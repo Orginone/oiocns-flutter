@@ -1,9 +1,10 @@
 import 'dart:io';
 
 import 'package:hive_flutter/adapters.dart';
-import 'package:orginone/model/user_info.dart';
+import 'package:orginone/model/target.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../model/team.dart';
 import '../model/user.dart';
 
 enum Keys { accessToken, isInitChat, user, userInfo, groupPriority }
@@ -28,7 +29,8 @@ class HiveUtil {
 
   Future<void> initAdapters() async {
     Hive.registerAdapter(UserAdapter());
-    Hive.registerAdapter(UserInfoAdapter());
+    Hive.registerAdapter(TargetAdapter());
+    Hive.registerAdapter(TeamAdapter());
   }
 
   // 这个存储一些键值

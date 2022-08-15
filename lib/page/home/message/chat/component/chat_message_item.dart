@@ -6,7 +6,7 @@ import '../../../../../config/custom_colors.dart';
 import '../../../../../enumeration/enum_map.dart';
 import '../../../../../enumeration/message_type.dart';
 import '../../../../../model/model.dart';
-import '../../../../../model/user_info.dart';
+import '../../../../../model/target.dart';
 
 enum Direction { leftStart, rightStart }
 
@@ -19,8 +19,8 @@ class ChatMessageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserInfo userInfo = HiveUtil().getValue(Keys.userInfo);
-    bool isMy = messageDetail.fromId.toString() == userInfo.id;
+    Target userInfo = HiveUtil().getValue(Keys.userInfo);
+    bool isMy = messageDetail.fromId == userInfo.id;
 
     return Row(
       textDirection: isMy ? TextDirection.rtl : TextDirection.ltr,

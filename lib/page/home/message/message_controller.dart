@@ -9,7 +9,7 @@ import 'package:orginone/util/sqlite_util.dart';
 import '../../../config/constant.dart';
 import '../../../model/api_resp.dart';
 import '../../../model/model.dart';
-import '../../../model/user_info.dart';
+import '../../../model/target.dart';
 import '../../../util/hub_util.dart';
 import 'chat/chat_controller.dart';
 
@@ -25,7 +25,7 @@ class MessageController extends GetxController {
   // 参数
   var currentGroupId = -1;
   User currentUser = HiveUtil().getValue(Keys.user);
-  UserInfo currentUserInfo = HiveUtil().getValue(Keys.userInfo);
+  Target currentUserInfo = HiveUtil().getValue(Keys.userInfo);
 
   Future<dynamic> firstInitChartsData() async {
     var hiveUtil = HiveUtil();

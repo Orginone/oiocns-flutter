@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/api/person_api.dart';
 
 import '../../model/login_resp.dart';
-import '../../model/user_info.dart';
+import '../../model/target.dart';
 import '../../util/hive_util.dart';
 
 class LoginController extends GetxController {
@@ -22,7 +22,7 @@ class LoginController extends GetxController {
     await hiveUtil.putValue(Keys.accessToken, loginResp.accessToken);
     await hiveUtil.putValue(Keys.user, loginResp.user);
 
-    UserInfo userInfo = await PersonApi.userInfo();
+    Target userInfo = await PersonApi.userInfo();
     await hiveUtil.putValue(Keys.userInfo, userInfo);
 
     return true;

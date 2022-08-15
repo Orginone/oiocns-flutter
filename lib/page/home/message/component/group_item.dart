@@ -72,12 +72,12 @@ class Group extends GetView<MessageController> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      controller.currentUserInfo.id ==
-                                              groupId.toString()
+                                      controller.currentUserInfo.id == groupId
                                           ? "$username（我）"
                                           : username,
                                       style: const TextStyle(
-                                          fontSize: 16, fontWeight: FontWeight.bold),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                     Obx(() => Text(formatDate(
                                         controller

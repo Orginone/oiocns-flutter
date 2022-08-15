@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/model/model.dart';
-import 'package:orginone/model/user_info.dart';
-import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/hub_util.dart';
 
 import '../../../../enumeration/message_type.dart';
@@ -22,8 +20,6 @@ class ChatController extends GetxController {
   var pageSize = 20;
   int oldTotalCount = 0;
   int oldRemainder = 0;
-
-  UserInfo currentUserInfo = HiveUtil().getValue(Keys.userInfo);
 
   // 观测对象
   var messageItems = <Widget>[].obs;

@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import 'package:getwidget/components/appbar/gf_appbar.dart';
 import 'package:getwidget/components/tabs/gf_tabbar.dart';
 import 'package:getwidget/components/tabs/gf_tabbar_view.dart';
+import 'package:getwidget/getwidget.dart';
 
+import '../../config/constant.dart';
 import 'home_controller.dart';
 
 class HomePage extends GetView<HomeController> {
@@ -16,6 +18,11 @@ class HomePage extends GetView<HomeController> {
 
     return Scaffold(
       appBar: GFAppBar(
+        leading: Container(
+            padding: const EdgeInsets.all(5),
+            child: const GFAvatar(
+                size: GFSize.SMALL,
+                backgroundImage: NetworkImage(Constant.testUrl))),
         title: const Text('Orginone-IM'),
       ),
       body: GFTabBarView(
