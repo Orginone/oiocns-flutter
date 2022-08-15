@@ -1,11 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:getwidget/components/avatar/gf_avatar.dart';
-import 'package:getwidget/shape/gf_avatar_shape.dart';
-import 'package:getwidget/size/gf_size.dart';
-import 'package:orginone/component/message_type/text_message.dart';
+import 'package:orginone/page/home/message/chat/component/text_message.dart';
 import 'package:orginone/util/hive_util.dart';
 
-import '../../../../../config/constant.dart';
+import '../../../../../config/custom_colors.dart';
 import '../../../../../enumeration/enum_map.dart';
 import '../../../../../enumeration/message_type.dart';
 import '../../../../../model/model.dart';
@@ -15,8 +12,10 @@ enum Direction { leftStart, rightStart }
 
 class ChatMessageItem extends StatelessWidget {
   final MessageDetail messageDetail;
+  final MessageGroup messageGroup;
 
-  const ChatMessageItem(this.messageDetail, {Key? key}) : super(key: key);
+  const ChatMessageItem(this.messageGroup, this.messageDetail, {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +28,16 @@ class ChatMessageItem extends StatelessWidget {
       children: [
         Container(
           padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
-          child: const GFAvatar(
-              size: GFSize.SMALL,
-              backgroundImage: NetworkImage(Constant.testUrl),
-              shape: GFAvatarShape.standard),
+          child: Container(
+              alignment: Alignment.center,
+              width: 40,
+              height: 40,
+              decoration: const BoxDecoration(
+                  color: CustomColors.blue,
+                  borderRadius: BorderRadius.all(Radius.circular(5))),
+              child: Text(messageGroup.name!
+                  .substring(0, messageGroup.name!.length >= 2 ? 2 : 1)
+                  .toUpperCase())),
         ),
         Container(
             padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),

@@ -10,19 +10,25 @@ class ChatBox extends GetView<ChatController> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
         child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
           Expanded(
               flex: 8,
-              child: TextField(
-                  controller: controller.messageText,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(), hintText: "请输入聊天信息"))),
+              child: Container(
+                constraints: const BoxConstraints(maxHeight: 40, minHeight: 40),
+                alignment: Alignment.centerLeft,
+                child: TextField(
+                    controller: controller.messageText,
+                    decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                        border: OutlineInputBorder(),
+                        hintText: "请输入聊天信息")),
+              )),
           Container(margin: const EdgeInsets.fromLTRB(10, 0, 0, 0)),
           Expanded(
               flex: 2,
               child: GFButton(
-                  size: GFSize.LARGE,
+                  size: GFSize.MEDIUM,
                   onPressed: () {
                     // 发送消息
                     controller.sendOneMessage();

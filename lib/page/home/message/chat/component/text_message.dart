@@ -8,16 +8,13 @@ class TextMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var width = window.physicalSize.height;
-    double cropWidth = width * 0.6;
-
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: const BoxDecoration(
           color: Colors.black12,
           borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Container(
-        constraints: BoxConstraints(maxWidth: cropWidth),
+        constraints: const BoxConstraints(maxWidth: 160),
         child: Text(message ?? ""),
       ),
     );

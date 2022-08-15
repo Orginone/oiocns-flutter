@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/page/home/message/chat/component/chat_box.dart';
@@ -16,7 +17,7 @@ class ChatPage extends GetView<ChatController> {
           onPressed: () => Get.back(),
           type: GFButtonType.transparent,
         ),
-        title: Obx(() => Text(controller.title.value)),
+        title: Text(controller.messageGroup.name ?? ""),
         actions: <Widget>[
           GFIconButton(icon: const Icon(Icons.favorite), onPressed: () {})
         ],
@@ -25,15 +26,25 @@ class ChatPage extends GetView<ChatController> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-              child: Scrollbar(
-                  key: UniqueKey(),
-                  child: Obx(() => ListView.builder(
-                      controller: controller.messageScrollController,
-                      scrollDirection: Axis.vertical,
-                      itemCount: controller.messageItems.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return controller.messageItems[index];
-                      })))),
+              child: RefreshIndicator(
+                  onRefresh: () async {
+                    var currentPage = controller.currentPage;
+                    if (currentPage <= 1) {
+                      EasyLoading.showToast("数据已更新完全");
+                      return;
+                    }
+                    controller.currentPage = currentPage - 1;
+                    await controller.getPageDataAndRender();
+                  },
+                  child: Scrollbar(
+                      key: UniqueKey(),
+                      child: Obx(() => ListView.builder(
+                          controller: controller.messageScrollController,
+                          scrollDirection: Axis.vertical,
+                          itemCount: controller.messageItems.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return controller.messageItems[index];
+                          }))))),
           const ChatBox()
         ],
       ),
