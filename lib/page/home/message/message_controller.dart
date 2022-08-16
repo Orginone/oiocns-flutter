@@ -137,9 +137,9 @@ class MessageController extends GetxController {
 
   // 更新聊天记录
   void updateChatItem(MessageDetail messageDetail) {
-    var messageItemId = messageDetail.toId;
-    if (latestDetailMap.containsKey(messageItemId)) {
-      LatestDetail latestDetail = latestDetailMap[messageItemId]!;
+    var groupId = messageDetail.toId;
+    if (latestDetailMap.containsKey(groupId)) {
+      LatestDetail latestDetail = latestDetailMap[groupId]!;
       latestDetail.notReadCount.value += 1;
       latestDetail.msgBody.value = messageDetail.msgBody ?? "";
       latestDetail.createTime.value =
@@ -167,6 +167,25 @@ class MessageController extends GetxController {
           // 保存消息
           await messageDetail.save();
 
+          // // 更新群组的优先级
+          // int fromId = messageDetail.fromId!;
+          // if (!latestDetailMap.containsKey(fromId)) {
+          //   // 保存新群组
+          //   await getCharts();
+          //
+          //   // 获取群组，没有获取到的话就处理下一条信息
+          //   MessageItem? newGroup = await MessageItem().getById(fromId);
+          //   if (newGroup == null) continue;
+          //
+          //   // 加入到可观测对象中去
+          //   messageItems.insert(0, newGroup);
+          //   messageItemMap[fromId] = newGroup;
+          //   latestDetailMap[fromId] = LatestDetail(
+          //       1.obs,
+          //       (messageDetail.msgBody ?? Constant.emptyString).obs,
+          //       (messageDetail.createTime ?? DateTime.now()).obs);
+          // }
+          //
           // // 比对第一条，如果不是第一条，那么需要更新优先级
           // var itemItem = messageItems[0];
           // if (itemItem.id != fromId) {

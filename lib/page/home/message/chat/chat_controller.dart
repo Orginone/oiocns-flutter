@@ -102,7 +102,9 @@ class ChatController extends GetxController {
 
     // 列表
     String querySQL =
-        "SELECT * FROM messageDetail WHERE fromId = ${messageController.currentGroupId} OR toId = ${messageController.currentGroupId} LIMIT $pageSize OFFSET $offset";
+        "SELECT * FROM messageDetail WHERE "
+        "fromId = ${messageController.currentGroupId} OR toId = ${messageController.currentGroupId} "
+        "LIMIT $pageSize OFFSET $offset";
     return await MessageDetailManager().execDataTable(querySQL);
   }
 
