@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/model/model.dart';
+import 'package:orginone/model/message_item.dart';
 import 'package:orginone/util/hub_util.dart';
 
 import '../../../../enumeration/message_type.dart';
+import '../../../../model/message_detail.dart';
 import '../message_controller.dart';
 import 'component/chat_message_item.dart';
 
@@ -15,7 +16,7 @@ class ChatController extends GetxController {
   var messageScrollController = ScrollController();
 
   // 老数据分页信息
-  late MessageGroup messageGroup;
+  late MessageItem messageItem;
   var currentPage = 1;
   var pageSize = 20;
   int oldTotalCount = 0;
@@ -71,7 +72,7 @@ class ChatController extends GetxController {
   // 消息接收函數
   Future<void> onReceiveMessage(MessageDetail messageDetail) async {
     try {
-      var chatMessageItem = ChatMessageItem(messageGroup, messageDetail);
+      var chatMessageItem = ChatMessageItem(messageItem, messageDetail);
       messageItems.add(chatMessageItem);
 
       // 改成已读状态
@@ -111,7 +112,7 @@ class ChatController extends GetxController {
     var messageList = await pageData();
     List<ChatMessageItem> temp = [];
     for (var message in messageList) {
-      temp.add(ChatMessageItem(messageGroup, MessageDetail.fromMap(message)));
+      temp.add(ChatMessageItem(messageItem, MessageDetail.fromMap(message)));
     }
     messageItems.insertAll(0, temp);
   }
@@ -122,8 +123,8 @@ class ChatController extends GetxController {
     messageItems.clear();
 
     // 初始化群組
-    messageGroup =
-        messageController.groupMap[messageController.currentGroupId]!;
+    messageItem =
+        messageController.messageItemMap[messageController.currentGroupId]!;
 
     // 初始化老数据个数，查询聊天记录的个数
     await preCount();

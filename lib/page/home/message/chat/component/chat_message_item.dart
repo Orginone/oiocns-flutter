@@ -5,16 +5,17 @@ import 'package:orginone/util/hive_util.dart';
 import '../../../../../config/custom_colors.dart';
 import '../../../../../enumeration/enum_map.dart';
 import '../../../../../enumeration/message_type.dart';
-import '../../../../../model/model.dart';
+import '../../../../../model/message_detail.dart';
+import '../../../../../model/message_item.dart';
 import '../../../../../model/target.dart';
 
 enum Direction { leftStart, rightStart }
 
 class ChatMessageItem extends StatelessWidget {
+  final MessageItem messageItem;
   final MessageDetail messageDetail;
-  final MessageGroup messageGroup;
 
-  const ChatMessageItem(this.messageGroup, this.messageDetail, {Key? key})
+  const ChatMessageItem(this.messageItem, this.messageDetail, {Key? key})
       : super(key: key);
 
   @override
@@ -35,8 +36,8 @@ class ChatMessageItem extends StatelessWidget {
               decoration: const BoxDecoration(
                   color: CustomColors.blue,
                   borderRadius: BorderRadius.all(Radius.circular(5))),
-              child: Text(messageGroup.name!
-                  .substring(0, messageGroup.name!.length >= 2 ? 2 : 1)
+              child: Text(messageItem.name!
+                  .substring(0, messageItem.name!.length >= 2 ? 2 : 1)
                   .toUpperCase())),
         ),
         Container(

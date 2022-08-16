@@ -1,12 +1,12 @@
-import 'package:orginone/model/user.dart';
+import 'package:orginone/api_resp/user_resp.dart';
 
 class LoginResp {
   final String accessToken;
-  final User user;
+  final UserResp user;
 
-  LoginResp.fromJson(Map<String, dynamic> map)
+  LoginResp.fromMap(Map<String, dynamic> map)
       : accessToken = map["accessToken"],
-        user = User.fromJson(map);
+        user = UserResp.fromJson(map);
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -14,6 +14,4 @@ class LoginResp {
     json['user'] = user;
     return json;
   }
-
-
 }

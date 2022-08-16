@@ -1,11 +1,12 @@
 import 'dart:io';
 
 import 'package:hive_flutter/adapters.dart';
-import 'package:orginone/model/target.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../model/team.dart';
-import '../model/user.dart';
+import '../api_resp/team_resp.dart';
+import '../api_resp/user_info_resp.dart';
+import '../api_resp/user_resp.dart';
+
 
 enum Keys { accessToken, isInitChat, user, userInfo, groupPriority }
 
@@ -28,9 +29,9 @@ class HiveUtil {
   }
 
   Future<void> initAdapters() async {
-    Hive.registerAdapter(UserAdapter());
-    Hive.registerAdapter(TargetAdapter());
-    Hive.registerAdapter(TeamAdapter());
+    Hive.registerAdapter(UserRespAdapter());
+    Hive.registerAdapter(UserInfoRespAdapter());
+    Hive.registerAdapter(TeamRespAdapter());
   }
 
   // 这个存储一些键值

@@ -1,31 +1,35 @@
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/model/message_count.dart';
-import 'package:orginone/model/user.dart';
+import 'package:orginone/api_resp/message_group_resp.dart';
+import 'package:orginone/api_resp/user_info_resp.dart';
+import 'package:orginone/api_resp/user_resp.dart';
+import 'package:orginone/model/message_detail_util.dart';
+import 'package:orginone/model/message_group.dart';
 import 'package:orginone/obserable/latest_message.dart';
 import 'package:orginone/util/hive_util.dart';
-import 'package:orginone/util/sqlite_util.dart';
 
+import '../../../api_resp/api_resp.dart';
 import '../../../config/constant.dart';
-import '../../../model/api_resp.dart';
-import '../../../model/model.dart';
-import '../../../model/target.dart';
+import '../../../model/message_detail.dart';
+import '../../../model/message_group_util.dart';
+import '../../../model/message_item.dart';
+import '../../../model/message_item_util.dart';
 import '../../../util/hub_util.dart';
 import 'chat/chat_controller.dart';
 
 /// 所有与后端消息交互的逻辑都先保存至数据库中再读取出来
 class MessageController extends GetxController {
   // 观测对象
-  RxList<MessageGroup> groupItems = <MessageGroup>[].obs;
-  var latestGroupMessageMap = <int, LatestMessage>{};
-  Map<int, MessageGroup> groupMap = <int, MessageGroup>{};
+  RxList<MessageItem> messageItems = <MessageItem>[].obs;
+  var latestDetailMap = <int, LatestDetail>{};
+  Map<int, MessageItem> messageItemMap = <int, MessageItem>{};
 
   var log = Logger("MessageController");
 
   // 参数
   var currentGroupId = -1;
-  User currentUser = HiveUtil().getValue(Keys.user);
-  Target currentUserInfo = HiveUtil().getValue(Keys.userInfo);
+  UserResp currentUser = HiveUtil().getValue(Keys.user);
+  UserInfoResp currentUserInfo = HiveUtil().getValue(Keys.userInfo);
 
   Future<dynamic> firstInitChartsData() async {
     var hiveUtil = HiveUtil();
@@ -41,114 +45,98 @@ class MessageController extends GetxController {
   }
 
   Future<dynamic> getCharts() async {
-    var sqliteUtil = SqliteUtil();
-
     // 读取聊天群
     Map<String, dynamic> chats = await HubUtil().getChats();
 
     // 聊天结果
-    ApiResp apiResp = ApiResp.fromJson(chats);
+    ApiResp apiResp = ApiResp.fromMap(chats);
 
     // 聊天数组
-    MessageCount messageCount = MessageCount.fromJson(apiResp.data);
+    List<dynamic> messageGroups = apiResp.data["groups"];
 
     // 事务控制
-    await sqliteUtil.orginone.batchStart();
+    await MessageItemModel().batchStart();
     try {
-      for (var item in messageCount.result) {
-        // 聊天群
-        MessageGroup group = MessageGroup.fromMap(item);
-        int groupExists = await MessageGroup()
-            .select(columnsToSelect: ["COUNT(id)"])
-            .id
-            .equals(group.id)
-            .page(1, 1)
-            .toCount();
+      for (var item in messageGroups) {
+        // 聊天组
+        MessageGroupResp group = MessageGroupResp.fromMap(item);
+
+        int groupExists =
+            await MessageGroupUtil.count(currentUser.account, group.id);
 
         if (groupExists == 0) {
           // 如果不存在这个群组就保存一下
-          group.priority = HiveUtil().groupPriorityAddAndGet();
-          await group.save();
+          await MessageGroup(
+                  account: currentUser.account, id: group.id, name: group.name)
+              .save();
         }
 
-        // 最新消息内容
-        var messageMap = item['message'];
-        if (messageMap != null) {
-          MessageDetail message = MessageDetail.fromMap(messageMap);
-          int messageExists = await MessageDetail()
-              .select(columnsToSelect: ["COUNT(id)"])
-              .id
-              .equals(message.id)
-              .page(1, 1)
-              .toCount();
+        // 群聊天内容
+        List<dynamic> messageItemList = item['chats'];
+        for (var messageItemMap in messageItemList) {
+          MessageItem messageItem = MessageItem.fromMap(messageItemMap);
 
+          // 不存在的就保存
+          int messageExists =
+              await MessageItemUtil.count(currentUser.account, messageItem.id!);
           if (messageExists == 0) {
-            await message.save();
+            messageItem.account = currentUser.account;
+            await messageItem.save();
           }
         }
       }
-      await sqliteUtil.orginone.batchCommit();
+      await MessageItemModel().batchCommit();
     } catch (error) {
       // 初始化有问题直接回滚数据
-      sqliteUtil.orginone.batchRollback();
+      MessageItemModel().batchRollback();
       return;
     }
   }
 
   Future<dynamic> initChats() async {
-    groupItems.clear();
+    messageItems.clear();
 
-    var groups = await MessageGroup().select().orderByDesc("priority").toList();
+    var items = await MessageItemUtil.getAllItems(currentUser.account);
 
-    for (int i = 0; i < groups.length; i++) {
-      var group = groups[i];
-      var groupId = group.id;
-      if (groupId == null) continue;
+    for (int i = 0; i < items.length; i++) {
+      var messageItem = items[i];
+      var messageItemId = messageItem.id;
+      if (messageItemId == null) continue;
 
-      var message = await MessageDetail()
-          .select(columnsToSelect: ["msgBody", "createTime"])
-          .toId
-          .equals(groupId)
-          .orderByDesc("seqId")
-          .page(1, 1)
-          .toSingle();
+      var message = await MessageDetailUtil.latestDetail(
+          currentUser.account, messageItemId);
 
-      var notReadMessageCount = await MessageDetail()
-          .select(columnsToSelect: ["COUNT(id)"])
-          .fromId
-          .equals(groupId)
-          .and
-          .isRead
-          .equals(false)
-          .toCount();
+      var notReadMessageCount = await MessageDetailUtil.notReadMessageCount(
+          currentUser.account, messageItemId);
+      ;
 
-      latestGroupMessageMap[groupId] = LatestMessage(
+      latestDetailMap[messageItemId] = LatestDetail(
           notReadMessageCount.obs,
           (message?.msgBody ?? Constant.emptyString).obs,
           (message?.createTime ?? DateTime.now()).obs);
 
-      groupItems.add(group);
-      groupMap[groupId] = group;
+      messageItems.add(messageItem);
+      messageItemMap[messageItemId] = messageItem;
     }
   }
 
   // 更新聊天记录
   void updateChatItem(MessageDetail messageDetail) {
     var groupId = messageDetail.fromId;
-    if (latestGroupMessageMap.containsKey(groupId)) {
-      LatestMessage latestGroupMessage = latestGroupMessageMap[groupId]!;
-      latestGroupMessage.notReadCount.value += 1;
-      latestGroupMessage.msgBody.value = messageDetail.msgBody ?? "";
-      latestGroupMessage.createTime.value =
+    if (latestDetailMap.containsKey(groupId)) {
+      LatestDetail latestDetail = latestDetailMap[groupId]!;
+      latestDetail.notReadCount.value += 1;
+      latestDetail.msgBody.value = messageDetail.msgBody ?? "";
+      latestDetail.createTime.value =
           messageDetail.createTime ?? DateTime.now();
     }
   }
 
   // 打开一个群组就阅读所有消息
   Future<void> groupRead() async {
-    if (latestGroupMessageMap.containsKey(currentGroupId)) {
-      LatestMessage latestGroupMessage = latestGroupMessageMap[currentGroupId]!;
-      latestGroupMessage.notReadCount.value = 0;
+    if (latestDetailMap.containsKey(currentGroupId)) {
+      LatestDetail latestDetail = latestDetailMap[currentGroupId]!;
+      latestDetail.notReadCount.value = 0;
     }
   }
 
@@ -157,7 +145,7 @@ class MessageController extends GetxController {
     if (messageList.isEmpty) return;
     try {
       for (var message in messageList) {
-        var resp = ApiResp.fromJson(message);
+        var resp = ApiResp.fromMap(message);
         var messageDetail = MessageDetail.fromMap(resp.data);
         messageDetail.isRead = false;
         try {
@@ -165,33 +153,32 @@ class MessageController extends GetxController {
           await messageDetail.save();
 
           // 更新群组的优先级
-          int fromId  = messageDetail.fromId!;
-          if (!latestGroupMessageMap.containsKey(fromId)) {
+          int fromId = messageDetail.fromId!;
+          if (!latestDetailMap.containsKey(fromId)) {
             // 保存新群组
             await getCharts();
 
             // 获取群组，没有获取到的话就处理下一条信息
-            MessageGroup? newGroup = await MessageGroup().getById(fromId);
+            MessageItem? newGroup = await MessageItem().getById(fromId);
             if (newGroup == null) continue;
 
             // 加入到可观测对象中去
-            groupItems.insert(0, newGroup);
-            groupMap[fromId] = newGroup;
-            latestGroupMessageMap[fromId] = LatestMessage(
+            messageItems.insert(0, newGroup);
+            messageItemMap[fromId] = newGroup;
+            latestDetailMap[fromId] = LatestDetail(
                 1.obs,
                 (messageDetail.msgBody ?? Constant.emptyString).obs,
                 (messageDetail.createTime ?? DateTime.now()).obs);
           }
 
           // 比对第一条，如果不是第一条，那么需要更新优先级
-          var groupItem = groupItems[0];
-          if (groupItem.id != fromId) {
-            var tempGroup = groupMap[fromId];
-            tempGroup!.priority = HiveUtil().groupPriorityAddAndGet();
-            await MessageGroupManager().update(tempGroup);
+          var itemItem = messageItems[0];
+          if (itemItem.id != fromId) {
+            MessageItem messageItem = messageItemMap[fromId]!;
+            await MessageItemManager().update(messageItem);
 
-            groupItems.remove(tempGroup);
-            groupItems.insert(0, tempGroup);
+            messageItems.remove(messageItem);
+            messageItems.insert(0, messageItem);
           }
 
           if (currentGroupId != -1) {

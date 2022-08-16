@@ -1,4 +1,3 @@
-import 'package:orginone/model/model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class SqliteUtil {
@@ -11,11 +10,9 @@ class SqliteUtil {
   }
 
   late var dataBase;
-  late Orginone orginone;
 
   Future<void> init() async {
     dataBase = await openDatabase("orginone.db");
-    orginone = Orginone();
   }
 
   Future<void> close() async {

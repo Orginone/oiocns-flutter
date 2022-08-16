@@ -1,11 +1,12 @@
 import 'package:hive/hive.dart';
+import 'package:orginone/api_resp/team_resp.dart';
 
 import '../config/hive_object_id.dart';
 
-part 'team.g.dart';
+part 'user_info_resp.g.dart';
 
-@HiveType(typeId: HiveObjectId.team)
-class Team {
+@HiveType(typeId: HiveObjectId.userInfo)
+class UserInfoResp {
   @HiveField(0)
   int id;
   @HiveField(1)
@@ -13,60 +14,59 @@ class Team {
   @HiveField(2)
   String code;
   @HiveField(3)
-  int targetId;
+  String typeName;
   @HiveField(4)
-  int authId;
+  int thingId;
   @HiveField(5)
-  String remark;
-  @HiveField(6)
   int status;
-  @HiveField(7)
+  @HiveField(6)
   int createUser;
-  @HiveField(8)
+  @HiveField(7)
   int updateUser;
-  @HiveField(9)
+  @HiveField(8)
   int version;
-  @HiveField(10)
+  @HiveField(9)
   DateTime createTime;
-  @HiveField(11)
+  @HiveField(10)
   DateTime updateTime;
+  @HiveField(11)
+  TeamResp team;
 
-  Team(
+  UserInfoResp(
       this.id,
       this.name,
       this.code,
-      this.targetId,
-      this.authId,
-      this.remark,
+      this.typeName,
+      this.thingId,
       this.status,
       this.createUser,
       this.updateUser,
       this.version,
       this.createTime,
-      this.updateTime);
+      this.updateTime,
+      this.team);
 
-  Team.fromJson(Map<String, dynamic> map)
+  UserInfoResp.fromMap(Map<String, dynamic> map)
       : id = int.parse(map["id"]),
         name = map["name"],
         code = map["code"],
-        targetId = int.parse(map["targetId"]),
-        authId = int.parse(map["authId"]),
-        remark = map["remark"],
+        typeName = map["typeName"],
+        thingId = int.parse(map["thingId"]),
         status = map["status"],
         createUser = int.parse(map["createUser"]),
         updateUser = int.parse(map["updateUser"]),
         version = int.parse(map["version"]),
         createTime = DateTime.parse(map["createTime"]),
-        updateTime = DateTime.parse(map["updateTime"]);
+        updateTime = DateTime.parse(map["updateTime"]),
+        team = TeamResp.fromJson(map["team"]);
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
     json['id'] = id;
     json['name'] = name;
     json['code'] = code;
-    json['targetId'] = targetId;
-    json['authId'] = authId;
-    json['remark'] = remark;
+    json['typeName'] = typeName;
+    json['thingId'] = thingId;
     json['status'] = status;
     json['createUser'] = createUser;
     json['updateUser'] = updateUser;

@@ -6,13 +6,14 @@ import 'package:orginone/config/custom_colors.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/routers.dart';
 
-class Group extends GetView<MessageController> {
+class MessageItemWidget extends GetView<MessageController> {
   // 用户信息
   final int groupId;
   final String username;
   final String avatarUrl;
 
-  const Group(this.groupId, this.username, this.avatarUrl, {Key? key})
+  const MessageItemWidget(this.groupId, this.username, this.avatarUrl,
+      {Key? key})
       : super(key: key);
 
   @override
@@ -48,9 +49,7 @@ class Group extends GetView<MessageController> {
                           )),
                       Obx(() {
                         var notReadCount = controller
-                                .latestGroupMessageMap[groupId]
-                                ?.notReadCount
-                                .value ??
+                                .latestDetailMap[groupId]?.notReadCount.value ??
                             0;
                         return Visibility(
                             visible: notReadCount > 0,
@@ -80,17 +79,13 @@ class Group extends GetView<MessageController> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                     Obx(() => Text(formatDate(
-                                        controller
-                                                .latestGroupMessageMap[groupId]
-                                                ?.createTime
-                                                .value ??
+                                        controller.latestDetailMap[groupId]
+                                                ?.createTime.value ??
                                             DateTime.now(),
                                         [HH, ':', nn, ':', ss])))
                                   ]),
-                              Obx(() => Text(controller
-                                      .latestGroupMessageMap[groupId]
-                                      ?.msgBody
-                                      .value ??
+                              Obx(() => Text(controller.latestDetailMap[groupId]
+                                      ?.msgBody.value ??
                                   ""))
                             ])))
               ]),

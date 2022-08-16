@@ -1,22 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user.dart';
+part of 'user_resp.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class UserAdapter extends TypeAdapter<User> {
+class UserRespAdapter extends TypeAdapter<UserResp> {
   @override
   final int typeId = 4;
 
   @override
-  User read(BinaryReader reader) {
+  UserResp read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return User(
+    return UserResp(
       fields[0] as String,
       fields[1] as String,
       fields[2] as int,
@@ -30,7 +30,7 @@ class UserAdapter extends TypeAdapter<User> {
   }
 
   @override
-  void write(BinaryWriter writer, User obj) {
+  void write(BinaryWriter writer, UserResp obj) {
     writer
       ..writeByte(9)
       ..writeByte(0)
@@ -59,7 +59,7 @@ class UserAdapter extends TypeAdapter<User> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UserAdapter &&
+      other is UserRespAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

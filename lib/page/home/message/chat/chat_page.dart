@@ -17,7 +17,7 @@ class ChatPage extends GetView<ChatController> {
           onPressed: () => Get.back(),
           type: GFButtonType.transparent,
         ),
-        title: Text(controller.messageGroup.name ?? ""),
+        title: Text(controller.messageItem.name ?? ""),
         actions: <Widget>[
           GFIconButton(icon: const Icon(Icons.favorite), onPressed: () {})
         ],

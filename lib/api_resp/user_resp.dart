@@ -2,10 +2,10 @@ import 'package:hive/hive.dart';
 
 import '../config/hive_object_id.dart';
 
-part 'user.g.dart';
+part 'user_resp.g.dart';
 
 @HiveType(typeId: HiveObjectId.userId)
-class User {
+class UserResp {
   @HiveField(0)
   final String account;
   @HiveField(1)
@@ -25,10 +25,10 @@ class User {
   @HiveField(8)
   final String workspaceName;
 
-  User(this.account, this.authority, this.expiresIn, this.license, this.motto,
+  UserResp(this.account, this.authority, this.expiresIn, this.license, this.motto,
       this.tokenType, this.userName, this.workspaceId, this.workspaceName);
 
-  User.fromJson(Map<String, dynamic> map)
+  UserResp.fromJson(Map<String, dynamic> map)
       : account = map["account"],
         authority = map["authority"],
         expiresIn = map["expiresIn"],

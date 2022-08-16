@@ -5,7 +5,7 @@ import 'package:orginone/util/hive_util.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../config/constant.dart';
-import '../model/api_resp.dart';
+import '../api_resp/api_resp.dart';
 
 class HttpUtil {
   HttpUtil._();
@@ -121,7 +121,7 @@ class HttpUtil {
   }
 
   Map<String, dynamic> _parseResp<T>(Response response) {
-    var resp = ApiResp.fromJson(response.data!);
+    var resp = ApiResp.fromMap(response.data!);
     log.info("==> resp: ${resp.toString()}");
     if (resp.code == 200) {
       return resp.data;
