@@ -1,5 +1,5 @@
 class Constant {
-  static const host = "http://192.168.31.88:800";
+  static const host = "http://anyinone.com:800";
   static const hub = "$host/orginone/orgchat/msghub";
   static const personModule = "$host/orginone/organization/person";
 

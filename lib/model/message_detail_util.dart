@@ -1,3 +1,4 @@
+import 'db_model.dart';
 import 'message_detail.dart';
 
 class MessageDetailUtil {
@@ -20,6 +21,7 @@ class MessageDetailUtil {
         .select(columnsToSelect: ["COUNT(id)"])
         .account
         .equals(account)
+        .and
         .fromId
         .equals(messageItemId)
         .and

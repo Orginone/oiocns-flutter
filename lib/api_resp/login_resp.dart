@@ -6,7 +6,7 @@ class LoginResp {
 
   LoginResp.fromMap(Map<String, dynamic> map)
       : accessToken = map["accessToken"],
-        user = UserResp.fromJson(map);
+        user = UserResp.fromMap(map);
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};

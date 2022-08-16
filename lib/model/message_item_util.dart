@@ -1,4 +1,4 @@
-import 'message_item.dart';
+import 'db_model.dart';
 
 class MessageItemUtil {
   static Future<int> count(String account, int messageItemId) async {

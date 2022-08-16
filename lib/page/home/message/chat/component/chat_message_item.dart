@@ -2,12 +2,11 @@ import 'package:flutter/widgets.dart';
 import 'package:orginone/page/home/message/chat/component/text_message.dart';
 import 'package:orginone/util/hive_util.dart';
 
+import '../../../../../api_resp/user_info_resp.dart';
 import '../../../../../config/custom_colors.dart';
 import '../../../../../enumeration/enum_map.dart';
 import '../../../../../enumeration/message_type.dart';
-import '../../../../../model/message_detail.dart';
-import '../../../../../model/message_item.dart';
-import '../../../../../model/target.dart';
+import '../../../../../model/db_model.dart';
 
 enum Direction { leftStart, rightStart }
 
@@ -20,7 +19,7 @@ class ChatMessageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Target userInfo = HiveUtil().getValue(Keys.userInfo);
+    UserInfoResp userInfo = HiveUtil().getValue(Keys.userInfo);
     bool isMy = messageDetail.fromId == userInfo.id;
 
     return Row(

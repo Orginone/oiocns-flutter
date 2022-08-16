@@ -4,23 +4,26 @@ import 'package:orginone/api_resp/message_group_resp.dart';
 import 'package:orginone/api_resp/user_info_resp.dart';
 import 'package:orginone/api_resp/user_resp.dart';
 import 'package:orginone/model/message_detail_util.dart';
-import 'package:orginone/model/message_group.dart';
 import 'package:orginone/obserable/latest_message.dart';
 import 'package:orginone/util/hive_util.dart';
 
 import '../../../api_resp/api_resp.dart';
 import '../../../config/constant.dart';
-import '../../../model/message_detail.dart';
+import '../../../model/db_model.dart';
 import '../../../model/message_group_util.dart';
-import '../../../model/message_item.dart';
 import '../../../model/message_item_util.dart';
 import '../../../util/hub_util.dart';
 import 'chat/chat_controller.dart';
 
 /// 所有与后端消息交互的逻辑都先保存至数据库中再读取出来
 class MessageController extends GetxController {
-  // 观测对象
-  RxList<MessageItem> messageItems = <MessageItem>[].obs;
+  var obs = false.obs;
+
+  // 组的对象
+  RxList<MessageGroup> messageGroups = <MessageGroup>[].obs;
+  Map<int, MessageGroup> messageGroupMap = {};
+  Map<int, RxList<MessageItem>> messageGroupItemsMap = {};
+
   var latestDetailMap = <int, LatestDetail>{};
   Map<int, MessageItem> messageItemMap = <int, MessageItem>{};
 
@@ -55,7 +58,7 @@ class MessageController extends GetxController {
     List<dynamic> messageGroups = apiResp.data["groups"];
 
     // 事务控制
-    await MessageItemModel().batchStart();
+    await DbModel().batchStart();
     try {
       for (var item in messageGroups) {
         // 聊天组
@@ -73,8 +76,9 @@ class MessageController extends GetxController {
 
         // 群聊天内容
         List<dynamic> messageItemList = item['chats'];
-        for (var messageItemMap in messageItemList) {
-          MessageItem messageItem = MessageItem.fromMap(messageItemMap);
+        for (var messageItemSingle in messageItemList) {
+          MessageItem messageItem = MessageItem.fromMap(messageItemSingle);
+          messageItem.msgGroupId = group.id;
 
           // 不存在的就保存
           int messageExists =
@@ -85,46 +89,57 @@ class MessageController extends GetxController {
           }
         }
       }
-      await MessageItemModel().batchCommit();
+      await DbModel().batchCommit();
     } catch (error) {
       // 初始化有问题直接回滚数据
-      MessageItemModel().batchRollback();
+      DbModel().batchRollback();
       return;
     }
   }
 
   Future<dynamic> initChats() async {
-    messageItems.clear();
+    messageGroups.clear();
 
-    var items = await MessageItemUtil.getAllItems(currentUser.account);
+    // 组装分组
+    List<MessageGroup> groups =
+        await MessageGroupUtil.getAllGroup(currentUser.account);
+    for (var group in groups) {
+      var groupId = group.id!;
+      messageGroupMap.putIfAbsent(groupId, () => group);
+      messageGroupMap[groupId] = group;
+      messageGroups.add(group);
+      messageGroupItemsMap[groupId]?.clear();
+    }
 
-    for (int i = 0; i < items.length; i++) {
-      var messageItem = items[i];
-      var messageItemId = messageItem.id;
-      if (messageItemId == null) continue;
+    // 聊天组
+    List<MessageItem> items =
+        await MessageItemUtil.getAllItems(currentUser.account);
+    for (var messageItem in items) {
+      var messageItemId = messageItem.id!;
+      var groupId = messageItem.msgGroupId!;
+      messageGroupItemsMap.putIfAbsent(groupId, () => <MessageItem>[].obs);
+      messageGroupItemsMap[groupId]!.add(messageItem);
 
+      // 最新的消息和未读的数量
       var message = await MessageDetailUtil.latestDetail(
           currentUser.account, messageItemId);
-
       var notReadMessageCount = await MessageDetailUtil.notReadMessageCount(
           currentUser.account, messageItemId);
-      ;
 
       latestDetailMap[messageItemId] = LatestDetail(
           notReadMessageCount.obs,
           (message?.msgBody ?? Constant.emptyString).obs,
           (message?.createTime ?? DateTime.now()).obs);
 
-      messageItems.add(messageItem);
       messageItemMap[messageItemId] = messageItem;
     }
   }
 
   // 更新聊天记录
   void updateChatItem(MessageDetail messageDetail) {
-    var groupId = messageDetail.fromId;
-    if (latestDetailMap.containsKey(groupId)) {
-      LatestDetail latestDetail = latestDetailMap[groupId]!;
+    var messageItemId = messageDetail.toId;
+    if (latestDetailMap.containsKey(messageItemId)) {
+      LatestDetail latestDetail = latestDetailMap[messageItemId]!;
       latestDetail.notReadCount.value += 1;
       latestDetail.msgBody.value = messageDetail.msgBody ?? "";
       latestDetail.createTime.value =
@@ -152,34 +167,15 @@ class MessageController extends GetxController {
           // 保存消息
           await messageDetail.save();
 
-          // 更新群组的优先级
-          int fromId = messageDetail.fromId!;
-          if (!latestDetailMap.containsKey(fromId)) {
-            // 保存新群组
-            await getCharts();
-
-            // 获取群组，没有获取到的话就处理下一条信息
-            MessageItem? newGroup = await MessageItem().getById(fromId);
-            if (newGroup == null) continue;
-
-            // 加入到可观测对象中去
-            messageItems.insert(0, newGroup);
-            messageItemMap[fromId] = newGroup;
-            latestDetailMap[fromId] = LatestDetail(
-                1.obs,
-                (messageDetail.msgBody ?? Constant.emptyString).obs,
-                (messageDetail.createTime ?? DateTime.now()).obs);
-          }
-
-          // 比对第一条，如果不是第一条，那么需要更新优先级
-          var itemItem = messageItems[0];
-          if (itemItem.id != fromId) {
-            MessageItem messageItem = messageItemMap[fromId]!;
-            await MessageItemManager().update(messageItem);
-
-            messageItems.remove(messageItem);
-            messageItems.insert(0, messageItem);
-          }
+          // // 比对第一条，如果不是第一条，那么需要更新优先级
+          // var itemItem = messageItems[0];
+          // if (itemItem.id != fromId) {
+          //   MessageItem messageItem = messageItemMap[fromId]!;
+          //   await MessageItemManager().update(messageItem);
+          //
+          //   messageItems.remove(messageItem);
+          //   messageItems.insert(0, messageItem);
+          // }
 
           if (currentGroupId != -1) {
             // 如果当前在聊天页面当中就接受消息

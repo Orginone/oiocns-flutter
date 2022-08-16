@@ -10,22 +10,21 @@ class MessageItemWidget extends GetView<MessageController> {
   // 用户信息
   final int groupId;
   final String username;
-  final String avatarUrl;
 
-  const MessageItemWidget(this.groupId, this.username, this.avatarUrl,
-      {Key? key})
+  const MessageItemWidget(this.groupId, this.username, {Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () {
           MessageController messageController = Get.find();
           messageController.currentGroupId = groupId;
           Get.toNamed(Routers.chat);
         },
         child: Container(
-          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
           child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,

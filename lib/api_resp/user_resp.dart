@@ -28,7 +28,7 @@ class UserResp {
   UserResp(this.account, this.authority, this.expiresIn, this.license, this.motto,
       this.tokenType, this.userName, this.workspaceId, this.workspaceName);
 
-  UserResp.fromJson(Map<String, dynamic> map)
+  UserResp.fromMap(Map<String, dynamic> map)
       : account = map["account"],
         authority = map["authority"],
         expiresIn = map["expiresIn"],

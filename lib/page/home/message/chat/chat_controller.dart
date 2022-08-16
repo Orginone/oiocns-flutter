@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/model/message_item.dart';
 import 'package:orginone/util/hub_util.dart';
 
 import '../../../../enumeration/message_type.dart';
-import '../../../../model/message_detail.dart';
+import '../../../../model/db_model.dart';
 import '../message_controller.dart';
 import 'component/chat_message_item.dart';
 
