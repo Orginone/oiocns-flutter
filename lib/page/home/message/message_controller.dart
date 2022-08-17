@@ -1,7 +1,8 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/message_group_resp.dart';
-import 'package:orginone/api_resp/user_info_resp.dart';
+import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/api_resp/user_resp.dart';
 import 'package:orginone/model/message_detail_util.dart';
 import 'package:orginone/obserable/latest_message.dart';
@@ -30,9 +31,9 @@ class MessageController extends GetxController {
   var log = Logger("MessageController");
 
   // 参数
-  var currentGroupId = -1;
+  var currentMessageItemId = -1;
   UserResp currentUser = HiveUtil().getValue(Keys.user);
-  UserInfoResp currentUserInfo = HiveUtil().getValue(Keys.userInfo);
+  TargetResp currentUserInfo = HiveUtil().getValue(Keys.userInfo);
 
   Future<dynamic> firstInitChartsData() async {
     var hiveUtil = HiveUtil();
@@ -64,13 +65,15 @@ class MessageController extends GetxController {
         // 聊天组
         MessageGroupResp group = MessageGroupResp.fromMap(item);
 
-        int groupExists =
-            await MessageGroupUtil.count(currentUser.account, group.id);
+        int groupExists = await MessageGroupUtil.count(group.id);
 
         if (groupExists == 0) {
           // 如果不存在这个群组就保存一下
           await MessageGroup(
-                  account: currentUser.account, id: group.id, name: group.name)
+                  account: currentUser.account,
+                  id: group.id,
+                  name: group.name,
+                  isExpand: true)
               .save();
         }
 
@@ -81,8 +84,8 @@ class MessageController extends GetxController {
           messageItem.msgGroupId = group.id;
 
           // 不存在的就保存
-          int messageExists =
-              await MessageItemUtil.count(currentUser.account, messageItem.id!);
+          int messageExists = await MessageItemUtil.count(
+              messageItem.id!, messageItem.label ?? "");
           if (messageExists == 0) {
             messageItem.account = currentUser.account;
             await messageItem.save();
@@ -101,8 +104,7 @@ class MessageController extends GetxController {
     messageGroups.clear();
 
     // 组装分组
-    List<MessageGroup> groups =
-        await MessageGroupUtil.getAllGroup(currentUser.account);
+    List<MessageGroup> groups = await MessageGroupUtil.getAllGroup();
     for (var group in groups) {
       var groupId = group.id!;
       messageGroupMap.putIfAbsent(groupId, () => group);
@@ -121,15 +123,18 @@ class MessageController extends GetxController {
       messageGroupItemsMap[groupId]!.add(messageItem);
 
       // 最新的消息和未读的数量
-      var message = await MessageDetailUtil.latestDetail(
-          currentUser.account, messageItemId);
-      var notReadMessageCount = await MessageDetailUtil.notReadMessageCount(
-          currentUser.account, messageItemId);
+      var message = await MessageDetailUtil.latestDetail(messageItemId);
+      var createTime = message?.createTime;
+      var notReadMessageCount =
+          await MessageDetailUtil.notReadMessageCount(messageItemId);
 
       latestDetailMap[messageItemId] = LatestDetail(
           notReadMessageCount.obs,
           (message?.msgBody ?? Constant.emptyString).obs,
-          (message?.createTime ?? DateTime.now()).obs);
+          (createTime == null
+                  ? ""
+                  : DateUtil.formatDate(createTime, format: "HH:mm:ss"))
+              .obs);
 
       messageItemMap[messageItemId] = messageItem;
     }
@@ -142,15 +147,16 @@ class MessageController extends GetxController {
       LatestDetail latestDetail = latestDetailMap[groupId]!;
       latestDetail.notReadCount.value += 1;
       latestDetail.msgBody.value = messageDetail.msgBody ?? "";
-      latestDetail.createTime.value =
-          messageDetail.createTime ?? DateTime.now();
+      latestDetail.createTime.value = messageDetail.createTime == null
+          ? ""
+          : DateUtil.formatDate(messageDetail.createTime, format: "HH:mm:ss");
     }
   }
 
   // 打开一个群组就阅读所有消息
-  Future<void> groupRead() async {
-    if (latestDetailMap.containsKey(currentGroupId)) {
-      LatestDetail latestDetail = latestDetailMap[currentGroupId]!;
+  Future<void> messageItemRead() async {
+    if (latestDetailMap.containsKey(currentMessageItemId)) {
+      LatestDetail latestDetail = latestDetailMap[currentMessageItemId]!;
       latestDetail.notReadCount.value = 0;
     }
   }
@@ -163,6 +169,7 @@ class MessageController extends GetxController {
         var resp = ApiResp.fromMap(message);
         var messageDetail = MessageDetail.fromMap(resp.data);
         messageDetail.isRead = false;
+        messageDetail.account = currentUser.account;
         try {
           // 保存消息
           await messageDetail.save();
@@ -196,7 +203,7 @@ class MessageController extends GetxController {
           //   messageItems.insert(0, messageItem);
           // }
 
-          if (currentGroupId != -1) {
+          if (currentMessageItemId != -1) {
             // 如果当前在聊天页面当中就接受消息
             ChatController chatController = Get.find();
             await chatController.onReceiveMessage(messageDetail);

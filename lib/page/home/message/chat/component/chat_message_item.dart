@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:orginone/page/home/message/chat/component/text_message.dart';
 import 'package:orginone/util/hive_util.dart';
 
-import '../../../../../api_resp/user_info_resp.dart';
+import '../../../../../api_resp/target_resp.dart';
 import '../../../../../config/custom_colors.dart';
 import '../../../../../enumeration/enum_map.dart';
 import '../../../../../enumeration/message_type.dart';
@@ -19,7 +19,7 @@ class ChatMessageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserInfoResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     bool isMy = messageDetail.fromId == userInfo.id;
 
     return Row(

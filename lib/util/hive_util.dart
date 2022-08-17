@@ -4,7 +4,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../api_resp/team_resp.dart';
-import '../api_resp/user_info_resp.dart';
+import '../api_resp/target_resp.dart';
 import '../api_resp/user_resp.dart';
 
 
@@ -30,7 +30,7 @@ class HiveUtil {
 
   Future<void> initAdapters() async {
     Hive.registerAdapter(UserRespAdapter());
-    Hive.registerAdapter(UserInfoRespAdapter());
+    Hive.registerAdapter(TargetRespAdapter());
     Hive.registerAdapter(TeamRespAdapter());
   }
 

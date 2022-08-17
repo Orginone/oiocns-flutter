@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api/person_api.dart';
-import 'package:orginone/api_resp/user_info_resp.dart';
+import 'package:orginone/api_resp/target_resp.dart';
 
 import '../../api_resp/login_resp.dart';
 import '../../util/hive_util.dart';
@@ -22,7 +22,7 @@ class LoginController extends GetxController {
     await hiveUtil.putValue(Keys.accessToken, loginResp.accessToken);
     await hiveUtil.putValue(Keys.user, loginResp.user);
 
-    UserInfoResp userInfo = await PersonApi.userInfo();
+    TargetResp userInfo = await PersonApi.userInfo();
     await hiveUtil.putValue(Keys.userInfo, userInfo);
 
     return true;

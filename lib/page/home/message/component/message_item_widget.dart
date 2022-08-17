@@ -20,7 +20,7 @@ class MessageItemWidget extends GetView<MessageController> {
         behavior: HitTestBehavior.opaque,
         onTap: () {
           MessageController messageController = Get.find();
-          messageController.currentGroupId = groupId;
+          messageController.currentMessageItemId = groupId;
           Get.toNamed(Routers.chat);
         },
         child: Container(
@@ -77,11 +77,8 @@ class MessageItemWidget extends GetView<MessageController> {
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    Obx(() => Text(formatDate(
-                                        controller.latestDetailMap[groupId]
-                                                ?.createTime.value ??
-                                            DateTime.now(),
-                                        [HH, ':', nn, ':', ss])))
+                                    Obx(() => Text(controller.latestDetailMap[groupId]?.createTime.value ??
+                                        ""))
                                   ]),
                               Obx(() => Text(controller.latestDetailMap[groupId]
                                       ?.msgBody.value ??

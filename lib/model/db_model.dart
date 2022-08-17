@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
-import 'package:orginone/model/target.dart';
 import 'package:sqfentity/sqfentity.dart';
 import 'package:sqfentity_gen/sqfentity_gen.dart';
 
@@ -26,5 +25,4 @@ const dbModel = SqfEntityModel(
       messageDetailTable,
       messageGroupTable,
       messageItemTable,
-      targetTable
     ]);

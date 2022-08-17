@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/model/message_detail_util.dart';
 import 'package:orginone/util/hub_util.dart';
 
 import '../../../../enumeration/message_type.dart';
@@ -39,8 +40,8 @@ class ChatController extends GetxController {
   @override
   void onReady() async {
     // 阅读数据
-    await groupRead();
-    await messageController.groupRead();
+    await messageItemRead();
+    await messageController.messageItemRead();
 
     super.onReady();
   }
@@ -50,7 +51,7 @@ class ChatController extends GetxController {
     logger.info("==============开始回收资源=============");
     // 清空数据
     messageItems.clear();
-    messageController.currentGroupId = -1;
+    messageController.currentMessageItemId = -1;
 
     // 解除控制
     messageText.dispose();
@@ -60,12 +61,9 @@ class ChatController extends GetxController {
   }
 
   // 阅读信息
-  Future<void> groupRead() async {
-    int groupId = messageController.currentGroupId;
-
-    String updateSql =
-        "UPDATE MessageDetail SET isRead = 1 WHERE fromId =$groupId";
-    await MessageDetailManager().execSQL(updateSql);
+  Future<void> messageItemRead() async {
+    await MessageDetailUtil.messageItemRead(
+        messageController.currentMessageItemId);
   }
 
   // 消息接收函數
@@ -87,10 +85,8 @@ class ChatController extends GetxController {
 
   /// 刚进入页面时, 老数据的聊天总数
   Future<void> preCount() async {
-    String countSQL =
-        "SELECT COUNT(id) number FROM MessageDetail WHERE fromId = ${messageController.currentGroupId} OR toId = ${messageController.currentGroupId}";
-    var res = await MessageDetailManager().execDataTable(countSQL);
-    oldTotalCount = int.tryParse(res[0]["number"]!.toString())!;
+    oldTotalCount = await MessageDetailUtil.getTotalCount(
+        messageController.currentMessageItemId);
     currentPage = (oldTotalCount / pageSize).ceil();
     oldRemainder = oldTotalCount % pageSize;
   }
@@ -101,11 +97,8 @@ class ChatController extends GetxController {
     offset = offset < 0 ? 0 : offset;
 
     // 列表
-    String querySQL =
-        "SELECT * FROM messageDetail WHERE "
-        "fromId = ${messageController.currentGroupId} OR toId = ${messageController.currentGroupId} "
-        "LIMIT $pageSize OFFSET $offset";
-    return await MessageDetailManager().execDataTable(querySQL);
+    return await MessageDetailUtil.pageData(
+        offset, pageSize, messageController.currentMessageItemId);
   }
 
   // 获取数据并渲染到页面
@@ -124,8 +117,8 @@ class ChatController extends GetxController {
     messageItems.clear();
 
     // 初始化群組
-    messageItem =
-        messageController.messageItemMap[messageController.currentGroupId]!;
+    messageItem = messageController
+        .messageItemMap[messageController.currentMessageItemId]!;
 
     // 初始化老数据个数，查询聊天记录的个数
     await preCount();
@@ -137,7 +130,7 @@ class ChatController extends GetxController {
 
   // 发送消息至聊天页面
   Future<void> sendOneMessage() async {
-    var groupId = messageController.currentGroupId;
+    var groupId = messageController.currentMessageItemId;
     if (groupId == -1) return;
 
     var value = messageText.value.text;

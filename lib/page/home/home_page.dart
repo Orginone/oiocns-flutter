@@ -4,6 +4,8 @@ import 'package:getwidget/components/appbar/gf_appbar.dart';
 import 'package:getwidget/components/tabs/gf_tabbar.dart';
 import 'package:getwidget/components/tabs/gf_tabbar_view.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/model/db_model.dart';
 import 'package:orginone/util/hive_util.dart';
 
 import '../../api_resp/user_resp.dart';
@@ -33,9 +35,7 @@ class HomePage extends GetView<HomeController> {
               GFIconButton(
                   color: CustomColors.lightGrey,
                   icon: const Icon(Icons.repeat, color: Colors.black),
-                  onPressed: () {
-
-                  }),
+                  onPressed: () {}),
             ],
             backgroundColor: CustomColors.lightGrey,
             leading: Container(
@@ -51,8 +51,12 @@ class HomePage extends GetView<HomeController> {
                       .toUpperCase(),
                   style: const TextStyle(color: Colors.white, fontSize: 18),
                 )),
-            title: const Text('Orginone',
-                style: TextStyle(color: Colors.black, fontSize: 18))),
+            title: DropdownButtonHideUnderline(
+              child: GFDropdown<TargetResp>(
+                items: [],
+                onChanged: (Object? value) {},
+              ),
+            )),
       ),
       body: GFTabBarView(
           controller: tabController,

@@ -3,10 +3,10 @@ import 'package:orginone/api_resp/team_resp.dart';
 
 import '../config/hive_object_id.dart';
 
-part 'user_info_resp.g.dart';
+part 'target_resp.g.dart';
 
-@HiveType(typeId: HiveObjectId.userInfo)
-class UserInfoResp {
+@HiveType(typeId: HiveObjectId.target)
+class TargetResp {
   @HiveField(0)
   int id;
   @HiveField(1)
@@ -32,7 +32,7 @@ class UserInfoResp {
   @HiveField(11)
   TeamResp team;
 
-  UserInfoResp(
+  TargetResp(
       this.id,
       this.name,
       this.code,
@@ -46,7 +46,7 @@ class UserInfoResp {
       this.updateTime,
       this.team);
 
-  UserInfoResp.fromMap(Map<String, dynamic> map)
+  TargetResp.fromMap(Map<String, dynamic> map)
       : id = int.parse(map["id"]),
         name = map["name"],
         code = map["code"],

@@ -2,6 +2,8 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_button.dart';
+import 'package:orginone/api/company_api.dart';
+import 'package:orginone/model/db_model.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 
 import '../../routers.dart';
@@ -66,6 +68,9 @@ class LoginPage extends GetView<LoginController> {
                           var messageController = Get.find<MessageController>();
                           await messageController.firstInitChartsData();
                           await messageController.initChats();
+
+                          // 获取工作空间
+                          var spaces = CompanyApi.getJoinedCompanys(0, 10);
 
                           Get.toNamed(Routers.home);
                         },

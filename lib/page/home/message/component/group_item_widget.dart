@@ -25,16 +25,7 @@ class GroupItemWidget extends GetView<MessageController> {
               behavior: HitTestBehavior.translucent,
               onTap: () {
                 var isExpandValue = !isExpand.value;
-                if (isExpandValue) {
-                  RenderBox renderBox =
-                      globalKey.currentContext!.findRenderObject() as RenderBox;
-                  height.value = renderBox.size.height;
-                } else {
-                  height.value = 0;
-                }
-
-                MessageGroupUtil.updateExpand(controller.currentUser.account,
-                    messageGroup.id!, isExpandValue);
+                MessageGroupUtil.updateExpand(messageGroup.id!, isExpandValue);
                 isExpand.value = isExpandValue;
               },
               child: Row(
