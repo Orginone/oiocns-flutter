@@ -16,27 +16,29 @@ class TargetResp {
   @HiveField(3)
   String typeName;
   @HiveField(4)
-  int thingId;
+  int belongId;
   @HiveField(5)
-  int status;
+  int thingId;
   @HiveField(6)
-  int createUser;
+  int status;
   @HiveField(7)
-  int updateUser;
+  int createUser;
   @HiveField(8)
-  int version;
+  int updateUser;
   @HiveField(9)
-  DateTime createTime;
+  int version;
   @HiveField(10)
-  DateTime updateTime;
+  DateTime createTime;
   @HiveField(11)
+  DateTime updateTime;
+  @HiveField(12)
   TeamResp team;
 
-  TargetResp(
-      this.id,
+  TargetResp(this.id,
       this.name,
       this.code,
       this.typeName,
+      this.belongId,
       this.thingId,
       this.status,
       this.createUser,
@@ -51,6 +53,8 @@ class TargetResp {
         name = map["name"],
         code = map["code"],
         typeName = map["typeName"],
+        belongId =
+        map.containsKey('belongId') ? int.parse(map['belongId']) : -1,
         thingId = int.parse(map["thingId"]),
         status = map["status"],
         createUser = int.parse(map["createUser"]),
@@ -66,6 +70,7 @@ class TargetResp {
     json['name'] = name;
     json['code'] = code;
     json['typeName'] = typeName;
+    json['belongId'] = belongId;
     json['thingId'] = thingId;
     json['status'] = status;
     json['createUser'] = createUser;

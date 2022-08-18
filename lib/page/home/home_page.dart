@@ -5,7 +5,6 @@ import 'package:getwidget/components/tabs/gf_tabbar.dart';
 import 'package:getwidget/components/tabs/gf_tabbar_view.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api_resp/target_resp.dart';
-import 'package:orginone/model/db_model.dart';
 import 'package:orginone/util/hive_util.dart';
 
 import '../../api_resp/user_resp.dart';
@@ -51,11 +50,16 @@ class HomePage extends GetView<HomeController> {
                       .toUpperCase(),
                   style: const TextStyle(color: Colors.white, fontSize: 18),
                 )),
-            title: DropdownButtonHideUnderline(
-              child: GFDropdown<TargetResp>(
-                items: [],
-                onChanged: (Object? value) {},
-              ),
+            title: Expanded(
+              child: DropdownButtonHideUnderline(
+                  child: Obx(() => GFDropdown<int>(
+                        dropdownButtonColor: CustomColors.blue,
+                        items: controller.currentCompanys
+                            .map((item) => DropdownMenuItem(
+                                value: item.id, child: Text(item.name)))
+                            .toList(),
+                        onChanged: (Object? value) {},
+                      ))),
             )),
       ),
       body: GFTabBarView(

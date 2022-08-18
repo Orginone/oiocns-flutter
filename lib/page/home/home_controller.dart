@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../api_resp/target_resp.dart';
+import '../../util/hive_util.dart';
 import 'message/message_page.dart';
 
 class HomeController extends GetxController
@@ -16,12 +18,18 @@ class HomeController extends GetxController
         MessagePage()),
   ];
 
-  late TabController tabController;
+  late TabController tabController =
+      TabController(length: tabs.length, vsync: this);
+  RxList<TargetResp> currentCompanys = <TargetResp>[].obs;
 
   @override
   void onInit() {
+    // 初始化
+    List<TargetResp> companys = HiveUtil().getValue(Keys.companys);
+    for (var company in companys) {
+      currentCompanys.add(company);
+    }
     super.onInit();
-    tabController = TabController(length: tabs.length, vsync: this);
   }
 
   @override

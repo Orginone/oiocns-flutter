@@ -26,16 +26,17 @@ class TargetRespAdapter extends TypeAdapter<TargetResp> {
       fields[6] as int,
       fields[7] as int,
       fields[8] as int,
-      fields[9] as DateTime,
+      fields[9] as int,
       fields[10] as DateTime,
-      fields[11] as TeamResp,
+      fields[11] as DateTime,
+      fields[12] as TeamResp,
     );
   }
 
   @override
   void write(BinaryWriter writer, TargetResp obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -45,20 +46,22 @@ class TargetRespAdapter extends TypeAdapter<TargetResp> {
       ..writeByte(3)
       ..write(obj.typeName)
       ..writeByte(4)
-      ..write(obj.thingId)
+      ..write(obj.belongId)
       ..writeByte(5)
-      ..write(obj.status)
+      ..write(obj.thingId)
       ..writeByte(6)
-      ..write(obj.createUser)
+      ..write(obj.status)
       ..writeByte(7)
-      ..write(obj.updateUser)
+      ..write(obj.createUser)
       ..writeByte(8)
-      ..write(obj.version)
+      ..write(obj.updateUser)
       ..writeByte(9)
-      ..write(obj.createTime)
+      ..write(obj.version)
       ..writeByte(10)
-      ..write(obj.updateTime)
+      ..write(obj.createTime)
       ..writeByte(11)
+      ..write(obj.updateTime)
+      ..writeByte(12)
       ..write(obj.team);
   }
 

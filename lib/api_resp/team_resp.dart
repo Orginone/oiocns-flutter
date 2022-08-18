@@ -51,7 +51,7 @@ class TeamResp {
         code = map["code"],
         targetId = int.parse(map["targetId"]),
         authId = int.parse(map["authId"]),
-        remark = map["remark"],
+        remark = map["remark"] ?? "",
         status = map["status"],
         createUser = int.parse(map["createUser"]),
         updateUser = int.parse(map["updateUser"]),

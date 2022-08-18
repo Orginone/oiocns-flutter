@@ -35,6 +35,11 @@ class MessageController extends GetxController {
   UserResp currentUser = HiveUtil().getValue(Keys.user);
   TargetResp currentUserInfo = HiveUtil().getValue(Keys.userInfo);
 
+  @override
+  void onInit() async {
+    super.onInit();
+  }
+
   Future<dynamic> firstInitChartsData() async {
     var hiveUtil = HiveUtil();
     var isInitChat = hiveUtil.getValue(Keys.isInitChat) ?? false;
