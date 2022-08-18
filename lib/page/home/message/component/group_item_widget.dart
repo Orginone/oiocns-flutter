@@ -61,7 +61,9 @@ class GroupItemWidget extends GetView<MessageController> {
                           (controller.messageGroupItemsMap[messageGroup.id] ??
                                   [])
                               .map((messageItem) => MessageItemWidget(
-                                  messageItem.id!, messageItem.name))
+                                  messageItem.msgGroupId,
+                                  messageItem.id!,
+                                  messageItem.name))
                               .toList())))
         ]));
   }

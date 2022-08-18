@@ -1,4 +1,3 @@
-import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
@@ -9,9 +8,10 @@ import 'package:orginone/routers.dart';
 class MessageItemWidget extends GetView<MessageController> {
   // 用户信息
   final int groupId;
+  final int itemId;
   final String username;
 
-  const MessageItemWidget(this.groupId, this.username, {Key? key})
+  const MessageItemWidget(this.groupId, this.itemId, this.username, {Key? key})
       : super(key: key);
 
   @override
@@ -20,7 +20,8 @@ class MessageItemWidget extends GetView<MessageController> {
         behavior: HitTestBehavior.opaque,
         onTap: () {
           MessageController messageController = Get.find();
-          messageController.currentMessageItemId = groupId;
+          messageController.currentSpaceId = groupId;
+          messageController.currentMessageItemId = itemId;
           Get.toNamed(Routers.chat);
         },
         child: Container(
@@ -48,7 +49,9 @@ class MessageItemWidget extends GetView<MessageController> {
                           )),
                       Obx(() {
                         var notReadCount = controller
-                                .latestDetailMap[groupId]?.notReadCount.value ??
+                                .latestDetailMap[groupId]?[itemId]
+                                ?.notReadCount
+                                .value ??
                             0;
                         return Visibility(
                             visible: notReadCount > 0,
@@ -70,7 +73,7 @@ class MessageItemWidget extends GetView<MessageController> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      controller.currentUserInfo.id == groupId
+                                      controller.currentUserInfo.id == itemId
                                           ? "$username（我）"
                                           : username,
                                       style: const TextStyle(
@@ -78,16 +81,16 @@ class MessageItemWidget extends GetView<MessageController> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                     Obx(() => Text(controller
-                                            .latestDetailMap[groupId]
+                                            .latestDetailMap[groupId]?[itemId]
                                             ?.createTime
                                             .value ??
                                         ""))
                                   ]),
                               Obx(() => Text(
-                                  overflow: TextOverflow.ellipsis,
-                                  controller.latestDetailMap[groupId]?.msgBody
-                                          .value ??
-                                      ""))
+                                  controller.latestDetailMap[groupId]?[itemId]
+                                          ?.msgBody.value ??
+                                      "",
+                                  overflow: TextOverflow.ellipsis))
                             ])))
               ]),
         ));

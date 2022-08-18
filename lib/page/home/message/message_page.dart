@@ -12,6 +12,7 @@ class MessagePage extends GetView<MessageController> {
     return Obx(() => RefreshIndicator(
         onRefresh: () async {
           await controller.getCharts();
+          await controller.initGroups();
           await controller.initChats();
         },
         child: ListView.builder(

@@ -100,7 +100,10 @@ class ChatController extends GetxController {
 
     // 列表
     return await MessageDetailUtil.pageData(
-        offset, pageSize, messageController.currentMessageItemId);
+        offset,
+        pageSize,
+        messageController.currentSpaceId,
+        messageController.currentMessageItemId);
   }
 
   // 获取数据并渲染到页面
@@ -119,8 +122,8 @@ class ChatController extends GetxController {
     messageItems.clear();
 
     // 初始化群組
-    messageItem = messageController
-        .messageItemMap[messageController.currentMessageItemId]!;
+    messageItem = messageController.messageGroupItemMap[messageController
+        .currentSpaceId]![messageController.currentMessageItemId]!;
 
     // 初始化老数据个数，查询聊天记录的个数
     await preCount();

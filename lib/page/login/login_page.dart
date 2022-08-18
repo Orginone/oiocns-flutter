@@ -68,6 +68,7 @@ class LoginPage extends GetView<LoginController> {
                           // 连接成功后初始化聊天面板信息，
                           var messageController = Get.find<MessageController>();
                           await messageController.firstInitChartsData();
+                          await messageController.initGroups();
                           await messageController.initChats();
 
                           Get.toNamed(Routers.home);

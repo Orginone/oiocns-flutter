@@ -6,6 +6,7 @@ import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/api_resp/user_resp.dart';
 import 'package:orginone/model/message_detail_util.dart';
 import 'package:orginone/obserable/latest_message.dart';
+import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/util/hive_util.dart';
 
 import '../../../api_resp/api_resp.dart';
@@ -18,22 +19,25 @@ import 'chat/chat_controller.dart';
 
 /// 所有与后端消息交互的逻辑都先保存至数据库中再读取出来
 class MessageController extends GetxController {
-  var obs = false.obs;
-
   // 组的对象
-  RxList<MessageGroup> messageGroups = <MessageGroup>[].obs;
   Map<int, MessageGroup> messageGroupMap = {};
+  RxList<MessageGroup> messageGroups = <MessageGroup>[].obs;
+  Map<int, Map<int, MessageItem>> messageGroupItemMap =
+      <int, Map<int, MessageItem>>{};
   Map<int, RxList<MessageItem>> messageGroupItemsMap = {};
+  var latestDetailMap = <int, Map<int, LatestDetail>>{};
 
-  var latestDetailMap = <int, LatestDetail>{};
-  Map<int, MessageItem> messageItemMap = <int, MessageItem>{};
-
+  // 日志对象
   var log = Logger("MessageController");
 
   // 参数
-  var currentMessageItemId = -1;
+  int currentSpaceId = -1;
+  int currentMessageItemId = -1;
   UserResp currentUser = HiveUtil().getValue(Keys.user);
   TargetResp currentUserInfo = HiveUtil().getValue(Keys.userInfo);
+
+  // 主页控制器
+  late HomeController homeController = Get.find<HomeController>();
 
   // 组排序
   void sortingGroup(TargetResp highestPriority) {
@@ -114,52 +118,92 @@ class MessageController extends GetxController {
     }
   }
 
-  Future<dynamic> initChats() async {
-    messageGroups.clear();
-
-    // 组装分组
+  // 组装分组
+  Future<dynamic> initGroups() async {
     List<MessageGroup> groups = await MessageGroupUtil.getAllGroup();
     for (var group in groups) {
-      var groupId = group.id!;
-      messageGroupMap.putIfAbsent(groupId, () => group);
-      messageGroupMap[groupId] = group;
-      messageGroups.add(group);
-      messageGroupItemsMap[groupId]?.clear();
+      var groupId = group.id;
+      if (groupId == null) continue;
+
+      if (!messageGroupMap.containsKey(groupId)) {
+        messageGroupMap[groupId] = group;
+        messageGroups.add(group);
+        latestDetailMap.putIfAbsent(groupId, () => {});
+      }
     }
+  }
 
-    // 聊天组
-    List<MessageItem> items =
-        await MessageItemUtil.getAllItems(currentUser.account);
+  // 具体会话
+  Future<dynamic> initChats() async {
+    List<MessageItem> items = await MessageItemUtil.getAllItems();
     for (var messageItem in items) {
-      var messageItemId = messageItem.id!;
-      var groupId = messageItem.msgGroupId!;
-      messageGroupItemsMap.putIfAbsent(groupId, () => <MessageItem>[].obs);
-      messageGroupItemsMap[groupId]!.add(messageItem);
+      if (messageItem.msgGroupId == null || messageItem.id == null) continue;
 
-      // 最新的消息和未读的数量
-      var message = await MessageDetailUtil.latestDetail(messageItemId);
-      var createTime = message?.createTime;
-      var notReadMessageCount =
-          await MessageDetailUtil.notReadMessageCount(messageItemId);
+      await obxNewItem(messageItem);
+      await obxNewItemDetail(messageItem.msgGroupId!, messageItem.id!);
+    }
+  }
 
-      latestDetailMap[messageItemId] = LatestDetail(
-          notReadMessageCount.obs,
-          (message?.msgBody ?? Constant.emptyString).obs,
+  // 最新的消息和未读的数量，以及时间
+  Future<dynamic> obxNewItemDetail(int groupId, int messageItemId) async {
+    // 每一条会话形成可观测对象
+    var detailMap = latestDetailMap[groupId]!;
+
+    var messageDetail =
+        await MessageDetailUtil.latestDetail(groupId, messageItemId);
+    var notReadMCount =
+        await MessageDetailUtil.notReadMessageCount(messageItemId);
+    var createTime = messageDetail?.createTime;
+
+    if (!detailMap.containsKey(messageItemId)) {
+      // 不存在就创建
+      detailMap[messageItemId] = LatestDetail(
+          notReadMCount.obs,
+          (messageDetail?.msgBody ?? Constant.emptyString).obs,
           (createTime == null
                   ? ""
                   : DateUtil.formatDate(createTime, format: "HH:mm:ss"))
               .obs);
+    } else {
+      updateChatItem(messageDetail);
+    }
+  }
 
-      messageItemMap[messageItemId] = messageItem;
+  Future<dynamic> obxNewItem(MessageItem messageItem) async {
+    // 先建立组
+    var messageItemId = messageItem.id!;
+    var groupId = messageItem.msgGroupId ?? currentUserInfo.id;
+
+    // 创建群的可观测对象和索引
+    messageGroupItemMap.putIfAbsent(groupId, () => {});
+    messageGroupItemsMap.putIfAbsent(groupId, () => <MessageItem>[].obs);
+
+    // 查看当前群里是否有会话 ID，没有的话就加一个进去，形成可观察对象
+    var messageGroupItem = messageGroupItemMap[groupId]!;
+    var messageGroupItems = messageGroupItemsMap[groupId]!;
+    if (!messageGroupItem.containsKey(messageItemId)) {
+      messageGroupItem[messageItemId] = messageItem;
+      messageGroupItems.insert(0, messageItem);
     }
   }
 
   // 更新聊天记录
-  void updateChatItem(MessageDetail messageDetail) {
-    var groupId = messageDetail.toId;
-    if (latestDetailMap.containsKey(groupId)) {
-      LatestDetail latestDetail = latestDetailMap[groupId]!;
-      latestDetail.notReadCount.value += 1;
+  void updateChatItem(MessageDetail? messageDetail) {
+    if (messageDetail == null) return;
+    if (messageDetail.fromId == null) return;
+
+    int spaceId = messageDetail.spaceId ?? currentUserInfo.id;
+    int itemId = messageDetail.fromId!;
+
+    latestDetailMap.putIfAbsent(spaceId, () => {});
+    var messageGroup = latestDetailMap[spaceId];
+
+    if (messageGroup!.containsKey(itemId)) {
+      LatestDetail latestDetail = messageGroup[itemId]!;
+      if (messageDetail.fromId != currentUserInfo.id) {
+        // 如果是我自己发的，那就不更新视图条数了
+        latestDetail.notReadCount.value += 1;
+      }
       latestDetail.msgBody.value = messageDetail.msgBody ?? "";
       latestDetail.createTime.value = messageDetail.createTime == null
           ? ""
@@ -169,9 +213,12 @@ class MessageController extends GetxController {
 
   // 打开一个群组就阅读所有消息
   Future<void> messageItemRead() async {
-    if (latestDetailMap.containsKey(currentMessageItemId)) {
-      LatestDetail latestDetail = latestDetailMap[currentMessageItemId]!;
-      latestDetail.notReadCount.value = 0;
+    if (latestDetailMap.containsKey(currentSpaceId)) {
+      var groupMap = latestDetailMap[currentSpaceId]!;
+      if (groupMap.containsKey(currentMessageItemId)) {
+        LatestDetail latestDetail = groupMap[currentMessageItemId]!;
+        latestDetail.notReadCount.value = 0;
+      }
     }
   }
 
@@ -182,29 +229,26 @@ class MessageController extends GetxController {
       for (var message in messageList) {
         var resp = ApiResp.fromMap(message);
         var messageDetail = MessageDetail.fromMap(resp.data);
-        messageDetail.isRead = false;
-        messageDetail.account = currentUser.account;
+
+        // 没有空间 ID 的就抛到我的会话中
+        var spaceId = messageGroupMap.containsKey(messageDetail.spaceId)
+            ? messageDetail.spaceId
+            : currentUserInfo.id;
+
         try {
           // 保存消息
+          messageDetail.isRead = false;
+          messageDetail.account = currentUser.account;
+          messageDetail.spaceId = spaceId;
           await messageDetail.save();
 
-          // // 更新群组的优先级
-          // int fromId = messageDetail.fromId!;
-          // if (!latestDetailMap.containsKey(fromId)) {
-          //   // 保存新群组
+          // 更新页面信息
+          //  int fromId = messageDetail.fromId!;
+          // if (!messageGroupItemMap.containsKey(spaceId) ||
+          //     !messageGroupItemMap[spaceId]!.containsKey(fromId)) {
+          //   // 如果这个群组和会话不存在，动态的加入
           //   await getCharts();
-          //
-          //   // 获取群组，没有获取到的话就处理下一条信息
-          //   MessageItem? newGroup = await MessageItem().getById(fromId);
-          //   if (newGroup == null) continue;
-          //
-          //   // 加入到可观测对象中去
-          //   messageItems.insert(0, newGroup);
-          //   messageItemMap[fromId] = newGroup;
-          //   latestDetailMap[fromId] = LatestDetail(
-          //       1.obs,
-          //       (messageDetail.msgBody ?? Constant.emptyString).obs,
-          //       (messageDetail.createTime ?? DateTime.now()).obs);
+          //   await initChats();
           // }
           //
           // // 比对第一条，如果不是第一条，那么需要更新优先级
