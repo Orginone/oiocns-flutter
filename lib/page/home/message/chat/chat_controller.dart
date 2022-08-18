@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/model/message_detail_util.dart';
+import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/util/hub_util.dart';
 
 import '../../../../enumeration/message_type.dart';
@@ -12,6 +13,7 @@ import 'component/chat_message_item.dart';
 class ChatController extends GetxController {
   // 控制信息
   var messageController = Get.find<MessageController>();
+  var homeController = Get.find<HomeController>();
   var messageText = TextEditingController();
   var messageScrollController = ScrollController();
 
@@ -135,8 +137,10 @@ class ChatController extends GetxController {
 
     var value = messageText.value.text;
     if (value.isNotEmpty) {
+      // toId 和 spaceId 都要是字符串类型
       var messageDetail = {
         "toId": "$groupId",
+        "spaceId": "${homeController.currentTarget.id}",
         "msgType": MessageType.text.name,
         "msgBody": value
       };

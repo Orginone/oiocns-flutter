@@ -77,12 +77,17 @@ class MessageItemWidget extends GetView<MessageController> {
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    Obx(() => Text(controller.latestDetailMap[groupId]?.createTime.value ??
+                                    Obx(() => Text(controller
+                                            .latestDetailMap[groupId]
+                                            ?.createTime
+                                            .value ??
                                         ""))
                                   ]),
-                              Obx(() => Text(controller.latestDetailMap[groupId]
-                                      ?.msgBody.value ??
-                                  ""))
+                              Obx(() => Text(
+                                  overflow: TextOverflow.ellipsis,
+                                  controller.latestDetailMap[groupId]?.msgBody
+                                          .value ??
+                                      ""))
                             ])))
               ]),
         ));

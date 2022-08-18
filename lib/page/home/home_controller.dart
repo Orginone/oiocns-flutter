@@ -18,9 +18,13 @@ class HomeController extends GetxController
         MessagePage()),
   ];
 
+  TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+  RxList<TargetResp> currentCompanys = <TargetResp>[].obs;
+
   late TabController tabController =
       TabController(length: tabs.length, vsync: this);
-  RxList<TargetResp> currentCompanys = <TargetResp>[].obs;
+  late TargetResp currentTarget;
+  var currentSpaceName = "".obs;
 
   @override
   void onInit() {
@@ -29,12 +33,25 @@ class HomeController extends GetxController
     for (var company in companys) {
       currentCompanys.add(company);
     }
+    if (companys.isNotEmpty) {
+      switchSpaces(companys[0]);
+    }
     super.onInit();
+  }
+
+  void switchSpaces(TargetResp targetResp) {
+    currentTarget = targetResp;
+    if (targetResp.name != userInfo.name) {
+      currentSpaceName.value = targetResp.name;
+    } else {
+      currentSpaceName.value = "个人空间";
+    }
   }
 
   @override
   void onClose() {
     // TODO: implement onClose
+    tabController.dispose();
     dispose();
     super.onClose();
   }

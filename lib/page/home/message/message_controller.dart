@@ -35,9 +35,18 @@ class MessageController extends GetxController {
   UserResp currentUser = HiveUtil().getValue(Keys.user);
   TargetResp currentUserInfo = HiveUtil().getValue(Keys.userInfo);
 
-  @override
-  void onInit() async {
-    super.onInit();
+  // 组排序
+  void sortingGroup(TargetResp highestPriority) {
+    MessageGroup? matchGroup;
+    for (var messageGroupItem in messageGroups) {
+      if (messageGroupItem.id == highestPriority.id) {
+        matchGroup = messageGroupItem;
+      }
+    }
+    if (matchGroup != null) {
+      messageGroups.remove(matchGroup);
+      messageGroups.insert(0, matchGroup);
+    }
   }
 
   Future<dynamic> firstInitChartsData() async {

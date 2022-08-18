@@ -5,6 +5,7 @@ import 'package:getwidget/components/tabs/gf_tabbar.dart';
 import 'package:getwidget/components/tabs/gf_tabbar_view.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/util/hive_util.dart';
 
 import '../../api_resp/user_resp.dart';
@@ -31,10 +32,20 @@ class HomePage extends GetView<HomeController> {
                   color: CustomColors.lightGrey,
                   icon: const Icon(Icons.search, color: Colors.black),
                   onPressed: () {}),
-              GFIconButton(
-                  color: CustomColors.lightGrey,
+              PopupMenuButton(
                   icon: const Icon(Icons.repeat, color: Colors.black),
-                  onPressed: () {}),
+                  offset: Offset(0, height * 0.07 + 5),
+                  onSelected: (item) {
+                    controller.switchSpaces(item as TargetResp);
+                    var messageController = Get.find<MessageController>();
+                    messageController.sortingGroup(item);
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return controller.currentCompanys
+                        .map((company) => PopupMenuItem(
+                            value: company, child: Text(company.name)))
+                        .toList();
+                  })
             ],
             backgroundColor: CustomColors.lightGrey,
             leading: Container(
@@ -50,17 +61,13 @@ class HomePage extends GetView<HomeController> {
                       .toUpperCase(),
                   style: const TextStyle(color: Colors.white, fontSize: 18),
                 )),
-            title: Expanded(
-              child: DropdownButtonHideUnderline(
-                  child: Obx(() => GFDropdown<int>(
-                        dropdownButtonColor: CustomColors.blue,
-                        items: controller.currentCompanys
-                            .map((item) => DropdownMenuItem(
-                                value: item.id, child: Text(item.name)))
-                            .toList(),
-                        onChanged: (Object? value) {},
-                      ))),
-            )),
+            title:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(controller.userInfo.name,
+                  style: const TextStyle(color: Colors.black, fontSize: 20)),
+              Obx(() => Text("${controller.currentSpaceName}",
+                  style: const TextStyle(color: Colors.black, fontSize: 12))),
+            ])),
       ),
       body: GFTabBarView(
           controller: tabController,

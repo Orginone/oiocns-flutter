@@ -6,9 +6,10 @@ const messageDetailTable = SqfEntityTable(
     primaryKeyType: PrimaryKeyType.integer_auto_incremental,
     fields: [
       SqfEntityField('account', DbType.text, isIndex: true),
-      SqfEntityField('id', DbType.integer),
+      SqfEntityField('id', DbType.integer, isIndex: true),
+      SqfEntityField('spaceId', DbType.integer, isIndex: true),
       SqfEntityField('fromId', DbType.integer, isIndex: true),
-      SqfEntityField('toId', DbType.integer),
+      SqfEntityField('toId', DbType.integer, isIndex: true),
       SqfEntityField('msgType', DbType.text),
       SqfEntityField('msgBody', DbType.text),
       SqfEntityField('status', DbType.integer),

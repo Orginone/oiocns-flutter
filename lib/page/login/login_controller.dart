@@ -30,7 +30,7 @@ class LoginController extends GetxController {
     await hiveUtil.putValue(Keys.userInfo, userInfo);
 
     // 公司
-    List<dynamic> companys = await CompanyApi.getJoinedCompanys(0, 10);
+    List<dynamic> companys = await CompanyApi.getJoinedCompanys(0, 100);
     for (var company in companys) {
       convertedCompany.add(TargetResp.fromMap(company));
     }

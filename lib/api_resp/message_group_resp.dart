@@ -10,8 +10,16 @@ class MessageGroupResp {
 
   MessageGroupResp(this.id, this.name, this.chats);
 
-  factory MessageGroupResp.fromMap(Map<String, dynamic> json) =>
-      _$MessageGroupRespFromJson(json);
+  MessageGroupResp.fromMap(Map<String, dynamic> map)
+      : id = int.parse(map["id"]),
+        name = map["name"],
+        chats = map["chats"];
 
-  Map<String, dynamic> toJson() => _$MessageGroupRespToJson(this);
+  Map<String, dynamic> toJson() {
+    final json = <String, dynamic>{};
+    json['id'] = id;
+    json['name'] = name;
+    json['chats'] = chats;
+    return json;
+  }
 }

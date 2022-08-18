@@ -46,7 +46,7 @@ class MessageDetailUtil {
   // 获取一个聊天的所有消息
   static Future<int> getTotalCount(int messageItemId) async {
     String countSQL =
-        "SELECT COUNT(id) number FROM MessageDetail WHERE (fromId = $messageItemId OR toId = $messageItemId) FROM account = ${userResp.account}";
+        "SELECT COUNT(id) number FROM MessageDetail WHERE (fromId = $messageItemId OR toId = $messageItemId) AND account = ${userResp.account}";
     var res = await MessageDetailManager().execDataTable(countSQL);
     return int.tryParse(res[0]["number"]!.toString())!;
   }
@@ -55,7 +55,7 @@ class MessageDetailUtil {
   static Future<List<Map<String, dynamic>>> pageData(
       int offset, int limit, int messageItemId) async {
     String querySQL = "SELECT * FROM messageDetail WHERE "
-        "(fromId = $messageItemId OR toId = $messageItemId) AND account = ${userResp.account}"
+        "(fromId = $messageItemId OR toId = $messageItemId) AND account = ${userResp.account} "
         "LIMIT $limit OFFSET $offset";
 
     return await MessageDetailManager().execDataTable(querySQL);
