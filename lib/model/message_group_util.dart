@@ -25,6 +25,17 @@ class MessageGroupUtil {
     return await MessageGroupManager().execSQL(updateSQL);
   }
 
+  static Future<MessageGroup?> getGroupById(int id) async {
+    return await MessageGroup()
+        .select()
+        .account
+        .equals(userResp.account)
+        .and
+        .id
+        .equals(id)
+        .toSingle();
+  }
+
   static Future<List<MessageGroup>> getAllGroup() async {
     return await MessageGroup()
         .select()

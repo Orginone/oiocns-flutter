@@ -20,51 +20,59 @@ class GroupItemWidget extends GetView<MessageController> {
   Widget build(BuildContext context) {
     GlobalKey globalKey = GlobalKey();
 
-    return Obx(() => Column(children: [
-          GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {
-                var isExpandValue = !isExpand.value;
-                MessageGroupUtil.updateExpand(messageGroup.id!, isExpandValue);
-                isExpand.value = isExpandValue;
-              },
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                        padding: const EdgeInsets.fromLTRB(10, 8, 0, 8),
-                        child: Text(messageGroup.name ?? "",
-                            style: const TextStyle(fontSize: 18))),
-                    Container(
-                        padding: const EdgeInsets.fromLTRB(0, 8, 10, 8),
-                        child: Obx(() => isExpand.value
-                            ? const Icon(
-                                Icons.arrow_right,
-                                size: 20,
-                              )
-                            : const Icon(
-                                Icons.arrow_drop_down,
-                                size: 20,
-                              )))
-                  ])),
-          const Divider(
-            height: 0,
-          ),
-          AnimatedSize(
-              duration: const Duration(seconds: 1),
-              child: SizedBox(
-                  // height: height.value,
-                  key: globalKey,
-                  child: Column(
-                      children:
-                          (controller.messageGroupItemsMap[messageGroup.id] ??
-                                  [])
-                              .map((messageItem) => MessageItemWidget(
-                                  messageItem.msgGroupId,
-                                  messageItem.id!,
-                                  messageItem.name))
-                              .toList())))
-        ]));
+    return Column(
+      children: [
+        GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              var isExpandValue = !isExpand.value;
+              MessageGroupUtil.updateExpand(messageGroup.id!, isExpandValue);
+              isExpand.value = isExpandValue;
+            },
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                      padding: const EdgeInsets.fromLTRB(10, 8, 0, 8),
+                      child: Text(messageGroup.name ?? "",
+                          style: const TextStyle(fontSize: 18))),
+                  Container(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 10, 8),
+                      child: Obx(() => isExpand.value
+                          ? const Icon(
+                              Icons.arrow_right,
+                              size: 20,
+                            )
+                          : const Icon(
+                              Icons.arrow_drop_down,
+                              size: 20,
+                            )))
+                ])),
+        const Divider(
+          height: 0,
+        ),
+        AnimatedSize(
+            duration: const Duration(seconds: 1),
+            child: SizedBox(
+                // height: height.value,
+                key: globalKey,
+                child: Obx(() => ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: controller
+                            .messageGroupItemsMap[messageGroup.id]?.length ??
+                        0,
+                    itemBuilder: (context, index) {
+                      var messageItem = controller
+                          .messageGroupItemsMap[messageGroup.id]![index];
+                      return MessageItemWidget(
+                          messageItem.msgGroupId!,
+                          messageItem.id!,
+                          messageItem.name!,
+                          messageItem.label!);
+                    }))))
+      ],
+    );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:orginone/page/home/message/chat/component/text_message.dart';
 import 'package:orginone/util/hive_util.dart';
@@ -21,24 +22,28 @@ class ChatMessageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     bool isMy = messageDetail.fromId == userInfo.id;
+    String itemAvatarName = isMy ? userInfo.name : messageItem.name!;
+
+    itemAvatarName = itemAvatarName
+        .substring(0, messageItem.name!.length >= 2 ? 2 : 1)
+        .toUpperCase();
 
     return Row(
       textDirection: isMy ? TextDirection.rtl : TextDirection.ltr,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
-          child: Container(
+            padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
+            child: Container(
               alignment: Alignment.center,
               width: 40,
               height: 40,
               decoration: const BoxDecoration(
                   color: CustomColors.blue,
                   borderRadius: BorderRadius.all(Radius.circular(5))),
-              child: Text(messageItem.name!
-                  .substring(0, messageItem.name!.length >= 2 ? 2 : 1)
-                  .toUpperCase())),
-        ),
+              child: Text(itemAvatarName,
+                  style: const TextStyle(color: Colors.white)),
+            )),
         Container(
             padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
             child: _getMessage())

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logging/logging.dart';
+import 'package:orginone/page/home/message/message_controller.dart';
 
 import '../../api_resp/target_resp.dart';
 import '../../util/hive_util.dart';
@@ -7,28 +9,23 @@ import 'message/message_page.dart';
 
 class HomeController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  final List<TabCombine> tabs = const <TabCombine>[
-    TabCombine(Tab(icon: Icon(Icons.directions_bike), child: Text('消息')),
-        MessagePage()),
-    TabCombine(Tab(icon: Icon(Icons.directions_bike), child: Text('组织架构')),
-        MessagePage()),
-    TabCombine(Tab(icon: Icon(Icons.directions_bike), child: Text('工作台')),
-        MessagePage()),
-    TabCombine(Tab(icon: Icon(Icons.directions_bike), child: Text('我的')),
-        MessagePage()),
-  ];
 
   TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-  RxList<TargetResp> currentCompanys = <TargetResp>[].obs;
 
-  late TabController tabController =
-      TabController(length: tabs.length, vsync: this);
+  late List<TabCombine> tabs;
+  late TabController tabController;
   late TargetResp currentTarget;
-  var currentSpaceName = "".obs;
+
+  RxList<TargetResp> currentCompanys = <TargetResp>[].obs;
+  Rx<String> currentSpaceName = "".obs;
+
+  var logger = Logger("HomeController");
+
+  MessageController messageController = Get.find<MessageController>();
 
   @override
   void onInit() {
-    // 初始化
+    // 初始化 companys
     List<TargetResp> companys = HiveUtil().getValue(Keys.companys);
     for (var company in companys) {
       currentCompanys.add(company);
@@ -36,6 +33,18 @@ class HomeController extends GetxController
     if (companys.isNotEmpty) {
       switchSpaces(companys[0]);
     }
+    // 初始化 Tabs 以及 TabController
+    tabs = const <TabCombine>[
+      TabCombine(Tab(icon: Icon(Icons.directions_bike), child: Text('消息')),
+          MessagePage()),
+      TabCombine(Tab(icon: Icon(Icons.directions_bike), child: Text('组织架构')),
+          MessagePage()),
+      TabCombine(Tab(icon: Icon(Icons.directions_bike), child: Text('工作台')),
+          MessagePage()),
+      TabCombine(Tab(icon: Icon(Icons.directions_bike), child: Text('我的')),
+          MessagePage()),
+    ];
+    tabController = TabController(length: tabs.length, vsync: this);
     super.onInit();
   }
 
@@ -51,9 +60,13 @@ class HomeController extends GetxController
   @override
   void onClose() {
     // TODO: implement onClose
+    logger.info("===============回收 HomeController 资源==================");
+    messageController.dispose();
     tabController.dispose();
+    tabs.clear();
     dispose();
     super.onClose();
+    logger.info("===============回收 HomeController 资源完成==================");
   }
 }
 

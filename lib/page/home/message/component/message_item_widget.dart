@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/config/custom_colors.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/routers.dart';
@@ -10,8 +11,10 @@ class MessageItemWidget extends GetView<MessageController> {
   final int groupId;
   final int itemId;
   final String username;
+  final String label;
 
-  const MessageItemWidget(this.groupId, this.itemId, this.username, {Key? key})
+  const MessageItemWidget(this.groupId, this.itemId, this.username, this.label,
+      {Key? key})
       : super(key: key);
 
   @override
@@ -47,6 +50,10 @@ class MessageItemWidget extends GetView<MessageController> {
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 18),
                           )),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: TextTag(label),
+                      ),
                       Obx(() {
                         var notReadCount = controller
                                 .latestDetailMap[groupId]?[itemId]
@@ -87,10 +94,11 @@ class MessageItemWidget extends GetView<MessageController> {
                                         ""))
                                   ]),
                               Obx(() => Text(
-                                  controller.latestDetailMap[groupId]?[itemId]
-                                          ?.msgBody.value ??
-                                      "",
-                                  overflow: TextOverflow.ellipsis))
+                                    controller.latestDetailMap[groupId]?[itemId]
+                                            ?.msgBody.value ??
+                                        "",
+                                    overflow: TextOverflow.ellipsis,
+                                  ))
                             ])))
               ]),
         ));
