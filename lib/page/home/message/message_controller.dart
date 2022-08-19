@@ -194,10 +194,10 @@ class MessageController extends GetxController {
   // 更新聊天记录
   void updateChatItem(MessageDetail? messageDetail) {
     if (messageDetail == null) return;
-    if (messageDetail.fromId == null) return;
+    if (messageDetail.toId == null) return;
 
     int spaceId = messageDetail.spaceId ?? currentUserInfo.id;
-    int itemId = messageDetail.fromId!;
+    int itemId = messageDetail.toId!;
 
     latestDetailMap.putIfAbsent(spaceId, () => {});
     var latestDetailItemMap = latestDetailMap[spaceId];

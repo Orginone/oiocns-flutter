@@ -1,5 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:ui';
+
+import 'package:flutter/material.dart';
+
+import '../../../../../config/custom_colors.dart';
 
 class TextMessage extends StatelessWidget {
   final String? message;
@@ -11,7 +14,7 @@ class TextMessage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: const BoxDecoration(
-          color: Colors.black12,
+          color: CustomColors.seaBlue,
           borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Container(
         constraints: const BoxConstraints(maxWidth: 160),

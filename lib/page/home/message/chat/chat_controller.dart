@@ -88,9 +88,15 @@ class ChatController extends GetxController {
   /// 刚进入页面时, 老数据的聊天总数
   Future<void> preCount() async {
     oldTotalCount = await MessageDetailUtil.getTotalCount(
-        messageController.currentMessageItemId);
+        messageItem.msgGroupId!, messageItem.id!);
     currentPage = (oldTotalCount / pageSize).ceil();
     oldRemainder = oldTotalCount % pageSize;
+  }
+
+  /// 刚进入页面时, 老数据的聊天总数
+  Future<void> getPersons() async {
+    dynamic persons = await HubUtil().getPersons(messageItem.id!, 100, 0);
+    return;
   }
 
   // 下拉时刷新旧的聊天记录

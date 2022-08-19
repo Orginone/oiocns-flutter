@@ -11,7 +11,7 @@ import 'hive_util.dart';
 
 enum ReceiveEvent { RecvMsg }
 
-enum SendEvent { TokenAuth, GetChats, SendMsg }
+enum SendEvent { TokenAuth, GetChats, SendMsg, GetPersons }
 
 class HubUtil {
   HubUtil._();
@@ -49,6 +49,11 @@ class HubUtil {
 
   Future<dynamic> getChats() async {
     return await _connServer.invoke(SendEvent.GetChats.name);
+  }
+
+  Future<dynamic> getPersons(int id, int limit, int offset) async {
+    Map params = {"cohortId": id, "limit": limit, "offset": offset};
+    return _connServer.invoke(SendEvent.GetPersons.name, args: [params]);
   }
 
   //初始化连接
@@ -94,7 +99,7 @@ class HubUtil {
 
   // 发送消息
   Future<dynamic> sendMsg(Map<String, dynamic> messageDetail) async {
-    if(!isConn()) {
+    if (!isConn()) {
       EasyLoading.showToast("未连接聊天服务器!");
       return;
     }

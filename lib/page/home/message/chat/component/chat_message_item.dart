@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/page/home/message/chat/component/text_message.dart';
 import 'package:orginone/util/hive_util.dart';
 
@@ -21,29 +22,25 @@ class ChatMessageItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+
     bool isMy = messageDetail.fromId == userInfo.id;
     String itemAvatarName = isMy ? userInfo.name : messageItem.name!;
+    bool isMultiple = "群组" ==  messageItem.label || "公司" == messageItem.label;
 
     itemAvatarName = itemAvatarName
         .substring(0, messageItem.name!.length >= 2 ? 2 : 1)
         .toUpperCase();
 
+    return isMy ? getMyChat(itemAvatarName, isMultiple) : getMyChat(itemAvatarName, isMultiple);
+  }
+
+  Widget getMyChat(String avatarName, bool isMultiple) {
     return Row(
-      textDirection: isMy ? TextDirection.rtl : TextDirection.ltr,
+      textDirection: TextDirection.rtl,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-            padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
-            child: Container(
-              alignment: Alignment.center,
-              width: 40,
-              height: 40,
-              decoration: const BoxDecoration(
-                  color: CustomColors.blue,
-                  borderRadius: BorderRadius.all(Radius.circular(5))),
-              child: Text(itemAvatarName,
-                  style: const TextStyle(color: Colors.white)),
-            )),
+        isMultiple? Container() : Container(),
+        TextAvatar(avatarName),
         Container(
             padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
             child: _getMessage())
