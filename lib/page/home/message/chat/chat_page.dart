@@ -48,9 +48,9 @@ class ChatPage extends GetView<ChatController> {
                       child: Obx(() => ListView.builder(
                           controller: controller.messageScrollController,
                           scrollDirection: Axis.vertical,
-                          itemCount: controller.messageItems.length,
+                          itemCount: controller.messageDetails.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return controller.messageItems[index];
+                            return controller.messageDetails[index];
                           }))))),
           const ChatBox()
         ],

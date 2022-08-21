@@ -61,7 +61,7 @@ class MessageController extends GetxController {
   Future<dynamic> firstInitChartsData() async {
     var hiveUtil = HiveUtil();
     var isInitChat = hiveUtil.getValue(Keys.isInitChat) ?? false;
-    if (isInitChat) return;
+    // if (isInitChat) return;
 
     try {
       await getCharts();
@@ -181,7 +181,7 @@ class MessageController extends GetxController {
       // 不存在就创建
       detailMap[messageItemId] = LatestDetail(
           notReadMCount.obs,
-          (messageDetail?.msgBody ?? Constant.emptyString).obs,
+          (messageDetail?.msgBody ?? "").obs,
           (createTime == null
                   ? ""
                   : DateUtil.formatDate(createTime, format: "HH:mm:ss"))
@@ -194,10 +194,19 @@ class MessageController extends GetxController {
   // 更新聊天记录
   void updateChatItem(MessageDetail? messageDetail) {
     if (messageDetail == null) return;
+    if (messageDetail.fromId == null) return;
     if (messageDetail.toId == null) return;
 
     int spaceId = messageDetail.spaceId ?? currentUserInfo.id;
-    int itemId = messageDetail.toId!;
+    int itemId;
+
+    if (messageDetail.fromId == currentUserInfo.id) {
+      // 如果是我发的
+      itemId = messageDetail.toId!;
+    } else {
+      // 如果不是我发的
+      itemId = messageDetail.fromId!;
+    }
 
     latestDetailMap.putIfAbsent(spaceId, () => {});
     var latestDetailItemMap = latestDetailMap[spaceId];
@@ -231,13 +240,9 @@ class MessageController extends GetxController {
     if (messageList.isEmpty) return;
     try {
       for (var message in messageList) {
-        var resp = ApiResp.fromMap(message);
-        var messageDetail = MessageDetail.fromMap(resp.data);
+        var messageDetail = MessageDetail.fromMap(message);
 
-        // 没有空间 ID 的就抛到我的会话中
-        var spaceId = messageGroupMap.containsKey(messageDetail.spaceId)
-            ? messageDetail.spaceId
-            : currentUserInfo.id;
+        var spaceId = messageDetail.spaceId;
 
         try {
           // 保存消息
@@ -247,13 +252,13 @@ class MessageController extends GetxController {
           await messageDetail.save();
 
           // 更新页面信息
-          //  int fromId = messageDetail.fromId!;
-          // if (!messageGroupItemMap.containsKey(spaceId) ||
-          //     !messageGroupItemMap[spaceId]!.containsKey(fromId)) {
-          //   // 如果这个群组和会话不存在，动态的加入
-          //   await getCharts();
-          //   await initChats();
-          // }
+          int fromId = messageDetail.fromId!;
+          if (!messageGroupItemMap.containsKey(spaceId) ||
+              !messageGroupItemMap[spaceId]!.containsKey(fromId)) {
+            // 如果这个群组和会话不存在，动态的加入
+            await getCharts();
+            await initChats();
+          }
           //
           // // 比对第一条，如果不是第一条，那么需要更新优先级
           // var itemItem = messageItems[0];

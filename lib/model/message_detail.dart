@@ -18,5 +18,6 @@ const messageDetailTable = SqfEntityTable(
       SqfEntityField('version', DbType.integer),
       SqfEntityField('createTime', DbType.datetime),
       SqfEntityField('updateTime', DbType.datetime),
-      SqfEntityField('isRead', DbType.bool)
+      SqfEntityField('isRead', DbType.bool),
+      SqfEntityField('typeName', DbType.text)
     ]);

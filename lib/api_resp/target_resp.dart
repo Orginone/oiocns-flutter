@@ -2,6 +2,7 @@ import 'package:hive/hive.dart';
 import 'package:orginone/api_resp/team_resp.dart';
 
 import '../config/hive_object_id.dart';
+import 'identity_resp.dart';
 
 part 'target_resp.g.dart';
 
@@ -33,8 +34,11 @@ class TargetResp {
   DateTime updateTime;
   @HiveField(12)
   TeamResp team;
+  @HiveField(13)
+  List<IdentityResp>? givenIdentitys;
 
-  TargetResp(this.id,
+  TargetResp(
+      this.id,
       this.name,
       this.code,
       this.typeName,
@@ -46,7 +50,8 @@ class TargetResp {
       this.version,
       this.createTime,
       this.updateTime,
-      this.team);
+      this.team,
+      this.givenIdentitys);
 
   TargetResp.fromMap(Map<String, dynamic> map)
       : id = int.parse(map["id"]),
@@ -54,7 +59,7 @@ class TargetResp {
         code = map["code"],
         typeName = map["typeName"],
         belongId =
-        map.containsKey('belongId') ? int.parse(map['belongId']) : -1,
+            map.containsKey('belongId') ? int.parse(map['belongId']) : -1,
         thingId = int.parse(map["thingId"]),
         status = map["status"],
         createUser = int.parse(map["createUser"]),
@@ -62,7 +67,12 @@ class TargetResp {
         version = int.parse(map["version"]),
         createTime = DateTime.parse(map["createTime"]),
         updateTime = DateTime.parse(map["updateTime"]),
-        team = TeamResp.fromJson(map["team"]);
+        team = TeamResp.fromMap(map["team"]),
+        givenIdentitys = map.containsKey("givenIdentitys")
+            ? IdentityResp.fromList(map["givenIdentitys"])
+            : null;
+
+
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};

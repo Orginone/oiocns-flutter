@@ -1,6 +1,3 @@
-import 'package:orginone/api_resp/target_resp.dart';
-import 'package:orginone/model/db_model.dart';
-
 import '../api_resp/page_resp.dart';
 import '../config/constant.dart';
 import '../util/http_util.dart';

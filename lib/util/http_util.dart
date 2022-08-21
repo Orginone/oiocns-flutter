@@ -113,7 +113,7 @@ class HttpUtil {
 
       return _parseResp(result);
     } catch (error) {
-      EasyLoading.showToast("服务器异常！");
+      EasyLoading.showToast(error.toString());
       rethrow;
     } finally {
       log.info("================End Post Http Request================");

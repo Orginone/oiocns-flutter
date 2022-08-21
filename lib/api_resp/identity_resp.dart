@@ -1,42 +1,23 @@
-import 'package:hive/hive.dart';
-
-import '../config/hive_object_id.dart';
-
-part 'team_resp.g.dart';
-
-@HiveType(typeId: HiveObjectId.team)
-class TeamResp {
-  @HiveField(0)
+class IdentityResp {
   int id;
-  @HiveField(1)
   String name;
-  @HiveField(2)
   String code;
-  @HiveField(3)
-  int targetId;
-  @HiveField(4)
-  int authId;
-  @HiveField(5)
   String remark;
-  @HiveField(6)
+  int authId;
+  int belongId;
   int status;
-  @HiveField(7)
   int createUser;
-  @HiveField(8)
   int updateUser;
-  @HiveField(9)
   int version;
-  @HiveField(10)
   DateTime createTime;
-  @HiveField(11)
   DateTime updateTime;
 
-  TeamResp(
+  IdentityResp(
       this.id,
       this.name,
       this.code,
-      this.targetId,
       this.authId,
+      this.belongId,
       this.remark,
       this.status,
       this.createUser,
@@ -45,12 +26,12 @@ class TeamResp {
       this.createTime,
       this.updateTime);
 
-  TeamResp.fromMap(Map<String, dynamic> map)
+  IdentityResp.fromMap(Map<String, dynamic> map)
       : id = int.parse(map["id"]),
         name = map["name"],
         code = map["code"],
-        targetId = int.parse(map["targetId"]),
         authId = int.parse(map["authId"]),
+        belongId = int.parse(map["belongId"]),
         remark = map["remark"] ?? "",
         status = map["status"],
         createUser = int.parse(map["createUser"]),
@@ -59,13 +40,24 @@ class TeamResp {
         createTime = DateTime.parse(map["createTime"]),
         updateTime = DateTime.parse(map["updateTime"]);
 
+  static List<IdentityResp> fromList(List<dynamic> list) {
+    List<IdentityResp> ans = [];
+    if (list.isEmpty) return ans;
+
+    for (var one in list) {
+      if (one == null) continue;
+      ans.add(IdentityResp.fromMap(one));
+    }
+    return ans;
+  }
+
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
     json['id'] = id;
     json['name'] = name;
     json['code'] = code;
-    json['targetId'] = targetId;
     json['authId'] = authId;
+    json['belongId'] = belongId;
     json['remark'] = remark;
     json['status'] = status;
     json['createUser'] = createUser;
