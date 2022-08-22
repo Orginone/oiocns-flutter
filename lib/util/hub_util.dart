@@ -5,13 +5,15 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:signalr_core/signalr_core.dart';
 
+import '../api_resp/api_resp.dart';
+import '../api_resp/target_resp.dart';
 import '../config/constant.dart';
 import '../page/home/message/message_controller.dart';
 import 'hive_util.dart';
 
 enum ReceiveEvent { RecvMsg }
 
-enum SendEvent { TokenAuth, GetChats, SendMsg }
+enum SendEvent { TokenAuth, GetChats, SendMsg, GetPersons }
 
 class HubUtil {
   HubUtil._();
@@ -49,6 +51,21 @@ class HubUtil {
 
   Future<dynamic> getChats() async {
     return await _connServer.invoke(SendEvent.GetChats.name);
+  }
+
+  Future<List<TargetResp>> getPersons(int id, int limit, int offset) async {
+    Map params = {"cohortId": "$id", "limit": limit, "offset": offset};
+    dynamic res = await _connServer.invoke(SendEvent.GetPersons.name, args: [params]);
+
+    ApiResp apiResp = ApiResp.fromMap(res);
+    var targetList = apiResp.data["result"];
+
+    List<TargetResp> temp = [];
+    for(var target in targetList){
+      var targetResp = TargetResp.fromMap(target);
+      temp.add(targetResp);
+    }
+    return temp;
   }
 
   //初始化连接
@@ -94,7 +111,7 @@ class HubUtil {
 
   // 发送消息
   Future<dynamic> sendMsg(Map<String, dynamic> messageDetail) async {
-    if(!isConn()) {
+    if (!isConn()) {
       EasyLoading.showToast("未连接聊天服务器!");
       return;
     }

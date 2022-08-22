@@ -8,11 +8,15 @@ class MessageDetailUtil {
   static UserResp userResp = HiveUtil().getValue(Keys.user);
 
   // 获取最新一条信息
-  static Future<MessageDetail?> latestDetail(int messageItemId) async {
+  static Future<MessageDetail?> latestDetail(
+      int spaceId, int messageItemId) async {
     return await MessageDetail()
         .select(columnsToSelect: ["msgBody", "createTime"])
         .account
         .equals(userResp.account)
+        .and
+        .spaceId
+        .equals(spaceId)
         .and
         .toId
         .equals(messageItemId)
@@ -44,18 +48,20 @@ class MessageDetailUtil {
   }
 
   // 获取一个聊天的所有消息
-  static Future<int> getTotalCount(int messageItemId) async {
+  static Future<int> getTotalCount(int spaceId, int messageItemId) async {
     String countSQL =
-        "SELECT COUNT(id) number FROM MessageDetail WHERE (fromId = $messageItemId OR toId = $messageItemId) AND account = ${userResp.account}";
+        "SELECT COUNT(id) number FROM MessageDetail WHERE spaceId = $spaceId AND (fromId = $messageItemId OR toId = $messageItemId) AND account = ${userResp.account}";
     var res = await MessageDetailManager().execDataTable(countSQL);
     return int.tryParse(res[0]["number"]!.toString())!;
   }
 
   // 获取一个聊天的所有消息
   static Future<List<Map<String, dynamic>>> pageData(
-      int offset, int limit, int messageItemId) async {
+      int offset, int limit, int spaceId, int messageItemId) async {
     String querySQL = "SELECT * FROM messageDetail WHERE "
-        "(fromId = $messageItemId OR toId = $messageItemId) AND account = ${userResp.account} "
+        "spaceId = $spaceId AND "
+        "(fromId = $messageItemId OR toId = $messageItemId) AND "
+        "account = ${userResp.account} "
         "LIMIT $limit OFFSET $offset";
 
     return await MessageDetailManager().execDataTable(querySQL);

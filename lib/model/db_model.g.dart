@@ -34,9 +34,10 @@ class TableMessageDetail extends SqfEntityTableBase {
     // declare fields
     fields = [
       SqfEntityFieldBase('account', DbType.text, isIndex: true),
-      SqfEntityFieldBase('id', DbType.integer),
+      SqfEntityFieldBase('id', DbType.integer, isIndex: true),
+      SqfEntityFieldBase('spaceId', DbType.integer, isIndex: true),
       SqfEntityFieldBase('fromId', DbType.integer, isIndex: true),
-      SqfEntityFieldBase('toId', DbType.integer),
+      SqfEntityFieldBase('toId', DbType.integer, isIndex: true),
       SqfEntityFieldBase('msgType', DbType.text),
       SqfEntityFieldBase('msgBody', DbType.text),
       SqfEntityFieldBase('status', DbType.integer),
@@ -48,6 +49,7 @@ class TableMessageDetail extends SqfEntityTableBase {
       SqfEntityFieldBase('updateTime', DbType.datetime,
           minValue: DateTime.parse('1900-01-01')),
       SqfEntityFieldBase('isRead', DbType.bool),
+      SqfEntityFieldBase('typeName', DbType.text),
     ];
     super.init();
   }
@@ -170,6 +172,7 @@ class MessageDetail extends TableBase {
       {this.seqId,
       this.account,
       this.id,
+      this.spaceId,
       this.fromId,
       this.toId,
       this.msgType,
@@ -180,13 +183,15 @@ class MessageDetail extends TableBase {
       this.version,
       this.createTime,
       this.updateTime,
-      this.isRead}) {
+      this.isRead,
+      this.typeName}) {
     _setDefaultValues();
     softDeleteActivated = false;
   }
   MessageDetail.withFields(
       this.account,
       this.id,
+      this.spaceId,
       this.fromId,
       this.toId,
       this.msgType,
@@ -197,13 +202,15 @@ class MessageDetail extends TableBase {
       this.version,
       this.createTime,
       this.updateTime,
-      this.isRead) {
+      this.isRead,
+      this.typeName) {
     _setDefaultValues();
   }
   MessageDetail.withId(
       this.seqId,
       this.account,
       this.id,
+      this.spaceId,
       this.fromId,
       this.toId,
       this.msgType,
@@ -214,7 +221,8 @@ class MessageDetail extends TableBase {
       this.version,
       this.createTime,
       this.updateTime,
-      this.isRead) {
+      this.isRead,
+      this.typeName) {
     _setDefaultValues();
   }
   // fromMap v2.0
@@ -229,6 +237,9 @@ class MessageDetail extends TableBase {
     }
     if (o['id'] != null) {
       id = int.tryParse(o['id'].toString());
+    }
+    if (o['spaceId'] != null) {
+      spaceId = int.tryParse(o['spaceId'].toString());
     }
     if (o['fromId'] != null) {
       fromId = int.tryParse(o['fromId'].toString());
@@ -270,11 +281,15 @@ class MessageDetail extends TableBase {
       isRead =
           o['isRead'].toString() == '1' || o['isRead'].toString() == 'true';
     }
+    if (o['typeName'] != null) {
+      typeName = o['typeName'].toString();
+    }
   }
   // FIELDS (MessageDetail)
   int? seqId;
   String? account;
   int? id;
+  int? spaceId;
   int? fromId;
   int? toId;
   String? msgType;
@@ -286,6 +301,7 @@ class MessageDetail extends TableBase {
   DateTime? createTime;
   DateTime? updateTime;
   bool? isRead;
+  String? typeName;
 
   // end FIELDS (MessageDetail)
 
@@ -308,6 +324,9 @@ class MessageDetail extends TableBase {
     if (id != null || !forView) {
       map['id'] = id;
     }
+    if (spaceId != null || !forView) {
+      map['spaceId'] = spaceId;
+    }
     if (fromId != null || !forView) {
       map['fromId'] = fromId;
     }
@@ -354,6 +373,9 @@ class MessageDetail extends TableBase {
       map['isRead'] = forQuery ? (isRead! ? 1 : 0) : isRead;
     } else if (isRead != null || !forView) {
       map['isRead'] = null;
+    }
+    if (typeName != null || !forView) {
+      map['typeName'] = typeName;
     }
 
     return map;
@@ -372,6 +394,9 @@ class MessageDetail extends TableBase {
     if (id != null || !forView) {
       map['id'] = id;
     }
+    if (spaceId != null || !forView) {
+      map['spaceId'] = spaceId;
+    }
     if (fromId != null || !forView) {
       map['fromId'] = fromId;
     }
@@ -418,6 +443,9 @@ class MessageDetail extends TableBase {
       map['isRead'] = forQuery ? (isRead! ? 1 : 0) : isRead;
     } else if (isRead != null || !forView) {
       map['isRead'] = null;
+    }
+    if (typeName != null || !forView) {
+      map['typeName'] = typeName;
     }
 
     return map;
@@ -440,6 +468,7 @@ class MessageDetail extends TableBase {
     return [
       account,
       id,
+      spaceId,
       fromId,
       toId,
       msgType,
@@ -450,7 +479,8 @@ class MessageDetail extends TableBase {
       version,
       createTime != null ? createTime!.millisecondsSinceEpoch : null,
       updateTime != null ? updateTime!.millisecondsSinceEpoch : null,
-      isRead
+      isRead,
+      typeName
     ];
   }
 
@@ -460,6 +490,7 @@ class MessageDetail extends TableBase {
       seqId,
       account,
       id,
+      spaceId,
       fromId,
       toId,
       msgType,
@@ -470,7 +501,8 @@ class MessageDetail extends TableBase {
       version,
       createTime != null ? createTime!.millisecondsSinceEpoch : null,
       updateTime != null ? updateTime!.millisecondsSinceEpoch : null,
-      isRead
+      isRead,
+      typeName
     ];
   }
 
@@ -620,11 +652,12 @@ class MessageDetail extends TableBase {
   Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnMessageDetail.rawInsert(
-          'INSERT OR REPLACE INTO messageDetail (seqId, account, id, fromId, toId, msgType, msgBody, status, createUser, updateUser, version, createTime, updateTime, isRead)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+          'INSERT OR REPLACE INTO messageDetail (seqId, account, id, spaceId, fromId, toId, msgType, msgBody, status, createUser, updateUser, version, createTime, updateTime, isRead, typeName)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
           [
             seqId,
             account,
             id,
+            spaceId,
             fromId,
             toId,
             msgType,
@@ -635,7 +668,8 @@ class MessageDetail extends TableBase {
             version,
             createTime != null ? createTime!.millisecondsSinceEpoch : null,
             updateTime != null ? updateTime!.millisecondsSinceEpoch : null,
-            isRead
+            isRead,
+            typeName
           ],
           ignoreBatch);
       if (result! > 0) {
@@ -663,7 +697,7 @@ class MessageDetail extends TableBase {
   Future<BoolCommitResult> upsertAll(List<MessageDetail> messagedetails,
       {bool? exclusive, bool? noResult, bool? continueOnError}) async {
     final results = await _mnMessageDetail.rawInsertAll(
-        'INSERT OR REPLACE INTO messageDetail (seqId, account, id, fromId, toId, msgType, msgBody, status, createUser, updateUser, version, createTime, updateTime, isRead)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+        'INSERT OR REPLACE INTO messageDetail (seqId, account, id, spaceId, fromId, toId, msgType, msgBody, status, createUser, updateUser, version, createTime, updateTime, isRead, typeName)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
         messagedetails,
         exclusive: exclusive,
         noResult: noResult,
@@ -934,6 +968,11 @@ class MessageDetailFilterBuilder extends ConjunctionBase {
     return _id = _setField(_id, 'id', DbType.integer);
   }
 
+  MessageDetailField? _spaceId;
+  MessageDetailField get spaceId {
+    return _spaceId = _setField(_spaceId, 'spaceId', DbType.integer);
+  }
+
   MessageDetailField? _fromId;
   MessageDetailField get fromId {
     return _fromId = _setField(_fromId, 'fromId', DbType.integer);
@@ -987,6 +1026,11 @@ class MessageDetailFilterBuilder extends ConjunctionBase {
   MessageDetailField? _isRead;
   MessageDetailField get isRead {
     return _isRead = _setField(_isRead, 'isRead', DbType.bool);
+  }
+
+  MessageDetailField? _typeName;
+  MessageDetailField get typeName {
+    return _typeName = _setField(_typeName, 'typeName', DbType.text);
   }
 
   /// Deletes List<MessageDetail> bulk by query
@@ -1228,6 +1272,12 @@ class MessageDetailFields {
     return _fId = _fId ?? SqlSyntax.setField(_fId, 'id', DbType.integer);
   }
 
+  static TableField? _fSpaceId;
+  static TableField get spaceId {
+    return _fSpaceId =
+        _fSpaceId ?? SqlSyntax.setField(_fSpaceId, 'spaceId', DbType.integer);
+  }
+
   static TableField? _fFromId;
   static TableField get fromId {
     return _fFromId =
@@ -1292,6 +1342,12 @@ class MessageDetailFields {
   static TableField get isRead {
     return _fIsRead =
         _fIsRead ?? SqlSyntax.setField(_fIsRead, 'isRead', DbType.bool);
+  }
+
+  static TableField? _fTypeName;
+  static TableField get typeName {
+    return _fTypeName =
+        _fTypeName ?? SqlSyntax.setField(_fTypeName, 'typeName', DbType.text);
   }
 }
 // endregion MessageDetailFields

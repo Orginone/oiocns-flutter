@@ -30,13 +30,14 @@ class TargetRespAdapter extends TypeAdapter<TargetResp> {
       fields[10] as DateTime,
       fields[11] as DateTime,
       fields[12] as TeamResp,
+      (fields[13] as List?)?.cast<IdentityResp>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, TargetResp obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(14)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -62,7 +63,9 @@ class TargetRespAdapter extends TypeAdapter<TargetResp> {
       ..writeByte(11)
       ..write(obj.updateTime)
       ..writeByte(12)
-      ..write(obj.team);
+      ..write(obj.team)
+      ..writeByte(13)
+      ..write(obj.givenIdentitys);
   }
 
   @override

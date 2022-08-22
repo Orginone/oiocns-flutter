@@ -2,12 +2,9 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_button.dart';
-import 'package:orginone/api/company_api.dart';
-import 'package:orginone/model/db_model.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 
 import '../../routers.dart';
-import '../../util/hive_util.dart';
 import '../../util/hub_util.dart';
 import 'login_controller.dart';
 
@@ -65,12 +62,7 @@ class LoginPage extends GetView<LoginController> {
                           await controller.login();
                           await HubUtil().conn();
 
-                          // 连接成功后初始化聊天面板信息，
-                          var messageController = Get.find<MessageController>();
-                          await messageController.firstInitChartsData();
-                          await messageController.initChats();
-
-                          Get.toNamed(Routers.home);
+                          Get.offNamed(Routers.home);
                         },
                         text: "登录",
                         blockButton: true,

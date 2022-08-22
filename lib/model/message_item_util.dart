@@ -21,7 +21,18 @@ class MessageItemUtil {
         .toCount();
   }
 
-  static Future<List<MessageItem>> getAllItems(String account) async {
-    return await MessageItem().select().account.equals(account).toList();
+  static Future<List<MessageItem>> getAllItems() async {
+    return await MessageItem().select().account.equals(userResp.account).toList();
+  }
+
+  static Future<MessageItem?> getItem(int spaceId, int itemId) async {
+    return await MessageItem()
+        .select()
+        .msgGroupId
+        .equals(spaceId)
+        .and
+        .id
+        .equals(itemId)
+        .toSingle();
   }
 }

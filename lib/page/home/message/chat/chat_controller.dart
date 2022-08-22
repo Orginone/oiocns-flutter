@@ -5,10 +5,11 @@ import 'package:orginone/model/message_detail_util.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/util/hub_util.dart';
 
+import '../../../../api_resp/target_resp.dart';
 import '../../../../enumeration/message_type.dart';
 import '../../../../model/db_model.dart';
 import '../message_controller.dart';
-import 'component/chat_message_item.dart';
+import 'component/chat_message_detail.dart';
 
 class ChatController extends GetxController {
   // 控制信息
@@ -17,15 +18,20 @@ class ChatController extends GetxController {
   var messageText = TextEditingController();
   var messageScrollController = ScrollController();
 
-  // 老数据分页信息
+  // 当前所在的群组
   late MessageItem messageItem;
+
+  // 当前群所有人
+  late Map<int, TargetResp> personMap;
+
+  // 老数据分页信息
   var currentPage = 1;
   var pageSize = 20;
   int oldTotalCount = 0;
   int oldRemainder = 0;
 
   // 观测对象
-  var messageItems = <Widget>[].obs;
+  var messageDetails = <Widget>[].obs;
 
   // 日志
   var logger = Logger("ChatController");
@@ -52,7 +58,7 @@ class ChatController extends GetxController {
   void onClose() {
     logger.info("==============开始回收资源=============");
     // 清空数据
-    messageItems.clear();
+    messageDetails.clear();
     messageController.currentMessageItemId = -1;
 
     // 解除控制
@@ -71,8 +77,9 @@ class ChatController extends GetxController {
   // 消息接收函數
   Future<void> onReceiveMessage(MessageDetail messageDetail) async {
     try {
-      var chatMessageItem = ChatMessageItem(messageItem, messageDetail);
-      messageItems.add(chatMessageItem);
+      var chatMessageDetail = ChatMessageDetail(
+          messageItem, messageDetail, personMap[messageDetail.fromId]);
+      messageDetails.add(chatMessageDetail);
 
       // 改成已读状态
       messageDetail.isRead = true;
@@ -88,9 +95,24 @@ class ChatController extends GetxController {
   /// 刚进入页面时, 老数据的聊天总数
   Future<void> preCount() async {
     oldTotalCount = await MessageDetailUtil.getTotalCount(
-        messageController.currentMessageItemId);
+        messageItem.msgGroupId!, messageItem.id!);
     currentPage = (oldTotalCount / pageSize).ceil();
     oldRemainder = oldTotalCount % pageSize;
+  }
+
+  /// 查询群成员信息
+  Future<void> getPersons() async {
+    personMap = {};
+    var label = messageItem.label;
+    if (label == "群组" || label == "公司") {
+      List<TargetResp> persons =
+          await HubUtil().getPersons(messageItem.id!, 1000, 0);
+      if (persons.isNotEmpty) {
+        for (var person in persons) {
+          personMap[person.id] = person;
+        }
+      }
+    }
   }
 
   // 下拉时刷新旧的聊天记录
@@ -100,29 +122,35 @@ class ChatController extends GetxController {
 
     // 列表
     return await MessageDetailUtil.pageData(
-        offset, pageSize, messageController.currentMessageItemId);
+        offset,
+        pageSize,
+        messageController.currentSpaceId,
+        messageController.currentMessageItemId);
   }
 
   // 获取数据并渲染到页面
   Future<void> getPageDataAndRender() async {
     var messageList = await pageData();
-    List<ChatMessageItem> temp = [];
+    List<ChatMessageDetail> temp = [];
     for (var message in messageList) {
-      temp.add(ChatMessageItem(messageItem, MessageDetail.fromMap(message)));
+      var messageDetail = MessageDetail.fromMap(message);
+      temp.add(ChatMessageDetail(
+          messageItem, messageDetail, personMap[messageDetail.fromId]));
     }
-    messageItems.insertAll(0, temp);
+    messageDetails.insertAll(0, temp);
   }
 
   // 初始化
   Future<void> init() async {
     // 清空所有聊天记录，指向当前聊天群
-    messageItems.clear();
+    messageDetails.clear();
 
     // 初始化群組
-    messageItem = messageController
-        .messageItemMap[messageController.currentMessageItemId]!;
+    messageItem = messageController.messageGroupItemMap[messageController
+        .currentSpaceId]![messageController.currentMessageItemId]!;
 
     // 初始化老数据个数，查询聊天记录的个数
+    await getPersons();
     await preCount();
     await getPageDataAndRender();
 
@@ -133,6 +161,7 @@ class ChatController extends GetxController {
   // 发送消息至聊天页面
   Future<void> sendOneMessage() async {
     var groupId = messageController.currentMessageItemId;
+    var spaceId = messageController.currentSpaceId;
     if (groupId == -1) return;
 
     var value = messageText.value.text;
@@ -140,7 +169,7 @@ class ChatController extends GetxController {
       // toId 和 spaceId 都要是字符串类型
       var messageDetail = {
         "toId": "$groupId",
-        "spaceId": "${homeController.currentTarget.id}",
+        "spaceId": "$spaceId",
         "msgType": MessageType.text.name,
         "msgBody": value
       };

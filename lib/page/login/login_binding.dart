@@ -8,7 +8,5 @@ class LoginBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => LoginController());
-    Get.lazyPut(() => MessageController());
-    Get.lazyPut(() => ChatController());
   }
 }

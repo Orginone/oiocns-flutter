@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/page/home/message/chat/component/chat_box.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 
@@ -15,11 +16,17 @@ class ChatPage extends GetView<ChatController> {
     return Scaffold(
       appBar: GFAppBar(
         leading: GFIconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Get.back(),
           type: GFButtonType.transparent,
         ),
-        title: Text(controller.messageItem.name ?? ""),
+        title: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Text(controller.messageItem.name ?? ""),
+          Container(
+            margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+          ),
+          TextTag(controller.messageItem.label ?? "")
+        ]),
         actions: <Widget>[
           GFIconButton(icon: const Icon(Icons.favorite), onPressed: () {
             Get.toNamed(Routers.czh);
@@ -45,9 +52,9 @@ class ChatPage extends GetView<ChatController> {
                       child: Obx(() => ListView.builder(
                           controller: controller.messageScrollController,
                           scrollDirection: Axis.vertical,
-                          itemCount: controller.messageItems.length,
+                          itemCount: controller.messageDetails.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return controller.messageItems[index];
+                            return controller.messageDetails[index];
                           }))))),
           const ChatBox()
         ],
