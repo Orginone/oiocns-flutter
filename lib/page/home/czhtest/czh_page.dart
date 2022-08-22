@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/config/custom_colors.dart';
 import 'package:orginone/page/home/czhtest/czh_controller.dart';
-import 'package:orginone/routers.dart';
 
 class CzhPage extends GetView<CzhController> {
   const CzhPage({Key? key}) : super(key: key);
@@ -79,17 +78,40 @@ class CzhPage extends GetView<CzhController> {
                 )
               ]),
           Container(
-            height: 40,
-            margin: const EdgeInsets.all(10),
+            height: 70,
+            margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
             child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: 20,
                 itemBuilder: (BuildContext context, int index) {
-                    return Column(
-                    children: const [
-
-                      Text("组成员 2人", style: TextStyle(fontSize: 12)),
-                    ],
+                  return Container(
+                    width: 50,
+                    margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        FadeInImage.assetNetwork(
+                          placeholder: 'images/person-empty.png',
+                          image: 'qqqqqq',
+                          imageErrorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 50,
+                              height: 50,
+                              decoration: const BoxDecoration(
+                                  image: DecorationImage(
+                                      image:
+                                          AssetImage('images/person-empty.png'),
+                                      fit: BoxFit.cover)),
+                            );
+                          },
+                          width: 50,
+                          height: 50,
+                        ),
+                        const Text("测试人员长字符测试",
+                            style: TextStyle(fontSize: 12),
+                            overflow: TextOverflow.ellipsis),
+                      ],
+                    ),
                   );
                 }),
           ),
@@ -97,32 +119,43 @@ class CzhPage extends GetView<CzhController> {
             height: 0,
           ),
           Obx(() => Row(
-            children: [
-              Radio(value: 1, groupValue: controller.textField1.value, onChanged: (a) {
-                controller.test1(a);
-              },
-              ),
-              const Text("设置群消息免打扰")
-            ],
-          )),
+                children: [
+                  Radio(
+                    value: 1,
+                    groupValue: controller.textField1.value,
+                    onChanged: (a) {
+                      controller.test1(a);
+                    },
+                  ),
+                  const Text("设置群消息免打扰")
+                ],
+              )),
           Obx(() => Row(
+                children: [
+                  Radio(
+                    value: 2,
+                    groupValue: controller.textField2.value,
+                    onChanged: (a) {
+                      controller.test1(a);
+                    },
+                  ),
+                  const Text("置顶该群")
+                ],
+              )),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Radio(value: 2, groupValue: controller.textField2.value, onChanged: (a) {
-                controller.test1(a);
-              },
-              ),
-              const Text("置顶该群")
+              Container(
+                margin: const EdgeInsets.fromLTRB(0,10,0,0),
+                child: GFButton(
+                  color: const Color.fromRGBO(255, 0, 0, 1),
+                  onPressed: () async {},
+                  text: "清空聊天记录",
+                  blockButton: true,
+                ),
+              )
             ],
-          ))
-          // Expanded(
-          //     flex: 2,
-          //     child: GFButton(
-          //         size: GFSize.MEDIUM,
-          //         onPressed: () {
-          //           // 发送消息
-          //           controller.sendOneMessage();
-          //         },
-          //         text: "发送"))
+          )
         ]));
   }
 }
