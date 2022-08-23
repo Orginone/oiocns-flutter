@@ -1,3 +1,4 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
@@ -60,16 +61,21 @@ class CzhPage extends GetView<CzhController> {
                       maxWidth: 150),
                   margin: const EdgeInsets.all(10),
                   child: TextField(
-                      controller: controller.searchGroupText,
-                      decoration: const InputDecoration(
-                          suffixIcon: Icon(Icons.search),
-                          contentPadding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                          enabledBorder: OutlineInputBorder(
+                      controller: controller.searchGroupTextController,
+                      decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                              icon: const Icon(Icons.search),
+                              onPressed: () {
+                                controller.searchPerson();
+                              }),
+                          contentPadding:
+                              const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                          enabledBorder: const OutlineInputBorder(
                             borderSide: BorderSide(color: Color(0xFFDCDFE6)),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(4.0)),
                           ),
-                          focusedBorder: OutlineInputBorder(
+                          focusedBorder: const OutlineInputBorder(
                             borderSide: BorderSide(color: Color(0xFF409EFF)),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(4.0)),
@@ -78,42 +84,110 @@ class CzhPage extends GetView<CzhController> {
                 )
               ]),
           Container(
-            height: 70,
-            margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 20,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    width: 50,
-                    margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        FadeInImage.assetNetwork(
-                          placeholder: 'images/person-empty.png',
-                          image: 'qqqqqq',
-                          imageErrorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              width: 50,
+              height: 70,
+              margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+              child: Obx(
+                () => ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 2 + controller.filterPersonList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      if (index == 0) {
+                        return GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: () {},
+                            child: Container(
                               height: 50,
-                              decoration: const BoxDecoration(
-                                  image: DecorationImage(
-                                      image:
-                                          AssetImage('images/person-empty.png'),
-                                      fit: BoxFit.cover)),
-                            );
-                          },
+                              margin: const EdgeInsets.fromLTRB(10, 1, 10, 20),
+                              child: DottedBorder(
+                                dashPattern: const [4, 4],
+                                strokeWidth: 1,
+                                padding: const EdgeInsets.all(0),
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  width: 50,
+                                  child: const Text("+",
+                                      style: TextStyle(fontSize: 40)),
+                                  // color: Colors.black26,
+                                ),
+                              ),
+                            ));
+                      } else if (index == 1) {
+                        return Container(
                           width: 50,
-                          height: 50,
-                        ),
-                        const Text("测试人员长字符测试",
-                            style: TextStyle(fontSize: 12),
-                            overflow: TextOverflow.ellipsis),
-                      ],
-                    ),
-                  );
-                }),
+                          margin: const EdgeInsets.fromLTRB(10, 0, 10, 20),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1,
+                                color: const Color.fromRGBO(255, 0, 0, 1)),
+                          ),
+                          child: const Text("-",
+                              style:
+                                  TextStyle(fontSize: 40, color: Colors.red)),
+                        );
+                      } else {
+                        return Container(
+                          width: 50,
+                          margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              FadeInImage.assetNetwork(
+                                placeholder: 'images/person-empty.png',
+                                image: 'qqqqqq',
+                                imageErrorBuilder:
+                                    (context, error, stackTrace) {
+                                  return Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: const BoxDecoration(
+                                        image: DecorationImage(
+                                            image: AssetImage(
+                                                'images/person-empty.png'),
+                                            fit: BoxFit.cover)),
+                                  );
+                                },
+                                width: 50,
+                                height: 50,
+                              ),
+                              Text(controller.filterPersonList[index - 2],
+                                  style: const TextStyle(fontSize: 12),
+                                  overflow: TextOverflow.ellipsis),
+                            ],
+                          ),
+                        );
+                      }
+                    }),
+              )),
+          const Divider(
+            height: 0,
+          ),
+          Container(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Text("我在本群昵称",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text("czh测试")
+              ],
+            ),
+          ),
+          const Divider(
+            height: 0,
+          ),
+          Container(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Text("群组备注",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text("czh测试")
+              ],
+            ),
           ),
           const Divider(
             height: 0,
@@ -146,7 +220,7 @@ class CzhPage extends GetView<CzhController> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                margin: const EdgeInsets.fromLTRB(0,10,0,0),
+                margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                 child: GFButton(
                   color: const Color.fromRGBO(255, 0, 0, 1),
                   onPressed: () async {},
