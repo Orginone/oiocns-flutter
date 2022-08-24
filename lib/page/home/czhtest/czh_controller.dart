@@ -30,7 +30,14 @@ class CzhController extends GetxController {
   }
   //查询成员
   searchPerson() {
-    filterPersonList = originPersonList.where((e) => e == searchGroupTextController.text).toList().obs;
+    //清空人员数组
+    filterPersonList.clear();
+    //筛选
+    RegExp exp = RegExp(searchGroupTextController.text);
+    List<String> tempArray = originPersonList.where((item) => exp.hasMatch(item)).toList();
+    for(String person in tempArray) {
+      filterPersonList.add(person);
+    }
   }
   //获取人或集团的信息
   Future<dynamic> getRelationData() async {
