@@ -1,4 +1,6 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:orginone/page/home/czhtest/czh_binding.dart';
+import 'package:orginone/page/home/czhtest/czh_page.dart';
 import 'package:orginone/page/home/home_binding.dart';
 import 'package:orginone/page/home/home_page.dart';
 import 'package:orginone/page/home/message/chat/chat_binding.dart';
@@ -17,6 +19,7 @@ class Routers {
   static const String home = "/home";
   static const String message = "/message";
   static const String chat = "/chat";
+  static const String czh = "/czh";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -45,6 +48,11 @@ class Routers {
         name: Routers.chat,
         page: () => const ChatPage(),
         binding: ChatBinding(),
+      ),
+      GetPage(
+        name: Routers.czh,
+        page: () => const CzhPage(),
+        binding: CzhPageBinding(),
       )
     ];
   }

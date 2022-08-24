@@ -6,6 +6,8 @@ import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/page/home/message/chat/component/chat_box.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 
+import '../../../../routers.dart';
+
 class ChatPage extends GetView<ChatController> {
   const ChatPage({Key? key}) : super(key: key);
 
@@ -26,7 +28,9 @@ class ChatPage extends GetView<ChatController> {
           TextTag(controller.messageItem.label ?? "")
         ]),
         actions: <Widget>[
-          GFIconButton(icon: const Icon(Icons.favorite), onPressed: () {})
+          GFIconButton(icon: const Icon(Icons.favorite), onPressed: () {
+            Get.toNamed(Routers.czh);
+          })
         ],
       ),
       body: Column(
