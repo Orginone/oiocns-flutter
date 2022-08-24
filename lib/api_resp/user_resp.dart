@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:orginone/model/db_model.dart';
 
 import '../config/hive_object_id.dart';
 
@@ -25,8 +26,16 @@ class UserResp {
   @HiveField(8)
   final String workspaceName;
 
-  UserResp(this.account, this.authority, this.expiresIn, this.license, this.motto,
-      this.tokenType, this.userName, this.workspaceId, this.workspaceName);
+  UserResp(
+      this.account,
+      this.authority,
+      this.expiresIn,
+      this.license,
+      this.motto,
+      this.tokenType,
+      this.userName,
+      this.workspaceId,
+      this.workspaceName);
 
   UserResp.fromMap(Map<String, dynamic> map)
       : account = map["account"],
@@ -51,5 +60,13 @@ class UserResp {
     data['workspaceId'] = workspaceId;
     data['workspaceName'] = workspaceName;
     return data;
+  }
+
+  User toUser() {
+    var user = User();
+    user.account = account;
+    user.userName = userName;
+    user.motto = motto;
+    return user;
   }
 }

@@ -2,6 +2,7 @@ import 'package:hive/hive.dart';
 import 'package:orginone/api_resp/team_resp.dart';
 
 import '../config/hive_object_id.dart';
+import '../model/db_model.dart';
 import 'identity_resp.dart';
 
 part 'target_resp.g.dart';
@@ -72,8 +73,6 @@ class TargetResp {
             ? IdentityResp.fromList(map["givenIdentitys"])
             : null;
 
-
-
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
     json['id'] = id;
@@ -89,5 +88,16 @@ class TargetResp {
     json['createTime'] = createTime;
     json['updateTime'] = updateTime;
     return json;
+  }
+
+  Target toTarget() {
+    var target = Target();
+    target.id = id;
+    target.code = code;
+    target.name = name;
+    target.typeName = typeName;
+    target.belongId = belongId;
+    target.thingId = thingId;
+    return target;
   }
 }

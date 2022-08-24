@@ -5,6 +5,7 @@ import 'package:orginone/api_resp/target_resp.dart';
 
 import '../../api/company_api.dart';
 import '../../api_resp/login_resp.dart';
+import '../../model/db_model.dart';
 import '../../util/hive_util.dart';
 
 class LoginController extends GetxController {
@@ -22,19 +23,27 @@ class LoginController extends GetxController {
     await hiveUtil.putValue(Keys.accessToken, loginResp.accessToken);
     await hiveUtil.putValue(Keys.user, loginResp.user);
 
-    List<TargetResp> convertedCompany = [];
+    // 更新一下数据库信息
+    User user = loginResp.user.toUser();
+    await user.upsert();
 
-    // 个人空间
+    // 个人空间, 公司空间
     TargetResp userInfo = await PersonApi.userInfo();
-    convertedCompany.add(userInfo);
-    await hiveUtil.putValue(Keys.userInfo, userInfo);
-
-    // 公司
     List<dynamic> companys = await CompanyApi.getJoinedCompanys(0, 100);
+
+    List<TargetResp> convertedCompany = [];
+    convertedCompany.add(userInfo);
     for (var company in companys) {
       convertedCompany.add(TargetResp.fromMap(company));
     }
+    await hiveUtil.putValue(Keys.userInfo, userInfo);
     await hiveUtil.putValue(Keys.companys, convertedCompany);
+
+    // 更新这些空间
+    for (TargetResp company in convertedCompany) {
+      await company.toTarget().upsert();
+      await UserSpaceRelation(account: user.account, targetId: company.id, name: company.name, isExpand: true).upsert();
+    }
 
     return true;
   }

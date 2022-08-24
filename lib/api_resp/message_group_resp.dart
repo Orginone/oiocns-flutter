@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../model/db_model.dart';
+
 part 'message_group_resp.g.dart';
 
 @JsonSerializable()
@@ -21,5 +23,12 @@ class MessageGroupResp {
     json['name'] = name;
     json['chats'] = chats;
     return json;
+  }
+
+  Target toTarget() {
+    var target = Target();
+    target.id = id;
+    target.name = name;
+    return target;
   }
 }

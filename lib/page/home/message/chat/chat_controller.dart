@@ -8,6 +8,7 @@ import 'package:orginone/util/hub_util.dart';
 import '../../../../api_resp/target_resp.dart';
 import '../../../../enumeration/message_type.dart';
 import '../../../../model/db_model.dart';
+import '../../../../util/hive_util.dart';
 import '../message_controller.dart';
 import 'component/chat_message_detail.dart';
 
@@ -19,7 +20,8 @@ class ChatController extends GetxController {
   var messageScrollController = ScrollController();
 
   // 当前所在的群组
-  late MessageItem messageItem;
+  late TargetRelation messageItem;
+  TargetResp currentUserInfo = HiveUtil().getValue(Keys.userInfo);
 
   // 当前群所有人
   late Map<int, TargetResp> personMap;
@@ -95,7 +97,9 @@ class ChatController extends GetxController {
   /// 刚进入页面时, 老数据的聊天总数
   Future<void> preCount() async {
     oldTotalCount = await MessageDetailUtil.getTotalCount(
-        messageItem.msgGroupId!, messageItem.id!);
+        messageItem.activeTargetId!,
+        messageItem.passiveTargetId!,
+        messageItem.typeName ?? "未知");
     currentPage = (oldTotalCount / pageSize).ceil();
     oldRemainder = oldTotalCount % pageSize;
   }
@@ -106,7 +110,7 @@ class ChatController extends GetxController {
     var label = messageItem.label;
     if (label == "群组" || label == "公司") {
       List<TargetResp> persons =
-          await HubUtil().getPersons(messageItem.id!, 1000, 0);
+          await HubUtil().getPersons(messageItem.passiveTargetId!, 1000, 0);
       if (persons.isNotEmpty) {
         for (var person in persons) {
           personMap[person.id] = person;
@@ -120,12 +124,22 @@ class ChatController extends GetxController {
     int offset = oldRemainder + (currentPage - 2) * pageSize;
     offset = offset < 0 ? 0 : offset;
 
+    if(messageItem.passiveTargetId == currentUserInfo.id) {
+      return  await MessageDetailUtil.myPageData(
+          offset,
+          pageSize,
+          messageController.currentSpaceId,
+          messageController.currentMessageItemId,
+          messageItem.typeName ?? "未知");
+    }
+
     // 列表
-    return await MessageDetailUtil.pageData(
+    return  await MessageDetailUtil.pageData(
         offset,
         pageSize,
         messageController.currentSpaceId,
-        messageController.currentMessageItemId);
+        messageController.currentMessageItemId,
+        messageItem.typeName ?? "未知");
   }
 
   // 获取数据并渲染到页面
