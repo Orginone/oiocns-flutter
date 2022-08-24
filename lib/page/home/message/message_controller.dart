@@ -94,7 +94,10 @@ class MessageController extends GetxController {
 
         await groupResp.toTarget().upsert();
         await UserSpaceRelation(
-                account: currentUser.account, targetId: groupResp.id, name: groupResp.name, isExpand: true)
+                account: currentUser.account,
+                targetId: groupResp.id,
+                name: groupResp.name,
+                isExpand: true)
             .upsert();
 
         // 群聊天内容
@@ -104,7 +107,8 @@ class MessageController extends GetxController {
           TargetRelation messageItem =
               TargetRelation.fromMap(messageItemSingle);
           messageItem.activeTargetId = groupResp.id;
-          messageItem.passiveTargetId = int.tryParse(messageItemSingle["id"].toString());
+          messageItem.passiveTargetId =
+              int.tryParse(messageItemSingle["id"].toString());
           messageItem.priority = HiveUtil().groupPriorityAddAndGet();
 
           await messageItem.upsert();
@@ -210,9 +214,8 @@ class MessageController extends GetxController {
 
     if (latestDetailItemMap!.containsKey(itemId)) {
       LatestDetail latestDetail = latestDetailItemMap[itemId]!;
-      if (messageDetail.fromId != currentUserInfo.id ||
-          (currentMessageItemId != -1 && currentMessageItemId != itemId)) {
-        // 如果是我自己发的，那就不更新视图条数了
+      if (messageDetail.fromId != currentUserInfo.id && currentMessageItemId != itemId) {
+        // 如果是我自己发的或者我当前正在群中，那就不更新视图条数了
         latestDetail.notReadCount.value += 1;
       }
       latestDetail.msgBody.value = messageDetail.msgBody ?? "";
