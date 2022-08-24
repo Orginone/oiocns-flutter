@@ -152,6 +152,7 @@ class TableMessageDetail extends SqfEntityTableBase {
           minValue: DateTime.parse('1900-01-01')),
       SqfEntityFieldBase('isRead', DbType.bool),
       SqfEntityFieldBase('typeName', DbType.text),
+      SqfEntityFieldBase('isWithdraw', DbType.bool),
     ];
     super.init();
   }
@@ -3563,7 +3564,8 @@ class MessageDetail extends TableBase {
       this.createTime,
       this.updateTime,
       this.isRead,
-      this.typeName}) {
+      this.typeName,
+      this.isWithdraw}) {
     _setDefaultValues();
     softDeleteActivated = false;
   }
@@ -3582,7 +3584,8 @@ class MessageDetail extends TableBase {
       this.createTime,
       this.updateTime,
       this.isRead,
-      this.typeName) {
+      this.typeName,
+      this.isWithdraw) {
     _setDefaultValues();
   }
   MessageDetail.withId(
@@ -3601,7 +3604,8 @@ class MessageDetail extends TableBase {
       this.createTime,
       this.updateTime,
       this.isRead,
-      this.typeName) {
+      this.typeName,
+      this.isWithdraw) {
     _setDefaultValues();
   }
   // fromMap v2.0
@@ -3663,6 +3667,10 @@ class MessageDetail extends TableBase {
     if (o['typeName'] != null) {
       typeName = o['typeName'].toString();
     }
+    if (o['isWithdraw'] != null) {
+      isWithdraw = o['isWithdraw'].toString() == '1' ||
+          o['isWithdraw'].toString() == 'true';
+    }
   }
   // FIELDS (MessageDetail)
   int? seqId;
@@ -3681,6 +3689,7 @@ class MessageDetail extends TableBase {
   DateTime? updateTime;
   bool? isRead;
   String? typeName;
+  bool? isWithdraw;
 
   // end FIELDS (MessageDetail)
 
@@ -3756,6 +3765,11 @@ class MessageDetail extends TableBase {
     if (typeName != null || !forView) {
       map['typeName'] = typeName;
     }
+    if (isWithdraw != null) {
+      map['isWithdraw'] = forQuery ? (isWithdraw! ? 1 : 0) : isWithdraw;
+    } else if (isWithdraw != null || !forView) {
+      map['isWithdraw'] = null;
+    }
 
     return map;
   }
@@ -3826,6 +3840,11 @@ class MessageDetail extends TableBase {
     if (typeName != null || !forView) {
       map['typeName'] = typeName;
     }
+    if (isWithdraw != null) {
+      map['isWithdraw'] = forQuery ? (isWithdraw! ? 1 : 0) : isWithdraw;
+    } else if (isWithdraw != null || !forView) {
+      map['isWithdraw'] = null;
+    }
 
     return map;
   }
@@ -3859,7 +3878,8 @@ class MessageDetail extends TableBase {
       createTime != null ? createTime!.millisecondsSinceEpoch : null,
       updateTime != null ? updateTime!.millisecondsSinceEpoch : null,
       isRead,
-      typeName
+      typeName,
+      isWithdraw
     ];
   }
 
@@ -3881,7 +3901,8 @@ class MessageDetail extends TableBase {
       createTime != null ? createTime!.millisecondsSinceEpoch : null,
       updateTime != null ? updateTime!.millisecondsSinceEpoch : null,
       isRead,
-      typeName
+      typeName,
+      isWithdraw
     ];
   }
 
@@ -4031,7 +4052,7 @@ class MessageDetail extends TableBase {
   Future<int?> upsert({bool ignoreBatch = true}) async {
     try {
       final result = await _mnMessageDetail.rawInsert(
-          'INSERT OR REPLACE INTO messageDetail (seqId, account, id, spaceId, fromId, toId, msgType, msgBody, status, createUser, updateUser, version, createTime, updateTime, isRead, typeName)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+          'INSERT OR REPLACE INTO messageDetail (seqId, account, id, spaceId, fromId, toId, msgType, msgBody, status, createUser, updateUser, version, createTime, updateTime, isRead, typeName, isWithdraw)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
           [
             seqId,
             account,
@@ -4048,7 +4069,8 @@ class MessageDetail extends TableBase {
             createTime != null ? createTime!.millisecondsSinceEpoch : null,
             updateTime != null ? updateTime!.millisecondsSinceEpoch : null,
             isRead,
-            typeName
+            typeName,
+            isWithdraw
           ],
           ignoreBatch);
       if (result! > 0) {
@@ -4076,7 +4098,7 @@ class MessageDetail extends TableBase {
   Future<BoolCommitResult> upsertAll(List<MessageDetail> messagedetails,
       {bool? exclusive, bool? noResult, bool? continueOnError}) async {
     final results = await _mnMessageDetail.rawInsertAll(
-        'INSERT OR REPLACE INTO messageDetail (seqId, account, id, spaceId, fromId, toId, msgType, msgBody, status, createUser, updateUser, version, createTime, updateTime, isRead, typeName)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+        'INSERT OR REPLACE INTO messageDetail (seqId, account, id, spaceId, fromId, toId, msgType, msgBody, status, createUser, updateUser, version, createTime, updateTime, isRead, typeName, isWithdraw)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
         messagedetails,
         exclusive: exclusive,
         noResult: noResult,
@@ -4412,6 +4434,11 @@ class MessageDetailFilterBuilder extends ConjunctionBase {
     return _typeName = _setField(_typeName, 'typeName', DbType.text);
   }
 
+  MessageDetailField? _isWithdraw;
+  MessageDetailField get isWithdraw {
+    return _isWithdraw = _setField(_isWithdraw, 'isWithdraw', DbType.bool);
+  }
+
   /// Deletes List<MessageDetail> bulk by query
   ///
   /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
@@ -4727,6 +4754,12 @@ class MessageDetailFields {
   static TableField get typeName {
     return _fTypeName =
         _fTypeName ?? SqlSyntax.setField(_fTypeName, 'typeName', DbType.text);
+  }
+
+  static TableField? _fIsWithdraw;
+  static TableField get isWithdraw {
+    return _fIsWithdraw = _fIsWithdraw ??
+        SqlSyntax.setField(_fIsWithdraw, 'isWithdraw', DbType.bool);
   }
 }
 // endregion MessageDetailFields

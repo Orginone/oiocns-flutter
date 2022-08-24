@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
+import 'package:logging/logging.dart';
 import 'package:orginone/component/text_avatar.dart';
+import 'package:orginone/page/home/message/chat/component/chat_func.dart';
 import 'package:orginone/page/home/message/chat/component/text_message.dart';
 import 'package:orginone/util/hive_util.dart';
 
 import '../../../../../api_resp/target_resp.dart';
+import '../../../../../component/popup_router.dart';
 import '../../../../../config/custom_colors.dart';
 import '../../../../../enumeration/enum_map.dart';
 import '../../../../../enumeration/message_type.dart';
@@ -16,14 +20,16 @@ class ChatMessageDetail extends StatelessWidget {
   final TargetRelation messageItem;
   final MessageDetail messageDetail;
   final TargetResp? targetResp;
+  final TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+  final Logger log = Logger("ChatMessageDetail");
 
-  const ChatMessageDetail(this.messageItem, this.messageDetail, this.targetResp,
+  ChatMessageDetail(this.messageItem, this.messageDetail, this.targetResp,
       {Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    Rx<bool> isWithdraw = (messageDetail.isWithdraw ?? false).obs;
 
     bool isMy = messageDetail.fromId == userInfo.id;
     String itemAvatarName = isMy ? userInfo.name : messageItem.name!;
@@ -33,42 +39,77 @@ class ChatMessageDetail extends StatelessWidget {
         .substring(0, messageItem.name!.length >= 2 ? 2 : 1)
         .toUpperCase();
 
-    return getChat(itemAvatarName, isMy, isMultiple);
+    return getChat(itemAvatarName, isMy, isMultiple, context, isWithdraw);
   }
 
-  Widget getChat(String avatarName, bool isMy, bool isMultiple) {
+  Widget getChat(String avatarName, bool isMy, bool isMultiple,
+      BuildContext context, Rx<bool> isWithdraw) {
+    return Obx(() {
+      List<Widget> children = [];
+      if (isWithdraw.value) {
+        children.add(Container(
+          padding: const EdgeInsets.all(10),
+          child:
+              const Text("您撤回了一条信息", style: TextStyle(color: Colors.black54)),
+        ));
+      } else {
+        children.add(_getAvatar(isMy, isMultiple, avatarName));
+        children.add(_getChat(isMy, isMultiple, context, isWithdraw));
+      }
+
+      return Row(
+        textDirection: isMy ? TextDirection.rtl : TextDirection.ltr,
+        mainAxisAlignment: isWithdraw.value
+            ? MainAxisAlignment.center
+            : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      );
+    });
+  }
+
+  Widget _getAvatar(bool isMy, bool isMultiple, String avatarName) {
     var targetName = targetResp?.name ?? "";
-    return Row(
-      textDirection: isMy ? TextDirection.rtl : TextDirection.ltr,
+    String name = !isMy && isMultiple
+        ? targetName.substring(0, targetName.length >= 2 ? 2 : 1).toUpperCase()
+        : avatarName;
+    return TextAvatar(name);
+  }
+
+  Widget _getChat(
+      bool isMy, bool isMultiple, BuildContext context, Rx<bool> isWithdraw) {
+    List<Widget> content = <Widget>[];
+    if (isMultiple && !isMy) {
+      var targetName = targetResp?.name ?? "";
+      content.add(
+        Container(padding: const EdgeInsets.fromLTRB(0, 10, 0, 0)),
+      );
+      content.add(Text(targetName));
+    }
+
+    // 添加长按手势
+    var key = GlobalKey();
+    var chat = GestureDetector(
+      onLongPress: () {
+        if (!isMy) return;
+        Navigator.push(
+            context,
+            NNPopupRoute(
+                onClick: () {
+                  Navigator.of(context).pop();
+                },
+                child: ChatFunc(messageDetail, isWithdraw)));
+      },
+      child: Container(
+          key: key,
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+          child: _getMessage()),
+    );
+    content.add(chat);
+
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        isMy
-            ? TextAvatar(avatarName)
-            : isMultiple
-                ? TextAvatar(targetName
-                    .substring(0, targetName.length >= 2 ? 2 : 1)
-                    .toUpperCase())
-                : TextAvatar(avatarName),
-        isMy
-            ? Container(
-                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                child: _getMessage())
-            : isMultiple
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0)),
-                      Text(targetName),
-                      Container(
-                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                          child: _getMessage())
-                    ],
-                  )
-                : Container(
-                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    child: _getMessage()),
-      ],
+      children: content,
     );
   }
 
@@ -79,7 +120,11 @@ class ChatMessageDetail extends StatelessWidget {
     switch (messageType) {
       case MessageType.text:
       case MessageType.unknown:
-        return TextMessage(messageDetail.msgBody);
+        return TextMessage(
+            messageDetail.msgBody,
+            messageDetail.fromId == userInfo.id
+                ? TextDirection.rtl
+                : TextDirection.ltr);
     }
   }
 }

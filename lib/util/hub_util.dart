@@ -13,7 +13,7 @@ import 'hive_util.dart';
 
 enum ReceiveEvent { RecvMsg }
 
-enum SendEvent { TokenAuth, GetChats, SendMsg, GetPersons }
+enum SendEvent { TokenAuth, GetChats, SendMsg, GetPersons, RecallMsg }
 
 class HubUtil {
   HubUtil._();
@@ -53,15 +53,24 @@ class HubUtil {
     return await _connServer.invoke(SendEvent.GetChats.name);
   }
 
+  Future<dynamic> recallMsg(int id) async {
+    return await _connServer.invoke(SendEvent.RecallMsg.name, args: [
+      {
+        "ids": ["$id"]
+      }
+    ]);
+  }
+
   Future<List<TargetResp>> getPersons(int id, int limit, int offset) async {
     Map params = {"cohortId": "$id", "limit": limit, "offset": offset};
-    dynamic res = await _connServer.invoke(SendEvent.GetPersons.name, args: [params]);
+    dynamic res =
+        await _connServer.invoke(SendEvent.GetPersons.name, args: [params]);
 
     ApiResp apiResp = ApiResp.fromMap(res);
     var targetList = apiResp.data["result"];
 
     List<TargetResp> temp = [];
-    for(var target in targetList){
+    for (var target in targetList) {
       var targetResp = TargetResp.fromMap(target);
       temp.add(targetResp);
     }
