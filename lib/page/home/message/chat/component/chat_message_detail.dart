@@ -13,7 +13,7 @@ import '../../../../../model/db_model.dart';
 enum Direction { leftStart, rightStart }
 
 class ChatMessageDetail extends StatelessWidget {
-  final MessageItem messageItem;
+  final TargetRelation messageItem;
   final MessageDetail messageDetail;
   final TargetResp? targetResp;
 

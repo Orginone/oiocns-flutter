@@ -14,13 +14,115 @@ part of 'db_model.dart';
 
 //  To use these SqfEntity classes do following:
 //  - import model.dart into where to use
-//  - start typing ex:MessageDetail.select()... (add a few filters with fluent methods)...(add orderBy/orderBydesc if you want)...
+//  - start typing ex:User.select()... (add a few filters with fluent methods)...(add orderBy/orderBydesc if you want)...
 //  - and then just put end of filters / or end of only select()  toSingle() / or toList()
 //  - you can select one or return List<yourObject> by your filters and orders
 //  - also you can batch update or batch delete by using delete/update methods instead of tosingle/tolist methods
 //    Enjoy.. Huseyin Tokpunar
 
 // BEGIN TABLES
+// User TABLE
+class TableUser extends SqfEntityTableBase {
+  TableUser() {
+    // declare properties of EntityTable
+    tableName = 'user';
+    primaryKeyName = 'account';
+    primaryKeyType = PrimaryKeyType.text;
+    useSoftDeleting = false;
+    // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
+
+    // declare fields
+    fields = [
+      SqfEntityFieldBase('userName', DbType.text),
+      SqfEntityFieldBase('motto', DbType.text),
+    ];
+    super.init();
+  }
+  static SqfEntityTableBase? _instance;
+  static SqfEntityTableBase get getInstance {
+    return _instance = _instance ?? TableUser();
+  }
+}
+
+// UserSpaceRelation TABLE
+class TableUserSpaceRelation extends SqfEntityTableBase {
+  TableUserSpaceRelation() {
+    // declare properties of EntityTable
+    tableName = 'userSpaceRelation';
+
+    useSoftDeleting = false;
+    // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
+
+    // declare fields
+    fields = [
+      SqfEntityFieldBase('account', DbType.text, isPrimaryKeyField: true),
+      SqfEntityFieldBase('targetId', DbType.integer, isPrimaryKeyField: true),
+      SqfEntityFieldBase('name', DbType.text),
+      SqfEntityFieldBase('isExpand', DbType.bool),
+    ];
+    super.init();
+  }
+  static SqfEntityTableBase? _instance;
+  static SqfEntityTableBase get getInstance {
+    return _instance = _instance ?? TableUserSpaceRelation();
+  }
+}
+
+// TargetRelation TABLE
+class TableTargetRelation extends SqfEntityTableBase {
+  TableTargetRelation() {
+    // declare properties of EntityTable
+    tableName = 'targetRelation';
+
+    useSoftDeleting = false;
+    // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
+
+    // declare fields
+    fields = [
+      SqfEntityFieldBase('activeTargetId', DbType.integer,
+          isPrimaryKeyField: true, isIndexGroup: 1),
+      SqfEntityFieldBase('passiveTargetId', DbType.integer,
+          isPrimaryKeyField: true, isIndexGroup: 1),
+      SqfEntityFieldBase('name', DbType.text),
+      SqfEntityFieldBase('label', DbType.text),
+      SqfEntityFieldBase('remark', DbType.text),
+      SqfEntityFieldBase('typeName', DbType.text),
+      SqfEntityFieldBase('priority', DbType.integer),
+    ];
+    super.init();
+  }
+  static SqfEntityTableBase? _instance;
+  static SqfEntityTableBase get getInstance {
+    return _instance = _instance ?? TableTargetRelation();
+  }
+}
+
+// Target TABLE
+class TableTarget extends SqfEntityTableBase {
+  TableTarget() {
+    // declare properties of EntityTable
+    tableName = 'target';
+    primaryKeyName = 'id';
+    primaryKeyType = PrimaryKeyType.integer_unique;
+    useSoftDeleting = false;
+    // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
+
+    // declare fields
+    fields = [
+      SqfEntityFieldBase('code', DbType.text),
+      SqfEntityFieldBase('name', DbType.text),
+      SqfEntityFieldBase('typeName', DbType.text),
+      SqfEntityFieldBase('belongId', DbType.integer),
+      SqfEntityFieldBase('thingId', DbType.integer),
+    ];
+    super.init();
+  }
+  static SqfEntityTableBase? _instance;
+  static SqfEntityTableBase get getInstance {
+    return _instance = _instance ?? TableTarget();
+  }
+}
+
 // MessageDetail TABLE
 class TableMessageDetail extends SqfEntityTableBase {
   TableMessageDetail() {
@@ -58,61 +160,6 @@ class TableMessageDetail extends SqfEntityTableBase {
     return _instance = _instance ?? TableMessageDetail();
   }
 }
-
-// MessageGroup TABLE
-class TableMessageGroup extends SqfEntityTableBase {
-  TableMessageGroup() {
-    // declare properties of EntityTable
-    tableName = 'messageGroup';
-    primaryKeyName = 'seqId';
-    primaryKeyType = PrimaryKeyType.integer_auto_incremental;
-    useSoftDeleting = false;
-    // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
-
-    // declare fields
-    fields = [
-      SqfEntityFieldBase('account', DbType.text, isIndex: true),
-      SqfEntityFieldBase('id', DbType.integer),
-      SqfEntityFieldBase('name', DbType.text),
-      SqfEntityFieldBase('isExpand', DbType.bool),
-    ];
-    super.init();
-  }
-  static SqfEntityTableBase? _instance;
-  static SqfEntityTableBase get getInstance {
-    return _instance = _instance ?? TableMessageGroup();
-  }
-}
-
-// MessageItem TABLE
-class TableMessageItem extends SqfEntityTableBase {
-  TableMessageItem() {
-    // declare properties of EntityTable
-    tableName = 'messageItem';
-    primaryKeyName = 'seqId';
-    primaryKeyType = PrimaryKeyType.integer_auto_incremental;
-    useSoftDeleting = false;
-    // when useSoftDeleting is true, creates a field named 'isDeleted' on the table, and set to '1' this field when item deleted (does not hard delete)
-
-    // declare fields
-    fields = [
-      SqfEntityFieldBase('account', DbType.text, isIndex: true),
-      SqfEntityFieldBase('id', DbType.integer),
-      SqfEntityFieldBase('name', DbType.text),
-      SqfEntityFieldBase('label', DbType.text),
-      SqfEntityFieldBase('remark', DbType.text),
-      SqfEntityFieldBase('typeName', DbType.text),
-      SqfEntityFieldBase('msgTime', DbType.datetime,
-          minValue: DateTime.parse('1900-01-01')),
-      SqfEntityFieldBase('msgGroupId', DbType.integer),
-    ];
-    super.init();
-  }
-  static SqfEntityTableBase? _instance;
-  static SqfEntityTableBase get getInstance {
-    return _instance = _instance ?? TableMessageItem();
-  }
-}
 // END TABLES
 
 // BEGIN SEQUENCES
@@ -144,9 +191,11 @@ class DbModel extends SqfEntityModelProvider {
     preSaveAction = dbModel.preSaveAction;
     logFunction = dbModel.logFunction;
     databaseTables = [
+      TableUser.getInstance,
+      TableUserSpaceRelation.getInstance,
+      TableTargetRelation.getInstance,
+      TableTarget.getInstance,
       TableMessageDetail.getInstance,
-      TableMessageGroup.getInstance,
-      TableMessageItem.getInstance,
     ];
 
     sequences = [
@@ -166,6 +215,3336 @@ class DbModel extends SqfEntityModelProvider {
 // END DATABASE MODEL
 
 // BEGIN ENTITIES
+// region User
+class User extends TableBase {
+  User({this.account, this.userName, this.motto}) {
+    _setDefaultValues();
+    softDeleteActivated = false;
+  }
+  User.withFields(this.account, this.userName, this.motto) {
+    _setDefaultValues();
+  }
+  User.withId(this.account, this.userName, this.motto) {
+    _setDefaultValues();
+  }
+  // fromMap v2.0
+  User.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
+    if (setDefaultValues) {
+      _setDefaultValues();
+    }
+    account = o['account'].toString();
+    if (o['userName'] != null) {
+      userName = o['userName'].toString();
+    }
+    if (o['motto'] != null) {
+      motto = o['motto'].toString();
+    }
+
+    isSaved = true;
+  }
+  // FIELDS (User)
+  String? account;
+  String? userName;
+  String? motto;
+  bool? isSaved;
+  // end FIELDS (User)
+
+  static const bool _softDeleteActivated = false;
+  UserManager? __mnUser;
+
+  UserManager get _mnUser {
+    return __mnUser = __mnUser ?? UserManager();
+  }
+
+  // METHODS
+  @override
+  Map<String, dynamic> toMap(
+      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+    final map = <String, dynamic>{};
+    map['account'] = account;
+    if (userName != null || !forView) {
+      map['userName'] = userName;
+    }
+    if (motto != null || !forView) {
+      map['motto'] = motto;
+    }
+
+    return map;
+  }
+
+  @override
+  Future<Map<String, dynamic>> toMapWithChildren(
+      [bool forQuery = false,
+      bool forJson = false,
+      bool forView = false]) async {
+    final map = <String, dynamic>{};
+    map['account'] = account;
+    if (userName != null || !forView) {
+      map['userName'] = userName;
+    }
+    if (motto != null || !forView) {
+      map['motto'] = motto;
+    }
+
+    return map;
+  }
+
+  /// This method returns Json String [User]
+  @override
+  String toJson() {
+    return json.encode(toMap(forJson: true));
+  }
+
+  /// This method returns Json String [User]
+  @override
+  Future<String> toJsonWithChilds() async {
+    return json.encode(await toMapWithChildren(false, true));
+  }
+
+  @override
+  List<dynamic> toArgs() {
+    return [account, userName, motto];
+  }
+
+  @override
+  List<dynamic> toArgsWithIds() {
+    return [account, userName, motto];
+  }
+
+  static Future<List<User>?> fromWebUrl(Uri uri,
+      {Map<String, String>? headers}) async {
+    try {
+      final response = await http.get(uri, headers: headers);
+      return await fromJson(response.body);
+    } catch (e) {
+      debugPrint(
+          'SQFENTITY ERROR User.fromWebUrl: ErrorMessage: ${e.toString()}');
+      return null;
+    }
+  }
+
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
+  }
+
+  static Future<List<User>> fromJson(String jsonBody) async {
+    final Iterable list = await json.decode(jsonBody) as Iterable;
+    var objList = <User>[];
+    try {
+      objList = list
+          .map((user) => User.fromMap(user as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      debugPrint(
+          'SQFENTITY ERROR User.fromJson: ErrorMessage: ${e.toString()}');
+    }
+    return objList;
+  }
+
+  static Future<List<User>> fromMapList(List<dynamic> data,
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields,
+      bool setDefaultValues = true}) async {
+    final List<User> objList = <User>[];
+    loadedFields = loadedFields ?? [];
+    for (final map in data) {
+      final obj = User.fromMap(map as Map<String, dynamic>,
+          setDefaultValues: setDefaultValues);
+
+      objList.add(obj);
+    }
+    return objList;
+  }
+
+  /// returns User by ID if exist, otherwise returns null
+  /// Primary Keys: String? account
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: getById(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns>returns [User] if exist, otherwise returns null
+  Future<User?> getById(String? account,
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    if (account == null) {
+      return null;
+    }
+    User? obj;
+    final data = await _mnUser.getById([account]);
+    if (data.length != 0) {
+      obj = User.fromMap(data[0] as Map<String, dynamic>);
+    } else {
+      obj = null;
+    }
+    return obj;
+  }
+
+  /// Saves the (User) object. If the Primary Key (account) field is null, returns Error.
+  /// INSERTS (If not exist) OR REPLACES (If exist) data while Primary Key is not null.
+  /// Call the saveAs() method if you do not want to save it when there is another row with the same account
+  /// <returns>Returns BoolResult
+  @override
+  Future<BoolResult> save({bool ignoreBatch = true}) async {
+    final result = BoolResult(success: false);
+    try {
+      await _mnUser.rawInsert(
+          'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO user (account, userName, motto)  VALUES (?,?,?)',
+          toArgsWithIds(),
+          ignoreBatch);
+      result.success = true;
+      isSaved = true;
+    } catch (e) {
+      result.errorMessage = e.toString();
+    }
+
+    saveResult = result;
+    return result;
+  }
+
+  /// saveAll method saves the sent List<User> as a bulk in one transaction
+  /// Returns a <List<BoolResult>>
+  static Future<List<dynamic>> saveAll(List<User> users,
+      {bool? exclusive, bool? noResult, bool? continueOnError}) async {
+    List<dynamic>? result = [];
+    // If there is no open transaction, start one
+    final isStartedBatch = await DbModel().batchStart();
+    for (final obj in users) {
+      await obj.save();
+    }
+    if (!isStartedBatch) {
+      result = await DbModel().batchCommit(
+          exclusive: exclusive,
+          noResult: noResult,
+          continueOnError: continueOnError);
+    }
+    return result!;
+  }
+
+  /// Updates if the record exists, otherwise adds a new row
+  /// <returns>Returns 1
+  @override
+  Future<int?> upsert({bool ignoreBatch = true}) async {
+    try {
+      final result = await _mnUser.rawInsert(
+          'INSERT OR REPLACE INTO user (account, userName, motto)  VALUES (?,?,?)',
+          [account, userName, motto],
+          ignoreBatch);
+      if (result! > 0) {
+        saveResult = BoolResult(
+            success: true,
+            successMessage: 'User account=$account updated successfully');
+      } else {
+        saveResult = BoolResult(
+            success: false,
+            errorMessage: 'User account=$account did not update');
+      }
+      return 1;
+    } catch (e) {
+      saveResult = BoolResult(
+          success: false,
+          errorMessage: 'User Save failed. Error: ${e.toString()}');
+      return null;
+    }
+  }
+
+  /// Deletes User
+
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
+  Future<BoolResult> delete([bool hardDelete = false]) async {
+    debugPrint('SQFENTITIY: delete User invoked (account=$account)');
+    if (!_softDeleteActivated || hardDelete) {
+      return _mnUser.delete(
+          QueryParams(whereString: 'account=?', whereArguments: [account]));
+    } else {
+      return _mnUser.updateBatch(
+          QueryParams(whereString: 'account=?', whereArguments: [account]),
+          {'isDeleted': 1});
+    }
+  }
+
+  @override
+  Future<BoolResult> recover([bool recoverChilds = true]) {
+    // not implemented because:
+    final msg =
+        'set useSoftDeleting:true in the table definition of [User] to use this feature';
+    throw UnimplementedError(msg);
+  }
+
+  @override
+  UserFilterBuilder select(
+      {List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return UserFilterBuilder(this, getIsDeleted)
+      ..qparams.selectColumns = columnsToSelect;
+  }
+
+  @override
+  UserFilterBuilder distinct(
+      {List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return UserFilterBuilder(this, getIsDeleted)
+      ..qparams.selectColumns = columnsToSelect
+      ..qparams.distinct = true;
+  }
+
+  void _setDefaultValues() {
+    isSaved = false;
+  }
+
+  @override
+  void rollbackPk() {
+    if (isInsert == true) {
+      account = null;
+    }
+  }
+
+  // END METHODS
+  // BEGIN CUSTOM CODE
+  /*
+      you can define customCode property of your SqfEntityTable constant. For example:
+      const tablePerson = SqfEntityTable(
+      tableName: 'person',
+      primaryKeyName: 'id',
+      primaryKeyType: PrimaryKeyType.integer_auto_incremental,
+      fields: [
+        SqfEntityField('firstName', DbType.text),
+        SqfEntityField('lastName', DbType.text),
+      ],
+      customCode: '''
+       String fullName()
+       { 
+         return '$firstName $lastName';
+       }
+      ''');
+     */
+  // END CUSTOM CODE
+}
+// endregion user
+
+// region UserField
+class UserField extends FilterBase {
+  UserField(UserFilterBuilder userFB) : super(userFB);
+
+  @override
+  UserFilterBuilder equals(dynamic pValue) {
+    return super.equals(pValue) as UserFilterBuilder;
+  }
+
+  @override
+  UserFilterBuilder equalsOrNull(dynamic pValue) {
+    return super.equalsOrNull(pValue) as UserFilterBuilder;
+  }
+
+  @override
+  UserFilterBuilder isNull() {
+    return super.isNull() as UserFilterBuilder;
+  }
+
+  @override
+  UserFilterBuilder contains(dynamic pValue) {
+    return super.contains(pValue) as UserFilterBuilder;
+  }
+
+  @override
+  UserFilterBuilder startsWith(dynamic pValue) {
+    return super.startsWith(pValue) as UserFilterBuilder;
+  }
+
+  @override
+  UserFilterBuilder endsWith(dynamic pValue) {
+    return super.endsWith(pValue) as UserFilterBuilder;
+  }
+
+  @override
+  UserFilterBuilder between(dynamic pFirst, dynamic pLast) {
+    return super.between(pFirst, pLast) as UserFilterBuilder;
+  }
+
+  @override
+  UserFilterBuilder greaterThan(dynamic pValue) {
+    return super.greaterThan(pValue) as UserFilterBuilder;
+  }
+
+  @override
+  UserFilterBuilder lessThan(dynamic pValue) {
+    return super.lessThan(pValue) as UserFilterBuilder;
+  }
+
+  @override
+  UserFilterBuilder greaterThanOrEquals(dynamic pValue) {
+    return super.greaterThanOrEquals(pValue) as UserFilterBuilder;
+  }
+
+  @override
+  UserFilterBuilder lessThanOrEquals(dynamic pValue) {
+    return super.lessThanOrEquals(pValue) as UserFilterBuilder;
+  }
+
+  @override
+  UserFilterBuilder inValues(dynamic pValue) {
+    return super.inValues(pValue) as UserFilterBuilder;
+  }
+
+  @override
+  UserField get not {
+    return super.not as UserField;
+  }
+}
+// endregion UserField
+
+// region UserFilterBuilder
+class UserFilterBuilder extends ConjunctionBase {
+  UserFilterBuilder(User obj, bool? getIsDeleted) : super(obj, getIsDeleted) {
+    _mnUser = obj._mnUser;
+    _softDeleteActivated = obj.softDeleteActivated;
+  }
+
+  bool _softDeleteActivated = false;
+  UserManager? _mnUser;
+
+  /// put the sql keyword 'AND'
+  @override
+  UserFilterBuilder get and {
+    super.and;
+    return this;
+  }
+
+  /// put the sql keyword 'OR'
+  @override
+  UserFilterBuilder get or {
+    super.or;
+    return this;
+  }
+
+  /// open parentheses
+  @override
+  UserFilterBuilder get startBlock {
+    super.startBlock;
+    return this;
+  }
+
+  /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  @override
+  UserFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
+    super.where(whereCriteria, parameterValue: parameterValue);
+    return this;
+  }
+
+  /// page = page number,
+  /// pagesize = row(s) per page
+  @override
+  UserFilterBuilder page(int page, int pagesize) {
+    super.page(page, pagesize);
+    return this;
+  }
+
+  /// int count = LIMIT
+  @override
+  UserFilterBuilder top(int count) {
+    super.top(count);
+    return this;
+  }
+
+  /// close parentheses
+  @override
+  UserFilterBuilder get endBlock {
+    super.endBlock;
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  /// Example 1: argFields='name, date'
+  /// Example 2: argFields = ['name', 'date']
+  @override
+  UserFilterBuilder orderBy(dynamic argFields) {
+    super.orderBy(argFields);
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  /// Example 1: argFields='field1, field2'
+  /// Example 2: argFields = ['field1', 'field2']
+  @override
+  UserFilterBuilder orderByDesc(dynamic argFields) {
+    super.orderByDesc(argFields);
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  /// Example 1: argFields='field1, field2'
+  /// Example 2: argFields = ['field1', 'field2']
+  @override
+  UserFilterBuilder groupBy(dynamic argFields) {
+    super.groupBy(argFields);
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  /// Example 1: argFields='name, date'
+  /// Example 2: argFields = ['name', 'date']
+  @override
+  UserFilterBuilder having(dynamic argFields) {
+    super.having(argFields);
+    return this;
+  }
+
+  UserField _setField(UserField? field, String colName, DbType dbtype) {
+    return UserField(this)
+      ..param = DbParameter(
+          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
+  }
+
+  UserField? _account;
+  UserField get account {
+    return _account = _setField(_account, 'account', DbType.integer);
+  }
+
+  UserField? _userName;
+  UserField get userName {
+    return _userName = _setField(_userName, 'userName', DbType.text);
+  }
+
+  UserField? _motto;
+  UserField get motto {
+    return _motto = _setField(_motto, 'motto', DbType.text);
+  }
+
+  /// Deletes List<User> bulk by query
+  ///
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
+  Future<BoolResult> delete([bool hardDelete = false]) async {
+    buildParameters();
+    var r = BoolResult(success: false);
+
+    if (_softDeleteActivated && !hardDelete) {
+      r = await _mnUser!.updateBatch(qparams, {'isDeleted': 1});
+    } else {
+      r = await _mnUser!.delete(qparams);
+    }
+    return r;
+  }
+
+  /// using:
+  /// update({'fieldName': Value})
+  /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  @override
+  Future<BoolResult> update(Map<String, dynamic> values) {
+    buildParameters();
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
+      qparams.whereString =
+          'account IN (SELECT account from user ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+    }
+    return _mnUser!.updateBatch(qparams, values);
+  }
+
+  /// This method always returns [User] Obj if exist, otherwise returns null
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> User?
+  @override
+  Future<User?> toSingle(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    buildParameters(pSize: 1);
+    final objFuture = _mnUser!.toList(qparams);
+    final data = await objFuture;
+    User? obj;
+    if (data.isNotEmpty) {
+      obj = User.fromMap(data[0] as Map<String, dynamic>);
+    } else {
+      obj = null;
+    }
+    return obj;
+  }
+
+  /// This method always returns [User]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> User?
+  @override
+  Future<User> toSingleOrDefault(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    return await toSingle(
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields) ??
+        User();
+  }
+
+  /// This method returns int. [User]
+  /// <returns>int
+  @override
+  Future<int> toCount([VoidCallback Function(int c)? userCount]) async {
+    buildParameters();
+    qparams.selectColumns = ['COUNT(1) AS CNT'];
+    final usersFuture = await _mnUser!.toList(qparams);
+    final int count = usersFuture[0]['CNT'] as int;
+    if (userCount != null) {
+      userCount(count);
+    }
+    return count;
+  }
+
+  /// This method returns List<User> [User]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toList(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns>List<User>
+  @override
+  Future<List<User>> toList(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    final data = await toMapList();
+    final List<User> usersData = await User.fromMapList(data,
+        preload: preload,
+        preloadFields: preloadFields,
+        loadParents: loadParents,
+        loadedFields: loadedFields,
+        setDefaultValues: qparams.selectColumns == null);
+    return usersData;
+  }
+
+  /// This method returns Json String [User]
+  @override
+  Future<String> toJson() async {
+    final list = <dynamic>[];
+    final data = await toList();
+    for (var o in data) {
+      list.add(o.toMap(forJson: true));
+    }
+    return json.encode(list);
+  }
+
+  /// This method returns Json String. [User]
+  @override
+  Future<String> toJsonWithChilds() async {
+    final list = <dynamic>[];
+    final data = await toList();
+    for (var o in data) {
+      list.add(await o.toMapWithChildren(false, true));
+    }
+    return json.encode(list);
+  }
+
+  /// This method returns List<dynamic>. [User]
+  /// <returns>List<dynamic>
+  @override
+  Future<List<dynamic>> toMapList() async {
+    buildParameters();
+    return await _mnUser!.toList(qparams);
+  }
+
+  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [User]
+  /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
+  /// <returns>List<String>
+  @override
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
+    final Map<String, dynamic> _retVal = <String, dynamic>{};
+    if (buildParams) {
+      buildParameters();
+    }
+    _retVal['sql'] = 'SELECT `account` FROM user WHERE ${qparams.whereString}';
+    _retVal['args'] = qparams.whereArguments;
+    return _retVal;
+  }
+
+  /// This method returns Primary Key List<String>.
+  /// <returns>List<String>
+  @override
+  Future<List<String>> toListPrimaryKey([bool buildParams = true]) async {
+    if (buildParams) {
+      buildParameters();
+    }
+    final List<String> accountData = <String>[];
+    qparams.selectColumns = ['account'];
+    final accountFuture = await _mnUser!.toList(qparams);
+
+    final int count = accountFuture.length;
+    for (int i = 0; i < count; i++) {
+      accountData.add(accountFuture[i]['account'] as String);
+    }
+    return accountData;
+  }
+
+  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [User]
+  /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  @override
+  Future<List<dynamic>> toListObject() async {
+    buildParameters();
+
+    final objectFuture = _mnUser!.toList(qparams);
+
+    final List<dynamic> objectsData = <dynamic>[];
+    final data = await objectFuture;
+    final int count = data.length;
+    for (int i = 0; i < count; i++) {
+      objectsData.add(data[i]);
+    }
+    return objectsData;
+  }
+
+  /// Returns List<String> for selected first column
+  /// Sample usage: await User.select(columnsToSelect: ['columnName']).toListString()
+  @override
+  Future<List<String>> toListString(
+      [VoidCallback Function(List<String> o)? listString]) async {
+    buildParameters();
+
+    final objectFuture = _mnUser!.toList(qparams);
+
+    final List<String> objectsData = <String>[];
+    final data = await objectFuture;
+    final int count = data.length;
+    for (int i = 0; i < count; i++) {
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
+    }
+    if (listString != null) {
+      listString(objectsData);
+    }
+    return objectsData;
+  }
+}
+// endregion UserFilterBuilder
+
+// region UserFields
+class UserFields {
+  static TableField? _fAccount;
+  static TableField get account {
+    return _fAccount =
+        _fAccount ?? SqlSyntax.setField(_fAccount, 'account', DbType.integer);
+  }
+
+  static TableField? _fUserName;
+  static TableField get userName {
+    return _fUserName =
+        _fUserName ?? SqlSyntax.setField(_fUserName, 'userName', DbType.text);
+  }
+
+  static TableField? _fMotto;
+  static TableField get motto {
+    return _fMotto =
+        _fMotto ?? SqlSyntax.setField(_fMotto, 'motto', DbType.text);
+  }
+}
+// endregion UserFields
+
+//region UserManager
+class UserManager extends SqfEntityProvider {
+  UserManager()
+      : super(DbModel(),
+            tableName: _tableName,
+            primaryKeyList: _primaryKeyList,
+            whereStr: _whereStr);
+  static const String _tableName = 'user';
+  static const List<String> _primaryKeyList = ['account'];
+  static const String _whereStr = 'account=?';
+}
+
+//endregion UserManager
+// region UserSpaceRelation
+class UserSpaceRelation extends TableBase {
+  UserSpaceRelation({this.account, this.targetId, this.name, this.isExpand}) {
+    _setDefaultValues();
+    softDeleteActivated = false;
+  }
+  UserSpaceRelation.withFields(
+      this.account, this.targetId, this.name, this.isExpand) {
+    _setDefaultValues();
+  }
+  UserSpaceRelation.withId(
+      this.account, this.targetId, this.name, this.isExpand) {
+    _setDefaultValues();
+  }
+  // fromMap v2.0
+  UserSpaceRelation.fromMap(Map<String, dynamic> o,
+      {bool setDefaultValues = true}) {
+    if (setDefaultValues) {
+      _setDefaultValues();
+    }
+    if (o['account'] != null) {
+      account = o['account'].toString();
+    }
+    if (o['targetId'] != null) {
+      targetId = int.tryParse(o['targetId'].toString());
+    }
+    if (o['name'] != null) {
+      name = o['name'].toString();
+    }
+    if (o['isExpand'] != null) {
+      isExpand =
+          o['isExpand'].toString() == '1' || o['isExpand'].toString() == 'true';
+    }
+
+    isSaved = true;
+  }
+  // FIELDS (UserSpaceRelation)
+  String? account;
+  int? targetId;
+  String? name;
+  bool? isExpand;
+  bool? isSaved;
+  // end FIELDS (UserSpaceRelation)
+
+  static const bool _softDeleteActivated = false;
+  UserSpaceRelationManager? __mnUserSpaceRelation;
+
+  UserSpaceRelationManager get _mnUserSpaceRelation {
+    return __mnUserSpaceRelation =
+        __mnUserSpaceRelation ?? UserSpaceRelationManager();
+  }
+
+  // METHODS
+  @override
+  Map<String, dynamic> toMap(
+      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+    final map = <String, dynamic>{};
+    if (account != null || !forView) {
+      map['account'] = account;
+    }
+    if (targetId != null || !forView) {
+      map['targetId'] = targetId;
+    }
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
+    if (isExpand != null) {
+      map['isExpand'] = forQuery ? (isExpand! ? 1 : 0) : isExpand;
+    } else if (isExpand != null || !forView) {
+      map['isExpand'] = null;
+    }
+
+    return map;
+  }
+
+  @override
+  Future<Map<String, dynamic>> toMapWithChildren(
+      [bool forQuery = false,
+      bool forJson = false,
+      bool forView = false]) async {
+    final map = <String, dynamic>{};
+    if (account != null || !forView) {
+      map['account'] = account;
+    }
+    if (targetId != null || !forView) {
+      map['targetId'] = targetId;
+    }
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
+    if (isExpand != null) {
+      map['isExpand'] = forQuery ? (isExpand! ? 1 : 0) : isExpand;
+    } else if (isExpand != null || !forView) {
+      map['isExpand'] = null;
+    }
+
+    return map;
+  }
+
+  /// This method returns Json String [UserSpaceRelation]
+  @override
+  String toJson() {
+    return json.encode(toMap(forJson: true));
+  }
+
+  /// This method returns Json String [UserSpaceRelation]
+  @override
+  Future<String> toJsonWithChilds() async {
+    return json.encode(await toMapWithChildren(false, true));
+  }
+
+  @override
+  List<dynamic> toArgs() {
+    return [account, targetId, name, isExpand];
+  }
+
+  @override
+  List<dynamic> toArgsWithIds() {
+    return [account, targetId, name, isExpand];
+  }
+
+  static Future<List<UserSpaceRelation>?> fromWebUrl(Uri uri,
+      {Map<String, String>? headers}) async {
+    try {
+      final response = await http.get(uri, headers: headers);
+      return await fromJson(response.body);
+    } catch (e) {
+      debugPrint(
+          'SQFENTITY ERROR UserSpaceRelation.fromWebUrl: ErrorMessage: ${e.toString()}');
+      return null;
+    }
+  }
+
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
+  }
+
+  static Future<List<UserSpaceRelation>> fromJson(String jsonBody) async {
+    final Iterable list = await json.decode(jsonBody) as Iterable;
+    var objList = <UserSpaceRelation>[];
+    try {
+      objList = list
+          .map((userspacerelation) => UserSpaceRelation.fromMap(
+              userspacerelation as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      debugPrint(
+          'SQFENTITY ERROR UserSpaceRelation.fromJson: ErrorMessage: ${e.toString()}');
+    }
+    return objList;
+  }
+
+  static Future<List<UserSpaceRelation>> fromMapList(List<dynamic> data,
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields,
+      bool setDefaultValues = true}) async {
+    final List<UserSpaceRelation> objList = <UserSpaceRelation>[];
+    loadedFields = loadedFields ?? [];
+    for (final map in data) {
+      final obj = UserSpaceRelation.fromMap(map as Map<String, dynamic>,
+          setDefaultValues: setDefaultValues);
+
+      objList.add(obj);
+    }
+    return objList;
+  }
+
+  /// returns UserSpaceRelation by ID if exist, otherwise returns null
+  /// Primary Keys: String? account, int? targetId
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: getById(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns>returns [UserSpaceRelation] if exist, otherwise returns null
+  Future<UserSpaceRelation?> getById(String? account, int? targetId,
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    if (account == null) {
+      return null;
+    }
+    UserSpaceRelation? obj;
+    final data = await _mnUserSpaceRelation.getById([account, targetId]);
+    if (data.length != 0) {
+      obj = UserSpaceRelation.fromMap(data[0] as Map<String, dynamic>);
+    } else {
+      obj = null;
+    }
+    return obj;
+  }
+
+  /// Saves the (UserSpaceRelation) object. If the Primary Key (account) field is null, returns Error.
+  /// INSERTS (If not exist) OR REPLACES (If exist) data while Primary Key is not null.
+  /// Call the saveAs() method if you do not want to save it when there is another row with the same account
+  /// <returns>Returns BoolResult
+  @override
+  Future<BoolResult> save({bool ignoreBatch = true}) async {
+    final result = BoolResult(success: false);
+    try {
+      await _mnUserSpaceRelation.rawInsert(
+          'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO userSpaceRelation ( account, targetId, name, isExpand)  VALUES (?,?,?,?)',
+          toArgsWithIds(),
+          ignoreBatch);
+      result.success = true;
+      isSaved = true;
+    } catch (e) {
+      result.errorMessage = e.toString();
+    }
+
+    saveResult = result;
+    return result;
+  }
+
+  /// saveAll method saves the sent List<UserSpaceRelation> as a bulk in one transaction
+  /// Returns a <List<BoolResult>>
+  static Future<List<dynamic>> saveAll(
+      List<UserSpaceRelation> userspacerelations,
+      {bool? exclusive,
+      bool? noResult,
+      bool? continueOnError}) async {
+    List<dynamic>? result = [];
+    // If there is no open transaction, start one
+    final isStartedBatch = await DbModel().batchStart();
+    for (final obj in userspacerelations) {
+      await obj.save();
+    }
+    if (!isStartedBatch) {
+      result = await DbModel().batchCommit(
+          exclusive: exclusive,
+          noResult: noResult,
+          continueOnError: continueOnError);
+      for (int i = 0; i < userspacerelations.length; i++) {
+        if (userspacerelations[i].account == null) {
+          userspacerelations[i].account = result![i] as String;
+        }
+      }
+    }
+    return result!;
+  }
+
+  /// Updates if the record exists, otherwise adds a new row
+  /// <returns>Returns account
+  @override
+  Future<int?> upsert({bool ignoreBatch = true}) async {
+    try {
+      final result = await _mnUserSpaceRelation.rawInsert(
+          'INSERT OR REPLACE INTO userSpaceRelation ( account, targetId, name, isExpand)  VALUES (?,?,?,?)',
+          [account, targetId, name, isExpand],
+          ignoreBatch);
+      if (result! > 0) {
+        saveResult = BoolResult(
+            success: true,
+            successMessage:
+                'UserSpaceRelation account=$account updated successfully');
+      } else {
+        saveResult = BoolResult(
+            success: false,
+            errorMessage: 'UserSpaceRelation account=$account did not update');
+      }
+      return 1;
+    } catch (e) {
+      saveResult = BoolResult(
+          success: false,
+          errorMessage:
+              'UserSpaceRelation Save failed. Error: ${e.toString()}');
+      return null;
+    }
+  }
+
+  /// inserts or replaces the sent List<<UserSpaceRelation>> as a bulk in one transaction.
+  /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
+  /// Returns a BoolCommitResult
+  @override
+  Future<BoolCommitResult> upsertAll(List<UserSpaceRelation> userspacerelations,
+      {bool? exclusive, bool? noResult, bool? continueOnError}) async {
+    final results = await _mnUserSpaceRelation.rawInsertAll(
+        'INSERT OR REPLACE INTO userSpaceRelation ( account, targetId, name, isExpand)  VALUES (?,?,?,?)',
+        userspacerelations,
+        exclusive: exclusive,
+        noResult: noResult,
+        continueOnError: continueOnError);
+    return results;
+  }
+
+  /// Deletes UserSpaceRelation
+
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
+  Future<BoolResult> delete([bool hardDelete = false]) async {
+    debugPrint(
+        'SQFENTITIY: delete UserSpaceRelation invoked (account=$account)');
+    if (!_softDeleteActivated || hardDelete) {
+      return _mnUserSpaceRelation.delete(QueryParams(
+          whereString: 'account=? AND targetId=?',
+          whereArguments: [account, targetId]));
+    } else {
+      return _mnUserSpaceRelation.updateBatch(
+          QueryParams(
+              whereString: 'account=? AND targetId=?',
+              whereArguments: [account, targetId]),
+          {'isDeleted': 1});
+    }
+  }
+
+  @override
+  Future<BoolResult> recover([bool recoverChilds = true]) {
+    // not implemented because:
+    final msg =
+        'set useSoftDeleting:true in the table definition of [UserSpaceRelation] to use this feature';
+    throw UnimplementedError(msg);
+  }
+
+  @override
+  UserSpaceRelationFilterBuilder select(
+      {List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return UserSpaceRelationFilterBuilder(this, getIsDeleted)
+      ..qparams.selectColumns = columnsToSelect;
+  }
+
+  @override
+  UserSpaceRelationFilterBuilder distinct(
+      {List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return UserSpaceRelationFilterBuilder(this, getIsDeleted)
+      ..qparams.selectColumns = columnsToSelect
+      ..qparams.distinct = true;
+  }
+
+  void _setDefaultValues() {
+    isSaved = false;
+  }
+
+  @override
+  void rollbackPk() {
+    if (isInsert == true) {
+      account = null;
+      targetId = null;
+    }
+  }
+
+  // END METHODS
+  // BEGIN CUSTOM CODE
+  /*
+      you can define customCode property of your SqfEntityTable constant. For example:
+      const tablePerson = SqfEntityTable(
+      tableName: 'person',
+      primaryKeyName: 'id',
+      primaryKeyType: PrimaryKeyType.integer_auto_incremental,
+      fields: [
+        SqfEntityField('firstName', DbType.text),
+        SqfEntityField('lastName', DbType.text),
+      ],
+      customCode: '''
+       String fullName()
+       { 
+         return '$firstName $lastName';
+       }
+      ''');
+     */
+  // END CUSTOM CODE
+}
+// endregion userspacerelation
+
+// region UserSpaceRelationField
+class UserSpaceRelationField extends FilterBase {
+  UserSpaceRelationField(UserSpaceRelationFilterBuilder userspacerelationFB)
+      : super(userspacerelationFB);
+
+  @override
+  UserSpaceRelationFilterBuilder equals(dynamic pValue) {
+    return super.equals(pValue) as UserSpaceRelationFilterBuilder;
+  }
+
+  @override
+  UserSpaceRelationFilterBuilder equalsOrNull(dynamic pValue) {
+    return super.equalsOrNull(pValue) as UserSpaceRelationFilterBuilder;
+  }
+
+  @override
+  UserSpaceRelationFilterBuilder isNull() {
+    return super.isNull() as UserSpaceRelationFilterBuilder;
+  }
+
+  @override
+  UserSpaceRelationFilterBuilder contains(dynamic pValue) {
+    return super.contains(pValue) as UserSpaceRelationFilterBuilder;
+  }
+
+  @override
+  UserSpaceRelationFilterBuilder startsWith(dynamic pValue) {
+    return super.startsWith(pValue) as UserSpaceRelationFilterBuilder;
+  }
+
+  @override
+  UserSpaceRelationFilterBuilder endsWith(dynamic pValue) {
+    return super.endsWith(pValue) as UserSpaceRelationFilterBuilder;
+  }
+
+  @override
+  UserSpaceRelationFilterBuilder between(dynamic pFirst, dynamic pLast) {
+    return super.between(pFirst, pLast) as UserSpaceRelationFilterBuilder;
+  }
+
+  @override
+  UserSpaceRelationFilterBuilder greaterThan(dynamic pValue) {
+    return super.greaterThan(pValue) as UserSpaceRelationFilterBuilder;
+  }
+
+  @override
+  UserSpaceRelationFilterBuilder lessThan(dynamic pValue) {
+    return super.lessThan(pValue) as UserSpaceRelationFilterBuilder;
+  }
+
+  @override
+  UserSpaceRelationFilterBuilder greaterThanOrEquals(dynamic pValue) {
+    return super.greaterThanOrEquals(pValue) as UserSpaceRelationFilterBuilder;
+  }
+
+  @override
+  UserSpaceRelationFilterBuilder lessThanOrEquals(dynamic pValue) {
+    return super.lessThanOrEquals(pValue) as UserSpaceRelationFilterBuilder;
+  }
+
+  @override
+  UserSpaceRelationFilterBuilder inValues(dynamic pValue) {
+    return super.inValues(pValue) as UserSpaceRelationFilterBuilder;
+  }
+
+  @override
+  UserSpaceRelationField get not {
+    return super.not as UserSpaceRelationField;
+  }
+}
+// endregion UserSpaceRelationField
+
+// region UserSpaceRelationFilterBuilder
+class UserSpaceRelationFilterBuilder extends ConjunctionBase {
+  UserSpaceRelationFilterBuilder(UserSpaceRelation obj, bool? getIsDeleted)
+      : super(obj, getIsDeleted) {
+    _mnUserSpaceRelation = obj._mnUserSpaceRelation;
+    _softDeleteActivated = obj.softDeleteActivated;
+  }
+
+  bool _softDeleteActivated = false;
+  UserSpaceRelationManager? _mnUserSpaceRelation;
+
+  /// put the sql keyword 'AND'
+  @override
+  UserSpaceRelationFilterBuilder get and {
+    super.and;
+    return this;
+  }
+
+  /// put the sql keyword 'OR'
+  @override
+  UserSpaceRelationFilterBuilder get or {
+    super.or;
+    return this;
+  }
+
+  /// open parentheses
+  @override
+  UserSpaceRelationFilterBuilder get startBlock {
+    super.startBlock;
+    return this;
+  }
+
+  /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  @override
+  UserSpaceRelationFilterBuilder where(String? whereCriteria,
+      {dynamic parameterValue}) {
+    super.where(whereCriteria, parameterValue: parameterValue);
+    return this;
+  }
+
+  /// page = page number,
+  /// pagesize = row(s) per page
+  @override
+  UserSpaceRelationFilterBuilder page(int page, int pagesize) {
+    super.page(page, pagesize);
+    return this;
+  }
+
+  /// int count = LIMIT
+  @override
+  UserSpaceRelationFilterBuilder top(int count) {
+    super.top(count);
+    return this;
+  }
+
+  /// close parentheses
+  @override
+  UserSpaceRelationFilterBuilder get endBlock {
+    super.endBlock;
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  /// Example 1: argFields='name, date'
+  /// Example 2: argFields = ['name', 'date']
+  @override
+  UserSpaceRelationFilterBuilder orderBy(dynamic argFields) {
+    super.orderBy(argFields);
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  /// Example 1: argFields='field1, field2'
+  /// Example 2: argFields = ['field1', 'field2']
+  @override
+  UserSpaceRelationFilterBuilder orderByDesc(dynamic argFields) {
+    super.orderByDesc(argFields);
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  /// Example 1: argFields='field1, field2'
+  /// Example 2: argFields = ['field1', 'field2']
+  @override
+  UserSpaceRelationFilterBuilder groupBy(dynamic argFields) {
+    super.groupBy(argFields);
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  /// Example 1: argFields='name, date'
+  /// Example 2: argFields = ['name', 'date']
+  @override
+  UserSpaceRelationFilterBuilder having(dynamic argFields) {
+    super.having(argFields);
+    return this;
+  }
+
+  UserSpaceRelationField _setField(
+      UserSpaceRelationField? field, String colName, DbType dbtype) {
+    return UserSpaceRelationField(this)
+      ..param = DbParameter(
+          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
+  }
+
+  UserSpaceRelationField? _account;
+  UserSpaceRelationField get account {
+    return _account = _setField(_account, 'account', DbType.text);
+  }
+
+  UserSpaceRelationField? _targetId;
+  UserSpaceRelationField get targetId {
+    return _targetId = _setField(_targetId, 'targetId', DbType.integer);
+  }
+
+  UserSpaceRelationField? _name;
+  UserSpaceRelationField get name {
+    return _name = _setField(_name, 'name', DbType.text);
+  }
+
+  UserSpaceRelationField? _isExpand;
+  UserSpaceRelationField get isExpand {
+    return _isExpand = _setField(_isExpand, 'isExpand', DbType.bool);
+  }
+
+  /// Deletes List<UserSpaceRelation> bulk by query
+  ///
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
+  Future<BoolResult> delete([bool hardDelete = false]) async {
+    buildParameters();
+    var r = BoolResult(success: false);
+
+    if (_softDeleteActivated && !hardDelete) {
+      r = await _mnUserSpaceRelation!.updateBatch(qparams, {'isDeleted': 1});
+    } else {
+      r = await _mnUserSpaceRelation!.delete(qparams);
+    }
+    return r;
+  }
+
+  /// using:
+  /// update({'fieldName': Value})
+  /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  @override
+  Future<BoolResult> update(Map<String, dynamic> values) {
+    buildParameters();
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
+      qparams.whereString =
+          'account IN (SELECT account from userSpaceRelation ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+    }
+    return _mnUserSpaceRelation!.updateBatch(qparams, values);
+  }
+
+  /// This method always returns [UserSpaceRelation] Obj if exist, otherwise returns null
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> UserSpaceRelation?
+  @override
+  Future<UserSpaceRelation?> toSingle(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    buildParameters(pSize: 1);
+    final objFuture = _mnUserSpaceRelation!.toList(qparams);
+    final data = await objFuture;
+    UserSpaceRelation? obj;
+    if (data.isNotEmpty) {
+      obj = UserSpaceRelation.fromMap(data[0] as Map<String, dynamic>);
+    } else {
+      obj = null;
+    }
+    return obj;
+  }
+
+  /// This method always returns [UserSpaceRelation]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> UserSpaceRelation?
+  @override
+  Future<UserSpaceRelation> toSingleOrDefault(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    return await toSingle(
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields) ??
+        UserSpaceRelation();
+  }
+
+  /// This method returns int. [UserSpaceRelation]
+  /// <returns>int
+  @override
+  Future<int> toCount(
+      [VoidCallback Function(int c)? userspacerelationCount]) async {
+    buildParameters();
+    qparams.selectColumns = ['COUNT(1) AS CNT'];
+    final userspacerelationsFuture =
+        await _mnUserSpaceRelation!.toList(qparams);
+    final int count = userspacerelationsFuture[0]['CNT'] as int;
+    if (userspacerelationCount != null) {
+      userspacerelationCount(count);
+    }
+    return count;
+  }
+
+  /// This method returns List<UserSpaceRelation> [UserSpaceRelation]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toList(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns>List<UserSpaceRelation>
+  @override
+  Future<List<UserSpaceRelation>> toList(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    final data = await toMapList();
+    final List<UserSpaceRelation> userspacerelationsData =
+        await UserSpaceRelation.fromMapList(data,
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields,
+            setDefaultValues: qparams.selectColumns == null);
+    return userspacerelationsData;
+  }
+
+  /// This method returns Json String [UserSpaceRelation]
+  @override
+  Future<String> toJson() async {
+    final list = <dynamic>[];
+    final data = await toList();
+    for (var o in data) {
+      list.add(o.toMap(forJson: true));
+    }
+    return json.encode(list);
+  }
+
+  /// This method returns Json String. [UserSpaceRelation]
+  @override
+  Future<String> toJsonWithChilds() async {
+    final list = <dynamic>[];
+    final data = await toList();
+    for (var o in data) {
+      list.add(await o.toMapWithChildren(false, true));
+    }
+    return json.encode(list);
+  }
+
+  /// This method returns List<dynamic>. [UserSpaceRelation]
+  /// <returns>List<dynamic>
+  @override
+  Future<List<dynamic>> toMapList() async {
+    buildParameters();
+    return await _mnUserSpaceRelation!.toList(qparams);
+  }
+
+  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [UserSpaceRelation]
+  /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
+  /// <returns>List<String>
+  @override
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
+    final Map<String, dynamic> _retVal = <String, dynamic>{};
+    if (buildParams) {
+      buildParameters();
+    }
+    _retVal['sql'] =
+        'SELECT `account`targetId` FROM userSpaceRelation WHERE ${qparams.whereString}';
+    _retVal['args'] = qparams.whereArguments;
+    return _retVal;
+  }
+
+  /// This method returns Primary Key List<account,targetId> [UserSpaceRelation]
+  /// <returns>List<account,targetId>
+  @override
+  Future<List<UserSpaceRelation>> toListPrimaryKey(
+      [bool buildParams = true]) async {
+    if (buildParams) {
+      buildParameters();
+    }
+    qparams.selectColumns = ['account', 'targetId'];
+    final userspacerelationFuture = await _mnUserSpaceRelation!.toList(qparams);
+    return await UserSpaceRelation.fromMapList(userspacerelationFuture);
+  }
+
+  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [UserSpaceRelation]
+  /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  @override
+  Future<List<dynamic>> toListObject() async {
+    buildParameters();
+
+    final objectFuture = _mnUserSpaceRelation!.toList(qparams);
+
+    final List<dynamic> objectsData = <dynamic>[];
+    final data = await objectFuture;
+    final int count = data.length;
+    for (int i = 0; i < count; i++) {
+      objectsData.add(data[i]);
+    }
+    return objectsData;
+  }
+
+  /// Returns List<String> for selected first column
+  /// Sample usage: await UserSpaceRelation.select(columnsToSelect: ['columnName']).toListString()
+  @override
+  Future<List<String>> toListString(
+      [VoidCallback Function(List<String> o)? listString]) async {
+    buildParameters();
+
+    final objectFuture = _mnUserSpaceRelation!.toList(qparams);
+
+    final List<String> objectsData = <String>[];
+    final data = await objectFuture;
+    final int count = data.length;
+    for (int i = 0; i < count; i++) {
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
+    }
+    if (listString != null) {
+      listString(objectsData);
+    }
+    return objectsData;
+  }
+}
+// endregion UserSpaceRelationFilterBuilder
+
+// region UserSpaceRelationFields
+class UserSpaceRelationFields {
+  static TableField? _fAccount;
+  static TableField get account {
+    return _fAccount =
+        _fAccount ?? SqlSyntax.setField(_fAccount, 'account', DbType.text);
+  }
+
+  static TableField? _fTargetId;
+  static TableField get targetId {
+    return _fTargetId = _fTargetId ??
+        SqlSyntax.setField(_fTargetId, 'targetId', DbType.integer);
+  }
+
+  static TableField? _fName;
+  static TableField get name {
+    return _fName = _fName ?? SqlSyntax.setField(_fName, 'name', DbType.text);
+  }
+
+  static TableField? _fIsExpand;
+  static TableField get isExpand {
+    return _fIsExpand =
+        _fIsExpand ?? SqlSyntax.setField(_fIsExpand, 'isExpand', DbType.bool);
+  }
+}
+// endregion UserSpaceRelationFields
+
+//region UserSpaceRelationManager
+class UserSpaceRelationManager extends SqfEntityProvider {
+  UserSpaceRelationManager()
+      : super(DbModel(),
+            tableName: _tableName,
+            primaryKeyList: _primaryKeyList,
+            whereStr: _whereStr);
+  static const String _tableName = 'userSpaceRelation';
+  static const List<String> _primaryKeyList = ['account', 'targetId'];
+  static const String _whereStr = 'account=? AND targetId=?';
+}
+
+//endregion UserSpaceRelationManager
+// region TargetRelation
+class TargetRelation extends TableBase {
+  TargetRelation(
+      {this.activeTargetId,
+      this.passiveTargetId,
+      this.name,
+      this.label,
+      this.remark,
+      this.typeName,
+      this.priority}) {
+    _setDefaultValues();
+    softDeleteActivated = false;
+  }
+  TargetRelation.withFields(this.activeTargetId, this.passiveTargetId,
+      this.name, this.label, this.remark, this.typeName, this.priority) {
+    _setDefaultValues();
+  }
+  TargetRelation.withId(this.activeTargetId, this.passiveTargetId, this.name,
+      this.label, this.remark, this.typeName, this.priority) {
+    _setDefaultValues();
+  }
+  // fromMap v2.0
+  TargetRelation.fromMap(Map<String, dynamic> o,
+      {bool setDefaultValues = true}) {
+    if (setDefaultValues) {
+      _setDefaultValues();
+    }
+    if (o['activeTargetId'] != null) {
+      activeTargetId = int.tryParse(o['activeTargetId'].toString());
+    }
+    if (o['passiveTargetId'] != null) {
+      passiveTargetId = int.tryParse(o['passiveTargetId'].toString());
+    }
+    if (o['name'] != null) {
+      name = o['name'].toString();
+    }
+    if (o['label'] != null) {
+      label = o['label'].toString();
+    }
+    if (o['remark'] != null) {
+      remark = o['remark'].toString();
+    }
+    if (o['typeName'] != null) {
+      typeName = o['typeName'].toString();
+    }
+    if (o['priority'] != null) {
+      priority = int.tryParse(o['priority'].toString());
+    }
+
+    isSaved = true;
+  }
+  // FIELDS (TargetRelation)
+  int? activeTargetId;
+  int? passiveTargetId;
+  String? name;
+  String? label;
+  String? remark;
+  String? typeName;
+  int? priority;
+  bool? isSaved;
+  // end FIELDS (TargetRelation)
+
+  static const bool _softDeleteActivated = false;
+  TargetRelationManager? __mnTargetRelation;
+
+  TargetRelationManager get _mnTargetRelation {
+    return __mnTargetRelation = __mnTargetRelation ?? TargetRelationManager();
+  }
+
+  // METHODS
+  @override
+  Map<String, dynamic> toMap(
+      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+    final map = <String, dynamic>{};
+    if (activeTargetId != null || !forView) {
+      map['activeTargetId'] = activeTargetId;
+    }
+    if (passiveTargetId != null || !forView) {
+      map['passiveTargetId'] = passiveTargetId;
+    }
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
+    if (label != null || !forView) {
+      map['label'] = label;
+    }
+    if (remark != null || !forView) {
+      map['remark'] = remark;
+    }
+    if (typeName != null || !forView) {
+      map['typeName'] = typeName;
+    }
+    if (priority != null || !forView) {
+      map['priority'] = priority;
+    }
+
+    return map;
+  }
+
+  @override
+  Future<Map<String, dynamic>> toMapWithChildren(
+      [bool forQuery = false,
+      bool forJson = false,
+      bool forView = false]) async {
+    final map = <String, dynamic>{};
+    if (activeTargetId != null || !forView) {
+      map['activeTargetId'] = activeTargetId;
+    }
+    if (passiveTargetId != null || !forView) {
+      map['passiveTargetId'] = passiveTargetId;
+    }
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
+    if (label != null || !forView) {
+      map['label'] = label;
+    }
+    if (remark != null || !forView) {
+      map['remark'] = remark;
+    }
+    if (typeName != null || !forView) {
+      map['typeName'] = typeName;
+    }
+    if (priority != null || !forView) {
+      map['priority'] = priority;
+    }
+
+    return map;
+  }
+
+  /// This method returns Json String [TargetRelation]
+  @override
+  String toJson() {
+    return json.encode(toMap(forJson: true));
+  }
+
+  /// This method returns Json String [TargetRelation]
+  @override
+  Future<String> toJsonWithChilds() async {
+    return json.encode(await toMapWithChildren(false, true));
+  }
+
+  @override
+  List<dynamic> toArgs() {
+    return [
+      activeTargetId,
+      passiveTargetId,
+      name,
+      label,
+      remark,
+      typeName,
+      priority
+    ];
+  }
+
+  @override
+  List<dynamic> toArgsWithIds() {
+    return [
+      activeTargetId,
+      passiveTargetId,
+      name,
+      label,
+      remark,
+      typeName,
+      priority
+    ];
+  }
+
+  static Future<List<TargetRelation>?> fromWebUrl(Uri uri,
+      {Map<String, String>? headers}) async {
+    try {
+      final response = await http.get(uri, headers: headers);
+      return await fromJson(response.body);
+    } catch (e) {
+      debugPrint(
+          'SQFENTITY ERROR TargetRelation.fromWebUrl: ErrorMessage: ${e.toString()}');
+      return null;
+    }
+  }
+
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
+  }
+
+  static Future<List<TargetRelation>> fromJson(String jsonBody) async {
+    final Iterable list = await json.decode(jsonBody) as Iterable;
+    var objList = <TargetRelation>[];
+    try {
+      objList = list
+          .map((targetrelation) =>
+              TargetRelation.fromMap(targetrelation as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      debugPrint(
+          'SQFENTITY ERROR TargetRelation.fromJson: ErrorMessage: ${e.toString()}');
+    }
+    return objList;
+  }
+
+  static Future<List<TargetRelation>> fromMapList(List<dynamic> data,
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields,
+      bool setDefaultValues = true}) async {
+    final List<TargetRelation> objList = <TargetRelation>[];
+    loadedFields = loadedFields ?? [];
+    for (final map in data) {
+      final obj = TargetRelation.fromMap(map as Map<String, dynamic>,
+          setDefaultValues: setDefaultValues);
+
+      objList.add(obj);
+    }
+    return objList;
+  }
+
+  /// returns TargetRelation by ID if exist, otherwise returns null
+  /// Primary Keys: int? activeTargetId, int? passiveTargetId
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: getById(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns>returns [TargetRelation] if exist, otherwise returns null
+  Future<TargetRelation?> getById(int? activeTargetId, int? passiveTargetId,
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    if (activeTargetId == null) {
+      return null;
+    }
+    TargetRelation? obj;
+    final data =
+        await _mnTargetRelation.getById([activeTargetId, passiveTargetId]);
+    if (data.length != 0) {
+      obj = TargetRelation.fromMap(data[0] as Map<String, dynamic>);
+    } else {
+      obj = null;
+    }
+    return obj;
+  }
+
+  /// Saves the (TargetRelation) object. If the Primary Key (activeTargetId) field is null, returns Error.
+  /// INSERTS (If not exist) OR REPLACES (If exist) data while Primary Key is not null.
+  /// Call the saveAs() method if you do not want to save it when there is another row with the same activeTargetId
+  /// <returns>Returns BoolResult
+  @override
+  Future<BoolResult> save({bool ignoreBatch = true}) async {
+    final result = BoolResult(success: false);
+    try {
+      await _mnTargetRelation.rawInsert(
+          'INSERT ${isSaved! ? 'OR REPLACE' : ''} INTO targetRelation ( activeTargetId, passiveTargetId, name, label, remark, typeName, priority)  VALUES (?,?,?,?,?,?,?)',
+          toArgsWithIds(),
+          ignoreBatch);
+      result.success = true;
+      isSaved = true;
+    } catch (e) {
+      result.errorMessage = e.toString();
+    }
+
+    saveResult = result;
+    return result;
+  }
+
+  /// saveAll method saves the sent List<TargetRelation> as a bulk in one transaction
+  /// Returns a <List<BoolResult>>
+  static Future<List<dynamic>> saveAll(List<TargetRelation> targetrelations,
+      {bool? exclusive, bool? noResult, bool? continueOnError}) async {
+    List<dynamic>? result = [];
+    // If there is no open transaction, start one
+    final isStartedBatch = await DbModel().batchStart();
+    for (final obj in targetrelations) {
+      await obj.save();
+    }
+    if (!isStartedBatch) {
+      result = await DbModel().batchCommit(
+          exclusive: exclusive,
+          noResult: noResult,
+          continueOnError: continueOnError);
+      for (int i = 0; i < targetrelations.length; i++) {
+        if (targetrelations[i].activeTargetId == null) {
+          targetrelations[i].activeTargetId = result![i] as int;
+        }
+      }
+    }
+    return result!;
+  }
+
+  /// Updates if the record exists, otherwise adds a new row
+  /// <returns>Returns activeTargetId
+  @override
+  Future<int?> upsert({bool ignoreBatch = true}) async {
+    try {
+      final result = await _mnTargetRelation.rawInsert(
+          'INSERT OR REPLACE INTO targetRelation ( activeTargetId, passiveTargetId, name, label, remark, typeName, priority)  VALUES (?,?,?,?,?,?,?)',
+          [
+            activeTargetId,
+            passiveTargetId,
+            name,
+            label,
+            remark,
+            typeName,
+            priority
+          ],
+          ignoreBatch);
+      if (result! > 0) {
+        saveResult = BoolResult(
+            success: true,
+            successMessage:
+                'TargetRelation activeTargetId=$activeTargetId updated successfully');
+      } else {
+        saveResult = BoolResult(
+            success: false,
+            errorMessage:
+                'TargetRelation activeTargetId=$activeTargetId did not update');
+      }
+      return activeTargetId;
+    } catch (e) {
+      saveResult = BoolResult(
+          success: false,
+          errorMessage: 'TargetRelation Save failed. Error: ${e.toString()}');
+      return null;
+    }
+  }
+
+  /// inserts or replaces the sent List<<TargetRelation>> as a bulk in one transaction.
+  /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
+  /// Returns a BoolCommitResult
+  @override
+  Future<BoolCommitResult> upsertAll(List<TargetRelation> targetrelations,
+      {bool? exclusive, bool? noResult, bool? continueOnError}) async {
+    final results = await _mnTargetRelation.rawInsertAll(
+        'INSERT OR REPLACE INTO targetRelation ( activeTargetId, passiveTargetId, name, label, remark, typeName, priority)  VALUES (?,?,?,?,?,?,?)',
+        targetrelations,
+        exclusive: exclusive,
+        noResult: noResult,
+        continueOnError: continueOnError);
+    return results;
+  }
+
+  /// Deletes TargetRelation
+
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
+  Future<BoolResult> delete([bool hardDelete = false]) async {
+    debugPrint(
+        'SQFENTITIY: delete TargetRelation invoked (activeTargetId=$activeTargetId)');
+    if (!_softDeleteActivated || hardDelete) {
+      return _mnTargetRelation.delete(QueryParams(
+          whereString: 'activeTargetId=? AND passiveTargetId=?',
+          whereArguments: [activeTargetId, passiveTargetId]));
+    } else {
+      return _mnTargetRelation.updateBatch(
+          QueryParams(
+              whereString: 'activeTargetId=? AND passiveTargetId=?',
+              whereArguments: [activeTargetId, passiveTargetId]),
+          {'isDeleted': 1});
+    }
+  }
+
+  @override
+  Future<BoolResult> recover([bool recoverChilds = true]) {
+    // not implemented because:
+    final msg =
+        'set useSoftDeleting:true in the table definition of [TargetRelation] to use this feature';
+    throw UnimplementedError(msg);
+  }
+
+  @override
+  TargetRelationFilterBuilder select(
+      {List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return TargetRelationFilterBuilder(this, getIsDeleted)
+      ..qparams.selectColumns = columnsToSelect;
+  }
+
+  @override
+  TargetRelationFilterBuilder distinct(
+      {List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return TargetRelationFilterBuilder(this, getIsDeleted)
+      ..qparams.selectColumns = columnsToSelect
+      ..qparams.distinct = true;
+  }
+
+  void _setDefaultValues() {
+    isSaved = false;
+  }
+
+  @override
+  void rollbackPk() {
+    if (isInsert == true) {
+      activeTargetId = null;
+      passiveTargetId = null;
+    }
+  }
+
+  // END METHODS
+  // BEGIN CUSTOM CODE
+  /*
+      you can define customCode property of your SqfEntityTable constant. For example:
+      const tablePerson = SqfEntityTable(
+      tableName: 'person',
+      primaryKeyName: 'id',
+      primaryKeyType: PrimaryKeyType.integer_auto_incremental,
+      fields: [
+        SqfEntityField('firstName', DbType.text),
+        SqfEntityField('lastName', DbType.text),
+      ],
+      customCode: '''
+       String fullName()
+       { 
+         return '$firstName $lastName';
+       }
+      ''');
+     */
+  // END CUSTOM CODE
+}
+// endregion targetrelation
+
+// region TargetRelationField
+class TargetRelationField extends FilterBase {
+  TargetRelationField(TargetRelationFilterBuilder targetrelationFB)
+      : super(targetrelationFB);
+
+  @override
+  TargetRelationFilterBuilder equals(dynamic pValue) {
+    return super.equals(pValue) as TargetRelationFilterBuilder;
+  }
+
+  @override
+  TargetRelationFilterBuilder equalsOrNull(dynamic pValue) {
+    return super.equalsOrNull(pValue) as TargetRelationFilterBuilder;
+  }
+
+  @override
+  TargetRelationFilterBuilder isNull() {
+    return super.isNull() as TargetRelationFilterBuilder;
+  }
+
+  @override
+  TargetRelationFilterBuilder contains(dynamic pValue) {
+    return super.contains(pValue) as TargetRelationFilterBuilder;
+  }
+
+  @override
+  TargetRelationFilterBuilder startsWith(dynamic pValue) {
+    return super.startsWith(pValue) as TargetRelationFilterBuilder;
+  }
+
+  @override
+  TargetRelationFilterBuilder endsWith(dynamic pValue) {
+    return super.endsWith(pValue) as TargetRelationFilterBuilder;
+  }
+
+  @override
+  TargetRelationFilterBuilder between(dynamic pFirst, dynamic pLast) {
+    return super.between(pFirst, pLast) as TargetRelationFilterBuilder;
+  }
+
+  @override
+  TargetRelationFilterBuilder greaterThan(dynamic pValue) {
+    return super.greaterThan(pValue) as TargetRelationFilterBuilder;
+  }
+
+  @override
+  TargetRelationFilterBuilder lessThan(dynamic pValue) {
+    return super.lessThan(pValue) as TargetRelationFilterBuilder;
+  }
+
+  @override
+  TargetRelationFilterBuilder greaterThanOrEquals(dynamic pValue) {
+    return super.greaterThanOrEquals(pValue) as TargetRelationFilterBuilder;
+  }
+
+  @override
+  TargetRelationFilterBuilder lessThanOrEquals(dynamic pValue) {
+    return super.lessThanOrEquals(pValue) as TargetRelationFilterBuilder;
+  }
+
+  @override
+  TargetRelationFilterBuilder inValues(dynamic pValue) {
+    return super.inValues(pValue) as TargetRelationFilterBuilder;
+  }
+
+  @override
+  TargetRelationField get not {
+    return super.not as TargetRelationField;
+  }
+}
+// endregion TargetRelationField
+
+// region TargetRelationFilterBuilder
+class TargetRelationFilterBuilder extends ConjunctionBase {
+  TargetRelationFilterBuilder(TargetRelation obj, bool? getIsDeleted)
+      : super(obj, getIsDeleted) {
+    _mnTargetRelation = obj._mnTargetRelation;
+    _softDeleteActivated = obj.softDeleteActivated;
+  }
+
+  bool _softDeleteActivated = false;
+  TargetRelationManager? _mnTargetRelation;
+
+  /// put the sql keyword 'AND'
+  @override
+  TargetRelationFilterBuilder get and {
+    super.and;
+    return this;
+  }
+
+  /// put the sql keyword 'OR'
+  @override
+  TargetRelationFilterBuilder get or {
+    super.or;
+    return this;
+  }
+
+  /// open parentheses
+  @override
+  TargetRelationFilterBuilder get startBlock {
+    super.startBlock;
+    return this;
+  }
+
+  /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  @override
+  TargetRelationFilterBuilder where(String? whereCriteria,
+      {dynamic parameterValue}) {
+    super.where(whereCriteria, parameterValue: parameterValue);
+    return this;
+  }
+
+  /// page = page number,
+  /// pagesize = row(s) per page
+  @override
+  TargetRelationFilterBuilder page(int page, int pagesize) {
+    super.page(page, pagesize);
+    return this;
+  }
+
+  /// int count = LIMIT
+  @override
+  TargetRelationFilterBuilder top(int count) {
+    super.top(count);
+    return this;
+  }
+
+  /// close parentheses
+  @override
+  TargetRelationFilterBuilder get endBlock {
+    super.endBlock;
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  /// Example 1: argFields='name, date'
+  /// Example 2: argFields = ['name', 'date']
+  @override
+  TargetRelationFilterBuilder orderBy(dynamic argFields) {
+    super.orderBy(argFields);
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  /// Example 1: argFields='field1, field2'
+  /// Example 2: argFields = ['field1', 'field2']
+  @override
+  TargetRelationFilterBuilder orderByDesc(dynamic argFields) {
+    super.orderByDesc(argFields);
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  /// Example 1: argFields='field1, field2'
+  /// Example 2: argFields = ['field1', 'field2']
+  @override
+  TargetRelationFilterBuilder groupBy(dynamic argFields) {
+    super.groupBy(argFields);
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  /// Example 1: argFields='name, date'
+  /// Example 2: argFields = ['name', 'date']
+  @override
+  TargetRelationFilterBuilder having(dynamic argFields) {
+    super.having(argFields);
+    return this;
+  }
+
+  TargetRelationField _setField(
+      TargetRelationField? field, String colName, DbType dbtype) {
+    return TargetRelationField(this)
+      ..param = DbParameter(
+          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
+  }
+
+  TargetRelationField? _activeTargetId;
+  TargetRelationField get activeTargetId {
+    return _activeTargetId =
+        _setField(_activeTargetId, 'activeTargetId', DbType.integer);
+  }
+
+  TargetRelationField? _passiveTargetId;
+  TargetRelationField get passiveTargetId {
+    return _passiveTargetId =
+        _setField(_passiveTargetId, 'passiveTargetId', DbType.integer);
+  }
+
+  TargetRelationField? _name;
+  TargetRelationField get name {
+    return _name = _setField(_name, 'name', DbType.text);
+  }
+
+  TargetRelationField? _label;
+  TargetRelationField get label {
+    return _label = _setField(_label, 'label', DbType.text);
+  }
+
+  TargetRelationField? _remark;
+  TargetRelationField get remark {
+    return _remark = _setField(_remark, 'remark', DbType.text);
+  }
+
+  TargetRelationField? _typeName;
+  TargetRelationField get typeName {
+    return _typeName = _setField(_typeName, 'typeName', DbType.text);
+  }
+
+  TargetRelationField? _priority;
+  TargetRelationField get priority {
+    return _priority = _setField(_priority, 'priority', DbType.integer);
+  }
+
+  /// Deletes List<TargetRelation> bulk by query
+  ///
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
+  Future<BoolResult> delete([bool hardDelete = false]) async {
+    buildParameters();
+    var r = BoolResult(success: false);
+
+    if (_softDeleteActivated && !hardDelete) {
+      r = await _mnTargetRelation!.updateBatch(qparams, {'isDeleted': 1});
+    } else {
+      r = await _mnTargetRelation!.delete(qparams);
+    }
+    return r;
+  }
+
+  /// using:
+  /// update({'fieldName': Value})
+  /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  @override
+  Future<BoolResult> update(Map<String, dynamic> values) {
+    buildParameters();
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
+      qparams.whereString =
+          'activeTargetId IN (SELECT activeTargetId from targetRelation ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+    }
+    return _mnTargetRelation!.updateBatch(qparams, values);
+  }
+
+  /// This method always returns [TargetRelation] Obj if exist, otherwise returns null
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> TargetRelation?
+  @override
+  Future<TargetRelation?> toSingle(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    buildParameters(pSize: 1);
+    final objFuture = _mnTargetRelation!.toList(qparams);
+    final data = await objFuture;
+    TargetRelation? obj;
+    if (data.isNotEmpty) {
+      obj = TargetRelation.fromMap(data[0] as Map<String, dynamic>);
+    } else {
+      obj = null;
+    }
+    return obj;
+  }
+
+  /// This method always returns [TargetRelation]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> TargetRelation?
+  @override
+  Future<TargetRelation> toSingleOrDefault(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    return await toSingle(
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields) ??
+        TargetRelation();
+  }
+
+  /// This method returns int. [TargetRelation]
+  /// <returns>int
+  @override
+  Future<int> toCount(
+      [VoidCallback Function(int c)? targetrelationCount]) async {
+    buildParameters();
+    qparams.selectColumns = ['COUNT(1) AS CNT'];
+    final targetrelationsFuture = await _mnTargetRelation!.toList(qparams);
+    final int count = targetrelationsFuture[0]['CNT'] as int;
+    if (targetrelationCount != null) {
+      targetrelationCount(count);
+    }
+    return count;
+  }
+
+  /// This method returns List<TargetRelation> [TargetRelation]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toList(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns>List<TargetRelation>
+  @override
+  Future<List<TargetRelation>> toList(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    final data = await toMapList();
+    final List<TargetRelation> targetrelationsData =
+        await TargetRelation.fromMapList(data,
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields,
+            setDefaultValues: qparams.selectColumns == null);
+    return targetrelationsData;
+  }
+
+  /// This method returns Json String [TargetRelation]
+  @override
+  Future<String> toJson() async {
+    final list = <dynamic>[];
+    final data = await toList();
+    for (var o in data) {
+      list.add(o.toMap(forJson: true));
+    }
+    return json.encode(list);
+  }
+
+  /// This method returns Json String. [TargetRelation]
+  @override
+  Future<String> toJsonWithChilds() async {
+    final list = <dynamic>[];
+    final data = await toList();
+    for (var o in data) {
+      list.add(await o.toMapWithChildren(false, true));
+    }
+    return json.encode(list);
+  }
+
+  /// This method returns List<dynamic>. [TargetRelation]
+  /// <returns>List<dynamic>
+  @override
+  Future<List<dynamic>> toMapList() async {
+    buildParameters();
+    return await _mnTargetRelation!.toList(qparams);
+  }
+
+  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [TargetRelation]
+  /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
+  /// <returns>List<String>
+  @override
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
+    final Map<String, dynamic> _retVal = <String, dynamic>{};
+    if (buildParams) {
+      buildParameters();
+    }
+    _retVal['sql'] =
+        'SELECT `activeTargetId`passiveTargetId` FROM targetRelation WHERE ${qparams.whereString}';
+    _retVal['args'] = qparams.whereArguments;
+    return _retVal;
+  }
+
+  /// This method returns Primary Key List<activeTargetId,passiveTargetId> [TargetRelation]
+  /// <returns>List<activeTargetId,passiveTargetId>
+  @override
+  Future<List<TargetRelation>> toListPrimaryKey(
+      [bool buildParams = true]) async {
+    if (buildParams) {
+      buildParameters();
+    }
+    qparams.selectColumns = ['activeTargetId', 'passiveTargetId'];
+    final targetrelationFuture = await _mnTargetRelation!.toList(qparams);
+    return await TargetRelation.fromMapList(targetrelationFuture);
+  }
+
+  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [TargetRelation]
+  /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  @override
+  Future<List<dynamic>> toListObject() async {
+    buildParameters();
+
+    final objectFuture = _mnTargetRelation!.toList(qparams);
+
+    final List<dynamic> objectsData = <dynamic>[];
+    final data = await objectFuture;
+    final int count = data.length;
+    for (int i = 0; i < count; i++) {
+      objectsData.add(data[i]);
+    }
+    return objectsData;
+  }
+
+  /// Returns List<String> for selected first column
+  /// Sample usage: await TargetRelation.select(columnsToSelect: ['columnName']).toListString()
+  @override
+  Future<List<String>> toListString(
+      [VoidCallback Function(List<String> o)? listString]) async {
+    buildParameters();
+
+    final objectFuture = _mnTargetRelation!.toList(qparams);
+
+    final List<String> objectsData = <String>[];
+    final data = await objectFuture;
+    final int count = data.length;
+    for (int i = 0; i < count; i++) {
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
+    }
+    if (listString != null) {
+      listString(objectsData);
+    }
+    return objectsData;
+  }
+}
+// endregion TargetRelationFilterBuilder
+
+// region TargetRelationFields
+class TargetRelationFields {
+  static TableField? _fActiveTargetId;
+  static TableField get activeTargetId {
+    return _fActiveTargetId = _fActiveTargetId ??
+        SqlSyntax.setField(_fActiveTargetId, 'activeTargetId', DbType.integer);
+  }
+
+  static TableField? _fPassiveTargetId;
+  static TableField get passiveTargetId {
+    return _fPassiveTargetId = _fPassiveTargetId ??
+        SqlSyntax.setField(
+            _fPassiveTargetId, 'passiveTargetId', DbType.integer);
+  }
+
+  static TableField? _fName;
+  static TableField get name {
+    return _fName = _fName ?? SqlSyntax.setField(_fName, 'name', DbType.text);
+  }
+
+  static TableField? _fLabel;
+  static TableField get label {
+    return _fLabel =
+        _fLabel ?? SqlSyntax.setField(_fLabel, 'label', DbType.text);
+  }
+
+  static TableField? _fRemark;
+  static TableField get remark {
+    return _fRemark =
+        _fRemark ?? SqlSyntax.setField(_fRemark, 'remark', DbType.text);
+  }
+
+  static TableField? _fTypeName;
+  static TableField get typeName {
+    return _fTypeName =
+        _fTypeName ?? SqlSyntax.setField(_fTypeName, 'typeName', DbType.text);
+  }
+
+  static TableField? _fPriority;
+  static TableField get priority {
+    return _fPriority = _fPriority ??
+        SqlSyntax.setField(_fPriority, 'priority', DbType.integer);
+  }
+}
+// endregion TargetRelationFields
+
+//region TargetRelationManager
+class TargetRelationManager extends SqfEntityProvider {
+  TargetRelationManager()
+      : super(DbModel(),
+            tableName: _tableName,
+            primaryKeyList: _primaryKeyList,
+            whereStr: _whereStr);
+  static const String _tableName = 'targetRelation';
+  static const List<String> _primaryKeyList = [
+    'activeTargetId',
+    'passiveTargetId'
+  ];
+  static const String _whereStr = 'activeTargetId=? AND passiveTargetId=?';
+}
+
+//endregion TargetRelationManager
+// region Target
+class Target extends TableBase {
+  Target(
+      {this.id,
+      this.code,
+      this.name,
+      this.typeName,
+      this.belongId,
+      this.thingId}) {
+    _setDefaultValues();
+    softDeleteActivated = false;
+  }
+  Target.withFields(this.id, this.code, this.name, this.typeName, this.belongId,
+      this.thingId) {
+    _setDefaultValues();
+  }
+  Target.withId(this.id, this.code, this.name, this.typeName, this.belongId,
+      this.thingId) {
+    _setDefaultValues();
+  }
+  // fromMap v2.0
+  Target.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
+    if (setDefaultValues) {
+      _setDefaultValues();
+    }
+    id = int.tryParse(o['id'].toString());
+    if (o['code'] != null) {
+      code = o['code'].toString();
+    }
+    if (o['name'] != null) {
+      name = o['name'].toString();
+    }
+    if (o['typeName'] != null) {
+      typeName = o['typeName'].toString();
+    }
+    if (o['belongId'] != null) {
+      belongId = int.tryParse(o['belongId'].toString());
+    }
+    if (o['thingId'] != null) {
+      thingId = int.tryParse(o['thingId'].toString());
+    }
+
+    isSaved = true;
+  }
+  // FIELDS (Target)
+  int? id;
+  String? code;
+  String? name;
+  String? typeName;
+  int? belongId;
+  int? thingId;
+  bool? isSaved;
+  // end FIELDS (Target)
+
+  static const bool _softDeleteActivated = false;
+  TargetManager? __mnTarget;
+
+  TargetManager get _mnTarget {
+    return __mnTarget = __mnTarget ?? TargetManager();
+  }
+
+  // METHODS
+  @override
+  Map<String, dynamic> toMap(
+      {bool forQuery = false, bool forJson = false, bool forView = false}) {
+    final map = <String, dynamic>{};
+    map['id'] = id;
+    if (code != null || !forView) {
+      map['code'] = code;
+    }
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
+    if (typeName != null || !forView) {
+      map['typeName'] = typeName;
+    }
+    if (belongId != null || !forView) {
+      map['belongId'] = belongId;
+    }
+    if (thingId != null || !forView) {
+      map['thingId'] = thingId;
+    }
+
+    return map;
+  }
+
+  @override
+  Future<Map<String, dynamic>> toMapWithChildren(
+      [bool forQuery = false,
+      bool forJson = false,
+      bool forView = false]) async {
+    final map = <String, dynamic>{};
+    map['id'] = id;
+    if (code != null || !forView) {
+      map['code'] = code;
+    }
+    if (name != null || !forView) {
+      map['name'] = name;
+    }
+    if (typeName != null || !forView) {
+      map['typeName'] = typeName;
+    }
+    if (belongId != null || !forView) {
+      map['belongId'] = belongId;
+    }
+    if (thingId != null || !forView) {
+      map['thingId'] = thingId;
+    }
+
+    return map;
+  }
+
+  /// This method returns Json String [Target]
+  @override
+  String toJson() {
+    return json.encode(toMap(forJson: true));
+  }
+
+  /// This method returns Json String [Target]
+  @override
+  Future<String> toJsonWithChilds() async {
+    return json.encode(await toMapWithChildren(false, true));
+  }
+
+  @override
+  List<dynamic> toArgs() {
+    return [id, code, name, typeName, belongId, thingId];
+  }
+
+  @override
+  List<dynamic> toArgsWithIds() {
+    return [id, code, name, typeName, belongId, thingId];
+  }
+
+  static Future<List<Target>?> fromWebUrl(Uri uri,
+      {Map<String, String>? headers}) async {
+    try {
+      final response = await http.get(uri, headers: headers);
+      return await fromJson(response.body);
+    } catch (e) {
+      debugPrint(
+          'SQFENTITY ERROR Target.fromWebUrl: ErrorMessage: ${e.toString()}');
+      return null;
+    }
+  }
+
+  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
+    return http.post(uri, headers: headers, body: toJson());
+  }
+
+  static Future<List<Target>> fromJson(String jsonBody) async {
+    final Iterable list = await json.decode(jsonBody) as Iterable;
+    var objList = <Target>[];
+    try {
+      objList = list
+          .map((target) => Target.fromMap(target as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      debugPrint(
+          'SQFENTITY ERROR Target.fromJson: ErrorMessage: ${e.toString()}');
+    }
+    return objList;
+  }
+
+  static Future<List<Target>> fromMapList(List<dynamic> data,
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields,
+      bool setDefaultValues = true}) async {
+    final List<Target> objList = <Target>[];
+    loadedFields = loadedFields ?? [];
+    for (final map in data) {
+      final obj = Target.fromMap(map as Map<String, dynamic>,
+          setDefaultValues: setDefaultValues);
+
+      objList.add(obj);
+    }
+    return objList;
+  }
+
+  /// returns Target by ID if exist, otherwise returns null
+  /// Primary Keys: int? id
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: getById(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns>returns [Target] if exist, otherwise returns null
+  Future<Target?> getById(int? id,
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    if (id == null) {
+      return null;
+    }
+    Target? obj;
+    final data = await _mnTarget.getById([id]);
+    if (data.length != 0) {
+      obj = Target.fromMap(data[0] as Map<String, dynamic>);
+    } else {
+      obj = null;
+    }
+    return obj;
+  }
+
+  /// Saves the (Target) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+  /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
+  /// <returns>Returns id
+  @override
+  Future<int?> save({bool ignoreBatch = true}) async {
+    if (id == null || id == 0 || !isSaved!) {
+      await _mnTarget.insert(this, ignoreBatch);
+      if (saveResult!.success) {
+        isSaved = true;
+      }
+    } else {
+      await _mnTarget.update(this);
+    }
+
+    return id;
+  }
+
+  /// Saves the (Target) object. If the id field is null, saves as a new record and returns new id, if id is not null then updates record
+  /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
+  /// <returns>Returns id
+  @override
+  Future<int?> saveOrThrow({bool ignoreBatch = true}) async {
+    if (id == null || id == 0 || !isSaved!) {
+      await _mnTarget.insertOrThrow(this, ignoreBatch);
+      if (saveResult != null && saveResult!.success) {
+        isSaved = true;
+      }
+      isInsert = true;
+    } else {
+      // id= await _upsert(); // removed in sqfentity_gen 1.3.0+6
+      await _mnTarget.updateOrThrow(this);
+    }
+
+    return id;
+  }
+
+  /// saveAll method saves the sent List<Target> as a bulk in one transaction
+  /// Returns a <List<BoolResult>>
+  static Future<List<dynamic>> saveAll(List<Target> targets,
+      {bool? exclusive, bool? noResult, bool? continueOnError}) async {
+    List<dynamic>? result = [];
+    // If there is no open transaction, start one
+    final isStartedBatch = await DbModel().batchStart();
+    for (final obj in targets) {
+      await obj.save(ignoreBatch: false);
+    }
+    if (!isStartedBatch) {
+      result = await DbModel().batchCommit(
+          exclusive: exclusive,
+          noResult: noResult,
+          continueOnError: continueOnError);
+    }
+    return result!;
+  }
+
+  /// Updates if the record exists, otherwise adds a new row
+  /// <returns>Returns id
+  @override
+  Future<int?> upsert({bool ignoreBatch = true}) async {
+    try {
+      final result = await _mnTarget.rawInsert(
+          'INSERT OR REPLACE INTO target (id, code, name, typeName, belongId, thingId)  VALUES (?,?,?,?,?,?)',
+          [id, code, name, typeName, belongId, thingId],
+          ignoreBatch);
+      if (result! > 0) {
+        saveResult = BoolResult(
+            success: true,
+            successMessage: 'Target id=$id updated successfully');
+      } else {
+        saveResult = BoolResult(
+            success: false, errorMessage: 'Target id=$id did not update');
+      }
+      return id;
+    } catch (e) {
+      saveResult = BoolResult(
+          success: false,
+          errorMessage: 'Target Save failed. Error: ${e.toString()}');
+      return null;
+    }
+  }
+
+  /// inserts or replaces the sent List<<Target>> as a bulk in one transaction.
+  /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
+  /// Returns a BoolCommitResult
+  @override
+  Future<BoolCommitResult> upsertAll(List<Target> targets,
+      {bool? exclusive, bool? noResult, bool? continueOnError}) async {
+    final results = await _mnTarget.rawInsertAll(
+        'INSERT OR REPLACE INTO target (id, code, name, typeName, belongId, thingId)  VALUES (?,?,?,?,?,?)',
+        targets,
+        exclusive: exclusive,
+        noResult: noResult,
+        continueOnError: continueOnError);
+    return results;
+  }
+
+  /// Deletes Target
+
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
+  Future<BoolResult> delete([bool hardDelete = false]) async {
+    debugPrint('SQFENTITIY: delete Target invoked (id=$id)');
+    if (!_softDeleteActivated || hardDelete) {
+      return _mnTarget
+          .delete(QueryParams(whereString: 'id=?', whereArguments: [id]));
+    } else {
+      return _mnTarget.updateBatch(
+          QueryParams(whereString: 'id=?', whereArguments: [id]),
+          {'isDeleted': 1});
+    }
+  }
+
+  @override
+  Future<BoolResult> recover([bool recoverChilds = true]) {
+    // not implemented because:
+    final msg =
+        'set useSoftDeleting:true in the table definition of [Target] to use this feature';
+    throw UnimplementedError(msg);
+  }
+
+  @override
+  TargetFilterBuilder select(
+      {List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return TargetFilterBuilder(this, getIsDeleted)
+      ..qparams.selectColumns = columnsToSelect;
+  }
+
+  @override
+  TargetFilterBuilder distinct(
+      {List<String>? columnsToSelect, bool? getIsDeleted}) {
+    return TargetFilterBuilder(this, getIsDeleted)
+      ..qparams.selectColumns = columnsToSelect
+      ..qparams.distinct = true;
+  }
+
+  void _setDefaultValues() {
+    isSaved = false;
+  }
+
+  @override
+  void rollbackPk() {
+    if (isInsert == true) {
+      id = null;
+    }
+  }
+
+  // END METHODS
+  // BEGIN CUSTOM CODE
+  /*
+      you can define customCode property of your SqfEntityTable constant. For example:
+      const tablePerson = SqfEntityTable(
+      tableName: 'person',
+      primaryKeyName: 'id',
+      primaryKeyType: PrimaryKeyType.integer_auto_incremental,
+      fields: [
+        SqfEntityField('firstName', DbType.text),
+        SqfEntityField('lastName', DbType.text),
+      ],
+      customCode: '''
+       String fullName()
+       { 
+         return '$firstName $lastName';
+       }
+      ''');
+     */
+  // END CUSTOM CODE
+}
+// endregion target
+
+// region TargetField
+class TargetField extends FilterBase {
+  TargetField(TargetFilterBuilder targetFB) : super(targetFB);
+
+  @override
+  TargetFilterBuilder equals(dynamic pValue) {
+    return super.equals(pValue) as TargetFilterBuilder;
+  }
+
+  @override
+  TargetFilterBuilder equalsOrNull(dynamic pValue) {
+    return super.equalsOrNull(pValue) as TargetFilterBuilder;
+  }
+
+  @override
+  TargetFilterBuilder isNull() {
+    return super.isNull() as TargetFilterBuilder;
+  }
+
+  @override
+  TargetFilterBuilder contains(dynamic pValue) {
+    return super.contains(pValue) as TargetFilterBuilder;
+  }
+
+  @override
+  TargetFilterBuilder startsWith(dynamic pValue) {
+    return super.startsWith(pValue) as TargetFilterBuilder;
+  }
+
+  @override
+  TargetFilterBuilder endsWith(dynamic pValue) {
+    return super.endsWith(pValue) as TargetFilterBuilder;
+  }
+
+  @override
+  TargetFilterBuilder between(dynamic pFirst, dynamic pLast) {
+    return super.between(pFirst, pLast) as TargetFilterBuilder;
+  }
+
+  @override
+  TargetFilterBuilder greaterThan(dynamic pValue) {
+    return super.greaterThan(pValue) as TargetFilterBuilder;
+  }
+
+  @override
+  TargetFilterBuilder lessThan(dynamic pValue) {
+    return super.lessThan(pValue) as TargetFilterBuilder;
+  }
+
+  @override
+  TargetFilterBuilder greaterThanOrEquals(dynamic pValue) {
+    return super.greaterThanOrEquals(pValue) as TargetFilterBuilder;
+  }
+
+  @override
+  TargetFilterBuilder lessThanOrEquals(dynamic pValue) {
+    return super.lessThanOrEquals(pValue) as TargetFilterBuilder;
+  }
+
+  @override
+  TargetFilterBuilder inValues(dynamic pValue) {
+    return super.inValues(pValue) as TargetFilterBuilder;
+  }
+
+  @override
+  TargetField get not {
+    return super.not as TargetField;
+  }
+}
+// endregion TargetField
+
+// region TargetFilterBuilder
+class TargetFilterBuilder extends ConjunctionBase {
+  TargetFilterBuilder(Target obj, bool? getIsDeleted)
+      : super(obj, getIsDeleted) {
+    _mnTarget = obj._mnTarget;
+    _softDeleteActivated = obj.softDeleteActivated;
+  }
+
+  bool _softDeleteActivated = false;
+  TargetManager? _mnTarget;
+
+  /// put the sql keyword 'AND'
+  @override
+  TargetFilterBuilder get and {
+    super.and;
+    return this;
+  }
+
+  /// put the sql keyword 'OR'
+  @override
+  TargetFilterBuilder get or {
+    super.or;
+    return this;
+  }
+
+  /// open parentheses
+  @override
+  TargetFilterBuilder get startBlock {
+    super.startBlock;
+    return this;
+  }
+
+  /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
+  @override
+  TargetFilterBuilder where(String? whereCriteria, {dynamic parameterValue}) {
+    super.where(whereCriteria, parameterValue: parameterValue);
+    return this;
+  }
+
+  /// page = page number,
+  /// pagesize = row(s) per page
+  @override
+  TargetFilterBuilder page(int page, int pagesize) {
+    super.page(page, pagesize);
+    return this;
+  }
+
+  /// int count = LIMIT
+  @override
+  TargetFilterBuilder top(int count) {
+    super.top(count);
+    return this;
+  }
+
+  /// close parentheses
+  @override
+  TargetFilterBuilder get endBlock {
+    super.endBlock;
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  /// Example 1: argFields='name, date'
+  /// Example 2: argFields = ['name', 'date']
+  @override
+  TargetFilterBuilder orderBy(dynamic argFields) {
+    super.orderBy(argFields);
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  /// Example 1: argFields='field1, field2'
+  /// Example 2: argFields = ['field1', 'field2']
+  @override
+  TargetFilterBuilder orderByDesc(dynamic argFields) {
+    super.orderByDesc(argFields);
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  /// Example 1: argFields='field1, field2'
+  /// Example 2: argFields = ['field1', 'field2']
+  @override
+  TargetFilterBuilder groupBy(dynamic argFields) {
+    super.groupBy(argFields);
+    return this;
+  }
+
+  /// argFields might be String or List<String>.
+  /// Example 1: argFields='name, date'
+  /// Example 2: argFields = ['name', 'date']
+  @override
+  TargetFilterBuilder having(dynamic argFields) {
+    super.having(argFields);
+    return this;
+  }
+
+  TargetField _setField(TargetField? field, String colName, DbType dbtype) {
+    return TargetField(this)
+      ..param = DbParameter(
+          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
+  }
+
+  TargetField? _id;
+  TargetField get id {
+    return _id = _setField(_id, 'id', DbType.integer);
+  }
+
+  TargetField? _code;
+  TargetField get code {
+    return _code = _setField(_code, 'code', DbType.text);
+  }
+
+  TargetField? _name;
+  TargetField get name {
+    return _name = _setField(_name, 'name', DbType.text);
+  }
+
+  TargetField? _typeName;
+  TargetField get typeName {
+    return _typeName = _setField(_typeName, 'typeName', DbType.text);
+  }
+
+  TargetField? _belongId;
+  TargetField get belongId {
+    return _belongId = _setField(_belongId, 'belongId', DbType.integer);
+  }
+
+  TargetField? _thingId;
+  TargetField get thingId {
+    return _thingId = _setField(_thingId, 'thingId', DbType.integer);
+  }
+
+  /// Deletes List<Target> bulk by query
+  ///
+  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
+  @override
+  Future<BoolResult> delete([bool hardDelete = false]) async {
+    buildParameters();
+    var r = BoolResult(success: false);
+
+    if (_softDeleteActivated && !hardDelete) {
+      r = await _mnTarget!.updateBatch(qparams, {'isDeleted': 1});
+    } else {
+      r = await _mnTarget!.delete(qparams);
+    }
+    return r;
+  }
+
+  /// using:
+  /// update({'fieldName': Value})
+  /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
+  @override
+  Future<BoolResult> update(Map<String, dynamic> values) {
+    buildParameters();
+    if (qparams.limit! > 0 || qparams.offset! > 0) {
+      qparams.whereString =
+          'id IN (SELECT id from target ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
+    }
+    return _mnTarget!.updateBatch(qparams, values);
+  }
+
+  /// This method always returns [Target] Obj if exist, otherwise returns null
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> Target?
+  @override
+  Future<Target?> toSingle(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    buildParameters(pSize: 1);
+    final objFuture = _mnTarget!.toList(qparams);
+    final data = await objFuture;
+    Target? obj;
+    if (data.isNotEmpty) {
+      obj = Target.fromMap(data[0] as Map<String, dynamic>);
+    } else {
+      obj = null;
+    }
+    return obj;
+  }
+
+  /// This method always returns [Target]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toSingle(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns> Target?
+  @override
+  Future<Target> toSingleOrDefault(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    return await toSingle(
+            preload: preload,
+            preloadFields: preloadFields,
+            loadParents: loadParents,
+            loadedFields: loadedFields) ??
+        Target();
+  }
+
+  /// This method returns int. [Target]
+  /// <returns>int
+  @override
+  Future<int> toCount([VoidCallback Function(int c)? targetCount]) async {
+    buildParameters();
+    qparams.selectColumns = ['COUNT(1) AS CNT'];
+    final targetsFuture = await _mnTarget!.toList(qparams);
+    final int count = targetsFuture[0]['CNT'] as int;
+    if (targetCount != null) {
+      targetCount(count);
+    }
+    return count;
+  }
+
+  /// This method returns List<Target> [Target]
+  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
+  /// ex: toList(preload:true) -> Loads all related objects
+  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
+  /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
+  /// bool loadParents: if true, loads all parent objects until the object has no parent
+
+  /// <returns>List<Target>
+  @override
+  Future<List<Target>> toList(
+      {bool preload = false,
+      List<String>? preloadFields,
+      bool loadParents = false,
+      List<String>? loadedFields}) async {
+    final data = await toMapList();
+    final List<Target> targetsData = await Target.fromMapList(data,
+        preload: preload,
+        preloadFields: preloadFields,
+        loadParents: loadParents,
+        loadedFields: loadedFields,
+        setDefaultValues: qparams.selectColumns == null);
+    return targetsData;
+  }
+
+  /// This method returns Json String [Target]
+  @override
+  Future<String> toJson() async {
+    final list = <dynamic>[];
+    final data = await toList();
+    for (var o in data) {
+      list.add(o.toMap(forJson: true));
+    }
+    return json.encode(list);
+  }
+
+  /// This method returns Json String. [Target]
+  @override
+  Future<String> toJsonWithChilds() async {
+    final list = <dynamic>[];
+    final data = await toList();
+    for (var o in data) {
+      list.add(await o.toMapWithChildren(false, true));
+    }
+    return json.encode(list);
+  }
+
+  /// This method returns List<dynamic>. [Target]
+  /// <returns>List<dynamic>
+  @override
+  Future<List<dynamic>> toMapList() async {
+    buildParameters();
+    return await _mnTarget!.toList(qparams);
+  }
+
+  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [Target]
+  /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
+  /// <returns>List<String>
+  @override
+  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
+    final Map<String, dynamic> _retVal = <String, dynamic>{};
+    if (buildParams) {
+      buildParameters();
+    }
+    _retVal['sql'] = 'SELECT `id` FROM target WHERE ${qparams.whereString}';
+    _retVal['args'] = qparams.whereArguments;
+    return _retVal;
+  }
+
+  /// This method returns Primary Key List<int>.
+  /// <returns>List<int>
+  @override
+  Future<List<int>> toListPrimaryKey([bool buildParams = true]) async {
+    if (buildParams) {
+      buildParameters();
+    }
+    final List<int> idData = <int>[];
+    qparams.selectColumns = ['id'];
+    final idFuture = await _mnTarget!.toList(qparams);
+
+    final int count = idFuture.length;
+    for (int i = 0; i < count; i++) {
+      idData.add(idFuture[i]['id'] as int);
+    }
+    return idData;
+  }
+
+  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [Target]
+  /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
+  @override
+  Future<List<dynamic>> toListObject() async {
+    buildParameters();
+
+    final objectFuture = _mnTarget!.toList(qparams);
+
+    final List<dynamic> objectsData = <dynamic>[];
+    final data = await objectFuture;
+    final int count = data.length;
+    for (int i = 0; i < count; i++) {
+      objectsData.add(data[i]);
+    }
+    return objectsData;
+  }
+
+  /// Returns List<String> for selected first column
+  /// Sample usage: await Target.select(columnsToSelect: ['columnName']).toListString()
+  @override
+  Future<List<String>> toListString(
+      [VoidCallback Function(List<String> o)? listString]) async {
+    buildParameters();
+
+    final objectFuture = _mnTarget!.toList(qparams);
+
+    final List<String> objectsData = <String>[];
+    final data = await objectFuture;
+    final int count = data.length;
+    for (int i = 0; i < count; i++) {
+      objectsData.add(data[i][qparams.selectColumns![0]].toString());
+    }
+    if (listString != null) {
+      listString(objectsData);
+    }
+    return objectsData;
+  }
+}
+// endregion TargetFilterBuilder
+
+// region TargetFields
+class TargetFields {
+  static TableField? _fId;
+  static TableField get id {
+    return _fId = _fId ?? SqlSyntax.setField(_fId, 'id', DbType.integer);
+  }
+
+  static TableField? _fCode;
+  static TableField get code {
+    return _fCode = _fCode ?? SqlSyntax.setField(_fCode, 'code', DbType.text);
+  }
+
+  static TableField? _fName;
+  static TableField get name {
+    return _fName = _fName ?? SqlSyntax.setField(_fName, 'name', DbType.text);
+  }
+
+  static TableField? _fTypeName;
+  static TableField get typeName {
+    return _fTypeName =
+        _fTypeName ?? SqlSyntax.setField(_fTypeName, 'typeName', DbType.text);
+  }
+
+  static TableField? _fBelongId;
+  static TableField get belongId {
+    return _fBelongId = _fBelongId ??
+        SqlSyntax.setField(_fBelongId, 'belongId', DbType.integer);
+  }
+
+  static TableField? _fThingId;
+  static TableField get thingId {
+    return _fThingId =
+        _fThingId ?? SqlSyntax.setField(_fThingId, 'thingId', DbType.integer);
+  }
+}
+// endregion TargetFields
+
+//region TargetManager
+class TargetManager extends SqfEntityProvider {
+  TargetManager()
+      : super(DbModel(),
+            tableName: _tableName,
+            primaryKeyList: _primaryKeyList,
+            whereStr: _whereStr);
+  static const String _tableName = 'target';
+  static const List<String> _primaryKeyList = ['id'];
+  static const String _whereStr = 'id=?';
+}
+
+//endregion TargetManager
 // region MessageDetail
 class MessageDetail extends TableBase {
   MessageDetail(
@@ -1365,1817 +4744,6 @@ class MessageDetailManager extends SqfEntityProvider {
 }
 
 //endregion MessageDetailManager
-// region MessageGroup
-class MessageGroup extends TableBase {
-  MessageGroup({this.seqId, this.account, this.id, this.name, this.isExpand}) {
-    _setDefaultValues();
-    softDeleteActivated = false;
-  }
-  MessageGroup.withFields(this.account, this.id, this.name, this.isExpand) {
-    _setDefaultValues();
-  }
-  MessageGroup.withId(
-      this.seqId, this.account, this.id, this.name, this.isExpand) {
-    _setDefaultValues();
-  }
-  // fromMap v2.0
-  MessageGroup.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
-    if (setDefaultValues) {
-      _setDefaultValues();
-    }
-    seqId = int.tryParse(o['seqId'].toString());
-    if (o['account'] != null) {
-      account = o['account'].toString();
-    }
-    if (o['id'] != null) {
-      id = int.tryParse(o['id'].toString());
-    }
-    if (o['name'] != null) {
-      name = o['name'].toString();
-    }
-    if (o['isExpand'] != null) {
-      isExpand =
-          o['isExpand'].toString() == '1' || o['isExpand'].toString() == 'true';
-    }
-  }
-  // FIELDS (MessageGroup)
-  int? seqId;
-  String? account;
-  int? id;
-  String? name;
-  bool? isExpand;
-
-  // end FIELDS (MessageGroup)
-
-  static const bool _softDeleteActivated = false;
-  MessageGroupManager? __mnMessageGroup;
-
-  MessageGroupManager get _mnMessageGroup {
-    return __mnMessageGroup = __mnMessageGroup ?? MessageGroupManager();
-  }
-
-  // METHODS
-  @override
-  Map<String, dynamic> toMap(
-      {bool forQuery = false, bool forJson = false, bool forView = false}) {
-    final map = <String, dynamic>{};
-    map['seqId'] = seqId;
-    if (account != null || !forView) {
-      map['account'] = account;
-    }
-    if (id != null || !forView) {
-      map['id'] = id;
-    }
-    if (name != null || !forView) {
-      map['name'] = name;
-    }
-    if (isExpand != null) {
-      map['isExpand'] = forQuery ? (isExpand! ? 1 : 0) : isExpand;
-    } else if (isExpand != null || !forView) {
-      map['isExpand'] = null;
-    }
-
-    return map;
-  }
-
-  @override
-  Future<Map<String, dynamic>> toMapWithChildren(
-      [bool forQuery = false,
-      bool forJson = false,
-      bool forView = false]) async {
-    final map = <String, dynamic>{};
-    map['seqId'] = seqId;
-    if (account != null || !forView) {
-      map['account'] = account;
-    }
-    if (id != null || !forView) {
-      map['id'] = id;
-    }
-    if (name != null || !forView) {
-      map['name'] = name;
-    }
-    if (isExpand != null) {
-      map['isExpand'] = forQuery ? (isExpand! ? 1 : 0) : isExpand;
-    } else if (isExpand != null || !forView) {
-      map['isExpand'] = null;
-    }
-
-    return map;
-  }
-
-  /// This method returns Json String [MessageGroup]
-  @override
-  String toJson() {
-    return json.encode(toMap(forJson: true));
-  }
-
-  /// This method returns Json String [MessageGroup]
-  @override
-  Future<String> toJsonWithChilds() async {
-    return json.encode(await toMapWithChildren(false, true));
-  }
-
-  @override
-  List<dynamic> toArgs() {
-    return [account, id, name, isExpand];
-  }
-
-  @override
-  List<dynamic> toArgsWithIds() {
-    return [seqId, account, id, name, isExpand];
-  }
-
-  static Future<List<MessageGroup>?> fromWebUrl(Uri uri,
-      {Map<String, String>? headers}) async {
-    try {
-      final response = await http.get(uri, headers: headers);
-      return await fromJson(response.body);
-    } catch (e) {
-      debugPrint(
-          'SQFENTITY ERROR MessageGroup.fromWebUrl: ErrorMessage: ${e.toString()}');
-      return null;
-    }
-  }
-
-  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
-    return http.post(uri, headers: headers, body: toJson());
-  }
-
-  static Future<List<MessageGroup>> fromJson(String jsonBody) async {
-    final Iterable list = await json.decode(jsonBody) as Iterable;
-    var objList = <MessageGroup>[];
-    try {
-      objList = list
-          .map((messagegroup) =>
-              MessageGroup.fromMap(messagegroup as Map<String, dynamic>))
-          .toList();
-    } catch (e) {
-      debugPrint(
-          'SQFENTITY ERROR MessageGroup.fromJson: ErrorMessage: ${e.toString()}');
-    }
-    return objList;
-  }
-
-  static Future<List<MessageGroup>> fromMapList(List<dynamic> data,
-      {bool preload = false,
-      List<String>? preloadFields,
-      bool loadParents = false,
-      List<String>? loadedFields,
-      bool setDefaultValues = true}) async {
-    final List<MessageGroup> objList = <MessageGroup>[];
-    loadedFields = loadedFields ?? [];
-    for (final map in data) {
-      final obj = MessageGroup.fromMap(map as Map<String, dynamic>,
-          setDefaultValues: setDefaultValues);
-
-      objList.add(obj);
-    }
-    return objList;
-  }
-
-  /// returns MessageGroup by ID if exist, otherwise returns null
-  /// Primary Keys: int? seqId
-  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  /// ex: getById(preload:true) -> Loads all related objects
-  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  /// bool loadParents: if true, loads all parent objects until the object has no parent
-
-  /// <returns>returns [MessageGroup] if exist, otherwise returns null
-  Future<MessageGroup?> getById(int? seqId,
-      {bool preload = false,
-      List<String>? preloadFields,
-      bool loadParents = false,
-      List<String>? loadedFields}) async {
-    if (seqId == null) {
-      return null;
-    }
-    MessageGroup? obj;
-    final data = await _mnMessageGroup.getById([seqId]);
-    if (data.length != 0) {
-      obj = MessageGroup.fromMap(data[0] as Map<String, dynamic>);
-    } else {
-      obj = null;
-    }
-    return obj;
-  }
-
-  /// Saves the (MessageGroup) object. If the seqId field is null, saves as a new record and returns new seqId, if seqId is not null then updates record
-  /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
-  /// <returns>Returns seqId
-  @override
-  Future<int?> save({bool ignoreBatch = true}) async {
-    if (seqId == null || seqId == 0) {
-      seqId = await _mnMessageGroup.insert(this, ignoreBatch);
-    } else {
-      await _mnMessageGroup.update(this);
-    }
-
-    return seqId;
-  }
-
-  /// Saves the (MessageGroup) object. If the seqId field is null, saves as a new record and returns new seqId, if seqId is not null then updates record
-  /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
-  /// <returns>Returns seqId
-  @override
-  Future<int?> saveOrThrow({bool ignoreBatch = true}) async {
-    if (seqId == null || seqId == 0) {
-      seqId = await _mnMessageGroup.insertOrThrow(this, ignoreBatch);
-
-      isInsert = true;
-    } else {
-      // seqId= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnMessageGroup.updateOrThrow(this);
-    }
-
-    return seqId;
-  }
-
-  /// saveAs MessageGroup. Returns a new Primary Key value of MessageGroup
-
-  /// <returns>Returns a new Primary Key value of MessageGroup
-  @override
-  Future<int?> saveAs({bool ignoreBatch = true}) async {
-    seqId = null;
-
-    return save(ignoreBatch: ignoreBatch);
-  }
-
-  /// saveAll method saves the sent List<MessageGroup> as a bulk in one transaction
-  /// Returns a <List<BoolResult>>
-  static Future<List<dynamic>> saveAll(List<MessageGroup> messagegroups,
-      {bool? exclusive, bool? noResult, bool? continueOnError}) async {
-    List<dynamic>? result = [];
-    // If there is no open transaction, start one
-    final isStartedBatch = await DbModel().batchStart();
-    for (final obj in messagegroups) {
-      await obj.save(ignoreBatch: false);
-    }
-    if (!isStartedBatch) {
-      result = await DbModel().batchCommit(
-          exclusive: exclusive,
-          noResult: noResult,
-          continueOnError: continueOnError);
-      for (int i = 0; i < messagegroups.length; i++) {
-        if (messagegroups[i].seqId == null) {
-          messagegroups[i].seqId = result![i] as int;
-        }
-      }
-    }
-    return result!;
-  }
-
-  /// Updates if the record exists, otherwise adds a new row
-  /// <returns>Returns seqId
-  @override
-  Future<int?> upsert({bool ignoreBatch = true}) async {
-    try {
-      final result = await _mnMessageGroup.rawInsert(
-          'INSERT OR REPLACE INTO messageGroup (seqId, account, id, name, isExpand)  VALUES (?,?,?,?,?)',
-          [seqId, account, id, name, isExpand],
-          ignoreBatch);
-      if (result! > 0) {
-        saveResult = BoolResult(
-            success: true,
-            successMessage: 'MessageGroup seqId=$seqId updated successfully');
-      } else {
-        saveResult = BoolResult(
-            success: false,
-            errorMessage: 'MessageGroup seqId=$seqId did not update');
-      }
-      return seqId;
-    } catch (e) {
-      saveResult = BoolResult(
-          success: false,
-          errorMessage: 'MessageGroup Save failed. Error: ${e.toString()}');
-      return null;
-    }
-  }
-
-  /// inserts or replaces the sent List<<MessageGroup>> as a bulk in one transaction.
-  /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  /// Returns a BoolCommitResult
-  @override
-  Future<BoolCommitResult> upsertAll(List<MessageGroup> messagegroups,
-      {bool? exclusive, bool? noResult, bool? continueOnError}) async {
-    final results = await _mnMessageGroup.rawInsertAll(
-        'INSERT OR REPLACE INTO messageGroup (seqId, account, id, name, isExpand)  VALUES (?,?,?,?,?)',
-        messagegroups,
-        exclusive: exclusive,
-        noResult: noResult,
-        continueOnError: continueOnError);
-    return results;
-  }
-
-  /// Deletes MessageGroup
-
-  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
-  @override
-  Future<BoolResult> delete([bool hardDelete = false]) async {
-    debugPrint('SQFENTITIY: delete MessageGroup invoked (seqId=$seqId)');
-    if (!_softDeleteActivated || hardDelete) {
-      return _mnMessageGroup
-          .delete(QueryParams(whereString: 'seqId=?', whereArguments: [seqId]));
-    } else {
-      return _mnMessageGroup.updateBatch(
-          QueryParams(whereString: 'seqId=?', whereArguments: [seqId]),
-          {'isDeleted': 1});
-    }
-  }
-
-  @override
-  Future<BoolResult> recover([bool recoverChilds = true]) {
-    // not implemented because:
-    final msg =
-        'set useSoftDeleting:true in the table definition of [MessageGroup] to use this feature';
-    throw UnimplementedError(msg);
-  }
-
-  @override
-  MessageGroupFilterBuilder select(
-      {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return MessageGroupFilterBuilder(this, getIsDeleted)
-      ..qparams.selectColumns = columnsToSelect;
-  }
-
-  @override
-  MessageGroupFilterBuilder distinct(
-      {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return MessageGroupFilterBuilder(this, getIsDeleted)
-      ..qparams.selectColumns = columnsToSelect
-      ..qparams.distinct = true;
-  }
-
-  void _setDefaultValues() {}
-
-  @override
-  void rollbackPk() {
-    if (isInsert == true) {
-      seqId = null;
-    }
-  }
-
-  // END METHODS
-  // BEGIN CUSTOM CODE
-  /*
-      you can define customCode property of your SqfEntityTable constant. For example:
-      const tablePerson = SqfEntityTable(
-      tableName: 'person',
-      primaryKeyName: 'id',
-      primaryKeyType: PrimaryKeyType.integer_auto_incremental,
-      fields: [
-        SqfEntityField('firstName', DbType.text),
-        SqfEntityField('lastName', DbType.text),
-      ],
-      customCode: '''
-       String fullName()
-       { 
-         return '$firstName $lastName';
-       }
-      ''');
-     */
-  // END CUSTOM CODE
-}
-// endregion messagegroup
-
-// region MessageGroupField
-class MessageGroupField extends FilterBase {
-  MessageGroupField(MessageGroupFilterBuilder messagegroupFB)
-      : super(messagegroupFB);
-
-  @override
-  MessageGroupFilterBuilder equals(dynamic pValue) {
-    return super.equals(pValue) as MessageGroupFilterBuilder;
-  }
-
-  @override
-  MessageGroupFilterBuilder equalsOrNull(dynamic pValue) {
-    return super.equalsOrNull(pValue) as MessageGroupFilterBuilder;
-  }
-
-  @override
-  MessageGroupFilterBuilder isNull() {
-    return super.isNull() as MessageGroupFilterBuilder;
-  }
-
-  @override
-  MessageGroupFilterBuilder contains(dynamic pValue) {
-    return super.contains(pValue) as MessageGroupFilterBuilder;
-  }
-
-  @override
-  MessageGroupFilterBuilder startsWith(dynamic pValue) {
-    return super.startsWith(pValue) as MessageGroupFilterBuilder;
-  }
-
-  @override
-  MessageGroupFilterBuilder endsWith(dynamic pValue) {
-    return super.endsWith(pValue) as MessageGroupFilterBuilder;
-  }
-
-  @override
-  MessageGroupFilterBuilder between(dynamic pFirst, dynamic pLast) {
-    return super.between(pFirst, pLast) as MessageGroupFilterBuilder;
-  }
-
-  @override
-  MessageGroupFilterBuilder greaterThan(dynamic pValue) {
-    return super.greaterThan(pValue) as MessageGroupFilterBuilder;
-  }
-
-  @override
-  MessageGroupFilterBuilder lessThan(dynamic pValue) {
-    return super.lessThan(pValue) as MessageGroupFilterBuilder;
-  }
-
-  @override
-  MessageGroupFilterBuilder greaterThanOrEquals(dynamic pValue) {
-    return super.greaterThanOrEquals(pValue) as MessageGroupFilterBuilder;
-  }
-
-  @override
-  MessageGroupFilterBuilder lessThanOrEquals(dynamic pValue) {
-    return super.lessThanOrEquals(pValue) as MessageGroupFilterBuilder;
-  }
-
-  @override
-  MessageGroupFilterBuilder inValues(dynamic pValue) {
-    return super.inValues(pValue) as MessageGroupFilterBuilder;
-  }
-
-  @override
-  MessageGroupField get not {
-    return super.not as MessageGroupField;
-  }
-}
-// endregion MessageGroupField
-
-// region MessageGroupFilterBuilder
-class MessageGroupFilterBuilder extends ConjunctionBase {
-  MessageGroupFilterBuilder(MessageGroup obj, bool? getIsDeleted)
-      : super(obj, getIsDeleted) {
-    _mnMessageGroup = obj._mnMessageGroup;
-    _softDeleteActivated = obj.softDeleteActivated;
-  }
-
-  bool _softDeleteActivated = false;
-  MessageGroupManager? _mnMessageGroup;
-
-  /// put the sql keyword 'AND'
-  @override
-  MessageGroupFilterBuilder get and {
-    super.and;
-    return this;
-  }
-
-  /// put the sql keyword 'OR'
-  @override
-  MessageGroupFilterBuilder get or {
-    super.or;
-    return this;
-  }
-
-  /// open parentheses
-  @override
-  MessageGroupFilterBuilder get startBlock {
-    super.startBlock;
-    return this;
-  }
-
-  /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
-  @override
-  MessageGroupFilterBuilder where(String? whereCriteria,
-      {dynamic parameterValue}) {
-    super.where(whereCriteria, parameterValue: parameterValue);
-    return this;
-  }
-
-  /// page = page number,
-  /// pagesize = row(s) per page
-  @override
-  MessageGroupFilterBuilder page(int page, int pagesize) {
-    super.page(page, pagesize);
-    return this;
-  }
-
-  /// int count = LIMIT
-  @override
-  MessageGroupFilterBuilder top(int count) {
-    super.top(count);
-    return this;
-  }
-
-  /// close parentheses
-  @override
-  MessageGroupFilterBuilder get endBlock {
-    super.endBlock;
-    return this;
-  }
-
-  /// argFields might be String or List<String>.
-  /// Example 1: argFields='name, date'
-  /// Example 2: argFields = ['name', 'date']
-  @override
-  MessageGroupFilterBuilder orderBy(dynamic argFields) {
-    super.orderBy(argFields);
-    return this;
-  }
-
-  /// argFields might be String or List<String>.
-  /// Example 1: argFields='field1, field2'
-  /// Example 2: argFields = ['field1', 'field2']
-  @override
-  MessageGroupFilterBuilder orderByDesc(dynamic argFields) {
-    super.orderByDesc(argFields);
-    return this;
-  }
-
-  /// argFields might be String or List<String>.
-  /// Example 1: argFields='field1, field2'
-  /// Example 2: argFields = ['field1', 'field2']
-  @override
-  MessageGroupFilterBuilder groupBy(dynamic argFields) {
-    super.groupBy(argFields);
-    return this;
-  }
-
-  /// argFields might be String or List<String>.
-  /// Example 1: argFields='name, date'
-  /// Example 2: argFields = ['name', 'date']
-  @override
-  MessageGroupFilterBuilder having(dynamic argFields) {
-    super.having(argFields);
-    return this;
-  }
-
-  MessageGroupField _setField(
-      MessageGroupField? field, String colName, DbType dbtype) {
-    return MessageGroupField(this)
-      ..param = DbParameter(
-          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
-  }
-
-  MessageGroupField? _seqId;
-  MessageGroupField get seqId {
-    return _seqId = _setField(_seqId, 'seqId', DbType.integer);
-  }
-
-  MessageGroupField? _account;
-  MessageGroupField get account {
-    return _account = _setField(_account, 'account', DbType.text);
-  }
-
-  MessageGroupField? _id;
-  MessageGroupField get id {
-    return _id = _setField(_id, 'id', DbType.integer);
-  }
-
-  MessageGroupField? _name;
-  MessageGroupField get name {
-    return _name = _setField(_name, 'name', DbType.text);
-  }
-
-  MessageGroupField? _isExpand;
-  MessageGroupField get isExpand {
-    return _isExpand = _setField(_isExpand, 'isExpand', DbType.bool);
-  }
-
-  /// Deletes List<MessageGroup> bulk by query
-  ///
-  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
-  @override
-  Future<BoolResult> delete([bool hardDelete = false]) async {
-    buildParameters();
-    var r = BoolResult(success: false);
-
-    if (_softDeleteActivated && !hardDelete) {
-      r = await _mnMessageGroup!.updateBatch(qparams, {'isDeleted': 1});
-    } else {
-      r = await _mnMessageGroup!.delete(qparams);
-    }
-    return r;
-  }
-
-  /// using:
-  /// update({'fieldName': Value})
-  /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
-  @override
-  Future<BoolResult> update(Map<String, dynamic> values) {
-    buildParameters();
-    if (qparams.limit! > 0 || qparams.offset! > 0) {
-      qparams.whereString =
-          'seqId IN (SELECT seqId from messageGroup ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
-    }
-    return _mnMessageGroup!.updateBatch(qparams, values);
-  }
-
-  /// This method always returns [MessageGroup] Obj if exist, otherwise returns null
-  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  /// ex: toSingle(preload:true) -> Loads all related objects
-  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  /// bool loadParents: if true, loads all parent objects until the object has no parent
-
-  /// <returns> MessageGroup?
-  @override
-  Future<MessageGroup?> toSingle(
-      {bool preload = false,
-      List<String>? preloadFields,
-      bool loadParents = false,
-      List<String>? loadedFields}) async {
-    buildParameters(pSize: 1);
-    final objFuture = _mnMessageGroup!.toList(qparams);
-    final data = await objFuture;
-    MessageGroup? obj;
-    if (data.isNotEmpty) {
-      obj = MessageGroup.fromMap(data[0] as Map<String, dynamic>);
-    } else {
-      obj = null;
-    }
-    return obj;
-  }
-
-  /// This method always returns [MessageGroup]
-  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  /// ex: toSingle(preload:true) -> Loads all related objects
-  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  /// bool loadParents: if true, loads all parent objects until the object has no parent
-
-  /// <returns> MessageGroup?
-  @override
-  Future<MessageGroup> toSingleOrDefault(
-      {bool preload = false,
-      List<String>? preloadFields,
-      bool loadParents = false,
-      List<String>? loadedFields}) async {
-    return await toSingle(
-            preload: preload,
-            preloadFields: preloadFields,
-            loadParents: loadParents,
-            loadedFields: loadedFields) ??
-        MessageGroup();
-  }
-
-  /// This method returns int. [MessageGroup]
-  /// <returns>int
-  @override
-  Future<int> toCount([VoidCallback Function(int c)? messagegroupCount]) async {
-    buildParameters();
-    qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final messagegroupsFuture = await _mnMessageGroup!.toList(qparams);
-    final int count = messagegroupsFuture[0]['CNT'] as int;
-    if (messagegroupCount != null) {
-      messagegroupCount(count);
-    }
-    return count;
-  }
-
-  /// This method returns List<MessageGroup> [MessageGroup]
-  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  /// ex: toList(preload:true) -> Loads all related objects
-  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  /// bool loadParents: if true, loads all parent objects until the object has no parent
-
-  /// <returns>List<MessageGroup>
-  @override
-  Future<List<MessageGroup>> toList(
-      {bool preload = false,
-      List<String>? preloadFields,
-      bool loadParents = false,
-      List<String>? loadedFields}) async {
-    final data = await toMapList();
-    final List<MessageGroup> messagegroupsData = await MessageGroup.fromMapList(
-        data,
-        preload: preload,
-        preloadFields: preloadFields,
-        loadParents: loadParents,
-        loadedFields: loadedFields,
-        setDefaultValues: qparams.selectColumns == null);
-    return messagegroupsData;
-  }
-
-  /// This method returns Json String [MessageGroup]
-  @override
-  Future<String> toJson() async {
-    final list = <dynamic>[];
-    final data = await toList();
-    for (var o in data) {
-      list.add(o.toMap(forJson: true));
-    }
-    return json.encode(list);
-  }
-
-  /// This method returns Json String. [MessageGroup]
-  @override
-  Future<String> toJsonWithChilds() async {
-    final list = <dynamic>[];
-    final data = await toList();
-    for (var o in data) {
-      list.add(await o.toMapWithChildren(false, true));
-    }
-    return json.encode(list);
-  }
-
-  /// This method returns List<dynamic>. [MessageGroup]
-  /// <returns>List<dynamic>
-  @override
-  Future<List<dynamic>> toMapList() async {
-    buildParameters();
-    return await _mnMessageGroup!.toList(qparams);
-  }
-
-  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [MessageGroup]
-  /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
-  /// <returns>List<String>
-  @override
-  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
-    final Map<String, dynamic> _retVal = <String, dynamic>{};
-    if (buildParams) {
-      buildParameters();
-    }
-    _retVal['sql'] =
-        'SELECT `seqId` FROM messageGroup WHERE ${qparams.whereString}';
-    _retVal['args'] = qparams.whereArguments;
-    return _retVal;
-  }
-
-  /// This method returns Primary Key List<int>.
-  /// <returns>List<int>
-  @override
-  Future<List<int>> toListPrimaryKey([bool buildParams = true]) async {
-    if (buildParams) {
-      buildParameters();
-    }
-    final List<int> seqIdData = <int>[];
-    qparams.selectColumns = ['seqId'];
-    final seqIdFuture = await _mnMessageGroup!.toList(qparams);
-
-    final int count = seqIdFuture.length;
-    for (int i = 0; i < count; i++) {
-      seqIdData.add(seqIdFuture[i]['seqId'] as int);
-    }
-    return seqIdData;
-  }
-
-  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [MessageGroup]
-  /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
-  @override
-  Future<List<dynamic>> toListObject() async {
-    buildParameters();
-
-    final objectFuture = _mnMessageGroup!.toList(qparams);
-
-    final List<dynamic> objectsData = <dynamic>[];
-    final data = await objectFuture;
-    final int count = data.length;
-    for (int i = 0; i < count; i++) {
-      objectsData.add(data[i]);
-    }
-    return objectsData;
-  }
-
-  /// Returns List<String> for selected first column
-  /// Sample usage: await MessageGroup.select(columnsToSelect: ['columnName']).toListString()
-  @override
-  Future<List<String>> toListString(
-      [VoidCallback Function(List<String> o)? listString]) async {
-    buildParameters();
-
-    final objectFuture = _mnMessageGroup!.toList(qparams);
-
-    final List<String> objectsData = <String>[];
-    final data = await objectFuture;
-    final int count = data.length;
-    for (int i = 0; i < count; i++) {
-      objectsData.add(data[i][qparams.selectColumns![0]].toString());
-    }
-    if (listString != null) {
-      listString(objectsData);
-    }
-    return objectsData;
-  }
-}
-// endregion MessageGroupFilterBuilder
-
-// region MessageGroupFields
-class MessageGroupFields {
-  static TableField? _fSeqId;
-  static TableField get seqId {
-    return _fSeqId =
-        _fSeqId ?? SqlSyntax.setField(_fSeqId, 'seqid', DbType.integer);
-  }
-
-  static TableField? _fAccount;
-  static TableField get account {
-    return _fAccount =
-        _fAccount ?? SqlSyntax.setField(_fAccount, 'account', DbType.text);
-  }
-
-  static TableField? _fId;
-  static TableField get id {
-    return _fId = _fId ?? SqlSyntax.setField(_fId, 'id', DbType.integer);
-  }
-
-  static TableField? _fName;
-  static TableField get name {
-    return _fName = _fName ?? SqlSyntax.setField(_fName, 'name', DbType.text);
-  }
-
-  static TableField? _fIsExpand;
-  static TableField get isExpand {
-    return _fIsExpand =
-        _fIsExpand ?? SqlSyntax.setField(_fIsExpand, 'isExpand', DbType.bool);
-  }
-}
-// endregion MessageGroupFields
-
-//region MessageGroupManager
-class MessageGroupManager extends SqfEntityProvider {
-  MessageGroupManager()
-      : super(DbModel(),
-            tableName: _tableName,
-            primaryKeyList: _primaryKeyList,
-            whereStr: _whereStr);
-  static const String _tableName = 'messageGroup';
-  static const List<String> _primaryKeyList = ['seqId'];
-  static const String _whereStr = 'seqId=?';
-}
-
-//endregion MessageGroupManager
-// region MessageItem
-class MessageItem extends TableBase {
-  MessageItem(
-      {this.seqId,
-      this.account,
-      this.id,
-      this.name,
-      this.label,
-      this.remark,
-      this.typeName,
-      this.msgTime,
-      this.msgGroupId}) {
-    _setDefaultValues();
-    softDeleteActivated = false;
-  }
-  MessageItem.withFields(this.account, this.id, this.name, this.label,
-      this.remark, this.typeName, this.msgTime, this.msgGroupId) {
-    _setDefaultValues();
-  }
-  MessageItem.withId(this.seqId, this.account, this.id, this.name, this.label,
-      this.remark, this.typeName, this.msgTime, this.msgGroupId) {
-    _setDefaultValues();
-  }
-  // fromMap v2.0
-  MessageItem.fromMap(Map<String, dynamic> o, {bool setDefaultValues = true}) {
-    if (setDefaultValues) {
-      _setDefaultValues();
-    }
-    seqId = int.tryParse(o['seqId'].toString());
-    if (o['account'] != null) {
-      account = o['account'].toString();
-    }
-    if (o['id'] != null) {
-      id = int.tryParse(o['id'].toString());
-    }
-    if (o['name'] != null) {
-      name = o['name'].toString();
-    }
-    if (o['label'] != null) {
-      label = o['label'].toString();
-    }
-    if (o['remark'] != null) {
-      remark = o['remark'].toString();
-    }
-    if (o['typeName'] != null) {
-      typeName = o['typeName'].toString();
-    }
-    if (o['msgTime'] != null) {
-      msgTime = int.tryParse(o['msgTime'].toString()) != null
-          ? DateTime.fromMillisecondsSinceEpoch(
-              int.tryParse(o['msgTime'].toString())!)
-          : DateTime.tryParse(o['msgTime'].toString());
-    }
-    if (o['msgGroupId'] != null) {
-      msgGroupId = int.tryParse(o['msgGroupId'].toString());
-    }
-  }
-  // FIELDS (MessageItem)
-  int? seqId;
-  String? account;
-  int? id;
-  String? name;
-  String? label;
-  String? remark;
-  String? typeName;
-  DateTime? msgTime;
-  int? msgGroupId;
-
-  // end FIELDS (MessageItem)
-
-  static const bool _softDeleteActivated = false;
-  MessageItemManager? __mnMessageItem;
-
-  MessageItemManager get _mnMessageItem {
-    return __mnMessageItem = __mnMessageItem ?? MessageItemManager();
-  }
-
-  // METHODS
-  @override
-  Map<String, dynamic> toMap(
-      {bool forQuery = false, bool forJson = false, bool forView = false}) {
-    final map = <String, dynamic>{};
-    map['seqId'] = seqId;
-    if (account != null || !forView) {
-      map['account'] = account;
-    }
-    if (id != null || !forView) {
-      map['id'] = id;
-    }
-    if (name != null || !forView) {
-      map['name'] = name;
-    }
-    if (label != null || !forView) {
-      map['label'] = label;
-    }
-    if (remark != null || !forView) {
-      map['remark'] = remark;
-    }
-    if (typeName != null || !forView) {
-      map['typeName'] = typeName;
-    }
-    if (msgTime != null) {
-      map['msgTime'] = forJson
-          ? msgTime!.toString()
-          : forQuery
-              ? msgTime!.millisecondsSinceEpoch
-              : msgTime;
-    } else if (msgTime != null || !forView) {
-      map['msgTime'] = null;
-    }
-    if (msgGroupId != null || !forView) {
-      map['msgGroupId'] = msgGroupId;
-    }
-
-    return map;
-  }
-
-  @override
-  Future<Map<String, dynamic>> toMapWithChildren(
-      [bool forQuery = false,
-      bool forJson = false,
-      bool forView = false]) async {
-    final map = <String, dynamic>{};
-    map['seqId'] = seqId;
-    if (account != null || !forView) {
-      map['account'] = account;
-    }
-    if (id != null || !forView) {
-      map['id'] = id;
-    }
-    if (name != null || !forView) {
-      map['name'] = name;
-    }
-    if (label != null || !forView) {
-      map['label'] = label;
-    }
-    if (remark != null || !forView) {
-      map['remark'] = remark;
-    }
-    if (typeName != null || !forView) {
-      map['typeName'] = typeName;
-    }
-    if (msgTime != null) {
-      map['msgTime'] = forJson
-          ? msgTime!.toString()
-          : forQuery
-              ? msgTime!.millisecondsSinceEpoch
-              : msgTime;
-    } else if (msgTime != null || !forView) {
-      map['msgTime'] = null;
-    }
-    if (msgGroupId != null || !forView) {
-      map['msgGroupId'] = msgGroupId;
-    }
-
-    return map;
-  }
-
-  /// This method returns Json String [MessageItem]
-  @override
-  String toJson() {
-    return json.encode(toMap(forJson: true));
-  }
-
-  /// This method returns Json String [MessageItem]
-  @override
-  Future<String> toJsonWithChilds() async {
-    return json.encode(await toMapWithChildren(false, true));
-  }
-
-  @override
-  List<dynamic> toArgs() {
-    return [
-      account,
-      id,
-      name,
-      label,
-      remark,
-      typeName,
-      msgTime != null ? msgTime!.millisecondsSinceEpoch : null,
-      msgGroupId
-    ];
-  }
-
-  @override
-  List<dynamic> toArgsWithIds() {
-    return [
-      seqId,
-      account,
-      id,
-      name,
-      label,
-      remark,
-      typeName,
-      msgTime != null ? msgTime!.millisecondsSinceEpoch : null,
-      msgGroupId
-    ];
-  }
-
-  static Future<List<MessageItem>?> fromWebUrl(Uri uri,
-      {Map<String, String>? headers}) async {
-    try {
-      final response = await http.get(uri, headers: headers);
-      return await fromJson(response.body);
-    } catch (e) {
-      debugPrint(
-          'SQFENTITY ERROR MessageItem.fromWebUrl: ErrorMessage: ${e.toString()}');
-      return null;
-    }
-  }
-
-  Future<http.Response> postUrl(Uri uri, {Map<String, String>? headers}) {
-    return http.post(uri, headers: headers, body: toJson());
-  }
-
-  static Future<List<MessageItem>> fromJson(String jsonBody) async {
-    final Iterable list = await json.decode(jsonBody) as Iterable;
-    var objList = <MessageItem>[];
-    try {
-      objList = list
-          .map((messageitem) =>
-              MessageItem.fromMap(messageitem as Map<String, dynamic>))
-          .toList();
-    } catch (e) {
-      debugPrint(
-          'SQFENTITY ERROR MessageItem.fromJson: ErrorMessage: ${e.toString()}');
-    }
-    return objList;
-  }
-
-  static Future<List<MessageItem>> fromMapList(List<dynamic> data,
-      {bool preload = false,
-      List<String>? preloadFields,
-      bool loadParents = false,
-      List<String>? loadedFields,
-      bool setDefaultValues = true}) async {
-    final List<MessageItem> objList = <MessageItem>[];
-    loadedFields = loadedFields ?? [];
-    for (final map in data) {
-      final obj = MessageItem.fromMap(map as Map<String, dynamic>,
-          setDefaultValues: setDefaultValues);
-
-      objList.add(obj);
-    }
-    return objList;
-  }
-
-  /// returns MessageItem by ID if exist, otherwise returns null
-  /// Primary Keys: int? seqId
-  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  /// ex: getById(preload:true) -> Loads all related objects
-  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  /// ex: getById(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  /// bool loadParents: if true, loads all parent objects until the object has no parent
-
-  /// <returns>returns [MessageItem] if exist, otherwise returns null
-  Future<MessageItem?> getById(int? seqId,
-      {bool preload = false,
-      List<String>? preloadFields,
-      bool loadParents = false,
-      List<String>? loadedFields}) async {
-    if (seqId == null) {
-      return null;
-    }
-    MessageItem? obj;
-    final data = await _mnMessageItem.getById([seqId]);
-    if (data.length != 0) {
-      obj = MessageItem.fromMap(data[0] as Map<String, dynamic>);
-    } else {
-      obj = null;
-    }
-    return obj;
-  }
-
-  /// Saves the (MessageItem) object. If the seqId field is null, saves as a new record and returns new seqId, if seqId is not null then updates record
-  /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
-  /// <returns>Returns seqId
-  @override
-  Future<int?> save({bool ignoreBatch = true}) async {
-    if (seqId == null || seqId == 0) {
-      seqId = await _mnMessageItem.insert(this, ignoreBatch);
-    } else {
-      await _mnMessageItem.update(this);
-    }
-
-    return seqId;
-  }
-
-  /// Saves the (MessageItem) object. If the seqId field is null, saves as a new record and returns new seqId, if seqId is not null then updates record
-  /// ignoreBatch = true as a default. Set ignoreBatch to false if you run more than one save() operation those are between batchStart and batchCommit
-  /// <returns>Returns seqId
-  @override
-  Future<int?> saveOrThrow({bool ignoreBatch = true}) async {
-    if (seqId == null || seqId == 0) {
-      seqId = await _mnMessageItem.insertOrThrow(this, ignoreBatch);
-
-      isInsert = true;
-    } else {
-      // seqId= await _upsert(); // removed in sqfentity_gen 1.3.0+6
-      await _mnMessageItem.updateOrThrow(this);
-    }
-
-    return seqId;
-  }
-
-  /// saveAs MessageItem. Returns a new Primary Key value of MessageItem
-
-  /// <returns>Returns a new Primary Key value of MessageItem
-  @override
-  Future<int?> saveAs({bool ignoreBatch = true}) async {
-    seqId = null;
-
-    return save(ignoreBatch: ignoreBatch);
-  }
-
-  /// saveAll method saves the sent List<MessageItem> as a bulk in one transaction
-  /// Returns a <List<BoolResult>>
-  static Future<List<dynamic>> saveAll(List<MessageItem> messageitems,
-      {bool? exclusive, bool? noResult, bool? continueOnError}) async {
-    List<dynamic>? result = [];
-    // If there is no open transaction, start one
-    final isStartedBatch = await DbModel().batchStart();
-    for (final obj in messageitems) {
-      await obj.save(ignoreBatch: false);
-    }
-    if (!isStartedBatch) {
-      result = await DbModel().batchCommit(
-          exclusive: exclusive,
-          noResult: noResult,
-          continueOnError: continueOnError);
-      for (int i = 0; i < messageitems.length; i++) {
-        if (messageitems[i].seqId == null) {
-          messageitems[i].seqId = result![i] as int;
-        }
-      }
-    }
-    return result!;
-  }
-
-  /// Updates if the record exists, otherwise adds a new row
-  /// <returns>Returns seqId
-  @override
-  Future<int?> upsert({bool ignoreBatch = true}) async {
-    try {
-      final result = await _mnMessageItem.rawInsert(
-          'INSERT OR REPLACE INTO messageItem (seqId, account, id, name, label, remark, typeName, msgTime, msgGroupId)  VALUES (?,?,?,?,?,?,?,?,?)',
-          [
-            seqId,
-            account,
-            id,
-            name,
-            label,
-            remark,
-            typeName,
-            msgTime != null ? msgTime!.millisecondsSinceEpoch : null,
-            msgGroupId
-          ],
-          ignoreBatch);
-      if (result! > 0) {
-        saveResult = BoolResult(
-            success: true,
-            successMessage: 'MessageItem seqId=$seqId updated successfully');
-      } else {
-        saveResult = BoolResult(
-            success: false,
-            errorMessage: 'MessageItem seqId=$seqId did not update');
-      }
-      return seqId;
-    } catch (e) {
-      saveResult = BoolResult(
-          success: false,
-          errorMessage: 'MessageItem Save failed. Error: ${e.toString()}');
-      return null;
-    }
-  }
-
-  /// inserts or replaces the sent List<<MessageItem>> as a bulk in one transaction.
-  /// upsertAll() method is faster then saveAll() method. upsertAll() should be used when you are sure that the primary key is greater than zero
-  /// Returns a BoolCommitResult
-  @override
-  Future<BoolCommitResult> upsertAll(List<MessageItem> messageitems,
-      {bool? exclusive, bool? noResult, bool? continueOnError}) async {
-    final results = await _mnMessageItem.rawInsertAll(
-        'INSERT OR REPLACE INTO messageItem (seqId, account, id, name, label, remark, typeName, msgTime, msgGroupId)  VALUES (?,?,?,?,?,?,?,?,?)',
-        messageitems,
-        exclusive: exclusive,
-        noResult: noResult,
-        continueOnError: continueOnError);
-    return results;
-  }
-
-  /// Deletes MessageItem
-
-  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
-  @override
-  Future<BoolResult> delete([bool hardDelete = false]) async {
-    debugPrint('SQFENTITIY: delete MessageItem invoked (seqId=$seqId)');
-    if (!_softDeleteActivated || hardDelete) {
-      return _mnMessageItem
-          .delete(QueryParams(whereString: 'seqId=?', whereArguments: [seqId]));
-    } else {
-      return _mnMessageItem.updateBatch(
-          QueryParams(whereString: 'seqId=?', whereArguments: [seqId]),
-          {'isDeleted': 1});
-    }
-  }
-
-  @override
-  Future<BoolResult> recover([bool recoverChilds = true]) {
-    // not implemented because:
-    final msg =
-        'set useSoftDeleting:true in the table definition of [MessageItem] to use this feature';
-    throw UnimplementedError(msg);
-  }
-
-  @override
-  MessageItemFilterBuilder select(
-      {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return MessageItemFilterBuilder(this, getIsDeleted)
-      ..qparams.selectColumns = columnsToSelect;
-  }
-
-  @override
-  MessageItemFilterBuilder distinct(
-      {List<String>? columnsToSelect, bool? getIsDeleted}) {
-    return MessageItemFilterBuilder(this, getIsDeleted)
-      ..qparams.selectColumns = columnsToSelect
-      ..qparams.distinct = true;
-  }
-
-  void _setDefaultValues() {}
-
-  @override
-  void rollbackPk() {
-    if (isInsert == true) {
-      seqId = null;
-    }
-  }
-
-  // END METHODS
-  // BEGIN CUSTOM CODE
-  /*
-      you can define customCode property of your SqfEntityTable constant. For example:
-      const tablePerson = SqfEntityTable(
-      tableName: 'person',
-      primaryKeyName: 'id',
-      primaryKeyType: PrimaryKeyType.integer_auto_incremental,
-      fields: [
-        SqfEntityField('firstName', DbType.text),
-        SqfEntityField('lastName', DbType.text),
-      ],
-      customCode: '''
-       String fullName()
-       { 
-         return '$firstName $lastName';
-       }
-      ''');
-     */
-  // END CUSTOM CODE
-}
-// endregion messageitem
-
-// region MessageItemField
-class MessageItemField extends FilterBase {
-  MessageItemField(MessageItemFilterBuilder messageitemFB)
-      : super(messageitemFB);
-
-  @override
-  MessageItemFilterBuilder equals(dynamic pValue) {
-    return super.equals(pValue) as MessageItemFilterBuilder;
-  }
-
-  @override
-  MessageItemFilterBuilder equalsOrNull(dynamic pValue) {
-    return super.equalsOrNull(pValue) as MessageItemFilterBuilder;
-  }
-
-  @override
-  MessageItemFilterBuilder isNull() {
-    return super.isNull() as MessageItemFilterBuilder;
-  }
-
-  @override
-  MessageItemFilterBuilder contains(dynamic pValue) {
-    return super.contains(pValue) as MessageItemFilterBuilder;
-  }
-
-  @override
-  MessageItemFilterBuilder startsWith(dynamic pValue) {
-    return super.startsWith(pValue) as MessageItemFilterBuilder;
-  }
-
-  @override
-  MessageItemFilterBuilder endsWith(dynamic pValue) {
-    return super.endsWith(pValue) as MessageItemFilterBuilder;
-  }
-
-  @override
-  MessageItemFilterBuilder between(dynamic pFirst, dynamic pLast) {
-    return super.between(pFirst, pLast) as MessageItemFilterBuilder;
-  }
-
-  @override
-  MessageItemFilterBuilder greaterThan(dynamic pValue) {
-    return super.greaterThan(pValue) as MessageItemFilterBuilder;
-  }
-
-  @override
-  MessageItemFilterBuilder lessThan(dynamic pValue) {
-    return super.lessThan(pValue) as MessageItemFilterBuilder;
-  }
-
-  @override
-  MessageItemFilterBuilder greaterThanOrEquals(dynamic pValue) {
-    return super.greaterThanOrEquals(pValue) as MessageItemFilterBuilder;
-  }
-
-  @override
-  MessageItemFilterBuilder lessThanOrEquals(dynamic pValue) {
-    return super.lessThanOrEquals(pValue) as MessageItemFilterBuilder;
-  }
-
-  @override
-  MessageItemFilterBuilder inValues(dynamic pValue) {
-    return super.inValues(pValue) as MessageItemFilterBuilder;
-  }
-
-  @override
-  MessageItemField get not {
-    return super.not as MessageItemField;
-  }
-}
-// endregion MessageItemField
-
-// region MessageItemFilterBuilder
-class MessageItemFilterBuilder extends ConjunctionBase {
-  MessageItemFilterBuilder(MessageItem obj, bool? getIsDeleted)
-      : super(obj, getIsDeleted) {
-    _mnMessageItem = obj._mnMessageItem;
-    _softDeleteActivated = obj.softDeleteActivated;
-  }
-
-  bool _softDeleteActivated = false;
-  MessageItemManager? _mnMessageItem;
-
-  /// put the sql keyword 'AND'
-  @override
-  MessageItemFilterBuilder get and {
-    super.and;
-    return this;
-  }
-
-  /// put the sql keyword 'OR'
-  @override
-  MessageItemFilterBuilder get or {
-    super.or;
-    return this;
-  }
-
-  /// open parentheses
-  @override
-  MessageItemFilterBuilder get startBlock {
-    super.startBlock;
-    return this;
-  }
-
-  /// String whereCriteria, write raw query without 'where' keyword. Like this: 'field1 like 'test%' and field2 = 3'
-  @override
-  MessageItemFilterBuilder where(String? whereCriteria,
-      {dynamic parameterValue}) {
-    super.where(whereCriteria, parameterValue: parameterValue);
-    return this;
-  }
-
-  /// page = page number,
-  /// pagesize = row(s) per page
-  @override
-  MessageItemFilterBuilder page(int page, int pagesize) {
-    super.page(page, pagesize);
-    return this;
-  }
-
-  /// int count = LIMIT
-  @override
-  MessageItemFilterBuilder top(int count) {
-    super.top(count);
-    return this;
-  }
-
-  /// close parentheses
-  @override
-  MessageItemFilterBuilder get endBlock {
-    super.endBlock;
-    return this;
-  }
-
-  /// argFields might be String or List<String>.
-  /// Example 1: argFields='name, date'
-  /// Example 2: argFields = ['name', 'date']
-  @override
-  MessageItemFilterBuilder orderBy(dynamic argFields) {
-    super.orderBy(argFields);
-    return this;
-  }
-
-  /// argFields might be String or List<String>.
-  /// Example 1: argFields='field1, field2'
-  /// Example 2: argFields = ['field1', 'field2']
-  @override
-  MessageItemFilterBuilder orderByDesc(dynamic argFields) {
-    super.orderByDesc(argFields);
-    return this;
-  }
-
-  /// argFields might be String or List<String>.
-  /// Example 1: argFields='field1, field2'
-  /// Example 2: argFields = ['field1', 'field2']
-  @override
-  MessageItemFilterBuilder groupBy(dynamic argFields) {
-    super.groupBy(argFields);
-    return this;
-  }
-
-  /// argFields might be String or List<String>.
-  /// Example 1: argFields='name, date'
-  /// Example 2: argFields = ['name', 'date']
-  @override
-  MessageItemFilterBuilder having(dynamic argFields) {
-    super.having(argFields);
-    return this;
-  }
-
-  MessageItemField _setField(
-      MessageItemField? field, String colName, DbType dbtype) {
-    return MessageItemField(this)
-      ..param = DbParameter(
-          dbType: dbtype, columnName: colName, wStartBlock: openedBlock);
-  }
-
-  MessageItemField? _seqId;
-  MessageItemField get seqId {
-    return _seqId = _setField(_seqId, 'seqId', DbType.integer);
-  }
-
-  MessageItemField? _account;
-  MessageItemField get account {
-    return _account = _setField(_account, 'account', DbType.text);
-  }
-
-  MessageItemField? _id;
-  MessageItemField get id {
-    return _id = _setField(_id, 'id', DbType.integer);
-  }
-
-  MessageItemField? _name;
-  MessageItemField get name {
-    return _name = _setField(_name, 'name', DbType.text);
-  }
-
-  MessageItemField? _label;
-  MessageItemField get label {
-    return _label = _setField(_label, 'label', DbType.text);
-  }
-
-  MessageItemField? _remark;
-  MessageItemField get remark {
-    return _remark = _setField(_remark, 'remark', DbType.text);
-  }
-
-  MessageItemField? _typeName;
-  MessageItemField get typeName {
-    return _typeName = _setField(_typeName, 'typeName', DbType.text);
-  }
-
-  MessageItemField? _msgTime;
-  MessageItemField get msgTime {
-    return _msgTime = _setField(_msgTime, 'msgTime', DbType.datetime);
-  }
-
-  MessageItemField? _msgGroupId;
-  MessageItemField get msgGroupId {
-    return _msgGroupId = _setField(_msgGroupId, 'msgGroupId', DbType.integer);
-  }
-
-  /// Deletes List<MessageItem> bulk by query
-  ///
-  /// <returns>BoolResult res.success= true (Deleted), false (Could not be deleted)
-  @override
-  Future<BoolResult> delete([bool hardDelete = false]) async {
-    buildParameters();
-    var r = BoolResult(success: false);
-
-    if (_softDeleteActivated && !hardDelete) {
-      r = await _mnMessageItem!.updateBatch(qparams, {'isDeleted': 1});
-    } else {
-      r = await _mnMessageItem!.delete(qparams);
-    }
-    return r;
-  }
-
-  /// using:
-  /// update({'fieldName': Value})
-  /// fieldName must be String. Value is dynamic, it can be any of the (int, bool, String.. )
-  @override
-  Future<BoolResult> update(Map<String, dynamic> values) {
-    buildParameters();
-    if (qparams.limit! > 0 || qparams.offset! > 0) {
-      qparams.whereString =
-          'seqId IN (SELECT seqId from messageItem ${qparams.whereString!.isNotEmpty ? 'WHERE ${qparams.whereString}' : ''}${qparams.limit! > 0 ? ' LIMIT ${qparams.limit}' : ''}${qparams.offset! > 0 ? ' OFFSET ${qparams.offset}' : ''})';
-    }
-    return _mnMessageItem!.updateBatch(qparams, values);
-  }
-
-  /// This method always returns [MessageItem] Obj if exist, otherwise returns null
-  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  /// ex: toSingle(preload:true) -> Loads all related objects
-  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  /// bool loadParents: if true, loads all parent objects until the object has no parent
-
-  /// <returns> MessageItem?
-  @override
-  Future<MessageItem?> toSingle(
-      {bool preload = false,
-      List<String>? preloadFields,
-      bool loadParents = false,
-      List<String>? loadedFields}) async {
-    buildParameters(pSize: 1);
-    final objFuture = _mnMessageItem!.toList(qparams);
-    final data = await objFuture;
-    MessageItem? obj;
-    if (data.isNotEmpty) {
-      obj = MessageItem.fromMap(data[0] as Map<String, dynamic>);
-    } else {
-      obj = null;
-    }
-    return obj;
-  }
-
-  /// This method always returns [MessageItem]
-  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  /// ex: toSingle(preload:true) -> Loads all related objects
-  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  /// ex: toSingle(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  /// bool loadParents: if true, loads all parent objects until the object has no parent
-
-  /// <returns> MessageItem?
-  @override
-  Future<MessageItem> toSingleOrDefault(
-      {bool preload = false,
-      List<String>? preloadFields,
-      bool loadParents = false,
-      List<String>? loadedFields}) async {
-    return await toSingle(
-            preload: preload,
-            preloadFields: preloadFields,
-            loadParents: loadParents,
-            loadedFields: loadedFields) ??
-        MessageItem();
-  }
-
-  /// This method returns int. [MessageItem]
-  /// <returns>int
-  @override
-  Future<int> toCount([VoidCallback Function(int c)? messageitemCount]) async {
-    buildParameters();
-    qparams.selectColumns = ['COUNT(1) AS CNT'];
-    final messageitemsFuture = await _mnMessageItem!.toList(qparams);
-    final int count = messageitemsFuture[0]['CNT'] as int;
-    if (messageitemCount != null) {
-      messageitemCount(count);
-    }
-    return count;
-  }
-
-  /// This method returns List<MessageItem> [MessageItem]
-  /// bool preload: if true, loads all related child objects (Set preload to true if you want to load all fields related to child or parent)
-  /// ex: toList(preload:true) -> Loads all related objects
-  /// List<String> preloadFields: specify the fields you want to preload (preload parameter's value should also be "true")
-  /// ex: toList(preload:true, preloadFields:['plField1','plField2'... etc])  -> Loads only certain fields what you specified
-  /// bool loadParents: if true, loads all parent objects until the object has no parent
-
-  /// <returns>List<MessageItem>
-  @override
-  Future<List<MessageItem>> toList(
-      {bool preload = false,
-      List<String>? preloadFields,
-      bool loadParents = false,
-      List<String>? loadedFields}) async {
-    final data = await toMapList();
-    final List<MessageItem> messageitemsData = await MessageItem.fromMapList(
-        data,
-        preload: preload,
-        preloadFields: preloadFields,
-        loadParents: loadParents,
-        loadedFields: loadedFields,
-        setDefaultValues: qparams.selectColumns == null);
-    return messageitemsData;
-  }
-
-  /// This method returns Json String [MessageItem]
-  @override
-  Future<String> toJson() async {
-    final list = <dynamic>[];
-    final data = await toList();
-    for (var o in data) {
-      list.add(o.toMap(forJson: true));
-    }
-    return json.encode(list);
-  }
-
-  /// This method returns Json String. [MessageItem]
-  @override
-  Future<String> toJsonWithChilds() async {
-    final list = <dynamic>[];
-    final data = await toList();
-    for (var o in data) {
-      list.add(await o.toMapWithChildren(false, true));
-    }
-    return json.encode(list);
-  }
-
-  /// This method returns List<dynamic>. [MessageItem]
-  /// <returns>List<dynamic>
-  @override
-  Future<List<dynamic>> toMapList() async {
-    buildParameters();
-    return await _mnMessageItem!.toList(qparams);
-  }
-
-  /// This method returns Primary Key List SQL and Parameters retVal = Map<String,dynamic>. [MessageItem]
-  /// retVal['sql'] = SQL statement string, retVal['args'] = whereArguments List<dynamic>;
-  /// <returns>List<String>
-  @override
-  Map<String, dynamic> toListPrimaryKeySQL([bool buildParams = true]) {
-    final Map<String, dynamic> _retVal = <String, dynamic>{};
-    if (buildParams) {
-      buildParameters();
-    }
-    _retVal['sql'] =
-        'SELECT `seqId` FROM messageItem WHERE ${qparams.whereString}';
-    _retVal['args'] = qparams.whereArguments;
-    return _retVal;
-  }
-
-  /// This method returns Primary Key List<int>.
-  /// <returns>List<int>
-  @override
-  Future<List<int>> toListPrimaryKey([bool buildParams = true]) async {
-    if (buildParams) {
-      buildParameters();
-    }
-    final List<int> seqIdData = <int>[];
-    qparams.selectColumns = ['seqId'];
-    final seqIdFuture = await _mnMessageItem!.toList(qparams);
-
-    final int count = seqIdFuture.length;
-    for (int i = 0; i < count; i++) {
-      seqIdData.add(seqIdFuture[i]['seqId'] as int);
-    }
-    return seqIdData;
-  }
-
-  /// Returns List<dynamic> for selected columns. Use this method for 'groupBy' with min,max,avg..  [MessageItem]
-  /// Sample usage: (see EXAMPLE 4.2 at https://github.com/hhtokpinar/sqfEntity#group-by)
-  @override
-  Future<List<dynamic>> toListObject() async {
-    buildParameters();
-
-    final objectFuture = _mnMessageItem!.toList(qparams);
-
-    final List<dynamic> objectsData = <dynamic>[];
-    final data = await objectFuture;
-    final int count = data.length;
-    for (int i = 0; i < count; i++) {
-      objectsData.add(data[i]);
-    }
-    return objectsData;
-  }
-
-  /// Returns List<String> for selected first column
-  /// Sample usage: await MessageItem.select(columnsToSelect: ['columnName']).toListString()
-  @override
-  Future<List<String>> toListString(
-      [VoidCallback Function(List<String> o)? listString]) async {
-    buildParameters();
-
-    final objectFuture = _mnMessageItem!.toList(qparams);
-
-    final List<String> objectsData = <String>[];
-    final data = await objectFuture;
-    final int count = data.length;
-    for (int i = 0; i < count; i++) {
-      objectsData.add(data[i][qparams.selectColumns![0]].toString());
-    }
-    if (listString != null) {
-      listString(objectsData);
-    }
-    return objectsData;
-  }
-}
-// endregion MessageItemFilterBuilder
-
-// region MessageItemFields
-class MessageItemFields {
-  static TableField? _fSeqId;
-  static TableField get seqId {
-    return _fSeqId =
-        _fSeqId ?? SqlSyntax.setField(_fSeqId, 'seqid', DbType.integer);
-  }
-
-  static TableField? _fAccount;
-  static TableField get account {
-    return _fAccount =
-        _fAccount ?? SqlSyntax.setField(_fAccount, 'account', DbType.text);
-  }
-
-  static TableField? _fId;
-  static TableField get id {
-    return _fId = _fId ?? SqlSyntax.setField(_fId, 'id', DbType.integer);
-  }
-
-  static TableField? _fName;
-  static TableField get name {
-    return _fName = _fName ?? SqlSyntax.setField(_fName, 'name', DbType.text);
-  }
-
-  static TableField? _fLabel;
-  static TableField get label {
-    return _fLabel =
-        _fLabel ?? SqlSyntax.setField(_fLabel, 'label', DbType.text);
-  }
-
-  static TableField? _fRemark;
-  static TableField get remark {
-    return _fRemark =
-        _fRemark ?? SqlSyntax.setField(_fRemark, 'remark', DbType.text);
-  }
-
-  static TableField? _fTypeName;
-  static TableField get typeName {
-    return _fTypeName =
-        _fTypeName ?? SqlSyntax.setField(_fTypeName, 'typeName', DbType.text);
-  }
-
-  static TableField? _fMsgTime;
-  static TableField get msgTime {
-    return _fMsgTime =
-        _fMsgTime ?? SqlSyntax.setField(_fMsgTime, 'msgTime', DbType.datetime);
-  }
-
-  static TableField? _fMsgGroupId;
-  static TableField get msgGroupId {
-    return _fMsgGroupId = _fMsgGroupId ??
-        SqlSyntax.setField(_fMsgGroupId, 'msgGroupId', DbType.integer);
-  }
-}
-// endregion MessageItemFields
-
-//region MessageItemManager
-class MessageItemManager extends SqfEntityProvider {
-  MessageItemManager()
-      : super(DbModel(),
-            tableName: _tableName,
-            primaryKeyList: _primaryKeyList,
-            whereStr: _whereStr);
-  static const String _tableName = 'messageItem';
-  static const List<String> _primaryKeyList = ['seqId'];
-  static const String _whereStr = 'seqId=?';
-}
-
-//endregion MessageItemManager
 /// Region SEQUENCE IdentitySequence
 class IdentitySequence {
   /// Assigns a new value when it is triggered and returns the new value

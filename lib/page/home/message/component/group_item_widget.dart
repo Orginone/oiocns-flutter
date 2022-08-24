@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/model/message_group_util.dart';
 import 'package:orginone/page/home/message/component/message_item_widget.dart';
 
 import '../../../../model/db_model.dart';
+import '../../../../model/user_space_relation_util.dart';
 import '../message_controller.dart';
 
 class GroupItemWidget extends GetView<MessageController> {
-  final MessageGroup messageGroup;
+  final UserSpaceRelation messageGroup;
   final Rx<bool> isExpand;
   final Rx<double> height;
 
@@ -26,7 +26,7 @@ class GroupItemWidget extends GetView<MessageController> {
             behavior: HitTestBehavior.translucent,
             onTap: () {
               var isExpandValue = !isExpand.value;
-              MessageGroupUtil.updateExpand(messageGroup.id!, isExpandValue);
+              UserSpaceRelationUtil.updateExpand(messageGroup.targetId!, isExpandValue);
               isExpand.value = isExpandValue;
             },
             child: Row(
@@ -61,14 +61,14 @@ class GroupItemWidget extends GetView<MessageController> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: controller
-                            .messageGroupItemsMap[messageGroup.id]?.length ??
+                            .messageGroupItemsMap[messageGroup.targetId]?.length ??
                         0,
                     itemBuilder: (context, index) {
                       var messageItem = controller
-                          .messageGroupItemsMap[messageGroup.id]![index];
+                          .messageGroupItemsMap[messageGroup.targetId]![index];
                       return MessageItemWidget(
-                          messageItem.msgGroupId!,
-                          messageItem.id!,
+                          messageItem.activeTargetId!,
+                          messageItem.passiveTargetId!,
                           messageItem.name!,
                           messageItem.label!);
                     }))))
