@@ -217,36 +217,33 @@ class CzhPage extends GetView<CzhController> {
                 ],
               )),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Expanded(
-                flex: 1,
+              SizedBox(
+                width: 110,
                 child: GFButton(
                   color: const Color.fromRGBO(254,240,240, 1),
                   textColor: const Color.fromRGBO(255, 0, 0, 1),
                   onPressed: () async {},
                   text: "退出该群",
-                  blockButton: true,
                 ),
               ),
-              Expanded(
-                flex: 1,
+              SizedBox(
+                width: 110,
                 child: GFButton(
                   color: const Color.fromRGBO(255, 0, 0, 1),
                   textColor: const Color.fromRGBO(254,240,240, 1),
                   onPressed: () async {},
                   text: "解散该群",
-                  blockButton: true,
                 ),
               ),
-              Expanded(
-                flex: 1,
+              SizedBox(
+                width: 130,
                 child: GFButton(
                   color: const Color.fromRGBO(254,240,240, 1),
                   textColor: const Color.fromRGBO(255, 0, 0, 1),
                   onPressed: () async {},
                   text: "清空聊天记录",
-                  blockButton: true,
                 ),
               ),
             ],

@@ -1,9 +1,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logging/logging.dart';
+import 'package:orginone/model/db_model.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
+import 'package:orginone/model/target_relation_util.dart';
+
 
 class CzhController extends GetxController {
+  final Logger log = Logger("czhController");
   String currentRelationId = '';
   TextEditingController searchGroupTextController = TextEditingController();
   MessageController messageController = Get.find<MessageController>();
@@ -16,16 +21,21 @@ class CzhController extends GetxController {
   RxList<String> originPersonList = <String>['测试1','测试2','测试3'].obs;
   //筛选过后的成员列表，不填值会报错
   RxList<String> filterPersonList = <String>[].obs;
+  //当前关系对象的信息
+  late TargetRelation? currentTargetRelation;
   void test1(a) {
     textField1.value = a;
   }
   @override
   void onInit() async {
     await getRelationData();
-    //初始化
+    //初始化成员列表
     for(String person in originPersonList) {
       filterPersonList.add(person);
     }
+    //初始化
+    currentTargetRelation = await TargetRelationUtil.getItem(messageController.currentMessageItemId);
+    log.info(currentTargetRelation);
     super.onInit();
   }
   //查询成员
