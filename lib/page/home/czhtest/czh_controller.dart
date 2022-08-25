@@ -28,13 +28,14 @@ class CzhController extends GetxController {
   }
   @override
   void onInit() async {
-    //初始化当前会话对象
-    currentTargetRelation = await TargetRelationUtil.getItem(messageController.currentMessageItemId);
-    log.info(currentTargetRelation);
+    await getRelationData();
     //初始化成员列表
     for(String person in originPersonList) {
       filterPersonList.add(person);
     }
+    //初始化
+    currentTargetRelation = await TargetRelationUtil.getItem(messageController.currentSpaceId, messageController.currentMessageItemId);
+    log.info(currentTargetRelation);
     super.onInit();
   }
   //查询成员
