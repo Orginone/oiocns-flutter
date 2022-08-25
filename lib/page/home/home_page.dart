@@ -72,10 +72,27 @@ class HomePage extends GetView<HomeController> {
       body: GFTabBarView(
           controller: tabController,
           children: tabs.map((e) => e.widget).toList()),
-      bottomNavigationBar: GFTabBar(
-        length: tabController.length,
-        controller: tabController,
-        tabs: tabs.map((e) => e.tab).toList(),
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+            border: Border(top: BorderSide(width: 0.5, color: Colors.black12)),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0xFFE8E8E8),
+                offset: Offset(8, 8),
+                blurRadius: 10,
+                spreadRadius: 1,
+              )
+            ]),
+        child: GFTabBar(
+          tabBarHeight: 60,
+          indicatorColor: CustomColors.blue,
+          tabBarColor: CustomColors.easyGrey,
+          labelColor: Colors.black,
+          labelStyle: const TextStyle(fontSize: 12),
+          length: tabController.length,
+          controller: tabController,
+          tabs: tabs.map((e) => e.tab).toList(),
+        ),
       ),
     );
   }

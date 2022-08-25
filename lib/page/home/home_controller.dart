@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
+import 'package:orginone/page/home/organization/organization_page.dart';
 
 import '../../api_resp/target_resp.dart';
 import '../../util/hive_util.dart';
@@ -9,7 +10,6 @@ import 'message/message_page.dart';
 
 class HomeController extends GetxController
     with GetSingleTickerProviderStateMixin {
-
   TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
 
   late List<TabCombine> tabs;
@@ -34,18 +34,23 @@ class HomeController extends GetxController
       switchSpaces(companys[0]);
     }
     // 初始化 Tabs 以及 TabController
-    tabs = const <TabCombine>[
-      TabCombine(Tab(icon: Icon(Icons.directions_bike), child: Text('消息')),
-          MessagePage()),
-      TabCombine(Tab(icon: Icon(Icons.directions_bike), child: Text('组织架构')),
-          MessagePage()),
-      TabCombine(Tab(icon: Icon(Icons.directions_bike), child: Text('工作台')),
-          MessagePage()),
-      TabCombine(Tab(icon: Icon(Icons.directions_bike), child: Text('我的')),
-          MessagePage()),
+    tabs = <TabCombine>[
+      TabCombine(
+          _buildTab(Icons.chat_bubble_outline, '消息'), const MessagePage()),
+      TabCombine(
+          _buildTab(Icons.groups_outlined, '关系'), const OrganizationPage()),
+      TabCombine(_buildTab(Icons.work_outline, '工作台'), MessagePage()),
+      TabCombine(_buildTab(Icons.person_outline, '我的'), MessagePage()),
     ];
     tabController = TabController(length: tabs.length, vsync: this);
     super.onInit();
+  }
+
+  Tab _buildTab(IconData iconData, String label) {
+    return Tab(
+        iconMargin: const EdgeInsets.all(5),
+        icon: Icon(iconData),
+        child: Text(label));
   }
 
   void switchSpaces(TargetResp targetResp) {
