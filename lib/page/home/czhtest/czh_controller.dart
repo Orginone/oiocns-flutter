@@ -2,40 +2,47 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/model/db_model.dart';
+import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/model/target_relation_util.dart';
+import 'package:orginone/util/hive_util.dart';
 
 
 class CzhController extends GetxController {
   final Logger log = Logger("czhController");
-  String currentRelationId = '';
   TextEditingController searchGroupTextController = TextEditingController();
   MessageController messageController = Get.find<MessageController>();
+  ChatController chatController = Get.find<ChatController>();
   var textField1 = 1.obs;
   var textField2 = 2.obs;
-  //关系对象,估计用接口或长链接hubUtil下的方法获取
-  var relationObj = {
-  }.obs;
+  //当前用户信息
+  TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
   //接收关系对象下的成员列表
-  RxList<String> originPersonList = <String>['测试1','测试2','测试3'].obs;
+  RxList<TargetResp> originPersonList = <TargetResp>[].obs;
   //筛选过后的成员列表，不填值会报错
-  RxList<String> filterPersonList = <String>[].obs;
-  //当前关系对象的信息
-  late TargetRelation? currentTargetRelation;
+  RxList<TargetResp> filterPersonList = <TargetResp>[].obs;
+  //当前关系对象(观测)的信息
+  TargetRelation? currentTargetRelation;
+  RxString name = ''.obs;
+  RxString remark = ''.obs;
+
   void test1(a) {
     textField1.value = a;
   }
   @override
   void onInit() async {
-    await getRelationData();
+    //初始化关系对象
+    currentTargetRelation = await TargetRelationUtil.getItem(messageController.currentSpaceId, messageController.currentMessageItemId);
+    name.value = currentTargetRelation?.name ?? '';
+    remark.value = currentTargetRelation?.remark ?? '';
+    log.info(currentTargetRelation);
     //初始化成员列表
-    for(String person in originPersonList) {
+    for(TargetResp person in chatController.personList) {
+      originPersonList.add(person);
       filterPersonList.add(person);
     }
-    //初始化
-    currentTargetRelation = await TargetRelationUtil.getItem(messageController.currentSpaceId, messageController.currentMessageItemId);
-    log.info(currentTargetRelation);
     super.onInit();
   }
   //查询成员
@@ -44,8 +51,8 @@ class CzhController extends GetxController {
     filterPersonList.clear();
     //筛选
     RegExp exp = RegExp(searchGroupTextController.text);
-    List<String> tempArray = originPersonList.where((item) => exp.hasMatch(item)).toList();
-    for(String person in tempArray) {
+    List<TargetResp> tempArray = originPersonList.where((item) => exp.hasMatch(item.name)).toList();
+    for(TargetResp person in tempArray) {
       filterPersonList.add(person);
     }
   }

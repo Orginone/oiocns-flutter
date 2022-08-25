@@ -25,6 +25,7 @@ class ChatController extends GetxController {
 
   // 当前群所有人
   late Map<int, TargetResp> personMap;
+  late List<TargetResp> personList;
 
   // 老数据分页信息
   var currentPage = 1;
@@ -120,6 +121,7 @@ class ChatController extends GetxController {
   /// 查询群成员信息
   Future<void> getPersons() async {
     personMap = {};
+    personList = [];
     var label = messageItem.label;
     if (label == "群组" || label == "公司") {
       List<TargetResp> persons =
@@ -127,6 +129,7 @@ class ChatController extends GetxController {
       if (persons.isNotEmpty) {
         for (var person in persons) {
           personMap[person.id] = person;
+          personList.add(person);
         }
       }
     }

@@ -1,6 +1,5 @@
 import 'package:orginone/util/hive_util.dart';
 
-import '../api_resp/target_resp.dart';
 import '../api_resp/user_resp.dart';
 import 'db_model.dart';
 
