@@ -7,6 +7,12 @@ import 'package:orginone/page/home/message/chat/chat_binding.dart';
 import 'package:orginone/page/home/message/chat/chat_page.dart';
 import 'package:orginone/page/home/message/message_binding.dart';
 import 'package:orginone/page/home/message/message_page.dart';
+import 'package:orginone/page/home/organization/friends/friends_binding.dart';
+import 'package:orginone/page/home/organization/friends/friends_page.dart';
+import 'package:orginone/page/home/organization/groups/groups_binding.dart';
+import 'package:orginone/page/home/organization/groups/groups_page.dart';
+import 'package:orginone/page/home/organization/units/units_binding.dart';
+import 'package:orginone/page/home/organization/units/units_page.dart';
 import 'package:orginone/page/login/login_binding.dart';
 import 'package:orginone/page/login/login_page.dart';
 import 'package:orginone/page/register/register_binding.dart';
@@ -20,6 +26,8 @@ class Routers {
   static const String message = "/message";
   static const String chat = "/chat";
   static const String czh = "/czh";
+  static const String friends = "/friends";
+  static const String units = "/units";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -53,6 +61,21 @@ class Routers {
         name: Routers.czh,
         page: () => const CzhPage(),
         binding: CzhPageBinding(),
+      ),
+      GetPage(
+        name: Routers.friends,
+        page: () => const FriendsPage(),
+        binding: FriendsBinding(),
+      ),
+      GetPage(
+        name: Routers.units,
+        page: () => const UnitsPage(),
+        binding: UnitsBinding(),
+      ),
+      GetPage(
+        name: Routers.units,
+        page: () => const GroupsPage(),
+        binding: GroupsBinding(),
       )
     ];
   }
