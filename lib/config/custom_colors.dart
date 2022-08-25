@@ -7,4 +7,5 @@ class CustomColors {
   static const Color lightGrey = Color(0xFFfafafa);
   static const Color easyGrey = Color(0xFFf7f7f7);
   static const Color lightBlack = Color(0xFF252a30);
+  static const Color searchGrey = Color(0xFFecedef);
 }

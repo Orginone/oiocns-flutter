@@ -7,6 +7,14 @@ import 'package:orginone/page/home/message/message_binding.dart';
 import 'package:orginone/page/home/message/message_page.dart';
 import 'package:orginone/page/home/message/setting/message_setting_binding.dart';
 import 'package:orginone/page/home/message/setting/message_setting_page.dart';
+import 'package:orginone/page/home/organization/cohorts/cohorts_binding.dart';
+import 'package:orginone/page/home/organization/cohorts/cohorts_page.dart';
+import 'package:orginone/page/home/organization/friends/friends_binding.dart';
+import 'package:orginone/page/home/organization/friends/friends_page.dart';
+import 'package:orginone/page/home/organization/groups/groups_binding.dart';
+import 'package:orginone/page/home/organization/groups/groups_page.dart';
+import 'package:orginone/page/home/organization/units/units_binding.dart';
+import 'package:orginone/page/home/organization/units/units_page.dart';
 import 'package:orginone/page/login/login_binding.dart';
 import 'package:orginone/page/login/login_page.dart';
 import 'package:orginone/page/register/register_binding.dart';
@@ -20,6 +28,10 @@ class Routers {
   static const String message = "/message";
   static const String chat = "/chat";
   static const String messageSetting = "/messageSetting";
+  static const String friends = "/friends";
+  static const String units = "/units";
+  static const String groups = "/groups";
+  static const String cohorts = "/cohorts";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -53,6 +65,26 @@ class Routers {
         name: Routers.messageSetting,
         page: () => const MessageSettingPage(),
         binding: MessageSettingBinding(),
+      ),
+      GetPage(
+        name: Routers.friends,
+        page: () => const FriendsPage(),
+        binding: FriendsBinding(),
+      ),
+      GetPage(
+        name: Routers.units,
+        page: () => const UnitsPage(),
+        binding: UnitsBinding(),
+      ),
+      GetPage(
+        name: Routers.groups,
+        page: () => const GroupsPage(),
+        binding: GroupsBinding(),
+      ),
+      GetPage(
+        name: Routers.cohorts,
+        page: () => const CohortsPage(),
+        binding: CohortsBinding(),
       )
     ];
   }
