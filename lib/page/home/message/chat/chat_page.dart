@@ -28,7 +28,7 @@ class ChatPage extends GetView<ChatController> {
           TextTag(controller.messageItem.label ?? "")
         ]),
         actions: <Widget>[
-          GFIconButton(icon: const Icon(Icons.favorite), onPressed: () {
+          GFIconButton(icon: const Icon(Icons.more_horiz),onPressed: () {
             Get.toNamed(Routers.messageSetting);
           })
         ],
