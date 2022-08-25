@@ -284,6 +284,7 @@ class MessageController extends GetxController {
           await TargetRelationManager().update(currentMessageItem);
 
           // 保存消息
+          messageDetail.isWithdraw = false;
           messageDetail.isRead = false;
           messageDetail.account = currentUser.account;
           messageDetail.spaceId = spaceId;
