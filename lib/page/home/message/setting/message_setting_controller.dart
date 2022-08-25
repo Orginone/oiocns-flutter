@@ -10,7 +10,7 @@ import 'package:orginone/model/target_relation_util.dart';
 import 'package:orginone/util/hive_util.dart';
 
 
-class CzhController extends GetxController {
+class MessageSettingController extends GetxController {
   final Logger log = Logger("czhController");
   TextEditingController searchGroupTextController = TextEditingController();
   MessageController messageController = Get.find<MessageController>();
@@ -27,6 +27,7 @@ class CzhController extends GetxController {
   TargetRelation? currentTargetRelation;
   RxString name = ''.obs;
   RxString remark = ''.obs;
+  RxString label = ''.obs;
 
   void test1(a) {
     textField1.value = a;
@@ -37,6 +38,7 @@ class CzhController extends GetxController {
     currentTargetRelation = await TargetRelationUtil.getItem(messageController.currentSpaceId, messageController.currentMessageItemId);
     name.value = currentTargetRelation?.name ?? '';
     remark.value = currentTargetRelation?.remark ?? '';
+    label.value = currentTargetRelation?.label ?? '';
     log.info(currentTargetRelation);
     //初始化成员列表
     for(TargetResp person in chatController.personList) {

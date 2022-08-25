@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/config/custom_colors.dart';
-import 'package:orginone/page/home/czhtest/czh_controller.dart';
+import 'message_setting_controller.dart';
 
-class CzhPage extends GetView<CzhController> {
-  const CzhPage({Key? key}) : super(key: key);
+class MessageSettingPage extends GetView<MessageSettingController> {
+  const MessageSettingPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,49 +45,58 @@ class CzhPage extends GetView<CzhController> {
           const Divider(
             height: 0,
           ),
-          Obx(() => Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                    margin: const EdgeInsets.all(10),
-                    child:
-                    Text("组成员 ${controller.originPersonList.length} 人", style: const TextStyle(fontSize: 16))),
-                Container(
-                  constraints: const BoxConstraints(
-                      maxHeight: 40,
-                      minHeight: 40,
-                      minWidth: 50,
-                      maxWidth: 150),
-                  margin: const EdgeInsets.all(10),
-                  child: TextField(
-                      controller: controller.searchGroupTextController,
-                      decoration: InputDecoration(
-                          suffixIcon: IconButton(
-                              icon: const Icon(Icons.search),
-                              onPressed: () {
-                                controller.searchPerson();
-                              }),
-                          contentPadding:
-                          const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFFDCDFE6)),
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(4.0)),
-                          ),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Color(0xFF409EFF)),
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(4.0)),
-                          ),
-                          hintText: "搜索成员")),
-                )
-              ])),
-          Container(
-              height: 70,
-              margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-              child: Obx(
-                () => ListView.builder(
+          Obx(() {
+            if(controller.label.value == '群组' || controller.label.value == '公司') {
+              return Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                        margin: const EdgeInsets.all(10),
+                        child:
+                        Text("组成员 ${controller.originPersonList.length} 人", style: const TextStyle(fontSize: 16))),
+                    Container(
+                      constraints: const BoxConstraints(
+                          maxHeight: 40,
+                          minHeight: 40,
+                          minWidth: 50,
+                          maxWidth: 150),
+                      margin: const EdgeInsets.all(10),
+                      child: TextField(
+                          controller: controller.searchGroupTextController,
+                          decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                  icon: const Icon(Icons.search),
+                                  onPressed: () {
+                                    controller.searchPerson();
+                                  }),
+                              contentPadding:
+                              const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Color(0xFFDCDFE6)),
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(4.0)),
+                              ),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Color(0xFF409EFF)),
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(4.0)),
+                              ),
+                              hintText: "搜索成员")),
+                    )
+                  ]);
+            } else {
+              return const SizedBox(
+                height: 0,
+              );
+            }
+          }),
+          Obx(() {
+            if(controller.label.value == '群组' || controller.label.value == '公司') {
+              return Container(
+                height: 70,
+                margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: 2 + controller.filterPersonList.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -123,7 +132,7 @@ class CzhPage extends GetView<CzhController> {
                           ),
                           child: const Text("-",
                               style:
-                                  TextStyle(fontSize: 40, color: Colors.red)),
+                              TextStyle(fontSize: 40, color: Colors.red)),
                         );
                       } else {
                         return Container(
@@ -157,8 +166,13 @@ class CzhPage extends GetView<CzhController> {
                           ),
                         );
                       }
-                    }),
-              )),
+                    }),);
+            } else {
+              return const SizedBox(
+                height: 0,
+              );
+            }
+          }),
           const Divider(
             height: 0,
           ),

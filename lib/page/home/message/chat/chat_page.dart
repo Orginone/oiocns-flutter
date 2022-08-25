@@ -29,7 +29,7 @@ class ChatPage extends GetView<ChatController> {
         ]),
         actions: <Widget>[
           GFIconButton(icon: const Icon(Icons.favorite), onPressed: () {
-            Get.toNamed(Routers.czh);
+            Get.toNamed(Routers.messageSetting);
           })
         ],
       ),
