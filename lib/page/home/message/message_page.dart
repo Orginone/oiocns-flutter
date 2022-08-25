@@ -18,7 +18,9 @@ class MessagePage extends GetView<MessageController> {
             scrollDirection: Axis.vertical,
             itemCount: controller.messageGroups.length,
             itemBuilder: (BuildContext context, int index) {
-              return GroupItemWidget(controller.messageGroups[index]);
+              var groupItem = GroupItemWidget(controller.messageGroups[index]);
+              groupItem.isExpanded.value = index == 0;
+              return groupItem;
             })));
   }
 }

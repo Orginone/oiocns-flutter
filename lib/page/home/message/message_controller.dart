@@ -8,6 +8,7 @@ import 'package:orginone/model/message_detail_util.dart';
 import 'package:orginone/model/target_relation_util.dart';
 import 'package:orginone/model/user_space_relation_util.dart';
 import 'package:orginone/obserable/latest_message.dart';
+import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/util/hive_util.dart';
 
 import '../../../api_resp/api_resp.dart';
@@ -52,7 +53,8 @@ class MessageController extends GetxController {
   void sortingGroup(TargetResp highestPriority) {
     UserSpaceRelation? matchGroup;
     for (var messageGroupItem in messageGroups) {
-      if (messageGroupItem.targetId == highestPriority.id) {
+      var isCurrentGroup = messageGroupItem.targetId == highestPriority.id;
+      if (isCurrentGroup) {
         matchGroup = messageGroupItem;
       }
     }
@@ -130,6 +132,8 @@ class MessageController extends GetxController {
           await UserSpaceRelationUtil.getById(groupId);
       if (messageGroup == null) return;
 
+      var homeController = Get.find<HomeController>();
+      messageGroup.isExpand = messageGroup.targetId == homeController.currentTarget.id;
       messageGroupMap[groupId] = messageGroup;
       messageGroups.add(messageGroup);
     }
@@ -137,7 +141,23 @@ class MessageController extends GetxController {
 
   // 具体会话
   Future<dynamic> initChats() async {
+    HomeController homeController = Get.find<HomeController>();
+    var currentTarget = homeController.currentTarget;
+
+    // 处理当前空间的为第一个，并且它是展开的
     List<TargetRelation> items = await TargetRelationUtil.getAllItems();
+    TargetRelation? first;
+    for (TargetRelation messageItem in items) {
+      if (messageItem.activeTargetId == currentTarget.id) {
+        first = messageItem;
+        break;
+      }
+    }
+    if (first != null) {
+      items.remove(first);
+      items.insert(0, first);
+    }
+
     for (TargetRelation messageItem in items) {
       if (messageItem.activeTargetId == null ||
           messageItem.passiveTargetId == null) continue;
@@ -214,7 +234,8 @@ class MessageController extends GetxController {
 
     if (latestDetailItemMap!.containsKey(itemId)) {
       LatestDetail latestDetail = latestDetailItemMap[itemId]!;
-      if (messageDetail.fromId != currentUserInfo.id && currentMessageItemId != itemId) {
+      if (messageDetail.fromId != currentUserInfo.id &&
+          currentMessageItemId != itemId) {
         // 如果是我自己发的或者我当前正在群中，那就不更新视图条数了
         latestDetail.notReadCount.value += 1;
       }
@@ -284,12 +305,27 @@ class MessageController extends GetxController {
           await TargetRelationManager().update(currentMessageItem);
 
           // 保存消息
-          messageDetail.isWithdraw = false;
-          messageDetail.isRead = false;
-          messageDetail.account = currentUser.account;
-          messageDetail.spaceId = spaceId;
-          messageDetail.typeName = currentMessageItem.typeName;
-          await messageDetail.save();
+          if (messageDetail.msgType == "recall") {
+            var oldDetail = await MessageDetailUtil.getById(messageDetail.id!);
+            if (oldDetail == null) continue;
+            var msgBody = oldDetail.fromId == currentUserInfo.id
+                ? "您撤回了一条信息"
+                : "xxx 撤回了一条信息";
+            oldDetail.isWithdraw = true;
+            oldDetail.msgBody = msgBody;
+            await MessageDetailManager().update(oldDetail);
+
+            messageDetail.msgBody = msgBody;
+            messageDetail.isWithdraw = true;
+            messageDetail.isRead = false;
+          } else {
+            messageDetail.isWithdraw = false;
+            messageDetail.isRead = false;
+            messageDetail.account = currentUser.account;
+            messageDetail.spaceId = spaceId;
+            messageDetail.typeName = currentMessageItem.typeName;
+            await messageDetail.save();
+          }
 
           if (currentMessageItemId == currentMessageItem.passiveTargetId) {
             // 如果当前在聊天页面当中就接受消息

@@ -9,7 +9,7 @@ class TargetRelationUtil {
     UserResp userResp = HiveUtil().getValue(Keys.user);
     String querySQL =
         "SELECT TargetRelation.* FROM UserSpaceRelation LEFT JOIN TargetRelation ON UserSpaceRelation.targetId = "
-        "TargetRelation.activeTargetId WHERE UserSpaceRelation.account = ${userResp.account} ORDER BY TargetRelation.priority";
+        "TargetRelation.activeTargetId WHERE UserSpaceRelation.account = ${userResp.account} ORDER BY TargetRelation.priority DESC";
     return TargetRelation.fromMapList(
         await TargetRelationManager().execDataTable(querySQL));
   }

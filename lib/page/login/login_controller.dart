@@ -42,7 +42,7 @@ class LoginController extends GetxController {
     // 更新这些空间
     for (TargetResp company in convertedCompany) {
       await company.toTarget().upsert();
-      await UserSpaceRelation(account: user.account, targetId: company.id, name: company.name, isExpand: true).upsert();
+      await UserSpaceRelation(account: user.account, targetId: company.id, name: company.name).upsert();
     }
 
     return true;
