@@ -28,8 +28,8 @@ class ChatPage extends GetView<ChatController> {
           TextTag(controller.messageItem.label ?? "")
         ]),
         actions: <Widget>[
-          GFIconButton(icon: const Icon(Icons.favorite), onPressed: () {
-            Get.toNamed(Routers.czh);
+          GFIconButton(icon: const Icon(Icons.more_horiz),onPressed: () {
+            Get.toNamed(Routers.messageSetting);
           })
         ],
       ),

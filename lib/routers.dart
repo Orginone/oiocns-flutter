@@ -1,12 +1,12 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
-import 'package:orginone/page/home/czhtest/czh_binding.dart';
-import 'package:orginone/page/home/czhtest/czh_page.dart';
 import 'package:orginone/page/home/home_binding.dart';
 import 'package:orginone/page/home/home_page.dart';
 import 'package:orginone/page/home/message/chat/chat_binding.dart';
 import 'package:orginone/page/home/message/chat/chat_page.dart';
 import 'package:orginone/page/home/message/message_binding.dart';
 import 'package:orginone/page/home/message/message_page.dart';
+import 'package:orginone/page/home/message/setting/message_setting_binding.dart';
+import 'package:orginone/page/home/message/setting/message_setting_page.dart';
 import 'package:orginone/page/home/organization/friends/friends_binding.dart';
 import 'package:orginone/page/home/organization/friends/friends_page.dart';
 import 'package:orginone/page/home/organization/groups/groups_binding.dart';
@@ -25,7 +25,7 @@ class Routers {
   static const String home = "/home";
   static const String message = "/message";
   static const String chat = "/chat";
-  static const String czh = "/czh";
+  static const String messageSetting = "/messageSetting";
   static const String friends = "/friends";
   static const String units = "/units";
 
@@ -58,9 +58,9 @@ class Routers {
         binding: ChatBinding(),
       ),
       GetPage(
-        name: Routers.czh,
-        page: () => const CzhPage(),
-        binding: CzhPageBinding(),
+        name: Routers.messageSetting,
+        page: () => const MessageSettingPage(),
+        binding: MessageSettingBinding(),
       ),
       GetPage(
         name: Routers.friends,
