@@ -14,12 +14,11 @@ class TargetRelationUtil {
         await TargetRelationManager().execDataTable(querySQL));
   }
 
-  static Future<TargetRelation?> getItem(int itemId) async {
-    TargetResp userResp = HiveUtil().getValue(Keys.userInfo);
+  static Future<TargetRelation?> getItem(int spaceId, int itemId) async {
     return await TargetRelation()
         .select()
         .activeTargetId
-        .equals(userResp.id)
+        .equals(spaceId)
         .and
         .passiveTargetId
         .equals(itemId)

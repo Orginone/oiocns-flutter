@@ -34,7 +34,7 @@ class CzhController extends GetxController {
       filterPersonList.add(person);
     }
     //初始化
-    currentTargetRelation = await TargetRelationUtil.getItem(messageController.currentMessageItemId);
+    currentTargetRelation = await TargetRelationUtil.getItem(messageController.currentSpaceId, messageController.currentMessageItemId);
     log.info(currentTargetRelation);
     super.onInit();
   }
