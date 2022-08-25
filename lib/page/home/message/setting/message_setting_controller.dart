@@ -11,7 +11,7 @@ import 'package:orginone/util/hive_util.dart';
 
 
 class MessageSettingController extends GetxController {
-  final Logger log = Logger("czhController");
+  final Logger log = Logger("MessageSettingController");
   TextEditingController searchGroupTextController = TextEditingController();
   MessageController messageController = Get.find<MessageController>();
   ChatController chatController = Get.find<ChatController>();
