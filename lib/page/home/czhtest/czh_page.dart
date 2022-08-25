@@ -24,7 +24,7 @@ class CzhPage extends GetView<CzhController> {
           // ],
         ),
         body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Obx(() => Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
             Container(
                 width: 50,
                 height: 50,
@@ -34,25 +34,25 @@ class CzhPage extends GetView<CzhController> {
                 margin: const EdgeInsets.all(10),
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(6),
-                child: const Text(
-                  '江',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                child: Text(
+                  controller.name.value.isNotEmpty ? controller.name.value.substring(0, controller.name.value.length >= 2 ? 2 : 1) : '',
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
                 )),
             Container(
                 margin: const EdgeInsets.all(10),
-                child: const Text("江", style: TextStyle(fontSize: 30))),
-          ]),
+                child: Text(controller.name.value, style: const TextStyle(fontSize: 24))),
+          ])),
           const Divider(
             height: 0,
           ),
-          Row(
+          Obx(() => Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
                     margin: const EdgeInsets.all(10),
                     child:
-                        const Text("组成员 2人", style: TextStyle(fontSize: 16))),
+                    Text("组成员 ${controller.originPersonList.length} 人", style: const TextStyle(fontSize: 16))),
                 Container(
                   constraints: const BoxConstraints(
                       maxHeight: 40,
@@ -69,20 +69,20 @@ class CzhPage extends GetView<CzhController> {
                                 controller.searchPerson();
                               }),
                           contentPadding:
-                              const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                          const EdgeInsets.fromLTRB(10, 0, 0, 0),
                           enabledBorder: const OutlineInputBorder(
                             borderSide: BorderSide(color: Color(0xFFDCDFE6)),
                             borderRadius:
-                                BorderRadius.all(Radius.circular(4.0)),
+                            BorderRadius.all(Radius.circular(4.0)),
                           ),
                           focusedBorder: const OutlineInputBorder(
                             borderSide: BorderSide(color: Color(0xFF409EFF)),
                             borderRadius:
-                                BorderRadius.all(Radius.circular(4.0)),
+                            BorderRadius.all(Radius.circular(4.0)),
                           ),
                           hintText: "搜索成员")),
                 )
-              ]),
+              ])),
           Container(
               height: 70,
               margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
@@ -150,7 +150,7 @@ class CzhPage extends GetView<CzhController> {
                                 width: 50,
                                 height: 50,
                               ),
-                              Text(controller.filterPersonList[index - 2],
+                              Text(controller.filterPersonList[index - 2].name,
                                   style: const TextStyle(fontSize: 12),
                                   overflow: TextOverflow.ellipsis),
                             ],
@@ -166,29 +166,29 @@ class CzhPage extends GetView<CzhController> {
             padding: const EdgeInsets.all(10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text("我在本群昵称",
+              children: [
+                const Text("我在本群昵称",
                     style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                Text("czh测试")
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(controller.userInfo.name)
               ],
             ),
           ),
           const Divider(
             height: 0,
           ),
-          Container(
+          Obx(() => Container(
             padding: const EdgeInsets.all(10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text("群组备注",
+              children:  [
+                const Text("群组备注",
                     style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                Text("czh测试")
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(controller.remark.value)
               ],
             ),
-          ),
+          )),
           const Divider(
             height: 0,
           ),
