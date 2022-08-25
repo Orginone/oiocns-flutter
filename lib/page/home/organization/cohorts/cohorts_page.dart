@@ -3,12 +3,13 @@ import 'package:get/get.dart';
 import 'package:getwidget/components/appbar/gf_appbar.dart';
 import 'package:getwidget/components/button/gf_icon_button.dart';
 import 'package:getwidget/types/gf_button_type.dart';
+import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
 
 import '../../../../component/text_search.dart';
 import '../../../../config/custom_colors.dart';
 
-class FriendsPage extends GetView<FriendsPage> {
-  const FriendsPage({Key? key}) : super(key: key);
+class CohortsPage extends GetView<CohortsController> {
+  const CohortsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
