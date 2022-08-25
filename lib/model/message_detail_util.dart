@@ -84,4 +84,16 @@ class MessageDetailUtil {
 
     return await MessageDetailManager().execDataTable(querySQL);
   }
+
+  // 获取一个聊天的所有消息
+  static Future<MessageDetail?> getById(int id) async {
+    return await MessageDetail()
+        .select()
+        .account
+        .equals(userResp.account)
+        .and
+        .id
+        .equals(id)
+        .toSingle();
+  }
 }

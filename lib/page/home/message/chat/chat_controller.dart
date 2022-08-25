@@ -35,6 +35,7 @@ class ChatController extends GetxController {
 
   // 观测对象
   var messageDetails = <Widget>[].obs;
+  Map<int, ChatMessageDetail> messageDetailMap = {};
 
   // 日志
   var logger = Logger("ChatController");
@@ -80,13 +81,25 @@ class ChatController extends GetxController {
   // 消息接收函數
   Future<void> onReceiveMessage(MessageDetail messageDetail) async {
     try {
-      var chatMessageDetail = ChatMessageDetail(
-          messageItem, messageDetail, personMap[messageDetail.fromId]);
-      messageDetails.add(chatMessageDetail);
+      var messageDetailId = messageDetail.id!;
+      if (!messageDetail.isWithdraw!) {
+        // 如果不是撤回的话加入到会话当中
+        var chatMessageDetail = ChatMessageDetail(
+            messageItem, messageDetail, personMap[messageDetail.fromId]);
+        messageDetails.add(chatMessageDetail);
+        messageDetailMap[messageDetailId] = chatMessageDetail;
+      } else {
+        if (messageDetailMap.containsKey(messageDetailId)){
+          // 如果存在这条单据详情的话
+          ChatMessageDetail oldDetail = messageDetailMap[messageDetailId]!;
+          oldDetail.isWithdraw.value = true;
+          oldDetail.msgBody.value = messageDetail.msgBody ?? "";
+        }
+      }
 
       // 改成已读状态
       messageDetail.isRead = true;
-      MessageDetailManager().update(messageDetail);
+      await MessageDetailManager().update(messageDetail);
 
       // 滚动到最底
       toBottom();
@@ -151,8 +164,10 @@ class ChatController extends GetxController {
     List<ChatMessageDetail> temp = [];
     for (var message in messageList) {
       var messageDetail = MessageDetail.fromMap(message);
-      temp.add(ChatMessageDetail(
-          messageItem, messageDetail, personMap[messageDetail.fromId]));
+      var chatMessageDetail = ChatMessageDetail(
+          messageItem, messageDetail, personMap[messageDetail.fromId]);
+      temp.add(chatMessageDetail);
+      messageDetailMap[messageDetail.id!] = chatMessageDetail;
     }
     messageDetails.insertAll(0, temp);
   }

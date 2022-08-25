@@ -22,6 +22,8 @@ class ChatMessageDetail extends StatelessWidget {
   final TargetResp? targetResp;
   final TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
   final Logger log = Logger("ChatMessageDetail");
+  final Rx<bool> isWithdraw = false.obs;
+  final Rx<String> msgBody = "".obs;
 
   ChatMessageDetail(this.messageItem, this.messageDetail, this.targetResp,
       {Key? key})
@@ -29,7 +31,8 @@ class ChatMessageDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Rx<bool> isWithdraw = (messageDetail.isWithdraw ?? false).obs;
+    isWithdraw.value = messageDetail.isWithdraw ?? false;
+    msgBody.value = messageDetail.msgBody ?? "";
 
     bool isMy = messageDetail.fromId == userInfo.id;
     String itemAvatarName = isMy ? userInfo.name : messageItem.name!;
@@ -49,8 +52,8 @@ class ChatMessageDetail extends StatelessWidget {
       if (isWithdraw.value) {
         children.add(Container(
           padding: const EdgeInsets.all(10),
-          child:
-              const Text("您撤回了一条信息", style: TextStyle(color: Colors.black54)),
+          child: Text(msgBody.value,
+              style: const TextStyle(color: Colors.black54)),
         ));
       } else {
         children.add(_getAvatar(isMy, isMultiple, avatarName));

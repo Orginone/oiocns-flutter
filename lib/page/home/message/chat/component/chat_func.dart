@@ -29,12 +29,7 @@ class ChatFunc extends StatelessWidget {
             IconFunc(Icons.keyboard_return, "撤回", () async {
               var res = await HubUtil().recallMsg(messageDetail.id!);
               var apiResp = ApiResp.fromMap(res);
-              if (apiResp.code == 200) {
-                isWithdraw.value = true;
-                messageDetail.isWithdraw = true;
-                await MessageDetailManager().update(messageDetail);
-                EasyLoading.showToast("撤回成功！");
-              } else {
+              if (apiResp.code != 200) {
                 EasyLoading.showError(apiResp.msg);
               }
             })
