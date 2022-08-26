@@ -100,7 +100,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                       return GestureDetector(
                         behavior: HitTestBehavior.translucent,
                         onTap: () {
-                          // Get.toNamed(Routers.personDetail);
+                          Get.toNamed(Routers.personDetail);
                         },
                         child: Container(
                           width: 50,
