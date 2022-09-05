@@ -13,6 +13,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
     return Scaffold(
         appBar: GFAppBar(
           leading: GFIconButton(
+            color: Colors.white,
             icon: const Icon(Icons.arrow_back),
             onPressed: () => Get.back(),
             type: GFButtonType.transparent,
@@ -100,7 +101,8 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                       return GestureDetector(
                         behavior: HitTestBehavior.translucent,
                         onTap: () {
-                          Get.toNamed(Routers.personDetail);
+                          Get.toNamed(Routers.personDetail,
+                              arguments: controller.filterPersonList[index].id);
                         },
                         child: Container(
                           width: 50,
@@ -110,7 +112,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                             children: [
                               FadeInImage.assetNetwork(
                                 placeholder: 'images/person-empty.png',
-                                image: 'qqqqqq',
+                                image: 'https://www.vcg.com/creative/1382429598',
                                 imageErrorBuilder:
                                     (context, error, stackTrace) {
                                   return Container(
