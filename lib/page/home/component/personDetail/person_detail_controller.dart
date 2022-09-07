@@ -13,7 +13,7 @@ class PersonDetailController extends GetxController {
     update();
     super.onReady();
   }
-  getPersonDetail(personId) async {
-    personDetail = await PersonDetailApi.getPersonDetail(personId);
+  getPersonDetail(personName) async {
+    personDetail = await PersonDetailApi.getPersonDetail(personName);
   }
 }

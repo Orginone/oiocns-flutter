@@ -1,4 +1,6 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:orginone/page/home/component/personAdd/person_add_binding.dart';
+import 'package:orginone/page/home/component/personAdd/person_add_page.dart';
 import 'package:orginone/page/home/component/personDetail/person_detail_binding.dart';
 import 'package:orginone/page/home/component/personDetail/person_detail_page.dart';
 import 'package:orginone/page/home/home_binding.dart';
@@ -35,6 +37,7 @@ class Routers {
   static const String groups = "/groups";
   static const String cohorts = "/cohorts";
   static const String personDetail = "/personDetail";
+  static const String personAdd = "/personAdd";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -93,6 +96,11 @@ class Routers {
         name: Routers.personDetail,
         page: () => const PersonDetailPage(),
         binding: PersonDetailBinding(),
+      ),
+      GetPage(
+        name: Routers.personAdd,
+        page: () => const PersonAddPage(),
+        binding: PersonAddBinding(),
       )
     ];
   }
