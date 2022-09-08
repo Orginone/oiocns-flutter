@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/model/db_model.dart';
+import 'package:orginone/page/home/message/chat/chat_controller.dart';
+import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/routers.dart';
 import 'person_detail_controller.dart';
 
@@ -158,7 +162,34 @@ class PersonDetailPage extends GetView<PersonDetailController> {
                 margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: FloatingActionButton(
                     heroTag: 'one',
-                    onPressed: () {},
+                    onPressed: () async{
+                      MessageController messageController = Get.find();
+                      //循环判断该人员是否在集团里，若有则对话，无则提示
+                      int matchGroupId = -1;
+                      messageController.messageGroupItemsMap.forEach((key, value) {
+                        List<TargetRelation> matchList = value.where((item) => item.passiveTargetId == int.tryParse(controller.personDetail!.id)).toList();
+                        if(matchList.isNotEmpty) {
+                          matchGroupId = key;
+                        }
+                      });
+                      if(matchGroupId != -1) {
+                        messageController.currentMessageItemId = int.tryParse(controller.personDetail!.id) ?? -1;
+                        messageController.currentSpaceId = matchGroupId;
+                        ChatController chatController = Get.find();
+                        await chatController.init();
+                        Get.toNamed(Routers.chat);
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: '集团中不存在该人员',
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0
+                        );
+                      }
+                    },
                     ///长按提示
                     tooltip: "发送消息",
                     ///设置悬浮按钮的背景
