@@ -63,11 +63,8 @@ class ChatController extends GetxController {
     logger.info("==============开始回收资源=============");
     // 清空数据
     messageDetails.clear();
-    messageController.currentMessageItemId = -1;
 
     // 解除控制
-    messageText.dispose();
-    messageScrollController.dispose();
     super.onClose();
     logger.info("==============结束回收资源=============");
   }
