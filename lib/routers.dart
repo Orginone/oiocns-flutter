@@ -19,10 +19,14 @@ import 'package:orginone/page/home/mine/mine_binding.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_binding.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_page.dart';
+import 'package:orginone/page/home/organization/dept/dept_binding.dart';
+import 'package:orginone/page/home/organization/dept/dept_page.dart';
 import 'package:orginone/page/home/organization/friends/friends_binding.dart';
 import 'package:orginone/page/home/organization/friends/friends_page.dart';
 import 'package:orginone/page/home/organization/groups/groups_binding.dart';
 import 'package:orginone/page/home/organization/groups/groups_page.dart';
+import 'package:orginone/page/home/organization/organization_binding.dart';
+import 'package:orginone/page/home/organization/organization_page.dart';
 import 'package:orginone/page/home/organization/units/units_binding.dart';
 import 'package:orginone/page/home/organization/units/units_page.dart';
 import 'package:orginone/page/login/login_binding.dart';
@@ -37,12 +41,14 @@ class Routers {
   static const String home = "/home";
   static const String spaceChoose = "/spaceChoose";
   static const String message = "/message";
+  static const String organization = "/organization";
   static const String chat = "/chat";
   static const String messageSetting = "/messageSetting";
   static const String friends = "/friends";
   static const String units = "/units";
   static const String groups = "/groups";
   static const String cohorts = "/cohorts";
+  static const String dept = "/dept";
   static const String personDetail = "/personDetail";
   static const String personAdd = "/personAdd";
   static const String mine = "/mine";
@@ -77,6 +83,11 @@ class Routers {
         binding: MessageBinding(),
       ),
       GetPage(
+        name: Routers.organization,
+        page: () => const OrganizationPage(),
+        binding: OrganizationBinding(),
+      ),
+      GetPage(
         name: Routers.chat,
         page: () => const ChatPage(),
         binding: ChatBinding(),
@@ -105,6 +116,11 @@ class Routers {
         name: Routers.cohorts,
         page: () => const CohortsPage(),
         binding: CohortsBinding(),
+      ),
+      GetPage(
+        name: Routers.dept,
+        page: () => const DeptPage(),
+        binding: DeptBinding(),
       ),
       GetPage(
         name: Routers.personDetail,

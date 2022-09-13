@@ -8,4 +8,5 @@ class CustomColors {
   static const Color easyGrey = Color(0xFFf7f7f7);
   static const Color lightBlack = Color(0xFF252a30);
   static const Color searchGrey = Color(0xFFecedef);
+  static const Color darkGreen = Color.fromRGBO(1, 173, 67, 1);
 }

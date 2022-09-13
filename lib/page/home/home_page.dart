@@ -53,7 +53,7 @@ class HomePage extends GetView<HomeController> {
                         Expanded(
                           child: Text(
                             controller.currentSpace.name,
-                            style: text16,
+                            style: text16Bold,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
