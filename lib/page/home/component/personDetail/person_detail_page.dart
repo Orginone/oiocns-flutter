@@ -147,7 +147,7 @@ class PersonDetailPage extends GetView<PersonDetailController> {
                 margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: FloatingActionButton(
                     onPressed: () {
-                      Get.toNamed(Routers.personAdd);
+                      Get.toNamed(Routers.personAdd,arguments: item.personDetail!.id);
                     },
                     tooltip: "添加好友",
                     backgroundColor: Colors.blueAccent,

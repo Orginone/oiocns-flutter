@@ -10,14 +10,16 @@ import 'package:orginone/page/home/component/personDetail/person_detail_controll
 class PersonAddController extends GetxController {
   final Logger log = Logger("PersonAddController");
   PersonDetailController personDetailController = Get.find<PersonDetailController>();
+  String personId = '';
   TextEditingController validateInfoTextController = TextEditingController();
   TextEditingController nickNameTextController = TextEditingController();
   @override
-  void onInit() async{
-    super.onInit();
+  void onReady() async{
+    personId = Get.arguments;
+    super.onReady();
   }
   void submitPersonAdd() async{
-    var resMeg = await PersonDetailApi.addPerson(personDetailController.personDetail!.id);
+    var resMeg = await PersonDetailApi.addPerson(personId);
     Fluttertoast.showToast(
         msg: resMeg,
         toastLength: Toast.LENGTH_SHORT,

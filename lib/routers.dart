@@ -11,8 +11,10 @@ import 'package:orginone/page/home/message/chat/chat_binding.dart';
 import 'package:orginone/page/home/message/chat/chat_page.dart';
 import 'package:orginone/page/home/message/message_binding.dart';
 import 'package:orginone/page/home/message/message_page.dart';
-import 'package:orginone/page/home/message/setting/message_setting_binding.dart';
-import 'package:orginone/page/home/message/setting/message_setting_page.dart';
+import 'package:orginone/page/home/message/messageSetting/message_setting_binding.dart';
+import 'package:orginone/page/home/message/messageSetting/message_setting_page.dart';
+import 'package:orginone/page/home/mine/mineInfo/mine_info_binding.dart';
+import 'package:orginone/page/home/mine/mineInfo/mine_info_page.dart';
 import 'package:orginone/page/home/mine/mine_binding.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_binding.dart';
@@ -44,6 +46,8 @@ class Routers {
   static const String personDetail = "/personDetail";
   static const String personAdd = "/personAdd";
   static const String mine = "/mine";
+  static const String mineInfo = "/mineInfo";
+  static const String mineUnit = "/mineUnit";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -116,6 +120,11 @@ class Routers {
         name: Routers.mine,
         page: () => const MinePage(),
         binding: MineBinding(),
+      ),
+      GetPage(
+        name: Routers.mineInfo,
+        page: () => const MineInfoPage(),
+        binding: MineInfoBinding(),
       ),
     ];
   }
