@@ -54,6 +54,22 @@ class TargetResp {
       this.team,
       this.givenIdentitys);
 
+  TargetResp.copyWith(TargetResp targetResp)
+      : id = targetResp.id,
+        name = targetResp.name,
+        code = targetResp.code,
+        typeName = targetResp.typeName,
+        belongId = targetResp.belongId,
+        thingId = targetResp.thingId,
+        status = targetResp.status,
+        createUser = targetResp.createUser,
+        updateUser = targetResp.updateUser,
+        version = targetResp.version,
+        createTime = targetResp.createTime,
+        updateTime = targetResp.updateTime,
+        team = TeamResp.copyWith(targetResp.team),
+        givenIdentitys = targetResp.givenIdentitys?.map((item) => IdentityResp.copyWith(item)).toList();
+
   TargetResp.fromMap(Map<String, dynamic> map)
       : id = int.parse(map["id"]),
         name = map["name"],

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 
 import '../config/custom_colors.dart';
 
 class TextSearch extends StatelessWidget {
-  final TextSearchController textSearchController;
+  final Function searchingCallback;
 
-  const TextSearch(this.textSearchController, {Key? key}) : super(key: key);
+  const TextSearch(this.searchingCallback, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +21,10 @@ class TextSearch extends StatelessWidget {
               child: const Icon(Icons.search)),
           Expanded(
             child: TextFormField(
+              controller: TextEditingController(),
+              onChanged: (newVal) {
+                searchingCallback(newVal);
+              },
               style: const TextStyle(fontSize: 18),
               decoration: const InputDecoration(
                   enabledBorder: InputBorder.none,
@@ -33,5 +36,3 @@ class TextSearch extends StatelessWidget {
     );
   }
 }
-
-class TextSearchController extends GetxController {}

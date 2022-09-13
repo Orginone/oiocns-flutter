@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:orginone/config/custom_colors.dart';
+import 'package:orginone/page/home/organization/organization_controller.dart';
 
 import '../../../routers.dart';
 
-class OrganizationPage extends GetView<OrganizationPage> {
+class OrganizationPage extends GetView<OrganizationController> {
   const OrganizationPage({Key? key}) : super(key: key);
 
   @override

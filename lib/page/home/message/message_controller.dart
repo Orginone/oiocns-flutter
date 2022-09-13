@@ -20,12 +20,12 @@ import 'chat/chat_controller.dart';
 class MessageController extends GetxController {
   // 组的对象
   Map<int, UserSpaceRelation> messageGroupMap = {};
-  RxList<UserSpaceRelation> messageGroups = <UserSpaceRelation>[].obs;
+  List<UserSpaceRelation> messageGroups = [];
 
   // 会话对象和索引
   Map<int, Map<int, TargetRelation>> messageGroupItemMap =
       <int, Map<int, TargetRelation>>{};
-  Map<int, RxList<TargetRelation>> messageGroupItemsMap = {};
+  Map<int, List<TargetRelation>> messageGroupItemsMap = {};
   Map<int, int> notFindItemMap = {};
 
   // 最新消息对象
@@ -56,12 +56,14 @@ class MessageController extends GetxController {
       var isCurrentGroup = messageGroupItem.targetId == highestPriority.id;
       if (isCurrentGroup) {
         matchGroup = messageGroupItem;
+        break;
       }
     }
     if (matchGroup != null) {
       messageGroups.remove(matchGroup);
       messageGroups.insert(0, matchGroup);
     }
+    update();
   }
 
   Future<dynamic> firstInitChartsData() async {
@@ -133,7 +135,8 @@ class MessageController extends GetxController {
       if (messageGroup == null) return;
 
       var homeController = Get.find<HomeController>();
-      messageGroup.isExpand = messageGroup.targetId == homeController.currentTarget.id;
+      messageGroup.isExpand =
+          messageGroup.targetId == homeController.currentSpace.id;
       messageGroupMap[groupId] = messageGroup;
       messageGroups.add(messageGroup);
     }
@@ -141,23 +144,7 @@ class MessageController extends GetxController {
 
   // 具体会话
   Future<dynamic> initChats() async {
-    HomeController homeController = Get.find<HomeController>();
-    var currentTarget = homeController.currentTarget;
-
-    // 处理当前空间的为第一个，并且它是展开的
     List<TargetRelation> items = await TargetRelationUtil.getAllItems();
-    TargetRelation? first;
-    for (TargetRelation messageItem in items) {
-      if (messageItem.activeTargetId == currentTarget.id) {
-        first = messageItem;
-        break;
-      }
-    }
-    if (first != null) {
-      items.remove(first);
-      items.insert(0, first);
-    }
-
     for (TargetRelation messageItem in items) {
       if (messageItem.activeTargetId == null ||
           messageItem.passiveTargetId == null) continue;
@@ -165,6 +152,10 @@ class MessageController extends GetxController {
       await initGroup(messageItem.activeTargetId!);
       await obxNewItem(messageItem);
     }
+
+    HomeController homeController = Get.find<HomeController>();
+    var currentSpace = homeController.currentSpace;
+    sortingGroup(currentSpace);
   }
 
   Future<dynamic> obxNewItem(TargetRelation messageItem) async {
@@ -174,7 +165,7 @@ class MessageController extends GetxController {
 
     // 创建群的可观测对象和索引
     messageGroupItemMap.putIfAbsent(groupId, () => {});
-    messageGroupItemsMap.putIfAbsent(groupId, () => <TargetRelation>[].obs);
+    messageGroupItemsMap.putIfAbsent(groupId, () => []);
 
     // 查看当前群里是否有会话 ID，没有的话就加一个进去，形成可观察对象
     var messageGroupItem = messageGroupItemMap[groupId]!;
@@ -283,7 +274,7 @@ class MessageController extends GetxController {
           // 匹配群
           Map<int, TargetRelation> messageItemMap =
               messageGroupItemMap[spaceId]!;
-          RxList<TargetRelation> messageItems = messageGroupItemsMap[spaceId]!;
+          List<TargetRelation> messageItems = messageGroupItemsMap[spaceId]!;
           TargetRelation? currentMessageItem = messageItemMap[toId];
           for (var messageItem in messageItems) {
             if (messageItem.typeName == "人员" &&

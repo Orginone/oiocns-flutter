@@ -3,6 +3,8 @@ import 'package:orginone/page/home/component/personAdd/person_add_binding.dart';
 import 'package:orginone/page/home/component/personAdd/person_add_page.dart';
 import 'package:orginone/page/home/component/personDetail/person_detail_binding.dart';
 import 'package:orginone/page/home/component/personDetail/person_detail_page.dart';
+import 'package:orginone/page/home/component/space_choose/space_choose_binding.dart';
+import 'package:orginone/page/home/component/space_choose/space_choose_page.dart';
 import 'package:orginone/page/home/home_binding.dart';
 import 'package:orginone/page/home/home_page.dart';
 import 'package:orginone/page/home/message/chat/chat_binding.dart';
@@ -29,6 +31,7 @@ class Routers {
   static const String register = "/register";
   static const String login = "/login";
   static const String home = "/home";
+  static const String spaceChoose = "/spaceChoose";
   static const String message = "/message";
   static const String chat = "/chat";
   static const String messageSetting = "/messageSetting";
@@ -57,6 +60,10 @@ class Routers {
           name: Routers.home,
           page: () => const HomePage(),
           binding: HomeBinding()),
+      GetPage(
+          name: Routers.spaceChoose,
+          page: () => const SpaceChoosePage(),
+          binding: SpaceChooseBinding()),
       GetPage(
         name: Routers.message,
         page: () => const MessagePage(),

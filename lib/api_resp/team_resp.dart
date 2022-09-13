@@ -45,6 +45,20 @@ class TeamResp {
       this.createTime,
       this.updateTime);
 
+  TeamResp.copyWith(TeamResp teamResp)
+      : id = teamResp.id,
+        name = teamResp.name,
+        code = teamResp.code,
+        targetId = teamResp.targetId,
+        authId = teamResp.authId,
+        remark = teamResp.remark,
+        status = teamResp.status,
+        createUser = teamResp.createUser,
+        updateUser = teamResp.updateUser,
+        version = teamResp.version,
+        createTime = teamResp.createTime,
+        updateTime = teamResp.updateTime;
+
   TeamResp.fromMap(Map<String, dynamic> map)
       : id = int.parse(map["id"]),
         name = map["name"],

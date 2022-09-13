@@ -26,6 +26,20 @@ class IdentityResp {
       this.createTime,
       this.updateTime);
 
+  IdentityResp.copyWith(IdentityResp identityResp)
+      : id = identityResp.id,
+        name = identityResp.name,
+        code = identityResp.code,
+        authId = identityResp.authId,
+        belongId = identityResp.belongId,
+        remark = identityResp.remark,
+        status = identityResp.status,
+        createUser = identityResp.createUser,
+        updateUser = identityResp.updateUser,
+        version = identityResp.version,
+        createTime = identityResp.createTime,
+        updateTime = identityResp.updateTime;
+
   IdentityResp.fromMap(Map<String, dynamic> map)
       : id = int.parse(map["id"]),
         name = map["name"],

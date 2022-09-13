@@ -174,7 +174,7 @@ class PersonDetailPage extends GetView<PersonDetailController> {
                       HomeController homeController = Get.find();
                       MessageController messageController = Get.find();
                       messageController.currentSpaceId =
-                          homeController.currentTarget.id;
+                          homeController.currentSpace.id;
                       messageController.currentMessageItemId =
                           int.tryParse(controller.personDetail!.id)!;
                       Get.offNamedUntil(

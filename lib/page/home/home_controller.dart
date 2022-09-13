@@ -4,46 +4,52 @@ import 'package:logging/logging.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/page/home/organization/organization_page.dart';
 
+import '../../api/person_api.dart';
 import '../../api_resp/target_resp.dart';
+import '../../api_resp/user_resp.dart';
 import '../../util/hive_util.dart';
 import 'message/message_page.dart';
 
 class HomeController extends GetxController
     with GetSingleTickerProviderStateMixin {
+  Logger logger = Logger("HomeController");
+
+  MessageController messageController = Get.find<MessageController>();
+
+  UserResp user = HiveUtil().getValue(Keys.user);
   TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
 
   late List<TabCombine> tabs;
   late TabController tabController;
-  late TargetResp currentTarget;
 
-  RxList<TargetResp> currentCompanys = <TargetResp>[].obs;
-  Rx<String> currentSpaceName = "".obs;
-
-  var logger = Logger("HomeController");
-
-  MessageController messageController = Get.find<MessageController>();
+  late TargetResp currentSpace;
 
   @override
   void onInit() {
-    // 初始化 companys
-    List<TargetResp> companys = HiveUtil().getValue(Keys.companys);
-    for (var company in companys) {
-      currentCompanys.add(company);
-    }
-    if (companys.isNotEmpty) {
-      switchSpaces(companys[0]);
-    }
-    // 初始化 Tabs 以及 TabController
-    tabs = <TabCombine>[
-      TabCombine(
-          _buildTab(Icons.chat_bubble_outline, '消息'), const MessagePage()),
-      TabCombine(
-          _buildTab(Icons.groups_outlined, '关系'), const OrganizationPage()),
-      TabCombine(_buildTab(Icons.work_outline, '工作台'), MessagePage()),
-      TabCombine(_buildTab(Icons.person_outline, '我的'), MessagePage()),
-    ];
-    tabController = TabController(length: tabs.length, vsync: this);
+    initTabs();
+    initCurrentSpace();
     super.onInit();
+  }
+
+  Future<void> initCurrentSpace() async {
+    currentSpace = TargetResp.copyWith(userInfo);
+    currentSpace.name = "个人空间";
+  }
+
+  void initTabs() {
+    var message = _buildTab(Icons.chat_bubble_outline, '消息');
+    var relation = _buildTab(Icons.groups_outlined, '关系');
+    var work = _buildTab(Icons.work_outline, '工作台');
+    var my = _buildTab(Icons.person_outline, '我的');
+
+    tabs = <TabCombine>[
+      TabCombine(message, const MessagePage()),
+      TabCombine(relation, const OrganizationPage()),
+      TabCombine(work, const MessagePage()),
+      TabCombine(my, const MessagePage()),
+    ];
+
+    tabController = TabController(length: tabs.length, vsync: this);
   }
 
   Tab _buildTab(IconData iconData, String label) {
@@ -53,25 +59,12 @@ class HomeController extends GetxController
         child: Text(label));
   }
 
-  void switchSpaces(TargetResp targetResp) {
-    currentTarget = targetResp;
-    if (targetResp.name != userInfo.name) {
-      currentSpaceName.value = targetResp.name;
-    } else {
-      currentSpaceName.value = "个人空间";
-    }
-  }
+  void switchSpaces(TargetResp targetResp) async {
+    await PersonApi.changeWorkspace(targetResp.id);
+    currentSpace = targetResp;
+    update();
 
-  @override
-  void onClose() {
-    // TODO: implement onClose
-    logger.info("===============回收 HomeController 资源==================");
-    messageController.dispose();
-    tabController.dispose();
-    tabs.clear();
-    dispose();
-    super.onClose();
-    logger.info("===============回收 HomeController 资源完成==================");
+    messageController.sortingGroup(targetResp);
   }
 }
 

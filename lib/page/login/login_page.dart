@@ -2,7 +2,6 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_button.dart';
-import 'package:orginone/page/home/message/message_controller.dart';
 
 import '../../routers.dart';
 import '../../util/hub_util.dart';

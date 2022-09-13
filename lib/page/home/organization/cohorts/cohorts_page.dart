@@ -24,7 +24,7 @@ class CohortsPage extends GetView<CohortsController> {
       ),
       body: Column(
         children: [
-          TextSearch(TextSearchController()),
+          TextSearch((newVal) => {}),
           Expanded(
               child: Scrollbar(
                   child: ListView.builder(

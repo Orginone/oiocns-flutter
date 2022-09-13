@@ -14,13 +14,16 @@ class MessagePage extends GetView<MessageController> {
           await controller.getCharts();
           await controller.initChats();
         },
-        child: Obx(() => ListView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: controller.messageGroups.length,
-            itemBuilder: (BuildContext context, int index) {
-              var groupItem = GroupItemWidget(controller.messageGroups[index]);
-              groupItem.isExpanded.value = index == 0;
-              return groupItem;
-            })));
+        child: GetBuilder<MessageController>(
+            init: controller,
+            builder: (controller) => ListView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: controller.messageGroups.length,
+                itemBuilder: (BuildContext context, int index) {
+                  var groupItem =
+                      GroupItemWidget(controller.messageGroups[index]);
+                  groupItem.isExpanded.value = index == 0;
+                  return groupItem;
+                })));
   }
 }

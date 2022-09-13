@@ -8,7 +8,7 @@ import '../api_resp/target_resp.dart';
 import '../api_resp/user_resp.dart';
 
 
-enum Keys { accessToken, isInitChat, user, userInfo, groupPriority, companys }
+enum Keys { accessToken, isInitChat, user, userInfo, groupPriority}
 
 class HiveUtil {
   HiveUtil._();

@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import 'package:getwidget/components/appbar/gf_appbar.dart';
 import 'package:getwidget/components/button/gf_icon_button.dart';
 import 'package:getwidget/types/gf_button_type.dart';
+import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/page/home/organization/friends/friends_controller.dart';
 
+import '../../../../component/text_avatar.dart';
 import '../../../../component/text_search.dart';
-import '../../../../config/custom_colors.dart';
 
-class FriendsPage extends GetView<FriendsPage> {
+class FriendsPage extends GetView<FriendsController> {
   const FriendsPage({Key? key}) : super(key: key);
 
   @override
@@ -23,34 +25,39 @@ class FriendsPage extends GetView<FriendsPage> {
       ),
       body: Column(
         children: [
-          TextSearch(TextSearchController()),
+          TextSearch(controller.searchingCallback),
           Expanded(
               child: Scrollbar(
-                  child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: 1,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Container(
-                            padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                            child: Row(children: [
-                              Container(
-                                  alignment: Alignment.center,
-                                  width: 54,
-                                  height: 54,
-                                  decoration: const BoxDecoration(
-                                      color: CustomColors.blue,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(54)))),
-                              Container(
-                                  margin:
-                                      const EdgeInsets.fromLTRB(10, 0, 0, 0)),
-                              const Expanded(
-                                  child: Text("姓名",
-                                      style: TextStyle(fontSize: 18)))
-                            ]));
-                      })))
+                  child: RefreshIndicator(
+                      onRefresh: () async {
+                        controller.onLoadFriends("");
+                      },
+                      child: _list())))
         ],
       ),
     );
+  }
+
+  Widget _list() {
+    return GetBuilder<FriendsController>(
+        init: FriendsController(),
+        builder: (controller) => ListView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: controller.friends.length,
+            itemBuilder: (BuildContext context, int index) {
+              return _item(controller.friends[index]);
+            }));
+  }
+
+  Widget _item(TargetResp targetResp) {
+    return Container(
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+        child: Row(children: [
+          TextAvatar(avatarName: targetResp.name, type: TextAvatarType.chat),
+          Container(margin: const EdgeInsets.fromLTRB(10, 0, 0, 0)),
+          Expanded(
+              child:
+                  Text(targetResp.name, style: const TextStyle(fontSize: 18)))
+        ]));
   }
 }

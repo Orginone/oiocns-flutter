@@ -72,11 +72,8 @@ class ChatMessageDetail extends StatelessWidget {
   }
 
   Widget _getAvatar(bool isMy, bool isMultiple, String avatarName) {
-    var targetName = targetResp?.name ?? "";
-    String name = !isMy && isMultiple
-        ? targetName.substring(0, targetName.length >= 2 ? 2 : 1).toUpperCase()
-        : avatarName;
-    return TextAvatar(name);
+    String name = !isMy && isMultiple ? targetResp?.name ?? "" : avatarName;
+    return TextAvatar(avatarName: name, type: TextAvatarType.chat);
   }
 
   Widget _getChat(
