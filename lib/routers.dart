@@ -13,6 +13,8 @@ import 'package:orginone/page/home/message/message_binding.dart';
 import 'package:orginone/page/home/message/message_page.dart';
 import 'package:orginone/page/home/message/setting/message_setting_binding.dart';
 import 'package:orginone/page/home/message/setting/message_setting_page.dart';
+import 'package:orginone/page/home/mine/mine_binding.dart';
+import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_binding.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_page.dart';
 import 'package:orginone/page/home/organization/friends/friends_binding.dart';
@@ -41,6 +43,7 @@ class Routers {
   static const String cohorts = "/cohorts";
   static const String personDetail = "/personDetail";
   static const String personAdd = "/personAdd";
+  static const String mine = "/mine";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -108,7 +111,12 @@ class Routers {
         name: Routers.personAdd,
         page: () => const PersonAddPage(),
         binding: PersonAddBinding(),
-      )
+      ),
+      GetPage(
+        name: Routers.mine,
+        page: () => const MinePage(),
+        binding: MineBinding(),
+      ),
     ];
   }
 }

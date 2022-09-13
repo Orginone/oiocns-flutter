@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
+import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/organization/organization_page.dart';
 
 import '../../api/person_api.dart';
@@ -46,7 +47,7 @@ class HomeController extends GetxController
       TabCombine(message, const MessagePage()),
       TabCombine(relation, const OrganizationPage()),
       TabCombine(work, const MessagePage()),
-      TabCombine(my, const MessagePage()),
+      TabCombine(my, const MinePage()),
     ];
 
     tabController = TabController(length: tabs.length, vsync: this);
