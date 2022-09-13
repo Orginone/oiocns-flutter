@@ -27,6 +27,8 @@ import 'package:orginone/page/home/organization/organization_binding.dart';
 import 'package:orginone/page/home/organization/organization_page.dart';
 import 'package:orginone/page/home/organization/units/units_binding.dart';
 import 'package:orginone/page/home/organization/units/units_page.dart';
+import 'package:orginone/page/home/search/search_list.dart';
+import 'package:orginone/page/home/search/search_page.dart';
 import 'package:orginone/page/login/login_binding.dart';
 import 'package:orginone/page/login/login_page.dart';
 import 'package:orginone/page/register/register_binding.dart';
@@ -50,6 +52,7 @@ class Routers {
   static const String personDetail = "/personDetail";
   static const String personAdd = "/personAdd";
   static const String mine = "/mine";
+  static const String search = "/search";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -132,6 +135,11 @@ class Routers {
         name: Routers.mine,
         page: () => const MinePage(),
         binding: MineBinding(),
+      ),
+      GetPage(
+        name: Routers.search,
+        page: () => const SearchPage(),
+        binding: SearchBinding(),
       ),
     ];
   }

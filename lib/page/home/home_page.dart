@@ -16,7 +16,9 @@ class HomePage extends GetView<HomeController> {
         GFIconButton(
             color: CustomColors.lightGrey,
             icon: const Icon(Icons.search, color: Colors.black),
-            onPressed: () {}),
+            onPressed: () {
+              Get.toNamed(Routers.search);
+            }),
         GFIconButton(
             color: CustomColors.lightGrey,
             icon: const Icon(Icons.add, color: Colors.black),

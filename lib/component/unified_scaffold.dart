@@ -14,6 +14,7 @@ class UnifiedScaffold extends StatelessWidget {
   final Widget? appBarLeading;
   final Widget? body;
   final Widget? bottomNavigationBar;
+  final Widget? floatingButton;
 
   const UnifiedScaffold(
       {Key? key,
@@ -23,7 +24,8 @@ class UnifiedScaffold extends StatelessWidget {
       this.appBarTitle,
       this.appBarLeading,
       this.body,
-      this.bottomNavigationBar})
+      this.bottomNavigationBar,
+      this.floatingButton})
       : super(key: key);
 
   @override
@@ -41,6 +43,8 @@ class UnifiedScaffold extends StatelessWidget {
       ),
       body: body,
       bottomNavigationBar: bottomNavigationBar,
+      floatingActionButton: floatingButton,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
