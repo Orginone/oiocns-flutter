@@ -3,6 +3,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/component/form_item_type1.dart';
 import 'package:orginone/model/db_model.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
@@ -39,117 +40,30 @@ class PersonDetailPage extends GetView<PersonDetailController> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin:
-                                        const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                                    child: const Text("昵称",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Color.fromRGBO(
-                                                130, 130, 130, 1))),
-                                  ),
-                                  Text(
-                                      item.personDetail != null
-                                          ? item.personDetail!.nickName
-                                          : '',
-                                      style: const TextStyle(fontSize: 16)),
-                                ],
-                              ),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.keyboard_arrow_right))
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
+                    FormItemType1(
+                        title: '昵称',
+                        text: item.personDetail != null
+                            ? item.personDetail!.nickName
+                            : '',
+                        suffixIcon: const Icon(Icons.keyboard_arrow_right)),
                     const Divider(
                       height: 0,
                     ),
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin:
-                                        const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                                    child: const Text("姓名",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Color.fromRGBO(
-                                                130, 130, 130, 1))),
-                                  ),
-                                  Text(
-                                      item.personDetail != null
-                                          ? item.personDetail!.team['name']
-                                          : '',
-                                      style: const TextStyle(fontSize: 16)),
-                                ],
-                              ),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.keyboard_arrow_right))
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
+                    FormItemType1(
+                        title: '姓名',
+                        text: item.personDetail != null
+                            ? item.personDetail!.team['name']
+                            : '',
+                        suffixIcon: const Icon(Icons.keyboard_arrow_right)),
                     const Divider(
                       height: 0,
                     ),
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin:
-                                        const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                                    child: const Text("电话",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Color.fromRGBO(
-                                                130, 130, 130, 1))),
-                                  ),
-                                  Text(
-                                      item.personDetail != null
-                                          ? item.personDetail!.team['code']
-                                          : '',
-                                      style: const TextStyle(fontSize: 16)),
-                                ],
-                              ),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.keyboard_arrow_right))
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
+                    FormItemType1(
+                        title: '电话',
+                        text: item.personDetail != null
+                            ? item.personDetail!.team['code']
+                            : '',
+                        suffixIcon: const Icon(Icons.keyboard_arrow_right)),
                     const Divider(
                       height: 0,
                     ),
@@ -158,7 +72,8 @@ class PersonDetailPage extends GetView<PersonDetailController> {
               ),
             ]),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
           floatingActionButton: Row(
             children: [
               Container(
@@ -170,7 +85,6 @@ class PersonDetailPage extends GetView<PersonDetailController> {
                         EasyLoading.showToast("未获取到人员信息！");
                         return;
                       }
-
                       HomeController homeController = Get.find();
                       MessageController messageController = Get.find();
                       messageController.currentSpaceId =
