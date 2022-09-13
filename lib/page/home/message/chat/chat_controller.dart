@@ -44,6 +44,7 @@ class ChatController extends GetxController {
   void onInit() async {
     logger.info("==============开始初始化聊天控制器=============");
     logger.info("===> 异步初始化聊天数据");
+    logger.info("hashCode:$hashCode");
     await init();
     super.onInit();
     logger.info("==============结束初始化聊天控制器=============");
@@ -56,17 +57,6 @@ class ChatController extends GetxController {
     await messageController.messageItemRead();
 
     super.onReady();
-  }
-
-  @override
-  void onClose() {
-    logger.info("==============开始回收资源=============");
-    // 清空数据
-    messageDetails.clear();
-
-    // 解除控制
-    super.onClose();
-    logger.info("==============结束回收资源=============");
   }
 
   // 阅读信息
@@ -189,6 +179,7 @@ class ChatController extends GetxController {
 
   // 发送消息至聊天页面
   Future<void> sendOneMessage() async {
+    logger.info("hashCode:$hashCode");
     var groupId = messageController.currentMessageItemId;
     var spaceId = messageController.currentSpaceId;
     if (groupId == -1) return;
