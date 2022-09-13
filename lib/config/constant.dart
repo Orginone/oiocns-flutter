@@ -4,6 +4,4 @@ class Constant {
   static const personModule = "$host/orginone/organization/person";
   static const companyModule = "$host/orginone/organization/company";
   static const cohortModule = "$host/orginone/organization/cohort";
-
-
 }

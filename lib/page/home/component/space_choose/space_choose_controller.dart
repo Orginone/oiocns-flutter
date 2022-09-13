@@ -10,8 +10,6 @@ import '../../../../util/hive_util.dart';
 class SpaceChooseController extends GetxController {
   HomeController homeController = Get.find<HomeController>();
 
-  UserResp userResp = HiveUtil().getValue(Keys.user);
-
   late int offset;
   late int limit;
   late List<TargetResp> spaces;
@@ -30,6 +28,7 @@ class SpaceChooseController extends GetxController {
   }
 
   Future<void> loadMoreSpaces(int offset, int limit) async {
+    UserResp userResp = HiveUtil().getValue(Keys.user);
     List<dynamic> joined = await CompanyApi.getJoinedCompanys(offset, limit);
     for (var joinedSpace in joined) {
       var space = TargetResp.fromMap(joinedSpace);

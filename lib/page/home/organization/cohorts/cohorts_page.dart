@@ -1,57 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/components/appbar/gf_appbar.dart';
-import 'package:getwidget/components/button/gf_icon_button.dart';
-import 'package:getwidget/types/gf_button_type.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
 
+import '../../../../api_resp/target_resp.dart';
+import '../../../../component/text_avatar.dart';
 import '../../../../component/text_search.dart';
-import '../../../../config/custom_colors.dart';
+import '../../../../component/unified_scaffold.dart';
+import '../../../../component/unified_text_style.dart';
+import '../../../../routers.dart';
+import '../../../../util/widget_util.dart';
 
 class CohortsPage extends GetView<CohortsController> {
   const CohortsPage({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: GFAppBar(
-        leading: GFIconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Get.back(),
-          type: GFButtonType.transparent,
-        ),
-        title: const Text("我的好友"),
-      ),
-      body: Column(
+  get _body => Column(
         children: [
-          TextSearch((newVal) => {}),
+          TextSearch(controller.searchingCallback),
           Expanded(
               child: Scrollbar(
-                  child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: 1,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Container(
-                            padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                            child: Row(children: [
-                              Container(
-                                  alignment: Alignment.center,
-                                  width: 54,
-                                  height: 54,
-                                  decoration: const BoxDecoration(
-                                      color: CustomColors.blue,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(54)))),
-                              Container(
-                                  margin:
-                                      const EdgeInsets.fromLTRB(10, 0, 0, 0)),
-                              const Expanded(
-                                  child: Text("姓名",
-                                      style: TextStyle(fontSize: 18)))
-                            ]));
-                      })))
+                  child: RefreshIndicator(
+                      onRefresh: () async {
+                        controller.onLoad();
+                      },
+                      child: _list())))
         ],
-      ),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    return UnifiedScaffold(
+      appBarTitle: Text("我的群组", style: text16),
+      appBarLeading: WidgetUtil.defaultBackBtn,
+      body: _body,
     );
+  }
+
+  Widget _list() {
+    return GetBuilder<CohortsController>(
+        init: controller,
+        builder: (controller) => ListView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: controller.cohorts.length,
+            itemBuilder: (BuildContext context, int index) {
+              return _item(controller.cohorts[index]);
+            }));
+  }
+
+  Widget _item(TargetResp targetResp) {
+    return GestureDetector(
+        onTap: () {
+          Get.toNamed(Routers.personDetail, arguments: targetResp.name);
+        },
+        child: Container(
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+            child: Row(children: [
+              TextAvatar(
+                  avatarName: targetResp.name, type: TextAvatarType.chat),
+              Container(margin: const EdgeInsets.fromLTRB(10, 0, 0, 0)),
+              Expanded(child: Text(targetResp.name, style: text16))
+            ])));
   }
 }
