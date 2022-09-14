@@ -29,6 +29,8 @@ import 'package:orginone/page/home/organization/organization_binding.dart';
 import 'package:orginone/page/home/organization/organization_page.dart';
 import 'package:orginone/page/home/organization/units/units_binding.dart';
 import 'package:orginone/page/home/organization/units/units_page.dart';
+import 'package:orginone/page/home/search/search_list.dart';
+import 'package:orginone/page/home/search/search_page.dart';
 import 'package:orginone/page/login/login_binding.dart';
 import 'package:orginone/page/login/login_page.dart';
 import 'package:orginone/page/register/register_binding.dart';

@@ -75,18 +75,17 @@ class MineInfoPage extends GetView<MineInfoController> {
                                   //底部按钮区域
                                   actions: <Widget>[
                                     TextButton(
-                                      child: Text("再考虑一下"),
+                                      child: const Text("确认"),
                                       onPressed: () {
                                         Navigator.of(context).pop(false);
                                       },
                                     ),
-                                    FlatButton(
-                                      child: Text("考虑好了"),
-                                      onPressed: () {
-                                        //关闭 返回true
-                                        Navigator.of(context).pop(true);
-                                      },
-                                    ),
+                                TextButton(
+                                child: const Text("取消"),
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                ),
                                   ],
                                 );
                               },
