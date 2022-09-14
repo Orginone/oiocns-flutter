@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/api/person_detail_api.dart';
+import 'package:orginone/api/person_api.dart';
 import 'package:orginone/page/home/component/personDetail/person_detail_controller.dart';
 
 
@@ -19,7 +19,7 @@ class PersonAddController extends GetxController {
     super.onReady();
   }
   void submitPersonAdd() async{
-    var resMeg = await PersonDetailApi.addPerson(personId);
+    var resMeg = await PersonApi.addPerson(personId);
     Fluttertoast.showToast(
         msg: resMeg,
         toastLength: Toast.LENGTH_SHORT,

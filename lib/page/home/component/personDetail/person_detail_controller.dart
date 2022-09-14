@@ -1,7 +1,7 @@
 
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/api/person_detail_api.dart';
+import 'package:orginone/api/person_api.dart';
 import 'package:orginone/api_resp/person_detail_resp.dart';
 
 class PersonDetailController extends GetxController {
@@ -14,6 +14,6 @@ class PersonDetailController extends GetxController {
     super.onReady();
   }
   getPersonDetail(personName) async {
-    personDetail = await PersonDetailApi.getPersonDetail(personName);
+    personDetail = await PersonApi.getPersonDetail(personName);
   }
 }
