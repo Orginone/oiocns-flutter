@@ -32,6 +32,13 @@ class FriendsPage extends GetView<FriendsController> {
       appBarTitle: Text("我的好友", style: text16),
       appBarLeading: WidgetUtil.defaultBackBtn,
       body: _body,
+      floatingButton: FloatingActionButton(
+          onPressed: () {
+            Get.toNamed(Routers.personAdd);
+          },
+          backgroundColor: Colors.blueAccent,
+          splashColor: Colors.white,
+          child: const Icon(Icons.person_add, size: 30, color: Colors.white)),
     );
   }
 
@@ -52,12 +59,15 @@ class FriendsPage extends GetView<FriendsController> {
           Get.toNamed(Routers.personDetail, arguments: targetResp.name);
         },
         child: Container(
-            padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-            child: Row(children: [
-              TextAvatar(
-                  avatarName: targetResp.name, type: TextAvatarType.chat),
-              Container(margin: const EdgeInsets.fromLTRB(10, 0, 0, 0)),
-              Expanded(child: Text(targetResp.name, style: text16))
-            ])));
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                TextAvatar(
+                    avatarName: targetResp.name, type: TextAvatarType.chat),
+                Container(margin: const EdgeInsets.fromLTRB(10, 0, 0, 0)),
+                Expanded(child: Text(targetResp.name, style: text16Bold))
+              ],
+            )));
   }
 }

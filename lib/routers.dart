@@ -54,6 +54,7 @@ class Routers {
   static const String mine = "/mine";
   static const String mineInfo = "/mineInfo";
   static const String mineUnit = "/mineUnit";
+  static const String search = "/search";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -141,6 +142,11 @@ class Routers {
         name: Routers.mineInfo,
         page: () => const MineInfoPage(),
         binding: MineInfoBinding(),
+      ),
+      GetPage(
+        name: Routers.search,
+        page: () => const SearchPage(),
+        binding: SearchBinding(),
       ),
     ];
   }
