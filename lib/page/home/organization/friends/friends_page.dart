@@ -9,6 +9,7 @@ import '../../../../component/text_search.dart';
 import '../../../../component/unified_scaffold.dart';
 import '../../../../routers.dart';
 import '../../../../util/widget_util.dart';
+import '../../search/search_controller.dart';
 
 class FriendsPage extends GetView<FriendsController> {
   const FriendsPage({Key? key}) : super(key: key);
@@ -34,7 +35,8 @@ class FriendsPage extends GetView<FriendsController> {
       body: _body,
       floatingButton: FloatingActionButton(
           onPressed: () {
-            Get.toNamed(Routers.personAdd);
+            List<SearchItem> friends = [SearchItem.friends];
+            Get.toNamed(Routers.search, arguments: friends);
           },
           backgroundColor: Colors.blueAccent,
           splashColor: Colors.white,

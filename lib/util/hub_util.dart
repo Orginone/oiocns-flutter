@@ -92,7 +92,7 @@ class HubUtil {
 
           // 开启连接，鉴权
           await _connServer.start();
-          await _auth(HiveUtil().getValue(Keys.accessToken));
+          await _auth(HiveUtil().accessToken);
 
           log.info("==> connected success");
           log.info("================== 连接 HUB 成功 =========================");

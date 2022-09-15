@@ -12,16 +12,18 @@ class LoginController extends GetxController {
   var password = TextEditingController(text: "38179960Jzy~");
 
   Future<void> login() async {
+    var hiveUtil = HiveUtil();
+
+    // 登录，设置 accessToken
     LoginResp loginResp =
         await PersonApi.login(account.value.text, password.value.text);
+    hiveUtil.accessToken = loginResp.accessToken;
 
-    var hiveUtil = HiveUtil();
-    await hiveUtil.initEnvParams(account.value.text);
-    await hiveUtil.putValue(Keys.accessToken, loginResp.accessToken);
-    await hiveUtil.putValue(Keys.user, loginResp.user);
-
+    // 获取当前用户信息
     TargetResp userInfo = await PersonApi.userInfo();
+    await hiveUtil.initEnvParams(userInfo.id);
     await hiveUtil.putValue(Keys.userInfo, userInfo);
+    await hiveUtil.putValue(Keys.user, loginResp.user);
 
     // 更新一下数据库信息
     User user = loginResp.user.toUser();

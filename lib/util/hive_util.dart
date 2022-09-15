@@ -7,8 +7,7 @@ import '../api_resp/team_resp.dart';
 import '../api_resp/target_resp.dart';
 import '../api_resp/user_resp.dart';
 
-
-enum Keys { accessToken, isInitChat, user, userInfo, groupPriority}
+enum Keys { accessToken, isInitChat, user, userInfo, groupPriority }
 
 class HiveUtil {
   HiveUtil._();
@@ -26,6 +25,9 @@ class HiveUtil {
 
     // 初始化适配器
     initAdapters();
+
+    // 初始化全局唯一盒子
+    await initUniqueBox();
   }
 
   Future<void> initAdapters() async {
@@ -35,30 +37,41 @@ class HiveUtil {
   }
 
   // 这个存储一些键值
+  late Box uniqueBox;
   late Box keyValueBox;
-  late String currentAccount;
-  late final String _groupPriorityKey = "$currentAccount${Keys.groupPriority.name}";
+  late int currentTargetId;
+  late final String _groupPriorityKey =
+      "$currentTargetId${Keys.groupPriority.name}";
+
+  Future<void> initUniqueBox() async {
+    uniqueBox = await Hive.openBox("uniqueBox");
+  }
 
   // 初始化系统参数
-  Future<void> initEnvParams(String account) async {
+  Future<void> initEnvParams(int targetId) async {
     // 初始化键值对，不同参数保存在不同的文件中
-    keyValueBox = await Hive.openBox("keyValueBox_$account");
+    keyValueBox = await Hive.openBox("keyValueBox_$targetId");
 
     // 初始化当前用户
-    currentAccount = account;
+    currentTargetId = targetId;
 
     // 初始化聊天的优先级
+
     if (!keyValueBox.containsKey(_groupPriorityKey)) {
       keyValueBox.put(_groupPriorityKey, 0);
     }
   }
 
+  set accessToken(accessToken) => uniqueBox.put("accessToken", accessToken);
+
+  get accessToken => uniqueBox.get("accessToken");
+
   dynamic getValue(Keys key) {
-    return keyValueBox.get(currentAccount + key.name);
+    return keyValueBox.get("$currentTargetId${key.name}");
   }
 
   dynamic putValue(Keys key, dynamic value) {
-    return keyValueBox.put(currentAccount + key.name, value);
+    return keyValueBox.put("$currentTargetId${key.name}", value);
   }
 
   int groupPriorityAddAndGet() {

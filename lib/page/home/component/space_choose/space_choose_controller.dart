@@ -24,15 +24,24 @@ class SpaceChooseController extends GetxController {
     offset = 0;
     limit = 20;
     spaces = [];
+    if (homeController.currentSpace.id != homeController.userInfo.id) {
+      TargetResp userInfo = TargetResp.copyWith(homeController.userInfo);
+      userInfo.name = "个人空间";
+      spaces.add(userInfo);
+    }
     await loadMoreSpaces(offset, limit);
   }
 
   Future<void> loadMoreSpaces(int offset, int limit) async {
+    var currentSpace = homeController.currentSpace;
+
     UserResp userResp = HiveUtil().getValue(Keys.user);
     List<dynamic> joined = await CompanyApi.getJoinedCompanys(offset, limit);
     for (var joinedSpace in joined) {
       var space = TargetResp.fromMap(joinedSpace);
-      spaces.add(space);
+      if (currentSpace.id != space.id) {
+        spaces.add(space);
+      }
 
       await space.toTarget().upsert();
       var relation = UserSpaceRelation();

@@ -39,7 +39,7 @@ class HttpUtil {
   }
 
   Future<Options> addTokenHeader(Options? options) async {
-    var accessToken = await HiveUtil().getValue(Keys.accessToken);
+    var accessToken = await HiveUtil().accessToken;
     log.info("==> accessToken：$accessToken");
     if (options == null) {
       return Options(headers: {"Authorization": accessToken});

@@ -13,6 +13,7 @@ class SpaceChoosePage extends GetView<SpaceChooseController> {
 
   Widget _item(TargetResp targetResp) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         controller.homeController.switchSpaces(targetResp);
         Get.back();

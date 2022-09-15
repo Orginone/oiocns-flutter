@@ -1,49 +1,40 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/api_resp/user_resp.dart';
-import 'package:orginone/page/home/home_controller.dart';
-import 'package:orginone/page/home/search/search_page.dart';
+import 'package:logging/logging.dart';
 
-import '../../../../api/company_api.dart';
-import '../../../../api_resp/target_resp.dart';
-import '../../../../model/db_model.dart';
-import '../../../../util/hive_util.dart';
+enum SearchItem {
+  comprehensive("综合"),
+  friends("好友"),
+  cohorts("群组"),
+  messages("消息"),
+  documents("文档"),
+  logs("日志"),
+  labels("文本"),
+  functions("功能"),
+  departments("部门"),
+  publicCohorts("公开群组"),
+  applications("应用");
 
-class SearchController extends GetxController {
-  HomeController homeController = Get.find<HomeController>();
+  const SearchItem(this.name);
 
-  late int offset;
-  late int limit;
-  late List<TargetResp> spaces;
+  final String name;
+}
 
+class SearchController extends GetxController
+    with GetSingleTickerProviderStateMixin {
+  Logger logger = Logger("SearchController");
+
+  late TabController tabController;
   late List<SearchItem> searchItems;
 
   @override
   void onInit() {
-    onLoadSpaces();
+    searchItems = Get.arguments ?? SearchItem.values;
+    tabController = TabController(length: searchItems.length, vsync: this);
     super.onInit();
   }
 
-  Future<void> onLoadSpaces() async {
-    offset = 0;
-    limit = 20;
-    spaces = [];
-    await loadMoreSpaces(offset, limit);
-  }
+  Future<void> searchingCallback(String filter) async {
 
-  Future<void> loadMoreSpaces(int offset, int limit) async {
-    UserResp userResp = HiveUtil().getValue(Keys.user);
-    List<dynamic> joined = await CompanyApi.getJoinedCompanys(offset, limit);
-    for (var joinedSpace in joined) {
-      var space = TargetResp.fromMap(joinedSpace);
-      spaces.add(space);
-
-      await space.toTarget().upsert();
-      var relation = UserSpaceRelation();
-      relation.account = userResp.account;
-      relation.targetId = space.id;
-      relation.name = space.name;
-      await relation.upsert();
-    }
-    update();
   }
 }

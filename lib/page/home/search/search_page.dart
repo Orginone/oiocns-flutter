@@ -1,72 +1,94 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:getwidget/components/tabs/gf_tabbar.dart';
+import 'package:getwidget/components/tabs/gf_tabbar_view.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
 
-import '../../../../api_resp/target_resp.dart';
-import '../../../../component/text_avatar.dart';
 import '../../../../util/widget_util.dart';
+import '../../../component/text_search.dart';
+import '../../../config/custom_colors.dart';
 import 'search_controller.dart';
-
-enum SearchItem {
-  friends,
-  cohorts,
-  messages,
-  documents,
-  logs,
-  labels,
-  functions,
-  departments,
-  publicCohorts,
-  applications,
-}
 
 class SearchPage extends GetView<SearchController> {
   const SearchPage({Key? key}) : super(key: key);
 
-  Widget _item(TargetResp targetResp) {
-    return GestureDetector(
-      onTap: () {
-        controller.homeController.switchSpaces(targetResp);
-        Get.back();
-      },
-      child: Container(
-          padding: const EdgeInsets.fromLTRB(5, 5, 10, 0),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            TextAvatar(avatarName: targetResp.name, type: TextAvatarType.space),
-            Container(margin: const EdgeInsets.fromLTRB(5, 0, 0, 0)),
-            Expanded(
-              child: Text(
-                targetResp.name,
-                style: text18,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-          ])),
+  Widget _tabBar(BuildContext context) {
+    List<Widget> tabs = controller.searchItems
+        .map((item) => Text(item.name, style: text12))
+        .toList();
+
+    return GFTabBar(
+        width: 1000,
+        tabBarHeight: 40,
+        indicatorColor: CustomColors.blue,
+        tabBarColor: CustomColors.easyGrey,
+        length: controller.tabController.length,
+        controller: controller.tabController,
+        tabs: tabs);
+  }
+
+  Widget _tabView() {
+    return GFTabBarView(
+      height: 400,
+      controller: controller.tabController,
+      children: controller.searchItems
+          .map((item) =>
+              Container(alignment: Alignment.center, child: Text(item.name)))
+          .toList(),
     );
   }
 
-  get _body => RefreshIndicator(
-        onRefresh: () async {
-          controller.onLoadSpaces();
-        },
-        child: GetBuilder<SearchController>(
-            init: controller,
-            builder: (controller) => ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: controller.spaces.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return _item(controller.spaces[index]);
-                })),
-      );
+  Widget _friendsResultPage() {
+    return Container();
+  }
 
   @override
   Widget build(BuildContext context) {
+    bool isMultiple = controller.searchItems.length > 1;
+    bool isSingle = controller.searchItems.length == 1;
+    Widget? body;
+    if (isMultiple) {
+      body = Column(
+        children: [_tabBar(context), _tabView()],
+      );
+    } else if (isSingle) {
+      SearchItem searchItem = controller.searchItems[0];
+      switch (searchItem) {
+        case SearchItem.friends:
+          body = _friendsResultPage();
+          break;
+        case SearchItem.applications:
+          break;
+        case SearchItem.comprehensive:
+          break;
+        case SearchItem.cohorts:
+          break;
+        case SearchItem.messages:
+          break;
+        case SearchItem.documents:
+          break;
+        case SearchItem.logs:
+          break;
+        case SearchItem.labels:
+          break;
+        case SearchItem.functions:
+          break;
+        case SearchItem.departments:
+          break;
+        case SearchItem.publicCohorts:
+          break;
+      }
+    } else {
+      body = Container();
+    }
+
     return UnifiedScaffold(
       appBarLeading: WidgetUtil.defaultBackBtn,
-      appBarTitle:
-          Text(controller.homeController.currentSpace.name, style: text20),
-      body: _body,
+      appBarTitle: TextSearch(
+          margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+          controller.searchingCallback),
+      body: body,
     );
   }
 }

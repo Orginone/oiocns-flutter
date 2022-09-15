@@ -35,6 +35,7 @@ class UnifiedScaffold extends StatelessWidget {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(height * appBarPercent),
         child: GFAppBar(
+          titleSpacing: 0.0,
           actions: appBarActions,
           backgroundColor: appBarBgColor,
           title: appBarTitle,
