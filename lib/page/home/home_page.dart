@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/util/string_util.dart';
@@ -25,17 +26,11 @@ class HomePage extends GetView<HomeController> {
             onPressed: () {}),
       ];
 
-  get _leading => Container(
-        decoration: const BoxDecoration(
-            color: CustomColors.blue,
-            borderRadius: BorderRadius.all(Radius.circular(2))),
+  get _leading => TextAvatar(
+        avatarName: controller.user.userName,
+        type: TextAvatarType.avatar,
+        textStyle: text16White,
         margin: const EdgeInsets.all(10),
-        alignment: Alignment.center,
-        padding: const EdgeInsets.all(6),
-        child: Text(
-          StringUtil.getPrefixChars(controller.user.userName, count: 2),
-          style: const TextStyle(color: Colors.white, fontSize: 18),
-        ),
       );
 
   get _title => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

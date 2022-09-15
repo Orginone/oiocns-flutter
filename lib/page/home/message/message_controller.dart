@@ -9,6 +9,7 @@ import 'package:orginone/model/target_relation_util.dart';
 import 'package:orginone/model/user_space_relation_util.dart';
 import 'package:orginone/obserable/latest_message.dart';
 import 'package:orginone/page/home/home_controller.dart';
+import 'package:orginone/util/date_util.dart';
 import 'package:orginone/util/hive_util.dart';
 
 import '../../../api_resp/api_resp.dart';
@@ -200,7 +201,7 @@ class MessageController extends GetxController {
           (messageDetail?.msgBody ?? "").obs,
           (createTime == null
                   ? ""
-                  : DateUtil.formatDate(createTime, format: "HH:mm:ss"))
+                  : CustomDateUtil.getSessionTime(createTime))
               .obs);
     } else {
       updateChatItem(messageItem, messageDetail);

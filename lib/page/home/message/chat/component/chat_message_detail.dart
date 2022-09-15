@@ -9,7 +9,7 @@ import 'package:orginone/util/hive_util.dart';
 
 import '../../../../../api_resp/target_resp.dart';
 import '../../../../../component/popup_router.dart';
-import '../../../../../config/custom_colors.dart';
+import '../../../../../component/unified_text_style.dart';
 import '../../../../../enumeration/enum_map.dart';
 import '../../../../../enumeration/message_type.dart';
 import '../../../../../model/db_model.dart';
@@ -73,7 +73,11 @@ class ChatMessageDetail extends StatelessWidget {
 
   Widget _getAvatar(bool isMy, bool isMultiple, String avatarName) {
     String name = !isMy && isMultiple ? targetResp?.name ?? "" : avatarName;
-    return TextAvatar(avatarName: name, type: TextAvatarType.chat);
+    return TextAvatar(
+      avatarName: name,
+      type: TextAvatarType.chat,
+      textStyle: text12White,
+    );
   }
 
   Widget _getChat(
@@ -81,14 +85,10 @@ class ChatMessageDetail extends StatelessWidget {
     List<Widget> content = <Widget>[];
     if (isMultiple && !isMy) {
       var targetName = targetResp?.name ?? "";
-      content.add(
-        Container(padding: const EdgeInsets.fromLTRB(0, 10, 0, 0)),
-      );
       content.add(Text(targetName));
     }
 
     // 添加长按手势
-    var key = GlobalKey();
     var chat = GestureDetector(
       onLongPress: () {
         if (!isMy) return;
@@ -101,15 +101,18 @@ class ChatMessageDetail extends StatelessWidget {
                 child: ChatFunc(messageDetail, isWithdraw)));
       },
       child: Container(
-          key: key,
-          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-          child: _getMessage()),
+          margin: const EdgeInsets.fromLTRB(0, 5, 0, 0), child: _getMessage()),
     );
     content.add(chat);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: content,
+    return Container(
+      margin: isMy
+          ? const EdgeInsets.fromLTRB(0, 0, 5, 0)
+          : const EdgeInsets.fromLTRB(5, 0, 0, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: content,
+      ),
     );
   }
 

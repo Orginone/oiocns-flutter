@@ -6,6 +6,8 @@ import 'package:orginone/config/custom_colors.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/routers.dart';
 
+import '../../../../component/text_avatar.dart';
+
 class MessageItemWidget extends GetView<MessageController> {
   // 用户信息
   final int groupId;
@@ -37,18 +39,13 @@ class MessageItemWidget extends GetView<MessageController> {
                     alignment: Alignment.center,
                     width: 54,
                     height: 54,
-                    decoration: const BoxDecoration(
-                        color: CustomColors.blue,
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
                     child: Stack(children: [
                       Align(
                           alignment: Alignment.center,
-                          child: Text(
-                            username
-                                .substring(0, username.length >= 2 ? 2 : 1)
-                                .toUpperCase(),
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 18),
+                          child: TextAvatar(
+                            avatarName: username,
+                            type: TextAvatarType.chat,
+                            width: 54,
                           )),
                       Align(
                         alignment: Alignment.bottomLeft,

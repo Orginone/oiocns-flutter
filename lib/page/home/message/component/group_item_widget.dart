@@ -36,11 +36,11 @@ class GroupItemWidget extends GetView<MessageController> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                      padding: const EdgeInsets.fromLTRB(10, 8, 0, 8),
+                      padding: const EdgeInsets.fromLTRB(10, 12, 0, 12),
                       child: Text(messageGroup.name ?? "",
                           style: const TextStyle(fontSize: 18))),
                   Container(
-                      padding: const EdgeInsets.fromLTRB(0, 8, 10, 8),
+                      padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                       child: Obx(() => isExpanded.value
                           ? const Icon(
                               Icons.arrow_drop_down,

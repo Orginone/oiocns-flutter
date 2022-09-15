@@ -28,9 +28,11 @@ class ChatPage extends GetView<ChatController> {
           TextTag(controller.messageItem.label ?? "")
         ]),
         actions: <Widget>[
-          GFIconButton(icon: const Icon(Icons.more_horiz),onPressed: () {
-            Get.toNamed(Routers.messageSetting);
-          })
+          GFIconButton(
+              icon: const Icon(Icons.more_horiz),
+              onPressed: () {
+                Get.toNamed(Routers.messageSetting);
+              })
         ],
       ),
       body: Column(
@@ -49,13 +51,15 @@ class ChatPage extends GetView<ChatController> {
                   },
                   child: Scrollbar(
                       key: UniqueKey(),
-                      child: Obx(() => ListView.builder(
-                          controller: controller.messageScrollController,
-                          scrollDirection: Axis.vertical,
-                          itemCount: controller.messageDetails.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return controller.messageDetails[index];
-                          }))))),
+                      child: Container(
+                          padding: const EdgeInsets.all(10),
+                          child: Obx(() => ListView.builder(
+                              controller: controller.messageScrollController,
+                              scrollDirection: Axis.vertical,
+                              itemCount: controller.messageDetails.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return controller.messageDetails[index];
+                              })))))),
           const ChatBox()
         ],
       ),

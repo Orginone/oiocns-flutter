@@ -29,7 +29,7 @@ class TeamResp {
   @HiveField(10)
   DateTime createTime;
   @HiveField(11)
-  DateTime updateTime;
+  DateTime? updateTime;
 
   TeamResp(
       this.id,
@@ -69,9 +69,11 @@ class TeamResp {
         status = map["status"],
         createUser = int.parse(map["createUser"]),
         updateUser = int.parse(map["updateUser"]),
-        version = int.parse(map["version"]),
+        version = int.parse(map["version"] ?? "1"),
         createTime = DateTime.parse(map["createTime"]),
-        updateTime = DateTime.parse(map["updateTime"]);
+        updateTime = map["updateTime"] == null
+            ? null
+            : DateTime.parse(map["updateTime"]);
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};

@@ -3,21 +3,23 @@ import 'package:flutter/material.dart';
 import '../config/custom_colors.dart';
 import '../util/string_util.dart';
 
-enum TextAvatarType { space, chat }
+enum TextAvatarType { space, chat, avatar }
 
 const double defaultWidth = 40;
-const double defaultHeight = 40;
 const double defaultRadius = 5;
-const EdgeInsets defaultInsets = EdgeInsets.fromLTRB(5, 10, 5, 0);
 const Color defaultBgColor = CustomColors.blue;
+const EdgeInsets defaultMargin = EdgeInsets.zero;
+const TextStyle defaultTextStyle =
+    TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold);
 
 class TextAvatar extends StatelessWidget {
   final TextAvatarType textAvatarType;
   final String avatarName;
   final double width;
   final double radius;
-  final EdgeInsets padding;
+  final EdgeInsets? margin;
   final Color bgColor;
+  final TextStyle textStyle;
 
   TextAvatar(
       {Key? key,
@@ -25,8 +27,9 @@ class TextAvatar extends StatelessWidget {
       required TextAvatarType type,
       radius = defaultRadius,
       this.width = defaultWidth,
-      this.padding = defaultInsets,
-      this.bgColor = defaultBgColor})
+      this.margin = defaultMargin,
+      this.bgColor = defaultBgColor,
+      this.textStyle = defaultTextStyle})
       : avatarName = _getAvatarName(avatarName, type),
         radius = _getRadius(width, radius, type),
         textAvatarType = type,
@@ -38,6 +41,8 @@ class TextAvatar extends StatelessWidget {
         return StringUtil.getPrefixChars(avatarName, count: 1);
       case TextAvatarType.chat:
         return StringUtil.getPrefixChars(avatarName, count: 2);
+      case TextAvatarType.avatar:
+        return StringUtil.getPrefixChars(avatarName, count: 1);
     }
   }
 
@@ -46,6 +51,7 @@ class TextAvatar extends StatelessWidget {
       case TextAvatarType.space:
         return width / 2;
       case TextAvatarType.chat:
+      case TextAvatarType.avatar:
         return radius;
     }
   }
@@ -53,15 +59,18 @@ class TextAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: padding,
-        child: Container(
-          alignment: Alignment.center,
-          width: width,
-          height: width,
-          decoration: BoxDecoration(
-              color: bgColor,
-              borderRadius: BorderRadius.all(Radius.circular(radius))),
-          child: Text(avatarName, style: const TextStyle(color: Colors.white)),
-        ));
+      alignment: Alignment.center,
+      width: width,
+      height: width,
+      margin: margin,
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.all(Radius.circular(radius)),
+      ),
+      child: Text(
+        avatarName,
+        style: textStyle,
+      ),
+    );
   }
 }
