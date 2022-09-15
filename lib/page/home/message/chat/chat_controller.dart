@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:orginone/model/message_detail_util.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/util/hub_util.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../../api_resp/target_resp.dart';
 import '../../../../enumeration/message_type.dart';
@@ -17,7 +18,7 @@ class ChatController extends GetxController {
   var messageController = Get.find<MessageController>();
   var homeController = Get.find<HomeController>();
   var messageText = TextEditingController();
-  var messageScrollController = ScrollController();
+  var messageScrollController = ItemScrollController();
 
   // 当前所在的群组
   late TargetRelation messageItem;
@@ -29,7 +30,7 @@ class ChatController extends GetxController {
 
   // 老数据分页信息
   var currentPage = 1;
-  var pageSize = 20;
+  var pageSize = 15;
   int oldTotalCount = 0;
   int oldRemainder = 0;
 
@@ -76,7 +77,7 @@ class ChatController extends GetxController {
         messageDetails.add(chatMessageDetail);
         messageDetailMap[messageDetailId] = chatMessageDetail;
       } else {
-        if (messageDetailMap.containsKey(messageDetailId)){
+        if (messageDetailMap.containsKey(messageDetailId)) {
           // 如果存在这条单据详情的话
           ChatMessageDetail oldDetail = messageDetailMap[messageDetailId]!;
           oldDetail.isWithdraw.value = true;
@@ -127,8 +128,8 @@ class ChatController extends GetxController {
     int offset = oldRemainder + (currentPage - 2) * pageSize;
     offset = offset < 0 ? 0 : offset;
 
-    if(messageItem.passiveTargetId == currentUserInfo.id) {
-      return  await MessageDetailUtil.myPageData(
+    if (messageItem.passiveTargetId == currentUserInfo.id) {
+      return await MessageDetailUtil.myPageData(
           offset,
           pageSize,
           messageController.currentSpaceId,
@@ -137,7 +138,7 @@ class ChatController extends GetxController {
     }
 
     // 列表
-    return  await MessageDetailUtil.pageData(
+    return await MessageDetailUtil.pageData(
         offset,
         pageSize,
         messageController.currentSpaceId,
@@ -208,10 +209,10 @@ class ChatController extends GetxController {
   // 滚动到页面底部
   void toBottom() {
     WidgetsBinding.instance.addPostFrameCallback((mag) {
-      messageScrollController.animateTo(
-          messageScrollController.position.maxScrollExtent,
+      messageScrollController.scrollTo(
+          index: messageDetails.length - 1,
           duration: const Duration(seconds: 1),
-          curve: Curves.ease);
+          curve: Curves.easeInCubic);
     });
   }
 }

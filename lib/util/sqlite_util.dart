@@ -9,15 +9,13 @@ class SqliteUtil {
     return _instance;
   }
 
-  late var dataBase;
+  late Database dataBase;
 
   Future<void> init() async {
     dataBase = await openDatabase("orginone.db");
   }
 
   Future<void> close() async {
-    if (dataBase != null) {
-      await dataBase.close();
-    }
+    await dataBase.close();
   }
 }

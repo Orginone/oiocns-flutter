@@ -9,6 +9,7 @@ import 'package:orginone/model/db_model.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/chat/component/chat_box.dart';
 import 'package:orginone/util/date_util.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../../component/unified_edge_insets.dart';
 import '../../../../routers.dart';
@@ -91,9 +92,10 @@ class ChatPage extends GetView<ChatController> {
                       key: UniqueKey(),
                       child: Container(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          child: Obx(() => ListView.builder(
-                              controller: controller.messageScrollController,
-                              scrollDirection: Axis.vertical,
+                          child: Obx(() => ScrollablePositionedList.builder(
+                              itemScrollController: controller.messageScrollController,
+                              scrollDirection
+                                  : Axis.vertical,
                               itemCount: controller.messageDetails.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return _chatItem(index);
