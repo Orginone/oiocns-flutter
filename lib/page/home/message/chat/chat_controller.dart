@@ -34,7 +34,7 @@ class ChatController extends GetxController {
   int oldRemainder = 0;
 
   // 观测对象
-  var messageDetails = <Widget>[].obs;
+  var messageDetails = <ChatMessageDetail>[].obs;
   Map<int, ChatMessageDetail> messageDetailMap = {};
 
   // 日志

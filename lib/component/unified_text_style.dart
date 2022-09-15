@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 
 get text12 => const TextStyle(fontSize: 12, color: Colors.black);
 
+get text12Grey => const TextStyle(fontSize: 12, color: Colors.grey);
+
 get text12White => const TextStyle(fontSize: 12, color: Colors.white);
 
 get text12WhiteBold => const TextStyle(
     fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold);
 
 get text12Blue => const TextStyle(fontSize: 12, color: Colors.blueAccent);
+
+get text14Grey => const TextStyle(fontSize: 14, color: Colors.grey);
 
 get text16 => const TextStyle(fontSize: 16, color: Colors.black);
 

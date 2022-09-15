@@ -2,7 +2,16 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 
 class CustomDateUtil {
-  static List<String> chineseWeekdays = ["", "周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+  static List<String> chineseWeekdays = [
+    "",
+    "周一",
+    "周二",
+    "周三",
+    "周四",
+    "周五",
+    "周六",
+    "周日"
+  ];
 
   static String getSessionTime(DateTime targetTime) {
     int targetYear = targetTime.year;
@@ -35,15 +44,67 @@ class CustomDateUtil {
             }
           }
         } else {
-          if (targetHour < 6) {
-            return DateUtil.formatDate(targetTime, format: "凌晨 HH:mm");
-          } else if (targetHour < 12) {
-            return DateUtil.formatDate(targetTime, format: "上午 HH:mm");
-          } else if (targetHour < 18) {
-            return DateUtil.formatDate(targetTime, format: "下午 HH:mm");
+          String dayDescription = getDayDescription(targetHour);
+          String format = "${dayDescription}HH:mm";
+          return DateUtil.formatDate(targetTime, format: format);
+        }
+      }
+    }
+  }
+
+  static String getDayDescription(int hour) {
+    if (hour < 6) {
+      return "凌晨";
+    } else if (hour < 12) {
+      return "上午";
+    } else if (hour < 18) {
+      return "下午";
+    } else {
+      return "晚上";
+    }
+  }
+
+  static String getDetailTime(DateTime targetTime) {
+    String dayDescription = getDayDescription(targetTime.hour);
+
+    int targetYear = targetTime.year;
+    int targetMonth = targetTime.month;
+    int targetDay = targetTime.day;
+    int targetWeekday = targetTime.weekday;
+    int targetHour = targetTime.hour;
+
+    DateTime now = DateTime.now();
+    int nowYear = now.year;
+    int nowMonth = now.month;
+    int nowDay = now.day;
+    int nowWeekday = now.weekday;
+
+    if (targetYear != nowYear) {
+      String format = "yyyy年MM月dd日 ${dayDescription}HH:mm";
+      return DateUtil.formatDate(targetTime, format: format);
+    } else {
+      if (targetMonth != nowMonth) {
+        String format = "MM月dd日 ${dayDescription}HH:mm";
+        return DateUtil.formatDate(targetTime, format: format);
+      } else {
+        if (targetDay != nowDay) {
+          var differDay = nowDay - targetDay;
+          if (differDay == 1) {
+            String format = "昨天 ${dayDescription}HH:mm";
+            return DateUtil.formatDate(targetTime, format: format);
           } else {
-            return DateUtil.formatDate(targetTime, format: "晚上 HH:mm");
+            if (differDay < nowWeekday) {
+              String format = "${chineseWeekdays[targetWeekday]} ${dayDescription}HH:mm";
+              return DateUtil.formatDate(targetTime, format: format);
+            } else {
+              String format = "MM月dd日 ${dayDescription}HH:mm";
+              return DateUtil.formatDate(targetTime, format: format);
+            }
           }
+        } else {
+          String dayDescription = getDayDescription(targetHour);
+          String format = "${dayDescription}HH:mm";
+          return DateUtil.formatDate(targetTime, format: format);
         }
       }
     }

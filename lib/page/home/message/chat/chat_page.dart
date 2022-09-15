@@ -5,11 +5,15 @@ import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/model/db_model.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/chat/component/chat_box.dart';
+import 'package:orginone/util/date_util.dart';
 
+import '../../../../component/unified_edge_insets.dart';
 import '../../../../routers.dart';
 import '../../../../util/widget_util.dart';
+import 'component/chat_message_detail.dart';
 
 class ChatPage extends GetView<ChatController> {
   const ChatPage({Key? key}) : super(key: key);
@@ -39,6 +43,36 @@ class ChatPage extends GetView<ChatController> {
             })
       ];
 
+  Widget _chatItem(int index) {
+    ChatMessageDetail currentWidget = controller.messageDetails[index];
+    if (index == 0) {
+      return currentWidget;
+    } else {
+      MessageDetail pre = controller.messageDetails[index - 1].messageDetail;
+      MessageDetail current = currentWidget.messageDetail;
+      if (current.createTime == null || current.createTime == null) {
+        return currentWidget;
+      }
+      var difference = current.createTime!.difference(pre.createTime!);
+      if (difference.inSeconds > 60) {
+        return Column(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              margin: topSmall,
+              child: Text(
+                CustomDateUtil.getDetailTime(current.createTime!),
+                style: text12Grey,
+              ),
+            ),
+            currentWidget
+          ],
+        );
+      }
+      return currentWidget;
+    }
+  }
+
   get _body => Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -56,13 +90,13 @@ class ChatPage extends GetView<ChatController> {
                   child: Scrollbar(
                       key: UniqueKey(),
                       child: Container(
-                          padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                           child: Obx(() => ListView.builder(
                               controller: controller.messageScrollController,
                               scrollDirection: Axis.vertical,
                               itemCount: controller.messageDetails.length,
                               itemBuilder: (BuildContext context, int index) {
-                                return controller.messageDetails[index];
+                                return _chatItem(index);
                               })))))),
           const ChatBox()
         ],

@@ -92,13 +92,14 @@ class MessageItemWidget extends GetView<MessageController> {
                                                   ?.createTime
                                                   .value ??
                                               "",
-                                          style: text12,
+                                          style: text12Grey,
                                         ))
                                   ]),
                               Obx(() => Text(
                                     controller.latestDetailMap[groupId]?[itemId]
                                             ?.msgBody.value ??
                                         "",
+                                    style: text14Grey,
                                     overflow: TextOverflow.ellipsis,
                                   ))
                             ])))

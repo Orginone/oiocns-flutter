@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/component/text_avatar.dart';
@@ -9,6 +8,7 @@ import 'package:orginone/util/hive_util.dart';
 
 import '../../../../../api_resp/target_resp.dart';
 import '../../../../../component/popup_router.dart';
+import '../../../../../component/unified_edge_insets.dart';
 import '../../../../../component/unified_text_style.dart';
 import '../../../../../enumeration/enum_map.dart';
 import '../../../../../enumeration/message_type.dart';
@@ -17,11 +17,11 @@ import '../../../../../model/db_model.dart';
 enum Direction { leftStart, rightStart }
 
 class ChatMessageDetail extends StatelessWidget {
+  final Logger log = Logger("ChatMessageDetail");
+
   final TargetRelation messageItem;
   final MessageDetail messageDetail;
   final TargetResp? targetResp;
-  final TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-  final Logger log = Logger("ChatMessageDetail");
   final Rx<bool> isWithdraw = false.obs;
   final Rx<String> msgBody = "".obs;
 
@@ -34,6 +34,7 @@ class ChatMessageDetail extends StatelessWidget {
     isWithdraw.value = messageDetail.isWithdraw ?? false;
     msgBody.value = messageDetail.msgBody ?? "";
 
+    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     bool isMy = messageDetail.fromId == userInfo.id;
     String itemAvatarName = isMy ? userInfo.name : messageItem.name!;
     bool isMultiple = "群组" == messageItem.label || "公司" == messageItem.label;
@@ -50,24 +51,22 @@ class ChatMessageDetail extends StatelessWidget {
     return Obx(() {
       List<Widget> children = [];
       if (isWithdraw.value) {
-        children.add(Container(
-          padding: const EdgeInsets.all(10),
-          child: Text(msgBody.value,
-              style: const TextStyle(color: Colors.black54)),
-        ));
+        children.add(Text(msgBody.value, style: text12Grey));
       } else {
         children.add(_getAvatar(isMy, isMultiple, avatarName));
         children.add(_getChat(isMy, isMultiple, context, isWithdraw));
       }
 
-      return Row(
-        textDirection: isMy ? TextDirection.rtl : TextDirection.ltr,
-        mainAxisAlignment: isWithdraw.value
-            ? MainAxisAlignment.center
-            : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: children,
-      );
+      return Container(
+          margin: topSmall,
+          child: Row(
+            textDirection: isMy ? TextDirection.rtl : TextDirection.ltr,
+            mainAxisAlignment: isWithdraw.value
+                ? MainAxisAlignment.center
+                : MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: children,
+          ));
     });
   }
 
@@ -100,8 +99,7 @@ class ChatMessageDetail extends StatelessWidget {
                 },
                 child: ChatFunc(messageDetail, isWithdraw)));
       },
-      child: Container(
-          margin: const EdgeInsets.fromLTRB(0, 5, 0, 0), child: _getMessage()),
+      child: _getMessage(),
     );
     content.add(chat);
 
@@ -120,6 +118,7 @@ class ChatMessageDetail extends StatelessWidget {
     MessageType messageType =
         EnumMap.messageTypeMap[messageDetail.msgType] ?? MessageType.unknown;
 
+    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     switch (messageType) {
       case MessageType.text:
       case MessageType.unknown:

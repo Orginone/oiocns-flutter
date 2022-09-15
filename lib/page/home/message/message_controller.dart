@@ -199,9 +199,7 @@ class MessageController extends GetxController {
       detailMap[messageItemId] = LatestDetail(
           notReadMCount.obs,
           (messageDetail?.msgBody ?? "").obs,
-          (createTime == null
-                  ? ""
-                  : CustomDateUtil.getSessionTime(createTime))
+          (createTime == null ? "" : CustomDateUtil.getSessionTime(createTime))
               .obs);
     } else {
       updateChatItem(messageItem, messageDetail);
@@ -234,7 +232,7 @@ class MessageController extends GetxController {
       latestDetail.msgBody.value = messageDetail.msgBody ?? "";
       latestDetail.createTime.value = messageDetail.createTime == null
           ? ""
-          : DateUtil.formatDate(messageDetail.createTime, format: "HH:mm:ss");
+          : CustomDateUtil.getSessionTime(messageDetail.createTime!);
     }
   }
 
