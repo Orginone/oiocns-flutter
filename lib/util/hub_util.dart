@@ -16,18 +16,54 @@ enum ReceiveEvent { RecvMsg }
 enum SendEvent { TokenAuth, GetChats, SendMsg, GetPersons, RecallMsg }
 
 class HubUtil {
+  final Logger log = Logger("HubConn");
+
   HubUtil._();
 
   static final HubUtil _instance = HubUtil._();
 
   factory HubUtil() {
+    _instance.state ??= _instance._connServer.state.obs;
     return _instance;
   }
 
-  final Logger log = Logger("HubConn");
   final HubConnection _connServer =
       HubConnectionBuilder().withUrl(Constant.hub).build();
+  Rx<HubConnectionState?>? state;
+
   final Map<String, void Function(List<dynamic>?)> events = {};
+
+  void _initOnReconnecting() {
+    _connServer.onreconnecting((exception) {
+      log.info("================== 正在重新连接 HUB  =========================");
+      log.info("==> reconnecting");
+      if (exception != null) {
+        log.info("==> $exception");
+      }
+      tryConn();
+    });
+  }
+
+  void _initOnReconnected() {
+    _connServer.onreconnected((id) {
+      tryConn();
+      log.info("==> reconnected success");
+      log.info("================== 重新连接 HUB 成功 =========================");
+    });
+  }
+
+  void _initOnClose() {
+    Duration duration = const Duration(seconds: 30);
+    _connServer.onclose((error) {
+      state!.value = HubConnectionState.disconnected;
+      Timer.periodic(duration, (timer) async {
+        await tryConn();
+        if (isConn()) {
+          timer.cancel();
+        }
+      });
+    });
+  }
 
   void _initEvents() {
     events[ReceiveEvent.RecvMsg.name] = (params) {
@@ -38,7 +74,6 @@ class HubUtil {
   }
 
   void _initCallback() {
-    _connServer.onclose((error) => log.severe(error));
     for (var element in ReceiveEvent.values) {
       void Function(List<dynamic>?) event = events[element.name]!;
       _connServer.on(element.name, event);
@@ -47,6 +82,10 @@ class HubUtil {
 
   Future<dynamic> _auth(String accessToken) async {
     return _connServer.invoke(SendEvent.TokenAuth.name, args: [accessToken]);
+  }
+
+  Future<dynamic> disconnect() async {
+    await _connServer.stop();
   }
 
   Future<dynamic> getChats() async {
@@ -78,7 +117,7 @@ class HubUtil {
   }
 
   //初始化连接
-  Future<dynamic> conn() async {
+  Future<dynamic> tryConn() async {
     log.info("================== 连接 HUB =========================");
 
     var state = _connServer.state;
@@ -87,12 +126,16 @@ class HubUtil {
         log.info("==> connecting");
         try {
           // 定义事件和回调函数
+          _initOnReconnecting();
+          _initOnReconnected();
+          _initOnClose();
           _initEvents();
           _initCallback();
 
           // 开启连接，鉴权
           await _connServer.start();
           await _auth(HiveUtil().accessToken);
+          this.state!.value = HubConnectionState.connected;
 
           log.info("==> connected success");
           log.info("================== 连接 HUB 成功 =========================");
@@ -109,6 +152,7 @@ class HubUtil {
 
       default:
         log.info("==> 连接失败，当前连接状态为：$state");
+        this.state!.value = state;
         break;
     }
   }

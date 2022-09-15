@@ -7,7 +7,7 @@ enum TextAvatarType { space, chat, avatar }
 
 const double defaultWidth = 40;
 const double defaultRadius = 5;
-const Color defaultBgColor = CustomColors.blue;
+const Color defaultBgColor = Colors.blueAccent;
 const EdgeInsets defaultMargin = EdgeInsets.zero;
 const TextStyle defaultTextStyle =
     TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold);
@@ -20,6 +20,7 @@ class TextAvatar extends StatelessWidget {
   final EdgeInsets? margin;
   final Color bgColor;
   final TextStyle textStyle;
+  final Widget? status;
 
   TextAvatar(
       {Key? key,
@@ -29,7 +30,8 @@ class TextAvatar extends StatelessWidget {
       this.width = defaultWidth,
       this.margin = defaultMargin,
       this.bgColor = defaultBgColor,
-      this.textStyle = defaultTextStyle})
+      this.textStyle = defaultTextStyle,
+      this.status})
       : avatarName = _getAvatarName(avatarName, type),
         radius = _getRadius(width, radius, type),
         textAvatarType = type,
@@ -67,9 +69,20 @@ class TextAvatar extends StatelessWidget {
         color: bgColor,
         borderRadius: BorderRadius.all(Radius.circular(radius)),
       ),
-      child: Text(
-        avatarName,
-        style: textStyle,
+      child: Stack(
+        children: [
+          Align(
+            alignment: AlignmentDirectional.topEnd,
+            child: Container(margin: const EdgeInsets.all(2), child: status),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Text(
+              avatarName,
+              style: textStyle,
+            ),
+          )
+        ],
       ),
     );
   }

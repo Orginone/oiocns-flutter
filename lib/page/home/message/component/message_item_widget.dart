@@ -7,6 +7,7 @@ import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/routers.dart';
 
 import '../../../../component/text_avatar.dart';
+import '../../../../component/unified_text_style.dart';
 
 class MessageItemWidget extends GetView<MessageController> {
   // 用户信息
@@ -84,11 +85,15 @@ class MessageItemWidget extends GetView<MessageController> {
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    Obx(() => Text(controller
-                                            .latestDetailMap[groupId]?[itemId]
-                                            ?.createTime
-                                            .value ??
-                                        ""))
+                                    Obx(() => Text(
+                                          controller
+                                                  .latestDetailMap[groupId]
+                                                      ?[itemId]
+                                                  ?.createTime
+                                                  .value ??
+                                              "",
+                                          style: text12,
+                                        ))
                                   ]),
                               Obx(() => Text(
                                     controller.latestDetailMap[groupId]?[itemId]

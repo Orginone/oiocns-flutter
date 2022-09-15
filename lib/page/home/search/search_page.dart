@@ -21,7 +21,7 @@ class SearchPage extends GetView<SearchController> {
     return GFTabBar(
         width: 1000,
         tabBarHeight: 40,
-        indicatorColor: CustomColors.blue,
+        indicatorColor: Colors.blueAccent,
         tabBarColor: CustomColors.easyGrey,
         length: controller.tabController.length,
         controller: controller.tabController,

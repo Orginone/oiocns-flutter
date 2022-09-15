@@ -17,7 +17,7 @@ class TextTag extends StatelessWidget {
         padding: const EdgeInsets.all(2),
         child: Text(
           label,
-          style: const TextStyle(fontSize: 10, color: CustomColors.blue),
+          style: const TextStyle(fontSize: 10, color: Colors.blueAccent),
         ));
   }
 }

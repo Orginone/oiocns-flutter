@@ -4,10 +4,11 @@ import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
-import 'package:orginone/util/string_util.dart';
+import 'package:signalr_core/signalr_core.dart';
 
 import '../../config/custom_colors.dart';
 import '../../routers.dart';
+import '../../util/hub_util.dart';
 import 'home_controller.dart';
 
 class HomePage extends GetView<HomeController> {
@@ -31,6 +32,26 @@ class HomePage extends GetView<HomeController> {
         type: TextAvatarType.avatar,
         textStyle: text16White,
         margin: const EdgeInsets.all(10),
+        status: Obx(() {
+          Color color;
+          switch (HubUtil().state!.value) {
+            case HubConnectionState.connecting:
+            case HubConnectionState.disconnecting:
+            case HubConnectionState.reconnecting:
+              color = Colors.yellow;
+              break;
+            case HubConnectionState.connected:
+              color = Colors.greenAccent;
+              break;
+            default:
+              color = Colors.redAccent;
+          }
+          return Icon(
+            Icons.circle,
+            size: 10,
+            color: color,
+          );
+        }),
       );
 
   get _title => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -75,7 +96,7 @@ class HomePage extends GetView<HomeController> {
             ]),
         child: GFTabBar(
           tabBarHeight: 60,
-          indicatorColor: CustomColors.blue,
+          indicatorColor: Colors.blueAccent,
           tabBarColor: CustomColors.easyGrey,
           labelColor: Colors.black,
           labelStyle: const TextStyle(fontSize: 12),

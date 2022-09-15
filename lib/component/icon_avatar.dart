@@ -5,7 +5,7 @@ import '../config/custom_colors.dart';
 const double defaultWidth = 40;
 const double defaultRadius = 5;
 const EdgeInsets defaultInsets = EdgeInsets.all(15);
-const Color defaultBgColor = CustomColors.blue;
+const Color defaultBgColor = Colors.blueAccent;
 
 class IconAvatar extends StatelessWidget {
   final Icon icon;

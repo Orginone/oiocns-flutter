@@ -27,7 +27,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                   width: 50,
                   height: 50,
                   decoration: const BoxDecoration(
-                      color: CustomColors.blue,
+                      color: Colors.blueAccent,
                       borderRadius: BorderRadius.all(Radius.circular(2))),
                   margin: const EdgeInsets.all(10),
                   alignment: Alignment.center,

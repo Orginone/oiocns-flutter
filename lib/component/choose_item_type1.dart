@@ -23,7 +23,7 @@ class ChooseItemType1 extends StatelessWidget {
                 Container(
                     padding: const EdgeInsets.all(15),
                     decoration: const BoxDecoration(
-                        color: CustomColors.blue,
+                        color: Colors.blueAccent,
                         borderRadius: BorderRadius.all(Radius.circular(5))),
                     child: Icon(
                       icon,
