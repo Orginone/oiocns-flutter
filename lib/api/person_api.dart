@@ -23,6 +23,14 @@ class PersonApi {
     return TargetResp.fromMap(resp);
   }
 
+  //更新用户信息
+  static Future<String> updateUser(dynamic postData) async {
+    await HttpUtil().post("${Constant.personModule}/update",
+      data: postData
+        );
+    return '修改成功';
+  }
+
   static Future<List<TargetResp>> friends(
       int limit, int offset, String filter) async {
     String url = "${Constant.personModule}/get/friends";
@@ -55,10 +63,10 @@ class PersonApi {
 
   //好友验证
   static Future<String> addPerson(String personId) async {
-    Map<String, dynamic> resp = await HttpUtil().post("${Constant.personModule}/apply/join",
+    await HttpUtil().post("${Constant.personModule}/apply/join",
         data: {
           "id": personId
         });
-    return resp['msg'];
+    return '发起申请';
   }
 }
