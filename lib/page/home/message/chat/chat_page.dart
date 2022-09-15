@@ -3,39 +3,37 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/text_tag.dart';
+import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/message/chat/component/chat_box.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 
 import '../../../../routers.dart';
+import '../../../../util/widget_util.dart';
 
 class ChatPage extends GetView<ChatController> {
   const ChatPage({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: GFAppBar(
-        leading: GFIconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Get.back(),
-          type: GFButtonType.transparent,
+  get _title => Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Text(
+          controller.messageItem.name ?? "",
+          style: text20,
         ),
-        title: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          Text(controller.messageItem.name ?? ""),
-          Container(
-            margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-          ),
-          TextTag(controller.messageItem.label ?? "")
-        ]),
-        actions: <Widget>[
-          GFIconButton(
-              icon: const Icon(Icons.more_horiz),
-              onPressed: () {
-                Get.toNamed(Routers.messageSetting);
-              })
-        ],
-      ),
-      body: Column(
+        Container(
+          margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+        ),
+        TextTag(controller.messageItem.label)
+      ]);
+
+  get _actions => <Widget>[
+        GFIconButton(
+            icon: const Icon(Icons.more_horiz),
+            onPressed: () {
+              Get.toNamed(Routers.messageSetting);
+            })
+      ];
+
+  get _body => Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
@@ -62,7 +60,15 @@ class ChatPage extends GetView<ChatController> {
                               })))))),
           const ChatBox()
         ],
-      ),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    return UnifiedScaffold(
+      appBarLeading: WidgetUtil.defaultBackBtn,
+      appBarTitle: _title,
+      appBarActions: _actions,
+      body: _body,
     );
   }
 }
