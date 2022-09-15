@@ -20,6 +20,14 @@ version: 1.0.0+1
 environment:
   sdk: ">=2.17.6 <3.0.0"
 
+flutter_icons:
+  android: "ic_launcher"
+  ios: false
+  image_path: "images/logo.png"
+
+flutter_app_name:
+  name: "奥集能"
+
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
 # consider running `flutter pub upgrade --major-versions`. Alternatively,
@@ -32,6 +40,10 @@ dependencies:
 
   # 本地代理
   shelf_proxy: ^1.0.2
+
+  # 启动图标
+  flutter_app_name: ^0.1.1
+  flutter_launcher_icons: ^0.10.0
 
   # 存储库
   hive: ^2.2.3

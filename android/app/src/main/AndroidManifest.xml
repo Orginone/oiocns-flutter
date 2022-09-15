@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.orginone">
    <application
-        android:label="orginone"
+        android:label="奥集能"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
