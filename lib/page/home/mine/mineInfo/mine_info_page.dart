@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/api/person_api.dart';
 import 'package:orginone/component/form_item_type2.dart';
 import 'package:getwidget/getwidget.dart';
 import 'mine_info_controller.dart';
@@ -22,126 +23,224 @@ class MineInfoPage extends GetView<MineInfoController> {
                 title: const Text('我的信息', style: TextStyle(fontSize: 24)),
               ),
               backgroundColor: const Color.fromRGBO(240, 240, 240, 1),
-              body: Container(
-                color: const Color.fromRGBO(255, 255, 255, 1),
-                margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                child: Row(children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        FormItemType2(
-                            text: '头像',
-                            rightSlot: CircleAvatar(
-                              foregroundImage: const NetworkImage(
-                                  'https://www.vcg.com/creative/1382429598'),
-                              backgroundImage:
-                                  const AssetImage('images/person-empty.png'),
-                              onForegroundImageError: (error, stackTrace) {},
-                              radius: 15,
-                            ),
-                            suffixIcon: const Icon(Icons.keyboard_arrow_right)),
-                        const Divider(
-                          height: 0,
-                        ),
-                        FormItemType2(
-                          text: '昵称',
-                          rightSlot: Text(controller.userInfo.name,
-                              style: const TextStyle(
-                                  color: Color.fromRGBO(130, 130, 130, 1))),
-                          suffixIcon: const Icon(Icons.keyboard_arrow_right),
-                          callback1: () async {
-                            await showDialog<bool>(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text("温馨提示"),
-                                  //title 的内边距，默认 left: 24.0,top: 24.0, right 24.0
-                                  //默认底部边距 如果 content 不为null 则底部内边距为0
-                                  //            如果 content 为 null 则底部内边距为20
-                                  titlePadding: EdgeInsets.all(10),
-                                  //标题文本样式
-                                  titleTextStyle: TextStyle(
-                                      color: Colors.black87, fontSize: 16),
-                                  //中间显示的内容
-                                  content: Text("您确定要删除吗?"),
-                                  //中间显示的内容边距
-                                  //默认 EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0)
-                                  contentPadding: EdgeInsets.all(10),
-                                  //中间显示内容的文本样式
-                                  contentTextStyle: TextStyle(
-                                      color: Colors.black54, fontSize: 14),
-                                  //底部按钮区域
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: const Text("确认"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop(false);
-                                      },
-                                    ),
-                                TextButton(
-                                child: const Text("取消"),
-                                onPressed: () {
-                                  Get.back();
-                                },
-                                ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                        ),
-                        const Divider(
-                          height: 0,
-                        ),
-                        FormItemType2(
+              body: ListView(children: [
+                Container(
+                  color: const Color.fromRGBO(255, 255, 255, 1),
+                  margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                  child: Row(children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          FormItemType2(
+                              text: '头像',
+                              rightSlot: CircleAvatar(
+                                foregroundImage: const NetworkImage(
+                                    'https://www.vcg.com/creative/1382429598'),
+                                backgroundImage:
+                                const AssetImage('images/person-empty.png'),
+                                onForegroundImageError: (error, stackTrace) {},
+                                radius: 15,
+                              ),
+                              suffixIcon: const Icon(Icons.keyboard_arrow_right)),
+                          const Divider(
+                            height: 0,
+                          ),
+                          FormItemType2(
+                            text: '昵称',
+                            rightSlot: Text(controller.userInfo.name,
+                                style: const TextStyle(
+                                    color: Color.fromRGBO(130, 130, 130, 1))),
+                            suffixIcon: const Icon(Icons.keyboard_arrow_right),
+                            callback1: () async {
+                              controller.showFormDialogWidget(context, controller.nickNameTextController, title: '昵称修改', text: controller.userInfo.name, validator: (value) {
+                                value = value ?? '';
+                                if (value.isEmpty) {
+                                  return '请输入昵称';
+                                }
+                                return null;
+                              },callback: () {
+                                controller.updateUser({
+                                  "code": controller
+                                      .userInfo.code,
+                                  "id": controller.userInfo.id,
+                                  "name":
+                                  controller
+                                      .nickNameTextController.text,
+                                  "teamAuthId":
+                                  controller.userInfo.team.id,
+                                  "teamCode": controller
+                                      .userInfo.team.code,
+                                  "teamName": controller
+                                      .userInfo.team.name,
+                                  "teamRemark": controller
+                                      .userInfo.team.remark,
+                                  "thingId":
+                                  controller.userInfo.thingId,
+                                });
+                                controller.nickNameTextController
+                                    .clear();
+                                Get.back();
+
+                              });
+                            },
+                          ),
+                          const Divider(
+                            height: 0,
+                          ),
+                          FormItemType2(
                             text: '账号',
                             rightSlot: Text(controller.userInfo.code,
                                 style: const TextStyle(
                                     color: Color.fromRGBO(130, 130, 130, 1))),
-                            suffixIcon: const Icon(Icons.keyboard_arrow_right)),
-                        const Divider(
-                          height: 0,
-                        ),
-                        FormItemType2(
+                            suffixIcon: const Icon(Icons.keyboard_arrow_right),
+                            callback1: () async {
+                              controller.showFormDialogWidget(context, controller.accountTextController, title: '账号修改', text: controller.userInfo.code, validator: (value) {
+                                value = value ?? '';
+                                if (value.isEmpty) {
+                                  return '请输入账号';
+                                }
+                                //用户名正则，4到16位（字母，数字，下划线，减号）
+                                RegExp exp =
+                                RegExp(r"^[a-zA-Z0-9_-]{4,16}$");
+                                if (!exp.hasMatch(value)) {
+                                  return '账号格式错误';
+                                }
+                                return null;
+                              },callback: () {
+                                controller.updateUser({
+                                  "code": controller
+                                      .accountTextController.text,
+                                  "id": controller.userInfo.id,
+                                  "name":
+                                  controller.userInfo.name,
+                                  "teamAuthId":
+                                  controller.userInfo.team.id,
+                                  "teamCode": controller
+                                      .userInfo.team.code,
+                                  "teamName": controller
+                                      .userInfo.team.name,
+                                  "teamRemark": controller
+                                      .userInfo.team.remark,
+                                  "thingId":
+                                  controller.userInfo.thingId,
+                                });
+                                controller.accountTextController
+                                    .clear();
+                                Get.back();
+
+                              });
+                            },
+                          ),
+                          const Divider(
+                            height: 0,
+                          ),
+                          FormItemType2(
                             text: '真实姓名',
                             rightSlot: Text(controller.userInfo.team.name,
                                 style: const TextStyle(
                                     color: Color.fromRGBO(130, 130, 130, 1),
                                     overflow: TextOverflow.ellipsis)),
-                            suffixIcon: const Icon(Icons.keyboard_arrow_right)),
-                        const Divider(
-                          height: 0,
-                        ),
-                        FormItemType2(
-                            text: '手机号',
-                            rightSlot: Text(controller.userInfo.team.code,
-                                style: const TextStyle(
-                                    color: Color.fromRGBO(130, 130, 130, 1),
-                                    overflow: TextOverflow.ellipsis)),
-                            suffixIcon: const Icon(Icons.keyboard_arrow_right)),
-                        const Divider(
-                          height: 0,
-                        ),
-                        FormItemType2(
-                            text: '座右铭',
-                            rightSlot: Expanded(
-                              child: Text(controller.userInfo.team.remark,
-                                  textAlign: TextAlign.right,
+                            suffixIcon: const Icon(Icons.keyboard_arrow_right),
+                            callback1: () async {
+                              controller.showFormDialogWidget(context, controller.nameTextController, title: '真实姓名修改', text: controller.userInfo.team.name, validator: (value) {
+                                value = value ?? '';
+                                if (value.isEmpty) {
+                                  return '请输入真实姓名';
+                                }
+                                return null;
+                              },callback: () {
+                                controller.updateUser({
+                                  "code": controller
+                                      .userInfo.code,
+                                  "id": controller.userInfo.id,
+                                  "name":
+                                  controller.userInfo.name,
+                                  "teamAuthId":
+                                  controller.userInfo.team.id,
+                                  "teamCode": controller
+                                      .userInfo.team.code,
+                                  "teamName": controller.nameTextController.text,
+                                  "teamRemark": controller
+                                      .userInfo.team.remark,
+                                  "thingId":
+                                  controller.userInfo.thingId,
+                                });
+                                controller.nameTextController
+                                    .clear();
+                                Get.back();
+                              });
+                            },
+                          ),
+                          const Divider(
+                            height: 0,
+                          ),
+                          FormItemType2(
+                              text: '手机号',
+                              rightSlot: Text(controller.userInfo.team.code,
                                   style: const TextStyle(
                                       color: Color.fromRGBO(130, 130, 130, 1),
                                       overflow: TextOverflow.ellipsis)),
-                            ),
-                            suffixIcon: const Icon(Icons.keyboard_arrow_right)),
-                        const Divider(
-                          height: 0,
-                        ),
-                      ],
+                              suffixIcon: const Icon(Icons.keyboard_arrow_right),
+                              callback1: () async {
+                                controller.showFormDialogWidget(context, controller.phoneTextController, keyboardType: TextInputType.number,title: '手机号修改', text: controller.userInfo.team.code, validator: (value) {
+                                  value = value ?? '';
+                                  if (value.isEmpty) {
+                                    return '请输入手机号';
+                                  }
+                                  //用户名正则，4到16位（字母，数字，下划线，减号）
+                                  RegExp exp =
+                                  RegExp(r"^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\d{8}$");
+                                  if (!exp.hasMatch(value)) {
+                                    return '手机号格式错误';
+                                  }
+                                  return null;
+                                },callback: () {
+                                  controller.updateUser({
+                                    "code": controller.phoneTextController.text,
+                                    "id": controller.userInfo.id,
+                                    "name":
+                                    controller.userInfo.name,
+                                    "teamAuthId":
+                                    controller.userInfo.team.id,
+                                    "teamCode": controller
+                                        .userInfo.team.code,
+                                    "teamName": controller.userInfo.team.name,
+                                    "teamRemark": controller
+                                        .userInfo.team.remark,
+                                    "thingId":
+                                    controller.userInfo.thingId,
+                                  });
+                                  controller.phoneTextController
+                                      .clear();
+                                  Get.back();
+                                });
+                              }),
+                          const Divider(
+                            height: 0,
+                          ),
+                          FormItemType2(
+                              text: '座右铭',
+                              rightSlot: Expanded(
+                                child: Text(controller.userInfo.team.remark,
+                                    textAlign: TextAlign.right,
+                                    style: const TextStyle(
+                                        color: Color.fromRGBO(130, 130, 130, 1),
+                                        overflow: TextOverflow.ellipsis)),
+                              ),
+                              suffixIcon: const Icon(Icons.keyboard_arrow_right)),
+                          const Divider(
+                            height: 0,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ]),
-              ),
+                  ]),
+                )
+              ]),
             ));
   }
+
+  void showFormItemDialog() {}
 }
