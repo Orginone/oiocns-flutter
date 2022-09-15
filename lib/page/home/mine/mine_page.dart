@@ -12,7 +12,7 @@ class MinePage extends GetView<MineController> {
     return ListView(
       children: [
         ChooseItemType1(Icons.person, "个人信息", () {
-          Get.toNamed(Routers.friends);
+          Get.toNamed(Routers.mineInfo);
         }),
         ChooseItemType1(Icons.group, "我的单位", () {}),
         ChooseItemType1(Icons.account_box, "账号绑定", () {}),

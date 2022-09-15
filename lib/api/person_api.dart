@@ -1,3 +1,4 @@
+import 'package:orginone/api_resp/person_detail_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/config/constant.dart';
 
@@ -39,5 +40,25 @@ class PersonApi {
     String url = "${Constant.personModule}/change/workspace";
     Map<String, dynamic> res = await HttpUtil().post(url, data: {"id": targetId});
     return LoginResp.fromMap(res);
+  }
+
+  //获取人员详情（目前用搜索接口替代）
+  static Future<PersonDetailResp> getPersonDetail(String personName) async {
+    Map<String, dynamic> resp = await HttpUtil().post("${Constant.personModule}/search/persons",
+        data: {
+          "filter": personName,
+          "limit": 20,
+          "offset": 0,
+        });
+    return PersonDetailResp.fromMap(resp["result"][0]);
+  }
+
+  //好友验证
+  static Future<String> addPerson(String personId) async {
+    Map<String, dynamic> resp = await HttpUtil().post("${Constant.personModule}/apply/join",
+        data: {
+          "id": personId
+        });
+    return resp['msg'];
   }
 }
