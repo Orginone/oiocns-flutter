@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../config/custom_colors.dart';
-
 get text12 => const TextStyle(fontSize: 12, color: Colors.black);
 
 get text12White => const TextStyle(fontSize: 12, color: Colors.white);
+
+get text12WhiteBold => const TextStyle(
+    fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold);
 
 get text12Blue => const TextStyle(fontSize: 12, color: Colors.blueAccent);
 

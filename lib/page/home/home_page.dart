@@ -4,6 +4,7 @@ import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/util/sys_util.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 import '../../config/custom_colors.dart';
@@ -108,6 +109,7 @@ class HomePage extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    SysUtil.setStatusBarBright();
     return UnifiedScaffold(
       appBarActions: _actions,
       appBarTitle: _title,

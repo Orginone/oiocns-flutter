@@ -5,8 +5,8 @@ import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
-import 'package:orginone/page/home/message/chat/component/chat_box.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
+import 'package:orginone/page/home/message/chat/component/chat_box.dart';
 
 import '../../../../routers.dart';
 import '../../../../util/widget_util.dart';
@@ -22,12 +22,18 @@ class ChatPage extends GetView<ChatController> {
         Container(
           margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
         ),
-        TextTag(controller.messageItem.label)
+        TextTag(
+          controller.messageItem.label,
+          textStyle: text12WhiteBold,
+          bgColor: Colors.blueAccent,
+          padding: const EdgeInsets.all(4),
+        )
       ]);
 
   get _actions => <Widget>[
         GFIconButton(
-            icon: const Icon(Icons.more_horiz),
+            color: Colors.white.withOpacity(0),
+            icon: const Icon(Icons.more_horiz, color: Colors.black),
             onPressed: () {
               Get.toNamed(Routers.messageSetting);
             })

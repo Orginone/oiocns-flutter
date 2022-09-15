@@ -5,15 +5,18 @@ import '../config/custom_colors.dart';
 const TextStyle defaultTextStyle = TextStyle(
     fontSize: 9, color: Colors.blueAccent, fontWeight: FontWeight.bold);
 const Color defaultBgColor = CustomColors.lightBlue;
+const EdgeInsets defaultPadding = EdgeInsets.all(2);
 
 class TextTag extends StatelessWidget {
   final String? label;
   final TextStyle textStyle;
   final Color? bgColor;
+  final EdgeInsets? padding;
 
   const TextTag(this.label,
       {this.textStyle = defaultTextStyle,
       this.bgColor = defaultBgColor,
+      this.padding = defaultPadding,
       Key? key})
       : super(key: key);
 
@@ -24,10 +27,10 @@ class TextTag extends StatelessWidget {
         decoration: BoxDecoration(
             color: bgColor,
             borderRadius: const BorderRadius.all(Radius.circular(5))),
-        padding: const EdgeInsets.all(2),
+        padding: padding,
         child: Text(
           label ?? "",
-          style: defaultTextStyle,
+          style: textStyle,
         ));
   }
 }
