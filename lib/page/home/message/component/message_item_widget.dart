@@ -40,14 +40,14 @@ class MessageItemWidget extends GetView<MessageController> {
         Align(
           alignment: Alignment.center,
           child: TextAvatar(
-            avatarName: messageItem.name ?? "",
+            avatarName: messageItem.name,
             type: TextAvatarType.chat,
             width: defaultAvatarWidth,
           ),
         ),
         Align(
           alignment: Alignment.bottomLeft,
-          child: TextTag(messageItem.typeName ?? ""),
+          child: TextTag(messageItem.typeName),
         ),
         Visibility(
           visible: notRead > 0,
@@ -89,7 +89,7 @@ class MessageItemWidget extends GetView<MessageController> {
             Text(
               userInfo.id == messageItem.id
                   ? "${messageItem.name}（我）"
-                  : messageItem.name ?? "",
+                  : messageItem.name,
               style: text16Bold,
             ),
             Visibility(

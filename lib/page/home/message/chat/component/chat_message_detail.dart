@@ -37,11 +37,11 @@ class ChatMessageDetail extends StatelessWidget {
 
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     bool isMy = messageDetail.fromId == userInfo.id;
-    String itemAvatarName = isMy ? userInfo.name : messageItem.name!;
+    String itemAvatarName = isMy ? userInfo.name : messageItem.name;
     bool isMultiple = "群组" == messageItem.label || "公司" == messageItem.label;
 
     itemAvatarName = itemAvatarName
-        .substring(0, messageItem.name!.length >= 2 ? 2 : 1)
+        .substring(0, messageItem.name.length >= 2 ? 2 : 1)
         .toUpperCase();
 
     return getChat(itemAvatarName, isMy, isMultiple, context, isWithdraw);

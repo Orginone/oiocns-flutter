@@ -104,7 +104,7 @@ class ChatController extends GetxController {
     var label = messageItem.label;
     if (label == "群组" || label == "公司") {
       List<TargetResp> persons =
-          await HubUtil().getPersons(messageItem.id!, 1000, 0);
+          await HubUtil().getPersons(messageItem.id, 1000, 0);
       if (persons.isNotEmpty) {
         for (var person in persons) {
           personMap[person.id] = person;
@@ -125,7 +125,7 @@ class ChatController extends GetxController {
           pageSize,
           messageController.currentSpaceId,
           messageController.currentMessageItemId,
-          messageItem.typeName ?? "未知");
+          messageItem.typeName);
     }
 
     // 列表
@@ -134,7 +134,7 @@ class ChatController extends GetxController {
         pageSize,
         messageController.currentSpaceId,
         messageController.currentMessageItemId,
-        messageItem.typeName ?? "未知");
+        messageItem.typeName);
   }
 
   // 获取数据并渲染到页面

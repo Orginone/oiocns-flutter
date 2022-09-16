@@ -69,6 +69,12 @@ class MessageController extends GetxController {
       SpaceMessagesResp space = SpaceMessagesResp.fromMap(messageGroup);
       spaces.add(space);
       spaceMap[space.id] = space;
+
+      // 建立索引
+      spaceMessageItemMap.putIfAbsent(space.id, () => {});
+      for (MessageItemResp messageItem in space.chats) {
+        spaceMessageItemMap[space.id]![messageItem.id] = messageItem;
+      }
     }
     sortingGroup(homeController.currentSpace);
 
@@ -91,7 +97,7 @@ class MessageController extends GetxController {
     Map<int, MessageItemResp> messageItemMap = spaceMessageItemMap[spaceId]!;
 
     // 搜索会话
-    int targetId = target.id!;
+    int targetId = target.id;
     if (!messageItemMap.containsKey(targetId)) {
       return;
     }

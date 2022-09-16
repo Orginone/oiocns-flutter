@@ -1,11 +1,11 @@
 import 'package:common_utils/common_utils.dart';
 
 class MessageItemResp {
-  int? id;
-  String? name;
-  String? label;
+  int id;
+  String name;
+  String label;
   String? remark;
-  String? typeName;
+  String typeName;
   DateTime? msgTime;
   int? spaceId;
   int noRead;
@@ -13,7 +13,7 @@ class MessageItemResp {
   String? msgBody;
 
   MessageItemResp.fromMap(Map<String, dynamic> map)
-      : id = int.tryParse(map["id"]),
+      : id = int.parse(map["id"]),
         name = map["name"],
         label = map["label"],
         remark = map["remark"],

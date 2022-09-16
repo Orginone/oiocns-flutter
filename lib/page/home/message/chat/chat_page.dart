@@ -21,7 +21,7 @@ class ChatPage extends GetView<ChatController> {
 
   get _title => Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
         Text(
-          controller.messageItem.name ?? "",
+          controller.messageItem.name,
           style: text20,
         ),
         Container(

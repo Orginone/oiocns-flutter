@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
 
 import '../../../../api_resp/target_resp.dart';
 import '../../../../component/text_avatar.dart';
+import '../../../../component/unified_edge_insets.dart';
 import '../../../../util/widget_util.dart';
 import 'space_choose_controller.dart';
 
@@ -12,6 +14,9 @@ class SpaceChoosePage extends GetView<SpaceChooseController> {
   const SpaceChoosePage({Key? key}) : super(key: key);
 
   Widget _item(TargetResp targetResp) {
+    var currentSpaceId = controller.homeController.currentSpace.id;
+    var spaceId = targetResp.id;
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
@@ -19,15 +24,24 @@ class SpaceChoosePage extends GetView<SpaceChooseController> {
         Get.back();
       },
       child: Container(
-          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+          padding: ltr10,
           child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
             TextAvatar(avatarName: targetResp.name, type: TextAvatarType.space),
-            Container(margin: const EdgeInsets.fromLTRB(5, 0, 0, 0)),
+            Container(margin: left10),
             Expanded(
               child: Text(
                 targetResp.name,
                 style: text18,
                 overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Visibility(
+              visible: currentSpaceId == spaceId,
+              child: TextTag(
+                "当前空间",
+                bgColor: Colors.green,
+                textStyle: text12White,
+                padding: const EdgeInsets.all(4),
               ),
             )
           ])),
@@ -52,8 +66,8 @@ class SpaceChoosePage extends GetView<SpaceChooseController> {
   Widget build(BuildContext context) {
     return UnifiedScaffold(
       appBarLeading: WidgetUtil.defaultBackBtn,
-      appBarTitle:
-          Text(controller.homeController.currentSpace.name, style: text20),
+      appBarTitle: Text("工作空间切换", style: text20),
+      appBarCenterTitle: true,
       body: _body,
     );
   }
