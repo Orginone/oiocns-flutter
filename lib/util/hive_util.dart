@@ -40,8 +40,6 @@ class HiveUtil {
   late Box uniqueBox;
   late Box keyValueBox;
   late int currentTargetId;
-  late final String _groupPriorityKey =
-      "$currentTargetId${Keys.groupPriority.name}";
 
   Future<void> initUniqueBox() async {
     uniqueBox = await Hive.openBox("uniqueBox");
@@ -54,12 +52,6 @@ class HiveUtil {
 
     // 初始化当前用户
     currentTargetId = targetId;
-
-    // 初始化聊天的优先级
-
-    if (!keyValueBox.containsKey(_groupPriorityKey)) {
-      keyValueBox.put(_groupPriorityKey, 0);
-    }
   }
 
   set accessToken(accessToken) => uniqueBox.put("accessToken", accessToken);
@@ -72,13 +64,5 @@ class HiveUtil {
 
   dynamic putValue(Keys key, dynamic value) {
     return keyValueBox.put("$currentTargetId${key.name}", value);
-  }
-
-  int groupPriorityAddAndGet() {
-    int groupPriorityValue = keyValueBox.get(_groupPriorityKey);
-    groupPriorityValue++;
-    keyValueBox.put(_groupPriorityKey, groupPriorityValue);
-
-    return groupPriorityValue;
   }
 }

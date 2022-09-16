@@ -52,16 +52,20 @@ class HubUtil {
     });
   }
 
-  void _initOnClose() {
+  void _connTimer() {
     Duration duration = const Duration(seconds: 30);
+    Timer.periodic(duration, (timer) async {
+      await tryConn();
+      if (isConn()) {
+        timer.cancel();
+      }
+    });
+  }
+
+  void _initOnClose() {
     _connServer.onclose((error) {
       state!.value = HubConnectionState.disconnected;
-      Timer.periodic(duration, (timer) async {
-        await tryConn();
-        if (isConn()) {
-          timer.cancel();
-        }
-      });
+      _connTimer();
     });
   }
 
@@ -89,6 +93,10 @@ class HubUtil {
   }
 
   Future<dynamic> getChats() async {
+    return await _connServer.invoke(SendEvent.GetChats.name);
+  }
+
+  Future<dynamic> cacheChats() async {
     return await _connServer.invoke(SendEvent.GetChats.name);
   }
 
@@ -143,6 +151,7 @@ class HubUtil {
           error.printError();
           EasyLoading.showToast("连接聊天服务器失败!");
           log.info("================== 连接 HUB 失败 =========================");
+          _connTimer();
         }
         break;
 
@@ -151,7 +160,7 @@ class HubUtil {
         break;
 
       default:
-        log.info("==> 连接失败，当前连接状态为：$state");
+        log.info("==> 当前连接状态为：$state");
         this.state!.value = state;
         break;
     }

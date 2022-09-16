@@ -24,7 +24,7 @@ class SpaceChoosePage extends GetView<SpaceChooseController> {
         Get.back();
       },
       child: Container(
-          padding: ltr10,
+          padding: lr20t10,
           child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
             TextAvatar(avatarName: targetResp.name, type: TextAvatarType.space),
             Container(margin: left10),
