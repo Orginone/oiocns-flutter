@@ -28,7 +28,7 @@ class LoginPage extends GetView<LoginController> {
                   Container(
                       padding: const EdgeInsets.fromLTRB(40, 10, 40, 0),
                       child: TextFormField(
-                        controller: controller.account,
+                        controller: controller.accountController,
                         decoration: const InputDecoration(hintText: '请输入账号'),
                         keyboardType: TextInputType.text,
                         validator: (value) {
@@ -41,8 +41,10 @@ class LoginPage extends GetView<LoginController> {
                   Container(
                       padding: const EdgeInsets.fromLTRB(40, 10, 40, 0),
                       child: TextFormField(
-                        controller: controller.password,
-                        decoration: const InputDecoration(hintText: '请输入密码'),
+                        controller: controller.passwordController,
+                        obscureText: true,
+                        decoration: const InputDecoration(hintText: '请输入密码',
+                          ),
                         keyboardType: TextInputType.text,
                         validator: (value) {
                           if (TextUtil.isEmpty(value)) {
@@ -66,6 +68,22 @@ class LoginPage extends GetView<LoginController> {
                         text: "登录",
                         blockButton: true,
                       )),
+                  Container(
+                      padding: const EdgeInsets.fromLTRB(40, 15, 40, 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children:  [
+                          GestureDetector(
+                            onTap: () {
+                              Get.toNamed(Routers.register);
+                            },
+                            child: const Text('注册',style: TextStyle(
+                                color: Colors.lightBlue
+                            )),
+                          )
+                        ],
+                      )
+                  ),
                 ])));
   }
 }

@@ -1,6 +1,6 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/api/person_api.dart';
 import 'package:orginone/component/form_item_type2.dart';
 import 'package:getwidget/getwidget.dart';
 import 'mine_info_controller.dart';
@@ -55,8 +55,7 @@ class MineInfoPage extends GetView<MineInfoController> {
                             suffixIcon: const Icon(Icons.keyboard_arrow_right),
                             callback1: () async {
                               controller.showFormDialogWidget(context, controller.nickNameTextController, title: '昵称修改', text: controller.userInfo.name, validator: (value) {
-                                value = value ?? '';
-                                if (value.isEmpty) {
+                                if (TextUtil.isEmpty(value)) {
                                   return '请输入昵称';
                                 }
                                 return null;
@@ -82,7 +81,6 @@ class MineInfoPage extends GetView<MineInfoController> {
                                 controller.nickNameTextController
                                     .clear();
                                 Get.back();
-
                               });
                             },
                           ),
@@ -97,11 +95,10 @@ class MineInfoPage extends GetView<MineInfoController> {
                             suffixIcon: const Icon(Icons.keyboard_arrow_right),
                             callback1: () async {
                               controller.showFormDialogWidget(context, controller.accountTextController, title: '账号修改', text: controller.userInfo.code, validator: (value) {
-                                value = value ?? '';
-                                if (value.isEmpty) {
+                                if (TextUtil.isEmpty(value)) {
                                   return '请输入账号';
                                 }
-                                //用户名正则，4到16位（字母，数字，下划线，减号）
+                                //账号正则，4到16位（字母，数字，下划线，减号）
                                 RegExp exp =
                                 RegExp(r"^[a-zA-Z0-9_-]{4,16}$");
                                 if (!exp.hasMatch(value)) {
@@ -145,8 +142,7 @@ class MineInfoPage extends GetView<MineInfoController> {
                             suffixIcon: const Icon(Icons.keyboard_arrow_right),
                             callback1: () async {
                               controller.showFormDialogWidget(context, controller.nameTextController, title: '真实姓名修改', text: controller.userInfo.team.name, validator: (value) {
-                                value = value ?? '';
-                                if (value.isEmpty) {
+                                if (TextUtil.isEmpty(value)) {
                                   return '请输入真实姓名';
                                 }
                                 return null;
@@ -185,8 +181,7 @@ class MineInfoPage extends GetView<MineInfoController> {
                               suffixIcon: const Icon(Icons.keyboard_arrow_right),
                               callback1: () async {
                                 controller.showFormDialogWidget(context, controller.phoneTextController, keyboardType: TextInputType.number,title: '手机号修改', text: controller.userInfo.team.code, validator: (value) {
-                                  value = value ?? '';
-                                  if (value.isEmpty) {
+                                  if (TextUtil.isEmpty(value)) {
                                     return '请输入手机号';
                                   }
                                   //用户名正则，4到16位（字母，数字，下划线，减号）

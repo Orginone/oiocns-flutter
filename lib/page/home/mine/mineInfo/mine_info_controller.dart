@@ -48,8 +48,9 @@ class MineInfoController extends GetxController {
     await showDialog<bool>(
       context: context,
       builder: (context) {
+        //ListView防止横屏被键盘遮挡
         return ListView(
-          padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
+          padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
           children: [
             Form(
                 key: formKey,

@@ -9,5 +9,10 @@ class RegisterController extends GetxController {
   var accountController = TextEditingController();
   var passwordController = TextEditingController();
   var confirmController = TextEditingController();
-
+  int step = 1;
+  String privateKey = "";
+  void changeStep(int value) {
+    step = value;
+    update();
+  }
 }

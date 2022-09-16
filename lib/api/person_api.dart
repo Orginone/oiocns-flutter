@@ -7,6 +7,13 @@ import '../api_resp/page_resp.dart';
 import '../util/http_util.dart';
 
 class PersonApi {
+
+  static Future<Map<String, dynamic>> regist(dynamic postData) async {
+    String url = "${Constant.personModule}/register";
+    Map<String, dynamic> resp = await HttpUtil().post(url, data: postData);
+    return resp;
+  }
+
   static Future<LoginResp> login(String account, String password) async {
     String url = "${Constant.personModule}/login";
     Map<String, dynamic> data = {"account": account, "password": password};
