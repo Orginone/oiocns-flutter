@@ -68,10 +68,14 @@ class HomeController extends GetxController
     HiveUtil().putValue(Keys.user, loginResp.user);
     HiveUtil().putValue(Keys.accessToken, loginResp.accessToken);
 
+    // 当前页面需要变化
     currentSpace = targetResp;
     update();
 
+    // 会话需要分组
     messageController.sortingGroup(targetResp);
+
+    // 组织架构页面需要变化
     organizationController.update();
   }
 }

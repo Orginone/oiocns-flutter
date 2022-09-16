@@ -14,6 +14,8 @@ import '../../../../component/unified_text_style.dart';
 import '../../../../util/date_util.dart';
 import '../../../../util/hive_util.dart';
 
+double defaultAvatarWidth = 48.w;
+
 class MessageItemWidget extends GetView<MessageController> {
   // 用户信息
   final int spaceId;
@@ -29,7 +31,7 @@ class MessageItemWidget extends GetView<MessageController> {
       return Container();
     }
 
-    MessageSpaceResp spaceMessageItems = controller.spaceMap[spaceId]!;
+    SpaceMessagesResp spaceMessageItems = controller.spaceMap[spaceId]!;
     MessageItemResp messageItem = spaceMessageItems.chats[index];
 
     int notRead = messageItem.noRead;
@@ -40,7 +42,7 @@ class MessageItemWidget extends GetView<MessageController> {
           child: TextAvatar(
             avatarName: messageItem.name ?? "",
             type: TextAvatarType.chat,
-            width: 54.w,
+            width: defaultAvatarWidth,
           ),
         ),
         Align(
@@ -61,8 +63,8 @@ class MessageItemWidget extends GetView<MessageController> {
   Widget _avatarContainer() {
     return Container(
       alignment: Alignment.center,
-      width: 54.w,
-      height: 54.w,
+      width: defaultAvatarWidth,
+      height: defaultAvatarWidth,
       child: GetBuilder<MessageController>(builder: (controller) => _avatar()),
     );
   }
@@ -72,7 +74,7 @@ class MessageItemWidget extends GetView<MessageController> {
       return Container();
     }
 
-    MessageSpaceResp spaceMessageItems = controller.spaceMap[spaceId]!;
+    SpaceMessagesResp spaceMessageItems = controller.spaceMap[spaceId]!;
     MessageItemResp messageItem = spaceMessageItems.chats[index];
 
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
@@ -101,7 +103,7 @@ class MessageItemWidget extends GetView<MessageController> {
         ),
         Text(
           messageItem.msgBody ?? "",
-          style: text14Grey,
+          style: text12Grey,
           overflow: TextOverflow.ellipsis,
         ),
       ],
@@ -112,7 +114,7 @@ class MessageItemWidget extends GetView<MessageController> {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
-        height: 40.h,
+        height: defaultAvatarWidth,
         child: GetBuilder<MessageController>(
           builder: (controller) => _content(),
         ),
@@ -131,7 +133,7 @@ class MessageItemWidget extends GetView<MessageController> {
         Get.toNamed(Routers.chat);
       },
       child: Container(
-        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+        padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,

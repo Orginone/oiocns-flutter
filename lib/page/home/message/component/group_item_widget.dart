@@ -6,6 +6,7 @@ import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/message/component/message_item_widget.dart';
 
 import '../../../../api_resp/message_space_resp.dart';
+import '../../../../component/unified_edge_insets.dart';
 import '../message_controller.dart';
 
 class GroupItemWidget extends GetView<MessageController> {
@@ -25,11 +26,11 @@ class GroupItemWidget extends GetView<MessageController> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.fromLTRB(10, 12, 0, 12),
-              child: Text(controller.spaces[index].name ?? "", style: text16),
+              padding: ltb10,
+              child: Text(controller.spaces[index].name, style: text16),
             ),
             Container(
-              padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+              padding: right10,
               child: GetBuilder<MessageController>(
                 builder: (controller) {
                   var space = controller.spaces[index];
@@ -47,9 +48,9 @@ class GroupItemWidget extends GetView<MessageController> {
   get _list => SizedBox(
         child: GetBuilder<MessageController>(
           builder: (controller) {
-            MessageSpaceResp spaceMessageItems = controller.spaces[index];
-            bool isExpand = spaceMessageItems.isExpand;
-            List<MessageItemResp> messageItems = spaceMessageItems.chats;
+            SpaceMessagesResp spaceMessages = controller.spaces[index];
+            bool isExpand = spaceMessages.isExpand;
+            List<MessageItemResp> messageItems = spaceMessages.chats;
 
             if (!isExpand) {
               return Container();
@@ -61,7 +62,7 @@ class GroupItemWidget extends GetView<MessageController> {
               itemBuilder: (context, index) {
                 MessageItemResp messageItem = messageItems[index];
                 return MessageItemWidget(
-                    spaceMessageItems.id, messageItem.id!, index);
+                    spaceMessages.id, messageItem.id!, index);
               },
             );
           },
@@ -70,8 +71,15 @@ class GroupItemWidget extends GetView<MessageController> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [_title, const Divider(height: 0), _list],
-    );
+    List<Widget> children = [
+      _title,
+      const Divider(height: 0),
+      _list,
+    ];
+    if (controller.spaces[index].isExpand) {
+      children.add(Container(margin: top5));
+      children.add(const Divider(height: 0));
+    }
+    return Column(children: children);
   }
 }

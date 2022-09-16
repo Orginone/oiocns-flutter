@@ -1,10 +1,8 @@
-import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/message_space_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/model/message_detail_util.dart';
-import 'package:orginone/model/target_relation_util.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/util/hive_util.dart';
 
@@ -20,10 +18,10 @@ class MessageController extends GetxController {
   Logger log = Logger("MessageController");
 
   // 空间
-  List<MessageSpaceResp> spaces = [];
+  List<SpaceMessagesResp> spaces = [];
 
   // 会话索引
-  Map<int, MessageSpaceResp> spaceMap = {};
+  Map<int, SpaceMessagesResp> spaceMap = {};
   Map<int, Map<int, MessageItemResp>> spaceMessageItemMap = {};
 
   // 参数
@@ -39,11 +37,12 @@ class MessageController extends GetxController {
 
   void sortingGroup(TargetResp highestPriority) {
     // 匹配会话空间
-    MessageSpaceResp? matchSpace;
-    for (MessageSpaceResp spaceTargetChat in spaces) {
-      var isCurrentSpace = spaceTargetChat.id == highestPriority.id;
+    SpaceMessagesResp? matchSpace;
+    for (SpaceMessagesResp space in spaces) {
+      var isCurrentSpace = space.id == highestPriority.id;
+      space.isExpand = isCurrentSpace;
       if (isCurrentSpace) {
-        matchSpace = spaceTargetChat;
+        matchSpace = space;
         break;
       }
     }
@@ -56,16 +55,22 @@ class MessageController extends GetxController {
   }
 
   Future<dynamic> getCharts() async {
+    // 清空数组
+    spaces.clear();
+    spaceMap.clear();
+
     // 读取聊天群
     Map<String, dynamic> chats = await HubUtil().getChats();
     ApiResp apiResp = ApiResp.fromMap(chats);
 
     List<dynamic> messageGroups = apiResp.data["groups"];
+    HomeController homeController = Get.find<HomeController>();
     for (var messageGroup in messageGroups) {
-      MessageSpaceResp space = MessageSpaceResp.fromMap(messageGroup);
+      SpaceMessagesResp space = SpaceMessagesResp.fromMap(messageGroup);
       spaces.add(space);
       spaceMap[space.id] = space;
     }
+    sortingGroup(homeController.currentSpace);
 
     // 更新视图
     update();
@@ -158,7 +163,7 @@ class MessageController extends GetxController {
           }
 
           // 更换位置, 更新优先级
-          MessageSpaceResp spaceMessageItems = spaceMap[spaceId]!;
+          SpaceMessagesResp spaceMessageItems = spaceMap[spaceId]!;
           List<MessageItemResp> messageItems = spaceMessageItems.chats;
           messageItems.remove(currentMessageItem);
           messageItems.insert(0, currentMessageItem!);

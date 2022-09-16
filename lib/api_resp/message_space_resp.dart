@@ -1,15 +1,15 @@
 import '../model/db_model.dart';
 import 'message_item_resp.dart';
 
-class MessageSpaceResp {
+class SpaceMessagesResp {
   int id;
   String name;
   List<MessageItemResp> chats;
   bool isExpand;
 
-  MessageSpaceResp(this.id, this.name, this.chats, {this.isExpand = false});
+  SpaceMessagesResp(this.id, this.name, this.chats, {this.isExpand = false});
 
-  MessageSpaceResp.fromMap(Map<String, dynamic> map)
+  SpaceMessagesResp.fromMap(Map<String, dynamic> map)
       : id = int.parse(map["id"]),
         name = map["name"],
         chats = MessageItemResp.fromList(map["chats"]),
