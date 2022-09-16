@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-get top10 => const EdgeInsets.fromLTRB(0, 10, 0, 0);
+get top10 => EdgeInsets.only(top: 10.h);
 
-get top15 => const EdgeInsets.fromLTRB(0, 15, 0, 0);
+get top15 => EdgeInsets.only(top: 15.h);
 
-get topSmall => top15;
+get topSmall => top10;

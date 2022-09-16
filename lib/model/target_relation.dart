@@ -4,9 +4,9 @@ const targetRelationTable = SqfEntityTable(
   tableName: 'targetRelation',
   fields: [
     SqfEntityField('activeTargetId', DbType.integer,
-        isIndexGroup: 1, isPrimaryKeyField: true),
+        isIndexGroup: 1, isPrimaryKeyField: true, isNotNull: true),
     SqfEntityField("passiveTargetId", DbType.integer,
-        isIndexGroup: 1, isPrimaryKeyField: true),
+        isIndexGroup: 1, isPrimaryKeyField: true, isNotNull: true),
     SqfEntityField('name', DbType.text),
     SqfEntityField("label", DbType.text),
     SqfEntityField("remark", DbType.text),

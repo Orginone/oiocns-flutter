@@ -1,21 +1,19 @@
-import 'package:json_annotation/json_annotation.dart';
-
 import '../model/db_model.dart';
+import 'message_item_resp.dart';
 
-part 'message_group_resp.g.dart';
-
-@JsonSerializable()
-class MessageGroupResp {
+class MessageSpaceResp {
   int id;
   String name;
-  List<dynamic> chats;
+  List<MessageItemResp> chats;
+  bool isExpand;
 
-  MessageGroupResp(this.id, this.name, this.chats);
+  MessageSpaceResp(this.id, this.name, this.chats, {this.isExpand = false});
 
-  MessageGroupResp.fromMap(Map<String, dynamic> map)
+  MessageSpaceResp.fromMap(Map<String, dynamic> map)
       : id = int.parse(map["id"]),
         name = map["name"],
-        chats = map["chats"];
+        chats = MessageItemResp.fromList(map["chats"]),
+        isExpand = false;
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};

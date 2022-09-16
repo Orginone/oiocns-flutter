@@ -13,7 +13,11 @@ class CustomDateUtil {
     "周日"
   ];
 
-  static String getSessionTime(DateTime targetTime) {
+  static String getSessionTime(DateTime? targetTime) {
+    if (targetTime == null) {
+      return "";
+    }
+
     int targetYear = targetTime.year;
     int targetMonth = targetTime.month;
     int targetDay = targetTime.day;

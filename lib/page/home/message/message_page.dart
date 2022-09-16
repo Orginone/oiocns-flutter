@@ -7,23 +7,21 @@ import 'component/group_item_widget.dart';
 class MessagePage extends GetView<MessageController> {
   const MessagePage({Key? key}) : super(key: key);
 
+  get _body => GetBuilder<MessageController>(
+      init: controller,
+      builder: (controller) => ListView.builder(
+          scrollDirection: Axis.vertical,
+          itemCount: controller.spaces.length,
+          itemBuilder: (BuildContext context, int index) {
+            return GroupItemWidget(index);
+          }));
+
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
         onRefresh: () async {
           await controller.getCharts();
-          await controller.initChats();
         },
-        child: GetBuilder<MessageController>(
-            init: controller,
-            builder: (controller) => ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: controller.messageGroups.length,
-                itemBuilder: (BuildContext context, int index) {
-                  var groupItem =
-                      GroupItemWidget(controller.messageGroups[index]);
-                  groupItem.isExpanded.value = index == 0;
-                  return groupItem;
-                })));
+        child: _body);
   }
 }
