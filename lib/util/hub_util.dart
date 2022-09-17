@@ -7,7 +7,7 @@ import 'package:signalr_core/signalr_core.dart';
 
 import '../api_resp/api_resp.dart';
 import '../api_resp/target_resp.dart';
-import '../config/constant.dart';
+import '../api/constant.dart';
 import '../page/home/message/message_controller.dart';
 import 'hive_util.dart';
 
@@ -16,7 +16,7 @@ enum ReceiveEvent { RecvMsg }
 enum SendEvent { TokenAuth, GetChats, SendMsg, GetPersons, RecallMsg }
 
 class HubUtil {
-  final Logger log = Logger("HubConn");
+  final Logger log = Logger("HubUtil");
 
   HubUtil._();
 
@@ -40,13 +40,13 @@ class HubUtil {
       if (exception != null) {
         log.info("==> $exception");
       }
-      tryConn();
+      entryStateMachine();
     });
   }
 
   void _initOnReconnected() {
     _connServer.onreconnected((id) {
-      tryConn();
+      entryStateMachine();
       log.info("==> reconnected success");
       log.info("================== 重新连接 HUB 成功 =========================");
     });
@@ -55,7 +55,7 @@ class HubUtil {
   void _connTimer() {
     Duration duration = const Duration(seconds: 30);
     Timer.periodic(duration, (timer) async {
-      await tryConn();
+      await entryStateMachine();
       if (isConn()) {
         timer.cancel();
       }
@@ -64,7 +64,7 @@ class HubUtil {
 
   void _initOnClose() {
     _connServer.onclose((error) {
-      state!.value = HubConnectionState.disconnected;
+      entryStateMachine();
       _connTimer();
     });
   }
@@ -125,7 +125,7 @@ class HubUtil {
   }
 
   //初始化连接
-  Future<dynamic> tryConn() async {
+  Future<dynamic> entryStateMachine() async {
     log.info("================== 连接 HUB =========================");
 
     var state = _connServer.state;
@@ -154,11 +154,6 @@ class HubUtil {
           _connTimer();
         }
         break;
-
-      case HubConnectionState.connected:
-        log.info("==> 已建立与 HUB 的连接");
-        break;
-
       default:
         log.info("==> 当前连接状态为：$state");
         this.state!.value = state;

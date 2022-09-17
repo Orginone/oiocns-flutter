@@ -62,7 +62,7 @@ class GroupItemWidget extends GetView<MessageController> {
               itemBuilder: (context, index) {
                 MessageItemResp messageItem = messageItems[index];
                 return MessageItemWidget(
-                    spaceMessages.id, messageItem.id!, index);
+                    spaceMessages.id, messageItem.id, index);
               },
             );
           },
