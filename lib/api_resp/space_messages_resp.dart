@@ -15,6 +15,15 @@ class SpaceMessagesResp {
         chats = MessageItemResp.fromList(map["chats"]),
         isExpand = false;
 
+  static List<SpaceMessagesResp> fromList(List<dynamic> data) {
+    List<SpaceMessagesResp> ans = [];
+    for (var spaceMessagesMap in data) {
+      var spaceMessagesResp = SpaceMessagesResp.fromMap(spaceMessagesMap);
+      ans.add(spaceMessagesResp);
+    }
+    return ans;
+  }
+
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
     json['id'] = id;

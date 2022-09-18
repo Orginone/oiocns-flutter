@@ -3,6 +3,7 @@ import 'package:orginone/api_resp/team_resp.dart';
 
 import '../config/hive_object_id.dart';
 import '../model/db_model.dart';
+import '../util/date_util.dart';
 import 'identity_resp.dart';
 
 part 'target_resp.g.dart';
@@ -82,8 +83,8 @@ class TargetResp {
         createUser = int.parse(map["createUser"]),
         updateUser = int.parse(map["updateUser"]),
         version = int.parse(map["version"]),
-        createTime = DateTime.parse(map["createTime"]),
-        updateTime = DateTime.parse(map["updateTime"]),
+        createTime = CustomDateUtil.parse(map["createTime"]),
+        updateTime = CustomDateUtil.parse(map["updateTime"]),
         team = TeamResp.fromMap(map["team"]),
         givenIdentitys = map.containsKey("givenIdentitys")
             ? IdentityResp.fromList(map["givenIdentitys"])

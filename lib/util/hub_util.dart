@@ -96,10 +96,6 @@ class HubUtil {
     return await _connServer.invoke(SendEvent.GetChats.name);
   }
 
-  Future<dynamic> cacheChats() async {
-    return await _connServer.invoke(SendEvent.GetChats.name);
-  }
-
   Future<dynamic> recallMsg(int id) async {
     return await _connServer.invoke(SendEvent.RecallMsg.name, args: [
       {

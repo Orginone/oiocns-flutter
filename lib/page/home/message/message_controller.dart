@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/api_resp/message_space_resp.dart';
+import 'package:orginone/api_resp/org_chat_cache.dart';
+import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/model/message_detail_util.dart';
 import 'package:orginone/page/home/home_controller.dart';
+import 'package:orginone/util/any_store_util.dart';
 import 'package:orginone/util/hive_util.dart';
 
 import '../../../api_resp/api_resp.dart';
@@ -31,7 +33,7 @@ class MessageController extends GetxController {
   @override
   void onInit() async {
     // 连接成功后初始化聊天面板信息，
-    await getCharts();
+    await _subscribingCharts();
     super.onInit();
   }
 
@@ -54,38 +56,77 @@ class MessageController extends GetxController {
     update();
   }
 
+  @Deprecated("废弃，新会话从缓存中拿")
   Future<dynamic> getCharts() async {
-    // 清空数组
-    spaces.clear();
-    spaceMap.clear();
-
     // 读取聊天群
     Map<String, dynamic> chats = await HubUtil().getChats();
     ApiResp apiResp = ApiResp.fromMap(chats);
 
-    List<dynamic> messageGroups = apiResp.data["groups"];
-    HomeController homeController = Get.find<HomeController>();
-    for (var messageGroup in messageGroups) {
-      SpaceMessagesResp space = SpaceMessagesResp.fromMap(messageGroup);
-      spaces.add(space);
-      spaceMap[space.id] = space;
+    // 空间数据处理
+    List<dynamic> groups = apiResp.data["groups"];
+    List<SpaceMessagesResp> messageGroups =
+        groups.map((item) => SpaceMessagesResp.fromMap(item)).toList();
+    _spaceHandling(messageGroups);
 
-      // 建立索引
-      spaceMessageItemMap.putIfAbsent(space.id, () => {});
-      for (MessageItemResp messageItem in space.chats) {
-        spaceMessageItemMap[space.id]![messageItem.id] = messageItem;
-      }
-    }
+    // 空间排序
+    HomeController homeController = Get.find<HomeController>();
     sortingGroup(homeController.currentSpace);
 
     // 更新视图
     update();
   }
 
-  // 更新聊天记录
+  /// 空间处理
+  _spaceHandling(List<SpaceMessagesResp> messageGroups) {
+    // 清空数组
+    spaces.clear();
+    spaceMap.clear();
+    spaceMessageItemMap.clear();
+
+    // 处理数组
+    var homeController = Get.find<HomeController>();
+    for (var messageGroup in messageGroups) {
+      if (messageGroup.id == homeController.currentSpace.id) {
+        messageGroup.isExpand = true;
+        spaces.insert(0, messageGroup);
+      } else {
+        spaces.add(messageGroup);
+      }
+      spaceMap[messageGroup.id] = messageGroup;
+
+      // 排序
+      List<MessageItemResp> chats = messageGroup.chats;
+      chats.sort((first, second) => first.msgTime.compareTo(second.msgTime));
+
+      // 建立索引
+      spaceMessageItemMap[messageGroup.id] = {};
+      for (MessageItemResp messageItem in chats) {
+        spaceMessageItemMap[messageGroup.id]![messageItem.id] = messageItem;
+      }
+    }
+  }
+
+  /// 订阅聊天群变动
+  _subscribingCharts() {
+    SubscriptionKey key = SubscriptionKey.orgChat;
+    String domain = Domain.user.name;
+    AnyStoreUtil().subscribing(key, domain, _updateChats);
+  }
+
+  _updateChats(Map<String, dynamic> data) {
+    OrgChatCache orgChatCache = OrgChatCache(data);
+    if (orgChatCache.chats != null) {
+      _spaceHandling(orgChatCache.chats!);
+    }
+    if (orgChatCache.target != null && orgChatCache.messageDetail != null) {
+      updateChatItem(orgChatCache.target!, orgChatCache.messageDetail!);
+    }
+  }
+
+  /// 更新聊天记录
   void updateChatItem(MessageItemResp target, MessageDetail messageDetail) {
     // 校验
-    if (messageDetail.spaceId == null || target.id == null) {
+    if (messageDetail.spaceId == null) {
       return;
     }
 
@@ -107,13 +148,14 @@ class MessageController extends GetxController {
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     if (messageDetail.fromId != userInfo.id &&
         currentMessageItemId != targetId) {
-      messageItem.noRead += 1;
+      int noRead = messageItem.noRead ?? 0;
+      messageItem.noRead = noRead + 1;
     }
 
     update();
   }
 
-  // 打开一个群组就阅读所有消息
+  /// 打开一个群组就阅读所有消息
   Future<void> messageItemRead() async {
     if (spaceMessageItemMap.containsKey(currentSpaceId)) {
       Map<int, MessageItemResp> messageItemMap =
@@ -125,7 +167,7 @@ class MessageController extends GetxController {
     }
   }
 
-  // 接受消息
+  /// 接受消息
   Future<void> onReceiveMessage(List<dynamic> messageList) async {
     if (messageList.isEmpty) {
       return;

@@ -15,6 +15,8 @@ enum ReceiveEvent { Updated }
 
 enum SubscriptionKey { orgChat }
 
+enum Domain { user }
+
 class AnyStoreUtil {
   final Logger log = Logger("AnyStoreUtil");
 
@@ -97,7 +99,8 @@ class AnyStoreUtil {
   }
 
   Future<dynamic> _auth(String accessToken) async {
-    return _connServer.invoke(SendEvent.TokenAuth.name, args: [accessToken, "user"]);
+    return _connServer
+        .invoke(SendEvent.TokenAuth.name, args: [accessToken, Domain.user.name]);
   }
 
   Future<dynamic> disconnect() async {
@@ -106,7 +109,7 @@ class AnyStoreUtil {
 
   /// 订阅
   subscribing(SubscriptionKey key, String domain, Function callback) async {
-    var fullKey = "$key|$domain";
+    var fullKey = "${key.name}|$domain";
     if (subscriptionMap.containsKey(fullKey)) {
       return;
     }
@@ -116,7 +119,7 @@ class AnyStoreUtil {
     }
     subscriptionMap[fullKey] = callback;
     dynamic res = await _connServer
-        .invoke(SendEvent.Subscribed.name, args: [key, domain]);
+        .invoke(SendEvent.Subscribed.name, args: [key.name, domain]);
     ApiResp apiResp = ApiResp.fromMap(res);
     if (apiResp.success) {
       callback(apiResp.data);
@@ -125,13 +128,13 @@ class AnyStoreUtil {
 
   /// 取消订阅
   unsubscribing(SubscriptionKey key, String domain) async {
-    var fullKey = "$key|$domain";
+    var fullKey = "${key.name}|$domain";
     if (!subscriptionMap.containsKey(fullKey)) {
       return;
     }
     if (isConn()) {
       await _connServer
-          .invoke(SendEvent.UnSubscribed.name, args: [key, domain]);
+          .invoke(SendEvent.UnSubscribed.name, args: [key.name, domain]);
       subscriptionMap.remove(fullKey);
     }
   }

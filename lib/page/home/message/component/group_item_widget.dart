@@ -5,7 +5,7 @@ import 'package:orginone/api_resp/message_item_resp.dart';
 import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/message/component/message_item_widget.dart';
 
-import '../../../../api_resp/message_space_resp.dart';
+import '../../../../api_resp/space_messages_resp.dart';
 import '../../../../component/unified_edge_insets.dart';
 import '../message_controller.dart';
 

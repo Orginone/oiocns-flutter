@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api_resp/message_item_resp.dart';
-import 'package:orginone/api_resp/message_space_resp.dart';
+import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
@@ -14,7 +14,7 @@ import '../../../../component/unified_text_style.dart';
 import '../../../../util/date_util.dart';
 import '../../../../util/hive_util.dart';
 
-double defaultAvatarWidth = 48.w;
+double defaultAvatarWidth = 50.w;
 
 class MessageItemWidget extends GetView<MessageController> {
   // 用户信息
@@ -34,7 +34,7 @@ class MessageItemWidget extends GetView<MessageController> {
     SpaceMessagesResp spaceMessageItems = controller.spaceMap[spaceId]!;
     MessageItemResp messageItem = spaceMessageItems.chats[index];
 
-    int notRead = messageItem.noRead;
+    int notRead = messageItem.noRead ?? 0;
     return Stack(
       children: [
         Align(
