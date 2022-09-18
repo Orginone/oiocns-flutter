@@ -7,6 +7,7 @@ import 'package:signalr_core/signalr_core.dart';
 
 import '../api_resp/api_resp.dart';
 import '../api/constant.dart';
+import 'errors.dart';
 import 'hive_util.dart';
 
 enum SendEvent { TokenAuth, Subscribed, UnSubscribed }
@@ -53,18 +54,18 @@ class AnyStoreUtil {
 
   void _initOnReconnecting() {
     _connServer.onreconnecting((exception) {
+      setState();
       log.info("================== 正在重新连接 AnyStore =========================");
       log.info("==> reconnecting");
       if (exception != null) {
         log.info("==> $exception");
       }
-      entryStateMachine();
     });
   }
 
   void _initOnReconnected() {
     _connServer.onreconnected((id) {
-      entryStateMachine();
+      setState();
       log.info("==> reconnected success");
       log.info("================== 重新连接 AnyStore 成功 =========================");
     });
@@ -73,7 +74,8 @@ class AnyStoreUtil {
   void _connTimer() {
     Duration duration = const Duration(seconds: 30);
     Timer.periodic(duration, (timer) async {
-      await entryStateMachine();
+      await tryConn();
+      setState();
       if (isConn()) {
         timer.cancel();
       }
@@ -93,22 +95,26 @@ class AnyStoreUtil {
 
   void _initOnClose() {
     _connServer.onclose((error) {
-      state!.value = HubConnectionState.disconnected;
+      setState();
       _connTimer();
     });
   }
 
   Future<dynamic> _auth(String accessToken) async {
-    return _connServer
-        .invoke(SendEvent.TokenAuth.name, args: [accessToken, Domain.user.name]);
+    checkConn();
+    return _connServer.invoke(SendEvent.TokenAuth.name,
+        args: [accessToken, Domain.user.name]);
   }
 
   Future<dynamic> disconnect() async {
     await _connServer.stop();
+    setState();
+    log.info("===> 已断开和存储服务器的连接。");
   }
 
   /// 订阅
   subscribing(SubscriptionKey key, String domain, Function callback) async {
+    checkConn();
     var fullKey = "${key.name}|$domain";
     if (subscriptionMap.containsKey(fullKey)) {
       return;
@@ -128,6 +134,7 @@ class AnyStoreUtil {
 
   /// 取消订阅
   unsubscribing(SubscriptionKey key, String domain) async {
+    checkConn();
     var fullKey = "${key.name}|$domain";
     if (!subscriptionMap.containsKey(fullKey)) {
       return;
@@ -140,7 +147,7 @@ class AnyStoreUtil {
   }
 
   //初始化连接
-  Future<dynamic> entryStateMachine() async {
+  Future<dynamic> tryConn() async {
     log.info("================== 连接 AnyStore =========================");
     var state = _connServer.state;
     switch (state) {
@@ -156,7 +163,7 @@ class AnyStoreUtil {
           // 开启连接，鉴权
           await _connServer.start();
           await _auth(HiveUtil().accessToken);
-          this.state!.value = HubConnectionState.connected;
+          setState();
 
           log.info("==> connected success");
           log.info("========== 连接 AnyStore 成功 =============");
@@ -169,9 +176,20 @@ class AnyStoreUtil {
         break;
       default:
         log.info("==> 当前连接状态为：$state");
-        this.state!.value = state;
         break;
     }
+  }
+
+  checkConn() {
+    if (!isConn()) {
+      var errorMsg = "未连接存储服务器!";
+      EasyLoading.showToast(errorMsg);
+      throw ServerError(errorMsg);
+    }
+  }
+
+  setState() {
+    state!.value = _connServer.state;
   }
 
   // 判断是否处于连接当中

@@ -5,6 +5,8 @@ import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
 import 'package:orginone/page/home/organization/organization_page.dart';
+import 'package:orginone/util/any_store_util.dart';
+import 'package:orginone/util/hub_util.dart';
 
 import '../../api/person_api.dart';
 import '../../api_resp/login_resp.dart';
@@ -18,7 +20,8 @@ class HomeController extends GetxController
   Logger logger = Logger("HomeController");
 
   MessageController messageController = Get.find<MessageController>();
-  OrganizationController organizationController = Get.find<OrganizationController>();
+  OrganizationController organizationController =
+      Get.find<OrganizationController>();
 
   UserResp user = HiveUtil().getValue(Keys.user);
   TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
@@ -33,6 +36,13 @@ class HomeController extends GetxController
     initTabs();
     initCurrentSpace();
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    AnyStoreUtil().disconnect();
+    HubUtil().disconnect();
+    super.onClose();
   }
 
   Future<void> initCurrentSpace() async {

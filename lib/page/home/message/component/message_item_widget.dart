@@ -92,12 +92,9 @@ class MessageItemWidget extends GetView<MessageController> {
                   : messageItem.name,
               style: text16Bold,
             ),
-            Visibility(
-              visible: messageItem.msgTime != null,
-              child: Text(
-                CustomDateUtil.getSessionTime(messageItem.msgTime),
-                style: text12Grey,
-              ),
+            Text(
+              CustomDateUtil.getSessionTime(messageItem.msgTime),
+              style: text12Grey,
             ),
           ],
         ),

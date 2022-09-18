@@ -9,6 +9,7 @@ import '../api_resp/api_resp.dart';
 import '../api_resp/target_resp.dart';
 import '../api/constant.dart';
 import '../page/home/message/message_controller.dart';
+import 'errors.dart';
 import 'hive_util.dart';
 
 enum ReceiveEvent { RecvMsg }
@@ -35,18 +36,18 @@ class HubUtil {
 
   void _initOnReconnecting() {
     _connServer.onreconnecting((exception) {
+      setStatus();
       log.info("================== 正在重新连接 HUB  =========================");
       log.info("==> reconnecting");
       if (exception != null) {
         log.info("==> $exception");
       }
-      entryStateMachine();
     });
   }
 
   void _initOnReconnected() {
     _connServer.onreconnected((id) {
-      entryStateMachine();
+      setStatus();
       log.info("==> reconnected success");
       log.info("================== 重新连接 HUB 成功 =========================");
     });
@@ -55,7 +56,8 @@ class HubUtil {
   void _connTimer() {
     Duration duration = const Duration(seconds: 30);
     Timer.periodic(duration, (timer) async {
-      await entryStateMachine();
+      await tryConn();
+      setStatus();
       if (isConn()) {
         timer.cancel();
       }
@@ -64,7 +66,7 @@ class HubUtil {
 
   void _initOnClose() {
     _connServer.onclose((error) {
-      entryStateMachine();
+      setStatus();
       _connTimer();
     });
   }
@@ -85,18 +87,23 @@ class HubUtil {
   }
 
   Future<dynamic> _auth(String accessToken) async {
+    checkConn();
     return _connServer.invoke(SendEvent.TokenAuth.name, args: [accessToken]);
   }
 
   Future<dynamic> disconnect() async {
     await _connServer.stop();
+    setStatus();
+    log.info("===> 已断开和聊天服务器的连接。");
   }
 
   Future<dynamic> getChats() async {
+    checkConn();
     return await _connServer.invoke(SendEvent.GetChats.name);
   }
 
   Future<dynamic> recallMsg(int id) async {
+    checkConn();
     return await _connServer.invoke(SendEvent.RecallMsg.name, args: [
       {
         "ids": ["$id"]
@@ -105,6 +112,8 @@ class HubUtil {
   }
 
   Future<List<TargetResp>> getPersons(int id, int limit, int offset) async {
+    checkConn();
+
     Map params = {"cohortId": "$id", "limit": limit, "offset": offset};
     dynamic res =
         await _connServer.invoke(SendEvent.GetPersons.name, args: [params]);
@@ -121,7 +130,7 @@ class HubUtil {
   }
 
   //初始化连接
-  Future<dynamic> entryStateMachine() async {
+  Future<dynamic> tryConn() async {
     log.info("================== 连接 HUB =========================");
 
     var state = _connServer.state;
@@ -139,7 +148,7 @@ class HubUtil {
           // 开启连接，鉴权
           await _connServer.start();
           await _auth(HiveUtil().accessToken);
-          this.state!.value = HubConnectionState.connected;
+          setStatus();
 
           log.info("==> connected success");
           log.info("================== 连接 HUB 成功 =========================");
@@ -152,9 +161,12 @@ class HubUtil {
         break;
       default:
         log.info("==> 当前连接状态为：$state");
-        this.state!.value = state;
         break;
     }
+  }
+
+  setStatus() {
+    state!.value = _connServer.state;
   }
 
   // 判断是否处于连接当中
@@ -162,12 +174,17 @@ class HubUtil {
     return _connServer.state == HubConnectionState.connected;
   }
 
+  checkConn(){
+    if (!isConn()) {
+      var errorMsg = "未连接聊天服务器!";
+      EasyLoading.showToast(errorMsg);
+      throw ServerError(errorMsg);
+    }
+  }
+
   // 发送消息
   Future<dynamic> sendMsg(Map<String, dynamic> messageDetail) async {
-    if (!isConn()) {
-      EasyLoading.showToast("未连接聊天服务器!");
-      return;
-    }
+    checkConn();
     return await _connServer
         .invoke(SendEvent.SendMsg.name, args: <Object>[messageDetail]);
   }

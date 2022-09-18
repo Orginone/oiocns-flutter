@@ -96,7 +96,7 @@ class MessageController extends GetxController {
 
       // 排序
       List<MessageItemResp> chats = messageGroup.chats;
-      chats.sort((first, second) => first.msgTime.compareTo(second.msgTime));
+      chats.sort((first, second) => -first.msgTime.compareTo(second.msgTime));
 
       // 建立索引
       spaceMessageItemMap[messageGroup.id] = {};
@@ -113,14 +113,13 @@ class MessageController extends GetxController {
     AnyStoreUtil().subscribing(key, domain, _updateChats);
   }
 
+  /// 从订阅通道拿到的数据直接更新试图
   _updateChats(Map<String, dynamic> data) {
     OrgChatCache orgChatCache = OrgChatCache(data);
     if (orgChatCache.chats != null) {
       _spaceHandling(orgChatCache.chats!);
     }
-    if (orgChatCache.target != null && orgChatCache.messageDetail != null) {
-      updateChatItem(orgChatCache.target!, orgChatCache.messageDetail!);
-    }
+    update();
   }
 
   /// 更新聊天记录
@@ -151,8 +150,6 @@ class MessageController extends GetxController {
       int noRead = messageItem.noRead ?? 0;
       messageItem.noRead = noRead + 1;
     }
-
-    update();
   }
 
   /// 打开一个群组就阅读所有消息
