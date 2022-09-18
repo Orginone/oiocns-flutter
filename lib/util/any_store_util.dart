@@ -56,13 +56,13 @@ class AnyStoreUtil {
       if (exception != null) {
         log.info("==> $exception");
       }
-      tryConn();
+      entryStateMachine();
     });
   }
 
   void _initOnReconnected() {
     _connServer.onreconnected((id) {
-      tryConn();
+      entryStateMachine();
       log.info("==> reconnected success");
       log.info("================== 重新连接 AnyStore 成功 =========================");
     });
@@ -71,7 +71,7 @@ class AnyStoreUtil {
   void _connTimer() {
     Duration duration = const Duration(seconds: 30);
     Timer.periodic(duration, (timer) async {
-      await tryConn();
+      await entryStateMachine();
       if (isConn()) {
         timer.cancel();
       }
@@ -97,7 +97,7 @@ class AnyStoreUtil {
   }
 
   Future<dynamic> _auth(String accessToken) async {
-    return _connServer.invoke(SendEvent.TokenAuth.name, args: [accessToken]);
+    return _connServer.invoke(SendEvent.TokenAuth.name, args: [accessToken, "user"]);
   }
 
   Future<dynamic> disconnect() async {
@@ -137,7 +137,7 @@ class AnyStoreUtil {
   }
 
   //初始化连接
-  Future<dynamic> tryConn() async {
+  Future<dynamic> entryStateMachine() async {
     log.info("================== 连接 AnyStore =========================");
     var state = _connServer.state;
     switch (state) {
@@ -159,7 +159,7 @@ class AnyStoreUtil {
           log.info("========== 连接 AnyStore 成功 =============");
         } catch (error) {
           error.printError();
-          EasyLoading.showToast("连接聊天服务器失败!");
+          EasyLoading.showToast("连接本地存储服务失败!");
           log.info("========== 连接 AnyStore 失败 =============");
           _connTimer();
         }
