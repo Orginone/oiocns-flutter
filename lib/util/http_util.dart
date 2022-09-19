@@ -53,7 +53,7 @@ class HttpUtil {
     return options;
   }
 
-  Future<Map<String, dynamic>> get(String path,
+  Future<dynamic> get(String path,
       {Map<String, dynamic>? queryParameters,
       Options? options,
       CancelToken? cancelToken,
@@ -83,7 +83,7 @@ class HttpUtil {
     }
   }
 
-  Future<Map<String, dynamic>> post(String path,
+  Future<dynamic> post(String path,
       {dynamic data,
       Map<String, dynamic>? queryParameters,
       Options? options,
@@ -120,7 +120,7 @@ class HttpUtil {
     }
   }
 
-  Map<String, dynamic> _parseResp<T>(Response response) {
+  dynamic _parseResp<T>(Response response) {
     var resp = ApiResp.fromMap(response.data!);
     log.info("==> resp: ${resp.toString()}");
     if (resp.code == 200) {

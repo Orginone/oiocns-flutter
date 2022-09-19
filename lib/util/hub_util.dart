@@ -1,11 +1,18 @@
 import 'dart:async';
 
+import 'package:common_utils/common_utils.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api/collection_api.dart';
+import 'package:orginone/api_resp/org_chat_cache.dart';
+import 'package:orginone/api_resp/space_messages_resp.dart';
+import 'package:orginone/util/any_store_util.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 import '../api_resp/api_resp.dart';
+import '../api_resp/message_detail_resp.dart';
 import '../api_resp/target_resp.dart';
 import '../api/constant.dart';
 import '../page/home/message/message_controller.dart';
@@ -15,6 +22,8 @@ import 'hive_util.dart';
 enum ReceiveEvent { RecvMsg }
 
 enum SendEvent { TokenAuth, GetChats, SendMsg, GetPersons, RecallMsg }
+
+String collName = "chat-message";
 
 class HubUtil {
   final Logger log = Logger("HubUtil");
@@ -102,19 +111,61 @@ class HubUtil {
     return await _connServer.invoke(SendEvent.GetChats.name);
   }
 
-  Future<dynamic> recallMsg(int id) async {
+  Future<dynamic> cacheMsg(String sessionId, MessageDetailResp detail) async {
+    if (detail.msgType == "recall") {
+      Map<String, dynamic> update = {
+        "match": {"chatId": detail.id},
+        "update": {
+          "_set_": {"msgBody": detail.msgBody, "msgType": detail.msgType}
+        },
+        "options": {}
+      };
+      CollectionApi.update("chat-message", update, Domain.user.name);
+    } else {
+      Map<String, dynamic> data = {
+        "chatId": detail.id,
+        "toId": detail.toId,
+        "spaceId": detail.spaceId,
+        "fromId": detail.fromId,
+        "msgType": detail.msgType,
+        "msgBody": detail.msgBody,
+        "sessionId": sessionId,
+        "createTime": DateUtil.formatDate(detail.createTime,
+            format: "yyyy/MM/dd hh:mm:ss")
+      };
+      CollectionApi.insert(collName, data, Domain.user.name);
+    }
+  }
+
+  Future<dynamic> cacheChats(OrgChatCache orgChatCache) async {
+    Map<String, dynamic> setData = {
+      "operation": "replaceAll",
+      "data": {
+        "name": "我的消息",
+        "chats": SpaceMessagesResp.toJsonList(orgChatCache.chats),
+        "nameMap": orgChatCache.nameMap?.map(OrgChatCache.outEntry),
+        "openChats": SpaceMessagesResp.toJsonList(orgChatCache.openChats),
+        "lastMsg": {
+          "chat": orgChatCache.target?.toJson(),
+          "data": orgChatCache.messageDetail?.toJson()
+        }
+      }
+    };
+    await AnyStoreUtil().set(StoreKey.orgChat.name, setData, Domain.user.name);
+  }
+
+  Future<dynamic> recallMsg(String id) async {
     checkConn();
     return await _connServer.invoke(SendEvent.RecallMsg.name, args: [
       {
-        "ids": ["$id"]
+        "ids": [id]
       }
     ]);
   }
 
-  Future<List<TargetResp>> getPersons(int id, int limit, int offset) async {
+  Future<List<TargetResp>> getPersons(String id, int limit, int offset) async {
     checkConn();
-
-    Map params = {"cohortId": "$id", "limit": limit, "offset": offset};
+    Map params = {"cohortId": id, "limit": limit, "offset": offset};
     dynamic res =
         await _connServer.invoke(SendEvent.GetPersons.name, args: [params]);
 
@@ -174,7 +225,7 @@ class HubUtil {
     return _connServer.state == HubConnectionState.connected;
   }
 
-  checkConn(){
+  checkConn() {
     if (!isConn()) {
       var errorMsg = "未连接聊天服务器!";
       EasyLoading.showToast(errorMsg);

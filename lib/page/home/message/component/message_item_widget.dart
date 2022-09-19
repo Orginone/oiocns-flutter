@@ -18,8 +18,8 @@ double defaultAvatarWidth = 50.w;
 
 class MessageItemWidget extends GetView<MessageController> {
   // 用户信息
-  final int spaceId;
-  final int messageItemId;
+  final String spaceId;
+  final String messageItemId;
   final int index;
 
   const MessageItemWidget(this.spaceId, this.messageItemId, this.index,

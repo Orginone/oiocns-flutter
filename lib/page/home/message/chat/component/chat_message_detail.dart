@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/message_item_resp.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/page/home/message/chat/component/chat_func.dart';
@@ -21,7 +22,7 @@ class ChatMessageDetail extends StatelessWidget {
   final Logger log = Logger("ChatMessageDetail");
 
   final MessageItemResp messageItem;
-  final MessageDetail messageDetail;
+  final MessageDetailResp messageDetail;
   final TargetResp? targetResp;
   final Rx<bool> isWithdraw = false.obs;
   final Rx<String> msgBody = "".obs;
@@ -32,8 +33,8 @@ class ChatMessageDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    isWithdraw.value = messageDetail.isWithdraw ?? false;
-    msgBody.value = messageDetail.msgBody ?? "";
+    // isWithdraw.value = messageDetail.isWithdraw ?? false;
+    // msgBody.value = messageDetail.msgBody;
 
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     bool isMy = messageDetail.fromId == userInfo.id;

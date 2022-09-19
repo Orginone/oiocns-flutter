@@ -11,7 +11,7 @@ part 'target_resp.g.dart';
 @HiveType(typeId: HiveObjectId.target)
 class TargetResp {
   @HiveField(0)
-  int id;
+  String id;
   @HiveField(1)
   String name;
   @HiveField(2)
@@ -72,7 +72,7 @@ class TargetResp {
         givenIdentitys = targetResp.givenIdentitys?.map((item) => IdentityResp.copyWith(item)).toList();
 
   TargetResp.fromMap(Map<String, dynamic> map)
-      : id = int.parse(map["id"]),
+      : id = map["id"],
         name = map["name"],
         code = map["code"],
         typeName = map["typeName"],
@@ -105,16 +105,5 @@ class TargetResp {
     json['createTime'] = createTime;
     json['updateTime'] = updateTime;
     return json;
-  }
-
-  Target toTarget() {
-    var target = Target();
-    target.id = id;
-    target.code = code;
-    target.name = name;
-    target.typeName = typeName;
-    target.belongId = belongId;
-    target.thingId = thingId;
-    return target;
   }
 }

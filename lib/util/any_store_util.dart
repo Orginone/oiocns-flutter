@@ -10,11 +10,13 @@ import '../api/constant.dart';
 import 'errors.dart';
 import 'hive_util.dart';
 
-enum SendEvent { TokenAuth, Subscribed, UnSubscribed }
+enum SendEvent { TokenAuth, Subscribed, UnSubscribed, Get, Set, Delete }
 
 enum ReceiveEvent { Updated }
 
 enum SubscriptionKey { orgChat }
+
+enum StoreKey { orgChat }
 
 enum Domain { user }
 
@@ -36,6 +38,24 @@ class AnyStoreUtil {
   Map<String, Function> subscriptionMap = {};
 
   final Map<String, void Function(List<dynamic>?)> events = {};
+
+  Future<ApiResp> get(String key, String domain) async {
+    checkConn();
+    dynamic data = _connServer.invoke(SendEvent.Get.name, args: [key, domain]);
+    return ApiResp.fromMap(data);
+  }
+
+  Future<void> set(String key, dynamic setData, String domain) async {
+    checkConn();
+    await _connServer.invoke(SendEvent.Set.name, args: [key, setData, domain]);
+  }
+
+  Future<ApiResp> delete(String key, String domain) async {
+    checkConn();
+    dynamic res =
+        _connServer.invoke(SendEvent.Delete.name, args: [key, domain]);
+    return ApiResp.fromMap(res);
+  }
 
   void _onUpdated() {
     _connServer.on(ReceiveEvent.Updated.name, (arguments) {

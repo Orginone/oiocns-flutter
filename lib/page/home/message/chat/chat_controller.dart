@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/model/message_detail_util.dart';
+import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/util/hub_util.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -9,7 +9,6 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import '../../../../api_resp/message_item_resp.dart';
 import '../../../../api_resp/target_resp.dart';
 import '../../../../enumeration/message_type.dart';
-import '../../../../model/db_model.dart';
 import '../../../../util/hive_util.dart';
 import '../message_controller.dart';
 import 'component/chat_message_detail.dart';
@@ -26,7 +25,7 @@ class ChatController extends GetxController {
   TargetResp currentUserInfo = HiveUtil().getValue(Keys.userInfo);
 
   // 当前群所有人
-  late Map<int, TargetResp> personMap;
+  late Map<String, TargetResp> personMap;
   late List<TargetResp> personList;
 
   // 老数据分页信息
@@ -37,7 +36,7 @@ class ChatController extends GetxController {
 
   // 观测对象
   var messageDetails = <ChatMessageDetail>[].obs;
-  Map<int, ChatMessageDetail> messageDetailMap = {};
+  Map<String, ChatMessageDetail> messageDetailMap = {};
 
   // 日志
   var logger = Logger("ChatController");
@@ -55,40 +54,39 @@ class ChatController extends GetxController {
   @override
   void onReady() async {
     // 阅读数据
-    await messageItemRead();
     await messageController.messageItemRead();
-
     super.onReady();
   }
 
-  // 阅读信息
-  Future<void> messageItemRead() async {
-    await MessageDetailUtil.messageItemRead(
-        messageController.currentMessageItemId);
+  @override
+  void onClose() async {
+    // 阅读数据
+    messageController.currentSpaceId = "-1";
+    messageController.currentMessageItemId = "-1";
   }
 
   // 消息接收函數
-  Future<void> onReceiveMessage(MessageDetail messageDetail) async {
+  Future<void> onReceiveMessage(MessageDetailResp messageDetail) async {
     try {
-      var messageDetailId = messageDetail.id!;
-      if (!messageDetail.isWithdraw!) {
-        // 如果不是撤回的话加入到会话当中
-        var chatMessageDetail = ChatMessageDetail(
-            messageItem, messageDetail, personMap[messageDetail.fromId]);
-        messageDetails.add(chatMessageDetail);
-        messageDetailMap[messageDetailId] = chatMessageDetail;
-      } else {
-        if (messageDetailMap.containsKey(messageDetailId)) {
-          // 如果存在这条单据详情的话
-          ChatMessageDetail oldDetail = messageDetailMap[messageDetailId]!;
-          oldDetail.isWithdraw.value = true;
-          oldDetail.msgBody.value = messageDetail.msgBody ?? "";
-        }
-      }
-
-      // 改成已读状态
-      messageDetail.isRead = true;
-      await MessageDetailManager().update(messageDetail);
+      var messageDetailId = messageDetail.id;
+      // if (!messageDetail.isWithdraw!) {
+      //   // 如果不是撤回的话加入到会话当中
+      //   var chatMessageDetail = ChatMessageDetail(
+      //       messageItem, messageDetail, personMap[messageDetail.fromId]);
+      //   messageDetails.add(chatMessageDetail);
+      //   messageDetailMap[messageDetailId] = chatMessageDetail;
+      // } else {
+      //   if (messageDetailMap.containsKey(messageDetailId)) {
+      //     // 如果存在这条单据详情的话
+      //     ChatMessageDetail oldDetail = messageDetailMap[messageDetailId]!;
+      //     oldDetail.isWithdraw.value = true;
+      //     oldDetail.msgBody.value = messageDetail.msgBody ?? "";
+      //   }
+      // }
+      //
+      // // 改成已读状态
+      // messageDetail.isRead = true;
+      // await MessageDetailManager().update(messageDetail);
 
       // 滚动到最底
       toBottom();
@@ -119,22 +117,23 @@ class ChatController extends GetxController {
     int offset = oldRemainder + (currentPage - 2) * pageSize;
     offset = offset < 0 ? 0 : offset;
 
-    if (messageItem.id == currentUserInfo.id) {
-      return await MessageDetailUtil.myPageData(
-          offset,
-          pageSize,
-          messageController.currentSpaceId,
-          messageController.currentMessageItemId,
-          messageItem.typeName);
-    }
-
-    // 列表
-    return await MessageDetailUtil.pageData(
-        offset,
-        pageSize,
-        messageController.currentSpaceId,
-        messageController.currentMessageItemId,
-        messageItem.typeName);
+    // if (messageItem.id == currentUserInfo.id) {
+    //   return await MessageDetailUtil.myPageData(
+    //       offset,
+    //       pageSize,
+    //       messageController.currentSpaceId,
+    //       messageController.currentMessageItemId,
+    //       messageItem.typeName);
+    // }
+    //
+    // // 列表
+    // return await MessageDetailUtil.pageData(
+    //     offset,
+    //     pageSize,
+    //     messageController.currentSpaceId,
+    //     messageController.currentMessageItemId,
+    //     messageItem.typeName);
+    return [];
   }
 
   // 获取数据并渲染到页面
@@ -142,11 +141,11 @@ class ChatController extends GetxController {
     var messageList = await pageData();
     List<ChatMessageDetail> temp = [];
     for (var message in messageList) {
-      var messageDetail = MessageDetail.fromMap(message);
+      var messageDetail = MessageDetailResp.fromMap(message);
       var chatMessageDetail = ChatMessageDetail(
           messageItem, messageDetail, personMap[messageDetail.fromId]);
       temp.add(chatMessageDetail);
-      messageDetailMap[messageDetail.id!] = chatMessageDetail;
+      messageDetailMap[messageDetail.id] = chatMessageDetail;
     }
     messageDetails.insertAll(0, temp);
   }
@@ -175,14 +174,14 @@ class ChatController extends GetxController {
     logger.info("hashCode:$hashCode");
     var groupId = messageController.currentMessageItemId;
     var spaceId = messageController.currentSpaceId;
-    if (groupId == -1) return;
+    if (groupId == "-1") return;
 
     var value = messageText.value.text;
     if (value.isNotEmpty) {
       // toId 和 spaceId 都要是字符串类型
       var messageDetail = {
-        "toId": "$groupId",
-        "spaceId": "$spaceId",
+        "toId": groupId,
+        "spaceId": spaceId,
         "msgType": MessageType.text.name,
         "msgBody": value
       };

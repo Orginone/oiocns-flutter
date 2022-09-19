@@ -1,30 +1,37 @@
 import '../util/date_util.dart';
 
 class MessageItemResp {
-  int id;
-  String name;
+  String id;
   String label;
+  String name;
   String remark;
   String typeName;
   DateTime msgTime;
-  int? spaceId;
+  String? msgType;
+  String? msgBody;
+  String? spaceId;
   int? noRead;
   int? personNum;
-  String? msgBody;
+  String? showText;
 
   MessageItemResp.fromMap(Map<String, dynamic> map)
-      : id = int.parse(map["id"]),
-        name = map["name"],
+      : id = map["id"],
         label = map["label"],
+        name = map["name"],
         remark = map["remark"],
         typeName = map["typeName"],
         msgTime = CustomDateUtil.parse(map["msgTime"]),
-        spaceId = map["spaceId"] != null ? int.parse(map["spaceId"]) : null,
+        msgType = map["msgType"],
+        msgBody = map["msgBody"],
+        spaceId = map["spaceId"],
         noRead = map["noRead"],
         personNum = map["personNum"],
-        msgBody = map["msgBody"];
+        showText = map["showText"];
 
-  static List<MessageItemResp> fromList(List<dynamic> data) {
+  static List<MessageItemResp> fromList(List<dynamic>? data) {
+    if (data == null) {
+      return [];
+    }
     List<MessageItemResp> ans = [];
     for (dynamic item in data) {
       MessageItemResp chatResp = MessageItemResp.fromMap(item);
@@ -33,10 +40,43 @@ class MessageItemResp {
     return ans;
   }
 
+  static List<Map<String, dynamic>>? toJsonList(List<MessageItemResp>? data) {
+    if (data == null) {
+      return null;
+    }
+    List<Map<String, dynamic>> ans = [];
+    for (var item in data) {
+      ans.add(item.toJson());
+    }
+    return ans;
+  }
+
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
     json['id'] = id;
+    json['label'] = label;
     json['name'] = name;
+    json['remark'] = remark;
+    json['typeName'] = typeName;
+    json['msgTime'] = msgTime.toString();
+    if (msgType != null) {
+      json['msgType'] = msgType;
+    }
+    if (msgBody != null) {
+      json['msgBody'] = msgBody;
+    }
+    if (spaceId != null) {
+      json["spaceId"] = spaceId;
+    }
+    if (noRead != null) {
+      json["noRead"] = noRead;
+    }
+    if (personNum != null) {
+      json["personNum"] = personNum;
+    }
+    if (showText != null) {
+      json["showText"] = showText;
+    }
     return json;
   }
 }

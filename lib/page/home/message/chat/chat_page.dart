@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
-import 'package:orginone/model/db_model.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/chat/component/chat_box.dart';
 import 'package:orginone/util/date_util.dart';
@@ -57,20 +57,18 @@ class ChatPage extends GetView<ChatController> {
 
   Widget _chatItem(int index) {
     ChatMessageDetail currentWidget = controller.messageDetails[index];
-    MessageDetail current = currentWidget.messageDetail;
+    MessageDetailResp current = currentWidget.messageDetail;
     if (index == 0) {
       return Column(
-        children: [_time(current.createTime!), currentWidget],
+        children: [_time(current.createTime), currentWidget],
       );
     } else {
-      MessageDetail pre = controller.messageDetails[index - 1].messageDetail;
-      if (current.createTime == null || current.createTime == null) {
-        return currentWidget;
-      }
-      var difference = current.createTime!.difference(pre.createTime!);
+      MessageDetailResp pre =
+          controller.messageDetails[index - 1].messageDetail;
+      var difference = current.createTime.difference(pre.createTime);
       if (difference.inSeconds > 60) {
         return Column(
-          children: [_time(current.createTime!), currentWidget],
+          children: [_time(current.createTime), currentWidget],
         );
       }
       return currentWidget;
