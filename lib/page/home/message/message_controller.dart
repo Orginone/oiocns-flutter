@@ -29,6 +29,11 @@ class MessageController extends GetxController {
   String currentSpaceId = "-1";
   String currentMessageItemId = "-1";
 
+  closingRef() {
+    currentSpaceId = "-1";
+    currentMessageItemId = "-1";
+  }
+
   @override
   void onInit() async {
     // 连接成功后初始化聊天面板信息，
@@ -39,7 +44,7 @@ class MessageController extends GetxController {
   void sortingGroup(TargetResp highestPriority) {
     // 匹配会话空间
     SpaceMessagesResp? matchSpace;
-    var spaces = orgChatCache.chats!;
+    var spaces = orgChatCache.chats;
     for (SpaceMessagesResp space in spaces) {
       var isCurrentSpace = space.id == highestPriority.id;
       space.isExpand = isCurrentSpace;
@@ -120,9 +125,7 @@ class MessageController extends GetxController {
   /// 从订阅通道拿到的数据直接更新试图
   _updateChats(Map<String, dynamic> data) {
     orgChatCache = OrgChatCache(data);
-    if (orgChatCache.chats != null) {
-      _spaceHandling(orgChatCache.chats!);
-    }
+    _spaceHandling(orgChatCache.chats);
     update();
   }
 
@@ -148,7 +151,8 @@ class MessageController extends GetxController {
       var messageDetail = MessageDetailResp.fromMap(message);
 
       // 空间转换
-      if (messageDetail.spaceId == null || messageDetail.spaceId == messageDetail.fromId) {
+      if (messageDetail.spaceId == null ||
+          messageDetail.spaceId == messageDetail.fromId) {
         messageDetail.spaceId = userInfo.id;
       }
 
@@ -184,7 +188,7 @@ class MessageController extends GetxController {
           await HubUtil().cacheMsg(sessionId, messageDetail);
         }
         item.msgBody = messageDetail.msgBody;
-        item.msgTime = messageDetail.createTime;
+        item.msgTime = messageDetail.createTime ?? DateTime.now();
         item.msgType = messageDetail.msgType;
         if (item.msgType == "recall") {
           item.showText = messageDetail.msgBody?.contains("<img>") ?? false
@@ -195,7 +199,7 @@ class MessageController extends GetxController {
         }
         if (item.typeName != "人员") {
           item.showText =
-              "${orgChatCache.nameMap?[messageDetail.fromId]}：${item.showText}";
+              "${orgChatCache.nameMap[messageDetail.fromId]}：${item.showText}";
         }
         if (currentSpaceId == spaceId && currentMessageItemId == sessionId) {
           // 如果当前正在会话中

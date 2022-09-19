@@ -17,8 +17,8 @@ class GroupItemWidget extends GetView<MessageController> {
   get _title => GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () async {
-          controller.orgChatCache.chats![index].isExpand =
-              !controller.orgChatCache.chats![index].isExpand;
+          controller.orgChatCache.chats[index].isExpand =
+              !controller.orgChatCache.chats[index].isExpand;
           controller.update();
         },
         child: Row(
@@ -27,13 +27,13 @@ class GroupItemWidget extends GetView<MessageController> {
           children: [
             Container(
               padding: ltb10,
-              child: Text(controller.orgChatCache.chats![index].name, style: text16),
+              child: Text(controller.orgChatCache.chats[index].name, style: text16),
             ),
             Container(
               padding: right10,
               child: GetBuilder<MessageController>(
                 builder: (controller) {
-                  var space = controller.orgChatCache.chats![index];
+                  var space = controller.orgChatCache.chats[index];
                   var iconData = space.isExpand
                       ? Icons.arrow_drop_down
                       : Icons.arrow_right;
@@ -48,7 +48,7 @@ class GroupItemWidget extends GetView<MessageController> {
   get _list => SizedBox(
         child: GetBuilder<MessageController>(
           builder: (controller) {
-            SpaceMessagesResp spaceMessages = controller.orgChatCache.chats![index];
+            SpaceMessagesResp spaceMessages = controller.orgChatCache.chats[index];
             bool isExpand = spaceMessages.isExpand;
             List<MessageItemResp> messageItems = spaceMessages.chats;
 
@@ -76,7 +76,7 @@ class GroupItemWidget extends GetView<MessageController> {
       const Divider(height: 0),
       _list,
     ];
-    if (controller.orgChatCache.chats![index].isExpand) {
+    if (controller.orgChatCache.chats[index].isExpand) {
       children.add(Container(margin: top5));
       children.add(const Divider(height: 0));
     }

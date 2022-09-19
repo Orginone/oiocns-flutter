@@ -8,19 +8,11 @@ class OrgChatCache {
   String? key;
   String? name;
   DateTime? updateTime;
-  List<SpaceMessagesResp>? chats;
-  Map<int, String>? nameMap;
-  List<SpaceMessagesResp>? openChats;
+  List<SpaceMessagesResp> chats;
+  Map<String, dynamic> nameMap;
+  List<SpaceMessagesResp> openChats;
   MessageItemResp? target;
   MessageDetailResp? messageDetail;
-
-  static MapEntry<int, String> entry(String idStr, dynamic nameStr) {
-    return MapEntry(int.parse(idStr), nameStr);
-  }
-
-  static MapEntry<String, String> outEntry(int id, dynamic nameStr) {
-    return MapEntry(id.toString(), nameStr);
-  }
 
   OrgChatCache.empty()
       : chats = [],
@@ -36,10 +28,6 @@ class OrgChatCache {
     }
     if (map["openChats"] != null) {
       map["openChats"] = SpaceMessagesResp.fromList(map["openChats"]);
-    }
-    if (map["nameMap"] != null) {
-      Map<String, dynamic> nameMap = map["nameMap"];
-      map["nameMap"] = nameMap.map(entry);
     }
     if (map["lastMsg"] != null) {
       Map<String, dynamic> lastMsg = map["lastMsg"];

@@ -1,15 +1,15 @@
 import 'package:orginone/util/date_util.dart';
 
 class IdentityResp {
-  int id;
+  String id;
   String name;
   String code;
-  String remark;
-  int authId;
-  int belongId;
+  String? remark;
+  String authId;
+  String belongId;
   int status;
-  int createUser;
-  int updateUser;
+  String createUser;
+  String updateUser;
   int version;
   DateTime createTime;
   DateTime updateTime;
@@ -43,16 +43,16 @@ class IdentityResp {
         updateTime = identityResp.updateTime;
 
   IdentityResp.fromMap(Map<String, dynamic> map)
-      : id = int.parse(map["id"]),
+      : id = map["id"],
         name = map["name"],
         code = map["code"],
-        authId = int.parse(map["authId"]),
-        belongId = int.parse(map["belongId"]),
-        remark = map["remark"] ?? "",
+        authId = map["authId"],
+        belongId = map["belongId"],
+        remark = map["remark"],
         status = map["status"],
-        createUser = int.parse(map["createUser"]),
-        updateUser = int.parse(map["updateUser"]),
-        version = int.parse(map["version"]),
+        createUser = map["createUser"],
+        updateUser = map["updateUser"],
+        version = map["version"],
         createTime = CustomDateUtil.parse(map["createTime"]),
         updateTime = CustomDateUtil.parse(map["updateTime"]);
 

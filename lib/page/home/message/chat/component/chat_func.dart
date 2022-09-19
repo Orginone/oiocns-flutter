@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/util/hub_util.dart';
 
 import '../../../../../api_resp/api_resp.dart';
 import '../../../../../config/custom_colors.dart';
-import '../../../../../model/db_model.dart';
 
 class ChatFunc extends StatelessWidget {
   final MessageDetailResp messageDetail;
-  final Rx<bool> isWithdraw;
 
-  const ChatFunc(this.messageDetail, this.isWithdraw, {Key? key})
+  const ChatFunc(this.messageDetail, {Key? key})
       : super(key: key);
 
   @override

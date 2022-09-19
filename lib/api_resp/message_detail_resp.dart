@@ -7,10 +7,10 @@ class MessageDetailResp {
   String toId;
   String msgType;
   String? msgBody;
-  String createUser;
-  String updateUser;
-  DateTime createTime;
-  DateTime updateTime;
+  String? createUser;
+  String? updateUser;
+  DateTime? createTime;
+  DateTime? updateTime;
 
   MessageDetailResp.fromMap(Map<String, dynamic> map)
       : id = map["id"],
@@ -25,19 +25,17 @@ class MessageDetailResp {
         updateTime = CustomDateUtil.parse(map["updateTime"]);
 
   Map<String, dynamic> toJson() {
-    final json = <String, dynamic>{};
+    Map<String, dynamic> json = {};
     json['id'] = id;
     json['spaceId'] = spaceId;
     json["fromId"] = fromId;
     json["toId"] = toId;
     json["msgType"] = msgType;
-    if (msgBody != null) {
-      json["msgBody"] = msgBody;
-    }
+    json["msgBody"] = msgBody;
     json["createUser"] = createUser;
     json["updateUser"] = updateUser;
-    json["createTime"] = createTime.toString();
-    json["updateTime"] = updateTime.toString();
+    json["createTime"] = createTime?.toString();
+    json["updateTime"] = updateTime?.toString();
     return json;
   }
 }

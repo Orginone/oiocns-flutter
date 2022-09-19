@@ -17,7 +17,7 @@ class MessagePage extends GetView<MessageController> {
             init: controller,
             builder: (controller) => ListView.builder(
                 scrollDirection: Axis.vertical,
-                itemCount: controller.orgChatCache.chats!.length,
+                itemCount: controller.orgChatCache.chats.length,
                 itemBuilder: (BuildContext context, int index) {
                   return GroupItemWidget(index);
                 })));

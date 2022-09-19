@@ -21,7 +21,15 @@ import 'hive_util.dart';
 
 enum ReceiveEvent { RecvMsg }
 
-enum SendEvent { TokenAuth, GetChats, SendMsg, GetPersons, RecallMsg }
+enum SendEvent {
+  TokenAuth,
+  GetChats,
+  SendMsg,
+  GetPersons,
+  RecallMsg,
+  QueryFriendMsg,
+  QueryCohortMsg
+}
 
 String collName = "chat-message";
 
@@ -143,7 +151,7 @@ class HubUtil {
       "data": {
         "name": "我的消息",
         "chats": SpaceMessagesResp.toJsonList(orgChatCache.chats),
-        "nameMap": orgChatCache.nameMap?.map(OrgChatCache.outEntry),
+        "nameMap": orgChatCache.nameMap,
         "openChats": SpaceMessagesResp.toJsonList(orgChatCache.openChats),
         "lastMsg": {
           "chat": orgChatCache.target?.toJson(),
@@ -152,6 +160,52 @@ class HubUtil {
       }
     };
     await AnyStoreUtil().set(StoreKey.orgChat.name, setData, Domain.user.name);
+  }
+
+  Future<List<MessageDetailResp>> getHistoryMsg(String? spaceId,
+      String sessionId, String typeName, int offset, int limit) async {
+    // 默认我的空间
+    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    spaceId = spaceId ?? userInfo.id;
+    if (userInfo.id == spaceId) {
+      // 如果是个人空间从本地存储拿数据
+      Map<String, dynamic> options = {
+        "match": {
+          "sessionId": sessionId,
+        },
+        "sort": {"createTime": -1},
+        "skip": offset,
+        "limit": limit
+      };
+      List<dynamic> details =
+          await CollectionApi.aggregate(collName, options, Domain.user.name);
+      List<MessageDetailResp> ans = [];
+      for (var item in details) {
+        item["id"] = item["chatId"];
+        ans.insert(0, MessageDetailResp.fromMap(item));
+      }
+      return ans;
+    } else {
+      checkConn();
+      String funcName = SendEvent.QueryFriendMsg.name;
+      String idName = "friendId";
+      if (typeName != "人员") {
+        funcName = SendEvent.QueryCohortMsg.name;
+        idName = "cohortId";
+      }
+      Map<String, dynamic> params = {
+        "limit": 30,
+        idName: sessionId,
+        "offset": offset,
+        "spaceId": spaceId
+      };
+      Map<String, dynamic> res =
+          await _connServer.invoke(funcName, args: [params]);
+      var apiResp = ApiResp.fromMap(res);
+      Map<String, dynamic> data = apiResp.data;
+      List<dynamic> details = data["result"];
+      return details.map((item) => MessageDetailResp.fromMap(item)).toList();
+    }
   }
 
   Future<dynamic> recallMsg(String id) async {

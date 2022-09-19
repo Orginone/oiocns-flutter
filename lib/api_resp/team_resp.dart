@@ -8,27 +8,27 @@ part 'team_resp.g.dart';
 @HiveType(typeId: HiveObjectId.team)
 class TeamResp {
   @HiveField(0)
-  int id;
+  String id;
   @HiveField(1)
   String name;
   @HiveField(2)
   String code;
   @HiveField(3)
-  int targetId;
+  String targetId;
   @HiveField(4)
-  int authId;
+  String authId;
   @HiveField(5)
   String remark;
   @HiveField(6)
   int status;
   @HiveField(7)
-  int createUser;
+  String? createUser;
   @HiveField(8)
-  int updateUser;
+  String? updateUser;
   @HiveField(9)
-  int version;
+  String? version;
   @HiveField(10)
-  DateTime createTime;
+  DateTime? createTime;
   @HiveField(11)
   DateTime? updateTime;
 
@@ -61,20 +61,18 @@ class TeamResp {
         updateTime = teamResp.updateTime;
 
   TeamResp.fromMap(Map<String, dynamic> map)
-      : id = int.parse(map["id"]),
+      : id = map["id"],
         name = map["name"],
         code = map["code"],
-        targetId = int.parse(map["targetId"]),
-        authId = int.parse(map["authId"]),
-        remark = map["remark"] ?? "",
+        targetId = map["targetId"],
+        authId = map["authId"],
+        remark = map["remark"],
         status = map["status"],
-        createUser = int.parse(map["createUser"]),
-        updateUser = int.parse(map["updateUser"]),
-        version = int.parse(map["version"] ?? "1"),
+        createUser = map["createUser"],
+        updateUser = map["updateUser"],
+        version = map["version"],
         createTime = CustomDateUtil.parse(map["createTime"]),
-        updateTime = map["updateTime"] == null
-            ? null
-            : CustomDateUtil.parse(map["updateTime"]);
+        updateTime =  CustomDateUtil.parse(map["updateTime"]);
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};

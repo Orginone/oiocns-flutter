@@ -23,69 +23,61 @@ class ChatMessageDetail extends StatelessWidget {
 
   final MessageItemResp messageItem;
   final MessageDetailResp messageDetail;
-  final TargetResp? targetResp;
-  final Rx<bool> isWithdraw = false.obs;
-  final Rx<String> msgBody = "".obs;
+  final TargetResp? target;
+  final bool isMy;
+  final bool isMultiple;
 
-  ChatMessageDetail(this.messageItem, this.messageDetail, this.targetResp,
+  ChatMessageDetail(this.messageItem, this.messageDetail, this.target,
       {Key? key})
-      : super(key: key);
+      : isMy = messageDetail.fromId ==
+            (HiveUtil().getValue(Keys.userInfo) as TargetResp).id,
+        isMultiple = messageItem.typeName != "人员",
+        super(key: key);
+
+  get targetName => target?.name ?? "";
 
   @override
   Widget build(BuildContext context) {
-    // isWithdraw.value = messageDetail.isWithdraw ?? false;
-    // msgBody.value = messageDetail.msgBody;
-
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-    bool isMy = messageDetail.fromId == userInfo.id;
-    String itemAvatarName = isMy ? userInfo.name : messageItem.name;
-    bool isMultiple = "群组" == messageItem.label || "公司" == messageItem.label;
-
-    itemAvatarName = itemAvatarName
-        .substring(0, messageItem.name.length >= 2 ? 2 : 1)
-        .toUpperCase();
-
-    return getChat(itemAvatarName, isMy, isMultiple, context, isWithdraw);
+    return _messageDetail(context);
   }
 
-  Widget getChat(String avatarName, bool isMy, bool isMultiple,
-      BuildContext context, Rx<bool> isWithdraw) {
-    return Obx(() {
-      List<Widget> children = [];
-      if (isWithdraw.value) {
-        children.add(Text(msgBody.value, style: text12Grey));
-      } else {
-        children.add(_getAvatar(isMy, isMultiple, avatarName));
-        children.add(_getChat(isMy, isMultiple, context, isWithdraw));
-      }
+  Widget _messageDetail(BuildContext context) {
+    List<Widget> children = [];
 
-      return Container(
-          margin: topSmall,
-          child: Row(
-            textDirection: isMy ? TextDirection.rtl : TextDirection.ltr,
-            mainAxisAlignment: isWithdraw.value
-                ? MainAxisAlignment.center
-                : MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: children,
-          ));
-    });
+    bool isRecall = false;
+    if (messageDetail.msgType == "recall") {
+      isRecall = true;
+      String msgBody = "$targetName：撤回了一条信息";
+      children.add(Text(msgBody, style: text12Grey));
+    } else {
+      children.add(_getAvatar());
+      children.add(_getChat(context));
+    }
+
+    return Container(
+      margin: topSmall,
+      child: Row(
+        textDirection: isMy ? TextDirection.rtl : TextDirection.ltr,
+        mainAxisAlignment:
+            isRecall ? MainAxisAlignment.center : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    );
   }
 
-  Widget _getAvatar(bool isMy, bool isMultiple, String avatarName) {
-    String name = !isMy && isMultiple ? targetResp?.name ?? "" : avatarName;
+  Widget _getAvatar() {
     return TextAvatar(
-      avatarName: name,
+      avatarName: targetName,
       type: TextAvatarType.chat,
       textStyle: text12White,
     );
   }
 
-  Widget _getChat(
-      bool isMy, bool isMultiple, BuildContext context, Rx<bool> isWithdraw) {
+  Widget _getChat(BuildContext context) {
     List<Widget> content = <Widget>[];
+
     if (isMultiple && !isMy) {
-      var targetName = targetResp?.name ?? "";
       content.add(Text(targetName));
     }
 
@@ -99,7 +91,7 @@ class ChatMessageDetail extends StatelessWidget {
                 onClick: () {
                   Navigator.of(context).pop();
                 },
-                child: ChatFunc(messageDetail, isWithdraw)));
+                child: ChatFunc(messageDetail)));
       },
       child: _getMessage(),
     );

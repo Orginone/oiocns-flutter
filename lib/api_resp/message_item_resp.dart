@@ -59,24 +59,12 @@ class MessageItemResp {
     json['remark'] = remark;
     json['typeName'] = typeName;
     json['msgTime'] = msgTime.toString();
-    if (msgType != null) {
-      json['msgType'] = msgType;
-    }
-    if (msgBody != null) {
-      json['msgBody'] = msgBody;
-    }
-    if (spaceId != null) {
-      json["spaceId"] = spaceId;
-    }
-    if (noRead != null) {
-      json["noRead"] = noRead;
-    }
-    if (personNum != null) {
-      json["personNum"] = personNum;
-    }
-    if (showText != null) {
-      json["showText"] = showText;
-    }
+    json['msgType'] = msgType;
+    json['msgBody'] = msgBody;
+    json["spaceId"] = spaceId;
+    json["noRead"] = noRead;
+    json["personNum"] = personNum;
+    json["showText"] = showText;
     return json;
   }
 }
