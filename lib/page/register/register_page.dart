@@ -276,7 +276,7 @@ class RegistFormWidget3 extends GetView<RegisterController> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
-                    Text('该密钥用于账号密码的找回,请及时复制保存'),
+                    Text('该私钥用于账号密码的找回,请及时复制保存'),
                   ],
                 )
               ],

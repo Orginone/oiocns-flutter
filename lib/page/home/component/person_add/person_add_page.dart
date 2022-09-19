@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:orginone/page/home/component/personAdd/person_add_controller.dart';
+import 'package:orginone/page/home/component/person_add/person_add_controller.dart';
 
 class PersonAddPage extends GetView<PersonAddController> {
   const PersonAddPage({Key? key}) : super(key: key);
