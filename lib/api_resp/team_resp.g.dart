@@ -28,7 +28,7 @@ class TeamRespAdapter extends TypeAdapter<TeamResp> {
       fields[8] as int,
       fields[9] as int,
       fields[10] as DateTime,
-      fields[11] as DateTime,
+      fields[11] as DateTime?,
     );
   }
 

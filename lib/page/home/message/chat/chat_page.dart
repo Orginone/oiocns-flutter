@@ -21,7 +21,7 @@ class ChatPage extends GetView<ChatController> {
 
   get _title => Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
         Text(
-          controller.messageItem.name ?? "",
+          controller.messageItem.name,
           style: text20,
         ),
         Container(
@@ -44,30 +44,33 @@ class ChatPage extends GetView<ChatController> {
             })
       ];
 
+  Widget _time(DateTime dateTime) {
+    return Container(
+      alignment: Alignment.center,
+      margin: topSmall,
+      child: Text(
+        CustomDateUtil.getDetailTime(dateTime),
+        style: text12Grey,
+      ),
+    );
+  }
+
   Widget _chatItem(int index) {
     ChatMessageDetail currentWidget = controller.messageDetails[index];
+    MessageDetail current = currentWidget.messageDetail;
     if (index == 0) {
-      return currentWidget;
+      return Column(
+        children: [_time(current.createTime!), currentWidget],
+      );
     } else {
       MessageDetail pre = controller.messageDetails[index - 1].messageDetail;
-      MessageDetail current = currentWidget.messageDetail;
       if (current.createTime == null || current.createTime == null) {
         return currentWidget;
       }
       var difference = current.createTime!.difference(pre.createTime!);
       if (difference.inSeconds > 60) {
         return Column(
-          children: [
-            Container(
-              alignment: Alignment.center,
-              margin: topSmall,
-              child: Text(
-                CustomDateUtil.getDetailTime(current.createTime!),
-                style: text12Grey,
-              ),
-            ),
-            currentWidget
-          ],
+          children: [_time(current.createTime!), currentWidget],
         );
       }
       return currentWidget;
@@ -93,9 +96,9 @@ class ChatPage extends GetView<ChatController> {
                       child: Container(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                           child: Obx(() => ScrollablePositionedList.builder(
-                              itemScrollController: controller.messageScrollController,
-                              scrollDirection
-                                  : Axis.vertical,
+                              itemScrollController:
+                                  controller.messageScrollController,
+                              scrollDirection: Axis.vertical,
                               itemCount: controller.messageDetails.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return _chatItem(index);

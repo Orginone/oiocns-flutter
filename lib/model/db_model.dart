@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'package:orginone/model/target.dart';
 import 'package:orginone/model/user.dart';
 import 'package:orginone/model/target_relation.dart';
-import 'package:orginone/model/user_space_relation.dart';
 import 'package:sqfentity/sqfentity.dart';
 import 'package:sqfentity_gen/sqfentity_gen.dart';
 
@@ -25,7 +24,6 @@ const dbModel = SqfEntityModel(
     databaseName: "orginone.db",
     databaseTables: [
       userTable,
-      userSpaceRelationTable,
       targetRelationTable,
       targetTable,
       messageDetailTable

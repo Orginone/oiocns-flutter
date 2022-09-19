@@ -9,21 +9,13 @@ class MessagePage extends GetView<MessageController> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-        onRefresh: () async {
-          await controller.getCharts();
-          await controller.initChats();
-        },
-        child: GetBuilder<MessageController>(
-            init: controller,
-            builder: (controller) => ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: controller.messageGroups.length,
-                itemBuilder: (BuildContext context, int index) {
-                  var groupItem =
-                      GroupItemWidget(controller.messageGroups[index]);
-                  groupItem.isExpanded.value = index == 0;
-                  return groupItem;
-                })));
+    return GetBuilder<MessageController>(
+        init: controller,
+        builder: (controller) => ListView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: controller.spaces.length,
+            itemBuilder: (BuildContext context, int index) {
+              return GroupItemWidget(index);
+            }));
   }
 }

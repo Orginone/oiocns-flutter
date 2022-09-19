@@ -2,6 +2,7 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_button.dart';
+import 'package:orginone/util/any_store_util.dart';
 
 import '../../routers.dart';
 import '../../util/hub_util.dart';
@@ -63,6 +64,7 @@ class LoginPage extends GetView<LoginController> {
                           // 登录以及连接聊天服务器
                           await controller.login();
                           await HubUtil().tryConn();
+                          await AnyStoreUtil().tryConn();
 
                           Get.offNamed(Routers.home);
                         },

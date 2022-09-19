@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api_resp/message_item_resp.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/page/home/message/chat/component/chat_func.dart';
 import 'package:orginone/page/home/message/chat/component/text_message.dart';
@@ -19,7 +20,7 @@ enum Direction { leftStart, rightStart }
 class ChatMessageDetail extends StatelessWidget {
   final Logger log = Logger("ChatMessageDetail");
 
-  final TargetRelation messageItem;
+  final MessageItemResp messageItem;
   final MessageDetail messageDetail;
   final TargetResp? targetResp;
   final Rx<bool> isWithdraw = false.obs;
@@ -36,11 +37,11 @@ class ChatMessageDetail extends StatelessWidget {
 
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     bool isMy = messageDetail.fromId == userInfo.id;
-    String itemAvatarName = isMy ? userInfo.name : messageItem.name!;
+    String itemAvatarName = isMy ? userInfo.name : messageItem.name;
     bool isMultiple = "群组" == messageItem.label || "公司" == messageItem.label;
 
     itemAvatarName = itemAvatarName
-        .substring(0, messageItem.name!.length >= 2 ? 2 : 1)
+        .substring(0, messageItem.name.length >= 2 ? 2 : 1)
         .toUpperCase();
 
     return getChat(itemAvatarName, isMy, isMultiple, context, isWithdraw);

@@ -6,6 +6,7 @@ import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/util/hub_util.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+import '../../../../api_resp/message_item_resp.dart';
 import '../../../../api_resp/target_resp.dart';
 import '../../../../enumeration/message_type.dart';
 import '../../../../model/db_model.dart';
@@ -21,7 +22,7 @@ class ChatController extends GetxController {
   var messageScrollController = ItemScrollController();
 
   // 当前所在的群组
-  late TargetRelation messageItem;
+  late MessageItemResp messageItem;
   TargetResp currentUserInfo = HiveUtil().getValue(Keys.userInfo);
 
   // 当前群所有人
@@ -96,16 +97,6 @@ class ChatController extends GetxController {
     }
   }
 
-  /// 刚进入页面时, 老数据的聊天总数
-  Future<void> preCount() async {
-    oldTotalCount = await MessageDetailUtil.getTotalCount(
-        messageItem.activeTargetId!,
-        messageItem.passiveTargetId!,
-        messageItem.typeName ?? "未知");
-    currentPage = (oldTotalCount / pageSize).ceil();
-    oldRemainder = oldTotalCount % pageSize;
-  }
-
   /// 查询群成员信息
   Future<void> getPersons() async {
     personMap = {};
@@ -113,7 +104,7 @@ class ChatController extends GetxController {
     var label = messageItem.label;
     if (label == "群组" || label == "公司") {
       List<TargetResp> persons =
-          await HubUtil().getPersons(messageItem.passiveTargetId!, 1000, 0);
+          await HubUtil().getPersons(messageItem.id, 1000, 0);
       if (persons.isNotEmpty) {
         for (var person in persons) {
           personMap[person.id] = person;
@@ -128,13 +119,13 @@ class ChatController extends GetxController {
     int offset = oldRemainder + (currentPage - 2) * pageSize;
     offset = offset < 0 ? 0 : offset;
 
-    if (messageItem.passiveTargetId == currentUserInfo.id) {
+    if (messageItem.id == currentUserInfo.id) {
       return await MessageDetailUtil.myPageData(
           offset,
           pageSize,
           messageController.currentSpaceId,
           messageController.currentMessageItemId,
-          messageItem.typeName ?? "未知");
+          messageItem.typeName);
     }
 
     // 列表
@@ -143,7 +134,7 @@ class ChatController extends GetxController {
         pageSize,
         messageController.currentSpaceId,
         messageController.currentMessageItemId,
-        messageItem.typeName ?? "未知");
+        messageItem.typeName);
   }
 
   // 获取数据并渲染到页面
@@ -166,12 +157,13 @@ class ChatController extends GetxController {
     messageDetails.clear();
 
     // 初始化群組
-    messageItem = messageController.messageGroupItemMap[messageController
-        .currentSpaceId]![messageController.currentMessageItemId]!;
+    var currentSpaceId = messageController.currentSpaceId;
+    var currentMessageItemId = messageController.currentMessageItemId;
+    messageItem = messageController
+        .spaceMessageItemMap[currentSpaceId]![currentMessageItemId]!;
 
     // 初始化老数据个数，查询聊天记录的个数
     await getPersons();
-    await preCount();
     await getPageDataAndRender();
 
     // 跳转到页面底部
@@ -209,10 +201,7 @@ class ChatController extends GetxController {
   // 滚动到页面底部
   void toBottom() {
     WidgetsBinding.instance.addPostFrameCallback((mag) {
-      messageScrollController.scrollTo(
-          index: messageDetails.length - 1,
-          duration: const Duration(seconds: 1),
-          curve: Curves.easeInCubic);
+      messageScrollController.jumpTo(index: messageDetails.length - 1);
     });
   }
 }

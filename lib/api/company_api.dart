@@ -1,11 +1,11 @@
 import '../api_resp/page_resp.dart';
 import '../api_resp/target_resp.dart';
-import '../config/constant.dart';
+import 'constant.dart';
 import '../util/http_util.dart';
 
 class CompanyApi {
   static Future<List<dynamic>> getJoinedCompanys(int offset, int limit) async {
-    String url = "${Constant.companyModule}/get/joined/companys";
+    String url = "${Constant.company}/get/joined/companys";
     Map<String, dynamic> data = {"offset": offset, "limit": limit};
     Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
 
@@ -14,7 +14,7 @@ class CompanyApi {
   }
 
   static Future<TargetResp> queryInfo() async {
-    String url = "${Constant.companyModule}/query/info";
+    String url = "${Constant.company}/query/info";
     Map<String, dynamic> resp = await HttpUtil().post(url);
 
     TargetResp targetResp = TargetResp.fromMap(resp);
@@ -23,7 +23,7 @@ class CompanyApi {
 
   static Future<List<TargetResp>> groups(
       int limit, int offset, String filter) async {
-    String url = "${Constant.companyModule}/get/groups";
+    String url = "${Constant.company}/get/groups";
     Map<String, dynamic> data = {"offset": offset, "limit": limit};
     if (filter.isNotEmpty) {
       data["filter"] = filter;

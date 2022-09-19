@@ -1,3 +1,5 @@
+import 'package:orginone/util/date_util.dart';
+
 class IdentityResp {
   int id;
   String name;
@@ -51,8 +53,8 @@ class IdentityResp {
         createUser = int.parse(map["createUser"]),
         updateUser = int.parse(map["updateUser"]),
         version = int.parse(map["version"]),
-        createTime = DateTime.parse(map["createTime"]),
-        updateTime = DateTime.parse(map["updateTime"]);
+        createTime = CustomDateUtil.parse(map["createTime"]),
+        updateTime = CustomDateUtil.parse(map["updateTime"]);
 
   static List<IdentityResp> fromList(List<dynamic> list) {
     List<IdentityResp> ans = [];

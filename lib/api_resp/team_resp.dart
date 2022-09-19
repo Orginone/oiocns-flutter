@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 
 import '../config/hive_object_id.dart';
+import '../util/date_util.dart';
 
 part 'team_resp.g.dart';
 
@@ -70,10 +71,10 @@ class TeamResp {
         createUser = int.parse(map["createUser"]),
         updateUser = int.parse(map["updateUser"]),
         version = int.parse(map["version"] ?? "1"),
-        createTime = DateTime.parse(map["createTime"]),
+        createTime = CustomDateUtil.parse(map["createTime"]),
         updateTime = map["updateTime"] == null
             ? null
-            : DateTime.parse(map["updateTime"]);
+            : CustomDateUtil.parse(map["updateTime"]);
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};

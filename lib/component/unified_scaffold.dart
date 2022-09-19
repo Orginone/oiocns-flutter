@@ -11,6 +11,7 @@ class UnifiedScaffold extends StatelessWidget {
   final Color appBarBgColor;
   final List<Widget>? appBarActions;
   final Widget? appBarTitle;
+  final bool? appBarCenterTitle;
   final Widget? appBarLeading;
   final Widget? body;
   final Widget? bottomNavigationBar;
@@ -22,6 +23,7 @@ class UnifiedScaffold extends StatelessWidget {
       this.appBarBgColor = defaultAppBarColor,
       this.appBarActions,
       this.appBarTitle,
+      this.appBarCenterTitle,
       this.appBarLeading,
       this.body,
       this.bottomNavigationBar,
@@ -39,6 +41,7 @@ class UnifiedScaffold extends StatelessWidget {
           actions: appBarActions,
           backgroundColor: appBarBgColor,
           title: appBarTitle,
+          centerTitle: appBarCenterTitle,
           leading: appBarLeading,
         ),
       ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../config/custom_colors.dart';
 
 const TextStyle defaultTextStyle = TextStyle(
-    fontSize: 9, color: Colors.blueAccent, fontWeight: FontWeight.bold);
+    fontSize: 8, color: Colors.blueAccent, fontWeight: FontWeight.bold);
 const Color defaultBgColor = CustomColors.lightBlue;
 const EdgeInsets defaultPadding = EdgeInsets.all(2);
 

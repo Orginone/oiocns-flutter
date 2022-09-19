@@ -1,5 +1,5 @@
 import 'package:common_utils/common_utils.dart';
-import 'package:flutter/material.dart';
+import 'package:jiffy/jiffy.dart';
 
 class CustomDateUtil {
   static List<String> chineseWeekdays = [
@@ -13,7 +13,19 @@ class CustomDateUtil {
     "周日"
   ];
 
-  static String getSessionTime(DateTime targetTime) {
+  static DateTime parse(String dtStr) {
+    bool hasDiagonal = dtStr.contains("/");
+    if (hasDiagonal) {
+      return Jiffy(dtStr, "yyyy/MM/dd hh:mm:ss").dateTime;
+    }
+    return DateTime.parse(dtStr);
+  }
+
+  static String getSessionTime(DateTime? targetTime) {
+    if (targetTime == null) {
+      return "";
+    }
+
     int targetYear = targetTime.year;
     int targetMonth = targetTime.month;
     int targetDay = targetTime.day;
@@ -94,7 +106,8 @@ class CustomDateUtil {
             return DateUtil.formatDate(targetTime, format: format);
           } else {
             if (differDay < nowWeekday) {
-              String format = "${chineseWeekdays[targetWeekday]} ${dayDescription}HH:mm";
+              String format =
+                  "${chineseWeekdays[targetWeekday]} ${dayDescription}HH:mm";
               return DateUtil.formatDate(targetTime, format: format);
             } else {
               String format = "MM月dd日 ${dayDescription}HH:mm";
