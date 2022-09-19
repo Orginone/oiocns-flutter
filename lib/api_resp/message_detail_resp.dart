@@ -2,7 +2,7 @@ import 'package:orginone/util/date_util.dart';
 
 class MessageDetailResp {
   String id;
-  String spaceId;
+  String? spaceId;
   String fromId;
   String toId;
   String msgType;

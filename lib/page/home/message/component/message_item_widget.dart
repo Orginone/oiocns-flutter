@@ -99,7 +99,7 @@ class MessageItemWidget extends GetView<MessageController> {
           ],
         ),
         Text(
-          messageItem.msgBody ?? "",
+          messageItem.showText ?? "",
           style: text12Grey,
           overflow: TextOverflow.ellipsis,
         ),

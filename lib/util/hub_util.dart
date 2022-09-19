@@ -131,7 +131,7 @@ class HubUtil {
         "msgBody": detail.msgBody,
         "sessionId": sessionId,
         "createTime": DateUtil.formatDate(detail.createTime,
-            format: "yyyy/MM/dd hh:mm:ss")
+            format: "yyyy/MM/dd HH:mm:ss")
       };
       CollectionApi.insert(collName, data, Domain.user.name);
     }

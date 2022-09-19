@@ -144,10 +144,11 @@ class MessageController extends GetxController {
     }
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     for (var message in messageList) {
+      log.info("接收到一条新的消息$message");
       var messageDetail = MessageDetailResp.fromMap(message);
 
       // 空间转换
-      if (messageDetail.spaceId == messageDetail.fromId) {
+      if (messageDetail.spaceId == null || messageDetail.spaceId == messageDetail.fromId) {
         messageDetail.spaceId = userInfo.id;
       }
 
@@ -179,7 +180,7 @@ class MessageController extends GetxController {
         }
 
         if (spaceId == userInfo.id) {
-          // 如果是个人空间，存储一下小心信息
+          // 如果是个人空间，存储一下信息
           await HubUtil().cacheMsg(sessionId, messageDetail);
         }
         item.msgBody = messageDetail.msgBody;
@@ -196,20 +197,20 @@ class MessageController extends GetxController {
           item.showText =
               "${orgChatCache.nameMap?[messageDetail.fromId]}：${item.showText}";
         }
-
         if (currentSpaceId == spaceId && currentMessageItemId == sessionId) {
           // 如果当前正在会话中
           ChatController chatController = Get.find();
           await chatController.onReceiveMessage(messageDetail);
         } else {
           // 如果不在会话中
-          item.noRead = item.noRead ?? 0 + 1;
+          item.noRead = (item.noRead ?? 0) + 1;
         }
-
         orgChatCache.messageDetail = messageDetail;
         orgChatCache.target = item;
-
         HubUtil().cacheChats(orgChatCache);
+
+        // 更新试图
+        update();
       } catch (error) {
         log.info("接收消息异常:$error");
       }
