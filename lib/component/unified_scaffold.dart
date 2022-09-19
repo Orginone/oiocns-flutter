@@ -5,10 +5,12 @@ import '../config/custom_colors.dart';
 
 const double defaultAppBarPercent = 0.07;
 const Color defaultAppBarColor = CustomColors.lightGrey;
+const Color defaultBgColor = Colors.white;
 
 class UnifiedScaffold extends StatelessWidget {
   final double appBarPercent;
   final Color appBarBgColor;
+  final Color bgColor;
   final List<Widget>? appBarActions;
   final Widget? appBarTitle;
   final bool? appBarCenterTitle;
@@ -21,6 +23,7 @@ class UnifiedScaffold extends StatelessWidget {
       {Key? key,
       this.appBarPercent = defaultAppBarPercent,
       this.appBarBgColor = defaultAppBarColor,
+      this.bgColor = defaultBgColor,
       this.appBarActions,
       this.appBarTitle,
       this.appBarCenterTitle,
@@ -45,6 +48,7 @@ class UnifiedScaffold extends StatelessWidget {
           leading: appBarLeading,
         ),
       ),
+      backgroundColor: bgColor,
       body: body,
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingButton,
