@@ -19,6 +19,8 @@ import 'package:orginone/page/home/mine/mine_info/mine_info_binding.dart';
 import 'package:orginone/page/home/mine/mine_info/mine_info_page.dart';
 import 'package:orginone/page/home/mine/mine_binding.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
+import 'package:orginone/page/home/mine/mine_unit/mine_unit_binding.dart';
+import 'package:orginone/page/home/mine/mine_unit/mine_unit_page.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_binding.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_page.dart';
 import 'package:orginone/page/home/organization/dept/dept_binding.dart';
@@ -48,16 +50,16 @@ class Routers {
   static const String message = "/message";
   static const String organization = "/organization";
   static const String chat = "/chat";
-  static const String messageSetting = "/message_setting";
+  static const String messageSetting = "/messageSetting";
   static const String friends = "/friends";
   static const String units = "/units";
   static const String groups = "/groups";
   static const String cohorts = "/cohorts";
   static const String dept = "/dept";
   static const String personDetail = "/personDetail";
-  static const String personAdd = "/person_add";
+  static const String personAdd = "/personAdd";
   static const String mine = "/mine";
-  static const String mineInfo = "/mine_info";
+  static const String mineInfo = "/mineInfo";
   static const String mineUnit = "/mineUnit";
   static const String search = "/search";
 
@@ -151,6 +153,11 @@ class Routers {
         name: Routers.mineInfo,
         page: () => const MineInfoPage(),
         binding: MineInfoBinding(),
+      ),
+      GetPage(
+        name: Routers.mineUnit,
+        page: () => const MineUnitPage(),
+        binding: MineUnitBinding(),
       ),
       GetPage(
         name: Routers.search,
