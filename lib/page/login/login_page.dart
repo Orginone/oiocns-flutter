@@ -43,8 +43,9 @@ class LoginPage extends GetView<LoginController> {
                       child: TextFormField(
                         controller: controller.passwordController,
                         obscureText: true,
-                        decoration: const InputDecoration(hintText: '请输入密码',
-                          ),
+                        decoration: const InputDecoration(
+                          hintText: '请输入密码',
+                        ),
                         keyboardType: TextInputType.text,
                         validator: (value) {
                           if (TextUtil.isEmpty(value)) {
@@ -72,18 +73,27 @@ class LoginPage extends GetView<LoginController> {
                       padding: const EdgeInsets.fromLTRB(40, 15, 40, 0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
-                        children:  [
+                        children: [
                           GestureDetector(
                             onTap: () {
                               Get.toNamed(Routers.register);
                             },
-                            child: const Text('注册',style: TextStyle(
-                                color: Colors.lightBlue
-                            )),
+                            child: const Text('注册',
+                                style: TextStyle(color: Colors.lightBlue)),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Get.toNamed(Routers.forget);
+                            },
+                            child: Container(
+                                margin: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                child: const Text('忘记密码',
+                                    style: TextStyle(
+                                      color: Colors.lightBlue,
+                                    ))),
                           )
                         ],
-                      )
-                  ),
+                      )),
                 ])));
   }
 }

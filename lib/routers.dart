@@ -1,4 +1,6 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:orginone/page/forget/forget_binding.dart';
+import 'package:orginone/page/forget/forget_page.dart';
 import 'package:orginone/page/home/component/personAdd/person_add_binding.dart';
 import 'package:orginone/page/home/component/personAdd/person_add_page.dart';
 import 'package:orginone/page/home/component/personDetail/person_detail_binding.dart';
@@ -38,6 +40,7 @@ import 'package:orginone/page/register/register_page.dart';
 
 class Routers {
   static const String main = "/";
+  static const String forget = "/forget";
   static const String register = "/register";
   static const String login = "/login";
   static const String home = "/home";
@@ -64,6 +67,10 @@ class Routers {
           name: Routers.main,
           page: () => const LoginPage(),
           binding: LoginBinding()),
+      GetPage(
+          name: Routers.forget,
+          page: () => const ForgetPage(),
+          binding: ForgetBinding()),
       GetPage(
           name: Routers.register,
           page: () => const RegisterPage(),

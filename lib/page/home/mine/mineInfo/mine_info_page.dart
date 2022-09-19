@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/component/form_item_type2.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/routers.dart';
 import 'mine_info_controller.dart';
 
 class MineInfoPage extends GetView<MineInfoController> {
@@ -232,7 +233,24 @@ class MineInfoPage extends GetView<MineInfoController> {
                       ),
                     ),
                   ]),
-                )
+                ),
+      Container(
+        padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+        child: Row(
+          children: [
+            GFButton(
+                onPressed: () async {
+                  //暂时没接登出接口
+                  Get.offNamed(Routers.main);
+                },
+                color: Colors.red,
+                text: "注销",
+                blockButton: true
+            )
+          ],
+        ),
+      )
+
               ]),
             ));
   }
