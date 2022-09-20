@@ -91,13 +91,15 @@ class ChatPage extends GetView<ChatController> {
               },
               child: Container(
                 padding: lr10,
-                child: ScrollablePositionedList.builder(
-                  itemScrollController: controller.messageScrollController,
-                  scrollDirection: Axis.vertical,
-                  itemCount: controller.messageDetails.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return _chatItem(index);
-                  },
+                child: GetBuilder<ChatController>(
+                  builder: (controller) => ListView.builder(
+                    controller: controller.messageScrollController,
+                    scrollDirection: Axis.vertical,
+                    itemCount: controller.messageDetails.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _chatItem(index);
+                    },
+                  ),
                 ),
               ),
             ),

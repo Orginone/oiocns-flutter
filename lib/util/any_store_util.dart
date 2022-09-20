@@ -134,7 +134,6 @@ class AnyStoreUtil {
 
   /// 订阅
   subscribing(SubscriptionKey key, String domain, Function callback) async {
-    checkConn();
     var fullKey = "${key.name}|$domain";
     if (subscriptionMap.containsKey(fullKey)) {
       return;

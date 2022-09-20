@@ -19,7 +19,7 @@ class TargetResp {
   @HiveField(3)
   String typeName;
   @HiveField(4)
-  String belongId;
+  String? belongId;
   @HiveField(5)
   String thingId;
   @HiveField(6)
@@ -29,7 +29,7 @@ class TargetResp {
   @HiveField(8)
   String updateUser;
   @HiveField(9)
-  int version;
+  String? version;
   @HiveField(10)
   DateTime? createTime;
   @HiveField(11)

@@ -21,8 +21,8 @@ class MessageDetailResp {
         msgBody = map["msgBody"],
         createUser = map["createUser"],
         updateUser = map["updateUser"],
-        createTime = CustomDateUtil.parse(map["createTime"]),
-        updateTime = CustomDateUtil.parse(map["updateTime"]);
+        createTime = map["createTime"] != null ? CustomDateUtil.parse(map["createTime"]) : null,
+        updateTime = map["updateTime"] != null ? CustomDateUtil.parse(map["updateTime"]) : null;
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};

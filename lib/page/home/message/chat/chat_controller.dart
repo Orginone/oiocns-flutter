@@ -5,6 +5,7 @@ import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/util/hub_util.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../api_resp/message_item_resp.dart';
 import '../../../../api_resp/target_resp.dart';
@@ -19,7 +20,7 @@ class ChatController extends GetxController {
   var homeController = Get.find<HomeController>();
   var messageController = Get.find<MessageController>();
   var messageText = TextEditingController();
-  var messageScrollController = ItemScrollController();
+  var messageScrollController = ScrollController();
 
   // 当前所在的群组
   late MessageItemResp messageItem;
@@ -32,9 +33,14 @@ class ChatController extends GetxController {
   late List<MessageDetailResp> messageDetails;
 
   @override
-  void onInit() async {
-    await init();
+  void onInit() {
+    init();
     super.onInit();
+  }
+
+  @override
+  void onClose() async {
+    messageController.closingRef();
   }
 
   // 初始化
@@ -46,42 +52,35 @@ class ChatController extends GetxController {
     messageDetails = [];
     personMap = {};
     personList = [];
-    update();
 
     // 初始化老数据个数，查询聊天记录的个数
     await getPersons();
     await getPageData();
 
     // 更新页面后，跳转到页面底部
-    update();
+    messageScrollController.addListener(() {
+      var maxPosition = messageScrollController.position.maxScrollExtent;
+      if (messageScrollController.offset >= maxPosition) {}
+    });
     toBottom();
+    update();
   }
 
   // 消息接收函數
   Future<void> onReceiveMessage(MessageDetailResp messageDetail) async {
     try {
-      var messageDetailId = messageDetail.id;
-      // if (!messageDetail.isWithdraw!) {
-      //   // 如果不是撤回的话加入到会话当中
-      //   var chatMessageDetail = ChatMessageDetail(
-      //       messageItem, messageDetail, personMap[messageDetail.fromId]);
-      //   messageDetails.add(chatMessageDetail);
-      //   messageDetailMap[messageDetailId] = chatMessageDetail;
-      // } else {
-      //   if (messageDetailMap.containsKey(messageDetailId)) {
-      //     // 如果存在这条单据详情的话
-      //     ChatMessageDetail oldDetail = messageDetailMap[messageDetailId]!;
-      //     oldDetail.isWithdraw.value = true;
-      //     oldDetail.msgBody.value = messageDetail.msgBody ?? "";
-      //   }
-      // }
-      //
-      // // 改成已读状态
-      // messageDetail.isRead = true;
-      // await MessageDetailManager().update(messageDetail);
-
+      if (messageDetail.msgType == "recall") {
+        for (var oldDetail in messageDetails) {
+          // if (oldDetail.id == ){
+          //
+          // }
+        }
+      } else {
+        messageDetails.add(messageDetail);
+      }
       // 滚动到最底
       toBottom();
+      update();
     } catch (error) {
       error.printError();
     }
@@ -154,8 +153,7 @@ class ChatController extends GetxController {
 
   // 滚动到页面底部
   void toBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((mag) {
-      messageScrollController.jumpTo(index: 0);
-    });
+    messageScrollController
+        .jumpTo(messageScrollController.position.maxScrollExtent);
   }
 }

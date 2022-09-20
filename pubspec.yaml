@@ -59,6 +59,7 @@ dependencies:
   common_utils: ^2.1.0
   path_provider: ^2.0.11
   jiffy: ^5.0.0
+  uuid: ^3.0.6
 
   # 注解
   json_annotation: ^4.6.0
