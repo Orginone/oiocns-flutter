@@ -6,7 +6,7 @@ class MessageItemResp {
   String name;
   String remark;
   String typeName;
-  DateTime msgTime;
+  DateTime? msgTime;
   String? msgType;
   String? msgBody;
   String? spaceId;
@@ -58,7 +58,7 @@ class MessageItemResp {
     json['name'] = name;
     json['remark'] = remark;
     json['typeName'] = typeName;
-    json['msgTime'] = msgTime.toString();
+    json['msgTime'] = msgTime?.toString();
     json['msgType'] = msgType;
     json['msgBody'] = msgBody;
     json["spaceId"] = spaceId;

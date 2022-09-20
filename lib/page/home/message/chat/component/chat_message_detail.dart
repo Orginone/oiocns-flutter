@@ -26,14 +26,14 @@ class ChatMessageDetail extends GetView<ChatController> {
   final bool isMy;
   final bool isMultiple;
 
-  ChatMessageDetail(this.sessionId, this.messageDetail, this.isMy,
-      this.isMultiple,
+  ChatMessageDetail(
+      this.sessionId, this.messageDetail, this.isMy, this.isMultiple,
       {Key? key})
       : super(key: key);
 
   String targetName() {
     OrgChatCache orgChatCache = controller.messageController.orgChatCache;
-    return orgChatCache.nameMap[sessionId] ?? "";
+    return orgChatCache.nameMap[messageDetail.fromId] ?? "";
   }
 
   @override
@@ -55,11 +55,11 @@ class ChatMessageDetail extends GetView<ChatController> {
     }
 
     return Container(
-      margin: topSmall,
+      margin: top10,
       child: Row(
         textDirection: isMy ? TextDirection.rtl : TextDirection.ltr,
         mainAxisAlignment:
-        isRecall ? MainAxisAlignment.center : MainAxisAlignment.start,
+            isRecall ? MainAxisAlignment.center : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: children,
       ),
@@ -67,10 +67,11 @@ class ChatMessageDetail extends GetView<ChatController> {
   }
 
   Widget _getAvatar() {
+    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     return TextAvatar(
-      avatarName: targetName(),
+      avatarName: isMy ? userInfo.team.name : targetName(),
       type: TextAvatarType.chat,
-      textStyle: text12White,
+      textStyle: text12WhiteBold,
     );
   }
 
@@ -78,7 +79,14 @@ class ChatMessageDetail extends GetView<ChatController> {
     List<Widget> content = <Widget>[];
 
     if (isMultiple && !isMy) {
-      content.add(Text(targetName()));
+      content.add(
+        Container(
+            margin: left10,
+            child: Text(
+              targetName(),
+              style: text12Bold,
+            )),
+      );
     }
 
     // 添加长按手势
@@ -98,9 +106,7 @@ class ChatMessageDetail extends GetView<ChatController> {
     content.add(chat);
 
     return Container(
-      margin: isMy
-          ? const EdgeInsets.fromLTRB(0, 0, 5, 0)
-          : const EdgeInsets.fromLTRB(5, 0, 0, 0),
+      margin: isMy ? right2 : left2,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: content,

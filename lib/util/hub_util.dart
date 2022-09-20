@@ -198,7 +198,7 @@ class HubUtil {
       List<MessageDetailResp> ans = [];
       for (var item in details) {
         item["id"] = item["chatId"];
-        ans.insert(0, MessageDetailResp.fromMap(item));
+        ans.add(MessageDetailResp.fromMap(item));
       }
       return ans;
     } else {

@@ -89,7 +89,13 @@ class MessageController extends GetxController {
 
       // 排序
       List<MessageItemResp> chats = messageGroup.chats;
-      chats.sort((first, second) => -first.msgTime.compareTo(second.msgTime));
+      chats.sort((first, second) {
+        if (first.msgTime == null || second.msgTime == null) {
+          return 0;
+        } else {
+          return -first.msgTime!.compareTo(second.msgTime!);
+        }
+      });
 
       // 建立索引
       spaceMessageItemMap[messageGroup.id] = {};
@@ -108,6 +114,7 @@ class MessageController extends GetxController {
   }
 
   /// 从订阅通道拿到的数据直接更新试图
+
   _updateChats(Map<String, dynamic> data) {
     orgChatCache = OrgChatCache(data);
     _spaceHandling(orgChatCache.chats);
@@ -161,31 +168,35 @@ class MessageController extends GetxController {
           // 如果是个人空间，存储一下信息
           await HubUtil().cacheMsg(sessionId, messageDetail);
         }
-        item.msgBody = messageDetail.msgBody;
-        item.msgTime = messageDetail.createTime ?? DateTime.now();
+        String? msgBody = messageDetail.msgBody;
+        item.msgBody = msgBody;
+        item.msgTime = messageDetail.createTime;
         item.msgType = messageDetail.msgType;
         if (item.msgType == "recall") {
-          item.showText = messageDetail.msgBody?.contains("<img>") ?? false
-              ? "[图片]"
-              : messageDetail.msgBody;
+          bool hasPic = msgBody?.contains("<img>") ?? false;
+          item.showText = hasPic ? "[图片]" : msgBody;
         } else {
-          item.showText = messageDetail.msgBody;
+          item.showText = msgBody;
         }
         if (item.typeName != "人员") {
-          item.showText =
-              "${orgChatCache.nameMap[messageDetail.fromId]}：${item.showText}";
+          String name = orgChatCache.nameMap[messageDetail.fromId];
+          item.showText = "$name：${item.showText}";
         }
 
-        ChatController chatController = Get.find();
-        // if (currentSpaceId == spaceId && currentMessageItemId == sessionId) {
-        //   // 如果当前正在会话中
-        //   ChatController chatController = Get.find();
-        //   await chatController.onReceiveMessage(messageDetail);
-        // } else {
-        //   // 如果不在会话中
-        //
-        // }
-        item.noRead = (item.noRead ?? 0) + 1;
+        bool isTalking = false;
+        if (Get.isRegistered<ChatController>()) {
+          ChatController chatController = Get.find();
+          if (chatController.spaceId == spaceId &&
+              chatController.messageItemId == sessionId) {
+            isTalking = true;
+            chatController.onReceiveMessage(messageDetail);
+          }
+        }
+        if (!isTalking && fromId != userInfo.id) {
+          // 不在会话中且不是我发的消息
+          item.noRead = (item.noRead ?? 0) + 1;
+        }
+
         orgChatCache.messageDetail = messageDetail;
         orgChatCache.target = item;
 

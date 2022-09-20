@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+get text10Grey => TextStyle(fontSize: 10.sp, color: Colors.grey);
+
 get text12 => TextStyle(fontSize: 12.sp, color: Colors.black);
+
+get text12Bold => TextStyle(
+    fontSize: 12.sp, color: Colors.black, fontWeight: FontWeight.bold);
 
 get text12Grey => TextStyle(fontSize: 12.sp, color: Colors.grey);
 
@@ -11,6 +16,9 @@ get text12WhiteBold => TextStyle(
     fontSize: 12.sp, color: Colors.white, fontWeight: FontWeight.bold);
 
 get text12Blue => TextStyle(fontSize: 12.sp, color: Colors.blueAccent);
+
+get text14Bold => TextStyle(
+    fontSize: 14.sp, color: Colors.black, fontWeight: FontWeight.bold);
 
 get text14Grey => TextStyle(fontSize: 14.sp, color: Colors.grey);
 

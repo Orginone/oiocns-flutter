@@ -54,14 +54,13 @@ class ChatController extends GetxController {
 
     // 初始化老数据个数，查询聊天记录的个数
     await getPersons();
-    await getPageData();
+    await getHistoryMsg();
 
-    toBottom();
-    update();
+    updateAndToBottom();
   }
 
   // 消息接收函數
-  Future<void> onReceiveMessage(MessageDetailResp messageDetail) async {
+  void onReceiveMessage(MessageDetailResp messageDetail) {
     try {
       if (messageDetail.msgType == "recall") {
         for (var oldDetail in messageDetails) {
@@ -74,9 +73,7 @@ class ChatController extends GetxController {
       } else {
         messageDetails.add(messageDetail);
       }
-      // 滚动到最底
-      toBottom();
-      update();
+      updateAndToBottom();
     } catch (error) {
       error.printError();
     }
@@ -91,8 +88,8 @@ class ChatController extends GetxController {
       if (!orgChatCache.nameMap.containsKey(messageItemId)) {
         var name = await HubUtil().getName(messageItemId);
         orgChatCache.nameMap[messageItemId] = name;
+        await HubUtil().cacheChats(orgChatCache);
       }
-      await HubUtil().cacheChats(orgChatCache);
       return;
     }
     int offset = 0;
@@ -101,7 +98,7 @@ class ChatController extends GetxController {
       List<TargetResp> persons =
           await HubUtil().getPersons(messageItemId, limit, offset);
       personList.addAll(persons);
-      if (persons.isEmpty || persons.length < limit) {
+      if (persons.isEmpty) {
         break;
       }
       for (var person in persons) {
@@ -112,12 +109,15 @@ class ChatController extends GetxController {
         orgChatCache.nameMap[person.id] = "${person.name}$typeName";
       }
       offset += limit;
+      if (persons.length < limit){
+        break;
+      }
     }
     await HubUtil().cacheChats(orgChatCache);
   }
 
   /// 下拉时刷新旧的聊天记录
-  Future<void> getPageData() async {
+  Future<void> getHistoryMsg() async {
     String typeName = messageItem.typeName;
 
     List<MessageDetailResp> newDetails = await HubUtil().getHistoryMsg(
@@ -151,10 +151,11 @@ class ChatController extends GetxController {
   }
 
   // 滚动到页面底部
-  void toBottom() {
+  void updateAndToBottom() {
+    update();
     WidgetsBinding.instance.addPostFrameCallback((mag) {
-      messageScrollController
-          .jumpTo(messageScrollController.position.maxScrollExtent);
+      var max = messageScrollController.position.maxScrollExtent;
+      messageScrollController.jumpTo(max);
     });
   }
 }

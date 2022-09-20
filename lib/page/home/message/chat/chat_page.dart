@@ -26,7 +26,7 @@ class ChatPage extends GetView<ChatController> {
           style: text20,
         ),
         Container(
-          margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+          margin: left10,
         ),
         TextTag(
           controller.messageItem.label,
@@ -52,10 +52,10 @@ class ChatPage extends GetView<ChatController> {
   Widget _time(DateTime? dateTime) {
     return Container(
       alignment: Alignment.center,
-      margin: topSmall,
+      margin: top10,
       child: Text(
         dateTime != null ? CustomDateUtil.getDetailTime(dateTime) : "",
-        style: text12Grey,
+        style: text10Grey,
       ),
     );
   }
@@ -72,14 +72,16 @@ class ChatPage extends GetView<ChatController> {
         ChatMessageDetail(messageItem.id, messageDetail, isMy, isMultiple);
 
     var time = _time(messageDetail.createTime);
-    var item = Column(children: [time, currentWidget]);
+    var item = Column(children: [currentWidget]);
     if (index == 0) {
+      item.children.insert(0, time);
       return item;
     } else {
       MessageDetailResp pre = controller.messageDetails[index - 1];
       if (messageDetail.createTime != null && pre.createTime != null) {
         var difference = messageDetail.createTime!.difference(pre.createTime!);
         if (difference.inSeconds > 60) {
+          item.children.insert(0, time);
           return item;
         }
       }
@@ -93,7 +95,7 @@ class ChatPage extends GetView<ChatController> {
           Expanded(
             child: RefreshIndicator(
               onRefresh: () async {
-                await controller.getPageData();
+                await controller.getHistoryMsg();
                 controller.update();
               },
               child: Container(

@@ -1,8 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../component/unified_edge_insets.dart';
 import '../../../../../config/custom_colors.dart';
+
+double defaultWidth = 10.w;
 
 class TextMessage extends StatelessWidget {
   final String? message;
@@ -13,33 +17,32 @@ class TextMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double half = 10.0;
     return Stack(
       textDirection: textDirection,
       children: [
         Align(
           child: Container(
-            margin: EdgeInsets.fromLTRB(0, half, 0, 0),
+            margin: EdgeInsets.only(top: defaultWidth * 1.2),
             child: Material(
               color: CustomColors.seaBlue,
               shape: BeveledRectangleBorder(
-                  borderRadius: BorderRadius.circular(half)),
+                  borderRadius: BorderRadius.circular(defaultWidth)),
               child: SizedBox(
-                width: half * 2,
-                height: half,
+                width: defaultWidth * 2,
+                height: defaultWidth,
               ),
             ),
           ),
         ),
         Container(
-            constraints: const BoxConstraints(maxWidth: 180),
-            padding: const EdgeInsets.all(10),
+            constraints: BoxConstraints(maxWidth: 180.w),
+            padding: EdgeInsets.all(defaultWidth),
             margin: textDirection == TextDirection.ltr
-                ? EdgeInsets.fromLTRB(half, 0, 0, 0)
-                : EdgeInsets.fromLTRB(0, 0, half, 0),
+                ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
+                : EdgeInsets.only(right: defaultWidth, top: defaultWidth / 2),
             decoration: BoxDecoration(
                 color: CustomColors.seaBlue,
-                borderRadius: BorderRadius.all(Radius.circular(half))),
+                borderRadius: BorderRadius.all(Radius.circular(defaultWidth))),
             child: Text(message ?? "")),
       ],
     );
