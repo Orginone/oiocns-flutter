@@ -218,6 +218,9 @@ class HubUtil {
       Map<String, dynamic> res = await _server.invoke(funcName, args: [params]);
       var apiResp = ApiResp.fromMap(res);
       Map<String, dynamic> data = apiResp.data;
+      if (data["result"] == null) {
+        return [];
+      }
       List<dynamic> details = data["result"];
       return details.map((item) => MessageDetailResp.fromMap(item)).toList();
     }
@@ -240,6 +243,9 @@ class HubUtil {
 
     ApiResp apiResp = ApiResp.fromMap(res);
     var targetList = apiResp.data["result"];
+    if (targetList == null) {
+      return [];
+    }
 
     List<TargetResp> temp = [];
     for (var target in targetList) {

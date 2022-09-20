@@ -117,10 +117,12 @@ class MessageItemWidget extends GetView<MessageController> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        MessageController messageController = Get.find();
-        messageController.currentSpaceId = spaceId;
-        messageController.currentMessageItemId = messageItemId;
-        Get.toNamed(Routers.chat, arguments: messageItem);
+        Map<String, dynamic> args = {
+          "messageItem": messageItem,
+          "spaceId": spaceId,
+          "messageItemId": messageItemId
+        };
+        Get.toNamed(Routers.chat, arguments: args);
       },
       child: Container(
         padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),

@@ -85,17 +85,17 @@ class PersonDetailPage extends GetView<PersonDetailController> {
                         EasyLoading.showToast("未获取到人员信息！");
                         return;
                       }
-                      HomeController homeController = Get.find();
-                      MessageController messageController = Get.find();
-                      messageController.currentSpaceId =
-                          homeController.currentSpace.id;
-                      messageController.currentMessageItemId =
-                          controller.personDetail!.id;
-                      Get.offNamedUntil(
-                          Routers.chat,
-                          (route) =>
-                              (route as GetPageRoute).settings.name ==
-                              Routers.home);
+                      // HomeController homeController = Get.find();
+                      // MessageController messageController = Get.find();
+                      // messageController.currentSpaceId =
+                      //     homeController.currentSpace.id;
+                      // messageController.currentMessageItemId =
+                      //     controller.personDetail!.id;
+                      // Get.offNamedUntil(
+                      //     Routers.chat,
+                      //     (route) =>
+                      //         (route as GetPageRoute).settings.name ==
+                      //         Routers.home);
 
                       // MessageController messageController = Get.find();
                       // //循环判断该人员是否在集团里，若有则对话，无则提示

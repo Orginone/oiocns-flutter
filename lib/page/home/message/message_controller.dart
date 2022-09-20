@@ -7,7 +7,6 @@ import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/util/any_store_util.dart';
 import 'package:orginone/util/hive_util.dart';
 
-import '../../../api_resp/api_resp.dart';
 import '../../../api_resp/message_detail_resp.dart';
 import '../../../api_resp/message_item_resp.dart';
 import '../../../util/hub_util.dart';
@@ -24,15 +23,6 @@ class MessageController extends GetxController {
   // 会话索引
   Map<String, SpaceMessagesResp> spaceMap = {};
   Map<String, Map<String, MessageItemResp>> spaceMessageItemMap = {};
-
-  // 参数
-  String currentSpaceId = "-1";
-  String currentMessageItemId = "-1";
-
-  closingRef() {
-    currentSpaceId = "-1";
-    currentMessageItemId = "-1";
-  }
 
   @override
   void onInit() async {
@@ -185,20 +175,25 @@ class MessageController extends GetxController {
           item.showText =
               "${orgChatCache.nameMap[messageDetail.fromId]}：${item.showText}";
         }
-        if (currentSpaceId == spaceId && currentMessageItemId == sessionId) {
-          // 如果当前正在会话中
-          ChatController chatController = Get.find();
-          await chatController.onReceiveMessage(messageDetail);
-        } else {
-          // 如果不在会话中
-          item.noRead = (item.noRead ?? 0) + 1;
-        }
+
+        ChatController chatController = Get.find();
+        // if (currentSpaceId == spaceId && currentMessageItemId == sessionId) {
+        //   // 如果当前正在会话中
+        //   ChatController chatController = Get.find();
+        //   await chatController.onReceiveMessage(messageDetail);
+        // } else {
+        //   // 如果不在会话中
+        //
+        // }
+        item.noRead = (item.noRead ?? 0) + 1;
         orgChatCache.messageDetail = messageDetail;
         orgChatCache.target = item;
-        HubUtil().cacheChats(orgChatCache);
 
         // 更新试图
         update();
+
+        // 缓存会话
+        HubUtil().cacheChats(orgChatCache);
       } catch (error) {
         log.info("接收消息异常:$error");
       }

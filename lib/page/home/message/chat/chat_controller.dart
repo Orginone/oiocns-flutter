@@ -4,7 +4,6 @@ import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/page/home/home_controller.dart';
-import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/hub_util.dart';
 
 import '../../../../api_resp/message_item_resp.dart';
@@ -24,6 +23,8 @@ class ChatController extends GetxController {
 
   // 当前所在的群组
   late MessageItemResp messageItem;
+  late String spaceId;
+  late String messageItemId;
 
   // 当前群所有人
   late Map<String, TargetResp> personMap;
@@ -38,15 +39,13 @@ class ChatController extends GetxController {
     super.onInit();
   }
 
-  @override
-  void onClose() async {
-    messageController.closingRef();
-  }
-
   // 初始化
   Future<void> init() async {
     // 获取参数
-    messageItem = Get.arguments;
+    Map<String, dynamic> args = Get.arguments;
+    messageItem = args["messageItem"];
+    spaceId = args["spaceId"];
+    messageItemId = args["messageItemId"];
 
     // 清空所有聊天记录
     messageDetails = [];
@@ -85,16 +84,13 @@ class ChatController extends GetxController {
 
   /// 查询群成员信息
   Future<void> getPersons() async {
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-    String spaceId = messageItem.spaceId ?? userInfo.id;
-    String itemId = messageItem.id;
-    messageController.spaceMessageItemMap[spaceId]?[itemId]?.noRead = 0;
+    messageController.spaceMessageItemMap[spaceId]?[messageItemId]?.noRead = 0;
 
     OrgChatCache orgChatCache = messageController.orgChatCache;
     if (messageItem.typeName == "人员") {
-      if (!orgChatCache.nameMap.containsKey(itemId)) {
-        var name = await HubUtil().getName(itemId);
-        orgChatCache.nameMap[itemId] = name;
+      if (!orgChatCache.nameMap.containsKey(messageItemId)) {
+        var name = await HubUtil().getName(messageItemId);
+        orgChatCache.nameMap[messageItemId] = name;
       }
       await HubUtil().cacheChats(orgChatCache);
       return;
@@ -103,9 +99,9 @@ class ChatController extends GetxController {
     int limit = 100;
     while (true) {
       List<TargetResp> persons =
-          await HubUtil().getPersons(itemId, limit, offset);
+          await HubUtil().getPersons(messageItemId, limit, offset);
       personList.addAll(persons);
-      if (persons.isEmpty) {
+      if (persons.isEmpty || persons.length < limit) {
         break;
       }
       for (var person in persons) {
@@ -122,26 +118,22 @@ class ChatController extends GetxController {
 
   /// 下拉时刷新旧的聊天记录
   Future<void> getPageData() async {
-    String? spaceId = messageItem.spaceId;
-    String sessionId = messageItem.id;
     String typeName = messageItem.typeName;
 
-    List<MessageDetailResp> newDetails = await HubUtil()
-        .getHistoryMsg(spaceId, sessionId, typeName, messageDetails.length, 15);
+    List<MessageDetailResp> newDetails = await HubUtil().getHistoryMsg(
+        spaceId, messageItemId, typeName, messageDetails.length, 15);
     messageDetails.insertAll(0, newDetails);
   }
 
   // 发送消息至聊天页面
   Future<void> sendOneMessage() async {
-    var groupId = messageController.currentMessageItemId;
-    var spaceId = messageController.currentSpaceId;
-    if (groupId == "-1") return;
+    if (messageItemId == "-1") return;
 
     var value = messageText.value.text;
     if (value.isNotEmpty) {
       // toId 和 spaceId 都要是字符串类型
       var messageDetail = {
-        "toId": groupId,
+        "toId": messageItemId,
         "spaceId": spaceId,
         "msgType": MessageType.text.name,
         "msgBody": value

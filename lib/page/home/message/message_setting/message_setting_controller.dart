@@ -37,10 +37,13 @@ class MessageSettingController extends GetxController {
 
   @override
   void onInit() async {
+    Map<String, dynamic> args = Get.arguments;
+    String spaceId = args["spaceId"];
+    String messageItemId = args["messageItemId"];
+
     //初始化关系对象
-    currentTargetRelation = await TargetRelationUtil.getItem(
-        messageController.currentSpaceId,
-        messageController.currentMessageItemId);
+    currentTargetRelation =
+        await TargetRelationUtil.getItem(spaceId, messageItemId);
     name.value = currentTargetRelation?.name ?? '';
     remark.value = currentTargetRelation?.remark ?? '';
     label.value = currentTargetRelation?.label ?? '';

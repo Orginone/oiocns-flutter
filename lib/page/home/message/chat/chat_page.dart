@@ -41,7 +41,11 @@ class ChatPage extends GetView<ChatController> {
             color: Colors.white.withOpacity(0),
             icon: const Icon(Icons.more_horiz, color: Colors.black),
             onPressed: () {
-              Get.toNamed(Routers.messageSetting);
+              Map<String, dynamic> args = {
+                "spaceId": controller.spaceId,
+                "messageItemId": controller.messageItemId
+              };
+              Get.toNamed(Routers.messageSetting, arguments: args);
             })
       ];
 
