@@ -39,14 +39,14 @@ class HiveUtil {
   // 这个存储一些键值
   late Box uniqueBox;
   late Box keyValueBox;
-  late int currentTargetId;
+  late String currentTargetId;
 
   Future<void> initUniqueBox() async {
     uniqueBox = await Hive.openBox("uniqueBox");
   }
 
   // 初始化系统参数
-  Future<void> initEnvParams(int targetId) async {
+  Future<void> initEnvParams(String targetId) async {
     // 初始化键值对，不同参数保存在不同的文件中
     keyValueBox = await Hive.openBox("keyValueBox_$targetId");
 

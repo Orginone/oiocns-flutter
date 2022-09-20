@@ -11,7 +11,7 @@ part 'target_resp.g.dart';
 @HiveType(typeId: HiveObjectId.target)
 class TargetResp {
   @HiveField(0)
-  int id;
+  String id;
   @HiveField(1)
   String name;
   @HiveField(2)
@@ -19,21 +19,21 @@ class TargetResp {
   @HiveField(3)
   String typeName;
   @HiveField(4)
-  int belongId;
+  String belongId;
   @HiveField(5)
-  int thingId;
+  String thingId;
   @HiveField(6)
   int status;
   @HiveField(7)
-  int createUser;
+  String createUser;
   @HiveField(8)
-  int updateUser;
+  String updateUser;
   @HiveField(9)
   int version;
   @HiveField(10)
-  DateTime createTime;
+  DateTime? createTime;
   @HiveField(11)
-  DateTime updateTime;
+  DateTime? updateTime;
   @HiveField(12)
   TeamResp team;
   @HiveField(13)
@@ -69,24 +69,25 @@ class TargetResp {
         createTime = targetResp.createTime,
         updateTime = targetResp.updateTime,
         team = TeamResp.copyWith(targetResp.team),
-        givenIdentitys = targetResp.givenIdentitys?.map((item) => IdentityResp.copyWith(item)).toList();
+        givenIdentitys = targetResp.givenIdentitys
+            ?.map((item) => IdentityResp.copyWith(item))
+            .toList();
 
   TargetResp.fromMap(Map<String, dynamic> map)
-      : id = int.parse(map["id"]),
+      : id = map["id"],
         name = map["name"],
         code = map["code"],
         typeName = map["typeName"],
-        belongId =
-            map.containsKey('belongId') ? int.parse(map['belongId']) : -1,
-        thingId = int.parse(map["thingId"]),
+        belongId = map['belongId'],
+        thingId = map["thingId"],
         status = map["status"],
-        createUser = int.parse(map["createUser"]),
-        updateUser = int.parse(map["updateUser"]),
-        version = int.parse(map["version"]),
+        createUser = map["createUser"],
+        updateUser = map["updateUser"],
+        version = map["version"],
         createTime = CustomDateUtil.parse(map["createTime"]),
         updateTime = CustomDateUtil.parse(map["updateTime"]),
         team = TeamResp.fromMap(map["team"]),
-        givenIdentitys = map.containsKey("givenIdentitys")
+        givenIdentitys = map["givenIdentitys"] != null
             ? IdentityResp.fromList(map["givenIdentitys"])
             : null;
 
@@ -105,16 +106,5 @@ class TargetResp {
     json['createTime'] = createTime;
     json['updateTime'] = updateTime;
     return json;
-  }
-
-  Target toTarget() {
-    var target = Target();
-    target.id = id;
-    target.code = code;
-    target.name = name;
-    target.typeName = typeName;
-    target.belongId = belongId;
-    target.thingId = thingId;
-    return target;
   }
 }

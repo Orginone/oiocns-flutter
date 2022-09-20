@@ -62,7 +62,7 @@ class PersonApi {
     return pageData.result.map((item) => TargetResp.fromMap(item)).toList();
   }
 
-  static Future<LoginResp> changeWorkspace(int targetId) async {
+  static Future<LoginResp> changeWorkspace(String targetId) async {
     String url = "${Constant.person}/change/workspace";
     Map<String, dynamic> res = await HttpUtil().post(url, data: {"id": targetId});
     return LoginResp.fromMap(res);

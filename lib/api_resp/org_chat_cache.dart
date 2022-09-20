@@ -1,21 +1,23 @@
+import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/util/date_util.dart';
 
-import '../model/db_model.dart';
 import 'message_item_resp.dart';
 
 class OrgChatCache {
   String? key;
   String? name;
   DateTime? updateTime;
-  List<SpaceMessagesResp>? chats;
-  Map<int, String>? nameMap;
+  List<SpaceMessagesResp> chats;
+  Map<String, dynamic> nameMap;
+  List<SpaceMessagesResp> openChats;
   MessageItemResp? target;
-  MessageDetail? messageDetail;
+  MessageDetailResp? messageDetail;
 
-  static MapEntry<int, String> _entry(String idStr, dynamic nameStr) {
-    return MapEntry(int.parse(idStr), nameStr);
-  }
+  OrgChatCache.empty()
+      : chats = [],
+        nameMap = {},
+        openChats = [];
 
   factory OrgChatCache(Map<String, dynamic> map) {
     if (map["UpdateTime"] != null) {
@@ -24,9 +26,8 @@ class OrgChatCache {
     if (map["chats"] != null) {
       map["chats"] = SpaceMessagesResp.fromList(map["chats"]);
     }
-    if (map["nameMap"] != null) {
-      Map<String, dynamic> nameMap = map["nameMap"];
-      map["nameMap"] = nameMap.map(_entry);
+    if (map["openChats"] != null) {
+      map["openChats"] = SpaceMessagesResp.fromList(map["openChats"]);
     }
     if (map["lastMsg"] != null) {
       Map<String, dynamic> lastMsg = map["lastMsg"];
@@ -34,7 +35,7 @@ class OrgChatCache {
         map["target"] = MessageItemResp.fromMap(lastMsg["chat"]);
       }
       if (lastMsg["data"] != null) {
-        map["messageDetail"] = MessageDetail.fromMap(lastMsg["data"]);
+        map["messageDetail"] = MessageDetailResp.fromMap(lastMsg["data"]);
       }
     }
     return OrgChatCache._fromMap(map);
@@ -45,6 +46,7 @@ class OrgChatCache {
         name = map["Name"],
         updateTime = map["UpdateTime"],
         chats = map["chats"],
+        openChats = map["openChats"],
         nameMap = map["nameMap"],
         target = map["target"],
         messageDetail = map["messageDetail"];

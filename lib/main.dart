@@ -21,6 +21,6 @@ void main() async {
     }
   });
 
-  // 开启 app, 初始化 EasyLoading
+  // 开启 app
   runApp(const ScreenInit());
 }

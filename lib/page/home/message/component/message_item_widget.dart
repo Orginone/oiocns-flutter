@@ -18,22 +18,15 @@ double defaultAvatarWidth = 50.w;
 
 class MessageItemWidget extends GetView<MessageController> {
   // 用户信息
-  final int spaceId;
-  final int messageItemId;
+  final String spaceId;
+  final String messageItemId;
   final int index;
 
   const MessageItemWidget(this.spaceId, this.messageItemId, this.index,
       {Key? key})
       : super(key: key);
 
-  Widget _avatar() {
-    if (!controller.spaceMap.containsKey(spaceId)) {
-      return Container();
-    }
-
-    SpaceMessagesResp spaceMessageItems = controller.spaceMap[spaceId]!;
-    MessageItemResp messageItem = spaceMessageItems.chats[index];
-
+  Widget _avatar(MessageItemResp messageItem) {
     int notRead = messageItem.noRead ?? 0;
     return Stack(
       children: [
@@ -60,25 +53,19 @@ class MessageItemWidget extends GetView<MessageController> {
     );
   }
 
-  Widget _avatarContainer() {
+  Widget _avatarContainer(MessageItemResp messageItem) {
     return Container(
       alignment: Alignment.center,
       width: defaultAvatarWidth,
       height: defaultAvatarWidth,
-      child: GetBuilder<MessageController>(builder: (controller) => _avatar()),
+      child: GetBuilder<MessageController>(
+        builder: (controller) => _avatar(messageItem),
+      ),
     );
   }
 
-  Widget _content() {
-    if (!controller.spaceMap.containsKey(spaceId)) {
-      return Container();
-    }
-
-    SpaceMessagesResp spaceMessageItems = controller.spaceMap[spaceId]!;
-    MessageItemResp messageItem = spaceMessageItems.chats[index];
-
+  Widget _content(MessageItemResp messageItem) {
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,7 +86,7 @@ class MessageItemWidget extends GetView<MessageController> {
           ],
         ),
         Text(
-          messageItem.msgBody ?? "",
+          messageItem.showText ?? "",
           style: text12Grey,
           overflow: TextOverflow.ellipsis,
         ),
@@ -107,13 +94,13 @@ class MessageItemWidget extends GetView<MessageController> {
     );
   }
 
-  Widget _contentContainer() {
+  Widget _contentContainer(MessageItemResp messageItem) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
         height: defaultAvatarWidth,
         child: GetBuilder<MessageController>(
-          builder: (controller) => _content(),
+          builder: (controller) => _content(messageItem),
         ),
       ),
     );
@@ -121,13 +108,19 @@ class MessageItemWidget extends GetView<MessageController> {
 
   @override
   Widget build(BuildContext context) {
+    var spaceMap = controller.spaceMap;
+    if (!spaceMap.containsKey(spaceId)) {
+      return Container();
+    }
+    SpaceMessagesResp spaceMessageItems = spaceMap[spaceId]!;
+    MessageItemResp messageItem = spaceMessageItems.chats[index];
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
         MessageController messageController = Get.find();
         messageController.currentSpaceId = spaceId;
         messageController.currentMessageItemId = messageItemId;
-        Get.toNamed(Routers.chat);
+        Get.toNamed(Routers.chat, arguments: messageItem);
       },
       child: Container(
         padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
@@ -135,8 +128,8 @@ class MessageItemWidget extends GetView<MessageController> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _avatarContainer(),
-            _contentContainer(),
+            _avatarContainer(messageItem),
+            _contentContainer(messageItem),
           ],
         ),
       ),

@@ -23,7 +23,7 @@ class TargetRelationUtil {
         await TargetRelationManager().execDataTable(querySQL));
   }
 
-  static Future<TargetRelation?> getItem(int spaceId, int itemId) async {
+  static Future<TargetRelation?> getItem(String spaceId, String itemId) async {
     return await TargetRelation()
         .select()
         .activeTargetId

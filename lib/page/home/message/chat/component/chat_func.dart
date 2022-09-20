@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/util/hub_util.dart';
 
 import '../../../../../api_resp/api_resp.dart';
 import '../../../../../config/custom_colors.dart';
-import '../../../../../model/db_model.dart';
 
 class ChatFunc extends StatelessWidget {
-  final MessageDetail messageDetail;
-  final Rx<bool> isWithdraw;
+  final MessageDetailResp messageDetail;
 
-  const ChatFunc(this.messageDetail, this.isWithdraw, {Key? key})
+  const ChatFunc(this.messageDetail, {Key? key})
       : super(key: key);
 
   @override
@@ -27,7 +25,7 @@ class ChatFunc extends StatelessWidget {
           direction: Axis.horizontal,
           children: [
             IconFunc(Icons.keyboard_return, "撤回", () async {
-              var res = await HubUtil().recallMsg(messageDetail.id!);
+              var res = await HubUtil().recallMsg(messageDetail.id);
               var apiResp = ApiResp.fromMap(res);
               if (apiResp.code != 200) {
                 EasyLoading.showError(apiResp.msg);

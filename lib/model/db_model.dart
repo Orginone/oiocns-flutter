@@ -10,8 +10,6 @@ import 'package:orginone/model/target_relation.dart';
 import 'package:sqfentity/sqfentity.dart';
 import 'package:sqfentity_gen/sqfentity_gen.dart';
 
-import 'message_detail.dart';
-
 part 'db_model.g.dart';
 
 const seqIdentity = SqfEntitySequence(
@@ -26,5 +24,4 @@ const dbModel = SqfEntityModel(
       userTable,
       targetRelationTable,
       targetTable,
-      messageDetailTable
     ]);

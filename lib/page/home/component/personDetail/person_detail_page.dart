@@ -90,7 +90,7 @@ class PersonDetailPage extends GetView<PersonDetailController> {
                       messageController.currentSpaceId =
                           homeController.currentSpace.id;
                       messageController.currentMessageItemId =
-                          int.tryParse(controller.personDetail!.id)!;
+                          controller.personDetail!.id;
                       Get.offNamedUntil(
                           Routers.chat,
                           (route) =>
@@ -147,7 +147,8 @@ class PersonDetailPage extends GetView<PersonDetailController> {
                 margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: FloatingActionButton(
                     onPressed: () {
-                      Get.toNamed(Routers.personAdd,arguments: item.personDetail!.id);
+                      Get.toNamed(Routers.personAdd,
+                          arguments: item.personDetail!.id);
                     },
                     tooltip: "添加好友",
                     backgroundColor: Colors.blueAccent,

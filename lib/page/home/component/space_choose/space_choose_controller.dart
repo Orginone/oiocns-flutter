@@ -37,7 +37,6 @@ class SpaceChooseController extends GetxController {
     for (var joinedSpace in joined) {
       TargetResp space = TargetResp.fromMap(joinedSpace);
       spaces.add(space);
-      await space.toTarget().upsert();
     }
 
     // 更新试图
