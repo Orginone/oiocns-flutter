@@ -27,8 +27,6 @@ class MineInfoPage extends GetView<MineInfoController> {
                   child: Row(children: [
                     Expanded(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisSize: MainAxisSize.min,
                         children: [
                           FormItemType2(
                               text: '头像',
@@ -42,9 +40,6 @@ class MineInfoPage extends GetView<MineInfoController> {
                               ),
                               suffixIcon:
                                   const Icon(Icons.keyboard_arrow_right)),
-                          const Divider(
-                            height: 0,
-                          ),
                           FormItemType2(
                             text: '昵称',
                             rightSlot: Text(controller.userInfo.name,
@@ -76,9 +71,6 @@ class MineInfoPage extends GetView<MineInfoController> {
                                 Get.back();
                               });
                             },
-                          ),
-                          const Divider(
-                            height: 0,
                           ),
                           FormItemType2(
                             text: '账号',
@@ -116,9 +108,6 @@ class MineInfoPage extends GetView<MineInfoController> {
                               });
                             },
                           ),
-                          const Divider(
-                            height: 0,
-                          ),
                           FormItemType2(
                             text: '真实姓名',
                             rightSlot: Text(controller.userInfo.team.name,
@@ -152,9 +141,6 @@ class MineInfoPage extends GetView<MineInfoController> {
                                 Get.back();
                               });
                             },
-                          ),
-                          const Divider(
-                            height: 0,
                           ),
                           FormItemType2(
                               text: '手机号',
@@ -197,9 +183,6 @@ class MineInfoPage extends GetView<MineInfoController> {
                                   Get.back();
                                 });
                               }),
-                          const Divider(
-                            height: 0,
-                          ),
                           FormItemType2(
                               text: '座右铭',
                               rightSlot: Expanded(
@@ -211,9 +194,6 @@ class MineInfoPage extends GetView<MineInfoController> {
                               ),
                               suffixIcon:
                                   const Icon(Icons.keyboard_arrow_right)),
-                          const Divider(
-                            height: 0,
-                          ),
                         ],
                       ),
                     ),
