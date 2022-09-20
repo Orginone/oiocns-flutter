@@ -203,10 +203,10 @@ class HubUtil {
       return ans;
     } else {
       checkConn();
-      String funcName = SendEvent.QueryFriendMsg.name;
+      String event = SendEvent.QueryFriendMsg.name;
       String idName = "friendId";
       if (typeName != "人员") {
-        funcName = SendEvent.QueryCohortMsg.name;
+        event = SendEvent.QueryCohortMsg.name;
         idName = "cohortId";
       }
       Map<String, dynamic> params = {
@@ -215,31 +215,34 @@ class HubUtil {
         "offset": offset,
         "spaceId": spaceId
       };
-      Map<String, dynamic> res = await _server.invoke(funcName, args: [params]);
+      Map<String, dynamic> res = await _server.invoke(event, args: [params]);
       var apiResp = ApiResp.fromMap(res);
       Map<String, dynamic> data = apiResp.data;
       if (data["result"] == null) {
         return [];
       }
       List<dynamic> details = data["result"];
-      return details.map((item) => MessageDetailResp.fromMap(item)).toList();
+      return details.reversed.map((item) => MessageDetailResp.fromMap(item)).toList();
     }
   }
 
   Future<dynamic> recallMsg(String id) async {
     checkConn();
-    return await _server.invoke(SendEvent.RecallMsg.name, args: [
-      {
-        "ids": [id]
-      }
-    ]);
+    Map<String, dynamic> params = {
+      "ids": [id]
+    };
+    return await _server.invoke(SendEvent.RecallMsg.name, args: [params]);
   }
 
   Future<List<TargetResp>> getPersons(String id, int limit, int offset) async {
     checkConn();
-    Map params = {"cohortId": id, "limit": limit, "offset": offset};
-    dynamic res =
-        await _server.invoke(SendEvent.GetPersons.name, args: [params]);
+    String event = SendEvent.GetPersons.name;
+    Map<String, dynamic> params = {
+      "cohortId": id,
+      "limit": limit,
+      "offset": offset
+    };
+    dynamic res = await _server.invoke(event, args: [params]);
 
     ApiResp apiResp = ApiResp.fromMap(res);
     var targetList = apiResp.data["result"];
