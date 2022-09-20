@@ -28,7 +28,8 @@ enum SendEvent {
   GetPersons,
   RecallMsg,
   QueryFriendMsg,
-  QueryCohortMsg
+  QueryCohortMsg,
+  GetName
 }
 
 String collName = "chat-message";
@@ -41,18 +42,18 @@ class HubUtil {
   static final HubUtil _instance = HubUtil._();
 
   factory HubUtil() {
-    _instance.state ??= _instance._connServer.state.obs;
+    _instance.state ??= _instance._server.state.obs;
     return _instance;
   }
 
-  final HubConnection _connServer =
+  final HubConnection _server =
       HubConnectionBuilder().withUrl(Constant.hub).build();
   Rx<HubConnectionState?>? state;
 
   final Map<String, void Function(List<dynamic>?)> events = {};
 
   void _initOnReconnecting() {
-    _connServer.onreconnecting((exception) {
+    _server.onreconnecting((exception) {
       setStatus();
       log.info("================== 正在重新连接 HUB  =========================");
       log.info("==> reconnecting");
@@ -63,7 +64,7 @@ class HubUtil {
   }
 
   void _initOnReconnected() {
-    _connServer.onreconnected((id) {
+    _server.onreconnected((id) {
       setStatus();
       log.info("==> reconnected success");
       log.info("================== 重新连接 HUB 成功 =========================");
@@ -82,7 +83,7 @@ class HubUtil {
   }
 
   void _initOnClose() {
-    _connServer.onclose((error) {
+    _server.onclose((error) {
       setStatus();
       _connTimer();
     });
@@ -99,24 +100,39 @@ class HubUtil {
   void _initCallback() {
     for (var element in ReceiveEvent.values) {
       void Function(List<dynamic>?) event = events[element.name]!;
-      _connServer.on(element.name, event);
+      _server.on(element.name, event);
     }
   }
 
   Future<dynamic> _auth(String accessToken) async {
     checkConn();
-    return _connServer.invoke(SendEvent.TokenAuth.name, args: [accessToken]);
+    return _server.invoke(SendEvent.TokenAuth.name, args: [accessToken]);
   }
 
   Future<dynamic> disconnect() async {
-    await _connServer.stop();
+    await _server.stop();
     setStatus();
     log.info("===> 已断开和聊天服务器的连接。");
   }
 
-  Future<dynamic> getChats() async {
+  Future<List<SpaceMessagesResp>> getChats() async {
     checkConn();
-    return await _connServer.invoke(SendEvent.GetChats.name);
+    String key = SendEvent.GetChats.name;
+    Map<String, dynamic> chats = await _server.invoke(key);
+    ApiResp resp = ApiResp.fromMap(chats);
+
+    List<dynamic> groups = resp.data["groups"];
+    List<SpaceMessagesResp> messageGroups =
+        groups.map((item) => SpaceMessagesResp.fromMap(item)).toList();
+    return messageGroups;
+  }
+
+  Future<String> getName(String personId) async {
+    checkConn();
+    String key = SendEvent.GetName.name;
+    Map<String, dynamic> nameRes = await _server.invoke(key, args: [personId]);
+    ApiResp resp = ApiResp.fromMap(nameRes);
+    return resp.data;
   }
 
   Future<dynamic> cacheMsg(String sessionId, MessageDetailResp detail) async {
@@ -199,8 +215,7 @@ class HubUtil {
         "offset": offset,
         "spaceId": spaceId
       };
-      Map<String, dynamic> res =
-          await _connServer.invoke(funcName, args: [params]);
+      Map<String, dynamic> res = await _server.invoke(funcName, args: [params]);
       var apiResp = ApiResp.fromMap(res);
       Map<String, dynamic> data = apiResp.data;
       List<dynamic> details = data["result"];
@@ -210,7 +225,7 @@ class HubUtil {
 
   Future<dynamic> recallMsg(String id) async {
     checkConn();
-    return await _connServer.invoke(SendEvent.RecallMsg.name, args: [
+    return await _server.invoke(SendEvent.RecallMsg.name, args: [
       {
         "ids": [id]
       }
@@ -221,7 +236,7 @@ class HubUtil {
     checkConn();
     Map params = {"cohortId": id, "limit": limit, "offset": offset};
     dynamic res =
-        await _connServer.invoke(SendEvent.GetPersons.name, args: [params]);
+        await _server.invoke(SendEvent.GetPersons.name, args: [params]);
 
     ApiResp apiResp = ApiResp.fromMap(res);
     var targetList = apiResp.data["result"];
@@ -238,7 +253,7 @@ class HubUtil {
   Future<dynamic> tryConn() async {
     log.info("================== 连接 HUB =========================");
 
-    var state = _connServer.state;
+    var state = _server.state;
     switch (state) {
       case HubConnectionState.disconnected:
         log.info("==> connecting");
@@ -251,7 +266,7 @@ class HubUtil {
           _initCallback();
 
           // 开启连接，鉴权
-          await _connServer.start();
+          await _server.start();
           await _auth(HiveUtil().accessToken);
           setStatus();
 
@@ -271,12 +286,12 @@ class HubUtil {
   }
 
   setStatus() {
-    state!.value = _connServer.state;
+    state!.value = _server.state;
   }
 
   // 判断是否处于连接当中
   bool isConn() {
-    return _connServer.state == HubConnectionState.connected;
+    return _server.state == HubConnectionState.connected;
   }
 
   checkConn() {
@@ -290,7 +305,7 @@ class HubUtil {
   // 发送消息
   Future<dynamic> sendMsg(Map<String, dynamic> messageDetail) async {
     checkConn();
-    return await _connServer
+    return await _server
         .invoke(SendEvent.SendMsg.name, args: <Object>[messageDetail]);
   }
 }

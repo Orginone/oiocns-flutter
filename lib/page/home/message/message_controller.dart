@@ -64,13 +64,7 @@ class MessageController extends GetxController {
   @Deprecated("废弃，新会话从缓存中拿")
   Future<dynamic> getCharts() async {
     // 读取聊天群
-    Map<String, dynamic> chats = await HubUtil().getChats();
-    ApiResp apiResp = ApiResp.fromMap(chats);
-
-    // 空间数据处理
-    List<dynamic> groups = apiResp.data["groups"];
-    List<SpaceMessagesResp> messageGroups =
-        groups.map((item) => SpaceMessagesResp.fromMap(item)).toList();
+    List<SpaceMessagesResp> messageGroups = await HubUtil().getChats();
     _spaceHandling(messageGroups);
 
     // 空间排序
@@ -80,8 +74,9 @@ class MessageController extends GetxController {
     // 更新视图
     update();
 
+    // 缓存消息
     orgChatCache.chats = messageGroups;
-    HubUtil().cacheChats(orgChatCache);
+    await HubUtil().cacheChats(orgChatCache);
   }
 
   /// 空间处理
@@ -127,17 +122,6 @@ class MessageController extends GetxController {
     orgChatCache = OrgChatCache(data);
     _spaceHandling(orgChatCache.chats);
     update();
-  }
-
-  /// 打开一个群组就阅读所有消息
-  Future<void> messageItemRead() async {
-    if (spaceMessageItemMap.containsKey(currentSpaceId)) {
-      Map<String, MessageItemResp> map = spaceMessageItemMap[currentSpaceId]!;
-      if (map.containsKey(currentMessageItemId)) {
-        MessageItemResp messageItem = map[currentMessageItemId]!;
-        messageItem.noRead = 0;
-      }
-    }
   }
 
   /// 接受消息

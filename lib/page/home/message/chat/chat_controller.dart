@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
+import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/page/home/home_controller.dart';
+import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/hub_util.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../../api_resp/message_item_resp.dart';
 import '../../../../api_resp/target_resp.dart';
@@ -57,11 +57,6 @@ class ChatController extends GetxController {
     await getPersons();
     await getPageData();
 
-    // 更新页面后，跳转到页面底部
-    messageScrollController.addListener(() {
-      var maxPosition = messageScrollController.position.maxScrollExtent;
-      if (messageScrollController.offset >= maxPosition) {}
-    });
     toBottom();
     update();
   }
@@ -71,9 +66,11 @@ class ChatController extends GetxController {
     try {
       if (messageDetail.msgType == "recall") {
         for (var oldDetail in messageDetails) {
-          // if (oldDetail.id == ){
-          //
-          // }
+          if (oldDetail.id == messageDetail.id) {
+            oldDetail.msgBody = messageDetail.msgBody;
+            oldDetail.msgType = messageDetail.msgType;
+            oldDetail.createTime = messageDetail.createTime;
+          }
         }
       } else {
         messageDetails.add(messageDetail);
@@ -88,14 +85,25 @@ class ChatController extends GetxController {
 
   /// 查询群成员信息
   Future<void> getPersons() async {
+    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    String spaceId = messageItem.spaceId ?? userInfo.id;
+    String itemId = messageItem.id;
+    messageController.spaceMessageItemMap[spaceId]?[itemId]?.noRead = 0;
+
+    OrgChatCache orgChatCache = messageController.orgChatCache;
     if (messageItem.typeName == "人员") {
+      if (!orgChatCache.nameMap.containsKey(itemId)) {
+        var name = await HubUtil().getName(itemId);
+        orgChatCache.nameMap[itemId] = name;
+      }
+      await HubUtil().cacheChats(orgChatCache);
       return;
     }
     int offset = 0;
     int limit = 100;
-    String id = messageItem.id;
     while (true) {
-      List<TargetResp> persons = await HubUtil().getPersons(id, limit, offset);
+      List<TargetResp> persons =
+          await HubUtil().getPersons(itemId, limit, offset);
       personList.addAll(persons);
       if (persons.isEmpty) {
         break;
@@ -105,12 +113,11 @@ class ChatController extends GetxController {
         person.name = person.team.name;
         var typeName = person.typeName;
         typeName = typeName == "人员" ? "" : "[$typeName]";
-        messageController.orgChatCache.nameMap[person.id] =
-            "${person.name}$typeName";
+        orgChatCache.nameMap[person.id] = "${person.name}$typeName";
       }
       offset += limit;
     }
-    await HubUtil().cacheChats(messageController.orgChatCache);
+    await HubUtil().cacheChats(orgChatCache);
   }
 
   /// 下拉时刷新旧的聊天记录
@@ -120,8 +127,8 @@ class ChatController extends GetxController {
     String typeName = messageItem.typeName;
 
     List<MessageDetailResp> newDetails = await HubUtil()
-        .getHistoryMsg(spaceId, sessionId, typeName, messageDetails.length, 30);
-    messageDetails.addAll(newDetails);
+        .getHistoryMsg(spaceId, sessionId, typeName, messageDetails.length, 15);
+    messageDetails.insertAll(0, newDetails);
   }
 
   // 发送消息至聊天页面
@@ -153,7 +160,9 @@ class ChatController extends GetxController {
 
   // 滚动到页面底部
   void toBottom() {
-    messageScrollController
-        .jumpTo(messageScrollController.position.maxScrollExtent);
+    WidgetsBinding.instance.addPostFrameCallback((mag) {
+      messageScrollController
+          .jumpTo(messageScrollController.position.maxScrollExtent);
+    });
   }
 }

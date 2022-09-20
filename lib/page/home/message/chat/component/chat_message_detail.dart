@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
-import 'package:orginone/api_resp/message_item_resp.dart';
+import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/component/text_avatar.dart';
+import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/chat/component/chat_func.dart';
 import 'package:orginone/page/home/message/chat/component/text_message.dart';
 import 'package:orginone/util/hive_util.dart';
@@ -14,27 +15,26 @@ import '../../../../../component/unified_edge_insets.dart';
 import '../../../../../component/unified_text_style.dart';
 import '../../../../../enumeration/enum_map.dart';
 import '../../../../../enumeration/message_type.dart';
-import '../../../../../model/db_model.dart';
 
 enum Direction { leftStart, rightStart }
 
-class ChatMessageDetail extends StatelessWidget {
+class ChatMessageDetail extends GetView<ChatController> {
   final Logger log = Logger("ChatMessageDetail");
 
-  final MessageItemResp messageItem;
+  final String sessionId;
   final MessageDetailResp messageDetail;
-  final TargetResp? target;
   final bool isMy;
   final bool isMultiple;
 
-  ChatMessageDetail(this.messageItem, this.messageDetail, this.target,
+  ChatMessageDetail(this.sessionId, this.messageDetail, this.isMy,
+      this.isMultiple,
       {Key? key})
-      : isMy = messageDetail.fromId ==
-            (HiveUtil().getValue(Keys.userInfo) as TargetResp).id,
-        isMultiple = messageItem.typeName != "人员",
-        super(key: key);
+      : super(key: key);
 
-  get targetName => target?.name ?? "";
+  String targetName() {
+    OrgChatCache orgChatCache = controller.messageController.orgChatCache;
+    return orgChatCache.nameMap[sessionId] ?? "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class ChatMessageDetail extends StatelessWidget {
     bool isRecall = false;
     if (messageDetail.msgType == "recall") {
       isRecall = true;
-      String msgBody = "$targetName：撤回了一条信息";
+      String msgBody = "${targetName()}：撤回了一条信息";
       children.add(Text(msgBody, style: text12Grey));
     } else {
       children.add(_getAvatar());
@@ -59,7 +59,7 @@ class ChatMessageDetail extends StatelessWidget {
       child: Row(
         textDirection: isMy ? TextDirection.rtl : TextDirection.ltr,
         mainAxisAlignment:
-            isRecall ? MainAxisAlignment.center : MainAxisAlignment.start,
+        isRecall ? MainAxisAlignment.center : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: children,
       ),
@@ -68,7 +68,7 @@ class ChatMessageDetail extends StatelessWidget {
 
   Widget _getAvatar() {
     return TextAvatar(
-      avatarName: targetName,
+      avatarName: targetName(),
       type: TextAvatarType.chat,
       textStyle: text12White,
     );
@@ -78,7 +78,7 @@ class ChatMessageDetail extends StatelessWidget {
     List<Widget> content = <Widget>[];
 
     if (isMultiple && !isMy) {
-      content.add(Text(targetName));
+      content.add(Text(targetName()));
     }
 
     // 添加长按手势

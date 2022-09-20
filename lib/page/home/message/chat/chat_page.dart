@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
@@ -10,11 +9,11 @@ import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/chat/component/chat_box.dart';
 import 'package:orginone/util/date_util.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../../../api_resp/message_item_resp.dart';
 import '../../../../component/unified_edge_insets.dart';
 import '../../../../routers.dart';
+import '../../../../util/hive_util.dart';
 import '../../../../util/widget_util.dart';
 import 'component/chat_message_detail.dart';
 
@@ -60,10 +59,13 @@ class ChatPage extends GetView<ChatController> {
   Widget _chatItem(int index) {
     MessageItemResp messageItem = controller.messageItem;
     MessageDetailResp messageDetail = controller.messageDetails[index];
-    TargetResp? person = controller.personMap[messageDetail.fromId];
+
+    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    bool isMy = messageDetail.fromId == userInfo.id;
+    bool isMultiple = messageItem.typeName != "人员";
 
     Widget currentWidget =
-        ChatMessageDetail(messageItem, messageDetail, person);
+        ChatMessageDetail(messageItem.id, messageDetail, isMy, isMultiple);
 
     var time = _time(messageDetail.createTime);
     var item = Column(children: [time, currentWidget]);
@@ -88,6 +90,7 @@ class ChatPage extends GetView<ChatController> {
             child: RefreshIndicator(
               onRefresh: () async {
                 await controller.getPageData();
+                controller.update();
               },
               child: Container(
                 padding: lr10,
