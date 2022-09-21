@@ -117,6 +117,7 @@ class AnyStoreUtil {
     _subscribingTimerLock = true;
     Duration duration = const Duration(seconds: 10);
     Timer.periodic(duration, (timer) async {
+      log.info("=====> 尝试重新订阅中");
       await subscribing(key, domain, callback);
       if (isConn()) {
         timer.cancel();

@@ -31,6 +31,7 @@ class ChatController extends GetxController {
 
   // 当前群所有人
   late Map<String, TargetResp> personMap;
+  late Map<String, String> personNameMap;
   late List<TargetResp> personList;
 
   // 观测对象
@@ -52,14 +53,17 @@ class ChatController extends GetxController {
 
     // 清空所有聊天记录
     messageDetails = [];
+    personNameMap = {};
     personMap = {};
     personList = [];
 
     // 初始化老数据个数，查询聊天记录的个数
     await getPersons();
     await getHistoryMsg();
+    update();
 
-    updateAndToBottom();
+    // 处理缓存
+    orgChatHandler();
   }
 
   // 消息接收函數
@@ -83,24 +87,39 @@ class ChatController extends GetxController {
         }
       }
     } else {
-      messageDetails.insert(0, detail);
+      int has = messageDetails.where((item) => item.id == detail.id).length;
+      if (has == 0) {
+        messageDetails.insert(0, detail);
+      }
     }
     updateAndToBottom();
     return true;
   }
 
-  /// 查询群成员信息
-  Future<void> getPersons() async {
-    messageController.spaceMessageItemMap[spaceId]?[messageItemId]?.noRead = 0;
+  void orgChatHandler() {
 
+    // 过滤掉自己的再加入
     OrgChatCache orgChatCache = messageController.orgChatCache;
+    orgChatCache.openChats = orgChatCache.openChats
+        .where((item) => item.id != messageItemId || item.spaceId != spaceId)
+        .toList();
+
+    // 加入所有人员群缓存
+    orgChatCache.nameMap.addAll(personNameMap);
+
+    // 加入自己
+    messageItem.noRead = 0;
+    orgChatCache.openChats.add(messageItem);
+
+    HubUtil().cacheChats(messageController.orgChatCache);
+  }
+
+  /// 查询群成员信息
+  Future<Map<String, String>> getPersons() async {
     if (messageItem.typeName == "人员") {
-      if (!orgChatCache.nameMap.containsKey(messageItemId)) {
-        var name = await HubUtil().getName(messageItemId);
-        orgChatCache.nameMap[messageItemId] = name;
-        await HubUtil().cacheChats(orgChatCache);
-      }
-      return;
+      var name = await HubUtil().getName(messageItemId);
+      personNameMap[messageItemId] = name;
+      return personNameMap;
     }
     int offset = 0;
     int limit = 100;
@@ -113,17 +132,16 @@ class ChatController extends GetxController {
       }
       for (var person in persons) {
         personMap[person.id] = person;
-        person.name = person.team.name;
         var typeName = person.typeName;
         typeName = typeName == "人员" ? "" : "[$typeName]";
-        orgChatCache.nameMap[person.id] = "${person.name}$typeName";
+        personNameMap[person.id] = "${person.team.name}$typeName";
       }
       offset += limit;
       if (persons.length < limit) {
         break;
       }
     }
-    await HubUtil().cacheChats(orgChatCache);
+    return personNameMap;
   }
 
   /// 下拉时刷新旧的聊天记录
@@ -166,7 +184,8 @@ class ChatController extends GetxController {
 
   // 滚动到页面底部
   void updateAndToBottom() {
-    if (messageScrollController.offset != 0) {
+    if (messageScrollController.positions.isNotEmpty &&
+        messageScrollController.offset != 0) {
       messageScrollKey.value = uuid.v4();
     }
     update();

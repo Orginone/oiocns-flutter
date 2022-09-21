@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:common_utils/common_utils.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
@@ -11,10 +10,11 @@ import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/util/any_store_util.dart';
 import 'package:signalr_core/signalr_core.dart';
 
+import '../api/constant.dart';
 import '../api_resp/api_resp.dart';
 import '../api_resp/message_detail_resp.dart';
+import '../api_resp/message_item_resp.dart';
 import '../api_resp/target_resp.dart';
-import '../api/constant.dart';
 import '../page/home/message/message_controller.dart';
 import 'errors.dart';
 import 'hive_util.dart';
@@ -174,7 +174,7 @@ class HubUtil {
         "name": "我的消息",
         "chats": SpaceMessagesResp.toJsonList(orgChatCache.chats),
         "nameMap": orgChatCache.nameMap,
-        "openChats": SpaceMessagesResp.toJsonList(orgChatCache.openChats),
+        "openChats": MessageItemResp.toJsonList(orgChatCache.openChats),
         "lastMsg": {
           "chat": orgChatCache.target?.toJson(),
           "data": orgChatCache.messageDetail?.toJson()

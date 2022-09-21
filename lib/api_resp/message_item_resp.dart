@@ -33,7 +33,7 @@ class MessageItemResp {
       return [];
     }
     List<MessageItemResp> ans = [];
-    for (dynamic item in data) {
+    for (Map<String, dynamic> item in data) {
       MessageItemResp chatResp = MessageItemResp.fromMap(item);
       ans.add(chatResp);
     }

@@ -73,9 +73,7 @@ class ChatPage extends GetView<ChatController> {
 
     var time = _time(messageDetail.createTime);
     var item = Column(children: [currentWidget]);
-    if (index == 0) {
-      return item;
-    } else if (index == controller.messageDetails.length - 1) {
+    if (index == controller.messageDetails.length - 1) {
       item.children.insert(0, time);
       return item;
     } else {

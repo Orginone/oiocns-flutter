@@ -10,7 +10,7 @@ class OrgChatCache {
   DateTime? updateTime;
   List<SpaceMessagesResp> chats;
   Map<String, dynamic> nameMap;
-  List<SpaceMessagesResp> openChats;
+  List<MessageItemResp> openChats;
   MessageItemResp? target;
   MessageDetailResp? messageDetail;
 
@@ -27,7 +27,7 @@ class OrgChatCache {
       map["chats"] = SpaceMessagesResp.fromList(map["chats"]);
     }
     if (map["openChats"] != null) {
-      map["openChats"] = SpaceMessagesResp.fromList(map["openChats"]);
+      map["openChats"] = MessageItemResp.fromList(map["openChats"]);
     }
     if (map["lastMsg"] != null) {
       Map<String, dynamic> lastMsg = map["lastMsg"];
