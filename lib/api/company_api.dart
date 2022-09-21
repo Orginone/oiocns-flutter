@@ -21,10 +21,15 @@ class CompanyApi {
     return pageResp.result;
   }
 
-  static Future<void> quitCompanys(String id) async {
+  static Future<void> quitCompany(String id) async {
     String url = "${Constant.company}/exit";
     Map<String, dynamic> data = {"id": id};
     await HttpUtil().post(url, data: data);
+  }
+
+  static Future<void> createCompany(dynamic postData) async {
+    String url = "${Constant.company}/create";
+    await HttpUtil().post(url, data: postData);
   }
 
   static Future<TargetResp> queryInfo() async {

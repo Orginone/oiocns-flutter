@@ -28,61 +28,51 @@ class UnitDetailPage extends GetView<UnitDetailController> {
                   children: [
                     Container(
                       color: const Color.fromRGBO(255, 255, 255, 1),
-                      child: Row(children: [
-                        Expanded(
-                          child: Column(
-                            children: [
-                              FormItemType2(
-                                text: '单位名称',
-                                rightSlot: Text(controller.unit?.team.name ?? '',
-                                    style: const TextStyle(
-                                        color: Color.fromRGBO(
-                                            130, 130, 130, 1))),
-                              ),
-                              FormItemType2(
-                                text: '单位简称',
-                                rightSlot: Text(controller.unit?.name ?? '',
-                                    style: const TextStyle(
-                                        color: Color.fromRGBO(
-                                            130, 130, 130, 1))),
-                              ),
-                              FormItemType2(
-                                text: '设立人',
-                                rightSlot: Text(controller.unit?.createUser ?? '',
-                                    style: const TextStyle(
-                                        color: Color.fromRGBO(
-                                            130, 130, 130, 1))),
-                              ),
-                              FormItemType2(
-                                text: '创建时间',
-                                rightSlot: Text(controller.unit?.createTime.toString() ?? '',
-                                    style: const TextStyle(
-                                        color: Color.fromRGBO(
-                                            130, 130, 130, 1))),
-                              ),
-                              FormItemType2(
-                                text: '统一社会信用代码',
-                                rightSlot: Text(controller.unit?.code ?? '',
-                                    style: const TextStyle(
-                                        color: Color.fromRGBO(
-                                            130, 130, 130, 1))),
-                              ),
-                              FormItemType2(
-                                  text: '单位简介',
-                                  rightSlot: Expanded(
-                                    child: Text(
-                                        controller.unit?.team.remark ?? '',
-                                        textAlign: TextAlign.right,
-                                        style: const TextStyle(
-                                            color: Color.fromRGBO(
-                                                130, 130, 130, 1),
-                                            overflow: TextOverflow.ellipsis)),
-                                  ),
-                              )
-                            ],
+                      child: Column(
+                        children: [
+                          FormItemType2(
+                            text: '单位名称',
+                            rightSlot: Text(controller.unit?.team.name ?? '',
+                                style: const TextStyle(
+                                    color: Color.fromRGBO(130, 130, 130, 1))),
                           ),
-                        ),
-                      ]),
+                          FormItemType2(
+                            text: '单位简称',
+                            rightSlot: Text(controller.unit?.name ?? '',
+                                style: const TextStyle(
+                                    color: Color.fromRGBO(130, 130, 130, 1))),
+                          ),
+                          FormItemType2(
+                            text: '设立人',
+                            rightSlot: Text(controller.unit?.createUser ?? '',
+                                style: const TextStyle(
+                                    color: Color.fromRGBO(130, 130, 130, 1))),
+                          ),
+                          FormItemType2(
+                            text: '创建时间',
+                            rightSlot: Text(
+                                controller.unit?.createTime.toString() ?? '',
+                                style: const TextStyle(
+                                    color: Color.fromRGBO(130, 130, 130, 1))),
+                          ),
+                          FormItemType2(
+                            text: '统一社会信用代码',
+                            rightSlot: Text(controller.unit?.code ?? '',
+                                style: const TextStyle(
+                                    color: Color.fromRGBO(130, 130, 130, 1))),
+                          ),
+                          FormItemType2(
+                            text: '单位简介',
+                            rightSlot: Expanded(
+                              child: Text(controller.unit?.team.remark ?? '',
+                                  textAlign: TextAlign.right,
+                                  style: const TextStyle(
+                                      color: Color.fromRGBO(130, 130, 130, 1),
+                                      overflow: TextOverflow.ellipsis)),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                     Container(
                       padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
@@ -90,7 +80,8 @@ class UnitDetailPage extends GetView<UnitDetailController> {
                         children: [
                           GFButton(
                               onPressed: () async {
-                                await CompanyApi.quitCompanys(controller.unit!.id);
+                                await CompanyApi.quitCompany(
+                                    controller.unit!.id);
                                 Get.offNamed(Routers.unitDetail);
                               },
                               color: Colors.red,
@@ -100,7 +91,6 @@ class UnitDetailPage extends GetView<UnitDetailController> {
                       ),
                     )
                   ],
-                ))
-        ));
+                ))));
   }
 }

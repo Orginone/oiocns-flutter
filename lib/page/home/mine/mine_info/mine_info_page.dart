@@ -26,37 +26,35 @@ class MineInfoPage extends GetView<MineInfoController> {
                     children: [
                       Container(
                         color: const Color.fromRGBO(255, 255, 255, 1),
-                        child: Row(children: [
-                          Expanded(
-                            child: Column(
-                              children: [
-                                FormItemType2(
-                                    text: '头像',
-                                    rightSlot: CircleAvatar(
-                                      foregroundImage: const NetworkImage(
-                                          'https://www.vcg.com/creative/1382429598'),
-                                      backgroundImage: const AssetImage(
-                                          'images/person-empty.png'),
-                                      onForegroundImageError:
-                                          (error, stackTrace) {},
-                                      radius: 15,
-                                    ),
-                                    suffixIcon:
-                                        const Icon(Icons.keyboard_arrow_right)),
-                                FormItemType2(
-                                  text: '昵称',
-                                  rightSlot: Text(controller.userInfo.name,
-                                      style: const TextStyle(
-                                          color: Color.fromRGBO(
-                                              130, 130, 130, 1))),
-                                  suffixIcon:
-                                      const Icon(Icons.keyboard_arrow_right),
-                                  callback1: () async {
-                                    controller.showFormDialogWidget(context,
-                                        controller.nickNameTextController,
-                                        title: '昵称修改',
-                                        text: controller.userInfo.name,
-                                        validator: (value) {
+                        child: Column(
+                          children: [
+                            FormItemType2(
+                                text: '头像',
+                                rightSlot: CircleAvatar(
+                                  foregroundImage: const NetworkImage(
+                                      'https://www.vcg.com/creative/1382429598'),
+                                  backgroundImage: const AssetImage(
+                                      'images/person-empty.png'),
+                                  onForegroundImageError:
+                                      (error, stackTrace) {},
+                                  radius: 15,
+                                ),
+                                suffixIcon:
+                                const Icon(Icons.keyboard_arrow_right)),
+                            FormItemType2(
+                              text: '昵称',
+                              rightSlot: Text(controller.userInfo.name,
+                                  style: const TextStyle(
+                                      color: Color.fromRGBO(
+                                          130, 130, 130, 1))),
+                              suffixIcon:
+                              const Icon(Icons.keyboard_arrow_right),
+                              callback1: () async {
+                                controller.showFormDialogWidget(context,
+                                    controller.nickNameTextController,
+                                    title: '昵称修改',
+                                    text: controller.userInfo.name,
+                                    validator: (value) {
                                       if (TextUtil.isEmpty(value)) {
                                         return '请输入昵称';
                                       }
@@ -68,40 +66,40 @@ class MineInfoPage extends GetView<MineInfoController> {
                                         "name": controller
                                             .nickNameTextController.text,
                                         "teamAuthId":
-                                            controller.userInfo.team.id,
+                                        controller.userInfo.team.id,
                                         "teamCode":
-                                            controller.userInfo.team.code,
+                                        controller.userInfo.team.code,
                                         "teamName":
-                                            controller.userInfo.team.name,
+                                        controller.userInfo.team.name,
                                         "teamRemark":
-                                            controller.userInfo.team.remark,
+                                        controller.userInfo.team.remark,
                                         "thingId": controller.userInfo.thingId,
                                       });
                                       controller.nickNameTextController.clear();
                                       Get.back();
                                     });
-                                  },
-                                ),
-                                FormItemType2(
-                                  text: '账号',
-                                  rightSlot: Text(controller.userInfo.code,
-                                      style: const TextStyle(
-                                          color: Color.fromRGBO(
-                                              130, 130, 130, 1))),
-                                  suffixIcon:
-                                      const Icon(Icons.keyboard_arrow_right),
-                                  callback1: () async {
-                                    controller.showFormDialogWidget(context,
-                                        controller.accountTextController,
-                                        title: '账号修改',
-                                        text: controller.userInfo.code,
-                                        validator: (value) {
+                              },
+                            ),
+                            FormItemType2(
+                              text: '账号',
+                              rightSlot: Text(controller.userInfo.code,
+                                  style: const TextStyle(
+                                      color: Color.fromRGBO(
+                                          130, 130, 130, 1))),
+                              suffixIcon:
+                              const Icon(Icons.keyboard_arrow_right),
+                              callback1: () async {
+                                controller.showFormDialogWidget(context,
+                                    controller.accountTextController,
+                                    title: '账号修改',
+                                    text: controller.userInfo.code,
+                                    validator: (value) {
                                       if (TextUtil.isEmpty(value)) {
                                         return '请输入账号';
                                       }
                                       //账号正则，4到16位（字母，数字，下划线，减号）
                                       RegExp exp =
-                                          RegExp(r"^[a-zA-Z0-9_-]{4,16}$");
+                                      RegExp(r"^[a-zA-Z0-9_-]{4,16}$");
                                       if (!exp.hasMatch(value)) {
                                         return '账号格式错误';
                                       }
@@ -113,76 +111,76 @@ class MineInfoPage extends GetView<MineInfoController> {
                                         "id": controller.userInfo.id,
                                         "name": controller.userInfo.name,
                                         "teamAuthId":
-                                            controller.userInfo.team.id,
+                                        controller.userInfo.team.id,
                                         "teamCode":
-                                            controller.userInfo.team.code,
+                                        controller.userInfo.team.code,
                                         "teamName":
-                                            controller.userInfo.team.name,
+                                        controller.userInfo.team.name,
                                         "teamRemark":
-                                            controller.userInfo.team.remark,
+                                        controller.userInfo.team.remark,
                                         "thingId": controller.userInfo.thingId,
                                       });
                                       controller.accountTextController.clear();
                                       Get.back();
                                     });
-                                  },
-                                ),
-                                FormItemType2(
-                                  text: '真实姓名',
-                                  rightSlot: Text(controller.userInfo.team.name,
-                                      style: const TextStyle(
-                                          color:
-                                              Color.fromRGBO(130, 130, 130, 1),
-                                          overflow: TextOverflow.ellipsis)),
-                                  suffixIcon:
-                                      const Icon(Icons.keyboard_arrow_right),
-                                  callback1: () async {
-                                    controller.showFormDialogWidget(
-                                        context, controller.nameTextController,
-                                        title: '真实姓名修改',
-                                        text: controller.userInfo.team.name,
-                                        validator: (value) {
+                              },
+                            ),
+                            FormItemType2(
+                              text: '真实姓名',
+                              rightSlot: Text(controller.userInfo.team.name,
+                                  style: const TextStyle(
+                                      color:
+                                      Color.fromRGBO(130, 130, 130, 1),
+                                      overflow: TextOverflow.ellipsis)),
+                              suffixIcon:
+                              const Icon(Icons.keyboard_arrow_right),
+                              callback1: () async {
+                                controller.showFormDialogWidget(
+                                    context, controller.nameTextController,
+                                    title: '真实姓名修改',
+                                    text: controller.userInfo.team.name,
+                                    validator: (value) {
                                       if (TextUtil.isEmpty(value)) {
                                         return '请输入真实姓名';
                                       }
                                       return null;
                                     }, callback: () {
-                                      controller.updateUser({
-                                        "code": controller.userInfo.code,
-                                        "id": controller.userInfo.id,
-                                        "name": controller.userInfo.name,
-                                        "teamAuthId":
-                                            controller.userInfo.team.id,
-                                        "teamCode":
-                                            controller.userInfo.team.code,
-                                        "teamName":
-                                            controller.nameTextController.text,
-                                        "teamRemark":
-                                            controller.userInfo.team.remark,
-                                        "thingId": controller.userInfo.thingId,
-                                      });
-                                      controller.nameTextController.clear();
-                                      Get.back();
-                                    });
-                                  },
-                                ),
-                                FormItemType2(
-                                    text: '手机号',
-                                    rightSlot: Text(
-                                        controller.userInfo.team.code,
-                                        style: const TextStyle(
-                                            color: Color.fromRGBO(
-                                                130, 130, 130, 1),
-                                            overflow: TextOverflow.ellipsis)),
-                                    suffixIcon:
-                                        const Icon(Icons.keyboard_arrow_right),
-                                    callback1: () async {
-                                      controller.showFormDialogWidget(context,
-                                          controller.phoneTextController,
-                                          keyboardType: TextInputType.number,
-                                          title: '手机号修改',
-                                          text: controller.userInfo.team.code,
-                                          validator: (value) {
+                                  controller.updateUser({
+                                    "code": controller.userInfo.code,
+                                    "id": controller.userInfo.id,
+                                    "name": controller.userInfo.name,
+                                    "teamAuthId":
+                                    controller.userInfo.team.id,
+                                    "teamCode":
+                                    controller.userInfo.team.code,
+                                    "teamName":
+                                    controller.nameTextController.text,
+                                    "teamRemark":
+                                    controller.userInfo.team.remark,
+                                    "thingId": controller.userInfo.thingId,
+                                  });
+                                  controller.nameTextController.clear();
+                                  Get.back();
+                                });
+                              },
+                            ),
+                            FormItemType2(
+                                text: '手机号',
+                                rightSlot: Text(
+                                    controller.userInfo.team.code,
+                                    style: const TextStyle(
+                                        color: Color.fromRGBO(
+                                            130, 130, 130, 1),
+                                        overflow: TextOverflow.ellipsis)),
+                                suffixIcon:
+                                const Icon(Icons.keyboard_arrow_right),
+                                callback1: () async {
+                                  controller.showFormDialogWidget(context,
+                                      controller.phoneTextController,
+                                      keyboardType: TextInputType.number,
+                                      title: '手机号修改',
+                                      text: controller.userInfo.team.code,
+                                      validator: (value) {
                                         if (TextUtil.isEmpty(value)) {
                                           return '请输入手机号';
                                         }
@@ -200,37 +198,35 @@ class MineInfoPage extends GetView<MineInfoController> {
                                           "id": controller.userInfo.id,
                                           "name": controller.userInfo.name,
                                           "teamAuthId":
-                                              controller.userInfo.team.id,
+                                          controller.userInfo.team.id,
                                           "teamCode":
-                                              controller.userInfo.team.code,
+                                          controller.userInfo.team.code,
                                           "teamName":
-                                              controller.userInfo.team.name,
+                                          controller.userInfo.team.name,
                                           "teamRemark":
-                                              controller.userInfo.team.remark,
+                                          controller.userInfo.team.remark,
                                           "thingId":
-                                              controller.userInfo.thingId,
+                                          controller.userInfo.thingId,
                                         });
                                         controller.phoneTextController.clear();
                                         Get.back();
                                       });
-                                    }),
-                                FormItemType2(
-                                    text: '座右铭',
-                                    rightSlot: Expanded(
-                                      child: Text(
-                                          controller.userInfo.team.remark,
-                                          textAlign: TextAlign.right,
-                                          style: const TextStyle(
-                                              color: Color.fromRGBO(
-                                                  130, 130, 130, 1),
-                                              overflow: TextOverflow.ellipsis)),
-                                    ),
-                                    suffixIcon:
-                                        const Icon(Icons.keyboard_arrow_right)),
-                              ],
-                            ),
-                          ),
-                        ]),
+                                }),
+                            FormItemType2(
+                                text: '座右铭',
+                                rightSlot: Expanded(
+                                  child: Text(
+                                      controller.userInfo.team.remark,
+                                      textAlign: TextAlign.right,
+                                      style: const TextStyle(
+                                          color: Color.fromRGBO(
+                                              130, 130, 130, 1),
+                                          overflow: TextOverflow.ellipsis)),
+                                ),
+                                suffixIcon:
+                                const Icon(Icons.keyboard_arrow_right)),
+                          ],
+                        ),
                       ),
                       Container(
                         padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),

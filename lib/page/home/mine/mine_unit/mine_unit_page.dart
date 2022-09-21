@@ -19,6 +19,40 @@ class MineUnitPage extends GetView<MineUnitController> {
             appBarTitle: Text("我的单位", style: text16),
             appBarLeading: WidgetUtil.defaultBackBtn,
             bgColor: const Color.fromRGBO(240, 240, 240, 1),
+            floatingButton: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                  margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: FloatingActionButton(
+                      heroTag: 'one',
+                      onPressed: () async {
+                        Get.toNamed(Routers.unitCreate);
+                      },
+                      tooltip: "创建单位",
+                      backgroundColor: Colors.blueAccent,
+                      splashColor: Colors.white,
+                      elevation: 0.0,
+                      highlightElevation: 25.0,
+                      child: const Icon(Icons.add,
+                          size: 30, color: Colors.white)),
+                ),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(10, 0, 5, 0),
+                  child: FloatingActionButton(
+                      onPressed: () {
+                      },
+                      tooltip: "加入单位",
+                      backgroundColor: Colors.blueAccent,
+                      splashColor: Colors.white,
+                      elevation: 0.0,
+                      highlightElevation: 25.0,
+                      // Text('添加好友',style:TextStyle(fontSize: 10)),
+                      child: const Icon(Icons.person_add,
+                          size: 30, color: Colors.white)),
+                )
+              ],
+            ),
             body: Container(
               margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
               child: ListView.builder(
