@@ -53,7 +53,7 @@ class GroupItemWidget extends GetView<MessageController> {
             List<MessageItemResp> messageItems = spaceMessages.chats;
 
             if (!isExpand) {
-              return Container();
+              messageItems = messageItems.where((item) => item.noRead != 0).toList();
             }
             return ListView.builder(
               shrinkWrap: true,

@@ -36,6 +36,8 @@ class AnyStoreUtil {
       HubConnectionBuilder().withUrl(Constant.anyStore).build();
   Rx<HubConnectionState?>? state;
   Map<String, Function> subscriptionMap = {};
+  bool _connTimerLock = false;
+  bool _subscribingTimerLock = false;
 
   final Map<String, void Function(List<dynamic>?)> events = {};
 
@@ -92,23 +94,33 @@ class AnyStoreUtil {
   }
 
   void _connTimer() {
+    if (_connTimerLock){
+      return;
+    }
+    _connTimerLock = true;
     Duration duration = const Duration(seconds: 30);
     Timer.periodic(duration, (timer) async {
       await tryConn();
       setState();
       if (isConn()) {
         timer.cancel();
+        _connTimerLock = false;
       }
     });
   }
 
   void _subscribingTimer(
       SubscriptionKey key, String domain, Function callback) {
+    if (_subscribingTimerLock){
+      return;
+    }
+    _subscribingTimerLock = true;
     Duration duration = const Duration(seconds: 10);
     Timer.periodic(duration, (timer) async {
       await subscribing(key, domain, callback);
       if (isConn()) {
         timer.cancel();
+        _subscribingTimerLock = false;
       }
     });
   }

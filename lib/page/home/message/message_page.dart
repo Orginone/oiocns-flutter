@@ -11,7 +11,7 @@ class MessagePage extends GetView<MessageController> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
         onRefresh: () async {
-          await controller.getCharts();
+          // await controller.getCharts();
         },
         child: GetBuilder<MessageController>(
             init: controller,
