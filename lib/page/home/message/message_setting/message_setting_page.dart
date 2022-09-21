@@ -2,24 +2,20 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/config/custom_colors.dart';
 import 'package:orginone/routers.dart';
+import '../../../../util/widget_util.dart';
 import 'message_setting_controller.dart';
 
 class MessageSettingPage extends GetView<MessageSettingController> {
   const MessageSettingPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: GFAppBar(
-          leading: GFIconButton(
-            color: Colors.white,
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => Get.back(),
-            type: GFButtonType.transparent,
-          ),
-          title: const Text("会话设置"),
-        ),
+    return UnifiedScaffold(
+        appBarLeading: WidgetUtil.defaultBackBtn,
+        appBarTitle: const Text("会话设置"),
         body: Obx(() {
           List<Widget> widgetList = [
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -102,7 +98,8 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                         behavior: HitTestBehavior.translucent,
                         onTap: () {
                           Get.toNamed(Routers.personDetail,
-                              arguments: controller.filterPersonList[index].name);
+                              arguments:
+                                  controller.filterPersonList[index].name);
                         },
                         child: Container(
                           width: 50,
@@ -112,7 +109,8 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                             children: [
                               FadeInImage.assetNetwork(
                                 placeholder: 'images/person-empty.png',
-                                image: 'https://www.vcg.com/creative/1382429598',
+                                image:
+                                    'https://www.vcg.com/creative/1382429598',
                                 imageErrorBuilder:
                                     (context, error, stackTrace) {
                                   return Container(
