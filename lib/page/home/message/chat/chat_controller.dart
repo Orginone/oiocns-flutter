@@ -5,6 +5,7 @@ import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/util/hub_util.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../api_resp/message_item_resp.dart';
 import '../../../../api_resp/target_resp.dart';
@@ -20,6 +21,8 @@ class ChatController extends GetxController {
   var messageController = Get.find<MessageController>();
   var messageText = TextEditingController();
   var messageScrollController = ScrollController();
+  var messageScrollKey = "1024".obs;
+  var uuid = const Uuid();
 
   // 当前所在的群组
   late MessageItemResp messageItem;
@@ -32,6 +35,7 @@ class ChatController extends GetxController {
 
   // 观测对象
   late List<MessageDetailResp> messageDetails;
+
 
   @override
   void onInit() {
@@ -71,7 +75,7 @@ class ChatController extends GetxController {
           }
         }
       } else {
-        messageDetails.add(messageDetail);
+        messageDetails.insert(0, messageDetail);
       }
       updateAndToBottom();
     } catch (error) {
@@ -120,9 +124,13 @@ class ChatController extends GetxController {
   Future<void> getHistoryMsg() async {
     String typeName = messageItem.typeName;
 
+    var insertPointer = messageDetails.length;
     List<MessageDetailResp> newDetails = await HubUtil().getHistoryMsg(
-        spaceId, messageItemId, typeName, messageDetails.length, 15);
-    messageDetails.insertAll(0, newDetails);
+        spaceId, messageItemId, typeName, insertPointer, 15);
+
+    for(MessageDetailResp detail in newDetails) {
+      messageDetails.insert(insertPointer, detail);
+    }
   }
 
   // 发送消息至聊天页面
@@ -152,10 +160,9 @@ class ChatController extends GetxController {
 
   // 滚动到页面底部
   void updateAndToBottom() {
+    if (messageScrollController.offset != 0){
+      messageScrollKey.value = uuid.v4();
+    }
     update();
-    WidgetsBinding.instance.addPostFrameCallback((mag) {
-      var max = messageScrollController.position.maxScrollExtent;
-      messageScrollController.jumpTo(max);
-    });
   }
 }

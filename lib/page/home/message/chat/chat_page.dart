@@ -74,10 +74,12 @@ class ChatPage extends GetView<ChatController> {
     var time = _time(messageDetail.createTime);
     var item = Column(children: [currentWidget]);
     if (index == 0) {
+      return item;
+    } else if (index == controller.messageDetails.length - 1) {
       item.children.insert(0, time);
       return item;
     } else {
-      MessageDetailResp pre = controller.messageDetails[index - 1];
+      MessageDetailResp pre = controller.messageDetails[index + 1];
       if (messageDetail.createTime != null && pre.createTime != null) {
         var difference = messageDetail.createTime!.difference(pre.createTime!);
         if (difference.inSeconds > 60) {
@@ -102,6 +104,9 @@ class ChatPage extends GetView<ChatController> {
                 padding: lr10,
                 child: GetBuilder<ChatController>(
                   builder: (controller) => ListView.builder(
+                    key: ObjectKey(controller.messageScrollKey.value),
+                    reverse: true,
+                    shrinkWrap: true,
                     controller: controller.messageScrollController,
                     scrollDirection: Axis.vertical,
                     itemCount: controller.messageDetails.length,
