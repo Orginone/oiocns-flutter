@@ -27,7 +27,8 @@ class GroupItemWidget extends GetView<MessageController> {
           children: [
             Container(
               padding: ltb10,
-              child: Text(controller.orgChatCache.chats[index].name, style: text16),
+              child: Text(controller.orgChatCache.chats[index].name,
+                  style: text16),
             ),
             Container(
               padding: right10,
@@ -48,12 +49,15 @@ class GroupItemWidget extends GetView<MessageController> {
   get _list => SizedBox(
         child: GetBuilder<MessageController>(
           builder: (controller) {
-            SpaceMessagesResp spaceMessages = controller.orgChatCache.chats[index];
+            SpaceMessagesResp spaceMessages =
+                controller.orgChatCache.chats[index];
             bool isExpand = spaceMessages.isExpand;
             List<MessageItemResp> messageItems = spaceMessages.chats;
 
             if (!isExpand) {
-              messageItems = messageItems.where((item) => item.noRead != 0).toList();
+              messageItems = messageItems
+                  .where((item) => item.noRead != null && item.noRead != 0)
+                  .toList();
             }
             return ListView.builder(
               shrinkWrap: true,

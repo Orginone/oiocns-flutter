@@ -193,13 +193,13 @@ class MessageController extends GetxController {
         item.msgType = detail.msgType;
         if (item.msgType == "recall") {
           bool hasPic = msgBody?.contains("<img>") ?? false;
-          item.showText = hasPic ? "[图片]" : msgBody;
+          item.showTxt = hasPic ? "[图片]" : msgBody;
         } else {
-          item.showText = msgBody;
+          item.showTxt = msgBody;
         }
         if (item.typeName != "人员") {
           String name = orgChatCache.nameMap[detail.fromId];
-          item.showText = "$name：${item.showText}";
+          item.showTxt = "$name：${item.showTxt}";
         }
 
         bool isTalking = false;

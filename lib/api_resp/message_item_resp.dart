@@ -12,7 +12,7 @@ class MessageItemResp {
   String? spaceId;
   int? noRead;
   int? personNum;
-  String? showText;
+  String? showTxt;
 
   MessageItemResp.fromMap(Map<String, dynamic> map)
       : id = map["id"],
@@ -26,7 +26,7 @@ class MessageItemResp {
         spaceId = map["spaceId"],
         noRead = map["noRead"],
         personNum = map["personNum"],
-        showText = map["showText"];
+        showTxt = map["showTxt"];
 
   static List<MessageItemResp> fromList(List<dynamic>? data) {
     if (data == null) {
@@ -64,7 +64,7 @@ class MessageItemResp {
     json["spaceId"] = spaceId;
     json["noRead"] = noRead;
     json["personNum"] = personNum;
-    json["showText"] = showText;
+    json["showTxt"] = showTxt;
     return json;
   }
 }

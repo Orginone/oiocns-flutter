@@ -73,7 +73,7 @@ class HubUtil {
   }
 
   void _connTimer() {
-    if (_connTimerLocker){
+    if (_connTimerLocker) {
       return;
     }
     _connTimerLocker = true;
@@ -128,8 +128,13 @@ class HubUtil {
     ApiResp resp = ApiResp.fromMap(chats);
 
     List<dynamic> groups = resp.data["groups"];
-    List<SpaceMessagesResp> messageGroups =
-        groups.map((item) => SpaceMessagesResp.fromMap(item)).toList();
+    List<SpaceMessagesResp> messageGroups = groups.map((item) {
+      SpaceMessagesResp messagesResp = SpaceMessagesResp.fromMap(item);
+      for (var chat in messagesResp.chats) {
+        chat.spaceId = messagesResp.id;
+      }
+      return messagesResp;
+    }).toList();
     return messageGroups;
   }
 

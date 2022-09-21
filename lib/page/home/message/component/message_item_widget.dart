@@ -86,7 +86,7 @@ class MessageItemWidget extends GetView<MessageController> {
           ],
         ),
         Text(
-          messageItem.showText ?? "",
+          messageItem.showTxt ?? "",
           style: text12Grey,
           overflow: TextOverflow.ellipsis,
         ),
