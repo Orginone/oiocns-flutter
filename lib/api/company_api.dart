@@ -13,6 +13,20 @@ class CompanyApi {
     return pageResp.result;
   }
 
+  static Future<List<dynamic>> searchCompanys(String code) async {
+    String url = "${Constant.company}/search/companys";
+    Map<String, dynamic> data = {"filter": code,"limit": 20,"offset": 0};
+    Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
+    PageResp pageResp = PageResp.fromMap(resp);
+    return pageResp.result;
+  }
+
+  static Future<void> quitCompanys(String id) async {
+    String url = "${Constant.company}/exit";
+    Map<String, dynamic> data = {"id": id};
+    await HttpUtil().post(url, data: data);
+  }
+
   static Future<TargetResp> queryInfo() async {
     String url = "${Constant.company}/query/info";
     Map<String, dynamic> resp = await HttpUtil().post(url);

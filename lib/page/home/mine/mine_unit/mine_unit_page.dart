@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/component/form_item_type1.dart';
-import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
-import 'package:orginone/page/home/mine/mine_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/widget_util.dart';
 
@@ -24,7 +22,8 @@ class MineUnitPage extends GetView<MineUnitController> {
             body: Container(
               margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
               child: ListView.builder(
-                  itemCount: 15,
+                  controller: controller.scrollController,
+                  itemCount: controller.units.length,
                   itemBuilder: (BuildContext context, int index) {
                     return FormItemType1(
                       leftSlot: CircleAvatar(
@@ -35,9 +34,13 @@ class MineUnitPage extends GetView<MineUnitController> {
                         onForegroundImageError: (error, stackTrace) {},
                         radius: 15,
                       ),
-                      title: '测试标题',
-                      text: '测试文本',
+                      title: controller.units[index].code,
+                      text: controller.units[index].name,
                       suffixIcon: const Icon(Icons.keyboard_arrow_right),
+                      callback1: () {
+                        Get.toNamed(Routers.unitDetail,
+                            arguments: controller.units[index].code);
+                      },
                     );
                   }),
             )));
