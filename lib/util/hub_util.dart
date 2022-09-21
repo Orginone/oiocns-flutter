@@ -49,6 +49,7 @@ class HubUtil {
   final HubConnection _server =
       HubConnectionBuilder().withUrl(Constant.hub).build();
   Rx<HubConnectionState?>? state;
+  bool _connTimerLocker = false;
 
   final Map<String, void Function(List<dynamic>?)> events = {};
 
@@ -72,12 +73,17 @@ class HubUtil {
   }
 
   void _connTimer() {
+    if (_connTimerLocker){
+      return;
+    }
+    _connTimerLocker = true;
     Duration duration = const Duration(seconds: 30);
     Timer.periodic(duration, (timer) async {
       await tryConn();
       setStatus();
       if (isConn()) {
         timer.cancel();
+        _connTimerLocker = false;
       }
     });
   }

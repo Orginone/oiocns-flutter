@@ -36,7 +36,6 @@ class ChatController extends GetxController {
   // 观测对象
   late List<MessageDetailResp> messageDetails;
 
-
   @override
   void onInit() {
     init();
@@ -64,23 +63,30 @@ class ChatController extends GetxController {
   }
 
   // 消息接收函數
-  void onReceiveMessage(MessageDetailResp messageDetail) {
-    try {
-      if (messageDetail.msgType == "recall") {
-        for (var oldDetail in messageDetails) {
-          if (oldDetail.id == messageDetail.id) {
-            oldDetail.msgBody = messageDetail.msgBody;
-            oldDetail.msgType = messageDetail.msgType;
-            oldDetail.createTime = messageDetail.createTime;
-          }
-        }
-      } else {
-        messageDetails.insert(0, messageDetail);
-      }
-      updateAndToBottom();
-    } catch (error) {
-      error.printError();
+  bool onReceiveMsg(
+    String spaceId,
+    String sessionId,
+    MessageDetailResp? detail,
+  ) {
+    if (spaceId != spaceId && sessionId != messageItemId) {
+      return false;
     }
+    if (detail == null) {
+      return false;
+    }
+    if (detail.msgType == "recall") {
+      for (var oldDetail in messageDetails) {
+        if (oldDetail.id == detail.id) {
+          oldDetail.msgBody = detail.msgBody;
+          oldDetail.msgType = detail.msgType;
+          oldDetail.createTime = detail.createTime;
+        }
+      }
+    } else {
+      messageDetails.insert(0, detail);
+    }
+    updateAndToBottom();
+    return true;
   }
 
   /// 查询群成员信息
@@ -113,7 +119,7 @@ class ChatController extends GetxController {
         orgChatCache.nameMap[person.id] = "${person.name}$typeName";
       }
       offset += limit;
-      if (persons.length < limit){
+      if (persons.length < limit) {
         break;
       }
     }
@@ -125,10 +131,10 @@ class ChatController extends GetxController {
     String typeName = messageItem.typeName;
 
     var insertPointer = messageDetails.length;
-    List<MessageDetailResp> newDetails = await HubUtil().getHistoryMsg(
-        spaceId, messageItemId, typeName, insertPointer, 15);
+    List<MessageDetailResp> newDetails = await HubUtil()
+        .getHistoryMsg(spaceId, messageItemId, typeName, insertPointer, 15);
 
-    for(MessageDetailResp detail in newDetails) {
+    for (MessageDetailResp detail in newDetails) {
       messageDetails.insert(insertPointer, detail);
     }
   }
@@ -160,7 +166,7 @@ class ChatController extends GetxController {
 
   // 滚动到页面底部
   void updateAndToBottom() {
-    if (messageScrollController.offset != 0){
+    if (messageScrollController.offset != 0) {
       messageScrollKey.value = uuid.v4();
     }
     update();

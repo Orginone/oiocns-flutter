@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:orginone/component/unified_text_style.dart';
 
 import '../../../../../component/unified_edge_insets.dart';
 import '../../../../../config/custom_colors.dart';
@@ -43,7 +44,7 @@ class TextMessage extends StatelessWidget {
             decoration: BoxDecoration(
                 color: CustomColors.seaBlue,
                 borderRadius: BorderRadius.all(Radius.circular(defaultWidth))),
-            child: Text(message ?? "")),
+            child: Text(message ?? "", style: text14Bold,)),
       ],
     );
   }

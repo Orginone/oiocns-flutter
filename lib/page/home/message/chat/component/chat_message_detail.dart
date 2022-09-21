@@ -84,7 +84,7 @@ class ChatMessageDetail extends GetView<ChatController> {
             margin: left10,
             child: Text(
               targetName(),
-              style: text12Bold,
+              style: text12,
             )),
       );
     }
