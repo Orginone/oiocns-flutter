@@ -7,6 +7,10 @@ import 'package:orginone/page/home/component/personDetail/person_detail_binding.
 import 'package:orginone/page/home/component/personDetail/person_detail_page.dart';
 import 'package:orginone/page/home/component/space_choose/space_choose_binding.dart';
 import 'package:orginone/page/home/component/space_choose/space_choose_page.dart';
+import 'package:orginone/page/home/component/unit/unit_create/unit_create_binding.dart';
+import 'package:orginone/page/home/component/unit/unit_create/unit_create_page.dart';
+import 'package:orginone/page/home/component/unit/unit_detail/unit_detail_binding.dart';
+import 'package:orginone/page/home/component/unit/unit_detail/unit_detail_page.dart';
 import 'package:orginone/page/home/home_binding.dart';
 import 'package:orginone/page/home/home_page.dart';
 import 'package:orginone/page/home/message/chat/chat_binding.dart';
@@ -58,6 +62,8 @@ class Routers {
   static const String dept = "/dept";
   static const String personDetail = "/personDetail";
   static const String personAdd = "/personAdd";
+  static const String unitDetail = "/unitDetail";
+  static const String unitCreate = "/unitCreate";
   static const String mine = "/mine";
   static const String mineInfo = "/mineInfo";
   static const String mineUnit = "/mineUnit";
@@ -143,6 +149,16 @@ class Routers {
         name: Routers.personAdd,
         page: () => const PersonAddPage(),
         binding: PersonAddBinding(),
+      ),
+      GetPage(
+        name: Routers.unitDetail,
+        page: () => const UnitDetailPage(),
+        binding: UnitDetailBinding(),
+      ),
+      GetPage(
+        name: Routers.unitCreate,
+        page: () => const UnitCreatePage(),
+        binding: UnitCreateBinding(),
       ),
       GetPage(
         name: Routers.mine,
