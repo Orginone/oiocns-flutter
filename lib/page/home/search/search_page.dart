@@ -4,6 +4,7 @@ import 'package:getwidget/components/tabs/gf_tabbar.dart';
 import 'package:getwidget/components/tabs/gf_tabbar_view.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/page/home/search/unit_result_page.dart';
 
 import '../../../../util/widget_util.dart';
 import '../../../component/text_search.dart';
@@ -77,6 +78,9 @@ class SearchPage extends GetView<SearchController> {
         case SearchItem.departments:
           break;
         case SearchItem.publicCohorts:
+          break;
+        case SearchItem.units:
+          body = const UnitResultPage();
           break;
       }
     } else {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_button.dart';
 import 'package:orginone/api/company_api.dart';
-import 'package:orginone/component/form_item_type1.dart';
 import 'package:orginone/component/form_item_type2.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
@@ -74,22 +73,46 @@ class UnitDetailPage extends GetView<UnitDetailController> {
                         ],
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                      child: Row(
-                        children: [
-                          GFButton(
-                              onPressed: () async {
-                                await CompanyApi.quitCompany(
-                                    controller.unit!.id);
-                                Get.offNamed(Routers.unitDetail);
-                              },
-                              color: Colors.red,
-                              text: "退出单位",
-                              blockButton: true)
-                        ],
-                      ),
-                    )
+                    (){
+                      switch(controller.type) {
+                        case 1:
+                          return Container(
+                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                            child: Row(
+                              children: [
+                                GFButton(
+                                    onPressed: () async {
+                                      await CompanyApi.quitCompany(
+                                          controller.unit!.id);
+                                      Get.offNamed(Routers.unitDetail);
+                                    },
+                                    color: Colors.red,
+                                    text: "退出单位",
+                                    blockButton: true)
+                              ],
+                            ),
+                          );
+                        case 2:
+                          return Container(
+                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                            child: Row(
+                              children: [
+                                GFButton(
+                                    onPressed: () async {
+                                      await CompanyApi.joinCompany(
+                                          controller.unit!.id);
+                                      Get.back();
+                                    },
+                                    color: Colors.blueAccent,
+                                    text: "申请加入",
+                                    blockButton: true)
+                              ],
+                            ),
+                          );
+                        default:
+                          return Container();
+                      }
+                    }()
                   ],
                 ))));
   }

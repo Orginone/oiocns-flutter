@@ -5,10 +5,12 @@ import 'package:orginone/api_resp/target_resp.dart';
 //需要接收一个统一社会信用代码来做查询
 class UnitDetailController extends GetxController {
   TargetResp? unit;
+  int type = 0;
   ScrollController scrollController = ScrollController();
   @override
   onReady() async{
-    await getUnitDetail(Get.arguments);
+    type = (Get.arguments["type"]);
+    await getUnitDetail(Get.arguments["code"]);
     super.onReady();
   }
 

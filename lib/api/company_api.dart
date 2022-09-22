@@ -23,12 +23,18 @@ class CompanyApi {
 
   static Future<void> quitCompany(String id) async {
     String url = "${Constant.company}/exit";
-    Map<String, dynamic> data = {"id": id};
-    await HttpUtil().post(url, data: data);
+    Map<String, dynamic> postData = {"id": id};
+    await HttpUtil().post(url, data: postData);
   }
 
   static Future<void> createCompany(dynamic postData) async {
     String url = "${Constant.company}/create";
+    await HttpUtil().post(url, data: postData);
+  }
+
+  static Future<void> joinCompany(String id) async {
+    String url = "${Constant.company}/apply/join";
+    Map<String, dynamic> postData = {"id": id};
     await HttpUtil().post(url, data: postData);
   }
 

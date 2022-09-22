@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/component/form_item_type1.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/page/home/search/search_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/widget_util.dart';
 
@@ -41,6 +42,8 @@ class MineUnitPage extends GetView<MineUnitController> {
                   margin: const EdgeInsets.fromLTRB(10, 0, 5, 0),
                   child: FloatingActionButton(
                       onPressed: () {
+                        List<SearchItem> units = [SearchItem.units];
+                        Get.toNamed(Routers.search,arguments: units);
                       },
                       tooltip: "加入单位",
                       backgroundColor: Colors.blueAccent,
@@ -73,7 +76,10 @@ class MineUnitPage extends GetView<MineUnitController> {
                       suffixIcon: const Icon(Icons.keyboard_arrow_right),
                       callback1: () {
                         Get.toNamed(Routers.unitDetail,
-                            arguments: controller.units[index].code);
+                            arguments: {
+                              'code': controller.units[index].code,
+                              'type': 1
+                            });
                       },
                     );
                   }),
