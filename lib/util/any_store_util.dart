@@ -10,7 +10,18 @@ import '../api/constant.dart';
 import 'errors.dart';
 import 'hive_util.dart';
 
-enum SendEvent { TokenAuth, Subscribed, UnSubscribed, Get, Set, Delete }
+enum SendEvent {
+  TokenAuth,
+  Subscribed,
+  UnSubscribed,
+  Get,
+  Set,
+  Delete,
+  Insert,
+  Update,
+  Remove,
+  Aggregate
+}
 
 enum ReceiveEvent { Updated }
 
@@ -55,6 +66,12 @@ class AnyStoreUtil {
   Future<ApiResp> delete(String key, String domain) async {
     checkConn();
     dynamic res = _server.invoke(SendEvent.Delete.name, args: [key, domain]);
+    return ApiResp.fromMap(res);
+  }
+
+  Future<ApiResp> insert(String collName, String key, String domain) async {
+    checkConn();
+    dynamic res = _server.invoke(SendEvent.Insert.name, args: [key, domain]);
     return ApiResp.fromMap(res);
   }
 
