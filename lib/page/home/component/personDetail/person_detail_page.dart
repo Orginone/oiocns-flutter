@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/form_item_type1.dart';
-import 'package:orginone/model/db_model.dart';
-import 'package:orginone/page/home/message/chat/chat_controller.dart';
-import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/routers.dart';
-import '../../home_controller.dart';
+
 import 'person_detail_controller.dart';
 
 class PersonDetailPage extends GetView<PersonDetailController> {
