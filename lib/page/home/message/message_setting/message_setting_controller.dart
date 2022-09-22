@@ -30,6 +30,9 @@ class MessageSettingController extends GetxController {
   RxString remark = ''.obs;
   RxString label = ''.obs;
 
+  late String spaceId;
+  late String messageItemId;
+
   void test1(a) {
     textField1.value = a;
   }
@@ -37,8 +40,8 @@ class MessageSettingController extends GetxController {
   @override
   void onInit() async {
     Map<String, dynamic> args = Get.arguments;
-    String spaceId = args["spaceId"];
-    String messageItemId = args["messageItemId"];
+    spaceId = args["spaceId"];
+    messageItemId = args["messageItemId"];
 
     //初始化关系对象
     MessageItemResp item = chatController.messageItem;

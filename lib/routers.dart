@@ -43,6 +43,9 @@ import 'package:orginone/page/login/login_binding.dart';
 import 'package:orginone/page/login/login_page.dart';
 import 'package:orginone/page/register/register_binding.dart';
 import 'package:orginone/page/register/register_page.dart';
+import 'package:orginone/page/scanning/scannin_binding.dart';
+import 'package:orginone/page/scanning/scanning_controller.dart';
+import 'package:orginone/page/scanning/scanning_page.dart';
 
 class Routers {
   static const String main = "/";
@@ -68,6 +71,7 @@ class Routers {
   static const String mineInfo = "/mineInfo";
   static const String mineUnit = "/mineUnit";
   static const String search = "/search";
+  static const String scanning = "/scanning";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -179,6 +183,11 @@ class Routers {
         name: Routers.search,
         page: () => const SearchPage(),
         binding: SearchBinding(),
+      ),
+      GetPage(
+        name: Routers.scanning,
+        page: () => const ScanningPage(),
+        binding: ScanningBinding(),
       ),
     ];
   }

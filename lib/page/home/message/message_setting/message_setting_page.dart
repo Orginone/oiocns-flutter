@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/unified_scaffold.dart';
-import 'package:orginone/config/custom_colors.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/hub_util.dart';
+
+import '../../../../component/unified_text_style.dart';
 import '../../../../util/widget_util.dart';
 import 'message_setting_controller.dart';
 
@@ -15,7 +17,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
   Widget build(BuildContext context) {
     return UnifiedScaffold(
         appBarLeading: WidgetUtil.defaultBackBtn,
-        appBarTitle: const Text("会话设置"),
+        appBarTitle: Text("会话设置", style: text20),
         body: Obx(() {
           List<Widget> widgetList = [
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -325,7 +327,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
             ),
           ]);
 
-          if (controller.label.value == '公司') {
+          if (controller.spaceId == controller.userInfo.id) {
             widgetList.add(Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -334,7 +336,10 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                   child: GFButton(
                     color: const Color.fromRGBO(254, 240, 240, 1),
                     textColor: const Color.fromRGBO(255, 0, 0, 1),
-                    onPressed: () async {},
+                    onPressed: () async {
+                      HubUtil().clearHistoryMsg(
+                          controller.spaceId, controller.messageItemId);
+                    },
                     text: "清空聊天记录",
                   ),
                 ),

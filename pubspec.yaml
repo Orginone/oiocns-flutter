@@ -71,6 +71,7 @@ dependencies:
   dotted_border: ^2.0.0+2
   fluttertoast: ^8.0.9
   permission_handler: ^10.0.1
+  qr_code_scanner: ^1.0.1
 
   # 组件管理库
   get: ^4.6.5

@@ -17,16 +17,21 @@ import 'home_controller.dart';
 class HomePage extends GetView<HomeController> {
   const HomePage({Key? key}) : super(key: key);
 
-  Widget _popMenuItem(IconData icon, String text) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Icon(icon, color: Colors.black),
-        Container(
-          margin: EdgeInsets.only(left: 20.w),
-        ),
-        Text(text),
-      ],
+  Widget _popMenuItem(IconData icon, String text, Function func) {
+    return GestureDetector(
+      onTap: () {
+        func();
+      },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(icon, color: Colors.black),
+          Container(
+            margin: EdgeInsets.only(left: 20.w),
+          ),
+          Text(text),
+        ],
+      ),
     );
   }
 
@@ -39,9 +44,13 @@ class HomePage extends GetView<HomeController> {
       icon: const Icon(Icons.add, color: Colors.black, size: GFSize.MEDIUM),
       itemBuilder: (context) {
         return [
-          PopupMenuItem(child: _popMenuItem(Icons.qr_code_scanner, "扫一扫")),
-          PopupMenuItem(child: _popMenuItem(Icons.group_add_outlined, "创建群组")),
-          PopupMenuItem(child: _popMenuItem(Icons.groups_outlined, "创建单位")),
+          PopupMenuItem(
+              child: _popMenuItem(Icons.qr_code_scanner, "扫一扫",
+                  () => Get.toNamed(Routers.scanning))),
+          PopupMenuItem(
+              child: _popMenuItem(Icons.group_add_outlined, "创建群组", () => {})),
+          PopupMenuItem(
+              child: _popMenuItem(Icons.groups_outlined, "创建单位", () => {})),
         ];
       },
     );
