@@ -4,7 +4,6 @@ import 'package:orginone/api/person_api.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 
 import '../../api_resp/login_resp.dart';
-import '../../model/db_model.dart';
 import '../../util/hive_util.dart';
 
 class LoginController extends GetxController {
@@ -37,7 +36,6 @@ class LoginController extends GetxController {
       'password': passwordController.value.text,
     });
 
-
     hiveUtil.accessToken = loginResp.accessToken;
 
     // 获取当前用户信息
@@ -45,9 +43,5 @@ class LoginController extends GetxController {
     await hiveUtil.initEnvParams(userInfo.id);
     await hiveUtil.putValue(Keys.userInfo, userInfo);
     await hiveUtil.putValue(Keys.user, loginResp.user);
-
-    // 更新一下数据库信息
-    User user = loginResp.user.toUser();
-    await user.upsert();
   }
 }

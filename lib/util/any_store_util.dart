@@ -28,11 +28,11 @@ class AnyStoreUtil {
   static final AnyStoreUtil _instance = AnyStoreUtil._();
 
   factory AnyStoreUtil() {
-    _instance.state ??= _instance._connServer.state.obs;
+    _instance.state ??= _instance._server.state.obs;
     return _instance;
   }
 
-  final HubConnection _connServer =
+  final HubConnection _server =
       HubConnectionBuilder().withUrl(Constant.anyStore).build();
   Rx<HubConnectionState?>? state;
   Map<String, Function> subscriptionMap = {};
@@ -43,24 +43,23 @@ class AnyStoreUtil {
 
   Future<ApiResp> get(String key, String domain) async {
     checkConn();
-    dynamic data = _connServer.invoke(SendEvent.Get.name, args: [key, domain]);
+    dynamic data = _server.invoke(SendEvent.Get.name, args: [key, domain]);
     return ApiResp.fromMap(data);
   }
 
   Future<void> set(String key, dynamic setData, String domain) async {
     checkConn();
-    await _connServer.invoke(SendEvent.Set.name, args: [key, setData, domain]);
+    await _server.invoke(SendEvent.Set.name, args: [key, setData, domain]);
   }
 
   Future<ApiResp> delete(String key, String domain) async {
     checkConn();
-    dynamic res =
-        _connServer.invoke(SendEvent.Delete.name, args: [key, domain]);
+    dynamic res = _server.invoke(SendEvent.Delete.name, args: [key, domain]);
     return ApiResp.fromMap(res);
   }
 
   void _onUpdated() {
-    _connServer.on(ReceiveEvent.Updated.name, (arguments) {
+    _server.on(ReceiveEvent.Updated.name, (arguments) {
       if (arguments == null) {
         return;
       }
@@ -75,7 +74,7 @@ class AnyStoreUtil {
   }
 
   void _initOnReconnecting() {
-    _connServer.onreconnecting((exception) {
+    _server.onreconnecting((exception) {
       setState();
       log.info("================== 正在重新连接 AnyStore =========================");
       log.info("==> reconnecting");
@@ -86,7 +85,7 @@ class AnyStoreUtil {
   }
 
   void _initOnReconnected() {
-    _connServer.onreconnected((id) {
+    _server.onreconnected((id) {
       setState();
       log.info("==> reconnected success");
       log.info("================== 重新连接 AnyStore 成功 =========================");
@@ -94,7 +93,7 @@ class AnyStoreUtil {
   }
 
   void _connTimer() {
-    if (_connTimerLock){
+    if (_connTimerLock) {
       return;
     }
     _connTimerLock = true;
@@ -111,7 +110,7 @@ class AnyStoreUtil {
 
   void _subscribingTimer(
       SubscriptionKey key, String domain, Function callback) {
-    if (_subscribingTimerLock){
+    if (_subscribingTimerLock) {
       return;
     }
     _subscribingTimerLock = true;
@@ -127,7 +126,7 @@ class AnyStoreUtil {
   }
 
   void _initOnClose() {
-    _connServer.onclose((error) {
+    _server.onclose((error) {
       setState();
       _connTimer();
     });
@@ -135,12 +134,12 @@ class AnyStoreUtil {
 
   Future<dynamic> _auth(String accessToken) async {
     checkConn();
-    return _connServer.invoke(SendEvent.TokenAuth.name,
+    return _server.invoke(SendEvent.TokenAuth.name,
         args: [accessToken, Domain.user.name]);
   }
 
   Future<dynamic> disconnect() async {
-    await _connServer.stop();
+    await _server.stop();
     setState();
     log.info("===> 已断开和存储服务器的连接。");
   }
@@ -156,7 +155,7 @@ class AnyStoreUtil {
       return;
     }
     subscriptionMap[fullKey] = callback;
-    dynamic res = await _connServer
+    dynamic res = await _server
         .invoke(SendEvent.Subscribed.name, args: [key.name, domain]);
     ApiResp apiResp = ApiResp.fromMap(res);
     if (apiResp.success) {
@@ -172,7 +171,7 @@ class AnyStoreUtil {
       return;
     }
     if (isConn()) {
-      await _connServer
+      await _server
           .invoke(SendEvent.UnSubscribed.name, args: [key.name, domain]);
       subscriptionMap.remove(fullKey);
     }
@@ -181,7 +180,7 @@ class AnyStoreUtil {
   //初始化连接
   Future<dynamic> tryConn() async {
     log.info("================== 连接 AnyStore =========================");
-    var state = _connServer.state;
+    var state = _server.state;
     switch (state) {
       case HubConnectionState.disconnected:
         log.info("==> connecting");
@@ -193,7 +192,7 @@ class AnyStoreUtil {
           _onUpdated();
 
           // 开启连接，鉴权
-          await _connServer.start();
+          await _server.start();
           await _auth(HiveUtil().accessToken);
           setState();
 
@@ -204,6 +203,7 @@ class AnyStoreUtil {
           EasyLoading.showToast("连接本地存储服务失败!");
           log.info("========== 连接 AnyStore 失败 =============");
           _connTimer();
+          rethrow;
         }
         break;
       default:
@@ -221,11 +221,11 @@ class AnyStoreUtil {
   }
 
   setState() {
-    state!.value = _connServer.state;
+    state!.value = _server.state;
   }
 
   // 判断是否处于连接当中
   bool isConn() {
-    return _connServer.state == HubConnectionState.connected;
+    return _server.state == HubConnectionState.connected;
   }
 }

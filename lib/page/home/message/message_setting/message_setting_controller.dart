@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/target_resp.dart';
-import 'package:orginone/model/db_model.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
-import 'package:orginone/model/target_relation_util.dart';
 import 'package:orginone/util/hive_util.dart';
+
+import '../../../../api_resp/message_item_resp.dart';
 
 class MessageSettingController extends GetxController {
   final Logger log = Logger("MessageSettingController");
@@ -26,7 +26,6 @@ class MessageSettingController extends GetxController {
   RxList<TargetResp> filterPersonList = <TargetResp>[].obs;
 
   //当前关系对象(观测)的信息
-  TargetRelation? currentTargetRelation;
   RxString name = ''.obs;
   RxString remark = ''.obs;
   RxString label = ''.obs;
@@ -42,12 +41,11 @@ class MessageSettingController extends GetxController {
     String messageItemId = args["messageItemId"];
 
     //初始化关系对象
-    currentTargetRelation =
-        await TargetRelationUtil.getItem(spaceId, messageItemId);
-    name.value = currentTargetRelation?.name ?? '';
-    remark.value = currentTargetRelation?.remark ?? '';
-    label.value = currentTargetRelation?.label ?? '';
-    log.info(currentTargetRelation);
+    MessageItemResp item = chatController.messageItem;
+    name.value = item.name;
+    remark.value = item.remark;
+    label.value = item.label;
+    log.info(item);
     //初始化成员列表
     for (TargetResp person in chatController.personList) {
       originPersonList.add(person);

@@ -48,9 +48,6 @@ dependencies:
   # 存储库
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  sqflite: ^2.0.3+1
-  sqfentity: ^2.2.0+6
-  sqfentity_gen: ^2.2.0+12
 
   # 网络库，日志库，工具库，路径库
   dio: ^4.0.4
@@ -68,12 +65,12 @@ dependencies:
   signalr_core: ^1.1.1
 
   # UI 库
-  getwidget: ^2.0.4
+  getwidget: ^3.0.1
   flutter_easyloading: ^3.0.5
   flutter_screenutil: ^5.5.3+2
   dotted_border: ^2.0.0+2
   fluttertoast: ^8.0.9
-  scrollable_positioned_list: ^0.3.4
+  permission_handler: ^10.0.1
 
   # 组件管理库
   get: ^4.6.5
