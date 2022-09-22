@@ -15,6 +15,23 @@ import 'home_controller.dart';
 class HomePage extends GetView<HomeController> {
   const HomePage({Key? key}) : super(key: key);
 
+  Widget _popMenuItem(IconData icon, String text) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [Icon(icon), Text(text)],
+    );
+  }
+
+  Widget _popMenu() {
+    return PopupMenuButton(itemBuilder: (context) {
+      return [
+        PopupMenuItem(child: _popMenuItem(Icons.qr_code_scanner, "扫一扫")),
+        PopupMenuItem(child: _popMenuItem(Icons.group_add_outlined, "创建群组")),
+        PopupMenuItem(child: _popMenuItem(Icons.groups_outlined, "创建单位")),
+      ];
+    });
+  }
+
   get _actions => [
         GFIconButton(
             color: CustomColors.lightGrey,
@@ -25,7 +42,9 @@ class HomePage extends GetView<HomeController> {
         GFIconButton(
             color: CustomColors.lightGrey,
             icon: const Icon(Icons.add, color: Colors.black),
-            onPressed: () {}),
+            onPressed: () {
+
+            }),
       ];
 
   get _leading => TextAvatar(

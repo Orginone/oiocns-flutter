@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.orginone">
+    package="com.github.orginone">
    <application
         android:label="奥集能"
         android:name="${applicationName}"

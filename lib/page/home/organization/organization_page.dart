@@ -6,7 +6,9 @@ import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/config/custom_colors.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
 
+import '../../../component/choose_item.dart';
 import '../../../component/icon_avatar.dart';
+import '../../../component/unified_edge_insets.dart';
 import '../../../component/unified_text_style.dart';
 import '../../../routers.dart';
 import '../home_controller.dart';
@@ -24,8 +26,14 @@ class OrganizationPage extends GetView<OrganizationController> {
             color: Colors.white,
           ),
         ),
-        label: targetResp.name,
-        goto: () {
+        body: Container(
+          margin: left10,
+          child: Text(
+            targetResp.name,
+            style: text16Bold,
+          ),
+        ),
+        func: () {
           Get.toNamed(Routers.units);
         },
         operate: GFButton(
@@ -35,7 +43,7 @@ class OrganizationPage extends GetView<OrganizationController> {
           onPressed: () async {},
           text: "邀请",
         ),
-        body: [
+        content: [
           ChooseItem(
               header: IconAvatar(
                 icon: const Icon(
@@ -44,8 +52,11 @@ class OrganizationPage extends GetView<OrganizationController> {
                 ),
                 bgColor: Colors.white.withOpacity(0),
               ),
-              label: "组织架构",
-              goto: () {
+              body: Container(
+                margin: left10,
+                child: Text("组织架构", style: text16Bold),
+              ),
+              func: () {
                 Get.toNamed(Routers.dept);
               })
         ]);
@@ -67,8 +78,11 @@ class OrganizationPage extends GetView<OrganizationController> {
                   color: Colors.white,
                 ),
               ),
-              label: "我的好友",
-              goto: () {
+              body: Container(
+                margin: left10,
+                child: Text("我的好友", style: text16Bold),
+              ),
+              func: () {
                 Get.toNamed(Routers.friends);
               }));
 
@@ -80,8 +94,11 @@ class OrganizationPage extends GetView<OrganizationController> {
                   color: Colors.white,
                 ),
               ),
-              label: "我的群组",
-              goto: () {
+              body: Container(
+                margin: left10,
+                child: Text("我的群组", style: text16Bold),
+              ),
+              func: () {
                 Get.toNamed(Routers.cohorts);
               }));
 
@@ -94,69 +111,70 @@ class OrganizationPage extends GetView<OrganizationController> {
                     color: Colors.white,
                   ),
                 ),
-                label: "我的集团",
-                goto: () {
+                body: Container(
+                  margin: EdgeInsets.only(left: left10),
+                  child: Text("我的集团", style: text16Bold),
+                ),
+                func: () {
                   Get.toNamed(Routers.groups);
                 }));
-
             // 单位管理
             items.add(_unit());
           }
-
           return ListView(children: items);
         });
   }
 }
 
-class ChooseItem extends StatelessWidget {
-  final Widget header;
-  final String label;
-  final Function goto;
-  final Widget? operate;
-  final List<Widget>? body;
-
-  const ChooseItem(
-      {Key? key,
-      required this.header,
-      required this.label,
-      required this.goto,
-      this.operate,
-      this.body})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> content = [];
-    Widget basics = Container(
-        padding: const EdgeInsets.fromLTRB(10, 10, 20, 0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            header,
-            Expanded(
-              child: Container(
-                  margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                  child: Text(
-                    label,
-                    style: text16Bold,
-                  )),
-            ),
-            operate == null
-                ? Container(
-                    margin: const EdgeInsets.all(5),
-                    child: const Icon(Icons.keyboard_arrow_right))
-                : operate!
-          ],
-        ));
-    content.add(basics);
-    if (body != null) {
-      content.addAll(body!);
-    }
-    return GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          goto();
-        },
-        child: Column(children: content));
-  }
-}
+// class ChooseItem extends StatelessWidget {
+//   final Widget header;
+//   final String label;
+//   final Function goto;
+//   final Widget? operate;
+//   final List<Widget>? body;
+//
+//   const ChooseItem(
+//       {Key? key,
+//       required this.header,
+//       required this.label,
+//       required this.goto,
+//       this.operate,
+//       this.body})
+//       : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     List<Widget> content = [];
+//     Widget basics = Container(
+//         padding: const EdgeInsets.fromLTRB(10, 10, 20, 0),
+//         child: Row(
+//           crossAxisAlignment: CrossAxisAlignment.center,
+//           children: [
+//             header,
+//             Expanded(
+//               child: Container(
+//                   margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+//                   child: Text(
+//                     label,
+//                     style: text16Bold,
+//                   )),
+//             ),
+//             operate == null
+//                 ? Container(
+//                     margin: const EdgeInsets.all(5),
+//                     child: const Icon(Icons.keyboard_arrow_right))
+//                 : operate!
+//           ],
+//         ));
+//     content.add(basics);
+//     if (body != null) {
+//       content.addAll(body!);
+//     }
+//     return GestureDetector(
+//         behavior: HitTestBehavior.opaque,
+//         onTap: () {
+//           goto();
+//         },
+//         child: Column(children: content));
+//   }
+// }
