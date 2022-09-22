@@ -19,6 +19,7 @@ class HomePage extends GetView<HomeController> {
 
   Widget _popMenuItem(IconData icon, String text, Function func) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         func();
       },

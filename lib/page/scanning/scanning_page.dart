@@ -26,12 +26,14 @@ class ScanningPage extends GetView<ScanningController> {
           ),
           Expanded(
             flex: 1,
-            child: Center(
-              child: (controller.result != null)
-                  ? Text('Barcode Type: ${controller.result!.format}  '
-                      ' Data: ${controller.result!.code}')
-                  : const Text('Scan a code'),
-            ),
+            child: Center(child: GetBuilder<ScanningController>(
+              builder: (controller) {
+                return (controller.result != null)
+                    ? Text('Barcode Type: ${controller.result!.format}  '
+                        ' Data: ${controller.result!.code}')
+                    : const Text('Scan a code');
+              },
+            )),
           )
         ],
       ),
