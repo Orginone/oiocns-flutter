@@ -1,4 +1,4 @@
-package com.example.orginone;
+package com.github.orginone;
 
 import io.flutter.embedding.android.FlutterActivity;
 

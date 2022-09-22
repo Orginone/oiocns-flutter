@@ -109,6 +109,7 @@ class ChatController extends GetxController {
 
     // 加入自己
     messageItem.noRead = 0;
+    messageItem.personNum = personMap.length;
     orgChatCache.openChats.add(messageItem);
 
     HubUtil().cacheChats(messageController.orgChatCache);
