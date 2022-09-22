@@ -7,6 +7,7 @@ import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:signalr_core/signalr_core.dart';
 
+import '../../component/unified_edge_insets.dart';
 import '../../config/custom_colors.dart';
 import '../../routers.dart';
 import '../../util/hub_util.dart';
@@ -16,9 +17,22 @@ class HomePage extends GetView<HomeController> {
   const HomePage({Key? key}) : super(key: key);
 
   Widget _popMenuItem(IconData icon, String text) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [Icon(icon), Text(text)],
+    return Container(
+      decoration: const BoxDecoration(
+          border: Border(top: BorderSide(width: 0.5, color: Colors.black12)),
+          boxShadow: [
+            BoxShadow(
+              color: Color(0xFFE8E8E8),
+              offset: Offset(8, 8),
+              blurRadius: 10,
+              spreadRadius: 1,
+            )
+          ]),
+      padding: all10,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [Icon(icon), Text(text)],
+      ),
     );
   }
 
@@ -40,11 +54,11 @@ class HomePage extends GetView<HomeController> {
               Get.toNamed(Routers.search);
             }),
         GFIconButton(
-            color: CustomColors.lightGrey,
-            icon: const Icon(Icons.add, color: Colors.black),
-            onPressed: () {
-
-            }),
+          color: CustomColors.lightGrey,
+          icon: const Icon(Icons.add, color: Colors.black),
+          onPressed: () {},
+        ),
+        _popMenu()
       ];
 
   get _leading => TextAvatar(
