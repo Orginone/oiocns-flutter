@@ -5,6 +5,7 @@ import 'package:orginone/component/form_item_type2.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/widget_util.dart';
 import 'mine_info_controller.dart';
@@ -234,8 +235,7 @@ class MineInfoPage extends GetView<MineInfoController> {
                           children: [
                             GFButton(
                                 onPressed: () async {
-                                  //暂时没接登出接口
-                                  Get.offNamed(Routers.main);
+                                  Get.offAllNamed(Routers.main);
                                 },
                                 color: Colors.red,
                                 text: "注销",
