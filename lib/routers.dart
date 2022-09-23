@@ -1,10 +1,10 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
-import 'package:orginone/page/home/component/person_add/person_add_binding.dart';
-import 'package:orginone/page/home/component/person_add/person_add_page.dart';
 import 'package:orginone/page/home/component/personDetail/person_detail_binding.dart';
 import 'package:orginone/page/home/component/personDetail/person_detail_page.dart';
+import 'package:orginone/page/home/component/person_add/person_add_binding.dart';
+import 'package:orginone/page/home/component/person_add/person_add_page.dart';
 import 'package:orginone/page/home/component/space_choose/space_choose_binding.dart';
 import 'package:orginone/page/home/component/space_choose/space_choose_page.dart';
 import 'package:orginone/page/home/component/unit/unit_create/unit_create_binding.dart';
@@ -19,9 +19,9 @@ import 'package:orginone/page/home/message/message_binding.dart';
 import 'package:orginone/page/home/message/message_page.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_binding.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_page.dart';
+import 'package:orginone/page/home/mine/mine_binding.dart';
 import 'package:orginone/page/home/mine/mine_info/mine_info_binding.dart';
 import 'package:orginone/page/home/mine/mine_info/mine_info_page.dart';
-import 'package:orginone/page/home/mine/mine_binding.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/mine/mine_unit/mine_unit_binding.dart';
 import 'package:orginone/page/home/mine/mine_unit/mine_unit_page.dart';
@@ -43,9 +43,9 @@ import 'package:orginone/page/login/login_binding.dart';
 import 'package:orginone/page/login/login_page.dart';
 import 'package:orginone/page/register/register_binding.dart';
 import 'package:orginone/page/register/register_page.dart';
-import 'package:orginone/page/scanning/scannin_binding.dart';
-import 'package:orginone/page/scanning/scanning_controller.dart';
 import 'package:orginone/page/scanning/scanning_page.dart';
+import 'package:orginone/page/scanning/scanning_result/scanning_result_binding.dart';
+import 'package:orginone/page/scanning/scanning_result/scanning_result_pge.dart';
 
 class Routers {
   static const String main = "/";
@@ -72,6 +72,7 @@ class Routers {
   static const String mineUnit = "/mineUnit";
   static const String search = "/search";
   static const String scanning = "/scanning";
+  static const String scanningResult = "/scanningResult";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -188,6 +189,11 @@ class Routers {
         name: Routers.scanning,
         page: () => const ScanningPage(),
         binding: ScanningBinding(),
+      ),
+      GetPage(
+        name: Routers.scanningResult,
+        page: () => const ScanningResultPage(),
+        binding: ScanningResultBinding(),
       ),
     ];
   }

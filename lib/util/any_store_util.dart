@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:signalr_core/signalr_core.dart';
 
-import '../api_resp/api_resp.dart';
 import '../api/constant.dart';
+import '../api_resp/api_resp.dart';
 import 'errors.dart';
 import 'hive_util.dart';
 
@@ -71,26 +71,30 @@ class AnyStoreUtil {
 
   Future<ApiResp> insert(String collName, dynamic data, String domain) async {
     checkConn();
-    dynamic res = await _server.invoke(SendEvent.Insert.name, args: [collName, data, domain]);
+    dynamic res = await _server
+        .invoke(SendEvent.Insert.name, args: [collName, data, domain]);
     return ApiResp.fromMap(res);
   }
 
   Future<ApiResp> update(String collName, dynamic update, String domain) async {
     checkConn();
-    dynamic res = await _server.invoke(SendEvent.Update.name, args: [collName, update, domain]);
+    dynamic res = await _server
+        .invoke(SendEvent.Update.name, args: [collName, update, domain]);
     return ApiResp.fromMap(res);
   }
 
   Future<ApiResp> remove(String collName, dynamic match, String domain) async {
     checkConn();
-    dynamic res = await _server.invoke(SendEvent.Remove.name, args: [collName, match, domain]);
+    dynamic res = await _server
+        .invoke(SendEvent.Remove.name, args: [collName, match, domain]);
     return ApiResp.fromMap(res);
   }
 
   Future<dynamic> aggregate(String collName, dynamic opt, String domain) async {
     checkConn();
     var aggregateName = SendEvent.Aggregate.name;
-    dynamic res = await _server.invoke(aggregateName, args: [collName, opt, domain]);
+    dynamic res =
+        await _server.invoke(aggregateName, args: [collName, opt, domain]);
     return ApiResp.fromMap(res).data;
   }
 
@@ -236,7 +240,7 @@ class AnyStoreUtil {
           log.info("========== 连接 AnyStore 成功 =============");
         } catch (error) {
           error.printError();
-          EasyLoading.showToast("连接本地存储服务失败!");
+          Fluttertoast.showToast(msg: "连接本地存储服务失败!");
           log.info("========== 连接 AnyStore 失败 =============");
           _connTimer();
           rethrow;
@@ -251,7 +255,7 @@ class AnyStoreUtil {
   checkConn() {
     if (!isConn()) {
       var errorMsg = "未连接存储服务器!";
-      EasyLoading.showToast(errorMsg);
+      Fluttertoast.showToast(msg: errorMsg);
       throw ServerError(errorMsg);
     }
   }

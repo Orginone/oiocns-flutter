@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/util/hub_util.dart';
 
@@ -9,8 +9,7 @@ import '../../../../../config/custom_colors.dart';
 class ChatFunc extends StatelessWidget {
   final MessageDetailResp messageDetail;
 
-  const ChatFunc(this.messageDetail, {Key? key})
-      : super(key: key);
+  const ChatFunc(this.messageDetail, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +27,7 @@ class ChatFunc extends StatelessWidget {
               var res = await HubUtil().recallMsg(messageDetail.id);
               var apiResp = ApiResp.fromMap(res);
               if (apiResp.code != 200) {
-                EasyLoading.showError(apiResp.msg);
+                Fluttertoast.showToast(msg: apiResp.msg);
               }
             })
           ],
