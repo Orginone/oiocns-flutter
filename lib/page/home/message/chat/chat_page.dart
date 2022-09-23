@@ -43,7 +43,9 @@ class ChatPage extends GetView<ChatController> {
             onPressed: () {
               Map<String, dynamic> args = {
                 "spaceId": controller.spaceId,
-                "messageItemId": controller.messageItemId
+                "messageItemId": controller.messageItemId,
+                "messageItem": controller.messageItem,
+                "personList": controller.personList
               };
               Get.toNamed(Routers.messageSetting, arguments: args);
             })

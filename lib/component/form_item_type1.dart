@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-const Color defaultBgColor = Colors.white;
-
 //组件布局组件字段 顺序是从左到右
 class FormItemType1 extends StatelessWidget {
+  //背景
+  final Color? bgColor;
   //最左侧的插槽
   final Widget? leftSlot;
   //左上标题
@@ -19,6 +19,7 @@ class FormItemType1 extends StatelessWidget {
 
   const FormItemType1({
     Key? key,
+    this.bgColor = Colors.white,
     this.callback1,
     this.callback2,
     this.title,
@@ -31,6 +32,7 @@ class FormItemType1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       child: Ink(
+          color: bgColor,
           child: InkWell(
         onTap: () {
           callback1 != null ? callback1!() : () => {};

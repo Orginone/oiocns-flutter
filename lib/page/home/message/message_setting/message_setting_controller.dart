@@ -13,8 +13,8 @@ class MessageSettingController extends GetxController {
   TextEditingController searchGroupTextController = TextEditingController();
   MessageController messageController = Get.find<MessageController>();
   ChatController chatController = Get.find<ChatController>();
-  var textField1 = 1.obs;
-  var textField2 = 2.obs;
+  RxBool textField1 = true.obs;
+  RxBool textField2 = true.obs;
 
   //当前用户信息
   TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
@@ -26,29 +26,19 @@ class MessageSettingController extends GetxController {
   RxList<TargetResp> filterPersonList = <TargetResp>[].obs;
 
   //当前关系对象(观测)的信息
-  RxString name = ''.obs;
-  RxString remark = ''.obs;
-  RxString label = ''.obs;
-
-  late String spaceId;
-  late String messageItemId;
-
-  void test1(a) {
-    textField1.value = a;
-  }
+  Rx<MessageItemResp>? messageItem;
+  Rx<String>? spaceId;
+  Rx<String>? messageItemId;
+  RxList<TargetResp>? personList;
 
   @override
   void onInit() async {
+    //初始化
     Map<String, dynamic> args = Get.arguments;
-    spaceId = args["spaceId"];
-    messageItemId = args["messageItemId"];
-
-    //初始化关系对象
-    MessageItemResp item = chatController.messageItem;
-    name.value = item.name;
-    remark.value = item.remark;
-    label.value = item.label;
-    log.info(item);
+    spaceId = RxString(args["spaceId"]);
+    messageItemId = RxString(args["messageItemId"]);
+    messageItem = Rx<MessageItemResp>(args["messageItem"]);
+    personList = RxList<TargetResp>(args["personList"]);
     //初始化成员列表
     for (TargetResp person in chatController.personList) {
       originPersonList.add(person);

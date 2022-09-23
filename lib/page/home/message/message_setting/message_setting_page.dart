@@ -2,8 +2,11 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/component/form_item_type1.dart';
+import 'package:orginone/component/form_item_type2.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/hub_util.dart';
 
 import '../../../../component/unified_text_style.dart';
@@ -18,131 +21,118 @@ class MessageSettingPage extends GetView<MessageSettingController> {
     return UnifiedScaffold(
         appBarLeading: WidgetUtil.defaultBackBtn,
         appBarTitle: Text("会话设置", style: text20),
+        bgColor: const Color.fromRGBO(240, 240, 240, 1),
         body: Obx(() {
+          //拼接消息设置的界面,根据会话的标签分为个人,好友,单位,群组的概念
           List<Widget> widgetList = [
-            Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-              Container(
-                  width: 50,
-                  height: 50,
-                  decoration: const BoxDecoration(
-                      color: Colors.blueAccent,
-                      borderRadius: BorderRadius.all(Radius.circular(2))),
-                  margin: const EdgeInsets.all(10),
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(6),
-                  child: Text(
-                    controller.name.value.isNotEmpty
-                        ? controller.name.value.substring(
-                            0, controller.name.value.length >= 2 ? 2 : 1)
-                        : '',
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
-                  )),
-              Container(
-                  margin: const EdgeInsets.all(10),
-                  child: Text(controller.name.value,
-                      style: const TextStyle(fontSize: 24))),
-            ]),
-            const Divider(
-              height: 0,
-            )
-          ];
-          if (controller.label.value == '公司') {
-            widgetList.addAll([
-              Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                        margin: const EdgeInsets.all(10),
-                        child: Text(
-                            "组成员 ${controller.originPersonList.length} 人",
-                            style: const TextStyle(fontSize: 16))),
-                    Container(
-                      constraints: const BoxConstraints(
-                          maxHeight: 40,
-                          minHeight: 40,
-                          minWidth: 50,
-                          maxWidth: 150),
-                      margin: const EdgeInsets.all(10),
-                      child: TextField(
-                          controller: controller.searchGroupTextController,
-                          decoration: InputDecoration(
-                              suffixIcon: IconButton(
-                                  icon: const Icon(Icons.search),
-                                  onPressed: () {
-                                    controller.searchPerson();
-                                  }),
-                              contentPadding:
-                                  const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                              enabledBorder: const OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Color(0xFFDCDFE6)),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4.0)),
-                              ),
-                              focusedBorder: const OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Color(0xFF409EFF)),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4.0)),
-                              ),
-                              hintText: "搜索成员")),
-                    )
-                  ]),
-              Container(
-                height: 70,
-                margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: controller.filterPersonList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onTap: () {
-                          Get.toNamed(Routers.personDetail,
-                              arguments:
-                                  controller.filterPersonList[index].name);
-                        },
-                        child: Container(
-                          width: 50,
-                          margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              FadeInImage.assetNetwork(
-                                placeholder: 'images/person-empty.png',
-                                image:
-                                    'https://www.vcg.com/creative/1382429598',
-                                imageErrorBuilder:
-                                    (context, error, stackTrace) {
-                                  return Container(
-                                    width: 50,
-                                    height: 50,
-                                    decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                            image: AssetImage(
-                                                'images/person-empty.png'),
-                                            fit: BoxFit.cover)),
-                                  );
-                                },
-                                width: 50,
-                                height: 50,
-                              ),
-                              Text(controller.filterPersonList[index].name,
-                                  style: const TextStyle(fontSize: 12),
-                                  overflow: TextOverflow.ellipsis),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+              child: FormItemType1(
+                leftSlot: Container(
+                    width: 50,
+                    height: 50,
+                    decoration: const BoxDecoration(
+                        color: Colors.blueAccent,
+                        borderRadius: BorderRadius.all(Radius.circular(2))),
+                    margin: const EdgeInsets.all(10),
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(6),
+                    child: Text(
+                      controller.messageItem != null &&
+                              controller.messageItem!.value.name.isNotEmpty
+                          ? controller.messageItem!.value.name.substring(
+                              0,
+                              controller.messageItem!.value.name.length >= 2
+                                  ? 2
+                                  : 1)
+                          : '',
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
+                    )),
+                title: '群聊名称',
+                text: controller.messageItem?.value.name,
               ),
-              const Divider(
-                height: 0,
-              )
-            ]);
-          } else if (controller.label.value == '群组') {
-            widgetList.addAll([
+            ),
+          ];
+          widgetList
+              .add(personListWidget(controller.messageItem?.value.label ?? ''));
+          if (controller.messageItem?.value.label == '群组') {
+            widgetList.add(Container(
+              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+              child: Column(
+                children: [
+                  FormItemType2(
+                    text: "我在本群昵称",
+                    rightSlot: Text(
+                      controller.userInfo.name,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                  FormItemType2(
+                    text: "备注",
+                    rightSlot: Text(
+                      controller.messageItem?.value.remark ?? '',
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                ],
+              ),
+            ));
+          }
+
+          widgetList.addAll([
+            FormItemType2(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+              height: 50,
+              text: '设置群消息免打扰',
+              rightSlot: Switch(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  value: controller.textField1.value,
+                  activeColor: Colors.white,
+                  activeTrackColor: const Color(0xff025EFF),
+                  inactiveTrackColor: const Color(0xffF2F2F2),
+                  onChanged: (value) {
+                    controller.textField1.value = value;
+                  }),
+            ),
+            FormItemType2(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+              height: 50,
+              text: '置顶该群',
+              rightSlot: Switch(
+                  value: controller.textField2.value,
+                  activeColor: Colors.white,
+                  activeTrackColor: const Color(0xff025EFF),
+                  inactiveTrackColor: const Color(0xffF2F2F2),
+                  onChanged: (value) {
+                    controller.textField2.value = value;
+                  }),
+            ),
+          ]);
+          widgetList
+              .add(btnListWidget(controller.messageItem?.value.label ?? ''));
+          return ListView(
+            children: [
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: widgetList)
+            ],
+          );
+        }));
+  }
+
+  //群组的widget
+  Widget personListWidget(String type) {
+    switch (type) {
+      case '本人':
+      case '好友':
+        return Container();
+      case '群组':
+      case '单位':
+        return Container(
+          color: Colors.white,
+          margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+          child: Column(
+            children: [
               Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -189,9 +179,11 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                 margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: 2 + controller.filterPersonList.length,
+                    itemCount: type == '群组'
+                        ? 2 + controller.filterPersonList.length
+                        : controller.filterPersonList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      if (index == 0) {
+                      if (index == 0 && type == '群组') {
                         return GestureDetector(
                             behavior: HitTestBehavior.translucent,
                             onTap: () {},
@@ -211,7 +203,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                                 ),
                               ),
                             ));
-                      } else if (index == 1) {
+                      } else if (index == 1 && type == '群组') {
                         return Container(
                           width: 50,
                           margin: const EdgeInsets.fromLTRB(10, 0, 10, 20),
@@ -228,7 +220,9 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                       } else {
                         return GestureDetector(
                           behavior: HitTestBehavior.translucent,
-                          onTap: () {},
+                          onTap: () {
+                            Get.toNamed(Routers.personDetail);
+                          },
                           child: Container(
                             width: 50,
                             margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -254,7 +248,10 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                                   height: 50,
                                 ),
                                 Text(
-                                    controller.filterPersonList[index - 2].name,
+                                    controller
+                                        .filterPersonList[
+                                            type == '群组' ? index - 2 : index]
+                                        .name,
                                     style: const TextStyle(fontSize: 12),
                                     overflow: TextOverflow.ellipsis),
                               ],
@@ -265,138 +262,66 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                     }),
               ),
               const Divider(
-                height: 0,
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("我在本群昵称",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16)),
-                    Text(controller.userInfo.name)
-                  ],
-                ),
-              ),
-              const Divider(
-                height: 0,
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("群组备注",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16)),
-                    Text(controller.remark.value)
-                  ],
-                ),
-              ),
-              const Divider(
-                height: 0,
-              ),
-            ]);
-          } else {}
+                height: 1,
+              )
+            ],
+          ),
+        );
+    }
+    return Container();
+  }
 
-          widgetList.addAll([
-            Row(
-              children: [
-                Radio(
-                  value: 1,
-                  groupValue: controller.textField1.value,
-                  onChanged: (a) {
-                    controller.test1(a);
-                  },
-                ),
-                const Text("设置群消息免打扰")
-              ],
+  //按钮组的widget
+  Widget btnListWidget(String type) {
+    switch (type) {
+      case '本人':
+        return GFButton(
+          size: 50,
+          color: Colors.white,
+          textStyle: const TextStyle(
+              fontSize: 16, color: Color.fromRGBO(255, 0, 0, 1)),
+          fullWidthButton: true,
+          onPressed: () async {
+            HubUtil().clearHistoryMsg(controller.spaceId?.value,
+                controller.messageItemId?.value ?? '');
+          },
+          text: "清空聊天记录",
+        );
+      case '好友':
+        return Column(
+          children: [
+            GFButton(
+              size: 50,
+              color: Colors.white,
+              textStyle: const TextStyle(
+                  fontSize: 16, color: Color.fromRGBO(255, 0, 0, 1)),
+              fullWidthButton: true,
+              onPressed: () async {
+              },
+              text: "删除好友",
             ),
-            Row(
-              children: [
-                Radio(
-                  value: 2,
-                  groupValue: controller.textField2.value,
-                  onChanged: (a) {
-                    controller.test1(a);
-                  },
-                ),
-                const Text("置顶该群")
-              ],
+            const Divider(
+              height: 1,
             ),
-          ]);
-
-          if (controller.spaceId == controller.userInfo.id) {
-            widgetList.add(Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                SizedBox(
-                  width: 130,
-                  child: GFButton(
-                    color: const Color.fromRGBO(254, 240, 240, 1),
-                    textColor: const Color.fromRGBO(255, 0, 0, 1),
-                    onPressed: () async {
-                      HubUtil().clearHistoryMsg(
-                          controller.spaceId, controller.messageItemId);
-                    },
-                    text: "清空聊天记录",
-                  ),
-                ),
-              ],
-            ));
-          } else if (controller.label.value == '群组') {
-            widgetList.add(Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                SizedBox(
-                  width: 110,
-                  child: GFButton(
-                    color: const Color.fromRGBO(254, 240, 240, 1),
-                    textColor: const Color.fromRGBO(255, 0, 0, 1),
-                    onPressed: () async {},
-                    text: "退出该群",
-                  ),
-                ),
-                SizedBox(
-                  width: 110,
-                  child: GFButton(
-                    color: const Color.fromRGBO(255, 0, 0, 1),
-                    textColor: const Color.fromRGBO(254, 240, 240, 1),
-                    onPressed: () async {},
-                    text: "解散该群",
-                  ),
-                ),
-                SizedBox(
-                  width: 130,
-                  child: GFButton(
-                    color: const Color.fromRGBO(254, 240, 240, 1),
-                    textColor: const Color.fromRGBO(255, 0, 0, 1),
-                    onPressed: () async {},
-                    text: "清空聊天记录",
-                  ),
-                ),
-              ],
-            ));
-          } else {
-            widgetList.add(Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                SizedBox(
-                  width: 130,
-                  child: GFButton(
-                    color: const Color.fromRGBO(254, 240, 240, 1),
-                    textColor: const Color.fromRGBO(255, 0, 0, 1),
-                    onPressed: () async {},
-                    text: "删除好友",
-                  ),
-                ),
-              ],
-            ));
-          }
-          return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: widgetList);
-        }));
+            GFButton(
+              size: 50,
+              color: Colors.white,
+              textStyle: const TextStyle(
+                  fontSize: 16, color: Color.fromRGBO(255, 0, 0, 1)),
+              fullWidthButton: true,
+              onPressed: () async {
+                HubUtil().clearHistoryMsg(controller.spaceId?.value,
+                    controller.messageItemId?.value ?? '');
+              },
+              text: "清空聊天记录",
+            ),
+          ],
+        );
+      case '群组':
+        return Container();
+      case '单位':
+        return Container();
+    }
+    return Container();
   }
 }
