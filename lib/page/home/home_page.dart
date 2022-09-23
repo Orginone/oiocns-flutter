@@ -17,55 +17,76 @@ import 'home_controller.dart';
 class HomePage extends GetView<HomeController> {
   const HomePage({Key? key}) : super(key: key);
 
-  Widget _popMenuItem(IconData icon, String text, Function func) {
+  Widget _popMenuItem(
+      BuildContext context, IconData icon, String text, Function func) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
+        Navigator.pop(context);
         func();
       },
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(icon, color: Colors.black),
-          Container(
-            margin: EdgeInsets.only(left: 20.w),
-          ),
-          Text(text),
-        ],
+      child: SizedBox(
+        height: 40.h,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(icon, color: Colors.black),
+            Container(
+              margin: EdgeInsets.only(left: 20.w),
+            ),
+            Text(text),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _popMenu() {
+  Widget _popMenu(BuildContext context) {
     return PopupMenuButton(
       splashRadius: 10.w,
-      padding: all5,
+      padding: lr10,
       position: PopupMenuPosition.under,
       color: CustomColors.lightGrey,
       icon: const Icon(Icons.add, color: Colors.black, size: GFSize.MEDIUM),
       itemBuilder: (context) {
         return [
           PopupMenuItem(
-              child: _popMenuItem(Icons.qr_code_scanner, "扫一扫",
-                  () => Get.toNamed(Routers.scanning))),
+            child:
+                _popMenuItem(context, Icons.qr_code_scanner, "扫一扫", () async {
+              controller.log.info("測試測試");
+              Get.toNamed(Routers.scanning);
+            }),
+          ),
           PopupMenuItem(
-              child: _popMenuItem(Icons.group_add_outlined, "创建群组", () => {})),
+              child: _popMenuItem(
+            context,
+            Icons.group_add_outlined,
+            "创建群组",
+            () {},
+          )),
           PopupMenuItem(
-              child: _popMenuItem(Icons.groups_outlined, "创建单位", () => {})),
+              child: _popMenuItem(
+            context,
+            Icons.groups_outlined,
+            "创建单位",
+            () {},
+          )),
         ];
       },
     );
   }
 
-  get _actions => [
-        GFIconButton(
-            color: CustomColors.lightGrey,
-            icon: const Icon(Icons.search, color: Colors.black),
-            onPressed: () {
-              Get.toNamed(Routers.search);
-            }),
-        _popMenu()
-      ];
+  List<Widget> _actions(BuildContext context) {
+    return [
+      GFIconButton(
+          color: CustomColors.lightGrey,
+          icon: const Icon(Icons.search, color: Colors.black),
+          onPressed: () {
+            Get.toNamed(Routers.search);
+          }),
+      _popMenu(context)
+    ];
+  }
 
   get _leading => TextAvatar(
         avatarName: controller.user.userName,
@@ -150,7 +171,7 @@ class HomePage extends GetView<HomeController> {
   Widget build(BuildContext context) {
     SysUtil.setStatusBarBright();
     return UnifiedScaffold(
-      appBarActions: _actions,
+      appBarActions: _actions(context),
       appBarTitle: _title,
       appBarLeading: _leading,
       body: _body,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/form_item_type1.dart';
@@ -78,7 +78,7 @@ class PersonDetailPage extends GetView<PersonDetailController> {
                     heroTag: 'one',
                     onPressed: () async {
                       if (controller.personDetail == null) {
-                        EasyLoading.showToast("未获取到人员信息！");
+                        Fluttertoast.showToast(msg: "未获取到人员信息！");
                         return;
                       }
                       // HomeController homeController = Get.find();

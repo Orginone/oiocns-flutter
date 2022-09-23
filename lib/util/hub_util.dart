@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:common_utils/common_utils.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
@@ -305,7 +305,7 @@ class HubUtil {
           log.info("================== 连接 HUB 成功 =========================");
         } catch (error) {
           error.printError();
-          EasyLoading.showToast("连接聊天服务器失败!");
+          Fluttertoast.showToast(msg: "连接聊天服务器失败!");
           log.info("================== 连接 HUB 失败 =========================");
           _connTimer();
         }
@@ -328,7 +328,7 @@ class HubUtil {
   checkConn() {
     if (!isConn()) {
       var errorMsg = "未连接聊天服务器!";
-      EasyLoading.showToast(errorMsg);
+      Fluttertoast.showToast(msg: errorMsg);
       throw ServerError(errorMsg);
     }
   }

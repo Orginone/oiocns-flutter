@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/util/hive_util.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -75,8 +75,10 @@ class HttpUtil {
           onReceiveProgress: onReceiveProgress);
 
       return _parseResp(result);
+    } on Exception catch (error) {
+      Fluttertoast.showToast(msg: error.toString());
     } catch (error) {
-      EasyLoading.showToast(error.toString());
+      Fluttertoast.showToast(msg: "请求异常，请稍后再试。");
       rethrow;
     } finally {
       log.info("================End Get Http Request================");
@@ -112,8 +114,10 @@ class HttpUtil {
       );
 
       return _parseResp(result);
+    } on Exception catch (error) {
+      Fluttertoast.showToast(msg: error.toString());
     } catch (error) {
-      EasyLoading.showToast(error.toString());
+      Fluttertoast.showToast(msg: "请求异常，请稍后再试。");
       rethrow;
     } finally {
       log.info("================End Post Http Request================");
