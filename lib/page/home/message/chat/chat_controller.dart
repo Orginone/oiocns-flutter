@@ -39,8 +39,8 @@ class ChatController extends GetxController {
 
   @override
   void onInit() {
-    init();
     super.onInit();
+    init();
   }
 
   // 初始化

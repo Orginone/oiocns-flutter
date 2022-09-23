@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
@@ -13,7 +15,7 @@ import '../../../util/hub_util.dart';
 import 'chat/chat_controller.dart';
 
 /// 所有与后端消息交互的逻辑都先保存至数据库中再读取出来
-class MessageController extends GetxController {
+class MessageController extends GetxController with WidgetsBindingObserver {
   // 日志对象
   Logger log = Logger("MessageController");
 
@@ -24,11 +26,18 @@ class MessageController extends GetxController {
   Map<String, SpaceMessagesResp> spaceMap = {};
   Map<String, Map<String, MessageItemResp>> spaceMessageItemMap = {};
 
+  // 当前 app 状态
+  AppLifecycleState? currentAppState;
+
   @override
   void onInit() async {
-    // 连接成功后初始化聊天面板信息，
-    await _subscribingCharts();
     super.onInit();
+    // 监听页面的生命周期
+    WidgetsBinding.instance.addObserver(this);
+    // 初始化后台消息推送
+    await _initNotification();
+    // 订阅聊天面板信息
+    await _subscribingCharts();
   }
 
   void sortingGroup(TargetResp highestPriority) {
@@ -219,11 +228,54 @@ class MessageController extends GetxController {
         // 更新试图
         update();
 
+        // 如果正在后台，发送本地消息提示
+        _pushMessage(item, detail);
+
         // 缓存会话
         HubUtil().cacheChats(orgChatCache);
       } catch (error) {
         log.info("接收消息异常:$error");
       }
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    currentAppState = state;
+  }
+
+  static void notificationTapBackground(NotificationResponse response) {
+    var messageController = Get.find<MessageController>();
+    messageController.log.info("回调消息：$response");
+  }
+
+  static _initNotification() {
+    var plugin = FlutterLocalNotificationsPlugin();
+    var android = const AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initSettings = InitializationSettings(android: android);
+    plugin.initialize(
+      initSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        var messageController = Get.find<MessageController>();
+        messageController.log.info("回调消息：$response");
+      },
+      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+    );
+  }
+
+  void _pushMessage(MessageItemResp item, MessageDetailResp detail) {
+    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    if (currentAppState != null &&
+        currentAppState == AppLifecycleState.paused &&
+        detail.fromId != userInfo.id) {
+      // 当前系统在后台，且不是自己发的消息
+      var android = const AndroidNotificationDetails(
+          'channel id', 'channel name',
+          priority: Priority.max, importance: Importance.max);
+      var notificationDetails = NotificationDetails(android: android);
+      FlutterLocalNotificationsPlugin()
+          .show(0, item.name, item.showTxt, notificationDetails);
     }
   }
 }

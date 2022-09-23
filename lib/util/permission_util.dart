@@ -1,30 +1,22 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PermissionUtil {
-  static Future<bool> hasCamera() async {
-    late PermissionStatus status;
+  static final Map<Permission, String> permissionNameMap = {
+    Permission.camera: "相册",
+  };
 
-    if (Platform.isIOS) {
-      status = await Permission.camera.status;
-    } else if (Platform.isAndroid) {
-      status = await Permission.camera.status;
-    } else {
-      throw Exception("暂不支持的平台");
-    }
+  static showPermissionDialog(BuildContext context, Permission permission) {
+    var name = permissionNameMap[permission];
+    String title = '您需要授予$name权限';
+    String content = '"请转到您的手机设置打开相应$name的权限"';
 
-    return status == PermissionStatus.granted;
-  }
-
-  static showConfirmDialog(BuildContext context) {
     showCupertinoDialog(
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
-          title: const Text('您需要授予相册权限'),
-          content: const Text("请转到您的手机设置打开相应相册的权限"),
+          title: Text(title),
+          content: Text(content),
           actions: <Widget>[
             CupertinoDialogAction(
               child: const Text('取消'),

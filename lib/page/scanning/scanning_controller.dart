@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/util/permission_util.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:scan/scan.dart';
 
@@ -27,14 +28,13 @@ class ScanningController extends FullLifeCycleController
     Get.offNamed(Routers.scanningResult, arguments: result);
   }
 
-  checkSetCameraAuthorized() {
-    PermissionUtil.hasCamera().then((res) {
-      if (res) {
-        cameraAuthorized.value = true;
-      } else {
-        PermissionUtil.showConfirmDialog(context!);
-      }
-    });
+  checkSetCameraAuthorized() async {
+    var hasCamera = await Permission.camera.status;
+    if (hasCamera == PermissionStatus.granted) {
+      cameraAuthorized.value = true;
+    } else {
+      PermissionUtil.showPermissionDialog(context!, Permission.camera);
+    }
   }
 
   @override

@@ -33,8 +33,8 @@ class HomeController extends GetxController
 
   @override
   void onInit() {
-    initTabs();
-    initCurrentSpace();
+    _initTabs();
+    _initCurrentSpace();
     super.onInit();
   }
 
@@ -45,12 +45,12 @@ class HomeController extends GetxController
     super.onClose();
   }
 
-  Future<void> initCurrentSpace() async {
+  Future<void> _initCurrentSpace() async {
     currentSpace = TargetResp.copyWith(userInfo);
     currentSpace.name = "个人空间";
   }
 
-  void initTabs() {
+  void _initTabs() {
     var message = _buildTab(Icons.chat_bubble_outline, '消息');
     var relation = _buildTab(Icons.groups_outlined, '关系');
     var work = _buildTab(Icons.work_outline, '工作台');
