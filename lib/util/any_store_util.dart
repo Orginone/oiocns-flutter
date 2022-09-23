@@ -69,10 +69,29 @@ class AnyStoreUtil {
     return ApiResp.fromMap(res);
   }
 
-  Future<ApiResp> insert(String collName, String key, String domain) async {
+  Future<ApiResp> insert(String collName, dynamic data, String domain) async {
     checkConn();
-    dynamic res = _server.invoke(SendEvent.Insert.name, args: [key, domain]);
+    dynamic res = await _server.invoke(SendEvent.Insert.name, args: [collName, data, domain]);
     return ApiResp.fromMap(res);
+  }
+
+  Future<ApiResp> update(String collName, dynamic update, String domain) async {
+    checkConn();
+    dynamic res = await _server.invoke(SendEvent.Update.name, args: [collName, update, domain]);
+    return ApiResp.fromMap(res);
+  }
+
+  Future<ApiResp> remove(String collName, dynamic match, String domain) async {
+    checkConn();
+    dynamic res = await _server.invoke(SendEvent.Remove.name, args: [collName, match, domain]);
+    return ApiResp.fromMap(res);
+  }
+
+  Future<dynamic> aggregate(String collName, dynamic opt, String domain) async {
+    checkConn();
+    var aggregateName = SendEvent.Aggregate.name;
+    dynamic res = await _server.invoke(aggregateName, args: [collName, opt, domain]);
+    return ApiResp.fromMap(res).data;
   }
 
   void _onUpdated() {

@@ -4,7 +4,6 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/api/collection_api.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/util/any_store_util.dart';
@@ -155,7 +154,7 @@ class HubUtil {
         },
         "options": {}
       };
-      CollectionApi.update("chat-message", update, Domain.user.name);
+      AnyStoreUtil().insert("chat-message", update, Domain.user.name);
     } else {
       Map<String, dynamic> data = {
         "chatId": detail.id,
@@ -168,7 +167,7 @@ class HubUtil {
         "createTime": DateUtil.formatDate(detail.createTime,
             format: "yyyy/MM/dd HH:mm:ss")
       };
-      CollectionApi.insert(collName, data, Domain.user.name);
+      AnyStoreUtil().insert(collName, data, Domain.user.name);
     }
   }
 
@@ -195,7 +194,7 @@ class HubUtil {
     if (userInfo.id == spaceId) {
       // 清空会话
       Map<String, dynamic> match = {};
-      await CollectionApi.remove(collName, match, Domain.user.name);
+      await AnyStoreUtil().remove(collName, match, Domain.user.name);
     }
   }
 
@@ -215,11 +214,11 @@ class HubUtil {
         "limit": limit
       };
       List<dynamic> details =
-          await CollectionApi.aggregate(collName, options, Domain.user.name);
+          await AnyStoreUtil().aggregate(collName, options, Domain.user.name);
       List<MessageDetailResp> ans = [];
       for (var item in details) {
         item["id"] = item["chatId"];
-        ans.add(MessageDetailResp.fromMap(item));
+        ans.insert(0, MessageDetailResp.fromMap(item));
       }
       return ans;
     } else {
