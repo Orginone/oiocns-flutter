@@ -17,7 +17,7 @@ import 'message/message_page.dart';
 
 class HomeController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  Logger logger = Logger("HomeController");
+  Logger log = Logger("HomeController");
 
   MessageController messageController = Get.find<MessageController>();
   OrganizationController organizationController =

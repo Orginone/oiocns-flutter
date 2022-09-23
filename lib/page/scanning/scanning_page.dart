@@ -12,18 +12,24 @@ class ScanningPage extends GetView<ScanningController> {
 
   @override
   Widget build(BuildContext context) {
+    controller.context = context;
+    controller.checkSetCameraAuthorized();
     return UnifiedScaffold(
       appBarLeading: WidgetUtil.defaultBackBtn,
       appBarTitle: Text("扫一扫", style: text20),
+      appBarCenterTitle: true,
       body: Column(
         children: <Widget>[
           Expanded(
-            flex: 5,
-            child: QRView(
-              key: GlobalKey(debugLabel: "QR"),
-              onQRViewCreated: controller.onQRViewCreated,
-            ),
-          ),
+              flex: 5,
+              child: Obx(
+                () => controller.cameraAuthorized.value
+                    ? QRView(
+                        key: GlobalKey(debugLabel: "QR"),
+                        onQRViewCreated: controller.onQRViewCreated,
+                      )
+                    : Container(color: Colors.black),
+              )),
           Expanded(
             flex: 1,
             child: Center(child: GetBuilder<ScanningController>(
