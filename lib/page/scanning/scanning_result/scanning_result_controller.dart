@@ -7,16 +7,16 @@ import '../../../util/regex_util.dart';
 class ScanningResultController extends GetxController {
   Logger log = Logger("ScanningResultController");
 
-  late ScanResultType resultType;
+  Rx<ScanResultType> resultType = ScanResultType.unknown.obs;
   late String codeRes;
 
   @override
   void onInit() {
     codeRes = Get.arguments;
     if (CustomRegexUtil.isWebsite(codeRes)) {
-      resultType = ScanResultType.website;
+      resultType.value = ScanResultType.website;
     } else {
-      resultType = ScanResultType.unknown;
+      resultType.value = ScanResultType.unknown;
     }
     super.onInit();
   }

@@ -43,6 +43,7 @@ import 'package:orginone/page/login/login_binding.dart';
 import 'package:orginone/page/login/login_page.dart';
 import 'package:orginone/page/register/register_binding.dart';
 import 'package:orginone/page/register/register_page.dart';
+import 'package:orginone/page/scanning/scanning_binding.dart';
 import 'package:orginone/page/scanning/scanning_page.dart';
 import 'package:orginone/page/scanning/scanning_result/scanning_result_binding.dart';
 import 'package:orginone/page/scanning/scanning_result/scanning_result_pge.dart';
