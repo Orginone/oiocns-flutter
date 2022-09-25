@@ -16,7 +16,7 @@ class TeamResp {
   @HiveField(3)
   String targetId;
   @HiveField(4)
-  String authId;
+  String? authId;
   @HiveField(5)
   String remark;
   @HiveField(6)

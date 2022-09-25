@@ -271,7 +271,7 @@ class MessageController extends GetxController with WidgetsBindingObserver {
         detail.fromId != userInfo.id) {
       // 当前系统在后台，且不是自己发的消息
       var android = const AndroidNotificationDetails(
-          'channel id', 'channel name',
+          'NewMessageNotification', '新消息通知',
           priority: Priority.max, importance: Importance.max);
       var notificationDetails = NotificationDetails(android: android);
       FlutterLocalNotificationsPlugin()
