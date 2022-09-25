@@ -123,7 +123,7 @@ class ChatMessageDetail extends GetView<ChatController> {
       case MessageType.text:
       case MessageType.unknown:
         return TextMessage(
-            messageDetail.msgBody,
+            message: messageDetail.msgBody,
             messageDetail.fromId == userInfo.id
                 ? TextDirection.rtl
                 : TextDirection.ltr);

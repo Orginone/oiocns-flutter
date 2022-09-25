@@ -8,7 +8,7 @@ void main() async {
   // 逻辑绑定
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 初始化 hive, 初始化 sqlite
+  // 初始化 hive
   await HiveUtil().init();
 
   // 日志初始化

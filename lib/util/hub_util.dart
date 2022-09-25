@@ -154,7 +154,7 @@ class HubUtil {
         },
         "options": {}
       };
-      AnyStoreUtil().insert("chat-message", update, Domain.user.name);
+      await AnyStoreUtil().insert("chat-message", update, Domain.user.name);
     } else {
       Map<String, dynamic> data = {
         "chatId": detail.id,
@@ -165,9 +165,9 @@ class HubUtil {
         "msgBody": detail.msgBody,
         "sessionId": sessionId,
         "createTime": DateUtil.formatDate(detail.createTime,
-            format: "yyyy/MM/dd HH:mm:ss")
+            format: "yyyy-MM-dd HH:mm:ss")
       };
-      AnyStoreUtil().insert(collName, data, Domain.user.name);
+      await AnyStoreUtil().insert(collName, data, Domain.user.name);
     }
   }
 

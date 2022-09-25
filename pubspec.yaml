@@ -76,6 +76,7 @@ dependencies:
   scan: ^1.6.0
   webview_flutter: ^3.0.4
   flutter_local_notifications: ^11.0.0
+  flutter_html: ^3.0.0-alpha.5
 
   # 组件管理库
   get: ^4.6.5

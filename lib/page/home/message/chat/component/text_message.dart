@@ -1,23 +1,23 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/component/unified_text_style.dart';
 
-import '../../../../../component/unified_edge_insets.dart';
 import '../../../../../config/custom_colors.dart';
+import '../../../../../util/string_util.dart';
 
 double defaultWidth = 10.w;
+const String defaultMsg = "";
 
 class TextMessage extends StatelessWidget {
   final String? message;
   final TextDirection textDirection;
 
-  const TextMessage(this.message, this.textDirection, {Key? key})
+  const TextMessage(this.textDirection, {Key? key, this.message = defaultMsg})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    String showText = StringUtil.removeHtml(message);
     return Stack(
       textDirection: textDirection,
       children: [
@@ -36,15 +36,20 @@ class TextMessage extends StatelessWidget {
           ),
         ),
         Container(
-            constraints: BoxConstraints(maxWidth: 180.w),
-            padding: EdgeInsets.all(defaultWidth),
-            margin: textDirection == TextDirection.ltr
-                ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
-                : EdgeInsets.only(right: defaultWidth, top: defaultWidth / 2),
-            decoration: BoxDecoration(
-                color: CustomColors.seaBlue,
-                borderRadius: BorderRadius.all(Radius.circular(defaultWidth))),
-            child: Text(message ?? "", style: text14Bold,)),
+          constraints: BoxConstraints(maxWidth: 180.w),
+          padding: EdgeInsets.all(defaultWidth),
+          margin: textDirection == TextDirection.ltr
+              ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
+              : EdgeInsets.only(right: defaultWidth, top: defaultWidth / 2),
+          decoration: BoxDecoration(
+            color: CustomColors.seaBlue,
+            borderRadius: BorderRadius.all(Radius.circular(defaultWidth)),
+          ),
+          child: Text(
+            showText,
+            style: text14Bold,
+          ),
+        ),
       ],
     );
   }
