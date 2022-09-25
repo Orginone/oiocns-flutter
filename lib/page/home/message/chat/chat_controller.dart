@@ -97,7 +97,6 @@ class ChatController extends GetxController {
   }
 
   void orgChatHandler() {
-
     // 过滤掉自己的再加入
     OrgChatCache orgChatCache = messageController.orgChatCache;
     orgChatCache.openChats = orgChatCache.openChats
@@ -111,6 +110,7 @@ class ChatController extends GetxController {
     messageItem.noRead = 0;
     messageItem.personNum = personMap.length;
     orgChatCache.openChats.add(messageItem);
+    messageController.update();
 
     HubUtil().cacheChats(messageController.orgChatCache);
   }
