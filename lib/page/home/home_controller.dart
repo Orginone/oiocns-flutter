@@ -59,7 +59,7 @@ class HomeController extends GetxController
     tabs = <TabCombine>[
       TabCombine(message, const MessagePage()),
       TabCombine(relation, const OrganizationPage()),
-      TabCombine(work, const MessagePage()),
+      TabCombine(work, Container()),
       TabCombine(my, const MinePage()),
     ];
 
