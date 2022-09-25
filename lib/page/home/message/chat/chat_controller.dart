@@ -30,6 +30,7 @@ class ChatController extends GetxController {
   late String messageItemId;
 
   // 当前群所有人
+  late RxString titleName;
   late Map<String, TargetResp> personMap;
   late Map<String, String> personNameMap;
   late List<TargetResp> personList;
@@ -50,6 +51,7 @@ class ChatController extends GetxController {
     messageItem = args["messageItem"];
     spaceId = args["spaceId"];
     messageItemId = args["messageItemId"];
+    titleName = messageItem.name.obs;
 
     // 清空所有聊天记录
     messageDetails = [];
@@ -60,6 +62,7 @@ class ChatController extends GetxController {
     // 初始化老数据个数，查询聊天记录的个数
     await getPersons();
     await getHistoryMsg();
+    titleName.value = getTitleName();
     update();
 
     // 处理缓存
@@ -190,5 +193,14 @@ class ChatController extends GetxController {
       messageScrollKey.value = uuid.v4();
     }
     update();
+  }
+
+  /// 获取顶部群名称
+  String getTitleName() {
+    String itemName = messageItem.name;
+    if (messageItem.typeName != "人员") {
+      itemName = "$itemName(${personList.length})";
+    }
+    return itemName;
   }
 }

@@ -21,10 +21,10 @@ class ChatPage extends GetView<ChatController> {
   const ChatPage({Key? key}) : super(key: key);
 
   get _title => Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        Text(
-          controller.messageItem.name,
-          style: text20,
-        ),
+        Obx(() => Text(
+              controller.titleName.value,
+              style: text20,
+            )),
         Container(
           margin: left10,
         ),
