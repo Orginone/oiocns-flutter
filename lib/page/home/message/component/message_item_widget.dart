@@ -46,7 +46,7 @@ class MessageItemWidget extends GetView<MessageController> {
           visible: notRead > 0,
           child: Align(
             alignment: Alignment.topRight,
-            child: GFBadge(child: Text("$notRead")),
+            child: GFBadge(child: Text("${notRead > 99 ? "99+" : notRead}")),
           ),
         )
       ],
