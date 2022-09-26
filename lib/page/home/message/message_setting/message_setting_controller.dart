@@ -40,7 +40,7 @@ class MessageSettingController extends GetxController {
     messageItem = Rx<MessageItemResp>(args["messageItem"]);
     personList = RxList<TargetResp>(args["personList"]);
     //初始化成员列表
-    for (TargetResp person in chatController.personList) {
+    for (TargetResp person in personList!) {
       originPersonList.add(person);
       filterPersonList.add(person);
     }

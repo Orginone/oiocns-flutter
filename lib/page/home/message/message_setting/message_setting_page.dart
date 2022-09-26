@@ -6,7 +6,6 @@ import 'package:orginone/component/form_item_type1.dart';
 import 'package:orginone/component/form_item_type2.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/hub_util.dart';
 
 import '../../../../component/unified_text_style.dart';
@@ -221,7 +220,9 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                         return GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () {
-                            Get.toNamed(Routers.personDetail);
+                            Get.toNamed(Routers.personDetail,arguments:
+                              controller.filterPersonList[index].team.code
+                            );
                           },
                           child: Container(
                             width: 50,

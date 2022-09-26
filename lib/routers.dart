@@ -1,8 +1,8 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
-import 'package:orginone/page/home/component/personDetail/person_detail_binding.dart';
-import 'package:orginone/page/home/component/personDetail/person_detail_page.dart';
+import 'package:orginone/page/home/component/person_detail/person_detail_binding.dart';
+import 'package:orginone/page/home/component/person_detail/person_detail_page.dart';
 import 'package:orginone/page/home/component/person_add/person_add_binding.dart';
 import 'package:orginone/page/home/component/person_add/person_add_page.dart';
 import 'package:orginone/page/home/component/space_choose/space_choose_binding.dart';
@@ -64,7 +64,7 @@ class Routers {
   static const String groups = "/groups";
   static const String cohorts = "/cohorts";
   static const String dept = "/dept";
-  static const String personDetail = "/personDetail";
+  static const String personDetail = "/person_detail";
   static const String personAdd = "/personAdd";
   static const String unitDetail = "/unitDetail";
   static const String unitCreate = "/unitCreate";

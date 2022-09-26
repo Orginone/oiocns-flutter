@@ -58,7 +58,7 @@ class FriendsPage extends GetView<FriendsController> {
   Widget _item(TargetResp targetResp) {
     return GestureDetector(
         onTap: () {
-          Get.toNamed(Routers.personDetail, arguments: targetResp.name);
+          Get.toNamed(Routers.personDetail, arguments: targetResp.team.code);
         },
         child: Container(
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),

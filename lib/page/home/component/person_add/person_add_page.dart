@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/getwidget.dart';
+import 'package:getwidget/components/button/gf_button.dart';
+import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/component/person_add/person_add_controller.dart';
+import 'package:orginone/util/widget_util.dart';
 
 class PersonAddPage extends GetView<PersonAddController> {
   const PersonAddPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: GFAppBar(
-          leading: GFIconButton(
-            color: Colors.white,
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => Get.back(),
-            type: GFButtonType.transparent,
-          ),
-          title: const Text("好友验证"),
-        ),
+    return UnifiedScaffold(
+        appBarTitle: Text("好友添加", style: text16),
+        appBarLeading: WidgetUtil.defaultBackBtn,
+        bgColor: const Color.fromRGBO(240, 240, 240, 1),
         body: Container(
           padding: const EdgeInsets.all(20),
           child: Form(
@@ -45,7 +42,7 @@ class PersonAddPage extends GetView<PersonAddController> {
                     controller: controller.nickNameTextController,
                     decoration: InputDecoration(
                         hintText: controller
-                            .personDetailController.personDetail!.team["name"],
+                            .personDetailController.personDetail!.team.name,
                         hintStyle: const TextStyle(color: Colors.grey),
                         labelText: '备注',
                         contentPadding:

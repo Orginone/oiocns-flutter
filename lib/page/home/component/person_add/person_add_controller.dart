@@ -4,7 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/person_api.dart';
-import 'package:orginone/page/home/component/personDetail/person_detail_controller.dart';
+import 'package:orginone/page/home/component/person_detail/person_detail_controller.dart';
 
 
 class PersonAddController extends GetxController {
