@@ -1,4 +1,3 @@
-
 import 'package:html/parser.dart';
 
 class StringUtil {
@@ -10,6 +9,9 @@ class StringUtil {
   }
 
   static String removeHtml(String? target) {
+    if (target == null) {
+      return "";
+    }
     var document = parse(target);
     return parse(document.body?.text).documentElement?.text ?? "";
   }
