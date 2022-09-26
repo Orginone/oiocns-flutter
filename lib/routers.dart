@@ -20,6 +20,8 @@ import 'package:orginone/page/home/message/message_page.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_binding.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_page.dart';
 import 'package:orginone/page/home/mine/mine_binding.dart';
+import 'package:orginone/page/home/mine/mine_card/mine_card_binding.dart';
+import 'package:orginone/page/home/mine/mine_card/mine_card_page.dart';
 import 'package:orginone/page/home/mine/mine_info/mine_info_binding.dart';
 import 'package:orginone/page/home/mine/mine_info/mine_info_page.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
@@ -70,6 +72,7 @@ class Routers {
   static const String unitCreate = "/unitCreate";
   static const String mine = "/mine";
   static const String mineInfo = "/mineInfo";
+  static const String mineCard = "/mineCard";
   static const String mineUnit = "/mineUnit";
   static const String search = "/search";
   static const String scanning = "/scanning";
@@ -175,6 +178,11 @@ class Routers {
         name: Routers.mineInfo,
         page: () => const MineInfoPage(),
         binding: MineInfoBinding(),
+      ),
+      GetPage(
+        name: Routers.mineCard,
+        page: () => const MineCardPage(),
+        binding: MineCardBinding(),
       ),
       GetPage(
         name: Routers.mineUnit,
