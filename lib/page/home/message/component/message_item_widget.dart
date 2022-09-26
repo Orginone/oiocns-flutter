@@ -8,6 +8,7 @@ import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/string_util.dart';
 
 import '../../../../component/text_avatar.dart';
 import '../../../../component/unified_text_style.dart';
@@ -86,7 +87,7 @@ class MessageItemWidget extends GetView<MessageController> {
           ],
         ),
         Text(
-          messageItem.showTxt ?? "",
+          StringUtil.removeHtml(messageItem.showTxt),
           style: text12Grey,
           overflow: TextOverflow.ellipsis,
         ),
