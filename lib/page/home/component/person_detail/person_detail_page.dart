@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/form_item_type1.dart';
+import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/widget_util.dart';
 
 import 'person_detail_controller.dart';
 
@@ -14,21 +16,11 @@ class PersonDetailPage extends GetView<PersonDetailController> {
   Widget build(BuildContext context) {
     return GetBuilder<PersonDetailController>(
       init: PersonDetailController(),
-      builder: (item) => Scaffold(
-          appBar: GFAppBar(
-            leading: GFIconButton(
-              color: Colors.white,
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => Get.back(),
-              type: GFButtonType.transparent,
-            ),
-            title: Text(
-                item.personDetail != null ? item.personDetail!.nickName : '',
-                style: const TextStyle(fontSize: 24)),
-          ),
-          backgroundColor: const Color.fromRGBO(240, 240, 240, 1),
+      builder: (item) => UnifiedScaffold(
+          appBarTitle: Text("用户详情", style: text16),
+          appBarLeading: WidgetUtil.defaultBackBtn,
+          bgColor: const Color.fromRGBO(240, 240, 240, 1),
           body: Container(
-            color: const Color.fromRGBO(255, 255, 255, 1),
             margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
             child: Row(children: [
               Expanded(
@@ -39,7 +31,7 @@ class PersonDetailPage extends GetView<PersonDetailController> {
                     FormItemType1(
                         title: '昵称',
                         text: item.personDetail != null
-                            ? item.personDetail!.nickName
+                            ? item.personDetail!.name
                             : '',
                         suffixIcon: const Icon(Icons.keyboard_arrow_right)),
                     const Divider(
@@ -48,7 +40,7 @@ class PersonDetailPage extends GetView<PersonDetailController> {
                     FormItemType1(
                         title: '姓名',
                         text: item.personDetail != null
-                            ? item.personDetail!.team['name']
+                            ? item.personDetail!.team.name
                             : '',
                         suffixIcon: const Icon(Icons.keyboard_arrow_right)),
                     const Divider(
@@ -57,7 +49,7 @@ class PersonDetailPage extends GetView<PersonDetailController> {
                     FormItemType1(
                         title: '电话',
                         text: item.personDetail != null
-                            ? item.personDetail!.team['code']
+                            ? item.personDetail!.team.code
                             : '',
                         suffixIcon: const Icon(Icons.keyboard_arrow_right)),
                     const Divider(
@@ -68,9 +60,8 @@ class PersonDetailPage extends GetView<PersonDetailController> {
               ),
             ]),
           ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: Row(
+          floatingButton: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Container(
                 margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -120,27 +111,17 @@ class PersonDetailPage extends GetView<PersonDetailController> {
                       //   );
                       // }
                     },
-
-                    ///长按提示
                     tooltip: "发送消息",
-
-                    ///设置悬浮按钮的背景
                     backgroundColor: Colors.blueAccent,
-
-                    ///水波纹颜色
                     splashColor: Colors.white,
-
-                    ///配制阴影高度 未点击时
                     elevation: 0.0,
-
-                    ///配制阴影高度 点击时
                     highlightElevation: 25.0,
                     // Text('添加好友',style:TextStyle(fontSize: 10)),
                     child: const Icon(Icons.message,
                         size: 30, color: Colors.white)),
               ),
               Container(
-                margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                margin: const EdgeInsets.fromLTRB(10, 0, 5, 0),
                 child: FloatingActionButton(
                     onPressed: () {
                       Get.toNamed(Routers.personAdd,
