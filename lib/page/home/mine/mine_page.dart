@@ -17,7 +17,9 @@ class MinePage extends GetView<MineController> {
         ChooseItemType1(Icons.group, "我的单位", () {
           Get.toNamed(Routers.mineUnit);
         }),
-        ChooseItemType1(Icons.account_box, "账号绑定", () {}),
+        ChooseItemType1(Icons.account_box, "我的名片", () {
+          Get.toNamed(Routers.mineCard);
+        }),
         ChooseItemType1(Icons.group_add_sharp, "安全设置", () {})
       ],
     );
