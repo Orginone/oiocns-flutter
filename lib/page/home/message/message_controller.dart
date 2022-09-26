@@ -34,8 +34,6 @@ class MessageController extends GetxController with WidgetsBindingObserver {
     super.onInit();
     // 监听页面的生命周期
     WidgetsBinding.instance.addObserver(this);
-    // 初始化后台消息推送
-    await _initNotification();
     // 订阅聊天面板信息
     await _subscribingCharts();
   }
@@ -243,25 +241,6 @@ class MessageController extends GetxController with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     currentAppState = state;
-  }
-
-  static void notificationTapBackground(NotificationResponse response) {
-    var messageController = Get.find<MessageController>();
-    messageController.log.info("回调消息：$response");
-  }
-
-  static _initNotification() {
-    var plugin = FlutterLocalNotificationsPlugin();
-    var android = const AndroidInitializationSettings('@mipmap/ic_launcher');
-    var initSettings = InitializationSettings(android: android);
-    plugin.initialize(
-      initSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-        var messageController = Get.find<MessageController>();
-        messageController.log.info("回调消息：$response");
-      },
-      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
-    );
   }
 
   void _pushMessage(MessageItemResp item, MessageDetailResp detail) {
