@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api_resp/scan_results.dart';
+import 'package:orginone/enumeration/system_scan_data_type.dart';
 import 'package:orginone/util/permission_util.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -25,7 +29,24 @@ class ScanningController extends FullLifeCycleController
 
   toScanningResult(XFile file) async {
     String? result = await Scan.parse(file.path);
-    Get.offNamed(Routers.scanningResult, arguments: result);
+    Map<String,dynamic> resultMap = jsonDecode(result ?? '');
+    //如果解析出来对象中有type,则为系统类消息,有些可能是要跳转界面
+    if (resultMap['type'] != null) {
+      ScanResults scanResults = ScanResults.fromMap(resultMap);
+      switch (scanResults.scanResultType) {
+        case SystemScanDataType.person:
+            Get.offNamed(Routers.personDetail,arguments: scanResults.data);
+          break;
+        case SystemScanDataType.company:
+          break;
+        case SystemScanDataType.unknown:
+          break;
+        default:
+          Get.offNamed(Routers.scanningResult, arguments: result);
+      }
+    } else {
+      Get.offNamed(Routers.scanningResult, arguments: result);
+    }
   }
 
   checkSetCameraAuthorized() async {

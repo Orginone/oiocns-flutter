@@ -1,1 +1,0 @@
-enum QrDataType { person, company }
