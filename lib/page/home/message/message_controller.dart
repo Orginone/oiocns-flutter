@@ -38,55 +38,61 @@ class MessageController extends GetxController with WidgetsBindingObserver {
     await _subscribingCharts();
   }
 
-  void sortingGroup(TargetResp highestPriority) {
-    // 匹配会话空间
-    SpaceMessagesResp? matchSpace;
-    var spaces = orgChatCache.chats;
-    for (SpaceMessagesResp space in spaces) {
-      var isCurrentSpace = space.id == highestPriority.id;
-      space.isExpand = isCurrentSpace;
-      if (isCurrentSpace) {
-        matchSpace = space;
-        break;
+  // 分组排序
+  sortingGroups() {
+    HomeController homeController = Get.find<HomeController>();
+    List<SpaceMessagesResp> groups = orgChatCache.chats;
+    List<SpaceMessagesResp> spaces = [];
+    for (SpaceMessagesResp space in groups) {
+      if (space.id == homeController.currentSpace.id) {
+        space.isExpand = true;
+        spaces.insert(0, space);
+      } else {
+        spaces.add(space);
       }
     }
-    if (matchSpace != null) {
-      // 重新排序
-      spaces.remove(matchSpace);
-      spaces.insert(0, matchSpace);
-    }
-    update();
+    orgChatCache.chats = spaces;
   }
 
-  @Deprecated("废弃，新会话从缓存中拿")
-  Future<dynamic> getCharts() async {
+  // 组内会话排序
+  sortingItems(SpaceMessagesResp spaceMessagesResp) {
+    // 会话
+    spaceMessagesResp.chats.sort((first, second) {
+      if (first.msgTime == null || second.msgTime == null) {
+        return 0;
+      } else {
+        return -first.msgTime!.compareTo(second.msgTime!);
+      }
+    });
+  }
+
+  Future<dynamic> refreshCharts() async {
     // 读取聊天群
     List<SpaceMessagesResp> messageGroups = await HubUtil().getChats();
-    _spaceHandling(messageGroups);
 
-    // 空间排序
-    HomeController homeController = Get.find<HomeController>();
-    sortingGroup(homeController.currentSpace);
-
-    // 更新视图
+    // 处理空间并排序
+    orgChatCache.chats = _spaceHandling(messageGroups);
+    sortingGroups();
     update();
 
     // 缓存消息
-    orgChatCache.chats = messageGroups;
     await HubUtil().cacheChats(orgChatCache);
   }
 
   /// 订阅聊天群变动
-  _subscribingCharts() {
+  _subscribingCharts() async {
     SubscriptionKey key = SubscriptionKey.orgChat;
     String domain = Domain.user.name;
-    AnyStoreUtil().subscribing(key, domain, _updateChats);
+    await AnyStoreUtil().subscribing(key, domain, _updateChats);
+    if (orgChatCache.chats.isEmpty) {
+      await refreshCharts();
+    }
   }
 
   /// 从订阅通道拿到的数据直接更新试图
   _updateChats(Map<String, dynamic> data) {
     orgChatCache = OrgChatCache(data);
-    _spaceHandling(orgChatCache.chats);
+    orgChatCache.chats = _spaceHandling(orgChatCache.chats);
     _latestMsgHandling(orgChatCache.messageDetail);
     update();
   }
@@ -107,40 +113,45 @@ class MessageController extends GetxController with WidgetsBindingObserver {
   }
 
   /// 空间处理
-  _spaceHandling(List<SpaceMessagesResp> messageGroups) {
-    // 清空数组
-    spaceMap.clear();
-    spaceMessageItemMap.clear();
-
-    // 处理数组
-    var homeController = Get.find<HomeController>();
+  List<SpaceMessagesResp> _spaceHandling(List<SpaceMessagesResp> groups) {
+    // 新的数组
     List<SpaceMessagesResp> spaces = [];
-    for (var messageGroup in messageGroups) {
-      if (messageGroup.id == homeController.currentSpace.id) {
-        messageGroup.isExpand = true;
-        spaces.insert(0, messageGroup);
-      } else {
-        spaces.add(messageGroup);
-      }
-      spaceMap[messageGroup.id] = messageGroup;
+    Map<String, SpaceMessagesResp> newSpaceMap = {};
+    Map<String, Map<String, MessageItemResp>> newSpaceMessageItemMap = {};
 
-      // 排序
-      List<MessageItemResp> chats = messageGroup.chats;
-      chats.sort((first, second) {
-        if (first.msgTime == null || second.msgTime == null) {
-          return 0;
-        } else {
-          return -first.msgTime!.compareTo(second.msgTime!);
-        }
-      });
+    for (var group in groups) {
+      // 初始数据
+      String spaceId = group.id;
+      List<MessageItemResp> chats = group.chats;
 
       // 建立索引
-      spaceMessageItemMap[messageGroup.id] = {};
+      newSpaceMap[spaceId] = group;
+      newSpaceMessageItemMap[spaceId] = {};
+
+      // 数据映射
       for (MessageItemResp messageItem in chats) {
-        spaceMessageItemMap[messageGroup.id]![messageItem.id] = messageItem;
+        var id = messageItem.id;
+        if (spaceMessageItemMap.containsKey(spaceId)) {
+          var messageItemMap = spaceMessageItemMap[spaceId]!;
+          if (messageItemMap.containsKey(id)) {
+            var oldItem = messageItemMap[id]!;
+            messageItem.msgTime = oldItem.msgTime;
+            messageItem.msgType = oldItem.msgType;
+            messageItem.msgBody = oldItem.msgBody;
+            messageItem.personNum = oldItem.personNum;
+            messageItem.noRead = oldItem.noRead;
+            messageItem.showTxt = oldItem.showTxt;
+          }
+        }
+        newSpaceMessageItemMap[spaceId]![id] = messageItem;
       }
+
+      // 组内排序
+      sortingItems(group);
     }
-    orgChatCache.chats = spaces;
+    spaceMap = newSpaceMap;
+    spaceMessageItemMap = newSpaceMessageItemMap;
+    return spaces;
   }
 
   String _msgPreHandler(MessageDetailResp detail, TargetResp userInfo) {
@@ -228,6 +239,9 @@ class MessageController extends GetxController with WidgetsBindingObserver {
 
         orgChatCache.messageDetail = detail;
         orgChatCache.target = item;
+        for (var group in orgChatCache.chats) {
+          sortingItems(group);
+        }
 
         // 更新试图
         update();

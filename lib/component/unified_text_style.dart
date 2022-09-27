@@ -18,11 +18,15 @@ get text12WhiteBold => TextStyle(
 get text12Blue => TextStyle(fontSize: 12.sp, color: Colors.blueAccent);
 
 get text14Bold => TextStyle(
-    fontSize: 14.sp, color: Colors.black, fontWeight: FontWeight.bold);
+    fontSize: 14.sp,
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
+    decoration: TextDecoration.none);
 
 get text14Grey => TextStyle(fontSize: 14.sp, color: Colors.grey);
 
-get text16 => TextStyle(fontSize: 16.sp, color: Colors.black);
+get text16 => TextStyle(
+    fontSize: 16.sp, color: Colors.black, decoration: TextDecoration.none);
 
 get text16Bold => TextStyle(
     fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.bold);

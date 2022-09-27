@@ -17,6 +17,19 @@ import 'home_controller.dart';
 class HomePage extends GetView<HomeController> {
   const HomePage({Key? key}) : super(key: key);
 
+  @override
+  Widget build(BuildContext context) {
+    SysUtil.setStatusBarBright();
+    controller.context = context;
+    return UnifiedScaffold(
+      appBarActions: _actions(context),
+      appBarTitle: _title,
+      appBarLeading: _leading,
+      body: _body,
+      bottomNavigationBar: _bottomNavigatorBar,
+    );
+  }
+
   Widget _popMenuItem(
       BuildContext context, IconData icon, String text, Function func) {
     return GestureDetector(
@@ -51,26 +64,31 @@ class HomePage extends GetView<HomeController> {
       itemBuilder: (context) {
         return [
           PopupMenuItem(
-            child:
-                _popMenuItem(context, Icons.qr_code_scanner, "扫一扫", () async {
-              controller.log.info("測試測試");
-              Get.toNamed(Routers.scanning);
-            }),
+            child: _popMenuItem(
+              context,
+              Icons.qr_code_scanner,
+              "扫一扫",
+              () async {
+                Get.toNamed(Routers.scanning);
+              },
+            ),
           ),
           PopupMenuItem(
-              child: _popMenuItem(
-            context,
-            Icons.group_add_outlined,
-            "创建群组",
-            () {},
-          )),
+            child: _popMenuItem(
+              context,
+              Icons.group_add_outlined,
+              "创建群组",
+              () {},
+            ),
+          ),
           PopupMenuItem(
-              child: _popMenuItem(
-            context,
-            Icons.groups_outlined,
-            "创建单位",
-            () {},
-          )),
+            child: _popMenuItem(
+              context,
+              Icons.groups_outlined,
+              "创建单位",
+              () {},
+            ),
+          ),
         ];
       },
     );
@@ -166,16 +184,4 @@ class HomePage extends GetView<HomeController> {
           tabs: controller.tabs.map((e) => e.tab).toList(),
         ),
       );
-
-  @override
-  Widget build(BuildContext context) {
-    SysUtil.setStatusBarBright();
-    return UnifiedScaffold(
-      appBarActions: _actions(context),
-      appBarTitle: _title,
-      appBarLeading: _leading,
-      body: _body,
-      bottomNavigationBar: _bottomNavigatorBar,
-    );
-  }
 }

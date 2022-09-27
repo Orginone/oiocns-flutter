@@ -18,7 +18,7 @@ import '../page/home/message/message_controller.dart';
 import 'errors.dart';
 import 'hive_util.dart';
 
-enum ReceiveEvent { RecvMsg }
+enum ReceiveEvent { RecvMsg, ChatRefresh }
 
 enum SendEvent {
   TokenAuth,
@@ -49,6 +49,7 @@ class HubUtil {
       HubConnectionBuilder().withUrl(Constant.hub).build();
   Rx<HubConnectionState?>? state;
   bool _connTimerLocker = false;
+  bool _authTimerLocker = false;
 
   final Map<String, void Function(List<dynamic>?)> events = {};
 
@@ -76,7 +77,7 @@ class HubUtil {
       return;
     }
     _connTimerLocker = true;
-    Duration duration = const Duration(seconds: 30);
+    Duration duration = const Duration(seconds: 5);
     Timer.periodic(duration, (timer) async {
       await tryConn();
       setStatus();
@@ -96,9 +97,16 @@ class HubUtil {
 
   void _initEvents() {
     events[ReceiveEvent.RecvMsg.name] = (params) {
-      // 消息页面每时都在接收
-      var messageController = Get.find<MessageController>();
-      messageController.onReceiveMessage(params ?? []);
+      if (Get.isRegistered<MessageController>()) {
+        var messageController = Get.find<MessageController>();
+        messageController.onReceiveMessage(params ?? []);
+      }
+    };
+    events[ReceiveEvent.ChatRefresh.name] = (params) {
+      if (Get.isRegistered<MessageController>()) {
+        var messageController = Get.find<MessageController>();
+        messageController.refreshCharts();
+      }
     };
   }
 
@@ -109,9 +117,24 @@ class HubUtil {
     }
   }
 
+  Future<dynamic> _authTimer(String accessToken) async {
+    if (_authTimerLocker) {
+      return;
+    }
+    _authTimerLocker = true;
+    Duration duration = const Duration(seconds: 2);
+    Timer.periodic(duration, (timer) {
+      if (isConn()) {
+        _auth(accessToken);
+      } else {
+        timer.cancel();
+        _authTimerLocker = false;
+      }
+    });
+  }
+
   Future<dynamic> _auth(String accessToken) async {
-    checkConn();
-    return _server.invoke(SendEvent.TokenAuth.name, args: [accessToken]);
+    await _server.invoke(SendEvent.TokenAuth.name, args: [accessToken]);
   }
 
   Future<dynamic> disconnect() async {
@@ -299,6 +322,9 @@ class HubUtil {
           // 开启连接，鉴权
           await _server.start();
           await _auth(HiveUtil().accessToken);
+
+          // 定时刷新权限
+          _authTimer(HiveUtil().accessToken);
           setStatus();
 
           log.info("==> connected success");
