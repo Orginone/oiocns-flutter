@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/components/button/gf_button.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/config/custom_colors.dart';
@@ -12,7 +11,6 @@ import '../../../component/unified_edge_insets.dart';
 import '../../../component/unified_text_style.dart';
 import '../../../routers.dart';
 import '../home_controller.dart';
-import '../message/chat/component/chat_box.dart';
 
 class OrganizationPage extends GetView<OrganizationController> {
   const OrganizationPage({Key? key}) : super(key: key);
@@ -32,7 +30,6 @@ class OrganizationPage extends GetView<OrganizationController> {
           items.add(_groups);
           items.add(_unit());
         }
-        items.add(ChatBox(() => {}));
         return ListView(children: items);
       },
     );
