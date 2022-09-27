@@ -209,13 +209,19 @@ class MessageController extends GetxController with WidgetsBindingObserver {
           item.showTxt = "$name：${item.showTxt}";
         }
 
-        bool isTalking = false;
         if (Get.isRegistered<ChatController>()) {
           ChatController chatController = Get.find();
-          isTalking =
-              chatController.onReceiveMsg(detail.spaceId!, sessionId, detail);
+          chatController.onReceiveMsg(detail.spaceId!, sessionId, detail);
+        }
+        bool isTalking = false;
+        for (MessageItemResp openItem in orgChatCache.openChats) {
+          if (openItem.id == item.id && openItem.spaceId == item.spaceId) {
+            isTalking = true;
+          }
         }
         if (!isTalking && detail.fromId != userInfo.id) {
+          // 如果正在后台，发送本地消息提示
+          _pushMessage(item, detail);
           // 不在会话中且不是我发的消息
           item.noRead = (item.noRead ?? 0) + 1;
         }
@@ -225,9 +231,6 @@ class MessageController extends GetxController with WidgetsBindingObserver {
 
         // 更新试图
         update();
-
-        // 如果正在后台，发送本地消息提示
-        _pushMessage(item, detail);
 
         // 缓存会话
         HubUtil().cacheChats(orgChatCache);
