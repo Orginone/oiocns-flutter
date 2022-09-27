@@ -11,7 +11,7 @@ import 'package:orginone/util/hub_util.dart';
 import '../../api/person_api.dart';
 import '../../api_resp/login_resp.dart';
 import '../../api_resp/target_resp.dart';
-import '../../api_resp/user_resprogress_dialog.dart';
+import '../../api_resp/user_resp.dart';
 import '../../util/hive_util.dart';
 import 'message/message_page.dart';
 
