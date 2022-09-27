@@ -118,7 +118,7 @@ class ChatPage extends GetView<ChatController> {
               ),
             ),
           ),
-          const ChatBox()
+          ChatBox(controller.sendOneMessage)
         ],
       );
 

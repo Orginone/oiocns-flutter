@@ -19,7 +19,6 @@ class ChatController extends GetxController {
   // 控制信息
   var homeController = Get.find<HomeController>();
   var messageController = Get.find<MessageController>();
-  var messageText = TextEditingController();
   var messageScrollController = ScrollController();
   var messageScrollKey = "1024".obs;
   var uuid = const Uuid();
@@ -161,12 +160,11 @@ class ChatController extends GetxController {
   }
 
   // 发送消息至聊天页面
-  Future<void> sendOneMessage() async {
+  void sendOneMessage(String value) {
     if (messageItemId == "-1") return;
 
-    var value = messageText.value.text;
+    // toId 和 spaceId 都要是字符串类型
     if (value.isNotEmpty) {
-      // toId 和 spaceId 都要是字符串类型
       var messageDetail = {
         "toId": messageItemId,
         "spaceId": spaceId,
@@ -175,10 +173,7 @@ class ChatController extends GetxController {
       };
       try {
         log.info("==> 发送的消息信息：$messageDetail");
-        await HubUtil().sendMsg(messageDetail);
-
-        // 清空聊天框内容
-        messageText.clear();
+        HubUtil().sendMsg(messageDetail);
       } catch (error) {
         error.printError();
       }
