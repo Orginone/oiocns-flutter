@@ -34,8 +34,6 @@ class MessageController extends GetxController with WidgetsBindingObserver {
     super.onInit();
     // 监听页面的生命周期
     WidgetsBinding.instance.addObserver(this);
-    // 初始化后台消息推送
-    await _initNotification();
     // 订阅聊天面板信息
     await _subscribingCharts();
   }
@@ -211,13 +209,19 @@ class MessageController extends GetxController with WidgetsBindingObserver {
           item.showTxt = "$name：${item.showTxt}";
         }
 
-        bool isTalking = false;
         if (Get.isRegistered<ChatController>()) {
           ChatController chatController = Get.find();
-          isTalking =
-              chatController.onReceiveMsg(detail.spaceId!, sessionId, detail);
+          chatController.onReceiveMsg(detail.spaceId!, sessionId, detail);
+        }
+        bool isTalking = false;
+        for (MessageItemResp openItem in orgChatCache.openChats) {
+          if (openItem.id == item.id && openItem.spaceId == item.spaceId) {
+            isTalking = true;
+          }
         }
         if (!isTalking && detail.fromId != userInfo.id) {
+          // 如果正在后台，发送本地消息提示
+          _pushMessage(item, detail);
           // 不在会话中且不是我发的消息
           item.noRead = (item.noRead ?? 0) + 1;
         }
@@ -227,9 +231,6 @@ class MessageController extends GetxController with WidgetsBindingObserver {
 
         // 更新试图
         update();
-
-        // 如果正在后台，发送本地消息提示
-        _pushMessage(item, detail);
 
         // 缓存会话
         HubUtil().cacheChats(orgChatCache);
@@ -243,25 +244,6 @@ class MessageController extends GetxController with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     currentAppState = state;
-  }
-
-  static void notificationTapBackground(NotificationResponse response) {
-    var messageController = Get.find<MessageController>();
-    messageController.log.info("回调消息：$response");
-  }
-
-  static _initNotification() {
-    var plugin = FlutterLocalNotificationsPlugin();
-    var android = const AndroidInitializationSettings('@mipmap/ic_launcher');
-    var initSettings = InitializationSettings(android: android);
-    plugin.initialize(
-      initSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-        var messageController = Get.find<MessageController>();
-        messageController.log.info("回调消息：$response");
-      },
-      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
-    );
   }
 
   void _pushMessage(MessageItemResp item, MessageDetailResp detail) {

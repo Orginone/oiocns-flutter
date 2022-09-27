@@ -70,16 +70,16 @@ class ChatController extends GetxController {
   }
 
   // 消息接收函數
-  bool onReceiveMsg(
+  void onReceiveMsg(
     String spaceId,
     String sessionId,
     MessageDetailResp? detail,
   ) {
     if (spaceId != spaceId && sessionId != messageItemId) {
-      return false;
+      return;
     }
     if (detail == null) {
-      return false;
+      return;
     }
     if (detail.msgType == "recall") {
       for (var oldDetail in messageDetails) {
@@ -96,15 +96,15 @@ class ChatController extends GetxController {
       }
     }
     updateAndToBottom();
-    return true;
   }
 
   void orgChatHandler() {
-    // 过滤掉自己的再加入
+    // 不存在就加入
     OrgChatCache orgChatCache = messageController.orgChatCache;
     orgChatCache.openChats = orgChatCache.openChats
         .where((item) => item.id != messageItemId || item.spaceId != spaceId)
         .toList();
+    orgChatCache.openChats.add(messageItem);
 
     // 加入所有人员群缓存
     orgChatCache.nameMap.addAll(personNameMap);
@@ -112,7 +112,6 @@ class ChatController extends GetxController {
     // 加入自己
     messageItem.noRead = 0;
     messageItem.personNum = personMap.length;
-    orgChatCache.openChats.add(messageItem);
     messageController.update();
 
     HubUtil().cacheChats(messageController.orgChatCache);

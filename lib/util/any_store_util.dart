@@ -201,6 +201,7 @@ class AnyStoreUtil {
     if (apiResp.success) {
       callback(apiResp.data);
     }
+    log.info("订阅成功！");
   }
 
   /// 取消订阅
