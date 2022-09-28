@@ -47,8 +47,6 @@ class AnyStoreUtil {
       HubConnectionBuilder().withUrl(Constant.anyStore).build();
   Rx<HubConnectionState?>? state;
   Map<String, Function> subscriptionMap = {};
-  bool _connTimerLock = false;
-  bool _subscribingTimerLock = false;
 
   final Map<String, void Function(List<dynamic>?)> events = {};
 
@@ -132,43 +130,31 @@ class AnyStoreUtil {
     });
   }
 
-  void _connTimer() {
-    if (_connTimerLock) {
-      return;
-    }
-    _connTimerLock = true;
-    Duration duration = const Duration(seconds: 30);
-    Timer.periodic(duration, (timer) async {
+  void _connTimeout() {
+    log.info("==》尝试重新连接");
+    Duration duration = const Duration(seconds: 5);
+    Timer(duration, () async {
       await tryConn();
       setState();
-      if (isConn()) {
-        timer.cancel();
-        _connTimerLock = false;
-      }
     });
   }
 
   void _subscribingTimer(
-      SubscriptionKey key, String domain, Function callback) {
-    if (_subscribingTimerLock) {
-      return;
-    }
-    _subscribingTimerLock = true;
-    Duration duration = const Duration(seconds: 10);
-    Timer.periodic(duration, (timer) async {
+    SubscriptionKey key,
+    String domain,
+    Function callback,
+  ) {
+    Duration duration = const Duration(seconds: 5);
+    Timer(duration, () async {
       log.info("=====> 尝试重新订阅中");
       await subscribing(key, domain, callback);
-      if (isConn()) {
-        timer.cancel();
-        _subscribingTimerLock = false;
-      }
     });
   }
 
   void _initOnClose() {
     _server.onclose((error) {
       setState();
-      _connTimer();
+      _connTimeout();
     });
   }
 
@@ -243,7 +229,7 @@ class AnyStoreUtil {
           error.printError();
           Fluttertoast.showToast(msg: "连接本地存储服务失败!");
           log.info("========== 连接 AnyStore 失败 =============");
-          _connTimer();
+          _connTimeout();
           rethrow;
         }
         break;
