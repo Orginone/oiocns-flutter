@@ -133,30 +133,35 @@ class HomePage extends GetView<HomeController> {
         }),
       );
 
-  get _title => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        GetBuilder<HomeController>(
+  get _title => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GetBuilder<HomeController>(
             init: controller,
             builder: (controller) {
               return GestureDetector(
-                  onTap: () {
-                    Get.toNamed(Routers.spaceChoose);
-                  },
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.repeat, color: Colors.black, size: 18),
-                        Container(
-                            padding: const EdgeInsets.fromLTRB(10, 0, 0, 0)),
-                        Expanded(
-                          child: Text(
-                            controller.currentSpace.name,
-                            style: text16Bold,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ]));
-            }),
-      ]);
+                onTap: () {
+                  Get.toNamed(Routers.spaceChoose);
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.repeat, color: Colors.black, size: 18),
+                    Container(padding: const EdgeInsets.fromLTRB(10, 0, 0, 0)),
+                    Expanded(
+                      child: Text(
+                        controller.currentSpace.name,
+                        style: text16Bold,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      );
 
   get _body => GFTabBarView(
       controller: controller.tabController,
