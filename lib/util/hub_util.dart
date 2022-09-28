@@ -48,8 +48,6 @@ class HubUtil {
   final HubConnection _server =
       HubConnectionBuilder().withUrl(Constant.hub).build();
   Rx<HubConnectionState?>? state;
-  bool _connTimerLocker = false;
-  bool _authTimerLocker = false;
 
   final Map<String, void Function(List<dynamic>?)> events = {};
 
@@ -72,26 +70,19 @@ class HubUtil {
     });
   }
 
-  void _connTimer() {
-    if (_connTimerLocker) {
-      return;
-    }
-    _connTimerLocker = true;
+  void _connTimeout() {
+    log.info("==》开始重新连接");
     Duration duration = const Duration(seconds: 5);
-    Timer.periodic(duration, (timer) async {
+    Timer(duration, () async {
       await tryConn();
       setStatus();
-      if (isConn()) {
-        timer.cancel();
-        _connTimerLocker = false;
-      }
     });
   }
 
   void _initOnClose() {
     _server.onclose((error) {
       setStatus();
-      _connTimer();
+      _connTimeout();
     });
   }
 
@@ -115,22 +106,6 @@ class HubUtil {
       void Function(List<dynamic>?) event = events[element.name]!;
       _server.on(element.name, event);
     }
-  }
-
-  Future<dynamic> _authTimer(String accessToken) async {
-    if (_authTimerLocker) {
-      return;
-    }
-    _authTimerLocker = true;
-    Duration duration = const Duration(seconds: 2);
-    Timer.periodic(duration, (timer) {
-      if (isConn()) {
-        _auth(accessToken);
-      } else {
-        timer.cancel();
-        _authTimerLocker = false;
-      }
-    });
   }
 
   Future<dynamic> _auth(String accessToken) async {
@@ -322,9 +297,6 @@ class HubUtil {
           // 开启连接，鉴权
           await _server.start();
           await _auth(HiveUtil().accessToken);
-
-          // 定时刷新权限
-          _authTimer(HiveUtil().accessToken);
           setStatus();
 
           log.info("==> connected success");
@@ -333,7 +305,7 @@ class HubUtil {
           error.printError();
           Fluttertoast.showToast(msg: "连接聊天服务器失败!");
           log.info("================== 连接 HUB 失败 =========================");
-          _connTimer();
+          _connTimeout();
         }
         break;
       default:
