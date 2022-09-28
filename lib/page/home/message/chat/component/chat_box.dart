@@ -41,8 +41,6 @@ class ChatBox extends StatelessWidget {
         children: [
           _input(controller),
           Container(margin: EdgeInsets.only(left: 10.w)),
-          _emoji(),
-          Container(margin: EdgeInsets.only(left: 10.w)),
           _sendBtn(controller)
         ],
       ),
@@ -88,7 +86,7 @@ class ChatBox extends StatelessWidget {
     return GFButton(
       size: defaultHeight,
       onPressed: () {
-        callback();
+        callback(controller.text);
         controller.clear();
       },
       text: "发送",

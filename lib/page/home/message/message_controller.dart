@@ -93,6 +93,7 @@ class MessageController extends GetxController with WidgetsBindingObserver {
   _updateChats(Map<String, dynamic> data) {
     orgChatCache = OrgChatCache(data);
     orgChatCache.chats = _spaceHandling(orgChatCache.chats);
+    sortingGroups();
     _latestMsgHandling(orgChatCache.messageDetail);
     update();
   }
