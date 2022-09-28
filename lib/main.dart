@@ -4,7 +4,6 @@ import 'package:logging/logging.dart';
 import 'package:orginone/screen_init.dart';
 import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/notification_util.dart';
-import 'package:orginone/util/sys_util.dart';
 
 void main() async {
   // 逻辑绑定

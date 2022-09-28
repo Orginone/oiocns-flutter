@@ -23,7 +23,9 @@ get ltb10 => EdgeInsets.only(left: 10.w, top: 10.h, bottom: 10.h);
 
 get ltr10 => EdgeInsets.only(left: 10.w, top: 10.h, right: 10.w);
 
-get lr10 => EdgeInsets.only(left: 10.w, right: 10.h);
+get lr10 => EdgeInsets.only(left: 10.w, right: 10.w);
+
+get lr40 => EdgeInsets.only(left: 40.w, right: 40.w);
 
 get all5 => EdgeInsets.all(5.w);
 

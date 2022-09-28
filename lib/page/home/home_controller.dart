@@ -28,15 +28,27 @@ class HomeController extends GetxController
 
   late List<TabCombine> tabs;
   late TabController tabController;
+  late BuildContext context;
 
   late TargetResp currentSpace;
 
   @override
   void onInit() {
+    super.onInit();
     _initTabs();
     _initCurrentSpace();
-    super.onInit();
   }
+
+  // @override
+  // void onReady() {
+  //   super.onReady();
+  //   // 弹出更新框
+  //   showDialog(
+  //     context: context,
+  //     barrierColor: null,
+  //     builder: (context) => UpdaterDialog("1.修复聊天同步会话问题；\n2.修改重连时间为两秒；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；"),
+  //   );
+  // }
 
   @override
   void onClose() {
@@ -83,7 +95,8 @@ class HomeController extends GetxController
     update();
 
     // 会话需要分组
-    messageController.sortingGroup(targetResp);
+    messageController.sortingGroups();
+    messageController.update();
 
     // 组织架构页面需要变化
     organizationController.update();
