@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
@@ -75,6 +76,9 @@ class ChatPage extends GetView<ChatController> {
 
     var time = _time(messageDetail.createTime);
     var item = Column(children: [currentWidget]);
+    if (index == 0){
+      item.children.add(Container(margin: EdgeInsets.only(bottom: 5.h)));
+    }
     if (index == controller.messageDetails.length - 1) {
       item.children.insert(0, time);
       return item;
@@ -87,7 +91,7 @@ class ChatPage extends GetView<ChatController> {
           return item;
         }
       }
-      return currentWidget;
+      return item;
     }
   }
 

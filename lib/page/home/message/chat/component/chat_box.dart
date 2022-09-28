@@ -31,7 +31,7 @@ class ChatBox extends StatelessWidget {
     var controller = TextEditingController();
     return Container(
       color: CustomColors.easyGrey,
-      padding: EdgeInsets.fromLTRB(10.w, 5.h, 10.w, 5.h),
+      padding: EdgeInsets.fromLTRB(10.w, 0.h, 10.w, 0.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
