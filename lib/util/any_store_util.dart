@@ -153,6 +153,7 @@ class AnyStoreUtil {
 
   void _initOnClose() {
     _server.onclose((error) {
+      log.info("=====> 连接被关闭了");
       setState();
       _connTimeout();
     });
@@ -204,6 +205,21 @@ class AnyStoreUtil {
     }
   }
 
+  /// 重新订阅
+  _resubscribed() async {
+    checkConn();
+    subscriptionMap.forEach((fullKey, callback) async {
+      String key = fullKey.split("|")[0];
+      String domain = fullKey.split("|")[1];
+      dynamic res =
+          await _server.invoke(SendEvent.Subscribed.name, args: [key, domain]);
+      ApiResp apiResp = ApiResp.fromMap(res);
+      if (apiResp.success) {
+        callback(apiResp.data);
+      }
+    });
+  }
+
   //初始化连接
   Future<dynamic> tryConn() async {
     log.info("================== 连接 AnyStore =========================");
@@ -221,6 +237,8 @@ class AnyStoreUtil {
           // 开启连接，鉴权
           await _server.start();
           await _auth(HiveUtil().accessToken);
+          _resubscribed();
+
           setState();
 
           log.info("==> connected success");

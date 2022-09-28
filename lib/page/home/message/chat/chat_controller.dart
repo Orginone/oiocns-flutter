@@ -80,6 +80,7 @@ class ChatController extends GetxController {
     if (detail == null) {
       return;
     }
+    log.info("会话页面接收到一条新的数据${detail.toJson()}");
     if (detail.msgType == "recall") {
       for (var oldDetail in messageDetails) {
         if (oldDetail.id == detail.id) {
