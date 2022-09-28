@@ -14,24 +14,28 @@ class ChatFunc extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(6),
-        decoration: BoxDecoration(
-            color: CustomColors.lightBlack.withAlpha(200),
-            borderRadius: const BorderRadius.all(Radius.circular(5))),
-        child: Wrap(
-          spacing: 4,
-          runSpacing: 4,
-          direction: Axis.horizontal,
-          children: [
-            IconFunc(Icons.keyboard_return, "撤回", () async {
-              var res = await HubUtil().recallMsg(messageDetail.id);
-              var apiResp = ApiResp.fromMap(res);
+      padding: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+          color: CustomColors.lightBlack.withAlpha(200),
+          borderRadius: const BorderRadius.all(Radius.circular(5))),
+      child: Wrap(
+        spacing: 4,
+        runSpacing: 4,
+        direction: Axis.horizontal,
+        children: [
+          IconFunc(
+            Icons.keyboard_return,
+            "撤回",
+            () async {
+              var apiResp = await HubUtil().recallMsg(messageDetail.id);
               if (apiResp.code != 200) {
                 Fluttertoast.showToast(msg: apiResp.msg);
               }
-            })
-          ],
-        ));
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
 

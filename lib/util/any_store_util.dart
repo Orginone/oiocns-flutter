@@ -7,7 +7,6 @@ import 'package:signalr_core/signalr_core.dart';
 
 import '../api/constant.dart';
 import '../api_resp/api_resp.dart';
-import 'errors.dart';
 import 'hive_util.dart';
 
 enum SendEvent {
@@ -39,65 +38,91 @@ class AnyStoreUtil {
   static final AnyStoreUtil _instance = AnyStoreUtil._();
 
   factory AnyStoreUtil() {
-    _instance.state ??= _instance._server.state.obs;
     return _instance;
   }
 
-  final HubConnection _server =
-      HubConnectionBuilder().withUrl(Constant.anyStore).build();
-  Rx<HubConnectionState?>? state;
+  HubConnection? _server;
+  Rx<HubConnectionState> state = HubConnectionState.disconnected.obs;
+  bool isStop = true;
   Map<String, Function> subscriptionMap = {};
 
   final Map<String, void Function(List<dynamic>?)> events = {};
 
   Future<ApiResp> get(String key, String domain) async {
-    checkConn();
-    dynamic data = _server.invoke(SendEvent.Get.name, args: [key, domain]);
-    return ApiResp.fromMap(data);
+    if (isConn()) {
+      var name = SendEvent.Get.name;
+      var args = [key, domain];
+      dynamic data = _server!.invoke(name, args: args);
+      return ApiResp.fromMap(data);
+    }
+    return ApiResp.empty();
   }
 
-  Future<void> set(String key, dynamic setData, String domain) async {
-    checkConn();
-    await _server.invoke(SendEvent.Set.name, args: [key, setData, domain]);
+  Future<ApiResp> set(String key, dynamic setData, String domain) async {
+    if (isConn()) {
+      var name = SendEvent.Set.name;
+      var args = [key, setData, domain];
+      dynamic res = await _server!.invoke(name, args: args);
+      return ApiResp.fromMap(res);
+    } else {
+      return ApiResp.empty();
+    }
   }
 
   Future<ApiResp> delete(String key, String domain) async {
-    checkConn();
-    dynamic res = _server.invoke(SendEvent.Delete.name, args: [key, domain]);
-    return ApiResp.fromMap(res);
+    if (isConn()) {
+      var name = SendEvent.Delete.name;
+      dynamic res = _server!.invoke(name, args: [key, domain]);
+      return ApiResp.fromMap(res);
+    }
+    return ApiResp.empty();
   }
 
   Future<ApiResp> insert(String collName, dynamic data, String domain) async {
-    checkConn();
-    dynamic res = await _server
-        .invoke(SendEvent.Insert.name, args: [collName, data, domain]);
-    return ApiResp.fromMap(res);
+    if (isConn()) {
+      var name = SendEvent.Insert.name;
+      var args = [collName, data, domain];
+      dynamic res = await _server!.invoke(name, args: args);
+      return ApiResp.fromMap(res);
+    }
+    return ApiResp.empty();
   }
 
   Future<ApiResp> update(String collName, dynamic update, String domain) async {
-    checkConn();
-    dynamic res = await _server
-        .invoke(SendEvent.Update.name, args: [collName, update, domain]);
-    return ApiResp.fromMap(res);
+    if (isConn()) {
+      var name = SendEvent.Update.name;
+      var args = [collName, update, domain];
+      dynamic res = await _server!.invoke(name, args: args);
+      return ApiResp.fromMap(res);
+    }
+    return ApiResp.empty();
   }
 
   Future<ApiResp> remove(String collName, dynamic match, String domain) async {
-    checkConn();
-    dynamic res = await _server
-        .invoke(SendEvent.Remove.name, args: [collName, match, domain]);
-    return ApiResp.fromMap(res);
+    if (isConn()) {
+      var name = SendEvent.Remove.name;
+      var args = [collName, match, domain];
+      dynamic res = await _server!.invoke(name, args: args);
+      return ApiResp.fromMap(res);
+    }
+    return ApiResp.empty();
   }
 
-  Future<dynamic> aggregate(String collName, dynamic opt, String domain) async {
-    checkConn();
-    var aggregateName = SendEvent.Aggregate.name;
-    dynamic res =
-        await _server.invoke(aggregateName, args: [collName, opt, domain]);
-    return ApiResp.fromMap(res).data;
+  Future<ApiResp> aggregate(String collName, dynamic opt, String domain) async {
+    if (isConn()) {
+      var aggregateName = SendEvent.Aggregate.name;
+      var args = [collName, opt, domain];
+      dynamic res = await _server!.invoke(aggregateName, args: args);
+      return ApiResp.fromMap(res);
+    }
+    return ApiResp.empty();
   }
 
   void _onUpdated() {
-    _server.on(ReceiveEvent.Updated.name, (arguments) {
+    if (_server == null) {
+      return;
+    }
+    _server!.on(ReceiveEvent.Updated.name, (arguments) {
       if (arguments == null) {
         return;
       }
@@ -112,30 +137,36 @@ class AnyStoreUtil {
   }
 
   void _initOnReconnecting() {
-    _server.onreconnecting((exception) {
+    if (_server == null) {
+      return;
+    }
+    _server!.onreconnecting((exception) {
       setState();
       log.info("================== 正在重新连接 AnyStore =========================");
-      log.info("==> reconnecting");
+      log.info("====> reconnecting");
       if (exception != null) {
-        log.info("==> $exception");
+        log.info("====> $exception");
       }
     });
   }
 
   void _initOnReconnected() {
-    _server.onreconnected((id) {
+    if (_server == null) {
+      return;
+    }
+    _server!.onreconnected((id) {
       setState();
-      log.info("==> reconnected success");
+      log.info("====> reconnected success");
       log.info("================== 重新连接 AnyStore 成功 =========================");
     });
   }
 
   void _connTimeout() {
-    log.info("==》尝试重新连接");
+    log.info("====> 5s 后，anyStore 开始重新连接");
     Duration duration = const Duration(seconds: 5);
     Timer(duration, () async {
+      _server = null;
       await tryConn();
-      setState();
     });
   }
 
@@ -152,23 +183,38 @@ class AnyStoreUtil {
   }
 
   void _initOnClose() {
-    _server.onclose((error) {
-      log.info("=====> 连接被关闭了");
+    if (_server == null) {
+      return;
+    }
+    _server!.onclose((error) {
+      log.info("====> anyStore 连接被关闭了");
       setState();
-      _connTimeout();
+      if (!isStop) {
+        _connTimeout();
+      }
     });
   }
 
   Future<dynamic> _auth(String accessToken) async {
-    checkConn();
-    return _server.invoke(SendEvent.TokenAuth.name,
-        args: [accessToken, Domain.user.name]);
+    if (isConn()) {
+      var name = SendEvent.TokenAuth.name;
+      var domain = Domain.user.name;
+      return _server!.invoke(name, args: [accessToken, domain]);
+    }
   }
 
   Future<dynamic> disconnect() async {
-    await _server.stop();
-    setState();
-    log.info("===> 已断开和存储服务器的连接。");
+    if (_server == null) {
+      return;
+    }
+    isStop = true;
+    try {
+      await _server!.stop();
+      log.info("===> 已断开和存储服务器的连接。");
+      setState();
+    } catch (error) {
+      isStop = false;
+    }
   }
 
   /// 订阅
@@ -182,51 +228,58 @@ class AnyStoreUtil {
       return;
     }
     subscriptionMap[fullKey] = callback;
-    dynamic res = await _server
-        .invoke(SendEvent.Subscribed.name, args: [key.name, domain]);
+    var name = SendEvent.Subscribed.name;
+    dynamic res = await _server!.invoke(name, args: [key.name, domain]);
     ApiResp apiResp = ApiResp.fromMap(res);
     if (apiResp.success) {
       callback(apiResp.data);
     }
-    log.info("订阅成功！");
+    log.info("====> 订阅 ${key.name} 成功！");
   }
 
   /// 取消订阅
   unsubscribing(SubscriptionKey key, String domain) async {
-    checkConn();
     var fullKey = "${key.name}|$domain";
     if (!subscriptionMap.containsKey(fullKey)) {
       return;
     }
     if (isConn()) {
-      await _server
-          .invoke(SendEvent.UnSubscribed.name, args: [key.name, domain]);
+      var name = SendEvent.UnSubscribed.name;
+      await _server!.invoke(name, args: [key.name, domain]);
       subscriptionMap.remove(fullKey);
     }
   }
 
   /// 重新订阅
   _resubscribed() async {
-    checkConn();
-    subscriptionMap.forEach((fullKey, callback) async {
-      String key = fullKey.split("|")[0];
-      String domain = fullKey.split("|")[1];
-      dynamic res =
-          await _server.invoke(SendEvent.Subscribed.name, args: [key, domain]);
-      ApiResp apiResp = ApiResp.fromMap(res);
-      if (apiResp.success) {
-        callback(apiResp.data);
-      }
-    });
+    if (isConn()) {
+      subscriptionMap.forEach((fullKey, callback) async {
+        var key = fullKey.split("|")[0];
+        var domain = fullKey.split("|")[1];
+        var name = SendEvent.Subscribed.name;
+        dynamic res = await _server!.invoke(name, args: [key, domain]);
+
+        ApiResp apiResp = ApiResp.fromMap(res);
+        if (apiResp.success) {
+          callback(apiResp.data);
+        }
+        log.info("====> 重新订阅 $key 事件成功");
+      });
+    }
   }
 
   //初始化连接
   Future<dynamic> tryConn() async {
-    log.info("================== 连接 AnyStore =========================");
-    var state = _server.state;
+    if (_server != null) {
+      return;
+    }
+    log.info("================== 连接 AnyStore ==================");
+    _server = HubConnectionBuilder().withUrl(Constant.anyStore).build();
+    isStop = false;
+    var state = _server!.state;
     switch (state) {
       case HubConnectionState.disconnected:
-        log.info("==> connecting");
+        log.info("====> connecting");
         try {
           // 定义事件和回调函数
           _initOnReconnecting();
@@ -235,42 +288,38 @@ class AnyStoreUtil {
           _onUpdated();
 
           // 开启连接，鉴权
-          await _server.start();
+          await _server!.start();
           await _auth(HiveUtil().accessToken);
+
+          // 重新订阅
           _resubscribed();
 
-          setState();
-
-          log.info("==> connected success");
-          log.info("========== 连接 AnyStore 成功 =============");
+          log.info("====> connected success");
+          log.info("================== 连接 AnyStore 成功 ==================");
         } catch (error) {
           error.printError();
           Fluttertoast.showToast(msg: "连接本地存储服务失败!");
-          log.info("========== 连接 AnyStore 失败 =============");
+          log.info("================== 连接 AnyStore 失败 ==================");
           _connTimeout();
-          rethrow;
         }
         break;
       default:
-        log.info("==> 当前连接状态为：$state");
+        log.info("====> 当前连接状态为：$state");
         break;
     }
+    setState();
   }
 
-  checkConn() {
-    if (!isConn()) {
-      var errorMsg = "未连接存储服务器!";
-      Fluttertoast.showToast(msg: errorMsg);
-      throw ServerError(errorMsg);
-    }
-  }
-
+  /// 设置状态
   setState() {
-    state!.value = _server.state;
+    state.value = _server?.state ?? HubConnectionState.disconnected;
   }
 
-  // 判断是否处于连接当中
+  /// 判断是否处于连接当中
   bool isConn() {
-    return _server.state == HubConnectionState.connected;
+    if (_server == null) {
+      return false;
+    }
+    return _server!.state == HubConnectionState.connected;
   }
 }

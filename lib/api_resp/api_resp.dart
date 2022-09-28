@@ -13,6 +13,12 @@ class ApiResp {
 
   factory ApiResp.fromMap(Map<String, dynamic> json) => _$ApiRespFromJson(json);
 
+  ApiResp.empty()
+      : code = 404,
+        msg = "",
+        data = null,
+        success = false;
+
   Map<String, dynamic> toJson() => _$ApiRespToJson(this);
 
   @override

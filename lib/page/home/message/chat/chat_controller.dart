@@ -173,7 +173,7 @@ class ChatController extends GetxController {
         "msgBody": value
       };
       try {
-        log.info("==> 发送的消息信息：$messageDetail");
+        log.info("====> 发送的消息信息：$messageDetail");
         HubUtil().sendMsg(messageDetail);
       } catch (error) {
         error.printError();

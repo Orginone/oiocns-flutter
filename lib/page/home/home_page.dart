@@ -113,7 +113,7 @@ class HomePage extends GetView<HomeController> {
         margin: all10,
         status: Obx(() {
           Color color;
-          switch (HubUtil().state!.value) {
+          switch (HubUtil().state.value) {
             case HubConnectionState.connecting:
             case HubConnectionState.disconnecting:
             case HubConnectionState.reconnecting:

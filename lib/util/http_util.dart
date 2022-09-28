@@ -40,7 +40,7 @@ class HttpUtil {
 
   Future<Options> addTokenHeader(Options? options) async {
     var accessToken = await HiveUtil().accessToken;
-    log.info("==> accessToken：$accessToken");
+    log.info("====> accessToken：$accessToken");
     if (options == null) {
       return Options(headers: {"Authorization": accessToken});
     } else {
@@ -61,8 +61,8 @@ class HttpUtil {
       bool? hasToken}) async {
     log.info("================Get Http Request================");
     try {
-      log.info("==> path: $path");
-      log.info("==> queryParameters: ${queryParameters.toString()}");
+      log.info("====> path: $path");
+      log.info("====> queryParameters: ${queryParameters.toString()}");
 
       if (hasToken ?? true) {
         options = await addTokenHeader(options);
@@ -95,9 +95,9 @@ class HttpUtil {
       bool? hasToken}) async {
     log.info("================Post Http Request================");
     try {
-      log.info("==> path: $path");
-      log.info("==> queryParameters: ${queryParameters.toString()}");
-      log.info("==> data: ${data.toString()}");
+      log.info("====> path: $path");
+      log.info("====> queryParameters: ${queryParameters.toString()}");
+      log.info("====> data: ${data.toString()}");
 
       if (hasToken ?? true) {
         options = await addTokenHeader(options);
@@ -126,7 +126,7 @@ class HttpUtil {
 
   dynamic _parseResp<T>(Response response) {
     var resp = ApiResp.fromMap(response.data!);
-    log.info("==> resp: ${resp.toString()}");
+    log.info("====> resp: ${resp.toString()}");
     if (resp.code == 200) {
       return resp.data;
     } else {

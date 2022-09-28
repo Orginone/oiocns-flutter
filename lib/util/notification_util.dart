@@ -9,7 +9,7 @@ class NotificationUtil {
   }
 
   static void _receiveNotificationBackground(NotificationResponse response) {
-    log.info("后台==》通知回调：$response");
+    log.info("====>后台通知回调：$response");
   }
 
   static initNotification() {

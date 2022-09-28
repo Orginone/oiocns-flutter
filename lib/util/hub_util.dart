@@ -15,7 +15,6 @@ import '../api_resp/message_detail_resp.dart';
 import '../api_resp/message_item_resp.dart';
 import '../api_resp/target_resp.dart';
 import '../page/home/message/message_controller.dart';
-import 'errors.dart';
 import 'hive_util.dart';
 
 enum ReceiveEvent { RecvMsg, ChatRefresh }
@@ -41,106 +40,52 @@ class HubUtil {
   static final HubUtil _instance = HubUtil._();
 
   factory HubUtil() {
-    _instance.state ??= _instance._server.state.obs;
     return _instance;
   }
 
-  final HubConnection _server =
-      HubConnectionBuilder().withUrl(Constant.hub).build();
-  Rx<HubConnectionState?>? state;
+  HubConnection? _server;
+  bool isStop = true;
+  Rx<HubConnectionState> state = HubConnectionState.disconnected.obs;
 
   final Map<String, void Function(List<dynamic>?)> events = {};
 
-  void _initOnReconnecting() {
-    _server.onreconnecting((exception) {
-      setStatus();
-      log.info("================== 正在重新连接 HUB  =========================");
-      log.info("==> reconnecting");
-      if (exception != null) {
-        log.info("==> $exception");
-      }
-    });
-  }
-
-  void _initOnReconnected() {
-    _server.onreconnected((id) {
-      setStatus();
-      log.info("==> reconnected success");
-      log.info("================== 重新连接 HUB 成功 =========================");
-    });
-  }
-
-  void _connTimeout() {
-    log.info("==》开始重新连接");
-    Duration duration = const Duration(seconds: 5);
-    Timer(duration, () async {
-      await tryConn();
-      setStatus();
-    });
-  }
-
-  void _initOnClose() {
-    _server.onclose((error) {
-      setStatus();
-      _connTimeout();
-    });
-  }
-
-  void _initEvents() {
-    events[ReceiveEvent.RecvMsg.name] = (params) {
-      if (Get.isRegistered<MessageController>()) {
-        var messageController = Get.find<MessageController>();
-        messageController.onReceiveMessage(params ?? []);
-      }
-    };
-    events[ReceiveEvent.ChatRefresh.name] = (params) {
-      if (Get.isRegistered<MessageController>()) {
-        var messageController = Get.find<MessageController>();
-        messageController.refreshCharts();
-      }
-    };
-  }
-
-  void _initCallback() {
-    for (var element in ReceiveEvent.values) {
-      void Function(List<dynamic>?) event = events[element.name]!;
-      _server.on(element.name, event);
+  // 发送消息
+  Future<void> sendMsg(Map<String, dynamic> messageDetail) async {
+    if (isConn()) {
+      var args = <Object>[messageDetail];
+      var sendName = SendEvent.SendMsg.name;
+      await _server!.invoke(sendName, args: args);
     }
   }
 
-  Future<dynamic> _auth(String accessToken) async {
-    await _server.invoke(SendEvent.TokenAuth.name, args: [accessToken]);
-  }
-
-  Future<dynamic> disconnect() async {
-    await _server.stop();
-    setStatus();
-    log.info("===> 已断开和聊天服务器的连接。");
-  }
-
   Future<List<SpaceMessagesResp>> getChats() async {
-    checkConn();
-    String key = SendEvent.GetChats.name;
-    Map<String, dynamic> chats = await _server.invoke(key);
-    ApiResp resp = ApiResp.fromMap(chats);
+    if (isConn()) {
+      String key = SendEvent.GetChats.name;
+      Map<String, dynamic> chats = await _server!.invoke(key);
+      ApiResp resp = ApiResp.fromMap(chats);
 
-    List<dynamic> groups = resp.data["groups"];
-    List<SpaceMessagesResp> messageGroups = groups.map((item) {
-      SpaceMessagesResp messagesResp = SpaceMessagesResp.fromMap(item);
-      for (var chat in messagesResp.chats) {
-        chat.spaceId = messagesResp.id;
-      }
-      return messagesResp;
-    }).toList();
-    return messageGroups;
+      List<dynamic> groups = resp.data["groups"];
+      List<SpaceMessagesResp> messageGroups = groups.map((item) {
+        SpaceMessagesResp messagesResp = SpaceMessagesResp.fromMap(item);
+        for (var chat in messagesResp.chats) {
+          chat.spaceId = messagesResp.id;
+        }
+        return messagesResp;
+      }).toList();
+      return messageGroups;
+    }
+    return [];
   }
 
   Future<String> getName(String personId) async {
-    checkConn();
-    String key = SendEvent.GetName.name;
-    Map<String, dynamic> nameRes = await _server.invoke(key, args: [personId]);
-    ApiResp resp = ApiResp.fromMap(nameRes);
-    return resp.data;
+    if (isConn()) {
+      var key = SendEvent.GetName.name;
+      var args = [personId];
+      Map<String, dynamic> nameRes = await _server!.invoke(key, args: args);
+      ApiResp resp = ApiResp.fromMap(nameRes);
+      return resp.data;
+    }
+    return "";
   }
 
   Future<dynamic> cacheMsg(String sessionId, MessageDetailResp detail) async {
@@ -211,8 +156,10 @@ class HubUtil {
         "skip": offset,
         "limit": limit
       };
-      List<dynamic> details =
-          await AnyStoreUtil().aggregate(collName, options, Domain.user.name);
+      var store = AnyStoreUtil();
+      var domain = Domain.user.name;
+      ApiResp apiResp = await store.aggregate(collName, options, domain);
+      List<dynamic> details = apiResp.data ?? [];
       List<MessageDetailResp> ans = [];
       for (var item in details) {
         item["id"] = item["chatId"];
@@ -220,72 +167,84 @@ class HubUtil {
       }
       return ans;
     } else {
-      checkConn();
-      String event = SendEvent.QueryFriendMsg.name;
-      String idName = "friendId";
-      if (typeName != "人员") {
-        event = SendEvent.QueryCohortMsg.name;
-        idName = "cohortId";
+      if (isConn()) {
+        String event = SendEvent.QueryFriendMsg.name;
+        String idName = "friendId";
+        if (typeName != "人员") {
+          event = SendEvent.QueryCohortMsg.name;
+          idName = "cohortId";
+        }
+        Map<String, dynamic> params = {
+          "limit": 30,
+          idName: sessionId,
+          "offset": offset,
+          "spaceId": spaceId
+        };
+        Map<String, dynamic> res = await _server!.invoke(event, args: [params]);
+        var apiResp = ApiResp.fromMap(res);
+        Map<String, dynamic> data = apiResp.data;
+        if (data["result"] == null) {
+          return [];
+        }
+        List<dynamic> details = data["result"];
+        return details.reversed
+            .map((item) => MessageDetailResp.fromMap(item))
+            .toList();
       }
-      Map<String, dynamic> params = {
-        "limit": 30,
-        idName: sessionId,
-        "offset": offset,
-        "spaceId": spaceId
-      };
-      Map<String, dynamic> res = await _server.invoke(event, args: [params]);
-      var apiResp = ApiResp.fromMap(res);
-      Map<String, dynamic> data = apiResp.data;
-      if (data["result"] == null) {
-        return [];
-      }
-      List<dynamic> details = data["result"];
-      return details.reversed
-          .map((item) => MessageDetailResp.fromMap(item))
-          .toList();
+      return [];
     }
   }
 
-  Future<dynamic> recallMsg(String id) async {
-    checkConn();
-    Map<String, dynamic> params = {
-      "ids": [id]
-    };
-    return await _server.invoke(SendEvent.RecallMsg.name, args: [params]);
+  Future<ApiResp> recallMsg(String id) async {
+    if (isConn()) {
+      Map<String, dynamic> params = {
+        "ids": [id]
+      };
+      var name = SendEvent.RecallMsg.name;
+      dynamic res = await _server!.invoke(name, args: [params]);
+      return ApiResp.fromMap(res);
+    }
+    return ApiResp.empty();
   }
 
   Future<List<TargetResp>> getPersons(String id, int limit, int offset) async {
-    checkConn();
-    String event = SendEvent.GetPersons.name;
-    Map<String, dynamic> params = {
-      "cohortId": id,
-      "limit": limit,
-      "offset": offset
-    };
-    dynamic res = await _server.invoke(event, args: [params]);
+    if (isConn()) {
+      String event = SendEvent.GetPersons.name;
+      Map<String, dynamic> params = {
+        "cohortId": id,
+        "limit": limit,
+        "offset": offset
+      };
+      dynamic res = await _server!.invoke(event, args: [params]);
 
-    ApiResp apiResp = ApiResp.fromMap(res);
-    var targetList = apiResp.data["result"];
-    if (targetList == null) {
-      return [];
-    }
+      ApiResp apiResp = ApiResp.fromMap(res);
+      var targetList = apiResp.data["result"];
+      if (targetList == null) {
+        return [];
+      }
 
-    List<TargetResp> temp = [];
-    for (var target in targetList) {
-      var targetResp = TargetResp.fromMap(target);
-      temp.add(targetResp);
+      List<TargetResp> temp = [];
+      for (var target in targetList) {
+        var targetResp = TargetResp.fromMap(target);
+        temp.add(targetResp);
+      }
+      return temp;
     }
-    return temp;
+    return [];
   }
 
   //初始化连接
   Future<dynamic> tryConn() async {
+    if (_server != null) {
+      return;
+    }
     log.info("================== 连接 HUB =========================");
-
-    var state = _server.state;
+    _server = HubConnectionBuilder().withUrl(Constant.hub).build();
+    isStop = false;
+    var state = _server!.state;
     switch (state) {
       case HubConnectionState.disconnected:
-        log.info("==> connecting");
+        log.info("====> connecting");
         try {
           // 定义事件和回调函数
           _initOnReconnecting();
@@ -295,11 +254,10 @@ class HubUtil {
           _initCallback();
 
           // 开启连接，鉴权
-          await _server.start();
+          await _server!.start();
           await _auth(HiveUtil().accessToken);
-          setStatus();
 
-          log.info("==> connected success");
+          log.info("====> connected success");
           log.info("================== 连接 HUB 成功 =========================");
         } catch (error) {
           error.printError();
@@ -309,32 +267,126 @@ class HubUtil {
         }
         break;
       default:
-        log.info("==> 当前连接状态为：$state");
+        log.info("====> 当前连接状态为：$state");
         break;
     }
+    // 设置可观测状态
+    setStatus();
   }
 
-  setStatus() {
-    state!.value = _server.state;
+  /// 定义事件
+  void _initEvents() {
+    events[ReceiveEvent.RecvMsg.name] = (params) {
+      if (Get.isRegistered<MessageController>()) {
+        var messageController = Get.find<MessageController>();
+        messageController.onReceiveMessage(params ?? []);
+      }
+    };
+    events[ReceiveEvent.ChatRefresh.name] = (params) {
+      if (Get.isRegistered<MessageController>()) {
+        var messageController = Get.find<MessageController>();
+        messageController.refreshCharts();
+      }
+    };
   }
 
-  // 判断是否处于连接当中
-  bool isConn() {
-    return _server.state == HubConnectionState.connected;
-  }
-
-  checkConn() {
-    if (!isConn()) {
-      var errorMsg = "未连接聊天服务器!";
-      Fluttertoast.showToast(msg: errorMsg);
-      throw ServerError(errorMsg);
+  /// 函数回调
+  void _initCallback() {
+    if (_server == null) {
+      return;
+    }
+    for (var element in ReceiveEvent.values) {
+      void Function(List<dynamic>?) event = events[element.name]!;
+      _server!.on(element.name, event);
     }
   }
 
-  // 发送消息
-  Future<dynamic> sendMsg(Map<String, dynamic> messageDetail) async {
-    checkConn();
-    return await _server
-        .invoke(SendEvent.SendMsg.name, args: <Object>[messageDetail]);
+  /// 鉴权
+  Future<dynamic> _auth(String accessToken) async {
+    if (isConn()) {
+      String name = SendEvent.TokenAuth.name;
+      await _server!.invoke(name, args: [accessToken]);
+    }
+  }
+
+  /// 断开连接
+  Future<dynamic> disconnect() async {
+    if (_server == null) {
+      return;
+    }
+    isStop = true;
+    try {
+      await _server!.stop();
+      log.info("===> 已断开和聊天服务器的连接。");
+      // 设置可观测状态
+      setStatus();
+    } catch (error) {
+      isStop = false;
+    }
+  }
+
+  /// 重连定时器
+  void _connTimeout() {
+    log.info("====> 5s 后，hub 开始重新连接");
+    Duration duration = const Duration(seconds: 5);
+    Timer(duration, () async {
+      _server?.stop();
+      _server = null;
+      await tryConn();
+    });
+  }
+
+  /// 重连中回调
+  void _initOnReconnecting() {
+    if (_server == null) {
+      return;
+    }
+    _server!.onreconnecting((exception) {
+      setStatus();
+      log.info("================== 正在重新连接 HUB  =========================");
+      log.info("====> reconnecting");
+      if (exception != null) {
+        log.info("====> $exception");
+      }
+    });
+  }
+
+  /// 重连成功回调
+  void _initOnReconnected() {
+    if (_server == null) {
+      return;
+    }
+    _server!.onreconnected((id) {
+      setStatus();
+      log.info("====> reconnected success");
+      log.info("================== 重新连接 HUB 成功 =========================");
+    });
+  }
+
+  /// 关闭回调
+  void _initOnClose() {
+    if (_server == null) {
+      return;
+    }
+    _server!.onclose((error) {
+      log.info("====> hub 连接被关闭了");
+      setStatus();
+      if (!isStop) {
+        _connTimeout();
+      }
+    });
+  }
+
+  /// 设置状态
+  setStatus() {
+    state.value = _server?.state ?? HubConnectionState.disconnected;
+  }
+
+  /// 判断是否处于连接当中
+  bool isConn() {
+    if (_server == null) {
+      return false;
+    }
+    return _server!.state == HubConnectionState.connected;
   }
 }
