@@ -34,8 +34,10 @@ class SearchPage extends GetView<SearchController> {
       height: 400,
       controller: controller.tabController,
       children: controller.searchItems
-          .map((item) =>
-              Container(alignment: Alignment.center, child: Text(item.name)))
+          .map((item) => Container(
+                alignment: Alignment.center,
+                child: Text(item.name),
+              ))
           .toList(),
     );
   }

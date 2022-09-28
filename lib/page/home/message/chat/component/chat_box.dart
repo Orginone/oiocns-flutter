@@ -1,14 +1,10 @@
-import 'dart:io';
-
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getwidget/components/button/gf_button.dart';
+import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/config/custom_colors.dart';
 
-import '../../../../../component/unified_edge_insets.dart';
-
-double defaultHeight = 35.h;
 double defaultBorderRadius = 6.w;
 
 class CustomView extends EmojiPickerBuilder {
@@ -34,7 +30,7 @@ class ChatBox extends StatelessWidget {
   Widget build(BuildContext context) {
     var controller = TextEditingController();
     return Container(
-      color: CustomColors.lightGrey,
+      color: CustomColors.easyGrey,
       padding: EdgeInsets.fromLTRB(10.w, 5.h, 10.w, 5.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -50,26 +46,18 @@ class ChatBox extends StatelessWidget {
   Widget _input(TextEditingController controller) {
     return Expanded(
       child: Container(
-        constraints: BoxConstraints(
-          maxHeight: defaultHeight,
-          minHeight: defaultHeight,
-        ),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(defaultBorderRadius)),
         ),
         alignment: Alignment.centerLeft,
         child: TextField(
+          style: text16,
           controller: controller,
           decoration: InputDecoration(
-            contentPadding: left10,
-            border: OutlineInputBorder(
-              borderSide: const BorderSide(style: BorderStyle.none, width: 5),
-              borderRadius: BorderRadius.all(
-                Radius.circular(defaultBorderRadius),
-              ),
-            ),
-            hintText: "请输入聊天信息",
+            isCollapsed: true,
+            contentPadding: EdgeInsets.fromLTRB(10.w, 5.h, 10.w, 5.h),
+            border: InputBorder.none,
           ),
         ),
       ),
@@ -84,7 +72,8 @@ class ChatBox extends StatelessWidget {
 
   Widget _sendBtn(TextEditingController controller) {
     return GFButton(
-      size: defaultHeight,
+      constraints: BoxConstraints(maxWidth: 10.w, minWidth: 10.w),
+      size: 25.h,
       onPressed: () {
         callback(controller.text);
         controller.clear();
