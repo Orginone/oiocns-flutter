@@ -148,6 +148,7 @@ class MessageController extends GetxController with WidgetsBindingObserver {
 
       // 组内排序
       sortingItems(group);
+      spaces.add(group);
     }
     spaceMap = newSpaceMap;
     spaceMessageItemMap = newSpaceMessageItemMap;
