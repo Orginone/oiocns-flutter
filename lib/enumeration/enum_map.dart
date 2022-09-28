@@ -11,4 +11,13 @@ class EnumMap {
     }
     return map;
   }
+
+  ///string转枚举类型
+  static T? enumFromString<T>(Iterable<T> values, String value) {
+    try {
+      return values.firstWhere((type) => type.toString().split('.').last == value);
+    } catch(e) {
+      return null;
+    }
+  }
 }

@@ -18,6 +18,7 @@ class ScanningResultPage extends GetView<ScanningResultController> {
         case ScanResultType.website:
           return WebView(initialUrl: controller.codeRes);
         case ScanResultType.system:
+          return Container();
         case ScanResultType.unknown:
           return Text(controller.codeRes);
       }
