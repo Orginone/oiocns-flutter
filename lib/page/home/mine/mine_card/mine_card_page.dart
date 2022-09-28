@@ -41,7 +41,7 @@ class MineCardPage extends GetView<MineCardController> {
                             //头像
                             Positioned(
                               top: 20.h,
-                              right: 30.w,
+                              right: 20.w,
                               child: CircleAvatar(
                                 foregroundImage: const NetworkImage(
                                     'https://www.vcg.com/creative/1382429598'),
@@ -49,8 +49,56 @@ class MineCardPage extends GetView<MineCardController> {
                                     'images/person-empty.png'),
                                 onForegroundImageError:
                                     (error, stackTrace) {},
-                                radius: 30.w,
+                                radius: 25.w,
                               ),
+                            ),
+                            //左侧上信息
+                            Positioned(
+                              top: 20.h,
+                              left: 20.w,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(0, 0, 0, 5.w),
+                                    child:  Text(controller.userInfo.name,style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 24
+                                    ),)
+                                  ),
+                                  Container(
+                                      margin: EdgeInsets.fromLTRB(0, 0, 0, 5.w),
+                                      child:  Text(controller.userInfo.team.name,style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 13
+                                      ),)
+                                  ),
+                                  Container(
+                                      margin: EdgeInsets.fromLTRB(0, 0, 0, 5.w),
+                                      child:  Text(controller.userInfo.team.remark,style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 13
+                                      ),)
+                                  ),
+                                ],
+                              )
+                            ),
+                            //左侧下信息
+                            Positioned(
+                                bottom: 10.h,
+                                left: 20.w,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                        margin: EdgeInsets.fromLTRB(0, 0, 0, 5.w),
+                                        child:  Text(controller.userInfo.team.code,style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 13
+                                        ),)
+                                    ),
+                                  ],
+                                )
                             ),
                           ],
                         ),
@@ -91,6 +139,9 @@ class MineCardPage extends GetView<MineCardController> {
                               padding: const EdgeInsets.all(0),
                               text: '保存到相册',
                               icon: const Icon(Icons.image,color: Color.fromRGBO(238, 95, 0, 1),size: 32),
+                              callback:() {
+
+                              },
                             ),
                             ClickItemType1(
                               bgColor: const Color.fromRGBO(239, 251, 254, 1),
