@@ -188,7 +188,7 @@ class HubUtil {
         "msgBody": detail.msgBody,
         "sessionId": sessionId,
         "createTime": DateUtil.formatDate(detail.createTime,
-            format: "yyyy-MM-dd HH:mm:ss:SSS")
+            format: "yyyy-MM-dd HH:mm:ss.SSS")
       };
       await AnyStoreUtil().insert(collName, data, Domain.user.name);
     }
