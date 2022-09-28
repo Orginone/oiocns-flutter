@@ -36,6 +36,24 @@ class MineCardPage extends GetView<MineCardController> {
                                 image:
                                     AssetImage('images/person-card-bg.png')),
                           ),
+                        child: Stack(
+                          children: [
+                            //头像
+                            Positioned(
+                              top: 20.h,
+                              right: 30.w,
+                              child: CircleAvatar(
+                                foregroundImage: const NetworkImage(
+                                    'https://www.vcg.com/creative/1382429598'),
+                                backgroundImage: const AssetImage(
+                                    'images/person-empty.png'),
+                                onForegroundImageError:
+                                    (error, stackTrace) {},
+                                radius: 30.w,
+                              ),
+                            ),
+                          ],
+                        ),
                           ),
                       //二维码层
                       Container(
