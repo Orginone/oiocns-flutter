@@ -1,43 +1,37 @@
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:getwidget/components/button/gf_button.dart';
+import 'package:get/get.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/config/custom_colors.dart';
 
 double defaultBorderRadius = 6.w;
 
-class CustomView extends EmojiPickerBuilder {
-  CustomView(super.config, super.state, {Key? key}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => _CustomViewState();
-}
-
-class _CustomViewState extends State<CustomView> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
-
 class ChatBox extends StatelessWidget {
   final Function callback;
+  final RxBool showEmoji = false.obs;
+  final RxBool showSendBtn = false.obs;
 
-  const ChatBox(this.callback, {Key? key}) : super(key: key);
+  ChatBox(this.callback, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var controller = TextEditingController();
     return Container(
       color: CustomColors.easyGrey,
-      padding: EdgeInsets.fromLTRB(10.w, 0.h, 10.w, 0.h),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      padding: EdgeInsets.fromLTRB(10.w, 2.h, 10.w, 2.h),
+      child: Column(
         children: [
-          _input(controller),
-          Container(margin: EdgeInsets.only(left: 10.w)),
-          _sendBtn(controller)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _input(controller),
+              _emoji(context),
+              Obx(() => showSendBtn.value ? _sendBtn(controller) : Container()),
+            ],
+          ),
+          _emojiPicker(controller)
         ],
       ),
     );
@@ -52,7 +46,13 @@ class ChatBox extends StatelessWidget {
         ),
         alignment: Alignment.centerLeft,
         child: TextField(
-          style: text16,
+          onChanged: (text) {
+            showSendBtn.value = text.isNotEmpty;
+          },
+          onTap: () {
+            showEmoji.value = false;
+          },
+          style: text18,
           controller: controller,
           decoration: InputDecoration(
             isCollapsed: true,
@@ -64,21 +64,59 @@ class ChatBox extends StatelessWidget {
     );
   }
 
-  Widget _emoji() {
-    return EmojiPicker(
-      onEmojiSelected: (category, emoji) {},
+  Widget _emoji(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        bool target = !showEmoji.value;
+        if (target) {
+          FocusScope.of(context).requestFocus(FocusNode());
+          Future.delayed(const Duration(milliseconds: 200), () {
+            showEmoji.value = target;
+          });
+        }
+      },
+      icon: Icon(
+        Icons.emoji_emotions_outlined,
+        size: 28.w,
+      ),
+    );
+  }
+
+  Widget _emojiPicker(TextEditingController controller) {
+    return Obx(
+      () => Offstage(
+        offstage: !showEmoji.value,
+        child: SizedBox(
+          height: 250.h,
+          child: EmojiPicker(
+            onEmojiSelected: (category, emoji) {
+              controller
+                ..text += emoji.emoji
+                ..selection = TextSelection.fromPosition(
+                  TextPosition(
+                    offset: controller.text.length,
+                  ),
+                );
+              showSendBtn.value = true;
+            },
+          ),
+        ),
+      ),
     );
   }
 
   Widget _sendBtn(TextEditingController controller) {
-    return GFButton(
-      constraints: BoxConstraints(maxWidth: 10.w, minWidth: 10.w),
-      size: 25.h,
+    return ElevatedButton(
       onPressed: () {
         callback(controller.text);
         controller.clear();
+        showSendBtn.value = false;
       },
-      text: "发送",
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Colors.blueAccent),
+        minimumSize: MaterialStateProperty.all(Size(10, 28.h)),
+      ),
+      child: const Text("发送"),
     );
   }
 }
