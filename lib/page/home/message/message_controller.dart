@@ -158,13 +158,9 @@ class MessageController extends GetxController with WidgetsBindingObserver {
 
   String _msgPreHandler(MessageDetailResp detail, TargetResp userInfo) {
     // 空间转换
-    if (detail.spaceId == null || detail.spaceId == detail.fromId) {
+    if (detail.spaceId == null || detail.spaceId == detail.fromId || !spaceMap.containsKey(detail.spaceId)) {
+      // 消息没有空间 ID，在他们自己空间下发的，当前会话不存在
       detail.spaceId = userInfo.id;
-    }
-
-    // 确定空间
-    if (!spaceMap.containsKey(detail.spaceId)) {
-      throw Exception("不存在空间${detail.spaceId}");
     }
 
     var sessionId = detail.toId;
