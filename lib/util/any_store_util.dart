@@ -42,10 +42,9 @@ class AnyStoreUtil {
   }
 
   HubConnection? _server;
-  Rx<HubConnectionState> state = HubConnectionState.disconnected.obs;
   bool isStop = true;
-  Map<String, Function> subscriptionMap = {};
-
+  final Rx<HubConnectionState> state = HubConnectionState.disconnected.obs;
+  final Map<String, Function> subscriptionMap = {};
   final Map<String, void Function(List<dynamic>?)> events = {};
 
   Future<ApiResp> get(String key, String domain) async {
@@ -210,8 +209,12 @@ class AnyStoreUtil {
     isStop = true;
     try {
       await _server!.stop();
-      log.info("===> 已断开和存储服务器的连接。");
       setState();
+      _server = null;
+      subscriptionMap.clear();
+      events.clear();
+
+      log.info("===> 已断开和存储服务器的连接。");
     } catch (error) {
       isStop = false;
     }

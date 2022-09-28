@@ -229,20 +229,6 @@ class MineInfoPage extends GetView<MineInfoController> {
                           ],
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                        child: Row(
-                          children: [
-                            GFButton(
-                                onPressed: () async {
-                                  Get.offAllNamed(Routers.main);
-                                },
-                                color: Colors.red,
-                                text: "注销",
-                                blockButton: true)
-                          ],
-                        ),
-                      )
                     ],
                   )),
             ));

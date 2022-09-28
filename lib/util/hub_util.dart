@@ -45,8 +45,7 @@ class HubUtil {
 
   HubConnection? _server;
   bool isStop = true;
-  Rx<HubConnectionState> state = HubConnectionState.disconnected.obs;
-
+  final Rx<HubConnectionState> state = HubConnectionState.disconnected.obs;
   final Map<String, void Function(List<dynamic>?)> events = {};
 
   // 发送消息
@@ -317,9 +316,11 @@ class HubUtil {
     isStop = true;
     try {
       await _server!.stop();
-      log.info("===> 已断开和聊天服务器的连接。");
-      // 设置可观测状态
       setStatus();
+      _server = null;
+      events.clear();
+
+      log.info("===> 已断开和聊天服务器的连接。");
     } catch (error) {
       isStop = false;
     }
