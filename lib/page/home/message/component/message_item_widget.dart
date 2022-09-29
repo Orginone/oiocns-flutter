@@ -119,6 +119,9 @@ class MessageItemWidget extends GetView<MessageController> {
     MessageItemResp messageItem = spaceMessageItems.chats[index];
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
+      onLongPress: () {
+        
+      },
       onTap: () {
         Map<String, dynamic> args = {
           "messageItem": messageItem,

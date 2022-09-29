@@ -19,6 +19,8 @@ import '../../../../../enumeration/message_type.dart';
 
 enum Direction { leftStart, rightStart }
 
+enum Func { recall, remove }
+
 class ChatMessageDetail extends GetView<ChatController> {
   final Logger log = Logger("ChatMessageDetail");
 
@@ -96,13 +98,7 @@ class ChatMessageDetail extends GetView<ChatController> {
     var chat = GestureDetector(
       onLongPress: () {
         if (!isMy) return;
-        Navigator.push(
-            context,
-            NNPopupRoute(
-                onClick: () {
-                  Navigator.of(context).pop();
-                },
-                child: ChatFunc(messageDetail)));
+        // _function(context, this);
       },
       child: _getMessage(),
     );
@@ -131,5 +127,32 @@ class ChatMessageDetail extends GetView<ChatController> {
                 ? TextDirection.rtl
                 : TextDirection.ltr);
     }
+  }
+
+  _function(BuildContext context, Widget item) {
+    log.info("function");
+    final RenderBox box = context.findRenderObject()! as RenderBox;
+    final RenderBox overlay =
+        Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
+    const Offset offset = Offset.zero;
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        box.localToGlobal(offset, ancestor: overlay),
+        box.localToGlobal(box.size.bottomRight(Offset.zero) + offset,
+            ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+    showMenu<Func>(
+      context: context,
+      items: [
+        CheckedPopupMenuItem(
+          child: ChatFunc(messageDetail),
+        )
+      ],
+      position: position,
+    ).then<void>((Func? newValue) {
+      controller.log.info("func${newValue?.name ?? ""}");
+    });
   }
 }

@@ -86,7 +86,7 @@ class ChatController extends GetxController {
     String sessionId,
     MessageDetailResp? detail,
   ) {
-    if (spaceId != spaceId && sessionId != messageItemId) {
+    if (spaceId != this.spaceId && sessionId != messageItemId) {
       return;
     }
     if (detail == null) {

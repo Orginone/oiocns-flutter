@@ -17,8 +17,8 @@ class GroupItemWidget extends GetView<MessageController> {
   get _title => GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () async {
-          controller.orgChatCache.chats[index].isExpand =
-              !controller.orgChatCache.chats[index].isExpand;
+          var item = controller.orgChatCache.chats[index];
+          item.isExpand = !item.isExpand;
           controller.update();
         },
         child: Row(
@@ -65,8 +65,9 @@ class GroupItemWidget extends GetView<MessageController> {
               itemCount: messageItems.length,
               itemBuilder: (context, index) {
                 MessageItemResp messageItem = messageItems[index];
-                return MessageItemWidget(
-                    spaceMessages.id, messageItem.id, index);
+                String spaceId = spaceMessages.id;
+                String itemId = messageItem.id;
+                return MessageItemWidget(spaceId, itemId, index);
               },
             );
           },
