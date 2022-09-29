@@ -44,6 +44,17 @@ class ChatController extends GetxController {
     init();
   }
 
+  @override
+  void onClose() {
+    super.onClose();
+    var orgChatCache = messageController.orgChatCache;
+    var openChats = orgChatCache.openChats
+        .where((chat) => chat.spaceId != spaceId || chat.id != messageItemId)
+        .toList();
+    orgChatCache.openChats = openChats;
+    HubUtil().cacheChats(orgChatCache);
+  }
+
   // 初始化
   Future<void> init() async {
     // 获取参数

@@ -96,6 +96,51 @@ class ChatPage extends GetView<ChatController> {
     }
   }
 
+  _function(BuildContext context, RelativeRect position) {
+    // final RenderBox target = context.findRenderObject()! as RenderBox;
+    // final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
+    // final Offset offset;
+    // switch (widget.position) {
+    //   case PopupMenuPosition.over:
+    //     offset = widget.offset;
+    //     break;
+    //   case PopupMenuPosition.under:
+    //     offset = Offset(0.0, button.size.height - (widget.padding.vertical / 2)) + widget.offset;
+    //     break;
+    // }
+    // final RelativeRect position = RelativeRect.fromRect(
+    //   Rect.fromPoints(
+    //     button.localToGlobal(offset, ancestor: overlay),
+    //     button.localToGlobal(button.size.bottomRight(Offset.zero) + offset, ancestor: overlay),
+    //   ),
+    //   Offset.zero & overlay.size,
+    // );
+    // final List<PopupMenuEntry<T>> items = widget.itemBuilder(context);
+    // // Only show the menu if there is something to show
+    // if (items.isNotEmpty) {
+    //   showMenu<T?>(
+    //     context: context,
+    //     elevation: widget.elevation ?? popupMenuTheme.elevation,
+    //     items: items,
+    //     initialValue: widget.initialValue,
+    //     position: position,
+    //     shape: widget.shape ?? popupMenuTheme.shape,
+    //     color: widget.color ?? popupMenuTheme.color,
+    //     constraints: widget.constraints,
+    //   )
+    //       .then<void>((T? newValue) {
+    //     if (!mounted)
+    //       return null;
+    //     if (newValue == null) {
+    //       widget.onCanceled?.call();
+    //       return null;
+    //     }
+    //     widget.onSelected?.call(newValue);
+    //   });
+    // }
+
+  }
+
   get _body => Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

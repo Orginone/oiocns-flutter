@@ -277,13 +277,24 @@ class HubUtil {
     setStatus();
   }
 
+  _rsvCallback(List<dynamic> params){
+    if (Get.isRegistered<MessageController>()) {
+      var messageController = Get.find<MessageController>();
+      var count = messageController.orgChatCache.chats.length;
+      if (count > 0) {
+        messageController.onReceiveMessage(params);
+        return;
+      }
+    }
+    Timer(const Duration(seconds: 1), () {
+      _rsvCallback(params);
+    });
+  }
+
   /// 定义事件
   void _initEvents() {
     events[ReceiveEvent.RecvMsg.name] = (params) {
-      if (Get.isRegistered<MessageController>()) {
-        var messageController = Get.find<MessageController>();
-        messageController.onReceiveMessage(params ?? []);
-      }
+      _rsvCallback(params ?? []);
     };
     events[ReceiveEvent.ChatRefresh.name] = (params) {
       if (Get.isRegistered<MessageController>()) {
