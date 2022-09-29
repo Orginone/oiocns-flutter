@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:keframe/keframe.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/component/text_tag.dart';
@@ -117,7 +116,7 @@ class ChatPage extends GetView<ChatController> {
                     scrollDirection: Axis.vertical,
                     itemCount: controller.messageDetails.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return FrameSeparateWidget(child: _chatItem(index));
+                      return _chatItem(index);
                     },
                   ),
                 ),

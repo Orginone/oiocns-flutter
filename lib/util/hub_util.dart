@@ -55,6 +55,9 @@ class HubUtil {
       var args = <Object>[messageDetail];
       var sendName = SendEvent.SendMsg.name;
       await _server!.invoke(sendName, args: args);
+    } else {
+      Fluttertoast.showToast(msg: "未连接聊天服务器!");
+      throw Exception("未连接聊天服务器!");
     }
   }
 
