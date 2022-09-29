@@ -30,7 +30,8 @@ class GroupsPage extends GetView<GroupsController> {
   @override
   Widget build(BuildContext context) {
     return UnifiedScaffold(
-      appBarTitle: Text("我的群组", style: text16),
+      appBarTitle: Text("我的集团", style: text20),
+      appBarCenterTitle: true,
       appBarLeading: WidgetUtil.defaultBackBtn,
       body: _body,
     );

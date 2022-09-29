@@ -30,7 +30,8 @@ class CohortsPage extends GetView<CohortsController> {
   @override
   Widget build(BuildContext context) {
     return UnifiedScaffold(
-      appBarTitle: Text("我的群组", style: text16),
+      appBarTitle: Text("我的群组", style: text20),
+      appBarCenterTitle: true,
       appBarLeading: WidgetUtil.defaultBackBtn,
       body: _body,
     );
