@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
+import 'package:orginone/util/string_util.dart';
 
 import '../../../../api_resp/target_resp.dart';
 import '../../../../component/text_avatar.dart';
@@ -55,7 +56,11 @@ class CohortsPage extends GetView<CohortsController> {
             padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
             child: Row(children: [
               TextAvatar(
-                  avatarName: targetResp.name, type: TextAvatarType.chat),
+                avatarName: StringUtil.getAvatarName(
+                  avatarName: targetResp.name,
+                  type: TextAvatarType.chat,
+                ),
+              ),
               Container(margin: const EdgeInsets.fromLTRB(10, 0, 0, 0)),
               Expanded(child: Text(targetResp.name, style: text16))
             ])));

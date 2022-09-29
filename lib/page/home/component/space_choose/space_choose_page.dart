@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/util/string_util.dart';
 
 import '../../../../api_resp/target_resp.dart';
 import '../../../../component/text_avatar.dart';
@@ -24,9 +25,16 @@ class SpaceChoosePage extends GetView<SpaceChooseController> {
         Get.back();
       },
       child: Container(
-          padding: lr20t10,
-          child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            TextAvatar(avatarName: targetResp.name, type: TextAvatarType.space),
+        padding: lr20t10,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            TextAvatar(
+              avatarName: StringUtil.getAvatarName(
+                avatarName: targetResp.name,
+                type: TextAvatarType.space,
+              ),
+            ),
             Container(margin: left10),
             Expanded(
               child: Text(
@@ -44,7 +52,9 @@ class SpaceChoosePage extends GetView<SpaceChooseController> {
                 padding: const EdgeInsets.all(4),
               ),
             )
-          ])),
+          ],
+        ),
+      ),
     );
   }
 
@@ -53,13 +63,15 @@ class SpaceChoosePage extends GetView<SpaceChooseController> {
           controller.onLoadSpaces();
         },
         child: GetBuilder<SpaceChooseController>(
-            init: controller,
-            builder: (controller) => ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: controller.spaces.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return _item(controller.spaces[index]);
-                })),
+          init: controller,
+          builder: (controller) => ListView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: controller.spaces.length,
+            itemBuilder: (BuildContext context, int index) {
+              return _item(controller.spaces[index]);
+            },
+          ),
+        ),
       );
 
   @override

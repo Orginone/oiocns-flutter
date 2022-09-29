@@ -34,8 +34,10 @@ class MessageItemWidget extends GetView<MessageController> {
         Align(
           alignment: Alignment.center,
           child: TextAvatar(
-            avatarName: messageItem.name,
-            type: TextAvatarType.chat,
+            avatarName: StringUtil.getAvatarName(
+              avatarName: messageItem.name,
+              type: TextAvatarType.chat,
+            ),
             width: defaultAvatarWidth,
           ),
         ),

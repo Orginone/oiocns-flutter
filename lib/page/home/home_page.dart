@@ -12,6 +12,7 @@ import '../../component/unified_edge_insets.dart';
 import '../../config/custom_colors.dart';
 import '../../routers.dart';
 import '../../util/hub_util.dart';
+import '../../util/string_util.dart';
 import 'home_controller.dart';
 
 class HomePage extends GetView<HomeController> {
@@ -107,8 +108,10 @@ class HomePage extends GetView<HomeController> {
   }
 
   get _leading => TextAvatar(
-        avatarName: controller.user.userName,
-        type: TextAvatarType.avatar,
+        avatarName: StringUtil.getAvatarName(
+          avatarName: controller.user.userName,
+          type: TextAvatarType.avatar,
+        ),
         textStyle: text16White,
         margin: all10,
         status: Obx(() {

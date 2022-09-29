@@ -8,6 +8,7 @@ import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/chat/component/chat_func.dart';
 import 'package:orginone/page/home/message/chat/component/text_message.dart';
 import 'package:orginone/util/hive_util.dart';
+import 'package:orginone/util/string_util.dart';
 
 import '../../../../../api_resp/target_resp.dart';
 import '../../../../../component/popup_router.dart';
@@ -69,8 +70,10 @@ class ChatMessageDetail extends GetView<ChatController> {
   Widget _getAvatar() {
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     return TextAvatar(
-      avatarName: isMy ? userInfo.team.name : targetName(),
-      type: TextAvatarType.chat,
+      avatarName: StringUtil.getAvatarName(
+        avatarName: isMy ? userInfo.team.name : targetName(),
+        type: TextAvatarType.chat,
+      ),
       textStyle: text12WhiteBold,
     );
   }

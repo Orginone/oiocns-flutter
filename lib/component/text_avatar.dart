@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 
-import '../config/custom_colors.dart';
-import '../util/string_util.dart';
-
 enum TextAvatarType { space, chat, avatar }
 
 const double defaultWidth = 40;
 const double defaultRadius = 5;
 const Color defaultBgColor = Colors.blueAccent;
 const EdgeInsets defaultMargin = EdgeInsets.zero;
-const TextStyle defaultTextStyle =
-    TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold);
+const TextStyle defaultTextStyle = TextStyle(
+  fontSize: 16,
+  color: Colors.white,
+  fontWeight: FontWeight.bold,
+);
 
 class TextAvatar extends StatelessWidget {
-  final TextAvatarType textAvatarType;
   final String avatarName;
   final double width;
   final double radius;
@@ -22,41 +21,16 @@ class TextAvatar extends StatelessWidget {
   final TextStyle textStyle;
   final Widget? status;
 
-  TextAvatar(
+  const TextAvatar(
       {Key? key,
-      required String avatarName,
-      required TextAvatarType type,
-      radius = defaultRadius,
+      required this.avatarName,
+      this.radius = defaultRadius,
       this.width = defaultWidth,
       this.margin = defaultMargin,
       this.bgColor = defaultBgColor,
       this.textStyle = defaultTextStyle,
       this.status})
-      : avatarName = _getAvatarName(avatarName, type),
-        radius = _getRadius(width, radius, type),
-        textAvatarType = type,
-        super(key: key);
-
-  static String _getAvatarName(String avatarName, TextAvatarType type) {
-    switch (type) {
-      case TextAvatarType.space:
-        return StringUtil.getPrefixChars(avatarName, count: 1);
-      case TextAvatarType.chat:
-        return StringUtil.getPrefixChars(avatarName, count: 2);
-      case TextAvatarType.avatar:
-        return StringUtil.getPrefixChars(avatarName, count: 1);
-    }
-  }
-
-  static double _getRadius(double width, double radius, TextAvatarType type) {
-    switch (type) {
-      case TextAvatarType.space:
-        return width / 2;
-      case TextAvatarType.chat:
-      case TextAvatarType.avatar:
-        return radius;
-    }
-  }
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

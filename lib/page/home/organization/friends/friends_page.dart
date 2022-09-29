@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/organization/friends/friends_controller.dart';
+import 'package:orginone/util/string_util.dart';
 
 import '../../../../component/text_avatar.dart';
 import '../../../../component/text_search.dart';
@@ -66,7 +67,11 @@ class FriendsPage extends GetView<FriendsController> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 TextAvatar(
-                    avatarName: targetResp.name, type: TextAvatarType.chat),
+                  avatarName: StringUtil.getAvatarName(
+                    avatarName: targetResp.name,
+                    type: TextAvatarType.chat,
+                  ),
+                ),
                 Container(margin: const EdgeInsets.fromLTRB(10, 0, 0, 0)),
                 Expanded(child: Text(targetResp.name, style: text16Bold))
               ],
