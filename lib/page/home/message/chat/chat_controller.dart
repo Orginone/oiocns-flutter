@@ -10,6 +10,7 @@ import 'package:uuid/uuid.dart';
 import '../../../../api_resp/message_item_resp.dart';
 import '../../../../api_resp/target_resp.dart';
 import '../../../../enumeration/message_type.dart';
+import '../../../../enumeration/target_type.dart';
 import '../message_controller.dart';
 
 class ChatController extends GetxController {
@@ -119,7 +120,7 @@ class ChatController extends GetxController {
 
   /// 查询群成员信息
   Future<Map<String, String>> getPersons() async {
-    if (messageItem.typeName == "人员") {
+    if (messageItem.typeName == TargetType.person.name) {
       var name = await HubUtil().getName(messageItemId);
       personNameMap[messageItemId] = name;
       return personNameMap;
@@ -136,7 +137,7 @@ class ChatController extends GetxController {
       for (var person in persons) {
         personMap[person.id] = person;
         var typeName = person.typeName;
-        typeName = typeName == "人员" ? "" : "[$typeName]";
+        typeName = typeName == TargetType.person.name ? "" : "[$typeName]";
         personNameMap[person.id] = "${person.team.name}$typeName";
       }
       offset += limit;
@@ -193,7 +194,7 @@ class ChatController extends GetxController {
   /// 获取顶部群名称
   String getTitleName() {
     String itemName = messageItem.name;
-    if (messageItem.typeName != "人员") {
+    if (messageItem.typeName != TargetType.person.name) {
       itemName = "$itemName(${personList.length})";
     }
     return itemName;

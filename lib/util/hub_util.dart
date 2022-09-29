@@ -14,6 +14,7 @@ import '../api_resp/api_resp.dart';
 import '../api_resp/message_detail_resp.dart';
 import '../api_resp/message_item_resp.dart';
 import '../api_resp/target_resp.dart';
+import '../enumeration/target_type.dart';
 import '../page/home/message/message_controller.dart';
 import 'hive_util.dart';
 
@@ -169,7 +170,7 @@ class HubUtil {
       if (isConn()) {
         String event = SendEvent.QueryFriendMsg.name;
         String idName = "friendId";
-        if (typeName != "人员") {
+        if (typeName != TargetType.person.name) {
           event = SendEvent.QueryCohortMsg.name;
           idName = "cohortId";
         }

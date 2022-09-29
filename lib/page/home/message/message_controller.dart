@@ -11,6 +11,7 @@ import 'package:orginone/util/hive_util.dart';
 
 import '../../../api_resp/message_detail_resp.dart';
 import '../../../api_resp/message_item_resp.dart';
+import '../../../enumeration/target_type.dart';
 import '../../../util/hub_util.dart';
 import 'chat/chat_controller.dart';
 
@@ -168,7 +169,7 @@ class MessageController extends GetxController with WidgetsBindingObserver {
     // 匹配群
     SpaceMessagesResp space = spaceMap[detail.spaceId]!;
     for (var chat in space.chats) {
-      if (chat.typeName == "人员" &&
+      if (chat.typeName == TargetType.person.name &&
           detail.fromId == chat.id &&
           detail.toId == userInfo.id) {
         sessionId = detail.fromId;
@@ -213,7 +214,7 @@ class MessageController extends GetxController with WidgetsBindingObserver {
         } else {
           item.showTxt = msgBody;
         }
-        if (item.typeName != "人员") {
+        if (item.typeName != TargetType.person.name) {
           String name = orgChatCache.nameMap[detail.fromId];
           item.showTxt = "$name：${item.showTxt}";
         }

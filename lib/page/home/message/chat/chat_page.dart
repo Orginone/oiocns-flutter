@@ -13,6 +13,7 @@ import 'package:orginone/util/date_util.dart';
 
 import '../../../../api_resp/message_item_resp.dart';
 import '../../../../component/unified_edge_insets.dart';
+import '../../../../enumeration/target_type.dart';
 import '../../../../routers.dart';
 import '../../../../util/hive_util.dart';
 import '../../../../util/widget_util.dart';
@@ -69,7 +70,7 @@ class ChatPage extends GetView<ChatController> {
 
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     bool isMy = messageDetail.fromId == userInfo.id;
-    bool isMultiple = messageItem.typeName != "人员";
+    bool isMultiple = messageItem.typeName != TargetType.person.name;
 
     Widget currentWidget =
         ChatMessageDetail(messageItem.id, messageDetail, isMy, isMultiple);
