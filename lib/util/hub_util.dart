@@ -139,7 +139,7 @@ class HubUtil {
     spaceId = spaceId ?? userInfo.id;
     if (userInfo.id == spaceId) {
       // 清空会话
-      Map<String, dynamic> match = {};
+      Map<String, dynamic> match = {"sessionId": sessionId};
       await AnyStoreUtil().remove(collName, match, Domain.user.name);
     }
   }
@@ -277,7 +277,7 @@ class HubUtil {
     setStatus();
   }
 
-  _rsvCallback(List<dynamic> params){
+  _rsvCallback(List<dynamic> params) {
     if (Get.isRegistered<MessageController>()) {
       var messageController = Get.find<MessageController>();
       var count = messageController.orgChatCache.chats.length;
