@@ -116,6 +116,7 @@ class HttpUtil {
       return _parseResp(result);
     } on Exception catch (error) {
       Fluttertoast.showToast(msg: error.toString());
+      rethrow;
     } catch (error) {
       Fluttertoast.showToast(msg: "请求异常，请稍后再试。");
       rethrow;
@@ -124,7 +125,7 @@ class HttpUtil {
     }
   }
 
-  dynamic _parseResp<T>(Response response) {
+  dynamic _parseResp(Response response) {
     var resp = ApiResp.fromMap(response.data!);
     log.info("====> resp: ${resp.toString()}");
     if (resp.code == 200) {

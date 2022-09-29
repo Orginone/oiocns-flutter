@@ -75,7 +75,7 @@ class OrganizationPage extends GetView<OrganizationController> {
           ),
         ),
         body: Container(
-          margin: EdgeInsets.only(left: left10),
+          margin: left10,
           child: Text("我的集团", style: text16Bold),
         ),
         func: () {
@@ -93,11 +93,13 @@ class OrganizationPage extends GetView<OrganizationController> {
           color: Colors.white,
         ),
       ),
-      body: Container(
-        margin: left10,
-        child: Text(
-          targetResp.name,
-          style: text16Bold,
+      body: Expanded(
+        child: Container(
+          margin: left10,
+          child: Text(
+            targetResp.name,
+            style: text16Bold,
+          ),
         ),
       ),
       func: () {

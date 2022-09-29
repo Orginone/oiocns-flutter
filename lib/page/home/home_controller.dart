@@ -88,7 +88,7 @@ class HomeController extends GetxController
   void switchSpaces(TargetResp targetResp) async {
     LoginResp loginResp = await PersonApi.changeWorkspace(targetResp.id);
     HiveUtil().putValue(Keys.user, loginResp.user);
-    HiveUtil().putValue(Keys.accessToken, loginResp.accessToken);
+    HiveUtil().accessToken = loginResp.accessToken;
 
     // 当前页面需要变化
     currentSpace = targetResp;

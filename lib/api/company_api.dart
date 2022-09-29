@@ -1,9 +1,13 @@
+import 'package:logging/logging.dart';
+
 import '../api_resp/page_resp.dart';
 import '../api_resp/target_resp.dart';
 import 'constant.dart';
 import '../util/http_util.dart';
 
 class CompanyApi {
+  static final Logger log = Logger("CompanyApi");
+
   static Future<List<dynamic>> getJoinedCompanys(int offset, int limit) async {
     String url = "${Constant.company}/get/joined/companys";
     Map<String, dynamic> data = {"offset": offset, "limit": limit};
@@ -15,7 +19,7 @@ class CompanyApi {
 
   static Future<List<dynamic>> searchCompanys(String code) async {
     String url = "${Constant.company}/search/companys";
-    Map<String, dynamic> data = {"filter": code,"limit": 20,"offset": 0};
+    Map<String, dynamic> data = {"filter": code, "limit": 20, "offset": 0};
     Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
     PageResp pageResp = PageResp.fromMap(resp);
     return pageResp.result;
@@ -54,7 +58,7 @@ class CompanyApi {
       data["filter"] = filter;
     }
 
-    Map<String, dynamic> pageResp = await HttpUtil().post(url, data: data);
+    dynamic pageResp = await HttpUtil().post(url, data: data);
     var pageData = PageResp.fromMap(pageResp);
     return pageData.result.map((item) => TargetResp.fromMap(item)).toList();
   }

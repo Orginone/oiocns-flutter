@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/component/unified_text_style.dart';
@@ -15,19 +16,6 @@ import '../../search/search_controller.dart';
 class FriendsPage extends GetView<FriendsController> {
   const FriendsPage({Key? key}) : super(key: key);
 
-  get _body => Column(
-        children: [
-          TextSearch(controller.searchingCallback),
-          Expanded(
-              child: Scrollbar(
-                  child: RefreshIndicator(
-                      onRefresh: () async {
-                        controller.onLoadFriends("");
-                      },
-                      child: _list())))
-        ],
-      );
-
   @override
   Widget build(BuildContext context) {
     return UnifiedScaffold(
@@ -35,46 +23,67 @@ class FriendsPage extends GetView<FriendsController> {
       appBarLeading: WidgetUtil.defaultBackBtn,
       body: _body,
       floatingButton: FloatingActionButton(
-          onPressed: () {
-            List<SearchItem> friends = [SearchItem.friends];
-            Get.toNamed(Routers.search, arguments: friends);
-          },
-          backgroundColor: Colors.blueAccent,
-          splashColor: Colors.white,
-          child: const Icon(Icons.person_add, size: 30, color: Colors.white)),
+        onPressed: () {
+          List<SearchItem> friends = [SearchItem.friends];
+          Get.toNamed(Routers.search, arguments: friends);
+        },
+        backgroundColor: Colors.blueAccent,
+        splashColor: Colors.white,
+        child: Icon(Icons.person_add, size: 25.w, color: Colors.white),
+      ),
     );
   }
 
+  get _body => Column(
+    children: [
+      TextSearch(controller.searchingCallback),
+      Expanded(
+        child: Scrollbar(
+          child: RefreshIndicator(
+            onRefresh: () async {
+              controller.onLoadFriends("");
+            },
+            child: _list(),
+          ),
+        ),
+      ),
+    ],
+  );
+
   Widget _list() {
     return GetBuilder<FriendsController>(
-        init: FriendsController(),
-        builder: (controller) => ListView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: controller.friends.length,
-            itemBuilder: (BuildContext context, int index) {
-              return _item(controller.friends[index]);
-            }));
+      init: FriendsController(),
+      builder: (controller) => ListView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: controller.friends.length,
+        itemBuilder: (BuildContext context, int index) {
+          return _item(controller.friends[index]);
+        },
+      ),
+    );
   }
 
   Widget _item(TargetResp targetResp) {
     return GestureDetector(
-        onTap: () {
-          Get.toNamed(Routers.personDetail, arguments: targetResp.team.code);
-        },
-        child: Container(
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                TextAvatar(
-                  avatarName: StringUtil.getAvatarName(
-                    avatarName: targetResp.name,
-                    type: TextAvatarType.chat,
-                  ),
-                ),
-                Container(margin: const EdgeInsets.fromLTRB(10, 0, 0, 0)),
-                Expanded(child: Text(targetResp.name, style: text16Bold))
-              ],
-            )));
+      onTap: () {
+        Get.toNamed(Routers.personDetail, arguments: targetResp.team.code);
+      },
+      child: Container(
+        padding: EdgeInsets.only(left: 10.w, bottom: 10.h, right: 10.w),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            TextAvatar(
+              avatarName: StringUtil.getAvatarName(
+                avatarName: targetResp.name,
+                type: TextAvatarType.chat,
+              ),
+            ),
+            Container(margin: EdgeInsets.only(left: 10.w)),
+            Expanded(child: Text(targetResp.name, style: text16Bold))
+          ],
+        ),
+      ),
+    );
   }
 }
