@@ -21,9 +21,9 @@ class MessageItemWidget extends GetView<MessageController> {
   // 用户信息
   final String spaceId;
   final String messageItemId;
-  final int index;
+  final MessageItemResp messageItem;
 
-  const MessageItemWidget(this.spaceId, this.messageItemId, this.index,
+  const MessageItemWidget(this.spaceId, this.messageItemId, this.messageItem,
       {Key? key})
       : super(key: key);
 
@@ -116,12 +116,9 @@ class MessageItemWidget extends GetView<MessageController> {
       return Container();
     }
     SpaceMessagesResp spaceMessageItems = spaceMap[spaceId]!;
-    MessageItemResp messageItem = spaceMessageItems.chats[index];
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onLongPress: () {
-        
-      },
+      onLongPress: () {},
       onTap: () {
         Map<String, dynamic> args = {
           "messageItem": messageItem,

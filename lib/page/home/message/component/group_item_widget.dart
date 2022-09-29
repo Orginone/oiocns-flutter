@@ -67,7 +67,7 @@ class GroupItemWidget extends GetView<MessageController> {
                 MessageItemResp messageItem = messageItems[index];
                 String spaceId = spaceMessages.id;
                 String itemId = messageItem.id;
-                return MessageItemWidget(spaceId, itemId, index);
+                return MessageItemWidget(spaceId, itemId, messageItem);
               },
             );
           },
