@@ -113,6 +113,7 @@ class HubUtil {
         "createTime": DateUtil.formatDate(detail.createTime,
             format: "yyyy-MM-dd HH:mm:ss.SSS")
       };
+      log.info("====> 插入一条数据：${data["createTime"]}");
       await AnyStoreUtil().insert(collName, data, Domain.user.name);
     }
   }
