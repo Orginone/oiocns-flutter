@@ -45,8 +45,9 @@ class MessageController extends GetxController with WidgetsBindingObserver {
     List<SpaceMessagesResp> groups = orgChatCache.chats;
     List<SpaceMessagesResp> spaces = [];
     for (SpaceMessagesResp space in groups) {
-      if (space.id == homeController.currentSpace.id) {
-        space.isExpand = true;
+      var isCurrent = space.id == homeController.currentSpace.id;
+      space.isExpand = isCurrent;
+      if (isCurrent) {
         spaces.insert(0, space);
       } else {
         spaces.add(space);
@@ -159,7 +160,9 @@ class MessageController extends GetxController with WidgetsBindingObserver {
 
   String _msgPreHandler(MessageDetailResp detail, TargetResp userInfo) {
     // 空间转换
-    if (detail.spaceId == null || detail.spaceId == detail.fromId || !spaceMap.containsKey(detail.spaceId)) {
+    if (detail.spaceId == null ||
+        detail.spaceId == detail.fromId ||
+        !spaceMap.containsKey(detail.spaceId)) {
       // 消息没有空间 ID，在他们自己空间下发的，当前会话不存在
       detail.spaceId = userInfo.id;
     }
@@ -230,11 +233,11 @@ class MessageController extends GetxController with WidgetsBindingObserver {
           }
         }
         if (!isTalking && detail.fromId != userInfo.id) {
-          // 如果正在后台，发送本地消息提示
-          _pushMessage(item, detail);
           // 不在会话中且不是我发的消息
           item.noRead = (item.noRead ?? 0) + 1;
         }
+        // 如果正在后台，发送本地消息提示
+        _pushMessage(item, detail);
 
         orgChatCache.messageDetail = detail;
         orgChatCache.target = item;
@@ -266,8 +269,12 @@ class MessageController extends GetxController with WidgetsBindingObserver {
         detail.fromId != userInfo.id) {
       // 当前系统在后台，且不是自己发的消息
       var android = const AndroidNotificationDetails(
-          'NewMessageNotification', '新消息通知',
-          priority: Priority.max, importance: Importance.max);
+        'NewMessageNotification',
+        '新消息通知',
+        priority: Priority.max,
+        importance: Importance.max,
+        playSound: true,
+      );
       var notificationDetails = NotificationDetails(android: android);
       FlutterLocalNotificationsPlugin()
           .show(0, item.name, item.showTxt, notificationDetails);
