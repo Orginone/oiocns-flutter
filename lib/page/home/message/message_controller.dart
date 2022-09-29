@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
@@ -8,6 +7,7 @@ import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/util/any_store_util.dart';
 import 'package:orginone/util/hive_util.dart';
+import 'package:orginone/util/notification_util.dart';
 
 import '../../../api_resp/message_detail_resp.dart';
 import '../../../api_resp/message_item_resp.dart';
@@ -268,16 +268,7 @@ class MessageController extends GetxController with WidgetsBindingObserver {
         currentAppState == AppLifecycleState.paused &&
         detail.fromId != userInfo.id) {
       // 当前系统在后台，且不是自己发的消息
-      var android = const AndroidNotificationDetails(
-        'NewMessageNotification',
-        '新消息通知',
-        priority: Priority.max,
-        importance: Importance.max,
-        playSound: true,
-      );
-      var notificationDetails = NotificationDetails(android: android);
-      FlutterLocalNotificationsPlugin()
-          .show(0, item.name, item.showTxt, notificationDetails);
+      NotificationUtil.showNewMsg(item.name, item.showTxt ?? "");
     }
   }
 }
