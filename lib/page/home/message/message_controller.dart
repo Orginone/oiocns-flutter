@@ -58,7 +58,7 @@ class MessageController extends GetxController with WidgetsBindingObserver {
         spaces.add(space);
       }
     }
-    if (topping != null && topping.chats.isNotEmpty) {
+    if (topping != null) {
       spaces.insert(0, topping);
     }
     orgChatCache.chats = spaces;
@@ -136,6 +136,7 @@ class MessageController extends GetxController with WidgetsBindingObserver {
     // 置顶会话
     SpaceMessagesResp topGroup = SpaceMessagesResp("topping", "置顶会话", []);
 
+    bool hasTop = false;
     for (var group in groups) {
       // 初始数据
       String spaceId = group.id;
@@ -152,26 +153,26 @@ class MessageController extends GetxController with WidgetsBindingObserver {
           var messageItemMap = spaceMessageItemMap[spaceId]!;
           if (messageItemMap.containsKey(id)) {
             var oldItem = messageItemMap[id]!;
-            messageItem.msgTime = oldItem.msgTime;
-            messageItem.msgType = oldItem.msgType;
-            messageItem.msgBody = oldItem.msgBody;
-            messageItem.personNum = oldItem.personNum;
-            messageItem.noRead = oldItem.noRead;
-            messageItem.showTxt = oldItem.showTxt;
+            messageItem.msgTime ??= oldItem.msgTime;
+            messageItem.msgType ??= oldItem.msgType;
+            messageItem.msgBody ??= oldItem.msgBody;
+            messageItem.personNum ??= oldItem.personNum;
+            messageItem.noRead ??= oldItem.noRead;
+            messageItem.showTxt ??= oldItem.showTxt;
+            messageItem.isTop ??= oldItem.isTop;
           }
         }
         newSpaceMessageItemMap[spaceId]![id] = messageItem;
+        if (messageItem.isTop == true){
+          hasTop = true;
+        }
       }
-
-      // 插入置顶会话
-      var tops = chats.where((item) => item.isTop ?? false).toList();
-      topGroup.chats.addAll(tops);
 
       // 组内排序
       sortingItems(group);
       spaces.add(group);
     }
-    if (topGroup.chats.isNotEmpty) {
+    if (hasTop) {
       spaces.insert(0, topGroup);
     }
     spaceMap = newSpaceMap;

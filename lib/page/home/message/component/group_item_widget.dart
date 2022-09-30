@@ -53,28 +53,54 @@ class GroupItemWidget extends GetView<MessageController> {
             OrgChatCache orgChatCache = controller.orgChatCache;
             SpaceMessagesResp spaceMessages = orgChatCache.chats[index];
             bool isExpand = spaceMessages.isExpand;
-            List<MessageItemResp> messageItems = spaceMessages.id == "topping"
-                ? spaceMessages.chats
-                : spaceMessages.chats
-                    .where((item) => item.isTop == null || item.isTop == false)
-                    .toList();
-
-            if (!isExpand) {
-              messageItems = messageItems
-                  .where((item) => item.noRead != null && item.noRead != 0)
+            if (spaceMessages.id == "topping") {
+              List<MessageItemWidget> tops = [];
+              for (var space in orgChatCache.chats) {
+                var items = space.chats;
+                for (var item in items) {
+                  if (item.isTop == true) {
+                    tops.add(MessageItemWidget(space.id, item.id, item));
+                  }
+                }
+              }
+              tops.sort((first, second) {
+                var firstItem = first.messageItem;
+                var secondItem = second.messageItem;
+                if (firstItem.msgTime == null || secondItem.msgTime == null) {
+                  return 0;
+                } else {
+                  return -firstItem.msgTime!.compareTo(secondItem.msgTime!);
+                }
+              });
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: tops.length,
+                itemBuilder: (context, index) {
+                  return tops[index];
+                },
+              );
+            } else {
+              List<MessageItemResp> messageItems = spaceMessages.chats
+                  .where((item) => item.isTop == null || item.isTop == false)
                   .toList();
+              if (!isExpand) {
+                messageItems = messageItems
+                    .where((item) => item.noRead != null && item.noRead != 0)
+                    .toList();
+              }
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: messageItems.length,
+                itemBuilder: (context, index) {
+                  MessageItemResp messageItem = messageItems[index];
+                  String spaceId = spaceMessages.id;
+                  String itemId = messageItem.id;
+                  return MessageItemWidget(spaceId, itemId, messageItem);
+                },
+              );
             }
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: messageItems.length,
-              itemBuilder: (context, index) {
-                MessageItemResp messageItem = messageItems[index];
-                String spaceId = spaceMessages.id;
-                String itemId = messageItem.id;
-                return MessageItemWidget(spaceId, itemId, messageItem);
-              },
-            );
           },
         ),
       );

@@ -173,7 +173,6 @@ class HubUtil {
         item["id"] = item["chatId"];
         ans.insert(0, MessageDetailResp.fromMap(item));
       }
-      log.info("获取到的聊天记录：$ans");
       return ans;
     } else {
       if (isConn()) {
