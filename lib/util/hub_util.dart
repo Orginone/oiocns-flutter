@@ -123,7 +123,9 @@ class HubUtil {
       "operation": "replaceAll",
       "data": {
         "name": "我的消息",
-        "chats": SpaceMessagesResp.toJsonList(orgChatCache.chats),
+        "chats": SpaceMessagesResp.toJsonList(orgChatCache.chats)
+            .where((item) => item["id"] != "topping")
+            .toList(),
         "nameMap": orgChatCache.nameMap,
         "openChats": MessageItemResp.toJsonList(orgChatCache.openChats),
         "lastMsg": {

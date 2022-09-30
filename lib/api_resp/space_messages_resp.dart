@@ -22,9 +22,9 @@ class SpaceMessagesResp {
     return ans;
   }
 
-  static List<Map<String, dynamic>>? toJsonList(List<SpaceMessagesResp>? data) {
+  static List<Map<String, dynamic>> toJsonList(List<SpaceMessagesResp>? data) {
     if (data == null) {
-      return null;
+      return [];
     }
     List<Map<String, dynamic>> ans = [];
     for (var item in data) {
