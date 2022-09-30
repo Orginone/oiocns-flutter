@@ -13,6 +13,7 @@ class MessageItemResp {
   int? noRead;
   int? personNum;
   String? showTxt;
+  bool? isTop;
 
   MessageItemResp.fromMap(Map<String, dynamic> map)
       : id = map["id"],
@@ -26,7 +27,8 @@ class MessageItemResp {
         spaceId = map["spaceId"],
         noRead = map["noRead"],
         personNum = map["personNum"],
-        showTxt = map["showTxt"];
+        showTxt = map["showTxt"],
+        isTop = map["isTop"];
 
   static List<MessageItemResp> fromList(List<dynamic>? data) {
     if (data == null) {
@@ -65,6 +67,7 @@ class MessageItemResp {
     json["noRead"] = noRead;
     json["personNum"] = personNum;
     json["showTxt"] = showTxt;
+    json["isTop"] = isTop;
     return json;
   }
 }

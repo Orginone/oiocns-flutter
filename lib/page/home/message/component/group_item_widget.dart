@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api_resp/message_item_resp.dart';
+import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/message/component/message_item_widget.dart';
 
@@ -49,10 +50,14 @@ class GroupItemWidget extends GetView<MessageController> {
   get _list => SizedBox(
         child: GetBuilder<MessageController>(
           builder: (controller) {
-            SpaceMessagesResp spaceMessages =
-                controller.orgChatCache.chats[index];
+            OrgChatCache orgChatCache = controller.orgChatCache;
+            SpaceMessagesResp spaceMessages = orgChatCache.chats[index];
             bool isExpand = spaceMessages.isExpand;
-            List<MessageItemResp> messageItems = spaceMessages.chats;
+            List<MessageItemResp> messageItems = spaceMessages.id == "topping"
+                ? spaceMessages.chats
+                : spaceMessages.chats
+                    .where((item) => item.isTop == null || item.isTop == false)
+                    .toList();
 
             if (!isExpand) {
               messageItems = messageItems

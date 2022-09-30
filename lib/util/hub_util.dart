@@ -153,7 +153,7 @@ class HubUtil {
     if (userInfo.id == spaceId) {
       Map<String, dynamic> match = {"sessionId": sessionId};
       if (typeName == TargetType.person.name) {
-        match["spaceId"] = sessionId;
+        match["spaceId"] = userInfo.id;
       }
       // 如果是个人空间从本地存储拿数据
       Map<String, dynamic> options = {
@@ -247,6 +247,8 @@ class HubUtil {
     }
     log.info("================== 连接 HUB =========================");
     _server = HubConnectionBuilder().withUrl(Constant.hub).build();
+    _server!.keepAliveIntervalInMilliseconds = 3000;
+    _server!.serverTimeoutInMilliseconds = 5000;
     isStop = false;
     var state = _server!.state;
     switch (state) {

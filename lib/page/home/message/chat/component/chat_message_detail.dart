@@ -47,15 +47,11 @@ class ChatMessageDetail extends GetView<ChatController> {
   Widget _messageDetail(BuildContext context) {
     List<Widget> children = [];
 
-    bool isRecall = false;
-    if (messageDetail.msgType == "recall") {
-      isRecall = true;
-      String msgBody = "${targetName()}：撤回了一条信息";
-      children.add(Text(msgBody, style: text12Grey));
-    } else {
+    bool isRecall = messageDetail.msgType == MessageType.recall.name;
+    if (!isRecall) {
       children.add(_getAvatar());
-      children.add(_getChat(context));
     }
+    children.add(_getChat(context));
 
     return Container(
       margin: top10,
@@ -86,11 +82,12 @@ class ChatMessageDetail extends GetView<ChatController> {
     if (isMultiple && !isMy) {
       content.add(
         Container(
-            margin: left10,
-            child: Text(
-              targetName(),
-              style: text12,
-            )),
+          margin: left10,
+          child: Text(
+            targetName(),
+            style: text12,
+          ),
+        ),
       );
     }
 
@@ -119,13 +116,16 @@ class ChatMessageDetail extends GetView<ChatController> {
 
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     switch (messageType) {
-      case MessageType.text:
-      case MessageType.unknown:
+      case MessageType.recall:
+        String msgBody = "${targetName()}：撤回了一条信息";
+        return Text(msgBody, style: text12Grey);
+      default:
         return TextMessage(
-            message: messageDetail.msgBody,
-            messageDetail.fromId == userInfo.id
-                ? TextDirection.rtl
-                : TextDirection.ltr);
+          message: messageDetail.msgBody,
+          messageDetail.fromId == userInfo.id
+              ? TextDirection.rtl
+              : TextDirection.ltr,
+        );
     }
   }
 

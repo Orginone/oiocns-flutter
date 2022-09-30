@@ -11,6 +11,7 @@ import 'package:orginone/util/notification_util.dart';
 
 import '../../../api_resp/message_detail_resp.dart';
 import '../../../api_resp/message_item_resp.dart';
+import '../../../enumeration/message_type.dart';
 import '../../../enumeration/target_type.dart';
 import '../../../util/hub_util.dart';
 import 'chat/chat_controller.dart';
@@ -44,14 +45,21 @@ class MessageController extends GetxController with WidgetsBindingObserver {
     HomeController homeController = Get.find<HomeController>();
     List<SpaceMessagesResp> groups = orgChatCache.chats;
     List<SpaceMessagesResp> spaces = [];
+    SpaceMessagesResp? topping;
     for (SpaceMessagesResp space in groups) {
       var isCurrent = space.id == homeController.currentSpace.id;
-      space.isExpand = isCurrent;
-      if (isCurrent) {
+      if (space.id == "topping") {
+        topping = space;
+        space.isExpand = true;
+      } else if (isCurrent) {
+        space.isExpand = isCurrent && topping == null;
         spaces.insert(0, space);
       } else {
         spaces.add(space);
       }
+    }
+    if (topping != null && topping.chats.isNotEmpty) {
+      spaces.insert(0, topping);
     }
     orgChatCache.chats = spaces;
   }
@@ -108,7 +116,10 @@ class MessageController extends GetxController with WidgetsBindingObserver {
     if (Get.isRegistered<ChatController>()) {
       // 消息预处理
       TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-      String sessionId = _msgPreHandler(detail, userInfo);
+      var sessionId = detail.toId;
+      if (detail.toId == userInfo.id) {
+        sessionId = detail.fromId;
+      }
 
       ChatController chatController = Get.find<ChatController>();
       chatController.onReceiveMsg(detail.spaceId!, sessionId, detail);
@@ -121,6 +132,9 @@ class MessageController extends GetxController with WidgetsBindingObserver {
     List<SpaceMessagesResp> spaces = [];
     Map<String, SpaceMessagesResp> newSpaceMap = {};
     Map<String, Map<String, MessageItemResp>> newSpaceMessageItemMap = {};
+
+    // 置顶会话
+    SpaceMessagesResp topGroup = SpaceMessagesResp("topping", "置顶会话", []);
 
     for (var group in groups) {
       // 初始数据
@@ -149,21 +163,20 @@ class MessageController extends GetxController with WidgetsBindingObserver {
         newSpaceMessageItemMap[spaceId]![id] = messageItem;
       }
 
+      // 插入置顶会话
+      var tops = chats.where((item) => item.isTop ?? false).toList();
+      topGroup.chats.addAll(tops);
+
       // 组内排序
       sortingItems(group);
       spaces.add(group);
     }
+    if (topGroup.chats.isNotEmpty) {
+      spaces.insert(0, topGroup);
+    }
     spaceMap = newSpaceMap;
     spaceMessageItemMap = newSpaceMessageItemMap;
     return spaces;
-  }
-
-  String _msgPreHandler(MessageDetailResp detail, TargetResp userInfo) {
-    var sessionId = detail.toId;
-    if (detail.toId == userInfo.id){
-      sessionId = detail.fromId;
-    }
-    return sessionId;
   }
 
   /// 接受消息
@@ -179,57 +192,78 @@ class MessageController extends GetxController with WidgetsBindingObserver {
 
       try {
         // 会话 ID
-        String sessionId = _msgPreHandler(detail, userInfo);
-
-        // 对象
-        MessageItemResp? item = spaceMessageItemMap[detail.spaceId]?[sessionId];
-        if (item == null) {
-          throw Exception("不存在会话对象$sessionId");
-        }
-        if (item.msgType == TargetType.person.name && detail.spaceId != item.spaceId){
-          throw Exception("不在同一个空间中，消息空间：${detail.spaceId}，会话空间：${item.spaceId}");
+        var sessionId = detail.toId;
+        if (detail.toId == userInfo.id) {
+          sessionId = detail.fromId;
         }
 
-        if (detail.spaceId == userInfo.id) {
-          // 如果是个人空间，存储一下信息
-          await HubUtil().cacheMsg(sessionId, detail);
-        }
-        String? msgBody = detail.msgBody;
-        item.msgBody = msgBody;
-        item.msgTime = detail.createTime;
-        item.msgType = detail.msgType;
-        if (item.msgType == "recall") {
-          bool hasPic = msgBody?.contains("<img>") ?? false;
-          item.showTxt = hasPic ? "[图片]" : msgBody;
-        } else {
-          item.showTxt = msgBody;
-        }
-        if (item.typeName != TargetType.person.name) {
-          String name = orgChatCache.nameMap[detail.fromId];
-          item.showTxt = "$name：${item.showTxt}";
-        }
-
-        if (Get.isRegistered<ChatController>()) {
-          ChatController chatController = Get.find();
-          chatController.onReceiveMsg(detail.spaceId!, sessionId, detail);
-        }
-        bool isTalking = false;
-        for (MessageItemResp openItem in orgChatCache.openChats) {
-          if (openItem.id == item.id && openItem.spaceId == item.spaceId) {
-            isTalking = true;
+        // 确定会话
+        MessageItemResp? currentItem =
+            spaceMessageItemMap[detail.spaceId]?[sessionId];
+        outer:
+        for (var space in orgChatCache.chats) {
+          for (var item in space.chats) {
+            if (item.id == sessionId) {
+              currentItem = item;
+            }
+            if (item.typeName == TargetType.person.name &&
+                currentItem != null &&
+                detail.spaceId != item.spaceId) {
+              currentItem = null;
+            }
+            if (currentItem != null) {
+              break outer;
+            }
           }
         }
-        if (!isTalking && detail.fromId != userInfo.id) {
-          // 不在会话中且不是我发的消息
-          item.noRead = (item.noRead ?? 0) + 1;
+        if (currentItem == null) {
+          throw Exception("未找到会话!");
         }
-        // 如果正在后台，发送本地消息提示
-        _pushMessage(item, detail);
 
-        orgChatCache.messageDetail = detail;
-        orgChatCache.target = item;
-        for (var group in orgChatCache.chats) {
-          sortingItems(group);
+        if (detail.msgType == MessageType.topping.name) {
+          currentItem.isTop = bool.fromEnvironment(detail.msgBody ?? "false");
+        } else {
+          if (detail.spaceId == userInfo.id) {
+            // 如果是个人空间，存储一下信息
+            await HubUtil().cacheMsg(sessionId, detail);
+          }
+          String? msgBody = detail.msgBody;
+          currentItem.msgBody = msgBody;
+          currentItem.msgTime = detail.createTime;
+          currentItem.msgType = detail.msgType;
+          if (currentItem.msgType == MessageType.recall.name) {
+            bool hasPic = msgBody?.contains("<img>") ?? false;
+            currentItem.showTxt = hasPic ? "[图片]" : msgBody;
+          } else {
+            currentItem.showTxt = msgBody;
+          }
+          if (currentItem.typeName != TargetType.person.name) {
+            String name = orgChatCache.nameMap[detail.fromId];
+            currentItem.showTxt = "$name：${currentItem.showTxt}";
+          }
+
+          if (Get.isRegistered<ChatController>()) {
+            ChatController chatController = Get.find();
+            chatController.onReceiveMsg(detail.spaceId!, sessionId, detail);
+          }
+          bool isTalking = false;
+          for (MessageItemResp openItem in orgChatCache.openChats) {
+            if (openItem.id == currentItem.id &&
+                openItem.spaceId == currentItem.spaceId) {
+              isTalking = true;
+            }
+          }
+          if (!isTalking && detail.fromId != userInfo.id) {
+            // 不在会话中且不是我发的消息
+            currentItem.noRead = (currentItem.noRead ?? 0) + 1;
+          }
+          // 如果正在后台，发送本地消息提示
+          _pushMessage(currentItem, detail);
+          orgChatCache.messageDetail = detail;
+          orgChatCache.target = currentItem;
+          for (var group in orgChatCache.chats) {
+            sortingItems(group);
+          }
         }
 
         // 更新试图

@@ -111,11 +111,6 @@ class MessageItemWidget extends GetView<MessageController> {
 
   @override
   Widget build(BuildContext context) {
-    var spaceMap = controller.spaceMap;
-    if (!spaceMap.containsKey(spaceId)) {
-      return Container();
-    }
-    SpaceMessagesResp spaceMessageItems = spaceMap[spaceId]!;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onLongPress: () {},
