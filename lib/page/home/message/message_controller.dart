@@ -159,26 +159,10 @@ class MessageController extends GetxController with WidgetsBindingObserver {
   }
 
   String _msgPreHandler(MessageDetailResp detail, TargetResp userInfo) {
-    // 空间转换
-    if (detail.spaceId == null ||
-        detail.spaceId == detail.fromId ||
-        !spaceMap.containsKey(detail.spaceId)) {
-      // 消息没有空间 ID，在他们自己空间下发的，当前会话不存在
-      detail.spaceId = userInfo.id;
-    }
-
     var sessionId = detail.toId;
-
-    // 匹配群
-    SpaceMessagesResp space = spaceMap[detail.spaceId]!;
-    for (var chat in space.chats) {
-      if (chat.typeName == TargetType.person.name &&
-          detail.fromId == chat.id &&
-          detail.toId == userInfo.id) {
-        sessionId = detail.fromId;
-      }
+    if (detail.toId == userInfo.id){
+      sessionId = detail.fromId;
     }
-
     return sessionId;
   }
 
@@ -201,6 +185,9 @@ class MessageController extends GetxController with WidgetsBindingObserver {
         MessageItemResp? item = spaceMessageItemMap[detail.spaceId]?[sessionId];
         if (item == null) {
           throw Exception("不存在会话对象$sessionId");
+        }
+        if (item.msgType == TargetType.person.name && detail.spaceId != item.spaceId){
+          throw Exception("不在同一个空间中，消息空间：${detail.spaceId}，会话空间：${item.spaceId}");
         }
 
         if (detail.spaceId == userInfo.id) {

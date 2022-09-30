@@ -150,11 +150,13 @@ class HubUtil {
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     spaceId = spaceId ?? userInfo.id;
     if (userInfo.id == spaceId) {
+      Map<String, dynamic> match = {"sessionId": sessionId};
+      if (typeName == TargetType.person.name) {
+        match["spaceId"] = sessionId;
+      }
       // 如果是个人空间从本地存储拿数据
       Map<String, dynamic> options = {
-        "match": {
-          "sessionId": sessionId,
-        },
+        "match": match,
         "sort": {"createTime": -1},
         "skip": offset,
         "limit": limit
@@ -168,6 +170,7 @@ class HubUtil {
         item["id"] = item["chatId"];
         ans.insert(0, MessageDetailResp.fromMap(item));
       }
+      log.info("获取到的聊天记录：$ans");
       return ans;
     } else {
       if (isConn()) {
@@ -277,7 +280,7 @@ class HubUtil {
     setStatus();
   }
 
-  _rsvCallback(List<dynamic> params){
+  _rsvCallback(List<dynamic> params) {
     if (Get.isRegistered<MessageController>()) {
       var messageController = Get.find<MessageController>();
       var count = messageController.orgChatCache.chats.length;
