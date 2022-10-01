@@ -46,7 +46,7 @@ class MessageItemWidget extends GetView<MessageController> {
         y = position.globalPosition.dy;
       },
       onLongPress: () async {
-        String isTop = "${item.isTop}";
+        String isTop = "${item.isTop ?? false}";
         final result = await showMenu(
           context: context,
           position: RelativeRect.fromLTRB(
