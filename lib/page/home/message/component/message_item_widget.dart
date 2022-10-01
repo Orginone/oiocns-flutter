@@ -19,11 +19,11 @@ import '../../../../util/widget_util.dart';
 double defaultAvatarWidth = 50.w;
 
 enum LongPressFunc {
-  topping("置顶会话", false),
-  cancelTopping("取消置顶", true);
+  topping("置顶会话", "false"),
+  cancelTopping("取消置顶", "true");
 
   final String name;
-  final bool isTopFunc;
+  final String isTopFunc;
 
   const LongPressFunc(this.name, this.isTopFunc);
 }
@@ -46,12 +46,13 @@ class MessageItemWidget extends GetView<MessageController> {
         y = position.globalPosition.dy;
       },
       onLongPress: () async {
+        String isTop = "${item.isTop}";
         final result = await showMenu(
           context: context,
           position: RelativeRect.fromLTRB(
               x, y - 50, MediaQuery.of(context).size.width - x, 0),
           items: LongPressFunc.values
-              .where((item) => this.item.isTop == item.isTopFunc)
+              .where((item) => isTop == item.isTopFunc)
               .map((item) => PopupMenuItem(value: item, child: Text(item.name)))
               .toList(),
         );

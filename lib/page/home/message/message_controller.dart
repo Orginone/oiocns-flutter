@@ -156,7 +156,7 @@ class MessageController extends GetxController with WidgetsBindingObserver {
           var messageItemMap = spaceMessageItemMap[spaceId]!;
           if (messageItemMap.containsKey(id)) {
             var oldItem = messageItemMap[id]!;
-            messageItem.msgTime ??= oldItem.msgTime;
+            messageItem.msgTime = oldItem.msgTime;
             messageItem.msgType ??= oldItem.msgType;
             messageItem.msgBody ??= oldItem.msgBody;
             messageItem.personNum ??= oldItem.personNum;
