@@ -27,6 +27,33 @@ class MessageItemWidget extends GetView<MessageController> {
       {Key? key})
       : super(key: key);
 
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onLongPress: () {},
+      onTap: () {
+        Map<String, dynamic> args = {
+          "messageItem": messageItem,
+          "spaceId": spaceId,
+          "messageItemId": messageItemId
+        };
+        Get.toNamed(Routers.chat, arguments: args);
+      },
+      child: Container(
+        padding: EdgeInsets.only(left: 10.w, top: 5.h, right: 10.w),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _avatarContainer(messageItem),
+            _contentContainer(messageItem),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _avatar(MessageItemResp messageItem) {
     int notRead = messageItem.noRead ?? 0;
     return Stack(
@@ -104,33 +131,6 @@ class MessageItemWidget extends GetView<MessageController> {
         height: defaultAvatarWidth,
         child: GetBuilder<MessageController>(
           builder: (controller) => _content(messageItem),
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onLongPress: () {},
-      onTap: () {
-        Map<String, dynamic> args = {
-          "messageItem": messageItem,
-          "spaceId": spaceId,
-          "messageItemId": messageItemId
-        };
-        Get.toNamed(Routers.chat, arguments: args);
-      },
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _avatarContainer(messageItem),
-            _contentContainer(messageItem),
-          ],
         ),
       ),
     );

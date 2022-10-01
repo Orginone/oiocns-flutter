@@ -72,6 +72,13 @@ class GroupItemWidget extends GetView<MessageController> {
                   return -firstItem.msgTime!.compareTo(secondItem.msgTime!);
                 }
               });
+              if (!isExpand) {
+                tops = tops
+                    .where((item) =>
+                        item.messageItem.noRead != null &&
+                        item.messageItem.noRead != 0)
+                    .toList();
+              }
               return ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
