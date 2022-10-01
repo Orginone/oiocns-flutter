@@ -5,6 +5,7 @@ import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/page/home/home_controller.dart';
+import 'package:orginone/page/home/message/component/message_item_widget.dart';
 import 'package:orginone/util/any_store_util.dart';
 import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/notification_util.dart';
@@ -52,9 +53,10 @@ class MessageController extends GetxController with WidgetsBindingObserver {
         topping = space;
         space.isExpand = true;
       } else if (isCurrent) {
-        space.isExpand = isCurrent && topping == null;
+        space.isExpand = isCurrent;
         spaces.insert(0, space);
       } else {
+        space.isExpand = false;
         spaces.add(space);
       }
     }
@@ -134,6 +136,7 @@ class MessageController extends GetxController with WidgetsBindingObserver {
     Map<String, Map<String, MessageItemResp>> newSpaceMessageItemMap = {};
 
     // 置顶会话
+    groups = groups.where((item) => item.id != "topping").toList();
     SpaceMessagesResp topGroup = SpaceMessagesResp("topping", "置顶会话", []);
 
     bool hasTop = false;
@@ -163,7 +166,7 @@ class MessageController extends GetxController with WidgetsBindingObserver {
           }
         }
         newSpaceMessageItemMap[spaceId]![id] = messageItem;
-        if (messageItem.isTop == true){
+        if (messageItem.isTop == true) {
           hasTop = true;
         }
       }
@@ -291,6 +294,19 @@ class MessageController extends GetxController with WidgetsBindingObserver {
         detail.fromId != userInfo.id) {
       // 当前系统在后台，且不是自己发的消息
       NotificationUtil.showNewMsg(item.name, item.showTxt ?? "");
+    }
+  }
+
+  funcCallback(LongPressFunc func, String spaceId, MessageItemResp item) async {
+    switch (func) {
+      case LongPressFunc.topping:
+      case LongPressFunc.cancelTopping:
+        item.isTop = func == LongPressFunc.topping;
+        orgChatCache.chats = _spaceHandling(orgChatCache.chats);
+        sortingGroups();
+        await HubUtil().cacheChats(orgChatCache);
+        update();
+        break;
     }
   }
 }

@@ -59,13 +59,13 @@ class GroupItemWidget extends GetView<MessageController> {
                 var items = space.chats;
                 for (var item in items) {
                   if (item.isTop == true) {
-                    tops.add(MessageItemWidget(space.id, item.id, item));
+                    tops.add(MessageItemWidget(space.id, item));
                   }
                 }
               }
               tops.sort((first, second) {
-                var firstItem = first.messageItem;
-                var secondItem = second.messageItem;
+                var firstItem = first.item;
+                var secondItem = second.item;
                 if (firstItem.msgTime == null || secondItem.msgTime == null) {
                   return 0;
                 } else {
@@ -75,8 +75,8 @@ class GroupItemWidget extends GetView<MessageController> {
               if (!isExpand) {
                 tops = tops
                     .where((item) =>
-                        item.messageItem.noRead != null &&
-                        item.messageItem.noRead != 0)
+                        item.item.noRead != null &&
+                        item.item.noRead != 0)
                     .toList();
               }
               return ListView.builder(
@@ -103,8 +103,7 @@ class GroupItemWidget extends GetView<MessageController> {
                 itemBuilder: (context, index) {
                   MessageItemResp messageItem = messageItems[index];
                   String spaceId = spaceMessages.id;
-                  String itemId = messageItem.id;
-                  return MessageItemWidget(spaceId, itemId, messageItem);
+                  return MessageItemWidget(spaceId, messageItem);
                 },
               );
             }

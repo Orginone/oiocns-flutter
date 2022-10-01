@@ -14,29 +14,56 @@ import '../../../../component/text_avatar.dart';
 import '../../../../component/unified_text_style.dart';
 import '../../../../util/date_util.dart';
 import '../../../../util/hive_util.dart';
+import '../../../../util/widget_util.dart';
 
 double defaultAvatarWidth = 50.w;
+
+enum LongPressFunc {
+  topping("置顶会话", false),
+  cancelTopping("取消置顶", true);
+
+  final String name;
+  final bool isTopFunc;
+
+  const LongPressFunc(this.name, this.isTopFunc);
+}
 
 class MessageItemWidget extends GetView<MessageController> {
   // 用户信息
   final String spaceId;
-  final String messageItemId;
-  final MessageItemResp messageItem;
+  final MessageItemResp item;
 
-  const MessageItemWidget(this.spaceId, this.messageItemId, this.messageItem,
-      {Key? key})
+  const MessageItemWidget(this.spaceId, this.item, {Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    double x = 0, y = 0;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onLongPress: () {},
+      onPanDown: (position) {
+        x = position.globalPosition.dx;
+        y = position.globalPosition.dy;
+      },
+      onLongPress: () async {
+        final result = await showMenu(
+          context: context,
+          position: RelativeRect.fromLTRB(
+              x, y - 50, MediaQuery.of(context).size.width - x, 0),
+          items: LongPressFunc.values
+              .where((item) => this.item.isTop == item.isTopFunc)
+              .map((item) => PopupMenuItem(value: item, child: Text(item.name)))
+              .toList(),
+        );
+        if (result != null) {
+          controller.funcCallback(result, spaceId, item);
+        }
+      },
       onTap: () {
         Map<String, dynamic> args = {
-          "messageItem": messageItem,
+          "messageItem": item,
           "spaceId": spaceId,
-          "messageItemId": messageItemId
+          "messageItemId": item.id
         };
         Get.toNamed(Routers.chat, arguments: args);
       },
@@ -46,8 +73,8 @@ class MessageItemWidget extends GetView<MessageController> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _avatarContainer(messageItem),
-            _contentContainer(messageItem),
+            _avatarContainer(item),
+            _contentContainer(item),
           ],
         ),
       ),

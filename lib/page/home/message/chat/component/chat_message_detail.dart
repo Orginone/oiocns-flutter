@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
-import 'package:orginone/page/home/message/chat/component/chat_func.dart';
 import 'package:orginone/page/home/message/chat/component/text_message.dart';
 import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/string_util.dart';
+import 'package:orginone/util/widget_util.dart';
 
-import '../../../../../api_resp/target_resp.dart';
-import '../../../../../component/popup_router.dart';
 import '../../../../../component/unified_edge_insets.dart';
 import '../../../../../component/unified_text_style.dart';
 import '../../../../../enumeration/enum_map.dart';
@@ -95,7 +94,11 @@ class ChatMessageDetail extends GetView<ChatController> {
     var chat = GestureDetector(
       onLongPress: () {
         if (!isMy) return;
-        // _function(context, this);
+        WidgetUtil.showMsg(
+          context: context,
+          child: Container(),
+          height: 50.h,
+        );
       },
       child: _getMessage(),
     );
@@ -127,32 +130,5 @@ class ChatMessageDetail extends GetView<ChatController> {
               : TextDirection.ltr,
         );
     }
-  }
-
-  _function(BuildContext context, Widget item) {
-    log.info("function");
-    final RenderBox box = context.findRenderObject()! as RenderBox;
-    final RenderBox overlay =
-        Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
-    const Offset offset = Offset.zero;
-    final RelativeRect position = RelativeRect.fromRect(
-      Rect.fromPoints(
-        box.localToGlobal(offset, ancestor: overlay),
-        box.localToGlobal(box.size.bottomRight(Offset.zero) + offset,
-            ancestor: overlay),
-      ),
-      Offset.zero & overlay.size,
-    );
-    showMenu<Func>(
-      context: context,
-      items: [
-        CheckedPopupMenuItem(
-          child: ChatFunc(messageDetail),
-        )
-      ],
-      position: position,
-    ).then<void>((Func? newValue) {
-      controller.log.info("func${newValue?.name ?? ""}");
-    });
   }
 }
