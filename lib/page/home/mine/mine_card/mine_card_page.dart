@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,114 +28,128 @@ class MineCardPage extends GetView<MineCardController> {
                     children: [
                       //截图层
                       RepaintBoundary(
-                        key: controller.globalKey1,
-                        child: Column(
-                          children: [
-                            //名片层
-                            Container(
-                              height: 195.h,
-                              margin: EdgeInsets.fromLTRB(20.w, 20.w, 20.w, 35.w),
-                              decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image:
-                                      AssetImage('images/person-card-bg.png')
-                                  ,
-                              )
-                              ),
-                              child: Stack(
-                                children: [
-                                  //头像
-                                  Positioned(
-                                    top: 20.h,
-                                    right: 20.w,
-                                    child: CircleAvatar(
-                                      foregroundImage: const NetworkImage(
-                                          'https://www.vcg.com/creative/1382429598'),
-                                      backgroundImage: const AssetImage(
-                                          'images/person-empty.png'),
-                                      onForegroundImageError:
-                                          (error, stackTrace) {},
-                                      radius: 25.w,
-                                    ),
-                                  ),
-                                  //左侧上信息
-                                  Positioned(
+                          key: controller.globalKey1,
+                          child: Column(
+                            children: [
+                              //名片层
+                              Container(
+                                height: 195.h,
+                                margin:
+                                    EdgeInsets.fromLTRB(20.w, 20.w, 20.w, 35.w),
+                                decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image:
+                                      AssetImage('images/person-card-bg.png'),
+                                )),
+                                child: Stack(
+                                  children: [
+                                    //头像
+                                    Positioned(
                                       top: 20.h,
-                                      left: 20.w,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                              margin: EdgeInsets.fromLTRB(0, 0, 0, 5.w),
-                                              child:  Text(controller.userInfo.name,style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 24
-                                              ),)
-                                          ),
-                                          Container(
-                                              margin: EdgeInsets.fromLTRB(0, 0, 0, 5.w),
-                                              child:  Text(controller.userInfo.team.name,style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 13
-                                              ),)
-                                          ),
-                                          Container(
-                                              margin: EdgeInsets.fromLTRB(0, 0, 0, 5.w),
-                                              child:  Text(controller.userInfo.team.remark,style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 13
-                                              ),)
-                                          ),
-                                        ],
-                                      )
-                                  ),
-                                  //左侧下信息
-                                  Positioned(
-                                      bottom: 10.h,
-                                      left: 20.w,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                              margin: EdgeInsets.fromLTRB(0, 0, 0, 5.w),
-                                              child:  Text(controller.userInfo.team.code,style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 13
-                                              ),)
-                                          ),
-                                        ],
-                                      )
-                                  ),
-                                ],
-                              ),
-                            ),
-                            //二维码层
-                            Container(
-                              margin: EdgeInsets.fromLTRB(50.w, 0, 50.w, 35.w),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.all(3.w),
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: 1.3,
-                                            color:
-                                            const Color.fromRGBO(0, 0, 0, 1))),
-                                    child: QrImage(
-                                      data: '{"type":"person","data":"13362799531"}',
-                                      version: QrVersions.auto,
-                                      size: 150.0,
+                                      right: 20.w,
+                                      child: CircleAvatar(
+                                        foregroundImage: const NetworkImage(
+                                            'https://www.vcg.com/creative/1382429598'),
+                                        backgroundImage: const AssetImage(
+                                            'images/person-empty.png'),
+                                        onForegroundImageError:
+                                            (error, stackTrace) {},
+                                        radius: 25.w,
+                                      ),
                                     ),
-                                  )
-                                ],
+                                    //左侧上信息
+                                    Positioned(
+                                        top: 20.h,
+                                        left: 20.w,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                                margin: EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 5.w),
+                                                child: Text(
+                                                  controller.userInfo.name,
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 24),
+                                                )),
+                                            Container(
+                                                margin: EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 5.w),
+                                                child: Text(
+                                                  controller.userInfo.team
+                                                          ?.name ??
+                                                      "",
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 13),
+                                                )),
+                                            Container(
+                                                margin: EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 5.w),
+                                                child: Text(
+                                                  controller.userInfo.team
+                                                          ?.remark ??
+                                                      "",
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 13),
+                                                )),
+                                          ],
+                                        )),
+                                    //左侧下信息
+                                    Positioned(
+                                        bottom: 10.h,
+                                        left: 20.w,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                                margin: EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 5.w),
+                                                child: Text(
+                                                  controller.userInfo.team
+                                                          ?.code ??
+                                                      "",
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 13),
+                                                )),
+                                          ],
+                                        )),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
-                        )
-                      ),
+                              //二维码层
+                              Container(
+                                margin:
+                                    EdgeInsets.fromLTRB(50.w, 0, 50.w, 35.w),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.all(3.w),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 1.3,
+                                              color: const Color.fromRGBO(
+                                                  0, 0, 0, 1))),
+                                      child: QrImage(
+                                        data:
+                                            '{"type":"person","data":"13362799531"}',
+                                        version: QrVersions.auto,
+                                        size: 150.0,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )),
                       //功能层
                       Container(
                         margin: EdgeInsets.fromLTRB(50.w, 0, 50.w, 40.w),
@@ -149,8 +162,10 @@ class MineCardPage extends GetView<MineCardController> {
                               width: 50.w,
                               padding: const EdgeInsets.all(0),
                               text: '保存到相册',
-                              icon: const Icon(Icons.image,color: Color.fromRGBO(238, 95, 0, 1),size: 32),
-                              callback:() {
+                              icon: const Icon(Icons.image,
+                                  color: Color.fromRGBO(238, 95, 0, 1),
+                                  size: 32),
+                              callback: () {
                                 // controller.captureImage();
                               },
                             ),
@@ -160,7 +175,9 @@ class MineCardPage extends GetView<MineCardController> {
                               width: 50.w,
                               padding: const EdgeInsets.all(0),
                               text: '奥集能分享',
-                              icon: const Icon(Icons.electric_bolt,color: Color.fromRGBO(75, 214, 249, 1),size: 32),
+                              icon: const Icon(Icons.electric_bolt,
+                                  color: Color.fromRGBO(75, 214, 249, 1),
+                                  size: 32),
                             ),
                             ClickItemType1(
                               bgColor: const Color.fromRGBO(238, 255, 238, 1),
@@ -168,7 +185,9 @@ class MineCardPage extends GetView<MineCardController> {
                               width: 50.w,
                               padding: EdgeInsets.all(10.w),
                               text: '微信分享',
-                              icon: const Icon(Icons.message,color: Color.fromRGBO(102, 255, 102, 1),size: 28),
+                              icon: const Icon(Icons.message,
+                                  color: Color.fromRGBO(102, 255, 102, 1),
+                                  size: 28),
                             )
                           ],
                         ),

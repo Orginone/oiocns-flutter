@@ -69,7 +69,7 @@ class ChatMessageDetail extends GetView<ChatController> {
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     return TextAvatar(
       avatarName: StringUtil.getAvatarName(
-        avatarName: isMy ? userInfo.team.name : targetName(),
+        avatarName: isMy ? userInfo.team?.name ?? "" : targetName(),
         type: TextAvatarType.chat,
       ),
       textStyle: text12WhiteBold,

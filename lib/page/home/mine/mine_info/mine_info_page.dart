@@ -41,123 +41,112 @@ class MineInfoPage extends GetView<MineInfoController> {
                                   radius: 15,
                                 ),
                                 suffixIcon:
-                                const Icon(Icons.keyboard_arrow_right)),
+                                    const Icon(Icons.keyboard_arrow_right)),
                             FormItemType2(
                               text: '昵称',
                               rightSlot: Text(controller.userInfo.name,
                                   style: const TextStyle(
-                                      color: Color.fromRGBO(
-                                          130, 130, 130, 1))),
+                                      color: Color.fromRGBO(130, 130, 130, 1))),
                               suffixIcon:
-                              const Icon(Icons.keyboard_arrow_right),
+                                  const Icon(Icons.keyboard_arrow_right),
                               callback1: () async {
-                                controller.showFormDialogWidget(context,
-                                    controller.nickNameTextController,
+                                controller.showFormDialogWidget(
+                                    context, controller.nickNameTextController,
                                     title: '昵称修改',
                                     text: controller.userInfo.name,
                                     validator: (value) {
-                                      if (TextUtil.isEmpty(value)) {
-                                        return '请输入昵称';
-                                      }
-                                      return null;
-                                    }, callback: () {
-                                      controller.updateUser({
-                                        "code": controller.userInfo.code,
-                                        "id": controller.userInfo.id,
-                                        "name": controller
-                                            .nickNameTextController.text,
-                                        "teamAuthId":
-                                        controller.userInfo.team.id,
-                                        "teamCode":
-                                        controller.userInfo.team.code,
-                                        "teamName":
-                                        controller.userInfo.team.name,
-                                        "teamRemark":
-                                        controller.userInfo.team.remark,
-                                        "thingId": controller.userInfo.thingId,
-                                      });
-                                      controller.nickNameTextController.clear();
-                                      Get.back();
-                                    });
+                                  if (TextUtil.isEmpty(value)) {
+                                    return '请输入昵称';
+                                  }
+                                  return null;
+                                }, callback: () {
+                                  controller.updateUser({
+                                    "code": controller.userInfo.code,
+                                    "id": controller.userInfo.id,
+                                    "name":
+                                        controller.nickNameTextController.text,
+                                    "teamAuthId": controller.userInfo.team?.id,
+                                    "teamCode": controller.userInfo.team?.code,
+                                    "teamName": controller.userInfo.team?.name,
+                                    "teamRemark":
+                                        controller.userInfo.team?.remark,
+                                    "thingId": controller.userInfo.thingId,
+                                  });
+                                  controller.nickNameTextController.clear();
+                                  Get.back();
+                                });
                               },
                             ),
                             FormItemType2(
                               text: '账号',
                               rightSlot: Text(controller.userInfo.code,
                                   style: const TextStyle(
-                                      color: Color.fromRGBO(
-                                          130, 130, 130, 1))),
+                                      color: Color.fromRGBO(130, 130, 130, 1))),
                               suffixIcon:
-                              const Icon(Icons.keyboard_arrow_right),
+                                  const Icon(Icons.keyboard_arrow_right),
                               callback1: () async {
-                                controller.showFormDialogWidget(context,
-                                    controller.accountTextController,
+                                controller.showFormDialogWidget(
+                                    context, controller.accountTextController,
                                     title: '账号修改',
                                     text: controller.userInfo.code,
                                     validator: (value) {
-                                      if (TextUtil.isEmpty(value)) {
-                                        return '请输入账号';
-                                      }
-                                      //账号正则，4到16位（字母，数字，下划线，减号）
-                                      RegExp exp =
-                                      RegExp(r"^[a-zA-Z0-9_-]{4,16}$");
-                                      if (!exp.hasMatch(value)) {
-                                        return '账号格式错误';
-                                      }
-                                      return null;
-                                    }, callback: () {
-                                      controller.updateUser({
-                                        "code": controller
-                                            .accountTextController.text,
-                                        "id": controller.userInfo.id,
-                                        "name": controller.userInfo.name,
-                                        "teamAuthId":
-                                        controller.userInfo.team.id,
-                                        "teamCode":
-                                        controller.userInfo.team.code,
-                                        "teamName":
-                                        controller.userInfo.team.name,
-                                        "teamRemark":
-                                        controller.userInfo.team.remark,
-                                        "thingId": controller.userInfo.thingId,
-                                      });
-                                      controller.accountTextController.clear();
-                                      Get.back();
-                                    });
+                                  if (TextUtil.isEmpty(value)) {
+                                    return '请输入账号';
+                                  }
+                                  //账号正则，4到16位（字母，数字，下划线，减号）
+                                  RegExp exp = RegExp(r"^[a-zA-Z0-9_-]{4,16}$");
+                                  if (!exp.hasMatch(value)) {
+                                    return '账号格式错误';
+                                  }
+                                  return null;
+                                }, callback: () {
+                                  controller.updateUser({
+                                    "code":
+                                        controller.accountTextController.text,
+                                    "id": controller.userInfo.id,
+                                    "name": controller.userInfo.name,
+                                    "teamAuthId": controller.userInfo.team?.id,
+                                    "teamCode": controller.userInfo.team?.code,
+                                    "teamName": controller.userInfo.team?.name,
+                                    "teamRemark":
+                                        controller.userInfo.team?.remark,
+                                    "thingId": controller.userInfo.thingId,
+                                  });
+                                  controller.accountTextController.clear();
+                                  Get.back();
+                                });
                               },
                             ),
                             FormItemType2(
                               text: '真实姓名',
-                              rightSlot: Text(controller.userInfo.team.name,
+                              rightSlot: Text(
+                                  controller.userInfo.team?.name ?? "",
                                   style: const TextStyle(
-                                      color:
-                                      Color.fromRGBO(130, 130, 130, 1),
+                                      color: Color.fromRGBO(130, 130, 130, 1),
                                       overflow: TextOverflow.ellipsis)),
                               suffixIcon:
-                              const Icon(Icons.keyboard_arrow_right),
+                                  const Icon(Icons.keyboard_arrow_right),
                               callback1: () async {
                                 controller.showFormDialogWidget(
                                     context, controller.nameTextController,
                                     title: '真实姓名修改',
-                                    text: controller.userInfo.team.name,
+                                    text: controller.userInfo.team?.name,
                                     validator: (value) {
-                                      if (TextUtil.isEmpty(value)) {
-                                        return '请输入真实姓名';
-                                      }
-                                      return null;
-                                    }, callback: () {
+                                  if (TextUtil.isEmpty(value)) {
+                                    return '请输入真实姓名';
+                                  }
+                                  return null;
+                                }, callback: () {
                                   controller.updateUser({
                                     "code": controller.userInfo.code,
                                     "id": controller.userInfo.id,
                                     "name": controller.userInfo.name,
-                                    "teamAuthId":
-                                    controller.userInfo.team.id,
-                                    "teamCode":
-                                    controller.userInfo.team.code,
+                                    "teamAuthId": controller.userInfo.team?.id,
+                                    "teamCode": controller.userInfo.team?.code,
                                     "teamName":
-                                    controller.nameTextController.text,
+                                        controller.nameTextController.text,
                                     "teamRemark":
-                                    controller.userInfo.team.remark,
+                                        controller.userInfo.team?.remark,
                                     "thingId": controller.userInfo.thingId,
                                   });
                                   controller.nameTextController.clear();
@@ -168,64 +157,62 @@ class MineInfoPage extends GetView<MineInfoController> {
                             FormItemType2(
                                 text: '手机号',
                                 rightSlot: Text(
-                                    controller.userInfo.team.code,
+                                    controller.userInfo.team?.code ?? "",
                                     style: const TextStyle(
-                                        color: Color.fromRGBO(
-                                            130, 130, 130, 1),
+                                        color: Color.fromRGBO(130, 130, 130, 1),
                                         overflow: TextOverflow.ellipsis)),
                                 suffixIcon:
-                                const Icon(Icons.keyboard_arrow_right),
+                                    const Icon(Icons.keyboard_arrow_right),
                                 callback1: () async {
-                                  controller.showFormDialogWidget(context,
-                                      controller.phoneTextController,
+                                  controller.showFormDialogWidget(
+                                      context, controller.phoneTextController,
                                       keyboardType: TextInputType.number,
                                       title: '手机号修改',
-                                      text: controller.userInfo.team.code,
-                                      validator: (value) {
-                                        if (TextUtil.isEmpty(value)) {
-                                          return '请输入手机号';
-                                        }
-                                        //用户名正则，4到16位（字母，数字，下划线，减号）
-                                        RegExp exp = RegExp(
-                                            r"^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\d{8}$");
-                                        if (!exp.hasMatch(value)) {
-                                          return '手机号格式错误';
-                                        }
-                                        return null;
-                                      }, callback: () {
-                                        controller.updateUser({
-                                          "code": controller
-                                              .phoneTextController.text,
-                                          "id": controller.userInfo.id,
-                                          "name": controller.userInfo.name,
-                                          "teamAuthId":
-                                          controller.userInfo.team.id,
-                                          "teamCode":
-                                          controller.userInfo.team.code,
-                                          "teamName":
-                                          controller.userInfo.team.name,
-                                          "teamRemark":
-                                          controller.userInfo.team.remark,
-                                          "thingId":
-                                          controller.userInfo.thingId,
-                                        });
-                                        controller.phoneTextController.clear();
-                                        Get.back();
-                                      });
+                                      text: controller.userInfo.team?.code ??
+                                          "", validator: (value) {
+                                    if (TextUtil.isEmpty(value)) {
+                                      return '请输入手机号';
+                                    }
+                                    //用户名正则，4到16位（字母，数字，下划线，减号）
+                                    RegExp exp = RegExp(
+                                        r"^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\d{8}$");
+                                    if (!exp.hasMatch(value)) {
+                                      return '手机号格式错误';
+                                    }
+                                    return null;
+                                  }, callback: () {
+                                    controller.updateUser({
+                                      "code":
+                                          controller.phoneTextController.text,
+                                      "id": controller.userInfo.id,
+                                      "name": controller.userInfo.name,
+                                      "teamAuthId":
+                                          controller.userInfo.team?.id,
+                                      "teamCode":
+                                          controller.userInfo.team?.code,
+                                      "teamName":
+                                          controller.userInfo.team?.name,
+                                      "teamRemark":
+                                          controller.userInfo.team?.remark,
+                                      "thingId": controller.userInfo.thingId,
+                                    });
+                                    controller.phoneTextController.clear();
+                                    Get.back();
+                                  });
                                 }),
                             FormItemType2(
                                 text: '座右铭',
                                 rightSlot: Expanded(
                                   child: Text(
-                                      controller.userInfo.team.remark,
+                                      controller.userInfo.team?.remark ?? "",
                                       textAlign: TextAlign.right,
                                       style: const TextStyle(
-                                          color: Color.fromRGBO(
-                                              130, 130, 130, 1),
+                                          color:
+                                              Color.fromRGBO(130, 130, 130, 1),
                                           overflow: TextOverflow.ellipsis)),
                                 ),
                                 suffixIcon:
-                                const Icon(Icons.keyboard_arrow_right)),
+                                    const Icon(Icons.keyboard_arrow_right)),
                           ],
                         ),
                       ),

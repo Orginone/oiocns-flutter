@@ -31,7 +31,7 @@ class UnitDetailPage extends GetView<UnitDetailController> {
                         children: [
                           FormItemType2(
                             text: '单位名称',
-                            rightSlot: Text(controller.unit?.team.name ?? '',
+                            rightSlot: Text(controller.unit?.team?.name ?? '',
                                 style: const TextStyle(
                                     color: Color.fromRGBO(130, 130, 130, 1))),
                           ),
@@ -63,7 +63,7 @@ class UnitDetailPage extends GetView<UnitDetailController> {
                           FormItemType2(
                             text: '单位简介',
                             rightSlot: Expanded(
-                              child: Text(controller.unit?.team.remark ?? '',
+                              child: Text(controller.unit?.team?.remark ?? '',
                                   textAlign: TextAlign.right,
                                   style: const TextStyle(
                                       color: Color.fromRGBO(130, 130, 130, 1),
@@ -73,8 +73,8 @@ class UnitDetailPage extends GetView<UnitDetailController> {
                         ],
                       ),
                     ),
-                    (){
-                      switch(controller.type) {
+                    () {
+                      switch (controller.type) {
                         case 1:
                           return Container(
                             padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),

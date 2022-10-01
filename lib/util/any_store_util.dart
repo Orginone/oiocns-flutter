@@ -169,18 +169,6 @@ class AnyStoreUtil {
     });
   }
 
-  void _subscribingTimer(
-    SubscriptionKey key,
-    String domain,
-    Function callback,
-  ) {
-    Duration duration = const Duration(seconds: 5);
-    Timer(duration, () async {
-      log.info("=====> 尝试重新订阅中");
-      await subscribing(key, domain, callback);
-    });
-  }
-
   void _initOnClose() {
     if (_server == null) {
       return;
@@ -226,18 +214,16 @@ class AnyStoreUtil {
     if (subscriptionMap.containsKey(fullKey)) {
       return;
     }
-    if (!isConn()) {
-      _subscribingTimer(key, domain, callback);
-      return;
+    if (isConn()) {
+      subscriptionMap[fullKey] = callback;
+      var name = SendEvent.Subscribed.name;
+      dynamic res = await _server!.invoke(name, args: [key.name, domain]);
+      ApiResp apiResp = ApiResp.fromMap(res);
+      if (apiResp.success) {
+        callback(apiResp.data);
+      }
+      log.info("====> 订阅 ${key.name} 成功！");
     }
-    subscriptionMap[fullKey] = callback;
-    var name = SendEvent.Subscribed.name;
-    dynamic res = await _server!.invoke(name, args: [key.name, domain]);
-    ApiResp apiResp = ApiResp.fromMap(res);
-    if (apiResp.success) {
-      callback(apiResp.data);
-    }
-    log.info("====> 订阅 ${key.name} 成功！");
   }
 
   /// 取消订阅

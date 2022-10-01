@@ -40,7 +40,7 @@ class PersonDetailPage extends GetView<PersonDetailController> {
                     FormItemType1(
                         title: '姓名',
                         text: item.personDetail != null
-                            ? item.personDetail!.team.name
+                            ? item.personDetail!.team?.name
                             : '',
                         suffixIcon: const Icon(Icons.keyboard_arrow_right)),
                     const Divider(
@@ -49,7 +49,7 @@ class PersonDetailPage extends GetView<PersonDetailController> {
                     FormItemType1(
                         title: '电话',
                         text: item.personDetail != null
-                            ? item.personDetail!.team.code
+                            ? item.personDetail!.team?.code
                             : '',
                         suffixIcon: const Icon(Icons.keyboard_arrow_right)),
                     const Divider(

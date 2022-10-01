@@ -149,7 +149,7 @@ class ChatController extends GetxController {
         personMap[person.id] = person;
         var typeName = person.typeName;
         typeName = typeName == TargetType.person.name ? "" : "[$typeName]";
-        personNameMap[person.id] = "${person.team.name}$typeName";
+        personNameMap[person.id] = "${person.team?.name}$typeName";
       }
       offset += limit;
       if (persons.length < limit) {

@@ -24,9 +24,9 @@ class TargetResp {
   @HiveField(6)
   int status;
   @HiveField(7)
-  String createUser;
+  String? createUser;
   @HiveField(8)
-  String updateUser;
+  String? updateUser;
   @HiveField(9)
   String? version;
   @HiveField(10)
@@ -34,7 +34,7 @@ class TargetResp {
   @HiveField(11)
   DateTime? updateTime;
   @HiveField(12)
-  TeamResp team;
+  TeamResp? team;
   @HiveField(13)
   List<IdentityResp>? givenIdentitys;
 
@@ -67,7 +67,9 @@ class TargetResp {
         version = targetResp.version,
         createTime = targetResp.createTime,
         updateTime = targetResp.updateTime,
-        team = TeamResp.copyWith(targetResp.team),
+        team = targetResp.team == null
+            ? null
+            : TeamResp.copyWith(targetResp.team!),
         givenIdentitys = targetResp.givenIdentitys
             ?.map((item) => IdentityResp.copyWith(item))
             .toList();
@@ -85,7 +87,7 @@ class TargetResp {
         version = map["version"],
         createTime = CustomDateUtil.parse(map["createTime"]),
         updateTime = CustomDateUtil.parse(map["updateTime"]),
-        team = TeamResp.fromMap(map["team"]),
+        team = map["team"] != null ? TeamResp.fromMap(map["team"]) : null,
         givenIdentitys = map["givenIdentitys"] != null
             ? IdentityResp.fromList(map["givenIdentitys"])
             : null;

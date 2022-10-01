@@ -36,20 +36,20 @@ class FriendsPage extends GetView<FriendsController> {
   }
 
   get _body => Column(
-    children: [
-      TextSearch(controller.searchingCallback),
-      Expanded(
-        child: Scrollbar(
-          child: RefreshIndicator(
-            onRefresh: () async {
-              controller.onLoadFriends("");
-            },
-            child: _list(),
+        children: [
+          TextSearch(controller.searchingCallback),
+          Expanded(
+            child: Scrollbar(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  controller.onLoadFriends("");
+                },
+                child: _list(),
+              ),
+            ),
           ),
-        ),
-      ),
-    ],
-  );
+        ],
+      );
 
   Widget _list() {
     return GetBuilder<FriendsController>(
@@ -67,7 +67,7 @@ class FriendsPage extends GetView<FriendsController> {
   Widget _item(TargetResp targetResp) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed(Routers.personDetail, arguments: targetResp.team.code);
+        Get.toNamed(Routers.personDetail, arguments: targetResp.team?.code);
       },
       child: Container(
         padding: EdgeInsets.only(left: 10.w, bottom: 10.h, right: 10.w),

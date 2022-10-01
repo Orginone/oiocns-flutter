@@ -221,7 +221,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                           behavior: HitTestBehavior.translucent,
                           onTap: () {
                             Get.toNamed(Routers.personDetail,arguments:
-                              controller.filterPersonList[index].team.code
+                              controller.filterPersonList[index].team?.code
                             );
                           },
                           child: Container(

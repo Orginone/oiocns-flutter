@@ -51,7 +51,7 @@ class CohortsPage extends GetView<CohortsController> {
   Widget _item(TargetResp targetResp) {
     return GestureDetector(
         onTap: () {
-          Get.toNamed(Routers.personDetail, arguments: targetResp.team.code);
+          Get.toNamed(Routers.personDetail, arguments: targetResp.team?.code);
         },
         child: Container(
             padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),

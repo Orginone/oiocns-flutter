@@ -8,6 +8,7 @@ import 'package:orginone/util/widget_util.dart';
 
 class PersonAddPage extends GetView<PersonAddController> {
   const PersonAddPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return UnifiedScaffold(
@@ -31,8 +32,7 @@ class PersonAddPage extends GetView<PersonAddController> {
                         hintText: '请输入验证消息',
                         hintStyle: TextStyle(color: Colors.grey),
                         labelText: '验证',
-                        contentPadding:
-                        EdgeInsets.fromLTRB(0, 30, 0, 15)),
+                        contentPadding: EdgeInsets.fromLTRB(0, 30, 0, 15)),
                   ),
                   TextFormField(
                     style: const TextStyle(height: 2),
@@ -41,15 +41,17 @@ class PersonAddPage extends GetView<PersonAddController> {
                     keyboardType: TextInputType.name,
                     controller: controller.nickNameTextController,
                     decoration: InputDecoration(
-                        hintText: controller
-                            .personDetailController.personDetail!.team.name,
+                        hintText: controller.personDetailController
+                                .personDetail!.team?.name ??
+                            "",
                         hintStyle: const TextStyle(color: Colors.grey),
                         labelText: '备注',
                         contentPadding:
                             const EdgeInsets.fromLTRB(0, 30, 0, 15)),
                     // validator: validateTelePhone,
                   ),
-                  Expanded(child: Column(
+                  Expanded(
+                      child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       GFButton(
