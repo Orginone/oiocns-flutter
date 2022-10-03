@@ -17,7 +17,6 @@ class TextMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String showText = StringUtil.removeHtml(message);
     return Stack(
       textDirection: textDirection,
       children: [
@@ -46,7 +45,7 @@ class TextMessage extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(defaultWidth)),
           ),
           child: Text(
-            showText,
+            message ?? "",
             style: text14Bold,
           ),
         ),
