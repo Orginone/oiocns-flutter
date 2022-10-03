@@ -15,37 +15,52 @@ class GroupItemWidget extends GetView<MessageController> {
 
   const GroupItemWidget(this.index, {Key? key}) : super(key: key);
 
-  get _title => GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: () async {
-          var item = controller.orgChatCache.chats[index];
-          item.isExpand = !item.isExpand;
-          controller.update();
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              padding: ltb10,
-              child: Text(controller.orgChatCache.chats[index].name,
-                  style: text16),
+  get _title {
+    var orgChatCache = controller.orgChatCache;
+    var chat = orgChatCache.chats[index];
+    var showCount = 0;
+    if (chat.id == "topping") {
+      for (var space in orgChatCache.chats) {
+        var items = space.chats;
+        for (var item in items) {
+          if (item.isTop == true) {
+            showCount++;
+          }
+        }
+      }
+    } else {
+      showCount = chat.chats
+          .where((item) => item.isTop == null || item.isTop == false)
+          .length;
+    }
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () async {
+        chat.isExpand = !chat.isExpand;
+        controller.update();
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            padding: ltb10,
+            child: Text("${chat.name}($showCount)", style: text16),
+          ),
+          Container(
+            padding: right10,
+            child: GetBuilder<MessageController>(
+              builder: (controller) {
+                var iconData =
+                    chat.isExpand ? Icons.arrow_drop_down : Icons.arrow_right;
+                return Icon(iconData, size: 20.w);
+              },
             ),
-            Container(
-              padding: right10,
-              child: GetBuilder<MessageController>(
-                builder: (controller) {
-                  var space = controller.orgChatCache.chats[index];
-                  var iconData = space.isExpand
-                      ? Icons.arrow_drop_down
-                      : Icons.arrow_right;
-                  return Icon(iconData, size: 20.w);
-                },
-              ),
-            ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 
   get _list => SizedBox(
         child: GetBuilder<MessageController>(
@@ -73,16 +88,16 @@ class GroupItemWidget extends GetView<MessageController> {
                 }
               });
               if (!isExpand) {
-                tops = tops
-                    .where((item) =>
-                        item.item.noRead != null &&
-                        item.item.noRead != 0)
-                    .toList();
+                tops = tops.where((item) {
+                  var data = item.item;
+                  return data.noRead != null && data.noRead != 0;
+                }).toList();
               }
               return ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: tops.length,
+                padding: EdgeInsets.only(bottom: 5.h),
                 itemBuilder: (context, index) {
                   return tops[index];
                 },
@@ -99,6 +114,7 @@ class GroupItemWidget extends GetView<MessageController> {
               return ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.only(bottom: 5.h),
                 itemCount: messageItems.length,
                 itemBuilder: (context, index) {
                   MessageItemResp messageItem = messageItems[index];
@@ -119,7 +135,6 @@ class GroupItemWidget extends GetView<MessageController> {
       _list,
     ];
     if (controller.orgChatCache.chats[index].isExpand) {
-      children.add(Container(margin: top5));
       children.add(const Divider(height: 0));
     }
     return Column(children: children);

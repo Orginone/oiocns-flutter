@@ -1,9 +1,12 @@
+import 'package:get/get.dart';
+
 import 'message_item_resp.dart';
 
 class SpaceMessagesResp {
-  String id;
-  String name;
-  List<MessageItemResp> chats;
+  final String id;
+  final String name;
+  final List<MessageItemResp> chats;
+
   bool isExpand = false;
 
   SpaceMessagesResp(this.id, this.name, this.chats);
