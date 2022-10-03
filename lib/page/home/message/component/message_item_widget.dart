@@ -142,7 +142,7 @@ class MessageItemWidget extends GetView<MessageController> {
           ],
         ),
         Text(
-          (messageItem.showTxt ?? "").replaceAll("", "\u200B"),
+          messageItem.showTxt ?? "",
           style: text12Grey,
           textAlign: TextAlign.left,
           maxLines: 1,
