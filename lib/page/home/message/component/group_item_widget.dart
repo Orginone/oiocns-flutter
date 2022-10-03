@@ -93,11 +93,12 @@ class GroupItemWidget extends GetView<MessageController> {
                   return data.noRead != null && data.noRead != 0;
                 }).toList();
               }
+              var bottom = tops.isEmpty ? 0.h : 5.h;
               return ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: tops.length,
-                padding: EdgeInsets.only(bottom: 5.h),
+                padding: EdgeInsets.only(bottom: bottom),
                 itemBuilder: (context, index) {
                   return tops[index];
                 },
@@ -111,10 +112,11 @@ class GroupItemWidget extends GetView<MessageController> {
                     .where((item) => item.noRead != null && item.noRead != 0)
                     .toList();
               }
+              var bottom = messageItems.isEmpty ? 0.h : 5.h;
               return ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.only(bottom: 5.h),
+                padding: EdgeInsets.only(bottom: bottom),
                 itemCount: messageItems.length,
                 itemBuilder: (context, index) {
                   MessageItemResp messageItem = messageItems[index];
