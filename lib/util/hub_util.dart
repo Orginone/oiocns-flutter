@@ -7,6 +7,7 @@ import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/util/any_store_util.dart';
+import 'package:orginone/util/encryption_util.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 import '../api/constant.dart';
@@ -175,7 +176,9 @@ class HubUtil {
       List<MessageDetailResp> ans = [];
       for (var item in details) {
         item["id"] = item["chatId"];
-        ans.insert(0, MessageDetailResp.fromMap(item));
+        var detail = MessageDetailResp.fromMap(item);
+        detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
+        ans.insert(0, detail);
       }
       return ans;
     } else {
@@ -199,9 +202,11 @@ class HubUtil {
           return [];
         }
         List<dynamic> details = data["result"];
-        return details.reversed
-            .map((item) => MessageDetailResp.fromMap(item))
-            .toList();
+        return details.reversed.map((item) {
+          var detail = MessageDetailResp.fromMap(item);
+          detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
+          return detail;
+        }).toList();
       } else {
         Fluttertoast.showToast(msg: "未连接聊天服务器!");
         throw Exception("未连接聊天服务器!");
@@ -259,7 +264,7 @@ class HubUtil {
     log.info("================== 连接 HUB =========================");
     _server = HubConnectionBuilder().withUrl(Constant.hub).build();
     _server!.keepAliveIntervalInMilliseconds = 3000;
-    _server!.serverTimeoutInMilliseconds = 5000;
+    _server!.serverTimeoutInMilliseconds = 8000;
     isStop = false;
     var state = _server!.state;
     switch (state) {

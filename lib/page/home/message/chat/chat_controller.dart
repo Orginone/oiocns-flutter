@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/page/home/home_controller.dart';
+import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/hub_util.dart';
 import 'package:uuid/uuid.dart';
 
@@ -104,6 +105,7 @@ class ChatController extends GetxController {
     } else {
       int has = messageDetails.where((item) => item.id == detail.id).length;
       if (has == 0) {
+        detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
         messageDetails.insert(0, detail);
       }
     }
@@ -182,7 +184,7 @@ class ChatController extends GetxController {
         "toId": messageItemId,
         "spaceId": spaceId,
         "msgType": MessageType.text.name,
-        "msgBody": value
+        "msgBody": EncryptionUtil.deflate(value)
       };
       try {
         log.info("====> 发送的消息信息：$messageDetail");

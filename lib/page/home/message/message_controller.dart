@@ -7,6 +7,7 @@ import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/page/home/message/component/message_item_widget.dart';
 import 'package:orginone/util/any_store_util.dart';
+import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/notification_util.dart';
 
@@ -231,6 +232,7 @@ class MessageController extends GetxController with WidgetsBindingObserver {
             // 如果是个人空间，存储一下信息
             await HubUtil().cacheMsg(sessionId, detail);
           }
+          detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
           String? msgBody = detail.msgBody;
           currentItem.msgBody = msgBody;
           currentItem.msgTime = detail.createTime;

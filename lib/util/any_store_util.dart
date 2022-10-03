@@ -265,7 +265,7 @@ class AnyStoreUtil {
     log.info("================== 连接 AnyStore ==================");
     _server = HubConnectionBuilder().withUrl(Constant.anyStore).build();
     _server!.keepAliveIntervalInMilliseconds = 3000;
-    _server!.serverTimeoutInMilliseconds = 5000;
+    _server!.serverTimeoutInMilliseconds = 8000;
     isStop = false;
     var state = _server!.state;
     switch (state) {

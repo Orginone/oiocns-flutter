@@ -50,7 +50,7 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
 
-  # 网络库，日志库，工具库，路径库
+  # 网络库，日志库，工具库，路径库，压缩库
   dio: ^4.0.4
   pretty_dio_logger: ^1.2.0-beta-1
   logging: ^1.0.2
@@ -58,6 +58,7 @@ dependencies:
   path_provider: ^2.0.11
   jiffy: ^5.0.0
   uuid: ^3.0.6
+  archive: ^3.3.1
 
   # 注解
   json_annotation: ^4.6.0
