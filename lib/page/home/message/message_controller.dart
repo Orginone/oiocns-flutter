@@ -238,13 +238,15 @@ class MessageController extends GetxController with WidgetsBindingObserver {
           currentItem.msgBody = msgBody;
           currentItem.msgTime = detail.createTime;
           currentItem.msgType = detail.msgType;
-          if (currentItem.msgType != MsgType.recall.name) {
+          if (currentItem.msgType == MsgType.recall.name) {
+            currentItem.showTxt = "撤回了一条消息";
+          } else {
             bool hasPic = msgBody?.contains("<img>") ?? false;
             currentItem.showTxt = hasPic ? "[图片]" : msgBody;
           }
           if (currentItem.typeName != TargetType.person.name) {
             String name = orgChatCache.nameMap[detail.fromId];
-            currentItem.showTxt = "$name：${currentItem.showTxt}";
+            currentItem.showTxt = "$name: ${currentItem.showTxt}";
           }
 
           // 如果当前会话正打开
