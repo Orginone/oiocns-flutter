@@ -22,35 +22,51 @@ import 'component/chat_message_detail.dart';
 class ChatPage extends GetView<ChatController> {
   const ChatPage({Key? key}) : super(key: key);
 
-  get _title => Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        Obx(() => Text(
+  @override
+  Widget build(BuildContext context) {
+    return UnifiedScaffold(
+      appBarLeading: WidgetUtil.defaultBackBtn,
+      appBarTitle: _title,
+      appBarActions: _actions,
+      body: _body,
+    );
+  }
+
+  get _title => Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Obx(
+            () => Text(
               controller.titleName.value,
               style: text20,
-            )),
-        Container(
-          margin: left10,
-        ),
-        TextTag(
-          controller.messageItem.label,
-          textStyle: text12WhiteBold,
-          bgColor: Colors.blueAccent,
-          padding: const EdgeInsets.all(4),
-        )
-      ]);
+            ),
+          ),
+          Container(
+            margin: left10,
+          ),
+          TextTag(
+            controller.messageItem.label,
+            textStyle: text12WhiteBold,
+            bgColor: Colors.blueAccent,
+            padding: const EdgeInsets.all(4),
+          )
+        ],
+      );
 
   get _actions => <Widget>[
         GFIconButton(
-            color: Colors.white.withOpacity(0),
-            icon: const Icon(Icons.more_horiz, color: Colors.black),
-            onPressed: () {
-              Map<String, dynamic> args = {
-                "spaceId": controller.spaceId,
-                "messageItemId": controller.messageItemId,
-                "messageItem": controller.messageItem,
-                "personList": controller.personList
-              };
-              Get.toNamed(Routers.messageSetting, arguments: args);
-            })
+          color: Colors.white.withOpacity(0),
+          icon: const Icon(Icons.more_horiz, color: Colors.black),
+          onPressed: () {
+            Map<String, dynamic> args = {
+              "spaceId": controller.spaceId,
+              "messageItemId": controller.messageItemId,
+              "messageItem": controller.messageItem,
+              "personList": controller.personList
+            };
+            Get.toNamed(Routers.messageSetting, arguments: args);
+          },
+        ),
       ];
 
   Widget _time(DateTime? dateTime) {
@@ -72,8 +88,12 @@ class ChatPage extends GetView<ChatController> {
     bool isMy = messageDetail.fromId == userInfo.id;
     bool isMultiple = messageItem.typeName != TargetType.person.name;
 
-    Widget currentWidget =
-        ChatMessageDetail(messageItem.id, messageDetail, isMy, isMultiple);
+    Widget currentWidget = ChatMessageDetail(
+        spaceId: controller.spaceId,
+        sessionId: messageItem.id,
+        detail: messageDetail,
+        isMy: isMy,
+        isMultiple: isMultiple);
 
     var time = _time(messageDetail.createTime);
     var item = Column(children: [currentWidget]);
@@ -109,7 +129,6 @@ class ChatPage extends GetView<ChatController> {
                 padding: lr10,
                 child: GetBuilder<ChatController>(
                   builder: (controller) => ListView.builder(
-                    key: ObjectKey(controller.messageScrollKey.value),
                     reverse: true,
                     shrinkWrap: true,
                     controller: controller.messageScrollController,
@@ -126,14 +145,4 @@ class ChatPage extends GetView<ChatController> {
           ChatBox(controller.sendOneMessage)
         ],
       );
-
-  @override
-  Widget build(BuildContext context) {
-    return UnifiedScaffold(
-      appBarLeading: WidgetUtil.defaultBackBtn,
-      appBarTitle: _title,
-      appBarActions: _actions,
-      body: _body,
-    );
-  }
 }

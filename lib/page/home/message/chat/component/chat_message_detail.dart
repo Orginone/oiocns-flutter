@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
@@ -8,35 +7,46 @@ import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/chat/component/text_message.dart';
 import 'package:orginone/util/hive_util.dart';
-import 'package:orginone/util/string_util.dart';
-import 'package:orginone/util/widget_util.dart';
 
 import '../../../../../api_resp/target_resp.dart';
 import '../../../../../component/unified_edge_insets.dart';
 import '../../../../../component/unified_text_style.dart';
 import '../../../../../enumeration/enum_map.dart';
 import '../../../../../enumeration/message_type.dart';
+import '../../../../../util/string_util.dart';
 
 enum Direction { leftStart, rightStart }
 
-enum Func { recall, remove }
+enum DetailFunc {
+  recall("撤回"),
+  remove("删除");
+
+  const DetailFunc(this.name);
+
+  final String name;
+}
 
 class ChatMessageDetail extends GetView<ChatController> {
   final Logger log = Logger("ChatMessageDetail");
 
+  final String spaceId;
   final String sessionId;
-  final MessageDetailResp messageDetail;
+  final MessageDetailResp detail;
   final bool isMy;
   final bool isMultiple;
 
-  ChatMessageDetail(
-      this.sessionId, this.messageDetail, this.isMy, this.isMultiple,
-      {Key? key})
-      : super(key: key);
+  ChatMessageDetail({
+    required this.spaceId,
+    required this.sessionId,
+    required this.detail,
+    required this.isMy,
+    required this.isMultiple,
+    Key? key,
+  }) : super(key: key);
 
   String targetName() {
     OrgChatCache orgChatCache = controller.messageController.orgChatCache;
-    return orgChatCache.nameMap[messageDetail.fromId] ?? "";
+    return orgChatCache.nameMap[detail.fromId] ?? "";
   }
 
   @override
@@ -47,11 +57,13 @@ class ChatMessageDetail extends GetView<ChatController> {
   Widget _messageDetail(BuildContext context) {
     List<Widget> children = [];
 
-    bool isRecall = messageDetail.msgType == MessageType.recall.name;
-    if (!isRecall) {
+    bool isRecall = detail.msgType == MsgType.recall.name;
+    if (isRecall) {
+      children.add(_getMessage());
+    } else {
       children.add(_getAvatar());
+      children.add(_getChat(context));
     }
-    children.add(_getChat(context));
 
     return Container(
       margin: top10,
@@ -92,14 +104,42 @@ class ChatMessageDetail extends GetView<ChatController> {
     }
 
     // 添加长按手势
+    double x = 0, y = 0;
     var chat = GestureDetector(
-      onLongPress: () {
-        if (!isMy) return;
-        WidgetUtil.showMsg(
+      onPanDown: (position) {
+        x = position.globalPosition.dx;
+        y = position.globalPosition.dy;
+      },
+      onLongPress: () async {
+        List<DetailFunc> items = [];
+        if (isMy && detail.createTime != null) {
+          var diff = detail.createTime!.difference(DateTime.now());
+          if (diff.inSeconds.abs() < 2 * 60) {
+            items.add(DetailFunc.recall);
+          }
+        }
+        TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+        if (spaceId == userInfo.id) {
+          items.add(DetailFunc.remove);
+        }
+        if (items.isEmpty) {
+          return;
+        }
+        var top = y - 50;
+        var right = MediaQuery.of(context).size.width - x;
+        final result = await showMenu<DetailFunc>(
           context: context,
-          child: Container(),
-          height: 50.h,
+          position: RelativeRect.fromLTRB(x, top, right, 0),
+          items: items.map((item) {
+            return PopupMenuItem(
+              value: item,
+              child: Text(item.name),
+            );
+          }).toList(),
         );
+        if (result != null) {
+          controller.detailFuncCallback(result, spaceId, sessionId, detail);
+        }
       },
       child: _getMessage(),
     );
@@ -115,20 +155,25 @@ class ChatMessageDetail extends GetView<ChatController> {
   }
 
   Widget _getMessage() {
-    MessageType messageType =
-        EnumMap.messageTypeMap[messageDetail.msgType] ?? MessageType.unknown;
+    MsgType messageType =
+        EnumMap.messageTypeMap[detail.msgType] ?? MsgType.unknown;
 
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     switch (messageType) {
-      case MessageType.recall:
-        String msgBody = "${targetName()}：撤回了一条信息";
+      case MsgType.recall:
+        String msgBody = "撤回了一条信息";
+        if (userInfo.id == detail.fromId) {
+          msgBody = "您$msgBody";
+        } else if (!isMultiple) {
+          msgBody = "对方$msgBody";
+        } else {
+          msgBody = "${targetName()}$msgBody";
+        }
         return Text(msgBody, style: text12Grey);
       default:
         return TextMessage(
-          message: messageDetail.msgBody,
-          messageDetail.fromId == userInfo.id
-              ? TextDirection.rtl
-              : TextDirection.ltr,
+          message: detail.msgBody,
+          detail.fromId == userInfo.id ? TextDirection.rtl : TextDirection.ltr,
         );
     }
   }

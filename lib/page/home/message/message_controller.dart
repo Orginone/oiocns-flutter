@@ -203,8 +203,7 @@ class MessageController extends GetxController with WidgetsBindingObserver {
         }
 
         // 确定会话
-        MessageItemResp? currentItem =
-            spaceMessageItemMap[detail.spaceId]?[sessionId];
+        MessageItemResp? currentItem;
         outer:
         for (var space in orgChatCache.chats) {
           for (var item in space.chats) {
@@ -225,29 +224,30 @@ class MessageController extends GetxController with WidgetsBindingObserver {
           throw Exception("未找到会话!");
         }
 
-        if (detail.msgType == MessageType.topping.name) {
+        if (detail.msgType == MsgType.topping.name) {
           currentItem.isTop = bool.fromEnvironment(detail.msgBody ?? "false");
         } else {
           if (detail.spaceId == userInfo.id) {
             // 如果是个人空间，存储一下信息
             await HubUtil().cacheMsg(sessionId, detail);
           }
+
+          // 处理消息
           detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
           String? msgBody = detail.msgBody;
           currentItem.msgBody = msgBody;
           currentItem.msgTime = detail.createTime;
           currentItem.msgType = detail.msgType;
-          if (currentItem.msgType == MessageType.recall.name) {
+          if (currentItem.msgType != MsgType.recall.name) {
             bool hasPic = msgBody?.contains("<img>") ?? false;
             currentItem.showTxt = hasPic ? "[图片]" : msgBody;
-          } else {
-            currentItem.showTxt = msgBody;
           }
           if (currentItem.typeName != TargetType.person.name) {
             String name = orgChatCache.nameMap[detail.fromId];
             currentItem.showTxt = "$name：${currentItem.showTxt}";
           }
 
+          // 如果当前会话正打开
           if (Get.isRegistered<ChatController>()) {
             ChatController chatController = Get.find();
             chatController.onReceiveMsg(detail.spaceId!, sessionId, detail);
@@ -259,12 +259,27 @@ class MessageController extends GetxController with WidgetsBindingObserver {
               isTalking = true;
             }
           }
-          if (!isTalking && detail.fromId != userInfo.id) {
-            // 不在会话中且不是我发的消息
-            currentItem.noRead = (currentItem.noRead ?? 0) + 1;
+          if (detail.fromId != userInfo.id) {
+            // 如果不是我发的消息
+            if (detail.msgType == MsgType.recall.name) {
+              // 撤回消息需要减 1
+              int noRead = currentItem.noRead ?? 0;
+              if (noRead > 0) currentItem.noRead = noRead - 1;
+            } else if (!isTalking) {
+              // 不在会话中需要加 1
+              int noRead = currentItem.noRead ?? 0;
+              currentItem.noRead = noRead + 1;
+            }
+
+            // 如果正在后台，发送本地消息提示
+            if (currentAppState == AppLifecycleState.paused) {
+              var name = currentItem.name;
+              var txt = currentItem.showTxt ?? "";
+              NotificationUtil.showNewMsg(name, txt);
+            }
           }
-          // 如果正在后台，发送本地消息提示
-          _pushMessage(currentItem, detail);
+
+          // 最新的消息
           orgChatCache.messageDetail = detail;
           orgChatCache.target = currentItem;
           for (var group in orgChatCache.chats) {
@@ -287,16 +302,6 @@ class MessageController extends GetxController with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     currentAppState = state;
-  }
-
-  void _pushMessage(MessageItemResp item, MessageDetailResp detail) {
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-    if (currentAppState != null &&
-        currentAppState == AppLifecycleState.paused &&
-        detail.fromId != userInfo.id) {
-      // 当前系统在后台，且不是自己发的消息
-      NotificationUtil.showNewMsg(item.name, item.showTxt ?? "");
-    }
   }
 
   funcCallback(LongPressFunc func, String spaceId, MessageItemResp item) async {

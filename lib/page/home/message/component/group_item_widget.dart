@@ -15,6 +15,19 @@ class GroupItemWidget extends GetView<MessageController> {
 
   const GroupItemWidget(this.index, {Key? key}) : super(key: key);
 
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = [
+      _title,
+      const Divider(height: 0),
+      _list,
+    ];
+    if (controller.orgChatCache.chats[index].isExpand) {
+      children.add(const Divider(height: 0));
+    }
+    return Column(children: children);
+  }
+
   get _title {
     var orgChatCache = controller.orgChatCache;
     var chat = orgChatCache.chats[index];
@@ -128,17 +141,4 @@ class GroupItemWidget extends GetView<MessageController> {
           },
         ),
       );
-
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> children = [
-      _title,
-      const Divider(height: 0),
-      _list,
-    ];
-    if (controller.orgChatCache.chats[index].isExpand) {
-      children.add(const Divider(height: 0));
-    }
-    return Column(children: children);
-  }
 }

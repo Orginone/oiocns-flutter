@@ -1,4 +1,4 @@
-enum MessageType {
+enum MsgType {
   text,
   recall,
   topping,

@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
+import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/util/any_store_util.dart';
 import 'package:orginone/util/encryption_util.dart';
 import 'package:signalr_core/signalr_core.dart';
@@ -56,9 +57,6 @@ class HubUtil {
       var args = <Object>[messageDetail];
       var sendName = SendEvent.SendMsg.name;
       await _server!.invoke(sendName, args: args);
-    } else {
-      Fluttertoast.showToast(msg: "未连接聊天服务器!");
-      throw Exception("未连接聊天服务器!");
     }
   }
 
@@ -77,10 +75,9 @@ class HubUtil {
         return messagesResp;
       }).toList();
       return messageGroups;
-    } else {
-      Fluttertoast.showToast(msg: "未连接聊天服务器!");
-      throw Exception("未连接聊天服务器!");
     }
+    Fluttertoast.showToast(msg: "未连接聊天服务器!");
+    throw Exception("未连接聊天服务器!");
   }
 
   Future<String> getName(String personId) async {
@@ -90,14 +87,13 @@ class HubUtil {
       Map<String, dynamic> nameRes = await _server!.invoke(key, args: args);
       ApiResp resp = ApiResp.fromMap(nameRes);
       return resp.data;
-    } else {
-      Fluttertoast.showToast(msg: "未连接聊天服务器!");
-      throw Exception("未连接聊天服务器!");
     }
+    Fluttertoast.showToast(msg: "未连接聊天服务器!");
+    throw Exception("未连接聊天服务器!");
   }
 
   Future<dynamic> cacheMsg(String sessionId, MessageDetailResp detail) async {
-    if (detail.msgType == "recall") {
+    if (detail.msgType == MsgType.recall.name) {
       Map<String, dynamic> update = {
         "match": {"chatId": detail.id},
         "update": {
@@ -105,7 +101,9 @@ class HubUtil {
         },
         "options": {}
       };
-      await AnyStoreUtil().insert("chat-message", update, Domain.user.name);
+      ApiResp ans =
+          await AnyStoreUtil().insert("chat-message", update, Domain.user.name);
+      log.info("ans:${ans.toJson()}");
     } else {
       Map<String, dynamic> data = {
         "chatId": detail.id,
@@ -150,6 +148,11 @@ class HubUtil {
       Map<String, dynamic> match = {"sessionId": sessionId};
       await AnyStoreUtil().remove(collName, match, Domain.user.name);
     }
+  }
+
+  Future<void> deleteMsg(String chatId) async {
+    Map<String, dynamic> match = {"chatId": chatId};
+    await AnyStoreUtil().remove(collName, match, Domain.user.name);
   }
 
   Future<List<MessageDetailResp>> getHistoryMsg(String? spaceId,
@@ -207,25 +210,20 @@ class HubUtil {
           detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
           return detail;
         }).toList();
-      } else {
-        Fluttertoast.showToast(msg: "未连接聊天服务器!");
-        throw Exception("未连接聊天服务器!");
       }
-    }
-  }
-
-  Future<ApiResp> recallMsg(String id) async {
-    if (isConn()) {
-      Map<String, dynamic> params = {
-        "ids": [id]
-      };
-      var name = SendEvent.RecallMsg.name;
-      dynamic res = await _server!.invoke(name, args: [params]);
-      return ApiResp.fromMap(res);
-    } else {
       Fluttertoast.showToast(msg: "未连接聊天服务器!");
       throw Exception("未连接聊天服务器!");
     }
+  }
+
+  Future<ApiResp> recallMsg(MessageDetailResp msg) async {
+    if (isConn()) {
+      var name = SendEvent.RecallMsg.name;
+      dynamic res = await _server!.invoke(name, args: [msg]);
+      return ApiResp.fromMap(res);
+    }
+    Fluttertoast.showToast(msg: "未连接聊天服务器!");
+    throw Exception("未连接聊天服务器!");
   }
 
   Future<List<TargetResp>> getPersons(String id, int limit, int offset) async {
@@ -250,10 +248,9 @@ class HubUtil {
         temp.add(targetResp);
       }
       return temp;
-    } else {
-      Fluttertoast.showToast(msg: "未连接聊天服务器!");
-      throw Exception("未连接聊天服务器!");
     }
+    Fluttertoast.showToast(msg: "未连接聊天服务器!");
+    throw Exception("未连接聊天服务器!");
   }
 
   //初始化连接

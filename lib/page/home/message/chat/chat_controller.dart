@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/page/home/home_controller.dart';
+import 'package:orginone/page/home/message/chat/component/chat_message_detail.dart';
 import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/hub_util.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../api_resp/api_resp.dart';
 import '../../../../api_resp/message_item_resp.dart';
 import '../../../../api_resp/target_resp.dart';
 import '../../../../enumeration/message_type.dart';
@@ -100,6 +103,7 @@ class ChatController extends GetxController {
           oldDetail.msgBody = detail.msgBody;
           oldDetail.msgType = detail.msgType;
           oldDetail.createTime = detail.createTime;
+          break;
         }
       }
     } else {
@@ -141,8 +145,11 @@ class ChatController extends GetxController {
     int offset = 0;
     int limit = 100;
     while (true) {
-      List<TargetResp> persons =
-          await HubUtil().getPersons(messageItemId, limit, offset);
+      List<TargetResp> persons = await HubUtil().getPersons(
+        messageItemId,
+        limit,
+        offset,
+      );
       personList.addAll(persons);
       if (persons.isEmpty) {
         break;
@@ -183,7 +190,7 @@ class ChatController extends GetxController {
       var messageDetail = {
         "toId": messageItemId,
         "spaceId": spaceId,
-        "msgType": MessageType.text.name,
+        "msgType": MsgType.text.name,
         "msgBody": EncryptionUtil.deflate(value)
       };
       try {
@@ -195,7 +202,7 @@ class ChatController extends GetxController {
     }
   }
 
-  // 滚动到页面底部
+  /// 滚动到页面底部
   void updateAndToBottom() {
     if (messageScrollController.positions.isNotEmpty &&
         messageScrollController.offset != 0) {
@@ -211,5 +218,27 @@ class ChatController extends GetxController {
       itemName = "$itemName(${personList.length})";
     }
     return itemName;
+  }
+
+  /// 会话函数
+  detailFuncCallback(
+    DetailFunc func,
+    String spaceId,
+    String sessionId,
+    MessageDetailResp detail,
+  ) async {
+    switch (func) {
+      case DetailFunc.recall:
+        ApiResp apiResp = await HubUtil().recallMsg(detail);
+        if (apiResp.success) {
+          Fluttertoast.showToast(msg: "撤回成功！");
+        }
+        break;
+      case DetailFunc.remove:
+        await HubUtil().deleteMsg(detail.id);
+        messageDetails = messageDetails.where((item) => item.id != detail.id).toList();
+        update();
+        break;
+    }
   }
 }

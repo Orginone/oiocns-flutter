@@ -54,7 +54,8 @@ class AnyStoreUtil {
       dynamic data = _server!.invoke(name, args: args);
       return ApiResp.fromMap(data);
     }
-    return ApiResp.empty();
+    Fluttertoast.showToast(msg: "未连接存储服务器!");
+    throw Exception("未连接存储服务器!");
   }
 
   Future<ApiResp> set(String key, dynamic setData, String domain) async {
@@ -63,9 +64,9 @@ class AnyStoreUtil {
       var args = [key, setData, domain];
       dynamic res = await _server!.invoke(name, args: args);
       return ApiResp.fromMap(res);
-    } else {
-      return ApiResp.empty();
     }
+    Fluttertoast.showToast(msg: "未连接存储服务器!");
+    throw Exception("未连接存储服务器!");
   }
 
   Future<ApiResp> delete(String key, String domain) async {
@@ -74,7 +75,8 @@ class AnyStoreUtil {
       dynamic res = _server!.invoke(name, args: [key, domain]);
       return ApiResp.fromMap(res);
     }
-    return ApiResp.empty();
+    Fluttertoast.showToast(msg: "未连接存储服务器!");
+    throw Exception("未连接存储服务器!");
   }
 
   Future<ApiResp> insert(String collName, dynamic data, String domain) async {
@@ -84,7 +86,8 @@ class AnyStoreUtil {
       dynamic res = await _server!.invoke(name, args: args);
       return ApiResp.fromMap(res);
     }
-    return ApiResp.empty();
+    Fluttertoast.showToast(msg: "未连接存储服务器!");
+    throw Exception("未连接存储服务器!");
   }
 
   Future<ApiResp> update(String collName, dynamic update, String domain) async {
@@ -94,7 +97,8 @@ class AnyStoreUtil {
       dynamic res = await _server!.invoke(name, args: args);
       return ApiResp.fromMap(res);
     }
-    return ApiResp.empty();
+    Fluttertoast.showToast(msg: "未连接存储服务器!");
+    throw Exception("未连接存储服务器!");
   }
 
   Future<ApiResp> remove(String collName, dynamic match, String domain) async {
@@ -104,7 +108,8 @@ class AnyStoreUtil {
       dynamic res = await _server!.invoke(name, args: args);
       return ApiResp.fromMap(res);
     }
-    return ApiResp.empty();
+    Fluttertoast.showToast(msg: "未连接存储服务器!");
+    throw Exception("未连接存储服务器!");
   }
 
   Future<ApiResp> aggregate(String collName, dynamic opt, String domain) async {
@@ -114,7 +119,8 @@ class AnyStoreUtil {
       dynamic res = await _server!.invoke(aggregateName, args: args);
       return ApiResp.fromMap(res);
     }
-    return ApiResp.empty();
+    Fluttertoast.showToast(msg: "未连接存储服务器!");
+    throw Exception("未连接存储服务器!");
   }
 
   void _onUpdated() {
