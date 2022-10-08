@@ -14,19 +14,6 @@ import '../../../../util/widget_util.dart';
 class CohortsPage extends GetView<CohortsController> {
   const CohortsPage({Key? key}) : super(key: key);
 
-  get _body => Column(
-        children: [
-          TextSearch(controller.searchingCallback),
-          Expanded(
-              child: Scrollbar(
-                  child: RefreshIndicator(
-                      onRefresh: () async {
-                        controller.onLoad();
-                      },
-                      child: _list())))
-        ],
-      );
-
   @override
   Widget build(BuildContext context) {
     return UnifiedScaffold(
@@ -37,33 +24,53 @@ class CohortsPage extends GetView<CohortsController> {
     );
   }
 
-  Widget _list() {
-    return GetBuilder<CohortsController>(
+  get _body => Column(
+        children: [
+          TextSearch(controller.searchingCallback),
+          Expanded(
+            child: Scrollbar(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  controller.onLoad();
+                },
+                child: _list,
+              ),
+            ),
+          ),
+        ],
+      );
+
+  get _list => GetBuilder<CohortsController>(
         init: controller,
         builder: (controller) => ListView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: controller.cohorts.length,
-            itemBuilder: (BuildContext context, int index) {
-              return _item(controller.cohorts[index]);
-            }));
-  }
+          scrollDirection: Axis.vertical,
+          itemCount: controller.cohorts.length,
+          itemBuilder: (BuildContext context, int index) {
+            return _item(controller.cohorts[index]);
+          },
+        ),
+      );
 
   Widget _item(TargetResp targetResp) {
     return GestureDetector(
-        onTap: () {
-          Get.toNamed(Routers.personDetail, arguments: targetResp.team?.code);
-        },
-        child: Container(
-            padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-            child: Row(children: [
-              TextAvatar(
-                avatarName: StringUtil.getAvatarName(
-                  avatarName: targetResp.name,
-                  type: TextAvatarType.chat,
-                ),
+      onTap: () {
+        Get.toNamed(Routers.personDetail, arguments: targetResp.team?.code);
+      },
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+        child: Row(
+          children: [
+            TextAvatar(
+              avatarName: StringUtil.getAvatarName(
+                avatarName: targetResp.name,
+                type: TextAvatarType.chat,
               ),
-              Container(margin: const EdgeInsets.fromLTRB(10, 0, 0, 0)),
-              Expanded(child: Text(targetResp.name, style: text16))
-            ])));
+            ),
+            Container(margin: const EdgeInsets.fromLTRB(10, 0, 0, 0)),
+            Expanded(child: Text(targetResp.name, style: text16))
+          ],
+        ),
+      ),
+    );
   }
 }

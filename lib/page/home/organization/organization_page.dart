@@ -28,7 +28,7 @@ class OrganizationPage extends GetView<OrganizationController> {
         // 集团管理，单位管理
         if (controller.userInfo.id != homeController.currentSpace.id) {
           items.add(_groups);
-          items.add(_unit());
+          items.add(_unit);
         }
         return ListView(children: items);
       },
@@ -83,7 +83,7 @@ class OrganizationPage extends GetView<OrganizationController> {
         },
       );
 
-  Widget _unit() {
+  get _unit {
     HomeController homeController = Get.find<HomeController>();
     TargetResp targetResp = homeController.currentSpace;
     return ChooseItem(
