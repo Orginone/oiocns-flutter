@@ -19,8 +19,9 @@ class TextSearch extends StatelessWidget {
     return Container(
       margin: margin,
       decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          color: CustomColors.searchGrey),
+        borderRadius: BorderRadius.all(Radius.circular(5)),
+        color: CustomColors.searchGrey,
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

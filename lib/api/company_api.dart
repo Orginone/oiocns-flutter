@@ -1,7 +1,9 @@
 import 'package:logging/logging.dart';
+import 'package:orginone/api_resp/api_resp.dart';
 
 import '../api_resp/page_resp.dart';
 import '../api_resp/target_resp.dart';
+import '../api_resp/tree_node.dart';
 import 'constant.dart';
 import '../util/http_util.dart';
 
@@ -61,5 +63,14 @@ class CompanyApi {
     dynamic pageResp = await HttpUtil().post(url, data: data);
     var pageData = PageResp.fromMap(pageResp);
     return pageData.result.map((item) => TargetResp.fromMap(item)).toList();
+  }
+
+  static Future<TreeNode> tree() async {
+    String url = "${Constant.company}/get/company/tree";
+
+    dynamic dataResp = await HttpUtil().post(url);
+    ApiResp apiResp = ApiResp.fromMap(dataResp);
+    TreeNode topNode = TreeNode.fromNode(apiResp.data);
+    return topNode;
   }
 }

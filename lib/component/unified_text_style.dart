@@ -6,7 +6,10 @@ get text10Grey => TextStyle(fontSize: 10.sp, color: Colors.grey);
 get text12 => TextStyle(fontSize: 12.sp, color: Colors.black);
 
 get text12Bold => TextStyle(
-    fontSize: 12.sp, color: Colors.black, fontWeight: FontWeight.bold);
+      fontSize: 12.sp,
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+    );
 
 get text12Grey => TextStyle(fontSize: 12.sp, color: Colors.grey);
 
@@ -18,22 +21,43 @@ get text12WhiteBold => TextStyle(
 get text12Blue => TextStyle(fontSize: 12.sp, color: Colors.blueAccent);
 
 get text14Bold => TextStyle(
-    fontSize: 14.sp,
-    color: Colors.black,
-    fontWeight: FontWeight.bold,
-    decoration: TextDecoration.none);
+      fontSize: 14.sp,
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+      decoration: TextDecoration.none,
+    );
 
 get text14Grey => TextStyle(fontSize: 14.sp, color: Colors.grey);
 
+get text14Blue => TextStyle(fontSize: 14.sp, color: Colors.blueAccent);
+
 get text16 => TextStyle(
-    fontSize: 16.sp, color: Colors.black, decoration: TextDecoration.none);
+      fontSize: 16.sp,
+      color: Colors.black,
+      decoration: TextDecoration.none,
+    );
 
 get text16Bold => TextStyle(
-    fontSize: 16.sp, color: Colors.black, fontWeight: FontWeight.bold);
+      fontSize: 16.sp,
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+    );
+
+get text16GreyBold => TextStyle(
+      fontSize: 16.sp,
+      color: Colors.grey,
+      fontWeight: FontWeight.bold,
+    );
 
 get text16White => TextStyle(fontSize: 16.sp, color: Colors.white);
 
 get text16Blue => TextStyle(fontSize: 16.sp, color: Colors.blueAccent);
+
+get text16BlueBold => TextStyle(
+      fontSize: 16.sp,
+      color: Colors.blueAccent,
+      fontWeight: FontWeight.bold,
+    );
 
 get text18 => TextStyle(fontSize: 18.sp, color: Colors.black);
 
