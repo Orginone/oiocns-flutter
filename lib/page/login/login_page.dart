@@ -63,8 +63,8 @@ class LoginPage extends GetView<LoginController> {
 
                           // 登录以及连接聊天服务器
                           await controller.login();
-                          await HubUtil().tryConn();
                           await AnyStoreUtil().tryConn();
+                          await HubUtil().tryConn();
 
                           Get.offNamed(Routers.home);
                         },

@@ -42,13 +42,15 @@ class AnyStoreUtil {
   }
 
   HubConnection? _server;
-  bool isStop = true;
+  bool _isAuthed = false;
+  bool _isStop = true;
   final Rx<HubConnectionState> state = HubConnectionState.disconnected.obs;
   final Map<String, Function> subscriptionMap = {};
   final Map<String, void Function(List<dynamic>?)> events = {};
 
+  /// 获取
   Future<ApiResp> get(String key, String domain) async {
-    if (isConn()) {
+    if (_isAuthed) {
       var name = SendEvent.Get.name;
       var args = [key, domain];
       dynamic data = _server!.invoke(name, args: args);
@@ -58,8 +60,9 @@ class AnyStoreUtil {
     throw Exception("未连接存储服务器!");
   }
 
+  /// 设置
   Future<ApiResp> set(String key, dynamic setData, String domain) async {
-    if (isConn()) {
+    if (_isAuthed) {
       var name = SendEvent.Set.name;
       var args = [key, setData, domain];
       dynamic res = await _server!.invoke(name, args: args);
@@ -69,8 +72,9 @@ class AnyStoreUtil {
     throw Exception("未连接存储服务器!");
   }
 
+  /// 刪除
   Future<ApiResp> delete(String key, String domain) async {
-    if (isConn()) {
+    if (_isAuthed) {
       var name = SendEvent.Delete.name;
       dynamic res = _server!.invoke(name, args: [key, domain]);
       return ApiResp.fromMap(res);
@@ -79,8 +83,9 @@ class AnyStoreUtil {
     throw Exception("未连接存储服务器!");
   }
 
+  /// 插入
   Future<ApiResp> insert(String collName, dynamic data, String domain) async {
-    if (isConn()) {
+    if (_isAuthed) {
       var name = SendEvent.Insert.name;
       var args = [collName, data, domain];
       dynamic res = await _server!.invoke(name, args: args);
@@ -90,8 +95,9 @@ class AnyStoreUtil {
     throw Exception("未连接存储服务器!");
   }
 
+  /// 更新
   Future<ApiResp> update(String collName, dynamic update, String domain) async {
-    if (isConn()) {
+    if (_isAuthed) {
       var name = SendEvent.Update.name;
       var args = [collName, update, domain];
       dynamic res = await _server!.invoke(name, args: args);
@@ -101,8 +107,9 @@ class AnyStoreUtil {
     throw Exception("未连接存储服务器!");
   }
 
+  /// 刪除
   Future<ApiResp> remove(String collName, dynamic match, String domain) async {
-    if (isConn()) {
+    if (_isAuthed) {
       var name = SendEvent.Remove.name;
       var args = [collName, match, domain];
       dynamic res = await _server!.invoke(name, args: args);
@@ -112,8 +119,9 @@ class AnyStoreUtil {
     throw Exception("未连接存储服务器!");
   }
 
+  /// 聚合
   Future<ApiResp> aggregate(String collName, dynamic opt, String domain) async {
-    if (isConn()) {
+    if (_isAuthed) {
       var aggregateName = SendEvent.Aggregate.name;
       var args = [collName, opt, domain];
       dynamic res = await _server!.invoke(aggregateName, args: args);
@@ -123,6 +131,7 @@ class AnyStoreUtil {
     throw Exception("未连接存储服务器!");
   }
 
+  /// 设置订阅事件
   void _onUpdated() {
     if (_server == null) {
       return;
@@ -141,6 +150,7 @@ class AnyStoreUtil {
     });
   }
 
+  /// 重连回调
   void _initOnReconnecting() {
     if (_server == null) {
       return;
@@ -155,6 +165,7 @@ class AnyStoreUtil {
     });
   }
 
+  /// 重连成功后回调
   void _initOnReconnected() {
     if (_server == null) {
       return;
@@ -166,15 +177,18 @@ class AnyStoreUtil {
     });
   }
 
+  /// 重连定时器
   void _connTimeout() {
     log.info("====> 5s 后，anyStore 开始重新连接");
     Duration duration = const Duration(seconds: 5);
     Timer(duration, () async {
+      _isAuthed = false;
       _server = null;
       await tryConn();
     });
   }
 
+  /// 重连事件
   void _initOnClose() {
     if (_server == null) {
       return;
@@ -182,12 +196,13 @@ class AnyStoreUtil {
     _server!.onclose((error) {
       log.info("====> anyStore 连接被关闭了");
       setState();
-      if (!isStop) {
+      if (!_isStop) {
         _connTimeout();
       }
     });
   }
 
+  /// 鉴权
   Future<dynamic> _auth(String accessToken) async {
     if (isConn()) {
       var name = SendEvent.TokenAuth.name;
@@ -200,18 +215,16 @@ class AnyStoreUtil {
     if (_server == null) {
       return;
     }
-    isStop = true;
-    try {
-      await _server!.stop();
-      setState();
-      _server = null;
-      subscriptionMap.clear();
-      events.clear();
 
-      log.info("===> 已断开和存储服务器的连接。");
-    } catch (error) {
-      isStop = false;
-    }
+    _isStop = true;
+    _isAuthed = false;
+    subscriptionMap.clear();
+    events.clear();
+    await _server!.stop();
+    _server = null;
+    setState();
+
+    log.info("===> 已断开和存储服务器的连接。");
   }
 
   /// 订阅
@@ -220,7 +233,7 @@ class AnyStoreUtil {
     if (subscriptionMap.containsKey(fullKey)) {
       return;
     }
-    if (isConn()) {
+    if (_isAuthed) {
       subscriptionMap[fullKey] = callback;
       var name = SendEvent.Subscribed.name;
       dynamic res = await _server!.invoke(name, args: [key.name, domain]);
@@ -238,7 +251,7 @@ class AnyStoreUtil {
     if (!subscriptionMap.containsKey(fullKey)) {
       return;
     }
-    if (isConn()) {
+    if (_isAuthed) {
       var name = SendEvent.UnSubscribed.name;
       await _server!.invoke(name, args: [key.name, domain]);
       subscriptionMap.remove(fullKey);
@@ -247,7 +260,7 @@ class AnyStoreUtil {
 
   /// 重新订阅
   _resubscribed() async {
-    if (isConn()) {
+    if (_isAuthed) {
       subscriptionMap.forEach((fullKey, callback) async {
         var key = fullKey.split("|")[0];
         var domain = fullKey.split("|")[1];
@@ -272,7 +285,7 @@ class AnyStoreUtil {
     _server = HubConnectionBuilder().withUrl(Constant.anyStore).build();
     _server!.keepAliveIntervalInMilliseconds = 3000;
     _server!.serverTimeoutInMilliseconds = 8000;
-    isStop = false;
+    _isStop = false;
     var state = _server!.state;
     switch (state) {
       case HubConnectionState.disconnected:
@@ -287,6 +300,7 @@ class AnyStoreUtil {
           // 开启连接，鉴权
           await _server!.start();
           await _auth(HiveUtil().accessToken);
+          _isAuthed = true;
 
           // 重新订阅
           _resubscribed();

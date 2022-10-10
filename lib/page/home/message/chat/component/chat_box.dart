@@ -30,12 +30,26 @@ class ChatBox extends StatelessWidget {
               Obx(() => showSendBtn.value ? _sendBtn(controller) : Container()),
             ],
           ),
-          _emojiPicker(controller)
+          _emojiPicker(controller),
         ],
       ),
     );
   }
 
+  /// 更多功能
+  Widget _more() {
+    return Obx(
+      () => Offstage(
+        offstage: !showEmoji.value,
+        child: SizedBox(
+          height: 250.h,
+          child: Container(),
+        ),
+      ),
+    );
+  }
+
+  /// 输入
   Widget _input(TextEditingController controller) {
     return Expanded(
       child: Container(
@@ -63,6 +77,7 @@ class ChatBox extends StatelessWidget {
     );
   }
 
+  /// 表情包按钮
   Widget _emoji(BuildContext context) {
     return IconButton(
       onPressed: () {
@@ -81,6 +96,7 @@ class ChatBox extends StatelessWidget {
     );
   }
 
+  /// 表情包选择
   Widget _emojiPicker(TextEditingController controller) {
     return Obx(
       () => Offstage(
@@ -104,6 +120,7 @@ class ChatBox extends StatelessWidget {
     );
   }
 
+  /// 发送按钮
   Widget _sendBtn(TextEditingController controller) {
     return ElevatedButton(
       onPressed: () {

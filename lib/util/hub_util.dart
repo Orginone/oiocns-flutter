@@ -47,21 +47,23 @@ class HubUtil {
   }
 
   HubConnection? _server;
-  bool isStop = true;
+  bool _isStop = true;
+  bool _isAuthed = false;
   final Rx<HubConnectionState> state = HubConnectionState.disconnected.obs;
   final Map<String, void Function(List<dynamic>?)> events = {};
 
   // 发送消息
   Future<void> sendMsg(Map<String, dynamic> messageDetail) async {
-    if (isConn()) {
+    if (_isAuthed) {
       var args = <Object>[messageDetail];
       var sendName = SendEvent.SendMsg.name;
       await _server!.invoke(sendName, args: args);
     }
   }
 
+  /// 获取聊天对话
   Future<List<SpaceMessagesResp>> getChats() async {
-    if (isConn()) {
+    if (_isAuthed) {
       String key = SendEvent.GetChats.name;
       Map<String, dynamic> chats = await _server!.invoke(key);
       ApiResp resp = ApiResp.fromMap(chats);
@@ -81,7 +83,7 @@ class HubUtil {
   }
 
   Future<String> getName(String personId) async {
-    if (isConn()) {
+    if (_isAuthed) {
       var key = SendEvent.GetName.name;
       var args = [personId];
       Map<String, dynamic> nameRes = await _server!.invoke(key, args: args);
@@ -185,7 +187,7 @@ class HubUtil {
       }
       return ans;
     } else {
-      if (isConn()) {
+      if (_isAuthed) {
         String event = SendEvent.QueryFriendMsg.name;
         String idName = "friendId";
         if (typeName != TargetType.person.name) {
@@ -217,7 +219,7 @@ class HubUtil {
   }
 
   Future<ApiResp> recallMsg(MessageDetailResp msg) async {
-    if (isConn()) {
+    if (_isAuthed) {
       var name = SendEvent.RecallMsg.name;
       dynamic res = await _server!.invoke(name, args: [msg]);
       return ApiResp.fromMap(res);
@@ -227,7 +229,7 @@ class HubUtil {
   }
 
   Future<List<TargetResp>> getPersons(String id, int limit, int offset) async {
-    if (isConn()) {
+    if (_isAuthed) {
       String event = SendEvent.GetPersons.name;
       Map<String, dynamic> params = {
         "cohortId": id,
@@ -262,7 +264,7 @@ class HubUtil {
     _server = HubConnectionBuilder().withUrl(Constant.hub).build();
     _server!.keepAliveIntervalInMilliseconds = 3000;
     _server!.serverTimeoutInMilliseconds = 8000;
-    isStop = false;
+    _isStop = false;
     var state = _server!.state;
     switch (state) {
       case HubConnectionState.disconnected:
@@ -277,7 +279,9 @@ class HubUtil {
 
           // 开启连接，鉴权
           await _server!.start();
+
           await _auth(HiveUtil().accessToken);
+          _isAuthed = true;
 
           log.info("====> connected success");
           log.info("================== 连接 HUB 成功 =========================");
@@ -347,17 +351,15 @@ class HubUtil {
     if (_server == null) {
       return;
     }
-    isStop = true;
-    try {
-      await _server!.stop();
-      setStatus();
-      _server = null;
-      events.clear();
 
-      log.info("===> 已断开和聊天服务器的连接。");
-    } catch (error) {
-      isStop = false;
-    }
+    _isStop = true;
+    _isAuthed = false;
+    events.clear();
+    await _server!.stop();
+    _server = null;
+    setStatus();
+
+    log.info("===> 已断开和聊天服务器的连接。");
   }
 
   /// 重连定时器
@@ -365,7 +367,7 @@ class HubUtil {
     log.info("====> 5s 后，hub 开始重新连接");
     Duration duration = const Duration(seconds: 5);
     Timer(duration, () async {
-      _server?.stop();
+      _isAuthed = false;
       _server = null;
       await tryConn();
     });
@@ -406,7 +408,7 @@ class HubUtil {
     _server!.onclose((error) {
       log.info("====> hub 连接被关闭了");
       setStatus();
-      if (!isStop) {
+      if (!_isStop) {
         _connTimeout();
       }
     });
