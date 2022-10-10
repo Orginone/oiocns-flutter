@@ -11,6 +11,12 @@ get text12Bold => TextStyle(
       fontWeight: FontWeight.bold,
     );
 
+get text12BlueBold => TextStyle(
+      fontSize: 12.sp,
+      color: Colors.blueAccent,
+      fontWeight: FontWeight.bold,
+    );
+
 get text12Grey => TextStyle(fontSize: 12.sp, color: Colors.grey);
 
 get text12White => TextStyle(fontSize: 12.sp, color: Colors.white);
@@ -25,6 +31,11 @@ get text14Bold => TextStyle(
       color: Colors.black,
       fontWeight: FontWeight.bold,
       decoration: TextDecoration.none,
+    );
+
+get text14White => TextStyle(
+      fontSize: 14.sp,
+      color: Colors.white,
     );
 
 get text14Grey => TextStyle(fontSize: 14.sp, color: Colors.grey);

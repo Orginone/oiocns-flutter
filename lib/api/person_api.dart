@@ -6,7 +6,6 @@ import '../api_resp/page_resp.dart';
 import '../util/http_util.dart';
 
 class PersonApi {
-
   static Future<Map<String, dynamic>> regist(dynamic postData) async {
     String url = "${Constant.person}/register";
     Map<String, dynamic> resp = await HttpUtil().post(url, data: postData);
@@ -27,6 +26,7 @@ class PersonApi {
     Map<String, dynamic> resp = await HttpUtil().post(url, data: postData);
     return resp;
   }
+
   static Future<Map<String, dynamic>> resetPwd(dynamic postData) async {
     String url = "${Constant.person}/reset/pwd";
     Map<String, dynamic> resp = await HttpUtil().post(url, data: postData);
@@ -42,9 +42,7 @@ class PersonApi {
 
   //更新用户信息
   static Future<String> updateUser(dynamic postData) async {
-    await HttpUtil().post("${Constant.person}/update",
-      data: postData
-        );
+    await HttpUtil().post("${Constant.person}/update", data: postData);
     return '修改成功';
   }
 
@@ -63,28 +61,27 @@ class PersonApi {
 
   static Future<LoginResp> changeWorkspace(String targetId) async {
     String url = "${Constant.person}/change/workspace";
-    Map<String, dynamic> res = await HttpUtil().post(url, data: {"id": targetId});
+    Map<String, dynamic> res =
+        await HttpUtil().post(url, data: {"id": targetId});
     return LoginResp.fromMap(res);
   }
 
   //获取人员详情（目前用搜索接口替代）
   static Future<TargetResp> getPersonDetail(String personPhone) async {
-    Map<String, dynamic> resp = await HttpUtil().post("${Constant.person}/search/persons",
-        data: {
-          "filter": personPhone,
-          "limit": 20,
-          "offset": 0,
-        });
+    Map<String, dynamic> resp =
+        await HttpUtil().post("${Constant.person}/search/persons", data: {
+      "filter": personPhone,
+      "limit": 20,
+      "offset": 0,
+    });
 
     return TargetResp.fromMap(resp["result"][0]);
   }
 
   //好友验证
   static Future<String> addPerson(String personId) async {
-    await HttpUtil().post("${Constant.person}/apply/join",
-        data: {
-          "id": personId
-        });
+    await HttpUtil()
+        .post("${Constant.person}/apply/join", data: {"id": personId});
     return '发起申请';
   }
 }

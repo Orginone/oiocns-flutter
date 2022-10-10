@@ -14,13 +14,21 @@ class TreeNode {
         data = TargetResp.fromMap(map["data"]),
         children = <TreeNode>[];
 
-  static TreeNode fromNode(Map<String, dynamic> node) {
+  static TreeNode fromNode(Map<String, dynamic> node, Map<String, TreeNode> index) {
     TreeNode treeNode = TreeNode.fromMap(node);
-    List<Map<String, dynamic>> mapChildren = node["children"] ?? [];
+    index.putIfAbsent(treeNode.id, () => treeNode);
+    List<dynamic> mapChildren = node["children"] ?? [];
     if (mapChildren.isNotEmpty) {
-      var nodes = mapChildren.map((item) => fromNode(item)).toList();
+      var nodes = mapChildren.map((item) => fromNode(item, index)).toList();
       treeNode.children.addAll(nodes);
     }
     return treeNode;
   }
+}
+
+class NodeCombine {
+  final TreeNode topNode;
+  final Map<String, TreeNode> index;
+
+  const NodeCombine(this.topNode, this.index);
 }

@@ -41,7 +41,7 @@ class TextSearch extends StatelessWidget {
               decoration: InputDecoration(
                 border: InputBorder.none,
                 isCollapsed: true,
-                contentPadding: EdgeInsets.fromLTRB(10.w, 5.h, 10.w, 5.h),
+                contentPadding: EdgeInsets.fromLTRB(8.w, 10.h, 10.w, 8.h),
                 hintText: '请输入搜索内容',
               ),
             ),

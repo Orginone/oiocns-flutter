@@ -18,7 +18,7 @@ class TeamResp {
   @HiveField(4)
   String? authId;
   @HiveField(5)
-  String remark;
+  String? remark;
   @HiveField(6)
   int status;
   @HiveField(7)

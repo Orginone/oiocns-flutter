@@ -5,31 +5,46 @@ import 'package:orginone/component/unified_text_style.dart';
 
 class BreadCrumb<T> extends StatelessWidget {
   final BreadCrumbController<T> controller;
+  final Function? popsCallback;
 
-  const BreadCrumb({required this.controller, Key? key}) : super(key: key);
+  const BreadCrumb({
+    required this.controller,
+    this.popsCallback,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 24.h,
       padding: EdgeInsets.only(left: 10.w, right: 10.w),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        itemCount: controller.items.length,
-        itemBuilder: (BuildContext context, int index) {
-          Item<T> item = controller.items[index];
-          bool topOfStack = index == controller.items.length - 1;
+      child: Obx(
+        () => ListView.builder(
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          itemCount: controller.items.length,
+          itemBuilder: (BuildContext context, int index) {
+            Item<T> item = controller.items[index];
+            bool topOfStack = index == controller.items.length - 1;
 
-          List<Widget> children = [];
-          var style = topOfStack ? text16GreyBold : text16BlueBold;
-          children.add(Text(item.label, style: style));
-          if (!topOfStack) {
-            children.add(const Icon(Icons.keyboard_arrow_right));
-          }
+            List<Widget> children = [];
+            var style = topOfStack ? text16GreyBold : text16BlueBold;
+            var text = GestureDetector(
+              onTap: () {
+                if (popsCallback != null) {
+                  popsCallback!(item);
+                }
+              },
+              child: Text(item.label, style: style),
+            );
+            children.add(text);
+            if (!topOfStack) {
+              children.add(const Icon(Icons.keyboard_arrow_right));
+            }
 
-          return Row(children: children);
-        },
+            return Row(children: children);
+          },
+        ),
       ),
     );
   }
@@ -69,7 +84,7 @@ class BreadCrumbController<T> extends GetxController {
     index.remove(target.id);
   }
 
-  pops(T id) {
+  popsUntil(T id) {
     int position = -1;
     var length = items.length;
     List<T> ids = [];
@@ -86,7 +101,7 @@ class BreadCrumbController<T> extends GetxController {
       return;
     }
 
-    items.removeRange(position, items.length);
+    items.removeRange(position + 1, items.length);
     for (var id in ids) {
       index.remove(id);
     }

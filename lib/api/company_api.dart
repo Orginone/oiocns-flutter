@@ -53,7 +53,10 @@ class CompanyApi {
   }
 
   static Future<List<TargetResp>> groups(
-      int limit, int offset, String filter) async {
+    int limit,
+    int offset,
+    String filter,
+  ) async {
     String url = "${Constant.company}/get/groups";
     Map<String, dynamic> data = {"offset": offset, "limit": limit};
     if (filter.isNotEmpty) {
@@ -65,12 +68,40 @@ class CompanyApi {
     return pageData.result.map((item) => TargetResp.fromMap(item)).toList();
   }
 
-  static Future<TreeNode> tree() async {
+  static Future<NodeCombine> tree() async {
     String url = "${Constant.company}/get/company/tree";
 
-    dynamic dataResp = await HttpUtil().post(url);
-    ApiResp apiResp = ApiResp.fromMap(dataResp);
-    TreeNode topNode = TreeNode.fromNode(apiResp.data);
-    return topNode;
+    Map<String, dynamic> ans = await HttpUtil().post(url);
+    Map<String, TreeNode> index = {};
+    TreeNode topNode = TreeNode.fromNode(ans, index);
+    return NodeCombine(topNode, index);
+  }
+
+  static Future<List<TargetResp>> getCompanyPersons(
+    String id,
+    int limit,
+    int offset,
+  ) async {
+    String url = "${Constant.company}/get/persons";
+    Map<String, dynamic> data = {"id": id, "offset": offset, "limit": limit};
+
+    dynamic ans = await HttpUtil().post(url, data: data);
+    PageResp pageResp = PageResp.fromMap(ans);
+
+    return TargetResp.fromList(pageResp.result);
+  }
+
+  static Future<List<TargetResp>> getDeptPersons(
+      String id,
+      int limit,
+      int offset,
+      ) async {
+    String url = "${Constant.company}/get/department/persons";
+    Map<String, dynamic> data = {"id": id, "offset": offset, "limit": limit};
+
+    dynamic ans = await HttpUtil().post(url, data: data);
+    PageResp pageResp = PageResp.fromMap(ans);
+
+    return TargetResp.fromList(pageResp.result);
   }
 }

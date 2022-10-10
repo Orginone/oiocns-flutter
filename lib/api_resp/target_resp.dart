@@ -92,6 +92,17 @@ class TargetResp {
             ? IdentityResp.fromList(map["givenIdentitys"])
             : null;
 
+  static List<TargetResp> fromList(List<dynamic> list) {
+    List<TargetResp> ans = [];
+    if (list.isEmpty) return ans;
+
+    for (var one in list) {
+      if (one == null) continue;
+      ans.add(TargetResp.fromMap(one));
+    }
+    return ans;
+  }
+
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
     json['id'] = id;
