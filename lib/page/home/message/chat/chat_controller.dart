@@ -27,6 +27,7 @@ class ChatController extends GetxController {
   var messageScrollController = ScrollController();
   var messageScrollKey = "1024".obs;
   var uuid = const Uuid();
+  var resizeToAvoidBottomInset = true.obs;
 
   // 当前所在的群组
   late MessageItemResp messageItem;

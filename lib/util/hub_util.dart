@@ -375,8 +375,7 @@ class HubUtil {
     log.info("====> 5s 后，hub 开始重新连接");
     Duration duration = const Duration(seconds: 5);
     Timer(duration, () async {
-      _isAuthed = false;
-      _server = null;
+      await disconnect();
       await tryConn();
     });
   }

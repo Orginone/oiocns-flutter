@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/component/unified_text_style.dart';
 
 import '../../../../../config/custom_colors.dart';
-import '../../../../../util/string_util.dart';
 
 double defaultWidth = 10.w;
 const String defaultMsg = "";
