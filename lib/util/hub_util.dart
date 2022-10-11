@@ -82,6 +82,7 @@ class HubUtil {
     throw Exception("未连接聊天服务器!");
   }
 
+  /// 获取名称
   Future<String> getName(String personId) async {
     if (_isAuthed) {
       var key = SendEvent.GetName.name;
@@ -94,6 +95,7 @@ class HubUtil {
     throw Exception("未连接聊天服务器!");
   }
 
+  /// 缓存聊天记录
   Future<dynamic> cacheMsg(String sessionId, MessageDetailResp detail) async {
     if (detail.msgType == MsgType.recall.name) {
       Map<String, dynamic> update = {
@@ -123,6 +125,7 @@ class HubUtil {
     }
   }
 
+  /// 缓存会话
   Future<dynamic> cacheChats(OrgChatCache orgChatCache) async {
     Map<String, dynamic> setData = {
       "operation": "replaceAll",
@@ -142,6 +145,7 @@ class HubUtil {
     await AnyStoreUtil().set(StoreKey.orgChat.name, setData, Domain.user.name);
   }
 
+  /// 清空消息
   Future<void> clearHistoryMsg(String? spaceId, String sessionId) async {
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     spaceId = spaceId ?? userInfo.id;
@@ -152,11 +156,13 @@ class HubUtil {
     }
   }
 
+  /// 删除消息
   Future<void> deleteMsg(String chatId) async {
     Map<String, dynamic> match = {"chatId": chatId};
     await AnyStoreUtil().remove(collName, match, Domain.user.name);
   }
 
+  /// 获取历史消息
   Future<List<MessageDetailResp>> getHistoryMsg(String? spaceId,
       String sessionId, String typeName, int offset, int limit) async {
     // 默认我的空间
@@ -218,6 +224,7 @@ class HubUtil {
     }
   }
 
+  // 撤销消息
   Future<ApiResp> recallMsg(MessageDetailResp msg) async {
     if (_isAuthed) {
       var name = SendEvent.RecallMsg.name;
@@ -228,6 +235,7 @@ class HubUtil {
     throw Exception("未连接聊天服务器!");
   }
 
+  /// 获取人员
   Future<List<TargetResp>> getPersons(String id, int limit, int offset) async {
     if (_isAuthed) {
       String event = SendEvent.GetPersons.name;

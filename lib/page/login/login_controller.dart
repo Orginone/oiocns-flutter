@@ -7,10 +7,9 @@ import '../../api_resp/login_resp.dart';
 import '../../util/hive_util.dart';
 
 class LoginController extends GetxController {
-  // var account = TextEditingController(text: "15168347908");
-  // var password = TextEditingController(text: "38179960Jzy~");
   var accountController = TextEditingController();
   var passwordController = TextEditingController();
+
   @override
   onInit() {
     initLogin();
@@ -18,8 +17,9 @@ class LoginController extends GetxController {
   }
 
   initLogin() {
-    accountController.text = HiveUtil().uniqueBox.get("historyLogin") != null ? HiveUtil().uniqueBox.get("historyLogin")["account"] : '';
-    passwordController.text = HiveUtil().uniqueBox.get("historyLogin") != null ? HiveUtil().uniqueBox.get("historyLogin")["password"] : '';
+    var historyLogin = HiveUtil().uniqueBox.get("historyLogin");
+    accountController.text = historyLogin?["account"] ?? "";
+    passwordController.text = historyLogin?["password"] ?? "";
     update();
   }
 
@@ -27,8 +27,8 @@ class LoginController extends GetxController {
     var hiveUtil = HiveUtil();
 
     // 登录，设置 accessToken
-    LoginResp loginResp =
-        await PersonApi.login(accountController.value.text, passwordController.value.text);
+    LoginResp loginResp = await PersonApi.login(
+        accountController.value.text, passwordController.value.text);
 
     //存储账号密码历史数据
     await HiveUtil().uniqueBox.put('historyLogin', {

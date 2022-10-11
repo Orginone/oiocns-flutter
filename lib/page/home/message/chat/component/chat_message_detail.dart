@@ -29,15 +29,11 @@ enum DetailFunc {
 class ChatMessageDetail extends GetView<ChatController> {
   final Logger log = Logger("ChatMessageDetail");
 
-  final String spaceId;
-  final String sessionId;
   final MessageDetailResp detail;
   final bool isMy;
   final bool isMultiple;
 
   ChatMessageDetail({
-    required this.spaceId,
-    required this.sessionId,
     required this.detail,
     required this.isMy,
     required this.isMultiple,
@@ -105,6 +101,8 @@ class ChatMessageDetail extends GetView<ChatController> {
 
     // 添加长按手势
     double x = 0, y = 0;
+    String spaceId = controller.spaceId;
+    String sessionId = controller.messageItemId;
     var chat = GestureDetector(
       onPanDown: (position) {
         x = position.globalPosition.dx;
@@ -161,14 +159,9 @@ class ChatMessageDetail extends GetView<ChatController> {
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     switch (messageType) {
       case MsgType.recall:
-        String msgBody = "撤回了一条信息";
-        if (userInfo.id == detail.fromId) {
-          msgBody = "您$msgBody";
-        } else if (!isMultiple) {
-          msgBody = "对方$msgBody";
-        } else {
-          msgBody = "${targetName()}$msgBody";
-        }
+        var messageItem = controller.messageItem;
+        var nameMap = controller.messageController.orgChatCache.nameMap;
+        String msgBody = StringUtil.getDetailRecallBody(messageItem, detail, nameMap);
         return Text(msgBody, style: text12Grey);
       default:
         return TextMessage(

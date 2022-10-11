@@ -89,11 +89,10 @@ class ChatPage extends GetView<ChatController> {
     bool isMultiple = messageItem.typeName != TargetType.person.name;
 
     Widget currentWidget = ChatMessageDetail(
-        spaceId: controller.spaceId,
-        sessionId: messageItem.id,
-        detail: messageDetail,
-        isMy: isMy,
-        isMultiple: isMultiple);
+      detail: messageDetail,
+      isMy: isMy,
+      isMultiple: isMultiple,
+    );
 
     var time = _time(messageDetail.createTime);
     var item = Column(children: [currentWidget]);

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
@@ -11,11 +13,13 @@ import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/notification_util.dart';
 
+import '../../../api_resp/api_resp.dart';
 import '../../../api_resp/message_detail_resp.dart';
 import '../../../api_resp/message_item_resp.dart';
 import '../../../enumeration/message_type.dart';
 import '../../../enumeration/target_type.dart';
 import '../../../util/hub_util.dart';
+import '../../../util/string_util.dart';
 import 'chat/chat_controller.dart';
 
 /// 所有与后端消息交互的逻辑都先保存至数据库中再读取出来
@@ -32,6 +36,9 @@ class MessageController extends GetxController with WidgetsBindingObserver {
 
   // 当前 app 状态
   AppLifecycleState? currentAppState;
+
+  // 会话加载状态
+  bool isLoaded = false;
 
   @override
   void onInit() async {
@@ -80,16 +87,20 @@ class MessageController extends GetxController with WidgetsBindingObserver {
   }
 
   Future<dynamic> refreshCharts() async {
-    // 读取聊天群
-    List<SpaceMessagesResp> messageGroups = await HubUtil().getChats();
+    if (isLoaded) {
+      // 只有从缓存拿过会话了才能刷新会话
 
-    // 处理空间并排序
-    orgChatCache.chats = _spaceHandling(messageGroups);
-    sortingGroups();
-    update();
+      // 读取聊天群
+      List<SpaceMessagesResp> messageGroups = await HubUtil().getChats();
 
-    // 缓存消息
-    await HubUtil().cacheChats(orgChatCache);
+      // 处理空间并排序
+      orgChatCache.chats = _spaceHandling(messageGroups);
+      sortingGroups();
+      update();
+
+      // 缓存消息
+      await HubUtil().cacheChats(orgChatCache);
+    }
   }
 
   /// 订阅聊天群变动
@@ -98,7 +109,8 @@ class MessageController extends GetxController with WidgetsBindingObserver {
     String domain = Domain.user.name;
     await AnyStoreUtil().subscribing(key, domain, _updateChats);
     if (orgChatCache.chats.isEmpty) {
-      await refreshCharts();
+      ApiResp apiResp = await AnyStoreUtil().get(key.name, domain);
+      _updateChats(apiResp.data);
     }
   }
 
@@ -109,6 +121,9 @@ class MessageController extends GetxController with WidgetsBindingObserver {
     sortingGroups();
     _latestMsgHandling(orgChatCache.messageDetail);
     update();
+
+    // 表示从缓存会话已经加载完毕
+    isLoaded = true;
   }
 
   /// 最新的消息处理
@@ -239,7 +254,7 @@ class MessageController extends GetxController with WidgetsBindingObserver {
           currentItem.msgTime = detail.createTime;
           currentItem.msgType = detail.msgType;
           if (currentItem.msgType == MsgType.recall.name) {
-            currentItem.showTxt = "撤回了一条消息";
+            currentItem.showTxt = StringUtil.getRecallBody(currentItem, detail);
           } else {
             bool hasPic = msgBody?.contains("<img>") ?? false;
             currentItem.showTxt = hasPic ? "[图片]" : msgBody;

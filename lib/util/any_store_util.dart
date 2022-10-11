@@ -53,7 +53,7 @@ class AnyStoreUtil {
     if (_isAuthed) {
       var name = SendEvent.Get.name;
       var args = [key, domain];
-      dynamic data = _server!.invoke(name, args: args);
+      dynamic data = await _server!.invoke(name, args: args);
       return ApiResp.fromMap(data);
     }
     Fluttertoast.showToast(msg: "未连接存储服务器!");
@@ -76,7 +76,7 @@ class AnyStoreUtil {
   Future<ApiResp> delete(String key, String domain) async {
     if (_isAuthed) {
       var name = SendEvent.Delete.name;
-      dynamic res = _server!.invoke(name, args: [key, domain]);
+      dynamic res = await _server!.invoke(name, args: [key, domain]);
       return ApiResp.fromMap(res);
     }
     Fluttertoast.showToast(msg: "未连接存储服务器!");
@@ -211,6 +211,7 @@ class AnyStoreUtil {
     }
   }
 
+  /// 断开连接
   Future<dynamic> disconnect() async {
     if (_server == null) {
       return;
