@@ -3,7 +3,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 class PermissionUtil {
   static final Map<Permission, String> permissionNameMap = {
-    Permission.camera: "相册",
+    Permission.camera: "相机",
   };
 
   static showPermissionDialog(BuildContext context, Permission permission) {

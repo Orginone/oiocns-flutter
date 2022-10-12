@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
@@ -182,7 +183,7 @@ class ChatController extends GetxController {
     }
   }
 
-  // 发送消息至聊天页面
+  /// 发送消息至聊天页面
   void sendOneMessage(String value) {
     if (messageItemId == "-1") return;
 
@@ -201,6 +202,16 @@ class ChatController extends GetxController {
         error.printError();
       }
     }
+  }
+
+  /// 相册选择照片后回调
+  void imagePicked(XFile file) {
+    // MessageDetailResp.fromMap({
+    //   "id":"-1",
+    //   "fromId": IJ
+    // });
+    //
+    // messageDetails.add(value);
   }
 
   /// 滚动到页面底部
@@ -237,7 +248,8 @@ class ChatController extends GetxController {
         break;
       case DetailFunc.remove:
         await HubUtil().deleteMsg(detail.id);
-        messageDetails = messageDetails.where((item) => item.id != detail.id).toList();
+        messageDetails =
+            messageDetails.where((item) => item.id != detail.id).toList();
         update();
         break;
     }

@@ -7,6 +7,12 @@ class ChatBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => ChatController());
-    Get.lazyPut(() => ChatBoxController());
+    Get.lazyPut(() {
+      var chatController = Get.find<ChatController>();
+      return ChatBoxController(
+        sendCallback: chatController.sendOneMessage,
+        imageCallback: chatController.imagePicked,
+      );
+    });
   }
 }

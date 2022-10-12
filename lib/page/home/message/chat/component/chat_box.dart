@@ -1,14 +1,18 @@
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/config/custom_colors.dart';
+import 'package:orginone/util/permission_util.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 double defaultBorderRadius = 6.w;
 
-enum BottomPopupType { emoji, more, keyboard, notPopup }
+enum BottomPopupType { emoji, more, inputting, notPopup }
 
 enum MoreFunction {
   photo("相册", Icons.photo),
@@ -22,11 +26,10 @@ enum MoreFunction {
 }
 
 class ChatBox extends GetView<ChatBoxController> {
-  final Function sendCallback;
   final RxBool showSendBtn = false.obs;
   final Rx<BottomPopupType> bottomPopupType = BottomPopupType.notPopup.obs;
 
-  ChatBox(this.sendCallback, {Key? key}) : super(key: key);
+  ChatBox({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,10 +48,14 @@ class ChatBox extends GetView<ChatBoxController> {
             children: [_emojiBtn(context), _moreBtn(context)],
           );
         case BottomPopupType.notPopup:
-        case BottomPopupType.keyboard:
           return Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [_emojiBtn(context), _moreBtn(context)],
+          );
+        case BottomPopupType.inputting:
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [_emojiBtn(context)],
           );
       }
     });
@@ -63,11 +70,15 @@ class ChatBox extends GetView<ChatBoxController> {
             children: [
               _input(inputController, focusNode),
               func,
-              Obx(() =>
-                  showSendBtn.value ? _sendBtn(inputController) : Container()),
+              Obx(() => showSendBtn.value
+                  ? Container(
+                      margin: EdgeInsets.only(left: 8.w),
+                      child: _sendBtn(inputController),
+                    )
+                  : Container()),
             ],
           ),
-          _bottomPopup(inputController),
+          _bottomPopup(inputController, context),
         ],
       ),
     );
@@ -85,10 +96,17 @@ class ChatBox extends GetView<ChatBoxController> {
         child: TextField(
           focusNode: focusNode,
           onChanged: (text) {
-            showSendBtn.value = text.isNotEmpty;
+            var isEmpty = text.isEmpty;
+            if (isEmpty) {
+              showSendBtn.value = false;
+              bottomPopupType.value = BottomPopupType.notPopup;
+            } else {
+              showSendBtn.value = true;
+              bottomPopupType.value = BottomPopupType.inputting;
+            }
           },
           onTap: () {
-            bottomPopupType.value = BottomPopupType.notPopup;
+            bottomPopupType.value = BottomPopupType.inputting;
           },
           style: text18,
           controller: controller,
@@ -118,7 +136,7 @@ class ChatBox extends GetView<ChatBoxController> {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(focusNode);
-        bottomPopupType.value = BottomPopupType.keyboard;
+        bottomPopupType.value = BottomPopupType.inputting;
       },
       child: _defaultIcon(Icons.keyboard_alt_outlined),
     );
@@ -140,17 +158,17 @@ class ChatBox extends GetView<ChatBoxController> {
       padding: EdgeInsets.only(left: 8.w, top: 8.h, bottom: 8.h),
       child: Icon(
         iconData,
-        size: 28.w,
+        size: 28.h,
       ),
     );
   }
 
   /// 发送按钮
-  Widget _sendBtn(TextEditingController controller) {
+  Widget _sendBtn(TextEditingController inputController) {
     return ElevatedButton(
       onPressed: () {
-        sendCallback(controller.text);
-        controller.clear();
+        controller.sendCallback(inputController.text);
+        inputController.clear();
         showSendBtn.value = false;
       },
       style: ButtonStyle(
@@ -162,7 +180,8 @@ class ChatBox extends GetView<ChatBoxController> {
   }
 
   /// 下面的弹出框
-  Widget _bottomPopup(TextEditingController inputController) {
+  Widget _bottomPopup(
+      TextEditingController inputController, BuildContext context) {
     return Obx(() {
       late Widget body;
       switch (bottomPopupType.value) {
@@ -170,11 +189,13 @@ class ChatBox extends GetView<ChatBoxController> {
           body = _emojiPicker(inputController);
           break;
         case BottomPopupType.more:
-          body = _more();
+          body = _more(context);
           break;
         case BottomPopupType.notPopup:
-        case BottomPopupType.keyboard:
           return Container();
+        case BottomPopupType.inputting:
+          body = Container();
+          break;
       }
       return Offstage(
         offstage: false,
@@ -200,7 +221,7 @@ class ChatBox extends GetView<ChatBoxController> {
   }
 
   /// 更多功能
-  Widget _more() {
+  Widget _more(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 20.h),
       child: GridView.count(
@@ -208,16 +229,18 @@ class ChatBox extends GetView<ChatBoxController> {
         mainAxisSpacing: 10.w,
         scrollDirection: Axis.vertical,
         crossAxisCount: 4,
-        children: MoreFunction.values.map((item) => _funcIcon(item)).toList(),
+        children: MoreFunction.values
+            .map((item) => _funcIcon(item, context))
+            .toList(),
       ),
     );
   }
 
   /// 功能点
-  Widget _funcIcon(MoreFunction moreFunction) {
+  Widget _funcIcon(MoreFunction moreFunction, BuildContext context) {
     return GestureDetector(
       onTap: () {
-        controller.execute(moreFunction);
+        controller.execute(moreFunction, context);
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -239,12 +262,17 @@ class ChatBox extends GetView<ChatBoxController> {
 }
 
 // 控制下面的动画
-class ChatBoxController extends GetxController
+class ChatBoxController extends FullLifeCycleController
     with GetSingleTickerProviderStateMixin {
   late AnimationController animationController;
   late CurvedAnimation curvedAnimation;
   late Animation<Offset> slideTransition;
   final ImagePicker picker = ImagePicker();
+
+  final Function sendCallback;
+  final Function imageCallback;
+
+  ChatBoxController({required this.sendCallback, required this.imageCallback});
 
   @override
   void onInit() {
@@ -263,15 +291,30 @@ class ChatBoxController extends GetxController
     ).animate(curvedAnimation);
   }
 
-  execute(MoreFunction moreFunction) async {
+  execute(MoreFunction moreFunction, BuildContext context) async {
     switch (moreFunction) {
       case MoreFunction.photo:
         var gallery = ImageSource.gallery;
-        await picker.pickImage(source: gallery);
+        XFile? pickedImage = await picker.pickImage(source: gallery);
+        if (pickedImage != null) {
+          imageCallback(pickedImage);
+        }
         break;
       case MoreFunction.camera:
         var camera = ImageSource.camera;
-        await picker.pickImage(source: camera);
+        try {
+          XFile? pickedImage = await picker.pickImage(source: camera);
+          if (pickedImage != null) {
+            imageCallback(pickedImage);
+          }
+        } on PlatformException catch (error) {
+          if (error.code == "camera_access_denied") {
+            PermissionUtil.showPermissionDialog(context, Permission.camera);
+          }
+        } catch (error) {
+          error.printError();
+          Fluttertoast.showToast(msg: "打开相机时发生异常!");
+        }
         break;
       case MoreFunction.voice:
         break;

@@ -18,6 +18,7 @@ class UnifiedScaffold extends StatelessWidget {
   final Widget? body;
   final Widget? bottomNavigationBar;
   final Widget? floatingButton;
+  final bool? resizeToAvoidBottomInset;
 
   const UnifiedScaffold(
       {Key? key,
@@ -30,13 +31,15 @@ class UnifiedScaffold extends StatelessWidget {
       this.appBarLeading,
       this.body,
       this.bottomNavigationBar,
-      this.floatingButton})
+      this.floatingButton,
+      this.resizeToAvoidBottomInset})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
+      resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(height * appBarPercent),
         child: GFAppBar(
