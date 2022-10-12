@@ -29,7 +29,7 @@ class ChatPage extends GetView<ChatController> {
       appBarLeading: WidgetUtil.defaultBackBtn,
       appBarTitle: _title,
       appBarActions: _actions,
-      body: _body,
+      body: _body(context),
     );
   }
 
@@ -114,7 +114,12 @@ class ChatPage extends GetView<ChatController> {
     }
   }
 
-  get _body => Column(
+  Widget _body(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
@@ -142,5 +147,7 @@ class ChatPage extends GetView<ChatController> {
           ),
           ChatBox()
         ],
-      );
+      ),
+    );
+  }
 }

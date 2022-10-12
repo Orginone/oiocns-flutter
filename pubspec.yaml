@@ -37,6 +37,8 @@ flutter_app_name:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   # 本地代理
   shelf_proxy: ^1.0.2
