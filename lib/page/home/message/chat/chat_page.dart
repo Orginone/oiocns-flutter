@@ -25,6 +25,7 @@ class ChatPage extends GetView<ChatController> {
   @override
   Widget build(BuildContext context) {
     return UnifiedScaffold(
+      resizeToAvoidBottomInset: false,
       appBarLeading: WidgetUtil.defaultBackBtn,
       appBarTitle: _title,
       appBarActions: _actions,
@@ -35,12 +36,10 @@ class ChatPage extends GetView<ChatController> {
   get _title => Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Obx(
-            () => Text(
-              controller.titleName.value,
-              style: text20,
-            ),
-          ),
+          Obx(() => Text(
+                controller.titleName.value,
+                style: text20,
+              )),
           Container(
             margin: left10,
           ),
@@ -141,7 +140,7 @@ class ChatPage extends GetView<ChatController> {
               ),
             ),
           ),
-          ChatBox(controller.sendOneMessage)
+          ChatBox()
         ],
       );
 }

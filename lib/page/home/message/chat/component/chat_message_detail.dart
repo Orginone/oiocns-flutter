@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:keframe/keframe.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
@@ -32,18 +34,15 @@ class ChatMessageDetail extends GetView<ChatController> {
   final MessageDetailResp detail;
   final bool isMy;
   final bool isMultiple;
+  final MsgType msgType;
 
   ChatMessageDetail({
     required this.detail,
     required this.isMy,
     required this.isMultiple,
     Key? key,
-  }) : super(key: key);
-
-  String targetName() {
-    OrgChatCache orgChatCache = controller.messageController.orgChatCache;
-    return orgChatCache.nameMap[detail.fromId] ?? "";
-  }
+  })  : msgType = EnumMap.messageTypeMap[detail.msgType] ?? MsgType.unknown,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,51 +51,87 @@ class ChatMessageDetail extends GetView<ChatController> {
 
   Widget _messageDetail(BuildContext context) {
     List<Widget> children = [];
-
-    bool isRecall = detail.msgType == MsgType.recall.name;
-    if (isRecall) {
-      children.add(_getMessage());
-    } else {
-      children.add(_getAvatar());
-      children.add(_getChat(context));
+    switch (msgType) {
+      case MsgType.text:
+      case MsgType.image:
+        children.add(_getAvatar());
+        children.add(_getChat(context));
+        break;
+      case MsgType.recall:
+        var messageItem = controller.messageItem;
+        var nameMap = controller.messageController.orgChatCache.nameMap;
+        String msgBody = StringUtil.getDetailRecallBody(
+          item: messageItem,
+          detail: detail,
+          nameMap: nameMap,
+        );
+        children.add(Text(msgBody, style: text12Grey));
+        break;
+      default:
+        break;
     }
 
     return Container(
       margin: top10,
       child: Row(
         textDirection: isMy ? TextDirection.rtl : TextDirection.ltr,
-        mainAxisAlignment:
-            isRecall ? MainAxisAlignment.center : MainAxisAlignment.start,
+        mainAxisAlignment: msgType == MsgType.recall
+            ? MainAxisAlignment.center
+            : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: children,
       ),
     );
   }
 
+  String targetName() {
+    OrgChatCache orgChatCache = controller.messageController.orgChatCache;
+    return orgChatCache.nameMap[detail.fromId] ?? "";
+  }
+
+  // 获取头像
   Widget _getAvatar() {
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-    return TextAvatar(
-      avatarName: StringUtil.getAvatarName(
-        avatarName: isMy ? userInfo.team?.name ?? "" : targetName(),
-        type: TextAvatarType.chat,
+    return SizeCacheWidget(
+      child: TextAvatar(
+        avatarName: StringUtil.getAvatarName(
+          avatarName: isMy ? userInfo.team?.name ?? "" : targetName(),
+          type: TextAvatarType.chat,
+        ),
+        textStyle: text12WhiteBold,
       ),
-      textStyle: text12WhiteBold,
     );
   }
 
+  /// 获取会话
   Widget _getChat(BuildContext context) {
     List<Widget> content = <Widget>[];
 
     if (isMultiple && !isMy) {
-      content.add(
-        Container(
-          margin: left10,
-          child: Text(
-            targetName(),
-            style: text12,
-          ),
-        ),
-      );
+      content.add(Container(
+        margin: left10,
+        child: Text(targetName(), style: text12),
+      ));
+    }
+
+    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+
+    Widget body;
+    switch (msgType) {
+      case MsgType.text:
+        body = TextMessage(
+          message: detail.msgBody,
+          detail.fromId == userInfo.id ? TextDirection.rtl : TextDirection.ltr,
+        );
+        break;
+      case MsgType.image:
+        body = Image.network(
+          "https://img2.baidu.com/it/u=676445988,3422842132&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1665680400&t=2450f6e5b2f1cbf9c22517f2fde94183",
+          width: 100.w,
+        );
+        break;
+      default:
+        body = Container();
     }
 
     // 添加长按手势
@@ -139,7 +174,7 @@ class ChatMessageDetail extends GetView<ChatController> {
           controller.detailFuncCallback(result, spaceId, sessionId, detail);
         }
       },
-      child: _getMessage(),
+      child: body,
     );
     content.add(chat);
 
@@ -150,24 +185,5 @@ class ChatMessageDetail extends GetView<ChatController> {
         children: content,
       ),
     );
-  }
-
-  Widget _getMessage() {
-    MsgType messageType =
-        EnumMap.messageTypeMap[detail.msgType] ?? MsgType.unknown;
-
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-    switch (messageType) {
-      case MsgType.recall:
-        var messageItem = controller.messageItem;
-        var nameMap = controller.messageController.orgChatCache.nameMap;
-        String msgBody = StringUtil.getDetailRecallBody(messageItem, detail, nameMap);
-        return Text(msgBody, style: text12Grey);
-      default:
-        return TextMessage(
-          message: detail.msgBody,
-          detail.fromId == userInfo.id ? TextDirection.rtl : TextDirection.ltr,
-        );
-    }
   }
 }

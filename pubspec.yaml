@@ -80,6 +80,7 @@ dependencies:
   flutter_local_notifications: ^11.0.0
   flutter_html: ^3.0.0-alpha.5
   emoji_picker_flutter: ^1.3.1
+  flutter_sound: ^9.2.13
 
   # 组件管理库
   get: ^4.6.5

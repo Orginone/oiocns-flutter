@@ -37,11 +37,11 @@ class StringUtil {
     }
   }
 
-  static String getDetailRecallBody(
-    MessageItemResp item,
-    MessageDetailResp detail,
-    Map<String, dynamic> nameMap,
-  ) {
+  static String getDetailRecallBody({
+    required MessageItemResp item,
+    required MessageDetailResp detail,
+    required Map<String, dynamic> nameMap,
+  }) {
     var userInfo = HiveUtil().getValue(Keys.userInfo);
     String msgBody = "撤回了一条消息";
     var targetType = EnumMap.targetTypeMap[item.typeName];
