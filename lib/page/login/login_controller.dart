@@ -2,13 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api/person_api.dart';
 import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/component/loading_button.dart';
 
 import '../../api_resp/login_resp.dart';
+import '../../util/any_store_util.dart';
 import '../../util/hive_util.dart';
+import '../../util/hub_util.dart';
 
 class LoginController extends GetxController {
   var accountController = TextEditingController();
   var passwordController = TextEditingController();
+  var loginBtnController = LoadingButtonController();
 
   @override
   onInit() {
@@ -43,5 +47,9 @@ class LoginController extends GetxController {
     await hiveUtil.initEnvParams(userInfo.id);
     await hiveUtil.putValue(Keys.userInfo, userInfo);
     await hiveUtil.putValue(Keys.user, loginResp.user);
+
+    // 连接服务器
+    await AnyStoreUtil().tryConn();
+    await HubUtil().tryConn();
   }
 }
