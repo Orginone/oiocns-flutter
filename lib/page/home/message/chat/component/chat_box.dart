@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,9 +12,15 @@ import 'package:logging/logging.dart';
 import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/config/custom_colors.dart';
 import 'package:orginone/util/permission_util.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-double defaultBorderRadius = 6.w;
+import '../../../../../component/voice_painter.dart';
+
+enum RecordStatus {
+  stop,
+  recoding,
+}
 
 enum InputStatus {
   notPopup,
@@ -45,10 +54,12 @@ enum MoreFunction {
   const MoreFunction(this.name, this.iconData);
 }
 
+double defaultBorderRadius = 6.w;
 double boxDefaultHeight = 28.h;
 
 class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   final Rx<InputStatus> inputStatus = InputStatus.notPopup.obs;
+  final Rx<RecordStatus> recordStatus = RecordStatus.stop.obs;
   final RxDouble bottomHeight = 220.h.obs;
 
   ChatBox({Key? key}) : super(key: key);
@@ -177,8 +188,22 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
         child: Obx(() {
           if (inputStatus.value == InputStatus.voice) {
             return GestureDetector(
-              onLongPress: () {
+              onPanDown: (DragDownDetails details) async {
+                var voiceWave = OverlayEntry(builder: (BuildContext context) {
+                  return _voiceWave();
+                });
 
+                Overlay.of(context)!.insert(voiceWave);
+                recordStatus.value = RecordStatus.recoding;
+                try {
+                  await controller.startRecord();
+                } on RecordingPermissionException catch () {
+                  PermissionUtil.showPermissionDialog(
+                      context, Permission.microphone);
+                } finally {
+                  voiceWave.remove();
+                  recordStatus.value = RecordStatus.stop;
+                }
               },
               child: Container(
                 alignment: Alignment.center,
@@ -374,6 +399,14 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
       ),
     );
   }
+
+  /// 录音波动
+  Widget _voiceWave() {
+    return CustomPaint(
+      size: Size(150.w, 150.w),
+      painter: VoicePainter(),
+    );
+  }
 }
 
 // 控制下面的动画
@@ -389,6 +422,8 @@ class ChatBoxController extends FullLifeCycleController
   final Function sendCallback;
   final Function imageCallback;
 
+  FlutterSoundRecorder? recorder;
+
   ChatBoxController({required this.sendCallback, required this.imageCallback});
 
   @override
@@ -397,6 +432,10 @@ class ChatBoxController extends FullLifeCycleController
     inputController.dispose();
     focusNode.dispose();
     blankNode.dispose();
+    if (recorder != null) {
+      recorder!.closeRecorder();
+      recorder = null;
+    }
   }
 
   execute(MoreFunction moreFunction, BuildContext context) async {
@@ -427,5 +466,23 @@ class ChatBoxController extends FullLifeCycleController
       case MoreFunction.file:
         break;
     }
+  }
+
+  startRecord() async {
+    recorder ??= await FlutterSoundRecorder().openRecorder();
+    if (recorder == null) {
+      return;
+    }
+
+    // 鉴权
+    PermissionStatus permissionStatus = await Permission.microphone.request();
+    if (permissionStatus != PermissionStatus.granted) {
+      throw RecordingPermissionException("Microphone permission not granted");
+    }
+
+    await recorder!.startRecorder(toFile: "temp.mp4", codec: Codec.aacMP4);
+    var directory = await getTemporaryDirectory();
+    var file = File("${directory.path}/temp.mp4");
+    log.info(file);
   }
 }
