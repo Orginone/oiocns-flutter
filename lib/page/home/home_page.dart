@@ -5,6 +5,7 @@ import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/util/any_store_util.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:signalr_core/signalr_core.dart';
 
@@ -32,7 +33,11 @@ class HomePage extends GetView<HomeController> {
   }
 
   Widget _popMenuItem(
-      BuildContext context, IconData icon, String text, Function func) {
+    BuildContext context,
+    IconData icon,
+    String text,
+    Function func,
+  ) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
@@ -114,54 +119,86 @@ class HomePage extends GetView<HomeController> {
         ),
         textStyle: text16White,
         margin: all10,
-        status: Obx(() {
-          Color color;
-          switch (HubUtil().state.value) {
-            case HubConnectionState.connecting:
-            case HubConnectionState.disconnecting:
-            case HubConnectionState.reconnecting:
-              color = Colors.yellow;
-              break;
-            case HubConnectionState.connected:
-              color = Colors.greenAccent;
-              break;
-            default:
-              color = Colors.redAccent;
-          }
-          return Icon(
-            Icons.circle,
-            size: 10,
-            color: color,
-          );
-        }),
       );
 
-  get _title => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  get _title => Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          GetBuilder<HomeController>(
-            init: controller,
-            builder: (controller) {
-              return GestureDetector(
-                onTap: () {
-                  Get.toNamed(Routers.spaceChoose);
-                },
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.repeat, color: Colors.black, size: 18),
-                    Container(padding: const EdgeInsets.fromLTRB(10, 0, 0, 0)),
-                    Expanded(
-                      child: Text(
-                        controller.currentSpace.name,
-                        style: text16Bold,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
+          Column(
+            children: [
+              Row(
+                children: [
+                  Obx(() {
+                    Color color;
+                    switch (HubUtil().state.value) {
+                      case HubConnectionState.connecting:
+                      case HubConnectionState.disconnecting:
+                      case HubConnectionState.reconnecting:
+                        color = Colors.yellow;
+                        break;
+                      case HubConnectionState.connected:
+                        color = Colors.greenAccent;
+                        break;
+                      default:
+                        color = Colors.redAccent;
+                    }
+                    return Icon(
+                      Icons.circle,
+                      size: 10,
+                      color: color,
+                    );
+                  }),
+                  Container(margin: EdgeInsets.only(left: 5.w)),
+                  Text("会话", style: text12),
+                ],
+              ),
+              Row(
+                children: [
+                  Obx(() {
+                    Color color;
+                    switch (AnyStoreUtil().state.value) {
+                      case HubConnectionState.connecting:
+                      case HubConnectionState.disconnecting:
+                      case HubConnectionState.reconnecting:
+                        color = Colors.yellow;
+                        break;
+                      case HubConnectionState.connected:
+                        color = Colors.greenAccent;
+                        break;
+                      default:
+                        color = Colors.redAccent;
+                    }
+                    return Icon(
+                      Icons.circle,
+                      size: 10,
+                      color: color,
+                    );
+                  }),
+                  Container(margin: EdgeInsets.only(left: 5.w)),
+                  Text("存储", style: text12),
+                ],
+              )
+            ],
+          ),
+          Container(padding: EdgeInsets.only(left: 10.w)),
+          Icon(Icons.repeat, color: Colors.black, size: 18.w),
+          Container(padding: EdgeInsets.only(left: 10.w)),
+          Expanded(
+            child: GetBuilder<HomeController>(
+              init: controller,
+              builder: (controller) {
+                return GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routers.spaceChoose);
+                  },
+                  child: Text(
+                    controller.currentSpace.name,
+                    style: text16Bold,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                );
+              },
+            ),
           ),
         ],
       );
