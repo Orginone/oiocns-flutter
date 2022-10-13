@@ -1,4 +1,6 @@
 class Constant {
+  static const projectName = "Orginone";
+
   static const host = "http://anyinone.com:800";
   static const hub = "$host/orginone/orgchat/msghub";
   static const anyStore = "$host/orginone/anydata/hub";

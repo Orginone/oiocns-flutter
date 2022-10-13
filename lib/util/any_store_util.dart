@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:signalr_core/signalr_core.dart';
 
-import '../api/constant.dart';
+import '../config/constant.dart';
 import '../api_resp/api_resp.dart';
 import 'hive_util.dart';
 

@@ -1,6 +1,6 @@
 import '../api_resp/page_resp.dart';
 import '../api_resp/target_resp.dart';
-import 'constant.dart';
+import '../config/constant.dart';
 import '../util/http_util.dart';
 
 class CohortApi {

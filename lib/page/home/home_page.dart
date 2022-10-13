@@ -149,9 +149,10 @@ class HomePage extends GetView<HomeController> {
                     );
                   }),
                   Container(margin: EdgeInsets.only(left: 5.w)),
-                  Text("会话", style: text12),
+                  Text("会话", style: text10Bold),
                 ],
               ),
+              Container(margin: EdgeInsets.only(top: 5.h)),
               Row(
                 children: [
                   Obx(() {
@@ -175,7 +176,7 @@ class HomePage extends GetView<HomeController> {
                     );
                   }),
                   Container(margin: EdgeInsets.only(left: 5.w)),
-                  Text("存储", style: text12),
+                  Text("存储", style: text10Bold),
                 ],
               )
             ],

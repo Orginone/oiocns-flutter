@@ -37,7 +37,7 @@ enum InputEvent {
 enum MoreFunction {
   photo("相册", Icons.photo),
   camera("拍摄", Icons.camera_alt),
-  voice("语音", Icons.keyboard_voice);
+  file("文件", Icons.upload);
 
   final String name;
   final IconData iconData;
@@ -177,7 +177,9 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
         child: Obx(() {
           if (inputStatus.value == InputStatus.voice) {
             return GestureDetector(
-              onLongPress: () {},
+              onLongPress: () {
+
+              },
               child: Container(
                 alignment: Alignment.center,
                 height: boxDefaultHeight,
@@ -422,7 +424,7 @@ class ChatBoxController extends FullLifeCycleController
           Fluttertoast.showToast(msg: "打开相机时发生异常!");
         }
         break;
-      case MoreFunction.voice:
+      case MoreFunction.file:
         break;
     }
   }

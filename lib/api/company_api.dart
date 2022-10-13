@@ -1,10 +1,9 @@
 import 'package:logging/logging.dart';
-import 'package:orginone/api_resp/api_resp.dart';
 
 import '../api_resp/page_resp.dart';
 import '../api_resp/target_resp.dart';
 import '../api_resp/tree_node.dart';
-import 'constant.dart';
+import '../config/constant.dart';
 import '../util/http_util.dart';
 
 class CompanyApi {
