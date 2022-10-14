@@ -10,9 +10,11 @@ class TextSearch extends StatelessWidget {
   final EdgeInsets? margin;
   final Function searchingCallback;
 
-  const TextSearch(this.searchingCallback,
-      {Key? key, this.margin = defaultMargin})
-      : super(key: key);
+  const TextSearch(
+    this.searchingCallback, {
+    Key? key,
+    this.margin = defaultMargin,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -26,7 +26,10 @@ class FriendsPage extends GetView<FriendsController> {
       floatingButton: FloatingActionButton(
         onPressed: () {
           List<SearchItem> friends = [SearchItem.friends];
-          Get.toNamed(Routers.search, arguments: friends);
+          Get.toNamed(Routers.search, arguments: {
+            "items": friends,
+            "point": FunctionPoint.addFriends,
+          });
         },
         backgroundColor: Colors.blueAccent,
         splashColor: Colors.white,

@@ -18,7 +18,7 @@ class RegisterPage extends GetView<RegisterController> {
         init: RegisterController(),
         builder: (item) => Scaffold(
               body: () {
-                switch(controller.step) {
+                switch (controller.step) {
                   case 1:
                     return const RegistFormWidget1();
                   case 2:
@@ -172,11 +172,10 @@ class RegistFormWidget2 extends GetView<RegisterController> {
                 padding: const EdgeInsets.fromLTRB(40, 10, 40, 0),
                 child: TextFormField(
                   controller: controller.confirmController,
-                  decoration:
-                  const InputDecoration(hintText: '确认你的密码'),
+                  decoration: const InputDecoration(hintText: '确认你的密码'),
                   keyboardType: TextInputType.text,
                   validator: (value) {
-                    if(value != controller.passwordController.text) {
+                    if (value != controller.passwordController.text) {
                       return '两次输入密码不一致';
                     }
                     return null;
@@ -197,7 +196,8 @@ class RegistFormWidget2 extends GetView<RegisterController> {
                         "password2": controller.confirmController.text,
                         "phone": controller.phoneController.text
                       };
-                      Map<String, dynamic> res = await PersonApi.regist(postData);
+                      Map<String, dynamic> res =
+                          await PersonApi.regist(postData);
                       Fluttertoast.showToast(
                           msg: '注册成功',
                           toastLength: Toast.LENGTH_SHORT,
@@ -205,8 +205,7 @@ class RegistFormWidget2 extends GetView<RegisterController> {
                           timeInSecForIosWeb: 1,
                           backgroundColor: Colors.grey,
                           textColor: Colors.white,
-                          fontSize: 16.0
-                      );
+                          fontSize: 16.0);
                       //存储账号密码历史数据
                       await HiveUtil().uniqueBox.put('historyLogin', {
                         'account': controller.accountController.text,
@@ -238,9 +237,8 @@ class RegistFormWidget2 extends GetView<RegisterController> {
                           onTap: () {
                             Get.offNamed(Routers.main);
                           },
-                          child: const Text('立即登录',style: TextStyle(
-                              color: Colors.lightBlue
-                          )),
+                          child: const Text('立即登录',
+                              style: TextStyle(color: Colors.lightBlue)),
                         )
                       ],
                     )
@@ -263,11 +261,10 @@ class RegistFormWidget3 extends GetView<RegisterController> {
         const Text("Orginone", style: TextStyle(fontSize: 50)),
         Container(
             padding: const EdgeInsets.fromLTRB(40, 60, 40, 0),
-            child:
-              SelectableText(controller.privateKey,style: const TextStyle(
-                fontSize: 31
-              ),)
-        ),
+            child: SelectableText(
+              controller.privateKey,
+              style: const TextStyle(fontSize: 31),
+            )),
         Container(
             padding: const EdgeInsets.fromLTRB(40, 15, 40, 0),
             child: Row(
@@ -285,8 +282,7 @@ class RegistFormWidget3 extends GetView<RegisterController> {
             padding: const EdgeInsets.fromLTRB(40, 30, 40, 0),
             child: GFButton(
               onPressed: () async {
-                LoginController loginController = Get.find<LoginController>(
-                );
+                LoginController loginController = Get.find<LoginController>();
                 loginController.initLogin();
                 Get.offNamed(Routers.main);
               },
