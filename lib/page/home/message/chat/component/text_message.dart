@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/component/unified_text_style.dart';
 
-import '../../../../../config/custom_colors.dart';
+import '../../../../../component/unified_colors.dart';
 
 double defaultWidth = 10.w;
 const String defaultMsg = "";
@@ -23,7 +23,7 @@ class TextMessage extends StatelessWidget {
           child: Container(
             margin: EdgeInsets.only(top: defaultWidth * 1.2),
             child: Material(
-              color: CustomColors.seaBlue,
+              color: UnifiedColors.seaBlue,
               shape: BeveledRectangleBorder(
                   borderRadius: BorderRadius.circular(defaultWidth)),
               child: SizedBox(
@@ -40,7 +40,7 @@ class TextMessage extends StatelessWidget {
               ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
               : EdgeInsets.only(right: defaultWidth, top: defaultWidth / 2),
           decoration: BoxDecoration(
-            color: CustomColors.seaBlue,
+            color: UnifiedColors.seaBlue,
             borderRadius: BorderRadius.all(Radius.circular(defaultWidth)),
           ),
           child: Text(

@@ -8,7 +8,7 @@ import 'package:orginone/page/home/search/unit_result_page.dart';
 
 import '../../../../util/widget_util.dart';
 import '../../../component/text_search.dart';
-import '../../../config/custom_colors.dart';
+import '../../../component/unified_colors.dart';
 import 'search_controller.dart';
 
 class SearchPage extends GetView<SearchController> {
@@ -23,7 +23,7 @@ class SearchPage extends GetView<SearchController> {
         width: 1000,
         tabBarHeight: 40,
         indicatorColor: Colors.blueAccent,
-        tabBarColor: CustomColors.easyGrey,
+        tabBarColor: UnifiedColors.easyGrey,
         length: controller.tabController.length,
         controller: controller.tabController,
         tabs: tabs);

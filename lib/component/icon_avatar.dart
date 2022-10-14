@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../config/custom_colors.dart';
+import 'unified_colors.dart';
 
 const double defaultWidth = 40;
 const double defaultRadius = 5;

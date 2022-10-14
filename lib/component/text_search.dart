@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/component/unified_text_style.dart';
 
-import '../config/custom_colors.dart';
+import 'unified_colors.dart';
 
 const EdgeInsets defaultMargin = EdgeInsets.all(10);
 
@@ -20,7 +20,7 @@ class TextSearch extends StatelessWidget {
       margin: margin,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(5)),
-        color: CustomColors.searchGrey,
+        color: UnifiedColors.searchGrey,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,

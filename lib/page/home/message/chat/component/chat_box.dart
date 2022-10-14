@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/component/unified_text_style.dart';
-import 'package:orginone/config/custom_colors.dart';
+import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/util/permission_util.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -115,7 +115,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
       }
     });
     return Container(
-      color: CustomColors.easyGrey,
+      color: UnifiedColors.easyGrey,
       padding: EdgeInsets.fromLTRB(10.w, 2.h, 10.w, 2.h),
       child: Column(
         children: [
