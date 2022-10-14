@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/appbar/gf_appbar.dart';
 
-import '../config/custom_colors.dart';
+import 'unified_colors.dart';
 
 const double defaultAppBarPercent = 0.07;
-const Color defaultAppBarColor = CustomColors.lightGrey;
+const Color defaultAppBarColor = UnifiedColors.lightGrey;
 const Color defaultBgColor = Colors.white;
 
 class UnifiedScaffold extends StatelessWidget {

@@ -10,7 +10,7 @@ import 'package:orginone/util/sys_util.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 import '../../component/unified_edge_insets.dart';
-import '../../config/custom_colors.dart';
+import '../../component/unified_colors.dart';
 import '../../routers.dart';
 import '../../util/hub_util.dart';
 import '../../util/string_util.dart';
@@ -65,7 +65,7 @@ class HomePage extends GetView<HomeController> {
       splashRadius: 10.w,
       padding: lr10,
       position: PopupMenuPosition.under,
-      color: CustomColors.lightGrey,
+      color: UnifiedColors.lightGrey,
       icon: const Icon(Icons.add, color: Colors.black, size: GFSize.MEDIUM),
       itemBuilder: (context) {
         return [
@@ -103,7 +103,7 @@ class HomePage extends GetView<HomeController> {
   List<Widget> _actions(BuildContext context) {
     return [
       GFIconButton(
-          color: CustomColors.lightGrey,
+          color: UnifiedColors.lightGrey,
           icon: const Icon(Icons.search, color: Colors.black),
           onPressed: () {
             Get.toNamed(Routers.search);
@@ -222,7 +222,7 @@ class HomePage extends GetView<HomeController> {
         child: GFTabBar(
           tabBarHeight: 60,
           indicatorColor: Colors.blueAccent,
-          tabBarColor: CustomColors.easyGrey,
+          tabBarColor: UnifiedColors.easyGrey,
           labelColor: Colors.black,
           labelStyle: const TextStyle(fontSize: 12),
           length: controller.tabController.length,
