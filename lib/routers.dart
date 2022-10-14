@@ -39,8 +39,10 @@ import 'package:orginone/page/home/organization/organization_binding.dart';
 import 'package:orginone/page/home/organization/organization_page.dart';
 import 'package:orginone/page/home/organization/units/units_binding.dart';
 import 'package:orginone/page/home/organization/units/units_page.dart';
-import 'package:orginone/page/home/search/search_list.dart';
+import 'package:orginone/page/home/search/search_binding.dart';
 import 'package:orginone/page/home/search/search_page.dart';
+import 'package:orginone/page/home/work/work_binding.dart';
+import 'package:orginone/page/home/work/work_page.dart';
 import 'package:orginone/page/login/login_binding.dart';
 import 'package:orginone/page/login/login_page.dart';
 import 'package:orginone/page/register/register_binding.dart';
@@ -59,6 +61,7 @@ class Routers {
   static const String spaceChoose = "/spaceChoose";
   static const String message = "/message";
   static const String organization = "/organization";
+  static const String work = "/work";
   static const String chat = "/chat";
   static const String messageSetting = "/messageSetting";
   static const String friends = "/friends";
@@ -113,6 +116,11 @@ class Routers {
         name: Routers.organization,
         page: () => const OrganizationPage(),
         binding: OrganizationBinding(),
+      ),
+      GetPage(
+        name: Routers.work,
+        page: () => const WorkPage(),
+        binding: WorkBinding(),
       ),
       GetPage(
         name: Routers.chat,

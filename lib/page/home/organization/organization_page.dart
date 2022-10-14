@@ -125,6 +125,7 @@ class OrganizationPage extends GetView<OrganizationController> {
             margin: left10,
             child: Text("组织架构", style: text16Bold),
           ),
+          padding: const EdgeInsets.only(left: 10, top: 10),
           func: () {
             Get.toNamed(Routers.dept);
           },

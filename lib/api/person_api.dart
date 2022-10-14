@@ -46,8 +46,11 @@ class PersonApi {
     return '修改成功';
   }
 
-  static Future<List<TargetResp>> friends(
-      int limit, int offset, String filter) async {
+  static Future<PageResp<TargetResp>> friends(
+    int limit,
+    int offset,
+    String filter,
+  ) async {
     String url = "${Constant.person}/get/friends";
     Map<String, dynamic> data = {"offset": offset, "limit": limit};
     if (filter.isNotEmpty) {
@@ -55,8 +58,7 @@ class PersonApi {
     }
 
     Map<String, dynamic> pageResp = await HttpUtil().post(url, data: data);
-    var pageData = PageResp.fromMap(pageResp);
-    return pageData.result.map((item) => TargetResp.fromMap(item)).toList();
+    return PageResp.fromMap(pageResp, TargetResp.fromMap);
   }
 
   static Future<LoginResp> changeWorkspace(String targetId) async {
@@ -66,16 +68,16 @@ class PersonApi {
     return LoginResp.fromMap(res);
   }
 
-  //获取人员详情（目前用搜索接口替代）
-  static Future<TargetResp> getPersonDetail(String personPhone) async {
-    Map<String, dynamic> resp =
-        await HttpUtil().post("${Constant.person}/search/persons", data: {
-      "filter": personPhone,
-      "limit": 20,
-      "offset": 0,
-    });
-
-    return TargetResp.fromMap(resp["result"][0]);
+  /// 人员搜索
+  static Future<PageResp<TargetResp>> searchPersons({
+    required String keyword,
+    required int limit,
+    required int offset,
+  }) async {
+    String url = "${Constant.person}/search/persons";
+    var data = {"filter": keyword, "limit": limit, "offset": offset};
+    Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
+    return PageResp.fromMap(resp, TargetResp.fromMap);
   }
 
   //好友验证

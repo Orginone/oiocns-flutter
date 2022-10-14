@@ -1,14 +1,18 @@
-class PageResp {
+class PageResp<T> {
   final int limit;
   final int total;
-  final List<dynamic> result;
+  final List<T> result;
 
   PageResp(this.limit, this.total, this.result);
 
-  PageResp.fromMap(Map<String, dynamic> map)
-      : limit = map["limit"],
-        total = map["total"] ?? 0,
-        result = map["result"] ?? [];
+  static PageResp<T> fromMap<T>(Map<String, dynamic> map, Function mapping) {
+    int limit = map["limit"];
+    int total = map["total"] ?? 0;
+    List<dynamic> result = map["result"] ?? [];
+
+    List<T> ans = result.map((item) => mapping(item) as T).toList();
+    return PageResp<T>(limit, total, ans);
+  }
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};

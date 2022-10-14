@@ -24,13 +24,14 @@ class GroupsController extends GetxController {
   Future<void> onLoadGroups(String filter) async {
     limit = 20;
     offset = 0;
-    groups = await CompanyApi.groups(limit!, offset!, filter);
+    var pageResp = await CompanyApi.groups(limit!, offset!, filter);
+    groups = pageResp.result;
     update();
   }
 
   Future<void> moreFriends(int offset, int limit, String filter) async {
-    var newGroups = await CompanyApi.groups(offset, limit, filter);
-    groups.addAll(newGroups);
+    var pageResp = await CompanyApi.groups(offset, limit, filter);
+    groups.addAll(pageResp.result);
     update();
   }
 
