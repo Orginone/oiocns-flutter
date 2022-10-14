@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/tabs/gf_tabbar.dart';
 import 'package:getwidget/components/tabs/gf_tabbar_view.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
-import 'package:orginone/page/home/search/unit_result_page.dart';
 
 import '../../../../util/widget_util.dart';
+import '../../../api_resp/target_resp.dart';
+import '../../../component/text_avatar.dart';
 import '../../../component/text_search.dart';
 import '../../../component/unified_colors.dart';
+import '../../../enumeration/target_type./../../routers.dart';
+import '../../../util/string_util.dart';
 import 'search_controller.dart';
 
 class SearchPage extends GetView<SearchController> {
@@ -18,16 +22,14 @@ class SearchPage extends GetView<SearchController> {
   Widget build(BuildContext context) {
     bool isMultiple = controller.searchItems.length > 1;
     bool isSingle = controller.searchItems.length == 1;
-    Widget? body;
+    Column body = Column(children: [TextSearch(controller.searchingCallback)]);
     if (isMultiple) {
-      body = Column(
-        children: [_tabBar(context), _tabView()],
-      );
+      body.children.addAll([_tabBar(context), _tabView()]);
     } else if (isSingle) {
       SearchItem searchItem = controller.searchItems[0];
       switch (searchItem) {
         case SearchItem.friends:
-          body = _friendsResultPage();
+          body.children.add(_targetBody(TargetType.person));
           break;
         case SearchItem.applications:
           break;
@@ -50,16 +52,16 @@ class SearchPage extends GetView<SearchController> {
         case SearchItem.publicCohorts:
           break;
         case SearchItem.units:
-          body = const UnitResultPage();
+          body.children.add(_targetBody(TargetType.company));
           break;
       }
-    } else {
-      body = Container();
     }
 
     return UnifiedScaffold(
       appBarLeading: WidgetUtil.defaultBackBtn,
-      appBarTitle: TextSearch(controller.searchingCallback),
+      appBarTitle:
+          Text(controller.functionPoint?.functionName ?? "搜索", style: text20),
+      appBarCenterTitle: true,
       body: body,
     );
   }
@@ -92,7 +94,63 @@ class SearchPage extends GetView<SearchController> {
     );
   }
 
-  Widget _friendsResultPage() {
-    return Container();
+  Widget _targetBody(TargetType targetType) {
+    return GetBuilder<SearchController>(
+      builder: (item) {
+        List<TargetResp> searchResults = [];
+        switch (targetType) {
+          case TargetType.person:
+            searchResults = controller.personRes?.searchResults ?? [];
+            break;
+          case TargetType.company:
+            searchResults = controller.companyRes?.searchResults ?? [];
+            break;
+          case TargetType.cohort:
+            break;
+          case TargetType.department:
+            break;
+        }
+        return Expanded(
+          child: ListView.builder(
+            controller: controller.scrollController,
+            itemCount: searchResults.length,
+            itemBuilder: (BuildContext context, int index) {
+              return _targetItem(searchResults[index]);
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _targetItem(TargetResp targetResp) {
+    List<Widget> children = [
+      TextAvatar(
+        avatarName: StringUtil.getAvatarName(
+          avatarName: targetResp.name,
+          type: TextAvatarType.chat,
+        ),
+      ),
+      Container(margin: EdgeInsets.only(left: 10.w)),
+      Expanded(child: Text(targetResp.name, style: text16Bold)),
+    ];
+    if (controller.functionPoint != null) {
+      switch (controller.functionPoint!) {
+        case FunctionPoint.addFriends:
+
+          break;
+      }
+    }
+
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        padding: EdgeInsets.only(left: 10.w, bottom: 10.h, right: 10.w),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: children,
+        ),
+      ),
+    );
   }
 }

@@ -7,22 +7,31 @@ import 'package:orginone/api/person_api.dart';
 import '../../../api_resp/target_resp.dart';
 
 enum SearchItem {
-  comprehensive("综合"),
-  friends("好友"),
-  cohorts("群组"),
-  messages("消息"),
-  documents("文档"),
-  logs("日志"),
-  labels("文本"),
-  functions("功能"),
-  departments("部门"),
-  publicCohorts("公开群组"),
-  applications("应用"),
-  units("单位");
+  comprehensive("综合", []),
+  friends("好友", [FunctionPoint.addFriends]),
+  cohorts("群组", []),
+  messages("消息", []),
+  documents("文档", []),
+  logs("日志", []),
+  labels("文本", []),
+  functions("功能", []),
+  departments("部门", []),
+  publicCohorts("公开群组", []),
+  applications("应用", []),
+  units("单位", []);
 
-  const SearchItem(this.name);
+  const SearchItem(this.name, this.functionPoint);
 
   final String name;
+  final List<FunctionPoint> functionPoint;
+}
+
+enum FunctionPoint {
+  addFriends("添加好友");
+
+  const FunctionPoint(this.functionName);
+
+  final String functionName;
 }
 
 class SearchController extends GetxController
@@ -31,6 +40,7 @@ class SearchController extends GetxController
 
   late TabController tabController;
   late List<SearchItem> searchItems;
+  FunctionPoint? functionPoint;
   ScrollController scrollController = ScrollController();
 
   // 搜索的一些结果
@@ -39,7 +49,9 @@ class SearchController extends GetxController
 
   @override
   void onInit() {
-    searchItems = Get.arguments ?? SearchItem.values;
+    Map<String, dynamic> args = Get.arguments;
+    searchItems = args["items"] ?? SearchItem.values;
+    functionPoint = args["point"];
     tabController = TabController(length: searchItems.length, vsync: this);
     super.onInit();
   }
@@ -54,8 +66,8 @@ class SearchController extends GetxController
           offset: personRes!.offset,
         );
         var result = pageResp.result;
-        personRes!.offset += result.length;
-        personRes!.searchResults.addAll(result);
+        personRes!.offset = result.length;
+        personRes!.searchResults = result;
         update();
         break;
       case SearchItem.applications:
@@ -86,8 +98,8 @@ class SearchController extends GetxController
           offset: companyRes!.offset,
         );
         var result = pageResp.result;
-        companyRes!.offset += result.length;
-        companyRes!.searchResults.addAll(result);
+        companyRes!.offset = result.length;
+        companyRes!.searchResults = result;
         update();
         break;
     }
@@ -97,5 +109,5 @@ class SearchController extends GetxController
 class SearchParams<T> {
   List<T> searchResults = [];
   int limit = 20;
-  int offset = 10;
+  int offset = 0;
 }
