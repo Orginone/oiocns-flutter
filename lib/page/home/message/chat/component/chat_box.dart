@@ -197,7 +197,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
                 recordStatus.value = RecordStatus.recoding;
                 try {
                   await controller.startRecord();
-                } on RecordingPermissionException catch () {
+                } on RecordingPermissionException {
                   PermissionUtil.showPermissionDialog(
                       context, Permission.microphone);
                 } finally {
