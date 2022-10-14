@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 
 import '../api_resp/page_resp.dart';
@@ -9,21 +10,27 @@ import '../util/http_util.dart';
 class CompanyApi {
   static final Logger log = Logger("CompanyApi");
 
-  static Future<List<dynamic>> getJoinedCompanys(int offset, int limit) async {
+  static Future<PageResp<TargetResp>> getJoinedCompanys(
+      int offset, int limit) async {
     String url = "${Constant.company}/get/joined/companys";
     Map<String, dynamic> data = {"offset": offset, "limit": limit};
     Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
-
-    PageResp pageResp = PageResp.fromMap(resp);
-    return pageResp.result;
+    return PageResp.fromMap(resp, TargetResp.fromMap);
   }
 
-  static Future<List<dynamic>> searchCompanys(String code) async {
+  static Future<PageResp<TargetResp>> searchCompanys({
+    required String keyword,
+    required int limit,
+    required int offset,
+  }) async {
     String url = "${Constant.company}/search/companys";
-    Map<String, dynamic> data = {"filter": code, "limit": 20, "offset": 0};
+    Map<String, dynamic> data = {
+      "filter": keyword,
+      "limit": limit,
+      "offset": offset
+    };
     Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
-    PageResp pageResp = PageResp.fromMap(resp);
-    return pageResp.result;
+    return PageResp.fromMap(resp, TargetResp.fromMap);
   }
 
   static Future<void> quitCompany(String id) async {
@@ -51,7 +58,7 @@ class CompanyApi {
     return targetResp;
   }
 
-  static Future<List<TargetResp>> groups(
+  static Future<PageResp<TargetResp>> groups(
     int limit,
     int offset,
     String filter,
@@ -63,8 +70,7 @@ class CompanyApi {
     }
 
     dynamic pageResp = await HttpUtil().post(url, data: data);
-    var pageData = PageResp.fromMap(pageResp);
-    return pageData.result.map((item) => TargetResp.fromMap(item)).toList();
+    return PageResp.fromMap(pageResp, TargetResp.fromMap);
   }
 
   static Future<NodeCombine> tree() async {
@@ -76,7 +82,7 @@ class CompanyApi {
     return NodeCombine(topNode, index);
   }
 
-  static Future<List<TargetResp>> getCompanyPersons(
+  static Future<PageResp<TargetResp>> getCompanyPersons(
     String id,
     int limit,
     int offset,
@@ -85,22 +91,18 @@ class CompanyApi {
     Map<String, dynamic> data = {"id": id, "offset": offset, "limit": limit};
 
     dynamic ans = await HttpUtil().post(url, data: data);
-    PageResp pageResp = PageResp.fromMap(ans);
-
-    return TargetResp.fromList(pageResp.result);
+    return PageResp.fromMap(ans, TargetResp.fromMap);
   }
 
-  static Future<List<TargetResp>> getDeptPersons(
-      String id,
-      int limit,
-      int offset,
-      ) async {
+  static Future<PageResp<TargetResp>> getDeptPersons(
+    String id,
+    int limit,
+    int offset,
+  ) async {
     String url = "${Constant.company}/get/department/persons";
     Map<String, dynamic> data = {"id": id, "offset": offset, "limit": limit};
 
     dynamic ans = await HttpUtil().post(url, data: data);
-    PageResp pageResp = PageResp.fromMap(ans);
-
-    return TargetResp.fromList(pageResp.result);
+    return PageResp.fromMap(ans, TargetResp.fromMap);
   }
 }

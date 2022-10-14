@@ -4,7 +4,7 @@ import '../config/constant.dart';
 import '../util/http_util.dart';
 
 class CohortApi {
-  static Future<List<TargetResp>> cohorts(
+  static Future<PageResp<TargetResp>> cohorts(
       int limit, int offset, String filter) async {
     String url = "${Constant.cohort}/get/joined/cohorts";
     Map<String, dynamic> data = {"offset": offset, "limit": limit};
@@ -13,7 +13,6 @@ class CohortApi {
     }
 
     Map<String, dynamic> pageResp = await HttpUtil().post(url, data: data);
-    var pageData = PageResp.fromMap(pageResp);
-    return pageData.result.map((item) => TargetResp.fromMap(item)).toList();
+    return PageResp.fromMap(pageResp, TargetResp.fromMap);
   }
 }

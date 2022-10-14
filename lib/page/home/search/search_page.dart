@@ -14,38 +14,6 @@ import 'search_controller.dart';
 class SearchPage extends GetView<SearchController> {
   const SearchPage({Key? key}) : super(key: key);
 
-  Widget _tabBar(BuildContext context) {
-    List<Widget> tabs = controller.searchItems
-        .map((item) => Text(item.name, style: text12))
-        .toList();
-
-    return GFTabBar(
-        width: 1000,
-        tabBarHeight: 40,
-        indicatorColor: Colors.blueAccent,
-        tabBarColor: UnifiedColors.easyGrey,
-        length: controller.tabController.length,
-        controller: controller.tabController,
-        tabs: tabs);
-  }
-
-  Widget _tabView() {
-    return GFTabBarView(
-      height: 400,
-      controller: controller.tabController,
-      children: controller.searchItems
-          .map((item) => Container(
-                alignment: Alignment.center,
-                child: Text(item.name),
-              ))
-          .toList(),
-    );
-  }
-
-  Widget _friendsResultPage() {
-    return Container();
-  }
-
   @override
   Widget build(BuildContext context) {
     bool isMultiple = controller.searchItems.length > 1;
@@ -91,10 +59,40 @@ class SearchPage extends GetView<SearchController> {
 
     return UnifiedScaffold(
       appBarLeading: WidgetUtil.defaultBackBtn,
-      appBarTitle: TextSearch(
-          margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-          controller.searchingCallback),
+      appBarTitle: TextSearch(controller.searchingCallback),
       body: body,
     );
+  }
+
+  Widget _tabBar(BuildContext context) {
+    List<Widget> tabs = controller.searchItems
+        .map((item) => Text(item.name, style: text12))
+        .toList();
+
+    return GFTabBar(
+        width: 1000,
+        tabBarHeight: 40,
+        indicatorColor: Colors.blueAccent,
+        tabBarColor: UnifiedColors.easyGrey,
+        length: controller.tabController.length,
+        controller: controller.tabController,
+        tabs: tabs);
+  }
+
+  Widget _tabView() {
+    return GFTabBarView(
+      height: 400,
+      controller: controller.tabController,
+      children: controller.searchItems
+          .map((item) => Container(
+                alignment: Alignment.center,
+                child: Text(item.name),
+              ))
+          .toList(),
+    );
+  }
+
+  Widget _friendsResultPage() {
+    return Container();
   }
 }

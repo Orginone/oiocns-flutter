@@ -33,11 +33,8 @@ class SpaceChooseController extends GetxController {
 
   Future<void> loadMoreSpaces(int offset, int limit) async {
     // 获取加入的空间
-    List<dynamic> joined = await CompanyApi.getJoinedCompanys(offset, limit);
-    for (var joinedSpace in joined) {
-      TargetResp space = TargetResp.fromMap(joinedSpace);
-      spaces.add(space);
-    }
+    var pageResp = await CompanyApi.getJoinedCompanys(offset, limit);
+    spaces.addAll(pageResp.result);
 
     // 更新试图
     update();

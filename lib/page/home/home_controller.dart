@@ -5,6 +5,7 @@ import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
 import 'package:orginone/page/home/organization/organization_page.dart';
+import 'package:orginone/page/home/work/work_page.dart';
 import 'package:orginone/util/any_store_util.dart';
 import 'package:orginone/util/hub_util.dart';
 
@@ -71,7 +72,7 @@ class HomeController extends GetxController
     tabs = <TabCombine>[
       TabCombine(message, const MessagePage()),
       TabCombine(relation, const OrganizationPage()),
-      TabCombine(work, Container()),
+      TabCombine(work, const WorkPage()),
       TabCombine(my, const MinePage()),
     ];
 

@@ -22,13 +22,14 @@ class FriendsController extends GetxController {
   Future<void> onLoadFriends(String filter) async {
     limit = 20;
     offset = 0;
-    friends = await PersonApi.friends(limit!, offset!, filter);
+    var pageResp = await PersonApi.friends(limit!, offset!, filter);
+    friends = pageResp.result;
     update();
   }
 
   Future<void> moreFriends(int offset, int limit, String filter) async {
-    var newFriends = await PersonApi.friends(offset, limit, filter);
-    friends.addAll(newFriends);
+    var pageResp = await PersonApi.friends(offset, limit, filter);
+    friends.addAll(pageResp.result);
     update();
   }
 

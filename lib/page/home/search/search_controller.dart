@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/company_api.dart';
+import 'package:orginone/api/person_api.dart';
+
+import '../../../api_resp/target_resp.dart';
 
 enum SearchItem {
   comprehensive("综合"),
@@ -25,10 +28,14 @@ enum SearchItem {
 class SearchController extends GetxController
     with GetSingleTickerProviderStateMixin {
   Logger logger = Logger("SearchController");
-  List<dynamic> searchResults = [];
-  ScrollController scrollController = ScrollController();
+
   late TabController tabController;
   late List<SearchItem> searchItems;
+  ScrollController scrollController = ScrollController();
+
+  // 搜索的一些结果
+  SearchParams<TargetResp>? personRes;
+  SearchParams<TargetResp>? companyRes;
 
   @override
   void onInit() {
@@ -40,6 +47,16 @@ class SearchController extends GetxController
   Future<void> searchingCallback(String filter) async {
     switch (searchItems[tabController.index]) {
       case SearchItem.friends:
+        personRes ??= SearchParams();
+        var pageResp = await PersonApi.searchPersons(
+          keyword: filter,
+          limit: personRes!.limit,
+          offset: personRes!.offset,
+        );
+        var result = pageResp.result;
+        personRes!.offset += result.length;
+        personRes!.searchResults.addAll(result);
+        update();
         break;
       case SearchItem.applications:
         break;
@@ -62,9 +79,23 @@ class SearchController extends GetxController
       case SearchItem.publicCohorts:
         break;
       case SearchItem.units:
-        searchResults = await CompanyApi.searchCompanys(filter);
+        companyRes ??= SearchParams();
+        var pageResp = await CompanyApi.searchCompanys(
+          keyword: filter,
+          limit: companyRes!.limit,
+          offset: companyRes!.offset,
+        );
+        var result = pageResp.result;
+        companyRes!.offset += result.length;
+        companyRes!.searchResults.addAll(result);
         update();
         break;
     }
   }
+}
+
+class SearchParams<T> {
+  List<T> searchResults = [];
+  int limit = 20;
+  int offset = 10;
 }
