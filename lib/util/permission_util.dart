@@ -4,6 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 class PermissionUtil {
   static final Map<Permission, String> permissionNameMap = {
     Permission.camera: "相机",
+    Permission.microphone: "录音"
   };
 
   static showPermissionDialog(BuildContext context, Permission permission) {
