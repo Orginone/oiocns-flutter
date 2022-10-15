@@ -26,7 +26,6 @@ class ChatController extends GetxController {
   // 控制信息
   var homeController = Get.find<HomeController>();
   var messageController = Get.find<MessageController>();
-  var chatBoxController = Get.find<ChatBoxController>();
   var messageScrollController = ScrollController();
   var messageScrollKey = "1024".obs;
   var uuid = const Uuid();
