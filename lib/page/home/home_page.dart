@@ -210,15 +210,16 @@ class HomePage extends GetView<HomeController> {
 
   get _bottomNavigatorBar => Container(
         decoration: const BoxDecoration(
-            border: Border(top: BorderSide(width: 0.5, color: Colors.black12)),
-            boxShadow: [
-              BoxShadow(
-                color: Color(0xFFE8E8E8),
-                offset: Offset(8, 8),
-                blurRadius: 10,
-                spreadRadius: 1,
-              )
-            ]),
+          border: Border(top: BorderSide(width: 0.5, color: Colors.black12)),
+          boxShadow: [
+            BoxShadow(
+              color: Color(0xFFE8E8E8),
+              offset: Offset(8, 8),
+              blurRadius: 10,
+              spreadRadius: 1,
+            )
+          ],
+        ),
         child: GFTabBar(
           tabBarHeight: 60,
           indicatorColor: Colors.blueAccent,
