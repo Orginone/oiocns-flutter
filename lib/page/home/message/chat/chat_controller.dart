@@ -6,6 +6,7 @@ import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/page/home/home_controller.dart';
+import 'package:orginone/page/home/message/chat/component/chat_box.dart';
 import 'package:orginone/page/home/message/chat/component/chat_message_detail.dart';
 import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/hub_util.dart';
@@ -25,6 +26,7 @@ class ChatController extends GetxController {
   // 控制信息
   var homeController = Get.find<HomeController>();
   var messageController = Get.find<MessageController>();
+  var chatBoxController = Get.find<ChatBoxController>();
   var messageScrollController = ScrollController();
   var messageScrollKey = "1024".obs;
   var uuid = const Uuid();
