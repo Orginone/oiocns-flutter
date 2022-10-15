@@ -4,30 +4,43 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class VoicePainter extends CustomPainter {
   final double amplitude;
-  final int number;
+  final double centerY;
+  final double width;
 
-  VoicePainter({this.amplitude = 100.0, this.number = 20});
+  const VoicePainter({
+    required this.centerY,
+    required this.width,
+    this.amplitude = 100.0,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
-    var centerY = 0.0;
-    var width = ScreenUtil().screenWidth / number;
+    var count = 6;
+    var margin = 5.0.w;
+    var useWidth = width - margin * 2;
+    var averageWidth = useWidth / count / 2;
 
     for (var a = 0; a < 4; a++) {
       var path = Path();
-      path.moveTo(0.0, centerY);
+      path.moveTo(margin, centerY);
       var i = 0;
-      while (i < number) {
-        path.cubicTo(width * i, centerY, width * (i + 1),
-            centerY + amplitude - a * (30), width * (i + 2), centerY);
-        path.cubicTo(width * (i + 2), centerY, width * (i + 3),
-            centerY - amplitude + a * (30), width * (i + 4), centerY);
-        i = i + 4;
+      var isOdd = false;
+      while (i < count * 2) {
+        path.cubicTo(
+          averageWidth * i,
+          centerY,
+          averageWidth * (i + 1),
+          centerY + (isOdd ? amplitude : -amplitude),
+          averageWidth * (i + 2),
+          centerY,
+        );
+        i = i + 2;
+        isOdd = !isOdd;
       }
       canvas.drawPath(
           path,
           Paint()
-            ..color = a == 0 ? Colors.blueAccent : Colors.blueGrey.withAlpha(50)
+            ..color = a == 0 ? Colors.white : Colors.white.withAlpha(50)
             ..strokeWidth = a == 0 ? 3.0 : 2.0
             ..maskFilter = const MaskFilter.blur(
               BlurStyle.solid,

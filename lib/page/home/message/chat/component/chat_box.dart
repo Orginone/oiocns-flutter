@@ -186,7 +186,8 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
             maxLines: null,
             keyboardType: TextInputType.multiline,
             focusNode: controller.focusNode,
-            onChanged: (text) => controller.eventFire(context, InputEvent.clickInput),
+            onChanged: (text) =>
+                controller.eventFire(context, InputEvent.clickInput),
             onTap: () => controller.eventFire(context, InputEvent.clickInput),
             style: text16,
             controller: controller.inputController,
@@ -374,18 +375,25 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
 
   /// 录音波动
   Widget _voiceWave() {
+    var width = 120.h;
+    var height = 80.h;
     return Stack(
       children: [
-        Positioned(
-          top: 100.h,
-          child: SizedBox(
-            width: 200.w,
+        Align(
+          alignment: Alignment.topCenter - const Alignment(0.0, -0.5),
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(5)),
+                color: Colors.black.withOpacity(0.5)),
+            height: height,
+            width: width,
             child: Obx(() {
               var value = controller.level?.value ?? 0;
               return CustomPaint(
                 painter: VoicePainter(
-                  amplitude: value / 2,
-                  number: 10 - value ~/ 20,
+                  width: width,
+                  centerY: height / 2,
+                  amplitude: value * 2,
                 ),
               );
             }),
@@ -470,7 +478,7 @@ class ChatBoxController extends FullLifeCycleController
         _inputStatus.value = InputStatus.voice;
         break;
       case InputEvent.clickBlank:
-        if (_inputStatus.value != InputStatus.voice){
+        if (_inputStatus.value != InputStatus.voice) {
           _inputStatus.value = InputStatus.notPopup;
         }
         break;
@@ -523,7 +531,7 @@ class ChatBoxController extends FullLifeCycleController
 
       // 监听音浪
       level ??= 0.0.obs;
-      _recorder!.setSubscriptionDuration(const Duration(milliseconds: 10));
+      _recorder!.setSubscriptionDuration(const Duration(milliseconds: 50));
       _mt = _recorder?.onProgress?.listen((e) {
         level!.value = e.decibels ?? 0;
       });
