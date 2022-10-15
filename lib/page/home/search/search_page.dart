@@ -11,7 +11,7 @@ import '../../../api_resp/target_resp.dart';
 import '../../../component/text_avatar.dart';
 import '../../../component/text_search.dart';
 import '../../../component/unified_colors.dart';
-import '../../../enumeration/target_type./../../routers.dart';
+import '../../../enumeration/target_type.dart';
 import '../../../util/string_util.dart';
 import 'search_controller.dart';
 
