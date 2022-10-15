@@ -39,6 +39,7 @@ enum InputEvent {
   clickKeyBoard,
   clickVoice,
   clickMore,
+  clickBlank,
   inputText,
   inputEmoji,
   clickSendBtn
@@ -59,7 +60,6 @@ double defaultBorderRadius = 6.w;
 double boxDefaultHeight = 28.h;
 
 class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
-  final Rx<InputStatus> inputStatus = InputStatus.notPopup.obs;
   final RxDouble bottomHeight = 220.h.obs;
 
   ChatBox({Key? key}) : super(key: key);
@@ -67,14 +67,14 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     Widget voiceFunc = Obx(() {
-      if (inputStatus.value == InputStatus.voice) {
+      if (controller._inputStatus.value == InputStatus.voice) {
         return _leftKeyBoardBtn(context);
       } else {
         return _voiceBtn(context);
       }
     });
     Widget otherFunc = Obx(() {
-      switch (inputStatus.value) {
+      switch (controller._inputStatus.value) {
         case InputStatus.notPopup:
         case InputStatus.focusing:
         case InputStatus.voice:
@@ -107,10 +107,10 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((duration) {
       var bottom = MediaQuery.of(context).viewInsets.bottom;
-      if (inputStatus.value == InputStatus.focusing ||
-          inputStatus.value == InputStatus.notPopup ||
-          inputStatus.value == InputStatus.voice ||
-          inputStatus.value == InputStatus.inputtingText) {
+      if (controller._inputStatus.value == InputStatus.focusing ||
+          controller._inputStatus.value == InputStatus.notPopup ||
+          controller._inputStatus.value == InputStatus.voice ||
+          controller._inputStatus.value == InputStatus.inputtingText) {
         bottomHeight.value = bottom;
       }
     });
@@ -129,55 +129,8 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
     );
   }
 
-  /// 事件触发器
-  eventFire(BuildContext context, InputEvent inputEvent) {
-    switch (inputEvent) {
-      case InputEvent.clickInput:
-      case InputEvent.inputText:
-      case InputEvent.clickKeyBoard:
-        var text = controller.inputController.value.text;
-        if (text.isNotEmpty) {
-          inputStatus.value = InputStatus.inputtingText;
-        } else {
-          inputStatus.value = InputStatus.focusing;
-        }
-        break;
-      case InputEvent.clickEmoji:
-        FocusScope.of(context).requestFocus(controller.blankNode);
-        var text = controller.inputController.value.text;
-        if (text.isNotEmpty) {
-          inputStatus.value = InputStatus.inputtingEmoji;
-        } else {
-          inputStatus.value = InputStatus.emoji;
-        }
-        break;
-      case InputEvent.clickMore:
-        FocusScope.of(context).requestFocus(controller.blankNode);
-        inputStatus.value = InputStatus.more;
-        break;
-      case InputEvent.inputEmoji:
-        inputStatus.value = InputStatus.inputtingEmoji;
-        break;
-      case InputEvent.clickSendBtn:
-        var inputController = controller.inputController;
-        controller.sendCallback(inputController.text);
-        inputController.clear();
-        if (inputStatus.value == InputStatus.inputtingText) {
-          inputStatus.value = InputStatus.focusing;
-        } else {
-          inputStatus.value = InputStatus.emoji;
-        }
-        break;
-      case InputEvent.clickVoice:
-        FocusScope.of(context).requestFocus(controller.blankNode);
-        inputStatus.value = InputStatus.voice;
-        permissionMicrophone(context, controller.openRecorder);
-        break;
-    }
-  }
-
   /// 麦克风权限
-  permissionMicrophone(BuildContext context, Function callback) {
+  _permissionMicrophone(BuildContext context, Function callback) {
     Permission.microphone.request().then((permissionStatus) {
       try {
         if (permissionStatus != PermissionStatus.granted) {
@@ -202,7 +155,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
         ),
         alignment: Alignment.centerLeft,
         child: Obx(() {
-          if (inputStatus.value == InputStatus.voice) {
+          if (controller._inputStatus.value == InputStatus.voice) {
             var voiceWave = OverlayEntry(builder: (BuildContext context) {
               return _voiceWave();
             });
@@ -210,7 +163,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
               behavior: HitTestBehavior.opaque,
               onTap: () {},
               onPanDown: (DragDownDetails details) {
-                permissionMicrophone(context, () async {
+                _permissionMicrophone(context, () async {
                   Overlay.of(context)!.insert(voiceWave);
                   await controller.startRecord();
                 });
@@ -233,8 +186,8 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
             maxLines: null,
             keyboardType: TextInputType.multiline,
             focusNode: controller.focusNode,
-            onChanged: (text) => eventFire(context, InputEvent.clickInput),
-            onTap: () => eventFire(context, InputEvent.clickInput),
+            onChanged: (text) => controller.eventFire(context, InputEvent.clickInput),
+            onTap: () => controller.eventFire(context, InputEvent.clickInput),
             style: text16,
             controller: controller.inputController,
             decoration: InputDecoration(
@@ -255,7 +208,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   /// 表情包按钮
   Widget _emojiBtn(BuildContext context) {
     return GestureDetector(
-      onTap: () => eventFire(context, InputEvent.clickEmoji),
+      onTap: () => controller.eventFire(context, InputEvent.clickEmoji),
       child: _rightIcon(Icons.emoji_emotions_outlined),
     );
   }
@@ -263,7 +216,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   /// 更多操作
   Widget _moreBtn(BuildContext context) {
     return GestureDetector(
-      onTap: () => eventFire(context, InputEvent.clickMore),
+      onTap: () => controller.eventFire(context, InputEvent.clickMore),
       child: _rightIcon(Icons.add),
     );
   }
@@ -271,7 +224,10 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   /// 语音按钮
   Widget _voiceBtn(BuildContext context) {
     return GestureDetector(
-      onTap: () => eventFire(context, InputEvent.clickVoice),
+      onTap: () {
+        controller.eventFire(context, InputEvent.clickVoice);
+        _permissionMicrophone(context, controller.openRecorder);
+      },
       child: _leftIcon(Icons.settings_voice_outlined),
     );
   }
@@ -279,7 +235,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   /// 键盘按钮
   Widget _leftKeyBoardBtn(BuildContext context) {
     return GestureDetector(
-      onTap: () => eventFire(context, InputEvent.clickKeyBoard),
+      onTap: () => controller.eventFire(context, InputEvent.clickKeyBoard),
       child: _leftIcon(Icons.keyboard_alt_outlined),
     );
   }
@@ -287,7 +243,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   /// 键盘按钮
   Widget _keyBoardBtn(BuildContext context) {
     return GestureDetector(
-      onTap: () => eventFire(context, InputEvent.clickKeyBoard),
+      onTap: () => controller.eventFire(context, InputEvent.clickKeyBoard),
       child: _rightIcon(Icons.keyboard_alt_outlined),
     );
   }
@@ -319,7 +275,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
     return Container(
       margin: EdgeInsets.only(left: 8.w),
       child: ElevatedButton(
-        onPressed: () => eventFire(context, InputEvent.clickSendBtn),
+        onPressed: () => controller.eventFire(context, InputEvent.clickSendBtn),
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Colors.blueAccent),
           minimumSize: MaterialStateProperty.all(Size(10.w, boxDefaultHeight)),
@@ -333,7 +289,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   Widget _bottomPopup(BuildContext context) {
     return Obx(() {
       late Widget body;
-      switch (inputStatus.value) {
+      switch (controller._inputStatus.value) {
         case InputStatus.emoji:
         case InputStatus.inputtingEmoji:
           bottomHeight.value = 220.h;
@@ -371,7 +327,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
               offset: inputController.text.length,
             ),
           );
-        eventFire(context, InputEvent.inputEmoji);
+        controller.eventFire(context, InputEvent.inputEmoji);
       },
     );
   }
@@ -418,21 +374,34 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
 
   /// 录音波动
   Widget _voiceWave() {
-    return Obx(() {
-      var value = controller.level?.value ?? 0;
-      return CustomPaint(
-        size: Size(150.w, 150.w),
-        painter: VoicePainter(amplitude: value / 2, number: 30 - value ~/ 20),
-      );
-    });
+    return Stack(
+      children: [
+        Positioned(
+          top: 100.h,
+          child: SizedBox(
+            width: 200.w,
+            child: Obx(() {
+              var value = controller.level?.value ?? 0;
+              return CustomPaint(
+                painter: VoicePainter(
+                  amplitude: value / 2,
+                  number: 10 - value ~/ 20,
+                ),
+              );
+            }),
+          ),
+        ),
+      ],
+    );
   }
 }
 
-// 控制下面的动画
+// 控制器
 class ChatBoxController extends FullLifeCycleController
     with GetSingleTickerProviderStateMixin, WidgetsBindingObserver {
   final Logger log = Logger("ChatBoxController");
 
+  final Rx<InputStatus> _inputStatus = InputStatus.notPopup.obs;
   final TextEditingController inputController = TextEditingController();
   final FocusNode focusNode = FocusNode();
   final FocusNode blankNode = FocusNode();
@@ -455,9 +424,56 @@ class ChatBoxController extends FullLifeCycleController
     inputController.dispose();
     focusNode.dispose();
     blankNode.dispose();
-    if (_recorder != null) {
-      _recorder!.closeRecorder();
-      _recorder = null;
+    stopRecord();
+  }
+
+  /// 事件触发器
+  eventFire(BuildContext context, InputEvent inputEvent) {
+    switch (inputEvent) {
+      case InputEvent.clickInput:
+      case InputEvent.inputText:
+      case InputEvent.clickKeyBoard:
+        var text = inputController.value.text;
+        if (text.isNotEmpty) {
+          _inputStatus.value = InputStatus.inputtingText;
+        } else {
+          _inputStatus.value = InputStatus.focusing;
+        }
+        break;
+      case InputEvent.clickEmoji:
+        FocusScope.of(context).requestFocus(blankNode);
+        var text = inputController.value.text;
+        if (text.isNotEmpty) {
+          _inputStatus.value = InputStatus.inputtingEmoji;
+        } else {
+          _inputStatus.value = InputStatus.emoji;
+        }
+        break;
+      case InputEvent.clickMore:
+        FocusScope.of(context).requestFocus(blankNode);
+        _inputStatus.value = InputStatus.more;
+        break;
+      case InputEvent.inputEmoji:
+        _inputStatus.value = InputStatus.inputtingEmoji;
+        break;
+      case InputEvent.clickSendBtn:
+        sendCallback(inputController.text);
+        inputController.clear();
+        if (_inputStatus.value == InputStatus.inputtingText) {
+          _inputStatus.value = InputStatus.focusing;
+        } else {
+          _inputStatus.value = InputStatus.emoji;
+        }
+        break;
+      case InputEvent.clickVoice:
+        FocusScope.of(context).requestFocus(blankNode);
+        _inputStatus.value = InputStatus.voice;
+        break;
+      case InputEvent.clickBlank:
+        if (_inputStatus.value != InputStatus.voice){
+          _inputStatus.value = InputStatus.notPopup;
+        }
+        break;
     }
   }
 
@@ -507,6 +523,7 @@ class ChatBoxController extends FullLifeCycleController
 
       // 监听音浪
       level ??= 0.0.obs;
+      _recorder!.setSubscriptionDuration(const Duration(milliseconds: 10));
       _mt = _recorder?.onProgress?.listen((e) {
         level!.value = e.decibels ?? 0;
       });
@@ -525,6 +542,7 @@ class ChatBoxController extends FullLifeCycleController
       );
     } catch (error) {
       await stopRecord();
+      rethrow;
     }
   }
 
@@ -533,12 +551,13 @@ class ChatBoxController extends FullLifeCycleController
     if (_recorder == null) {
       return;
     }
-    recordStatus!.value = RecordStatus.stop;
+    recordStatus?.value = RecordStatus.stop;
     _mt?.cancel();
     _mt = null;
     await _recorder!.stopRecorder();
   }
 
+  /// 获取文件
   getFile() async {
     var directory = await getTemporaryDirectory();
     var file = File("${directory.path}/$_currentFile");

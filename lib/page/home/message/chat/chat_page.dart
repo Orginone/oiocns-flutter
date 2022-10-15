@@ -118,6 +118,7 @@ class ChatPage extends GetView<ChatController> {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
+        controller.chatBoxController.eventFire(context, InputEvent.clickBlank);
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
