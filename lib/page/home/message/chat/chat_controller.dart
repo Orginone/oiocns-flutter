@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -23,18 +25,26 @@ import '../../../../enumeration/target_type.dart';
 import '../message_controller.dart';
 
 /// 播放状态
-enum PlayStatus { stop, playing, completed }
+enum PlayStatus { stop, playing }
 
 /// 语音播放器状态类
 class VoicePlay {
   final MessageDetailResp detailResp;
   final Rx<PlayStatus> status;
+  final int initProgress;
+  final RxInt progress;
   final String path;
 
-  const VoicePlay(this.detailResp, this.status, this.path);
+  const VoicePlay({
+    required this.detailResp,
+    required this.status,
+    required this.initProgress,
+    required this.progress,
+    required this.path,
+  });
 }
 
-class ChatController extends GetxController {
+class ChatController extends GetxController with GetTickerProviderStateMixin {
   // 日志
   var log = Logger("ChatController");
 
@@ -61,7 +71,8 @@ class ChatController extends GetxController {
   late List<MessageDetailResp> messageDetails;
 
   // 语音播放器
-  FlutterSoundPlayer? soundPlayer;
+  FlutterSoundPlayer? _soundPlayer;
+  StreamSubscription? _mt;
   AnimationController? animationController;
   Animation<AlignmentGeometry>? animation;
   Map<String, VoicePlay> playStatusMap = {};
@@ -242,7 +253,7 @@ class ChatController extends GetxController {
           messageDetails.insert(
               0,
               MessageDetailResp(
-                id: "-1",
+                id: "${DateTime.now().millisecondsSinceEpoch}",
                 spaceId: userInfo.id,
                 fromId: userInfo.id,
                 toId: messageItem.id,
@@ -262,7 +273,7 @@ class ChatController extends GetxController {
     messageDetails.insert(
         0,
         MessageDetailResp(
-          id: "-1",
+          id: "${DateTime.now().millisecondsSinceEpoch}",
           spaceId: userInfo.id,
           fromId: userInfo.id,
           toId: messageItem.id,
@@ -315,29 +326,59 @@ class ChatController extends GetxController {
 
   /// 开始播放
   startPlayVoice(String id) async {
-    if (_currentVoicePlay != null) {
-      // 如果当前有正在播放的语音，先关闭
-      await stopPlayVoice();
-    }
-    // 重新开始播放
+    await stopPrePlayVoice();
+
+    // 动画效果
     _currentVoicePlay = playStatusMap[id];
-    _currentVoicePlay!.status.value = PlayStatus.playing;
-    soundPlayer ??= await FlutterSoundPlayer().openPlayer();
-    soundPlayer!.startPlayer(
-      fromURI: _currentVoicePlay!.path,
-      codec: Codec.aacADTS,
-      whenFinished: () {
-        _currentVoicePlay!.status.value = PlayStatus.completed;
-      },
+    var progress = _currentVoicePlay!.progress.value;
+    animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: progress),
     );
+    animation = Tween<AlignmentGeometry>(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+    ).animate(CurvedAnimation(
+      parent: animationController!,
+      curve: Curves.linear,
+    ));
+
+    // 监听进度
+    _soundPlayer ??= await FlutterSoundPlayer().openPlayer();
+    _soundPlayer!.setSubscriptionDuration(const Duration(milliseconds: 50));
+    _mt = _soundPlayer!.onProgress!.listen((event) {
+      _currentVoicePlay!.progress.value = event.position.inSeconds;
+    });
+    _soundPlayer!
+        .startPlayer(
+            fromDataBuffer: File(_currentVoicePlay!.path).readAsBytesSync(),
+            whenFinished: () => stopPrePlayVoice())
+        .catchError((error) => stopPrePlayVoice());
+
+    // 重新开始播放
+    _currentVoicePlay!.status.value = PlayStatus.playing;
   }
 
   /// 停止播放
-  stopPlayVoice() async {
+  stopPrePlayVoice() async {
     if (_currentVoicePlay != null) {
-      // 如果当前有正在播放的语音，先关闭
-      await soundPlayer!.stopPlayer();
+      // 改状态
       _currentVoicePlay!.status.value = PlayStatus.stop;
+      _currentVoicePlay!.progress.value = _currentVoicePlay!.initProgress;
+
+      // 关闭播放
+      await _soundPlayer?.stopPlayer();
+      _mt?.cancel();
+      _mt = null;
+      _soundPlayer = null;
+
+      // 关闭动画
+      animation = null;
+      animationController?.stop();
+      animationController?.dispose();
+      animationController = null;
+
+      // 空引用
       _currentVoicePlay = null;
     }
   }

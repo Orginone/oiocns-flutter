@@ -53,8 +53,8 @@ class IdentityResp {
         createUser = map["createUser"],
         updateUser = map["updateUser"],
         version = map["version"],
-        createTime = CustomDateUtil.parse(map["createTime"]),
-        updateTime = CustomDateUtil.parse(map["updateTime"]);
+        createTime = DateTime.parse(map["createTime"]),
+        updateTime = DateTime.parse(map["updateTime"]);
 
   static List<IdentityResp> fromList(List<dynamic> list) {
     List<IdentityResp> ans = [];

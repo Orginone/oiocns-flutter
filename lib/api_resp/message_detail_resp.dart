@@ -35,10 +35,10 @@ class MessageDetailResp {
         createUser = map["createUser"],
         updateUser = map["updateUser"],
         createTime = map["createTime"] != null
-            ? CustomDateUtil.parse(map["createTime"])
+            ? DateTime.parse(map["createTime"])
             : null,
         updateTime = map["updateTime"] != null
-            ? CustomDateUtil.parse(map["updateTime"])
+            ? DateTime.parse(map["updateTime"])
             : null;
 
   Map<String, dynamic> toJson() {

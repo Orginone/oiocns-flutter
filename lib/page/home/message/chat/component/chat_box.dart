@@ -107,10 +107,11 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((duration) {
       var bottom = MediaQuery.of(context).viewInsets.bottom;
-      if (controller._inputStatus.value == InputStatus.focusing ||
-          controller._inputStatus.value == InputStatus.notPopup ||
-          controller._inputStatus.value == InputStatus.voice ||
-          controller._inputStatus.value == InputStatus.inputtingText) {
+      var inputStatus = controller._inputStatus;
+      if (inputStatus.value == InputStatus.focusing ||
+          inputStatus.value == InputStatus.notPopup ||
+          inputStatus.value == InputStatus.voice ||
+          inputStatus.value == InputStatus.inputtingText) {
         bottomHeight.value = bottom;
       }
     });
@@ -169,15 +170,16 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
                 });
               },
               onPanCancel: () async {
-                await controller.stopRecord();
                 voiceWave.remove();
+
                 var duration = controller.currentDuration ?? Duration.zero;
                 if (duration.inMilliseconds < 1 * 1000) {
                   Fluttertoast.showToast(msg: '时间太短啦');
                   return;
                 }
 
-                var path = await controller.getPath();
+                await controller.stopRecord();
+                var path = await controller.currentFile;
                 controller.voiceCallback(path, duration.inSeconds);
               },
               child: Container(
@@ -438,6 +440,8 @@ class ChatBoxController extends FullLifeCycleController
     required this.voiceCallback,
   });
 
+  get currentFile => _currentFile;
+
   @override
   onClose() {
     super.onClose();
@@ -576,12 +580,7 @@ class ChatBoxController extends FullLifeCycleController
     _mt?.cancel();
     _mt = null;
     await _recorder!.stopRecorder();
-  }
-
-  /// 获取文件
-  Future<String> getPath() async {
-    var directory = await getTemporaryDirectory();
-    return "${directory.path}/$_currentFile";
+    _currentDuration = null;
   }
 
   /// 获取录音时间

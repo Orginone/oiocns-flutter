@@ -85,8 +85,8 @@ class TargetResp {
         createUser = map["createUser"],
         updateUser = map["updateUser"],
         version = map["version"],
-        createTime = CustomDateUtil.parse(map["createTime"]),
-        updateTime = CustomDateUtil.parse(map["updateTime"]),
+        createTime = DateTime.parse(map["createTime"]),
+        updateTime = DateTime.parse(map["updateTime"]),
         team = map["team"] != null ? TeamResp.fromMap(map["team"]) : null,
         givenIdentitys = map["givenIdentitys"] != null
             ? IdentityResp.fromList(map["givenIdentitys"])

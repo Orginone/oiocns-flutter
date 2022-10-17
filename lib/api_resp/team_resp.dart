@@ -71,8 +71,8 @@ class TeamResp {
         createUser = map["createUser"],
         updateUser = map["updateUser"],
         version = map["version"],
-        createTime = CustomDateUtil.parse(map["createTime"]),
-        updateTime =  CustomDateUtil.parse(map["updateTime"]);
+        createTime = DateTime.parse(map["createTime"]),
+        updateTime =  DateTime.parse(map["updateTime"]);
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
