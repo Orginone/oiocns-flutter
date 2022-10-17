@@ -12,6 +12,19 @@ class MessageDetailResp {
   DateTime? createTime;
   DateTime? updateTime;
 
+  MessageDetailResp({
+    required this.id,
+    required this.spaceId,
+    required this.fromId,
+    required this.toId,
+    required this.msgType,
+    this.msgBody,
+    this.createUser,
+    this.updateUser,
+    this.createTime,
+    this.updateTime,
+  });
+
   MessageDetailResp.fromMap(Map<String, dynamic> map)
       : id = map["id"],
         spaceId = map["spaceId"],
@@ -21,8 +34,12 @@ class MessageDetailResp {
         msgBody = map["msgBody"],
         createUser = map["createUser"],
         updateUser = map["updateUser"],
-        createTime = map["createTime"] != null ? CustomDateUtil.parse(map["createTime"]) : null,
-        updateTime = map["updateTime"] != null ? CustomDateUtil.parse(map["updateTime"]) : null;
+        createTime = map["createTime"] != null
+            ? CustomDateUtil.parse(map["createTime"])
+            : null,
+        updateTime = map["updateTime"] != null
+            ? CustomDateUtil.parse(map["updateTime"])
+            : null;
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
