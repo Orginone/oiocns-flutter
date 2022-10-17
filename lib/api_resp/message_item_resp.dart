@@ -21,7 +21,7 @@ class MessageItemResp {
         name = map["name"],
         remark = map["remark"],
         typeName = map["typeName"],
-        msgTime = CustomDateUtil.parse(map["msgTime"]),
+        msgTime = DateTime.parse(map["msgTime"]),
         msgType = map["msgType"],
         msgBody = map["msgBody"],
         spaceId = map["spaceId"],

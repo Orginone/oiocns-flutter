@@ -248,59 +248,91 @@ class ChatMessageDetail extends GetView<ChatController> {
 
   /// 语音详情
   Widget _voice({required TextDirection textDirection}) {
-    /// 解析参数
+    // 解析参数
     Map<String, dynamic> msgMap = jsonDecode(detail.msgBody ?? "{}");
     String path = msgMap["path"] ?? "";
     int seconds = msgMap["seconds"] ?? 0;
 
+    // 初始化语音输入
     controller.playStatusMap.putIfAbsent(
-        detail.id, () => VoicePlay(detail, PlayStatus.stop.obs, path));
+        detail.id,
+        () => VoicePlay(
+              detailResp: detail,
+              status: PlayStatus.stop.obs,
+              initProgress: seconds,
+              progress: seconds.obs,
+              path: path,
+            ));
+
     return _detail(
+      padding: EdgeInsets.all(6.w),
       textDirection: textDirection,
-      body: Obx(
-        () {
-          var voicePlay = controller.playStatusMap[detail.id]!;
-          var status = voicePlay.status;
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  if (status.value == PlayStatus.stop) {
-                    controller.startPlayVoice(detail.id);
-                  } else {
-                    controller.stopPlayVoice();
-                  }
-                },
-                child: status.value == PlayStatus.stop
-                    ? const Icon(Icons.play_arrow, color: Colors.black)
-                    : const Icon(Icons.stop, color: Colors.black),
-              ),
-              Container(margin: EdgeInsets.only(left: 5.w)),
-              Expanded(
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Icon(Icons.circle, size: 8.w),
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        height: 8.h,
-                        width: 80.w,
-                        color: Colors.grey,
+      body: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          GestureDetector(
+            onTap: () {
+              var voicePlay = controller.playStatusMap[detail.id]!;
+              var status = voicePlay.status;
+              if (status.value == PlayStatus.stop) {
+                controller.startPlayVoice(detail.id);
+              } else {
+                controller.stopPrePlayVoice();
+              }
+            },
+            child: Obx(() {
+              var voicePlay = controller.playStatusMap[detail.id]!;
+              var status = voicePlay.status;
+              return status.value == PlayStatus.stop
+                  ? const Icon(Icons.play_arrow, color: Colors.black)
+                  : const Icon(Icons.stop, color: Colors.black);
+            }),
+          ),
+          Container(margin: EdgeInsets.only(left: 5.w)),
+          Expanded(
+            child: SizedBox(
+              height: 12.h,
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      height: 8.h,
+                      decoration: BoxDecoration(
+                        color: Colors.white60,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(2.w),
+                        ),
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  ),
+                  Obx(() {
+                    var voicePlay = controller.playStatusMap[detail.id]!;
+                    var status = voicePlay.status;
+                    if (status.value == PlayStatus.stop) {
+                      return Align(
+                        alignment: Alignment.centerLeft,
+                        child: Icon(Icons.circle, size: 12.h),
+                      );
+                    } else {
+                      return AlignTransition(
+                        alignment: controller.animation!,
+                        child: Icon(Icons.circle, size: 12.h),
+                      );
+                    }
+                  }),
+                ],
               ),
-              Container(margin: EdgeInsets.only(left: 5.w)),
-              Text(StringUtil.getMinusShow(seconds))
-            ],
-          );
-        },
+            ),
+          ),
+          Container(margin: EdgeInsets.only(left: 5.w)),
+          Obx(() {
+            var voicePlay = controller.playStatusMap[detail.id]!;
+            var progress = voicePlay.progress;
+            return Text(StringUtil.getMinusShow(progress.value));
+          })
+        ],
       ),
     );
   }

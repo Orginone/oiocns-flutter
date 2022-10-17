@@ -1,4 +1,3 @@
-import 'package:html/parser.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/enumeration/enum_map.dart';
 import 'package:orginone/util/hive_util.dart';
@@ -13,14 +12,6 @@ class StringUtil {
     return target
         .substring(0, target.length >= count ? count : 1)
         .toUpperCase();
-  }
-
-  static String removeHtml(String? target) {
-    if (target == null) {
-      return "";
-    }
-    var document = parse(target);
-    return parse(document.body?.text).documentElement?.text ?? "";
   }
 
   static String getAvatarName({
@@ -74,6 +65,19 @@ class StringUtil {
   static String getMinusShow(int seconds) {
     int minus = seconds ~/ 60;
     int remainder = seconds % 60;
-    return "$minus:$remainder";
+    String prefix = "", suffix = "";
+    if (minus < 10) {
+      prefix = "0$minus";
+    } else if (minus < 100) {
+      prefix = "$minus";
+    } else {
+      prefix = "99";
+    }
+    if (remainder < 10) {
+      suffix = "0$remainder";
+    } else {
+      suffix = "$remainder";
+    }
+    return "$prefix:$suffix";
   }
 }

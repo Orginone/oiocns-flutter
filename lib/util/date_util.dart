@@ -1,5 +1,4 @@
 import 'package:common_utils/common_utils.dart';
-import 'package:jiffy/jiffy.dart';
 
 class CustomDateUtil {
   static List<String> chineseWeekdays = [
@@ -12,14 +11,6 @@ class CustomDateUtil {
     "周六",
     "周日"
   ];
-
-  static DateTime parse(String dtStr) {
-    bool hasDiagonal = dtStr.contains("/");
-    if (hasDiagonal) {
-      return Jiffy(dtStr, "yyyy/MM/dd hh:mm:ss").dateTime;
-    }
-    return DateTime.parse(dtStr);
-  }
 
   static String getSessionTime(DateTime? targetTime) {
     if (targetTime == null) {
