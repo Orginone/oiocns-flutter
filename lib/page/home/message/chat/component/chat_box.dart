@@ -171,9 +171,14 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
               onPanCancel: () async {
                 await controller.stopRecord();
                 voiceWave.remove();
+                var duration = controller.currentDuration ?? Duration.zero;
+                if (duration.inMilliseconds < 1 * 1000) {
+                  Fluttertoast.showToast(msg: '时间太短啦');
+                  return;
+                }
 
-                var file = await controller.getFile();
-                controller.voiceCallback(file);
+                var path = await controller.getPath();
+                controller.voiceCallback(path, duration.inSeconds);
               },
               child: Container(
                 alignment: Alignment.center,
@@ -424,6 +429,7 @@ class ChatBoxController extends FullLifeCycleController
   FlutterSoundRecorder? _recorder;
   StreamSubscription? _mt;
   String? _currentFile;
+  Duration? _currentDuration;
   RxDouble? level;
 
   ChatBoxController({
@@ -540,6 +546,7 @@ class ChatBoxController extends FullLifeCycleController
       _recorder!.setSubscriptionDuration(const Duration(milliseconds: 50));
       _mt = _recorder?.onProgress?.listen((e) {
         level!.value = e.decibels ?? 0;
+        _currentDuration = e.duration;
       });
 
       // 创建临时文件
@@ -572,8 +579,11 @@ class ChatBoxController extends FullLifeCycleController
   }
 
   /// 获取文件
-  Future<File> getFile() async {
+  Future<String> getPath() async {
     var directory = await getTemporaryDirectory();
-    return File("${directory.path}/$_currentFile");
+    return "${directory.path}/$_currentFile";
   }
+
+  /// 获取录音时间
+  Duration? get currentDuration => _currentDuration;
 }

@@ -69,4 +69,11 @@ class StringUtil {
     }
     return msgBody;
   }
+
+  /// 分:秒显示
+  static String getMinusShow(int seconds) {
+    int minus = seconds ~/ 60;
+    int remainder = seconds % 60;
+    return "$minus:$remainder";
+  }
 }
