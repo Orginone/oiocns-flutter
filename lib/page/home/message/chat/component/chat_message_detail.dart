@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -122,12 +125,12 @@ class ChatMessageDetail extends GetView<ChatController> {
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
 
     Widget body;
+    var textDirection =
+        detail.fromId == userInfo.id ? TextDirection.rtl : TextDirection.ltr;
     switch (msgType) {
       case MsgType.text:
         body = _detail(
-          textDirection: detail.fromId == userInfo.id
-              ? TextDirection.rtl
-              : TextDirection.ltr,
+          textDirection: textDirection,
           body: Text(
             detail.msgBody ?? "",
             style: text14Bold,
@@ -135,16 +138,14 @@ class ChatMessageDetail extends GetView<ChatController> {
         );
         break;
       case MsgType.image:
-        body = Image.network(
-          "https://img2.baidu.com/it/u=676445988,3422842132&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1665680400&t=2450f6e5b2f1cbf9c22517f2fde94183",
-          width: 100.w,
+        body = _image(
+          textDirection: textDirection,
+          msgBody: detail.msgBody ?? "{}",
         );
         break;
       case MsgType.voice:
         body = _detail(
-          textDirection: detail.fromId == userInfo.id
-              ? TextDirection.rtl
-              : TextDirection.ltr,
+          textDirection: textDirection,
           body: Text(
             detail.msgBody ?? "",
             style: text14Bold,
@@ -209,18 +210,52 @@ class ChatMessageDetail extends GetView<ChatController> {
   }
 
   /// 会话详情
-  Widget _detail({required TextDirection textDirection, required Widget body}) {
+  Widget _detail({
+    required TextDirection textDirection,
+    required Widget body,
+  }) {
     return Container(
       constraints: BoxConstraints(maxWidth: 180.w),
       padding: EdgeInsets.all(defaultWidth),
       margin: textDirection == TextDirection.ltr
           ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
-          : EdgeInsets.only(right: defaultWidth, top: defaultWidth / 2),
+          : EdgeInsets.only(right: defaultWidth),
       decoration: BoxDecoration(
         color: UnifiedColors.seaBlue,
         borderRadius: BorderRadius.all(Radius.circular(defaultWidth)),
       ),
       child: body,
+    );
+  }
+
+  /// 图片详情
+  Widget _image({
+    required TextDirection textDirection,
+    required String msgBody,
+  }) {
+    /// 解析参数
+    Map<String, dynamic> msgBody = jsonDecode(detail.msgBody ?? "{}");
+    var file = File(msgBody["path"]);
+    double width = double.parse(msgBody["width"].toString());
+    double height = double.parse(msgBody["height"].toString());
+
+    /// 限制大小
+    late BoxConstraints boxConstraints;
+    if (width > height) {
+      boxConstraints = BoxConstraints(maxWidth: 120.w);
+    } else {
+      boxConstraints = BoxConstraints(maxHeight: 120.h);
+    }
+    return Container(
+      constraints: boxConstraints,
+      margin: textDirection == TextDirection.ltr
+          ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
+          : EdgeInsets.only(right: defaultWidth),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(4.w)),
+      ),
+      clipBehavior: Clip.hardEdge,
+      child: Image.memory(file.readAsBytesSync()),
     );
   }
 }
