@@ -172,7 +172,8 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
                 await controller.stopRecord();
                 voiceWave.remove();
 
-                controller.getFile();
+                var file = await controller.getFile();
+                controller.voiceCallback(file);
               },
               child: Container(
                 alignment: Alignment.center,
@@ -417,6 +418,7 @@ class ChatBoxController extends FullLifeCycleController
   final ImagePicker picker = ImagePicker();
   final Function sendCallback;
   final Function imageCallback;
+  final Function voiceCallback;
 
   Rx<RecordStatus>? recordStatus;
   FlutterSoundRecorder? _recorder;
@@ -424,7 +426,11 @@ class ChatBoxController extends FullLifeCycleController
   String? _currentFile;
   RxDouble? level;
 
-  ChatBoxController({required this.sendCallback, required this.imageCallback});
+  ChatBoxController({
+    required this.sendCallback,
+    required this.imageCallback,
+    required this.voiceCallback,
+  });
 
   @override
   onClose() {
@@ -566,9 +572,8 @@ class ChatBoxController extends FullLifeCycleController
   }
 
   /// 获取文件
-  getFile() async {
+  Future<File> getFile() async {
     var directory = await getTemporaryDirectory();
-    var file = File("${directory.path}/$_currentFile");
-    log.info(file);
+    return File("${directory.path}/$_currentFile");
   }
 }

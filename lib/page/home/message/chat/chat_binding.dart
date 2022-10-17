@@ -12,6 +12,7 @@ class ChatBinding extends Bindings {
       return ChatBoxController(
         sendCallback: chatController.sendOneMessage,
         imageCallback: chatController.imagePicked,
+        voiceCallback: chatController.sendVoice,
       );
     });
   }

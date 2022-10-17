@@ -7,10 +7,10 @@ import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
-import 'package:orginone/page/home/message/chat/component/text_message.dart';
 import 'package:orginone/util/hive_util.dart';
 
 import '../../../../../api_resp/target_resp.dart';
+import '../../../../../component/unified_colors.dart';
 import '../../../../../component/unified_edge_insets.dart';
 import '../../../../../component/unified_text_style.dart';
 import '../../../../../enumeration/enum_map.dart';
@@ -27,6 +27,8 @@ enum DetailFunc {
 
   final String name;
 }
+
+double defaultWidth = 10.w;
 
 class ChatMessageDetail extends GetView<ChatController> {
   final Logger log = Logger("ChatMessageDetail");
@@ -49,11 +51,13 @@ class ChatMessageDetail extends GetView<ChatController> {
     return _messageDetail(context);
   }
 
+  /// 消息详情
   Widget _messageDetail(BuildContext context) {
     List<Widget> children = [];
     switch (msgType) {
       case MsgType.text:
       case MsgType.image:
+      case MsgType.voice:
         children.add(_getAvatar());
         children.add(_getChat(context));
         break;
@@ -84,6 +88,7 @@ class ChatMessageDetail extends GetView<ChatController> {
     );
   }
 
+  /// 目标名称
   String targetName() {
     OrgChatCache orgChatCache = controller.messageController.orgChatCache;
     return orgChatCache.nameMap[detail.fromId] ?? "";
@@ -119,15 +124,31 @@ class ChatMessageDetail extends GetView<ChatController> {
     Widget body;
     switch (msgType) {
       case MsgType.text:
-        body = TextMessage(
-          message: detail.msgBody,
-          detail.fromId == userInfo.id ? TextDirection.rtl : TextDirection.ltr,
+        body = _detail(
+          textDirection: detail.fromId == userInfo.id
+              ? TextDirection.rtl
+              : TextDirection.ltr,
+          body: Text(
+            detail.msgBody ?? "",
+            style: text14Bold,
+          ),
         );
         break;
       case MsgType.image:
         body = Image.network(
           "https://img2.baidu.com/it/u=676445988,3422842132&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1665680400&t=2450f6e5b2f1cbf9c22517f2fde94183",
           width: 100.w,
+        );
+        break;
+      case MsgType.voice:
+        body = _detail(
+          textDirection: detail.fromId == userInfo.id
+              ? TextDirection.rtl
+              : TextDirection.ltr,
+          body: Text(
+            detail.msgBody ?? "",
+            style: text14Bold,
+          ),
         );
         break;
       default:
@@ -184,6 +205,22 @@ class ChatMessageDetail extends GetView<ChatController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: content,
       ),
+    );
+  }
+
+  /// 会话详情
+  Widget _detail({required TextDirection textDirection, required Widget body}) {
+    return Container(
+      constraints: BoxConstraints(maxWidth: 180.w),
+      padding: EdgeInsets.all(defaultWidth),
+      margin: textDirection == TextDirection.ltr
+          ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
+          : EdgeInsets.only(right: defaultWidth, top: defaultWidth / 2),
+      decoration: BoxDecoration(
+        color: UnifiedColors.seaBlue,
+        borderRadius: BorderRadius.all(Radius.circular(defaultWidth)),
+      ),
+      child: body,
     );
   }
 }

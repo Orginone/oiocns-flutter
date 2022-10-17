@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -6,9 +9,9 @@ import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/page/home/home_controller.dart';
-import 'package:orginone/page/home/message/chat/component/chat_box.dart';
 import 'package:orginone/page/home/message/chat/component/chat_message_detail.dart';
 import 'package:orginone/util/encryption_util.dart';
+import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/hub_util.dart';
 import 'package:uuid/uuid.dart';
 
@@ -44,6 +47,9 @@ class ChatController extends GetxController {
 
   // 观测对象
   late List<MessageDetailResp> messageDetails;
+
+  // 语音播放器
+  FlutterSoundPlayer? soundPlayer;
 
   @override
   void onInit() {
@@ -213,6 +219,20 @@ class ChatController extends GetxController {
     // });
     //
     // messageDetails.add(value);
+  }
+
+  /// 语音录制完成并发送
+  void sendVoice(File file) {
+    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    messageDetails.insert(0, MessageDetailResp(
+      id: "-1",
+      spaceId: userInfo.id,
+      fromId: userInfo.id,
+      toId: messageItem.id,
+      msgType: MsgType.voice.name,
+      msgBody: file.path,
+    ));
+    updateAndToBottom();
   }
 
   /// 滚动到页面底部
