@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -212,26 +213,46 @@ class ChatController extends GetxController {
   }
 
   /// 相册选择照片后回调
-  void imagePicked(XFile file) {
-    // MessageDetailResp.fromMap({
-    //   "id":"-1",
-    //   "fromId": IJ
-    // });
-    //
-    // messageDetails.add(value);
+  void imagePicked(XFile file) async {
+    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    Image imageCompo = Image.memory(await file.readAsBytes());
+    imageCompo.image.resolve(const ImageConfiguration()).addListener(
+      ImageStreamListener(
+        (imageInfo, synchronousCall) {
+          Map<String, dynamic> body = {
+            "width": imageInfo.image.width,
+            "height": imageInfo.image.height,
+            "path": file.path
+          };
+          messageDetails.insert(
+              0,
+              MessageDetailResp(
+                id: "-1",
+                spaceId: userInfo.id,
+                fromId: userInfo.id,
+                toId: messageItem.id,
+                msgType: MsgType.image.name,
+                msgBody: jsonEncode(body),
+              ));
+          updateAndToBottom();
+        },
+      ),
+    );
   }
 
   /// 语音录制完成并发送
   void sendVoice(File file) {
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-    messageDetails.insert(0, MessageDetailResp(
-      id: "-1",
-      spaceId: userInfo.id,
-      fromId: userInfo.id,
-      toId: messageItem.id,
-      msgType: MsgType.voice.name,
-      msgBody: file.path,
-    ));
+    messageDetails.insert(
+        0,
+        MessageDetailResp(
+          id: "-1",
+          spaceId: userInfo.id,
+          fromId: userInfo.id,
+          toId: messageItem.id,
+          msgType: MsgType.voice.name,
+          msgBody: file.path,
+        ));
     updateAndToBottom();
   }
 
