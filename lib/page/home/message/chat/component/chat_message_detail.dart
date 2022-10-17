@@ -138,19 +138,10 @@ class ChatMessageDetail extends GetView<ChatController> {
         );
         break;
       case MsgType.image:
-        body = _image(
-          textDirection: textDirection,
-          msgBody: detail.msgBody ?? "{}",
-        );
+        body = _image(textDirection: textDirection);
         break;
       case MsgType.voice:
-        body = _detail(
-          textDirection: textDirection,
-          body: Text(
-            detail.msgBody ?? "",
-            style: text14Bold,
-          ),
-        );
+        body = _voice(textDirection: textDirection);
         break;
       default:
         body = Container();
@@ -213,10 +204,13 @@ class ChatMessageDetail extends GetView<ChatController> {
   Widget _detail({
     required TextDirection textDirection,
     required Widget body,
+    BoxConstraints? constraints,
+    Clip? clipBehavior,
+    EdgeInsets? padding,
   }) {
     return Container(
-      constraints: BoxConstraints(maxWidth: 180.w),
-      padding: EdgeInsets.all(defaultWidth),
+      constraints: constraints ?? BoxConstraints(maxWidth: 180.w),
+      padding: padding ?? EdgeInsets.all(defaultWidth),
       margin: textDirection == TextDirection.ltr
           ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
           : EdgeInsets.only(right: defaultWidth),
@@ -224,15 +218,13 @@ class ChatMessageDetail extends GetView<ChatController> {
         color: UnifiedColors.seaBlue,
         borderRadius: BorderRadius.all(Radius.circular(defaultWidth)),
       ),
+      clipBehavior: clipBehavior ?? Clip.none,
       child: body,
     );
   }
 
   /// 图片详情
-  Widget _image({
-    required TextDirection textDirection,
-    required String msgBody,
-  }) {
+  Widget _image({required TextDirection textDirection}) {
     /// 解析参数
     Map<String, dynamic> msgBody = jsonDecode(detail.msgBody ?? "{}");
     var file = File(msgBody["path"]);
@@ -246,16 +238,70 @@ class ChatMessageDetail extends GetView<ChatController> {
     } else {
       boxConstraints = BoxConstraints(maxHeight: 120.h);
     }
-    return Container(
-      constraints: boxConstraints,
-      margin: textDirection == TextDirection.ltr
-          ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
-          : EdgeInsets.only(right: defaultWidth),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(4.w)),
+    return _detail(
+        constraints: boxConstraints,
+        textDirection: textDirection,
+        body: Image.memory(file.readAsBytesSync()),
+        clipBehavior: Clip.hardEdge,
+        padding: EdgeInsets.zero);
+  }
+
+  /// 语音详情
+  Widget _voice({required TextDirection textDirection}) {
+    /// 解析参数
+    Map<String, dynamic> msgMap = jsonDecode(detail.msgBody ?? "{}");
+    String path = msgMap["path"] ?? "";
+    int seconds = msgMap["seconds"] ?? 0;
+
+    controller.playStatusMap.putIfAbsent(
+        detail.id, () => VoicePlay(detail, PlayStatus.stop.obs, path));
+    return _detail(
+      textDirection: textDirection,
+      body: Obx(
+        () {
+          var voicePlay = controller.playStatusMap[detail.id]!;
+          var status = voicePlay.status;
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  if (status.value == PlayStatus.stop) {
+                    controller.startPlayVoice(detail.id);
+                  } else {
+                    controller.stopPlayVoice();
+                  }
+                },
+                child: status.value == PlayStatus.stop
+                    ? const Icon(Icons.play_arrow, color: Colors.black)
+                    : const Icon(Icons.stop, color: Colors.black),
+              ),
+              Container(margin: EdgeInsets.only(left: 5.w)),
+              Expanded(
+                child: Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Icon(Icons.circle, size: 8.w),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        height: 8.h,
+                        width: 80.w,
+                        color: Colors.grey,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Container(margin: EdgeInsets.only(left: 5.w)),
+              Text(StringUtil.getMinusShow(seconds))
+            ],
+          );
+        },
       ),
-      clipBehavior: Clip.hardEdge,
-      child: Image.memory(file.readAsBytesSync()),
     );
   }
 }

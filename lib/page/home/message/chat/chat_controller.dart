@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -22,6 +21,18 @@ import '../../../../api_resp/target_resp.dart';
 import '../../../../enumeration/message_type.dart';
 import '../../../../enumeration/target_type.dart';
 import '../message_controller.dart';
+
+/// 播放状态
+enum PlayStatus { stop, playing, completed }
+
+/// 语音播放器状态类
+class VoicePlay {
+  final MessageDetailResp detailResp;
+  final Rx<PlayStatus> status;
+  final String path;
+
+  const VoicePlay(this.detailResp, this.status, this.path);
+}
 
 class ChatController extends GetxController {
   // 日志
@@ -51,6 +62,10 @@ class ChatController extends GetxController {
 
   // 语音播放器
   FlutterSoundPlayer? soundPlayer;
+  AnimationController? animationController;
+  Animation<AlignmentGeometry>? animation;
+  Map<String, VoicePlay> playStatusMap = {};
+  VoicePlay? _currentVoicePlay;
 
   @override
   void onInit() {
@@ -241,8 +256,9 @@ class ChatController extends GetxController {
   }
 
   /// 语音录制完成并发送
-  void sendVoice(File file) {
+  void sendVoice(String path, int seconds) {
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    Map<String, dynamic> msgBody = {"path": path, "seconds": seconds};
     messageDetails.insert(
         0,
         MessageDetailResp(
@@ -251,7 +267,7 @@ class ChatController extends GetxController {
           fromId: userInfo.id,
           toId: messageItem.id,
           msgType: MsgType.voice.name,
-          msgBody: file.path,
+          msgBody: jsonEncode(msgBody),
         ));
     updateAndToBottom();
   }
@@ -294,6 +310,35 @@ class ChatController extends GetxController {
             messageDetails.where((item) => item.id != detail.id).toList();
         update();
         break;
+    }
+  }
+
+  /// 开始播放
+  startPlayVoice(String id) async {
+    if (_currentVoicePlay != null) {
+      // 如果当前有正在播放的语音，先关闭
+      await stopPlayVoice();
+    }
+    // 重新开始播放
+    _currentVoicePlay = playStatusMap[id];
+    _currentVoicePlay!.status.value = PlayStatus.playing;
+    soundPlayer ??= await FlutterSoundPlayer().openPlayer();
+    soundPlayer!.startPlayer(
+      fromURI: _currentVoicePlay!.path,
+      codec: Codec.aacADTS,
+      whenFinished: () {
+        _currentVoicePlay!.status.value = PlayStatus.completed;
+      },
+    );
+  }
+
+  /// 停止播放
+  stopPlayVoice() async {
+    if (_currentVoicePlay != null) {
+      // 如果当前有正在播放的语音，先关闭
+      await soundPlayer!.stopPlayer();
+      _currentVoicePlay!.status.value = PlayStatus.stop;
+      _currentVoicePlay = null;
     }
   }
 }
