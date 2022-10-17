@@ -173,14 +173,14 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
                 voiceWave.remove();
 
                 var duration = controller.currentDuration ?? Duration.zero;
-                if (duration.inMilliseconds < 1 * 1000) {
+                if (duration.inMilliseconds < 1000) {
                   Fluttertoast.showToast(msg: '时间太短啦');
                   return;
                 }
 
                 await controller.stopRecord();
                 var path = await controller.currentFile;
-                controller.voiceCallback(path, duration.inSeconds);
+                controller.voiceCallback(path, duration.inMilliseconds);
               },
               child: Container(
                 alignment: Alignment.center,

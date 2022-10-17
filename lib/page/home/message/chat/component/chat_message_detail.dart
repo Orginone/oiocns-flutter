@@ -251,7 +251,7 @@ class ChatMessageDetail extends GetView<ChatController> {
     // 解析参数
     Map<String, dynamic> msgMap = jsonDecode(detail.msgBody ?? "{}");
     String path = msgMap["path"] ?? "";
-    int seconds = msgMap["seconds"] ?? 0;
+    int milliseconds = msgMap["milliseconds"] ?? 0;
 
     // 初始化语音输入
     controller.playStatusMap.putIfAbsent(
@@ -259,8 +259,8 @@ class ChatMessageDetail extends GetView<ChatController> {
         () => VoicePlay(
               detailResp: detail,
               status: PlayStatus.stop.obs,
-              initProgress: seconds,
-              progress: seconds.obs,
+              initProgress: milliseconds,
+              progress: milliseconds.obs,
               path: path,
             ));
 
@@ -330,7 +330,7 @@ class ChatMessageDetail extends GetView<ChatController> {
           Obx(() {
             var voicePlay = controller.playStatusMap[detail.id]!;
             var progress = voicePlay.progress;
-            return Text(StringUtil.getMinusShow(progress.value));
+            return Text(StringUtil.getMinusShow(progress.value ~/ 1000));
           })
         ],
       ),

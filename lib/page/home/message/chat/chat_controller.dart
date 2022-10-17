@@ -267,9 +267,9 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   }
 
   /// 语音录制完成并发送
-  void sendVoice(String path, int seconds) {
+  void sendVoice(String path, int milliseconds) {
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-    Map<String, dynamic> msgBody = {"path": path, "seconds": seconds};
+    Map<String, dynamic> msgBody = {"path": path, "milliseconds": milliseconds};
     messageDetails.insert(
         0,
         MessageDetailResp(
@@ -330,10 +330,9 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
 
     // 动画效果
     _currentVoicePlay = playStatusMap[id];
-    var progress = _currentVoicePlay!.progress.value;
     animationController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: progress),
+      duration: Duration(milliseconds: _currentVoicePlay!.initProgress),
     );
     animation = Tween<AlignmentGeometry>(
       begin: Alignment.centerLeft,
@@ -342,12 +341,13 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
       parent: animationController!,
       curve: Curves.linear,
     ));
+    animationController!.forward();
 
     // 监听进度
     _soundPlayer ??= await FlutterSoundPlayer().openPlayer();
     _soundPlayer!.setSubscriptionDuration(const Duration(milliseconds: 50));
     _mt = _soundPlayer!.onProgress!.listen((event) {
-      _currentVoicePlay!.progress.value = event.position.inSeconds;
+      _currentVoicePlay!.progress.value = event.position.inMilliseconds;
     });
     _soundPlayer!
         .startPlayer(
