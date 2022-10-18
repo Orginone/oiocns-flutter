@@ -178,9 +178,12 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
                   return;
                 }
 
+                var path = controller.currentFile;
+                var fileName = controller.currentFileName;
+                var time = duration.inMilliseconds;
+                controller.voiceCallback(fileName, path, time);
+
                 await controller.stopRecord();
-                var path = await controller.currentFile;
-                controller.voiceCallback(path, duration.inMilliseconds);
               },
               child: Container(
                 alignment: Alignment.center,
@@ -383,7 +386,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
 
   /// 录音波动
   Widget _voiceWave() {
-    var width = 120.h;
+    var width = 120.w;
     var height = 80.h;
     return Stack(
       children: [
@@ -391,8 +394,9 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
           alignment: Alignment.topCenter - const Alignment(0.0, -0.5),
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(5)),
-                color: Colors.black.withOpacity(0.5)),
+              borderRadius: const BorderRadius.all(Radius.circular(5)),
+              color: Colors.black.withOpacity(0.5),
+            ),
             height: height,
             width: width,
             child: Obx(() {
@@ -431,8 +435,9 @@ class ChatBoxController extends FullLifeCycleController
   FlutterSoundRecorder? _recorder;
   StreamSubscription? _mt;
   String? _currentFile;
+  String? _currentFileName;
   Duration? _currentDuration;
-  RxDouble? level;
+  RxDouble? _level;
 
   ChatBoxController({
     required this.sendCallback,
@@ -441,6 +446,10 @@ class ChatBoxController extends FullLifeCycleController
   });
 
   get currentFile => _currentFile;
+
+  get currentFileName => _currentFileName;
+
+  get level => _level;
 
   @override
   onClose() {
@@ -546,17 +555,18 @@ class ChatBoxController extends FullLifeCycleController
       recordStatus!.value = RecordStatus.recoding;
 
       // 监听音浪
-      level ??= 0.0.obs;
+      _level ??= 0.0.obs;
       _recorder!.setSubscriptionDuration(const Duration(milliseconds: 50));
       _mt = _recorder?.onProgress?.listen((e) {
-        level!.value = e.decibels ?? 0;
+        _level!.value = e.decibels ?? 0;
         _currentDuration = e.duration;
       });
 
       // 创建临时文件
       var tempDir = await getTemporaryDirectory();
       var key = DateTime.now().millisecondsSinceEpoch;
-      _currentFile = "${tempDir.path}/$key${ext[Codec.aacADTS.index]}";
+      _currentFileName = "$key${ext[Codec.aacADTS.index]}";
+      _currentFile = "${tempDir.path}/$_currentFileName";
 
       // 开启监听
       await _recorder!.startRecorder(
@@ -576,11 +586,15 @@ class ChatBoxController extends FullLifeCycleController
     if (_recorder == null) {
       return;
     }
-    recordStatus?.value = RecordStatus.stop;
+    await _recorder!.stopRecorder();
+    _currentFile = null;
+    _currentFileName = null;
+    _currentDuration = null;
     _mt?.cancel();
     _mt = null;
-    await _recorder!.stopRecorder();
-    _currentDuration = null;
+    _level = null;
+
+    recordStatus?.value = RecordStatus.stop;
   }
 
   /// 获取录音时间

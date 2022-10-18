@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -15,7 +14,7 @@ class VoicePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    var count = 6;
+    var count = 21;
     var margin = 5.0.w;
     var useWidth = width - margin * 2;
     var averageWidth = useWidth / count / 2;
@@ -26,11 +25,15 @@ class VoicePainter extends CustomPainter {
       var i = 0;
       var isOdd = false;
       while (i < count * 2) {
+        var multiple = ((count ~/ 2) - i).abs();
+        if (multiple == 0){
+          multiple = 2;
+        }
         path.cubicTo(
           averageWidth * i,
           centerY,
           averageWidth * (i + 1),
-          centerY + (isOdd ? amplitude : -amplitude),
+          centerY + (isOdd ? amplitude / multiple : -amplitude / multiple),
           averageWidth * (i + 2),
           centerY,
         );

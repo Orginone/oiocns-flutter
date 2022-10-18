@@ -8,4 +8,5 @@ class Constant {
   static const company = "$host/orginone/organization/company";
   static const cohort = "$host/orginone/organization/cohort";
   static const collection = "$host/orginone/anydata/collection";
+  static const bucket = "$host/orginone/anydata/Bucket";
 }
