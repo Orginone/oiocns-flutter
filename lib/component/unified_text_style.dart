@@ -80,6 +80,8 @@ get text18 => TextStyle(fontSize: 18.sp, color: Colors.black);
 
 get text20 => TextStyle(fontSize: 20.sp, color: Colors.black);
 
+get text20White => TextStyle(fontSize: 20.sp, color: Colors.white);
+
 get text20blue => TextStyle(fontSize: 20.sp, color: Colors.blueAccent);
 
 get text24 => TextStyle(fontSize: 24.sp, color: Colors.black);

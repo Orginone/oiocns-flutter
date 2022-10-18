@@ -11,14 +11,14 @@ class BucketApi {
   }) async {
     String url = "${Constant.bucket}/Upload";
 
+    var params = {"shareDomain": "user", "prefix": prefix};
     var formData = FormData.fromMap({
-      "shareDomain": "user",
-      "prefix": prefix,
       "file": await MultipartFile.fromFile(filePath, filename: fileName),
     });
     await HttpUtil().post(
       url,
-      data: [formData],
+      queryParameters: params,
+      data: formData,
       options: Options(contentType: "multipart/form-data"),
     );
   }

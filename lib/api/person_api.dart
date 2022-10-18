@@ -40,12 +40,13 @@ class PersonApi {
     return TargetResp.fromMap(resp);
   }
 
-  //更新用户信息
+  /// 更新用户信息
   static Future<String> updateUser(dynamic postData) async {
     await HttpUtil().post("${Constant.person}/update", data: postData);
     return '修改成功';
   }
 
+  /// 好友
   static Future<PageResp<TargetResp>> friends(
     int limit,
     int offset,
@@ -61,6 +62,7 @@ class PersonApi {
     return PageResp.fromMap(pageResp, TargetResp.fromMap);
   }
 
+  /// 改变工作空间
   static Future<LoginResp> changeWorkspace(String targetId) async {
     String url = "${Constant.person}/change/workspace";
     Map<String, dynamic> res =
@@ -80,10 +82,26 @@ class PersonApi {
     return PageResp.fromMap(resp, TargetResp.fromMap);
   }
 
-  //好友验证
+  /// 好友验证
   static Future<String> addPerson(String personId) async {
     await HttpUtil()
         .post("${Constant.person}/apply/join", data: {"id": personId});
     return '发起申请';
+  }
+
+  /// 人员搜索
+  static Future<int> approval() async {
+    String url = "${Constant.person}/get/all/approval";
+    var data = {"id": 0, "limit": 0, "offset": 0};
+    Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
+    return resp["total"] ?? 0;
+  }
+
+  /// 人员搜索
+  static Future<int> apply() async {
+    String url = "${Constant.person}/get/all/apply";
+    var data = {"limit": 0, "offset": 0};
+    Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
+    return resp["total"] ?? 0;
   }
 }
