@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api/bucket_api.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/page/home/home_controller.dart';
@@ -218,7 +219,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   }
 
   /// 发送消息至聊天页面
-  void sendOneMessage(String value) {
+  void sendOneMessage(String value, {MsgType? msgType}) {
     if (messageItemId == "-1") return;
 
     // toId 和 spaceId 都要是字符串类型
@@ -226,7 +227,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
       var messageDetail = {
         "toId": messageItemId,
         "spaceId": spaceId,
-        "msgType": MsgType.text.name,
+        "msgType": msgType?.name ?? MsgType.text.name,
         "msgBody": EncryptionUtil.deflate(value)
       };
       try {
@@ -267,20 +268,21 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   }
 
   /// 语音录制完成并发送
-  void sendVoice(String path, int milliseconds) {
+  void sendVoice(String fileName, String filePath, int milliseconds) async {
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-    Map<String, dynamic> msgBody = {"path": path, "milliseconds": milliseconds};
-    messageDetails.insert(
-        0,
-        MessageDetailResp(
-          id: "${DateTime.now().millisecondsSinceEpoch}",
-          spaceId: userInfo.id,
-          fromId: userInfo.id,
-          toId: messageItem.id,
-          msgType: MsgType.voice.name,
-          msgBody: jsonEncode(msgBody),
-        ));
-    updateAndToBottom();
+
+    String prefix = "/chat/${userInfo.id}/${messageItem.id}/voice/$fileName";
+    await BucketApi.upload(
+      prefix: prefix,
+      filePath: filePath,
+      fileName: fileName,
+    );
+
+    Map<String, dynamic> msgBody = {
+      "prefix": prefix,
+      "milliseconds": milliseconds
+    };
+    sendOneMessage(jsonEncode(msgBody), msgType: MsgType.voice);
   }
 
   /// 滚动到页面底部

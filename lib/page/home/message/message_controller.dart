@@ -255,9 +255,12 @@ class MessageController extends GetxController with WidgetsBindingObserver {
           currentItem.msgType = detail.msgType;
           if (currentItem.msgType == MsgType.recall.name) {
             currentItem.showTxt = StringUtil.getRecallBody(currentItem, detail);
+          } else if (currentItem.msgType == MsgType.voice.name) {
+            currentItem.showTxt = "[语音]";
+          } else if (currentItem.msgType == MsgType.image.name) {
+            currentItem.showTxt = "[图片]";
           } else {
-            bool hasPic = msgBody?.contains("<img>") ?? false;
-            currentItem.showTxt = hasPic ? "[图片]" : msgBody;
+            currentItem.showTxt = msgBody;
           }
           if (currentItem.typeName != TargetType.person.name) {
             String name = orgChatCache.nameMap[detail.fromId];

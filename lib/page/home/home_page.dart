@@ -7,10 +7,11 @@ import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/util/any_store_util.dart';
 import 'package:orginone/util/sys_util.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:signalr_core/signalr_core.dart';
 
-import '../../component/unified_edge_insets.dart';
 import '../../component/unified_colors.dart';
+import '../../component/unified_edge_insets.dart';
 import '../../routers.dart';
 import '../../util/hub_util.dart';
 import '../../util/string_util.dart';
@@ -21,6 +22,8 @@ class HomePage extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    initPermission(context);
+
     SysUtil.setStatusBarBright();
     controller.context = context;
     return UnifiedScaffold(
@@ -30,6 +33,10 @@ class HomePage extends GetView<HomeController> {
       body: _body,
       bottomNavigationBar: _bottomNavigatorBar,
     );
+  }
+
+  initPermission(BuildContext context) async {
+    await [Permission.storage, Permission.notification].request();
   }
 
   Widget _popMenuItem(
