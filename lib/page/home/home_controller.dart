@@ -81,9 +81,10 @@ class HomeController extends GetxController
 
   Tab _buildTab(IconData iconData, String label) {
     return Tab(
-        iconMargin: const EdgeInsets.all(5),
-        icon: Icon(iconData),
-        child: Text(label));
+      iconMargin: const EdgeInsets.all(5),
+      icon: Icon(iconData),
+      child: Text(label),
+    );
   }
 
   void switchSpaces(TargetResp targetResp) async {
