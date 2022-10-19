@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
@@ -24,7 +23,7 @@ import '../../../util/string_util.dart';
 import 'chat/chat_controller.dart';
 
 /// 所有与后端消息交互的逻辑都先保存至数据库中再读取出来
-class MessageController extends GetxController with WidgetsBindingObserver, GetSingleTickerProviderStateMixin {
+class MessageController extends GetxController with WidgetsBindingObserver {
   // 日志对象
   Logger log = Logger("MessageController");
 
@@ -38,21 +37,16 @@ class MessageController extends GetxController with WidgetsBindingObserver, GetS
   // 当前 app 状态
   AppLifecycleState? currentAppState;
 
-  // 应用内 Tab
-  late TabController tabController;
-
   // 会话加载状态
   bool isLoaded = false;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    // 页签控制器
-    tabController = TabController(length: 2, vsync: this);
     // 监听页面的生命周期
     WidgetsBinding.instance.addObserver(this);
     // 订阅聊天面板信息
-    _subscribingCharts();
+    await _subscribingCharts();
   }
 
   // 分组排序
@@ -261,12 +255,9 @@ class MessageController extends GetxController with WidgetsBindingObserver, GetS
           currentItem.msgType = detail.msgType;
           if (currentItem.msgType == MsgType.recall.name) {
             currentItem.showTxt = StringUtil.getRecallBody(currentItem, detail);
-          } else if (currentItem.msgType == MsgType.voice.name) {
-            currentItem.showTxt = "[语音]";
-          } else if (currentItem.msgType == MsgType.image.name) {
-            currentItem.showTxt = "[图片]";
           } else {
-            currentItem.showTxt = msgBody;
+            bool hasPic = msgBody?.contains("<img>") ?? false;
+            currentItem.showTxt = hasPic ? "[图片]" : msgBody;
           }
           if (currentItem.typeName != TargetType.person.name) {
             String name = orgChatCache.nameMap[detail.fromId];

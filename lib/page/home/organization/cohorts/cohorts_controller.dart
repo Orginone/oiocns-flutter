@@ -26,14 +26,13 @@ class CohortsController extends GetxController {
   Future<void> onLoadCohorts(String filter) async {
     limit = 20;
     offset = 0;
-    var pageResp = await CohortApi.cohorts(limit!, offset!, filter);
-    cohorts = pageResp.result;
+    cohorts = await CohortApi.cohorts(limit!, offset!, filter);
     update();
   }
 
   Future<void> moreCohorts(int offset, int limit, String filter) async {
-    var pageResp = await CohortApi.cohorts(offset, limit, filter);
-    cohorts.addAll(pageResp.result);
+    var newCohorts = await CohortApi.cohorts(offset, limit, filter);
+    cohorts.addAll(newCohorts);
     update();
   }
 

@@ -3,7 +3,6 @@ import 'package:orginone/page/home/home_controller.dart';
 
 import '../../../../api/company_api.dart';
 import '../../../../api_resp/target_resp.dart';
-import '../../../../util/hive_util.dart';
 
 class SpaceChooseController extends GetxController {
   HomeController homeController = Get.find<HomeController>();
@@ -27,16 +26,18 @@ class SpaceChooseController extends GetxController {
   }
 
   void addUserInfoSpace() {
-    var currentUserInfo = HiveUtil().getValue(Keys.userInfo);
-    TargetResp userInfo = TargetResp.copyWith(currentUserInfo);
+    TargetResp userInfo = TargetResp.copyWith(homeController.userInfo);
     userInfo.name = "个人空间";
     spaces.add(userInfo);
   }
 
   Future<void> loadMoreSpaces(int offset, int limit) async {
     // 获取加入的空间
-    var pageResp = await CompanyApi.getJoinedCompanys(offset, limit);
-    spaces.addAll(pageResp.result);
+    List<dynamic> joined = await CompanyApi.getJoinedCompanys(offset, limit);
+    for (var joinedSpace in joined) {
+      TargetResp space = TargetResp.fromMap(joinedSpace);
+      spaces.add(space);
+    }
 
     // 更新试图
     update();

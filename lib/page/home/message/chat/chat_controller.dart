@@ -1,20 +1,12 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/api/bucket_api.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/page/home/message/chat/component/chat_message_detail.dart';
 import 'package:orginone/util/encryption_util.dart';
-import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/hub_util.dart';
 import 'package:uuid/uuid.dart';
 
@@ -25,27 +17,7 @@ import '../../../../enumeration/message_type.dart';
 import '../../../../enumeration/target_type.dart';
 import '../message_controller.dart';
 
-/// 播放状态
-enum PlayStatus { stop, playing }
-
-/// 语音播放器状态类
-class VoicePlay {
-  final MessageDetailResp detailResp;
-  final Rx<PlayStatus> status;
-  final int initProgress;
-  final RxInt progress;
-  final String path;
-
-  const VoicePlay({
-    required this.detailResp,
-    required this.status,
-    required this.initProgress,
-    required this.progress,
-    required this.path,
-  });
-}
-
-class ChatController extends GetxController with GetTickerProviderStateMixin {
+class ChatController extends GetxController {
   // 日志
   var log = Logger("ChatController");
 
@@ -70,14 +42,6 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
 
   // 观测对象
   late List<MessageDetailResp> messageDetails;
-
-  // 语音播放器
-  FlutterSoundPlayer? _soundPlayer;
-  StreamSubscription? _mt;
-  AnimationController? animationController;
-  Animation<AlignmentGeometry>? animation;
-  Map<String, VoicePlay> playStatusMap = {};
-  VoicePlay? _currentVoicePlay;
 
   @override
   void onInit() {
@@ -218,8 +182,8 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     }
   }
 
-  /// 发送消息至聊天页面
-  void sendOneMessage(String value, {MsgType? msgType}) {
+  // 发送消息至聊天页面
+  void sendOneMessage(String value) {
     if (messageItemId == "-1") return;
 
     // toId 和 spaceId 都要是字符串类型
@@ -227,7 +191,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
       var messageDetail = {
         "toId": messageItemId,
         "spaceId": spaceId,
-        "msgType": msgType?.name ?? MsgType.text.name,
+        "msgType": MsgType.text.name,
         "msgBody": EncryptionUtil.deflate(value)
       };
       try {
@@ -237,52 +201,6 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         error.printError();
       }
     }
-  }
-
-  /// 相册选择照片后回调
-  void imagePicked(XFile file) async {
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-    Image imageCompo = Image.memory(await file.readAsBytes());
-    imageCompo.image.resolve(const ImageConfiguration()).addListener(
-      ImageStreamListener(
-        (imageInfo, synchronousCall) {
-          Map<String, dynamic> body = {
-            "width": imageInfo.image.width,
-            "height": imageInfo.image.height,
-            "path": file.path
-          };
-          messageDetails.insert(
-              0,
-              MessageDetailResp(
-                id: "${DateTime.now().millisecondsSinceEpoch}",
-                spaceId: userInfo.id,
-                fromId: userInfo.id,
-                toId: messageItem.id,
-                msgType: MsgType.image.name,
-                msgBody: jsonEncode(body),
-              ));
-          updateAndToBottom();
-        },
-      ),
-    );
-  }
-
-  /// 语音录制完成并发送
-  void sendVoice(String fileName, String filePath, int milliseconds) async {
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-
-    String prefix = "/chat/${userInfo.id}/${messageItem.id}/voice/$fileName";
-    await BucketApi.upload(
-      prefix: prefix,
-      filePath: filePath,
-      fileName: fileName,
-    );
-
-    Map<String, dynamic> msgBody = {
-      "prefix": prefix,
-      "milliseconds": milliseconds
-    };
-    sendOneMessage(jsonEncode(msgBody), msgType: MsgType.voice);
   }
 
   /// 滚动到页面底部
@@ -319,69 +237,9 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         break;
       case DetailFunc.remove:
         await HubUtil().deleteMsg(detail.id);
-        messageDetails =
-            messageDetails.where((item) => item.id != detail.id).toList();
+        messageDetails = messageDetails.where((item) => item.id != detail.id).toList();
         update();
         break;
-    }
-  }
-
-  /// 开始播放
-  startPlayVoice(String id) async {
-    await stopPrePlayVoice();
-
-    // 动画效果
-    _currentVoicePlay = playStatusMap[id];
-    animationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: _currentVoicePlay!.initProgress),
-    );
-    animation = Tween<AlignmentGeometry>(
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-    ).animate(CurvedAnimation(
-      parent: animationController!,
-      curve: Curves.linear,
-    ));
-    animationController!.forward();
-
-    // 监听进度
-    _soundPlayer ??= await FlutterSoundPlayer().openPlayer();
-    _soundPlayer!.setSubscriptionDuration(const Duration(milliseconds: 50));
-    _mt = _soundPlayer!.onProgress!.listen((event) {
-      _currentVoicePlay!.progress.value = event.position.inMilliseconds;
-    });
-    _soundPlayer!
-        .startPlayer(
-            fromDataBuffer: File(_currentVoicePlay!.path).readAsBytesSync(),
-            whenFinished: () => stopPrePlayVoice())
-        .catchError((error) => stopPrePlayVoice());
-
-    // 重新开始播放
-    _currentVoicePlay!.status.value = PlayStatus.playing;
-  }
-
-  /// 停止播放
-  stopPrePlayVoice() async {
-    if (_currentVoicePlay != null) {
-      // 改状态
-      _currentVoicePlay!.status.value = PlayStatus.stop;
-      _currentVoicePlay!.progress.value = _currentVoicePlay!.initProgress;
-
-      // 关闭播放
-      await _soundPlayer?.stopPlayer();
-      _mt?.cancel();
-      _mt = null;
-      _soundPlayer = null;
-
-      // 关闭动画
-      animation = null;
-      animationController?.stop();
-      animationController?.dispose();
-      animationController = null;
-
-      // 空引用
-      _currentVoicePlay = null;
     }
   }
 }

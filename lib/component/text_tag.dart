@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'unified_colors.dart';
+import '../config/custom_colors.dart';
 
 const TextStyle defaultTextStyle = TextStyle(
     fontSize: 8, color: Colors.blueAccent, fontWeight: FontWeight.bold);
-const Color defaultBgColor = UnifiedColors.lightBlue;
+const Color defaultBgColor = CustomColors.lightBlue;
 const EdgeInsets defaultPadding = EdgeInsets.all(2);
 
 class TextTag extends StatelessWidget {

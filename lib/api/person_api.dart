@@ -1,5 +1,5 @@
 import 'package:orginone/api_resp/target_resp.dart';
-import 'package:orginone/config/constant.dart';
+import 'package:orginone/api/constant.dart';
 
 import '../api_resp/login_resp.dart';
 import '../api_resp/page_resp.dart';
@@ -40,18 +40,14 @@ class PersonApi {
     return TargetResp.fromMap(resp);
   }
 
-  /// 更新用户信息
+  //更新用户信息
   static Future<String> updateUser(dynamic postData) async {
     await HttpUtil().post("${Constant.person}/update", data: postData);
     return '修改成功';
   }
 
-  /// 好友
-  static Future<PageResp<TargetResp>> friends(
-    int limit,
-    int offset,
-    String filter,
-  ) async {
+  static Future<List<TargetResp>> friends(
+      int limit, int offset, String filter) async {
     String url = "${Constant.person}/get/friends";
     Map<String, dynamic> data = {"offset": offset, "limit": limit};
     if (filter.isNotEmpty) {
@@ -59,10 +55,10 @@ class PersonApi {
     }
 
     Map<String, dynamic> pageResp = await HttpUtil().post(url, data: data);
-    return PageResp.fromMap(pageResp, TargetResp.fromMap);
+    var pageData = PageResp.fromMap(pageResp);
+    return pageData.result.map((item) => TargetResp.fromMap(item)).toList();
   }
 
-  /// 改变工作空间
   static Future<LoginResp> changeWorkspace(String targetId) async {
     String url = "${Constant.person}/change/workspace";
     Map<String, dynamic> res =
@@ -70,38 +66,22 @@ class PersonApi {
     return LoginResp.fromMap(res);
   }
 
-  /// 人员搜索
-  static Future<PageResp<TargetResp>> searchPersons({
-    required String keyword,
-    required int limit,
-    required int offset,
-  }) async {
-    String url = "${Constant.person}/search/persons";
-    var data = {"filter": keyword, "limit": limit, "offset": offset};
-    Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
-    return PageResp.fromMap(resp, TargetResp.fromMap);
+  //获取人员详情（目前用搜索接口替代）
+  static Future<TargetResp> getPersonDetail(String personPhone) async {
+    Map<String, dynamic> resp =
+        await HttpUtil().post("${Constant.person}/search/persons", data: {
+      "filter": personPhone,
+      "limit": 20,
+      "offset": 0,
+    });
+
+    return TargetResp.fromMap(resp["result"][0]);
   }
 
-  /// 好友验证
+  //好友验证
   static Future<String> addPerson(String personId) async {
     await HttpUtil()
         .post("${Constant.person}/apply/join", data: {"id": personId});
     return '发起申请';
-  }
-
-  /// 人员搜索
-  static Future<int> approval() async {
-    String url = "${Constant.person}/get/all/approval";
-    var data = {"id": 0, "limit": 0, "offset": 0};
-    Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
-    return resp["total"] ?? 0;
-  }
-
-  /// 人员搜索
-  static Future<int> apply() async {
-    String url = "${Constant.person}/get/all/apply";
-    var data = {"limit": 0, "offset": 0};
-    Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
-    return resp["total"] ?? 0;
   }
 }

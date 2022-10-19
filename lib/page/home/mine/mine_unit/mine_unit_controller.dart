@@ -8,9 +8,8 @@ class MineUnitController extends GetxController {
   int offset = 0;
   int limit = 10;
   ScrollController scrollController = ScrollController();
-
   @override
-  onInit() async {
+  onInit() async{
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
@@ -28,10 +27,17 @@ class MineUnitController extends GetxController {
       units = [];
     }
     // 获取加入的空间
-    var pageResp = await CompanyApi.getJoinedCompanys(offset, limit);
-    units.addAll(pageResp.result);
+    List<dynamic> joined = await CompanyApi.getJoinedCompanys(offset, limit);
     offset += 10;
     limit += 10;
+    for (var joinedUnit in joined) {
+      TargetResp unit = TargetResp.fromMap(joinedUnit);
+      units.add(unit);
+    }
+    // for (var item in [1,2,3,4,5,6,7,8,9,10,11]) {
+    //   units.add(item);
+    // }
+    // 更新试图
     update();
   }
 }

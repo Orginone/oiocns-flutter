@@ -21,7 +21,7 @@ class OrgChatCache {
 
   factory OrgChatCache(Map<String, dynamic> map) {
     if (map["UpdateTime"] != null) {
-      map["UpdateTime"] = DateTime.parse(map["UpdateTime"]);
+      map["UpdateTime"] = CustomDateUtil.parse(map["UpdateTime"]);
     }
     if (map["chats"] != null) {
       map["chats"] = SpaceMessagesResp.fromList(map["chats"]);

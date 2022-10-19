@@ -43,16 +43,12 @@ class DeptController extends GetxController {
 
     var nameMap = EnumMap.targetTypeMap;
     var targetType = nameMap[node.data.typeName];
-
     switch (targetType) {
       case TargetType.company:
-        var pageResp =
-            await CompanyApi.getCompanyPersons(node.id, limit, offset);
-        persons = pageResp.result;
+        persons = await CompanyApi.getCompanyPersons(node.id, limit, offset);
         break;
       case TargetType.department:
-        var pageResp = await CompanyApi.getDeptPersons(node.id, limit, offset);
-        persons = pageResp.result;
+        persons = await CompanyApi.getDeptPersons(node.id, limit, offset);
         break;
       default:
         persons = [];

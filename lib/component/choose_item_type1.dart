@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:orginone/component/unified_colors.dart';
+import 'package:orginone/config/custom_colors.dart';
 
 class ChooseItemType1 extends StatelessWidget {
   final IconData icon;

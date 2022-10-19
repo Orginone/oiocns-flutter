@@ -11,7 +11,7 @@ import 'package:orginone/util/any_store_util.dart';
 import 'package:orginone/util/encryption_util.dart';
 import 'package:signalr_core/signalr_core.dart';
 
-import '../config/constant.dart';
+import '../api/constant.dart';
 import '../api_resp/api_resp.dart';
 import '../api_resp/message_detail_resp.dart';
 import '../api_resp/message_item_resp.dart';

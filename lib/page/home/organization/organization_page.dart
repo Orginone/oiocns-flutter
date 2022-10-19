@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api_resp/target_resp.dart';
-import 'package:orginone/component/unified_colors.dart';
+import 'package:orginone/config/custom_colors.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
 
 import '../../../component/choose_item.dart';
@@ -107,7 +107,7 @@ class OrganizationPage extends GetView<OrganizationController> {
       },
       operate: GFButton(
         size: GFSize.SMALL,
-        color: UnifiedColors.darkGreen,
+        color: CustomColors.darkGreen,
         textColor: Colors.white,
         onPressed: () async {},
         text: "邀请",
@@ -125,7 +125,6 @@ class OrganizationPage extends GetView<OrganizationController> {
             margin: left10,
             child: Text("组织架构", style: text16Bold),
           ),
-          padding: const EdgeInsets.only(left: 10, top: 10),
           func: () {
             Get.toNamed(Routers.dept);
           },

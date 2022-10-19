@@ -4,8 +4,8 @@ import 'package:logging/logging.dart';
 import 'package:orginone/util/hive_util.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
+import '../api/constant.dart';
 import '../api_resp/api_resp.dart';
-import '../config/constant.dart';
 
 class HttpUtil {
   HttpUtil._();
@@ -133,15 +133,5 @@ class HttpUtil {
     } else {
       throw Exception(resp.msg);
     }
-  }
-
-  Future<dynamic> download({
-    required String url,
-    required String savePath,
-    required Function progressCallback,
-  }) async {
-    dio.download(url, savePath, onReceiveProgress: (received, total) {
-      progressCallback(received, total);
-    });
   }
 }

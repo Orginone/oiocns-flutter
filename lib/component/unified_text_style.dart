@@ -3,12 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 get text10Grey => TextStyle(fontSize: 10.sp, color: Colors.grey);
 
-get text10Bold => TextStyle(
-      fontSize: 10.sp,
-      color: Colors.black,
-      fontWeight: FontWeight.bold,
-    );
-
 get text12 => TextStyle(fontSize: 12.sp, color: Colors.black);
 
 get text12Bold => TextStyle(
@@ -79,8 +73,6 @@ get text16BlueBold => TextStyle(
 get text18 => TextStyle(fontSize: 18.sp, color: Colors.black);
 
 get text20 => TextStyle(fontSize: 20.sp, color: Colors.black);
-
-get text20White => TextStyle(fontSize: 20.sp, color: Colors.white);
 
 get text20blue => TextStyle(fontSize: 20.sp, color: Colors.blueAccent);
 

@@ -1,3 +1,4 @@
+import 'package:html/parser.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/enumeration/enum_map.dart';
 import 'package:orginone/util/hive_util.dart';
@@ -14,24 +15,33 @@ class StringUtil {
         .toUpperCase();
   }
 
+  static String removeHtml(String? target) {
+    if (target == null) {
+      return "";
+    }
+    var document = parse(target);
+    return parse(document.body?.text).documentElement?.text ?? "";
+  }
+
   static String getAvatarName({
     required String avatarName,
     required TextAvatarType type,
   }) {
     switch (type) {
       case TextAvatarType.space:
-      case TextAvatarType.avatar:
         return StringUtil.getPrefixChars(avatarName, count: 1);
       case TextAvatarType.chat:
         return StringUtil.getPrefixChars(avatarName, count: 2);
+      case TextAvatarType.avatar:
+        return StringUtil.getPrefixChars(avatarName, count: 1);
     }
   }
 
-  static String getDetailRecallBody({
-    required MessageItemResp item,
-    required MessageDetailResp detail,
-    required Map<String, dynamic> nameMap,
-  }) {
+  static String getDetailRecallBody(
+    MessageItemResp item,
+    MessageDetailResp detail,
+    Map<String, dynamic> nameMap,
+  ) {
     var userInfo = HiveUtil().getValue(Keys.userInfo);
     String msgBody = "撤回了一条消息";
     var targetType = EnumMap.targetTypeMap[item.typeName];
@@ -58,25 +68,5 @@ class StringUtil {
       }
     }
     return msgBody;
-  }
-
-  /// 分:秒显示
-  static String getMinusShow(int seconds) {
-    int minus = seconds ~/ 60;
-    int remainder = seconds % 60;
-    String prefix = "", suffix = "";
-    if (minus < 10) {
-      prefix = "0$minus";
-    } else if (minus < 100) {
-      prefix = "$minus";
-    } else {
-      prefix = "99";
-    }
-    if (remainder < 10) {
-      suffix = "0$remainder";
-    } else {
-      suffix = "$remainder";
-    }
-    return "$prefix:$suffix";
   }
 }

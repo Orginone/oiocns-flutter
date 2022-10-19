@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 const EdgeInsets defaultPadding = EdgeInsets.only(left: 15, top: 15, right: 15);
-const Icon defaultOperate = Icon(Icons.keyboard_arrow_right);
 
 class ChooseItem extends StatelessWidget {
   final Widget header;
@@ -17,7 +16,7 @@ class ChooseItem extends StatelessWidget {
       required this.header,
       required this.func,
       this.padding = defaultPadding,
-      this.operate = defaultOperate,
+      this.operate,
       this.body,
       this.content})
       : super(key: key);
@@ -30,12 +29,7 @@ class ChooseItem extends StatelessWidget {
       row.add(body!);
     }
     if (operate != null) {
-      row.add(Expanded(
-        child: Container(
-          alignment: Alignment.centerRight,
-          child: operate!,
-        ),
-      ));
+      row.add(operate!);
     }
     Row chooseItem = Row(
       crossAxisAlignment: CrossAxisAlignment.center,

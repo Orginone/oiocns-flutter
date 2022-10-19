@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/appbar/gf_appbar.dart';
 
-import 'unified_colors.dart';
+import '../config/custom_colors.dart';
 
 const double defaultAppBarPercent = 0.07;
-const Color defaultAppBarColor = UnifiedColors.lightGrey;
+const Color defaultAppBarColor = CustomColors.lightGrey;
 const Color defaultBgColor = Colors.white;
 
 class UnifiedScaffold extends StatelessWidget {
   final double appBarPercent;
-  final double? appBarHeight;
   final Color appBarBgColor;
   final Color bgColor;
   final List<Widget>? appBarActions;
@@ -19,12 +18,10 @@ class UnifiedScaffold extends StatelessWidget {
   final Widget? body;
   final Widget? bottomNavigationBar;
   final Widget? floatingButton;
-  final bool? resizeToAvoidBottomInset;
 
   const UnifiedScaffold(
       {Key? key,
       this.appBarPercent = defaultAppBarPercent,
-      this.appBarHeight,
       this.appBarBgColor = defaultAppBarColor,
       this.bgColor = defaultBgColor,
       this.appBarActions,
@@ -33,18 +30,15 @@ class UnifiedScaffold extends StatelessWidget {
       this.appBarLeading,
       this.body,
       this.bottomNavigationBar,
-      this.floatingButton,
-      this.resizeToAvoidBottomInset})
+      this.floatingButton})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height * appBarPercent;
-    height = appBarHeight ?? height;
+    var height = MediaQuery.of(context).size.height;
     return Scaffold(
-      resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(height),
+        preferredSize: Size.fromHeight(height * appBarPercent),
         child: GFAppBar(
           titleSpacing: 0.0,
           actions: appBarActions,

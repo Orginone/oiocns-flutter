@@ -25,21 +25,22 @@ class ChatPage extends GetView<ChatController> {
   @override
   Widget build(BuildContext context) {
     return UnifiedScaffold(
-      resizeToAvoidBottomInset: false,
       appBarLeading: WidgetUtil.defaultBackBtn,
       appBarTitle: _title,
       appBarActions: _actions,
-      body: _body(context),
+      body: _body,
     );
   }
 
   get _title => Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Obx(() => Text(
-                controller.titleName.value,
-                style: text20,
-              )),
+          Obx(
+            () => Text(
+              controller.titleName.value,
+              style: text20,
+            ),
+          ),
           Container(
             margin: left10,
           ),
@@ -114,14 +115,7 @@ class ChatPage extends GetView<ChatController> {
     }
   }
 
-  Widget _body(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).requestFocus(FocusNode());
-        ChatBoxController chatBoxController = Get.find<ChatBoxController>();
-        chatBoxController.eventFire(context, InputEvent.clickBlank);
-      },
-      child: Column(
+  get _body => Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
@@ -147,9 +141,7 @@ class ChatPage extends GetView<ChatController> {
               ),
             ),
           ),
-          ChatBox()
+          ChatBox(controller.sendOneMessage)
         ],
-      ),
-    );
-  }
+      );
 }

@@ -1,8 +1,6 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
-import 'package:orginone/page/home/center/center_binding.dart';
-import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/component/person_detail/person_detail_binding.dart';
 import 'package:orginone/page/home/component/person_detail/person_detail_page.dart';
 import 'package:orginone/page/home/component/person_add/person_add_binding.dart';
@@ -41,10 +39,8 @@ import 'package:orginone/page/home/organization/organization_binding.dart';
 import 'package:orginone/page/home/organization/organization_page.dart';
 import 'package:orginone/page/home/organization/units/units_binding.dart';
 import 'package:orginone/page/home/organization/units/units_page.dart';
-import 'package:orginone/page/home/search/search_binding.dart';
+import 'package:orginone/page/home/search/search_list.dart';
 import 'package:orginone/page/home/search/search_page.dart';
-import 'package:orginone/page/home/work/work_binding.dart';
-import 'package:orginone/page/home/work/work_page.dart';
 import 'package:orginone/page/login/login_binding.dart';
 import 'package:orginone/page/login/login_page.dart';
 import 'package:orginone/page/register/register_binding.dart';
@@ -63,7 +59,6 @@ class Routers {
   static const String spaceChoose = "/spaceChoose";
   static const String message = "/message";
   static const String organization = "/organization";
-  static const String work = "/work";
   static const String chat = "/chat";
   static const String messageSetting = "/messageSetting";
   static const String friends = "/friends";
@@ -106,10 +101,6 @@ class Routers {
           page: () => const HomePage(),
           binding: HomeBinding()),
       GetPage(
-          name: Routers.home,
-          page: () => const CenterPage(),
-          binding: CenterBinding()),
-      GetPage(
           name: Routers.spaceChoose,
           page: () => const SpaceChoosePage(),
           binding: SpaceChooseBinding()),
@@ -122,11 +113,6 @@ class Routers {
         name: Routers.organization,
         page: () => const OrganizationPage(),
         binding: OrganizationBinding(),
-      ),
-      GetPage(
-        name: Routers.work,
-        page: () => const WorkPage(),
-        binding: WorkBinding(),
       ),
       GetPage(
         name: Routers.chat,
