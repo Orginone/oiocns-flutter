@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
@@ -23,7 +24,7 @@ import '../../../util/string_util.dart';
 import 'chat/chat_controller.dart';
 
 /// 所有与后端消息交互的逻辑都先保存至数据库中再读取出来
-class MessageController extends GetxController with WidgetsBindingObserver {
+class MessageController extends GetxController with WidgetsBindingObserver, GetSingleTickerProviderStateMixin {
   // 日志对象
   Logger log = Logger("MessageController");
 
@@ -37,16 +38,21 @@ class MessageController extends GetxController with WidgetsBindingObserver {
   // 当前 app 状态
   AppLifecycleState? currentAppState;
 
+  // 应用内 Tab
+  late TabController tabController;
+
   // 会话加载状态
   bool isLoaded = false;
 
   @override
-  void onInit() async {
+  void onInit() {
     super.onInit();
+    // 页签控制器
+    tabController = TabController(length: 2, vsync: this);
     // 监听页面的生命周期
     WidgetsBinding.instance.addObserver(this);
     // 订阅聊天面板信息
-    await _subscribingCharts();
+    _subscribingCharts();
   }
 
   // 分组排序

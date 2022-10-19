@@ -9,6 +9,7 @@ const Color defaultBgColor = Colors.white;
 
 class UnifiedScaffold extends StatelessWidget {
   final double appBarPercent;
+  final double? appBarHeight;
   final Color appBarBgColor;
   final Color bgColor;
   final List<Widget>? appBarActions;
@@ -23,6 +24,7 @@ class UnifiedScaffold extends StatelessWidget {
   const UnifiedScaffold(
       {Key? key,
       this.appBarPercent = defaultAppBarPercent,
+      this.appBarHeight,
       this.appBarBgColor = defaultAppBarColor,
       this.bgColor = defaultBgColor,
       this.appBarActions,
@@ -37,11 +39,12 @@ class UnifiedScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
+    var height = MediaQuery.of(context).size.height * appBarPercent;
+    height = appBarHeight ?? height;
     return Scaffold(
       resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(height * appBarPercent),
+        preferredSize: Size.fromHeight(height),
         child: GFAppBar(
           titleSpacing: 0.0,
           actions: appBarActions,

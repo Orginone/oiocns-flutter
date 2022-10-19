@@ -20,11 +20,10 @@ class StringUtil {
   }) {
     switch (type) {
       case TextAvatarType.space:
+      case TextAvatarType.avatar:
         return StringUtil.getPrefixChars(avatarName, count: 1);
       case TextAvatarType.chat:
         return StringUtil.getPrefixChars(avatarName, count: 2);
-      case TextAvatarType.avatar:
-        return StringUtil.getPrefixChars(avatarName, count: 1);
     }
   }
 

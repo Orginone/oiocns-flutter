@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
@@ -25,7 +27,6 @@ class HomeController extends GetxController
       Get.find<OrganizationController>();
 
   UserResp user = HiveUtil().getValue(Keys.user);
-  TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
 
   late List<TabCombine> tabs;
   late TabController tabController;
@@ -59,19 +60,22 @@ class HomeController extends GetxController
   }
 
   Future<void> _initCurrentSpace() async {
+    var userInfo = HiveUtil().getValue(Keys.userInfo);
     currentSpace = TargetResp.copyWith(userInfo);
     currentSpace.name = "个人空间";
   }
 
   void _initTabs() {
-    var message = _buildTab(Icons.chat_bubble_outline, '消息');
-    var relation = _buildTab(Icons.groups_outlined, '关系');
-    var work = _buildTab(Icons.work_outline, '工作台');
-    var my = _buildTab(Icons.person_outline, '我的');
+    var message = _buildTab(Icons.group_outlined, '沟通');
+    var relation = _buildTab(Icons.book_outlined, '办事');
+    var center = _buildCenter(Icons.circle);
+    var work = _buildTab(Icons.warehouse_outlined, '仓库');
+    var my = _buildTab(Icons.person, '设置');
 
     tabs = <TabCombine>[
       TabCombine(message, const MessagePage()),
       TabCombine(relation, const OrganizationPage()),
+      TabCombine(center, const CenterPage()),
       TabCombine(work, const WorkPage()),
       TabCombine(my, const MinePage()),
     ];
@@ -81,9 +85,24 @@ class HomeController extends GetxController
 
   Tab _buildTab(IconData iconData, String label) {
     return Tab(
-      iconMargin: const EdgeInsets.all(5),
+      iconMargin: EdgeInsets.all(5.w),
       icon: Icon(iconData),
       child: Text(label),
+    );
+  }
+
+  Tab _buildCenter(IconData iconData) {
+    double width = 36.w;
+    return Tab(
+      iconMargin: const EdgeInsets.all(0),
+      icon: Container(
+          width: width,
+          height: width,
+          decoration: BoxDecoration(
+            color: Colors.grey,
+            borderRadius: BorderRadius.all(Radius.circular(width)),
+          ),
+        ),
     );
   }
 
