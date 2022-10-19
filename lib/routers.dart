@@ -1,6 +1,8 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
+import 'package:orginone/page/home/center/center_binding.dart';
+import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/component/person_detail/person_detail_binding.dart';
 import 'package:orginone/page/home/component/person_detail/person_detail_page.dart';
 import 'package:orginone/page/home/component/person_add/person_add_binding.dart';
@@ -103,6 +105,10 @@ class Routers {
           name: Routers.home,
           page: () => const HomePage(),
           binding: HomeBinding()),
+      GetPage(
+          name: Routers.home,
+          page: () => const CenterPage(),
+          binding: CenterBinding()),
       GetPage(
           name: Routers.spaceChoose,
           page: () => const SpaceChoosePage(),

@@ -27,9 +27,8 @@ class HomePage extends GetView<HomeController> {
     SysUtil.setStatusBarBright();
     controller.context = context;
     return UnifiedScaffold(
-      appBarActions: _actions(context),
       appBarTitle: _title,
-      appBarLeading: _leading,
+      appBarHeight: 10.h + 28.w + 5.h + 28.w + 5.h,
       body: _body,
       bottomNavigationBar: _bottomNavigatorBar,
     );
@@ -107,109 +106,123 @@ class HomePage extends GetView<HomeController> {
     );
   }
 
-  List<Widget> _actions(BuildContext context) {
-    return [
-      GFIconButton(
-          color: UnifiedColors.lightGrey,
-          icon: const Icon(Icons.search, color: Colors.black),
-          onPressed: () {
-            Get.toNamed(Routers.search);
-          }),
-      _popMenu(context)
-    ];
-  }
-
-  get _leading => TextAvatar(
-        avatarName: StringUtil.getAvatarName(
-          avatarName: controller.user.userName,
-          type: TextAvatarType.avatar,
-        ),
-        textStyle: text16White,
-        margin: all10,
-      );
-
-  get _title => Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Column(
-            children: [
-              Row(
-                children: [
-                  Obx(() {
-                    Color color;
-                    switch (HubUtil().state.value) {
-                      case HubConnectionState.connecting:
-                      case HubConnectionState.disconnecting:
-                      case HubConnectionState.reconnecting:
-                        color = Colors.yellow;
-                        break;
-                      case HubConnectionState.connected:
-                        color = Colors.greenAccent;
-                        break;
-                      default:
-                        color = Colors.redAccent;
-                    }
-                    return Icon(
-                      Icons.circle,
-                      size: 10,
-                      color: color,
-                    );
-                  }),
-                  Container(margin: EdgeInsets.only(left: 5.w)),
-                  Text("会话", style: text10Bold),
-                ],
+  get _title {
+    var spaceName = controller.currentSpace.name;
+    var userName = controller.user.userName;
+    var spaceKeyWord = StringUtil.getPrefixChars(spaceName, count: 1);
+    var userKeyWord = StringUtil.getPrefixChars(userName, count: 1);
+    return Column(
+      children: [
+        Container(margin: EdgeInsets.only(top: 10.h)),
+        Row(
+          children: [
+            TextAvatar(
+              radius: 28.w,
+              width: 28.w,
+              avatarName: spaceKeyWord,
+              textStyle: text16White,
+              margin: EdgeInsets.only(left: 20.w),
+            ),
+            Container(margin: EdgeInsets.only(left: 10.w)),
+            Expanded(
+              child: GetBuilder<HomeController>(
+                init: controller,
+                builder: (controller) {
+                  return GestureDetector(
+                    onTap: () {
+                      Get.toNamed(Routers.spaceChoose);
+                    },
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          spaceName,
+                          style: text16Bold,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Container(margin: EdgeInsets.only(left: 2.w)),
+                        const Icon(Icons.arrow_drop_down, color: Colors.black)
+                      ],
+                    ),
+                  );
+                },
               ),
-              Container(margin: EdgeInsets.only(top: 5.h)),
-              Row(
-                children: [
-                  Obx(() {
-                    Color color;
-                    switch (AnyStoreUtil().state.value) {
-                      case HubConnectionState.connecting:
-                      case HubConnectionState.disconnecting:
-                      case HubConnectionState.reconnecting:
-                        color = Colors.yellow;
-                        break;
-                      case HubConnectionState.connected:
-                        color = Colors.greenAccent;
-                        break;
-                      default:
-                        color = Colors.redAccent;
-                    }
-                    return Icon(
-                      Icons.circle,
-                      size: 10,
-                      color: color,
-                    );
-                  }),
-                  Container(margin: EdgeInsets.only(left: 5.w)),
-                  Text("存储", style: text10Bold),
-                ],
-              )
-            ],
+            ),
+            Column(
+              children: [
+                _conn(HubUtil().state, "会话"),
+                Container(margin: EdgeInsets.only(top: 2.h)),
+                _conn(AnyStoreUtil().state, "存储"),
+              ],
+            ),
+            Container(margin: EdgeInsets.only(left: 10.w)),
+            TextAvatar(
+              radius: 28.w,
+              width: 28.w,
+              avatarName: userKeyWord,
+              textStyle: text16White,
+              margin: EdgeInsets.only(right: 20.w),
+            ),
+          ],
+        ),
+        Container(margin: EdgeInsets.only(top: 5.h)),
+        Row(children: [
+          Container(
+            margin: EdgeInsets.only(left: 20.w),
+            child: const Icon(Icons.read_more_outlined, color: Colors.black),
           ),
-          Container(padding: EdgeInsets.only(left: 10.w)),
-          Icon(Icons.repeat, color: Colors.black, size: 18.w),
-          Container(padding: EdgeInsets.only(left: 10.w)),
-          Expanded(
-            child: GetBuilder<HomeController>(
-              init: controller,
-              builder: (controller) {
-                return GestureDetector(
-                  onTap: () {
-                    Get.toNamed(Routers.spaceChoose);
-                  },
-                  child: Text(
-                    controller.currentSpace.name,
-                    style: text16Bold,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                );
+          Expanded(child: Container()),
+          Container(
+            margin: EdgeInsets.only(left: 10.w),
+            child: const Icon(Icons.search, color: Colors.black),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 10.w),
+            child: GestureDetector(
+              child: const Icon(Icons.add, color: Colors.black),
+              onTap: () {
+                Get.toNamed(Routers.search);
               },
             ),
           ),
-        ],
-      );
+          Container(
+            margin: EdgeInsets.only(left: 10.w, right: 20.w),
+            child: const Icon(Icons.more_horiz, color: Colors.black),
+          ),
+        ])
+      ],
+    );
+  }
+
+  Widget _conn(Rx<HubConnectionState> status, String name) {
+    return Row(
+      children: [
+        Obx(() {
+          Color color;
+          switch (status.value) {
+            case HubConnectionState.connecting:
+            case HubConnectionState.disconnecting:
+            case HubConnectionState.reconnecting:
+              color = Colors.yellow;
+              break;
+            case HubConnectionState.connected:
+              color = Colors.greenAccent;
+              break;
+            default:
+              color = Colors.redAccent;
+          }
+          return Icon(
+            Icons.circle,
+            size: 10,
+            color: color,
+          );
+        }),
+        Container(margin: EdgeInsets.only(left: 5.w)),
+        Text(name, style: text10Bold),
+      ],
+    );
+  }
 
   get _body => GFTabBarView(
       controller: controller.tabController,
@@ -228,7 +241,7 @@ class HomePage extends GetView<HomeController> {
           ],
         ),
         child: GFTabBar(
-          tabBarHeight: 60,
+          tabBarHeight: 70.h,
           indicatorColor: Colors.blueAccent,
           tabBarColor: UnifiedColors.easyGrey,
           labelColor: Colors.black,
