@@ -24,7 +24,8 @@ import '../../../util/string_util.dart';
 import 'chat/chat_controller.dart';
 
 /// 所有与后端消息交互的逻辑都先保存至数据库中再读取出来
-class MessageController extends GetxController with WidgetsBindingObserver, GetSingleTickerProviderStateMixin {
+class MessageController extends GetxController
+    with WidgetsBindingObserver, GetSingleTickerProviderStateMixin {
   // 日志对象
   Logger log = Logger("MessageController");
 
@@ -269,7 +270,11 @@ class MessageController extends GetxController with WidgetsBindingObserver, GetS
             currentItem.showTxt = msgBody;
           }
           if (currentItem.typeName != TargetType.person.name) {
-            String name = orgChatCache.nameMap[detail.fromId];
+            var nameMap = orgChatCache.nameMap;
+            if (!nameMap.containsKey(detail.fromId)) {
+              nameMap[detail.fromId] = await HubUtil().getName(detail.fromId);
+            }
+            String name = nameMap[detail.fromId];
             currentItem.showTxt = "$name: ${currentItem.showTxt}";
           }
 

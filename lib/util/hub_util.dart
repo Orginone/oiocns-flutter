@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
+import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/util/any_store_util.dart';
@@ -236,7 +237,11 @@ class HubUtil {
   }
 
   /// 获取人员
-  Future<List<TargetResp>> getPersons(String id, int limit, int offset) async {
+  Future<PageResp<TargetResp>> getPersons(
+    String id,
+    int limit,
+    int offset,
+  ) async {
     if (_isAuthed) {
       String event = SendEvent.GetPersons.name;
       Map<String, dynamic> params = {
@@ -247,17 +252,7 @@ class HubUtil {
       dynamic res = await _server!.invoke(event, args: [params]);
 
       ApiResp apiResp = ApiResp.fromMap(res);
-      var targetList = apiResp.data["result"];
-      if (targetList == null) {
-        return [];
-      }
-
-      List<TargetResp> temp = [];
-      for (var target in targetList) {
-        var targetResp = TargetResp.fromMap(target);
-        temp.add(targetResp);
-      }
-      return temp;
+      return PageResp.fromMap(apiResp.data, TargetResp.fromMap);
     }
     Fluttertoast.showToast(msg: "未连接聊天服务器!");
     throw Exception("未连接聊天服务器!");
@@ -373,7 +368,7 @@ class HubUtil {
   /// 重连定时器
   void _connTimeout() {
     log.info("====> 5s 后，hub 开始重新连接");
-    Duration duration = const Duration(seconds: 5);
+    Duration duration = const Duration(seconds: 2);
     Timer(duration, () async {
       await disconnect();
       await tryConn();

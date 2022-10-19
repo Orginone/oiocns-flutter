@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api_resp/org_chat_cache.dart';
+import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/util/hive_util.dart';
 
 import '../../../../api_resp/message_item_resp.dart';
+import '../../../../enumeration/target_type.dart';
+import '../../../../util/hub_util.dart';
 
 class MessageSettingController extends GetxController {
   final Logger log = Logger("MessageSettingController");
@@ -28,19 +32,21 @@ class MessageSettingController extends GetxController {
   //当前关系对象(观测)的信息
   Rx<MessageItemResp>? messageItem;
   Rx<String>? spaceId;
-  Rx<String>? messageItemId;
-  RxList<TargetResp>? personList;
+  late String messageItemId;
+  RxList<TargetResp> personList = <TargetResp>[].obs;
 
   @override
   void onInit() async {
     //初始化
     Map<String, dynamic> args = Get.arguments;
     spaceId = RxString(args["spaceId"]);
-    messageItemId = RxString(args["messageItemId"]);
+    messageItemId = args["messageItemId"];
     messageItem = Rx<MessageItemResp>(args["messageItem"]);
-    personList = RxList<TargetResp>(args["personList"]);
+
+    await getPersons();
+
     //初始化成员列表
-    for (TargetResp person in personList!) {
+    for (TargetResp person in personList) {
       originPersonList.add(person);
       filterPersonList.add(person);
     }
@@ -68,5 +74,36 @@ class MessageSettingController extends GetxController {
     // ApiResp apiResp = ApiResp.fromMap(chats);
     // 存入对应
     // relationObj = relationResp.data
+  }
+
+  /// 查询群成员信息
+  Future<void> getPersons() async {
+    OrgChatCache orgChatCache = messageController.orgChatCache;
+    Map<String, dynamic> nameMap = orgChatCache.nameMap;
+
+    int offset = 0;
+    int limit = 100;
+    while (true) {
+      PageResp<TargetResp> personPage = await HubUtil().getPersons(
+        messageItemId,
+        limit,
+        offset,
+      );
+      var persons = personPage.result;
+      personList.addAll(persons);
+      if (persons.isEmpty) {
+        break;
+      }
+      for (var person in persons) {
+        var typeName = person.typeName;
+        typeName = typeName == TargetType.person.name ? "" : "[$typeName]";
+        nameMap[person.id] = "${person.team?.name}$typeName";
+      }
+      offset += limit;
+      if (persons.length < limit) {
+        break;
+      }
+    }
+    HubUtil().cacheChats(orgChatCache);
   }
 }

@@ -11,6 +11,7 @@ import 'package:logging/logging.dart';
 import 'package:orginone/api/bucket_api.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
+import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/page/home/message/chat/component/chat_message_detail.dart';
 import 'package:orginone/util/encryption_util.dart';
@@ -64,9 +65,6 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
 
   // 当前群所有人
   late RxString titleName;
-  late Map<String, TargetResp> personMap;
-  late Map<String, String> personNameMap;
-  late List<TargetResp> personList;
 
   // 观测对象
   late List<MessageDetailResp> messageDetails;
@@ -107,13 +105,10 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
 
     // 清空所有聊天记录
     messageDetails = [];
-    personNameMap = {};
-    personMap = {};
-    personList = [];
 
     // 初始化老数据个数，查询聊天记录的个数
-    await getPersons();
     await getHistoryMsg();
+    await getTotal();
     titleName.value = getTitleName();
     update();
 
@@ -153,7 +148,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     updateAndToBottom();
   }
 
-  void orgChatHandler() {
+  void orgChatHandler() async {
     // 不存在就加入
     OrgChatCache orgChatCache = messageController.orgChatCache;
     orgChatCache.openChats = orgChatCache.openChats
@@ -161,60 +156,39 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         .toList();
     orgChatCache.openChats.add(messageItem);
 
-    // 加入所有人员群缓存
-    orgChatCache.nameMap.addAll(personNameMap);
-
     // 加入自己
     messageItem.noRead = 0;
-    messageItem.personNum = personMap.length;
     messageController.update();
 
     HubUtil().cacheChats(messageController.orgChatCache);
   }
 
-  /// 查询群成员信息
-  Future<Map<String, String>> getPersons() async {
-    if (messageItem.typeName == TargetType.person.name) {
-      var name = await HubUtil().getName(messageItemId);
-      personNameMap[messageItemId] = name;
-      return personNameMap;
+  Future<int> getTotal() async {
+    if (messageItem.typeName != TargetType.person.name) {
+      var page = await HubUtil().getPersons(messageItemId, 1, 0);
+      return page.total;
     }
-    int offset = 0;
-    int limit = 100;
-    while (true) {
-      List<TargetResp> persons = await HubUtil().getPersons(
-        messageItemId,
-        limit,
-        offset,
-      );
-      personList.addAll(persons);
-      if (persons.isEmpty) {
-        break;
-      }
-      for (var person in persons) {
-        personMap[person.id] = person;
-        var typeName = person.typeName;
-        typeName = typeName == TargetType.person.name ? "" : "[$typeName]";
-        personNameMap[person.id] = "${person.team?.name}$typeName";
-      }
-      offset += limit;
-      if (persons.length < limit) {
-        break;
-      }
-    }
-    return personNameMap;
+    return 0;
   }
 
   /// 下拉时刷新旧的聊天记录
-  Future<void> getHistoryMsg() async {
+  Future<void> getHistoryMsg({bool isCacheNameMap = false}) async {
     String typeName = messageItem.typeName;
 
     var insertPointer = messageDetails.length;
     List<MessageDetailResp> newDetails = await HubUtil()
         .getHistoryMsg(spaceId, messageItemId, typeName, insertPointer, 15);
 
+    Map<String, dynamic> nameMap = messageController.orgChatCache.nameMap;
     for (MessageDetailResp detail in newDetails) {
       messageDetails.insert(insertPointer, detail);
+      if (!nameMap.containsKey(detail.fromId)) {
+        var name = await HubUtil().getName(detail.fromId);
+        nameMap[detail.fromId] = name;
+      }
+    }
+    if (isCacheNameMap) {
+      HubUtil().cacheChats(messageController.orgChatCache);
     }
   }
 
@@ -298,7 +272,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   String getTitleName() {
     String itemName = messageItem.name;
     if (messageItem.typeName != TargetType.person.name) {
-      itemName = "$itemName(${personList.length})";
+      itemName = "$itemName(${messageItem.personNum ?? 0})";
     }
     return itemName;
   }

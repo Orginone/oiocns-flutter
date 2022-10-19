@@ -220,9 +220,9 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                         return GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () {
-                            Get.toNamed(Routers.personDetail,arguments:
-                              controller.filterPersonList[index].team?.code
-                            );
+                            Get.toNamed(Routers.personDetail,
+                                arguments: controller
+                                    .filterPersonList[index].team?.code);
                           },
                           child: Container(
                             width: 50,
@@ -283,8 +283,10 @@ class MessageSettingPage extends GetView<MessageSettingController> {
               fontSize: 16, color: Color.fromRGBO(255, 0, 0, 1)),
           fullWidthButton: true,
           onPressed: () async {
-            HubUtil().clearHistoryMsg(controller.spaceId?.value,
-                controller.messageItemId?.value ?? '');
+            HubUtil().clearHistoryMsg(
+              controller.spaceId?.value,
+              controller.messageItemId,
+            );
           },
           text: "清空聊天记录",
         );
@@ -297,8 +299,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
               textStyle: const TextStyle(
                   fontSize: 16, color: Color.fromRGBO(255, 0, 0, 1)),
               fullWidthButton: true,
-              onPressed: () async {
-              },
+              onPressed: () async {},
               text: "删除好友",
             ),
             const Divider(
@@ -311,8 +312,8 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                   fontSize: 16, color: Color.fromRGBO(255, 0, 0, 1)),
               fullWidthButton: true,
               onPressed: () async {
-                HubUtil().clearHistoryMsg(controller.spaceId?.value,
-                    controller.messageItemId?.value ?? '');
+                HubUtil().clearHistoryMsg(
+                    controller.spaceId?.value, controller.messageItemId);
               },
               text: "清空聊天记录",
             ),

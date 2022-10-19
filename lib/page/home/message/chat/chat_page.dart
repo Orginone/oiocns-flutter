@@ -61,7 +61,6 @@ class ChatPage extends GetView<ChatController> {
               "spaceId": controller.spaceId,
               "messageItemId": controller.messageItemId,
               "messageItem": controller.messageItem,
-              "personList": controller.personList
             };
             Get.toNamed(Routers.messageSetting, arguments: args);
           },
@@ -127,7 +126,7 @@ class ChatPage extends GetView<ChatController> {
           Expanded(
             child: RefreshIndicator(
               onRefresh: () async {
-                await controller.getHistoryMsg();
+                await controller.getHistoryMsg(isCacheNameMap: true);
                 controller.update();
               },
               child: Container(

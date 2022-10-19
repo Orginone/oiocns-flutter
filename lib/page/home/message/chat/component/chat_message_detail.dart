@@ -94,20 +94,18 @@ class ChatMessageDetail extends GetView<ChatController> {
   /// 目标名称
   String targetName() {
     OrgChatCache orgChatCache = controller.messageController.orgChatCache;
-    return orgChatCache.nameMap[detail.fromId] ?? "";
+    return orgChatCache.nameMap[detail.fromId];
   }
 
   // 获取头像
   Widget _getAvatar() {
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-    return SizeCacheWidget(
-      child: TextAvatar(
-        avatarName: StringUtil.getAvatarName(
-          avatarName: isMy ? userInfo.team?.name ?? "" : targetName(),
-          type: TextAvatarType.chat,
-        ),
-        textStyle: text12WhiteBold,
+    return TextAvatar(
+      avatarName: StringUtil.getAvatarName(
+        avatarName: isMy ? userInfo.team?.name ?? "" : targetName(),
+        type: TextAvatarType.chat,
       ),
+      textStyle: text12WhiteBold,
     );
   }
 
