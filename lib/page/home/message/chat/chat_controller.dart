@@ -11,7 +11,6 @@ import 'package:logging/logging.dart';
 import 'package:orginone/api/bucket_api.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
-import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/page/home/message/chat/component/chat_message_detail.dart';
 import 'package:orginone/util/encryption_util.dart';
@@ -250,9 +249,9 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   void sendVoice(String fileName, String filePath, int milliseconds) async {
     TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
 
-    String prefix = "/chat/${userInfo.id}/${messageItem.id}/voice/$fileName";
+    String prefix = "/chat/${userInfo.id}/${messageItem.id}/voice";
     await BucketApi.upload(
-      prefix: prefix,
+      prefix: EncryptionUtil.encodeURLString(prefix),
       filePath: filePath,
       fileName: fileName,
     );
