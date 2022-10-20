@@ -107,27 +107,19 @@ class HomePage extends GetView<HomeController> {
   }
 
   get _title {
-    var spaceName = controller.currentSpace.name;
     var userName = controller.user.userName;
-    var spaceKeyWord = StringUtil.getPrefixChars(spaceName, count: 1);
     var userKeyWord = StringUtil.getPrefixChars(userName, count: 1);
     return Column(
       children: [
         Container(margin: EdgeInsets.only(top: 10.h)),
         Row(
           children: [
-            TextAvatar(
-              radius: 28.w,
-              width: 28.w,
-              avatarName: spaceKeyWord,
-              textStyle: text16White,
-              margin: EdgeInsets.only(left: 20.w),
-            ),
-            Container(margin: EdgeInsets.only(left: 10.w)),
             Expanded(
               child: GetBuilder<HomeController>(
                 init: controller,
                 builder: (controller) {
+                  var spaceName = controller.currentSpace.name;
+                  var spaceKeyWord = StringUtil.getPrefixChars(spaceName, count: 1);
                   return GestureDetector(
                     onTap: () {
                       Get.toNamed(Routers.spaceChoose);
@@ -136,6 +128,14 @@ class HomePage extends GetView<HomeController> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        TextAvatar(
+                          radius: 28.w,
+                          width: 28.w,
+                          avatarName: spaceKeyWord,
+                          textStyle: text16White,
+                          margin: EdgeInsets.only(left: 20.w),
+                        ),
+                        Container(margin: EdgeInsets.only(left: 10.w)),
                         Text(
                           spaceName,
                           style: text16Bold,
