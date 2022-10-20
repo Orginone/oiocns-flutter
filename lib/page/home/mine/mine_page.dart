@@ -6,6 +6,11 @@ import 'package:orginone/component/choose_item_type1.dart';
 import 'package:orginone/page/home/mine/mine_controller.dart';
 import 'package:orginone/routers.dart';
 
+import '../../../component/choose_item.dart';
+import '../../../component/icon_avatar.dart';
+import '../../../component/unified_edge_insets.dart';
+import '../../../component/unified_text_style.dart';
+
 class MinePage extends GetView<MineController> {
   const MinePage({Key? key}) : super(key: key);
 
@@ -16,18 +21,7 @@ class MinePage extends GetView<MineController> {
       children: [
         ListView(
           shrinkWrap: true,
-          children: [
-            ChooseItemType1(Icons.person, "个人信息", () {
-              Get.toNamed(Routers.mineInfo);
-            }),
-            ChooseItemType1(Icons.group, "我的单位", () {
-              Get.toNamed(Routers.mineUnit);
-            }),
-            ChooseItemType1(Icons.account_box, "我的名片", () {
-              Get.toNamed(Routers.mineCard);
-            }),
-            ChooseItemType1(Icons.group_add_sharp, "安全设置", () {})
-          ],
+          children: [_person, _unit, _businessCard, _secure],
         ),
         Container(
           margin: EdgeInsets.only(left: 20.w, bottom: 10.h, right: 20.w),
@@ -43,4 +37,68 @@ class MinePage extends GetView<MineController> {
       ],
     );
   }
+
+  get _person => ChooseItem(
+        header: const IconAvatar(
+          icon: Icon(
+            Icons.person,
+            color: Colors.white,
+          ),
+        ),
+        body: Container(
+          margin: left10,
+          child: Text("个人信息", style: text16Bold),
+        ),
+        func: () {
+          Get.toNamed(Routers.mineInfo);
+        },
+      );
+
+  get _unit => ChooseItem(
+        header: const IconAvatar(
+          icon: Icon(
+            Icons.person,
+            color: Colors.white,
+          ),
+        ),
+        body: Container(
+          margin: left10,
+          child: Text("我的单位", style: text16Bold),
+        ),
+        func: () {
+          Get.toNamed(Routers.mineUnit);
+        },
+      );
+
+  get _businessCard => ChooseItem(
+        header: const IconAvatar(
+          icon: Icon(
+            Icons.account_box,
+            color: Colors.white,
+          ),
+        ),
+        body: Container(
+          margin: left10,
+          child: Text("我的名片", style: text16Bold),
+        ),
+        func: () {
+          Get.toNamed(Routers.mineCard);
+        },
+      );
+
+  get _secure => ChooseItem(
+        header: const IconAvatar(
+          icon: Icon(
+            Icons.account_box,
+            color: Colors.white,
+          ),
+        ),
+        body: Container(
+          margin: left10,
+          child: Text("安全设置", style: text16Bold),
+        ),
+        func: () {
+          Get.toNamed(Routers.mineCard);
+        },
+      );
 }

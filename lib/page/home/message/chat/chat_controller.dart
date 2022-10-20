@@ -86,12 +86,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   @override
   void onClose() {
     super.onClose();
-    var orgChatCache = messageController.orgChatCache;
-    var openChats = orgChatCache.openChats
-        .where((chat) => chat.spaceId != spaceId || chat.id != messageItemId)
-        .toList();
-    orgChatCache.openChats = openChats;
-    HubUtil().cacheChats(orgChatCache);
+    closeChats();
   }
 
   // 初始化
@@ -107,13 +102,13 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     messageDetails = [];
 
     // 初始化老数据个数，查询聊天记录的个数
-    await getHistoryMsg();
     await getTotal();
+    await getHistoryMsg();
     titleName.value = getTitleName();
     update();
 
     // 处理缓存
-    orgChatHandler();
+    openChats();
   }
 
   // 消息接收函數
@@ -148,8 +143,18 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     updateAndToBottom();
   }
 
-  void orgChatHandler() async {
-    // 不存在就加入
+  closeChats() async {
+    // 关闭会话时去除当前的
+    var orgChatCache = messageController.orgChatCache;
+    orgChatCache.openChats = orgChatCache.openChats
+        .where((chat) => chat.spaceId != spaceId || chat.id != messageItemId)
+        .toList();
+
+    HubUtil().cacheChats(orgChatCache);
+  }
+
+  void openChats() async {
+    // 打开的会话不存在就加入
     OrgChatCache orgChatCache = messageController.orgChatCache;
     orgChatCache.openChats = orgChatCache.openChats
         .where((item) => item.id != messageItemId || item.spaceId != spaceId)
