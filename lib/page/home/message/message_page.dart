@@ -4,12 +4,14 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/tree_node.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/util/hive_util.dart';
 
 import '../../../component/choose_item.dart';
+import '../../../component/icon_avatar.dart';
 import '../../../component/unified_edge_insets.dart';
 import '../../../component/unified_text_style.dart';
 import '../../../routers.dart';
@@ -34,6 +36,10 @@ class MessagePage extends GetView<MessageController> {
             Text("通讯录"),
           ],
         ),
+      ),
+      Container(
+        margin: EdgeInsets.only(top: 2.h),
+        child: Divider(height: 1.h),
       ),
       Expanded(
         child: TabBarView(
@@ -66,13 +72,15 @@ class MessagePage extends GetView<MessageController> {
   Widget _relation() {
     List<Widget> children = [];
     children.addAll(_recent());
+    children.add(
+      Container(
+        margin: EdgeInsets.only(top: 10.h),
+        child: Divider(height: 1.h),
+      ),
+    );
     children.add(Container(margin: EdgeInsets.only(top: 10.h)));
 
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-    HomeController homeController = Get.find<HomeController>();
-    if (userInfo.id != homeController.currentSpace.id) {
-      children.addAll(_tree());
-    }
+    children.add(_tree());
 
     return Container(
       margin: EdgeInsets.only(left: 20.w, right: 20.w),
@@ -83,6 +91,7 @@ class MessagePage extends GetView<MessageController> {
   List<Widget> _recent() {
     double avatarWidth = 44.w;
     return [
+      Container(margin: EdgeInsets.only(top: 4.h)),
       Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -122,19 +131,164 @@ class MessagePage extends GetView<MessageController> {
     ];
   }
 
-  List<Widget> _tree() {
-    return [
-      ChooseItem(
+  Widget _tree() {
+    return GetBuilder<HomeController>(builder: (homeController) {
+      var currentSpace = homeController.currentSpace;
+      TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+      var isSelf = userInfo.id == currentSpace.id;
+
+      double leftWidth = 36.w;
+
+      // 选择项
+      List<Widget> body = [];
+      body.add(ChooseItem(
         padding: EdgeInsets.zero,
-        header: const TextTag("单位"),
+        header: Container(
+          alignment: Alignment.center,
+          width: leftWidth,
+          child: TextTag(
+            isSelf ? "个人" : "单位",
+            padding: EdgeInsets.all(4.w),
+            textStyle: TextStyle(
+              color: Colors.blueAccent,
+              fontSize: 10.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
         body: Container(
           margin: left10,
-          child: Text("组织架构", style: text16Bold),
+          child: Text(currentSpace.name, style: text20Bold),
         ),
         func: () {
-          Get.toNamed(Routers.dept);
+          Get.toNamed(Routers.dept, arguments: currentSpace.id);
         },
-      )
-    ];
+      ));
+
+      NodeCombine? nodeCombine = homeController.nodeCombine;
+      if (nodeCombine != null) {
+        TreeNode topNode = nodeCombine.topNode;
+        var children = topNode.children;
+        double top = 16.h;
+        if (children.isNotEmpty) {
+          body.add(Container(margin: EdgeInsets.only(top: top)));
+          body.add(_deptItem(children[0], leftWidth));
+          if (children.length > 1) {
+            body.add(Container(margin: EdgeInsets.only(top: top)));
+            body.add(_deptItem(children[1], leftWidth));
+            if (children.length > 2) {
+              body.add(Container(margin: EdgeInsets.only(top: top)));
+              body.add(_more(leftWidth));
+            }
+          }
+        }
+      }
+
+      double top = 12.h;
+      body.add(Container(margin: EdgeInsets.only(top: top)));
+      body.add(_otherUnits);
+      body.add(Container(margin: EdgeInsets.only(top: top)));
+      body.add(_chats);
+      body.add(Container(margin: EdgeInsets.only(top: top)));
+      body.add(Divider(height: 1.h));
+      body.add(Container(margin: EdgeInsets.only(top: top)));
+      body.add(_specialFocus);
+      body.add(Container(margin: EdgeInsets.only(top: top)));
+      body.add(_myRelation);
+
+      return Column(children: body);
+    });
   }
+
+  Widget _deptItem(TreeNode treeNode, double leftWidth) {
+    return ChooseItem(
+      padding: EdgeInsets.zero,
+      header: Container(
+        alignment: Alignment.centerRight,
+        width: leftWidth,
+        child: const Icon(Icons.arrow_right),
+      ),
+      body: Container(
+        margin: left10,
+        child: Text(treeNode.label, style: text18),
+      ),
+      func: () {
+        Get.toNamed(Routers.dept, arguments: treeNode.id);
+      },
+    );
+  }
+
+  Widget _more(double leftWidth) {
+    return ChooseItem(
+      padding: EdgeInsets.zero,
+      header: Container(width: leftWidth),
+      body: Container(
+        margin: left10,
+        child: Text("更多", style: text16),
+      ),
+      func: () {
+        Get.toNamed(Routers.dept);
+      },
+    );
+  }
+
+  get _otherUnits => ChooseItem(
+        padding: EdgeInsets.zero,
+        header: const IconAvatar(
+          icon: Icon(
+            Icons.group,
+            color: Colors.white,
+          ),
+        ),
+        body: Container(
+          margin: left10,
+          child: Text("其他单位", style: text16Bold),
+        ),
+        func: () {},
+      );
+
+  get _chats => ChooseItem(
+        padding: EdgeInsets.zero,
+        header: const IconAvatar(
+          icon: Icon(
+            Icons.group,
+            color: Colors.white,
+          ),
+        ),
+        body: Container(
+          margin: left10,
+          child: Text("奥集能通讯录", style: text16Bold),
+        ),
+        func: () {},
+      );
+
+  get _specialFocus => ChooseItem(
+        padding: EdgeInsets.zero,
+        header: const IconAvatar(
+          icon: Icon(
+            Icons.group,
+            color: Colors.white,
+          ),
+        ),
+        body: Container(
+          margin: left10,
+          child: Text("特别关注", style: text16Bold),
+        ),
+        func: () {},
+      );
+
+  get _myRelation => ChooseItem(
+        padding: EdgeInsets.zero,
+        header: const IconAvatar(
+          icon: Icon(
+            Icons.group,
+            color: Colors.white,
+          ),
+        ),
+        body: Container(
+          margin: left10,
+          child: Text("我的联系人", style: text16Bold),
+        ),
+        func: () {},
+      );
 }

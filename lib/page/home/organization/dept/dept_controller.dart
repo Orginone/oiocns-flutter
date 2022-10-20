@@ -33,7 +33,21 @@ class DeptController extends GetxController {
     if (nodeCombine == null) {
       return;
     }
-    await entryNode(nodeCombine!.topNode);
+    var topNode = nodeCombine!.topNode;
+    var nodeId = Get.arguments;
+    if (nodeId != null) {
+      List<TreeNode> queue = [topNode];
+      while (queue.isNotEmpty){
+        var first = queue.removeAt(0);
+        if (first.id == nodeId){
+          await entryNode(first);
+          return;
+        }
+        queue.addAll(first.children);
+      }
+    } else {
+      await entryNode(topNode);
+    }
   }
 
   /// 刷新人员

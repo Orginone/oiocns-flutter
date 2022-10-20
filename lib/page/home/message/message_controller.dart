@@ -23,7 +23,6 @@ import '../../../util/hub_util.dart';
 import '../../../util/string_util.dart';
 import 'chat/chat_controller.dart';
 
-/// 所有与后端消息交互的逻辑都先保存至数据库中再读取出来
 class MessageController extends GetxController
     with WidgetsBindingObserver, GetSingleTickerProviderStateMixin {
   // 日志对象
