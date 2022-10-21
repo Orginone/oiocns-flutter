@@ -368,7 +368,7 @@ class HubUtil {
   /// 重连定时器
   void _connTimeout() {
     log.info("====> 5s 后，hub 开始重新连接");
-    Duration duration = const Duration(seconds: 2);
+    Duration duration = const Duration(seconds: 5);
     Timer(duration, () async {
       await disconnect();
       await tryConn();
