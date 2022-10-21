@@ -161,7 +161,11 @@ class MessagePage extends GetView<MessageController> {
           child: Text(currentSpace.name, style: text20Bold),
         ),
         func: () {
-          Get.toNamed(Routers.dept, arguments: currentSpace.id);
+          if (isSelf) {
+            Get.toNamed(Routers.friends);
+          } else {
+            Get.toNamed(Routers.dept, arguments: currentSpace.id);
+          }
         },
       ));
 

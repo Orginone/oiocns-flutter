@@ -97,7 +97,7 @@ class HomeController extends GetxController
   Tab _buildCenter(IconData iconData) {
     double width = 36.w;
     return Tab(
-      iconMargin: const EdgeInsets.all(0),
+      iconMargin: EdgeInsets.zero,
       icon: Container(
         width: width,
         height: width,
