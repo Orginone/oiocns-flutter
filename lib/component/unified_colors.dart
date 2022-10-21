@@ -8,4 +8,12 @@ class UnifiedColors {
   static const Color lightBlack = Color(0xFF252a30);
   static const Color searchGrey = Color(0xFFecedef);
   static const Color darkGreen = Color.fromRGBO(1, 173, 67, 1);
+  static const Color themeColor = Color(0xff3D5ED1);
+  static const Color black = Color(0xff000000);
+  static const Color black3 = Color(0xff303133);
+  static const Color black6 = Color(0xff606266);
+  static const Color black9 = Color(0xff909399);
+  static const Color white = Color(0xffffffff);
+  static const Color lineLight = Color(0xffEDEDED);
+
 }

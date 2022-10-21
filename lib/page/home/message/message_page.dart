@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 
+import '../../../routers.dart';
 import 'component/group_item_widget.dart';
 
 class MessagePage extends GetView<MessageController> {
@@ -55,6 +56,12 @@ class MessagePage extends GetView<MessageController> {
   }
 
   Widget _relation() {
-    return Container();
+    return Container(
+      child: GFButton(onPressed: () {
+        Get.toNamed(Routers.contact);
+      },
+      size: GFSize.SMALL,
+      text: "我的联系人",),
+    );
   }
 }
