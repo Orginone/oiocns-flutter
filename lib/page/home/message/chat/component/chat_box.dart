@@ -173,6 +173,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
                 voiceWave.remove();
 
                 var duration = controller.currentDuration ?? Duration.zero;
+                await controller.stopRecord();
                 if (duration.inMilliseconds < 1000) {
                   Fluttertoast.showToast(msg: '时间太短啦');
                   return;
@@ -182,8 +183,6 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
                 var fileName = controller.currentFileName;
                 var time = duration.inMilliseconds;
                 controller.voiceCallback(fileName, path, time);
-
-                await controller.stopRecord();
               },
               child: Container(
                 alignment: Alignment.center,
@@ -587,9 +586,6 @@ class ChatBoxController extends FullLifeCycleController
       return;
     }
     await _recorder!.stopRecorder();
-    _currentFile = null;
-    _currentFileName = null;
-    _currentDuration = null;
     _mt?.cancel();
     _mt = null;
     _level = null;

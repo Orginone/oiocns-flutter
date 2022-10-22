@@ -3,9 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:keframe/keframe.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api/bucket_api.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/component/text_avatar.dart';
@@ -270,11 +271,22 @@ class ChatMessageDetail extends GetView<ChatController> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           GestureDetector(
-            onTap: () {
+            onTap: () async {
+              if (detail.msgBody == null) {
+                Fluttertoast.showToast(msg: "未获取到文件信息，无法播放！");
+                return;
+              }
+
+              Map<String, dynamic> body = jsonDecode(detail.msgBody!);
+              String prefix = body["prefix"];
+              String fileName = body["fileName"];
+              File cachedFile = await BucketApi.getCachedFile(prefix, fileName);
+
+              // 播放文件
               var voicePlay = controller.playStatusMap[detail.id]!;
               var status = voicePlay.status;
               if (status.value == PlayStatus.stop) {
-                controller.startPlayVoice(detail.id);
+                controller.startPlayVoice(detail.id, cachedFile);
               } else {
                 controller.stopPrePlayVoice();
               }

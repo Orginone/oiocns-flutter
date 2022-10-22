@@ -247,9 +247,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
 
   /// 语音录制完成并发送
   void sendVoice(String fileName, String filePath, int milliseconds) async {
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-
-    String prefix = "/chat/${userInfo.id}/${messageItem.id}/voice";
+    String prefix = "";
     await BucketApi.upload(
       prefix: EncryptionUtil.encodeURLString(prefix),
       filePath: filePath,
@@ -258,7 +256,8 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
 
     Map<String, dynamic> msgBody = {
       "prefix": prefix,
-      "milliseconds": milliseconds
+      "milliseconds": milliseconds,
+      "fileName": fileName
     };
     sendOneMessage(jsonEncode(msgBody), msgType: MsgType.voice);
   }
@@ -305,7 +304,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   }
 
   /// 开始播放
-  startPlayVoice(String id) async {
+  startPlayVoice(String id, File file) async {
     await stopPrePlayVoice();
 
     // 动画效果
@@ -331,7 +330,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     });
     _soundPlayer!
         .startPlayer(
-            fromDataBuffer: File(_currentVoicePlay!.path).readAsBytesSync(),
+            fromDataBuffer: file.readAsBytesSync(),
             whenFinished: () => stopPrePlayVoice())
         .catchError((error) => stopPrePlayVoice());
 
