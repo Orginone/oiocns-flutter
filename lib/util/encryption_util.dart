@@ -49,4 +49,14 @@ class EncryptionUtil {
     }
     return str;
   }
+
+  static String encodeURLString(String target){
+    target = Uri.encodeComponent(target);
+    return const Base64Encoder().convert(utf8.encode(target));
+  }
+
+  static String decodeURLString(String target){
+    target = utf8.decode(const Base64Decoder().convert(target));
+    return Uri.decodeComponent(target);
+  }
 }

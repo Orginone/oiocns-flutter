@@ -78,7 +78,19 @@ get text16BlueBold => TextStyle(
 
 get text18 => TextStyle(fontSize: 18.sp, color: Colors.black);
 
+get text18Bold => TextStyle(
+      fontSize: 18.sp,
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+    );
+
 get text20 => TextStyle(fontSize: 20.sp, color: Colors.black);
+
+get text20Bold => TextStyle(
+      fontSize: 20.sp,
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+    );
 
 get text20White => TextStyle(fontSize: 20.sp, color: Colors.white);
 

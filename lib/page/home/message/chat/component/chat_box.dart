@@ -57,7 +57,7 @@ enum MoreFunction {
 }
 
 double defaultBorderRadius = 6.w;
-double boxDefaultHeight = 28.h;
+double boxDefaultHeight = 36.h;
 
 class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   final RxDouble bottomHeight = 220.h.obs;
@@ -204,7 +204,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
             controller: controller.inputController,
             decoration: InputDecoration(
               isCollapsed: true,
-              contentPadding: EdgeInsets.fromLTRB(10.w, 5.h, 10.w, 5.h),
+              contentPadding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 10.h),
               border: InputBorder.none,
               constraints: BoxConstraints(
                 maxHeight: 144.h,

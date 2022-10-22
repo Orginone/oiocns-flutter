@@ -11,9 +11,11 @@ import 'package:orginone/page/home/work/work_page.dart';
 import 'package:orginone/util/any_store_util.dart';
 import 'package:orginone/util/hub_util.dart';
 
+import '../../api/company_api.dart';
 import '../../api/person_api.dart';
 import '../../api_resp/login_resp.dart';
 import '../../api_resp/target_resp.dart';
+import '../../api_resp/tree_node.dart';
 import '../../api_resp/user_resp.dart';
 import '../../util/hive_util.dart';
 import 'message/message_page.dart';
@@ -33,6 +35,7 @@ class HomeController extends GetxController
   late BuildContext context;
 
   late TargetResp currentSpace;
+  NodeCombine? nodeCombine;
 
   @override
   void onInit() {
@@ -94,15 +97,15 @@ class HomeController extends GetxController
   Tab _buildCenter(IconData iconData) {
     double width = 36.w;
     return Tab(
-      iconMargin: const EdgeInsets.all(0),
+      iconMargin: EdgeInsets.zero,
       icon: Container(
-          width: width,
-          height: width,
-          decoration: BoxDecoration(
-            color: Colors.grey,
-            borderRadius: BorderRadius.all(Radius.circular(width)),
-          ),
+        width: width,
+        height: width,
+        decoration: BoxDecoration(
+          color: Colors.grey,
+          borderRadius: BorderRadius.all(Radius.circular(width)),
         ),
+      ),
     );
   }
 
@@ -113,6 +116,7 @@ class HomeController extends GetxController
 
     // 当前页面需要变化
     currentSpace = targetResp;
+    await _loadTree();
     update();
 
     // 会话需要分组
@@ -121,6 +125,15 @@ class HomeController extends GetxController
 
     // 组织架构页面需要变化
     organizationController.update();
+  }
+
+  _loadTree() async {
+    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    if (userInfo.id != currentSpace.id) {
+      nodeCombine = await CompanyApi.tree();
+    } else {
+      nodeCombine = null;
+    }
   }
 }
 
