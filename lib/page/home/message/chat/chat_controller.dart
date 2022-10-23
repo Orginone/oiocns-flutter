@@ -247,17 +247,25 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
 
   /// 语音录制完成并发送
   void sendVoice(String fileName, String filePath, int milliseconds) async {
-    String prefix = "";
+    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    String prefix = "chat_${userInfo.id}_${messageItem.id}_voice";
+    log.info("====> prefix:$prefix");
+    String encodedPrefix = EncryptionUtil.encodeURLString(prefix);
+
+    try {
+      await BucketApi.create(prefix: encodedPrefix);
+    } catch (error) {
+      log.warning("====> 创建目录失败：$error");
+    }
     await BucketApi.upload(
-      prefix: EncryptionUtil.encodeURLString(prefix),
+      prefix: encodedPrefix,
       filePath: filePath,
       fileName: fileName,
     );
 
     Map<String, dynamic> msgBody = {
-      "prefix": prefix,
-      "milliseconds": milliseconds,
-      "fileName": fileName
+      "path": "$prefix/$fileName",
+      "milliseconds": milliseconds
     };
     sendOneMessage(jsonEncode(msgBody), msgType: MsgType.voice);
   }

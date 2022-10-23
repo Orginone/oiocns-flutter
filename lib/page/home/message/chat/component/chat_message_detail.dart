@@ -278,9 +278,8 @@ class ChatMessageDetail extends GetView<ChatController> {
               }
 
               Map<String, dynamic> body = jsonDecode(detail.msgBody!);
-              String prefix = body["prefix"];
-              String fileName = body["fileName"];
-              File cachedFile = await BucketApi.getCachedFile(prefix, fileName);
+              String path = body["path"];
+              File cachedFile = await BucketApi.getCachedFile(path);
 
               // 播放文件
               var voicePlay = controller.playStatusMap[detail.id]!;
