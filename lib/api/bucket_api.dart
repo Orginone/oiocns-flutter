@@ -1,14 +1,11 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/hive_util.dart';
 
-import '../api_resp/api_resp.dart';
 import '../config/constant.dart';
 import '../util/http_util.dart';
 
@@ -34,6 +31,25 @@ class BucketApi {
     required String fileName,
   }) async {
     String url = "${Constant.bucket}/Upload";
+
+    var params = {"shareDomain": shareDomain, "prefix": prefix};
+    var file = await MultipartFile.fromFile(filePath, filename: fileName);
+    var formData = FormData.fromMap({"file": file});
+
+    await HttpUtil().post(
+      url,
+      queryParameters: params,
+      data: formData,
+      options: Options(contentType: "multipart/form-data"),
+    );
+  }
+
+  static Future<void> uploadChunk({
+    required String prefix,
+    required String filePath,
+    required String fileName,
+  }) async {
+    String url = "${Constant.bucket}/UploadChunk";
 
     var params = {"shareDomain": shareDomain, "prefix": prefix};
     var file = await MultipartFile.fromFile(filePath, filename: fileName);
