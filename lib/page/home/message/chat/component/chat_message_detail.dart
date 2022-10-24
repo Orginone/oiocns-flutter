@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -17,8 +18,10 @@ import '../../../../../api_resp/target_resp.dart';
 import '../../../../../component/unified_colors.dart';
 import '../../../../../component/unified_edge_insets.dart';
 import '../../../../../component/unified_text_style.dart';
+import '../../../../../config/constant.dart';
 import '../../../../../enumeration/enum_map.dart';
 import '../../../../../enumeration/message_type.dart';
+import '../../../../../util/encryption_util.dart';
 import '../../../../../util/string_util.dart';
 
 enum Direction { leftStart, rightStart }
@@ -226,7 +229,7 @@ class ChatMessageDetail extends GetView<ChatController> {
   Widget _image({required TextDirection textDirection}) {
     /// 解析参数
     Map<String, dynamic> msgBody = jsonDecode(detail.msgBody ?? "{}");
-    var file = File(msgBody["path"]);
+    String path = msgBody["path"];
     double width = double.parse(msgBody["width"].toString());
     double height = double.parse(msgBody["height"].toString());
 
@@ -237,12 +240,22 @@ class ChatMessageDetail extends GetView<ChatController> {
     } else {
       boxConstraints = BoxConstraints(maxHeight: 120.h);
     }
+
+    path = EncryptionUtil.encodeURLString(path);
+    String params =
+        "shareDomain=${BucketApi.shareDomain}&prefix=$path&preview=True";
+    String url = "${Constant.bucket}/Download?$params";
+
+    Map<String, String> headers = {
+      "Authorization": HiveUtil().accessToken,
+    };
     return _detail(
-        constraints: boxConstraints,
-        textDirection: textDirection,
-        body: Image.memory(file.readAsBytesSync()),
-        clipBehavior: Clip.hardEdge,
-        padding: EdgeInsets.zero);
+      constraints: boxConstraints,
+      textDirection: textDirection,
+      body: CachedNetworkImage(imageUrl: url, httpHeaders: headers),
+      clipBehavior: Clip.hardEdge,
+      padding: EdgeInsets.zero,
+    );
   }
 
   /// 语音详情

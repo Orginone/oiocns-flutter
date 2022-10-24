@@ -1,7 +1,10 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:logging/logging.dart';
 import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/hive_util.dart';
 
@@ -10,13 +13,19 @@ import '../config/constant.dart';
 import '../util/http_util.dart';
 
 class BucketApi {
+  static Logger log = Logger("BucketApi");
+
   static String shareDomain = "user";
 
   static Future<dynamic> create({required String prefix}) async {
     String url = "${Constant.bucket}/Create";
     var params = {"shareDomain": shareDomain, "prefix": prefix};
 
-    return await HttpUtil().post(url, queryParameters: params);
+    return await HttpUtil().post(
+      url,
+      queryParameters: params,
+      showError: false,
+    );
   }
 
   static Future<void> upload({

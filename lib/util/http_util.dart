@@ -92,7 +92,8 @@ class HttpUtil {
       CancelToken? cancelToken,
       ProgressCallback? onSendProgress,
       ProgressCallback? onReceiveProgress,
-      bool? hasToken}) async {
+      bool? hasToken,
+      bool? showError = true}) async {
     log.info("================Post Http Request================");
     try {
       log.info("====> path: $path");
@@ -115,9 +116,11 @@ class HttpUtil {
 
       return _parseResp(result);
     } on Exception catch (error) {
-      Fluttertoast.showToast(msg: error.toString());
+      if (showError!) {
+        Fluttertoast.showToast(msg: error.toString());
+      }
       rethrow;
-    } catch (error) {
+    } on Error {
       Fluttertoast.showToast(msg: "请求异常，请稍后再试。");
       rethrow;
     } finally {

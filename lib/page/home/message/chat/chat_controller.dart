@@ -219,27 +219,36 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
 
   /// 相册选择照片后回调
   void imagePicked(XFile file) async {
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
     Image imageCompo = Image.memory(await file.readAsBytes());
     imageCompo.image.resolve(const ImageConfiguration()).addListener(
       ImageStreamListener(
-        (imageInfo, synchronousCall) {
+        (imageInfo, synchronousCall) async {
+          TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+          String prefix = "chat_${userInfo.id}_${messageItem.id}_image";
+          log.info("====> prefix:$prefix");
+          String encodedPrefix = EncryptionUtil.encodeURLString(prefix);
+
+          try {
+            await BucketApi.create(prefix: encodedPrefix);
+          } catch (error) {
+            log.warning("====> 创建目录失败：$error");
+          }
+          var filePath = file.path;
+          var fileName = file.name;
+
+          await BucketApi.upload(
+            prefix: encodedPrefix,
+            filePath: filePath,
+            fileName: fileName,
+          );
+
           Map<String, dynamic> body = {
             "width": imageInfo.image.width,
             "height": imageInfo.image.height,
-            "path": file.path
+            "path": "$prefix/$fileName",
           };
-          messageDetails.insert(
-              0,
-              MessageDetailResp(
-                id: "${DateTime.now().millisecondsSinceEpoch}",
-                spaceId: userInfo.id,
-                fromId: userInfo.id,
-                toId: messageItem.id,
-                msgType: MsgType.image.name,
-                msgBody: jsonEncode(body),
-              ));
-          updateAndToBottom();
+
+          sendOneMessage(jsonEncode(body), msgType: MsgType.image);
         },
       ),
     );
