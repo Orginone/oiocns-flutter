@@ -86,6 +86,7 @@ dependencies:
   cached_network_image: ^3.2.1
   card_swiper: ^2.0.4
   flutter_cache_manager: ^3.3.0
+  graphic: ^0.10.7
 
   # 组件管理库
   get: ^4.6.5

@@ -17,6 +17,12 @@ get text12Bold => TextStyle(
       fontWeight: FontWeight.bold,
     );
 
+get text12GreyBold => TextStyle(
+      fontSize: 12.sp,
+      color: Colors.grey,
+      fontWeight: FontWeight.bold,
+    );
+
 get text12BlueBold => TextStyle(
       fontSize: 12.sp,
       color: Colors.blueAccent,
