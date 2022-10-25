@@ -29,7 +29,7 @@ class DeptPage extends GetView<DeptController> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextSearch(controller.searchingCallback),
+          TextSearch(searchingCallback: controller.searchingCallback),
           BreadCrumb(
             controller: controller.breadCrumbController,
             popsCallback: (Item<String> item) => controller.popsNode(item),

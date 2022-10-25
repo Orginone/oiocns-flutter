@@ -40,7 +40,7 @@ class FriendsPage extends GetView<FriendsController> {
 
   get _body => Column(
         children: [
-          TextSearch(controller.searchingCallback),
+          TextSearch(searchingCallback: controller.searchingCallback),
           Expanded(
             child: Scrollbar(
               child: RefreshIndicator(

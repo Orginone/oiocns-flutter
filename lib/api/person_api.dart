@@ -83,10 +83,9 @@ class PersonApi {
   }
 
   /// 好友验证
-  static Future<String> addPerson(String personId) async {
-    await HttpUtil()
-        .post("${Constant.person}/apply/join", data: {"id": personId});
-    return '发起申请';
+  static Future<void> join(String targetId) async {
+    String url = "${Constant.person}/apply/join";
+    await HttpUtil().post(url, data: {"id": targetId});
   }
 
   /// 人员搜索

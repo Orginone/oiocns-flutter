@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/tabs/gf_tabbar.dart';
 import 'package:getwidget/components/tabs/gf_tabbar_view.dart';
+import 'package:orginone/api/person_api.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
 
@@ -22,7 +24,9 @@ class SearchPage extends GetView<SearchController> {
   Widget build(BuildContext context) {
     bool isMultiple = controller.searchItems.length > 1;
     bool isSingle = controller.searchItems.length == 1;
-    Column body = Column(children: [TextSearch(controller.searchingCallback)]);
+    Column body = Column(
+      children: [Container(margin: EdgeInsets.only(top: 10.h))],
+    );
     if (isMultiple) {
       body.children.addAll([_tabBar(context), _tabView()]);
     } else if (isSingle) {
@@ -59,8 +63,11 @@ class SearchPage extends GetView<SearchController> {
 
     return UnifiedScaffold(
       appBarLeading: WidgetUtil.defaultBackBtn,
-      appBarTitle:
-          Text(controller.functionPoint?.functionName ?? "搜索", style: text20),
+      appBarTitle: TextSearch(
+        searchingCallback: controller.searchingCallback,
+        margin: EdgeInsets.only(right: 10.w),
+        placeHolder: controller.placeholder,
+      ),
       appBarCenterTitle: true,
       body: body,
     );
@@ -137,11 +144,20 @@ class SearchPage extends GetView<SearchController> {
     if (controller.functionPoint != null) {
       switch (controller.functionPoint!) {
         case FunctionPoint.addFriends:
-
+          children.add(ElevatedButton(
+            onPressed: () async {
+              await PersonApi.join(targetResp.id);
+              Fluttertoast.showToast(msg: "申请成功");
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.green),
+              minimumSize: MaterialStateProperty.all(Size(10.w, 30.w)),
+            ),
+            child: Text("申请", style: text14White),
+          ));
           break;
       }
     }
-
     return GestureDetector(
       onTap: () {},
       child: Container(

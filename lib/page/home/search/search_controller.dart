@@ -47,11 +47,16 @@ class SearchController extends GetxController
   SearchParams<TargetResp>? personRes;
   SearchParams<TargetResp>? companyRes;
 
+  // 输入提示
+  String? placeholder;
+
   @override
   void onInit() {
     Map<String, dynamic> args = Get.arguments ?? {};
     searchItems = args["items"] ?? SearchItem.values;
     functionPoint = args["point"];
+    placeholder = args["placeholder"];
+
     tabController = TabController(length: searchItems.length, vsync: this);
     super.onInit();
   }

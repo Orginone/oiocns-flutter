@@ -9,13 +9,15 @@ const String defaultPlaceHolder = "请输入搜索内容";
 
 class TextSearch extends StatelessWidget {
   final EdgeInsets? margin;
-  final Function searchingCallback;
+  final Function? searchingCallback;
+  final Function? onTap;
   final String? placeHolder;
 
-  const TextSearch(
-    this.searchingCallback, {
+  const TextSearch({
     Key? key,
     this.margin = defaultMargin,
+    this.onTap,
+    this.searchingCallback,
     this.placeHolder,
   }) : super(key: key);
 
@@ -39,8 +41,15 @@ class TextSearch extends StatelessWidget {
           ),
           Expanded(
             child: TextField(
+              onTap: () {
+                if (onTap != null) {
+                  onTap!();
+                }
+              },
               onChanged: (newVal) {
-                searchingCallback(newVal);
+                if (searchingCallback != null) {
+                  searchingCallback!(newVal);
+                }
               },
               style: text16,
               decoration: InputDecoration(

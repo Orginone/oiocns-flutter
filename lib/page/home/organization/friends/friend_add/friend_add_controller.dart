@@ -1,9 +1,3 @@
 import 'package:get/get.dart';
 
-class FriendAddController extends GetxController {
-
-
-  searchCallback(){
-
-  }
-}
+class FriendAddController extends GetxController {}

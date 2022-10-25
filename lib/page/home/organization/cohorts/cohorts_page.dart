@@ -26,7 +26,7 @@ class CohortsPage extends GetView<CohortsController> {
 
   get _body => Column(
         children: [
-          TextSearch(controller.searchingCallback),
+          TextSearch(searchingCallback: controller.searchingCallback),
           Expanded(
             child: Scrollbar(
               child: RefreshIndicator(

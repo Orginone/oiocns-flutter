@@ -10,6 +10,7 @@ import '../../../../../component/choose_item.dart';
 import '../../../../../component/unified_edge_insets.dart';
 import '../../../../../component/unified_text_style.dart';
 import '../../../../../util/widget_util.dart';
+import '../../../search/search_controller.dart';
 import 'friend_add_controller.dart';
 
 class FriendAddPage extends GetView<FriendAddController> {
@@ -17,6 +18,7 @@ class FriendAddPage extends GetView<FriendAddController> {
 
   @override
   Widget build(BuildContext context) {
+    String placeholder = "通过账号/手机号搜索添加";
     return UnifiedScaffold(
       appBarCenterTitle: true,
       appBarTitle: Text("好友添加", style: text18Bold),
@@ -25,8 +27,15 @@ class FriendAddPage extends GetView<FriendAddController> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           TextSearch(
-            controller.searchCallback,
-            placeHolder: "通过账号/手机号搜索添加",
+            placeHolder: placeholder,
+            onTap: () {
+              List<SearchItem> friends = [SearchItem.friends];
+              Get.toNamed(Routers.search, arguments: {
+                "items": friends,
+                "point": FunctionPoint.addFriends,
+                "placeholder": placeholder
+              });
+            },
           ),
           Container(margin: EdgeInsets.only(top: 6.h)),
           GestureDetector(
