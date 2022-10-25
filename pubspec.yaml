@@ -96,6 +96,9 @@ dependencies:
   # 汉字转拼音
   lpinyin: ^2.0.2
 
+  # view滑动库
+  flutter_slidable: ^2.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/page/home/affairs/affairs_controller.dart';
+import 'package:orginone/page/home/affairs/affairs_list.dart';
+import 'package:orginone/page/home/affairs/affairs_type_enum.dart';
 
 class AffairsPage extends GetView<AffairsController> {
   const AffairsPage({Key? key}) : super(key: key);
@@ -26,7 +27,7 @@ class AffairsPage extends GetView<AffairsController> {
         builder: (controller) {
           return Container(
             color: UnifiedColors.white,
-            child: GFTabBar(
+            child: TabBar(
               isScrollable: false,
               controller: controller.tabController,
               labelColor: UnifiedColors.themeColor,
@@ -35,11 +36,11 @@ class AffairsPage extends GetView<AffairsController> {
               indicatorSize: TabBarIndicatorSize.label,
               labelStyle: TextStyle(fontSize: 14.sp),
               tabs: const [
-                Tab(text: '代办'),
+                Tab(text: '待办'),
                 Tab(text: '已办'),
-                Tab(text: '已完结'),
                 Tab(text: '我的发起'),
-              ], length: 4,
+                Tab(text: '抄送我的'),
+              ],
             ),
           );
         });
@@ -48,21 +49,13 @@ class AffairsPage extends GetView<AffairsController> {
   _content() {
     return Expanded(
       flex: 1,
-      child: GFTabBarView(
+      child: TabBarView(
         controller: controller.tabController,
         children: [
-          Container(
-            color: Colors.red,
-          ),
-          Container(
-            color: Colors.black12,
-          ),
-          Container(
-            color: Colors.pink,
-          ),
-          Container(
-            color: Colors.red,
-          ),
+          AffairsList(AffairsTypeEnum.waiting),
+          AffairsList(AffairsTypeEnum.finish),
+          AffairsList(AffairsTypeEnum.mine),
+          AffairsList(AffairsTypeEnum.copy),
         ],
       ),
     );

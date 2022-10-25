@@ -111,8 +111,7 @@ class Routers {
       GetPage(
           name: Routers.home,
           page: () => const HomePage(),
-    binding: HomeBinding()),
-          // bindings: [HomeBinding(),AffairsBinding()]),
+          bindings: [HomeBinding(),AffairsBinding()]),
       GetPage(
           name: Routers.home,
           page: () => const CenterPage(),
