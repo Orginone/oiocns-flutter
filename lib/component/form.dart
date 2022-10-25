@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 
-class FormDialog extends GetView<FormController> {
-  const FormDialog({Key? key}) : super(key: key);
+class Form extends GetView<FormController> {
+  const Form({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -125,8 +125,7 @@ class FormDialog extends GetView<FormController> {
                       decoration: InputDecoration(
                         labelText: 'Age',
                       ),
-                      onChanged: (val) {
-                      },
+                      onChanged: (val) {},
                       // valueTransformer: (text) => num.tryParse(text),
                       // initialValue: '12',
                       keyboardType: TextInputType.number,
@@ -140,8 +139,7 @@ class FormDialog extends GetView<FormController> {
                         labelText: 'Gender',
                         hintText: 'Select Gender',
                       ),
-                      onChanged: (val) {
-                      },
+                      onChanged: (val) {},
                       valueTransformer: (val) => val?.toString(),
                     ),
                     FormBuilderRadioGroup<String>(
@@ -306,3 +304,10 @@ class FormDialog extends GetView<FormController> {
 }
 
 class FormController extends GetxController {}
+
+class FormBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => FormController());
+  }
+}

@@ -11,7 +11,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 import '../../component/unified_colors.dart';
-import '../../component/unified_edge_insets.dart';
 import '../../routers.dart';
 import '../../util/hub_util.dart';
 import '../../util/string_util.dart';
@@ -27,7 +26,7 @@ class HomePage extends GetView<HomeController> {
     SysUtil.setStatusBarBright();
     controller.context = context;
     return UnifiedScaffold(
-      appBarTitle: _title,
+      appBarTitle: _title(context),
       appBarHeight: 10.h + 28.w + 5.h + 28.w + 5.h,
       body: _body,
       bottomNavigationBar: _bottomNavigatorBar,
@@ -66,49 +65,43 @@ class HomePage extends GetView<HomeController> {
     );
   }
 
-  Widget _popMenu(BuildContext context) {
-    return PopupMenuButton(
-      splashRadius: 10.w,
-      padding: lr10,
-      position: PopupMenuPosition.under,
-      color: UnifiedColors.lightGrey,
-      icon: const Icon(Icons.add, color: Colors.black, size: GFSize.MEDIUM),
-      itemBuilder: (context) {
-        return [
-          PopupMenuItem(
-            child: _popMenuItem(
-              context,
-              Icons.qr_code_scanner,
-              "扫一扫",
-              () async {
-                Get.toNamed(Routers.scanning);
-              },
-            ),
-          ),
-          PopupMenuItem(
-            child: _popMenuItem(
-              context,
-              Icons.group_add_outlined,
-              "创建群组",
-              () {},
-            ),
-          ),
-          PopupMenuItem(
-            child: _popMenuItem(
-              context,
-              Icons.groups_outlined,
-              "创建单位",
-              () {},
-            ),
-          ),
-        ];
-      },
-    );
+  List<PopupMenuEntry> _popupMenus(BuildContext context) {
+    return [
+      PopupMenuItem(
+        child: _popMenuItem(
+          context,
+          Icons.qr_code_scanner,
+          "扫一扫",
+          () async {
+            Get.toNamed(Routers.scanning);
+          },
+        ),
+      ),
+      PopupMenuItem(
+        child: _popMenuItem(
+          context,
+          Icons.group_add_outlined,
+          "创建群组",
+          () {},
+        ),
+      ),
+      PopupMenuItem(
+        child: _popMenuItem(
+          context,
+          Icons.groups_outlined,
+          "创建单位",
+          () {
+            Get.toNamed(Routers.unitCreate);
+          },
+        ),
+      ),
+    ];
   }
 
-  get _title {
+  Widget _title(BuildContext context) {
     var userName = controller.user.userName;
     var userKeyWord = StringUtil.getPrefixChars(userName, count: 1);
+    double x = 0, y = 0;
     return Column(
       children: [
         Container(margin: EdgeInsets.only(top: 10.h)),
@@ -119,7 +112,8 @@ class HomePage extends GetView<HomeController> {
                 init: controller,
                 builder: (controller) {
                   var spaceName = controller.currentSpace.name;
-                  var spaceKeyWord = StringUtil.getPrefixChars(spaceName, count: 1);
+                  var spaceKeyWord =
+                      StringUtil.getPrefixChars(spaceName, count: 1);
                   return GestureDetector(
                     onTap: () {
                       Get.toNamed(Routers.spaceChoose);
@@ -175,14 +169,26 @@ class HomePage extends GetView<HomeController> {
           Expanded(child: Container()),
           Container(
             margin: EdgeInsets.only(left: 10.w),
-            child: const Icon(Icons.search, color: Colors.black),
+            child: GestureDetector(
+                child: const Icon(Icons.search, color: Colors.black),
+                onTap: () {
+                  Get.toNamed(Routers.search);
+                }),
           ),
           Container(
             margin: EdgeInsets.only(left: 10.w),
             child: GestureDetector(
               child: const Icon(Icons.add, color: Colors.black),
+              onPanDown: (position) {
+                x = position.globalPosition.dx;
+                y = position.globalPosition.dy;
+              },
               onTap: () {
-                Get.toNamed(Routers.search);
+                showMenu(
+                    context: context,
+                    position: RelativeRect.fromLTRB(
+                        x - 20.w, y + 20.h, x + 20.w, y + 40.h),
+                    items: _popupMenus(context));
               },
             ),
           ),

@@ -10,17 +10,19 @@ import 'package:orginone/page/home/center/center_controller.dart';
 
 import '../../../component/unified_colors.dart';
 import '../../../component/unified_text_style.dart';
+import '../../../routers.dart';
 
 enum Functions {
-  addFriends("加好友"),
-  createUnits("创单位"),
-  inviteMembers("邀成员"),
-  createApplication("建应用"),
-  scanShop("逛商店");
+  addFriends("加好友", Routers.friendAdd),
+  createUnits("创单位", Routers.unitCreate),
+  inviteMembers("邀成员", Routers.form),
+  createApplication("建应用", Routers.form),
+  scanShop("逛商店", Routers.form);
 
   final String funcName;
+  final String router;
 
-  const Functions(this.funcName);
+  const Functions(this.funcName, this.router);
 }
 
 const adjustData = [
@@ -97,9 +99,8 @@ class CenterPage extends GetView<CenterController> {
                     itemCount: Functions.values.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      var value = Functions.values[index];
                       return Row(children: [
-                        _fastEntry(value.funcName),
+                        _fastEntry(Functions.values[index]),
                         Container(margin: EdgeInsets.only(right: 8.w))
                       ]);
                     },
@@ -158,32 +159,37 @@ class CenterPage extends GetView<CenterController> {
       );
 
   // 快速入口
-  Widget _fastEntry(String keyWord) {
-    return Container(
-      alignment: Alignment.center,
-      width: 72.w,
-      height: 72.w,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(10.w)),
-      ),
-      child: Wrap(
-        direction: Axis.vertical,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          Icon(
-            Icons.add,
-            color: UnifiedColors.designBlue,
-            size: 30.w,
-          ),
-          Text(
-            keyWord,
-            style: TextStyle(
+  Widget _fastEntry(Functions func) {
+    return GestureDetector(
+      onTap: () {
+        Get.toNamed(func.router);
+      },
+      child: Container(
+        alignment: Alignment.center,
+        width: 72.w,
+        height: 72.w,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(10.w)),
+        ),
+        child: Wrap(
+          direction: Axis.vertical,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Icon(
+              Icons.add,
               color: UnifiedColors.designBlue,
-              fontSize: 14.sp,
+              size: 30.w,
             ),
-          )
-        ],
+            Text(
+              func.funcName,
+              style: TextStyle(
+                color: UnifiedColors.designBlue,
+                fontSize: 14.sp,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

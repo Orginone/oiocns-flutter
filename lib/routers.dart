@@ -1,4 +1,5 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:orginone/component/form.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
 import 'package:orginone/page/home/center/center_binding.dart';
@@ -33,6 +34,8 @@ import 'package:orginone/page/home/organization/cohorts/cohorts_binding.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_page.dart';
 import 'package:orginone/page/home/organization/dept/dept_binding.dart';
 import 'package:orginone/page/home/organization/dept/dept_page.dart';
+import 'package:orginone/page/home/organization/friends/friend_add/friend_add_binding.dart';
+import 'package:orginone/page/home/organization/friends/friend_add/friend_add_page.dart';
 import 'package:orginone/page/home/organization/friends/friends_binding.dart';
 import 'package:orginone/page/home/organization/friends/friends_page.dart';
 import 'package:orginone/page/home/organization/groups/groups_binding.dart';
@@ -82,6 +85,8 @@ class Routers {
   static const String search = "/search";
   static const String scanning = "/scanning";
   static const String scanningResult = "/scanningResult";
+  static const String friendAdd = "/friendAdd";
+  static const String form = "/form";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -217,6 +222,16 @@ class Routers {
         name: Routers.scanningResult,
         page: () => const ScanningResultPage(),
         binding: ScanningResultBinding(),
+      ),
+      GetPage(
+        name: Routers.form,
+        page: () => const Form(),
+        binding: FormBinding(),
+      ),
+      GetPage(
+        name: Routers.friendAdd,
+        page: () => const FriendAddPage(),
+        binding: FriendAddBinding(),
       ),
     ];
   }

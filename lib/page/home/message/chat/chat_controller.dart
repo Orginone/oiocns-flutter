@@ -236,7 +236,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
           var filePath = file.path;
           var fileName = file.name;
 
-          await BucketApi.upload(
+          await BucketApi.uploadChunk(
             prefix: encodedPrefix,
             filePath: filePath,
             fileName: fileName,

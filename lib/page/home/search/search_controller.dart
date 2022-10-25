@@ -49,7 +49,7 @@ class SearchController extends GetxController
 
   @override
   void onInit() {
-    Map<String, dynamic> args = Get.arguments;
+    Map<String, dynamic> args = Get.arguments ?? {};
     searchItems = args["items"] ?? SearchItem.values;
     functionPoint = args["point"];
     tabController = TabController(length: searchItems.length, vsync: this);
