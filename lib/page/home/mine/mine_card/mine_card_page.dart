@@ -17,7 +17,8 @@ class MineCardPage extends GetView<MineCardController> {
     return GetBuilder<MineCardController>(
         init: MineCardController(),
         builder: (item) => UnifiedScaffold(
-              appBarTitle: Text("我的名片", style: text16),
+              appBarTitle: Text("我的名片", style: text18Bold),
+              appBarCenterTitle: true,
               appBarLeading: WidgetUtil.defaultBackBtn,
               bgColor: const Color.fromRGBO(240, 240, 240, 1),
               body: Container(
