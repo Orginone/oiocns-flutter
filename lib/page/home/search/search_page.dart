@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -14,6 +16,7 @@ import '../../../component/text_avatar.dart';
 import '../../../component/text_search.dart';
 import '../../../component/unified_colors.dart';
 import '../../../enumeration/target_type.dart';
+import '../../../util/asset_util.dart';
 import '../../../util/string_util.dart';
 import 'search_controller.dart';
 
@@ -60,7 +63,6 @@ class SearchPage extends GetView<SearchController> {
           break;
       }
     }
-
     return UnifiedScaffold(
       appBarLeading: WidgetUtil.defaultBackBtn,
       appBarTitle: TextSearch(
@@ -69,7 +71,27 @@ class SearchPage extends GetView<SearchController> {
         placeHolder: controller.placeholder,
       ),
       appBarCenterTitle: true,
-      body: body,
+      body: Obx(() => controller.searchStatus.value == SearchStatus.stop
+          ? body
+          : _loadingIcon()),
+    );
+  }
+
+  Widget _loadingIcon() {
+    return Container(
+      alignment: Alignment.center,
+      child: AnimatedBuilder(
+        animation: controller.animationController,
+        builder: (context, child) => Transform.rotate(
+          angle: controller.animationController.value * 2 * pi,
+          child: child,
+        ),
+        child: Icon(
+          AssetUtil.loadingIcon,
+          color: Colors.blueAccent,
+          size: 40.w,
+        ),
+      ),
     );
   }
 

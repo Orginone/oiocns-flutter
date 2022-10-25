@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/component/unified_text_style.dart';
@@ -10,6 +12,7 @@ const String defaultPlaceHolder = "请输入搜索内容";
 class TextSearch extends StatelessWidget {
   final EdgeInsets? margin;
   final Function? searchingCallback;
+  final Function? loadingCallback;
   final Function? onTap;
   final String? placeHolder;
 
@@ -18,15 +21,18 @@ class TextSearch extends StatelessWidget {
     this.margin = defaultMargin,
     this.onTap,
     this.searchingCallback,
+    this.loadingCallback,
     this.placeHolder,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Duration duration = const Duration(seconds: 1);
+    Timer? timer;
     return Container(
       margin: margin,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(5)),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(5.w)),
         color: UnifiedColors.searchGrey,
       ),
       child: Row(
@@ -47,9 +53,11 @@ class TextSearch extends StatelessWidget {
                 }
               },
               onChanged: (newVal) {
-                if (searchingCallback != null) {
-                  searchingCallback!(newVal);
+                if (searchingCallback == null) return;
+                if (timer != null) {
+                  timer!.cancel();
                 }
+                timer = Timer(duration, () => searchingCallback!(newVal));
               },
               style: text16,
               decoration: InputDecoration(

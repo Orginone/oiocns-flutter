@@ -34,8 +34,9 @@ enum FunctionPoint {
   final String functionName;
 }
 
-class SearchController extends GetxController
-    with GetSingleTickerProviderStateMixin {
+enum SearchStatus { stop, searching }
+
+class SearchController extends GetxController with GetTickerProviderStateMixin {
   Logger logger = Logger("SearchController");
 
   late TabController tabController;
@@ -50,6 +51,12 @@ class SearchController extends GetxController
   // 输入提示
   String? placeholder;
 
+  // 搜索状态
+  Rx<SearchStatus> searchStatus = SearchStatus.stop.obs;
+
+  // 动画
+  late AnimationController animationController;
+
   @override
   void onInit() {
     Map<String, dynamic> args = Get.arguments ?? {};
@@ -58,55 +65,71 @@ class SearchController extends GetxController
     placeholder = args["placeholder"];
 
     tabController = TabController(length: searchItems.length, vsync: this);
+    const duration = Duration(seconds: 1);
+    animationController = AnimationController(vsync: this, duration: duration);
+    animationController.repeat();
     super.onInit();
   }
 
+  @override
+  void onClose() {
+    super.onClose();
+    tabController.dispose();
+    animationController.dispose();
+  }
+
   Future<void> searchingCallback(String filter) async {
-    switch (searchItems[tabController.index]) {
-      case SearchItem.friends:
-        personRes ??= SearchParams();
-        var pageResp = await PersonApi.searchPersons(
-          keyword: filter,
-          limit: personRes!.limit,
-          offset: personRes!.offset,
-        );
-        var result = pageResp.result;
-        personRes!.offset = result.length;
-        personRes!.searchResults = result;
-        update();
-        break;
-      case SearchItem.applications:
-        break;
-      case SearchItem.comprehensive:
-        break;
-      case SearchItem.cohorts:
-        break;
-      case SearchItem.messages:
-        break;
-      case SearchItem.documents:
-        break;
-      case SearchItem.logs:
-        break;
-      case SearchItem.labels:
-        break;
-      case SearchItem.functions:
-        break;
-      case SearchItem.departments:
-        break;
-      case SearchItem.publicCohorts:
-        break;
-      case SearchItem.units:
-        companyRes ??= SearchParams();
-        var pageResp = await CompanyApi.searchCompanys(
-          keyword: filter,
-          limit: companyRes!.limit,
-          offset: companyRes!.offset,
-        );
-        var result = pageResp.result;
-        companyRes!.offset = result.length;
-        companyRes!.searchResults = result;
-        update();
-        break;
+    searchStatus.value = SearchStatus.searching;
+    update();
+    try {
+      switch (searchItems[tabController.index]) {
+        case SearchItem.friends:
+          personRes ??= SearchParams();
+          var pageResp = await PersonApi.searchPersons(
+            keyword: filter,
+            limit: personRes!.limit,
+            offset: personRes!.offset,
+          );
+          var result = pageResp.result;
+          personRes!.offset = result.length;
+          personRes!.searchResults = result;
+          update();
+          break;
+        case SearchItem.applications:
+          break;
+        case SearchItem.comprehensive:
+          break;
+        case SearchItem.cohorts:
+          break;
+        case SearchItem.messages:
+          break;
+        case SearchItem.documents:
+          break;
+        case SearchItem.logs:
+          break;
+        case SearchItem.labels:
+          break;
+        case SearchItem.functions:
+          break;
+        case SearchItem.departments:
+          break;
+        case SearchItem.publicCohorts:
+          break;
+        case SearchItem.units:
+          companyRes ??= SearchParams();
+          var pageResp = await CompanyApi.searchCompanys(
+            keyword: filter,
+            limit: companyRes!.limit,
+            offset: companyRes!.offset,
+          );
+          var result = pageResp.result;
+          companyRes!.offset = result.length;
+          companyRes!.searchResults = result;
+          update();
+          break;
+      }
+    } finally {
+      searchStatus.value = SearchStatus.stop;
     }
   }
 }
