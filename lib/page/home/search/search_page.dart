@@ -71,9 +71,16 @@ class SearchPage extends GetView<SearchController> {
         placeHolder: controller.placeholder,
       ),
       appBarCenterTitle: true,
-      body: Obx(() => controller.searchStatus.value == SearchStatus.stop
-          ? body
-          : _loadingIcon()),
+      body: Obx(() {
+        var status = controller.searchStatus.value;
+        if (status == SearchStatus.stop) {
+          controller.animationController.stop();
+          return body;
+        } else {
+          controller.animationController.repeat();
+          return _loadingIcon();
+        }
+      }),
     );
   }
 
