@@ -29,13 +29,13 @@ class ScanningController extends FullLifeCycleController
 
   toScanningResult(XFile file) async {
     String? result = await Scan.parse(file.path);
-    Map<String,dynamic> resultMap = jsonDecode(result ?? '');
+    Map<String, dynamic> resultMap = jsonDecode(result ?? '');
     //如果解析出来对象中有type,则为系统类消息,有些可能是要跳转界面
     if (resultMap['type'] != null) {
       ScanResults scanResults = ScanResults.fromMap(resultMap);
       switch (scanResults.scanResultType) {
         case SystemScanDataType.person:
-            Get.offNamed(Routers.personDetail,arguments: scanResults.data);
+          Get.offNamed(Routers.personDetail, arguments: scanResults.data);
           break;
         case SystemScanDataType.company:
           break;
