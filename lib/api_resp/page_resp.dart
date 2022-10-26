@@ -6,7 +6,7 @@ class PageResp<T> {
   PageResp(this.limit, this.total, this.result);
 
   static PageResp<T> fromMap<T>(Map<String, dynamic> map, Function mapping) {
-    int limit = map["limit"];
+    int limit = map["limit"] ?? 0;
     int total = map["total"] ?? 0;
     List<dynamic> result = map["result"] ?? [];
 
