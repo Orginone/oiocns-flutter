@@ -54,7 +54,7 @@ class AnyStoreUtil {
       var name = SendEvent.Get.name;
       var args = [key, domain];
       dynamic data = await _server!.invoke(name, args: args);
-      return ApiResp.fromMap(data);
+      return ApiResp.fromJson(data);
     }
     Fluttertoast.showToast(msg: "未连接存储服务器!");
     throw Exception("未连接存储服务器!");
@@ -66,7 +66,7 @@ class AnyStoreUtil {
       var name = SendEvent.Set.name;
       var args = [key, setData, domain];
       dynamic res = await _server!.invoke(name, args: args);
-      return ApiResp.fromMap(res);
+      return ApiResp.fromJson(res);
     }
     Fluttertoast.showToast(msg: "未连接存储服务器!");
     throw Exception("未连接存储服务器!");
@@ -77,7 +77,7 @@ class AnyStoreUtil {
     if (_isAuthed) {
       var name = SendEvent.Delete.name;
       dynamic res = await _server!.invoke(name, args: [key, domain]);
-      return ApiResp.fromMap(res);
+      return ApiResp.fromJson(res);
     }
     Fluttertoast.showToast(msg: "未连接存储服务器!");
     throw Exception("未连接存储服务器!");
@@ -89,7 +89,7 @@ class AnyStoreUtil {
       var name = SendEvent.Insert.name;
       var args = [collName, data, domain];
       dynamic res = await _server!.invoke(name, args: args);
-      return ApiResp.fromMap(res);
+      return ApiResp.fromJson(res);
     }
     Fluttertoast.showToast(msg: "未连接存储服务器!");
     throw Exception("未连接存储服务器!");
@@ -101,7 +101,7 @@ class AnyStoreUtil {
       var name = SendEvent.Update.name;
       var args = [collName, update, domain];
       dynamic res = await _server!.invoke(name, args: args);
-      return ApiResp.fromMap(res);
+      return ApiResp.fromJson(res);
     }
     Fluttertoast.showToast(msg: "未连接存储服务器!");
     throw Exception("未连接存储服务器!");
@@ -113,7 +113,7 @@ class AnyStoreUtil {
       var name = SendEvent.Remove.name;
       var args = [collName, match, domain];
       dynamic res = await _server!.invoke(name, args: args);
-      return ApiResp.fromMap(res);
+      return ApiResp.fromJson(res);
     }
     Fluttertoast.showToast(msg: "未连接存储服务器!");
     throw Exception("未连接存储服务器!");
@@ -125,7 +125,7 @@ class AnyStoreUtil {
       var aggregateName = SendEvent.Aggregate.name;
       var args = [collName, opt, domain];
       dynamic res = await _server!.invoke(aggregateName, args: args);
-      return ApiResp.fromMap(res);
+      return ApiResp.fromJson(res);
     }
     Fluttertoast.showToast(msg: "未连接存储服务器!");
     throw Exception("未连接存储服务器!");
@@ -237,7 +237,7 @@ class AnyStoreUtil {
       subscriptionMap[fullKey] = callback;
       var name = SendEvent.Subscribed.name;
       dynamic res = await _server!.invoke(name, args: [key.name, domain]);
-      ApiResp apiResp = ApiResp.fromMap(res);
+      ApiResp apiResp = ApiResp.fromJson(res);
       if (apiResp.success) {
         callback(apiResp.data);
       }
@@ -267,7 +267,7 @@ class AnyStoreUtil {
         var name = SendEvent.Subscribed.name;
         dynamic res = await _server!.invoke(name, args: [key, domain]);
 
-        ApiResp apiResp = ApiResp.fromMap(res);
+        ApiResp apiResp = ApiResp.fromJson(res);
         if (apiResp.success) {
           callback(apiResp.data);
         }
