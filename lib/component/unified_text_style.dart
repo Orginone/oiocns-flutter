@@ -99,6 +99,7 @@ get text20Bold => TextStyle(
     );
 
 get text20White => TextStyle(fontSize: 20.sp, color: Colors.white);
+get text25White => TextStyle(fontSize: 25.sp, color: Colors.white);
 
 get text20blue => TextStyle(fontSize: 20.sp, color: Colors.blueAccent);
 

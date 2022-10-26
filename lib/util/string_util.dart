@@ -79,4 +79,10 @@ class StringUtil {
     }
     return "$prefix:$suffix";
   }
+
+  static String getStrFirstUpperChar(String? str){
+    if(str == null || str.isEmpty) return "";
+    if(str.length == 1) return str.toUpperCase();
+    return str.substring(0,1).toUpperCase();
+  }
 }
