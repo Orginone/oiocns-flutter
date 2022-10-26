@@ -27,7 +27,7 @@ class TextSearch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Duration duration = const Duration(seconds: 1);
+    Duration duration = const Duration(milliseconds: 500);
     Timer? timer;
     return Container(
       margin: margin,

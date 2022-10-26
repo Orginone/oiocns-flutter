@@ -2,6 +2,8 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:orginone/component/form.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
+import 'package:orginone/page/home/affairs/affairs_binding.dart';
+import 'package:orginone/page/home/affairs/affairs_page.dart';
 import 'package:orginone/page/home/center/center_binding.dart';
 import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/component/person_detail/person_detail_binding.dart';
@@ -18,6 +20,8 @@ import 'package:orginone/page/home/home_binding.dart';
 import 'package:orginone/page/home/home_page.dart';
 import 'package:orginone/page/home/message/chat/chat_binding.dart';
 import 'package:orginone/page/home/message/chat/chat_page.dart';
+import 'package:orginone/page/home/message/contact/contact_binding.dart';
+import 'package:orginone/page/home/message/contact/contact_page.dart';
 import 'package:orginone/page/home/message/message_binding.dart';
 import 'package:orginone/page/home/message/message_page.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_binding.dart';
@@ -85,6 +89,9 @@ class Routers {
   static const String search = "/search";
   static const String scanning = "/scanning";
   static const String scanningResult = "/scanningResult";
+  static const String contact = "/contact";
+  //首页-办事
+  static const String affairs = "/affairs";
   static const String friendAdd = "/friendAdd";
   static const String form = "/form";
 
@@ -109,7 +116,7 @@ class Routers {
       GetPage(
           name: Routers.home,
           page: () => const HomePage(),
-          binding: HomeBinding()),
+          bindings: [HomeBinding(),AffairsBinding()]),
       GetPage(
           name: Routers.home,
           page: () => const CenterPage(),
@@ -232,6 +239,16 @@ class Routers {
         name: Routers.friendAdd,
         page: () => const FriendAddPage(),
         binding: FriendAddBinding(),
+      ),
+      GetPage(
+        name: Routers.contact,
+        page: () => const ContactPage(),
+        binding: ContactBinding(),
+      ),
+      GetPage(
+        name: Routers.affairs,
+        page: () => const AffairsPage(),
+        binding: AffairsBinding(),
       ),
     ];
   }

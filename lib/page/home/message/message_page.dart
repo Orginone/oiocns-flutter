@@ -293,6 +293,8 @@ class MessagePage extends GetView<MessageController> {
           margin: left10,
           child: Text("我的联系人", style: text16Bold),
         ),
-        func: () {},
+        func: () {
+          Get.toNamed(Routers.contact);
+        },
       );
 }
