@@ -1,17 +1,16 @@
-import 'package:json_annotation/json_annotation.dart';
-
-part 'api_resp.g.dart';
+import 'package:orginone/generated/json/base/json_field.dart';
+import 'package:orginone/generated/json/api_resp.g.dart';
+import 'dart:convert';
 
 @JsonSerializable()
 class ApiResp {
-  final int code;
-  final String msg;
-  final dynamic data;
-  final bool success;
 
-  ApiResp(this.code, this.msg, this.data, this.success);
-
-  factory ApiResp.fromMap(Map<String, dynamic> json) => _$ApiRespFromJson(json);
+	late int code;
+	late dynamic data;
+	late String msg;
+	late bool success;
+  
+  ApiResp();
 
   ApiResp.empty()
       : code = 404,
@@ -19,10 +18,12 @@ class ApiResp {
         data = null,
         success = false;
 
-  Map<String, dynamic> toJson() => _$ApiRespToJson(this);
+  factory ApiResp.fromJson(Map<String, dynamic> json) => $ApiRespFromJson(json);
+
+  Map<String, dynamic> toJson() => $ApiRespToJson(this);
 
   @override
   String toString() {
-    return 'ApiResp{code: $code, msg: $msg, data: $data, success: $success}';
+    return jsonEncode(this);
   }
 }

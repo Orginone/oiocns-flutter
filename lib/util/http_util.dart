@@ -129,7 +129,7 @@ class HttpUtil {
   }
 
   dynamic _parseResp(Response response) {
-    var resp = ApiResp.fromMap(response.data!);
+    var resp = ApiResp.fromJson(response.data!);
     log.info("====> resp: ${resp.toString()}");
     if (resp.code == 200) {
       return resp.data;

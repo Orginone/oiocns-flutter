@@ -71,7 +71,7 @@ class MessageSettingController extends GetxController {
     // 根据currentRelationId获取关系信息
     // Map<String, dynamic> chats = await HubUtil().getChats();
     // 转化为api的格式
-    // ApiResp apiResp = ApiResp.fromMap(chats);
+    // ApiResp apiResp = ApiResp.fromJson(chats);
     // 存入对应
     // relationObj = relationResp.data
   }

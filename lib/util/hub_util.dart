@@ -67,7 +67,7 @@ class HubUtil {
     if (_isAuthed) {
       String key = SendEvent.GetChats.name;
       Map<String, dynamic> chats = await _server!.invoke(key);
-      ApiResp resp = ApiResp.fromMap(chats);
+      ApiResp resp = ApiResp.fromJson(chats);
 
       List<dynamic> groups = resp.data["groups"];
       List<SpaceMessagesResp> messageGroups = groups.map((item) {
@@ -89,7 +89,7 @@ class HubUtil {
       var key = SendEvent.GetName.name;
       var args = [personId];
       Map<String, dynamic> nameRes = await _server!.invoke(key, args: args);
-      ApiResp resp = ApiResp.fromMap(nameRes);
+      ApiResp resp = ApiResp.fromJson(nameRes);
       return resp.data;
     }
     Fluttertoast.showToast(msg: "未连接聊天服务器!");
@@ -208,7 +208,7 @@ class HubUtil {
           "spaceId": spaceId
         };
         Map<String, dynamic> res = await _server!.invoke(event, args: [params]);
-        var apiResp = ApiResp.fromMap(res);
+        var apiResp = ApiResp.fromJson(res);
         Map<String, dynamic> data = apiResp.data;
         if (data["result"] == null) {
           return [];
@@ -230,7 +230,7 @@ class HubUtil {
     if (_isAuthed) {
       var name = SendEvent.RecallMsg.name;
       dynamic res = await _server!.invoke(name, args: [msg]);
-      return ApiResp.fromMap(res);
+      return ApiResp.fromJson(res);
     }
     Fluttertoast.showToast(msg: "未连接聊天服务器!");
     throw Exception("未连接聊天服务器!");
@@ -251,7 +251,7 @@ class HubUtil {
       };
       dynamic res = await _server!.invoke(event, args: [params]);
 
-      ApiResp apiResp = ApiResp.fromMap(res);
+      ApiResp apiResp = ApiResp.fromJson(res);
       return PageResp.fromMap(apiResp.data, TargetResp.fromMap);
     }
     Fluttertoast.showToast(msg: "未连接聊天服务器!");
