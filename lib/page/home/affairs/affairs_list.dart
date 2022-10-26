@@ -18,7 +18,7 @@ class AffairsList extends GetView<AffairsController> {
     return Container(
       color: Colors.white,
       child: ListView.builder(
-          itemCount: 20,
+          itemCount: controller.taskList.length,
           itemBuilder: (context, index) {
             return Slidable(
               key: const ValueKey(0),
