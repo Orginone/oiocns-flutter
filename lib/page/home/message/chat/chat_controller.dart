@@ -160,6 +160,19 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         .toList();
     orgChatCache.openChats.add(messageItem);
 
+    // 加入近期会话
+    orgChatCache.recentChats ??= [];
+    bool has = false;
+    for (var item in orgChatCache.recentChats!) {
+      if (item.spaceId == spaceId && item.id == messageItemId) {
+        has = true;
+      }
+    }
+    if (!has) {
+      orgChatCache.recentChats!.insert(0, messageItem);
+      messageController.sortingItems(orgChatCache.recentChats!);
+    }
+
     // 加入自己
     messageItem.noRead = 0;
     messageController.update();

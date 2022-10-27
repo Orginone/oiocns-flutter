@@ -13,6 +13,7 @@ class OrgChatCache {
   List<MessageItemResp> openChats;
   MessageItemResp? target;
   MessageDetailResp? messageDetail;
+  List<MessageItemResp>? recentChats;
 
   OrgChatCache.empty()
       : chats = [],
@@ -25,6 +26,9 @@ class OrgChatCache {
     }
     if (map["chats"] != null) {
       map["chats"] = SpaceMessagesResp.fromList(map["chats"]);
+    }
+    if (map["recentChats"] != null) {
+      map["recentChats"] = MessageItemResp.fromList(map["recentChats"]);
     }
     if (map["openChats"] != null) {
       map["openChats"] = MessageItemResp.fromList(map["openChats"]);
@@ -46,6 +50,7 @@ class OrgChatCache {
         name = map["Name"],
         updateTime = map["UpdateTime"],
         chats = map["chats"],
+        recentChats = map["recentChats"],
         openChats = map["openChats"],
         nameMap = map["nameMap"],
         target = map["target"],

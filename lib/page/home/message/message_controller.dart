@@ -48,7 +48,7 @@ class MessageController extends GetxController
   void onInit() {
     super.onInit();
     // 页签控制器
-    tabController = TabController(length: 2, vsync: this);
+    tabController = TabController(length: 3, vsync: this);
     // 监听页面的生命周期
     WidgetsBinding.instance.addObserver(this);
     // 订阅聊天面板信息
@@ -81,10 +81,12 @@ class MessageController extends GetxController
   }
 
   // 组内会话排序
-  sortingItems(SpaceMessagesResp spaceMessagesResp) {
+  sortingItems(List<MessageItemResp> chats) {
     // 会话
-    spaceMessagesResp.chats.sort((first, second) {
-      if (first.msgTime == null || second.msgTime == null) {
+    chats.sort((first, second) {
+      if (first.isTop ?? false) {
+        return 1;
+      } else if (first.msgTime == null || second.msgTime == null) {
         return 0;
       } else {
         return -first.msgTime!.compareTo(second.msgTime!);
@@ -194,7 +196,7 @@ class MessageController extends GetxController
       }
 
       // 组内排序
-      sortingItems(group);
+      sortingItems(group.chats);
       spaces.add(group);
     }
     if (hasTop) {
@@ -313,8 +315,17 @@ class MessageController extends GetxController
           orgChatCache.messageDetail = detail;
           orgChatCache.target = currentItem;
           for (var group in orgChatCache.chats) {
-            sortingItems(group);
+            sortingItems(group.chats);
           }
+
+          // 近期会话不存在就加入
+          orgChatCache.recentChats = orgChatCache.recentChats ?? [];
+          orgChatCache.recentChats = orgChatCache.recentChats!
+              .where((item) =>
+                  item.id != currentItem!.id ||
+                  item.spaceId != currentItem.spaceId)
+              .toList();
+          orgChatCache.recentChats!.insert(0, currentItem);
         }
 
         // 更新试图

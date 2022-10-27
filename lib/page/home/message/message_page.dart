@@ -7,9 +7,11 @@ import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/api_resp/tree_node.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/page/home/home_controller.dart';
+import 'package:orginone/page/home/message/component/message_item_widget.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/util/hive_util.dart';
 
+import '../../../api_resp/message_item_resp.dart';
 import '../../../component/choose_item.dart';
 import '../../../component/icon_avatar.dart';
 import '../../../component/unified_edge_insets.dart';
@@ -24,7 +26,7 @@ class MessagePage extends GetView<MessageController> {
   Widget build(BuildContext context) {
     return Column(children: [
       SizedBox(
-        width: 120.w,
+        width: 200.w,
         child: TabBar(
           controller: controller.tabController,
           indicatorSize: TabBarIndicatorSize.label,
@@ -32,6 +34,7 @@ class MessagePage extends GetView<MessageController> {
           labelStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
           labelColor: Colors.black,
           tabs: const [
+            Text("近期会话"),
             Text("会话"),
             Text("通讯录"),
           ],
@@ -44,10 +47,27 @@ class MessagePage extends GetView<MessageController> {
       Expanded(
         child: TabBarView(
           controller: controller.tabController,
-          children: [_chat(), _relation()],
+          children: [_recentChat(), _chat(), _relation()],
         ),
       )
     ]);
+  }
+
+  Widget _recentChat() {
+    return GetBuilder<MessageController>(
+      builder: (controller) {
+        List<MessageItemResp> items = controller.orgChatCache.recentChats ?? [];
+        return ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          itemCount: items.length,
+          itemBuilder: (BuildContext context, int index) {
+            var recentChat = items[index];
+            return MessageItemWidget(recentChat.spaceId!, recentChat);
+          },
+        );
+      },
+    );
   }
 
   Widget _chat() {
@@ -56,7 +76,6 @@ class MessagePage extends GetView<MessageController> {
         await controller.refreshCharts();
       },
       child: GetBuilder<MessageController>(
-        init: controller,
         builder: (controller) => ListView.builder(
           shrinkWrap: true,
           scrollDirection: Axis.vertical,
