@@ -70,7 +70,7 @@ class HomeController extends GetxController
   }
 
   void _initTabs() {
-    var message = _buildTab(Icons.group_outlined, '沟通');
+    var message = _buildTabTick(Icons.group_outlined, '沟通');
     var relation = _buildTab(Icons.book_outlined, '办事');
     var center = _buildCenter(Icons.circle);
     var work = _buildTab(Icons.warehouse_outlined, '仓库');
@@ -92,6 +92,29 @@ class HomeController extends GetxController
       iconMargin: EdgeInsets.all(5.w),
       icon: Icon(iconData),
       child: Text(label),
+    );
+  }
+
+  Widget _buildTabTick(IconData iconData, String label) {
+    return GetBuilder<MessageController>(
+      builder: (controller) => Container(
+        width: 100.w,
+        child: Stack(
+          children: [
+            Tab(
+              iconMargin: EdgeInsets.all(5.w),
+              icon: Icon(iconData),
+              child: Text(label),
+            ),
+            Positioned(
+              right: 0,
+              child: controller.hasNoRead()
+                  ? Icon(Icons.circle, color: Colors.redAccent, size: 10.w)
+                  : Container(),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -139,12 +162,12 @@ class HomeController extends GetxController
 }
 
 class TabCombine {
-  final Tab _tab;
+  final Widget _tab;
   final Widget _widget;
 
   const TabCombine(this._tab, this._widget);
 
   Widget get widget => _widget;
 
-  Tab get tab => _tab;
+  Widget get tab => _tab;
 }

@@ -26,17 +26,17 @@ class MessagePage extends GetView<MessageController> {
   Widget build(BuildContext context) {
     return Column(children: [
       SizedBox(
-        width: 200.w,
+        width: 300.w,
         child: TabBar(
           controller: controller.tabController,
           indicatorSize: TabBarIndicatorSize.label,
           labelPadding: EdgeInsets.only(top: 10.h, bottom: 6.h),
           labelStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
           labelColor: Colors.black,
-          tabs: const [
-            Text("近期会话"),
-            Text("会话"),
-            Text("通讯录"),
+          tabs: [
+            _chatTab("近期会话"),
+            _chatTab("会话"),
+            const Text("通讯录"),
           ],
         ),
       ),
@@ -52,6 +52,22 @@ class MessagePage extends GetView<MessageController> {
       )
     ]);
   }
+
+  Widget _chatTab(String name) {
+    return SizedBox(
+      height: 24.h,
+      child: Stack(children: [
+        Align(alignment: Alignment.center, child: Text(name)),
+        GetBuilder<MessageController>(builder: (controller) => _noRead)
+      ]),
+    );
+  }
+
+  get _noRead => Align(
+      alignment: Alignment.topRight,
+      child: controller.hasNoRead()
+          ? Icon(Icons.circle, color: Colors.redAccent, size: 10.w)
+          : Container());
 
   Widget _recentChat() {
     return GetBuilder<MessageController>(

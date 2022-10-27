@@ -365,4 +365,9 @@ class MessageController extends GetxController
         break;
     }
   }
+
+  bool hasNoRead() {
+    var has = orgChatCache.recentChats?.firstWhereOrNull((item) => (item.noRead ?? 0) > 0);
+    return has != null;
+  }
 }
