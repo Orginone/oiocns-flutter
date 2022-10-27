@@ -84,14 +84,14 @@ class MessageController extends GetxController
   sortingItems(List<MessageItemResp> chats) {
     // 会话
     chats.sort((first, second) {
-      if (first.isTop ?? false) {
-        return 1;
-      } else if (first.msgTime == null || second.msgTime == null) {
+      if (first.msgTime == null || second.msgTime == null) {
         return 0;
       } else {
         return -first.msgTime!.compareTo(second.msgTime!);
       }
     });
+    // 置顶排序
+    chats.sort((first, second) => first.isTop ?? false ? -1 : 1);
   }
 
   Future<dynamic> refreshCharts() async {
@@ -325,7 +325,9 @@ class MessageController extends GetxController
                   item.id != currentItem!.id ||
                   item.spaceId != currentItem.spaceId)
               .toList();
-          orgChatCache.recentChats!.insert(0, currentItem);
+
+          orgChatCache.recentChats!.add(currentItem);
+          sortingItems(orgChatCache.recentChats!);
         }
 
         // 更新试图
@@ -352,6 +354,12 @@ class MessageController extends GetxController
         item.isTop = func == LongPressFunc.topping;
         orgChatCache.chats = _spaceHandling(orgChatCache.chats);
         sortingGroups();
+        sortingItems(orgChatCache.recentChats ?? []);
+        await HubUtil().cacheChats(orgChatCache);
+        update();
+        break;
+      case LongPressFunc.remove:
+        orgChatCache.recentChats?.remove(item);
         await HubUtil().cacheChats(orgChatCache);
         update();
         break;

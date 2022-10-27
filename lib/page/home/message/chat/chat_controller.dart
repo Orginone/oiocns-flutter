@@ -169,7 +169,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
       }
     }
     if (!has) {
-      orgChatCache.recentChats!.insert(0, messageItem);
+      orgChatCache.recentChats!.add(messageItem);
       messageController.sortingItems(orgChatCache.recentChats!);
     }
 

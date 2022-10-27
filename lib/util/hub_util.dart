@@ -137,10 +137,11 @@ class HubUtil {
             .toList(),
         "nameMap": orgChatCache.nameMap,
         "openChats": MessageItemResp.toJsonList(orgChatCache.openChats),
+        "recentChats": orgChatCache.recentChats,
         "lastMsg": {
           "chat": orgChatCache.target?.toJson(),
           "data": orgChatCache.messageDetail?.toJson()
-        }
+        },
       }
     };
     await AnyStoreUtil().set(StoreKey.orgChat.name, setData, Domain.user.name);

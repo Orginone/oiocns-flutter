@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -17,13 +19,13 @@ import '../../../../util/hive_util.dart';
 double defaultAvatarWidth = 50.w;
 
 enum LongPressFunc {
-  topping("置顶会话", "false"),
-  cancelTopping("取消置顶", "true");
+  topping("置顶会话"),
+  cancelTopping("取消置顶"),
+  remove("删除会话");
 
   final String name;
-  final String isTopFunc;
 
-  const LongPressFunc(this.name, this.isTopFunc);
+  const LongPressFunc(this.name);
 }
 
 class MessageItemWidget extends GetView<MessageController> {
@@ -44,13 +46,22 @@ class MessageItemWidget extends GetView<MessageController> {
         y = position.globalPosition.dy;
       },
       onLongPress: () async {
-        String isTop = "${item.isTop ?? false}";
+        bool isTop = item.isTop ?? false;
+        bool isRecent =
+            controller.orgChatCache.recentChats?.contains(item) ?? false;
+        List<LongPressFunc> functions = [];
+        if (isTop) {
+          functions.add(LongPressFunc.cancelTopping);
+        } else {
+          functions.add(LongPressFunc.topping);
+        }
+        if (isRecent) functions.add(LongPressFunc.remove);
+
         final result = await showMenu(
           context: context,
           position: RelativeRect.fromLTRB(
               x, y - 50, MediaQuery.of(context).size.width - x, 0),
-          items: LongPressFunc.values
-              .where((item) => isTop == item.isTopFunc)
+          items: functions
               .map((item) => PopupMenuItem(value: item, child: Text(item.name)))
               .toList(),
         );
