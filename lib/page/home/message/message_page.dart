@@ -114,9 +114,8 @@ class MessagePage extends GetView<MessageController> {
       ),
     );
     children.add(Container(margin: EdgeInsets.only(top: 10.h)));
-
     children.add(_tree());
-
+    children.add(_links());
     return Container(
       margin: EdgeInsets.only(left: 20.w, right: 20.w),
       child: Column(children: children),
@@ -222,21 +221,28 @@ class MessagePage extends GetView<MessageController> {
           }
         }
       }
-
-      double top = 12.h;
-      body.add(Container(margin: EdgeInsets.only(top: top)));
-      body.add(_otherUnits);
-      body.add(Container(margin: EdgeInsets.only(top: top)));
-      body.add(_chats);
-      body.add(Container(margin: EdgeInsets.only(top: top)));
-      body.add(Divider(height: 1.h));
-      body.add(Container(margin: EdgeInsets.only(top: top)));
-      body.add(_specialFocus);
-      body.add(Container(margin: EdgeInsets.only(top: top)));
-      body.add(_myRelation);
-
       return Column(children: body);
     });
+  }
+
+  Widget _links() {
+    double top = 12.h;
+    return Column(
+      children: [
+        Container(margin: EdgeInsets.only(top: top)),
+        _otherUnits,
+        Container(margin: EdgeInsets.only(top: top)),
+        _chats,
+        Container(margin: EdgeInsets.only(top: top)),
+        Divider(height: 1.h),
+        Container(margin: EdgeInsets.only(top: top)),
+        _newFriends,
+        Container(margin: EdgeInsets.only(top: top)),
+        _specialFocus,
+        Container(margin: EdgeInsets.only(top: top)),
+        _myRelation,
+      ],
+    );
   }
 
   Widget _deptItem(TreeNode treeNode, double leftWidth) {
@@ -297,6 +303,21 @@ class MessagePage extends GetView<MessageController> {
         body: Container(
           margin: left10,
           child: Text("奥集能通讯录", style: text16Bold),
+        ),
+        func: () {},
+      );
+
+  get _newFriends => ChooseItem(
+        padding: EdgeInsets.zero,
+        header: const IconAvatar(
+          icon: Icon(
+            Icons.group,
+            color: Colors.white,
+          ),
+        ),
+        body: Container(
+          margin: left10,
+          child: Text("新朋友", style: text16Bold),
         ),
         func: () {},
       );
