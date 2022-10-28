@@ -10,6 +10,7 @@ import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/message/contact/contact_controller.dart';
 import 'package:orginone/page/home/search/search_controller.dart';
+import 'package:orginone/public/loading/loading_widget.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/string_util.dart';
 import 'package:orginone/util/widget_util.dart';
@@ -29,7 +30,8 @@ class ContactPage extends GetView<ContactController> {
       appBarLeading: WidgetUtil.defaultBackBtn,
       appBarActions: _actions,
       bgColor: UnifiedColors.white,
-      body: Stack(children: [_contactList(), _indexList(), _stickIndexBar()]),
+      body: LoadingWidget(controller: controller,
+      builder:(context)=> Stack(children: [_contactList(), _indexList(), _stickIndexBar()])),
     );
   }
 

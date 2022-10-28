@@ -1,14 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:orginone/component/unified_colors.dart';
-import 'package:orginone/page/home/affairs/affairs_controller.dart';
-import 'package:orginone/page/home/affairs/affairs_list.dart';
-import 'package:orginone/page/home/affairs/affairs_type_enum.dart';
+import 'package:orginone/page/home/affairs/task/task_list.dart';
+import 'affairs_page_controller.dart';
+import 'copy/copy_list.dart';
+import 'instance/instance_list.dart';
+import 'record/record_list.dart';
 
-class AffairsPage extends GetView<AffairsController> {
+class AffairsPage extends StatefulWidget {
   const AffairsPage({Key? key}) : super(key: key);
+
+  @override
+  State<AffairsPage> createState() => _AffairsPageState();
+}
+
+class _AffairsPageState extends State<AffairsPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return const AffairsTab();
+  }
+
+  @override
+  bool get wantKeepAlive => false;
+}
+
+class AffairsTab extends GetView<AffairsPageController> {
+  const AffairsTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +42,7 @@ class AffairsPage extends GetView<AffairsController> {
   }
 
   Widget _tabBar() {
-    return GetBuilder<AffairsController>(
+    return GetBuilder<AffairsPageController>(
         init: controller,
         builder: (controller) {
           return Container(
@@ -51,11 +71,11 @@ class AffairsPage extends GetView<AffairsController> {
       flex: 1,
       child: TabBarView(
         controller: controller.tabController,
-        children: [
-          AffairsList(AffairsTypeEnum.waiting),
-          AffairsList(AffairsTypeEnum.finish),
-          AffairsList(AffairsTypeEnum.mine),
-          AffairsList(AffairsTypeEnum.copy),
+        children:  [
+          AffairsTaskWidget(),
+          AffairsRecordWidget(),
+          AffairsInstanceWidget(),
+          AffairsCopyWidget(),
         ],
       ),
     );
