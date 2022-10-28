@@ -7,13 +7,15 @@ import 'package:lpinyin/lpinyin.dart';
 import 'package:orginone/api/person_api.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/page/home/home_controller.dart';
+import 'package:orginone/public/http/base_controller.dart';
+import 'package:orginone/public/loading/load_status.dart';
 import 'package:orginone/util/string_util.dart';
 
 
 get typeChar => "-101";
 
-class ContactController extends GetxController {
-  int limit = 1;
+class ContactController extends BaseController {
+  int limit = 20;
   int offset = 0;
   int mSelectIndex = -1;
   bool mTouchUp = true;
@@ -93,8 +95,7 @@ class ContactController extends GetxController {
       for (var value1 in mData) {
         logger.info("====>1 名称：${value1.name}");
       }
-
-      update();
+      updateLoadStatus(LoadStatusX.success);
     } else {
       offset++;
       mData.addAll(pageResp.result);
