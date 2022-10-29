@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -63,14 +64,26 @@ class BucketApi {
     var length = file.lengthSync();
     var openedFile = await file.open();
 
+    if (length < chunkSize){
+      await upload(prefix: prefix, filePath: filePath, fileName: fileName);
+      if (progressCallback != null){
+        progressCallback(100);
+      }
+      return;
+    }
+
     // 上传地址
     String url = "${Constant.bucket}/UploadChunk";
-    var params = {"shareDomain": shareDomain, "prefix": prefix, "value":"value"};
+    var params = {
+      "shareDomain": shareDomain,
+      "prefix": prefix,
+    };
 
     // 当前进度
     var current = 0;
     var index = 0;
-    var totalCount = (current / length).ceil();
+    var totalCount = (length / chunkSize).ceil();
+    var uploadId = uuid.v4();
     while (current < length) {
       // 获取字节流
       var remainder = length - current;
@@ -79,13 +92,16 @@ class BucketApi {
 
       // 组装文件
       var file = MultipartFile.fromBytes(bytes, filename: fileName);
-      var formData = FormData.fromMap({
-        "file": file,
-        "uploadId": uuid.v4(),
+      var chunkMetaData = {
+        "uploadId": uploadId,
         "fileName": fileName,
         "Index": index++,
         "TotalCount": totalCount,
         "FileSize": readSize
+      };
+      var formData = FormData.fromMap({
+        "file": file,
+        "chunkMetadata": jsonEncode(chunkMetaData),
       });
 
       // 包装上传
@@ -96,6 +112,7 @@ class BucketApi {
         options: Options(contentType: "multipart/form-data"),
       );
 
+      current += readSize;
       if (progressCallback != null) {
         progressCallback(current / length);
       }
