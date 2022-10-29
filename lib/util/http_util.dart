@@ -120,8 +120,8 @@ class HttpUtil {
         Fluttertoast.showToast(msg: error.toString());
       }
       rethrow;
-    } on Error {
-      Fluttertoast.showToast(msg: "请求异常，请稍后再试。");
+    } on Error catch (error) {
+      Fluttertoast.showToast(msg: error.toString());
       rethrow;
     } finally {
       log.info("================End Post Http Request================");
@@ -129,12 +129,14 @@ class HttpUtil {
   }
 
   dynamic _parseResp(Response response) {
-    var resp = ApiResp.fromJson(response.data!);
-    log.info("====> resp: ${resp.toString()}");
-    if (resp.code == 200) {
-      return resp.data;
+    if (response.statusCode != 200) {
+      throw Exception(response.statusMessage);
     } else {
-      throw Exception(resp.msg);
+      var resp = ApiResp.fromJson(response.data!);
+      if (resp.code == 200) {
+        return resp.data;
+      }
+      Fluttertoast.showToast(msg: resp.msg);
     }
   }
 

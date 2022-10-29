@@ -197,7 +197,7 @@ class RegistFormWidget2 extends GetView<RegisterController> {
                         "phone": controller.phoneController.text
                       };
                       Map<String, dynamic> res =
-                          await PersonApi.regist(postData);
+                          await PersonApi.register(postData);
                       Fluttertoast.showToast(
                           msg: '注册成功',
                           toastLength: Toast.LENGTH_SHORT,

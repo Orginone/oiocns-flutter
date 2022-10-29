@@ -19,6 +19,7 @@ import '../../../api_resp/message_detail_resp.dart';
 import '../../../api_resp/message_item_resp.dart';
 import '../../../enumeration/message_type.dart';
 import '../../../enumeration/target_type.dart';
+import '../../../logic/authority.dart';
 import '../../../util/hub_util.dart';
 import '../../../util/string_util.dart';
 import 'chat/chat_controller.dart';
@@ -141,7 +142,7 @@ class MessageController extends GetxController
     }
     if (Get.isRegistered<ChatController>()) {
       // 消息预处理
-      TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+      TargetResp userInfo = auth.userInfo;
       var sessionId = detail.toId;
       if (detail.toId == userInfo.id) {
         sessionId = detail.fromId;
@@ -212,7 +213,7 @@ class MessageController extends GetxController
     if (messageList.isEmpty) {
       return;
     }
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    TargetResp userInfo = auth.userInfo;
 
     for (var message in messageList) {
       log.info("接收到一条新的消息$message");

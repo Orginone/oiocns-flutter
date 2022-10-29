@@ -14,6 +14,7 @@ import 'package:orginone/util/date_util.dart';
 import '../../../../api_resp/message_item_resp.dart';
 import '../../../../component/unified_edge_insets.dart';
 import '../../../../enumeration/target_type.dart';
+import '../../../../logic/authority.dart';
 import '../../../../routers.dart';
 import '../../../../util/hive_util.dart';
 import '../../../../util/widget_util.dart';
@@ -82,7 +83,7 @@ class ChatPage extends GetView<ChatController> {
     MessageItemResp messageItem = controller.messageItem;
     MessageDetailResp messageDetail = controller.messageDetails[index];
 
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    TargetResp userInfo = auth.userInfo;
     bool isMy = messageDetail.fromId == userInfo.id;
     bool isMultiple = messageItem.typeName != TargetType.person.name;
 

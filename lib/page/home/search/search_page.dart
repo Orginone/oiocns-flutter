@@ -175,8 +175,10 @@ class SearchPage extends GetView<SearchController> {
         case FunctionPoint.addFriends:
           children.add(ElevatedButton(
             onPressed: () async {
-              await PersonApi.join(targetResp.id);
-              Fluttertoast.showToast(msg: "申请成功");
+              var result = await PersonApi.join(targetResp.id);
+              if (result != null) {
+                Fluttertoast.showToast(msg: "申请成功");
+              }
             },
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(Colors.green),

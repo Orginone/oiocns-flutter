@@ -18,6 +18,7 @@ import '../api_resp/message_detail_resp.dart';
 import '../api_resp/message_item_resp.dart';
 import '../api_resp/target_resp.dart';
 import '../enumeration/target_type.dart';
+import '../logic/authority.dart';
 import '../page/home/message/message_controller.dart';
 import 'hive_util.dart';
 
@@ -149,7 +150,7 @@ class HubUtil {
 
   /// 清空消息
   Future<void> clearHistoryMsg(String? spaceId, String sessionId) async {
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    TargetResp userInfo = auth.userInfo;
     spaceId = spaceId ?? userInfo.id;
     if (userInfo.id == spaceId) {
       // 清空会话
@@ -168,7 +169,7 @@ class HubUtil {
   Future<List<MessageDetailResp>> getHistoryMsg(String? spaceId,
       String sessionId, String typeName, int offset, int limit) async {
     // 默认我的空间
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    TargetResp userInfo = auth.userInfo;
     spaceId = spaceId ?? userInfo.id;
     if (userInfo.id == spaceId) {
       Map<String, dynamic> match = {"sessionId": sessionId};

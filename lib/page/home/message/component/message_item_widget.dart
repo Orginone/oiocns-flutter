@@ -13,6 +13,7 @@ import 'package:orginone/util/string_util.dart';
 
 import '../../../../component/text_avatar.dart';
 import '../../../../component/unified_text_style.dart';
+import '../../../../logic/authority.dart';
 import '../../../../util/date_util.dart';
 import '../../../../util/hive_util.dart';
 
@@ -132,7 +133,7 @@ class MessageItemWidget extends GetView<MessageController> {
   }
 
   Widget _content(MessageItemResp messageItem) {
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    TargetResp userInfo = auth.userInfo;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,

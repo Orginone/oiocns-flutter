@@ -18,6 +18,7 @@ import '../../api_resp/login_resp.dart';
 import '../../api_resp/target_resp.dart';
 import '../../api_resp/tree_node.dart';
 import '../../api_resp/user_resp.dart';
+import '../../logic/authority.dart';
 import '../../util/hive_util.dart';
 import 'message/message_page.dart';
 
@@ -26,10 +27,7 @@ class HomeController extends GetxController
   Logger log = Logger("HomeController");
 
   MessageController messageController = Get.find<MessageController>();
-  OrganizationController organizationController =
-      Get.find<OrganizationController>();
-
-  UserResp user = HiveUtil().getValue(Keys.user);
+  OrganizationController organizationCtrl = Get.find<OrganizationController>();
 
   late List<TabCombine> tabs;
   late TabController tabController;
@@ -64,7 +62,7 @@ class HomeController extends GetxController
   }
 
   Future<void> _initCurrentSpace() async {
-    var userInfo = HiveUtil().getValue(Keys.userInfo);
+    var userInfo = auth.userInfo;
     currentSpace = TargetResp.copyWith(userInfo);
     currentSpace.name = "个人空间";
   }
@@ -135,8 +133,9 @@ class HomeController extends GetxController
 
   void switchSpaces(TargetResp targetResp) async {
     LoginResp loginResp = await PersonApi.changeWorkspace(targetResp.id);
-    HiveUtil().putValue(Keys.user, loginResp.user);
     HiveUtil().accessToken = loginResp.accessToken;
+
+    await loadAuth();
 
     // 当前页面需要变化
     currentSpace = targetResp;
@@ -148,11 +147,11 @@ class HomeController extends GetxController
     messageController.update();
 
     // 组织架构页面需要变化
-    organizationController.update();
+    organizationCtrl.update();
   }
 
   _loadTree() async {
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    TargetResp userInfo = auth.userInfo;
     if (userInfo.id != currentSpace.id) {
       nodeCombine = await CompanyApi.tree();
     } else {

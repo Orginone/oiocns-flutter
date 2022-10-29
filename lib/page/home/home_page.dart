@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 import '../../component/unified_colors.dart';
+import '../../logic/authority.dart';
 import '../../routers.dart';
 import '../../util/hub_util.dart';
 import '../../util/string_util.dart';
@@ -99,7 +100,7 @@ class HomePage extends GetView<HomeController> {
   }
 
   Widget _title(BuildContext context) {
-    var userName = controller.user.userName;
+    var userName = auth.userInfo.name;
     var userKeyWord = StringUtil.getPrefixChars(userName, count: 1);
     double x = 0, y = 0;
     return Column(

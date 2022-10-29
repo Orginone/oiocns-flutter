@@ -16,6 +16,7 @@ import '../../../component/choose_item.dart';
 import '../../../component/icon_avatar.dart';
 import '../../../component/unified_edge_insets.dart';
 import '../../../component/unified_text_style.dart';
+import '../../../logic/authority.dart';
 import '../../../routers.dart';
 import 'component/group_item_widget.dart';
 
@@ -168,7 +169,7 @@ class MessagePage extends GetView<MessageController> {
   Widget _tree() {
     return GetBuilder<HomeController>(builder: (homeController) {
       var currentSpace = homeController.currentSpace;
-      TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+      TargetResp userInfo = auth.userInfo;
       var isSelf = userInfo.id == currentSpace.id;
 
       double leftWidth = 36.w;

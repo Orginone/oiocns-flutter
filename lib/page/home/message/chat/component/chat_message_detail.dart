@@ -21,6 +21,7 @@ import '../../../../../component/unified_text_style.dart';
 import '../../../../../config/constant.dart';
 import '../../../../../enumeration/enum_map.dart';
 import '../../../../../enumeration/message_type.dart';
+import '../../../../../logic/authority.dart';
 import '../../../../../util/encryption_util.dart';
 import '../../../../../util/string_util.dart';
 
@@ -103,7 +104,7 @@ class ChatMessageDetail extends GetView<ChatController> {
 
   // 获取头像
   Widget _getAvatar() {
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    TargetResp userInfo = auth.userInfo;
     return TextAvatar(
       avatarName: StringUtil.getAvatarName(
         avatarName: isMy ? userInfo.team?.name ?? "" : targetName(),
@@ -124,7 +125,7 @@ class ChatMessageDetail extends GetView<ChatController> {
       ));
     }
 
-    TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+    TargetResp userInfo = auth.userInfo;
 
     Widget body;
     var textDirection =
@@ -166,7 +167,7 @@ class ChatMessageDetail extends GetView<ChatController> {
             items.add(DetailFunc.recall);
           }
         }
-        TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+        TargetResp userInfo = auth.userInfo;
         if (spaceId == userInfo.id) {
           items.add(DetailFunc.remove);
         }

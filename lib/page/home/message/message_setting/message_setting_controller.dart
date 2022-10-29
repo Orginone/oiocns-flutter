@@ -10,6 +10,7 @@ import 'package:orginone/util/hive_util.dart';
 
 import '../../../../api_resp/message_item_resp.dart';
 import '../../../../enumeration/target_type.dart';
+import '../../../../logic/authority.dart';
 import '../../../../util/hub_util.dart';
 
 class MessageSettingController extends GetxController {
@@ -21,7 +22,7 @@ class MessageSettingController extends GetxController {
   RxBool textField2 = true.obs;
 
   //当前用户信息
-  TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+  TargetResp userInfo = auth.userInfo;
 
   //接收关系对象下的成员列表
   RxList<TargetResp> originPersonList = <TargetResp>[].obs;

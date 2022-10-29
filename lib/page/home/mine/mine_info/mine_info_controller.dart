@@ -7,25 +7,21 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/person_api.dart';
 import 'package:orginone/api_resp/target_resp.dart';
-import 'package:orginone/util/hive_util.dart';
+
+import '../../../../logic/authority.dart';
 
 class MineInfoController extends GetxController {
   final Logger log = Logger("MineInfoController");
-  // final GlobalKey<FormState> accountKey = GlobalKey<FormState>();
+
   TextEditingController nickNameTextController = TextEditingController();
   TextEditingController accountTextController = TextEditingController();
   TextEditingController nameTextController = TextEditingController();
   TextEditingController phoneTextController = TextEditingController();
-  TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
-  @override
-  void onReady() async {
-    super.onReady();
-  }
+  TargetResp userInfo = auth.userInfo;
 
   void updateUser(dynamic postData) async {
     var resMeg = await PersonApi.updateUser(postData);
-    userInfo = await PersonApi.userInfo();
-    await HiveUtil().putValue(Keys.userInfo, userInfo);
+    await loadAuth();
     Fluttertoast.showToast(
         msg: resMeg,
         toastLength: Toast.LENGTH_SHORT,

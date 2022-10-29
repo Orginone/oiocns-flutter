@@ -5,6 +5,7 @@ import 'package:orginone/util/hive_util.dart';
 import '../api_resp/message_item_resp.dart';
 import '../component/text_avatar.dart';
 import '../enumeration/target_type.dart';
+import '../logic/authority.dart';
 
 class StringUtil {
   static String getPrefixChars(String target, {required int count}) {
@@ -32,7 +33,7 @@ class StringUtil {
     required MessageDetailResp detail,
     required Map<String, dynamic> nameMap,
   }) {
-    var userInfo = HiveUtil().getValue(Keys.userInfo);
+    var userInfo = auth.userInfo;
     String msgBody = "撤回了一条消息";
     var targetType = EnumMap.targetTypeMap[item.typeName];
     if (userInfo.id == detail.fromId) {
@@ -47,7 +48,7 @@ class StringUtil {
   }
 
   static String getRecallBody(MessageItemResp item, MessageDetailResp detail) {
-    var userInfo = HiveUtil().getValue(Keys.userInfo);
+    var userInfo = auth.userInfo;
     String msgBody = "撤回了一条消息";
     var targetType = EnumMap.targetTypeMap[item.typeName];
     if (targetType == TargetType.person) {

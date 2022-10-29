@@ -1,4 +1,4 @@
-import 'package:orginone/util/date_util.dart';
+import 'package:orginone/api_resp/authority_resp.dart';
 
 class IdentityResp {
   String id;
@@ -7,10 +7,11 @@ class IdentityResp {
   String? remark;
   String authId;
   String belongId;
+  AuthorityResp? authority;
   int status;
   String createUser;
   String updateUser;
-  int version;
+  String version;
   DateTime createTime;
   DateTime updateTime;
 
@@ -20,6 +21,7 @@ class IdentityResp {
       this.code,
       this.authId,
       this.belongId,
+      this.authority,
       this.remark,
       this.status,
       this.createUser,
@@ -34,6 +36,7 @@ class IdentityResp {
         code = identityResp.code,
         authId = identityResp.authId,
         belongId = identityResp.belongId,
+        authority = identityResp.authority,
         remark = identityResp.remark,
         status = identityResp.status,
         createUser = identityResp.createUser,
@@ -48,6 +51,9 @@ class IdentityResp {
         code = map["code"],
         authId = map["authId"],
         belongId = map["belongId"],
+        authority = map["authority"] == null
+            ? null
+            : AuthorityResp.fromMap(map["authority"]),
         remark = map["remark"],
         status = map["status"],
         createUser = map["createUser"],
@@ -74,6 +80,7 @@ class IdentityResp {
     json['code'] = code;
     json['authId'] = authId;
     json['belongId'] = belongId;
+    json["authority"] = authority?.toJson();
     json['remark'] = remark;
     json['status'] = status;
     json['createUser'] = createUser;

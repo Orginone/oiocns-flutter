@@ -3,13 +3,13 @@ import 'package:orginone/config/constant.dart';
 
 import '../api_resp/login_resp.dart';
 import '../api_resp/page_resp.dart';
+import '../api_resp/token_authority_resp.dart';
 import '../util/http_util.dart';
 
 class PersonApi {
-  static Future<Map<String, dynamic>> regist(dynamic postData) async {
+  static Future<Map<String, dynamic>> register(dynamic postData) async {
     String url = "${Constant.person}/register";
-    Map<String, dynamic> resp = await HttpUtil().post(url, data: postData);
-    return resp;
+    return await HttpUtil().post(url, data: postData);
   }
 
   static Future<LoginResp> login(String account, String password) async {
@@ -23,14 +23,12 @@ class PersonApi {
 
   static Future<Map<String, dynamic>> logout(dynamic postData) async {
     String url = "${Constant.person}/logout";
-    Map<String, dynamic> resp = await HttpUtil().post(url, data: postData);
-    return resp;
+    return await HttpUtil().post(url, data: postData);
   }
 
   static Future<Map<String, dynamic>> resetPwd(dynamic postData) async {
     String url = "${Constant.person}/reset/pwd";
-    Map<String, dynamic> resp = await HttpUtil().post(url, data: postData);
-    return resp;
+    return await HttpUtil().post(url, data: postData);
   }
 
   static Future<TargetResp> userInfo() async {
@@ -38,6 +36,13 @@ class PersonApi {
 
     Map<String, dynamic> resp = await HttpUtil().post(url);
     return TargetResp.fromMap(resp);
+  }
+
+  static Future<TokenAuthorityResp> tokenInfo() async {
+    String url = "${Constant.person}/token/info";
+
+    Map<String, dynamic> resp = await HttpUtil().post(url);
+    return TokenAuthorityResp.fromMap(resp);
   }
 
   /// 更新用户信息
@@ -65,8 +70,8 @@ class PersonApi {
   /// 改变工作空间
   static Future<LoginResp> changeWorkspace(String targetId) async {
     String url = "${Constant.person}/change/workspace";
-    Map<String, dynamic> res =
-        await HttpUtil().post(url, data: {"id": targetId});
+    var data = {"id": targetId};
+    Map<String, dynamic> res = await HttpUtil().post(url, data: data);
     return LoginResp.fromMap(res);
   }
 
@@ -83,9 +88,9 @@ class PersonApi {
   }
 
   /// 好友验证
-  static Future<void> join(String targetId) async {
+  static Future<dynamic> join(String targetId) async {
     String url = "${Constant.person}/apply/join";
-    await HttpUtil().post(url, data: {"id": targetId});
+    return await HttpUtil().post(url, data: {"id": targetId});
   }
 
   /// 人员搜索

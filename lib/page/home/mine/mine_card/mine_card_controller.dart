@@ -12,9 +12,11 @@ import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/util/hive_util.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../../../logic/authority.dart';
+
 class MineCardController extends GetxController {
   final Logger log = Logger("MineCardController");
-  TargetResp userInfo = HiveUtil().getValue(Keys.userInfo);
+  TargetResp userInfo = auth.userInfo;
   GlobalKey globalKey1 = GlobalKey();
   //截图后的文件路径，通过File包装并通过.image可以展示出来
   String captureImgPath = '';
