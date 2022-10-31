@@ -429,6 +429,7 @@ class ChatBoxController extends FullLifeCycleController
   final Function sendCallback;
   final Function imageCallback;
   final Function voiceCallback;
+  final Function fileCallback;
 
   Rx<RecordStatus>? recordStatus;
   FlutterSoundRecorder? _recorder;
@@ -442,6 +443,7 @@ class ChatBoxController extends FullLifeCycleController
     required this.sendCallback,
     required this.imageCallback,
     required this.voiceCallback,
+    required this.fileCallback
   });
 
   get currentFile => _currentFile;

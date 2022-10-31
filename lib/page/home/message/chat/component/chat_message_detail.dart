@@ -269,9 +269,9 @@ class ChatMessageDetail extends GetView<ChatController> {
     // 初始化语音输入
     controller.playStatusMap.putIfAbsent(
         detail.id,
-        () => VoicePlay(
-              detailResp: detail,
-              status: PlayStatus.stop.obs,
+        () => VoiceDetail(
+              resp: detail,
+              status: VoiceStatus.stop.obs,
               initProgress: milliseconds,
               progress: milliseconds.obs,
               path: path,
@@ -298,7 +298,7 @@ class ChatMessageDetail extends GetView<ChatController> {
               // 播放文件
               var voicePlay = controller.playStatusMap[detail.id]!;
               var status = voicePlay.status;
-              if (status.value == PlayStatus.stop) {
+              if (status.value == VoiceStatus.stop) {
                 controller.startPlayVoice(detail.id, cachedFile);
               } else {
                 controller.stopPrePlayVoice();
@@ -307,7 +307,7 @@ class ChatMessageDetail extends GetView<ChatController> {
             child: Obx(() {
               var voicePlay = controller.playStatusMap[detail.id]!;
               var status = voicePlay.status;
-              return status.value == PlayStatus.stop
+              return status.value == VoiceStatus.stop
                   ? const Icon(Icons.play_arrow, color: Colors.black)
                   : const Icon(Icons.stop, color: Colors.black);
             }),
@@ -333,7 +333,7 @@ class ChatMessageDetail extends GetView<ChatController> {
                   Obx(() {
                     var voicePlay = controller.playStatusMap[detail.id]!;
                     var status = voicePlay.status;
-                    if (status.value == PlayStatus.stop) {
+                    if (status.value == VoiceStatus.stop) {
                       return Align(
                         alignment: Alignment.centerLeft,
                         child: Icon(Icons.circle, size: 12.h),

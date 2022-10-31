@@ -4,5 +4,6 @@ enum MsgType {
   image,
   voice,
   topping,
-  unknown
+  unknown,
+  file,
 }

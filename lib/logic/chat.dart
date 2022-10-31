@@ -1,1 +1,3 @@
-class Chat {}
+class Chat {
+
+}

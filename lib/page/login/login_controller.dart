@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api/person_api.dart';
-import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/component/loading_button.dart';
 
 import '../../api_resp/login_resp.dart';

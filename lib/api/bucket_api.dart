@@ -95,9 +95,9 @@ class BucketApi {
       var chunkMetaData = {
         "uploadId": uploadId,
         "fileName": fileName,
-        "Index": index++,
-        "TotalCount": totalCount,
-        "FileSize": readSize
+        "index": index++,
+        "totalCount": totalCount,
+        "fileSize": readSize
       };
       var formData = FormData.fromMap({
         "file": file,

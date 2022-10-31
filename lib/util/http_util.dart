@@ -77,6 +77,7 @@ class HttpUtil {
       return _parseResp(result);
     } on Exception catch (error) {
       Fluttertoast.showToast(msg: error.toString());
+      rethrow;
     } catch (error) {
       Fluttertoast.showToast(msg: "请求异常，请稍后再试。");
       rethrow;

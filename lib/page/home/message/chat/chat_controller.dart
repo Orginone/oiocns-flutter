@@ -14,36 +14,100 @@ import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/page/home/message/chat/component/chat_message_detail.dart';
 import 'package:orginone/util/encryption_util.dart';
-import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/hub_util.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../api_resp/api_resp.dart';
 import '../../../../api_resp/message_item_resp.dart';
 import '../../../../api_resp/target_resp.dart';
+import '../../../../enumeration/enum_map.dart';
 import '../../../../enumeration/message_type.dart';
 import '../../../../enumeration/target_type.dart';
 import '../../../../logic/authority.dart';
 import '../message_controller.dart';
 
-/// 播放状态
-enum PlayStatus { stop, playing }
+class Detail {
+  final MessageDetailResp resp;
 
-/// 语音播放器状态类
-class VoicePlay {
-  final MessageDetailResp detailResp;
-  final Rx<PlayStatus> status;
+  const Detail.fromResp(this.resp);
+
+  /// 构造工厂
+  factory Detail(MessageDetailResp resp) {
+    MsgType msgType = EnumMap.messageTypeMap[resp.msgType] ?? MsgType.unknown;
+    Map<String, dynamic> msgMap = jsonDecode(resp.msgBody ?? "{}");
+    switch (msgType) {
+      case MsgType.file:
+        // 文件
+        String fileName = msgMap["fileName"] ?? "";
+        String path = msgMap["path"] ?? "";
+        String size = msgMap["size"] ?? "";
+        return FileDetail(
+          fileName: fileName,
+          resp: resp,
+          status: FileStatus.local.obs,
+          progress: 0.0.obs,
+          path: path,
+          size: size,
+        );
+      case MsgType.voice:
+        // 语音
+        String path = msgMap["path"] ?? "";
+        int milliseconds = msgMap["milliseconds"] ?? 0;
+        return VoiceDetail(
+          resp: resp,
+          status: VoiceStatus.stop.obs,
+          initProgress: milliseconds,
+          progress: milliseconds.obs,
+          path: path,
+        );
+      case MsgType.topping:
+      case MsgType.text:
+      case MsgType.recall:
+      case MsgType.image:
+      case MsgType.unknown:
+        return Detail(resp);
+    }
+  }
+}
+
+/// 播放状态
+enum VoiceStatus { stop, playing }
+
+/// 语音播放类
+class VoiceDetail extends Detail {
+  final Rx<VoiceStatus> status;
   final int initProgress;
   final RxInt progress;
   final String path;
 
-  const VoicePlay({
-    required this.detailResp,
+  const VoiceDetail({
+    required MessageDetailResp resp,
     required this.status,
     required this.initProgress,
     required this.progress,
     required this.path,
-  });
+  }) : super.fromResp(resp);
+}
+
+/// 文件状态
+enum FileStatus { local, uploading, pausing, stopping, uploaded, synced }
+
+/// 文件上传状态类
+class FileDetail extends Detail {
+  final String fileName;
+  final Rx<FileStatus> status;
+  final RxDouble progress;
+  final String path;
+  final String size;
+
+  const FileDetail({
+    required MessageDetailResp resp,
+    required this.fileName,
+    required this.status,
+    required this.progress,
+    required this.path,
+    required this.size,
+  }) : super.fromResp(resp);
 }
 
 class ChatController extends GetxController with GetTickerProviderStateMixin {
@@ -67,15 +131,15 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   late RxString titleName;
 
   // 观测对象
-  late List<MessageDetailResp> messageDetails;
+  late RxList<Detail> details;
 
   // 语音播放器
   FlutterSoundPlayer? _soundPlayer;
   StreamSubscription? _mt;
   AnimationController? animationController;
   Animation<AlignmentGeometry>? animation;
-  Map<String, VoicePlay> playStatusMap = {};
-  VoicePlay? _currentVoicePlay;
+  Map<String, VoiceDetail> playStatusMap = {};
+  VoiceDetail? _currentVoicePlay;
 
   @override
   void onInit() {
@@ -99,7 +163,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     titleName = messageItem.name.obs;
 
     // 清空所有聊天记录
-    messageDetails = [];
+    details = <Detail>[].obs;
 
     // 初始化老数据个数，查询聊天记录的个数
     await getTotal();
@@ -125,19 +189,23 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     }
     log.info("会话页面接收到一条新的数据${detail.toJson()}");
     if (detail.msgType == "recall") {
-      for (var oldDetail in messageDetails) {
-        if (oldDetail.id == detail.id) {
-          oldDetail.msgBody = detail.msgBody;
-          oldDetail.msgType = detail.msgType;
-          oldDetail.createTime = detail.createTime;
+      for (var oldDetail in details) {
+        var resp = oldDetail.resp;
+        if (resp.id == detail.id) {
+          resp.msgBody = detail.msgBody;
+          resp.msgType = detail.msgType;
+          resp.createTime = detail.createTime;
           break;
         }
       }
     } else {
-      int has = messageDetails.where((item) => item.id == detail.id).length;
+      int has = details
+          .map((item) => item.resp)
+          .where((item) => item.id == detail.id)
+          .length;
       if (has == 0) {
         detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
-        messageDetails.insert(0, detail);
+        details.insert(0, Detail.fromResp(detail));
       }
     }
     updateAndToBottom();
@@ -193,13 +261,13 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   Future<void> getHistoryMsg({bool isCacheNameMap = false}) async {
     String typeName = messageItem.typeName;
 
-    var insertPointer = messageDetails.length;
+    var insertPointer = details.length;
     List<MessageDetailResp> newDetails = await HubUtil()
         .getHistoryMsg(spaceId, messageItemId, typeName, insertPointer, 15);
 
     Map<String, dynamic> nameMap = messageController.orgChatCache.nameMap;
     for (MessageDetailResp detail in newDetails) {
-      messageDetails.insert(insertPointer, detail);
+      details.insert(insertPointer, Detail.fromResp(detail));
       if (!nameMap.containsKey(detail.fromId)) {
         var name = await HubUtil().getName(detail.fromId);
         nameMap[detail.fromId] = name;
@@ -238,15 +306,10 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
       ImageStreamListener(
         (imageInfo, synchronousCall) async {
           TargetResp userInfo = auth.userInfo;
-          String prefix = "chat_${userInfo.id}_${messageItem.id}_image";
+          String prefix = "chat/${userInfo.id}/${messageItem.id}/image";
           log.info("====> prefix:$prefix");
           String encodedPrefix = EncryptionUtil.encodeURLString(prefix);
 
-          try {
-            await BucketApi.create(prefix: encodedPrefix);
-          } catch (error) {
-            log.warning("====> 创建目录失败：$error");
-          }
           var filePath = file.path;
           var fileName = file.name;
 
@@ -293,6 +356,30 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     sendOneMessage(jsonEncode(msgBody), msgType: MsgType.voice);
   }
 
+  /// 语音录制完成并发送
+  void filePicked(String fileName, String filePath) async {
+    // TargetResp userInfo = auth.userInfo;
+    // String prefix = "chat_${userInfo.id}_${messageItem.id}_voice";
+    // log.info("====> prefix:$prefix");
+    // String encodedPrefix = EncryptionUtil.encodeURLString(prefix);
+    //
+    // try {
+    //   await BucketApi.create(prefix: encodedPrefix);
+    // } catch (error) {
+    //   log.warning("====> 创建目录失败：$error");
+    // }
+    // await BucketApi.upload(
+    //   prefix: encodedPrefix,
+    //   filePath: filePath,
+    //   fileName: fileName,
+    // );
+    //
+    // Map<String, dynamic> msgBody = {
+    //   "path": "$prefix/$fileName",
+    // };
+    // sendOneMessage(jsonEncode(msgBody), msgType: MsgType.voice);
+  }
+
   /// 滚动到页面底部
   void updateAndToBottom() {
     if (messageScrollController.positions.isNotEmpty &&
@@ -327,9 +414,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         break;
       case DetailFunc.remove:
         await HubUtil().deleteMsg(detail.id);
-        messageDetails =
-            messageDetails.where((item) => item.id != detail.id).toList();
-        update();
+        details.removeWhere((item) => item.resp.id == detail.id);
         break;
     }
   }
@@ -366,14 +451,14 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         .catchError((error) => stopPrePlayVoice());
 
     // 重新开始播放
-    _currentVoicePlay!.status.value = PlayStatus.playing;
+    _currentVoicePlay!.status.value = VoiceStatus.playing;
   }
 
   /// 停止播放
   stopPrePlayVoice() async {
     if (_currentVoicePlay != null) {
       // 改状态
-      _currentVoicePlay!.status.value = PlayStatus.stop;
+      _currentVoicePlay!.status.value = VoiceStatus.stop;
       _currentVoicePlay!.progress.value = _currentVoicePlay!.initProgress;
 
       // 关闭播放

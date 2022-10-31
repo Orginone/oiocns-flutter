@@ -81,7 +81,7 @@ class ChatPage extends GetView<ChatController> {
 
   Widget _chatItem(int index) {
     MessageItemResp messageItem = controller.messageItem;
-    MessageDetailResp messageDetail = controller.messageDetails[index];
+    MessageDetailResp messageDetail = controller.details[index].resp;
 
     TargetResp userInfo = auth.userInfo;
     bool isMy = messageDetail.fromId == userInfo.id;
@@ -98,11 +98,11 @@ class ChatPage extends GetView<ChatController> {
     if (index == 0) {
       item.children.add(Container(margin: EdgeInsets.only(bottom: 5.h)));
     }
-    if (index == controller.messageDetails.length - 1) {
+    if (index == controller.details.length - 1) {
       item.children.insert(0, time);
       return item;
     } else {
-      MessageDetailResp pre = controller.messageDetails[index + 1];
+      MessageDetailResp pre = controller.details[index + 1].resp;
       if (messageDetail.createTime != null && pre.createTime != null) {
         var difference = messageDetail.createTime!.difference(pre.createTime!);
         if (difference.inSeconds > 60) {
@@ -132,13 +132,13 @@ class ChatPage extends GetView<ChatController> {
               },
               child: Container(
                 padding: lr10,
-                child: GetBuilder<ChatController>(
-                  builder: (controller) => ListView.builder(
+                child: Obx(
+                  () => ListView.builder(
                     reverse: true,
                     shrinkWrap: true,
                     controller: controller.messageScrollController,
                     scrollDirection: Axis.vertical,
-                    itemCount: controller.messageDetails.length,
+                    itemCount: controller.details.length,
                     itemBuilder: (BuildContext context, int index) {
                       return _chatItem(index);
                     },
