@@ -27,9 +27,8 @@ class HomePage extends GetView<HomeController> {
     SysUtil.setStatusBarBright();
     controller.context = context;
     return UnifiedScaffold(
-      appBarTitle: _title(context),
-      appBarHeight: 10.h + 28.w + 5.h + 28.w + 5.h,
-      body: _body,
+      appBarHeight: 0,
+      body: _body(context),
       bottomNavigationBar: _bottomNavigatorBar,
     );
   }
@@ -100,69 +99,85 @@ class HomePage extends GetView<HomeController> {
   }
 
   Widget _title(BuildContext context) {
-    var userName = auth.userInfo.name;
-    var userKeyWord = StringUtil.getPrefixChars(userName, count: 1);
-    double x = 0, y = 0;
     return Column(
       children: [
-        Container(margin: EdgeInsets.only(top: 10.h)),
-        Row(
-          children: [
-            Expanded(
-              child: GetBuilder<HomeController>(
-                init: controller,
-                builder: (controller) {
-                  var spaceName = controller.currentSpace.name;
-                  var spaceKeyWord =
-                      StringUtil.getPrefixChars(spaceName, count: 1);
-                  return GestureDetector(
-                    onTap: () {
-                      Get.toNamed(Routers.spaceChoose);
-                    },
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        TextAvatar(
-                          radius: 28.w,
-                          width: 28.w,
-                          avatarName: spaceKeyWord,
-                          textStyle: text16White,
-                          margin: EdgeInsets.only(left: 20.w),
-                        ),
-                        Container(margin: EdgeInsets.only(left: 10.w)),
-                        Text(
-                          spaceName,
-                          style: text16Bold,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Container(margin: EdgeInsets.only(left: 2.w)),
-                        const Icon(Icons.arrow_drop_down, color: Colors.black)
-                      ],
-                    ),
-                  );
-                },
-              ),
+        _workSpace(),
+        _operation(context),
+      ],
+    );
+  }
+
+  Widget _workSpace() {
+    var userName = auth.userInfo.name;
+    var userKeyWord = StringUtil.getPrefixChars(userName, count: 1);
+    return SizedBox(
+      height: 74.h,
+      child: Row(
+        children: [
+          Expanded(
+            child: GetBuilder<HomeController>(
+              init: controller,
+              builder: (controller) {
+                var spaceName = controller.currentSpace.name;
+                var spaceKeyWord =
+                    StringUtil.getPrefixChars(spaceName, count: 1);
+                return GestureDetector(
+                  onTap: () {
+                    Get.toNamed(Routers.spaceChoose);
+                  },
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      TextAvatar(
+                        radius: 45.w,
+                        width: 45.w,
+                        avatarName: spaceKeyWord,
+                        textStyle: text20White,
+                        margin: EdgeInsets.only(left: 20.w),
+                      ),
+                      Container(margin: EdgeInsets.only(left: 10.w)),
+                      Text(
+                        spaceName,
+                        style: text22,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Container(margin: EdgeInsets.only(left: 2.w)),
+                      const Icon(Icons.arrow_drop_down, color: Colors.black)
+                    ],
+                  ),
+                );
+              },
             ),
-            Column(
-              children: [
-                _conn(HubUtil().state, "会话"),
-                Container(margin: EdgeInsets.only(top: 2.h)),
-                _conn(AnyStoreUtil().state, "存储"),
-              ],
-            ),
-            Container(margin: EdgeInsets.only(left: 10.w)),
-            TextAvatar(
-              radius: 28.w,
-              width: 28.w,
-              avatarName: userKeyWord,
-              textStyle: text16White,
-              margin: EdgeInsets.only(right: 20.w),
-            ),
-          ],
-        ),
-        Container(margin: EdgeInsets.only(top: 5.h)),
-        Row(children: [
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _conn(HubUtil().state, "会话"),
+              Container(margin: EdgeInsets.only(top: 2.h)),
+              _conn(AnyStoreUtil().state, "存储"),
+            ],
+          ),
+          Padding(padding: EdgeInsets.only(left: 10.w)),
+          TextAvatar(
+            radius: 45.w,
+            width: 45.w,
+            avatarName: userKeyWord,
+            textStyle: text22White,
+            margin: EdgeInsets.only(right: 20.w),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _operation(BuildContext context) {
+    double x = 0, y = 0;
+    return SizedBox(
+      height: 62.h,
+      child: Row(
+        children: [
           Container(
             margin: EdgeInsets.only(left: 20.w),
             child: const Icon(Icons.read_more_outlined, color: Colors.black),
@@ -197,8 +212,8 @@ class HomePage extends GetView<HomeController> {
             margin: EdgeInsets.only(left: 10.w, right: 20.w),
             child: const Icon(Icons.more_horiz, color: Colors.black),
           ),
-        ])
-      ],
+        ],
+      ),
     );
   }
 
@@ -231,9 +246,17 @@ class HomePage extends GetView<HomeController> {
     );
   }
 
-  get _body => GFTabBarView(
-      controller: controller.tabController,
-      children: controller.tabs.map((e) => e.widget).toList());
+  Widget _body(BuildContext context) {
+    return Column(children: [
+      _title(context),
+      Expanded(
+        child: GFTabBarView(
+          controller: controller.tabController,
+          children: controller.tabs.map((e) => e.widget).toList(),
+        ),
+      ),
+    ]);
+  }
 
   get _bottomNavigatorBar => Container(
         decoration: const BoxDecoration(
@@ -248,7 +271,7 @@ class HomePage extends GetView<HomeController> {
           ],
         ),
         child: GFTabBar(
-          tabBarHeight: 70.h,
+          tabBarHeight: 84.h,
           indicatorColor: Colors.blueAccent,
           tabBarColor: UnifiedColors.easyGrey,
           labelColor: Colors.black,

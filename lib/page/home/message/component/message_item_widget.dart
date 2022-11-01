@@ -17,7 +17,7 @@ import '../../../../logic/authority.dart';
 import '../../../../util/date_util.dart';
 import '../../../../util/hive_util.dart';
 
-double defaultAvatarWidth = 50.w;
+double defaultAvatarWidth = 66.w;
 
 enum LongPressFunc {
   topping("置顶会话"),

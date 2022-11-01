@@ -38,6 +38,11 @@ get text12WhiteBold => TextStyle(
 
 get text12Blue => TextStyle(fontSize: 12.sp, color: Colors.blueAccent);
 
+get text14 => TextStyle(
+      fontSize: 14.sp,
+      color: Colors.black,
+    );
+
 get text14Bold => TextStyle(
       fontSize: 14.sp,
       color: Colors.black,
@@ -99,9 +104,14 @@ get text20Bold => TextStyle(
     );
 
 get text20White => TextStyle(fontSize: 20.sp, color: Colors.white);
+
 get text25White => TextStyle(fontSize: 25.sp, color: Colors.white);
 
 get text20blue => TextStyle(fontSize: 20.sp, color: Colors.blueAccent);
+
+get text22 => TextStyle(fontSize: 22.sp, color: Colors.black);
+
+get text22White => TextStyle(fontSize: 22.sp, color: Colors.white);
 
 get text24 => TextStyle(fontSize: 24.sp, color: Colors.black);
 

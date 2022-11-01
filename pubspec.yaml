@@ -61,7 +61,7 @@ dependencies:
   jiffy: ^5.0.0
   uuid: ^3.0.6
   archive: ^3.3.1
-  file_picker: ^5.2.2
+  file_picker: ^4.6.1
 
   # 注解
   json_annotation: ^4.6.0

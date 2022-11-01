@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/affairs/affairs_page.dart';
 import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
@@ -72,7 +73,7 @@ class HomeController extends GetxController
     var relation = _buildTab(Icons.book_outlined, '办事');
     var center = _buildCenter(Icons.circle);
     var work = _buildTab(Icons.warehouse_outlined, '仓库');
-    var my = _buildTab(Icons.person, '设置');
+    var my = _buildTab(Icons.person_outline, '设置');
 
     tabs = <TabCombine>[
       TabCombine(message, const MessagePage()),
@@ -89,20 +90,20 @@ class HomeController extends GetxController
     return Tab(
       iconMargin: EdgeInsets.all(5.w),
       icon: Icon(iconData),
-      child: Text(label),
+      child: Text(label, style: text14),
     );
   }
 
   Widget _buildTabTick(IconData iconData, String label) {
     return GetBuilder<MessageController>(
-      builder: (controller) => Container(
+      builder: (controller) => SizedBox(
         width: 100.w,
         child: Stack(
           children: [
             Tab(
               iconMargin: EdgeInsets.all(5.w),
               icon: Icon(iconData),
-              child: Text(label),
+              child: Text(label, style: text14),
             ),
             Positioned(
               right: 0,

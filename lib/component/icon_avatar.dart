@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-const double defaultWidth = 40;
 const double defaultRadius = 5;
 const EdgeInsets defaultInsets = EdgeInsets.all(12);
 const Color defaultBgColor = Colors.blueAccent;
@@ -11,13 +10,13 @@ class IconAvatar extends StatelessWidget {
   final EdgeInsets padding;
   final Color bgColor;
 
-  const IconAvatar(
-      {Key? key,
-      required this.icon,
-      this.radius = defaultRadius,
-      this.padding = defaultInsets,
-      this.bgColor = defaultBgColor})
-      : super(key: key);
+  const IconAvatar({
+    Key? key,
+    required this.icon,
+    this.radius = defaultRadius,
+    this.padding = defaultInsets,
+    this.bgColor = defaultBgColor,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
