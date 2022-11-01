@@ -1,13 +1,13 @@
 
 enum AffairsTypeEnum {
   /// 待办
-  waiting,
+  task,
 
   /// 已办结
-  finish,
+  record,
 
   /// 我发起的
-  mine,
+  instance,
 
   /// 抄送
   copy,

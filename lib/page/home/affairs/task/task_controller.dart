@@ -13,5 +13,17 @@ class TaskController extends AffairsBaseListController<TaskEntity> {
   void onRefresh() async {
     var pageResp = await WorkflowApi.task(limit, offset, 'string');
     addData(true, pageResp);
+    // if(_controller != null && _controller!.spaces != null && _controller!.spaces.isNotEmpty){
+    //   for (var value in _controller!.spaces) {
+    //     print('--->' + value.name);
+    //   }
+    // }
+  }
+
+  //审批
+   void approval() async{
+    // approval/task
+    // var pageResp = await WorkflowApi.reject(limit, offset, 'string');
+    // addData(true, pageResp);
   }
 }

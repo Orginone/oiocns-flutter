@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:getwidget/getwidget.dart';
-import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/public/http/base_controller.dart';
 import '../../component/unified_text_style.dart';
-import '../../page/home/affairs/affairs_type_enum.dart';
 import 'load_status.dart';
 
 class LoadingWidget extends StatelessWidget {
   ///内容页面
-  // final Widget child;
   final BaseController controller;
+
   ///内容页面
   final WidgetBuilder builder;
+
   ///是否显示loading
-  final bool showLoading;
-  LoadStatusX lastLoadStatus = LoadStatusX.loading;
-  LoadingWidget({
-    this.showLoading = true,
+  /// 初始化状态，默认显示页面内容
+  LoadStatusX initStatus = LoadStatusX.loading;
+
+  LoadingWidget({Key? key,
+    this.initStatus = LoadStatusX.loading,
     required this.builder,
     required this.controller,
-  }){
+  }) : super(key: key) {
+    controller.loadStatus.value = initStatus;
     debugPrint("--->重新初始化了LoadingWidget:$controller");
   }
 
@@ -49,11 +50,26 @@ class LoadingWidget extends StatelessWidget {
     return Container(
       color: Colors.white,
       alignment: Alignment.center,
-      child: Center(
-          child: Text(
-        "加载中...",
-        style: text14Grey,
-      )),
+      child: Container(
+        width: 100.w,
+        height: 100.w,
+        alignment: Alignment.center,
+        child: Column(
+          children: [
+            CircularProgressIndicator(
+              strokeWidth: 2.5.w,
+              color: Colors.grey,
+            ),
+            SizedBox(
+              height: 10.h,
+            ),
+            Text(
+              "加载中...",
+              style: text14Grey,
+            ),
+          ],
+        ),
+      ),
     );
   }
 

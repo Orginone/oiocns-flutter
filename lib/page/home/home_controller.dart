@@ -7,6 +7,7 @@ import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/config/bread_crumb_points.dart';
 import 'package:orginone/page/home/affairs/affairs_page.dart';
 import 'package:orginone/page/home/center/center_page.dart';
+import 'package:orginone/page/home/message/contact/contact_page.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
@@ -22,6 +23,7 @@ import '../../api_resp/tree_node.dart';
 import '../../logic/authority.dart';
 import '../../util/hive_util.dart';
 import 'message/message_page.dart';
+import 'organization/friends/friends_page.dart';
 
 enum TitleStatus { home, breadCrumb }
 

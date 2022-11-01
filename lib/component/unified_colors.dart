@@ -22,4 +22,7 @@ class UnifiedColors {
   static const Color agreeColor = Color(0xff3D5ED1);
   static const Color navigatorBgColor = Color(0xfff2f2f2);
   static const Color bgColor = Color(0xfff8f8f8);
+  static const Color transparent = Color(0x00ffffff);
+  static const Color bgGrayLight = Color(0xFFF5F5F5);
+
 }

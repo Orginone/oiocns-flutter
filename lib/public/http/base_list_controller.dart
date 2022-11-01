@@ -30,10 +30,8 @@ abstract class BaseListController<T> extends BaseController {
         updateLoadStatus(LoadStatusX.empty);
         return;
       } else {
-        debugPrint("---更新了");
         updateLoadStatus(LoadStatusX.success);
       }
-
       /// 无更多
       if (dataList.length >= pageResp.total) {
         refreshController.loadComplete();
@@ -48,7 +46,7 @@ abstract class BaseListController<T> extends BaseController {
         refreshController.loadNoData();
       }
     }
-    update();
+    // update();
   }
 
   @override
