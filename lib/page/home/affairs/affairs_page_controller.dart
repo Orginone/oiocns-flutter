@@ -14,6 +14,9 @@ class AffairsPageController extends BaseController
     tabController = TabController(length: 4, vsync: this);
     tabController.addListener(() {
       index.value = tabController.index;
+      int previousIndex = tabController.previousIndex;
+      print('previousIndex $previousIndex');
+      print('previousIndex ${index.value}');
     });
   }
 

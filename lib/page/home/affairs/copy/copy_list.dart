@@ -4,19 +4,44 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/public/view/base_list_view.dart';
 import '../../../../component/unified_colors.dart';
 import '../../../../component/unified_text_style.dart';
-import '../base/affairs_base_list.dart';
+import '../../../../public/loading/load_status.dart';
 import 'copy_controller.dart';
-
-class AffairsCopyWidget extends AffairsBaseList<CopyController> {
-  @override
-  final controller = Get.put(CopyController());
-
-  AffairsCopyWidget({Key? key}) : super(key: key);
+class AffairsCopyWidget extends StatefulWidget {
+  const AffairsCopyWidget({Key? key}) : super(key: key);
 
   @override
-  Widget listWidget() {
+  State<AffairsCopyWidget> createState() => _AffairsCopyWidgetState();
+}
+
+class _AffairsCopyWidgetState extends State<AffairsCopyWidget>  with AutomaticKeepAliveClientMixin{
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return CopyWidget();
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}
+
+class CopyWidget extends BaseListView<CopyController> {
+
+  // final controller = Get.put(CopyController());
+
+  CopyWidget({Key? key}) : super(key: key){
+    Get.lazyPut(() => CopyController());
+  }
+
+  @override
+  bool isUseScaffold() {
+    return false;
+  }
+
+  @override
+  ListView listWidget() {
     return ListView.builder(
         itemCount: controller.dataList.length,
         itemBuilder: (context, index) {

@@ -85,4 +85,10 @@ class StringUtil {
     if(str.length == 1) return str.toUpperCase();
     return str.substring(0,1).toUpperCase();
   }
+
+  static String formatStr(String? str){
+    if(str == null) return '';
+    if(str.trim().isEmpty) return '';
+    return str;
+  }
 }

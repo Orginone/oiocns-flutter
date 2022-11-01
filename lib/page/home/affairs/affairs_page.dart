@@ -20,15 +20,15 @@ class _AffairsPageState extends State<AffairsPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return const AffairsTab();
+    return AffairsTab();
   }
 
   @override
-  bool get wantKeepAlive => false;
+  bool get wantKeepAlive => true;
 }
 
 class AffairsTab extends GetView<AffairsPageController> {
-  const AffairsTab({Key? key}) : super(key: key);
+  AffairsTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

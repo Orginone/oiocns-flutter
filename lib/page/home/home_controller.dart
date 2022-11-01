@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/page/home/affairs/affairs_page.dart';
 import 'package:orginone/page/home/center/center_page.dart';
+import 'package:orginone/page/home/message/contact/contact_page.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
@@ -20,6 +21,7 @@ import '../../api_resp/tree_node.dart';
 import '../../api_resp/user_resp.dart';
 import '../../util/hive_util.dart';
 import 'message/message_page.dart';
+import 'organization/friends/friends_page.dart';
 
 class HomeController extends GetxController
     with GetSingleTickerProviderStateMixin {

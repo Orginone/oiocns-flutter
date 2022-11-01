@@ -6,17 +6,46 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import '../../../../component/unified_colors.dart';
 import '../../../../component/unified_text_style.dart';
-import '../base/affairs_base_list.dart';
+import '../../../../public/loading/load_status.dart';
+import '../../../../public/view/base_list_view.dart';
 import 'instance_controller.dart';
-
-class AffairsInstanceWidget extends AffairsBaseList<InstanceController> {
-  @override
-  final controller = Get.put(InstanceController());
-
-  AffairsInstanceWidget({Key? key}) : super(key: key);
+class AffairsInstanceWidget extends StatefulWidget {
+  const AffairsInstanceWidget({Key? key}) : super(key: key);
 
   @override
-  Widget listWidget() {
+  State<AffairsInstanceWidget> createState() => _AffairsInstanceWidgetState();
+}
+
+class _AffairsInstanceWidgetState extends State<AffairsInstanceWidget> with AutomaticKeepAliveClientMixin{
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return InstanceWidget();
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}
+
+class InstanceWidget extends BaseListView<InstanceController> {
+
+
+  InstanceWidget({Key? key}) : super(key: key){
+    Get.lazyPut(() => InstanceController());
+  }
+
+  @override
+  LoadStatusX initStatus() {
+    return LoadStatusX.loading;
+  }
+
+  @override
+  bool isUseScaffold() {
+    return false;
+  }
+
+  @override
+  ListView listWidget() {
     return ListView.builder(
         itemCount: controller.dataList.length,
         itemBuilder: (context, index) {

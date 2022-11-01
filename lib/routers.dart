@@ -2,8 +2,7 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:orginone/component/form.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
-import 'package:orginone/page/home/affairs/affairs_binding.dart';
-import 'package:orginone/page/home/affairs/affairs_page.dart';
+import 'package:orginone/page/home/affairs/detail/affairs_detail.dart';
 import 'package:orginone/page/home/center/center_binding.dart';
 import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/component/person_detail/person_detail_binding.dart';
@@ -61,6 +60,8 @@ import 'package:orginone/page/scanning/scanning_page.dart';
 import 'package:orginone/page/scanning/scanning_result/scanning_result_binding.dart';
 import 'package:orginone/page/scanning/scanning_result/scanning_result_pge.dart';
 
+import 'page/home/affairs/detail/affairs_detail_binding.dart';
+
 class Routers {
   static const String main = "/";
   static const String forget = "/forget";
@@ -94,6 +95,7 @@ class Routers {
   static const String affairs = "/affairs";
   static const String friendAdd = "/friendAdd";
   static const String form = "/form";
+  static const String affairsDetail = "/affairsDetail";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -116,7 +118,7 @@ class Routers {
       GetPage(
           name: Routers.home,
           page: () => const HomePage(),
-          bindings: [HomeBinding(),AffairsBinding()]),
+          binding: HomeBinding()),
       GetPage(
           name: Routers.home,
           page: () => const CenterPage(),
@@ -246,9 +248,9 @@ class Routers {
         binding: ContactBinding(),
       ),
       GetPage(
-        name: Routers.affairs,
-        page: () => const AffairsPage(),
-        binding: AffairsBinding(),
+        name: Routers.affairsDetail,
+        page: () => AffairsDetailPage(),
+        binding: AffairsDetailBinding(),
       ),
     ];
   }

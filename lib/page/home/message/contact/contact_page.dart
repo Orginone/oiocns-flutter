@@ -6,49 +6,54 @@ import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/component/index_bar.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_colors.dart';
-import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/message/contact/contact_controller.dart';
 import 'package:orginone/page/home/search/search_controller.dart';
-import 'package:orginone/public/loading/loading_widget.dart';
+import 'package:orginone/public/loading/load_status.dart';
+import 'package:orginone/public/view/base_view.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/string_util.dart';
-import 'package:orginone/util/widget_util.dart';
 
 ///联系人页面
-class ContactPage extends GetView<ContactController> {
+class ContactPage extends BaseView<ContactController> {
   const ContactPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return UnifiedScaffold(
-      appBarCenterTitle: true,
-      appBarTitle: Text(
-        "我的联系人",
-        style: text16,
-      ),
-      appBarLeading: WidgetUtil.defaultBackBtn,
-      appBarActions: _actions,
-      bgColor: UnifiedColors.white,
-      body: LoadingWidget(controller: controller,
-      builder:(context)=> Stack(children: [_contactList(), _indexList(), _stickIndexBar()])),
-    );
+  LoadStatusX initStatus() {
+    return LoadStatusX.loading;
   }
 
-  ///右侧按钮
-  get _actions => <Widget>[
-        GFIconButton(
-          color: Colors.white.withOpacity(0),
-          icon: const Icon(Icons.person_add_alt, color: Colors.black),
-          onPressed: () {
-            List<SearchItem> friends = [SearchItem.friends];
-            Get.toNamed(Routers.search, arguments: {
-              "items": friends,
-              "point": FunctionPoint.addFriends,
-            });
-          },
-        ),
-      ];
+  @override
+  String getTitle() {
+    return "我的联系人";
+  }
+
+  @override
+  bool isUseScaffold() {
+    return true;
+  }
+
+  @override
+  List<Widget> actions() {
+    return [
+      GFIconButton(
+        color: Colors.white.withOpacity(0),
+        icon: const Icon(Icons.person_add_alt, color: Colors.black),
+        onPressed: () {
+          List<SearchItem> friends = [SearchItem.friends];
+          Get.toNamed(Routers.search, arguments: {
+            "items": friends,
+            "point": FunctionPoint.addFriends,
+          });
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget builder(BuildContext context) {
+    return Stack(children: [_contactList(), _indexList(), _stickIndexBar()]);
+  }
 
   /// 联系人列表
   Widget _contactList() {

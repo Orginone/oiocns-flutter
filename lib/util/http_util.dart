@@ -7,6 +7,8 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import '../api_resp/api_resp.dart';
 import '../config/constant.dart';
 
+typedef ErrorCallback = void Function(String err);
+
 class HttpUtil {
   HttpUtil._();
 
@@ -93,7 +95,8 @@ class HttpUtil {
       ProgressCallback? onSendProgress,
       ProgressCallback? onReceiveProgress,
       bool? hasToken,
-      bool? showError = true}) async {
+      bool? showError = true,
+      ErrorCallback? errorCallback}) async {
     log.info("================Post Http Request================");
     try {
       log.info("====> path: $path");
@@ -119,6 +122,7 @@ class HttpUtil {
       if (showError!) {
         Fluttertoast.showToast(msg: error.toString());
       }
+      errorCallback!(error.toString());
       rethrow;
     } on Error {
       Fluttertoast.showToast(msg: "请求异常，请稍后再试。");

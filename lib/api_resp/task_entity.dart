@@ -14,8 +14,8 @@ class TaskEntity {
 	late String version;
 	late String createTime;
 	late String updateTime;
-	late TaskFlowNode flowNode;
-	late TaskFlowInstance flowInstance;
+	late TaskFlowNode? flowNode;
+	late TaskFlowInstance? flowInstance;
   
   TaskEntity();
 
@@ -76,7 +76,7 @@ class TaskFlowInstance {
 	late String version;
 	late String createTime;
 	late String updateTime;
-	late TaskFlowInstanceFlowRelation flowRelation;
+	late TaskFlowInstanceFlowRelation? flowRelation;
   
   TaskFlowInstance();
 

@@ -20,5 +20,7 @@ class UnifiedColors {
   static const Color cardBorder = Color(0xffB1B1B1);
   static const Color backColor = Color(0xffF76C6F);
   static const Color agreeColor = Color(0xff3D5ED1);
+  static const Color transparent = Color(0x00ffffff);
+  static const Color bgGrayLight = Color(0xFFF5F5F5);
 
 }

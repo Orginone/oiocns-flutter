@@ -4,20 +4,40 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/public/loading/load_status.dart';
+import 'package:orginone/routers.dart';
 import '../../../../component/unified_colors.dart';
 import '../../../../component/unified_text_style.dart';
-import '../base/affairs_base_list.dart';
+import '../../../../public/view/base_list_view.dart';
 import 'record_controller.dart';
 
-class AffairsRecordWidget extends AffairsBaseList<RecordController> {
-  @override
-  RecordController controller = Get.put(RecordController());
-
-  AffairsRecordWidget({Key? key}) : super(key: key);
-
+class AffairsRecordWidget extends StatefulWidget {
+  const AffairsRecordWidget({Key? key}) : super(key: key);
 
   @override
-  Widget listWidget() {
+  State<AffairsRecordWidget> createState() => _AffairsRecordWidgetState();
+}
+
+class _AffairsRecordWidgetState extends State<AffairsRecordWidget>  with AutomaticKeepAliveClientMixin{
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return RecordWidget();
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}
+
+class RecordWidget extends BaseListView<RecordController> {
+
+  RecordWidget({Key? key}) : super(key: key){
+    Get.lazyPut(() => RecordController());
+  }
+
+
+  @override
+  ListView listWidget() {
     return ListView.builder(
         itemCount: controller.dataList.length,
         itemBuilder: (context, index) {
@@ -81,7 +101,7 @@ class AffairsRecordWidget extends AffairsBaseList<RecordController> {
             ),
             Container(
               alignment: Alignment.centerLeft,
-              child: Text("你好，我是谢谢谢谢谢谢谢谢谢谢公司的张三，想成为你的好友", style: text12Grey),
+              child: Text("你好，我是谢谢谢谢谢谢谢公司的张三，想成为你的好友", style: text12Grey),
             ),
             SizedBox(
               height: 30.h,
@@ -103,14 +123,17 @@ class AffairsRecordWidget extends AffairsBaseList<RecordController> {
                 ),
                 Row(
                   children: [
-                    SizedBox(
-                      width: 70.w,
-                      height: 30.h,
-                      child: GFButton(
-                        onPressed: () {},
-                        color: UnifiedColors.backColor,
-                        text: "退回",
-                        textColor: Colors.white,
+                    Visibility(
+                      visible: false,
+                      child: SizedBox(
+                        width: 70.w,
+                        height: 30.h,
+                        child: GFButton(
+                          onPressed: () {},
+                          color: UnifiedColors.backColor,
+                          text: "退回",
+                          textColor: Colors.white,
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -120,7 +143,9 @@ class AffairsRecordWidget extends AffairsBaseList<RecordController> {
                       width: 70.w,
                       height: 30.h,
                       child: GFButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.toNamed(Routers.affairsDetail);
+                        },
                         color: UnifiedColors.agreeColor,
                         text: "通过",
                         textStyle: text14White,
@@ -138,5 +163,17 @@ class AffairsRecordWidget extends AffairsBaseList<RecordController> {
   }
 
   void _doNothing(BuildContext context) {}
+
+  @override
+  LoadStatusX initStatus() {
+    return LoadStatusX.loading;
+  }
+
+  @override
+  bool isUseScaffold() {
+    return false;
+  }
+
+
 
 }

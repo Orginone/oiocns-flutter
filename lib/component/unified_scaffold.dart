@@ -52,6 +52,7 @@ class UnifiedScaffold extends StatelessWidget {
           title: appBarTitle,
           centerTitle: appBarCenterTitle,
           leading: appBarLeading,
+          elevation: 2,
         ),
       ),
       backgroundColor: bgColor,
