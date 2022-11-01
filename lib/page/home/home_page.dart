@@ -27,6 +27,7 @@ class HomePage extends GetView<HomeController> {
     SysUtil.setStatusBarBright();
     controller.context = context;
     return UnifiedScaffold(
+      appBarElevation: 0,
       appBarHeight: 0,
       body: _body(context),
       bottomNavigationBar: _bottomNavigatorBar,

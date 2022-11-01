@@ -11,6 +11,7 @@ class UnifiedScaffold extends StatelessWidget {
   final double appBarPercent;
   final double? appBarHeight;
   final Color appBarBgColor;
+  final double? appBarElevation;
   final Color bgColor;
   final List<Widget>? appBarActions;
   final Widget? appBarTitle;
@@ -21,21 +22,22 @@ class UnifiedScaffold extends StatelessWidget {
   final Widget? floatingButton;
   final bool? resizeToAvoidBottomInset;
 
-  const UnifiedScaffold(
-      {Key? key,
-      this.appBarPercent = defaultAppBarPercent,
-      this.appBarHeight,
-      this.appBarBgColor = defaultAppBarColor,
-      this.bgColor = defaultBgColor,
-      this.appBarActions,
-      this.appBarTitle,
-      this.appBarCenterTitle,
-      this.appBarLeading,
-      this.body,
-      this.bottomNavigationBar,
-      this.floatingButton,
-      this.resizeToAvoidBottomInset})
-      : super(key: key);
+  const UnifiedScaffold({
+    Key? key,
+    this.appBarPercent = defaultAppBarPercent,
+    this.appBarHeight,
+    this.appBarBgColor = defaultAppBarColor,
+    this.appBarElevation,
+    this.bgColor = defaultBgColor,
+    this.appBarActions,
+    this.appBarTitle,
+    this.appBarCenterTitle,
+    this.appBarLeading,
+    this.body,
+    this.bottomNavigationBar,
+    this.floatingButton,
+    this.resizeToAvoidBottomInset,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +54,7 @@ class UnifiedScaffold extends StatelessWidget {
           title: appBarTitle,
           centerTitle: appBarCenterTitle,
           leading: appBarLeading,
+          elevation: appBarElevation,
         ),
       ),
       backgroundColor: bgColor,
