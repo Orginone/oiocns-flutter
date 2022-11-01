@@ -55,6 +55,9 @@ class MessageController extends GetxController
     _subscribingCharts();
   }
 
+  _initTabs(){
+  }
+
   // 分组排序
   sortingGroups() {
     HomeController homeController = Get.find<HomeController>();

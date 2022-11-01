@@ -287,7 +287,7 @@ class HomePage extends GetView<HomeController> {
       Expanded(
         child: GFTabBarView(
           controller: controller.tabController,
-          children: controller.tabs.map((e) => e.widget).toList(),
+          children: controller.tabs.map((e) => e.tabView).toList(),
         ),
       ),
       _bottomNavigatorBar,
@@ -314,7 +314,7 @@ class HomePage extends GetView<HomeController> {
           labelStyle: const TextStyle(fontSize: 12),
           length: controller.tabController.length,
           controller: controller.tabController,
-          tabs: controller.tabs.map((e) => e.tab).toList(),
+          tabs: controller.tabs.map((item) => item.toTab()).toList(),
         ),
       );
 }

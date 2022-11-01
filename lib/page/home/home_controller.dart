@@ -7,6 +7,7 @@ import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/config/bread_crumb_points.dart';
 import 'package:orginone/page/home/affairs/affairs_page.dart';
 import 'package:orginone/page/home/center/center_page.dart';
+import 'package:orginone/page/home/home_page.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
@@ -19,6 +20,7 @@ import '../../api/person_api.dart';
 import '../../api_resp/login_resp.dart';
 import '../../api_resp/target_resp.dart';
 import '../../api_resp/tree_node.dart';
+import '../../component/tab_combine.dart';
 import '../../logic/authority.dart';
 import '../../util/hive_util.dart';
 import 'message/message_page.dart';
@@ -78,19 +80,36 @@ class HomeController extends GetxController
   }
 
   void _initTabs() {
-    var message = _buildTabTick(Icons.group_outlined, '沟通');
-    var relation = _buildTab(Icons.book_outlined, '办事');
-    var center = _buildCenter(Icons.circle);
-    var work = _buildTab(Icons.warehouse_outlined, '仓库');
-    var my = _buildTab(Icons.person_outline, '设置');
+    var message = TabCombine(
+      body: Text('沟通', style: text14),
+      tabView: const MessagePage(),
+      icon: Icons.group_outlined,
+      breadCrumbItem: chatPoint,
+    );
+    var relation = TabCombine(
+      body: Text('办事', style: text14),
+      tabView: const AffairsPage(),
+      icon: Icons.book_outlined,
+      breadCrumbItem: workPoint,
+    );
+    var center = const TabCombine(
+      // icon: Icons.circle,
+      tabView: HomePage(),
+    );
+    var work = TabCombine(
+      body: Text('仓库', style: text14),
+      tabView: const WorkPage(),
+      icon: Icons.warehouse_outlined,
+      breadCrumbItem: warehousePoint,
+    );
+    var my = TabCombine(
+      body: Text('设置', style: text14),
+      tabView: const MinePage(),
+      icon: Icons.person_outline,
+      breadCrumbItem: settingPoint,
+    );
 
-    tabs = <TabCombine>[
-      TabCombine(message, const MessagePage(), chatPoint),
-      TabCombine(relation, const AffairsPage(), workPoint),
-      TabCombine(center, const CenterPage(), centerPoint),
-      TabCombine(work, const WorkPage(), warehousePoint),
-      TabCombine(my, const MinePage(), settingPoint),
-    ];
+    tabs = <TabCombine>[message, relation, center, work, my];
 
     tabController = TabController(length: tabs.length, vsync: this);
     tabController.addListener(() {
@@ -98,25 +117,21 @@ class HomeController extends GetxController
         return;
       }
 
-      var preTab = tabs[tabController.previousIndex];
-      var tab = tabs[tabController.index];
-      if (tab._tab == center) {
+      var preTabCombine = tabs[tabController.previousIndex];
+      var tabCombine = tabs[tabController.index];
+      if (tabCombine == center) {
         titleStatus.value = TitleStatus.home;
         breadCrumbController.clear();
       } else {
         titleStatus.value = TitleStatus.breadCrumb;
-        breadCrumbController.pops(preTab.breadCrumbItem.id);
-        breadCrumbController.push(tab.breadCrumbItem);
+        if (preTabCombine.breadCrumbItem != null) {
+          breadCrumbController.pops(preTabCombine.breadCrumbItem!.id);
+        }
+        if (tabCombine.breadCrumbItem != null) {
+          breadCrumbController.push(tabCombine.breadCrumbItem!);
+        }
       }
     });
-  }
-
-  Tab _buildTab(IconData iconData, String label) {
-    return Tab(
-      iconMargin: EdgeInsets.all(5.w),
-      icon: Icon(iconData),
-      child: Text(label, style: text14),
-    );
   }
 
   Widget _buildTabTick(IconData iconData, String label) {
@@ -137,21 +152,6 @@ class HomeController extends GetxController
                   : Container(),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Tab _buildCenter(IconData iconData) {
-    double width = 36.w;
-    return Tab(
-      iconMargin: EdgeInsets.zero,
-      icon: Container(
-        width: width,
-        height: width,
-        decoration: BoxDecoration(
-          color: Colors.grey,
-          borderRadius: BorderRadius.all(Radius.circular(width)),
         ),
       ),
     );
@@ -183,18 +183,4 @@ class HomeController extends GetxController
       nodeCombine = null;
     }
   }
-}
-
-class TabCombine {
-  final Widget _tab;
-  final Widget _widget;
-  final Item<String> _breadCrumbItem;
-
-  const TabCombine(this._tab, this._widget, this._breadCrumbItem);
-
-  Widget get widget => _widget;
-
-  Widget get tab => _tab;
-
-  Item<String> get breadCrumbItem => _breadCrumbItem;
 }
