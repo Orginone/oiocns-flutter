@@ -9,7 +9,6 @@ import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/page/home/message/component/message_item_widget.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
-import 'package:orginone/util/hive_util.dart';
 
 import '../../../api_resp/message_item_resp.dart';
 import '../../../component/choose_item.dart';
@@ -27,17 +26,14 @@ class MessagePage extends GetView<MessageController> {
   Widget build(BuildContext context) {
     return Column(children: [
       SizedBox(
-        width: 300.w,
+        height: 60.h,
         child: TabBar(
           controller: controller.tabController,
-          indicatorSize: TabBarIndicatorSize.label,
-          labelPadding: EdgeInsets.only(top: 10.h, bottom: 6.h),
-          labelStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
           labelColor: Colors.black,
           tabs: [
-            _chatTab("近期会话"),
             _chatTab("会话"),
-            const Text("通讯录"),
+            // _chatTab("会话"),
+            Text("通讯录", style: text22),
           ],
         ),
       ),
@@ -48,7 +44,11 @@ class MessagePage extends GetView<MessageController> {
       Expanded(
         child: TabBarView(
           controller: controller.tabController,
-          children: [_recentChat(), _chat(), _relation()],
+          children: [
+            _recentChat(),
+            // _chat(),
+            _relation(),
+          ],
         ),
       )
     ]);
@@ -56,9 +56,8 @@ class MessagePage extends GetView<MessageController> {
 
   Widget _chatTab(String name) {
     return SizedBox(
-      height: 24.h,
       child: Stack(children: [
-        Align(alignment: Alignment.center, child: Text(name)),
+        Align(alignment: Alignment.center, child: Text(name, style: text22)),
         GetBuilder<MessageController>(builder: (controller) => _noRead)
       ]),
     );
@@ -114,11 +113,11 @@ class MessagePage extends GetView<MessageController> {
         child: Divider(height: 1.h),
       ),
     );
-    children.add(Container(margin: EdgeInsets.only(top: 10.h)));
+    children.add(Padding(padding: EdgeInsets.only(top: 10.h)));
     children.add(_tree());
     children.add(_links());
     return Container(
-      margin: EdgeInsets.only(left: 20.w, right: 20.w),
+      margin: EdgeInsets.only(left: 25.w, right: 25.w),
       child: Column(children: children),
     );
   }
@@ -138,7 +137,10 @@ class MessagePage extends GetView<MessageController> {
               fontSize: 18.sp,
             ),
           ),
-          GestureDetector(onTap: () {}, child: const Text("更多"))
+          GestureDetector(
+            onTap: () {},
+            child: const Icon(Icons.keyboard_arrow_right),
+          )
         ],
       ),
       Container(

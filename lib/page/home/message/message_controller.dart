@@ -11,7 +11,6 @@ import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/page/home/message/component/message_item_widget.dart';
 import 'package:orginone/util/any_store_util.dart';
 import 'package:orginone/util/encryption_util.dart';
-import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/notification_util.dart';
 
 import '../../../api_resp/api_resp.dart';
@@ -49,7 +48,7 @@ class MessageController extends GetxController
   void onInit() {
     super.onInit();
     // 页签控制器
-    tabController = TabController(length: 3, vsync: this);
+    tabController = TabController(length: 2, vsync: this);
     // 监听页面的生命周期
     WidgetsBinding.instance.addObserver(this);
     // 订阅聊天面板信息

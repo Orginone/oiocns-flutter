@@ -111,6 +111,12 @@ get text20blue => TextStyle(fontSize: 20.sp, color: Colors.blueAccent);
 
 get text22 => TextStyle(fontSize: 22.sp, color: Colors.black);
 
+get text22Bold => TextStyle(
+      fontSize: 22.sp,
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+    );
+
 get text22White => TextStyle(fontSize: 22.sp, color: Colors.white);
 
 get text24 => TextStyle(fontSize: 24.sp, color: Colors.black);

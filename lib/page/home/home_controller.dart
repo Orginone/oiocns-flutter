@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/component/bread_crumb.dart';
 import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/config/bread_crumb_points.dart';
 import 'package:orginone/page/home/affairs/affairs_page.dart';
 import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
-import 'package:orginone/page/home/organization/organization_page.dart';
 import 'package:orginone/page/home/work/work_page.dart';
 import 'package:orginone/util/any_store_util.dart';
 import 'package:orginone/util/hub_util.dart';
@@ -18,22 +19,28 @@ import '../../api/person_api.dart';
 import '../../api_resp/login_resp.dart';
 import '../../api_resp/target_resp.dart';
 import '../../api_resp/tree_node.dart';
-import '../../api_resp/user_resp.dart';
 import '../../logic/authority.dart';
 import '../../util/hive_util.dart';
 import 'message/message_page.dart';
+
+enum TitleStatus { home, breadCrumb }
 
 class HomeController extends GetxController
     with GetSingleTickerProviderStateMixin {
   Logger log = Logger("HomeController");
 
-  MessageController messageController = Get.find<MessageController>();
-  OrganizationController organizationCtrl = Get.find<OrganizationController>();
+  var messageController = Get.find<MessageController>();
+  var organizationCtrl = Get.find<OrganizationController>();
 
+  /// 全局面包屑
+  var breadCrumbController = BreadCrumbController<String>();
+  var titleStatus = TitleStatus.home.obs;
+
+  /// Tab 控制器
   late List<TabCombine> tabs;
   late TabController tabController;
-  late BuildContext context;
 
+  /// 当前空间
   late TargetResp currentSpace;
   NodeCombine? nodeCombine;
 
@@ -57,9 +64,11 @@ class HomeController extends GetxController
 
   @override
   void onClose() {
+    super.onClose();
     AnyStoreUtil().disconnect();
     HubUtil().disconnect();
-    super.onClose();
+    breadCrumbController.dispose();
+    tabController.dispose();
   }
 
   Future<void> _initCurrentSpace() async {
@@ -76,14 +85,30 @@ class HomeController extends GetxController
     var my = _buildTab(Icons.person_outline, '设置');
 
     tabs = <TabCombine>[
-      TabCombine(message, const MessagePage()),
-      TabCombine(relation, const AffairsPage()),
-      TabCombine(center, const CenterPage()),
-      TabCombine(work, const WorkPage()),
-      TabCombine(my, const MinePage()),
+      TabCombine(message, const MessagePage(), chatPoint),
+      TabCombine(relation, const AffairsPage(), workPoint),
+      TabCombine(center, const CenterPage(), centerPoint),
+      TabCombine(work, const WorkPage(), warehousePoint),
+      TabCombine(my, const MinePage(), settingPoint),
     ];
 
     tabController = TabController(length: tabs.length, vsync: this);
+    tabController.addListener(() {
+      if (tabController.index != tabController.animation?.value) {
+        return;
+      }
+
+      var preTab = tabs[tabController.previousIndex];
+      var tab = tabs[tabController.index];
+      if (tab._tab == center) {
+        titleStatus.value = TitleStatus.home;
+        breadCrumbController.clear();
+      } else {
+        titleStatus.value = TitleStatus.breadCrumb;
+        breadCrumbController.pops(preTab.breadCrumbItem.id);
+        breadCrumbController.push(tab.breadCrumbItem);
+      }
+    });
   }
 
   Tab _buildTab(IconData iconData, String label) {
@@ -152,8 +177,7 @@ class HomeController extends GetxController
   }
 
   _loadTree() async {
-    TargetResp userInfo = auth.userInfo;
-    if (userInfo.id != currentSpace.id) {
+    if (auth.isCompanySpace()) {
       nodeCombine = await CompanyApi.tree();
     } else {
       nodeCombine = null;
@@ -164,10 +188,13 @@ class HomeController extends GetxController
 class TabCombine {
   final Widget _tab;
   final Widget _widget;
+  final Item<String> _breadCrumbItem;
 
-  const TabCombine(this._tab, this._widget);
+  const TabCombine(this._tab, this._widget, this._breadCrumbItem);
 
   Widget get widget => _widget;
 
   Widget get tab => _tab;
+
+  Item<String> get breadCrumbItem => _breadCrumbItem;
 }

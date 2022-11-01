@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -7,6 +5,7 @@ import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api_resp/message_item_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/component/text_tag.dart';
+import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/string_util.dart';
@@ -15,7 +14,6 @@ import '../../../../component/text_avatar.dart';
 import '../../../../component/unified_text_style.dart';
 import '../../../../logic/authority.dart';
 import '../../../../util/date_util.dart';
-import '../../../../util/hive_util.dart';
 
 double defaultAvatarWidth = 66.w;
 
@@ -79,7 +77,7 @@ class MessageItemWidget extends GetView<MessageController> {
         Get.toNamed(Routers.chat, arguments: args);
       },
       child: Container(
-        padding: EdgeInsets.only(left: 10.w, top: 5.h, right: 10.w),
+        padding: EdgeInsets.only(left: 25.w, top: 17.h, right: 25.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -134,6 +132,9 @@ class MessageItemWidget extends GetView<MessageController> {
 
   Widget _content(MessageItemResp messageItem) {
     TargetResp userInfo = auth.userInfo;
+    var name = userInfo.id == messageItem.id
+        ? "${messageItem.name}（我）"
+        : messageItem.name;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,21 +142,19 @@ class MessageItemWidget extends GetView<MessageController> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              userInfo.id == messageItem.id
-                  ? "${messageItem.name}（我）"
-                  : messageItem.name,
-              style: text16Bold,
-            ),
+            Text(name, style: text22Bold),
             Text(
               CustomDateUtil.getSessionTime(messageItem.msgTime),
-              style: text12Grey,
+              style: text18,
             ),
           ],
         ),
         Text(
           messageItem.showTxt ?? "",
-          style: text12Grey,
+          style: TextStyle(
+            color: UnifiedColors.black9,
+            fontSize: 20.sp,
+          ),
           textAlign: TextAlign.left,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -167,7 +166,7 @@ class MessageItemWidget extends GetView<MessageController> {
   Widget _contentContainer(MessageItemResp messageItem) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
+        padding: EdgeInsets.only(left: 18.w, top: 2.h, bottom: 2.h),
         height: defaultAvatarWidth,
         child: GetBuilder<MessageController>(
           builder: (controller) => _content(messageItem),
