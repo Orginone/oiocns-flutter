@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/component/unified_colors.dart';
 import 'package:ota_update/ota_update.dart';
 
 class SysUtil {
@@ -13,7 +14,7 @@ class SysUtil {
     // 设置 Android 头部的导航栏透明
     if (Platform.isAndroid) {
       SystemUiOverlayStyle systemUiOverlayStyle = const SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
+          statusBarColor: UnifiedColors.navigatorBgColor,
           statusBarIconBrightness: Brightness.light);
       SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
     }
