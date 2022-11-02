@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -6,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:graphic/graphic.dart';
+import 'package:orginone/component/a_font.dart';
 import 'package:orginone/page/home/center/center_controller.dart';
 
 import '../../../component/unified_colors.dart';
@@ -81,79 +81,84 @@ class CenterPage extends GetView<CenterController> {
   Widget build(BuildContext context) {
     return Container(
       color: UnifiedColors.designLightBlue,
-      child: Column(
-        children: [
-          _swiper,
-          Container(margin: EdgeInsets.only(top: 12.h)),
-          Container(
-            margin: EdgeInsets.only(left: 20.w, right: 20.w),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Expanded(
+        child: ListView(
+          children: [
+            Column(
               children: [
-                Text("快捷入口", style: text16Bold),
-                Container(height: 8.h),
-                SizedBox(
-                  height: 72.w,
-                  child: ListView.builder(
-                    itemCount: Functions.values.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return Row(children: [
-                        _fastEntry(Functions.values[index]),
-                        Container(margin: EdgeInsets.only(right: 8.w))
-                      ]);
-                    },
+                _swiper,
+                Container(margin: EdgeInsets.only(top: 16.h)),
+                Container(
+                  margin: EdgeInsets.only(left: 25.w, right: 25.w),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("快捷入口", style: AFont.instance.size22Black3W500),
+                      Padding(padding: EdgeInsets.only(top: 16.h)),
+                      SizedBox(
+                        height: 100.w,
+                        child: ListView.builder(
+                          itemCount: Functions.values.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return Row(children: [
+                              _fastEntry(Functions.values[index]),
+                              Padding(padding: EdgeInsets.only(right: 8.w))
+                            ]);
+                          },
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.only(top: 16.h)),
+                      Text("常用应用", style: AFont.instance.size22Black3W500),
+                      Padding(padding: EdgeInsets.only(top: 16.h)),
+                      GridView.count(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        crossAxisCount: 5,
+                        childAspectRatio: 80 / 100,
+                        children: [
+                          _applicationEntry("资产应用"),
+                          _applicationEntry("资产应用"),
+                          _applicationEntry("资产应用"),
+                          _applicationEntry("资产应用"),
+                          _applicationEntry("资产应用"),
+                          _applicationEntry("资产应用"),
+                          _applicationEntry("资产应用"),
+                          _applicationEntry("资产应用"),
+                          _applicationEntry("资产应用"),
+                          _applicationEntry("更多", iconData: Icons.add)
+                        ],
+                      ),
+                      Container(height: 8.h),
+                      Text("数据检测", style: text16Bold),
+                      GridView.count(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        crossAxisCount: 2,
+                        children: [_charts(), _roseCharts()],
+                      )
+                    ],
                   ),
-                ),
-                Container(height: 8.h),
-                Text("常用应用", style: text16Bold),
-                Container(height: 8.h),
-                GridView.count(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  crossAxisCount: 5,
-                  childAspectRatio: 56 / 70,
-                  children: [
-                    _applicationEntry("资产应用"),
-                    _applicationEntry("资产应用"),
-                    _applicationEntry("资产应用"),
-                    _applicationEntry("资产应用"),
-                    _applicationEntry("资产应用"),
-                    _applicationEntry("资产应用"),
-                    _applicationEntry("资产应用"),
-                    _applicationEntry("资产应用"),
-                    _applicationEntry("资产应用"),
-                    _applicationEntry("更多", iconData: Icons.add)
-                  ],
-                ),
-                Container(height: 8.h),
-                Text("数据检测", style: text16Bold),
-                GridView.count(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  crossAxisCount: 2,
-                  children: [_charts(), _roseCharts()],
                 )
               ],
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
 
   // 轮播图
   get _swiper => SizedBox(
-        height: 130.h,
+        height: 176.h,
         child: Swiper(
           autoplay: true,
           itemCount: 4,
           itemBuilder: (BuildContext context, int index) {
-            return CachedNetworkImage(
-                height: 130.h,
-                imageUrl:
-                    "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fblog%2F202105%2F04%2F20210504062111_d8dc3.thumb.1000_0.jpg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1668839600&t=153f1b08bff7c682539eabde8c2f862f");
+            return const Image(
+              image: AssetImage("images/bg-center.png"),
+            );
           },
         ),
       );
@@ -166,8 +171,8 @@ class CenterPage extends GetView<CenterController> {
       },
       child: Container(
         alignment: Alignment.center,
-        width: 72.w,
-        height: 72.w,
+        width: 100.w,
+        height: 100.w,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(10.w)),
@@ -200,10 +205,10 @@ class CenterPage extends GetView<CenterController> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          width: 56.w,
-          height: 56.w,
+          width: 80.w,
+          height: 80.w,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(28.w)),
+            borderRadius: BorderRadius.all(Radius.circular(40.w)),
             color: Colors.white,
           ),
           child: iconData != null
