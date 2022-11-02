@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/component/loading_button.dart';
-import 'package:orginone/component/unified_text_style.dart';
 
+import '../../component/a_font.dart';
 import '../../routers.dart';
 import 'login_controller.dart';
 
@@ -65,7 +65,7 @@ class LoginPage extends GetView<LoginController> {
                     await controller.login();
                     Get.offNamed(Routers.home);
                   },
-                  child: Text("登录", style: text16White),
+                  child: Text("登录", style: AFont.instance.size20WhiteW500),
                 )),
             Container(
               padding: const EdgeInsets.fromLTRB(40, 15, 40, 0),
