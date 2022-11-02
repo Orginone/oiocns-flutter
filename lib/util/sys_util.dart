@@ -31,4 +31,9 @@ class SysUtil {
       Fluttertoast.showToast(msg: "安装包下载成功！");
     });
   }
+
+  static void hideStatusBar(){
+    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,overlays: []);
+  }
 }

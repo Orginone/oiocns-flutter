@@ -16,7 +16,7 @@ class TextSpaceBetween extends StatelessWidget {
     this.leftTxt = '',
     this.rightTxt = '',
     this.isShowLine = false,
-    this.leftStyle = const TextStyle(color: UnifiedColors.black3, fontSize: 16),
+    this.leftStyle =  const TextStyle(color: UnifiedColors.black3, fontSize: 16),
     this.rightStyle =
         const TextStyle(color: UnifiedColors.black6, fontSize: 16),
   }) : super(key: key);

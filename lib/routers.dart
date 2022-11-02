@@ -117,7 +117,7 @@ class Routers {
           binding: LoginBinding()),
       GetPage(
           name: Routers.home,
-          page: () => const HomePage(),
+          page: () =>  HomePage(),
           binding: HomeBinding()),
       GetPage(
           name: Routers.home,

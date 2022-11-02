@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_icon_button.dart';
+import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/component/index_bar.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_colors.dart';
-import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/logic/authority.dart';
 import 'package:orginone/page/home/message/contact/contact_controller.dart';
 import 'package:orginone/page/home/search/search_controller.dart';
 import 'package:orginone/public/loading/load_status.dart';
 import 'package:orginone/public/view/base_view.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/string_util.dart';
+import '../../../../component/a_font.dart';
 
 ///联系人页面
 class ContactPage extends BaseView<ContactController> {
@@ -77,21 +79,30 @@ class ContactPage extends BaseView<ContactController> {
           padding: EdgeInsets.only(left: 40.w, top: 10.h, bottom: 10.h),
           child: Text(
             targetResp.name,
-            style: text16,
+            style: AFont.instance.size20themeColorW500,
           ));
     }
     return Column(children: [
       Container(
         color: Colors.white,
         child: ListTile(
+          onTap: (){
+            var msgItem = controller.getMsgItem(targetResp);
+            Map<String, dynamic> args = {
+              "messageItem": msgItem,
+              "spaceId": auth.userId,
+              "messageItemId": msgItem.id
+            };
+            Get.toNamed(Routers.chat, arguments: args);
+          },
             leading: TextAvatar(
               avatarName: StringUtil.getAvatarName(
                 avatarName: targetResp.name,
                 type: TextAvatarType.chat,
               ),
             ),
-            title: Text(targetResp.name, style: text16),
-            subtitle: Text(targetResp.team?.name ?? "", style: text12Grey),
+            title: Text(targetResp.name, style: AFont.instance.size22Black3),
+            subtitle: Text(targetResp.team?.name ?? "", style: AFont.instance.size20Black9),
             contentPadding: EdgeInsets.only(left: 30.w)),
       ),
       Container(
@@ -126,11 +137,11 @@ class ContactPage extends BaseView<ContactController> {
             decoration: BoxDecoration(
                 color: Colors.black,
                 borderRadius: BorderRadius.all(Radius.circular(5.w))),
-            width: 80.w,
-            height: 80.h,
+            width: 100.w,
+            height: 100.w,
             child: Align(
               alignment: Alignment.center,
-              child: Text(controller.getBarStr(), style: text25White),
+              child: Text(controller.getBarStr(), style: AFont.instance.size28White),
             ),
           ),
         ),

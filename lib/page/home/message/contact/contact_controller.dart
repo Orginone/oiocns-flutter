@@ -2,8 +2,11 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:orginone/api/person_api.dart';
+import 'package:orginone/api_resp/message_item_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/logic/authority.dart';
 import 'package:orginone/page/home/home_controller.dart';
+import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/public/http/base_controller.dart';
 import 'package:orginone/public/loading/load_status.dart';
 import 'package:orginone/util/string_util.dart';
@@ -22,11 +25,17 @@ class ContactController extends BaseController {
   List<String> mIndex = [];
   HomeController homeController = Get.find<HomeController>();
 
+
   @override
   void onInit() {
     super.onInit();
     loadAllContact("");
     homeController.currentSpace;
+  }
+
+  MessageItemResp getMsgItem(TargetResp targetResp){
+    MessageController messageController = Get.find<MessageController>();
+    return messageController.spaceMessageItemMap[auth.userId]![targetResp.id]!;
   }
 
   /// 一次性加载全部好友，并提取索引
