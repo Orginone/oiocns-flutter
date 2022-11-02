@@ -78,7 +78,7 @@ class ChatMessageDetail extends GetView<ChatController> {
           detail: detail,
           nameMap: nameMap,
         );
-        children.add(Text(msgBody, style: text12Grey));
+        children.add(Text(msgBody, style: AFont.instance.size16Black9));
         break;
       default:
         break;
