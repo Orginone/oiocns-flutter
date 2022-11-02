@@ -31,8 +31,8 @@ class MessageSettingController extends GetxController {
   RxList<TargetResp> filterPersonList = <TargetResp>[].obs;
 
   //当前关系对象(观测)的信息
-  Rx<MessageItemResp>? messageItem;
-  Rx<String>? spaceId;
+  late MessageItemResp messageItem;
+  late String spaceId;
   late String messageItemId;
   RxList<TargetResp> personList = <TargetResp>[].obs;
 
@@ -40,9 +40,9 @@ class MessageSettingController extends GetxController {
   void onInit() async {
     //初始化
     Map<String, dynamic> args = Get.arguments;
-    spaceId = RxString(args["spaceId"]);
+    spaceId = args["spaceId"];
     messageItemId = args["messageItemId"];
-    messageItem = Rx<MessageItemResp>(args["messageItem"]);
+    messageItem = args["messageItem"];
 
     await getPersons();
 

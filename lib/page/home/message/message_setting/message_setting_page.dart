@@ -4,11 +4,12 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/form_item_type1.dart';
 import 'package:orginone/component/form_item_type2.dart';
+import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/hub_util.dart';
 
-import '../../../../component/unified_text_style.dart';
+import '../../../../util/string_util.dart';
 import '../../../../util/widget_util.dart';
 import 'message_setting_controller.dart';
 
@@ -19,8 +20,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
   Widget build(BuildContext context) {
     return UnifiedScaffold(
         appBarLeading: WidgetUtil.defaultBackBtn,
-        appBarTitle: Text("会话设置", style: text20),
-        bgColor: const Color.fromRGBO(240, 240, 240, 1),
+        appBarElevation: 0,
         body: Obx(() {
           //拼接消息设置的界面,根据会话的标签分为个人,好友,单位,群组的概念
           List<Widget> widgetList = [
@@ -37,24 +37,19 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                     alignment: Alignment.center,
                     padding: const EdgeInsets.all(6),
                     child: Text(
-                      controller.messageItem != null &&
-                              controller.messageItem!.value.name.isNotEmpty
-                          ? controller.messageItem!.value.name.substring(
-                              0,
-                              controller.messageItem!.value.name.length >= 2
-                                  ? 2
-                                  : 1)
+                      controller.messageItem.name.isNotEmpty
+                          ? controller.messageItem.name.substring(0,
+                              controller.messageItem.name.length >= 2 ? 2 : 1)
                           : '',
                       style: const TextStyle(color: Colors.white, fontSize: 18),
                     )),
                 title: '群聊名称',
-                text: controller.messageItem?.value.name,
+                text: controller.messageItem.name,
               ),
             ),
           ];
-          widgetList
-              .add(personListWidget(controller.messageItem?.value.label ?? ''));
-          if (controller.messageItem?.value.label == '群组') {
+          widgetList.add(personListWidget(controller.messageItem.label ?? ''));
+          if (controller.messageItem.label == '群组') {
             widgetList.add(Container(
               margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
               child: Column(
@@ -69,7 +64,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                   FormItemType2(
                     text: "备注",
                     rightSlot: Text(
-                      controller.messageItem?.value.remark ?? '',
+                      controller.messageItem.remark ?? '',
                       style: const TextStyle(color: Colors.grey),
                     ),
                   ),
@@ -107,8 +102,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                   }),
             ),
           ]);
-          widgetList
-              .add(btnListWidget(controller.messageItem?.value.label ?? ''));
+          widgetList.add(btnListWidget(controller.messageItem.label ?? ''));
           return ListView(
             children: [
               Column(
@@ -117,6 +111,22 @@ class MessageSettingPage extends GetView<MessageSettingController> {
             ],
           );
         }));
+  }
+
+  Widget _avatar() {
+    var messageItem = controller.messageItem;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TextAvatar(
+          avatarName: StringUtil.getPrefixChars(
+            messageItem.name,
+            count: 2,
+          ),
+        ),
+      ],
+    );
   }
 
   //群组的widget
@@ -284,7 +294,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
           fullWidthButton: true,
           onPressed: () async {
             HubUtil().clearHistoryMsg(
-              controller.spaceId?.value,
+              controller.spaceId,
               controller.messageItemId,
             );
           },
@@ -313,7 +323,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
               fullWidthButton: true,
               onPressed: () async {
                 HubUtil().clearHistoryMsg(
-                    controller.spaceId?.value, controller.messageItemId);
+                    controller.spaceId, controller.messageItemId);
               },
               text: "清空聊天记录",
             ),
