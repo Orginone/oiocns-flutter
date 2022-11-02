@@ -61,8 +61,8 @@ Map<String, dynamic> $TaskEntityToJson(TaskEntity entity) {
 	data['version'] = entity.version;
 	data['createTime'] = entity.createTime;
 	data['updateTime'] = entity.updateTime;
-	data['flowNode'] = entity.flowNode.toJson();
-	data['flowInstance'] = entity.flowInstance.toJson();
+	data['flowNode'] = entity.flowNode?.toJson();
+	data['flowInstance'] = entity.flowInstance?.toJson();
 	return data;
 }
 
@@ -227,7 +227,7 @@ Map<String, dynamic> $TaskFlowInstanceToJson(TaskFlowInstance entity) {
 	data['version'] = entity.version;
 	data['createTime'] = entity.createTime;
 	data['updateTime'] = entity.updateTime;
-	data['flowRelation'] = entity.flowRelation.toJson();
+	data['flowRelation'] = entity.flowRelation?.toJson();
 	return data;
 }
 

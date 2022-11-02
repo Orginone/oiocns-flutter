@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:orginone/public/http/base_list_controller.dart';
 
 /// 办事模块通用的controller
@@ -9,6 +10,17 @@ abstract class AffairsBaseListController<T> extends BaseListController<T> {
   @override
   void onInit() {
     super.onInit();
+    debugPrint("onInit->$this");
     onRefresh();
   }
+
+  @override
+  void onReady() {
+    super.onReady();
+    debugPrint("onReady->$this");
+    // onRefresh();
+  }
+
+
+
 }

@@ -20,16 +20,16 @@ class IndexBar extends StatelessWidget {
       child: GestureDetector(
         onVerticalDragDown: (DragDownDetails detail) {
           int i = detail.localPosition.dy ~/ 20.h;
-          print("--->滑动开始$i");
+          debugPrint("--->滑动开始$i");
           _updateSelectIndex(i, false);
         },
         onVerticalDragUpdate: (DragUpdateDetails detail) {
           int i = detail.localPosition.dy ~/ 20.h;
-          print('---> 拖动了$i');
+          debugPrint('---> 拖动了$i');
           _updateSelectIndex(i, false);
         },
         onVerticalDragEnd: (DragEndDetails detail) {
-          print("--->滑动结束i");
+          debugPrint("--->滑动结束i");
           _updateSelectIndex(-1, true);
         },
         onTapUp: (TapUpDetails detail) {
@@ -44,7 +44,7 @@ class IndexBar extends StatelessWidget {
               return Container(
                 height: 20.h,
                 width: 30.w,
-                color: Colors.black12,
+                color: Colors.transparent,
                 child: Align(
                     alignment: Alignment.center,
                     child: Text(

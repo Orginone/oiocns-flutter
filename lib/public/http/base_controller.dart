@@ -7,6 +7,8 @@ abstract class BaseController extends GetxController {
 
   updateLoadStatus(LoadStatusX status) {
     debugPrint("---->1$status");
-    loadStatus.value = status;
+    if (status != loadStatus.value) {
+      loadStatus.value = status;
+    }
   }
 }

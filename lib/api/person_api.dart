@@ -56,6 +56,7 @@ class PersonApi {
     int limit,
     int offset,
     String filter,
+    {ErrorCallback? errorCallback}
   ) async {
     String url = "${Constant.person}/get/friends";
     Map<String, dynamic> data = {"offset": offset, "limit": limit};
@@ -63,7 +64,7 @@ class PersonApi {
       data["filter"] = filter;
     }
 
-    Map<String, dynamic> pageResp = await HttpUtil().post(url, data: data);
+    Map<String, dynamic> pageResp = await HttpUtil().post(url, data: data,errorCallback: errorCallback);
     return PageResp.fromMap(pageResp, TargetResp.fromMap);
   }
 

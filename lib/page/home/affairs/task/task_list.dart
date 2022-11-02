@@ -1,22 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/api_resp/task_entity.dart';
+import 'package:orginone/page/home/affairs/affairs_type_enum.dart';
+import 'package:orginone/util/date_util.dart';
 import '../../../../component/unified_colors.dart';
 import '../../../../component/unified_text_style.dart';
-import '../base/affairs_base_list.dart';
+import '../../../../public/loading/load_status.dart';
+import '../../../../public/view/base_list_view.dart';
+import '../../../../routers.dart';
+import '../base/detail_arguments.dart';
 import 'task_controller.dart';
 
-class AffairsTaskWidget extends AffairsBaseList<TaskController> {
-  @override
-  TaskController controller = Get.put(TaskController());
-
-  AffairsTaskWidget({Key? key}) : super(key: key);
+class AffairsTaskWidget extends StatefulWidget {
+  const AffairsTaskWidget({Key? key}) : super(key: key);
 
   @override
-  Widget listWidget() {
+  State<AffairsTaskWidget> createState() => _TaskWidgetState();
+}
+
+class _TaskWidgetState extends State<AffairsTaskWidget>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return TaskWidget();
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}
+
+class TaskWidget extends BaseListView<TaskController> {
+  TaskWidget({Key? key}) : super(key: key) {
+    Get.lazyPut(() => TaskController());
+  }
+
+  @override
+  LoadStatusX initStatus() {
+    return controller.loadStatus.value;
+  }
+
+  @override
+  bool isUseScaffold() {
+    return false;
+  }
+
+  @override
+  ListView listWidget() {
     return ListView.builder(
         itemCount: controller.dataList.length,
         itemBuilder: (context, index) {
@@ -24,7 +57,7 @@ class AffairsTaskWidget extends AffairsBaseList<TaskController> {
         });
   }
 
-  Widget itemInit(BuildContext context, int index, dataList) {
+  Widget itemInit(BuildContext context, int index, TaskEntity item) {
     return Slidable(
       enabled: false,
       key: const ValueKey(0),
@@ -72,7 +105,10 @@ class AffairsTaskWidget extends AffairsBaseList<TaskController> {
           children: [
             Container(
               alignment: Alignment.centerLeft,
-              child: Text("“张三”想成为你的好友",
+              child: Text(
+                  item.flowInstance?.title == null
+                      ? ""
+                      : item.flowInstance!.title,
                   style: TextStyle(
                       color: UnifiedColors.black3,
                       fontSize: 16.sp,
@@ -80,7 +116,9 @@ class AffairsTaskWidget extends AffairsBaseList<TaskController> {
             ),
             Container(
               alignment: Alignment.centerLeft,
-              child: Text("你好，我是谢谢谢谢谢谢谢谢谢谢公司的张三，想成为你的好友", style: text12Grey),
+              padding: EdgeInsets.only(top: 5.h),
+              child: Text(item.flowInstance?.flowRelation?.functionCode ?? "",
+                  style: text12Grey),
             ),
             SizedBox(
               height: 30.h,
@@ -96,20 +134,24 @@ class AffairsTaskWidget extends AffairsBaseList<TaskController> {
                           color: UnifiedColors.cardBorder, width: 0.1.w),
                       borderRadius: const BorderRadius.all(Radius.circular(0))),
                   child: Text(
-                    "时间：2022-02-23",
+                    CustomDateUtil.getDetailTime(
+                        DateTime.parse(item.createTime)),
                     style: text14Grey,
                   ),
                 ),
                 Row(
                   children: [
-                    SizedBox(
-                      width: 70.w,
-                      height: 30.h,
-                      child: GFButton(
-                        onPressed: () {},
-                        color: UnifiedColors.backColor,
-                        text: "退回",
-                        textColor: Colors.white,
+                    Visibility(
+                      visible: false,
+                      child: SizedBox(
+                        width: 70.w,
+                        height: 30.h,
+                        child: GFButton(
+                          onPressed: () {},
+                          color: UnifiedColors.backColor,
+                          text: "退回",
+                          textColor: Colors.white,
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -119,9 +161,14 @@ class AffairsTaskWidget extends AffairsBaseList<TaskController> {
                       width: 70.w,
                       height: 30.h,
                       child: GFButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.toNamed(Routers.affairsDetail,
+                              arguments: DetailArguments(
+                                  AffairsTypeEnum.task, index,
+                                  taskEntity: item));
+                        },
                         color: UnifiedColors.agreeColor,
-                        text: "通过",
+                        text: "审批",
                         textStyle: text14White,
                         textColor: Colors.white,
                       ),
