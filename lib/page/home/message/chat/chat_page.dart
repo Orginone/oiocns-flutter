@@ -12,7 +12,7 @@ import 'package:orginone/page/home/message/chat/component/chat_box.dart';
 import 'package:orginone/util/date_util.dart';
 
 import '../../../../api_resp/message_item_resp.dart';
-import '../../../../component/unified_edge_insets.dart';
+import '../../../../component/a_font.dart';
 import '../../../../enumeration/target_type.dart';
 import '../../../../logic/authority.dart';
 import '../../../../routers.dart';
@@ -71,10 +71,10 @@ class ChatPage extends GetView<ChatController> {
   Widget _time(DateTime? dateTime) {
     return Container(
       alignment: Alignment.center,
-      margin: top10,
+      margin: EdgeInsets.only(top: 5.h, bottom: 5.h),
       child: Text(
         dateTime != null ? CustomDateUtil.getDetailTime(dateTime) : "",
-        style: text10Grey,
+        style: AFont.instance.size20Black9,
       ),
     );
   }
@@ -125,23 +125,26 @@ class ChatPage extends GetView<ChatController> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            child: RefreshIndicator(
-              onRefresh: () async {
-                await controller.getHistoryMsg(isCacheNameMap: true);
-                controller.update();
-              },
-              child: Container(
-                padding: lr10,
-                child: Obx(
-                  () => ListView.builder(
-                    reverse: true,
-                    shrinkWrap: true,
-                    controller: controller.messageScrollController,
-                    scrollDirection: Axis.vertical,
-                    itemCount: controller.details.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return _chatItem(index);
-                    },
+            child: Container(
+              color: UnifiedColors.bgColor,
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await controller.getHistoryMsg(isCacheNameMap: true);
+                  controller.update();
+                },
+                child: Container(
+                  padding: EdgeInsets.only(left: 10.w, right: 10.w),
+                  child: Obx(
+                    () => ListView.builder(
+                      reverse: true,
+                      shrinkWrap: true,
+                      controller: controller.messageScrollController,
+                      scrollDirection: Axis.vertical,
+                      itemCount: controller.details.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _chatItem(index);
+                      },
+                    ),
                   ),
                 ),
               ),

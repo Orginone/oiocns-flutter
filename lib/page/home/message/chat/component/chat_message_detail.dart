@@ -15,6 +15,7 @@ import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/util/hive_util.dart';
 
 import '../../../../../api_resp/target_resp.dart';
+import '../../../../../component/a_font.dart';
 import '../../../../../component/unified_colors.dart';
 import '../../../../../component/unified_edge_insets.dart';
 import '../../../../../component/unified_text_style.dart';
@@ -84,7 +85,7 @@ class ChatMessageDetail extends GetView<ChatController> {
     }
 
     return Container(
-      margin: top10,
+      margin: EdgeInsets.only(top: 5.h, bottom: 5.h),
       child: Row(
         textDirection: isMy ? TextDirection.rtl : TextDirection.ltr,
         mainAxisAlignment: msgType == MsgType.recall
@@ -110,7 +111,7 @@ class ChatMessageDetail extends GetView<ChatController> {
         avatarName: isMy ? userInfo.team?.name ?? "" : targetName(),
         type: TextAvatarType.chat,
       ),
-      textStyle: text12WhiteBold,
+      textStyle: text16WhiteBold,
       radius: 9999,
     );
   }
@@ -134,12 +135,17 @@ class ChatMessageDetail extends GetView<ChatController> {
     switch (msgType) {
       case MsgType.text:
         body = _detail(
-          textDirection: textDirection,
-          body: Text(
-            detail.msgBody ?? "",
-            style: text14Bold,
-          ),
-        );
+            textDirection: textDirection,
+            body: Text(
+              detail.msgBody ?? "",
+              style: AFont.instance.size22Black3W500,
+            ),
+            padding: EdgeInsets.only(
+              left: 16.w,
+              right: 16.w,
+              top: 10.w,
+              bottom: 10.w,
+            ));
         break;
       case MsgType.image:
         body = _image(textDirection: textDirection);
@@ -213,14 +219,23 @@ class ChatMessageDetail extends GetView<ChatController> {
     EdgeInsets? padding,
   }) {
     return Container(
-      constraints: constraints ?? BoxConstraints(maxWidth: 180.w),
+      constraints: constraints ?? BoxConstraints(maxWidth: 350.w),
       padding: padding ?? EdgeInsets.all(defaultWidth),
       margin: textDirection == TextDirection.ltr
           ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
           : EdgeInsets.only(right: defaultWidth),
       decoration: BoxDecoration(
-        color: UnifiedColors.seaBlue,
+        color: isMy ? UnifiedColors.tinyLightBlue : Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(defaultWidth)),
+        boxShadow: const [
+          //阴影效果
+          BoxShadow(
+            offset: Offset(0, 2), //阴影在X轴和Y轴上的偏移
+            color: Colors.black12, //阴影颜色
+            blurRadius: 3.0, //阴影程度
+            spreadRadius: 0, //阴影扩散的程度 取值可以正数,也可以是负数
+          ),
+        ],
       ),
       clipBehavior: clipBehavior ?? Clip.none,
       child: body,

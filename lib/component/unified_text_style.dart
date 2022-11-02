@@ -79,6 +79,12 @@ get text16GreyBold => TextStyle(
 
 get text16White => TextStyle(fontSize: 16.sp, color: Colors.white);
 
+get text16WhiteBold => TextStyle(
+      fontSize: 16.sp,
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
+    );
+
 get text16Blue => TextStyle(fontSize: 16.sp, color: Colors.blueAccent);
 
 get text16BlueBold => TextStyle(

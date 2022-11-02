@@ -16,6 +16,7 @@ import 'package:orginone/util/permission_util.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../../../component/a_font.dart';
 import '../../../../../component/voice_painter.dart';
 
 enum RecordStatus {
@@ -57,10 +58,11 @@ enum MoreFunction {
 }
 
 double defaultBorderRadius = 6.w;
-double boxDefaultHeight = 36.h;
+double boxDefaultHeight = 40.w;
+double defaultBottomHeight = 300.h;
 
 class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
-  final RxDouble bottomHeight = 220.h.obs;
+  final RxDouble bottomHeight = defaultBottomHeight.obs;
 
   ChatBox({Key? key}) : super(key: key);
 
@@ -116,8 +118,8 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
       }
     });
     return Container(
-      color: UnifiedColors.easyGrey,
-      padding: EdgeInsets.fromLTRB(10.w, 2.h, 10.w, 2.h),
+      color: UnifiedColors.navigatorBgColor,
+      padding: EdgeInsets.fromLTRB(18.w, 10.h, 18.w, 10.h),
       child: Column(
         children: [
           Row(
@@ -186,8 +188,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
               },
               child: Container(
                 alignment: Alignment.center,
-                height: boxDefaultHeight,
-                padding: EdgeInsets.fromLTRB(10.w, 5.h, 10.w, 5.h),
+                height: 52.h,
                 child: const Text("按住 说话"),
               ),
             );
@@ -199,11 +200,11 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
             onChanged: (text) =>
                 controller.eventFire(context, InputEvent.clickInput),
             onTap: () => controller.eventFire(context, InputEvent.clickInput),
-            style: text16,
+            style: AFont.instance.size22Black3W500,
             controller: controller.inputController,
             decoration: InputDecoration(
               isCollapsed: true,
-              contentPadding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 10.h),
+              contentPadding: EdgeInsets.fromLTRB(10.w, 15.h, 10.w, 15.h),
               border: InputBorder.none,
               constraints: BoxConstraints(
                 maxHeight: 144.h,
@@ -303,11 +304,11 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
       switch (controller._inputStatus.value) {
         case InputStatus.emoji:
         case InputStatus.inputtingEmoji:
-          bottomHeight.value = 220.h;
+          bottomHeight.value = defaultBottomHeight;
           body = _emojiPicker(context);
           break;
         case InputStatus.more:
-          bottomHeight.value = 220.h;
+          bottomHeight.value = defaultBottomHeight;
           body = _more(context);
           break;
         case InputStatus.notPopup:

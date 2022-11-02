@@ -11,6 +11,7 @@ class UnifiedColors {
   static const Color designBlue = Color(0xFF3D5ED1);
   static const Color designLightBlue = Color(0xFFEDEFFC);
   static const Color tinyBlue = Color(0xFFA8B5FF);
+  static const Color tinyLightBlue = Color(0xFFCEDFFF);
   static const Color themeColor = Color(0xff3D5ED1);
   static const Color black = Color(0xff000000);
   static const Color black3 = Color(0xff303133);
