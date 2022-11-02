@@ -111,6 +111,7 @@ class ChatMessageDetail extends GetView<ChatController> {
         type: TextAvatarType.chat,
       ),
       textStyle: text12WhiteBold,
+      radius: 9999,
     );
   }
 

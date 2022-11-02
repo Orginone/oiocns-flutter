@@ -81,9 +81,8 @@ class HomeController extends GetxController
 
   void _initTabs() {
     var message = TabCombine(
-      body: Text('沟通', style: text14),
+      customTab: _buildTabTick(Icons.group_outlined, "沟通"),
       tabView: const MessagePage(),
-      icon: Icons.group_outlined,
       breadCrumbItem: chatPoint,
     );
     var relation = TabCombine(
@@ -93,8 +92,8 @@ class HomeController extends GetxController
       breadCrumbItem: workPoint,
     );
     var center = const TabCombine(
-      // icon: Icons.circle,
-      tabView: HomePage(),
+      icon: Icons.circle,
+      tabView: CenterPage(),
     );
     var work = TabCombine(
       body: Text('仓库', style: text14),

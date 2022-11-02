@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
-import 'package:orginone/component/text_tag.dart';
+import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
@@ -16,7 +16,6 @@ import '../../../../component/unified_edge_insets.dart';
 import '../../../../enumeration/target_type.dart';
 import '../../../../logic/authority.dart';
 import '../../../../routers.dart';
-import '../../../../util/hive_util.dart';
 import '../../../../util/widget_util.dart';
 import 'component/chat_message_detail.dart';
 
@@ -26,32 +25,32 @@ class ChatPage extends GetView<ChatController> {
   @override
   Widget build(BuildContext context) {
     return UnifiedScaffold(
+      appBarHeight: 74.h,
       resizeToAvoidBottomInset: false,
       appBarLeading: WidgetUtil.defaultBackBtn,
       appBarTitle: _title,
+      appBarCenterTitle: true,
       appBarActions: _actions,
       body: _body(context),
     );
   }
 
-  get _title => Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Obx(() => Text(
-                controller.titleName.value,
-                style: text20,
-              )),
-          Container(
-            margin: left10,
-          ),
-          TextTag(
-            controller.messageItem.label,
-            textStyle: text12WhiteBold,
-            bgColor: Colors.blueAccent,
-            padding: const EdgeInsets.all(4),
-          )
-        ],
-      );
+  get _title {
+    var spaceId = controller.spaceId;
+    var spaceMap = controller.messageController.spaceMap;
+    var space = spaceMap[spaceId];
+    var messageItem = controller.messageItem;
+    var remark = "${space?.name} | ${messageItem.name}";
+
+    var style = TextStyle(color: UnifiedColors.black9, fontSize: 14.sp);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Obx(() => Text(controller.titleName.value, style: text22Bold)),
+        Text(remark, style: style)
+      ],
+    );
+  }
 
   get _actions => <Widget>[
         GFIconButton(
