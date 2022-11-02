@@ -54,8 +54,11 @@ class ChatPage extends GetView<ChatController> {
 
   get _actions => <Widget>[
         GFIconButton(
-          color: Colors.white.withOpacity(0),
-          icon: const Icon(Icons.more_horiz, color: Colors.black),
+          icon: Icon(
+            Icons.more_horiz,
+            color: UnifiedColors.black3,
+            size: 32.w,
+          ),
           onPressed: () {
             Map<String, dynamic> args = {
               "spaceId": controller.spaceId,
