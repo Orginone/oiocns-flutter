@@ -4,10 +4,11 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api_resp/task_entity.dart';
+import 'package:orginone/component/a_font.dart';
 import 'package:orginone/page/home/affairs/affairs_type_enum.dart';
 import 'package:orginone/util/date_util.dart';
 import '../../../../component/unified_colors.dart';
-import '../../../../component/unified_text_style.dart';
+// import '../../../../component/unified_text_style.dart';
 import '../../../../public/loading/load_status.dart';
 import '../../../../public/view/base_list_view.dart';
 import '../../../../routers.dart';
@@ -109,16 +110,13 @@ class TaskWidget extends BaseListView<TaskController> {
                   item.flowInstance?.title == null
                       ? ""
                       : item.flowInstance!.title,
-                  style: TextStyle(
-                      color: UnifiedColors.black3,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w500)),
+                  style: AFont.instance.size22Black3W500),
             ),
             Container(
               alignment: Alignment.centerLeft,
               padding: EdgeInsets.only(top: 5.h),
               child: Text(item.flowInstance?.flowRelation?.functionCode ?? "",
-                  style: text12Grey),
+                  style: AFont.instance.size18Black9),
             ),
             SizedBox(
               height: 30.h,
@@ -127,7 +125,7 @@ class TaskWidget extends BaseListView<TaskController> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  padding: EdgeInsets.fromLTRB(10.w, 3.h, 10.w, 3.h),
+                  padding: EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 8.h),
                   decoration: BoxDecoration(
                       color: UnifiedColors.white,
                       border: Border.all(
@@ -136,7 +134,7 @@ class TaskWidget extends BaseListView<TaskController> {
                   child: Text(
                     CustomDateUtil.getDetailTime(
                         DateTime.parse(item.createTime)),
-                    style: text14Grey,
+                    style: AFont.instance.size14Black9,
                   ),
                 ),
                 Row(
@@ -144,8 +142,8 @@ class TaskWidget extends BaseListView<TaskController> {
                     Visibility(
                       visible: false,
                       child: SizedBox(
-                        width: 70.w,
-                        height: 30.h,
+                        width: 106.w,
+                        height: 42.h,
                         child: GFButton(
                           onPressed: () {},
                           color: UnifiedColors.backColor,
@@ -155,11 +153,11 @@ class TaskWidget extends BaseListView<TaskController> {
                       ),
                     ),
                     SizedBox(
-                      width: 10.w,
+                      width: 15.w,
                     ),
                     SizedBox(
-                      width: 70.w,
-                      height: 30.h,
+                      width: 106.w,
+                      height: 42.h,
                       child: GFButton(
                         onPressed: () {
                           Get.toNamed(Routers.affairsDetail,
@@ -169,7 +167,7 @@ class TaskWidget extends BaseListView<TaskController> {
                         },
                         color: UnifiedColors.agreeColor,
                         text: "审批",
-                        textStyle: text14White,
+                        textStyle: AFont.instance.size18White,
                         textColor: Colors.white,
                       ),
                     ),

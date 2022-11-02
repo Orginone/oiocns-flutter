@@ -17,6 +17,7 @@ class UnifiedColors {
   static const Color black9 = Color(0xff909399);
   static const Color white = Color(0xffffffff);
   static const Color lineLight = Color(0xffEDEDED);
+  static const Color lineLight2 = Color(0xffD4D4D4);
   static const Color cardBorder = Color(0xffB1B1B1);
   static const Color backColor = Color(0xffF76C6F);
   static const Color agreeColor = Color(0xff3D5ED1);

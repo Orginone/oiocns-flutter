@@ -7,8 +7,6 @@ import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/util/string_util.dart';
 
-import '../../component/unified_text_style.dart';
-
 /// 编辑弹窗
 typedef ConfirmCallback = void Function(String);
 
@@ -57,13 +55,12 @@ class DialogEdit extends Dialog {
                     child: TextField(
                         maxLines: 3,
                         cursorColor: UnifiedColors.themeColor,
-                        style: const TextStyle(
-                            fontSize: 15, color: UnifiedColors.black3),
+                        style: AFont.instance.size20Black3,
                         decoration: InputDecoration(
                             fillColor: UnifiedColors.bgGrayLight,
                             filled: true,
                             contentPadding: const EdgeInsets.all(12),
-                            hintStyle: AFont.instance.size12Black9,
+                            hintStyle: AFont.instance.size20Black9,
                             border: InputBorder.none,
                             hintText: StringUtil.formatStr(hint)),
                         controller: editingController,
@@ -83,9 +80,7 @@ class DialogEdit extends Dialog {
                               Navigator.of(context).pop();
                             },
                             text: "取消",
-                            textStyle: TextStyle(
-                                color: UnifiedColors.black6, fontSize: 16.sp),
-                            textColor: UnifiedColors.themeColor,
+                            textStyle: AFont.instance.size22Black3,
                           )),
                       Container(
                         width: 1.5.w,
@@ -106,7 +101,7 @@ class DialogEdit extends Dialog {
                               }
                             },
                             text: confirmText,
-                            textStyle: text16Blue,
+                            textStyle: AFont.instance.size22Black3,
                             textColor: UnifiedColors.themeColor,
                           )),
                     ],

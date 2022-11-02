@@ -54,7 +54,7 @@ class AffairsTab extends GetView<AffairsPageController> {
               unselectedLabelColor: UnifiedColors.black6,
               indicatorColor: UnifiedColors.themeColor,
               indicatorSize: TabBarIndicatorSize.label,
-              labelStyle: TextStyle(fontSize: 14.sp),
+              labelStyle: TextStyle(fontSize: 20.sp),
               tabs: const [
                 Tab(text: '待办'),
                 Tab(text: '已办'),
@@ -66,12 +66,34 @@ class AffairsTab extends GetView<AffairsPageController> {
         });
   }
 
+  Widget _tabBarItem(String title, {bool showRightImage = true}) {
+    return Tab(
+        child: Container(
+          color: Colors.yellow,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                color: Colors.red,
+                child: Center(
+                  child: Text(title),
+                ),
+              ),
+              ///分割符自定义，可以放任何widget
+              showRightImage
+                  ? Container(width: 1.w,height:30.h,color: UnifiedColors.lineLight2,)
+                  : Container(width: 1.w,height:30.h,color: UnifiedColors.transparent)
+            ],
+          ),
+        ));
+  }
+
   _content() {
     return Expanded(
       flex: 1,
       child: TabBarView(
         controller: controller.tabController,
-        children:  [
+        children:  const [
           AffairsTaskWidget(),
           AffairsRecordWidget(),
           AffairsInstanceWidget(),

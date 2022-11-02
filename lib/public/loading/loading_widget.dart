@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:orginone/component/a_font.dart';
 import 'package:orginone/public/http/base_controller.dart';
-import '../../component/unified_text_style.dart';
 import 'load_status.dart';
 
 class LoadingWidget extends StatelessWidget {
@@ -65,7 +65,7 @@ class LoadingWidget extends StatelessWidget {
             ),
             Text(
               "加载中...",
-              style: text14Grey,
+              style: AFont.instance.size20Black9,
             ),
           ],
         ),
@@ -79,7 +79,7 @@ class LoadingWidget extends StatelessWidget {
       color: Colors.white,
       child: Text(
         "暂无数据",
-        style: text14Grey,
+        style: AFont.instance.size20Black9,
       ),
     );
   }
@@ -90,7 +90,7 @@ class LoadingWidget extends StatelessWidget {
       color: Colors.white,
       child: Text(
         "服务器开小差了",
-        style: text14Grey,
+        style: AFont.instance.size20Black9,
       ),
     );
   }

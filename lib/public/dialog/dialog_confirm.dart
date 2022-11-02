@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/unified_colors.dart';
 
-import '../../component/unified_text_style.dart';
-
-/**
- * 确认弹窗，说明内容
- */
-
+/// 确认弹窗
 typedef ConfirmCallback = void Function();
 
 class DialogConfirm extends Dialog {
@@ -27,7 +23,7 @@ class DialogConfirm extends Dialog {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(60, 0, 60, 100),
+      padding: const EdgeInsets.fromLTRB(40, 0, 40, 100),
       child: Material(
         type: MaterialType.transparency,
         child: Column(
@@ -69,9 +65,7 @@ class DialogConfirm extends Dialog {
                               Navigator.of(context).pop();
                             },
                             text: "取消",
-                            textStyle: TextStyle(
-                                color: UnifiedColors.black6, fontSize: 16.sp),
-                            textColor: UnifiedColors.themeColor,
+                            textStyle: AFont.instance.size22Black9,
                           )),
                       Container(
                         width: 1.5.w,
@@ -89,8 +83,8 @@ class DialogConfirm extends Dialog {
                                 confirmFun!();
                               }
                             },
-                            text: "同意",
-                            textStyle: text16Blue,
+                            text: "确定",
+                            textStyle: AFont.instance.size22Black3,
                             textColor: UnifiedColors.themeColor,
                           )),
                     ],
@@ -109,10 +103,7 @@ class DialogConfirm extends Dialog {
       margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
       child: Text(
         "$title",
-        style: const TextStyle(
-            color: UnifiedColors.black3,
-            fontSize: 16,
-            fontWeight: FontWeight.w600),
+        style: AFont.instance.size22Black3W500,
       ),
     );
   }

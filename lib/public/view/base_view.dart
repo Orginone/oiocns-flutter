@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:orginone/component/a_font.dart';
 import 'package:orginone/public/http/base_controller.dart';
 import 'package:orginone/public/loading/load_status.dart';
 import 'package:orginone/public/loading/loading_widget.dart';
 
 import '../../component/unified_colors.dart';
 import '../../component/unified_scaffold.dart';
-import '../../component/unified_text_style.dart';
 import '../../util/widget_util.dart';
 
 abstract class BaseView<T extends BaseController> extends GetView<T> {
@@ -19,13 +19,12 @@ abstract class BaseView<T extends BaseController> extends GetView<T> {
             appBarCenterTitle: true,
             appBarTitle: Text(
               getTitle(),
-              style: text16,
+              style: AFont.instance.size22Black3,
             ),
             appBarLeading: WidgetUtil.defaultBackBtn,
             appBarActions: actions(),
             bgColor: UnifiedColors.white,
             body: _loadingWidget(),
-            appBarPercent: 0.0,
             resizeToAvoidBottomInset: false)
         : _loadingWidget();
   }

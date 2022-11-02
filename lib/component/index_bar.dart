@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/component/unified_text_style.dart';
+
+import 'a_font.dart';
 
 class IndexBar extends StatelessWidget {
   List<String> mData;
@@ -42,14 +43,14 @@ class IndexBar extends StatelessWidget {
             itemCount: mData.length,
             itemBuilder: (context, index) {
               return Container(
-                height: 20.h,
+                height: 25.h,
                 width: 30.w,
                 color: Colors.transparent,
                 child: Align(
                     alignment: Alignment.center,
                     child: Text(
                       mData[index],
-                      style: text12,
+                      style: AFont.instance.size20Black3,
                     )),
               );
             }),
