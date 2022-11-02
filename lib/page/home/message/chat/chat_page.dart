@@ -36,24 +36,22 @@ class ChatPage extends GetView<ChatController> {
   }
 
   get _title {
-    var spaceId = controller.spaceId;
     var spaceMap = controller.messageController.spaceMap;
-    var space = spaceMap[spaceId];
+    var space = spaceMap[controller.spaceId];
     var messageItem = controller.messageItem;
-    var remark = "${space?.name} | ${messageItem.name}";
 
     var style = TextStyle(color: UnifiedColors.black9, fontSize: 14.sp);
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Obx(() => Text(controller.titleName.value, style: text22Bold)),
-        Text(remark, style: style)
+        Text("${space?.name} | ${messageItem.name}", style: style),
       ],
     );
   }
 
   get _actions => <Widget>[
         GFIconButton(
+          color: Colors.white.withOpacity(0),
           icon: Icon(
             Icons.more_horiz,
             color: UnifiedColors.black3,
