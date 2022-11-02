@@ -10,6 +10,7 @@ class UnifiedColors {
   static const Color darkGreen = Color.fromRGBO(1, 173, 67, 1);
   static const Color designBlue = Color(0xFF3D5ED1);
   static const Color designLightBlue = Color(0xFFEDEFFC);
+  static const Color tinyBlue = Color(0xFFA8B5FF);
   static const Color themeColor = Color(0xff3D5ED1);
   static const Color black = Color(0xff000000);
   static const Color black3 = Color(0xff303133);
@@ -24,5 +25,4 @@ class UnifiedColors {
   static const Color bgColor = Color(0xfff8f8f8);
   static const Color transparent = Color(0x00ffffff);
   static const Color bgGrayLight = Color(0xFFF5F5F5);
-
 }

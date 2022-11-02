@@ -135,6 +135,8 @@ class MessageItemWidget extends GetView<MessageController> {
     var name = userInfo.id == messageItem.id
         ? "${messageItem.name}（我）"
         : messageItem.name;
+
+    var space = controller.spaceMap[messageItem.spaceId];
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,15 +151,31 @@ class MessageItemWidget extends GetView<MessageController> {
             ),
           ],
         ),
-        Text(
-          messageItem.showTxt ?? "",
-          style: TextStyle(
-            color: UnifiedColors.black9,
-            fontSize: 20.sp,
-          ),
-          textAlign: TextAlign.left,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Text(
+                messageItem.showTxt ?? "",
+                style: TextStyle(
+                  color: UnifiedColors.black9,
+                  fontSize: 20.sp,
+                ),
+                textAlign: TextAlign.left,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            TextTag(
+              space?.name,
+              bgColor: Colors.white,
+              textStyle: TextStyle(
+                color: UnifiedColors.designBlue,
+                fontSize: 12.sp,
+              ),
+              borderColor: UnifiedColors.tinyBlue,
+            ),
+          ],
         ),
       ],
     );

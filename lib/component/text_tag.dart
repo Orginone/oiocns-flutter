@@ -11,22 +11,27 @@ class TextTag extends StatelessWidget {
   final String? label;
   final TextStyle textStyle;
   final Color? bgColor;
+  final Color? borderColor;
   final EdgeInsets? padding;
 
-  const TextTag(this.label,
-      {this.textStyle = defaultTextStyle,
-      this.bgColor = defaultBgColor,
-      this.padding = defaultPadding,
-      Key? key})
-      : super(key: key);
+  const TextTag(
+    this.label, {
+    this.textStyle = defaultTextStyle,
+    this.bgColor = defaultBgColor,
+    this.borderColor,
+    this.padding = defaultPadding,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
         margin: const EdgeInsets.all(1),
         decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: const BorderRadius.all(Radius.circular(5))),
+          color: bgColor,
+          borderRadius: const BorderRadius.all(Radius.circular(5)),
+          border: borderColor == null ? null : Border.all(color: borderColor!),
+        ),
         padding: padding,
         child: Text(
           label ?? "",
