@@ -116,9 +116,9 @@ class HomeController extends GetxController
       initialIndex: tabIndex.value,
     );
     breadCrumbController.push(center.breadCrumbItem!);
-
+    int preIndex = tabController.index;
     tabController.addListener(() {
-      if (tabController.index != tabController.animation?.value) {
+      if(preIndex == tabController.index){
         return;
       }
       tabIndex.value = tabController.index;
@@ -130,6 +130,7 @@ class HomeController extends GetxController
       if (tabCombine.breadCrumbItem != null) {
         breadCrumbController.push(tabCombine.breadCrumbItem!);
       }
+      preIndex = tabController.index;
     });
   }
 
