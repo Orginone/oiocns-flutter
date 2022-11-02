@@ -99,7 +99,7 @@ class RecordWidget extends BaseListView<RecordController> {
           children: [
             Container(
               alignment: Alignment.centerLeft,
-              child: Text(item.flowTask!.flowInstance!.title ??"",
+              child: Text(item.flowTask?.flowInstance?.title ??"",
                   style: AFont.instance.size22Black3W500),
             ),
             Container(

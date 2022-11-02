@@ -6,6 +6,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/routers.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class ScreenInit extends StatelessWidget {
   const ScreenInit({Key? key}) : super(key: key);
@@ -36,6 +37,7 @@ class ScreenInit extends StatelessWidget {
             return false;
           },
           child: GetMaterialApp(
+            navigatorKey: navigatorKey,
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
