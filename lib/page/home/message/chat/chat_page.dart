@@ -44,7 +44,7 @@ class ChatPage extends GetView<ChatController> {
     return Column(
       children: [
         Obx(() => Text(controller.titleName.value, style: text22Bold)),
-        Text("${space?.name} | ${messageItem.name}", style: style),
+        Text("${space?.name} | ${messageItem.label}", style: style),
       ],
     );
   }

@@ -12,6 +12,7 @@ class BreadCrumb<T> extends StatelessWidget {
   final TextStyle? stackBottomStyle;
   final TextStyle? stackTopStyle;
   final Color? bgColor;
+  final EdgeInsets? padding;
 
   const BreadCrumb({
     required this.controller,
@@ -20,15 +21,16 @@ class BreadCrumb<T> extends StatelessWidget {
     this.stackBottomStyle,
     this.stackTopStyle,
     this.bgColor,
+    this.padding,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      alignment: Alignment.centerLeft,
       color: bgColor,
-      height: 24.h,
-      padding: EdgeInsets.only(left: 10.w, right: 10.w),
+      padding: padding ?? EdgeInsets.only(left: 10.w, right: 10.w),
       child: Obx(
         () => ListView.builder(
           scrollDirection: Axis.horizontal,

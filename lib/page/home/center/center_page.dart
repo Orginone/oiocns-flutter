@@ -131,7 +131,7 @@ class CenterPage extends GetView<CenterController> {
                         ],
                       ),
                       Container(height: 8.h),
-                      Text("数据检测", style: text16Bold),
+                      Text("数据监测", style: AFont.instance.size22Black3W500),
                       GridView.count(
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
