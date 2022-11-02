@@ -8,7 +8,7 @@ import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/util/string_util.dart';
 
 /// 编辑弹窗
-typedef ConfirmCallback = void Function(String);
+typedef ConfirmCallback = void Function(BuildContext,String);
 
 class DialogEdit extends Dialog {
   String? title; //标题
@@ -93,10 +93,9 @@ class DialogEdit extends Dialog {
                             color: UnifiedColors.white,
                             onPressed: () {
                               if (confirmFun == null) {
-                                // Navigator.of(context).pop();
-                                Get.back();
+                                Navigator.of(context).pop();
                               } else {
-                                confirmFun!(
+                                confirmFun!(context,
                                     editingController.text.toString().trim());
                               }
                             },

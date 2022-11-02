@@ -120,9 +120,11 @@ class HomeController extends GetxController
       var tabCombine = tabs[tabController.index];
       if (tabCombine == center) {
         titleStatus.value = TitleStatus.home;
+        debugPrint("send0: controller.titleStatus.value= ${titleStatus.value}");
         breadCrumbController.clear();
       } else {
         titleStatus.value = TitleStatus.breadCrumb;
+        debugPrint("send1: controller.titleStatus.value= ${titleStatus.value}");
         if (preTabCombine.breadCrumbItem != null) {
           breadCrumbController.pops(preTabCombine.breadCrumbItem!.id);
         }

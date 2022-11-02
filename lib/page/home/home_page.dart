@@ -112,6 +112,7 @@ class HomePage extends GetView<HomeController> {
               body = _globalBreadcrumbs;
               break;
           }
+          debugPrint("receiver: controller.titleStatus.value= ${controller.titleStatus.value}");
           return Container(
             color: UnifiedColors.navigatorBgColor,
             height: 74.h,

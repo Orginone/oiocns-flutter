@@ -159,7 +159,8 @@ class AffairsDetailPage extends BaseView<AffairsDetailController> {
                     return DialogEdit(
                       title: "审批信息",
                       content: "",
-                      confirmFun: (content) {
+                      confirmFun: (context,content) {
+                        Navigator.of(context).pop();
                         controller.approvalTask(content);
                       },
                     );
@@ -187,7 +188,7 @@ class AffairsDetailPage extends BaseView<AffairsDetailController> {
                     return DialogEdit(
                       title: "审批信息",
                       content: "",
-                      confirmFun: (content) {
+                      confirmFun: (context,content) {
                         controller.approvalTask(content);
                       },
                     );
