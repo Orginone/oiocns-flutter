@@ -37,7 +37,7 @@ samples, guidance on mobile development, and a full API reference.
 # 列表控制器基类 BaseListController
 
 # 通用确认弹框
-    <!--
+```
      showAnimatedDialog(
        context: context,
        barrierDismissible: false,
@@ -50,9 +50,10 @@ samples, guidance on mobile development, and a full API reference.
          );
        },
      );
-     -->
+
+```
 # 通用编辑框弹框
-    <!--
+```
      showAnimatedDialog(
        context: context,
        barrierDismissible: false,
@@ -65,6 +66,6 @@ samples, guidance on mobile development, and a full API reference.
          );
        },
      );
-     -->
+```
 
 
