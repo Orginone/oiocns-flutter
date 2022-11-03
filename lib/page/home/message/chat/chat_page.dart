@@ -10,6 +10,7 @@ import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/chat/component/chat_box.dart';
 import 'package:orginone/util/date_util.dart';
+import 'package:orginone/util/sys_util.dart';
 
 import '../../../../api_resp/message_item_resp.dart';
 import '../../../../component/a_font.dart';
@@ -26,6 +27,7 @@ class ChatPage extends GetView<ChatController> {
   Widget build(BuildContext context) {
     return UnifiedScaffold(
       appBarHeight: 74.h,
+      appBarBgColor: UnifiedColors.navigatorBgColor,
       resizeToAvoidBottomInset: false,
       appBarLeading: WidgetUtil.defaultBackBtn,
       appBarTitle: _title,
@@ -71,7 +73,7 @@ class ChatPage extends GetView<ChatController> {
   Widget _time(DateTime? dateTime) {
     return Container(
       alignment: Alignment.center,
-      margin: EdgeInsets.only(top: 5.h, bottom: 5.h),
+      margin: EdgeInsets.only(top: 10.h, bottom: 10.h),
       child: Text(
         dateTime != null ? CustomDateUtil.getDetailTime(dateTime) : "",
         style: AFont.instance.size16Black9,

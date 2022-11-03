@@ -12,6 +12,7 @@ import 'package:orginone/component/unified_text_style.dart';
 
 import '../../../../util/widget_util.dart';
 import '../../../api_resp/target_resp.dart';
+import '../../../component/a_font.dart';
 import '../../../component/text_avatar.dart';
 import '../../../component/text_search.dart';
 import '../../../component/unified_colors.dart';
@@ -28,7 +29,7 @@ class SearchPage extends GetView<SearchController> {
     bool isMultiple = controller.searchItems.length > 1;
     bool isSingle = controller.searchItems.length == 1;
     Column body = Column(
-      children: [Container(margin: EdgeInsets.only(top: 10.h))],
+      children: [Padding(padding: EdgeInsets.only(top: 10.h))],
     );
     if (isMultiple) {
       body.children.addAll([_tabBar(context), _tabView()]);
@@ -68,7 +69,7 @@ class SearchPage extends GetView<SearchController> {
       appBarTitle: TextSearch(
         searchingCallback: controller.searchingCallback,
         margin: EdgeInsets.only(right: 10.w),
-        placeHolder: controller.placeholder,
+        placeHolder: controller.functionPoint?.placeHolder,
       ),
       appBarCenterTitle: true,
       body: Obx(() {
@@ -162,13 +163,12 @@ class SearchPage extends GetView<SearchController> {
   Widget _targetItem(TargetResp targetResp) {
     List<Widget> children = [
       TextAvatar(
-        avatarName: StringUtil.getAvatarName(
-          avatarName: targetResp.name,
-          type: TextAvatarType.chat,
-        ),
+        avatarName: StringUtil.getPrefixChars(targetResp.name, count: 2),
+        textStyle: AFont.instance.size20WhiteW500,
       ),
-      Container(margin: EdgeInsets.only(left: 10.w)),
-      Expanded(child: Text(targetResp.name, style: text16Bold)),
+      Padding(padding: EdgeInsets.only(left: 10.w)),
+      Expanded(
+          child: Text(targetResp.name, style: AFont.instance.size22Black3W500)),
     ];
     if (controller.functionPoint != null) {
       switch (controller.functionPoint!) {
@@ -184,7 +184,7 @@ class SearchPage extends GetView<SearchController> {
               backgroundColor: MaterialStateProperty.all(Colors.green),
               minimumSize: MaterialStateProperty.all(Size(10.w, 30.w)),
             ),
-            child: Text("申请", style: text14White),
+            child: Text("申请", style: AFont.instance.size18White),
           ));
           break;
       }
@@ -192,7 +192,7 @@ class SearchPage extends GetView<SearchController> {
     return GestureDetector(
       onTap: () {},
       child: Container(
-        padding: EdgeInsets.only(left: 10.w, bottom: 10.h, right: 10.w),
+        padding: EdgeInsets.only(left: 25.w, bottom: 10.h, right: 25.w),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: children,

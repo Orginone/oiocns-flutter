@@ -5,7 +5,7 @@ import 'package:orginone/page/scanning/scanning_result/scanning_result_controlle
 import 'package:orginone/util/widget_util.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../../component/unified_text_style.dart';
+import '../../../component/a_font.dart';
 import '../../../enumeration/scan_result_type.dart';
 
 class ScanningResultPage extends GetView<ScanningResultController> {
@@ -26,7 +26,7 @@ class ScanningResultPage extends GetView<ScanningResultController> {
 
     return UnifiedScaffold(
       appBarLeading: WidgetUtil.defaultBackBtn,
-      appBarTitle: Text("扫描结果", style: text20),
+      appBarTitle: Text("扫描结果", style: AFont.instance.size22Black3),
       appBarCenterTitle: true,
       body: body,
     );

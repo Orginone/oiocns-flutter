@@ -165,7 +165,7 @@ class InstanceWidget extends BaseListView<InstanceController> {
                                   AffairsTypeEnum.instance, index,
                                   instanceEntity: item));
                         },
-                        color: UnifiedColors.agreeColor,
+                        color: UnifiedColors.themeColor,
                         text: "审批",
                         textStyle: AFont.instance.size18White,
                         textColor: Colors.white,

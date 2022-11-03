@@ -268,7 +268,7 @@ class HomePage extends GetView<HomeController> {
               child: BreadCrumb(
                 stackBottomStyle: TextStyle(
                   fontSize: 18.sp,
-                  color: UnifiedColors.agreeColor,
+                  color: UnifiedColors.themeColor,
                 ),
                 stackTopStyle: TextStyle(fontSize: 18.sp),
                 controller: controller.breadCrumbController,

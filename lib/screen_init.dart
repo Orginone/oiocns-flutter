@@ -8,13 +8,15 @@ import 'package:orginone/routers.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+Size screenSize = const Size(540, 1170);
+
 class ScreenInit extends StatelessWidget {
   const ScreenInit({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(540, 1170),
+      designSize: screenSize,
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {

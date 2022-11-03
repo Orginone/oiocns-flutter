@@ -78,14 +78,14 @@ class ChatMessageDetail extends GetView<ChatController> {
           detail: detail,
           nameMap: nameMap,
         );
-        children.add(Text(msgBody, style: AFont.instance.size16Black9));
+        children.add(Text(msgBody, style: AFont.instance.size18Black9));
         break;
       default:
         break;
     }
 
     return Container(
-      margin: EdgeInsets.only(top: 5.h, bottom: 5.h),
+      margin: EdgeInsets.only(top: 8.h, bottom: 8.h),
       child: Row(
         textDirection: isMy ? TextDirection.rtl : TextDirection.ltr,
         mainAxisAlignment: msgType == MsgType.recall

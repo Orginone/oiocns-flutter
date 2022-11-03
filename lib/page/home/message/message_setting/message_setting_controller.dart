@@ -6,8 +6,8 @@ import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
-import 'package:orginone/util/hive_util.dart';
 
+import '../../../../api/person_api.dart';
 import '../../../../api_resp/message_item_resp.dart';
 import '../../../../enumeration/target_type.dart';
 import '../../../../logic/authority.dart';
@@ -15,11 +15,11 @@ import '../../../../util/hub_util.dart';
 
 class MessageSettingController extends GetxController {
   final Logger log = Logger("MessageSettingController");
+
   TextEditingController searchGroupTextController = TextEditingController();
+
   MessageController messageController = Get.find<MessageController>();
   ChatController chatController = Get.find<ChatController>();
-  RxBool textField1 = true.obs;
-  RxBool textField2 = true.obs;
 
   //当前用户信息
   TargetResp userInfo = auth.userInfo;
@@ -105,6 +105,32 @@ class MessageSettingController extends GetxController {
         break;
       }
     }
+    HubUtil().cacheChats(orgChatCache);
+  }
+
+  /// 删除好友
+  removeFriends() async {
+    // 接口删除好友
+    var targetId = messageItem.id;
+    await PersonApi.remove(targetId);
+
+    var userId = auth.userId;
+    var orgChatCache = messageController.orgChatCache;
+
+    // 从缓存中删掉会话
+    orgChatCache.chats.where((space) => space.id == userId).forEach((space) {
+      space.chats.removeWhere((chat) => chat.id == targetId);
+    });
+
+    // 从近期删除会话
+    orgChatCache.recentChats
+        ?.removeWhere((chat) => chat.spaceId == userId && chat.id == targetId);
+
+    // 从打开的会话删除
+    orgChatCache.openChats
+        .removeWhere((chat) => chat.spaceId == userId && chat.id == targetId);
+
+    // 同步会话
     HubUtil().cacheChats(orgChatCache);
   }
 }

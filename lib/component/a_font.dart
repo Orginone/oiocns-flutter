@@ -158,6 +158,7 @@ class AFont {
         color: UnifiedColors.black9,
         fontWeight: FontWeight.normal,
       );
+
   get size24Black0 => TextStyle(
         fontSize: 24.sp,
         color: UnifiedColors.black,
@@ -470,6 +471,12 @@ class AFont {
         fontWeight: FontWeight.w500,
       );
 
+  get size22Black3W700 => TextStyle(
+        fontSize: 22.sp,
+        color: UnifiedColors.black3,
+        fontWeight: FontWeight.bold,
+      );
+
   get size22Black6W500 => TextStyle(
         fontSize: 22.sp,
         color: UnifiedColors.black6,
@@ -481,6 +488,7 @@ class AFont {
         color: UnifiedColors.black9,
         fontWeight: FontWeight.w500,
       );
+
   get size24Black0W500 => TextStyle(
         fontSize: 24.sp,
         color: UnifiedColors.black,
@@ -504,6 +512,7 @@ class AFont {
         color: UnifiedColors.black9,
         fontWeight: FontWeight.w500,
       );
+
   get size26Black0W500 => TextStyle(
         fontSize: 26.sp,
         color: UnifiedColors.black,
@@ -617,16 +626,19 @@ class AFont {
         color: UnifiedColors.white,
         fontWeight: FontWeight.w500,
       );
+
   get size24WhiteW500 => TextStyle(
         fontSize: 24.sp,
         color: UnifiedColors.white,
         fontWeight: FontWeight.w500,
       );
+
   get size26WhiteW500 => TextStyle(
         fontSize: 26.sp,
         color: UnifiedColors.white,
         fontWeight: FontWeight.w500,
       );
+
   get size28WhiteW500 => TextStyle(
         fontSize: 28.sp,
         color: UnifiedColors.white,

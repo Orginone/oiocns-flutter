@@ -109,4 +109,11 @@ class PersonApi {
     Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
     return resp["total"] ?? 0;
   }
+
+  /// 好友删除
+  static Future<dynamic> remove(String id) async {
+    String url = "${Constant.person}/remove";
+    var data = {"id": id, "targetIds": [id]};
+    return await HttpUtil().post(url, data: data);
+  }
 }

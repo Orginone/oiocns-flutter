@@ -22,7 +22,6 @@ class UnifiedColors {
   static const Color lineLight2 = Color(0xffD4D4D4);
   static const Color cardBorder = Color(0xffB1B1B1);
   static const Color backColor = Color(0xffF76C6F);
-  static const Color agreeColor = Color(0xff3D5ED1);
   static const Color navigatorBgColor = Color(0xfff2f2f2);
   static const Color bgColor = Color(0xfff8f8f8);
   static const Color transparent = Color(0x00ffffff);

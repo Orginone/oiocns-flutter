@@ -9,10 +9,12 @@ class IconAvatar extends StatelessWidget {
   final double radius;
   final EdgeInsets padding;
   final Color bgColor;
+  final double? width;
 
   const IconAvatar({
     Key? key,
     required this.icon,
+    this.width,
     this.radius = defaultRadius,
     this.padding = defaultInsets,
     this.bgColor = defaultBgColor,
@@ -21,6 +23,8 @@ class IconAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: width,
+      height: width,
       alignment: Alignment.center,
       padding: padding,
       decoration: BoxDecoration(

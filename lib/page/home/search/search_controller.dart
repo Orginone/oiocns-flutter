@@ -27,17 +27,18 @@ enum SearchItem {
 }
 
 enum FunctionPoint {
-  addFriends("添加好友");
+  addFriends("添加好友", "通过账号/手机号搜索添加");
 
-  const FunctionPoint(this.functionName);
+  const FunctionPoint(this.functionName, this.placeHolder);
 
   final String functionName;
+  final String placeHolder;
 }
 
 enum SearchStatus { stop, searching }
 
 class SearchController extends GetxController with GetTickerProviderStateMixin {
-  Logger logger = Logger("SearchController");
+  final Logger log = Logger("SearchController");
 
   late TabController tabController;
   late List<SearchItem> searchItems;
@@ -47,9 +48,6 @@ class SearchController extends GetxController with GetTickerProviderStateMixin {
   // 搜索的一些结果
   SearchParams<TargetResp>? personRes;
   SearchParams<TargetResp>? companyRes;
-
-  // 输入提示
-  String? placeholder;
 
   // 搜索状态
   Rx<SearchStatus> searchStatus = SearchStatus.stop.obs;
@@ -62,7 +60,6 @@ class SearchController extends GetxController with GetTickerProviderStateMixin {
     Map<String, dynamic> args = Get.arguments ?? {};
     searchItems = args["items"] ?? SearchItem.values;
     functionPoint = args["point"];
-    placeholder = args["placeholder"];
 
     tabController = TabController(length: searchItems.length, vsync: this);
     const duration = Duration(seconds: 1);
@@ -84,12 +81,13 @@ class SearchController extends GetxController with GetTickerProviderStateMixin {
     try {
       switch (searchItems[tabController.index]) {
         case SearchItem.friends:
-          personRes ??= SearchParams();
+          personRes = SearchParams();
           var pageResp = await PersonApi.searchPersons(
             keyword: filter,
             limit: personRes!.limit,
             offset: personRes!.offset,
           );
+          log.info(pageResp.result);
           var result = pageResp.result;
           personRes!.offset = result.length;
           personRes!.searchResults = result;
@@ -116,7 +114,7 @@ class SearchController extends GetxController with GetTickerProviderStateMixin {
         case SearchItem.publicCohorts:
           break;
         case SearchItem.units:
-          companyRes ??= SearchParams();
+          companyRes = SearchParams();
           var pageResp = await CompanyApi.searchCompanys(
             keyword: filter,
             limit: companyRes!.limit,

@@ -11,8 +11,10 @@ import 'package:orginone/page/home/message/component/message_item_widget.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 
 import '../../../api_resp/message_item_resp.dart';
+import '../../../component/a_font.dart';
 import '../../../component/choose_item.dart';
 import '../../../component/icon_avatar.dart';
+import '../../../component/unified_colors.dart';
 import '../../../component/unified_edge_insets.dart';
 import '../../../component/unified_text_style.dart';
 import '../../../logic/authority.dart';
@@ -107,12 +109,8 @@ class MessagePage extends GetView<MessageController> {
   Widget _relation() {
     List<Widget> children = [];
     children.addAll(_recent());
-    children.add(
-      Container(
-        margin: EdgeInsets.only(top: 10.h),
-        child: Divider(height: 1.h),
-      ),
-    );
+    children.add(Padding(padding: EdgeInsets.only(top: 10.h)));
+    children.add(Divider(height: 1.h));
     children.add(Padding(padding: EdgeInsets.only(top: 10.h)));
     children.add(_tree());
     children.add(_links());
@@ -123,20 +121,14 @@ class MessagePage extends GetView<MessageController> {
   }
 
   List<Widget> _recent() {
-    double avatarWidth = 44.w;
+    double avatarWidth = 60.w;
     return [
       Container(margin: EdgeInsets.only(top: 4.h)),
       Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            "最近联系",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18.sp,
-            ),
-          ),
+          Text("最近联系", style: AFont.instance.size20Black3W500),
           GestureDetector(
             onTap: () {},
             child: const Icon(Icons.keyboard_arrow_right),
@@ -155,7 +147,7 @@ class MessagePage extends GetView<MessageController> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(6.w)),
               ),
-              margin: EdgeInsets.only(right: 12.w),
+              margin: EdgeInsets.only(right: 15.w),
               child: CachedNetworkImage(
                   width: avatarWidth,
                   height: avatarWidth,
@@ -174,7 +166,7 @@ class MessagePage extends GetView<MessageController> {
       TargetResp userInfo = auth.userInfo;
       var isSelf = userInfo.id == currentSpace.id;
 
-      double leftWidth = 36.w;
+      double leftWidth = 60.w;
 
       // 选择项
       List<Widget> body = [];
@@ -186,16 +178,14 @@ class MessagePage extends GetView<MessageController> {
           child: TextTag(
             isSelf ? "个人" : "单位",
             padding: EdgeInsets.all(4.w),
-            textStyle: TextStyle(
-              color: Colors.blueAccent,
-              fontSize: 10.sp,
-              fontWeight: FontWeight.bold,
-            ),
+            textStyle: AFont.instance.size12themeColor,
+            borderColor: UnifiedColors.themeColor,
+            bgColor: Colors.white,
           ),
         ),
         body: Container(
-          margin: left10,
-          child: Text(currentSpace.name, style: text20Bold),
+          margin: EdgeInsets.only(left: 15.w),
+          child: Text(currentSpace.name, style: AFont.instance.size22Black3W700),
         ),
         func: () {
           if (isSelf) {
@@ -212,13 +202,13 @@ class MessagePage extends GetView<MessageController> {
         var children = topNode.children;
         double top = 16.h;
         if (children.isNotEmpty) {
-          body.add(Container(margin: EdgeInsets.only(top: top)));
+          body.add(Padding(padding: EdgeInsets.only(top: top)));
           body.add(_deptItem(children[0], leftWidth));
           if (children.length > 1) {
-            body.add(Container(margin: EdgeInsets.only(top: top)));
+            body.add(Padding(padding: EdgeInsets.only(top: top)));
             body.add(_deptItem(children[1], leftWidth));
             if (children.length > 2) {
-              body.add(Container(margin: EdgeInsets.only(top: top)));
+              body.add(Padding(padding: EdgeInsets.only(top: top)));
               body.add(_more(leftWidth));
             }
           }
@@ -232,17 +222,17 @@ class MessagePage extends GetView<MessageController> {
     double top = 12.h;
     return Column(
       children: [
-        Container(margin: EdgeInsets.only(top: top)),
+        Padding(padding: EdgeInsets.only(top: top)),
         _otherUnits,
-        Container(margin: EdgeInsets.only(top: top)),
+        Padding(padding: EdgeInsets.only(top: top)),
         _chats,
-        Container(margin: EdgeInsets.only(top: top)),
+        Padding(padding: EdgeInsets.only(top: top)),
         Divider(height: 1.h),
-        Container(margin: EdgeInsets.only(top: top)),
+        Padding(padding: EdgeInsets.only(top: top)),
         _newFriends,
-        Container(margin: EdgeInsets.only(top: top)),
+        Padding(padding: EdgeInsets.only(top: top)),
         _specialFocus,
-        Container(margin: EdgeInsets.only(top: top)),
+        Padding(padding: EdgeInsets.only(top: top)),
         _myRelation,
       ],
     );
@@ -280,77 +270,60 @@ class MessagePage extends GetView<MessageController> {
     );
   }
 
+  Widget _header(IconData icon) {
+    return IconAvatar(
+      width: 60.w,
+      icon: Icon(icon, color: Colors.white),
+      padding: EdgeInsets.zero,
+    );
+  }
+
   get _otherUnits => ChooseItem(
         padding: EdgeInsets.zero,
-        header: const IconAvatar(
-          icon: Icon(
-            Icons.group,
-            color: Colors.white,
-          ),
-        ),
+        header: _header(Icons.group),
         body: Container(
-          margin: left10,
-          child: Text("其他单位", style: text16Bold),
+          margin: EdgeInsets.only(left: 15.w),
+          child: Text("其他单位", style: AFont.instance.size22Black3W500),
         ),
         func: () {},
       );
 
   get _chats => ChooseItem(
         padding: EdgeInsets.zero,
-        header: const IconAvatar(
-          icon: Icon(
-            Icons.group,
-            color: Colors.white,
-          ),
-        ),
+        header: _header(Icons.group),
         body: Container(
-          margin: left10,
-          child: Text("奥集能通讯录", style: text16Bold),
+          margin: EdgeInsets.only(left: 15.w),
+          child: Text("奥集能通讯录", style: AFont.instance.size22Black3W500),
         ),
         func: () {},
       );
 
   get _newFriends => ChooseItem(
         padding: EdgeInsets.zero,
-        header: const IconAvatar(
-          icon: Icon(
-            Icons.group,
-            color: Colors.white,
-          ),
-        ),
+        header: _header(Icons.group),
         body: Container(
-          margin: left10,
-          child: Text("新朋友", style: text16Bold),
+          margin: EdgeInsets.only(left: 15.w),
+          child: Text("新朋友", style: AFont.instance.size22Black3W500),
         ),
         func: () {},
       );
 
   get _specialFocus => ChooseItem(
         padding: EdgeInsets.zero,
-        header: const IconAvatar(
-          icon: Icon(
-            Icons.group,
-            color: Colors.white,
-          ),
-        ),
+        header: _header(Icons.group),
         body: Container(
-          margin: left10,
-          child: Text("特别关注", style: text16Bold),
+          margin: EdgeInsets.only(left: 15.w),
+          child: Text("特别关注", style: AFont.instance.size22Black3W500),
         ),
         func: () {},
       );
 
   get _myRelation => ChooseItem(
         padding: EdgeInsets.zero,
-        header: const IconAvatar(
-          icon: Icon(
-            Icons.group,
-            color: Colors.white,
-          ),
-        ),
+        header: _header(Icons.group),
         body: Container(
-          margin: left10,
-          child: Text("我的联系人", style: text16Bold),
+          margin: EdgeInsets.only(left: 15.w),
+          child: Text("我的联系人", style: AFont.instance.size22Black3W500),
         ),
         func: () {
           Get.toNamed(Routers.contact);

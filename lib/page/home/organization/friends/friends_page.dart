@@ -6,6 +6,7 @@ import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/organization/friends/friends_controller.dart';
 import 'package:orginone/util/string_util.dart';
 
+import '../../../../component/a_font.dart';
 import '../../../../component/text_avatar.dart';
 import '../../../../component/text_search.dart';
 import '../../../../component/unified_scaffold.dart';
@@ -19,7 +20,7 @@ class FriendsPage extends GetView<FriendsController> {
   @override
   Widget build(BuildContext context) {
     return UnifiedScaffold(
-      appBarTitle: Text("我的好友", style: text20),
+      appBarTitle: Text("我的好友", style: AFont.instance.size22Black3),
       appBarCenterTitle: true,
       appBarLeading: WidgetUtil.defaultBackBtn,
       body: _body,

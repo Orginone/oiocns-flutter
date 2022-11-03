@@ -106,7 +106,7 @@ class MessageItemWidget extends GetView<MessageController> {
         ),
         Align(
           alignment: Alignment.bottomLeft,
-          child: TextTag(messageItem.typeName),
+          child: TextTag(messageItem.label),
         ),
         Visibility(
           visible: notRead > 0,

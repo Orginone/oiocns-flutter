@@ -42,7 +42,7 @@ class LoginPage extends GetView<LoginController> {
               ),
             ),
             Container(
-                padding: const EdgeInsets.fromLTRB(40, 10, 40, 0),
+                padding: EdgeInsets.only(left: 40.w, top: 10, right: 40.w),
                 child: TextFormField(
                   controller: controller.passwordController,
                   obscureText: true,
