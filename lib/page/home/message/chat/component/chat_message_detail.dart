@@ -123,7 +123,7 @@ class ChatMessageDetail extends GetView<ChatController> {
     if (isMultiple && !isMy) {
       content.add(Container(
         margin: left10,
-        child: Text(targetName(), style: text12),
+        child: Text(targetName(), style: AFont.instance.size16Black3),
       ));
     }
 
