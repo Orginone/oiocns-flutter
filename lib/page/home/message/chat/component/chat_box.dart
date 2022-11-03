@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:math';
 
+import 'package:audio_wave/audio_wave.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,7 +18,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../../component/a_font.dart';
-import '../../../../../component/voice_painter.dart';
 
 enum RecordStatus {
   stop,
@@ -159,60 +159,73 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
         alignment: Alignment.centerLeft,
         child: Obx(() {
           if (controller._inputStatus.value == InputStatus.voice) {
-            var voiceWave = OverlayEntry(builder: (BuildContext context) {
-              return _voiceWave();
-            });
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {},
-              onPanDown: (DragDownDetails details) {
-                _permissionMicrophone(context, () async {
-                  Overlay.of(context)!.insert(voiceWave);
-                  await controller.startRecord();
-                });
-              },
-              onPanCancel: () async {
-                voiceWave.remove();
-
-                var duration = controller.currentDuration ?? Duration.zero;
-                await controller.stopRecord();
-                if (duration.inMilliseconds < 1000) {
-                  Fluttertoast.showToast(msg: '时间太短啦');
-                  return;
-                }
-
-                var path = controller.currentFile;
-                var fileName = controller.currentFileName;
-                var time = duration.inMilliseconds;
-                controller.voiceCallback(fileName, path, time);
-              },
-              child: Container(
-                alignment: Alignment.center,
-                height: 52.h,
-                child: const Text("按住 说话"),
-              ),
-            );
+            return _voice(context);
           }
-          return TextField(
-            maxLines: null,
-            keyboardType: TextInputType.multiline,
-            focusNode: controller.focusNode,
-            onChanged: (text) =>
-                controller.eventFire(context, InputEvent.clickInput),
-            onTap: () => controller.eventFire(context, InputEvent.clickInput),
-            style: AFont.instance.size22Black3W500,
-            controller: controller.inputController,
-            decoration: InputDecoration(
-              isCollapsed: true,
-              contentPadding: EdgeInsets.fromLTRB(10.w, 15.h, 10.w, 15.h),
-              border: InputBorder.none,
-              constraints: BoxConstraints(
-                maxHeight: 144.h,
-                minHeight: boxDefaultHeight,
-              ),
-            ),
-          );
+          return _inputBox(context);
         }),
+      ),
+    );
+  }
+
+  /// 输入框
+  Widget _inputBox(BuildContext context) {
+    return TextField(
+      maxLines: null,
+      keyboardType: TextInputType.multiline,
+      focusNode: controller.focusNode,
+      onChanged: (text) => controller.eventFire(context, InputEvent.clickInput),
+      onTap: () => controller.eventFire(context, InputEvent.clickInput),
+      style: AFont.instance.size22Black3W500,
+      controller: controller.inputController,
+      decoration: InputDecoration(
+        isCollapsed: true,
+        contentPadding: EdgeInsets.fromLTRB(10.w, 15.h, 10.w, 15.h),
+        border: InputBorder.none,
+        constraints: BoxConstraints(
+          maxHeight: 144.h,
+          minHeight: boxDefaultHeight,
+        ),
+      ),
+    );
+  }
+
+  /// 录音按钮
+  Widget _voice(BuildContext context) {
+    var voiceWave = OverlayEntry(builder: (BuildContext context) {
+      return _voiceWave();
+    });
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {},
+      onPanDown: (DragDownDetails details) {
+        _permissionMicrophone(context, () {
+          controller
+              .startRecord()
+              .then((value) => Overlay.of(context)!.insert(voiceWave));
+        });
+      },
+      onPanCancel: () async {
+        if (controller.recordStatus?.value != RecordStatus.recoding) {
+          return;
+        }
+        voiceWave.remove();
+
+        var duration = controller.currentDuration ?? Duration.zero;
+        await controller.stopRecord();
+        if (duration.inMilliseconds < 2000) {
+          Fluttertoast.showToast(msg: '时间太短啦');
+          return;
+        }
+
+        var path = controller.currentFile;
+        var fileName = controller.currentFileName;
+        var time = duration.inMilliseconds;
+        controller.voiceCallback(fileName, path, time);
+      },
+      child: Container(
+        alignment: Alignment.center,
+        height: 52.h,
+        child: const Text("按住 说话"),
       ),
     );
   }
@@ -386,8 +399,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
 
   /// 录音波动
   Widget _voiceWave() {
-    var width = 120.w;
-    var height = 80.h;
+    Random random = Random();
     return Stack(
       children: [
         Align(
@@ -397,17 +409,38 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
               borderRadius: const BorderRadius.all(Radius.circular(5)),
               color: Colors.black.withOpacity(0.5),
             ),
-            height: height,
-            width: width,
             child: Obx(() {
-              var value = controller.level?.value ?? 0;
-              return CustomPaint(
-                painter: VoicePainter(
-                  width: width,
-                  centerY: height / 2,
-                  amplitude: value * 2,
-                ),
-              );
+              double value = controller.level?.value ?? 0;
+              double maxValue = controller.maxLevel ?? 0;
+
+              double randomPercent = 0.3;
+              double percent = maxValue == 0 ? 1 : value / maxValue;
+              percent = percent - randomPercent;
+              Color color = UnifiedColors.white;
+
+              // 坡数量，波浪数量
+              int peakCount = 8;
+              int waveCount = 32;
+              int averagePeakCount = waveCount ~/ peakCount;
+              double average = peakCount / waveCount;
+
+              List<AudioWaveBar> bars = [];
+              for (int i = 0; i <= waveCount; i++) {
+                bool isEven = ((i ~/ averagePeakCount) % 2) == 0;
+                int heightCount = i % averagePeakCount;
+                double randomHeight = random.nextDouble() * randomPercent;
+                if (isEven) {
+                  var height = heightCount * average * percent + randomHeight;
+                  height = height < 0 ? 0 : height;
+                  bars.add(AudioWaveBar(heightFactor: height, color: color));
+                } else {
+                  var remainder = averagePeakCount - heightCount;
+                  var height = remainder * average * percent + randomHeight;
+                  height = height < 0 ? 0 : height;
+                  bars.add(AudioWaveBar(heightFactor: height, color: color));
+                }
+              }
+              return AudioWave(animation: false, bars: bars);
             }),
           ),
         ),
@@ -439,19 +472,24 @@ class ChatBoxController extends FullLifeCycleController
   String? _currentFileName;
   Duration? _currentDuration;
   RxDouble? _level;
+  double? _maxLevel;
 
   ChatBoxController({
     required this.sendCallback,
     required this.imageCallback,
     required this.voiceCallback,
-    required this.fileCallback
+    required this.fileCallback,
   });
 
   get currentFile => _currentFile;
 
   get currentFileName => _currentFileName;
 
-  get level => _level;
+  RxDouble? get level => _level;
+
+  double? get maxLevel => _maxLevel;
+
+  Duration? get currentDuration => _currentDuration;
 
   @override
   onClose() {
@@ -547,7 +585,7 @@ class ChatBoxController extends FullLifeCycleController
   }
 
   /// 开始录音
-  startRecord() async {
+  Future<void> startRecord() async {
     if (_recorder == null) {
       return;
     }
@@ -558,9 +596,11 @@ class ChatBoxController extends FullLifeCycleController
 
       // 监听音浪
       _level ??= 0.0.obs;
+      _maxLevel ??= 40.0;
       _recorder!.setSubscriptionDuration(const Duration(milliseconds: 50));
       _mt = _recorder?.onProgress?.listen((e) {
         _level!.value = e.decibels ?? 0;
+        _maxLevel = max(_maxLevel!, _level!.value);
         _currentDuration = e.duration;
       });
 
@@ -595,7 +635,4 @@ class ChatBoxController extends FullLifeCycleController
 
     recordStatus?.value = RecordStatus.stop;
   }
-
-  /// 获取录音时间
-  Duration? get currentDuration => _currentDuration;
 }
