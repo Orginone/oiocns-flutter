@@ -158,6 +158,77 @@ class AFont {
         color: UnifiedColors.black9,
         fontWeight: FontWeight.normal,
       );
+  get size24Black0 => TextStyle(
+        fontSize: 24.sp,
+        color: UnifiedColors.black,
+        fontWeight: FontWeight.normal,
+      );
+
+  get size24Black3 => TextStyle(
+        fontSize: 24.sp,
+        color: UnifiedColors.black3,
+        fontWeight: FontWeight.normal,
+      );
+
+  get size24Black6 => TextStyle(
+        fontSize: 24.sp,
+        color: UnifiedColors.black6,
+        fontWeight: FontWeight.normal,
+      );
+
+  get size24Black9 => TextStyle(
+        fontSize: 24.sp,
+        color: UnifiedColors.black9,
+        fontWeight: FontWeight.normal,
+      );
+
+  get size26Black0 => TextStyle(
+        fontSize: 26.sp,
+        color: UnifiedColors.black,
+        fontWeight: FontWeight.normal,
+      );
+
+  get size26Black3 => TextStyle(
+        fontSize: 26.sp,
+        color: UnifiedColors.black3,
+        fontWeight: FontWeight.normal,
+      );
+
+  get size26Black6 => TextStyle(
+        fontSize: 26.sp,
+        color: UnifiedColors.black6,
+        fontWeight: FontWeight.normal,
+      );
+
+  get size26Black9 => TextStyle(
+        fontSize: 26.sp,
+        color: UnifiedColors.black9,
+        fontWeight: FontWeight.normal,
+      );
+
+  get size28Black0 => TextStyle(
+        fontSize: 28.sp,
+        color: UnifiedColors.black,
+        fontWeight: FontWeight.normal,
+      );
+
+  get size28Black3 => TextStyle(
+        fontSize: 28.sp,
+        color: UnifiedColors.black3,
+        fontWeight: FontWeight.normal,
+      );
+
+  get size28Black6 => TextStyle(
+        fontSize: 28.sp,
+        color: UnifiedColors.black6,
+        fontWeight: FontWeight.normal,
+      );
+
+  get size28Black9 => TextStyle(
+        fontSize: 28.sp,
+        color: UnifiedColors.black9,
+        fontWeight: FontWeight.normal,
+      );
 
   get size12themeColor => TextStyle(
         fontSize: 12.sp,
@@ -195,6 +266,24 @@ class AFont {
         fontWeight: FontWeight.normal,
       );
 
+  get size24themeColor => TextStyle(
+        fontSize: 24.sp,
+        color: UnifiedColors.themeColor,
+        fontWeight: FontWeight.normal,
+      );
+
+  get size26themeColor => TextStyle(
+        fontSize: 26.sp,
+        color: UnifiedColors.themeColor,
+        fontWeight: FontWeight.normal,
+      );
+
+  get size28themeColor => TextStyle(
+        fontSize: 28.sp,
+        color: UnifiedColors.themeColor,
+        fontWeight: FontWeight.normal,
+      );
+
   get size12White => TextStyle(
         fontSize: 12.sp,
         color: UnifiedColors.white,
@@ -227,6 +316,24 @@ class AFont {
 
   get size22White => TextStyle(
         fontSize: 22.sp,
+        color: UnifiedColors.white,
+        fontWeight: FontWeight.normal,
+      );
+
+  get size24White => TextStyle(
+        fontSize: 24.sp,
+        color: UnifiedColors.white,
+        fontWeight: FontWeight.normal,
+      );
+
+  get size26White => TextStyle(
+        fontSize: 26.sp,
+        color: UnifiedColors.white,
+        fontWeight: FontWeight.normal,
+      );
+
+  get size28White => TextStyle(
+        fontSize: 28.sp,
         color: UnifiedColors.white,
         fontWeight: FontWeight.normal,
       );
@@ -374,6 +481,52 @@ class AFont {
         color: UnifiedColors.black9,
         fontWeight: FontWeight.w500,
       );
+  get size24Black0W500 => TextStyle(
+        fontSize: 24.sp,
+        color: UnifiedColors.black,
+        fontWeight: FontWeight.w500,
+      );
+
+  get size24Black3W500 => TextStyle(
+        fontSize: 24.sp,
+        color: UnifiedColors.black3,
+        fontWeight: FontWeight.w500,
+      );
+
+  get size24Black6W500 => TextStyle(
+        fontSize: 24.sp,
+        color: UnifiedColors.black6,
+        fontWeight: FontWeight.w500,
+      );
+
+  get size24Black9W500 => TextStyle(
+        fontSize: 24.sp,
+        color: UnifiedColors.black9,
+        fontWeight: FontWeight.w500,
+      );
+  get size26Black0W500 => TextStyle(
+        fontSize: 26.sp,
+        color: UnifiedColors.black,
+        fontWeight: FontWeight.w500,
+      );
+
+  get size26Black3W500 => TextStyle(
+        fontSize: 26.sp,
+        color: UnifiedColors.black3,
+        fontWeight: FontWeight.w500,
+      );
+
+  get size26Black6W500 => TextStyle(
+        fontSize: 26.sp,
+        color: UnifiedColors.black6,
+        fontWeight: FontWeight.w500,
+      );
+
+  get size26Black9W500 => TextStyle(
+        fontSize: 26.sp,
+        color: UnifiedColors.black9,
+        fontWeight: FontWeight.w500,
+      );
 
   get size12themeColorW500 => TextStyle(
         fontSize: 12.sp,
@@ -411,6 +564,24 @@ class AFont {
         fontWeight: FontWeight.w500,
       );
 
+  get size24themeColorW500 => TextStyle(
+        fontSize: 24.sp,
+        color: UnifiedColors.themeColor,
+        fontWeight: FontWeight.w500,
+      );
+
+  get size26themeColorW500 => TextStyle(
+        fontSize: 26.sp,
+        color: UnifiedColors.themeColor,
+        fontWeight: FontWeight.w500,
+      );
+
+  get size28themeColorW500 => TextStyle(
+        fontSize: 28.sp,
+        color: UnifiedColors.themeColor,
+        fontWeight: FontWeight.w500,
+      );
+
   get size12WhiteW500 => TextStyle(
         fontSize: 12.sp,
         color: UnifiedColors.white,
@@ -443,6 +614,21 @@ class AFont {
 
   get size22WhiteW500 => TextStyle(
         fontSize: 22.sp,
+        color: UnifiedColors.white,
+        fontWeight: FontWeight.w500,
+      );
+  get size24WhiteW500 => TextStyle(
+        fontSize: 24.sp,
+        color: UnifiedColors.white,
+        fontWeight: FontWeight.w500,
+      );
+  get size26WhiteW500 => TextStyle(
+        fontSize: 26.sp,
+        color: UnifiedColors.white,
+        fontWeight: FontWeight.w500,
+      );
+  get size28WhiteW500 => TextStyle(
+        fontSize: 28.sp,
         color: UnifiedColors.white,
         fontWeight: FontWeight.w500,
       );

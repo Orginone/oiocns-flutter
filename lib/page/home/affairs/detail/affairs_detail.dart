@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:getwidget/components/button/gf_button.dart';
+import 'package:orginone/component/a_font.dart';
 import 'package:orginone/public/dialog/dialog_confirm.dart';
 import 'package:orginone/public/dialog/dialog_edit.dart';
 import 'package:orginone/public/loading/load_status.dart';
@@ -36,32 +37,28 @@ class AffairsDetailPage extends BaseView<AffairsDetailController> {
   }
 
   @override
+  String getTitle() {
+    return "详情";
+  }
+
+  @override
   bool isUseScaffold() {
-    return false;
+    return true;
   }
 
   @override
   Widget builder(context) {
     this.context = context;
-    return UnifiedScaffold(
-      appBarCenterTitle: true,
-      appBarTitle: Text(
-        "详情",
-        style: text16,
-      ),
-      appBarLeading: WidgetUtil.defaultBackBtn,
-      bgColor: UnifiedColors.white,
-      body: Column(
-        children: [
-          _tabBar(),
-          _tabBarView(),
-          Divider(
-            height: 2.h,
-            color: UnifiedColors.lineLight,
-          ),
-          _bottom(),
-        ],
-      ),
+    return Column(
+      children: [
+        _tabBar(),
+        _tabBarView(),
+        Divider(
+          height: 2.h,
+          color: UnifiedColors.lineLight,
+        ),
+        _bottom(),
+      ],
     );
   }
 
@@ -80,7 +77,7 @@ class AffairsDetailPage extends BaseView<AffairsDetailController> {
         unselectedLabelColor: UnifiedColors.black6,
         indicatorColor: UnifiedColors.themeColor,
         indicatorSize: TabBarIndicatorSize.label,
-        labelStyle: TextStyle(fontSize: 14.sp),
+        labelStyle: TextStyle(fontSize: 20.sp),
         tabs: const [
           Tab(text: '审批内容'),
           Tab(text: '流程进度'),
@@ -159,21 +156,22 @@ class AffairsDetailPage extends BaseView<AffairsDetailController> {
                   barrierDismissible: false,
                   animationType: DialogTransitionType.fadeScale,
                   builder: (BuildContext context) {
-                    return DialogConfirm(
-                      title: "标题",
-                      content:
-                          "挖猎杀对决菲拉斯记得放挖猎杀对决菲拉斯记得放挖猎杀对决菲拉斯记得放挖猎杀对决菲拉斯记得放挖猎杀对决菲拉斯记得放挖猎杀对决菲拉斯记得放",
-                      confirmFun: () {},
+                    return DialogEdit(
+                      title: "审批信息",
+                      content: "",
+                      confirmFun: (context,content) {
+                        Navigator.of(context).pop();
+                        controller.approvalTask(content);
+                      },
                     );
                   },
                 );
               },
               text: "拒绝",
-              textStyle: text16Blue,
-              textColor: UnifiedColors.themeColor,
+              textStyle: AFont.instance.size22themeColorW500,
             )),
         Container(
-          width: 1.5.w,
+          width: 2.w,
           height: 30.h,
           color: UnifiedColors.lineLight,
         ),
@@ -188,9 +186,9 @@ class AffairsDetailPage extends BaseView<AffairsDetailController> {
                   animationType: DialogTransitionType.fadeScale,
                   builder: (BuildContext context) {
                     return DialogEdit(
-                      title: "标题",
+                      title: "审批信息",
                       content: "",
-                      confirmFun: (content) {
+                      confirmFun: (context,content) {
                         controller.approvalTask(content);
                       },
                     );
@@ -198,7 +196,7 @@ class AffairsDetailPage extends BaseView<AffairsDetailController> {
                 );
               },
               text: "同意",
-              textStyle: text16Blue,
+              textStyle: AFont.instance.size22themeColorW500,
               textColor: UnifiedColors.themeColor,
             )),
       ],

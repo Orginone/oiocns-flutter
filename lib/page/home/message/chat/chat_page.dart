@@ -44,7 +44,7 @@ class ChatPage extends GetView<ChatController> {
     return Column(
       children: [
         Obx(() => Text(controller.titleName.value, style: text22Bold)),
-        Text("${space?.name} | ${messageItem.name}", style: style),
+        Text("${space?.name} | ${messageItem.label}", style: style),
       ],
     );
   }
@@ -74,7 +74,7 @@ class ChatPage extends GetView<ChatController> {
       margin: EdgeInsets.only(top: 5.h, bottom: 5.h),
       child: Text(
         dateTime != null ? CustomDateUtil.getDetailTime(dateTime) : "",
-        style: AFont.instance.size20Black9,
+        style: AFont.instance.size16Black9,
       ),
     );
   }

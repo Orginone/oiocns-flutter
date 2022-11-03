@@ -68,6 +68,7 @@ class Routers {
   static const String register = "/register";
   static const String login = "/login";
   static const String home = "/home";
+  static const String center = "/center";
   static const String spaceChoose = "/spaceChoose";
   static const String message = "/message";
   static const String organization = "/organization";
@@ -91,6 +92,7 @@ class Routers {
   static const String scanning = "/scanning";
   static const String scanningResult = "/scanningResult";
   static const String contact = "/contact";
+
   //首页-办事
   static const String affairs = "/affairs";
   static const String friendAdd = "/friendAdd";
@@ -120,13 +122,14 @@ class Routers {
           page: () => const HomePage(),
           binding: HomeBinding()),
       GetPage(
-          name: Routers.home,
+          name: Routers.center,
           page: () => const CenterPage(),
           binding: CenterBinding()),
       GetPage(
-          name: Routers.spaceChoose,
-          page: () => const SpaceChoosePage(),
-          binding: SpaceChooseBinding()),
+        name: Routers.spaceChoose,
+        page: () => const SpaceChoosePage(),
+        binding: SpaceChooseBinding(),
+      ),
       GetPage(
         name: Routers.message,
         page: () => const MessagePage(),

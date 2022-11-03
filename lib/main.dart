@@ -22,7 +22,7 @@ void main() async {
       print('${event.level.name}: ${event.time}: ${event.message}');
     }
   });
-
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   // 开启 app
   runApp(const ScreenInit());
 }

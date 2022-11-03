@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/bread_crumb.dart';
+import 'package:orginone/component/tab_combine.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
@@ -103,22 +104,21 @@ class HomePage extends GetView<HomeController> {
     return Column(
       children: [
         Obx(() {
-          late Widget body;
-          switch (controller.titleStatus.value) {
-            case TitleStatus.home:
-              body = _workSpace;
-              break;
-            case TitleStatus.breadCrumb:
-              body = _globalBreadcrumbs;
-              break;
+          TabCombine tab = controller.tabs[controller.tabIndex.value];
+          if (controller.center == tab) {
+            return Column(
+              children: [
+                Container(
+                  color: UnifiedColors.navigatorBgColor,
+                  height: 74.h,
+                  child: _workSpace,
+                ),
+                Divider(height: 1.h, color: Colors.white),
+              ],
+            );
           }
-          return Container(
-            color: UnifiedColors.navigatorBgColor,
-            height: 74.h,
-            child: body,
-          );
+          return Container();
         }),
-        Divider(height: 1.h, color: Colors.white),
         _operation(context),
       ],
     );
@@ -191,10 +191,11 @@ class HomePage extends GetView<HomeController> {
       color: UnifiedColors.navigatorBgColor,
       height: 62.h,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(padding: EdgeInsets.only(left: 25.w)),
           const Icon(Icons.read_more_outlined, color: Colors.black),
-          Expanded(child: Container()),
+          Expanded(child: _globalBreadcrumbs),
           Container(
             margin: EdgeInsets.only(left: 10.w),
             child: GestureDetector(
@@ -262,21 +263,23 @@ class HomePage extends GetView<HomeController> {
         children: [
           Padding(padding: EdgeInsets.only(left: 25.w)),
           Expanded(
-              child: Hero(
-            tag: globalBreadCrumb,
-            child: BreadCrumb(
-              stackBottomStyle: TextStyle(
-                fontSize: 18.sp,
-                color: UnifiedColors.agreeColor,
-              ),
-              stackTopStyle: TextStyle(fontSize: 18.sp),
-              controller: controller.breadCrumbController,
-              splitWidget: Container(
-                margin: EdgeInsets.only(left: 6.w, right: 6.w),
-                child: Icon(Icons.circle, size: 6.w),
+            child: Hero(
+              tag: globalBreadCrumb,
+              child: BreadCrumb(
+                stackBottomStyle: TextStyle(
+                  fontSize: 18.sp,
+                  color: UnifiedColors.agreeColor,
+                ),
+                stackTopStyle: TextStyle(fontSize: 18.sp),
+                controller: controller.breadCrumbController,
+                splitWidget: Container(
+                  margin: EdgeInsets.only(left: 6.w, right: 6.w),
+                  child: Icon(Icons.circle, size: 6.w),
+                ),
+                padding: EdgeInsets.zero,
               ),
             ),
-          )),
+          ),
           Padding(padding: EdgeInsets.only(right: 25.w))
         ],
       );

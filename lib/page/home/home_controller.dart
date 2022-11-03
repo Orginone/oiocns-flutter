@@ -7,7 +7,6 @@ import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/config/bread_crumb_points.dart';
 import 'package:orginone/page/home/affairs/affairs_page.dart';
 import 'package:orginone/page/home/center/center_page.dart';
-import 'package:orginone/page/home/home_page.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
@@ -25,8 +24,6 @@ import '../../logic/authority.dart';
 import '../../util/hive_util.dart';
 import 'message/message_page.dart';
 
-enum TitleStatus { home, breadCrumb }
-
 class HomeController extends GetxController
     with GetSingleTickerProviderStateMixin {
   Logger log = Logger("HomeController");
@@ -36,11 +33,13 @@ class HomeController extends GetxController
 
   /// 全局面包屑
   var breadCrumbController = BreadCrumbController<String>();
-  var titleStatus = TitleStatus.home.obs;
 
   /// Tab 控制器
   late List<TabCombine> tabs;
   late TabController tabController;
+  late HomeController homeController;
+  late RxInt tabIndex;
+  late TabCombine message, relation, center, work, my;
 
   /// 当前空间
   late TargetResp currentSpace;
@@ -80,28 +79,29 @@ class HomeController extends GetxController
   }
 
   void _initTabs() {
-    var message = TabCombine(
+    message = TabCombine(
       customTab: _buildTabTick(Icons.group_outlined, "沟通"),
       tabView: const MessagePage(),
       breadCrumbItem: chatPoint,
     );
-    var relation = TabCombine(
+    relation = TabCombine(
       body: Text('办事', style: text14),
       tabView: const AffairsPage(),
       icon: Icons.book_outlined,
       breadCrumbItem: workPoint,
     );
-    var center = const TabCombine(
+    center = const TabCombine(
       icon: Icons.circle,
       tabView: CenterPage(),
+      breadCrumbItem: centerPoint,
     );
-    var work = TabCombine(
+    work = TabCombine(
       body: Text('仓库', style: text14),
       tabView: const WorkPage(),
       icon: Icons.warehouse_outlined,
       breadCrumbItem: warehousePoint,
     );
-    var my = TabCombine(
+    my = TabCombine(
       body: Text('设置', style: text14),
       tabView: const MinePage(),
       icon: Icons.person_outline,
@@ -109,27 +109,28 @@ class HomeController extends GetxController
     );
 
     tabs = <TabCombine>[message, relation, center, work, my];
-
-    tabController = TabController(length: tabs.length, vsync: this);
+    tabIndex = tabs.indexOf(center).obs;
+    tabController = TabController(
+      length: tabs.length,
+      vsync: this,
+      initialIndex: tabIndex.value,
+    );
+    breadCrumbController.push(center.breadCrumbItem!);
+    int preIndex = tabController.index;
     tabController.addListener(() {
-      if (tabController.index != tabController.animation?.value) {
+      if(preIndex == tabController.index){
         return;
       }
-
+      tabIndex.value = tabController.index;
       var preTabCombine = tabs[tabController.previousIndex];
       var tabCombine = tabs[tabController.index];
-      if (tabCombine == center) {
-        titleStatus.value = TitleStatus.home;
-        breadCrumbController.clear();
-      } else {
-        titleStatus.value = TitleStatus.breadCrumb;
-        if (preTabCombine.breadCrumbItem != null) {
-          breadCrumbController.pops(preTabCombine.breadCrumbItem!.id);
-        }
-        if (tabCombine.breadCrumbItem != null) {
-          breadCrumbController.push(tabCombine.breadCrumbItem!);
-        }
+      if (preTabCombine.breadCrumbItem != null) {
+        breadCrumbController.pops(preTabCombine.breadCrumbItem!.id);
       }
+      if (tabCombine.breadCrumbItem != null) {
+        breadCrumbController.push(tabCombine.breadCrumbItem!);
+      }
+      preIndex = tabController.index;
     });
   }
 

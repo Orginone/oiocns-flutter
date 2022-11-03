@@ -4,11 +4,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/api_resp/task_entity.dart';
 import 'package:orginone/public/loading/load_status.dart';
 import 'package:orginone/routers.dart';
+import '../../../../api_resp/record_task_entity.dart';
+import '../../../../component/a_font.dart';
 import '../../../../component/unified_colors.dart';
 import '../../../../component/unified_text_style.dart';
 import '../../../../public/view/base_list_view.dart';
+import '../../../../util/date_util.dart';
+import '../affairs_type_enum.dart';
+import '../base/detail_arguments.dart';
 import 'record_controller.dart';
 
 class AffairsRecordWidget extends StatefulWidget {
@@ -45,7 +51,7 @@ class RecordWidget extends BaseListView<RecordController> {
         });
   }
 
-  Widget itemInit(BuildContext context, int index, dataList) {
+  Widget itemInit(BuildContext context, int index, RecordTaskEntity item) {
     return Slidable(
       enabled: false,
       key: const ValueKey(0),
@@ -93,15 +99,14 @@ class RecordWidget extends BaseListView<RecordController> {
           children: [
             Container(
               alignment: Alignment.centerLeft,
-              child: Text("“张三”想成为你的好友",
-                  style: TextStyle(
-                      color: UnifiedColors.black3,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w500)),
+              child: Text(item.flowTask?.flowInstance?.title ??"",
+                  style: AFont.instance.size22Black3W500),
             ),
             Container(
               alignment: Alignment.centerLeft,
-              child: Text("你好，我是谢谢谢谢谢谢谢公司的张三，想成为你的好友", style: text12Grey),
+              padding: EdgeInsets.only(top: 5.h),
+              child: Text(item.flowTask?.flowInstance?.flowRelation?.functionCode ?? "",
+                  style: AFont.instance.size18Black9),
             ),
             SizedBox(
               height: 30.h,
@@ -110,15 +115,16 @@ class RecordWidget extends BaseListView<RecordController> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  padding: EdgeInsets.fromLTRB(10.w, 3.h, 10.w, 3.h),
+                  padding: EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 8.h),
                   decoration: BoxDecoration(
                       color: UnifiedColors.white,
                       border: Border.all(
                           color: UnifiedColors.cardBorder, width: 0.1.w),
                       borderRadius: const BorderRadius.all(Radius.circular(0))),
                   child: Text(
-                    "时间：2022-02-23",
-                    style: text14Grey,
+                    CustomDateUtil.getDetailTime(
+                        DateTime.parse(item.createTime)),
+                    style: AFont.instance.size14Black9,
                   ),
                 ),
                 Row(
@@ -126,8 +132,8 @@ class RecordWidget extends BaseListView<RecordController> {
                     Visibility(
                       visible: false,
                       child: SizedBox(
-                        width: 70.w,
-                        height: 30.h,
+                        width: 106.w,
+                        height: 42.h,
                         child: GFButton(
                           onPressed: () {},
                           color: UnifiedColors.backColor,
@@ -137,18 +143,21 @@ class RecordWidget extends BaseListView<RecordController> {
                       ),
                     ),
                     SizedBox(
-                      width: 10.w,
+                      width: 15.w,
                     ),
                     SizedBox(
-                      width: 70.w,
-                      height: 30.h,
+                      width: 106.w,
+                      height: 42.h,
                       child: GFButton(
                         onPressed: () {
-                          Get.toNamed(Routers.affairsDetail);
+                          Get.toNamed(Routers.affairsDetail,
+                              arguments: DetailArguments(
+                                  AffairsTypeEnum.record, index,
+                                  recordEntity: item));
                         },
                         color: UnifiedColors.agreeColor,
-                        text: "通过",
-                        textStyle: text14White,
+                        text: "审批",
+                        textStyle: AFont.instance.size18White,
                         textColor: Colors.white,
                       ),
                     ),
