@@ -2,17 +2,13 @@ import 'package:orginone/component/bread_crumb.dart';
 
 const Item<String> centerPoint = Item(id: "center", label: "首页");
 
-Item<String> chatPoint = const Item(
+const Item<String> chatPoint = Item(
   id: "chat",
   label: "沟通",
-  innerItem: chatRecentPoint,
+  children: [chatRecentPoint, chatMailPoint],
+  defaultBindingItem: chatRecentPoint,
 );
-const Item<String> chatRecentPoint = Item(
-  id: "chatRecent",
-  label: "会话",
-  innerItem: chatListPoint,
-);
-const Item<String> chatListPoint = Item(id: "chatList", label: "会话列表");
+const Item<String> chatRecentPoint = Item(id: "chatRecent", label: "会话");
 const Item<String> chatMailPoint = Item(id: "chatMail", label: "通讯录");
 
 const Item<String> workPoint = Item(id: "work", label: "办事");
