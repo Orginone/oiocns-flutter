@@ -1,7 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
@@ -13,6 +12,7 @@ import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/logic/authority.dart';
+import 'package:orginone/page/home/message/component/message_item_widget.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/screen_init.dart';
 import 'package:orginone/util/hub_util.dart';
@@ -204,13 +204,16 @@ class MessageSettingPage extends GetView<MessageSettingController> {
         "消息免打扰",
         style: AFont.instance.size20Black3W500,
       ),
-      operate: Switch(
-        value: controller.messageItem.isInterruption ?? false,
-        onChanged: (value) {
-          controller.messageItem.isInterruption = value;
-          HubUtil().cacheChats(controller.messageController.orgChatCache);
-        },
-      ),
+      operate: GetBuilder<MessageSettingController>(builder: (controller) {
+        return Switch(
+          value: controller.messageItem.isInterruption ?? false,
+          onChanged: (value) {
+            controller.messageItem.isInterruption = value;
+            HubUtil().cacheChats(controller.messageController.orgChatCache);
+            controller.update();
+          },
+        );
+      }),
     );
   }
 
@@ -222,13 +225,20 @@ class MessageSettingPage extends GetView<MessageSettingController> {
         "置顶聊天",
         style: AFont.instance.size20Black3W500,
       ),
-      operate: Switch(
-        value: controller.messageItem.isTop ?? false,
-        onChanged: (value) {
-          controller.messageItem.isTop = value;
-          HubUtil().cacheChats(controller.messageController.orgChatCache);
-        },
-      ),
+      operate: GetBuilder<MessageSettingController>(builder: (controller) {
+        return Switch(
+          value: controller.messageItem.isTop ?? false,
+          onChanged: (value) {
+            var messageController = controller.messageController;
+            var messageItem = controller.messageItem;
+            var spaceId = controller.spaceId;
+            var event = value ? ChatFunc.topping : ChatFunc.cancelTopping;
+
+            messageController.chatEventFire(event, spaceId, messageItem);
+            controller.update();
+          },
+        );
+      }),
     );
   }
 

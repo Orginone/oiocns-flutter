@@ -17,14 +17,14 @@ import '../../../../util/date_util.dart';
 
 double defaultAvatarWidth = 66.w;
 
-enum LongPressFunc {
+enum ChatFunc {
   topping("置顶会话"),
   cancelTopping("取消置顶"),
   remove("删除会话");
 
   final String name;
 
-  const LongPressFunc(this.name);
+  const ChatFunc(this.name);
 }
 
 class MessageItemWidget extends GetView<MessageController> {
@@ -48,13 +48,13 @@ class MessageItemWidget extends GetView<MessageController> {
         bool isTop = item.isTop ?? false;
         bool isRecent =
             controller.orgChatCache.recentChats?.contains(item) ?? false;
-        List<LongPressFunc> functions = [];
+        List<ChatFunc> functions = [];
         if (isTop) {
-          functions.add(LongPressFunc.cancelTopping);
+          functions.add(ChatFunc.cancelTopping);
         } else {
-          functions.add(LongPressFunc.topping);
+          functions.add(ChatFunc.topping);
         }
-        if (isRecent) functions.add(LongPressFunc.remove);
+        if (isRecent) functions.add(ChatFunc.remove);
 
         final result = await showMenu(
           context: context,
@@ -65,7 +65,7 @@ class MessageItemWidget extends GetView<MessageController> {
               .toList(),
         );
         if (result != null) {
-          controller.funcCallback(result, spaceId, item);
+          controller.chatEventFire(result, spaceId, item);
         }
       },
       onTap: () {

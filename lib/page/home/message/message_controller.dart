@@ -350,18 +350,18 @@ class MessageController extends GetxController
     currentAppState = state;
   }
 
-  funcCallback(LongPressFunc func, String spaceId, MessageItemResp item) async {
+  chatEventFire(ChatFunc func, String spaceId, MessageItemResp item) async {
     switch (func) {
-      case LongPressFunc.topping:
-      case LongPressFunc.cancelTopping:
-        item.isTop = func == LongPressFunc.topping;
+      case ChatFunc.topping:
+      case ChatFunc.cancelTopping:
+        item.isTop = func == ChatFunc.topping;
         orgChatCache.chats = _spaceHandling(orgChatCache.chats);
         sortingGroups();
         sortingItems(orgChatCache.recentChats ?? []);
         await HubUtil().cacheChats(orgChatCache);
         update();
         break;
-      case LongPressFunc.remove:
+      case ChatFunc.remove:
         orgChatCache.recentChats?.remove(item);
         await HubUtil().cacheChats(orgChatCache);
         update();
