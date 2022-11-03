@@ -208,9 +208,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
         return Switch(
           value: controller.messageItem.isInterruption ?? false,
           onChanged: (value) {
-            controller.messageItem.isInterruption = value;
-            HubUtil().cacheChats(controller.messageController.orgChatCache);
-            controller.update();
+            controller.interruptionOrNot(value);
           },
         );
       }),
@@ -228,13 +226,13 @@ class MessageSettingPage extends GetView<MessageSettingController> {
       operate: GetBuilder<MessageSettingController>(builder: (controller) {
         return Switch(
           value: controller.messageItem.isTop ?? false,
-          onChanged: (value) {
+          onChanged: (value) async {
             var messageController = controller.messageController;
             var messageItem = controller.messageItem;
             var spaceId = controller.spaceId;
             var event = value ? ChatFunc.topping : ChatFunc.cancelTopping;
 
-            messageController.chatEventFire(event, spaceId, messageItem);
+            await messageController.chatEventFire(event, spaceId, messageItem);
             controller.update();
           },
         );
@@ -279,7 +277,10 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                 ),
                 CupertinoDialogAction(
                   child: const Text('确定'),
-                  onPressed: () {},
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    await controller.clearHistoryMsg();
+                  },
                 ),
               ],
             );
@@ -309,13 +310,14 @@ class MessageSettingPage extends GetView<MessageSettingController> {
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: const Text('取消'),
-                  onPressed: () {
+                  onPressed: () async {
                     Navigator.pop(context);
                   },
                 ),
                 CupertinoDialogAction(
                   child: const Text('确定'),
                   onPressed: () async {
+                    Navigator.pop(context);
                     await controller.removeFriends();
                     Get.until((route) => route.settings.name == Routers.home);
                   },
@@ -325,10 +327,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
           },
         );
       },
-      child: Text(
-        "删除好友",
-        style: AFont.instance.size22WhiteW500,
-      ),
+      child: Text("删除好友", style: AFont.instance.size22WhiteW500),
     );
   }
 
@@ -495,12 +494,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
           textStyle: const TextStyle(
               fontSize: 16, color: Color.fromRGBO(255, 0, 0, 1)),
           fullWidthButton: true,
-          onPressed: () async {
-            HubUtil().clearHistoryMsg(
-              controller.spaceId,
-              controller.messageItemId,
-            );
-          },
+          onPressed: () async {},
           text: "清空聊天记录",
         );
       case '好友':

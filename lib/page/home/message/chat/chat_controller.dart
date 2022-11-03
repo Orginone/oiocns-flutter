@@ -131,7 +131,9 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   late RxString titleName;
 
   // 观测对象
-  late RxList<Detail> details;
+  late RxList<Detail> _details;
+
+  RxList<Detail> get details => _details;
 
   // 语音播放器
   FlutterSoundPlayer? _soundPlayer;
@@ -163,7 +165,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     titleName = messageItem.name.obs;
 
     // 清空所有聊天记录
-    details = <Detail>[].obs;
+    _details = <Detail>[].obs;
 
     // 初始化老数据个数，查询聊天记录的个数
     await getTotal();
@@ -189,7 +191,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     }
     log.info("会话页面接收到一条新的数据${detail.toJson()}");
     if (detail.msgType == "recall") {
-      for (var oldDetail in details) {
+      for (var oldDetail in _details) {
         var resp = oldDetail.resp;
         if (resp.id == detail.id) {
           resp.msgBody = detail.msgBody;
@@ -199,13 +201,13 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         }
       }
     } else {
-      int has = details
+      int has = _details
           .map((item) => item.resp)
           .where((item) => item.id == detail.id)
           .length;
       if (has == 0) {
         detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
-        details.insert(0, Detail.fromResp(detail));
+        _details.insert(0, Detail.fromResp(detail));
       }
     }
     updateAndToBottom();
@@ -261,13 +263,13 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   Future<void> getHistoryMsg({bool isCacheNameMap = false}) async {
     String typeName = messageItem.typeName;
 
-    var insertPointer = details.length;
+    var insertPointer = _details.length;
     List<MessageDetailResp> newDetails = await HubUtil()
         .getHistoryMsg(spaceId, messageItemId, typeName, insertPointer, 15);
 
     Map<String, dynamic> nameMap = messageController.orgChatCache.nameMap;
     for (MessageDetailResp detail in newDetails) {
-      details.insert(insertPointer, Detail.fromResp(detail));
+      _details.insert(insertPointer, Detail.fromResp(detail));
       if (!nameMap.containsKey(detail.fromId)) {
         var name = await HubUtil().getName(detail.fromId);
         nameMap[detail.fromId] = name;
@@ -414,7 +416,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         break;
       case DetailFunc.remove:
         await HubUtil().deleteMsg(detail.id);
-        details.removeWhere((item) => item.resp.id == detail.id);
+        _details.removeWhere((item) => item.resp.id == detail.id);
         break;
     }
   }

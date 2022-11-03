@@ -92,6 +92,8 @@ class MessageItemWidget extends GetView<MessageController> {
 
   Widget _avatar(MessageItemResp messageItem) {
     int notRead = messageItem.noRead ?? 0;
+    Color badgeColor =
+        messageItem.isInterruption ?? false ? UnifiedColors.cardBorder : GFColors.DANGER;
     return Stack(
       children: [
         Align(
@@ -112,7 +114,10 @@ class MessageItemWidget extends GetView<MessageController> {
           visible: notRead > 0,
           child: Align(
             alignment: Alignment.topRight,
-            child: GFBadge(child: Text("${notRead > 99 ? "99+" : notRead}")),
+            child: GFBadge(
+              color: badgeColor,
+              child: Text("${notRead > 99 ? "99+" : notRead}"),
+            ),
           ),
         )
       ],

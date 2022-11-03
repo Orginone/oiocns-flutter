@@ -55,9 +55,6 @@ class MessageController extends GetxController
     _subscribingCharts();
   }
 
-  _initTabs(){
-  }
-
   // 分组排序
   sortingGroups() {
     HomeController homeController = Get.find<HomeController>();
@@ -94,7 +91,15 @@ class MessageController extends GetxController
       }
     });
     // 置顶排序
-    chats.sort((first, second) => first.isTop ?? false ? -1 : 1);
+    chats.sort((first, second) {
+      first.isTop ??= false;
+      second.isTop ??= false;
+      if (first.isTop == second.isTop) {
+        return first.isTop! ? -1 : 0;
+      } else {
+        return first.isTop! ? -1 : 1;
+      }
+    });
   }
 
   Future<dynamic> refreshCharts() async {
@@ -322,7 +327,7 @@ class MessageController extends GetxController
           }
 
           // 近期会话不存在就加入
-          orgChatCache.recentChats = orgChatCache.recentChats ?? [];
+          orgChatCache.recentChats ??= [];
           orgChatCache.recentChats = orgChatCache.recentChats!
               .where((item) =>
                   item.id != currentItem!.id ||
@@ -370,7 +375,8 @@ class MessageController extends GetxController
   }
 
   bool hasNoRead() {
-    var has = orgChatCache.recentChats?.firstWhereOrNull((item) => (item.noRead ?? 0) > 0);
+    var has = orgChatCache.recentChats?.firstWhereOrNull(
+        (item) => (item.noRead ?? 0) > 0 && !(item.isInterruption ?? false));
     return has != null;
   }
 }

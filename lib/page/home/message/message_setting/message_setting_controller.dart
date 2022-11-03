@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
@@ -108,6 +109,65 @@ class MessageSettingController extends GetxController {
     HubUtil().cacheChats(orgChatCache);
   }
 
+  /// 消息免打扰
+  interruptionOrNot(bool trueOrNot) async {
+    var orgChatCache = messageController.orgChatCache;
+
+    // 会话中止
+    orgChatCache.chats.where((space) => space.id == spaceId).forEach((space) {
+      space.chats.where((chat) => chat.id == messageItemId).forEach((item) {
+        item.isInterruption = trueOrNot;
+      });
+    });
+
+    // 近期会话
+    orgChatCache.recentChats?.forEach((chat) {
+      chat.isInterruption = trueOrNot;
+    });
+
+    // 打开的会话
+    for (var chat in orgChatCache.openChats) {
+      chat.isInterruption = trueOrNot;
+    }
+    messageController.update();
+    update();
+
+    // 同步会话
+    await HubUtil().cacheChats(orgChatCache);
+  }
+
+  /// 删除个人空间所有聊天记录
+  clearHistoryMsg() async {
+    await HubUtil().clearHistoryMsg(spaceId, messageItemId);
+
+    // 清空页面
+    var chatSpaceId = chatController.spaceId;
+    var chatMessageItemId = chatController.messageItemId;
+    if (chatSpaceId == spaceId && messageItemId == chatMessageItemId) {
+      chatController.details.clear();
+    }
+
+    var userId = auth.userId;
+
+    var orgChatCache = messageController.orgChatCache;
+    orgChatCache.chats.where((space) => space.id == userId).forEach((space) {
+      for (var chat in space.chats) {
+        if (chat.id == messageItemId) {
+          chat.showTxt = null;
+        }
+      }
+    });
+    orgChatCache.recentChats
+        ?.where((c) => c.spaceId == userId && c.id == messageItemId)
+        .forEach((chat) {
+      chat.showTxt = null;
+    });
+    messageController.update();
+
+    // 同步会话
+    await HubUtil().cacheChats(orgChatCache);
+  }
+
   /// 删除好友
   removeFriends() async {
     // 接口删除好友
@@ -131,6 +191,6 @@ class MessageSettingController extends GetxController {
         .removeWhere((chat) => chat.spaceId == userId && chat.id == targetId);
 
     // 同步会话
-    HubUtil().cacheChats(orgChatCache);
+    await HubUtil().cacheChats(orgChatCache);
   }
 }

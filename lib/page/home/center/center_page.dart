@@ -81,70 +81,68 @@ class CenterPage extends GetView<CenterController> {
   Widget build(BuildContext context) {
     return Container(
       color: UnifiedColors.designLightBlue,
-      child: Expanded(
-        child: ListView(
-          children: [
-            Column(
-              children: [
-                _swiper,
-                Container(margin: EdgeInsets.only(top: 16.h)),
-                Container(
-                  margin: EdgeInsets.only(left: 25.w, right: 25.w),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("快捷入口", style: AFont.instance.size22Black3W500),
-                      Padding(padding: EdgeInsets.only(top: 16.h)),
-                      SizedBox(
-                        height: 100.w,
-                        child: ListView.builder(
-                          itemCount: Functions.values.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return Row(children: [
-                              _fastEntry(Functions.values[index]),
-                              Padding(padding: EdgeInsets.only(right: 8.w))
-                            ]);
-                          },
-                        ),
+      child: ListView(
+        children: [
+          Column(
+            children: [
+              _swiper,
+              Container(margin: EdgeInsets.only(top: 16.h)),
+              Container(
+                margin: EdgeInsets.only(left: 25.w, right: 25.w),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("快捷入口", style: AFont.instance.size22Black3W500),
+                    Padding(padding: EdgeInsets.only(top: 16.h)),
+                    SizedBox(
+                      height: 100.w,
+                      child: ListView.builder(
+                        itemCount: Functions.values.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return Row(children: [
+                            _fastEntry(Functions.values[index]),
+                            Padding(padding: EdgeInsets.only(right: 8.w))
+                          ]);
+                        },
                       ),
-                      Padding(padding: EdgeInsets.only(top: 16.h)),
-                      Text("常用应用", style: AFont.instance.size22Black3W500),
-                      Padding(padding: EdgeInsets.only(top: 16.h)),
-                      GridView.count(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        crossAxisCount: 5,
-                        childAspectRatio: 80 / 100,
-                        children: [
-                          _applicationEntry("资产应用"),
-                          _applicationEntry("资产应用"),
-                          _applicationEntry("资产应用"),
-                          _applicationEntry("资产应用"),
-                          _applicationEntry("资产应用"),
-                          _applicationEntry("资产应用"),
-                          _applicationEntry("资产应用"),
-                          _applicationEntry("资产应用"),
-                          _applicationEntry("资产应用"),
-                          _applicationEntry("更多", iconData: Icons.add)
-                        ],
-                      ),
-                      Container(height: 8.h),
-                      Text("数据监测", style: AFont.instance.size22Black3W500),
-                      GridView.count(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        crossAxisCount: 2,
-                        children: [_charts(), _roseCharts()],
-                      )
-                    ],
-                  ),
-                )
-              ],
-            )
-          ],
-        ),
+                    ),
+                    Padding(padding: EdgeInsets.only(top: 16.h)),
+                    Text("常用应用", style: AFont.instance.size22Black3W500),
+                    Padding(padding: EdgeInsets.only(top: 16.h)),
+                    GridView.count(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      crossAxisCount: 5,
+                      childAspectRatio: 80 / 100,
+                      children: [
+                        _applicationEntry("资产应用"),
+                        _applicationEntry("资产应用"),
+                        _applicationEntry("资产应用"),
+                        _applicationEntry("资产应用"),
+                        _applicationEntry("资产应用"),
+                        _applicationEntry("资产应用"),
+                        _applicationEntry("资产应用"),
+                        _applicationEntry("资产应用"),
+                        _applicationEntry("资产应用"),
+                        _applicationEntry("更多", iconData: Icons.add)
+                      ],
+                    ),
+                    Container(height: 8.h),
+                    Text("数据监测", style: AFont.instance.size22Black3W500),
+                    GridView.count(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      crossAxisCount: 2,
+                      children: [_charts(), _roseCharts()],
+                    )
+                  ],
+                ),
+              )
+            ],
+          )
+        ],
       ),
     );
   }

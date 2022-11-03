@@ -70,6 +70,7 @@ class MessageItemResp {
     json["personNum"] = personNum;
     json["showTxt"] = showTxt;
     json["isTop"] = isTop;
+    json["isInterruption"] = isInterruption;
     return json;
   }
 }
