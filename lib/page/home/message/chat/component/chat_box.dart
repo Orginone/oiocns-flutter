@@ -218,9 +218,8 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
         }
 
         var path = controller.currentFile;
-        var fileName = controller.currentFileName;
         var time = duration.inMilliseconds;
-        controller.voiceCallback(fileName, path, time);
+        controller.voiceCallback(path, time);
       },
       child: Container(
         alignment: Alignment.center,

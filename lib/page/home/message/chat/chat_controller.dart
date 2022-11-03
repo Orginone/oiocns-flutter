@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -51,21 +52,22 @@ class Detail {
         );
       case MsgType.voice:
         // 语音
-        String path = msgMap["path"] ?? "";
         int milliseconds = msgMap["milliseconds"] ?? 0;
+        List<dynamic> rowBytes = msgMap["bytes"] ?? [];
+        List<int> tempBytes = rowBytes.map((byte) => byte as int).toList();
         return VoiceDetail(
           resp: resp,
           status: VoiceStatus.stop.obs,
           initProgress: milliseconds,
           progress: milliseconds.obs,
-          path: path,
+          bytes: Uint8List.fromList(tempBytes),
         );
       case MsgType.topping:
       case MsgType.text:
       case MsgType.recall:
       case MsgType.image:
       case MsgType.unknown:
-        return Detail(resp);
+        return Detail.fromResp(resp);
     }
   }
 }
@@ -78,14 +80,14 @@ class VoiceDetail extends Detail {
   final Rx<VoiceStatus> status;
   final int initProgress;
   final RxInt progress;
-  final String path;
+  final Uint8List bytes;
 
   const VoiceDetail({
     required MessageDetailResp resp,
     required this.status,
     required this.initProgress,
     required this.progress,
-    required this.path,
+    required this.bytes,
   }) : super.fromResp(resp);
 }
 
@@ -334,26 +336,11 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   }
 
   /// 语音录制完成并发送
-  void sendVoice(String fileName, String filePath, int milliseconds) async {
-    TargetResp userInfo = auth.userInfo;
-    String prefix = "chat_${userInfo.id}_${messageItem.id}_voice";
-    log.info("====> prefix:$prefix");
-    String encodedPrefix = EncryptionUtil.encodeURLString(prefix);
-
-    try {
-      await BucketApi.create(prefix: encodedPrefix);
-    } catch (error) {
-      log.warning("====> 创建目录失败：$error");
-    }
-    await BucketApi.upload(
-      prefix: encodedPrefix,
-      filePath: filePath,
-      fileName: fileName,
-    );
-
+  void sendVoice(String filePath, int milliseconds) async {
+    var file = File(filePath);
     Map<String, dynamic> msgBody = {
-      "path": "$prefix/$fileName",
-      "milliseconds": milliseconds
+      "milliseconds": milliseconds,
+      "bytes": file.readAsBytesSync()
     };
     sendOneMessage(jsonEncode(msgBody), msgType: MsgType.voice);
   }
@@ -422,7 +409,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   }
 
   /// 开始播放
-  startPlayVoice(String id, File file) async {
+  startPlayVoice(String id, Uint8List bytes) async {
     await stopPrePlayVoice();
 
     // 动画效果
@@ -448,8 +435,9 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     });
     _soundPlayer!
         .startPlayer(
-            fromDataBuffer: file.readAsBytesSync(),
-            whenFinished: () => stopPrePlayVoice())
+          fromDataBuffer: bytes,
+          whenFinished: () => stopPrePlayVoice(),
+        )
         .catchError((error) => stopPrePlayVoice());
 
     // 重新开始播放

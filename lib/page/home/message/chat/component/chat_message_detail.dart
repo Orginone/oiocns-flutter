@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -277,21 +275,9 @@ class ChatMessageDetail extends GetView<ChatController> {
 
   /// 语音详情
   Widget _voice({required TextDirection textDirection}) {
-    // 解析参数
-    Map<String, dynamic> msgMap = jsonDecode(detail.msgBody ?? "{}");
-    String path = msgMap["path"] ?? "";
-    int milliseconds = msgMap["milliseconds"] ?? 0;
-
     // 初始化语音输入
-    controller.playStatusMap.putIfAbsent(
-        detail.id,
-        () => VoiceDetail(
-              resp: detail,
-              status: VoiceStatus.stop.obs,
-              initProgress: milliseconds,
-              progress: milliseconds.obs,
-              path: path,
-            ));
+    controller.playStatusMap
+        .putIfAbsent(detail.id, () => Detail(detail) as VoiceDetail);
 
     return _detail(
       padding: EdgeInsets.all(6.w),
@@ -302,20 +288,14 @@ class ChatMessageDetail extends GetView<ChatController> {
         children: [
           GestureDetector(
             onTap: () async {
-              if (detail.msgBody == null) {
-                Fluttertoast.showToast(msg: "未获取到文件信息，无法播放！");
+              var voicePlay = controller.playStatusMap[detail.id]!;
+              if (voicePlay.bytes.isEmpty) {
+                Fluttertoast.showToast(msg: "未获取到语音，播放失败！");
                 return;
               }
 
-              Map<String, dynamic> body = jsonDecode(detail.msgBody!);
-              String path = body["path"];
-              File cachedFile = await BucketApi.getCachedFile(path);
-
-              // 播放文件
-              var voicePlay = controller.playStatusMap[detail.id]!;
-              var status = voicePlay.status;
-              if (status.value == VoiceStatus.stop) {
-                controller.startPlayVoice(detail.id, cachedFile);
+              if (voicePlay.status.value == VoiceStatus.stop) {
+                controller.startPlayVoice(detail.id, voicePlay.bytes);
               } else {
                 controller.stopPrePlayVoice();
               }
@@ -328,7 +308,7 @@ class ChatMessageDetail extends GetView<ChatController> {
                   : const Icon(Icons.stop, color: Colors.black);
             }),
           ),
-          Container(margin: EdgeInsets.only(left: 5.w)),
+          Padding(padding: EdgeInsets.only(left: 5.w)),
           Expanded(
             child: SizedBox(
               height: 12.h,
@@ -337,7 +317,7 @@ class ChatMessageDetail extends GetView<ChatController> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Container(
-                      height: 8.h,
+                      height: 16.h,
                       decoration: BoxDecoration(
                         color: Colors.white60,
                         borderRadius: BorderRadius.all(
@@ -365,7 +345,7 @@ class ChatMessageDetail extends GetView<ChatController> {
               ),
             ),
           ),
-          Container(margin: EdgeInsets.only(left: 5.w)),
+          Padding(padding: EdgeInsets.only(left: 5.w)),
           Obx(() {
             var voicePlay = controller.playStatusMap[detail.id]!;
             var progress = voicePlay.progress;
