@@ -58,7 +58,7 @@ enum MoreFunction {
 }
 
 double defaultBorderRadius = 6.w;
-double boxDefaultHeight = 40.w;
+double boxDefaultHeight = 40.h;
 double defaultBottomHeight = 300.h;
 
 class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
@@ -151,12 +151,13 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   Widget _input(BuildContext context) {
     return Expanded(
       child: Container(
+        height: 60.h,
         margin: EdgeInsets.only(top: 8.h, bottom: 8.h),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(defaultBorderRadius)),
         ),
-        alignment: Alignment.centerLeft,
+        alignment: Alignment.center,
         child: Obx(() {
           if (controller._inputStatus.value == InputStatus.voice) {
             return _voice(context);
@@ -179,7 +180,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
       controller: controller.inputController,
       decoration: InputDecoration(
         isCollapsed: true,
-        contentPadding: EdgeInsets.fromLTRB(10.w, 15.h, 10.w, 15.h),
+        contentPadding: EdgeInsets.fromLTRB(10.w, 16.h, 10.w, 16.h),
         border: InputBorder.none,
         constraints: BoxConstraints(
           maxHeight: 144.h,
@@ -221,11 +222,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
         var time = duration.inMilliseconds;
         controller.voiceCallback(path, time);
       },
-      child: Container(
-        alignment: Alignment.center,
-        height: 52.h,
-        child: const Text("按住 说话"),
-      ),
+      child: const Text("按住 说话"),
     );
   }
 
