@@ -625,6 +625,7 @@ class AFont {
         fontSize: 22.sp,
         color: UnifiedColors.white,
         fontWeight: FontWeight.w500,
+        decoration: TextDecoration.none,
       );
 
   get size24WhiteW500 => TextStyle(

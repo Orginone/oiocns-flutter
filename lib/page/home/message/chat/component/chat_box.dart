@@ -16,13 +16,11 @@ import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/util/permission_util.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:vibration/vibration.dart';
 
 import '../../../../../component/a_font.dart';
 
-enum RecordStatus {
-  stop,
-  recoding,
-}
+enum RecordStatus { stop, recoding, pausing }
 
 enum InputStatus {
   notPopup,
@@ -149,42 +147,39 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
 
   /// 输入
   Widget _input(BuildContext context) {
-    return Expanded(
-      child: Container(
-        height: 60.h,
-        margin: EdgeInsets.only(top: 8.h, bottom: 8.h),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(defaultBorderRadius)),
-        ),
-        alignment: Alignment.center,
-        child: Obx(() {
-          if (controller._inputStatus.value == InputStatus.voice) {
-            return _voice(context);
-          }
-          return _inputBox(context);
-        }),
-      ),
-    );
+    return Expanded(child: Obx(() {
+      if (controller._inputStatus.value == InputStatus.voice) {
+        return _voice(context);
+      }
+      return _inputBox(context);
+    }));
   }
 
   /// 输入框
   Widget _inputBox(BuildContext context) {
-    return TextField(
-      maxLines: null,
-      keyboardType: TextInputType.multiline,
-      focusNode: controller.focusNode,
-      onChanged: (text) => controller.eventFire(context, InputEvent.clickInput),
-      onTap: () => controller.eventFire(context, InputEvent.clickInput),
-      style: AFont.instance.size22Black3W500,
-      controller: controller.inputController,
-      decoration: InputDecoration(
-        isCollapsed: true,
-        contentPadding: EdgeInsets.fromLTRB(10.w, 16.h, 10.w, 16.h),
-        border: InputBorder.none,
-        constraints: BoxConstraints(
-          maxHeight: 144.h,
-          minHeight: boxDefaultHeight,
+    return Container(
+      margin: EdgeInsets.only(top: 8.h, bottom: 8.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(defaultBorderRadius)),
+      ),
+      alignment: Alignment.center,
+      child: TextField(
+        maxLines: null,
+        keyboardType: TextInputType.multiline,
+        focusNode: controller.focusNode,
+        onChanged: (text) =>
+            controller.eventFire(context, InputEvent.clickInput),
+        onTap: () => controller.eventFire(context, InputEvent.clickInput),
+        style: AFont.instance.size22Black3W500,
+        controller: controller.inputController,
+        decoration: InputDecoration(
+          isCollapsed: true,
+          contentPadding: EdgeInsets.fromLTRB(10.w, 16.h, 10.w, 16.h),
+          border: InputBorder.none,
+          constraints: BoxConstraints(
+            maxHeight: 144.h,
+          ),
         ),
       ),
     );
@@ -198,31 +193,66 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {},
-      onPanDown: (DragDownDetails details) {
+      onLongPressMoveUpdate: (details) async {
+        var localPosition = details.localPosition;
+        if (localPosition.dy < 0) {
+          await controller.pauseRecord();
+        } else {
+          await controller.resumeRecord();
+        }
+      },
+      onLongPress: () {
         _permissionMicrophone(context, () {
-          controller
-              .startRecord()
-              .then((value) => Overlay.of(context)!.insert(voiceWave));
+          controller.startRecord().then((value) async {
+            Vibration.hasVibrator()
+                .then((value) => Vibration.vibrate(duration: 100));
+            Overlay.of(context)!.insert(voiceWave);
+          });
         });
       },
-      onPanCancel: () async {
-        if (controller.recordStatus?.value != RecordStatus.recoding) {
-          return;
-        }
+      onLongPressEnd: (details) async {
         voiceWave.remove();
 
-        var duration = controller.currentDuration ?? Duration.zero;
-        await controller.stopRecord();
-        if (duration.inMilliseconds < 2000) {
-          Fluttertoast.showToast(msg: '时间太短啦');
-          return;
-        }
+        var recordStatus = controller.recordStatus.value;
+        if (recordStatus == RecordStatus.recoding) {
+          // 记录
+          var duration = controller.currentDuration ?? Duration.zero;
+          await controller.stopRecord();
+          if (duration.inMilliseconds < 2000) {
+            Fluttertoast.showToast(msg: '时间太短啦!');
+            return;
+          }
 
-        var path = controller.currentFile;
-        var time = duration.inMilliseconds;
-        controller.voiceCallback(path, time);
+          var path = controller.currentFile;
+          var time = duration.inMilliseconds;
+          controller.voiceCallback(path, time);
+        } else if (recordStatus == RecordStatus.pausing) {
+          // 停止记录
+          await controller.stopRecord();
+          Fluttertoast.showToast(msg: "取消成功!");
+        }
       },
-      child: const Text("按住 说话"),
+      child: Container(
+        height: 36.h + 22.sp,
+        margin: EdgeInsets.only(top: 8.h, bottom: 8.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(defaultBorderRadius)),
+        ),
+        alignment: Alignment.center,
+        child: Obx(() {
+          var recordStatus = controller.recordStatus.value;
+          switch (recordStatus) {
+            case RecordStatus.stop:
+              return const Text("按住 说话");
+            case RecordStatus.recoding:
+              return const Text("松开 发送");
+            case RecordStatus.pausing:
+              return const Text("上移 取消",
+                  style: TextStyle(color: UnifiedColors.backColor));
+          }
+        }),
+      ),
     );
   }
 
@@ -406,37 +436,68 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
               color: Colors.black.withOpacity(0.5),
             ),
             child: Obx(() {
-              double value = controller.level?.value ?? 0;
-              double maxValue = controller.maxLevel ?? 0;
+              var recordStatus = controller.recordStatus.value;
+              if (recordStatus == RecordStatus.recoding) {
+                // 处于录音状态
+                double value = controller.level?.value ?? 0;
+                double maxValue = controller.maxLevel ?? 0;
 
-              double randomPercent = 0.3;
-              double percent = maxValue == 0 ? 1 : value / maxValue;
-              percent = percent - randomPercent;
-              Color color = UnifiedColors.white;
+                double randomPercent = 0.3;
+                double percent = maxValue == 0 ? 1 : value / maxValue;
+                percent = percent - randomPercent;
+                Color color = UnifiedColors.white;
 
-              // 坡数量，波浪数量
-              int peakCount = 8;
-              int waveCount = 32;
-              int averagePeakCount = waveCount ~/ peakCount;
-              double average = peakCount / waveCount;
+                // 坡数量，波浪数量
+                int peakCount = 8;
+                int waveCount = 32;
+                int averagePeakCount = waveCount ~/ peakCount;
+                double average = peakCount / waveCount;
 
-              List<AudioWaveBar> bars = [];
-              for (int i = 0; i <= waveCount; i++) {
-                bool isEven = ((i ~/ averagePeakCount) % 2) == 0;
-                int heightCount = i % averagePeakCount;
-                double randomHeight = random.nextDouble() * randomPercent;
-                if (isEven) {
-                  var height = heightCount * average * percent + randomHeight;
-                  height = height < 0 ? 0 : height;
-                  bars.add(AudioWaveBar(heightFactor: height, color: color));
-                } else {
-                  var remainder = averagePeakCount - heightCount;
-                  var height = remainder * average * percent + randomHeight;
-                  height = height < 0 ? 0 : height;
-                  bars.add(AudioWaveBar(heightFactor: height, color: color));
+                List<AudioWaveBar> bars = [];
+                for (int i = 0; i <= waveCount; i++) {
+                  bool isEven = ((i ~/ averagePeakCount) % 2) == 0;
+                  int heightCount = i % averagePeakCount;
+                  double randomHeight = random.nextDouble() * randomPercent;
+                  if (isEven) {
+                    var height = heightCount * average * percent + randomHeight;
+                    height = height < 0 ? 0 : height;
+                    bars.add(AudioWaveBar(heightFactor: height, color: color));
+                  } else {
+                    var remainder = averagePeakCount - heightCount;
+                    var height = remainder * average * percent + randomHeight;
+                    height = height < 0 ? 0 : height;
+                    bars.add(AudioWaveBar(heightFactor: height, color: color));
+                  }
                 }
+                return AudioWave(
+                  animation: false,
+                  bars: bars,
+                );
+              } else if (recordStatus == RecordStatus.pausing) {
+                return Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: UnifiedColors.backColor,
+                    borderRadius: BorderRadius.all(Radius.circular(10.w)),
+                  ),
+                  width: 100,
+                  height: 100,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.keyboard_return,
+                        color: Colors.white,
+                        size: 50.w,
+                      ),
+                      Padding(padding: EdgeInsets.only(top: 10.h)),
+                      Text("取消发送", style: AFont.instance.size22WhiteW500)
+                    ],
+                  ),
+                );
+              } else {
+                return Container();
               }
-              return AudioWave(animation: false, bars: bars);
             }),
           ),
         ),
@@ -461,7 +522,7 @@ class ChatBoxController extends FullLifeCycleController
   final Function voiceCallback;
   final Function fileCallback;
 
-  Rx<RecordStatus>? recordStatus;
+  final Rx<RecordStatus> _recordStatus = RecordStatus.stop.obs;
   FlutterSoundRecorder? _recorder;
   StreamSubscription? _mt;
   String? _currentFile;
@@ -477,9 +538,11 @@ class ChatBoxController extends FullLifeCycleController
     required this.fileCallback,
   });
 
-  get currentFile => _currentFile;
+  Rx<RecordStatus> get recordStatus => _recordStatus;
 
-  get currentFileName => _currentFileName;
+  String? get currentFile => _currentFile;
+
+  String? get currentFileName => _currentFileName;
 
   RxDouble? get level => _level;
 
@@ -587,8 +650,7 @@ class ChatBoxController extends FullLifeCycleController
     }
     try {
       // 状态变化
-      recordStatus ??= RecordStatus.recoding.obs;
-      recordStatus!.value = RecordStatus.recoding;
+      _recordStatus.value = RecordStatus.recoding;
 
       // 监听音浪
       _level ??= 0.0.obs;
@@ -597,6 +659,7 @@ class ChatBoxController extends FullLifeCycleController
       _mt = _recorder?.onProgress?.listen((e) {
         _level!.value = e.decibels ?? 0;
         _maxLevel = max(_maxLevel!, _level!.value);
+        log.info("duration:${e.duration}");
         _currentDuration = e.duration;
       });
 
@@ -629,6 +692,28 @@ class ChatBoxController extends FullLifeCycleController
     _mt = null;
     _level = null;
 
-    recordStatus?.value = RecordStatus.stop;
+    _recordStatus.value = RecordStatus.stop;
+  }
+
+  /// 暂停录音
+  pauseRecord() async {
+    if (_recorder == null) {
+      return;
+    }
+    if (_recorder!.isRecording) {
+      await _recorder!.pauseRecorder();
+      recordStatus.value = RecordStatus.pausing;
+    }
+  }
+
+  /// 继续录音
+  resumeRecord() async {
+    if (_recorder == null) {
+      return;
+    }
+    if (_recorder!.isPaused) {
+      await _recorder!.resumeRecorder();
+      recordStatus.value = RecordStatus.recoding;
+    }
   }
 }

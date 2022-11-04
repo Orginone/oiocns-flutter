@@ -92,6 +92,7 @@ dependencies:
   # 音频录制以及音频播放
   flutter_sound: ^9.2.13
   audio_wave: ^0.1.4
+  vibration: ^1.7.5
 
   # 组件管理库
   get: ^4.6.5
