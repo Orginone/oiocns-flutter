@@ -125,11 +125,12 @@ class ChatMessageDetail extends GetView<ChatController> {
       ));
     }
 
-    TargetResp userInfo = auth.userInfo;
-
     Widget body;
-    var textDirection =
-        detail.fromId == userInfo.id ? TextDirection.rtl : TextDirection.ltr;
+    var mySend = detail.fromId == auth.userId;
+    var rtl = TextDirection.rtl;
+    var ltr = TextDirection.ltr;
+    var textDirection = mySend ? rtl : ltr;
+
     switch (msgType) {
       case MsgType.text:
         body = _detail(
@@ -172,8 +173,7 @@ class ChatMessageDetail extends GetView<ChatController> {
             items.add(DetailFunc.recall);
           }
         }
-        TargetResp userInfo = auth.userInfo;
-        if (spaceId == userInfo.id) {
+        if (spaceId == auth.userId) {
           items.add(DetailFunc.remove);
         }
         if (items.isEmpty) {
@@ -279,16 +279,17 @@ class ChatMessageDetail extends GetView<ChatController> {
     controller.playStatusMap
         .putIfAbsent(detail.id, () => Detail(detail) as VoiceDetail);
 
+    var voicePlay = controller.playStatusMap[detail.id]!;
+    var seconds = voicePlay.initProgress ~/ 1000;
+    seconds = seconds > 60 ? 60 : seconds;
+
     return _detail(
-      padding: EdgeInsets.all(6.w),
       textDirection: textDirection,
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
+      body: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           GestureDetector(
             onTap: () async {
-              var voicePlay = controller.playStatusMap[detail.id]!;
               if (voicePlay.bytes.isEmpty) {
                 Fluttertoast.showToast(msg: "未获取到语音，播放失败！");
                 return;
@@ -301,7 +302,6 @@ class ChatMessageDetail extends GetView<ChatController> {
               }
             },
             child: Obx(() {
-              var voicePlay = controller.playStatusMap[detail.id]!;
               var status = voicePlay.status;
               return status.value == VoiceStatus.stop
                   ? const Icon(Icons.play_arrow, color: Colors.black)
@@ -309,47 +309,47 @@ class ChatMessageDetail extends GetView<ChatController> {
             }),
           ),
           Padding(padding: EdgeInsets.only(left: 5.w)),
-          Expanded(
-            child: SizedBox(
-              height: 12.h,
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      height: 16.h,
-                      decoration: BoxDecoration(
-                        color: Colors.white60,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(2.w),
-                        ),
+          SizedBox(
+            height: 12.h,
+            width: 60.w + seconds * 2.w,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    height: 16.h,
+                    decoration: BoxDecoration(
+                      color: UnifiedColors.lineLight,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(2.w),
                       ),
                     ),
                   ),
-                  Obx(() {
-                    var voicePlay = controller.playStatusMap[detail.id]!;
-                    var status = voicePlay.status;
-                    if (status.value == VoiceStatus.stop) {
-                      return Align(
-                        alignment: Alignment.centerLeft,
-                        child: Icon(Icons.circle, size: 12.h),
-                      );
-                    } else {
-                      return AlignTransition(
-                        alignment: controller.animation!,
-                        child: Icon(Icons.circle, size: 12.h),
-                      );
-                    }
-                  }),
-                ],
-              ),
+                ),
+                Obx(() {
+                  var status = voicePlay.status;
+                  if (status.value == VoiceStatus.stop) {
+                    return Align(
+                      alignment: Alignment.centerLeft,
+                      child: Icon(Icons.circle, size: 12.h),
+                    );
+                  } else {
+                    return AlignTransition(
+                      alignment: controller.animation!,
+                      child: Icon(Icons.circle, size: 12.h),
+                    );
+                  }
+                }),
+              ],
             ),
           ),
-          Padding(padding: EdgeInsets.only(left: 5.w)),
+          Padding(padding: EdgeInsets.only(left: 10.w)),
           Obx(() {
-            var voicePlay = controller.playStatusMap[detail.id]!;
             var progress = voicePlay.progress;
-            return Text(StringUtil.getMinusShow(progress.value ~/ 1000));
+            return Text(
+              StringUtil.getMinusShow(progress.value ~/ 1000),
+              style: AFont.instance.size22Black3,
+            );
           })
         ],
       ),

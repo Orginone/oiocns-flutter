@@ -595,7 +595,7 @@ class ChatBoxController extends FullLifeCycleController
 
       // 监听音浪
       _level ??= 0.0.obs;
-      _maxLevel ??= 40.0;
+      _maxLevel ??= 60.0;
       _recorder!.setSubscriptionDuration(const Duration(milliseconds: 50));
       _mt = _recorder?.onProgress?.listen((e) {
         _level!.value = e.decibels ?? 0;
