@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api/cohort_api.dart';
 import 'package:orginone/api/company_api.dart';
 import 'package:orginone/api/person_api.dart';
 
@@ -9,7 +10,7 @@ import '../../../api_resp/target_resp.dart';
 enum SearchItem {
   comprehensive("综合", []),
   friends("好友", [FunctionPoint.addFriends]),
-  cohorts("群组", []),
+  cohorts("群组", [FunctionPoint.applyFriends]),
   messages("消息", []),
   documents("文档", []),
   logs("日志", []),
@@ -27,7 +28,8 @@ enum SearchItem {
 }
 
 enum FunctionPoint {
-  addFriends("添加好友", "通过账号/手机号搜索添加");
+  addFriends("添加好友", "通过账号/手机号搜索"),
+  applyFriends("申请入群", "通过群组编号搜索");
 
   const FunctionPoint(this.functionName, this.placeHolder);
 
@@ -47,6 +49,7 @@ class SearchController extends GetxController with GetTickerProviderStateMixin {
 
   // 搜索的一些结果
   SearchParams<TargetResp>? personRes;
+  SearchParams<TargetResp>? cohortRes;
   SearchParams<TargetResp>? companyRes;
 
   // 搜索状态
@@ -98,6 +101,17 @@ class SearchController extends GetxController with GetTickerProviderStateMixin {
         case SearchItem.comprehensive:
           break;
         case SearchItem.cohorts:
+          cohortRes = SearchParams();
+          var pageResp = await CohortApi.searchCohorts(
+            keyword: filter,
+            limit: cohortRes!.limit,
+            offset: cohortRes!.offset,
+          );
+          log.info(pageResp.result);
+          var result = pageResp.result;
+          cohortRes!.offset = result.length;
+          cohortRes!.searchResults = result;
+          update();
           break;
         case SearchItem.messages:
           break;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api/cohort_api.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
@@ -173,22 +174,34 @@ class MessageSettingController extends GetxController {
     // 接口删除好友
     var targetId = messageItem.id;
     await PersonApi.remove(targetId);
+    await cacheRemove(auth.userId, targetId);
+    messageController.update();
+  }
 
-    var userId = auth.userId;
+  /// 退出群组
+  exitGroup() async {
+    var targetId = messageItem.id;
+    await CohortApi.exit(targetId);
+    await cacheRemove(spaceId, targetId);
+    messageController.update();
+  }
+
+  // 清理缓存内容并同步信息
+  cacheRemove(String spaceId, String targetId) async {
     var orgChatCache = messageController.orgChatCache;
 
     // 从缓存中删掉会话
-    orgChatCache.chats.where((space) => space.id == userId).forEach((space) {
+    orgChatCache.chats.where((space) => space.id == spaceId).forEach((space) {
       space.chats.removeWhere((chat) => chat.id == targetId);
     });
 
     // 从近期删除会话
     orgChatCache.recentChats
-        ?.removeWhere((chat) => chat.spaceId == userId && chat.id == targetId);
+        ?.removeWhere((chat) => chat.spaceId == spaceId && chat.id == targetId);
 
     // 从打开的会话删除
     orgChatCache.openChats
-        .removeWhere((chat) => chat.spaceId == userId && chat.id == targetId);
+        .removeWhere((chat) => chat.spaceId == spaceId && chat.id == targetId);
 
     // 同步会话
     await HubUtil().cacheChats(orgChatCache);

@@ -43,6 +43,16 @@ class MessageSettingPage extends GetView<MessageSettingController> {
     double bottomDistance = interval;
     double left = (screenSize.width.w - defaultBtnSize.width) / 2;
 
+    // 如果是群组,就有退出群组
+    if (chatType == ChatType.group) {
+      bottomDistance += interval + defaultBtnSize.height;
+      children.add(Positioned(
+        left: left,
+        bottom: bottomDistance,
+        child: _exitGroup(context),
+      ));
+    }
+
     // 个人空间的, 有特殊按钮
     if (item.spaceId == auth.userId) {
       // 如果是好友, 添加删除好友功能
@@ -71,100 +81,47 @@ class MessageSettingPage extends GetView<MessageSettingController> {
   }
 
   Widget _body(ChatType chatType) {
+    late Widget body;
     switch (chatType) {
       case ChatType.colleague:
       case ChatType.friends:
-        return Container(
-          padding: EdgeInsets.only(left: 30.w, right: 30.w),
-          color: UnifiedColors.navigatorBgColor,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _avatar,
-              Padding(padding: EdgeInsets.only(top: 50.h)),
-              _container(_interruption),
-              _container(_top),
-              _container(_searchChat),
-            ],
-          ),
+        body = Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _avatar,
+            Padding(padding: EdgeInsets.only(top: 50.h)),
+            _container(_interruption),
+            _container(_top),
+            _container(_searchChat),
+          ],
         );
+        break;
       case ChatType.group:
+        body = Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _avatar,
+            Padding(padding: EdgeInsets.only(top: 50.h)),
+            _container(_interruption),
+            _container(_top),
+            _container(_searchChat),
+          ],
+        );
         break;
       case ChatType.unit:
         break;
       case ChatType.unknown:
         Container(
           alignment: Alignment.center,
-          child: Text(
-            "未适配的类型",
-            style: AFont.instance.size16Black3,
-          ),
+          child: Text("未适配的类型", style: AFont.instance.size16Black3),
         );
         break;
     }
-
-    return Obx(() {
-      //拼接消息设置的界面,根据会话的标签分为个人,好友,单位,群组的概念
-      List<Widget> widgetList = [
-        Container(
-          margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-          child: FormItemType1(
-            leftSlot: Container(
-                width: 50,
-                height: 50,
-                decoration: const BoxDecoration(
-                    color: Colors.blueAccent,
-                    borderRadius: BorderRadius.all(Radius.circular(2))),
-                margin: const EdgeInsets.all(10),
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(6),
-                child: Text(
-                  controller.messageItem.name.isNotEmpty
-                      ? controller.messageItem.name.substring(
-                          0, controller.messageItem.name.length >= 2 ? 2 : 1)
-                      : '',
-                  style: const TextStyle(color: Colors.white, fontSize: 18),
-                )),
-            title: '群聊名称',
-            text: controller.messageItem.name,
-          ),
-        ),
-      ];
-      return Container();
-      // widgetList.add(personListWidget(typeName));
-      // if (typeName == '群组') {
-      //   widgetList.add(Container(
-      //     margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-      //     child: Column(
-      //       children: [
-      //         FormItemType2(
-      //           text: "我在本群昵称",
-      //           rightSlot: Text(
-      //             controller.userInfo.name,
-      //             style: const TextStyle(color: Colors.grey),
-      //           ),
-      //         ),
-      //         FormItemType2(
-      //           text: "备注",
-      //           rightSlot: Text(
-      //             controller.messageItem.remark,
-      //             style: const TextStyle(color: Colors.grey),
-      //           ),
-      //         ),
-      //       ],
-      //     ),
-      //   ));
-      // }
-      //
-      // widgetList.add(btnListWidget(typeName));
-      // return ListView(
-      //   children: [
-      //     Column(
-      //         crossAxisAlignment: CrossAxisAlignment.start,
-      //         children: widgetList)
-      //   ],
-      // );
-    });
+    return Container(
+      padding: EdgeInsets.only(left: 30.w, right: 30.w),
+      color: UnifiedColors.navigatorBgColor,
+      child: body,
+    );
   }
 
   /// 选择项包装器
@@ -329,6 +286,43 @@ class MessageSettingPage extends GetView<MessageSettingController> {
         );
       },
       child: Text("删除好友", style: AFont.instance.size22WhiteW500),
+    );
+  }
+
+  /// 删除好友
+  Widget _exitGroup(BuildContext context) {
+    return ElevatedButton(
+      style: ButtonStyle(
+        fixedSize: MaterialStateProperty.all(defaultBtnSize),
+        backgroundColor: MaterialStateProperty.all(UnifiedColors.backColor),
+      ),
+      onPressed: () {
+        showCupertinoDialog(
+          context: context,
+          builder: (context) {
+            return CupertinoAlertDialog(
+              title: Text("您确定退出${controller.messageItem.name}吗?"),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: const Text('取消'),
+                  onPressed: () async {
+                    Navigator.pop(context);
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: const Text('确定'),
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    await controller.exitGroup();
+                    Get.until((route) => route.settings.name == Routers.home);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+      child: Text("退出群聊", style: AFont.instance.size22WhiteW500),
     );
   }
 

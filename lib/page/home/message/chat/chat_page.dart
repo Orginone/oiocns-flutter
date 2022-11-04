@@ -10,7 +10,6 @@ import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/chat/component/chat_box.dart';
 import 'package:orginone/util/date_util.dart';
-import 'package:orginone/util/sys_util.dart';
 
 import '../../../../api_resp/message_item_resp.dart';
 import '../../../../component/a_font.dart';

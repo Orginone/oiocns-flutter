@@ -229,6 +229,8 @@ class MessagePage extends GetView<MessageController> {
         _specialFocus,
         Padding(padding: EdgeInsets.only(top: top)),
         _myRelation,
+        Padding(padding: EdgeInsets.only(top: top)),
+        _myCohort,
       ],
     );
   }
@@ -322,6 +324,18 @@ class MessagePage extends GetView<MessageController> {
         ),
         func: () {
           Get.toNamed(Routers.contact);
+        },
+      );
+
+  get _myCohort => ChooseItem(
+        padding: EdgeInsets.zero,
+        header: _header(Icons.group),
+        body: Container(
+          margin: EdgeInsets.only(left: 15.w),
+          child: Text("我的群组", style: AFont.instance.size22Black3W500),
+        ),
+        func: () {
+          Get.toNamed(Routers.cohorts);
         },
       );
 }

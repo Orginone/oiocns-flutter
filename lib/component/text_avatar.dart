@@ -21,16 +21,16 @@ class TextAvatar extends StatelessWidget {
   final TextStyle textStyle;
   final Widget? status;
 
-  const TextAvatar(
-      {Key? key,
-      required this.avatarName,
-      this.radius = defaultRadius,
-      this.width = defaultWidth,
-      this.margin = defaultMargin,
-      this.bgColor = defaultBgColor,
-      this.textStyle = defaultTextStyle,
-      this.status})
-      : super(key: key);
+  const TextAvatar({
+    Key? key,
+    required this.avatarName,
+    this.radius = defaultRadius,
+    this.width = defaultWidth,
+    this.margin = defaultMargin,
+    this.bgColor = defaultBgColor,
+    this.textStyle = defaultTextStyle,
+    this.status,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

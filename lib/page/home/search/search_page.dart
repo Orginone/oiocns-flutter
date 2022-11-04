@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/tabs/gf_tabbar.dart';
 import 'package:getwidget/components/tabs/gf_tabbar_view.dart';
+import 'package:orginone/api/cohort_api.dart';
 import 'package:orginone/api/person_api.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
@@ -44,6 +45,7 @@ class SearchPage extends GetView<SearchController> {
         case SearchItem.comprehensive:
           break;
         case SearchItem.cohorts:
+          body.children.add(_targetBody(TargetType.cohort));
           break;
         case SearchItem.messages:
           break;
@@ -109,13 +111,14 @@ class SearchPage extends GetView<SearchController> {
         .toList();
 
     return GFTabBar(
-        width: 1000,
-        tabBarHeight: 40,
-        indicatorColor: Colors.blueAccent,
-        tabBarColor: UnifiedColors.easyGrey,
-        length: controller.tabController.length,
-        controller: controller.tabController,
-        tabs: tabs);
+      width: 1000,
+      tabBarHeight: 40,
+      indicatorColor: Colors.blueAccent,
+      tabBarColor: UnifiedColors.easyGrey,
+      length: controller.tabController.length,
+      controller: controller.tabController,
+      tabs: tabs,
+    );
   }
 
   Widget _tabView() {
@@ -143,6 +146,7 @@ class SearchPage extends GetView<SearchController> {
             searchResults = controller.companyRes?.searchResults ?? [];
             break;
           case TargetType.cohort:
+            searchResults = controller.cohortRes?.searchResults ?? [];
             break;
           case TargetType.department:
             break;
@@ -167,18 +171,21 @@ class SearchPage extends GetView<SearchController> {
         textStyle: AFont.instance.size20WhiteW500,
       ),
       Padding(padding: EdgeInsets.only(left: 10.w)),
-      Expanded(
-          child: Text(targetResp.name, style: AFont.instance.size22Black3W500)),
+      Text(targetResp.name, style: AFont.instance.size22Black3W500),
+      Expanded(child: Container()),
     ];
     if (controller.functionPoint != null) {
       switch (controller.functionPoint!) {
         case FunctionPoint.addFriends:
+        case FunctionPoint.applyFriends:
           children.add(ElevatedButton(
             onPressed: () async {
-              var result = await PersonApi.join(targetResp.id);
-              if (result != null) {
-                Fluttertoast.showToast(msg: "申请成功");
+              if (controller.functionPoint! == FunctionPoint.addFriends) {
+                await PersonApi.join(targetResp.id);
+              } else {
+                await CohortApi.join(targetResp.id);
               }
+              Fluttertoast.showToast(msg: "申请成功");
             },
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(Colors.green),

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/util/api_exception.dart';
 import 'package:orginone/util/hive_util.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
@@ -55,12 +56,14 @@ class HttpUtil {
     return options;
   }
 
-  Future<dynamic> get(String path,
-      {Map<String, dynamic>? queryParameters,
-      Options? options,
-      CancelToken? cancelToken,
-      ProgressCallback? onReceiveProgress,
-      bool? hasToken}) async {
+  Future<dynamic> get(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onReceiveProgress,
+    bool? hasToken,
+  }) async {
     log.info("================Get Http Request================");
     try {
       log.info("====> path: $path");
@@ -88,16 +91,18 @@ class HttpUtil {
     }
   }
 
-  Future<dynamic> post(String path,
-      {dynamic data,
-      Map<String, dynamic>? queryParameters,
-      Options? options,
-      CancelToken? cancelToken,
-      ProgressCallback? onSendProgress,
-      ProgressCallback? onReceiveProgress,
-      bool? hasToken,
-      bool? showError = true,
-      ErrorCallback? errorCallback}) async {
+  Future<dynamic> post(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+    bool? hasToken,
+    bool? showError = true,
+    ErrorCallback? errorCallback,
+  }) async {
     log.info("================Post Http Request================");
     try {
       log.info("====> path: $path");
@@ -119,11 +124,21 @@ class HttpUtil {
       );
 
       return _parseResp(result);
+    } on ApiException catch (error) {
+      if (showError!) {
+        Fluttertoast.showToast(msg: error.message);
+      }
+      if (errorCallback != null) {
+        errorCallback(error.toString());
+      }
+      rethrow;
     } on Exception catch (error) {
       if (showError!) {
         Fluttertoast.showToast(msg: error.toString());
       }
-      errorCallback!(error.toString());
+      if (errorCallback != null) {
+        errorCallback(error.toString());
+      }
       rethrow;
     } on Error catch (error) {
       Fluttertoast.showToast(msg: error.toString());
@@ -137,11 +152,12 @@ class HttpUtil {
     if (response.statusCode != 200) {
       throw Exception(response.statusMessage);
     } else {
+      log.info(response.data!);
       var resp = ApiResp.fromJson(response.data!);
       if (resp.code == 200) {
         return resp.data;
       }
-      Fluttertoast.showToast(msg: resp.msg);
+      throw ApiException(resp.msg);
     }
   }
 

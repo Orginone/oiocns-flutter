@@ -199,10 +199,11 @@ class HomePage extends GetView<HomeController> {
           Container(
             margin: EdgeInsets.only(left: 10.w),
             child: GestureDetector(
-                child: const Icon(Icons.search, color: Colors.black),
-                onTap: () {
-                  Get.toNamed(Routers.search);
-                }),
+              child: const Icon(Icons.search, color: Colors.black),
+              onTap: () {
+                Get.toNamed(Routers.search);
+              },
+            ),
           ),
           Container(
             margin: EdgeInsets.only(left: 10.w),
@@ -214,10 +215,15 @@ class HomePage extends GetView<HomeController> {
               },
               onTap: () {
                 showMenu(
-                    context: context,
-                    position: RelativeRect.fromLTRB(
-                        x - 20.w, y + 20.h, x + 20.w, y + 40.h),
-                    items: _popupMenus(context));
+                  context: context,
+                  position: RelativeRect.fromLTRB(
+                    x - 20.w,
+                    y + 20.h,
+                    x + 20.w,
+                    y + 40.h,
+                  ),
+                  items: _popupMenus(context),
+                );
               },
             ),
           ),
