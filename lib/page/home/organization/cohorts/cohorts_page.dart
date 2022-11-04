@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
 import 'package:orginone/util/string_util.dart';
 
@@ -9,6 +10,7 @@ import '../../../../component/a_font.dart';
 import '../../../../component/text_avatar.dart';
 import '../../../../component/text_search.dart';
 import '../../../../component/unified_scaffold.dart';
+import '../../../../logic/authority.dart';
 import '../../../../routers.dart';
 import '../../../../util/widget_util.dart';
 import '../../search/search_controller.dart';
@@ -72,11 +74,13 @@ class CohortsPage extends GetView<CohortsController> {
         ),
       );
 
-  Widget _item(TargetResp targetResp) {
-    var avatarName = StringUtil.getPrefixChars(targetResp.name, count: 2);
+  Widget _item(TargetResp cohort) {
+    auth.isRelationAdmin([cohort.id]);
+
+    var avatarName = StringUtil.getPrefixChars(cohort.name, count: 2);
     return GestureDetector(
       onTap: () {
-        Get.toNamed(Routers.personDetail, arguments: targetResp.team?.code);
+        Get.toNamed(Routers.personDetail, arguments: cohort.team?.code);
       },
       child: Container(
         padding: EdgeInsets.only(left: 25.w, top: 20.h),
@@ -84,7 +88,9 @@ class CohortsPage extends GetView<CohortsController> {
           children: [
             TextAvatar(avatarName: avatarName),
             Padding(padding: EdgeInsets.only(left: 10.w)),
-            Text(targetResp.name, style: AFont.instance.size22Black3),
+            Text(cohort.name, style: AFont.instance.size22Black3),
+            Expanded(child: Container()),
+            Column(children: [])
           ],
         ),
       ),
