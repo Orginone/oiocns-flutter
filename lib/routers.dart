@@ -25,6 +25,7 @@ import 'package:orginone/page/home/message/message_binding.dart';
 import 'package:orginone/page/home/message/message_page.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_binding.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_page.dart';
+import 'package:orginone/page/home/message/more_message/more_message_page.dart';
 import 'package:orginone/page/home/mine/mine_binding.dart';
 import 'package:orginone/page/home/mine/mine_card/mine_card_binding.dart';
 import 'package:orginone/page/home/mine/mine_card/mine_card_page.dart';
@@ -70,10 +71,12 @@ class Routers {
   static const String home = "/home";
   static const String center = "/center";
   static const String spaceChoose = "/spaceChoose";
+  // 会话
   static const String message = "/message";
+  static const String chat = "/chat";
+  static const String moreMessage = "/moreMessage";
   static const String organization = "/organization";
   static const String work = "/work";
-  static const String chat = "/chat";
   static const String messageSetting = "/messageSetting";
   static const String friends = "/friends";
   static const String units = "/units";
@@ -102,29 +105,35 @@ class Routers {
   static List<GetPage> getInitRouters() {
     return [
       GetPage(
-          name: Routers.main,
-          page: () => const LoginPage(),
-          binding: LoginBinding()),
+        name: Routers.main,
+        page: () => const LoginPage(),
+        binding: LoginBinding(),
+      ),
       GetPage(
-          name: Routers.forget,
-          page: () => const ForgetPage(),
-          binding: ForgetBinding()),
+        name: Routers.forget,
+        page: () => const ForgetPage(),
+        binding: ForgetBinding(),
+      ),
       GetPage(
-          name: Routers.register,
-          page: () => const RegisterPage(),
-          binding: RegisterBinding()),
+        name: Routers.register,
+        page: () => const RegisterPage(),
+        binding: RegisterBinding(),
+      ),
       GetPage(
-          name: Routers.login,
-          page: () => const LoginPage(),
-          binding: LoginBinding()),
+        name: Routers.login,
+        page: () => const LoginPage(),
+        binding: LoginBinding(),
+      ),
       GetPage(
-          name: Routers.home,
-          page: () => const HomePage(),
-          binding: HomeBinding()),
+        name: Routers.home,
+        page: () => const HomePage(),
+        binding: HomeBinding(),
+      ),
       GetPage(
-          name: Routers.center,
-          page: () => const CenterPage(),
-          binding: CenterBinding()),
+        name: Routers.center,
+        page: () => const CenterPage(),
+        binding: CenterBinding(),
+      ),
       GetPage(
         name: Routers.spaceChoose,
         page: () => const SpaceChoosePage(),
@@ -133,6 +142,11 @@ class Routers {
       GetPage(
         name: Routers.message,
         page: () => const MessagePage(),
+        binding: MessageBinding(),
+      ),
+      GetPage(
+        name: Routers.moreMessage,
+        page: () => const MoreMessagePage(),
         binding: MessageBinding(),
       ),
       GetPage(

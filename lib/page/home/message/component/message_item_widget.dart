@@ -77,7 +77,7 @@ class MessageItemWidget extends GetView<MessageController> {
         Get.toNamed(Routers.chat, arguments: args);
       },
       child: Container(
-        padding: EdgeInsets.only(left: 25.w, top: 17.h, right: 25.w),
+        padding: EdgeInsets.only(left: 25.w, top: 16.h, right: 25.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,

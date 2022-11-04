@@ -2,6 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api_resp/message_item_resp.dart';
@@ -64,7 +65,6 @@ class MessageSettingPage extends GetView<MessageSettingController> {
 
     return UnifiedScaffold(
       appBarLeading: WidgetUtil.defaultBackBtn,
-      appBarBgColor: UnifiedColors.navigatorBgColor,
       appBarElevation: 0,
       body: Stack(children: children),
     );
@@ -280,6 +280,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                   onPressed: () async {
                     Navigator.pop(context);
                     await controller.clearHistoryMsg();
+                    Fluttertoast.showToast(msg: "清空成功!");
                   },
                 ),
               ],

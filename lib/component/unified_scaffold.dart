@@ -4,7 +4,7 @@ import 'package:getwidget/components/appbar/gf_appbar.dart';
 import 'unified_colors.dart';
 
 const double defaultAppBarPercent = 0.07;
-const Color defaultAppBarColor = UnifiedColors.lightGrey;
+const Color defaultAppBarColor = UnifiedColors.navigatorBgColor;
 const Color defaultBgColor = Colors.white;
 
 class UnifiedScaffold extends StatelessWidget {

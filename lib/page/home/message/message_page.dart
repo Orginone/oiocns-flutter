@@ -19,7 +19,6 @@ import '../../../component/unified_edge_insets.dart';
 import '../../../component/unified_text_style.dart';
 import '../../../logic/authority.dart';
 import '../../../routers.dart';
-import 'component/group_item_widget.dart';
 
 class MessagePage extends GetView<MessageController> {
   const MessagePage({Key? key}) : super(key: key);
@@ -34,7 +33,6 @@ class MessagePage extends GetView<MessageController> {
           labelColor: Colors.black,
           tabs: [
             _chatTab("会话"),
-            // _chatTab("会话"),
             Text("通讯录", style: text22),
           ],
         ),
@@ -48,7 +46,6 @@ class MessagePage extends GetView<MessageController> {
           controller: controller.tabController,
           children: [
             _recentChat(),
-            // _chat(),
             _relation(),
           ],
         ),
@@ -78,31 +75,26 @@ class MessagePage extends GetView<MessageController> {
         return ListView.builder(
           shrinkWrap: true,
           scrollDirection: Axis.vertical,
-          itemCount: items.length,
+          itemCount: items.length + 1,
           itemBuilder: (BuildContext context, int index) {
-            var recentChat = items[index];
-            return MessageItemWidget(recentChat.spaceId!, recentChat);
+            if (index < items.length) {
+              var recentChat = items[index];
+              return MessageItemWidget(recentChat.spaceId!, recentChat);
+            }
+            return GestureDetector(
+              onTap: () {
+                Get.toNamed(Routers.moreMessage);
+              },
+              child: Column(
+                children: [
+                  Padding(padding: EdgeInsets.only(top: 16.h)),
+                  Text("更多会话", style: AFont.instance.size18themeColorW500)
+                ],
+              ),
+            );
           },
         );
       },
-    );
-  }
-
-  Widget _chat() {
-    return RefreshIndicator(
-      onRefresh: () async {
-        await controller.refreshCharts();
-      },
-      child: GetBuilder<MessageController>(
-        builder: (controller) => ListView.builder(
-          shrinkWrap: true,
-          scrollDirection: Axis.vertical,
-          itemCount: controller.orgChatCache.chats.length,
-          itemBuilder: (BuildContext context, int index) {
-            return GroupItemWidget(index);
-          },
-        ),
-      ),
     );
   }
 
@@ -185,7 +177,10 @@ class MessagePage extends GetView<MessageController> {
         ),
         body: Container(
           margin: EdgeInsets.only(left: 15.w),
-          child: Text(currentSpace.name, style: AFont.instance.size22Black3W700),
+          child: Text(
+            currentSpace.name,
+            style: AFont.instance.size22Black3W700,
+          ),
         ),
         func: () {
           if (isSelf) {
