@@ -1,5 +1,5 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
-import 'package:orginone/component/form.dart';
+import 'package:orginone/component/form_widget.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
 import 'package:orginone/page/home/affairs/detail/affairs_detail.dart';
@@ -34,6 +34,7 @@ import 'package:orginone/page/home/mine/mine_info/mine_info_page.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/mine/mine_unit/mine_unit_binding.dart';
 import 'package:orginone/page/home/mine/mine_unit/mine_unit_page.dart';
+import 'package:orginone/page/home/organization/cohorts/cohort_create/cohort_create_page.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_binding.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_page.dart';
 import 'package:orginone/page/home/organization/dept/dept_binding.dart';
@@ -82,6 +83,7 @@ class Routers {
   static const String units = "/units";
   static const String groups = "/groups";
   static const String cohorts = "/cohorts";
+  static const String cohortCreate = "/cohortCreate";
   static const String dept = "/dept";
   static const String personDetail = "/person_detail";
   static const String personAdd = "/personAdd";
@@ -99,7 +101,6 @@ class Routers {
   //首页-办事
   static const String affairs = "/affairs";
   static const String friendAdd = "/friendAdd";
-  static const String form = "/form";
   static const String affairsDetail = "/affairsDetail";
 
   static List<GetPage> getInitRouters() {
@@ -190,6 +191,11 @@ class Routers {
         binding: CohortsBinding(),
       ),
       GetPage(
+        name: Routers.cohortCreate,
+        page: () => const CohortCreatePage(),
+        binding: CohortsBinding(),
+      ),
+      GetPage(
         name: Routers.dept,
         page: () => const DeptPage(),
         binding: DeptBinding(),
@@ -248,11 +254,6 @@ class Routers {
         name: Routers.scanningResult,
         page: () => const ScanningResultPage(),
         binding: ScanningResultBinding(),
-      ),
-      GetPage(
-        name: Routers.form,
-        page: () => const Form(),
-        binding: FormBinding(),
       ),
       GetPage(
         name: Routers.friendAdd,

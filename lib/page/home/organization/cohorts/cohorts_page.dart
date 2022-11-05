@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
 import 'package:orginone/util/string_util.dart';
 
@@ -31,7 +30,9 @@ class CohortsPage extends GetView<CohortsController> {
 
   get _actions => <Widget>[
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Get.toNamed(Routers.cohortCreate);
+          },
           icon: const Icon(Icons.create_outlined, color: Colors.black),
         ),
         IconButton(
@@ -79,9 +80,7 @@ class CohortsPage extends GetView<CohortsController> {
 
     var avatarName = StringUtil.getPrefixChars(cohort.name, count: 2);
     return GestureDetector(
-      onTap: () {
-        Get.toNamed(Routers.personDetail, arguments: cohort.team?.code);
-      },
+      onTap: () {},
       child: Container(
         padding: EdgeInsets.only(left: 25.w, top: 20.h),
         child: Row(

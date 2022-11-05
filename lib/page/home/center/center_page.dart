@@ -1,7 +1,5 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:graphic/graphic.dart';
@@ -15,9 +13,9 @@ import '../../../routers.dart';
 enum Functions {
   addFriends("加好友", Routers.friendAdd),
   createUnits("创单位", Routers.unitCreate),
-  inviteMembers("邀成员", Routers.form),
-  createApplication("建应用", Routers.form),
-  scanShop("逛商店", Routers.form);
+  inviteMembers("邀成员", Routers.unitCreate),
+  createApplication("建应用", Routers.unitCreate),
+  scanShop("逛商店", Routers.unitCreate);
 
   final String funcName;
   final String router;

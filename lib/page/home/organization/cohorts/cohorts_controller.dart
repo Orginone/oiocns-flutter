@@ -1,3 +1,4 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:logging/logging.dart';
 
@@ -39,5 +40,15 @@ class CohortsController extends GetxController {
 
   Future<void> searchingCallback(String filter) async {
     await onLoadCohorts(filter);
+  }
+
+  Future<dynamic> createCohort(Map<String, dynamic> value) async {
+    await CohortApi.createCohort(
+      code: value["code"],
+      name: value["name"],
+      teamRemark: value["remark"],
+    );
+    await onLoad();
+    Fluttertoast.showToast(msg: "创建成功！");
   }
 }

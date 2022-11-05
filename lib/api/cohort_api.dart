@@ -48,4 +48,16 @@ class CohortApi {
     Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
     return PageResp.fromMap(resp, TargetResp.fromMap);
   }
+
+  /// 创建群组
+  static Future<dynamic> createCohort({
+    required String code,
+    required String name,
+    required String teamRemark,
+  }) async {
+    String url = "${Constant.cohort}/create";
+    var data = {"code": code, "name": name, "teamRemark": teamRemark};
+
+    return await HttpUtil().post(url, data: data);
+  }
 }
