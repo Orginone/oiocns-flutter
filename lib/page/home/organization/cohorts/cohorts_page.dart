@@ -98,10 +98,15 @@ class CohortsPage extends GetView<CohortsController> {
 
     var avatarName = StringUtil.getPrefixChars(cohort.name, count: 2);
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
+        var messageController = controller.messageController;
+        var spaceMessageItemMap = messageController.spaceMessageItemMap;
+        var hasSpace = spaceMessageItemMap.containsKey(cohort.belongId);
+        var spaceId = hasSpace ? cohort.belongId : auth.userId;
         Map<String, dynamic> args = {
-          "messageItem": controller.messageController.getMsgItem(cohort),
-          "spaceId": cohort.belongId,
+          "messageItem": messageController.getMsgItem(spaceId, cohort),
+          "spaceId": spaceId,
           "messageItemId": cohort.id
         };
         Get.toNamed(Routers.chat, arguments: args);
@@ -125,7 +130,8 @@ class CohortsPage extends GetView<CohortsController> {
     double x = 0, y = 0;
     return TextTag(
       ctrlType.typeName,
-      padding: EdgeInsets.all(5.w),
+      textStyle: AFont.instance.size18themeColorW500,
+      padding: EdgeInsets.all(10.w),
       onTap: () async {
         var items = CohortFunction.values;
         if (ctrlType == CtrlType.manageable) {

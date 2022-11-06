@@ -55,8 +55,8 @@ class MessageController extends GetxController
   }
 
   /// 获取消息会话对象
-  MessageItemResp getMsgItem(TargetResp targetResp) {
-    return spaceMessageItemMap[targetResp.belongId]![targetResp.id]!;
+  MessageItemResp getMsgItem(String spaceId, TargetResp targetResp) {
+    return spaceMessageItemMap[spaceId]![targetResp.id]!;
   }
 
   /// 分组排序
