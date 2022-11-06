@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 const EdgeInsets defaultPadding = EdgeInsets.only(left: 15, top: 15, right: 15);

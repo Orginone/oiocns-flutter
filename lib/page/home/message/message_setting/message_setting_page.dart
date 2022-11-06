@@ -1,22 +1,19 @@
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api_resp/message_item_resp.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/choose_item.dart';
-import 'package:orginone/component/form_item_type1.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/logic/authority.dart';
 import 'package:orginone/page/home/message/component/message_item_widget.dart';
+import 'package:orginone/page/home/organization/cohorts/component/avatar_group.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/screen_init.dart';
-import 'package:orginone/util/hub_util.dart';
 
 import '../../../../enumeration/chat_type.dart';
 import '../../../../enumeration/enum_map.dart';
@@ -81,46 +78,49 @@ class MessageSettingPage extends GetView<MessageSettingController> {
   }
 
   Widget _body(ChatType chatType) {
-    late Widget body;
+    List<Widget> children = [];
     switch (chatType) {
       case ChatType.colleague:
       case ChatType.friends:
-        body = Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _avatar,
-            Padding(padding: EdgeInsets.only(top: 50.h)),
-            _interruption,
-            _top,
-            _searchChat,
-          ],
-        );
+        children = [
+          _avatar,
+          Padding(padding: EdgeInsets.only(top: 50.h)),
+          _interruption,
+          _top,
+          _searchChat,
+        ];
         break;
       case ChatType.group:
-        body = Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _avatar,
-            Padding(padding: EdgeInsets.only(top: 50.h)),
-            _interruption,
-            _top,
-            _searchChat,
-          ],
-        );
-        break;
       case ChatType.unit:
+        children = [
+          _avatar,
+          Padding(padding: EdgeInsets.only(top: 50.h)),
+          const AvatarGroup(showCount: 13),
+          if (controller.hasReminder) _more,
+          _interruption,
+          _top,
+          _searchChat,
+        ];
         break;
       case ChatType.unknown:
-        Container(
-          alignment: Alignment.center,
-          child: Text("未适配的类型", style: AFont.instance.size16Black3),
-        );
         break;
     }
     return Container(
       padding: EdgeInsets.only(left: 30.w, right: 30.w),
       color: UnifiedColors.navigatorBgColor,
-      child: body,
+      child: ListView(children: children),
+    );
+  }
+
+  get _more {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        GestureDetector(
+          onTap: () => Get.toNamed(Routers.moreCohort),
+          child: Text("查看更多", style: AFont.instance.size20themeColorW500),
+        ),
+      ],
     );
   }
 
@@ -315,208 +315,5 @@ class MessageSettingPage extends GetView<MessageSettingController> {
       },
       child: Text("退出群聊", style: AFont.instance.size22WhiteW500),
     );
-  }
-
-  //群组的widget
-  Widget personListWidget(String type) {
-    switch (type) {
-      case '本人':
-      case '好友':
-        return Container();
-      case '群组':
-      case '单位':
-        return Container(
-          color: Colors.white,
-          margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-          child: Column(
-            children: [
-              Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                        margin: const EdgeInsets.all(10),
-                        child: Text(
-                            "组成员 ${controller.originPersonList.length} 人",
-                            style: const TextStyle(fontSize: 16))),
-                    Container(
-                      constraints: const BoxConstraints(
-                          maxHeight: 40,
-                          minHeight: 40,
-                          minWidth: 50,
-                          maxWidth: 150),
-                      margin: const EdgeInsets.all(10),
-                      child: TextField(
-                          controller: controller.searchGroupTextController,
-                          decoration: InputDecoration(
-                              suffixIcon: IconButton(
-                                  icon: const Icon(Icons.search),
-                                  onPressed: () {
-                                    controller.searchPerson();
-                                  }),
-                              contentPadding:
-                                  const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                              enabledBorder: const OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Color(0xFFDCDFE6)),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4.0)),
-                              ),
-                              focusedBorder: const OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Color(0xFF409EFF)),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4.0)),
-                              ),
-                              hintText: "搜索成员")),
-                    )
-                  ]),
-              Container(
-                height: 70,
-                margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: type == '群组'
-                        ? 2 + controller.filterPersonList.length
-                        : controller.filterPersonList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index == 0 && type == '群组') {
-                        return GestureDetector(
-                            behavior: HitTestBehavior.translucent,
-                            onTap: () {},
-                            child: Container(
-                              height: 50,
-                              margin: const EdgeInsets.fromLTRB(10, 1, 10, 20),
-                              child: DottedBorder(
-                                dashPattern: const [4, 4],
-                                strokeWidth: 1,
-                                padding: const EdgeInsets.all(0),
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  width: 50,
-                                  child: const Text("+",
-                                      style: TextStyle(fontSize: 40)),
-                                  // color: Colors.black26,
-                                ),
-                              ),
-                            ));
-                      } else if (index == 1 && type == '群组') {
-                        return Container(
-                          width: 50,
-                          margin: const EdgeInsets.fromLTRB(10, 0, 10, 20),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1,
-                                color: const Color.fromRGBO(255, 0, 0, 1)),
-                          ),
-                          child: const Text("-",
-                              style:
-                                  TextStyle(fontSize: 40, color: Colors.red)),
-                        );
-                      } else {
-                        return GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: () {
-                            Get.toNamed(Routers.personDetail,
-                                arguments: controller
-                                    .filterPersonList[index].team?.code);
-                          },
-                          child: Container(
-                            width: 50,
-                            margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                FadeInImage.assetNetwork(
-                                  placeholder: 'images/person-empty.png',
-                                  image: 'qqqqqq',
-                                  imageErrorBuilder:
-                                      (context, error, stackTrace) {
-                                    return Container(
-                                      width: 50,
-                                      height: 50,
-                                      decoration: const BoxDecoration(
-                                          image: DecorationImage(
-                                              image: AssetImage(
-                                                  'images/person-empty.png'),
-                                              fit: BoxFit.cover)),
-                                    );
-                                  },
-                                  width: 50,
-                                  height: 50,
-                                ),
-                                Text(
-                                    controller
-                                        .filterPersonList[
-                                            type == '群组' ? index - 2 : index]
-                                        .name,
-                                    style: const TextStyle(fontSize: 12),
-                                    overflow: TextOverflow.ellipsis),
-                              ],
-                            ),
-                          ),
-                        );
-                      }
-                    }),
-              ),
-              const Divider(
-                height: 1,
-              )
-            ],
-          ),
-        );
-    }
-    return Container();
-  }
-
-  //按钮组的widget
-  Widget btnListWidget(String type) {
-    switch (type) {
-      case '本人':
-        return GFButton(
-          size: 50,
-          color: Colors.white,
-          textStyle: const TextStyle(
-              fontSize: 16, color: Color.fromRGBO(255, 0, 0, 1)),
-          fullWidthButton: true,
-          onPressed: () async {},
-          text: "清空聊天记录",
-        );
-      case '好友':
-        return Column(
-          children: [
-            GFButton(
-              size: 50,
-              color: Colors.white,
-              textStyle: const TextStyle(
-                  fontSize: 16, color: Color.fromRGBO(255, 0, 0, 1)),
-              fullWidthButton: true,
-              onPressed: () async {},
-              text: "删除好友",
-            ),
-            const Divider(
-              height: 1,
-            ),
-            GFButton(
-              size: 50,
-              color: Colors.white,
-              textStyle: const TextStyle(
-                  fontSize: 16, color: Color.fromRGBO(255, 0, 0, 1)),
-              fullWidthButton: true,
-              onPressed: () async {
-                HubUtil().clearHistoryMsg(
-                    controller.spaceId, controller.messageItemId);
-              },
-              text: "清空聊天记录",
-            ),
-          ],
-        );
-      case '群组':
-        return Container();
-      case '单位':
-        return Container();
-    }
-    return Container();
   }
 }

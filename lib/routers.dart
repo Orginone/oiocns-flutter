@@ -34,9 +34,10 @@ import 'package:orginone/page/home/mine/mine_info/mine_info_page.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/mine/mine_unit/mine_unit_binding.dart';
 import 'package:orginone/page/home/mine/mine_unit/mine_unit_page.dart';
-import 'package:orginone/page/home/organization/cohorts/cohort_create/cohort_maintain_page.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_binding.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_page.dart';
+import 'package:orginone/page/home/organization/cohorts/component/cohort_maintain_page.dart';
+import 'package:orginone/page/home/organization/cohorts/component/more_cohort.dart';
 import 'package:orginone/page/home/organization/dept/dept_binding.dart';
 import 'package:orginone/page/home/organization/dept/dept_page.dart';
 import 'package:orginone/page/home/organization/friends/friend_add/friend_add_binding.dart';
@@ -72,6 +73,7 @@ class Routers {
   static const String home = "/home";
   static const String center = "/center";
   static const String spaceChoose = "/spaceChoose";
+
   // 会话
   static const String message = "/message";
   static const String chat = "/chat";
@@ -84,6 +86,7 @@ class Routers {
   static const String groups = "/groups";
   static const String cohorts = "/cohorts";
   static const String cohortMaintain = "/cohortMaintain";
+  static const String moreCohort = "/moreCohort";
   static const String dept = "/dept";
   static const String personDetail = "/person_detail";
   static const String personAdd = "/personAdd";
@@ -193,6 +196,11 @@ class Routers {
       GetPage(
         name: Routers.cohortMaintain,
         page: () => const CohortMaintainPage(),
+        binding: CohortsBinding(),
+      ),
+      GetPage(
+        name: Routers.moreCohort,
+        page: () => const MoreCohort(),
         binding: CohortsBinding(),
       ),
       GetPage(

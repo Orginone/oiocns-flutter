@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:orginone/component/unified_colors.dart';
 
 enum TextAvatarType { space, chat, avatar }
 
 const double defaultWidth = 40;
 const double defaultRadius = 5;
-const Color defaultBgColor = Colors.blueAccent;
+const Color defaultBgColor = UnifiedColors.themeColor;
 const EdgeInsets defaultMargin = EdgeInsets.zero;
 const TextStyle defaultTextStyle = TextStyle(
   fontSize: 16,

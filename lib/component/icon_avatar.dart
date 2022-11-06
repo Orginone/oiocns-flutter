@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:orginone/component/unified_colors.dart';
 
 const double defaultRadius = 5;
 const EdgeInsets defaultInsets = EdgeInsets.all(12);
-const Color defaultBgColor = Colors.blueAccent;
+const Color defaultBgColor = UnifiedColors.themeColor;
 
 class IconAvatar extends StatelessWidget {
   final Icon icon;
