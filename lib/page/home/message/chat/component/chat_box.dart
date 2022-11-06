@@ -11,7 +11,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/util/permission_util.dart';
 import 'package:path_provider/path_provider.dart';
@@ -409,15 +408,16 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
+            width: 80.w,
+            height: 80.w,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(5.w)),
             ),
-            padding: EdgeInsets.all(16.w),
-            margin: EdgeInsets.only(bottom: 5.h),
+            margin: EdgeInsets.only(bottom: 10.h),
             child: Icon(moreFunction.iconData),
           ),
-          Text(moreFunction.name, style: text12Bold)
+          Text(moreFunction.name, style: AFont.instance.size20Black3W500)
         ],
       ),
     );
