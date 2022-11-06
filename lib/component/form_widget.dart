@@ -24,6 +24,7 @@ const String defaultSubmitName = '提交';
 const EdgeInsets defaultPadding = EdgeInsets.only(left: 25, right: 25);
 
 class FormWidget extends StatelessWidget {
+  final Map<String, dynamic>? initValue;
   final List<FormItem> items;
   final EdgeInsets padding;
   final Function? submitCallback;
@@ -31,6 +32,7 @@ class FormWidget extends StatelessWidget {
 
   const FormWidget(
     this.items, {
+    this.initValue,
     this.padding = defaultPadding,
     this.submitName = defaultSubmitName,
     this.submitCallback,
@@ -42,6 +44,7 @@ class FormWidget extends StatelessWidget {
     final formKey = GlobalKey<FormBuilderState>();
     final children = items.map(_itemMapping).toList();
     return FormBuilder(
+      initialValue: initValue ?? {},
       key: formKey,
       child: Container(
         padding: padding,
@@ -88,7 +91,11 @@ class FormWidget extends StatelessWidget {
           return;
         }
         if (submitCallback != null) {
-          submitCallback!(formKey.currentState!.value);
+          var value = Map<String, dynamic>.of(formKey.currentState!.value);
+          initValue?.forEach((initKey, initValue) {
+            value.putIfAbsent(initKey, () => initValue);
+          });
+          submitCallback!(value);
         }
       },
       child: Text(submitName, style: const TextStyle(color: Colors.white)),

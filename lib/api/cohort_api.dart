@@ -21,23 +21,23 @@ class CohortApi {
   }
 
   /// 退出群组
-  static Future<dynamic> exit(String id) async {
+  static Future<dynamic> exit(String cohortId) async {
     String url = "${Constant.cohort}/exit";
-    Map<String, dynamic> data = {"id": id};
+    Map<String, dynamic> data = {"id": cohortId};
 
     return await HttpUtil().post(url, data: data);
   }
 
   /// 加入群组
-  static Future<dynamic> join(String id) async {
+  static Future<dynamic> join(String cohortId) async {
     String url = "${Constant.cohort}/apply/join";
-    Map<String, dynamic> data = {"id": id};
+    Map<String, dynamic> data = {"id": cohortId};
 
     return await HttpUtil().post(url, data: data);
   }
 
   /// 人员搜索
-  static Future<PageResp<TargetResp>> searchCohorts({
+  static Future<PageResp<TargetResp>> search({
     required String keyword,
     required int limit,
     required int offset,
@@ -50,14 +50,37 @@ class CohortApi {
   }
 
   /// 创建群组
-  static Future<dynamic> createCohort({
-    required String code,
-    required String name,
-    required String teamRemark,
-  }) async {
+  static Future<dynamic> create(Map<String, dynamic> params) async {
     String url = "${Constant.cohort}/create";
-    var data = {"code": code, "name": name, "teamRemark": teamRemark};
+    var data = {
+      "code": params["code"],
+      "name": params["name"],
+      "teamRemark": params["remark"],
+    };
 
+    return await HttpUtil().post(url, data: data);
+  }
+
+  /// 创建群组
+  static Future<dynamic> update(Map<String, dynamic> params) async {
+    String url = "${Constant.cohort}/update";
+    var data = {
+      "id": params["id"],
+      "code": params["code"],
+      "name": params["name"],
+      "teamCode": params["code"],
+      "teamName": params["name"],
+      "teamRemark": params["remark"],
+      "thingId": params["thingId"],
+      "belongId": params["belongId"],
+    };
+    return await HttpUtil().post(url, data: data);
+  }
+
+  /// 解散群组
+  static Future<dynamic> delete(String cohortId) async {
+    String url = "${Constant.cohort}/delete";
+    var data = {"id": cohortId};
     return await HttpUtil().post(url, data: data);
   }
 }

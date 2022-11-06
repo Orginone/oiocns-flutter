@@ -90,9 +90,9 @@ class MessageSettingPage extends GetView<MessageSettingController> {
           children: [
             _avatar,
             Padding(padding: EdgeInsets.only(top: 50.h)),
-            _container(_interruption),
-            _container(_top),
-            _container(_searchChat),
+            _interruption,
+            _top,
+            _searchChat,
           ],
         );
         break;
@@ -102,9 +102,9 @@ class MessageSettingPage extends GetView<MessageSettingController> {
           children: [
             _avatar,
             Padding(padding: EdgeInsets.only(top: 50.h)),
-            _container(_interruption),
-            _container(_top),
-            _container(_searchChat),
+            _interruption,
+            _top,
+            _searchChat,
           ],
         );
         break;
@@ -121,15 +121,6 @@ class MessageSettingPage extends GetView<MessageSettingController> {
       padding: EdgeInsets.only(left: 30.w, right: 30.w),
       color: UnifiedColors.navigatorBgColor,
       child: body,
-    );
-  }
-
-  /// 选择项包装器
-  Widget _container(Widget child) {
-    return Container(
-      alignment: Alignment.center,
-      height: 72.h,
-      child: child,
     );
   }
 

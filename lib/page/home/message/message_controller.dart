@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
@@ -55,7 +54,12 @@ class MessageController extends GetxController
     _subscribingCharts();
   }
 
-  // 分组排序
+  /// 获取消息会话对象
+  MessageItemResp getMsgItem(TargetResp targetResp) {
+    return spaceMessageItemMap[targetResp.belongId]![targetResp.id]!;
+  }
+
+  /// 分组排序
   sortingGroups() {
     HomeController homeController = Get.find<HomeController>();
     List<SpaceMessagesResp> groups = orgChatCache.chats;
@@ -80,7 +84,7 @@ class MessageController extends GetxController
     orgChatCache.chats = spaces;
   }
 
-  // 组内会话排序
+  /// 组内会话排序
   sortingItems(List<MessageItemResp> chats) {
     // 会话
     chats.sort((first, second) {
@@ -102,6 +106,7 @@ class MessageController extends GetxController
     });
   }
 
+  /// 刷新会话
   Future<dynamic> refreshCharts() async {
     if (isLoaded) {
       // 只有从缓存拿过会话了才能刷新会话

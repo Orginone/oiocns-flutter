@@ -25,18 +25,34 @@ List<FormItem> formConfig = [
   ),
 ];
 
-class CohortCreatePage extends GetView<CohortsController> {
-  const CohortCreatePage({Key? key}) : super(key: key);
+class CohortMaintainPage extends GetView<CohortsController> {
+  const CohortMaintainPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    String label = "";
+    Map<String, dynamic> args = Get.arguments;
+    CohortFunction func = args["func"];
+    if (func == CohortFunction.update) {
+      label = CohortFunction.update.funcName;
+    } else {
+      label = CohortFunction.create.funcName;
+    }
     return UnifiedScaffold(
-      appBarTitle: Text("群组创建", style: AFont.instance.size22Black3),
+      appBarTitle: Text(label, style: AFont.instance.size22Black3),
       appBarLeading: WidgetUtil.defaultBackBtn,
       appBarCenterTitle: true,
-      body: FormWidget(formConfig, submitCallback: (value) {
-        controller.createCohort(value).then((value) => Get.back());
-      }),
+      body: FormWidget(
+        formConfig,
+        initValue: args["cohort"],
+        submitCallback: (Map<String, dynamic> value) {
+          if (func == CohortFunction.update) {
+            controller.updateCohort(value).then((value) => Get.back());
+          } else {
+            controller.createCohort(value).then((value) => Get.back());
+          }
+        },
+      ),
     );
   }
 }

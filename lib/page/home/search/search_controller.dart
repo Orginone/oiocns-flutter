@@ -102,7 +102,7 @@ class SearchController extends GetxController with GetTickerProviderStateMixin {
           break;
         case SearchItem.cohorts:
           cohortRes = SearchParams();
-          var pageResp = await CohortApi.searchCohorts(
+          var pageResp = await CohortApi.search(
             keyword: filter,
             limit: cohortRes!.limit,
             offset: cohortRes!.offset,

@@ -15,6 +15,15 @@ import '../../../../routers.dart';
 import '../../../../util/widget_util.dart';
 import '../../search/search_controller.dart';
 
+enum CtrlType {
+  manageable("管理的"),
+  joined("加入的");
+
+  final String typeName;
+
+  const CtrlType(this.typeName);
+}
+
 class CohortsPage extends GetView<CohortsController> {
   const CohortsPage({Key? key}) : super(key: key);
 
@@ -32,7 +41,8 @@ class CohortsPage extends GetView<CohortsController> {
   get _actions => <Widget>[
         IconButton(
           onPressed: () {
-            Get.toNamed(Routers.cohortCreate);
+            Map<String, dynamic> args = {"func": CohortFunction.create};
+            Get.toNamed(Routers.cohortMaintain, arguments: args);
           },
           icon: const Icon(Icons.create_outlined, color: Colors.black),
         ),
@@ -71,22 +81,31 @@ class CohortsPage extends GetView<CohortsController> {
           scrollDirection: Axis.vertical,
           itemCount: controller.cohorts.length,
           itemBuilder: (BuildContext context, int index) {
-            return _item(controller.cohorts[index]);
+            return _item(context, controller.cohorts[index]);
           },
         ),
       );
 
-  Widget _item(TargetResp cohort) {
+  Widget _item(BuildContext context, TargetResp cohort) {
     var targetIds = [cohort.id, cohort.belongId ?? ""];
     bool isRelationAdmin = auth.isRelationAdmin(targetIds);
     List<Widget> children = [];
     if (isRelationAdmin) {
-      children.add(TextTag("管理的", padding: EdgeInsets.all(5.w)));
+      children.add(_popMenu(context, cohort, CtrlType.manageable));
+    } else {
+      children.add(_popMenu(context, cohort, CtrlType.joined));
     }
 
     var avatarName = StringUtil.getPrefixChars(cohort.name, count: 2);
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Map<String, dynamic> args = {
+          "messageItem": controller.messageController.getMsgItem(cohort),
+          "spaceId": cohort.belongId,
+          "messageItemId": cohort.id
+        };
+        Get.toNamed(Routers.chat, arguments: args);
+      },
       child: Container(
         padding: EdgeInsets.only(left: 25.w, top: 20.h, right: 25.w),
         child: Row(
@@ -99,6 +118,45 @@ class CohortsPage extends GetView<CohortsController> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _popMenu(BuildContext context, TargetResp cohort, CtrlType ctrlType) {
+    double x = 0, y = 0;
+    return TextTag(
+      ctrlType.typeName,
+      padding: EdgeInsets.all(5.w),
+      onTap: () async {
+        var items = CohortFunction.values;
+        if (ctrlType == CtrlType.manageable) {
+          items = items.where((item) {
+            return item != CohortFunction.create && item != CohortFunction.exit;
+          }).toList();
+        } else {
+          items = [CohortFunction.exit];
+        }
+
+        // 弹出菜单
+        var top = y - 50;
+        var right = MediaQuery.of(context).size.width - x;
+        final result = await showMenu<CohortFunction>(
+          context: context,
+          position: RelativeRect.fromLTRB(x, top, right, 0),
+          items: items.map((item) {
+            return PopupMenuItem(
+              value: item,
+              child: Text(item.funcName),
+            );
+          }).toList(),
+        );
+        if (result != null) {
+          controller.cohortFunc(result, cohort);
+        }
+      },
+      onPanDown: (details) {
+        x = details.globalPosition.dx;
+        y = details.globalPosition.dy;
+      },
     );
   }
 }

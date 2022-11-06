@@ -59,7 +59,11 @@ class MessageItemWidget extends GetView<MessageController> {
         final result = await showMenu(
           context: context,
           position: RelativeRect.fromLTRB(
-              x, y - 50, MediaQuery.of(context).size.width - x, 0),
+            x,
+            y - 50,
+            MediaQuery.of(context).size.width - x,
+            0,
+          ),
           items: functions
               .map((item) => PopupMenuItem(value: item, child: Text(item.name)))
               .toList(),
@@ -92,8 +96,9 @@ class MessageItemWidget extends GetView<MessageController> {
 
   Widget _avatar(MessageItemResp messageItem) {
     int notRead = messageItem.noRead ?? 0;
-    Color badgeColor =
-        messageItem.isInterruption ?? false ? UnifiedColors.cardBorder : GFColors.DANGER;
+    Color badgeColor = messageItem.isInterruption ?? false
+        ? UnifiedColors.cardBorder
+        : GFColors.DANGER;
     return Stack(
       children: [
         Align(
@@ -172,7 +177,7 @@ class MessageItemWidget extends GetView<MessageController> {
               ),
             ),
             TextTag(
-              space?.name,
+              space?.name ?? "",
               bgColor: Colors.white,
               textStyle: TextStyle(
                 color: UnifiedColors.designBlue,

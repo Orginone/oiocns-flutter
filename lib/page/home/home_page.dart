@@ -11,6 +11,7 @@ import 'package:orginone/util/any_store_util.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:signalr_core/signalr_core.dart';
+import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
 
 import '../../component/unified_colors.dart';
 import '../../logic/authority.dart';
@@ -84,7 +85,10 @@ class HomePage extends GetView<HomeController> {
           context,
           Icons.group_add_outlined,
           "创建群组",
-          () {},
+          () {
+            Map<String, dynamic> args = {"func": CohortFunction.create};
+            Get.toNamed(Routers.cohortMaintain, arguments: args);
+          },
         ),
       ),
       PopupMenuItem(
