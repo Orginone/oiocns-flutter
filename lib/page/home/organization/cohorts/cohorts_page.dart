@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
 import 'package:orginone/util/string_util.dart';
 
@@ -76,20 +77,25 @@ class CohortsPage extends GetView<CohortsController> {
       );
 
   Widget _item(TargetResp cohort) {
-    auth.isRelationAdmin([cohort.id]);
+    var targetIds = [cohort.id, cohort.belongId ?? ""];
+    bool isRelationAdmin = auth.isRelationAdmin(targetIds);
+    List<Widget> children = [];
+    if (isRelationAdmin) {
+      children.add(TextTag("管理的", padding: EdgeInsets.all(5.w)));
+    }
 
     var avatarName = StringUtil.getPrefixChars(cohort.name, count: 2);
     return GestureDetector(
       onTap: () {},
       child: Container(
-        padding: EdgeInsets.only(left: 25.w, top: 20.h),
+        padding: EdgeInsets.only(left: 25.w, top: 20.h, right: 25.w),
         child: Row(
           children: [
             TextAvatar(avatarName: avatarName),
             Padding(padding: EdgeInsets.only(left: 10.w)),
             Text(cohort.name, style: AFont.instance.size22Black3),
             Expanded(child: Container()),
-            Column(children: [])
+            Column(children: children)
           ],
         ),
       ),
