@@ -19,9 +19,9 @@ class InstanceTaskEntity {
 	late String version;
 	late String createTime;
 	late String updateTime;
-	late List<InstanceTaskFlowTasks> flowTasks;
-	late InstanceTaskFlowDefine? flowDefine;
-	late InstanceTaskFlowRelation? flowRelation;
+	List<InstanceTaskFlowTasks>? flowTasks;
+	InstanceTaskFlowDefine? flowDefine;
+	InstanceTaskFlowRelation? flowRelation;
   
   InstanceTaskEntity();
 

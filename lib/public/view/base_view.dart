@@ -40,7 +40,7 @@ abstract class BaseView<T extends BaseController> extends GetView<T> {
 
   /// 设置页面的初始状态，默认值为loading
   LoadStatusX initStatus() {
-    return LoadStatusX.loading;
+    return controller.loadStatus.value;
   }
 
   /// 默认标题

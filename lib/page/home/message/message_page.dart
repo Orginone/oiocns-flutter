@@ -322,7 +322,9 @@ class MessagePage extends GetView<MessageController> {
           margin: left10,
           child: Text("新朋友", style: text16Bold),
         ),
-        func: () {},
+        func: () {
+          Get.toNamed(Routers.newFriends);
+        },
       );
 
   get _specialFocus => ChooseItem(

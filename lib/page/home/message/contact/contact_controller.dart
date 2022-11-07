@@ -40,47 +40,48 @@ class ContactController extends BaseController {
 
   /// 一次性加载全部好友，并提取索引
   Future<void> loadAllContact(String filter) async {
-    var pageResp = await PersonApi.friends(limit, offset, filter,
-        errorCallback: (error) => {updateLoadStatus(LoadStatusX.error)});
+    await PersonApi.friends(limit, offset, filter).then((pageResp) {
+      if (pageResp.result.length < limit) {
+        mData.addAll(pageResp.result);
 
-    if (pageResp.result.length < limit) {
-      mData.addAll(pageResp.result);
-
-      /// 提取首字符
-      List<String> firstChars = [];
-      List<int> insertPos = [];
-      for (var value in mData) {
-        firstChars.add(StringUtil.getStrFirstUpperChar(
-            PinyinHelper.getFirstWordPinyin(value.name)));
-      }
-
-      /// 记录内容区域插入索引的位置
-      for (var index = 0; index < firstChars.length; index++) {
-        if (index == 0) {
-          insertPos.add(0);
-        } else if (firstChars[index - 1] != firstChars[index]) {
-          insertPos.add(index);
+        /// 提取首字符
+        List<String> firstChars = [];
+        List<int> insertPos = [];
+        for (var value in mData) {
+          firstChars.add(StringUtil.getStrFirstUpperChar(
+              PinyinHelper.getFirstWordPinyin(value.name)));
         }
+
+        /// 记录内容区域插入索引的位置
+        for (var index = 0; index < firstChars.length; index++) {
+          if (index == 0) {
+            insertPos.add(0);
+          } else if (firstChars[index - 1] != firstChars[index]) {
+            insertPos.add(index);
+          }
+        }
+        //插入字符
+        var index = 0;
+        for (var pos in insertPos) {
+          var targetResp = TargetResp(typeChar, firstChars[pos], "", "", "", "",
+              0, "", "", "", null, null, null, null);
+          mData.insert(pos + index, targetResp);
+          index++;
+        }
+        mIndex.addAll(firstChars.toSet().toList());
+        for (var value1 in mData) {
+          logger.info("====>1 名称：${value1.name}");
+        }
+        updateLoadStatus(LoadStatusX.success);
+        update();
+      } else {
+        offset++;
+        mData.addAll(pageResp.result);
+        loadAllContact(filter);
       }
-      //插入字符
-      var index = 0;
-      for (var pos in insertPos) {
-        var targetResp = TargetResp(typeChar, firstChars[pos], "", "", "", "",
-            0, "", "", "", null, null, null, null);
-        mData.insert(pos + index, targetResp);
-        index++;
-      }
-      mIndex.addAll(firstChars.toSet().toList());
-      for (var value1 in mData) {
-        logger.info("====>1 名称：${value1.name}");
-      }
-      updateLoadStatus(LoadStatusX.success);
-      update();
-    } else {
-      offset++;
-      mData.addAll(pageResp.result);
-      loadAllContact(filter);
-    }
+    }).onError((error, stackTrace) {
+      updateLoadStatus(LoadStatusX.error);
+    });
   }
 
   String getBarStr() {

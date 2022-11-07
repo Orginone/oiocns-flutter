@@ -42,10 +42,11 @@ class AffairsDetailController extends BaseController
     } else {
       id = StringUtil.formatStr(arguments.taskEntity?.id);
     }
-    print('-----------------》');
     ALoading.showCircle();
     Timer.periodic(const Duration(seconds: 4), (timer) {
       ALoading.dismiss();
+      timer.cancel();
+      update();
     });
     //
     // WorkflowApi.approvalTask(id, '201', content, (error) {
@@ -58,6 +59,7 @@ class AffairsDetailController extends BaseController
   }
 
   String getTitle() {
+    debugPrint("------刷新了");
     if (arguments.typeEnum == AffairsTypeEnum.record) {
       return StringUtil.formatStr(
           arguments.recordEntity?.flowTask?.flowInstance?.title);

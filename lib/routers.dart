@@ -41,6 +41,8 @@ import 'package:orginone/page/home/organization/friends/friend_add/friend_add_bi
 import 'package:orginone/page/home/organization/friends/friend_add/friend_add_page.dart';
 import 'package:orginone/page/home/organization/friends/friends_binding.dart';
 import 'package:orginone/page/home/organization/friends/friends_page.dart';
+import 'package:orginone/page/home/organization/friends/new_friend/new_friend_page.dart';
+import 'package:orginone/page/home/organization/friends/new_friend/new_friends_binding.dart';
 import 'package:orginone/page/home/organization/groups/groups_binding.dart';
 import 'package:orginone/page/home/organization/groups/groups_page.dart';
 import 'package:orginone/page/home/organization/organization_binding.dart';
@@ -98,6 +100,7 @@ class Routers {
   static const String friendAdd = "/friendAdd";
   static const String form = "/form";
   static const String affairsDetail = "/affairsDetail";
+  static const String newFriends = "/newFriends";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -254,6 +257,11 @@ class Routers {
         name: Routers.affairsDetail,
         page: () => AffairsDetailPage(),
         binding: AffairsDetailBinding(),
+      ),
+      GetPage(
+        name: Routers.newFriends,
+        page: () => NewFriendsPage(),
+        binding: NewFriendsBinding(),
       ),
     ];
   }

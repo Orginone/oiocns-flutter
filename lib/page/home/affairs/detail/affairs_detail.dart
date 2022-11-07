@@ -48,6 +48,7 @@ class AffairsDetailPage extends BaseView<AffairsDetailController> {
 
   @override
   Widget builder(context) {
+    debugPrint('----刷新了');
     this.context = context;
     return Column(
       children: [
@@ -189,6 +190,7 @@ class AffairsDetailPage extends BaseView<AffairsDetailController> {
                       title: "审批信息",
                       content: "",
                       confirmFun: (context,content) {
+                        Navigator.of(context).pop();
                         controller.approvalTask(content);
                       },
                     );

@@ -22,7 +22,6 @@ class TaskController extends AffairsBaseListController<TaskEntity> {
 
   //审批
    void approval() async{
-    // approval/task
     // var pageResp = await WorkflowApi.reject(limit, offset, 'string');
     // addData(true, pageResp);
   }

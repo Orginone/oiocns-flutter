@@ -1,6 +1,7 @@
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/config/constant.dart';
 
+import '../api_resp/friends_entity.dart';
 import '../api_resp/login_resp.dart';
 import '../api_resp/page_resp.dart';
 import '../api_resp/token_authority_resp.dart';
@@ -55,8 +56,7 @@ class PersonApi {
   static Future<PageResp<TargetResp>> friends(
     int limit,
     int offset,
-    String filter,
-    {ErrorCallback? errorCallback}
+    String filter
   ) async {
     String url = "${Constant.person}/get/friends";
     Map<String, dynamic> data = {"offset": offset, "limit": limit};
@@ -64,7 +64,7 @@ class PersonApi {
       data["filter"] = filter;
     }
 
-    Map<String, dynamic> pageResp = await HttpUtil().post(url, data: data,errorCallback: errorCallback);
+    Map<String, dynamic> pageResp = await HttpUtil().post(url, data: data);
     return PageResp.fromMap(pageResp, TargetResp.fromMap);
   }
 
@@ -100,6 +100,28 @@ class PersonApi {
     var data = {"id": 0, "limit": 0, "offset": 0};
     Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
     return resp["total"] ?? 0;
+  }
+
+  /// 查询好友申请
+  static Future<PageResp<FriendsEntity>> approvalAll(String id,int limit,int offset) async {
+    String url = "${Constant.person}/get/all/approval";
+    var data = {"id": id, "limit": limit, "offset": offset};
+    Map<String, dynamic> pageResp = await HttpUtil().post(url, data: data);
+    return PageResp.fromMap(pageResp, FriendsEntity.fromJson);
+  }
+  /// 加好友通过
+  static Future<bool> joinSuccess(String id) async {
+    String url = "${Constant.person}/join/success";
+    var data = {"id": id};
+    Map<String, dynamic> resp = await HttpUtil().post(url, data: data,showError: false);
+    return resp != null;
+  }
+  /// 加好友拒绝
+  static Future<bool> joinRefuse(String id) async {
+    String url = "${Constant.person}/join/refuse";
+    var data = {"id": id};
+    Map<String, dynamic> resp = await HttpUtil().post(url, data: data,showError: false);
+    return resp != null;
   }
 
   /// 人员搜索

@@ -90,7 +90,7 @@ Map<String, dynamic> $InstanceTaskEntityToJson(InstanceTaskEntity entity) {
 	data['version'] = entity.version;
 	data['createTime'] = entity.createTime;
 	data['updateTime'] = entity.updateTime;
-	data['flowTasks'] =  entity.flowTasks.map((v) => v.toJson()).toList();
+	data['flowTasks'] =  entity.flowTasks?.map((v) => v.toJson()).toList();
 	data['flowDefine'] = entity.flowDefine?.toJson();
 	data['flowRelation'] = entity.flowRelation?.toJson();
 	return data;
