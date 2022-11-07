@@ -83,4 +83,11 @@ class CohortApi {
     var data = {"id": cohortId};
     return await HttpUtil().post(url, data: data);
   }
+
+  /// 邀请好友入群
+  static Future<dynamic> pull(String cohortId, List<String> targetIds) async {
+    String url = "${Constant.cohort}/pull/persons";
+    var data = {"id": cohortId, "targetIds": targetIds};
+    return await HttpUtil().post(url, data: data);
+  }
 }

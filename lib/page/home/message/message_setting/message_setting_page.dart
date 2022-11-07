@@ -96,13 +96,10 @@ class MessageSettingPage extends GetView<MessageSettingController> {
           _avatar,
           Padding(padding: EdgeInsets.only(top: 50.h)),
           AvatarGroup(
+            hasAdd: auth.isRelationAdmin([controller.messageItemId]),
             showCount: 13,
             addCallback: () {
-              Map<String, dynamic> args = {
-                "spaceId": controller.spaceId,
-                "itemId": controller.messageItemId
-              };
-              Get.toNamed(Routers.invite, arguments: args);
+              Get.toNamed(Routers.invite, arguments: controller.messageItemId);
             },
           ),
           if (controller.hasReminder) _more,

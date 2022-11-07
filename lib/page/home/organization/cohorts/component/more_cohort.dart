@@ -27,11 +27,7 @@ class MoreCohort extends GetView<MessageSettingController> {
             AvatarGroup(
               padding: EdgeInsets.only(top: 30.h),
               addCallback: () {
-                Map<String, dynamic> args = {
-                  "spaceId": controller.spaceId,
-                  "itemId": controller.messageItemId
-                };
-                Get.toNamed(Routers.invite, arguments: args);
+                Get.toNamed(Routers.invite, arguments: controller.messageItemId);
               },
             ),
             GetBuilder<MessageSettingController>(builder: (controller) {

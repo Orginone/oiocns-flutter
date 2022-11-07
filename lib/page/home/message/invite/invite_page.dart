@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
+import 'package:orginone/api/cohort_api.dart';
 import 'package:orginone/component/unified_scaffold.dart';
-import 'package:orginone/config/hive_object_id.dart';
 
 import '../../../../api_resp/target_resp.dart';
 import '../../../../component/a_font.dart';
@@ -25,7 +26,21 @@ class InvitePage extends GetView<InviteController> {
       appBarTitle: Text("好友邀请", style: AFont.instance.size22Black3),
       appBarCenterTitle: true,
       body: _body,
+      appBarActions: _actions,
     );
+  }
+
+  get _actions {
+    return [
+      IconButton(
+        onPressed: () async {
+          await controller.pull();
+          Fluttertoast.showToast(msg: "邀请成功!");
+          Get.back();
+        },
+        icon: const Icon(Icons.save, color: Colors.black),
+      )
+    ];
   }
 
   get _body {
@@ -140,9 +155,17 @@ class InviteController extends GetxController {
   /// 好友控制器
   final FriendsController friendsController = Get.find();
 
+  late final String messageItemId;
+
   /// 目标对量和索引
   final Map<String, RxBool> chooseMap = {};
   final RxList<TargetResp> targetQueue = <TargetResp>[].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    messageItemId = Get.arguments;
+  }
 
   /// 推入队列
   push(TargetResp target) {
@@ -156,6 +179,12 @@ class InviteController extends GetxController {
   remove(TargetResp target) {
     targetQueue.removeWhere((item) => item.id == target.id);
     chooseMap[target.id]?.value = false;
+  }
+
+  /// 邀请人员进群
+  pull() async {
+    List<String> targetIds = targetQueue.map((item) => item.id).toList();
+    await CohortApi.pull(messageItemId, targetIds);
   }
 }
 
