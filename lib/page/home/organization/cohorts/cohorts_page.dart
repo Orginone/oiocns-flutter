@@ -117,8 +117,9 @@ class CohortsPage extends GetView<CohortsController> {
           children: [
             TextAvatar(avatarName: avatarName),
             Padding(padding: EdgeInsets.only(left: 10.w)),
-            Text(cohort.name, style: AFont.instance.size22Black3),
-            Expanded(child: Container()),
+            Expanded(
+              child: Text(cohort.name, style: AFont.instance.size22Black3),
+            ),
             Column(children: children)
           ],
         ),

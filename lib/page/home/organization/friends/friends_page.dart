@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api_resp/target_resp.dart';
-import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/organization/friends/friends_controller.dart';
 import 'package:orginone/util/string_util.dart';
 
@@ -84,7 +83,7 @@ class FriendsPage extends GetView<FriendsController> {
           children: [
             TextAvatar(avatarName: avatarName),
             Container(margin: EdgeInsets.only(left: 10.w)),
-            Expanded(child: Text(targetResp.name, style: text16Bold))
+            Expanded(child: Text(targetResp.name, style: AFont.instance.size22Black3))
           ],
         ),
       ),

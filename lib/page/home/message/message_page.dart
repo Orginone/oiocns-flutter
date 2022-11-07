@@ -87,8 +87,9 @@ class MessagePage extends GetView<MessageController> {
               },
               child: Column(
                 children: [
-                  Padding(padding: EdgeInsets.only(top: 16.h)),
-                  Text("更多会话", style: AFont.instance.size18themeColorW500)
+                  Padding(padding: EdgeInsets.only(top: 30.h)),
+                  Text("更多会话", style: AFont.instance.size18themeColorW500),
+                  Padding(padding: EdgeInsets.only(top: 30.h)),
                 ],
               ),
             );
