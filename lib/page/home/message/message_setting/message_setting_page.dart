@@ -95,7 +95,16 @@ class MessageSettingPage extends GetView<MessageSettingController> {
         children = [
           _avatar,
           Padding(padding: EdgeInsets.only(top: 50.h)),
-          const AvatarGroup(showCount: 13),
+          AvatarGroup(
+            showCount: 13,
+            addCallback: () {
+              Map<String, dynamic> args = {
+                "spaceId": controller.spaceId,
+                "itemId": controller.messageItemId
+              };
+              Get.toNamed(Routers.invite, arguments: args);
+            },
+          ),
           if (controller.hasReminder) _more,
           _interruption,
           _top,

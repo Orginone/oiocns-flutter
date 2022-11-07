@@ -15,8 +15,8 @@ class FriendsController extends GetxController {
 
   @override
   void onInit() {
-    onLoadFriends("");
     super.onInit();
+    onLoadFriends("");
   }
 
   Future<void> onLoadFriends(String filter) async {

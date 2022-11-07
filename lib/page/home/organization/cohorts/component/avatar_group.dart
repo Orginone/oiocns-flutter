@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 
 import '../../../../../api_resp/target_resp.dart';
 import '../../../../../component/a_font.dart';
 import '../../../../../component/text_avatar.dart';
+import '../../../../../routers.dart';
 import '../../../../../util/string_util.dart';
 import '../../../message/message_setting/message_setting_controller.dart';
 
@@ -13,10 +15,12 @@ double avatarWidth = 76.w;
 class AvatarGroup extends StatelessWidget {
   final int? showCount;
   final EdgeInsets? padding;
+  final Function? addCallback;
 
   const AvatarGroup({
     this.showCount,
     this.padding,
+    this.addCallback,
     Key? key,
   }) : super(key: key);
 
@@ -54,7 +58,9 @@ class AvatarGroup extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-
+            if (addCallback != null) {
+              addCallback!();
+            }
           },
           child: Container(
             width: avatarWidth,

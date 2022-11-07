@@ -52,10 +52,7 @@ class TextAvatar extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.center,
-            child: Text(
-              avatarName,
-              style: textStyle,
-            ),
+            child: Text(avatarName, style: textStyle),
           )
         ],
       ),

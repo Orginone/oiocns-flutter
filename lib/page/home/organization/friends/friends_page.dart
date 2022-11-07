@@ -33,7 +33,7 @@ class FriendsPage extends GetView<FriendsController> {
         },
         backgroundColor: Colors.blueAccent,
         splashColor: Colors.white,
-        child: Icon(Icons.person_add, size: 25.w, color: Colors.white),
+        child: Icon(Icons.person_add, size: 40.w, color: Colors.white),
       ),
     );
   }
@@ -45,13 +45,11 @@ class FriendsPage extends GetView<FriendsController> {
             margin: EdgeInsets.only(left: 25.w, top: 20.h, right: 25.w),
           ),
           Expanded(
-            child: Scrollbar(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  controller.onLoadFriends("");
-                },
-                child: _list(),
-              ),
+            child: RefreshIndicator(
+              onRefresh: () async {
+                controller.onLoadFriends("");
+              },
+              child: _list(),
             ),
           ),
         ],
@@ -59,7 +57,6 @@ class FriendsPage extends GetView<FriendsController> {
 
   Widget _list() {
     return GetBuilder<FriendsController>(
-      init: FriendsController(),
       builder: (controller) => ListView.builder(
         scrollDirection: Axis.vertical,
         itemCount: controller.friends.length,
@@ -83,7 +80,9 @@ class FriendsPage extends GetView<FriendsController> {
           children: [
             TextAvatar(avatarName: avatarName),
             Container(margin: EdgeInsets.only(left: 10.w)),
-            Expanded(child: Text(targetResp.name, style: AFont.instance.size22Black3))
+            Expanded(
+              child: Text(targetResp.name, style: AFont.instance.size22Black3),
+            )
           ],
         ),
       ),
