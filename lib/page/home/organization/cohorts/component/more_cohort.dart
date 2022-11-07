@@ -6,6 +6,7 @@ import 'package:orginone/page/home/message/message_setting/message_setting_contr
 import 'package:orginone/page/home/organization/cohorts/component/avatar_group.dart';
 
 import '../../../../../component/a_font.dart';
+import '../../../../../component/unified_colors.dart';
 import '../../../../../util/widget_util.dart';
 
 class MoreCohort extends GetView<MessageSettingController> {
@@ -17,16 +18,20 @@ class MoreCohort extends GetView<MessageSettingController> {
       appBarTitle: Text("群组人员", style: AFont.instance.size22Black3),
       appBarCenterTitle: true,
       appBarLeading: WidgetUtil.defaultBackBtn,
-      body: ListView(
-        children: [
-          AvatarGroup(padding: EdgeInsets.only(top: 30.h)),
-          GetBuilder<MessageSettingController>(builder: (controller) {
-            if (controller.hasReminder) {
-              return _more;
-            }
-            return Container();
-          })
-        ],
+      appBarElevation: 0,
+      body: Container(
+        color: UnifiedColors.bgColor,
+        child: ListView(
+          children: [
+            AvatarGroup(padding: EdgeInsets.only(top: 30.h)),
+            GetBuilder<MessageSettingController>(builder: (controller) {
+              if (controller.hasReminder) {
+                return _more;
+              }
+              return Container();
+            })
+          ],
+        ),
       ),
     );
   }

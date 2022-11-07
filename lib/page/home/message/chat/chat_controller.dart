@@ -253,12 +253,11 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     HubUtil().cacheChats(messageController.orgChatCache);
   }
 
-  Future<int> getTotal() async {
+  Future<void> getTotal() async {
     if (messageItem.typeName != TargetType.person.name) {
       var page = await HubUtil().getPersons(messageItemId, 1, 0);
-      return page.total;
+      messageItem.personNum = page.total;
     }
-    return 0;
   }
 
   /// 下拉时刷新旧的聊天记录

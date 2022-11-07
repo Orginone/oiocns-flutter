@@ -48,19 +48,26 @@ class AvatarGroup extends StatelessWidget {
     });
   }
 
+  /// 添加好友
   get _addItem {
     return Column(
       children: [
-        Container(
-          width: avatarWidth,
-          height: avatarWidth,
-          color: Colors.white,
-          child: const Icon(Icons.add),
+        GestureDetector(
+          onTap: () {
+
+          },
+          child: Container(
+            width: avatarWidth,
+            height: avatarWidth,
+            color: Colors.white,
+            child: const Icon(Icons.add),
+          ),
         )
       ],
     );
   }
 
+  /// 减少好友
   get _minusItem {
     return Column(
       children: [
