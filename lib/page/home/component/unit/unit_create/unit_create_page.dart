@@ -5,10 +5,10 @@ import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_button.dart';
 import 'package:orginone/api/company_api.dart';
 import 'package:orginone/component/unified_scaffold.dart';
-import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/widget_util.dart';
 
+import '../../../../../component/a_font.dart';
 import 'unit_create_controller.dart';
 
 class UnitCreatePage extends GetView<UnitCreateController> {
@@ -20,7 +20,8 @@ class UnitCreatePage extends GetView<UnitCreateController> {
     return GetBuilder<UnitCreateController>(
       init: UnitCreateController(),
       builder: (item) => UnifiedScaffold(
-        appBarTitle: Text("创建单位", style: text16),
+        appBarTitle: Text("创建单位", style: AFont.instance.size22Black3),
+        appBarCenterTitle: true,
         appBarLeading: WidgetUtil.defaultBackBtn,
         bgColor: const Color.fromRGBO(240, 240, 240, 1),
         body: Container(

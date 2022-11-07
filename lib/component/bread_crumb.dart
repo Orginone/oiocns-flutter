@@ -68,9 +68,15 @@ class BreadCrumb<T> extends StatelessWidget {
 class Item<T> {
   final T id;
   final String label;
-  final Item<T>? innerItem;
+  final List<Item<T>>? children;
+  final Item<T>? defaultBindingItem;
 
-  const Item({required this.id, required this.label, this.innerItem});
+  const Item({
+    required this.id,
+    required this.label,
+    this.children,
+    this.defaultBindingItem,
+  });
 }
 
 class BreadCrumbController<T> extends GetxController {
@@ -89,10 +95,6 @@ class BreadCrumbController<T> extends GetxController {
   push(Item<T> item) {
     checkDuplication(item);
     items.add(item);
-    while (item.innerItem != null) {
-      item = item.innerItem!;
-      items.add(item);
-    }
   }
 
   checkDuplication(Item<T> target) {

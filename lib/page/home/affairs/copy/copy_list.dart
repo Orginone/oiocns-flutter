@@ -162,7 +162,7 @@ class CopyWidget extends BaseListView<CopyController> {
                                   AffairsTypeEnum.task, index,
                                   taskEntity: item));
                         },
-                        color: UnifiedColors.agreeColor,
+                        color: UnifiedColors.themeColor,
                         text: "审批",
                         textStyle: AFont.instance.size18White,
                         textColor: Colors.white,

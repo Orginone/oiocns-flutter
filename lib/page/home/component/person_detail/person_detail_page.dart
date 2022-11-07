@@ -7,6 +7,7 @@ import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/widget_util.dart';
 
+import '../../../../component/a_font.dart';
 import 'person_detail_controller.dart';
 
 class PersonDetailPage extends GetView<PersonDetailController> {
@@ -17,7 +18,8 @@ class PersonDetailPage extends GetView<PersonDetailController> {
     return GetBuilder<PersonDetailController>(
       init: PersonDetailController(),
       builder: (item) => UnifiedScaffold(
-          appBarTitle: Text("用户详情", style: text16),
+          appBarTitle: Text("用户详情", style: AFont.instance.size22Black3),
+          appBarCenterTitle: true,
           appBarLeading: WidgetUtil.defaultBackBtn,
           bgColor: const Color.fromRGBO(240, 240, 240, 1),
           body: Container(
@@ -120,22 +122,22 @@ class PersonDetailPage extends GetView<PersonDetailController> {
                     child: const Icon(Icons.message,
                         size: 30, color: Colors.white)),
               ),
-              Container(
-                margin: const EdgeInsets.fromLTRB(10, 0, 5, 0),
-                child: FloatingActionButton(
-                    onPressed: () {
-                      Get.toNamed(Routers.personAdd,
-                          arguments: item.personDetail!.id);
-                    },
-                    tooltip: "添加好友",
-                    backgroundColor: Colors.blueAccent,
-                    splashColor: Colors.white,
-                    elevation: 0.0,
-                    highlightElevation: 25.0,
-                    // Text('添加好友',style:TextStyle(fontSize: 10)),
-                    child: const Icon(Icons.person_add,
-                        size: 30, color: Colors.white)),
-              )
+              // Container(
+              //   margin: const EdgeInsets.fromLTRB(10, 0, 5, 0),
+              //   child: FloatingActionButton(
+              //       onPressed: () {
+              //         Get.toNamed(Routers.personAdd,
+              //             arguments: item.personDetail!.id);
+              //       },
+              //       tooltip: "添加好友",
+              //       backgroundColor: Colors.blueAccent,
+              //       splashColor: Colors.white,
+              //       elevation: 0.0,
+              //       highlightElevation: 25.0,
+              //       // Text('添加好友',style:TextStyle(fontSize: 10)),
+              //       child: const Icon(Icons.person_add,
+              //           size: 30, color: Colors.white)),
+              // )
             ],
           )),
     );

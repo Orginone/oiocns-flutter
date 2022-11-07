@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
@@ -55,10 +54,12 @@ class MessageController extends GetxController
     _subscribingCharts();
   }
 
-  _initTabs(){
+  /// 获取消息会话对象
+  MessageItemResp getMsgItem(String spaceId, TargetResp targetResp) {
+    return spaceMessageItemMap[spaceId]![targetResp.id]!;
   }
 
-  // 分组排序
+  /// 分组排序
   sortingGroups() {
     HomeController homeController = Get.find<HomeController>();
     List<SpaceMessagesResp> groups = orgChatCache.chats;
@@ -83,7 +84,7 @@ class MessageController extends GetxController
     orgChatCache.chats = spaces;
   }
 
-  // 组内会话排序
+  /// 组内会话排序
   sortingItems(List<MessageItemResp> chats) {
     // 会话
     chats.sort((first, second) {
@@ -94,9 +95,18 @@ class MessageController extends GetxController
       }
     });
     // 置顶排序
-    chats.sort((first, second) => first.isTop ?? false ? -1 : 1);
+    chats.sort((first, second) {
+      first.isTop ??= false;
+      second.isTop ??= false;
+      if (first.isTop == second.isTop) {
+        return first.isTop! ? -1 : 0;
+      } else {
+        return first.isTop! ? -1 : 1;
+      }
+    });
   }
 
+  /// 刷新会话
   Future<dynamic> refreshCharts() async {
     if (isLoaded) {
       // 只有从缓存拿过会话了才能刷新会话
@@ -322,7 +332,7 @@ class MessageController extends GetxController
           }
 
           // 近期会话不存在就加入
-          orgChatCache.recentChats = orgChatCache.recentChats ?? [];
+          orgChatCache.recentChats ??= [];
           orgChatCache.recentChats = orgChatCache.recentChats!
               .where((item) =>
                   item.id != currentItem!.id ||
@@ -350,18 +360,18 @@ class MessageController extends GetxController
     currentAppState = state;
   }
 
-  funcCallback(LongPressFunc func, String spaceId, MessageItemResp item) async {
+  chatEventFire(ChatFunc func, String spaceId, MessageItemResp item) async {
     switch (func) {
-      case LongPressFunc.topping:
-      case LongPressFunc.cancelTopping:
-        item.isTop = func == LongPressFunc.topping;
+      case ChatFunc.topping:
+      case ChatFunc.cancelTopping:
+        item.isTop = func == ChatFunc.topping;
         orgChatCache.chats = _spaceHandling(orgChatCache.chats);
         sortingGroups();
         sortingItems(orgChatCache.recentChats ?? []);
         await HubUtil().cacheChats(orgChatCache);
         update();
         break;
-      case LongPressFunc.remove:
+      case ChatFunc.remove:
         orgChatCache.recentChats?.remove(item);
         await HubUtil().cacheChats(orgChatCache);
         update();
@@ -370,7 +380,8 @@ class MessageController extends GetxController
   }
 
   bool hasNoRead() {
-    var has = orgChatCache.recentChats?.firstWhereOrNull((item) => (item.noRead ?? 0) > 0);
+    var has = orgChatCache.recentChats?.firstWhereOrNull(
+        (item) => (item.noRead ?? 0) > 0 && !(item.isInterruption ?? false));
     return has != null;
   }
 }

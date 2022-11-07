@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/component/unified_text_style.dart';
 
+import 'a_font.dart';
 import 'unified_colors.dart';
 
 const EdgeInsets defaultMargin = EdgeInsets.all(10);
@@ -22,7 +23,7 @@ class TextSearch extends StatelessWidget {
     this.onTap,
     this.searchingCallback,
     this.loadingCallback,
-    this.placeHolder,
+    this.placeHolder = defaultPlaceHolder,
   }) : super(key: key);
 
   @override
@@ -59,11 +60,11 @@ class TextSearch extends StatelessWidget {
                 }
                 timer = Timer(duration, () => searchingCallback!(newVal));
               },
-              style: text16,
+              style: AFont.instance.size22Black3,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 isCollapsed: true,
-                contentPadding: EdgeInsets.fromLTRB(8.w, 10.h, 10.w, 8.h),
+                contentPadding: EdgeInsets.fromLTRB(8.w, 12.h, 10.w, 12.h),
                 hintText: placeHolder,
               ),
             ),

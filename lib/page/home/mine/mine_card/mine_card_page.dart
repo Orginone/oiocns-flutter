@@ -4,9 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/component/click_item_type1.dart';
 import 'package:orginone/component/unified_scaffold.dart';
-import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/util/widget_util.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import '../../../../component/a_font.dart';
 import 'mine_card_controller.dart';
 
 class MineCardPage extends GetView<MineCardController> {
@@ -17,7 +17,7 @@ class MineCardPage extends GetView<MineCardController> {
     return GetBuilder<MineCardController>(
         init: MineCardController(),
         builder: (item) => UnifiedScaffold(
-              appBarTitle: Text("我的名片", style: text18Bold),
+              appBarTitle: Text("我的名片", style: AFont.instance.size22Black3),
               appBarCenterTitle: true,
               appBarLeading: WidgetUtil.defaultBackBtn,
               bgColor: const Color.fromRGBO(240, 240, 240, 1),

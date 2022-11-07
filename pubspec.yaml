@@ -83,12 +83,16 @@ dependencies:
   flutter_local_notifications: ^11.0.0
   flutter_html: ^3.0.0-alpha.5
   emoji_picker_flutter: ^1.5.0
-  flutter_sound: ^9.2.13
   cached_network_image: ^3.2.1
   card_swiper: ^2.0.4
   flutter_cache_manager: ^3.3.0
   graphic: ^0.10.7
   flutter_form_builder: ^7.7.0
+
+  # 音频录制以及音频播放
+  flutter_sound: ^9.2.13
+  audio_wave: ^0.1.4
+  vibration: ^1.7.5
 
   # 组件管理库
   get: ^4.6.5

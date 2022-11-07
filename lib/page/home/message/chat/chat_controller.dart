@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -51,21 +52,22 @@ class Detail {
         );
       case MsgType.voice:
         // 语音
-        String path = msgMap["path"] ?? "";
         int milliseconds = msgMap["milliseconds"] ?? 0;
+        List<dynamic> rowBytes = msgMap["bytes"] ?? [];
+        List<int> tempBytes = rowBytes.map((byte) => byte as int).toList();
         return VoiceDetail(
           resp: resp,
           status: VoiceStatus.stop.obs,
           initProgress: milliseconds,
           progress: milliseconds.obs,
-          path: path,
+          bytes: Uint8List.fromList(tempBytes),
         );
       case MsgType.topping:
       case MsgType.text:
       case MsgType.recall:
       case MsgType.image:
       case MsgType.unknown:
-        return Detail(resp);
+        return Detail.fromResp(resp);
     }
   }
 }
@@ -78,14 +80,14 @@ class VoiceDetail extends Detail {
   final Rx<VoiceStatus> status;
   final int initProgress;
   final RxInt progress;
-  final String path;
+  final Uint8List bytes;
 
   const VoiceDetail({
     required MessageDetailResp resp,
     required this.status,
     required this.initProgress,
     required this.progress,
-    required this.path,
+    required this.bytes,
   }) : super.fromResp(resp);
 }
 
@@ -131,7 +133,9 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   late RxString titleName;
 
   // 观测对象
-  late RxList<Detail> details;
+  late RxList<Detail> _details;
+
+  RxList<Detail> get details => _details;
 
   // 语音播放器
   FlutterSoundPlayer? _soundPlayer;
@@ -163,7 +167,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     titleName = messageItem.name.obs;
 
     // 清空所有聊天记录
-    details = <Detail>[].obs;
+    _details = <Detail>[].obs;
 
     // 初始化老数据个数，查询聊天记录的个数
     await getTotal();
@@ -189,7 +193,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     }
     log.info("会话页面接收到一条新的数据${detail.toJson()}");
     if (detail.msgType == "recall") {
-      for (var oldDetail in details) {
+      for (var oldDetail in _details) {
         var resp = oldDetail.resp;
         if (resp.id == detail.id) {
           resp.msgBody = detail.msgBody;
@@ -199,13 +203,13 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         }
       }
     } else {
-      int has = details
+      int has = _details
           .map((item) => item.resp)
           .where((item) => item.id == detail.id)
           .length;
       if (has == 0) {
         detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
-        details.insert(0, Detail.fromResp(detail));
+        _details.insert(0, Detail.fromResp(detail));
       }
     }
     updateAndToBottom();
@@ -249,25 +253,24 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     HubUtil().cacheChats(messageController.orgChatCache);
   }
 
-  Future<int> getTotal() async {
+  Future<void> getTotal() async {
     if (messageItem.typeName != TargetType.person.name) {
       var page = await HubUtil().getPersons(messageItemId, 1, 0);
-      return page.total;
+      messageItem.personNum = page.total;
     }
-    return 0;
   }
 
   /// 下拉时刷新旧的聊天记录
   Future<void> getHistoryMsg({bool isCacheNameMap = false}) async {
     String typeName = messageItem.typeName;
 
-    var insertPointer = details.length;
+    var insertPointer = _details.length;
     List<MessageDetailResp> newDetails = await HubUtil()
         .getHistoryMsg(spaceId, messageItemId, typeName, insertPointer, 15);
 
     Map<String, dynamic> nameMap = messageController.orgChatCache.nameMap;
     for (MessageDetailResp detail in newDetails) {
-      details.insert(insertPointer, Detail.fromResp(detail));
+      _details.insert(insertPointer, Detail.fromResp(detail));
       if (!nameMap.containsKey(detail.fromId)) {
         var name = await HubUtil().getName(detail.fromId);
         nameMap[detail.fromId] = name;
@@ -332,26 +335,11 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   }
 
   /// 语音录制完成并发送
-  void sendVoice(String fileName, String filePath, int milliseconds) async {
-    TargetResp userInfo = auth.userInfo;
-    String prefix = "chat_${userInfo.id}_${messageItem.id}_voice";
-    log.info("====> prefix:$prefix");
-    String encodedPrefix = EncryptionUtil.encodeURLString(prefix);
-
-    try {
-      await BucketApi.create(prefix: encodedPrefix);
-    } catch (error) {
-      log.warning("====> 创建目录失败：$error");
-    }
-    await BucketApi.upload(
-      prefix: encodedPrefix,
-      filePath: filePath,
-      fileName: fileName,
-    );
-
+  void sendVoice(String filePath, int milliseconds) async {
+    var file = File(filePath);
     Map<String, dynamic> msgBody = {
-      "path": "$prefix/$fileName",
-      "milliseconds": milliseconds
+      "milliseconds": milliseconds,
+      "bytes": file.readAsBytesSync()
     };
     sendOneMessage(jsonEncode(msgBody), msgType: MsgType.voice);
   }
@@ -414,13 +402,13 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         break;
       case DetailFunc.remove:
         await HubUtil().deleteMsg(detail.id);
-        details.removeWhere((item) => item.resp.id == detail.id);
+        _details.removeWhere((item) => item.resp.id == detail.id);
         break;
     }
   }
 
   /// 开始播放
-  startPlayVoice(String id, File file) async {
+  startPlayVoice(String id, Uint8List bytes) async {
     await stopPrePlayVoice();
 
     // 动画效果
@@ -446,8 +434,9 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     });
     _soundPlayer!
         .startPlayer(
-            fromDataBuffer: file.readAsBytesSync(),
-            whenFinished: () => stopPrePlayVoice())
+          fromDataBuffer: bytes,
+          whenFinished: () => stopPrePlayVoice(),
+        )
         .catchError((error) => stopPrePlayVoice());
 
     // 重新开始播放

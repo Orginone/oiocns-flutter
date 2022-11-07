@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../api_resp/target_resp.dart';
 import '../../../../api_resp/tree_node.dart';
+import '../../../../component/a_font.dart';
 import '../../../../component/bread_crumb.dart';
 import '../../../../component/text_avatar.dart';
 import '../../../../component/text_search.dart';
@@ -23,7 +23,8 @@ class DeptPage extends GetView<DeptController> {
   Widget build(BuildContext context) {
     HomeController homeController = Get.find<HomeController>();
     return UnifiedScaffold(
-      appBarTitle: Text(homeController.currentSpace.name, style: text20),
+      appBarTitle: Text(homeController.currentSpace.name,
+          style: AFont.instance.size22Black3),
       appBarCenterTitle: true,
       appBarLeading: WidgetUtil.defaultBackBtn,
       body: Column(

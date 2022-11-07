@@ -11,6 +11,7 @@ import 'package:orginone/util/any_store_util.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:signalr_core/signalr_core.dart';
+import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
 
 import '../../component/unified_colors.dart';
 import '../../logic/authority.dart';
@@ -84,7 +85,10 @@ class HomePage extends GetView<HomeController> {
           context,
           Icons.group_add_outlined,
           "创建群组",
-          () {},
+          () {
+            Map<String, dynamic> args = {"func": CohortFunction.create};
+            Get.toNamed(Routers.cohortMaintain, arguments: args);
+          },
         ),
       ),
       PopupMenuItem(
@@ -199,10 +203,11 @@ class HomePage extends GetView<HomeController> {
           Container(
             margin: EdgeInsets.only(left: 10.w),
             child: GestureDetector(
-                child: const Icon(Icons.search, color: Colors.black),
-                onTap: () {
-                  Get.toNamed(Routers.search);
-                }),
+              child: const Icon(Icons.search, color: Colors.black),
+              onTap: () {
+                Get.toNamed(Routers.search);
+              },
+            ),
           ),
           Container(
             margin: EdgeInsets.only(left: 10.w),
@@ -214,10 +219,15 @@ class HomePage extends GetView<HomeController> {
               },
               onTap: () {
                 showMenu(
-                    context: context,
-                    position: RelativeRect.fromLTRB(
-                        x - 20.w, y + 20.h, x + 20.w, y + 40.h),
-                    items: _popupMenus(context));
+                  context: context,
+                  position: RelativeRect.fromLTRB(
+                    x - 20.w,
+                    y + 20.h,
+                    x + 20.w,
+                    y + 40.h,
+                  ),
+                  items: _popupMenus(context),
+                );
               },
             ),
           ),
@@ -268,7 +278,7 @@ class HomePage extends GetView<HomeController> {
               child: BreadCrumb(
                 stackBottomStyle: TextStyle(
                   fontSize: 18.sp,
-                  color: UnifiedColors.agreeColor,
+                  color: UnifiedColors.themeColor,
                 ),
                 stackTopStyle: TextStyle(fontSize: 18.sp),
                 controller: controller.breadCrumbController,

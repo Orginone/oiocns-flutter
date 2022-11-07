@@ -3,11 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api_resp/message_item_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
-import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/component/a_font.dart';
 import 'package:orginone/page/home/message/component/message_item_widget.dart';
 
 import '../../../../api_resp/space_messages_resp.dart';
-import '../../../../component/unified_edge_insets.dart';
 import '../message_controller.dart';
 
 class GroupItemWidget extends GetView<MessageController> {
@@ -54,19 +53,19 @@ class GroupItemWidget extends GetView<MessageController> {
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            padding: ltb10,
-            child: Text("${chat.name}($showCount)", style: text16),
+            padding: EdgeInsets.only(left: 25.w, top: 10.h, bottom: 10.h),
+            child: Text("${chat.name}($showCount)",
+                style: AFont.instance.size22Black3W500),
           ),
           Container(
-            padding: right10,
+            padding: EdgeInsets.only(right: 25.w),
             child: GetBuilder<MessageController>(
               builder: (controller) {
                 var iconData =
                     chat.isExpand ? Icons.arrow_drop_down : Icons.arrow_right;
-                return Icon(iconData, size: 20.w);
+                return Icon(iconData, size: 30.w);
               },
             ),
           ),
@@ -106,7 +105,7 @@ class GroupItemWidget extends GetView<MessageController> {
                   return data.noRead != null && data.noRead != 0;
                 }).toList();
               }
-              var bottom = tops.isEmpty ? 0.h : 5.h;
+              var bottom = tops.isEmpty ? 0.h : 16.h;
               return ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -125,7 +124,7 @@ class GroupItemWidget extends GetView<MessageController> {
                     .where((item) => item.noRead != null && item.noRead != 0)
                     .toList();
               }
-              var bottom = messageItems.isEmpty ? 0.h : 5.h;
+              var bottom = messageItems.isEmpty ? 0.h : 16.h;
               return ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),

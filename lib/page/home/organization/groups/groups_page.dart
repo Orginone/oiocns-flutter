@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/util/string_util.dart';
 
 import '../../../../api_resp/target_resp.dart';
+import '../../../../component/a_font.dart';
 import '../../../../component/text_avatar.dart';
 import '../../../../component/text_search.dart';
 import '../../../../component/unified_scaffold.dart';
@@ -17,7 +18,7 @@ class GroupsPage extends GetView<GroupsController> {
   @override
   Widget build(BuildContext context) {
     return UnifiedScaffold(
-      appBarTitle: Text("我的集团", style: text20),
+      appBarTitle: Text("我的集团", style: AFont.instance.size22Black3),
       appBarCenterTitle: true,
       appBarLeading: WidgetUtil.defaultBackBtn,
       body: _body,

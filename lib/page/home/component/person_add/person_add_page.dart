@@ -6,13 +6,15 @@ import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/component/person_add/person_add_controller.dart';
 import 'package:orginone/util/widget_util.dart';
 
+import '../../../../component/a_font.dart';
+
 class PersonAddPage extends GetView<PersonAddController> {
   const PersonAddPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return UnifiedScaffold(
-        appBarTitle: Text("好友添加", style: text16),
+        appBarTitle: Text("好友添加", style: AFont.instance.size22Black3),
         appBarLeading: WidgetUtil.defaultBackBtn,
         bgColor: const Color.fromRGBO(240, 240, 240, 1),
         body: Container(

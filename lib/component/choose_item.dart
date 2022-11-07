@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 const EdgeInsets defaultPadding = EdgeInsets.only(left: 15, top: 15, right: 15);
@@ -10,17 +9,17 @@ class ChooseItem extends StatelessWidget {
   final Widget? operate;
   final List<Widget>? content;
   final EdgeInsets? padding;
-  final Function func;
+  final Function? func;
 
-  const ChooseItem(
-      {Key? key,
-      required this.header,
-      required this.func,
-      this.padding = defaultPadding,
-      this.operate = defaultOperate,
-      this.body,
-      this.content})
-      : super(key: key);
+  const ChooseItem({
+    Key? key,
+    required this.header,
+    this.func,
+    this.padding = defaultPadding,
+    this.operate = defaultOperate,
+    this.body,
+    this.content,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -48,13 +47,19 @@ class ChooseItem extends StatelessWidget {
     if (content != null) {
       column.addAll(content!);
     }
-    Column all = Column(children: column);
+    Column all = Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: column,
+    );
 
     // 点击触发方法
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        func();
+        if (func != null) {
+          func!();
+        }
       },
       child: Container(
         padding: padding,

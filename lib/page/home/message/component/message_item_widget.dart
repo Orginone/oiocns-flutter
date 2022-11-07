@@ -17,14 +17,14 @@ import '../../../../util/date_util.dart';
 
 double defaultAvatarWidth = 66.w;
 
-enum LongPressFunc {
+enum ChatFunc {
   topping("置顶会话"),
   cancelTopping("取消置顶"),
   remove("删除会话");
 
   final String name;
 
-  const LongPressFunc(this.name);
+  const ChatFunc(this.name);
 }
 
 class MessageItemWidget extends GetView<MessageController> {
@@ -48,24 +48,28 @@ class MessageItemWidget extends GetView<MessageController> {
         bool isTop = item.isTop ?? false;
         bool isRecent =
             controller.orgChatCache.recentChats?.contains(item) ?? false;
-        List<LongPressFunc> functions = [];
+        List<ChatFunc> functions = [];
         if (isTop) {
-          functions.add(LongPressFunc.cancelTopping);
+          functions.add(ChatFunc.cancelTopping);
         } else {
-          functions.add(LongPressFunc.topping);
+          functions.add(ChatFunc.topping);
         }
-        if (isRecent) functions.add(LongPressFunc.remove);
+        if (isRecent) functions.add(ChatFunc.remove);
 
         final result = await showMenu(
           context: context,
           position: RelativeRect.fromLTRB(
-              x, y - 50, MediaQuery.of(context).size.width - x, 0),
+            x,
+            y - 50,
+            MediaQuery.of(context).size.width - x,
+            0,
+          ),
           items: functions
               .map((item) => PopupMenuItem(value: item, child: Text(item.name)))
               .toList(),
         );
         if (result != null) {
-          controller.funcCallback(result, spaceId, item);
+          controller.chatEventFire(result, spaceId, item);
         }
       },
       onTap: () {
@@ -77,7 +81,7 @@ class MessageItemWidget extends GetView<MessageController> {
         Get.toNamed(Routers.chat, arguments: args);
       },
       child: Container(
-        padding: EdgeInsets.only(left: 25.w, top: 17.h, right: 25.w),
+        padding: EdgeInsets.only(left: 25.w, top: 16.h, right: 25.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -92,6 +96,9 @@ class MessageItemWidget extends GetView<MessageController> {
 
   Widget _avatar(MessageItemResp messageItem) {
     int notRead = messageItem.noRead ?? 0;
+    Color badgeColor = messageItem.isInterruption ?? false
+        ? UnifiedColors.cardBorder
+        : GFColors.DANGER;
     return Stack(
       children: [
         Align(
@@ -106,13 +113,16 @@ class MessageItemWidget extends GetView<MessageController> {
         ),
         Align(
           alignment: Alignment.bottomLeft,
-          child: TextTag(messageItem.typeName),
+          child: TextTag(messageItem.label),
         ),
         Visibility(
           visible: notRead > 0,
           child: Align(
             alignment: Alignment.topRight,
-            child: GFBadge(child: Text("${notRead > 99 ? "99+" : notRead}")),
+            child: GFBadge(
+              color: badgeColor,
+              child: Text("${notRead > 99 ? "99+" : notRead}"),
+            ),
           ),
         )
       ],
@@ -167,7 +177,7 @@ class MessageItemWidget extends GetView<MessageController> {
               ),
             ),
             TextTag(
-              space?.name,
+              space?.name ?? "",
               bgColor: Colors.white,
               textStyle: TextStyle(
                 color: UnifiedColors.designBlue,

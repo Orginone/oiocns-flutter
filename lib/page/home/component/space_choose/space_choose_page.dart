@@ -6,6 +6,7 @@ import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/util/string_util.dart';
 
 import '../../../../api_resp/target_resp.dart';
+import '../../../../component/a_font.dart';
 import '../../../../component/text_avatar.dart';
 import '../../../../component/unified_edge_insets.dart';
 import '../../../../util/widget_util.dart';
@@ -78,7 +79,7 @@ class SpaceChoosePage extends GetView<SpaceChooseController> {
   Widget build(BuildContext context) {
     return UnifiedScaffold(
       appBarLeading: WidgetUtil.defaultBackBtn,
-      appBarTitle: Text("工作空间切换", style: text20),
+      appBarTitle: Text("工作空间切换", style: AFont.instance.size22Black3),
       appBarCenterTitle: true,
       body: _body,
     );

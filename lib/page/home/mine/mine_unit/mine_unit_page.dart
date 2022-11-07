@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/component/form_item_type1.dart';
 import 'package:orginone/component/unified_scaffold.dart';
-import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/search/search_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/widget_util.dart';
 
+import '../../../../component/a_font.dart';
 import 'mine_unit_controller.dart';
 
 class MineUnitPage extends GetView<MineUnitController> {
@@ -17,7 +17,8 @@ class MineUnitPage extends GetView<MineUnitController> {
     return GetBuilder<MineUnitController>(
         init: MineUnitController(),
         builder: (item) => UnifiedScaffold(
-            appBarTitle: Text("我的单位", style: text16),
+            appBarTitle: Text("我的单位", style: AFont.instance.size22Black3),
+            appBarCenterTitle: true,
             appBarLeading: WidgetUtil.defaultBackBtn,
             bgColor: const Color.fromRGBO(240, 240, 240, 1),
             floatingButton: Row(
@@ -35,15 +36,15 @@ class MineUnitPage extends GetView<MineUnitController> {
                       splashColor: Colors.white,
                       elevation: 0.0,
                       highlightElevation: 25.0,
-                      child: const Icon(Icons.add,
-                          size: 30, color: Colors.white)),
+                      child:
+                          const Icon(Icons.add, size: 30, color: Colors.white)),
                 ),
                 Container(
                   margin: const EdgeInsets.fromLTRB(10, 0, 5, 0),
                   child: FloatingActionButton(
                       onPressed: () {
                         List<SearchItem> units = [SearchItem.units];
-                        Get.toNamed(Routers.search,arguments: units);
+                        Get.toNamed(Routers.search, arguments: units);
                       },
                       tooltip: "加入单位",
                       backgroundColor: Colors.blueAccent,
@@ -75,11 +76,10 @@ class MineUnitPage extends GetView<MineUnitController> {
                       text: controller.units[index].name,
                       suffixIcon: const Icon(Icons.keyboard_arrow_right),
                       callback1: () {
-                        Get.toNamed(Routers.unitDetail,
-                            arguments: {
-                              'code': controller.units[index].code,
-                              'type': 1
-                            });
+                        Get.toNamed(Routers.unitDetail, arguments: {
+                          'code': controller.units[index].code,
+                          'type': 1
+                        });
                       },
                     );
                   }),

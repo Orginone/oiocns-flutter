@@ -1,3 +1,4 @@
+import 'package:orginone/enumeration/chat_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 
 import 'message_type.dart';
@@ -7,6 +8,10 @@ class EnumMap {
   static Map<String, TargetType> targetTypeMap = typeMapFunc(
     TargetType.values,
     TargetType.getName,
+  );
+  static Map<String, ChatType> chatTypeMap = typeMapFunc(
+    ChatType.values,
+    ChatType.getName,
   );
 
   ///string转枚举类型

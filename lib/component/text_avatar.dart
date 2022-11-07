@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:orginone/component/unified_colors.dart';
 
 enum TextAvatarType { space, chat, avatar }
 
 const double defaultWidth = 40;
 const double defaultRadius = 5;
-const Color defaultBgColor = Colors.blueAccent;
+const Color defaultBgColor = UnifiedColors.themeColor;
 const EdgeInsets defaultMargin = EdgeInsets.zero;
 const TextStyle defaultTextStyle = TextStyle(
   fontSize: 16,
@@ -21,16 +22,16 @@ class TextAvatar extends StatelessWidget {
   final TextStyle textStyle;
   final Widget? status;
 
-  const TextAvatar(
-      {Key? key,
-      required this.avatarName,
-      this.radius = defaultRadius,
-      this.width = defaultWidth,
-      this.margin = defaultMargin,
-      this.bgColor = defaultBgColor,
-      this.textStyle = defaultTextStyle,
-      this.status})
-      : super(key: key);
+  const TextAvatar({
+    Key? key,
+    required this.avatarName,
+    this.radius = defaultRadius,
+    this.width = defaultWidth,
+    this.margin = defaultMargin,
+    this.bgColor = defaultBgColor,
+    this.textStyle = defaultTextStyle,
+    this.status,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

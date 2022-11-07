@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -78,14 +76,14 @@ class ChatMessageDetail extends GetView<ChatController> {
           detail: detail,
           nameMap: nameMap,
         );
-        children.add(Text(msgBody, style: AFont.instance.size16Black9));
+        children.add(Text(msgBody, style: AFont.instance.size18Black9));
         break;
       default:
         break;
     }
 
     return Container(
-      margin: EdgeInsets.only(top: 5.h, bottom: 5.h),
+      margin: EdgeInsets.only(top: 8.h, bottom: 8.h),
       child: Row(
         textDirection: isMy ? TextDirection.rtl : TextDirection.ltr,
         mainAxisAlignment: msgType == MsgType.recall
@@ -123,15 +121,16 @@ class ChatMessageDetail extends GetView<ChatController> {
     if (isMultiple && !isMy) {
       content.add(Container(
         margin: left10,
-        child: Text(targetName(), style: text12),
+        child: Text(targetName(), style: AFont.instance.size16Black3),
       ));
     }
 
-    TargetResp userInfo = auth.userInfo;
-
     Widget body;
-    var textDirection =
-        detail.fromId == userInfo.id ? TextDirection.rtl : TextDirection.ltr;
+    var mySend = detail.fromId == auth.userId;
+    var rtl = TextDirection.rtl;
+    var ltr = TextDirection.ltr;
+    var textDirection = mySend ? rtl : ltr;
+
     switch (msgType) {
       case MsgType.text:
         body = _detail(
@@ -174,8 +173,7 @@ class ChatMessageDetail extends GetView<ChatController> {
             items.add(DetailFunc.recall);
           }
         }
-        TargetResp userInfo = auth.userInfo;
-        if (spaceId == userInfo.id) {
+        if (spaceId == auth.userId) {
           items.add(DetailFunc.remove);
         }
         if (items.isEmpty) {
@@ -277,99 +275,81 @@ class ChatMessageDetail extends GetView<ChatController> {
 
   /// 语音详情
   Widget _voice({required TextDirection textDirection}) {
-    // 解析参数
-    Map<String, dynamic> msgMap = jsonDecode(detail.msgBody ?? "{}");
-    String path = msgMap["path"] ?? "";
-    int milliseconds = msgMap["milliseconds"] ?? 0;
-
     // 初始化语音输入
-    controller.playStatusMap.putIfAbsent(
-        detail.id,
-        () => VoiceDetail(
-              resp: detail,
-              status: VoiceStatus.stop.obs,
-              initProgress: milliseconds,
-              progress: milliseconds.obs,
-              path: path,
-            ));
+    controller.playStatusMap
+        .putIfAbsent(detail.id, () => Detail(detail) as VoiceDetail);
+
+    var voicePlay = controller.playStatusMap[detail.id]!;
+    var seconds = voicePlay.initProgress ~/ 1000;
+    seconds = seconds > 60 ? 60 : seconds;
 
     return _detail(
-      padding: EdgeInsets.all(6.w),
       textDirection: textDirection,
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
+      body: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           GestureDetector(
             onTap: () async {
-              if (detail.msgBody == null) {
-                Fluttertoast.showToast(msg: "未获取到文件信息，无法播放！");
+              if (voicePlay.bytes.isEmpty) {
+                Fluttertoast.showToast(msg: "未获取到语音，播放失败！");
                 return;
               }
 
-              Map<String, dynamic> body = jsonDecode(detail.msgBody!);
-              String path = body["path"];
-              File cachedFile = await BucketApi.getCachedFile(path);
-
-              // 播放文件
-              var voicePlay = controller.playStatusMap[detail.id]!;
-              var status = voicePlay.status;
-              if (status.value == VoiceStatus.stop) {
-                controller.startPlayVoice(detail.id, cachedFile);
+              if (voicePlay.status.value == VoiceStatus.stop) {
+                controller.startPlayVoice(detail.id, voicePlay.bytes);
               } else {
                 controller.stopPrePlayVoice();
               }
             },
             child: Obx(() {
-              var voicePlay = controller.playStatusMap[detail.id]!;
               var status = voicePlay.status;
               return status.value == VoiceStatus.stop
                   ? const Icon(Icons.play_arrow, color: Colors.black)
                   : const Icon(Icons.stop, color: Colors.black);
             }),
           ),
-          Container(margin: EdgeInsets.only(left: 5.w)),
-          Expanded(
-            child: SizedBox(
-              height: 12.h,
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      height: 8.h,
-                      decoration: BoxDecoration(
-                        color: Colors.white60,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(2.w),
-                        ),
+          Padding(padding: EdgeInsets.only(left: 5.w)),
+          SizedBox(
+            height: 12.h,
+            width: 60.w + seconds * 2.w,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    height: 16.h,
+                    decoration: BoxDecoration(
+                      color: UnifiedColors.lineLight,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(2.w),
                       ),
                     ),
                   ),
-                  Obx(() {
-                    var voicePlay = controller.playStatusMap[detail.id]!;
-                    var status = voicePlay.status;
-                    if (status.value == VoiceStatus.stop) {
-                      return Align(
-                        alignment: Alignment.centerLeft,
-                        child: Icon(Icons.circle, size: 12.h),
-                      );
-                    } else {
-                      return AlignTransition(
-                        alignment: controller.animation!,
-                        child: Icon(Icons.circle, size: 12.h),
-                      );
-                    }
-                  }),
-                ],
-              ),
+                ),
+                Obx(() {
+                  var status = voicePlay.status;
+                  if (status.value == VoiceStatus.stop) {
+                    return Align(
+                      alignment: Alignment.centerLeft,
+                      child: Icon(Icons.circle, size: 12.h),
+                    );
+                  } else {
+                    return AlignTransition(
+                      alignment: controller.animation!,
+                      child: Icon(Icons.circle, size: 12.h),
+                    );
+                  }
+                }),
+              ],
             ),
           ),
-          Container(margin: EdgeInsets.only(left: 5.w)),
+          Padding(padding: EdgeInsets.only(left: 10.w)),
           Obx(() {
-            var voicePlay = controller.playStatusMap[detail.id]!;
             var progress = voicePlay.progress;
-            return Text(StringUtil.getMinusShow(progress.value ~/ 1000));
+            return Text(
+              StringUtil.getMinusShow(progress.value ~/ 1000),
+              style: AFont.instance.size22Black3,
+            );
           })
         ],
       ),

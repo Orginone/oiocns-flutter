@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -6,6 +5,7 @@ import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/routers.dart';
 
+import '../../../../../component/a_font.dart';
 import '../../../../../component/choose_item.dart';
 import '../../../../../component/unified_edge_insets.dart';
 import '../../../../../component/unified_text_style.dart';
@@ -18,22 +18,20 @@ class FriendAddPage extends GetView<FriendAddController> {
 
   @override
   Widget build(BuildContext context) {
-    String placeholder = "通过账号/手机号搜索添加";
     return UnifiedScaffold(
       appBarCenterTitle: true,
-      appBarTitle: Text("好友添加", style: text18Bold),
+      appBarTitle: Text("好友添加", style: AFont.instance.size22Black3),
       appBarLeading: WidgetUtil.defaultBackBtn,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           TextSearch(
-            placeHolder: placeholder,
+            placeHolder: FunctionPoint.addFriends.placeHolder,
             onTap: () {
               List<SearchItem> friends = [SearchItem.friends];
               Get.toNamed(Routers.search, arguments: {
                 "items": friends,
                 "point": FunctionPoint.addFriends,
-                "placeholder": placeholder
               });
             },
           ),

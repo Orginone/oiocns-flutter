@@ -1,5 +1,5 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
-import 'package:orginone/component/form.dart';
+import 'package:orginone/component/form_widget.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
 import 'package:orginone/page/home/affairs/detail/affairs_detail.dart';
@@ -25,6 +25,7 @@ import 'package:orginone/page/home/message/message_binding.dart';
 import 'package:orginone/page/home/message/message_page.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_binding.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_page.dart';
+import 'package:orginone/page/home/message/more_message/more_message_page.dart';
 import 'package:orginone/page/home/mine/mine_binding.dart';
 import 'package:orginone/page/home/mine/mine_card/mine_card_binding.dart';
 import 'package:orginone/page/home/mine/mine_card/mine_card_page.dart';
@@ -35,6 +36,8 @@ import 'package:orginone/page/home/mine/mine_unit/mine_unit_binding.dart';
 import 'package:orginone/page/home/mine/mine_unit/mine_unit_page.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_binding.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_page.dart';
+import 'package:orginone/page/home/organization/cohorts/component/cohort_maintain_page.dart';
+import 'package:orginone/page/home/organization/cohorts/component/more_cohort.dart';
 import 'package:orginone/page/home/organization/dept/dept_binding.dart';
 import 'package:orginone/page/home/organization/dept/dept_page.dart';
 import 'package:orginone/page/home/organization/friends/friend_add/friend_add_binding.dart';
@@ -72,15 +75,20 @@ class Routers {
   static const String home = "/home";
   static const String center = "/center";
   static const String spaceChoose = "/spaceChoose";
+
+  // 会话
   static const String message = "/message";
+  static const String chat = "/chat";
+  static const String moreMessage = "/moreMessage";
   static const String organization = "/organization";
   static const String work = "/work";
-  static const String chat = "/chat";
   static const String messageSetting = "/messageSetting";
   static const String friends = "/friends";
   static const String units = "/units";
   static const String groups = "/groups";
   static const String cohorts = "/cohorts";
+  static const String cohortMaintain = "/cohortMaintain";
+  static const String moreCohort = "/moreCohort";
   static const String dept = "/dept";
   static const String personDetail = "/person_detail";
   static const String personAdd = "/personAdd";
@@ -98,36 +106,41 @@ class Routers {
   //首页-办事
   static const String affairs = "/affairs";
   static const String friendAdd = "/friendAdd";
-  static const String form = "/form";
   static const String affairsDetail = "/affairsDetail";
   static const String newFriends = "/newFriends";
 
   static List<GetPage> getInitRouters() {
     return [
       GetPage(
-          name: Routers.main,
-          page: () => const LoginPage(),
-          binding: LoginBinding()),
+        name: Routers.main,
+        page: () => const LoginPage(),
+        binding: LoginBinding(),
+      ),
       GetPage(
-          name: Routers.forget,
-          page: () => const ForgetPage(),
-          binding: ForgetBinding()),
+        name: Routers.forget,
+        page: () => const ForgetPage(),
+        binding: ForgetBinding(),
+      ),
       GetPage(
-          name: Routers.register,
-          page: () => const RegisterPage(),
-          binding: RegisterBinding()),
+        name: Routers.register,
+        page: () => const RegisterPage(),
+        binding: RegisterBinding(),
+      ),
       GetPage(
-          name: Routers.login,
-          page: () => const LoginPage(),
-          binding: LoginBinding()),
+        name: Routers.login,
+        page: () => const LoginPage(),
+        binding: LoginBinding(),
+      ),
       GetPage(
-          name: Routers.home,
-          page: () => const HomePage(),
-          binding: HomeBinding()),
+        name: Routers.home,
+        page: () => const HomePage(),
+        binding: HomeBinding(),
+      ),
       GetPage(
-          name: Routers.center,
-          page: () => const CenterPage(),
-          binding: CenterBinding()),
+        name: Routers.center,
+        page: () => const CenterPage(),
+        binding: CenterBinding(),
+      ),
       GetPage(
         name: Routers.spaceChoose,
         page: () => const SpaceChoosePage(),
@@ -136,6 +149,11 @@ class Routers {
       GetPage(
         name: Routers.message,
         page: () => const MessagePage(),
+        binding: MessageBinding(),
+      ),
+      GetPage(
+        name: Routers.moreMessage,
+        page: () => const MoreMessagePage(),
         binding: MessageBinding(),
       ),
       GetPage(
@@ -176,6 +194,16 @@ class Routers {
       GetPage(
         name: Routers.cohorts,
         page: () => const CohortsPage(),
+        binding: CohortsBinding(),
+      ),
+      GetPage(
+        name: Routers.cohortMaintain,
+        page: () => const CohortMaintainPage(),
+        binding: CohortsBinding(),
+      ),
+      GetPage(
+        name: Routers.moreCohort,
+        page: () => const MoreCohort(),
         binding: CohortsBinding(),
       ),
       GetPage(
@@ -237,11 +265,6 @@ class Routers {
         name: Routers.scanningResult,
         page: () => const ScanningResultPage(),
         binding: ScanningResultBinding(),
-      ),
-      GetPage(
-        name: Routers.form,
-        page: () => const Form(),
-        binding: FormBinding(),
       ),
       GetPage(
         name: Routers.friendAdd,

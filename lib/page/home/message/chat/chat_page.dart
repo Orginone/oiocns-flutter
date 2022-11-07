@@ -26,6 +26,7 @@ class ChatPage extends GetView<ChatController> {
   Widget build(BuildContext context) {
     return UnifiedScaffold(
       appBarHeight: 74.h,
+      appBarBgColor: UnifiedColors.navigatorBgColor,
       resizeToAvoidBottomInset: false,
       appBarLeading: WidgetUtil.defaultBackBtn,
       appBarTitle: _title,
@@ -71,7 +72,7 @@ class ChatPage extends GetView<ChatController> {
   Widget _time(DateTime? dateTime) {
     return Container(
       alignment: Alignment.center,
-      margin: EdgeInsets.only(top: 5.h, bottom: 5.h),
+      margin: EdgeInsets.only(top: 10.h, bottom: 10.h),
       child: Text(
         dateTime != null ? CustomDateUtil.getDetailTime(dateTime) : "",
         style: AFont.instance.size16Black9,
