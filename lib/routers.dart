@@ -21,6 +21,7 @@ import 'package:orginone/page/home/message/chat/chat_binding.dart';
 import 'package:orginone/page/home/message/chat/chat_page.dart';
 import 'package:orginone/page/home/message/contact/contact_binding.dart';
 import 'package:orginone/page/home/message/contact/contact_page.dart';
+import 'package:orginone/page/home/message/invite/invite_page.dart';
 import 'package:orginone/page/home/message/message_binding.dart';
 import 'package:orginone/page/home/message/message_page.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_binding.dart';
@@ -106,6 +107,7 @@ class Routers {
   //首页-办事
   static const String affairs = "/affairs";
   static const String friendAdd = "/friendAdd";
+  static const String invite = "/invite";
   static const String affairsDetail = "/affairsDetail";
   static const String newFriends = "/newFriends";
 
@@ -285,6 +287,11 @@ class Routers {
         name: Routers.newFriends,
         page: () => NewFriendsPage(),
         binding: NewFriendsBinding(),
+      ),
+      GetPage(
+        name: Routers.invite,
+        page: () => const InvitePage(),
+        binding: InviteBinding(),
       ),
     ];
   }

@@ -92,10 +92,17 @@ class MessageSettingPage extends GetView<MessageSettingController> {
         break;
       case ChatType.group:
       case ChatType.unit:
+        var isRelationAdmin = auth.isRelationAdmin([controller.messageItemId]);
         children = [
           _avatar,
           Padding(padding: EdgeInsets.only(top: 50.h)),
-          const AvatarGroup(showCount: 13),
+          AvatarGroup(
+            hasAdd: isRelationAdmin,
+            showCount: isRelationAdmin ? 14 : 15,
+            addCallback: () {
+              Get.toNamed(Routers.invite, arguments: controller.messageItemId);
+            },
+          ),
           if (controller.hasReminder) _more,
           _interruption,
           _top,

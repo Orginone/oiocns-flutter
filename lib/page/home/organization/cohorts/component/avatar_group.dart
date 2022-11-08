@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 
 import '../../../../../api_resp/target_resp.dart';
@@ -13,10 +14,14 @@ double avatarWidth = 76.w;
 class AvatarGroup extends StatelessWidget {
   final int? showCount;
   final EdgeInsets? padding;
+  final bool hasAdd;
+  final Function? addCallback;
 
   const AvatarGroup({
     this.showCount,
     this.padding,
+    this.hasAdd = false,
+    this.addCallback,
     Key? key,
   }) : super(key: key);
 
@@ -28,14 +33,15 @@ class AvatarGroup extends StatelessWidget {
   /// 头像组
   get _avatarGroup {
     return GetBuilder<MessageSettingController>(builder: (controller) {
-      var persons =
-          controller.persons.map((item) => _avatarItem(item)).toList();
+      var persons = controller.persons.map((item) {
+        return _avatarItem(item);
+      }).toList();
       if (showCount != null && persons.length > showCount!) {
         persons = persons.sublist(0, showCount!);
       }
-      persons
-        ..add(_addItem)
-        ..add(_minusItem);
+      if (hasAdd) {
+        persons.add(_addItem);
+      }
 
       return GridView.count(
         padding: padding,
@@ -54,7 +60,9 @@ class AvatarGroup extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-
+            if (addCallback != null) {
+              addCallback!();
+            }
           },
           child: Container(
             width: avatarWidth,
@@ -62,20 +70,6 @@ class AvatarGroup extends StatelessWidget {
             color: Colors.white,
             child: const Icon(Icons.add),
           ),
-        )
-      ],
-    );
-  }
-
-  /// 减少好友
-  get _minusItem {
-    return Column(
-      children: [
-        Container(
-          width: avatarWidth,
-          height: avatarWidth,
-          color: Colors.white,
-          child: const Icon(Icons.remove),
         )
       ],
     );

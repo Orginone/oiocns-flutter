@@ -7,6 +7,7 @@ import 'package:orginone/page/home/organization/cohorts/component/avatar_group.d
 
 import '../../../../../component/a_font.dart';
 import '../../../../../component/unified_colors.dart';
+import '../../../../../routers.dart';
 import '../../../../../util/widget_util.dart';
 
 class MoreCohort extends GetView<MessageSettingController> {
@@ -23,7 +24,12 @@ class MoreCohort extends GetView<MessageSettingController> {
         color: UnifiedColors.bgColor,
         child: ListView(
           children: [
-            AvatarGroup(padding: EdgeInsets.only(top: 30.h)),
+            AvatarGroup(
+              padding: EdgeInsets.only(top: 30.h),
+              addCallback: () {
+                Get.toNamed(Routers.invite, arguments: controller.messageItemId);
+              },
+            ),
             GetBuilder<MessageSettingController>(builder: (controller) {
               if (controller.hasReminder) {
                 return _more;
