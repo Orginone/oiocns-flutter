@@ -28,6 +28,7 @@ class MessageSettingController extends GetxController {
   // 人员列表
   late bool hasReminder;
   late List<TargetResp> persons;
+  late bool isRelationAdmin;
   late int offset;
   late int limit;
 
@@ -40,12 +41,13 @@ class MessageSettingController extends GetxController {
     spaceId = args["spaceId"];
     messageItemId = args["messageItemId"];
     messageItem = args["messageItem"];
+    isRelationAdmin = auth.isRelationAdmin([messageItemId]);
 
     hasReminder = true;
     offset = 0;
     limit = 15;
     persons = [];
-    await getPersons(13);
+    await getPersons(isRelationAdmin ? 14 : 15);
   }
 
   /// 查询群成员信息
