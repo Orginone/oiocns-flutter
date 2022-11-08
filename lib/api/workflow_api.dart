@@ -52,7 +52,7 @@ class WorkflowApi {
 
   /// 审核
   static Future<PageResp> approvalTask(String id,String status,String comment) async {
-    String url = "${Constant.workflow}/approval/task1";
+    String url = "${Constant.workflow}/approval/task";
     Map<String, dynamic> data = {"comment": comment, "id": id, "status": status};
     Map<String, dynamic> pageResp = await HttpUtil().post(url, data: data);
     return PageResp.fromMap(pageResp, PageResp.fromMap);

@@ -43,7 +43,7 @@ samples, guidance on mobile development, and a full API reference.
        barrierDismissible: false,
        animationType: DialogTransitionType.fadeScale,
        builder: (BuildContext context) {
-         return DialogSure(
+         return DialogConfirm(
            title: "xxx",
            content:"xxx",
            confirmFun: () {},

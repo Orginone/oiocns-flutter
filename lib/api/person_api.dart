@@ -113,14 +113,14 @@ class PersonApi {
   static Future<bool> joinSuccess(String id) async {
     String url = "${Constant.person}/join/success";
     var data = {"id": id};
-    Map<String, dynamic> resp = await HttpUtil().post(url, data: data,showError: false);
+    Map<String, dynamic> resp = await HttpUtil().post(url, data: data,showError: true);
     return resp != null;
   }
   /// 加好友拒绝
   static Future<bool> joinRefuse(String id) async {
     String url = "${Constant.person}/join/refuse";
     var data = {"id": id};
-    Map<String, dynamic> resp = await HttpUtil().post(url, data: data,showError: false);
+    Map<String, dynamic> resp = await HttpUtil().post(url, data: data,showError: true);
     return resp != null;
   }
 

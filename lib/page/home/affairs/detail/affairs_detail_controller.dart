@@ -3,18 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:orginone/page/home/affairs/affairs_type_enum.dart';
 import 'package:orginone/public/http/base_controller.dart';
-
 import '../../../../api/workflow_api.dart';
-import '../../../../api_resp/task_entity.dart';
 import '../../../../public/loading/opt_loading.dart';
-import '../../../../screen_init.dart';
 import '../../../../util/string_util.dart';
 import '../base/detail_arguments.dart';
-
-import 'package:orginone/page/home/affairs/detail/affairs_detail_controller.dart';
 
 class AffairsDetailController extends BaseController
     with GetSingleTickerProviderStateMixin {
@@ -33,7 +27,7 @@ class AffairsDetailController extends BaseController
     super.dispose();
   }
 
-  void approvalTask(String content) async {
+  void approvalTask(bool isAgree,String content) async {
     String id;
     if (arguments.typeEnum == AffairsTypeEnum.record) {
       id = "";
@@ -43,19 +37,14 @@ class AffairsDetailController extends BaseController
       id = StringUtil.formatStr(arguments.taskEntity?.id);
     }
     ALoading.showCircle();
-    Timer.periodic(const Duration(seconds: 4), (timer) {
-      ALoading.dismiss();
-      timer.cancel();
-      update();
-    });
-    //
-    // WorkflowApi.approvalTask(id, '201', content, (error) {
-    //   Fluttertoast.showToast(msg: "err:$error");
-    // }).then((value) {
-    //   ALoading.dismiss();
-    // }).onError((error, stackTrace) {
-    //   ALoading.dismiss();
-    // });
+    /// 201 拒绝 101 同意
+    String status = isAgree ? "101" : "201";
+    await WorkflowApi.approvalTask(id, status, content).then((value) {
+      /// 审核成功，刷新页面
+    }).onError((error, stackTrace) {
+      /// 成功则通知列表刷新
+      Fluttertoast.showToast(msg: error.toString());
+    }).whenComplete(() => ALoading.dismiss());
   }
 
   String getTitle() {

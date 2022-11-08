@@ -62,4 +62,13 @@ class NewFriendsController extends BaseListController<FriendsEntity> {
     }).onError((error, stackTrace) {
     }).whenComplete(() => ALoading.dismiss());
   }
+
+  String getStatus(int status) {
+    if(status >= 0 && status <= 100){
+      return "待批";
+    }else if(status >= 100 && status < 200){
+      return "已通过";
+    }
+    return "已拒绝";
+  }
 }

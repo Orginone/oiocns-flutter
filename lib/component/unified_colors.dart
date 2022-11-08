@@ -26,4 +26,5 @@ class UnifiedColors {
   static const Color bgColor = Color(0xfff8f8f8);
   static const Color transparent = Color(0x00ffffff);
   static const Color bgGrayLight = Color(0xFFF5F5F5);
+  static const Color yellow = Color(0xFFF1B463);
 }

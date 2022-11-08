@@ -162,7 +162,7 @@ class AffairsDetailPage extends BaseView<AffairsDetailController> {
                       content: "",
                       confirmFun: (context,content) {
                         Navigator.of(context).pop();
-                        controller.approvalTask(content);
+                        controller.approvalTask(false,content);
                       },
                     );
                   },
@@ -191,7 +191,7 @@ class AffairsDetailPage extends BaseView<AffairsDetailController> {
                       content: "",
                       confirmFun: (context,content) {
                         Navigator.of(context).pop();
-                        controller.approvalTask(content);
+                        controller.approvalTask(true,content);
                       },
                     );
                   },
