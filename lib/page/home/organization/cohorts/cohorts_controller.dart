@@ -1,6 +1,7 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/logic/authority.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/routers.dart';
 
@@ -63,6 +64,7 @@ class CohortsController extends GetxController {
   Future<dynamic> createCohort(Map<String, dynamic> value) async {
     await CohortApi.create(value);
     await onLoad();
+    await loadAuth();
     Fluttertoast.showToast(msg: "创建成功！");
   }
 

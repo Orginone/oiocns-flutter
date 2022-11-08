@@ -17,6 +17,7 @@ import 'package:orginone/screen_init.dart';
 
 import '../../../../enumeration/chat_type.dart';
 import '../../../../enumeration/enum_map.dart';
+import '../../../../enumeration/target_type.dart';
 import '../../../../util/string_util.dart';
 import '../../../../util/widget_util.dart';
 import 'message_setting_controller.dart';
@@ -80,6 +81,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
   Widget _body(ChatType chatType) {
     List<Widget> children = [];
     switch (chatType) {
+      case ChatType.self:
       case ChatType.colleague:
       case ChatType.friends:
         children = [
@@ -140,8 +142,10 @@ class MessageSettingPage extends GetView<MessageSettingController> {
     return GetBuilder<MessageSettingController>(builder: (controller) {
       var messageItem = controller.messageItem;
       var avatarName = StringUtil.getPrefixChars(messageItem.name, count: 1);
-      var personNum = controller.messageItem.personNum;
-      var name = "${messageItem.name}($personNum)";
+      String name = messageItem.name;
+      if (messageItem.typeName != TargetType.person.name) {
+        name += "(${messageItem.personNum ?? 0})";
+      }
       return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

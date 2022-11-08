@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:orginone/api/cohort_api.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 
@@ -43,6 +44,9 @@ class MessageSettingController extends GetxController {
     messageItem = messageController.getMsgItem(spaceId, messageItemId);
     isRelationAdmin = auth.isRelationAdmin([messageItemId]);
 
+    if (messageItem.typeName == TargetType.person.name) {
+      return;
+    }
     hasReminder = true;
     offset = 0;
     limit = 15;

@@ -125,9 +125,6 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   late String spaceId;
   late String messageItemId;
 
-  // 当前群所有人
-  late RxString titleName;
-
   // 观测对象
   late RxList<Detail> _details;
 
@@ -160,15 +157,12 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     spaceId = args["spaceId"];
     messageItemId = args["messageItemId"];
     messageItem = messageController.getMsgItem(spaceId, messageItemId);
-    titleName = messageItem.name.obs;
 
     // 清空所有聊天记录
     _details = <Detail>[].obs;
 
     // 初始化老数据个数，查询聊天记录的个数
-    await getTotal();
     await getHistoryMsg();
-    titleName.value = getTitleName();
 
     // 处理缓存
     openChats();
@@ -246,15 +240,6 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     messageController.update();
 
     HubUtil().cacheChats(messageController.orgChatCache);
-  }
-
-  Future<void> getTotal() async {
-    if (messageItem.typeName != TargetType.person.name) {
-      if (messageItem.personNum == null) {
-        var page = await HubUtil().getPersons(messageItemId, 1, 0);
-        messageItem.personNum = page.total;
-      }
-    }
   }
 
   /// 下拉时刷新旧的聊天记录
@@ -387,15 +372,6 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
       messageScrollKey.value = uuid.v4();
     }
     update();
-  }
-
-  /// 获取顶部群名称
-  String getTitleName() {
-    String itemName = messageItem.name;
-    if (messageItem.typeName != TargetType.person.name) {
-      itemName = "$itemName(${messageItem.personNum ?? 0})";
-    }
-    return itemName;
   }
 
   /// 会话函数

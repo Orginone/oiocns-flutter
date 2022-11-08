@@ -6,7 +6,6 @@ import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
-import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/chat/component/chat_box.dart';
 import 'package:orginone/util/date_util.dart';
@@ -44,7 +43,13 @@ class ChatPage extends GetView<ChatController> {
     var style = TextStyle(color: UnifiedColors.black9, fontSize: 14.sp);
     return Column(
       children: [
-        Obx(() => Text(controller.titleName.value, style: text22Bold)),
+        GetBuilder<ChatController>(builder: (controller) {
+          String name = messageItem.name;
+          if (messageItem.typeName != TargetType.person.name) {
+            name += "(${messageItem.personNum ?? 0})";
+          }
+          return Text(name, style: AFont.instance.size22Black3);
+        }),
         Text("${space?.name} | ${messageItem.label}", style: style),
       ],
     );
