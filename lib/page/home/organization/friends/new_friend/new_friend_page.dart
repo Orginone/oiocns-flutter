@@ -91,7 +91,7 @@ class NewFriendsPage extends BaseListView<NewFriendsController> {
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.only(top: 8.h),
                     child: Text(
-                        "${controller.getName(item.createUser ?? "")}申请加入${(item.team?.name) ?? ""}",
+                        "${controller.getName(item.createUser)}申请加入${(item.team?.name) ?? ""}",
                         style: AFont.instance.size18Black9),
                   ),
                   SizedBox(
@@ -109,7 +109,7 @@ class NewFriendsPage extends BaseListView<NewFriendsController> {
                             borderRadius:
                             const BorderRadius.all(Radius.circular(0))),
                         child: Text(
-                          item.createTime?.toString() ?? "",
+                          item.createTime.toString() ?? "",
                           style: AFont.instance.size14Black9,
                         ),
                       ),
