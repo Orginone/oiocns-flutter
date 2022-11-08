@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/page/home/message/component/message_item_widget.dart';
+import 'package:orginone/page/home/message/message_setting/message_setting_controller.dart';
 import 'package:orginone/util/any_store_util.dart';
 import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/notification_util.dart';
@@ -55,8 +57,8 @@ class MessageController extends GetxController
   }
 
   /// 获取消息会话对象
-  MessageItemResp getMsgItem(String spaceId, TargetResp targetResp) {
-    return spaceMessageItemMap[spaceId]![targetResp.id]!;
+  MessageItemResp getMsgItem(String spaceId, String messageItemId) {
+    return spaceMessageItemMap[spaceId]![messageItemId]!;
   }
 
   /// 分组排序
@@ -225,8 +227,6 @@ class MessageController extends GetxController
     if (messageList.isEmpty) {
       return;
     }
-    TargetResp userInfo = auth.userInfo;
-
     for (var message in messageList) {
       log.info("接收到一条新的消息$message");
       var detail = MessageDetailResp.fromMap(message);
@@ -234,7 +234,7 @@ class MessageController extends GetxController
       try {
         // 会话 ID
         var sessionId = detail.toId;
-        if (detail.toId == userInfo.id) {
+        if (detail.toId == auth.userId) {
           sessionId = detail.fromId;
         }
 
@@ -263,7 +263,7 @@ class MessageController extends GetxController
         if (detail.msgType == MsgType.topping.name) {
           currentItem.isTop = bool.fromEnvironment(detail.msgBody ?? "false");
         } else {
-          if (detail.spaceId == userInfo.id) {
+          if (detail.spaceId == auth.userId) {
             // 如果是个人空间，存储一下信息
             await HubUtil().cacheMsg(sessionId, detail);
           }
@@ -280,10 +280,22 @@ class MessageController extends GetxController
             currentItem.showTxt = "[语音]";
           } else if (currentItem.msgType == MsgType.image.name) {
             currentItem.showTxt = "[图片]";
+          } else if (currentItem.msgType == MsgType.pull.name) {
+            var msg = jsonDecode(msgBody!);
+            var passive = msg["passive"] as List<dynamic>;
+            currentItem.showTxt = msg["remark"];
+            if (currentItem.personNum != null) {
+              currentItem.personNum = currentItem.personNum! + passive.length;
+            }
+            if (Get.isRegistered<MessageSettingController>()){
+              var settingController = Get.find<MessageSettingController>();
+              settingController.morePersons();
+            }
           } else {
             currentItem.showTxt = msgBody;
           }
-          if (currentItem.typeName != TargetType.person.name) {
+          if (currentItem.typeName != TargetType.person.name &&
+              currentItem.msgType != MsgType.pull.name) {
             var nameMap = orgChatCache.nameMap;
             if (!nameMap.containsKey(detail.fromId)) {
               nameMap[detail.fromId] = await HubUtil().getName(detail.fromId);
@@ -304,7 +316,8 @@ class MessageController extends GetxController
               isTalking = true;
             }
           }
-          if (detail.fromId != userInfo.id) {
+          if (detail.fromId != auth.userId ||
+              currentItem.msgType != MsgType.pull.name) {
             // 如果不是我发的消息
             if (detail.msgType == MsgType.recall.name) {
               // 撤回消息需要减 1

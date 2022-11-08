@@ -7,6 +7,7 @@ import 'package:orginone/page/home/organization/cohorts/component/avatar_group.d
 
 import '../../../../../component/a_font.dart';
 import '../../../../../component/unified_colors.dart';
+import '../../../../../logic/authority.dart';
 import '../../../../../routers.dart';
 import '../../../../../util/widget_util.dart';
 
@@ -15,6 +16,7 @@ class MoreCohort extends GetView<MessageSettingController> {
 
   @override
   Widget build(BuildContext context) {
+    var isRelationAdmin = auth.isRelationAdmin([controller.messageItemId]);
     return UnifiedScaffold(
       appBarTitle: Text("群组人员", style: AFont.instance.size22Black3),
       appBarCenterTitle: true,
@@ -25,9 +27,14 @@ class MoreCohort extends GetView<MessageSettingController> {
         child: ListView(
           children: [
             AvatarGroup(
+              hasAdd: isRelationAdmin,
               padding: EdgeInsets.only(top: 30.h),
               addCallback: () {
-                Get.toNamed(Routers.invite, arguments: controller.messageItemId);
+                Map<String, dynamic> args = {
+                  "spaceId": controller.spaceId,
+                  "messageItemId": controller.messageItemId
+                };
+                Get.toNamed(Routers.invite, arguments: args);
               },
             ),
             GetBuilder<MessageSettingController>(builder: (controller) {

@@ -68,6 +68,17 @@ class ChatMessageDetail extends GetView<ChatController> {
         children.add(_getAvatar());
         children.add(_getChat(context));
         break;
+      case MsgType.pull:
+        String msgBody = detail.msgBody ?? "{}";
+        Map<String, dynamic> body = jsonDecode(msgBody);
+        children.add(
+          Container(
+            alignment: Alignment.center,
+            width: 400.w,
+            child: Text(body["remark"], style: AFont.instance.size18Black9),
+          ),
+        );
+        break;
       case MsgType.recall:
         var messageItem = controller.messageItem;
         var nameMap = controller.messageController.orgChatCache.nameMap;
@@ -86,7 +97,7 @@ class ChatMessageDetail extends GetView<ChatController> {
       margin: EdgeInsets.only(top: 8.h, bottom: 8.h),
       child: Row(
         textDirection: isMy ? TextDirection.rtl : TextDirection.ltr,
-        mainAxisAlignment: msgType == MsgType.recall
+        mainAxisAlignment: msgType == MsgType.recall || msgType == MsgType.pull
             ? MainAxisAlignment.center
             : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +112,7 @@ class ChatMessageDetail extends GetView<ChatController> {
     return orgChatCache.nameMap[detail.fromId];
   }
 
-  // 获取头像
+  /// 获取头像
   Widget _getAvatar() {
     TargetResp userInfo = auth.userInfo;
     return TextAvatar(

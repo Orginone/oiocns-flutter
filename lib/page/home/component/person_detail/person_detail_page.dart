@@ -3,8 +3,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/component/form_item_type1.dart';
 import 'package:orginone/component/unified_scaffold.dart';
-import 'package:orginone/component/unified_text_style.dart';
-import 'package:orginone/routers.dart';
 import 'package:orginone/util/widget_util.dart';
 
 import '../../../../component/a_font.dart';
@@ -74,44 +72,6 @@ class PersonDetailPage extends GetView<PersonDetailController> {
                         Fluttertoast.showToast(msg: "未获取到人员信息！");
                         return;
                       }
-                      // HomeController homeController = Get.find();
-                      // MessageController messageController = Get.find();
-                      // messageController.currentSpaceId =
-                      //     homeController.currentSpace.id;
-                      // messageController.currentMessageItemId =
-                      //     controller.personDetail!.id;
-                      // Get.offNamedUntil(
-                      //     Routers.chat,
-                      //     (route) =>
-                      //         (route as GetPageRoute).settings.name ==
-                      //         Routers.home);
-
-                      // MessageController messageController = Get.find();
-                      // //循环判断该人员是否在集团里，若有则对话，无则提示
-                      // int matchGroupId = -1;
-                      // messageController.messageGroupItemsMap.forEach((key, value) {
-                      //   List<TargetRelation> matchList = value.where((item) => item.passiveTargetId == int.tryParse(controller.personDetail!.id)).toList();
-                      //   if(matchList.isNotEmpty) {
-                      //     matchGroupId = key;
-                      //   }
-                      // });
-                      // if(matchGroupId != -1) {
-                      //   messageController.currentMessageItemId = int.tryParse(controller.personDetail!.id) ?? -1;
-                      //   messageController.currentSpaceId = matchGroupId;
-                      //   ChatController chatController = Get.find();
-                      //   await chatController.init();
-                      //   Get.toNamed(Routers.chat);
-                      // } else {
-                      //   Fluttertoast.showToast(
-                      //       msg: '集团中不存在该人员',
-                      //       toastLength: Toast.LENGTH_SHORT,
-                      //       gravity: ToastGravity.CENTER,
-                      //       timeInSecForIosWeb: 1,
-                      //       backgroundColor: Colors.red,
-                      //       textColor: Colors.white,
-                      //       fontSize: 16.0
-                      //   );
-                      // }
                     },
                     tooltip: "发送消息",
                     backgroundColor: Colors.blueAccent,

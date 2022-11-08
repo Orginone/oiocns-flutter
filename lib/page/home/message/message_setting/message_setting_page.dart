@@ -100,7 +100,11 @@ class MessageSettingPage extends GetView<MessageSettingController> {
             hasAdd: isRelationAdmin,
             showCount: isRelationAdmin ? 14 : 15,
             addCallback: () {
-              Get.toNamed(Routers.invite, arguments: controller.messageItemId);
+              Map<String, dynamic> args = {
+                "spaceId": controller.spaceId,
+                "messageItemId": controller.messageItemId
+              };
+              Get.toNamed(Routers.invite, arguments: args);
             },
           ),
           if (controller.hasReminder) _more,
@@ -133,22 +137,26 @@ class MessageSettingPage extends GetView<MessageSettingController> {
 
   /// 头像相关
   get _avatar {
-    var messageItem = controller.messageItem;
-    var name = StringUtil.getPrefixChars(messageItem.name, count: 1);
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        TextAvatar(avatarName: name, width: 60.w),
-        Padding(padding: EdgeInsets.only(left: 10.w)),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(messageItem.name, style: AFont.instance.size22Black3W500),
-            Text(messageItem.remark, style: AFont.instance.size16Black6)
-          ],
-        )
-      ],
-    );
+    return GetBuilder<MessageSettingController>(builder: (controller) {
+      var messageItem = controller.messageItem;
+      var avatarName = StringUtil.getPrefixChars(messageItem.name, count: 1);
+      var personNum = controller.messageItem.personNum;
+      var name = "${messageItem.name}($personNum)";
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          TextAvatar(avatarName: avatarName, width: 60.w),
+          Padding(padding: EdgeInsets.only(left: 10.w)),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(name, style: AFont.instance.size22Black3W500),
+              Text(messageItem.remark, style: AFont.instance.size16Black6)
+            ],
+          )
+        ],
+      );
+    });
   }
 
   /// 消息免打扰

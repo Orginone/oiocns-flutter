@@ -40,7 +40,7 @@ class MessageSettingController extends GetxController {
     Map<String, dynamic> args = Get.arguments;
     spaceId = args["spaceId"];
     messageItemId = args["messageItemId"];
-    messageItem = args["messageItem"];
+    messageItem = messageController.getMsgItem(spaceId, messageItemId);
     isRelationAdmin = auth.isRelationAdmin([messageItemId]);
 
     hasReminder = true;
@@ -62,6 +62,16 @@ class MessageSettingController extends GetxController {
 
     hasReminder = ans.total > persons.length;
     update();
+  }
+
+  Future<List<TargetResp>> getAllPersons() async {
+    while (true) {
+      if (!hasReminder) {
+        break;
+      }
+      await morePersons();
+    }
+    return persons;
   }
 
   morePersons() {

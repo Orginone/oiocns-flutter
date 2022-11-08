@@ -1,20 +1,24 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:orginone/api/cohort_api.dart';
+import 'package:orginone/api/person_api.dart';
 import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/page/home/message/chat/chat_controller.dart';
+import 'package:orginone/page/home/message/message_setting/message_setting_controller.dart';
 
 import '../../../../api_resp/target_resp.dart';
 import '../../../../component/a_font.dart';
 import '../../../../component/text_avatar.dart';
 import '../../../../component/text_search.dart';
+import '../../../../enumeration/message_type.dart';
+import '../../../../logic/authority.dart';
 import '../../../../routers.dart';
 import '../../../../util/string_util.dart';
 import '../../../../util/widget_util.dart';
-import '../../organization/friends/friends_controller.dart';
 
 class InvitePage extends GetView<InviteController> {
   const InvitePage({Key? key}) : super(key: key);
@@ -35,8 +39,6 @@ class InvitePage extends GetView<InviteController> {
       IconButton(
         onPressed: () async {
           await controller.pull();
-          Fluttertoast.showToast(msg: "邀请成功!");
-          Get.back();
         },
         icon: const Icon(Icons.save, color: Colors.black),
       )
@@ -44,22 +46,14 @@ class InvitePage extends GetView<InviteController> {
   }
 
   get _body {
-    var friendsController = controller.friendsController;
     return Column(
       children: [
         TextSearch(
-          searchingCallback: friendsController.searchingCallback,
+          searchingCallback: controller.searchCallback,
           margin: EdgeInsets.only(left: 25.w, top: 20.h, right: 25.w),
         ),
         _chooseBody,
-        Expanded(
-          child: RefreshIndicator(
-            onRefresh: () async {
-              friendsController.onLoadFriends("");
-            },
-            child: _list,
-          ),
-        ),
+        _list,
       ],
     );
   }
@@ -97,12 +91,13 @@ class InvitePage extends GetView<InviteController> {
     );
   }
 
-  get _list => GetBuilder<FriendsController>(
+  get _list => GetBuilder<InviteController>(
         builder: (controller) => ListView.builder(
+          shrinkWrap: true,
           scrollDirection: Axis.vertical,
-          itemCount: controller.friends.length,
+          itemCount: controller.filterNotJoinedFriends.length,
           itemBuilder: (BuildContext context, int index) {
-            return _item(controller.friends[index]);
+            return _item(controller.filterNotJoinedFriends[index]);
           },
         ),
       );
@@ -152,19 +147,52 @@ class InvitePage extends GetView<InviteController> {
 }
 
 class InviteController extends GetxController {
-  /// 好友控制器
-  final FriendsController friendsController = Get.find();
-
+  late final String spaceId;
   late final String messageItemId;
+  late final List<String> joinedPersonIds;
 
-  /// 目标对量和索引
+  /// 目标对象和索引
   final Map<String, RxBool> chooseMap = {};
   final RxList<TargetResp> targetQueue = <TargetResp>[].obs;
 
+  /// 没有加入的好友
+  final List<TargetResp> initNotJoinedFriends = [];
+  final List<TargetResp> filterNotJoinedFriends = [];
+
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    messageItemId = Get.arguments;
+    Map<String, dynamic> args = Get.arguments;
+    spaceId = args["spaceId"];
+    messageItemId = args["messageItemId"];
+
+    var settingController = Get.find<MessageSettingController>();
+    var allPersons = await settingController.getAllPersons();
+    var allFriends = await PersonApi.friendsAll("");
+    List<String> joinedFriendIds = [];
+    for (var friend in allFriends) {
+      for (var person in allPersons) {
+        if (friend.id == person.id) {
+          joinedFriendIds.add(friend.id);
+          break;
+        }
+      }
+    }
+    for (var joinedFriendId in joinedFriendIds) {
+      allFriends.removeWhere((item) => item.id == joinedFriendId);
+    }
+    initNotJoinedFriends.addAll(allFriends);
+    filterNotJoinedFriends.addAll(allFriends);
+    update();
+  }
+
+  /// 搜索回调
+  searchCallback(String value) {
+    filterNotJoinedFriends.clear();
+    List<TargetResp> friends = initNotJoinedFriends
+        .where((item) => item.name.contains(value))
+        .toList();
+    filterNotJoinedFriends.addAll(friends);
   }
 
   /// 推入队列
@@ -183,8 +211,34 @@ class InviteController extends GetxController {
 
   /// 邀请人员进群
   pull() async {
+    if (targetQueue.isEmpty) {
+      Fluttertoast.showToast(msg: "请至少选择一个需要拉取的好友!");
+      return;
+    }
+
+    // 拉取的人员
     List<String> targetIds = targetQueue.map((item) => item.id).toList();
     await CohortApi.pull(messageItemId, targetIds);
+
+    // 组装对象
+    var targetNames = targetQueue.map((item) => item.name).join("，");
+    var msgBody = {
+      "active": auth.userId,
+      "passive": targetQueue.map((item) => item.id).toList(),
+      "remark": "${auth.userInfo.name}邀请$targetNames加入了群聊",
+    };
+
+    // 发送消息
+    var chatController = Get.find<ChatController>();
+    await chatController.sendOneMessage(
+      spaceId: spaceId,
+      messageItemId: messageItemId,
+      msgBody: jsonEncode(msgBody),
+      msgType: MsgType.pull,
+    );
+
+    Fluttertoast.showToast(msg: "邀请成功!");
+    Get.back();
   }
 }
 
@@ -192,6 +246,5 @@ class InviteBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => InviteController());
-    Get.lazyPut(() => FriendsController());
   }
 }

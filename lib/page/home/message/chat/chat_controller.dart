@@ -62,11 +62,7 @@ class Detail {
           progress: milliseconds.obs,
           bytes: Uint8List.fromList(tempBytes),
         );
-      case MsgType.topping:
-      case MsgType.text:
-      case MsgType.recall:
-      case MsgType.image:
-      case MsgType.unknown:
+      default:
         return Detail.fromResp(resp);
     }
   }
@@ -161,9 +157,9 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   Future<void> init() async {
     // 获取参数
     Map<String, dynamic> args = Get.arguments;
-    messageItem = args["messageItem"];
     spaceId = args["spaceId"];
     messageItemId = args["messageItemId"];
+    messageItem = messageController.getMsgItem(spaceId, messageItemId);
     titleName = messageItem.name.obs;
 
     // 清空所有聊天记录
@@ -173,7 +169,6 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     await getTotal();
     await getHistoryMsg();
     titleName.value = getTitleName();
-    update();
 
     // 处理缓存
     openChats();
@@ -255,8 +250,10 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
 
   Future<void> getTotal() async {
     if (messageItem.typeName != TargetType.person.name) {
-      var page = await HubUtil().getPersons(messageItemId, 1, 0);
-      messageItem.personNum = page.total;
+      if (messageItem.personNum == null) {
+        var page = await HubUtil().getPersons(messageItemId, 1, 0);
+        messageItem.personNum = page.total;
+      }
     }
   }
 
@@ -282,22 +279,27 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   }
 
   /// 发送消息至聊天页面
-  void sendOneMessage(String value, {MsgType? msgType}) {
+  Future<void> sendOneMessage({
+    required String spaceId,
+    required String messageItemId,
+    required String msgBody,
+    required MsgType msgType,
+  }) async {
     if (messageItemId == "-1") return;
 
-    // toId 和 spaceId 都要是字符串类型
-    if (value.isNotEmpty) {
+    if (msgBody.isNotEmpty) {
       var messageDetail = {
-        "toId": messageItemId,
         "spaceId": spaceId,
-        "msgType": msgType?.name ?? MsgType.text.name,
-        "msgBody": EncryptionUtil.deflate(value)
+        "toId": messageItemId,
+        "msgType": msgType.name,
+        "msgBody": EncryptionUtil.deflate(msgBody)
       };
       try {
         log.info("====> 发送的消息信息：$messageDetail");
-        HubUtil().sendMsg(messageDetail);
+        await HubUtil().sendMsg(messageDetail);
       } catch (error) {
-        error.printError();
+        Fluttertoast.showToast(msg: "消息发送失败!");
+        rethrow;
       }
     }
   }
@@ -328,7 +330,12 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
             "path": "$prefix/$fileName",
           };
 
-          sendOneMessage(jsonEncode(body), msgType: MsgType.image);
+          sendOneMessage(
+            spaceId: spaceId,
+            messageItemId: messageItemId,
+            msgBody: jsonEncode(body),
+            msgType: MsgType.image,
+          );
         },
       ),
     );
@@ -341,7 +348,12 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
       "milliseconds": milliseconds,
       "bytes": file.readAsBytesSync()
     };
-    sendOneMessage(jsonEncode(msgBody), msgType: MsgType.voice);
+    sendOneMessage(
+      spaceId: spaceId,
+      messageItemId: messageItemId,
+      msgBody: jsonEncode(msgBody),
+      msgType: MsgType.voice,
+    );
   }
 
   /// 语音录制完成并发送

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
@@ -104,8 +105,11 @@ class CohortsPage extends GetView<CohortsController> {
         var spaceMessageItemMap = messageController.spaceMessageItemMap;
         var hasSpace = spaceMessageItemMap.containsKey(cohort.belongId);
         var spaceId = hasSpace ? cohort.belongId : auth.userId;
+        if (spaceId == null) {
+          Fluttertoast.showToast(msg: "未获取到空间 ID!");
+          return;
+        }
         Map<String, dynamic> args = {
-          "messageItem": messageController.getMsgItem(spaceId, cohort),
           "spaceId": spaceId,
           "messageItemId": cohort.id
         };
