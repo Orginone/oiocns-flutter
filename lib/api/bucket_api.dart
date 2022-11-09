@@ -15,7 +15,7 @@ import '../util/http_util.dart';
 class BucketApi {
   static Logger log = Logger("BucketApi");
 
-  static String shareDomain = "user";
+  static const String shareDomain = "user";
 
   // 每次以 1M 的速度上传
   static int chunkSize = 1024 * 1024;
@@ -58,6 +58,7 @@ class BucketApi {
     required String filePath,
     required String fileName,
     Function? progressCallback,
+    String shareDomain = shareDomain,
   }) async {
     // 先读取文件大小，获取文件的长度
     var file = File(filePath);

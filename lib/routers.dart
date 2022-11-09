@@ -55,6 +55,7 @@ import 'package:orginone/page/home/organization/units/units_binding.dart';
 import 'package:orginone/page/home/organization/units/units_page.dart';
 import 'package:orginone/page/home/search/search_binding.dart';
 import 'package:orginone/page/home/search/search_page.dart';
+import 'package:orginone/page/home/upload/upload_page.dart';
 import 'package:orginone/page/home/work/work_binding.dart';
 import 'package:orginone/page/home/work/work_page.dart';
 import 'package:orginone/page/login/login_binding.dart';
@@ -110,6 +111,9 @@ class Routers {
   static const String invite = "/invite";
   static const String affairsDetail = "/affairsDetail";
   static const String newFriends = "/newFriends";
+
+  // 上传文件
+  static const String upload = "/upload";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -292,6 +296,11 @@ class Routers {
         name: Routers.invite,
         page: () => const InvitePage(),
         binding: InviteBinding(),
+      ),
+      GetPage(
+        name: Routers.upload,
+        page: () => const UploadPage(),
+        binding: UploadBinding(),
       ),
     ];
   }

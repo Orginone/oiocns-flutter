@@ -6,7 +6,7 @@ import 'package:orginone/component/unified_colors.dart';
 import '../util/valid_util.dart';
 import 'a_font.dart';
 
-enum ItemType { text }
+enum ItemType { text, upload }
 
 class FormItem {
   final String fieldKey;
@@ -60,11 +60,22 @@ class FormWidget extends StatelessWidget {
   Widget _itemMapping(FormItem item) {
     switch (item.itemType) {
       case ItemType.text:
-        return _textField(item);
+        return _text(item);
+      case ItemType.upload:
+        return _uploader(item);
     }
   }
 
-  Widget _textField(FormItem item) {
+  Widget _text(FormItem item) {
+    return FormBuilderTextField(
+      validator: (value) => ValidUtil.isEmpty(item.fieldName, value),
+      name: item.fieldKey,
+      decoration: _formDecoration(item.fieldName),
+      onChanged: (val) {},
+    );
+  }
+
+  Widget _uploader(FormItem item) {
     return FormBuilderTextField(
       validator: (value) => ValidUtil.isEmpty(item.fieldName, value),
       name: item.fieldKey,

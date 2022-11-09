@@ -9,7 +9,8 @@ enum OrgAuths {
   relationAdmin("relation-admin"),
   thingAdmin("thing-admin"),
   marketAdmin("market-admin"),
-  applicationAdmin("application-admin");
+  applicationAdmin("application-admin"),
+  mobileAPKAdmin("mobile-apk-admin");
 
   final String name;
 
@@ -32,13 +33,13 @@ class Authority {
   /// 判断目标是否含有系统权限
   /// [auths] 相应权限
   /// [targetIds] 相应目标
-  bool _hasTargetsAuth(List<String> auths, List<String> targetIds) {
+  bool _hasTargetsAuth(List<String> auths, List<String> targetIds, {bool isSystem = true}) {
     var matchedFirst = resp.identitys.firstWhereOrNull((identity) {
       var authority = identity.authority;
       if (authority == null) {
         return false;
       }
-      if (authority.belongId != null) {
+      if (isSystem && authority.belongId != null) {
         // 系统的权限
         return false;
       }
@@ -92,6 +93,13 @@ class Authority {
   bool isMarketAdmin(List<String> targetIds) {
     var auths = [OrgAuths.superAdmin.name, OrgAuths.marketAdmin.name];
     return _hasTargetsAuth(auths, targetIds);
+  }
+
+  /// 是否为平台 Android APK 包管理员
+  /// [targetIds] 目标对象
+  bool isMobileAPKAdmin(List<String> targetIds) {
+    var auths = [OrgAuths.mobileAPKAdmin.name];
+    return _hasTargetsAuth(auths, targetIds, isSystem: false);
   }
 
   /// 是否为组织应用管理员

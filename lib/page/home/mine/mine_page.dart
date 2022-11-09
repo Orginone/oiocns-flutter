@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_button.dart';
+import 'package:orginone/logic/authority.dart';
 import 'package:orginone/page/home/mine/mine_controller.dart';
 import 'package:orginone/routers.dart';
 
@@ -20,7 +21,13 @@ class MinePage extends GetView<MineController> {
       children: [
         ListView(
           shrinkWrap: true,
-          children: [_person, _unit, _businessCard, _secure],
+          children: [
+            _person,
+            _unit,
+            _businessCard,
+            _secure,
+            if (auth.isMobileAPKAdmin([auth.userId])) _uploadAPK
+          ],
         ),
         Container(
           margin: EdgeInsets.only(left: 20.w, bottom: 10.h, right: 20.w),
@@ -95,6 +102,22 @@ class MinePage extends GetView<MineController> {
         body: Container(
           margin: left10,
           child: Text("安全设置", style: text16Bold),
+        ),
+        func: () {
+          Get.toNamed(Routers.mineCard);
+        },
+      );
+
+  get _uploadAPK => ChooseItem(
+        header: const IconAvatar(
+          icon: Icon(
+            Icons.upload,
+            color: Colors.white,
+          ),
+        ),
+        body: Container(
+          margin: left10,
+          child: Text("上传 APK 文件", style: text16Bold),
         ),
         func: () {
           Get.toNamed(Routers.mineCard);
