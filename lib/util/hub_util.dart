@@ -55,11 +55,29 @@ class HubUtil {
   final Map<String, void Function(List<dynamic>?)> events = {};
 
   // 发送消息
-  Future<void> sendMsg(Map<String, dynamic> messageDetail) async {
+  Future<void> sendMsg({
+    required String spaceId,
+    required String messageItemId,
+    required String msgBody,
+    required MsgType msgType,
+  }) async {
     if (_isAuthed) {
-      var args = <Object>[messageDetail];
-      var sendName = SendEvent.SendMsg.name;
-      await _server!.invoke(sendName, args: args);
+      if (messageItemId == "-1") return;
+
+      var messageDetail = {
+        "spaceId": spaceId,
+        "toId": messageItemId,
+        "msgType": msgType.name,
+        "msgBody": EncryptionUtil.deflate(msgBody)
+      };
+      try {
+        var args = <Object>[messageDetail];
+        var sendName = SendEvent.SendMsg.name;
+        await _server!.invoke(sendName, args: args);
+      } catch (error) {
+        Fluttertoast.showToast(msg: "消息发送失败!");
+        rethrow;
+      }
     }
   }
 

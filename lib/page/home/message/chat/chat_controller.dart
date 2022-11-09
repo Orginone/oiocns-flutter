@@ -180,8 +180,11 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     if (detail == null) {
       return;
     }
+
+    messageItem = messageController.getMsgItem(spaceId, messageItemId);
+
     log.info("会话页面接收到一条新的数据${detail.toJson()}");
-    if (detail.msgType == "recall") {
+    if (detail.msgType == MsgType.recall.name) {
       for (var oldDetail in _details) {
         var resp = oldDetail.resp;
         if (resp.id == detail.id) {
@@ -191,17 +194,19 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
           break;
         }
       }
-    } else {
-      int has = _details
-          .map((item) => item.resp)
-          .where((item) => item.id == detail.id)
-          .length;
-      if (has == 0) {
-        detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
-        _details.insert(0, Detail.fromResp(detail));
-      }
+      return;
     }
-    updateAndToBottom();
+
+    /// 插入会话
+    int has = _details
+        .map((item) => item.resp)
+        .where((item) => item.id == detail.id)
+        .length;
+    if (has == 0) {
+      detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
+      _details.insert(0, Detail.fromResp(detail));
+      updateAndToBottom();
+    }
   }
 
   closeChats() async {
@@ -263,32 +268,6 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     }
   }
 
-  /// 发送消息至聊天页面
-  Future<void> sendOneMessage({
-    required String spaceId,
-    required String messageItemId,
-    required String msgBody,
-    required MsgType msgType,
-  }) async {
-    if (messageItemId == "-1") return;
-
-    if (msgBody.isNotEmpty) {
-      var messageDetail = {
-        "spaceId": spaceId,
-        "toId": messageItemId,
-        "msgType": msgType.name,
-        "msgBody": EncryptionUtil.deflate(msgBody)
-      };
-      try {
-        log.info("====> 发送的消息信息：$messageDetail");
-        await HubUtil().sendMsg(messageDetail);
-      } catch (error) {
-        Fluttertoast.showToast(msg: "消息发送失败!");
-        rethrow;
-      }
-    }
-  }
-
   /// 相册选择照片后回调
   void imagePicked(XFile file) async {
     Image imageCompo = Image.memory(await file.readAsBytes());
@@ -315,7 +294,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
             "path": "$prefix/$fileName",
           };
 
-          sendOneMessage(
+          await HubUtil().sendMsg(
             spaceId: spaceId,
             messageItemId: messageItemId,
             msgBody: jsonEncode(body),
@@ -333,7 +312,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
       "milliseconds": milliseconds,
       "bytes": file.readAsBytesSync()
     };
-    sendOneMessage(
+    await HubUtil().sendMsg(
       spaceId: spaceId,
       messageItemId: messageItemId,
       msgBody: jsonEncode(msgBody),

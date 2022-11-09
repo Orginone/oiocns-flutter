@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:orginone/util/hub_util.dart';
 
 import 'chat_controller.dart';
 import 'component/chat_box.dart';
@@ -10,10 +11,9 @@ class ChatBinding extends Bindings {
     Get.lazyPut(() {
       var chatController = Get.find<ChatController>();
       return ChatBoxController(
-        sendCallback: chatController.sendOneMessage,
         imageCallback: chatController.imagePicked,
         voiceCallback: chatController.sendVoice,
-        fileCallback: chatController.filePicked
+        fileCallback: chatController.filePicked,
       );
     });
   }

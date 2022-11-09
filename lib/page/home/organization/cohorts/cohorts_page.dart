@@ -25,6 +25,8 @@ enum CtrlType {
   const CtrlType(this.typeName);
 }
 
+enum CohortPageReturnType { createCohort, updateCohort }
+
 class CohortsPage extends GetView<CohortsController> {
   const CohortsPage({Key? key}) : super(key: key);
 

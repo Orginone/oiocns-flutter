@@ -11,6 +11,7 @@ import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/util/hive_util.dart';
+import 'package:orginone/util/hub_util.dart';
 
 import '../../../../../api_resp/target_resp.dart';
 import '../../../../../component/a_font.dart';
@@ -61,6 +62,7 @@ class ChatMessageDetail extends GetView<ChatController> {
   /// 消息详情
   Widget _messageDetail(BuildContext context) {
     List<Widget> children = [];
+    bool isCenter = false;
     switch (msgType) {
       case MsgType.text:
       case MsgType.image:
@@ -78,6 +80,22 @@ class ChatMessageDetail extends GetView<ChatController> {
             child: Text(body["remark"], style: AFont.instance.size18Black9),
           ),
         );
+        isCenter = true;
+        break;
+      case MsgType.createCohort:
+      case MsgType.exitCohort:
+      case MsgType.deleteCohort:
+      case MsgType.updateCohortName:
+        children.add(
+          Container(
+            alignment: Alignment.center,
+            child: Text(
+              detail.msgBody ?? "",
+              style: AFont.instance.size18Black9,
+            ),
+          ),
+        );
+        isCenter = true;
         break;
       case MsgType.recall:
         var messageItem = controller.messageItem;
@@ -97,9 +115,8 @@ class ChatMessageDetail extends GetView<ChatController> {
       margin: EdgeInsets.only(top: 8.h, bottom: 8.h),
       child: Row(
         textDirection: isMy ? TextDirection.rtl : TextDirection.ltr,
-        mainAxisAlignment: msgType == MsgType.recall || msgType == MsgType.pull
-            ? MainAxisAlignment.center
-            : MainAxisAlignment.start,
+        mainAxisAlignment:
+            isCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: children,
       ),
@@ -109,7 +126,12 @@ class ChatMessageDetail extends GetView<ChatController> {
   /// 目标名称
   String targetName() {
     OrgChatCache orgChatCache = controller.messageController.orgChatCache;
-    return orgChatCache.nameMap[detail.fromId];
+    if (!orgChatCache.nameMap.containsKey(detail.fromId)) {
+      HubUtil().getName(detail.fromId).then((name) {
+        orgChatCache.nameMap[detail.fromId] = name;
+      });
+    }
+    return orgChatCache.nameMap[detail.fromId] ?? "";
   }
 
   /// 获取头像

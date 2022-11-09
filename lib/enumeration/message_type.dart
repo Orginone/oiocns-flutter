@@ -6,5 +6,9 @@ enum MsgType {
   topping,
   unknown,
   file,
-  pull
+  pull,
+  createCohort,
+  updateCohortName,
+  exitCohort,
+  deleteCohort,
 }

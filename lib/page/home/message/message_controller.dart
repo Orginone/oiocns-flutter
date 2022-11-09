@@ -287,15 +287,19 @@ class MessageController extends GetxController
             if (currentItem.personNum != null) {
               currentItem.personNum = currentItem.personNum! + passive.length;
             }
-            if (Get.isRegistered<MessageSettingController>()){
-              var settingController = Get.find<MessageSettingController>();
-              settingController.morePersons();
-            }
+          } else if (currentItem.msgType == MsgType.createCohort.name) {
+            currentItem.personNum = 1;
+            currentItem.showTxt = msgBody;
+          } else if (currentItem.msgType == MsgType.exitCohort.name) {
+            currentItem.personNum = currentItem.personNum! - 1;
+            currentItem.showTxt = msgBody;
           } else {
             currentItem.showTxt = msgBody;
           }
           if (currentItem.typeName != TargetType.person.name &&
-              currentItem.msgType != MsgType.pull.name) {
+              currentItem.msgType != MsgType.pull.name &&
+              currentItem.msgType != MsgType.createCohort.name &&
+              currentItem.msgType != MsgType.exitCohort.name) {
             var nameMap = orgChatCache.nameMap;
             if (!nameMap.containsKey(detail.fromId)) {
               nameMap[detail.fromId] = await HubUtil().getName(detail.fromId);
@@ -304,11 +308,6 @@ class MessageController extends GetxController
             currentItem.showTxt = "$name: ${currentItem.showTxt}";
           }
 
-          // 如果当前会话正打开
-          if (Get.isRegistered<ChatController>()) {
-            ChatController chatController = Get.find();
-            chatController.onReceiveMsg(detail.spaceId!, sessionId, detail);
-          }
           bool isTalking = false;
           for (MessageItemResp openItem in orgChatCache.openChats) {
             if (openItem.id == currentItem.id &&
@@ -352,8 +351,30 @@ class MessageController extends GetxController
                   item.spaceId != currentItem.spaceId)
               .toList();
 
-          orgChatCache.recentChats!.add(currentItem);
+          if (detail.msgType != MsgType.deleteCohort.name) {
+            // 如果是解散了群聊, 就不加入了
+            if (detail.msgType == MsgType.exitCohort.name) {
+              // 如果是自己退出了群聊, 就不加入了
+              if (detail.fromId != auth.userId) {
+                orgChatCache.recentChats!.add(currentItem);
+              }
+            } else {
+              orgChatCache.recentChats!.add(currentItem);
+            }
+          }
           sortingItems(orgChatCache.recentChats!);
+
+          // 如果当前会话正打开
+          if (Get.isRegistered<ChatController>()) {
+            ChatController chatController = Get.find();
+            chatController.onReceiveMsg(detail.spaceId!, sessionId, detail);
+          }
+
+          // 如果设置页面正打开中
+          if (Get.isRegistered<MessageSettingController>()) {
+            var settingController = Get.find<MessageSettingController>();
+            settingController.morePersons();
+          }
         }
 
         // 更新试图

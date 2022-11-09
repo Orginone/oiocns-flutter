@@ -201,7 +201,7 @@ class Routers {
       GetPage(
         name: Routers.cohortMaintain,
         page: () => const CohortMaintainPage(),
-        binding: CohortsBinding(),
+        binding: CohortMaintainBinding(),
       ),
       GetPage(
         name: Routers.moreCohort,

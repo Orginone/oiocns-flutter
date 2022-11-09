@@ -50,7 +50,7 @@ class CohortApi {
   }
 
   /// 创建群组
-  static Future<dynamic> create(Map<String, dynamic> params) async {
+  static Future<TargetResp> create(Map<String, dynamic> params) async {
     String url = "${Constant.cohort}/create";
     var data = {
       "code": params["code"],
@@ -58,11 +58,12 @@ class CohortApi {
       "teamRemark": params["remark"],
     };
 
-    return await HttpUtil().post(url, data: data);
+    Map<String, dynamic> ansMap = await HttpUtil().post(url, data: data);
+    return TargetResp.fromMap(ansMap);
   }
 
   /// 更新群组
-  static Future<dynamic> update(Map<String, dynamic> params) async {
+  static Future<TargetResp> update(Map<String, dynamic> params) async {
     String url = "${Constant.cohort}/update";
     var data = {
       "id": params["id"],
@@ -74,7 +75,8 @@ class CohortApi {
       "thingId": params["thingId"],
       "belongId": params["belongId"],
     };
-    return await HttpUtil().post(url, data: data);
+    Map<String, dynamic> ansMap = await HttpUtil().post(url, data: data);
+    return TargetResp.fromMap(ansMap);
   }
 
   /// 解散群组

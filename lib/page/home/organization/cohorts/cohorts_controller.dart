@@ -1,9 +1,10 @@
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/logic/authority.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/hub_util.dart';
 
 import '../../../../api/cohort_api.dart';
 import '../../../../api_resp/target_resp.dart';
@@ -25,7 +26,7 @@ enum CohortFunction {
 class CohortsController extends GetxController {
   Logger logger = Logger("CohortsController");
 
-  MessageController messageController = Get.find();
+  var messageController = Get.find<MessageController>();
 
   int? limit;
   int? offset;
@@ -61,19 +62,6 @@ class CohortsController extends GetxController {
     await onLoadCohorts(filter);
   }
 
-  Future<dynamic> createCohort(Map<String, dynamic> value) async {
-    await CohortApi.create(value);
-    await onLoad();
-    await loadAuth();
-    Fluttertoast.showToast(msg: "创建成功！");
-  }
-
-  Future<dynamic> updateCohort(Map<String, dynamic> value) async {
-    await CohortApi.update(value);
-    await onLoad();
-    Fluttertoast.showToast(msg: "修改成功！");
-  }
-
   cohortFunc(CohortFunction func, TargetResp cohort) async {
     switch (func) {
       case CohortFunction.update:
@@ -97,12 +85,28 @@ class CohortsController extends GetxController {
       case CohortFunction.transfer:
         break;
       case CohortFunction.dissolution:
+        String msgBody = "${auth.userInfo.name}解散了群组";
+        await HubUtil().sendMsg(
+          spaceId: cohort.belongId!,
+          messageItemId: cohort.id,
+          msgBody: msgBody,
+          msgType: MsgType.deleteCohort,
+        );
+
         await CohortApi.delete(cohort.id);
         await onLoad();
         break;
       case CohortFunction.exit:
         await CohortApi.exit(cohort.id);
         await onLoad();
+
+        String msgBody = "${auth.userInfo.name}退出了群聊";
+        await HubUtil().sendMsg(
+          spaceId: cohort.belongId!,
+          messageItemId: cohort.id,
+          msgBody: msgBody,
+          msgType: MsgType.exitCohort,
+        );
         break;
       case CohortFunction.create:
         break;

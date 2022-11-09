@@ -12,12 +12,15 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/component/unified_colors.dart';
+import 'package:orginone/enumeration/message_type.dart';
+import 'package:orginone/util/hub_util.dart';
 import 'package:orginone/util/permission_util.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vibration/vibration.dart';
 
 import '../../../../../component/a_font.dart';
+import '../chat_controller.dart';
 
 enum RecordStatus { stop, recoding, pausing }
 
@@ -517,7 +520,6 @@ class ChatBoxController extends FullLifeCycleController
   final FocusNode blankNode = FocusNode();
 
   final ImagePicker picker = ImagePicker();
-  final Function sendCallback;
   final Function imageCallback;
   final Function voiceCallback;
   final Function fileCallback;
@@ -532,7 +534,6 @@ class ChatBoxController extends FullLifeCycleController
   double? _maxLevel;
 
   ChatBoxController({
-    required this.sendCallback,
     required this.imageCallback,
     required this.voiceCallback,
     required this.fileCallback,
@@ -560,7 +561,7 @@ class ChatBoxController extends FullLifeCycleController
   }
 
   /// 事件触发器
-  eventFire(BuildContext context, InputEvent inputEvent) {
+  eventFire(BuildContext context, InputEvent inputEvent) async {
     switch (inputEvent) {
       case InputEvent.clickInput:
       case InputEvent.inputText:
@@ -589,7 +590,13 @@ class ChatBoxController extends FullLifeCycleController
         _inputStatus.value = InputStatus.inputtingEmoji;
         break;
       case InputEvent.clickSendBtn:
-        sendCallback(inputController.text);
+        ChatController chatController = Get.find<ChatController>();
+        await HubUtil().sendMsg(
+          spaceId: chatController.spaceId,
+          messageItemId: chatController.messageItemId,
+          msgBody: inputController.text,
+          msgType: MsgType.text,
+        );
         inputController.clear();
         if (_inputStatus.value == InputStatus.inputtingText) {
           _inputStatus.value = InputStatus.focusing;
