@@ -35,8 +35,8 @@ class CohortsController extends GetxController {
 
   @override
   void onInit() {
-    onLoad();
     super.onInit();
+    onLoad();
   }
 
   Future<void> onLoad() async {

@@ -62,6 +62,7 @@ class HttpUtil {
     CancelToken? cancelToken,
     ProgressCallback? onReceiveProgress,
     bool? hasToken,
+    bool? showError = true,
   }) async {
     log.info("================Get Http Request================");
     try {
@@ -79,28 +80,32 @@ class HttpUtil {
           onReceiveProgress: onReceiveProgress);
 
       return _parseResp(result);
-    } on Exception catch (error) {
-      Fluttertoast.showToast(msg: error.toString());
+    } on ApiException catch (error) {
+      if (showError!) {
+        Fluttertoast.showToast(msg: error.message);
+      }
       rethrow;
+    } on DioError catch (error) {
+      if (showError!) {
+        Fluttertoast.showToast(msg: error.message);
+      }
     } catch (error) {
-      Fluttertoast.showToast(msg: "请求异常，请稍后再试。");
+      Fluttertoast.showToast(msg: "请求异常,请联系管理员处理!");
       rethrow;
     } finally {
       log.info("================End Get Http Request================");
     }
   }
 
-  Future<dynamic> post(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-    CancelToken? cancelToken,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-    bool? hasToken,
-    bool? showError = true
-  }) async {
+  Future<dynamic> post(String path,
+      {dynamic data,
+      Map<String, dynamic>? queryParameters,
+      Options? options,
+      CancelToken? cancelToken,
+      ProgressCallback? onSendProgress,
+      ProgressCallback? onReceiveProgress,
+      bool? hasToken,
+      bool? showError = true}) async {
     log.info("================Post Http Request================");
     try {
       log.info("====> path: $path");
@@ -127,13 +132,13 @@ class HttpUtil {
         Fluttertoast.showToast(msg: error.message);
       }
       rethrow;
-    } on Exception catch (error) {
+    } on DioError catch (error) {
       if (showError!) {
-        Fluttertoast.showToast(msg: error.toString());
+        Fluttertoast.showToast(msg: error.message);
       }
       rethrow;
-    } on Error catch (error) {
-      Fluttertoast.showToast(msg: error.toString());
+    } catch (error) {
+      Fluttertoast.showToast(msg: "请求异常,请联系管理员处理!");
       rethrow;
     } finally {
       log.info("================End Post Http Request================");
