@@ -9,9 +9,9 @@ import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/logic/authority.dart';
 import 'package:orginone/logic/server/chat_server.dart';
+import 'package:orginone/logic/server/store_server.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
-
 
 class MessageSettingController extends GetxController {
   final Logger log = Logger("MessageSettingController");
@@ -57,9 +57,9 @@ class MessageSettingController extends GetxController {
   /// 查询群成员信息
   Future<void> getPersons(int limit) async {
     PageResp<TargetResp> ans = await chatServer.getPersons(
-      messageItemId,
-      limit,
-      offset,
+      cohortId: messageItemId,
+      limit: limit,
+      offset: offset,
     );
     persons.addAll(ans.result);
     offset += ans.result.length;
@@ -106,12 +106,12 @@ class MessageSettingController extends GetxController {
     update();
 
     // 同步会话
-    await chatServer.cacheChats(orgChatCache);
+    await storeServer.cacheChats(orgChatCache);
   }
 
   /// 删除个人空间所有聊天记录
   clearHistoryMsg() async {
-    await chatServer.clearHistoryMsg(spaceId, messageItemId);
+    await storeServer.clearHistoryMsg(messageItemId);
 
     // 清空页面
     var chatSpaceId = chatController.spaceId;
@@ -138,7 +138,7 @@ class MessageSettingController extends GetxController {
     messageController.update();
 
     // 同步会话
-    await chatServer.cacheChats(orgChatCache);
+    await storeServer.cacheChats(orgChatCache);
   }
 
   /// 删除好友
@@ -176,6 +176,6 @@ class MessageSettingController extends GetxController {
         .removeWhere((chat) => chat.spaceId == spaceId && chat.id == targetId);
 
     // 同步会话
-    await chatServer.cacheChats(orgChatCache);
+    await storeServer.cacheChats(orgChatCache);
   }
 }

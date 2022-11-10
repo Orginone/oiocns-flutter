@@ -590,9 +590,9 @@ class ChatBoxController extends FullLifeCycleController
         break;
       case InputEvent.clickSendBtn:
         ChatController chatController = Get.find<ChatController>();
-        await chatServer.sendMsg(
+        await chatServer.send(
           spaceId: chatController.spaceId,
-          messageItemId: chatController.messageItemId,
+          itemId: chatController.messageItemId,
           msgBody: inputController.text,
           msgType: MsgType.text,
         );

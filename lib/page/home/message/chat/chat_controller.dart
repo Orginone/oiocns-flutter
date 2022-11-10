@@ -19,12 +19,13 @@ import 'package:orginone/enumeration/enum_map.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/logic/authority.dart';
 import 'package:orginone/logic/server/chat_server.dart';
+import 'package:orginone/logic/server/store_server.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/page/home/message/chat/component/chat_message_detail.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
+import 'package:orginone/util/api_exception.dart';
 import 'package:orginone/util/encryption_util.dart';
 import 'package:uuid/uuid.dart';
-
 
 class Detail {
   final MessageDetailResp resp;
@@ -215,7 +216,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         .where((chat) => chat.spaceId != spaceId || chat.id != messageItemId)
         .toList();
 
-    chatServer.cacheChats(orgChatCache);
+    storeServer.cacheChats(orgChatCache);
   }
 
   void openChats() async {
@@ -243,16 +244,35 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     messageItem.noRead = 0;
     messageController.update();
 
-    chatServer.cacheChats(messageController.orgChatCache);
+    storeServer.cacheChats(messageController.orgChatCache);
   }
 
   /// 下拉时刷新旧的聊天记录
   Future<void> getHistoryMsg({bool isCacheNameMap = false}) async {
-    String typeName = messageItem.typeName;
+    var typeMap = EnumMap.targetTypeMap;
+    var typeName = messageItem.typeName;
+    if (!typeMap.containsKey(messageItem.typeName)) {
+      throw ApiException("未知的会话类型！");
+    }
 
     var insertPointer = _details.length;
-    List<MessageDetailResp> newDetails = await chatServer
-        .getHistoryMsg(spaceId, messageItemId, typeName, insertPointer, 15);
+    late List<MessageDetailResp> newDetails;
+    if (auth.userId == spaceId) {
+      newDetails = await storeServer.getUserSpaceHistoryMsg(
+        typeName: typeMap[typeName]!,
+        sessionId: messageItemId,
+        offset: insertPointer,
+        limit: 15,
+      );
+    } else {
+      newDetails = await chatServer.getHistoryMsg(
+        spaceId: spaceId,
+        sessionId: messageItemId,
+        typeName: typeMap[typeName]!,
+        offset: insertPointer,
+        limit: 15,
+      );
+    }
 
     Map<String, dynamic> nameMap = messageController.orgChatCache.nameMap;
     for (MessageDetailResp detail in newDetails) {
@@ -263,7 +283,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
       }
     }
     if (isCacheNameMap) {
-      chatServer.cacheChats(messageController.orgChatCache);
+      storeServer.cacheChats(messageController.orgChatCache);
     }
   }
 
@@ -293,9 +313,9 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
             "path": "$prefix/$fileName",
           };
 
-          await chatServer.sendMsg(
+          await chatServer.send(
             spaceId: spaceId,
-            messageItemId: messageItemId,
+            itemId: messageItemId,
             msgBody: jsonEncode(body),
             msgType: MsgType.image,
           );
@@ -311,9 +331,9 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
       "milliseconds": milliseconds,
       "bytes": file.readAsBytesSync()
     };
-    await chatServer.sendMsg(
+    await chatServer.send(
       spaceId: spaceId,
-      messageItemId: messageItemId,
+      itemId: messageItemId,
       msgBody: jsonEncode(msgBody),
       msgType: MsgType.voice,
     );
@@ -367,7 +387,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         }
         break;
       case DetailFunc.remove:
-        await chatServer.deleteMsg(detail.id);
+        await storeServer.deleteMsg(detail.id);
         _details.removeWhere((item) => item.resp.id == detail.id);
         break;
     }

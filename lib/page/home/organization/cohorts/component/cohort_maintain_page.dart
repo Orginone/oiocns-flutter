@@ -89,9 +89,9 @@ class CohortMaintainController extends GetxController {
     Fluttertoast.showToast(msg: "创建成功！");
 
     var msgBody = "${auth.userInfo.name}创建了群聊";
-    await chatServer.sendMsg(
+    await chatServer.send(
       spaceId: auth.spaceId,
-      messageItemId: cohort.id,
+      itemId: cohort.id,
       msgBody: msgBody,
       msgType: MsgType.createCohort,
     );
@@ -104,9 +104,9 @@ class CohortMaintainController extends GetxController {
     String oldName = old["name"];
     if (oldName != cohort.name) {
       var msgBody = "${auth.userInfo.name}将群名称修改为${cohort.name}";
-      await chatServer.sendMsg(
+      await chatServer.send(
         spaceId: value["belongId"],
-        messageItemId: cohort.id,
+        itemId: cohort.id,
         msgBody: msgBody,
         msgType: MsgType.updateCohortName,
       );

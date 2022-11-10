@@ -38,6 +38,11 @@ class ConnHolder {
 
   setState() => _state.value = _server.state ?? HubConnectionState.disconnected;
 
+  /// 是否未连接
+  bool isDisConnected() {
+    return _server.state! != HubConnectionState.connected;
+  }
+
   /// 是否已连接
   bool isConnected() {
     return _server.state! == HubConnectionState.connected;

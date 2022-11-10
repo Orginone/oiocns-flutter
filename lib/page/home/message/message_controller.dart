@@ -122,7 +122,7 @@ class MessageController extends GetxController
       update();
 
       // 缓存消息
-      await chatServer.cacheChats(orgChatCache);
+      await storeServer.cacheChats(orgChatCache);
     }
   }
 
@@ -265,7 +265,7 @@ class MessageController extends GetxController
         } else {
           if (detail.spaceId == auth.userId) {
             // 如果是个人空间，存储一下信息
-            await chatServer.cacheMsg(sessionId, detail);
+            await storeServer.cacheMsg(sessionId, detail);
           }
 
           // 处理消息
@@ -381,7 +381,7 @@ class MessageController extends GetxController
         update();
 
         // 缓存会话
-        chatServer.cacheChats(orgChatCache);
+        await storeServer.cacheChats(orgChatCache);
       } catch (error) {
         log.info("接收消息异常:$error");
       }
@@ -402,12 +402,12 @@ class MessageController extends GetxController
         orgChatCache.chats = _spaceHandling(orgChatCache.chats);
         sortingGroups();
         sortingItems(orgChatCache.recentChats ?? []);
-        await chatServer.cacheChats(orgChatCache);
+        await storeServer.cacheChats(orgChatCache);
         update();
         break;
       case ChatFunc.remove:
         orgChatCache.recentChats?.remove(item);
-        await chatServer.cacheChats(orgChatCache);
+        await storeServer.cacheChats(orgChatCache);
         update();
         break;
     }

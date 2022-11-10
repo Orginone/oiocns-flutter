@@ -86,9 +86,9 @@ class CohortsController extends GetxController {
         break;
       case CohortFunction.dissolution:
         String msgBody = "${auth.userInfo.name}解散了群组";
-        await chatServer.sendMsg(
+        await chatServer.send(
           spaceId: cohort.belongId!,
-          messageItemId: cohort.id,
+          itemId: cohort.id,
           msgBody: msgBody,
           msgType: MsgType.deleteCohort,
         );
@@ -101,9 +101,9 @@ class CohortsController extends GetxController {
         await onLoad();
 
         String msgBody = "${auth.userInfo.name}退出了群聊";
-        await chatServer.sendMsg(
+        await chatServer.send(
           spaceId: cohort.belongId!,
-          messageItemId: cohort.id,
+          itemId: cohort.id,
           msgBody: msgBody,
           msgType: MsgType.exitCohort,
         );

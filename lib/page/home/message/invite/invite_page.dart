@@ -229,9 +229,9 @@ class InviteController extends GetxController {
     };
 
     // 发送消息
-    await chatServer.sendMsg(
+    await chatServer.send(
       spaceId: spaceId,
-      messageItemId: messageItemId,
+      itemId: messageItemId,
       msgBody: jsonEncode(msgBody),
       msgType: MsgType.pull,
     );
