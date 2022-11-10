@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api/person_api.dart';
+import 'package:orginone/api_resp/login_resp.dart';
 import 'package:orginone/component/loading_button.dart';
-
-import '../../api_resp/login_resp.dart';
-import '../../logic/authority.dart';
-import '../../util/any_store_util.dart';
-import '../../util/hive_util.dart';
-import '../../util/hub_util.dart';
+import 'package:orginone/logic/authority.dart';
+import 'package:orginone/logic/server/chat_server.dart';
+import 'package:orginone/logic/server/store_server.dart';
+import 'package:orginone/util/hive_util.dart';
 
 class LoginController extends GetxController {
   var accountController = TextEditingController();
@@ -47,7 +46,7 @@ class LoginController extends GetxController {
     await loadAuth();
 
     // 连接服务器
-    await AnyStoreUtil().tryConn();
-    await HubUtil().tryConn();
+    await storeServer.start();
+    await chatServer.start();
   }
 }

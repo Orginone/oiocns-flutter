@@ -3,8 +3,9 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/component/unified_colors.dart';
 
-import '../util/valid_util.dart';
-import 'a_font.dart';
+import '../../util/valid_util.dart';
+import '../a_font.dart';
+import 'form_builder_uploader.dart';
 
 enum ItemType { text, upload }
 
@@ -76,12 +77,7 @@ class FormWidget extends StatelessWidget {
   }
 
   Widget _uploader(FormItem item) {
-    return FormBuilderTextField(
-      validator: (value) => ValidUtil.isEmpty(item.fieldName, value),
-      name: item.fieldKey,
-      decoration: _formDecoration(item.fieldName),
-      onChanged: (val) {},
-    );
+    return FormBuilderUploaderField(name: item.fieldName);
   }
 
   InputDecoration _formDecoration(String label) {

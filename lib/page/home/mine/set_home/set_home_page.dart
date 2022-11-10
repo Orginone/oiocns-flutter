@@ -3,8 +3,11 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/unified_colors.dart';
+import 'package:orginone/routers.dart';
 import '../../../../public/image/icons.dart';
 import '../../../../public/image/load_image.dart';
 import '../../../../public/loading/load_status.dart';
@@ -75,7 +78,18 @@ class SetHomePage extends BaseView<SetHomeController> {
       padding: EdgeInsets.only(left: 12.w, right: 12.w),
       child: ListView(
         shrinkWrap: true,
-        children: _getItems(),
+        children: _getItems()
+          ..add(Container(
+            margin: EdgeInsets.only(left: 20.w, bottom: 10.h, right: 20.w),
+            child: GFButton(
+              onPressed: () async {
+                Get.offAllNamed(Routers.main);
+              },
+              color: Colors.redAccent,
+              text: "注销",
+              blockButton: true,
+            ),
+          )),
       ),
     );
   }
@@ -120,8 +134,8 @@ class CardChildWidget extends StatelessWidget {
               shrinkWrap: true,
               itemCount: value.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 5,
-                  ),
+                crossAxisCount: 5,
+              ),
               itemBuilder: (context, index) {
                 return Column(
                   children: [
@@ -129,7 +143,9 @@ class CardChildWidget extends StatelessWidget {
                     //     size: Size(64.w, 64.w)),
                     AImage.netImage(AIcons.placeholder,
                         url: value[index]['icon'], size: Size(64.w, 64.w)),
-                    SizedBox(height: 10.h,),
+                    SizedBox(
+                      height: 10.h,
+                    ),
                     Text(
                       value[index]['cardName'],
                       style: AFont.instance.size18Black6,

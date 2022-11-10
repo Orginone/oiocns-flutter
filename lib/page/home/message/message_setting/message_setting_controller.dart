@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/cohort_api.dart';
+import 'package:orginone/api/person_api.dart';
+import 'package:orginone/api_resp/message_item_resp.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/enumeration/target_type.dart';
+import 'package:orginone/logic/authority.dart';
+import 'package:orginone/logic/server/chat_server.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 
-import '../../../../api/person_api.dart';
-import '../../../../api_resp/message_item_resp.dart';
-import '../../../../logic/authority.dart';
-import '../../../../util/hub_util.dart';
 
 class MessageSettingController extends GetxController {
   final Logger log = Logger("MessageSettingController");
@@ -56,7 +56,7 @@ class MessageSettingController extends GetxController {
 
   /// 查询群成员信息
   Future<void> getPersons(int limit) async {
-    PageResp<TargetResp> ans = await HubUtil().getPersons(
+    PageResp<TargetResp> ans = await chatServer.getPersons(
       messageItemId,
       limit,
       offset,
@@ -106,12 +106,12 @@ class MessageSettingController extends GetxController {
     update();
 
     // 同步会话
-    await HubUtil().cacheChats(orgChatCache);
+    await chatServer.cacheChats(orgChatCache);
   }
 
   /// 删除个人空间所有聊天记录
   clearHistoryMsg() async {
-    await HubUtil().clearHistoryMsg(spaceId, messageItemId);
+    await chatServer.clearHistoryMsg(spaceId, messageItemId);
 
     // 清空页面
     var chatSpaceId = chatController.spaceId;
@@ -138,7 +138,7 @@ class MessageSettingController extends GetxController {
     messageController.update();
 
     // 同步会话
-    await HubUtil().cacheChats(orgChatCache);
+    await chatServer.cacheChats(orgChatCache);
   }
 
   /// 删除好友
@@ -176,6 +176,6 @@ class MessageSettingController extends GetxController {
         .removeWhere((chat) => chat.spaceId == spaceId && chat.id == targetId);
 
     // 同步会话
-    await HubUtil().cacheChats(orgChatCache);
+    await chatServer.cacheChats(orgChatCache);
   }
 }

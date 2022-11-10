@@ -10,22 +10,21 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/bucket_api.dart';
+import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
+import 'package:orginone/api_resp/message_item_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
+import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/enumeration/enum_map.dart';
+import 'package:orginone/enumeration/message_type.dart';
+import 'package:orginone/logic/authority.dart';
+import 'package:orginone/logic/server/chat_server.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/page/home/message/chat/component/chat_message_detail.dart';
+import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/util/encryption_util.dart';
-import 'package:orginone/util/hub_util.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../api_resp/api_resp.dart';
-import '../../../../api_resp/message_item_resp.dart';
-import '../../../../api_resp/target_resp.dart';
-import '../../../../enumeration/enum_map.dart';
-import '../../../../enumeration/message_type.dart';
-import '../../../../enumeration/target_type.dart';
-import '../../../../logic/authority.dart';
-import '../message_controller.dart';
 
 class Detail {
   final MessageDetailResp resp;
@@ -216,7 +215,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         .where((chat) => chat.spaceId != spaceId || chat.id != messageItemId)
         .toList();
 
-    HubUtil().cacheChats(orgChatCache);
+    chatServer.cacheChats(orgChatCache);
   }
 
   void openChats() async {
@@ -244,7 +243,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     messageItem.noRead = 0;
     messageController.update();
 
-    HubUtil().cacheChats(messageController.orgChatCache);
+    chatServer.cacheChats(messageController.orgChatCache);
   }
 
   /// 下拉时刷新旧的聊天记录
@@ -252,19 +251,19 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     String typeName = messageItem.typeName;
 
     var insertPointer = _details.length;
-    List<MessageDetailResp> newDetails = await HubUtil()
+    List<MessageDetailResp> newDetails = await chatServer
         .getHistoryMsg(spaceId, messageItemId, typeName, insertPointer, 15);
 
     Map<String, dynamic> nameMap = messageController.orgChatCache.nameMap;
     for (MessageDetailResp detail in newDetails) {
       _details.insert(insertPointer, Detail.fromResp(detail));
       if (!nameMap.containsKey(detail.fromId)) {
-        var name = await HubUtil().getName(detail.fromId);
+        var name = await chatServer.getName(detail.fromId);
         nameMap[detail.fromId] = name;
       }
     }
     if (isCacheNameMap) {
-      HubUtil().cacheChats(messageController.orgChatCache);
+      chatServer.cacheChats(messageController.orgChatCache);
     }
   }
 
@@ -294,7 +293,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
             "path": "$prefix/$fileName",
           };
 
-          await HubUtil().sendMsg(
+          await chatServer.sendMsg(
             spaceId: spaceId,
             messageItemId: messageItemId,
             msgBody: jsonEncode(body),
@@ -312,7 +311,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
       "milliseconds": milliseconds,
       "bytes": file.readAsBytesSync()
     };
-    await HubUtil().sendMsg(
+    await chatServer.sendMsg(
       spaceId: spaceId,
       messageItemId: messageItemId,
       msgBody: jsonEncode(msgBody),
@@ -362,13 +361,13 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   ) async {
     switch (func) {
       case DetailFunc.recall:
-        ApiResp apiResp = await HubUtil().recallMsg(detail);
+        ApiResp apiResp = await chatServer.recallMsg(detail);
         if (apiResp.success) {
           Fluttertoast.showToast(msg: "撤回成功！");
         }
         break;
       case DetailFunc.remove:
-        await HubUtil().deleteMsg(detail.id);
+        await chatServer.deleteMsg(detail.id);
         _details.removeWhere((item) => item.resp.id == detail.id);
         break;
     }

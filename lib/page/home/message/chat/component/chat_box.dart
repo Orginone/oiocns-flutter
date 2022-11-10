@@ -11,16 +11,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/enumeration/message_type.dart';
-import 'package:orginone/util/hub_util.dart';
+import 'package:orginone/logic/server/chat_server.dart';
+import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/util/permission_util.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vibration/vibration.dart';
-
-import '../../../../../component/a_font.dart';
-import '../chat_controller.dart';
 
 enum RecordStatus { stop, recoding, pausing }
 
@@ -591,7 +590,7 @@ class ChatBoxController extends FullLifeCycleController
         break;
       case InputEvent.clickSendBtn:
         ChatController chatController = Get.find<ChatController>();
-        await HubUtil().sendMsg(
+        await chatServer.sendMsg(
           spaceId: chatController.spaceId,
           messageItemId: chatController.messageItemId,
           msgBody: inputController.text,

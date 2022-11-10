@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:orginone/api/cohort_api.dart';
+import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/component/a_font.dart';
+import 'package:orginone/component/form/form_widget.dart';
 import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/enumeration/message_type.dart';
+import 'package:orginone/logic/authority.dart';
+import 'package:orginone/logic/server/chat_server.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
+import 'package:orginone/util/widget_util.dart';
 
-import '../../../../../api/cohort_api.dart';
-import '../../../../../api_resp/target_resp.dart';
-import '../../../../../component/a_font.dart';
-import '../../../../../component/form_widget.dart';
-import '../../../../../enumeration/message_type.dart';
-import '../../../../../logic/authority.dart';
-import '../../../../../util/hub_util.dart';
-import '../../../../../util/widget_util.dart';
 
 List<FormItem> formConfig = [
   const FormItem(
@@ -89,7 +89,7 @@ class CohortMaintainController extends GetxController {
     Fluttertoast.showToast(msg: "创建成功！");
 
     var msgBody = "${auth.userInfo.name}创建了群聊";
-    await HubUtil().sendMsg(
+    await chatServer.sendMsg(
       spaceId: auth.spaceId,
       messageItemId: cohort.id,
       msgBody: msgBody,
@@ -104,7 +104,7 @@ class CohortMaintainController extends GetxController {
     String oldName = old["name"];
     if (oldName != cohort.name) {
       var msgBody = "${auth.userInfo.name}将群名称修改为${cohort.name}";
-      await HubUtil().sendMsg(
+      await chatServer.sendMsg(
         spaceId: value["belongId"],
         messageItemId: cohort.id,
         msgBody: msgBody,

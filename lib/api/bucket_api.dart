@@ -12,10 +12,13 @@ import 'package:uuid/uuid.dart';
 import '../config/constant.dart';
 import '../util/http_util.dart';
 
+const String userDomain = "user";
+const String allDomain = "all";
+
 class BucketApi {
   static Logger log = Logger("BucketApi");
 
-  static const String shareDomain = "user";
+  static const String defaultShareDomain = userDomain;
 
   // 每次以 1M 的速度上传
   static int chunkSize = 1024 * 1024;
@@ -23,9 +26,12 @@ class BucketApi {
   // uuid
   static Uuid uuid = const Uuid();
 
-  static Future<dynamic> create({required String prefix}) async {
+  static Future<dynamic> create({
+    required String prefix,
+    String domain = userDomain,
+  }) async {
     String url = "${Constant.bucket}/Create";
-    var params = {"shareDomain": shareDomain, "prefix": prefix};
+    var params = {"shareDomain": domain, "prefix": prefix};
 
     return await HttpUtil().post(
       url,
@@ -38,10 +44,11 @@ class BucketApi {
     required String prefix,
     required String filePath,
     required String fileName,
+    String domain = defaultShareDomain,
   }) async {
     String url = "${Constant.bucket}/Upload";
 
-    var params = {"shareDomain": shareDomain, "prefix": prefix};
+    var params = {"shareDomain": domain, "prefix": prefix};
     var file = await MultipartFile.fromFile(filePath, filename: fileName);
     var formData = FormData.fromMap({"file": file});
 
@@ -58,16 +65,16 @@ class BucketApi {
     required String filePath,
     required String fileName,
     Function? progressCallback,
-    String shareDomain = shareDomain,
+    String shareDomain = defaultShareDomain,
   }) async {
     // 先读取文件大小，获取文件的长度
     var file = File(filePath);
     var length = file.lengthSync();
     var openedFile = await file.open();
 
-    if (length < chunkSize){
+    if (length < chunkSize) {
       await upload(prefix: prefix, filePath: filePath, fileName: fileName);
-      if (progressCallback != null){
+      if (progressCallback != null) {
         progressCallback(100);
       }
       return;
@@ -120,9 +127,12 @@ class BucketApi {
     }
   }
 
-  static Future<File> getCachedFile(String path) async {
+  static Future<File> getCachedFile({
+    required String path,
+    String domain = defaultShareDomain,
+  }) async {
     path = EncryptionUtil.encodeURLString(path);
-    String params = "shareDomain=$shareDomain&prefix=$path&preview=False";
+    String params = "shareDomain=$domain&prefix=$path&preview=False";
     String url = "${Constant.bucket}/Download?$params";
 
     Map<String, String> headers = {

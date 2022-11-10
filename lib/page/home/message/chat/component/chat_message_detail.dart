@@ -8,22 +8,21 @@ import 'package:logging/logging.dart';
 import 'package:orginone/api/bucket_api.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
+import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/text_avatar.dart';
+import 'package:orginone/component/unified_colors.dart';
+import 'package:orginone/component/unified_edge_insets.dart';
+import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/config/constant.dart';
+import 'package:orginone/enumeration/enum_map.dart';
+import 'package:orginone/enumeration/message_type.dart';
+import 'package:orginone/logic/authority.dart';
+import 'package:orginone/logic/server/chat_server.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
+import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/hive_util.dart';
-import 'package:orginone/util/hub_util.dart';
-
-import '../../../../../api_resp/target_resp.dart';
-import '../../../../../component/a_font.dart';
-import '../../../../../component/unified_colors.dart';
-import '../../../../../component/unified_edge_insets.dart';
-import '../../../../../component/unified_text_style.dart';
-import '../../../../../config/constant.dart';
-import '../../../../../enumeration/enum_map.dart';
-import '../../../../../enumeration/message_type.dart';
-import '../../../../../logic/authority.dart';
-import '../../../../../util/encryption_util.dart';
-import '../../../../../util/string_util.dart';
+import 'package:orginone/util/string_util.dart';
 
 enum Direction { leftStart, rightStart }
 
@@ -127,7 +126,7 @@ class ChatMessageDetail extends GetView<ChatController> {
   String targetName() {
     OrgChatCache orgChatCache = controller.messageController.orgChatCache;
     if (!orgChatCache.nameMap.containsKey(detail.fromId)) {
-      HubUtil().getName(detail.fromId).then((name) {
+      chatServer.getName(detail.fromId).then((name) {
         orgChatCache.nameMap[detail.fromId] = name;
       });
     }
@@ -291,7 +290,7 @@ class ChatMessageDetail extends GetView<ChatController> {
 
     path = EncryptionUtil.encodeURLString(path);
     String params =
-        "shareDomain=${BucketApi.shareDomain}&prefix=$path&preview=True";
+        "shareDomain=${BucketApi.defaultShareDomain}&prefix=$path&preview=True";
     String url = "${Constant.bucket}/Download?$params";
 
     Map<String, String> headers = {

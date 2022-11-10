@@ -4,24 +4,24 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api_resp/api_resp.dart';
+import 'package:orginone/api_resp/message_detail_resp.dart';
+import 'package:orginone/api_resp/message_item_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/enumeration/message_type.dart';
+import 'package:orginone/enumeration/target_type.dart';
+import 'package:orginone/logic/authority.dart';
+import 'package:orginone/logic/server/chat_server.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/page/home/message/component/message_item_widget.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_controller.dart';
-import 'package:orginone/util/any_store_util.dart';
+import 'package:orginone/logic/server/store_server.dart';
 import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/notification_util.dart';
+import 'package:orginone/util/string_util.dart';
 
-import '../../../api_resp/api_resp.dart';
-import '../../../api_resp/message_detail_resp.dart';
-import '../../../api_resp/message_item_resp.dart';
-import '../../../enumeration/message_type.dart';
-import '../../../enumeration/target_type.dart';
-import '../../../logic/authority.dart';
-import '../../../util/hub_util.dart';
-import '../../../util/string_util.dart';
 import 'chat/chat_controller.dart';
 
 class MessageController extends GetxController
@@ -114,7 +114,7 @@ class MessageController extends GetxController
       // 只有从缓存拿过会话了才能刷新会话
 
       // 读取聊天群
-      List<SpaceMessagesResp> messageGroups = await HubUtil().getChats();
+      List<SpaceMessagesResp> messageGroups = await chatServer.getChats();
 
       // 处理空间并排序
       orgChatCache.chats = _spaceHandling(messageGroups);
@@ -122,7 +122,7 @@ class MessageController extends GetxController
       update();
 
       // 缓存消息
-      await HubUtil().cacheChats(orgChatCache);
+      await chatServer.cacheChats(orgChatCache);
     }
   }
 
@@ -130,9 +130,9 @@ class MessageController extends GetxController
   _subscribingCharts() async {
     SubscriptionKey key = SubscriptionKey.orgChat;
     String domain = Domain.user.name;
-    await AnyStoreUtil().subscribing(key, domain, _updateChats);
+    await storeServer.subscribing(key, domain, _updateChats);
     if (orgChatCache.chats.isEmpty) {
-      ApiResp apiResp = await AnyStoreUtil().get(key.name, domain);
+      ApiResp apiResp = await storeServer.get(key.name, domain);
       _updateChats(apiResp.data);
     }
   }
@@ -265,7 +265,7 @@ class MessageController extends GetxController
         } else {
           if (detail.spaceId == auth.userId) {
             // 如果是个人空间，存储一下信息
-            await HubUtil().cacheMsg(sessionId, detail);
+            await chatServer.cacheMsg(sessionId, detail);
           }
 
           // 处理消息
@@ -302,7 +302,7 @@ class MessageController extends GetxController
               currentItem.msgType != MsgType.exitCohort.name) {
             var nameMap = orgChatCache.nameMap;
             if (!nameMap.containsKey(detail.fromId)) {
-              nameMap[detail.fromId] = await HubUtil().getName(detail.fromId);
+              nameMap[detail.fromId] = await chatServer.getName(detail.fromId);
             }
             String name = nameMap[detail.fromId];
             currentItem.showTxt = "$name: ${currentItem.showTxt}";
@@ -381,7 +381,7 @@ class MessageController extends GetxController
         update();
 
         // 缓存会话
-        HubUtil().cacheChats(orgChatCache);
+        chatServer.cacheChats(orgChatCache);
       } catch (error) {
         log.info("接收消息异常:$error");
       }
@@ -402,12 +402,12 @@ class MessageController extends GetxController
         orgChatCache.chats = _spaceHandling(orgChatCache.chats);
         sortingGroups();
         sortingItems(orgChatCache.recentChats ?? []);
-        await HubUtil().cacheChats(orgChatCache);
+        await chatServer.cacheChats(orgChatCache);
         update();
         break;
       case ChatFunc.remove:
         orgChatCache.recentChats?.remove(item);
-        await HubUtil().cacheChats(orgChatCache);
+        await chatServer.cacheChats(orgChatCache);
         update();
         break;
     }

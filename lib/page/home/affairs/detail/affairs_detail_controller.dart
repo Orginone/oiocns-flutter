@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:orginone/logic/server/chat_server.dart';
 import 'package:orginone/page/home/affairs/affairs_type_enum.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/public/http/base_controller.dart';
-import 'package:orginone/util/hub_util.dart';
 import '../../../../api/workflow_api.dart';
 import '../../../../public/loading/opt_loading.dart';
 import '../../../../util/string_util.dart';
@@ -162,7 +162,7 @@ class AffairsDetailController extends BaseController
       }
       applicant = orgChatCache.nameMap[id];
       if(applicant.isEmpty){
-        applicant = await HubUtil().getName(id);
+        applicant = await chatServer.getName(id);
       }
     }
     return applicant;

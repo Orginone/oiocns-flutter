@@ -7,16 +7,15 @@ import 'package:orginone/component/tab_combine.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
-import 'package:orginone/util/any_store_util.dart';
+import 'package:orginone/logic/server/conn_holder.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:signalr_core/signalr_core.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
+import 'package:signalr_core/signalr_core.dart';
 
 import '../../component/unified_colors.dart';
 import '../../logic/authority.dart';
 import '../../routers.dart';
-import '../../util/hub_util.dart';
 import '../../util/string_util.dart';
 import 'home_controller.dart';
 
@@ -172,9 +171,9 @@ class HomePage extends GetView<HomeController> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _conn(HubUtil().state, "会话"),
+            _conn(chatConn.state, "会话"),
             Container(margin: EdgeInsets.only(top: 2.h)),
-            _conn(AnyStoreUtil().state, "存储"),
+            _conn(storeConn.state, "存储"),
           ],
         ),
         Padding(padding: EdgeInsets.only(left: 10.w)),
@@ -254,8 +253,9 @@ class HomePage extends GetView<HomeController> {
             case HubConnectionState.connected:
               color = Colors.greenAccent;
               break;
-            default:
+            case HubConnectionState.disconnected:
               color = Colors.redAccent;
+              break;
           }
           return Icon(
             Icons.circle,

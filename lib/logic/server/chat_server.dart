@@ -4,23 +4,22 @@ import 'package:common_utils/common_utils.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api_resp/api_resp.dart';
+import 'package:orginone/api_resp/message_detail_resp.dart';
+import 'package:orginone/api_resp/message_item_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
+import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/enumeration/message_type.dart';
-import 'package:orginone/util/any_store_util.dart';
+import 'package:orginone/enumeration/target_type.dart';
+import 'package:orginone/logic/authority.dart';
+import 'package:orginone/logic/server/store_server.dart';
+import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/util/encryption_util.dart';
-import 'package:signalr_core/signalr_core.dart';
+import 'package:orginone/util/hive_util.dart';
 
-import '../config/constant.dart';
-import '../api_resp/api_resp.dart';
-import '../api_resp/message_detail_resp.dart';
-import '../api_resp/message_item_resp.dart';
-import '../api_resp/target_resp.dart';
-import '../enumeration/target_type.dart';
-import '../logic/authority.dart';
-import '../page/home/message/message_controller.dart';
-import 'hive_util.dart';
+import 'conn_holder.dart';
 
 enum ReceiveEvent { RecvMsg, ChatRefresh }
 
@@ -37,31 +36,44 @@ enum SendEvent {
 
 String collName = "chat-message";
 
-class HubUtil {
+class ChatServer {
   final Logger log = Logger("HubUtil");
 
-  HubUtil._();
+  ChatServer._();
 
-  static final HubUtil _instance = HubUtil._();
+  final ConnHolder _conn = chatConn;
+  final Rx<bool> isAuthed = false.obs;
 
-  factory HubUtil() {
-    return _instance;
+  Future<void> start() async {
+    await _conn.start();
+    await _auth();
   }
 
-  HubConnection? _server;
-  bool _isStop = true;
-  bool _isAuthed = false;
-  final Rx<HubConnectionState> state = HubConnectionState.disconnected.obs;
-  final Map<String, void Function(List<dynamic>?)> events = {};
+  Future<void> stop() async {
+    isAuthed.value = true;
+    await _conn.stop();
+  }
 
-  // 发送消息
+  /// 鉴权
+  _auth() async {
+    if (_conn.isConnected()) {
+      var accessToken = HiveUtil().accessToken;
+      var methodName = SendEvent.TokenAuth.name;
+      await _conn.invoke(methodName, args: [accessToken]);
+      isAuthed.value = true;
+    } else {
+      throw Exception("未连接,无法授权!");
+    }
+  }
+
+  /// 发送消息
   Future<void> sendMsg({
     required String spaceId,
     required String messageItemId,
     required String msgBody,
     required MsgType msgType,
   }) async {
-    if (_isAuthed) {
+    if (isAuthed.value) {
       if (messageItemId == "-1") return;
 
       var messageDetail = {
@@ -73,9 +85,9 @@ class HubUtil {
       try {
         var args = <Object>[messageDetail];
         var sendName = SendEvent.SendMsg.name;
-        await _server!.invoke(sendName, args: args);
+        await _conn.invoke(sendName, args: args);
       } catch (error) {
-        Fluttertoast.showToast(msg: "消息发送失败!");
+        Fluttertoast.showToast(msg: "消息发送失败");
         rethrow;
       }
     }
@@ -83,9 +95,9 @@ class HubUtil {
 
   /// 获取聊天对话
   Future<List<SpaceMessagesResp>> getChats() async {
-    if (_isAuthed) {
+    if (isAuthed.value) {
       String key = SendEvent.GetChats.name;
-      Map<String, dynamic> chats = await _server!.invoke(key);
+      Map<String, dynamic> chats = await _conn.invoke(key);
       ApiResp resp = ApiResp.fromJson(chats);
 
       List<dynamic> groups = resp.data["groups"];
@@ -98,21 +110,21 @@ class HubUtil {
       }).toList();
       return messageGroups;
     }
-    Fluttertoast.showToast(msg: "未连接聊天服务器!");
-    throw Exception("未连接聊天服务器!");
+    Fluttertoast.showToast(msg: "未连接聊天服务器");
+    throw Exception("未连接聊天服务器");
   }
 
   /// 获取名称
   Future<String> getName(String personId) async {
-    if (_isAuthed) {
+    if (isAuthed.value) {
       var key = SendEvent.GetName.name;
       var args = [personId];
-      Map<String, dynamic> nameRes = await _server!.invoke(key, args: args);
+      Map<String, dynamic> nameRes = await _conn.invoke(key, args: args);
       ApiResp resp = ApiResp.fromJson(nameRes);
       return resp.data;
     }
-    Fluttertoast.showToast(msg: "未连接聊天服务器!");
-    throw Exception("未连接聊天服务器!");
+    Fluttertoast.showToast(msg: "未连接聊天服务器");
+    throw Exception("未连接聊天服务器");
   }
 
   /// 缓存聊天记录
@@ -125,8 +137,11 @@ class HubUtil {
         },
         "options": {}
       };
-      ApiResp ans =
-          await AnyStoreUtil().insert("chat-message", update, Domain.user.name);
+      ApiResp ans = await storeServer.insert(
+        "chat-message",
+        update,
+        Domain.user.name,
+      );
       log.info("ans:${ans.toJson()}");
     } else {
       Map<String, dynamic> data = {
@@ -141,7 +156,7 @@ class HubUtil {
             format: "yyyy-MM-dd HH:mm:ss.SSS")
       };
       log.info("====> 插入一条数据：${data["createTime"]}");
-      await AnyStoreUtil().insert(collName, data, Domain.user.name);
+      storeServer.insert(collName, data, Domain.user.name);
     }
   }
 
@@ -152,7 +167,7 @@ class HubUtil {
       "data": {
         "name": "我的消息",
         "chats": SpaceMessagesResp.toJsonList(orgChatCache.chats)
-            .where((item) => item["id"] != "topping")
+            .where((item) => item["id"] == "topping")
             .toList(),
         "nameMap": orgChatCache.nameMap,
         "openChats": MessageItemResp.toJsonList(orgChatCache.openChats),
@@ -163,7 +178,7 @@ class HubUtil {
         },
       }
     };
-    await AnyStoreUtil().set(StoreKey.orgChat.name, setData, Domain.user.name);
+    storeServer.set(StoreKey.orgChat.name, setData, Domain.user.name);
   }
 
   /// 清空消息
@@ -173,14 +188,14 @@ class HubUtil {
     if (userInfo.id == spaceId) {
       // 清空会话
       Map<String, dynamic> match = {"sessionId": sessionId};
-      await AnyStoreUtil().remove(collName, match, Domain.user.name);
+      storeServer.remove(collName, match, Domain.user.name);
     }
   }
 
   /// 删除消息
   Future<void> deleteMsg(String chatId) async {
     Map<String, dynamic> match = {"chatId": chatId};
-    await AnyStoreUtil().remove(collName, match, Domain.user.name);
+    storeServer.remove(collName, match, Domain.user.name);
   }
 
   /// 获取历史消息
@@ -201,7 +216,7 @@ class HubUtil {
         "skip": offset,
         "limit": limit
       };
-      var store = AnyStoreUtil();
+      var store = storeServer;
       var domain = Domain.user.name;
       ApiResp apiResp = await store.aggregate(collName, options, domain);
       List<dynamic> details = apiResp.data ?? [];
@@ -214,10 +229,10 @@ class HubUtil {
       }
       return ans;
     } else {
-      if (_isAuthed) {
+      if (isAuthed.value) {
         String event = SendEvent.QueryFriendMsg.name;
         String idName = "friendId";
-        if (typeName != TargetType.person.name) {
+        if (typeName == TargetType.person.name) {
           event = SendEvent.QueryCohortMsg.name;
           idName = "cohortId";
         }
@@ -227,7 +242,7 @@ class HubUtil {
           "offset": offset,
           "spaceId": spaceId
         };
-        Map<String, dynamic> res = await _server!.invoke(event, args: [params]);
+        Map<String, dynamic> res = await _conn.invoke(event, args: [params]);
         var apiResp = ApiResp.fromJson(res);
         Map<String, dynamic> data = apiResp.data;
         if (data["result"] == null) {
@@ -240,20 +255,20 @@ class HubUtil {
           return detail;
         }).toList();
       }
-      Fluttertoast.showToast(msg: "未连接聊天服务器!");
-      throw Exception("未连接聊天服务器!");
+      Fluttertoast.showToast(msg: "未连接聊天服务器");
+      throw Exception("未连接聊天服务器");
     }
   }
 
-  // 撤销消息
+  /// 撤销消息
   Future<ApiResp> recallMsg(MessageDetailResp msg) async {
-    if (_isAuthed) {
+    if (isAuthed.value) {
       var name = SendEvent.RecallMsg.name;
-      dynamic res = await _server!.invoke(name, args: [msg]);
+      dynamic res = await _conn.invoke(name, args: [msg]);
       return ApiResp.fromJson(res);
     }
-    Fluttertoast.showToast(msg: "未连接聊天服务器!");
-    throw Exception("未连接聊天服务器!");
+    Fluttertoast.showToast(msg: "未连接聊天服务器");
+    throw Exception("未连接聊天服务器");
   }
 
   /// 获取人员
@@ -262,65 +277,20 @@ class HubUtil {
     int limit,
     int offset,
   ) async {
-    if (_isAuthed) {
+    if (isAuthed.value) {
       String event = SendEvent.GetPersons.name;
       Map<String, dynamic> params = {
         "cohortId": id,
         "limit": limit,
         "offset": offset
       };
-      dynamic res = await _server!.invoke(event, args: [params]);
+      dynamic res = await _conn.invoke(event, args: [params]);
 
       ApiResp apiResp = ApiResp.fromJson(res);
       return PageResp.fromMap(apiResp.data, TargetResp.fromMap);
     }
-    Fluttertoast.showToast(msg: "未连接聊天服务器!");
-    throw Exception("未连接聊天服务器!");
-  }
-
-  /// 初始化连接
-  Future<dynamic> tryConn() async {
-    if (_server != null) {
-      return;
-    }
-    log.info("================== 连接 HUB =========================");
-    _server = HubConnectionBuilder().withUrl(Constant.hub).build();
-    _server!.keepAliveIntervalInMilliseconds = 3000;
-    _server!.serverTimeoutInMilliseconds = 8000;
-    _isStop = false;
-    var state = _server!.state;
-    switch (state) {
-      case HubConnectionState.disconnected:
-        log.info("====> connecting");
-        try {
-          // 定义事件和回调函数
-          _initOnReconnecting();
-          _initOnReconnected();
-          _initOnClose();
-          _initEvents();
-          _initCallback();
-
-          // 开启连接，鉴权
-          await _server!.start();
-
-          await _auth(HiveUtil().accessToken);
-          _isAuthed = true;
-
-          log.info("====> connected success");
-          log.info("================== 连接 HUB 成功 =========================");
-        } catch (error) {
-          error.printError();
-          Fluttertoast.showToast(msg: "连接聊天服务器失败!");
-          log.info("================== 连接 HUB 失败 =========================");
-          _connTimeout();
-        }
-        break;
-      default:
-        log.info("====> 当前连接状态为：$state");
-        break;
-    }
-    // 设置可观测状态
-    setStatus();
+    Fluttertoast.showToast(msg: "未连接聊天服务器");
+    throw Exception("未连接聊天服务器");
   }
 
   /// 接收回调
@@ -340,113 +310,16 @@ class HubUtil {
 
   /// 定义事件
   void _initEvents() {
-    events[ReceiveEvent.RecvMsg.name] = (params) {
+    _conn.on(ReceiveEvent.ChatRefresh.name, (params) {
       _rsvCallback(params ?? []);
-    };
-    events[ReceiveEvent.ChatRefresh.name] = (params) {
+    });
+    _conn.on(ReceiveEvent.ChatRefresh.name, (params) {
       if (Get.isRegistered<MessageController>()) {
         var messageController = Get.find<MessageController>();
         messageController.refreshCharts();
       }
-    };
-  }
-
-  /// 函数回调
-  void _initCallback() {
-    if (_server == null) {
-      return;
-    }
-    for (var element in ReceiveEvent.values) {
-      void Function(List<dynamic>?) event = events[element.name]!;
-      _server!.on(element.name, event);
-    }
-  }
-
-  /// 鉴权
-  Future<dynamic> _auth(String accessToken) async {
-    if (isConn()) {
-      String name = SendEvent.TokenAuth.name;
-      await _server!.invoke(name, args: [accessToken]);
-    }
-  }
-
-  /// 断开连接
-  Future<dynamic> disconnect() async {
-    if (_server == null) {
-      return;
-    }
-
-    _isStop = true;
-    _isAuthed = false;
-    events.clear();
-    await _server!.stop();
-    _server = null;
-    setStatus();
-
-    log.info("===> 已断开和聊天服务器的连接。");
-  }
-
-  /// 重连定时器
-  void _connTimeout() {
-    log.info("====> 5s 后，hub 开始重新连接");
-    Duration duration = const Duration(seconds: 5);
-    Timer(duration, () async {
-      await disconnect();
-      await tryConn();
     });
-  }
-
-  /// 重连中回调
-  void _initOnReconnecting() {
-    if (_server == null) {
-      return;
-    }
-    _server!.onreconnecting((exception) {
-      setStatus();
-      log.info("================== 正在重新连接 HUB  =========================");
-      log.info("====> reconnecting");
-      if (exception != null) {
-        log.info("====> $exception");
-      }
-    });
-  }
-
-  /// 重连成功回调
-  void _initOnReconnected() {
-    if (_server == null) {
-      return;
-    }
-    _server!.onreconnected((id) {
-      setStatus();
-      log.info("====> reconnected success");
-      log.info("================== 重新连接 HUB 成功 =========================");
-    });
-  }
-
-  /// 关闭回调
-  void _initOnClose() {
-    if (_server == null) {
-      return;
-    }
-    _server!.onclose((error) {
-      log.info("====> hub 连接被关闭了");
-      setStatus();
-      if (!_isStop) {
-        _connTimeout();
-      }
-    });
-  }
-
-  /// 设置状态
-  setStatus() {
-    state.value = _server?.state ?? HubConnectionState.disconnected;
-  }
-
-  /// 判断是否处于连接当中
-  bool isConn() {
-    if (_server == null) {
-      return false;
-    }
-    return _server!.state == HubConnectionState.connected;
   }
 }
+
+final ChatServer chatServer = ChatServer._().._initEvents();

@@ -1,5 +1,4 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
-import 'package:orginone/component/form_widget.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
 import 'package:orginone/page/home/affairs/detail/affairs_detail.dart';

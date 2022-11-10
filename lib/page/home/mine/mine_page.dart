@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/components/button/gf_button.dart';
 import 'package:orginone/logic/authority.dart';
 import 'package:orginone/page/home/mine/mine_controller.dart';
 import 'package:orginone/routers.dart';
@@ -29,17 +27,6 @@ class MinePage extends GetView<MineController> {
             if (auth.isMobileAPKAdmin([auth.userId])) _uploadAPK
           ],
         ),
-        Container(
-          margin: EdgeInsets.only(left: 20.w, bottom: 10.h, right: 20.w),
-          child: GFButton(
-            onPressed: () async {
-              Get.offAllNamed(Routers.main);
-            },
-            color: Colors.redAccent,
-            text: "注销",
-            blockButton: true,
-          ),
-        )
       ],
     );
   }
@@ -120,7 +107,7 @@ class MinePage extends GetView<MineController> {
           child: Text("上传 APK 文件", style: text16Bold),
         ),
         func: () {
-          Get.toNamed(Routers.mineCard);
+          Get.toNamed(Routers.upload);
         },
       );
 }

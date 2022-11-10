@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:orginone/util/hub_util.dart';
 
 import 'chat_controller.dart';
 import 'component/chat_box.dart';

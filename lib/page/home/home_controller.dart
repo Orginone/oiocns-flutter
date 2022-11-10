@@ -2,9 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api/company_api.dart';
+import 'package:orginone/api/person_api.dart';
+import 'package:orginone/api_resp/login_resp.dart';
+import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/tree_node.dart';
 import 'package:orginone/component/bread_crumb.dart';
+import 'package:orginone/component/tab_combine.dart';
 import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/config/bread_crumb_points.dart';
+import 'package:orginone/logic/authority.dart';
+import 'package:orginone/logic/server/chat_server.dart';
+import 'package:orginone/logic/server/conn_holder.dart';
+import 'package:orginone/logic/server/store_server.dart';
 import 'package:orginone/page/home/affairs/affairs_page.dart';
 import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
@@ -12,17 +22,8 @@ import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/mine/set_home/set_home_page.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
 import 'package:orginone/page/home/work/work_page.dart';
-import 'package:orginone/util/any_store_util.dart';
-import 'package:orginone/util/hub_util.dart';
+import 'package:orginone/util/hive_util.dart';
 
-import '../../api/company_api.dart';
-import '../../api/person_api.dart';
-import '../../api_resp/login_resp.dart';
-import '../../api_resp/target_resp.dart';
-import '../../api_resp/tree_node.dart';
-import '../../component/tab_combine.dart';
-import '../../logic/authority.dart';
-import '../../util/hive_util.dart';
 import 'message/message_page.dart';
 
 class HomeController extends GetxController
@@ -67,8 +68,8 @@ class HomeController extends GetxController
   @override
   void onClose() {
     super.onClose();
-    AnyStoreUtil().disconnect();
-    HubUtil().disconnect();
+    chatServer.stop();
+    storeServer.stop();
     breadCrumbController.dispose();
     tabController.dispose();
   }
@@ -119,7 +120,7 @@ class HomeController extends GetxController
     breadCrumbController.push(center.breadCrumbItem!);
     int preIndex = tabController.index;
     tabController.addListener(() {
-      if(preIndex == tabController.index){
+      if (preIndex == tabController.index) {
         return;
       }
       tabIndex.value = tabController.index;
