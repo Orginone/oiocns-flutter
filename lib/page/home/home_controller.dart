@@ -9,6 +9,7 @@ import 'package:orginone/page/home/affairs/affairs_page.dart';
 import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
+import 'package:orginone/page/home/mine/set_home/set_home_page.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
 import 'package:orginone/page/home/work/work_page.dart';
 import 'package:orginone/util/any_store_util.dart';
@@ -103,7 +104,7 @@ class HomeController extends GetxController
     );
     my = TabCombine(
       body: Text('设置', style: text14),
-      tabView: const MinePage(),
+      tabView: SetHomePage(),
       icon: Icons.person_outline,
       breadCrumbItem: settingPoint,
     );

@@ -8,7 +8,6 @@ import 'package:orginone/component/a_font.dart';
 import 'package:orginone/page/home/affairs/affairs_type_enum.dart';
 import 'package:orginone/util/date_util.dart';
 import '../../../../component/unified_colors.dart';
-// import '../../../../component/unified_text_style.dart';
 import '../../../../public/loading/load_status.dart';
 import '../../../../public/view/base_list_view.dart';
 import '../../../../routers.dart';

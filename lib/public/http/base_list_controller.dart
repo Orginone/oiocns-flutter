@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:orginone/public/http/base_controller.dart';
 import 'package:orginone/public/loading/load_status.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -6,7 +7,7 @@ import '../../api_resp/page_resp.dart';
 
 abstract class BaseListController<T> extends BaseController {
   /// 列表数据容器
-  List<T> dataList = [];
+  RxList<T> dataList = RxList([]);
 
   /// 刷新控制器
   RefreshController refreshController = RefreshController();
@@ -18,7 +19,6 @@ abstract class BaseListController<T> extends BaseController {
   void onLoadMore();
 
   /// isRefresh true 刷新 false 加载更多
-  /// pageResp PageResp
   /// 添加数据&自动判断列表刷新和更多对应的头和脚状态
   void addData(bool isRefresh, PageResp<T> pageResp) {
     if (isRefresh) {
@@ -46,7 +46,15 @@ abstract class BaseListController<T> extends BaseController {
         refreshController.loadNoData();
       }
     }
-    // update();
+  }
+
+  void removeAt(int index){
+    if(index < dataList.length){
+      dataList.removeAt(index);
+      if(dataList.isEmpty){
+        updateLoadStatus(LoadStatusX.empty);
+      }
+    }
   }
 
   @override

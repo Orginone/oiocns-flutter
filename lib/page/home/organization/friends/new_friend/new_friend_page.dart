@@ -109,7 +109,7 @@ class NewFriendsPage extends BaseListView<NewFriendsController> {
                             borderRadius:
                             const BorderRadius.all(Radius.circular(0))),
                         child: Text(
-                          item.createTime?.toString() ?? "",
+                          item.createTime.toString(),
                           style: AFont.instance.size14Black9,
                         ),
                       ),

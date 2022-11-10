@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_icon_button.dart';
-import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/component/index_bar.dart';
 import 'package:orginone/component/text_avatar.dart';
@@ -10,7 +9,6 @@ import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/logic/authority.dart';
 import 'package:orginone/page/home/message/contact/contact_controller.dart';
 import 'package:orginone/page/home/search/search_controller.dart';
-import 'package:orginone/public/loading/load_status.dart';
 import 'package:orginone/public/view/base_view.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/string_util.dart';
@@ -19,11 +17,6 @@ import '../../../../component/a_font.dart';
 ///联系人页面
 class ContactPage extends BaseView<ContactController> {
   const ContactPage({Key? key}) : super(key: key);
-
-  @override
-  LoadStatusX initStatus() {
-    return LoadStatusX.loading;
-  }
 
   @override
   String getTitle() {
@@ -62,7 +55,9 @@ class ContactPage extends BaseView<ContactController> {
     return GetBuilder<ContactController>(
       init: controller,
       builder: (controller) => ListView.builder(
+          key: controller.mGlobalKey,
           shrinkWrap: true,
+          controller: controller.mScrollController,
           scrollDirection: Axis.vertical,
           itemCount: controller.mData.length,
           itemBuilder: (context, index) {
@@ -76,7 +71,9 @@ class ContactPage extends BaseView<ContactController> {
     if (targetResp.id == "-101") {
       return Container(
           color: UnifiedColors.lineLight,
-          padding: EdgeInsets.only(left: 40.w, top: 10.h, bottom: 10.h),
+          height: 45.h,
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.only(left: 40.w),
           child: Text(
             targetResp.name,
             style: AFont.instance.size20themeColorW500,
@@ -85,6 +82,7 @@ class ContactPage extends BaseView<ContactController> {
     return Column(children: [
       Container(
         color: Colors.white,
+        height: 110.h,
         child: ListTile(
           onTap: (){
             var msgItem = controller.getMsgItem(targetResp);
@@ -127,25 +125,22 @@ class ContactPage extends BaseView<ContactController> {
 
   /// 触摸索引显示的view
   _stickIndexBar() {
-    return GetBuilder<ContactController>(
-      init: controller,
-      builder: (controller) => Visibility(
-        visible: controller.isVisibility(),
-        child: Align(
-          alignment: Alignment.center,
-          child: Container(
-            decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.all(Radius.circular(5.w))),
-            width: 100.w,
-            height: 100.w,
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(controller.getBarStr(), style: AFont.instance.size28White),
-            ),
+    return Obx(() =>Visibility(
+      visible: !controller.mTouchUp.value,
+      child: Align(
+        alignment: Alignment.center,
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.all(Radius.circular(5.w))),
+          width: 100.w,
+          height: 100.w,
+          child: Align(
+            alignment: Alignment.center,
+            child: Text(controller.mTouchChar.value, style: AFont.instance.size28White),
           ),
         ),
       ),
-    );
+    ) );
   }
 }

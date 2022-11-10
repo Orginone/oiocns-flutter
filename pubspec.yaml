@@ -145,6 +145,9 @@ flutter:
   assets:
     - assets/
     - images/
+    - assets/icons/
+    - assets/icons/2.0x/
+    - assets/icons/3.0x/
     - images/person-empty.png
     - images/person-card-bg.png
     - images/logo.png
