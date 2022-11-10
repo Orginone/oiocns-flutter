@@ -36,7 +36,7 @@ class CohortApi {
     return await HttpUtil().post(url, data: data);
   }
 
-  /// 人员搜索
+  /// 群组搜索
   static Future<PageResp<TargetResp>> search({
     required String keyword,
     required int limit,
@@ -61,7 +61,7 @@ class CohortApi {
     return await HttpUtil().post(url, data: data);
   }
 
-  /// 创建群组
+  /// 更新群组
   static Future<dynamic> update(Map<String, dynamic> params) async {
     String url = "${Constant.cohort}/update";
     var data = {

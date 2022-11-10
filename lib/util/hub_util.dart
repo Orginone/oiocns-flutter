@@ -260,7 +260,7 @@ class HubUtil {
     throw Exception("未连接聊天服务器!");
   }
 
-  //初始化连接
+  /// 初始化连接
   Future<dynamic> tryConn() async {
     if (_server != null) {
       return;
@@ -305,6 +305,7 @@ class HubUtil {
     setStatus();
   }
 
+  /// 接收回调
   _rsvCallback(List<dynamic> params) {
     if (Get.isRegistered<MessageController>()) {
       var messageController = Get.find<MessageController>();

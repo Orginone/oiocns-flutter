@@ -87,7 +87,6 @@ class ContactPage extends BaseView<ContactController> {
           onTap: (){
             var msgItem = controller.getMsgItem(targetResp);
             Map<String, dynamic> args = {
-              "messageItem": msgItem,
               "spaceId": auth.userId,
               "messageItemId": msgItem.id
             };

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/config/constant.dart';
 
@@ -56,7 +57,7 @@ class PersonApi {
   static Future<PageResp<TargetResp>> friends(
     int limit,
     int offset,
-    String filter
+    String filter,
   ) async {
     String url = "${Constant.person}/get/friends";
     Map<String, dynamic> data = {"offset": offset, "limit": limit};
@@ -66,6 +67,19 @@ class PersonApi {
 
     Map<String, dynamic> pageResp = await HttpUtil().post(url, data: data);
     return PageResp.fromMap(pageResp, TargetResp.fromMap);
+  }
+
+  /// 获取所有好友
+  static Future<List<TargetResp>> friendsAll(String filter) async {
+    List<TargetResp> allFriends = [];
+    while (true) {
+      PageResp<TargetResp> tempPage = await friends(50, 0, filter);
+      allFriends.addAll(tempPage.result);
+      if (tempPage.result.length == allFriends.length) {
+        break;
+      }
+    }
+    return allFriends;
   }
 
   /// 改变工作空间
@@ -103,24 +117,29 @@ class PersonApi {
   }
 
   /// 查询好友申请
-  static Future<PageResp<FriendsEntity>> approvalAll(String id,int limit,int offset) async {
+  static Future<PageResp<FriendsEntity>> approvalAll(
+      String id, int limit, int offset) async {
     String url = "${Constant.person}/get/all/approval";
     var data = {"id": id, "limit": limit, "offset": offset};
     Map<String, dynamic> pageResp = await HttpUtil().post(url, data: data);
     return PageResp.fromMap(pageResp, FriendsEntity.fromJson);
   }
+
   /// 加好友通过
   static Future<bool> joinSuccess(String id) async {
     String url = "${Constant.person}/join/success";
     var data = {"id": id};
-    Map<String, dynamic> resp = await HttpUtil().post(url, data: data,showError: true);
+    Map<String, dynamic> resp =
+        await HttpUtil().post(url, data: data, showError: true);
     return resp != null;
   }
+
   /// 加好友拒绝
   static Future<bool> joinRefuse(String id) async {
     String url = "${Constant.person}/join/refuse";
     var data = {"id": id};
-    Map<String, dynamic> resp = await HttpUtil().post(url, data: data,showError: true);
+    Map<String, dynamic> resp =
+        await HttpUtil().post(url, data: data, showError: true);
     return resp != null;
   }
 
@@ -135,7 +154,10 @@ class PersonApi {
   /// 好友删除
   static Future<dynamic> remove(String id) async {
     String url = "${Constant.person}/remove";
-    var data = {"id": id, "targetIds": [id]};
+    var data = {
+      "id": id,
+      "targetIds": [id]
+    };
     return await HttpUtil().post(url, data: data);
   }
 }

@@ -74,7 +74,6 @@ class MessageItemWidget extends GetView<MessageController> {
       },
       onTap: () {
         Map<String, dynamic> args = {
-          "messageItem": item,
           "spaceId": spaceId,
           "messageItemId": item.id
         };

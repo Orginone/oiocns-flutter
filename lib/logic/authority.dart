@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/api/person_api.dart';
+import 'package:orginone/api_resp/target_resp.dart';
 
 import '../api_resp/token_authority_resp.dart';
 
@@ -20,13 +21,13 @@ class Authority {
 
   Authority._(this.resp);
 
-  get spaceId => resp.spaceId;
+  String get spaceId => resp.spaceId;
 
-  get userId => resp.userId;
+  String get userId => resp.userId;
 
-  get userInfo => resp.userInfo;
+  TargetResp get userInfo => resp.userInfo;
 
-  get spaceInfo => resp.spaceInfo;
+  TargetResp get spaceInfo => resp.spaceInfo;
 
   /// 判断目标是否含有系统权限
   /// [auths] 相应权限
