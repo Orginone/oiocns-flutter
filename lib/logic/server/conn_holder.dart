@@ -68,12 +68,15 @@ class ConnHolder {
   }
 
   /// 开始连接
-  start() async {
+  start({Function? callback}) async {
     try {
       _info("开始连接");
       _isStop.value = false;
       await _server.start();
       setState();
+      if (callback != null) {
+        await callback();
+      }
       _info("连接成功");
     } catch (error) {
       _info("连接时发生异常: ${error.toString()}");
@@ -131,10 +134,10 @@ class ConnHolder {
   }
 
   /// 重连定时器
-  void _connTimeout() {
+  void _connTimeout({Function? callback}) {
     Timer(_timeout, () async {
-      _info("开始重新连接,间隔为: ${_timeout.toString()}");
-      await start();
+      _info("重连时间间隔: ${_timeout.inSeconds}s");
+      await start(callback: callback);
     });
   }
 }

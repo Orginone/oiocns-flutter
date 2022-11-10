@@ -45,12 +45,13 @@ class ChatServer {
   final Rx<bool> isAuthed = false.obs;
 
   Future<void> start() async {
-    await _conn.start();
-    await _auth();
+    await _conn.start(callback: () async {
+      await _auth();
+    });
   }
 
   Future<void> stop() async {
-    isAuthed.value = true;
+    isAuthed.value = false;
     await _conn.stop();
   }
 

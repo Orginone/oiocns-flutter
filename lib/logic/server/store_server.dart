@@ -39,11 +39,12 @@ class StoreServer {
   final Rx<bool> isAuthed = false.obs;
 
   Future<void> start() async {
-    await _conn.start();
-    await _auth();
-    await _resubscribed();
+    await _conn.start(callback: () async {
+      await _auth();
+      await _resubscribed();
+    });
   }
-  
+
   Future<void> stop() async {
     subscriptionMap.clear();
     isAuthed.value = false;
