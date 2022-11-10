@@ -22,9 +22,9 @@ class MoreMessagePage extends GetView<MessageController> {
         },
         child: GetBuilder<MessageController>(
           builder: (controller) => ListView.builder(
-            shrinkWrap: true,
             scrollDirection: Axis.vertical,
             itemCount: controller.orgChatCache.chats.length,
+            physics: const AlwaysScrollableScrollPhysics(),
             itemBuilder: (BuildContext context, int index) {
               return GroupItemWidget(index);
             },

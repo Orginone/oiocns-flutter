@@ -345,7 +345,7 @@ class RealStoreServer implements StoreServer {
       "data": {
         "name": "我的消息",
         "chats": SpaceMessagesResp.toJsonList(orgChatCache.chats)
-            .where((item) => item["id"] == "topping")
+            .where((item) => item["id"] != "topping")
             .toList(),
         "nameMap": orgChatCache.nameMap,
         "openChats": MessageItemResp.toJsonList(orgChatCache.openChats),
