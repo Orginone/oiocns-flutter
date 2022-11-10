@@ -60,6 +60,7 @@ class IndexBar extends StatelessWidget {
 
   /// 只有和上次选择不同且在范围之内的才有效
   _updateSelectIndex(int i, bool touchUp) {
+    if(mCurrentIndex == i) return;
     if (touchUp) {
       indexBarCallBack("", -1, touchUp);
     } else if (mCurrentIndex != i && i >= 0 && i < mData.length) {

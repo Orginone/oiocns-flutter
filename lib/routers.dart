@@ -35,6 +35,7 @@ import 'package:orginone/page/home/mine/mine_info/mine_info_page.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/mine/mine_unit/mine_unit_binding.dart';
 import 'package:orginone/page/home/mine/mine_unit/mine_unit_page.dart';
+import 'package:orginone/page/home/mine/set_home/set_home_page.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_binding.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_page.dart';
 import 'package:orginone/page/home/organization/cohorts/component/cohort_maintain_page.dart';
@@ -68,6 +69,7 @@ import 'package:orginone/page/scanning/scanning_result/scanning_result_binding.d
 import 'package:orginone/page/scanning/scanning_result/scanning_result_pge.dart';
 
 import 'page/home/affairs/detail/affairs_detail_binding.dart';
+import 'page/home/mine/set_home/set_home_binding.dart';
 
 class Routers {
   static const String main = "/";
@@ -111,6 +113,7 @@ class Routers {
   static const String invite = "/invite";
   static const String affairsDetail = "/affairsDetail";
   static const String newFriends = "/newFriends";
+  static const String setHome = "/setHome";
 
   // 上传文件
   static const String upload = "/upload";
@@ -296,6 +299,11 @@ class Routers {
         name: Routers.invite,
         page: () => const InvitePage(),
         binding: InviteBinding(),
+      ),
+      GetPage(
+        name: Routers.setHome,
+        page: () => SetHomePage(),
+        binding: SetHomeBinding(),
       ),
       GetPage(
         name: Routers.upload,

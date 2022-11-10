@@ -6,13 +6,23 @@ import '../../../../api_resp/record_task_entity.dart';
 class RecordController extends AffairsBaseListController<RecordTaskEntity> {
   @override
   void onLoadMore() async {
-    var pageResp = await WorkflowApi.record(limit, offset += 1, 'string');
-    addData(true, pageResp);
+    await WorkflowApi.record(limit, offset += 1, 'string')
+        .then((pageResp) {
+          addData(false, pageResp);
+        })
+        .onError((error, stackTrace) {
+      refreshController.loadFailed();
+    })
+        .whenComplete(() {});
   }
 
   @override
   void onRefresh() async {
-    var pageResp = await WorkflowApi.record(limit, offset, 'string');
-    addData(true, pageResp);
+    await WorkflowApi.record(limit, offset, 'string')
+        .then((pageResp) {
+          addData(true, pageResp);
+        })
+        .onError((error, stackTrace) {})
+        .whenComplete(() {});
   }
 }

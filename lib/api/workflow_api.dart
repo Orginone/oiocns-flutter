@@ -11,9 +11,9 @@ class WorkflowApi {
   /// 待办
   static Future<PageResp<TaskEntity>> task(int limit,
       int offset,
-      String filter,) async {
+      String filter,typeName) async {
     String url = "${Constant.workflow}/query/task";
-    Map<String, dynamic> data = {"offset": offset, "limit": limit};
+    Map<String, dynamic> data = {"offset": offset, "limit": limit,"typeName":typeName};
     if (filter.isNotEmpty) {
       data["filter"] = filter;
     }
@@ -48,6 +48,13 @@ class WorkflowApi {
 
     Map<String, dynamic> pageResp = await HttpUtil().post(url, data: data);
     return PageResp.fromMap(pageResp, InstanceTaskEntity.fromJson);
+  }
+
+  /// 删除实例
+  static Future<dynamic> deleteInstance(String id) async{
+    String url = "${Constant.workflow}/delete/instance";
+    Map<String, dynamic> pageResp = await HttpUtil().post(url, data: {"id":id});
+    return pageResp;
   }
 
   /// 审核

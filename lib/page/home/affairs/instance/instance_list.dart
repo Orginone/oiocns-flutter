@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:orginone/api_resp/task_entity.dart';
 import '../../../../api_resp/instance_task_entity.dart';
 import '../../../../component/a_font.dart';
 import '../../../../component/unified_colors.dart';
-import '../../../../component/unified_text_style.dart';
-import '../../../../public/loading/load_status.dart';
+import '../../../../public/dialog/dialog_confirm.dart';
 import '../../../../public/view/base_list_view.dart';
 import '../../../../routers.dart';
 import '../../../../util/date_util.dart';
 import '../affairs_type_enum.dart';
 import '../base/detail_arguments.dart';
 import 'instance_controller.dart';
+
 class AffairsInstanceWidget extends StatefulWidget {
   const AffairsInstanceWidget({Key? key}) : super(key: key);
 
@@ -23,7 +22,8 @@ class AffairsInstanceWidget extends StatefulWidget {
   State<AffairsInstanceWidget> createState() => _AffairsInstanceWidgetState();
 }
 
-class _AffairsInstanceWidgetState extends State<AffairsInstanceWidget> with AutomaticKeepAliveClientMixin{
+class _AffairsInstanceWidgetState extends State<AffairsInstanceWidget>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -35,15 +35,8 @@ class _AffairsInstanceWidgetState extends State<AffairsInstanceWidget> with Auto
 }
 
 class InstanceWidget extends BaseListView<InstanceController> {
-
-
-  InstanceWidget({Key? key}) : super(key: key){
+  InstanceWidget({Key? key}) : super(key: key) {
     Get.lazyPut(() => InstanceController());
-  }
-
-  @override
-  LoadStatusX initStatus() {
-    return LoadStatusX.loading;
   }
 
   @override
@@ -108,9 +101,7 @@ class InstanceWidget extends BaseListView<InstanceController> {
           children: [
             Container(
               alignment: Alignment.centerLeft,
-              child: Text(
-                  item.title,
-                  style: AFont.instance.size22Black3W500),
+              child: Text(item.title, style: AFont.instance.size22Black3W500),
             ),
             Container(
               alignment: Alignment.centerLeft,
@@ -139,17 +130,30 @@ class InstanceWidget extends BaseListView<InstanceController> {
                 ),
                 Row(
                   children: [
-                    Visibility(
-                      visible: false,
-                      child: SizedBox(
-                        width: 106.w,
-                        height: 42.h,
-                        child: GFButton(
-                          onPressed: () {},
-                          color: UnifiedColors.backColor,
-                          text: "退回",
-                          textColor: Colors.white,
-                        ),
+                    SizedBox(
+                      width: 106.w,
+                      height: 42.h,
+                      child: GFButton(
+                        onPressed: () {
+                          showAnimatedDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            animationType: DialogTransitionType.fadeScale,
+                            builder: (BuildContext context) {
+                              return DialogConfirm(
+                                title: "提示",
+                                content: "确认撤销？",
+                                confirmFun: () {
+                                  controller.deleteInstance(index, item);
+                                  Navigator.of(context).pop();
+                                },
+                              );
+                            },
+                          );
+                        },
+                        color: UnifiedColors.backColor,
+                        text: "撤销",
+                        textColor: Colors.white,
                       ),
                     ),
                     SizedBox(
@@ -166,7 +170,7 @@ class InstanceWidget extends BaseListView<InstanceController> {
                                   instanceEntity: item));
                         },
                         color: UnifiedColors.themeColor,
-                        text: "审批",
+                        text: "查看详情",
                         textStyle: AFont.instance.size18White,
                         textColor: Colors.white,
                       ),

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:lpinyin/lpinyin.dart';
@@ -17,14 +19,17 @@ class ContactController extends BaseController {
   int limit = 20;
   int offset = 0;
   int mSelectIndex = -1;
-  bool mTouchUp = true;
+  RxBool mTouchUp = RxBool(true);
+  RxString mTouchChar = RxString("");
   List<TargetResp> mData = [];
   Logger logger = Logger("ContactController");
+  double _listAllItemHeight = 0;
 
   //索引
   List<String> mIndex = [];
   HomeController homeController = Get.find<HomeController>();
-
+  ScrollController mScrollController = ScrollController();
+  GlobalKey mGlobalKey = GlobalKey();
 
   @override
   void onInit() {
@@ -33,7 +38,7 @@ class ContactController extends BaseController {
     homeController.currentSpace;
   }
 
-  MessageItemResp getMsgItem(TargetResp targetResp){
+  MessageItemResp getMsgItem(TargetResp targetResp) {
     MessageController messageController = Get.find<MessageController>();
     return messageController.spaceMessageItemMap[auth.userId]![targetResp.id]!;
   }
@@ -73,6 +78,7 @@ class ContactController extends BaseController {
           logger.info("====>1 名称：${value1.name}");
         }
         updateLoadStatus(LoadStatusX.success);
+        _calcAllItemHeight();
         update();
       } else {
         offset++;
@@ -92,12 +98,47 @@ class ContactController extends BaseController {
   }
 
   bool isVisibility() {
-    return !mTouchUp;
+    return !mTouchUp.value;
   }
 
   updateIndex(int index, bool touchUp) {
     mSelectIndex = index;
-    mTouchUp = touchUp;
-    update();
+    mTouchUp.value = touchUp;
+    scrollPos(index);
+    mTouchChar.value = getBarStr();
+  }
+
+  void _calcAllItemHeight(){
+    _listAllItemHeight = 0;
+    for (var i = 0;i < mData.length; i++) {
+      if (typeChar == mData[i].id) {
+        _listAllItemHeight += 45.h;
+      } else {
+        _listAllItemHeight += 110.h;
+      }
+    }
+  }
+
+  void scrollPos(int index) {
+    double height = 0;
+    int charIndex = 0;
+    for (var i = 0;; i++) {
+      var item = mData[i];
+      if (typeChar == item.id) {
+        if (charIndex == index) {
+          break;
+        }
+        charIndex++;
+        height += 45.h;
+      } else {
+        height += 11.h;
+      }
+    }
+    /// 不足一页滑动到底部
+    if(_listAllItemHeight - height > 1000.h) {
+      mScrollController.jumpTo(height);
+    }else{
+      mScrollController.jumpTo(mScrollController.position.maxScrollExtent);
+    }
   }
 }

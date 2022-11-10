@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
@@ -8,8 +7,6 @@ import 'package:orginone/api_resp/task_entity.dart';
 import 'package:orginone/public/view/base_list_view.dart';
 import '../../../../component/a_font.dart';
 import '../../../../component/unified_colors.dart';
-import '../../../../component/unified_text_style.dart';
-import '../../../../public/loading/load_status.dart';
 import '../../../../routers.dart';
 import '../../../../util/date_util.dart';
 import '../affairs_type_enum.dart';
@@ -34,8 +31,6 @@ class _AffairsCopyWidgetState extends State<AffairsCopyWidget>  with AutomaticKe
 }
 
 class CopyWidget extends BaseListView<CopyController> {
-
-  // final controller = Get.put(CopyController());
 
   CopyWidget({Key? key}) : super(key: key){
     Get.lazyPut(() => CopyController());

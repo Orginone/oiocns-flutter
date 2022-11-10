@@ -1,23 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:getwidget/components/button/gf_button.dart';
 import 'package:orginone/component/a_font.dart';
-import 'package:orginone/public/dialog/dialog_confirm.dart';
+import 'package:orginone/page/home/affairs/affairs_type_enum.dart';
 import 'package:orginone/public/dialog/dialog_edit.dart';
 import 'package:orginone/public/loading/load_status.dart';
 import 'package:orginone/public/view/base_view.dart';
-
-import '../../../../api_resp/task_entity.dart';
 import '../../../../component/form_text_space_between.dart';
 import '../../../../component/unified_colors.dart';
-import '../../../../component/unified_scaffold.dart';
-import '../../../../component/unified_text_style.dart';
-import '../../../../util/widget_util.dart';
-import '../affairs_type_enum.dart';
 import '../base/detail_arguments.dart';
 import 'affairs_detail_controller.dart';
 
@@ -58,15 +50,14 @@ class AffairsDetailPage extends BaseView<AffairsDetailController> {
           height: 2.h,
           color: UnifiedColors.lineLight,
         ),
-        _bottom(),
+        _bottom()
       ],
     );
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-
-  // }
+  bool _isBottomOptShow(){
+    return arguments.typeEnum == AffairsTypeEnum.task;
+  }
 
   _tabBar() {
     return Container(
@@ -105,13 +96,18 @@ class AffairsDetailPage extends BaseView<AffairsDetailController> {
       color: Colors.white,
       child: Column(
         children: [
-          TextSpaceBetween(
-            leftTxt: '应用名',
-            rightTxt: '',
+          FutureBuilder<String>(
+            future: controller.getAppName(),
+            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+              return TextSpaceBetween(
+                leftTxt: '应用名',
+                rightTxt: snapshot.data ?? "",
+              );
+            },
           ),
           TextSpaceBetween(
             leftTxt: '流程名称',
-            rightTxt: controller.getTitle() ,
+            rightTxt: controller.getTitle(),
           ),
           TextSpaceBetween(
             leftTxt: '业务名称',
@@ -119,7 +115,7 @@ class AffairsDetailPage extends BaseView<AffairsDetailController> {
           ),
           TextSpaceBetween(
             leftTxt: '申请人',
-            rightTxt: '',
+            rightTxt: controller.getApplicant(),
           ),
           TextSpaceBetween(
             leftTxt: '内容',
@@ -145,63 +141,65 @@ class AffairsDetailPage extends BaseView<AffairsDetailController> {
   }
 
   _bottom() {
-    return Row(
-      children: [
-        Expanded(
-            flex: 1,
-            child: GFButton(
-              color: UnifiedColors.white,
-              onPressed: () {
-                showAnimatedDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  animationType: DialogTransitionType.fadeScale,
-                  builder: (BuildContext context) {
-                    return DialogEdit(
-                      title: "审批信息",
-                      content: "",
-                      confirmFun: (context,content) {
-                        Navigator.of(context).pop();
-                        controller.approvalTask(false,content);
+    return Visibility(
+        visible: _isBottomOptShow(),
+        child: Row(
+          children: [
+            Expanded(
+                flex: 1,
+                child: GFButton(
+                  color: UnifiedColors.white,
+                  onPressed: () {
+                    showAnimatedDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      animationType: DialogTransitionType.fadeScale,
+                      builder: (BuildContext context) {
+                        return DialogEdit(
+                          title: "审批信息",
+                          content: "",
+                          confirmFun: (context, content) {
+                            Navigator.of(context).pop();
+                            controller.approvalTask(false, content);
+                          },
+                        );
                       },
                     );
                   },
-                );
-              },
-              text: "拒绝",
-              textStyle: AFont.instance.size22themeColorW500,
-            )),
-        Container(
-          width: 2.w,
-          height: 30.h,
-          color: UnifiedColors.lineLight,
-        ),
-        Expanded(
-            flex: 1,
-            child: GFButton(
-              color: UnifiedColors.white,
-              onPressed: () {
-                showAnimatedDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  animationType: DialogTransitionType.fadeScale,
-                  builder: (BuildContext context) {
-                    return DialogEdit(
-                      title: "审批信息",
-                      content: "",
-                      confirmFun: (context,content) {
-                        Navigator.of(context).pop();
-                        controller.approvalTask(true,content);
+                  text: "拒绝",
+                  textStyle: AFont.instance.size22themeColorW500,
+                )),
+            Container(
+              width: 2.w,
+              height: 30.h,
+              color: UnifiedColors.lineLight,
+            ),
+            Expanded(
+                flex: 1,
+                child: GFButton(
+                  color: UnifiedColors.white,
+                  onPressed: () {
+                    showAnimatedDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      animationType: DialogTransitionType.fadeScale,
+                      builder: (BuildContext context) {
+                        return DialogEdit(
+                          title: "审批信息",
+                          content: "",
+                          confirmFun: (context, content) {
+                            Navigator.of(context).pop();
+                            controller.approvalTask(true, content);
+                          },
+                        );
                       },
                     );
                   },
-                );
-              },
-              text: "同意",
-              textStyle: AFont.instance.size22themeColorW500,
-              textColor: UnifiedColors.themeColor,
-            )),
-      ],
-    );
+                  text: "同意",
+                  textStyle: AFont.instance.size22themeColorW500,
+                  textColor: UnifiedColors.themeColor,
+                )),
+          ],
+        ));
   }
 }

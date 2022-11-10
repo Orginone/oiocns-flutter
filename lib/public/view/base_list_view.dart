@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:orginone/public/view/base_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -9,15 +10,16 @@ abstract class BaseListView<T extends BaseListController> extends BaseView<T> {
 
   @override
   Widget builder(context) {
-    return SmartRefresher(
-        controller: controller.refreshController,
-        enablePullDown: true,
-        enablePullUp: true,
-        onRefresh: () => controller.onRefresh(),
-        onLoading: () => controller.onLoadMore(),
-        child: listWidget());
+    return Obx(() {
+      return SmartRefresher(
+          controller: controller.refreshController,
+          enablePullDown: true,
+          enablePullUp: true,
+          onRefresh: () => controller.onRefresh(),
+          onLoading: () => controller.onLoadMore(),
+          child: listWidget());
+    });
   }
 
   ListView listWidget();
-
 }

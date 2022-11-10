@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/page/home/affairs/affairs_type_enum.dart';
+import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/public/http/base_controller.dart';
+import 'package:orginone/util/hub_util.dart';
 import '../../../../api/workflow_api.dart';
 import '../../../../public/loading/opt_loading.dart';
 import '../../../../util/string_util.dart';
@@ -40,7 +42,8 @@ class AffairsDetailController extends BaseController
     /// 201 拒绝 101 同意
     String status = isAgree ? "101" : "201";
     await WorkflowApi.approvalTask(id, status, content).then((value) {
-      /// 审核成功，刷新页面
+
+
     }).onError((error, stackTrace) {
       /// 成功则通知列表刷新
       Fluttertoast.showToast(msg: error.toString());
@@ -122,5 +125,46 @@ class AffairsDetailController extends BaseController
           ? '待批'
           : '已通过';
     }
+  }
+
+  String getApplicant() {
+    MessageController msgController = Get.find<MessageController>();
+    var orgChatCache = msgController.orgChatCache;
+    String applicant = "";
+    if(orgChatCache.nameMap.isNotEmpty){
+      if (arguments.typeEnum == AffairsTypeEnum.record) {
+        applicant = orgChatCache.nameMap[arguments.recordEntity?.createUser ??""];
+      } else if (arguments.typeEnum == AffairsTypeEnum.instance) {
+        applicant = orgChatCache.nameMap[arguments.instanceEntity?.createUser ??""];
+      } else {
+        applicant = orgChatCache.nameMap[arguments.taskEntity?.createUser ??""];
+      }
+    }
+    return applicant;
+  }
+
+  Future<String> getAppName() async {
+    // {{chat.getName(scope.row?.flowInstance?.flowRelation?.productId||
+    // scope.row?.flowTask?.flowInstance?.flowRelation?.productId||
+    // scope.row?.flowRelation?.productId)}}
+
+    MessageController msgController = Get.find<MessageController>();
+    var orgChatCache = msgController.orgChatCache;
+    String applicant = "";
+    if(orgChatCache.nameMap.isNotEmpty){
+      String id = "";
+      if (arguments.typeEnum == AffairsTypeEnum.record) {
+        id = arguments.recordEntity?.flowTask?.flowInstance?.flowRelation?.productId??"";
+      } else if (arguments.typeEnum == AffairsTypeEnum.instance) {
+        id = arguments.instanceEntity?.flowRelation?.productId ??"";
+      } else {
+        id = arguments.taskEntity?.flowInstance?.flowRelation?.productId ??"";
+      }
+      applicant = orgChatCache.nameMap[id];
+      if(applicant.isEmpty){
+        applicant = await HubUtil().getName(id);
+      }
+    }
+    return applicant;
   }
 }
