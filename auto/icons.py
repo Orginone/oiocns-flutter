@@ -30,7 +30,7 @@ def autoIcons():
             if filename.endswith(".png"):
                 #完整图片路径
                 fullname = os.path.join(home, filename)
-                fullname = fullname.replace("../", "")
+                fullname = fullname.replace("../", "").replace("\\","/")
                 #获取文件名称去除拓展名
                 name = os.path.splitext(filename)[0]
                 #拼接声明代码
