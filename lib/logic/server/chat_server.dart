@@ -100,7 +100,10 @@ class ProxyChatServer implements ChatServer, ConnServer {
   }) {
     checkAuthed();
     return _instance.getPersons(
-        cohortId: cohortId, limit: limit, offset: offset);
+      cohortId: cohortId,
+      limit: limit,
+      offset: offset,
+    );
   }
 
   @override
