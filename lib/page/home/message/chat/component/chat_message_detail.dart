@@ -105,6 +105,7 @@ class ChatMessageDetail extends GetView<ChatController> {
           nameMap: nameMap,
         );
         children.add(Text(msgBody, style: AFont.instance.size18Black9));
+        isCenter = true;
         break;
       default:
         break;

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/text_search.dart';
+import 'package:orginone/component/unified_colors.dart';
 
 class ApplicationPage extends GetView<ApplicationController> {
   const ApplicationPage({Key? key}) : super(key: key);
@@ -46,7 +47,12 @@ class ApplicationPage extends GetView<ApplicationController> {
     return Container(
       width: 64.w,
       height: 64.w,
+      color: UnifiedColors.applicationColor,
+      child: Column(
+        children: [
 
+        ],
+      ),
     );
   }
 }
