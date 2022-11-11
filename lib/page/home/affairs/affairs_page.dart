@@ -44,15 +44,12 @@ class AffairsTab extends GetView<AffairsPageController> {
         builder: (controller) {
           return Container(
             color: UnifiedColors.white,
-            child: TabBar(
-              isScrollable: false,
-              controller: controller.tabController,
-              labelColor: UnifiedColors.themeColor,
-              unselectedLabelColor: UnifiedColors.black6,
-              indicatorColor: UnifiedColors.themeColor,
-              indicatorSize: TabBarIndicatorSize.label,
-              labelStyle: TextStyle(fontSize: 20.sp),
-              tabs: controller.tabs.map((item) => item.body!).toList(),
+            child: SizedBox(
+              height: 60.h,
+              child: TabBar(
+                controller: controller.tabController,
+                tabs: controller.tabs.map((item) => item.body!).toList(),
+              ),
             ),
           );
         });

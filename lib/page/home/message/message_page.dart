@@ -30,7 +30,6 @@ class MessagePage extends GetView<MessageController> {
         height: 60.h,
         child: TabBar(
           controller: controller.tabController,
-          labelColor: Colors.black,
           tabs: controller.tabs.map((item) => item.body!).toList(),
         ),
       ),

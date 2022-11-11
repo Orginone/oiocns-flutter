@@ -25,22 +25,22 @@ class AffairsPageController extends BaseController
 
   _initTabs() {
     toBe = TabCombine(
-      body: Text("待办", style: AFont.instance.size22Black3),
+      body: Text("待办", style: AFont.instance.size20Black3),
       tabView: const AffairsTaskWidget(),
       breadCrumbItem: toBePoint,
     );
     completed = TabCombine(
-      body: Text("待办", style: AFont.instance.size22Black3),
+      body: Text("待办", style: AFont.instance.size20Black3),
       tabView: const AffairsRecordWidget(),
       breadCrumbItem: completedPoint,
     );
     my = TabCombine(
-      body: Text("我发起的", style: AFont.instance.size22Black3),
+      body: Text("我发起的", style: AFont.instance.size20Black3),
       tabView: const AffairsInstanceWidget(),
       breadCrumbItem: myPoint,
     );
     sendMy = TabCombine(
-      body: Text("抄送我的", style: AFont.instance.size22Black3),
+      body: Text("抄送我的", style: AFont.instance.size20Black3),
       tabView: const AffairsCopyWidget(),
       breadCrumbItem: sendMyPoint,
     );
