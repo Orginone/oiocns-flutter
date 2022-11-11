@@ -15,6 +15,7 @@ class PersonAddPage extends GetView<PersonAddController> {
   Widget build(BuildContext context) {
     return UnifiedScaffold(
         appBarTitle: Text("好友添加", style: AFont.instance.size22Black3),
+        appBarCenterTitle: true,
         appBarLeading: WidgetUtil.defaultBackBtn,
         bgColor: const Color.fromRGBO(240, 240, 240, 1),
         body: Container(

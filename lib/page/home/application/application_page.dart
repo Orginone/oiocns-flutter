@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/unified_colors.dart';
+import 'package:orginone/routers.dart';
 
 class ApplicationPage extends GetView<ApplicationController> {
   const ApplicationPage({Key? key}) : super(key: key);
@@ -26,7 +27,12 @@ class ApplicationPage extends GetView<ApplicationController> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text("最近打开", style: AFont.instance.size20Black3W700),
-              Text("管理应用 > ", style: AFont.instance.size14Black3)
+              GestureDetector(
+                onTap: () {
+                  Get.toNamed(Routers.applicationManager);
+                },
+                child: Text("管理应用 > ", style: AFont.instance.size14Black3),
+              ),
             ],
           ),
           Padding(padding: EdgeInsets.only(top: 12.h)),
