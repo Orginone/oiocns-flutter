@@ -2,6 +2,7 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
 import 'package:orginone/page/home/affairs/detail/affairs_detail.dart';
+import 'package:orginone/page/home/application/application_page.dart';
 import 'package:orginone/page/home/center/center_binding.dart';
 import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/component/person_detail/person_detail_binding.dart';
@@ -56,8 +57,6 @@ import 'package:orginone/page/home/organization/units/units_page.dart';
 import 'package:orginone/page/home/search/search_binding.dart';
 import 'package:orginone/page/home/search/search_page.dart';
 import 'package:orginone/page/home/upload/upload_page.dart';
-import 'package:orginone/page/home/work/work_binding.dart';
-import 'package:orginone/page/home/work/work_page.dart';
 import 'package:orginone/page/login/login_binding.dart';
 import 'package:orginone/page/login/login_page.dart';
 import 'package:orginone/page/register/register_binding.dart';
@@ -84,7 +83,6 @@ class Routers {
   static const String chat = "/chat";
   static const String moreMessage = "/moreMessage";
   static const String organization = "/organization";
-  static const String work = "/work";
   static const String messageSetting = "/messageSetting";
   static const String friends = "/friends";
   static const String units = "/units";
@@ -116,6 +114,9 @@ class Routers {
 
   // 上传文件
   static const String upload = "/upload";
+
+  // 仓库
+  static const String application = "/application";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -168,11 +169,6 @@ class Routers {
         name: Routers.organization,
         page: () => const OrganizationPage(),
         binding: OrganizationBinding(),
-      ),
-      GetPage(
-        name: Routers.work,
-        page: () => const WorkPage(),
-        binding: WorkBinding(),
       ),
       GetPage(
         name: Routers.chat,
@@ -308,6 +304,11 @@ class Routers {
         name: Routers.upload,
         page: () => const UploadPage(),
         binding: UploadBinding(),
+      ),
+      GetPage(
+        name: Routers.application,
+        page: () => const ApplicationPage(),
+        binding: ApplicationBinding(),
       ),
     ];
   }

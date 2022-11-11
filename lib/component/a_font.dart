@@ -447,6 +447,12 @@ class AFont {
         fontWeight: FontWeight.w500,
       );
 
+  get size20Black3W700 => TextStyle(
+        fontSize: 20.sp,
+        color: UnifiedColors.black3,
+        fontWeight: FontWeight.w500,
+      );
+
   get size20Black6W500 => TextStyle(
         fontSize: 20.sp,
         color: UnifiedColors.black6,
