@@ -10,15 +10,12 @@ import 'package:orginone/api_resp/tree_node.dart';
 import 'package:orginone/component/bread_crumb.dart';
 import 'package:orginone/component/tab_combine.dart';
 import 'package:orginone/component/unified_text_style.dart';
-import 'package:orginone/config/bread_crumb_points.dart';
 import 'package:orginone/logic/authority.dart';
 import 'package:orginone/logic/server/chat_server.dart';
-import 'package:orginone/logic/server/conn_holder.dart';
 import 'package:orginone/logic/server/store_server.dart';
 import 'package:orginone/page/home/affairs/affairs_page.dart';
 import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
-import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/mine/set_home/set_home_page.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
 import 'package:orginone/page/home/work/work_page.dart';
@@ -34,7 +31,7 @@ class HomeController extends GetxController
   var organizationCtrl = Get.find<OrganizationController>();
 
   /// 全局面包屑
-  var breadCrumbController = BreadCrumbController<String>();
+  var breadCrumbController = BreadCrumbController<String>(topNode: topPoint);
 
   /// Tab 控制器
   late List<TabCombine> tabs;
@@ -92,9 +89,9 @@ class HomeController extends GetxController
       icon: Icons.book_outlined,
       breadCrumbItem: workPoint,
     );
-    center = const TabCombine(
+    center = TabCombine(
       icon: Icons.circle,
-      tabView: CenterPage(),
+      tabView: const CenterPage(),
       breadCrumbItem: centerPoint,
     );
     work = TabCombine(
@@ -117,21 +114,14 @@ class HomeController extends GetxController
       vsync: this,
       initialIndex: tabIndex.value,
     );
-    breadCrumbController.push(center.breadCrumbItem!);
+    breadCrumbController.redirect(centerPoint);
     int preIndex = tabController.index;
     tabController.addListener(() {
       if (preIndex == tabController.index) {
         return;
       }
       tabIndex.value = tabController.index;
-      var preTabCombine = tabs[tabController.previousIndex];
-      var tabCombine = tabs[tabController.index];
-      if (preTabCombine.breadCrumbItem != null) {
-        breadCrumbController.pops(preTabCombine.breadCrumbItem!.id);
-      }
-      if (tabCombine.breadCrumbItem != null) {
-        breadCrumbController.push(tabCombine.breadCrumbItem!);
-      }
+      breadCrumbController.redirect(tabs[tabIndex.value].breadCrumbItem!);
       preIndex = tabController.index;
     });
   }

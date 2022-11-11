@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/api_resp.dart';
@@ -10,12 +11,16 @@ import 'package:orginone/api_resp/message_item_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/component/a_font.dart';
+import 'package:orginone/component/bread_crumb.dart';
+import 'package:orginone/component/tab_combine.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/logic/authority.dart';
 import 'package:orginone/logic/server/chat_server.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/page/home/message/component/message_item_widget.dart';
+import 'package:orginone/page/home/message/message_page.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_controller.dart';
 import 'package:orginone/logic/server/store_server.dart';
 import 'package:orginone/util/encryption_util.dart';
@@ -41,6 +46,8 @@ class MessageController extends GetxController
 
   // 应用内 Tab
   late TabController tabController;
+  late TabCombine recentChat, mailList;
+  late List<TabCombine> tabs;
 
   // 会话加载状态
   bool isLoaded = false;
@@ -48,13 +55,60 @@ class MessageController extends GetxController
   @override
   void onInit() {
     super.onInit();
-    // 页签控制器
-    tabController = TabController(length: 2, vsync: this);
+    initTabs();
     // 监听页面的生命周期
     WidgetsBinding.instance.addObserver(this);
     // 订阅聊天面板信息
     _subscribingCharts();
   }
+
+  initTabs() {
+    recentChat = TabCombine(
+      tabView: const RecentChat(),
+      breadCrumbItem: chatRecentPoint,
+      body: _chatTab("会话"),
+    );
+    mailList = TabCombine(
+      tabView: const Relation(),
+      breadCrumbItem: chatMailPoint,
+      body: Text("通讯录", style: AFont.instance.size22Black3),
+    );
+    tabs = [recentChat, mailList];
+    tabController = TabController(length: tabs.length, vsync: this);
+    int preIndex = tabController.index;
+    tabController.addListener(() {
+      if (preIndex == tabController.index) {
+        return;
+      }
+      if (Get.isRegistered<HomeController>()) {
+        var homeController = Get.find<HomeController>();
+        var bcController = homeController.breadCrumbController;
+        bcController.redirect(tabs[tabController.index].breadCrumbItem!);
+      }
+      preIndex = tabController.index;
+    });
+  }
+
+  Widget _chatTab(String name) {
+    return SizedBox(
+      child: Stack(children: [
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+            name,
+            style: AFont.instance.size22Black3,
+          ),
+        ),
+        GetBuilder<MessageController>(builder: (controller) => _noRead)
+      ]),
+    );
+  }
+
+  get _noRead => Align(
+      alignment: Alignment.topRight,
+      child: hasNoRead()
+          ? Icon(Icons.circle, color: Colors.redAccent, size: 10.w)
+          : Container());
 
   /// 获取消息会话对象
   MessageItemResp getMsgItem(String spaceId, String messageItemId) {

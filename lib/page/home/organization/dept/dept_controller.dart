@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:orginone/logic/authority.dart';
 
 import '../../../../api/company_api.dart';
 import '../../../../api_resp/target_resp.dart';
@@ -37,9 +38,9 @@ class DeptController extends GetxController {
     var nodeId = Get.arguments;
     if (nodeId != null) {
       List<TreeNode> queue = [topNode];
-      while (queue.isNotEmpty){
+      while (queue.isNotEmpty) {
         var first = queue.removeAt(0);
-        if (first.id == nodeId){
+        if (first.id == nodeId) {
           await entryNode(first);
           return;
         }

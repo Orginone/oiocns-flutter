@@ -31,10 +31,7 @@ class MessagePage extends GetView<MessageController> {
         child: TabBar(
           controller: controller.tabController,
           labelColor: Colors.black,
-          tabs: [
-            _chatTab("会话"),
-            Text("通讯录", style: text22),
-          ],
+          tabs: controller.tabs.map((item) => item.body!).toList(),
         ),
       ),
       Container(
@@ -44,31 +41,18 @@ class MessagePage extends GetView<MessageController> {
       Expanded(
         child: TabBarView(
           controller: controller.tabController,
-          children: [
-            _recentChat(),
-            _relation(),
-          ],
+          children: controller.tabs.map((item) => item.tabView).toList(),
         ),
       )
     ]);
   }
+}
 
-  Widget _chatTab(String name) {
-    return SizedBox(
-      child: Stack(children: [
-        Align(alignment: Alignment.center, child: Text(name, style: text22)),
-        GetBuilder<MessageController>(builder: (controller) => _noRead)
-      ]),
-    );
-  }
+class RecentChat extends GetView<MessageController> {
+  const RecentChat({Key? key}) : super(key: key);
 
-  get _noRead => Align(
-      alignment: Alignment.topRight,
-      child: controller.hasNoRead()
-          ? Icon(Icons.circle, color: Colors.redAccent, size: 10.w)
-          : Container());
-
-  Widget _recentChat() {
+  @override
+  Widget build(BuildContext context) {
     return GetBuilder<MessageController>(
       builder: (controller) {
         List<MessageItemResp> items = controller.orgChatCache.recentChats ?? [];
@@ -98,6 +82,15 @@ class MessagePage extends GetView<MessageController> {
       },
     );
   }
+}
+
+class Relation extends GetView<MessageController> {
+  const Relation({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return _relation();
+  }
 
   Widget _relation() {
     List<Widget> children = [];
@@ -111,46 +104,6 @@ class MessagePage extends GetView<MessageController> {
       margin: EdgeInsets.only(left: 25.w, right: 25.w),
       child: Column(children: children),
     );
-  }
-
-  List<Widget> _recent() {
-    double avatarWidth = 60.w;
-    return [
-      Container(margin: EdgeInsets.only(top: 4.h)),
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text("最近联系", style: AFont.instance.size20Black3W500),
-          GestureDetector(
-            onTap: () {},
-            child: const Icon(Icons.keyboard_arrow_right),
-          )
-        ],
-      ),
-      Container(
-        margin: EdgeInsets.only(top: 10.h),
-        height: avatarWidth,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: 10,
-          itemBuilder: (context, index) {
-            return Container(
-              clipBehavior: Clip.hardEdge,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(6.w)),
-              ),
-              margin: EdgeInsets.only(right: 15.w),
-              child: CachedNetworkImage(
-                  width: avatarWidth,
-                  height: avatarWidth,
-                  imageUrl:
-                      "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fblog%2F202105%2F04%2F20210504062111_d8dc3.thumb.1000_0.jpg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1668839600&t=153f1b08bff7c682539eabde8c2f862f"),
-            );
-          },
-        ),
-      )
-    ];
   }
 
   Widget _tree() {
@@ -234,6 +187,46 @@ class MessagePage extends GetView<MessageController> {
         _myCohort,
       ],
     );
+  }
+
+  List<Widget> _recent() {
+    double avatarWidth = 60.w;
+    return [
+      Container(margin: EdgeInsets.only(top: 4.h)),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("最近联系", style: AFont.instance.size20Black3W500),
+          GestureDetector(
+            onTap: () {},
+            child: const Icon(Icons.keyboard_arrow_right),
+          )
+        ],
+      ),
+      Container(
+        margin: EdgeInsets.only(top: 10.h),
+        height: avatarWidth,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: 10,
+          itemBuilder: (context, index) {
+            return Container(
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(6.w)),
+              ),
+              margin: EdgeInsets.only(right: 15.w),
+              child: CachedNetworkImage(
+                  width: avatarWidth,
+                  height: avatarWidth,
+                  imageUrl:
+                      "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fblog%2F202105%2F04%2F20210504062111_d8dc3.thumb.1000_0.jpg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1668839600&t=153f1b08bff7c682539eabde8c2f862f"),
+            );
+          },
+        ),
+      )
+    ];
   }
 
   Widget _deptItem(TreeNode treeNode, double leftWidth) {

@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -65,22 +67,61 @@ class BreadCrumb<T> extends StatelessWidget {
   }
 }
 
+/// 顶部菜单
+Item<String> topPoint = Item(
+  id: "top",
+  label: "顶部",
+  children: [chatPoint, centerPoint, workPoint, warehousePoint, settingPoint],
+);
+
+/// 首页菜单
+Item<String> chatPoint = Item(
+  id: "chat",
+  label: "沟通",
+  children: [chatRecentPoint, chatMailPoint],
+);
+Item<String> workPoint = Item(id: "work", label: "办事");
+Item<String> centerPoint = Item(id: "center", label: "首页");
+Item<String> warehousePoint = Item(id: "warehouse", label: "仓库");
+Item<String> settingPoint = Item(id: "setting", label: "设置");
+
+/// 会话相关
+Item<String> chatRecentPoint = Item(id: "chatRecent", label: "会话");
+Item<String> chatMailPoint = Item(id: "chatMail", label: "通讯录");
+
+/// 单个面包屑
 class Item<T> {
   final T id;
   final String label;
-  final List<Item<T>>? children;
-  final Item<T>? defaultBindingItem;
+  Item<T>? parent;
+  final List<Item<T>> children;
 
-  const Item({
+  Item({
     required this.id,
     required this.label,
-    this.children,
-    this.defaultBindingItem,
+    this.parent,
+    this.children = const [],
   });
 }
 
 class BreadCrumbController<T> extends GetxController {
-  late RxList<Item<T>> items = <Item<T>>[].obs;
+  /// 当前面包屑个数
+  final RxList<Item<T>> items = <Item<T>>[].obs;
+  final Item<T>? topNode;
+
+  BreadCrumbController({this.topNode}) {
+    if (topNode == null) {
+      return;
+    }
+    Queue<Item<T>> queue = Queue.of([topNode!]);
+    while (queue.isNotEmpty) {
+      Item<T> first = queue.removeFirst();
+      for (var child in first.children) {
+        child.parent = first;
+      }
+      queue.addAll(first.children);
+    }
+  }
 
   @override
   void onClose() {
@@ -88,15 +129,18 @@ class BreadCrumbController<T> extends GetxController {
     items.clear();
   }
 
+  /// 清空面包屑
   clear() {
     items.clear();
   }
 
+  /// 入栈
   push(Item<T> item) {
     checkDuplication(item);
     items.add(item);
   }
 
+  /// 校验重复问题
   checkDuplication(Item<T> target) {
     for (var item in items) {
       if (item.id == target.id) {
@@ -105,6 +149,29 @@ class BreadCrumbController<T> extends GetxController {
     }
   }
 
+  /// 组装
+  void redirect(Item<T> item) {
+    if (topNode == null) {
+      return;
+    }
+    items.clear();
+    Queue<Item<T>> queue = Queue.of([topNode!]);
+    late Item<T> matched;
+    while (queue.isNotEmpty) {
+      Item<T> first = queue.removeFirst();
+      if (first == item) {
+        matched = item;
+        break;
+      }
+      queue.addAll(first.children);
+    }
+    while (matched.parent != null) {
+      items.insert(0, matched);
+      matched = matched.parent!;
+    }
+  }
+
+  /// 出栈
   Item<T>? pop() {
     if (items.isEmpty) {
       return null;
@@ -112,6 +179,7 @@ class BreadCrumbController<T> extends GetxController {
     return items.removeAt(items.length - 1);
   }
 
+  /// 获取当前节点位置
   getPositionById(T id) {
     int position = -1;
     var length = items.length;
@@ -125,6 +193,7 @@ class BreadCrumbController<T> extends GetxController {
     return position;
   }
 
+  /// 出栈直到某个节点停止(不包括)
   popsUntil(T id) {
     var position = getPositionById(id);
     if (position == -1) {
@@ -133,6 +202,7 @@ class BreadCrumbController<T> extends GetxController {
     items.removeRange(position + 1, items.length);
   }
 
+  /// 出栈到某个节点
   pops(T id) {
     var position = getPositionById(id);
     if (position == -1) {
