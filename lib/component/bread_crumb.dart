@@ -72,6 +72,7 @@ Item<String> topPoint = Item(
   id: "top",
   label: "顶部",
   children: [chatPoint, centerPoint, workPoint, warehousePoint, settingPoint],
+  mustNext: centerPoint,
 );
 
 /// 首页菜单
@@ -79,6 +80,7 @@ Item<String> chatPoint = Item(
   id: "chat",
   label: "沟通",
   children: [chatRecentPoint, chatMailPoint],
+  mustNext: chatRecentPoint,
 );
 Item<String> workPoint = Item(id: "work", label: "办事");
 Item<String> centerPoint = Item(id: "center", label: "首页");
@@ -94,12 +96,14 @@ class Item<T> {
   final T id;
   final String label;
   Item<T>? parent;
+  Item<T>? mustNext;
   final List<Item<T>> children;
 
   Item({
     required this.id,
     required this.label,
     this.parent,
+    this.mustNext,
     this.children = const [],
   });
 }
@@ -151,12 +155,12 @@ class BreadCrumbController<T> extends GetxController {
 
   /// 组装
   void redirect(Item<T> item) {
-    if (topNode == null) {
+    if (topNode == null || item == topNode) {
       return;
     }
     items.clear();
     Queue<Item<T>> queue = Queue.of([topNode!]);
-    late Item<T> matched;
+    Item<T>? matched;
     while (queue.isNotEmpty) {
       Item<T> first = queue.removeFirst();
       if (first == item) {
@@ -165,9 +169,20 @@ class BreadCrumbController<T> extends GetxController {
       }
       queue.addAll(first.children);
     }
-    while (matched.parent != null) {
+    if (matched == null) {
+      return;
+    }
+    while (matched!.parent != null) {
       items.insert(0, matched);
       matched = matched.parent!;
+    }
+    if (item.parent!.mustNext != null) {
+      item.parent!.mustNext = item;
+    }
+    var mustNext = item.mustNext;
+    while (mustNext != null) {
+      items.add(mustNext);
+      mustNext = mustNext.mustNext;
     }
   }
 
