@@ -35,7 +35,6 @@ class ContactController extends BaseController {
   void onInit() {
     super.onInit();
     loadAllContact("");
-    homeController.currentSpace;
   }
 
   MessageItemResp getMsgItem(TargetResp targetResp) {

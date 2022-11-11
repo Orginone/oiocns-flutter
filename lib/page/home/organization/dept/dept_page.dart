@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/logic/authority.dart';
 
 import '../../../../api_resp/target_resp.dart';
 import '../../../../api_resp/tree_node.dart';
@@ -21,10 +22,11 @@ class DeptPage extends GetView<DeptController> {
 
   @override
   Widget build(BuildContext context) {
-    HomeController homeController = Get.find<HomeController>();
     return UnifiedScaffold(
-      appBarTitle: Text(homeController.currentSpace.name,
-          style: AFont.instance.size22Black3),
+      appBarTitle: Text(
+        auth.spaceInfo.name,
+        style: AFont.instance.size22Black3,
+      ),
       appBarCenterTitle: true,
       appBarLeading: WidgetUtil.defaultBackBtn,
       body: Column(

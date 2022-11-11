@@ -29,6 +29,7 @@ class HomePage extends GetView<HomeController> {
     initPermission(context);
     SysUtil.setStatusBarBright();
     return UnifiedScaffold(
+      resizeToAvoidBottomInset: false,
       appBarElevation: 0,
       appBarHeight: 0,
       body: _body(context),
@@ -136,7 +137,7 @@ class HomePage extends GetView<HomeController> {
           child: GetBuilder<HomeController>(
             init: controller,
             builder: (controller) {
-              var spaceName = controller.currentSpace.name;
+              var spaceName = auth.spaceInfo.name;
               var spaceKeyWord = StringUtil.getPrefixChars(spaceName, count: 1);
               return GestureDetector(
                 onTap: () {

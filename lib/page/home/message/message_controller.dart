@@ -117,12 +117,11 @@ class MessageController extends GetxController
 
   /// 分组排序
   sortingGroups() {
-    HomeController homeController = Get.find<HomeController>();
     List<SpaceMessagesResp> groups = orgChatCache.chats;
     List<SpaceMessagesResp> spaces = [];
     SpaceMessagesResp? topping;
     for (SpaceMessagesResp space in groups) {
-      var isCurrent = space.id == homeController.currentSpace.id;
+      var isCurrent = space.id == auth.spaceId;
       if (space.id == "topping") {
         topping = space;
         space.isExpand = true;

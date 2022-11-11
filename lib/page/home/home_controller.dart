@@ -41,14 +41,12 @@ class HomeController extends GetxController
   late TabCombine message, relation, center, work, my;
 
   /// 当前空间
-  late TargetResp currentSpace;
   NodeCombine? nodeCombine;
 
   @override
   void onInit() {
     super.onInit();
     _initTabs();
-    _initCurrentSpace();
   }
 
   // @override
@@ -69,12 +67,6 @@ class HomeController extends GetxController
     storeServer.stop();
     breadCrumbController.dispose();
     tabController.dispose();
-  }
-
-  Future<void> _initCurrentSpace() async {
-    var userInfo = auth.userInfo;
-    currentSpace = TargetResp.copyWith(userInfo);
-    currentSpace.name = "个人空间";
   }
 
   void _initTabs() {
@@ -156,7 +148,6 @@ class HomeController extends GetxController
     await loadAuth();
 
     // 当前页面需要变化
-    currentSpace = targetResp;
     await _loadTree();
     update();
 

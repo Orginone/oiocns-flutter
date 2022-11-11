@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/logic/authority.dart';
 import 'package:orginone/util/string_util.dart';
 
 import '../../../../api_resp/target_resp.dart';
@@ -16,9 +17,8 @@ class SpaceChoosePage extends GetView<SpaceChooseController> {
   const SpaceChoosePage({Key? key}) : super(key: key);
 
   Widget _item(TargetResp targetResp) {
-    var currentSpaceId = controller.homeController.currentSpace.id;
+    var currentSpaceId = auth.spaceId;
     var spaceId = targetResp.id;
-
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {

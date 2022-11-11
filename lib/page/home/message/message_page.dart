@@ -107,10 +107,6 @@ class Relation extends GetView<MessageController> {
 
   Widget _tree() {
     return GetBuilder<HomeController>(builder: (homeController) {
-      var currentSpace = homeController.currentSpace;
-      TargetResp userInfo = auth.userInfo;
-      var isSelf = userInfo.id == currentSpace.id;
-
       double leftWidth = 60.w;
 
       // 选择项
@@ -121,7 +117,7 @@ class Relation extends GetView<MessageController> {
           alignment: Alignment.center,
           width: leftWidth,
           child: TextTag(
-            isSelf ? "个人" : "单位",
+            auth.isUserSpace() ? "个人" : "单位",
             padding: EdgeInsets.all(4.w),
             textStyle: AFont.instance.size12themeColor,
             borderColor: UnifiedColors.themeColor,
@@ -131,15 +127,15 @@ class Relation extends GetView<MessageController> {
         body: Container(
           margin: EdgeInsets.only(left: 15.w),
           child: Text(
-            currentSpace.name,
+            auth.spaceInfo.name,
             style: AFont.instance.size22Black3W700,
           ),
         ),
         func: () {
-          if (isSelf) {
+          if (auth.isUserSpace()) {
             Get.toNamed(Routers.friends);
           } else {
-            Get.toNamed(Routers.dept, arguments: currentSpace.id);
+            Get.toNamed(Routers.dept, arguments: auth.spaceId);
           }
         },
       ));

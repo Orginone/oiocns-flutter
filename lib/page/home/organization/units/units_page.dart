@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/page/home/home_controller.dart';
+import 'package:orginone/logic/authority.dart';
 import 'package:orginone/page/home/organization/units/units_controller.dart';
 
 import '../../../../component/a_font.dart';
@@ -12,10 +12,11 @@ class UnitsPage extends GetView<UnitsController> {
 
   @override
   Widget build(BuildContext context) {
-    HomeController homeController = Get.find<HomeController>();
     return UnifiedScaffold(
-      appBarTitle: Text(homeController.currentSpace.name,
-          style: AFont.instance.size22Black3),
+      appBarTitle: Text(
+        auth.spaceInfo.name,
+        style: AFont.instance.size22Black3,
+      ),
       appBarCenterTitle: true,
       appBarLeading: WidgetUtil.defaultBackBtn,
       body: Container(),
