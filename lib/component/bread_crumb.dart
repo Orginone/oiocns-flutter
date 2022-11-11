@@ -82,7 +82,12 @@ Item<String> chatPoint = Item(
   children: [chatRecentPoint, chatMailPoint],
   mustNext: chatRecentPoint,
 );
-Item<String> workPoint = Item(id: "work", label: "办事");
+Item<String> workPoint = Item(
+  id: "work",
+  label: "办事",
+  children: [toBePoint, completedPoint, myPoint, sendMyPoint],
+  mustNext: toBePoint,
+);
 Item<String> centerPoint = Item(id: "center", label: "首页");
 Item<String> warehousePoint = Item(id: "warehouse", label: "仓库");
 Item<String> settingPoint = Item(id: "setting", label: "设置");
@@ -90,6 +95,12 @@ Item<String> settingPoint = Item(id: "setting", label: "设置");
 /// 会话相关
 Item<String> chatRecentPoint = Item(id: "chatRecent", label: "会话");
 Item<String> chatMailPoint = Item(id: "chatMail", label: "通讯录");
+
+/// 办事
+Item<String> toBePoint = Item(id: "toBe", label: "待办");
+Item<String> completedPoint = Item(id: "completed", label: "已办");
+Item<String> myPoint = Item(id: "warehouse", label: "我的发起");
+Item<String> sendMyPoint = Item(id: "sendMy", label: "抄送我的");
 
 /// 单个面包屑
 class Item<T> {
