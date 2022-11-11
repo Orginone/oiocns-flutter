@@ -68,6 +68,14 @@ class SetHomePage extends BaseView<SetHomeController> {
       {"id": 4, "icon": "icon", "cardName": "流程设置"},
       {"id": 5, "icon": "icon", "cardName": "标准设置"},
       {"id": 6, "icon": "icon", "cardName": "权限设置"},
+      {
+        "id": 7,
+        "icon": "icon",
+        "cardName": "APK上传",
+        "func": () {
+          Get.toNamed(Routers.upload);
+        }
+      },
     ];
   }
 
@@ -137,20 +145,28 @@ class CardChildWidget extends StatelessWidget {
                 crossAxisCount: 5,
               ),
               itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    // AImage.netImageRadius(AIcons.back_black,
-                    //     size: Size(64.w, 64.w)),
-                    AImage.netImage(AIcons.placeholder,
-                        url: value[index]['icon'], size: Size(64.w, 64.w)),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    Text(
-                      value[index]['cardName'],
-                      style: AFont.instance.size18Black6,
-                    ),
-                  ],
+                return GestureDetector(
+                  onTap: () {
+                    var func = value[index]["func"];
+                    if (func != null) {
+                      func();
+                    }
+                  },
+                  child: Column(
+                    children: [
+                      // AImage.netImageRadius(AIcons.back_black,
+                      //     size: Size(64.w, 64.w)),
+                      AImage.netImage(AIcons.placeholder,
+                          url: value[index]['icon'], size: Size(64.w, 64.w)),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      Text(
+                        value[index]['cardName'],
+                        style: AFont.instance.size18Black6,
+                      ),
+                    ],
+                  ),
                 );
               }),
         ),
