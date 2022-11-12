@@ -96,7 +96,7 @@ class ApplicationPage extends GetView<ApplicationController> {
           width: 64.w,
           height: 64.w,
           decoration: BoxDecoration(
-            color: UnifiedColors.applicationColor,
+            color: UnifiedColors.themeColor,
             borderRadius: BorderRadius.all(Radius.circular(20.w)),
           ),
           child: const Icon(Icons.recent_actors, color: Colors.white),
@@ -143,7 +143,7 @@ class ApplicationPage extends GetView<ApplicationController> {
           width: 64.w,
           height: 64.w,
           decoration: BoxDecoration(
-            color: UnifiedColors.applicationColor,
+            color: UnifiedColors.themeColor,
             borderRadius: BorderRadius.all(Radius.circular(5.w)),
           ),
           child: const Icon(Icons.storefront, color: Colors.white),
