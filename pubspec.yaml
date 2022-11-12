@@ -88,6 +88,7 @@ dependencies:
   flutter_cache_manager: ^3.3.0
   graphic: ^0.10.7
   flutter_form_builder: ^7.7.0
+  flutter_treeview: ^1.0.7+1
 
   # 音频录制以及音频播放
   flutter_sound: ^9.2.13
@@ -112,6 +113,7 @@ dependencies:
   pull_to_refresh: ^2.0.0
   # 弹框
   flutter_animated_dialog: ^2.0.1
+
 
 dev_dependencies:
   flutter_test:

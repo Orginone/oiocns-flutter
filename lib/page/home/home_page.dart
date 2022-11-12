@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/bread_crumb.dart';
@@ -198,7 +199,21 @@ class HomePage extends GetView<HomeController> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(padding: EdgeInsets.only(left: 25.w)),
-          const Icon(Icons.read_more_outlined, color: Colors.black),
+          GestureDetector(
+            onTap: () {
+              controller.routerOpened.value = !controller.routerOpened.value;
+            },
+            child: Obx(() {
+              if (controller.routerOpened.value) {
+                return const Icon(Icons.close, color: Colors.black);
+              } else {
+                return const Icon(
+                  Icons.read_more_outlined,
+                  color: Colors.black,
+                );
+              }
+            }),
+          ),
           Expanded(child: _globalBreadcrumbs),
           Container(
             margin: EdgeInsets.only(left: 10.w),
@@ -298,14 +313,41 @@ class HomePage extends GetView<HomeController> {
   Widget _body(BuildContext context) {
     return Column(children: [
       _title(context),
-      Expanded(
-        child: GFTabBarView(
-          controller: controller.tabController,
-          children: controller.tabs.map((e) => e.tabView).toList(),
-        ),
-      ),
-      _bottomNavigatorBar,
+      _view(),
+      _navigator(),
     ]);
+  }
+
+  Widget _view() {
+    return Obx(() {
+      if (controller.routerOpened.value) {
+        return _router();
+      } else {
+        return Expanded(
+          child: GFTabBarView(
+            controller: controller.tabController,
+            children: controller.tabs.map((e) => e.tabView).toList(),
+          ),
+        );
+      }
+    });
+  }
+
+  Widget _navigator() {
+    return Obx(() {
+      if (controller.routerOpened.value) {
+        return Container();
+      } else {
+        return _bottomNavigatorBar;
+      }
+    });
+  }
+
+  Widget _router() {
+    return TreeView(
+      controller: controller.treeViewController,
+      shrinkWrap: true,
+    );
   }
 
   get _bottomNavigatorBar => Container(

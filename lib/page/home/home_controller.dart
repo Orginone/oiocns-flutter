@@ -1,5 +1,8 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/company_api.dart';
@@ -20,6 +23,7 @@ import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/page/home/mine/set_home/set_home_page.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
 import 'package:orginone/util/hive_util.dart';
+import 'package:flutter_treeview/flutter_treeview.dart' as tree_view;
 
 import 'message/message_page.dart';
 
@@ -43,10 +47,42 @@ class HomeController extends GetxController
   /// 当前空间
   NodeCombine? nodeCombine;
 
+  /// 路由切换
+  late RxBool routerOpened;
+  late TreeViewController treeViewController;
+
   @override
   void onInit() {
     super.onInit();
     _initTabs();
+    _initRouter();
+  }
+
+  _initRouter() {
+    routerOpened = false.obs;
+
+    Queue<Item<String>> queue = Queue.of(topPoint.children);
+    Map<String, tree_view.Node<Item<String>>> map = {};
+    List<tree_view.Node<Item<String>>> ans = [];
+    while (queue.isNotEmpty) {
+      var point = queue.removeFirst();
+      var node = tree_view.Node(
+        key: point.id,
+        label: point.label,
+        data: point,
+        children: [],
+      );
+      map[point.id] = node;
+      if (point.parent == topPoint) {
+        ans.add(node);
+      } else {
+        var parentNode = map[point.parent!.id];
+        parentNode!.children.add(node);
+      }
+      queue.addAll(point.children);
+    }
+
+    treeViewController = TreeViewController(children: ans);
   }
 
   // @override
