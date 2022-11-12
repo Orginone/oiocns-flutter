@@ -20,6 +20,7 @@ class ConnHolder {
   final Rx<HubConnectionState> _state;
   final Duration _timeout;
   final RxBool _isStop;
+  Function? connectedCallback;
 
   ConnHolder._({
     required String connName,
@@ -79,12 +80,13 @@ class ConnHolder {
       await _server.start();
       setState();
       if (callback != null) {
+        connectedCallback = callback;
         await callback();
       }
       _info("连接成功");
     } catch (error) {
       _info("连接时发生异常: ${error.toString()}");
-      _connTimeout();
+      _connTimeout(callback: callback);
       rethrow;
     }
   }
@@ -133,7 +135,7 @@ class ConnHolder {
       if (_isStop.value) {
         return;
       }
-      _connTimeout();
+      _connTimeout(callback: connectedCallback);
     });
   }
 
