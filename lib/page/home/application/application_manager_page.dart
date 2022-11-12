@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/choose_item.dart';
 import 'package:orginone/component/icon_avatar.dart';
@@ -10,6 +11,7 @@ import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/util/widget_util.dart';
 
 class ApplicationManagerPage extends GetView<ApplicationManagerController> {
@@ -23,6 +25,7 @@ class ApplicationManagerPage extends GetView<ApplicationManagerController> {
       appBarLeading: WidgetUtil.defaultBackBtn,
       bgColor: UnifiedColors.navigatorBgColor,
       body: _body(),
+      appBarActions: _actions,
     );
   }
 
@@ -71,6 +74,20 @@ class ApplicationManagerPage extends GetView<ApplicationManagerController> {
       ),
     );
   }
+
+  get _actions => <Widget>[
+        GFIconButton(
+          color: Colors.white.withOpacity(0),
+          icon: Icon(
+            Icons.more_horiz,
+            color: UnifiedColors.black3,
+            size: 32.w,
+          ),
+          onPressed: () {
+            Get.toNamed(Routers.messageSetting);
+          },
+        ),
+      ];
 }
 
 class ApplicationManagerController extends GetxController
@@ -146,25 +163,18 @@ class ApplicationManagerController extends GetxController
         padding: EdgeInsets.zero,
         icon: const Icon(Icons.group, color: Colors.white),
       ),
-      body: Row(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(padding: EdgeInsets.only(left: 10.w)),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("资产监管", style: AFont.instance.size14Black3W500),
-                Padding(padding: EdgeInsets.only(top: 5.h)),
-                Text(
-                  "此处显示应用描述描应用描描此处显示应用描述描应用描描此处显示应",
-                  overflow: TextOverflow.ellipsis,
-                  style: AFont.instance.size12Black9,
-                ),
-                Padding(padding: EdgeInsets.only(top: 2.h)),
-                Score(total: 5, actual: 4, size: 20.w),
-              ],
-            ),
-          )
+          Text("资产监管", style: AFont.instance.size14Black3W500),
+          Padding(padding: EdgeInsets.only(top: 5.h)),
+          Text(
+            "此处显示应用描述描应用描描此处显示应用描述描应用描描此处显示应",
+            overflow: TextOverflow.ellipsis,
+            style: AFont.instance.size12Black9,
+          ),
+          Padding(padding: EdgeInsets.only(top: 2.h)),
+          Score(total: 5, actual: 4, size: 20.w),
         ],
       ),
       operate: TextTag(

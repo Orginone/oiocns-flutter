@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 const EdgeInsets defaultPadding = EdgeInsets.only(left: 15, top: 15, right: 15);
 const Icon defaultOperate = Icon(Icons.keyboard_arrow_right);
@@ -12,6 +13,7 @@ class ChooseItem extends StatelessWidget {
   final EdgeInsets? margin;
   final Function? func;
   final Color? bgColor;
+  final CrossAxisAlignment? crossAxisAlignment;
 
   const ChooseItem({
     Key? key,
@@ -23,7 +25,7 @@ class ChooseItem extends StatelessWidget {
     this.body,
     this.content,
     this.bgColor,
-
+    this.crossAxisAlignment,
   }) : super(key: key);
 
   @override
@@ -31,6 +33,7 @@ class ChooseItem extends StatelessWidget {
     // 选择项
     List<Widget> row = [header];
     if (body != null) {
+      row.add(Padding(padding: EdgeInsets.only(left: 10.w)));
       row.add(Expanded(child: body!));
     }
     if (operate != null) {
@@ -40,7 +43,7 @@ class ChooseItem extends StatelessWidget {
       ));
     }
     Row chooseItem = Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: crossAxisAlignment ?? CrossAxisAlignment.center,
       children: row,
     );
 

@@ -4,6 +4,7 @@ import 'package:orginone/page/forget/forget_page.dart';
 import 'package:orginone/page/home/affairs/detail/affairs_detail.dart';
 import 'package:orginone/page/home/application/application_manager_page.dart';
 import 'package:orginone/page/home/application/application_page.dart';
+import 'package:orginone/page/home/application/application_shop.dart';
 import 'package:orginone/page/home/center/center_binding.dart';
 import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/component/person_detail/person_detail_binding.dart';
@@ -119,6 +120,7 @@ class Routers {
   // 仓库
   static const String application = "/application";
   static const String applicationManager = "/applicationManager";
+  static const String applicationShop = "/applicationShop";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -321,6 +323,11 @@ class Routers {
         name: Routers.applicationManager,
         page: () => const ApplicationManagerPage(),
         binding: ApplicationManagerBinding(),
+      ),
+      GetPage(
+        name: Routers.applicationShop,
+        page: () => const ApplicationShopPage(),
+        binding: ApplicationShopBinding(),
       ),
     ];
   }

@@ -6,6 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'a_font.dart';
 import 'unified_colors.dart';
 
+enum SearchType { text, dropdown }
+
 const EdgeInsets defaultMargin = EdgeInsets.all(10);
 const String defaultPlaceHolder = "请输入搜索内容";
 
@@ -16,6 +18,8 @@ class TextSearch extends StatelessWidget {
   final Function? onTap;
   final String? placeHolder;
   final Color? bgColor;
+  final bool hasSearchIcon;
+  final SearchType type;
 
   const TextSearch({
     Key? key,
@@ -25,6 +29,8 @@ class TextSearch extends StatelessWidget {
     this.loadingCallback,
     this.placeHolder = defaultPlaceHolder,
     this.bgColor,
+    this.hasSearchIcon = true,
+    this.type = SearchType.text,
   }) : super(key: key);
 
   @override
@@ -40,15 +46,17 @@ class TextSearch extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            margin: EdgeInsets.only(left: 10.w),
-            child: const Icon(
-              Icons.search,
-              color: Colors.black,
+          if (hasSearchIcon)
+            Container(
+              margin: EdgeInsets.only(left: 10.w),
+              child: const Icon(
+                Icons.search,
+                color: Colors.black,
+              ),
             ),
-          ),
           Expanded(
             child: TextField(
+              readOnly: type == SearchType.dropdown,
               onTap: () {
                 if (onTap != null) {
                   onTap!();

@@ -44,6 +44,14 @@ class ApplicationPage extends GetView<ApplicationController> {
             children: [
               Text("常用分类", style: AFont.instance.size20Black3W700),
               Wrap(children: [
+                GestureDetector(
+                  onTap: () => Get.toNamed(Routers.applicationShop),
+                  child: Text(
+                    "前往商店",
+                    style: AFont.instance.size14themeColorW500,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.only(left: 10.w)),
                 Text("新建分类", style: AFont.instance.size14themeColorW500),
                 Padding(padding: EdgeInsets.only(left: 10.w)),
                 Text("更多分类", style: AFont.instance.size14themeColorW500),
