@@ -35,6 +35,8 @@ class ChooseItem extends StatelessWidget {
     if (body != null) {
       row.add(Padding(padding: EdgeInsets.only(left: 10.w)));
       row.add(Expanded(child: body!));
+    } else {
+      row.add(Expanded(child: Container()));
     }
     if (operate != null) {
       row.add(Container(
