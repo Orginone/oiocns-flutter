@@ -1,4 +1,4 @@
-![logo](images/light_logo_horizontal.png#pic_center)
+<img width="1060" alt="image" src="https://user-images.githubusercontent.com/8328012/201800690-9f5e989e-4ed3-4817-85b9-b594ac89fd31.png">  
 
 # 框架基础使用
 # 页面基类需继承BaseView<Controller> 支持如下自定义特性
