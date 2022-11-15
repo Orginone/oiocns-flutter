@@ -33,7 +33,7 @@ class MineInfoPage extends GetView<MineInfoController> {
                                   foregroundImage: const NetworkImage(
                                       'https://www.vcg.com/creative/1382429598'),
                                   backgroundImage: const AssetImage(
-                                      'images/person-empty.png'),
+                                      'images/person_empty.png'),
                                   onForegroundImageError:
                                       (error, stackTrace) {},
                                   radius: 15,

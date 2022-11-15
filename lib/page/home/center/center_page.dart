@@ -153,7 +153,7 @@ class CenterPage extends GetView<CenterController> {
           itemCount: 4,
           itemBuilder: (BuildContext context, int index) {
             return const Image(
-              image: AssetImage("images/bg-center.png"),
+              image: AssetImage("images/bg_center.png"),
             );
           },
         ),

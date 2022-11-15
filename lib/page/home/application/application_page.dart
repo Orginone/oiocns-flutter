@@ -27,12 +27,24 @@ class ApplicationPage extends GetView<ApplicationController> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text("最近打开", style: AFont.instance.size20Black3W700),
-              GestureDetector(
-                onTap: () {
-                  Get.toNamed(Routers.applicationManager);
-                },
-                child: Text("管理应用 > ", style: AFont.instance.size14Black3),
-              ),
+              Wrap(
+                children: [
+                  GestureDetector(
+                    onTap: () => Get.toNamed(Routers.applicationShop),
+                    child: Text(
+                      "前往商店",
+                      style: AFont.instance.size14themeColorW500,
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.only(left: 10.w)),
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed(Routers.applicationManager);
+                    },
+                    child: Text("管理应用 > ", style: AFont.instance.size14Black3),
+                  ),
+                ],
+              )
             ],
           ),
           Padding(padding: EdgeInsets.only(top: 12.h)),
@@ -44,13 +56,6 @@ class ApplicationPage extends GetView<ApplicationController> {
             children: [
               Text("常用分类", style: AFont.instance.size20Black3W700),
               Wrap(children: [
-                GestureDetector(
-                  onTap: () => Get.toNamed(Routers.applicationShop),
-                  child: Text(
-                    "前往商店",
-                    style: AFont.instance.size14themeColorW500,
-                  ),
-                ),
                 Padding(padding: EdgeInsets.only(left: 10.w)),
                 Text("新建分类", style: AFont.instance.size14themeColorW500),
                 Padding(padding: EdgeInsets.only(left: 10.w)),

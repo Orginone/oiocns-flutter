@@ -1,3 +1,5 @@
+![deep_logo_horizontal.png](images/light_logo_horizontal.png)
+
 # 框架基础使用
 # 页面基类需继承BaseView<Controller> 支持如下自定义特性
 ```

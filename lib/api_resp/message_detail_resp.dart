@@ -1,5 +1,3 @@
-import 'package:orginone/util/date_util.dart';
-
 class MessageDetailResp {
   String id;
   String? spaceId;

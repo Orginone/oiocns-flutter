@@ -150,8 +150,8 @@ flutter:
     - assets/icons/
     - assets/icons/2.0x/
     - assets/icons/3.0x/
-    - images/person-empty.png
-    - images/person-card-bg.png
+    - images/person_empty.png
+    - images/person_card_bg.png
     - images/logo.png
   # To add assets to your application, add an assets section, like this:
   # assets:
