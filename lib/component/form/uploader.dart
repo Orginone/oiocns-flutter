@@ -61,7 +61,7 @@ class Uploader extends StatelessWidget {
               fileName: name,
               shareDomain: "all",
               progressCallback: (progress) {
-                progress.value = progress;
+                // progress.value = progress;
               },
             );
           },

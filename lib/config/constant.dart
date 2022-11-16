@@ -10,4 +10,7 @@ class Constant {
   static const collection = "$host/orginone/anydata/collection";
   static const bucket = "$host/orginone/anydata/Bucket";
   static const workflow = "$host/orginone/organization/workflow";
+  static const market = "$host/orginone/appstore/market";
+  static const order = "$host/orginone/appstore/order";
+  static const product = "$host/orginone/appstore/product";
 }

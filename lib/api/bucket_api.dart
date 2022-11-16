@@ -88,24 +88,19 @@ class BucketApi {
     };
 
     // 当前进度
-    var current = 0;
-    var index = 0;
     var totalCount = (length / chunkSize).ceil();
     var uploadId = uuid.v4();
-    while (current < length) {
-      // 获取字节流
-      var remainder = length - current;
-      int readSize = remainder < chunkSize ? remainder : chunkSize;
-      Uint8List bytes = openedFile.readSync(readSize);
+    for (int index = 0; index < totalCount; index++) {
+      Uint8List bytes = openedFile.readSync(chunkSize);
 
       // 组装文件
       var file = MultipartFile.fromBytes(bytes, filename: fileName);
       var chunkMetaData = {
-        "uploadId": uploadId,
-        "fileName": fileName,
-        "index": index++,
-        "totalCount": totalCount,
-        "fileSize": readSize
+        "UploadId": uploadId,
+        "FileName": fileName,
+        "Index": index,
+        "TotalCount": totalCount,
+        "FileSize": length
       };
       var formData = FormData.fromMap({
         "file": file,
@@ -120,9 +115,8 @@ class BucketApi {
         options: Options(contentType: "multipart/form-data"),
       );
 
-      current += readSize;
       if (progressCallback != null) {
-        progressCallback(current / length);
+        progressCallback((index + 1) / totalCount);
       }
     }
   }
