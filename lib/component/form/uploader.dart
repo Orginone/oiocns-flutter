@@ -60,8 +60,12 @@ class Uploader extends StatelessWidget {
               filePath: path,
               fileName: name,
               shareDomain: "all",
-              progressCallback: (progress) {
-                // progress.value = progress;
+              progressCallback: (value) {
+                progress.value = value;
+                if (value >= 1) {
+                  Fluttertoast.showToast(msg: "上传成功!");
+                  return;
+                }
               },
             );
           },

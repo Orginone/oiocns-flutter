@@ -284,9 +284,9 @@ class ChatMessageDetail extends GetView<ChatController> {
     /// 限制大小
     late BoxConstraints boxConstraints;
     if (width > height) {
-      boxConstraints = BoxConstraints(maxWidth: 120.w);
+      boxConstraints = BoxConstraints(maxWidth: 200.w);
     } else {
-      boxConstraints = BoxConstraints(maxHeight: 120.h);
+      boxConstraints = BoxConstraints(maxHeight: 200.h);
     }
 
     path = EncryptionUtil.encodeURLString(path);
