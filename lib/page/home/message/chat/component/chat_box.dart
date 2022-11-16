@@ -419,7 +419,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
             margin: EdgeInsets.only(bottom: 10.h),
             child: Icon(moreFunction.iconData),
           ),
-          Text(moreFunction.name, style: AFont.instance.size20Black3W500)
+          Text(moreFunction.name, style: AFont.instance.size16Black3W500)
         ],
       ),
     );

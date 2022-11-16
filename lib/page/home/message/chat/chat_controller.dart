@@ -293,10 +293,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     imageCompo.image.resolve(const ImageConfiguration()).addListener(
       ImageStreamListener(
         (imageInfo, synchronousCall) async {
-          TargetResp userInfo = auth.userInfo;
-          String prefix = "chat/${userInfo.id}/${messageItem.id}/image";
-          log.info("====> prefix:$prefix");
-          String encodedPrefix = EncryptionUtil.encodeURLString(prefix);
+          String encodedPrefix = EncryptionUtil.encodeURLString("");
 
           var filePath = file.path;
           var fileName = file.name;
@@ -310,7 +307,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
           Map<String, dynamic> body = {
             "width": imageInfo.image.width,
             "height": imageInfo.image.height,
-            "path": "$prefix/$fileName",
+            "path": fileName,
           };
 
           await chatServer.send(
