@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
+import 'package:orginone/component/form/form_widget.dart';
 import 'package:orginone/component/form/uploader.dart';
 
 class FormBuilderUploaderField extends FormBuilderField<String> {
+  final FormItem item;
+
   FormBuilderUploaderField({
     Key? key,
-    required super.name,
+    required this.item,
+    required FormFieldValidator<String>? validator,
   }) : super(
           key: key,
+          name: item.fieldName,
+          validator: validator,
           builder: (FormFieldState<String> state) {
             return Uploader(progress: 0.0.obs);
           },

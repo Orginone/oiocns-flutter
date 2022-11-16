@@ -37,20 +37,14 @@ class MarketApi {
   }
 
   /// 创建市场
-  static Future<Map<String, dynamic>> create({
-    required String name,
-    required String code,
-    required String sarmId,
-    required String remark,
-    required bool public,
-  }) async {
+  static Future<Map<String, dynamic>> create(Map<String, dynamic> map) async {
     String url = "${Constant.market}/create";
     Map<String, dynamic> data = {
-      "name": name,
-      "code": code,
-      "sarmId": sarmId,
-      "remark": remark,
-      "public": public,
+      "name": map['name'],
+      "code": map['code'],
+      "sarmId": map['sarmId'],
+      "remark": map['remark'],
+      "public": map['public'],
     };
     return await HttpUtil().post(url, data: data);
   }
@@ -295,22 +289,15 @@ class MarketApi {
   }
 
   /// 更新市场信息
-  static Future<Map<String, dynamic>> update({
-    required String marketId,
-    required String name,
-    required String code,
-    required String sarmId,
-    required String remark,
-    required bool public,
-  }) async {
+  static Future<Map<String, dynamic>> update(Map<String, dynamic> map) async {
     String url = "${Constant.market}/unpublish";
     Map<String, dynamic> data = {
-      "id": marketId,
-      "name": name,
-      "code": code,
-      "sarmId": sarmId,
-      "remark": remark,
-      "public": public,
+      "id": map["marketId"],
+      "name": map["name"],
+      "code": map["code"],
+      "sarmId": map["sarmId"],
+      "remark": map["remark"],
+      "public": map["public"],
     };
     return await HttpUtil().post(url, data: data);
   }

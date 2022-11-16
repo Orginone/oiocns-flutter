@@ -17,7 +17,7 @@ import 'package:orginone/logic/authority.dart';
 import 'package:orginone/logic/server/chat_server.dart';
 import 'package:orginone/logic/server/store_server.dart';
 import 'package:orginone/page/home/affairs/affairs_page.dart';
-import 'package:orginone/page/home/application/application_page.dart';
+import 'package:orginone/page/home/application/page/application_page.dart';
 import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/page/home/mine/set_home/set_home_page.dart';

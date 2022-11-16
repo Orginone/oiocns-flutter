@@ -7,17 +7,19 @@ import '../../util/valid_util.dart';
 import '../a_font.dart';
 import 'form_builder_uploader.dart';
 
-enum ItemType { text, upload }
+enum ItemType { text, upload, onOff }
 
 class FormItem {
   final String fieldKey;
   final String fieldName;
   final ItemType itemType;
+  final bool required;
 
   const FormItem({
     required this.fieldKey,
     required this.fieldName,
     required this.itemType,
+    this.required = false,
   });
 }
 
@@ -64,20 +66,48 @@ class FormWidget extends StatelessWidget {
         return _text(item);
       case ItemType.upload:
         return _uploader(item);
+      case ItemType.onOff:
+        return _switch(item);
     }
   }
 
   Widget _text(FormItem item) {
     return FormBuilderTextField(
-      validator: (value) => ValidUtil.isEmpty(item.fieldName, value),
+      validator: (value) {
+        if (item.required) {
+          return ValidUtil.isEmpty(item.fieldName, value);
+        }
+        return null;
+      },
       name: item.fieldKey,
       decoration: _formDecoration(item.fieldName),
       onChanged: (val) {},
     );
   }
 
+  Widget _switch(FormItem item) {
+    return FormBuilderSwitch(
+      validator: (value) {
+        if (item.required) {
+          return;
+        }
+        return null;
+      },
+      name: item.fieldKey,
+      title: Text(item.fieldName),
+    );
+  }
+
   Widget _uploader(FormItem item) {
-    return FormBuilderUploaderField(name: item.fieldName);
+    return FormBuilderUploaderField(
+      validator: (value) {
+        if (item.required) {
+          return ValidUtil.isEmpty(item.fieldName, value);
+        }
+        return null;
+      },
+      item: item,
+    );
   }
 
   InputDecoration _formDecoration(String label) {

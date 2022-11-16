@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/unified_colors.dart';
+import 'package:orginone/page/home/application/applicatino_controller.dart';
 import 'package:orginone/routers.dart';
 
 class ApplicationPage extends GetView<ApplicationController> {
@@ -158,10 +159,6 @@ class ApplicationPage extends GetView<ApplicationController> {
       ],
     );
   }
-}
-
-class ApplicationController extends GetxController {
-  searchingCallback(String value) {}
 }
 
 class ApplicationBinding extends Bindings {

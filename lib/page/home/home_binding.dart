@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/page/home/affairs/affairs_page_controller.dart';
-import 'package:orginone/page/home/application/application_page.dart';
+import 'package:orginone/page/home/application/applicatino_controller.dart';
 import 'package:orginone/page/home/mine/set_home/set_home_controller.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
 

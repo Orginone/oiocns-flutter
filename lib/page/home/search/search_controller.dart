@@ -19,6 +19,7 @@ enum SearchItem {
   departments("部门", []),
   publicCohorts("公开群组", []),
   applications("应用", []),
+  markets("市场", []),
   units("单位", []);
 
   const SearchItem(this.name, this.functionPoint);
@@ -138,6 +139,8 @@ class SearchController extends GetxController with GetTickerProviderStateMixin {
           companyRes!.offset = result.length;
           companyRes!.searchResults = result;
           update();
+          break;
+        case SearchItem.markets:
           break;
       }
     } finally {
