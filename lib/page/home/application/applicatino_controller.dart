@@ -1,3 +1,4 @@
+import 'package:orginone/api/market_api.dart';
 import 'package:orginone/public/http/base_list_controller.dart';
 
 enum ApplicationFunction {
@@ -23,5 +24,7 @@ class ApplicationController extends BaseListController {
 
   searchingCallback(String value) {}
 
-  marketSearchingCallback(String value) {}
+  marketSearchingCallback(String value) async {
+    await MarketApi.searchOwn(offset: offset, limit: limit, filter: value);
+  }
 }

@@ -1,3 +1,5 @@
+import 'package:orginone/api_resp/market_entity.dart';
+import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/util/http_util.dart';
 
@@ -223,18 +225,19 @@ class MarketApi {
   }
 
   /// 查询管理以及加入的市场
-  static Future<Map<String, dynamic>> searchOwn({
+  static Future<PageResp<MarketEntity>> searchOwn({
     required int offset,
     required int limit,
-    required String filter,
+    required String? filter,
   }) async {
-    String url = "${Constant.market}/search/merchandise";
+    String url = "${Constant.market}/search/own";
     Map<String, dynamic> data = {
       "offset": offset,
       "limit": limit,
       "filter": filter,
     };
-    return await HttpUtil().post(url, data: data);
+    Map<String, dynamic> ans = await HttpUtil().post(url, data: data);
+    return PageResp.fromMap(ans, MarketEntity.fromJson);
   }
 
   /// 查询产品上架申请

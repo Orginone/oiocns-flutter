@@ -341,7 +341,7 @@ class Routers {
       GetPage(
         name: Routers.applicationMarket,
         page: () => const ApplicationMarketPage(),
-        binding: ApplicationBinding(),
+        binding: ApplicationMarketBinding(),
       ),
     ];
   }
