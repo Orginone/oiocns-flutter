@@ -31,7 +31,7 @@ class ApplicationPage extends GetView<ApplicationController> {
               Wrap(
                 children: [
                   GestureDetector(
-                    onTap: () => Get.toNamed(Routers.applicationShop),
+                    onTap: () => Get.toNamed(Routers.applicationMarket),
                     child: Text(
                       "前往商店",
                       style: AFont.instance.size14themeColorW500,

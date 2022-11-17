@@ -4,7 +4,7 @@ class MessageItemResp {
   String id;
   String label;
   String name;
-  String remark;
+  String? remark;
   String typeName;
   DateTime? msgTime;
   String? msgType;

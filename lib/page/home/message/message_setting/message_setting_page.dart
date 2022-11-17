@@ -155,7 +155,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(name, style: AFont.instance.size22Black3W500),
-              Text(messageItem.remark, style: AFont.instance.size16Black6)
+              Text(messageItem.remark ?? "", style: AFont.instance.size16Black6)
             ],
           )
         ],

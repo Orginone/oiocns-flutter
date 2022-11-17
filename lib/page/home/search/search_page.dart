@@ -64,6 +64,8 @@ class SearchPage extends GetView<SearchController> {
         case SearchItem.units:
           body.children.add(_targetBody(TargetType.company));
           break;
+        case SearchItem.markets:
+          break;
       }
     }
     return UnifiedScaffold(

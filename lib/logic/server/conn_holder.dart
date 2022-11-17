@@ -64,6 +64,7 @@ class ConnHolder {
       _info("开始断开连接");
       _isStop.value = true;
       await _server.stop();
+      setState();
       _info("断开连接成功");
     } catch (error) {
       _info("断开连接失败,重新尝试!");
@@ -75,19 +76,22 @@ class ConnHolder {
   /// 开始连接
   start({Function? callback}) async {
     try {
+      if (state.value != HubConnectionState.disconnected) {
+        return;
+      }
       _info("开始连接");
       _isStop.value = false;
       await _server.start();
       setState();
-      if (callback != null) {
-        connectedCallback = callback;
-        await callback();
-      }
       _info("连接成功");
     } catch (error) {
       _info("连接时发生异常: ${error.toString()}");
       _connTimeout(callback: callback);
       rethrow;
+    }
+    if (callback != null) {
+      connectedCallback = callback;
+      await callback();
     }
   }
 

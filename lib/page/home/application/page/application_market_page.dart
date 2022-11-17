@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/unified_colors.dart';
@@ -15,17 +14,23 @@ class ApplicationMarketPage extends GetView<ApplicationMarketController> {
       appBarTitle: Text("市场", style: AFont.instance.size22Black3),
       appBarCenterTitle: true,
       appBarLeading: WidgetUtil.defaultBackBtn,
+      bgColor: UnifiedColors.navigatorBgColor,
       body: _body(),
     );
   }
 
   Widget _body() {
     return Container(
-      padding: EdgeInsets.only(left: 25.w, right: 25.w),
       color: UnifiedColors.navigatorBgColor,
       child: Column(
         children: [],
       ),
+    );
+  }
+
+  Widget _item() {
+    return Container(
+
     );
   }
 }

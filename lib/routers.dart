@@ -4,6 +4,7 @@ import 'package:orginone/page/forget/forget_page.dart';
 import 'package:orginone/page/home/affairs/detail/affairs_detail.dart';
 import 'package:orginone/page/home/application/page/application_maintain_page.dart';
 import 'package:orginone/page/home/application/page/application_manager_page.dart';
+import 'package:orginone/page/home/application/page/application_market_page.dart';
 import 'package:orginone/page/home/application/page/application_page.dart';
 import 'package:orginone/page/home/application/page/application_shop_page.dart';
 import 'package:orginone/page/home/center/center_binding.dart';
@@ -122,7 +123,8 @@ class Routers {
   static const String application = "/application";
   static const String applicationManager = "/applicationManager";
   static const String applicationShop = "/applicationShop";
-  static const String applicationMaintain = "/maintainShop";
+  static const String applicationMaintain = "/applicationMaintain";
+  static const String applicationMarket = "/applicationMarket";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -334,6 +336,11 @@ class Routers {
       GetPage(
         name: Routers.applicationMaintain,
         page: () => const ApplicationMaintainPage(),
+        binding: ApplicationBinding(),
+      ),
+      GetPage(
+        name: Routers.applicationMarket,
+        page: () => const ApplicationMarketPage(),
         binding: ApplicationBinding(),
       ),
     ];
