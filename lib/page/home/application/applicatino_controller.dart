@@ -7,7 +7,6 @@ enum ApplicationFunction {
 }
 
 class ApplicationController extends BaseListController {
-
   late int limit;
   late int offset;
 
@@ -17,12 +16,12 @@ class ApplicationController extends BaseListController {
   }
 
   @override
-  void onLoadMore() {
-
-  }
+  void onLoadMore() {}
 
   @override
   void onRefresh() {}
 
   searchingCallback(String value) {}
+
+  marketSearchingCallback(String value) {}
 }

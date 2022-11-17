@@ -64,12 +64,12 @@ class ConnHolder {
       _info("开始断开连接");
       _isStop.value = true;
       await _server.stop();
-      setState();
       _info("断开连接成功");
     } catch (error) {
       _info("断开连接失败,重新尝试!");
-      stop();
       rethrow;
+    } finally {
+      setState();
     }
   }
 
