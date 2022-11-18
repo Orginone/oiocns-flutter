@@ -90,7 +90,18 @@ class ApplicationMarketPage extends GetView<ApplicationMarketController> {
         children: [
           Padding(padding: EdgeInsets.only(left: 10.w)),
           Column(
-            children: [TextTag(market.public ?? false ? "公开" : "私有")],
+            children: [
+              if (market.public ?? false)
+                TextTag(
+                  "私有",
+                  padding: EdgeInsets.only(
+                    top: 6.w,
+                    bottom: 6.w,
+                    left: 10.w,
+                    right: 10.w,
+                  ),
+                )
+            ],
           )
         ],
       ),

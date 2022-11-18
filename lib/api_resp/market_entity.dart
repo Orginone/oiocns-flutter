@@ -9,7 +9,7 @@ class MarketEntity {
 	late String name;
 	late String code;
 	late String remark;
-	late bool? public;
+	bool? public;
 	late int status;
 	late String createUser;
 	late String updateUser;
