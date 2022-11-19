@@ -175,7 +175,7 @@ class HomePage extends GetView<HomeController> {
           children: [
             _conn(chatHub.state, "会话"),
             Container(margin: EdgeInsets.only(top: 2.h)),
-            _conn(chatHub.state, "存储"),
+            _conn(anyStoreHub.state, "存储"),
           ],
         ),
         Padding(padding: EdgeInsets.only(left: 10.w)),

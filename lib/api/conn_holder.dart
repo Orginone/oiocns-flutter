@@ -30,7 +30,15 @@ class StoreHub {
     required Duration timeout,
   })  : _connName = connName,
         _timeout = timeout,
-        _server = HubConnectionBuilder().withUrl(url).build()
+        _server = HubConnectionBuilder()
+            .withUrl(
+              url,
+              options: HttpConnectionOptions(
+                headers: MessageHeaders()
+                  ..setHeaderValue("Content-Type", "application/json"),
+              ),
+            )
+            .build()
           ..keepAliveIntervalInMilliseconds = 3000
           ..serverTimeoutInMilliseconds = 8000,
         _isStop = true.obs,
