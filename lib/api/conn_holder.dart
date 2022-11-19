@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
-import 'package:signalr_core/signalr_core.dart';
+import 'package:signalr_netcore/ihub_protocol.dart';
+import 'package:signalr_netcore/signalr_client.dart';
 
 enum SendEvent {
   tokenAuth("TokenAuth");
@@ -13,7 +14,8 @@ enum SendEvent {
   const SendEvent(this.keyWork);
 }
 
-class ConnHolder {
+/// 存储集线器
+class StoreHub {
   static final Logger _log = Logger("ConnHolder");
   final String _connName;
   final HubConnection _server;
@@ -22,7 +24,7 @@ class ConnHolder {
   final RxBool _isStop;
   Function? connectedCallback;
 
-  ConnHolder._({
+  StoreHub._({
     required String connName,
     required String url,
     required Duration timeout,
@@ -32,24 +34,24 @@ class ConnHolder {
           ..keepAliveIntervalInMilliseconds = 3000
           ..serverTimeoutInMilliseconds = 8000,
         _isStop = true.obs,
-        _state = HubConnectionState.disconnected.obs;
+        _state = HubConnectionState.Disconnected.obs;
 
   Rx<HubConnectionState> get state => _state;
 
-  setState() => _state.value = _server.state ?? HubConnectionState.disconnected;
+  setState() => _state.value = _server.state ?? HubConnectionState.Disconnected;
 
   /// 是否未连接
   bool isDisConnected() {
-    return _server.state! != HubConnectionState.connected;
+    return _server.state! != HubConnectionState.Connected;
   }
 
   /// 是否已连接
   bool isConnected() {
-    return _server.state! == HubConnectionState.connected;
+    return _server.state! == HubConnectionState.Connected;
   }
 
   /// 调用
-  dynamic invoke(String event, {List<dynamic>? args}) {
+  dynamic invoke(String event, {List<Object>? args}) {
     return _server.invoke(event, args: args);
   }
 
@@ -76,7 +78,7 @@ class ConnHolder {
   /// 开始连接
   start({Function? callback}) async {
     try {
-      if (state.value != HubConnectionState.disconnected) {
+      if (state.value != HubConnectionState.Disconnected) {
         return;
       }
       _info("开始连接");
@@ -109,7 +111,7 @@ class ConnHolder {
 
   /// 重连中回调
   _onReconnecting() {
-    _server.onreconnecting((error) {
+    _server.onreconnecting(({Exception? error}) {
       setState();
       if (error != null) {
         _info("重连中发生异常: ${error.toString()}");
@@ -120,7 +122,7 @@ class ConnHolder {
 
   /// 重连成功回调
   _onReconnected() {
-    _server.onreconnecting((error) {
+    _server.onreconnecting(({Exception? error}) {
       setState();
       if (error != null) {
         _info("重连后发生异常: ${error.toString()}");
@@ -131,7 +133,7 @@ class ConnHolder {
 
   /// 监听连接
   _onClose() {
-    _server.onclose((error) async {
+    _server.onclose(({Exception? error}) async {
       setState();
       if (error != null) {
         _info("关闭时发生异常:${error.toString()}");
@@ -152,14 +154,33 @@ class ConnHolder {
   }
 }
 
-final ConnHolder chatConn = ConnHolder._(
-  connName: "ChatConn",
-  url: Constant.hub,
-  timeout: const Duration(seconds: 5),
-).._init();
+StoreHub? _chatHub;
+StoreHub? _anyStoreHub;
+StoreHub? _storeHub;
 
-final ConnHolder storeConn = ConnHolder._(
-  connName: "StoreConn",
-  url: Constant.anyStore,
-  timeout: const Duration(seconds: 5),
-).._init();
+StoreHub get chatHub {
+  _chatHub ??= StoreHub._(
+      connName: "chatHub",
+      url: Constant.hub,
+      timeout: const Duration(seconds: 5))
+    .._init();
+  return _chatHub!;
+}
+
+StoreHub get anyStoreHub {
+  _anyStoreHub ??= StoreHub._(
+      connName: "anyStoreHub",
+      url: Constant.anyStore,
+      timeout: const Duration(seconds: 5))
+    .._init();
+  return _anyStoreHub!;
+}
+
+StoreHub get storeHub {
+  _storeHub ??= StoreHub._(
+      connName: "storeHub",
+      url: Constant.store,
+      timeout: const Duration(seconds: 5))
+    .._init();
+  return _storeHub!;
+}

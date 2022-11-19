@@ -3,13 +3,13 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/cohort_api.dart';
 import 'package:orginone/api/person_api.dart';
+import 'package:orginone/api/store_server.dart';
 import 'package:orginone/api_resp/message_item_resp.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/logic/authority.dart';
-import 'package:orginone/logic/server/chat_server.dart';
-import 'package:orginone/logic/server/store_server.dart';
+import 'package:orginone/api/chat_server.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 

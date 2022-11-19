@@ -56,6 +56,7 @@ class CohortApi {
       "code": params["code"],
       "name": params["name"],
       "teamRemark": params["remark"],
+      "avatar": "123123",
     };
 
     Map<String, dynamic> ansMap = await HttpUtil().post(url, data: data);

@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:orginone/api/cohort_api.dart';
 import 'package:orginone/api/person_api.dart';
 import 'package:orginone/component/unified_scaffold.dart';
-import 'package:orginone/logic/server/chat_server.dart';
+import 'package:orginone/api/chat_server.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_controller.dart';
 
 import '../../../../api_resp/target_resp.dart';

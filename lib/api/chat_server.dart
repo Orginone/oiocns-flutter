@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api/conn_holder.dart';
+import 'package:orginone/api/server.dart';
 import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/page_resp.dart';
@@ -10,12 +12,9 @@ import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
-import 'package:orginone/logic/server/server.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/hive_util.dart';
-
-import 'conn_holder.dart';
 
 enum ReceiveEvent { RecvMsg, ChatRefresh }
 
@@ -39,7 +38,7 @@ class ProxyChatServer implements ChatServer, ConnServer {
 
   @override
   Future<void> start() async {
-    await chatConn.start(callback: () async {
+    await chatHub.start(callback: () async {
       await tokenAuth();
     });
   }
@@ -47,18 +46,18 @@ class ProxyChatServer implements ChatServer, ConnServer {
   @override
   Future<void> stop() async {
     _isAuthed.value = false;
-    await chatConn.stop();
+    await chatHub.stop();
   }
 
   /// 鉴权
   @override
   tokenAuth() async {
-    if (chatConn.isDisConnected()) {
+    if (chatHub.isDisConnected()) {
       throw Exception("聊天服务未连接,无法授权!");
     }
     var accessToken = HiveUtil().accessToken;
     var methodName = SendEvent.TokenAuth.name;
-    await chatConn.invoke(methodName, args: [accessToken]);
+    await chatHub.invoke(methodName, args: [accessToken]);
     _isAuthed.value = true;
   }
 
@@ -144,10 +143,10 @@ class ProxyChatServer implements ChatServer, ConnServer {
 
   /// 定义事件
   void _initEvents() {
-    chatConn.on(ReceiveEvent.RecvMsg.name, (params) {
+    chatHub.on(ReceiveEvent.RecvMsg.name, (params) {
       rsvCallback(params ?? []);
     });
-    chatConn.on(ReceiveEvent.ChatRefresh.name, (params) {
+    chatHub.on(ReceiveEvent.ChatRefresh.name, (params) {
       if (Get.isRegistered<MessageController>()) {
         var messageController = Get.find<MessageController>();
         messageController.refreshCharts();
@@ -177,7 +176,7 @@ class RealChatServer implements ChatServer {
     };
     var args = <Object>[messageDetail];
     var sendName = SendEvent.SendMsg.name;
-    dynamic apiResp = await chatConn.invoke(sendName, args: args);
+    dynamic apiResp = await chatHub.invoke(sendName, args: args);
     return ApiResp.fromJson(apiResp);
   }
 
@@ -185,7 +184,7 @@ class RealChatServer implements ChatServer {
   @override
   Future<List<SpaceMessagesResp>> getChats() async {
     String key = SendEvent.GetChats.name;
-    Map<String, dynamic> chats = await chatConn.invoke(key);
+    Map<String, dynamic> chats = await chatHub.invoke(key);
     ApiResp resp = ApiResp.fromJson(chats);
 
     List<dynamic> groups = resp.data["groups"];
@@ -203,7 +202,7 @@ class RealChatServer implements ChatServer {
   Future<String> getName(String personId) async {
     var key = SendEvent.GetName.name;
     var args = [personId];
-    Map<String, dynamic> nameRes = await chatConn.invoke(key, args: args);
+    Map<String, dynamic> nameRes = await chatHub.invoke(key, args: args);
     ApiResp resp = ApiResp.fromJson(nameRes);
     return resp.data;
   }
@@ -229,7 +228,7 @@ class RealChatServer implements ChatServer {
       "offset": offset,
       "spaceId": spaceId
     };
-    Map<String, dynamic> res = await chatConn.invoke(event, args: [params]);
+    Map<String, dynamic> res = await chatHub.invoke(event, args: [params]);
     var apiResp = ApiResp.fromJson(res);
     Map<String, dynamic> data = apiResp.data;
     if (data["result"] == null) {
@@ -247,7 +246,7 @@ class RealChatServer implements ChatServer {
   @override
   Future<ApiResp> recallMsg(MessageDetailResp msg) async {
     var name = SendEvent.RecallMsg.name;
-    dynamic res = await chatConn.invoke(name, args: [msg]);
+    dynamic res = await chatHub.invoke(name, args: [msg]);
     return ApiResp.fromJson(res);
   }
 
@@ -264,7 +263,7 @@ class RealChatServer implements ChatServer {
       "limit": limit,
       "offset": offset
     };
-    dynamic res = await chatConn.invoke(event, args: [params]);
+    dynamic res = await chatHub.invoke(event, args: [params]);
 
     ApiResp apiResp = ApiResp.fromJson(res);
     return PageResp.fromMap(apiResp.data, TargetResp.fromMap);

@@ -3,16 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/api/conn_holder.dart';
 import 'package:orginone/component/bread_crumb.dart';
 import 'package:orginone/component/tab_combine.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
-import 'package:orginone/logic/server/conn_holder.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
-import 'package:signalr_core/signalr_core.dart';
+import 'package:signalr_netcore/signalr_client.dart';
 
 import '../../component/unified_colors.dart';
 import '../../logic/authority.dart';
@@ -173,9 +173,9 @@ class HomePage extends GetView<HomeController> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _conn(chatConn.state, "会话"),
+            _conn(chatHub.state, "会话"),
             Container(margin: EdgeInsets.only(top: 2.h)),
-            _conn(storeConn.state, "存储"),
+            _conn(chatHub.state, "存储"),
           ],
         ),
         Padding(padding: EdgeInsets.only(left: 10.w)),
@@ -261,15 +261,15 @@ class HomePage extends GetView<HomeController> {
         Obx(() {
           Color color;
           switch (status.value) {
-            case HubConnectionState.connecting:
-            case HubConnectionState.disconnecting:
-            case HubConnectionState.reconnecting:
+            case HubConnectionState.Connecting:
+            case HubConnectionState.Disconnecting:
+            case HubConnectionState.Reconnecting:
               color = Colors.yellow;
               break;
-            case HubConnectionState.connected:
+            case HubConnectionState.Connected:
               color = Colors.greenAccent;
               break;
-            case HubConnectionState.disconnected:
+            case HubConnectionState.Disconnected:
               color = Colors.redAccent;
               break;
           }

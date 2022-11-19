@@ -4,6 +4,7 @@ import 'package:common_utils/common_utils.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api/server.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/message_item_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
@@ -11,7 +12,6 @@ import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/logic/authority.dart';
-import 'package:orginone/logic/server/server.dart';
 import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/hive_util.dart';
 
@@ -50,7 +50,7 @@ class ProxyStoreServer implements ConnServer, StoreServer {
 
   @override
   Future<void> start() async {
-    await storeConn.start(callback: () async {
+    await anyStoreHub.start(callback: () async {
       await tokenAuth();
       await _instance._resubscribed();
     });
@@ -60,20 +60,20 @@ class ProxyStoreServer implements ConnServer, StoreServer {
   Future<void> stop() async {
     _instance.subscriptionMap.clear();
     _isAuthed.value = false;
-    await storeConn.stop();
+    await anyStoreHub.stop();
   }
 
   /// 鉴权
   @override
   Future<void> tokenAuth() async {
-    if (storeConn.isDisConnected()) {
+    if (anyStoreHub.isDisConnected()) {
       throw Exception("存储服务未连接,无法授权!");
     }
     var accessToken = HiveUtil().accessToken;
     var name = SendEvent.TokenAuth.name;
     var domain = Domain.user.name;
     try {
-      await storeConn.invoke(name, args: [accessToken, domain]);
+      await anyStoreHub.invoke(name, args: [accessToken, domain]);
       _isAuthed.value = true;
     } catch (error) {
       Fluttertoast.showToast(msg: error.toString());
@@ -185,7 +185,7 @@ class ProxyStoreServer implements ConnServer, StoreServer {
 
   /// 设置订阅事件
   void _onUpdated() {
-    storeConn.on(ReceiveEvent.Updated.name, (arguments) {
+    anyStoreHub.on(ReceiveEvent.Updated.name, (arguments) {
       if (arguments == null) {
         return;
       }
@@ -212,7 +212,7 @@ class RealStoreServer implements StoreServer {
   Future<ApiResp> get(String key, String domain) async {
     var name = SendEvent.Get.name;
     var args = [key, domain];
-    dynamic data = await storeConn.invoke(name, args: args);
+    dynamic data = await anyStoreHub.invoke(name, args: args);
     return ApiResp.fromJson(data);
   }
 
@@ -220,8 +220,8 @@ class RealStoreServer implements StoreServer {
   @override
   Future<ApiResp> set(String key, dynamic setData, String domain) async {
     var name = SendEvent.Set.name;
-    var args = [key, setData, domain];
-    dynamic res = await storeConn.invoke(name, args: args);
+    List<Object> args = [key, setData, domain];
+    dynamic res = await anyStoreHub.invoke(name, args: args);
     return ApiResp.fromJson(res);
   }
 
@@ -229,7 +229,7 @@ class RealStoreServer implements StoreServer {
   @override
   Future<ApiResp> delete(String key, String domain) async {
     var name = SendEvent.Delete.name;
-    dynamic res = await storeConn.invoke(name, args: [key, domain]);
+    dynamic res = await anyStoreHub.invoke(name, args: [key, domain]);
     return ApiResp.fromJson(res);
   }
 
@@ -237,8 +237,8 @@ class RealStoreServer implements StoreServer {
   @override
   Future<ApiResp> insert(String collName, dynamic data, String domain) async {
     var name = SendEvent.Insert.name;
-    var args = [collName, data, domain];
-    dynamic res = await storeConn.invoke(name, args: args);
+    List<Object> args = [collName, data, domain];
+    dynamic res = await anyStoreHub.invoke(name, args: args);
     return ApiResp.fromJson(res);
   }
 
@@ -246,8 +246,8 @@ class RealStoreServer implements StoreServer {
   @override
   Future<ApiResp> update(String collName, dynamic update, String domain) async {
     var name = SendEvent.Update.name;
-    var args = [collName, update, domain];
-    dynamic res = await storeConn.invoke(name, args: args);
+    List<Object> args = [collName, update, domain];
+    dynamic res = await anyStoreHub.invoke(name, args: args);
     return ApiResp.fromJson(res);
   }
 
@@ -255,8 +255,8 @@ class RealStoreServer implements StoreServer {
   @override
   Future<ApiResp> remove(String collName, dynamic match, String domain) async {
     var name = SendEvent.Remove.name;
-    var args = [collName, match, domain];
-    dynamic res = await storeConn.invoke(name, args: args);
+    List<Object> args = [collName, match, domain];
+    dynamic res = await anyStoreHub.invoke(name, args: args);
     return ApiResp.fromJson(res);
   }
 
@@ -264,8 +264,8 @@ class RealStoreServer implements StoreServer {
   @override
   Future<ApiResp> aggregate(String collName, dynamic opt, String domain) async {
     var aggregateName = SendEvent.Aggregate.name;
-    var args = [collName, opt, domain];
-    dynamic res = await storeConn.invoke(aggregateName, args: args);
+    List<Object> args = [collName, opt, domain];
+    dynamic res = await anyStoreHub.invoke(aggregateName, args: args);
     return ApiResp.fromJson(res);
   }
 
@@ -278,7 +278,7 @@ class RealStoreServer implements StoreServer {
     }
     subscriptionMap[fullKey] = callback;
     var name = SendEvent.Subscribed.name;
-    dynamic res = await storeConn.invoke(name, args: [key.name, domain]);
+    dynamic res = await anyStoreHub.invoke(name, args: [key.name, domain]);
     ApiResp apiResp = ApiResp.fromJson(res);
     if (apiResp.success) {
       callback(apiResp.data);
@@ -294,7 +294,7 @@ class RealStoreServer implements StoreServer {
       return;
     }
     var name = SendEvent.UnSubscribed.name;
-    await storeConn.invoke(name, args: [key.name, domain]);
+    await anyStoreHub.invoke(name, args: [key.name, domain]);
     subscriptionMap.remove(fullKey);
   }
 
@@ -304,7 +304,7 @@ class RealStoreServer implements StoreServer {
       var key = fullKey.split("|")[0];
       var domain = fullKey.split("|")[1];
       var name = SendEvent.Subscribed.name;
-      dynamic res = await storeConn.invoke(name, args: [key, domain]);
+      dynamic res = await anyStoreHub.invoke(name, args: [key, domain]);
 
       ApiResp apiResp = ApiResp.fromJson(res);
       if (apiResp.success) {

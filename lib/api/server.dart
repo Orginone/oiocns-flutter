@@ -1,3 +1,4 @@
+import 'package:orginone/api/store_server.dart';
 import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
@@ -6,7 +7,6 @@ import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
-import 'package:orginone/logic/server/store_server.dart';
 
 /// 定义连接服务的抽象，主要方法是开启，鉴权，停止
 abstract class ConnServer {
