@@ -14,12 +14,14 @@ class FormItem {
   final String fieldName;
   final ItemType itemType;
   final bool required;
+  final dynamic defaultValue;
 
   const FormItem({
     required this.fieldKey,
     required this.fieldName,
     required this.itemType,
     this.required = false,
+    this.defaultValue
   });
 }
 
@@ -79,6 +81,7 @@ class FormWidget extends StatelessWidget {
         }
         return null;
       },
+      initialValue: item.defaultValue,
       name: item.fieldKey,
       decoration: _formDecoration(item.fieldName),
       onChanged: (val) {},
@@ -93,6 +96,7 @@ class FormWidget extends StatelessWidget {
         }
         return null;
       },
+      initialValue: item.defaultValue,
       name: item.fieldKey,
       title: Text(item.fieldName),
     );

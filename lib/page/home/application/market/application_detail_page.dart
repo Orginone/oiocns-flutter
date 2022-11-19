@@ -9,11 +9,10 @@ import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/page/home/application/applicatino_controller.dart';
-import 'package:orginone/page/home/search/search_controller.dart';
-import 'package:orginone/routers.dart';
+import 'package:orginone/page/home/application/application_merchandise_controller.dart';
 import 'package:orginone/util/widget_util.dart';
 
-class ApplicationShopPage extends GetView<ApplicationController> {
+class ApplicationShopPage extends GetView<ApplicationMerchandiseController> {
   const ApplicationShopPage({Key? key}) : super(key: key);
 
   @override
@@ -23,30 +22,8 @@ class ApplicationShopPage extends GetView<ApplicationController> {
       appBarCenterTitle: true,
       appBarLeading: WidgetUtil.defaultBackBtn,
       body: _body(),
-      appBarActions: _actions,
     );
   }
-
-  /// 按钮
-  get _actions => <Widget>[
-        IconButton(
-          onPressed: () {
-            Map<String, dynamic> args = {"func": ApplicationFunction.create};
-            Get.toNamed(Routers.applicationMaintain, arguments: args);
-          },
-          icon: const Icon(Icons.create_outlined, color: Colors.black),
-        ),
-        IconButton(
-          onPressed: () {
-            List<SearchItem> friends = [SearchItem.applications];
-            Get.toNamed(Routers.search, arguments: {
-              "items": friends,
-              "point": ApplicationFunction.applyMarket,
-            });
-          },
-          icon: const Icon(Icons.add, color: Colors.black),
-        ),
-      ];
 
   Widget _body() {
     return Container(
@@ -60,7 +37,7 @@ class ApplicationShopPage extends GetView<ApplicationController> {
               top: 20.h,
               bottom: 20.h,
             ),
-            searchingCallback: controller.searchingCallback,
+            searchingCallback: controller.search,
             bgColor: Colors.white,
             hasSearchIcon: false,
             type: SearchType.dropdown,

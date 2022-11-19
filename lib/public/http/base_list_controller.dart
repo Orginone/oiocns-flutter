@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/public/http/base_controller.dart';
 import 'package:orginone/public/loading/load_status.dart';
@@ -13,10 +12,19 @@ abstract class BaseListController<T> extends BaseController {
   RefreshController refreshController = RefreshController();
 
   /// 下拉刷新使用
-  void onRefresh();
+  void onRefresh() {
+    throw Exception("未实现的方法!");
+  }
 
   /// 加载更多使用
-  void onLoadMore();
+  void onLoadMore() {
+    throw Exception("未实现的方法!");
+  }
+
+  /// 搜索时需要刷新页面
+  void search(String value) {
+    throw Exception("未实现的方法!");
+  }
 
   /// isRefresh true 刷新 false 加载更多
   /// 添加数据&自动判断列表刷新和更多对应的头和脚状态
@@ -32,6 +40,7 @@ abstract class BaseListController<T> extends BaseController {
       } else {
         updateLoadStatus(LoadStatusX.success);
       }
+
       /// 无更多
       if (dataList.length >= pageResp.total) {
         refreshController.loadComplete();
@@ -48,10 +57,10 @@ abstract class BaseListController<T> extends BaseController {
     }
   }
 
-  void removeAt(int index){
-    if(index < dataList.length){
+  void removeAt(int index) {
+    if (index < dataList.length) {
       dataList.removeAt(index);
-      if(dataList.isEmpty){
+      if (dataList.isEmpty) {
         updateLoadStatus(LoadStatusX.empty);
       }
     }

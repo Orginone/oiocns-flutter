@@ -8,7 +8,7 @@ import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/api_resp/friends_entity.dart';
 import 'package:orginone/api_resp/instance_task_entity.dart';
 import 'package:orginone/api_resp/market_entity.dart';
-import 'package:orginone/api_resp/market_resp_entity.dart';
+import 'package:orginone/api_resp/merchandise_entity.dart';
 import 'package:orginone/api_resp/record_task_entity.dart';
 import 'package:orginone/api_resp/task_entity.dart';
 
@@ -26,7 +26,8 @@ class JsonConvert {
 		(InstanceTaskFlowDefine).toString(): InstanceTaskFlowDefine.fromJson,
 		(InstanceTaskFlowRelation).toString(): InstanceTaskFlowRelation.fromJson,
 		(MarketEntity).toString(): MarketEntity.fromJson,
-		(MarketRespEntity).toString(): MarketRespEntity.fromJson,
+		(MerchandiseEntity).toString(): MerchandiseEntity.fromJson,
+		(MerchandiseProduct).toString(): MerchandiseProduct.fromJson,
 		(RecordTaskEntity).toString(): RecordTaskEntity.fromJson,
 		(RecordTaskFlowTask).toString(): RecordTaskFlowTask.fromJson,
 		(RecordTaskFlowTaskFlowNode).toString(): RecordTaskFlowTaskFlowNode.fromJson,
@@ -141,8 +142,11 @@ class JsonConvert {
 		if(<MarketEntity>[] is M){
 			return data.map<MarketEntity>((Map<String, dynamic> e) => MarketEntity.fromJson(e)).toList() as M;
 		}
-		if(<MarketRespEntity>[] is M){
-			return data.map<MarketRespEntity>((Map<String, dynamic> e) => MarketRespEntity.fromJson(e)).toList() as M;
+		if(<MerchandiseEntity>[] is M){
+			return data.map<MerchandiseEntity>((Map<String, dynamic> e) => MerchandiseEntity.fromJson(e)).toList() as M;
+		}
+		if(<MerchandiseProduct>[] is M){
+			return data.map<MerchandiseProduct>((Map<String, dynamic> e) => MerchandiseProduct.fromJson(e)).toList() as M;
 		}
 		if(<RecordTaskEntity>[] is M){
 			return data.map<RecordTaskEntity>((Map<String, dynamic> e) => RecordTaskEntity.fromJson(e)).toList() as M;

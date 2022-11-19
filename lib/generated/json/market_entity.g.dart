@@ -23,6 +23,14 @@ MarketEntity $MarketEntityFromJson(Map<String, dynamic> json) {
 	if (public != null) {
 		marketEntity.public = public;
 	}
+	final String? belongId = jsonConvert.convert<String>(json['belongId']);
+	if (belongId != null) {
+		marketEntity.belongId = belongId;
+	}
+	final String? samrId = jsonConvert.convert<String>(json['samrId']);
+	if (samrId != null) {
+		marketEntity.samrId = samrId;
+	}
 	final int? status = jsonConvert.convert<int>(json['status']);
 	if (status != null) {
 		marketEntity.status = status;
@@ -57,6 +65,8 @@ Map<String, dynamic> $MarketEntityToJson(MarketEntity entity) {
 	data['code'] = entity.code;
 	data['remark'] = entity.remark;
 	data['public'] = entity.public;
+	data['belongId'] = entity.belongId;
+	data['samrId'] = entity.samrId;
 	data['status'] = entity.status;
 	data['createUser'] = entity.createUser;
 	data['updateUser'] = entity.updateUser;

@@ -1,4 +1,5 @@
 import 'package:orginone/api_resp/market_entity.dart';
+import 'package:orginone/api_resp/merchandise_entity.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/util/http_util.dart';
@@ -66,10 +67,10 @@ class MarketApi {
     return await HttpUtil().post(url, data: data);
   }
 
-  /// 审批商品上架申请
-  static Future<Map<String, dynamic>> delete(String productId) async {
+  /// 删除市场
+  static Future<Map<String, dynamic>> delete(String marketId) async {
     String url = "${Constant.market}/delete";
-    Map<String, dynamic> data = {"id": productId};
+    Map<String, dynamic> data = {"id": marketId};
     return await HttpUtil().post(url, data: data);
   }
 
@@ -208,7 +209,7 @@ class MarketApi {
   }
 
   /// 查询指定市场所有商品
-  static Future<Map<String, dynamic>> searchMerchandise({
+  static Future<PageResp<MerchandiseEntity>> searchMerchandise({
     required String marketId,
     required int offset,
     required int limit,
@@ -221,7 +222,8 @@ class MarketApi {
       "limit": limit,
       "filter": filter,
     };
-    return await HttpUtil().post(url, data: data);
+    Map<String, dynamic> ansMap = await HttpUtil().post(url, data: data);
+    return PageResp.fromMap(ansMap, MerchandiseEntity.fromJson);
   }
 
   /// 查询管理以及加入的市场
@@ -256,10 +258,10 @@ class MarketApi {
   }
 
   /// 查询软件共享仓库
-  static Future<Map<String, dynamic>> searchSoftShare() async {
+  static Future<MarketEntity> searchSoftShare() async {
     String url = "${Constant.market}/search/softshare";
-    Map<String, dynamic> data = {};
-    return await HttpUtil().post(url, data: data);
+    Map<String, dynamic> ans = await HttpUtil().post(url, data: {});
+    return MarketEntity.fromJson(ans);
   }
 
   /// 查询暂存区

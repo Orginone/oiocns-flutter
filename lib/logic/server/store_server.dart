@@ -72,8 +72,13 @@ class ProxyStoreServer implements ConnServer, StoreServer {
     var accessToken = HiveUtil().accessToken;
     var name = SendEvent.TokenAuth.name;
     var domain = Domain.user.name;
-    await storeConn.invoke(name, args: [accessToken, domain]);
-    _isAuthed.value = true;
+    try {
+      await storeConn.invoke(name, args: [accessToken, domain]);
+      _isAuthed.value = true;
+    } catch (error) {
+      Fluttertoast.showToast(msg: error.toString());
+      rethrow;
+    }
   }
 
   @override

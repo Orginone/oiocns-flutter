@@ -2,11 +2,11 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
 import 'package:orginone/page/home/affairs/detail/affairs_detail.dart';
-import 'package:orginone/page/home/application/page/application_maintain_page.dart';
+import 'package:orginone/page/home/application/market/application_market_maintain_page.dart';
 import 'package:orginone/page/home/application/page/application_manager_page.dart';
-import 'package:orginone/page/home/application/page/application_market_page.dart';
+import 'package:orginone/page/home/application/market/application_market_page.dart';
 import 'package:orginone/page/home/application/page/application_page.dart';
-import 'package:orginone/page/home/application/page/application_shop_page.dart';
+import 'package:orginone/page/home/application/market/application_detail_page.dart';
 import 'package:orginone/page/home/center/center_binding.dart';
 import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/component/person_detail/person_detail_binding.dart';
@@ -123,7 +123,7 @@ class Routers {
   static const String application = "/application";
   static const String applicationManager = "/applicationManager";
   static const String applicationShop = "/applicationShop";
-  static const String applicationMaintain = "/applicationMaintain";
+  static const String applicationMarketMaintain = "/marketMaintain";
   static const String applicationMarket = "/applicationMarket";
 
   static List<GetPage> getInitRouters() {
@@ -334,7 +334,7 @@ class Routers {
         bindings: [ApplicationShopBinding(), ApplicationBinding()],
       ),
       GetPage(
-        name: Routers.applicationMaintain,
+        name: Routers.applicationMarketMaintain,
         page: () => const ApplicationMaintainPage(),
         binding: ApplicationBinding(),
       ),

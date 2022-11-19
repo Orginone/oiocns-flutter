@@ -10,6 +10,8 @@ class MarketEntity {
 	late String code;
 	late String remark;
 	bool? public;
+	String? belongId;
+	String? samrId;
 	late int status;
 	late String createUser;
 	late String updateUser;
