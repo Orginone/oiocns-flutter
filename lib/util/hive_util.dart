@@ -36,14 +36,9 @@ class HiveUtil {
 
   // 这个存储一些键值
   late Box uniqueBox;
-  late Box keyValueBox;
-  late String currentTargetId;
 
   Future<void> initUniqueBox() async {
     uniqueBox = await Hive.openBox("uniqueBox");
   }
 
-  set accessToken(accessToken) => uniqueBox.put("accessToken", accessToken);
-
-  get accessToken => uniqueBox.get("accessToken");
 }

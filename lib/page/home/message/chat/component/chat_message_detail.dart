@@ -21,7 +21,6 @@ import 'package:orginone/logic/authority.dart';
 import 'package:orginone/api/chat_server.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/util/encryption_util.dart';
-import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/string_util.dart';
 
 enum Direction { leftStart, rightStart }
@@ -295,7 +294,7 @@ class ChatMessageDetail extends GetView<ChatController> {
     String url = "${Constant.bucket}/Download?$params";
 
     Map<String, String> headers = {
-      "Authorization": HiveUtil().accessToken,
+      "Authorization": getAccessToken,
     };
     return _detail(
       constraints: boxConstraints,

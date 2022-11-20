@@ -22,7 +22,6 @@ import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/page/home/mine/set_home/set_home_page.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
-import 'package:orginone/util/hive_util.dart';
 import 'package:flutter_treeview/flutter_treeview.dart' as tree_view;
 
 import 'message/message_page.dart';
@@ -179,7 +178,7 @@ class HomeController extends GetxController
 
   void switchSpaces(TargetResp targetResp) async {
     LoginResp loginResp = await PersonApi.changeWorkspace(targetResp.id);
-    HiveUtil().accessToken = loginResp.accessToken;
+    setAccessToken = loginResp.accessToken;
 
     await loadAuth();
 

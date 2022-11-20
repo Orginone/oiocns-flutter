@@ -12,9 +12,9 @@ import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
+import 'package:orginone/logic/authority.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/util/encryption_util.dart';
-import 'package:orginone/util/hive_util.dart';
 
 enum ReceiveEvent { RecvMsg, ChatRefresh }
 
@@ -55,7 +55,7 @@ class ProxyChatServer implements ChatServer, ConnServer {
     if (chatHub.isDisConnected()) {
       throw Exception("聊天服务未连接,无法授权!");
     }
-    var accessToken = HiveUtil().accessToken;
+    var accessToken = getAccessToken;
     var methodName = SendEvent.TokenAuth.name;
     await chatHub.invoke(methodName, args: [accessToken]);
     _isAuthed.value = true;

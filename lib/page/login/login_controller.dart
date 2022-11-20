@@ -30,14 +30,12 @@ class LoginController extends GetxController {
   }
 
   Future<void> login() async {
-    var hiveUtil = HiveUtil();
-
     // 登录，设置 accessToken
     var account = accountController.value.text;
     var password = passwordController.value.text;
 
     LoginResp loginResp = await PersonApi.login(account, password);
-    hiveUtil.accessToken = loginResp.accessToken;
+    setAccessToken = loginResp.accessToken;
 
     //存储账号密码历史数据
     await HiveUtil().uniqueBox.put('historyLogin', {

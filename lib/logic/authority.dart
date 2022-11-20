@@ -33,7 +33,8 @@ class Authority {
   /// 判断目标是否含有系统权限
   /// [auths] 相应权限
   /// [targetIds] 相应目标
-  bool _hasTargetsAuth(List<String> auths, List<String> targetIds, {bool isSystem = true}) {
+  bool _hasTargetsAuth(List<String> auths, List<String> targetIds,
+      {bool isSystem = true}) {
     var matchedFirst = resp.identitys.firstWhereOrNull((identity) {
       var authority = identity.authority;
       if (authority == null) {
@@ -114,9 +115,14 @@ class Authority {
   }
 }
 
+late String _accessToken;
 late Authority _instance;
 
 Authority get auth => _instance;
+
+String get getAccessToken => _accessToken;
+
+set setAccessToken(String accessToken) => _accessToken = accessToken;
 
 Future<Authority> loadAuth() async {
   TokenAuthorityResp authorityResp = await PersonApi.tokenInfo();

@@ -13,7 +13,6 @@ import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/logic/authority.dart';
 import 'package:orginone/util/encryption_util.dart';
-import 'package:orginone/util/hive_util.dart';
 
 import '../../api_resp/api_resp.dart';
 import 'conn_holder.dart';
@@ -69,7 +68,7 @@ class ProxyStoreServer implements ConnServer, StoreServer {
     if (anyStoreHub.isDisConnected()) {
       throw Exception("存储服务未连接,无法授权!");
     }
-    var accessToken = HiveUtil().accessToken;
+    var accessToken = getAccessToken;
     var name = SendEvent.TokenAuth.name;
     var domain = Domain.user.name;
     try {

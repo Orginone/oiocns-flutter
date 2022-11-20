@@ -1,6 +1,5 @@
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/enumeration/enum_map.dart';
-import 'package:orginone/util/hive_util.dart';
 
 import '../api_resp/message_item_resp.dart';
 import '../component/text_avatar.dart';
@@ -81,15 +80,15 @@ class StringUtil {
     return "$prefix:$suffix";
   }
 
-  static String getStrFirstUpperChar(String? str){
-    if(str == null || str.isEmpty) return "";
-    if(str.length == 1) return str.toUpperCase();
-    return str.substring(0,1).toUpperCase();
+  static String getStrFirstUpperChar(String? str) {
+    if (str == null || str.isEmpty) return "";
+    if (str.length == 1) return str.toUpperCase();
+    return str.substring(0, 1).toUpperCase();
   }
 
-  static String formatStr(String? str){
-    if(str == null) return '';
-    if(str.trim().isEmpty) return '';
+  static String formatStr(String? str) {
+    if (str == null) return '';
+    if (str.trim().isEmpty) return '';
     return str;
   }
 }
