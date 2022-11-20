@@ -18,7 +18,7 @@ import 'package:orginone/config/constant.dart';
 import 'package:orginone/enumeration/enum_map.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/logic/authority.dart';
-import 'package:orginone/api/chat_server.dart';
+import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/string_util.dart';

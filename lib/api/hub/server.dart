@@ -1,4 +1,4 @@
-import 'package:orginone/api/store_server.dart';
+import 'package:orginone/api/hub/store_server.dart';
 import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';

@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/api/conn_holder.dart';
-import 'package:orginone/api/server.dart';
+import 'package:orginone/api/hub/store_hub.dart';
+import 'package:orginone/api/hub/server.dart';
 import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/page_resp.dart';
@@ -38,9 +38,8 @@ class ProxyChatServer implements ChatServer, ConnServer {
 
   @override
   Future<void> start() async {
-    await chatHub.start(callback: () async {
-      await tokenAuth();
-    });
+    chatHub.addConnectedCallback(tokenAuth);
+    await chatHub.start();
   }
 
   @override

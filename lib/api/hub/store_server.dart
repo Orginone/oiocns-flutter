@@ -4,7 +4,7 @@ import 'package:common_utils/common_utils.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/api/server.dart';
+import 'package:orginone/api/hub/server.dart';
 import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/message_item_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
@@ -14,8 +14,8 @@ import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/logic/authority.dart';
 import 'package:orginone/util/encryption_util.dart';
 
-import '../../api_resp/api_resp.dart';
-import 'conn_holder.dart';
+import '../../../api_resp/api_resp.dart';
+import 'store_hub.dart';
 
 enum SendEvent {
   TokenAuth,
@@ -49,10 +49,13 @@ class ProxyStoreServer implements ConnServer, StoreServer {
 
   @override
   Future<void> start() async {
-    await anyStoreHub.start(callback: () async {
-      await tokenAuth();
-      await _instance._resubscribed();
-    });
+    anyStoreHub.addConnectedCallback(startCallback);
+    await anyStoreHub.start();
+  }
+
+  startCallback() async {
+    await tokenAuth();
+    await _instance._resubscribed();
   }
 
   @override

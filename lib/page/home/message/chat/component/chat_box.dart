@@ -14,7 +14,7 @@ import 'package:logging/logging.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/enumeration/message_type.dart';
-import 'package:orginone/api/chat_server.dart';
+import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/util/permission_util.dart';
 import 'package:path_provider/path_provider.dart';

@@ -14,15 +14,6 @@ class PersonApi {
     return await HttpUtil().post(url, data: postData);
   }
 
-  static Future<LoginResp> login(String account, String password) async {
-    String url = "${Constant.person}/login";
-    Map<String, dynamic> data = {"account": account, "password": password};
-
-    Map<String, dynamic> resp =
-        await HttpUtil().post(url, data: data, hasToken: false);
-    return LoginResp.fromMap(resp);
-  }
-
   static Future<Map<String, dynamic>> logout(dynamic postData) async {
     String url = "${Constant.person}/logout";
     return await HttpUtil().post(url, data: postData);

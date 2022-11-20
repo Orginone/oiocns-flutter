@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/logic/authority.dart';
-import 'package:orginone/api/chat_server.dart';
+import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/routers.dart';
 

@@ -21,8 +21,8 @@ class HttpUtil {
   Logger log = Logger("HttpLogger");
   var dio = Dio(BaseOptions(
     baseUrl: Constant.host,
-    connectTimeout: 30000,
-    receiveTimeout: 30000,
+    connectTimeout: 10000,
+    receiveTimeout: 10000,
   ));
 
   void init() {
@@ -97,15 +97,17 @@ class HttpUtil {
     }
   }
 
-  Future<dynamic> post(String path,
-      {dynamic data,
-      Map<String, dynamic>? queryParameters,
-      Options? options,
-      CancelToken? cancelToken,
-      ProgressCallback? onSendProgress,
-      ProgressCallback? onReceiveProgress,
-      bool? hasToken,
-      bool? showError = true}) async {
+  Future<dynamic> post(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+    bool? hasToken,
+    bool? showError = true,
+  }) async {
     log.info("================Post Http Request================");
     try {
       log.info("====> path: $path");

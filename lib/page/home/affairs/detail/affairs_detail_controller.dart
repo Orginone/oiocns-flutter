@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:orginone/api/chat_server.dart';
+import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/page/home/affairs/affairs_type_enum.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/public/http/base_controller.dart';

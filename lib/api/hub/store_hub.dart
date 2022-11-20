@@ -22,7 +22,7 @@ class StoreHub {
   final Rx<HubConnectionState> _state;
   final Duration _timeout;
   final RxBool _isStop;
-  Function? connectedCallback;
+  final List<Function> _connectedCallbacks;
 
   StoreHub._({
     required String connName,
@@ -42,11 +42,16 @@ class StoreHub {
           ..keepAliveIntervalInMilliseconds = 3000
           ..serverTimeoutInMilliseconds = 8000,
         _isStop = true.obs,
-        _state = HubConnectionState.Disconnected.obs;
+        _state = HubConnectionState.Disconnected.obs,
+        _connectedCallbacks = <Function>[];
 
   Rx<HubConnectionState> get state => _state;
 
   setState() => _state.value = _server.state ?? HubConnectionState.Disconnected;
+
+  void addConnectedCallback(Function func) {
+    _connectedCallbacks.add(func);
+  }
 
   /// 是否未连接
   bool isDisConnected() {
@@ -84,7 +89,7 @@ class StoreHub {
   }
 
   /// 开始连接
-  start({Function? callback}) async {
+  start() async {
     try {
       if (state.value != HubConnectionState.Disconnected) {
         return;
@@ -96,12 +101,13 @@ class StoreHub {
       _info("连接成功");
     } catch (error) {
       _info("连接时发生异常: ${error.toString()}");
-      _connTimeout(callback: callback);
+      _connTimeout();
       rethrow;
     }
-    if (callback != null) {
-      connectedCallback = callback;
-      await callback();
+    if (_connectedCallbacks.isNotEmpty) {
+      for (var callback in _connectedCallbacks) {
+        await callback();
+      }
     }
   }
 
@@ -149,15 +155,15 @@ class StoreHub {
       if (_isStop.value) {
         return;
       }
-      _connTimeout(callback: connectedCallback);
+      _connTimeout();
     });
   }
 
   /// 重连定时器
-  void _connTimeout({Function? callback}) {
+  void _connTimeout() {
     Timer(_timeout, () async {
       _info("重连时间间隔: ${_timeout.inSeconds}s");
-      await start(callback: callback);
+      await start();
     });
   }
 }
@@ -169,7 +175,7 @@ StoreHub? _storeHub;
 StoreHub get chatHub {
   _chatHub ??= StoreHub._(
       connName: "chatHub",
-      url: Constant.hub,
+      url: Constant.messageHub,
       timeout: const Duration(seconds: 5))
     .._init();
   return _chatHub!;
@@ -178,16 +184,16 @@ StoreHub get chatHub {
 StoreHub get anyStoreHub {
   _anyStoreHub ??= StoreHub._(
       connName: "anyStoreHub",
-      url: Constant.anyStore,
+      url: Constant.anyStoreHub,
       timeout: const Duration(seconds: 5))
     .._init();
   return _anyStoreHub!;
 }
 
-StoreHub get storeHub {
+StoreHub get kernelHub {
   _storeHub ??= StoreHub._(
-      connName: "storeHub",
-      url: Constant.store,
+      connName: "kernelHub",
+      url: Constant.kernelHub,
       timeout: const Duration(seconds: 5))
     .._init();
   return _storeHub!;
