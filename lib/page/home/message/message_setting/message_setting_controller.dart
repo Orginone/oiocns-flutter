@@ -44,7 +44,7 @@ class MessageSettingController extends GetxController {
     messageItem = messageController.getMsgItem(spaceId, messageItemId);
     isRelationAdmin = auth.isRelationAdmin([messageItemId]);
 
-    if (messageItem.typeName == TargetType.person.name) {
+    if (messageItem.typeName == TargetType.person.label) {
       return;
     }
     hasReminder = true;

@@ -30,9 +30,9 @@ enum DetailFunc {
   recall("撤回"),
   remove("删除");
 
-  const DetailFunc(this.name);
+  const DetailFunc(this.label);
 
-  final String name;
+  final String label;
 }
 
 double defaultWidth = 10.w;
@@ -220,7 +220,7 @@ class ChatMessageDetail extends GetView<ChatController> {
           items: items.map((item) {
             return PopupMenuItem(
               value: item,
-              child: Text(item.name),
+              child: Text(item.label),
             );
           }).toList(),
         );

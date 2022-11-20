@@ -22,9 +22,9 @@ enum SearchItem {
   markets("市场", []),
   units("单位", []);
 
-  const SearchItem(this.name, this.functionPoint);
+  const SearchItem(this.label, this.functionPoint);
 
-  final String name;
+  final String label;
   final List<FunctionPoint> functionPoint;
 }
 

@@ -4,11 +4,11 @@ enum TargetType {
   cohort("群组"),
   department("部门");
 
-  const TargetType(this.name);
+  const TargetType(this.label);
 
-  final String name;
+  final String label;
 
   static String getName(TargetType targetType) {
-    return targetType.name;
+    return targetType.label;
   }
 }

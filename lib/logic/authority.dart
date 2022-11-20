@@ -12,9 +12,9 @@ enum OrgAuths {
   applicationAdmin("application-admin"),
   mobileAPKAdmin("mobile-apk-admin");
 
-  final String name;
+  final String label;
 
-  const OrgAuths(this.name);
+  const OrgAuths(this.label);
 }
 
 class Authority {
@@ -71,34 +71,34 @@ class Authority {
   /// 是否为组织管理员
   /// [targetIds] 目标对象
   bool isSuperAdmin(List<String> targetIds) {
-    return _hasTargetsAuth([OrgAuths.superAdmin.name], targetIds);
+    return _hasTargetsAuth([OrgAuths.superAdmin.label], targetIds);
   }
 
   /// 是否为组织关系管理员
   /// [targetIds] 目标对象
   bool isRelationAdmin(List<String> targetIds) {
-    var auths = [OrgAuths.superAdmin.name, OrgAuths.relationAdmin.name];
+    var auths = [OrgAuths.superAdmin.label, OrgAuths.relationAdmin.label];
     return _hasTargetsAuth(auths, targetIds);
   }
 
   /// 是否为组织物资管理员
   /// [targetIds] 目标对象
   bool isThingAdmin(List<String> targetIds) {
-    var auths = [OrgAuths.superAdmin.name, OrgAuths.thingAdmin.name];
+    var auths = [OrgAuths.superAdmin.label, OrgAuths.thingAdmin.label];
     return _hasTargetsAuth(auths, targetIds);
   }
 
   /// 是否为组织商店管理员
   /// [targetIds] 目标对象
   bool isMarketAdmin(List<String> targetIds) {
-    var auths = [OrgAuths.superAdmin.name, OrgAuths.marketAdmin.name];
+    var auths = [OrgAuths.superAdmin.label, OrgAuths.marketAdmin.label];
     return _hasTargetsAuth(auths, targetIds);
   }
 
   /// 是否为平台 Android APK 包管理员
   /// [targetIds] 目标对象
   bool isMobileAPKAdmin(List<String> targetIds) {
-    var auths = [OrgAuths.mobileAPKAdmin.name];
+    var auths = [OrgAuths.mobileAPKAdmin.label];
     return _hasTargetsAuth(auths, targetIds, isSystem: false);
   }
 
@@ -106,9 +106,9 @@ class Authority {
   /// [targetIds] 目标对象
   bool isApplicationAdmin(List<String> targetIds) {
     var auths = [
-      OrgAuths.superAdmin.name,
-      OrgAuths.thingAdmin.name,
-      OrgAuths.applicationAdmin.name,
+      OrgAuths.superAdmin.label,
+      OrgAuths.thingAdmin.label,
+      OrgAuths.applicationAdmin.label,
     ];
     return _hasTargetsAuth(auths, targetIds);
   }

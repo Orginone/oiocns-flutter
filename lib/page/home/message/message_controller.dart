@@ -299,7 +299,7 @@ class MessageController extends GetxController
             if (item.id == sessionId) {
               currentItem = item;
             }
-            if (item.typeName == TargetType.person.name &&
+            if (item.typeName == TargetType.person.label &&
                 currentItem != null &&
                 detail.spaceId != item.spaceId) {
               currentItem = null;
@@ -349,7 +349,7 @@ class MessageController extends GetxController
           } else {
             currentItem.showTxt = msgBody;
           }
-          if (currentItem.typeName != TargetType.person.name &&
+          if (currentItem.typeName != TargetType.person.label &&
               currentItem.msgType != MsgType.pull.name &&
               currentItem.msgType != MsgType.createCohort.name &&
               currentItem.msgType != MsgType.exitCohort.name) {

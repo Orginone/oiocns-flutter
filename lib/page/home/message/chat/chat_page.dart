@@ -45,7 +45,7 @@ class ChatPage extends GetView<ChatController> {
       children: [
         GetBuilder<ChatController>(builder: (controller) {
           String name = messageItem.name;
-          if (messageItem.typeName != TargetType.person.name) {
+          if (messageItem.typeName != TargetType.person.label) {
             name += "(${messageItem.personNum ?? 0})";
           }
           return Text(name, style: AFont.instance.size22Black3);
@@ -90,7 +90,7 @@ class ChatPage extends GetView<ChatController> {
 
     TargetResp userInfo = auth.userInfo;
     bool isMy = messageDetail.fromId == userInfo.id;
-    bool isMultiple = messageItem.typeName != TargetType.person.name;
+    bool isMultiple = messageItem.typeName != TargetType.person.label;
 
     Widget currentWidget = ChatMessageDetail(
       detail: messageDetail,

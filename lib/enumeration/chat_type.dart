@@ -6,11 +6,11 @@ enum ChatType {
   unit("单位"),
   unknown("未知");
 
-  final String name;
+  final String label;
 
-  const ChatType(this.name);
+  const ChatType(this.label);
 
   static String getName(ChatType chatType) {
-    return chatType.name;
+    return chatType.label;
   }
 }

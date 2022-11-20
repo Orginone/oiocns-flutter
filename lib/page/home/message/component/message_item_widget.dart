@@ -22,9 +22,9 @@ enum ChatFunc {
   cancelTopping("取消置顶"),
   remove("删除会话");
 
-  final String name;
+  final String label;
 
-  const ChatFunc(this.name);
+  const ChatFunc(this.label);
 }
 
 class MessageItemWidget extends GetView<MessageController> {
@@ -65,7 +65,7 @@ class MessageItemWidget extends GetView<MessageController> {
             0,
           ),
           items: functions
-              .map((item) => PopupMenuItem(value: item, child: Text(item.name)))
+              .map((item) => PopupMenuItem(value: item, child: Text(item.label)))
               .toList(),
         );
         if (result != null) {

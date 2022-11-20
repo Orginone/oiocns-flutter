@@ -50,10 +50,10 @@ enum MoreFunction {
   camera("拍摄", Icons.camera_alt),
   file("文件", Icons.upload);
 
-  final String name;
+  final String label;
   final IconData iconData;
 
-  const MoreFunction(this.name, this.iconData);
+  const MoreFunction(this.label, this.iconData);
 }
 
 double defaultBorderRadius = 6.w;
@@ -419,7 +419,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
             margin: EdgeInsets.only(bottom: 10.h),
             child: Icon(moreFunction.iconData),
           ),
-          Text(moreFunction.name, style: AFont.instance.size16Black3W500)
+          Text(moreFunction.label, style: AFont.instance.size16Black3W500)
         ],
       ),
     );

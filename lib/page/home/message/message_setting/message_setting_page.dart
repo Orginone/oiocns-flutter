@@ -143,7 +143,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
       var messageItem = controller.messageItem;
       var avatarName = StringUtil.getPrefixChars(messageItem.name, count: 1);
       String name = messageItem.name;
-      if (messageItem.typeName != TargetType.person.name) {
+      if (messageItem.typeName != TargetType.person.label) {
         name += "(${messageItem.personNum ?? 0})";
       }
       return Row(

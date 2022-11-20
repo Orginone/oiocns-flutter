@@ -109,7 +109,7 @@ class SearchPage extends GetView<SearchController> {
 
   Widget _tabBar(BuildContext context) {
     List<Widget> tabs = controller.searchItems
-        .map((item) => Text(item.name, style: text12))
+        .map((item) => Text(item.label, style: text12))
         .toList();
 
     return GFTabBar(
@@ -130,7 +130,7 @@ class SearchPage extends GetView<SearchController> {
       children: controller.searchItems
           .map((item) => Container(
                 alignment: Alignment.center,
-                child: Text(item.name),
+                child: Text(item.label),
               ))
           .toList(),
     );
