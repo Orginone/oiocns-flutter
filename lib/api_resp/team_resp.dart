@@ -1,35 +1,15 @@
-import 'package:hive/hive.dart';
-
-import '../config/hive_object_id.dart';
-import '../util/date_util.dart';
-
-part 'team_resp.g.dart';
-
-@HiveType(typeId: HiveObjectId.team)
 class TeamResp {
-  @HiveField(0)
   String id;
-  @HiveField(1)
   String name;
-  @HiveField(2)
   String code;
-  @HiveField(3)
   String targetId;
-  @HiveField(4)
   String? authId;
-  @HiveField(5)
   String? remark;
-  @HiveField(6)
   int status;
-  @HiveField(7)
   String? createUser;
-  @HiveField(8)
   String? updateUser;
-  @HiveField(9)
   String? version;
-  @HiveField(10)
   DateTime? createTime;
-  @HiveField(11)
   DateTime? updateTime;
 
   TeamResp(
@@ -72,7 +52,7 @@ class TeamResp {
         updateUser = map["updateUser"],
         version = map["version"],
         createTime = DateTime.parse(map["createTime"]),
-        updateTime =  DateTime.parse(map["updateTime"]);
+        updateTime = DateTime.parse(map["updateTime"]);
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};

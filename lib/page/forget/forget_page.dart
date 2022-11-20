@@ -4,9 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_button.dart';
 import 'package:orginone/page/login/login_controller.dart';
-import 'package:orginone/page/register/register_controller.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/hive_util.dart';
 
 import '../../api/person_api.dart';
 import 'forget_controller.dart';
@@ -20,7 +18,7 @@ class ForgetPage extends GetView<ForgetController> {
         init: ForgetController(),
         builder: (item) => Scaffold(
               body: () {
-                    return const RegistFormWidget1();
+                return const RegistFormWidget1();
               }(),
             ));
   }
@@ -57,7 +55,7 @@ class RegistFormWidget1 extends GetView<ForgetController> {
                 child: TextFormField(
                   controller: controller.passwordController,
                   decoration:
-                  const InputDecoration(hintText: '大小写字母和数字符号组合的6-15位密码'),
+                      const InputDecoration(hintText: '大小写字母和数字符号组合的6-15位密码'),
                   keyboardType: TextInputType.text,
                   validator: (value) {
                     if (TextUtil.isEmpty(value)) {
@@ -76,11 +74,10 @@ class RegistFormWidget1 extends GetView<ForgetController> {
                 padding: const EdgeInsets.fromLTRB(40, 10, 40, 0),
                 child: TextFormField(
                   controller: controller.confirmController,
-                  decoration:
-                  const InputDecoration(hintText: '确认你的密码'),
+                  decoration: const InputDecoration(hintText: '确认你的密码'),
                   keyboardType: TextInputType.text,
                   validator: (value) {
-                    if(value != controller.passwordController.text) {
+                    if (value != controller.passwordController.text) {
                       return '两次输入密码不一致';
                     }
                     return null;
@@ -90,8 +87,7 @@ class RegistFormWidget1 extends GetView<ForgetController> {
                 padding: const EdgeInsets.fromLTRB(40, 10, 40, 0),
                 child: TextFormField(
                   controller: controller.privateKeyController,
-                  decoration:
-                  const InputDecoration(hintText: '请输入私钥'),
+                  decoration: const InputDecoration(hintText: '请输入私钥'),
                   keyboardType: TextInputType.text,
                   validator: (value) {
                     if (TextUtil.isEmpty(value)) {
@@ -120,17 +116,8 @@ class RegistFormWidget1 extends GetView<ForgetController> {
                           timeInSecForIosWeb: 1,
                           backgroundColor: Colors.grey,
                           textColor: Colors.white,
-                          fontSize: 16.0
-                      );
-                      LoginController loginController = Get.find<LoginController>(
-                      );
-                      loginController.initLogin();
+                          fontSize: 16.0);
                       Get.offNamed(Routers.main);
-                      //存储账号密码历史数据
-                      await HiveUtil().uniqueBox.put('historyLogin', {
-                        'account': controller.accountController.text,
-                        'password': '',
-                      });
                     }
                   },
                   text: "重置密码",

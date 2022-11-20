@@ -1,28 +1,12 @@
-import 'package:hive/hive.dart';
-
-import '../config/hive_object_id.dart';
-
-part 'user_resp.g.dart';
-
-@HiveType(typeId: HiveObjectId.userId)
 class UserResp {
-  @HiveField(0)
   final String account;
-  @HiveField(1)
   final String authority;
-  @HiveField(2)
   final int expiresIn;
-  @HiveField(3)
   final String license;
-  @HiveField(4)
   final String motto;
-  @HiveField(5)
   final String tokenType;
-  @HiveField(6)
   final String userName;
-  @HiveField(7)
   final String workspaceId;
-  @HiveField(8)
   final String workspaceName;
 
   UserResp(

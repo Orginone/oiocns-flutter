@@ -7,7 +7,6 @@ import 'package:orginone/api/person_api.dart';
 import 'package:orginone/page/login/login_controller.dart';
 import 'package:orginone/page/register/register_controller.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/hive_util.dart';
 
 class RegisterPage extends GetView<RegisterController> {
   const RegisterPage({Key? key}) : super(key: key);
@@ -207,10 +206,10 @@ class RegistFormWidget2 extends GetView<RegisterController> {
                           textColor: Colors.white,
                           fontSize: 16.0);
                       //存储账号密码历史数据
-                      await HiveUtil().uniqueBox.put('historyLogin', {
-                        'account': controller.accountController.text,
-                        'password': controller.passwordController.text,
-                      });
+                      // await HiveUtil().uniqueBox.put('historyLogin', {
+                      //   'account': controller.accountController.text,
+                      //   'password': controller.passwordController.text,
+                      // });
                       controller.privateKey = res["privateKey"];
                       controller.changeStep(3);
                     }
@@ -282,8 +281,6 @@ class RegistFormWidget3 extends GetView<RegisterController> {
             padding: const EdgeInsets.fromLTRB(40, 30, 40, 0),
             child: GFButton(
               onPressed: () async {
-                LoginController loginController = Get.find<LoginController>();
-                loginController.initLogin();
                 Get.offNamed(Routers.main);
               },
               text: "完成",
