@@ -42,7 +42,7 @@ class MerchandiseProduct {
   late String typeName;
   late String belongId;
   late String thingId;
-  late String remark;
+  String? remark;
   late int status;
   late String createUser;
   late String updateUser;

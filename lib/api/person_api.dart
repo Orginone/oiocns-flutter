@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/config/constant.dart';
 
@@ -29,6 +28,15 @@ class PersonApi {
 
     Map<String, dynamic> resp = await HttpUtil().post(url);
     return TargetResp.fromMap(resp);
+  }
+
+  static Future<LoginResp> login(String account, String password) async {
+    String url = "${Constant.person}/login";
+    Map<String, dynamic> data = {"account": account, "password": password};
+
+    Map<String, dynamic> resp =
+    await HttpUtil().post(url, data: data, hasToken: false);
+    return LoginResp.fromMap(resp);
   }
 
   static Future<TokenAuthorityResp> tokenInfo() async {

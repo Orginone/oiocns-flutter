@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api_resp/market_entity.dart';
 import 'package:orginone/component/a_font.dart';
-import 'package:orginone/component/choose_item.dart';
-import 'package:orginone/component/text_avatar.dart';
+import 'package:orginone/component/market/market_item_widget.dart';
 import 'package:orginone/component/text_search.dart';
-import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/controller/application_market_controller.dart';
 import 'package:orginone/logic/authority.dart';
-import 'package:orginone/page/home/application/application_market_controller.dart';
+import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/string_util.dart';
 import 'package:orginone/util/widget_util.dart';
 
 class ApplicationMarketPage extends GetView<ApplicationMarketController> {
@@ -66,9 +62,9 @@ class ApplicationMarketPage extends GetView<ApplicationMarketController> {
             child: Obx(
               () => ListView.builder(
                 shrinkWrap: true,
-                itemCount: controller.data.length,
+                itemCount: controller.getSize(),
                 itemBuilder: (context, index) {
-                  return _item(controller.data[index]);
+                  return controller.mapping(index, _mapping);
                 },
               ),
             ),
@@ -78,95 +74,21 @@ class ApplicationMarketPage extends GetView<ApplicationMarketController> {
     );
   }
 
-  Widget _item(MarketEntity market) {
-    List<Widget> list = [];
-    if (market.id != controller.soft.id) {
-      if (market.public ?? false) {
-        var tag = TextTag(
-          "私有",
-          padding: EdgeInsets.only(
-            top: 6.w,
-            bottom: 6.w,
-            left: 10.w,
-            right: 10.w,
-          ),
-        );
-        list.add(tag);
-        list.add(Padding(padding: EdgeInsets.only(bottom: 10.h)));
-      }
-      String name;
-      if (auth.isUserSpace()) {
-        name = auth.userId == market.belongId ? "创建的" : "加入的";
-      } else {
-        name = auth.spaceId == market.belongId ? "创建的" : "加入的";
-      }
-      var tag = TextTag(
-        name,
-        padding: EdgeInsets.only(
-          top: 6.w,
-          bottom: 6.w,
-          left: 10.w,
-          right: 10.w,
-        ),
-      );
-      list.add(tag);
-      list.add(Padding(padding: EdgeInsets.only(bottom: 10.h)));
-    }
-    return Slidable(
-      endActionPane: ActionPane(
-        motion: const ScrollMotion(),
-        children: [
-          SlidableAction(
-            onPressed: (BuildContext context) async {
-              await controller.delete(market.id);
-              Fluttertoast.showToast(msg: "删除市场成功");
-            },
-            backgroundColor: UnifiedColors.backColor,
-            icon: Icons.delete,
-            label: '刪除',
-          ),
-        ],
+  Widget _mapping(MarketEntity market) {
+    var messageController = Get.find<MessageController>();
+    var orgChatCache = messageController.orgChatCache;
+    return MarketItemWidget(
+      marketEntity: market,
+      isSoft: controller.isSoft(market),
+      isUserSpace: auth.isUserSpace(),
+      spaceId: auth.spaceId,
+      userId: auth.userId,
+      belongName: orgChatCache.nameMap[market.belongId] ?? "-",
+      transferCallback: (MarketEntity market) => Get.toNamed(
+        Routers.applicationMerchandise,
+        arguments: market.id,
       ),
-      child: ChooseItem(
-        bgColor: Colors.white,
-        padding: EdgeInsets.all(20.w),
-        header: TextAvatar(
-          avatarName: StringUtil.getPrefixChars(market.name, count: 1),
-          width: 64.w,
-          radius: 20.w,
-        ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(market.name, style: AFont.instance.size16Black0W500),
-                Padding(padding: EdgeInsets.only(left: 10.w)),
-                Text("归属:-", style: AFont.instance.size14Black6),
-                Padding(padding: EdgeInsets.only(left: 10.w)),
-                Text("编码:${market.code}", style: AFont.instance.size14Black6),
-              ],
-            ),
-            Padding(padding: EdgeInsets.only(top: 10.h)),
-            Text(
-              market.remark,
-              overflow: TextOverflow.ellipsis,
-              style: AFont.instance.size12Black9,
-              maxLines: 3,
-            ),
-          ],
-        ),
-        operate: Wrap(
-          children: [
-            Padding(padding: EdgeInsets.only(left: 10.w)),
-            Column(children: list)
-          ],
-        ),
-        func: () {
-          Get.toNamed(Routers.applicationShop);
-        },
-      ),
+      deleteCallback: (MarketEntity market) => controller.remove(market),
     );
   }
 }

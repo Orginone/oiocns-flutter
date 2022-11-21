@@ -38,25 +38,25 @@ class ProxyChatServer implements ChatServer, ConnServer {
 
   @override
   Future<void> start() async {
-    chatHub.addConnectedCallback(tokenAuth);
-    await chatHub.start();
+    _instance._chatHub.addConnectedCallback(tokenAuth);
+    await _instance._chatHub.start();
   }
 
   @override
   Future<void> stop() async {
     _isAuthed.value = false;
-    await chatHub.stop();
+    await _instance._chatHub.stop();
   }
 
   /// 鉴权
   @override
   tokenAuth() async {
-    if (chatHub.isDisConnected()) {
+    if (_instance._chatHub.isDisConnected()) {
       throw Exception("聊天服务未连接,无法授权!");
     }
     var accessToken = getAccessToken;
     var methodName = SendEvent.TokenAuth.name;
-    await chatHub.invoke(methodName, args: [accessToken]);
+    await _instance._chatHub.invoke(methodName, args: [accessToken]);
     _isAuthed.value = true;
   }
 
@@ -156,8 +156,9 @@ class ProxyChatServer implements ChatServer, ConnServer {
 
 class RealChatServer implements ChatServer {
   final Logger log = Logger("RealChatServer");
+  final StoreHub _chatHub;
 
-  RealChatServer._();
+  RealChatServer._(this._chatHub);
 
   /// 发送消息
   @override
@@ -175,7 +176,7 @@ class RealChatServer implements ChatServer {
     };
     var args = <Object>[messageDetail];
     var sendName = SendEvent.SendMsg.name;
-    dynamic apiResp = await chatHub.invoke(sendName, args: args);
+    dynamic apiResp = await _chatHub.invoke(sendName, args: args);
     return ApiResp.fromJson(apiResp);
   }
 
@@ -183,7 +184,7 @@ class RealChatServer implements ChatServer {
   @override
   Future<List<SpaceMessagesResp>> getChats() async {
     String key = SendEvent.GetChats.name;
-    Map<String, dynamic> chats = await chatHub.invoke(key);
+    Map<String, dynamic> chats = await _chatHub.invoke(key);
     ApiResp resp = ApiResp.fromJson(chats);
 
     List<dynamic> groups = resp.data["groups"];
@@ -201,7 +202,7 @@ class RealChatServer implements ChatServer {
   Future<String> getName(String personId) async {
     var key = SendEvent.GetName.name;
     var args = [personId];
-    Map<String, dynamic> nameRes = await chatHub.invoke(key, args: args);
+    Map<String, dynamic> nameRes = await _chatHub.invoke(key, args: args);
     ApiResp resp = ApiResp.fromJson(nameRes);
     return resp.data;
   }
@@ -227,7 +228,7 @@ class RealChatServer implements ChatServer {
       "offset": offset,
       "spaceId": spaceId
     };
-    Map<String, dynamic> res = await chatHub.invoke(event, args: [params]);
+    Map<String, dynamic> res = await _chatHub.invoke(event, args: [params]);
     var apiResp = ApiResp.fromJson(res);
     Map<String, dynamic> data = apiResp.data;
     if (data["result"] == null) {
@@ -245,7 +246,7 @@ class RealChatServer implements ChatServer {
   @override
   Future<ApiResp> recallMsg(MessageDetailResp msg) async {
     var name = SendEvent.RecallMsg.name;
-    dynamic res = await chatHub.invoke(name, args: [msg]);
+    dynamic res = await _chatHub.invoke(name, args: [msg]);
     return ApiResp.fromJson(res);
   }
 
@@ -262,7 +263,7 @@ class RealChatServer implements ChatServer {
       "limit": limit,
       "offset": offset
     };
-    dynamic res = await chatHub.invoke(event, args: [params]);
+    dynamic res = await _chatHub.invoke(event, args: [params]);
 
     ApiResp apiResp = ApiResp.fromJson(res);
     return PageResp.fromMap(apiResp.data, TargetResp.fromMap);
@@ -285,5 +286,5 @@ class RealChatServer implements ChatServer {
   }
 }
 
-final ProxyChatServer chatServer = ProxyChatServer(RealChatServer._())
+final ProxyChatServer chatServer = ProxyChatServer(RealChatServer._(kernelHub))
   .._initEvents();

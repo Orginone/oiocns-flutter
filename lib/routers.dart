@@ -6,7 +6,7 @@ import 'package:orginone/page/home/application/market/application_market_maintai
 import 'package:orginone/page/home/application/page/application_manager_page.dart';
 import 'package:orginone/page/home/application/market/application_market_page.dart';
 import 'package:orginone/page/home/application/page/application_page.dart';
-import 'package:orginone/page/home/application/market/application_detail_page.dart';
+import 'package:orginone/page/home/application/market/application_merchandise_page.dart';
 import 'package:orginone/page/home/center/center_binding.dart';
 import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/component/person_detail/person_detail_binding.dart';
@@ -122,7 +122,7 @@ class Routers {
   // 仓库
   static const String application = "/application";
   static const String applicationManager = "/applicationManager";
-  static const String applicationShop = "/applicationShop";
+  static const String applicationMerchandise = "/applicationMerchandise";
   static const String applicationMarketMaintain = "/marketMaintain";
   static const String applicationMarket = "/applicationMarket";
 
@@ -329,9 +329,9 @@ class Routers {
         binding: ApplicationManagerBinding(),
       ),
       GetPage(
-        name: Routers.applicationShop,
-        page: () => const ApplicationShopPage(),
-        bindings: [ApplicationShopBinding(), ApplicationBinding()],
+        name: Routers.applicationMerchandise,
+        page: () => const ApplicationMerchandisePage(),
+        binding: ApplicationMerchandiseBinding(),
       ),
       GetPage(
         name: Routers.applicationMarketMaintain,

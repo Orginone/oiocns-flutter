@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/api/person_api.dart';
 import 'package:orginone/api/hub/store_server.dart';
 import 'package:orginone/api_resp/login_resp.dart';
 import 'package:orginone/component/loading_button.dart';
 import 'package:orginone/logic/authority.dart';
-import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/util/hive_util.dart';
 
 class LoginController extends GetxController {
@@ -35,7 +33,7 @@ class LoginController extends GetxController {
     var account = accountController.value.text;
     var password = passwordController.value.text;
 
-    LoginResp loginResp = await kernelApi.login(account, password);
+    LoginResp loginResp = await PersonApi.login(account, password);
     setAccessToken = loginResp.accessToken;
 
     //存储账号密码历史数据
@@ -50,7 +48,7 @@ class LoginController extends GetxController {
     // 连接服务器
     try {
       await storeServer.start();
-      await chatServer.start();
+      // await chatServer.start();
     } catch (error) {
       log.info("====> ${error.toString()}");
     }
