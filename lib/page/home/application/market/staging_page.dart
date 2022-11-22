@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api_resp/staging_entity.dart';
 import 'package:orginone/component/a_font.dart';
@@ -7,6 +8,7 @@ import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/controller/market/staging_controller.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
+import 'package:orginone/public/dialog/dialog_confirm.dart';
 import 'package:orginone/util/widget_util.dart';
 
 class StagingPage extends StatelessWidget {
@@ -19,7 +21,37 @@ class StagingPage extends StatelessWidget {
       appBarCenterTitle: true,
       appBarLeading: WidgetUtil.defaultBackBtn,
       body: _body,
+      appBarActions: _actions(context),
     );
+  }
+
+  List<Widget> _actions(BuildContext context) {
+    var stagingCtrl = Get.find<StagingController>();
+    return [
+      IconButton(
+        onPressed: () {
+          stagingCtrl.deleteStagings();
+        },
+        icon: const Icon(Icons.delete_outline, color: Colors.black),
+      ),
+      IconButton(
+        onPressed: () {
+          showAnimatedDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return DialogConfirm(
+                title: "提示",
+                content: "此操作将生成操作订单, 是否确认？",
+                confirmFun: () {
+                  Navigator.of(context).pop();
+                },
+              );
+            },
+          );
+        },
+        icon: const Icon(Icons.add, color: Colors.black),
+      )
+    ];
   }
 
   get _body {
@@ -27,7 +59,6 @@ class StagingPage extends StatelessWidget {
     return Container(
       color: UnifiedColors.navigatorBgColor,
       child: Obx(() => ListView.builder(
-            shrinkWrap: true,
             itemCount: stagingCtrl.getSize(),
             itemBuilder: (BuildContext context, int index) {
               return stagingCtrl.mapping(index, _item);
@@ -37,11 +68,14 @@ class StagingPage extends StatelessWidget {
   }
 
   Widget _item(StagingEntity staging) {
-    var messageController = Get.find<MessageController>();
-    var orgChatCache = messageController.orgChatCache;
+    var messageCtrl = Get.find<MessageController>();
+    var orgChatCache = messageCtrl.orgChatCache;
+    var stagingCtrl = Get.find<StagingController>();
     return StagingItemWidget(
       staging: staging,
       belongName: orgChatCache.nameMap[staging.belongId],
+      onSelected: stagingCtrl.onSelected,
+      selected: stagingCtrl.has(staging.id) ? true.obs : false.obs,
     );
   }
 }

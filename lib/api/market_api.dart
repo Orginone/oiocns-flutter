@@ -75,10 +75,10 @@ class MarketApi {
     return await HttpUtil().post(url, data: data);
   }
 
-  /// 审批商品上架申请
-  static Future<Map<String, dynamic>> deleteStaging(String productId) async {
+  /// 删除购物车内容
+  static Future<Map<String, dynamic>> deleteStaging(String stagingId) async {
     String url = "${Constant.market}/delete/staging";
-    Map<String, dynamic> data = {"id": productId};
+    Map<String, dynamic> data = {"id": stagingId};
     return await HttpUtil().post(url, data: data);
   }
 

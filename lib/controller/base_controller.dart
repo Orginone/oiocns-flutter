@@ -28,6 +28,10 @@ abstract class BaseController<T> extends GetxController {
     _data.removeAt(index);
   }
 
+  removeWhere(bool Function(T item) filter) {
+    _data.removeWhere(filter);
+  }
+
   add(T one) {
     _data.add(one);
   }
