@@ -42,7 +42,7 @@ class StagingController extends BaseController<StagingEntity> {
   Future<void> staging(String merchandiseId) async {
     StagingEntity staging = await MarketApi.staging(merchandiseId);
     add(staging);
-    total.value += 1;
+    onLoad();
   }
 }
 

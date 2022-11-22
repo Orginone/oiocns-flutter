@@ -54,9 +54,7 @@ class MerchandisePage extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: GestureDetector(
-              onTap: () {
-                Get.toNamed(Routers.messageSetting);
-              },
+              onTap: () => Get.toNamed(Routers.staging),
               child: Icon(
                 Icons.shopping_cart,
                 color: UnifiedColors.black3,

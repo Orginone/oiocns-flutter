@@ -1,12 +1,14 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:orginone/controller/market/market_controller.dart';
 import 'package:orginone/controller/market/merchandise_controller.dart';
 import 'package:orginone/controller/market/staging_controller.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
 import 'package:orginone/page/home/affairs/detail/affairs_detail.dart';
-import 'package:orginone/page/home/application/market/application_market_maintain_page.dart';
+import 'package:orginone/page/home/application/market/market_maintain_page.dart';
+import 'package:orginone/page/home/application/market/staging_page.dart';
 import 'package:orginone/page/home/application/page/application_manager_page.dart';
-import 'package:orginone/page/home/application/market/application_market_page.dart';
+import 'package:orginone/page/home/application/market/market_page.dart';
 import 'package:orginone/page/home/application/page/application_page.dart';
 import 'package:orginone/page/home/application/market/merchandise_page.dart';
 import 'package:orginone/page/home/center/center_binding.dart';
@@ -124,10 +126,11 @@ class Routers {
 
   // 仓库
   static const String application = "/application";
-  static const String applicationManager = "/applicationManager";
-  static const String applicationMerchandise = "/applicationMerchandise";
-  static const String applicationMarketMaintain = "/marketMaintain";
-  static const String applicationMarket = "/applicationMarket";
+  static const String manager = "/applicationManager";
+  static const String merchandise = "/applicationMerchandise";
+  static const String marketMaintain = "/marketMaintain";
+  static const String market = "/market";
+  static const String staging = "/staging";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -327,24 +330,29 @@ class Routers {
         binding: ApplicationBinding(),
       ),
       GetPage(
-        name: Routers.applicationManager,
+        name: Routers.manager,
         page: () => const ApplicationManagerPage(),
         binding: ApplicationManagerBinding(),
       ),
       GetPage(
-        name: Routers.applicationMerchandise,
+        name: Routers.merchandise,
         page: () => const MerchandisePage(),
         bindings: [MerchandiseBinding(), StagingBinding(), MessageBinding()],
       ),
       GetPage(
-        name: Routers.applicationMarketMaintain,
-        page: () => const ApplicationMaintainPage(),
+        name: Routers.marketMaintain,
+        page: () => const MaintainPage(),
         binding: ApplicationBinding(),
       ),
       GetPage(
-        name: Routers.applicationMarket,
-        page: () => const ApplicationMarketPage(),
-        binding: ApplicationMarketBinding(),
+        name: Routers.market,
+        page: () => const MarketPage(),
+        binding: MarketBinding(),
+      ),
+      GetPage(
+        name: Routers.staging,
+        page: () => const StagingPage(),
+        binding: StagingBinding(),
       ),
     ];
   }

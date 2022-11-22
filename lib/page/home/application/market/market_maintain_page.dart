@@ -20,8 +20,8 @@ List<FormItem> formConfig = const [
   ),
 ];
 
-class ApplicationMaintainPage extends GetView<MarketController> {
-  const ApplicationMaintainPage({Key? key}) : super(key: key);
+class MaintainPage extends GetView<MarketController> {
+  const MaintainPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

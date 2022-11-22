@@ -30,8 +30,7 @@ class MerchandiseController extends BaseController<MerchandiseEntity> {
 
   changeMarket(String marketId) {
     _marketId = marketId;
-    clear();
-    loadMore();
+    onLoad();
   }
 
   Future<List<MerchandiseEntity>> _getData({String? value}) async {

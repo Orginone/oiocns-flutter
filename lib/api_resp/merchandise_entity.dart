@@ -7,7 +7,7 @@ class MerchandiseEntity {
   late String id;
   late String caption;
   late String productId;
-  late int price;
+  int? price;
   late String sellAuth;
   late String marketId;
   late int status;

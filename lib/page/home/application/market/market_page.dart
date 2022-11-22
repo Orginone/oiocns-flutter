@@ -13,8 +13,8 @@ import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/widget_util.dart';
 
-class ApplicationMarketPage extends GetView<MarketController> {
-  const ApplicationMarketPage({Key? key}) : super(key: key);
+class MarketPage extends GetView<MarketController> {
+  const MarketPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class ApplicationMarketPage extends GetView<MarketController> {
         IconButton(
           onPressed: () {
             Map<String, dynamic> args = {"func": ApplicationMarketFunc.create};
-            Get.toNamed(Routers.applicationMarketMaintain, arguments: args);
+            Get.toNamed(Routers.marketMaintain, arguments: args);
           },
           icon: const Icon(Icons.create_outlined, color: Colors.black),
         ),
@@ -85,17 +85,10 @@ class ApplicationMarketPage extends GetView<MarketController> {
       userId: auth.userId,
       belongName: orgChatCache.nameMap[market.belongId] ?? "-",
       transferCallback: (MarketEntity market) => Get.toNamed(
-        Routers.applicationMerchandise,
+        Routers.merchandise,
         arguments: market.id,
       ),
       deleteCallback: (MarketEntity market) => controller.remove(market),
     );
-  }
-}
-
-class ApplicationMarketBinding extends Bindings {
-  @override
-  void dependencies() {
-    Get.lazyPut(() => MarketController());
   }
 }

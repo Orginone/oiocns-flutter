@@ -1,4 +1,5 @@
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/market_api.dart';
 import 'package:orginone/api_resp/market_entity.dart';
@@ -59,5 +60,12 @@ class MarketController extends BaseController<MarketEntity> {
   /// 是否是软市场
   bool isSoft(MarketEntity target) {
     return target.id == soft.id;
+  }
+}
+
+class MarketBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => MarketController());
   }
 }
