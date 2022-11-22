@@ -3,11 +3,11 @@ import 'package:orginone/api/market_api.dart';
 import 'package:orginone/api_resp/merchandise_entity.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/controller/base_controller.dart';
-import 'package:orginone/page/home/message/message_controller.dart';
+import 'package:orginone/controller/market/staging_controller.dart';
 
-class ApplicationMerchandiseController
-    extends BaseController<MerchandiseEntity> {
-  final MessageController messageController = Get.find<MessageController>();
+class MerchandiseController extends BaseController<MerchandiseEntity> {
+  final StagingController stagingController = Get.find();
+
   late String _marketId;
 
   @override
@@ -23,9 +23,9 @@ class ApplicationMerchandiseController
   }
 
   @override
-  search(String value) {
+  search(String value) async {
     clear();
-    loadMore();
+    addAll(await _getData(value: value));
   }
 
   changeMarket(String marketId) {
@@ -42,5 +42,12 @@ class ApplicationMerchandiseController
       filter: value ?? "",
     );
     return page.result;
+  }
+}
+
+class MerchandiseBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => MerchandiseController());
   }
 }

@@ -1,4 +1,6 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:orginone/controller/market/merchandise_controller.dart';
+import 'package:orginone/controller/market/staging_controller.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
 import 'package:orginone/page/home/affairs/detail/affairs_detail.dart';
@@ -6,7 +8,7 @@ import 'package:orginone/page/home/application/market/application_market_maintai
 import 'package:orginone/page/home/application/page/application_manager_page.dart';
 import 'package:orginone/page/home/application/market/application_market_page.dart';
 import 'package:orginone/page/home/application/page/application_page.dart';
-import 'package:orginone/page/home/application/market/application_merchandise_page.dart';
+import 'package:orginone/page/home/application/market/merchandise_page.dart';
 import 'package:orginone/page/home/center/center_binding.dart';
 import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/component/person_detail/person_detail_binding.dart';
@@ -27,6 +29,7 @@ import 'package:orginone/page/home/message/contact/contact_binding.dart';
 import 'package:orginone/page/home/message/contact/contact_page.dart';
 import 'package:orginone/page/home/message/invite/invite_page.dart';
 import 'package:orginone/page/home/message/message_binding.dart';
+import 'package:orginone/page/home/message/message_controller.dart';
 import 'package:orginone/page/home/message/message_page.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_binding.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_page.dart';
@@ -330,8 +333,8 @@ class Routers {
       ),
       GetPage(
         name: Routers.applicationMerchandise,
-        page: () => const ApplicationMerchandisePage(),
-        binding: ApplicationMerchandiseBinding(),
+        page: () => const MerchandisePage(),
+        bindings: [MerchandiseBinding(), StagingBinding(), MessageBinding()],
       ),
       GetPage(
         name: Routers.applicationMarketMaintain,

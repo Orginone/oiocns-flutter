@@ -9,12 +9,16 @@ import 'package:orginone/component/unified_colors.dart';
 
 class MerchandiseItemWidget extends StatelessWidget {
   final MerchandiseEntity merchandise;
+  final Function? addStagingCall;
+  final Function? requiringCall;
   final String belongName;
 
   const MerchandiseItemWidget({
     Key? key,
     required this.merchandise,
     required this.belongName,
+    this.addStagingCall,
+    this.requiringCall,
   }) : super(key: key);
 
   @override
@@ -64,6 +68,11 @@ class MerchandiseItemWidget extends StatelessWidget {
             bgColor: Colors.white,
             padding: EdgeInsets.all(5.w),
             textStyle: AFont.instance.size12themeColor,
+            onTap: () {
+              if (addStagingCall != null) {
+                addStagingCall!(merchandise);
+              }
+            },
           ),
           Padding(padding: EdgeInsets.only(left: 10.w)),
           TextTag(
@@ -72,6 +81,11 @@ class MerchandiseItemWidget extends StatelessWidget {
             bgColor: Colors.white,
             padding: EdgeInsets.all(5.w),
             textStyle: AFont.instance.size12themeColor,
+            onTap: () {
+              if (requiringCall != null) {
+                requiringCall!(merchandise);
+              }
+            },
           ),
         ],
       ),

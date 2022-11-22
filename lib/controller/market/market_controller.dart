@@ -3,8 +3,9 @@ import 'package:logging/logging.dart';
 import 'package:orginone/api/market_api.dart';
 import 'package:orginone/api_resp/market_entity.dart';
 import 'package:orginone/api_resp/page_resp.dart';
+import 'package:orginone/controller/base_controller.dart';
 
-import 'base_controller.dart';
+import '../base_controller.dart';
 
 enum ApplicationMarketFunc {
   create,
@@ -12,7 +13,7 @@ enum ApplicationMarketFunc {
   applyMarket,
 }
 
-class ApplicationMarketController extends BaseController<MarketEntity> {
+class MarketController extends BaseController<MarketEntity> {
   Logger log = Logger("ApplicationMarketController");
 
   late MarketEntity soft;

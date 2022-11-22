@@ -1,6 +1,7 @@
 import 'package:orginone/api_resp/market_entity.dart';
 import 'package:orginone/api_resp/merchandise_entity.dart';
 import 'package:orginone/api_resp/page_resp.dart';
+import 'package:orginone/api_resp/staging_entity.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/util/http_util.dart';
 
@@ -265,28 +266,32 @@ class MarketApi {
   }
 
   /// 查询暂存区
-  static Future<Map<String, dynamic>> searchStaging({
+  static Future<PageResp<StagingEntity>> searchStaging({
+    required String targetId,
     required int offset,
     required int limit,
     required String filter,
   }) async {
     String url = "${Constant.market}/search/staging";
     Map<String, dynamic> data = {
+      "id": targetId,
       "offset": offset,
       "limit": limit,
       "filter": filter,
     };
-    return await HttpUtil().post(url, data: data);
+    Map<String, dynamic> map = await HttpUtil().post(url, data: data);
+    return PageResp.fromMap(map, StagingEntity.fromJson);
   }
 
   /// 加入暂存区
-  static Future<Map<String, dynamic>> staging(String marketId) async {
-    String url = "${Constant.market}/search/staging";
-    Map<String, dynamic> data = {"id": marketId};
-    return await HttpUtil().post(url, data: data);
+  static Future<StagingEntity> staging(String merchandiseId) async {
+    String url = "${Constant.market}/staging";
+    Map<String, dynamic> data = {"id": merchandiseId};
+    Map<String, dynamic> map = await HttpUtil().post(url, data: data);
+    return StagingEntity.fromJson(map);
   }
 
-  /// 加入暂存区
+  /// 下架
   static Future<Map<String, dynamic>> unPublish(String productId) async {
     String url = "${Constant.market}/unpublish";
     Map<String, dynamic> data = {"id": productId};

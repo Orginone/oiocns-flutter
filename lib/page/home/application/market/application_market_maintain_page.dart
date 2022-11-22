@@ -5,7 +5,7 @@ import 'package:orginone/api/market_api.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/form/form_widget.dart';
 import 'package:orginone/component/unified_scaffold.dart';
-import 'package:orginone/controller/application_market_controller.dart';
+import 'package:orginone/controller/market/market_controller.dart';
 import 'package:orginone/util/widget_util.dart';
 
 List<FormItem> formConfig = const [
@@ -20,7 +20,7 @@ List<FormItem> formConfig = const [
   ),
 ];
 
-class ApplicationMaintainPage extends GetView<ApplicationMarketController> {
+class ApplicationMaintainPage extends GetView<MarketController> {
   const ApplicationMaintainPage({Key? key}) : super(key: key);
 
   @override
