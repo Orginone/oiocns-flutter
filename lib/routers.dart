@@ -1,11 +1,13 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:orginone/controller/market/market_controller.dart';
 import 'package:orginone/controller/market/merchandise_controller.dart';
+import 'package:orginone/controller/market/order_controller.dart';
 import 'package:orginone/controller/market/staging_controller.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
 import 'package:orginone/page/home/affairs/detail/affairs_detail.dart';
 import 'package:orginone/page/home/application/market/market_maintain_page.dart';
+import 'package:orginone/page/home/application/market/order_page.dart';
 import 'package:orginone/page/home/application/market/staging_page.dart';
 import 'package:orginone/page/home/application/page/application_manager_page.dart';
 import 'package:orginone/page/home/application/market/market_page.dart';
@@ -131,6 +133,7 @@ class Routers {
   static const String marketMaintain = "/marketMaintain";
   static const String market = "/market";
   static const String staging = "/staging";
+  static const String order = "/order";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -352,7 +355,12 @@ class Routers {
       GetPage(
         name: Routers.staging,
         page: () => const StagingPage(),
-        binding: StagingBinding(),
+        bindings: [StagingBinding(), MessageBinding(), OrderBinding()],
+      ),
+      GetPage(
+        name: Routers.order,
+        page: () => const OrderPage(),
+        bindings: [OrderBinding()],
       ),
     ];
   }

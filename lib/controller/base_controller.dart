@@ -32,6 +32,14 @@ abstract class BaseController<T> extends GetxController {
     _data.removeWhere(filter);
   }
 
+  List<T> find(bool Function(T item) filter) {
+    return _data.where(filter).toList();
+  }
+
+  T findOne(bool Function(T item) filter) {
+    return _data.firstWhere(filter);
+  }
+
   add(T one) {
     _data.add(one);
   }

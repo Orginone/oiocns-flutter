@@ -4,6 +4,7 @@ import 'package:orginone/api/market_api.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/staging_entity.dart';
 import 'package:orginone/controller/base_controller.dart';
+import 'package:orginone/controller/market/order_controller.dart';
 import 'package:orginone/logic/authority.dart';
 
 class StagingController extends BaseController<StagingEntity> {
@@ -11,7 +12,7 @@ class StagingController extends BaseController<StagingEntity> {
   final RxInt total = 0.obs;
 
   /// 这个用来记录选中的产品, 存储购物车的 ID
-  final RxSet<String> selected = <String>{}.obs;
+  final RxSet<String> _selected = <String>{}.obs;
 
   @override
   void onInit() {
@@ -49,19 +50,24 @@ class StagingController extends BaseController<StagingEntity> {
     onLoad();
   }
 
+  /// 获取选中的数量的大小
+  int selectedSize() {
+    return _selected.length;
+  }
+
   /// 是否已经是选中了
   bool has(String id) {
-    return selected.contains(id);
+    return _selected.contains(id);
   }
 
   /// 加入一个选中的
   select(String id) {
-    selected.add(id);
+    _selected.add(id);
   }
 
   /// 去除一个选中的
   unselected(String id) {
-    selected.remove(id);
+    _selected.remove(id);
   }
 
   /// 选择购物车的回调
@@ -75,13 +81,33 @@ class StagingController extends BaseController<StagingEntity> {
 
   /// 删除购物车内容
   deleteStagings() async {
-    for (var stagingId in selected) {
+    for (var stagingId in _selected) {
       await MarketApi.deleteStaging(stagingId);
-      unselected(stagingId);
       removeWhere((item) => item.id == stagingId);
       total.value -= 1;
     }
+    _selected.clear();
     Fluttertoast.showToast(msg: "删除成功!");
+  }
+
+  // 购买选中的订单
+  Future<void> buy() async {
+    if (_selected.isEmpty) {
+      return;
+    }
+
+    /// 获取第一个购物车
+    var staging = findOne((item) => item.id == _selected.first);
+    var productName = staging.merchandise.caption;
+
+    /// 订单提交
+    var orderCtrl = Get.find<OrderController>();
+    await orderCtrl.createOrderByStaging(productName, _selected.toList());
+
+    /// 提交成功刷新购物车
+    total.value -= _selected.length;
+    _selected.clear();
+    onLoad();
   }
 }
 

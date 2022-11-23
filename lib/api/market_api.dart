@@ -63,7 +63,7 @@ class MarketApi {
     Map<String, dynamic> data = {
       "name": name,
       "code": code,
-      "stageIds": stageIds,
+      "stagIds": stageIds,
     };
     return await HttpUtil().post(url, data: data);
   }

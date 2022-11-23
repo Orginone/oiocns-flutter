@@ -86,12 +86,13 @@ class HttpUtil {
       }
       rethrow;
     } on DioError catch (error) {
-      if (showError!) {
-        Fluttertoast.showToast(msg: error.message);
+      if (showError! && error.response != null) {
+        Response response = error.response!;
+        if (response.statusCode == 400) {
+          log.info("errorInfo =====> ${response.data}");
+          Fluttertoast.showToast(msg: response.data);
+        }
       }
-    } catch (error) {
-      Fluttertoast.showToast(msg: "请求异常,请联系管理员处理!");
-      rethrow;
     } finally {
       log.info("================End Get Http Request================");
     }
@@ -135,12 +136,13 @@ class HttpUtil {
       }
       rethrow;
     } on DioError catch (error) {
-      if (showError!) {
-        Fluttertoast.showToast(msg: error.message);
+      if (showError! && error.response != null) {
+        Response response = error.response!;
+        if (response.statusCode == 400) {
+          log.info("errorInfo =====> ${response.data}");
+          Fluttertoast.showToast(msg: response.data);
+        }
       }
-      rethrow;
-    } catch (error) {
-      Fluttertoast.showToast(msg: "请求异常,请联系管理员处理!");
       rethrow;
     } finally {
       log.info("================End Post Http Request================");
