@@ -12,7 +12,7 @@ import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
-import 'package:signalr_netcore/signalr_client.dart';
+import 'package:signalr_core/signalr_core.dart';
 
 import '../../component/unified_colors.dart';
 import '../../logic/authority.dart';
@@ -261,15 +261,15 @@ class HomePage extends GetView<HomeController> {
         Obx(() {
           Color color;
           switch (status.value) {
-            case HubConnectionState.Connecting:
-            case HubConnectionState.Disconnecting:
-            case HubConnectionState.Reconnecting:
+            case HubConnectionState.connecting:
+            case HubConnectionState.disconnecting:
+            case HubConnectionState.reconnecting:
               color = Colors.yellow;
               break;
-            case HubConnectionState.Connected:
+            case HubConnectionState.connected:
               color = Colors.greenAccent;
               break;
-            case HubConnectionState.Disconnected:
+            case HubConnectionState.disconnected:
               color = Colors.redAccent;
               break;
           }

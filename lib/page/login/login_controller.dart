@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/api/person_api.dart';
 import 'package:orginone/api/hub/store_server.dart';
 import 'package:orginone/api_resp/login_resp.dart';
@@ -45,12 +46,7 @@ class LoginController extends GetxController {
     // 获取当前用户信息
     await loadAuth();
 
-    // 连接服务器
-    try {
-      await storeServer.start();
-      // await chatServer.start();
-    } catch (error) {
-      log.info("====> ${error.toString()}");
-    }
+    await storeServer.start();
+    await chatServer.start();
   }
 }

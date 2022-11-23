@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
-import 'package:signalr_netcore/ihub_protocol.dart';
-import 'package:signalr_netcore/signalr_client.dart';
+import 'package:signalr_core/signalr_core.dart';
 
 enum SendEvent {
   tokenAuth("TokenAuth");
@@ -30,24 +29,16 @@ class StoreHub {
     required Duration timeout,
   })  : _connName = connName,
         _timeout = timeout,
-        _server = HubConnectionBuilder()
-            .withUrl(
-              url,
-              options: HttpConnectionOptions(
-                headers: MessageHeaders()
-                  ..setHeaderValue("Content-Type", "application/json"),
-              ),
-            )
-            .build()
+        _server = HubConnectionBuilder().withUrl(url).build()
           ..keepAliveIntervalInMilliseconds = 3000
           ..serverTimeoutInMilliseconds = 8000,
         _isStop = true.obs,
-        _state = HubConnectionState.Disconnected.obs,
+        _state = HubConnectionState.disconnected.obs,
         _connectedCallbacks = <Function>[];
 
   Rx<HubConnectionState> get state => _state;
 
-  setState() => _state.value = _server.state ?? HubConnectionState.Disconnected;
+  setState() => _state.value = _server.state ?? HubConnectionState.disconnected;
 
   void addConnectedCallback(Function func) {
     _connectedCallbacks.add(func);
@@ -55,12 +46,12 @@ class StoreHub {
 
   /// 是否未连接
   bool isDisConnected() {
-    return _server.state! != HubConnectionState.Connected;
+    return _server.state! != HubConnectionState.connected;
   }
 
   /// 是否已连接
   bool isConnected() {
-    return _server.state! == HubConnectionState.Connected;
+    return _server.state! == HubConnectionState.connected;
   }
 
   /// 调用
@@ -91,7 +82,7 @@ class StoreHub {
   /// 开始连接
   start() async {
     try {
-      if (state.value != HubConnectionState.Disconnected) {
+      if (state.value != HubConnectionState.disconnected) {
         return;
       }
       _info("开始连接");
@@ -125,7 +116,7 @@ class StoreHub {
 
   /// 重连中回调
   _onReconnecting() {
-    _server.onreconnecting(({Exception? error}) {
+    _server.onreconnecting((Exception? error) {
       setState();
       if (error != null) {
         _info("重连中发生异常: ${error.toString()}");
@@ -136,7 +127,7 @@ class StoreHub {
 
   /// 重连成功回调
   _onReconnected() {
-    _server.onreconnecting(({Exception? error}) {
+    _server.onreconnecting((Exception? error) {
       setState();
       if (error != null) {
         _info("重连后发生异常: ${error.toString()}");
@@ -147,7 +138,7 @@ class StoreHub {
 
   /// 监听连接
   _onClose() {
-    _server.onclose(({Exception? error}) async {
+    _server.onclose((Exception? error) async {
       setState();
       if (error != null) {
         _info("关闭时发生异常:${error.toString()}");

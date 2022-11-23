@@ -286,5 +286,5 @@ class RealChatServer implements ChatServer {
   }
 }
 
-final ProxyChatServer chatServer = ProxyChatServer(RealChatServer._(kernelHub))
+final ProxyChatServer chatServer = ProxyChatServer(RealChatServer._(chatHub))
   .._initEvents();
