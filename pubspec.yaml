@@ -89,6 +89,7 @@ dependencies:
   graphic: ^0.10.7
   flutter_form_builder: ^7.7.0
   flutter_treeview: ^1.0.7+1
+  photo_view: ^0.14.0
 
   # 音频录制以及音频播放
   flutter_sound: ^9.2.13

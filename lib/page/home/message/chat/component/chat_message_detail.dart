@@ -10,6 +10,7 @@ import 'package:orginone/api_resp/message_detail_resp.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/component/a_font.dart';
+import 'package:orginone/component/photo_widget.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_edge_insets.dart';
@@ -179,7 +180,7 @@ class ChatMessageDetail extends GetView<ChatController> {
             ));
         break;
       case MsgType.image:
-        body = _image(textDirection: textDirection);
+        body = _image(textDirection: textDirection, context: context);
         break;
       case MsgType.voice:
         body = _voice(textDirection: textDirection);
@@ -273,7 +274,10 @@ class ChatMessageDetail extends GetView<ChatController> {
   }
 
   /// 图片详情
-  Widget _image({required TextDirection textDirection}) {
+  Widget _image({
+    required TextDirection textDirection,
+    required BuildContext context,
+  }) {
     /// 解析参数
     Map<String, dynamic> msgBody = jsonDecode(detail.msgBody ?? "{}");
     String path = msgBody["path"];
@@ -296,12 +300,23 @@ class ChatMessageDetail extends GetView<ChatController> {
     Map<String, String> headers = {
       "Authorization": getAccessToken,
     };
-    return _detail(
-      constraints: boxConstraints,
-      textDirection: textDirection,
-      body: CachedNetworkImage(imageUrl: url, httpHeaders: headers),
-      clipBehavior: Clip.hardEdge,
-      padding: EdgeInsets.zero,
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(DialogRoute(
+            context: context,
+            builder: (BuildContext context) {
+              return PhotoWidget(
+                  imageProvider: CachedNetworkImageProvider(url));
+            }));
+      },
+      child: _detail(
+        constraints: boxConstraints,
+        textDirection: textDirection,
+        body: CachedNetworkImage(imageUrl: url, httpHeaders: headers),
+        clipBehavior: Clip.hardEdge,
+        padding: EdgeInsets.zero,
+      ),
     );
   }
 
