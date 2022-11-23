@@ -77,7 +77,9 @@ class StagingController extends BaseController<StagingEntity> {
   deleteStagings() async {
     for (var stagingId in selected) {
       await MarketApi.deleteStaging(stagingId);
+      unselected(stagingId);
       removeWhere((item) => item.id == stagingId);
+      total.value -= 1;
     }
     Fluttertoast.showToast(msg: "删除成功!");
   }

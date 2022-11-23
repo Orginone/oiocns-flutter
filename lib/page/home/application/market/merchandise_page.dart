@@ -3,11 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:orginone/api/hub/chat_server.dart';
-import 'package:orginone/api/hub/store_server.dart';
 import 'package:orginone/api_resp/merchandise_entity.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/market/merchandise_item_widget.dart';
+import 'package:orginone/component/refresh_body.dart';
 import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
@@ -96,25 +95,18 @@ class MerchandisePage extends StatelessWidget {
 
   get _refreshBody {
     var merchandiseCtrl = Get.find<MerchandiseController>();
-    var refreshController = RefreshController();
-    return Obx(() => SmartRefresher(
-        controller: refreshController,
-        enablePullDown: true,
-        enablePullUp: true,
-        onRefresh: () async {
-          await merchandiseCtrl.onLoad();
-          refreshController.refreshCompleted();
-        },
-        onLoading: () async {
-          await merchandiseCtrl.loadMore();
-          refreshController.loadComplete();
-        },
-        child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: merchandiseCtrl.getSize(),
-            itemBuilder: (BuildContext context, int index) {
-              return merchandiseCtrl.mapping(index, _item);
-            })));
+    var refreshCtrl = RefreshController();
+    return Obx(() => RefreshBody(
+        refreshCtrl: refreshCtrl,
+        onRefresh: () async => await merchandiseCtrl.onLoad(),
+        onLoading: () async => await merchandiseCtrl.loadMore(),
+        body: ListView.builder(
+          shrinkWrap: true,
+          itemCount: merchandiseCtrl.getSize(),
+          itemBuilder: (BuildContext context, int index) {
+            return merchandiseCtrl.mapping(index, _item);
+          },
+        )));
   }
 
   Widget _item(MerchandiseEntity merchandise) {

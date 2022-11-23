@@ -77,6 +77,7 @@ class StagingItemWidget extends StatelessWidget {
           )
         ],
       ),
+      operate: Container(),
       func: () {},
     );
   }
