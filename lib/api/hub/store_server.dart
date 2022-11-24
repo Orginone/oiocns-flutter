@@ -5,8 +5,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/hub/server.dart';
-import 'package:orginone/api_resp/message_detail_resp.dart';
-import 'package:orginone/api_resp/message_item_resp.dart';
+import 'package:orginone/api_resp/message_detail.dart';
+import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/enumeration/message_type.dart';
@@ -84,7 +84,7 @@ class ProxyStoreServer implements ConnServer, StoreServer {
   }
 
   @override
-  Future<ApiResp> cacheMsg(String sessionId, MessageDetailResp detail) {
+  Future<ApiResp> cacheMsg(String sessionId, MessageDetail detail) {
     checkAuthed();
     return _instance.cacheMsg(sessionId, detail);
   }
@@ -158,7 +158,7 @@ class ProxyStoreServer implements ConnServer, StoreServer {
   }
 
   @override
-  Future<List<MessageDetailResp>> getUserSpaceHistoryMsg({
+  Future<List<MessageDetail>> getUserSpaceHistoryMsg({
     required TargetType typeName,
     required String sessionId,
     required int offset,
@@ -317,7 +317,7 @@ class RealStoreServer implements StoreServer {
   }
 
   @override
-  Future<ApiResp> cacheMsg(String sessionId, MessageDetailResp detail) {
+  Future<ApiResp> cacheMsg(String sessionId, MessageDetail detail) {
     if (detail.msgType == MsgType.recall.name) {
       Map<String, dynamic> update = {
         "match": {"chatId": detail.id},
@@ -355,7 +355,7 @@ class RealStoreServer implements StoreServer {
             .where((item) => item["id"] != "topping")
             .toList(),
         "nameMap": orgChatCache.nameMap,
-        "openChats": MessageItemResp.toJsonList(orgChatCache.openChats),
+        "openChats": MessageTarget.toJsonList(orgChatCache.openChats),
         "recentChats": orgChatCache.recentChats,
         "lastMsg": {
           "chat": orgChatCache.target?.toJson(),
@@ -381,7 +381,7 @@ class RealStoreServer implements StoreServer {
   }
 
   @override
-  Future<List<MessageDetailResp>> getUserSpaceHistoryMsg({
+  Future<List<MessageDetail>> getUserSpaceHistoryMsg({
     required TargetType typeName,
     required String sessionId,
     required int offset,
@@ -401,10 +401,10 @@ class RealStoreServer implements StoreServer {
     var domain = Domain.user.name;
     ApiResp apiResp = await aggregate(collName, options, domain);
     List<dynamic> details = apiResp.data ?? [];
-    List<MessageDetailResp> ans = [];
+    List<MessageDetail> ans = [];
     for (var item in details) {
       item["id"] = item["chatId"];
-      var detail = MessageDetailResp.fromMap(item);
+      var detail = MessageDetail.fromMap(item);
       detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
       ans.insert(0, detail);
     }

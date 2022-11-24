@@ -1,8 +1,7 @@
-import 'package:orginone/api_resp/message_detail_resp.dart';
+import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
-import 'package:orginone/util/date_util.dart';
 
-import 'message_item_resp.dart';
+import 'message_target.dart';
 
 class OrgChatCache {
   String? key;
@@ -10,10 +9,10 @@ class OrgChatCache {
   DateTime? updateTime;
   List<SpaceMessagesResp> chats;
   Map<String, dynamic> nameMap;
-  List<MessageItemResp> openChats;
-  MessageItemResp? target;
-  MessageDetailResp? messageDetail;
-  List<MessageItemResp>? recentChats;
+  List<MessageTarget> openChats;
+  MessageTarget? target;
+  MessageDetail? messageDetail;
+  List<MessageTarget>? recentChats;
 
   OrgChatCache.empty()
       : chats = [],
@@ -28,18 +27,18 @@ class OrgChatCache {
       map["chats"] = SpaceMessagesResp.fromList(map["chats"]);
     }
     if (map["recentChats"] != null) {
-      map["recentChats"] = MessageItemResp.fromList(map["recentChats"]);
+      map["recentChats"] = MessageTarget.fromList(map["recentChats"]);
     }
     if (map["openChats"] != null) {
-      map["openChats"] = MessageItemResp.fromList(map["openChats"]);
+      map["openChats"] = MessageTarget.fromList(map["openChats"]);
     }
     if (map["lastMsg"] != null) {
       Map<String, dynamic> lastMsg = map["lastMsg"];
       if (lastMsg["chat"] != null) {
-        map["target"] = MessageItemResp.fromMap(lastMsg["chat"]);
+        map["target"] = MessageTarget.fromMap(lastMsg["chat"]);
       }
       if (lastMsg["data"] != null) {
-        map["messageDetail"] = MessageDetailResp.fromMap(lastMsg["data"]);
+        map["messageDetail"] = MessageDetail.fromMap(lastMsg["data"]);
       }
     }
     return OrgChatCache._fromMap(map);

@@ -32,7 +32,7 @@ class CohortsController extends GetxController {
   int? offset;
   String? filter;
 
-  List<TargetResp> cohorts = [];
+  List<Target> cohorts = [];
 
   @override
   void onInit() {
@@ -62,7 +62,7 @@ class CohortsController extends GetxController {
     await onLoadCohorts(filter);
   }
 
-  cohortFunc(CohortFunction func, TargetResp cohort) async {
+  cohortFunc(CohortFunction func, Target cohort) async {
     switch (func) {
       case CohortFunction.update:
         Map<String, dynamic> args = {

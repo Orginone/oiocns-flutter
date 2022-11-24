@@ -11,7 +11,7 @@ class FriendsController extends GetxController {
   int? offset;
   String? filter;
 
-  List<TargetResp> friends = [];
+  List<Target> friends = [];
 
   @override
   void onInit() {

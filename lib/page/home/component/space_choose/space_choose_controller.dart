@@ -10,7 +10,7 @@ class SpaceChooseController extends GetxController {
 
   late int offset;
   late int limit;
-  late List<TargetResp> spaces;
+  late List<Target> spaces;
 
   @override
   void onInit() {
@@ -28,7 +28,7 @@ class SpaceChooseController extends GetxController {
 
   void addUserInfoSpace() {
     var currentUserInfo = auth.userInfo;
-    TargetResp userInfo = TargetResp.copyWith(currentUserInfo);
+    Target userInfo = Target.copyWith(currentUserInfo);
     userInfo.name = "个人空间";
     spaces.add(userInfo);
   }

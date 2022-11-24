@@ -96,7 +96,7 @@ class DeptPage extends GetView<DeptController> {
     );
   }
 
-  Widget _personItem(TargetResp person) {
+  Widget _personItem(Target person) {
     var name = person.team?.name ?? "";
     return Container(
       padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 10.h),

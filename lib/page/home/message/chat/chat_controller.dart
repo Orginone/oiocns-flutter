@@ -12,8 +12,8 @@ import 'package:logging/logging.dart';
 import 'package:orginone/api/bucket_api.dart';
 import 'package:orginone/api/hub/store_server.dart';
 import 'package:orginone/api_resp/api_resp.dart';
-import 'package:orginone/api_resp/message_detail_resp.dart';
-import 'package:orginone/api_resp/message_item_resp.dart';
+import 'package:orginone/api_resp/message_detail.dart';
+import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/enumeration/enum_map.dart';
 import 'package:orginone/enumeration/message_type.dart';
@@ -27,12 +27,12 @@ import 'package:orginone/util/encryption_util.dart';
 import 'package:uuid/uuid.dart';
 
 class Detail {
-  final MessageDetailResp resp;
+  final MessageDetail resp;
 
   const Detail.fromResp(this.resp);
 
   /// 构造工厂
-  factory Detail(MessageDetailResp resp) {
+  factory Detail(MessageDetail resp) {
     MsgType msgType = EnumMap.messageTypeMap[resp.msgType] ?? MsgType.unknown;
     Map<String, dynamic> msgMap = jsonDecode(resp.msgBody ?? "{}");
     switch (msgType) {
@@ -78,7 +78,7 @@ class VoiceDetail extends Detail {
   final Uint8List bytes;
 
   const VoiceDetail({
-    required MessageDetailResp resp,
+    required MessageDetail resp,
     required this.status,
     required this.initProgress,
     required this.progress,
@@ -98,7 +98,7 @@ class FileDetail extends Detail {
   final String size;
 
   const FileDetail({
-    required MessageDetailResp resp,
+    required MessageDetail resp,
     required this.fileName,
     required this.status,
     required this.progress,
@@ -120,7 +120,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   var resizeToAvoidBottomInset = true.obs;
 
   // 当前所在的群组
-  late MessageItemResp messageItem;
+  late MessageTarget messageItem;
   late String spaceId;
   late String messageItemId;
 
@@ -171,7 +171,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   void onReceiveMsg(
     String spaceId,
     String sessionId,
-    MessageDetailResp? detail,
+    MessageDetail? detail,
   ) {
     if (spaceId != this.spaceId && sessionId != messageItemId) {
       return;
@@ -228,16 +228,11 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
 
     // 加入近期会话
     orgChatCache.recentChats ??= [];
-    bool has = false;
-    for (var item in orgChatCache.recentChats!) {
-      if (item.spaceId == spaceId && item.id == messageItemId) {
-        has = true;
-      }
-    }
-    if (!has) {
-      orgChatCache.recentChats!.add(messageItem);
-      messageController.sortingItems(orgChatCache.recentChats!);
-    }
+    orgChatCache.recentChats!.removeWhere((item) {
+      return item.spaceId == spaceId && item.id == messageItemId;
+    });
+    orgChatCache.recentChats!.add(messageItem);
+    messageController.sortingItems(orgChatCache.recentChats!);
 
     // 加入自己
     messageItem.noRead = 0;
@@ -255,7 +250,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     }
 
     var insertPointer = _details.length;
-    late List<MessageDetailResp> newDetails;
+    late List<MessageDetail> newDetails;
     if (auth.userId == spaceId) {
       newDetails = await storeServer.getUserSpaceHistoryMsg(
         typeName: typeMap[typeName]!,
@@ -274,7 +269,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     }
 
     Map<String, dynamic> nameMap = messageController.orgChatCache.nameMap;
-    for (MessageDetailResp detail in newDetails) {
+    for (MessageDetail detail in newDetails) {
       _details.insert(insertPointer, Detail.fromResp(detail));
       if (!nameMap.containsKey(detail.fromId)) {
         var name = await chatServer.getName(detail.fromId);
@@ -373,7 +368,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     DetailFunc func,
     String spaceId,
     String sessionId,
-    MessageDetailResp detail,
+    MessageDetail detail,
   ) async {
     switch (func) {
       case DetailFunc.recall:

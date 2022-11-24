@@ -1,6 +1,6 @@
 import 'package:orginone/api/hub/store_server.dart';
 import 'package:orginone/api_resp/api_resp.dart';
-import 'package:orginone/api_resp/message_detail_resp.dart';
+import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
@@ -39,7 +39,7 @@ abstract class ChatServer {
   Future<String> getName(String personId);
 
   /// 根据类型获取历史消息
-  Future<List<MessageDetailResp>> getHistoryMsg({
+  Future<List<MessageDetail>> getHistoryMsg({
     required TargetType typeName,
     required String spaceId,
     required String sessionId,
@@ -48,10 +48,10 @@ abstract class ChatServer {
   });
 
   /// 撤销消息
-  Future<ApiResp> recallMsg(MessageDetailResp msg);
+  Future<ApiResp> recallMsg(MessageDetail msg);
 
   /// 获取群人员
-  Future<PageResp<TargetResp>> getPersons({
+  Future<PageResp<Target>> getPersons({
     required String cohortId,
     required int limit,
     required int offset,
@@ -90,10 +90,10 @@ abstract class StoreServer {
   unsubscribing(SubscriptionKey key, String domain);
 
   /// 缓存一条会话信息
-  Future<ApiResp> cacheMsg(String sessionId, MessageDetailResp detail);
+  Future<ApiResp> cacheMsg(String sessionId, MessageDetail detail);
 
   /// 获取个人空间历史消息
-  Future<List<MessageDetailResp>> getUserSpaceHistoryMsg({
+  Future<List<MessageDetail>> getUserSpaceHistoryMsg({
     required TargetType typeName,
     required String sessionId,
     required int offset,

@@ -5,7 +5,7 @@ import '../util/http_util.dart';
 
 class CohortApi {
   /// 查询加入的群组
-  static Future<PageResp<TargetResp>> cohorts(
+  static Future<PageResp<Target>> cohorts(
     int limit,
     int offset,
     String filter,
@@ -17,7 +17,7 @@ class CohortApi {
     }
 
     Map<String, dynamic> pageResp = await HttpUtil().post(url, data: data);
-    return PageResp.fromMap(pageResp, TargetResp.fromMap);
+    return PageResp.fromMap(pageResp, Target.fromMap);
   }
 
   /// 退出群组
@@ -37,7 +37,7 @@ class CohortApi {
   }
 
   /// 群组搜索
-  static Future<PageResp<TargetResp>> search({
+  static Future<PageResp<Target>> search({
     required String keyword,
     required int limit,
     required int offset,
@@ -46,11 +46,11 @@ class CohortApi {
     var data = {"filter": keyword, "limit": limit, "offset": offset};
 
     Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
-    return PageResp.fromMap(resp, TargetResp.fromMap);
+    return PageResp.fromMap(resp, Target.fromMap);
   }
 
   /// 创建群组
-  static Future<TargetResp> create(Map<String, dynamic> params) async {
+  static Future<Target> create(Map<String, dynamic> params) async {
     String url = "${Constant.cohort}/create";
     var data = {
       "code": params["code"],
@@ -60,11 +60,11 @@ class CohortApi {
     };
 
     Map<String, dynamic> ansMap = await HttpUtil().post(url, data: data);
-    return TargetResp.fromMap(ansMap);
+    return Target.fromMap(ansMap);
   }
 
   /// 更新群组
-  static Future<TargetResp> update(Map<String, dynamic> params) async {
+  static Future<Target> update(Map<String, dynamic> params) async {
     String url = "${Constant.cohort}/update";
     var data = {
       "id": params["id"],
@@ -77,7 +77,7 @@ class CohortApi {
       "belongId": params["belongId"],
     };
     Map<String, dynamic> ansMap = await HttpUtil().post(url, data: data);
-    return TargetResp.fromMap(ansMap);
+    return Target.fromMap(ansMap);
   }
 
   /// 解散群组

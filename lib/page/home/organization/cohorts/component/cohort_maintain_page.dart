@@ -84,7 +84,7 @@ class CohortMaintainController extends GetxController {
   }
 
   Future<dynamic> createCohort(Map<String, dynamic> value) async {
-    TargetResp cohort = await CohortApi.create(value);
+    Target cohort = await CohortApi.create(value);
     await loadAuth();
     Fluttertoast.showToast(msg: "创建成功！");
 
@@ -98,7 +98,7 @@ class CohortMaintainController extends GetxController {
   }
 
   Future<dynamic> updateCohort(Map<String, dynamic> value) async {
-    TargetResp cohort = await CohortApi.update(value);
+    Target cohort = await CohortApi.update(value);
     Fluttertoast.showToast(msg: "修改成功！");
 
     String oldName = old["name"];

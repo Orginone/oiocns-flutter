@@ -1,8 +1,7 @@
-import '../util/date_util.dart';
-
-class MessageItemResp {
+class MessageTarget {
   String id;
   String label;
+  String? photo;
   String name;
   String? remark;
   String typeName;
@@ -16,9 +15,10 @@ class MessageItemResp {
   bool? isTop;
   bool? isInterruption;
 
-  MessageItemResp.fromMap(Map<String, dynamic> map)
+  MessageTarget.fromMap(Map<String, dynamic> map)
       : id = map["id"],
         label = map["label"],
+        photo = map["photo"],
         name = map["name"],
         remark = map["remark"],
         typeName = map["typeName"],
@@ -32,19 +32,19 @@ class MessageItemResp {
         isTop = map["isTop"],
         isInterruption = map["isInterruption"];
 
-  static List<MessageItemResp> fromList(List<dynamic>? data) {
+  static List<MessageTarget> fromList(List<dynamic>? data) {
     if (data == null) {
       return [];
     }
-    List<MessageItemResp> ans = [];
+    List<MessageTarget> ans = [];
     for (Map<String, dynamic> item in data) {
-      MessageItemResp chatResp = MessageItemResp.fromMap(item);
+      MessageTarget chatResp = MessageTarget.fromMap(item);
       ans.add(chatResp);
     }
     return ans;
   }
 
-  static List<Map<String, dynamic>>? toJsonList(List<MessageItemResp>? data) {
+  static List<Map<String, dynamic>>? toJsonList(List<MessageTarget>? data) {
     if (data == null) {
       return null;
     }
@@ -59,6 +59,7 @@ class MessageItemResp {
     final json = <String, dynamic>{};
     json['id'] = id;
     json['label'] = label;
+    json['photo'] = photo;
     json['name'] = name;
     json['remark'] = remark;
     json['typeName'] = typeName;

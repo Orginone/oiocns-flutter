@@ -8,7 +8,7 @@ import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/page/home/message/component/message_item_widget.dart';
 import 'package:orginone/page/home/message/message_controller.dart';
 
-import '../../../api_resp/message_item_resp.dart';
+import '../../../api_resp/message_target.dart';
 import '../../../component/a_font.dart';
 import '../../../component/choose_item.dart';
 import '../../../component/icon_avatar.dart';
@@ -52,7 +52,7 @@ class RecentChat extends GetView<MessageController> {
   Widget build(BuildContext context) {
     return GetBuilder<MessageController>(
       builder: (controller) {
-        List<MessageItemResp> items = controller.orgChatCache.recentChats ?? [];
+        List<MessageTarget> items = controller.orgChatCache.recentChats ?? [];
         return ListView.builder(
           shrinkWrap: true,
           scrollDirection: Axis.vertical,

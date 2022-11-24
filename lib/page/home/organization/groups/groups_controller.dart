@@ -13,7 +13,7 @@ class GroupsController extends GetxController {
   int? offset;
   String? filter;
 
-  List<TargetResp> groups = [];
+  List<Target> groups = [];
 
   @override
   void onInit() {

@@ -6,8 +6,8 @@ class TokenAuthorityResp {
   final String spaceId;
   final String userId;
   final List<IdentityResp> identitys;
-  final TargetResp userInfo;
-  final TargetResp spaceInfo;
+  final Target userInfo;
+  final Target spaceInfo;
 
   const TokenAuthorityResp({
     required this.spaceId,
@@ -21,6 +21,6 @@ class TokenAuthorityResp {
       : spaceId = map["spaceId"],
         userId = map["userId"],
         identitys = IdentityResp.fromList(map["identitys"]),
-        userInfo = TargetResp.fromMap(map["userInfo"]),
-        spaceInfo = TargetResp.fromMap(map["spaceInfo"]);
+        userInfo = Target.fromMap(map["userInfo"]),
+        spaceInfo = Target.fromMap(map["spaceInfo"]);
 }

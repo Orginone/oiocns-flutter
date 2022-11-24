@@ -5,7 +5,7 @@ import 'package:orginone/api_resp/target_resp.dart';
 
 //需要接收一个统一社会信用代码来做查询
 class UnitDetailController extends GetxController {
-  TargetResp? unit;
+  Target? unit;
   int type = 0;
   ScrollController scrollController = ScrollController();
 

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:orginone/api/person_api.dart';
-import 'package:orginone/api_resp/message_item_resp.dart';
+import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/logic/authority.dart';
 import 'package:orginone/page/home/home_controller.dart';
@@ -21,7 +21,7 @@ class ContactController extends BaseController {
   int mSelectIndex = -1;
   RxBool mTouchUp = RxBool(true);
   RxString mTouchChar = RxString("");
-  List<TargetResp> mData = [];
+  List<Target> mData = [];
   Logger logger = Logger("ContactController");
   double _listAllItemHeight = 0;
 
@@ -37,7 +37,7 @@ class ContactController extends BaseController {
     loadAllContact("");
   }
 
-  MessageItemResp getMsgItem(TargetResp targetResp) {
+  MessageTarget getMsgItem(Target targetResp) {
     MessageController messageController = Get.find<MessageController>();
     return messageController.spaceMessageItemMap[auth.userId]![targetResp.id]!;
   }
@@ -67,7 +67,7 @@ class ContactController extends BaseController {
         //插入字符
         var index = 0;
         for (var pos in insertPos) {
-          var targetResp = TargetResp(typeChar, firstChars[pos], "", "", "", "",
+          var targetResp = Target(typeChar, firstChars[pos], "", "", "", "",
               0, "", "", "", null, null, null, null);
           mData.insert(pos + index, targetResp);
           index++;

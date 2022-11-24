@@ -67,7 +67,7 @@ class FriendsPage extends GetView<FriendsController> {
     );
   }
 
-  Widget _item(TargetResp targetResp) {
+  Widget _item(Target targetResp) {
     var avatarName = StringUtil.getPrefixChars(targetResp.name, count: 2);
     return GestureDetector(
       onTap: () {

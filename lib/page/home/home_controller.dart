@@ -176,7 +176,7 @@ class HomeController extends GetxController
     );
   }
 
-  void switchSpaces(TargetResp targetResp) async {
+  void switchSpaces(Target targetResp) async {
     LoginResp loginResp = await PersonApi.changeWorkspace(targetResp.id);
     setAccessToken = loginResp.accessToken;
 

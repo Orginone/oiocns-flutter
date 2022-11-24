@@ -26,9 +26,9 @@ class Authority {
 
   String get userId => resp.userId;
 
-  TargetResp get userInfo => resp.userInfo;
+  Target get userInfo => resp.userInfo;
 
-  TargetResp get spaceInfo => resp.spaceInfo;
+  Target get spaceInfo => resp.spaceInfo;
 
   /// 判断目标是否含有系统权限
   /// [auths] 相应权限

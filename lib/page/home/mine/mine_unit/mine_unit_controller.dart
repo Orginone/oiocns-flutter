@@ -4,7 +4,7 @@ import 'package:orginone/api/company_api.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 
 class MineUnitController extends GetxController {
-  List<TargetResp> units = [];
+  List<Target> units = [];
   int offset = 0;
   int limit = 10;
   ScrollController scrollController = ScrollController();

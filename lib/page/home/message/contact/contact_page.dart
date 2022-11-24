@@ -67,7 +67,7 @@ class ContactPage extends BaseView<ContactController> {
   }
 
   /// 联系人列表item
-  Widget item(TargetResp targetResp) {
+  Widget item(Target targetResp) {
     if (targetResp.id == "-101") {
       return Container(
           color: UnifiedColors.lineLight,

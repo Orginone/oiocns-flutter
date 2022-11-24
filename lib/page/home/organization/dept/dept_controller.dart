@@ -17,7 +17,7 @@ class DeptController extends GetxController {
   TreeNode? currentNode;
 
   // 人员获取控制器
-  List<TargetResp> persons = [];
+  List<Target> persons = [];
   int limit = 20;
   int offset = 0;
 

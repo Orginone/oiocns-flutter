@@ -6,7 +6,7 @@ import 'package:logging/logging.dart';
 import 'package:orginone/api/hub/store_hub.dart';
 import 'package:orginone/api/hub/server.dart';
 import 'package:orginone/api_resp/api_resp.dart';
-import 'package:orginone/api_resp/message_detail_resp.dart';
+import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
@@ -67,7 +67,7 @@ class ProxyChatServer implements ChatServer, ConnServer {
   }
 
   @override
-  Future<List<MessageDetailResp>> getHistoryMsg({
+  Future<List<MessageDetail>> getHistoryMsg({
     required TargetType typeName,
     required String spaceId,
     required String sessionId,
@@ -91,7 +91,7 @@ class ProxyChatServer implements ChatServer, ConnServer {
   }
 
   @override
-  Future<PageResp<TargetResp>> getPersons({
+  Future<PageResp<Target>> getPersons({
     required String cohortId,
     required int limit,
     required int offset,
@@ -105,7 +105,7 @@ class ProxyChatServer implements ChatServer, ConnServer {
   }
 
   @override
-  Future<ApiResp> recallMsg(MessageDetailResp msg) {
+  Future<ApiResp> recallMsg(MessageDetail msg) {
     checkAuthed();
     return _instance.recallMsg(msg);
   }
@@ -209,7 +209,7 @@ class RealChatServer implements ChatServer {
 
   /// 获取历史消息
   @override
-  Future<List<MessageDetailResp>> getHistoryMsg({
+  Future<List<MessageDetail>> getHistoryMsg({
     required TargetType typeName,
     required String spaceId,
     required String sessionId,
@@ -236,7 +236,7 @@ class RealChatServer implements ChatServer {
     }
     List<dynamic> details = data["result"];
     return details.reversed.map((item) {
-      var detail = MessageDetailResp.fromMap(item);
+      var detail = MessageDetail.fromMap(item);
       detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
       return detail;
     }).toList();
@@ -244,7 +244,7 @@ class RealChatServer implements ChatServer {
 
   /// 撤销消息
   @override
-  Future<ApiResp> recallMsg(MessageDetailResp msg) async {
+  Future<ApiResp> recallMsg(MessageDetail msg) async {
     var name = SendEvent.RecallMsg.name;
     dynamic res = await _chatHub.invoke(name, args: [msg]);
     return ApiResp.fromJson(res);
@@ -252,7 +252,7 @@ class RealChatServer implements ChatServer {
 
   /// 获取人员
   @override
-  Future<PageResp<TargetResp>> getPersons({
+  Future<PageResp<Target>> getPersons({
     required String cohortId,
     required int limit,
     required int offset,
@@ -266,7 +266,7 @@ class RealChatServer implements ChatServer {
     dynamic res = await _chatHub.invoke(event, args: [params]);
 
     ApiResp apiResp = ApiResp.fromJson(res);
-    return PageResp.fromMap(apiResp.data, TargetResp.fromMap);
+    return PageResp.fromMap(apiResp.data, Target.fromMap);
   }
 
   /// 接收回调

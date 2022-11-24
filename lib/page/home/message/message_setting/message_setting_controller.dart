@@ -4,7 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:orginone/api/cohort_api.dart';
 import 'package:orginone/api/person_api.dart';
 import 'package:orginone/api/hub/store_server.dart';
-import 'package:orginone/api_resp/message_item_resp.dart';
+import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/enumeration/target_type.dart';
@@ -22,13 +22,13 @@ class MessageSettingController extends GetxController {
   ChatController chatController = Get.find<ChatController>();
 
   // 当前观察对象
-  late MessageItemResp messageItem;
+  late MessageTarget messageItem;
   late String spaceId;
   late String messageItemId;
 
   // 人员列表
   late bool hasReminder;
-  late List<TargetResp> persons;
+  late List<Target> persons;
   late bool isRelationAdmin;
   late int offset;
   late int limit;
@@ -56,7 +56,7 @@ class MessageSettingController extends GetxController {
 
   /// 查询群成员信息
   Future<void> getPersons(int limit) async {
-    PageResp<TargetResp> ans = await chatServer.getPersons(
+    PageResp<Target> ans = await chatServer.getPersons(
       cohortId: messageItemId,
       limit: limit,
       offset: offset,
@@ -68,7 +68,7 @@ class MessageSettingController extends GetxController {
     update();
   }
 
-  Future<List<TargetResp>> getAllPersons() async {
+  Future<List<Target>> getAllPersons() async {
     while (true) {
       if (!hasReminder) {
         break;

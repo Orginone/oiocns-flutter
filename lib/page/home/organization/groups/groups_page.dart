@@ -52,7 +52,7 @@ class GroupsPage extends GetView<GroupsController> {
         ),
       );
 
-  Widget _item(TargetResp targetResp) {
+  Widget _item(Target targetResp) {
     return GestureDetector(
       onTap: () {
         Get.toNamed(Routers.personDetail, arguments: targetResp.team?.code);

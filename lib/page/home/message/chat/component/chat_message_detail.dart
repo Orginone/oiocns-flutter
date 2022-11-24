@@ -6,7 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/bucket_api.dart';
-import 'package:orginone/api_resp/message_detail_resp.dart';
+import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/component/a_font.dart';
@@ -40,7 +40,7 @@ double defaultWidth = 10.w;
 class ChatMessageDetail extends GetView<ChatController> {
   final Logger log = Logger("ChatMessageDetail");
 
-  final MessageDetailResp detail;
+  final MessageDetail detail;
   final bool isMy;
   final bool isMultiple;
   final MsgType msgType;
@@ -136,7 +136,7 @@ class ChatMessageDetail extends GetView<ChatController> {
 
   /// 获取头像
   Widget _getAvatar() {
-    TargetResp userInfo = auth.userInfo;
+    Target userInfo = auth.userInfo;
     return TextAvatar(
       avatarName: StringUtil.getAvatarName(
         avatarName: isMy ? userInfo.team?.name ?? "" : targetName(),

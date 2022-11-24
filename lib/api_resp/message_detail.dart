@@ -1,4 +1,4 @@
-class MessageDetailResp {
+class MessageDetail {
   String id;
   String? spaceId;
   String fromId;
@@ -10,20 +10,20 @@ class MessageDetailResp {
   DateTime? createTime;
   DateTime? updateTime;
 
-  MessageDetailResp({
+  MessageDetail({
     required this.id,
     required this.spaceId,
     required this.fromId,
     required this.toId,
     required this.msgType,
-    this.msgBody,
+    required this.msgBody,
     this.createUser,
     this.updateUser,
     this.createTime,
     this.updateTime,
   });
 
-  MessageDetailResp.fromMap(Map<String, dynamic> map)
+  MessageDetail.fromMap(Map<String, dynamic> map)
       : id = map["id"],
         spaceId = map["spaceId"],
         fromId = map["fromId"],

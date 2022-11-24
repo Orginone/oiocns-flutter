@@ -14,7 +14,7 @@ class MineInfoController extends GetxController {
   TextEditingController accountTextController = TextEditingController();
   TextEditingController nameTextController = TextEditingController();
   TextEditingController phoneTextController = TextEditingController();
-  TargetResp userInfo = auth.userInfo;
+  Target userInfo = auth.userInfo;
 
   void updateUser(dynamic postData) async {
     var resMeg = await PersonApi.updateUser(postData);

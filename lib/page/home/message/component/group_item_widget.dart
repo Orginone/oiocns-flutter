@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/api_resp/message_item_resp.dart';
+import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/page/home/message/component/message_item_widget.dart';
@@ -116,7 +116,7 @@ class GroupItemWidget extends GetView<MessageController> {
                 },
               );
             } else {
-              List<MessageItemResp> messageItems = spaceMessages.chats
+              List<MessageTarget> messageItems = spaceMessages.chats
                   .where((item) => item.isTop == null || item.isTop == false)
                   .toList();
               if (!isExpand) {
@@ -131,7 +131,7 @@ class GroupItemWidget extends GetView<MessageController> {
                 padding: EdgeInsets.only(bottom: bottom),
                 itemCount: messageItems.length,
                 itemBuilder: (context, index) {
-                  MessageItemResp messageItem = messageItems[index];
+                  MessageTarget messageItem = messageItems[index];
                   String spaceId = spaceMessages.id;
                   return MessageItemWidget(spaceId, messageItem);
                 },

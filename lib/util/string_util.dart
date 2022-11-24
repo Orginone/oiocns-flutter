@@ -1,7 +1,7 @@
-import 'package:orginone/api_resp/message_detail_resp.dart';
+import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/enumeration/enum_map.dart';
 
-import '../api_resp/message_item_resp.dart';
+import '../api_resp/message_target.dart';
 import '../component/text_avatar.dart';
 import '../enumeration/target_type.dart';
 import '../logic/authority.dart';
@@ -28,8 +28,8 @@ class StringUtil {
   }
 
   static String getDetailRecallBody({
-    required MessageItemResp item,
-    required MessageDetailResp detail,
+    required MessageTarget item,
+    required MessageDetail detail,
     required Map<String, dynamic> nameMap,
   }) {
     var userInfo = auth.userInfo;
@@ -46,7 +46,7 @@ class StringUtil {
     return msgBody;
   }
 
-  static String getRecallBody(MessageItemResp item, MessageDetailResp detail) {
+  static String getRecallBody(MessageTarget item, MessageDetail detail) {
     var userInfo = auth.userInfo;
     String msgBody = "撤回了一条消息";
     var targetType = EnumMap.targetTypeMap[item.typeName];

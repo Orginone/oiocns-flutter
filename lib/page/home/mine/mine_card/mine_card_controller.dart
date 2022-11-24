@@ -14,7 +14,7 @@ import '../../../../logic/authority.dart';
 
 class MineCardController extends GetxController {
   final Logger log = Logger("MineCardController");
-  TargetResp userInfo = auth.userInfo;
+  Target userInfo = auth.userInfo;
   GlobalKey globalKey1 = GlobalKey();
   //截图后的文件路径，通过File包装并通过.image可以展示出来
   String captureImgPath = '';

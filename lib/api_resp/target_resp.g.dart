@@ -6,17 +6,17 @@ part of 'target_resp.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TargetRespAdapter extends TypeAdapter<TargetResp> {
+class TargetRespAdapter extends TypeAdapter<Target> {
   @override
   final int typeId = 5;
 
   @override
-  TargetResp read(BinaryReader reader) {
+  Target read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return TargetResp(
+    return Target(
       fields[0] as String,
       fields[1] as String,
       fields[2] as String,
@@ -35,7 +35,7 @@ class TargetRespAdapter extends TypeAdapter<TargetResp> {
   }
 
   @override
-  void write(BinaryWriter writer, TargetResp obj) {
+  void write(BinaryWriter writer, Target obj) {
     writer
       ..writeByte(14)
       ..writeByte(0)

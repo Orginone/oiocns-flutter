@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:orginone/api_resp/message_item_resp.dart';
+import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_colors.dart';
@@ -30,7 +30,7 @@ enum ChatFunc {
 class MessageItemWidget extends GetView<MessageController> {
   // 用户信息
   final String spaceId;
-  final MessageItemResp item;
+  final MessageTarget item;
 
   const MessageItemWidget(this.spaceId, this.item, {Key? key})
       : super(key: key);
@@ -93,7 +93,7 @@ class MessageItemWidget extends GetView<MessageController> {
     );
   }
 
-  Widget _avatar(MessageItemResp messageItem) {
+  Widget _avatar(MessageTarget messageItem) {
     int notRead = messageItem.noRead ?? 0;
     Color badgeColor = messageItem.isInterruption ?? false
         ? UnifiedColors.cardBorder
@@ -128,7 +128,7 @@ class MessageItemWidget extends GetView<MessageController> {
     );
   }
 
-  Widget _avatarContainer(MessageItemResp messageItem) {
+  Widget _avatarContainer(MessageTarget messageItem) {
     return Container(
       alignment: Alignment.center,
       width: defaultAvatarWidth,
@@ -139,8 +139,8 @@ class MessageItemWidget extends GetView<MessageController> {
     );
   }
 
-  Widget _content(MessageItemResp messageItem) {
-    TargetResp userInfo = auth.userInfo;
+  Widget _content(MessageTarget messageItem) {
+    Target userInfo = auth.userInfo;
     var name = userInfo.id == messageItem.id
         ? "${messageItem.name}（我）"
         : messageItem.name;
@@ -190,7 +190,7 @@ class MessageItemWidget extends GetView<MessageController> {
     );
   }
 
-  Widget _contentContainer(MessageItemResp messageItem) {
+  Widget _contentContainer(MessageTarget messageItem) {
     return Expanded(
       child: Container(
         padding: EdgeInsets.only(left: 18.w, top: 2.h, bottom: 2.h),

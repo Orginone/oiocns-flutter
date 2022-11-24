@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:orginone/api_resp/message_item_resp.dart';
+import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/choose_item.dart';
 import 'package:orginone/component/text_avatar.dart';
@@ -30,7 +30,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
   @override
   Widget build(BuildContext context) {
     Map<String, ChatType> chatTypeMap = EnumMap.chatTypeMap;
-    MessageItemResp item = controller.messageItem;
+    MessageTarget item = controller.messageItem;
     ChatType chatType = chatTypeMap[item.label] ?? ChatType.unknown;
 
     List<Widget> children = [

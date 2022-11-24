@@ -76,7 +76,7 @@ class AvatarGroup extends StatelessWidget {
   }
 
   /// 头像子项
-  Widget _avatarItem(TargetResp person) {
+  Widget _avatarItem(Target person) {
     var name = person.team?.name ?? "";
     var prefix = StringUtil.getPrefixChars(name, count: 2);
     return Column(

@@ -7,8 +7,8 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/hub/store_server.dart';
 import 'package:orginone/api_resp/api_resp.dart';
-import 'package:orginone/api_resp/message_detail_resp.dart';
-import 'package:orginone/api_resp/message_item_resp.dart';
+import 'package:orginone/api_resp/message_detail.dart';
+import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
@@ -39,7 +39,7 @@ class MessageController extends GetxController
 
   // 会话索引
   Map<String, SpaceMessagesResp> spaceMap = {};
-  Map<String, Map<String, MessageItemResp>> spaceMessageItemMap = {};
+  Map<String, Map<String, MessageTarget>> spaceMessageItemMap = {};
 
   // 当前 app 状态
   AppLifecycleState? currentAppState;
@@ -111,7 +111,7 @@ class MessageController extends GetxController
           : Container());
 
   /// 获取消息会话对象
-  MessageItemResp getMsgItem(String spaceId, String messageItemId) {
+  MessageTarget getMsgItem(String spaceId, String messageItemId) {
     return spaceMessageItemMap[spaceId]![messageItemId]!;
   }
 
@@ -140,7 +140,7 @@ class MessageController extends GetxController
   }
 
   /// 组内会话排序
-  sortingItems(List<MessageItemResp> chats) {
+  sortingItems(List<MessageTarget> chats) {
     // 会话
     chats.sort((first, second) {
       if (first.msgTime == null || second.msgTime == null) {
@@ -203,13 +203,13 @@ class MessageController extends GetxController
   }
 
   /// 最新的消息处理
-  _latestMsgHandling(MessageDetailResp? detail) {
+  _latestMsgHandling(MessageDetail? detail) {
     if (detail == null) {
       return;
     }
     if (Get.isRegistered<ChatController>()) {
       // 消息预处理
-      TargetResp userInfo = auth.userInfo;
+      Target userInfo = auth.userInfo;
       var sessionId = detail.toId;
       if (detail.toId == userInfo.id) {
         sessionId = detail.fromId;
@@ -225,7 +225,7 @@ class MessageController extends GetxController
     // 新的数组
     List<SpaceMessagesResp> spaces = [];
     Map<String, SpaceMessagesResp> newSpaceMap = {};
-    Map<String, Map<String, MessageItemResp>> newSpaceMessageItemMap = {};
+    Map<String, Map<String, MessageTarget>> newSpaceMessageItemMap = {};
 
     // 置顶会话
     groups = groups.where((item) => item.id != "topping").toList();
@@ -235,14 +235,14 @@ class MessageController extends GetxController
     for (var group in groups) {
       // 初始数据
       String spaceId = group.id;
-      List<MessageItemResp> chats = group.chats;
+      List<MessageTarget> chats = group.chats;
 
       // 建立索引
       newSpaceMap[spaceId] = group;
       newSpaceMessageItemMap[spaceId] = {};
 
       // 数据映射
-      for (MessageItemResp messageItem in chats) {
+      for (MessageTarget messageItem in chats) {
         var id = messageItem.id;
         if (spaceMessageItemMap.containsKey(spaceId)) {
           var messageItemMap = spaceMessageItemMap[spaceId]!;
@@ -282,7 +282,7 @@ class MessageController extends GetxController
     }
     for (var message in messageList) {
       log.info("接收到一条新的消息$message");
-      var detail = MessageDetailResp.fromMap(message);
+      var detail = MessageDetail.fromMap(message);
 
       try {
         // 会话 ID
@@ -292,7 +292,7 @@ class MessageController extends GetxController
         }
 
         // 确定会话
-        MessageItemResp? currentItem;
+        MessageTarget? currentItem;
         outer:
         for (var space in orgChatCache.chats) {
           for (var item in space.chats) {
@@ -362,7 +362,7 @@ class MessageController extends GetxController
           }
 
           bool isTalking = false;
-          for (MessageItemResp openItem in orgChatCache.openChats) {
+          for (MessageTarget openItem in orgChatCache.openChats) {
             if (openItem.id == currentItem.id &&
                 openItem.spaceId == currentItem.spaceId) {
               isTalking = true;
@@ -447,7 +447,7 @@ class MessageController extends GetxController
     currentAppState = state;
   }
 
-  chatEventFire(ChatFunc func, String spaceId, MessageItemResp item) async {
+  chatEventFire(ChatFunc func, String spaceId, MessageTarget item) async {
     switch (func) {
       case ChatFunc.topping:
       case ChatFunc.cancelTopping:

@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
 
-import 'message_item_resp.dart';
+import 'message_target.dart';
 
 class SpaceMessagesResp {
   final String id;
   final String name;
-  final List<MessageItemResp> chats;
+  final List<MessageTarget> chats;
 
   bool isExpand = false;
 
@@ -14,7 +14,7 @@ class SpaceMessagesResp {
   SpaceMessagesResp.fromMap(Map<String, dynamic> map)
       : id = map["id"],
         name = map["name"],
-        chats = MessageItemResp.fromList(map["chats"]);
+        chats = MessageTarget.fromList(map["chats"]);
 
   static List<SpaceMessagesResp> fromList(List<dynamic> data) {
     List<SpaceMessagesResp> ans = [];
@@ -40,7 +40,7 @@ class SpaceMessagesResp {
     final json = <String, dynamic>{};
     json['id'] = id.toString();
     json['name'] = name;
-    json['chats'] = MessageItemResp.toJsonList(chats);
+    json['chats'] = MessageTarget.toJsonList(chats);
     return json;
   }
 }

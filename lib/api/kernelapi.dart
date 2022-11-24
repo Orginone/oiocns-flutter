@@ -1,8 +1,14 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:orginone/api/hub/store_hub.dart';
+import 'package:orginone/api/model.dart';
 import 'package:orginone/api_resp/login_resp.dart';
+import 'package:orginone/api_resp/message_detail.dart';
+import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/request_type.dart';
+import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/config/constant.dart';
+import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/util/http_util.dart';
 
 class KernelApi {
@@ -601,12 +607,13 @@ class KernelApi {
   /// 根据ID查询子组织/个人
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
-  dynamic querySubTargetById(dynamic params) async {
-    return await _request(RequestEntity(
+  Future<PageResp<Target>> querySubTargetById(IDReqSubModel params) async {
+    Map<String, dynamic> ans = await _request(RequestEntity(
       module: 'target',
       action: 'QuerySubTargetById',
       params: params,
     ));
+    return PageResp.fromMap(ans, Target.fromMap);
   }
 
   /// 根据ID查询子组织/个人
@@ -744,20 +751,20 @@ class KernelApi {
   /// 创建即使消息
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
-  dynamic createImMsg(dynamic params) async {
-    return await _request(RequestEntity(
+  Future<void> createImMsg(ImMsgModel model) {
+    return _request(RequestEntity(
       module: 'target',
       action: 'CreateImMsg',
-      params: params,
+      params: model,
     ));
   }
 
   /// 消息撤回
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
-  dynamic recallImMsg(dynamic params) async {
-    return await _request(RequestEntity(
-      module: 'target',
+  Future<MessageDetail> recallImMsg(MessageDetail params) {
+    return _request(RequestEntity(
+      module: 'chat',
       action: 'RecallImMsg',
       params: params,
     ));
@@ -777,23 +784,25 @@ class KernelApi {
   /// 查询群历史消息
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
-  dynamic queryCohortImMsgs(dynamic params) async {
-    return await _request(RequestEntity(
+  Future<PageResp<MessageDetail>> queryCohortImMsgs(IdReq params) async {
+    Map<String, dynamic> res = await _request(RequestEntity(
       module: 'chat',
       action: 'QueryCohortImMsgs',
       params: params,
     ));
+    return PageResp.fromMap(res, MessageDetail.fromMap);
   }
 
   /// 查询好友聊天消息
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
-  dynamic queryFriendImMsgs(dynamic params) async {
-    return await _request(RequestEntity(
+  Future<PageResp<MessageDetail>> queryFriendImMsgs(IdSpaceReq params) async {
+    Map<String, dynamic> res = await _request(RequestEntity(
       module: 'chat',
       action: 'QueryFriendImMsgs',
       params: params,
     ));
+    return PageResp.fromMap(res, MessageDetail.fromMap);
   }
 
   /// 根据ID查询名称

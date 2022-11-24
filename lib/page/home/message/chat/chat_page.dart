@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:orginone/api_resp/message_detail_resp.dart';
+import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
@@ -10,7 +10,7 @@ import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/chat/component/chat_box.dart';
 import 'package:orginone/util/date_util.dart';
 
-import '../../../../api_resp/message_item_resp.dart';
+import '../../../../api_resp/message_target.dart';
 import '../../../../component/a_font.dart';
 import '../../../../enumeration/target_type.dart';
 import '../../../../logic/authority.dart';
@@ -85,10 +85,10 @@ class ChatPage extends GetView<ChatController> {
   }
 
   Widget _chatItem(int index) {
-    MessageItemResp messageItem = controller.messageItem;
-    MessageDetailResp messageDetail = controller.details[index].resp;
+    MessageTarget messageItem = controller.messageItem;
+    MessageDetail messageDetail = controller.details[index].resp;
 
-    TargetResp userInfo = auth.userInfo;
+    Target userInfo = auth.userInfo;
     bool isMy = messageDetail.fromId == userInfo.id;
     bool isMultiple = messageItem.typeName != TargetType.person.label;
 
@@ -107,7 +107,7 @@ class ChatPage extends GetView<ChatController> {
       item.children.insert(0, time);
       return item;
     } else {
-      MessageDetailResp pre = controller.details[index + 1].resp;
+      MessageDetail pre = controller.details[index + 1].resp;
       if (messageDetail.createTime != null && pre.createTime != null) {
         var difference = messageDetail.createTime!.difference(pre.createTime!);
         if (difference.inSeconds > 60) {

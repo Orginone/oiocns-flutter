@@ -7,7 +7,7 @@ import 'identity_resp.dart';
 part 'target_resp.g.dart';
 
 @HiveType(typeId: HiveObjectId.target)
-class TargetResp {
+class Target {
   @HiveField(0)
   String id;
   @HiveField(1)
@@ -37,7 +37,7 @@ class TargetResp {
   @HiveField(13)
   List<IdentityResp>? givenIdentitys;
 
-  TargetResp(
+  Target(
       this.id,
       this.name,
       this.code,
@@ -53,7 +53,7 @@ class TargetResp {
       this.team,
       this.givenIdentitys);
 
-  TargetResp.copyWith(TargetResp targetResp)
+  Target.copyWith(Target targetResp)
       : id = targetResp.id,
         name = targetResp.name,
         code = targetResp.code,
@@ -73,7 +73,7 @@ class TargetResp {
             ?.map((item) => IdentityResp.copyWith(item))
             .toList();
 
-  TargetResp.fromMap(Map<String, dynamic> map)
+  Target.fromMap(Map<String, dynamic> map)
       : id = map["id"],
         name = map["name"],
         code = map["code"],
@@ -91,13 +91,13 @@ class TargetResp {
             ? IdentityResp.fromList(map["givenIdentitys"])
             : null;
 
-  static List<TargetResp> fromList(List<dynamic> list) {
-    List<TargetResp> ans = [];
+  static List<Target> fromList(List<dynamic> list) {
+    List<Target> ans = [];
     if (list.isEmpty) return ans;
 
     for (var one in list) {
       if (one == null) continue;
-      ans.add(TargetResp.fromMap(one));
+      ans.add(Target.fromMap(one));
     }
     return ans;
   }

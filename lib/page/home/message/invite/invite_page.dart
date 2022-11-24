@@ -75,7 +75,7 @@ class InvitePage extends GetView<InviteController> {
     });
   }
 
-  Widget _chooseItem(TargetResp target) {
+  Widget _chooseItem(Target target) {
     var avatarName = StringUtil.getPrefixChars(target.name, count: 2);
     return GestureDetector(
       onTap: () => controller.remove(target),
@@ -102,7 +102,7 @@ class InvitePage extends GetView<InviteController> {
         ),
       );
 
-  Widget _item(TargetResp target) {
+  Widget _item(Target target) {
     var chooseMap = controller.chooseMap;
     var targetId = target.id;
     chooseMap.putIfAbsent(targetId, () => false.obs);
@@ -153,11 +153,11 @@ class InviteController extends GetxController {
 
   /// 目标对象和索引
   final Map<String, RxBool> chooseMap = {};
-  final RxList<TargetResp> targetQueue = <TargetResp>[].obs;
+  final RxList<Target> targetQueue = <Target>[].obs;
 
   /// 没有加入的好友
-  final List<TargetResp> initNotJoinedFriends = [];
-  final List<TargetResp> filterNotJoinedFriends = [];
+  final List<Target> initNotJoinedFriends = [];
+  final List<Target> filterNotJoinedFriends = [];
 
   @override
   void onInit() async {
@@ -189,14 +189,14 @@ class InviteController extends GetxController {
   /// 搜索回调
   searchCallback(String value) {
     filterNotJoinedFriends.clear();
-    List<TargetResp> friends = initNotJoinedFriends
+    List<Target> friends = initNotJoinedFriends
         .where((item) => item.name.contains(value))
         .toList();
     filterNotJoinedFriends.addAll(friends);
   }
 
   /// 推入队列
-  push(TargetResp target) {
+  push(Target target) {
     var matched = targetQueue.firstWhereOrNull((item) => item.id == target.id);
     if (matched == null) {
       targetQueue.add(target);
@@ -204,7 +204,7 @@ class InviteController extends GetxController {
   }
 
   /// 从队列里移除相关内容
-  remove(TargetResp target) {
+  remove(Target target) {
     targetQueue.removeWhere((item) => item.id == target.id);
     chooseMap[target.id]?.value = false;
   }

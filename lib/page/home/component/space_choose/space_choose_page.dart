@@ -16,7 +16,7 @@ import 'space_choose_controller.dart';
 class SpaceChoosePage extends GetView<SpaceChooseController> {
   const SpaceChoosePage({Key? key}) : super(key: key);
 
-  Widget _item(TargetResp targetResp) {
+  Widget _item(Target targetResp) {
     var currentSpaceId = auth.spaceId;
     var spaceId = targetResp.id;
     return GestureDetector(

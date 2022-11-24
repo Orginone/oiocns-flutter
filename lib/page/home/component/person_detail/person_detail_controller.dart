@@ -5,7 +5,7 @@ import 'package:orginone/api_resp/target_resp.dart';
 
 class PersonDetailController extends GetxController {
   final Logger log = Logger("PersonDetailController");
-  TargetResp? personDetail;
+  Target? personDetail;
 
   @override
   void onReady() async {

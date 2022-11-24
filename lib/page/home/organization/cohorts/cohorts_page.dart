@@ -89,7 +89,7 @@ class CohortsPage extends GetView<CohortsController> {
         ),
       );
 
-  Widget _item(BuildContext context, TargetResp cohort) {
+  Widget _item(BuildContext context, Target cohort) {
     var targetIds = [cohort.id, cohort.belongId ?? ""];
     bool isRelationAdmin = auth.isRelationAdmin(targetIds);
     List<Widget> children = [];
@@ -133,7 +133,7 @@ class CohortsPage extends GetView<CohortsController> {
     );
   }
 
-  Widget _popMenu(BuildContext context, TargetResp cohort, CtrlType ctrlType) {
+  Widget _popMenu(BuildContext context, Target cohort, CtrlType ctrlType) {
     double x = 0, y = 0;
     return TextTag(
       ctrlType.typeName,

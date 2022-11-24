@@ -49,9 +49,9 @@ class SearchController extends GetxController with GetTickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
 
   // 搜索的一些结果
-  SearchParams<TargetResp>? personRes;
-  SearchParams<TargetResp>? cohortRes;
-  SearchParams<TargetResp>? companyRes;
+  SearchParams<Target>? personRes;
+  SearchParams<Target>? cohortRes;
+  SearchParams<Target>? companyRes;
 
   // 搜索状态
   Rx<SearchStatus> searchStatus = SearchStatus.stop.obs;

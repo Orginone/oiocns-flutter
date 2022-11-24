@@ -139,7 +139,7 @@ class SearchPage extends GetView<SearchController> {
   Widget _targetBody(TargetType targetType) {
     return GetBuilder<SearchController>(
       builder: (item) {
-        List<TargetResp> searchResults = [];
+        List<Target> searchResults = [];
         switch (targetType) {
           case TargetType.person:
             searchResults = controller.personRes?.searchResults ?? [];
@@ -166,7 +166,7 @@ class SearchPage extends GetView<SearchController> {
     );
   }
 
-  Widget _targetItem(TargetResp targetResp) {
+  Widget _targetItem(Target targetResp) {
     List<Widget> children = [
       TextAvatar(
         avatarName: StringUtil.getPrefixChars(targetResp.name, count: 2),
