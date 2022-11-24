@@ -1,3 +1,4 @@
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:orginone/api/hub/store_server.dart';
 import 'package:orginone/api/kernelapi.dart';
@@ -11,9 +12,56 @@ import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/logic/authority.dart';
+import 'package:orginone/logic/mapping_to_ui.dart';
 import 'package:orginone/util/encryption_util.dart';
 
-import 'ichat.dart';
+import 'i_chat.dart';
+
+class BaseChatGroup implements IChatGroup, MappingToUI {
+  final String _spaceId;
+  final String _spaceName;
+  final RxBool _isOpened;
+  final RxList<IChat> _chats;
+
+  BaseChatGroup({
+    required String spaceId,
+    required String spaceName,
+    bool isOpened = true,
+    List<IChat> chats = const [],
+  })  : _spaceId = spaceId,
+        _spaceName = spaceName,
+        _isOpened = isOpened.obs,
+        _chats = chats.obs;
+
+  @override
+  String get spaceId => _spaceId;
+
+  @override
+  String get spaceName => _spaceName;
+
+  @override
+  bool get isOpened => _isOpened.value;
+
+  @override
+  List<IChat> get chats => _chats.toList();
+
+  @override
+  Widget mapping() {
+
+  }
+
+  @override
+  List<Widget> mappings() {
+  }
+}
+
+IChat createChat(String spaceId, String spaceName, MessageTarget target) {
+  if (target.typeName == TargetType.person.name) {
+    return PersonChat(spaceId: spaceId, spaceName: spaceName, target: target);
+  } else {
+    return CohortChat(spaceId: spaceId, spaceName: spaceName, target: target);
+  }
+}
 
 class BaseChat implements IChat {
   final String _chatId;
@@ -245,13 +293,5 @@ class CohortChat extends BaseChat {
       _persons.add(target);
     }
     _personCount.value = page.total;
-  }
-}
-
-IChat createChat(String spaceId, String spaceName, MessageTarget target) {
-  if (target.typeName == TargetType.person.name) {
-    return PersonChat(spaceId: spaceId, spaceName: spaceName, target: target);
-  } else {
-    return CohortChat(spaceId: spaceId, spaceName: spaceName, target: target);
   }
 }

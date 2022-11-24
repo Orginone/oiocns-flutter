@@ -13,7 +13,7 @@ import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/logic/authority.dart';
-import 'package:orginone/page/home/message/message_controller.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/util/encryption_util.dart';
 
 enum ReceiveEvent { RecvMsg, ChatRefresh }
@@ -61,7 +61,7 @@ class ProxyChatServer implements ChatServer, ConnServer {
   }
 
   @override
-  Future<List<SpaceMessagesResp>> getChats() {
+  Future<List<ChatGroup>> getChats() {
     checkAuthed();
     return _instance.getChats();
   }
@@ -182,14 +182,14 @@ class RealChatServer implements ChatServer {
 
   /// 获取聊天对话
   @override
-  Future<List<SpaceMessagesResp>> getChats() async {
+  Future<List<ChatGroup>> getChats() async {
     String key = SendEvent.GetChats.name;
     Map<String, dynamic> chats = await _chatHub.invoke(key);
     ApiResp resp = ApiResp.fromJson(chats);
 
     List<dynamic> groups = resp.data["groups"];
     return groups.map((item) {
-      SpaceMessagesResp messagesResp = SpaceMessagesResp.fromMap(item);
+      ChatGroup messagesResp = ChatGroup.fromMap(item);
       for (var chat in messagesResp.chats) {
         chat.spaceId = messagesResp.id;
       }

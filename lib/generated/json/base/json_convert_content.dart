@@ -10,6 +10,7 @@ import 'package:orginone/api_resp/instance_task_entity.dart';
 import 'package:orginone/api_resp/market_entity.dart';
 import 'package:orginone/api_resp/merchandise_entity.dart';
 import 'package:orginone/api_resp/record_task_entity.dart';
+import 'package:orginone/api_resp/request_entity.dart';
 import 'package:orginone/api_resp/staging_entity.dart';
 import 'package:orginone/api_resp/task_entity.dart';
 
@@ -34,6 +35,7 @@ class JsonConvert {
 		(RecordTaskFlowTaskFlowNode).toString(): RecordTaskFlowTaskFlowNode.fromJson,
 		(RecordTaskFlowTaskFlowInstance).toString(): RecordTaskFlowTaskFlowInstance.fromJson,
 		(RecordTaskFlowTaskFlowInstanceFlowRelation).toString(): RecordTaskFlowTaskFlowInstanceFlowRelation.fromJson,
+		(RequestEntity).toString(): RequestEntity.fromJson,
 		(StagingEntity).toString(): StagingEntity.fromJson,
 		(TaskEntity).toString(): TaskEntity.fromJson,
 		(TaskFlowNode).toString(): TaskFlowNode.fromJson,
@@ -165,6 +167,9 @@ class JsonConvert {
 		if(<RecordTaskFlowTaskFlowInstanceFlowRelation>[] is M){
 			return data.map<RecordTaskFlowTaskFlowInstanceFlowRelation>((Map<String, dynamic> e) => RecordTaskFlowTaskFlowInstanceFlowRelation.fromJson(e)).toList() as M;
 		}
+		if(<RequestEntity>[] is M){
+			return data.map<RequestEntity>((Map<String, dynamic> e) => RequestEntity.fromJson(e)).toList() as M;
+		}
 		if(<StagingEntity>[] is M){
 			return data.map<StagingEntity>((Map<String, dynamic> e) => StagingEntity.fromJson(e)).toList() as M;
 		}
@@ -182,7 +187,7 @@ class JsonConvert {
 		}
 
 		debugPrint("${M.toString()} not found");
-
+	
 		return null;
 }
 

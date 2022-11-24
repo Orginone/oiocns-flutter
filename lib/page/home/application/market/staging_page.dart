@@ -9,7 +9,7 @@ import 'package:orginone/component/refresh_body.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/controller/market/staging_controller.dart';
-import 'package:orginone/page/home/message/message_controller.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/public/dialog/dialog_confirm.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/widget_util.dart';

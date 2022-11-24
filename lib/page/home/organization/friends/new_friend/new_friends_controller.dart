@@ -1,6 +1,6 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:orginone/page/home/message/message_controller.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/public/http/base_list_controller.dart';
 import 'package:orginone/public/loading/opt_loading.dart';
 

@@ -6,7 +6,7 @@ import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_colors.dart';
-import 'package:orginone/page/home/message/message_controller.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/string_util.dart';
 

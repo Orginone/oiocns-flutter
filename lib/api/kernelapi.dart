@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:orginone/api/hub/store_hub.dart';
@@ -5,7 +7,8 @@ import 'package:orginone/api/model.dart';
 import 'package:orginone/api_resp/login_resp.dart';
 import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/page_resp.dart';
-import 'package:orginone/api_resp/request_type.dart';
+import 'package:orginone/api_resp/request_entity.dart';
+import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/enumeration/message_type.dart';
@@ -36,7 +39,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createDict(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'base',
       action: 'CreateDict',
       params: params,
@@ -47,7 +50,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createLog(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'base',
       action: 'CreateLog',
       params: params,
@@ -58,7 +61,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createDictItem(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'base',
       action: 'CreateDictItem',
       params: params,
@@ -69,7 +72,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteDict(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'base',
       action: 'DeleteDict',
       params: params,
@@ -80,7 +83,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteDictItem(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'base',
       action: 'DeleteDictItem',
       params: params,
@@ -91,7 +94,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic updateDict(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'base',
       action: 'UpdateDict',
       params: params,
@@ -102,7 +105,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic updateDictItem(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'base',
       action: 'UpdateDictItem',
       params: params,
@@ -113,7 +116,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createSpecies(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'thing',
       action: 'CreateSpecies',
       params: params,
@@ -124,7 +127,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createAttribute(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'thing',
       action: 'CreateAttribute',
       params: params,
@@ -135,7 +138,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createThing(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'thing',
       action: 'CreateThing',
       params: params,
@@ -146,7 +149,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteSpecies(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'thing',
       action: 'DeleteSpecies',
       params: params,
@@ -157,7 +160,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteAttribute(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'thing',
       action: 'DeleteAttribute',
       params: params,
@@ -168,7 +171,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteThing(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'thing',
       action: 'DeleteThing',
       params: params,
@@ -179,7 +182,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic updateSpecies(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'thing',
       action: 'UpdateSpecies',
       params: params,
@@ -190,7 +193,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic updateAttribute(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'thing',
       action: 'UpdateAttribute',
       params: params,
@@ -201,7 +204,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic updateThing(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'thing',
       action: 'UpdateThing',
       params: params,
@@ -212,7 +215,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic thingAddSpecies(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'thing',
       action: 'ThingAddSpecies',
       params: params,
@@ -223,7 +226,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic thingAddAttribute(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'thing',
       action: 'ThingAddAttribute',
       params: params,
@@ -234,7 +237,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic thingRemoveSpecies(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'thing',
       action: 'ThingRemoveSpecies',
       params: params,
@@ -245,7 +248,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryThingData(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'thing',
       action: 'QueryThingData',
       params: params,
@@ -256,7 +259,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryThingHistoryData(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'thing',
       action: 'QueryThingHistoryData',
       params: params,
@@ -267,7 +270,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryThingRelationData(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'thing',
       action: 'QueryThingRelationData',
       params: params,
@@ -278,7 +281,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createAuthority(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'CreateAuthority',
       params: params,
@@ -289,7 +292,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createIdentity(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'CreateAuthority',
       params: params,
@@ -300,7 +303,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createTarget(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'CreateTarget',
       params: params,
@@ -311,7 +314,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createRuleStd(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'CreateRuleStd',
       params: params,
@@ -322,7 +325,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteAuthority(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'DeleteAuthority',
       params: params,
@@ -333,7 +336,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteIdentity(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'DeleteIdentity',
       params: params,
@@ -344,7 +347,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteTarget(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'DeleteTarget',
       params: params,
@@ -355,7 +358,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteRuleStd(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'DeleteRuleStd',
       params: params,
@@ -366,7 +369,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic recursiveDeleteTarget(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'RecursiveDeleteTarget',
       params: params,
@@ -377,7 +380,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic updateAuthority(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'UpdateAuthority',
       params: params,
@@ -388,7 +391,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic updateIdentity(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'UpdateIdentity',
       params: params,
@@ -399,7 +402,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic updateTarget(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'UpdateTarget',
       params: params,
@@ -410,7 +413,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic updateRuleStd(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'UpdateRuleStd',
       params: params,
@@ -421,7 +424,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic giveIdentity(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'GiveIdentity',
       params: params,
@@ -432,7 +435,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic removeIdentity(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'RemoveIdentity',
       params: params,
@@ -443,7 +446,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic applyJoinTeam(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'ApplyJoinTeam',
       params: params,
@@ -454,7 +457,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic joinTeamApproval(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'JoinTeamApproval',
       params: params,
@@ -465,7 +468,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic pullAnyToTeam(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'pullAnyToTeam',
       params: params,
@@ -476,7 +479,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic cancelJoinTeam(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'CancelJoinTeam',
       params: params,
@@ -487,7 +490,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic removeAnyOfTeam(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'RemoveAnyOfTeam',
       params: params,
@@ -498,7 +501,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic recursiveRemoveAnyOfTeam(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'RemoveAnyOfTeam',
       params: params,
@@ -509,7 +512,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic removeAnyOfTeamAndBelong(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'RemoveAnyOfTeamAndBelong',
       params: params,
@@ -520,7 +523,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic exitAnyOfTeam(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'ExitAnyOfTeam',
       params: params,
@@ -531,7 +534,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic recursiveExitAnyOfTeam(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'RecursiveExitAnyOfTeam',
       params: params,
@@ -542,7 +545,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic exitAnyOfTeamAndBelong(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'ExitAnyOfTeamAndBelong',
       params: params,
@@ -553,7 +556,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryTargetById(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'QueryTargetById',
       params: params,
@@ -564,7 +567,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryRelationById(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'QueryRelationById',
       params: params,
@@ -575,7 +578,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryTargetByName(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'QueryTargetByName',
       params: params,
@@ -586,7 +589,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic searchTargetByName(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'SearchTargetByName',
       params: params,
@@ -597,7 +600,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryTeamRuleAttrs(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'QueryTeamRuleAttrs',
       params: params,
@@ -608,7 +611,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   Future<PageResp<Target>> querySubTargetById(IDReqSubModel params) async {
-    Map<String, dynamic> ans = await _request(RequestEntity(
+    Map<String, dynamic> ans = await _request(RequestEntity.from(
       module: 'target',
       action: 'QuerySubTargetById',
       params: params,
@@ -620,7 +623,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryBelongTargetById(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'QueryBelongTargetById',
       params: params,
@@ -631,7 +634,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryJoinedTargetById(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'QueryJoinedTargetById',
       params: params,
@@ -642,7 +645,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryJoinTeamApply(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'QueryJoinTeamApply',
       params: params,
@@ -653,7 +656,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryTeamJoinApproval(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'QueryTeamJoinApproval',
       params: params,
@@ -664,7 +667,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryAuthorityTree(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'QueryAuthorityTree',
       params: params,
@@ -675,7 +678,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic querySubAuthorities(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'QuerySubAuthoritys',
       params: params,
@@ -686,7 +689,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryTargetAuthorities(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'QueryTargetAuthorities',
       params: params,
@@ -697,7 +700,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryTargetIdentities(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'QueryTargetIdentitys',
       params: params,
@@ -708,7 +711,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryAuthorityIdentities(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'QueryAuthorityIdentitys',
       params: params,
@@ -719,7 +722,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryIdentityTargets(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'QueryIdentityTargets',
       params: params,
@@ -730,7 +733,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryTargetsByAuthority(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'QueryTargetsByAuthority',
       params: params,
@@ -741,7 +744,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic querySpaceIdentities(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'target',
       action: 'QuerySpaceIdentitys',
       params: params,
@@ -752,7 +755,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   Future<void> createImMsg(ImMsgModel model) {
-    return _request(RequestEntity(
+    return _request(RequestEntity.from(
       module: 'target',
       action: 'CreateImMsg',
       params: model,
@@ -763,7 +766,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   Future<MessageDetail> recallImMsg(MessageDetail params) {
-    return _request(RequestEntity(
+    return _request(RequestEntity.from(
       module: 'chat',
       action: 'RecallImMsg',
       params: params,
@@ -773,19 +776,20 @@ class KernelApi {
   /// 查询聊天会话
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
-  dynamic queryImChats(dynamic params) async {
-    return await _request(RequestEntity(
+  Future<List<ChatGroup>> queryImChats(ChatsReqModel params) async {
+    Map<String, dynamic> ans = await _request(RequestEntity.from(
       module: 'chat',
       action: 'QueryImChats',
       params: params,
     ));
+    return ChatGroup.fromList(ans["groups"]);
   }
 
   /// 查询群历史消息
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   Future<PageResp<MessageDetail>> queryCohortImMsgs(IdReq params) async {
-    Map<String, dynamic> res = await _request(RequestEntity(
+    Map<String, dynamic> res = await _request(RequestEntity.from(
       module: 'chat',
       action: 'QueryCohortImMsgs',
       params: params,
@@ -797,7 +801,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   Future<PageResp<MessageDetail>> queryFriendImMsgs(IdSpaceReq params) async {
-    Map<String, dynamic> res = await _request(RequestEntity(
+    Map<String, dynamic> res = await _request(RequestEntity.from(
       module: 'chat',
       action: 'QueryFriendImMsgs',
       params: params,
@@ -809,7 +813,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryNameBySnowId(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'chat',
       action: 'QueryNameBySnowId',
       params: params,
@@ -820,7 +824,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createMarket(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'CreateMarket',
       params: params,
@@ -831,7 +835,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createMerchandise(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'CreateMerchandise',
       params: params,
@@ -842,7 +846,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createProduct(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'CreateProduct',
       params: params,
@@ -853,7 +857,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createProductResource(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'CreateProductResource',
       params: params,
@@ -864,7 +868,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createStaging(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'CreateStaging',
       params: params,
@@ -875,7 +879,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createOrder(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'CreateOrder',
       params: params,
@@ -886,7 +890,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createOrderByStags(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'CreateOrderByStags',
       params: params,
@@ -897,7 +901,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createOrderPay(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'CreateOrderPay',
       params: params,
@@ -908,7 +912,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createSourceExtend(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'CreateSourceExtend',
       params: params,
@@ -919,7 +923,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteMarket(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'DeleteMarket',
       params: params,
@@ -930,7 +934,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteMerchandise(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'DeleteMerchandise',
       params: params,
@@ -941,7 +945,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteMerchandiseByManager(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'DeleteMerchandiseByManager',
       params: params,
@@ -952,7 +956,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteProduct(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'DeleteProduct',
       params: params,
@@ -963,7 +967,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteProductResource(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'DeleteProductResource',
       params: params,
@@ -974,7 +978,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteStaging(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'DeleteStaging',
       params: params,
@@ -985,7 +989,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteSourceExtend(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'DeleteSourceExtend',
       params: params,
@@ -996,7 +1000,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryMarketByCode(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QueryMarketByCode',
       params: params,
@@ -1007,7 +1011,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryOwnMarket(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QueryOwnMarket',
       params: params,
@@ -1018,7 +1022,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic getPublicMarket(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'GetPublicMarket',
       params: params,
@@ -1029,7 +1033,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryMarketMember(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QueryMarketMember',
       params: params,
@@ -1040,7 +1044,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryStaging(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QueryStaging',
       params: params,
@@ -1051,7 +1055,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic getOrderInfo(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'GetOrderInfo',
       params: params,
@@ -1062,7 +1066,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic getOrderDetailById(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'GetOrderDetailById',
       params: params,
@@ -1073,7 +1077,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic querySellOrderList(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QuerySellOrderList',
       params: params,
@@ -1084,7 +1088,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic querySellOrderListByMerchandise(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QuerySellOrderListByMerchandise',
       params: params,
@@ -1095,7 +1099,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryBuyOrderList(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QueryBuyOrderList',
       params: params,
@@ -1106,7 +1110,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryPayList(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QueryPayList',
       params: params,
@@ -1117,7 +1121,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryJoinMarketApply(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QueryJoinMarketApply',
       params: params,
@@ -1128,7 +1132,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryJoinMarketApplyByManager(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QueryJoinMarketApplyByManager',
       params: params,
@@ -1139,7 +1143,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryMerchandiseApply(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QueryMerchandiseApply',
       params: params,
@@ -1150,7 +1154,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryMerchandisesApplyByManager(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QueryMerchandiesApplyByManager',
       params: params,
@@ -1161,7 +1165,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic searchMerchandise(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'SearchMerchandise',
       params: params,
@@ -1172,7 +1176,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic getProductInfo(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'GetProductInfo',
       params: params,
@@ -1183,7 +1187,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryProductResource(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QueryProductResource',
       params: params,
@@ -1194,7 +1198,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic querySelfProduct(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QuerySelfProduct',
       params: params,
@@ -1205,7 +1209,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryMerchandiseListByProduct(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QueryMerchandiseListByProduct',
       params: params,
@@ -1216,7 +1220,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryExtendBySource(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QueryExtendBySource',
       params: params,
@@ -1227,7 +1231,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryUsefulProduct(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QueryUsefulProduct',
       params: params,
@@ -1238,7 +1242,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryUsefulResource(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QueryUsefulResource',
       params: params,
@@ -1249,7 +1253,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic updateMarket(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'UpdateMarket',
       params: params,
@@ -1260,7 +1264,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic updateMerchandise(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'UpdateMerchandise',
       params: params,
@@ -1271,7 +1275,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic updateProduct(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'UpdateProduct',
       params: params,
@@ -1282,7 +1286,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic updateProductResource(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'UpdateProductResource',
       params: params,
@@ -1293,7 +1297,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic updateOrder(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'UpdateOrder',
       params: params,
@@ -1304,7 +1308,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic updateOrderDetail(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'UpdateOrderDetail',
       params: params,
@@ -1315,7 +1319,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic quitMarket(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'QuitMarket',
       params: params,
@@ -1326,7 +1330,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic applyJoinMarket(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'ApplyJoinMarket',
       params: params,
@@ -1337,7 +1341,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic pullAnyToMarket(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'PullAnyToMarket',
       params: params,
@@ -1348,7 +1352,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic cancelJoinMarket(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'CancelJoinMarket',
       params: params,
@@ -1359,7 +1363,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic cancelOrderDetail(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'CancelOrderDetail',
       params: params,
@@ -1370,7 +1374,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic removeMarketMember(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'RemoveMarketMember',
       params: params,
@@ -1381,7 +1385,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic approvalJoinApply(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'ApprovalJoinApply',
       params: params,
@@ -1392,7 +1396,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deliverMerchandise(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'DeliverMerchandise',
       params: params,
@@ -1403,7 +1407,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic rejectMerchandise(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'RejectMerchandise',
       params: params,
@@ -1414,7 +1418,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic approvalMerchandise(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'ApprovalMerchandise',
       params: params,
@@ -1425,7 +1429,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic pullProductToMarket(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'market',
       action: 'PullProductToMarket',
       params: params,
@@ -1436,7 +1440,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createDefine(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'flow',
       action: 'CreateDefine',
       params: params,
@@ -1447,7 +1451,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createInstance(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'flow',
       action: 'CreateInstance',
       params: params,
@@ -1458,7 +1462,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic createFlowRelation(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'flow',
       action: 'CreateFlowRelation',
       params: params,
@@ -1469,7 +1473,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteDefine(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'flow',
       action: 'DeleteDefine',
       params: params,
@@ -1480,7 +1484,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteInstance(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'flow',
       action: 'DeleteInstance',
       params: params,
@@ -1491,7 +1495,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic deleteFlowRelation(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'flow',
       action: 'DeleteFlowRelation',
       params: params,
@@ -1502,7 +1506,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryDefine(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'flow',
       action: 'QueryDefine',
       params: params,
@@ -1513,7 +1517,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryInstance(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'flow',
       action: 'QueryInstance',
       params: params,
@@ -1524,7 +1528,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryApproveTask(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'flow',
       action: 'QueryApproveTask',
       params: params,
@@ -1535,7 +1539,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryNoticeTask(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'flow',
       action: 'QueryNoticeTask',
       params: params,
@@ -1546,7 +1550,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic queryRecord(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'flow',
       action: 'QueryRecord',
       params: params,
@@ -1557,7 +1561,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic approvalTask(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'flow',
       action: 'ApprovalTask',
       params: params,
@@ -1568,7 +1572,7 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   dynamic resetDefine(dynamic params) async {
-    return await _request(RequestEntity(
+    return await _request(RequestEntity.from(
       module: 'flow',
       action: 'ResetDefine',
       params: params,

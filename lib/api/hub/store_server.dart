@@ -351,7 +351,7 @@ class RealStoreServer implements StoreServer {
       "operation": "replaceAll",
       "data": {
         "name": "我的消息",
-        "chats": SpaceMessagesResp.toJsonList(orgChatCache.chats)
+        "chats": ChatGroup.toJsonList(orgChatCache.chats)
             .where((item) => item["id"] != "topping")
             .toList(),
         "nameMap": orgChatCache.nameMap,

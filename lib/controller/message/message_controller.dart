@@ -6,6 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/hub/store_server.dart';
+import 'package:orginone/api/kernelapi.dart';
+import 'package:orginone/api/model.dart';
 import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/message_target.dart';
@@ -19,6 +21,8 @@ import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/logic/authority.dart';
 import 'package:orginone/api/hub/chat_server.dart';
+import 'package:orginone/logic/chat/chat_impl.dart';
+import 'package:orginone/logic/chat/i_chat.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/page/home/message/component/message_item_widget.dart';
 import 'package:orginone/page/home/message/message_page.dart';
@@ -27,10 +31,12 @@ import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/notification_util.dart';
 import 'package:orginone/util/string_util.dart';
 
-import 'chat/chat_controller.dart';
+import '../../page/home/message/chat/chat_controller.dart';
 
 class MessageController extends GetxController
     with WidgetsBindingObserver, GetSingleTickerProviderStateMixin {
+  final RxList<IChatGroup> groups = <IChatGroup>[].obs;
+
   // 日志对象
   Logger log = Logger("MessageController");
 
@@ -38,7 +44,7 @@ class MessageController extends GetxController
   OrgChatCache orgChatCache = OrgChatCache.empty();
 
   // 会话索引
-  Map<String, SpaceMessagesResp> spaceMap = {};
+  Map<String, ChatGroup> spaceMap = {};
   Map<String, Map<String, MessageTarget>> spaceMessageItemMap = {};
 
   // 当前 app 状态
@@ -60,6 +66,27 @@ class MessageController extends GetxController
     WidgetsBinding.instance.addObserver(this);
     // 订阅聊天面板信息
     _subscribingCharts();
+    // 主动获取会话
+    _loadingCharts();
+  }
+
+  _loadingCharts() async {
+    List<ChatGroup> ansGroups = await kernelApi.queryImChats(ChatsReqModel(
+      spaceId: auth.userId,
+      cohortName: TargetType.cohort.label,
+      spaceTypeName: TargetType.company.label,
+    ));
+    for (var group in ansGroups) {
+      var iChatGroup = BaseChatGroup(
+        isOpened: true,
+        spaceId: group.id,
+        spaceName: group.name,
+        chats: group.chats.map((item) {
+          return createChat(group.id, group.name, item);
+        }).toList(),
+      );
+      groups.add(iChatGroup);
+    }
   }
 
   initTabs() {
@@ -117,10 +144,10 @@ class MessageController extends GetxController
 
   /// 分组排序
   sortingGroups() {
-    List<SpaceMessagesResp> groups = orgChatCache.chats;
-    List<SpaceMessagesResp> spaces = [];
-    SpaceMessagesResp? topping;
-    for (SpaceMessagesResp space in groups) {
+    List<ChatGroup> groups = orgChatCache.chats;
+    List<ChatGroup> spaces = [];
+    ChatGroup? topping;
+    for (ChatGroup space in groups) {
       var isCurrent = space.id == auth.spaceId;
       if (space.id == "topping") {
         topping = space;
@@ -167,7 +194,7 @@ class MessageController extends GetxController
       // 只有从缓存拿过会话了才能刷新会话
 
       // 读取聊天群
-      List<SpaceMessagesResp> messageGroups = await chatServer.getChats();
+      List<ChatGroup> messageGroups = await chatServer.getChats();
 
       // 处理空间并排序
       orgChatCache.chats = _spaceHandling(messageGroups);
@@ -221,15 +248,15 @@ class MessageController extends GetxController
   }
 
   /// 空间处理
-  List<SpaceMessagesResp> _spaceHandling(List<SpaceMessagesResp> groups) {
+  List<ChatGroup> _spaceHandling(List<ChatGroup> groups) {
     // 新的数组
-    List<SpaceMessagesResp> spaces = [];
-    Map<String, SpaceMessagesResp> newSpaceMap = {};
+    List<ChatGroup> spaces = [];
+    Map<String, ChatGroup> newSpaceMap = {};
     Map<String, Map<String, MessageTarget>> newSpaceMessageItemMap = {};
 
     // 置顶会话
     groups = groups.where((item) => item.id != "topping").toList();
-    SpaceMessagesResp topGroup = SpaceMessagesResp("topping", "置顶会话", []);
+    ChatGroup topGroup = ChatGroup("topping", "置顶会话", []);
 
     bool hasTop = false;
     for (var group in groups) {
@@ -470,5 +497,12 @@ class MessageController extends GetxController
     var has = orgChatCache.recentChats?.firstWhereOrNull(
         (item) => (item.noRead ?? 0) > 0 && !(item.isInterruption ?? false));
     return has != null;
+  }
+}
+
+class MessageBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => MessageController());
   }
 }

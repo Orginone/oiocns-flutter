@@ -11,7 +11,7 @@ import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/logic/authority.dart';
 import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
-import 'package:orginone/page/home/message/message_controller.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 
 class MessageSettingController extends GetxController {
   final Logger log = Logger("MessageSettingController");

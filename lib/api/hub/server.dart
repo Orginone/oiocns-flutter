@@ -25,7 +25,7 @@ abstract class ConnServer {
 
 abstract class ChatServer {
   /// 获取聊天面板
-  Future<List<SpaceMessagesResp>> getChats();
+  Future<List<ChatGroup>> getChats();
 
   /// 发送消息
   Future<ApiResp> send({

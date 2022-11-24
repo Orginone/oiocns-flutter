@@ -4,60 +4,40 @@ import 'package:get/get.dart';
 import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/component/a_font.dart';
+import 'package:orginone/logic/chat/i_chat.dart';
 import 'package:orginone/page/home/message/component/message_item_widget.dart';
 
-import '../../../../api_resp/space_messages_resp.dart';
-import '../message_controller.dart';
+import '../../api_resp/space_messages_resp.dart';
+import '../../controller/message/message_controller.dart';
 
-class GroupItemWidget extends GetView<MessageController> {
-  final int index;
+class GroupItemWidget extends StatelessWidget {
+  final IChatGroup chatGroup;
 
-  const GroupItemWidget(this.index, {Key? key}) : super(key: key);
+  const GroupItemWidget(this.chatGroup, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = [
-      _title,
-      const Divider(height: 0),
-      _list,
-    ];
-    if (controller.orgChatCache.chats[index].isExpand) {
-      children.add(const Divider(height: 0));
-    }
+    var line = const Divider(height: 0);
+    List<Widget> children = [_title, line, _list];
+    children.add(Obx(() => chatGroup.isOpened ? Container() : line));
     return Column(children: children);
   }
 
   get _title {
-    var orgChatCache = controller.orgChatCache;
-    var chat = orgChatCache.chats[index];
-    var showCount = 0;
-    if (chat.id == "topping") {
-      for (var space in orgChatCache.chats) {
-        var items = space.chats;
-        for (var item in items) {
-          if (item.isTop == true) {
-            showCount++;
-          }
-        }
-      }
-    } else {
-      showCount = chat.chats
-          .where((item) => item.isTop == null || item.isTop == false)
-          .length;
-    }
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () async {
         chat.isExpand = !chat.isExpand;
-        controller.update();
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
             padding: EdgeInsets.only(left: 25.w, top: 10.h, bottom: 10.h),
-            child: Text("${chat.name}($showCount)",
-                style: AFont.instance.size22Black3W500),
+            child: Text(
+              "${chatGroup.spaceName}(${chatGroup.chats.length})",
+              style: AFont.instance.size22Black3W500,
+            ),
           ),
           Container(
             padding: EdgeInsets.only(right: 25.w),
@@ -78,7 +58,7 @@ class GroupItemWidget extends GetView<MessageController> {
         child: GetBuilder<MessageController>(
           builder: (controller) {
             OrgChatCache orgChatCache = controller.orgChatCache;
-            SpaceMessagesResp spaceMessages = orgChatCache.chats[index];
+            ChatGroup spaceMessages = orgChatCache.chats[index];
             bool isExpand = spaceMessages.isExpand;
             if (spaceMessages.id == "topping") {
               List<MessageItemWidget> tops = [];

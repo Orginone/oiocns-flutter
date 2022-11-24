@@ -6,7 +6,7 @@ import 'package:orginone/api_resp/tree_node.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/page/home/message/component/message_item_widget.dart';
-import 'package:orginone/page/home/message/message_controller.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 
 import '../../../api_resp/message_target.dart';
 import '../../../component/a_font.dart';

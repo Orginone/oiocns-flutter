@@ -5,7 +5,7 @@ import 'package:orginone/page/home/mine/set_home/set_home_controller.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
 
 import 'home_controller.dart';
-import 'message/message_controller.dart';
+import '../../controller/message/message_controller.dart';
 
 class HomeBinding extends Bindings {
   @override

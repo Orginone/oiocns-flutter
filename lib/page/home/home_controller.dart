@@ -19,7 +19,7 @@ import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/page/home/affairs/affairs_page.dart';
 import 'package:orginone/page/home/application/page/application_page.dart';
 import 'package:orginone/page/home/center/center_page.dart';
-import 'package:orginone/page/home/message/message_controller.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/page/home/mine/set_home/set_home_page.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
 import 'package:flutter_treeview/flutter_treeview.dart' as tree_view;

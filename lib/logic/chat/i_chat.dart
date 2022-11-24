@@ -5,7 +5,7 @@ import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/enumeration/message_type.dart';
 
 /// 会话组的抽象
-class IChatGroup {
+abstract class IChatGroup {
   final String spaceId;
   final String spaceName;
   final bool isOpened;

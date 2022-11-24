@@ -61,3 +61,28 @@ class IDReqSubModel {
     required this.page,
   });
 }
+
+class ChatsReqModel {
+  final String spaceId;
+  final String cohortName;
+  final String spaceTypeName;
+
+  ChatsReqModel({
+    required this.spaceId,
+    required this.cohortName,
+    required this.spaceTypeName,
+  });
+
+  ChatsReqModel.fromMap(Map<String, dynamic> map)
+      : spaceId = map["spaceId"],
+        cohortName = map["cohortName"],
+        spaceTypeName = map["spaceTypeName"];
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["spaceId"] = spaceId;
+    json["cohortName"] = cohortName;
+    json["spaceTypeName"] = spaceTypeName;
+    return json;
+  }
+}
