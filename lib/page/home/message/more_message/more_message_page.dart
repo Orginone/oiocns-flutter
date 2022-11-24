@@ -5,7 +5,6 @@ import 'package:orginone/controller/message/message_controller.dart';
 
 import '../../../../component/a_font.dart';
 import '../../../../util/widget_util.dart';
-import '../../../../component/message/group_item_widget.dart';
 
 class MoreMessagePage extends GetView<MessageController> {
   const MoreMessagePage({Key? key}) : super(key: key);
@@ -20,16 +19,14 @@ class MoreMessagePage extends GetView<MessageController> {
         onRefresh: () async {
           await controller.refreshCharts();
         },
-        child: GetBuilder<MessageController>(
-          builder: (controller) => ListView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: controller.orgChatCache.chats.length,
-            physics: const AlwaysScrollableScrollPhysics(),
-            itemBuilder: (BuildContext context, int index) {
-              return GroupItemWidget(index);
-            },
-          ),
-        ),
+        child: Obx(() => ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: controller.getSize(),
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) {
+                return controller.get(index).mapping();
+              },
+            )),
       ),
     );
   }

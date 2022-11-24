@@ -8,7 +8,7 @@ import 'package:logging/logging.dart';
 import 'package:orginone/api/bucket_api.dart';
 import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/photo_widget.dart';
 import 'package:orginone/component/text_avatar.dart';

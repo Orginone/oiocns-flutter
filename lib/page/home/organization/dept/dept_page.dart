@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/logic/authority.dart';
 
-import '../../../../api_resp/target_resp.dart';
+import '../../../../api_resp/target.dart';
 import '../../../../api_resp/tree_node.dart';
 import '../../../../component/a_font.dart';
 import '../../../../component/bread_crumb.dart';

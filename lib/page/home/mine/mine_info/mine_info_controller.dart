@@ -3,7 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/person_api.dart';
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
 
 import '../../../../logic/authority.dart';
 

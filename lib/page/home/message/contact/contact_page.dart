@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_icon_button.dart';
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/index_bar.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_colors.dart';

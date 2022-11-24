@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/person_api.dart';
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
 
 class PersonDetailController extends GetxController {
   final Logger log = Logger("PersonDetailController");

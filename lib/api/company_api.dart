@@ -1,7 +1,7 @@
 import 'package:logging/logging.dart';
 
 import '../api_resp/page_resp.dart';
-import '../api_resp/target_resp.dart';
+import '../api_resp/target.dart';
 import '../api_resp/tree_node.dart';
 import '../config/constant.dart';
 import '../util/http_util.dart';
@@ -10,7 +10,9 @@ class CompanyApi {
   static final Logger log = Logger("CompanyApi");
 
   static Future<PageResp<Target>> getJoinedCompanys(
-      int offset, int limit) async {
+    int offset,
+    int limit,
+  ) async {
     String url = "${Constant.company}/get/joined/companys";
     Map<String, dynamic> data = {"offset": offset, "limit": limit};
     Map<String, dynamic> resp = await HttpUtil().post(url, data: data);

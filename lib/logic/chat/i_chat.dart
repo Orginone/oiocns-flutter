@@ -1,11 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/message_target.dart';
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/enumeration/message_type.dart';
+import 'package:orginone/logic/mapping_to_ui.dart';
 
 /// 会话组的抽象
-abstract class IChatGroup {
+abstract class IChatGroup<W extends Widget> implements MappingToUI<W> {
   final String spaceId;
   final String spaceName;
   final bool isOpened;
@@ -17,6 +19,8 @@ abstract class IChatGroup {
     required this.isOpened,
     required this.chats,
   });
+
+  openOrNot(bool isOpened);
 }
 
 /// 单个会话缓存
@@ -35,7 +39,7 @@ class ChatCache {
 }
 
 /// 单个会话的抽象
-abstract class IChat {
+abstract class IChat<W extends Widget> implements MappingToUI<W>{
   final String chatId;
   final String spaceId;
   final String spaceName;

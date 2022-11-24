@@ -9,7 +9,7 @@ import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/logic/authority.dart';

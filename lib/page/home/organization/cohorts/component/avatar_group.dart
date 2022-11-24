@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 
-import '../../../../../api_resp/target_resp.dart';
+import '../../../../../api_resp/target.dart';
 import '../../../../../component/a_font.dart';
 import '../../../../../component/text_avatar.dart';
 import '../../../../../util/string_util.dart';

@@ -8,7 +8,8 @@ import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/page_resp.dart';
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
+import 'package:orginone/component/message/group_item_widget.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/logic/authority.dart';
@@ -17,7 +18,7 @@ import 'package:orginone/util/encryption_util.dart';
 
 import 'i_chat.dart';
 
-class BaseChatGroup implements IChatGroup, MappingToUI {
+class BaseChatGroup implements IChatGroup<GroupItemWidget> {
   final String _spaceId;
   final String _spaceName;
   final RxBool _isOpened;
@@ -46,12 +47,13 @@ class BaseChatGroup implements IChatGroup, MappingToUI {
   List<IChat> get chats => _chats.toList();
 
   @override
-  Widget mapping() {
-
+  GroupItemWidget mapping() {
+    return GroupItemWidget(this);
   }
 
   @override
-  List<Widget> mappings() {
+  openOrNot(bool isOpened) {
+    _isOpened.value = isOpened;
   }
 }
 
@@ -190,6 +192,12 @@ class BaseChat implements IChat {
       fromId: auth.userId,
       toId: _chatId,
     ));
+  }
+
+  @override
+  Widget mapping() {
+    // TODO: implement mapping
+    throw UnimplementedError();
   }
 }
 

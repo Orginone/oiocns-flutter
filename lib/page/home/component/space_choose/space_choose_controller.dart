@@ -1,8 +1,9 @@
 import 'package:get/get.dart';
+import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/page/home/home_controller.dart';
 
 import '../../../../api/company_api.dart';
-import '../../../../api_resp/target_resp.dart';
+import '../../../../api_resp/target.dart';
 import '../../../../logic/authority.dart';
 
 class SpaceChooseController extends GetxController {
@@ -35,7 +36,7 @@ class SpaceChooseController extends GetxController {
 
   Future<void> loadMoreSpaces(int offset, int limit) async {
     // 获取加入的空间
-    var pageResp = await CompanyApi.getJoinedCompanys(offset, limit);
+    PageResp<Target> pageResp = await CompanyApi.getJoinedCompanys(offset, limit);
     spaces.addAll(pageResp.result);
 
     // 更新试图

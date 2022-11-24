@@ -13,10 +13,11 @@ import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/bread_crumb.dart';
 import 'package:orginone/component/tab_combine.dart';
+import 'package:orginone/controller/base_controller.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/logic/authority.dart';
@@ -33,9 +34,8 @@ import 'package:orginone/util/string_util.dart';
 
 import '../../page/home/message/chat/chat_controller.dart';
 
-class MessageController extends GetxController
+class MessageController extends BaseController<IChatGroup>
     with WidgetsBindingObserver, GetSingleTickerProviderStateMixin {
-  final RxList<IChatGroup> groups = <IChatGroup>[].obs;
 
   // 日志对象
   Logger log = Logger("MessageController");
@@ -85,7 +85,7 @@ class MessageController extends GetxController
           return createChat(group.id, group.name, item);
         }).toList(),
       );
-      groups.add(iChatGroup);
+      add(iChatGroup);
     }
   }
 

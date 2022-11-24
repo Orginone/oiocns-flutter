@@ -5,7 +5,7 @@ import 'package:orginone/api/cohort_api.dart';
 import 'package:orginone/api/company_api.dart';
 import 'package:orginone/api/person_api.dart';
 
-import '../../../api_resp/target_resp.dart';
+import '../../../api_resp/target.dart';
 
 enum SearchItem {
   comprehensive("综合", []),

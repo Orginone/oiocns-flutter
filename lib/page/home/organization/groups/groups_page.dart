@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/util/string_util.dart';
 
-import '../../../../api_resp/target_resp.dart';
+import '../../../../api_resp/target.dart';
 import '../../../../component/a_font.dart';
 import '../../../../component/text_avatar.dart';
 import '../../../../component/text_search.dart';

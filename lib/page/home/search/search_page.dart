@@ -12,7 +12,7 @@ import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
 
 import '../../../../util/widget_util.dart';
-import '../../../api_resp/target_resp.dart';
+import '../../../api_resp/target.dart';
 import '../../../component/a_font.dart';
 import '../../../component/text_avatar.dart';
 import '../../../component/text_search.dart';

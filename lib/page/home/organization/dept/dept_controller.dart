@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:orginone/logic/authority.dart';
 
 import '../../../../api/company_api.dart';
-import '../../../../api_resp/target_resp.dart';
+import '../../../../api_resp/target.dart';
 import '../../../../api_resp/tree_node.dart';
 import '../../../../component/bread_crumb.dart';
 import '../../../../enumeration/enum_map.dart';

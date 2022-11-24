@@ -9,7 +9,7 @@ import 'package:orginone/api/company_api.dart';
 import 'package:orginone/api/person_api.dart';
 import 'package:orginone/api/hub/store_server.dart';
 import 'package:orginone/api_resp/login_resp.dart';
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/api_resp/tree_node.dart';
 import 'package:orginone/component/bread_crumb.dart';
 import 'package:orginone/component/tab_combine.dart';

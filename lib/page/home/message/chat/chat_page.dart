@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api_resp/message_detail.dart';
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';

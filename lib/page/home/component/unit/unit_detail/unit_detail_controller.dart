@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api/company_api.dart';
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
 
 //需要接收一个统一社会信用代码来做查询
 class UnitDetailController extends GetxController {

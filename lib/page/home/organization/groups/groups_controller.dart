@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 
 import '../../../../api/company_api.dart';
-import '../../../../api_resp/target_resp.dart';
+import '../../../../api_resp/target.dart';
 import '../../home_controller.dart';
 
 class GroupsController extends GetxController {

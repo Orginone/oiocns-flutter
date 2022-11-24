@@ -1,15 +1,19 @@
 import 'package:get/get.dart';
 
 /// 基类实现
-abstract class BaseController<T> extends GetxController {
+class BaseController<T> extends GetxController {
   final RxList<T> _data = <T>[].obs;
   final int _defaultLimit = 15;
 
   get defaultLimit => _defaultLimit;
 
-  loadMore();
+  loadMore() {
+    throw UnimplementedError();
+  }
 
-  search(String value);
+  search(String value) {
+    throw UnimplementedError();
+  }
 
   List<UI> mappingAll<UI>(UI Function(T item) func) {
     return _data.map(func).toList();

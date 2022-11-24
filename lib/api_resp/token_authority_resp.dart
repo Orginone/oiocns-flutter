@@ -1,4 +1,4 @@
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
 
 import 'identity_resp.dart';
 

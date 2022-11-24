@@ -7,7 +7,7 @@ import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/routers.dart';
 
 import '../../../../api/cohort_api.dart';
-import '../../../../api_resp/target_resp.dart';
+import '../../../../api_resp/target.dart';
 
 enum CohortFunction {
   create("创建群组"),

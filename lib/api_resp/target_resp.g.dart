@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'target_resp.dart';
+part of 'target.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator

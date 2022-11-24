@@ -1,4 +1,4 @@
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/config/constant.dart';
 
 import '../api_resp/friends_entity.dart';

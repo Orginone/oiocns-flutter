@@ -10,7 +10,7 @@ import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_controller.dart';
 
-import '../../../../api_resp/target_resp.dart';
+import '../../../../api_resp/target.dart';
 import '../../../../component/a_font.dart';
 import '../../../../component/text_avatar.dart';
 import '../../../../component/text_search.dart';
