@@ -10,10 +10,11 @@ import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/message/group_item_widget.dart';
+import 'package:orginone/component/message/message_item_widget.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/logic/authority.dart';
-import 'package:orginone/logic/mapping_to_ui.dart';
+import 'package:orginone/controller/mapping_to_ui.dart';
 import 'package:orginone/util/encryption_util.dart';
 
 import 'i_chat.dart';
@@ -65,7 +66,7 @@ IChat createChat(String spaceId, String spaceName, MessageTarget target) {
   }
 }
 
-class BaseChat implements IChat {
+class BaseChat implements IChat<MessageItemWidget> {
   final String _chatId;
   final String _spaceId;
   final String _spaceName;
@@ -195,9 +196,8 @@ class BaseChat implements IChat {
   }
 
   @override
-  Widget mapping() {
-    // TODO: implement mapping
-    throw UnimplementedError();
+  MessageItemWidget mapping() {
+    return MessageItemWidget(this);
   }
 }
 

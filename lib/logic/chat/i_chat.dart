@@ -4,7 +4,7 @@ import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/enumeration/message_type.dart';
-import 'package:orginone/logic/mapping_to_ui.dart';
+import 'package:orginone/controller/mapping_to_ui.dart';
 
 /// 会话组的抽象
 abstract class IChatGroup<W extends Widget> implements MappingToUI<W> {

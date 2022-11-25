@@ -7,13 +7,14 @@ import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/controller/message/message_controller.dart';
+import 'package:orginone/logic/chat/i_chat.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/string_util.dart';
 
-import '../../../../component/text_avatar.dart';
-import '../../../../component/unified_text_style.dart';
-import '../../../../logic/authority.dart';
-import '../../../../util/date_util.dart';
+import '../text_avatar.dart';
+import '../unified_text_style.dart';
+import '../../logic/authority.dart';
+import '../../util/date_util.dart';
 
 double defaultAvatarWidth = 66.w;
 
@@ -27,13 +28,11 @@ enum ChatFunc {
   const ChatFunc(this.label);
 }
 
-class MessageItemWidget extends GetView<MessageController> {
+class MessageItemWidget extends StatelessWidget {
   // 用户信息
-  final String spaceId;
-  final MessageTarget item;
+  final IChat chat;
 
-  const MessageItemWidget(this.spaceId, this.item, {Key? key})
-      : super(key: key);
+  const MessageItemWidget(this.chat, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,16 +44,10 @@ class MessageItemWidget extends GetView<MessageController> {
         y = position.globalPosition.dy;
       },
       onLongPress: () async {
-        bool isTop = item.isTop ?? false;
-        bool isRecent =
-            controller.orgChatCache.recentChats?.contains(item) ?? false;
         List<ChatFunc> functions = [];
-        if (isTop) {
-          functions.add(ChatFunc.cancelTopping);
-        } else {
-          functions.add(ChatFunc.topping);
-        }
-        if (isRecent) functions.add(ChatFunc.remove);
+        functions.add(ChatFunc.cancelTopping);
+        functions.add(ChatFunc.topping);
+        functions.add(ChatFunc.remove);
 
         final result = await showMenu(
           context: context,
@@ -65,17 +58,15 @@ class MessageItemWidget extends GetView<MessageController> {
             0,
           ),
           items: functions
-              .map((item) => PopupMenuItem(value: item, child: Text(item.label)))
+              .map(
+                  (item) => PopupMenuItem(value: item, child: Text(item.label)))
               .toList(),
         );
-        if (result != null) {
-          controller.chatEventFire(result, spaceId, item);
-        }
       },
       onTap: () {
         Map<String, dynamic> args = {
-          "spaceId": spaceId,
-          "messageItemId": item.id
+          "spaceId": chat.spaceId,
+          "messageItemId": chat.chatId
         };
         Get.toNamed(Routers.chat, arguments: args);
       },
@@ -85,8 +76,8 @@ class MessageItemWidget extends GetView<MessageController> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _avatarContainer(item),
-            _contentContainer(item),
+            _avatarContainer(chat.target),
+            _contentContainer(chat.target),
           ],
         ),
       ),
@@ -145,7 +136,6 @@ class MessageItemWidget extends GetView<MessageController> {
         ? "${messageItem.name}（我）"
         : messageItem.name;
 
-    var space = controller.spaceMap[messageItem.spaceId];
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,7 +166,7 @@ class MessageItemWidget extends GetView<MessageController> {
               ),
             ),
             TextTag(
-              space?.name ?? "",
+              chat.spaceName,
               bgColor: Colors.white,
               textStyle: TextStyle(
                 color: UnifiedColors.designBlue,

@@ -10,7 +10,7 @@ import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/logic/authority.dart';
-import 'package:orginone/page/home/message/component/message_item_widget.dart';
+import 'package:orginone/component/message/message_item_widget.dart';
 import 'package:orginone/page/home/organization/cohorts/component/avatar_group.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/screen_init.dart';

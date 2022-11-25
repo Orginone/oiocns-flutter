@@ -16,7 +16,7 @@ import '../../../../enumeration/target_type.dart';
 import '../../../../logic/authority.dart';
 import '../../../../routers.dart';
 import '../../../../util/widget_util.dart';
-import 'component/chat_message_detail.dart';
+import '../../../../component/message/chat_message_detail.dart';
 
 class ChatPage extends GetView<ChatController> {
   const ChatPage({Key? key}) : super(key: key);

@@ -20,7 +20,7 @@ import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/logic/authority.dart';
 import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/page/home/home_controller.dart';
-import 'package:orginone/page/home/message/chat/component/chat_message_detail.dart';
+import 'package:orginone/component/message/chat_message_detail.dart';
 import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/util/api_exception.dart';
 import 'package:orginone/util/encryption_util.dart';

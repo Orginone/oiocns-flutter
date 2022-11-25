@@ -48,6 +48,9 @@ class GroupItemWidget extends StatelessWidget {
   }
 
   get _chats => Obx(() {
+        if (!chatGroup.isOpened) {
+          return Container();
+        }
         return ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),

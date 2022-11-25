@@ -25,7 +25,7 @@ import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/logic/chat/chat_impl.dart';
 import 'package:orginone/logic/chat/i_chat.dart';
 import 'package:orginone/page/home/home_controller.dart';
-import 'package:orginone/page/home/message/component/message_item_widget.dart';
+import 'package:orginone/component/message/message_item_widget.dart';
 import 'package:orginone/page/home/message/message_page.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_controller.dart';
 import 'package:orginone/util/encryption_util.dart';
