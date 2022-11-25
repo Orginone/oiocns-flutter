@@ -6,7 +6,8 @@ import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
-import 'package:orginone/page/home/message/chat/chat_controller.dart';
+import 'package:orginone/controller/message/chat_box_controller.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/page/home/message/chat/component/chat_box.dart';
 import 'package:orginone/util/date_util.dart';
 
@@ -18,7 +19,7 @@ import '../../../../routers.dart';
 import '../../../../util/widget_util.dart';
 import '../../../../component/message/chat_message_detail.dart';
 
-class ChatPage extends GetView<ChatController> {
+class ChatPage extends GetView<MessageController> {
   const ChatPage({Key? key}) : super(key: key);
 
   @override
@@ -36,23 +37,21 @@ class ChatPage extends GetView<ChatController> {
   }
 
   get _title {
-    var spaceMap = controller.messageController.spaceMap;
-    var space = spaceMap[controller.spaceId];
-    var messageItem = controller.messageItem;
-
-    var style = TextStyle(color: UnifiedColors.black9, fontSize: 14.sp);
-    return Column(
-      children: [
-        GetBuilder<ChatController>(builder: (controller) {
-          String name = messageItem.name;
-          if (messageItem.typeName != TargetType.person.label) {
-            name += "(${messageItem.personNum ?? 0})";
-          }
-          return Text(name, style: AFont.instance.size22Black3);
-        }),
-        Text("${space?.name} | ${messageItem.label}", style: style),
-      ],
-    );
+    return Obx(() {
+      var chat = controller.getCurrentChat;
+      var messageItem = chat.target;
+      String name = messageItem.name;
+      if (messageItem.typeName != TargetType.person.label) {
+        name += "(${messageItem.personNum ?? 0})";
+      }
+      String spaceName = "${chat.spaceName} | ${messageItem.label}";
+      return Column(
+        children: [
+          Text(name, style: AFont.instance.size22Black3),
+          Text(spaceName, style: AFont.instance.size14Black9),
+        ],
+      );
+    });
   }
 
   get _actions => <Widget>[
@@ -64,9 +63,10 @@ class ChatPage extends GetView<ChatController> {
             size: 32.w,
           ),
           onPressed: () {
+            var chat = controller.getCurrentChat;
             Map<String, dynamic> args = {
-              "spaceId": controller.spaceId,
-              "messageItemId": controller.messageItemId,
+              "spaceId": chat.spaceId,
+              "messageItemId": chat.chatId,
             };
             Get.toNamed(Routers.messageSetting, arguments: args);
           },
@@ -85,8 +85,9 @@ class ChatPage extends GetView<ChatController> {
   }
 
   Widget _chatItem(int index) {
-    MessageTarget messageItem = controller.messageItem;
-    MessageDetail messageDetail = controller.details[index].resp;
+    var chat = controller.getCurrentChat;
+    MessageTarget messageItem = chat.target;
+    MessageDetail messageDetail = chat.messages[index];
 
     Target userInfo = auth.userInfo;
     bool isMy = messageDetail.fromId == userInfo.id;
@@ -103,11 +104,11 @@ class ChatPage extends GetView<ChatController> {
     if (index == 0) {
       item.children.add(Container(margin: EdgeInsets.only(bottom: 5.h)));
     }
-    if (index == controller.details.length - 1) {
+    if (index == chat.messages.length - 1) {
       item.children.insert(0, time);
       return item;
     } else {
-      MessageDetail pre = controller.details[index + 1].resp;
+      MessageDetail pre = chat.messages[index + 1];
       if (messageDetail.createTime != null && pre.createTime != null) {
         var difference = messageDetail.createTime!.difference(pre.createTime!);
         if (difference.inSeconds > 60) {
@@ -133,10 +134,7 @@ class ChatPage extends GetView<ChatController> {
             child: Container(
               color: UnifiedColors.bgColor,
               child: RefreshIndicator(
-                onRefresh: () async {
-                  await controller.getHistoryMsg(isCacheNameMap: true);
-                  controller.update();
-                },
+                onRefresh: () => controller.getCurrentChat.moreMessage(),
                 child: Container(
                   padding: EdgeInsets.only(left: 10.w, right: 10.w),
                   child: Obx(
@@ -145,7 +143,7 @@ class ChatPage extends GetView<ChatController> {
                       shrinkWrap: true,
                       controller: controller.messageScrollController,
                       scrollDirection: Axis.vertical,
-                      itemCount: controller.details.length,
+                      itemCount: controller.getCurrentChat.messages.length,
                       itemBuilder: (BuildContext context, int index) {
                         return _chatItem(index);
                       },

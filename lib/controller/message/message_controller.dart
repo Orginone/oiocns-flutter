@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/hub/any_store.dart';
@@ -33,8 +36,19 @@ import 'package:orginone/util/string_util.dart';
 
 import '../../page/home/message/chat/chat_controller.dart';
 
+enum ReceiveEvent {
+  receiveMessage("RecvMsg");
+
+  final String keyWord;
+
+  const ReceiveEvent(this.keyWord);
+}
+
 class MessageController extends BaseController<IChatGroup>
     with WidgetsBindingObserver, GetSingleTickerProviderStateMixin {
+  final RxList<IChat> _chats = <IChat>[].obs;
+  final Rx<IChat?> _currentChat = Rxn();
+
   // 日志对象
   Logger log = Logger("MessageController");
 
@@ -56,19 +70,85 @@ class MessageController extends BaseController<IChatGroup>
   // 会话加载状态
   bool isLoaded = false;
 
+  var messageScrollController = ScrollController();
+
+  // 语音相关
+  FlutterSoundPlayer? _soundPlayer;
+  StreamSubscription? _mt;
+  AnimationController? animationController;
+  Animation<AlignmentGeometry>? animation;
+  Map<String, VoiceDetail> playStatusMap = {};
+  VoiceDetail? _currentVoicePlay;
+
   @override
   void onInit() {
     super.onInit();
-    initTabs();
     // 监听页面的生命周期
     WidgetsBinding.instance.addObserver(this);
-    // 订阅聊天面板信息
-    _subscribingCharts();
+    // 初始化 Tabs
+    initTabs();
     // 获取通讯录
-    _loadingCharts();
+    _loadingMails();
+    // 订阅最新会话
+    _initListener();
   }
 
-  _loadingCharts() async {
+  int getChatSize() {
+    return _chats.length;
+  }
+
+  Widget getChatWidget(int index) {
+    return _chats[index].mapping();
+  }
+
+  IChat get getCurrentChat => _currentChat.value!;
+
+  /// 获取名称
+  String getName(String id) {
+    String name = "未知";
+    forEach((chatGroup) {
+      for (var chat in chatGroup.chats) {
+        if (chat.target.id == id) {
+          name = chat.target.name;
+          return false;
+        }
+      }
+      return true;
+    });
+    return name;
+  }
+
+  /// 设置当前会话
+  setCurrent(String spaceId, String chatId) async {
+    IChat? chat = _ref(spaceId, chatId);
+    if (chat != null) {
+      _currentChat.value = chat;
+      chat.readAll();
+      if (chat.messages.isEmpty) {
+        await chat.moreMessage();
+      }
+      if (chat.persons.isEmpty) {
+        await chat.morePersons();
+      }
+      _appendChat(chat);
+      await _cacheChats();
+    }
+  }
+
+  /// 缓存当前会话
+  _cacheChats() async {
+    var key = SubscriptionKey.userChat.keyWord;
+    var domain = Domain.user.name;
+    var chats = _chats.map((c) => c.getCache()).toList().reversed.toList();
+    var data = {
+      "operation": "replaceAll",
+      "data": {"chats": chats}
+    };
+    await kernelApi.anyStore.set(key, data, domain);
+  }
+
+  /// 加载通讯录
+  _loadingMails() async {
     List<ChatGroup> ansGroups = await kernelApi.queryImChats(ChatsReqModel(
       spaceId: auth.userId,
       cohortName: TargetType.cohort.label,
@@ -85,6 +165,64 @@ class MessageController extends BaseController<IChatGroup>
       );
       add(iChatGroup);
     }
+  }
+
+  /// 初始化监听器
+  _initListener() async {
+    // 消息接受订阅
+    var ketWord = ReceiveEvent.receiveMessage.keyWord;
+    kernelApi.on(ketWord, (message) => onReceiveMessage([message]));
+
+    // 订阅最新的消息会话
+    var key = SubscriptionKey.userChat;
+    var domain = Domain.user.name;
+    kernelApi.anyStore.subscribing(key, domain, _updateChats);
+  }
+
+  _appendChat(IChat targetChat) {
+    var matchedChat = _chats.indexWhere((item) {
+      return item.spaceId == targetChat.spaceId &&
+          item.chatId == targetChat.chatId;
+    });
+    if (matchedChat != -1) {
+      _chats[matchedChat] = targetChat;
+    } else {
+      _chats.insert(0, targetChat);
+    }
+  }
+
+  /// 更新视图
+  _updateChats(Map<String, dynamic> data) async {
+    List<dynamic> chats = data["chats"];
+    for (Map<String, dynamic>? chat in chats) {
+      if (chat == null) {
+        continue;
+      }
+      var spaceId = chat["spaceId"];
+      var chatId = chat["chatId"];
+      var matchedChat = _ref(spaceId, chatId);
+      if (matchedChat != null) {
+        matchedChat.loadCache(ChatCache.fromMap(chat));
+        _appendChat(matchedChat);
+      }
+    }
+  }
+
+  /// 获取存在的会话
+  IChat? _ref(String spaceId, String chatId) {
+    IChat? tempChat;
+    forEach((chatGroup) {
+      if (chatGroup.spaceId == spaceId) {
+        for (IChat chat in chatGroup.chats) {
+          if (chat.chatId == chatId) {
+            tempChat = chat;
+            return false;
+          }
+        }
+      }
+      return true;
+    });
+    return tempChat;
   }
 
   initTabs() {
@@ -202,25 +340,6 @@ class MessageController extends BaseController<IChatGroup>
       // 缓存消息
       await kernelApi.anyStore.cacheChats(orgChatCache);
     }
-  }
-
-  /// 订阅聊天群变动
-  _subscribingCharts() async {
-    SubscriptionKey key = SubscriptionKey.orgChat;
-    String domain = Domain.user.name;
-    await kernelApi.anyStore.subscribing(key, domain, _updateChats);
-  }
-
-  /// 从订阅通道拿到的数据直接更新试图
-  _updateChats(Map<String, dynamic> data) {
-    orgChatCache = OrgChatCache(data);
-    orgChatCache.chats = _spaceHandling(orgChatCache.chats);
-    sortingGroups();
-    _latestMsgHandling(orgChatCache.messageDetail);
-    update();
-
-    // 表示从缓存会话已经加载完毕
-    isLoaded = true;
   }
 
   /// 最新的消息处理
@@ -488,9 +607,84 @@ class MessageController extends BaseController<IChatGroup>
   }
 
   bool hasNoRead() {
-    var has = orgChatCache.recentChats?.firstWhereOrNull(
-        (item) => (item.noRead ?? 0) > 0 && !(item.isInterruption ?? false));
+    var has = _chats.firstWhereOrNull((item) => item.noReadCount != 0);
     return has != null;
+  }
+
+  /// 开始播放
+  startPlayVoice(String id, Uint8List bytes) async {
+    await stopPrePlayVoice();
+
+    // 动画效果
+    _currentVoicePlay = playStatusMap[id];
+    animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: _currentVoicePlay!.initProgress),
+    );
+    animation = Tween<AlignmentGeometry>(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+    ).animate(CurvedAnimation(
+      parent: animationController!,
+      curve: Curves.linear,
+    ));
+    animationController!.forward();
+
+    // 监听进度
+    _soundPlayer ??= await FlutterSoundPlayer().openPlayer();
+    _soundPlayer!.setSubscriptionDuration(const Duration(milliseconds: 50));
+    _mt = _soundPlayer!.onProgress!.listen((event) {
+      _currentVoicePlay!.progress.value = event.position.inMilliseconds;
+    });
+    _soundPlayer!
+        .startPlayer(
+          fromDataBuffer: bytes,
+          whenFinished: () => stopPrePlayVoice(),
+        )
+        .catchError((error) => stopPrePlayVoice());
+
+    // 重新开始播放
+    _currentVoicePlay!.status.value = VoiceStatus.playing;
+  }
+
+  /// 停止播放
+  stopPrePlayVoice() async {
+    if (_currentVoicePlay != null) {
+      // 改状态
+      _currentVoicePlay!.status.value = VoiceStatus.stop;
+      _currentVoicePlay!.progress.value = _currentVoicePlay!.initProgress;
+
+      // 关闭播放
+      await _soundPlayer?.stopPlayer();
+      _mt?.cancel();
+      _mt = null;
+      _soundPlayer = null;
+
+      // 关闭动画
+      animation = null;
+      animationController?.stop();
+      animationController?.dispose();
+      animationController = null;
+
+      // 空引用
+      _currentVoicePlay = null;
+    }
+  }
+
+  /// 语音录制完成并发送
+  void sendVoice(String filePath, int milliseconds) async {
+    var file = File(filePath);
+    Map<String, dynamic> msgBody = {
+      "milliseconds": milliseconds,
+      "bytes": file.readAsBytesSync()
+    };
+    IChat currentChat = _currentChat.value!;
+    await chatServer.send(
+      spaceId: currentChat.spaceId,
+      itemId: currentChat.chatId,
+      msgBody: jsonEncode(msgBody),
+      msgType: MsgType.voice,
+    );
   }
 }
 

@@ -31,8 +31,13 @@ enum ChatFunc {
 class MessageItemWidget extends StatelessWidget {
   // 用户信息
   final IChat chat;
+  final Function? onTap;
 
-  const MessageItemWidget(this.chat, {Key? key}) : super(key: key);
+  const MessageItemWidget({
+    Key? key,
+    required this.chat,
+    this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +49,6 @@ class MessageItemWidget extends StatelessWidget {
         y = position.globalPosition.dy;
       },
       onLongPress: () async {
-        List<ChatFunc> functions = [];
-        functions.add(ChatFunc.cancelTopping);
-        functions.add(ChatFunc.topping);
-        functions.add(ChatFunc.remove);
-
         final result = await showMenu(
           context: context,
           position: RelativeRect.fromLTRB(
@@ -57,18 +57,15 @@ class MessageItemWidget extends StatelessWidget {
             MediaQuery.of(context).size.width - x,
             0,
           ),
-          items: functions
-              .map(
-                  (item) => PopupMenuItem(value: item, child: Text(item.label)))
-              .toList(),
+          items: ChatFunc.values.map((item) {
+            return PopupMenuItem(value: item, child: Text(item.label));
+          }).toList(),
         );
       },
       onTap: () {
-        Map<String, dynamic> args = {
-          "spaceId": chat.spaceId,
-          "messageItemId": chat.chatId
-        };
-        Get.toNamed(Routers.chat, arguments: args);
+        if (onTap != null) {
+          onTap!(chat);
+        }
       },
       child: Container(
         padding: EdgeInsets.only(left: 25.w, top: 16.h, right: 25.w),

@@ -3,6 +3,7 @@ import 'package:orginone/controller/market/market_controller.dart';
 import 'package:orginone/controller/market/merchandise_controller.dart';
 import 'package:orginone/controller/market/order_controller.dart';
 import 'package:orginone/controller/market/staging_controller.dart';
+import 'package:orginone/controller/message/chat_box_controller.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
 import 'package:orginone/page/home/affairs/detail/affairs_detail.dart';
@@ -27,7 +28,6 @@ import 'package:orginone/page/home/component/unit/unit_detail/unit_detail_bindin
 import 'package:orginone/page/home/component/unit/unit_detail/unit_detail_page.dart';
 import 'package:orginone/page/home/home_binding.dart';
 import 'package:orginone/page/home/home_page.dart';
-import 'package:orginone/page/home/message/chat/chat_binding.dart';
 import 'package:orginone/page/home/message/chat/chat_page.dart';
 import 'package:orginone/page/home/message/contact/contact_binding.dart';
 import 'package:orginone/page/home/message/contact/contact_page.dart';
@@ -189,7 +189,7 @@ class Routers {
       GetPage(
         name: Routers.chat,
         page: () => const ChatPage(),
-        binding: ChatBinding(),
+        bindings: [MessageBinding(), ChatBoxBinding()],
       ),
       GetPage(
         name: Routers.messageSetting,

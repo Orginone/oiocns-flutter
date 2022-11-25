@@ -15,6 +15,13 @@ class BaseController<T> extends GetxController {
     throw UnimplementedError();
   }
 
+  forEach(bool Function(T) func) {
+    for (var value in _data) {
+      bool isContinue = func(value);
+      if (!isContinue) break;
+    }
+  }
+
   List<UI> mappingAll<UI>(UI Function(T item) func) {
     return _data.map(func).toList();
   }

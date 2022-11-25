@@ -130,14 +130,6 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
 
   RxList<Detail> get details => _details;
 
-  // 语音播放器
-  FlutterSoundPlayer? _soundPlayer;
-  StreamSubscription? _mt;
-  AnimationController? animationController;
-  Animation<AlignmentGeometry>? animation;
-  Map<String, VoiceDetail> playStatusMap = {};
-  VoiceDetail? _currentVoicePlay;
-
   @override
   void onInit() {
     super.onInit();
@@ -317,21 +309,6 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
   }
 
   /// 语音录制完成并发送
-  void sendVoice(String filePath, int milliseconds) async {
-    var file = File(filePath);
-    Map<String, dynamic> msgBody = {
-      "milliseconds": milliseconds,
-      "bytes": file.readAsBytesSync()
-    };
-    await chatServer.send(
-      spaceId: spaceId,
-      itemId: messageItemId,
-      msgBody: jsonEncode(msgBody),
-      msgType: MsgType.voice,
-    );
-  }
-
-  /// 语音录制完成并发送
   void filePicked(String fileName, String filePath) async {
     // TargetResp userInfo = auth.userInfo;
     // String prefix = "chat_${userInfo.id}_${messageItem.id}_voice";
@@ -385,63 +362,4 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     }
   }
 
-  /// 开始播放
-  startPlayVoice(String id, Uint8List bytes) async {
-    await stopPrePlayVoice();
-
-    // 动画效果
-    _currentVoicePlay = playStatusMap[id];
-    animationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: _currentVoicePlay!.initProgress),
-    );
-    animation = Tween<AlignmentGeometry>(
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-    ).animate(CurvedAnimation(
-      parent: animationController!,
-      curve: Curves.linear,
-    ));
-    animationController!.forward();
-
-    // 监听进度
-    _soundPlayer ??= await FlutterSoundPlayer().openPlayer();
-    _soundPlayer!.setSubscriptionDuration(const Duration(milliseconds: 50));
-    _mt = _soundPlayer!.onProgress!.listen((event) {
-      _currentVoicePlay!.progress.value = event.position.inMilliseconds;
-    });
-    _soundPlayer!
-        .startPlayer(
-          fromDataBuffer: bytes,
-          whenFinished: () => stopPrePlayVoice(),
-        )
-        .catchError((error) => stopPrePlayVoice());
-
-    // 重新开始播放
-    _currentVoicePlay!.status.value = VoiceStatus.playing;
-  }
-
-  /// 停止播放
-  stopPrePlayVoice() async {
-    if (_currentVoicePlay != null) {
-      // 改状态
-      _currentVoicePlay!.status.value = VoiceStatus.stop;
-      _currentVoicePlay!.progress.value = _currentVoicePlay!.initProgress;
-
-      // 关闭播放
-      await _soundPlayer?.stopPlayer();
-      _mt?.cancel();
-      _mt = null;
-      _soundPlayer = null;
-
-      // 关闭动画
-      animation = null;
-      animationController?.stop();
-      animationController?.dispose();
-      animationController = null;
-
-      // 空引用
-      _currentVoicePlay = null;
-    }
-  }
 }

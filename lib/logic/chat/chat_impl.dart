@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:orginone/api/hub/any_store.dart';
 import 'package:orginone/api/kernelapi.dart';
@@ -10,9 +11,11 @@ import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/message/group_item_widget.dart';
 import 'package:orginone/component/message/message_item_widget.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/logic/authority.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/util/encryption_util.dart';
 
 import 'i_chat.dart';
@@ -127,19 +130,19 @@ class BaseChat implements IChat<MessageItemWidget> {
       chatId: chatId,
       spaceId: spaceId,
       noReadCount: _noReadCount.value,
-      latestMsg: _lastMessage.value,
+      lastMessage: _lastMessage.value,
     );
   }
 
   @override
   loadCache(ChatCache chatCache) {
-    if (chatCache.latestMsg?.id != lastMessage?.id) {
-      if (chatCache.latestMsg != null) {
-        _messages.add(chatCache.latestMsg!);
+    if (chatCache.lastMessage?.id != lastMessage?.id) {
+      if (chatCache.lastMessage != null) {
+        _messages.add(chatCache.lastMessage!);
       }
     }
     _noReadCount.value = chatCache.noReadCount;
-    _lastMessage.value = chatCache.latestMsg;
+    _lastMessage.value = chatCache.lastMessage;
   }
 
   @override
@@ -153,12 +156,12 @@ class BaseChat implements IChat<MessageItemWidget> {
   }
 
   @override
-  moreMessage(String filter) {
+  moreMessage({String? filter}) {
     throw UnimplementedError();
   }
 
   @override
-  morePersons(String filter) {
+  morePersons({String? filter}) {
     throw UnimplementedError();
   }
 
@@ -195,7 +198,26 @@ class BaseChat implements IChat<MessageItemWidget> {
 
   @override
   MessageItemWidget mapping() {
-    return MessageItemWidget(this);
+    return MessageItemWidget(
+      chat: this,
+      onTap: (IChat chat) => onTap(chat),
+    );
+  }
+
+  onTap(IChat chat) async {
+    if (Get.isRegistered<MessageController>()) {
+      var messageCtrl = Get.find<MessageController>();
+      await messageCtrl.setCurrent(spaceId, chatId);
+      Get.offNamedUntil(
+        Routers.chat,
+        (router) => router.settings.name == Routers.home,
+      );
+    }
+  }
+
+  @override
+  readAll() {
+    _noReadCount.value = 0;
   }
 }
 
@@ -207,7 +229,7 @@ class PersonChat extends BaseChat {
   });
 
   @override
-  moreMessage(String filter) async {
+  moreMessage({String? filter}) async {
     List<dynamic> details = [];
     if (spaceId == auth.userId) {
       // 如果是个人空间从本地存储拿数据
@@ -221,14 +243,22 @@ class PersonChat extends BaseChat {
         "skip": _messages.length,
         "limit": 30
       };
-      ApiResp apiResp = await kernelApi.anyStore.aggregate(collName, options, domain);
+      ApiResp apiResp = await kernelApi.anyStore.aggregate(
+        collName: collName,
+        opt: options,
+        domain: domain,
+      );
       details.addAll(apiResp.data);
     } else {
       // 如果是单位空间从接口拿数据
       var params = IdSpaceReq(
         id: target.id,
         spaceId: spaceId,
-        page: PageModel(limit: 30, offset: _messages.length, filter: filter),
+        page: PageModel(
+          limit: 30,
+          offset: _messages.length,
+          filter: filter ?? "",
+        ),
       );
       PageResp<MessageDetail> res = await kernelApi.queryFriendImMsgs(params);
       details.addAll(res.result);
@@ -238,7 +268,7 @@ class PersonChat extends BaseChat {
       item["id"] = item["chatId"];
       var detail = MessageDetail.fromMap(item);
       detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
-      _messages.insert(0, detail);
+      _messages.add(detail);
     }
   }
 }
@@ -251,7 +281,7 @@ class CohortChat extends BaseChat {
   });
 
   @override
-  moreMessage(String filter) async {
+  moreMessage({String? filter}) async {
     List<dynamic> details = [];
     if (spaceId == auth.userId) {
       // 如果是个人空间从本地存储拿数据
@@ -262,13 +292,21 @@ class CohortChat extends BaseChat {
         "skip": _messages.length,
         "limit": 30
       };
-      ApiResp apiResp = await kernelApi.anyStore.aggregate(collName, options, domain);
+      ApiResp apiResp = await kernelApi.anyStore.aggregate(
+        collName: collName,
+        opt: options,
+        domain: domain,
+      );
       details.addAll(apiResp.data);
     } else {
       // 如果是单位空间从接口拿数据
       var params = IdReq(
         id: target.id,
-        page: PageModel(limit: 30, offset: _messages.length, filter: filter),
+        page: PageModel(
+          limit: 30,
+          offset: _messages.length,
+          filter: filter ?? "",
+        ),
       );
       PageResp<MessageDetail> res = await kernelApi.queryCohortImMsgs(params);
       details.addAll(res.result);
@@ -278,12 +316,12 @@ class CohortChat extends BaseChat {
       item["id"] = item["chatId"];
       var detail = MessageDetail.fromMap(item);
       detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
-      _messages.insert(0, detail);
+      _messages.add(detail);
     }
   }
 
   @override
-  morePersons(String filter) async {
+  morePersons({String? filter}) async {
     PageResp<Target> page = await kernelApi.querySubTargetById(IDReqSubModel(
       id: target.id,
       typeNames: [target.typeName],
@@ -291,7 +329,7 @@ class CohortChat extends BaseChat {
       page: PageModel(
         limit: 13,
         offset: _persons.length,
-        filter: filter,
+        filter: filter ?? "",
       ),
     ));
     for (var target in page.result) {

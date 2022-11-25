@@ -30,7 +30,7 @@ class StringUtil {
   static String getDetailRecallBody({
     required MessageTarget item,
     required MessageDetail detail,
-    required Map<String, dynamic> nameMap,
+    required String name,
   }) {
     var userInfo = auth.userInfo;
     String msgBody = "撤回了一条消息";
@@ -40,7 +40,6 @@ class StringUtil {
     } else if (targetType == TargetType.person) {
       msgBody = "对方$msgBody";
     } else {
-      String name = nameMap[detail.fromId];
       msgBody = "$name$msgBody";
     }
     return msgBody;

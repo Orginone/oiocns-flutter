@@ -42,7 +42,14 @@ enum ReceiveEvent {
   const ReceiveEvent(this.keyWord);
 }
 
-enum SubscriptionKey { orgChat }
+enum SubscriptionKey {
+  orgChat("orgChat"),
+  userChat("userchat");
+
+  final String keyWord;
+
+  const SubscriptionKey(this.keyWord);
+}
 
 enum StoreKey { orgChat }
 
@@ -149,7 +156,11 @@ class AnyStore {
   }
 
   /// 聚合
-  Future<ApiResp> aggregate(String collName, dynamic opt, String domain) async {
+  Future<ApiResp> aggregate({
+    required String collName,
+    required dynamic opt,
+    required String domain,
+  }) async {
     var aggregateName = SendEvent.aggregate.name;
     List<Object> args = [collName, opt, domain];
     dynamic res = await _storeHub.invoke(aggregateName, args: args);
@@ -158,18 +169,18 @@ class AnyStore {
 
   /// 订阅
   subscribing(SubscriptionKey key, String domain, Function callback) async {
-    var fullKey = "${key.name}|$domain";
+    var fullKey = "${key.keyWord}|$domain";
     if (_subscription.containsKey(fullKey)) {
       return;
     }
     _subscription[fullKey] = callback;
     var name = SendEvent.subscribed.name;
-    dynamic res = await _storeHub.invoke(name, args: [key.name, domain]);
+    dynamic res = await _storeHub.invoke(name, args: [key.keyWord, domain]);
     ApiResp apiResp = ApiResp.fromJson(res);
     if (apiResp.success) {
       callback(apiResp.data);
     }
-    log.info("====> 订阅 ${key.name} 成功！");
+    log.info("====> 订阅 ${key.keyWord} 成功！");
   }
 
   /// 取消订阅
@@ -277,7 +288,11 @@ class AnyStore {
       "limit": limit
     };
     var domain = Domain.user.name;
-    ApiResp apiResp = await aggregate(collName, options, domain);
+    ApiResp apiResp = await aggregate(
+      collName: collName,
+      opt: options,
+      domain: domain,
+    );
     List<dynamic> details = apiResp.data ?? [];
     List<MessageDetail> ans = [];
     for (var item in details) {

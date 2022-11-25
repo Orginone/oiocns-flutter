@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/bucket_api.dart';
 import 'package:orginone/api_resp/message_detail.dart';
-import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/photo_widget.dart';
@@ -16,10 +15,10 @@ import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_edge_insets.dart';
 import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/config/constant.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/enumeration/enum_map.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/logic/authority.dart';
-import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/string_util.dart';
@@ -37,7 +36,7 @@ enum DetailFunc {
 
 double defaultWidth = 10.w;
 
-class ChatMessageDetail extends GetView<ChatController> {
+class ChatMessageDetail extends GetView<MessageController> {
   final Logger log = Logger("ChatMessageDetail");
 
   final MessageDetail detail;
@@ -97,12 +96,11 @@ class ChatMessageDetail extends GetView<ChatController> {
         isCenter = true;
         break;
       case MsgType.recall:
-        var messageItem = controller.messageItem;
-        var nameMap = controller.messageController.orgChatCache.nameMap;
+        var messageItem = controller.getCurrentChat.target;
         String msgBody = StringUtil.getDetailRecallBody(
           item: messageItem,
           detail: detail,
-          nameMap: nameMap,
+          name: controller.getName(detail.fromId),
         );
         children.add(Text(msgBody, style: AFont.instance.size18Black9));
         isCenter = true;
@@ -125,13 +123,8 @@ class ChatMessageDetail extends GetView<ChatController> {
 
   /// 目标名称
   String targetName() {
-    OrgChatCache orgChatCache = controller.messageController.orgChatCache;
-    if (!orgChatCache.nameMap.containsKey(detail.fromId)) {
-      chatServer.getName(detail.fromId).then((name) {
-        orgChatCache.nameMap[detail.fromId] = name;
-      });
-    }
-    return orgChatCache.nameMap[detail.fromId] ?? "";
+    var currentChat = controller.getCurrentChat;
+    return controller.getName(currentChat.target.id);
   }
 
   /// 获取头像
@@ -191,8 +184,9 @@ class ChatMessageDetail extends GetView<ChatController> {
 
     // 添加长按手势
     double x = 0, y = 0;
-    String spaceId = controller.spaceId;
-    String sessionId = controller.messageItemId;
+    var currentChat = controller.getCurrentChat;
+    String spaceId = currentChat.spaceId;
+    String sessionId = currentChat.chatId;
     var chat = GestureDetector(
       onPanDown: (position) {
         x = position.globalPosition.dx;
@@ -225,7 +219,7 @@ class ChatMessageDetail extends GetView<ChatController> {
           }).toList(),
         );
         if (result != null) {
-          controller.detailFuncCallback(result, spaceId, sessionId, detail);
+          // controller.detailFuncCallback(result, spaceId, sessionId, detail);
         }
       },
       child: body,

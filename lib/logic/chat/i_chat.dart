@@ -28,18 +28,35 @@ class ChatCache {
   final String chatId;
   final String spaceId;
   final int noReadCount;
-  final MessageDetail? latestMsg;
+  final MessageDetail? lastMessage;
 
   const ChatCache({
     required this.chatId,
     required this.spaceId,
     required this.noReadCount,
-    required this.latestMsg,
+    this.lastMessage,
   });
+
+  ChatCache.fromMap(Map<String, dynamic> map)
+      : chatId = map["chatId"],
+        spaceId = map["spaceId"],
+        noReadCount = map["noReadCount"],
+        lastMessage = map["lastMessage"] == null
+            ? null
+            : MessageDetail.fromMap(map["lastMessage"]);
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["chatId"] = chatId;
+    json["spaceId"] = spaceId;
+    json["noReadCount"] = noReadCount;
+    json["lastMessage"] = lastMessage?.toJson();
+    return json;
+  }
 }
 
 /// 单个会话的抽象
-abstract class IChat<W extends Widget> implements MappingToUI<W>{
+abstract class IChat<W extends Widget> implements MappingToUI<W> {
   final String chatId;
   final String spaceId;
   final String spaceName;
@@ -69,10 +86,10 @@ abstract class IChat<W extends Widget> implements MappingToUI<W>{
   loadCache(ChatCache chatCache);
 
   /// 更多消息
-  moreMessage(String filter);
+  moreMessage({String? filter});
 
   /// 更多人
-  morePersons(String filter);
+  morePersons({String? filter});
 
   /// 撤销消息
   Future<bool> recallMessage(String id);
@@ -88,4 +105,7 @@ abstract class IChat<W extends Widget> implements MappingToUI<W>{
 
   /// 发送消息
   Future<void> sendMsg(MsgType msgType, String msgBody);
+
+  /// 阅读所有消息
+  readAll();
 }

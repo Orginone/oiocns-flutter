@@ -50,34 +50,31 @@ class RecentChat extends GetView<MessageController> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<MessageController>(
-      builder: (controller) {
-        List<MessageTarget> items = controller.orgChatCache.recentChats ?? [];
-        return ListView.builder(
-          shrinkWrap: true,
-          scrollDirection: Axis.vertical,
-          itemCount: items.length + 1,
-          itemBuilder: (BuildContext context, int index) {
-            if (index < items.length) {
-              var recentChat = items[index];
-              return Container();
-            }
-            return GestureDetector(
-              onTap: () {
-                Get.toNamed(Routers.moreMessage);
-              },
-              child: Column(
-                children: [
-                  Padding(padding: EdgeInsets.only(top: 30.h)),
-                  Text("更多会话", style: AFont.instance.size18themeColorW500),
-                  Padding(padding: EdgeInsets.only(top: 30.h)),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
+    return Obx(() {
+      int chatSize = controller.getChatSize();
+      return ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        itemCount: chatSize + 1,
+        itemBuilder: (BuildContext context, int index) {
+          if (index < chatSize) {
+            return controller.getChatWidget(index);
+          }
+          return GestureDetector(
+            onTap: () {
+              Get.toNamed(Routers.moreMessage);
+            },
+            child: Column(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 30.h)),
+                Text("更多会话", style: AFont.instance.size18themeColorW500),
+                Padding(padding: EdgeInsets.only(top: 30.h)),
+              ],
+            ),
+          );
+        },
+      );
+    });
   }
 }
 
