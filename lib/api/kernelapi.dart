@@ -3,6 +3,7 @@ import 'package:logging/logging.dart';
 import 'package:orginone/api/hub/any_store.dart';
 import 'package:orginone/api/hub/store_hub.dart';
 import 'package:orginone/api/model.dart';
+import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/api_resp/login_resp.dart';
 import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/page_resp.dart';
@@ -850,12 +851,12 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   Future<List<ChatGroup>> queryImChats(ChatsReqModel params) async {
-    Map<String, dynamic> ans = await _request(RequestEntity.from(
+    ApiResp resp = ApiResp.fromJson(await _request(RequestEntity.from(
       module: 'chat',
       action: 'QueryImChats',
       params: params,
-    ));
-    return ChatGroup.fromList(ans["groups"]);
+    )));
+    return ChatGroup.fromList(resp.data["groups"]);
   }
 
   /// 查询群历史消息

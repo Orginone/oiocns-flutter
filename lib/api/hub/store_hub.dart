@@ -87,18 +87,19 @@ class StoreHub {
       _info("开始连接失败，当前连接状态：${_server.state}");
       return;
     }
-    _info("开始连接······");
-    _isStarted.value = true;
-    await _server.start()?.then((value) {
+    try {
+      _info("开始连接······");
+      _isStarted.value = true;
+      await _server.start();
       _info("连接成功！");
       for (var callback in _connectedCallbacks) {
         callback();
       }
       setState();
-    }).catchError((error, stackTrace) {
+    } catch (error) {
       _info(" ${error.toString()}");
       _startTimeout();
-    });
+    }
   }
 
   /// 日志打印前缀
