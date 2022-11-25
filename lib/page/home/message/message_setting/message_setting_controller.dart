@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/cohort_api.dart';
+import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/api/person_api.dart';
-import 'package:orginone/api/hub/store_server.dart';
 import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/target.dart';
@@ -106,12 +106,12 @@ class MessageSettingController extends GetxController {
     update();
 
     // 同步会话
-    await storeServer.cacheChats(orgChatCache);
+    await kernelApi.anyStore.cacheChats(orgChatCache);
   }
 
   /// 删除个人空间所有聊天记录
   clearHistoryMsg() async {
-    await storeServer.clearHistoryMsg(messageItemId);
+    await kernelApi.anyStore.clearHistoryMsg(messageItemId);
 
     // 清空页面
     var chatSpaceId = chatController.spaceId;
@@ -138,7 +138,7 @@ class MessageSettingController extends GetxController {
     messageController.update();
 
     // 同步会话
-    await storeServer.cacheChats(orgChatCache);
+    await kernelApi.anyStore.cacheChats(orgChatCache);
   }
 
   /// 删除好友
@@ -176,6 +176,6 @@ class MessageSettingController extends GetxController {
         .removeWhere((chat) => chat.spaceId == spaceId && chat.id == targetId);
 
     // 同步会话
-    await storeServer.cacheChats(orgChatCache);
+    await kernelApi.anyStore.cacheChats(orgChatCache);
   }
 }

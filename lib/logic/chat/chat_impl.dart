@@ -1,6 +1,5 @@
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:orginone/api/hub/store_server.dart';
+import 'package:orginone/api/hub/any_store.dart';
 import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/api/model.dart';
 
@@ -14,7 +13,6 @@ import 'package:orginone/component/message/message_item_widget.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/logic/authority.dart';
-import 'package:orginone/controller/mapping_to_ui.dart';
 import 'package:orginone/util/encryption_util.dart';
 
 import 'i_chat.dart';
@@ -223,7 +221,7 @@ class PersonChat extends BaseChat {
         "skip": _messages.length,
         "limit": 30
       };
-      ApiResp apiResp = await storeServer.aggregate(collName, options, domain);
+      ApiResp apiResp = await kernelApi.anyStore.aggregate(collName, options, domain);
       details.addAll(apiResp.data);
     } else {
       // 如果是单位空间从接口拿数据
@@ -264,7 +262,7 @@ class CohortChat extends BaseChat {
         "skip": _messages.length,
         "limit": 30
       };
-      ApiResp apiResp = await storeServer.aggregate(collName, options, domain);
+      ApiResp apiResp = await kernelApi.anyStore.aggregate(collName, options, domain);
       details.addAll(apiResp.data);
     } else {
       // 如果是单位空间从接口拿数据

@@ -1,36 +1,46 @@
 import 'dart:async';
 
 import 'package:common_utils/common_utils.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/api/hub/server.dart';
 import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
+import 'package:orginone/config/constant.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/logic/authority.dart';
 import 'package:orginone/util/encryption_util.dart';
+import 'package:signalr_core/signalr_core.dart';
 
 import '../../../api_resp/api_resp.dart';
 import 'store_hub.dart';
 
 enum SendEvent {
-  TokenAuth,
-  Subscribed,
-  UnSubscribed,
-  Get,
-  Set,
-  Delete,
-  Insert,
-  Update,
-  Remove,
-  Aggregate
+  tokenAuth("TokenAuth"),
+  subscribed("Subscribed"),
+  unSubscribed("UnSubscribed"),
+  get("Get"),
+  set("Set"),
+  delete("Delete"),
+  insert("Insert"),
+  update("Update"),
+  remove("Remove"),
+  aggregate("Aggregate");
+
+  final String keyWord;
+
+  const SendEvent(this.keyWord);
 }
 
-enum ReceiveEvent { Updated }
+enum ReceiveEvent {
+  updated("Updated");
+
+  final String keyWord;
+
+  const ReceiveEvent(this.keyWord);
+}
 
 enum SubscriptionKey { orgChat }
 
@@ -40,247 +50,121 @@ enum Domain { user }
 
 String collName = "chat-message";
 
-class ProxyStoreServer implements ConnServer, StoreServer {
-  final RealStoreServer _instance;
+class AnyStore {
+  final Logger log = Logger("AnyStoreUtil");
+  final StoreHub _storeHub;
+  final Map<String, Function> _subscription = {};
 
-  ProxyStoreServer(this._instance);
+  Rx<HubConnectionState> get state => _storeHub.state;
 
-  final Rx<bool> _isAuthed = false.obs;
-
-  @override
-  Future<void> start() async {
-    anyStoreHub.addConnectedCallback(startCallback);
-    await anyStoreHub.start();
+  AnyStore()
+      : _storeHub = StoreHub(
+          connName: "anyStore",
+          url: Constant.anyStoreHub,
+          timeout: const Duration(seconds: 5),
+        ) {
+    _storeHub.on(ReceiveEvent.updated.name, _onUpdated);
+    _storeHub.addConnectedCallback(() async {
+      await _tokenAuth();
+      await _resubscribed();
+    });
   }
 
-  startCallback() async {
-    await tokenAuth();
-    await _instance._resubscribed();
+  start() async {
+    await _storeHub.start();
   }
 
-  @override
-  Future<void> stop() async {
-    _instance.subscriptionMap.clear();
-    _isAuthed.value = false;
-    await anyStoreHub.stop();
+  stop() async {
+    _subscription.clear();
+    await _storeHub.stop();
   }
 
   /// 鉴权
-  @override
-  Future<void> tokenAuth() async {
-    if (anyStoreHub.isDisConnected()) {
-      throw Exception("存储服务未连接,无法授权!");
-    }
+  Future<void> _tokenAuth() async {
     var accessToken = getAccessToken;
-    var name = SendEvent.TokenAuth.name;
+    var name = SendEvent.tokenAuth.name;
     var domain = Domain.user.name;
-    try {
-      await anyStoreHub.invoke(name, args: [accessToken, domain]);
-      _isAuthed.value = true;
-    } catch (error) {
-      Fluttertoast.showToast(msg: error.toString());
-      rethrow;
+    await _storeHub.invoke(name, args: [accessToken, domain]);
+  }
+
+  /// 回调事件
+  void _onUpdated(dynamic arguments) {
+    if (arguments == null) {
+      return;
     }
-  }
-
-  @override
-  Future<ApiResp> cacheMsg(String sessionId, MessageDetail detail) {
-    checkAuthed();
-    return _instance.cacheMsg(sessionId, detail);
-  }
-
-  @override
-  checkAuthed() {
-    if (!_isAuthed.value) {
-      Fluttertoast.showToast(msg: "未连接聊天服务器");
-      throw Exception("未连接聊天服务器");
-    }
-  }
-
-  @override
-  Future<ApiResp> cacheChats(OrgChatCache orgChatCache) {
-    checkAuthed();
-    return _instance.cacheChats(orgChatCache);
-  }
-
-  @override
-  Future<ApiResp> clearHistoryMsg(String sessionId) {
-    checkAuthed();
-    return _instance.clearHistoryMsg(sessionId);
-  }
-
-  @override
-  Future<ApiResp> deleteMsg(String chatId) {
-    checkAuthed();
-    return _instance.deleteMsg(chatId);
-  }
-
-  @override
-  Future<ApiResp> aggregate(String collName, opt, String domain) {
-    checkAuthed();
-    return _instance.aggregate(collName, opt, domain);
-  }
-
-  @override
-  Future<ApiResp> delete(String key, String domain) {
-    checkAuthed();
-    return _instance.delete(key, domain);
-  }
-
-  @override
-  Future<ApiResp> get(String key, String domain) {
-    checkAuthed();
-    return _instance.get(key, domain);
-  }
-
-  @override
-  Future<ApiResp> insert(String collName, data, String domain) {
-    checkAuthed();
-    return _instance.insert(collName, data, domain);
-  }
-
-  @override
-  Future<ApiResp> remove(String collName, match, String domain) {
-    checkAuthed();
-    return _instance.remove(collName, match, domain);
-  }
-
-  @override
-  Future<ApiResp> set(String key, setData, String domain) {
-    checkAuthed();
-    return _instance.set(key, setData, domain);
-  }
-
-  @override
-  Future<ApiResp> update(String collName, update, String domain) {
-    checkAuthed();
-    return _instance.update(collName, update, domain);
-  }
-
-  @override
-  Future<List<MessageDetail>> getUserSpaceHistoryMsg({
-    required TargetType typeName,
-    required String sessionId,
-    required int offset,
-    required int limit,
-  }) {
-    checkAuthed();
-    return _instance.getUserSpaceHistoryMsg(
-      typeName: typeName,
-      sessionId: sessionId,
-      offset: offset,
-      limit: limit,
-    );
-  }
-
-  @override
-  subscribing(SubscriptionKey key, String domain, Function callback) {
-    checkAuthed();
-    _instance.subscribing(key, domain, callback);
-  }
-
-  @override
-  unsubscribing(SubscriptionKey key, String domain) {
-    checkAuthed();
-    _instance.unsubscribing(key, domain);
-  }
-
-  /// 设置订阅事件
-  void _onUpdated() {
-    anyStoreHub.on(ReceiveEvent.Updated.name, (arguments) {
-      if (arguments == null) {
-        return;
+    String key = arguments[0];
+    dynamic data = arguments[1];
+    _subscription.forEach((fullKey, callback) {
+      if (fullKey.split("|")[0] == key) {
+        callback(data);
       }
-      String key = arguments[0];
-      dynamic data = arguments[1];
-      _instance.subscriptionMap.forEach((fullKey, callback) {
-        if (fullKey.split("|")[0] == key) {
-          callback(data);
-        }
-      });
     });
   }
-}
-
-class RealStoreServer implements StoreServer {
-  final Logger log = Logger("AnyStoreUtil");
-
-  RealStoreServer._();
-
-  final Map<String, Function> subscriptionMap = {};
 
   /// 获取
-  @override
   Future<ApiResp> get(String key, String domain) async {
-    var name = SendEvent.Get.name;
+    var name = SendEvent.get.name;
     var args = [key, domain];
-    dynamic data = await anyStoreHub.invoke(name, args: args);
+    dynamic data = await _storeHub.invoke(name, args: args);
     return ApiResp.fromJson(data);
   }
 
   /// 设置
-  @override
   Future<ApiResp> set(String key, dynamic setData, String domain) async {
-    var name = SendEvent.Set.name;
+    var name = SendEvent.set.name;
     List<Object> args = [key, setData, domain];
-    dynamic res = await anyStoreHub.invoke(name, args: args);
+    dynamic res = await _storeHub.invoke(name, args: args);
     return ApiResp.fromJson(res);
   }
 
   /// 刪除
-  @override
   Future<ApiResp> delete(String key, String domain) async {
-    var name = SendEvent.Delete.name;
-    dynamic res = await anyStoreHub.invoke(name, args: [key, domain]);
+    var name = SendEvent.delete.name;
+    dynamic res = await _storeHub.invoke(name, args: [key, domain]);
     return ApiResp.fromJson(res);
   }
 
   /// 插入
-  @override
   Future<ApiResp> insert(String collName, dynamic data, String domain) async {
-    var name = SendEvent.Insert.name;
+    var name = SendEvent.insert.name;
     List<Object> args = [collName, data, domain];
-    dynamic res = await anyStoreHub.invoke(name, args: args);
+    dynamic res = await _storeHub.invoke(name, args: args);
     return ApiResp.fromJson(res);
   }
 
   /// 更新
-  @override
   Future<ApiResp> update(String collName, dynamic update, String domain) async {
-    var name = SendEvent.Update.name;
+    var name = SendEvent.update.name;
     List<Object> args = [collName, update, domain];
-    dynamic res = await anyStoreHub.invoke(name, args: args);
+    dynamic res = await _storeHub.invoke(name, args: args);
     return ApiResp.fromJson(res);
   }
 
   /// 刪除
-  @override
   Future<ApiResp> remove(String collName, dynamic match, String domain) async {
-    var name = SendEvent.Remove.name;
+    var name = SendEvent.remove.name;
     List<Object> args = [collName, match, domain];
-    dynamic res = await anyStoreHub.invoke(name, args: args);
+    dynamic res = await _storeHub.invoke(name, args: args);
     return ApiResp.fromJson(res);
   }
 
   /// 聚合
-  @override
   Future<ApiResp> aggregate(String collName, dynamic opt, String domain) async {
-    var aggregateName = SendEvent.Aggregate.name;
+    var aggregateName = SendEvent.aggregate.name;
     List<Object> args = [collName, opt, domain];
-    dynamic res = await anyStoreHub.invoke(aggregateName, args: args);
+    dynamic res = await _storeHub.invoke(aggregateName, args: args);
     return ApiResp.fromJson(res);
   }
 
   /// 订阅
-  @override
   subscribing(SubscriptionKey key, String domain, Function callback) async {
     var fullKey = "${key.name}|$domain";
-    if (subscriptionMap.containsKey(fullKey)) {
+    if (_subscription.containsKey(fullKey)) {
       return;
     }
-    subscriptionMap[fullKey] = callback;
-    var name = SendEvent.Subscribed.name;
-    dynamic res = await anyStoreHub.invoke(name, args: [key.name, domain]);
+    _subscription[fullKey] = callback;
+    var name = SendEvent.subscribed.name;
+    dynamic res = await _storeHub.invoke(name, args: [key.name, domain]);
     ApiResp apiResp = ApiResp.fromJson(res);
     if (apiResp.success) {
       callback(apiResp.data);
@@ -289,24 +173,23 @@ class RealStoreServer implements StoreServer {
   }
 
   /// 取消订阅
-  @override
   unsubscribing(SubscriptionKey key, String domain) async {
     var fullKey = "${key.name}|$domain";
-    if (!subscriptionMap.containsKey(fullKey)) {
+    if (!_subscription.containsKey(fullKey)) {
       return;
     }
-    var name = SendEvent.UnSubscribed.name;
-    await anyStoreHub.invoke(name, args: [key.name, domain]);
-    subscriptionMap.remove(fullKey);
+    var name = SendEvent.unSubscribed.name;
+    await _storeHub.invoke(name, args: [key.name, domain]);
+    _subscription.remove(fullKey);
   }
 
   /// 重新订阅
   _resubscribed() async {
-    subscriptionMap.forEach((fullKey, callback) async {
+    _subscription.forEach((fullKey, callback) async {
       var key = fullKey.split("|")[0];
       var domain = fullKey.split("|")[1];
-      var name = SendEvent.Subscribed.name;
-      dynamic res = await anyStoreHub.invoke(name, args: [key, domain]);
+      var name = SendEvent.subscribed.name;
+      dynamic res = await _storeHub.invoke(name, args: [key, domain]);
 
       ApiResp apiResp = ApiResp.fromJson(res);
       if (apiResp.success) {
@@ -316,7 +199,6 @@ class RealStoreServer implements StoreServer {
     });
   }
 
-  @override
   Future<ApiResp> cacheMsg(String sessionId, MessageDetail detail) {
     if (detail.msgType == MsgType.recall.name) {
       Map<String, dynamic> update = {
@@ -345,7 +227,6 @@ class RealStoreServer implements StoreServer {
   }
 
   /// 缓存会话
-  @override
   Future<ApiResp> cacheChats(OrgChatCache orgChatCache) {
     Map<String, dynamic> setData = {
       "operation": "replaceAll",
@@ -367,20 +248,17 @@ class RealStoreServer implements StoreServer {
   }
 
   /// 清空消息
-  @override
   Future<ApiResp> clearHistoryMsg(String sessionId) {
     Map<String, dynamic> match = {"sessionId": sessionId};
     return remove(collName, match, Domain.user.name);
   }
 
   /// 删除消息
-  @override
   Future<ApiResp> deleteMsg(String chatId) async {
     Map<String, dynamic> match = {"chatId": chatId};
     return remove(collName, match, Domain.user.name);
   }
 
-  @override
   Future<List<MessageDetail>> getUserSpaceHistoryMsg({
     required TargetType typeName,
     required String sessionId,
@@ -412,5 +290,9 @@ class RealStoreServer implements StoreServer {
   }
 }
 
-final ProxyStoreServer storeServer = ProxyStoreServer(RealStoreServer._())
-  .._onUpdated();
+AnyStore? _instance;
+
+AnyStore get getAnyStore {
+  _instance ??= AnyStore();
+  return _instance!;
+}

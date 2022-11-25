@@ -1,3 +1,6 @@
+import 'package:get/get.dart';
+import 'package:logging/logging.dart';
+import 'package:orginone/api/hub/any_store.dart';
 import 'package:orginone/api/hub/store_hub.dart';
 import 'package:orginone/api/model.dart';
 import 'package:orginone/api_resp/login_resp.dart';
@@ -7,20 +10,95 @@ import 'package:orginone/api_resp/request_entity.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/config/constant.dart';
+import 'package:orginone/logic/authority.dart';
 import 'package:orginone/util/http_util.dart';
+import 'package:signalr_core/signalr_core.dart';
+
+enum ReceiveEvent {
+  receive("Receive");
+
+  final String keyWork;
+
+  const ReceiveEvent(this.keyWork);
+}
+
+enum SendEvent {
+  tokenAuth("TokenAuth"),
+  getChats("GetChats"),
+  sendMsg("SendMsg"),
+  getPersons("GetPersons"),
+  recallMsg("RecallMsg"),
+  queryFriendMsg("QueryFriendMsg"),
+  queryCohortMsg("QueryCohortMsg"),
+  getName("GetName");
+
+  final String keyWord;
+
+  const SendEvent(this.keyWord);
+}
 
 class KernelApi {
+  Logger logger = Logger("KernelApi");
+
   final StoreHub _kernelHub;
   final HttpUtil _requester;
-  final Map<String, Function> _methods;
+  final Map<String, List<Function>> _methods;
 
-  KernelApi._({
-    required StoreHub kernelHub,
-    required HttpUtil request,
-  })  : _methods = {},
-        _kernelHub = kernelHub,
-        _requester = request;
+  late AnyStore _anyStore;
 
+  AnyStore get anyStore => _anyStore;
+
+  Rx<HubConnectionState> get state => _kernelHub.state;
+
+  KernelApi._({required HttpUtil request})
+      : _kernelHub = StoreHub(
+          connName: "kernelHub",
+          url: Constant.kernelHub,
+          timeout: const Duration(seconds: 5),
+        ),
+        _methods = {},
+        _requester = request {
+    _kernelHub.on(ReceiveEvent.receive.keyWork, receive);
+    _kernelHub.addConnectedCallback(tokenAuth);
+  }
+
+  start() async {
+    _anyStore = getAnyStore;
+    await _anyStore.start();
+    await _kernelHub.start();
+  }
+
+  stop() async {
+    _methods.clear();
+    await _kernelHub.stop();
+    await _anyStore.stop();
+  }
+
+  tokenAuth() async {
+    var accessToken = getAccessToken;
+    var methodName = SendEvent.tokenAuth.keyWord;
+    await _kernelHub.invoke(methodName, args: [accessToken]);
+  }
+
+  receive(Map<String, dynamic> params) {
+    String key = params["target"].toString().toLowerCase();
+    if (_methods.containsKey(key)) {
+      for (var callback in _methods[key]!) {
+        callback();
+      }
+    }
+  }
+
+  on(String methodName, Function method) {
+    var lowerCase = methodName.toLowerCase();
+    _methods.putIfAbsent(lowerCase, () => []);
+    if (_methods[lowerCase]!.contains(method)) {
+      return;
+    }
+    _methods[lowerCase]!.add(method);
+  }
+
+  /// 登录接口
   Future<LoginResp> login(String account, String password) async {
     Map<String, dynamic> data = {
       "account": account,
@@ -1604,6 +1682,6 @@ class KernelApi {
 KernelApi? _instance;
 
 KernelApi get kernelApi {
-  _instance ??= KernelApi._(kernelHub: kernelHub, request: HttpUtil());
+  _instance ??= KernelApi._(request: HttpUtil());
   return _instance!;
 }

@@ -6,8 +6,9 @@ import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/company_api.dart';
+import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/api/person_api.dart';
-import 'package:orginone/api/hub/store_server.dart';
+import 'package:orginone/api/hub/any_store.dart';
 import 'package:orginone/api_resp/login_resp.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/api_resp/tree_node.dart';
@@ -98,8 +99,7 @@ class HomeController extends GetxController
   @override
   void onClose() {
     super.onClose();
-    chatServer.stop();
-    storeServer.stop();
+    kernelApi.stop();
     breadCrumbController.dispose();
     tabController.dispose();
   }

@@ -4,6 +4,7 @@ import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api/hub/store_hub.dart';
+import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/component/bread_crumb.dart';
 import 'package:orginone/component/tab_combine.dart';
 import 'package:orginone/component/text_avatar.dart';
@@ -173,9 +174,9 @@ class HomePage extends GetView<HomeController> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _conn(chatHub.state, "会话"),
+            _conn(kernelApi.state, "会话"),
             Container(margin: EdgeInsets.only(top: 2.h)),
-            _conn(anyStoreHub.state, "存储"),
+            _conn(kernelApi.anyStore.state, "存储"),
           ],
         ),
         Padding(padding: EdgeInsets.only(left: 10.w)),

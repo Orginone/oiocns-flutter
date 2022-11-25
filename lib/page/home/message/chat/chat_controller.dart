@@ -10,7 +10,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/bucket_api.dart';
-import 'package:orginone/api/hub/store_server.dart';
+import 'package:orginone/api/hub/any_store.dart';
+import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/message_target.dart';
@@ -215,7 +216,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         .where((chat) => chat.spaceId != spaceId || chat.id != messageItemId)
         .toList();
 
-    storeServer.cacheChats(orgChatCache);
+    kernelApi.anyStore.cacheChats(orgChatCache);
   }
 
   void openChats() async {
@@ -238,7 +239,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     messageItem.noRead = 0;
     messageController.update();
 
-    storeServer.cacheChats(messageController.orgChatCache);
+    kernelApi.anyStore.cacheChats(messageController.orgChatCache);
   }
 
   /// 下拉时刷新旧的聊天记录
@@ -252,7 +253,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     var insertPointer = _details.length;
     late List<MessageDetail> newDetails;
     if (auth.userId == spaceId) {
-      newDetails = await storeServer.getUserSpaceHistoryMsg(
+      newDetails = await kernelApi.anyStore.getUserSpaceHistoryMsg(
         typeName: typeMap[typeName]!,
         sessionId: messageItemId,
         offset: insertPointer,
@@ -277,7 +278,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
       }
     }
     if (isCacheNameMap) {
-      storeServer.cacheChats(messageController.orgChatCache);
+      kernelApi.anyStore.cacheChats(messageController.orgChatCache);
     }
   }
 
@@ -378,7 +379,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         }
         break;
       case DetailFunc.remove:
-        await storeServer.deleteMsg(detail.id);
+        await kernelApi.anyStore.deleteMsg(detail.id);
         _details.removeWhere((item) => item.resp.id == detail.id);
         break;
     }

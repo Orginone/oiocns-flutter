@@ -20,28 +20,35 @@ class StoreHub {
   final HubConnection _server;
   final Rx<HubConnectionState> _state;
   final Duration _timeout;
-  final RxBool _isStop;
+  final RxBool _isStarted;
   final List<Function> _connectedCallbacks;
+  Timer? _timer;
 
-  StoreHub._({
+  StoreHub({
     required String connName,
     required String url,
     required Duration timeout,
   })  : _connName = connName,
         _timeout = timeout,
-        _server = HubConnectionBuilder().withUrl(url).build()
-          ..keepAliveIntervalInMilliseconds = 3000
-          ..serverTimeoutInMilliseconds = 8000,
-        _isStop = true.obs,
+        _server = HubConnectionBuilder().withUrl(url).build(),
         _state = HubConnectionState.disconnected.obs,
-        _connectedCallbacks = <Function>[];
+        _isStarted = false.obs,
+        _connectedCallbacks = <Function>[] {
+    _server.keepAliveIntervalInMilliseconds = 3000;
+    _server.serverTimeoutInMilliseconds = 8000;
+    _onReconnecting();
+    _onReconnected();
+    _onClose();
+  }
 
   Rx<HubConnectionState> get state => _state;
 
   setState() => _state.value = _server.state ?? HubConnectionState.disconnected;
 
   void addConnectedCallback(Function func) {
-    _connectedCallbacks.add(func);
+    if (!_connectedCallbacks.contains(func)) {
+      _connectedCallbacks.add(func);
+    }
   }
 
   /// 是否未连接
@@ -55,7 +62,7 @@ class StoreHub {
   }
 
   /// 调用
-  dynamic invoke(String event, {List<Object>? args}) {
+  Future<dynamic> invoke(String event, {List<Object>? args}) {
     return _server.invoke(event, args: args);
   }
 
@@ -66,52 +73,37 @@ class StoreHub {
 
   /// 停止连接
   stop() async {
-    try {
-      _info("开始断开连接");
-      _isStop.value = true;
-      await _server.stop();
-      _info("断开连接成功");
-    } catch (error) {
-      _info("断开连接失败,重新尝试!");
-      rethrow;
-    } finally {
-      setState();
-    }
+    _info("开始断开连接");
+    _isStarted.value = false;
+    _timer?.cancel();
+    await _server.stop();
+    setState();
+    _info("断开连接成功");
   }
 
   /// 开始连接
   start() async {
-    try {
-      if (state.value != HubConnectionState.disconnected) {
-        return;
-      }
-      _info("开始连接");
-      _isStop.value = false;
-      await _server.start();
-      setState();
-      _info("连接成功");
-    } catch (error) {
-      _info("连接时发生异常: ${error.toString()}");
-      _connTimeout();
-      rethrow;
+    if (_server.state != HubConnectionState.disconnected) {
+      _info("开始连接失败，当前连接状态：${_server.state}");
+      return;
     }
-    if (_connectedCallbacks.isNotEmpty) {
+    _info("开始连接······");
+    _isStarted.value = true;
+    await _server.start()?.then((value) {
+      _info("连接成功！");
       for (var callback in _connectedCallbacks) {
-        await callback();
+        callback();
       }
-    }
+      setState();
+    }).catchError((error, stackTrace) {
+      _info(" ${error.toString()}");
+      _startTimeout();
+    });
   }
 
   /// 日志打印前缀
   _info(String info) {
     _log.info("==$_connName==> $info");
-  }
-
-  /// 初始化监听事件
-  _init() {
-    _onReconnecting();
-    _onReconnected();
-    _onClose();
   }
 
   /// 重连中回调
@@ -127,12 +119,9 @@ class StoreHub {
 
   /// 重连成功回调
   _onReconnected() {
-    _server.onreconnecting((Exception? error) {
+    _server.onreconnected((String? connectId) {
       setState();
-      if (error != null) {
-        _info("重连后发生异常: ${error.toString()}");
-        return;
-      }
+      _info("重连成功，connectId:$connectId");
     });
   }
 
@@ -143,49 +132,25 @@ class StoreHub {
       if (error != null) {
         _info("关闭时发生异常:${error.toString()}");
       }
-      if (_isStop.value) {
-        return;
+      if (_isStarted.value) {
+        _startTimeout();
       }
-      _connTimeout();
     });
   }
 
   /// 重连定时器
-  void _connTimeout() {
-    Timer(_timeout, () async {
-      _info("重连时间间隔: ${_timeout.inSeconds}s");
-      await start();
-    });
+  void _startTimeout() {
+    _info("${_timeout.inSeconds}s后开始重连");
+    _timer = Timer(_timeout, start);
   }
 }
 
 StoreHub? _chatHub;
-StoreHub? _anyStoreHub;
-StoreHub? _storeHub;
 
 StoreHub get chatHub {
-  _chatHub ??= StoreHub._(
+  _chatHub ??= StoreHub(
       connName: "chatHub",
       url: Constant.messageHub,
-      timeout: const Duration(seconds: 5))
-    .._init();
+      timeout: const Duration(seconds: 5));
   return _chatHub!;
-}
-
-StoreHub get anyStoreHub {
-  _anyStoreHub ??= StoreHub._(
-      connName: "anyStoreHub",
-      url: Constant.anyStoreHub,
-      timeout: const Duration(seconds: 5))
-    .._init();
-  return _anyStoreHub!;
-}
-
-StoreHub get kernelHub {
-  _storeHub ??= StoreHub._(
-      connName: "kernelHub",
-      url: Constant.kernelHub,
-      timeout: const Duration(seconds: 5))
-    .._init();
-  return _storeHub!;
 }

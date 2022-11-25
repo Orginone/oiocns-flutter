@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/api/hub/store_server.dart';
+import 'package:orginone/api/hub/any_store.dart';
 import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/api/model.dart';
 import 'package:orginone/api_resp/api_resp.dart';
@@ -36,7 +36,6 @@ import '../../page/home/message/chat/chat_controller.dart';
 
 class MessageController extends BaseController<IChatGroup>
     with WidgetsBindingObserver, GetSingleTickerProviderStateMixin {
-
   // 日志对象
   Logger log = Logger("MessageController");
 
@@ -66,7 +65,7 @@ class MessageController extends BaseController<IChatGroup>
     WidgetsBinding.instance.addObserver(this);
     // 订阅聊天面板信息
     _subscribingCharts();
-    // 主动获取会话
+    // 获取通讯录
     _loadingCharts();
   }
 
@@ -202,7 +201,7 @@ class MessageController extends BaseController<IChatGroup>
       update();
 
       // 缓存消息
-      await storeServer.cacheChats(orgChatCache);
+      await kernelApi.anyStore.cacheChats(orgChatCache);
     }
   }
 
@@ -210,11 +209,7 @@ class MessageController extends BaseController<IChatGroup>
   _subscribingCharts() async {
     SubscriptionKey key = SubscriptionKey.orgChat;
     String domain = Domain.user.name;
-    await storeServer.subscribing(key, domain, _updateChats);
-    if (orgChatCache.chats.isEmpty) {
-      ApiResp apiResp = await storeServer.get(key.name, domain);
-      _updateChats(apiResp.data);
-    }
+    await kernelApi.anyStore.subscribing(key, domain, _updateChats);
   }
 
   /// 从订阅通道拿到的数据直接更新试图
@@ -345,7 +340,7 @@ class MessageController extends BaseController<IChatGroup>
         } else {
           if (detail.spaceId == auth.userId) {
             // 如果是个人空间，存储一下信息
-            await storeServer.cacheMsg(sessionId, detail);
+            await kernelApi.anyStore.cacheMsg(sessionId, detail);
           }
 
           // 处理消息
@@ -461,7 +456,7 @@ class MessageController extends BaseController<IChatGroup>
         update();
 
         // 缓存会话
-        await storeServer.cacheChats(orgChatCache);
+        await kernelApi.anyStore.cacheChats(orgChatCache);
       } catch (error) {
         log.info("接收消息异常:$error");
       }
@@ -482,12 +477,12 @@ class MessageController extends BaseController<IChatGroup>
         orgChatCache.chats = _spaceHandling(orgChatCache.chats);
         sortingGroups();
         sortingItems(orgChatCache.recentChats ?? []);
-        await storeServer.cacheChats(orgChatCache);
+        await kernelApi.anyStore.cacheChats(orgChatCache);
         update();
         break;
       case ChatFunc.remove:
         orgChatCache.recentChats?.remove(item);
-        await storeServer.cacheChats(orgChatCache);
+        await kernelApi.anyStore.cacheChats(orgChatCache);
         update();
         break;
     }
