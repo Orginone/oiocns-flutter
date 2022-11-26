@@ -154,26 +154,24 @@ class HomeController extends GetxController
   }
 
   Widget _buildTabTick(IconData iconData, String label) {
-    return GetBuilder<MessageController>(
-      builder: (controller) => SizedBox(
-        width: 100.w,
-        child: Stack(
-          children: [
-            Tab(
-              iconMargin: EdgeInsets.all(5.w),
-              icon: Icon(iconData),
-              child: Text(label, style: text14),
-            ),
-            Positioned(
-              right: 0,
-              child: controller.hasNoRead()
-                  ? Icon(Icons.circle, color: Colors.redAccent, size: 10.w)
-                  : Container(),
-            ),
-          ],
-        ),
-      ),
-    );
+    return Obx(() => SizedBox(
+          width: 100.w,
+          child: Stack(
+            children: [
+              Tab(
+                iconMargin: EdgeInsets.all(5.w),
+                icon: Icon(iconData),
+                child: Text(label, style: text14),
+              ),
+              Positioned(
+                right: 0,
+                child: messageController.hasNoRead()
+                    ? Icon(Icons.circle, color: Colors.redAccent, size: 10.w)
+                    : Container(),
+              ),
+            ],
+          ),
+        ));
   }
 
   void switchSpaces(Target targetResp) async {

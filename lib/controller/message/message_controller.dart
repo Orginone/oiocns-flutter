@@ -51,6 +51,7 @@ class MessageController extends BaseController<IChatGroup>
 
   final RxList<IChat> _chats = <IChat>[].obs;
   final Rx<IChat?> _currentChat = Rxn();
+  Timer? setNullTimer;
 
   // 参数
   OrgChatCache orgChatCache = OrgChatCache.empty();
@@ -118,10 +119,18 @@ class MessageController extends BaseController<IChatGroup>
     return name;
   }
 
+  /// 设置当前会话为空
+  setCurrentNull() {
+    setNullTimer = Timer(const Duration(seconds: 1), () {
+      _currentChat.value = null;
+    });
+  }
+
   /// 设置当前会话
   setCurrent(String spaceId, String chatId) async {
     IChat? chat = _ref(spaceId, chatId);
     if (chat != null) {
+      setNullTimer?.cancel();
       _currentChat.value = chat;
       chat.readAll();
       if (chat.messages.length <= 30) {
@@ -274,16 +283,21 @@ class MessageController extends BaseController<IChatGroup>
             style: AFont.instance.size22Black3,
           ),
         ),
-        GetBuilder<MessageController>(builder: (controller) => _noRead)
+        _noRead,
       ]),
     );
   }
 
   get _noRead => Align(
       alignment: Alignment.topRight,
-      child: hasNoRead()
+      child: Obx(() => hasNoRead()
           ? Icon(Icons.circle, color: Colors.redAccent, size: 10.w)
-          : Container());
+          : Container()));
+
+  bool hasNoRead() {
+    var has = _chats.firstWhereOrNull((item) => item.noReadCount != 0);
+    return has != null;
+  }
 
   /// 获取消息会话对象
   MessageTarget getMsgItem(String spaceId, String messageItemId) {
@@ -351,24 +365,6 @@ class MessageController extends BaseController<IChatGroup>
 
       // 缓存消息
       await kernelApi.anyStore.cacheChats(orgChatCache);
-    }
-  }
-
-  /// 最新的消息处理
-  _latestMsgHandling(MessageDetail? detail) {
-    if (detail == null) {
-      return;
-    }
-    if (Get.isRegistered<ChatController>()) {
-      // 消息预处理
-      Target userInfo = auth.userInfo;
-      var sessionId = detail.toId;
-      if (detail.toId == userInfo.id) {
-        sessionId = detail.fromId;
-      }
-
-      ChatController chatController = Get.find<ChatController>();
-      chatController.onReceiveMsg(detail.spaceId!, sessionId, detail);
     }
   }
 
@@ -627,11 +623,6 @@ class MessageController extends BaseController<IChatGroup>
         update();
         break;
     }
-  }
-
-  bool hasNoRead() {
-    var has = _chats.firstWhereOrNull((item) => item.noReadCount != 0);
-    return has != null;
   }
 
   /// 开始播放
