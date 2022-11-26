@@ -173,30 +173,4 @@ class HomeController extends GetxController
           ),
         ));
   }
-
-  void switchSpaces(Target targetResp) async {
-    LoginResp loginResp = await PersonApi.changeWorkspace(targetResp.id);
-    setAccessToken = loginResp.accessToken;
-
-    await loadAuth();
-
-    // 当前页面需要变化
-    await _loadTree();
-    update();
-
-    // 会话需要分组
-    messageController.sortingGroups();
-    messageController.update();
-
-    // 组织架构页面需要变化
-    organizationCtrl.update();
-  }
-
-  _loadTree() async {
-    if (auth.isCompanySpace()) {
-      nodeCombine = await CompanyApi.tree();
-    } else {
-      nodeCombine = null;
-    }
-  }
 }

@@ -158,7 +158,7 @@ class ChatsReqModel {
 
 class IDReqJoinedModel {
   final String id;
-  final List<String> typeName;
+  final String typeName;
   final List<String> joinTypeNames;
   final String spaceId;
   final PageRequest page;
@@ -259,6 +259,35 @@ class TargetModel {
     json["teamName"] = teamName;
     json["teamCode"] = teamCode;
     json["teamRemark"] = teamRemark;
+    return json;
+  }
+}
+
+class JoinTeamModel {
+  final String id;
+  final String teamType;
+  final String targetId;
+  final String targetType;
+
+  JoinTeamModel({
+    required this.id,
+    required this.teamType,
+    required this.targetId,
+    required this.targetType,
+  });
+
+  JoinTeamModel.fromJson(Map<String, dynamic> json)
+      : id = json["id"],
+        teamType = json["teamType"],
+        targetId = json["targetId"],
+        targetType = json["targetType"];
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["teamType"] = teamType;
+    json["targetId"] = targetId;
+    json["targetType"] = targetType;
     return json;
   }
 }

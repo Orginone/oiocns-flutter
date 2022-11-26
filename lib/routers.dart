@@ -4,6 +4,7 @@ import 'package:orginone/controller/market/merchandise_controller.dart';
 import 'package:orginone/controller/market/order_controller.dart';
 import 'package:orginone/controller/market/staging_controller.dart';
 import 'package:orginone/controller/message/chat_box_controller.dart';
+import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
 import 'package:orginone/page/home/affairs/detail/affairs_detail.dart';
@@ -20,7 +21,6 @@ import 'package:orginone/page/home/component/person_detail/person_detail_binding
 import 'package:orginone/page/home/component/person_detail/person_detail_page.dart';
 import 'package:orginone/page/home/component/person_add/person_add_binding.dart';
 import 'package:orginone/page/home/component/person_add/person_add_page.dart';
-import 'package:orginone/page/home/component/space_choose/space_choose_binding.dart';
 import 'package:orginone/page/home/component/space_choose/space_choose_page.dart';
 import 'package:orginone/page/home/component/unit/unit_create/unit_create_binding.dart';
 import 'package:orginone/page/home/component/unit/unit_create/unit_create_page.dart';
@@ -169,7 +169,7 @@ class Routers {
       GetPage(
         name: Routers.spaceChoose,
         page: () => const SpaceChoosePage(),
-        binding: SpaceChooseBinding(),
+        binding: TargetBinding(),
       ),
       GetPage(
         name: Routers.message,

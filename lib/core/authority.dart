@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/api/person_api.dart';
 import 'package:orginone/api_resp/target.dart';
-import 'package:orginone/core/target/person.dart';
 
 import '../api_resp/token_authority_resp.dart';
 
@@ -20,9 +19,8 @@ enum OrgAuths {
 
 class Authority {
   final TokenAuthorityResp _resp;
-  final Person _currentPerson;
 
-  Authority._(this._resp) : _currentPerson = Person(_resp.userInfo);
+  Authority._(this._resp);
 
   String get spaceId => _resp.spaceId;
 
@@ -31,8 +29,6 @@ class Authority {
   Target get userInfo => _resp.userInfo;
 
   Target get spaceInfo => _resp.spaceInfo;
-
-  Person get currentPerson => _currentPerson;
 
   /// 判断目标是否含有系统权限
   /// [auths] 相应权限

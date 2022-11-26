@@ -6,12 +6,12 @@ import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/form/form_widget.dart';
 import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/core/authority.dart';
 import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
 import 'package:orginone/util/widget_util.dart';
-
 
 List<FormItem> formConfig = [
   const FormItem(
@@ -52,7 +52,13 @@ class CohortMaintainPage extends GetView<CohortMaintainController> {
               Get.back();
             });
           } else {
-            controller.createCohort(value).then((value) {
+            var targetCtrl = Get.find<TargetController>();
+            targetCtrl.currentPerson
+                .createCohort(
+                    code: value["code"],
+                    name: value["name"],
+                    remark: value["remark"])
+                .then((value) {
               if (Get.isRegistered<CohortsController>()) {
                 Get.find<CohortsController>().onLoad();
               }

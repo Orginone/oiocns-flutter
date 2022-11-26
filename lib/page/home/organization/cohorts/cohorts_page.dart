@@ -53,7 +53,7 @@ class CohortsPage extends GetView<CohortsController> {
             List<SearchItem> friends = [SearchItem.cohorts];
             Get.toNamed(Routers.search, arguments: {
               "items": friends,
-              "point": FunctionPoint.applyFriends,
+              "point": FunctionPoint.applyCohorts,
             });
           },
           icon: const Icon(Icons.add, color: Colors.black),

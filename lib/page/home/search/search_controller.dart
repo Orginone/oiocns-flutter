@@ -10,7 +10,7 @@ import '../../../api_resp/target.dart';
 enum SearchItem {
   comprehensive("综合", []),
   friends("好友", [FunctionPoint.addFriends]),
-  cohorts("群组", [FunctionPoint.applyFriends]),
+  cohorts("群组", [FunctionPoint.applyCohorts]),
   messages("消息", []),
   documents("文档", []),
   logs("日志", []),
@@ -30,7 +30,7 @@ enum SearchItem {
 
 enum FunctionPoint {
   addFriends("添加好友", "通过账号/手机号搜索"),
-  applyFriends("申请入群", "通过群组编号搜索");
+  applyCohorts("申请入群", "通过群组编号搜索");
 
   const FunctionPoint(this.functionName, this.placeHolder);
 

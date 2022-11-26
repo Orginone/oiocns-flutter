@@ -51,7 +51,7 @@ class MessageController extends BaseController<IChatGroup>
 
   final RxList<IChat> _chats = <IChat>[].obs;
   final Rx<IChat?> _currentChat = Rxn();
-  Timer? setNullTimer;
+  Timer? _setNullTimer;
 
   // 参数
   OrgChatCache orgChatCache = OrgChatCache.empty();
@@ -119,9 +119,22 @@ class MessageController extends BaseController<IChatGroup>
     return name;
   }
 
+  /// 设置顶部
+  setGroupTop(String spaceId) {
+    var position = indexWhere((item) => item.spaceId == spaceId);
+    if (position != -1) {
+      var chatGroup = removeAt(position);
+      chatGroup.openOrNot(true);
+      insert(0, chatGroup);
+      for (int i = 1; i < getSize(); i++) {
+        get(i).openOrNot(false);
+      }
+    }
+  }
+
   /// 设置当前会话为空
   setCurrentNull() {
-    setNullTimer = Timer(const Duration(seconds: 1), () {
+    _setNullTimer = Timer(const Duration(seconds: 1), () {
       _currentChat.value = null;
     });
   }
@@ -130,7 +143,7 @@ class MessageController extends BaseController<IChatGroup>
   setCurrent(String spaceId, String chatId) async {
     IChat? chat = _ref(spaceId, chatId);
     if (chat != null) {
-      setNullTimer?.cancel();
+      _setNullTimer?.cancel();
       _currentChat.value = chat;
       chat.readAll();
       if (chat.messages.length <= 30) {

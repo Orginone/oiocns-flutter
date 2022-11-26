@@ -17,7 +17,7 @@ class BaseTarget {
   }) async {
     var request = IDReqJoinedModel(
       id: target.id,
-      typeName: [target.typeName],
+      typeName: target.typeName,
       joinTypeNames: joinTypeNames.map((item) => item.label).toList(),
       spaceId: spaceId,
       page: PageRequest(

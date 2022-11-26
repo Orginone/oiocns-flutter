@@ -10,6 +10,9 @@ import 'package:orginone/api/cohort_api.dart';
 import 'package:orginone/api/person_api.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/controller/message/message_controller.dart';
+import 'package:orginone/controller/target/target_controller.dart';
+import 'package:orginone/core/authority.dart';
 
 import '../../../../util/widget_util.dart';
 import '../../../api_resp/target.dart';
@@ -145,12 +148,14 @@ class SearchPage extends GetView<SearchController> {
             searchResults = controller.personRes?.searchResults ?? [];
             break;
           case TargetType.company:
+          case TargetType.university:
+          case TargetType.hospital:
             searchResults = controller.companyRes?.searchResults ?? [];
             break;
           case TargetType.cohort:
             searchResults = controller.cohortRes?.searchResults ?? [];
             break;
-          case TargetType.department:
+          default:
             break;
         }
         return Expanded(
@@ -179,13 +184,14 @@ class SearchPage extends GetView<SearchController> {
     if (controller.functionPoint != null) {
       switch (controller.functionPoint!) {
         case FunctionPoint.addFriends:
-        case FunctionPoint.applyFriends:
+        case FunctionPoint.applyCohorts:
           children.add(ElevatedButton(
             onPressed: () async {
+              var targetCtrl = Get.find<TargetController>();
               if (controller.functionPoint! == FunctionPoint.addFriends) {
                 await PersonApi.join(targetResp.id);
               } else {
-                await CohortApi.join(targetResp.id);
+                await targetCtrl.currentPerson.applyJoinCohort(targetResp.id);
               }
               Fluttertoast.showToast(msg: "申请成功");
             },

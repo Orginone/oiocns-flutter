@@ -35,12 +35,16 @@ class BaseController<T> extends GetxController {
     loadMore();
   }
 
-  removeAt(int index) {
-    _data.removeAt(index);
+  T removeAt(int index) {
+    return _data.removeAt(index);
   }
 
   removeWhere(bool Function(T item) filter) {
     _data.removeWhere(filter);
+  }
+
+  int indexWhere(bool Function(T item) filter) {
+    return _data.indexWhere(filter);
   }
 
   List<T> find(bool Function(T item) filter) {
@@ -73,5 +77,9 @@ class BaseController<T> extends GetxController {
 
   remove(T entity) {
     _data.remove(entity);
+  }
+
+  insert(int index, T entity){
+    _data.insert(index, entity);
   }
 }

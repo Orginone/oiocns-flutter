@@ -10,6 +10,7 @@ import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/core/authority.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/routers.dart';
@@ -134,39 +135,36 @@ class HomePage extends GetView<HomeController> {
     return Row(
       children: [
         Expanded(
-          child: GetBuilder<HomeController>(
-            init: controller,
-            builder: (controller) {
-              var spaceName = auth.spaceInfo.name;
-              var spaceKeyWord = StringUtil.getPrefixChars(spaceName, count: 1);
-              return GestureDetector(
-                onTap: () {
-                  Get.toNamed(Routers.spaceChoose);
-                },
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    TextAvatar(
-                      radius: 45.w,
-                      width: 45.w,
-                      avatarName: spaceKeyWord,
-                      textStyle: text20White,
-                      margin: EdgeInsets.only(left: 20.w),
-                    ),
-                    Container(margin: EdgeInsets.only(left: 10.w)),
-                    Text(
-                      spaceName,
-                      style: text22,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Container(margin: EdgeInsets.only(left: 2.w)),
-                    const Icon(Icons.arrow_drop_down, color: Colors.black)
-                  ],
-                ),
-              );
-            },
-          ),
+          child: Obx(() {
+            var targetController = Get.find<TargetController>();
+            var target = targetController.currentCompany.target;
+            var spaceName = target.name;
+            var spaceKeyWord = StringUtil.getPrefixChars(spaceName, count: 1);
+            return GestureDetector(
+              onTap: () => Get.toNamed(Routers.spaceChoose),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  TextAvatar(
+                    radius: 45.w,
+                    width: 45.w,
+                    avatarName: spaceKeyWord,
+                    textStyle: text20White,
+                    margin: EdgeInsets.only(left: 20.w),
+                  ),
+                  Container(margin: EdgeInsets.only(left: 10.w)),
+                  Text(
+                    spaceName,
+                    style: text22,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Container(margin: EdgeInsets.only(left: 2.w)),
+                  const Icon(Icons.arrow_drop_down, color: Colors.black)
+                ],
+              ),
+            );
+          }),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,

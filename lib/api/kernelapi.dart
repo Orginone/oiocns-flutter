@@ -525,7 +525,7 @@ class KernelApi {
   /// 申请加入组织/个人
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
-  dynamic applyJoinTeam(dynamic params) async {
+  Future<void> applyJoinTeam(JoinTeamModel params) async {
     return await _request(RequestEntity.from(
       module: 'target',
       action: 'ApplyJoinTeam',
