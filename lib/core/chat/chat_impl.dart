@@ -59,7 +59,7 @@ class BaseChatGroup implements IChatGroup<GroupItemWidget> {
 }
 
 IChat createChat(String spaceId, String spaceName, MessageTarget target) {
-  if (target.typeName == TargetType.person.name) {
+  if (target.typeName == TargetType.person.label) {
     return PersonChat(spaceId: spaceId, spaceName: spaceName, target: target);
   } else {
     return CohortChat(spaceId: spaceId, spaceName: spaceName, target: target);
@@ -185,7 +185,10 @@ class BaseChat implements IChat<MessageItemWidget> {
   }
 
   @override
-  Future<void> sendMsg(MsgType msgType, String msgBody) async {
+  Future<void> sendMsg({
+    required MsgType msgType,
+    required String msgBody,
+  }) async {
     await kernelApi.createImMsg(ImMsgModel(
       msgType: msgType.name,
       msgBody: msgBody,
@@ -229,7 +232,6 @@ class PersonChat extends BaseChat {
 
   @override
   moreMessage({String? filter}) async {
-    List<dynamic> details = [];
     if (spaceId == auth.userId) {
       // 如果是个人空间从本地存储拿数据
       var domain = Domain.user.name;
@@ -247,7 +249,13 @@ class PersonChat extends BaseChat {
         opt: options,
         domain: domain,
       );
-      details.addAll(apiResp.data);
+      List<dynamic> data = apiResp.data;
+      _messages.addAll(data.map((item) {
+        item["id"] = item["chatId"];
+        var detail = MessageDetail.fromMap(item);
+        detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
+        return detail;
+      }).toList());
     } else {
       // 如果是单位空间从接口拿数据
       var params = IdSpaceReq(
@@ -260,15 +268,16 @@ class PersonChat extends BaseChat {
         ),
       );
       PageResp<MessageDetail> res = await kernelApi.queryFriendImMsgs(params);
-      details.addAll(res.result);
+      for (var detail in res.result) {
+        detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
+        _messages.add(detail);
+      }
     }
-    // 插入最新的位置
-    for (var item in details) {
-      item["id"] = item["chatId"];
-      var detail = MessageDetail.fromMap(item);
-      detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
-      _messages.add(detail);
-    }
+  }
+
+  @override
+  morePersons({String? filter}) {
+    return;
   }
 }
 
@@ -281,7 +290,6 @@ class CohortChat extends BaseChat {
 
   @override
   moreMessage({String? filter}) async {
-    List<dynamic> details = [];
     if (spaceId == auth.userId) {
       // 如果是个人空间从本地存储拿数据
       var domain = Domain.user.name;
@@ -296,7 +304,13 @@ class CohortChat extends BaseChat {
         opt: options,
         domain: domain,
       );
-      details.addAll(apiResp.data);
+      List<dynamic> data = apiResp.data;
+      _messages.addAll(data.map((item) {
+        item["id"] = item["chatId"];
+        var detail = MessageDetail.fromMap(item);
+        detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
+        return detail;
+      }).toList());
     } else {
       // 如果是单位空间从接口拿数据
       var params = IdReq(
@@ -308,14 +322,10 @@ class CohortChat extends BaseChat {
         ),
       );
       PageResp<MessageDetail> res = await kernelApi.queryCohortImMsgs(params);
-      details.addAll(res.result);
-    }
-    // 插入最新的位置
-    for (var item in details) {
-      item["id"] = item["chatId"];
-      var detail = MessageDetail.fromMap(item);
-      detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
-      _messages.add(detail);
+      for (var detail in res.result) {
+        detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
+        _messages.add(detail);
+      }
     }
   }
 

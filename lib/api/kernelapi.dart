@@ -39,7 +39,7 @@ enum SendEvent {
 }
 
 class KernelApi {
-  Logger logger = Logger("KernelApi");
+  Logger log = Logger("KernelApi");
 
   final StoreHub _kernelHub;
   final HttpUtil _requester;
@@ -828,12 +828,12 @@ class KernelApi {
     ));
   }
 
-  /// 创建即使消息
+  /// 创建及时消息
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   Future<void> createImMsg(ImMsgModel model) {
     return _request(RequestEntity.from(
-      module: 'target',
+      module: 'chat',
       action: 'CreateImMsg',
       params: model,
     ));
@@ -842,8 +842,8 @@ class KernelApi {
   /// 消息撤回
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
-  Future<MessageDetail> recallImMsg(MessageDetail params) {
-    return _request(RequestEntity.from(
+  Future<MessageDetail> recallImMsg(MessageDetail params) async {
+    return await _request(RequestEntity.from(
       module: 'chat',
       action: 'RecallImMsg',
       params: params,
@@ -854,12 +854,12 @@ class KernelApi {
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
   Future<List<ChatGroup>> queryImChats(ChatsReqModel params) async {
-    ApiResp resp = ApiResp.fromJson(await _request(RequestEntity.from(
+    Map<String, dynamic> resp = await _request(RequestEntity.from(
       module: 'chat',
       action: 'QueryImChats',
       params: params,
-    )));
-    return ChatGroup.fromList(resp.data["groups"]);
+    ));
+    return ChatGroup.fromList(resp["groups"]);
   }
 
   /// 查询群历史消息
@@ -1656,26 +1656,30 @@ class KernelApi {
     ));
   }
 
-  dynamic _request(RequestEntity request) {
+  Future<dynamic> _request(RequestEntity request) async {
     if (_kernelHub.isConnected()) {
-      return _kernelHub.invoke("Request", args: [request]);
+      dynamic res = await _kernelHub.invoke("Request", args: [request]);
+      log.info("kernelHub ===> ${res.toString()}");
+      return ApiResp.fromJson(res).getData();
     }
-    return _restRequest("request", request);
+    return await _restRequest("request", request);
   }
 
-  dynamic _requests(List<RequestEntity> requests) async {
+  Future<dynamic> _requests(List<RequestEntity> requests) async {
     if (_kernelHub.isConnected()) {
-      return _kernelHub.invoke("Requests", args: [requests]);
+      dynamic res = await _kernelHub.invoke("Requests", args: [requests]);
+      log.info("kernelHub ===> ${res.toString()}");
+      return ApiResp.fromJson(res).getData();
     }
-    return _restRequest("requests", requests);
+    return await _restRequest("requests", requests);
   }
 
-  dynamic _restRequest(
+  Future<dynamic> _restRequest(
     String methodName,
     dynamic data, {
     bool hasToken = true,
   }) async {
-    return _requester.post(
+    return await _requester.post(
       "${Constant.kernel}/$methodName",
       data: data,
       hasToken: hasToken,

@@ -42,7 +42,7 @@ class ChatPage extends GetView<MessageController> {
       var messageItem = chat.target;
       String name = messageItem.name;
       if (messageItem.typeName != TargetType.person.label) {
-        name += "(${messageItem.personNum ?? 0})";
+        name += "(${chat.personCount})";
       }
       String spaceName = "${chat.spaceName} | ${messageItem.label}";
       return Column(

@@ -104,7 +104,10 @@ abstract class IChat<W extends Widget> implements MappingToUI<W> {
   receiveMessage(MessageDetail detail, bool noRead);
 
   /// 发送消息
-  Future<void> sendMsg(MsgType msgType, String msgBody);
+  Future<void> sendMsg({
+    required MsgType msgType,
+    required String msgBody,
+  });
 
   /// 阅读所有消息
   readAll();

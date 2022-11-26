@@ -9,9 +9,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/api/hub/chat_server.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/enumeration/message_type.dart';
-import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/util/permission_util.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -126,10 +125,9 @@ class ChatBoxController extends FullLifeCycleController
         _inputStatus.value = InputStatus.inputtingEmoji;
         break;
       case InputEvent.clickSendBtn:
-        ChatController chatController = Get.find<ChatController>();
-        await chatServer.send(
-          spaceId: chatController.spaceId,
-          itemId: chatController.messageItemId,
+        var messageCtrl = Get.find<MessageController>();
+        var currentChat = messageCtrl.getCurrentChat;
+        await currentChat.sendMsg(
           msgBody: inputController.text,
           msgType: MsgType.text,
         );

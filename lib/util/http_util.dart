@@ -80,19 +80,11 @@ class HttpUtil {
           onReceiveProgress: onReceiveProgress);
 
       return _parseResp(result);
-    } on ApiException catch (error) {
-      if (showError!) {
-        Fluttertoast.showToast(msg: error.message);
-      }
-      rethrow;
     } on DioError catch (error) {
-      if (showError! && error.response != null) {
-        Response response = error.response!;
-        if (response.statusCode == 400) {
-          log.info("errorInfo =====> ${response.data}");
-          Fluttertoast.showToast(msg: response.data);
-        }
-      }
+      onDioError(error, showError!);
+    } on Exception catch (error) {
+      onExceptionError(error, showError!);
+      rethrow;
     } finally {
       log.info("================End Get Http Request================");
     }
@@ -130,19 +122,11 @@ class HttpUtil {
       );
 
       return _parseResp(result);
-    } on ApiException catch (error) {
-      if (showError!) {
-        Fluttertoast.showToast(msg: error.message);
-      }
-      rethrow;
     } on DioError catch (error) {
-      if (showError! && error.response != null) {
-        Response response = error.response!;
-        if (response.statusCode == 400) {
-          log.info("errorInfo =====> ${response.data}");
-          Fluttertoast.showToast(msg: response.data);
-        }
-      }
+      onDioError(error, showError!);
+      rethrow;
+    } on Exception catch (error) {
+      onExceptionError(error, showError!);
       rethrow;
     } finally {
       log.info("================End Post Http Request================");
@@ -154,11 +138,25 @@ class HttpUtil {
       throw Exception(response.statusMessage);
     } else {
       log.info(response.data!);
-      var resp = ApiResp.fromJson(response.data!);
-      if (resp.code == 200) {
-        return resp.data;
+      return ApiResp.fromJson(response.data!).getData();
+    }
+  }
+
+  onExceptionError(Exception error, bool showToast) {
+    log.info("errorInfo =====> ${error.toString()}");
+    if (showToast) {
+      Fluttertoast.showToast(msg: error.toString());
+    }
+  }
+
+  onDioError(DioError error, bool showToast) {
+    if (error.response == null) return;
+    Response response = error.response!;
+    if (response.statusCode == 400) {
+      log.info("errorInfo =====> ${response.data}");
+      if (showToast) {
+        Fluttertoast.showToast(msg: response.data);
       }
-      throw ApiException(resp.msg);
     }
   }
 
