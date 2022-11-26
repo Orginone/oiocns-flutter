@@ -124,7 +124,7 @@ class MessageController extends BaseController<IChatGroup>
     if (chat != null) {
       _currentChat.value = chat;
       chat.readAll();
-      if (chat.messages.isEmpty) {
+      if (chat.messages.length <= 30) {
         await chat.moreMessage();
       }
       if (chat.persons.isEmpty) {
@@ -179,14 +179,17 @@ class MessageController extends BaseController<IChatGroup>
     kernelApi.anyStore.subscribing(key, domain, _updateChats);
   }
 
-  _appendChat(IChat targetChat) {
-    var matchedChat = _chats.indexWhere((item) {
-      return item.spaceId == targetChat.spaceId &&
-          item.chatId == targetChat.chatId;
+  /// 获取会话的位置
+  _getPositioned(String spaceId, String chatId) {
+    return _chats.indexWhere((item) {
+      return item.spaceId == spaceId && item.chatId == chatId;
     });
-    if (matchedChat != -1) {
-      _chats[matchedChat] = targetChat;
-    } else {
+  }
+
+  /// 不存在会话就加入
+  _appendChat(IChat targetChat) {
+    var position = _getPositioned(targetChat.spaceId, targetChat.chatId);
+    if (position == -1) {
       _chats.insert(0, targetChat);
     }
   }
@@ -223,6 +226,15 @@ class MessageController extends BaseController<IChatGroup>
       return true;
     });
     return tempChat;
+  }
+
+  /// 设置置顶
+  _setTop(IChat targetChat) {
+    var position = _getPositioned(targetChat.spaceId, targetChat.chatId);
+    if (position != -1) {
+      var chat = _chats.removeAt(position);
+      _chats.insert(0, chat);
+    }
   }
 
   initTabs() {
@@ -416,168 +428,179 @@ class MessageController extends BaseController<IChatGroup>
   }
 
   /// 接受消息
-  Future<void> onReceiveMessage(List<dynamic> messageList) async {
-    if (messageList.isEmpty) {
+  Future<void> onReceiveMessage(dynamic messageList) async {
+    if (messageList == null) {
       return;
     }
     for (var message in messageList) {
-      log.info("接收到一条新的消息$message");
       var detail = MessageDetail.fromMap(message);
 
-      try {
-        // 会话 ID
-        var sessionId = detail.toId;
-        if (detail.toId == auth.userId) {
-          sessionId = detail.fromId;
-        }
-
-        // 确定会话
-        MessageTarget? currentItem;
-        outer:
-        for (var space in orgChatCache.chats) {
-          for (var item in space.chats) {
-            if (item.id == sessionId) {
-              currentItem = item;
-            }
-            if (item.typeName == TargetType.person.label &&
-                currentItem != null &&
-                detail.spaceId != item.spaceId) {
-              currentItem = null;
-            }
-            if (currentItem != null) {
-              break outer;
-            }
-          }
-        }
-        if (currentItem == null) {
-          throw Exception("未找到会话!");
-        }
-
-        if (detail.msgType == MsgType.topping.name) {
-          currentItem.isTop = bool.fromEnvironment(detail.msgBody ?? "false");
-        } else {
-          if (detail.spaceId == auth.userId) {
-            // 如果是个人空间，存储一下信息
-            await kernelApi.anyStore.cacheMsg(sessionId, detail);
-          }
-
-          // 处理消息
-          detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
-          String? msgBody = detail.msgBody;
-          currentItem.msgBody = msgBody;
-          currentItem.msgTime = detail.createTime;
-          currentItem.msgType = detail.msgType;
-          if (currentItem.msgType == MsgType.recall.name) {
-            currentItem.showTxt = StringUtil.getRecallBody(currentItem, detail);
-          } else if (currentItem.msgType == MsgType.voice.name) {
-            currentItem.showTxt = "[语音]";
-          } else if (currentItem.msgType == MsgType.image.name) {
-            currentItem.showTxt = "[图片]";
-          } else if (currentItem.msgType == MsgType.pull.name) {
-            var msg = jsonDecode(msgBody!);
-            var passive = msg["passive"] as List<dynamic>;
-            currentItem.showTxt = msg["remark"];
-            if (currentItem.personNum != null) {
-              currentItem.personNum = currentItem.personNum! + passive.length;
-            }
-          } else if (currentItem.msgType == MsgType.createCohort.name) {
-            currentItem.personNum = 1;
-            currentItem.showTxt = msgBody;
-          } else if (currentItem.msgType == MsgType.exitCohort.name) {
-            currentItem.personNum = currentItem.personNum! - 1;
-            currentItem.showTxt = msgBody;
-          } else {
-            currentItem.showTxt = msgBody;
-          }
-          if (currentItem.typeName != TargetType.person.label &&
-              currentItem.msgType != MsgType.pull.name &&
-              currentItem.msgType != MsgType.createCohort.name &&
-              currentItem.msgType != MsgType.exitCohort.name) {
-            var nameMap = orgChatCache.nameMap;
-            if (!nameMap.containsKey(detail.fromId)) {
-              nameMap[detail.fromId] = await chatServer.getName(detail.fromId);
-            }
-            String name = nameMap[detail.fromId];
-            currentItem.showTxt = "$name: ${currentItem.showTxt}";
-          }
-
-          bool isTalking = false;
-          for (MessageTarget openItem in orgChatCache.openChats) {
-            if (openItem.id == currentItem.id &&
-                openItem.spaceId == currentItem.spaceId) {
-              isTalking = true;
-            }
-          }
-          if (detail.fromId != auth.userId ||
-              currentItem.msgType != MsgType.pull.name) {
-            // 如果不是我发的消息
-            if (detail.msgType == MsgType.recall.name) {
-              // 撤回消息需要减 1
-              int noRead = currentItem.noRead ?? 0;
-              if (noRead > 0) currentItem.noRead = noRead - 1;
-            } else if (!isTalking) {
-              // 不在会话中需要加 1
-              int noRead = currentItem.noRead ?? 0;
-              currentItem.noRead = noRead + 1;
-            }
-
-            // 如果正在后台，发送本地消息提示
-            if (currentAppState == AppLifecycleState.paused) {
-              var name = currentItem.name;
-              var txt = currentItem.showTxt ?? "";
-              NotificationUtil.showNewMsg(name, txt);
-            }
-          }
-
-          // 最新的消息
-          orgChatCache.messageDetail = detail;
-          orgChatCache.target = currentItem;
-          for (var group in orgChatCache.chats) {
-            sortingItems(group.chats);
-          }
-
-          // 近期会话不存在就加入
-          orgChatCache.recentChats ??= [];
-          orgChatCache.recentChats = orgChatCache.recentChats!
-              .where((item) =>
-                  item.id != currentItem!.id ||
-                  item.spaceId != currentItem.spaceId)
-              .toList();
-
-          if (detail.msgType != MsgType.deleteCohort.name) {
-            // 如果是解散了群聊, 就不加入了
-            if (detail.msgType == MsgType.exitCohort.name) {
-              // 如果是自己退出了群聊, 就不加入了
-              if (detail.fromId != auth.userId) {
-                orgChatCache.recentChats!.add(currentItem);
-              }
-            } else {
-              orgChatCache.recentChats!.add(currentItem);
-            }
-          }
-          sortingItems(orgChatCache.recentChats!);
-
-          // 如果当前会话正打开
-          if (Get.isRegistered<ChatController>()) {
-            ChatController chatController = Get.find();
-            chatController.onReceiveMsg(detail.spaceId!, sessionId, detail);
-          }
-
-          // 如果设置页面正打开中
-          if (Get.isRegistered<MessageSettingController>()) {
-            var settingController = Get.find<MessageSettingController>();
-            settingController.morePersons();
-          }
-        }
-
-        // 更新试图
-        update();
-
-        // 缓存会话
-        await kernelApi.anyStore.cacheChats(orgChatCache);
-      } catch (error) {
-        log.info("接收消息异常:$error");
+      // 会话 ID
+      var sessionId = detail.toId;
+      if (detail.toId == auth.userId) {
+        sessionId = detail.fromId;
       }
+
+      super.forEach((chatGroup) {
+        for (var chat in chatGroup.chats) {
+          bool isMatched = chat.chatId == sessionId;
+          if (isMatched && chat.target.typeName == TargetType.person.label) {
+            isMatched = detail.spaceId == chat.spaceId;
+          }
+          if (!isMatched) continue;
+          chat.receiveMessage(detail, _currentChat.value != chat);
+          _appendChat(chat);
+          _setTop(chat);
+          _cacheChats();
+          return false;
+        }
+        return true;
+      });
+
+      // // 确定会话
+      // MessageTarget? currentItem;
+      // outer:
+      // for (var space in orgChatCache.chats) {
+      //   for (var item in space.chats) {
+      //     if (item.id == sessionId) {
+      //       currentItem = item;
+      //     }
+      //     if (item.typeName == TargetType.person.label &&
+      //         currentItem != null &&
+      //         detail.spaceId != item.spaceId) {
+      //       currentItem = null;
+      //     }
+      //     if (currentItem != null) {
+      //       break outer;
+      //     }
+      //   }
+      // }
+      // if (currentItem == null) {
+      //   throw Exception("未找到会话!");
+      // }
+      //
+      // if (detail.msgType == MsgType.topping.name) {
+      //   currentItem.isTop = bool.fromEnvironment(detail.msgBody ?? "false");
+      // } else {
+      //   if (detail.spaceId == auth.userId) {
+      //     // 如果是个人空间，存储一下信息
+      //     await kernelApi.anyStore.cacheMsg(sessionId, detail);
+      //   }
+      //
+      //   // 处理消息
+      //   detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
+      //   String? msgBody = detail.msgBody;
+      //   currentItem.msgBody = msgBody;
+      //   currentItem.msgTime = detail.createTime;
+      //   currentItem.msgType = detail.msgType;
+      //   if (currentItem.msgType == MsgType.recall.name) {
+      //     currentItem.showTxt = StringUtil.getRecallBody(currentItem, detail);
+      //   } else if (currentItem.msgType == MsgType.voice.name) {
+      //     currentItem.showTxt = "[语音]";
+      //   } else if (currentItem.msgType == MsgType.image.name) {
+      //     currentItem.showTxt = "[图片]";
+      //   } else if (currentItem.msgType == MsgType.pull.name) {
+      //     var msg = jsonDecode(msgBody!);
+      //     var passive = msg["passive"] as List<dynamic>;
+      //     currentItem.showTxt = msg["remark"];
+      //     if (currentItem.personNum != null) {
+      //       currentItem.personNum = currentItem.personNum! + passive.length;
+      //     }
+      //   } else if (currentItem.msgType == MsgType.createCohort.name) {
+      //     currentItem.personNum = 1;
+      //     currentItem.showTxt = msgBody;
+      //   } else if (currentItem.msgType == MsgType.exitCohort.name) {
+      //     currentItem.personNum = currentItem.personNum! - 1;
+      //     currentItem.showTxt = msgBody;
+      //   } else {
+      //     currentItem.showTxt = msgBody;
+      //   }
+      //   if (currentItem.typeName != TargetType.person.label &&
+      //       currentItem.msgType != MsgType.pull.name &&
+      //       currentItem.msgType != MsgType.createCohort.name &&
+      //       currentItem.msgType != MsgType.exitCohort.name) {
+      //     var nameMap = orgChatCache.nameMap;
+      //     if (!nameMap.containsKey(detail.fromId)) {
+      //       nameMap[detail.fromId] = await chatServer.getName(detail.fromId);
+      //     }
+      //     String name = nameMap[detail.fromId];
+      //     currentItem.showTxt = "$name: ${currentItem.showTxt}";
+      //   }
+      //
+      //   bool isTalking = false;
+      //   for (MessageTarget openItem in orgChatCache.openChats) {
+      //     if (openItem.id == currentItem.id &&
+      //         openItem.spaceId == currentItem.spaceId) {
+      //       isTalking = true;
+      //     }
+      //   }
+      //   if (detail.fromId != auth.userId ||
+      //       currentItem.msgType != MsgType.pull.name) {
+      //     // 如果不是我发的消息
+      //     if (detail.msgType == MsgType.recall.name) {
+      //       // 撤回消息需要减 1
+      //       int noRead = currentItem.noRead ?? 0;
+      //       if (noRead > 0) currentItem.noRead = noRead - 1;
+      //     } else if (!isTalking) {
+      //       // 不在会话中需要加 1
+      //       int noRead = currentItem.noRead ?? 0;
+      //       currentItem.noRead = noRead + 1;
+      //     }
+      //
+      //     // 如果正在后台，发送本地消息提示
+      //     if (currentAppState == AppLifecycleState.paused) {
+      //       var name = currentItem.name;
+      //       var txt = currentItem.showTxt ?? "";
+      //       NotificationUtil.showNewMsg(name, txt);
+      //     }
+      //   }
+      //
+      //   // 最新的消息
+      //   orgChatCache.messageDetail = detail;
+      //   orgChatCache.target = currentItem;
+      //   for (var group in orgChatCache.chats) {
+      //     sortingItems(group.chats);
+      //   }
+      //
+      //   // 近期会话不存在就加入
+      //   orgChatCache.recentChats ??= [];
+      //   orgChatCache.recentChats = orgChatCache.recentChats!
+      //       .where((item) =>
+      //           item.id != currentItem!.id ||
+      //           item.spaceId != currentItem.spaceId)
+      //       .toList();
+      //
+      //   if (detail.msgType != MsgType.deleteCohort.name) {
+      //     // 如果是解散了群聊, 就不加入了
+      //     if (detail.msgType == MsgType.exitCohort.name) {
+      //       // 如果是自己退出了群聊, 就不加入了
+      //       if (detail.fromId != auth.userId) {
+      //         orgChatCache.recentChats!.add(currentItem);
+      //       }
+      //     } else {
+      //       orgChatCache.recentChats!.add(currentItem);
+      //     }
+      //   }
+      //   sortingItems(orgChatCache.recentChats!);
+      //
+      //   // 如果当前会话正打开
+      //   if (Get.isRegistered<ChatController>()) {
+      //     ChatController chatController = Get.find();
+      //     chatController.onReceiveMsg(detail.spaceId!, sessionId, detail);
+      //   }
+      //
+      //   // 如果设置页面正打开中
+      //   if (Get.isRegistered<MessageSettingController>()) {
+      //     var settingController = Get.find<MessageSettingController>();
+      //     settingController.morePersons();
+      //   }
+      // }
+      //
+      // // 更新试图
+      // update();
+      //
+      // // 缓存会话
+      // await kernelApi.anyStore.cacheChats(orgChatCache);
     }
   }
 

@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:orginone/api_resp/message_target.dart';
-import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_text_style.dart';
-import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/core/authority.dart';
 import 'package:orginone/core/chat/i_chat.dart';
 import 'package:orginone/util/date_util.dart';
@@ -71,17 +68,17 @@ class MessageItemWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _avatarContainer(chat.target),
-            _contentContainer(chat.target),
+            _avatarContainer(),
+            _contentContainer(),
           ],
         ),
       ),
     );
   }
 
-  Widget _avatar(MessageTarget messageItem) {
-    int notRead = messageItem.noRead ?? 0;
-    Color badgeColor = messageItem.isInterruption ?? false
+  Widget _avatar() {
+    int notRead = chat.noReadCount;
+    Color badgeColor = chat.target.isInterruption ?? false
         ? UnifiedColors.cardBorder
         : GFColors.DANGER;
     return Stack(
@@ -90,7 +87,7 @@ class MessageItemWidget extends StatelessWidget {
           alignment: Alignment.center,
           child: TextAvatar(
             avatarName: StringUtil.getAvatarName(
-              avatarName: messageItem.name,
+              avatarName: chat.target.name,
               type: TextAvatarType.chat,
             ),
             width: defaultAvatarWidth,
@@ -98,7 +95,7 @@ class MessageItemWidget extends StatelessWidget {
         ),
         Align(
           alignment: Alignment.bottomLeft,
-          child: TextTag(messageItem.label),
+          child: TextTag(chat.target.label),
         ),
         Visibility(
           visible: notRead > 0,
@@ -114,23 +111,22 @@ class MessageItemWidget extends StatelessWidget {
     );
   }
 
-  Widget _avatarContainer(MessageTarget messageItem) {
+  Widget _avatarContainer() {
     return Container(
       alignment: Alignment.center,
       width: defaultAvatarWidth,
       height: defaultAvatarWidth,
-      child: GetBuilder<MessageController>(
-        builder: (controller) => _avatar(messageItem),
-      ),
+      child: Obx(() => _avatar()),
     );
   }
 
-  Widget _content(MessageTarget messageItem) {
-    Target userInfo = auth.userInfo;
-    var name = userInfo.id == messageItem.id
+  Widget _content() {
+    var messageItem = chat.target;
+    var name = auth.userId == messageItem.id
         ? "${messageItem.name}（我）"
         : messageItem.name;
 
+    var lastMessage = chat.lastMessage;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +136,7 @@ class MessageItemWidget extends StatelessWidget {
           children: [
             Text(name, style: text22Bold),
             Text(
-              CustomDateUtil.getSessionTime(messageItem.msgTime),
+              CustomDateUtil.getSessionTime(lastMessage?.createTime),
               style: text18,
             ),
           ],
@@ -150,7 +146,7 @@ class MessageItemWidget extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                messageItem.showTxt ?? "",
+                lastMessage?.msgBody ?? "",
                 style: TextStyle(
                   color: UnifiedColors.black9,
                   fontSize: 20.sp,
@@ -175,14 +171,12 @@ class MessageItemWidget extends StatelessWidget {
     );
   }
 
-  Widget _contentContainer(MessageTarget messageItem) {
+  Widget _contentContainer() {
     return Expanded(
       child: Container(
-        padding: EdgeInsets.only(left: 18.w, top: 2.h, bottom: 2.h),
+        padding: EdgeInsets.only(left: 20.w, top: 2.h, bottom: 2.h),
         height: defaultAvatarWidth,
-        child: GetBuilder<MessageController>(
-          builder: (controller) => _content(messageItem),
-        ),
+        child: Obx(() => _content()),
       ),
     );
   }

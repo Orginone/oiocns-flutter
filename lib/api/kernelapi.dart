@@ -81,11 +81,16 @@ class KernelApi {
     await _kernelHub.invoke(methodName, args: [accessToken]);
   }
 
-  receive(Map<String, dynamic> params) {
-    String key = params["target"].toString().toLowerCase();
+  receive(List<dynamic>? params) {
+    if (params == null) {
+      return;
+    }
+    log.info("接受到一条新的信息: ${params.toString()}");
+    Map<String, dynamic> param = params[0];
+    String key = param["target"].toString().toLowerCase();
     if (_methods.containsKey(key)) {
       for (var callback in _methods[key]!) {
-        callback();
+        callback(param["data"]);
       }
     }
   }

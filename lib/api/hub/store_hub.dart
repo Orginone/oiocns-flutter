@@ -67,8 +67,8 @@ class StoreHub {
   }
 
   /// 订阅
-  on(String methodName, Function callback) {
-    _server.on(methodName, (params) => callback(params));
+  on(String methodName, Function(List<dynamic>?) callback) {
+    _server.on(methodName, callback);
   }
 
   /// 停止连接

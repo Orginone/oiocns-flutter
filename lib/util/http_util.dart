@@ -81,9 +81,9 @@ class HttpUtil {
 
       return _parseResp(result);
     } on DioError catch (error) {
-      onDioError(error, showError!);
+      _onDioError(error, showError!);
     } on Exception catch (error) {
-      onExceptionError(error, showError!);
+      _onExceptionError(error, showError!);
       rethrow;
     } finally {
       log.info("================End Get Http Request================");
@@ -123,10 +123,10 @@ class HttpUtil {
 
       return _parseResp(result);
     } on DioError catch (error) {
-      onDioError(error, showError!);
+      _onDioError(error, showError!);
       rethrow;
     } on Exception catch (error) {
-      onExceptionError(error, showError!);
+      _onExceptionError(error, showError!);
       rethrow;
     } finally {
       log.info("================End Post Http Request================");
@@ -142,14 +142,14 @@ class HttpUtil {
     }
   }
 
-  onExceptionError(Exception error, bool showToast) {
+  _onExceptionError(Exception error, bool showToast) {
     log.info("errorInfo =====> ${error.toString()}");
     if (showToast) {
       Fluttertoast.showToast(msg: error.toString());
     }
   }
 
-  onDioError(DioError error, bool showToast) {
+  _onDioError(DioError error, bool showToast) {
     if (error.response == null) return;
     Response response = error.response!;
     if (response.statusCode == 400) {

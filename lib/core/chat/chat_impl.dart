@@ -180,7 +180,7 @@ class BaseChat implements IChat<MessageItemWidget> {
     if (detail.id != _lastMessage.value?.id) {
       _noReadCount.value += noRead ? 1 : 0;
       _lastMessage.value = detail;
-      _messages.add(detail);
+      _messages.insert(0, detail);
     }
   }
 
