@@ -13,7 +13,7 @@ class ImMsgModel {
     required this.msgBody,
   });
 
-  ImMsgModel.fromMap(Map<String, dynamic> map)
+  ImMsgModel.fromJson(Map<String, dynamic> map)
       : spaceId = map["spaceId"],
         fromId = map["fromId"],
         toId = map["toId"],
@@ -31,18 +31,18 @@ class ImMsgModel {
   }
 }
 
-class PageModel {
+class PageRequest {
   final int offset;
   final int limit;
   final String filter;
 
-  PageModel({
+  PageRequest({
     required this.offset,
     required this.limit,
     required this.filter,
   });
 
-  PageModel.fromMap(Map<String, dynamic> map)
+  PageRequest.fromJson(Map<String, dynamic> map)
       : offset = map["offset"],
         limit = map["limit"],
         filter = map["filter"];
@@ -59,7 +59,7 @@ class PageModel {
 class IdSpaceReq {
   final String id;
   final String spaceId;
-  final PageModel page;
+  final PageRequest page;
 
   IdSpaceReq({
     required this.id,
@@ -67,10 +67,10 @@ class IdSpaceReq {
     required this.page,
   });
 
-  IdSpaceReq.fromMap(Map<String, dynamic> map)
+  IdSpaceReq.fromJson(Map<String, dynamic> map)
       : id = map["id"],
         spaceId = map["spaceId"],
-        page = PageModel.fromMap(map["page"]);
+        page = PageRequest.fromJson(map["page"]);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -83,16 +83,16 @@ class IdSpaceReq {
 
 class IdReq {
   final String id;
-  final PageModel page;
+  final PageRequest page;
 
   IdReq({
     required this.id,
     required this.page,
   });
 
-  IdReq.fromMap(Map<String, dynamic> map)
+  IdReq.fromJson(Map<String, dynamic> map)
       : id = map["id"],
-        page = PageModel.fromMap(map["page"]);
+        page = PageRequest.fromJson(map["page"]);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -106,7 +106,7 @@ class IDReqSubModel {
   final String id;
   final List<String> typeNames;
   final List<String> subTypeNames;
-  final PageModel page;
+  final PageRequest page;
 
   IDReqSubModel({
     required this.id,
@@ -115,11 +115,11 @@ class IDReqSubModel {
     required this.page,
   });
 
-  IDReqSubModel.fromMap(Map<String, dynamic> map)
+  IDReqSubModel.fromJson(Map<String, dynamic> map)
       : id = map["id"],
         typeNames = map["cohortName"],
         subTypeNames = map["spaceTypeName"],
-        page = PageModel.fromMap(map["page"]);
+        page = PageRequest.fromJson(map["page"]);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -142,7 +142,7 @@ class ChatsReqModel {
     required this.spaceTypeName,
   });
 
-  ChatsReqModel.fromMap(Map<String, dynamic> map)
+  ChatsReqModel.fromJson(Map<String, dynamic> map)
       : spaceId = map["spaceId"],
         cohortName = map["cohortName"],
         spaceTypeName = map["spaceTypeName"];
@@ -152,6 +152,113 @@ class ChatsReqModel {
     json["spaceId"] = spaceId;
     json["cohortName"] = cohortName;
     json["spaceTypeName"] = spaceTypeName;
+    return json;
+  }
+}
+
+class IDReqJoinedModel {
+  final String id;
+  final List<String> typeName;
+  final List<String> joinTypeNames;
+  final String spaceId;
+  final PageRequest page;
+
+  IDReqJoinedModel({
+    required this.id,
+    required this.typeName,
+    required this.joinTypeNames,
+    required this.spaceId,
+    required this.page,
+  });
+
+  IDReqJoinedModel.fromJson(Map<String, dynamic> json)
+      : id = json["id"],
+        typeName = json["typeName"],
+        joinTypeNames = json["JoinTypeNames"],
+        spaceId = json["spaceId"],
+        page = PageRequest.fromJson(json["page"]);
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["typeName"] = typeName;
+    json["JoinTypeNames"] = joinTypeNames;
+    json["spaceId"] = spaceId;
+    json["page"] = page.toJson();
+    return json;
+  }
+}
+
+class TeamPullModel {
+  final String id;
+  final List<String> teamTypes;
+  final List<String> targetIds;
+  final String targetType;
+
+  TeamPullModel({
+    required this.id,
+    required this.teamTypes,
+    required this.targetIds,
+    required this.targetType,
+  });
+
+  TeamPullModel.fromJson(Map<String, dynamic> json)
+      : id = json["id"],
+        teamTypes = json["teamTypes"],
+        targetIds = json["targetIds"],
+        targetType = json["targetType"];
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["teamTypes"] = teamTypes;
+    json["targetIds"] = targetIds;
+    json["targetType"] = targetType;
+    return json;
+  }
+}
+
+class TargetModel {
+  String? id;
+  String? name;
+  String? code;
+  String? typeName;
+  String? belongId;
+  String? teamName;
+  String? teamCode;
+  String? teamRemark;
+
+  TargetModel({
+    this.id,
+    this.name,
+    this.code,
+    this.typeName,
+    this.belongId,
+    this.teamName,
+    this.teamCode,
+    this.teamRemark,
+  });
+
+  TargetModel.fromJson(Map<String, dynamic> json)
+      : id = json["id"],
+        name = json["name"],
+        code = json["code"],
+        typeName = json["typeName"],
+        belongId = json["belongId"],
+        teamName = json["teamName"],
+        teamCode = json["teamCode"],
+        teamRemark = json["teamRemark"];
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["name"] = name;
+    json["code"] = code;
+    json["typeName"] = typeName;
+    json["belongId"] = belongId;
+    json["teamName"] = teamName;
+    json["teamCode"] = teamCode;
+    json["teamRemark"] = teamRemark;
     return json;
   }
 }

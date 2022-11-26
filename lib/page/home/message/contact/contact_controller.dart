@@ -6,7 +6,7 @@ import 'package:lpinyin/lpinyin.dart';
 import 'package:orginone/api/person_api.dart';
 import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/target.dart';
-import 'package:orginone/logic/authority.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/public/http/base_controller.dart';

@@ -2,19 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:orginone/api_resp/target.dart';
+import 'package:orginone/component/a_font.dart';
+import 'package:orginone/component/text_avatar.dart';
+import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/text_tag.dart';
+import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
+import 'package:orginone/page/home/search/search_controller.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/util/string_util.dart';
-
-import '../../../../api_resp/target.dart';
-import '../../../../component/a_font.dart';
-import '../../../../component/text_avatar.dart';
-import '../../../../component/text_search.dart';
-import '../../../../component/unified_scaffold.dart';
-import '../../../../logic/authority.dart';
-import '../../../../routers.dart';
-import '../../../../util/widget_util.dart';
-import '../../search/search_controller.dart';
+import 'package:orginone/util/widget_util.dart';
 
 enum CtrlType {
   manageable("管理的"),

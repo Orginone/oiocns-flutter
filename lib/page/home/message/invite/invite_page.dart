@@ -6,19 +6,18 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api/cohort_api.dart';
 import 'package:orginone/api/person_api.dart';
+import 'package:orginone/api_resp/target.dart';
+import 'package:orginone/component/a_font.dart';
+import 'package:orginone/component/text_avatar.dart';
+import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/api/hub/chat_server.dart';
+import 'package:orginone/core/authority.dart';
+import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_controller.dart';
-
-import '../../../../api_resp/target.dart';
-import '../../../../component/a_font.dart';
-import '../../../../component/text_avatar.dart';
-import '../../../../component/text_search.dart';
-import '../../../../enumeration/message_type.dart';
-import '../../../../logic/authority.dart';
-import '../../../../routers.dart';
-import '../../../../util/string_util.dart';
-import '../../../../util/widget_util.dart';
+import 'package:orginone/routers.dart';
+import 'package:orginone/util/string_util.dart';
+import 'package:orginone/util/widget_util.dart';
 
 class InvitePage extends GetView<InviteController> {
   const InvitePage({Key? key}) : super(key: key);

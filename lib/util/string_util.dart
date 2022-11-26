@@ -1,10 +1,9 @@
 import 'package:orginone/api_resp/message_detail.dart';
+import 'package:orginone/api_resp/message_target.dart';
+import 'package:orginone/component/text_avatar.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/enumeration/enum_map.dart';
-
-import '../api_resp/message_target.dart';
-import '../component/text_avatar.dart';
-import '../enumeration/target_type.dart';
-import '../logic/authority.dart';
+import 'package:orginone/enumeration/target_type.dart';
 
 class StringUtil {
   static String getPrefixChars(String target, {required int count}) {

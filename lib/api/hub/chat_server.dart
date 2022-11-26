@@ -10,7 +10,7 @@ import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
-import 'package:orginone/logic/authority.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/util/encryption_util.dart';
 

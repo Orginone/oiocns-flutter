@@ -4,24 +4,22 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/bucket_api.dart';
-import 'package:orginone/api/hub/any_store.dart';
 import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
+import 'package:orginone/core/ui/message/chat_message_detail.dart';
 import 'package:orginone/enumeration/enum_map.dart';
 import 'package:orginone/enumeration/message_type.dart';
-import 'package:orginone/logic/authority.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/page/home/home_controller.dart';
-import 'package:orginone/component/message/chat_message_detail.dart';
 import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/util/api_exception.dart';
 import 'package:orginone/util/encryption_util.dart';
@@ -361,5 +359,4 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         break;
     }
   }
-
 }

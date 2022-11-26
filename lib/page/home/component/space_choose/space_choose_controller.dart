@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
 import 'package:orginone/api_resp/page_resp.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/page/home/home_controller.dart';
 
 import '../../../../api/company_api.dart';
 import '../../../../api_resp/target.dart';
-import '../../../../logic/authority.dart';
 
 class SpaceChooseController extends GetxController {
   HomeController homeController = Get.find<HomeController>();

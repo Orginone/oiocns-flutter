@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/logic/authority.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/util/encryption_util.dart';
 import 'package:uuid/uuid.dart';
 

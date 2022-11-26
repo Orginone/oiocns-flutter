@@ -20,14 +20,14 @@ import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/bread_crumb.dart';
 import 'package:orginone/component/tab_combine.dart';
 import 'package:orginone/controller/base_controller.dart';
+import 'package:orginone/core/ui/message/message_item_widget.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
-import 'package:orginone/logic/authority.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/api/hub/chat_server.dart';
-import 'package:orginone/logic/chat/chat_impl.dart';
-import 'package:orginone/logic/chat/i_chat.dart';
+import 'package:orginone/core/chat/chat_impl.dart';
+import 'package:orginone/core/chat/i_chat.dart';
 import 'package:orginone/page/home/home_controller.dart';
-import 'package:orginone/component/message/message_item_widget.dart';
 import 'package:orginone/page/home/message/message_page.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_controller.dart';
 import 'package:orginone/util/encryption_util.dart';
@@ -46,11 +46,11 @@ enum ReceiveEvent {
 
 class MessageController extends BaseController<IChatGroup>
     with WidgetsBindingObserver, GetSingleTickerProviderStateMixin {
-  final RxList<IChat> _chats = <IChat>[].obs;
-  final Rx<IChat?> _currentChat = Rxn();
-
   // 日志对象
   Logger log = Logger("MessageController");
+
+  final RxList<IChat> _chats = <IChat>[].obs;
+  final Rx<IChat?> _currentChat = Rxn();
 
   // 参数
   OrgChatCache orgChatCache = OrgChatCache.empty();
@@ -81,16 +81,16 @@ class MessageController extends BaseController<IChatGroup>
   VoiceDetail? _currentVoicePlay;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
     // 监听页面的生命周期
     WidgetsBinding.instance.addObserver(this);
     // 初始化 Tabs
     initTabs();
     // 获取通讯录
-    _loadingMails();
+    await _loadingMails();
     // 订阅最新会话
-    _initListener();
+    await _initListener();
   }
 
   int getChatSize() {
@@ -156,7 +156,7 @@ class MessageController extends BaseController<IChatGroup>
     ));
     for (var group in ansGroups) {
       var iChatGroup = BaseChatGroup(
-        isOpened: true,
+        isOpened: auth.spaceId == group.id,
         spaceId: group.id,
         spaceName: group.name,
         chats: group.chats.map((item) {

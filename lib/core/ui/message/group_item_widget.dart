@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/component/a_font.dart';
-import 'package:orginone/logic/chat/i_chat.dart';
+import 'package:orginone/core/chat/i_chat.dart';
 
 class GroupItemWidget extends StatelessWidget {
   final IChatGroup chatGroup;

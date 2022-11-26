@@ -3,13 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api_resp/market_entity.dart';
 import 'package:orginone/component/a_font.dart';
-import 'package:orginone/component/market/market_item_widget.dart';
 import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/controller/market/market_controller.dart';
-import 'package:orginone/logic/authority.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/controller/message/message_controller.dart';
+import 'package:orginone/core/ui/market/market_item_widget.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/widget_util.dart';
 

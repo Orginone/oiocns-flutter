@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
-import 'package:orginone/logic/authority.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/util/string_util.dart';
 
 import '../../../../api_resp/target.dart';

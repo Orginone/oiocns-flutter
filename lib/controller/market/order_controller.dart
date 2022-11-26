@@ -3,7 +3,7 @@ import 'package:orginone/api/market_api.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/staging_entity.dart';
 import 'package:orginone/controller/base_controller.dart';
-import 'package:orginone/logic/authority.dart';
+import 'package:orginone/core/authority.dart';
 
 class OrderController extends BaseController<StagingEntity> {
   @override

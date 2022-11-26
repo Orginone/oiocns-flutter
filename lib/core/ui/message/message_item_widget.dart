@@ -4,17 +4,15 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/target.dart';
+import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_colors.dart';
+import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/controller/message/message_controller.dart';
-import 'package:orginone/logic/chat/i_chat.dart';
-import 'package:orginone/routers.dart';
+import 'package:orginone/core/authority.dart';
+import 'package:orginone/core/chat/i_chat.dart';
+import 'package:orginone/util/date_util.dart';
 import 'package:orginone/util/string_util.dart';
-
-import '../text_avatar.dart';
-import '../unified_text_style.dart';
-import '../../logic/authority.dart';
-import '../../util/date_util.dart';
 
 double defaultAvatarWidth = 66.w;
 

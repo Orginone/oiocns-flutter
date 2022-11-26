@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:orginone/logic/authority.dart';
+import 'package:orginone/core/authority.dart';
 
 import '../../../../api/company_api.dart';
 import '../../../../api_resp/target.dart';

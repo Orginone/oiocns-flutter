@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:orginone/api/person_api.dart';
 import 'package:orginone/api_resp/target.dart';
+import 'package:orginone/core/target/person.dart';
 
 import '../api_resp/token_authority_resp.dart';
 
@@ -18,24 +19,27 @@ enum OrgAuths {
 }
 
 class Authority {
-  final TokenAuthorityResp resp;
+  final TokenAuthorityResp _resp;
+  final Person _currentPerson;
 
-  Authority._(this.resp);
+  Authority._(this._resp) : _currentPerson = Person(_resp.userInfo);
 
-  String get spaceId => resp.spaceId;
+  String get spaceId => _resp.spaceId;
 
-  String get userId => resp.userId;
+  String get userId => _resp.userId;
 
-  Target get userInfo => resp.userInfo;
+  Target get userInfo => _resp.userInfo;
 
-  Target get spaceInfo => resp.spaceInfo;
+  Target get spaceInfo => _resp.spaceInfo;
+
+  Person get currentPerson => _currentPerson;
 
   /// 判断目标是否含有系统权限
   /// [auths] 相应权限
   /// [targetIds] 相应目标
   bool _hasTargetsAuth(List<String> auths, List<String> targetIds,
       {bool isSystem = true}) {
-    var matchedFirst = resp.identitys.firstWhereOrNull((identity) {
+    var matchedFirst = _resp.identitys.firstWhereOrNull((identity) {
       var authority = identity.authority;
       if (authority == null) {
         return false;
@@ -53,7 +57,7 @@ class Authority {
   /// 获取目标相应的系统权限
   /// [targetId] 目标 id
   String getTargetIdentities(String targetId) {
-    return resp.identitys
+    return _resp.identitys
         .where((identity) => identity.belongId == targetId)
         .map((identity) => identity.name)
         .join(",");
@@ -61,12 +65,12 @@ class Authority {
 
   /// 是否为用户空间
   bool isUserSpace() {
-    return resp.userId == resp.spaceId;
+    return _resp.userId == _resp.spaceId;
   }
 
   /// 是否为单位空间
   bool isCompanySpace() {
-    return resp.userId != resp.spaceId;
+    return _resp.userId != _resp.spaceId;
   }
 
   /// 是否为组织管理员

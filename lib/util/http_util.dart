@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/logic/authority.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/util/api_exception.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 

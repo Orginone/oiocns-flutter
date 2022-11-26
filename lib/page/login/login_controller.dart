@@ -4,7 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/api_resp/login_resp.dart';
 import 'package:orginone/component/loading_button.dart';
-import 'package:orginone/logic/authority.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/util/hive_util.dart';
 
 class LoginController extends GetxController {

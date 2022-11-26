@@ -7,7 +7,7 @@ import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/form/form_widget.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/enumeration/message_type.dart';
-import 'package:orginone/logic/authority.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
 import 'package:orginone/util/widget_util.dart';

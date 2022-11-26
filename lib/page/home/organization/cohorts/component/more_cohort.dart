@@ -1,15 +1,14 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/component/a_font.dart';
+import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_controller.dart';
 import 'package:orginone/page/home/organization/cohorts/component/avatar_group.dart';
-
-import '../../../../../component/a_font.dart';
-import '../../../../../component/unified_colors.dart';
-import '../../../../../logic/authority.dart';
-import '../../../../../routers.dart';
-import '../../../../../util/widget_util.dart';
+import 'package:orginone/routers.dart';
+import 'package:orginone/util/widget_util.dart';
 
 class MoreCohort extends GetView<MessageSettingController> {
   const MoreCohort({Key? key}) : super(key: key);

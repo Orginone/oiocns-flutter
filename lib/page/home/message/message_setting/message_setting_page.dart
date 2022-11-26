@@ -9,18 +9,17 @@ import 'package:orginone/component/choose_item.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
-import 'package:orginone/logic/authority.dart';
-import 'package:orginone/component/message/message_item_widget.dart';
+import 'package:orginone/core/authority.dart';
+import 'package:orginone/core/ui/message/message_item_widget.dart';
+import 'package:orginone/enumeration/chat_type.dart';
+import 'package:orginone/enumeration/enum_map.dart';
+import 'package:orginone/enumeration/target_type.dart';
+import 'package:orginone/page/home/message/message_setting/message_setting_controller.dart';
 import 'package:orginone/page/home/organization/cohorts/component/avatar_group.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/screen_init.dart';
-
-import '../../../../enumeration/chat_type.dart';
-import '../../../../enumeration/enum_map.dart';
-import '../../../../enumeration/target_type.dart';
-import '../../../../util/string_util.dart';
-import '../../../../util/widget_util.dart';
-import 'message_setting_controller.dart';
+import 'package:orginone/util/string_util.dart';
+import 'package:orginone/util/widget_util.dart';
 
 Size defaultBtnSize = Size(400.w, 70.h);
 

@@ -8,9 +8,8 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api_resp/target.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:path_provider/path_provider.dart';
-
-import '../../../../logic/authority.dart';
 
 class MineCardController extends GetxController {
   final Logger log = Logger("MineCardController");

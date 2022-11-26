@@ -11,7 +11,7 @@ import 'package:orginone/api_resp/request_entity.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/config/constant.dart';
-import 'package:orginone/logic/authority.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/util/http_util.dart';
 import 'package:signalr_core/signalr_core.dart';
 
@@ -376,12 +376,13 @@ class KernelApi {
   /// 创建身份
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
-  dynamic createTarget(dynamic params) async {
-    return await _request(RequestEntity.from(
+  Future<Target> createTarget(TargetModel params) async {
+    Map<String, dynamic> map = await _request(RequestEntity.from(
       module: 'target',
       action: 'CreateTarget',
       params: params,
     ));
+    return Target.fromMap(map);
   }
 
   /// 创建标准规则
@@ -541,8 +542,8 @@ class KernelApi {
   /// 拉组织/个人加入组织/个人的团队
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
-  dynamic pullAnyToTeam(dynamic params) async {
-    return await _request(RequestEntity.from(
+  Future<void> pullAnyToTeam(TeamPullModel params) async {
+    await _request(RequestEntity.from(
       module: 'target',
       action: 'pullAnyToTeam',
       params: params,
@@ -707,12 +708,14 @@ class KernelApi {
   /// 查询组织/个人加入的组织/个人
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
-  dynamic queryJoinedTargetById(dynamic params) async {
-    return await _request(RequestEntity.from(
+  Future<PageResp<Target>> queryJoinedTargetById(
+      IDReqJoinedModel params) async {
+    Map<String, dynamic> res = await _request(RequestEntity.from(
       module: 'target',
       action: 'QueryJoinedTargetById',
       params: params,
     ));
+    return PageResp.fromMap(res, Target.fromMap);
   }
 
   /// 查询组织/个人加入的组织/个人

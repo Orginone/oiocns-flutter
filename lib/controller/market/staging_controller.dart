@@ -5,7 +5,7 @@ import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/staging_entity.dart';
 import 'package:orginone/controller/base_controller.dart';
 import 'package:orginone/controller/market/order_controller.dart';
-import 'package:orginone/logic/authority.dart';
+import 'package:orginone/core/authority.dart';
 
 class StagingController extends BaseController<StagingEntity> {
   /// 这个数值用来记录购物车里面的总数量

@@ -4,8 +4,7 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/person_api.dart';
 import 'package:orginone/api_resp/target.dart';
-
-import '../../../../logic/authority.dart';
+import 'package:orginone/core/authority.dart';
 
 class MineInfoController extends GetxController {
   final Logger log = Logger("MineInfoController");

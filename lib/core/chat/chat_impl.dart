@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:orginone/api/hub/any_store.dart';
 import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/api/model.dart';
@@ -9,12 +8,12 @@ import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/target.dart';
-import 'package:orginone/component/message/group_item_widget.dart';
-import 'package:orginone/component/message/message_item_widget.dart';
 import 'package:orginone/controller/message/message_controller.dart';
+import 'package:orginone/core/ui/message/group_item_widget.dart';
+import 'package:orginone/core/ui/message/message_item_widget.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
-import 'package:orginone/logic/authority.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/encryption_util.dart';
 
@@ -254,7 +253,7 @@ class PersonChat extends BaseChat {
       var params = IdSpaceReq(
         id: target.id,
         spaceId: spaceId,
-        page: PageModel(
+        page: PageRequest(
           limit: 30,
           offset: _messages.length,
           filter: filter ?? "",
@@ -302,7 +301,7 @@ class CohortChat extends BaseChat {
       // 如果是单位空间从接口拿数据
       var params = IdReq(
         id: target.id,
-        page: PageModel(
+        page: PageRequest(
           limit: 30,
           offset: _messages.length,
           filter: filter ?? "",
@@ -326,7 +325,7 @@ class CohortChat extends BaseChat {
       id: target.id,
       typeNames: [target.typeName],
       subTypeNames: [TargetType.person.label],
-      page: PageModel(
+      page: PageRequest(
         limit: 13,
         offset: _persons.length,
         filter: filter ?? "",

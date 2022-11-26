@@ -6,7 +6,7 @@ import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/index_bar.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_colors.dart';
-import 'package:orginone/logic/authority.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/page/home/message/contact/contact_controller.dart';
 import 'package:orginone/page/home/search/search_controller.dart';
 import 'package:orginone/public/view/base_view.dart';

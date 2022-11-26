@@ -3,20 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api_resp/tree_node.dart';
+import 'package:orginone/component/a_font.dart';
+import 'package:orginone/component/choose_item.dart';
+import 'package:orginone/component/icon_avatar.dart';
 import 'package:orginone/component/text_tag.dart';
+import 'package:orginone/component/unified_colors.dart';
+import 'package:orginone/component/unified_edge_insets.dart';
+import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/page/home/home_controller.dart';
-import 'package:orginone/component/message/message_item_widget.dart';
 import 'package:orginone/controller/message/message_controller.dart';
-
-import '../../../api_resp/message_target.dart';
-import '../../../component/a_font.dart';
-import '../../../component/choose_item.dart';
-import '../../../component/icon_avatar.dart';
-import '../../../component/unified_colors.dart';
-import '../../../component/unified_edge_insets.dart';
-import '../../../component/unified_text_style.dart';
-import '../../../logic/authority.dart';
-import '../../../routers.dart';
+import 'package:orginone/routers.dart';
 
 class MessagePage extends GetView<MessageController> {
   const MessagePage({Key? key}) : super(key: key);

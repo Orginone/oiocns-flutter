@@ -3,21 +3,21 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api_resp/message_detail.dart';
+import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/target.dart';
+import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/controller/message/chat_box_controller.dart';
 import 'package:orginone/controller/message/message_controller.dart';
+import 'package:orginone/core/authority.dart';
+import 'package:orginone/core/ui/message/chat_message_detail.dart';
+import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/page/home/message/chat/component/chat_box.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_util.dart';
+import 'package:orginone/util/widget_util.dart';
 
-import '../../../../api_resp/message_target.dart';
-import '../../../../component/a_font.dart';
-import '../../../../enumeration/target_type.dart';
-import '../../../../logic/authority.dart';
-import '../../../../routers.dart';
-import '../../../../util/widget_util.dart';
-import '../../../../component/message/chat_message_detail.dart';
 
 class ChatPage extends GetView<MessageController> {
   const ChatPage({Key? key}) : super(key: key);
