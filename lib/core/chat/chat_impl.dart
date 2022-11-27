@@ -1,3 +1,4 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api/hub/any_store.dart';
 import 'package:orginone/api/kernelapi.dart';
@@ -109,10 +110,10 @@ class BaseChat implements IChat<MessageItemWidget> {
   MessageDetail? get lastMessage => _lastMessage.value;
 
   @override
-  List<MessageDetail> get messages => _messages.toList();
+  List<MessageDetail> get messages => _messages;
 
   @override
-  List<Target> get persons => _persons.toList();
+  List<Target> get persons => _persons;
 
   @override
   String get spaceId => _spaceId;
@@ -145,8 +146,11 @@ class BaseChat implements IChat<MessageItemWidget> {
   }
 
   @override
-  clearMessage() {
-    throw UnimplementedError();
+  clearMessage() async {
+    if (spaceId == auth.userId) {
+      await Kernel.getInstance.anyStore.clearHistoryMsg(chatId);
+      _messages.clear();
+    }
   }
 
   @override
@@ -165,10 +169,15 @@ class BaseChat implements IChat<MessageItemWidget> {
   }
 
   @override
+  bool hasMorePersons() {
+    throw UnimplementedError();
+  }
+
+  @override
   Future<bool> recallMessage(String id) async {
     for (var message in _messages) {
       if (message.id == id) {
-        await kernelApi.recallImMsg(message);
+        await Kernel.getInstance.recallImMsg(message);
         return true;
       }
     }
@@ -181,6 +190,9 @@ class BaseChat implements IChat<MessageItemWidget> {
       _noReadCount.value += noRead ? 1 : 0;
       _lastMessage.value = detail;
       _messages.insert(0, detail);
+      if (detail.msgType == MsgType.pull.name) {
+        await morePersons();
+      }
     }
   }
 
@@ -189,7 +201,7 @@ class BaseChat implements IChat<MessageItemWidget> {
     required MsgType msgType,
     required String msgBody,
   }) async {
-    await kernelApi.createImMsg(ImMsgModel(
+    await Kernel.getInstance.createImMsg(ImMsgModel(
       msgType: msgType.name,
       msgBody: msgBody,
       spaceId: _spaceId,
@@ -209,7 +221,11 @@ class BaseChat implements IChat<MessageItemWidget> {
   onTap(IChat chat) async {
     if (Get.isRegistered<MessageController>()) {
       var messageCtrl = Get.find<MessageController>();
-      await messageCtrl.setCurrent(spaceId, chatId);
+      bool isSuccess = await messageCtrl.setCurrent(spaceId, chatId);
+      if (!isSuccess) {
+        Fluttertoast.showToast(msg: "打开会话失败！");
+        return;
+      }
       Get.offNamedUntil(
         Routers.chat,
         (router) => router.settings.name == Routers.home,
@@ -244,7 +260,7 @@ class PersonChat extends BaseChat {
         "skip": _messages.length,
         "limit": 30
       };
-      ApiResp apiResp = await kernelApi.anyStore.aggregate(
+      ApiResp apiResp = await Kernel.getInstance.anyStore.aggregate(
         collName: collName,
         opt: options,
         domain: domain,
@@ -267,7 +283,7 @@ class PersonChat extends BaseChat {
           filter: filter ?? "",
         ),
       );
-      PageResp<MessageDetail> res = await kernelApi.queryFriendImMsgs(params);
+      PageResp<MessageDetail> res = await Kernel.getInstance.queryFriendImMsgs(params);
       for (var detail in res.result) {
         detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
         _messages.add(detail);
@@ -299,7 +315,7 @@ class CohortChat extends BaseChat {
         "skip": _messages.length,
         "limit": 30
       };
-      ApiResp apiResp = await kernelApi.anyStore.aggregate(
+      ApiResp apiResp = await Kernel.getInstance.anyStore.aggregate(
         collName: collName,
         opt: options,
         domain: domain,
@@ -321,7 +337,7 @@ class CohortChat extends BaseChat {
           filter: filter ?? "",
         ),
       );
-      PageResp<MessageDetail> res = await kernelApi.queryCohortImMsgs(params);
+      PageResp<MessageDetail> res = await Kernel.getInstance.queryCohortImMsgs(params);
       for (var detail in res.result) {
         detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
         _messages.add(detail);
@@ -331,7 +347,7 @@ class CohortChat extends BaseChat {
 
   @override
   morePersons({String? filter}) async {
-    PageResp<Target> page = await kernelApi.querySubTargetById(IDReqSubModel(
+    PageResp<Target> page = await Kernel.getInstance.querySubTargetById(IDReqSubModel(
       id: target.id,
       typeNames: [target.typeName],
       subTypeNames: [TargetType.person.label],
@@ -346,5 +362,10 @@ class CohortChat extends BaseChat {
       _persons.add(target);
     }
     _personCount.value = page.total;
+  }
+
+  @override
+  bool hasMorePersons() {
+    return _persons.length != _personCount.value;
   }
 }

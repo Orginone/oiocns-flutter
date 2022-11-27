@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:orginone/screen_init.dart';
 import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/notification_util.dart';
+import 'package:orginone/util/service_work_utils.dart';
 
 void main() async {
   // 逻辑绑定
@@ -22,6 +23,9 @@ void main() async {
       print('${event.level.name}: ${event.time}: ${event.message}');
     }
   });
+
+  await initializeService();
+
   // 开启 app
   runApp(const ScreenInit());
 }

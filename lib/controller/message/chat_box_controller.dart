@@ -127,7 +127,7 @@ class ChatBoxController extends FullLifeCycleController
       case InputEvent.clickSendBtn:
         var messageCtrl = Get.find<MessageController>();
         var currentChat = messageCtrl.getCurrentChat;
-        await currentChat.sendMsg(
+        await currentChat!.sendMsg(
           msgBody: inputController.text,
           msgType: MsgType.text,
         );

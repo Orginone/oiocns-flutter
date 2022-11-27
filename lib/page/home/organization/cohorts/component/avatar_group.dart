@@ -12,12 +12,14 @@ import '../../../message/message_setting/message_setting_controller.dart';
 double avatarWidth = 76.w;
 
 class AvatarGroup extends StatelessWidget {
+  final List<Target> persons;
   final int? showCount;
   final EdgeInsets? padding;
   final bool hasAdd;
   final Function? addCallback;
 
   const AvatarGroup({
+    required this.persons,
     this.showCount,
     this.padding,
     this.hasAdd = false,
@@ -32,15 +34,15 @@ class AvatarGroup extends StatelessWidget {
 
   /// 头像组
   get _avatarGroup {
-    return GetBuilder<MessageSettingController>(builder: (controller) {
-      var persons = controller.persons.map((item) {
+    return Obx(() {
+      var mappedPerson = persons.map((item) {
         return _avatarItem(item);
       }).toList();
-      if (showCount != null && persons.length > showCount!) {
-        persons = persons.sublist(0, showCount!);
+      if (showCount != null && mappedPerson.length > showCount!) {
+        mappedPerson = mappedPerson.sublist(0, showCount!);
       }
       if (hasAdd) {
-        persons.add(_addItem);
+        mappedPerson.add(_addItem);
       }
 
       return GridView.count(
@@ -49,7 +51,7 @@ class AvatarGroup extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         crossAxisCount: 5,
         childAspectRatio: 60 / 80,
-        children: persons,
+        children: mappedPerson,
       );
     });
   }

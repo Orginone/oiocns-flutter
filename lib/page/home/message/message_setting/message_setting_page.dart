@@ -3,18 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/choose_item.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/core/authority.dart';
-import 'package:orginone/core/ui/message/message_item_widget.dart';
+import 'package:orginone/core/chat/i_chat.dart';
 import 'package:orginone/enumeration/chat_type.dart';
 import 'package:orginone/enumeration/enum_map.dart';
 import 'package:orginone/enumeration/target_type.dart';
-import 'package:orginone/page/home/message/message_setting/message_setting_controller.dart';
 import 'package:orginone/page/home/organization/cohorts/component/avatar_group.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/screen_init.dart';
@@ -23,14 +22,14 @@ import 'package:orginone/util/widget_util.dart';
 
 Size defaultBtnSize = Size(400.w, 70.h);
 
-class MessageSettingPage extends GetView<MessageSettingController> {
+class MessageSettingPage extends GetView<MessageController> {
   const MessageSettingPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Map<String, ChatType> chatTypeMap = EnumMap.chatTypeMap;
-    MessageTarget item = controller.messageItem;
-    ChatType chatType = chatTypeMap[item.label] ?? ChatType.unknown;
+    IChat chat = controller.getCurrentSetting!;
+    ChatType chatType = chatTypeMap[chat.target.label] ?? ChatType.unknown;
 
     List<Widget> children = [
       Align(alignment: Alignment.center, child: _body(chatType)),
@@ -51,7 +50,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
     }
 
     // 个人空间的, 有特殊按钮
-    if (item.spaceId == auth.userId) {
+    if (chat.spaceId == auth.userId) {
       // 如果是好友, 添加删除好友功能
       if (chatType == ChatType.friends) {
         bottomDistance += interval + defaultBtnSize.height;
@@ -78,6 +77,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
   }
 
   Widget _body(ChatType chatType) {
+    IChat chat = controller.getCurrentSetting!;
     List<Widget> children = [];
     switch (chatType) {
       case ChatType.self:
@@ -93,22 +93,23 @@ class MessageSettingPage extends GetView<MessageSettingController> {
         break;
       case ChatType.group:
       case ChatType.unit:
-        var isRelationAdmin = auth.isRelationAdmin([controller.messageItemId]);
+        var isRelationAdmin = auth.isRelationAdmin([chat.chatId]);
         children = [
           _avatar,
           Padding(padding: EdgeInsets.only(top: 50.h)),
           AvatarGroup(
+            persons: controller.getCurrentSetting!.persons,
             hasAdd: isRelationAdmin,
             showCount: isRelationAdmin ? 14 : 15,
             addCallback: () {
               Map<String, dynamic> args = {
-                "spaceId": controller.spaceId,
-                "messageItemId": controller.messageItemId
+                "spaceId": chat.spaceId,
+                "messageItemId": chat.chatId
               };
               Get.toNamed(Routers.invite, arguments: args);
             },
           ),
-          if (controller.hasReminder) _more,
+          if (chat.hasMorePersons()) _more,
           _interruption,
           _top,
           _searchChat,
@@ -138,28 +139,27 @@ class MessageSettingPage extends GetView<MessageSettingController> {
 
   /// 头像相关
   get _avatar {
-    return GetBuilder<MessageSettingController>(builder: (controller) {
-      var messageItem = controller.messageItem;
-      var avatarName = StringUtil.getPrefixChars(messageItem.name, count: 1);
-      String name = messageItem.name;
-      if (messageItem.typeName != TargetType.person.label) {
-        name += "(${messageItem.personNum ?? 0})";
-      }
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          TextAvatar(avatarName: avatarName, width: 60.w),
-          Padding(padding: EdgeInsets.only(left: 10.w)),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(name, style: AFont.instance.size22Black3W500),
-              Text(messageItem.remark ?? "", style: AFont.instance.size16Black6)
-            ],
-          )
-        ],
-      );
-    });
+    var chat = controller.getCurrentSetting!;
+    var messageItem = chat.target;
+    var avatarName = StringUtil.getPrefixChars(messageItem.name, count: 1);
+    String name = messageItem.name;
+    if (messageItem.typeName != TargetType.person.label) {
+      name += "(${chat.personCount})";
+    }
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        TextAvatar(avatarName: avatarName, width: 60.w),
+        Padding(padding: EdgeInsets.only(left: 10.w)),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(name, style: AFont.instance.size22Black3W500),
+            Text(messageItem.remark ?? "", style: AFont.instance.size16Black6)
+          ],
+        )
+      ],
+    );
   }
 
   /// 消息免打扰
@@ -170,14 +170,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
         "消息免打扰",
         style: AFont.instance.size20Black3W500,
       ),
-      operate: GetBuilder<MessageSettingController>(builder: (controller) {
-        return Switch(
-          value: controller.messageItem.isInterruption ?? false,
-          onChanged: (value) {
-            controller.interruptionOrNot(value);
-          },
-        );
-      }),
+      operate: Switch(value: false, onChanged: (value) {}),
     );
   }
 
@@ -189,20 +182,10 @@ class MessageSettingPage extends GetView<MessageSettingController> {
         "置顶聊天",
         style: AFont.instance.size20Black3W500,
       ),
-      operate: GetBuilder<MessageSettingController>(builder: (controller) {
-        return Switch(
-          value: controller.messageItem.isTop ?? false,
-          onChanged: (value) async {
-            var messageController = controller.messageController;
-            var messageItem = controller.messageItem;
-            var spaceId = controller.spaceId;
-            var event = value ? ChatFunc.topping : ChatFunc.cancelTopping;
-
-            await messageController.chatEventFire(event, spaceId, messageItem);
-            controller.update();
-          },
-        );
-      }),
+      operate: Switch(
+        value: false,
+        onChanged: (value) {},
+      ),
     );
   }
 
@@ -233,7 +216,8 @@ class MessageSettingPage extends GetView<MessageSettingController> {
           context: context,
           builder: (context) {
             return CupertinoAlertDialog(
-              title: Text("您确定清空与${controller.messageItem.name}的聊天记录吗?"),
+              title: Text(
+                  "您确定清空与${controller.getCurrentSetting?.target.name}的聊天记录吗?"),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: const Text('取消'),
@@ -245,7 +229,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                   child: const Text('确定'),
                   onPressed: () async {
                     Navigator.pop(context);
-                    await controller.clearHistoryMsg();
+                    await controller.getCurrentSetting?.clearMessage();
                     Fluttertoast.showToast(msg: "清空成功!");
                   },
                 ),
@@ -273,7 +257,8 @@ class MessageSettingPage extends GetView<MessageSettingController> {
           context: context,
           builder: (context) {
             return CupertinoAlertDialog(
-              title: Text("您确定删除好友${controller.messageItem.name}吗?"),
+              title:
+                  Text("您确定删除好友${controller.getCurrentSetting?.target.name}吗?"),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: const Text('取消'),
@@ -285,7 +270,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                   child: const Text('确定'),
                   onPressed: () async {
                     Navigator.pop(context);
-                    await controller.removeFriends();
+                    await controller.exitCurrentTarget();
                     Get.until((route) => route.settings.name == Routers.home);
                   },
                 ),
@@ -310,7 +295,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
           context: context,
           builder: (context) {
             return CupertinoAlertDialog(
-              title: Text("您确定退出${controller.messageItem.name}吗?"),
+              title: Text("您确定退出${controller.getCurrentChat?.target.name}吗?"),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: const Text('取消'),
@@ -322,7 +307,7 @@ class MessageSettingPage extends GetView<MessageSettingController> {
                   child: const Text('确定'),
                   onPressed: () async {
                     Navigator.pop(context);
-                    await controller.exitGroup();
+                    await controller.exitCurrentTarget();
                     Get.until((route) => route.settings.name == Routers.home);
                   },
                 ),

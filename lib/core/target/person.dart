@@ -15,12 +15,14 @@ class Person extends BaseTarget {
   final Rx<Company?> _currentCompany;
   final RxList<Company> _joinedCompanies;
   final RxList<Cohort> _joinedCohorts;
+  final RxList<Person> _joinedFriends;
 
   Person(Target target)
       : _selfCompany = Company(target..name = "个人空间"),
         _currentCompany = Rxn(),
         _joinedCompanies = <Company>[].obs,
         _joinedCohorts = <Cohort>[].obs,
+        _joinedFriends = <Person>[].obs,
         super(target);
 
   get companyTypes => <TargetType>[
@@ -29,9 +31,10 @@ class Person extends BaseTarget {
         TargetType.hospital
       ];
 
-  /// 获取当前工作空间
+  /// 获取个人工作空间
   Company get selfCompany => _selfCompany;
 
+  /// 获取当前工作空间
   Company get currentCompany => _currentCompany.value ?? _selfCompany;
 
   /// 获取加入的单位
@@ -61,7 +64,7 @@ class Person extends BaseTarget {
       teamCode: code,
       teamRemark: remark,
     );
-    Cohort cohort = Cohort(await _create(targetModel));
+    Cohort cohort = Cohort(await _createCohort(targetModel));
     _joinedCohorts.add(cohort);
     await cohort.pullPersons([super.target.id]);
   }
@@ -78,7 +81,7 @@ class Person extends BaseTarget {
     if (!companyTypes.contains(type)) {
       throw Exception("未定义的类型");
     }
-    TargetModel targetModel = TargetModel(
+    TargetModel companyModel = TargetModel(
       name: name,
       code: code,
       teamName: teamName,
@@ -86,8 +89,8 @@ class Person extends BaseTarget {
       typeName: type.label,
       teamRemark: teamRemark,
     );
-    Target target = await _create(targetModel);
-    Company company = _addCompany(target);
+    Target companyTarget = await Kernel.getInstance.createTarget(companyModel);
+    Company company = _addCompany(companyTarget);
     await company.pullPersons([super.target.id]);
   }
 
@@ -108,12 +111,24 @@ class Person extends BaseTarget {
 
   /// 申请加入组织
   _applyJoinTeam(String targetId, TargetType targetType) async {
-    await kernelApi.applyJoinTeam(JoinTeamModel(
+    await Kernel.getInstance.applyJoinTeam(JoinTeamModel(
       id: targetId,
       teamType: targetType.label,
       targetId: super.target.id,
       targetType: super.target.typeName,
     ));
+  }
+
+  /// 删除好友
+  removeFriends(List<String> targetIds) async {
+    await remove(targetType: TargetType.person, targetIds: targetIds);
+    _joinedFriends.removeWhere((item) => targetIds.contains(item.target.id));
+  }
+
+  /// 退出群组
+  exitCohort(List<String> targetIds) async {
+    await remove(targetType: TargetType.cohort, targetIds: targetIds);
+    _joinedCohorts.removeWhere((item) => targetIds.contains(item.target.id));
   }
 
   /// 获取加入的群组列表
@@ -133,7 +148,10 @@ class Person extends BaseTarget {
   /// 刷新加载的单位列表
   Future<void> refreshJoinedCompanies() async {
     _joinedCompanies.clear();
-    await _getJoinedCompanies();
+    List<Target> companies = await _getJoinedCompanies();
+    for (var targetCompany in companies) {
+      _addCompany(targetCompany);
+    }
   }
 
   /// 加载加入的单位列表
@@ -141,29 +159,31 @@ class Person extends BaseTarget {
     if (_joinedCompanies.isNotEmpty) {
       return;
     }
-    await _getJoinedCompanies();
+    List<Target> companies = await _getJoinedCompanies();
+    for (var targetCompany in companies) {
+      _addCompany(targetCompany);
+    }
   }
 
+  /// 获取加入的组织
   _getJoinedCompanies() async {
     PageResp<Target> companies = await getJoined(
       spaceId: super.target.id,
       joinTypeNames: companyTypes,
     );
-    for (var targetCompany in companies.result) {
-      _addCompany(targetCompany);
-    }
+    return companies.result;
   }
 
   /// 创建对象
-  Future<Target> _create(TargetModel target) async {
+  Future<Target> _createCohort(TargetModel target) async {
     target.belongId = super.target.id;
-    target.typeName = super.target.typeName;
+    target.typeName = TargetType.cohort.label;
     if (_currentCompany.value != null) {
       var companyTarget = _currentCompany.value!.target;
       target.belongId = companyTarget.id;
-      target.typeName = companyTarget.typeName;
+      target.typeName = TargetType.jobCohort.label;
     }
-    return await kernelApi.createTarget(target);
+    return await Kernel.getInstance.createTarget(target);
   }
 
   /// 添加一个 company

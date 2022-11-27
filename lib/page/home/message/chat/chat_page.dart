@@ -46,7 +46,7 @@ class ChatPageState extends State<ChatPage> with RouteAware {
   get _title {
     return Obx(() {
       var chat = messageCtrl.getCurrentChat;
-      var messageItem = chat.target;
+      var messageItem = chat!.target;
       String name = messageItem.name;
       if (messageItem.typeName != TargetType.person.label) {
         name += "(${chat.personCount})";
@@ -69,13 +69,10 @@ class ChatPageState extends State<ChatPage> with RouteAware {
             color: UnifiedColors.black3,
             size: 32.w,
           ),
-          onPressed: () {
-            var chat = messageCtrl.getCurrentChat;
-            Map<String, dynamic> args = {
-              "spaceId": chat.spaceId,
-              "messageItemId": chat.chatId,
-            };
-            Get.toNamed(Routers.messageSetting, arguments: args);
+          onPressed: () async {
+            var chat = messageCtrl.getCurrentChat!;
+            await messageCtrl.setCurrentSetting(chat.spaceId, chat.chatId);
+            Get.toNamed(Routers.messageSetting);
           },
         ),
       ];
@@ -92,7 +89,7 @@ class ChatPageState extends State<ChatPage> with RouteAware {
   }
 
   Widget _chatItem(int index) {
-    var chat = messageCtrl.getCurrentChat;
+    var chat = messageCtrl.getCurrentChat!;
     MessageTarget messageItem = chat.target;
     MessageDetail messageDetail = chat.messages[index];
 
@@ -141,7 +138,7 @@ class ChatPageState extends State<ChatPage> with RouteAware {
             child: Container(
               color: UnifiedColors.bgColor,
               child: RefreshIndicator(
-                onRefresh: () => messageCtrl.getCurrentChat.moreMessage(),
+                onRefresh: () => messageCtrl.getCurrentChat!.moreMessage(),
                 child: Container(
                   padding: EdgeInsets.only(left: 10.w, right: 10.w),
                   child: Obx(
@@ -150,7 +147,7 @@ class ChatPageState extends State<ChatPage> with RouteAware {
                       shrinkWrap: true,
                       controller: messageCtrl.messageScrollController,
                       scrollDirection: Axis.vertical,
-                      itemCount: messageCtrl.getCurrentChat.messages.length,
+                      itemCount: messageCtrl.getCurrentChat!.messages.length,
                       itemBuilder: (BuildContext context, int index) {
                         return _chatItem(index);
                       },

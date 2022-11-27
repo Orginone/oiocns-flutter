@@ -32,7 +32,7 @@ class LoginController extends GetxController {
     var account = accountController.value.text;
     var password = passwordController.value.text;
 
-    LoginResp loginResp = await kernelApi.login(account, password);
+    LoginResp loginResp = await Kernel.getInstance.login(account, password);
     setAccessToken = loginResp.accessToken;
 
     //存储账号密码历史数据
@@ -45,6 +45,7 @@ class LoginController extends GetxController {
     await loadAuth();
 
     // 建立长连接
-    await kernelApi.start();
+    await Kernel.getInstance.start();
+    log.info("============system==============> Kernel.getInstance:${Kernel.getInstance.hashCode}");
   }
 }

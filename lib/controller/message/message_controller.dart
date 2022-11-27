@@ -20,6 +20,7 @@ import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/bread_crumb.dart';
 import 'package:orginone/component/tab_combine.dart';
 import 'package:orginone/controller/base_controller.dart';
+import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/core/ui/message/message_item_widget.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
@@ -51,6 +52,7 @@ class MessageController extends BaseController<IChatGroup>
 
   final RxList<IChat> _chats = <IChat>[].obs;
   final Rx<IChat?> _currentChat = Rxn();
+  final Rx<IChat?> _currentSetting = Rxn();
   Timer? _setNullTimer;
 
   // 参数
@@ -102,7 +104,9 @@ class MessageController extends BaseController<IChatGroup>
     return _chats[index].mapping();
   }
 
-  IChat get getCurrentChat => _currentChat.value!;
+  IChat? get getCurrentChat => _currentChat.value;
+
+  IChat? get getCurrentSetting => _currentSetting.value;
 
   /// 获取名称
   String getName(String id) {
@@ -139,8 +143,21 @@ class MessageController extends BaseController<IChatGroup>
     });
   }
 
+  /// 设置当前页面
+  Future<bool> setCurrentSetting(String spaceId, String chatId) async {
+    IChat? chat = _ref(spaceId, chatId);
+    if (chat != null) {
+      _currentSetting.value = chat;
+      if (chat.persons.isEmpty) {
+        await chat.morePersons();
+      }
+      return true;
+    }
+    return false;
+  }
+
   /// 设置当前会话
-  setCurrent(String spaceId, String chatId) async {
+  Future<bool> setCurrent(String spaceId, String chatId) async {
     IChat? chat = _ref(spaceId, chatId);
     if (chat != null) {
       _setNullTimer?.cancel();
@@ -154,7 +171,9 @@ class MessageController extends BaseController<IChatGroup>
       }
       _appendChat(chat);
       await _cacheChats();
+      return true;
     }
+    return false;
   }
 
   /// 缓存当前会话
@@ -166,12 +185,13 @@ class MessageController extends BaseController<IChatGroup>
       "operation": "replaceAll",
       "data": {"chats": chats}
     };
-    await kernelApi.anyStore.set(key, data, domain);
+    await Kernel.getInstance.anyStore.set(key, data, domain);
   }
 
   /// 加载通讯录
   _loadingMails() async {
-    List<ChatGroup> ansGroups = await kernelApi.queryImChats(ChatsReqModel(
+    clear();
+    List<ChatGroup> ansGroups = await Kernel.getInstance.queryImChats(ChatsReqModel(
       spaceId: auth.userId,
       cohortName: TargetType.cohort.label,
       spaceTypeName: TargetType.company.label,
@@ -193,12 +213,12 @@ class MessageController extends BaseController<IChatGroup>
   _initListener() async {
     // 消息接受订阅
     var ketWord = ReceiveEvent.receiveMessage.keyWord;
-    kernelApi.on(ketWord, (message) => onReceiveMessage([message]));
+    Kernel.getInstance.on(ketWord, (message) => onReceiveMessage([message]));
 
     // 订阅最新的消息会话
     var key = SubscriptionKey.userChat;
     var domain = Domain.user.name;
-    kernelApi.anyStore.subscribing(key, domain, _updateChats);
+    Kernel.getInstance.anyStore.subscribing(key, domain, _updateChats);
   }
 
   /// 获取会话的位置
@@ -206,6 +226,28 @@ class MessageController extends BaseController<IChatGroup>
     return _chats.indexWhere((item) {
       return item.spaceId == spaceId && item.chatId == chatId;
     });
+  }
+
+  /// 删除好友
+  Future<bool> exitCurrentTarget() async {
+    var chat = getCurrentSetting;
+    if (chat != null) {
+      if (Get.isRegistered<TargetController>()) {
+        var targetCtrl = Get.find<TargetController>();
+        if (chat.target.typeName == TargetType.person.label) {
+          await targetCtrl.currentPerson.removeFriends([chat.target.id]);
+        } else if (chat.target.typeName == TargetType.cohort.label) {
+          await targetCtrl.currentPerson.exitCohort([chat.target.id]);
+        }
+      }
+      await _loadingMails();
+      _chats.removeWhere((item) {
+        return item.spaceId == chat.spaceId && item.chatId == chat.chatId;
+      });
+      await _cacheChats();
+      return true;
+    }
+    return false;
   }
 
   /// 不存在会话就加入
@@ -377,7 +419,7 @@ class MessageController extends BaseController<IChatGroup>
       update();
 
       // 缓存消息
-      await kernelApi.anyStore.cacheChats(orgChatCache);
+      await Kernel.getInstance.anyStore.cacheChats(orgChatCache);
     }
   }
 
@@ -493,7 +535,7 @@ class MessageController extends BaseController<IChatGroup>
       // } else {
       //   if (detail.spaceId == auth.userId) {
       //     // 如果是个人空间，存储一下信息
-      //     await kernelApi.anyStore.cacheMsg(sessionId, detail);
+      //     await Kernel.getInstance.anyStore.cacheMsg(sessionId, detail);
       //   }
       //
       //   // 处理消息
@@ -609,7 +651,7 @@ class MessageController extends BaseController<IChatGroup>
       // update();
       //
       // // 缓存会话
-      // await kernelApi.anyStore.cacheChats(orgChatCache);
+      // await Kernel.getInstance.anyStore.cacheChats(orgChatCache);
     }
   }
 
@@ -627,12 +669,12 @@ class MessageController extends BaseController<IChatGroup>
         orgChatCache.chats = _spaceHandling(orgChatCache.chats);
         sortingGroups();
         sortingItems(orgChatCache.recentChats ?? []);
-        await kernelApi.anyStore.cacheChats(orgChatCache);
+        await Kernel.getInstance.anyStore.cacheChats(orgChatCache);
         update();
         break;
       case ChatFunc.remove:
         orgChatCache.recentChats?.remove(item);
-        await kernelApi.anyStore.cacheChats(orgChatCache);
+        await Kernel.getInstance.anyStore.cacheChats(orgChatCache);
         update();
         break;
     }

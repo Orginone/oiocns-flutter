@@ -206,7 +206,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         .where((chat) => chat.spaceId != spaceId || chat.id != messageItemId)
         .toList();
 
-    kernelApi.anyStore.cacheChats(orgChatCache);
+    Kernel.getInstance.anyStore.cacheChats(orgChatCache);
   }
 
   void openChats() async {
@@ -229,7 +229,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     messageItem.noRead = 0;
     messageController.update();
 
-    kernelApi.anyStore.cacheChats(messageController.orgChatCache);
+    Kernel.getInstance.anyStore.cacheChats(messageController.orgChatCache);
   }
 
   /// 下拉时刷新旧的聊天记录
@@ -243,7 +243,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
     var insertPointer = _details.length;
     late List<MessageDetail> newDetails;
     if (auth.userId == spaceId) {
-      newDetails = await kernelApi.anyStore.getUserSpaceHistoryMsg(
+      newDetails = await Kernel.getInstance.anyStore.getUserSpaceHistoryMsg(
         typeName: typeMap[typeName]!,
         sessionId: messageItemId,
         offset: insertPointer,
@@ -268,7 +268,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
       }
     }
     if (isCacheNameMap) {
-      kernelApi.anyStore.cacheChats(messageController.orgChatCache);
+      Kernel.getInstance.anyStore.cacheChats(messageController.orgChatCache);
     }
   }
 
@@ -354,7 +354,7 @@ class ChatController extends GetxController with GetTickerProviderStateMixin {
         }
         break;
       case DetailFunc.remove:
-        await kernelApi.anyStore.deleteMsg(detail.id);
+        await Kernel.getInstance.anyStore.deleteMsg(detail.id);
         _details.removeWhere((item) => item.resp.id == detail.id);
         break;
     }

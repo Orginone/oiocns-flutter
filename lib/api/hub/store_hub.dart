@@ -61,6 +61,21 @@ class StoreHub {
     return _server.state! == HubConnectionState.connected;
   }
 
+  /// 是否断开连接中
+  bool isDisconnecting() {
+    return _server.state! == HubConnectionState.disconnecting;
+  }
+
+  /// 是否断开连接中
+  bool isReconnecting() {
+    return _server.state! == HubConnectionState.reconnecting;
+  }
+
+  /// 是否连接中
+  bool isConnecting() {
+    return _server.state! == HubConnectionState.connecting;
+  }
+
   /// 调用
   Future<dynamic> invoke(String event, {List<Object>? args}) {
     return _server.invoke(event, args: args);

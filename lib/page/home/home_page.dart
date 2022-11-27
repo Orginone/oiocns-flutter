@@ -170,9 +170,9 @@ class HomePage extends GetView<HomeController> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _conn(kernelApi.state, "会话"),
+            _conn(Kernel.getInstance.state, "会话"),
             Container(margin: EdgeInsets.only(top: 2.h)),
-            _conn(kernelApi.anyStore.state, "存储"),
+            _conn(Kernel.getInstance.anyStore.state, "存储"),
           ],
         ),
         Padding(padding: EdgeInsets.only(left: 10.w)),

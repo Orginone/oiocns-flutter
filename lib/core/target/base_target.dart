@@ -11,6 +11,7 @@ class BaseTarget {
 
   const BaseTarget(this.target);
 
+  /// 获取加入的组织
   Future<PageResp<Target>> getJoined({
     required String spaceId,
     required List<TargetType> joinTypeNames,
@@ -26,10 +27,25 @@ class BaseTarget {
         filter: "",
       ),
     );
-    return await kernelApi.queryJoinedTargetById(request);
+    return await Kernel.getInstance.queryJoinedTargetById(request);
   }
 
+  /// 把组织/个人拉入
   Future<void> pull({
+    required TargetType targetType,
+    required List<String> targetIds,
+  }) async {
+    var teamPull = TeamPullModel(
+      id: target.id,
+      teamTypes: [target.typeName],
+      targetType: targetType.label,
+      targetIds: targetIds,
+    );
+    return await Kernel.getInstance.pullAnyToTeam(teamPull);
+  }
+
+  /// 移除组织/个人
+  Future<void> remove({
     required TargetType targetType,
     required List<String> targetIds,
   }) async {
@@ -39,6 +55,6 @@ class BaseTarget {
       teamTypes: [target.typeName],
       id: target.id,
     );
-    return await kernelApi.pullAnyToTeam(teamPull);
+    return await Kernel.getInstance.removeAnyOfTeam(teamPull);
   }
 }

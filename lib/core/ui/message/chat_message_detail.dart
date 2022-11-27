@@ -96,7 +96,7 @@ class ChatMessageDetail extends GetView<MessageController> {
         isCenter = true;
         break;
       case MsgType.recall:
-        var messageItem = controller.getCurrentChat.target;
+        var messageItem = controller.getCurrentChat!.target;
         String msgBody = StringUtil.getDetailRecallBody(
           item: messageItem,
           detail: detail,
@@ -124,7 +124,7 @@ class ChatMessageDetail extends GetView<MessageController> {
   /// 目标名称
   String targetName() {
     var currentChat = controller.getCurrentChat;
-    return controller.getName(currentChat.target.id);
+    return controller.getName(currentChat!.target.id);
   }
 
   /// 获取头像
@@ -184,7 +184,7 @@ class ChatMessageDetail extends GetView<MessageController> {
 
     // 添加长按手势
     double x = 0, y = 0;
-    var currentChat = controller.getCurrentChat;
+    var currentChat = controller.getCurrentChat!;
     String spaceId = currentChat.spaceId;
     String sessionId = currentChat.chatId;
     var chat = GestureDetector(

@@ -64,6 +64,13 @@ class AnyStore {
 
   Rx<HubConnectionState> get state => _storeHub.state;
 
+  static AnyStore? _instance;
+
+  static AnyStore get getInstance {
+    _instance ??= AnyStore();
+    return _instance!;
+  }
+
   AnyStore()
       : _storeHub = StoreHub(
           connName: "anyStore",
@@ -303,11 +310,4 @@ class AnyStore {
     }
     return ans;
   }
-}
-
-AnyStore? _instance;
-
-AnyStore get getAnyStore {
-  _instance ??= AnyStore();
-  return _instance!;
 }

@@ -99,7 +99,7 @@ class HomeController extends GetxController
   @override
   void onClose() {
     super.onClose();
-    kernelApi.stop();
+    Kernel.getInstance.stop();
     breadCrumbController.dispose();
     tabController.dispose();
   }

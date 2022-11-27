@@ -10,7 +10,6 @@ import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/core/authority.dart';
 import 'package:orginone/api/hub/chat_server.dart';
-import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/controller/message/message_controller.dart';
 
 class MessageSettingController extends GetxController {
@@ -19,7 +18,6 @@ class MessageSettingController extends GetxController {
   TextEditingController searchGroupTextController = TextEditingController();
 
   MessageController messageController = Get.find<MessageController>();
-  ChatController chatController = Get.find<ChatController>();
 
   // 当前观察对象
   late MessageTarget messageItem;
@@ -106,39 +104,39 @@ class MessageSettingController extends GetxController {
     update();
 
     // 同步会话
-    await kernelApi.anyStore.cacheChats(orgChatCache);
+    await Kernel.getInstance.anyStore.cacheChats(orgChatCache);
   }
 
   /// 删除个人空间所有聊天记录
   clearHistoryMsg() async {
-    await kernelApi.anyStore.clearHistoryMsg(messageItemId);
-
-    // 清空页面
-    var chatSpaceId = chatController.spaceId;
-    var chatMessageItemId = chatController.messageItemId;
-    if (chatSpaceId == spaceId && messageItemId == chatMessageItemId) {
-      chatController.details.clear();
-    }
-
-    var userId = auth.userId;
-
-    var orgChatCache = messageController.orgChatCache;
-    orgChatCache.chats.where((space) => space.id == userId).forEach((space) {
-      for (var chat in space.chats) {
-        if (chat.id == messageItemId) {
-          chat.showTxt = null;
-        }
-      }
-    });
-    orgChatCache.recentChats
-        ?.where((c) => c.spaceId == userId && c.id == messageItemId)
-        .forEach((chat) {
-      chat.showTxt = null;
-    });
-    messageController.update();
-
-    // 同步会话
-    await kernelApi.anyStore.cacheChats(orgChatCache);
+    // await Kernel.getInstance.anyStore.clearHistoryMsg(messageItemId);
+    //
+    // // 清空页面
+    // var chatSpaceId = chatController.spaceId;
+    // var chatMessageItemId = chatController.messageItemId;
+    // if (chatSpaceId == spaceId && messageItemId == chatMessageItemId) {
+    //   chatController.details.clear();
+    // }
+    //
+    // var userId = auth.userId;
+    //
+    // var orgChatCache = messageController.orgChatCache;
+    // orgChatCache.chats.where((space) => space.id == userId).forEach((space) {
+    //   for (var chat in space.chats) {
+    //     if (chat.id == messageItemId) {
+    //       chat.showTxt = null;
+    //     }
+    //   }
+    // });
+    // orgChatCache.recentChats
+    //     ?.where((c) => c.spaceId == userId && c.id == messageItemId)
+    //     .forEach((chat) {
+    //   chat.showTxt = null;
+    // });
+    // messageController.update();
+    //
+    // // 同步会话
+    // await Kernel.getInstance.anyStore.cacheChats(orgChatCache);
   }
 
   /// 删除好友
@@ -176,6 +174,6 @@ class MessageSettingController extends GetxController {
         .removeWhere((chat) => chat.spaceId == spaceId && chat.id == targetId);
 
     // 同步会话
-    await kernelApi.anyStore.cacheChats(orgChatCache);
+    await Kernel.getInstance.anyStore.cacheChats(orgChatCache);
   }
 }

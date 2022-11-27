@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api/cohort_api.dart';
+import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/api/person_api.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/a_font.dart';
@@ -12,6 +13,7 @@ import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/api/hub/chat_server.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/core/authority.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_controller.dart';
@@ -165,12 +167,15 @@ class InviteController extends GetxController {
     spaceId = args["spaceId"];
     messageItemId = args["messageItemId"];
 
-    var settingController = Get.find<MessageSettingController>();
-    var allPersons = await settingController.getAllPersons();
+    var messageCtrl = Get.find<MessageController>();
+    var chat = messageCtrl.getCurrentSetting!;
+    while(chat.hasMorePersons()) {
+      await messageCtrl.getCurrentSetting!.morePersons();
+    }
     var allFriends = await PersonApi.friendsAll("");
     List<String> joinedFriendIds = [];
     for (var friend in allFriends) {
-      for (var person in allPersons) {
+      for (var person in chat.persons) {
         if (friend.id == person.id) {
           joinedFriendIds.add(friend.id);
           break;
@@ -228,9 +233,9 @@ class InviteController extends GetxController {
     };
 
     // 发送消息
-    await chatServer.send(
-      spaceId: spaceId,
-      itemId: messageItemId,
+    var messageCtrl = Get.find<MessageController>();
+    var chat = messageCtrl.getCurrentSetting!;
+    await chat.sendMsg(
       msgBody: jsonEncode(msgBody),
       msgType: MsgType.pull,
     );

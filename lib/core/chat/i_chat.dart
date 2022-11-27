@@ -91,6 +91,9 @@ abstract class IChat<W extends Widget> implements MappingToUI<W> {
   /// 更多人
   morePersons({String? filter});
 
+  /// 更多人
+  bool hasMorePersons();
+
   /// 撤销消息
   Future<bool> recallMessage(String id);
 

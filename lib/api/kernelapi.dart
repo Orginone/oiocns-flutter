@@ -38,20 +38,25 @@ enum SendEvent {
   const SendEvent(this.keyWord);
 }
 
-class KernelApi {
+class Kernel {
   Logger log = Logger("KernelApi");
 
   final StoreHub _kernelHub;
   final HttpUtil _requester;
   final Map<String, List<Function>> _methods;
 
-  late AnyStore _anyStore;
-
-  AnyStore get anyStore => _anyStore;
+  AnyStore get anyStore => AnyStore.getInstance;
 
   Rx<HubConnectionState> get state => _kernelHub.state;
 
-  KernelApi._({required HttpUtil request})
+  static Kernel? _instance;
+
+  static Kernel get getInstance {
+    _instance ??= Kernel._(request: HttpUtil());
+    return _instance!;
+  }
+
+  Kernel._({required HttpUtil request})
       : _kernelHub = StoreHub(
           connName: "kernelHub",
           url: Constant.kernelHub,
@@ -64,15 +69,14 @@ class KernelApi {
   }
 
   start() async {
-    _anyStore = getAnyStore;
-    await _anyStore.start();
+    await anyStore.start();
     await _kernelHub.start();
   }
 
   stop() async {
     _methods.clear();
     await _kernelHub.stop();
-    await _anyStore.stop();
+    await anyStore.stop();
   }
 
   tokenAuth() async {
@@ -550,7 +554,7 @@ class KernelApi {
   Future<void> pullAnyToTeam(TeamPullModel params) async {
     await _request(RequestEntity.from(
       module: 'target',
-      action: 'pullAnyToTeam',
+      action: 'PullAnyToTeam',
       params: params,
     ));
   }
@@ -569,8 +573,8 @@ class KernelApi {
   /// 从组织/个人移除组织/个人的团队
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
-  dynamic removeAnyOfTeam(dynamic params) async {
-    return await _request(RequestEntity.from(
+  Future<void> removeAnyOfTeam(TeamPullModel params) async {
+    await _request(RequestEntity.from(
       module: 'target',
       action: 'RemoveAnyOfTeam',
       params: params,
@@ -1690,11 +1694,4 @@ class KernelApi {
       hasToken: hasToken,
     );
   }
-}
-
-KernelApi? _instance;
-
-KernelApi get kernelApi {
-  _instance ??= KernelApi._(request: HttpUtil());
-  return _instance!;
 }

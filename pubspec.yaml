@@ -115,6 +115,9 @@ dependencies:
   # 弹框
   flutter_animated_dialog: ^2.0.1
 
+  optimize_battery: ^0.0.4
+  auto_start_flutter: ^0.1.1
+  flutter_background_service: ^2.4.5
 
 dev_dependencies:
   flutter_test:
