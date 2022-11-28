@@ -41,8 +41,8 @@ enum InputEvent {
 
 enum MoreFunction {
   photo("相册", Icons.photo),
-  camera("拍摄", Icons.camera_alt),
-  file("文件", Icons.upload);
+  camera("拍摄", Icons.camera_alt);
+  // file("文件", Icons.upload);
 
   final String label;
   final IconData iconData;
@@ -150,14 +150,14 @@ class ChatBoxController extends FullLifeCycleController
     }
   }
 
-  execute(MoreFunction moreFunction, BuildContext context,
-      {Function? imageCallback}) async {
+  execute(MoreFunction moreFunction, BuildContext context) async {
+    var messageCtrl = Get.find<MessageController>();
     switch (moreFunction) {
       case MoreFunction.photo:
         var gallery = ImageSource.gallery;
         XFile? pickedImage = await picker.pickImage(source: gallery);
         if (pickedImage != null) {
-          imageCallback!(pickedImage);
+          messageCtrl.imagePicked(pickedImage);
         }
         break;
       case MoreFunction.camera:
@@ -165,7 +165,7 @@ class ChatBoxController extends FullLifeCycleController
         try {
           XFile? pickedImage = await picker.pickImage(source: camera);
           if (pickedImage != null) {
-            imageCallback!(pickedImage);
+            messageCtrl.imagePicked(pickedImage);
           }
         } on PlatformException catch (error) {
           if (error.code == "camera_access_denied") {
@@ -175,8 +175,6 @@ class ChatBoxController extends FullLifeCycleController
           error.printError();
           Fluttertoast.showToast(msg: "打开相机时发生异常!");
         }
-        break;
-      case MoreFunction.file:
         break;
     }
   }

@@ -300,7 +300,8 @@ class ChatMessageDetail extends GetView<MessageController> {
             context: context,
             builder: (BuildContext context) {
               return PhotoWidget(
-                  imageProvider: CachedNetworkImageProvider(url));
+                imageProvider: CachedNetworkImageProvider(url),
+              );
             }));
       },
       child: _detail(
