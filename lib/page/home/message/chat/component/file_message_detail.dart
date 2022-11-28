@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/component/unified_text_style.dart';
-import 'package:orginone/page/home/message/chat/chat_controller.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 
-class FileMessageDetail extends GetView<ChatController> {
-  final int index;
+class FileMessageDetail extends StatelessWidget {
+  final FileDetail detail;
 
-  const FileMessageDetail(this.index, {Key? key}) : super(key: key);
+  const FileMessageDetail(this.detail, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var detail = controller.details[index] as FileDetail;
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,

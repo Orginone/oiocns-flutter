@@ -18,21 +18,22 @@ class RefreshBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SmartRefresher(
-        controller: refreshCtrl,
-        enablePullDown: true,
-        enablePullUp: true,
-        onRefresh: () async {
-          if (onLoading != null) {
-            await onLoading!();
-          }
-          refreshCtrl.refreshCompleted();
-        },
-        onLoading: () async {
-          if (onLoading != null) {
-            await onLoading!();
-          }
-          refreshCtrl.loadComplete();
-        },
-        child: body);
+      controller: refreshCtrl,
+      enablePullDown: true,
+      enablePullUp: true,
+      onRefresh: () async {
+        if (onLoading != null) {
+          await onLoading!();
+        }
+        refreshCtrl.refreshCompleted();
+      },
+      onLoading: () async {
+        if (onLoading != null) {
+          await onLoading!();
+        }
+        refreshCtrl.loadComplete();
+      },
+      child: body,
+    );
   }
 }

@@ -45,7 +45,6 @@ import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/mine/mine_unit/mine_unit_binding.dart';
 import 'package:orginone/page/home/mine/mine_unit/mine_unit_page.dart';
 import 'package:orginone/page/home/mine/set_home/set_home_page.dart';
-import 'package:orginone/page/home/organization/cohorts/cohorts_binding.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_page.dart';
 import 'package:orginone/page/home/organization/cohorts/component/cohort_maintain_page.dart';
 import 'package:orginone/page/home/organization/cohorts/component/more_cohort.dart';
@@ -213,17 +212,17 @@ class Routers {
       GetPage(
         name: Routers.cohorts,
         page: () => const CohortsPage(),
-        binding: CohortsBinding(),
+        binding: TargetBinding(),
       ),
       GetPage(
         name: Routers.cohortMaintain,
         page: () => const CohortMaintainPage(),
-        binding: CohortMaintainBinding(),
+        binding: TargetBinding(),
       ),
       GetPage(
         name: Routers.moreCohort,
         page: () => const MoreCohort(),
-        binding: CohortsBinding(),
+        binding: TargetBinding(),
       ),
       GetPage(
         name: Routers.dept,

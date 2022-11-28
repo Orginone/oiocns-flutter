@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api/bucket_api.dart';
 import 'package:orginone/api/hub/any_store.dart';
 import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/api/model.dart';
@@ -21,6 +23,7 @@ import 'package:orginone/component/tab_combine.dart';
 import 'package:orginone/controller/base_controller.dart';
 import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/core/ui/message/message_item_widget.dart';
+import 'package:orginone/enumeration/enum_map.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/core/authority.dart';
@@ -28,8 +31,89 @@ import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/core/chat/chat_impl.dart';
 import 'package:orginone/core/chat/i_chat.dart';
 import 'package:orginone/page/home/home_controller.dart';
-import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/message_page.dart';
+import 'package:orginone/util/encryption_util.dart';
+
+class Detail {
+  final MessageDetail resp;
+
+  const Detail.fromResp(this.resp);
+
+  /// 构造工厂
+  factory Detail(MessageDetail resp) {
+    MsgType msgType = EnumMap.messageTypeMap[resp.msgType] ?? MsgType.unknown;
+    Map<String, dynamic> msgMap = jsonDecode(resp.msgBody ?? "{}");
+    switch (msgType) {
+      case MsgType.file:
+        // 文件
+        String fileName = msgMap["fileName"] ?? "";
+        String path = msgMap["path"] ?? "";
+        String size = msgMap["size"] ?? "";
+        return FileDetail(
+          fileName: fileName,
+          resp: resp,
+          status: FileStatus.local.obs,
+          progress: 0.0.obs,
+          path: path,
+          size: size,
+        );
+      case MsgType.voice:
+        // 语音
+        int milliseconds = msgMap["milliseconds"] ?? 0;
+        List<dynamic> rowBytes = msgMap["bytes"] ?? [];
+        List<int> tempBytes = rowBytes.map((byte) => byte as int).toList();
+        return VoiceDetail(
+          resp: resp,
+          status: VoiceStatus.stop.obs,
+          initProgress: milliseconds,
+          progress: milliseconds.obs,
+          bytes: Uint8List.fromList(tempBytes),
+        );
+      default:
+        return Detail.fromResp(resp);
+    }
+  }
+}
+
+/// 播放状态
+enum VoiceStatus { stop, playing }
+
+/// 语音播放类
+class VoiceDetail extends Detail {
+  final Rx<VoiceStatus> status;
+  final int initProgress;
+  final RxInt progress;
+  final Uint8List bytes;
+
+  const VoiceDetail({
+    required MessageDetail resp,
+    required this.status,
+    required this.initProgress,
+    required this.progress,
+    required this.bytes,
+  }) : super.fromResp(resp);
+}
+
+/// 文件状态
+enum FileStatus { local, uploading, pausing, stopping, uploaded, synced }
+
+/// 文件上传状态类
+class FileDetail extends Detail {
+  final String fileName;
+  final Rx<FileStatus> status;
+  final RxDouble progress;
+  final String path;
+  final String size;
+
+  const FileDetail({
+    required MessageDetail resp,
+    required this.fileName,
+    required this.status,
+    required this.progress,
+    required this.path,
+    required this.size,
+  }) : super.fromResp(resp);
+}
 
 enum ReceiveEvent {
   receiveMessage("RecvMsg");
@@ -63,9 +147,6 @@ class MessageController extends BaseController<IChatGroup>
   late TabController tabController;
   late TabCombine recentChat, mailList;
   late List<TabCombine> tabs;
-
-  // 会话加载状态
-  bool isLoaded = false;
 
   var messageScrollController = ScrollController();
 
@@ -745,6 +826,64 @@ class MessageController extends BaseController<IChatGroup>
       msgBody: jsonEncode(msgBody),
       msgType: MsgType.voice,
     );
+  }
+
+  /// 相册选择照片后回调
+  void imagePicked(XFile file) async {
+    Image imageCompo = Image.memory(await file.readAsBytes());
+    imageCompo.image.resolve(const ImageConfiguration()).addListener(
+      ImageStreamListener(
+        (imageInfo, synchronousCall) async {
+          String encodedPrefix = EncryptionUtil.encodeURLString("");
+
+          var filePath = file.path;
+          var fileName = file.name;
+
+          await BucketApi.uploadChunk(
+            prefix: encodedPrefix,
+            filePath: filePath,
+            fileName: fileName,
+          );
+
+          Map<String, dynamic> body = {
+            "width": imageInfo.image.width,
+            "height": imageInfo.image.height,
+            "path": fileName,
+          };
+
+          await chatServer.send(
+            spaceId: "",
+            itemId: "",
+            msgBody: jsonEncode(body),
+            msgType: MsgType.image,
+          );
+        },
+      ),
+    );
+  }
+
+  /// 语音录制完成并发送
+  void filePicked(String fileName, String filePath) async {
+    // TargetResp userInfo = auth.userInfo;
+    // String prefix = "chat_${userInfo.id}_${messageItem.id}_voice";
+    // log.info("====> prefix:$prefix");
+    // String encodedPrefix = EncryptionUtil.encodeURLString(prefix);
+    //
+    // try {
+    //   await BucketApi.create(prefix: encodedPrefix);
+    // } catch (error) {
+    //   log.warning("====> 创建目录失败：$error");
+    // }
+    // await BucketApi.upload(
+    //   prefix: encodedPrefix,
+    //   filePath: filePath,
+    //   fileName: fileName,
+    // );
+    //
+    // Map<String, dynamic> msgBody = {
+    //   "path": "$prefix/$fileName",
+    // };
+    // sendOneMessage(jsonEncode(msgBody), msgType: MsgType.voice);
   }
 }
 

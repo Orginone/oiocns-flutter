@@ -3,17 +3,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/a_font.dart';
+import 'package:orginone/component/refresh_body.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/controller/message/message_controller.dart';
+import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/core/authority.dart';
-import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
+import 'package:orginone/core/target/cohort.dart';
 import 'package:orginone/page/home/search/search_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/string_util.dart';
 import 'package:orginone/util/widget_util.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 enum CtrlType {
   manageable("管理的"),
@@ -26,7 +29,7 @@ enum CtrlType {
 
 enum CohortPageReturnType { createCohort, updateCohort }
 
-class CohortsPage extends GetView<CohortsController> {
+class CohortsPage extends GetView<TargetController> {
   const CohortsPage({Key? key}) : super(key: key);
 
   @override
@@ -43,7 +46,7 @@ class CohortsPage extends GetView<CohortsController> {
   get _actions => <Widget>[
         IconButton(
           onPressed: () {
-            Map<String, dynamic> args = {"func": CohortFunction.create};
+            Map<String, CohortFunction> args = {"func": CohortFunction.create};
             Get.toNamed(Routers.cohortMaintain, arguments: args);
           },
           icon: const Icon(Icons.create_outlined, color: Colors.black),
@@ -66,44 +69,38 @@ class CohortsPage extends GetView<CohortsController> {
             searchingCallback: controller.searchingCallback,
             margin: EdgeInsets.only(left: 25.w, top: 20.h, right: 25.w),
           ),
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: () async {
-                controller.onLoad();
-              },
-              child: _list,
-            ),
+          RefreshBody(
+            body: _list,
+            refreshCtrl: RefreshController(),
           ),
         ],
       );
 
-  get _list => GetBuilder<CohortsController>(
-        init: controller,
-        builder: (controller) => ListView.builder(
-          scrollDirection: Axis.vertical,
-          itemCount: controller.cohorts.length,
-          itemBuilder: (BuildContext context, int index) {
-            return _item(context, controller.cohorts[index]);
-          },
-        ),
-      );
+  get _list => Obx(() => ListView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: controller.searchedCohorts.length,
+        itemBuilder: (BuildContext context, int index) {
+          return _item(context, controller.searchedCohorts[index]);
+        },
+      ));
 
-  Widget _item(BuildContext context, Target cohort) {
-    var targetIds = [cohort.id, cohort.belongId ?? ""];
+  Widget _item(BuildContext context, Cohort cohort) {
+    var target = cohort.target;
+    var targetIds = [target.id, target.belongId ?? ""];
     bool isRelationAdmin = auth.isRelationAdmin(targetIds);
     List<Widget> children = [];
     if (isRelationAdmin) {
-      children.add(_popMenu(context, cohort, CtrlType.manageable));
+      children.add(_popMenu(context, target, CtrlType.manageable));
     } else {
-      children.add(_popMenu(context, cohort, CtrlType.joined));
+      children.add(_popMenu(context, target, CtrlType.joined));
     }
 
-    var avatarName = StringUtil.getPrefixChars(cohort.name, count: 2);
+    var avatarName = StringUtil.getPrefixChars(target.name, count: 2);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () async {
         var messageCtrl = Get.find<MessageController>();
-        await messageCtrl.setCurrent(auth.spaceId, cohort.id);
+        await messageCtrl.setCurrent(auth.spaceId, target.id);
         Get.toNamed(Routers.chat);
       },
       child: Container(
@@ -113,7 +110,7 @@ class CohortsPage extends GetView<CohortsController> {
             TextAvatar(avatarName: avatarName),
             Padding(padding: EdgeInsets.only(left: 10.w)),
             Expanded(
-              child: Text(cohort.name, style: AFont.instance.size22Black3),
+              child: Text(target.name, style: AFont.instance.size22Black3),
             ),
             Column(children: children)
           ],

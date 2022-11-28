@@ -17,7 +17,6 @@ import 'package:orginone/routers.dart';
 import 'package:orginone/util/string_util.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 const String globalBreadCrumb = "globalBreadCrumb";

@@ -1,3 +1,4 @@
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/api/model.dart';
@@ -40,6 +41,12 @@ class Person extends BaseTarget {
   /// 获取加入的单位
   List<Company> get joinedCompanies => _joinedCompanies;
 
+  /// 获取加入的群组
+  List<Cohort> get joinedCohorts => _joinedCohorts;
+
+  /// 获取加入的群组
+  List<Person> get joinedFriends => _joinedFriends;
+
   /// 设置当前工作空间
   setCurrentCompany(String companyId) {
     for (var company in _joinedCompanies) {
@@ -68,6 +75,31 @@ class Person extends BaseTarget {
     _joinedCohorts.add(cohort);
     await cohort.pullPersons([super.target.id]);
     return cohort;
+  }
+
+  /// 修改群组
+  Future<Target> updateCohort({
+    required String id,
+    required String code,
+    required String name,
+    required String remark,
+  }) async {
+    var target = TargetModel(
+      id: id,
+      code: code,
+      name: name,
+      teamCode: code,
+      teamName: name,
+      teamRemark: remark,
+    );
+    Target updatedTarget = await Kernel.getInstance.updateTarget(target);
+    for(int i = 0; i < _joinedCohorts.length; i++){
+      var cohort = _joinedCohorts[i];
+      if (cohort.target.id == updatedTarget.id) {
+        _joinedCohorts[i] = Cohort(updatedTarget);
+      }
+    }
+    return updatedTarget;
   }
 
   /// 创建单位
