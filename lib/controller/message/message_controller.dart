@@ -134,6 +134,8 @@ class MessageController extends BaseController<IChatGroup>
   final Rx<IChat?> _currentSetting = Rxn();
   Timer? _setNullTimer;
 
+  List<IChat> get chats => _chats;
+
   // 参数
   OrgChatCache orgChatCache = OrgChatCache.empty();
 
