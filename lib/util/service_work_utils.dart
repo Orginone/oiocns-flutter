@@ -64,7 +64,7 @@ Future<void> initializeService() async {
           onIosBackground, // you have to enable background fetch capability on xcode project
     ),
   );
-  service.startService();
+  // service.startService();
 }
 
 // 以确保执行
@@ -107,39 +107,6 @@ void onStart(ServiceInstance service) async {
   // bring to foreground
   Timer.periodic(const Duration(seconds: 5), (timer) async {
     logInfo("flutter service running  ${DateTime.now()}");
-
-    logInfo(
-        "============background-system==============> Kernel.getInstance:${Kernel.getInstance.hashCode}");
-    logInfo(
-        "Kernel.getInstance************${Kernel.getInstance.state.value == HubConnectionState.disconnected}***********  ${DateTime.now()}");
-    logInfo(
-        "Kernel.getInstance************${Kernel.getInstance.state.value == HubConnectionState.connecting}***********  ${DateTime.now()}");
-    logInfo(
-        "Kernel.getInstance************${Kernel.getInstance.state.value == HubConnectionState.connected}***********  ${DateTime.now()}");
-    logInfo(
-        "Kernel.getInstance************${Kernel.getInstance.state.value == HubConnectionState.disconnecting}***********  ${DateTime.now()}");
-    logInfo(
-        "Kernel.getInstance************${Kernel.getInstance.state.value == HubConnectionState.reconnecting}***********  ${DateTime.now()}");
-
-    logInfo(
-        "anyStore************${Kernel.getInstance.anyStore.state.value == HubConnectionState.disconnected}***********  ${DateTime.now()}");
-    logInfo(
-        "anyStore************${Kernel.getInstance.anyStore.state.value == HubConnectionState.connecting}***********  ${DateTime.now()}");
-    logInfo(
-        "anyStore************${Kernel.getInstance.anyStore.state.value == HubConnectionState.connected}***********  ${DateTime.now()}");
-    logInfo(
-        "anyStore************${Kernel.getInstance.anyStore.state.value == HubConnectionState.disconnecting}***********  ${DateTime.now()}");
-    logInfo(
-        "anyStore************${Kernel.getInstance.anyStore.state.value == HubConnectionState.reconnecting}***********  ${DateTime.now()}");
-
-    // logInfo("storeServer************${anyStoreHub.isConnected()}***********  ${DateTime.now()}");
-    // logInfo("chatHub************${chatHub.isConnected()}***********  ${DateTime.now()}");
-
-    /// 检测是否未连接并且连接中
-    if (Kernel.getInstance.state.value == HubConnectionState.disconnected) {
-      logInfo("Kernel.getInstance: ${DateTime.now()} \t正在重新连接");
-      await Kernel.getInstance.start();
-    }
 
     if (service is AndroidServiceInstance) {
       if (await service.isForegroundService()) {

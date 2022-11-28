@@ -114,4 +114,7 @@ abstract class IChat<W extends Widget> implements MappingToUI<W> {
 
   /// 阅读所有消息
   readAll();
+
+  /// 打开会话
+  openChat();
 }

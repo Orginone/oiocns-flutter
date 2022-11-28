@@ -15,7 +15,6 @@ import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
-import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/bread_crumb.dart';
 import 'package:orginone/component/tab_combine.dart';
@@ -29,13 +28,8 @@ import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/core/chat/chat_impl.dart';
 import 'package:orginone/core/chat/i_chat.dart';
 import 'package:orginone/page/home/home_controller.dart';
+import 'package:orginone/page/home/message/chat/chat_controller.dart';
 import 'package:orginone/page/home/message/message_page.dart';
-import 'package:orginone/page/home/message/message_setting/message_setting_controller.dart';
-import 'package:orginone/util/encryption_util.dart';
-import 'package:orginone/util/notification_util.dart';
-import 'package:orginone/util/string_util.dart';
-
-import '../../page/home/message/chat/chat_controller.dart';
 
 enum ReceiveEvent {
   receiveMessage("RecvMsg");
@@ -145,7 +139,7 @@ class MessageController extends BaseController<IChatGroup>
 
   /// 设置当前页面
   Future<bool> setCurrentSetting(String spaceId, String chatId) async {
-    IChat? chat = _ref(spaceId, chatId);
+    IChat? chat = ref(spaceId, chatId);
     if (chat != null) {
       _currentSetting.value = chat;
       if (chat.persons.isEmpty) {
@@ -156,9 +150,13 @@ class MessageController extends BaseController<IChatGroup>
     return false;
   }
 
+  Future<bool> setCurrentByChat(IChat chat) async {
+    return await setCurrent(chat.spaceId, chat.chatId);
+  }
+
   /// 设置当前会话
   Future<bool> setCurrent(String spaceId, String chatId) async {
-    IChat? chat = _ref(spaceId, chatId);
+    IChat? chat = ref(spaceId, chatId);
     if (chat != null) {
       _setNullTimer?.cancel();
       _currentChat.value = chat;
@@ -190,12 +188,12 @@ class MessageController extends BaseController<IChatGroup>
 
   /// 加载通讯录
   _loadingMails() async {
-    clear();
-    List<ChatGroup> ansGroups = await Kernel.getInstance.queryImChats(ChatsReqModel(
+    var model = ChatsReqModel(
       spaceId: auth.userId,
       cohortName: TargetType.cohort.label,
       spaceTypeName: TargetType.company.label,
-    ));
+    );
+    List<ChatGroup> ansGroups = await Kernel.getInstance.queryImChats(model);
     for (var group in ansGroups) {
       var iChatGroup = BaseChatGroup(
         isOpened: auth.spaceId == group.id,
@@ -209,6 +207,16 @@ class MessageController extends BaseController<IChatGroup>
     }
   }
 
+  /// 刷新通讯录
+  refreshMails() async {
+    clear();
+    await _loadingMails();
+    var key = SubscriptionKey.userChat;
+    var domain = Domain.user.name;
+    var ans = await Kernel.getInstance.anyStore.get(key.keyWord, domain);
+    _updateMails(ans.data);
+  }
+
   /// 初始化监听器
   _initListener() async {
     // 消息接受订阅
@@ -218,7 +226,7 @@ class MessageController extends BaseController<IChatGroup>
     // 订阅最新的消息会话
     var key = SubscriptionKey.userChat;
     var domain = Domain.user.name;
-    Kernel.getInstance.anyStore.subscribing(key, domain, _updateChats);
+    Kernel.getInstance.anyStore.subscribing(key, domain, _updateMails);
   }
 
   /// 获取会话的位置
@@ -259,7 +267,8 @@ class MessageController extends BaseController<IChatGroup>
   }
 
   /// 更新视图
-  _updateChats(Map<String, dynamic> data) async {
+  _updateMails(Map<String, dynamic> data) {
+    log.info("接收到的通讯录：$data");
     List<dynamic> chats = data["chats"];
     for (Map<String, dynamic>? chat in chats) {
       if (chat == null) {
@@ -267,7 +276,7 @@ class MessageController extends BaseController<IChatGroup>
       }
       var spaceId = chat["spaceId"];
       var chatId = chat["chatId"];
-      var matchedChat = _ref(spaceId, chatId);
+      var matchedChat = ref(spaceId, chatId);
       if (matchedChat != null) {
         matchedChat.loadCache(ChatCache.fromMap(chat));
         _appendChat(matchedChat);
@@ -276,7 +285,7 @@ class MessageController extends BaseController<IChatGroup>
   }
 
   /// 获取存在的会话
-  IChat? _ref(String spaceId, String chatId) {
+  IChat? ref(String spaceId, String chatId) {
     IChat? tempChat;
     forEach((chatGroup) {
       if (chatGroup.spaceId == spaceId) {
@@ -403,24 +412,6 @@ class MessageController extends BaseController<IChatGroup>
         return first.isTop! ? -1 : 1;
       }
     });
-  }
-
-  /// 刷新会话
-  Future<dynamic> refreshCharts() async {
-    if (isLoaded) {
-      // 只有从缓存拿过会话了才能刷新会话
-
-      // 读取聊天群
-      List<ChatGroup> messageGroups = await chatServer.getChats();
-
-      // 处理空间并排序
-      orgChatCache.chats = _spaceHandling(messageGroups);
-      sortingGroups();
-      update();
-
-      // 缓存消息
-      await Kernel.getInstance.anyStore.cacheChats(orgChatCache);
-    }
   }
 
   /// 空间处理

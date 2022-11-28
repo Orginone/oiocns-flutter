@@ -18,7 +18,7 @@ class Person extends BaseTarget {
   final RxList<Person> _joinedFriends;
 
   Person(Target target)
-      : _selfCompany = Company(target..name = "个人空间"),
+      : _selfCompany = Company(Target.copyWith(target)..name = "个人空间"),
         _currentCompany = Rxn(),
         _joinedCompanies = <Company>[].obs,
         _joinedCohorts = <Cohort>[].obs,
@@ -52,7 +52,7 @@ class Person extends BaseTarget {
   }
 
   /// 创建群组
-  createCohort({
+  Future<Cohort> createCohort({
     required String code,
     required String name,
     required String remark,
@@ -67,6 +67,7 @@ class Person extends BaseTarget {
     Cohort cohort = Cohort(await _createCohort(targetModel));
     _joinedCohorts.add(cohort);
     await cohort.pullPersons([super.target.id]);
+    return cohort;
   }
 
   /// 创建单位

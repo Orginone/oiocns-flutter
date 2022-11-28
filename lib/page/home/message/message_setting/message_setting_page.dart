@@ -139,27 +139,29 @@ class MessageSettingPage extends GetView<MessageController> {
 
   /// 头像相关
   get _avatar {
-    var chat = controller.getCurrentSetting!;
-    var messageItem = chat.target;
-    var avatarName = StringUtil.getPrefixChars(messageItem.name, count: 1);
-    String name = messageItem.name;
-    if (messageItem.typeName != TargetType.person.label) {
-      name += "(${chat.personCount})";
-    }
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        TextAvatar(avatarName: avatarName, width: 60.w),
-        Padding(padding: EdgeInsets.only(left: 10.w)),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(name, style: AFont.instance.size22Black3W500),
-            Text(messageItem.remark ?? "", style: AFont.instance.size16Black6)
-          ],
-        )
-      ],
-    );
+    return Obx(() {
+      var chat = controller.getCurrentSetting!;
+      var messageItem = chat.target;
+      var avatarName = StringUtil.getPrefixChars(messageItem.name, count: 1);
+      String name = messageItem.name;
+      if (messageItem.typeName != TargetType.person.label) {
+        name += "(${chat.personCount})";
+      }
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          TextAvatar(avatarName: avatarName, width: 60.w),
+          Padding(padding: EdgeInsets.only(left: 10.w)),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(name, style: AFont.instance.size22Black3W500),
+              Text(messageItem.remark ?? "", style: AFont.instance.size16Black6)
+            ],
+          )
+        ],
+      );
+    });
   }
 
   /// 消息免打扰

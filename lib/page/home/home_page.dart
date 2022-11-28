@@ -170,9 +170,9 @@ class HomePage extends GetView<HomeController> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _conn(Kernel.getInstance.state, "会话"),
+            Obx(() => _conn(Kernel.getInstance.state, "会话")),
             Container(margin: EdgeInsets.only(top: 2.h)),
-            _conn(Kernel.getInstance.anyStore.state, "存储"),
+            Obx(() => _conn(Kernel.getInstance.state, "存储")),
           ],
         ),
         Padding(padding: EdgeInsets.only(left: 10.w)),
@@ -252,30 +252,24 @@ class HomePage extends GetView<HomeController> {
     );
   }
 
-  Widget _conn(Rx<HubConnectionState> status, String name) {
+  Widget _conn(HubConnectionState status, String name) {
+    Color color;
+    switch (status) {
+      case HubConnectionState.connecting:
+      case HubConnectionState.disconnecting:
+      case HubConnectionState.reconnecting:
+        color = Colors.yellow;
+        break;
+      case HubConnectionState.connected:
+        color = Colors.greenAccent;
+        break;
+      case HubConnectionState.disconnected:
+        color = Colors.redAccent;
+        break;
+    }
     return Row(
       children: [
-        Obx(() {
-          Color color;
-          switch (status.value) {
-            case HubConnectionState.connecting:
-            case HubConnectionState.disconnecting:
-            case HubConnectionState.reconnecting:
-              color = Colors.yellow;
-              break;
-            case HubConnectionState.connected:
-              color = Colors.greenAccent;
-              break;
-            case HubConnectionState.disconnected:
-              color = Colors.redAccent;
-              break;
-          }
-          return Icon(
-            Icons.circle,
-            size: 10,
-            color: color,
-          );
-        }),
+        Icon(Icons.circle, size: 10, color: color),
         Container(margin: EdgeInsets.only(left: 5.w)),
         Text(name, style: text10Bold),
       ],

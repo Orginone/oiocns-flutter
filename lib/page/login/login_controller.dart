@@ -44,8 +44,7 @@ class LoginController extends GetxController {
     // 获取当前用户信息
     await loadAuth();
 
-    // 建立长连接
+    // 启动服务
     await Kernel.getInstance.start();
-    log.info("============system==============> Kernel.getInstance:${Kernel.getInstance.hashCode}");
   }
 }

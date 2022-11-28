@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api/hub/app_server.dart';
 import 'package:orginone/screen_init.dart';
 import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/notification_util.dart';
-import 'package:orginone/util/service_work_utils.dart';
 
 void main() async {
   // 逻辑绑定
@@ -24,7 +24,7 @@ void main() async {
     }
   });
 
-  await initializeService();
+  await AppServer.initialization();
 
   // 开启 app
   runApp(const ScreenInit());

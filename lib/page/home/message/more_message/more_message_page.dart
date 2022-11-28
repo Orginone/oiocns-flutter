@@ -17,7 +17,7 @@ class MoreMessagePage extends GetView<MessageController> {
       appBarLeading: WidgetUtil.defaultBackBtn,
       body: RefreshIndicator(
         onRefresh: () async {
-          await controller.refreshCharts();
+          await controller.refreshMails();
         },
         child: Obx(() => ListView.builder(
               scrollDirection: Axis.vertical,

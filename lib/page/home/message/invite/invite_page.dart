@@ -4,19 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:orginone/api/cohort_api.dart';
 import 'package:orginone/api/kernelapi.dart';
+import 'package:orginone/api/model.dart';
 import 'package:orginone/api/person_api.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/unified_scaffold.dart';
-import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/core/authority.dart';
 import 'package:orginone/enumeration/message_type.dart';
-import 'package:orginone/page/home/message/message_setting/message_setting_controller.dart';
+import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/string_util.dart';
 import 'package:orginone/util/widget_util.dart';
@@ -219,10 +218,18 @@ class InviteController extends GetxController {
       Fluttertoast.showToast(msg: "请至少选择一个需要拉取的好友!");
       return;
     }
+    var messageCtrl = Get.find<MessageController>();
+    var chat = messageCtrl.getCurrentSetting!;
 
     // 拉取的人员
     List<String> targetIds = targetQueue.map((item) => item.id).toList();
-    await CohortApi.pull(messageItemId, targetIds);
+    var teamPull = TeamPullModel(
+      id: chat.chatId,
+      teamTypes: [TargetType.cohort.label],
+      targetType: TargetType.person.label,
+      targetIds: targetIds,
+    );
+    await Kernel.getInstance.pullAnyToTeam(teamPull);
 
     // 组装对象
     var targetNames = targetQueue.map((item) => item.name).join("，");
@@ -233,8 +240,6 @@ class InviteController extends GetxController {
     };
 
     // 发送消息
-    var messageCtrl = Get.find<MessageController>();
-    var chat = messageCtrl.getCurrentSetting!;
     await chat.sendMsg(
       msgBody: jsonEncode(msgBody),
       msgType: MsgType.pull,

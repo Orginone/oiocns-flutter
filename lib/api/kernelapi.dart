@@ -47,7 +47,7 @@ class Kernel {
 
   AnyStore get anyStore => AnyStore.getInstance;
 
-  Rx<HubConnectionState> get state => _kernelHub.state;
+  HubConnectionState get state => _kernelHub.state.value;
 
   static Kernel? _instance;
 

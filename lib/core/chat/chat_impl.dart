@@ -1,5 +1,6 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:logging/logging.dart';
 import 'package:orginone/api/hub/any_store.dart';
 import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/api/model.dart';
@@ -7,7 +8,6 @@ import 'package:orginone/api/model.dart';
 import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/message_target.dart';
-import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/core/ui/message/group_item_widget.dart';
@@ -68,6 +68,8 @@ IChat createChat(String spaceId, String spaceName, MessageTarget target) {
 }
 
 class BaseChat implements IChat<MessageItemWidget> {
+  static final Logger log = Logger("BaseChat");
+
   final String _chatId;
   final String _spaceId;
   final String _spaceName;
@@ -214,14 +216,15 @@ class BaseChat implements IChat<MessageItemWidget> {
   MessageItemWidget mapping() {
     return MessageItemWidget(
       chat: this,
-      onTap: (IChat chat) => onTap(chat),
+      onTap: () => openChat(),
     );
   }
 
-  onTap(IChat chat) async {
+  @override
+  openChat() async {
     if (Get.isRegistered<MessageController>()) {
       var messageCtrl = Get.find<MessageController>();
-      bool isSuccess = await messageCtrl.setCurrent(spaceId, chatId);
+      bool isSuccess = await messageCtrl.setCurrentByChat(this);
       if (!isSuccess) {
         Fluttertoast.showToast(msg: "打开会话失败！");
         return;
@@ -283,7 +286,7 @@ class PersonChat extends BaseChat {
           filter: filter ?? "",
         ),
       );
-      PageResp<MessageDetail> res = await Kernel.getInstance.queryFriendImMsgs(params);
+      var res = await Kernel.getInstance.queryFriendImMsgs(params);
       for (var detail in res.result) {
         detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
         _messages.add(detail);
@@ -337,7 +340,7 @@ class CohortChat extends BaseChat {
           filter: filter ?? "",
         ),
       );
-      PageResp<MessageDetail> res = await Kernel.getInstance.queryCohortImMsgs(params);
+      var res = await Kernel.getInstance.queryCohortImMsgs(params);
       for (var detail in res.result) {
         detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
         _messages.add(detail);
@@ -347,7 +350,7 @@ class CohortChat extends BaseChat {
 
   @override
   morePersons({String? filter}) async {
-    PageResp<Target> page = await Kernel.getInstance.querySubTargetById(IDReqSubModel(
+    var page = await Kernel.getInstance.querySubTargetById(IDReqSubModel(
       id: target.id,
       typeNames: [target.typeName],
       subTypeNames: [TargetType.person.label],

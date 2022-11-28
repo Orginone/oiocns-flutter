@@ -2,6 +2,7 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/api/hub/app_server.dart';
 import 'package:orginone/component/loading_button.dart';
 
 import '../../component/a_font.dart';
@@ -66,6 +67,14 @@ class LoginPage extends GetView<LoginController> {
                     Get.offNamed(Routers.home);
                   },
                   child: Text("登录", style: AFont.instance.size20WhiteW500),
+                )),
+            Container(
+                padding: EdgeInsets.only(left: 40.w, top: 30.h, right: 40.w),
+                child: LoadingButton(
+                  callback: () async {
+                    AppServer.getInstance.invoke(Event.stopService.name);
+                  },
+                  child: Text("关闭服务", style: AFont.instance.size20WhiteW500),
                 )),
             Container(
               padding: const EdgeInsets.fromLTRB(40, 15, 40, 0),

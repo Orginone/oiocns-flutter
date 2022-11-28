@@ -34,7 +34,6 @@ import 'package:orginone/page/home/message/contact/contact_page.dart';
 import 'package:orginone/page/home/message/invite/invite_page.dart';
 import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/page/home/message/message_page.dart';
-import 'package:orginone/page/home/message/message_setting/message_setting_binding.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_page.dart';
 import 'package:orginone/page/home/message/more_message/more_message_page.dart';
 import 'package:orginone/page/home/mine/mine_binding.dart';
@@ -194,7 +193,7 @@ class Routers {
       GetPage(
         name: Routers.messageSetting,
         page: () => const MessageSettingPage(),
-        binding: MessageSettingBinding(),
+        binding: MessageBinding(),
       ),
       GetPage(
         name: Routers.friends,

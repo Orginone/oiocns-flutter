@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
-
-import '../../../../../api_resp/target.dart';
-import '../../../../../component/a_font.dart';
-import '../../../../../component/text_avatar.dart';
-import '../../../../../util/string_util.dart';
-import '../../../message/message_setting/message_setting_controller.dart';
+import 'package:orginone/api_resp/target.dart';
+import 'package:orginone/component/a_font.dart';
+import 'package:orginone/component/text_avatar.dart';
+import 'package:orginone/util/string_util.dart';
 
 double avatarWidth = 76.w;
 

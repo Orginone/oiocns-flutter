@@ -45,7 +45,6 @@ class RealChatServer {
   RealChatServer._(this._chatHub);
 
   Future<void> start() async {
-    _chatHub.addConnectedCallback(tokenAuth);
     await _chatHub.start();
   }
 
@@ -180,16 +179,7 @@ class RealChatServer {
 
   /// 定义事件
   void _initEvents() {
-    chatHub.on(ReceiveEvent.receiveMsg.name, (params) {
-      rsvCallback(params ?? []);
-    });
-    chatHub.on(ReceiveEvent.chatRefresh.name, (params) {
-      if (Get.isRegistered<MessageController>()) {
-        var messageController = Get.find<MessageController>();
-        messageController.refreshCharts();
-      }
-    });
   }
 }
 
-final RealChatServer chatServer = RealChatServer._(chatHub).._initEvents();
+late RealChatServer chatServer;

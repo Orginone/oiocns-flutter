@@ -59,7 +59,7 @@ class MessageItemWidget extends StatelessWidget {
       },
       onTap: () {
         if (onTap != null) {
-          onTap!(chat);
+          onTap!();
         }
       },
       child: Container(

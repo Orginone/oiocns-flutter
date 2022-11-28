@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/a_font.dart';
@@ -8,6 +7,7 @@ import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/core/authority.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
 import 'package:orginone/page/home/search/search_controller.dart';
@@ -101,20 +101,10 @@ class CohortsPage extends GetView<CohortsController> {
     var avatarName = StringUtil.getPrefixChars(cohort.name, count: 2);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {
-        var messageController = controller.messageController;
-        var spaceMessageItemMap = messageController.spaceMessageItemMap;
-        var hasSpace = spaceMessageItemMap.containsKey(cohort.belongId);
-        var spaceId = hasSpace ? cohort.belongId : auth.userId;
-        if (spaceId == null) {
-          Fluttertoast.showToast(msg: "未获取到空间 ID!");
-          return;
-        }
-        Map<String, dynamic> args = {
-          "spaceId": spaceId,
-          "messageItemId": cohort.id
-        };
-        Get.toNamed(Routers.chat, arguments: args);
+      onTap: () async {
+        var messageCtrl = Get.find<MessageController>();
+        await messageCtrl.setCurrent(auth.spaceId, cohort.id);
+        Get.toNamed(Routers.chat);
       },
       child: Container(
         padding: EdgeInsets.only(left: 25.w, top: 20.h, right: 25.w),

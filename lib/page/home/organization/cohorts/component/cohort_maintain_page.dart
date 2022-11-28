@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -6,7 +8,9 @@ import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/form/form_widget.dart';
 import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/controller/target/target_controller.dart';
+import 'package:orginone/core/target/cohort.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/core/authority.dart';
 import 'package:orginone/api/hub/chat_server.dart';
@@ -43,7 +47,7 @@ class CohortMaintainPage extends GetView<CohortMaintainController> {
       body: FormWidget(
         formConfig,
         initValue: controller.old,
-        submitCallback: (Map<String, dynamic> value) {
+        submitCallback: (Map<String, dynamic> value) async {
           if (controller.func == CohortFunction.update) {
             controller.updateCohort(value).then((value) {
               if (Get.isRegistered<CohortsController>()) {
@@ -53,17 +57,27 @@ class CohortMaintainPage extends GetView<CohortMaintainController> {
             });
           } else {
             var targetCtrl = Get.find<TargetController>();
-            targetCtrl.currentPerson
-                .createCohort(
-                    code: value["code"],
-                    name: value["name"],
-                    remark: value["remark"])
-                .then((value) {
-              if (Get.isRegistered<CohortsController>()) {
-                Get.find<CohortsController>().onLoad();
-              }
-              Get.back();
-            });
+            Cohort cohort = await targetCtrl.currentPerson.createCohort(
+              code: value["code"],
+              name: value["name"],
+              remark: value["remark"],
+            );
+            if (Get.isRegistered<CohortsController>()) {
+              Get.find<CohortsController>().onLoad();
+            }
+            if (Get.isRegistered<MessageController>()) {
+              var messageCtrl = Get.find<MessageController>();
+              await messageCtrl.refreshMails();
+              await loadAuth();
+              var chat = messageCtrl.ref(auth.spaceId, cohort.target.id);
+              chat?.openChat();
+              Timer(const Duration(seconds: 1), () {
+                chat?.sendMsg(
+                  msgType: MsgType.createCohort,
+                  msgBody: "${auth.userInfo.name}创建了群聊",
+                );
+              });
+            }
           }
         },
       ),
@@ -87,20 +101,6 @@ class CohortMaintainController extends GetxController {
     } else {
       label = CohortFunction.create.funcName;
     }
-  }
-
-  Future<dynamic> createCohort(Map<String, dynamic> value) async {
-    Target cohort = await CohortApi.create(value);
-    await loadAuth();
-    Fluttertoast.showToast(msg: "创建成功！");
-
-    var msgBody = "${auth.userInfo.name}创建了群聊";
-    await chatServer.send(
-      spaceId: auth.spaceId,
-      itemId: cohort.id,
-      msgBody: msgBody,
-      msgType: MsgType.createCohort,
-    );
   }
 
   Future<dynamic> updateCohort(Map<String, dynamic> value) async {
