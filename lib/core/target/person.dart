@@ -82,18 +82,24 @@ class Person extends BaseTarget {
     required String id,
     required String code,
     required String name,
+    required String typeName,
     required String remark,
+    required String thingId,
+    required String belongId,
   }) async {
     var target = TargetModel(
       id: id,
       code: code,
       name: name,
+      typeName: typeName,
       teamCode: code,
       teamName: name,
       teamRemark: remark,
+      thingId: thingId,
+      belongId: belongId,
     );
     Target updatedTarget = await Kernel.getInstance.updateTarget(target);
-    for(int i = 0; i < _joinedCohorts.length; i++){
+    for (int i = 0; i < _joinedCohorts.length; i++) {
       var cohort = _joinedCohorts[i];
       if (cohort.target.id == updatedTarget.id) {
         _joinedCohorts[i] = Cohort(updatedTarget);
@@ -169,13 +175,28 @@ class Person extends BaseTarget {
     if (_joinedCohorts.isNotEmpty) {
       return;
     }
+    var cohorts = await _getJoinedCohorts();
+    for (var targetCohort in cohorts) {
+      _joinedCohorts.add(Cohort(targetCohort));
+    }
+  }
+
+  /// 刷新加载的单位列表
+  Future<void> refreshJoinedCohorts() async {
+    _joinedCompanies.clear();
+    var cohorts = await _getJoinedCohorts();
+    for (var targetCohort in cohorts) {
+      _joinedCohorts.add(Cohort(targetCohort));
+    }
+  }
+
+  /// 获取加入的组织
+  Future<List<Target>> _getJoinedCohorts() async {
     PageResp<Target> cohorts = await getJoined(
       spaceId: super.target.id,
       joinTypeNames: [TargetType.cohort],
     );
-    for (var targetCohort in cohorts.result) {
-      _joinedCohorts.add(Cohort(targetCohort));
-    }
+    return cohorts.result;
   }
 
   /// 刷新加载的单位列表
@@ -199,7 +220,7 @@ class Person extends BaseTarget {
   }
 
   /// 获取加入的组织
-  _getJoinedCompanies() async {
+  Future<List<Target>> _getJoinedCompanies() async {
     PageResp<Target> companies = await getJoined(
       spaceId: super.target.id,
       joinTypeNames: companyTypes,

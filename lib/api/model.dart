@@ -227,6 +227,7 @@ class TargetModel {
   String? teamName;
   String? teamCode;
   String? teamRemark;
+  String? thingId;
 
   TargetModel({
     this.id,
@@ -237,6 +238,7 @@ class TargetModel {
     this.teamName,
     this.teamCode,
     this.teamRemark,
+    this.thingId,
   });
 
   TargetModel.fromJson(Map<String, dynamic> json)
@@ -247,7 +249,8 @@ class TargetModel {
         belongId = json["belongId"],
         teamName = json["teamName"],
         teamCode = json["teamCode"],
-        teamRemark = json["teamRemark"];
+        teamRemark = json["teamRemark"],
+        thingId = json["thingId"];
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -259,6 +262,7 @@ class TargetModel {
     json["teamName"] = teamName;
     json["teamCode"] = teamCode;
     json["teamRemark"] = teamRemark;
+    json["thingId"] = thingId;
     return json;
   }
 }

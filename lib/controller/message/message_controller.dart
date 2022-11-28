@@ -17,6 +17,7 @@ import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/org_chat_cache.dart';
 import 'package:orginone/api_resp/space_messages_resp.dart';
+import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/bread_crumb.dart';
 import 'package:orginone/component/tab_combine.dart';
@@ -124,7 +125,7 @@ enum ReceiveEvent {
 }
 
 class MessageController extends BaseController<IChatGroup>
-    with WidgetsBindingObserver, GetSingleTickerProviderStateMixin {
+    with WidgetsBindingObserver, GetTickerProviderStateMixin {
   // 日志对象
   Logger log = Logger("MessageController");
 
@@ -182,6 +183,39 @@ class MessageController extends BaseController<IChatGroup>
   IChat? get getCurrentChat => _currentChat.value;
 
   IChat? get getCurrentSetting => _currentSetting.value;
+
+  /// 组织变动事件
+  cohortChange(CohortEvent event, Target target) async {
+    await refreshMails();
+    await loadAuth();
+    var chat = ref(auth.spaceId, target.id);
+    switch (event) {
+      case CohortEvent.create:
+        Timer(const Duration(seconds: 1), () {
+          chat?.sendMsg(
+            msgType: MsgType.createCohort,
+            msgBody: "${auth.userInfo.name}创建了群聊",
+          );
+        });
+        chat?.openChat();
+        break;
+      case CohortEvent.update:
+        var msgBody = "${auth.userInfo.name}将群名称修改为${target.name}";
+        chat?.sendMsg(msgType: MsgType.updateCohortName, msgBody: msgBody);
+        chat?.openChat();
+        break;
+      case CohortEvent.role:
+        break;
+      case CohortEvent.identity:
+        break;
+      case CohortEvent.transfer:
+        break;
+      case CohortEvent.dissolution:
+        break;
+      case CohortEvent.exit:
+        break;
+    }
+  }
 
   /// 获取名称
   String getName(String id) {
@@ -820,11 +854,9 @@ class MessageController extends BaseController<IChatGroup>
       "bytes": file.readAsBytesSync()
     };
     IChat currentChat = _currentChat.value!;
-    await chatServer.send(
-      spaceId: currentChat.spaceId,
-      itemId: currentChat.chatId,
-      msgBody: jsonEncode(msgBody),
+    await currentChat.sendMsg(
       msgType: MsgType.voice,
+      msgBody: jsonEncode(msgBody),
     );
   }
 

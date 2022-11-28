@@ -30,7 +30,7 @@ class CohortMaintainPage extends GetView<TargetController> {
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> args = Get.arguments;
-    CohortFunction func = (args["func"] as CohortFunction);
+    CohortEvent func = (args["func"] as CohortEvent);
     return UnifiedScaffold(
       appBarTitle: Text(func.funcName, style: AFont.instance.size22Black3),
       appBarLeading: WidgetUtil.defaultBackBtn,
@@ -39,7 +39,7 @@ class CohortMaintainPage extends GetView<TargetController> {
         formConfig,
         initValue: args["cohort"] ?? {},
         submitCallback: (Map<String, dynamic> value) async {
-          if (func == CohortFunction.update) {
+          if (func == CohortEvent.update) {
             controller.updateCohort(value);
           } else {
             controller.createCohort(value);

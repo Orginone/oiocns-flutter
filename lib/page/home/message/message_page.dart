@@ -10,6 +10,7 @@ import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_edge_insets.dart';
 import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/core/authority.dart';
 import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/controller/message/message_controller.dart';
@@ -318,6 +319,11 @@ class Relation extends GetView<MessageController> {
           child: Text("我的群组", style: AFont.instance.size22Black3W500),
         ),
         func: () {
+          var targetCtrl = Get.find<TargetController>();
+          targetCtrl.currentPerson.loadJoinedCohorts().then((value) {
+            targetCtrl.searchedCohorts.clear();
+            targetCtrl.searchedCohorts.addAll(targetCtrl.currentPerson.joinedCohorts);
+          });
           Get.toNamed(Routers.cohorts);
         },
       );

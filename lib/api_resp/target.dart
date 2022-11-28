@@ -114,8 +114,8 @@ class Target {
     json['createUser'] = createUser;
     json['updateUser'] = updateUser;
     json['version'] = version;
-    json['createTime'] = createTime;
-    json['updateTime'] = updateTime;
+    json['createTime'] = createTime.toString();
+    json['updateTime'] = updateTime.toString();
     return json;
   }
 }

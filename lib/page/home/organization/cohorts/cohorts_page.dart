@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/a_font.dart';
-import 'package:orginone/component/refresh_body.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/text_tag.dart';
@@ -16,7 +15,6 @@ import 'package:orginone/page/home/search/search_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/string_util.dart';
 import 'package:orginone/util/widget_util.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 enum CtrlType {
   manageable("管理的"),
@@ -46,7 +44,7 @@ class CohortsPage extends GetView<TargetController> {
   get _actions => <Widget>[
         IconButton(
           onPressed: () {
-            Map<String, CohortFunction> args = {"func": CohortFunction.create};
+            Map<String, CohortEvent> args = {"func": CohortEvent.create};
             Get.toNamed(Routers.cohortMaintain, arguments: args);
           },
           icon: const Icon(Icons.create_outlined, color: Colors.black),
@@ -69,14 +67,17 @@ class CohortsPage extends GetView<TargetController> {
             searchingCallback: controller.searchingCallback,
             margin: EdgeInsets.only(left: 25.w, top: 20.h, right: 25.w),
           ),
-          RefreshBody(
-            body: _list,
-            refreshCtrl: RefreshController(),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () => controller.currentPerson.refreshJoinedCohorts(),
+              child: _list,
+            ),
           ),
         ],
       );
 
   get _list => Obx(() => ListView.builder(
+        shrinkWrap: true,
         scrollDirection: Axis.vertical,
         itemCount: controller.searchedCohorts.length,
         itemBuilder: (BuildContext context, int index) {
@@ -126,19 +127,19 @@ class CohortsPage extends GetView<TargetController> {
       textStyle: AFont.instance.size18themeColorW500,
       padding: EdgeInsets.all(10.w),
       onTap: () async {
-        var items = CohortFunction.values;
+        var items = CohortEvent.values;
         if (ctrlType == CtrlType.manageable) {
           items = items.where((item) {
-            return item != CohortFunction.create && item != CohortFunction.exit;
+            return item != CohortEvent.create && item != CohortEvent.exit;
           }).toList();
         } else {
-          items = [CohortFunction.exit];
+          items = [CohortEvent.exit];
         }
 
         // 弹出菜单
         var top = y - 50;
         var right = MediaQuery.of(context).size.width - x;
-        final result = await showMenu<CohortFunction>(
+        final result = await showMenu<CohortEvent>(
           context: context,
           position: RelativeRect.fromLTRB(x, top, right, 0),
           items: items.map((item) {

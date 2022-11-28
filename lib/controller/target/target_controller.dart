@@ -14,7 +14,7 @@ import 'package:orginone/core/target/person.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/routers.dart';
 
-enum CohortFunction {
+enum CohortEvent {
   create("创建群组"),
   update("修改群组"),
   role("角色管理"),
@@ -25,7 +25,7 @@ enum CohortFunction {
 
   final String funcName;
 
-  const CohortFunction(this.funcName);
+  const CohortEvent(this.funcName);
 }
 
 class TargetController extends GetxController {
@@ -46,6 +46,7 @@ class TargetController extends GetxController {
     _currentPerson.loadJoinedCompanies();
   }
 
+  /// 搜索回调
   searchingCallback(String filter) async {
     _searchedCohorts.clear();
     List<Cohort> cohorts = _currentPerson.joinedCohorts.where((item) {
@@ -54,6 +55,7 @@ class TargetController extends GetxController {
     _searchedCohorts.addAll(cohorts);
   }
 
+  /// 切换空间
   Future<void> switchSpaces(String spaceId) async {
     if (auth.spaceId == spaceId) {
       return;
@@ -84,62 +86,49 @@ class TargetController extends GetxController {
     );
     if (Get.isRegistered<MessageController>()) {
       var messageCtrl = Get.find<MessageController>();
-      await messageCtrl.refreshMails();
-      await loadAuth();
-      var chat = messageCtrl.ref(auth.spaceId, cohort.target.id);
-      chat?.openChat();
-      Timer(const Duration(seconds: 1), () {
-        chat?.sendMsg(
-          msgType: MsgType.createCohort,
-          msgBody: "${auth.userInfo.name}创建了群聊",
-        );
-      });
+      messageCtrl.cohortChange(CohortEvent.create, cohort.target);
     }
   }
 
   /// 更新群组
   updateCohort(Map<String, dynamic> value) async {
+    var cohort = Target.fromMap(value);
     Target updatedTarget = await currentPerson.updateCohort(
-      id: value["id"],
-      code: value["code"],
-      name: value["name"],
-      remark: value["remark"],
+      id: cohort.id,
+      code: cohort.code,
+      name: cohort.name,
+      typeName: cohort.typeName,
+      remark: cohort.team?.remark ?? "",
+      belongId: cohort.belongId ?? "",
+      thingId: cohort.thingId,
     );
-
     if (Get.isRegistered<MessageController>()) {
       var messageCtrl = Get.find<MessageController>();
-      IChat? chat = messageCtrl.ref(auth.spaceId, updatedTarget.id);
-      var msgBody = "${auth.userInfo.name}将群名称修改为${updatedTarget.name}";
-      chat?.sendMsg(msgType: MsgType.updateCohortName, msgBody: msgBody);
+      messageCtrl.cohortChange(CohortEvent.update, updatedTarget);
     }
   }
 
-  cohortFunc(CohortFunction func, Target cohort) async {
+  cohortFunc(CohortEvent func, Target cohort) async {
     switch (func) {
-      case CohortFunction.update:
+      case CohortEvent.update:
+        var json = cohort.toJson();
+        json["remark"] = cohort.team?.remark;
         Map<String, dynamic> args = {
           "func": func,
-          "cohort": {
-            "id": cohort.id,
-            "name": cohort.name,
-            "code": cohort.code,
-            "remark": cohort.team?.remark,
-            "thingId": cohort.thingId,
-            "belongId": cohort.belongId
-          },
+          "cohort": json,
         };
         Get.toNamed(Routers.cohortMaintain, arguments: args);
         break;
-      case CohortFunction.role:
+      case CohortEvent.role:
         break;
-      case CohortFunction.identity:
+      case CohortEvent.identity:
         break;
-      case CohortFunction.transfer:
+      case CohortEvent.transfer:
         break;
-      case CohortFunction.dissolution:
+      case CohortEvent.dissolution:
         await CohortApi.delete(cohort.id);
         break;
-      case CohortFunction.exit:
+      case CohortEvent.exit:
         // await CohortApi.exit(cohort.id);
         //
         // String msgBody = "${auth.userInfo.name}退出了群聊";
@@ -150,7 +139,7 @@ class TargetController extends GetxController {
         //   msgType: MsgType.exitCohort,
         // );
         break;
-      case CohortFunction.create:
+      case CohortEvent.create:
         break;
     }
   }
