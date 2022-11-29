@@ -34,17 +34,6 @@ class MessageTarget {
         isTop = map["isTop"],
         isInterruption = map["isInterruption"];
 
-  Target toTarget() {
-    return Target(
-      id: id,
-      name: name,
-      code: "",
-      typeName: typeName,
-      thingId: "",
-      status: 1,
-    );
-  }
-
   static List<MessageTarget> fromList(List<dynamic>? data) {
     if (data == null) {
       return [];
