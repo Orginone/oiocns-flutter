@@ -81,6 +81,31 @@ class IdSpaceReq {
   }
 }
 
+class IdReqModel {
+  final String id;
+  final String typeName;
+  final String belongId;
+
+  IdReqModel({
+    required this.id,
+    required this.typeName,
+    required this.belongId,
+  });
+
+  IdReqModel.fromJson(Map<String, dynamic> map)
+      : id = map["id"],
+        typeName = map["typeName"],
+        belongId = map["belongId"];
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["typeName"] = typeName;
+    json["belongId"] = belongId;
+    return json;
+  }
+}
+
 class IdReq {
   final String id;
   final PageRequest page;
@@ -213,6 +238,35 @@ class TeamPullModel {
     json["id"] = id;
     json["teamTypes"] = teamTypes;
     json["targetIds"] = targetIds;
+    json["targetType"] = targetType;
+    return json;
+  }
+}
+
+class ExitTeamModel {
+  final String id;
+  final List<String> teamTypes;
+  final String targetId;
+  final String targetType;
+
+  ExitTeamModel({
+    required this.id,
+    required this.teamTypes,
+    required this.targetId,
+    required this.targetType,
+  });
+
+  ExitTeamModel.fromJson(Map<String, dynamic> json)
+      : id = json["id"],
+        teamTypes = json["teamTypes"],
+        targetId = json["targetId"],
+        targetType = json["targetType"];
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["teamTypes"] = teamTypes;
+    json["targetId"] = targetId;
     json["targetType"] = targetType;
     return json;
   }

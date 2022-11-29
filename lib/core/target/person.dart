@@ -1,9 +1,12 @@
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/api/model.dart';
+import 'package:orginone/api/person_api.dart';
+import 'package:orginone/api_resp/login_resp.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/target.dart';
+import 'package:orginone/controller/message/message_controller.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/core/target/base_target.dart';
 import 'package:orginone/core/target/cohort.dart';
@@ -44,18 +47,26 @@ class Person extends BaseTarget {
   /// 获取加入的群组
   List<Cohort> get joinedCohorts => _joinedCohorts;
 
-  /// 获取加入的群组
+  /// 获取所有好友
   List<Person> get joinedFriends => _joinedFriends;
 
-  /// 设置当前工作空间
-  setCurrentCompany(String companyId) {
-    for (var company in _joinedCompanies) {
-      if (company.target.id == companyId) {
-        _currentCompany.value = company;
-        return;
-      }
+  /// 切换当前工作空间
+  Future<void> changeSpaces(Company company) async {
+    if (auth.spaceId == company.target.id) {
+      return;
     }
-    _currentCompany.value = _selfCompany;
+
+    // 调用接口切换空间，加载当前空间权限
+    LoginResp loginResp = await PersonApi.changeWorkspace(company.target.id);
+    setAccessToken = loginResp.accessToken;
+    await loadAuth();
+    _currentCompany.value = company;
+
+    // 空间会话置顶
+    if (Get.isRegistered<MessageController>()) {
+      var messageCtrl = Get.find<MessageController>();
+      messageCtrl.setGroupTop(company.target.id);
+    }
   }
 
   /// 创建群组
@@ -78,7 +89,7 @@ class Person extends BaseTarget {
   }
 
   /// 修改群组
-  Future<Target> updateCohort({
+  Future<void> updateCohort({
     required String id,
     required String code,
     required String name,
@@ -105,7 +116,21 @@ class Person extends BaseTarget {
         _joinedCohorts[i] = Cohort(updatedTarget);
       }
     }
-    return updatedTarget;
+  }
+
+  /// 解散群组
+  Future<void> dissolutionCohort({
+    required String id,
+    required String typeName,
+    required String belongId,
+  }) async {
+    var model = IdReqModel(
+      id: id,
+      typeName: typeName,
+      belongId: belongId,
+    );
+    await Kernel.getInstance.deleteTarget(model);
+    _joinedCohorts.removeWhere((item) => item.target.id == id);
   }
 
   /// 创建单位
@@ -160,14 +185,38 @@ class Person extends BaseTarget {
 
   /// 删除好友
   removeFriends(List<String> targetIds) async {
-    await remove(targetType: TargetType.person, targetIds: targetIds);
+    await remove(targetType: TargetType.person.label, targetIds: targetIds);
     _joinedFriends.removeWhere((item) => targetIds.contains(item.target.id));
   }
 
-  /// 退出群组
-  exitCohort(List<String> targetIds) async {
-    await remove(targetType: TargetType.cohort, targetIds: targetIds);
-    _joinedCohorts.removeWhere((item) => targetIds.contains(item.target.id));
+  /// 解散群组
+
+  /// 退出群组，当前空间只加载当前空间的群组，如果不是退出当前空间的群组
+  /// 那么尝试退出群组
+  exitCohort(String cohortId) async {
+    for (var joinedCohort in joinedCohorts) {
+      if (joinedCohort.target.id == cohortId) {
+        await exit(
+            targetType: joinedCohort.target.typeName, targetId: cohortId);
+        _joinedCohorts.remove(joinedCohort);
+        return;
+      }
+    }
+  }
+
+  /// 退出单位
+  exitCompany(String companyId) async {
+    for (var joinedCompany in joinedCompanies) {
+      if (joinedCompany.target.id == companyId) {
+        await exit(
+            targetType: joinedCompany.target.typeName, targetId: companyId);
+        joinedCompanies.remove(joinedCompany);
+        if (currentCompany.target.id == companyId) {
+          await changeSpaces(selfCompany);
+        }
+        return;
+      }
+    }
   }
 
   /// 获取加入的群组列表
@@ -183,7 +232,7 @@ class Person extends BaseTarget {
 
   /// 刷新加载的单位列表
   Future<void> refreshJoinedCohorts() async {
-    _joinedCompanies.clear();
+    _joinedCohorts.clear();
     var cohorts = await _getJoinedCohorts();
     for (var targetCohort in cohorts) {
       _joinedCohorts.add(Cohort(targetCohort));
@@ -194,7 +243,7 @@ class Person extends BaseTarget {
   Future<List<Target>> _getJoinedCohorts() async {
     PageResp<Target> cohorts = await getJoined(
       spaceId: super.target.id,
-      joinTypeNames: [TargetType.cohort],
+      joinTypeNames: [TargetType.cohort, TargetType.jobCohort],
     );
     return cohorts.result;
   }

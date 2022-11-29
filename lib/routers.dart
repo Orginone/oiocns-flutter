@@ -24,7 +24,6 @@ import 'package:orginone/page/home/component/person_add/person_add_page.dart';
 import 'package:orginone/page/home/component/space_choose/space_choose_page.dart';
 import 'package:orginone/page/home/component/unit/unit_create/unit_create_binding.dart';
 import 'package:orginone/page/home/component/unit/unit_create/unit_create_page.dart';
-import 'package:orginone/page/home/component/unit/unit_detail/unit_detail_binding.dart';
 import 'package:orginone/page/home/component/unit/unit_detail/unit_detail_page.dart';
 import 'package:orginone/page/home/home_binding.dart';
 import 'package:orginone/page/home/home_page.dart';
@@ -42,7 +41,6 @@ import 'package:orginone/page/home/mine/mine_card/mine_card_page.dart';
 import 'package:orginone/page/home/mine/mine_info/mine_info_binding.dart';
 import 'package:orginone/page/home/mine/mine_info/mine_info_page.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
-import 'package:orginone/page/home/mine/mine_unit/mine_unit_binding.dart';
 import 'package:orginone/page/home/mine/mine_unit/mine_unit_page.dart';
 import 'package:orginone/page/home/mine/set_home/set_home_page.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_page.dart';
@@ -242,7 +240,7 @@ class Routers {
       GetPage(
         name: Routers.unitDetail,
         page: () => const UnitDetailPage(),
-        binding: UnitDetailBinding(),
+        binding: TargetBinding(),
       ),
       GetPage(
         name: Routers.unitCreate,
@@ -267,7 +265,7 @@ class Routers {
       GetPage(
         name: Routers.mineUnit,
         page: () => const MineUnitPage(),
-        binding: MineUnitBinding(),
+        binding: TargetBinding(),
       ),
       GetPage(
         name: Routers.search,

@@ -40,7 +40,7 @@ class MessageSettingPage extends GetView<MessageController> {
     double left = (screenSize.width.w - defaultBtnSize.width) / 2;
 
     // 如果是群组,就有退出群组
-    if (chatType == ChatType.group) {
+    if (chatType == ChatType.cohort || chatType == ChatType.jobCohort) {
       bottomDistance += interval + defaultBtnSize.height;
       children.add(Positioned(
         left: left,
@@ -91,7 +91,8 @@ class MessageSettingPage extends GetView<MessageController> {
           _searchChat,
         ];
         break;
-      case ChatType.group:
+      case ChatType.cohort:
+      case ChatType.jobCohort:
       case ChatType.unit:
         var isRelationAdmin = auth.isRelationAdmin([chat.chatId]);
         children = [
@@ -285,7 +286,7 @@ class MessageSettingPage extends GetView<MessageController> {
     );
   }
 
-  /// 删除好友
+  /// 退出群组
   Widget _exitGroup(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(

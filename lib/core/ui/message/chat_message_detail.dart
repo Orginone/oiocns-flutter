@@ -67,24 +67,14 @@ class ChatMessageDetail extends GetView<MessageController> {
         children.add(_getAvatar());
         children.add(_getChat(context));
         break;
-      case MsgType.pull:
-        String msgBody = detail.msgBody ?? "{}";
-        Map<String, dynamic> body = jsonDecode(msgBody);
-        children.add(
-          Container(
-            alignment: Alignment.center,
-            width: 400.w,
-            child: Text(body["remark"], style: AFont.instance.size18Black9),
-          ),
-        );
-        isCenter = true;
-        break;
       case MsgType.createCohort:
       case MsgType.exitCohort:
       case MsgType.deleteCohort:
       case MsgType.updateCohortName:
+      case MsgType.pull:
         children.add(
           Container(
+            width: 300.w,
             alignment: Alignment.center,
             child: Text(
               detail.msgBody ?? "",

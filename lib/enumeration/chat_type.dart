@@ -1,7 +1,8 @@
 enum ChatType {
   self("本人"),
   colleague("同事"),
-  group("群组"),
+  cohort("群组"),
+  jobCohort("工作群"),
   friends("好友"),
   unit("单位"),
   unknown("未知");

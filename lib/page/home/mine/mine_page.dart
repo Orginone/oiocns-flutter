@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/component/choose_item.dart';
+import 'package:orginone/component/icon_avatar.dart';
+import 'package:orginone/component/unified_edge_insets.dart';
+import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/core/authority.dart';
 import 'package:orginone/page/home/mine/mine_controller.dart';
 import 'package:orginone/routers.dart';
-
-import '../../../component/choose_item.dart';
-import '../../../component/icon_avatar.dart';
-import '../../../component/unified_edge_insets.dart';
-import '../../../component/unified_text_style.dart';
 
 class MinePage extends GetView<MineController> {
   const MinePage({Key? key}) : super(key: key);

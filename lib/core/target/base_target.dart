@@ -46,15 +46,29 @@ class BaseTarget {
 
   /// 移除组织/个人
   Future<void> remove({
-    required TargetType targetType,
+    required String targetType,
     required List<String> targetIds,
   }) async {
     var teamPull = TeamPullModel(
-      targetType: targetType.label,
+      targetType: targetType,
       targetIds: targetIds,
       teamTypes: [target.typeName],
       id: target.id,
     );
     return await Kernel.getInstance.removeAnyOfTeam(teamPull);
+  }
+
+  /// 主动退出组织/个人
+  Future<void> exit({
+    required String targetType,
+    required String targetId,
+  }) async {
+    var teamPull = ExitTeamModel(
+      teamTypes: [targetType],
+      id: targetId,
+      targetType: target.typeName,
+      targetId: target.id,
+    );
+    return await Kernel.getInstance.exitAnyOfTeam(teamPull);
   }
 }

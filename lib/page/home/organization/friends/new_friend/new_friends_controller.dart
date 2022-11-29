@@ -1,6 +1,9 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/controller/message/message_controller.dart';
+import 'package:orginone/core/authority.dart';
+import 'package:orginone/enumeration/message_type.dart';
+import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/public/http/base_list_controller.dart';
 import 'package:orginone/public/loading/opt_loading.dart';
 
@@ -34,39 +37,60 @@ class NewFriendsController extends BaseListController<FriendsEntity> {
     MessageController find = Get.find<MessageController>();
     var orgChatCache = find.orgChatCache;
     String name = "";
-    if (orgChatCache != null &&
-        orgChatCache.nameMap != null &&
-        orgChatCache.nameMap.isNotEmpty) {
+    if (orgChatCache.nameMap.isNotEmpty) {
       name = (orgChatCache.nameMap[userId]) ?? "";
     }
     return name;
   }
 
-  void joinSuccess(String id) async {
+  void joinSuccess(FriendsEntity friends) async {
     ALoading.showCircle();
-    await PersonApi.joinSuccess(id).then((value) {
-      //成功，刷新列表
-      Fluttertoast.showToast(msg: "已通过");
-      offset = 0;
-      onRefresh();
-    }).onError((error, stackTrace) {
-    }).whenComplete(() => ALoading.dismiss());
+    await PersonApi.joinSuccess(friends.id)
+        .then((value) {
+          //成功，刷新列表
+          Fluttertoast.showToast(msg: "已通过");
+          offset = 0;
+          onRefresh();
+          var team = friends.team;
+          if (team != null) {
+            var target = team.target;
+            if (target != null) {
+              // 所有非人员的都要加一条信息
+              if (Get.isRegistered<MessageController>()) {
+                var messageCtrl = Get.find<MessageController>();
+                if (target.typeName != TargetType.person.name) {
+                  var chat = messageCtrl.refById(target.id);
+                  if (chat != null) {
+                    var msgBody = "${auth.userInfo.name}邀请${team.name}加入了群聊";
+                    chat.sendMsg(msgType: MsgType.pull, msgBody: msgBody);
+                  }
+                } else {
+                  messageCtrl.refreshMails();
+                }
+              }
+            }
+          }
+        })
+        .onError((error, stackTrace) {})
+        .whenComplete(() => ALoading.dismiss());
   }
 
   void joinRefuse(String id) async {
     ALoading.showCircle();
-    await PersonApi.joinRefuse(id).then((value) {
-      //成功，刷新列表
-      offset = 0;
-      onRefresh();
-    }).onError((error, stackTrace) {
-    }).whenComplete(() => ALoading.dismiss());
+    await PersonApi.joinRefuse(id)
+        .then((value) {
+          //成功，刷新列表
+          offset = 0;
+          onRefresh();
+        })
+        .onError((error, stackTrace) {})
+        .whenComplete(() => ALoading.dismiss());
   }
 
   String getStatus(int status) {
-    if(status >= 0 && status <= 100){
+    if (status >= 0 && status <= 100) {
       return "待批";
-    }else if(status >= 100 && status < 200){
+    } else if (status >= 100 && status < 200) {
       return "已通过";
     }
     return "已拒绝";

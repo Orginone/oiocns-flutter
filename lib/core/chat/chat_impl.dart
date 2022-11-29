@@ -192,8 +192,13 @@ class BaseChat implements IChat<MessageItemWidget> {
       _noReadCount.value += noRead ? 1 : 0;
       _lastMessage.value = detail;
       _messages.insert(0, detail);
-      if (detail.msgType == MsgType.pull.name) {
+      var msgType = detail.msgType;
+      if (msgType == MsgType.pull.name) {
         await morePersons();
+      } else if (msgType == MsgType.exitCohort.name) {
+        if (detail.fromId == auth.userId){
+
+        }
       }
     }
   }
@@ -224,11 +229,7 @@ class BaseChat implements IChat<MessageItemWidget> {
   openChat() async {
     if (Get.isRegistered<MessageController>()) {
       var messageCtrl = Get.find<MessageController>();
-      bool isSuccess = await messageCtrl.setCurrentByChat(this);
-      if (!isSuccess) {
-        Fluttertoast.showToast(msg: "打开会话失败！");
-        return;
-      }
+      await messageCtrl.setCurrentByChat(this);
       Get.offNamedUntil(
         Routers.chat,
         (router) => router.settings.name == Routers.home,

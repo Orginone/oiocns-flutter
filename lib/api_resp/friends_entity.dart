@@ -43,6 +43,7 @@ class FriendsTeam {
 	late String version;
 	late String createTime;
 	late String updateTime;
+	late FriendsTarget? target;
   
   FriendsTeam();
 

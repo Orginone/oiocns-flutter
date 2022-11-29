@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
@@ -28,7 +29,6 @@ import 'package:orginone/enumeration/enum_map.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/core/authority.dart';
-import 'package:orginone/api/hub/chat_server.dart';
 import 'package:orginone/core/chat/chat_impl.dart';
 import 'package:orginone/core/chat/i_chat.dart';
 import 'package:orginone/page/home/home_controller.dart';
@@ -186,39 +186,6 @@ class MessageController extends BaseController<IChatGroup>
 
   IChat? get getCurrentSetting => _currentSetting.value;
 
-  /// 组织变动事件
-  cohortChange(CohortEvent event, Target target) async {
-    await refreshMails();
-    await loadAuth();
-    var chat = ref(auth.spaceId, target.id);
-    switch (event) {
-      case CohortEvent.create:
-        Timer(const Duration(seconds: 1), () {
-          chat?.sendMsg(
-            msgType: MsgType.createCohort,
-            msgBody: "${auth.userInfo.name}创建了群聊",
-          );
-        });
-        chat?.openChat();
-        break;
-      case CohortEvent.update:
-        var msgBody = "${auth.userInfo.name}将群名称修改为${target.name}";
-        chat?.sendMsg(msgType: MsgType.updateCohortName, msgBody: msgBody);
-        chat?.openChat();
-        break;
-      case CohortEvent.role:
-        break;
-      case CohortEvent.identity:
-        break;
-      case CohortEvent.transfer:
-        break;
-      case CohortEvent.dissolution:
-        break;
-      case CohortEvent.exit:
-        break;
-    }
-  }
-
   /// 获取名称
   String getName(String id) {
     String name = "未知";
@@ -267,28 +234,46 @@ class MessageController extends BaseController<IChatGroup>
     return false;
   }
 
+  /// 通过会话设置
   Future<bool> setCurrentByChat(IChat chat) async {
     return await setCurrent(chat.spaceId, chat.chatId);
   }
 
-  /// 设置当前会话
+  /// 群组或单位可以只通过 ID 设置
+  Future<bool> setCurrentById(String chatId) async {
+    IChat? chat = refById(chatId);
+    if (chat != null) {
+      _setCurrent(chat);
+      return true;
+    }
+    Fluttertoast.showToast(msg: "未获取到会话内容！");
+    throw Exception("未获取到会话内容！");
+  }
+
+  /// 通过空间 ID，会话 ID设置
   Future<bool> setCurrent(String spaceId, String chatId) async {
     IChat? chat = ref(spaceId, chatId);
     if (chat != null) {
-      _setNullTimer?.cancel();
-      _currentChat.value = chat;
-      chat.readAll();
-      if (chat.messages.length <= 30) {
-        await chat.moreMessage();
-      }
-      if (chat.persons.isEmpty) {
-        await chat.morePersons();
-      }
-      _appendChat(chat);
-      await _cacheChats();
+      _setCurrent(chat);
       return true;
     }
-    return false;
+    Fluttertoast.showToast(msg: "未获取到会话内容！");
+    throw Exception("未获取到会话内容！");
+  }
+
+  Future<bool> _setCurrent(IChat chat) async {
+    _setNullTimer?.cancel();
+    _currentChat.value = chat;
+    chat.readAll();
+    if (chat.messages.length <= 30) {
+      await chat.moreMessage();
+    }
+    if (chat.persons.isEmpty) {
+      await chat.morePersons();
+    }
+    _appendChat(chat);
+    await _cacheChats();
+    return true;
   }
 
   /// 缓存当前会话
@@ -310,6 +295,7 @@ class MessageController extends BaseController<IChatGroup>
       cohortName: TargetType.cohort.label,
       spaceTypeName: TargetType.company.label,
     );
+    if (getSize() > 0) return;
     List<ChatGroup> ansGroups = await Kernel.getInstance.queryImChats(model);
     for (var group in ansGroups) {
       var iChatGroup = BaseChatGroup(
@@ -337,8 +323,8 @@ class MessageController extends BaseController<IChatGroup>
   /// 初始化监听器
   _initListener() async {
     // 消息接受订阅
-    var ketWord = ReceiveEvent.receiveMessage.keyWord;
-    Kernel.getInstance.on(ketWord, (message) => onReceiveMessage([message]));
+    var receive = ReceiveEvent.receiveMessage.keyWord;
+    Kernel.getInstance.on(receive, (message) => onReceiveMessage([message]));
 
     // 订阅最新的消息会话
     var key = SubscriptionKey.userChat;
@@ -354,25 +340,25 @@ class MessageController extends BaseController<IChatGroup>
   }
 
   /// 删除好友
-  Future<bool> exitCurrentTarget() async {
+  Future<void> exitCurrentTarget() async {
     var chat = getCurrentSetting;
     if (chat != null) {
       if (Get.isRegistered<TargetController>()) {
         var targetCtrl = Get.find<TargetController>();
-        if (chat.target.typeName == TargetType.person.label) {
+        var typeName = chat.target.typeName;
+        var cohorts = [TargetType.cohort.label, TargetType.jobCohort.label];
+        if (typeName == TargetType.person.label) {
           await targetCtrl.currentPerson.removeFriends([chat.target.id]);
-        } else if (chat.target.typeName == TargetType.cohort.label) {
-          await targetCtrl.currentPerson.exitCohort([chat.target.id]);
+        } else if (cohorts.contains(typeName)) {
+          await targetCtrl.currentPerson.exitCohort(chat.target.id);
         }
       }
-      await _loadingMails();
       _chats.removeWhere((item) {
         return item.spaceId == chat.spaceId && item.chatId == chat.chatId;
       });
+      await refreshMails();
       await _cacheChats();
-      return true;
     }
-    return false;
   }
 
   /// 不存在会话就加入
@@ -418,12 +404,61 @@ class MessageController extends BaseController<IChatGroup>
     return tempChat;
   }
 
+  /// 通过 ID 获取存在的会话
+  IChat? refById(String chatId) {
+    IChat? tempChat;
+    forEach((chatGroup) {
+      for (IChat chat in chatGroup.chats) {
+        if (chat.chatId == chatId) {
+          tempChat = chat;
+          return false;
+        }
+      }
+      return true;
+    });
+    return tempChat;
+  }
+
   /// 设置置顶
   _setTop(IChat targetChat) {
     var position = _getPositioned(targetChat.spaceId, targetChat.chatId);
     if (position != -1) {
       var chat = _chats.removeAt(position);
       _chats.insert(0, chat);
+    }
+  }
+
+  /// 组织变动事件，用于更新本机用户数据
+  targetChange(TargetEvent event, Target target) async {
+    switch (event) {
+      case TargetEvent.createCohort:
+        var chat = ref(auth.spaceId, target.id);
+        var msgBody = "${auth.userInfo.name}创建了群聊";
+        chat?.sendMsg(msgType: MsgType.createCohort, msgBody: msgBody);
+        chat?.openChat();
+        break;
+      case TargetEvent.updateCohort:
+        var chat = ref(auth.spaceId, target.id);
+        var msgBody = "${auth.userInfo.name}将群名称修改为${target.name}";
+        chat?.sendMsg(msgType: MsgType.updateCohortName, msgBody: msgBody);
+        chat?.openChat();
+        break;
+      case TargetEvent.deleteCohort:
+        var chat = ref(auth.spaceId, target.id);
+        var msgBody = "${auth.userInfo.name}解散了群聊";
+        chat?.sendMsg(msgType: MsgType.deleteCohort, msgBody: msgBody);
+        break;
+      case TargetEvent.exitCohort:
+        var chat = ref(auth.spaceId, target.id);
+        var msgBody = "${auth.userInfo.name}退出了群聊";
+        chat?.sendMsg(msgType: MsgType.deleteCohort, msgBody: msgBody);
+        break;
+      case TargetEvent.role:
+        break;
+      case TargetEvent.identity:
+        break;
+      case TargetEvent.transfer:
+        break;
     }
   }
 
@@ -478,11 +513,6 @@ class MessageController extends BaseController<IChatGroup>
   bool hasNoRead() {
     var has = _chats.firstWhereOrNull((item) => item.noReadCount != 0);
     return has != null;
-  }
-
-  /// 获取消息会话对象
-  MessageTarget getMsgItem(String spaceId, String messageItemId) {
-    return spaceMessageItemMap[spaceId]![messageItemId]!;
   }
 
   /// 分组排序
@@ -586,28 +616,38 @@ class MessageController extends BaseController<IChatGroup>
     return spaces;
   }
 
+  /// 这几种类型接受消息前需要刷新通讯录
+  var types = [
+    MsgType.createCohort.name,
+    MsgType.updateCohortName.name,
+    MsgType.exitCohort.name,
+    MsgType.deleteCohort.name,
+  ];
+
   /// 接受消息
-  Future<void> onReceiveMessage(dynamic messageList) async {
-    if (messageList == null) {
+  Future<void> onReceiveMessage(List<dynamic> messages) async {
+    if (getSize() == 0) {
+      Timer(const Duration(seconds: 1), () => onReceiveMessage(messages));
       return;
     }
-    for (var message in messageList) {
-      var detail = MessageDetail.fromMap(message);
+
+    for (var item in messages) {
+      var message = MessageDetail.fromMap(item);
 
       // 会话 ID
-      var sessionId = detail.toId;
-      if (detail.toId == auth.userId) {
-        sessionId = detail.fromId;
+      var sessionId = message.toId;
+      if (message.toId == auth.userId) {
+        sessionId = message.fromId;
       }
 
       super.forEach((chatGroup) {
         for (var chat in chatGroup.chats) {
           bool isMatched = chat.chatId == sessionId;
           if (isMatched && chat.target.typeName == TargetType.person.label) {
-            isMatched = detail.spaceId == chat.spaceId;
+            isMatched = message.spaceId == chat.spaceId;
           }
           if (!isMatched) continue;
-          chat.receiveMessage(detail, _currentChat.value != chat);
+          chat.receiveMessage(message, _currentChat.value != chat);
           _appendChat(chat);
           _setTop(chat);
           _cacheChats();

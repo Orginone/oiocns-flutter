@@ -158,7 +158,7 @@ class NewFriendsPage extends BaseListView<NewFriendsController> {
                                       title: "提示",
                                       content: "确定通过吗？",
                                       confirmFun: () {
-                                        controller.joinSuccess(item.id);
+                                        controller.joinSuccess(item);
                                         Navigator.of(context).pop();
                                       },
                                     );

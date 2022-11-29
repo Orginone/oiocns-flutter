@@ -4,16 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:orginone/api/company_api.dart';
 import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/api/model.dart';
 import 'package:orginone/api/person_api.dart';
+import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/controller/message/message_controller.dart';
+import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/core/authority.dart';
+import 'package:orginone/core/target/base_target.dart';
+import 'package:orginone/core/target/company.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/routers.dart';
@@ -168,12 +173,18 @@ class InviteController extends GetxController {
 
     var messageCtrl = Get.find<MessageController>();
     var chat = messageCtrl.getCurrentSetting!;
-    while(chat.hasMorePersons()) {
+    while (chat.hasMorePersons()) {
       await messageCtrl.getCurrentSetting!.morePersons();
     }
-    var allFriends = await PersonApi.friendsAll("");
+    List<Target> allPersons = [];
+    if (auth.userId == spaceId) {
+      allPersons.addAll(await PersonApi.friendsAll(""));
+    } else {
+      var res = await CompanyApi.getCompanyPersons(spaceId, maxInt, 0);
+      allPersons.addAll(res.result);
+    }
     List<String> joinedFriendIds = [];
-    for (var friend in allFriends) {
+    for (var friend in allPersons) {
       for (var person in chat.persons) {
         if (friend.id == person.id) {
           joinedFriendIds.add(friend.id);
@@ -182,10 +193,10 @@ class InviteController extends GetxController {
       }
     }
     for (var joinedFriendId in joinedFriendIds) {
-      allFriends.removeWhere((item) => item.id == joinedFriendId);
+      allPersons.removeWhere((item) => item.id == joinedFriendId);
     }
-    initNotJoinedFriends.addAll(allFriends);
-    filterNotJoinedFriends.addAll(allFriends);
+    initNotJoinedFriends.addAll(allPersons);
+    filterNotJoinedFriends.addAll(allPersons);
     update();
   }
 
@@ -225,7 +236,7 @@ class InviteController extends GetxController {
     List<String> targetIds = targetQueue.map((item) => item.id).toList();
     var teamPull = TeamPullModel(
       id: chat.chatId,
-      teamTypes: [TargetType.cohort.label],
+      teamTypes: [TargetType.cohort.label, TargetType.jobCohort.label],
       targetType: TargetType.person.label,
       targetIds: targetIds,
     );
@@ -233,11 +244,7 @@ class InviteController extends GetxController {
 
     // 组装对象
     var targetNames = targetQueue.map((item) => item.name).join("，");
-    var msgBody = {
-      "active": auth.userId,
-      "passive": targetQueue.map((item) => item.id).toList(),
-      "remark": "${auth.userInfo.name}邀请$targetNames加入了群聊",
-    };
+    var msgBody = "${auth.userInfo.name}邀请$targetNames加入了群聊";
 
     // 发送消息
     await chat.sendMsg(

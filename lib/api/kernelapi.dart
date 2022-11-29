@@ -430,8 +430,8 @@ class Kernel {
   /// 删除组织/个人
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
-  dynamic deleteTarget(dynamic params) async {
-    return await _request(RequestEntity.from(
+  Future<void> deleteTarget(IdReqModel params) async {
+    await _request(RequestEntity.from(
       module: 'target',
       action: 'DeleteTarget',
       params: params,
@@ -607,8 +607,8 @@ class Kernel {
   /// 退出组织
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
-  dynamic exitAnyOfTeam(dynamic params) async {
-    return await _request(RequestEntity.from(
+  Future<void> exitAnyOfTeam(ExitTeamModel params) async {
+    await _request(RequestEntity.from(
       module: 'target',
       action: 'ExitAnyOfTeam',
       params: params,
@@ -718,12 +718,11 @@ class Kernel {
   /// 查询组织/个人加入的组织/个人
   /// @param {any} params 请求参数
   /// @returns {ResultType} 请求结果
-  Future<PageResp<Target>> queryJoinedTargetById(
-      IDReqJoinedModel params) async {
+  Future<PageResp<Target>> queryJoinedTargetById(IDReqJoinedModel p) async {
     Map<String, dynamic> res = await _request(RequestEntity.from(
       module: 'target',
       action: 'QueryJoinedTargetById',
-      params: params,
+      params: p,
     ));
     return PageResp.fromMap(res, Target.fromMap);
   }

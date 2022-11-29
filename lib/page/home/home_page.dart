@@ -86,7 +86,7 @@ class HomePage extends GetView<HomeController> {
           Icons.group_add_outlined,
           "创建群组",
           () {
-            Map<String, dynamic> args = {"func": CohortEvent.create};
+            Map<String, dynamic> args = {"func": TargetEvent.createCohort};
             Get.toNamed(Routers.cohortMaintain, arguments: args);
           },
         ),

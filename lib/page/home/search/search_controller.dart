@@ -20,7 +20,7 @@ enum SearchItem {
   publicCohorts("公开群组", []),
   applications("应用", []),
   markets("市场", []),
-  units("单位", []);
+  units("单位", [FunctionPoint.applyCompanies]);
 
   const SearchItem(this.label, this.functionPoint);
 
@@ -30,7 +30,8 @@ enum SearchItem {
 
 enum FunctionPoint {
   addFriends("添加好友", "通过账号/手机号搜索"),
-  applyCohorts("申请入群", "通过群组编号搜索");
+  applyCohorts("申请入群", "通过群组编号搜索"),
+  applyCompanies("申请入单位", "通过单位编号搜索"),;
 
   const FunctionPoint(this.functionName, this.placeHolder);
 

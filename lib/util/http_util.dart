@@ -152,11 +152,14 @@ class HttpUtil {
   _onDioError(DioError error, bool showToast) {
     if (error.response == null) return;
     Response response = error.response!;
-    if (response.statusCode == 400) {
+    var statusCode = response.statusCode;
+    if (statusCode == 400 || statusCode == 500) {
       log.info("errorInfo =====> ${response.data}");
       if (showToast) {
         Fluttertoast.showToast(msg: response.data);
       }
+    } else if (statusCode == 401){
+
     }
   }
 

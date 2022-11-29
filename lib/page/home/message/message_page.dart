@@ -164,8 +164,8 @@ class Relation extends GetView<MessageController> {
         Padding(padding: EdgeInsets.only(top: top)),
         _otherUnits,
         Padding(padding: EdgeInsets.only(top: top)),
-        _chats,
-        Padding(padding: EdgeInsets.only(top: top)),
+        // _chats,
+        // Padding(padding: EdgeInsets.only(top: top)),
         Divider(height: 1.h),
         Padding(padding: EdgeInsets.only(top: top)),
         _newFriends,
@@ -277,7 +277,9 @@ class Relation extends GetView<MessageController> {
           margin: EdgeInsets.only(left: 15.w),
           child: Text("其他单位", style: AFont.instance.size22Black3W500),
         ),
-        func: () {},
+        func: () {
+          Get.toNamed(Routers.mineUnit);
+        },
       );
 
   get _chats => ChooseItem(

@@ -39,12 +39,11 @@ class SpaceChoosePage extends GetView<TargetController> {
       }));
 
   Widget _item(Company company) {
-    var targetId = company.target.id;
     return SpaceItemWidget(
         company: company,
-        isCurrent: auth.spaceId == targetId,
+        isCurrent: auth.spaceId == company.target.id,
         onTap: (company) async {
-          await controller.switchSpaces(targetId);
+          await controller.currentPerson.changeSpaces(company);
           Get.back();
         });
   }

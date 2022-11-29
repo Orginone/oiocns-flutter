@@ -44,7 +44,7 @@ class CohortsPage extends GetView<TargetController> {
   get _actions => <Widget>[
         IconButton(
           onPressed: () {
-            Map<String, CohortEvent> args = {"func": CohortEvent.create};
+            Map<String, TargetEvent> args = {"func": TargetEvent.createCohort};
             Get.toNamed(Routers.cohortMaintain, arguments: args);
           },
           icon: const Icon(Icons.create_outlined, color: Colors.black),
@@ -79,9 +79,9 @@ class CohortsPage extends GetView<TargetController> {
   get _list => Obx(() => ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
-        itemCount: controller.searchedCohorts.length,
+        itemCount: controller.currentPerson.joinedCohorts.length,
         itemBuilder: (BuildContext context, int index) {
-          return _item(context, controller.searchedCohorts[index]);
+          return _item(context, controller.currentPerson.joinedCohorts[index]);
         },
       ));
 
@@ -101,7 +101,7 @@ class CohortsPage extends GetView<TargetController> {
       behavior: HitTestBehavior.opaque,
       onTap: () async {
         var messageCtrl = Get.find<MessageController>();
-        await messageCtrl.setCurrent(auth.spaceId, target.id);
+        await messageCtrl.setCurrentById(target.id);
         Get.toNamed(Routers.chat);
       },
       child: Container(
@@ -127,19 +127,17 @@ class CohortsPage extends GetView<TargetController> {
       textStyle: AFont.instance.size18themeColorW500,
       padding: EdgeInsets.all(10.w),
       onTap: () async {
-        var items = CohortEvent.values;
+        List<TargetEvent> items = [];
         if (ctrlType == CtrlType.manageable) {
-          items = items.where((item) {
-            return item != CohortEvent.create && item != CohortEvent.exit;
-          }).toList();
+          items = [TargetEvent.updateCohort, TargetEvent.deleteCohort];
         } else {
-          items = [CohortEvent.exit];
+          items = [TargetEvent.exitCohort];
         }
 
         // 弹出菜单
         var top = y - 50;
         var right = MediaQuery.of(context).size.width - x;
-        final result = await showMenu<CohortEvent>(
+        final result = await showMenu<TargetEvent>(
           context: context,
           position: RelativeRect.fromLTRB(x, top, right, 0),
           items: items.map((item) {
@@ -150,7 +148,16 @@ class CohortsPage extends GetView<TargetController> {
           }).toList(),
         );
         if (result != null) {
-          controller.cohortFunc(result, cohort);
+          if (result == TargetEvent.updateCohort) {
+            var json = cohort.toJson();
+            json["remark"] = cohort.team?.remark;
+            Map<String, dynamic> args = {"func": result, "cohort": json};
+            Get.toNamed(Routers.cohortMaintain, arguments: args);
+          } else if (result == TargetEvent.deleteCohort) {
+            controller.deleteCohort(cohort);
+          } else if (result == TargetEvent.exitCohort) {
+            controller.exitCohort(cohort);
+          }
         }
       },
       onPanDown: (details) {

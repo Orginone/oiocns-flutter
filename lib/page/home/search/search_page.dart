@@ -6,24 +6,20 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/tabs/gf_tabbar.dart';
 import 'package:getwidget/components/tabs/gf_tabbar_view.dart';
-import 'package:orginone/api/cohort_api.dart';
 import 'package:orginone/api/person_api.dart';
+import 'package:orginone/api_resp/target.dart';
+import 'package:orginone/component/a_font.dart';
+import 'package:orginone/component/text_avatar.dart';
+import 'package:orginone/component/text_search.dart';
+import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
-import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/controller/target/target_controller.dart';
-import 'package:orginone/core/authority.dart';
-
-import '../../../../util/widget_util.dart';
-import '../../../api_resp/target.dart';
-import '../../../component/a_font.dart';
-import '../../../component/text_avatar.dart';
-import '../../../component/text_search.dart';
-import '../../../component/unified_colors.dart';
-import '../../../enumeration/target_type.dart';
-import '../../../util/asset_util.dart';
-import '../../../util/string_util.dart';
-import 'search_controller.dart';
+import 'package:orginone/enumeration/target_type.dart';
+import 'package:orginone/page/home/search/search_controller.dart';
+import 'package:orginone/util/asset_util.dart';
+import 'package:orginone/util/string_util.dart';
+import 'package:orginone/util/widget_util.dart';
 
 class SearchPage extends GetView<SearchController> {
   const SearchPage({Key? key}) : super(key: key);
@@ -171,27 +167,34 @@ class SearchPage extends GetView<SearchController> {
     );
   }
 
-  Widget _targetItem(Target targetResp) {
+  Widget _targetItem(Target target) {
     List<Widget> children = [
       TextAvatar(
-        avatarName: StringUtil.getPrefixChars(targetResp.name, count: 2),
+        avatarName: StringUtil.getPrefixChars(target.name, count: 2),
         textStyle: AFont.instance.size20WhiteW500,
       ),
       Padding(padding: EdgeInsets.only(left: 10.w)),
-      Text(targetResp.name, style: AFont.instance.size22Black3W500),
+      Text(target.name, style: AFont.instance.size22Black3W500),
       Expanded(child: Container()),
     ];
     if (controller.functionPoint != null) {
       switch (controller.functionPoint!) {
         case FunctionPoint.addFriends:
         case FunctionPoint.applyCohorts:
+        case FunctionPoint.applyCompanies:
           children.add(ElevatedButton(
             onPressed: () async {
               var targetCtrl = Get.find<TargetController>();
-              if (controller.functionPoint! == FunctionPoint.addFriends) {
-                await PersonApi.join(targetResp.id);
-              } else {
-                await targetCtrl.currentPerson.applyJoinCohort(targetResp.id);
+              switch (controller.functionPoint!) {
+                case FunctionPoint.addFriends:
+                  await PersonApi.join(target.id);
+                  break;
+                case FunctionPoint.applyCohorts:
+                  await targetCtrl.currentPerson.applyJoinCohort(target.id);
+                  break;
+                case FunctionPoint.applyCompanies:
+                  await targetCtrl.currentPerson.applyJoinCompany(target.id);
+                  break;
               }
               Fluttertoast.showToast(msg: "申请成功");
             },

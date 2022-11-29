@@ -67,8 +67,14 @@ class ContactController extends BaseController {
         //插入字符
         var index = 0;
         for (var pos in insertPos) {
-          var targetResp = Target(typeChar, firstChars[pos], "", "", "", "",
-              0, "", "", "", null, null, null, null);
+          var targetResp = Target(
+            id: typeChar,
+            name: firstChars[pos],
+            code: "",
+            typeName: "",
+            thingId: "",
+            status: 1,
+          );
           mData.insert(pos + index, targetResp);
           index++;
         }
@@ -107,9 +113,9 @@ class ContactController extends BaseController {
     mTouchChar.value = getBarStr();
   }
 
-  void _calcAllItemHeight(){
+  void _calcAllItemHeight() {
     _listAllItemHeight = 0;
-    for (var i = 0;i < mData.length; i++) {
+    for (var i = 0; i < mData.length; i++) {
       if (typeChar == mData[i].id) {
         _listAllItemHeight += 45.h;
       } else {
@@ -133,10 +139,11 @@ class ContactController extends BaseController {
         height += 11.h;
       }
     }
+
     /// 不足一页滑动到底部
-    if(_listAllItemHeight - height > 1000.h) {
+    if (_listAllItemHeight - height > 1000.h) {
       mScrollController.jumpTo(height);
-    }else{
+    } else {
       mScrollController.jumpTo(mScrollController.position.maxScrollExtent);
     }
   }
