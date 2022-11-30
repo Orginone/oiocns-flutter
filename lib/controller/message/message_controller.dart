@@ -496,107 +496,6 @@ class MessageController extends BaseController<IChatGroup>
     return has != null;
   }
 
-  /// 分组排序
-  sortingGroups() {
-    List<ChatGroup> groups = orgChatCache.chats;
-    List<ChatGroup> spaces = [];
-    ChatGroup? topping;
-    for (ChatGroup space in groups) {
-      var isCurrent = space.id == auth.spaceId;
-      if (space.id == "topping") {
-        topping = space;
-        space.isExpand = true;
-      } else if (isCurrent) {
-        space.isExpand = isCurrent;
-        spaces.insert(0, space);
-      } else {
-        space.isExpand = false;
-        spaces.add(space);
-      }
-    }
-    if (topping != null) {
-      spaces.insert(0, topping);
-    }
-    orgChatCache.chats = spaces;
-  }
-
-  /// 组内会话排序
-  sortingItems(List<MessageTarget> chats) {
-    // 会话
-    chats.sort((first, second) {
-      if (first.msgTime == null || second.msgTime == null) {
-        return 0;
-      } else {
-        return -first.msgTime!.compareTo(second.msgTime!);
-      }
-    });
-    // 置顶排序
-    chats.sort((first, second) {
-      first.isTop ??= false;
-      second.isTop ??= false;
-      if (first.isTop == second.isTop) {
-        return first.isTop! ? -1 : 0;
-      } else {
-        return first.isTop! ? -1 : 1;
-      }
-    });
-  }
-
-  /// 空间处理
-  List<ChatGroup> _spaceHandling(List<ChatGroup> groups) {
-    // 新的数组
-    List<ChatGroup> spaces = [];
-    Map<String, ChatGroup> newSpaceMap = {};
-    Map<String, Map<String, MessageTarget>> newSpaceMessageItemMap = {};
-
-    // 置顶会话
-    groups = groups.where((item) => item.id != "topping").toList();
-    ChatGroup topGroup = ChatGroup("topping", "置顶会话", []);
-
-    bool hasTop = false;
-    for (var group in groups) {
-      // 初始数据
-      String spaceId = group.id;
-      List<MessageTarget> chats = group.chats;
-
-      // 建立索引
-      newSpaceMap[spaceId] = group;
-      newSpaceMessageItemMap[spaceId] = {};
-
-      // 数据映射
-      for (MessageTarget messageItem in chats) {
-        var id = messageItem.id;
-        if (spaceMessageItemMap.containsKey(spaceId)) {
-          var messageItemMap = spaceMessageItemMap[spaceId]!;
-          if (messageItemMap.containsKey(id)) {
-            var oldItem = messageItemMap[id]!;
-            messageItem.msgTime = oldItem.msgTime;
-            messageItem.msgType ??= oldItem.msgType;
-            messageItem.msgBody ??= oldItem.msgBody;
-            messageItem.personNum ??= oldItem.personNum;
-            messageItem.noRead ??= oldItem.noRead;
-            messageItem.showTxt ??= oldItem.showTxt;
-            messageItem.isTop ??= oldItem.isTop;
-          }
-        }
-        newSpaceMessageItemMap[spaceId]![id] = messageItem;
-        if (messageItem.isTop == true) {
-          hasTop = true;
-        }
-      }
-
-      // 组内排序
-      sortingItems(group.chats);
-      spaces.add(group);
-    }
-    if (hasTop) {
-      spaces.insert(0, topGroup);
-    }
-    spaceMap = newSpaceMap;
-    spaceMessageItemMap = newSpaceMessageItemMap;
-    return spaces;
-  }
-
   /// 接受消息
   Future<void> onReceiveMessage(List<dynamic> messages) async {
     for (var item in messages) {
@@ -630,25 +529,6 @@ class MessageController extends BaseController<IChatGroup>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     currentAppState = state;
-  }
-
-  chatEventFire(ChatFunc func, String spaceId, MessageTarget item) async {
-    switch (func) {
-      case ChatFunc.topping:
-      case ChatFunc.cancelTopping:
-        item.isTop = func == ChatFunc.topping;
-        orgChatCache.chats = _spaceHandling(orgChatCache.chats);
-        sortingGroups();
-        sortingItems(orgChatCache.recentChats ?? []);
-        await Kernel.getInstance.anyStore.cacheChats(orgChatCache);
-        update();
-        break;
-      case ChatFunc.remove:
-        orgChatCache.recentChats?.remove(item);
-        await Kernel.getInstance.anyStore.cacheChats(orgChatCache);
-        update();
-        break;
-    }
   }
 
   /// 开始播放
