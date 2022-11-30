@@ -51,25 +51,6 @@ class NewFriendsController extends BaseListController<FriendsEntity> {
           Fluttertoast.showToast(msg: "已通过");
           offset = 0;
           onRefresh();
-          var team = friends.team;
-          if (team != null) {
-            var target = team.target;
-            if (target != null) {
-              // 所有非人员的都要加一条信息
-              if (Get.isRegistered<MessageController>()) {
-                var messageCtrl = Get.find<MessageController>();
-                if (target.typeName != TargetType.person.name) {
-                  var chat = messageCtrl.refById(target.id);
-                  if (chat != null) {
-                    var msgBody = "${auth.userInfo.name}邀请${team.name}加入了群聊";
-                    chat.sendMsg(msgType: MsgType.pull, msgBody: msgBody);
-                  }
-                } else {
-                  messageCtrl.refreshMails();
-                }
-              }
-            }
-          }
         })
         .onError((error, stackTrace) {})
         .whenComplete(() => ALoading.dismiss());

@@ -67,19 +67,6 @@ class ChatMessageDetail extends GetView<MessageController> {
         children.add(_getAvatar());
         children.add(_getChat(context));
         break;
-      case MsgType.pull:
-        children.add(
-          Container(
-            width: 300.w,
-            alignment: Alignment.center,
-            child: Text(
-              detail.msgBody ?? "",
-              style: AFont.instance.size18Black9,
-            ),
-          ),
-        );
-        isCenter = true;
-        break;
       case MsgType.recall:
         var messageItem = controller.getCurrentChat!.target;
         String msgBody = StringUtil.getDetailRecallBody(

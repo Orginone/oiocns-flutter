@@ -204,7 +204,6 @@ class MessageItemWidget extends StatelessWidget {
         return "$showTxt[语音]";
       case MsgType.file:
         return "$showTxt[文件]";
-      case MsgType.pull:
       case MsgType.unknown:
       case MsgType.topping:
         return detail.msgBody ?? "";
