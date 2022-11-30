@@ -252,6 +252,16 @@ class InviteController extends GetxController {
     );
     await Kernel.getInstance.pullAnyToTeam(teamPull);
 
+    // 组装对象
+    var targetNames = targetQueue.map((item) => item.name).join("，");
+    var msgBody = "${auth.userInfo.name}邀请$targetNames加入了群聊";
+
+    // 发送消息
+    await chat.sendMsg(
+      msgBody: jsonEncode(msgBody),
+      msgType: MsgType.pull,
+    );
+
     Fluttertoast.showToast(msg: "邀请成功!");
     Get.back();
   }

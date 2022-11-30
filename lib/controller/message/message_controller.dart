@@ -244,22 +244,18 @@ class MessageController extends BaseController<IChatGroup>
   Future<bool> setCurrentById(String chatId) async {
     IChat? chat = refById(chatId);
     if (chat != null) {
-      _setCurrent(chat);
-      return true;
+      return await _setCurrent(chat);
     }
-    Fluttertoast.showToast(msg: "未获取到会话内容！");
-    throw Exception("未获取到会话内容！");
+    return false;
   }
 
   /// 通过空间 ID，会话 ID设置
   Future<bool> setCurrent(String spaceId, String chatId) async {
     IChat? chat = ref(spaceId, chatId);
     if (chat != null) {
-      _setCurrent(chat);
-      return true;
+      return await _setCurrent(chat);
     }
-    Fluttertoast.showToast(msg: "未获取到会话内容！");
-    throw Exception("未获取到会话内容！");
+    return false;
   }
 
   Future<bool> _setCurrent(IChat chat) async {
@@ -603,11 +599,6 @@ class MessageController extends BaseController<IChatGroup>
 
   /// 接受消息
   Future<void> onReceiveMessage(List<dynamic> messages) async {
-    if (getSize() == 0) {
-      Timer(const Duration(seconds: 1), () => onReceiveMessage(messages));
-      return;
-    }
-
     for (var item in messages) {
       var message = MessageDetail.fromMap(item);
 

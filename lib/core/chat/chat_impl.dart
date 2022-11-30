@@ -221,7 +221,11 @@ class BaseChat implements IChat<MessageItemWidget> {
   openChat() async {
     if (Get.isRegistered<MessageController>()) {
       var messageCtrl = Get.find<MessageController>();
-      await messageCtrl.setCurrentByChat(this);
+      bool success = await messageCtrl.setCurrentByChat(this);
+      if (!success) {
+        Fluttertoast.showToast(msg: "未获取到会话信息");
+        return;
+      }
       Get.offNamedUntil(
         Routers.chat,
         (router) => router.settings.name == Routers.home,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/hub/any_store.dart';
@@ -89,13 +91,16 @@ class Kernel {
     if (params == null) {
       return;
     }
-    log.info("接受到一条新的信息: ${params.toString()}");
+    log.info("最初接受到的消息: ${params.toString()}");
     Map<String, dynamic> param = params[0];
     String key = param["target"].toString().toLowerCase();
     if (_methods.containsKey(key)) {
       for (var callback in _methods[key]!) {
         callback(param["data"]);
       }
+    } else {
+      log.info("未订阅相关内容信息，循环接收消息中......");
+      Timer(const Duration(seconds: 1), () => receive(params));
     }
   }
 

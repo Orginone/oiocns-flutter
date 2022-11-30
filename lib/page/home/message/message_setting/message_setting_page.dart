@@ -48,7 +48,7 @@ class MessageSettingPage extends GetView<MessageController> {
       children.add(Positioned(
         left: left,
         bottom: bottomDistance,
-        child: _exitTarget(context, chatType.label),
+        child: _exitTarget(context, chatType),
       ));
     }
 
@@ -60,7 +60,7 @@ class MessageSettingPage extends GetView<MessageController> {
         children.add(Positioned(
           left: left,
           bottom: bottomDistance,
-          child: _exitTarget(context, chatType.label),
+          child: _exitTarget(context, chatType),
         ));
       }
       // 个人空间可以清空会话
@@ -256,15 +256,15 @@ class MessageSettingPage extends GetView<MessageController> {
   }
 
   /// 删除好友
-  Widget _exitTarget(BuildContext context, String targetType) {
+  Widget _exitTarget(BuildContext context, ChatType chatType) {
     String remark = "";
     String btnName = "";
-    if (targetType == TargetType.cohort.label || targetType == TargetType.jobCohort.label) {
-      remark = "您确定退出${controller.getCurrentChat?.target.name}吗?";
-      btnName = "退出群聊";
-    } else if (targetType == TargetType.person.label) {
+    if (chatType == ChatType.friends) {
       remark = "您确定删除好友${controller.getCurrentSetting?.target.name}吗?";
       btnName = "删除好友";
+    } else {
+      remark = "您确定退出${controller.getCurrentChat?.target.name}吗?";
+      btnName = "退出群聊";
     }
     return ElevatedButton(
       style: ButtonStyle(

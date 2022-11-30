@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api_resp/tree_node.dart';
 import 'package:orginone/component/a_font.dart';
@@ -205,7 +205,11 @@ class Relation extends GetView<MessageController> {
               var chat = controller.chats[index];
               return GestureDetector(
                 onTap: () async {
-                  await controller.setCurrentByChat(chat);
+                  bool success = await controller.setCurrentByChat(chat);
+                  if (!success) {
+                    Fluttertoast.showToast(msg: "未获取到会话信息！");
+                    return;
+                  }
                   Get.toNamed(Routers.chat);
                 },
                 child: Container(

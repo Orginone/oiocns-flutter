@@ -29,7 +29,6 @@ class ApiResp {
 
   dynamic getData() {
     if (code != 200) {
-      Fluttertoast.showToast(msg: msg);
       throw Exception(msg);
     }
     return data;

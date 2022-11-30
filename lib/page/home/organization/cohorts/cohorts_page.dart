@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/a_font.dart';
@@ -101,7 +102,11 @@ class CohortsPage extends GetView<TargetController> {
       behavior: HitTestBehavior.opaque,
       onTap: () async {
         var messageCtrl = Get.find<MessageController>();
-        await messageCtrl.setCurrentById(target.id);
+        bool success = await messageCtrl.setCurrentById(target.id);
+        if (!success) {
+          Fluttertoast.showToast(msg: "未获取到会话信息！");
+          return;
+        }
         Get.toNamed(Routers.chat);
       },
       child: Container(

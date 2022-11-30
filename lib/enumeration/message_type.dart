@@ -6,4 +6,5 @@ enum MsgType {
   topping,
   unknown,
   file,
+  pull,
 }

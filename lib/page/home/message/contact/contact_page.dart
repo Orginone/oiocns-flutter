@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_icon_button.dart';
 import 'package:orginone/api_resp/target.dart';
@@ -87,7 +88,14 @@ class ContactPage extends BaseView<ContactController> {
         child: ListTile(
             onTap: () async {
               var messageCtrl = Get.find<MessageController>();
-              await messageCtrl.setCurrent(auth.userId, target.id);
+              bool success = await messageCtrl.setCurrent(
+                auth.userId,
+                target.id,
+              );
+              if (!success) {
+                Fluttertoast.showToast(msg: "未获取到会话信息！");
+                return;
+              }
               Get.toNamed(Routers.chat);
             },
             leading: TextAvatar(
