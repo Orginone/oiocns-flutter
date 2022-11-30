@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:get/get.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/hub/any_store.dart';
 import 'package:orginone/api/hub/store_hub.dart';
@@ -1672,18 +1672,30 @@ class Kernel {
 
   Future<dynamic> _request(RequestEntity request) async {
     if (_kernelHub.isConnected()) {
-      dynamic res = await _kernelHub.invoke("Request", args: [request]);
-      log.info("kernelHub ===> ${res.toString()}");
-      return ApiResp.fromJson(res).getData();
+      try {
+        dynamic res = await _kernelHub.invoke("Request", args: [request]);
+        log.info("kernelHub request ===> ${request.toString()}");
+        log.info("kernelHub ===> ${res.toString()}");
+        return ApiResp.fromJson(res).getData();
+      } on Exception catch (error) {
+        Fluttertoast.showToast(msg: error.toString());
+        rethrow;
+      }
     }
     return await _restRequest("request", request);
   }
 
   Future<dynamic> _requests(List<RequestEntity> requests) async {
     if (_kernelHub.isConnected()) {
-      dynamic res = await _kernelHub.invoke("Requests", args: [requests]);
-      log.info("kernelHub ===> ${res.toString()}");
-      return ApiResp.fromJson(res).getData();
+      try {
+        dynamic res = await _kernelHub.invoke("Requests", args: [requests]);
+        log.info("kernelHub request ===> ${requests.toString()}");
+        log.info("kernelHub ===> ${res.toString()}");
+        return ApiResp.fromJson(res).getData();
+      } on Exception catch (error) {
+        Fluttertoast.showToast(msg: error.toString());
+        rethrow;
+      }
     }
     return await _restRequest("requests", requests);
   }

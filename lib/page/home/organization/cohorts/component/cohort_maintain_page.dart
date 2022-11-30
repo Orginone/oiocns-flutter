@@ -11,16 +11,19 @@ List<FormItem> formConfig = [
     fieldKey: 'name',
     fieldName: "群组名称",
     itemType: ItemType.text,
+    required: true,
   ),
   const FormItem(
     fieldKey: 'code',
     fieldName: "群组编号",
     itemType: ItemType.text,
+    required: true,
   ),
   const FormItem(
     fieldKey: 'remark',
     fieldName: "群组简介",
     itemType: ItemType.text,
+    required: true,
   ),
 ];
 

@@ -93,15 +93,17 @@ class InvitePage extends GetView<InviteController> {
     );
   }
 
-  get _list => GetBuilder<InviteController>(
-        builder: (controller) => ListView.builder(
-          shrinkWrap: true,
-          scrollDirection: Axis.vertical,
-          itemCount: controller.filterNotJoinedFriends.length,
-          itemBuilder: (BuildContext context, int index) {
-            return _item(controller.filterNotJoinedFriends[index]);
-          },
-        ),
+  get _list =>
+      GetBuilder<InviteController>(
+        builder: (controller) =>
+            ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              itemCount: controller.filterNotJoinedFriends.length,
+              itemBuilder: (BuildContext context, int index) {
+                return _item(controller.filterNotJoinedFriends[index]);
+              },
+            ),
       );
 
   Widget _item(Target target) {
@@ -174,9 +176,9 @@ class InviteController extends GetxController {
       await messageCtrl.getCurrentSetting!.morePersons();
     }
     List<Target> allPersons = [];
-    if (auth.userId == spaceId) {
-      allPersons.addAll(await PersonApi.friendsAll(""));
-    } else {
+    var friends = await PersonApi.friendsAll("");
+    allPersons.addAll(friends);
+    if (auth.userId != spaceId) {
       var res = await Kernel.getInstance.querySubTargetById(IDReqSubModel(
         id: spaceId,
         typeNames: [
@@ -191,6 +193,9 @@ class InviteController extends GetxController {
           filter: "",
         ),
       ));
+      for (var item in friends) {
+        res.result.removeWhere((person) => person.id == item.id);
+      }
       allPersons.addAll(res.result);
     }
     List<String> joinedFriendIds = [];
