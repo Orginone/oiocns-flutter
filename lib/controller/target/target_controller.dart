@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:orginone/api/cohort_api.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/core/authority.dart';
@@ -56,28 +55,18 @@ class TargetController extends GetxController {
     _searchedCohorts.addAll(cohorts);
   }
 
-  /// 通知会话控制器
-  notification(TargetEvent event, Target target) {
-    if (Get.isRegistered<MessageController>()) {
-      var messageCtrl = Get.find<MessageController>();
-      messageCtrl.targetChange(event, target);
-    }
-  }
-
   /// 创建群组
-  createCohort(Map<String, dynamic> value) async {
-    Cohort cohort = await currentPerson.createCohort(
+  Future<void> createCohort(Map<String, dynamic> value) async {
+    await currentPerson.createCohort(
       code: value["code"],
       name: value["name"],
       remark: value["remark"],
     );
-    notification(TargetEvent.createCohort, cohort.target);
   }
 
   /// 更新群组
   updateCohort(Map<String, dynamic> value) async {
     var cohort = Target.fromMap(value);
-    notification(TargetEvent.updateCohort, cohort);
     await currentPerson.updateCohort(
       id: cohort.id,
       code: cohort.code,
@@ -91,39 +80,16 @@ class TargetController extends GetxController {
 
   /// 解散群组
   deleteCohort(Target cohort) async {
-    await notification(TargetEvent.deleteCohort, cohort);
-    await currentPerson.dissolutionCohort(
+    await currentPerson.deleteCohort(
       id: cohort.id,
       typeName: cohort.typeName,
       belongId: cohort.belongId ?? "",
     );
   }
 
-  /// 解散群组
+  /// 退出群组
   exitCohort(Target cohort) async {
-    notification(TargetEvent.exitCohort, cohort);
     await currentPerson.exitCohort(cohort.id);
-  }
-
-  targetEvent(TargetEvent func, Target cohort) async {
-    switch (func) {
-      case TargetEvent.updateCohort:
-        break;
-      case TargetEvent.role:
-        break;
-      case TargetEvent.identity:
-        break;
-      case TargetEvent.transfer:
-        break;
-      case TargetEvent.deleteCohort:
-        await CohortApi.delete(cohort.id);
-        break;
-      case TargetEvent.exitCohort:
-        await currentPerson.exitCohort(cohort.id);
-        break;
-      case TargetEvent.createCohort:
-        break;
-    }
   }
 }
 

@@ -67,10 +67,6 @@ class ChatMessageDetail extends GetView<MessageController> {
         children.add(_getAvatar());
         children.add(_getChat(context));
         break;
-      case MsgType.createCohort:
-      case MsgType.exitCohort:
-      case MsgType.deleteCohort:
-      case MsgType.updateCohortName:
       case MsgType.pull:
         children.add(
           Container(
@@ -112,8 +108,7 @@ class ChatMessageDetail extends GetView<MessageController> {
 
   /// 目标名称
   String targetName() {
-    var currentChat = controller.getCurrentChat;
-    return controller.getName(currentChat!.target.id);
+    return controller.getName(detail.fromId);
   }
 
   /// 获取头像

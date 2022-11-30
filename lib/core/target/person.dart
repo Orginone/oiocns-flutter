@@ -83,8 +83,9 @@ class Person extends BaseTarget {
       teamRemark: remark,
     );
     Cohort cohort = Cohort(await _createCohort(targetModel));
-    _joinedCohorts.add(cohort);
     await cohort.pullPersons([super.target.id]);
+    await loadAuth();
+    _joinedCohorts.add(cohort);
     return cohort;
   }
 
@@ -119,7 +120,7 @@ class Person extends BaseTarget {
   }
 
   /// 解散群组
-  Future<void> dissolutionCohort({
+  Future<void> deleteCohort({
     required String id,
     required String typeName,
     required String belongId,
@@ -197,7 +198,9 @@ class Person extends BaseTarget {
     for (var joinedCohort in joinedCohorts) {
       if (joinedCohort.target.id == cohortId) {
         await exit(
-            targetType: joinedCohort.target.typeName, targetId: cohortId);
+          targetType: joinedCohort.target.typeName,
+          targetId: cohortId,
+        );
         _joinedCohorts.remove(joinedCohort);
         return;
       }
@@ -209,7 +212,9 @@ class Person extends BaseTarget {
     for (var joinedCompany in joinedCompanies) {
       if (joinedCompany.target.id == companyId) {
         await exit(
-            targetType: joinedCompany.target.typeName, targetId: companyId);
+          targetType: joinedCompany.target.typeName,
+          targetId: companyId,
+        );
         joinedCompanies.remove(joinedCompany);
         if (currentCompany.target.id == companyId) {
           await changeSpaces(selfCompany);

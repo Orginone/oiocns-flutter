@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/text_avatar.dart';
@@ -31,26 +30,23 @@ class AvatarGroup extends StatelessWidget {
 
   /// 头像组
   get _avatarGroup {
-    return Obx(() {
-      var mappedPerson = persons.map((item) {
-        return _avatarItem(item);
-      }).toList();
-      if (showCount != null && mappedPerson.length > showCount!) {
-        mappedPerson = mappedPerson.sublist(0, showCount!);
-      }
-      if (hasAdd) {
-        mappedPerson.add(_addItem);
-      }
-
-      return GridView.count(
-        padding: padding,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: 5,
-        childAspectRatio: 60 / 80,
-        children: mappedPerson,
-      );
-    });
+    var mappedPerson = persons.map((item) {
+      return _avatarItem(item);
+    }).toList();
+    if (showCount != null && mappedPerson.length > showCount!) {
+      mappedPerson = mappedPerson.sublist(0, showCount!);
+    }
+    if (hasAdd) {
+      mappedPerson.add(_addItem);
+    }
+    return GridView.count(
+      padding: padding,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 5,
+      childAspectRatio: 60 / 80,
+      children: mappedPerson,
+    );
   }
 
   /// 添加好友

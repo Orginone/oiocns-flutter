@@ -192,14 +192,6 @@ class BaseChat implements IChat<MessageItemWidget> {
       _noReadCount.value += noRead ? 1 : 0;
       _lastMessage.value = detail;
       _messages.insert(0, detail);
-      var msgType = detail.msgType;
-      if (msgType == MsgType.pull.name) {
-        await morePersons();
-      } else if (msgType == MsgType.exitCohort.name) {
-        if (detail.fromId == auth.userId){
-
-        }
-      }
     }
   }
 

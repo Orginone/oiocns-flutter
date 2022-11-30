@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:logging/logging.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/choose_item.dart';
 import 'package:orginone/component/text_avatar.dart';
@@ -45,7 +48,7 @@ class MessageSettingPage extends GetView<MessageController> {
       children.add(Positioned(
         left: left,
         bottom: bottomDistance,
-        child: _exitGroup(context),
+        child: _exitTarget(context, chatType.label),
       ));
     }
 
@@ -57,7 +60,7 @@ class MessageSettingPage extends GetView<MessageController> {
         children.add(Positioned(
           left: left,
           bottom: bottomDistance,
-          child: _removeFriend(context),
+          child: _exitTarget(context, chatType.label),
         ));
       }
       // 个人空间可以清空会话
@@ -98,18 +101,22 @@ class MessageSettingPage extends GetView<MessageController> {
         children = [
           _avatar,
           Padding(padding: EdgeInsets.only(top: 50.h)),
-          AvatarGroup(
-            persons: controller.getCurrentSetting!.persons,
-            hasAdd: isRelationAdmin,
-            showCount: isRelationAdmin ? 14 : 15,
-            addCallback: () {
-              Map<String, dynamic> args = {
-                "spaceId": chat.spaceId,
-                "messageItemId": chat.chatId
-              };
-              Get.toNamed(Routers.invite, arguments: args);
-            },
-          ),
+          Obx(() {
+            controller.log.info(
+                "当前群人员数量：${controller.getCurrentSetting!.persons.length}");
+            return AvatarGroup(
+              persons: controller.getCurrentSetting!.persons,
+              hasAdd: isRelationAdmin,
+              showCount: isRelationAdmin ? 14 : 15,
+              addCallback: () {
+                Map<String, dynamic> args = {
+                  "spaceId": chat.spaceId,
+                  "messageItemId": chat.chatId
+                };
+                Get.toNamed(Routers.invite, arguments: args);
+              },
+            );
+          }),
           if (chat.hasMorePersons()) _more,
           _interruption,
           _top,
@@ -249,7 +256,16 @@ class MessageSettingPage extends GetView<MessageController> {
   }
 
   /// 删除好友
-  Widget _removeFriend(BuildContext context) {
+  Widget _exitTarget(BuildContext context, String targetType) {
+    String remark = "";
+    String btnName = "";
+    if (targetType == TargetType.cohort.label || targetType == TargetType.jobCohort.label) {
+      remark = "您确定退出${controller.getCurrentChat?.target.name}吗?";
+      btnName = "退出群聊";
+    } else if (targetType == TargetType.person.label) {
+      remark = "您确定删除好友${controller.getCurrentSetting?.target.name}吗?";
+      btnName = "删除好友";
+    }
     return ElevatedButton(
       style: ButtonStyle(
         fixedSize: MaterialStateProperty.all(defaultBtnSize),
@@ -260,8 +276,7 @@ class MessageSettingPage extends GetView<MessageController> {
           context: context,
           builder: (context) {
             return CupertinoAlertDialog(
-              title:
-                  Text("您确定删除好友${controller.getCurrentSetting?.target.name}吗?"),
+              title: Text(remark),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: const Text('取消'),
@@ -282,44 +297,7 @@ class MessageSettingPage extends GetView<MessageController> {
           },
         );
       },
-      child: Text("删除好友", style: AFont.instance.size22WhiteW500),
-    );
-  }
-
-  /// 退出群组
-  Widget _exitGroup(BuildContext context) {
-    return ElevatedButton(
-      style: ButtonStyle(
-        fixedSize: MaterialStateProperty.all(defaultBtnSize),
-        backgroundColor: MaterialStateProperty.all(UnifiedColors.backColor),
-      ),
-      onPressed: () {
-        showCupertinoDialog(
-          context: context,
-          builder: (context) {
-            return CupertinoAlertDialog(
-              title: Text("您确定退出${controller.getCurrentChat?.target.name}吗?"),
-              actions: <Widget>[
-                CupertinoDialogAction(
-                  child: const Text('取消'),
-                  onPressed: () async {
-                    Navigator.pop(context);
-                  },
-                ),
-                CupertinoDialogAction(
-                  child: const Text('确定'),
-                  onPressed: () async {
-                    Navigator.pop(context);
-                    await controller.exitCurrentTarget();
-                    Get.until((route) => route.settings.name == Routers.home);
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      },
-      child: Text("退出群聊", style: AFont.instance.size22WhiteW500),
+      child: Text(btnName, style: AFont.instance.size22WhiteW500),
     );
   }
 }

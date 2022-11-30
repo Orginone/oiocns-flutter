@@ -115,7 +115,7 @@ class ChatPageState extends State<ChatPage> with RouteAware {
       MessageDetail pre = chat.messages[index + 1];
       if (messageDetail.createTime != null && pre.createTime != null) {
         var difference = messageDetail.createTime!.difference(pre.createTime!);
-        if (difference.inSeconds > 60) {
+        if (difference.inSeconds > 60 * 3) {
           item.children.insert(0, time);
           return item;
         }

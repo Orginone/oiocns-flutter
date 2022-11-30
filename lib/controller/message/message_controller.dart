@@ -117,7 +117,8 @@ class FileDetail extends Detail {
 }
 
 enum ReceiveEvent {
-  receiveMessage("RecvMsg");
+  receiveMessage("RecvMsg"),
+  chatRefresh("ChatRefresh");
 
   final String keyWord;
 
@@ -290,41 +291,62 @@ class MessageController extends BaseController<IChatGroup>
 
   /// 加载通讯录
   _loadingMails() async {
+    if (getSize() > 0) return;
+    addAll(await _getMails());
+  }
+
+  /// 获取通讯录
+  Future<List<IChatGroup>> _getMails() async {
     var model = ChatsReqModel(
       spaceId: auth.userId,
       cohortName: TargetType.cohort.label,
       spaceTypeName: TargetType.company.label,
     );
-    if (getSize() > 0) return;
     List<ChatGroup> ansGroups = await Kernel.getInstance.queryImChats(model);
+    List<IChatGroup> groups = [];
     for (var group in ansGroups) {
-      var iChatGroup = BaseChatGroup(
+      groups.add(BaseChatGroup(
         isOpened: auth.spaceId == group.id,
         spaceId: group.id,
         spaceName: group.name,
         chats: group.chats.map((item) {
           return createChat(group.id, group.name, item);
         }).toList(),
-      );
-      add(iChatGroup);
+      ));
     }
+    return groups;
   }
 
   /// 刷新通讯录
   refreshMails() async {
+    // 加载会话组
+    List<IChatGroup> groups = await _getMails();
     clear();
-    await _loadingMails();
+    addAll(groups);
+
+    // 获取最新消息
     var key = SubscriptionKey.userChat;
     var domain = Domain.user.name;
     var ans = await Kernel.getInstance.anyStore.get(key.keyWord, domain);
+    _chats.clear();
     _updateMails(ans.data);
+
+    // 当前有在编辑的就刷新一下
+    var chat = _currentChat.value;
+    var setting = _currentSetting.value;
+    if (chat != null) await setCurrent(chat.spaceId, chat.chatId);
+    if (setting != null) {
+      await setCurrentSetting(setting.spaceId, setting.chatId);
+    }
   }
 
   /// 初始化监听器
   _initListener() async {
     // 消息接受订阅
     var receive = ReceiveEvent.receiveMessage.keyWord;
+    var chatRefresh = ReceiveEvent.chatRefresh.keyWord;
     Kernel.getInstance.on(receive, (message) => onReceiveMessage([message]));
+    Kernel.getInstance.on(chatRefresh, (message) => refreshMails());
 
     // 订阅最新的消息会话
     var key = SubscriptionKey.userChat;
@@ -353,11 +375,6 @@ class MessageController extends BaseController<IChatGroup>
           await targetCtrl.currentPerson.exitCohort(chat.target.id);
         }
       }
-      _chats.removeWhere((item) {
-        return item.spaceId == chat.spaceId && item.chatId == chat.chatId;
-      });
-      await refreshMails();
-      await _cacheChats();
     }
   }
 
@@ -366,6 +383,8 @@ class MessageController extends BaseController<IChatGroup>
     var position = _getPositioned(targetChat.spaceId, targetChat.chatId);
     if (position == -1) {
       _chats.insert(0, targetChat);
+    } else {
+      _chats[position] = targetChat;
     }
   }
 
@@ -425,40 +444,6 @@ class MessageController extends BaseController<IChatGroup>
     if (position != -1) {
       var chat = _chats.removeAt(position);
       _chats.insert(0, chat);
-    }
-  }
-
-  /// 组织变动事件，用于更新本机用户数据
-  targetChange(TargetEvent event, Target target) async {
-    switch (event) {
-      case TargetEvent.createCohort:
-        var chat = ref(auth.spaceId, target.id);
-        var msgBody = "${auth.userInfo.name}创建了群聊";
-        chat?.sendMsg(msgType: MsgType.createCohort, msgBody: msgBody);
-        chat?.openChat();
-        break;
-      case TargetEvent.updateCohort:
-        var chat = ref(auth.spaceId, target.id);
-        var msgBody = "${auth.userInfo.name}将群名称修改为${target.name}";
-        chat?.sendMsg(msgType: MsgType.updateCohortName, msgBody: msgBody);
-        chat?.openChat();
-        break;
-      case TargetEvent.deleteCohort:
-        var chat = ref(auth.spaceId, target.id);
-        var msgBody = "${auth.userInfo.name}解散了群聊";
-        chat?.sendMsg(msgType: MsgType.deleteCohort, msgBody: msgBody);
-        break;
-      case TargetEvent.exitCohort:
-        var chat = ref(auth.spaceId, target.id);
-        var msgBody = "${auth.userInfo.name}退出了群聊";
-        chat?.sendMsg(msgType: MsgType.deleteCohort, msgBody: msgBody);
-        break;
-      case TargetEvent.role:
-        break;
-      case TargetEvent.identity:
-        break;
-      case TargetEvent.transfer:
-        break;
     }
   }
 
@@ -615,14 +600,6 @@ class MessageController extends BaseController<IChatGroup>
     spaceMessageItemMap = newSpaceMessageItemMap;
     return spaces;
   }
-
-  /// 这几种类型接受消息前需要刷新通讯录
-  var types = [
-    MsgType.createCohort.name,
-    MsgType.updateCohortName.name,
-    MsgType.exitCohort.name,
-    MsgType.deleteCohort.name,
-  ];
 
   /// 接受消息
   Future<void> onReceiveMessage(List<dynamic> messages) async {

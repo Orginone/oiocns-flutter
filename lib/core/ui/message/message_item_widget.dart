@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/core/authority.dart';
+import 'package:orginone/core/chat/chat_impl.dart';
 import 'package:orginone/core/chat/i_chat.dart';
+import 'package:orginone/enumeration/enum_map.dart';
+import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/util/date_util.dart';
 import 'package:orginone/util/string_util.dart';
 
@@ -146,7 +151,7 @@ class MessageItemWidget extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                lastMessage?.msgBody ?? "",
+                _detailRemark(lastMessage),
                 style: TextStyle(
                   color: UnifiedColors.black9,
                   fontSize: 20.sp,
@@ -169,6 +174,41 @@ class MessageItemWidget extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String _detailRemark(MessageDetail? detail) {
+    if (detail == null) {
+      return "";
+    }
+    var messageType = EnumMap.messageTypeMap;
+    var type = messageType[detail.msgType] ?? MsgType.text;
+    var messageCtrl = Get.find<MessageController>();
+
+    var name = messageCtrl.getName(detail.fromId);
+    var showTxt = "";
+    if (chat is PersonChat) {
+      if (detail.fromId != auth.userId) {
+        showTxt = "对方：";
+      }
+    } else {
+      showTxt = "$name:";
+    }
+    switch (type) {
+      case MsgType.text:
+        return "$showTxt${detail.msgBody ?? ""}";
+      case MsgType.recall:
+        return "$showTxt撤回了一条消息";
+      case MsgType.image:
+        return "$showTxt[图片]";
+      case MsgType.voice:
+        return "$showTxt[语音]";
+      case MsgType.file:
+        return "$showTxt[文件]";
+      case MsgType.pull:
+      case MsgType.unknown:
+      case MsgType.topping:
+        return detail.msgBody ?? "";
+    }
   }
 
   Widget _contentContainer() {

@@ -154,13 +154,11 @@ class HttpUtil {
     Response response = error.response!;
     var statusCode = response.statusCode;
     if (statusCode == 400 || statusCode == 500) {
-      log.info("errorInfo =====> ${response.data}");
+      log.info("errorInfo =====> ${response.statusMessage}");
       if (showToast) {
-        Fluttertoast.showToast(msg: response.data);
+        Fluttertoast.showToast(msg: response.statusMessage ?? "");
       }
-    } else if (statusCode == 401){
-
-    }
+    } else if (statusCode == 401) {}
   }
 
   Future<dynamic> download({

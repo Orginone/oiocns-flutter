@@ -8,17 +8,14 @@ import 'package:orginone/api/company_api.dart';
 import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/api/model.dart';
 import 'package:orginone/api/person_api.dart';
-import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/controller/message/message_controller.dart';
-import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/core/authority.dart';
 import 'package:orginone/core/target/base_target.dart';
-import 'package:orginone/core/target/company.dart';
 import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/routers.dart';
@@ -180,7 +177,20 @@ class InviteController extends GetxController {
     if (auth.userId == spaceId) {
       allPersons.addAll(await PersonApi.friendsAll(""));
     } else {
-      var res = await CompanyApi.getCompanyPersons(spaceId, maxInt, 0);
+      var res = await Kernel.getInstance.querySubTargetById(IDReqSubModel(
+        id: spaceId,
+        typeNames: [
+          TargetType.company.label,
+          TargetType.hospital.label,
+          TargetType.university.label
+        ],
+        subTypeNames: [TargetType.person.label],
+        page: PageRequest(
+          limit: maxInt,
+          offset: 0,
+          filter: "",
+        ),
+      ));
       allPersons.addAll(res.result);
     }
     List<String> joinedFriendIds = [];

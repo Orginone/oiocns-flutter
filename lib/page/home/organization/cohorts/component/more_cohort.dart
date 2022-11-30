@@ -15,8 +15,6 @@ class MoreCohort extends GetView<MessageController> {
 
   @override
   Widget build(BuildContext context) {
-    var chat = controller.getCurrentSetting!;
-    var isRelationAdmin = auth.isRelationAdmin([chat.target.id]);
     return UnifiedScaffold(
       appBarTitle: Text("群组人员", style: AFont.instance.size22Black3),
       appBarCenterTitle: true,
@@ -26,19 +24,24 @@ class MoreCohort extends GetView<MessageController> {
         color: UnifiedColors.bgColor,
         child: ListView(
           children: [
-            AvatarGroup(
-              persons: chat.persons,
-              hasAdd: isRelationAdmin,
-              padding: EdgeInsets.only(top: 30.h),
-              addCallback: () {
-                Map<String, dynamic> args = {
-                  "spaceId": chat.spaceId,
-                  "messageItemId": chat.chatId,
-                };
-                Get.toNamed(Routers.invite, arguments: args);
-              },
-            ),
             Obx(() {
+              var chat = controller.getCurrentSetting!;
+              var isRelationAdmin = auth.isRelationAdmin([chat.target.id]);
+              return AvatarGroup(
+                persons: chat.persons,
+                hasAdd: isRelationAdmin,
+                padding: EdgeInsets.only(top: 30.h),
+                addCallback: () {
+                  Map<String, dynamic> args = {
+                    "spaceId": chat.spaceId,
+                    "messageItemId": chat.chatId,
+                  };
+                  Get.toNamed(Routers.invite, arguments: args);
+                },
+              );
+            }),
+            Obx(() {
+              var chat = controller.getCurrentSetting!;
               if (chat.hasMorePersons()) {
                 return _more;
               }

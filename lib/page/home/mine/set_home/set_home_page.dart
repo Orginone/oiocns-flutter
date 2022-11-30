@@ -156,8 +156,9 @@ class CardChildWidget extends StatelessWidget {
                     children: [
                       // AImage.netImageRadius(AIcons.back_black,
                       //     size: Size(64.w, 64.w)),
-                      AImage.netImage(AIcons.placeholder,
-                          url: value[index]['icon'], size: Size(64.w, 64.w)),
+                      Container(width: 64.w, height: 64.w, color: UnifiedColors.navigatorBgColor),
+                      // AImage.netImage(AIcons.placeholder,
+                      //     url: value[index]['icon'], size: Size()),
                       SizedBox(
                         height: 10.h,
                       ),

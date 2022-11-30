@@ -127,11 +127,11 @@ class Relation extends GetView<MessageController> {
           ),
         ),
         func: () {
-          if (auth.isUserSpace()) {
-            Get.toNamed(Routers.friends);
-          } else {
-            Get.toNamed(Routers.dept, arguments: auth.spaceId);
-          }
+          // if (auth.isUserSpace()) {
+          //   Get.toNamed(Routers.friends);
+          // } else {
+          //   Get.toNamed(Routers.dept, arguments: auth.spaceId);
+          // }
         },
       ));
 

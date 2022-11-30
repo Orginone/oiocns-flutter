@@ -40,9 +40,11 @@ class CohortMaintainPage extends GetView<TargetController> {
         initValue: args["cohort"] ?? {},
         submitCallback: (Map<String, dynamic> value) async {
           if (func == TargetEvent.updateCohort) {
-            controller.updateCohort(value);
+            await controller.updateCohort(value);
+            Get.back();
           } else {
-            controller.createCohort(value);
+            await controller.createCohort(value);
+            Get.back();
           }
         },
       ),
