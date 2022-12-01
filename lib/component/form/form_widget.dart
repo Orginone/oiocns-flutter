@@ -21,43 +21,35 @@ class FormItem {
     required this.fieldName,
     required this.itemType,
     this.required = false,
-    this.defaultValue
+    this.defaultValue,
   });
 }
 
-const String defaultSubmitName = '提交';
 const EdgeInsets defaultPadding = EdgeInsets.only(left: 25, right: 25);
 
 class FormWidget extends StatelessWidget {
+  final GlobalKey<FormBuilderState>? state;
   final Map<String, dynamic>? initValue;
   final List<FormItem> items;
   final EdgeInsets padding;
-  final Function? submitCallback;
-  final String submitName;
 
   const FormWidget(
     this.items, {
+    this.state,
     this.initValue,
     this.padding = defaultPadding,
-    this.submitName = defaultSubmitName,
-    this.submitCallback,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormBuilderState>();
     final children = items.map(_itemMapping).toList();
     return FormBuilder(
       initialValue: initValue ?? {},
-      key: formKey,
+      key: state,
       child: Container(
         padding: padding,
-        child: Column(
-          children: children
-            ..add(Padding(padding: EdgeInsets.only(top: 20.h)))
-            ..add(_submitBtn(formKey)),
-        ),
+        child: Column(children: children),
       ),
     );
   }
@@ -96,7 +88,7 @@ class FormWidget extends StatelessWidget {
         }
         return null;
       },
-      initialValue: item.defaultValue,
+      initialValue: item.defaultValue ?? false,
       name: item.fieldKey,
       title: Text(item.fieldName),
     );
@@ -118,28 +110,6 @@ class FormWidget extends StatelessWidget {
     return InputDecoration(
       labelText: label,
       labelStyle: AFont.instance.size22Black0,
-    );
-  }
-
-  Widget _submitBtn(GlobalKey<FormBuilderState> formKey) {
-    return ElevatedButton(
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(UnifiedColors.themeColor),
-        fixedSize: MaterialStateProperty.all(Size.fromWidth(400.w)),
-      ),
-      onPressed: () {
-        if (!formKey.currentState!.saveAndValidate()) {
-          return;
-        }
-        if (submitCallback != null) {
-          var value = Map<String, dynamic>.of(formKey.currentState!.value);
-          initValue?.forEach((initKey, initValue) {
-            value.putIfAbsent(initKey, () => initValue);
-          });
-          submitCallback!(value);
-        }
-      },
-      child: Text(submitName, style: const TextStyle(color: Colors.white)),
     );
   }
 }

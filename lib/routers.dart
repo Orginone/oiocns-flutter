@@ -8,7 +8,6 @@ import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
 import 'package:orginone/page/home/affairs/detail/affairs_detail.dart';
-import 'package:orginone/page/home/application/market/market_maintain_page.dart';
 import 'package:orginone/page/home/application/market/order_page.dart';
 import 'package:orginone/page/home/application/market/staging_page.dart';
 import 'package:orginone/page/home/application/page/application_manager_page.dart';
@@ -27,6 +26,7 @@ import 'package:orginone/page/home/component/unit/unit_create/unit_create_page.d
 import 'package:orginone/page/home/component/unit/unit_detail/unit_detail_page.dart';
 import 'package:orginone/page/home/home_binding.dart';
 import 'package:orginone/page/home/home_page.dart';
+import 'package:orginone/page/home/maintain_page.dart';
 import 'package:orginone/page/home/message/chat/chat_page.dart';
 import 'package:orginone/page/home/message/contact/contact_binding.dart';
 import 'package:orginone/page/home/message/contact/contact_page.dart';
@@ -44,7 +44,6 @@ import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/mine/mine_unit/mine_unit_page.dart';
 import 'package:orginone/page/home/mine/set_home/set_home_page.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_page.dart';
-import 'package:orginone/page/home/organization/cohorts/component/cohort_maintain_page.dart';
 import 'package:orginone/page/home/organization/cohorts/component/more_cohort.dart';
 import 'package:orginone/page/home/organization/dept/dept_binding.dart';
 import 'package:orginone/page/home/organization/dept/dept_page.dart';
@@ -83,6 +82,7 @@ class Routers {
   static const String home = "/home";
   static const String center = "/center";
   static const String spaceChoose = "/spaceChoose";
+  static const String maintain = "/maintain";
 
   // 会话
   static const String message = "/message";
@@ -94,7 +94,6 @@ class Routers {
   static const String units = "/units";
   static const String groups = "/groups";
   static const String cohorts = "/cohorts";
-  static const String cohortMaintain = "/cohortMaintain";
   static const String moreCohort = "/moreCohort";
   static const String dept = "/dept";
   static const String personDetail = "/person_detail";
@@ -210,11 +209,6 @@ class Routers {
       GetPage(
         name: Routers.cohorts,
         page: () => const CohortsPage(),
-        binding: TargetBinding(),
-      ),
-      GetPage(
-        name: Routers.cohortMaintain,
-        page: () => const CohortMaintainPage(),
         binding: TargetBinding(),
       ),
       GetPage(
@@ -356,6 +350,16 @@ class Routers {
         name: Routers.order,
         page: () => const OrderPage(),
         bindings: [OrderBinding()],
+      ),
+      GetPage(
+        name: Routers.order,
+        page: () => const OrderPage(),
+        bindings: [OrderBinding()],
+      ),
+      GetPage(
+        name: Routers.maintain,
+        page: () => const MaintainPage(),
+        bindings: [TargetBinding(), MessageBinding(), MarketBinding()],
       ),
     ];
   }

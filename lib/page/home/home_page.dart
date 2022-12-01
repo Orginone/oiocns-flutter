@@ -5,14 +5,17 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/component/bread_crumb.dart';
+import 'package:orginone/component/maintain_widget.dart';
 import 'package:orginone/component/tab_combine.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/config/field_config.dart';
 import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/core/authority.dart';
 import 'package:orginone/page/home/home_controller.dart';
+import 'package:orginone/page/home/maintain_page.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/string_util.dart';
 import 'package:orginone/util/sys_util.dart';
@@ -86,8 +89,15 @@ class HomePage extends GetView<HomeController> {
           Icons.group_add_outlined,
           "创建群组",
           () {
-            Map<String, dynamic> args = {"func": TargetEvent.createCohort};
-            Get.toNamed(Routers.cohortMaintain, arguments: args);
+            Get.toNamed(
+              Routers.maintain,
+              arguments: CreateCohort((value) {
+                if (Get.isRegistered<TargetController>()) {
+                  var targetCtrl = Get.find<TargetController>();
+                  targetCtrl.createCohort(value).then((value) => Get.back());
+                }
+              }),
+            );
           },
         ),
       ),
@@ -97,7 +107,15 @@ class HomePage extends GetView<HomeController> {
           Icons.groups_outlined,
           "创建单位",
           () {
-            Get.toNamed(Routers.unitCreate);
+            Get.toNamed(
+              Routers.maintain,
+              arguments: CreateCompany((value) {
+                if (Get.isRegistered<TargetController>()) {
+                  var targetCtrl = Get.find<TargetController>();
+                  targetCtrl.createCohort(value).then((value) => Get.back());
+                }
+              }),
+            );
           },
         ),
       ),

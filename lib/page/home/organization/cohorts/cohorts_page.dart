@@ -8,6 +8,7 @@ import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/config/field_config.dart';
 import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/core/authority.dart';
@@ -45,8 +46,15 @@ class CohortsPage extends GetView<TargetController> {
   get _actions => <Widget>[
         IconButton(
           onPressed: () {
-            Map<String, TargetEvent> args = {"func": TargetEvent.createCohort};
-            Get.toNamed(Routers.cohortMaintain, arguments: args);
+            Get.toNamed(
+              Routers.maintain,
+              arguments: CreateCohort((value) {
+                if (Get.isRegistered<TargetController>()) {
+                  var targetCtrl = Get.find<TargetController>();
+                  targetCtrl.createCohort(value).then((value) => Get.back());
+                }
+              }),
+            );
           },
           icon: const Icon(Icons.create_outlined, color: Colors.black),
         ),
@@ -155,8 +163,15 @@ class CohortsPage extends GetView<TargetController> {
           if (result == TargetEvent.updateCohort) {
             var json = cohort.toJson();
             json["remark"] = cohort.team?.remark;
-            Map<String, dynamic> args = {"func": result, "cohort": json};
-            Get.toNamed(Routers.cohortMaintain, arguments: args);
+            Get.toNamed(
+              Routers.maintain,
+              arguments: CreateCohort((value) {
+                if (Get.isRegistered<TargetController>()) {
+                  var targetCtrl = Get.find<TargetController>();
+                  targetCtrl.createCohort(value).then((value) => Get.back());
+                }
+              }),
+            );
           } else if (result == TargetEvent.deleteCohort) {
             controller.deleteCohort(cohort);
           } else if (result == TargetEvent.exitCohort) {

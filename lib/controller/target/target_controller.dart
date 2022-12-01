@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:orginone/api_resp/target.dart';
-import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/core/authority.dart';
 import 'package:orginone/core/target/cohort.dart';
 import 'package:orginone/core/target/company.dart';
