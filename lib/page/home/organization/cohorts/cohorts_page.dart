@@ -78,7 +78,6 @@ class CohortsPage extends GetView<TargetController> {
       );
 
   get _list => Obx(() => ListView.builder(
-        shrinkWrap: true,
         scrollDirection: Axis.vertical,
         itemCount: controller.currentPerson.joinedCohorts.length,
         itemBuilder: (BuildContext context, int index) {
