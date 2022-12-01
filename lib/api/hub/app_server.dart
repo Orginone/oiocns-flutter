@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
@@ -7,9 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:logging/logging.dart';
 
 enum Event {
-  connStateChange("connStateChange"),
-  request("Request"),
-  requests("Requests"),
+  heartbeat("heartbeat"),
   stopService("stopService");
 
   const Event(this.keyWord);
@@ -31,8 +30,6 @@ class AppServer {
   }
 
   static initialization() async {
-    var appServer = getInstance;
-
     // 创建通知管道
     var channel = AndroidNotificationChannel(
       channelId,
@@ -46,11 +43,13 @@ class AppServer {
         ?.createNotificationChannel(channel);
 
     // 配置并启动后台实例
-    await _instance!._service.configure(
+    var instance = getInstance;
+    instance.on(Event.heartbeat.name, (data) {});
+    await instance._service.configure(
       androidConfiguration: AndroidConfiguration(
         onStart: onStart,
         autoStart: true,
-        isForegroundMode: true,
+        isForegroundMode: false,
         notificationChannelId: channelId,
         initialNotificationTitle: initialTitle,
         initialNotificationContent: initialContent,
@@ -70,9 +69,9 @@ class AppServer {
 
   on(String event, void Function(List<dynamic>) func) {
     _service.on(event).listen((data) {
+      log.info("事件：$event，数据：$data");
       if (data == null) return;
       if (data["args"] == null) return;
-      log.info("接受到的消息为：${data.toString()}");
       func(data["args"]);
     });
   }
@@ -97,6 +96,11 @@ onStart(ServiceInstance service) async {
 
   // 初始化插件
   DartPluginRegistrant.ensureInitialized();
+
+  // 定时器
+  Timer.periodic(const Duration(seconds: 5), (timer) {
+    service.invoke("heartbeat");
+  });
 }
 
 @pragma('vm:entry-point')
