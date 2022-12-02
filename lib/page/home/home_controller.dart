@@ -33,7 +33,6 @@ class HomeController extends GetxController
   /// Tab 控制器
   late List<TabCombine> tabs;
   late TabController tabController;
-  late HomeController homeController;
   late RxInt tabIndex;
   late TabCombine message, relation, center, work, my;
 

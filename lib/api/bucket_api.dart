@@ -75,7 +75,7 @@ class BucketApi {
     if (length < chunkSize) {
       await upload(prefix: prefix, filePath: filePath, fileName: fileName);
       if (progressCallback != null) {
-        progressCallback(100);
+        progressCallback(1.0);
       }
       return;
     }

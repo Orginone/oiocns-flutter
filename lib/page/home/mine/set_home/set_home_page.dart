@@ -7,14 +7,15 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/unified_colors.dart';
+import 'package:orginone/config/field_config.dart';
+import 'package:orginone/controller/file_controller.dart';
+import 'package:orginone/page/home/mine/set_home/set_home_controller.dart';
+import 'package:orginone/public/loading/load_status.dart';
+import 'package:orginone/public/view/base_view.dart';
 import 'package:orginone/routers.dart';
-import '../../../../public/image/icons.dart';
-import '../../../../public/image/load_image.dart';
-import '../../../../public/loading/load_status.dart';
-import '../../../../public/view/base_view.dart';
-import 'set_home_controller.dart';
 
 /// 设置首页
+@immutable
 class SetHomePage extends BaseView<SetHomeController> {
   LinkedHashMap map = LinkedHashMap();
 
@@ -73,7 +74,15 @@ class SetHomePage extends BaseView<SetHomeController> {
         "icon": "icon",
         "cardName": "APK上传",
         "func": () {
-          Get.toNamed(Routers.upload);
+          Get.toNamed(
+            Routers.maintain,
+            arguments: NewVersion((value) {
+              if (Get.isRegistered<FileController>()) {
+                var fileCtrl = Get.find<FileController>();
+                fileCtrl.upload(value).then((value) => Get.back());
+              }
+            }),
+          );
         }
       },
     ];
@@ -156,7 +165,10 @@ class CardChildWidget extends StatelessWidget {
                     children: [
                       // AImage.netImageRadius(AIcons.back_black,
                       //     size: Size(64.w, 64.w)),
-                      Container(width: 64.w, height: 64.w, color: UnifiedColors.navigatorBgColor),
+                      Container(
+                          width: 64.w,
+                          height: 64.w,
+                          color: UnifiedColors.navigatorBgColor),
                       // AImage.netImage(AIcons.placeholder,
                       //     url: value[index]['icon'], size: Size()),
                       SizedBox(

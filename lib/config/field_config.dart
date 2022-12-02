@@ -158,3 +158,36 @@ class UpdateMarket extends MaintainInfo {
           call: update,
         );
 }
+
+List<FormItem> _uploadFields = const [
+  FormItem(
+    fieldKey: "version",
+    fieldName: "版本",
+    itemType: ItemType.text,
+    required: true,
+  ),
+  FormItem(
+    fieldKey: "remark",
+    fieldName: "更新信息",
+    itemType: ItemType.text,
+    required: true,
+  ),
+  FormItem(
+    fieldKey: "path",
+    fieldName: "文件路径",
+    itemType: ItemType.upload,
+    required: true,
+  ),
+];
+
+class NewVersion extends MaintainInfo {
+  NewVersion(Function(Map<String, dynamic>) upload)
+      : super(
+          formConfig: FormConfig(
+            title: "上传 APK",
+            status: MaintainStatus.create,
+            items: _uploadFields,
+          ),
+          call: upload,
+        );
+}

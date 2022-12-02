@@ -1,4 +1,5 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:orginone/controller/file_controller.dart';
 import 'package:orginone/controller/market/market_controller.dart';
 import 'package:orginone/controller/market/merchandise_controller.dart';
 import 'package:orginone/controller/market/order_controller.dart';
@@ -61,7 +62,6 @@ import 'package:orginone/page/home/organization/units/units_binding.dart';
 import 'package:orginone/page/home/organization/units/units_page.dart';
 import 'package:orginone/page/home/search/search_binding.dart';
 import 'package:orginone/page/home/search/search_page.dart';
-import 'package:orginone/page/home/upload/upload_page.dart';
 import 'package:orginone/page/login/login_binding.dart';
 import 'package:orginone/page/login/login_page.dart';
 import 'package:orginone/page/register/register_binding.dart';
@@ -116,9 +116,6 @@ class Routers {
   static const String affairsDetail = "/affairsDetail";
   static const String newFriends = "/newFriends";
   static const String setHome = "/setHome";
-
-  // 上传文件
-  static const String upload = "/upload";
 
   // 仓库
   static const String application = "/application";
@@ -307,11 +304,6 @@ class Routers {
         binding: SetHomeBinding(),
       ),
       GetPage(
-        name: Routers.upload,
-        page: () => const UploadPage(),
-        binding: UploadBinding(),
-      ),
-      GetPage(
         name: Routers.application,
         page: () => const ApplicationPage(),
         binding: ApplicationBinding(),
@@ -359,7 +351,12 @@ class Routers {
       GetPage(
         name: Routers.maintain,
         page: () => const MaintainPage(),
-        bindings: [TargetBinding(), MessageBinding(), MarketBinding()],
+        bindings: [
+          TargetBinding(),
+          MessageBinding(),
+          MarketBinding(),
+          FileBinding()
+        ],
       ),
     ];
   }

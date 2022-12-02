@@ -2,18 +2,22 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/component/unified_colors.dart';
 
 import '../../api/bucket_api.dart';
 import '../a_font.dart';
 
 class Uploader extends StatelessWidget {
-  final RxDouble progress;
+  final double progress;
+  final String? errorText;
+  final Function? uploadedCall;
 
   const Uploader({
     Key? key,
     required this.progress,
+    this.errorText,
+    this.uploadedCall,
   }) : super(key: key);
 
   @override
@@ -22,17 +26,16 @@ class Uploader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Obx(
-          () => GFProgressBar(
-            percentage: progress.value,
-            width: 100.w,
-            lineHeight: 20.h,
-            radius: 50.w,
-            type: GFProgressType.linear,
-            backgroundColor: Colors.black26,
-            progressBarColor: Colors.lightGreen,
-            alignment: MainAxisAlignment.center,
-          ),
+        Padding(padding: EdgeInsets.only(top: 20.h)),
+        GFProgressBar(
+          percentage: progress,
+          width: 100.w,
+          lineHeight: 20.h,
+          radius: 50.w,
+          type: GFProgressType.linear,
+          backgroundColor: Colors.black26,
+          progressBarColor: Colors.lightGreen,
+          alignment: MainAxisAlignment.center,
         ),
         ElevatedButton(
           onPressed: () async {
@@ -61,16 +64,20 @@ class Uploader extends StatelessWidget {
               fileName: name,
               shareDomain: "all",
               progressCallback: (value) {
-                progress.value = value;
-                if (value >= 1) {
-                  Fluttertoast.showToast(msg: "上传成功!");
-                  return;
+                if (uploadedCall != null) {
+                  uploadedCall!(value, name);
                 }
               },
             );
           },
           child: Text("上传文件", style: AFont.instance.size22WhiteW500),
         ),
+        if (errorText != null)
+          Text(errorText!,
+              style: TextStyle(
+                color: UnifiedColors.fontErrorColor,
+                fontSize: 18.sp,
+              ))
       ],
     );
   }

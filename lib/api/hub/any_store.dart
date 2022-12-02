@@ -44,7 +44,8 @@ enum ReceiveEvent {
 
 enum SubscriptionKey {
   orgChat("orgChat"),
-  userChat("userchat");
+  userChat("userchat"),
+  apkFile("apkFile");
 
   final String keyWord;
 
@@ -53,7 +54,7 @@ enum SubscriptionKey {
 
 enum StoreKey { orgChat }
 
-enum Domain { user }
+enum Domain { user, all }
 
 String collName = "chat-message";
 

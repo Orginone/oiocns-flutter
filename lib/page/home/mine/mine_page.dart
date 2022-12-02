@@ -105,8 +105,6 @@ class MinePage extends GetView<MineController> {
           margin: left10,
           child: Text("上传 APK 文件", style: text16Bold),
         ),
-        func: () {
-          Get.toNamed(Routers.upload);
-        },
+        func: () {},
       );
 }

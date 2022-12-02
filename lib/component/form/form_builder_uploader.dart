@@ -16,7 +16,15 @@ class FormBuilderUploaderField extends FormBuilderField<String> {
           name: item.fieldName,
           validator: validator,
           builder: (FormFieldState<String> state) {
-            return Uploader(progress: 0.0.obs);
+            var uploadState = state as _FormBuilderUploaderState;
+            return Uploader(
+              progress: uploadState.getProgress,
+              errorText: uploadState.errorText,
+              uploadedCall: (progress, fileName) {
+                uploadState.setProgress(progress);
+                uploadState.setValue(fileName);
+              },
+            );
           },
         );
 
@@ -27,6 +35,16 @@ class FormBuilderUploaderField extends FormBuilderField<String> {
 
 class _FormBuilderUploaderState
     extends FormBuilderFieldState<FormBuilderUploaderField, String> {
+  final RxDouble _progress = 0.0.obs;
+
+  double get getProgress => _progress.value;
+
+  setProgress(double progress) {
+    setState(() {
+      _progress.value = progress;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
