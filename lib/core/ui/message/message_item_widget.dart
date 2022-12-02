@@ -151,7 +151,7 @@ class MessageItemWidget extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                _detailRemark(lastMessage),
+                StringUtil.showTxt(chat, lastMessage),
                 style: TextStyle(
                   color: UnifiedColors.black9,
                   fontSize: 20.sp,
@@ -174,41 +174,6 @@ class MessageItemWidget extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  String _detailRemark(MessageDetail? detail) {
-    if (detail == null) {
-      return "";
-    }
-    var messageType = EnumMap.messageTypeMap;
-    var type = messageType[detail.msgType] ?? MsgType.text;
-    var messageCtrl = Get.find<MessageController>();
-
-    var name = messageCtrl.getName(detail.fromId);
-    var showTxt = "";
-    if (chat is PersonChat) {
-      if (detail.fromId != auth.userId) {
-        showTxt = "对方：";
-      }
-    } else {
-      showTxt = "$name:";
-    }
-    switch (type) {
-      case MsgType.text:
-        return "$showTxt${detail.msgBody ?? ""}";
-      case MsgType.recall:
-        return "$showTxt撤回了一条消息";
-      case MsgType.image:
-        return "$showTxt[图片]";
-      case MsgType.voice:
-        return "$showTxt[语音]";
-      case MsgType.file:
-        return "$showTxt[文件]";
-      case MsgType.unknown:
-      case MsgType.topping:
-      case MsgType.pull:
-        return detail.msgBody ?? "";
-    }
   }
 
   Widget _contentContainer() {

@@ -17,6 +17,8 @@ import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/core/authority.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/encryption_util.dart';
+import 'package:orginone/util/notification_util.dart';
+import 'package:orginone/util/string_util.dart';
 
 import 'i_chat.dart';
 
@@ -192,6 +194,10 @@ class BaseChat implements IChat<MessageItemWidget> {
       _noReadCount.value += noRead ? 1 : 0;
       _lastMessage.value = detail;
       _messages.insert(0, detail);
+      if (noRead) {
+        var showTxt = StringUtil.showTxt(this, detail);
+        NotificationUtil.showNewMsg(target.name, showTxt);
+      }
     }
   }
 
