@@ -5,6 +5,7 @@ import 'package:orginone/api/company_api.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/form_item_type2.dart';
 import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/widget_util.dart';
@@ -14,9 +15,9 @@ class UnitDetailPage extends GetView<TargetController> {
 
   @override
   Widget build(BuildContext context) {
-
     var args = Get.arguments;
     var company = controller.maintainCompany?.target;
+    var messageCtrl = Get.find<MessageController>();
     return UnifiedScaffold(
       appBarTitle: Text("单位信息", style: AFont.instance.size22Black3),
       appBarCenterTitle: true,
@@ -49,7 +50,7 @@ class UnitDetailPage extends GetView<TargetController> {
                   FormItemType2(
                     text: '设立人',
                     rightSlot: Text(
-                      company?.createUser ?? '',
+                      messageCtrl.getName(company?.createUser ?? ''),
                       style: const TextStyle(
                         color: Color.fromRGBO(130, 130, 130, 1),
                       ),
@@ -100,7 +101,8 @@ class UnitDetailPage extends GetView<TargetController> {
                           onPressed: () async {
                             var currentPerson = controller.currentPerson;
                             var maintainCompany = controller.maintainCompany!;
-                            await currentPerson.exitCompany(maintainCompany.target.id);
+                            await currentPerson
+                                .exitCompany(maintainCompany.target.id);
                             Get.back();
                           },
                           color: Colors.red,
