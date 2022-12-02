@@ -49,7 +49,7 @@ class AppServer {
       androidConfiguration: AndroidConfiguration(
         onStart: onStart,
         autoStart: true,
-        isForegroundMode: false,
+        isForegroundMode: true,
         notificationChannelId: channelId,
         initialNotificationTitle: initialTitle,
         initialNotificationContent: initialContent,
