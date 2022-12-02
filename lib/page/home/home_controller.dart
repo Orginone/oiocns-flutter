@@ -37,9 +37,6 @@ class HomeController extends GetxController
   late RxInt tabIndex;
   late TabCombine message, relation, center, work, my;
 
-  /// 当前空间
-  NodeCombine? nodeCombine;
-
   /// 路由切换
   late RxBool routerOpened;
   late TreeViewController treeViewController;

@@ -1,10 +1,13 @@
+import 'package:get/get.dart';
 import 'package:orginone/api/company_api.dart';
 import 'package:orginone/api_resp/tree_node.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/core/target/base_target.dart';
 
 class Company extends BaseTarget {
-  NodeCombine? _tree;
+  final Rx<NodeCombine?> _tree = Rxn();
+
+  NodeCombine? get tree => _tree.value;
 
   Company(super.target);
 
@@ -22,7 +25,7 @@ class Company extends BaseTarget {
   }
 
   /// 加载组织树形
-  loadTree() async {
-    _tree ??= await CompanyApi.tree();
+  getTree() async {
+    _tree.value ??= await CompanyApi.tree();
   }
 }

@@ -34,6 +34,8 @@ class DeptPage extends GetView<DeptController> {
         children: [
           TextSearch(searchingCallback: controller.searchingCallback),
           BreadCrumb(
+            width: 540.w,
+            height: 50.h,
             controller: controller.breadCrumbController,
             popsCallback: (Item<String> item) => controller.popsNode(item),
           ),

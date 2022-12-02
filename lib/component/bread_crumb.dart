@@ -9,6 +9,8 @@ const defaultSplitWidget = Icon(Icons.keyboard_arrow_right);
 
 class BreadCrumb<T> extends StatelessWidget {
   final BreadCrumbController<T> controller;
+  final double? width;
+  final double? height;
   final Function? popsCallback;
   final Widget? splitWidget;
   final TextStyle? stackBottomStyle;
@@ -18,6 +20,8 @@ class BreadCrumb<T> extends StatelessWidget {
 
   const BreadCrumb({
     required this.controller,
+    this.width,
+    this.height,
     this.popsCallback,
     this.splitWidget = defaultSplitWidget,
     this.stackBottomStyle,
@@ -30,6 +34,8 @@ class BreadCrumb<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: width,
+      height: height,
       alignment: Alignment.centerLeft,
       color: bgColor,
       padding: padding ?? EdgeInsets.only(left: 10.w, right: 10.w),

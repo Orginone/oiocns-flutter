@@ -20,6 +20,8 @@ enum OrgAuths {
 class Authority {
   final TokenAuthorityResp _resp;
 
+  final RxBool _isUserSpace = false.obs;
+
   Authority._(this._resp);
 
   String get spaceId => _resp.spaceId;
@@ -59,14 +61,18 @@ class Authority {
         .join(",");
   }
 
+  judgeSpace() {
+    _isUserSpace.value = spaceId == userId;
+  }
+
   /// 是否为用户空间
   bool isUserSpace() {
-    return _resp.userId == _resp.spaceId;
+    return _isUserSpace.value;
   }
 
   /// 是否为单位空间
   bool isCompanySpace() {
-    return _resp.userId != _resp.spaceId;
+    return !_isUserSpace.value;
   }
 
   /// 是否为组织管理员
@@ -127,5 +133,6 @@ set setAccessToken(String accessToken) => _accessToken = accessToken;
 Future<Authority> loadAuth() async {
   TokenAuthorityResp authorityResp = await PersonApi.tokenInfo();
   _instance = Authority._(authorityResp);
+  _instance.judgeSpace();
   return _instance;
 }

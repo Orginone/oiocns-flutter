@@ -112,7 +112,7 @@ class HomePage extends GetView<HomeController> {
               arguments: CreateCompany((value) {
                 if (Get.isRegistered<TargetController>()) {
                   var targetCtrl = Get.find<TargetController>();
-                  targetCtrl.createCohort(value).then((value) => Get.back());
+                  targetCtrl.createCompany(value).then((value) => Get.back());
                 }
               }),
             );

@@ -101,7 +101,7 @@ class Relation extends GetView<MessageController> {
   }
 
   Widget _tree() {
-    return GetBuilder<HomeController>(builder: (homeController) {
+    return Obx(() {
       double leftWidth = 60.w;
 
       // 选择项
@@ -127,28 +127,31 @@ class Relation extends GetView<MessageController> {
           ),
         ),
         func: () {
-          // if (auth.isUserSpace()) {
-          //   Get.toNamed(Routers.friends);
-          // } else {
-          //   Get.toNamed(Routers.dept, arguments: auth.spaceId);
-          // }
+          if (auth.isUserSpace()) {
+            Get.toNamed(Routers.friends);
+          } else {
+            Get.toNamed(Routers.dept, arguments: auth.spaceId);
+          }
         },
       ));
 
-      NodeCombine? nodeCombine = homeController.nodeCombine;
-      if (nodeCombine != null) {
-        TreeNode topNode = nodeCombine.topNode;
-        var children = topNode.children;
-        double top = 16.h;
-        if (children.isNotEmpty) {
-          body.add(Padding(padding: EdgeInsets.only(top: top)));
-          body.add(_deptItem(children[0], leftWidth));
-          if (children.length > 1) {
+      if (Get.isRegistered<TargetController>() && auth.isCompanySpace()) {
+        var targetCtrl = Get.find<TargetController>();
+        NodeCombine? nodeCombine = targetCtrl.currentCompany.tree;
+        if (nodeCombine != null) {
+          TreeNode topNode = nodeCombine.topNode;
+          var children = topNode.children;
+          double top = 16.h;
+          if (children.isNotEmpty) {
             body.add(Padding(padding: EdgeInsets.only(top: top)));
-            body.add(_deptItem(children[1], leftWidth));
-            if (children.length > 2) {
+            body.add(_deptItem(children[0], leftWidth));
+            if (children.length > 1) {
               body.add(Padding(padding: EdgeInsets.only(top: top)));
-              body.add(_more(leftWidth));
+              body.add(_deptItem(children[1], leftWidth));
+              if (children.length > 2) {
+                body.add(Padding(padding: EdgeInsets.only(top: top)));
+                body.add(_more(leftWidth));
+              }
             }
           }
         }

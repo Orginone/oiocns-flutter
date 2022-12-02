@@ -61,6 +61,7 @@ class Person extends BaseTarget {
     setAccessToken = loginResp.accessToken;
     await loadAuth();
     _currentCompany.value = company;
+    company.getTree();
 
     // 空间会话置顶
     if (Get.isRegistered<MessageController>()) {
