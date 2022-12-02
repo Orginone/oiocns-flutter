@@ -189,8 +189,10 @@ class Relation extends GetView<MessageController> {
         children: [
           Text("最近联系", style: AFont.instance.size20Black3W500),
           GestureDetector(
-            onTap: () {},
-            child: const Icon(Icons.keyboard_arrow_right),
+            onTap: () {
+              Get.toNamed(Routers.moreMessage);
+            },
+            child: Text("更多会话", style: AFont.instance.size18themeColorW500),
           )
         ],
       ),

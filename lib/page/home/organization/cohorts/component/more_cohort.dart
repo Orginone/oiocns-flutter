@@ -28,7 +28,7 @@ class MoreCohort extends GetView<MessageController> {
               var chat = controller.getCurrentSetting!;
               var isRelationAdmin = auth.isRelationAdmin([chat.target.id]);
               return AvatarGroup(
-                persons: chat.persons,
+                persons: controller.settingPersons,
                 hasAdd: isRelationAdmin,
                 padding: EdgeInsets.only(top: 30.h),
                 addCallback: () {

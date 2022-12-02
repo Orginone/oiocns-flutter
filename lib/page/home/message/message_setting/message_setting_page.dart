@@ -1,11 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:logging/logging.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/choose_item.dart';
 import 'package:orginone/component/text_avatar.dart';
@@ -19,7 +16,6 @@ import 'package:orginone/enumeration/enum_map.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/page/home/organization/cohorts/component/avatar_group.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/screen_init.dart';
 import 'package:orginone/util/string_util.dart';
 import 'package:orginone/util/widget_util.dart';
 
@@ -34,52 +30,14 @@ class MessageSettingPage extends GetView<MessageController> {
     IChat chat = controller.getCurrentSetting!;
     ChatType chatType = chatTypeMap[chat.target.label] ?? ChatType.unknown;
 
-    List<Widget> children = [
-      Align(alignment: Alignment.center, child: _body(chatType)),
-    ];
-
-    double interval = 28.h;
-    double bottomDistance = interval;
-    double left = (screenSize.width.w - defaultBtnSize.width) / 2;
-
-    // 如果是群组,就有退出群组
-    if (chatType == ChatType.cohort || chatType == ChatType.jobCohort) {
-      bottomDistance += interval + defaultBtnSize.height;
-      children.add(Positioned(
-        left: left,
-        bottom: bottomDistance,
-        child: _exitTarget(context, chatType),
-      ));
-    }
-
-    // 个人空间的, 有特殊按钮
-    if (chat.spaceId == auth.userId) {
-      // 如果是好友, 添加删除好友功能
-      if (chatType == ChatType.friends) {
-        bottomDistance += interval + defaultBtnSize.height;
-        children.add(Positioned(
-          left: left,
-          bottom: bottomDistance,
-          child: _exitTarget(context, chatType),
-        ));
-      }
-      // 个人空间可以清空会话
-      bottomDistance += interval + defaultBtnSize.height;
-      children.add(Positioned(
-        left: left,
-        bottom: bottomDistance,
-        child: _clear(context),
-      ));
-    }
-
     return UnifiedScaffold(
       appBarLeading: WidgetUtil.defaultBackBtn,
       appBarElevation: 0,
-      body: Stack(children: children),
+      body: _body(context, chatType),
     );
   }
 
-  Widget _body(ChatType chatType) {
+  Widget _body(BuildContext context, ChatType chatType) {
     IChat chat = controller.getCurrentSetting!;
     List<Widget> children = [];
     switch (chatType) {
@@ -117,7 +75,7 @@ class MessageSettingPage extends GetView<MessageController> {
               },
             );
           }),
-          if (chat.hasMorePersons()) _more,
+          _more,
           _interruption,
           _top,
           _searchChat,
@@ -125,6 +83,24 @@ class MessageSettingPage extends GetView<MessageController> {
         break;
       case ChatType.unknown:
         break;
+    }
+
+    // 如果是群组,就有退出群组
+    if (chatType == ChatType.cohort || chatType == ChatType.jobCohort) {
+      children.add(Padding(padding: EdgeInsets.only(top: 20.h)));
+      children.add(_exitTarget(context, chatType));
+    }
+
+    // 个人空间的, 有特殊按钮
+    if (chat.spaceId == auth.userId) {
+      // 如果是好友, 添加删除好友功能
+      if (chatType == ChatType.friends) {
+        children.add(Padding(padding: EdgeInsets.only(top: 20.h)));
+        children.add(_exitTarget(context, chatType));
+      }
+      // 个人空间可以清空会话
+      children.add(Padding(padding: EdgeInsets.only(top: 20.h)));
+      children.add(_clear(context));
     }
     return Container(
       padding: EdgeInsets.only(left: 30.w, right: 30.w),

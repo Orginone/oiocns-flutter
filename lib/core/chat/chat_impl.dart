@@ -352,7 +352,7 @@ class CohortChat extends BaseChat {
       typeNames: [target.typeName],
       subTypeNames: [TargetType.person.label],
       page: PageRequest(
-        limit: 13,
+        limit: 14,
         offset: _persons.length,
         filter: filter ?? "",
       ),

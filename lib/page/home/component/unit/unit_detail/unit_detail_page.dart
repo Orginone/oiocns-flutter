@@ -14,6 +14,7 @@ class UnitDetailPage extends GetView<TargetController> {
 
   @override
   Widget build(BuildContext context) {
+
     var args = Get.arguments;
     var company = controller.maintainCompany?.target;
     return UnifiedScaffold(

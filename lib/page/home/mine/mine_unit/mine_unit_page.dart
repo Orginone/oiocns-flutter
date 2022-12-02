@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/component/form_item_type1.dart';
 import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/config/field_config.dart';
 import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/page/home/search/search_controller.dart';
 import 'package:orginone/routers.dart';
@@ -27,7 +28,17 @@ class MineUnitPage extends GetView<TargetController> {
             child: FloatingActionButton(
               heroTag: 'one',
               onPressed: () async {
-                Get.toNamed(Routers.unitCreate);
+                Get.toNamed(
+                  Routers.maintain,
+                  arguments: CreateCompany((value) {
+                    if (Get.isRegistered<TargetController>()) {
+                      var targetCtrl = Get.find<TargetController>();
+                      targetCtrl
+                          .createCompany(value)
+                          .then((value) => Get.back());
+                    }
+                  }),
+                );
               },
               tooltip: "创建单位",
               backgroundColor: Colors.blueAccent,

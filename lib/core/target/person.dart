@@ -153,10 +153,12 @@ class Person extends BaseTarget {
       teamCode: teamCode,
       typeName: type.label,
       teamRemark: teamRemark,
+      belongId: auth.userId,
     );
     Target companyTarget = await Kernel.getInstance.createTarget(companyModel);
     Company company = _addCompany(companyTarget);
     await company.pullPersons([super.target.id]);
+    await loadAuth();
   }
 
   /// 申请加入群组

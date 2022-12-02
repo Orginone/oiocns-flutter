@@ -63,6 +63,17 @@ class TargetController extends GetxController {
     );
   }
 
+  /// 创建群组
+  Future<void> createCompany(Map<String, dynamic> value) async {
+    await currentPerson.createCompany(
+      code: value["code"],
+      name: value["name"],
+      teamName: value["teamName"],
+      teamCode: value["teamCode"],
+      teamRemark: value["teamRemark"],
+    );
+  }
+
   /// 更新群组
   updateCohort(Map<String, dynamic> value) async {
     var cohort = Target.fromMap(value);

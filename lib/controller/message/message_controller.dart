@@ -187,6 +187,8 @@ class MessageController extends BaseController<IChatGroup>
 
   IChat? get getCurrentSetting => _currentSetting.value;
 
+  List<Target> get settingPersons => _currentSetting.value!.persons;
+
   /// 获取名称
   String getName(String id) {
     String name = "未知";

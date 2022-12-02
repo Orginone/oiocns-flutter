@@ -93,17 +93,15 @@ class InvitePage extends GetView<InviteController> {
     );
   }
 
-  get _list =>
-      GetBuilder<InviteController>(
-        builder: (controller) =>
-            ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              itemCount: controller.filterNotJoinedFriends.length,
-              itemBuilder: (BuildContext context, int index) {
-                return _item(controller.filterNotJoinedFriends[index]);
-              },
-            ),
+  get _list => GetBuilder<InviteController>(
+        builder: (controller) => ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          itemCount: controller.filterNotJoinedFriends.length,
+          itemBuilder: (BuildContext context, int index) {
+            return _item(controller.filterNotJoinedFriends[index]);
+          },
+        ),
       );
 
   Widget _item(Target target) {
@@ -251,7 +249,13 @@ class InviteController extends GetxController {
     List<String> targetIds = targetQueue.map((item) => item.id).toList();
     var teamPull = TeamPullModel(
       id: chat.chatId,
-      teamTypes: [TargetType.cohort.label, TargetType.jobCohort.label],
+      teamTypes: [
+        TargetType.cohort.label,
+        TargetType.jobCohort.label,
+        TargetType.company.label,
+        TargetType.university.label,
+        TargetType.hospital.label,
+      ],
       targetType: TargetType.person.label,
       targetIds: targetIds,
     );
