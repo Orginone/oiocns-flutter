@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/enumeration/message_type.dart';
-import 'package:orginone/controller/mapping_to_ui.dart';
 
 /// 会话组的抽象
-abstract class IChatGroup<W extends Widget> implements MappingToUI<W> {
+abstract class IChatGroup<W extends Widget> {
   final String spaceId;
   final String spaceName;
   final bool isOpened;
@@ -56,7 +54,7 @@ class ChatCache {
 }
 
 /// 单个会话的抽象
-abstract class IChat<W extends Widget> implements MappingToUI<W> {
+abstract class IChat {
   final String chatId;
   final String spaceId;
   final String spaceName;
@@ -98,7 +96,7 @@ abstract class IChat<W extends Widget> implements MappingToUI<W> {
   Future<bool> recallMessage(String id);
 
   /// 删除消息
-  Future<ApiResp> deleteMessage(String id);
+  Future<void> deleteMessage(String id);
 
   /// 清空历史消息
   clearMessage();
@@ -114,7 +112,4 @@ abstract class IChat<W extends Widget> implements MappingToUI<W> {
 
   /// 阅读所有消息
   readAll();
-
-  /// 打开会话
-  openChat();
 }

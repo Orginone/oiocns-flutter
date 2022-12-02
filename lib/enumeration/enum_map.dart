@@ -4,7 +4,10 @@ import 'package:orginone/enumeration/target_type.dart';
 import 'message_type.dart';
 
 class EnumMap {
-  static Map<String, MsgType> messageTypeMap = MsgType.values.asNameMap();
+  static Map<String, MsgType> messageTypeMap = typeMapFunc(
+    MsgType.values,
+    MsgType.getName
+  );
   static Map<String, TargetType> targetTypeMap = typeMapFunc(
     TargetType.values,
     TargetType.getName,

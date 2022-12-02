@@ -13,8 +13,8 @@ import 'package:orginone/component/unified_edge_insets.dart';
 import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/core/authority.dart';
-import 'package:orginone/page/home/home_controller.dart';
 import 'package:orginone/controller/message/message_controller.dart';
+import 'package:orginone/core/ui/message/message_item_widget.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/string_util.dart';
 
@@ -58,7 +58,11 @@ class RecentChat extends GetView<MessageController> {
         itemCount: chatSize + 1,
         itemBuilder: (BuildContext context, int index) {
           if (index < chatSize) {
-            return controller.getChatWidget(index);
+            var chat = controller.chats[index];
+            return MessageItemWidget(
+              chat: chat,
+              remove: controller.removeChat,
+            );
           }
           return GestureDetector(
             onTap: () {

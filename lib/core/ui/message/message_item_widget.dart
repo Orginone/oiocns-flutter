@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/component/text_avatar.dart';
 import 'package:orginone/component/text_tag.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_text_style.dart';
 import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/core/authority.dart';
-import 'package:orginone/core/chat/chat_impl.dart';
 import 'package:orginone/core/chat/i_chat.dart';
-import 'package:orginone/enumeration/enum_map.dart';
-import 'package:orginone/enumeration/message_type.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_util.dart';
 import 'package:orginone/util/string_util.dart';
 
 double defaultAvatarWidth = 66.w;
 
 enum ChatFunc {
-  topping("置顶会话"),
-  cancelTopping("取消置顶"),
+  // topping("置顶会话"),
+  // cancelTopping("取消置顶"),
   remove("删除会话");
 
   final String label;
@@ -31,12 +29,12 @@ enum ChatFunc {
 class MessageItemWidget extends StatelessWidget {
   // 用户信息
   final IChat chat;
-  final Function? onTap;
+  final Function? remove;
 
   const MessageItemWidget({
     Key? key,
     required this.chat,
-    this.onTap,
+    this.remove,
   }) : super(key: key);
 
   @override
@@ -61,10 +59,28 @@ class MessageItemWidget extends StatelessWidget {
             return PopupMenuItem(value: item, child: Text(item.label));
           }).toList(),
         );
+        if (result != null) {
+          switch (result) {
+            case ChatFunc.remove:
+              if (remove != null) {
+                remove!(chat);
+              }
+              break;
+          }
+        }
       },
-      onTap: () {
-        if (onTap != null) {
-          onTap!();
+      onTap: () async {
+        if (Get.isRegistered<MessageController>()) {
+          var messageCtrl = Get.find<MessageController>();
+          bool success = await messageCtrl.setCurrentByChat(chat);
+          if (!success) {
+            Fluttertoast.showToast(msg: "未获取到会话信息");
+            return;
+          }
+          Get.offNamedUntil(
+            Routers.chat,
+            (router) => router.settings.name == Routers.home,
+          );
         }
       },
       child: Container(

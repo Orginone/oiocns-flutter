@@ -99,8 +99,7 @@ class StringUtil {
     if (detail == null) {
       return "";
     }
-    var messageType = EnumMap.messageTypeMap;
-    var type = messageType[detail.msgType] ?? MsgType.text;
+    var type = EnumMap.messageTypeMap[detail.msgType] ?? MsgType.text;
     var messageCtrl = Get.find<MessageController>();
 
     var name = messageCtrl.getName(detail.fromId);
@@ -119,14 +118,16 @@ class StringUtil {
         return "$showTxt撤回了一条消息";
       case MsgType.image:
         return "$showTxt[图片]";
+      case MsgType.video:
+        return "$showTxt[视频]";
       case MsgType.voice:
         return "$showTxt[语音]";
       case MsgType.file:
         return "$showTxt[文件]";
-      case MsgType.unknown:
-      case MsgType.topping:
       case MsgType.pull:
         return detail.msgBody ?? "";
+      case MsgType.read:
+        return "";
     }
   }
 }
