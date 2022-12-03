@@ -88,12 +88,11 @@ class StagingPage extends StatelessWidget {
 
   Widget _item(StagingEntity staging) {
     var messageCtrl = Get.find<MessageController>();
-    var orgChatCache = messageCtrl.orgChatCache;
     var stagingCtrl = Get.find<StagingController>();
 
     return StagingItemWidget(
       staging: staging,
-      belongName: orgChatCache.nameMap[staging.belongId],
+      belongName: messageCtrl.getName(staging.belongId),
       onSelected: stagingCtrl.onSelected,
       selected: stagingCtrl.has(staging.id) ? true.obs : false.obs,
     );

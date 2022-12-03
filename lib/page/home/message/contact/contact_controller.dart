@@ -37,11 +37,6 @@ class ContactController extends BaseController {
     loadAllContact("");
   }
 
-  MessageTarget getMsgItem(Target targetResp) {
-    MessageController messageController = Get.find<MessageController>();
-    return messageController.spaceMessageItemMap[auth.userId]![targetResp.id]!;
-  }
-
   /// 一次性加载全部好友，并提取索引
   Future<void> loadAllContact(String filter) async {
     await PersonApi.friends(limit, offset, filter).then((pageResp) {

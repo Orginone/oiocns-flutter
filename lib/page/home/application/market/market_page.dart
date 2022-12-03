@@ -76,14 +76,13 @@ class MarketPage extends GetView<MarketController> {
 
   Widget _mapping(MarketEntity market) {
     var messageController = Get.find<MessageController>();
-    var orgChatCache = messageController.orgChatCache;
     return MarketItemWidget(
       marketEntity: market,
       isSoft: controller.isSoft(market),
       isUserSpace: auth.isUserSpace(),
       spaceId: auth.spaceId,
       userId: auth.userId,
-      belongName: orgChatCache.nameMap[market.belongId] ?? "-",
+      belongName: messageController.getName(market.belongId ?? ""),
       transferCallback: (MarketEntity market) => Get.toNamed(
         Routers.merchandise,
         arguments: market.id,

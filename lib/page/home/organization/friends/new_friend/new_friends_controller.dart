@@ -1,9 +1,6 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/controller/message/message_controller.dart';
-import 'package:orginone/core/authority.dart';
-import 'package:orginone/enumeration/message_type.dart';
-import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/public/http/base_list_controller.dart';
 import 'package:orginone/public/loading/opt_loading.dart';
 
@@ -34,13 +31,8 @@ class NewFriendsController extends BaseListController<FriendsEntity> {
   }
 
   String getName(String userId) {
-    MessageController find = Get.find<MessageController>();
-    var orgChatCache = find.orgChatCache;
-    String name = "";
-    if (orgChatCache.nameMap.isNotEmpty) {
-      name = (orgChatCache.nameMap[userId]) ?? "";
-    }
-    return name;
+    MessageController msgCtrl = Get.find<MessageController>();
+    return msgCtrl.getName(userId);
   }
 
   void joinSuccess(FriendsEntity friends) async {

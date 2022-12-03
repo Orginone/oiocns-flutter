@@ -137,13 +137,6 @@ class MessageController extends BaseController<IChatGroup>
 
   List<IChat> get chats => _chats;
 
-  // 参数
-  OrgChatCache orgChatCache = OrgChatCache.empty();
-
-  // 会话索引
-  Map<String, ChatGroup> spaceMap = {};
-  Map<String, Map<String, MessageTarget>> spaceMessageItemMap = {};
-
   // 当前 app 状态
   AppLifecycleState? currentAppState;
 

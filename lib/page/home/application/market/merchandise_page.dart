@@ -112,14 +112,12 @@ class MerchandisePage extends StatelessWidget {
   Widget _item(MerchandiseEntity merchandise) {
     /// 获取归属名称
     var messageCtrl = Get.find<MessageController>();
-    var orgChatCache = messageCtrl.orgChatCache;
-    var nameMap = orgChatCache.nameMap;
     var belongId = merchandise.product.belongId;
 
     var stagingController = Get.find<StagingController>();
     return MerchandiseItemWidget(
       merchandise: merchandise,
-      belongName: nameMap[belongId] ?? "",
+      belongName: messageCtrl.getName(belongId),
       addStagingCall: (MerchandiseEntity m) => stagingController
           .staging(m.id)
           .then((value) => Fluttertoast.showToast(msg: "添加成功!")),

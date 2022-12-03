@@ -127,20 +127,14 @@ class AffairsDetailController extends BaseController
   }
 
   String getApplicant() {
-    MessageController msgController = Get.find<MessageController>();
-    var orgChatCache = msgController.orgChatCache;
+    MessageController msgCtrl = Get.find<MessageController>();
     String applicant = "";
-    if (orgChatCache.nameMap.isNotEmpty) {
-      if (arguments.typeEnum == AffairsTypeEnum.record) {
-        applicant =
-            orgChatCache.nameMap[arguments.recordEntity?.createUser ?? ""];
-      } else if (arguments.typeEnum == AffairsTypeEnum.instance) {
-        applicant =
-            orgChatCache.nameMap[arguments.instanceEntity?.createUser ?? ""];
-      } else {
-        applicant =
-            orgChatCache.nameMap[arguments.taskEntity?.createUser ?? ""];
-      }
+    if (arguments.typeEnum == AffairsTypeEnum.record) {
+      applicant = msgCtrl.getName(arguments.recordEntity?.createUser ?? "");
+    } else if (arguments.typeEnum == AffairsTypeEnum.instance) {
+      applicant = msgCtrl.getName(arguments.instanceEntity?.createUser ?? "");
+    } else {
+      applicant = msgCtrl.getName(arguments.taskEntity?.createUser ?? "");
     }
     return applicant;
   }
