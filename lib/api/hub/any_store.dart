@@ -218,54 +218,6 @@ class AnyStore {
     });
   }
 
-  Future<ApiResp> cacheMsg(String sessionId, MessageDetail detail) {
-    if (detail.msgType == MsgType.recall.name) {
-      Map<String, dynamic> update = {
-        "match": {"chatId": detail.id},
-        "update": {
-          "_set_": {"msgBody": detail.msgBody, "msgType": detail.msgType}
-        },
-        "options": {}
-      };
-      return insert("chat-message", update, Domain.user.name);
-    } else {
-      Map<String, dynamic> data = {
-        "chatId": detail.id,
-        "toId": detail.toId,
-        "spaceId": detail.spaceId,
-        "fromId": detail.fromId,
-        "msgType": detail.msgType,
-        "msgBody": detail.msgBody,
-        "sessionId": sessionId,
-        "createTime": DateUtil.formatDate(detail.createTime,
-            format: "yyyy-MM-dd HH:mm:ss.SSS")
-      };
-      log.info("====> 插入一条数据：${data["createTime"]}");
-      return insert(collName, data, Domain.user.name);
-    }
-  }
-
-  /// 缓存会话
-  Future<ApiResp> cacheChats(OrgChatCache orgChatCache) {
-    Map<String, dynamic> setData = {
-      "operation": "replaceAll",
-      "data": {
-        "name": "我的消息",
-        "chats": ChatGroup.toJsonList(orgChatCache.chats)
-            .where((item) => item["id"] != "topping")
-            .toList(),
-        "nameMap": orgChatCache.nameMap,
-        "openChats": MessageTarget.toJsonList(orgChatCache.openChats),
-        "recentChats": orgChatCache.recentChats,
-        "lastMsg": {
-          "chat": orgChatCache.target?.toJson(),
-          "data": orgChatCache.messageDetail?.toJson()
-        },
-      }
-    };
-    return set(StoreKey.orgChat.name, setData, Domain.user.name);
-  }
-
   /// 清空消息
   Future<ApiResp> clearHistoryMsg(String sessionId) {
     Map<String, dynamic> match = {"sessionId": sessionId};

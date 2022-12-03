@@ -48,7 +48,7 @@ class ChatMessageDetail extends GetView<MessageController> {
     required this.isMy,
     required this.isMultiple,
     Key? key,
-  })  : msgType = EnumMap.messageTypeMap[detail.msgType] ?? MsgType.unknown,
+  })  : msgType = EnumMap.messageTypeMap[detail.msgType] ?? MsgType.text,
         super(key: key);
 
   @override
@@ -203,7 +203,13 @@ class ChatMessageDetail extends GetView<MessageController> {
           }).toList(),
         );
         if (result != null) {
-          // controller.detailFuncCallback(result, spaceId, sessionId, detail);
+          switch (result) {
+            case DetailFunc.recall:
+              break;
+            case DetailFunc.remove:
+              controller.getCurrentChat?.deleteMessage(detail.id);
+              break;
+          }
         }
       },
       child: body,
@@ -258,22 +264,10 @@ class ChatMessageDetail extends GetView<MessageController> {
   }) {
     /// 解析参数
     Map<String, dynamic> msgBody = jsonDecode(detail.msgBody ?? "{}");
-    String path = msgBody["path"];
-    double width = double.parse(msgBody["width"].toString());
-    double height = double.parse(msgBody["height"].toString());
+    String link = msgBody["shareLink"] ?? "";
 
     /// 限制大小
-    late BoxConstraints boxConstraints;
-    if (width > height) {
-      boxConstraints = BoxConstraints(maxWidth: 200.w);
-    } else {
-      boxConstraints = BoxConstraints(maxHeight: 200.h);
-    }
-
-    path = EncryptionUtil.encodeURLString(path);
-    String params =
-        "shareDomain=${BucketApi.defaultShareDomain}&prefix=$path&preview=True";
-    String url = "${Constant.bucket}/Download?$params";
+    BoxConstraints boxConstraints = BoxConstraints(maxWidth: 200.w);
 
     Map<String, String> headers = {
       "Authorization": getAccessToken,
@@ -285,14 +279,14 @@ class ChatMessageDetail extends GetView<MessageController> {
             context: context,
             builder: (BuildContext context) {
               return PhotoWidget(
-                imageProvider: CachedNetworkImageProvider(url),
+                imageProvider: CachedNetworkImageProvider(link),
               );
             }));
       },
       child: _detail(
         constraints: boxConstraints,
         textDirection: textDirection,
-        body: CachedNetworkImage(imageUrl: url, httpHeaders: headers),
+        body: CachedNetworkImage(imageUrl: link, httpHeaders: headers),
         clipBehavior: Clip.hardEdge,
         padding: EdgeInsets.zero,
       ),

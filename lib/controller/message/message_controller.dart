@@ -42,7 +42,7 @@ class Detail {
 
   /// 构造工厂
   factory Detail(MessageDetail resp) {
-    MsgType msgType = EnumMap.messageTypeMap[resp.msgType] ?? MsgType.unknown;
+    MsgType msgType = EnumMap.messageTypeMap[resp.msgType] ?? MsgType.text;
     Map<String, dynamic> msgMap = jsonDecode(resp.msgBody ?? "{}");
     switch (msgType) {
       case MsgType.file:
@@ -172,15 +172,17 @@ class MessageController extends BaseController<IChatGroup>
     return _chats.length;
   }
 
-  Widget getChatWidget(int index) {
-    return _chats[index].mapping();
-  }
-
   IChat? get getCurrentChat => _currentChat.value;
 
   IChat? get getCurrentSetting => _currentSetting.value;
 
   List<Target> get settingPersons => _currentSetting.value!.persons;
+
+  /// 移除近期会话
+  removeChat(IChat chat) async {
+    _chats.remove(chat);
+    await _cacheChats();
+  }
 
   /// 获取名称
   String getName(String id) {

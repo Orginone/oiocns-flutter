@@ -17,6 +17,8 @@ import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/core/authority.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/encryption_util.dart';
+import 'package:orginone/util/notification_util.dart';
+import 'package:orginone/util/string_util.dart';
 
 import 'i_chat.dart';
 
@@ -49,11 +51,6 @@ class BaseChatGroup implements IChatGroup<GroupItemWidget> {
   List<IChat> get chats => _chats.toList();
 
   @override
-  GroupItemWidget mapping() {
-    return GroupItemWidget(this);
-  }
-
-  @override
   openOrNot(bool isOpened) {
     _isOpened.value = isOpened;
   }
@@ -67,7 +64,7 @@ IChat createChat(String spaceId, String spaceName, MessageTarget target) {
   }
 }
 
-class BaseChat implements IChat<MessageItemWidget> {
+class BaseChat implements IChat {
   static final Logger log = Logger("BaseChat");
 
   final String _chatId;
@@ -156,8 +153,11 @@ class BaseChat implements IChat<MessageItemWidget> {
   }
 
   @override
-  Future<ApiResp> deleteMessage(String id) {
-    throw UnimplementedError();
+  Future<void> deleteMessage(String id) async {
+    if (auth.userId == spaceId) {
+      await Kernel.getInstance.anyStore.deleteMsg(id);
+    }
+    _messages.removeWhere((item) => item.id == id);
   }
 
   @override
@@ -192,6 +192,10 @@ class BaseChat implements IChat<MessageItemWidget> {
       _noReadCount.value += noRead ? 1 : 0;
       _lastMessage.value = detail;
       _messages.insert(0, detail);
+      if (noRead) {
+        var showTxt = StringUtil.showTxt(this, detail);
+        NotificationUtil.showNewMsg(target.name, showTxt);
+      }
     }
   }
 
@@ -201,36 +205,12 @@ class BaseChat implements IChat<MessageItemWidget> {
     required String msgBody,
   }) async {
     await Kernel.getInstance.createImMsg(ImMsgModel(
-      msgType: msgType.name,
+      msgType: msgType.keyword,
       msgBody: msgBody,
       spaceId: _spaceId,
       fromId: auth.userId,
       toId: _chatId,
     ));
-  }
-
-  @override
-  MessageItemWidget mapping() {
-    return MessageItemWidget(
-      chat: this,
-      onTap: () => openChat(),
-    );
-  }
-
-  @override
-  openChat() async {
-    if (Get.isRegistered<MessageController>()) {
-      var messageCtrl = Get.find<MessageController>();
-      bool success = await messageCtrl.setCurrentByChat(this);
-      if (!success) {
-        Fluttertoast.showToast(msg: "未获取到会话信息");
-        return;
-      }
-      Get.offNamedUntil(
-        Routers.chat,
-        (router) => router.settings.name == Routers.home,
-      );
-    }
   }
 
   @override

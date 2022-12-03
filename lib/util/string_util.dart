@@ -1,8 +1,13 @@
+import 'package:get/get.dart';
 import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/component/text_avatar.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/core/authority.dart';
+import 'package:orginone/core/chat/chat_impl.dart';
+import 'package:orginone/core/chat/i_chat.dart';
 import 'package:orginone/enumeration/enum_map.dart';
+import 'package:orginone/enumeration/message_type.dart';
 import 'package:orginone/enumeration/target_type.dart';
 
 class StringUtil {
@@ -88,5 +93,41 @@ class StringUtil {
     if (str == null) return '';
     if (str.trim().isEmpty) return '';
     return str;
+  }
+
+  static String showTxt(IChat chat, MessageDetail? detail) {
+    if (detail == null) {
+      return "";
+    }
+    var type = EnumMap.messageTypeMap[detail.msgType] ?? MsgType.text;
+    var messageCtrl = Get.find<MessageController>();
+
+    var name = messageCtrl.getName(detail.fromId);
+    var showTxt = "";
+    if (chat is PersonChat) {
+      if (detail.fromId != auth.userId) {
+        showTxt = "对方：";
+      }
+    } else {
+      showTxt = "$name:";
+    }
+    switch (type) {
+      case MsgType.text:
+        return "$showTxt${detail.msgBody ?? ""}";
+      case MsgType.recall:
+        return "$showTxt撤回了一条消息";
+      case MsgType.image:
+        return "$showTxt[图片]";
+      case MsgType.video:
+        return "$showTxt[视频]";
+      case MsgType.voice:
+        return "$showTxt[语音]";
+      case MsgType.file:
+        return "$showTxt[文件]";
+      case MsgType.pull:
+        return detail.msgBody ?? "";
+      case MsgType.read:
+        return "";
+    }
   }
 }

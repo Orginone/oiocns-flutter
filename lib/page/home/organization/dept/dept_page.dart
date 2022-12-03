@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/api_resp/target.dart';
+import 'package:orginone/api_resp/tree_node.dart';
+import 'package:orginone/component/a_font.dart';
+import 'package:orginone/component/bread_crumb.dart';
+import 'package:orginone/component/text_avatar.dart';
+import 'package:orginone/component/text_search.dart';
+import 'package:orginone/component/text_tag.dart';
+import 'package:orginone/component/unified_colors.dart';
+import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/core/authority.dart';
+import 'package:orginone/page/home/organization/dept/dept_controller.dart';
+import 'package:orginone/routers.dart';
+import 'package:orginone/util/string_util.dart';
+import 'package:orginone/util/widget_util.dart';
 
-import '../../../../api_resp/target.dart';
-import '../../../../api_resp/tree_node.dart';
-import '../../../../component/a_font.dart';
-import '../../../../component/bread_crumb.dart';
-import '../../../../component/text_avatar.dart';
-import '../../../../component/text_search.dart';
-import '../../../../component/text_tag.dart';
-import '../../../../component/unified_scaffold.dart';
-import '../../../../component/unified_text_style.dart';
-import '../../../../util/string_util.dart';
-import '../../../../util/widget_util.dart';
-import '../../home_controller.dart';
-import 'dept_controller.dart';
 
 class DeptPage extends GetView<DeptController> {
   const DeptPage({Key? key}) : super(key: key);
@@ -32,10 +34,19 @@ class DeptPage extends GetView<DeptController> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextSearch(searchingCallback: controller.searchingCallback),
+          TextSearch(
+            margin: EdgeInsets.only(left: 25.w, top: 20.h, right: 25.w),
+            searchingCallback: controller.searchingCallback,
+          ),
           BreadCrumb(
+            padding: EdgeInsets.only(left: 25.w, right: 25.w),
             width: 540.w,
             height: 50.h,
+            stackBottomStyle: TextStyle(
+              fontSize: 20.sp,
+              color: UnifiedColors.themeColor,
+            ),
+            stackTopStyle: TextStyle(fontSize: 20.sp),
             controller: controller.breadCrumbController,
             popsCallback: (Item<String> item) => controller.popsNode(item),
           ),
@@ -63,25 +74,26 @@ class DeptPage extends GetView<DeptController> {
     return Column(
       children: [
         GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTap: () => controller.entryNode(node),
           child: Container(
             margin: EdgeInsets.only(
-              left: 10.w,
-              right: 10.w,
+              left: 25.w,
+              right: 25.w,
               top: 15.h,
               bottom: 15.h,
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(node.label, style: text20),
+                Text(node.label, style: AFont.instance.size22Black0),
                 Container(margin: EdgeInsets.only(left: 5.w)),
                 TextTag(
                   node.data.typeName,
-                  textStyle: text12BlueBold,
+                  textStyle: AFont.instance.size16themeColorW500,
                   padding: EdgeInsets.all(4.w),
                 ),
-                Container(margin: EdgeInsets.only(left: 5.w)),
+                Container(margin: EdgeInsets.only(left: 10.w)),
                 Text("(${node.children.length})"),
                 Expanded(
                   child: Container(
@@ -100,21 +112,35 @@ class DeptPage extends GetView<DeptController> {
 
   Widget _personItem(Target person) {
     var name = person.team?.name ?? "";
-    return Container(
-      padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 10.h),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          TextAvatar(
-            avatarName: StringUtil.getAvatarName(
-              avatarName: name,
-              type: TextAvatarType.chat,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () async {
+        if (Get.isRegistered<MessageController>()) {
+          var messageCtrl = Get.find<MessageController>();
+          if (auth.userId == person.id) {
+            await messageCtrl.setCurrent(auth.userId, person.id);
+          } else {
+            await messageCtrl.setCurrent(auth.spaceId, person.id);
+          }
+          Get.toNamed(Routers.chat);
+        }
+      },
+      child: Container(
+        padding: EdgeInsets.only(left: 25.w, right: 25.w, top: 10.h),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            TextAvatar(
+              avatarName: StringUtil.getAvatarName(
+                avatarName: name,
+                type: TextAvatarType.chat,
+              ),
+              width: 60.w,
             ),
-            width: 48.w,
-          ),
-          Container(margin: EdgeInsets.only(left: 10.w)),
-          Text(name, style: text18)
-        ],
+            Container(margin: EdgeInsets.only(left: 10.w)),
+            Text(name, style: text18)
+          ],
+        ),
       ),
     );
   }

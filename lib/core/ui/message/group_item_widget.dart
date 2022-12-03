@@ -3,11 +3,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/core/chat/i_chat.dart';
+import 'package:orginone/core/ui/message/message_item_widget.dart';
 
 class GroupItemWidget extends StatelessWidget {
   final IChatGroup chatGroup;
+  final Function? openChat;
 
-  const GroupItemWidget(this.chatGroup, {Key? key}) : super(key: key);
+  const GroupItemWidget({
+    Key? key,
+    required this.chatGroup,
+    this.openChat,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +63,7 @@ class GroupItemWidget extends StatelessWidget {
           padding: EdgeInsets.only(bottom: 16.h),
           itemCount: chatGroup.chats.length,
           itemBuilder: (context, index) {
-            return chatGroup.chats[index].mapping();
+            return MessageItemWidget(chat: chatGroup.chats[index]);
           },
         );
       });

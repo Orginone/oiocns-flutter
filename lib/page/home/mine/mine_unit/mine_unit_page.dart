@@ -63,9 +63,8 @@ class MineUnitPage extends GetView<TargetController> {
               splashColor: Colors.white,
               elevation: 0.0,
               highlightElevation: 25.0,
-              // Text('添加好友',style:TextStyle(fontSize: 10)),
               child: const Icon(
-                Icons.person_add,
+                Icons.search,
                 size: 30,
                 color: Colors.white,
               ),
