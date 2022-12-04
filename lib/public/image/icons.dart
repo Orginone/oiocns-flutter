@@ -3,6 +3,7 @@ class AIcons {
 		"x": {
 			"back_black": "assets/icons/back_black.png",
 			"bg_center": "assets/icons/bg_center.png",
+			"chat": "assets/icons/chat.png",
 			"deep_logo_horizontal": "assets/icons/deep_logo_horizontal.png",
 			"deep_logo_vertical": "assets/icons/deep_logo_vertical.png",
 			"light_logo_horizontal": "assets/icons/light_logo_horizontal.png",
@@ -10,7 +11,10 @@ class AIcons {
 			"logo": "assets/icons/logo.png",
 			"person_card_bg": "assets/icons/person_card_bg.png",
 			"person_empty": "assets/icons/person_empty.png",
-			"placeholder": "assets/icons/placeholder.png"
+			"placeholder": "assets/icons/placeholder.png",
+			"setting": "assets/icons/setting.png",
+			"warehouse": "assets/icons/warehouse.png",
+			"work": "assets/icons/work.png"
 		},
 		"2x": {
 			"back_black": "assets/icons/2.0x/back_black.png",
@@ -40,6 +44,7 @@ class AIcons {
 
 	static const back_black = "back_black";
 	static const bg_center = "bg_center";
+	static const chat = "chat";
 	static const deep_logo_horizontal = "deep_logo_horizontal";
 	static const deep_logo_vertical = "deep_logo_vertical";
 	static const light_logo_horizontal = "light_logo_horizontal";
@@ -48,4 +53,7 @@ class AIcons {
 	static const person_card_bg = "person_card_bg";
 	static const person_empty = "person_empty";
 	static const placeholder = "placeholder";
+	static const setting = "setting";
+	static const warehouse = "warehouse";
+	static const work = "work";
 }

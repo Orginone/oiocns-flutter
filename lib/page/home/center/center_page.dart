@@ -154,10 +154,11 @@ class CenterPage extends GetView<CenterController> {
         height: 176.h,
         child: Swiper(
           autoplay: true,
-          itemCount: 4,
+          itemCount: 1,
           itemBuilder: (BuildContext context, int index) {
             return const Image(
-              image: AssetImage("images/bg_center.png"),
+              image: AssetImage("assets/home_bg.png"),
+              fit: BoxFit.cover,
             );
           },
         ),
