@@ -61,7 +61,7 @@ String collName = "chat-message";
 class AnyStore {
   final Logger log = Logger("AnyStoreUtil");
   final StoreHub _storeHub;
-  final Map<String, Function> _subscription = {};
+  final Map<String, Function(String, dynamic)> _subscription = {};
 
   Rx<HubConnectionState> get state => _storeHub.state;
 
@@ -104,14 +104,16 @@ class AnyStore {
 
   /// 回调事件
   void _onUpdated(dynamic arguments) {
+    log.info("订阅的信息：$arguments");
     if (arguments == null) {
       return;
     }
     String key = arguments[0];
-    dynamic data = arguments[1];
+    String domain = arguments[1];
+    dynamic data = arguments[2];
     _subscription.forEach((fullKey, callback) {
       if (fullKey.split("|")[0] == key) {
-        callback(data);
+        callback(domain, data);
       }
     });
   }
@@ -176,7 +178,11 @@ class AnyStore {
   }
 
   /// 订阅
-  subscribing(SubscriptionKey key, String domain, Function callback) async {
+  subscribing(
+    SubscriptionKey key,
+    String domain,
+    Function(String, dynamic) callback,
+  ) async {
     var fullKey = "${key.keyWord}|$domain";
     if (_subscription.containsKey(fullKey)) {
       return;
@@ -186,7 +192,7 @@ class AnyStore {
     dynamic res = await _storeHub.invoke(name, args: [key.keyWord, domain]);
     ApiResp apiResp = ApiResp.fromJson(res);
     if (apiResp.success) {
-      callback(apiResp.data);
+      callback(domain, apiResp.data);
     }
     log.info("====> 订阅 ${key.keyWord} 成功！");
   }
@@ -212,7 +218,7 @@ class AnyStore {
 
       ApiResp apiResp = ApiResp.fromJson(res);
       if (apiResp.success) {
-        callback(apiResp.data);
+        callback(domain, apiResp.data);
       }
       log.info("====> 重新订阅 $key 事件成功");
     });

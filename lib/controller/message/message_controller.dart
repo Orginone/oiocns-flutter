@@ -322,7 +322,7 @@ class MessageController extends BaseController<IChatGroup>
     var domain = Domain.user.name;
     var ans = await Kernel.getInstance.anyStore.get(key.keyWord, domain);
     _chats.clear();
-    _updateMails(ans.data);
+    _updateMails(domain, ans.data);
 
     // 当前有在编辑的就刷新一下
     var chat = _currentChat.value;
@@ -382,9 +382,11 @@ class MessageController extends BaseController<IChatGroup>
   }
 
   /// 更新视图
-  _updateMails(Map<String, dynamic> data) {
+  _updateMails(String domain, dynamic data) {
+    log.info("域：$domain");
     log.info("接收到的通讯录：$data");
     List<dynamic> chats = data["chats"];
+    log.info("chats：$data");
     for (Map<String, dynamic>? chat in chats) {
       if (chat == null) {
         continue;
