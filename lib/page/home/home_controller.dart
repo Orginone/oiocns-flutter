@@ -92,7 +92,7 @@ class HomeController extends GetxController
     Map<String, dynamic> apkDetail = await fileCtrl.apkDetail();
 
     // 弹出更新框
-    if (apkDetail[version] != version) {
+    if (apkDetail["version"] != version) {
       showDialog(
         context: navigatorKey.currentContext!,
         barrierColor: null,
