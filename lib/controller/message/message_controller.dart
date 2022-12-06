@@ -43,7 +43,7 @@ class Detail {
   /// 构造工厂
   factory Detail(MessageDetail resp) {
     MsgType msgType = EnumMap.messageTypeMap[resp.msgType] ?? MsgType.text;
-    Map<String, dynamic> msgMap = jsonDecode(resp.msgBody ?? "{}");
+    Map<String, dynamic> msgMap = jsonDecode(resp.msgBody);
     switch (msgType) {
       case MsgType.file:
         // 文件

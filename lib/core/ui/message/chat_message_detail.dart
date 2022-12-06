@@ -73,7 +73,7 @@ class ChatMessageDetail extends GetView<MessageController> {
             width: 300.w,
             alignment: Alignment.center,
             child: Text(
-              detail.msgBody ?? "",
+              detail.showTxt,
               style: AFont.instance.size18Black9,
             ),
           ),
@@ -146,7 +146,7 @@ class ChatMessageDetail extends GetView<MessageController> {
         body = _detail(
             textDirection: textDirection,
             body: Text(
-              detail.msgBody ?? "",
+              detail.showTxt,
               style: AFont.instance.size22Black3W500,
             ),
             padding: EdgeInsets.only(
@@ -263,7 +263,7 @@ class ChatMessageDetail extends GetView<MessageController> {
     required BuildContext context,
   }) {
     /// 解析参数
-    Map<String, dynamic> msgBody = jsonDecode(detail.msgBody ?? "{}");
+    Map<String, dynamic> msgBody = jsonDecode(detail.showTxt);
     String link = msgBody["shareLink"] ?? "";
 
     /// 限制大小

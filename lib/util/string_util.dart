@@ -49,20 +49,6 @@ class StringUtil {
     return msgBody;
   }
 
-  static String getRecallBody(MessageTarget item, MessageDetail detail) {
-    var userInfo = auth.userInfo;
-    String msgBody = "撤回了一条消息";
-    var targetType = EnumMap.targetTypeMap[item.typeName];
-    if (targetType == TargetType.person) {
-      if (userInfo.id == detail.fromId) {
-        msgBody = "您$msgBody";
-      } else {
-        msgBody = "对方$msgBody";
-      }
-    }
-    return msgBody;
-  }
-
   /// 分:秒显示
   static String getMinusShow(int seconds) {
     int minus = seconds ~/ 60;
@@ -99,6 +85,7 @@ class StringUtil {
     if (detail == null) {
       return "";
     }
+
     var type = EnumMap.messageTypeMap[detail.msgType] ?? MsgType.text;
     var messageCtrl = Get.find<MessageController>();
 
@@ -113,7 +100,7 @@ class StringUtil {
     }
     switch (type) {
       case MsgType.text:
-        return "$showTxt${detail.msgBody ?? ""}";
+        return "$showTxt${detail.showTxt}";
       case MsgType.recall:
         return "$showTxt撤回了一条消息";
       case MsgType.image:
@@ -125,7 +112,7 @@ class StringUtil {
       case MsgType.file:
         return "$showTxt[文件]";
       case MsgType.pull:
-        return detail.msgBody ?? "";
+        return detail.showTxt;
       case MsgType.read:
         return "";
     }

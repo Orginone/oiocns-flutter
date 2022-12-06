@@ -70,6 +70,7 @@ class FriendsPage extends GetView<FriendsController> {
   Widget _item(Target targetResp) {
     var avatarName = StringUtil.getPrefixChars(targetResp.name, count: 2);
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         Get.toNamed(Routers.personDetail, arguments: targetResp.team?.code);
       },

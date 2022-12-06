@@ -189,12 +189,13 @@ class BaseChat implements IChat {
   @override
   receiveMessage(MessageDetail detail, bool noRead) async {
     if (detail.id != _lastMessage.value?.id) {
+      detail.showTxt = EncryptionUtil.inflate(detail.msgBody);
       _noReadCount.value += noRead ? 1 : 0;
       _lastMessage.value = detail;
       _messages.insert(0, detail);
       if (noRead) {
-        var showTxt = StringUtil.showTxt(this, detail);
-        NotificationUtil.showNewMsg(target.name, showTxt);
+        String notification = StringUtil.showTxt(this, detail);
+        NotificationUtil.showNewMsg(target.name, notification);
       }
     }
   }
@@ -206,7 +207,7 @@ class BaseChat implements IChat {
   }) async {
     await Kernel.getInstance.createImMsg(ImMsgModel(
       msgType: msgType.keyword,
-      msgBody: msgBody,
+      msgBody: EncryptionUtil.deflate(msgBody),
       spaceId: _spaceId,
       fromId: auth.userId,
       toId: _chatId,
@@ -249,7 +250,7 @@ class PersonChat extends BaseChat {
       _messages.addAll(data.map((item) {
         item["id"] = item["chatId"];
         var detail = MessageDetail.fromMap(item);
-        detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
+        detail.showTxt = EncryptionUtil.inflate(detail.msgBody);
         return detail;
       }).toList());
     } else {
@@ -265,7 +266,7 @@ class PersonChat extends BaseChat {
       );
       var res = await Kernel.getInstance.queryFriendImMsgs(params);
       for (var detail in res.result) {
-        detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
+        detail.showTxt = EncryptionUtil.inflate(detail.msgBody);
         _messages.add(detail);
       }
     }
@@ -304,7 +305,7 @@ class CohortChat extends BaseChat {
       _messages.addAll(data.map((item) {
         item["id"] = item["chatId"];
         var detail = MessageDetail.fromMap(item);
-        detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
+        detail.showTxt = EncryptionUtil.inflate(detail.msgBody);
         return detail;
       }).toList());
     } else {
@@ -319,7 +320,7 @@ class CohortChat extends BaseChat {
       );
       var res = await Kernel.getInstance.queryCohortImMsgs(params);
       for (var detail in res.result) {
-        detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
+        detail.showTxt = EncryptionUtil.inflate(detail.msgBody);
         _messages.add(detail);
       }
     }

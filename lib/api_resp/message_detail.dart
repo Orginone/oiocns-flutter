@@ -4,11 +4,13 @@ class MessageDetail {
   String fromId;
   String toId;
   String msgType;
-  String? msgBody;
+  String msgBody;
   String? createUser;
   String? updateUser;
   DateTime? createTime;
   DateTime? updateTime;
+  String showTxt;
+  bool allowEdit;
 
   MessageDetail({
     required this.id,
@@ -21,6 +23,8 @@ class MessageDetail {
     this.updateUser,
     this.createTime,
     this.updateTime,
+    required this.showTxt,
+    required this.allowEdit,
   });
 
   MessageDetail.fromMap(Map<String, dynamic> map)
@@ -37,7 +41,9 @@ class MessageDetail {
             : null,
         updateTime = map["updateTime"] != null
             ? DateTime.parse(map["updateTime"])
-            : null;
+            : null,
+        showTxt = map["showTxt"] ?? "",
+        allowEdit = map["allowEdit"] ?? false;
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -51,6 +57,8 @@ class MessageDetail {
     json["updateUser"] = updateUser;
     json["createTime"] = createTime?.toString();
     json["updateTime"] = updateTime?.toString();
+    json["showTxt"] = showTxt;
+    json["allowEdit"] = allowEdit;
     return json;
   }
 }

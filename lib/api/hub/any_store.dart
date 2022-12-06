@@ -120,7 +120,7 @@ class AnyStore {
 
   /// 获取
   Future<ApiResp> get(String key, String domain) async {
-    var name = SendEvent.get.name;
+    var name = SendEvent.get.keyWord;
     var args = [key, domain];
     dynamic data = await _storeHub.invoke(name, args: args);
     var resp = ApiResp.fromJson(data);
@@ -130,7 +130,7 @@ class AnyStore {
 
   /// 设置
   Future<ApiResp> set(String key, dynamic setData, String domain) async {
-    var name = SendEvent.set.name;
+    var name = SendEvent.set.keyWord;
     List<Object> args = [key, setData, domain];
     dynamic res = await _storeHub.invoke(name, args: args);
     var resp = ApiResp.fromJson(res);
@@ -140,7 +140,7 @@ class AnyStore {
 
   /// 刪除
   Future<ApiResp> delete(String key, String domain) async {
-    var name = SendEvent.delete.name;
+    var name = SendEvent.delete.keyWord;
     dynamic res = await _storeHub.invoke(name, args: [key, domain]);
     var resp = ApiResp.fromJson(res);
     log.info("删除返回数据：$resp");
@@ -149,7 +149,7 @@ class AnyStore {
 
   /// 插入
   Future<ApiResp> insert(String collName, dynamic data, String domain) async {
-    var name = SendEvent.insert.name;
+    var name = SendEvent.insert.keyWord;
     List<Object> args = [collName, data, domain];
     dynamic res = await _storeHub.invoke(name, args: args);
     var resp = ApiResp.fromJson(res);
@@ -159,7 +159,7 @@ class AnyStore {
 
   /// 更新
   Future<ApiResp> update(String collName, dynamic update, String domain) async {
-    var name = SendEvent.update.name;
+    var name = SendEvent.update.keyWord;
     List<Object> args = [collName, update, domain];
     dynamic res = await _storeHub.invoke(name, args: args);
     var resp = ApiResp.fromJson(res);
@@ -169,7 +169,7 @@ class AnyStore {
 
   /// 刪除
   Future<ApiResp> remove(String collName, dynamic match, String domain) async {
-    var name = SendEvent.remove.name;
+    var name = SendEvent.remove.keyWord;
     List<Object> args = [collName, match, domain];
     dynamic res = await _storeHub.invoke(name, args: args);
     var resp = ApiResp.fromJson(res);
@@ -183,7 +183,7 @@ class AnyStore {
     required dynamic opt,
     required String domain,
   }) async {
-    var aggregateName = SendEvent.aggregate.name;
+    var aggregateName = SendEvent.aggregate.keyWord;
     List<Object> args = [collName, opt, domain];
     dynamic res = await _storeHub.invoke(aggregateName, args: args);
     var resp = ApiResp.fromJson(res);
@@ -248,39 +248,5 @@ class AnyStore {
   Future<ApiResp> deleteMsg(String chatId) async {
     Map<String, dynamic> match = {"chatId": chatId};
     return remove(collName, match, Domain.user.name);
-  }
-
-  Future<List<MessageDetail>> getUserSpaceHistoryMsg({
-    required TargetType typeName,
-    required String sessionId,
-    required int offset,
-    required int limit,
-  }) async {
-    Map<String, dynamic> match = {"sessionId": sessionId};
-    if (typeName == TargetType.person) {
-      match["spaceId"] = auth.userId;
-    }
-    // 如果是个人空间从本地存储拿数据
-    Map<String, dynamic> options = {
-      "match": match,
-      "sort": {"createTime": -1},
-      "skip": offset,
-      "limit": limit
-    };
-    var domain = Domain.user.name;
-    ApiResp apiResp = await aggregate(
-      collName: collName,
-      opt: options,
-      domain: domain,
-    );
-    List<dynamic> details = apiResp.data ?? [];
-    List<MessageDetail> ans = [];
-    for (var item in details) {
-      item["id"] = item["chatId"];
-      var detail = MessageDetail.fromMap(item);
-      detail.msgBody = EncryptionUtil.inflate(detail.msgBody ?? "");
-      ans.insert(0, detail);
-    }
-    return ans;
   }
 }
