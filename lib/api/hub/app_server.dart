@@ -69,7 +69,6 @@ class AppServer {
 
   on(String event, void Function(List<dynamic>) func) {
     _service.on(event).listen((data) {
-      log.info("事件：$event，数据：$data");
       if (data == null) return;
       if (data["args"] == null) return;
       func(data["args"]);

@@ -191,3 +191,15 @@ class NewVersion extends MaintainInfo {
           call: upload,
         );
 }
+
+class ViewVersion extends MaintainInfo {
+  ViewVersion(Map<String, dynamic> initValue)
+      : super(
+          formConfig: FormConfig(
+            initValue: initValue,
+            title: "当前版本",
+            status: MaintainStatus.view,
+            items: _uploadFields,
+          ),
+        );
+}

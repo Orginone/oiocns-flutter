@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,10 +7,11 @@ import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/kernelapi.dart';
-import 'package:orginone/api_resp/tree_node.dart';
 import 'package:orginone/component/bread_crumb.dart';
+import 'package:orginone/component/progress_dialog.dart';
 import 'package:orginone/component/tab_combine.dart';
 import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/controller/file_controller.dart';
 import 'package:orginone/page/home/affairs/affairs_page.dart';
 import 'package:orginone/page/home/application/page/application_page.dart';
 import 'package:orginone/page/home/center/center_page.dart';
@@ -18,6 +20,8 @@ import 'package:orginone/page/home/mine/set_home/set_home_page.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
 import 'package:flutter_treeview/flutter_treeview.dart' as tree_view;
 import 'package:orginone/public/image/load_image.dart';
+import 'package:orginone/screen_init.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'message/message_page.dart';
 
@@ -25,8 +29,9 @@ class HomeController extends GetxController
     with GetSingleTickerProviderStateMixin {
   Logger log = Logger("HomeController");
 
-  var messageController = Get.find<MessageController>();
+  var messageCtrl = Get.find<MessageController>();
   var organizationCtrl = Get.find<OrganizationController>();
+  var fileCtrl = Get.find<FileController>();
 
   /// 全局面包屑
   var breadCrumbController = BreadCrumbController<String>(topNode: topPoint);
@@ -75,16 +80,29 @@ class HomeController extends GetxController
     treeViewController = TreeViewController(children: ans);
   }
 
-  // @override
-  // void onReady() {
-  //   super.onReady();
-  //   // 弹出更新框
-  //   showDialog(
-  //     context: context,
-  //     barrierColor: null,
-  //     builder: (context) => UpdaterDialog("1.修复聊天同步会话问题；\n2.修改重连时间为两秒；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；"),
-  //   );
-  // }
+  @override
+  void onReady() async {
+    super.onReady();
+
+    // 获取当前 apk 版本
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String version = packageInfo.version;
+
+    // 获取当前上传的 apk 版本
+    Map<String, dynamic> apkDetail = await fileCtrl.apkDetail();
+
+    // 弹出更新框
+    if (apkDetail[version] != version) {
+      showDialog(
+        context: navigatorKey.currentContext!,
+        barrierColor: null,
+        builder: (context) => UpdaterDialog(
+          prefix: apkDetail["path"],
+          content: apkDetail["remark"],
+        ),
+      );
+    }
+  }
 
   @override
   void onClose() {
@@ -164,7 +182,7 @@ class HomeController extends GetxController
               ),
               Positioned(
                 right: 0,
-                child: messageController.hasNoRead()
+                child: messageCtrl.hasNoRead()
                     ? Icon(Icons.circle, color: Colors.redAccent, size: 10.w)
                     : Container(),
               ),

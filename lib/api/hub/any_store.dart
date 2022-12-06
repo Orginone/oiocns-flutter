@@ -123,7 +123,9 @@ class AnyStore {
     var name = SendEvent.get.name;
     var args = [key, domain];
     dynamic data = await _storeHub.invoke(name, args: args);
-    return ApiResp.fromJson(data);
+    var resp = ApiResp.fromJson(data);
+    log.info("获取返回数据：$resp");
+    return resp;
   }
 
   /// 设置
@@ -131,14 +133,18 @@ class AnyStore {
     var name = SendEvent.set.name;
     List<Object> args = [key, setData, domain];
     dynamic res = await _storeHub.invoke(name, args: args);
-    return ApiResp.fromJson(res);
+    var resp = ApiResp.fromJson(res);
+    log.info("设置返回数据：$resp");
+    return resp;
   }
 
   /// 刪除
   Future<ApiResp> delete(String key, String domain) async {
     var name = SendEvent.delete.name;
     dynamic res = await _storeHub.invoke(name, args: [key, domain]);
-    return ApiResp.fromJson(res);
+    var resp = ApiResp.fromJson(res);
+    log.info("删除返回数据：$resp");
+    return resp;
   }
 
   /// 插入
@@ -146,7 +152,9 @@ class AnyStore {
     var name = SendEvent.insert.name;
     List<Object> args = [collName, data, domain];
     dynamic res = await _storeHub.invoke(name, args: args);
-    return ApiResp.fromJson(res);
+    var resp = ApiResp.fromJson(res);
+    log.info("插入返回数据：$resp");
+    return resp;
   }
 
   /// 更新
@@ -154,7 +162,9 @@ class AnyStore {
     var name = SendEvent.update.name;
     List<Object> args = [collName, update, domain];
     dynamic res = await _storeHub.invoke(name, args: args);
-    return ApiResp.fromJson(res);
+    var resp = ApiResp.fromJson(res);
+    log.info("更新返回数据：$resp");
+    return resp;
   }
 
   /// 刪除
@@ -162,7 +172,9 @@ class AnyStore {
     var name = SendEvent.remove.name;
     List<Object> args = [collName, match, domain];
     dynamic res = await _storeHub.invoke(name, args: args);
-    return ApiResp.fromJson(res);
+    var resp = ApiResp.fromJson(res);
+    log.info("删除返回数据：$resp");
+    return resp;
   }
 
   /// 聚合
@@ -174,7 +186,9 @@ class AnyStore {
     var aggregateName = SendEvent.aggregate.name;
     List<Object> args = [collName, opt, domain];
     dynamic res = await _storeHub.invoke(aggregateName, args: args);
-    return ApiResp.fromJson(res);
+    var resp = ApiResp.fromJson(res);
+    log.info("删除返回数据：$resp");
+    return resp;
   }
 
   /// 订阅

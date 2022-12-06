@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:orginone/controller/file_controller.dart';
 import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/page/home/affairs/affairs_page_controller.dart';
 import 'package:orginone/page/home/application/applicatino_controller.dart';
@@ -18,5 +19,6 @@ class HomeBinding extends Bindings {
     Get.lazyPut(() => OrganizationController());
     Get.lazyPut(() => SetHomeController());
     Get.lazyPut(() => TargetController());
+    Get.lazyPut(() => FileController());
   }
 }

@@ -27,10 +27,7 @@ class MaintainInfo {
   final FormConfig formConfig;
   final Function(Map<String, dynamic>)? call;
 
-  MaintainInfo({
-    required this.formConfig,
-    this.call
-  });
+  MaintainInfo({required this.formConfig, this.call});
 }
 
 class MaintainWidget extends StatelessWidget {
@@ -49,8 +46,7 @@ class MaintainWidget extends StatelessWidget {
       body: Column(
         children: [
           FormWidget(
-            formConfig.items,
-            initValue: formConfig.initValue,
+            formConfig,
             state: state,
           ),
           Padding(padding: EdgeInsets.only(top: 20.h)),

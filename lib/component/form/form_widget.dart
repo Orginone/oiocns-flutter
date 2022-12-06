@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:orginone/component/maintain_widget.dart';
 import 'package:orginone/component/unified_colors.dart';
 
 import '../../util/valid_util.dart';
@@ -29,23 +30,20 @@ const EdgeInsets defaultPadding = EdgeInsets.only(left: 25, right: 25);
 
 class FormWidget extends StatelessWidget {
   final GlobalKey<FormBuilderState>? state;
-  final Map<String, dynamic>? initValue;
-  final List<FormItem> items;
+  final FormConfig formConfig;
   final EdgeInsets padding;
 
-  const FormWidget(
-    this.items, {
+  const FormWidget(this.formConfig, {
     this.state,
-    this.initValue,
     this.padding = defaultPadding,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final children = items.map(_itemMapping).toList();
+    final children = formConfig.items.map(_itemMapping).toList();
     return FormBuilder(
-      initialValue: initValue ?? {},
+      initialValue: formConfig.initValue ?? {},
       key: state,
       child: Container(
         padding: padding,
@@ -67,13 +65,13 @@ class FormWidget extends StatelessWidget {
 
   Widget _text(FormItem item) {
     return FormBuilderTextField(
+      readOnly: formConfig.status != MaintainStatus.create,
       validator: (value) {
         if (item.required) {
           return ValidUtil.isEmpty(item.fieldName, value);
         }
         return null;
       },
-      initialValue: item.defaultValue,
       name: item.fieldKey,
       decoration: _formDecoration(item.fieldName),
       onChanged: (val) {},
@@ -82,13 +80,13 @@ class FormWidget extends StatelessWidget {
 
   Widget _switch(FormItem item) {
     return FormBuilderSwitch(
+      enabled: formConfig.status != MaintainStatus.create,
       validator: (value) {
         if (item.required) {
           return;
         }
         return null;
       },
-      initialValue: item.defaultValue ?? false,
       name: item.fieldKey,
       title: Text(item.fieldName),
     );
@@ -96,6 +94,7 @@ class FormWidget extends StatelessWidget {
 
   Widget _uploader(FormItem item) {
     return FormBuilderUploaderField(
+      readOnly: formConfig.status != MaintainStatus.create,
       validator: (value) {
         if (item.required) {
           return ValidUtil.isEmpty(item.fieldName, value);

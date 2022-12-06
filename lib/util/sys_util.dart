@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/component/unified_colors.dart';
+import 'package:orginone/config/constant.dart';
+import 'package:orginone/util/encryption_util.dart';
 import 'package:ota_update/ota_update.dart';
 
 class SysUtil {
@@ -20,8 +22,10 @@ class SysUtil {
     }
   }
 
-  static void update(Function callback) {
-    String url = "https://dldir1.qq.com/weixin/Windows/WeChatSetup.exe";
+  static void update(String prefix, Function callback) {
+    prefix = EncryptionUtil.encodeURLString(prefix);
+    String params = "shareDomain=all&prefix=$prefix&preview=False";
+    String url = "${Constant.bucket}/Download?$params";
     var stream = OtaUpdate().execute(url);
     stream.listen((OtaEvent event) {
       callback(event);
@@ -32,8 +36,8 @@ class SysUtil {
     });
   }
 
-  static void hideStatusBar(){
+  static void hideStatusBar() {
     SystemChrome.setEnabledSystemUIOverlays([]);
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,overlays: []);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   }
 }

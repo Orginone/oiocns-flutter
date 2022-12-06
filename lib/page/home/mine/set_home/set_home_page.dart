@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:logging/logging.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/config/field_config.dart';
@@ -17,6 +18,8 @@ import 'package:orginone/routers.dart';
 /// 设置首页
 @immutable
 class SetHomePage extends BaseView<SetHomeController> {
+  final Logger log = Logger("SetHomePage");
+
   LinkedHashMap map = LinkedHashMap();
 
   @override
@@ -79,10 +82,24 @@ class SetHomePage extends BaseView<SetHomeController> {
             arguments: NewVersion((value) {
               if (Get.isRegistered<FileController>()) {
                 var fileCtrl = Get.find<FileController>();
-                fileCtrl.upload(value).then((value) => Get.back());
+                fileCtrl.apkUpload(value).then((value) => Get.back());
               }
             }),
           );
+        }
+      },
+      {
+        "id": 8,
+        "icon": "icon",
+        "cardName": "APK版本",
+        "func": () async {
+          if (Get.isRegistered<FileController>()) {
+            var fileCtrl = Get.find<FileController>();
+            Get.toNamed(
+              Routers.maintain,
+              arguments: ViewVersion(await fileCtrl.apkDetail()),
+            );
+          }
         }
       },
     ];
