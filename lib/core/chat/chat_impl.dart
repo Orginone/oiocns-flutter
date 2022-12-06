@@ -137,7 +137,7 @@ class BaseChat implements IChat {
   loadCache(ChatCache chatCache) {
     if (chatCache.lastMessage?.id != lastMessage?.id) {
       if (chatCache.lastMessage != null) {
-        _messages.add(chatCache.lastMessage!);
+        _messages.insert(0, chatCache.lastMessage!);
       }
     }
     _noReadCount.value = chatCache.noReadCount;
