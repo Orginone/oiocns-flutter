@@ -10,6 +10,7 @@ import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/config/field_config.dart';
 import 'package:orginone/controller/file_controller.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/page/home/mine/set_home/set_home_controller.dart';
 import 'package:orginone/public/loading/load_status.dart';
 import 'package:orginone/public/view/base_view.dart';
@@ -72,26 +73,32 @@ class SetHomePage extends BaseView<SetHomeController> {
       {"id": 4, "icon": "icon", "cardName": "流程设置"},
       {"id": 5, "icon": "icon", "cardName": "标准设置"},
       {"id": 6, "icon": "icon", "cardName": "权限设置"},
-      {
-        "id": 7,
-        "icon": "icon",
-        "cardName": "APK上传",
-        "func": () {
-          Get.toNamed(
-            Routers.maintain,
-            arguments: NewVersion((value) {
-              if (Get.isRegistered<FileController>()) {
-                var fileCtrl = Get.find<FileController>();
-                fileCtrl.apkUpload(value).then((value) => Get.back());
-              }
-            }),
-          );
-        }
-      },
+      if (auth.isMobileAPKAdmin([auth.userId]))
+        {
+          "id": 7,
+          "icon": "icon",
+          "cardName": "APK上传",
+          "func": () async {
+            Map<String, dynamic> initValue = {};
+            if (Get.isRegistered<FileController>()) {
+              var fileCtrl = Get.find<FileController>();
+              initValue.addAll(await fileCtrl.apkDetail());
+            }
+            Get.toNamed(
+              Routers.maintain,
+              arguments: NewVersion((value) {
+                if (Get.isRegistered<FileController>()) {
+                  var fileCtrl = Get.find<FileController>();
+                  fileCtrl.apkUpload(value).then((value) => Get.back());
+                }
+              }, initValue),
+            );
+          }
+        },
       {
         "id": 8,
         "icon": "icon",
-        "cardName": "APK版本",
+        "cardName": "当前版本",
         "func": () async {
           if (Get.isRegistered<FileController>()) {
             var fileCtrl = Get.find<FileController>();

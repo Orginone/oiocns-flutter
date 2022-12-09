@@ -24,7 +24,7 @@ class LoginPage extends GetView<LoginController> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            AImage.localImage("light_logo_vertical",size: const Size(150, 150)),
+            AImage.localImage("light_logo_vertical", size: Size(200.w, 200.w)),
             Container(
               padding: EdgeInsets.only(left: 40.w, top: 10.w, right: 40.w),
               child: TextFormField(

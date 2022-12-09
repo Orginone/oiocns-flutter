@@ -18,15 +18,17 @@ class ConfirmStatus {
 }
 
 class UpdaterDialog extends Dialog {
-  final String prefix;
-  final String content;
-  final ConfirmStatus confirmStatus = ConfirmStatus();
-
   UpdaterDialog({
+    required this.version,
     required this.prefix,
     required this.content,
     Key? key,
   }) : super(key: key);
+
+  final String version;
+  final String prefix;
+  final String content;
+  final ConfirmStatus confirmStatus = ConfirmStatus();
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +105,7 @@ class UpdaterDialog extends Dialog {
           shrinkWrap: true,
           children: [
             Text(
-              "更新内容",
+              "版本 v$version",
               style: text16,
               textAlign: TextAlign.center,
             ),

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
@@ -26,11 +25,13 @@ class SysUtil {
     prefix = EncryptionUtil.encodeURLString(prefix);
     String params = "shareDomain=all&prefix=$prefix&preview=False";
     String url = "${Constant.bucket}/Download?$params";
+    log.info("======>updateURL:$url");
     var stream = OtaUpdate().execute(url);
     stream.listen((OtaEvent event) {
       callback(event);
     }, onError: (error) {
       Fluttertoast.showToast(msg: "下载安装报包异常！");
+      throw error;
     }, onDone: () {
       Fluttertoast.showToast(msg: "安装包下载成功！");
     });

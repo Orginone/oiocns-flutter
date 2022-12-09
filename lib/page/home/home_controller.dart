@@ -96,6 +96,7 @@ class HomeController extends GetxController
         context: navigatorKey.currentContext!,
         barrierColor: null,
         builder: (context) => UpdaterDialog(
+          version: apkDetail["version"],
           prefix: apkDetail["path"],
           content: apkDetail["remark"],
         ),
@@ -130,7 +131,7 @@ class HomeController extends GetxController
       breadCrumbItem: workPoint,
     );
     center = TabCombine(
-      icon: const Icon(Icons.circle),
+      icon: AImage.localImage("logo_not_bg", size: Size(44.w, 44.w)),
       tabView: const CenterPage(),
       breadCrumbItem: centerPoint,
     );

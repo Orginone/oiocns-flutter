@@ -169,7 +169,7 @@ List<FormItem> _uploadFields = const [
   FormItem(
     fieldKey: "remark",
     fieldName: "更新信息",
-    itemType: ItemType.text,
+    itemType: ItemType.multiText,
     required: true,
   ),
   FormItem(
@@ -181,11 +181,12 @@ List<FormItem> _uploadFields = const [
 ];
 
 class NewVersion extends MaintainInfo {
-  NewVersion(Function(Map<String, dynamic>) upload)
+  NewVersion(Function(Map<String, dynamic>) upload, Map<String, dynamic> initValue)
       : super(
           formConfig: FormConfig(
+            initValue: initValue,
             title: "上传 APK",
-            status: MaintainStatus.create,
+            status: MaintainStatus.update,
             items: _uploadFields,
           ),
           call: upload,

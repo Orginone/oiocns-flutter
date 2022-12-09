@@ -9,6 +9,7 @@ class AIcons {
 			"light_logo_horizontal": "assets/icons/light_logo_horizontal.png",
 			"light_logo_vertical": "assets/icons/light_logo_vertical.png",
 			"logo": "assets/icons/logo.png",
+			"logo_not_bg": "assets/icons/logo_not_bg.png",
 			"person_card_bg": "assets/icons/person_card_bg.png",
 			"person_empty": "assets/icons/person_empty.png",
 			"placeholder": "assets/icons/placeholder.png",
@@ -50,6 +51,7 @@ class AIcons {
 	static const light_logo_horizontal = "light_logo_horizontal";
 	static const light_logo_vertical = "light_logo_vertical";
 	static const logo = "logo";
+	static const logo_not_bg = "logo_not_bg";
 	static const person_card_bg = "person_card_bg";
 	static const person_empty = "person_empty";
 	static const placeholder = "placeholder";

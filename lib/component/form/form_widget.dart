@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/component/maintain_widget.dart';
-import 'package:orginone/component/unified_colors.dart';
 
 import '../../util/valid_util.dart';
 import '../a_font.dart';
 import 'form_builder_uploader.dart';
 
-enum ItemType { text, upload, onOff }
+enum ItemType { text, multiText, upload, onOff }
 
 class FormItem {
   final String fieldKey;
@@ -33,7 +32,8 @@ class FormWidget extends StatelessWidget {
   final FormConfig formConfig;
   final EdgeInsets padding;
 
-  const FormWidget(this.formConfig, {
+  const FormWidget(
+    this.formConfig, {
     this.state,
     this.padding = defaultPadding,
     Key? key,
@@ -55,7 +55,9 @@ class FormWidget extends StatelessWidget {
   Widget _itemMapping(FormItem item) {
     switch (item.itemType) {
       case ItemType.text:
-        return _text(item);
+        return _text(item, false);
+      case ItemType.multiText:
+        return _text(item, true);
       case ItemType.upload:
         return _uploader(item);
       case ItemType.onOff:
@@ -63,9 +65,11 @@ class FormWidget extends StatelessWidget {
     }
   }
 
-  Widget _text(FormItem item) {
+  Widget _text(FormItem item, bool isMultiple) {
     return FormBuilderTextField(
-      readOnly: formConfig.status != MaintainStatus.create,
+      maxLines: isMultiple ? null : 1,
+      keyboardType: isMultiple ? TextInputType.multiline : TextInputType.text,
+      readOnly: formConfig.status == MaintainStatus.view,
       validator: (value) {
         if (item.required) {
           return ValidUtil.isEmpty(item.fieldName, value);
@@ -73,14 +77,20 @@ class FormWidget extends StatelessWidget {
         return null;
       },
       name: item.fieldKey,
-      decoration: _formDecoration(item.fieldName),
+      decoration: InputDecoration(
+        labelText: item.fieldName,
+        labelStyle: AFont.instance.size22Black0,
+        constraints: BoxConstraints(
+          maxHeight: 144.h,
+        ),
+      ),
       onChanged: (val) {},
     );
   }
 
   Widget _switch(FormItem item) {
     return FormBuilderSwitch(
-      enabled: formConfig.status != MaintainStatus.create,
+      enabled: formConfig.status != MaintainStatus.view,
       validator: (value) {
         if (item.required) {
           return;
@@ -94,7 +104,7 @@ class FormWidget extends StatelessWidget {
 
   Widget _uploader(FormItem item) {
     return FormBuilderUploaderField(
-      readOnly: formConfig.status != MaintainStatus.create,
+      readOnly: formConfig.status == MaintainStatus.view,
       validator: (value) {
         if (item.required) {
           return ValidUtil.isEmpty(item.fieldName, value);
@@ -102,13 +112,6 @@ class FormWidget extends StatelessWidget {
         return null;
       },
       item: item,
-    );
-  }
-
-  InputDecoration _formDecoration(String label) {
-    return InputDecoration(
-      labelText: label,
-      labelStyle: AFont.instance.size22Black0,
     );
   }
 }
