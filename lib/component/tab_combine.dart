@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'bread_crumb.dart';
 
@@ -27,6 +28,7 @@ class TabCombine {
       return customTab!;
     }
     return Tab(
+      height: 84.h,
       iconMargin: iconMargin!,
       icon: icon,
       child: body,
