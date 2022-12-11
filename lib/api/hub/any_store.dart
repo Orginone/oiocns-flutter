@@ -1,21 +1,15 @@
 import 'dart:async';
 
-import 'package:common_utils/common_utils.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/api_resp/message_detail.dart';
-import 'package:orginone/api_resp/message_target.dart';
-import 'package:orginone/api_resp/org_chat_cache.dart';
-import 'package:orginone/api_resp/space_messages_resp.dart';
+import 'package:orginone/api/hub/store_hub.dart';
+import 'package:orginone/api/model.dart';
+import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/config/constant.dart';
-import 'package:orginone/enumeration/message_type.dart';
-import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/core/authority.dart';
-import 'package:orginone/util/encryption_util.dart';
+import 'package:orginone/util/http_util.dart';
 import 'package:signalr_core/signalr_core.dart';
 
-import '../../../api_resp/api_resp.dart';
-import 'store_hub.dart';
 
 enum SendEvent {
   tokenAuth("TokenAuth"),
@@ -60,6 +54,7 @@ String collName = "chat-message";
 
 class AnyStore {
   final Logger log = Logger("AnyStoreUtil");
+  final HttpUtil _requester;
   final StoreHub _storeHub;
   final Map<String, Function(String, dynamic)> _subscription = {};
 
@@ -68,16 +63,17 @@ class AnyStore {
   static AnyStore? _instance;
 
   static AnyStore get getInstance {
-    _instance ??= AnyStore();
+    _instance ??= AnyStore(request: HttpUtil());
     return _instance!;
   }
 
-  AnyStore()
+  AnyStore({required HttpUtil request})
       : _storeHub = StoreHub(
           connName: "anyStore",
           url: Constant.anyStoreHub,
           timeout: const Duration(seconds: 5),
-        ) {
+        ),
+        _requester = request {
     _storeHub.on(ReceiveEvent.updated.name, _onUpdated);
     _storeHub.addConnectedCallback(() async {
       await _tokenAuth();
@@ -238,6 +234,17 @@ class AnyStore {
     });
   }
 
+  /// 取消订阅
+  Future<dynamic> bucketOperate(BucketOperateModel model) async {
+    if (_storeHub.isConnected()) {
+      var res = await _storeHub.invoke('BucketOpreate', args: [model]);
+      log.info("bucketOperate request ===> ${model.toString()}");
+      log.info("bucketOperate ===> ${res.toString()}");
+      return ApiResp.fromJson(res).getData();
+    }
+    return await _restRequest("Bucket", 'Operate', model);
+  }
+
   /// 清空消息
   Future<ApiResp> clearHistoryMsg(String sessionId) {
     Map<String, dynamic> match = {"sessionId": sessionId};
@@ -248,5 +255,16 @@ class AnyStore {
   Future<ApiResp> deleteMsg(String chatId) async {
     Map<String, dynamic> match = {"chatId": chatId};
     return remove(collName, match, Domain.user.name);
+  }
+
+  Future<dynamic> _restRequest(
+    String controller,
+    String methodName,
+    dynamic data,
+  ) async {
+    return await _requester.post(
+      "/orginone/anydata/$controller/$methodName",
+      data: data,
+    );
   }
 }

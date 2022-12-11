@@ -349,3 +349,156 @@ class JoinTeamModel {
     return json;
   }
 }
+
+class FileItemShare {
+  final int size;
+  final String name;
+  final String shareLink;
+  final String extension;
+  final String thumbnail;
+
+  FileItemShare({
+    required this.size,
+    required this.name,
+    required this.shareLink,
+    required this.extension,
+    required this.thumbnail,
+  });
+
+  FileItemShare.fromJson(Map<String, dynamic> json)
+      : size = json["size"],
+        name = json["name"],
+        shareLink = json["shareLink"],
+        extension = json["extension"],
+        thumbnail = json["thumbnail"];
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["size"] = size;
+    json["name"] = name;
+    json["shareLink"] = shareLink;
+    json["extension"] = extension;
+    json["thumbnail"] = thumbnail;
+    return json;
+  }
+}
+
+class FileItemModel extends FileItemShare {
+  final String key;
+  final DateTime dateCreated;
+  final DateTime dateModified;
+  final String contentType;
+  final bool isDirectory;
+  final bool hasSubDirectories;
+
+  FileItemModel({
+    required int size,
+    required String name,
+    required String shareLink,
+    required String extension,
+    required String thumbnail,
+    required this.key,
+    required this.dateCreated,
+    required this.dateModified,
+    required this.contentType,
+    required this.isDirectory,
+    required this.hasSubDirectories,
+  }) : super(
+          size: size,
+          name: name,
+          shareLink: shareLink,
+          extension: extension,
+          thumbnail: thumbnail,
+        );
+
+  FileItemModel.fromJson(Map<String, dynamic> json)
+      : key = json["key"],
+        dateCreated = json["dateCreated"],
+        dateModified = json["dateModified"],
+        contentType = json["contentType"],
+        isDirectory = json["isDirectory"],
+        hasSubDirectories = json["hasSubDirectories"],
+        super.fromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() {
+    var json = super.toJson();
+    json["key"] = key;
+    json["dateCreated"] = dateCreated;
+    json["dateModified"] = dateModified;
+    json["contentType"] = contentType;
+    json["isDirectory"] = isDirectory;
+    json["hasSubDirectories"] = hasSubDirectories;
+    return json;
+  }
+}
+
+class BucketOperateModel {
+  final String key;
+  final String? name;
+  final String shareDomain;
+  final String? destination;
+  final String operate;
+  final FileChunkData? fileItem;
+
+  BucketOperateModel({
+    required this.key,
+    this.name,
+    required this.shareDomain,
+    this.destination,
+    required this.operate,
+    this.fileItem,
+  });
+
+  BucketOperateModel.fromJson(Map<String, dynamic> json)
+      : key = json["key"],
+        name = json["name"],
+        shareDomain = json["shareDomain"],
+        destination = json["destination"],
+        operate = json["operate"],
+        fileItem = FileChunkData.fromJson(json);
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["key"] = key;
+    json["name"] = name;
+    json["shareDomain"] = shareDomain;
+    json["destination"] = destination;
+    json["operate"] = operate;
+    json["fileItem"] = fileItem?.toJson();
+    return json;
+  }
+}
+
+class FileChunkData {
+  final int index;
+  final int size;
+  final String uploadId;
+  final List<int> data;
+  final String dataUrl;
+
+  FileChunkData({
+    required this.index,
+    required this.size,
+    required this.uploadId,
+    required this.data,
+    required this.dataUrl,
+  });
+
+  FileChunkData.fromJson(Map<String, dynamic> json)
+      : index = json["index"],
+        size = json["size"],
+        uploadId = json["uploadId"],
+        data = json["data"],
+        dataUrl = json["dataUrl"];
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["index"] = index;
+    json["size"] = size;
+    json["uploadId"] = uploadId;
+    json["data"] = data;
+    json["dataUrl"] = dataUrl;
+    return json;
+  }
+}
