@@ -4,11 +4,11 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:orginone/api/person_api.dart';
-import 'package:orginone/api_resp/message_item_resp.dart';
-import 'package:orginone/api_resp/target_resp.dart';
-import 'package:orginone/logic/authority.dart';
+import 'package:orginone/api_resp/message_target.dart';
+import 'package:orginone/api_resp/target.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/page/home/home_controller.dart';
-import 'package:orginone/page/home/message/message_controller.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/public/http/base_controller.dart';
 import 'package:orginone/public/loading/load_status.dart';
 import 'package:orginone/util/string_util.dart';
@@ -21,7 +21,7 @@ class ContactController extends BaseController {
   int mSelectIndex = -1;
   RxBool mTouchUp = RxBool(true);
   RxString mTouchChar = RxString("");
-  List<TargetResp> mData = [];
+  List<Target> mData = [];
   Logger logger = Logger("ContactController");
   double _listAllItemHeight = 0;
 
@@ -35,12 +35,6 @@ class ContactController extends BaseController {
   void onInit() {
     super.onInit();
     loadAllContact("");
-    homeController.currentSpace;
-  }
-
-  MessageItemResp getMsgItem(TargetResp targetResp) {
-    MessageController messageController = Get.find<MessageController>();
-    return messageController.spaceMessageItemMap[auth.userId]![targetResp.id]!;
   }
 
   /// 一次性加载全部好友，并提取索引
@@ -68,8 +62,14 @@ class ContactController extends BaseController {
         //插入字符
         var index = 0;
         for (var pos in insertPos) {
-          var targetResp = TargetResp(typeChar, firstChars[pos], "", "", "", "",
-              0, "", "", "", null, null, null, null);
+          var targetResp = Target(
+            id: typeChar,
+            name: firstChars[pos],
+            code: "",
+            typeName: "",
+            thingId: "",
+            status: 1,
+          );
           mData.insert(pos + index, targetResp);
           index++;
         }
@@ -108,9 +108,9 @@ class ContactController extends BaseController {
     mTouchChar.value = getBarStr();
   }
 
-  void _calcAllItemHeight(){
+  void _calcAllItemHeight() {
     _listAllItemHeight = 0;
-    for (var i = 0;i < mData.length; i++) {
+    for (var i = 0; i < mData.length; i++) {
       if (typeChar == mData[i].id) {
         _listAllItemHeight += 45.h;
       } else {
@@ -134,10 +134,11 @@ class ContactController extends BaseController {
         height += 11.h;
       }
     }
+
     /// 不足一页滑动到底部
-    if(_listAllItemHeight - height > 1000.h) {
+    if (_listAllItemHeight - height > 1000.h) {
       mScrollController.jumpTo(height);
-    }else{
+    } else {
       mScrollController.jumpTo(mScrollController.position.maxScrollExtent);
     }
   }

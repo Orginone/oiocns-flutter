@@ -4,21 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:orginone/api/cohort_api.dart';
+import 'package:orginone/api/company_api.dart';
+import 'package:orginone/api/kernelapi.dart';
+import 'package:orginone/api/model.dart';
 import 'package:orginone/api/person_api.dart';
+import 'package:orginone/api_resp/target.dart';
+import 'package:orginone/component/a_font.dart';
+import 'package:orginone/component/text_avatar.dart';
+import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/unified_scaffold.dart';
-import 'package:orginone/page/home/message/chat/chat_controller.dart';
-import 'package:orginone/page/home/message/message_setting/message_setting_controller.dart';
-
-import '../../../../api_resp/target_resp.dart';
-import '../../../../component/a_font.dart';
-import '../../../../component/text_avatar.dart';
-import '../../../../component/text_search.dart';
-import '../../../../enumeration/message_type.dart';
-import '../../../../logic/authority.dart';
-import '../../../../routers.dart';
-import '../../../../util/string_util.dart';
-import '../../../../util/widget_util.dart';
+import 'package:orginone/controller/message/message_controller.dart';
+import 'package:orginone/core/authority.dart';
+import 'package:orginone/core/target/base_target.dart';
+import 'package:orginone/enumeration/message_type.dart';
+import 'package:orginone/enumeration/target_type.dart';
+import 'package:orginone/routers.dart';
+import 'package:orginone/util/string_util.dart';
+import 'package:orginone/util/widget_util.dart';
 
 class InvitePage extends GetView<InviteController> {
   const InvitePage({Key? key}) : super(key: key);
@@ -75,7 +77,7 @@ class InvitePage extends GetView<InviteController> {
     });
   }
 
-  Widget _chooseItem(TargetResp target) {
+  Widget _chooseItem(Target target) {
     var avatarName = StringUtil.getPrefixChars(target.name, count: 2);
     return GestureDetector(
       onTap: () => controller.remove(target),
@@ -102,7 +104,7 @@ class InvitePage extends GetView<InviteController> {
         ),
       );
 
-  Widget _item(TargetResp target) {
+  Widget _item(Target target) {
     var chooseMap = controller.chooseMap;
     var targetId = target.id;
     chooseMap.putIfAbsent(targetId, () => false.obs);
@@ -153,11 +155,11 @@ class InviteController extends GetxController {
 
   /// 目标对象和索引
   final Map<String, RxBool> chooseMap = {};
-  final RxList<TargetResp> targetQueue = <TargetResp>[].obs;
+  final RxList<Target> targetQueue = <Target>[].obs;
 
   /// 没有加入的好友
-  final List<TargetResp> initNotJoinedFriends = [];
-  final List<TargetResp> filterNotJoinedFriends = [];
+  final List<Target> initNotJoinedFriends = [];
+  final List<Target> filterNotJoinedFriends = [];
 
   @override
   void onInit() async {
@@ -166,12 +168,37 @@ class InviteController extends GetxController {
     spaceId = args["spaceId"];
     messageItemId = args["messageItemId"];
 
-    var settingController = Get.find<MessageSettingController>();
-    var allPersons = await settingController.getAllPersons();
-    var allFriends = await PersonApi.friendsAll("");
+    var messageCtrl = Get.find<MessageController>();
+    var chat = messageCtrl.getCurrentSetting!;
+    while (chat.hasMorePersons()) {
+      await messageCtrl.getCurrentSetting!.morePersons();
+    }
+    List<Target> allPersons = [];
+    var friends = await PersonApi.friendsAll("");
+    allPersons.addAll(friends);
+    if (auth.userId != spaceId) {
+      var res = await Kernel.getInstance.querySubTargetById(IDReqSubModel(
+        id: spaceId,
+        typeNames: [
+          TargetType.company.label,
+          TargetType.hospital.label,
+          TargetType.university.label
+        ],
+        subTypeNames: [TargetType.person.label],
+        page: PageRequest(
+          limit: maxInt,
+          offset: 0,
+          filter: "",
+        ),
+      ));
+      for (var item in friends) {
+        res.result.removeWhere((person) => person.id == item.id);
+      }
+      allPersons.addAll(res.result);
+    }
     List<String> joinedFriendIds = [];
-    for (var friend in allFriends) {
-      for (var person in allPersons) {
+    for (var friend in allPersons) {
+      for (var person in chat.persons) {
         if (friend.id == person.id) {
           joinedFriendIds.add(friend.id);
           break;
@@ -179,24 +206,24 @@ class InviteController extends GetxController {
       }
     }
     for (var joinedFriendId in joinedFriendIds) {
-      allFriends.removeWhere((item) => item.id == joinedFriendId);
+      allPersons.removeWhere((item) => item.id == joinedFriendId);
     }
-    initNotJoinedFriends.addAll(allFriends);
-    filterNotJoinedFriends.addAll(allFriends);
+    initNotJoinedFriends.addAll(allPersons);
+    filterNotJoinedFriends.addAll(allPersons);
     update();
   }
 
   /// 搜索回调
   searchCallback(String value) {
     filterNotJoinedFriends.clear();
-    List<TargetResp> friends = initNotJoinedFriends
+    List<Target> friends = initNotJoinedFriends
         .where((item) => item.name.contains(value))
         .toList();
     filterNotJoinedFriends.addAll(friends);
   }
 
   /// 推入队列
-  push(TargetResp target) {
+  push(Target target) {
     var matched = targetQueue.firstWhereOrNull((item) => item.id == target.id);
     if (matched == null) {
       targetQueue.add(target);
@@ -204,7 +231,7 @@ class InviteController extends GetxController {
   }
 
   /// 从队列里移除相关内容
-  remove(TargetResp target) {
+  remove(Target target) {
     targetQueue.removeWhere((item) => item.id == target.id);
     chooseMap[target.id]?.value = false;
   }
@@ -215,24 +242,31 @@ class InviteController extends GetxController {
       Fluttertoast.showToast(msg: "请至少选择一个需要拉取的好友!");
       return;
     }
+    var messageCtrl = Get.find<MessageController>();
+    var chat = messageCtrl.getCurrentSetting!;
 
     // 拉取的人员
     List<String> targetIds = targetQueue.map((item) => item.id).toList();
-    await CohortApi.pull(messageItemId, targetIds);
+    var teamPull = TeamPullModel(
+      id: chat.chatId,
+      teamTypes: [
+        TargetType.cohort.label,
+        TargetType.jobCohort.label,
+        TargetType.company.label,
+        TargetType.university.label,
+        TargetType.hospital.label,
+      ],
+      targetType: TargetType.person.label,
+      targetIds: targetIds,
+    );
+    await Kernel.getInstance.pullAnyToTeam(teamPull);
 
     // 组装对象
     var targetNames = targetQueue.map((item) => item.name).join("，");
-    var msgBody = {
-      "active": auth.userId,
-      "passive": targetQueue.map((item) => item.id).toList(),
-      "remark": "${auth.userInfo.name}邀请$targetNames加入了群聊",
-    };
+    var msgBody = "${auth.userInfo.name}邀请$targetNames加入了群聊";
 
     // 发送消息
-    var chatController = Get.find<ChatController>();
-    await chatController.sendOneMessage(
-      spaceId: spaceId,
-      messageItemId: messageItemId,
+    await chat.sendMsg(
       msgBody: jsonEncode(msgBody),
       msgType: MsgType.pull,
     );

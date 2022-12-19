@@ -43,21 +43,25 @@ class FriendAddPage extends GetView<FriendAddController> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("我的名片", style: text16),
-                Icon(Icons.qr_code, color: Colors.blueAccent, size: 20.w),
+                Text("我的名片", style: AFont.instance.size20Black0W500),
+                Icon(Icons.qr_code, color: Colors.blueAccent, size: 24.w),
               ],
             ),
           ),
           Container(margin: EdgeInsets.only(top: 6.h)),
           ChooseItem(
-            header: const Icon(Icons.qr_code_scanner, color: Colors.blueAccent),
+            header: Icon(
+              Icons.qr_code_scanner,
+              color: Colors.blueAccent,
+              size: 30.w,
+            ),
             body: Container(
               margin: left10,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("扫一扫", style: text16Bold),
-                  Text("扫描二维码名片", style: text12Grey),
+                  Text("扫一扫", style: AFont.instance.size20Black0W500),
+                  Text("扫描二维码名片", style: AFont.instance.size16Black6W500),
                 ],
               ),
             ),

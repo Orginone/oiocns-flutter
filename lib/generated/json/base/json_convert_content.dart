@@ -7,7 +7,11 @@ import 'package:flutter/material.dart' show debugPrint;
 import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/api_resp/friends_entity.dart';
 import 'package:orginone/api_resp/instance_task_entity.dart';
+import 'package:orginone/api_resp/market_entity.dart';
+import 'package:orginone/api_resp/merchandise_entity.dart';
 import 'package:orginone/api_resp/record_task_entity.dart';
+import 'package:orginone/api_resp/request_entity.dart';
+import 'package:orginone/api_resp/staging_entity.dart';
 import 'package:orginone/api_resp/task_entity.dart';
 
 JsonConvert jsonConvert = JsonConvert();
@@ -23,11 +27,16 @@ class JsonConvert {
 		(InstanceTaskFlowTasks).toString(): InstanceTaskFlowTasks.fromJson,
 		(InstanceTaskFlowDefine).toString(): InstanceTaskFlowDefine.fromJson,
 		(InstanceTaskFlowRelation).toString(): InstanceTaskFlowRelation.fromJson,
+		(MarketEntity).toString(): MarketEntity.fromJson,
+		(MerchandiseEntity).toString(): MerchandiseEntity.fromJson,
+		(MerchandiseProduct).toString(): MerchandiseProduct.fromJson,
 		(RecordTaskEntity).toString(): RecordTaskEntity.fromJson,
 		(RecordTaskFlowTask).toString(): RecordTaskFlowTask.fromJson,
 		(RecordTaskFlowTaskFlowNode).toString(): RecordTaskFlowTaskFlowNode.fromJson,
 		(RecordTaskFlowTaskFlowInstance).toString(): RecordTaskFlowTaskFlowInstance.fromJson,
 		(RecordTaskFlowTaskFlowInstanceFlowRelation).toString(): RecordTaskFlowTaskFlowInstanceFlowRelation.fromJson,
+		(RequestEntity).toString(): RequestEntity.fromJson,
+		(StagingEntity).toString(): StagingEntity.fromJson,
 		(TaskEntity).toString(): TaskEntity.fromJson,
 		(TaskFlowNode).toString(): TaskFlowNode.fromJson,
 		(TaskFlowInstance).toString(): TaskFlowInstance.fromJson,
@@ -134,6 +143,15 @@ class JsonConvert {
 		if(<InstanceTaskFlowRelation>[] is M){
 			return data.map<InstanceTaskFlowRelation>((Map<String, dynamic> e) => InstanceTaskFlowRelation.fromJson(e)).toList() as M;
 		}
+		if(<MarketEntity>[] is M){
+			return data.map<MarketEntity>((Map<String, dynamic> e) => MarketEntity.fromJson(e)).toList() as M;
+		}
+		if(<MerchandiseEntity>[] is M){
+			return data.map<MerchandiseEntity>((Map<String, dynamic> e) => MerchandiseEntity.fromJson(e)).toList() as M;
+		}
+		if(<MerchandiseProduct>[] is M){
+			return data.map<MerchandiseProduct>((Map<String, dynamic> e) => MerchandiseProduct.fromJson(e)).toList() as M;
+		}
 		if(<RecordTaskEntity>[] is M){
 			return data.map<RecordTaskEntity>((Map<String, dynamic> e) => RecordTaskEntity.fromJson(e)).toList() as M;
 		}
@@ -148,6 +166,12 @@ class JsonConvert {
 		}
 		if(<RecordTaskFlowTaskFlowInstanceFlowRelation>[] is M){
 			return data.map<RecordTaskFlowTaskFlowInstanceFlowRelation>((Map<String, dynamic> e) => RecordTaskFlowTaskFlowInstanceFlowRelation.fromJson(e)).toList() as M;
+		}
+		if(<RequestEntity>[] is M){
+			return data.map<RequestEntity>((Map<String, dynamic> e) => RequestEntity.fromJson(e)).toList() as M;
+		}
+		if(<StagingEntity>[] is M){
+			return data.map<StagingEntity>((Map<String, dynamic> e) => StagingEntity.fromJson(e)).toList() as M;
 		}
 		if(<TaskEntity>[] is M){
 			return data.map<TaskEntity>((Map<String, dynamic> e) => TaskEntity.fromJson(e)).toList() as M;

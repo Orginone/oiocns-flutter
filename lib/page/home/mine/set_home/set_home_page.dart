@@ -3,16 +3,24 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:getwidget/getwidget.dart';
+import 'package:logging/logging.dart';
 import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/unified_colors.dart';
-import '../../../../public/image/icons.dart';
-import '../../../../public/image/load_image.dart';
-import '../../../../public/loading/load_status.dart';
-import '../../../../public/view/base_view.dart';
-import 'set_home_controller.dart';
+import 'package:orginone/config/field_config.dart';
+import 'package:orginone/controller/file_controller.dart';
+import 'package:orginone/core/authority.dart';
+import 'package:orginone/page/home/mine/set_home/set_home_controller.dart';
+import 'package:orginone/public/loading/load_status.dart';
+import 'package:orginone/public/view/base_view.dart';
+import 'package:orginone/routers.dart';
 
 /// 设置首页
+@immutable
 class SetHomePage extends BaseView<SetHomeController> {
+  final Logger log = Logger("SetHomePage");
+
   LinkedHashMap map = LinkedHashMap();
 
   @override
@@ -65,6 +73,42 @@ class SetHomePage extends BaseView<SetHomeController> {
       {"id": 4, "icon": "icon", "cardName": "流程设置"},
       {"id": 5, "icon": "icon", "cardName": "标准设置"},
       {"id": 6, "icon": "icon", "cardName": "权限设置"},
+      if (auth.isMobileAPKAdmin([auth.userId]))
+        {
+          "id": 7,
+          "icon": "icon",
+          "cardName": "APK上传",
+          "func": () async {
+            Map<String, dynamic> initValue = {};
+            if (Get.isRegistered<FileController>()) {
+              var fileCtrl = Get.find<FileController>();
+              initValue.addAll(await fileCtrl.apkDetail());
+            }
+            Get.toNamed(
+              Routers.maintain,
+              arguments: NewVersion((value) {
+                if (Get.isRegistered<FileController>()) {
+                  var fileCtrl = Get.find<FileController>();
+                  fileCtrl.apkUpload(value).then((value) => Get.back());
+                }
+              }, initValue),
+            );
+          }
+        },
+      {
+        "id": 8,
+        "icon": "icon",
+        "cardName": "当前版本",
+        "func": () async {
+          if (Get.isRegistered<FileController>()) {
+            var fileCtrl = Get.find<FileController>();
+            Get.toNamed(
+              Routers.maintain,
+              arguments: ViewVersion(await fileCtrl.apkDetail()),
+            );
+          }
+        }
+      },
     ];
   }
 
@@ -75,7 +119,18 @@ class SetHomePage extends BaseView<SetHomeController> {
       padding: EdgeInsets.only(left: 12.w, right: 12.w),
       child: ListView(
         shrinkWrap: true,
-        children: _getItems(),
+        children: _getItems()
+          ..add(Container(
+            margin: EdgeInsets.only(left: 20.w, bottom: 10.h, right: 20.w),
+            child: GFButton(
+              onPressed: () async {
+                Get.offAllNamed(Routers.main);
+              },
+              color: Colors.redAccent,
+              text: "注销",
+              blockButton: true,
+            ),
+          )),
       ),
     );
   }
@@ -120,20 +175,35 @@ class CardChildWidget extends StatelessWidget {
               shrinkWrap: true,
               itemCount: value.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 5,
-                  ),
+                crossAxisCount: 5,
+              ),
               itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    // AImage.netImageRadius(AIcons.back_black,
-                    //     size: Size(64.w, 64.w)),
-                    AImage.netImage(url: value[index]['icon'], size: Size(64.w, 64.w)),
-                    SizedBox(height: 10.h,),
-                    Text(
-                      value[index]['cardName'],
-                      style: AFont.instance.size18Black6,
-                    ),
-                  ],
+                return GestureDetector(
+                  onTap: () {
+                    var func = value[index]["func"];
+                    if (func != null) {
+                      func();
+                    }
+                  },
+                  child: Column(
+                    children: [
+                      // AImage.netImageRadius(AIcons.back_black,
+                      //     size: Size(64.w, 64.w)),
+                      Container(
+                          width: 64.w,
+                          height: 64.w,
+                          color: UnifiedColors.navigatorBgColor),
+                      // AImage.netImage(AIcons.placeholder,
+                      //     url: value[index]['icon'], size: Size()),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      Text(
+                        value[index]['cardName'],
+                        style: AFont.instance.size18Black6,
+                      ),
+                    ],
+                  ),
                 );
               }),
         ),

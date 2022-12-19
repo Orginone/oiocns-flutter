@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/util/string_util.dart';
 
-import '../../../../api_resp/target_resp.dart';
+import '../../../../api_resp/target.dart';
 import '../../../../component/a_font.dart';
 import '../../../../component/text_avatar.dart';
 import '../../../../component/text_search.dart';
@@ -52,7 +52,7 @@ class GroupsPage extends GetView<GroupsController> {
         ),
       );
 
-  Widget _item(TargetResp targetResp) {
+  Widget _item(Target targetResp) {
     return GestureDetector(
       onTap: () {
         Get.toNamed(Routers.personDetail, arguments: targetResp.team?.code);

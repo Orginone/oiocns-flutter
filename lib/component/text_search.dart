@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/component/unified_text_style.dart';
 
 import 'a_font.dart';
 import 'unified_colors.dart';
+
+enum SearchType { text, dropdown }
 
 const EdgeInsets defaultMargin = EdgeInsets.all(10);
 const String defaultPlaceHolder = "请输入搜索内容";
@@ -16,6 +17,9 @@ class TextSearch extends StatelessWidget {
   final Function? loadingCallback;
   final Function? onTap;
   final String? placeHolder;
+  final Color? bgColor;
+  final bool hasSearchIcon;
+  final SearchType type;
 
   const TextSearch({
     Key? key,
@@ -24,6 +28,9 @@ class TextSearch extends StatelessWidget {
     this.searchingCallback,
     this.loadingCallback,
     this.placeHolder = defaultPlaceHolder,
+    this.bgColor,
+    this.hasSearchIcon = true,
+    this.type = SearchType.text,
   }) : super(key: key);
 
   @override
@@ -34,20 +41,22 @@ class TextSearch extends StatelessWidget {
       margin: margin,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(5.w)),
-        color: UnifiedColors.searchGrey,
+        color: bgColor ?? UnifiedColors.searchGrey,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            margin: EdgeInsets.only(left: 10.w),
-            child: const Icon(
-              Icons.search,
-              color: Colors.black,
+          if (hasSearchIcon)
+            Container(
+              margin: EdgeInsets.only(left: 10.w),
+              child: const Icon(
+                Icons.search,
+                color: Colors.black,
+              ),
             ),
-          ),
           Expanded(
             child: TextField(
+              readOnly: type == SearchType.dropdown,
               onTap: () {
                 if (onTap != null) {
                   onTap!();

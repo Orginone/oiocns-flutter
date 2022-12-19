@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/get.dart';
 import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/routers.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-Size screenSize = const Size(540, 1170);
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final RouteObserver<PageRoute> routeObserver = RouteObserver();
+const Size screenSize = Size(540, 1170);
 
 class ScreenInit extends StatelessWidget {
   const ScreenInit({Key? key}) : super(key: key);
@@ -38,6 +39,7 @@ class ScreenInit extends StatelessWidget {
             return false;
           },
           child: GetMaterialApp(
+            navigatorObservers: [routeObserver],
             navigatorKey: navigatorKey,
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,

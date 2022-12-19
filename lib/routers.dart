@@ -1,30 +1,39 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
-import 'package:orginone/component/form_widget.dart';
+import 'package:orginone/controller/file_controller.dart';
+import 'package:orginone/controller/market/market_controller.dart';
+import 'package:orginone/controller/market/merchandise_controller.dart';
+import 'package:orginone/controller/market/order_controller.dart';
+import 'package:orginone/controller/market/staging_controller.dart';
+import 'package:orginone/controller/message/chat_box_controller.dart';
+import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/page/forget/forget_binding.dart';
 import 'package:orginone/page/forget/forget_page.dart';
 import 'package:orginone/page/home/affairs/detail/affairs_detail.dart';
+import 'package:orginone/page/home/application/market/order_page.dart';
+import 'package:orginone/page/home/application/market/staging_page.dart';
+import 'package:orginone/page/home/application/page/application_manager_page.dart';
+import 'package:orginone/page/home/application/market/market_page.dart';
+import 'package:orginone/page/home/application/page/application_page.dart';
+import 'package:orginone/page/home/application/market/merchandise_page.dart';
 import 'package:orginone/page/home/center/center_binding.dart';
 import 'package:orginone/page/home/center/center_page.dart';
 import 'package:orginone/page/home/component/person_detail/person_detail_binding.dart';
 import 'package:orginone/page/home/component/person_detail/person_detail_page.dart';
 import 'package:orginone/page/home/component/person_add/person_add_binding.dart';
 import 'package:orginone/page/home/component/person_add/person_add_page.dart';
-import 'package:orginone/page/home/component/space_choose/space_choose_binding.dart';
 import 'package:orginone/page/home/component/space_choose/space_choose_page.dart';
 import 'package:orginone/page/home/component/unit/unit_create/unit_create_binding.dart';
 import 'package:orginone/page/home/component/unit/unit_create/unit_create_page.dart';
-import 'package:orginone/page/home/component/unit/unit_detail/unit_detail_binding.dart';
 import 'package:orginone/page/home/component/unit/unit_detail/unit_detail_page.dart';
 import 'package:orginone/page/home/home_binding.dart';
 import 'package:orginone/page/home/home_page.dart';
-import 'package:orginone/page/home/message/chat/chat_binding.dart';
+import 'package:orginone/page/home/maintain_page.dart';
 import 'package:orginone/page/home/message/chat/chat_page.dart';
 import 'package:orginone/page/home/message/contact/contact_binding.dart';
 import 'package:orginone/page/home/message/contact/contact_page.dart';
 import 'package:orginone/page/home/message/invite/invite_page.dart';
-import 'package:orginone/page/home/message/message_binding.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/page/home/message/message_page.dart';
-import 'package:orginone/page/home/message/message_setting/message_setting_binding.dart';
 import 'package:orginone/page/home/message/message_setting/message_setting_page.dart';
 import 'package:orginone/page/home/message/more_message/more_message_page.dart';
 import 'package:orginone/page/home/mine/mine_binding.dart';
@@ -33,12 +42,9 @@ import 'package:orginone/page/home/mine/mine_card/mine_card_page.dart';
 import 'package:orginone/page/home/mine/mine_info/mine_info_binding.dart';
 import 'package:orginone/page/home/mine/mine_info/mine_info_page.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
-import 'package:orginone/page/home/mine/mine_unit/mine_unit_binding.dart';
 import 'package:orginone/page/home/mine/mine_unit/mine_unit_page.dart';
 import 'package:orginone/page/home/mine/set_home/set_home_page.dart';
-import 'package:orginone/page/home/organization/cohorts/cohorts_binding.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_page.dart';
-import 'package:orginone/page/home/organization/cohorts/component/cohort_maintain_page.dart';
 import 'package:orginone/page/home/organization/cohorts/component/more_cohort.dart';
 import 'package:orginone/page/home/organization/dept/dept_binding.dart';
 import 'package:orginone/page/home/organization/dept/dept_page.dart';
@@ -56,8 +62,6 @@ import 'package:orginone/page/home/organization/units/units_binding.dart';
 import 'package:orginone/page/home/organization/units/units_page.dart';
 import 'package:orginone/page/home/search/search_binding.dart';
 import 'package:orginone/page/home/search/search_page.dart';
-import 'package:orginone/page/home/work/work_binding.dart';
-import 'package:orginone/page/home/work/work_page.dart';
 import 'package:orginone/page/login/login_binding.dart';
 import 'package:orginone/page/login/login_page.dart';
 import 'package:orginone/page/register/register_binding.dart';
@@ -78,19 +82,18 @@ class Routers {
   static const String home = "/home";
   static const String center = "/center";
   static const String spaceChoose = "/spaceChoose";
+  static const String maintain = "/maintain";
 
   // 会话
   static const String message = "/message";
   static const String chat = "/chat";
   static const String moreMessage = "/moreMessage";
   static const String organization = "/organization";
-  static const String work = "/work";
   static const String messageSetting = "/messageSetting";
   static const String friends = "/friends";
   static const String units = "/units";
   static const String groups = "/groups";
   static const String cohorts = "/cohorts";
-  static const String cohortMaintain = "/cohortMaintain";
   static const String moreCohort = "/moreCohort";
   static const String dept = "/dept";
   static const String personDetail = "/person_detail";
@@ -113,6 +116,15 @@ class Routers {
   static const String affairsDetail = "/affairsDetail";
   static const String newFriends = "/newFriends";
   static const String setHome = "/setHome";
+
+  // 仓库
+  static const String application = "/application";
+  static const String manager = "/applicationManager";
+  static const String merchandise = "/applicationMerchandise";
+  static const String marketMaintain = "/marketMaintain";
+  static const String market = "/market";
+  static const String staging = "/staging";
+  static const String order = "/order";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -149,7 +161,7 @@ class Routers {
       GetPage(
         name: Routers.spaceChoose,
         page: () => const SpaceChoosePage(),
-        binding: SpaceChooseBinding(),
+        binding: TargetBinding(),
       ),
       GetPage(
         name: Routers.message,
@@ -167,19 +179,14 @@ class Routers {
         binding: OrganizationBinding(),
       ),
       GetPage(
-        name: Routers.work,
-        page: () => const WorkPage(),
-        binding: WorkBinding(),
-      ),
-      GetPage(
         name: Routers.chat,
         page: () => const ChatPage(),
-        binding: ChatBinding(),
+        bindings: [MessageBinding(), ChatBoxBinding()],
       ),
       GetPage(
         name: Routers.messageSetting,
         page: () => const MessageSettingPage(),
-        binding: MessageSettingBinding(),
+        binding: MessageBinding(),
       ),
       GetPage(
         name: Routers.friends,
@@ -199,17 +206,12 @@ class Routers {
       GetPage(
         name: Routers.cohorts,
         page: () => const CohortsPage(),
-        binding: CohortsBinding(),
-      ),
-      GetPage(
-        name: Routers.cohortMaintain,
-        page: () => const CohortMaintainPage(),
-        binding: CohortsBinding(),
+        binding: TargetBinding(),
       ),
       GetPage(
         name: Routers.moreCohort,
         page: () => const MoreCohort(),
-        binding: CohortsBinding(),
+        binding: TargetBinding(),
       ),
       GetPage(
         name: Routers.dept,
@@ -229,7 +231,7 @@ class Routers {
       GetPage(
         name: Routers.unitDetail,
         page: () => const UnitDetailPage(),
-        binding: UnitDetailBinding(),
+        binding: TargetBinding(),
       ),
       GetPage(
         name: Routers.unitCreate,
@@ -254,7 +256,7 @@ class Routers {
       GetPage(
         name: Routers.mineUnit,
         page: () => const MineUnitPage(),
-        binding: MineUnitBinding(),
+        binding: TargetBinding(),
       ),
       GetPage(
         name: Routers.search,
@@ -288,7 +290,7 @@ class Routers {
       ),
       GetPage(
         name: Routers.newFriends,
-        page: () => NewFriendsPage(),
+        page: () => const NewFriendsPage(),
         binding: NewFriendsBinding(),
       ),
       GetPage(
@@ -300,6 +302,61 @@ class Routers {
         name: Routers.setHome,
         page: () => SetHomePage(),
         binding: SetHomeBinding(),
+      ),
+      GetPage(
+        name: Routers.application,
+        page: () => const ApplicationPage(),
+        binding: ApplicationBinding(),
+      ),
+      GetPage(
+        name: Routers.application,
+        page: () => const ApplicationPage(),
+        binding: ApplicationBinding(),
+      ),
+      GetPage(
+        name: Routers.manager,
+        page: () => const ApplicationManagerPage(),
+        binding: ApplicationManagerBinding(),
+      ),
+      GetPage(
+        name: Routers.merchandise,
+        page: () => const MerchandisePage(),
+        bindings: [MerchandiseBinding(), StagingBinding(), MessageBinding()],
+      ),
+      GetPage(
+        name: Routers.marketMaintain,
+        page: () => const MaintainPage(),
+        binding: ApplicationBinding(),
+      ),
+      GetPage(
+        name: Routers.market,
+        page: () => const MarketPage(),
+        binding: MarketBinding(),
+      ),
+      GetPage(
+        name: Routers.staging,
+        page: () => const StagingPage(),
+        bindings: [StagingBinding(), MessageBinding(), OrderBinding()],
+      ),
+      GetPage(
+        name: Routers.order,
+        page: () => const OrderPage(),
+        bindings: [OrderBinding()],
+      ),
+      GetPage(
+        name: Routers.order,
+        page: () => const OrderPage(),
+        bindings: [OrderBinding()],
+      ),
+      GetPage(
+        name: Routers.maintain,
+        page: () => const MaintainPage(),
+        bindings: [
+          TargetBinding(),
+          MessageBinding(),
+          MarketBinding(),
+          FileBinding()
+        ],
       ),
     ];
   }

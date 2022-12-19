@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/util/api_exception.dart';
-import 'package:orginone/util/hive_util.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../api_resp/api_resp.dart';
@@ -21,8 +21,8 @@ class HttpUtil {
   Logger log = Logger("HttpLogger");
   var dio = Dio(BaseOptions(
     baseUrl: Constant.host,
-    connectTimeout: 30000,
-    receiveTimeout: 30000,
+    connectTimeout: 10000,
+    receiveTimeout: 10000,
   ));
 
   void init() {
@@ -41,7 +41,7 @@ class HttpUtil {
   }
 
   Future<Options> addTokenHeader(Options? options) async {
-    var accessToken = await HiveUtil().accessToken;
+    var accessToken = getAccessToken;
     log.info("====> accessToken：$accessToken");
     if (options == null) {
       return Options(headers: {"Authorization": accessToken});
@@ -62,6 +62,7 @@ class HttpUtil {
     CancelToken? cancelToken,
     ProgressCallback? onReceiveProgress,
     bool? hasToken,
+    bool? showError = true,
   }) async {
     log.info("================Get Http Request================");
     try {
@@ -79,11 +80,10 @@ class HttpUtil {
           onReceiveProgress: onReceiveProgress);
 
       return _parseResp(result);
+    } on DioError catch (error) {
+      _onDioError(error, showError!);
     } on Exception catch (error) {
-      Fluttertoast.showToast(msg: error.toString());
-      rethrow;
-    } catch (error) {
-      Fluttertoast.showToast(msg: "请求异常，请稍后再试。");
+      _onExceptionError(error, showError!);
       rethrow;
     } finally {
       log.info("================End Get Http Request================");
@@ -99,7 +99,7 @@ class HttpUtil {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
     bool? hasToken,
-    bool? showError = true
+    bool? showError = true,
   }) async {
     log.info("================Post Http Request================");
     try {
@@ -122,18 +122,11 @@ class HttpUtil {
       );
 
       return _parseResp(result);
-    } on ApiException catch (error) {
-      if (showError!) {
-        Fluttertoast.showToast(msg: error.message);
-      }
+    } on DioError catch (error) {
+      _onDioError(error, showError!);
       rethrow;
     } on Exception catch (error) {
-      if (showError!) {
-        Fluttertoast.showToast(msg: error.toString());
-      }
-      rethrow;
-    } on Error catch (error) {
-      Fluttertoast.showToast(msg: error.toString());
+      _onExceptionError(error, showError!);
       rethrow;
     } finally {
       log.info("================End Post Http Request================");
@@ -145,12 +138,27 @@ class HttpUtil {
       throw Exception(response.statusMessage);
     } else {
       log.info(response.data!);
-      var resp = ApiResp.fromJson(response.data!);
-      if (resp.code == 200) {
-        return resp.data;
-      }
-      throw ApiException(resp.msg);
+      return ApiResp.fromJson(response.data!).getData();
     }
+  }
+
+  _onExceptionError(Exception error, bool showToast) {
+    log.info("errorInfo =====> ${error.toString()}");
+    if (showToast) {
+      Fluttertoast.showToast(msg: error.toString());
+    }
+  }
+
+  _onDioError(DioError error, bool showToast) {
+    if (error.response == null) return;
+    Response response = error.response!;
+    var statusCode = response.statusCode;
+    if (statusCode == 400 || statusCode == 500) {
+      log.info("errorInfo =====> ${response.statusMessage}");
+      if (showToast) {
+        Fluttertoast.showToast(msg: response.statusMessage ?? "");
+      }
+    } else if (statusCode == 401) {}
   }
 
   Future<dynamic> download({

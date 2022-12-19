@@ -7,14 +7,13 @@ import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:path_provider/path_provider.dart';
-
-import '../../../../logic/authority.dart';
 
 class MineCardController extends GetxController {
   final Logger log = Logger("MineCardController");
-  TargetResp userInfo = auth.userInfo;
+  Target userInfo = auth.userInfo;
   GlobalKey globalKey1 = GlobalKey();
   //截图后的文件路径，通过File包装并通过.image可以展示出来
   String captureImgPath = '';

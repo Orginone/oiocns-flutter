@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:orginone/api_resp/target_resp.dart';
 import 'package:orginone/component/unified_colors.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
 
 import '../../../component/choose_item.dart';
@@ -10,7 +10,6 @@ import '../../../component/icon_avatar.dart';
 import '../../../component/unified_edge_insets.dart';
 import '../../../component/unified_text_style.dart';
 import '../../../routers.dart';
-import '../home_controller.dart';
 
 class OrganizationPage extends GetView<OrganizationController> {
   const OrganizationPage({Key? key}) : super(key: key);
@@ -21,12 +20,11 @@ class OrganizationPage extends GetView<OrganizationController> {
       init: controller,
       builder: (controller) {
         List<Widget> items = [];
-        HomeController homeController = Get.find<HomeController>();
         // 好友管理，群组管理
         items.add(_friends);
         items.add(_cohorts);
         // 集团管理，单位管理
-        if (controller.userInfo.id != homeController.currentSpace.id) {
+        if (auth.isCompanySpace()) {
           items.add(_groups);
           items.add(_unit);
         }
@@ -84,8 +82,6 @@ class OrganizationPage extends GetView<OrganizationController> {
       );
 
   get _unit {
-    HomeController homeController = Get.find<HomeController>();
-    TargetResp targetResp = homeController.currentSpace;
     return ChooseItem(
       header: const IconAvatar(
         icon: Icon(
@@ -97,7 +93,7 @@ class OrganizationPage extends GetView<OrganizationController> {
         child: Container(
           margin: left10,
           child: Text(
-            targetResp.name,
+            auth.spaceInfo.name,
             style: text16Bold,
           ),
         ),

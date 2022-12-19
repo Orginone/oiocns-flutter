@@ -3,9 +3,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/api/person_api.dart';
-import 'package:orginone/api_resp/target_resp.dart';
-
-import '../../../../logic/authority.dart';
+import 'package:orginone/api_resp/target.dart';
+import 'package:orginone/core/authority.dart';
 
 class MineInfoController extends GetxController {
   final Logger log = Logger("MineInfoController");
@@ -14,7 +13,7 @@ class MineInfoController extends GetxController {
   TextEditingController accountTextController = TextEditingController();
   TextEditingController nameTextController = TextEditingController();
   TextEditingController phoneTextController = TextEditingController();
-  TargetResp userInfo = auth.userInfo;
+  Target userInfo = auth.userInfo;
 
   void updateUser(dynamic postData) async {
     var resMeg = await PersonApi.updateUser(postData);

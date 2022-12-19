@@ -12,12 +12,13 @@ abstract class BaseListView<T extends BaseListController> extends BaseView<T> {
   Widget builder(context) {
     return Obx(() {
       return SmartRefresher(
-          controller: controller.refreshController,
-          enablePullDown: true,
-          enablePullUp: true,
-          onRefresh: () => controller.onRefresh(),
-          onLoading: () => controller.onLoadMore(),
-          child: listWidget());
+        controller: controller.refreshController,
+        enablePullDown: true,
+        enablePullUp: true,
+        onRefresh: () => controller.onRefresh(),
+        onLoading: () => controller.onLoadMore(),
+        child: listWidget(),
+      );
     });
   }
 

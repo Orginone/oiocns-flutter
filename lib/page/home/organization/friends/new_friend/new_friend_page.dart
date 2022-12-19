@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/api_resp/friends_entity.dart';
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/public/dialog/dialog_confirm.dart';
 import 'package:orginone/public/view/base_list_view.dart';
 
@@ -158,7 +158,7 @@ class NewFriendsPage extends BaseListView<NewFriendsController> {
                                       title: "提示",
                                       content: "确定通过吗？",
                                       confirmFun: () {
-                                        controller.joinSuccess(item.id);
+                                        controller.joinSuccess(item);
                                         Navigator.of(context).pop();
                                       },
                                     );

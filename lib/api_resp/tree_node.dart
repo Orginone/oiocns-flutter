@@ -1,17 +1,17 @@
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
 
 class TreeNode {
   String id;
   String label;
   bool hasNodes;
-  TargetResp data;
+  Target data;
   List<TreeNode> children;
 
   TreeNode.fromMap(Map<String, dynamic> map)
       : id = map["id"],
         label = map["label"],
         hasNodes = map["hasNodes"],
-        data = TargetResp.fromMap(map["data"]),
+        data = Target.fromMap(map["data"]),
         children = <TreeNode>[];
 
   static TreeNode fromNode(Map<String, dynamic> node, Map<String, TreeNode> index) {

@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.3+1
 
 environment:
   sdk: ">=2.17.6 <3.0.0"
@@ -71,7 +71,7 @@ dependencies:
 
   # UI 库
   getwidget: ^3.0.1
-  flutter_screenutil: ^5.5.3+2
+  flutter_screenutil: ^5.6.0
   dotted_border: ^2.0.0+2
   fluttertoast: ^8.0.9
   permission_handler: ^10.0.1
@@ -88,6 +88,9 @@ dependencies:
   flutter_cache_manager: ^3.3.0
   graphic: ^0.10.7
   flutter_form_builder: ^7.7.0
+  flutter_treeview: ^1.0.7+1
+  photo_view: ^0.14.0
+  package_info_plus: ^1.4.2
 
   # 音频录制以及音频播放
   flutter_sound: ^9.2.13
@@ -112,6 +115,13 @@ dependencies:
   pull_to_refresh: ^2.0.0
   # 弹框
   flutter_animated_dialog: ^2.0.1
+
+  optimize_battery: ^0.0.4
+  auto_start_flutter: ^0.1.1
+  flutter_background_service: ^2.4.5
+
+  # 日志收集工具
+  flutter_bugly: 0.4.4
 
 dev_dependencies:
   flutter_test:
@@ -148,8 +158,8 @@ flutter:
     - assets/icons/
     - assets/icons/2.0x/
     - assets/icons/3.0x/
-    - images/person-empty.png
-    - images/person-card-bg.png
+    - images/person_empty.png
+    - images/person_card_bg.png
     - images/logo.png
   # To add assets to your application, add an assets section, like this:
   # assets:

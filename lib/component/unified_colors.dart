@@ -13,6 +13,8 @@ class UnifiedColors {
   static const Color tinyBlue = Color(0xFFA8B5FF);
   static const Color tinyLightBlue = Color(0xFFCEDFFF);
   static const Color themeColor = Color(0xff3D5ED1);
+  static const Color applicationColor = Color(0xff2F96F9);
+  static const Color starColor = Color(0xff154AD8);
   static const Color black = Color(0xff000000);
   static const Color black3 = Color(0xff303133);
   static const Color black6 = Color(0xff606266);
@@ -22,6 +24,7 @@ class UnifiedColors {
   static const Color lineLight2 = Color(0xffD4D4D4);
   static const Color cardBorder = Color(0xffB1B1B1);
   static const Color backColor = Color(0xffF76C6F);
+  static const Color fontErrorColor = Color(0xffd43436);
   static const Color navigatorBgColor = Color(0xfff2f2f2);
   static const Color bgColor = Color(0xfff8f8f8);
   static const Color transparent = Color(0x00ffffff);

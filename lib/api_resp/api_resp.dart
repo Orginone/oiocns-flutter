@@ -1,15 +1,15 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:orginone/generated/json/base/json_field.dart';
 import 'package:orginone/generated/json/api_resp.g.dart';
 import 'dart:convert';
 
 @JsonSerializable()
 class ApiResp {
+  late int code;
+  late dynamic data;
+  late String msg;
+  late bool success;
 
-	late int code;
-	late dynamic data;
-	late String msg;
-	late bool success;
-  
   ApiResp();
 
   ApiResp.empty()
@@ -25,5 +25,12 @@ class ApiResp {
   @override
   String toString() {
     return jsonEncode(this);
+  }
+
+  dynamic getData() {
+    if (code != 200) {
+      throw Exception(msg);
+    }
+    return data;
   }
 }

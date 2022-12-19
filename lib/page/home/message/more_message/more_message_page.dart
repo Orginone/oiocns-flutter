@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/component/unified_scaffold.dart';
-import 'package:orginone/page/home/message/message_controller.dart';
+import 'package:orginone/controller/message/message_controller.dart';
+import 'package:orginone/core/ui/message/group_item_widget.dart';
 
 import '../../../../component/a_font.dart';
 import '../../../../util/widget_util.dart';
-import '../component/group_item_widget.dart';
 
 class MoreMessagePage extends GetView<MessageController> {
   const MoreMessagePage({Key? key}) : super(key: key);
@@ -18,18 +18,16 @@ class MoreMessagePage extends GetView<MessageController> {
       appBarLeading: WidgetUtil.defaultBackBtn,
       body: RefreshIndicator(
         onRefresh: () async {
-          await controller.refreshCharts();
+          await controller.refreshMails();
         },
-        child: GetBuilder<MessageController>(
-          builder: (controller) => ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            itemCount: controller.orgChatCache.chats.length,
-            itemBuilder: (BuildContext context, int index) {
-              return GroupItemWidget(index);
-            },
-          ),
-        ),
+        child: Obx(() => ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: controller.getSize(),
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) {
+                return GroupItemWidget(chatGroup: controller.get(index));
+              },
+            )),
       ),
     );
   }

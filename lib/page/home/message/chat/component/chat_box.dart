@@ -1,58 +1,19 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:audio_wave/audio_wave.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:logging/logging.dart';
+import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/unified_colors.dart';
+import 'package:orginone/controller/message/chat_box_controller.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/util/permission_util.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vibration/vibration.dart';
-
-import '../../../../../component/a_font.dart';
-
-enum RecordStatus { stop, recoding, pausing }
-
-enum InputStatus {
-  notPopup,
-  focusing,
-  emoji,
-  more,
-  voice,
-  inputtingText,
-  inputtingEmoji,
-}
-
-enum InputEvent {
-  clickInput,
-  clickEmoji,
-  clickKeyBoard,
-  clickVoice,
-  clickMore,
-  clickBlank,
-  inputText,
-  inputEmoji,
-  clickSendBtn
-}
-
-enum MoreFunction {
-  photo("相册", Icons.photo),
-  camera("拍摄", Icons.camera_alt),
-  file("文件", Icons.upload);
-
-  final String name;
-  final IconData iconData;
-
-  const MoreFunction(this.name, this.iconData);
-}
 
 double defaultBorderRadius = 6.w;
 double boxDefaultHeight = 40.h;
@@ -66,14 +27,14 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     Widget voiceFunc = Obx(() {
-      if (controller._inputStatus.value == InputStatus.voice) {
+      if (controller.inputStatus == InputStatus.voice) {
         return _leftKeyBoardBtn(context);
       } else {
         return _voiceBtn(context);
       }
     });
     Widget otherFunc = Obx(() {
-      switch (controller._inputStatus.value) {
+      switch (controller.inputStatus) {
         case InputStatus.notPopup:
         case InputStatus.focusing:
         case InputStatus.voice:
@@ -106,11 +67,11 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((duration) {
       var bottom = MediaQuery.of(context).viewInsets.bottom;
-      var inputStatus = controller._inputStatus;
-      if (inputStatus.value == InputStatus.focusing ||
-          inputStatus.value == InputStatus.notPopup ||
-          inputStatus.value == InputStatus.voice ||
-          inputStatus.value == InputStatus.inputtingText) {
+      var inputStatus = controller.inputStatus;
+      if (inputStatus == InputStatus.focusing ||
+          inputStatus == InputStatus.notPopup ||
+          inputStatus == InputStatus.voice ||
+          inputStatus == InputStatus.inputtingText) {
         bottomHeight.value = bottom;
       }
     });
@@ -147,7 +108,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   /// 输入
   Widget _input(BuildContext context) {
     return Expanded(child: Obx(() {
-      if (controller._inputStatus.value == InputStatus.voice) {
+      if (controller.inputStatus == InputStatus.voice) {
         return _voice(context);
       }
       return _inputBox(context);
@@ -224,7 +185,10 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
 
           var path = controller.currentFile;
           var time = duration.inMilliseconds;
-          controller.voiceCallback(path, time);
+          if (Get.isRegistered<MessageController>()) {
+            var messageCtrl = Get.find<MessageController>();
+            messageCtrl.sendVoice(path!, time);
+          }
         } else if (recordStatus == RecordStatus.pausing) {
           // 停止记录
           await controller.stopRecord();
@@ -339,7 +303,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   Widget _bottomPopup(BuildContext context) {
     return Obx(() {
       late Widget body;
-      switch (controller._inputStatus.value) {
+      switch (controller.inputStatus) {
         case InputStatus.emoji:
         case InputStatus.inputtingEmoji:
           bottomHeight.value = defaultBottomHeight;
@@ -417,7 +381,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
             margin: EdgeInsets.only(bottom: 10.h),
             child: Icon(moreFunction.iconData),
           ),
-          Text(moreFunction.name, style: AFont.instance.size20Black3W500)
+          Text(moreFunction.label, style: AFont.instance.size16Black3W500)
         ],
       ),
     );
@@ -503,217 +467,5 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
         ),
       ],
     );
-  }
-}
-
-// 控制器
-class ChatBoxController extends FullLifeCycleController
-    with GetSingleTickerProviderStateMixin, WidgetsBindingObserver {
-  final Logger log = Logger("ChatBoxController");
-
-  final Rx<InputStatus> _inputStatus = InputStatus.notPopup.obs;
-  final TextEditingController inputController = TextEditingController();
-  final FocusNode focusNode = FocusNode();
-  final FocusNode blankNode = FocusNode();
-
-  final ImagePicker picker = ImagePicker();
-  final Function sendCallback;
-  final Function imageCallback;
-  final Function voiceCallback;
-  final Function fileCallback;
-
-  final Rx<RecordStatus> _recordStatus = RecordStatus.stop.obs;
-  FlutterSoundRecorder? _recorder;
-  StreamSubscription? _mt;
-  String? _currentFile;
-  String? _currentFileName;
-  Duration? _currentDuration;
-  RxDouble? _level;
-  double? _maxLevel;
-
-  ChatBoxController({
-    required this.sendCallback,
-    required this.imageCallback,
-    required this.voiceCallback,
-    required this.fileCallback,
-  });
-
-  Rx<RecordStatus> get recordStatus => _recordStatus;
-
-  String? get currentFile => _currentFile;
-
-  String? get currentFileName => _currentFileName;
-
-  RxDouble? get level => _level;
-
-  double? get maxLevel => _maxLevel;
-
-  Duration? get currentDuration => _currentDuration;
-
-  @override
-  onClose() {
-    super.onClose();
-    inputController.dispose();
-    focusNode.dispose();
-    blankNode.dispose();
-    stopRecord();
-  }
-
-  /// 事件触发器
-  eventFire(BuildContext context, InputEvent inputEvent) {
-    switch (inputEvent) {
-      case InputEvent.clickInput:
-      case InputEvent.inputText:
-      case InputEvent.clickKeyBoard:
-        var text = inputController.value.text;
-        if (text.isNotEmpty) {
-          _inputStatus.value = InputStatus.inputtingText;
-        } else {
-          _inputStatus.value = InputStatus.focusing;
-        }
-        break;
-      case InputEvent.clickEmoji:
-        FocusScope.of(context).requestFocus(blankNode);
-        var text = inputController.value.text;
-        if (text.isNotEmpty) {
-          _inputStatus.value = InputStatus.inputtingEmoji;
-        } else {
-          _inputStatus.value = InputStatus.emoji;
-        }
-        break;
-      case InputEvent.clickMore:
-        FocusScope.of(context).requestFocus(blankNode);
-        _inputStatus.value = InputStatus.more;
-        break;
-      case InputEvent.inputEmoji:
-        _inputStatus.value = InputStatus.inputtingEmoji;
-        break;
-      case InputEvent.clickSendBtn:
-        sendCallback(inputController.text);
-        inputController.clear();
-        if (_inputStatus.value == InputStatus.inputtingText) {
-          _inputStatus.value = InputStatus.focusing;
-        } else {
-          _inputStatus.value = InputStatus.emoji;
-        }
-        break;
-      case InputEvent.clickVoice:
-        FocusScope.of(context).requestFocus(blankNode);
-        _inputStatus.value = InputStatus.voice;
-        break;
-      case InputEvent.clickBlank:
-        if (_inputStatus.value != InputStatus.voice) {
-          _inputStatus.value = InputStatus.notPopup;
-        }
-        break;
-    }
-  }
-
-  execute(MoreFunction moreFunction, BuildContext context) async {
-    switch (moreFunction) {
-      case MoreFunction.photo:
-        var gallery = ImageSource.gallery;
-        XFile? pickedImage = await picker.pickImage(source: gallery);
-        if (pickedImage != null) {
-          imageCallback(pickedImage);
-        }
-        break;
-      case MoreFunction.camera:
-        var camera = ImageSource.camera;
-        try {
-          XFile? pickedImage = await picker.pickImage(source: camera);
-          if (pickedImage != null) {
-            imageCallback(pickedImage);
-          }
-        } on PlatformException catch (error) {
-          if (error.code == "camera_access_denied") {
-            PermissionUtil.showPermissionDialog(context, Permission.camera);
-          }
-        } catch (error) {
-          error.printError();
-          Fluttertoast.showToast(msg: "打开相机时发生异常!");
-        }
-        break;
-      case MoreFunction.file:
-        break;
-    }
-  }
-
-  openRecorder() async {
-    _recorder ??= await FlutterSoundRecorder().openRecorder();
-  }
-
-  /// 开始录音
-  Future<void> startRecord() async {
-    if (_recorder == null) {
-      return;
-    }
-    try {
-      // 状态变化
-      _recordStatus.value = RecordStatus.recoding;
-
-      // 监听音浪
-      _level ??= 0.0.obs;
-      _maxLevel ??= 60.0;
-      _recorder!.setSubscriptionDuration(const Duration(milliseconds: 50));
-      _mt = _recorder?.onProgress?.listen((e) {
-        _level!.value = e.decibels ?? 0;
-        _maxLevel = max(_maxLevel!, _level!.value);
-        log.info("duration:${e.duration}");
-        _currentDuration = e.duration;
-      });
-
-      // 创建临时文件
-      var tempDir = await getTemporaryDirectory();
-      var key = DateTime.now().millisecondsSinceEpoch;
-      _currentFileName = "$key${ext[Codec.aacADTS.index]}";
-      _currentFile = "${tempDir.path}/$_currentFileName";
-
-      // 开启监听
-      await _recorder!.startRecorder(
-        toFile: _currentFile,
-        codec: Codec.aacADTS,
-        bitRate: 8000,
-        sampleRate: 8000,
-      );
-    } catch (error) {
-      await stopRecord();
-      rethrow;
-    }
-  }
-
-  /// 停止录音
-  stopRecord() async {
-    if (_recorder == null) {
-      return;
-    }
-    await _recorder!.stopRecorder();
-    _mt?.cancel();
-    _mt = null;
-    _level = null;
-
-    _recordStatus.value = RecordStatus.stop;
-  }
-
-  /// 暂停录音
-  pauseRecord() async {
-    if (_recorder == null) {
-      return;
-    }
-    if (_recorder!.isRecording) {
-      await _recorder!.pauseRecorder();
-      recordStatus.value = RecordStatus.pausing;
-    }
-  }
-
-  /// 继续录音
-  resumeRecord() async {
-    if (_recorder == null) {
-      return;
-    }
-    if (_recorder!.isPaused) {
-      await _recorder!.resumeRecorder();
-      recordStatus.value = RecordStatus.recoding;
-    }
   }
 }

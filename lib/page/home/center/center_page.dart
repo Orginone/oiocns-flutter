@@ -4,6 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:graphic/graphic.dart';
 import 'package:orginone/component/a_font.dart';
+import 'package:orginone/config/field_config.dart';
+import 'package:orginone/controller/message/message_controller.dart';
+import 'package:orginone/controller/target/target_controller.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/page/home/center/center_controller.dart';
 
 import '../../../component/unified_colors.dart';
@@ -150,10 +154,11 @@ class CenterPage extends GetView<CenterController> {
         height: 176.h,
         child: Swiper(
           autoplay: true,
-          itemCount: 4,
+          itemCount: 1,
           itemBuilder: (BuildContext context, int index) {
             return const Image(
-              image: AssetImage("images/bg-center.png"),
+              image: AssetImage("assets/home_bg.png"),
+              fit: BoxFit.cover,
             );
           },
         ),
@@ -162,8 +167,25 @@ class CenterPage extends GetView<CenterController> {
   // 快速入口
   Widget _fastEntry(Functions func) {
     return GestureDetector(
-      onTap: () {
-        Get.toNamed(func.router);
+      onTap: () async {
+        switch (func) {
+          case Functions.createUnits:
+            Get.toNamed(
+              Routers.maintain,
+              arguments: CreateCompany((value) {
+                if (Get.isRegistered<TargetController>()) {
+                  var targetCtrl = Get.find<TargetController>();
+                  targetCtrl.createCompany(value).then((value) => Get.back());
+                }
+              }),
+            );
+            break;
+          case Functions.addFriends:
+            Get.toNamed(Routers.friendAdd);
+            break;
+          default:
+            break;
+        }
       },
       child: Container(
         alignment: Alignment.center,

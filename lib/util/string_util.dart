@@ -1,11 +1,14 @@
-import 'package:orginone/api_resp/message_detail_resp.dart';
+import 'package:get/get.dart';
+import 'package:orginone/api_resp/message_detail.dart';
+import 'package:orginone/api_resp/message_target.dart';
+import 'package:orginone/component/text_avatar.dart';
+import 'package:orginone/controller/message/message_controller.dart';
+import 'package:orginone/core/authority.dart';
+import 'package:orginone/core/chat/chat_impl.dart';
+import 'package:orginone/core/chat/i_chat.dart';
 import 'package:orginone/enumeration/enum_map.dart';
-import 'package:orginone/util/hive_util.dart';
-
-import '../api_resp/message_item_resp.dart';
-import '../component/text_avatar.dart';
-import '../enumeration/target_type.dart';
-import '../logic/authority.dart';
+import 'package:orginone/enumeration/message_type.dart';
+import 'package:orginone/enumeration/target_type.dart';
 
 class StringUtil {
   static String getPrefixChars(String target, {required int count}) {
@@ -29,9 +32,9 @@ class StringUtil {
   }
 
   static String getDetailRecallBody({
-    required MessageItemResp item,
-    required MessageDetailResp detail,
-    required Map<String, dynamic> nameMap,
+    required MessageTarget item,
+    required MessageDetail detail,
+    required String name,
   }) {
     var userInfo = auth.userInfo;
     String msgBody = "撤回了一条消息";
@@ -41,22 +44,7 @@ class StringUtil {
     } else if (targetType == TargetType.person) {
       msgBody = "对方$msgBody";
     } else {
-      String name = nameMap[detail.fromId];
       msgBody = "$name$msgBody";
-    }
-    return msgBody;
-  }
-
-  static String getRecallBody(MessageItemResp item, MessageDetailResp detail) {
-    var userInfo = auth.userInfo;
-    String msgBody = "撤回了一条消息";
-    var targetType = EnumMap.targetTypeMap[item.typeName];
-    if (targetType == TargetType.person) {
-      if (userInfo.id == detail.fromId) {
-        msgBody = "您$msgBody";
-      } else {
-        msgBody = "对方$msgBody";
-      }
     }
     return msgBody;
   }
@@ -81,15 +69,52 @@ class StringUtil {
     return "$prefix:$suffix";
   }
 
-  static String getStrFirstUpperChar(String? str){
-    if(str == null || str.isEmpty) return "";
-    if(str.length == 1) return str.toUpperCase();
-    return str.substring(0,1).toUpperCase();
+  static String getStrFirstUpperChar(String? str) {
+    if (str == null || str.isEmpty) return "";
+    if (str.length == 1) return str.toUpperCase();
+    return str.substring(0, 1).toUpperCase();
   }
 
-  static String formatStr(String? str){
-    if(str == null) return '';
-    if(str.trim().isEmpty) return '';
+  static String formatStr(String? str) {
+    if (str == null) return '';
+    if (str.trim().isEmpty) return '';
     return str;
+  }
+
+  static String showTxt(IChat chat, MessageDetail? detail) {
+    if (detail == null) {
+      return "";
+    }
+
+    var type = EnumMap.messageTypeMap[detail.msgType] ?? MsgType.text;
+    var messageCtrl = Get.find<MessageController>();
+
+    var name = messageCtrl.getName(detail.fromId);
+    var showTxt = "";
+    if (chat is PersonChat) {
+      if (detail.fromId != auth.userId) {
+        showTxt = "对方：";
+      }
+    } else {
+      showTxt = "$name:";
+    }
+    switch (type) {
+      case MsgType.text:
+        return "$showTxt${detail.showTxt}";
+      case MsgType.recall:
+        return "$showTxt撤回了一条消息";
+      case MsgType.image:
+        return "$showTxt[图片]";
+      case MsgType.video:
+        return "$showTxt[视频]";
+      case MsgType.voice:
+        return "$showTxt[语音]";
+      case MsgType.file:
+        return "$showTxt[文件]";
+      case MsgType.pull:
+        return detail.showTxt;
+      case MsgType.read:
+        return "";
+    }
   }
 }

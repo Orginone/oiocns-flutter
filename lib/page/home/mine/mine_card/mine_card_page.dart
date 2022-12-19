@@ -41,7 +41,7 @@ class MineCardPage extends GetView<MineCardController> {
                                     image: DecorationImage(
                                   fit: BoxFit.cover,
                                   image:
-                                      AssetImage('images/person-card-bg.png'),
+                                      AssetImage('images/person_card_bg.png'),
                                 )),
                                 child: Stack(
                                   children: [
@@ -53,7 +53,7 @@ class MineCardPage extends GetView<MineCardController> {
                                         foregroundImage: const NetworkImage(
                                             'https://www.vcg.com/creative/1382429598'),
                                         backgroundImage: const AssetImage(
-                                            'images/person-empty.png'),
+                                            'images/person_empty.png'),
                                         onForegroundImageError:
                                             (error, stackTrace) {},
                                         radius: 25.w,

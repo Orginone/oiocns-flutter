@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
-
-import '../../../../../api_resp/target_resp.dart';
-import '../../../../../component/a_font.dart';
-import '../../../../../component/text_avatar.dart';
-import '../../../../../util/string_util.dart';
-import '../../../message/message_setting/message_setting_controller.dart';
+import 'package:orginone/api_resp/target.dart';
+import 'package:orginone/component/a_font.dart';
+import 'package:orginone/component/text_avatar.dart';
+import 'package:orginone/util/string_util.dart';
 
 double avatarWidth = 76.w;
 
 class AvatarGroup extends StatelessWidget {
+  final List<Target> persons;
   final int? showCount;
   final EdgeInsets? padding;
   final bool hasAdd;
   final Function? addCallback;
 
   const AvatarGroup({
+    required this.persons,
     this.showCount,
     this.padding,
     this.hasAdd = false,
@@ -32,24 +31,23 @@ class AvatarGroup extends StatelessWidget {
 
   /// 头像组
   get _avatarGroup {
-    return GetBuilder<MessageSettingController>(builder: (controller) {
-      var persons = controller.persons.map((item) {
+    return Obx(() {
+      var mappedPerson = persons.map((item) {
         return _avatarItem(item);
       }).toList();
-      if (showCount != null && persons.length > showCount!) {
-        persons = persons.sublist(0, showCount!);
+      if (showCount != null && mappedPerson.length > showCount!) {
+        mappedPerson = mappedPerson.sublist(0, showCount!);
       }
       if (hasAdd) {
-        persons.add(_addItem);
+        mappedPerson.add(_addItem);
       }
-
       return GridView.count(
         padding: padding,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         crossAxisCount: 5,
         childAspectRatio: 60 / 80,
-        children: persons,
+        children: mappedPerson,
       );
     });
   }
@@ -76,7 +74,7 @@ class AvatarGroup extends StatelessWidget {
   }
 
   /// 头像子项
-  Widget _avatarItem(TargetResp person) {
+  Widget _avatarItem(Target person) {
     var name = person.team?.name ?? "";
     var prefix = StringUtil.getPrefixChars(name, count: 2);
     return Column(

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/api/person_api.dart';
+import 'package:logging/logging.dart';
+import 'package:orginone/api/kernelapi.dart';
+import 'package:orginone/api_resp/login_resp.dart';
 import 'package:orginone/component/loading_button.dart';
-
-import '../../api_resp/login_resp.dart';
-import '../../logic/authority.dart';
-import '../../util/any_store_util.dart';
-import '../../util/hive_util.dart';
-import '../../util/hub_util.dart';
+import 'package:orginone/core/authority.dart';
+import 'package:orginone/util/hive_util.dart';
 
 class LoginController extends GetxController {
+  Logger log = Logger("LoginController");
+
   var accountController = TextEditingController();
   var passwordController = TextEditingController();
   var loginBtnController = LoadingButtonController();
@@ -28,14 +28,12 @@ class LoginController extends GetxController {
   }
 
   Future<void> login() async {
-    var hiveUtil = HiveUtil();
-
     // 登录，设置 accessToken
     var account = accountController.value.text;
     var password = passwordController.value.text;
 
-    LoginResp loginResp = await PersonApi.login(account, password);
-    hiveUtil.accessToken = loginResp.accessToken;
+    LoginResp loginResp = await Kernel.getInstance.login(account, password);
+    setAccessToken = loginResp.accessToken;
 
     //存储账号密码历史数据
     await HiveUtil().uniqueBox.put('historyLogin', {
@@ -46,8 +44,7 @@ class LoginController extends GetxController {
     // 获取当前用户信息
     await loadAuth();
 
-    // 连接服务器
-    await AnyStoreUtil().tryConn();
-    await HubUtil().tryConn();
+    // 启动服务
+    await Kernel.getInstance.start();
   }
 }

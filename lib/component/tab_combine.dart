@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'bread_crumb.dart';
 
@@ -7,7 +8,7 @@ const defaultIconMargin = EdgeInsets.all(4);
 class TabCombine {
   final Widget? body;
   final Widget tabView;
-  final IconData? icon;
+  final Widget? icon;
   final EdgeInsets? iconMargin;
   final Item<String>? breadCrumbItem;
   final Widget? customTab;
@@ -27,8 +28,9 @@ class TabCombine {
       return customTab!;
     }
     return Tab(
+      height: 84.h,
       iconMargin: iconMargin!,
-      icon: icon == null ? null : Icon(icon),
+      icon: icon,
       child: body,
     );
   }

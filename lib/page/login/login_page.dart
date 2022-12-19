@@ -2,7 +2,9 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/api/hub/app_server.dart';
 import 'package:orginone/component/loading_button.dart';
+import 'package:orginone/public/image/load_image.dart';
 
 import '../../component/a_font.dart';
 import '../../routers.dart';
@@ -22,11 +24,7 @@ class LoginPage extends GetView<LoginController> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("Orginone", style: TextStyle(fontSize: 50.w)),
-            Container(
-              margin: EdgeInsets.only(left: 10.w),
-              child: Text("奥集能", style: TextStyle(fontSize: 30.w)),
-            ),
+            AImage.localImage("light_logo_vertical", size: Size(200.w, 200.w)),
             Container(
               padding: EdgeInsets.only(left: 40.w, top: 10.w, right: 40.w),
               child: TextFormField(

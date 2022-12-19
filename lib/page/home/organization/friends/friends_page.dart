@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/page/home/organization/friends/friends_controller.dart';
 import 'package:orginone/util/string_util.dart';
 
@@ -67,9 +67,10 @@ class FriendsPage extends GetView<FriendsController> {
     );
   }
 
-  Widget _item(TargetResp targetResp) {
+  Widget _item(Target targetResp) {
     var avatarName = StringUtil.getPrefixChars(targetResp.name, count: 2);
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         Get.toNamed(Routers.personDetail, arguments: targetResp.team?.code);
       },

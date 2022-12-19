@@ -2,7 +2,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:logging/logging.dart';
 
 import '../../../../api/person_api.dart';
-import '../../../../api_resp/target_resp.dart';
+import '../../../../api_resp/target.dart';
 
 class FriendsController extends GetxController {
   Logger logger = Logger("FriendsController");
@@ -11,7 +11,7 @@ class FriendsController extends GetxController {
   int? offset;
   String? filter;
 
-  List<TargetResp> friends = [];
+  List<Target> friends = [];
 
   @override
   void onInit() {

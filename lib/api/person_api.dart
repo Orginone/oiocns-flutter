@@ -1,5 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:orginone/api_resp/target_resp.dart';
+import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/config/constant.dart';
 
 import '../api_resp/friends_entity.dart';
@@ -14,15 +13,6 @@ class PersonApi {
     return await HttpUtil().post(url, data: postData);
   }
 
-  static Future<LoginResp> login(String account, String password) async {
-    String url = "${Constant.person}/login";
-    Map<String, dynamic> data = {"account": account, "password": password};
-
-    Map<String, dynamic> resp =
-        await HttpUtil().post(url, data: data, hasToken: false);
-    return LoginResp.fromMap(resp);
-  }
-
   static Future<Map<String, dynamic>> logout(dynamic postData) async {
     String url = "${Constant.person}/logout";
     return await HttpUtil().post(url, data: postData);
@@ -33,11 +23,20 @@ class PersonApi {
     return await HttpUtil().post(url, data: postData);
   }
 
-  static Future<TargetResp> userInfo() async {
+  static Future<Target> userInfo() async {
     String url = "${Constant.person}/query/info";
 
     Map<String, dynamic> resp = await HttpUtil().post(url);
-    return TargetResp.fromMap(resp);
+    return Target.fromMap(resp);
+  }
+
+  static Future<LoginResp> login(String account, String password) async {
+    String url = "${Constant.person}/login";
+    Map<String, dynamic> data = {"account": account, "password": password};
+
+    Map<String, dynamic> resp =
+    await HttpUtil().post(url, data: data, hasToken: false);
+    return LoginResp.fromMap(resp);
   }
 
   static Future<TokenAuthorityResp> tokenInfo() async {
@@ -54,7 +53,7 @@ class PersonApi {
   }
 
   /// 好友
-  static Future<PageResp<TargetResp>> friends(
+  static Future<PageResp<Target>> friends(
     int limit,
     int offset,
     String filter,
@@ -66,14 +65,14 @@ class PersonApi {
     }
 
     Map<String, dynamic> pageResp = await HttpUtil().post(url, data: data);
-    return PageResp.fromMap(pageResp, TargetResp.fromMap);
+    return PageResp.fromMap(pageResp, Target.fromMap);
   }
 
   /// 获取所有好友
-  static Future<List<TargetResp>> friendsAll(String filter) async {
-    List<TargetResp> allFriends = [];
+  static Future<List<Target>> friendsAll(String filter) async {
+    List<Target> allFriends = [];
     while (true) {
-      PageResp<TargetResp> tempPage = await friends(50, 0, filter);
+      PageResp<Target> tempPage = await friends(50, 0, filter);
       allFriends.addAll(tempPage.result);
       if (tempPage.result.length == allFriends.length) {
         break;
@@ -91,7 +90,7 @@ class PersonApi {
   }
 
   /// 人员搜索
-  static Future<PageResp<TargetResp>> searchPersons({
+  static Future<PageResp<Target>> searchPersons({
     required String keyword,
     required int limit,
     required int offset,
@@ -99,7 +98,7 @@ class PersonApi {
     String url = "${Constant.person}/search/persons";
     var data = {"filter": keyword, "limit": limit, "offset": offset};
     Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
-    return PageResp.fromMap(resp, TargetResp.fromMap);
+    return PageResp.fromMap(resp, Target.fromMap);
   }
 
   /// 好友验证

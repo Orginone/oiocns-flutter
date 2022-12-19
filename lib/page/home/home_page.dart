@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/component/bread_crumb.dart';
+import 'package:orginone/component/maintain_widget.dart';
 import 'package:orginone/component/tab_combine.dart';
 import 'package:orginone/component/text_avatar.dart';
+import 'package:orginone/component/unified_colors.dart';
 import 'package:orginone/component/unified_scaffold.dart';
 import 'package:orginone/component/unified_text_style.dart';
-import 'package:orginone/util/any_store_util.dart';
+import 'package:orginone/config/field_config.dart';
+import 'package:orginone/controller/target/target_controller.dart';
+import 'package:orginone/core/authority.dart';
+import 'package:orginone/page/home/home_controller.dart';
+import 'package:orginone/page/home/maintain_page.dart';
+import 'package:orginone/routers.dart';
+import 'package:orginone/util/string_util.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:signalr_core/signalr_core.dart';
-import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
-
-import '../../component/unified_colors.dart';
-import '../../logic/authority.dart';
-import '../../routers.dart';
-import '../../util/hub_util.dart';
-import '../../util/string_util.dart';
-import 'home_controller.dart';
 
 const String globalBreadCrumb = "globalBreadCrumb";
 
@@ -30,6 +32,7 @@ class HomePage extends GetView<HomeController> {
     initPermission(context);
     SysUtil.setStatusBarBright();
     return UnifiedScaffold(
+      resizeToAvoidBottomInset: false,
       appBarElevation: 0,
       appBarHeight: 0,
       body: _body(context),
@@ -86,8 +89,15 @@ class HomePage extends GetView<HomeController> {
           Icons.group_add_outlined,
           "创建群组",
           () {
-            Map<String, dynamic> args = {"func": CohortFunction.create};
-            Get.toNamed(Routers.cohortMaintain, arguments: args);
+            Get.toNamed(
+              Routers.maintain,
+              arguments: CreateCohort((value) {
+                if (Get.isRegistered<TargetController>()) {
+                  var targetCtrl = Get.find<TargetController>();
+                  targetCtrl.createCohort(value).then((value) => Get.back());
+                }
+              }),
+            );
           },
         ),
       ),
@@ -97,7 +107,15 @@ class HomePage extends GetView<HomeController> {
           Icons.groups_outlined,
           "创建单位",
           () {
-            Get.toNamed(Routers.unitCreate);
+            Get.toNamed(
+              Routers.maintain,
+              arguments: CreateCompany((value) {
+                if (Get.isRegistered<TargetController>()) {
+                  var targetCtrl = Get.find<TargetController>();
+                  targetCtrl.createCompany(value).then((value) => Get.back());
+                }
+              }),
+            );
           },
         ),
       ),
@@ -134,47 +152,44 @@ class HomePage extends GetView<HomeController> {
     return Row(
       children: [
         Expanded(
-          child: GetBuilder<HomeController>(
-            init: controller,
-            builder: (controller) {
-              var spaceName = controller.currentSpace.name;
-              var spaceKeyWord = StringUtil.getPrefixChars(spaceName, count: 1);
-              return GestureDetector(
-                onTap: () {
-                  Get.toNamed(Routers.spaceChoose);
-                },
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    TextAvatar(
-                      radius: 45.w,
-                      width: 45.w,
-                      avatarName: spaceKeyWord,
-                      textStyle: text20White,
-                      margin: EdgeInsets.only(left: 20.w),
-                    ),
-                    Container(margin: EdgeInsets.only(left: 10.w)),
-                    Text(
-                      spaceName,
-                      style: text22,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Container(margin: EdgeInsets.only(left: 2.w)),
-                    const Icon(Icons.arrow_drop_down, color: Colors.black)
-                  ],
-                ),
-              );
-            },
-          ),
+          child: Obx(() {
+            var targetController = Get.find<TargetController>();
+            var target = targetController.currentCompany.target;
+            var spaceName = target.name;
+            var spaceKeyWord = StringUtil.getPrefixChars(spaceName, count: 1);
+            return GestureDetector(
+              onTap: () => Get.toNamed(Routers.spaceChoose),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  TextAvatar(
+                    radius: 45.w,
+                    width: 45.w,
+                    avatarName: spaceKeyWord,
+                    textStyle: text20White,
+                    margin: EdgeInsets.only(left: 20.w),
+                  ),
+                  Container(margin: EdgeInsets.only(left: 10.w)),
+                  Text(
+                    spaceName,
+                    style: text22,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Container(margin: EdgeInsets.only(left: 2.w)),
+                  const Icon(Icons.arrow_drop_down, color: Colors.black)
+                ],
+              ),
+            );
+          }),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _conn(HubUtil().state, "会话"),
+            Obx(() => _conn(Kernel.getInstance.state, "会话")),
             Container(margin: EdgeInsets.only(top: 2.h)),
-            _conn(AnyStoreUtil().state, "存储"),
+            Obx(() => _conn(Kernel.getInstance.state, "存储")),
           ],
         ),
         Padding(padding: EdgeInsets.only(left: 10.w)),
@@ -198,7 +213,21 @@ class HomePage extends GetView<HomeController> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(padding: EdgeInsets.only(left: 25.w)),
-          const Icon(Icons.read_more_outlined, color: Colors.black),
+          GestureDetector(
+            onTap: () {
+              controller.routerOpened.value = !controller.routerOpened.value;
+            },
+            child: Obx(() {
+              if (controller.routerOpened.value) {
+                return const Icon(Icons.close, color: Colors.black);
+              } else {
+                return const Icon(
+                  Icons.read_more_outlined,
+                  color: Colors.black,
+                );
+              }
+            }),
+          ),
           Expanded(child: _globalBreadcrumbs),
           Container(
             margin: EdgeInsets.only(left: 10.w),
@@ -240,29 +269,24 @@ class HomePage extends GetView<HomeController> {
     );
   }
 
-  Widget _conn(Rx<HubConnectionState> status, String name) {
+  Widget _conn(HubConnectionState status, String name) {
+    Color color;
+    switch (status) {
+      case HubConnectionState.connecting:
+      case HubConnectionState.disconnecting:
+      case HubConnectionState.reconnecting:
+        color = Colors.yellow;
+        break;
+      case HubConnectionState.connected:
+        color = Colors.greenAccent;
+        break;
+      case HubConnectionState.disconnected:
+        color = Colors.redAccent;
+        break;
+    }
     return Row(
       children: [
-        Obx(() {
-          Color color;
-          switch (status.value) {
-            case HubConnectionState.connecting:
-            case HubConnectionState.disconnecting:
-            case HubConnectionState.reconnecting:
-              color = Colors.yellow;
-              break;
-            case HubConnectionState.connected:
-              color = Colors.greenAccent;
-              break;
-            default:
-              color = Colors.redAccent;
-          }
-          return Icon(
-            Icons.circle,
-            size: 10,
-            color: color,
-          );
-        }),
+        Icon(Icons.circle, size: 10, color: color),
         Container(margin: EdgeInsets.only(left: 5.w)),
         Text(name, style: text10Bold),
       ],
@@ -297,14 +321,41 @@ class HomePage extends GetView<HomeController> {
   Widget _body(BuildContext context) {
     return Column(children: [
       _title(context),
-      Expanded(
-        child: GFTabBarView(
-          controller: controller.tabController,
-          children: controller.tabs.map((e) => e.tabView).toList(),
-        ),
-      ),
-      _bottomNavigatorBar,
+      _view(),
+      _navigator(),
     ]);
+  }
+
+  Widget _view() {
+    return Obx(() {
+      if (controller.routerOpened.value) {
+        return _router();
+      } else {
+        return Expanded(
+          child: GFTabBarView(
+            controller: controller.tabController,
+            children: controller.tabs.map((e) => e.tabView).toList(),
+          ),
+        );
+      }
+    });
+  }
+
+  Widget _navigator() {
+    return Obx(() {
+      if (controller.routerOpened.value) {
+        return Container();
+      } else {
+        return _bottomNavigatorBar;
+      }
+    });
+  }
+
+  Widget _router() {
+    return TreeView(
+      controller: controller.treeViewController,
+      shrinkWrap: true,
+    );
   }
 
   get _bottomNavigatorBar => Container(

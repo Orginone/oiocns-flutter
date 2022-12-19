@@ -1,7 +1,7 @@
 import 'package:logging/logging.dart';
 
 import '../api_resp/page_resp.dart';
-import '../api_resp/target_resp.dart';
+import '../api_resp/target.dart';
 import '../api_resp/tree_node.dart';
 import '../config/constant.dart';
 import '../util/http_util.dart';
@@ -9,15 +9,17 @@ import '../util/http_util.dart';
 class CompanyApi {
   static final Logger log = Logger("CompanyApi");
 
-  static Future<PageResp<TargetResp>> getJoinedCompanys(
-      int offset, int limit) async {
+  static Future<PageResp<Target>> getJoinedCompanys(
+    int offset,
+    int limit,
+  ) async {
     String url = "${Constant.company}/get/joined/companys";
     Map<String, dynamic> data = {"offset": offset, "limit": limit};
     Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
-    return PageResp.fromMap(resp, TargetResp.fromMap);
+    return PageResp.fromMap(resp, Target.fromMap);
   }
 
-  static Future<PageResp<TargetResp>> searchCompanys({
+  static Future<PageResp<Target>> searchCompanys({
     required String keyword,
     required int limit,
     required int offset,
@@ -29,7 +31,7 @@ class CompanyApi {
       "offset": offset
     };
     Map<String, dynamic> resp = await HttpUtil().post(url, data: data);
-    return PageResp.fromMap(resp, TargetResp.fromMap);
+    return PageResp.fromMap(resp, Target.fromMap);
   }
 
   static Future<void> quitCompany(String id) async {
@@ -49,15 +51,15 @@ class CompanyApi {
     await HttpUtil().post(url, data: postData);
   }
 
-  static Future<TargetResp> queryInfo() async {
+  static Future<Target> queryInfo() async {
     String url = "${Constant.company}/query/info";
     Map<String, dynamic> resp = await HttpUtil().post(url);
 
-    TargetResp targetResp = TargetResp.fromMap(resp);
+    Target targetResp = Target.fromMap(resp);
     return targetResp;
   }
 
-  static Future<PageResp<TargetResp>> groups(
+  static Future<PageResp<Target>> groups(
     int limit,
     int offset,
     String filter,
@@ -69,7 +71,7 @@ class CompanyApi {
     }
 
     dynamic pageResp = await HttpUtil().post(url, data: data);
-    return PageResp.fromMap(pageResp, TargetResp.fromMap);
+    return PageResp.fromMap(pageResp, Target.fromMap);
   }
 
   static Future<NodeCombine> tree() async {
@@ -81,7 +83,7 @@ class CompanyApi {
     return NodeCombine(topNode, index);
   }
 
-  static Future<PageResp<TargetResp>> getCompanyPersons(
+  static Future<PageResp<Target>> getCompanyPersons(
     String id,
     int limit,
     int offset,
@@ -90,10 +92,10 @@ class CompanyApi {
     Map<String, dynamic> data = {"id": id, "offset": offset, "limit": limit};
 
     dynamic ans = await HttpUtil().post(url, data: data);
-    return PageResp.fromMap(ans, TargetResp.fromMap);
+    return PageResp.fromMap(ans, Target.fromMap);
   }
 
-  static Future<PageResp<TargetResp>> getDeptPersons(
+  static Future<PageResp<Target>> getDeptPersons(
     String id,
     int limit,
     int offset,
@@ -102,6 +104,6 @@ class CompanyApi {
     Map<String, dynamic> data = {"id": id, "offset": offset, "limit": limit};
 
     dynamic ans = await HttpUtil().post(url, data: data);
-    return PageResp.fromMap(ans, TargetResp.fromMap);
+    return PageResp.fromMap(ans, Target.fromMap);
   }
 }

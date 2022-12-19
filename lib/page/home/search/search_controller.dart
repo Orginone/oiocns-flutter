@@ -5,12 +5,12 @@ import 'package:orginone/api/cohort_api.dart';
 import 'package:orginone/api/company_api.dart';
 import 'package:orginone/api/person_api.dart';
 
-import '../../../api_resp/target_resp.dart';
+import '../../../api_resp/target.dart';
 
 enum SearchItem {
   comprehensive("综合", []),
   friends("好友", [FunctionPoint.addFriends]),
-  cohorts("群组", [FunctionPoint.applyFriends]),
+  cohorts("群组", [FunctionPoint.applyCohorts]),
   messages("消息", []),
   documents("文档", []),
   logs("日志", []),
@@ -19,17 +19,19 @@ enum SearchItem {
   departments("部门", []),
   publicCohorts("公开群组", []),
   applications("应用", []),
-  units("单位", []);
+  markets("市场", []),
+  units("单位", [FunctionPoint.applyCompanies]);
 
-  const SearchItem(this.name, this.functionPoint);
+  const SearchItem(this.label, this.functionPoint);
 
-  final String name;
+  final String label;
   final List<FunctionPoint> functionPoint;
 }
 
 enum FunctionPoint {
   addFriends("添加好友", "通过账号/手机号搜索"),
-  applyFriends("申请入群", "通过群组编号搜索");
+  applyCohorts("申请入群", "通过群组编号搜索"),
+  applyCompanies("申请入单位", "通过单位编号搜索"),;
 
   const FunctionPoint(this.functionName, this.placeHolder);
 
@@ -48,9 +50,9 @@ class SearchController extends GetxController with GetTickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
 
   // 搜索的一些结果
-  SearchParams<TargetResp>? personRes;
-  SearchParams<TargetResp>? cohortRes;
-  SearchParams<TargetResp>? companyRes;
+  SearchParams<Target>? personRes;
+  SearchParams<Target>? cohortRes;
+  SearchParams<Target>? companyRes;
 
   // 搜索状态
   Rx<SearchStatus> searchStatus = SearchStatus.stop.obs;
@@ -138,6 +140,8 @@ class SearchController extends GetxController with GetTickerProviderStateMixin {
           companyRes!.offset = result.length;
           companyRes!.searchResults = result;
           update();
+          break;
+        case SearchItem.markets:
           break;
       }
     } finally {

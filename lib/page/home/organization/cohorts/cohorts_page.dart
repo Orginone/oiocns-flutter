@@ -2,19 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:orginone/api_resp/target.dart';
+import 'package:orginone/component/a_font.dart';
+import 'package:orginone/component/text_avatar.dart';
+import 'package:orginone/component/text_search.dart';
 import 'package:orginone/component/text_tag.dart';
-import 'package:orginone/page/home/organization/cohorts/cohorts_controller.dart';
+import 'package:orginone/component/unified_scaffold.dart';
+import 'package:orginone/config/field_config.dart';
+import 'package:orginone/controller/message/message_controller.dart';
+import 'package:orginone/controller/target/target_controller.dart';
+import 'package:orginone/core/authority.dart';
+import 'package:orginone/core/target/cohort.dart';
+import 'package:orginone/page/home/search/search_controller.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/util/string_util.dart';
-
-import '../../../../api_resp/target_resp.dart';
-import '../../../../component/a_font.dart';
-import '../../../../component/text_avatar.dart';
-import '../../../../component/text_search.dart';
-import '../../../../component/unified_scaffold.dart';
-import '../../../../logic/authority.dart';
-import '../../../../routers.dart';
-import '../../../../util/widget_util.dart';
-import '../../search/search_controller.dart';
+import 'package:orginone/util/widget_util.dart';
 
 enum CtrlType {
   manageable("管理的"),
@@ -25,7 +27,9 @@ enum CtrlType {
   const CtrlType(this.typeName);
 }
 
-class CohortsPage extends GetView<CohortsController> {
+enum CohortPageReturnType { createCohort, updateCohort }
+
+class CohortsPage extends GetView<TargetController> {
   const CohortsPage({Key? key}) : super(key: key);
 
   @override
@@ -42,8 +46,15 @@ class CohortsPage extends GetView<CohortsController> {
   get _actions => <Widget>[
         IconButton(
           onPressed: () {
-            Map<String, dynamic> args = {"func": CohortFunction.create};
-            Get.toNamed(Routers.cohortMaintain, arguments: args);
+            Get.toNamed(
+              Routers.maintain,
+              arguments: CreateCohort((value) {
+                if (Get.isRegistered<TargetController>()) {
+                  var targetCtrl = Get.find<TargetController>();
+                  targetCtrl.createCohort(value).then((value) => Get.back());
+                }
+              }),
+            );
           },
           icon: const Icon(Icons.create_outlined, color: Colors.black),
         ),
@@ -52,7 +63,7 @@ class CohortsPage extends GetView<CohortsController> {
             List<SearchItem> friends = [SearchItem.cohorts];
             Get.toNamed(Routers.search, arguments: {
               "items": friends,
-              "point": FunctionPoint.applyFriends,
+              "point": FunctionPoint.applyCohorts,
             });
           },
           icon: const Icon(Icons.add, color: Colors.black),
@@ -67,53 +78,43 @@ class CohortsPage extends GetView<CohortsController> {
           ),
           Expanded(
             child: RefreshIndicator(
-              onRefresh: () async {
-                controller.onLoad();
-              },
+              onRefresh: () => controller.currentPerson.refreshJoinedCohorts(),
               child: _list,
             ),
           ),
         ],
       );
 
-  get _list => GetBuilder<CohortsController>(
-        init: controller,
-        builder: (controller) => ListView.builder(
-          scrollDirection: Axis.vertical,
-          itemCount: controller.cohorts.length,
-          itemBuilder: (BuildContext context, int index) {
-            return _item(context, controller.cohorts[index]);
-          },
-        ),
-      );
+  get _list => Obx(() => ListView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: controller.currentPerson.joinedCohorts.length,
+        itemBuilder: (BuildContext context, int index) {
+          return _item(context, controller.currentPerson.joinedCohorts[index]);
+        },
+      ));
 
-  Widget _item(BuildContext context, TargetResp cohort) {
-    var targetIds = [cohort.id, cohort.belongId ?? ""];
+  Widget _item(BuildContext context, Cohort cohort) {
+    var target = cohort.target;
+    var targetIds = [target.id, target.belongId ?? ""];
     bool isRelationAdmin = auth.isRelationAdmin(targetIds);
     List<Widget> children = [];
     if (isRelationAdmin) {
-      children.add(_popMenu(context, cohort, CtrlType.manageable));
+      children.add(_popMenu(context, target, CtrlType.manageable));
     } else {
-      children.add(_popMenu(context, cohort, CtrlType.joined));
+      children.add(_popMenu(context, target, CtrlType.joined));
     }
 
-    var avatarName = StringUtil.getPrefixChars(cohort.name, count: 2);
+    var avatarName = StringUtil.getPrefixChars(target.name, count: 2);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {
-        var messageController = controller.messageController;
-        var spaceMessageItemMap = messageController.spaceMessageItemMap;
-        var hasSpace = spaceMessageItemMap.containsKey(cohort.belongId);
-        var spaceId = hasSpace ? cohort.belongId : auth.userId;
-        if (spaceId == null) {
-          Fluttertoast.showToast(msg: "未获取到空间 ID!");
+      onTap: () async {
+        var messageCtrl = Get.find<MessageController>();
+        bool success = await messageCtrl.setCurrentById(target.id);
+        if (!success) {
+          Fluttertoast.showToast(msg: "未获取到会话信息！");
           return;
         }
-        Map<String, dynamic> args = {
-          "spaceId": spaceId,
-          "messageItemId": cohort.id
-        };
-        Get.toNamed(Routers.chat, arguments: args);
+        Get.toNamed(Routers.chat);
       },
       child: Container(
         padding: EdgeInsets.only(left: 25.w, top: 20.h, right: 25.w),
@@ -122,7 +123,7 @@ class CohortsPage extends GetView<CohortsController> {
             TextAvatar(avatarName: avatarName),
             Padding(padding: EdgeInsets.only(left: 10.w)),
             Expanded(
-              child: Text(cohort.name, style: AFont.instance.size22Black3),
+              child: Text(target.name, style: AFont.instance.size22Black3),
             ),
             Column(children: children)
           ],
@@ -131,26 +132,24 @@ class CohortsPage extends GetView<CohortsController> {
     );
   }
 
-  Widget _popMenu(BuildContext context, TargetResp cohort, CtrlType ctrlType) {
+  Widget _popMenu(BuildContext context, Target cohort, CtrlType ctrlType) {
     double x = 0, y = 0;
     return TextTag(
       ctrlType.typeName,
       textStyle: AFont.instance.size18themeColorW500,
       padding: EdgeInsets.all(10.w),
       onTap: () async {
-        var items = CohortFunction.values;
+        List<TargetEvent> items = [];
         if (ctrlType == CtrlType.manageable) {
-          items = items.where((item) {
-            return item != CohortFunction.create && item != CohortFunction.exit;
-          }).toList();
+          items = [TargetEvent.updateCohort, TargetEvent.deleteCohort];
         } else {
-          items = [CohortFunction.exit];
+          items = [TargetEvent.exitCohort];
         }
 
         // 弹出菜单
         var top = y - 50;
         var right = MediaQuery.of(context).size.width - x;
-        final result = await showMenu<CohortFunction>(
+        final result = await showMenu<TargetEvent>(
           context: context,
           position: RelativeRect.fromLTRB(x, top, right, 0),
           items: items.map((item) {
@@ -161,7 +160,23 @@ class CohortsPage extends GetView<CohortsController> {
           }).toList(),
         );
         if (result != null) {
-          controller.cohortFunc(result, cohort);
+          if (result == TargetEvent.updateCohort) {
+            var json = cohort.toJson();
+            json["remark"] = cohort.team?.remark;
+            Get.toNamed(
+              Routers.maintain,
+              arguments: CreateCohort((value) {
+                if (Get.isRegistered<TargetController>()) {
+                  var targetCtrl = Get.find<TargetController>();
+                  targetCtrl.createCohort(value).then((value) => Get.back());
+                }
+              }),
+            );
+          } else if (result == TargetEvent.deleteCohort) {
+            controller.deleteCohort(cohort);
+          } else if (result == TargetEvent.exitCohort) {
+            controller.exitCohort(cohort);
+          }
         }
       },
       onPanDown: (details) {

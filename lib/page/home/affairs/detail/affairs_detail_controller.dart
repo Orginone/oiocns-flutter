@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/page/home/affairs/affairs_type_enum.dart';
-import 'package:orginone/page/home/message/message_controller.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/public/http/base_controller.dart';
-import 'package:orginone/util/hub_util.dart';
 import '../../../../api/workflow_api.dart';
 import '../../../../public/loading/opt_loading.dart';
 import '../../../../util/string_util.dart';
@@ -29,7 +28,7 @@ class AffairsDetailController extends BaseController
     super.dispose();
   }
 
-  void approvalTask(bool isAgree,String content) async {
+  void approvalTask(bool isAgree, String content) async {
     String id;
     if (arguments.typeEnum == AffairsTypeEnum.record) {
       id = "";
@@ -39,12 +38,12 @@ class AffairsDetailController extends BaseController
       id = StringUtil.formatStr(arguments.taskEntity?.id);
     }
     ALoading.showCircle();
+
     /// 201 拒绝 101 同意
     String status = isAgree ? "101" : "201";
-    await WorkflowApi.approvalTask(id, status, content).then((value) {
-
-
-    }).onError((error, stackTrace) {
+    await WorkflowApi.approvalTask(id, status, content)
+        .then((value) {})
+        .onError((error, stackTrace) {
       /// 成功则通知列表刷新
       Fluttertoast.showToast(msg: error.toString());
     }).whenComplete(() => ALoading.dismiss());
@@ -128,17 +127,14 @@ class AffairsDetailController extends BaseController
   }
 
   String getApplicant() {
-    MessageController msgController = Get.find<MessageController>();
-    var orgChatCache = msgController.orgChatCache;
+    MessageController msgCtrl = Get.find<MessageController>();
     String applicant = "";
-    if(orgChatCache.nameMap.isNotEmpty){
-      if (arguments.typeEnum == AffairsTypeEnum.record) {
-        applicant = orgChatCache.nameMap[arguments.recordEntity?.createUser ??""];
-      } else if (arguments.typeEnum == AffairsTypeEnum.instance) {
-        applicant = orgChatCache.nameMap[arguments.instanceEntity?.createUser ??""];
-      } else {
-        applicant = orgChatCache.nameMap[arguments.taskEntity?.createUser ??""];
-      }
+    if (arguments.typeEnum == AffairsTypeEnum.record) {
+      applicant = msgCtrl.getName(arguments.recordEntity?.createUser ?? "");
+    } else if (arguments.typeEnum == AffairsTypeEnum.instance) {
+      applicant = msgCtrl.getName(arguments.instanceEntity?.createUser ?? "");
+    } else {
+      applicant = msgCtrl.getName(arguments.taskEntity?.createUser ?? "");
     }
     return applicant;
   }
@@ -149,22 +145,18 @@ class AffairsDetailController extends BaseController
     // scope.row?.flowRelation?.productId)}}
 
     MessageController msgController = Get.find<MessageController>();
-    var orgChatCache = msgController.orgChatCache;
     String applicant = "";
-    if(orgChatCache.nameMap.isNotEmpty){
-      String id = "";
-      if (arguments.typeEnum == AffairsTypeEnum.record) {
-        id = arguments.recordEntity?.flowTask?.flowInstance?.flowRelation?.productId??"";
-      } else if (arguments.typeEnum == AffairsTypeEnum.instance) {
-        id = arguments.instanceEntity?.flowRelation?.productId ??"";
-      } else {
-        id = arguments.taskEntity?.flowInstance?.flowRelation?.productId ??"";
-      }
-      applicant = orgChatCache.nameMap[id];
-      if(applicant.isEmpty){
-        applicant = await HubUtil().getName(id);
-      }
+    String id = "";
+    if (arguments.typeEnum == AffairsTypeEnum.record) {
+      id = arguments
+              .recordEntity?.flowTask?.flowInstance?.flowRelation?.productId ??
+          "";
+    } else if (arguments.typeEnum == AffairsTypeEnum.instance) {
+      id = arguments.instanceEntity?.flowRelation?.productId ?? "";
+    } else {
+      id = arguments.taskEntity?.flowInstance?.flowRelation?.productId ?? "";
     }
+    applicant = msgController.getName(id);
     return applicant;
   }
 }

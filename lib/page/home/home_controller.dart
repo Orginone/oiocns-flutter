@@ -1,111 +1,151 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/component/bread_crumb.dart';
+import 'package:orginone/component/progress_dialog.dart';
+import 'package:orginone/component/tab_combine.dart';
 import 'package:orginone/component/unified_text_style.dart';
-import 'package:orginone/config/bread_crumb_points.dart';
+import 'package:orginone/controller/file_controller.dart';
 import 'package:orginone/page/home/affairs/affairs_page.dart';
+import 'package:orginone/page/home/application/page/application_page.dart';
 import 'package:orginone/page/home/center/center_page.dart';
-import 'package:orginone/page/home/message/message_controller.dart';
-import 'package:orginone/page/home/mine/mine_page.dart';
+import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/page/home/mine/set_home/set_home_page.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
-import 'package:orginone/page/home/work/work_page.dart';
-import 'package:orginone/util/any_store_util.dart';
-import 'package:orginone/util/hub_util.dart';
+import 'package:flutter_treeview/flutter_treeview.dart' as tree_view;
+import 'package:orginone/public/image/load_image.dart';
+import 'package:orginone/screen_init.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-import '../../api/company_api.dart';
-import '../../api/person_api.dart';
-import '../../api_resp/login_resp.dart';
-import '../../api_resp/target_resp.dart';
-import '../../api_resp/tree_node.dart';
-import '../../component/tab_combine.dart';
-import '../../logic/authority.dart';
-import '../../util/hive_util.dart';
 import 'message/message_page.dart';
 
 class HomeController extends GetxController
     with GetSingleTickerProviderStateMixin {
   Logger log = Logger("HomeController");
 
-  var messageController = Get.find<MessageController>();
+  var messageCtrl = Get.find<MessageController>();
   var organizationCtrl = Get.find<OrganizationController>();
+  var fileCtrl = Get.find<FileController>();
 
   /// 全局面包屑
-  var breadCrumbController = BreadCrumbController<String>();
+  var breadCrumbController = BreadCrumbController<String>(topNode: topPoint);
 
   /// Tab 控制器
   late List<TabCombine> tabs;
   late TabController tabController;
-  late HomeController homeController;
   late RxInt tabIndex;
   late TabCombine message, relation, center, work, my;
 
-  /// 当前空间
-  late TargetResp currentSpace;
-  NodeCombine? nodeCombine;
+  /// 路由切换
+  late RxBool routerOpened;
+  late TreeViewController treeViewController;
 
   @override
   void onInit() {
     super.onInit();
     _initTabs();
-    _initCurrentSpace();
+    _initRouter();
   }
 
-  // @override
-  // void onReady() {
-  //   super.onReady();
-  //   // 弹出更新框
-  //   showDialog(
-  //     context: context,
-  //     barrierColor: null,
-  //     builder: (context) => UpdaterDialog("1.修复聊天同步会话问题；\n2.修改重连时间为两秒；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；\n3.修改样式问题；"),
-  //   );
-  // }
+  _initRouter() {
+    routerOpened = false.obs;
+
+    Queue<Item<String>> queue = Queue.of(topPoint.children);
+    Map<String, tree_view.Node<Item<String>>> map = {};
+    List<tree_view.Node<Item<String>>> ans = [];
+    while (queue.isNotEmpty) {
+      var point = queue.removeFirst();
+      var node = tree_view.Node(
+        key: point.id,
+        label: point.label,
+        data: point,
+        children: [],
+      );
+      map[point.id] = node;
+      if (point.parent == topPoint) {
+        ans.add(node);
+      } else {
+        var parentNode = map[point.parent!.id];
+        parentNode!.children.add(node);
+      }
+      queue.addAll(point.children);
+    }
+
+    treeViewController = TreeViewController(children: ans);
+  }
+
+  @override
+  void onReady() async {
+    super.onReady();
+
+    // 获取当前 apk 版本
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String version = packageInfo.version;
+
+    // 获取当前上传的 apk 版本
+    Map<String, dynamic> apkDetail = await fileCtrl.apkDetail();
+
+    // 弹出更新框
+    if (apkDetail["version"] != version) {
+      showDialog(
+        context: navigatorKey.currentContext!,
+        barrierColor: null,
+        builder: (context) => UpdaterDialog(
+          version: apkDetail["version"],
+          prefix: apkDetail["path"],
+          content: apkDetail["remark"],
+        ),
+      );
+    }
+  }
 
   @override
   void onClose() {
     super.onClose();
-    AnyStoreUtil().disconnect();
-    HubUtil().disconnect();
+    Kernel.getInstance.stop();
     breadCrumbController.dispose();
     tabController.dispose();
   }
 
-  Future<void> _initCurrentSpace() async {
-    var userInfo = auth.userInfo;
-    currentSpace = TargetResp.copyWith(userInfo);
-    currentSpace.name = "个人空间";
-  }
-
   void _initTabs() {
+    var size = Size(32.w, 32.w);
     message = TabCombine(
-      customTab: _buildTabTick(Icons.group_outlined, "沟通"),
+      customTab: _buildTabTick(
+          AImage.localImage(
+            "chat",
+            size: Size(38.w, 32.w),
+          ),
+          "沟通"),
       tabView: const MessagePage(),
       breadCrumbItem: chatPoint,
     );
     relation = TabCombine(
       body: Text('办事', style: text14),
       tabView: const AffairsPage(),
-      icon: Icons.book_outlined,
+      icon: AImage.localImage("work", size: size),
       breadCrumbItem: workPoint,
     );
-    center = const TabCombine(
-      icon: Icons.circle,
-      tabView: CenterPage(),
+    center = TabCombine(
+      iconMargin: EdgeInsets.zero,
+      body: AImage.localImage("logo_not_bg", size: Size(50.w, 50.w)),
+      tabView: const CenterPage(),
       breadCrumbItem: centerPoint,
     );
     work = TabCombine(
       body: Text('仓库', style: text14),
-      tabView: const WorkPage(),
-      icon: Icons.warehouse_outlined,
+      tabView: const ApplicationPage(),
+      icon: AImage.localImage("warehouse", size: size),
       breadCrumbItem: warehousePoint,
     );
     my = TabCombine(
       body: Text('设置', style: text14),
       tabView: SetHomePage(),
-      icon: Icons.person_outline,
+      icon: AImage.localImage("setting", size: size),
       breadCrumbItem: settingPoint,
     );
 
@@ -116,72 +156,39 @@ class HomeController extends GetxController
       vsync: this,
       initialIndex: tabIndex.value,
     );
-    breadCrumbController.push(center.breadCrumbItem!);
+    breadCrumbController.redirect(centerPoint);
     int preIndex = tabController.index;
     tabController.addListener(() {
-      if(preIndex == tabController.index){
+      if (preIndex == tabController.index) {
         return;
       }
       tabIndex.value = tabController.index;
-      var preTabCombine = tabs[tabController.previousIndex];
-      var tabCombine = tabs[tabController.index];
-      if (preTabCombine.breadCrumbItem != null) {
-        breadCrumbController.pops(preTabCombine.breadCrumbItem!.id);
-      }
-      if (tabCombine.breadCrumbItem != null) {
-        breadCrumbController.push(tabCombine.breadCrumbItem!);
-      }
+      breadCrumbController.redirect(tabs[tabIndex.value].breadCrumbItem!);
       preIndex = tabController.index;
     });
   }
 
-  Widget _buildTabTick(IconData iconData, String label) {
-    return GetBuilder<MessageController>(
-      builder: (controller) => SizedBox(
-        width: 100.w,
-        child: Stack(
-          children: [
-            Tab(
-              iconMargin: EdgeInsets.all(5.w),
-              icon: Icon(iconData),
-              child: Text(label, style: text14),
-            ),
-            Positioned(
-              right: 0,
-              child: controller.hasNoRead()
-                  ? Icon(Icons.circle, color: Colors.redAccent, size: 10.w)
-                  : Container(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void switchSpaces(TargetResp targetResp) async {
-    LoginResp loginResp = await PersonApi.changeWorkspace(targetResp.id);
-    HiveUtil().accessToken = loginResp.accessToken;
-
-    await loadAuth();
-
-    // 当前页面需要变化
-    currentSpace = targetResp;
-    await _loadTree();
-    update();
-
-    // 会话需要分组
-    messageController.sortingGroups();
-    messageController.update();
-
-    // 组织架构页面需要变化
-    organizationCtrl.update();
-  }
-
-  _loadTree() async {
-    if (auth.isCompanySpace()) {
-      nodeCombine = await CompanyApi.tree();
-    } else {
-      nodeCombine = null;
-    }
+  Widget _buildTabTick(Widget icon, String label) {
+    return Obx(() => SizedBox(
+          width: 200.w,
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Tab(
+                  iconMargin: const EdgeInsets.all(4),
+                  icon: icon,
+                  child: Text(label, style: text14),
+                ),
+              ),
+              Positioned(
+                right: 0,
+                child: messageCtrl.hasNoRead()
+                    ? Icon(Icons.circle, color: Colors.redAccent, size: 10.w)
+                    : Container(),
+              ),
+            ],
+          ),
+        ));
   }
 }

@@ -5,17 +5,20 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/core/authority.dart';
 import 'package:orginone/util/encryption_util.dart';
-import 'package:orginone/util/hive_util.dart';
 import 'package:uuid/uuid.dart';
 
 import '../config/constant.dart';
 import '../util/http_util.dart';
 
+const String userDomain = "user";
+const String allDomain = "all";
+
 class BucketApi {
   static Logger log = Logger("BucketApi");
 
-  static String shareDomain = "user";
+  static const String defaultShareDomain = userDomain;
 
   // 每次以 1M 的速度上传
   static int chunkSize = 1024 * 1024;
@@ -23,9 +26,12 @@ class BucketApi {
   // uuid
   static Uuid uuid = const Uuid();
 
-  static Future<dynamic> create({required String prefix}) async {
+  static Future<dynamic> create({
+    required String prefix,
+    String domain = userDomain,
+  }) async {
     String url = "${Constant.bucket}/Create";
-    var params = {"shareDomain": shareDomain, "prefix": prefix};
+    var params = {"shareDomain": domain, "prefix": prefix};
 
     return await HttpUtil().post(
       url,
@@ -38,10 +44,11 @@ class BucketApi {
     required String prefix,
     required String filePath,
     required String fileName,
+    String domain = defaultShareDomain,
   }) async {
     String url = "${Constant.bucket}/Upload";
 
-    var params = {"shareDomain": shareDomain, "prefix": prefix};
+    var params = {"shareDomain": domain, "prefix": prefix};
     var file = await MultipartFile.fromFile(filePath, filename: fileName);
     var formData = FormData.fromMap({"file": file});
 
@@ -58,16 +65,17 @@ class BucketApi {
     required String filePath,
     required String fileName,
     Function? progressCallback,
+    String shareDomain = defaultShareDomain,
   }) async {
     // 先读取文件大小，获取文件的长度
     var file = File(filePath);
     var length = file.lengthSync();
     var openedFile = await file.open();
 
-    if (length < chunkSize){
+    if (length < chunkSize) {
       await upload(prefix: prefix, filePath: filePath, fileName: fileName);
-      if (progressCallback != null){
-        progressCallback(100);
+      if (progressCallback != null) {
+        progressCallback(1.0);
       }
       return;
     }
@@ -80,24 +88,19 @@ class BucketApi {
     };
 
     // 当前进度
-    var current = 0;
-    var index = 0;
     var totalCount = (length / chunkSize).ceil();
     var uploadId = uuid.v4();
-    while (current < length) {
-      // 获取字节流
-      var remainder = length - current;
-      int readSize = remainder < chunkSize ? remainder : chunkSize;
-      Uint8List bytes = openedFile.readSync(readSize);
+    for (int index = 0; index < totalCount; index++) {
+      Uint8List bytes = openedFile.readSync(chunkSize);
 
       // 组装文件
       var file = MultipartFile.fromBytes(bytes, filename: fileName);
       var chunkMetaData = {
-        "uploadId": uploadId,
-        "fileName": fileName,
-        "index": index++,
-        "totalCount": totalCount,
-        "fileSize": readSize
+        "UploadId": uploadId,
+        "FileName": fileName,
+        "Index": index,
+        "TotalCount": totalCount,
+        "FileSize": length
       };
       var formData = FormData.fromMap({
         "file": file,
@@ -112,20 +115,22 @@ class BucketApi {
         options: Options(contentType: "multipart/form-data"),
       );
 
-      current += readSize;
       if (progressCallback != null) {
-        progressCallback(current / length);
+        progressCallback((index + 1) / totalCount);
       }
     }
   }
 
-  static Future<File> getCachedFile(String path) async {
+  static Future<File> getCachedFile({
+    required String path,
+    String domain = defaultShareDomain,
+  }) async {
     path = EncryptionUtil.encodeURLString(path);
-    String params = "shareDomain=$shareDomain&prefix=$path&preview=False";
+    String params = "shareDomain=$domain&prefix=$path&preview=False";
     String url = "${Constant.bucket}/Download?$params";
 
     Map<String, String> headers = {
-      "Authorization": HiveUtil().accessToken,
+      "Authorization": getAccessToken,
     };
     return await DefaultCacheManager().getSingleFile(url, headers: headers);
   }

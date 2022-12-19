@@ -1,7 +1,8 @@
 import 'package:get/get.dart';
+import 'package:orginone/core/authority.dart';
 
 import '../../../../api/company_api.dart';
-import '../../../../api_resp/target_resp.dart';
+import '../../../../api_resp/target.dart';
 import '../../../../api_resp/tree_node.dart';
 import '../../../../component/bread_crumb.dart';
 import '../../../../enumeration/enum_map.dart';
@@ -16,7 +17,7 @@ class DeptController extends GetxController {
   TreeNode? currentNode;
 
   // 人员获取控制器
-  List<TargetResp> persons = [];
+  List<Target> persons = [];
   int limit = 20;
   int offset = 0;
 
@@ -37,9 +38,9 @@ class DeptController extends GetxController {
     var nodeId = Get.arguments;
     if (nodeId != null) {
       List<TreeNode> queue = [topNode];
-      while (queue.isNotEmpty){
+      while (queue.isNotEmpty) {
         var first = queue.removeAt(0);
-        if (first.id == nodeId){
+        if (first.id == nodeId) {
           await entryNode(first);
           return;
         }

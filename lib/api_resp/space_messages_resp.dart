@@ -1,31 +1,31 @@
 import 'package:get/get.dart';
 
-import 'message_item_resp.dart';
+import 'message_target.dart';
 
-class SpaceMessagesResp {
+class ChatGroup {
   final String id;
   final String name;
-  final List<MessageItemResp> chats;
+  final List<MessageTarget> chats;
 
   bool isExpand = false;
 
-  SpaceMessagesResp(this.id, this.name, this.chats);
+  ChatGroup(this.id, this.name, this.chats);
 
-  SpaceMessagesResp.fromMap(Map<String, dynamic> map)
+  ChatGroup.fromMap(Map<String, dynamic> map)
       : id = map["id"],
         name = map["name"],
-        chats = MessageItemResp.fromList(map["chats"]);
+        chats = MessageTarget.fromList(map["chats"]);
 
-  static List<SpaceMessagesResp> fromList(List<dynamic> data) {
-    List<SpaceMessagesResp> ans = [];
+  static List<ChatGroup> fromList(List<dynamic> data) {
+    List<ChatGroup> ans = [];
     for (var spaceMessagesMap in data) {
-      var spaceMessagesResp = SpaceMessagesResp.fromMap(spaceMessagesMap);
+      var spaceMessagesResp = ChatGroup.fromMap(spaceMessagesMap);
       ans.add(spaceMessagesResp);
     }
     return ans;
   }
 
-  static List<Map<String, dynamic>> toJsonList(List<SpaceMessagesResp>? data) {
+  static List<Map<String, dynamic>> toJsonList(List<ChatGroup>? data) {
     if (data == null) {
       return [];
     }
@@ -40,7 +40,7 @@ class SpaceMessagesResp {
     final json = <String, dynamic>{};
     json['id'] = id.toString();
     json['name'] = name;
-    json['chats'] = MessageItemResp.toJsonList(chats);
+    json['chats'] = MessageTarget.toJsonList(chats);
     return json;
   }
 }

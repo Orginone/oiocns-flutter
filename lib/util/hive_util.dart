@@ -4,7 +4,6 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../api_resp/team_resp.dart';
-import '../api_resp/target_resp.dart';
 import '../api_resp/user_resp.dart';
 
 class HiveUtil {
@@ -30,20 +29,14 @@ class HiveUtil {
 
   Future<void> initAdapters() async {
     Hive.registerAdapter(UserRespAdapter());
-    Hive.registerAdapter(TargetRespAdapter());
     Hive.registerAdapter(TeamRespAdapter());
   }
 
   // 这个存储一些键值
   late Box uniqueBox;
-  late Box keyValueBox;
-  late String currentTargetId;
 
   Future<void> initUniqueBox() async {
     uniqueBox = await Hive.openBox("uniqueBox");
   }
 
-  set accessToken(accessToken) => uniqueBox.put("accessToken", accessToken);
-
-  get accessToken => uniqueBox.get("accessToken");
 }
