@@ -160,13 +160,3 @@ class StoreHub {
     _timer = Timer(_timeout, start);
   }
 }
-
-StoreHub? _chatHub;
-
-StoreHub get chatHub {
-  _chatHub ??= StoreHub(
-      connName: "chatHub",
-      url: Constant.messageHub,
-      timeout: const Duration(seconds: 5));
-  return _chatHub!;
-}

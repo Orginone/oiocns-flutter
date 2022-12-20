@@ -389,7 +389,7 @@ class FileItemModel extends FileItemShare {
   final DateTime dateModified;
   final String contentType;
   final bool isDirectory;
-  final bool hasSubDirectories;
+  bool hasSubDirectories;
 
   FileItemModel({
     required int size,
@@ -402,7 +402,7 @@ class FileItemModel extends FileItemShare {
     required this.dateModified,
     required this.contentType,
     required this.isDirectory,
-    required this.hasSubDirectories,
+    this.hasSubDirectories = false,
   }) : super(
           size: size,
           name: name,

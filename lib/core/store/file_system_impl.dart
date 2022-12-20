@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/api/hub/any_store.dart';
 import 'package:orginone/api/kernelapi.dart';
 import 'package:orginone/api/model.dart';
+import 'package:orginone/config/constant.dart';
 import 'package:orginone/core/store/i_file_system.dart';
 import 'package:orginone/enumeration/bucket_operates.dart';
 import 'package:orginone/util/encryption_util.dart';
@@ -18,17 +19,26 @@ class FileSystemItem implements IFileSystemItem {
   @override
   List<IFileSystemItem> get children => _children;
 
+  @override
+  String get key => _key;
+
+  @override
+  String get name => _name;
+
+  @override
+  IFileSystemItem? get parent => _parent;
+
+  @override
+  FileItemModel get target => _target;
+
   FileSystemItem({
-    required String key,
-    required String name,
     required FileItemModel target,
     IFileSystemItem? parent,
-    List<IFileSystemItem> children = const [],
-  })  : _key = key,
-        _name = name,
+  })  : _key = target.key,
+        _name = target.name,
         _target = target,
         _parent = parent,
-        _children = children.obs;
+        _children = <IFileSystemItem>[].obs;
 
   String _formatKey({String subName = ""}) {
     var keys = [target.key];
@@ -36,6 +46,43 @@ class FileSystemItem implements IFileSystemItem {
       keys.add(subName);
     }
     return EncryptionUtil.encodeURLString(subName);
+  }
+
+  IFileSystemItem _newItemForDes({
+    required IFileSystemItem source,
+    required IFileSystemItem destination,
+  }) {
+    var node = FileSystemItem(
+      target: FileItemModel(
+        name: source.name,
+        dateCreated: DateTime.now(),
+        dateModified: DateTime.now(),
+        size: source.target.size,
+        shareLink: source.target.shareLink,
+        extension: source.target.extension,
+        thumbnail: source.target.thumbnail,
+        key: "${destination.key}/${source.name}",
+        contentType: source.target.contentType,
+        isDirectory: source.target.isDirectory,
+        hasSubDirectories: source.target.hasSubDirectories,
+      ),
+      parent: source,
+    );
+    for (var item in node.children) {
+      node._children.add(_newItemForDes(source: item, destination: node));
+    }
+    return node;
+  }
+
+  @override
+  FileItemShare shareInfo() {
+    return FileItemShare(
+      size: target.size,
+      name: name,
+      shareLink: "${Constant.bucket}/load${target.shareLink}",
+      extension: target.extension,
+      thumbnail: target.thumbnail,
+    );
   }
 
   @override
@@ -47,67 +94,43 @@ class FileSystemItem implements IFileSystemItem {
         destination: destination.key,
         operate: BucketOperates.copy.keyWord,
       ));
+      destination.target.hasSubDirectories = true;
+      destination.children
+          .add(_newItemForDes(source: this, destination: destination));
+      return true;
     }
     return false;
   }
 
   @override
   Future<IFileSystemItem?> create(String name) {
-    // TODO: implement create
     throw UnimplementedError();
   }
 
   @override
   Future<bool> delete() {
-    // TODO: implement delete
     throw UnimplementedError();
   }
 
   @override
   Future<void> download(String path, Function(double p1) onProgress) {
-    // TODO: implement download
     throw UnimplementedError();
   }
 
   @override
-  // TODO: implement key
-  String get key => throw UnimplementedError();
-
-  @override
   Future<bool> loadChildren(bool reload) {
-    // TODO: implement loadChildren
     throw UnimplementedError();
   }
 
   @override
   Future<bool> move(IFileSystemItem destination) {
-    // TODO: implement move
     throw UnimplementedError();
   }
-
-  @override
-  // TODO: implement name
-  String get name => throw UnimplementedError();
-
-  @override
-  // TODO: implement parent
-  IFileSystemItem? get parent => throw UnimplementedError();
 
   @override
   Future<bool> rename(String name) {
-    // TODO: implement rename
     throw UnimplementedError();
   }
-
-  @override
-  FileItemShare shareInfo() {
-    // TODO: implement shareInfo
-    throw UnimplementedError();
-  }
-
-  @override
-  // TODO: implement target
-  FileItemModel get target => throw UnimplementedError();
 
   @override
   Future<IFileSystemItem?> upload({
@@ -115,7 +138,6 @@ class FileSystemItem implements IFileSystemItem {
     required File file,
     required Function(double) onProgress,
   }) {
-    // TODO: implement upload
     throw UnimplementedError();
   }
 }
