@@ -132,7 +132,7 @@ class HomeController extends GetxController
     );
     center = TabCombine(
       iconMargin: EdgeInsets.zero,
-      body: AImage.localImage("logo_not_bg", size: Size(50.w, 50.w)),
+      body: AImage.localImage("logo_not_bg", size: Size(36.w, 36.w)),
       tabView: const CenterPage(),
       breadCrumbItem: centerPoint,
     );
