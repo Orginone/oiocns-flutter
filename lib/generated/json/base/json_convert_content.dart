@@ -13,6 +13,7 @@ import 'package:orginone/api_resp/record_task_entity.dart';
 import 'package:orginone/api_resp/request_entity.dart';
 import 'package:orginone/api_resp/staging_entity.dart';
 import 'package:orginone/api_resp/task_entity.dart';
+import 'package:orginone/api_resp/version_entity.dart';
 
 JsonConvert jsonConvert = JsonConvert();
 typedef JsonConvertFunction<T> = T Function(Map<String, dynamic> json);
@@ -41,6 +42,13 @@ class JsonConvert {
 		(TaskFlowNode).toString(): TaskFlowNode.fromJson,
 		(TaskFlowInstance).toString(): TaskFlowInstance.fromJson,
 		(TaskFlowInstanceFlowRelation).toString(): TaskFlowInstanceFlowRelation.fromJson,
+		(VersionEntity).toString(): VersionEntity.fromJson,
+		(VersionVersionMes).toString(): VersionVersionMes.fromJson,
+		(VersionVersionMesUploadName).toString(): VersionVersionMesUploadName.fromJson,
+		(VersionVersionMesPubTeam).toString(): VersionVersionMesPubTeam.fromJson,
+		(VersionVersionMesPubTeamTeam).toString(): VersionVersionMesPubTeamTeam.fromJson,
+		(VersionVersionMesPubAuthor).toString(): VersionVersionMesPubAuthor.fromJson,
+		(VersionVersionMesPubAuthorTeam).toString(): VersionVersionMesPubAuthorTeam.fromJson,
 	};
 
   T? convert<T>(dynamic value) {
@@ -184,6 +192,27 @@ class JsonConvert {
 		}
 		if(<TaskFlowInstanceFlowRelation>[] is M){
 			return data.map<TaskFlowInstanceFlowRelation>((Map<String, dynamic> e) => TaskFlowInstanceFlowRelation.fromJson(e)).toList() as M;
+		}
+		if(<VersionEntity>[] is M){
+			return data.map<VersionEntity>((Map<String, dynamic> e) => VersionEntity.fromJson(e)).toList() as M;
+		}
+		if(<VersionVersionMes>[] is M){
+			return data.map<VersionVersionMes>((Map<String, dynamic> e) => VersionVersionMes.fromJson(e)).toList() as M;
+		}
+		if(<VersionVersionMesUploadName>[] is M){
+			return data.map<VersionVersionMesUploadName>((Map<String, dynamic> e) => VersionVersionMesUploadName.fromJson(e)).toList() as M;
+		}
+		if(<VersionVersionMesPubTeam>[] is M){
+			return data.map<VersionVersionMesPubTeam>((Map<String, dynamic> e) => VersionVersionMesPubTeam.fromJson(e)).toList() as M;
+		}
+		if(<VersionVersionMesPubTeamTeam>[] is M){
+			return data.map<VersionVersionMesPubTeamTeam>((Map<String, dynamic> e) => VersionVersionMesPubTeamTeam.fromJson(e)).toList() as M;
+		}
+		if(<VersionVersionMesPubAuthor>[] is M){
+			return data.map<VersionVersionMesPubAuthor>((Map<String, dynamic> e) => VersionVersionMesPubAuthor.fromJson(e)).toList() as M;
+		}
+		if(<VersionVersionMesPubAuthorTeam>[] is M){
+			return data.map<VersionVersionMesPubAuthorTeam>((Map<String, dynamic> e) => VersionVersionMesPubAuthorTeam.fromJson(e)).toList() as M;
 		}
 
 		debugPrint("${M.toString()} not found");

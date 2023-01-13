@@ -44,6 +44,8 @@ import 'package:orginone/page/home/mine/mine_info/mine_info_page.dart';
 import 'package:orginone/page/home/mine/mine_page.dart';
 import 'package:orginone/page/home/mine/mine_unit/mine_unit_page.dart';
 import 'package:orginone/page/home/mine/set_home/set_home_page.dart';
+import 'package:orginone/page/home/mine/version/publisher_page.dart';
+import 'package:orginone/page/home/mine/version/version_page.dart';
 import 'package:orginone/page/home/organization/cohorts/cohorts_page.dart';
 import 'package:orginone/page/home/organization/cohorts/component/more_cohort.dart';
 import 'package:orginone/page/home/organization/dept/dept_binding.dart';
@@ -73,6 +75,8 @@ import 'package:orginone/page/scanning/scanning_result/scanning_result_pge.dart'
 
 import 'page/home/affairs/detail/affairs_detail_binding.dart';
 import 'page/home/mine/set_home/set_home_binding.dart';
+import 'page/home/mine/version/publisher_controller.dart';
+import 'page/home/mine/version/version_controller.dart';
 
 class Routers {
   static const String main = "/";
@@ -116,6 +120,7 @@ class Routers {
   static const String affairsDetail = "/affairsDetail";
   static const String newFriends = "/newFriends";
   static const String setHome = "/setHome";
+  static const String publisher = "/publisher";
 
   // 仓库
   static const String application = "/application";
@@ -125,6 +130,9 @@ class Routers {
   static const String market = "/market";
   static const String staging = "/staging";
   static const String order = "/order";
+
+  //设置
+  static const String version = "/version";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -358,6 +366,14 @@ class Routers {
           FileBinding()
         ],
       ),
+      GetPage(
+          name: Routers.version,
+          page: () => const VersionPage(),
+          binding: VersionBinding()),
+      GetPage(
+          name: Routers.publisher,
+          page: () => PublisherPage(),
+          binding: PublisherBinding()),
     ];
   }
 }

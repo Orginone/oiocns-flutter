@@ -20,6 +20,7 @@ import 'package:orginone/component/a_font.dart';
 import 'package:orginone/component/bread_crumb.dart';
 import 'package:orginone/component/tab_combine.dart';
 import 'package:orginone/controller/base_controller.dart';
+import 'package:orginone/controller/docs/docs_controller.dart';
 import 'package:orginone/controller/target/target_controller.dart';
 import 'package:orginone/core/authority.dart';
 import 'package:orginone/core/chat/chat_impl.dart';
@@ -602,35 +603,24 @@ class MessageController extends BaseController<IChatGroup>
 
   /// 相册选择照片后回调
   void imagePicked(XFile file) async {
-    Image imageCompo = Image.memory(await file.readAsBytes());
-    imageCompo.image.resolve(const ImageConfiguration()).addListener(
-      ImageStreamListener(
-        (imageInfo, synchronousCall) async {
-          String encodedPrefix = EncryptionUtil.encodeURLString("");
-
-          var filePath = file.path;
-          var fileName = file.name;
-
-          await BucketApi.uploadChunk(
-            prefix: encodedPrefix,
-            filePath: filePath,
-            fileName: fileName,
-          );
-
-          Map<String, dynamic> body = {
-            "width": imageInfo.image.width,
-            "height": imageInfo.image.height,
-            "path": fileName,
-          };
-
-          var current = _currentChat.value;
-          await current?.sendMsg(
-            msgBody: jsonEncode(body),
-            msgType: MsgType.image,
-          );
-        },
-      ),
-    );
+    var newFile = File(file.path);
+    var docs = DocsController.getInstance();
+    var home = await docs.root()?.create("主目录");
+    docs.setHome(home);
+    var docDir = await home?.create("沟通");
+    if(docDir != null && await newFile.exists()){
+      var res = await docDir.upload(name: file.name, file: newFile, onProgress: (progress){
+        debugPrint("progress:$progress");
+      });
+      debugPrint("结束上传。。。$res");
+      if(res != null ){
+        var current = _currentChat.value;
+        await current?.sendMsg(
+          msgBody: jsonEncode(res.shareInfo()),
+          msgType: MsgType.image,
+        );
+      }
+    }
   }
 
   /// 语音录制完成并发送

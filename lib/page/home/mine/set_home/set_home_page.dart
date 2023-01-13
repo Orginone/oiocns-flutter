@@ -73,42 +73,14 @@ class SetHomePage extends BaseView<SetHomeController> {
       {"id": 4, "icon": "icon", "cardName": "流程设置"},
       {"id": 5, "icon": "icon", "cardName": "标准设置"},
       {"id": 6, "icon": "icon", "cardName": "权限设置"},
-      if (auth.isMobileAPKAdmin([auth.userId]))
-        {
-          "id": 7,
-          "icon": "icon",
-          "cardName": "APK上传",
-          "func": () async {
-            Map<String, dynamic> initValue = {};
-            if (Get.isRegistered<FileController>()) {
-              var fileCtrl = Get.find<FileController>();
-              initValue.addAll(await fileCtrl.apkDetail());
-            }
-            Get.toNamed(
-              Routers.maintain,
-              arguments: NewVersion((value) {
-                if (Get.isRegistered<FileController>()) {
-                  var fileCtrl = Get.find<FileController>();
-                  fileCtrl.apkUpload(value).then((value) => Get.back());
-                }
-              }, initValue),
-            );
-          }
-        },
       {
-        "id": 8,
+        "id": 7,
         "icon": "icon",
-        "cardName": "当前版本",
+        "cardName": "更新版本",
         "func": () async {
-          if (Get.isRegistered<FileController>()) {
-            var fileCtrl = Get.find<FileController>();
-            Get.toNamed(
-              Routers.maintain,
-              arguments: ViewVersion(await fileCtrl.apkDetail()),
-            );
-          }
-        }
-      },
+          Get.toNamed(Routers.version);
+        },
+      }
     ];
   }
 

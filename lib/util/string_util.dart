@@ -117,4 +117,9 @@ class StringUtil {
         return "";
     }
   }
+
+  /// size 单位为字节
+  static String formatFileSize(int size){
+    return "${(size * 1.0 / 1024 / 1024).toStringAsFixed(1)}M";
+  }
 }

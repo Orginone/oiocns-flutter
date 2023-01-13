@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:get/get.dart';
@@ -20,8 +21,11 @@ import 'package:orginone/page/home/organization/organization_controller.dart';
 import 'package:flutter_treeview/flutter_treeview.dart' as tree_view;
 import 'package:orginone/public/image/load_image.dart';
 import 'package:orginone/screen_init.dart';
+import 'package:orginone/util/string_util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../api_resp/version_entity.dart';
+import '../../public/dialog/dialog_confirm.dart';
 import 'message/message_page.dart';
 
 class HomeController extends GetxController
@@ -92,15 +96,34 @@ class HomeController extends GetxController
 
     // 弹出更新框
     if (apkDetail["version"] != version) {
-      showDialog(
-        context: navigatorKey.currentContext!,
-        barrierColor: null,
-        builder: (context) => UpdaterDialog(
-          version: apkDetail["version"],
-          prefix: apkDetail["path"],
-          content: apkDetail["remark"],
-        ),
-      );
+      var versionEntry = await fileCtrl.versionList();
+      if (versionEntry != null && (versionEntry.versionMes ?? []).isNotEmpty) {
+        //筛选出当前最新版本
+        PackageInfo packageInfo = await PackageInfo.fromPlatform();
+        String appName = packageInfo.appName;
+        int versionCode = int.parse(packageInfo.buildNumber);
+        debugPrint("appName:$appName versionCode:$versionCode");
+        for (VersionVersionMes element in (versionEntry.versionMes ?? [])) {
+          if (appName == element.appName) {
+            if (element.version! > versionCode) {
+              //有新版本弹框提示
+              showAnimatedDialog(
+                context: navigatorKey.currentContext!,
+                barrierDismissible: true,
+                animationType: DialogTransitionType.fadeScale,
+                builder: (BuildContext context) {
+                  return UpdaterDialog(
+                    icon: element.uploadName?.shareLink??'',
+                    version: "${element.version}",
+                    path: element.shareLink??'',
+                    content: element.remark??'',
+                  );
+                },
+              );
+            }
+          }
+        }
+      }
     }
   }
 

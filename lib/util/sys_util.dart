@@ -21,12 +21,9 @@ class SysUtil {
     }
   }
 
-  static void update(String prefix, Function callback) {
-    prefix = EncryptionUtil.encodeURLString(prefix);
-    String params = "shareDomain=all&prefix=$prefix&preview=False";
-    String url = "${Constant.bucket}/Download?$params";
-    log.info("======>updateURL:$url");
-    var stream = OtaUpdate().execute(url);
+  static void update(String path, Function callback) {
+    log.info("======>updateURL:$path");
+    var stream = OtaUpdate().execute(path);
     stream.listen((OtaEvent event) {
       callback(event);
     }, onError: (error) {

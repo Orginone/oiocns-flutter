@@ -25,17 +25,17 @@ class AffairsPageController extends BaseController
 
   _initTabs() {
     toBe = TabCombine(
-      body: Text("待办", style: AFont.instance.size20Black3),
+      body: Text("我的待办", style: AFont.instance.size20Black3),
       tabView: const AffairsTaskWidget(),
       breadCrumbItem: toBePoint,
     );
     completed = TabCombine(
-      body: Text("待办", style: AFont.instance.size20Black3),
+      body: Text("我的已办", style: AFont.instance.size20Black3),
       tabView: const AffairsRecordWidget(),
       breadCrumbItem: completedPoint,
     );
     my = TabCombine(
-      body: Text("我发起的", style: AFont.instance.size20Black3),
+      body: Text("我的申请", style: AFont.instance.size20Black3),
       tabView: const AffairsInstanceWidget(),
       breadCrumbItem: myPoint,
     );
@@ -44,7 +44,7 @@ class AffairsPageController extends BaseController
       tabView: const AffairsCopyWidget(),
       breadCrumbItem: sendMyPoint,
     );
-    tabs = [toBe, completed, my, sendMy];
+    tabs = [toBe, completed, my];
     tabController = TabController(length: tabs.length, vsync: this);
     int preIndex = tabController.index;
     tabController.addListener(() {

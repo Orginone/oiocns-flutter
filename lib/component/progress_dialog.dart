@@ -4,10 +4,11 @@ import 'package:get/get.dart';
 import 'package:getwidget/components/progress_bar/gf_progress_bar.dart';
 import 'package:getwidget/types/gf_progress_type.dart';
 import 'package:orginone/component/unified_edge_insets.dart';
-import 'package:orginone/component/unified_text_style.dart';
+import 'package:orginone/public/image/load_image.dart';
 import 'package:ota_update/ota_update.dart';
 
 import '../util/sys_util.dart';
+import 'a_font.dart';
 
 class ConfirmStatus {
   RxBool startDownloading = false.obs;
@@ -19,19 +20,22 @@ class ConfirmStatus {
 
 class UpdaterDialog extends Dialog {
   UpdaterDialog({
+    required this.icon,
     required this.version,
-    required this.prefix,
+    required this.path,
     required this.content,
     Key? key,
   }) : super(key: key);
 
+  final String icon;
   final String version;
-  final String prefix;
+  final String path;
   final String content;
   final ConfirmStatus confirmStatus = ConfirmStatus();
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("path====$icon");
     return Center(
       child: Material(
         child: Container(
@@ -48,14 +52,14 @@ class UpdaterDialog extends Dialog {
               ),
             ],
           ),
-          width: 300.w,
+          width: 350.w,
           height: 400.h,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(padding: EdgeInsets.only(top: 20.h)),
-              image,
+              AImage.netImageRadiusAll(url: icon,radius: 5,size: Size(60.w, 60.w)),
               Padding(padding: EdgeInsets.only(top: 20.h)),
               description,
               progressWidget,
@@ -105,16 +109,16 @@ class UpdaterDialog extends Dialog {
           shrinkWrap: true,
           children: [
             Text(
-              "版本 v$version",
-              style: text16,
+              "发现新版本 v$version",
+              style: AFont.instance.size20Black6,
               textAlign: TextAlign.center,
             ),
             Container(
               alignment: Alignment.center,
-              margin: EdgeInsets.only(top: 10.h),
+              margin: EdgeInsets.only(top: 10.h,left: 15.w,right: 15.w),
               child: Text(
                 content,
-                style: text14Bold,
+                style: AFont.instance.size22Black3W500,
               ),
             ),
           ],
@@ -142,7 +146,7 @@ class UpdaterDialog extends Dialog {
       ));
 
   void _downloadPackage() {
-    SysUtil.update(prefix, (OtaEvent event) {
+    SysUtil.update(path, (OtaEvent event) {
       OtaStatus status = event.status;
       String? value = event.value;
 

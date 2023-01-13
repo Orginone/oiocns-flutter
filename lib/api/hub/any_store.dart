@@ -39,7 +39,8 @@ enum ReceiveEvent {
 enum SubscriptionKey {
   orgChat("orgChat"),
   userChat("userchat"),
-  apkFile("apkFile");
+  apkFile("apkFile"),
+  version("version");
 
   final String keyWord;
 
@@ -240,7 +241,7 @@ class AnyStore {
       var res = await _storeHub.invoke('BucketOpreate', args: [model]);
       log.info("bucketOperate request ===> ${model.toString()}");
       log.info("bucketOperate ===> ${res.toString()}");
-      return ApiResp.fromJson(res).getData();
+      return ApiResp.fromJson(res);
     }
     return await _restRequest("Bucket", 'Operate', model);
   }

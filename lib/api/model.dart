@@ -438,8 +438,8 @@ class BucketOperateModel {
   final String? name;
   final String shareDomain;
   final String? destination;
-  final String operate;
-  final FileChunkData? fileItem;
+  String operate;
+  FileChunkData? fileItem;
 
   BucketOperateModel({
     required this.key,
