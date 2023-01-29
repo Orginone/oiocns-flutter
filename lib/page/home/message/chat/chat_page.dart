@@ -15,7 +15,7 @@ import 'package:orginone/core/ui/message/chat_message_detail.dart';
 import 'package:orginone/enumeration/target_type.dart';
 import 'package:orginone/page/home/message/chat/component/chat_box.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/screen_init.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/util/date_util.dart';
 import 'package:orginone/util/widget_util.dart';
 

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/config/constant.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 enum SendEvent {

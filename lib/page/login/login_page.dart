@@ -2,7 +2,7 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/api/hub/app_server.dart';
+import 'package:orginone/core/base/api/app_server.dart';
 import 'package:orginone/component/loading_button.dart';
 import 'package:orginone/public/image/load_image.dart';
 

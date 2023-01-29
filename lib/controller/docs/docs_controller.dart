@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:get/get.dart';
-import 'package:orginone/api/model.dart';
+import 'package:orginone/core/base/model.dart';
 import 'package:orginone/controller/Emitter.dart';
 import 'package:orginone/core/store/file_system_impl.dart';
 

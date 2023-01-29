@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/component/unified_colors.dart';
-import '../../screen_init.dart';
+import '../../main.dart';
 import 'circle.dart';
 
 

@@ -1,5 +1,5 @@
-import 'package:orginone/api/kernelapi.dart';
-import 'package:orginone/api/model.dart';
+import 'package:orginone/core/base/api/kernelapi.dart';
+import 'package:orginone/core/base/model.dart';
 import 'package:orginone/api_resp/page_resp.dart';
 import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/enumeration/target_type.dart';

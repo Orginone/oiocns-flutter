@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/api/hub/store_hub.dart';
-import 'package:orginone/api/model.dart';
+import 'package:orginone/core/base/api/store_hub.dart';
+import 'package:orginone/core/base/model.dart';
 import 'package:orginone/api_resp/api_resp.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/core/authority.dart';

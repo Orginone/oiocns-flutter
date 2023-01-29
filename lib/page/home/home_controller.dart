@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/api/kernelapi.dart';
+import 'package:orginone/core/base/api/kernelapi.dart';
 import 'package:orginone/component/bread_crumb.dart';
 import 'package:orginone/component/progress_dialog.dart';
 import 'package:orginone/component/tab_combine.dart';
@@ -20,7 +20,7 @@ import 'package:orginone/page/home/mine/set_home/set_home_page.dart';
 import 'package:orginone/page/home/organization/organization_controller.dart';
 import 'package:flutter_treeview/flutter_treeview.dart' as tree_view;
 import 'package:orginone/public/image/load_image.dart';
-import 'package:orginone/screen_init.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/util/string_util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 

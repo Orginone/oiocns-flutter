@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
-import 'package:orginone/api/hub/any_store.dart';
-import 'package:orginone/api/kernelapi.dart';
+import 'package:orginone/core/base/api/any_store.dart';
+import 'package:orginone/core/base/api/kernelapi.dart';
 import 'package:orginone/api_resp/api_resp.dart';
 
 import '../api_resp/version_entity.dart';

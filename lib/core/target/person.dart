@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:orginone/api/kernelapi.dart';
-import 'package:orginone/api/model.dart';
+import 'package:orginone/core/base/api/kernelapi.dart';
+import 'package:orginone/core/base/model.dart';
 import 'package:orginone/api/person_api.dart';
 import 'package:orginone/api_resp/login_resp.dart';
 import 'package:orginone/api_resp/page_resp.dart';

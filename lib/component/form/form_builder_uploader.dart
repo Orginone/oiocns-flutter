@@ -58,24 +58,4 @@ class _FormBuilderUploaderState
       _progress.value = progress;
     });
   }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
-  void reset() {
-    super.reset();
-  }
-
-  @override
-  void didChange(String? value) {
-    super.didChange(value);
-  }
 }
