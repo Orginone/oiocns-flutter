@@ -1,5 +1,5 @@
-import 'package:orginone/component/form/form_widget.dart';
-import 'package:orginone/component/maintain_widget.dart';
+import 'package:orginone/components/form/form_widget.dart';
+import 'package:orginone/components/maintain_widget.dart';
 
 List<FormItem> get _cohortFields {
   return const [

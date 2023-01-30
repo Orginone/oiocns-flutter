@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/core/base/api/app_server.dart';
-import 'package:orginone/component/unified_colors.dart';
+import 'package:orginone/components/unified_colors.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/notification_util.dart';

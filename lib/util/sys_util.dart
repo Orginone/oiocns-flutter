@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/component/unified_colors.dart';
+import 'package:orginone/components/unified_colors.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/util/encryption_util.dart';
 import 'package:ota_update/ota_update.dart';

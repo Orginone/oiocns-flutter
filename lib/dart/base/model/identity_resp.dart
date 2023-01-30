@@ -1,0 +1,93 @@
+import 'package:orginone/core/base/model/authority_resp.dart';
+
+class IdentityResp {
+  String id;
+  String name;
+  String code;
+  String? remark;
+  String authId;
+  String belongId;
+  AuthorityResp? authority;
+  int status;
+  String createUser;
+  String updateUser;
+  String version;
+  DateTime createTime;
+  DateTime updateTime;
+
+  IdentityResp(
+      this.id,
+      this.name,
+      this.code,
+      this.authId,
+      this.belongId,
+      this.authority,
+      this.remark,
+      this.status,
+      this.createUser,
+      this.updateUser,
+      this.version,
+      this.createTime,
+      this.updateTime);
+
+  IdentityResp.copyWith(IdentityResp identityResp)
+      : id = identityResp.id,
+        name = identityResp.name,
+        code = identityResp.code,
+        authId = identityResp.authId,
+        belongId = identityResp.belongId,
+        authority = identityResp.authority,
+        remark = identityResp.remark,
+        status = identityResp.status,
+        createUser = identityResp.createUser,
+        updateUser = identityResp.updateUser,
+        version = identityResp.version,
+        createTime = identityResp.createTime,
+        updateTime = identityResp.updateTime;
+
+  IdentityResp.fromMap(Map<String, dynamic> map)
+      : id = map["id"],
+        name = map["name"],
+        code = map["code"],
+        authId = map["authId"],
+        belongId = map["belongId"],
+        authority = map["authority"] == null
+            ? null
+            : AuthorityResp.fromMap(map["authority"]),
+        remark = map["remark"],
+        status = map["status"],
+        createUser = map["createUser"],
+        updateUser = map["updateUser"],
+        version = map["version"],
+        createTime = DateTime.parse(map["createTime"]),
+        updateTime = DateTime.parse(map["updateTime"]);
+
+  static List<IdentityResp> fromList(List<dynamic> list) {
+    List<IdentityResp> ans = [];
+    if (list.isEmpty) return ans;
+
+    for (var one in list) {
+      if (one == null) continue;
+      ans.add(IdentityResp.fromMap(one));
+    }
+    return ans;
+  }
+
+  Map<String, dynamic> toJson() {
+    final json = <String, dynamic>{};
+    json['id'] = id;
+    json['name'] = name;
+    json['code'] = code;
+    json['authId'] = authId;
+    json['belongId'] = belongId;
+    json["authority"] = authority?.toJson();
+    json['remark'] = remark;
+    json['status'] = status;
+    json['createUser'] = createUser;
+    json['updateUser'] = updateUser;
+    json['version'] = version;
+    json['createTime'] = createTime;
+    json['updateTime'] = updateTime;
+    return json;
+  }
+}

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_icon_button.dart';
 import 'package:getwidget/types/gf_button_type.dart';
 
-import '../component/text_avatar.dart';
+import '../components/text_avatar.dart';
 
 class WidgetUtil {
   static get defaultBackBtn => GFIconButton(

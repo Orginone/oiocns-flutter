@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:orginone/api_resp/message_detail.dart';
 import 'package:orginone/api_resp/message_target.dart';
-import 'package:orginone/component/text_avatar.dart';
+import 'package:orginone/components/text_avatar.dart';
 import 'package:orginone/controller/message/message_controller.dart';
 import 'package:orginone/core/authority.dart';
 import 'package:orginone/core/chat/chat_impl.dart';
