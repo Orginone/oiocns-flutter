@@ -1,5 +1,5 @@
-import 'package:orginone/enumeration/target_type.dart';
-import 'package:orginone/core/target/company.dart';
+import 'package:orginone/dart/base/enumeration/target_type.dart';
+import 'package:orginone/dart/core/target/company.dart';
 
 class Hospital extends Company {
   Hospital(super.target);

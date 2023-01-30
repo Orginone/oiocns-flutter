@@ -3,12 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/progress_bar/gf_progress_bar.dart';
 import 'package:getwidget/types/gf_progress_type.dart';
+import 'package:orginone/components/a_font.dart';
 import 'package:orginone/components/unified_edge_insets.dart';
 import 'package:orginone/util/load_image.dart';
+import 'package:orginone/util/sys_util.dart';
 import 'package:ota_update/ota_update.dart';
 
-import '../util/sys_util.dart';
-import 'a_font.dart';
 
 class ConfirmStatus {
   RxBool startDownloading = false.obs;

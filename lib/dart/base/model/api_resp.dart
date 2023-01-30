@@ -1,7 +1,7 @@
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:orginone/generated/json/base/json_field.dart';
-import 'package:orginone/generated/json/api_resp.g.dart';
 import 'dart:convert';
+
+import 'package:orginone/dart/base/model/generated/json/api_resp.g.dart';
+import 'package:orginone/dart/base/model/generated/json/base/json_field.dart';
 
 @JsonSerializable()
 class ApiResp {

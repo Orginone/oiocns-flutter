@@ -4,16 +4,16 @@ import 'dart:io';
 import 'dart:convert' as convert;
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:orginone/core/base/api/any_store.dart';
-import 'package:orginone/core/base/api/kernelapi.dart';
-import 'package:orginone/core/base/model/model.dart';
 import 'package:orginone/config/constant.dart';
-import 'package:orginone/core/store/i_file_system.dart';
-import 'package:orginone/enumeration/bucket_operates.dart';
+import 'package:orginone/dart/base/api/any_store.dart';
+import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/base/enumeration/bucket_operates.dart';
+import 'package:orginone/dart/base/model/model.dart';
+import 'package:orginone/dart/core/store/i_file_system.dart';
 import 'package:uuid/uuid.dart';
 
 class FileSystemItem implements IFileSystemItem {
-  /** 分片大小 */
+  /// 分片大小
   final int chunkSize = 1024 * 1024;
   final String _key;
   final String _name;
@@ -125,7 +125,8 @@ class FileSystemItem implements IFileSystemItem {
               operate: BucketOperates.create.keyWord));
       if (res.success && res.data != null) {
         target.hasSubDirectories = true;
-        var node = FileSystemItem(target: mapToFileItemModel(res.data), parent: this);
+        var node =
+            FileSystemItem(target: mapToFileItemModel(res.data), parent: this);
         _children.add(node);
         return node;
       }
@@ -156,7 +157,8 @@ class FileSystemItem implements IFileSystemItem {
         var list = <IFileSystemItem>[];
         res.data.forEach((value) {
           debugPrint("keys === ${value["key"]}");
-          list.add(FileSystemItem(target: mapToFileItemModel(value), parent: this));
+          list.add(
+              FileSystemItem(target: mapToFileItemModel(value), parent: this));
         });
         _children.value = list;
       }
@@ -214,7 +216,8 @@ class FileSystemItem implements IFileSystemItem {
         index++;
         onProgress.call(end.toDouble());
         if (end == size && res.data != null) {
-          var node = FileSystemItem(target: mapToFileItemModel(res.data), parent: this);
+          var node = FileSystemItem(
+              target: mapToFileItemModel(res.data), parent: this);
           children.add(node);
           return node;
         }
@@ -249,5 +252,4 @@ class FileSystemItem implements IFileSystemItem {
     }
     return null;
   }
-
 }

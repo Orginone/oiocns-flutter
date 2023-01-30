@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:orginone/components/a_font.dart';
+import 'package:orginone/components/load_status.dart';
+import 'package:orginone/components/unified_colors.dart';
+import 'package:orginone/components/unified_scaffold.dart';
 import 'package:orginone/dart/controller/base_controller.dart';
-import 'package:orginone/public/loading/load_status.dart';
 import 'package:orginone/components/loading_widget.dart';
-
-import '../../components/unified_colors.dart';
-import '../../components/unified_scaffold.dart';
-import '../../util/widget_util.dart';
+import 'package:orginone/util/widget_util.dart';
 
 abstract class BaseView<T extends BaseController> extends GetView<T> {
   const BaseView({Key? key}) : super(key: key);

@@ -1,6 +1,7 @@
-import 'package:orginone/generated/json/base/json_field.dart';
-import 'package:orginone/generated/json/version_entity.g.dart';
 import 'dart:convert';
+
+import 'package:orginone/dart/base/model/generated/json/base/json_field.dart';
+import 'package:orginone/dart/base/model/generated/json/version_entity.g.dart';
 
 @JsonSerializable()
 class VersionEntity {

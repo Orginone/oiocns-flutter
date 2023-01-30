@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
+import 'package:orginone/components/delay_tween.dart';
 import 'package:orginone/components/unified_colors.dart';
-
-import '../public/loading/delay_tween.dart';
 
 class SpinKitCircle extends StatefulWidget {
   const SpinKitCircle({
@@ -13,7 +12,6 @@ class SpinKitCircle extends StatefulWidget {
     this.controller,
   })  : assert(!(itemBuilder is IndexedWidgetBuilder && color is Color) && !(itemBuilder == null && color == null),
             'You should specify either a itemBuilder or a color'),
-        assert(size != null),
         super(key: key);
 
   final Color? color;

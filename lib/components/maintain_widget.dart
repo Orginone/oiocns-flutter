@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:orginone/components/a_font.dart';
 import 'package:orginone/components/form/form_widget.dart';
 import 'package:orginone/components/unified_colors.dart';
 import 'package:orginone/components/unified_scaffold.dart';
 import 'package:orginone/util/widget_util.dart';
+
+class MaintainPage extends StatelessWidget {
+  const MaintainPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaintainWidget(Get.arguments);
+  }
+}
 
 enum MaintainStatus { view, create, update }
 

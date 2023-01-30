@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
-import 'package:orginone/api/company_api.dart';
-import 'package:orginone/core/base/model/tree_node.dart';
-import 'package:orginone/enumeration/target_type.dart';
-import 'package:orginone/core/target/base_target.dart';
+import 'package:orginone/dart/base/api/company_api.dart';
+import 'package:orginone/dart/base/enumeration/target_type.dart';
+import 'package:orginone/dart/base/model/tree_node.dart';
+import 'package:orginone/dart/core/target/base_target.dart';
 
 class Company extends BaseTarget {
   final Rx<NodeCombine?> _tree = Rxn();

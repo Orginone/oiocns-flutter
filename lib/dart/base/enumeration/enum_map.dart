@@ -1,5 +1,5 @@
-import 'package:orginone/enumeration/chat_type.dart';
-import 'package:orginone/enumeration/target_type.dart';
+import 'package:orginone/dart/base/enumeration/chat_type.dart';
+import 'package:orginone/dart/base/enumeration/target_type.dart';
 
 import 'message_type.dart';
 

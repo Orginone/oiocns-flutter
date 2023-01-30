@@ -1,25 +1,20 @@
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/controller/message/message_controller.dart';
-import 'package:orginone/core/authority.dart';
-import 'package:orginone/core/base/api/any_store.dart';
-import 'package:orginone/core/base/api/kernelapi.dart';
-import 'package:orginone/core/base/model/api_resp.dart';
-import 'package:orginone/core/base/model/message_detail.dart';
-import 'package:orginone/core/base/model/message_target.dart';
-import 'package:orginone/core/base/model/model.dart';
-import 'package:orginone/core/base/model/target.dart';
-import 'package:orginone/core/ui/message/group_item_widget.dart';
-import 'package:orginone/core/ui/message/message_item_widget.dart';
-import 'package:orginone/enumeration/message_type.dart';
-import 'package:orginone/enumeration/target_type.dart';
-import 'package:orginone/routers.dart';
+import 'package:orginone/dart/base/api/any_store.dart';
+import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/base/enumeration/message_type.dart';
+import 'package:orginone/dart/base/enumeration/target_type.dart';
+import 'package:orginone/dart/base/model/api_resp.dart';
+import 'package:orginone/dart/base/model/message_detail.dart';
+import 'package:orginone/dart/base/model/message_target.dart';
+import 'package:orginone/dart/base/model/model.dart';
+import 'package:orginone/dart/base/model/target.dart';
+import 'package:orginone/dart/core/authority.dart';
+import 'package:orginone/dart/core/chat/i_chat.dart';
+import 'package:orginone/pages/chat/components/group_item_widget.dart';
 import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/notification_util.dart';
 import 'package:orginone/util/string_util.dart';
-
-import 'i_chat.dart';
 
 class BaseChatGroup implements IChatGroup<GroupItemWidget> {
   final String _spaceId;

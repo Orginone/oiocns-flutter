@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/public/view/base_view.dart';
+import 'package:orginone/components/base_view.dart';
+import 'package:orginone/dart/controller/base_list_controller.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../public/http/base_list_controller.dart';
 
 abstract class BaseListView<T extends BaseListController> extends BaseView<T> {
   const BaseListView({Key? key}) : super(key: key);

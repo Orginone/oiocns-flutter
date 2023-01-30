@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/components/a_font.dart';
 import 'package:orginone/components/unified_colors.dart';
-
-import '../../core/base/api/bucket_api.dart';
-import '../a_font.dart';
+import 'package:orginone/dart/base/api/bucket_api.dart';
 
 class Uploader extends StatelessWidget {
   final double progress;

@@ -1,4 +1,4 @@
-import 'package:orginone/core/base/model/user_resp.dart';
+import 'package:orginone/dart/base/model/user_resp.dart';
 
 class LoginResp {
   final String accessToken;

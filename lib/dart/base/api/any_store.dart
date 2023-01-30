@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/core/base/api/store_hub.dart';
-import 'package:orginone/core/base/model/model.dart';
-import 'package:orginone/core/base/model/api_resp.dart';
 import 'package:orginone/config/constant.dart';
-import 'package:orginone/core/authority.dart';
+import 'package:orginone/dart/base/api/store_hub.dart';
+import 'package:orginone/dart/base/model/api_resp.dart';
+import 'package:orginone/dart/base/model/model.dart';
+import 'package:orginone/dart/core/authority.dart';
 import 'package:orginone/util/http_util.dart';
 import 'package:signalr_core/signalr_core.dart';
 

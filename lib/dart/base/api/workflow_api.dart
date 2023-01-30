@@ -1,8 +1,8 @@
 import 'package:orginone/config/constant.dart';
-import 'package:orginone/core/base/model/instance_task_entity.dart';
-import 'package:orginone/core/base/model/page_resp.dart';
-import 'package:orginone/core/base/model/record_task_entity.dart';
-import 'package:orginone/core/base/model/task_entity.dart';
+import 'package:orginone/dart/base/model/instance_task_entity.dart';
+import 'package:orginone/dart/base/model/page_resp.dart';
+import 'package:orginone/dart/base/model/record_task_entity.dart';
+import 'package:orginone/dart/base/model/task_entity.dart';
 import 'package:orginone/util/http_util.dart';
 
 

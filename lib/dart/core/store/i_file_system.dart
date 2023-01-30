@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:orginone/core/base/model/model.dart';
+import 'package:orginone/dart/base/model/model.dart';
 
 abstract class IFileSystemItem {
   final String key;

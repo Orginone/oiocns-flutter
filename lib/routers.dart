@@ -1,82 +1,81 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
-import 'package:orginone/controller/file_controller.dart';
-import 'package:orginone/controller/market/market_controller.dart';
-import 'package:orginone/controller/market/merchandise_controller.dart';
-import 'package:orginone/controller/market/order_controller.dart';
-import 'package:orginone/controller/market/staging_controller.dart';
-import 'package:orginone/controller/message/chat_box_controller.dart';
-import 'package:orginone/controller/target/target_controller.dart';
-import 'package:orginone/page/forget/forget_binding.dart';
-import 'package:orginone/page/forget/forget_page.dart';
-import 'package:orginone/page/home/affairs/detail/affairs_detail.dart';
-import 'package:orginone/page/home/application/market/order_page.dart';
-import 'package:orginone/page/home/application/market/staging_page.dart';
-import 'package:orginone/page/home/application/page/application_manager_page.dart';
-import 'package:orginone/page/home/application/market/market_page.dart';
-import 'package:orginone/page/home/application/page/application_page.dart';
-import 'package:orginone/page/home/application/market/merchandise_page.dart';
-import 'package:orginone/page/home/center/center_binding.dart';
-import 'package:orginone/page/home/center/center_page.dart';
-import 'package:orginone/pages/home/component/person_detail/person_detail_binding.dart';
-import 'package:orginone/pages/home/component/person_detail/person_detail_page.dart';
-import 'package:orginone/pages/home/component/person_add/person_add_binding.dart';
-import 'package:orginone/pages/home/component/person_add/person_add_page.dart';
-import 'package:orginone/pages/home/component/space_choose/space_choose_page.dart';
-import 'package:orginone/pages/home/component/unit/unit_create/unit_create_binding.dart';
-import 'package:orginone/pages/home/component/unit/unit_create/unit_create_page.dart';
-import 'package:orginone/pages/home/component/unit/unit_detail/unit_detail_page.dart';
-import 'package:orginone/page/home/home_binding.dart';
-import 'package:orginone/page/home/home_page.dart';
-import 'package:orginone/page/home/maintain_page.dart';
-import 'package:orginone/page/home/message/chat/chat_page.dart';
-import 'package:orginone/page/home/message/contact/contact_binding.dart';
-import 'package:orginone/page/home/message/contact/contact_page.dart';
-import 'package:orginone/page/home/message/invite/invite_page.dart';
-import 'package:orginone/controller/message/message_controller.dart';
-import 'package:orginone/page/home/message/message_page.dart';
-import 'package:orginone/page/home/message/message_setting/message_setting_page.dart';
-import 'package:orginone/page/home/message/more_message/more_message_page.dart';
-import 'package:orginone/page/home/mine/mine_binding.dart';
-import 'package:orginone/page/home/mine/mine_card/mine_card_binding.dart';
-import 'package:orginone/page/home/mine/mine_card/mine_card_page.dart';
-import 'package:orginone/page/home/mine/mine_info/mine_info_binding.dart';
-import 'package:orginone/page/home/mine/mine_info/mine_info_page.dart';
-import 'package:orginone/page/home/mine/mine_page.dart';
-import 'package:orginone/page/home/mine/mine_unit/mine_unit_page.dart';
-import 'package:orginone/page/home/mine/set_home/set_home_page.dart';
-import 'package:orginone/page/home/mine/version/publisher_page.dart';
-import 'package:orginone/page/home/mine/version/version_page.dart';
-import 'package:orginone/page/home/organization/cohorts/cohorts_page.dart';
-import 'package:orginone/page/home/organization/cohorts/component/more_cohort.dart';
-import 'package:orginone/page/home/organization/dept/dept_binding.dart';
-import 'package:orginone/page/home/organization/dept/dept_page.dart';
-import 'package:orginone/page/home/organization/friends/friend_add/friend_add_binding.dart';
-import 'package:orginone/page/home/organization/friends/friend_add/friend_add_page.dart';
-import 'package:orginone/page/home/organization/friends/friends_binding.dart';
-import 'package:orginone/page/home/organization/friends/friends_page.dart';
-import 'package:orginone/page/home/organization/friends/new_friend/new_friend_page.dart';
-import 'package:orginone/page/home/organization/friends/new_friend/new_friends_binding.dart';
-import 'package:orginone/page/home/organization/groups/groups_binding.dart';
-import 'package:orginone/page/home/organization/groups/groups_page.dart';
-import 'package:orginone/page/home/organization/organization_binding.dart';
-import 'package:orginone/page/home/organization/organization_page.dart';
-import 'package:orginone/page/home/organization/units/units_binding.dart';
-import 'package:orginone/page/home/organization/units/units_page.dart';
-import 'package:orginone/page/home/search/search_binding.dart';
-import 'package:orginone/page/home/search/search_page.dart';
-import 'package:orginone/page/login/login_binding.dart';
-import 'package:orginone/page/login/login_page.dart';
-import 'package:orginone/page/register/register_binding.dart';
-import 'package:orginone/page/register/register_page.dart';
-import 'package:orginone/page/scanning/scanning_binding.dart';
-import 'package:orginone/page/scanning/scanning_page.dart';
-import 'package:orginone/page/scanning/scanning_result/scanning_result_binding.dart';
-import 'package:orginone/page/scanning/scanning_result/scanning_result_pge.dart';
-
-import 'page/home/affairs/detail/affairs_detail_binding.dart';
-import 'page/home/mine/set_home/set_home_binding.dart';
-import 'page/home/mine/version/publisher_controller.dart';
-import 'page/home/mine/version/version_controller.dart';
+import 'package:orginone/components/maintain_widget.dart';
+import 'package:orginone/dart/controller/file_controller.dart';
+import 'package:orginone/dart/controller/market/market_controller.dart';
+import 'package:orginone/dart/controller/market/merchandise_controller.dart';
+import 'package:orginone/dart/controller/market/order_controller.dart';
+import 'package:orginone/dart/controller/market/staging_controller.dart';
+import 'package:orginone/dart/controller/message/chat_box_controller.dart';
+import 'package:orginone/dart/controller/message/message_controller.dart';
+import 'package:orginone/dart/controller/target/target_controller.dart';
+import 'package:orginone/pages/chat/chat/chat_page.dart';
+import 'package:orginone/pages/chat/contact/contact_binding.dart';
+import 'package:orginone/pages/chat/contact/contact_page.dart';
+import 'package:orginone/pages/chat/invite/invite_page.dart';
+import 'package:orginone/pages/chat/message_page.dart';
+import 'package:orginone/pages/chat/message_setting/message_setting_page.dart';
+import 'package:orginone/pages/chat/more_message/more_message_page.dart';
+import 'package:orginone/pages/market/application/page/application_manager_page.dart';
+import 'package:orginone/pages/market/application/page/application_page.dart';
+import 'package:orginone/pages/market/market/market_page.dart';
+import 'package:orginone/pages/market/market/merchandise_page.dart';
+import 'package:orginone/pages/market/market/order_page.dart';
+import 'package:orginone/pages/market/market/staging_page.dart';
+import 'package:orginone/pages/other/center/center_binding.dart';
+import 'package:orginone/pages/other/center/center_page.dart';
+import 'package:orginone/pages/other/forget/forget_binding.dart';
+import 'package:orginone/pages/other/forget/forget_page.dart';
+import 'package:orginone/pages/other/home/home_binding.dart';
+import 'package:orginone/pages/other/home/home_page.dart';
+import 'package:orginone/pages/other/login/login_binding.dart';
+import 'package:orginone/pages/other/login/login_page.dart';
+import 'package:orginone/pages/other/register/register_binding.dart';
+import 'package:orginone/pages/other/register/register_page.dart';
+import 'package:orginone/pages/other/scanning/scanning_binding.dart';
+import 'package:orginone/pages/other/scanning/scanning_page.dart';
+import 'package:orginone/pages/other/scanning/scanning_result/scanning_result_binding.dart';
+import 'package:orginone/pages/other/scanning/scanning_result/scanning_result_pge.dart';
+import 'package:orginone/pages/other/search/search_binding.dart';
+import 'package:orginone/pages/other/search/search_page.dart';
+import 'package:orginone/pages/setting/mine/mine_binding.dart';
+import 'package:orginone/pages/setting/mine/mine_card/mine_card_binding.dart';
+import 'package:orginone/pages/setting/mine/mine_card/mine_card_page.dart';
+import 'package:orginone/pages/setting/mine/mine_info/mine_info_binding.dart';
+import 'package:orginone/pages/setting/mine/mine_info/mine_info_page.dart';
+import 'package:orginone/pages/setting/mine/mine_page.dart';
+import 'package:orginone/pages/setting/mine/mine_unit/mine_unit_page.dart';
+import 'package:orginone/pages/setting/mine/set_home/set_home_binding.dart';
+import 'package:orginone/pages/setting/mine/set_home/set_home_page.dart';
+import 'package:orginone/pages/setting/mine/version/publisher_controller.dart';
+import 'package:orginone/pages/setting/mine/version/publisher_page.dart';
+import 'package:orginone/pages/setting/mine/version/version_controller.dart';
+import 'package:orginone/pages/setting/mine/version/version_page.dart';
+import 'package:orginone/pages/setting/organization/cohorts/cohorts_page.dart';
+import 'package:orginone/pages/setting/organization/cohorts/component/more_cohort.dart';
+import 'package:orginone/pages/setting/organization/dept/dept_binding.dart';
+import 'package:orginone/pages/setting/organization/dept/dept_page.dart';
+import 'package:orginone/pages/setting/organization/friends/friend_add/friend_add_binding.dart';
+import 'package:orginone/pages/setting/organization/friends/friend_add/friend_add_page.dart';
+import 'package:orginone/pages/setting/organization/friends/friends_binding.dart';
+import 'package:orginone/pages/setting/organization/friends/friends_page.dart';
+import 'package:orginone/pages/setting/organization/friends/new_friend/new_friend_page.dart';
+import 'package:orginone/pages/setting/organization/friends/new_friend/new_friends_binding.dart';
+import 'package:orginone/pages/setting/organization/groups/groups_binding.dart';
+import 'package:orginone/pages/setting/organization/groups/groups_page.dart';
+import 'package:orginone/pages/setting/organization/organization_binding.dart';
+import 'package:orginone/pages/setting/organization/organization_page.dart';
+import 'package:orginone/pages/setting/organization/units/units_binding.dart';
+import 'package:orginone/pages/setting/organization/units/units_page.dart';
+import 'package:orginone/pages/setting/person_add/person_add_binding.dart';
+import 'package:orginone/pages/setting/person_add/person_add_page.dart';
+import 'package:orginone/pages/setting/person_detail/person_detail_binding.dart';
+import 'package:orginone/pages/setting/person_detail/person_detail_page.dart';
+import 'package:orginone/pages/setting/space_choose/space_choose_page.dart';
+import 'package:orginone/pages/setting/unit/unit_create/unit_create_binding.dart';
+import 'package:orginone/pages/setting/unit/unit_create/unit_create_page.dart';
+import 'package:orginone/pages/setting/unit/unit_detail/unit_detail_page.dart';
+import 'package:orginone/pages/work/affairs/detail/affairs_detail.dart';
+import 'package:orginone/pages/work/affairs/detail/affairs_detail_binding.dart';
 
 class Routers {
   static const String main = "/";
@@ -367,13 +366,15 @@ class Routers {
         ],
       ),
       GetPage(
-          name: Routers.version,
-          page: () => const VersionPage(),
-          binding: VersionBinding()),
+        name: Routers.version,
+        page: () => const VersionPage(),
+        binding: VersionBinding(),
+      ),
       GetPage(
-          name: Routers.publisher,
-          page: () => PublisherPage(),
-          binding: PublisherBinding()),
+        name: Routers.publisher,
+        page: () => PublisherPage(),
+        binding: PublisherBinding(),
+      ),
     ];
   }
 }

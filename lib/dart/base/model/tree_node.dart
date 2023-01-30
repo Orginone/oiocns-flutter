@@ -1,4 +1,4 @@
-import 'package:orginone/core/base/model/target.dart';
+import 'package:orginone/dart/base/model/target.dart';
 
 class TreeNode {
   String id;

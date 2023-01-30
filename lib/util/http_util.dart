@@ -1,13 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/core/authority.dart';
-import 'package:orginone/util/api_exception.dart';
+import 'package:orginone/config/constant.dart';
+import 'package:orginone/dart/base/model/api_resp.dart';
+import 'package:orginone/dart/core/authority.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-
-import '../core/base/model/api_resp.dart';
-import '../config/constant.dart';
-import 'api_exception.dart';
 
 class HttpUtil {
   HttpUtil._();

@@ -9,28 +9,26 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/core/base/api/bucket_api.dart';
-import 'package:orginone/core/base/api/any_store.dart';
-import 'package:orginone/core/base/api/kernelapi.dart';
-import 'package:orginone/core/base/model/model.dart';
-import 'package:orginone/api_resp/message_detail.dart';
-import 'package:orginone/api_resp/space_messages_resp.dart';
-import 'package:orginone/api_resp/target.dart';
 import 'package:orginone/components/a_font.dart';
 import 'package:orginone/components/bread_crumb.dart';
 import 'package:orginone/components/tab_combine.dart';
-import 'package:orginone/controller/list_controller.dart';
-import 'package:orginone/controller/docs/docs_controller.dart';
-import 'package:orginone/controller/target/target_controller.dart';
-import 'package:orginone/core/authority.dart';
-import 'package:orginone/core/chat/chat_impl.dart';
-import 'package:orginone/core/chat/i_chat.dart';
-import 'package:orginone/enumeration/enum_map.dart';
-import 'package:orginone/enumeration/message_type.dart';
-import 'package:orginone/enumeration/target_type.dart';
-import 'package:orginone/page/home/home_controller.dart';
-import 'package:orginone/page/home/message/message_page.dart';
-import 'package:orginone/util/encryption_util.dart';
+import 'package:orginone/dart/base/api/any_store.dart';
+import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/base/enumeration/enum_map.dart';
+import 'package:orginone/dart/base/enumeration/message_type.dart';
+import 'package:orginone/dart/base/enumeration/target_type.dart';
+import 'package:orginone/dart/base/model/message_detail.dart';
+import 'package:orginone/dart/base/model/model.dart';
+import 'package:orginone/dart/base/model/space_messages_resp.dart';
+import 'package:orginone/dart/base/model/target.dart';
+import 'package:orginone/dart/controller/docs/docs_controller.dart';
+import 'package:orginone/dart/controller/list_controller.dart';
+import 'package:orginone/dart/controller/target/target_controller.dart';
+import 'package:orginone/dart/core/authority.dart';
+import 'package:orginone/dart/core/chat/chat_impl.dart';
+import 'package:orginone/dart/core/chat/i_chat.dart';
+import 'package:orginone/pages/chat/message_page.dart';
+import 'package:orginone/pages/other/home/home_controller.dart';
 
 class Detail {
   final MessageDetail resp;
@@ -608,12 +606,15 @@ class MessageController extends BaseController<IChatGroup>
     var home = await docs.root()?.create("主目录");
     docs.setHome(home);
     var docDir = await home?.create("沟通");
-    if(docDir != null && await newFile.exists()){
-      var res = await docDir.upload(name: file.name, file: newFile, onProgress: (progress){
-        debugPrint("progress:$progress");
-      });
+    if (docDir != null && await newFile.exists()) {
+      var res = await docDir.upload(
+          name: file.name,
+          file: newFile,
+          onProgress: (progress) {
+            debugPrint("progress:$progress");
+          });
       debugPrint("结束上传。。。$res");
-      if(res != null ){
+      if (res != null) {
         var current = _currentChat.value;
         await current?.sendMsg(
           msgBody: jsonEncode(res.shareInfo()),

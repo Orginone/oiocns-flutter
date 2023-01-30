@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
-import 'package:orginone/ts/controller/base_controller.dart';
-import 'package:orginone/public/loading/load_status.dart';
+import 'package:orginone/components/load_status.dart';
+import 'package:orginone/dart/base/model/page_resp.dart';
+import 'package:orginone/dart/controller/base_controller.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import '../../../api_resp/page_resp.dart';
 
 abstract class BaseListController<T> extends BaseController {
   /// 列表数据容器

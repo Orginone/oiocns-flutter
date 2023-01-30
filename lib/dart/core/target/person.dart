@@ -1,18 +1,18 @@
 import 'package:get/get.dart';
-import 'package:orginone/core/base/api/kernelapi.dart';
-import 'package:orginone/core/base/model/login_resp.dart';
-import 'package:orginone/core/base/model/model.dart';
-import 'package:orginone/api/person_api.dart';
-import 'package:orginone/controller/message/message_controller.dart';
-import 'package:orginone/core/authority.dart';
-import 'package:orginone/core/base/model/page_resp.dart';
-import 'package:orginone/core/base/model/target.dart';
-import 'package:orginone/enumeration/target_type.dart';
-import 'package:orginone/core/target/base_target.dart';
-import 'package:orginone/core/target/cohort.dart';
-import 'package:orginone/core/target/company.dart';
-import 'package:orginone/core/target/hospital.dart';
-import 'package:orginone/core/target/university.dart';
+import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/base/api/person_api.dart';
+import 'package:orginone/dart/base/enumeration/target_type.dart';
+import 'package:orginone/dart/base/model/login_resp.dart';
+import 'package:orginone/dart/base/model/model.dart';
+import 'package:orginone/dart/base/model/page_resp.dart';
+import 'package:orginone/dart/base/model/target.dart';
+import 'package:orginone/dart/controller/message/message_controller.dart';
+import 'package:orginone/dart/core/authority.dart';
+import 'package:orginone/dart/core/target/base_target.dart';
+import 'package:orginone/dart/core/target/cohort.dart';
+import 'package:orginone/dart/core/target/company.dart';
+import 'package:orginone/dart/core/target/hospital.dart';
+import 'package:orginone/dart/core/target/university.dart';
 
 class Person extends BaseTarget {
   final Company _selfCompany;

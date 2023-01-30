@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:orginone/api_resp/target.dart';
-import 'package:orginone/core/authority.dart';
-import 'package:orginone/core/target/cohort.dart';
-import 'package:orginone/core/target/company.dart';
-import 'package:orginone/core/target/person.dart';
+import 'package:orginone/dart/base/model/target.dart';
+import 'package:orginone/dart/core/authority.dart';
+import 'package:orginone/dart/core/target/cohort.dart';
+import 'package:orginone/dart/core/target/company.dart';
+import 'package:orginone/dart/core/target/person.dart';
 
 enum TargetEvent {
   createCohort("创建群组"),

@@ -1,5 +1,3 @@
-import 'package:get/get.dart';
-
 import 'message_target.dart';
 
 class ChatGroup {

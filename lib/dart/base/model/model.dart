@@ -70,13 +70,13 @@ class IdSpaceReq {
   IdSpaceReq.fromJson(Map<String, dynamic> map)
       : id = map["id"],
         spaceId = map["spaceId"],
-        page = PageRequest.fromJson(map["pages"]);
+        page = PageRequest.fromJson(map["page"]);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json["id"] = id;
     json["spaceId"] = spaceId;
-    json["pages"] = page.toJson();
+    json["page"] = page.toJson();
     return json;
   }
 }
@@ -117,12 +117,12 @@ class IdReq {
 
   IdReq.fromJson(Map<String, dynamic> map)
       : id = map["id"],
-        page = PageRequest.fromJson(map["pages"]);
+        page = PageRequest.fromJson(map["page"]);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json["id"] = id;
-    json["pages"] = page.toJson();
+    json["page"] = page.toJson();
     return json;
   }
 }
@@ -144,14 +144,14 @@ class IDReqSubModel {
       : id = map["id"],
         typeNames = map["cohortName"],
         subTypeNames = map["spaceTypeName"],
-        page = PageRequest.fromJson(map["pages"]);
+        page = PageRequest.fromJson(map["page"]);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json["id"] = id;
     json["typeNames"] = typeNames;
     json["subTypeNames"] = subTypeNames;
-    json["pages"] = page.toJson();
+    json["page"] = page.toJson();
     return json;
   }
 }
@@ -201,7 +201,7 @@ class IDReqJoinedModel {
         typeName = json["typeName"],
         joinTypeNames = json["JoinTypeNames"],
         spaceId = json["spaceId"],
-        page = PageRequest.fromJson(json["pages"]);
+        page = PageRequest.fromJson(json["page"]);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -209,7 +209,7 @@ class IDReqJoinedModel {
     json["typeName"] = typeName;
     json["JoinTypeNames"] = joinTypeNames;
     json["spaceId"] = spaceId;
-    json["pages"] = page.toJson();
+    json["page"] = page.toJson();
     return json;
   }
 }

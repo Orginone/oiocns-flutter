@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:orginone/api/market_api.dart';
-import 'package:orginone/api_resp/page_resp.dart';
-import 'package:orginone/api_resp/staging_entity.dart';
-import 'package:orginone/controller/list_controller.dart';
-import 'package:orginone/core/authority.dart';
+import 'package:orginone/dart/base/api/market_api.dart';
+import 'package:orginone/dart/base/model/page_resp.dart';
+import 'package:orginone/dart/base/model/staging_entity.dart';
+import 'package:orginone/dart/controller/list_controller.dart';
+import 'package:orginone/dart/core/authority.dart';
 
 class OrderController extends BaseController<StagingEntity> {
   @override

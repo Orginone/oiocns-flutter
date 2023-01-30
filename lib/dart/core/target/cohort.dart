@@ -1,5 +1,5 @@
-import 'package:orginone/enumeration/target_type.dart';
-import 'package:orginone/core/target/base_target.dart';
+import 'package:orginone/dart/base/enumeration/target_type.dart';
+import 'package:orginone/dart/core/target/base_target.dart';
 
 class Cohort extends BaseTarget {
   Cohort(super.target);

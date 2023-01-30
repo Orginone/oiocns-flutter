@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:orginone/core/base/model/message_detail.dart';
-import 'package:orginone/core/base/model/message_target.dart';
-import 'package:orginone/core/base/model/target.dart';
-import 'package:orginone/enumeration/message_type.dart';
+import 'package:orginone/dart/base/enumeration/message_type.dart';
+import 'package:orginone/dart/base/model/message_detail.dart';
+import 'package:orginone/dart/base/model/message_target.dart';
+import 'package:orginone/dart/base/model/target.dart';
 
 /// 会话组的抽象
 abstract class IChatGroup<W extends Widget> {

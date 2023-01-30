@@ -1,10 +1,9 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/api/market_api.dart';
-import 'package:orginone/api_resp/market_entity.dart';
-import 'package:orginone/api_resp/page_resp.dart';
-import 'package:orginone/controller/list_controller.dart';
+import 'package:orginone/dart/base/api/market_api.dart';
+import 'package:orginone/dart/base/model/market_entity.dart';
+import 'package:orginone/dart/base/model/page_resp.dart';
 
 import '../list_controller.dart';
 

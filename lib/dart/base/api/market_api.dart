@@ -1,8 +1,8 @@
 import 'package:orginone/config/constant.dart';
-import 'package:orginone/core/base/model/market_entity.dart';
-import 'package:orginone/core/base/model/merchandise_entity.dart';
-import 'package:orginone/core/base/model/page_resp.dart';
-import 'package:orginone/core/base/model/staging_entity.dart';
+import 'package:orginone/dart/base/model/market_entity.dart';
+import 'package:orginone/dart/base/model/merchandise_entity.dart';
+import 'package:orginone/dart/base/model/page_resp.dart';
+import 'package:orginone/dart/base/model/staging_entity.dart';
 import 'package:orginone/util/http_util.dart';
 
 class MarketApi {

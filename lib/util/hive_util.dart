@@ -1,10 +1,9 @@
 import 'dart:io';
 
 import 'package:hive_flutter/adapters.dart';
+import 'package:orginone/dart/base/model/team_resp.dart';
+import 'package:orginone/dart/base/model/user_resp.dart';
 import 'package:path_provider/path_provider.dart';
-
-import '../api_resp/team_resp.dart';
-import '../api_resp/user_resp.dart';
 
 class HiveUtil {
   HiveUtil._();
@@ -38,5 +37,4 @@ class HiveUtil {
   Future<void> initUniqueBox() async {
     uniqueBox = await Hive.openBox("uniqueBox");
   }
-
 }

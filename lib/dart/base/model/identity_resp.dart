@@ -1,4 +1,4 @@
-import 'package:orginone/core/base/model/authority_resp.dart';
+import 'package:orginone/dart/base/model/authority_resp.dart';
 
 class IdentityResp {
   String id;

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_core/get_core.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/components/a_font.dart';
 import 'package:orginone/components/unified_colors.dart';

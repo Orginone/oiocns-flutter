@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:orginone/api/person_api.dart';
-import 'package:orginone/core/base/model/target.dart';
-import 'package:orginone/core/base/model/token_authority_resp.dart';
+import 'package:orginone/dart/base/api/person_api.dart';
+import 'package:orginone/dart/base/model/target.dart';
+import 'package:orginone/dart/base/model/token_authority_resp.dart';
 
 enum OrgAuths {
   superAdmin("super-admin"),

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:orginone/components/a_font.dart';
+import 'package:orginone/components/load_status.dart';
 import 'package:orginone/dart/controller/base_controller.dart';
-import '../public/loading/load_status.dart';
 
 class LoadingWidget extends StatelessWidget {
   ///内容页面

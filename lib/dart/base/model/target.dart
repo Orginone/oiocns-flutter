@@ -1,6 +1,5 @@
-
-import 'package:orginone/core/base/model/identity_resp.dart';
-import 'package:orginone/core/base/model/team_resp.dart';
+import 'package:orginone/dart/base/model/identity_resp.dart';
+import 'package:orginone/dart/base/model/team_resp.dart';
 
 class Target {
   String id;

@@ -1,8 +1,8 @@
-import 'package:orginone/core/base/api/kernelapi.dart';
-import 'package:orginone/core/base/model/model.dart';
-import 'package:orginone/core/base/model/page_resp.dart';
-import 'package:orginone/core/base/model/target.dart';
-import 'package:orginone/enumeration/target_type.dart';
+import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/base/enumeration/target_type.dart';
+import 'package:orginone/dart/base/model/model.dart';
+import 'package:orginone/dart/base/model/page_resp.dart';
+import 'package:orginone/dart/base/model/target.dart';
 
 int maxInt = 65536;
 

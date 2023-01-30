@@ -1,11 +1,9 @@
 import 'dart:io';
 
-import 'package:get/get.dart';
-import 'package:orginone/core/base/model/model.dart';
-import 'package:orginone/controller/Emitter.dart';
-import 'package:orginone/core/store/file_system_impl.dart';
-
-import '../../dart/store/i_file_system.dart';
+import 'package:orginone/dart/base/model/model.dart';
+import 'package:orginone/dart/controller/emitter.dart';
+import 'package:orginone/dart/core/store/file_system_impl.dart';
+import 'package:orginone/dart/core/store/i_file_system.dart';
 
 class TaskModel {
   String? group;
@@ -24,14 +22,13 @@ class DocsController extends Emitter {
   List<TaskModel>? _taskList;
 
   DocsController._();
+
   static DocsController? _instance;
-
-
 
   // 单例模式固定格式
   static DocsController getInstance() {
-      _root = rootDir;
-      _curKey = _root?.key;
+    _root = rootDir;
+    _curKey = _root?.key;
     _instance ??= DocsController._();
     return _instance!;
   }
@@ -56,7 +53,7 @@ class DocsController extends Emitter {
     return _home;
   }
 
-  void setHome(IFileSystemItem? home){
+  void setHome(IFileSystemItem? home) {
     _home = home;
   }
 

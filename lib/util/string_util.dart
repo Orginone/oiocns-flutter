@@ -1,14 +1,14 @@
 import 'package:get/get.dart';
-import 'package:orginone/api_resp/message_detail.dart';
-import 'package:orginone/api_resp/message_target.dart';
 import 'package:orginone/components/text_avatar.dart';
-import 'package:orginone/controller/message/message_controller.dart';
-import 'package:orginone/core/authority.dart';
-import 'package:orginone/core/chat/chat_impl.dart';
-import 'package:orginone/core/chat/i_chat.dart';
-import 'package:orginone/enumeration/enum_map.dart';
-import 'package:orginone/enumeration/message_type.dart';
-import 'package:orginone/enumeration/target_type.dart';
+import 'package:orginone/dart/base/enumeration/enum_map.dart';
+import 'package:orginone/dart/base/enumeration/message_type.dart';
+import 'package:orginone/dart/base/enumeration/target_type.dart';
+import 'package:orginone/dart/base/model/message_detail.dart';
+import 'package:orginone/dart/base/model/message_target.dart';
+import 'package:orginone/dart/controller/message/message_controller.dart';
+import 'package:orginone/dart/core/authority.dart';
+import 'package:orginone/dart/core/chat/chat_impl.dart';
+import 'package:orginone/dart/core/chat/i_chat.dart';
 
 class StringUtil {
   static String getPrefixChars(String target, {required int count}) {
@@ -119,7 +119,7 @@ class StringUtil {
   }
 
   /// size 单位为字节
-  static String formatFileSize(int size){
+  static String formatFileSize(int size) {
     return "${(size * 1.0 / 1024 / 1024).toStringAsFixed(1)}M";
   }
 }

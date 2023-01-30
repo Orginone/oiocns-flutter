@@ -1,9 +1,9 @@
 import 'package:orginone/config/constant.dart';
-import 'package:orginone/core/base/model/friends_entity.dart';
-import 'package:orginone/core/base/model/login_resp.dart';
-import 'package:orginone/core/base/model/page_resp.dart';
-import 'package:orginone/core/base/model/target.dart';
-import 'package:orginone/core/base/model/token_authority_resp.dart';
+import 'package:orginone/dart/base/model/friends_entity.dart';
+import 'package:orginone/dart/base/model/login_resp.dart';
+import 'package:orginone/dart/base/model/page_resp.dart';
+import 'package:orginone/dart/base/model/target.dart';
+import 'package:orginone/dart/base/model/token_authority_resp.dart';
 import 'package:orginone/util/http_util.dart';
 
 
