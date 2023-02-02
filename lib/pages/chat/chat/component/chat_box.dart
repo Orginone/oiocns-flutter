@@ -166,7 +166,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
           controller.startRecord().then((value) async {
             Vibration.hasVibrator()
                 .then((value) => Vibration.vibrate(duration: 100));
-            Overlay.of(context).insert(voiceWave);
+            Overlay.of(context)!.insert(voiceWave);
           });
         });
       },
