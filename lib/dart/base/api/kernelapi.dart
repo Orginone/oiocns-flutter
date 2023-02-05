@@ -1,90 +1,52 @@
 import 'dart:async';
 
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
-import 'package:orginone/dart/base/api/any_store.dart';
-import 'package:orginone/dart/base/api/store_hub.dart';
-import 'package:orginone/dart/base/model/api_resp.dart';
-import 'package:orginone/dart/base/model/login_resp.dart';
-import 'package:orginone/dart/base/model/message_detail.dart';
-import 'package:orginone/dart/base/model/model.dart';
-import 'package:orginone/dart/base/model/page_resp.dart';
-import 'package:orginone/dart/base/model/request_entity.dart';
-import 'package:orginone/dart/base/model/space_messages_resp.dart';
-import 'package:orginone/dart/base/model/target.dart';
-import 'package:orginone/dart/core/authority.dart';
+import 'package:orginone/dart/base/api/anystore.dart';
+import 'package:orginone/dart/base/api/storehub.dart';
 import 'package:orginone/util/http_util.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:signalr_core/signalr_core.dart';
 
-enum ReceiveEvent {
-  receive("Receive");
-
-  final String keyWork;
-
-  const ReceiveEvent(this.keyWork);
-}
-
-enum SendEvent {
-  tokenAuth("TokenAuth"),
-  getChats("GetChats"),
-  sendMsg("SendMsg"),
-  getPersons("GetPersons"),
-  recallMsg("RecallMsg"),
-  queryFriendMsg("QueryFriendMsg"),
-  queryCohortMsg("QueryCohortMsg"),
-  getName("GetName");
-
-  final String keyWord;
-
-  const SendEvent(this.keyWord);
-}
-
-class Kernel {
+class KernelApi {
   Logger log = Logger("KernelApi");
 
-  final StoreHub _kernelHub;
+  final StoreHub _storeHub;
   final HttpUtil _requester;
   final Map<String, List<Function>> _methods;
 
   AnyStore get anyStore => AnyStore.getInstance;
 
-  HubConnectionState get state => _kernelHub.state.value;
+  HubConnectionState get state => _storeHub.state.value;
 
-  static Kernel? _instance;
+  static KernelApi? _instance;
 
-  static Kernel get getInstance {
-    _instance ??= Kernel._(request: HttpUtil());
+  static KernelApi get getInstance {
+    _instance ??= KernelApi(request: HttpUtil());
     return _instance!;
   }
 
-  Kernel._({required HttpUtil request})
-      : _kernelHub = StoreHub(
+  KernelApi({required HttpUtil request})
+      : _storeHub = StoreHub(
           connName: "kernelHub",
           url: Constant.kernelHub,
           timeout: const Duration(seconds: 5),
         ),
         _methods = {},
         _requester = request {
-    _kernelHub.on(ReceiveEvent.receive.keyWork, receive);
-    _kernelHub.addConnectedCallback(tokenAuth);
+    _storeHub.on("Receive", receive);
   }
 
   start() async {
     await anyStore.start();
-    await _kernelHub.start();
+    await _storeHub.start();
   }
 
   stop() async {
     _methods.clear();
-    await _kernelHub.stop();
+    await _storeHub.stop();
     await anyStore.stop();
-  }
-
-  tokenAuth() async {
-    var accessToken = getAccessToken;
-    var methodName = SendEvent.tokenAuth.keyWord;
-    await _kernelHub.invoke(methodName, args: [accessToken]);
   }
 
   receive(List<dynamic>? params) {
@@ -114,20 +76,22 @@ class Kernel {
   }
 
   /// 登录接口
-  Future<LoginResp> login(String account, String password) async {
-    Map<String, dynamic> data = {
+  Future<ResultType<dynamic>> login(String account, String password) async {
+    Map<String, dynamic> req = {
       "account": account,
       "pwd": password,
     };
-    var res = await _restRequest("login", data, hasToken: false);
-    return LoginResp.fromMap(res);
+    if (_storeHub.isConnected()) {
+      return await _storeHub.invoke('Login', args: [req]);
+    }
+    return await _restRequest("login", req);
   }
 
   /// 创建字典类型
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createDict(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {DictModel} params 请求参数
+  /// @returns {ResultType<XDict>} 请求结果
+  Future<ResultType<XDict>> createDict(DictModel params) async {
+    return await request(ReqestType(
       module: 'base',
       action: 'CreateDict',
       params: params,
@@ -135,10 +99,10 @@ class Kernel {
   }
 
   /// 创建日志记录
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createLog(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {LogModel} params 请求参数
+  /// @returns {ResultType<XLog>} 请求结果
+  Future<ResultType<XLog>> createLog(LogModel params) async {
+    return await request(ReqestType(
       module: 'base',
       action: 'CreateLog',
       params: params,
@@ -146,10 +110,10 @@ class Kernel {
   }
 
   /// 创建字典项
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createDictItem(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {DictItemModel} params 请求参数
+  /// @returns {ResultType<XDictItem>} 请求结果
+  Future<ResultType<XDictItem>> createDictItem(DictItemModel params) async {
+    return await request(ReqestType(
       module: 'base',
       action: 'CreateDictItem',
       params: params,
@@ -157,10 +121,10 @@ class Kernel {
   }
 
   /// 删除字典类型
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteDict(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdReqModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteDict(IdReqModel params) async {
+    return await request(ReqestType(
       module: 'base',
       action: 'DeleteDict',
       params: params,
@@ -168,10 +132,10 @@ class Kernel {
   }
 
   /// 删除字典项
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteDictItem(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdReqModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteDictItem(IdReqModel params) async {
+    return await request(ReqestType(
       module: 'base',
       action: 'DeleteDictItem',
       params: params,
@@ -179,10 +143,10 @@ class Kernel {
   }
 
   /// 更新字典类型
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic updateDict(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {DictModel} params 请求参数
+  /// @returns {ResultType<XDict>} 请求结果
+  Future<ResultType<XDict>> updateDict(DictModel params) async {
+    return await request(ReqestType(
       module: 'base',
       action: 'UpdateDict',
       params: params,
@@ -190,10 +154,10 @@ class Kernel {
   }
 
   /// 更新字典项
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic updateDictItem(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {DictItemModel} params 请求参数
+  /// @returns {ResultType<XDictItem>} 请求结果
+  Future<ResultType<XDictItem>> updateDictItem(DictItemModel params) async {
+    return await request(ReqestType(
       module: 'base',
       action: 'UpdateDictItem',
       params: params,
@@ -201,10 +165,10 @@ class Kernel {
   }
 
   /// 创建类别
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createSpecies(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {SpeciesModel} params 请求参数
+  /// @returns {ResultType<XSpecies>} 请求结果
+  Future<ResultType<XSpecies>> createSpecies(SpeciesModel params) async {
+    return await request(ReqestType(
       module: 'thing',
       action: 'CreateSpecies',
       params: params,
@@ -212,10 +176,10 @@ class Kernel {
   }
 
   /// 创建度量标准
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createAttribute(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {AttributeModel} params 请求参数
+  /// @returns {ResultType<XAttribute>} 请求结果
+  Future<ResultType<XAttribute>> createAttribute(AttributeModel params) async {
+    return await request(ReqestType(
       module: 'thing',
       action: 'CreateAttribute',
       params: params,
@@ -223,10 +187,10 @@ class Kernel {
   }
 
   /// 创建物
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createThing(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ThingModel} params 请求参数
+  /// @returns {ResultType<XThing>} 请求结果
+  Future<ResultType<XThing>> createThing(ThingModel params) async {
+    return await request(ReqestType(
       module: 'thing',
       action: 'CreateThing',
       params: params,
@@ -234,10 +198,10 @@ class Kernel {
   }
 
   /// 删除类别
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteSpecies(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdReqModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteSpecies(IdReqModel params) async {
+    return await request(ReqestType(
       module: 'thing',
       action: 'DeleteSpecies',
       params: params,
@@ -245,10 +209,10 @@ class Kernel {
   }
 
   /// 删除度量标准
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteAttribute(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdReqModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteAttribute(IdReqModel params) async {
+    return await request(ReqestType(
       module: 'thing',
       action: 'DeleteAttribute',
       params: params,
@@ -256,10 +220,10 @@ class Kernel {
   }
 
   /// 删除物
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteThing(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdReqModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteThing(IdReqModel params) async {
+    return await request(ReqestType(
       module: 'thing',
       action: 'DeleteThing',
       params: params,
@@ -267,10 +231,10 @@ class Kernel {
   }
 
   /// 更新类别
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic updateSpecies(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {SpeciesModel} params 请求参数
+  /// @returns {ResultType<XSpecies>} 请求结果
+  Future<ResultType<XSpecies>> updateSpecies(SpeciesModel params) async {
+    return await request(ReqestType(
       module: 'thing',
       action: 'UpdateSpecies',
       params: params,
@@ -278,10 +242,10 @@ class Kernel {
   }
 
   /// 更新度量标准
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic updateAttribute(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {AttributeModel} params 请求参数
+  /// @returns {ResultType<XAttribute>} 请求结果
+  Future<ResultType<XAttribute>> updateAttribute(AttributeModel params) async {
+    return await request(ReqestType(
       module: 'thing',
       action: 'UpdateAttribute',
       params: params,
@@ -289,10 +253,10 @@ class Kernel {
   }
 
   /// 更新物
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic updateThing(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ThingModel} params 请求参数
+  /// @returns {ResultType<XThing>} 请求结果
+  Future<ResultType<XThing>> updateThing(ThingModel params) async {
+    return await request(ReqestType(
       module: 'thing',
       action: 'UpdateThing',
       params: params,
@@ -300,10 +264,10 @@ class Kernel {
   }
 
   /// 物添加类别
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic thingAddSpecies(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ThingSpeciesModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> thingAddSpecies(ThingSpeciesModel params) async {
+    return await request(ReqestType(
       module: 'thing',
       action: 'ThingAddSpecies',
       params: params,
@@ -311,10 +275,10 @@ class Kernel {
   }
 
   /// 物添加度量数据
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic thingAddAttribute(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ThingAttrModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> thingAddAttribute(ThingAttrModel params) async {
+    return await request(ReqestType(
       module: 'thing',
       action: 'ThingAddAttribute',
       params: params,
@@ -322,21 +286,56 @@ class Kernel {
   }
 
   /// 物移除类别
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic thingRemoveSpecies(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ThingSpeciesModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> thingRemoveSpecies(ThingSpeciesModel params) async {
+    return await request(ReqestType(
       module: 'thing',
       action: 'ThingRemoveSpecies',
       params: params,
     ));
   }
 
+  /// 物移除度量数据
+  /// @param {ThingAttrModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> thingRemoveAttribute(ThingAttrModel params) async {
+    return await request(ReqestType(
+      module: 'thing',
+      action: 'ThingRemoveAttribute',
+      params: params,
+    ));
+  }
+
+  /// 查询分类树
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XSpecies>} 请求结果
+  Future<ResultType<XSpecies>> querySpeciesTree(IDBelongReq params) async {
+    return await request(ReqestType(
+      module: 'thing',
+      action: 'QuerySpeciesTree',
+      params: params,
+    ));
+  }
+
+  /// 查询分类的度量标准
+  /// @param {IdSpaceReq} params 请求参数
+  /// @returns {ResultType<XAttributeArray>} 请求结果
+  Future<ResultType<XAttributeArray>> querySpeciesAttrs(
+      IdSpaceReq params) async {
+    return await request(ReqestType(
+      module: 'thing',
+      action: 'QuerySpeciesAttrs',
+      params: params,
+    ));
+  }
+
   /// 物的元数据查询
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryThingData(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ThingAttrReq} params 请求参数
+  /// @returns {ResultType<XThingAttrArray>} 请求结果
+  Future<ResultType<XThingAttrArray>> queryThingData(
+      ThingAttrReq params) async {
+    return await request(ReqestType(
       module: 'thing',
       action: 'QueryThingData',
       params: params,
@@ -344,21 +343,23 @@ class Kernel {
   }
 
   /// 物的历史元数据查询
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryThingHistoryData(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XThingAttrHistroyArray>} 请求结果
+  Future<ResultType<XThingAttrHistroyArray>> queryThingHistroyData(
+      IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'thing',
-      action: 'QueryThingHistoryData',
+      action: 'QueryThingHistroyData',
       params: params,
     ));
   }
 
   /// 物的关系元数据查询
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryThingRelationData(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XRelationArray>} 请求结果
+  Future<ResultType<XRelationArray>> queryThingRelationData(
+      IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'thing',
       action: 'QueryThingRelationData',
       params: params,
@@ -366,10 +367,10 @@ class Kernel {
   }
 
   /// 创建职权
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createAuthority(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {AuthorityModel} params 请求参数
+  /// @returns {ResultType<XAuthority>} 请求结果
+  Future<ResultType<XAuthority>> createAuthority(AuthorityModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'CreateAuthority',
       params: params,
@@ -377,33 +378,32 @@ class Kernel {
   }
 
   /// 创建身份
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createIdentity(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdentityModel} params 请求参数
+  /// @returns {ResultType<XIdentity>} 请求结果
+  Future<ResultType<XIdentity>> createIdentity(IdentityModel params) async {
+    return await request(ReqestType(
       module: 'target',
-      action: 'CreateAuthority',
+      action: 'CreateIdentity',
       params: params,
     ));
   }
 
-  /// 创建身份
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  Future<Target> createTarget(TargetModel params) async {
-    Map<String, dynamic> map = await _request(RequestEntity.from(
+  /// 创建组织/个人
+  /// @param {TargetModel} params 请求参数
+  /// @returns {ResultType<XTarget>} 请求结果
+  Future<ResultType<XTarget>> createTarget(TargetModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'CreateTarget',
       params: params,
     ));
-    return Target.fromMap(map);
   }
 
   /// 创建标准规则
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createRuleStd(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {RuleStdModel} params 请求参数
+  /// @returns {ResultType<XRuleStd>} 请求结果
+  Future<ResultType<XRuleStd>> createRuleStd(RuleStdModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'CreateRuleStd',
       params: params,
@@ -411,10 +411,10 @@ class Kernel {
   }
 
   /// 删除职权
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteAuthority(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdReqModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteAuthority(IdReqModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'DeleteAuthority',
       params: params,
@@ -422,10 +422,10 @@ class Kernel {
   }
 
   /// 删除身份
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteIdentity(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdReqModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteIdentity(IdReqModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'DeleteIdentity',
       params: params,
@@ -433,10 +433,10 @@ class Kernel {
   }
 
   /// 删除组织/个人
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  Future<void> deleteTarget(IdReqModel params) async {
-    await _request(RequestEntity.from(
+  /// @param {IdReqModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteTarget(IdReqModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'DeleteTarget',
       params: params,
@@ -444,10 +444,10 @@ class Kernel {
   }
 
   /// 删除标准规则
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteRuleStd(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {RuleStdModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteRuleStd(RuleStdModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'DeleteRuleStd',
       params: params,
@@ -455,10 +455,11 @@ class Kernel {
   }
 
   /// 递归删除组织/个人
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic recursiveDeleteTarget(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {RecursiveReqModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> recursiveDeleteTarget(
+      RecursiveReqModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'RecursiveDeleteTarget',
       params: params,
@@ -466,10 +467,10 @@ class Kernel {
   }
 
   /// 更新职权
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic updateAuthority(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {AuthorityModel} params 请求参数
+  /// @returns {ResultType<XAuthority>} 请求结果
+  Future<ResultType<XAuthority>> updateAuthority(AuthorityModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'UpdateAuthority',
       params: params,
@@ -477,10 +478,10 @@ class Kernel {
   }
 
   /// 更新身份
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic updateIdentity(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdentityModel} params 请求参数
+  /// @returns {ResultType<XIdentity>} 请求结果
+  Future<ResultType<XIdentity>> updateIdentity(IdentityModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'UpdateIdentity',
       params: params,
@@ -488,22 +489,21 @@ class Kernel {
   }
 
   /// 更新组织/个人
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  Future<Target> updateTarget(TargetModel params) async {
-    Map<String, dynamic> map = await _request(RequestEntity.from(
+  /// @param {TargetModel} params 请求参数
+  /// @returns {ResultType<XTarget>} 请求结果
+  Future<ResultType<XTarget>> updateTarget(TargetModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'UpdateTarget',
       params: params,
     ));
-    return Target.fromMap(map);
   }
 
   /// 更新标准规则
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic updateRuleStd(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {RuleStdModel} params 请求参数
+  /// @returns {ResultType<XRuleStd>} 请求结果
+  Future<ResultType<XRuleStd>> updateRuleStd(RuleStdModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'UpdateRuleStd',
       params: params,
@@ -511,10 +511,10 @@ class Kernel {
   }
 
   /// 分配身份
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic giveIdentity(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {GiveIdentityModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> giveIdentity(GiveIdentityModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'GiveIdentity',
       params: params,
@@ -522,10 +522,10 @@ class Kernel {
   }
 
   /// 移除身份
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic removeIdentity(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {GiveIdentityModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> removeIdentity(GiveIdentityModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'RemoveIdentity',
       params: params,
@@ -533,10 +533,10 @@ class Kernel {
   }
 
   /// 申请加入组织/个人
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  Future<void> applyJoinTeam(JoinTeamModel params) async {
-    return await _request(RequestEntity.from(
+  /// @param {JoinTeamModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> applyJoinTeam(JoinTeamModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'ApplyJoinTeam',
       params: params,
@@ -544,10 +544,10 @@ class Kernel {
   }
 
   /// 加入组织/个人申请审批
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic joinTeamApproval(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ApprovalModel} params 请求参数
+  /// @returns {ResultType<XRelation>} 请求结果
+  Future<ResultType<XRelation>> joinTeamApproval(ApprovalModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'JoinTeamApproval',
       params: params,
@@ -555,10 +555,10 @@ class Kernel {
   }
 
   /// 拉组织/个人加入组织/个人的团队
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  Future<void> pullAnyToTeam(TeamPullModel params) async {
-    await _request(RequestEntity.from(
+  /// @param {TeamPullModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> pullAnyToTeam(TeamPullModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'PullAnyToTeam',
       params: params,
@@ -566,10 +566,10 @@ class Kernel {
   }
 
   /// 取消申请加入组织/个人
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic cancelJoinTeam(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdReqModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> cancelJoinTeam(IdReqModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'CancelJoinTeam',
       params: params,
@@ -577,10 +577,10 @@ class Kernel {
   }
 
   /// 从组织/个人移除组织/个人的团队
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  Future<void> removeAnyOfTeam(TeamPullModel params) async {
-    await _request(RequestEntity.from(
+  /// @param {TeamPullModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> removeAnyOfTeam(TeamPullModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'RemoveAnyOfTeam',
       params: params,
@@ -588,21 +588,23 @@ class Kernel {
   }
 
   /// 递归从组织及子组织/个人移除组织/个人的团队
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic recursiveRemoveAnyOfTeam(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {TeamPullModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> recursiveRemoveAnyOfTeam(
+      TeamPullModel params) async {
+    return await request(ReqestType(
       module: 'target',
-      action: 'RemoveAnyOfTeam',
+      action: 'RecursiveRemoveAnyOfTeam',
       params: params,
     ));
   }
 
   /// 从组织/个人及归属组织移除组织/个人的团队
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic removeAnyOfTeamAndBelong(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {TeamPullModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> removeAnyOfTeamAndBelong(
+      TeamPullModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'RemoveAnyOfTeamAndBelong',
       params: params,
@@ -610,10 +612,10 @@ class Kernel {
   }
 
   /// 退出组织
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  Future<void> exitAnyOfTeam(ExitTeamModel params) async {
-    await _request(RequestEntity.from(
+  /// @param {ExitTeamModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> exitAnyOfTeam(ExitTeamModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'ExitAnyOfTeam',
       params: params,
@@ -621,10 +623,10 @@ class Kernel {
   }
 
   /// 递归退出组织
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic recursiveExitAnyOfTeam(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ExitTeamModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> recursiveExitAnyOfTeam(ExitTeamModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'RecursiveExitAnyOfTeam',
       params: params,
@@ -632,10 +634,10 @@ class Kernel {
   }
 
   /// 退出组织及退出组织归属的组织
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic exitAnyOfTeamAndBelong(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ExitTeamModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> exitAnyOfTeamAndBelong(ExitTeamModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'ExitAnyOfTeamAndBelong',
       params: params,
@@ -643,10 +645,10 @@ class Kernel {
   }
 
   /// 根据ID查询组织/个人信息
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryTargetById(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdArrayReq} params 请求参数
+  /// @returns {ResultType<XTargetArray>} 请求结果
+  Future<ResultType<XTargetArray>> queryTargetById(IdArrayReq params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'QueryTargetById',
       params: params,
@@ -654,10 +656,11 @@ class Kernel {
   }
 
   /// 查询加入关系
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryRelationById(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {RelationReq} params 请求参数
+  /// @returns {ResultType<XRelationArray>} 请求结果
+  Future<ResultType<XRelationArray>> queryRelationById(
+      RelationReq params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'QueryRelationById',
       params: params,
@@ -665,10 +668,10 @@ class Kernel {
   }
 
   /// 根据名称和类型查询组织/个人
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryTargetByName(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {NameTypeModel} params 请求参数
+  /// @returns {ResultType<XTarget>} 请求结果
+  Future<ResultType<XTarget>> queryTargetByName(NameTypeModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'QueryTargetByName',
       params: params,
@@ -676,10 +679,11 @@ class Kernel {
   }
 
   /// 模糊查找组织/个人根据名称和类型
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic searchTargetByName(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {NameTypeModel} params 请求参数
+  /// @returns {ResultType<XTargetArray>} 请求结果
+  Future<ResultType<XTargetArray>> searchTargetByName(
+      NameTypeModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'SearchTargetByName',
       params: params,
@@ -687,10 +691,11 @@ class Kernel {
   }
 
   /// 查询组织制定的标准
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryTeamRuleAttrs(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongTargetReq} params 请求参数
+  /// @returns {ResultType<XAttributeArray>} 请求结果
+  Future<ResultType<XAttributeArray>> queryTeamRuleAttrs(
+      IDBelongTargetReq params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'QueryTeamRuleAttrs',
       params: params,
@@ -698,22 +703,23 @@ class Kernel {
   }
 
   /// 根据ID查询子组织/个人
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  Future<PageResp<Target>> querySubTargetById(IDReqSubModel params) async {
-    Map<String, dynamic> ans = await _request(RequestEntity.from(
+  /// @param {IDReqSubModel} params 请求参数
+  /// @returns {ResultType<XTargetArray>} 请求结果
+  Future<ResultType<XTargetArray>> querySubTargetById(
+      IDReqSubModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'QuerySubTargetById',
       params: params,
     ));
-    return PageResp.fromMap(ans, Target.fromMap);
   }
 
-  /// 根据ID查询子组织/个人
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryBelongTargetById(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// 根据ID查询归属的组织/个人
+  /// @param {IDReqSubModel} params 请求参数
+  /// @returns {ResultType<XTargetArray>} 请求结果
+  Future<ResultType<XTargetArray>> queryBelongTargetById(
+      IDReqSubModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'QueryBelongTargetById',
       params: params,
@@ -721,22 +727,23 @@ class Kernel {
   }
 
   /// 查询组织/个人加入的组织/个人
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  Future<PageResp<Target>> queryJoinedTargetById(IDReqJoinedModel p) async {
-    Map<String, dynamic> res = await _request(RequestEntity.from(
+  /// @param {IDReqJoinedModel} params 请求参数
+  /// @returns {ResultType<XTargetArray>} 请求结果
+  Future<ResultType<XTargetArray>> queryJoinedTargetById(
+      IDReqJoinedModel params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'QueryJoinedTargetById',
-      params: p,
+      params: params,
     ));
-    return PageResp.fromMap(res, Target.fromMap);
   }
 
-  /// 查询组织/个人加入的组织/个人
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryJoinTeamApply(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// 查询加入组织/个人申请
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XRelationArray>} 请求结果
+  Future<ResultType<XRelationArray>> queryJoinTeamApply(
+      IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'QueryJoinTeamApply',
       params: params,
@@ -744,10 +751,11 @@ class Kernel {
   }
 
   /// 查询组织/个人加入审批
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryTeamJoinApproval(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XRelationArray>} 请求结果
+  Future<ResultType<XRelationArray>> queryTeamJoinApproval(
+      IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'QueryTeamJoinApproval',
       params: params,
@@ -755,10 +763,10 @@ class Kernel {
   }
 
   /// 查询组织职权树
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryAuthorityTree(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XAuthority>} 请求结果
+  Future<ResultType<XAuthority>> queryAuthorityTree(IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'QueryAuthorityTree',
       params: params,
@@ -766,10 +774,11 @@ class Kernel {
   }
 
   /// 查询职权子职权
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic querySubAuthorities(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XAuthorityArray>} 请求结果
+  Future<ResultType<XAuthorityArray>> querySubAuthoritys(
+      IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'QuerySubAuthoritys',
       params: params,
@@ -777,21 +786,23 @@ class Kernel {
   }
 
   /// 查询组织职权
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryTargetAuthorities(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XAuthorityArray>} 请求结果
+  Future<ResultType<XAuthorityArray>> queryTargetAuthoritys(
+      IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'target',
-      action: 'QueryTargetAuthorities',
+      action: 'QueryTargetAuthoritys',
       params: params,
     ));
   }
 
   /// 查询组织身份
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryTargetIdentities(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XIdentityArray>} 请求结果
+  Future<ResultType<XIdentityArray>> queryTargetIdentitys(
+      IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'QueryTargetIdentitys',
       params: params,
@@ -799,10 +810,11 @@ class Kernel {
   }
 
   /// 查询职权身份
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryAuthorityIdentities(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XIdentityArray>} 请求结果
+  Future<ResultType<XIdentityArray>> queryAuthorityIdentitys(
+      IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'QueryAuthorityIdentitys',
       params: params,
@@ -810,10 +822,11 @@ class Kernel {
   }
 
   /// 查询赋予身份的组织/个人
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryIdentityTargets(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongTargetReq} params 请求参数
+  /// @returns {ResultType<XTargetArray>} 请求结果
+  Future<ResultType<XTargetArray>> queryIdentityTargets(
+      IDBelongTargetReq params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'QueryIdentityTargets',
       params: params,
@@ -821,10 +834,11 @@ class Kernel {
   }
 
   /// 查询在当前空间拥有角色的组织
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryTargetsByAuthority(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {SpaceAuthReq} params 请求参数
+  /// @returns {ResultType<XTargetArray>} 请求结果
+  Future<ResultType<XTargetArray>> queryTargetsByAuthority(
+      SpaceAuthReq params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'QueryTargetsByAuthority',
       params: params,
@@ -832,32 +846,32 @@ class Kernel {
   }
 
   /// 查询在当前空间拥有的身份
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic querySpaceIdentities(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdReq} params 请求参数
+  /// @returns {ResultType<XIdentityArray>} 请求结果
+  Future<ResultType<XIdentityArray>> querySpaceIdentitys(IdReq params) async {
+    return await request(ReqestType(
       module: 'target',
       action: 'QuerySpaceIdentitys',
       params: params,
     ));
   }
 
-  /// 创建及时消息
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  Future<void> createImMsg(ImMsgModel model) {
-    return _request(RequestEntity.from(
+  /// 创建即使消息
+  /// @param {ImMsgModel} params 请求参数
+  /// @returns {ResultType<XImMsg>} 请求结果
+  Future<ResultType<XImMsg>> createImMsg(ImMsgModel params) async {
+    return await request(ReqestType(
       module: 'chat',
       action: 'CreateImMsg',
-      params: model,
+      params: params,
     ));
   }
 
   /// 消息撤回
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  Future<MessageDetail> recallImMsg(MessageDetail params) async {
-    return await _request(RequestEntity.from(
+  /// @param {XImMsg} params 请求参数
+  /// @returns {ResultType<XImMsg>} 请求结果
+  Future<ResultType<XImMsg>> recallImMsg(XImMsg params) async {
+    return await request(ReqestType(
       module: 'chat',
       action: 'RecallImMsg',
       params: params,
@@ -865,46 +879,43 @@ class Kernel {
   }
 
   /// 查询聊天会话
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  Future<List<ChatGroup>> queryImChats(ChatsReqModel params) async {
-    Map<String, dynamic> resp = await _request(RequestEntity.from(
+  /// @param {ChatsReqModel} params 请求参数
+  /// @returns {ResultType<ChatResponse>} 请求结果
+  Future<ResultType<ChatResponse>> queryImChats(ChatsReqModel params) async {
+    return await request(ReqestType(
       module: 'chat',
       action: 'QueryImChats',
       params: params,
     ));
-    return ChatGroup.fromList(resp["groups"]);
   }
 
   /// 查询群历史消息
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  Future<PageResp<MessageDetail>> queryCohortImMsgs(IdReq params) async {
-    Map<String, dynamic> res = await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XImMsgArray>} 请求结果
+  Future<ResultType<XImMsgArray>> queryCohortImMsgs(IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'chat',
       action: 'QueryCohortImMsgs',
       params: params,
     ));
-    return PageResp.fromMap(res, MessageDetail.fromMap);
   }
 
   /// 查询好友聊天消息
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  Future<PageResp<MessageDetail>> queryFriendImMsgs(IdSpaceReq params) async {
-    Map<String, dynamic> res = await _request(RequestEntity.from(
+  /// @param {IdSpaceReq} params 请求参数
+  /// @returns {ResultType<XImMsgArray>} 请求结果
+  Future<ResultType<XImMsgArray>> queryFriendImMsgs(IdSpaceReq params) async {
+    return await request(ReqestType(
       module: 'chat',
       action: 'QueryFriendImMsgs',
       params: params,
     ));
-    return PageResp.fromMap(res, MessageDetail.fromMap);
   }
 
   /// 根据ID查询名称
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryNameBySnowId(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdReq} params 请求参数
+  /// @returns {ResultType<NameModel>} 请求结果
+  Future<ResultType<NameModel>> queryNameBySnowId(IdReq params) async {
+    return await request(ReqestType(
       module: 'chat',
       action: 'QueryNameBySnowId',
       params: params,
@@ -912,10 +923,10 @@ class Kernel {
   }
 
   /// 创建市场
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createMarket(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {MarketModel} params 请求参数
+  /// @returns {ResultType<XMarket>} 请求结果
+  Future<ResultType<XMarket>> createMarket(MarketModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'CreateMarket',
       params: params,
@@ -923,10 +934,11 @@ class Kernel {
   }
 
   /// 产品上架:产品所有者
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createMerchandise(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {MerchandiseModel} params 请求参数
+  /// @returns {ResultType<XMerchandise>} 请求结果
+  Future<ResultType<XMerchandise>> createMerchandise(
+      MerchandiseModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'CreateMerchandise',
       params: params,
@@ -934,10 +946,10 @@ class Kernel {
   }
 
   /// 创建产品
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createProduct(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ProductModel} params 请求参数
+  /// @returns {ResultType<XProduct>} 请求结果
+  Future<ResultType<XProduct>> createProduct(ProductModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'CreateProduct',
       params: params,
@@ -945,10 +957,11 @@ class Kernel {
   }
 
   /// 创建产品资源
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createProductResource(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ResourceModel} params 请求参数
+  /// @returns {ResultType<XResource>} 请求结果
+  Future<ResultType<XResource>> createProductResource(
+      ResourceModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'CreateProductResource',
       params: params,
@@ -956,10 +969,10 @@ class Kernel {
   }
 
   /// 商品加入暂存区
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createStaging(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {StagingModel} params 请求参数
+  /// @returns {ResultType<XStaging>} 请求结果
+  Future<ResultType<XStaging>> createStaging(StagingModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'CreateStaging',
       params: params,
@@ -967,10 +980,10 @@ class Kernel {
   }
 
   /// 创建订单:商品直接购买
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createOrder(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {OrderModel} params 请求参数
+  /// @returns {ResultType<XOrder>} 请求结果
+  Future<ResultType<XOrder>> createOrder(OrderModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'CreateOrder',
       params: params,
@@ -978,10 +991,11 @@ class Kernel {
   }
 
   /// 创建订单:暂存区下单
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createOrderByStags(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {OrderModelByStags} params 请求参数
+  /// @returns {ResultType<XOrder>} 请求结果
+  Future<ResultType<XOrder>> createOrderByStags(
+      OrderModelByStags params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'CreateOrderByStags',
       params: params,
@@ -989,10 +1003,10 @@ class Kernel {
   }
 
   /// 创建订单支付
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createOrderPay(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {OrderPayModel} params 请求参数
+  /// @returns {ResultType<XOrderPay>} 请求结果
+  Future<ResultType<XOrderPay>> createOrderPay(OrderPayModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'CreateOrderPay',
       params: params,
@@ -1000,10 +1014,10 @@ class Kernel {
   }
 
   /// 创建对象拓展操作
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createSourceExtend(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {SourceExtendModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> createSourceExtend(SourceExtendModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'CreateSourceExtend',
       params: params,
@@ -1011,10 +1025,10 @@ class Kernel {
   }
 
   /// 删除市场
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteMarket(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDWithBelongReq} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteMarket(IDWithBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'DeleteMarket',
       params: params,
@@ -1022,10 +1036,10 @@ class Kernel {
   }
 
   /// 下架商品:商品所有者
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteMerchandise(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDWithBelongReq} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteMerchandise(IDWithBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'DeleteMerchandise',
       params: params,
@@ -1033,10 +1047,11 @@ class Kernel {
   }
 
   /// 下架商品:市场管理员
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteMerchandiseByManager(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDWithBelongReq} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteMerchandiseByManager(
+      IDWithBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'DeleteMerchandiseByManager',
       params: params,
@@ -1044,10 +1059,10 @@ class Kernel {
   }
 
   /// 删除产品
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteProduct(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDWithBelongReq} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteProduct(IDWithBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'DeleteProduct',
       params: params,
@@ -1055,10 +1070,10 @@ class Kernel {
   }
 
   /// 删除产品资源(产品所属者可以操作)
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteProductResource(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDWithBelongReq} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteProductResource(IDWithBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'DeleteProductResource',
       params: params,
@@ -1066,10 +1081,10 @@ class Kernel {
   }
 
   /// 移除暂存区商品
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteStaging(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDWithBelongReq} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteStaging(IDWithBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'DeleteStaging',
       params: params,
@@ -1077,10 +1092,10 @@ class Kernel {
   }
 
   /// 创建对象拓展操作
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteSourceExtend(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {SourceExtendModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteSourceExtend(SourceExtendModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'DeleteSourceExtend',
       params: params,
@@ -1088,10 +1103,10 @@ class Kernel {
   }
 
   /// 根据Code查询市场
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryMarketByCode(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XMarketArray>} 请求结果
+  Future<ResultType<XMarketArray>> queryMarketByCode(IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QueryMarketByCode',
       params: params,
@@ -1099,10 +1114,10 @@ class Kernel {
   }
 
   /// 查询拥有的市场
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryOwnMarket(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XMarketArray>} 请求结果
+  Future<ResultType<XMarketArray>> queryOwnMarket(IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QueryOwnMarket',
       params: params,
@@ -1110,21 +1125,21 @@ class Kernel {
   }
 
   /// 查询软件共享仓库的市场
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic getPublicMarket(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @returns {ResultType<XMarketArray>} 请求结果
+  Future<ResultType<XMarketArray>> getPublicMarket() async {
+    return await request(ReqestType(
       module: 'market',
       action: 'GetPublicMarket',
-      params: params,
+      params: {},
     ));
   }
 
   /// 查询市场成员集合
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryMarketMember(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XMarketRelationArray>} 请求结果
+  Future<ResultType<XMarketRelationArray>> queryMarketMember(
+      IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QueryMarketMember',
       params: params,
@@ -1132,10 +1147,10 @@ class Kernel {
   }
 
   /// 查询市场对应的暂存区
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryStaging(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XStagingArray>} 请求结果
+  Future<ResultType<XStagingArray>> queryStaging(IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QueryStaging',
       params: params,
@@ -1143,10 +1158,10 @@ class Kernel {
   }
 
   /// 根据ID查询订单信息
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic getOrderInfo(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdReq} params 请求参数
+  /// @returns {ResultType<XOrder>} 请求结果
+  Future<ResultType<XOrder>> getOrderInfo(IdReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'GetOrderInfo',
       params: params,
@@ -1154,10 +1169,11 @@ class Kernel {
   }
 
   /// 根据ID查询订单详情项
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic getOrderDetailById(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDWithBelongReq} params 请求参数
+  /// @returns {ResultType<XOrderDetail>} 请求结果
+  Future<ResultType<XOrderDetail>> getOrderDetailById(
+      IDWithBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'GetOrderDetailById',
       params: params,
@@ -1165,10 +1181,11 @@ class Kernel {
   }
 
   /// 卖方:查询出售商品的订单列表
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic querySellOrderList(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDStatusPageReq} params 请求参数
+  /// @returns {ResultType<XOrderDetailArray>} 请求结果
+  Future<ResultType<XOrderDetailArray>> querySellOrderList(
+      IDStatusPageReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QuerySellOrderList',
       params: params,
@@ -1176,10 +1193,11 @@ class Kernel {
   }
 
   /// 卖方:查询指定商品的订单列表
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic querySellOrderListByMerchandise(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XOrderDetailArray>} 请求结果
+  Future<ResultType<XOrderDetailArray>> querySellOrderListByMerchandise(
+      IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QuerySellOrderListByMerchandise',
       params: params,
@@ -1187,10 +1205,11 @@ class Kernel {
   }
 
   /// 买方:查询购买订单列表
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryBuyOrderList(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDStatusPageReq} params 请求参数
+  /// @returns {ResultType<XOrderArray>} 请求结果
+  Future<ResultType<XOrderArray>> queryBuyOrderList(
+      IDStatusPageReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QueryBuyOrderList',
       params: params,
@@ -1198,10 +1217,10 @@ class Kernel {
   }
 
   /// 查询订单支付信息
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryPayList(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XOrderPayArray>} 请求结果
+  Future<ResultType<XOrderPayArray>> queryPayList(IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QueryPayList',
       params: params,
@@ -1209,10 +1228,11 @@ class Kernel {
   }
 
   /// 申请者:查询加入市场申请
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryJoinMarketApply(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XMarketRelationArray>} 请求结果
+  Future<ResultType<XMarketRelationArray>> queryJoinMarketApply(
+      IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QueryJoinMarketApply',
       params: params,
@@ -1220,21 +1240,23 @@ class Kernel {
   }
 
   /// 管理者:查询加入市场申请
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryJoinMarketApplyByManager(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XMarketRelationArray>} 请求结果
+  Future<ResultType<XMarketRelationArray>> queryJoinMarketApplyByManager(
+      IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QueryJoinMarketApplyByManager',
       params: params,
     ));
   }
 
-  /// 管理者:查询加入市场申请
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryMerchandiseApply(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// 申请者:查询商品上架申请
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XMerchandiseArray>} 请求结果
+  Future<ResultType<XMerchandiseArray>> queryMerchandiseApply(
+      IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QueryMerchandiseApply',
       params: params,
@@ -1242,10 +1264,11 @@ class Kernel {
   }
 
   /// 市场:查询商品上架申请
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryMerchandisesApplyByManager(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XMerchandiseArray>} 请求结果
+  Future<ResultType<XMerchandiseArray>> queryMerchandiesApplyByManager(
+      IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QueryMerchandiesApplyByManager',
       params: params,
@@ -1253,10 +1276,11 @@ class Kernel {
   }
 
   /// 查询市场中所有商品
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic searchMerchandise(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XMerchandiseArray>} 请求结果
+  Future<ResultType<XMerchandiseArray>> searchMerchandise(
+      IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'SearchMerchandise',
       params: params,
@@ -1264,10 +1288,10 @@ class Kernel {
   }
 
   /// 查询产品详细信息
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic getProductInfo(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDWithBelongReq} params 请求参数
+  /// @returns {ResultType<XProduct>} 请求结果
+  Future<ResultType<XProduct>> getProductInfo(IDWithBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'GetProductInfo',
       params: params,
@@ -1275,10 +1299,11 @@ class Kernel {
   }
 
   /// 查询产品资源列表
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryProductResource(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDWithBelongPageReq} params 请求参数
+  /// @returns {ResultType<XResourceArray>} 请求结果
+  Future<ResultType<XResourceArray>> queryProductResource(
+      IDWithBelongPageReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QueryProductResource',
       params: params,
@@ -1286,10 +1311,10 @@ class Kernel {
   }
 
   /// 查询组织/个人产品
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic querySelfProduct(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XProductArray>} 请求结果
+  Future<ResultType<XProductArray>> querySelfProduct(IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QuerySelfProduct',
       params: params,
@@ -1297,10 +1322,11 @@ class Kernel {
   }
 
   /// 根据产品查询商品上架信息
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryMerchandiseListByProduct(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XMerchandiseArray>} 请求结果
+  Future<ResultType<XMerchandiseArray>> queryMerchandiseListByProduct(
+      IDBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QueryMerchandiseListByProduct',
       params: params,
@@ -1308,10 +1334,11 @@ class Kernel {
   }
 
   /// 查询指定产品/资源的拓展信息
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryExtendBySource(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {SearchExtendReq} params 请求参数
+  /// @returns {ResultType<IdNameArray>} 请求结果
+  Future<ResultType<IdNameArray>> queryExtendBySource(
+      SearchExtendReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QueryExtendBySource',
       params: params,
@@ -1319,10 +1346,11 @@ class Kernel {
   }
 
   /// 查询可用产品
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryUsefulProduct(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {UsefulProductReq} params 请求参数
+  /// @returns {ResultType<XProductArray>} 请求结果
+  Future<ResultType<XProductArray>> queryUsefulProduct(
+      UsefulProductReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QueryUsefulProduct',
       params: params,
@@ -1330,10 +1358,11 @@ class Kernel {
   }
 
   /// 查询可用资源列表
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryUsefulResource(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {UsefulResourceReq} params 请求参数
+  /// @returns {ResultType<XResourceArray>} 请求结果
+  Future<ResultType<XResourceArray>> queryUsefulResource(
+      UsefulResourceReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QueryUsefulResource',
       params: params,
@@ -1341,10 +1370,10 @@ class Kernel {
   }
 
   /// 更新市场
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic updateMarket(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {MarketModel} params 请求参数
+  /// @returns {ResultType<XMarket>} 请求结果
+  Future<ResultType<XMarket>> updateMarket(MarketModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'UpdateMarket',
       params: params,
@@ -1352,10 +1381,11 @@ class Kernel {
   }
 
   /// 更新商品信息
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic updateMerchandise(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {MerchandiseModel} params 请求参数
+  /// @returns {ResultType<XMerchandise>} 请求结果
+  Future<ResultType<XMerchandise>> updateMerchandise(
+      MerchandiseModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'UpdateMerchandise',
       params: params,
@@ -1363,10 +1393,10 @@ class Kernel {
   }
 
   /// 更新产品
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic updateProduct(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ProductModel} params 请求参数
+  /// @returns {ResultType<XProduct>} 请求结果
+  Future<ResultType<XProduct>> updateProduct(ProductModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'UpdateProduct',
       params: params,
@@ -1374,10 +1404,11 @@ class Kernel {
   }
 
   /// 更新产品资源
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic updateProductResource(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ResourceModel} params 请求参数
+  /// @returns {ResultType<XResource>} 请求结果
+  Future<ResultType<XResource>> updateProductResource(
+      ResourceModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'UpdateProductResource',
       params: params,
@@ -1385,10 +1416,10 @@ class Kernel {
   }
 
   /// 更新订单
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic updateOrder(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {OrderModel} params 请求参数
+  /// @returns {ResultType<XOrder>} 请求结果
+  Future<ResultType<XOrder>> updateOrder(OrderModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'UpdateOrder',
       params: params,
@@ -1396,10 +1427,11 @@ class Kernel {
   }
 
   /// 更新订单项
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic updateOrderDetail(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {OrderDetailModel} params 请求参数
+  /// @returns {ResultType<XOrderDetail>} 请求结果
+  Future<ResultType<XOrderDetail>> updateOrderDetail(
+      OrderDetailModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'UpdateOrderDetail',
       params: params,
@@ -1407,10 +1439,10 @@ class Kernel {
   }
 
   /// 退出市场
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic quitMarket(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDWithBelongReq} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> quitMarket(IDWithBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'QuitMarket',
       params: params,
@@ -1418,10 +1450,11 @@ class Kernel {
   }
 
   /// 申请加入市场
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic applyJoinMarket(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IDWithBelongReq} params 请求参数
+  /// @returns {ResultType<XMarketRelation>} 请求结果
+  Future<ResultType<XMarketRelation>> applyJoinMarket(
+      IDWithBelongReq params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'ApplyJoinMarket',
       params: params,
@@ -1429,10 +1462,10 @@ class Kernel {
   }
 
   /// 拉组织/个人加入市场
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic pullAnyToMarket(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {MarketPullModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> pullAnyToMarket(MarketPullModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'PullAnyToMarket',
       params: params,
@@ -1440,10 +1473,10 @@ class Kernel {
   }
 
   /// 取消加入市场
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic cancelJoinMarket(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdReqModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> cancelJoinMarket(IdReqModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'CancelJoinMarket',
       params: params,
@@ -1451,10 +1484,10 @@ class Kernel {
   }
 
   /// 取消订单详情
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic cancelOrderDetail(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ApprovalModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> cancelOrderDetail(ApprovalModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'CancelOrderDetail',
       params: params,
@@ -1462,10 +1495,10 @@ class Kernel {
   }
 
   /// 移除市场成员
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic removeMarketMember(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {MarketPullModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> removeMarketMember(MarketPullModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'RemoveMarketMember',
       params: params,
@@ -1473,10 +1506,10 @@ class Kernel {
   }
 
   /// 审核加入市场申请
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic approvalJoinApply(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ApprovalModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> approvalJoinApply(ApprovalModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'ApprovalJoinApply',
       params: params,
@@ -1484,10 +1517,10 @@ class Kernel {
   }
 
   /// 交付订单详情中的商品
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deliverMerchandise(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ApprovalModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deliverMerchandise(ApprovalModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'DeliverMerchandise',
       params: params,
@@ -1495,10 +1528,10 @@ class Kernel {
   }
 
   /// 退还商品
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic rejectMerchandise(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ApprovalModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> rejectMerchandise(ApprovalModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'RejectMerchandise',
       params: params,
@@ -1506,10 +1539,10 @@ class Kernel {
   }
 
   /// 商品上架审核
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic approvalMerchandise(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ApprovalModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> approvalMerchandise(ApprovalModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'ApprovalMerchandise',
       params: params,
@@ -1517,10 +1550,11 @@ class Kernel {
   }
 
   /// 产品上架:市场拥有者
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic pullProductToMarket(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {MerchandiseModel} params 请求参数
+  /// @returns {ResultType<XMerchandise>} 请求结果
+  Future<ResultType<XMerchandise>> pullProductToMarket(
+      MerchandiseModel params) async {
+    return await request(ReqestType(
       module: 'market',
       action: 'PullProductToMarket',
       params: params,
@@ -1528,10 +1562,10 @@ class Kernel {
   }
 
   /// 创建流程定义
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createDefine(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {XFlowDefine} params 请求参数
+  /// @returns {ResultType<XFlowDefine>} 请求结果
+  Future<ResultType<XFlowDefine>> createDefine(XFlowDefine params) async {
+    return await request(ReqestType(
       module: 'flow',
       action: 'CreateDefine',
       params: params,
@@ -1539,10 +1573,11 @@ class Kernel {
   }
 
   /// 创建流程实例(启动流程)
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createInstance(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {FlowInstanceModel} params 请求参数
+  /// @returns {ResultType<XFlowInstance>} 请求结果
+  Future<ResultType<XFlowInstance>> createInstance(
+      FlowInstanceModel params) async {
+    return await request(ReqestType(
       module: 'flow',
       action: 'CreateInstance',
       params: params,
@@ -1550,10 +1585,11 @@ class Kernel {
   }
 
   /// 创建流程绑定
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic createFlowRelation(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {FlowRelationModel} params 请求参数
+  /// @returns {ResultType<XFlowRelation>} 请求结果
+  Future<ResultType<XFlowRelation>> createFlowRelation(
+      FlowRelationModel params) async {
+    return await request(ReqestType(
       module: 'flow',
       action: 'CreateFlowRelation',
       params: params,
@@ -1561,10 +1597,10 @@ class Kernel {
   }
 
   /// 删除流程定义
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteDefine(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdReq} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteDefine(IdReq params) async {
+    return await request(ReqestType(
       module: 'flow',
       action: 'DeleteDefine',
       params: params,
@@ -1572,10 +1608,10 @@ class Kernel {
   }
 
   /// 删除流程实例(发起人撤回)
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteInstance(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdReq} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteInstance(IdReq params) async {
+    return await request(ReqestType(
       module: 'flow',
       action: 'DeleteInstance',
       params: params,
@@ -1583,10 +1619,10 @@ class Kernel {
   }
 
   /// 删除流程绑定
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic deleteFlowRelation(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {FlowRelationModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteFlowRelation(FlowRelationModel params) async {
+    return await request(ReqestType(
       module: 'flow',
       action: 'DeleteFlowRelation',
       params: params,
@@ -1594,21 +1630,21 @@ class Kernel {
   }
 
   /// 查询流程定义
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryDefine(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdReq} params 请求参数
+  /// @returns {ResultType<XFlowDefineArray>} 请求结果
+  Future<ResultType<XFlowDefineArray>> queryDefine(IdReq params) async {
+    return await request(ReqestType(
       module: 'flow',
       action: 'QueryDefine',
       params: params,
     ));
   }
 
-  /// 查询流程定义
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryInstance(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// 查询发起的流程实例
+  /// @param {FlowReq} params 请求参数
+  /// @returns {ResultType<XFlowInstanceArray>} 请求结果
+  Future<ResultType<XFlowInstanceArray>> queryInstance(FlowReq params) async {
+    return await request(ReqestType(
       module: 'flow',
       action: 'QueryInstance',
       params: params,
@@ -1616,10 +1652,10 @@ class Kernel {
   }
 
   /// 查询待审批任务
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryApproveTask(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdReq} params 请求参数
+  /// @returns {ResultType<XFlowTaskArray>} 请求结果
+  Future<ResultType<XFlowTaskArray>> queryApproveTask(IdReq params) async {
+    return await request(ReqestType(
       module: 'flow',
       action: 'QueryApproveTask',
       params: params,
@@ -1627,10 +1663,11 @@ class Kernel {
   }
 
   /// 查询待审阅抄送
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryNoticeTask(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdReq} params 请求参数
+  /// @returns {ResultType<XFlowTaskHistoryArray>} 请求结果
+  Future<ResultType<XFlowTaskHistoryArray>> queryNoticeTask(
+      IdReq params) async {
+    return await request(ReqestType(
       module: 'flow',
       action: 'QueryNoticeTask',
       params: params,
@@ -1638,10 +1675,11 @@ class Kernel {
   }
 
   /// 查询审批记录
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic queryRecord(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {IdSpaceReq} params 请求参数
+  /// @returns {ResultType<XFlowTaskHistoryArray>} 请求结果
+  Future<ResultType<XFlowTaskHistoryArray>> queryRecord(
+      IdSpaceReq params) async {
+    return await request(ReqestType(
       module: 'flow',
       action: 'QueryRecord',
       params: params,
@@ -1649,10 +1687,10 @@ class Kernel {
   }
 
   /// 流程节点审批
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic approvalTask(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {ApprovalTaskReq} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> approvalTask(ApprovalTaskReq params) async {
+    return await request(ReqestType(
       module: 'flow',
       action: 'ApprovalTask',
       params: params,
@@ -1660,44 +1698,30 @@ class Kernel {
   }
 
   /// 重置流程定义
-  /// @param {any} params 请求参数
-  /// @returns {ResultType} 请求结果
-  dynamic resetDefine(dynamic params) async {
-    return await _request(RequestEntity.from(
+  /// @param {XFlowDefine} params 请求参数
+  /// @returns {ResultType<XFlowDefine>} 请求结果
+  Future<ResultType<XFlowDefine>> resetDefine(XFlowDefine params) async {
+    return await request(ReqestType(
       module: 'flow',
       action: 'ResetDefine',
       params: params,
     ));
   }
 
-  Future<dynamic> _request(RequestEntity request) async {
-    if (_kernelHub.isConnected()) {
-      try {
-        dynamic res = await _kernelHub.invoke("Request", args: [request]);
-        log.info("kernelHub request ===> ${request.toString()}");
-        log.info("kernelHub ===> ${res.toString()}");
-        return ApiResp.fromJson(res).getData();
-      } on Exception catch (error) {
-        Fluttertoast.showToast(msg: error.toString());
-        rethrow;
-      }
+  Future<dynamic> request(ReqestType req) async {
+    if (_storeHub.isConnected()) {
+      return await _storeHub.invoke('Request', args: [req]);
+    } else {
+      return await _restRequest('Request', req);
     }
-    return await _restRequest("request", request);
   }
 
-  Future<dynamic> _requests(List<RequestEntity> requests) async {
-    if (_kernelHub.isConnected()) {
-      try {
-        dynamic res = await _kernelHub.invoke("Requests", args: [requests]);
-        log.info("kernelHub request ===> ${requests.toString()}");
-        log.info("kernelHub ===> ${res.toString()}");
-        return ApiResp.fromJson(res).getData();
-      } on Exception catch (error) {
-        Fluttertoast.showToast(msg: error.toString());
-        rethrow;
-      }
+  Future<dynamic> requests(List<ReqestType> reqs) async {
+    if (_storeHub.isConnected()) {
+      return await _storeHub.invoke('Requests', args: reqs);
+    } else {
+      return await _restRequest('Requests', reqs);
     }
-    return await _restRequest("requests", requests);
   }
 
   Future<dynamic> _restRequest(
