@@ -199,13 +199,13 @@ class XAuthority {
   // 雪花ID
   final String id;
   // 名称
-  final String name;
+  late String name;
   // 编号
-  final String code;
+  late String code;
   // 备注
-  final String remark;
+  late String remark;
   // 公开的
-  final bool public;
+  late bool public;
   // 上级职权ID
   final String parentId;
   // 创建组织/个人
@@ -221,7 +221,7 @@ class XAuthority {
   // 创建时间
   final String createTime;
   // 更新时间
-  final String updateTime;
+  late String updateTime;
   // 上下级职权
   final XAuthority? parent;
   // 上下级职权
@@ -368,39 +368,39 @@ class XAuthorityArray {
 //字典类型
 class XDict {
   // 雪花ID
-  final String id;
+  late String id;
   // 名称
-  final String name;
+  late String name;
   // 编号
-  final String code;
+  late String code;
   // 备注
-  final String remark;
+  late String remark;
   // 公开的
-  final bool public;
+  late bool public;
   // 类别ID
-  final String speciesId;
+  late String speciesId;
   // 创建组织/个人
-  final String belongId;
+  late String belongId;
   // 状态
-  final int status;
+  late int status;
   // 创建人员ID
-  final String createUser;
+  late String createUser;
   // 更新人员ID
-  final String updateUser;
+  late String updateUser;
   // 修改次数
-  final String version;
+  late String version;
   // 创建时间
-  final String createTime;
+  late String createTime;
   // 更新时间
-  final String updateTime;
+  late String updateTime;
   // 字典项
-  final List<XDictItem>? dictItems;
+  late List<XDictItem>? dictItems;
   // 使用该字典的度量标准
-  final List<XAttribute>? dictAttrs;
+  late List<XAttribute>? dictAttrs;
   // 创建类别标准的组织/个人
-  final XTarget? belong;
+  late XTarget? belong;
   // 字典归属的分类
-  final XSpecies? species;
+  late XSpecies? species;
 
   //构造方法
   XDict({
@@ -2001,11 +2001,11 @@ class XIdentity {
   // 雪花ID
   final String id;
   // 名称
-  final String name;
+  late String name;
   // 编号
-  final String code;
+  late String code;
   // 备注
-  final String remark;
+  late String remark;
   // 职权Id
   final String authId;
   // 创建组织/个人
@@ -2021,7 +2021,7 @@ class XIdentity {
   // 创建时间
   final String createTime;
   // 更新时间
-  final String updateTime;
+  late String updateTime;
   // 身份证明
   final List<XIdProof>? idProofs;
   // 身份集关系
@@ -4438,19 +4438,19 @@ class XSpecies {
   // 雪花ID
   final String id;
   // 名称
-  final String name;
+  late String name;
   // 编号
-  final String code;
+  late String code;
   // 备注
-  final String remark;
+  late String remark;
   // 公开的
-  final bool public;
+  late bool public;
   // 父类别ID
   final String parentId;
   // 创建组织/个人
-  final String belongId;
+  late String belongId;
   // 工作职权Id
-  final String authId;
+  late String authId;
   // 状态
   final int status;
   // 创建人员ID
@@ -4773,87 +4773,87 @@ class XStagingArray {
 //组织/个人
 class XTarget {
   // 雪花ID
-  final String id;
+  late String id;
   // 名称
-  final String name;
+  late String name;
   // 编号
-  final String code;
+  late String code;
   // 类型
-  final String typeName;
+  late String typeName;
   // 头像
-  final String avatar;
+  late String avatar;
   // 归属
-  final String belongId;
+  late String belongId;
   // 元数据
-  final String thingId;
+  late String thingId;
   // 状态
-  final int status;
+  late int status;
   // 创建人员ID
-  final String createUser;
+  late String createUser;
   // 更新人员ID
-  final String updateUser;
+  late String updateUser;
   // 修改次数
-  final String version;
+  late String version;
   // 创建时间
-  final String createTime;
+  late String createTime;
   // 更新时间
-  final String updateTime;
+  late String updateTime;
   // 采购订单
-  final List<XOrder>? orders;
+  late List<XOrder>? orders;
   // 身份证明
-  final List<XIdProof>? idProofs;
+  late List<XIdProof>? idProofs;
   // 设立的市场
-  final List<XMarket>? markets;
+  late List<XMarket>? markets;
   // 标准要求
-  final List<XRuleStd>? ruleStds;
+  late List<XRuleStd>? ruleStds;
   // 商品采购暂存
-  final List<XStaging>? stags;
+  late List<XStaging>? stags;
   // 拥有的产品
-  final List<XProduct>? products;
+  late List<XProduct>? products;
   // 创建的身份
-  final List<XIdentity>? identitys;
+  late List<XIdentity>? identitys;
   // 监管的市场
-  final List<XMarket>? samrMarkets;
+  late List<XMarket>? samrMarkets;
   // 属于该组织/个人的物
-  final List<XThing>? things;
+  late List<XThing>? things;
   // 加入团队的关系
-  final List<XRelation>? relations;
+  late List<XRelation>? relations;
   // 作为团队的影子
-  final XTeam? team;
+  late XTeam? team;
   // 该组织/个人创建的字典类型
-  final List<XDict>? dicts;
+  late List<XDict>? dicts;
   // 卖出的订单详情
-  final List<XOrderDetail>? sellOrder;
+  late List<XOrderDetail>? sellOrder;
   // 该组织/个人创建的字典项
-  final List<XDictItem>? dictItems;
+  late List<XDictItem>? dictItems;
   // 该组织/个人创建的类别标准
-  final List<XSpecies>? species;
+  late List<XSpecies>? species;
   // 该组织/个人创建的度量标准
-  final List<XAttribute>? attributes;
+  late List<XAttribute>? attributes;
   // 该组织/个人创建的职权标准
-  final List<XAuthority>? authority;
+  late List<XAuthority>? authority;
   // 加入市场的关系
-  final List<XMarketRelation>? marketRelations;
+  late List<XMarketRelation>? marketRelations;
   // 加入的团队
-  final List<XTeam>? relTeams;
+  late List<XTeam>? relTeams;
   // 该组织/个人创建的业务单
-  final List<XOperation>? operations;
+  late List<XOperation>? operations;
   // 该组织或个人所属的业务单详情项
-  final List<XOperationItem>? operationItems;
+  late List<XOperationItem>? operationItems;
   // 赋予该组织/个人创建的身份
-  final List<XIdentity>? givenIdentitys;
+  late List<XIdentity>? givenIdentitys;
   // 该组织或个人所属的组织/个人
-  final XTarget? belong;
+  late XTarget? belong;
   // 该组织或个人所属的组织/个人
-  final List<XTarget>? targets;
+  late List<XTarget>? targets;
   // 组织/个人物的本质
-  final XThing? thing;
+  late XThing? thing;
   // 归属组织/个人的应用资源分配记录
-  final List<XExtend>? distributes;
+  late List<XExtend>? distributes;
   // 归属组织/个人的流程定义
-  final List<XFlowDefine>? flowDefines;
+  late List<XFlowDefine>? flowDefines;
   // 个人审批记录
-  final List<XFlowRecord>? flowRecords;
+  late List<XFlowRecord>? flowRecords;
 
   //构造方法
   XTarget({
@@ -5054,37 +5054,37 @@ class XTargetArray {
 //虚拟组织
 class XTeam {
   // 雪花ID
-  final String id;
+  late String id;
   // 名称
-  final String name;
+  late String name;
   // 编号
-  final String code;
+  late String code;
   // 实体
-  final String targetId;
+  late String targetId;
   // 备注
-  final String remark;
+  late String remark;
   // 状态
-  final int status;
+  late int status;
   // 创建人员ID
-  final String createUser;
+  late String createUser;
   // 更新人员ID
-  final String updateUser;
+  late String updateUser;
   // 修改次数
-  final String version;
+  late String version;
   // 创建时间
-  final String createTime;
+  late String createTime;
   // 更新时间
-  final String updateTime;
+  late String updateTime;
   // 加入团队的组织/个人
-  final List<XTarget>? relTargets;
+  late List<XTarget>? relTargets;
   // 组织身份集关系
-  final List<XTeamIdentity>? teamIdentitys;
+  late List<XTeamIdentity>? teamIdentitys;
   // 加入团队的组织/个人的关系
-  final List<XRelation>? relations;
+  late List<XRelation>? relations;
   // 团队的实体
-  final XTarget? target;
+  late XTarget? target;
   // 组织的身份集
-  final List<XIdentity>? identitys;
+  late List<XIdentity>? identitys;
 
   //构造方法
   XTeam({
