@@ -452,7 +452,7 @@ class IDBelongReq {
   //构造方法
   IDBelongReq({
     required this.id,
-    required this.page,
+    this.page,
   });
 
   //通过JSON构造

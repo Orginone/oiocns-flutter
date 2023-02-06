@@ -4,22 +4,17 @@ import 'package:orginone/dart/base/model.dart';
 import 'idict.dart';
 
 abstract class ISpeciesItem {
-  /// 主键,唯一
+  // 主键,唯一
   late String id;
-
-  /// 名称
+  // 名称
   late String name;
-
-  /// 标准分类项对应的目标
+  // 标准分类项对应的目标
   late XSpecies target;
-
-  /// 上级标准分类项
+  // 上级标准分类项
   late ISpeciesItem? parent;
-
-  /// 下级标准分类项数组
+  // 下级标准分类项数组
   late List<ISpeciesItem> children;
-
-  /// 归属信息
+  // 归属信息
   late TargetShare belongInfo;
 
   /// 加载信息

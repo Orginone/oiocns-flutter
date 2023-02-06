@@ -2,10 +2,12 @@ import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/consts.dart';
+import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/authority/identity.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
 import 'package:orginone/dart/core/target/species/ispecies.dart';
+import 'package:orginone/dart/core/target/species/species.dart';
 
 import '../../base/common/uint.dart';
 import '../enum.dart';
@@ -19,10 +21,12 @@ class BaseTarget extends ITarget {
   String get id {
     return target.id;
   }
+
   @override
   String get name {
     return target.name;
   }
+
   @override
   String get teamName {
     return target.team?.name ?? name;
@@ -42,6 +46,7 @@ class BaseTarget extends ITarget {
     // result.avatar = parseAvatar(target.avatar);
     return result;
   }
+
   KernelApi kernel = KernelApi.getInstance();
 
   BaseTarget(XTarget target) {
@@ -123,7 +128,7 @@ class BaseTarget extends ITarget {
     }
     return false;
   }
-  
+
   @override
   Future<IIdentity?> createIdentity(IdentityModel params) async {
     params.belongId = target.id;
@@ -135,38 +140,38 @@ class BaseTarget extends ITarget {
     }
     return null;
   }
-  
+
   Future<ResultType<XTarget>> createSubTarget(TargetModel data) async {
     if (createTargetType.contains(data.typeName)) {
       final res = await createTarget(data);
       if (res.success) {
-        await kernel.pullAnyToTeam(TeamPullModel(  id: target.id,
-          teamTypes: [target.typeName],
-          targetIds: [res.data!.id],
-          targetType: data.typeName));
+        await kernel.pullAnyToTeam(TeamPullModel(
+            id: target.id,
+            teamTypes: [target.typeName],
+            targetIds: [res.data!.id],
+            targetType: data.typeName));
       }
       return res;
     }
-    return ResultType(code: 400,msg: unAuthorizedError,success: false);
+    return ResultType(code: 400, msg: unAuthorizedError, success: false);
   }
 
   Future<ResultType<dynamic>> deleteSubTarget(
-   String id,
-   String typeName,
-  String  spaceId,
-  )async {
-    var req=IdReqModel(
-      id: id,
-      typeName: typeName);
-      req.belongId=spaceId;
+    String id,
+    String typeName,
+    String spaceId,
+  ) async {
+    var req = IdReqModel(id: id, typeName: typeName);
+    req.belongId = spaceId;
     return await kernel.deleteTarget(req);
   }
 
-   Future<ResultType<dynamic>> deleteTarget()async {
-     var req=IdReqModel(
+  Future<ResultType<dynamic>> deleteTarget() async {
+    var req = IdReqModel(
       id: id,
-      typeName: target.typeName,);
-      req.belongId=target.belongId;
+      typeName: target.typeName,
+    );
+    req.belongId = target.belongId;
     return await kernel.deleteTarget(req);
   }
 
@@ -174,109 +179,98 @@ class BaseTarget extends ITarget {
   /// @param code 编号
   /// @param TypeName 类型
   /// @returns
-Future<XTargetArray> searchTargetByName(
+  Future<XTargetArray> searchTargetByName(
     String code,
-List<TargetType>typeNames,
-  )async {
+    List<TargetType> typeNames,
+  ) async {
     typeNames = searchTargetType.where((a) => typeNames.contains(a)).toList();
     if (typeNames.isNotEmpty) {
-      final res = await kernel.searchTargetByName(NameTypeModel(  name: code,
-        typeNames:List<String>.from(typeNames),
-        page: PageRequest(
-          offset: 0,
-          filter: code,
-          limit: Constants.maxUint16,)
-        ));
-        if(res.success&&res.data!=null){
-      appendTarget(res.data);
-      return res.data!;
-        }
+      final res = await kernel.searchTargetByName(NameTypeModel(
+          name: code,
+          typeNames: List<String>.from(typeNames),
+          page: PageRequest(
+            offset: 0,
+            filter: code,
+            limit: Constants.maxUint16,
+          )));
+      if (res.success && res.data != null) {
+        // appendTarget(res.data);
+        return res.data!;
+      }
     }
     // logger.warn(unAuthorizedError);
-    return XTargetArray(total: 0, offset: 0, limit: 0, result: [] );
+    return XTargetArray(total: 0, offset: 0, limit: 0, result: []);
   }
 
   /// 申请加入组织/个人 (好友申请除外)
   /// @param destId 加入的组织/个人id
   /// @param typeName 对象
   /// @returns
- Future<bool> applyJoin(String destId ,TargetType typeName ) async{
+  Future<bool> applyJoin(String destId, TargetType typeName) async {
     if (joinTargetType.contains(typeName.name)) {
-      final res = await kernel.applyJoinTeam({
+      final res = await kernel.applyJoinTeam(JoinTeamModel(
         id: destId,
         targetId: target.id,
-        teamType: typeName,
+        teamType: typeName.name,
         targetType: target.typeName,
-      });
+      ));
       return res.success;
     }
-    logger.warn(unAuthorizedError);
+    // logger.warn(unAuthorizedError);
     return false;
   }
 
   /// 取消加入组织/个人
   /// @param id 申请Id/目标Id
   /// @returns
- Future<>  async cancelJoinTeam(id): Promise<model.ResultType<any>> {
-    return await kernel.cancelJoinTeam({
-      id,
-      belongId: target.id,
-      typeName: target.typeName,
-    });
+  Future<ResultType<dynamic>> cancelJoinTeam(id) async {
+    var req = IdReqModel(id: id, typeName: target.typeName);
+    req.belongId = id;
+    return await kernel.cancelJoinTeam(req);
   }
 
   /// 审批我的加入组织/个人申请
   /// @param id
   /// @param status
   /// @returns
- Future<>  async approvalJoinApply(
-    id,
-    status: number,
-  ): Promise<model.ResultType<any>> {
-    return await kernel.joinTeamApproval({
-      id,
-      status,
-    });
+  Future<ResultType<dynamic>> approvalJoinApply(
+    String id,
+    int status,
+  ) async {
+    return await kernel.joinTeamApproval(ApprovalModel(id: id, status: status));
   }
- Future<> async getjoinedTargets(
-    typeNames: TargetType[],
-    spaceId,
-  ): Promise<schema.XTargetArray | undefined> {
-    typeNames = typeNames.filter((a) => {
-      return joinTargetType.includes(a);
-    });
-    if (typeNames.length > 0) {
-      return (
-        await kernel.queryJoinedTargetById({
+
+  Future<XTargetArray> getjoinedTargets(
+    List<TargetType> typeNames,
+    String spaceId,
+  ) async {
+    typeNames =
+        typeNames.where((a) => joinTargetType.contains(a.toString())).toList();
+    if (typeNames.isNotEmpty) {
+      final res = await kernel.queryJoinedTargetById(IDReqJoinedModel(
           id: target.id,
           typeName: target.typeName,
-          page: {
-            offset: 0,
-            filter: '',
-            limit: common.Constants.MAX_UINT_16,
-          },
+          page: PageRequest(offset: 0, filter: '', limit: Constants.maxUint16),
           spaceId: spaceId,
-          JoinTypeNames: typeNames,
-        })
-      ).data;
+          JoinTypeNames: List<String>.from(typeNames)));
+      if (res.data != null) {
+        return res.data!;
+      }
     }
+    return XTargetArray(total: 0, offset: 0, limit: 0, result: []);
   }
 
   /// 获取子组织/个人
   /// @returns 返回好友列表
- Future<>  async getSubTargets(
-    typeNames: TargetType[],
-  ): Promise<model.ResultType<schema.XTargetArray>> {
-    return await kernel.querySubTargetById({
-      id: target.id,
+  Future<ResultType<XTargetArray>> getSubTargets(
+    List<TargetType> typeNames,
+  ) async {
+    return await kernel.querySubTargetById(IDReqSubModel(
+      id: id,
       typeNames: [target.typeName],
-      subTypeNames: typeNames,
-      page: {
-        offset: 0,
-        filter: '',
-        limit: common.Constants.MAX_UINT_16,
-      },
-    });
+      subTypeNames: List<String>.from(typeNames),
+      page: PageRequest(offset: 0, filter: '', limit: Constants.maxUint16),
+    ));
   }
 
   /// 拉自身进组织(创建组织的时候调用)
@@ -291,7 +285,7 @@ List<TargetType>typeNames,
         targetIds: [target.id],
       ));
     }
-    return badRequest(consts.UnauthorizedError);
+    return ResultType(code: 400, msg: unAuthorizedError, success: false);
   }
 
   /// 创建对象
@@ -306,7 +300,8 @@ List<TargetType>typeNames,
     if (createTargetType.contains(data.typeName)) {
       return await kernel.createTarget(data);
     } else {
-      return ResultType<XTarget>(code: 401, msg: unAuthorizedError, success: false);
+      return ResultType<XTarget>(
+          code: 401, msg: unAuthorizedError, success: false);
     }
   }
 
@@ -339,22 +334,23 @@ List<TargetType>typeNames,
 
   /// 判断是否拥有该职权对应身份
   /// @param codes 职权编号集合
+  @override
   Future<bool> judgeHasIdentity(List<String> codes) async {
-    if (ownIdentitys.length == 0) {
-      await getOwnIdentitys(true);
+    if (ownIdentitys.isNotEmpty) {
+      await getOwnIdentitys(reload: true);
     }
-    return (
-      ownIdentitys.find((a) => codes.includes(a.authority?.code ?? '')) != undefined
-    );
+    return ownIdentitys
+        .where((a) => codes.contains(a.authority?.code ?? ''))
+        .isNotEmpty;
   }
 
   Future<List<XIdentity>> getOwnIdentitys({bool reload = false}) async {
-    if (!reload && ownIdentitys.length > 0) {
+    if (!reload && ownIdentitys.isNotEmpty) {
       return ownIdentitys;
     }
     final res = await kernel.querySpaceIdentitys(IdReq(id: target.id));
-    if (res.success && res.data.result) {
-      ownIdentitys = res.data.result;
+    if (res.success && res.data?.result != null) {
+      ownIdentitys = res.data!.result!;
     }
     return ownIdentitys;
   }
@@ -362,30 +358,32 @@ List<TargetType>typeNames,
   /// 查询组织职权树
   /// @param id
   /// @returns
+  @override
   Future<IAuthority?> loadAuthorityTree({bool reload = false}) async {
     if (!reload && authorityTree != null) {
       return authorityTree;
     }
-    await getOwnIdentitys(reload);
-    final res = await kernel.queryAuthorityTree({
+    await getOwnIdentitys(reload: reload);
+    final res = await kernel.queryAuthorityTree(IDBelongReq(
       id: target.id,
-      page: {
+      page: PageRequest(
         offset: 0,
         filter: '',
-        limit: common.Constants.MAX_UINT_16,
-      },
-    });
+        limit: Constants.maxUint16,
+      ),
+    ));
     if (res.success) {
-      authorityTree = new Authority(res.data, id);
+      authorityTree = Authority(res.data!, id);
     }
     return authorityTree;
   }
 
+  @override
   Future<ISpeciesItem?> loadSpeciesTree({bool reload = false}) async {
-    if (reload || !speciesTree) {
-      final res = await kernel.querySpeciesTree(id, '');
+    if (reload || speciesTree != null) {
+      final res = await kernel.querySpeciesTree(IDBelongReq(id: id));
       if (res.success) {
-        speciesTree = new SpeciesItem(res.data, undefined);
+        speciesTree = SpeciesItem(res.data!, null);
       }
     }
     return speciesTree;
@@ -394,30 +392,32 @@ List<TargetType>typeNames,
   @override
   Future<ITarget?> create(TargetModel data) async {
     await Future.delayed(Duration.zero);
+    return null;
   }
 
   @override
   Future<bool> deleteIdentity(String id) async {
     var index = -1;
-    for(var i=0; i<identitys.length; i++) {
-      if(identitys[i].id == id) {
+    for (var i = 0; i < identitys.length; i++) {
+      if (identitys[i].id == id) {
         index = i;
         break;
       }
     }
-    if(index > -1){
-        final res = await kernel.deleteIdentity(IdReqModel(id: id, typeName: target.typeName));
-        if(res.success){
-          identitys.removeAt(index);
-          return true;
-        }
+    if (index > -1) {
+      final res = await kernel
+          .deleteIdentity(IdReqModel(id: id, typeName: target.typeName));
+      if (res.success) {
+        identitys.removeAt(index);
+        return true;
+      }
     }
     return false;
   }
 
   @override
   Future<List<IIdentity>> getIdentitys() async {
-     if (identitys.isNotEmpty) {
+    if (identitys.isNotEmpty) {
       return identitys;
     }
     final res = await kernel.queryTargetIdentitys(IDBelongReq(
@@ -425,7 +425,7 @@ List<TargetType>typeNames,
       page: PageRequest(
         offset: 0,
         filter: '',
-        limit: 2^16-1,
+        limit: 2 ^ 16 - 1,
       ),
     ));
     if (res.success && res.data != null && res.data?.result != null) {
@@ -437,31 +437,18 @@ List<TargetType>typeNames,
   }
 
   @override
-  Future<bool> judgeHasIdentity(List<String> codes) {
-    // TODO: implement judgeHasIdentity
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<IAuthority?> loadAuthorityTree({bool reload = false}) {
-    // TODO: implement loadAuthorityTree
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<ISpeciesItem?> loadSpeciesTree({bool reload = false}) {
-    // TODO: implement loadSpeciesTree
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<List<ITarget>> loadSubTeam({bool reload = false}) {
-    // TODO: implement loadSubTeam
-    throw UnimplementedError();
+  Future<List<ITarget>> loadSubTeam({bool reload = false}) async {
+    return [];
   }
 
   @override
   Future<ITarget> update(TargetModel data) async {
     await updateTarget(data);
     return this;
-  }}
+  }
+
+  @override
+  Future<bool> delete() async {
+    return false;
+  }
+}

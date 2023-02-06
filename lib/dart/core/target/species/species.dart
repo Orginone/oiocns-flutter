@@ -13,7 +13,7 @@ import 'ispecies.dart';
 class SpeciesItem extends ISpeciesItem {
   bool isRoot = false;
   KernelApi kernel = KernelApi.getInstance();
-  SpeciesItem(XSpecies target, ISpeciesItem parentss) {
+  SpeciesItem(XSpecies target, ISpeciesItem? parentss) {
     children = [];
     target = target;
     parent = parent;
