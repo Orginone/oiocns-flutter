@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/components/unified_colors.dart';
-import 'package:orginone/dart/base/api/app_server.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/notification_util.dart';
@@ -61,12 +60,10 @@ class ScreenInit extends StatelessWidget {
         return RefreshConfiguration(
           footerTriggerDistance: 15,
           dragSpeedRatio: 0.91,
-          headerBuilder: () =>
-          const MaterialClassicHeader(
+          headerBuilder: () => const MaterialClassicHeader(
             color: UnifiedColors.themeColor,
           ),
-          footerBuilder: () =>
-          const ClassicFooter(
+          footerBuilder: () => const ClassicFooter(
               loadingText: "努力加载中...",
               idleText: "上拉加载更多...",
               canLoadingText: "上拉加载更多",

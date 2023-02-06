@@ -7,46 +7,54 @@ import 'package:orginone/dart/base/api/storehub.dart';
 import 'package:orginone/util/http_util.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:signalr_core/signalr_core.dart';
 
 class KernelApi {
-  Logger log = Logger("KernelApi");
+  final Logger log = Logger("KernelApi");
 
   final StoreHub _storeHub;
   final HttpUtil _requester;
   final Map<String, List<Function>> _methods;
-
-  AnyStore get anyStore => AnyStore.getInstance;
-
-  HubConnectionState get state => _storeHub.state.value;
+  final AnyStore _anystore;
 
   static KernelApi? _instance;
 
-  static KernelApi get getInstance {
-    _instance ??= KernelApi(request: HttpUtil());
-    return _instance!;
-  }
-
-  KernelApi({required HttpUtil request})
-      : _storeHub = StoreHub(
-          connName: "kernelHub",
-          url: Constant.kernelHub,
-          timeout: const Duration(seconds: 5),
-        ),
+  KernelApi(String url, {required HttpUtil request})
+      : _storeHub = StoreHub(url),
         _methods = {},
-        _requester = request {
+        _requester = request,
+        _anystore = AnyStore.getInstance() {
     _storeHub.on("Receive", receive);
   }
 
+  /// 获取单例
+  /// @param {string} url 集线器地址，默认为 "/orginone/kernel/hub"
+  /// @returns {KernelApi} 内核api单例
+  static KernelApi getInstance({String url = '/orginone/kernel/hub'}) {
+    _instance ??= KernelApi(url, request: HttpUtil());
+    return _instance!;
+  }
+
+  /// 任意数据存储对象
+  /// @returns {AnyStore | undefined} 可能为空的存储对象
+  AnyStore get anystore {
+    return _anystore;
+  }
+
+  /// 是否在线
+  /// @returns {boolean} 在线状态
+  bool get isOnline {
+    return _storeHub.isConnected;
+  }
+
   start() async {
-    await anyStore.start();
-    await _storeHub.start();
+    await _anystore.start();
+    _storeHub.start();
   }
 
   stop() async {
     _methods.clear();
-    await _storeHub.stop();
-    await anyStore.stop();
+    await _storeHub.dispose();
+    await _anystore.stop();
   }
 
   receive(List<dynamic>? params) {
@@ -81,7 +89,7 @@ class KernelApi {
       "account": account,
       "pwd": password,
     };
-    if (_storeHub.isConnected()) {
+    if (_storeHub.isConnected) {
       return await _storeHub.invoke('Login', args: [req]);
     }
     return await _restRequest("login", req);
@@ -1709,7 +1717,7 @@ class KernelApi {
   }
 
   Future<dynamic> request(ReqestType req) async {
-    if (_storeHub.isConnected()) {
+    if (_storeHub.isConnected) {
       return await _storeHub.invoke('Request', args: [req]);
     } else {
       return await _restRequest('Request', req);
@@ -1717,7 +1725,7 @@ class KernelApi {
   }
 
   Future<dynamic> requests(List<ReqestType> reqs) async {
-    if (_storeHub.isConnected()) {
+    if (_storeHub.isConnected) {
       return await _storeHub.invoke('Requests', args: reqs);
     } else {
       return await _restRequest('Requests', reqs);

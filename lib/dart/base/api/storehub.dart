@@ -1,161 +1,139 @@
-import 'dart:async';
-
-import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:signalr_core/signalr_core.dart';
-
-enum SendEvent {
-  tokenAuth("TokenAuth");
-
-  final String keyWork;
-
-  const SendEvent(this.keyWork);
-}
+import 'package:orginone/dart/base/model.dart';
 
 /// 存储集线器
 class StoreHub {
-  static final Logger _log = Logger("ConnHolder");
-  final String _connName;
-  final HubConnection _server;
-  final Rx<HubConnectionState> _state;
-  final Duration _timeout;
-  final RxBool _isStarted;
-  final List<Function> _connectedCallbacks;
-  Timer? _timer;
+  // 是否已经启动
+  bool _isStarted = false;
+  // 超时重试时间
+  final int _timeout;
+  // signalr 连接
+  final HubConnection _connection;
+  // 连接成功回调
+  List<Function> _connectedCallbacks = [];
+  // 日志
+  final Logger log = Logger("StoreHub");
+  // 连接断开回调
+  List<Function(Exception?)> _disconnectedCallbacks = [];
 
-  StoreHub({
-    required String connName,
-    required String url,
-    required Duration timeout,
-  })  : _connName = connName,
-        _timeout = timeout,
-        _server = HubConnectionBuilder().withUrl(url).build(),
-        _state = HubConnectionState.disconnected.obs,
-        _isStarted = false.obs,
-        _connectedCallbacks = <Function>[] {
-    _server.keepAliveIntervalInMilliseconds = 3000;
-    _server.serverTimeoutInMilliseconds = 8000;
-    _onReconnecting();
-    _onReconnected();
-    _onClose();
+  StoreHub(
+    String url, {
+    int timeout = 8000,
+    int interval = 3000,
+  })  : _timeout = timeout,
+        _connection = HubConnectionBuilder().withUrl(url).build() {
+    _connection.keepAliveIntervalInMilliseconds = timeout;
+    _connection.serverTimeoutInMilliseconds = interval;
+    _connection.onclose((err) {
+      if (_isStarted && err != null) {
+        for (final callback in _disconnectedCallbacks) {
+          callback(err);
+        }
+        log.warning("连接断开,${_timeout}ms后重试。${err.toString()}`");
+        Future.delayed(Duration(milliseconds: _timeout), () {
+          _starting();
+        });
+      }
+    });
   }
 
-  Rx<HubConnectionState> get state => _state;
+  /// 是否处于连接着的状态
+  /// @return {boolean} 状态
+  bool get isConnected {
+    return _isStarted && _connection.state == HubConnectionState.connected;
+  }
 
-  setState() => _state.value = _server.state ?? HubConnectionState.disconnected;
+  /// 销毁连接
+  /// @returns {Promise<void>} 异步Promise
+  Future<void> dispose() async {
+    _isStarted = false;
+    _connectedCallbacks = [];
+    _disconnectedCallbacks = [];
+    return await _connection.stop();
+  }
 
-  void addConnectedCallback(Function func) {
-    if (!_connectedCallbacks.contains(func)) {
-      _connectedCallbacks.add(func);
+  /// 启动链接
+  /// @returns {void} 无返回值
+  void start() {
+    if (!_isStarted) {
+      _isStarted = true;
+      _starting();
     }
   }
 
-  /// 是否未连接
-  bool isDisConnected() {
-    return _server.state! != HubConnectionState.connected;
-  }
-
-  /// 是否已连接
-  bool isConnected() {
-    return _server.state! == HubConnectionState.connected;
-  }
-
-  /// 是否断开连接中
-  bool isDisconnecting() {
-    return _server.state! == HubConnectionState.disconnecting;
-  }
-
-  /// 是否断开连接中
-  bool isReconnecting() {
-    return _server.state! == HubConnectionState.reconnecting;
-  }
-
-  /// 是否连接中
-  bool isConnecting() {
-    return _server.state! == HubConnectionState.connecting;
-  }
-
-  /// 调用
-  Future<dynamic> invoke(String event, {List<Object>? args}) {
-    return _server.invoke(event, args: args);
-  }
-
-  /// 订阅
-  on(String methodName, Function(List<dynamic>?) callback) {
-    _server.on(methodName, callback);
-  }
-
-  /// 停止连接
-  stop() async {
-    _info("开始断开连接");
-    _isStarted.value = false;
-    _timer?.cancel();
-    await _server.stop();
-    setState();
-    _info("断开连接成功");
+  /// 重新建立连接
+  /// @returns {void} 无返回值
+  void restart() {
+    if (isConnected) {
+      _connection.stop().then((_) {
+        _starting();
+      });
+    }
   }
 
   /// 开始连接
-  start() async {
-    if (_server.state != HubConnectionState.disconnected) {
-      _info("开始连接失败，当前连接状态：${_server.state}");
-      return;
-    }
-    try {
-      _info("开始连接······");
-      _isStarted.value = true;
-      await _server.start();
-      _info("连接成功！");
-      for (var callback in _connectedCallbacks) {
+  /// @returns {void} 无返回值
+  void _starting() {
+    _connection.start()?.then((_) {
+      for (final callback in _connectedCallbacks) {
         callback();
       }
-      setState();
-    } catch (error) {
-      _info(" ${error.toString()}");
-      _startTimeout();
+    }, onError: (err) {
+      log.warning("连接失败,${_timeout}ms后重试。${err.toString()}`");
+      for (final callback in _disconnectedCallbacks) {
+        callback(err);
+      }
+      Future.delayed(Duration(milliseconds: _timeout), () {
+        _starting();
+      });
+    });
+  }
+
+  /// 连接成功事件
+  /// @param {Function} callback 回调
+  /// @returns {void} 无返回值
+  void onConnected(Function? callback) {
+    if (callback != null) {
+      _connectedCallbacks.add(callback);
     }
   }
 
-  /// 日志打印前缀
-  _info(String info) {
-    _log.info("==$_connName==> $info");
+  /// 断开连接事件
+  /// @param {Function} callback 回调
+  /// @returns {void} 无返回值
+  void onDisconnected(Function(Exception?)? callback) {
+    if (callback != null) {
+      _disconnectedCallbacks.add(callback);
+    }
   }
 
-  /// 重连中回调
-  _onReconnecting() {
-    _server.onreconnecting((Exception? error) {
-      setState();
-      if (error != null) {
-        _info("重连中发生异常: ${error.toString()}");
-        return;
+  /// 监听服务端方法
+  /// @param {string} methodName 方法名
+  /// @param {Function} newMethod 回调
+  /// @returns {void} 无返回值
+  void on(String methodName, void Function(List<dynamic>?) newMethod) {
+    _connection.on(methodName, newMethod);
+  }
+
+  /// 请求服务端方法
+  /// @param {string} methodName 方法名
+  /// @param {any[]} args 参数
+  /// @returns {Promise<ResultType>} 异步结果
+  Future<ResultType<T>> invoke<T>(String methodName,
+      {List<dynamic>? args}) async {
+    try {
+      final ResultType<T> res =
+          await _connection.invoke(methodName, args: args);
+      if (res.code == 401) {
+        log.warning("登录已过期");
       }
-    });
-  }
-
-  /// 重连成功回调
-  _onReconnected() {
-    _server.onreconnected((String? connectId) {
-      setState();
-      _info("重连成功，connectId:$connectId");
-    });
-  }
-
-  /// 监听连接
-  _onClose() {
-    _server.onclose((Exception? error) async {
-      setState();
-      if (error != null) {
-        _info("关闭时发生异常:${error.toString()}");
+      if (!res.success) {
+        log.warning("操作失败,错误消息${res.msg}");
       }
-      if (_isStarted.value) {
-        _startTimeout();
-      }
-    });
-  }
-
-  /// 重连定时器
-  void _startTimeout() {
-    _info("${_timeout.inSeconds}s后开始重连");
-    _timer = Timer(_timeout, start);
+      return res;
+    } catch (err) {
+      return ResultType(code: 400, msg: "请求异常", success: false);
+    }
   }
 }

@@ -1,45 +1,48 @@
 import 'dart:async';
 
-import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/api/storehub.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/util/http_util.dart';
-import 'package:signalr_core/signalr_core.dart';
 
 class AnyStore {
-  final Logger log = Logger("AnyStoreUtil");
+  final Logger log = Logger("AnyStore");
   final HttpUtil _requester;
   final StoreHub _storeHub;
+  String accessToken;
   final Map<String, Function(dynamic)> _subscribeCallbacks = {};
-
-  Rx<HubConnectionState> get state => _storeHub.state;
 
   static AnyStore? _instance;
 
-  static AnyStore get getInstance {
+  static AnyStore getInstance({String url = "/orginone/anydata/hub"}) {
     _instance ??= AnyStore(request: HttpUtil());
     return _instance!;
   }
 
   AnyStore({required HttpUtil request})
-      : _storeHub = StoreHub(
-          connName: "anyStore",
-          url: Constant.anyStoreHub,
-          timeout: const Duration(seconds: 5),
-        ),
+      : accessToken = "",
+        _storeHub = StoreHub(Constant.anyStoreHub),
         _requester = request {
     _storeHub.on("updated", _updated);
   }
 
-  start() async {
-    await _storeHub.start();
+  start() {
+    _storeHub.start();
   }
 
   stop() async {
     _subscribeCallbacks.clear();
-    await _storeHub.stop();
+    await _storeHub.dispose();
+  }
+
+  /// 更新token
+  /// @param accessToken token
+  updateToken(String accessToken) {
+    if (this.accessToken != accessToken) {
+      this.accessToken = accessToken;
+      _storeHub.restart();
+    }
   }
 
   /// 订阅对象变更
@@ -51,9 +54,9 @@ class AnyStore {
     if (callback != null) {
       final fullKey = "$key|$domain";
       _subscribeCallbacks[fullKey] = callback;
-      if (_storeHub.isConnected()) {
+      if (_storeHub.isConnected) {
         final ResultType<T> res =
-            await _storeHub.invoke('Subscribed', args: [key, domain]);
+            await _storeHub.invoke<T>('Subscribed', args: [key, domain]);
         if (res.success && res.data != null) {
           callback(res.data);
         }
@@ -67,7 +70,7 @@ class AnyStore {
   /// @returns {void} 无返回值
   unSubscribed(String key, String domain) async {
     final fullKey = "$key|$domain";
-    if (_subscribeCallbacks.containsKey(fullKey) && _storeHub.isConnected()) {
+    if (_subscribeCallbacks.containsKey(fullKey) && _storeHub.isConnected) {
       await _storeHub.invoke('UnSubscribed', args: [key, domain]);
       _subscribeCallbacks.remove(fullKey);
     }
@@ -78,7 +81,7 @@ class AnyStore {
   /// @param {string} domain 对象所在域, 个人域(user),单位域(company),开放域(all)
   /// @returns {ResultType} 对象异步结果
   Future<ResultType<T>> get<T>(String key, String domain) async {
-    return await _storeHub.invoke('Get', args: [key, domain]);
+    return await _storeHub.invoke<T>('Get', args: [key, domain]);
   }
 
   /// 修改对象
@@ -88,7 +91,7 @@ class AnyStore {
   /// @returns {ResultType} 变更异步结果
   Future<ResultType<dynamic>> set(
       String key, dynamic setData, String domain) async {
-    return await _storeHub.invoke('Set', args: [key, setData, domain]);
+    return await _storeHub.invoke<dynamic>('Set', args: [key, setData, domain]);
   }
 
   /// 删除对象
@@ -96,7 +99,7 @@ class AnyStore {
   /// @param {string} domain 对象所在域, 个人域(user),单位域(company),开放域(all)
   /// @returns {ResultType} 删除异步结果
   Future<ResultType<dynamic>> delete(String key, String domain) async {
-    return await _storeHub.invoke('Delete', args: [key, domain]);
+    return await _storeHub.invoke<dynamic>('Delete', args: [key, domain]);
   }
 
   /// 添加数据到数据集
@@ -106,7 +109,8 @@ class AnyStore {
   /// @returns {ResultType} 添加异步结果
   Future<ResultType<dynamic>> insert(
       String collName, dynamic data, String domain) async {
-    return await _storeHub.invoke('Insert', args: [collName, data, domain]);
+    return await _storeHub
+        .invoke<dynamic>('Insert', args: [collName, data, domain]);
   }
 
   /// 更新数据到数据集
@@ -116,7 +120,8 @@ class AnyStore {
   /// @returns {ResultType} 更新异步结果
   Future<ResultType<dynamic>> update(
       String collName, dynamic update, String domain) async {
-    return await _storeHub.invoke('Update', args: [collName, update, domain]);
+    return await _storeHub
+        .invoke<dynamic>('Update', args: [collName, update, domain]);
   }
 
   /// 从数据集移除数据
@@ -126,7 +131,8 @@ class AnyStore {
   /// @returns {ResultType} 移除异步结果
   Future<ResultType<dynamic>> remove(
       String collName, dynamic match, String domain) async {
-    return await _storeHub.invoke('Remove', args: [collName, match, domain]);
+    return await _storeHub
+        .invoke<dynamic>('Remove', args: [collName, match, domain]);
   }
 
   /// 从数据集查询数据
@@ -137,15 +143,15 @@ class AnyStore {
   Future<ResultType<dynamic>> aggregate(
       String collName, dynamic options, String domain) async {
     return await _storeHub
-        .invoke('Aggregate', args: [collName, options, domain]);
+        .invoke<dynamic>('Aggregate', args: [collName, options, domain]);
   }
 
   /// 桶操作
   /// @param data 操作携带的数据
   /// @returns {ResultType<T>} 移除异步结果
   Future<ResultType<T>> bucketOpreate<T>(BucketOpreateModel data) async {
-    if (_storeHub.isConnected()) {
-      return await _storeHub.invoke('BucketOpreate', args: [data]);
+    if (_storeHub.isConnected) {
+      return await _storeHub.invoke<T>('BucketOpreate', args: [data]);
     }
     return await _restRequest('Bucket', 'Operate', data);
   }

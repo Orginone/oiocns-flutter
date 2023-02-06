@@ -3,7 +3,7 @@ class ResultType<T> {
   // 代码，成功为200
   final int code;
   // 数据
-  final T data;
+  final T? data;
   // 消息
   final String msg;
   // 是否成功标志
@@ -11,7 +11,7 @@ class ResultType<T> {
 
   ResultType({
     required this.code,
-    required this.data,
+    this.data,
     required this.msg,
     required this.success,
   });
