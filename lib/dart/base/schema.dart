@@ -2185,7 +2185,7 @@ class XImMsg {
   // 消息类型
   final String msgType;
   // 消息体
-  final String msgBody;
+  String msgBody;
   // 状态
   final int status;
   // 创建人员ID
@@ -2198,6 +2198,10 @@ class XImMsg {
   final String createTime;
   // 更新时间
   final String updateTime;
+  // 更新时间
+  String showTxt;
+  // 允许编辑
+  bool allowEdit;
 
   //构造方法
   XImMsg({
@@ -2213,6 +2217,8 @@ class XImMsg {
     required this.version,
     required this.createTime,
     required this.updateTime,
+    required this.showTxt,
+    required this.allowEdit,
   });
 
   //通过JSON构造
@@ -2228,7 +2234,9 @@ class XImMsg {
         updateUser = json["updateUser"],
         version = json["version"],
         createTime = json["createTime"],
-        updateTime = json["updateTime"];
+        updateTime = json["updateTime"],
+        showTxt = json["showTxt"],
+        allowEdit = json["allowEdit"];
 
   //通过动态数组解析成List
   static List<XImMsg> fromList(List<Map<String, dynamic>> list) {
@@ -4775,7 +4783,7 @@ class XTarget {
   // 雪花ID
   final String id;
   // 名称
-  final String name;
+  String name;
   // 编号
   final String code;
   // 类型

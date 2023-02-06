@@ -3352,3 +3352,98 @@ class ApprovalTaskReq {
     return json;
   }
 }
+
+// 文件系统项分享数据
+class TargetShare {
+  // 名称
+  final String name;
+  // 类型
+  final String typeName;
+  // 头像
+  final String avatar;
+
+  //构造方法
+  TargetShare({
+    required this.name,
+    required this.typeName,
+    required this.avatar,
+  });
+
+  //通过JSON构造
+  TargetShare.fromJson(Map<String, dynamic> json)
+      : name = json["name"],
+        typeName = json["typeName"],
+        avatar = json["avatar"];
+
+  //通过动态数组解析成List
+  static List<TargetShare> fromList(List<Map<String, dynamic>> list) {
+    List<TargetShare> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(TargetShare.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["name"] = name;
+    json["typeName"] = typeName;
+    json["avatar"] = avatar;
+    return json;
+  }
+}
+
+// 文件系统项数据模型
+class FileItemShare {
+  // 大小
+  final int size;
+  // 名称
+  final String name;
+  // 共享链接
+  final String shareLink;
+  // 拓展名
+  final String extension;
+  // 缩略图
+  final String thumbnail;
+
+  FileItemShare({
+    required this.size,
+    required this.name,
+    required this.shareLink,
+    required this.extension,
+    required this.thumbnail,
+  });
+
+  //通过JSON构造
+  FileItemShare.fromJson(Map<String, dynamic> json)
+      : size = json["size"],
+        name = json["name"],
+        shareLink = json["shareLink"],
+        extension = json["extension"],
+        thumbnail = json["thumbnail"];
+
+  //通过动态数组解析成List
+  static List<FileItemShare> fromList(List<Map<String, dynamic>> list) {
+    List<FileItemShare> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(FileItemShare.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["size"] = size;
+    json["name"] = name;
+    json["shareLink"] = shareLink;
+    json["extension"] = extension;
+    json["thumbnail"] = thumbnail;
+    return json;
+  }
+}
