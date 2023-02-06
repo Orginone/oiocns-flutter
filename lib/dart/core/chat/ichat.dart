@@ -1,5 +1,6 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/enum.dart';
 
 /// 单个会话的抽象
 abstract class IChat {

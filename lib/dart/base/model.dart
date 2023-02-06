@@ -116,51 +116,6 @@ class FileChunkData {
   });
 }
 
-/// 文件系统项分享数据
-class TargetShare {
-  // 名称
-  String name;
-  // 类型
-  String typeName;
-  // 头像
-  FileItemShare? avatar;
-
-  TargetShare({
-    required this.name,
-    required this.typeName,
-    this.avatar,
-  });
-}
-
-/// 文件系统项分享数据
-class FileItemShare {
-  // 完整路径
-  int size;
-  // 名称
-  String name;
-  // 共享链接
-  String shareLink;
-  // 拓展名
-  String extension;
-  // 缩略图
-  String thumbnail;
-
-  FileItemShare({
-    required this.size,
-    required this.name,
-    required this.shareLink,
-    required this.extension,
-    required this.thumbnail,
-  });
-
-  FileItemShare.fromJson(Map<String, dynamic> json)
-      : name = json['name'],
-        shareLink = json['shareLink'],
-        extension = json['extension'],
-        thumbnail = json['thumbnail'],
-        size = json['size'];
-}
-
 /// 文件系统项数据模型
 class FileItemModel {
   // 完整路径
@@ -3458,13 +3413,13 @@ class TargetShare {
   // 类型
   final String typeName;
   // 头像
-  final String avatar;
+  String? avatar;
 
   //构造方法
   TargetShare({
     required this.name,
     required this.typeName,
-    required this.avatar,
+    this.avatar,
   });
 
   //通过JSON构造

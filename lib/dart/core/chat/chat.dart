@@ -4,6 +4,7 @@ import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/ichat.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/util/encryption_util.dart';
 
 const hisMsgCollName = 'chat-message';
@@ -45,7 +46,7 @@ class BaseChat implements IChat {
         _persons = persons.obs,
         _lastMessage = lastMessage.obs,
         _fullId = '$spaceId-${target.id}' {
-    appendShare(target.id, shareInfo());
+    // appendShare(target.id, shareInfo());
   }
 
   @override
@@ -88,7 +89,7 @@ class BaseChat implements IChat {
     return TargetShare(
       name: target.name,
       typeName: target.typeName,
-      avatar: parseAvatar(target.photo),
+      avatar: "", //parseAvatar(target.photo),
     );
   }
 
@@ -167,7 +168,7 @@ class BaseChat implements IChat {
     required String msgBody,
   }) async {
     var res = await KernelApi.getInstance().createImMsg(ImMsgModel(
-      msgType: type.keyword,
+      msgType: type.label,
       msgBody: EncryptionUtil.deflate(msgBody),
       spaceId: _spaceId,
       fromId: _userId,

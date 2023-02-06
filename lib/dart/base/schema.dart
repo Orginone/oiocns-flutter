@@ -199,13 +199,13 @@ class XAuthority {
   // 雪花ID
   final String id;
   // 名称
-  final String name;
+  String name;
   // 编号
-  final String code;
+  String code;
   // 备注
-  final String remark;
+  String remark;
   // 公开的
-  final bool public;
+  bool public;
   // 上级职权ID
   final String parentId;
   // 创建组织/个人
@@ -221,7 +221,7 @@ class XAuthority {
   // 创建时间
   final String createTime;
   // 更新时间
-  final String updateTime;
+  String updateTime;
   // 上下级职权
   final XAuthority? parent;
   // 上下级职权
@@ -370,17 +370,17 @@ class XDict {
   // 雪花ID
   final String id;
   // 名称
-  final String name;
+  String name;
   // 编号
   final String code;
   // 备注
-  final String remark;
+  String remark;
   // 公开的
-  final bool public;
+  bool public;
   // 类别ID
   final String speciesId;
   // 创建组织/个人
-  final String belongId;
+  String belongId;
   // 状态
   final int status;
   // 创建人员ID
@@ -2001,11 +2001,11 @@ class XIdentity {
   // 雪花ID
   final String id;
   // 名称
-  final String name;
+  String name;
   // 编号
-  final String code;
+  String code;
   // 备注
-  final String remark;
+  String remark;
   // 职权Id
   final String authId;
   // 创建组织/个人
@@ -2021,7 +2021,7 @@ class XIdentity {
   // 创建时间
   final String createTime;
   // 更新时间
-  final String updateTime;
+  String updateTime;
   // 身份证明
   final List<XIdProof>? idProofs;
   // 身份集关系
@@ -2185,7 +2185,7 @@ class XImMsg {
   // 消息类型
   final String msgType;
   // 消息体
-  final String msgBody;
+  String msgBody;
   // 状态
   final int status;
   // 创建人员ID
@@ -2198,6 +2198,10 @@ class XImMsg {
   final String createTime;
   // 更新时间
   final String updateTime;
+  // 显示文本
+  String showTxt;
+  // 是否允许编辑
+  late bool allowEdit;
 
   //构造方法
   XImMsg({
@@ -2213,6 +2217,7 @@ class XImMsg {
     required this.version,
     required this.createTime,
     required this.updateTime,
+    required this.showTxt,
   });
 
   //通过JSON构造
@@ -2227,6 +2232,7 @@ class XImMsg {
         createUser = json["createUser"],
         updateUser = json["updateUser"],
         version = json["version"],
+        showTxt = json["showTxt"],
         createTime = json["createTime"],
         updateTime = json["updateTime"];
 
@@ -4438,19 +4444,19 @@ class XSpecies {
   // 雪花ID
   final String id;
   // 名称
-  final String name;
+  String name;
   // 编号
   final String code;
   // 备注
-  final String remark;
+  String remark;
   // 公开的
-  final bool public;
+  bool public;
   // 父类别ID
   final String parentId;
   // 创建组织/个人
-  final String belongId;
+  String belongId;
   // 工作职权Id
-  final String authId;
+  String authId;
   // 状态
   final int status;
   // 创建人员ID
@@ -4775,15 +4781,15 @@ class XTarget {
   // 雪花ID
   final String id;
   // 名称
-  final String name;
+  String name;
   // 编号
-  final String code;
+  String code;
   // 类型
   final String typeName;
   // 头像
-  final String avatar;
+  String avatar;
   // 归属
-  final String belongId;
+  String belongId;
   // 元数据
   final String thingId;
   // 状态
@@ -5056,13 +5062,13 @@ class XTeam {
   // 雪花ID
   final String id;
   // 名称
-  final String name;
+  String name;
   // 编号
-  final String code;
+  String code;
   // 实体
   final String targetId;
   // 备注
-  final String remark;
+  String remark;
   // 状态
   final int status;
   // 创建人员ID
