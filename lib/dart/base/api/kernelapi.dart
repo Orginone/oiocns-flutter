@@ -100,8 +100,19 @@ class KernelApi {
   /// @returns {ResultType<XDict>} 请求结果
   Future<ResultType<XDict>> createDict(DictModel params) async {
     return await request(ReqestType(
-      module: 'base',
+      module: 'thing',
       action: 'CreateDict',
+      params: params,
+    ));
+  }
+
+  /// 创建业务标准
+  /// @param {DictModel} params 请求参数
+  /// @returns {ResultType<XOperation>} 请求结果
+  Future<ResultType<XOperation>> createOperation(OperationModel params) async {
+    return await request(ReqestType(
+      module: 'thing',
+      action: 'CreateOperation',
       params: params,
     ));
   }
@@ -122,7 +133,7 @@ class KernelApi {
   /// @returns {ResultType<XDictItem>} 请求结果
   Future<ResultType<XDictItem>> createDictItem(DictItemModel params) async {
     return await request(ReqestType(
-      module: 'base',
+      module: 'thing',
       action: 'CreateDictItem',
       params: params,
     ));
@@ -133,8 +144,19 @@ class KernelApi {
   /// @returns {ResultType<bool>} 请求结果
   Future<ResultType<bool>> deleteDict(IdReqModel params) async {
     return await request(ReqestType(
-      module: 'base',
+      module: 'thing',
       action: 'DeleteDict',
+      params: params,
+    ));
+  }
+
+  /// 删除业务标准
+  /// @param {IdReqModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> deleteOperation(IdReq params) async {
+    return await request(ReqestType(
+      module: 'thing',
+      action: 'DeleteOperation',
       params: params,
     ));
   }
@@ -144,7 +166,7 @@ class KernelApi {
   /// @returns {ResultType<bool>} 请求结果
   Future<ResultType<bool>> deleteDictItem(IdReqModel params) async {
     return await request(ReqestType(
-      module: 'base',
+      module: 'thing',
       action: 'DeleteDictItem',
       params: params,
     ));
@@ -155,7 +177,7 @@ class KernelApi {
   /// @returns {ResultType<XDict>} 请求结果
   Future<ResultType<XDict>> updateDict(DictModel params) async {
     return await request(ReqestType(
-      module: 'base',
+      module: 'thing',
       action: 'UpdateDict',
       params: params,
     ));
@@ -166,7 +188,18 @@ class KernelApi {
   /// @returns {ResultType<XDictItem>} 请求结果
   Future<ResultType<XDictItem>> updateDictItem(DictItemModel params) async {
     return await request(ReqestType(
-      module: 'base',
+      module: 'thing',
+      action: 'UpdateDictItem',
+      params: params,
+    ));
+  }
+
+  /// 更新字典项
+  /// @param {DictItemModel} params 请求参数
+  /// @returns {ResultType<XDictItem>} 请求结果
+  Future<ResultType<XDictItemArray>> queryDictItems(IdSpaceReq params) async {
+    return await request(ReqestType(
+      module: 'thing',
       action: 'UpdateDictItem',
       params: params,
     ));
@@ -260,6 +293,17 @@ class KernelApi {
     ));
   }
 
+  /// 更新度量标准
+  /// @param {AttributeModel} params 请求参数
+  /// @returns {ResultType<XAttribute>} 请求结果
+  Future<ResultType<XOperation>> updateOperation(OperationModel params) async {
+    return await request(ReqestType(
+      module: 'thing',
+      action: 'UpdateOperation',
+      params: params,
+    ));
+  }
+
   /// 更新物
   /// @param {ThingModel} params 请求参数
   /// @returns {ResultType<XThing>} 请求结果
@@ -334,6 +378,18 @@ class KernelApi {
     return await request(ReqestType(
       module: 'thing',
       action: 'QuerySpeciesAttrs',
+      params: params,
+    ));
+  }
+
+  /// 查询分类的业务标准
+  /// @param {IdSpaceReq} params 请求参数
+  /// @returns {ResultType<XOperationArray>} 请求结果
+  Future<ResultType<XOperationArray>> querySpeciesOperation(
+      IdSpaceReq params) async {
+    return await request(ReqestType(
+      module: 'thing',
+      action: 'QuerySpeciesOperation',
       params: params,
     ));
   }

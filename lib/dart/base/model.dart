@@ -116,6 +116,91 @@ class FileChunkData {
   });
 }
 
+/// 文件系统项分享数据
+class TargetShare {
+  // 名称
+  String name;
+  // 类型
+  String typeName;
+  // 头像
+  FileItemShare? avatar;
+
+  TargetShare({
+    required this.name,
+    required this.typeName,
+    this.avatar,
+  });
+}
+
+/// 文件系统项分享数据
+class FileItemShare {
+  // 完整路径
+  int size;
+  // 名称
+  String name;
+  // 共享链接
+  String shareLink;
+  // 拓展名
+  String extension;
+  // 缩略图
+  String thumbnail;
+
+  FileItemShare({
+    required this.size,
+    required this.name,
+    required this.shareLink,
+    required this.extension,
+    required this.thumbnail,
+  });
+
+  FileItemShare.fromJson(Map<String, dynamic> json)
+      : name = json['name'],
+        shareLink = json['shareLink'],
+        extension = json['extension'],
+        thumbnail = json['thumbnail'],
+        size = json['size'];
+}
+
+/// 文件系统项数据模型
+class FileItemModel {
+  // 完整路径
+  String key;
+  // 完整路径
+  int size;
+  // 名称
+  String name;
+  // 共享链接
+  String shareLink;
+  // 拓展名
+  String extension;
+  // 缩略图
+  String thumbnail;
+  // 创建时间
+  DateTime dateCreated;
+  // 修改时间
+  DateTime dateModified;
+  // 文件类型
+  String contentType;
+  // 是否是目录
+  bool isDirectory;
+  // 是否包含子目录
+  bool hasSubDirectories;
+
+  FileItemModel({
+    required this.key,
+    required this.size,
+    required this.name,
+    required this.shareLink,
+    required this.extension,
+    required this.thumbnail,
+    required this.dateCreated,
+    required this.dateModified,
+    required this.contentType,
+    required this.isDirectory,
+    required this.hasSubDirectories,
+  });
+}
+
 class IdReq {
   // 唯一ID
   final String id;
@@ -145,6 +230,23 @@ class IdReq {
     json["id"] = id;
     return json;
   }
+}
+
+class CreateDefineReq {
+  // 唯一Id
+  String? id;
+  // 名称
+  late String name;
+  // 编号
+  late String code;
+  // 备注
+  late String remark;
+  // 节点信息
+  // FlowNode? resource;
+  // 归属Id
+  late String belongId;
+  // 流程字段json
+  String? fields;
 }
 
 class NameModel {
@@ -190,13 +292,12 @@ class IdReqModel {
   // 实体类型
   final String typeName;
   // 归属ID
-  final String belongId;
+  late String belongId;
 
   //构造方法
   IdReqModel({
     required this.id,
     required this.typeName,
-    required this.belongId,
   });
 
   //通过JSON构造
@@ -1022,25 +1123,23 @@ class ApprovalModel {
 
 class DictModel {
   // 唯一ID
-  final String id;
+  late String id;
   // 名称
   final String name;
   // 编号
-  final String code;
+  late String code;
   // 公开的
   final bool public;
   // 创建组织/个人
   final String belongId;
   // 类别Id
-  final String speciesId;
+  late String speciesId;
   // 备注
   final String remark;
 
   //构造方法
   DictModel({
-    required this.id,
     required this.name,
-    required this.code,
     required this.public,
     required this.belongId,
     required this.speciesId,
@@ -1094,7 +1193,7 @@ class DictItemModel {
   // 创建组织/个人
   final String belongId;
   // 备注
-  final String dictId;
+  late String dictId;
 
   //构造方法
   DictItemModel({
@@ -1103,7 +1202,6 @@ class DictItemModel {
     required this.value,
     required this.public,
     required this.belongId,
-    required this.dictId,
   });
 
   //通过JSON构造
@@ -1151,7 +1249,7 @@ class OperationModel {
   // 创建组织/个人
   final String belongId;
   // 类别Id
-  final String speciesId;
+  late String speciesId;
   // 备注
   final String remark;
 
@@ -1322,15 +1420,15 @@ class ThingModel {
 
 class SpeciesModel {
   // 唯一ID
-  final String id;
+  late String id;
   // 名称
   final String name;
   // 编号
-  final String code;
+  late String code;
   // 公开的
   final bool public;
   // 父类别ID
-  final String parentId;
+  late String parentId;
   // 创建组织/个人
   final String belongId;
   // 工作职权Id
@@ -1407,9 +1505,9 @@ class AttributeModel {
   // 创建组织/个人
   final String belongId;
   // 类别Id
-  final String speciesId;
+  late String speciesId;
   // 类别代码
-  final String speciesCode;
+  late String speciesCode;
   // 工作职权Id
   final String authId;
 
@@ -1546,7 +1644,7 @@ class IdentityModel {
   // 职权Id
   final String authId;
   // 创建组织/个人
-  final String belongId;
+  late String belongId;
   // 备注
   final String remark;
 
@@ -1601,17 +1699,17 @@ class TargetModel {
   // 编号
   final String code;
   // 类型名
-  final String typeName;
+  late String typeName;
   // 头像
   final String avatar;
   // 创建组织/个人
   final String belongId;
   // 团队名称
-  final String teamName;
+  late String teamName;
   // 团队代号
-  final String teamCode;
+  late String teamCode;
   // 团队备注
-  final String teamRemark;
+  late String teamRemark;
 
   //构造方法
   TargetModel({
