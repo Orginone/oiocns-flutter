@@ -44,7 +44,7 @@ class ReceiveType {
   // 目标
   final String? target;
   // 数据
-  final dynamic? data;
+  final dynamic data;
 
   ReceiveType({
     this.target,
@@ -240,7 +240,6 @@ class NameModel {
     return json;
   }
 }
-
 class IdReqModel {
   // 唯一ID
   final String? id;
@@ -253,6 +252,7 @@ class IdReqModel {
   IdReqModel({
     this.id,
     this.typeName,
+    this.belongId,
   });
 
   //通过JSON构造
@@ -278,6 +278,49 @@ class IdReqModel {
     json["id"] = id;
     json["typeName"] = typeName;
     json["belongId"] = belongId;
+    return json;
+  }
+}
+
+
+class ResetPwdModel {
+  // 唯一ID
+  final String code;
+  // 实体类型
+  final String password;
+  // 归属ID
+  final String privateKey;
+
+  //构造方法
+  ResetPwdModel({
+    required this.code,
+    required this.password,
+    required this.privateKey,
+  });
+
+  //通过JSON构造
+  ResetPwdModel.fromJson(Map<String, dynamic> json)
+      : code = json["code"],
+        password = json["password"],
+        privateKey = json["privateKey"];
+
+  //通过动态数组解析成List
+  static List<ResetPwdModel> fromList(List<Map<String, dynamic>> list) {
+    List<ResetPwdModel> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(ResetPwdModel.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["code"] = code;
+    json["password"] = password;
+    json["privateKey"] = privateKey;
     return json;
   }
 }
@@ -798,7 +841,7 @@ class IDReqJoinedModel {
   // 实体类型
   final String? typeName;
   // 加入的节点类型
-  final List<String>? JoinTypeNames;
+  final List<String>? joinTypeNames;
   // 工作空间ID
   final String? spaceId;
   // 分页
@@ -808,7 +851,7 @@ class IDReqJoinedModel {
   IDReqJoinedModel({
     this.id,
     this.typeName,
-    this.JoinTypeNames,
+    this.joinTypeNames,
     this.spaceId,
     this.page,
   });
@@ -817,7 +860,7 @@ class IDReqJoinedModel {
   IDReqJoinedModel.fromJson(Map<String, dynamic> json)
       : id = json["id"],
         typeName = json["typeName"],
-        JoinTypeNames = json["JoinTypeNames"],
+        joinTypeNames = json["JoinTypeNames"],
         spaceId = json["spaceId"],
         page = PageRequest.fromJson(json["page"]);
 
@@ -837,7 +880,7 @@ class IDReqJoinedModel {
     Map<String, dynamic> json = {};
     json["id"] = id;
     json["typeName"] = typeName;
-    json["JoinTypeNames"] = JoinTypeNames;
+    json["JoinTypeNames"] = joinTypeNames;
     json["spaceId"] = spaceId;
     json["page"] = page?.toJson();
     return json;
@@ -1648,7 +1691,7 @@ class IdentityModel {
 
 class TargetModel {
   // 唯一ID
-  final String? id;
+  String? id;
   // 名称
   final String? name;
   // 编号
@@ -1658,7 +1701,7 @@ class TargetModel {
   // 头像
   final String? avatar;
   // 创建组织/个人
-  final String? belongId;
+  String? belongId;
   // 团队名称
   late String? teamName;
   // 团队代号
@@ -2614,14 +2657,14 @@ class CreateOrderByStagingModel {
   // 所属ID
   final String? belongId;
   // 暂存区ID
-  final List<String>? StagingIds;
+  final List<String>? stagingIds;
 
   //构造方法
   CreateOrderByStagingModel({
     this.name,
     this.code,
     this.belongId,
-    this.StagingIds,
+    this.stagingIds,
   });
 
   //通过JSON构造
@@ -2629,7 +2672,7 @@ class CreateOrderByStagingModel {
       : name = json["name"],
         code = json["code"],
         belongId = json["belongId"],
-        StagingIds = json["StagingIds"];
+        stagingIds = json["StagingIds"];
 
   //通过动态数组解析成List
   static List<CreateOrderByStagingModel> fromList(
@@ -2649,7 +2692,7 @@ class CreateOrderByStagingModel {
     json["name"] = name;
     json["code"] = code;
     json["belongId"] = belongId;
-    json["StagingIds"] = StagingIds;
+    json["StagingIds"] = stagingIds;
     return json;
   }
 }
@@ -3209,7 +3252,7 @@ class FlowInstanceModel {
   // 功能标识编号
   final String? functionCode;
   // 空间Id
-  final String? SpaceId;
+  final String? spaceId;
   // 展示内容
   final String? content;
   // 内容类型
@@ -3225,7 +3268,7 @@ class FlowInstanceModel {
   FlowInstanceModel({
     this.productId,
     this.functionCode,
-    this.SpaceId,
+    this.spaceId,
     this.content,
     this.contentType,
     this.data,
@@ -3237,7 +3280,7 @@ class FlowInstanceModel {
   FlowInstanceModel.fromJson(Map<String, dynamic> json)
       : productId = json["productId"],
         functionCode = json["functionCode"],
-        SpaceId = json["SpaceId"],
+        spaceId = json["SpaceId"],
         content = json["content"],
         contentType = json["contentType"],
         data = json["data"],
@@ -3260,7 +3303,7 @@ class FlowInstanceModel {
     Map<String, dynamic> json = {};
     json["productId"] = productId;
     json["functionCode"] = functionCode;
-    json["SpaceId"] = SpaceId;
+    json["SpaceId"] = spaceId;
     json["content"] = content;
     json["contentType"] = contentType;
     json["data"] = data;
