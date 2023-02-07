@@ -172,7 +172,7 @@ abstract class IProduct {
   /// @param destType 目标类型
   /// @param teamId 组织Id
   /// @returns
-  Future<IdNameArray> queryExtend(String destType, String? teamId);
+  Future<IdNameArray?> queryExtend(String destType, String? teamId);
 
   /// 上架商品
   /// @param params.Caption 标题
@@ -206,9 +206,9 @@ abstract class IProduct {
 }
 
 abstract class IResource {
-  /** 资源实体 */
+  /* 资源实体 */
   late XResource resource;
-  /**
+  /*
    * 资源分发拓展操作
    * @param teamId 组织Id
    * @param destIds 目标Id
@@ -217,7 +217,7 @@ abstract class IResource {
    */
   Future<bool> createExtend(
       String teamId, List<String> destIds, String destType);
-  /**
+  /*
    * 取消资源分发
    * @param teamId 组织Id
    * @param destIds 目标Id
@@ -226,12 +226,12 @@ abstract class IResource {
    */
   Future<bool> deleteExtend(
       String teamId, List<String> destIds, String destType);
-  /**
+  /*
    * 查询资源分发
    * @param sourceId 资源Id
    * @param destType 目标类型
    * @param teamId 组织Id
    * @returns
    */
-  Future<IdNameArray> queryExtend(String destType, String teamId);
+  Future<IdNameArray?> queryExtend(String destType, String teamId);
 }

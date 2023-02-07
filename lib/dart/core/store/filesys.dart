@@ -7,7 +7,7 @@ import './ifilesys.dart';
 /// 分片大小
 const chunkSize = 1024 * 1024;
 
-/**
+/*
  * 文件系统项实现
  */
 class FileSystemItem implements IFileSystemItem {
@@ -67,7 +67,7 @@ class FileSystemItem implements IFileSystemItem {
         key: _formatKey(),
         operate: BucketOpreates.rename,
       ));
-      if (res.success! && res.data != null) {
+      if (res.success && res.data != null) {
         target = res.data;
         key = res.data!.key;
         name = res.data!.name!;
@@ -87,7 +87,7 @@ class FileSystemItem implements IFileSystemItem {
         key: _formatKey(subName: name),
         operate: BucketOpreates.create,
       ));
-      if (res.success! && res.data != null) {
+      if (res.success && res.data != null) {
         target!.hasSubDirectories = true;
         var node = FileSystemItem(target: res.data, parent: parent);
         children!.add(node);
@@ -105,7 +105,7 @@ class FileSystemItem implements IFileSystemItem {
       key: _formatKey(),
       operate: BucketOpreates.delete,
     ));
-    if (res.success!) {
+    if (res.success) {
       var index = parent?.children!.indexWhere((item) => item.key == key);
       if (index != null && index > -1) {
         parent?.children!.removeAt(index);
@@ -125,7 +125,7 @@ class FileSystemItem implements IFileSystemItem {
         destination: destination.key,
         operate: BucketOpreates.copy,
       ));
-      if (res.success!) {
+      if (res.success) {
         destination.target?.hasSubDirectories = true;
         destination.children?.add(_newItemForDes(this, destination));
         return true;
@@ -144,7 +144,7 @@ class FileSystemItem implements IFileSystemItem {
         destination: destination.key,
         operate: BucketOpreates.move,
       ));
-      if (res.success!) {
+      if (res.success) {
         var index = parent?.children!.indexWhere((item) => item.key == key);
         if (index != null && index > -1) {
           parent?.children!.removeAt(index);
@@ -167,7 +167,7 @@ class FileSystemItem implements IFileSystemItem {
         key: _formatKey(),
         operate: BucketOpreates.list,
       ));
-      if (res.success! && res.data!.isNotEmpty) {
+      if (res.success && res.data!.isNotEmpty) {
         children = res.data!
             .map((item) => FileSystemItem(target: item, parent: parent))
             .toList();

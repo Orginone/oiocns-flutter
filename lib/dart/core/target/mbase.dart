@@ -2,6 +2,9 @@ import 'package:orginone/dart/base/model.dart';
 import '../../base/common/uint.dart';
 import '../../base/schema.dart';
 import '../enum.dart';
+import '../market/market.dart';
+import '../market/model.dart';
+import '../market/webapp.dart';
 import 'flow.dart';
 import 'itarget.dart';
 
@@ -43,13 +46,13 @@ abstract class MarketTarget extends FlowTarget implements IMTarget {
       ),
     ));
     if (res.success && res.data?.result != null) {
-      ownProducts = res.data!.result?.map((e) => WebApp(e)).toList();
+      ownProducts = res.data!.result?.map((e) => WebApp(e)).toList() ?? [];
     }
     return ownProducts;
   }
 
   @override
-  Future<List<Market>> getJoinMarkets({reload = false}) async {
+  Future<List<IMarket>> getJoinMarkets({reload = false}) async {
     if (!reload && joinedMarkets.isNotEmpty) {
       return joinedMarkets;
     }
@@ -58,18 +61,18 @@ abstract class MarketTarget extends FlowTarget implements IMTarget {
       page: PageRequest(offset: 0, limit: Constants.maxUint16, filter: ''),
     ));
     if (res.success && res.data?.result != null) {
-      joinedMarkets = res.data!.result?.map((e) => Market(e)).toList();
+      joinedMarkets = res.data!.result?.map((e) => Market(e)).toList() ?? [];
     }
     return joinedMarkets;
   }
 
   @override
-  Future<List<Market>> getPublicMarket({reload = false}) async {
+  Future<List<IMarket>> getPublicMarket({reload = false}) async {
     if (!reload && publicMarkets.isNotEmpty) {
       return publicMarkets;
     }
     final res = await kernel.getPublicMarket();
-    publicMarkets = res.data!.result?.map((e) => Market(e)).toList();
+    publicMarkets = res.data!.result?.map((e) => Market(e)).toList() ?? [];
     return publicMarkets;
   }
 
@@ -187,6 +190,7 @@ abstract class MarketTarget extends FlowTarget implements IMTarget {
       joinedMarkets.add(market);
       return market;
     }
+    return null;
   }
 
   @override
@@ -194,10 +198,11 @@ abstract class MarketTarget extends FlowTarget implements IMTarget {
     data.belongId = target.id;
     final res = await kernel.createProduct(data);
     if (res.success && res.data != null) {
-      var prod = WebApp(res.data);
+      var prod = WebApp(res.data!);
       ownProducts.add(prod);
       return prod;
     }
+    return null;
   }
 
   @override
@@ -291,15 +296,6 @@ abstract class MarketTarget extends FlowTarget implements IMTarget {
 
   @override
   late List<XMarketRelation> joinMarketApplys;
-
-  @override
-  late List joinedMarkets;
-
-  @override
-  late List ownProducts;
-
-  @override
-  late List publicMarkets;
 
   @override
   late List<XProduct> usefulProduct;

@@ -1,19 +1,19 @@
 /// 统一返回结构模型
 class ResultType<T> {
   // 代码，成功为200
-  final int? code;
+  final int code;
   // 数据
   final T? data;
   // 消息
-  final String? msg;
+  final String msg;
   // 是否成功标志
-  final bool? success;
+  final bool success;
 
   ResultType({
-    this.code,
+    required this.code,
     this.data,
-    this.msg,
-    this.success,
+    required this.msg,
+    required this.success,
   });
 
   ResultType.fromJson(Map<String, dynamic> json)
@@ -931,17 +931,17 @@ class ChatsReqModel {
 
 class PageRequest {
   // 偏移量
-  final int? offset;
+  final int offset;
   // 最大数量
-  final int? limit;
+  final int limit;
   //过滤条件
-  final String? filter;
+  final String filter;
 
   //构造方法
   PageRequest({
-    this.offset,
-    this.limit,
-    this.filter,
+    required this.offset,
+    required this.limit,
+    required this.filter,
   });
 
   //通过JSON构造
@@ -1123,25 +1123,25 @@ class DictModel {
   // 唯一ID
   late String? id;
   // 名称
-  final String? name;
+  final String name;
   // 编号
-  late String? code;
+  late String code;
   // 公开的
-  final bool? public;
+  final bool public;
   // 创建组织/个人
-  final String? belongId;
+  final String belongId;
   // 类别Id
-  late String? speciesId;
+  late String speciesId;
   // 备注
-  final String? remark;
+  final String remark;
 
   //构造方法
   DictModel({
-    this.name,
-    this.public,
-    this.belongId,
-    this.speciesId,
-    this.remark,
+    required this.name,
+    required this.public,
+    required this.belongId,
+    required this.speciesId,
+    required this.remark,
   });
 
   //通过JSON构造
@@ -1420,30 +1420,30 @@ class SpeciesModel {
   // 唯一ID
   late String? id;
   // 名称
-  final String? name;
+  final String name;
   // 编号
-  late String? code;
+  late String code;
   // 公开的
-  final bool? public;
+  final bool public;
   // 父类别ID
   late String? parentId;
   // 创建组织/个人
-  final String? belongId;
+  final String belongId;
   // 工作职权Id
-  final String? authId;
+  final String authId;
   // 备注
-  final String? remark;
+  final String remark;
 
   //构造方法
   SpeciesModel({
     this.id,
-    this.name,
-    this.code,
-    this.public,
-    this.parentId,
-    this.belongId,
-    this.authId,
-    this.remark,
+    required this.name,
+    required this.code,
+    required this.public,
+    required this.parentId,
+    required this.belongId,
+    required this.authId,
+    required this.remark,
   });
 
   //通过JSON构造
@@ -1693,33 +1693,33 @@ class TargetModel {
   // 唯一ID
   String? id;
   // 名称
-  final String? name;
+  final String name;
   // 编号
-  final String? code;
+  final String code;
   // 类型名
-  late String? typeName;
+  late String typeName;
   // 头像
-  final String? avatar;
+  final String avatar;
   // 创建组织/个人
-  String? belongId;
+  String belongId;
   // 团队名称
-  late String? teamName;
+  late String teamName;
   // 团队代号
-  late String? teamCode;
+  late String teamCode;
   // 团队备注
-  late String? teamRemark;
+  late String teamRemark;
 
   //构造方法
   TargetModel({
     this.id,
-    this.name,
-    this.code,
-    this.typeName,
-    this.avatar,
-    this.belongId,
-    this.teamName,
-    this.teamCode,
-    this.teamRemark,
+    required this.name,
+    required this.code,
+    required this.typeName,
+    required this.avatar,
+    required this.belongId,
+    required this.teamName,
+    required this.teamCode,
+    required this.teamRemark,
   });
 
   //通过JSON构造
@@ -2232,7 +2232,7 @@ class ProductModel {
   // 备注
   final String? remark;
   // 所属ID
-  final String? belongId;
+  late String belongId;
   // 照片
   final String? photo;
   // 资源列
@@ -2246,7 +2246,7 @@ class ProductModel {
     this.thingId,
     this.typeName,
     this.remark,
-    this.belongId,
+    required this.belongId,
     this.photo,
     this.resources,
   });
@@ -3134,16 +3134,16 @@ class ChatResponse {
 
 class GroupChatModel {
   // 分组ID
-  final String? id;
+  final String id;
   // 名称
-  final String? name;
+  final String name;
   // 会话
   final List<ChatModel>? chats;
 
   //构造方法
   GroupChatModel({
-    this.id,
-    this.name,
+    required this.id,
+    required this.name,
     this.chats,
   });
 
@@ -3176,9 +3176,9 @@ class GroupChatModel {
 
 class ChatModel {
   // 会话ID
-  final String? id;
+  final String id;
   // 名称
-  final String? name;
+  final String name;
   // 头像
   final String? photo;
   // 标签
@@ -3186,7 +3186,7 @@ class ChatModel {
   // 备注
   final String? remark;
   // 类型名称
-  final String? typeName;
+  final String typeName;
   // 消息体
   final String? msgType;
   // 消息体
@@ -3196,12 +3196,12 @@ class ChatModel {
 
   //构造方法
   ChatModel({
-    this.id,
-    this.name,
+    required this.id,
+    required this.name,
     this.photo,
     this.label,
     this.remark,
-    this.typeName,
+    required this.typeName,
     this.msgType,
     this.msgBody,
     this.msgTime,

@@ -1,3 +1,4 @@
+import 'package:orginone/dart/core/market/model.dart';
 import 'package:orginone/dart/core/target/university.dart'; 
 import '../../base/common/uint.dart';
 import '../../base/model.dart';
@@ -10,6 +11,28 @@ import 'itarget.dart';
 import 'mbase.dart';
 
 class Person extends MarketTarget implements IPerson {
+ 
+
+  @override
+  late List<ICohort> cohorts;
+
+  @override
+  late List<ICompany> joinedCompany;
+
+  @override
+  late List<XTarget> joinedFriend;
+
+  @override
+  set spaceData(SpaceType _) {}
+
+  @override
+  late List<IMarket> joinedMarkets;
+
+  @override
+  late List<IProduct> ownProducts;
+
+  @override
+  late List<IMarket> publicMarkets;
   Person(XTarget target) : super(target) {
     super.searchTargetType = [
       TargetType.cohort,
@@ -172,12 +195,12 @@ class Person extends MarketTarget implements IPerson {
   }
 
   @override
-  Future<IProduct> createProduct(ProductModel data) async {
+  Future<IProduct?> createProduct(ProductModel data) async {
     final prod = await super.createProduct(data);
-    if (prod) {
+    if (prod != null) {
       usefulProduct.add(prod.prod);
-      if (prod.prod.resource) {
-        usefulResource[prod.prod.id] = prod.prod.resource;
+      if (prod.prod.resource != null) {
+        usefulResource[prod.prod.id!] = prod.prod.resource!;
       }
     }
     return prod;
@@ -361,16 +384,4 @@ class Person extends MarketTarget implements IPerson {
             code: target.code, password: password, privateKey: privateKey)))
         .success;
   }
-
-  @override
-  late List<ICohort> cohorts;
-
-  @override
-  late List<ICompany> joinedCompany;
-
-  @override
-  late List<XTarget> joinedFriend;
-
-  @override
-  set spaceData(SpaceType _) {}
 }

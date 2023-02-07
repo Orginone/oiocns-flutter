@@ -2,6 +2,7 @@
  * 公司的元操作
  */
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/market/model.dart';
 import 'package:orginone/dart/core/target/station.dart';
 import 'package:orginone/dart/core/target/working.dart';
 
@@ -51,7 +52,7 @@ class Company extends MarketTarget implements ICompany {
         limit: Constants.maxUint16,
       ),
       spaceId: id,
-      JoinTypeNames: [TargetType.cohort.name],
+      joinTypeNames: [TargetType.cohort.name],
     ));
     if (res.success && res.data?.result != null) {
       cohorts = res.data!.result
@@ -452,4 +453,13 @@ class Company extends MarketTarget implements ICompany {
 
   @override
   set spaceData(SpaceType _) {}
+
+  @override
+  late List<IMarket> joinedMarkets;
+
+  @override
+  late List<IProduct> ownProducts;
+
+  @override
+  late List<IMarket> publicMarkets;
 }

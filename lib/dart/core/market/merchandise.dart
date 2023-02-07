@@ -3,17 +3,14 @@ import 'package:orginone/dart/base/model.dart';
 import './model.dart';
 
 class Merchandise implements IMerchandise {
+  @override
   late XMerchandise merchandise;
-
-  Merchandise(XMerchandise? merchandise);
 
   get id => merchandise.id;
   get marketId => merchandise.id;
   get productId => merchandise.productId;
 
-  constructor(XMerchandise merchandise) {
-    this.merchandise = merchandise;
-  }
+  Merchandise(this.merchandise);
 
   /// 更新商品信息
   /// @param merchandise 商品信息
@@ -36,7 +33,7 @@ class Merchandise implements IMerchandise {
       marketId: merchandise.marketId,
       productId: merchandise.productId,
     } as MerchandiseModel);
-    if (res.success!) {
+    if (res.success) {
       XMerchandise xMerchandise = XMerchandise(
           id: id,
           caption: caption,
@@ -58,7 +55,7 @@ class Merchandise implements IMerchandise {
           market: null);
       merchandise = xMerchandise;
     }
-    return res.success!;
+    return res.success;
   }
 
   /// 查询商品交易情况
@@ -77,13 +74,13 @@ class Merchandise implements IMerchandise {
   Future<bool> deliver(String detailId, int status) async {
     return (await kernel.deliverMerchandise(
             {id: detailId, status: status} as ApprovalModel))
-        .success!;
+        .success;
   }
 
   @override
   Future<bool> cancel(String detailId, int status) async {
     return (await kernel
             .cancelOrderDetail({id: detailId, status: status} as ApprovalModel))
-        .success!;
+        .success;
   }
 }

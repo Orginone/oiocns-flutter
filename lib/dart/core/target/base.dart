@@ -252,7 +252,7 @@ class BaseTarget extends ITarget {
           typeName: target.typeName,
           page: PageRequest(offset: 0, filter: '', limit: Constants.maxUint16),
           spaceId: spaceId,
-          JoinTypeNames: List<String>.from(typeNames)));
+          joinTypeNames: List<String>.from(typeNames)));
       if (res.data != null) {
         return res.data!;
       }

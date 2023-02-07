@@ -5,6 +5,8 @@ import 'package:orginone/dart/core/target/authority/iidentity.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/species/ispecies.dart';
 
+import '../market/model.dart';
+
 /// 空间类型数据
 class SpaceType {
   // 唯一标识
@@ -196,11 +198,11 @@ abstract class IMTarget {
   /// @param { String } params.name
   /// @param
   /// @returns
-  Future<IMarket> createMarket(MarketModel data);
+  Future<IMarket?> createMarket(MarketModel data);
 
   /// 创建应用
   /// @param  {model.ProductModel} 产品基础信息
-  Future<IProduct> createProduct(ProductModel model);
+  Future<IProduct?> createProduct(ProductModel model);
 
   /// 删除市场
   /// @param id 市场Id
