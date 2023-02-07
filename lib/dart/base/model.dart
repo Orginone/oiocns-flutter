@@ -240,19 +240,19 @@ class NameModel {
     return json;
   }
 }
-
 class IdReqModel {
   // 唯一ID
   final String id;
   // 实体类型
   final String typeName;
   // 归属ID
-  late String belongId;
+  late String? belongId;
 
   //构造方法
   IdReqModel({
     required this.id,
     required this.typeName,
+    this.belongId,
   });
 
   //通过JSON构造
@@ -278,6 +278,49 @@ class IdReqModel {
     json["id"] = id;
     json["typeName"] = typeName;
     json["belongId"] = belongId;
+    return json;
+  }
+}
+
+
+class ResetPwdModel {
+  // 唯一ID
+  final String code;
+  // 实体类型
+  final String password;
+  // 归属ID
+  final String privateKey;
+
+  //构造方法
+  ResetPwdModel({
+    required this.code,
+    required this.password,
+    required this.privateKey,
+  });
+
+  //通过JSON构造
+  ResetPwdModel.fromJson(Map<String, dynamic> json)
+      : code = json["code"],
+        password = json["password"],
+        privateKey = json["privateKey"];
+
+  //通过动态数组解析成List
+  static List<ResetPwdModel> fromList(List<Map<String, dynamic>> list) {
+    List<ResetPwdModel> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(ResetPwdModel.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["code"] = code;
+    json["password"] = password;
+    json["privateKey"] = privateKey;
     return json;
   }
 }
@@ -1648,7 +1691,7 @@ class IdentityModel {
 
 class TargetModel {
   // 唯一ID
-  final String id;
+  String? id;
   // 名称
   final String name;
   // 编号
@@ -1658,7 +1701,7 @@ class TargetModel {
   // 头像
   final String avatar;
   // 创建组织/个人
-  final String belongId;
+  String belongId;
   // 团队名称
   late String teamName;
   // 团队代号
@@ -1668,7 +1711,7 @@ class TargetModel {
 
   //构造方法
   TargetModel({
-    required this.id,
+    this.id,
     required this.name,
     required this.code,
     required this.typeName,
@@ -1829,7 +1872,7 @@ class LogModel {
 
 class MarketModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 名称
   final String name;
   // 编号
@@ -1847,7 +1890,7 @@ class MarketModel {
 
   //构造方法
   MarketModel({
-    required this.id,
+    this.id,
     required this.name,
     required this.code,
     required this.belongId,
@@ -1963,7 +2006,7 @@ class MerchandiseModel {
 
 class OrderModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 存证ID
   final String nftId;
   // 名称
@@ -1977,7 +2020,7 @@ class OrderModel {
 
   //构造方法
   OrderModel({
-    required this.id,
+    this.id,
     required this.nftId,
     required this.name,
     required this.code,
@@ -2189,7 +2232,7 @@ class ProductModel {
   // 备注
   final String remark;
   // 所属ID
-  final String belongId;
+  late String belongId;
   // 照片
   final String photo;
   // 资源列
