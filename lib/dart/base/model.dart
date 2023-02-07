@@ -1,19 +1,19 @@
 /// 统一返回结构模型
 class ResultType<T> {
   // 代码，成功为200
-  final int code;
+  final int? code;
   // 数据
   final T? data;
   // 消息
-  final String msg;
+  final String? msg;
   // 是否成功标志
-  final bool success;
+  final bool? success;
 
   ResultType({
-    required this.code,
+    this.code,
     this.data,
-    required this.msg,
-    required this.success,
+    this.msg,
+    this.success,
   });
 
   ResultType.fromJson(Map<String, dynamic> json)
@@ -26,29 +26,29 @@ class ResultType<T> {
 /// 内核请求模型
 class ReqestType {
   // 模块
-  final String module;
+  final String? module;
   // 方法
-  final String action;
+  final String? action;
   // 参数
   final dynamic params;
 
   ReqestType({
-    required this.module,
-    required this.action,
-    required this.params,
+    this.module,
+    this.action,
+    this.params,
   });
 }
 
 /// 事件接收模型
 class ReceiveType {
   // 目标
-  final String target;
+  final String? target;
   // 数据
-  final dynamic data;
+  final dynamic? data;
 
   ReceiveType({
-    required this.target,
-    required this.data,
+    this.target,
+    this.data,
   });
 }
 
@@ -75,24 +75,24 @@ enum BucketOpreates {
 /// 桶操作携带的数据模型
 class BucketOpreateModel {
   // 完整路径
-  final String key;
+  final String? key;
   // 名称
   final String? name;
   // 共享域
-  final String shareDomain;
+  final String? shareDomain;
   // 目标
   final String? destination;
   // 操作
-  final BucketOpreates operate;
+  final BucketOpreates? operate;
   // 携带的分片数据
   final FileChunkData? fileItem;
 
   BucketOpreateModel({
-    required this.key,
+    this.key,
     this.name,
-    required this.shareDomain,
+    this.shareDomain,
     this.destination,
-    required this.operate,
+    this.operate,
     this.fileItem,
   });
 }
@@ -100,69 +100,69 @@ class BucketOpreateModel {
 /// 上传文件携带的数据
 class FileChunkData {
   // 分片索引
-  final int index;
+  final int? index;
   // 文件大小
-  final int size;
+  final int? size;
   // 上传的唯一ID
-  final String uploadId;
+  final String? uploadId;
   // 分片数据编码字符串
-  final String dataUrl;
+  final String? dataUrl;
 
   FileChunkData({
-    required this.index,
-    required this.size,
-    required this.uploadId,
-    required this.dataUrl,
+    this.index,
+    this.size,
+    this.uploadId,
+    this.dataUrl,
   });
 }
 
 /// 文件系统项数据模型
 class FileItemModel {
   // 完整路径
-  String key;
+  String? key;
   // 完整路径
-  int size;
+  int? size;
   // 名称
-  String name;
+  String? name;
   // 共享链接
-  String shareLink;
+  String? shareLink;
   // 拓展名
-  String extension;
+  String? extension;
   // 缩略图
-  String thumbnail;
+  String? thumbnail;
   // 创建时间
-  DateTime dateCreated;
+  DateTime? dateCreated;
   // 修改时间
-  DateTime dateModified;
+  DateTime? dateModified;
   // 文件类型
-  String contentType;
+  String? contentType;
   // 是否是目录
-  bool isDirectory;
+  bool? isDirectory;
   // 是否包含子目录
-  bool hasSubDirectories;
+  bool? hasSubDirectories;
 
   FileItemModel({
-    required this.key,
-    required this.size,
-    required this.name,
-    required this.shareLink,
-    required this.extension,
-    required this.thumbnail,
-    required this.dateCreated,
-    required this.dateModified,
-    required this.contentType,
-    required this.isDirectory,
-    required this.hasSubDirectories,
+    this.key,
+    this.size,
+    this.name,
+    this.shareLink,
+    this.extension,
+    this.thumbnail,
+    this.dateCreated,
+    this.dateModified,
+    this.contentType,
+    this.isDirectory,
+    this.hasSubDirectories,
   });
 }
 
 class IdReq {
   // 唯一ID
-  final String id;
+  final String? id;
 
   //构造方法
   IdReq({
-    required this.id,
+    this.id,
   });
 
   //通过JSON构造
@@ -191,29 +191,29 @@ class CreateDefineReq {
   // 唯一Id
   String? id;
   // 名称
-  late String name;
+  late String? name;
   // 编号
-  late String code;
+  late String? code;
   // 备注
-  late String remark;
+  late String? remark;
   // 节点信息
   // FlowNode? resource;
   // 归属Id
-  late String belongId;
+  late String? belongId;
   // 流程字段json
   String? fields;
 }
 
 class NameModel {
   // 名称
-  final String name;
+  final String? name;
   // 图片
-  final String photo;
+  final String? photo;
 
   //构造方法
   NameModel({
-    required this.name,
-    required this.photo,
+    this.name,
+    this.photo,
   });
 
   //通过JSON构造
@@ -243,16 +243,16 @@ class NameModel {
 
 class IdReqModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 实体类型
-  final String typeName;
+  final String? typeName;
   // 归属ID
-  late String belongId;
+  late String? belongId;
 
   //构造方法
   IdReqModel({
-    required this.id,
-    required this.typeName,
+    this.id,
+    this.typeName,
   });
 
   //通过JSON构造
@@ -284,14 +284,14 @@ class IdReqModel {
 
 class IdArrayReq {
   // 唯一ID数组
-  final List<String> ids;
+  final List<String>? ids;
   // 分页
   final PageRequest? page;
 
   //构造方法
   IdArrayReq({
-    required this.ids,
-    required this.page,
+    this.ids,
+    this.page,
   });
 
   //通过JSON构造
@@ -321,17 +321,17 @@ class IdArrayReq {
 
 class IdSpaceReq {
   // 唯一ID
-  final String id;
+  final String? id;
   // 工作空间ID
-  final String spaceId;
+  final String? spaceId;
   // 分页
   final PageRequest? page;
 
   //构造方法
   IdSpaceReq({
-    required this.id,
-    required this.spaceId,
-    required this.page,
+    this.id,
+    this.spaceId,
+    this.page,
   });
 
   //通过JSON构造
@@ -363,14 +363,14 @@ class IdSpaceReq {
 
 class SpaceAuthReq {
   // 职权ID
-  final String authId;
+  final String? authId;
   // 工作空间ID
-  final String spaceId;
+  final String? spaceId;
 
   //构造方法
   SpaceAuthReq({
-    required this.authId,
-    required this.spaceId,
+    this.authId,
+    this.spaceId,
   });
 
   //通过JSON构造
@@ -400,13 +400,13 @@ class SpaceAuthReq {
 
 class IDBelongReq {
   // 唯一ID
-  final String id;
+  final String? id;
   // 分页
   final PageRequest? page;
 
   //构造方法
   IDBelongReq({
-    required this.id,
+    this.id,
     this.page,
   });
 
@@ -437,14 +437,14 @@ class IDBelongReq {
 
 class RelationReq {
   // 唯一ID
-  final String id;
+  final String? id;
   // 子组织/个人ID
-  final List<String> subIds;
+  final List<String>? subIds;
 
   //构造方法
   RelationReq({
-    required this.id,
-    required this.subIds,
+    this.id,
+    this.subIds,
   });
 
   //通过JSON构造
@@ -475,17 +475,17 @@ class RelationReq {
 // 缓存结构体
 class CacheReq {
   // 缓存key
-  final String key;
+  final String? key;
   // 缓存数据
-  final String value;
+  final String? value;
   // 过期时间s
-  final String expire;
+  final String? expire;
 
   //构造方法
   CacheReq({
-    required this.key,
-    required this.value,
-    required this.expire,
+    this.key,
+    this.value,
+    this.expire,
   });
 
   //通过JSON构造
@@ -517,32 +517,32 @@ class CacheReq {
 
 class ThingAttrReq {
   // 唯一ID
-  final String id;
+  final String? id;
   //类别Id
-  final String specId;
+  final String? specId;
   //类别代码
-  final String specCode;
+  final String? specCode;
   //特性Id
-  final String attrId;
+  final String? attrId;
   //特性代码
-  final String attrCode;
+  final String? attrCode;
   //关系Id
-  final String relationId;
+  final String? relationId;
   //是否公开
-  final bool public;
+  final bool? public;
   // 分页
   final PageRequest? page;
 
   //构造方法
   ThingAttrReq({
-    required this.id,
-    required this.specId,
-    required this.specCode,
-    required this.attrId,
-    required this.attrCode,
-    required this.relationId,
-    required this.public,
-    required this.page,
+    this.id,
+    this.specId,
+    this.specCode,
+    this.attrId,
+    this.attrCode,
+    this.relationId,
+    this.public,
+    this.page,
   });
 
   //通过JSON构造
@@ -584,14 +584,14 @@ class ThingAttrReq {
 
 class IDWithBelongReq {
   // 唯一ID
-  final String id;
+  final String? id;
   // 归属ID
-  final String belongId;
+  final String? belongId;
 
   //构造方法
   IDWithBelongReq({
-    required this.id,
-    required this.belongId,
+    this.id,
+    this.belongId,
   });
 
   //通过JSON构造
@@ -621,17 +621,17 @@ class IDWithBelongReq {
 
 class IDWithBelongPageReq {
   // 唯一ID
-  final String id;
+  final String? id;
   // 归属ID
-  final String belongId;
+  final String? belongId;
   // 分页
   final PageRequest? page;
 
   //构造方法
   IDWithBelongPageReq({
-    required this.id,
-    required this.belongId,
-    required this.page,
+    this.id,
+    this.belongId,
+    this.page,
   });
 
   //通过JSON构造
@@ -663,17 +663,17 @@ class IDWithBelongPageReq {
 
 class IDStatusPageReq {
   // 唯一ID
-  final String id;
+  final String? id;
   // 状态
-  final int status;
+  final int? status;
   // 分页
   final PageRequest? page;
 
   //构造方法
   IDStatusPageReq({
-    required this.id,
-    required this.status,
-    required this.page,
+    this.id,
+    this.status,
+    this.page,
   });
 
   //通过JSON构造
@@ -705,17 +705,17 @@ class IDStatusPageReq {
 
 class IDBelongTargetReq {
   // 唯一ID
-  final String id;
+  final String? id;
   // 类型
-  final String targetType;
+  final String? targetType;
   // 分页
   final PageRequest? page;
 
   //构造方法
   IDBelongTargetReq({
-    required this.id,
-    required this.targetType,
-    required this.page,
+    this.id,
+    this.targetType,
+    this.page,
   });
 
   //通过JSON构造
@@ -747,20 +747,20 @@ class IDBelongTargetReq {
 
 class IDReqSubModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 实体类型
-  final List<String> typeNames;
+  final List<String>? typeNames;
   // 子节点类型
-  final List<String> subTypeNames;
+  final List<String>? subTypeNames;
   // 分页
   final PageRequest? page;
 
   //构造方法
   IDReqSubModel({
-    required this.id,
-    required this.typeNames,
-    required this.subTypeNames,
-    required this.page,
+    this.id,
+    this.typeNames,
+    this.subTypeNames,
+    this.page,
   });
 
   //通过JSON构造
@@ -794,23 +794,23 @@ class IDReqSubModel {
 
 class IDReqJoinedModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 实体类型
-  final String typeName;
+  final String? typeName;
   // 加入的节点类型
-  final List<String> JoinTypeNames;
+  final List<String>? JoinTypeNames;
   // 工作空间ID
-  final String spaceId;
+  final String? spaceId;
   // 分页
   final PageRequest? page;
 
   //构造方法
   IDReqJoinedModel({
-    required this.id,
-    required this.typeName,
-    required this.JoinTypeNames,
-    required this.spaceId,
-    required this.page,
+    this.id,
+    this.typeName,
+    this.JoinTypeNames,
+    this.spaceId,
+    this.page,
   });
 
   //通过JSON构造
@@ -846,17 +846,17 @@ class IDReqJoinedModel {
 
 class ChatsReqModel {
   // 工作空间ID
-  final String spaceId;
+  final String? spaceId;
   // 群组名称
-  final String cohortName;
+  final String? cohortName;
   // 空间类型名称
-  final String spaceTypeName;
+  final String? spaceTypeName;
 
   //构造方法
   ChatsReqModel({
-    required this.spaceId,
-    required this.cohortName,
-    required this.spaceTypeName,
+    this.spaceId,
+    this.cohortName,
+    this.spaceTypeName,
   });
 
   //通过JSON构造
@@ -888,17 +888,17 @@ class ChatsReqModel {
 
 class PageRequest {
   // 偏移量
-  final int offset;
+  final int? offset;
   // 最大数量
-  final int limit;
+  final int? limit;
   //过滤条件
-  final String filter;
+  final String? filter;
 
   //构造方法
   PageRequest({
-    required this.offset,
-    required this.limit,
-    required this.filter,
+    this.offset,
+    this.limit,
+    this.filter,
   });
 
   //通过JSON构造
@@ -930,17 +930,17 @@ class PageRequest {
 
 class RecursiveReqModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 实体类型
-  final String typeName;
+  final String? typeName;
   // 字节点类型
-  final List<String> subNodeTypeNames;
+  final List<String>? subNodeTypeNames;
 
   //构造方法
   RecursiveReqModel({
-    required this.id,
-    required this.typeName,
-    required this.subNodeTypeNames,
+    this.id,
+    this.typeName,
+    this.subNodeTypeNames,
   });
 
   //通过JSON构造
@@ -972,14 +972,14 @@ class RecursiveReqModel {
 
 class IdWithNameModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 名称
-  final String name;
+  final String? name;
 
   //构造方法
   IdWithNameModel({
-    required this.id,
-    required this.name,
+    this.id,
+    this.name,
   });
 
   //通过JSON构造
@@ -1013,7 +1013,7 @@ class IdNameArray {
 
   //构造方法
   IdNameArray({
-    required this.result,
+    this.result,
   });
 
   //通过JSON构造
@@ -1041,14 +1041,14 @@ class IdNameArray {
 
 class ApprovalModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 状态
-  final int status;
+  final int? status;
 
   //构造方法
   ApprovalModel({
-    required this.id,
-    required this.status,
+    this.id,
+    this.status,
   });
 
   //通过JSON构造
@@ -1078,27 +1078,27 @@ class ApprovalModel {
 
 class DictModel {
   // 唯一ID
-  late String id;
+  late String? id;
   // 名称
-  final String name;
+  final String? name;
   // 编号
-  late String code;
+  late String? code;
   // 公开的
-  final bool public;
+  final bool? public;
   // 创建组织/个人
-  final String belongId;
+  final String? belongId;
   // 类别Id
-  late String speciesId;
+  late String? speciesId;
   // 备注
-  final String remark;
+  final String? remark;
 
   //构造方法
   DictModel({
-    required this.name,
-    required this.public,
-    required this.belongId,
-    required this.speciesId,
-    required this.remark,
+    this.name,
+    this.public,
+    this.belongId,
+    this.speciesId,
+    this.remark,
   });
 
   //通过JSON构造
@@ -1138,25 +1138,25 @@ class DictModel {
 
 class DictItemModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 名称
-  final String name;
+  final String? name;
   // 编号
-  final String value;
+  final String? value;
   // 公开的
-  final bool public;
+  final bool? public;
   // 创建组织/个人
-  final String belongId;
+  final String? belongId;
   // 备注
-  late String dictId;
+  String? dictId;
 
   //构造方法
   DictItemModel({
-    required this.id,
-    required this.name,
-    required this.value,
-    required this.public,
-    required this.belongId,
+    this.id,
+    this.name,
+    this.value,
+    this.public,
+    this.belongId,
   });
 
   //通过JSON构造
@@ -1194,29 +1194,29 @@ class DictItemModel {
 
 class OperationModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 名称
-  final String name;
+  final String? name;
   // 编号
-  final String code;
+  final String? code;
   // 公开的
-  final bool public;
+  final bool? public;
   // 创建组织/个人
-  final String belongId;
+  final String? belongId;
   // 类别Id
-  late String speciesId;
+  late String? speciesId;
   // 备注
-  final String remark;
+  final String? remark;
 
   //构造方法
   OperationModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.public,
-    required this.belongId,
-    required this.speciesId,
-    required this.remark,
+    this.id,
+    this.name,
+    this.code,
+    this.public,
+    this.belongId,
+    this.speciesId,
+    this.remark,
   });
 
   //通过JSON构造
@@ -1256,29 +1256,29 @@ class OperationModel {
 
 class OperationItemModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 名称
-  final String name;
+  final String? name;
   // 编号
-  final String code;
+  final String? code;
   // 规则
-  final String rule;
+  final String? rule;
   // 创建组织/个人
-  final String belongId;
+  final String? belongId;
   // 业务Id
-  final String operationId;
+  final String? operationId;
   // 备注
-  final String remark;
+  final String? remark;
 
   //构造方法
   OperationItemModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.rule,
-    required this.belongId,
-    required this.operationId,
-    required this.remark,
+    this.id,
+    this.name,
+    this.code,
+    this.rule,
+    this.belongId,
+    this.operationId,
+    this.remark,
   });
 
   //通过JSON构造
@@ -1318,26 +1318,26 @@ class OperationItemModel {
 
 class ThingModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 名称
-  final String name;
+  final String? name;
   // 编号
-  final String code;
+  final String? code;
   // 链上ID
-  final String chainId;
+  final String? chainId;
   // 创建组织/个人
-  final String belongId;
+  final String? belongId;
   // 备注
-  final String remark;
+  final String? remark;
 
   //构造方法
   ThingModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.chainId,
-    required this.belongId,
-    required this.remark,
+    this.id,
+    this.name,
+    this.code,
+    this.chainId,
+    this.belongId,
+    this.remark,
   });
 
   //通过JSON构造
@@ -1375,32 +1375,32 @@ class ThingModel {
 
 class SpeciesModel {
   // 唯一ID
-  late String id;
+  late String? id;
   // 名称
-  final String name;
+  final String? name;
   // 编号
-  late String code;
+  late String? code;
   // 公开的
-  final bool public;
+  final bool? public;
   // 父类别ID
-  late String parentId;
+  late String? parentId;
   // 创建组织/个人
-  final String belongId;
+  final String? belongId;
   // 工作职权Id
-  final String authId;
+  final String? authId;
   // 备注
-  final String remark;
+  final String? remark;
 
   //构造方法
   SpeciesModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.public,
-    required this.parentId,
-    required this.belongId,
-    required this.authId,
-    required this.remark,
+    this.id,
+    this.name,
+    this.code,
+    this.public,
+    this.parentId,
+    this.belongId,
+    this.authId,
+    this.remark,
   });
 
   //通过JSON构造
@@ -1442,44 +1442,44 @@ class SpeciesModel {
 
 class AttributeModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 名称
-  final String name;
+  final String? name;
   // 编号
-  final String code;
+  final String? code;
   // 公开的
-  final bool public;
+  final bool? public;
   // 值类型
-  final String valueType;
+  final String? valueType;
   // 单位
-  final String unit;
+  final String? unit;
   // 选择字典的类型ID
-  final String dictId;
+  final String? dictId;
   // 备注
-  final String remark;
+  final String? remark;
   // 创建组织/个人
-  final String belongId;
+  final String? belongId;
   // 类别Id
-  late String speciesId;
+  late String? speciesId;
   // 类别代码
-  late String speciesCode;
+  late String? speciesCode;
   // 工作职权Id
-  final String authId;
+  final String? authId;
 
   //构造方法
   AttributeModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.public,
-    required this.valueType,
-    required this.unit,
-    required this.dictId,
-    required this.remark,
-    required this.belongId,
-    required this.speciesId,
-    required this.speciesCode,
-    required this.authId,
+    this.id,
+    this.name,
+    this.code,
+    this.public,
+    this.valueType,
+    this.unit,
+    this.dictId,
+    this.remark,
+    this.belongId,
+    this.speciesId,
+    this.speciesCode,
+    this.authId,
   });
 
   //通过JSON构造
@@ -1529,29 +1529,29 @@ class AttributeModel {
 
 class AuthorityModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 名称
-  final String name;
+  final String? name;
   // 编号
-  final String code;
+  final String? code;
   // 公开的
-  final bool public;
+  final bool? public;
   // 父类别ID
-  final String parentId;
+  final String? parentId;
   // 创建组织/个人
-  final String belongId;
+  final String? belongId;
   // 备注
-  final String remark;
+  final String? remark;
 
   //构造方法
   AuthorityModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.public,
-    required this.parentId,
-    required this.belongId,
-    required this.remark,
+    this.id,
+    this.name,
+    this.code,
+    this.public,
+    this.parentId,
+    this.belongId,
+    this.remark,
   });
 
   //通过JSON构造
@@ -1591,26 +1591,26 @@ class AuthorityModel {
 
 class IdentityModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 名称
-  final String name;
+  final String? name;
   // 编号
-  final String code;
+  final String? code;
   // 职权Id
-  final String authId;
+  final String? authId;
   // 创建组织/个人
-  late String belongId;
+  late String? belongId;
   // 备注
-  final String remark;
+  final String? remark;
 
   //构造方法
   IdentityModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.authId,
-    required this.belongId,
-    required this.remark,
+    this.id,
+    this.name,
+    this.code,
+    this.authId,
+    this.belongId,
+    this.remark,
   });
 
   //通过JSON构造
@@ -1648,35 +1648,35 @@ class IdentityModel {
 
 class TargetModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 名称
-  final String name;
+  final String? name;
   // 编号
-  final String code;
+  final String? code;
   // 类型名
-  late String typeName;
+  late String? typeName;
   // 头像
-  final String avatar;
+  final String? avatar;
   // 创建组织/个人
-  final String belongId;
+  final String? belongId;
   // 团队名称
-  late String teamName;
+  late String? teamName;
   // 团队代号
-  late String teamCode;
+  late String? teamCode;
   // 团队备注
-  late String teamRemark;
+  late String? teamRemark;
 
   //构造方法
   TargetModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.typeName,
-    required this.avatar,
-    required this.belongId,
-    required this.teamName,
-    required this.teamCode,
-    required this.teamRemark,
+    this.id,
+    this.name,
+    this.code,
+    this.typeName,
+    this.avatar,
+    this.belongId,
+    this.teamName,
+    this.teamCode,
+    this.teamRemark,
   });
 
   //通过JSON构造
@@ -1720,29 +1720,29 @@ class TargetModel {
 
 class RuleStdModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 名称
-  final String name;
+  final String? name;
   // 编号
-  final String code;
+  final String? code;
   // 组织/个人ID
-  final String targetId;
+  final String? targetId;
   // 类型
-  final String typeName;
+  final String? typeName;
   // 备注
-  final String remark;
+  final String? remark;
   // 标准
-  final List<String> attrs;
+  final List<String>? attrs;
 
   //构造方法
   RuleStdModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.targetId,
-    required this.typeName,
-    required this.remark,
-    required this.attrs,
+    this.id,
+    this.name,
+    this.code,
+    this.targetId,
+    this.typeName,
+    this.remark,
+    this.attrs,
   });
 
   //通过JSON构造
@@ -1782,20 +1782,20 @@ class RuleStdModel {
 
 class LogModel {
   // 唯一ID
-  final String id;
+  final String? id;
   //类型
-  final String type;
+  final String? type;
   //模块
-  final String module;
+  final String? module;
   //内容
-  final String content;
+  final String? content;
 
   //构造方法
   LogModel({
-    required this.id,
-    required this.type,
-    required this.module,
-    required this.content,
+    this.id,
+    this.type,
+    this.module,
+    this.content,
   });
 
   //通过JSON构造
@@ -1829,32 +1829,32 @@ class LogModel {
 
 class MarketModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 名称
-  final String name;
+  final String? name;
   // 编号
-  final String code;
+  final String? code;
   // 创建组织/个人
-  final String belongId;
+  final String? belongId;
   // 监管组织/个人
-  final String samrId;
+  final String? samrId;
   // 备注
-  final String remark;
+  final String? remark;
   // 是否公开
-  final bool public;
+  final bool? public;
   // 照片
-  final String photo;
+  final String? photo;
 
   //构造方法
   MarketModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.belongId,
-    required this.samrId,
-    required this.remark,
-    required this.public,
-    required this.photo,
+    this.id,
+    this.name,
+    this.code,
+    this.belongId,
+    this.samrId,
+    this.remark,
+    this.public,
+    this.photo,
   });
 
   //通过JSON构造
@@ -1896,32 +1896,32 @@ class MarketModel {
 
 class MerchandiseModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 标题
-  final String caption;
+  final String? caption;
   // 产品ID
-  final String productId;
+  final String? productId;
   // 单价
-  final double price;
+  final double? price;
   // 出售权属
-  final String sellAuth;
+  final String? sellAuth;
   // 商品出售市场ID
-  final String marketId;
+  final String? marketId;
   // 描述信息
-  final String information;
+  final String? information;
   // 有效期
-  final String days;
+  final String? days;
 
   //构造方法
   MerchandiseModel({
-    required this.id,
-    required this.caption,
-    required this.productId,
-    required this.price,
-    required this.sellAuth,
-    required this.marketId,
-    required this.information,
-    required this.days,
+    this.id,
+    this.caption,
+    this.productId,
+    this.price,
+    this.sellAuth,
+    this.marketId,
+    this.information,
+    this.days,
   });
 
   //通过JSON构造
@@ -1963,26 +1963,26 @@ class MerchandiseModel {
 
 class OrderModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 存证ID
-  final String nftId;
+  final String? nftId;
   // 名称
-  final String name;
+  final String? name;
   // 编号
-  final String code;
+  final String? code;
   // 创建组织/个人
-  final String belongId;
+  final String? belongId;
   // 商品ID
-  final List<String> merchandiseIds;
+  final List<String>? merchandiseIds;
 
   //构造方法
   OrderModel({
-    required this.id,
-    required this.nftId,
-    required this.name,
-    required this.code,
-    required this.belongId,
-    required this.merchandiseIds,
+    this.id,
+    this.nftId,
+    this.name,
+    this.code,
+    this.belongId,
+    this.merchandiseIds,
   });
 
   //通过JSON构造
@@ -2020,26 +2020,26 @@ class OrderModel {
 
 class OrderModelByStags {
   // 唯一ID
-  final String id;
+  final String? id;
   // 存证ID
-  final String nftId;
+  final String? nftId;
   // 名称
-  final String name;
+  final String? name;
   // 编号
-  final String code;
+  final String? code;
   // 创建组织/个人
-  final String belongId;
+  final String? belongId;
   // 暂存区ID集合
-  final List<String> stagingIds;
+  final List<String>? stagingIds;
 
   //构造方法
   OrderModelByStags({
-    required this.id,
-    required this.nftId,
-    required this.name,
-    required this.code,
-    required this.belongId,
-    required this.stagingIds,
+    this.id,
+    this.nftId,
+    this.name,
+    this.code,
+    this.belongId,
+    this.stagingIds,
   });
 
   //通过JSON构造
@@ -2077,24 +2077,24 @@ class OrderModelByStags {
 
 class OrderDetailModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 订单
-  final String caption;
+  final String? caption;
   // 商品
-  final String days;
+  final String? days;
   // 单价
   // 卖方ID
-  final int status;
+  final int? status;
   // 空间ID
-  final String spaceId;
+  final String? spaceId;
 
   //构造方法
   OrderDetailModel({
-    required this.id,
-    required this.caption,
-    required this.days,
-    required this.status,
-    required this.spaceId,
+    this.id,
+    this.caption,
+    this.days,
+    this.status,
+    this.spaceId,
   });
 
   //通过JSON构造
@@ -2130,20 +2130,20 @@ class OrderDetailModel {
 
 class OrderPayModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 订单
-  final String orderDetailId;
+  final String? orderDetailId;
   // 支付总价
-  final double price;
+  final double? price;
   // 支付方式
-  final String paymentType;
+  final String? paymentType;
 
   //构造方法
   OrderPayModel({
-    required this.id,
-    required this.orderDetailId,
-    required this.price,
-    required this.paymentType,
+    this.id,
+    this.orderDetailId,
+    this.price,
+    this.paymentType,
   });
 
   //通过JSON构造
@@ -2177,35 +2177,35 @@ class OrderPayModel {
 
 class ProductModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 名称
-  final String name;
+  final String? name;
   // 编号
-  final String code;
+  final String? code;
   // 元数据Id
-  final String thingId;
+  final String? thingId;
   // 产品类型名
-  final String typeName;
+  final String? typeName;
   // 备注
-  final String remark;
+  final String? remark;
   // 所属ID
-  final String belongId;
+  final String? belongId;
   // 照片
-  final String photo;
+  final String? photo;
   // 资源列
   final List<ResourceModel>? resources;
 
   //构造方法
   ProductModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.thingId,
-    required this.typeName,
-    required this.remark,
-    required this.belongId,
-    required this.photo,
-    required this.resources,
+    this.id,
+    this.name,
+    this.code,
+    this.thingId,
+    this.typeName,
+    this.remark,
+    this.belongId,
+    this.photo,
+    this.resources,
   });
 
   //通过JSON构造
@@ -2249,32 +2249,32 @@ class ProductModel {
 
 class ResourceModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 编号
-  final String code;
+  final String? code;
   // 名称
-  final String name;
+  final String? name;
   // 产品ID
-  final String productId;
+  final String? productId;
   // 访问私钥
-  final String privateKey;
+  final String? privateKey;
   // 入口地址
-  final String link;
+  final String? link;
   // 流程项
-  final String flows;
+  final String? flows;
   // 组件
-  final String components;
+  final String? components;
 
   //构造方法
   ResourceModel({
-    required this.id,
-    required this.code,
-    required this.name,
-    required this.productId,
-    required this.privateKey,
-    required this.link,
-    required this.flows,
-    required this.components,
+    this.id,
+    this.code,
+    this.name,
+    this.productId,
+    this.privateKey,
+    this.link,
+    this.flows,
+    this.components,
   });
 
   //通过JSON构造
@@ -2316,17 +2316,17 @@ class ResourceModel {
 
 class StagingModel {
   // 唯一ID
-  final String id;
+  final String? id;
   // 商品
-  final String merchandiseId;
+  final String? merchandiseId;
   // 创建组织/个人
-  final String belongId;
+  final String? belongId;
 
   //构造方法
   StagingModel({
-    required this.id,
-    required this.merchandiseId,
-    required this.belongId,
+    this.id,
+    this.merchandiseId,
+    this.belongId,
   });
 
   //通过JSON构造
@@ -2358,17 +2358,17 @@ class StagingModel {
 
 class ThingSpeciesModel {
   // 物的唯一ID
-  final String id;
+  final String? id;
   // 赋予的类别Id
-  final String speciesId;
+  final String? speciesId;
   // 赋予的类别代码
-  final String speciesCode;
+  final String? speciesCode;
 
   //构造方法
   ThingSpeciesModel({
-    required this.id,
-    required this.speciesId,
-    required this.speciesCode,
+    this.id,
+    this.speciesId,
+    this.speciesCode,
   });
 
   //通过JSON构造
@@ -2400,32 +2400,32 @@ class ThingSpeciesModel {
 
 class ThingAttrModel {
   // 物的唯一ID
-  final String id;
+  final String? id;
   // 基于关系ID的度量
-  final String relationId;
+  final String? relationId;
   // 类别Id
-  final String speciesId;
+  final String? speciesId;
   //类别代码
-  final String specCode;
+  final String? specCode;
   //特性Id
-  final String attrId;
+  final String? attrId;
   //特性代码
-  final String attrCode;
+  final String? attrCode;
   // 字符串类型的值
-  final String strValue;
+  final String? strValue;
   // 数值类型的值
-  final double numValue;
+  final double? numValue;
 
   //构造方法
   ThingAttrModel({
-    required this.id,
-    required this.relationId,
-    required this.speciesId,
-    required this.specCode,
-    required this.attrId,
-    required this.attrCode,
-    required this.strValue,
-    required this.numValue,
+    this.id,
+    this.relationId,
+    this.speciesId,
+    this.specCode,
+    this.attrId,
+    this.attrCode,
+    this.strValue,
+    this.numValue,
   });
 
   //通过JSON构造
@@ -2467,20 +2467,20 @@ class ThingAttrModel {
 
 class JoinTeamModel {
   // 团队ID
-  final String id;
+  final String? id;
   // 团队类型
-  final String teamType;
+  final String? teamType;
   // 待加入团队组织/个人ID
-  final String targetId;
+  final String? targetId;
   // 待拉入组织/个人类型
-  final String targetType;
+  final String? targetType;
 
   //构造方法
   JoinTeamModel({
-    required this.id,
-    required this.teamType,
-    required this.targetId,
-    required this.targetType,
+    this.id,
+    this.teamType,
+    this.targetId,
+    this.targetType,
   });
 
   //通过JSON构造
@@ -2514,20 +2514,20 @@ class JoinTeamModel {
 
 class ExitTeamModel {
   // 团队ID
-  final String id;
+  final String? id;
   // 团队类型
-  final List<String> teamTypes;
+  final List<String>? teamTypes;
   // 待退出团队组织/个人ID
-  final String targetId;
+  final String? targetId;
   // 待退出组织/个人类型
-  final String targetType;
+  final String? targetType;
 
   //构造方法
   ExitTeamModel({
-    required this.id,
-    required this.teamTypes,
-    required this.targetId,
-    required this.targetType,
+    this.id,
+    this.teamTypes,
+    this.targetId,
+    this.targetType,
   });
 
   //通过JSON构造
@@ -2561,20 +2561,20 @@ class ExitTeamModel {
 
 class TeamPullModel {
   // 团队ID
-  final String id;
+  final String? id;
   // 团队类型
-  final List<String> teamTypes;
+  final List<String>? teamTypes;
   // 待拉入的组织/个人ID集合
-  final List<String> targetIds;
+  final List<String>? targetIds;
   // 待拉入组织/个人类型
-  final String targetType;
+  final String? targetType;
 
   //构造方法
   TeamPullModel({
-    required this.id,
-    required this.teamTypes,
-    required this.targetIds,
-    required this.targetType,
+    this.id,
+    this.teamTypes,
+    this.targetIds,
+    this.targetType,
   });
 
   //通过JSON构造
@@ -2608,20 +2608,20 @@ class TeamPullModel {
 
 class CreateOrderByStagingModel {
   // 订单名称
-  final String name;
+  final String? name;
   // 订单编号
-  final String code;
+  final String? code;
   // 所属ID
-  final String belongId;
+  final String? belongId;
   // 暂存区ID
-  final List<String> StagingIds;
+  final List<String>? StagingIds;
 
   //构造方法
   CreateOrderByStagingModel({
-    required this.name,
-    required this.code,
-    required this.belongId,
-    required this.StagingIds,
+    this.name,
+    this.code,
+    this.belongId,
+    this.StagingIds,
   });
 
   //通过JSON构造
@@ -2656,14 +2656,14 @@ class CreateOrderByStagingModel {
 
 class GiveIdentityModel {
   // 身份ID
-  final String id;
+  final String? id;
   // 人员ID
-  final List<String> targetIds;
+  final List<String>? targetIds;
 
   //构造方法
   GiveIdentityModel({
-    required this.id,
-    required this.targetIds,
+    this.id,
+    this.targetIds,
   });
 
   //通过JSON构造
@@ -2693,23 +2693,23 @@ class GiveIdentityModel {
 
 class SearchExtendReq {
   // 源ID
-  final String sourceId;
+  final String? sourceId;
   // 源类型
-  final String sourceType;
+  final String? sourceType;
   // 分配对象类型
-  final String destType;
+  final String? destType;
   // 归属ID
-  final String spaceId;
+  final String? spaceId;
   // TeamID
-  final String teamId;
+  final String? teamId;
 
   //构造方法
   SearchExtendReq({
-    required this.sourceId,
-    required this.sourceType,
-    required this.destType,
-    required this.spaceId,
-    required this.teamId,
+    this.sourceId,
+    this.sourceType,
+    this.destType,
+    this.spaceId,
+    this.teamId,
   });
 
   //通过JSON构造
@@ -2745,17 +2745,17 @@ class SearchExtendReq {
 
 class MarketPullModel {
   // 团队ID
-  final String marketId;
+  final String? marketId;
   // 待拉入的组织/个人ID集合
-  final List<String> targetIds;
+  final List<String>? targetIds;
   // 待拉入组织/个人类型
-  final List<String> typeNames;
+  final List<String>? typeNames;
 
   //构造方法
   MarketPullModel({
-    required this.marketId,
-    required this.targetIds,
-    required this.typeNames,
+    this.marketId,
+    this.targetIds,
+    this.typeNames,
   });
 
   //通过JSON构造
@@ -2787,14 +2787,14 @@ class MarketPullModel {
 
 class UsefulProductReq {
   // 工作空间ID
-  final String spaceId;
+  final String? spaceId;
   // 拓展目标所属对象类型
-  final List<String> typeNames;
+  final List<String>? typeNames;
 
   //构造方法
   UsefulProductReq({
-    required this.spaceId,
-    required this.typeNames,
+    this.spaceId,
+    this.typeNames,
   });
 
   //通过JSON构造
@@ -2824,17 +2824,17 @@ class UsefulProductReq {
 
 class UsefulResourceReq {
   // 工作空间ID
-  final String spaceId;
+  final String? spaceId;
   // 产品ID
-  final String productId;
+  final String? productId;
   // 拓展目标所属对象类型
-  final List<String> typeNames;
+  final List<String>? typeNames;
 
   //构造方法
   UsefulResourceReq({
-    required this.spaceId,
-    required this.productId,
-    required this.typeNames,
+    this.spaceId,
+    this.productId,
+    this.typeNames,
   });
 
   //通过JSON构造
@@ -2866,26 +2866,26 @@ class UsefulResourceReq {
 
 class SourceExtendModel {
   // 源对象ID
-  final String sourceId;
+  final String? sourceId;
   // 源对象类型
-  final String sourceType;
+  final String? sourceType;
   // 目标对象类型
-  final String destType;
+  final String? destType;
   // 目标对象ID
-  final List<String> destIds;
+  final List<String>? destIds;
   // 组织ID
-  final String teamId;
+  final String? teamId;
   // 归属ID
-  final String spaceId;
+  final String? spaceId;
 
   //构造方法
   SourceExtendModel({
-    required this.sourceId,
-    required this.sourceType,
-    required this.destType,
-    required this.destIds,
-    required this.teamId,
-    required this.spaceId,
+    this.sourceId,
+    this.sourceType,
+    this.destType,
+    this.destIds,
+    this.teamId,
+    this.spaceId,
   });
 
   //通过JSON构造
@@ -2923,17 +2923,17 @@ class SourceExtendModel {
 
 class NameTypeModel {
   // 名称
-  final String name;
+  final String? name;
   // 类型名
-  final List<String> typeNames;
+  final List<String>? typeNames;
   // 分页
   final PageRequest? page;
 
   //构造方法
   NameTypeModel({
-    required this.name,
-    required this.typeNames,
-    required this.page,
+    this.name,
+    this.typeNames,
+    this.page,
   });
 
   //通过JSON构造
@@ -2965,17 +2965,17 @@ class NameTypeModel {
 
 class NameCodeModel {
   // 名称
-  final String name;
+  final String? name;
   // 代码
-  final String code;
+  final String? code;
   // 分页
   final PageRequest? page;
 
   //构造方法
   NameCodeModel({
-    required this.name,
-    required this.code,
-    required this.page,
+    this.name,
+    this.code,
+    this.page,
   });
 
   //通过JSON构造
@@ -3007,23 +3007,23 @@ class NameCodeModel {
 
 class ImMsgModel {
   // 工作空间ID
-  final String spaceId;
+  final String? spaceId;
   // 发起方Id
-  final String fromId;
+  final String? fromId;
   // 接收方Id
-  final String toId;
+  final String? toId;
   // 消息类型
-  final String msgType;
+  final String? msgType;
   // 消息体
-  final String msgBody;
+  final String? msgBody;
 
   //构造方法
   ImMsgModel({
-    required this.spaceId,
-    required this.fromId,
-    required this.toId,
-    required this.msgType,
-    required this.msgBody,
+    this.spaceId,
+    this.fromId,
+    this.toId,
+    this.msgType,
+    this.msgBody,
   });
 
   //通过JSON构造
@@ -3063,7 +3063,7 @@ class ChatResponse {
 
   //构造方法
   ChatResponse({
-    required this.groups,
+    this.groups,
   });
 
   //通过JSON构造
@@ -3091,17 +3091,17 @@ class ChatResponse {
 
 class GroupChatModel {
   // 分组ID
-  final String id;
+  final String? id;
   // 名称
-  final String name;
+  final String? name;
   // 会话
   final List<ChatModel>? chats;
 
   //构造方法
   GroupChatModel({
-    required this.id,
-    required this.name,
-    required this.chats,
+    this.id,
+    this.name,
+    this.chats,
   });
 
   //通过JSON构造
@@ -3133,35 +3133,35 @@ class GroupChatModel {
 
 class ChatModel {
   // 会话ID
-  final String id;
+  final String? id;
   // 名称
-  final String name;
+  final String? name;
   // 头像
-  final String photo;
+  final String? photo;
   // 标签
-  final String label;
+  final String? label;
   // 备注
-  final String remark;
+  final String? remark;
   // 类型名称
-  final String typeName;
+  final String? typeName;
   // 消息体
-  final String msgType;
+  final String? msgType;
   // 消息体
-  final String msgBody;
+  final String? msgBody;
   // 消息时间
-  final String msgTime;
+  final String? msgTime;
 
   //构造方法
   ChatModel({
-    required this.id,
-    required this.name,
-    required this.photo,
-    required this.label,
-    required this.remark,
-    required this.typeName,
-    required this.msgType,
-    required this.msgBody,
-    required this.msgTime,
+    this.id,
+    this.name,
+    this.photo,
+    this.label,
+    this.remark,
+    this.typeName,
+    this.msgType,
+    this.msgBody,
+    this.msgTime,
   });
 
   //通过JSON构造
@@ -3205,32 +3205,32 @@ class ChatModel {
 
 class FlowInstanceModel {
   // 应用Id
-  final String productId;
+  final String? productId;
   // 功能标识编号
-  final String functionCode;
+  final String? functionCode;
   // 空间Id
-  final String SpaceId;
+  final String? SpaceId;
   // 展示内容
-  final String content;
+  final String? content;
   // 内容类型
-  final String contentType;
+  final String? contentType;
   // 单数据内容
-  final String data;
+  final String? data;
   // 标题
-  final String title;
+  final String? title;
   // 回调地址
-  final String hook;
+  final String? hook;
 
   //构造方法
   FlowInstanceModel({
-    required this.productId,
-    required this.functionCode,
-    required this.SpaceId,
-    required this.content,
-    required this.contentType,
-    required this.data,
-    required this.title,
-    required this.hook,
+    this.productId,
+    this.functionCode,
+    this.SpaceId,
+    this.content,
+    this.contentType,
+    this.data,
+    this.title,
+    this.hook,
   });
 
   //通过JSON构造
@@ -3272,20 +3272,20 @@ class FlowInstanceModel {
 
 class FlowRelationModel {
   //流程定义Id
-  final String defineId;
+  final String? defineId;
   // 应用Id
-  final String productId;
+  final String? productId;
   // 功能标识编号
-  final String functionCode;
+  final String? functionCode;
   // 空间Id
-  final String spaceId;
+  final String? spaceId;
 
   //构造方法
   FlowRelationModel({
-    required this.defineId,
-    required this.productId,
-    required this.functionCode,
-    required this.spaceId,
+    this.defineId,
+    this.productId,
+    this.functionCode,
+    this.spaceId,
   });
 
   //通过JSON构造
@@ -3319,20 +3319,20 @@ class FlowRelationModel {
 
 class FlowReq {
   // 应用Id
-  final String productId;
+  final String? productId;
   // 空间Id
-  final String spaceId;
+  final String? spaceId;
   // 状态
-  final int status;
+  final int? status;
   // 分页
   final PageRequest? page;
 
   //构造方法
   FlowReq({
-    required this.productId,
-    required this.spaceId,
-    required this.status,
-    required this.page,
+    this.productId,
+    this.spaceId,
+    this.status,
+    this.page,
   });
 
   //通过JSON构造
@@ -3366,17 +3366,17 @@ class FlowReq {
 
 class ApprovalTaskReq {
   // 流程定义Id
-  final String id;
+  final String? id;
   // 状态
-  final int status;
+  final int? status;
   // 评论
-  final String comment;
+  final String? comment;
 
   //构造方法
   ApprovalTaskReq({
-    required this.id,
-    required this.status,
-    required this.comment,
+    this.id,
+    this.status,
+    this.comment,
   });
 
   //通过JSON构造
@@ -3409,16 +3409,16 @@ class ApprovalTaskReq {
 // 文件系统项分享数据
 class TargetShare {
   // 名称
-  final String name;
+  final String? name;
   // 类型
-  final String typeName;
+  final String? typeName;
   // 头像
-  String? avatar;
+  final String? avatar;
 
   //构造方法
   TargetShare({
-    required this.name,
-    required this.typeName,
+    this.name,
+    this.typeName,
     this.avatar,
   });
 
@@ -3452,22 +3452,22 @@ class TargetShare {
 // 文件系统项数据模型
 class FileItemShare {
   // 大小
-  final int size;
+  final int? size;
   // 名称
-  final String name;
+  final String? name;
   // 共享链接
-  final String shareLink;
+  final String? shareLink;
   // 拓展名
-  final String extension;
+  final String? extension;
   // 缩略图
-  final String thumbnail;
+  final String? thumbnail;
 
   FileItemShare({
-    required this.size,
-    required this.name,
-    required this.shareLink,
-    required this.extension,
-    required this.thumbnail,
+    this.size,
+    this.name,
+    this.shareLink,
+    this.extension,
+    this.thumbnail,
   });
 
   //通过JSON构造
