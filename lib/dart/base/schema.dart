@@ -3388,7 +3388,7 @@ class XOrderDetail {
   // 标题
   final String caption;
   // 状态
-  final int status;
+  int status;
   // 创建人员ID
   final String createUser;
   // 更新人员ID
