@@ -1,5 +1,4 @@
-import 'package:orginone/dart/core/target/university.dart';
-
+import 'package:orginone/dart/core/target/university.dart'; 
 import '../../base/common/uint.dart';
 import '../../base/model.dart';
 import '../../base/schema.dart';
