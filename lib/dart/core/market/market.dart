@@ -36,7 +36,7 @@ class Market implements IMarket {
         photo: photo,
         public: ispublic,
         belongId: market.belongId));
-    if (res.success) {
+    if (res.success!) {
       XMarket xMarket = XMarket(
         name: name,
         code: code,
@@ -87,7 +87,7 @@ class Market implements IMarket {
   @override
   Future<bool> approvalJoinApply(String id, int status) async {
     return (await kernel.approvalJoinApply({id, status} as ApprovalModel))
-        .success;
+        .success!;
   }
 
   @override
@@ -98,7 +98,7 @@ class Market implements IMarket {
       marketId: market.id,
       typeNames: pullTypes,
     } as MarketPullModel))
-        .success;
+        .success!;
   }
 
   @override
@@ -108,7 +108,7 @@ class Market implements IMarket {
       marketId: market.id,
       typeNames: pullTypes,
     } as MarketPullModel))
-        .success;
+        .success!;
   }
 
   @override
@@ -132,7 +132,7 @@ class Market implements IMarket {
   @override
   Future<bool> approvalPublishApply(String id, int status) async {
     return (await kernel.approvalMerchandise({id, status} as ApprovalModel))
-        .success;
+        .success!;
   }
 
   @override
@@ -141,6 +141,6 @@ class Market implements IMarket {
       id: merchandiseId,
       belongId: market.belongId,
     } as IDWithBelongReq))
-        .success;
+        .success!;
   }
 }

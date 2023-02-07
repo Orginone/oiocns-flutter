@@ -31,7 +31,7 @@ class Resource implements IResource {
             teamId: teamId,
             spaceId: resource.product!.belongId));
 
-    return resultType.success;
+    return resultType.success!;
   }
 
   @override
@@ -48,7 +48,7 @@ class Resource implements IResource {
       spaceId: resource.product!.belongId,
       teamId: teamId,
     )))
-        .success;
+        .success!;
   }
 
   @override

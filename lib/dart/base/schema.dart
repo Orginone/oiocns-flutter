@@ -3677,41 +3677,41 @@ class XOrderPayArray {
 //产品信息
 class XProduct {
   // 雪花ID
-  final String id;
+  final String? id;
   // 名称
-  final String name;
+  final String? name;
   // 编号
-  final String code;
+  final String? code;
   // 来源
-  final String source;
+  final String? source;
   // 权属
-  final String authority;
+  final String? authority;
   // 对哪一类制定的标准
-  final String typeName;
+  final String? typeName;
   // 归属组织/个人
-  final String belongId;
+  final String? belongId;
   // 元数据Id
-  final String thingId;
+  final String? thingId;
   // 订单ID
-  final String orderId;
+  final String? orderId;
   // 过期时间
-  final String endTime;
+  final String? endTime;
   // 图片
-  final String photo;
+  final String? photo;
   // 备注
-  final String remark;
+  final String? remark;
   // 状态
-  final int status;
+  final int? status;
   // 创建人员ID
-  final String createUser;
+  final String? createUser;
   // 更新人员ID
-  final String updateUser;
+  final String? updateUser;
   // 修改次数
-  final String version;
+  final String? version;
   // 创建时间
-  final String createTime;
+  final String? createTime;
   // 更新时间
-  final String updateTime;
+  final String? updateTime;
   // 产品的资源
   final List<XResource>? resource;
   // 上架的商品
@@ -3727,30 +3727,30 @@ class XProduct {
 
   //构造方法
   XProduct({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.source,
-    required this.authority,
-    required this.typeName,
-    required this.belongId,
-    required this.thingId,
-    required this.orderId,
-    required this.endTime,
-    required this.photo,
-    required this.remark,
-    required this.status,
-    required this.createUser,
-    required this.updateUser,
-    required this.version,
-    required this.createTime,
-    required this.updateTime,
-    required this.resource,
-    required this.merchandises,
-    required this.flowRelations,
-    required this.thing,
-    required this.orderSource,
-    required this.belong,
+    this.name,
+    this.code,
+    this.source,
+    this.authority,
+    this.id,
+    this.typeName,
+    this.thingId,
+    this.orderId,
+    this.endTime,
+    this.photo,
+    this.belongId,
+    this.remark,
+    this.status,
+    this.createUser,
+    this.updateUser,
+    this.version,
+    this.createTime,
+    this.updateTime,
+    this.resource,
+    this.merchandises,
+    this.flowRelations,
+    this.thing,
+    this.orderSource,
+    this.belong,
   });
 
   //通过JSON构造

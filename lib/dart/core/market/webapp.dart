@@ -37,7 +37,7 @@ abstract class WebApp implements IProduct {
     ResultType res = await KernelApi.getInstance()
         .queryMerchandiseListByProduct(idBelongReq);
 
-    if (res.success && res.data.result) {
+    if (res.success! && res.data.result) {
       merchandises =
           res.data.result.map((a) => (XMerchandiseArray.fromJson(a))).toList();
     }
@@ -59,7 +59,7 @@ abstract class WebApp implements IProduct {
       teamId: teamId,
     ));
 
-    return rs.success;
+    return rs.success!;
   }
 
   @override
@@ -76,7 +76,7 @@ abstract class WebApp implements IProduct {
       spaceId: prod.belongId,
       teamId: teamId,
     )))
-        .success;
+        .success!;
   }
 
   @override
@@ -103,22 +103,22 @@ abstract class WebApp implements IProduct {
       productId: prod.id,
       id: '',
     ));
-    if (res.success) {
+    if (res.success!) {
       if (res.data!.status >= CommonStatus.approveStartStatus.value) {
         merchandises.add(Merchandise(res.data));
       }
     }
-    return res.success;
+    return res.success!;
   }
 
   @override
   Future<bool> unPublish(String id) async {
     var res = await kernel
         .deleteMerchandise(IDWithBelongReq(id: id, belongId: prod.belongId));
-    if (res.success) {
+    if (res.success!) {
       merchandises = merchandises.where((a) => a.merchandise.id != id).toList();
     }
-    return res.success;
+    return res.success!;
   }
 
   @override
@@ -140,26 +140,13 @@ abstract class WebApp implements IProduct {
         thingId: prod.thingId,
         belongId: prod.belongId,
         resources: resources));
-    if (res.success) {
+    if (res.success!) {
       XProduct xProduct = XProduct(
           id: id,
           name: name,
           code: code,
-          source: "",
-          authority: "authority",
-          typeName: typeName,
-          belongId: "belongId",
-          thingId: "thingId",
-          orderId: "orderId",
-          endTime: "endTime",
           photo: photo,
           remark: remark,
-          status: 0,
-          createUser: "",
-          updateUser: "updateUser",
-          version: "version",
-          createTime: "createTime",
-          updateTime: "updateTime",
           resource: [],
           merchandises: [],
           flowRelations: [],
@@ -170,6 +157,6 @@ abstract class WebApp implements IProduct {
       res.data?.resource?.forEach((a) =>
           {resource.add(Resource(a, destIds: [], destType: '', teamId: ''))});
     }
-    return res.success;
+    return res.success!;
   }
 }
