@@ -1,6 +1,3 @@
-// 分类系统项实现
-import 'dart:convert';
-
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/target/species/idict.dart';
 
@@ -114,8 +111,8 @@ class SpeciesItem extends ISpeciesItem {
       final res = await kernel.queryNameBySnowId(IdReq(id: target.belongId));
       if (res.success && res.data != null) {
         belongInfo = TargetShare(name: res.data!.name, typeName: '未知');
-        belongInfo.avatar =
-            ""; // FileItemShare.fromJson(jsonDecode(res.data!.photo));
+        // belongInfo.avatar =
+        // ""; // FileItemShare.fromJson(jsonDecode(res.data!.photo));
       }
     }
     return this;

@@ -14,8 +14,8 @@ import '../enum.dart';
 import 'itarget.dart';
 
 class BaseTarget extends ITarget {
-  late List<String> memberTypes;
-  late List<String> createTargetType;
+  late List<TargetType> memberTypes;
+  late List<TargetType> createTargetType;
 
   @override
   String get id {
@@ -72,7 +72,7 @@ class BaseTarget extends ITarget {
       ),
       id: target.id,
       typeNames: [target.typeName],
-      subTypeNames: memberTypes,
+      subTypeNames: List<String>.from(memberTypes),
     ));
     // appendTarget(res.data);
     return res.data!;
@@ -85,7 +85,7 @@ class BaseTarget extends ITarget {
 
   @override
   Future<bool> pullMembers(List<String> ids, String type) async {
-    if (memberTypes.contains(type)) {
+    if (memberTypes.contains(type as TargetType)) {
       final res = await kernel.pullAnyToTeam(TeamPullModel(
         id: target.id,
         targetIds: ids,
@@ -99,12 +99,12 @@ class BaseTarget extends ITarget {
 
   @override
   Future<bool> removeMember(XTarget target) async {
-    return removeMembers([target.id], target.typeName);
+    return removeMembers([target.id], type: target.typeName);
   }
 
   @override
-  Future<bool> removeMembers(List<String> ids, String type) async {
-    if (memberTypes.contains(type)) {
+  Future<bool> removeMembers(List<String> ids, {String type = ''}) async {
+    if (memberTypes.contains(type as TargetType)) {
       final res = await kernel.removeAnyOfTeam(TeamPullModel(
         id: target.id,
         targetIds: ids,
@@ -117,7 +117,7 @@ class BaseTarget extends ITarget {
   }
 
   Future<bool> pullSubTeam(XTarget team) async {
-    if (subTeamTypes.contains(team.typeName)) {
+    if (subTeamTypes.contains(team.typeName as TargetType)) {
       final res = await kernel.pullAnyToTeam(TeamPullModel(
         id: target.id,
         targetIds: [team.id],
@@ -142,7 +142,7 @@ class BaseTarget extends ITarget {
   }
 
   Future<ResultType<XTarget>> createSubTarget(TargetModel data) async {
-    if (createTargetType.contains(data.typeName)) {
+    if (createTargetType.contains(data.typeName as TargetType)) {
       final res = await createTarget(data);
       if (res.success) {
         await kernel.pullAnyToTeam(TeamPullModel(
@@ -207,7 +207,7 @@ class BaseTarget extends ITarget {
   /// @param typeName 对象
   /// @returns
   Future<bool> applyJoin(String destId, TargetType typeName) async {
-    if (joinTargetType.contains(typeName.name)) {
+    if (joinTargetType.contains(typeName.name as TargetType)) {
       final res = await kernel.applyJoinTeam(JoinTeamModel(
         id: destId,
         targetId: target.id,
@@ -245,14 +245,14 @@ class BaseTarget extends ITarget {
     String spaceId,
   ) async {
     typeNames =
-        typeNames.where((a) => joinTargetType.contains(a.toString())).toList();
+        typeNames.where((a) => joinTargetType.contains(a)).toList();
     if (typeNames.isNotEmpty) {
       final res = await kernel.queryJoinedTargetById(IDReqJoinedModel(
           id: target.id,
           typeName: target.typeName,
           page: PageRequest(offset: 0, filter: '', limit: Constants.maxUint16),
           spaceId: spaceId,
-          JoinTypeNames: List<String>.from(typeNames)));
+          joinTypeNames: List<String>.from(typeNames)));
       if (res.data != null) {
         return res.data!;
       }
@@ -277,7 +277,7 @@ class BaseTarget extends ITarget {
   /// @param target 目标对象
   /// @returns
   Future<ResultType<dynamic>> join(XTarget target) async {
-    if (joinTargetType.contains(target.typeName)) {
+    if (joinTargetType.contains(target.typeName as TargetType)) {
       return await kernel.pullAnyToTeam(TeamPullModel(
         id: target.id,
         teamTypes: [target.typeName],
@@ -297,7 +297,7 @@ class BaseTarget extends ITarget {
   /// @param teamRemark team备注
   /// @returns
   Future<ResultType<XTarget>> createTarget(TargetModel data) async {
-    if (createTargetType.contains(data.typeName)) {
+    if (createTargetType.contains(data.typeName as TargetType)) {
       return await kernel.createTarget(data);
     } else {
       return ResultType<XTarget>(

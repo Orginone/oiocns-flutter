@@ -639,6 +639,61 @@ class KernelApi {
       params: params,
     ));
   }
+  /// 重置密码
+  /// @param {IdReqModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> resetPassword(ResetPwdModel params) async {
+    return await request(ReqestType(
+      module: 'target',
+      action: 'ResetPassword',
+      params: params,
+    ));
+  }
+
+  /*
+   * 查询组织容器下的身份集
+   * @param {model.IDBelongReq} params 请求参数
+   * @returns {model.ResultType<schema.XIdentityArray>} 请求结果
+   */
+  Future<ResultType<XIdentityArray>> queryTeamIdentitys(
+    IDBelongReq params,
+  ) async {
+    return await request(ReqestType(
+      module: 'target',
+      action: 'QueryTeamIdentitys',
+      params: params,
+    ));
+  }
+
+  /*
+   * 拉身份加入组织
+   * @param {model.TeamPullModel} params 请求参数
+   * @returns {model.ResultType<boolean>} 请求结果
+   */
+  Future<ResultType<bool>> pullIdentityToTeam(
+    TeamPullModel params,
+  ) async {
+    return await request(ReqestType(
+      module: 'target',
+      action: 'PullIdentityToTeam',
+      params: params,
+    ));
+  }
+
+  /*
+   * 从组织身份集中剔除身份
+   * @param {model.TeamPullModel} params 请求参数
+   * @returns {model.ResultType<boolean>} 请求结果
+   */
+  Future<ResultType<bool>> removeTeamIdentity(
+    GiveIdentityModel params,
+  ) async {
+    return await request(ReqestType(
+      module: 'target',
+      action: 'RemoveTeamIdentity',
+      params: params,
+    ));
+  }
 
   /// 从组织/个人移除组织/个人的团队
   /// @param {TeamPullModel} params 请求参数
@@ -1303,6 +1358,18 @@ class KernelApi {
     ));
   }
 
+  /// 查询加入市场审批
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XMarketRelationArray>} 请求结果
+  Future<ResultType<XMarketRelationArray>> queryJoinApproval(
+      IDBelongReq params) async {
+    return await request(ReqestType(
+      module: 'market',
+      action: 'QueryJoinApproval',
+      params: params,
+    ));
+  }
+
   /// 管理者:查询加入市场申请
   /// @param {IDBelongReq} params 请求参数
   /// @returns {ResultType<XMarketRelationArray>} 请求结果
@@ -1547,6 +1614,18 @@ class KernelApi {
     ));
   }
 
+
+  /// 查询上架审批
+  /// @param {IdReqModel} params 请求参数
+  /// @returns {ResultType<XMerchandiseArray>} 请求结果
+  Future<ResultType<XMerchandiseArray>> queryPublicApproval(
+      IDBelongReq params) async {
+    return await request(ReqestType(
+      module: 'market',
+      action: 'QueryPublicApproval',
+      params: params,
+    ));
+  }
   /// 取消订单详情
   /// @param {ApprovalModel} params 请求参数
   /// @returns {ResultType<bool>} 请求结果
@@ -1704,6 +1783,18 @@ class KernelApi {
     ));
   }
 
+  /// 查询流程绑定
+  /// @param {IdReq} params 请求参数
+  /// @returns {ResultType<XFlowRelationArray>} 请求结果
+  Future<ResultType<XFlowRelationArray>> queryDefineRelation(
+      IdReq params) async {
+    return await request(ReqestType(
+      module: 'flow',
+      action: 'QueryDefineRelation',
+      params: params,
+    ));
+  }
+
   /// 查询发起的流程实例
   /// @param {FlowReq} params 请求参数
   /// @returns {ResultType<XFlowInstanceArray>} 请求结果
@@ -1757,6 +1848,17 @@ class KernelApi {
     return await request(ReqestType(
       module: 'flow',
       action: 'ApprovalTask',
+      params: params,
+    ));
+  }
+
+  /// 发布流程定义
+  /// @param {XFlowDefine} params 请求参数
+  /// @returns {ResultType<XFlowDefine>} 请求结果
+  Future<ResultType<XFlowDefine>> publishDefine(CreateDefineReq params) async {
+    return await request(ReqestType(
+      module: 'flow',
+      action: 'PublishDefine',
       params: params,
     ));
   }

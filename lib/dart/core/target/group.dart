@@ -1,103 +1,112 @@
-import 'package:./base';
-import 'package:@/ts/base/schma.dart';
-import 'package:./itarget';
-import 'package:../enum';
-import 'package:@/ts/base/common';
-import 'package:@/ts/base/model.dart';
+import '../../base/model.dart';
+import '../../base/schema.dart';
+import '../enum.dart';
+import 'base.dart';
+import 'itarget.dart';
 
-
-class Group extends BaseTarget implements IGroup{
-  IGroup[] subGroup;
-  Function _onDeleted;
-  Group(XTarget target, Function onDeleted){
-    super(target);
-    subGroup = null;
-    _onDeleted = onDeleted;
-    this.memberTypes = companyTypes;
-    this.subTeamTypes = [TargetType.Group];
-    this.joinTargetType = [TargetType.Group];
-    this.createTargetType = [TargetType.Group];
-    this.searchTargetType = [...companyTypes, TargetType.Group];
+class Group extends BaseTarget implements IGroup {
+  @override
+  late List<IGroup> subGroup;
+  final Function _onDeleted;
+  Group(XTarget target, this._onDeleted) : super(target) {
+    subGroup = [];
+    memberTypes = companyTypes;
+    subTeamTypes = [TargetType.group];
+    joinTargetType = [TargetType.group];
+    createTargetType = [TargetType.group];
+    searchTargetType = [...companyTypes, TargetType.group];
   }
-  ITarget[] get getSubTeam{
+  @override
+  List<ITarget> get subTeam {
     return subGroup;
   }
-  Future<ITarget[]> loadSubTeam(bool? reload) async{
-    await getSubGroups(reload);
+
+  @override
+  Future<List<ITarget>> loadSubTeam({bool reload = false}) async {
+    await getSubGroups(reload: reload);
     return subGroup;
   }
-  //可能有问题
-  Future<ITarget?> create(TargetModel data) async{
-    switch(data.typeName as TargetType){
-      case TargetType.Group:
+
+  @override
+  Future<ITarget?> create(TargetModel data) async {
+    switch (data.typeName as TargetType) {
+      case TargetType.group:
         return createSubGroup(data);
+      default:
+        return null;
     }
   }
-  Future<bool> delete() async{
-    var res = await this.deleteTarget();
-    if(res.success){
-      _onDeleted?.apply(this, []);
+
+  @override
+  Future<bool> delete() async {
+    final res = await deleteTarget();
+    if (res.success) {
+      _onDeleted(this, []);
     }
     return res.success;
   }
-  Future<bool> applyJoinGroup(String id) async{
-    return super.applyJoin(id, TargetType.Group);
+
+  @override
+  Future<bool> applyJoinGroup(String id) async {
+    return await super.applyJoin(id, TargetType.group);
   }
-  Future<IGroup> createSubGroup(TargetParam data) async{
-    var tres = await this.searchTargetByName(data.code, [TargetType.Group]);
-    if (!tres.result) {
-      var res = await this.createTarget({
-        ...data,
-        belongId: this.target.belongId,
-      });
+
+  @override
+  Future<IGroup?> createSubGroup(TargetModel data) async {
+    final tres = await searchTargetByName(data.code, [TargetType.group]);
+    if (tres.result == null) {
+      data.belongId = target.id;
+      final res = await createTarget(data);
       if (res.success) {
-        var group = Group(res.data, () => {
-          subGroup = subGroup.filter((item) => {
-              item.id != group.id
-          })
-        });
-        subGroup.push(group);
-        await this.pullSubTeam(group.target);
+        final group = Group(
+            res.data!,
+            () => {
+                  subGroup =
+                      subGroup.where((item) => item.id != res.data!.id).toList()
+                });
+        subGroup.add(group);
+        await pullSubTeam(group.target);
         return group;
       }
     } else {
-      //此处如何打印
-      //logger.warn('该集团已存在');
-      print('该集团已存在');
+      // logger.warn("该集团已存在");
     }
+    return null;
   }
-  Future<bool> deleteSubGroup(String id) async{
-    var group = subGroup.find((group) => {
-        group.target.id == id
-    });
-    if (group != null) {
-      Future<model.ResultType<boolean>> res = await kernel.recursiveDeleteTarget({
+
+  @override
+  Future<bool> deleteSubGroup(String id) async {
+    final group = subGroup.firstWhere((group) => group.target.id == id);
+    if (group.id != '') {
+      final res = await kernel.recursiveDeleteTarget(RecursiveReqModel(
         id: id,
-        typeName: TargetType.Group,
-        subNodeTypeNames: [TargetType.Group],
-      });
+        typeName: TargetType.group.name,
+        subNodeTypeNames: [TargetType.group.name],
+      ));
       if (res.success) {
-        subGroup = subGroup.filter((group) => {
-            group.target.id != id
-        });
+        subGroup = subGroup.where((group) => group.target.id != id).toList();
         return true;
       }
     }
     return false;
   }
-  Future<IGroup[]> getSubGroups(bool reload) async{
-    if (!reload && subGroup.length > 0) {
+
+  @override
+  Future<List<IGroup>> getSubGroups({bool reload = false}) async {
+    if (!reload && subGroup.isNotEmpty) {
       return subGroup;
     }
-    var res = await this.getSubTargets([TargetType.Group]);
-    if (res.success && res.data.result) {
-      subGroup = res.data.result.map((a) => {
-          Group(a, () => {
-            subGroup = subGroup.filter((item) => {
-              item.id != a.id
-            })
-        })
-      });
+    final res = await getSubTargets([TargetType.group]);
+    if (res.success && res.data?.result != null) {
+      subGroup = res.data!.result
+              ?.map((a) => Group(
+                  a,
+                  () => {
+                        subGroup =
+                            subGroup.where((item) => item.id != a.id).toList()
+                      }))
+              .toList() ??
+          [];
     }
     return subGroup;
   }

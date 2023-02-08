@@ -4,8 +4,10 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 
 class Market implements IMarket {
+  @override
   late XMarket market;
 
+  @override
   late List<TargetType> pullTypes;
 
   get typeNames => null;
@@ -13,7 +15,7 @@ class Market implements IMarket {
   get id => market.id;
   get belongId => market.belongId;
 
-  constructor(XMarket store) {
+  Market(XMarket store) {
     market = store;
     pullTypes = [TargetType.person, ...companyTypes];
   }
@@ -36,7 +38,7 @@ class Market implements IMarket {
         photo: photo,
         public: ispublic,
         belongId: market.belongId));
-    if (res.success!) {
+    if (res.success) {
       XMarket xMarket = XMarket(
         name: name,
         code: code,
@@ -87,7 +89,7 @@ class Market implements IMarket {
   @override
   Future<bool> approvalJoinApply(String id, int status) async {
     return (await kernel.approvalJoinApply({id, status} as ApprovalModel))
-        .success!;
+        .success;
   }
 
   @override
@@ -98,7 +100,7 @@ class Market implements IMarket {
       marketId: market.id,
       typeNames: pullTypes,
     } as MarketPullModel))
-        .success!;
+        .success;
   }
 
   @override
@@ -108,7 +110,7 @@ class Market implements IMarket {
       marketId: market.id,
       typeNames: pullTypes,
     } as MarketPullModel))
-        .success!;
+        .success;
   }
 
   @override
@@ -132,7 +134,7 @@ class Market implements IMarket {
   @override
   Future<bool> approvalPublishApply(String id, int status) async {
     return (await kernel.approvalMerchandise({id, status} as ApprovalModel))
-        .success!;
+        .success;
   }
 
   @override
@@ -141,6 +143,6 @@ class Market implements IMarket {
       id: merchandiseId,
       belongId: market.belongId,
     } as IDWithBelongReq))
-        .success!;
+        .success;
   }
 }

@@ -3689,7 +3689,7 @@ class XProduct {
   // 对哪一类制定的标准
   final String? typeName;
   // 归属组织/个人
-  final String? belongId;
+  late String belongId;
   // 元数据Id
   final String? thingId;
   // 订单ID
@@ -3737,7 +3737,7 @@ class XProduct {
     this.orderId,
     this.endTime,
     this.photo,
-    this.belongId,
+    required this.belongId,
     this.remark,
     this.status,
     this.createUser,
@@ -4037,7 +4037,7 @@ class XResource {
   // 更新时间
   final String updateTime;
   //
-  final XProduct? product;
+  late XProduct? product;
 
   //构造方法
   XResource({

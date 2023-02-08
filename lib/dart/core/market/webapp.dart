@@ -11,20 +11,23 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/market/index.dart';
 import 'package:orginone/dart/core/market/resource.dart';
-
-abstract class WebApp implements IProduct {
+class WebApp implements IProduct {
+  @override
+  set prod(XProduct _) {}
+  @override
+  late String id;
   @override
   final XProduct prod;
   @override
-  final List<IResource> resource;
+  late List<IResource> resource;
   @override
-  final List<IMerchandise> merchandises;
+  late List<IMerchandise> merchandises;
 
-  WebApp({
-    required this.prod,
-    required this.resource,
-    required this.merchandises,
-  });
+  WebApp(this.prod) {
+    merchandises = [];
+    resource = [];
+    prod.resource?.forEach((a) => {resource.add(Resource(a, prod))});
+  }
 
   @override
   Future<List<IMerchandise>> getMerchandises(bool reload) async {
@@ -37,7 +40,7 @@ abstract class WebApp implements IProduct {
     ResultType res = await KernelApi.getInstance()
         .queryMerchandiseListByProduct(idBelongReq);
 
-    if (res.success! && res.data.result) {
+    if (res.success && res.data.result) {
       merchandises =
           res.data.result.map((a) => (XMerchandiseArray.fromJson(a))).toList();
     }
@@ -59,7 +62,7 @@ abstract class WebApp implements IProduct {
       teamId: teamId,
     ));
 
-    return rs.success!;
+    return rs.success;
   }
 
   @override
@@ -76,11 +79,11 @@ abstract class WebApp implements IProduct {
       spaceId: prod.belongId,
       teamId: teamId,
     )))
-        .success!;
+        .success;
   }
 
   @override
-  Future<IdNameArray> queryExtend(String destType, String? teamId) async {
+  Future<IdNameArray?> queryExtend(String destType, String? teamId) async {
     var res = await kernel.queryExtendBySource(SearchExtendReq(
       sourceId: prod.id,
       sourceType: '产品',
@@ -88,7 +91,7 @@ abstract class WebApp implements IProduct {
       destType: destType,
       teamId: teamId!,
     ));
-    return res.data!;
+    return res.data;
   }
 
   @override
@@ -103,22 +106,22 @@ abstract class WebApp implements IProduct {
       productId: prod.id,
       id: '',
     ));
-    if (res.success!) {
+    if (res.success) {
       if (res.data!.status >= CommonStatus.approveStartStatus.value) {
-        merchandises.add(Merchandise(res.data));
+        merchandises.add(Merchandise(res.data!));
       }
     }
-    return res.success!;
+    return res.success;
   }
 
   @override
   Future<bool> unPublish(String id) async {
     var res = await kernel
         .deleteMerchandise(IDWithBelongReq(id: id, belongId: prod.belongId));
-    if (res.success!) {
+    if (res.success) {
       merchandises = merchandises.where((a) => a.merchandise.id != id).toList();
     }
-    return res.success!;
+    return res.success;
   }
 
   @override
@@ -140,7 +143,7 @@ abstract class WebApp implements IProduct {
         thingId: prod.thingId,
         belongId: prod.belongId,
         resources: resources));
-    if (res.success!) {
+    if (res.success) {
       XProduct xProduct = XProduct(
           id: id,
           name: name,
@@ -152,11 +155,12 @@ abstract class WebApp implements IProduct {
           flowRelations: [],
           thing: null,
           orderSource: null,
+          belongId: prod.belongId,
           belong: null);
       prod = xProduct;
       res.data?.resource?.forEach((a) =>
-          {resource.add(Resource(a, destIds: [], destType: '', teamId: ''))});
+          {resource.add(Resource(a, prod))});
     }
-    return res.success!;
-  }
+    return res.success;
+  }  
 }

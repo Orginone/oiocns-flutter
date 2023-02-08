@@ -33,6 +33,7 @@ class Dict extends IDict {
     if (res.success) {
       return Dict(res.data!);
     }
+    return null;
   }
 
   @override
