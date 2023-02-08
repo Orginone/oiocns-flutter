@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:logging/logging.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -9,81 +8,20 @@ import 'package:orginone/util/encryption_util.dart';
 
 const hisMsgCollName = 'chat-message';
 
-class BaseChat implements IChat {
-  static final Logger log = Logger("BaseChat");
-  final String _userId;
-  final String _fullId;
-  final String _chatId;
-  final String _spaceId;
-  final String _spaceName;
-  final RxBool _isTopping;
-  final RxInt _noReadCount;
-  final RxInt _personCount;
-  final ChatModel _target;
-  final RxList<XImMsg> _messages;
-  final RxList<XTarget> _persons;
-  final Rx<XImMsg?> _lastMessage;
-
-  BaseChat({
-    required String spaceId,
-    required String spaceName,
-    required ChatModel target,
-    required String userId,
-    int noReadCount = 0,
-    int personCount = 0,
-    List<XImMsg> messages = const [],
-    List<XTarget> persons = const [],
-    XImMsg? lastMessage,
-  })  : _userId = userId,
-        _chatId = target.id,
-        _spaceId = spaceId,
-        _spaceName = spaceName,
-        _isTopping = false.obs,
-        _noReadCount = noReadCount.obs,
-        _personCount = personCount.obs,
-        _target = target,
-        _messages = messages.obs,
-        _persons = persons.obs,
-        _lastMessage = lastMessage.obs,
-        _fullId = '$spaceId-${target.id}' {
+class BaseChat extends IChat {
+  BaseChat(String id, String name, ChatModel m, String userId) {
+    spaceId = id;
+    spaceName = name;
+    target = m;
+    messages = <XImMsg>[].obs;
+    persons = <XTarget>[].obs;
+    personCount = 0.obs;
+    chatId = target.id;
+    noReadCount = 0.obs;
+    isTopping = false.obs;
+    fullId = '$id-${target.id}';
     // appendShare(target.id, shareInfo());
   }
-
-  @override
-  String get userId => _userId;
-
-  @override
-  String get chatId => _chatId;
-
-  @override
-  int get noReadCount => _noReadCount.value;
-
-  @override
-  int get personCount => _personCount.value;
-
-  @override
-  XImMsg? get lastMessage => _lastMessage.value;
-
-  @override
-  List<XImMsg> get messages => _messages;
-
-  @override
-  List<XTarget> get persons => _persons;
-
-  @override
-  String get spaceId => _spaceId;
-
-  @override
-  String get spaceName => _spaceName;
-
-  @override
-  ChatModel get target => _target;
-
-  @override
-  String get fullId => _fullId;
-
-  @override
-  bool get isTopping => _isTopping.value;
 
   TargetShare shareInfo() {
     return TargetShare(
@@ -98,22 +36,22 @@ class BaseChat implements IChat {
     return ChatCache(
       chatId: chatId,
       spaceId: spaceId,
-      noReadCount: _noReadCount.value,
-      lastMessage: _lastMessage.value,
-      isTopping: _isTopping.value,
+      noReadCount: noReadCount.value,
+      lastMessage: lastMessage.value,
+      isTopping: isTopping.value,
     );
   }
 
   @override
-  loadCache(ChatCache cache) {
-    if (cache.lastMessage?.id != lastMessage?.id) {
-      if (cache.lastMessage != null) {
-        _messages.insert(0, cache.lastMessage!);
+  loadCache(ChatCache chatCache) {
+    if (chatCache.lastMessage?.id != lastMessage.value?.id) {
+      if (chatCache.lastMessage != null) {
+        messages.insert(0, chatCache.lastMessage!);
       }
     }
-    _isTopping.value = cache.isTopping;
-    _noReadCount.value = cache.noReadCount;
-    _lastMessage.value = cache.lastMessage;
+    isTopping.value = chatCache.isTopping;
+    noReadCount.value = chatCache.noReadCount;
+    lastMessage.value = chatCache.lastMessage;
   }
 
   @override
@@ -122,7 +60,7 @@ class BaseChat implements IChat {
       var res = await KernelApi.getInstance().anystore.remove(
           hisMsgCollName, {"sessionId": target.id, "spaceId": spaceId}, 'user');
       if (res.success) {
-        _messages.clear();
+        messages.clear();
         return true;
       }
     }
@@ -136,7 +74,7 @@ class BaseChat implements IChat {
           .anystore
           .remove(hisMsgCollName, {"chatId": id}, 'user');
       if (res.success && res.data > 0) {
-        _messages.removeWhere((item) => item.id == id);
+        messages.removeWhere((item) => item.id == id);
         return true;
       }
     }
@@ -145,7 +83,7 @@ class BaseChat implements IChat {
 
   @override
   Future<void> recallMessage(String id) async {
-    for (var message in _messages) {
+    for (var message in messages) {
       if (message.id == id) {
         await KernelApi.getInstance().recallImMsg(message);
       }
@@ -163,16 +101,13 @@ class BaseChat implements IChat {
   }
 
   @override
-  Future<bool> sendMessage({
-    required MessageType type,
-    required String msgBody,
-  }) async {
+  Future<bool> sendMessage(MessageType type, String msgBody) async {
     var res = await KernelApi.getInstance().createImMsg(ImMsgModel(
       msgType: type.label,
       msgBody: EncryptionUtil.deflate(msgBody),
-      spaceId: _spaceId,
-      fromId: _userId,
-      toId: _chatId,
+      spaceId: spaceId,
+      fromId: userId,
+      toId: chatId,
     ));
     return res.success;
   }
@@ -183,16 +118,16 @@ class BaseChat implements IChat {
       msg.showTxt = '撤回一条消息';
       msg.allowEdit = true;
       msg.msgBody = EncryptionUtil.inflate(msg.msgBody);
-      int index = _messages.indexWhere((item) => item.id == msg.id);
+      int index = messages.indexWhere((item) => item.id == msg.id);
       if (index > -1) {
-        _messages[index] = msg;
+        messages[index] = msg;
       }
     } else {
       msg.showTxt = EncryptionUtil.inflate(msg.msgBody);
-      _messages.insert(0, msg);
+      messages.insert(0, msg);
     }
-    _noReadCount.value += noRead ? 1 : 0;
-    _lastMessage.value = msg;
+    noReadCount.value += noRead ? 1 : 0;
+    lastMessage.value = msg;
   }
 
   loadMessages(List<dynamic> messages) {
@@ -200,7 +135,7 @@ class BaseChat implements IChat {
       message["id"] = message["chatId"];
       var detail = XImMsg.fromJson(message);
       detail.showTxt = EncryptionUtil.inflate(detail.msgBody);
-      _messages.add(detail);
+      messages.add(detail);
     }
   }
 
@@ -213,7 +148,7 @@ class BaseChat implements IChat {
               "spaceId": spaceId,
             },
             "sort": {"createTime": -1},
-            "skip": _messages.length,
+            "skip": messages.length,
             "limit": 30
           },
           'user',
@@ -224,24 +159,14 @@ class BaseChat implements IChat {
     }
     return 0;
   }
-
-  @override
-  readAll() {
-    _noReadCount.value = 0;
-  }
 }
 
 class PersonChat extends BaseChat {
-  PersonChat({
-    required super.spaceId,
-    required super.spaceName,
-    required super.target,
-    required super.userId,
-  });
+  PersonChat(super.id, super.name, super.m, super.userId);
 
   @override
   Future<int> moreMessage({String? filter}) async {
-    if (_spaceId == _userId) {
+    if (spaceId == userId) {
       return await loadCacheMessages();
     } else {
       var res = await KernelApi.getInstance().queryFriendImMsgs(IdSpaceReq(
@@ -249,14 +174,14 @@ class PersonChat extends BaseChat {
         spaceId: spaceId,
         page: PageRequest(
           limit: 30,
-          offset: _messages.length,
+          offset: messages.length,
           filter: filter ?? "",
         ),
       ));
       if (res.success && res.data != null && res.data?.result != null) {
         for (var detail in res.data!.result!) {
           detail.showTxt = EncryptionUtil.inflate(detail.msgBody);
-          _messages.add(detail);
+          messages.add(detail);
         }
         return res.data!.result!.length;
       }
@@ -266,12 +191,7 @@ class PersonChat extends BaseChat {
 }
 
 class CohortChat extends BaseChat {
-  CohortChat({
-    required super.spaceId,
-    required super.spaceName,
-    required super.target,
-    required super.userId,
-  });
+  CohortChat(super.id, super.name, super.m, super.userId);
 
   @override
   moreMessage({String? filter}) async {
@@ -282,7 +202,7 @@ class CohortChat extends BaseChat {
         id: target.id,
         page: PageRequest(
           limit: 30,
-          offset: _messages.length,
+          offset: messages.length,
           filter: filter ?? "",
         ),
       );
@@ -290,7 +210,7 @@ class CohortChat extends BaseChat {
       if (res.success && res.data != null && res.data?.result != null) {
         for (var detail in res.data!.result!) {
           detail.showTxt = EncryptionUtil.inflate(detail.msgBody);
-          _messages.add(detail);
+          messages.add(detail);
         }
         return res.data!.result!.length;
       }
@@ -306,47 +226,18 @@ class CohortChat extends BaseChat {
       subTypeNames: [TargetType.person.label],
       page: PageRequest(
         limit: 14,
-        offset: _persons.length,
+        offset: persons.length,
         filter: filter ?? "",
       ),
     ));
     if (res.success && res.data != null && res.data?.result != null) {
       for (var target in res.data!.result!) {
         target.name = target.team?.name ?? target.name;
-        _persons.add(target);
+        persons.add(target);
       }
-      _personCount.value = res.data?.total ?? 0;
+      personCount.value = res.data?.total ?? 0;
     }
   }
-}
-
-class BaseChatGroup implements IChatGroup {
-  final String _spaceId;
-  final String _spaceName;
-  final RxBool _isOpened;
-  final RxList<IChat> _chats;
-
-  BaseChatGroup({
-    required String spaceId,
-    required String spaceName,
-    bool isOpened = true,
-    List<IChat> chats = const [],
-  })  : _spaceId = spaceId,
-        _spaceName = spaceName,
-        _isOpened = isOpened.obs,
-        _chats = chats.obs;
-
-  @override
-  String get spaceId => _spaceId;
-
-  @override
-  String get spaceName => _spaceName;
-
-  @override
-  bool get isOpened => _isOpened.value;
-
-  @override
-  List<IChat> get chats => _chats.toList();
 }
 
 IChat createChat(
@@ -356,18 +247,8 @@ IChat createChat(
   String userId,
 ) {
   if (target.typeName == TargetType.person.label) {
-    return PersonChat(
-      spaceId: spaceId,
-      spaceName: spaceName,
-      target: target,
-      userId: userId,
-    );
+    return PersonChat(spaceId, spaceName, target, userId);
   } else {
-    return CohortChat(
-      spaceId: spaceId,
-      spaceName: spaceName,
-      target: target,
-      userId: userId,
-    );
+    return CohortChat(spaceId, spaceName, target, userId);
   }
 }

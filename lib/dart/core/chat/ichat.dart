@@ -1,36 +1,22 @@
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 
 /// 单个会话的抽象
 abstract class IChat {
-  final String userId;
-  final String fullId;
-  final String chatId;
-  final bool isTopping;
-  final String spaceId;
-  final String spaceName;
-  final int noReadCount;
-  final int personCount;
-  final ChatModel target;
-  final List<XImMsg> messages;
-  final List<XTarget> persons;
-  final XImMsg? lastMessage;
-
-  IChat({
-    required this.userId,
-    required this.fullId,
-    required this.chatId,
-    required this.isTopping,
-    required this.spaceId,
-    required this.spaceName,
-    required this.noReadCount,
-    required this.personCount,
-    required this.target,
-    required this.messages,
-    required this.persons,
-    this.lastMessage,
-  });
+  late String userId;
+  late String fullId;
+  late String chatId;
+  late RxBool isTopping;
+  late String spaceId;
+  late String spaceName;
+  late RxInt noReadCount;
+  late RxInt personCount;
+  late ChatModel target;
+  late RxList<XImMsg> messages;
+  late RxList<XTarget> persons;
+  late Rx<XImMsg?> lastMessage;
 
   /// 获取会话缓存
   ChatCache getCache();
@@ -47,10 +33,7 @@ abstract class IChat {
   Future<void> morePersons({String? filter});
 
   /// 发送消息
-  Future<bool> sendMessage({
-    required MessageType type,
-    required String msgBody,
-  });
+  Future<bool> sendMessage(MessageType type, String msgBody);
 
   /// 撤销消息
   Future<void> recallMessage(String id);
@@ -63,24 +46,14 @@ abstract class IChat {
 
   /// 接收消息
   receiveMessage(XImMsg detail, bool noRead);
-
-  /// 读取所有
-  readAll();
 }
 
 /// 会话组的抽象
 abstract class IChatGroup {
-  final String spaceId;
-  final String spaceName;
-  final bool isOpened;
-  final List<IChat> chats;
-
-  IChatGroup({
-    required this.spaceId,
-    required this.spaceName,
-    required this.isOpened,
-    required this.chats,
-  });
+  late String spaceId;
+  late String spaceName;
+  late bool isOpened;
+  late RxList<IChat> chats;
 }
 
 /// 单个会话缓存
