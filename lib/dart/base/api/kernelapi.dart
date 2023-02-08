@@ -1874,18 +1874,6 @@ class KernelApi {
     ));
   }
 
-
-  /// 查询我的加入商店审批
-  /// @param {model.IDBelongReq} params 请求参数
-  /// @returns {model.ResultType<schema.XMarketRelationArray>} 请求结果
-  Future<ResultType<XMarketRelationArray>> queryJoinApproval(IDBelongReq params)async {
-    return await request(ReqestType(
-      module: 'market',
-      action: 'QueryJoinApproval',
-      params: params,
-    ));
-  }
-
   /// 取消订单
   /// @param {model.ApprovalModel} params 请求参数
   /// @returns {model.ResultType<boolean>} 请求结果
@@ -1893,17 +1881,6 @@ class KernelApi {
     return await request(ReqestType(
       module: 'market',
       action: 'CancelOrder',
-      params: params,
-    ));
-  }
-
-  /// 查询我的商品上架审批
-  /// @param {model.IDBelongReq} params 请求参数
-  /// @returns {model.ResultType<schema.XMerchandiseArray>} 请求结果
-  Future<ResultType<XMerchandiseArray>> queryPublicApproval(IDBelongReq params) async{
-    return await request(ReqestType(
-      module: 'market',
-      action: 'QueryPublicApproval',
       params: params,
     ));
   }

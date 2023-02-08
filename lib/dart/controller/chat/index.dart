@@ -10,6 +10,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/ichat.dart';
 import 'package:orginone/dart/core/chat/index.dart';
+import 'package:orginone/dart/core/enum.dart';
 
 const chatsObjectName = 'userchat';
 
@@ -49,8 +50,9 @@ class MessageController extends GetxController
   }
 
   /// 查询组织信息
-  TargetShare findTeamInfoById(String id) {
-    return findTargetShare(id);
+  TargetShare? findTeamInfoById(String id) {
+    // return findTargetShare(id);
+    return null;
   }
 
   /// 获取未读数量
