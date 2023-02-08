@@ -21,7 +21,7 @@ class OrgTodo extends ITodoGroup {
   Future<IApplyItemResult> getApplyList(PageRequest page) async {
     final res = await KernelApi.getInstance()
         .queryJoinTeamApply(IDBelongReq(id: id ?? '', page: page));
-    if (res.success! && res.data?.result != null) {
+    if (res.success && res.data?.result != null) {
       _applyList.clear();
       for (var element in res.data!.result!) {
         _applyList.add(ApplyItem(element, (data) {
@@ -30,7 +30,7 @@ class OrgTodo extends ITodoGroup {
       }
     }
     return IApplyItemResult(
-        _applyList, res.data!.total, page.offset!, page.limit!);
+        _applyList, res.data!.total, page.offset, page.limit);
   }
 
   @override
@@ -47,10 +47,10 @@ class OrgTodo extends ITodoGroup {
       await getApprovalList();
     }
     return IApprovalItemResult(
-        _doList.sublist(page.offset!, page.offset! + page.limit!),
+        _doList.sublist(page.offset, page.offset + page.limit),
         _doList.length,
-        page.offset!,
-        page.limit!);
+        page.offset,
+        page.limit);
   }
 
   @override
@@ -72,7 +72,7 @@ class OrgTodo extends ITodoGroup {
         id: id ?? '',
         page: PageRequest(offset: 0, limit: 2 ^ 16 - 1, filter: '')));
 
-    if (res.success! && res.data!.result != null) {
+    if (res.success && res.data!.result != null) {
       /// 同意回调
       passFun(XRelation s) {
         _todoList.removeWhere((element) => element.getData().id == s.id);
@@ -136,20 +136,20 @@ class ApprovalItem extends IApprovalItem {
   Future<bool> pass(int status, {String remark = ''}) async {
     final res = await KernelApi.getInstance()
         .joinTeamApproval(ApprovalModel(id: _data.id, status: status));
-    if (res.success!) {
+    if (res.success) {
       _passCall.call(_data);
     }
-    return res.success!;
+    return res.success;
   }
 
   @override
   Future<bool> reject(int status, String remark) async {
     final res = await KernelApi.getInstance()
         .joinTeamApproval(ApprovalModel(id: _data.id, status: status));
-    if (res.success!) {
+    if (res.success) {
       _rejectCall.call(_data);
     }
-    return res.success!;
+    return res.success;
   }
 }
 
@@ -167,9 +167,9 @@ class ApplyItem extends IApplyItem {
   Future<bool> cancel(int status, String remark) async {
     final res = await KernelApi.getInstance()
         .cancelJoinTeam(IdReqModel(id: _data.id, typeName: ''));
-    if (res.success!) {
+    if (res.success) {
       _cancelFun.call(_data);
     }
-    return res.success!;
+    return res.success;
   }
 }

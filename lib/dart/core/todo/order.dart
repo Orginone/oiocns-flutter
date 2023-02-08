@@ -18,13 +18,13 @@ class OrderTodo extends ITodoGroup {
     final res = await KernelApi.getInstance()
         .queryBuyOrderList(IDStatusPageReq(id: '', status: 0, page: page));
 
-    if (res.success! && res.data?.result != null) {
+    if (res.success && res.data?.result != null) {
       for (var element in res.data!.result!) {
         applyList.add(OrderApplyItem(element));
       }
     }
     return IApplyItemResult(
-        applyList, res.data!.total, page.offset!, page.limit!);
+        applyList, res.data!.total, page.offset, page.limit);
   }
 
   @override
@@ -40,8 +40,11 @@ class OrderTodo extends ITodoGroup {
     if (_doList.isEmpty) {
       await getApprovalList();
     }
-    return IApprovalItemResult(_doList.sublist(page.offset!,page.offset! + page.limit!),
-        _doList.length, page.offset!, page.limit!);
+    return IApprovalItemResult(
+        _doList.sublist(page.offset, page.offset + page.limit),
+        _doList.length,
+        page.offset,
+        page.limit);
   }
 
   @override
@@ -64,7 +67,7 @@ class OrderTodo extends ITodoGroup {
             id: '',
             page: PageRequest(offset: 0, limit: 2 ^ 16 - 1, filter: '')));
 
-    if (res.success! && res.data!.result != null) {
+    if (res.success && res.data!.result != null) {
       // 同意回调
       approvalCall(XOrderDetail data) {
         _todoList.removeWhere((element) => element.getData().id == data.id);
@@ -105,10 +108,10 @@ class ApprovalItem extends IApprovalItem {
   Future<bool> pass(int status, {String remark = ''}) async {
     final res = await KernelApi.getInstance()
         .deliverMerchandise(ApprovalModel(id: _data.id, status: status));
-    if (res.success!) {
+    if (res.success) {
       _approvalCall?.call(_data);
     }
-    return res.success!;
+    return res.success;
   }
 
   @override
@@ -117,10 +120,10 @@ class ApprovalItem extends IApprovalItem {
       id: _data.id,
       status: status,
     ));
-    if (res.success!) {
+    if (res.success) {
       _approvalCall?.call(_data);
     }
-    return res.success!;
+    return res.success;
   }
 }
 
@@ -137,7 +140,7 @@ class OrderApplyItem extends IOrderApplyItem {
   Future<bool> cancel(int status, String remark) async {
     return (await KernelApi.getInstance()
             .cancelOrder(ApprovalModel(id: _data.id, status: status)))
-        .success!;
+        .success;
   }
 
   @override
@@ -153,14 +156,14 @@ class OrderApplyItem extends IOrderApplyItem {
       if (detail!.status > CommonStatus.approveStartStatus.value) {
         res = await KernelApi.getInstance()
             .rejectMerchandise(ApprovalModel(id: _data.id, status: status));
-        if (res.success!) {
+        if (res.success) {
           detail!.status = status;
           return true;
         }
       } else {
         res = await KernelApi.getInstance()
             .cancelOrderDetail(ApprovalModel(id: _data.id, status: status));
-        if (res.success!) {
+        if (res.success) {
           detail!.status = status;
           return true;
         }
@@ -173,6 +176,6 @@ class OrderApplyItem extends IOrderApplyItem {
   Future<bool> reject(String id, int status, String remark) async {
     return (await KernelApi.getInstance()
             .rejectMerchandise(ApprovalModel(id: id, status: status)))
-        .success!;
+        .success;
   }
 }
