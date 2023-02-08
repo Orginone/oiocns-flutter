@@ -1,10 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/components/a_font.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -180,29 +177,8 @@ class MessageController extends GetxController {
     }
   }
 
-  Widget _chatTab(String name) {
-    return SizedBox(
-      child: Stack(children: [
-        Align(
-          alignment: Alignment.center,
-          child: Text(
-            name,
-            style: AFont.instance.size22Black3,
-          ),
-        ),
-        _noRead,
-      ]),
-    );
-  }
-
-  get _noRead => Align(
-      alignment: Alignment.topRight,
-      child: Obx(() => hasNoRead()
-          ? Icon(Icons.circle, color: Colors.redAccent, size: 10.w)
-          : Container()));
-
   bool hasNoRead() {
-    var has = _chats.firstWhereOrNull((item) => item.noReadCount != 0);
+    var has = _chats.firstWhereOrNull((item) => item.noReadCount.value != 0);
     return has != null;
   }
 

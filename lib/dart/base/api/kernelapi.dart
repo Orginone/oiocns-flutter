@@ -29,7 +29,7 @@ class KernelApi {
   /// 获取单例
   /// @param {string} url 集线器地址，默认为 "/orginone/kernel/hub"
   /// @returns {KernelApi} 内核api单例
-  static KernelApi getInstance({String url = '/orginone/kernel/hub'}) {
+  static KernelApi getInstance({String url = Constant.kernelHub}) {
     _instance ??= KernelApi(url, request: HttpUtil());
     return _instance!;
   }
