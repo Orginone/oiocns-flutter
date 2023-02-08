@@ -7,7 +7,7 @@ import 'itarget.dart';
  * 工作组的元操作
  */
 class Working extends BaseTarget implements IWorking {
-  Function _onDeleted;
+  final Function _onDeleted;
   Working(XTarget target, this._onDeleted) : super(target);
   @override
   Future<bool> delete() async {

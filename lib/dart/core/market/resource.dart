@@ -3,18 +3,19 @@ import "package:orginone/dart/base/model.dart";
 import "package:orginone/dart/base/schema.dart";
 import "package:orginone/dart/core/market/index.dart";
 
-/**
+/*
  * 应用资源操作
  */
 class Resource implements IResource {
-  final String teamId;
-  final List<String> destIds;
-  final String destType;
+  late String teamId;
+  late List<String> destIds;
+  late String destType;
   @override
-  final XResource resource;
+  late XResource resource;
 
-  Resource(this.resource,
-      {required this.teamId, required this.destIds, required this.destType});
+  Resource(this.resource, XProduct prod) {
+    resource.product = prod;
+  }
 
   @override
   Future<bool> createExtend(
@@ -31,7 +32,7 @@ class Resource implements IResource {
             teamId: teamId,
             spaceId: resource.product!.belongId));
 
-    return resultType.success!;
+    return resultType.success;
   }
 
   @override
@@ -48,11 +49,11 @@ class Resource implements IResource {
       spaceId: resource.product!.belongId,
       teamId: teamId,
     )))
-        .success!;
+        .success;
   }
 
   @override
-  Future<IdNameArray> queryExtend(
+  Future<IdNameArray?> queryExtend(
     String destType,
     String? teamId,
   ) async {
@@ -63,11 +64,6 @@ class Resource implements IResource {
       destType: '',
       teamId: '',
     )))
-        .data!;
-  }
-
-  @override
-  set resource(XResource _resource) {
-    // TODO: implement resource
-  }
+        .data;
+  } 
 }
