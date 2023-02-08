@@ -1,7 +1,9 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/market/model.dart';
+import 'package:uuid/uuid.dart';
 import './ifilesys.dart';
 
 /// 分片大小
@@ -38,7 +40,12 @@ class FileSystemItem implements IFileSystemItem {
       this.children});
 
   @override
-  List<TaskModel> get taskList => _taskList;
+  set taskList(List<TaskModel>? taskList) {
+    _taskList = taskList!;
+  }
+
+  @override
+  List<TaskModel>? get taskList => _taskList;
 
 //TODO:浏览器location.origin 获取浏览器地址需要重新 在flutter中实现
 //Location.origin + '/orginone/anydata/bucket/load/' + target?.shareLink,
@@ -51,6 +58,11 @@ class FileSystemItem implements IFileSystemItem {
       shareLink: '/orginone/anydata/bucket/load/${target?.shareLink}',
       thumbnail: target?.thumbnail,
     );
+  }
+
+  @override
+  set childrenData(List<FileItemModel>? _childrenData) {
+    childrenData = _childrenData;
   }
 
   @override
@@ -176,61 +188,67 @@ class FileSystemItem implements IFileSystemItem {
     }
     return false;
   }
-  //TODO:需要验证翻
-  // Future<IObjectItem> upload(String name, File file, [OnProgressType? p]) async {
-  //   var exist = await _findByName(name);
-  //   if (exist !=null) {
-  //     p?.apply(this, [0]);
-  //     var task= TaskModel (name: name,
-  //       finished: 0,
-  //       size: file..,
-  //       createTime: DateTime.now(),
-  //       group: this.name);
 
-  //     FileSystemItem._taskList.push(task);
-  //     let data: BucketOpreateModel = {
-  //       shareDomain: 'user',
-  //       key: this._formatKey(name),
-  //       operate: BucketOpreates.Upload,
-  //     };
-  //     const id = generateUuid();
-  //     let index = 0;
-  //     while (index * chunkSize < file.size) {
-  //       var start = index * chunkSize;
-  //       var end = start + chunkSize;
-  //       if (end > file.size) {
-  //         end = file.size;
-  //       }
-  //       data.fileItem = {
-  //         index: index,
-  //         uploadId: id,
-  //         size: file.size,
-  //         data: [],
-  //         dataUrl: await blobToDataUrl(file.slice(start, end)),
-  //       };
-  //       const res = await kernel.anystore.bucketOpreate<FileItemModel>(data);
-  //       if (!res.success) {
-  //         data.operate = BucketOpreates.AbortUpload;
-  //         await kernel.anystore.bucketOpreate<boolean>(data);
-  //         task.finished = -1;
-  //         p?.apply(this, [-1]);
-  //         return;
-  //       }
-  //       index++;
-  //       task.finished = end;
-  //       p?.apply(this, [end]);
-  //       if (end === file.size && res.data) {
-  //         const node = new FileSystemItem(res.data, this);
-  //         this.children.push(node);
-  //         return node;
-  //       }
-  //     }
-  //   }
-  //   return exist;
-  // }
-  // download(path: string, onProgress: OnProgressType): Promise<void> {
-  //   throw new Error('Method not implemented.');
-  // }
+  //TODO:需要验证
+  @override
+  Future<IObjectItem> upload(String name, File file,
+      [OnProgressType? p]) async {
+    var exist = await _findByName(name);
+    if (exist != null) {
+      p?.call(0);
+      var task = TaskModel(
+          name: name,
+          finished: 0,
+          size: file.lengthSync().floorToDouble(),
+          createTime: DateTime.now(),
+          group: this.name);
+
+      _taskList.add(task);
+      var data = BucketOpreateModel(
+        shareDomain: 'user',
+        key: _formatKey(subName: name),
+        operate: BucketOpreates.upload,
+      );
+      String uuid = const Uuid().v1();
+      int index = 0;
+      while (index * chunkSize < file.lengthSync().floorToDouble()) {
+        var start = index * chunkSize;
+        var end = start + chunkSize;
+        if (end > file.lengthSync().floorToDouble()) {
+          end = file.lengthSync();
+        }
+        data.fileItem = FileChunkData(
+          index: index,
+          uploadId: uuid,
+          size: file.lengthSync(),
+          data: [],
+          // dataUrl: await blobToDataUrl(file.slice(start, end)),
+        );
+        var res = await kernel.anystore.bucketOpreate<FileItemModel>(data);
+        if (!res.success!) {
+          data.operate = BucketOpreates.abortUpload;
+          await kernel.anystore.bucketOpreate<bool>(data);
+          task.finished = -1;
+          p?.call(-1);
+          // return;
+        }
+        index++;
+        task.finished = end as double?;
+        p?.call(end as double);
+        if (end == file.lengthSync() && res.data != null) {
+          var node = FileSystemItem(target: res.data, parent: this);
+          children!.add(node);
+          return node;
+        }
+      }
+    }
+    return exist!;
+  }
+
+  @override
+  Future<Void> download(String path, OnProgressType onProgress) {
+    throw Error();
+  }
 
   ///判断url是否含有中文，有则进行urlencode
   bool isChinese(String value) {

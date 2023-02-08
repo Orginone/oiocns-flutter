@@ -83,9 +83,9 @@ class BucketOpreateModel {
   // 目标
   final String? destination;
   // 操作
-  final BucketOpreates? operate;
+  late final BucketOpreates? operate;
   // 携带的分片数据
-  final FileChunkData? fileItem;
+  late final FileChunkData? fileItem;
 
   BucketOpreateModel({
     this.key,
@@ -113,6 +113,7 @@ class FileChunkData {
     this.size,
     this.uploadId,
     this.dataUrl,
+    required List data,
   });
 }
 
