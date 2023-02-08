@@ -161,6 +161,20 @@ class BaseChat extends IChat {
   }
 }
 
+class BaseChatGroup extends IChatGroup {
+  BaseChatGroup(
+    String spaceId,
+    String spaceName,
+    bool isOpened,
+    RxList<IChat> chats,
+  ) {
+    this.spaceId = spaceId;
+    this.spaceName = spaceName;
+    this.isOpened = isOpened;
+    this.chats = chats;
+  }
+}
+
 class PersonChat extends BaseChat {
   PersonChat(super.id, super.name, super.m, super.userId);
 
