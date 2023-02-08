@@ -9,7 +9,7 @@ typedef IObjectItem = IFileSystemItem;
 typedef OnProgressType = Function(double progress); //function signature
 
 /// 任务模型
-abstract class TaskModel {
+class TaskModel {
   String? group;
   String? name;
   double? size;
