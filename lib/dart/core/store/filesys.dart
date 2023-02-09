@@ -82,7 +82,7 @@ class FileSystemItem implements IFileSystemItem {
       if (res.success && res.data != null) {
         target = res.data;
         key = res.data!.key;
-        name = res.data!.name!;
+        name = res.data!.name;
         return true;
       }
     }
@@ -172,7 +172,7 @@ class FileSystemItem implements IFileSystemItem {
   @override
   Future<bool> loadChildren({bool? reload}) async {
     reload ??= false;
-    if (target!.isDirectory! && (reload || children!.isEmpty)) {
+    if (target!.isDirectory && (reload || children!.isEmpty)) {
       var res = await kernel.anystore
           .bucketOpreate<List<FileItemModel>>(BucketOpreateModel(
         shareDomain: 'user',
@@ -221,11 +221,11 @@ class FileSystemItem implements IFileSystemItem {
           index: index,
           uploadId: uuid,
           size: file.lengthSync(),
-          data: [],
+          data: [], dataUrl: '',
           // dataUrl: await blobToDataUrl(file.slice(start, end)),
         );
         var res = await kernel.anystore.bucketOpreate<FileItemModel>(data);
-        if (!res.success!) {
+        if (!res.success) {
           data.operate = BucketOpreates.abortUpload;
           await kernel.anystore.bucketOpreate<bool>(data);
           task.finished = -1;
@@ -307,9 +307,9 @@ class FileSystemItem implements IFileSystemItem {
       name: source.name,
       parent: destination,
       target: FileItemModel(
-        size: source.target?.size,
+        size: source.target!.size,
         key: '${destination.key}/${source.name}',
-        name: source.name,
+        name: source.name!,
         dateCreated: DateTime.now(),
         dateModified: DateTime.now(),
         shareLink: source.target!.shareLink,

@@ -11,13 +11,12 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/market/index.dart';
 import 'package:orginone/dart/core/market/resource.dart';
+
 class WebApp implements IProduct {
-  @override
-  set prod(XProduct _) {}
   @override
   late String id;
   @override
-  final XProduct prod;
+  late XProduct prod;
   @override
   late List<IResource> resource;
   @override
@@ -26,7 +25,7 @@ class WebApp implements IProduct {
   WebApp(this.prod) {
     merchandises = [];
     resource = [];
-    prod.resource?.forEach((a) => {resource.add(Resource(a, prod))});
+    prod.resource.forEach((a) => {resource.add(Resource(a, prod))});
   }
 
   @override
@@ -144,23 +143,14 @@ class WebApp implements IProduct {
         belongId: prod.belongId,
         resources: resources));
     if (res.success) {
-      XProduct xProduct = XProduct(
-          id: id,
-          name: name,
-          code: code,
-          photo: photo,
-          remark: remark,
-          resource: [],
-          merchandises: [],
-          flowRelations: [],
-          thing: null,
-          orderSource: null,
-          belongId: prod.belongId,
-          belong: null);
-      prod = xProduct;
-      res.data?.resource?.forEach((a) =>
-          {resource.add(Resource(a, prod))});
+      prod.name = name;
+      prod.code = code;
+      prod.typeName = typeName;
+      prod.remark = remark;
+      resource = [];
+
+      res.data?.resource.forEach((a) => {resource.add(Resource(a, prod))});
     }
     return res.success;
-  }  
+  }
 }
