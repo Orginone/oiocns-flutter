@@ -26,29 +26,29 @@ class ResultType<T> {
 /// 内核请求模型
 class ReqestType {
   // 模块
-  final String? module;
+  final String module;
   // 方法
-  final String? action;
+  final String action;
   // 参数
   final dynamic params;
 
   ReqestType({
-    this.module,
-    this.action,
-    this.params,
+    required this.module,
+    required this.action,
+    required this.params,
   });
 }
 
 /// 事件接收模型
 class ReceiveType {
   // 目标
-  final String? target;
+  final String target;
   // 数据
   final dynamic data;
 
   ReceiveType({
-    this.target,
-    this.data,
+    required this.target,
+    required this.data,
   });
 }
 
@@ -75,24 +75,24 @@ enum BucketOpreates {
 /// 桶操作携带的数据模型
 class BucketOpreateModel {
   // 完整路径
-  final String? key;
+  final String key;
   // 名称
   final String? name;
   // 共享域
-  final String? shareDomain;
+  final String shareDomain;
   // 目标
   final String? destination;
   // 操作
-  late final BucketOpreates? operate;
+  BucketOpreates operate;
   // 携带的分片数据
-  late final FileChunkData? fileItem;
+  FileChunkData? fileItem;
 
   BucketOpreateModel({
-    this.key,
+    required this.key,
     this.name,
-    this.shareDomain,
+    required this.shareDomain,
+    required this.operate,
     this.destination,
-    this.operate,
     this.fileItem,
   });
 }
@@ -100,18 +100,18 @@ class BucketOpreateModel {
 /// 上传文件携带的数据
 class FileChunkData {
   // 分片索引
-  final int? index;
+  final int index;
   // 文件大小
-  final int? size;
+  final int size;
   // 上传的唯一ID
-  final String? uploadId;
+  final String uploadId;
   // 分片数据编码字符串
   final String? dataUrl;
 
   FileChunkData({
-    this.index,
-    this.size,
-    this.uploadId,
+    required this.index,
+    required this.size,
+    required this.uploadId,
     this.dataUrl,
     required List data,
   });
@@ -120,50 +120,50 @@ class FileChunkData {
 /// 文件系统项数据模型
 class FileItemModel {
   // 完整路径
-  String? key;
+  String key;
   // 完整路径
-  int? size;
+  int size;
   // 名称
-  String? name;
+  String name;
   // 共享链接
-  String? shareLink;
+  String shareLink;
   // 拓展名
-  String? extension;
+  String extension;
   // 缩略图
-  String? thumbnail;
+  String thumbnail;
   // 创建时间
-  DateTime? dateCreated;
+  DateTime dateCreated;
   // 修改时间
-  DateTime? dateModified;
+  DateTime dateModified;
   // 文件类型
-  String? contentType;
+  String contentType;
   // 是否是目录
-  bool? isDirectory;
+  bool isDirectory;
   // 是否包含子目录
-  bool? hasSubDirectories;
+  bool hasSubDirectories;
 
   FileItemModel({
-    this.key,
-    this.size,
-    this.name,
-    this.shareLink,
-    this.extension,
-    this.thumbnail,
-    this.dateCreated,
-    this.dateModified,
-    this.contentType,
-    this.isDirectory,
-    this.hasSubDirectories,
+    required this.key,
+    required this.size,
+    required this.name,
+    required this.shareLink,
+    required this.extension,
+    required this.thumbnail,
+    required this.dateCreated,
+    required this.dateModified,
+    required this.contentType,
+    required this.isDirectory,
+    required this.hasSubDirectories,
   });
 }
 
 class IdReq {
   // 唯一ID
-  final String? id;
+  final String id;
 
   //构造方法
   IdReq({
-    this.id,
+    required this.id,
   });
 
   //通过JSON构造
@@ -192,29 +192,29 @@ class CreateDefineReq {
   // 唯一Id
   String? id;
   // 名称
-  late String? name;
+  late String name;
   // 编号
-  late String? code;
+  late String code;
   // 备注
-  late String? remark;
+  late String remark;
   // 节点信息
   // FlowNode? resource;
   // 归属Id
-  late String? belongId;
+  late String belongId;
   // 流程字段json
   String? fields;
 }
 
 class NameModel {
   // 名称
-  final String? name;
+  final String name;
   // 图片
-  final String? photo;
+  final String photo;
 
   //构造方法
   NameModel({
-    this.name,
-    this.photo,
+    required this.name,
+    required this.photo,
   });
 
   //通过JSON构造
@@ -241,18 +241,19 @@ class NameModel {
     return json;
   }
 }
+
 class IdReqModel {
   // 唯一ID
-  final String? id;
+  final String id;
   // 实体类型
-  final String? typeName;
+  final String typeName;
   // 归属ID
   late String? belongId;
 
   //构造方法
   IdReqModel({
-    this.id,
-    this.typeName,
+    required this.id,
+    required this.typeName,
     this.belongId,
   });
 
@@ -282,7 +283,6 @@ class IdReqModel {
     return json;
   }
 }
-
 
 class ResetPwdModel {
   // 唯一ID
@@ -328,14 +328,14 @@ class ResetPwdModel {
 
 class IdArrayReq {
   // 唯一ID数组
-  final List<String>? ids;
+  final List<String> ids;
   // 分页
   final PageRequest? page;
 
   //构造方法
   IdArrayReq({
-    this.ids,
-    this.page,
+    required this.ids,
+    required this.page,
   });
 
   //通过JSON构造
@@ -365,17 +365,17 @@ class IdArrayReq {
 
 class IdSpaceReq {
   // 唯一ID
-  final String? id;
+  final String id;
   // 工作空间ID
-  final String? spaceId;
+  final String spaceId;
   // 分页
   final PageRequest? page;
 
   //构造方法
   IdSpaceReq({
-    this.id,
-    this.spaceId,
-    this.page,
+    required this.id,
+    required this.spaceId,
+    required this.page,
   });
 
   //通过JSON构造
@@ -407,14 +407,14 @@ class IdSpaceReq {
 
 class SpaceAuthReq {
   // 职权ID
-  final String? authId;
+  final String authId;
   // 工作空间ID
-  final String? spaceId;
+  final String spaceId;
 
   //构造方法
   SpaceAuthReq({
-    this.authId,
-    this.spaceId,
+    required this.authId,
+    required this.spaceId,
   });
 
   //通过JSON构造
@@ -444,13 +444,13 @@ class SpaceAuthReq {
 
 class IDBelongReq {
   // 唯一ID
-  final String? id;
+  final String id;
   // 分页
   final PageRequest? page;
 
   //构造方法
   IDBelongReq({
-    this.id,
+    required this.id,
     this.page,
   });
 
@@ -481,14 +481,14 @@ class IDBelongReq {
 
 class RelationReq {
   // 唯一ID
-  final String? id;
+  final String id;
   // 子组织/个人ID
-  final List<String>? subIds;
+  final List<String> subIds;
 
   //构造方法
   RelationReq({
-    this.id,
-    this.subIds,
+    required this.id,
+    required this.subIds,
   });
 
   //通过JSON构造
@@ -519,17 +519,17 @@ class RelationReq {
 // 缓存结构体
 class CacheReq {
   // 缓存key
-  final String? key;
+  final String key;
   // 缓存数据
-  final String? value;
+  final String value;
   // 过期时间s
-  final String? expire;
+  final String expire;
 
   //构造方法
   CacheReq({
-    this.key,
-    this.value,
-    this.expire,
+    required this.key,
+    required this.value,
+    required this.expire,
   });
 
   //通过JSON构造
@@ -561,32 +561,32 @@ class CacheReq {
 
 class ThingAttrReq {
   // 唯一ID
-  final String? id;
+  final String id;
   //类别Id
-  final String? specId;
+  final String specId;
   //类别代码
-  final String? specCode;
+  final String specCode;
   //特性Id
-  final String? attrId;
+  final String attrId;
   //特性代码
-  final String? attrCode;
+  final String attrCode;
   //关系Id
-  final String? relationId;
+  final String relationId;
   //是否公开
-  final bool? public;
+  final bool public;
   // 分页
   final PageRequest? page;
 
   //构造方法
   ThingAttrReq({
-    this.id,
-    this.specId,
-    this.specCode,
-    this.attrId,
-    this.attrCode,
-    this.relationId,
-    this.public,
-    this.page,
+    required this.id,
+    required this.specId,
+    required this.specCode,
+    required this.attrId,
+    required this.attrCode,
+    required this.relationId,
+    required this.public,
+    required this.page,
   });
 
   //通过JSON构造
@@ -628,14 +628,14 @@ class ThingAttrReq {
 
 class IDWithBelongReq {
   // 唯一ID
-  final String? id;
+  final String id;
   // 归属ID
-  final String? belongId;
+  final String belongId;
 
   //构造方法
   IDWithBelongReq({
-    this.id,
-    this.belongId,
+    required this.id,
+    required this.belongId,
   });
 
   //通过JSON构造
@@ -665,17 +665,17 @@ class IDWithBelongReq {
 
 class IDWithBelongPageReq {
   // 唯一ID
-  final String? id;
+  final String id;
   // 归属ID
-  final String? belongId;
+  final String belongId;
   // 分页
   final PageRequest? page;
 
   //构造方法
   IDWithBelongPageReq({
-    this.id,
-    this.belongId,
-    this.page,
+    required this.id,
+    required this.belongId,
+    required this.page,
   });
 
   //通过JSON构造
@@ -707,17 +707,17 @@ class IDWithBelongPageReq {
 
 class IDStatusPageReq {
   // 唯一ID
-  final String? id;
+  final String id;
   // 状态
-  final int? status;
+  final int status;
   // 分页
   final PageRequest? page;
 
   //构造方法
   IDStatusPageReq({
-    this.id,
-    this.status,
-    this.page,
+    required this.id,
+    required this.status,
+    required this.page,
   });
 
   //通过JSON构造
@@ -749,17 +749,17 @@ class IDStatusPageReq {
 
 class IDBelongTargetReq {
   // 唯一ID
-  final String? id;
+  final String id;
   // 类型
-  final String? targetType;
+  final String targetType;
   // 分页
   final PageRequest? page;
 
   //构造方法
   IDBelongTargetReq({
-    this.id,
-    this.targetType,
-    this.page,
+    required this.id,
+    required this.targetType,
+    required this.page,
   });
 
   //通过JSON构造
