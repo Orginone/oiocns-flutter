@@ -129,7 +129,7 @@ class FileSystemItem implements IFileSystemItem {
 
   @override
   Future<bool> copy(IFileSystemItem destination) async {
-    if (destination.target!.isDirectory! && key != destination.key) {
+    if (destination.target!.isDirectory && key != destination.key) {
       var res = await kernel.anystore
           .bucketOpreate<List<FileItemModel>>(BucketOpreateModel(
         shareDomain: 'user',
@@ -148,7 +148,7 @@ class FileSystemItem implements IFileSystemItem {
 
   @override
   Future<bool> move(IFileSystemItem destination) async {
-    if (destination.target!.isDirectory! && key != destination.key) {
+    if (destination.target!.isDirectory && key != destination.key) {
       var res = await kernel.anystore
           .bucketOpreate<List<FileItemModel>>(BucketOpreateModel(
         shareDomain: 'user',
@@ -272,7 +272,9 @@ class FileSystemItem implements IFileSystemItem {
         return keys.add(subName);
       }
 
+// ignore: todo
 //TODO:格式化key,主要针对路径中的中文 可能不对
+
       // return btoa(unescape(encodeURIComponent(keys.join('/'))));
     } catch (err) {
       return '';
@@ -328,7 +330,7 @@ class FileSystemItem implements IFileSystemItem {
   }
 }
 
-/** 获取文件系统的根 */
+/* 获取文件系统的根 */
 var getFileSysItemRoot = FileSystemItem(
     key: "",
     name: "根目录",

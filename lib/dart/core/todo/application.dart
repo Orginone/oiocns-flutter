@@ -1,4 +1,4 @@
-import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/base/api/kernelapi.dart' show KernelApi;
 import 'package:orginone/dart/base/model.dart';
 
 import '../../base/schema.dart';
@@ -26,16 +26,18 @@ class ApplicationTodo extends ITodoGroup {
   @override
   Future<IApplyItemResult> getApplyList(PageRequest page) async {
     List<IApplyItem> applyList = [];
-    var res = await KernelApi.getInstance().queryJoinMarketApply(
-        IDBelongReq(id: '', page: page));
+    var res = await KernelApi.getInstance()
+        .queryJoinMarketApply(IDBelongReq(id: '', page: page));
     if (res.success == true) {
       res.data?.result?.forEach((element) {
         applyList.add(ApplyItem(element));
       });
     }
     return IApplyItemResult(
-        applyList, (res.data?.total ?? 0) > 1 ? res.data!.total : 0,
-        page.offset!, page.limit!);
+        applyList,
+        (res.data?.total ?? 0) > 1 ? res.data!.total : 0,
+        page.offset,
+        page.limit);
   }
 
   @override
@@ -50,16 +52,18 @@ class ApplicationTodo extends ITodoGroup {
   Future<IApprovalItemResult> getDoList(PageRequest page) async {
     List<IApprovalItem> completeList = [];
     //spaceId可以不传
-    var res = await KernelApi.getInstance().queryRecord(
-        IdSpaceReq(id: _id, spaceId: '', page: page));
-    if (res.success!) {
+    var res = await KernelApi.getInstance()
+        .queryRecord(IdSpaceReq(id: _id, spaceId: '', page: page));
+    if (res.success) {
       res.data?.result?.forEach((element) {
         completeList.add(CompleteItem(element));
       });
     }
     return IApprovalItemResult(
-        completeList, (res.data?.total ?? 0) > 0 ? res.data!.total : 0,
-        page.offset!, page.limit!);
+        completeList,
+        (res.data?.total ?? 0) > 0 ? res.data!.total : 0,
+        page.offset,
+        page.limit);
   }
 
   @override
@@ -70,9 +74,12 @@ class ApplicationTodo extends ITodoGroup {
     var res = await KernelApi.getInstance().queryNoticeTask(IdReq(id: _id));
     if (res.success == true && res.data != null && res.data!.result != null) {
       for (var element in res.data!.result!) {
-        _noticeList.add(NoticeItem(element, (id) =>{
-          _noticeList.removeWhere((element) => element.getData().id == id)
-        }));
+        _noticeList.add(NoticeItem(
+            element,
+            (id) => {
+                  _noticeList
+                      .removeWhere((element) => element.getData().id == id)
+                }));
       }
     }
     return _noticeList;
@@ -86,16 +93,16 @@ class ApplicationTodo extends ITodoGroup {
     var res = await KernelApi.getInstance().queryApproveTask(IdReq(id: _id));
     if (res.success == true && res.data != null && res.data!.result != null) {
       for (var element in res.data!.result!) {
-        _todoList.add(ApprovalItem(element, (id) =>{
-          _todoList.removeWhere((element) => element.getData().id == id)
-        }));
+        _todoList.add(ApprovalItem(
+            element,
+            (id) => {
+                  _todoList.removeWhere((element) => element.getData().id == id)
+                }));
       }
     }
     return _todoList;
   }
-
 }
-
 
 typedef CompleteFun = Function(String id);
 
@@ -128,7 +135,6 @@ class ApprovalItem extends IApprovalItem {
     }
     return res.success == true;
   }
-
 }
 
 typedef NoticeCall = Function(String id);
@@ -137,7 +143,7 @@ class NoticeItem extends IApprovalItem {
   final XFlowTaskHistory _data;
   NoticeCall passCall;
 
-  getData(){
+  getData() {
     return _data;
   }
 
@@ -190,8 +196,8 @@ class ApplyItem extends IApplyItem {
 
   @override
   Future<bool> cancel(int status, String remark) async {
-    final res = await KernelApi.getInstance().cancelJoinMarket(
-        IdReqModel(id: _data.id, typeName: ''));
+    final res = await KernelApi.getInstance()
+        .cancelJoinMarket(IdReqModel(id: _data.id, typeName: ''));
     return res.success == true;
   }
 }

@@ -1,5 +1,5 @@
 import 'package:orginone/dart/core/market/model.dart';
-import 'package:orginone/dart/core/target/university.dart'; 
+import 'package:orginone/dart/core/target/university.dart';
 import '../../base/common/uint.dart';
 import '../../base/model.dart';
 import '../../base/schema.dart';
@@ -11,8 +11,6 @@ import 'itarget.dart';
 import 'mbase.dart';
 
 class Person extends MarketTarget implements IPerson {
- 
-
   @override
   late List<ICohort> cohorts;
 
@@ -200,7 +198,7 @@ class Person extends MarketTarget implements IPerson {
     if (prod != null) {
       usefulProduct.add(prod.prod);
       if (prod.prod.resource != null) {
-        usefulResource[prod.prod.id!] = prod.prod.resource!;
+        usefulResource[prod.prod.id] = prod.prod.resource;
       }
     }
     return prod;
