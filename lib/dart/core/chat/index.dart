@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/chat/chat.dart';
@@ -17,12 +18,7 @@ Future<List<IChatGroup>> loadChats(String userId) async {
       var chats = (item.chats ?? [])
           .map((item) => createChat(item.id, item.name, item, userId))
           .toList();
-      groups.add(BaseChatGroup(
-        spaceId: item.id,
-        spaceName: item.name,
-        isOpened: index++ == 0,
-        chats: chats,
-      ));
+      groups.add(BaseChatGroup(item.id, item.name, index++ == 0, chats.obs));
     });
   }
   return groups;

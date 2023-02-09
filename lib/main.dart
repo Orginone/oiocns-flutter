@@ -6,8 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/components/unified_colors.dart';
+import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/hive_util.dart';
 import 'package:orginone/util/notification_util.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -15,9 +15,6 @@ void main() async {
   FlutterBugly.postCatchedException(() async {
     // 逻辑绑定
     WidgetsFlutterBinding.ensureInitialized();
-
-    // 初始化 hive
-    await HiveUtil().init();
 
     // 初始化通知配置
     NotificationUtil.initNotification();
@@ -30,7 +27,8 @@ void main() async {
       }
     });
 
-    await AppServer.initialization();
+    // 启动连接
+    KernelApi.getInstance().start();
 
     // 开启 app
     runApp(const ScreenInit());

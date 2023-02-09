@@ -2,8 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
-import 'package:orginone/dart/base/model/api_resp.dart';
-import 'package:orginone/dart/core/authority.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class HttpUtil {
@@ -38,7 +37,7 @@ class HttpUtil {
   }
 
   Future<Options> addTokenHeader(Options? options) async {
-    var accessToken = getAccessToken;
+    var accessToken = "getAccessToken";
     log.info("====> accessToken：$accessToken");
     if (options == null) {
       return Options(headers: {"Authorization": accessToken});
@@ -87,7 +86,7 @@ class HttpUtil {
     }
   }
 
-  Future<dynamic> post(
+  Future<ResultType<dynamic>> post(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
@@ -130,12 +129,12 @@ class HttpUtil {
     }
   }
 
-  dynamic _parseResp(Response response) {
+  ResultType<dynamic> _parseResp(Response response) {
     if (response.statusCode != 200) {
       throw Exception(response.statusMessage);
     } else {
       log.info(response.data!);
-      return ApiResp.fromJson(response.data!).getData();
+      return ResultType.fromJson(response.data!);
     }
   }
 

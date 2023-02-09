@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/appbar/gf_appbar.dart';
-
-import 'unified_colors.dart';
+import 'package:orginone/components/unified_colors.dart';
 
 const double defaultAppBarPercent = 0.07;
 const Color defaultAppBarColor = UnifiedColors.navigatorBgColor;
 const Color defaultBgColor = Colors.white;
 
-class UnifiedScaffold extends StatelessWidget {
+class OrginoneScaffold extends StatelessWidget {
   final double appBarPercent;
   final double? appBarHeight;
   final Color appBarBgColor;
@@ -22,7 +21,7 @@ class UnifiedScaffold extends StatelessWidget {
   final Widget? floatingButton;
   final bool? resizeToAvoidBottomInset;
 
-  const UnifiedScaffold({
+  const OrginoneScaffold({
     Key? key,
     this.appBarPercent = defaultAppBarPercent,
     this.appBarHeight,
