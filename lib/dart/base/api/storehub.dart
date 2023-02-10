@@ -23,8 +23,8 @@ class StoreHub {
     int interval = 3000,
   })  : _timeout = timeout,
         _connection = HubConnectionBuilder().withUrl(url).build() {
-    _connection.keepAliveIntervalInMilliseconds = timeout;
-    _connection.serverTimeoutInMilliseconds = interval;
+    _connection.keepAliveIntervalInMilliseconds = interval;
+    _connection.serverTimeoutInMilliseconds = timeout;
     _connection.onclose((err) {
       if (_isStarted && err != null) {
         for (final callback in _disconnectedCallbacks) {
@@ -123,8 +123,9 @@ class StoreHub {
   Future<ResultType<T>> invoke<T>(String methodName,
       {List<dynamic>? args}) async {
     try {
-      final ResultType<T> res =
-          await _connection.invoke(methodName, args: args);
+      var raw = await _connection.invoke(methodName, args: args);
+      final ResultType<T> res = ResultType.fromJson(raw);
+
       if (res.code == 401) {
         log.warning("登录已过期");
       }
