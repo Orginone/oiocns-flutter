@@ -639,6 +639,7 @@ class KernelApi {
       params: params,
     ));
   }
+
   /// 重置密码
   /// @param {IdReqModel} params 请求参数
   /// @returns {ResultType<bool>} 请求结果
@@ -652,8 +653,8 @@ class KernelApi {
 
   /*
    * 查询组织容器下的身份集
-   * @param {model.IDBelongReq} params 请求参数
-   * @returns {model.ResultType<schema.XIdentityArray>} 请求结果
+   * @param {IDBelongReq} params 请求参数
+   * @returns {ResultType<schema.XIdentityArray>} 请求结果
    */
   Future<ResultType<XIdentityArray>> queryTeamIdentitys(
     IDBelongReq params,
@@ -667,8 +668,8 @@ class KernelApi {
 
   /*
    * 拉身份加入组织
-   * @param {model.TeamPullModel} params 请求参数
-   * @returns {model.ResultType<boolean>} 请求结果
+   * @param {TeamPullModel} params 请求参数
+   * @returns {ResultType<boolean>} 请求结果
    */
   Future<ResultType<bool>> pullIdentityToTeam(
     TeamPullModel params,
@@ -682,8 +683,8 @@ class KernelApi {
 
   /*
    * 从组织身份集中剔除身份
-   * @param {model.TeamPullModel} params 请求参数
-   * @returns {model.ResultType<boolean>} 请求结果
+   * @param {TeamPullModel} params 请求参数
+   * @returns {ResultType<boolean>} 请求结果
    */
   Future<ResultType<bool>> removeTeamIdentity(
     GiveIdentityModel params,
@@ -1614,7 +1615,6 @@ class KernelApi {
     ));
   }
 
-
   /// 查询上架审批
   /// @param {IdReqModel} params 请求参数
   /// @returns {ResultType<XMerchandiseArray>} 请求结果
@@ -1626,6 +1626,7 @@ class KernelApi {
       params: params,
     ));
   }
+
   /// 取消订单详情
   /// @param {ApprovalModel} params 请求参数
   /// @returns {ResultType<bool>} 请求结果
@@ -1875,13 +1876,91 @@ class KernelApi {
   }
 
   /// 取消订单
-  /// @param {model.ApprovalModel} params 请求参数
-  /// @returns {model.ResultType<boolean>} 请求结果
-  Future<ResultType<bool>> cancelOrder(ApprovalModel params)async {
+  /// @param {ApprovalModel} params 请求参数
+  /// @returns {ResultType<boolean>} 请求结果
+  Future<ResultType<bool>> cancelOrder(ApprovalModel params) async {
     return await request(ReqestType(
       module: 'market',
       action: 'CancelOrder',
       params: params,
+    ));
+  }
+
+  /// ******* 公共方法 *********///
+  /// *** 后续迁移至终端实现 ****///
+  /// ****** （资产链）Did *****///
+
+  /// 生成助记词
+  /// @param {int} language 请求参数
+  /// @returns {ResultType<dynamic>} 请求结果
+  Future<ResultType<dynamic>> newMnemonic(int language) async {
+    return await request(ReqestType(
+      module: 'public',
+      action: 'NewMnemonic',
+      params: Map.from({"language": language}),
+    ));
+  }
+
+  /// 从助记词到私钥
+  /// @param {int} index 序号
+  /// @param {String} mnemonic 助记词
+  /// @returns {ResultType<dynamic>} 请求结果
+  Future<ResultType<dynamic>> mnemonicToPrivateKey(
+      int index, String mnemonic) async {
+    return await request(ReqestType(
+      module: 'public',
+      action: 'MnemonicToPrivateKey',
+      params: Map.from({"index": index, "mnemonic": mnemonic}),
+    ));
+  }
+
+  /// 从私钥到公钥
+  /// @param {String} privateKey 私钥
+  /// @returns {ResultType<dynamic>} 请求结果
+  Future<ResultType<dynamic>> privateKeyToPublicKey(String privateKey) async {
+    return await request(ReqestType(
+      module: 'public',
+      action: 'PrivateKeyToPublicKey',
+      params: Map.from({"privateKey": privateKey}),
+    ));
+  }
+
+  /// 从公钥到地址
+  /// @param {String} publicKey 公钥
+  /// @returns {ResultType<dynamic>} 请求结果
+  Future<ResultType<dynamic>> publicKeyToAddress(String publicKey) async {
+    return await request(ReqestType(
+      module: 'public',
+      action: 'PublicKeyToAddress',
+      params: Map.from({"publicKey": publicKey}),
+    ));
+  }
+
+  /// 签名
+  /// @param {String} privateKey 私钥
+  /// @param {String} message 消息
+  /// @returns {ResultType<dynamic>} 请求结果
+  Future<ResultType<dynamic>> signature(
+      String privateKey, String message) async {
+    return await request(ReqestType(
+      module: 'public',
+      action: 'Signature',
+      params: Map.from({"privateKey": privateKey, "message": message}),
+    ));
+  }
+
+  /// 验签
+  /// @param {String} publicKey 公钥
+  /// @param {List<int>} signature 签名
+  /// @param {String} message 消息
+  /// @returns {ResultType<dynamic>} 请求结果
+  Future<ResultType<dynamic>> verify(
+      String publicKey, String message, List<int> signature) async {
+    return await request(ReqestType(
+      module: 'public',
+      action: 'Verify',
+      params: Map.from(
+          {"publicKey": publicKey, "message": message, "signature": signature}),
     ));
   }
 
