@@ -4,7 +4,9 @@ import 'package:flutter_treeview/flutter_treeview.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/components/originone_scaffold.dart';
+import 'package:orginone/components/template/tab_template.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/pages/other/home/components/user_bar.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -22,8 +24,68 @@ class HomePage extends GetView<HomeController> {
       resizeToAvoidBottomInset: false,
       appBarElevation: 0,
       appBarHeight: 0,
-      body: _body(context),
+      body: TabTemplate(
+        top: UserBar(),
+        views: [],
+        tabCtrl: null,
+      ),
     );
+  }
+
+  void _initTabs() {
+    var size = Size(32.w, 32.w);
+    message = TabCombine(
+      customTab: _buildTabTick(
+          AImage.localImage(
+            "chat",
+            size: Size(38.w, 32.w),
+          ),
+          "沟通"),
+      tabView: const MessagePage(),
+      breadCrumbItem: chatPoint,
+    );
+    relation = TabCombine(
+      body: Text('办事', style: text14),
+      tabView: const AffairsPage(),
+      icon: AImage.localImage("work", size: size),
+      breadCrumbItem: workPoint,
+    );
+    center = TabCombine(
+      iconMargin: EdgeInsets.zero,
+      body: AImage.localImage("logo_not_bg", size: Size(36.w, 36.w)),
+      tabView: const CenterPage(),
+      breadCrumbItem: centerPoint,
+    );
+    work = TabCombine(
+      body: Text('仓库', style: text14),
+      tabView: const ApplicationPage(),
+      icon: AImage.localImage("warehouse", size: size),
+      breadCrumbItem: warehousePoint,
+    );
+    my = TabCombine(
+      body: Text('设置', style: text14),
+      tabView: SetHomePage(),
+      icon: AImage.localImage("setting", size: size),
+      breadCrumbItem: settingPoint,
+    );
+
+    tabs = <TabCombine>[message, relation, center, work, my];
+    tabIndex = tabs.indexOf(center).obs;
+    tabController = TabController(
+      length: tabs.length,
+      vsync: this,
+      initialIndex: tabIndex.value,
+    );
+    breadCrumbController.redirect(centerPoint);
+    int preIndex = tabController.index;
+    tabController.addListener(() {
+      if (preIndex == tabController.index) {
+        return;
+      }
+      tabIndex.value = tabController.index;
+      breadCrumbController.redirect(tabs[tabIndex.value].breadCrumbItem!);
+      preIndex = tabController.index;
+    });
   }
 
   Widget _body(BuildContext context) {
@@ -314,9 +376,6 @@ class HomePage extends GetView<HomeController> {
 
 class HomeController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  var messageCtrl = Get.find<MessageController>();
-  var organizationCtrl = Get.find<OrganizationController>();
-  var fileCtrl = Get.find<FileController>();
 
   /// 全局面包屑
   var breadCrumbController = BreadCrumbController<String>(topNode: topPoint);
@@ -415,62 +474,6 @@ class HomeController extends GetxController
     Kernel.getInstance.stop();
     breadCrumbController.dispose();
     tabController.dispose();
-  }
-
-  void _initTabs() {
-    var size = Size(32.w, 32.w);
-    message = TabCombine(
-      customTab: _buildTabTick(
-          AImage.localImage(
-            "chat",
-            size: Size(38.w, 32.w),
-          ),
-          "沟通"),
-      tabView: const MessagePage(),
-      breadCrumbItem: chatPoint,
-    );
-    relation = TabCombine(
-      body: Text('办事', style: text14),
-      tabView: const AffairsPage(),
-      icon: AImage.localImage("work", size: size),
-      breadCrumbItem: workPoint,
-    );
-    center = TabCombine(
-      iconMargin: EdgeInsets.zero,
-      body: AImage.localImage("logo_not_bg", size: Size(36.w, 36.w)),
-      tabView: const CenterPage(),
-      breadCrumbItem: centerPoint,
-    );
-    work = TabCombine(
-      body: Text('仓库', style: text14),
-      tabView: const ApplicationPage(),
-      icon: AImage.localImage("warehouse", size: size),
-      breadCrumbItem: warehousePoint,
-    );
-    my = TabCombine(
-      body: Text('设置', style: text14),
-      tabView: SetHomePage(),
-      icon: AImage.localImage("setting", size: size),
-      breadCrumbItem: settingPoint,
-    );
-
-    tabs = <TabCombine>[message, relation, center, work, my];
-    tabIndex = tabs.indexOf(center).obs;
-    tabController = TabController(
-      length: tabs.length,
-      vsync: this,
-      initialIndex: tabIndex.value,
-    );
-    breadCrumbController.redirect(centerPoint);
-    int preIndex = tabController.index;
-    tabController.addListener(() {
-      if (preIndex == tabController.index) {
-        return;
-      }
-      tabIndex.value = tabController.index;
-      breadCrumbController.redirect(tabs[tabIndex.value].breadCrumbItem!);
-      preIndex = tabController.index;
-    });
   }
 
   Widget _buildTabTick(Widget icon, String label) {
