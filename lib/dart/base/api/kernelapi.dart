@@ -95,6 +95,33 @@ class KernelApi {
     return await _restRequest("login", req);
   }
 
+  /// 注册
+  Future<ResultType<dynamic>> register(RegisterType params) async {
+    ResultType<dynamic> res;
+    if (_storeHub.isConnected) {
+      res = await _storeHub.invoke('Register', args: [params]);
+    } else {
+      res = await _restRequest('Register', params);
+    }
+    if (res.success) {
+      _anystore.updateToken(res.data.accessToken);
+    }
+    return res;
+  }
+
+  Future<ResultType<String>> genToken(String companyId) async {
+    ResultType<String> res;
+    if (_storeHub.isConnected) {
+      res = await _storeHub.invoke<String>('GenToken', args: [companyId]);
+    } else {
+      res = await _restRequest('gentoken', companyId);
+    }
+    if (res.success) {
+      _anystore.updateToken(res.data ?? "");
+    }
+    return res;
+  }
+
   /// 创建字典类型
   /// @param {DictModel} params 请求参数
   /// @returns {ResultType<XDict>} 请求结果

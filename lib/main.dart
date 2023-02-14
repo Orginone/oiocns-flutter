@@ -5,7 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/components/unified_colors.dart';
+import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/notification_util.dart';
@@ -59,7 +59,7 @@ class ScreenInit extends StatelessWidget {
           footerTriggerDistance: 15,
           dragSpeedRatio: 0.91,
           headerBuilder: () => const MaterialClassicHeader(
-            color: UnifiedColors.themeColor,
+            color: XColors.themeColor,
           ),
           footerBuilder: () => const ClassicFooter(
               loadingText: "努力加载中...",

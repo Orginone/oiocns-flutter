@@ -3544,3 +3544,71 @@ class FileItemShare {
     return json;
   }
 }
+
+// 注册消息类型
+class RegisterType {
+  // 昵称
+  final String nickName;
+
+  // 姓名
+  final String name;
+
+  // 电话
+  final String phone;
+
+  // 账户
+  final String account;
+
+  // 密码
+  final String password;
+
+  // 座右铭
+  final String motto;
+
+  // 头像
+  final String avatar;
+
+  RegisterType({
+    required this.nickName,
+    required this.name,
+    required this.phone,
+    required this.account,
+    required this.password,
+    required this.motto,
+    required this.avatar,
+  });
+
+  //通过JSON构造
+  RegisterType.fromJson(Map<String, dynamic> json)
+      : nickName = json["nickName"],
+        name = json["name"],
+        phone = json["phone"],
+        account = json["account"],
+        password = json["password"],
+        motto = json["motto"],
+        avatar = json["avatar"];
+
+  //通过动态数组解析成List
+  static List<RegisterType> fromList(List<Map<String, dynamic>> list) {
+    List<RegisterType> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(RegisterType.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["nickName"] = nickName;
+    json["name"] = name;
+    json["phone"] = phone;
+    json["account"] = account;
+    json["password"] = password;
+    json["motto"] = motto;
+    json["avatar"] = avatar;
+    return json;
+  }
+}
