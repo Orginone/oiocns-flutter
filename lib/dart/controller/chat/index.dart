@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
-import 'package:logging/logging.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -11,9 +10,7 @@ import 'package:orginone/dart/core/enum.dart';
 
 const chatsObjectName = 'userchat';
 
-class MessageController extends GetxController {
-  final Logger log = Logger("MessageController");
-
+class ChatController extends GetxController {
   final String _userId = "";
   final RxList<IChatGroup> _groups = <IChatGroup>[].obs;
   final RxList<IChat> _chats = <IChat>[].obs;
@@ -207,9 +204,9 @@ class MessageController extends GetxController {
   }
 }
 
-class MessageBinding extends Bindings {
+class ChatBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => MessageController());
+    Get.lazyPut(() => ChatController());
   }
 }

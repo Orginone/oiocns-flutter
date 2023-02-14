@@ -170,7 +170,7 @@ class BaseChatGroup extends IChatGroup {
   ) {
     this.spaceId = spaceId;
     this.spaceName = spaceName;
-    this.isOpened = isOpened;
+    this.isOpened = isOpened.obs;
     this.chats = chats;
   }
 }

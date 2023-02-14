@@ -52,7 +52,7 @@ abstract class IChat {
 abstract class IChatGroup {
   late String spaceId;
   late String spaceName;
-  late bool isOpened;
+  late RxBool isOpened;
   late RxList<IChat> chats;
 }
 

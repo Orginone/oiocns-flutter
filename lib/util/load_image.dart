@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'icons.dart';
 
-class AImage {
-  AImage._();
+class XImage {
+  XImage._();
 
   static Image localImage(String name, {Size? size, BoxFit? fit}) {
     ///常规图
@@ -33,7 +33,7 @@ class AImage {
       BoxFit? fit,
       Alignment? alignment}) {
     if (url == null || url == "") {
-      return AImage.localImage(placeholder, size: size);
+      return XImage.localImage(placeholder, size: size);
     }
     double width = size != null ? size.width : double.infinity;
     double height = size != null ? size.height : double.infinity;

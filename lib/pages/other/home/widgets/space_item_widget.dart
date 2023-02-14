@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/components/text_avatar.dart';
+import 'package:orginone/components/unified.dart';
+import 'package:orginone/components/widgets/text_avatar.dart';
+import 'package:orginone/components/widgets/text_tag.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 
 class SpaceItemWidget extends StatelessWidget {
@@ -25,7 +27,7 @@ class SpaceItemWidget extends StatelessWidget {
         }
       },
       child: Container(
-        padding: ,
+        padding: XInsets.l20r20t10,
         child: _body,
       ),
     );
@@ -36,11 +38,11 @@ class SpaceItemWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         TextAvatar(avatarName: space.target.name.substring(0, 1)),
-        Container(margin: left10),
+        Container(margin: EdgeInsets.only(left: 10.w)),
         Expanded(
           child: Text(
             space.target.name,
-            style: text18,
+            style: XFonts.size18Black0,
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -49,11 +51,11 @@ class SpaceItemWidget extends StatelessWidget {
           child: TextTag(
             "当前空间",
             bgColor: Colors.green,
-            textStyle: text12White,
+            textStyle: XFonts.size12White,
             padding: const EdgeInsets.all(4),
           ),
         )
       ],
-    )
+    );
   }
 }

@@ -2,36 +2,65 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/template/tabs.dart';
+import 'package:orginone/components/unified.dart';
+import 'package:orginone/dart/controller/chat/index.dart';
+import 'package:orginone/pages/chat/widgets/message_item_widget.dart';
 import 'package:orginone/routers.dart';
 
-class MessagePage extends StatelessWidget {
+class MessagePage extends GetView<MessageController> {
   const MessagePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      SizedBox(
-        height: 60.h,
-        child: TabBar(
-          controller: controller.tabController,
-          tabs: controller.tabs.map((item) => item.body!).toList(),
-        ),
+    return Tabs(
+      tabCtrl: controller.tabController,
+      top: TabBar(
+        controller: controller.tabController,
+        tabs: controller.tabs.map((item) => item.body!).toList(),
       ),
-      Container(
-        margin: EdgeInsets.only(top: 2.h),
-        child: Divider(height: 1.h),
-      ),
-      Expanded(
-        child: TabBarView(
-          controller: controller.tabController,
-          children: controller.tabs.map((item) => item.tabView).toList(),
-        ),
-      )
-    ]);
+      views: controller.tabs.map((item) => item.tabView).toList(),
+    );
   }
 }
 
-class RecentChat extends GetView<MessageController> {
+class MessageBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => MessageController());
+  }
+}
+
+class MessageController extends TabsController {
+  @override
+  initTabs() {
+    registerTab(XTab(tabView: const RecentChat(), body: _chatTab("会话")));
+    var text = Text("通讯录", style: XFonts.size22Black3);
+    registerTab(XTab(tabView: const Relation(), body: text));
+  }
+
+  Widget _chatTab(String name) {
+    return SizedBox(
+      child: Stack(children: [
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+            name,
+            style: XFonts.size22Black3,
+          ),
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: Obx(() => Get.find<ChatController>().getNoReadCount() > 0
+              ? Icon(Icons.circle, color: Colors.redAccent, size: 10.w)
+              : Container()),
+        )
+      ]),
+    );
+  }
+}
+
+class RecentChat extends GetView<ChatController> {
   const RecentChat({Key? key}) : super(key: key);
 
   @override
@@ -57,7 +86,7 @@ class RecentChat extends GetView<MessageController> {
             child: Column(
               children: [
                 Padding(padding: EdgeInsets.only(top: 30.h)),
-                Text("更多会话", style: AFont.instance.size18themeColorW500),
+                Text("更多会话", style: XFonts.size18Theme),
                 Padding(padding: EdgeInsets.only(top: 30.h)),
               ],
             ),

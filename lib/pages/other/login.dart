@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/components/loading_button.dart';
+import 'package:orginone/components/widgets/loading_button.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/util/load_image.dart';
 
@@ -28,7 +28,7 @@ class LoginPage extends GetView<LoginController> {
   }
 
   get _logo {
-    return AImage.localImage("light_logo_vertical", size: Size(200.w, 200.w));
+    return XImage.localImage("light_logo_vertical", size: Size(200.w, 200.w));
   }
 
   get _account {
@@ -62,8 +62,10 @@ class LoginPage extends GetView<LoginController> {
           if (!formKey.currentState!.validate()) return;
           await controller.login();
         },
-        child:
-            Text("登录", style: TextStyle(fontSize: 20.sp, color: Colors.white),),
+        child: Text(
+          "登录",
+          style: TextStyle(fontSize: 20.sp, color: Colors.white),
+        ),
       ),
     );
   }

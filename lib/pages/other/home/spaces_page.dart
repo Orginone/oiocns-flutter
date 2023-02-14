@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/originone_scaffold.dart';
+import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/dart/ts/controller/setting/index.dart';
-import 'package:orginone/pages/other/home/components/space_item_widget.dart';
+import 'package:orginone/pages/other/home/widgets/space_item_widget.dart';
 
 class SpacesPage extends GetView<SettingController> {
   const SpacesPage({Key? key}) : super(key: key);
