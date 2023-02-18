@@ -26,7 +26,7 @@ class ResultType<T> {
         success = json["success"];
 
   ResultType.fromJsonSerialize(
-      Map<String, dynamic> json, T Function(Map<String, Object>) serialize)
+      Map<String, dynamic> json, T Function(Map<String, dynamic>) serialize)
       : msg = json["msg"],
         data = json["data"] == null ? null : serialize(json["data"]),
         code = json["code"],
@@ -49,6 +49,14 @@ class ReqestType {
     required this.action,
     required this.params,
   });
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["module"] = module;
+    json["action"] = action;
+    json["params"] = params;
+    return json;
+  }
 }
 
 /// 事件接收模型
@@ -201,7 +209,10 @@ class IdReq {
   IdReq.fromJson(Map<String, dynamic> json) : id = json["id"];
 
   //通过动态数组解析成List
-  static List<IdReq> fromList(List<Map<String, dynamic>> list) {
+  static List<IdReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<IdReq> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -260,7 +271,10 @@ class NameModel {
         photo = json["photo"];
 
   //通过动态数组解析成List
-  static List<NameModel> fromList(List<Map<String, dynamic>> list) {
+  static List<NameModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<NameModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -303,7 +317,10 @@ class IdReqModel {
         belongId = json["belongId"];
 
   //通过动态数组解析成List
-  static List<IdReqModel> fromList(List<Map<String, dynamic>> list) {
+  static List<IdReqModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<IdReqModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -347,7 +364,10 @@ class ResetPwdModel {
         privateKey = json["privateKey"];
 
   //通过动态数组解析成List
-  static List<ResetPwdModel> fromList(List<Map<String, dynamic>> list) {
+  static List<ResetPwdModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<ResetPwdModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -386,7 +406,10 @@ class IdArrayReq {
         page = PageRequest.fromJson(json["page"]);
 
   //通过动态数组解析成List
-  static List<IdArrayReq> fromList(List<Map<String, dynamic>> list) {
+  static List<IdArrayReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<IdArrayReq> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -429,7 +452,10 @@ class IdSpaceReq {
         page = PageRequest.fromJson(json["page"]);
 
   //通过动态数组解析成List
-  static List<IdSpaceReq> fromList(List<Map<String, dynamic>> list) {
+  static List<IdSpaceReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<IdSpaceReq> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -468,7 +494,10 @@ class SpaceAuthReq {
         spaceId = json["spaceId"];
 
   //通过动态数组解析成List
-  static List<SpaceAuthReq> fromList(List<Map<String, dynamic>> list) {
+  static List<SpaceAuthReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<SpaceAuthReq> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -506,7 +535,10 @@ class IDBelongReq {
         page = PageRequest.fromJson(json["page"]);
 
   //通过动态数组解析成List
-  static List<IDBelongReq> fromList(List<Map<String, dynamic>> list) {
+  static List<IDBelongReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<IDBelongReq> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -544,7 +576,10 @@ class RelationReq {
         subIds = json["subIds"];
 
   //通过动态数组解析成List
-  static List<RelationReq> fromList(List<Map<String, dynamic>> list) {
+  static List<RelationReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<RelationReq> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -588,7 +623,10 @@ class CacheReq {
         expire = json["expire"];
 
   //通过动态数组解析成List
-  static List<CacheReq> fromList(List<Map<String, dynamic>> list) {
+  static List<CacheReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<CacheReq> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -657,7 +695,10 @@ class ThingAttrReq {
         page = PageRequest.fromJson(json["page"]);
 
   //通过动态数组解析成List
-  static List<ThingAttrReq> fromList(List<Map<String, dynamic>> list) {
+  static List<ThingAttrReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<ThingAttrReq> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -701,7 +742,10 @@ class IDWithBelongReq {
         belongId = json["belongId"];
 
   //通过动态数组解析成List
-  static List<IDWithBelongReq> fromList(List<Map<String, dynamic>> list) {
+  static List<IDWithBelongReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<IDWithBelongReq> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -744,7 +788,10 @@ class IDWithBelongPageReq {
         page = PageRequest.fromJson(json["page"]);
 
   //通过动态数组解析成List
-  static List<IDWithBelongPageReq> fromList(List<Map<String, dynamic>> list) {
+  static List<IDWithBelongPageReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<IDWithBelongPageReq> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -788,7 +835,10 @@ class IDStatusPageReq {
         page = PageRequest.fromJson(json["page"]);
 
   //通过动态数组解析成List
-  static List<IDStatusPageReq> fromList(List<Map<String, dynamic>> list) {
+  static List<IDStatusPageReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<IDStatusPageReq> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -832,7 +882,10 @@ class IDBelongTargetReq {
         page = PageRequest.fromJson(json["page"]);
 
   //通过动态数组解析成List
-  static List<IDBelongTargetReq> fromList(List<Map<String, dynamic>> list) {
+  static List<IDBelongTargetReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<IDBelongTargetReq> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -881,7 +934,10 @@ class IDReqSubModel {
         page = PageRequest.fromJson(json["page"]);
 
   //通过动态数组解析成List
-  static List<IDReqSubModel> fromList(List<Map<String, dynamic>> list) {
+  static List<IDReqSubModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<IDReqSubModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -936,7 +992,10 @@ class IDReqJoinedModel {
         page = PageRequest.fromJson(json["page"]);
 
   //通过动态数组解析成List
-  static List<IDReqJoinedModel> fromList(List<Map<String, dynamic>> list) {
+  static List<IDReqJoinedModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<IDReqJoinedModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -982,7 +1041,10 @@ class ChatsReqModel {
         spaceTypeName = json["spaceTypeName"];
 
   //通过动态数组解析成List
-  static List<ChatsReqModel> fromList(List<Map<String, dynamic>> list) {
+  static List<ChatsReqModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<ChatsReqModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1026,7 +1088,10 @@ class PageRequest {
         filter = json["filter"];
 
   //通过动态数组解析成List
-  static List<PageRequest> fromList(List<Map<String, dynamic>> list) {
+  static List<PageRequest> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<PageRequest> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1070,7 +1135,10 @@ class RecursiveReqModel {
         subNodeTypeNames = json["subNodeTypeNames"];
 
   //通过动态数组解析成List
-  static List<RecursiveReqModel> fromList(List<Map<String, dynamic>> list) {
+  static List<RecursiveReqModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<RecursiveReqModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1109,7 +1177,10 @@ class IdWithNameModel {
         name = json["name"];
 
   //通过动态数组解析成List
-  static List<IdWithNameModel> fromList(List<Map<String, dynamic>> list) {
+  static List<IdWithNameModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<IdWithNameModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1142,7 +1213,10 @@ class IdNameArray {
       : result = IdWithNameModel.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<IdNameArray> fromList(List<Map<String, dynamic>> list) {
+  static List<IdNameArray> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<IdNameArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1179,7 +1253,10 @@ class ApprovalModel {
         status = json["status"];
 
   //通过动态数组解析成List
-  static List<ApprovalModel> fromList(List<Map<String, dynamic>> list) {
+  static List<ApprovalModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<ApprovalModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1240,7 +1317,10 @@ class DictModel {
         remark = json["remark"];
 
   //通过动态数组解析成List
-  static List<DictModel> fromList(List<Map<String, dynamic>> list) {
+  static List<DictModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<DictModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1302,7 +1382,10 @@ class DictItemModel {
         dictId = json["dictId"];
 
   //通过动态数组解析成List
-  static List<DictItemModel> fromList(List<Map<String, dynamic>> list) {
+  static List<DictItemModel> fromList(List<dynamic> list) {
+    if (list == null) {
+      return [];
+    }
     List<DictItemModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1369,7 +1452,10 @@ class OperationModel {
         remark = json["remark"];
 
   //通过动态数组解析成List
-  static List<OperationModel> fromList(List<Map<String, dynamic>> list) {
+  static List<OperationModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<OperationModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1437,7 +1523,10 @@ class OperationItemModel {
         remark = json["remark"];
 
   //通过动态数组解析成List
-  static List<OperationItemModel> fromList(List<Map<String, dynamic>> list) {
+  static List<OperationItemModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<OperationItemModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1500,7 +1589,10 @@ class ThingModel {
         remark = json["remark"];
 
   //通过动态数组解析成List
-  static List<ThingModel> fromList(List<Map<String, dynamic>> list) {
+  static List<ThingModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<ThingModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1572,7 +1664,10 @@ class SpeciesModel {
         remark = json["remark"];
 
   //通过动态数组解析成List
-  static List<SpeciesModel> fromList(List<Map<String, dynamic>> list) {
+  static List<SpeciesModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<SpeciesModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1666,7 +1761,10 @@ class AttributeModel {
         authId = json["authId"];
 
   //通过动态数组解析成List
-  static List<AttributeModel> fromList(List<Map<String, dynamic>> list) {
+  static List<AttributeModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<AttributeModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1739,7 +1837,10 @@ class AuthorityModel {
         remark = json["remark"];
 
   //通过动态数组解析成List
-  static List<AuthorityModel> fromList(List<Map<String, dynamic>> list) {
+  static List<AuthorityModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<AuthorityModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1802,7 +1903,10 @@ class IdentityModel {
         remark = json["remark"];
 
   //通过动态数组解析成List
-  static List<IdentityModel> fromList(List<Map<String, dynamic>> list) {
+  static List<IdentityModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<IdentityModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1879,7 +1983,10 @@ class TargetModel {
         teamRemark = json["teamRemark"];
 
   //通过动态数组解析成List
-  static List<TargetModel> fromList(List<Map<String, dynamic>> list) {
+  static List<TargetModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<TargetModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1949,7 +2056,10 @@ class RuleStdModel {
         attrs = json["attrs"];
 
   //通过动态数组解析成List
-  static List<RuleStdModel> fromList(List<Map<String, dynamic>> list) {
+  static List<RuleStdModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<RuleStdModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2002,7 +2112,10 @@ class LogModel {
         content = json["content"];
 
   //通过动态数组解析成List
-  static List<LogModel> fromList(List<Map<String, dynamic>> list) {
+  static List<LogModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<LogModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2072,7 +2185,10 @@ class MarketModel {
         photo = json["photo"];
 
   //通过动态数组解析成List
-  static List<MarketModel> fromList(List<Map<String, dynamic>> list) {
+  static List<MarketModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<MarketModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2146,7 +2262,10 @@ class MerchandiseModel {
         days = json["days"];
 
   //通过动态数组解析成List
-  static List<MerchandiseModel> fromList(List<Map<String, dynamic>> list) {
+  static List<MerchandiseModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<MerchandiseModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2210,7 +2329,10 @@ class OrderModel {
         merchandiseIds = json["merchandiseIds"];
 
   //通过动态数组解析成List
-  static List<OrderModel> fromList(List<Map<String, dynamic>> list) {
+  static List<OrderModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<OrderModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2272,7 +2394,10 @@ class OrderModelByStags {
         stagingIds = json["stagingIds"];
 
   //通过动态数组解析成List
-  static List<OrderModelByStags> fromList(List<Map<String, dynamic>> list) {
+  static List<OrderModelByStags> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<OrderModelByStags> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2330,7 +2455,10 @@ class OrderDetailModel {
         spaceId = json["spaceId"];
 
   //通过动态数组解析成List
-  static List<OrderDetailModel> fromList(List<Map<String, dynamic>> list) {
+  static List<OrderDetailModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<OrderDetailModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2381,7 +2509,10 @@ class OrderPayModel {
         paymentType = json["paymentType"];
 
   //通过动态数组解析成List
-  static List<OrderPayModel> fromList(List<Map<String, dynamic>> list) {
+  static List<OrderPayModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<OrderPayModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2456,7 +2587,10 @@ class ProductModel {
         resources = ResourceModel.fromList(json["resources"]);
 
   //通过动态数组解析成List
-  static List<ProductModel> fromList(List<Map<String, dynamic>> list) {
+  static List<ProductModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<ProductModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2531,7 +2665,10 @@ class ResourceModel {
         components = json["components"];
 
   //通过动态数组解析成List
-  static List<ResourceModel> fromList(List<Map<String, dynamic>> list) {
+  static List<ResourceModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<ResourceModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2580,7 +2717,10 @@ class StagingModel {
         belongId = json["belongId"];
 
   //通过动态数组解析成List
-  static List<StagingModel> fromList(List<Map<String, dynamic>> list) {
+  static List<StagingModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<StagingModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2624,7 +2764,10 @@ class ThingSpeciesModel {
         speciesCode = json["speciesCode"];
 
   //通过动态数组解析成List
-  static List<ThingSpeciesModel> fromList(List<Map<String, dynamic>> list) {
+  static List<ThingSpeciesModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<ThingSpeciesModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2693,7 +2836,10 @@ class ThingAttrModel {
         numValue = json["numValue"];
 
   //通过动态数组解析成List
-  static List<ThingAttrModel> fromList(List<Map<String, dynamic>> list) {
+  static List<ThingAttrModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<ThingAttrModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2747,7 +2893,10 @@ class JoinTeamModel {
         targetType = json["targetType"];
 
   //通过动态数组解析成List
-  static List<JoinTeamModel> fromList(List<Map<String, dynamic>> list) {
+  static List<JoinTeamModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<JoinTeamModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2797,7 +2946,10 @@ class ExitTeamModel {
         targetType = json["targetType"];
 
   //通过动态数组解析成List
-  static List<ExitTeamModel> fromList(List<Map<String, dynamic>> list) {
+  static List<ExitTeamModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<ExitTeamModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2847,7 +2999,10 @@ class TeamPullModel {
         targetType = json["targetType"];
 
   //通过动态数组解析成List
-  static List<TeamPullModel> fromList(List<Map<String, dynamic>> list) {
+  static List<TeamPullModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<TeamPullModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2897,8 +3052,10 @@ class CreateOrderByStagingModel {
         stagingIds = json["StagingIds"];
 
   //通过动态数组解析成List
-  static List<CreateOrderByStagingModel> fromList(
-      List<Map<String, dynamic>> list) {
+  static List<CreateOrderByStagingModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<CreateOrderByStagingModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2938,7 +3095,10 @@ class GiveIdentityModel {
         targetIds = json["targetIds"];
 
   //通过动态数组解析成List
-  static List<GiveIdentityModel> fromList(List<Map<String, dynamic>> list) {
+  static List<GiveIdentityModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<GiveIdentityModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2991,7 +3151,10 @@ class SearchExtendReq {
         teamId = json["teamId"];
 
   //通过动态数组解析成List
-  static List<SearchExtendReq> fromList(List<Map<String, dynamic>> list) {
+  static List<SearchExtendReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<SearchExtendReq> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3037,7 +3200,10 @@ class MarketPullModel {
         typeNames = json["typeNames"];
 
   //通过动态数组解析成List
-  static List<MarketPullModel> fromList(List<Map<String, dynamic>> list) {
+  static List<MarketPullModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<MarketPullModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3076,7 +3242,10 @@ class UsefulProductReq {
         typeNames = json["typeNames"];
 
   //通过动态数组解析成List
-  static List<UsefulProductReq> fromList(List<Map<String, dynamic>> list) {
+  static List<UsefulProductReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<UsefulProductReq> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3119,7 +3288,10 @@ class UsefulResourceReq {
         typeNames = json["typeNames"];
 
   //通过动态数组解析成List
-  static List<UsefulResourceReq> fromList(List<Map<String, dynamic>> list) {
+  static List<UsefulResourceReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<UsefulResourceReq> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3178,7 +3350,10 @@ class SourceExtendModel {
         spaceId = json["spaceId"];
 
   //通过动态数组解析成List
-  static List<SourceExtendModel> fromList(List<Map<String, dynamic>> list) {
+  static List<SourceExtendModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<SourceExtendModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3225,7 +3400,10 @@ class NameTypeModel {
         page = PageRequest.fromJson(json["page"]);
 
   //通过动态数组解析成List
-  static List<NameTypeModel> fromList(List<Map<String, dynamic>> list) {
+  static List<NameTypeModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<NameTypeModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3269,7 +3447,10 @@ class NameCodeModel {
         page = PageRequest.fromJson(json["page"]);
 
   //通过动态数组解析成List
-  static List<NameCodeModel> fromList(List<Map<String, dynamic>> list) {
+  static List<NameCodeModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<NameCodeModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3323,7 +3504,10 @@ class ImMsgModel {
         msgBody = json["msgBody"];
 
   //通过动态数组解析成List
-  static List<ImMsgModel> fromList(List<Map<String, dynamic>> list) {
+  static List<ImMsgModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<ImMsgModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3359,7 +3543,10 @@ class ChatResponse {
       : groups = GroupChatModel.fromList(json["groups"]);
 
   //通过动态数组解析成List
-  static List<ChatResponse> fromList(List<Map<String, dynamic>> list) {
+  static List<ChatResponse> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<ChatResponse> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3401,7 +3588,10 @@ class GroupChatModel {
         chats = ChatModel.fromList(json["chats"]);
 
   //通过动态数组解析成List
-  static List<GroupChatModel> fromList(List<Map<String, dynamic>> list) {
+  static List<GroupChatModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<GroupChatModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3475,7 +3665,10 @@ class ChatModel {
         msgTime = json["msgTime"];
 
   //通过动态数组解析成List
-  static List<ChatModel> fromList(List<Map<String, dynamic>> list) {
+  static List<ChatModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<ChatModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3550,7 +3743,10 @@ class FlowInstanceModel {
         hook = json["hook"];
 
   //通过动态数组解析成List
-  static List<FlowInstanceModel> fromList(List<Map<String, dynamic>> list) {
+  static List<FlowInstanceModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<FlowInstanceModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3604,7 +3800,10 @@ class FlowRelationModel {
         spaceId = json["spaceId"];
 
   //通过动态数组解析成List
-  static List<FlowRelationModel> fromList(List<Map<String, dynamic>> list) {
+  static List<FlowRelationModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<FlowRelationModel> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3654,7 +3853,10 @@ class FlowReq {
         page = PageRequest.fromJson(json["page"]);
 
   //通过动态数组解析成List
-  static List<FlowReq> fromList(List<Map<String, dynamic>> list) {
+  static List<FlowReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<FlowReq> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3699,7 +3901,10 @@ class ApprovalTaskReq {
         comment = json["comment"];
 
   //通过动态数组解析成List
-  static List<ApprovalTaskReq> fromList(List<Map<String, dynamic>> list) {
+  static List<ApprovalTaskReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<ApprovalTaskReq> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3744,7 +3949,10 @@ class TargetShare {
         avatar = json["avatar"];
 
   //通过动态数组解析成List
-  static List<TargetShare> fromList(List<Map<String, dynamic>> list) {
+  static List<TargetShare> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<TargetShare> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3798,7 +4006,10 @@ class FileItemShare {
         thumbnail = json["thumbnail"];
 
   //通过动态数组解析成List
-  static List<FileItemShare> fromList(List<Map<String, dynamic>> list) {
+  static List<FileItemShare> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<FileItemShare> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3864,7 +4075,10 @@ class RegisterType {
         avatar = json["avatar"];
 
   //通过动态数组解析成List
-  static List<RegisterType> fromList(List<Map<String, dynamic>> list) {
+  static List<RegisterType> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
     List<RegisterType> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {

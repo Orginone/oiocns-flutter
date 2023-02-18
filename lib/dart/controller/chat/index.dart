@@ -4,14 +4,16 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/controller/setting/index.dart';
 import 'package:orginone/dart/core/chat/ichat.dart';
 import 'package:orginone/dart/core/chat/index.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/util/event_bus.dart';
 
 const chatsObjectName = 'userchat';
 
 class ChatController extends GetxController {
-  final String _userId = "";
+  String _userId = "";
   final RxList<IChatGroup> _groups = <IChatGroup>[].obs;
   final RxList<IChat> _chats = <IChat>[].obs;
   final Rx<IChat?> _curChat = Rxn();
@@ -27,7 +29,13 @@ class ChatController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    _initialization();
+    XEventBus.getInstance.on<Signed>().listen((event) {
+      var settingCtrl = Get.find<SettingController>();
+      _userId = settingCtrl.user?.id ?? "";
+      if (_userId != "") {
+        _initialization();
+      }
+    });
   }
 
   /// 获取名称
@@ -108,10 +116,10 @@ class ChatController extends GetxController {
   /// 初始化监听器
   _initialization() async {
     _groups.value = await loadChats(userId);
-    var anystore = KernelApi.getInstance();
-    anystore.on('RecvMsg', (message) => onReceiveMessage([message]));
-    anystore.on('ChatRefresh', chatRefresh);
-    anystore.anystore.subscribed(chatsObjectName, 'user', _updateMails);
+    var kennel = KernelApi.getInstance();
+    kennel.on('RecvMsg', (message) => onReceiveMessage([message]));
+    kennel.on('ChatRefresh', chatRefresh);
+    kennel.anystore.subscribed(chatsObjectName, 'user', _updateMails);
   }
 
   chatRefresh() async {
@@ -207,6 +215,6 @@ class ChatController extends GetxController {
 class ChatBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => ChatController());
+    Get.put(ChatController());
   }
 }

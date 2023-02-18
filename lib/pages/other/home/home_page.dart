@@ -9,7 +9,6 @@ import 'package:orginone/pages/other/home/components/user_bar.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class HomePage extends GetView<HomeController> {
   const HomePage({Key? key}) : super(key: key);
@@ -62,35 +61,30 @@ class HomeController extends TabsController {
             ],
           ),
         ),
-        tabView: const MessagePage(),
+        view: const MessagePage(),
       ),
     );
     registerTab(XTab(
       body: Text('办事', style: XFonts.size14Black3),
-      tabView: Container(),
+      view: Container(),
       icon: XImage.localImage("work", size: size),
     ));
     var center = XTab(
       body: XImage.localImage("logo_not_bg", size: Size(36.w, 36.w)),
-      tabView: Container(),
+      view: Container(),
       iconMargin: EdgeInsets.zero,
     );
     registerTab(center);
     registerTab(XTab(
       body: Text('仓库', style: XFonts.size14Black3),
-      tabView: Container(),
+      view: Container(),
       icon: XImage.localImage("warehouse", size: size),
     ));
     registerTab(XTab(
       body: Text('设置', style: XFonts.size14Black3),
-      tabView: Container(),
+      view: SetHomePage(),
       icon: XImage.localImage("setting", size: size),
     ));
     setIndex(tabs.indexOf(center));
-  }
-
-  @override
-  initListeners() {
-    registerListens((currentIndex) => {});
   }
 }

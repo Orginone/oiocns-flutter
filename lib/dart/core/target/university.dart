@@ -4,8 +4,8 @@ import 'company.dart';
 
 class University extends Company {
   University(XTarget target, String userId) : super(target, userId) {
-    super.departmentTypes = [TargetType.college, ...departmentTypes];
-    subTeamTypes = [...departmentTypes, TargetType.working];
+    super.departmentTypes = [TargetType.college, ...targetDepartmentTypes];
+    subTeamTypes = [...targetDepartmentTypes, TargetType.working];
     extendTargetType = [...subTeamTypes, ...companyTypes];
     joinTargetType = [TargetType.group];
     createTargetType = [

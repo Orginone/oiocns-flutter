@@ -95,7 +95,11 @@ class KernelApi {
     } else {
       raw = await _restRequest("login", req);
     }
-    return ResultType.fromJson(raw);
+    var res = ResultType.fromJson(raw);
+    if (res.success) {
+      _anystore.updateToken(res.data["accessToken"]);
+    }
+    return res;
   }
 
   /// 注册
@@ -2487,9 +2491,10 @@ class KernelApi {
   }
 
   Future<ResultType<T>> request<T>(
-      ReqestType req, T Function(Map<String, Object>)? cvt) async {
+      ReqestType req, T Function(Map<String, dynamic>)? cvt) async {
     dynamic raw;
     if (_storeHub.isConnected) {
+      log.info("====> req:${req.toJson()}");
       raw = await _storeHub.invoke('Request', args: [req]);
     } else {
       raw = await _restRequest('Request', req);

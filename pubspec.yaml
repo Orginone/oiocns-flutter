@@ -123,6 +123,9 @@ dependencies:
   # 日志收集工具
   flutter_bugly: 0.4.4
 
+  # 消息总线
+  event_bus: 2.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -126,9 +126,15 @@ class StoreHub {
   /// @param {any[]} args 参数
   /// @returns {Promise<ResultType>} 异步结果
   Future<dynamic> invoke(String methodName, {List<dynamic>? args}) async {
+    log.info("========== storeHub-invoke-start =============");
+    log.info("=====> methodName: $methodName");
     try {
-      return await _connection.invoke(methodName, args: args);
+      var res = await _connection.invoke(methodName, args: args);
+      log.info("=====> res: $res");
+      log.info("========== storeHub-invoke-end =============");
+      return res;
     } catch (err) {
+      log.info("========== storeHub-invoke-end =============");
       return {"code": 400, "msg": "请求异常", "success": false};
     }
   }

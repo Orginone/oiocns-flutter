@@ -141,7 +141,7 @@ const companyTypes = [
   TargetType.university,
 ];
 
-const departmentTypes = [
+const targetDepartmentTypes = [
   TargetType.office,
   TargetType.section,
   TargetType.research,

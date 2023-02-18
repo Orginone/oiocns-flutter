@@ -4,13 +4,14 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/dart/core/target/person.dart';
+import 'package:orginone/util/event_bus.dart';
 
 const sessionUserName = 'sessionUser';
 const sessionSpaceName = 'sessionSpace';
 
 /// 设置控制器
 class SettingController extends GetxController {
-  late String currentKey;
+  String currentKey = "";
   final Rx<IPerson?> _user = Rxn();
   final Rx<ICompany?> _curSpace = Rxn();
 
@@ -40,12 +41,15 @@ class SettingController extends GetxController {
 
   /// 设置当前空间
   setCurSpace(String id) async {
+    if (id == space.id) {
+      return;
+    }
     if (id == _user.value!.id) {
       _curSpace.value = null;
     } else {
       _curSpace.value = _findCompany(id);
     }
-    if (currentKey == '') {
+    if (currentKey == "") {
       currentKey = space.key;
     }
     await KernelApi.getInstance().genToken(id);
@@ -103,6 +107,7 @@ class SettingController extends GetxController {
     var res = await KernelApi.getInstance().login(account, password);
     if (res.success) {
       await _loadUser(XTarget.fromJson(res.data["person"]));
+      XEventBus.getInstance.fire(Signed());
     }
     return res;
   }
@@ -156,6 +161,6 @@ class SettingController extends GetxController {
 class SettingBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => SettingController());
+    Get.put(SettingController());
   }
 }

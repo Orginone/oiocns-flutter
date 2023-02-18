@@ -118,16 +118,12 @@ class Person extends MarketTarget implements IPerson {
     if (res.result != null) {
       for (var a in res.result!) {
         late ICompany company;
-        switch (a.typeName as TargetType) {
-          case TargetType.university:
-            company = University(a, id);
-            break;
-          case TargetType.hospital:
-            company = Hospital(a, id);
-            break;
-          default:
-            company = Company(a, id);
-            break;
+        if (a.typeName == TargetType.university.label) {
+          company = University(a, id);
+        } else if (a.typeName == TargetType.university.label) {
+          company = Hospital(a, id);
+        } else {
+          company = Company(a, id);
         }
         joinedCompany.add(company);
       }

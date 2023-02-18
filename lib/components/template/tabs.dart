@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 class XTab {
   final Widget? body;
-  final Widget tabView;
+  final Widget view;
   final Widget? customTab;
   final Widget? icon;
   final double? tabHeight;
@@ -12,7 +12,7 @@ class XTab {
 
   const XTab({
     Key? key,
-    required this.tabView,
+    required this.view,
     this.customTab,
     this.body,
     this.icon,
@@ -33,7 +33,7 @@ class XTab {
   }
 
   Widget toTabView() {
-    return tabView;
+    return view;
   }
 }
 
@@ -88,7 +88,7 @@ abstract class TabsController extends GetxController
   initTabs();
 
   /// 初始化监听器
-  initListeners();
+  initListeners() {}
 
   /// 注册 tab
   registerTab(XTab tab) {

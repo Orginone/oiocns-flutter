@@ -29,9 +29,9 @@ class SpacesPage extends GetView<SettingController> {
         var spaces = <ISpace>[...joinedCompanies, controller.user!];
         return ListView.builder(
           scrollDirection: Axis.vertical,
-          itemCount: spaces.length + 1,
+          itemCount: spaces.length,
           itemBuilder: (BuildContext context, int index) {
-            return _item(spaces[index - 1]);
+            return _item(spaces[index]);
           },
         );
       }),

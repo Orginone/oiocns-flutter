@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/api/storehub.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/util/event_bus.dart';
 import 'package:orginone/util/http_util.dart';
 
 class AnyStore {
@@ -25,6 +26,19 @@ class AnyStore {
         _storeHub = StoreHub(Constant.anyStoreHub),
         _requester = request {
     _storeHub.on("updated", _updated);
+    _storeHub.onConnected(() {
+      if (accessToken != "") {
+        _storeHub.invoke("TokenAuth", args: [accessToken, 'user']).then(
+          (value) {
+            _subscribeCallbacks.forEach((fullKey, value) {
+              var key = fullKey.split("|")[0];
+              var domain = fullKey.split("|")[1];
+              subscribed(key, domain, value);
+            });
+          },
+        );
+      }
+    });
   }
 
   start() {
@@ -55,8 +69,8 @@ class AnyStore {
       final fullKey = "$key|$domain";
       _subscribeCallbacks[fullKey] = callback;
       if (_storeHub.isConnected) {
-        final ResultType<dynamic> res =
-            await _storeHub.invoke('Subscribed', args: [key, domain]);
+        dynamic raw = await _storeHub.invoke('Subscribed', args: [key, domain]);
+        var res = ResultType.fromJson(raw);
         if (res.success && res.data != null) {
           callback(res.data);
         }
@@ -109,8 +123,7 @@ class AnyStore {
   /// @returns {ResultType} 添加异步结果
   Future<ResultType<dynamic>> insert(
       String collName, dynamic data, String domain) async {
-    return await _storeHub
-        .invoke('Insert', args: [collName, data, domain]);
+    return await _storeHub.invoke('Insert', args: [collName, data, domain]);
   }
 
   /// 更新数据到数据集
@@ -120,8 +133,7 @@ class AnyStore {
   /// @returns {ResultType} 更新异步结果
   Future<ResultType<dynamic>> update(
       String collName, dynamic update, String domain) async {
-    return await _storeHub
-        .invoke('Update', args: [collName, update, domain]);
+    return await _storeHub.invoke('Update', args: [collName, update, domain]);
   }
 
   /// 从数据集移除数据
@@ -131,8 +143,7 @@ class AnyStore {
   /// @returns {ResultType} 移除异步结果
   Future<ResultType<dynamic>> remove(
       String collName, dynamic match, String domain) async {
-    return await _storeHub
-        .invoke('Remove', args: [collName, match, domain]);
+    return await _storeHub.invoke('Remove', args: [collName, match, domain]);
   }
 
   /// 从数据集查询数据

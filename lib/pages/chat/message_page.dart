@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:orginone/components/template/tabs.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/controller/chat/index.dart';
+import 'package:orginone/pages/chat/widgets/message_item_widget.dart';
+import 'package:orginone/routers.dart';
 
 class MessagePage extends GetView<MessageController> {
   const MessagePage({Key? key}) : super(key: key);
@@ -12,11 +14,14 @@ class MessagePage extends GetView<MessageController> {
   Widget build(BuildContext context) {
     return Tabs(
       tabCtrl: controller.tabController,
-      top: TabBar(
-        controller: controller.tabController,
-        tabs: controller.tabs.map((item) => item.body!).toList(),
+      top: SizedBox(
+        height: 60.h,
+        child: TabBar(
+          controller: controller.tabController,
+          tabs: controller.tabs.map((item) => item.toTab()).toList(),
+        ),
       ),
-      views: controller.tabs.map((item) => item.tabView).toList(),
+      views: controller.tabs.map((item) => item.toTabView()).toList(),
     );
   }
 }
@@ -31,18 +36,17 @@ class MessageBinding extends Bindings {
 class MessageController extends TabsController {
   @override
   initTabs() {
-    registerTab(XTab(tabView: Container(), body: _chatTab("会话")));
-    var text = Text("通讯录", style: XFonts.size22Black3);
-    registerTab(XTab(tabView: Container(), body: text));
+    registerTab(XTab(view: const RecentChat(), body: _chatTab));
+    registerTab(XTab(view: Container(), body: _chatEmail));
   }
 
-  Widget _chatTab(String name) {
+  Widget get _chatTab {
     return SizedBox(
       child: Stack(children: [
         Align(
           alignment: Alignment.center,
           child: Text(
-            name,
+            "会话",
             style: XFonts.size22Black3,
           ),
         ),
@@ -56,46 +60,44 @@ class MessageController extends TabsController {
     );
   }
 
-  @override
-  initListeners() {}
+  Widget get _chatEmail {
+    return Text("通讯录", style: XFonts.size22Black3);
+  }
 }
 
-// class RecentChat extends GetView<ChatController> {
-//   const RecentChat({Key? key}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Obx(() {
-//       int chatSize = controller.getChatSize();
-//       return ListView.builder(
-//         shrinkWrap: true,
-//         scrollDirection: Axis.vertical,
-//         itemCount: chatSize + 1,
-//         itemBuilder: (BuildContext context, int index) {
-//           if (index < chatSize) {
-//             var chat = controller.chats[index];
-//             return MessageItemWidget(
-//               chat: chat,
-//               remove: controller.removeChat,
-//             );
-//           }
-//           return GestureDetector(
-//             onTap: () {
-//               Get.toNamed(Routers.moreMessage);
-//             },
-//             child: Column(
-//               children: [
-//                 Padding(padding: EdgeInsets.only(top: 30.h)),
-//                 Text("更多会话", style: XFonts.size18Theme),
-//                 Padding(padding: EdgeInsets.only(top: 30.h)),
-//               ],
-//             ),
-//           );
-//         },
-//       );
-//     });
-//   }
-// }
+class RecentChat extends GetView<ChatController> {
+  const RecentChat({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      int chatSize = controller.getChatSize();
+      return ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        itemCount: chatSize + 1,
+        itemBuilder: (BuildContext context, int index) {
+          if (index < chatSize) {
+            var chat = controller.chats[index];
+            return MessageItemWidget(chat: chat, remove: controller.removeChat);
+          }
+          return GestureDetector(
+            onTap: () {
+              Get.toNamed(Routers.moreMessage);
+            },
+            child: Column(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 30.h)),
+                Text("更多会话", style: XFonts.size18Theme),
+                Padding(padding: EdgeInsets.only(top: 30.h)),
+              ],
+            ),
+          );
+        },
+      );
+    });
+  }
+}
 //
 // class Relation extends GetView<MessageController> {
 //   const Relation({Key? key}) : super(key: key);

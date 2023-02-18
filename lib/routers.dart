@@ -8,8 +8,10 @@ import 'package:orginone/pages/other/login.dart';
 import 'package:orginone/pages/other/scanning/scanning_page.dart';
 import 'package:orginone/pages/other/scanning/scanning_result_pge.dart';
 import 'package:orginone/pages/other/search_page.dart';
+import 'package:orginone/pages/setting/set_home_page.dart';
 
 class Routers {
+  // 入口页面
   static const String main = "/";
 
   // 首页
@@ -30,23 +32,25 @@ class Routers {
 
   // 搜索
   static const String search = "/search";
+  static const String searchResult = "/searchResult";
 
   // 消息
   static const String messageSetting = "/messageSetting";
   static const String message = "/message";
   static const String chat = "/chat";
+  static const String moreMessage = "/moreMessage";
 
   static List<GetPage> getInitRouters() {
     return [
       GetPage(
         name: Routers.main,
         page: () => LoginPage(),
-        binding: SettingBinding(),
+        bindings: [SettingBinding(), ChatBinding()],
       ),
       GetPage(
         name: Routers.home,
         page: () => const HomePage(),
-        bindings: [HomeBinding(), SettingBinding(), ChatBinding(), MessageBinding()],
+        bindings: [HomeBinding(), SetHomeBinding(), MessageBinding()],
       ),
       GetPage(
         name: Routers.spaces,
@@ -69,9 +73,9 @@ class Routers {
         binding: SearchBinding(),
       ),
       GetPage(
-        name: Routers.search,
-        page: () => const SearchPage(),
-        binding: SearchBinding(),
+        name: Routers.searchResult,
+        page: () => const ScanningResultPage(),
+        binding: ScanningResultBinding(),
       ),
     ];
   }

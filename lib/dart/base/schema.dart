@@ -5705,7 +5705,7 @@ class XTarget {
         flowRecords = XFlowRecord.fromList(json["flowRecords"]);
 
   //通过动态数组解析成List
-  static List<XTarget> fromList(List<Map<String, dynamic>>? list) {
+  static List<XTarget> fromList(List<dynamic>? list) {
     if (list == null) {
       return [];
     }
@@ -5790,13 +5790,13 @@ class XTargetArray {
 
   //通过JSON构造
   XTargetArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
+      : offset = json["offset"] ?? 0,
         limit = json["limit"],
         total = json["total"],
         result = XTarget.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XTargetArray> fromList(List<Map<String, dynamic>>? list) {
+  static List<XTargetArray> fromList(List<dynamic>? list) {
     if (list == null) {
       return [];
     }

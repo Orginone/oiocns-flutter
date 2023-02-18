@@ -17,43 +17,46 @@ class UserBar extends GetView<SettingController> {
   Widget get _empty => Container();
 
   Widget get _container {
-    return Row(children: [
-      Expanded(
-        child: Obx(() {
-          var target = controller.space.target;
-          var spaceName = target.name;
-          return GestureDetector(
-            onTap: () => Get.toNamed(Routers.spaces),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                _avatar,
-                Container(margin: EdgeInsets.only(left: 10.w)),
-                Text(
-                  spaceName,
-                  style: XFonts.size22White,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Container(margin: EdgeInsets.only(left: 2.w)),
-                const Icon(Icons.arrow_drop_down, color: XColors.black)
-              ],
-            ),
-          );
-        }),
-      ),
-      Padding(padding: EdgeInsets.only(left: 10.w)),
-      _avatar,
-    ]);
+    return SizedBox(
+      height: 74.h,
+      child: Row(children: [
+        Expanded(
+          child: Obx(() {
+            var target = controller.space.target;
+            var spaceName = target.name;
+            return GestureDetector(
+              onTap: () => Get.toNamed(Routers.spaces),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _avatar(EdgeInsets.only(left: 20.w)),
+                  Container(margin: EdgeInsets.only(left: 10.w)),
+                  Text(
+                    spaceName,
+                    style: XFonts.size22Black0,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Container(margin: EdgeInsets.only(left: 2.w)),
+                  const Icon(Icons.arrow_drop_down, color: XColors.black)
+                ],
+              ),
+            );
+          }),
+        ),
+        Padding(padding: EdgeInsets.only(left: 10.w)),
+        _avatar(EdgeInsets.only(right: 20.w)),
+      ]),
+    );
   }
 
-  Widget get _avatar {
+  Widget _avatar(EdgeInsets insets) {
     return TextAvatar(
       radius: 45.w,
       width: 45.w,
       avatarName: controller.user!.name.substring(0, 1),
       textStyle: XFonts.size22White,
-      margin: EdgeInsets.only(right: 20.w),
+      margin: insets,
     );
   }
 }
