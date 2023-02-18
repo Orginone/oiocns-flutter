@@ -4,7 +4,6 @@ import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/api/storehub.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/util/event_bus.dart';
 import 'package:orginone/util/http_util.dart';
 
 class AnyStore {
@@ -95,7 +94,8 @@ class AnyStore {
   /// @param {string} domain 对象所在域, 个人域(user),单位域(company),开放域(all)
   /// @returns {ResultType} 对象异步结果
   Future<ResultType<dynamic>> get(String key, String domain) async {
-    return await _storeHub.invoke('Get', args: [key, domain]);
+    var raw = await _storeHub.invoke('Get', args: [key, domain]);
+    return ResultType.fromJson(raw);
   }
 
   /// 修改对象
@@ -105,7 +105,8 @@ class AnyStore {
   /// @returns {ResultType} 变更异步结果
   Future<ResultType<dynamic>> set(
       String key, dynamic setData, String domain) async {
-    return await _storeHub.invoke('Set', args: [key, setData, domain]);
+    var raw = await _storeHub.invoke('Set', args: [key, setData, domain]);
+    return ResultType.fromJson(raw);
   }
 
   /// 删除对象
@@ -113,7 +114,8 @@ class AnyStore {
   /// @param {string} domain 对象所在域, 个人域(user),单位域(company),开放域(all)
   /// @returns {ResultType} 删除异步结果
   Future<ResultType<dynamic>> delete(String key, String domain) async {
-    return await _storeHub.invoke('Delete', args: [key, domain]);
+    var raw = await _storeHub.invoke('Delete', args: [key, domain]);
+    return ResultType.fromJson(raw);
   }
 
   /// 添加数据到数据集
@@ -123,7 +125,8 @@ class AnyStore {
   /// @returns {ResultType} 添加异步结果
   Future<ResultType<dynamic>> insert(
       String collName, dynamic data, String domain) async {
-    return await _storeHub.invoke('Insert', args: [collName, data, domain]);
+    var raw = await _storeHub.invoke('Insert', args: [collName, data, domain]);
+    return ResultType.fromJson(raw);
   }
 
   /// 更新数据到数据集
@@ -133,7 +136,9 @@ class AnyStore {
   /// @returns {ResultType} 更新异步结果
   Future<ResultType<dynamic>> update(
       String collName, dynamic update, String domain) async {
-    return await _storeHub.invoke('Update', args: [collName, update, domain]);
+    var raw =
+        await _storeHub.invoke('Update', args: [collName, update, domain]);
+    return ResultType.fromJson(raw);
   }
 
   /// 从数据集移除数据
@@ -143,7 +148,8 @@ class AnyStore {
   /// @returns {ResultType} 移除异步结果
   Future<ResultType<dynamic>> remove(
       String collName, dynamic match, String domain) async {
-    return await _storeHub.invoke('Remove', args: [collName, match, domain]);
+    var raw = await _storeHub.invoke('Remove', args: [collName, match, domain]);
+    return ResultType.fromJson(raw);
   }
 
   /// 从数据集查询数据
@@ -153,8 +159,9 @@ class AnyStore {
   /// @returns {ResultType} 移除异步结果
   Future<ResultType<dynamic>> aggregate(
       String collName, dynamic options, String domain) async {
-    return await _storeHub
-        .invoke('Aggregate', args: [collName, options, domain]);
+    var raw =
+        await _storeHub.invoke('Aggregate', args: [collName, options, domain]);
+    return ResultType.fromJson(raw);
   }
 
   /// 桶操作
@@ -162,9 +169,11 @@ class AnyStore {
   /// @returns {ResultType<T>} 移除异步结果
   Future<ResultType<dynamic>> bucketOpreate(BucketOpreateModel data) async {
     if (_storeHub.isConnected) {
-      return await _storeHub.invoke('BucketOpreate', args: [data]);
+      var raw = await _storeHub.invoke('BucketOpreate', args: [data]);
+      return ResultType.fromJson(raw);
     }
-    return await _restRequest('Bucket', 'Operate', data);
+    var raw = await _restRequest('Bucket', 'Operate', data);
+    return ResultType.fromJson(raw);
   }
 
   /// 对象变更通知

@@ -9,9 +9,11 @@ import 'package:orginone/dart/core/chat/chat.dart';
 import 'package:orginone/dart/core/chat/ichat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/util/event_bus.dart';
+import 'package:orginone/util/logger.dart';
 
 class ChatController extends GetxController {
   String _userId = "";
+  String _userName = "";
   final RxList<IChatGroup> _groups = <IChatGroup>[].obs;
   final RxList<IChat> _chats = <IChat>[].obs;
   final Rx<IChat?> _curChat = Rxn();
@@ -24,12 +26,17 @@ class ChatController extends GetxController {
 
   IChat? get chat => _curChat.value;
 
+  String get userId => _userId;
+
+  String get userName => _userName;
+
   @override
   void onInit() async {
     super.onInit();
     _signInSub = XEventBus.instance.on<SignIn>().listen((event) {
       var settingCtrl = Get.find<SettingController>();
       _userId = settingCtrl.user?.id ?? "";
+      _userName = settingCtrl.user?.name ?? "";
       if (_userId != "") {
         _initialization();
       }
@@ -116,14 +123,19 @@ class ChatController extends GetxController {
 
   /// 缓存当前会话
   _cacheChats() async {
+    var chats = _chats
+        .map((c) {
+          return c.getCache().toJson();
+        })
+        .toList()
+        .reversed
+        .toList();
+    Log.info(chats);
     await KernelApi.getInstance().anystore.set(
           "chatsObjectName",
           {
             "operation": "replaceAll",
-            "data": {
-              "chats":
-                  _chats.map((c) => c.getCache()).toList().reversed.toList()
-            }
+            "data": {"chats": chats}
           },
           "user",
         );
@@ -146,12 +158,12 @@ class ChatController extends GetxController {
       spaceTypeName: TargetType.company.label,
     ));
     if (res.success) {
-      res.data?.groups?.forEach((item) {
+      res.data?.groups?.forEach((group) {
         int index = 0;
-        var chats = (item.chats ?? [])
-            .map((item) => createChat(item.id, item.name, item, userId))
+        var chats = (group.chats ?? [])
+            .map((item) => createChat(group.id, item.name, item, userId))
             .toList();
-        groups.add(BaseChatGroup(item.id, item.name, index++ == 0, chats.obs));
+        groups.add(BaseChatGroup(group.id, group.name, index++ == 0, chats.obs));
       });
     }
     return groups;
@@ -201,7 +213,7 @@ class ChatController extends GetxController {
     for (var chatGroup in _groups) {
       for (var inner in chatGroup.chats) {
         if (inner.spaceId == spaceId && inner.chatId == chatId) {
-          return chat;
+          return inner;
         }
       }
     }

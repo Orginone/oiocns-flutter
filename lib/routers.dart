@@ -1,8 +1,11 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:orginone/dart/controller/chat/index.dart';
 import 'package:orginone/dart/controller/setting/index.dart';
+import 'package:orginone/pages/chat/message_chat_page.dart';
 import 'package:orginone/pages/chat/message_more.dart';
 import 'package:orginone/pages/chat/message_page.dart';
+import 'package:orginone/pages/chat/widgets/chat_box.dart';
+import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
 import 'package:orginone/pages/other/home/home_page.dart';
 import 'package:orginone/pages/other/home/spaces_page.dart';
 import 'package:orginone/pages/other/login.dart';
@@ -77,6 +80,11 @@ class Routers {
         name: Routers.searchResult,
         page: () => const ScanningResultPage(),
         binding: ScanningResultBinding(),
+      ),
+      GetPage(
+        name: Routers.chat,
+        page: () => const ChatPage(),
+        bindings: [ChatBoxBinding(), PlayBinding()],
       ),
       GetPage(
         name: Routers.moreMessage,

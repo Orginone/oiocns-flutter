@@ -6,6 +6,7 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/controller/chat/index.dart';
 import 'package:orginone/pages/chat/widgets/message_item_widget.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/logger.dart';
 
 class MessagePage extends GetView<MessageController> {
   const MessagePage({Key? key}) : super(key: key);

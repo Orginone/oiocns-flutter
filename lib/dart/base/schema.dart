@@ -2507,7 +2507,7 @@ class XImMsg {
   String msgBody;
 
   // 状态
-  final int status;
+  final int? status;
 
   // 创建人员ID
   final String createUser;
@@ -2516,10 +2516,10 @@ class XImMsg {
   final String updateUser;
 
   // 修改次数
-  final String version;
+  final String? version;
 
   // 创建时间
-  final String createTime;
+  final String? createTime;
 
   // 更新时间
   final String updateTime;
@@ -2554,17 +2554,17 @@ class XImMsg {
         fromId = json["fromId"],
         toId = json["toId"],
         msgType = json["msgType"],
-        msgBody = json["msgBody"],
+        msgBody = json["msgBody"] ?? "",
         status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
+        createUser = json["createUser"] ?? "",
+        updateUser = json["updateUser"] ?? "",
         version = json["version"],
-        showTxt = json["showTxt"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"];
+        showTxt = json["showTxt"] ?? "",
+        createTime = json["createTime"] ?? "",
+        updateTime = json["updateTime"] ?? "";
 
   //通过动态数组解析成List
-  static List<XImMsg> fromList(List<Map<String, dynamic>>? list) {
+  static List<XImMsg> fromList(List<dynamic>? list) {
     if (list == null) {
       return [];
     }
@@ -2620,9 +2620,9 @@ class XImMsgArray {
 
   //通过JSON构造
   XImMsgArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
+      : offset = json["offset"] ?? 0,
         limit = json["limit"],
-        total = json["total"],
+        total = json["total"] ?? 0,
         result = XImMsg.fromList(json["result"]);
 
   //通过动态数组解析成List

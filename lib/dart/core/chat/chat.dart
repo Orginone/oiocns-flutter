@@ -9,8 +9,9 @@ import 'package:orginone/util/encryption_util.dart';
 const hisMsgCollName = 'chat-message';
 
 class BaseChat extends IChat {
-  BaseChat(String id, String name, ChatModel m, String userId) {
-    spaceId = id;
+  BaseChat(String spaceId, String name, ChatModel m, String userId) {
+    this.userId = userId;
+    this.spaceId = spaceId;
     spaceName = name;
     target = m;
     messages = <XImMsg>[].obs;
@@ -19,7 +20,8 @@ class BaseChat extends IChat {
     chatId = target.id;
     noReadCount = 0.obs;
     isTopping = false.obs;
-    fullId = '$id-${target.id}';
+    fullId = '$spaceId-${target.id}';
+    lastMessage = Rxn();
     // appendShare(target.id, shareInfo());
   }
 
@@ -135,7 +137,7 @@ class BaseChat extends IChat {
       message["id"] = message["chatId"];
       var detail = XImMsg.fromJson(message);
       detail.showTxt = EncryptionUtil.inflate(detail.msgBody);
-      messages.add(detail);
+      this.messages.add(detail);
     }
   }
 
@@ -176,7 +178,7 @@ class BaseChatGroup extends IChatGroup {
 }
 
 class PersonChat extends BaseChat {
-  PersonChat(super.id, super.name, super.m, super.userId);
+  PersonChat(super.spaceId, super.name, super.m, super.userId);
 
   @override
   Future<int> moreMessage({String? filter}) async {

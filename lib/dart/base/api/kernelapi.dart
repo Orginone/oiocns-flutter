@@ -104,25 +104,27 @@ class KernelApi {
 
   /// 注册
   Future<ResultType<dynamic>> register(RegisterType params) async {
-    ResultType<dynamic> res;
+    dynamic raw;
     if (_storeHub.isConnected) {
-      res = await _storeHub.invoke('Register', args: [params]);
+      raw = await _storeHub.invoke('Register', args: [params]);
     } else {
-      res = await _restRequest('Register', params);
+      raw = await _restRequest('Register', params);
     }
+    var res = ResultType.fromJson(raw);
     if (res.success) {
-      _anystore.updateToken(res.data.accessToken);
+      _anystore.updateToken(res.data ?? "");
     }
     return res;
   }
 
   Future<ResultType<dynamic>> genToken(String companyId) async {
-    ResultType<dynamic> res;
+    dynamic raw;
     if (_storeHub.isConnected) {
-      res = await _storeHub.invoke('GenToken', args: [companyId]);
+      raw = await _storeHub.invoke('GenToken', args: [companyId]);
     } else {
-      res = await _restRequest('gentoken', companyId);
+      raw = await _restRequest('gentoken', companyId);
     }
+    var res = ResultType.fromJson(raw);
     if (res.success) {
       _anystore.updateToken(res.data ?? "");
     }

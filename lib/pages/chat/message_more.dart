@@ -18,16 +18,16 @@ class MoreMessagePage extends GetView<ChatController> {
         onRefresh: () async {
           await controller.chatRefresh();
         },
-        child: Obx(
-          () => ListView.builder(
+        child: Obx(() {
+          return ListView.builder(
             scrollDirection: Axis.vertical,
-            itemCount: controller.getChatSize(),
+            itemCount: controller.groups.length,
             physics: const AlwaysScrollableScrollPhysics(),
             itemBuilder: (BuildContext context, int index) {
               return GroupItemWidget(chatGroup: controller.groups[index]);
             },
-          ),
-        ),
+          );
+        }),
       ),
     );
   }

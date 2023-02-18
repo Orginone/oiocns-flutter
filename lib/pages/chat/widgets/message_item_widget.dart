@@ -131,7 +131,7 @@ class MessageItemWidget extends GetView<ChatController> {
   }
 
   Widget _content() {
-    var messageItem = chat.target;
+    var target = chat.target;
     var lastMessage = chat.lastMessage;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -140,7 +140,7 @@ class MessageItemWidget extends GetView<ChatController> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(messageItem.name, style: XFonts.size22Black0W700),
+            Text(target.name, style: XFonts.size22Black0W700),
             Text(
               CustomDateUtil.getSessionTime(lastMessage.value?.createTime),
               style: XFonts.size18Black0,
@@ -152,7 +152,7 @@ class MessageItemWidget extends GetView<ChatController> {
           children: [
             Expanded(child: _showTxt()),
             TextTag(
-              chat.spaceName,
+              target.typeName,
               bgColor: Colors.white,
               textStyle: TextStyle(
                 color: XColors.designBlue,
