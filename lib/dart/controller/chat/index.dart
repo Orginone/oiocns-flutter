@@ -5,18 +5,18 @@ import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/index.dart';
+import 'package:orginone/dart/core/chat/chat.dart';
 import 'package:orginone/dart/core/chat/ichat.dart';
-import 'package:orginone/dart/core/chat/index.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/util/event_bus.dart';
-
-const chatsObjectName = 'userchat';
 
 class ChatController extends GetxController {
   String _userId = "";
   final RxList<IChatGroup> _groups = <IChatGroup>[].obs;
   final RxList<IChat> _chats = <IChat>[].obs;
   final Rx<IChat?> _curChat = Rxn();
+  StreamSubscription<SignIn>? _signInSub;
+  StreamSubscription<SignOut>? _signOutSub;
 
   List<IChatGroup> get groups => _groups;
 
@@ -24,18 +24,34 @@ class ChatController extends GetxController {
 
   IChat? get chat => _curChat.value;
 
-  String get userId => _userId;
-
   @override
   void onInit() async {
     super.onInit();
-    XEventBus.getInstance.on<Signed>().listen((event) {
+    _signInSub = XEventBus.instance.on<SignIn>().listen((event) {
       var settingCtrl = Get.find<SettingController>();
       _userId = settingCtrl.user?.id ?? "";
       if (_userId != "") {
         _initialization();
       }
     });
+    _signOutSub = XEventBus.instance.on<SignOut>().listen((event) {
+      clear();
+    });
+  }
+
+  @override
+  onClose() {
+    _signInSub?.cancel();
+    _signOutSub?.cancel();
+    clear();
+    super.onClose();
+  }
+
+  clear() {
+    _userId = "";
+    _groups.clear();
+    _chats.clear();
+    _curChat.value = null;
   }
 
   /// 获取名称
@@ -115,15 +131,34 @@ class ChatController extends GetxController {
 
   /// 初始化监听器
   _initialization() async {
-    _groups.value = await loadChats(userId);
+    _groups.addAll(await loadChats(_userId));
     var kennel = KernelApi.getInstance();
     kennel.on('RecvMsg', (message) => onReceiveMessage([message]));
     kennel.on('ChatRefresh', chatRefresh);
-    kennel.anystore.subscribed(chatsObjectName, 'user', _updateMails);
+    kennel.anystore.subscribed('userchat', 'user', _updateMails);
+  }
+
+  Future<List<IChatGroup>> loadChats(String userId) async {
+    List<IChatGroup> groups = [];
+    var res = await KernelApi.getInstance().queryImChats(ChatsReqModel(
+      spaceId: userId,
+      cohortName: TargetType.cohort.label,
+      spaceTypeName: TargetType.company.label,
+    ));
+    if (res.success) {
+      res.data?.groups?.forEach((item) {
+        int index = 0;
+        var chats = (item.chats ?? [])
+            .map((item) => createChat(item.id, item.name, item, userId))
+            .toList();
+        groups.add(BaseChatGroup(item.id, item.name, index++ == 0, chats.obs));
+      });
+    }
+    return groups;
   }
 
   chatRefresh() async {
-    _groups.value = await loadChats(userId);
+    _groups.value = await loadChats(_userId);
     setCurrent(_curChat.value?.spaceId ?? "", _curChat.value?.chatId ?? "");
   }
 
@@ -165,7 +200,7 @@ class ChatController extends GetxController {
   IChat? findChat(String spaceId, String chatId) {
     for (var chatGroup in _groups) {
       for (var inner in chatGroup.chats) {
-        if (inner.chatId == spaceId && inner.spaceId == chatId) {
+        if (inner.spaceId == spaceId && inner.chatId == chatId) {
           return chat;
         }
       }
@@ -215,6 +250,6 @@ class ChatController extends GetxController {
 class ChatBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(ChatController());
+    Get.put(ChatController(), permanent: true);
   }
 }

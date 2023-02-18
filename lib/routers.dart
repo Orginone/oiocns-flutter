@@ -1,6 +1,7 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:orginone/dart/controller/chat/index.dart';
 import 'package:orginone/dart/controller/setting/index.dart';
+import 'package:orginone/pages/chat/message_more.dart';
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/other/home/home_page.dart';
 import 'package:orginone/pages/other/home/spaces_page.dart';
@@ -76,6 +77,10 @@ class Routers {
         name: Routers.searchResult,
         page: () => const ScanningResultPage(),
         binding: ScanningResultBinding(),
+      ),
+      GetPage(
+        name: Routers.moreMessage,
+        page: () => const MoreMessagePage(),
       ),
     ];
   }

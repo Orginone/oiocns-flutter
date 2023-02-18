@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -14,6 +16,18 @@ class SettingController extends GetxController {
   String currentKey = "";
   final Rx<IPerson?> _user = Rxn();
   final Rx<ICompany?> _curSpace = Rxn();
+
+  @override
+  void onClose() {
+    clear();
+    super.onClose();
+  }
+
+  clear() {
+    currentKey = "";
+    _user.value = null;
+    _curSpace.value = null;
+  }
 
   /// 是否已登录
   bool get signed {
@@ -107,7 +121,7 @@ class SettingController extends GetxController {
     var res = await KernelApi.getInstance().login(account, password);
     if (res.success) {
       await _loadUser(XTarget.fromJson(res.data["person"]));
-      XEventBus.getInstance.fire(Signed());
+      XEventBus.instance.fire(SignIn());
     }
     return res;
   }
@@ -161,6 +175,6 @@ class SettingController extends GetxController {
 class SettingBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(SettingController());
+    Get.put(SettingController(), permanent: true);
   }
 }

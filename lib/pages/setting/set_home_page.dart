@@ -9,6 +9,7 @@ import 'package:orginone/config/enum.dart';
 import 'package:orginone/components/template/base_view.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/event_bus.dart';
 
 /// 设置首页
 @immutable
@@ -91,6 +92,7 @@ class SetHomePage extends BaseView<SetHomeController> {
             child: GFButton(
               onPressed: () async {
                 Get.offAllNamed(Routers.main);
+                XEventBus.instance.fire(SignOut());
               },
               color: Colors.redAccent,
               text: "注销",
