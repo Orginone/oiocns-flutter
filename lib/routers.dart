@@ -1,6 +1,6 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:orginone/dart/controller/chat/index.dart';
-import 'package:orginone/dart/ts/controller/setting/index.dart';
+import 'package:orginone/dart/controller/setting/index.dart';
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/other/home/home_page.dart';
 import 'package:orginone/pages/other/home/spaces_page.dart';
@@ -40,13 +40,13 @@ class Routers {
     return [
       GetPage(
         name: Routers.main,
-        page: () => const HomePage(),
-        bindings: [SettingBinding(), ChatBinding()],
+        page: () => LoginPage(),
+        binding: SettingBinding(),
       ),
       GetPage(
-        name: Routers.login,
-        page: () => const LoginPage(),
-        binding: LoginBinding(),
+        name: Routers.home,
+        page: () => const HomePage(),
+        bindings: [HomeBinding(), SettingBinding(), ChatBinding(), MessageBinding()],
       ),
       GetPage(
         name: Routers.spaces,
@@ -72,16 +72,6 @@ class Routers {
         name: Routers.search,
         page: () => const SearchPage(),
         binding: SearchBinding(),
-      ),
-      GetPage(
-        name: Routers.message,
-        page: () => const MessagePage(),
-        binding: [MessageBinding(),  ],
-      ),
-      GetPage(
-        name: Routers.messageSetting,
-        page: () => const MessageSettingPage(),
-        binding: [MessageBinding(),  ],
       ),
     ];
   }

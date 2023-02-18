@@ -27,7 +27,7 @@ class SpaceItemWidget extends StatelessWidget {
         }
       },
       child: Container(
-        padding: XInsets.l20r20t10,
+        padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 10.w),
         child: _body,
       ),
     );

@@ -51,7 +51,7 @@ class BaseTarget extends ITarget {
 
   BaseTarget(XTarget target) {
     // key = generateUuid();
-    target = target;
+    this.target = target;
     createTargetType = [];
     joinTargetType = [];
     searchTargetType = [];
@@ -252,7 +252,7 @@ class BaseTarget extends ITarget {
           typeName: target.typeName,
           page: PageRequest(offset: 0, filter: '', limit: Constants.maxUint16),
           spaceId: spaceId,
-          joinTypeNames: List<String>.from(typeNames)));
+          joinTypeNames: typeNames.map((item) => item.name).toList()));
       if (res.data != null) {
         return res.data!;
       }

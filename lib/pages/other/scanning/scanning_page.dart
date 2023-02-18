@@ -43,7 +43,7 @@ class ScanningPage extends GetView<ScanningController> {
             top: 20.h,
             child: GFIconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black),
-              padding: XInsets.all8,
+              padding: EdgeInsets.all(8.w),
               onPressed: () => Get.back(),
               color: Colors.white,
               shape: GFIconButtonShape.circle,

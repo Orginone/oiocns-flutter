@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/controller/chat/index.dart';
+import 'package:orginone/pages/chat/widgets/group_item_widget.dart';
 
 class MoreMessagePage extends GetView<ChatController> {
   const MoreMessagePage({Key? key}) : super(key: key);
@@ -18,13 +19,13 @@ class MoreMessagePage extends GetView<ChatController> {
           await controller.chatRefresh();
         },
         child: Obx(() => ListView.builder(
-          scrollDirection: Axis.vertical,
-          itemCount: controller.getChatSize(),
-          physics: const AlwaysScrollableScrollPhysics(),
-          itemBuilder: (BuildContext context, int index) {
-            return group_item_widget.dart(chatGroup: controller.get(index));
-          },
-        )),
+              scrollDirection: Axis.vertical,
+              itemCount: controller.getChatSize(),
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) {
+                return GroupItemWidget(chatGroup: controller.groups[index]);
+              },
+            )),
       ),
     );
   }

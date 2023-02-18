@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -305,10 +306,10 @@ abstract class ICohort implements ITarget {
 /// 人员操作
 abstract class IPerson implements ISpace, ITarget {
   /// 我的好友列表
-  late List<XTarget> joinedFriend;
+  late RxList<XTarget> joinedFriend;
 
   /// 我加入的单位
-  late List<ICompany> joinedCompany;
+  late RxList<ICompany> joinedCompany;
 
   /// 退出群组
   /// @param id 群组Id

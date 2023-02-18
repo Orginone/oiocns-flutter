@@ -75,7 +75,7 @@ class HttpUtil {
           cancelToken: cancelToken,
           onReceiveProgress: onReceiveProgress);
 
-      return _parseResp(result);
+      return result.data!;
     } on DioError catch (error) {
       _onDioError(error, showError!);
     } on Exception catch (error) {
@@ -86,7 +86,7 @@ class HttpUtil {
     }
   }
 
-  Future<ResultType<dynamic>> post(
+  Future<dynamic> post(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
@@ -117,7 +117,7 @@ class HttpUtil {
         onReceiveProgress: onReceiveProgress,
       );
 
-      return _parseResp(result);
+      return result.data!;
     } on DioError catch (error) {
       _onDioError(error, showError!);
       rethrow;
@@ -126,15 +126,6 @@ class HttpUtil {
       rethrow;
     } finally {
       log.info("================End Post Http Request================");
-    }
-  }
-
-  ResultType<dynamic> _parseResp(Response response) {
-    if (response.statusCode != 200) {
-      throw Exception(response.statusMessage);
-    } else {
-      log.info(response.data!);
-      return ResultType.fromJson(response.data!);
     }
   }
 

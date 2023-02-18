@@ -2,50 +2,73 @@
 class XAttribute {
   // 雪花ID
   final String id;
+
   // 名称
   final String name;
+
   // 编号
   final String code;
+
   // 值类型
   final String valueType;
+
   // 公开的
   final bool public;
+
   // 单位
   final String unit;
+
   // 选择字典的类型ID
   final String dictId;
+
   // 备注
   final String remark;
+
   // 类别ID
   final String speciesId;
+
   // 创建组织/个人
   final String belongId;
+
   // 工作职权Id
   final String authId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 特性的物的度量
   final List<XThingAttr>? attrThingValues;
+
   // 特性度量过的的物
   final List<XThing>? things;
+
   // 标准要求
   final List<XRuleAttr>? ruleAttrs;
+
   // 字典类型
   final XDict? dict;
+
   // 度量特性对应的类别
   final XSpecies? species;
+
   // 工作职权
   final XAuthority? authority;
+
   // 创建度量标准的组织/个人
   final XTarget? belong;
 
@@ -105,7 +128,10 @@ class XAttribute {
         belong = XTarget.fromJson(json["belong"]);
 
   //通过动态数组解析成List
-  static List<XAttribute> fromList(List<Map<String, dynamic>> list) {
+  static List<XAttribute> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XAttribute> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -150,10 +176,13 @@ class XAttribute {
 class XAttributeArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XAttribute>? result;
 
@@ -173,7 +202,10 @@ class XAttributeArray {
         result = XAttribute.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XAttributeArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XAttributeArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XAttributeArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -198,40 +230,58 @@ class XAttributeArray {
 class XAuthority {
   // 雪花ID
   final String id;
+
   // 名称
   String name;
+
   // 编号
   String code;
+
   // 备注
   String remark;
+
   // 公开的
   bool public;
+
   // 上级职权ID
   final String parentId;
+
   // 创建组织/个人
   final String belongId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   String updateTime;
+
   // 上下级职权
   final XAuthority? parent;
+
   // 上下级职权
   final List<XAuthority>? nodes;
+
   // 创建职权标准的组织/个人
   final XTarget? belong;
+
   // 职权对应的身份
   final List<XIdentity>? identitys;
+
   // 职权可操作的类别
   final List<XSpecies>? authSpecies;
+
   // 职权可操作的度量
   final List<XAttribute>? autAttrs;
 
@@ -281,7 +331,10 @@ class XAuthority {
         autAttrs = XAttribute.fromList(json["autAttrs"]);
 
   //通过动态数组解析成List
-  static List<XAuthority> fromList(List<Map<String, dynamic>> list) {
+  static List<XAuthority> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XAuthority> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -321,10 +374,13 @@ class XAuthority {
 class XAuthorityArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XAuthority>? result;
 
@@ -344,7 +400,10 @@ class XAuthorityArray {
         result = XAuthority.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XAuthorityArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XAuthorityArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XAuthorityArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -369,36 +428,52 @@ class XAuthorityArray {
 class XDict {
   // 雪花ID
   final String id;
+
   // 名称
   String name;
+
   // 编号
   final String code;
+
   // 备注
   String remark;
+
   // 公开的
   bool public;
+
   // 类别ID
   final String speciesId;
+
   // 创建组织/个人
   String belongId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 字典项
   final List<XDictItem>? dictItems;
+
   // 使用该字典的度量标准
   final List<XAttribute>? dictAttrs;
+
   // 创建类别标准的组织/个人
   final XTarget? belong;
+
   // 字典归属的分类
   final XSpecies? species;
 
@@ -444,7 +519,10 @@ class XDict {
         species = XSpecies.fromJson(json["species"]);
 
   //通过动态数组解析成List
-  static List<XDict> fromList(List<Map<String, dynamic>> list) {
+  static List<XDict> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XDict> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -482,10 +560,13 @@ class XDict {
 class XDictArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XDict>? result;
 
@@ -505,7 +586,10 @@ class XDictArray {
         result = XDict.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XDictArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XDictArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XDictArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -530,30 +614,43 @@ class XDictArray {
 class XDictItem {
   // 雪花ID
   final String id;
+
   // 名称
   final String name;
+
   // 值
   final String value;
+
   // 公开的
   final bool public;
+
   // 创建组织/个人
   final String belongId;
+
   // 字典类型ID
   final String dictId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 字典类型
   final XDict? dict;
+
   // 创建类别标准的组织/个人
   final XTarget? belong;
 
@@ -593,7 +690,10 @@ class XDictItem {
         belong = XTarget.fromJson(json["belong"]);
 
   //通过动态数组解析成List
-  static List<XDictItem> fromList(List<Map<String, dynamic>> list) {
+  static List<XDictItem> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XDictItem> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -628,10 +728,13 @@ class XDictItem {
 class XDictItemArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XDictItem>? result;
 
@@ -651,7 +754,10 @@ class XDictItemArray {
         result = XDictItem.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XDictItemArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XDictItemArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XDictItemArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -676,26 +782,37 @@ class XDictItemArray {
 class XExtend {
   // 雪花ID
   final String id;
+
   // 源对象
   final String sourceId;
+
   // 目标类型
   final String destType;
+
   // 目标对象Id
   final String destId;
+
   // 所属组织/个人
   final String belongId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 资源归属的组织/个人
   final XTarget? belong;
 
@@ -731,7 +848,10 @@ class XExtend {
         belong = XTarget.fromJson(json["belong"]);
 
   //通过动态数组解析成List
-  static List<XExtend> fromList(List<Map<String, dynamic>> list) {
+  static List<XExtend> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XExtend> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -764,10 +884,13 @@ class XExtend {
 class XExtendArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XExtend>? result;
 
@@ -787,7 +910,10 @@ class XExtendArray {
         result = XExtend.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XExtendArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XExtendArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XExtendArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -812,34 +938,49 @@ class XExtendArray {
 class XFlowDefine {
   // 雪花ID
   final String id;
+
   // 名称
   final String name;
+
   // 编码
   final String code;
+
   // 归属组织/个人Id
   final String belongId;
+
   // 流程内容Json
   final String content;
+
   // 备注
   final String remark;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 流程定义节点
   final List<XFlowNode>? flowNodes;
+
   // 流程的实例
   final List<XFlowInstance>? flowInstances;
+
   // 应用单与流程对应
   final List<XFlowRelation>? flowRelations;
+
   // 归属组织/个人
   final XTarget? target;
 
@@ -883,7 +1024,10 @@ class XFlowDefine {
         target = XTarget.fromJson(json["target"]);
 
   //通过动态数组解析成List
-  static List<XFlowDefine> fromList(List<Map<String, dynamic>> list) {
+  static List<XFlowDefine> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XFlowDefine> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -920,10 +1064,13 @@ class XFlowDefine {
 class XFlowDefineArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XFlowDefine>? result;
 
@@ -943,7 +1090,10 @@ class XFlowDefineArray {
         result = XFlowDefine.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XFlowDefineArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XFlowDefineArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XFlowDefineArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -968,36 +1118,52 @@ class XFlowDefineArray {
 class XFlowInstance {
   // 雪花ID
   final String id;
+
   // 流程定义Id
   final String defineId;
+
   // 应用Id
   final String productId;
+
   // 标题
   final String title;
+
   // 展示内容类型
   final String contentType;
+
   // 展示内容
   final String content;
+
   // 单数据
   final String data;
+
   // 回调钩子
   final String hook;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 流程任务
   final List<XFlowTask>? flowTasks;
+
   // 流程实例任务
   final List<XFlowTaskHistory>? flowTaskHistory;
+
   // 流程的定义
   final XFlowDefine? flowDefine;
 
@@ -1081,10 +1247,13 @@ class XFlowInstance {
 class XFlowInstanceArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XFlowInstance>? result;
 
@@ -1129,42 +1298,61 @@ class XFlowInstanceArray {
 class XFlowNode {
   // 雪花ID
   final String id;
+
   // 节点编号
   final String code;
+
   // 节点名称
   final String name;
+
   // 审批人数
   final String count;
+
   // 流程定义Id
   final String defineId;
+
   // 节点规则
   final String rules;
+
   // 节点分配目标Id
   final String destId;
+
   // 节点分配目标组织集合
   final String orgIds;
+
   // destType
   final String destType;
+
   // 节点类型
   final String nodeType;
+
   // 备注
   final String remark;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 流程实例任务
   final List<XFlowTask>? flowTasks;
+
   // 流程实例任务
   final List<XFlowTaskHistory>? flowTaskHistory;
+
   // 流程的定义
   final XFlowDefine? flowDefine;
 
@@ -1257,10 +1445,13 @@ class XFlowNode {
 class XFlowNodeArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XFlowNode>? result;
 
@@ -1305,26 +1496,37 @@ class XFlowNodeArray {
 class XFlowRecord {
   // 雪花ID
   final String id;
+
   // 审批人员
   final String targetId;
+
   // 节点任务
   final String taskId;
+
   // 评论
   final String comment;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 流程的定义
   final XFlowTaskHistory? flowTaskHistory;
+
   // 审批人员
   final XTarget? target;
 
@@ -1360,7 +1562,10 @@ class XFlowRecord {
         target = XTarget.fromJson(json["target"]);
 
   //通过动态数组解析成List
-  static List<XFlowRecord> fromList(List<Map<String, dynamic>> list) {
+  static List<XFlowRecord> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XFlowRecord> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1393,10 +1598,13 @@ class XFlowRecord {
 class XFlowRecordArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XFlowRecord>? result;
 
@@ -1441,26 +1649,37 @@ class XFlowRecordArray {
 class XFlowRelation {
   // 雪花ID
   final String id;
+
   // 产品Id
   final String productId;
+
   // 业务编号
   final String functionCode;
+
   // 流程定义Id
   final String defineId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 应用资源
   final XProduct? product;
+
   // 流程的定义
   final XFlowDefine? flowDefine;
 
@@ -1529,10 +1748,13 @@ class XFlowRelation {
 class XFlowRelationArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XFlowRelation>? result;
 
@@ -1577,30 +1799,43 @@ class XFlowRelationArray {
 class XFlowTask {
   // 雪花ID
   final String id;
+
   // 流程定义节点id
   final String nodeId;
+
   // 流程实例id
   final String instanceId;
+
   // 节点分配目标Id
   final String identityId;
+
   // 审批人员
   final String personIds;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 任务审批的身份
   final XIdentity? identity;
+
   // 流程节点
   final XFlowNode? flowNode;
+
   // 流程的定义
   final XFlowInstance? flowInstance;
 
@@ -1640,7 +1875,10 @@ class XFlowTask {
         flowInstance = XFlowInstance.fromJson(json["flowInstance"]);
 
   //通过动态数组解析成List
-  static List<XFlowTask> fromList(List<Map<String, dynamic>> list) {
+  static List<XFlowTask> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XFlowTask> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1675,10 +1913,13 @@ class XFlowTask {
 class XFlowTaskArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XFlowTask>? result;
 
@@ -1698,7 +1939,10 @@ class XFlowTaskArray {
         result = XFlowTask.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XFlowTaskArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XFlowTaskArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XFlowTaskArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1723,30 +1967,43 @@ class XFlowTaskArray {
 class XFlowTaskHistory {
   // 雪花ID
   final String id;
+
   // 流程定义节点id
   final String nodeId;
+
   // 流程实例id
   final String instanceId;
+
   // 节点分配目标Id
   final String identityId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 流程节点记录
   final List<XFlowRecord>? flowRecords;
+
   // 任务审批的身份
   final XIdentity? identity;
+
   // 流程节点
   final XFlowNode? flowNode;
+
   // 流程的定义
   final XFlowInstance? flowInstance;
 
@@ -1786,7 +2043,10 @@ class XFlowTaskHistory {
         flowInstance = XFlowInstance.fromJson(json["flowInstance"]);
 
   //通过动态数组解析成List
-  static List<XFlowTaskHistory> fromList(List<Map<String, dynamic>> list) {
+  static List<XFlowTaskHistory> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XFlowTaskHistory> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1821,10 +2081,13 @@ class XFlowTaskHistory {
 class XFlowTaskHistoryArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XFlowTaskHistory>? result;
 
@@ -1844,7 +2107,11 @@ class XFlowTaskHistoryArray {
         result = XFlowTaskHistory.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XFlowTaskHistoryArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XFlowTaskHistoryArray> fromList(
+      List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XFlowTaskHistoryArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1869,24 +2136,34 @@ class XFlowTaskHistoryArray {
 class XIdProof {
   // 雪花ID
   final String id;
+
   // 身份ID
   final String identityId;
+
   // 对象ID
   final String targetId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 身份证明证明的组织/个人
   final XTarget? target;
+
   // 身份证明证明的身份
   final XIdentity? identity;
 
@@ -1920,7 +2197,10 @@ class XIdProof {
         identity = XIdentity.fromJson(json["identity"]);
 
   //通过动态数组解析成List
-  static List<XIdProof> fromList(List<Map<String, dynamic>> list) {
+  static List<XIdProof> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XIdProof> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -1952,10 +2232,13 @@ class XIdProof {
 class XIdProofArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XIdProof>? result;
 
@@ -1975,7 +2258,10 @@ class XIdProofArray {
         result = XIdProof.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XIdProofArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XIdProofArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XIdProofArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2000,42 +2286,61 @@ class XIdProofArray {
 class XIdentity {
   // 雪花ID
   final String id;
+
   // 名称
   String name;
+
   // 编号
   String code;
+
   // 备注
   String remark;
+
   // 职权Id
   final String authId;
+
   // 创建组织/个人
   final String belongId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   String updateTime;
+
   // 身份证明
   final List<XIdProof>? idProofs;
+
   // 身份集关系
   final List<XTeamIdentity>? identityTeams;
+
   // 赋予身份的组织/个人
   final List<XTarget>? givenTargets;
+
   // 身份所属的未完成流程的任务
   final List<XFlowTask>? flowTasks;
+
   // 身份所属的未完成流程的任务
   final List<XFlowTaskHistory>? flowTaskHistory;
+
   // 身份集对于组织
   final List<XTeam>? teams;
+
   // 身份的类别
   final XAuthority? authority;
+
   // 创建身份的组织/个人
   final XTarget? belong;
 
@@ -2087,7 +2392,10 @@ class XIdentity {
         belong = XTarget.fromJson(json["belong"]);
 
   //通过动态数组解析成List
-  static List<XIdentity> fromList(List<Map<String, dynamic>> list) {
+  static List<XIdentity> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XIdentity> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2128,10 +2436,13 @@ class XIdentity {
 class XIdentityArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XIdentity>? result;
 
@@ -2151,7 +2462,10 @@ class XIdentityArray {
         result = XIdentity.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XIdentityArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XIdentityArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XIdentityArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2176,30 +2490,43 @@ class XIdentityArray {
 class XImMsg {
   // 雪花ID
   final String id;
+
   // 工作空间Id
   final String spaceId;
+
   // 发起方Id
   final String fromId;
+
   // 接收方Id
   final String toId;
+
   // 消息类型
   final String msgType;
+
   // 消息体
   String msgBody;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 显示文本
   String showTxt;
+
   // 是否允许编辑
   late bool allowEdit;
 
@@ -2237,7 +2564,10 @@ class XImMsg {
         updateTime = json["updateTime"];
 
   //通过动态数组解析成List
-  static List<XImMsg> fromList(List<Map<String, dynamic>> list) {
+  static List<XImMsg> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XImMsg> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2270,10 +2600,13 @@ class XImMsg {
 class XImMsgArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XImMsg>? result;
 
@@ -2293,7 +2626,10 @@ class XImMsgArray {
         result = XImMsg.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XImMsgArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XImMsgArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XImMsgArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2318,22 +2654,31 @@ class XImMsgArray {
 class XLog {
   // 雪花ID
   final String id;
+
   // 类型
   final String type;
+
   // 模块
   final String module;
+
   // 内容
   final String content;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
 
@@ -2365,7 +2710,10 @@ class XLog {
         updateTime = json["updateTime"];
 
   //通过动态数组解析成List
-  static List<XLog> fromList(List<Map<String, dynamic>> list) {
+  static List<XLog> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XLog> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2396,10 +2744,13 @@ class XLog {
 class XLogArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XLog>? result;
 
@@ -2419,7 +2770,10 @@ class XLogArray {
         result = XLog.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XLogArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XLogArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XLogArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2444,40 +2798,58 @@ class XLogArray {
 class XMarket {
   // 雪花ID
   final String id;
+
   // 名称
   final String name;
+
   // 编号
   final String code;
+
   // 备注
   final String remark;
+
   // 公开的
   final bool public;
+
   // 图片
   final String photo;
+
   // 创建组织/个人
   final String belongId;
+
   // 市场监管组织/个人
   final String samrId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 市场暂存区
   final List<XStaging>? stags;
+
   // 上架市场的商品
   final List<XMerchandise>? merchandises;
+
   // 市场与组织/个人关系
   final List<XMarketRelation>? targetRelations;
+
   // 市场归属的组织/个人
   final XTarget? belong;
+
   // 市场监管的组织/个人
   final XTarget? samr;
 
@@ -2527,7 +2899,10 @@ class XMarket {
         samr = XTarget.fromJson(json["samr"]);
 
   //通过动态数组解析成List
-  static List<XMarket> fromList(List<Map<String, dynamic>> list) {
+  static List<XMarket> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XMarket> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2567,10 +2942,13 @@ class XMarket {
 class XMarketArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XMarket>? result;
 
@@ -2590,7 +2968,10 @@ class XMarketArray {
         result = XMarket.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XMarketArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XMarketArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XMarketArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2615,26 +2996,37 @@ class XMarketArray {
 class XMarketRelation {
   // 雪花ID
   final String id;
+
   // 市场ID
   final String marketId;
+
   // 组织/个人ID
   final String targetId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 关系的度量
   final List<XThingAttr>? marketRelationValues;
+
   // 市场
   final XMarket? market;
+
   // 组织/个人ID
   final XTarget? target;
 
@@ -2671,7 +3063,10 @@ class XMarketRelation {
         target = XTarget.fromJson(json["target"]);
 
   //通过动态数组解析成List
-  static List<XMarketRelation> fromList(List<Map<String, dynamic>> list) {
+  static List<XMarketRelation> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XMarketRelation> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2704,10 +3099,13 @@ class XMarketRelation {
 class XMarketRelationArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XMarketRelation>? result;
 
@@ -2727,7 +3125,10 @@ class XMarketRelationArray {
         result = XMarketRelation.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XMarketRelationArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XMarketRelationArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XMarketRelationArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2752,38 +3153,55 @@ class XMarketRelationArray {
 class XMerchandise {
   // 雪花ID
   final String id;
+
   // 标题
   final String caption;
+
   // 产品ID
   final String productId;
+
   // 单价
   final double price;
+
   // 出售权属
   final String sellAuth;
+
   // 有效期
   final String days;
+
   // 商品出售市场ID
   final String marketId;
+
   // 描述信息
   final String information;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 商品采购暂存
   final List<XStaging>? stags;
+
   // 采购订单
   final List<XOrderDetail>? orders;
+
   // 商品对应的产品
   final XProduct? product;
+
   // 商品上架的市场
   final XMarket? market;
 
@@ -2831,7 +3249,10 @@ class XMerchandise {
         market = XMarket.fromJson(json["market"]);
 
   //通过动态数组解析成List
-  static List<XMerchandise> fromList(List<Map<String, dynamic>> list) {
+  static List<XMerchandise> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XMerchandise> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2870,10 +3291,13 @@ class XMerchandise {
 class XMerchandiseArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XMerchandise>? result;
 
@@ -2893,7 +3317,10 @@ class XMerchandiseArray {
         result = XMerchandise.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XMerchandiseArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XMerchandiseArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XMerchandiseArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -2918,34 +3345,49 @@ class XMerchandiseArray {
 class XOperation {
   // 雪花ID
   final String id;
+
   // 名称
   final String name;
+
   // 编号
   final String code;
+
   // 公开的
   final bool public;
+
   // 备注
   final String remark;
+
   // 类别ID
   final String speciesId;
+
   // 创建组织/个人
   final String belongId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 业务单详情项
   final List<XOperationItem>? items;
+
   // 业务单针对的分类
   final XSpecies? species;
+
   // 创建度量标准的组织/个人
   final XTarget? belong;
 
@@ -2989,7 +3431,10 @@ class XOperation {
         belong = XTarget.fromJson(json["belong"]);
 
   //通过动态数组解析成List
-  static List<XOperation> fromList(List<Map<String, dynamic>> list) {
+  static List<XOperation> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XOperation> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3026,10 +3471,13 @@ class XOperation {
 class XOperationArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XOperation>? result;
 
@@ -3049,7 +3497,10 @@ class XOperationArray {
         result = XOperation.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XOperationArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XOperationArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XOperationArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3074,32 +3525,46 @@ class XOperationArray {
 class XOperationItem {
   // 雪花ID
   final String id;
+
   // 名称
   final String name;
+
   // 编号
   final String code;
+
   // 规则
   final String rule;
+
   // 备注
   final String remark;
+
   // 业务Id
   final String operationId;
+
   // 创建组织/个人
   final String belongId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 业务单
   final XOperation? operation;
+
   // 创建度量标准的组织/个人
   final XTarget? belong;
 
@@ -3141,7 +3606,10 @@ class XOperationItem {
         belong = XTarget.fromJson(json["belong"]);
 
   //通过动态数组解析成List
-  static List<XOperationItem> fromList(List<Map<String, dynamic>> list) {
+  static List<XOperationItem> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XOperationItem> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3177,10 +3645,13 @@ class XOperationItem {
 class XOperationItemArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XOperationItem>? result;
 
@@ -3200,7 +3671,10 @@ class XOperationItemArray {
         result = XOperationItem.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XOperationItemArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XOperationItemArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XOperationItemArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3225,30 +3699,43 @@ class XOperationItemArray {
 class XOrder {
   // 雪花ID
   final String id;
+
   // 存证ID
   final String nftId;
+
   // 名称
   final String name;
+
   // 编号
   final String code;
+
   // 总价
   final double price;
+
   // 创建组织/个人
   final String belongId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 订单明细
   final List<XOrderDetail>? details;
+
   // 创建订单的组织/个人
   final XTarget? belong;
 
@@ -3288,7 +3775,10 @@ class XOrder {
         belong = XTarget.fromJson(json["belong"]);
 
   //通过动态数组解析成List
-  static List<XOrder> fromList(List<Map<String, dynamic>> list) {
+  static List<XOrder> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XOrder> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3323,10 +3813,13 @@ class XOrder {
 class XOrderArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XOrder>? result;
 
@@ -3346,7 +3839,10 @@ class XOrderArray {
         result = XOrder.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XOrderArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XOrderArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XOrderArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3371,42 +3867,61 @@ class XOrderArray {
 class XOrderDetail {
   // 雪花ID
   final String id;
+
   // 订单ID
   final String orderId;
+
   // 商品ID
   final String merchandiseId;
+
   // 卖方ID
   final String sellerId;
+
   // 卖方产品来源
   final String productSource;
+
   // 出售权属
   final String sellAuth;
+
   // 总价
   final double price;
+
   // 有效期
   final String days;
+
   // 标题
   final String caption;
+
   // 状态
   int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 订单支付明细
   final List<XOrderPay>? pays;
+
   // 交付产品
   final XProduct? product;
+
   // 售卖方
   final XTarget? seller;
+
   // 订单
   final XOrder? order;
+
   // 商品
   final XMerchandise? merchandise;
 
@@ -3458,7 +3973,10 @@ class XOrderDetail {
         merchandise = XMerchandise.fromJson(json["merchandise"]);
 
   //通过动态数组解析成List
-  static List<XOrderDetail> fromList(List<Map<String, dynamic>> list) {
+  static List<XOrderDetail> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XOrderDetail> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3499,10 +4017,13 @@ class XOrderDetail {
 class XOrderDetailArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XOrderDetail>? result;
 
@@ -3522,7 +4043,10 @@ class XOrderDetailArray {
         result = XOrderDetail.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XOrderDetailArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XOrderDetailArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XOrderDetailArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3547,24 +4071,34 @@ class XOrderDetailArray {
 class XOrderPay {
   // 雪花ID
   final String id;
+
   // 订单ID
   final String orderDetailId;
+
   // 支付总价
   final double price;
+
   // 支付方式
   final String paymentType;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 订单
   final XOrderDetail? orderDetail;
 
@@ -3598,7 +4132,10 @@ class XOrderPay {
         orderDetail = XOrderDetail.fromJson(json["orderDetail"]);
 
   //通过动态数组解析成List
-  static List<XOrderPay> fromList(List<Map<String, dynamic>> list) {
+  static List<XOrderPay> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XOrderPay> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3630,10 +4167,13 @@ class XOrderPay {
 class XOrderPayArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XOrderPay>? result;
 
@@ -3653,7 +4193,10 @@ class XOrderPayArray {
         result = XOrderPay.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XOrderPayArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XOrderPayArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XOrderPayArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3678,50 +4221,73 @@ class XOrderPayArray {
 class XProduct {
   // 雪花ID
   final String id;
+
   // 名称
   String name;
+
   // 编号
   String code;
+
   // 来源
   final String source;
+
   // 权属
   final String authority;
+
   // 对哪一类制定的标准
   String typeName;
+
   // 归属组织/个人
   late String belongId;
+
   // 元数据Id
   final String thingId;
+
   // 订单ID
   final String orderId;
+
   // 过期时间
   final String endTime;
+
   // 图片
   final String photo;
+
   // 备注
   String remark;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 产品的资源
   final List<XResource> resource;
+
   // 上架的商品
   final List<XMerchandise> merchandises;
+
   // 流程对应
   final List<XFlowRelation> flowRelations;
+
   // 产品的本质
   final XThing thing;
+
   // 订单ID
   final XOrderDetail orderSource;
+
   // 产品归属的组织/个人
   final XTarget belong;
 
@@ -3781,7 +4347,10 @@ class XProduct {
         belong = XTarget.fromJson(json["belong"]);
 
   //通过动态数组解析成List
-  static List<XProduct> fromList(List<Map<String, dynamic>> list) {
+  static List<XProduct> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XProduct> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3826,10 +4395,13 @@ class XProduct {
 class XProductArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XProduct>? result;
 
@@ -3849,7 +4421,10 @@ class XProductArray {
         result = XProduct.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XProductArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XProductArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XProductArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3874,26 +4449,37 @@ class XProductArray {
 class XRelation {
   // 雪花ID
   final String id;
+
   // 对象ID
   final String targetId;
+
   // 组织ID
   final String teamId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 关系的度量
   final List<XThingAttr>? attrValues;
+
   // 关联的组织团队
   final XTeam? team;
+
   // 关联的组织实体
   final XTarget? target;
 
@@ -3929,7 +4515,10 @@ class XRelation {
         target = XTarget.fromJson(json["target"]);
 
   //通过动态数组解析成List
-  static List<XRelation> fromList(List<Map<String, dynamic>> list) {
+  static List<XRelation> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XRelation> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -3962,10 +4551,13 @@ class XRelation {
 class XRelationArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XRelation>? result;
 
@@ -3985,7 +4577,10 @@ class XRelationArray {
         result = XRelation.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XRelationArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XRelationArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XRelationArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -4010,32 +4605,46 @@ class XRelationArray {
 class XResource {
   // 雪花ID
   final String id;
+
   // 编号
   final String code;
+
   // 名称
   final String name;
+
   // 产品ID
   final String productId;
+
   // 访问私钥
   final String privateKey;
+
   // 入口
   final String link;
+
   // 流程项
   final String flows;
+
   // 组件
   final String components;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   //
   late XProduct? product;
 
@@ -4077,7 +4686,10 @@ class XResource {
         product = XProduct.fromJson(json["product"]);
 
   //通过动态数组解析成List
-  static List<XResource> fromList(List<Map<String, dynamic>> list) {
+  static List<XResource> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XResource> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -4113,10 +4725,13 @@ class XResource {
 class XResourceArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XResource>? result;
 
@@ -4136,7 +4751,10 @@ class XResourceArray {
         result = XResource.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XResourceArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XResourceArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XResourceArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -4161,24 +4779,34 @@ class XResourceArray {
 class XRuleAttr {
   // 雪花ID
   final String id;
+
   // 规则ID
   final String ruleId;
+
   // 度量标准ID
   final String attrId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 规则
   final XRuleStd? ruleStd;
+
   // 标准
   final XAttribute? attribute;
 
@@ -4212,7 +4840,10 @@ class XRuleAttr {
         attribute = XAttribute.fromJson(json["attribute"]);
 
   //通过动态数组解析成List
-  static List<XRuleAttr> fromList(List<Map<String, dynamic>> list) {
+  static List<XRuleAttr> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XRuleAttr> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -4244,10 +4875,13 @@ class XRuleAttr {
 class XRuleAttrArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XRuleAttr>? result;
 
@@ -4267,7 +4901,10 @@ class XRuleAttrArray {
         result = XRuleAttr.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XRuleAttrArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XRuleAttrArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XRuleAttrArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -4292,32 +4929,46 @@ class XRuleAttrArray {
 class XRuleStd {
   // 雪花ID
   final String id;
+
   // 名称
   final String name;
+
   // 编号
   final String code;
+
   // 备注
   final String remark;
+
   // 对哪一类制定的标准
   final String typeName;
+
   // 组织/个人ID
   final String targetId;
+
   // 容器ID
   final String containerId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 标准要求
   final List<XRuleAttr>? ruleAttrs;
+
   // 组织/个人
   final XTarget? target;
 
@@ -4359,7 +5010,10 @@ class XRuleStd {
         target = XTarget.fromJson(json["target"]);
 
   //通过动态数组解析成List
-  static List<XRuleStd> fromList(List<Map<String, dynamic>> list) {
+  static List<XRuleStd> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XRuleStd> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -4395,10 +5049,13 @@ class XRuleStd {
 class XRuleStdArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XRuleStd>? result;
 
@@ -4418,7 +5075,10 @@ class XRuleStdArray {
         result = XRuleStd.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XRuleStdArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XRuleStdArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XRuleStdArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -4443,48 +5103,70 @@ class XRuleStdArray {
 class XSpecies {
   // 雪花ID
   final String id;
+
   // 名称
   String name;
+
   // 编号
   final String code;
+
   // 备注
   String remark;
+
   // 公开的
   bool public;
+
   // 父类别ID
   final String parentId;
+
   // 创建组织/个人
   String belongId;
+
   // 工作职权Id
   String authId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 该类别与物的关系
   final List<XThingSpec>? specThings;
+
   // 该类别的物
   final List<XThing>? things;
+
   // 类别的字典
   final List<XDict>? dicts;
+
   // 类别的度量标准
   final List<XAttribute>? attributes;
+
   // 类别的业务单
   final List<XOperation>? operations;
+
   // 分类的结构
   final XSpecies? parent;
+
   // 分类的结构
   final List<XSpecies>? nodes;
+
   // 工作职权
   final XAuthority? authority;
+
   // 创建类别标准的组织/个人
   final XTarget? belong;
 
@@ -4542,7 +5224,10 @@ class XSpecies {
         belong = XTarget.fromJson(json["belong"]);
 
   //通过动态数组解析成List
-  static List<XSpecies> fromList(List<Map<String, dynamic>> list) {
+  static List<XSpecies> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XSpecies> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -4586,10 +5271,13 @@ class XSpecies {
 class XSpeciesArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XSpecies>? result;
 
@@ -4609,7 +5297,10 @@ class XSpeciesArray {
         result = XSpecies.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XSpeciesArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XSpeciesArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XSpeciesArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -4634,30 +5325,43 @@ class XSpeciesArray {
 class XStaging {
   // 雪花ID
   final String id;
+
   // 商品ID
   final String merchandiseId;
+
   // 创建组织/个人
   final String belongId;
+
   // 订单采购的市场
   final String marketId;
+
   // 数量
   final String number;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 暂存区针对的市场
   final XMarket? market;
+
   // 创建的组织/个人
   final XTarget? belong;
+
   // 暂存的商品
   final XMerchandise? merchandise;
 
@@ -4697,7 +5401,10 @@ class XStaging {
         merchandise = XMerchandise.fromJson(json["merchandise"]);
 
   //通过动态数组解析成List
-  static List<XStaging> fromList(List<Map<String, dynamic>> list) {
+  static List<XStaging> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XStaging> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -4732,10 +5439,13 @@ class XStaging {
 class XStagingArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XStaging>? result;
 
@@ -4755,7 +5465,10 @@ class XStagingArray {
         result = XStaging.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XStagingArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XStagingArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XStagingArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -4780,84 +5493,124 @@ class XStagingArray {
 class XTarget {
   // 雪花ID
   final String id;
+
   // 名称
   String name;
+
   // 编号
   String code;
+
   // 类型
   final String typeName;
+
   // 头像
   String avatar;
+
   // 归属
   String belongId;
+
   // 元数据
   final String thingId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 采购订单
   final List<XOrder>? orders;
+
   // 身份证明
   final List<XIdProof>? idProofs;
+
   // 设立的市场
   final List<XMarket>? markets;
+
   // 标准要求
   final List<XRuleStd>? ruleStds;
+
   // 商品采购暂存
   final List<XStaging>? stags;
+
   // 拥有的产品
   final List<XProduct>? products;
+
   // 创建的身份
   final List<XIdentity>? identitys;
+
   // 监管的市场
   final List<XMarket>? samrMarkets;
+
   // 属于该组织/个人的物
   final List<XThing>? things;
+
   // 加入团队的关系
   final List<XRelation>? relations;
+
   // 作为团队的影子
   final XTeam? team;
+
   // 该组织/个人创建的字典类型
   final List<XDict>? dicts;
+
   // 卖出的订单详情
   final List<XOrderDetail>? sellOrder;
+
   // 该组织/个人创建的字典项
   final List<XDictItem>? dictItems;
+
   // 该组织/个人创建的类别标准
   final List<XSpecies>? species;
+
   // 该组织/个人创建的度量标准
   final List<XAttribute>? attributes;
+
   // 该组织/个人创建的职权标准
   final List<XAuthority>? authority;
+
   // 加入市场的关系
   final List<XMarketRelation>? marketRelations;
+
   // 加入的团队
   final List<XTeam>? relTeams;
+
   // 该组织/个人创建的业务单
   final List<XOperation>? operations;
+
   // 该组织或个人所属的业务单详情项
   final List<XOperationItem>? operationItems;
+
   // 赋予该组织/个人创建的身份
   final List<XIdentity>? givenIdentitys;
+
   // 该组织或个人所属的组织/个人
   final XTarget? belong;
+
   // 该组织或个人所属的组织/个人
   final List<XTarget>? targets;
+
   // 组织/个人物的本质
   final XThing? thing;
+
   // 归属组织/个人的应用资源分配记录
   final List<XExtend>? distributes;
+
   // 归属组织/个人的流程定义
   final List<XFlowDefine>? flowDefines;
+
   // 个人审批记录
   final List<XFlowRecord>? flowRecords;
 
@@ -4912,8 +5665,8 @@ class XTarget {
         name = json["name"],
         code = json["code"],
         typeName = json["typeName"],
-        avatar = json["avatar"],
-        belongId = json["belongId"],
+        avatar = json["avatar"] ?? "",
+        belongId = json["belongId"] ?? "",
         thingId = json["thingId"],
         status = json["status"],
         createUser = json["createUser"],
@@ -4943,15 +5696,19 @@ class XTarget {
         operations = XOperation.fromList(json["operations"]),
         operationItems = XOperationItem.fromList(json["operationItems"]),
         givenIdentitys = XIdentity.fromList(json["givenIdentitys"]),
-        belong = XTarget.fromJson(json["belong"]),
+        belong =
+            json["belong"] == null ? null : XTarget.fromJson(json["belong"]),
         targets = XTarget.fromList(json["targets"]),
-        thing = XThing.fromJson(json["thing"]),
+        thing = json["thing"] == null ? null : XThing.fromJson(json["thing"]),
         distributes = XExtend.fromList(json["distributes"]),
         flowDefines = XFlowDefine.fromList(json["flowDefines"]),
         flowRecords = XFlowRecord.fromList(json["flowRecords"]);
 
   //通过动态数组解析成List
-  static List<XTarget> fromList(List<Map<String, dynamic>> list) {
+  static List<XTarget> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XTarget> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -5013,10 +5770,13 @@ class XTarget {
 class XTargetArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XTarget>? result;
 
@@ -5036,7 +5796,10 @@ class XTargetArray {
         result = XTarget.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XTargetArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XTargetArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XTargetArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -5061,34 +5824,49 @@ class XTargetArray {
 class XTeam {
   // 雪花ID
   final String id;
+
   // 名称
   String name;
+
   // 编号
   String code;
+
   // 实体
   final String targetId;
+
   // 备注
   String remark;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 加入团队的组织/个人
   final List<XTarget>? relTargets;
+
   // 组织身份集关系
   final List<XTeamIdentity>? teamIdentitys;
+
   // 加入团队的组织/个人的关系
   final List<XRelation>? relations;
+
   // 团队的实体
   final XTarget? target;
+
   // 组织的身份集
   final List<XIdentity>? identitys;
 
@@ -5128,11 +5906,15 @@ class XTeam {
         relTargets = XTarget.fromList(json["relTargets"]),
         teamIdentitys = XTeamIdentity.fromList(json["teamIdentitys"]),
         relations = XRelation.fromList(json["relations"]),
-        target = XTarget.fromJson(json["target"]),
+        target =
+            json["target"] == null ? null : XTarget.fromJson(json["target"]),
         identitys = XIdentity.fromList(json["identitys"]);
 
   //通过动态数组解析成List
-  static List<XTeam> fromList(List<Map<String, dynamic>> list) {
+  static List<XTeam> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XTeam> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -5169,10 +5951,13 @@ class XTeam {
 class XTeamArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XTeam>? result;
 
@@ -5192,7 +5977,10 @@ class XTeamArray {
         result = XTeam.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XTeamArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XTeamArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XTeamArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -5217,24 +6005,34 @@ class XTeamArray {
 class XTeamIdentity {
   // 雪花ID
   final String id;
+
   // 身份ID
   final String identityId;
+
   // 组织ID
   final String teamId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 身份加入的组织
   final XTeam? team;
+
   // 组织包含的身份
   final XIdentity? identity;
 
@@ -5268,7 +6066,10 @@ class XTeamIdentity {
         identity = XIdentity.fromJson(json["identity"]);
 
   //通过动态数组解析成List
-  static List<XTeamIdentity> fromList(List<Map<String, dynamic>> list) {
+  static List<XTeamIdentity> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XTeamIdentity> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -5300,10 +6101,13 @@ class XTeamIdentity {
 class XTeamIdentityArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XTeamIdentity>? result;
 
@@ -5323,7 +6127,10 @@ class XTeamIdentityArray {
         result = XTeamIdentity.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XTeamIdentityArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XTeamIdentityArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XTeamIdentityArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -5348,48 +6155,70 @@ class XTeamIdentityArray {
 class XThing {
   // 雪花ID
   final String id;
+
   // 链上ID
   final String chainId;
+
   // 名称
   final String name;
+
   // 编号
   final String code;
+
   // 归属
   final String belongId;
+
   // 备注
   final String remark;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 零件
   final List<XThing>? nodes;
+
   // 整件
   final List<XThing>? parent;
+
   // 物的类别关系
   final List<XThingSpec>? thingSpecies;
+
   // 合成物关系
   final List<XThingRelation>? relations;
+
   // 零件关系
   final List<XThingRelation>? subRelations;
+
   // 物的特性度量值
   final List<XThingAttr>? thingAttrValues;
+
   // 物作为产品的映射
   final List<XProduct>? products;
+
   // 物作为管理对象的映射
   final XTarget? target;
+
   // 给物的分类类别
   final List<XSpecies>? givenSpecies;
+
   // 给物的度量标准
   final List<XAttribute>? givenAttributes;
+
   // 物的归属
   final XTarget? belong;
 
@@ -5447,7 +6276,10 @@ class XThing {
         belong = XTarget.fromJson(json["belong"]);
 
   //通过动态数组解析成List
-  static List<XThing> fromList(List<Map<String, dynamic>> list) {
+  static List<XThing> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XThing> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -5491,10 +6323,13 @@ class XThing {
 class XThingArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XThing>? result;
 
@@ -5514,7 +6349,10 @@ class XThingArray {
         result = XThing.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XThingArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XThingArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XThingArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -5539,36 +6377,52 @@ class XThingArray {
 class XThingAttr {
   // 雪花ID
   final String id;
+
   // 属性ID
   final String attrId;
+
   // 元数据ID
   final String thingId;
+
   // 关系ID
   final String relationId;
+
   // 数值
   final double numValue;
+
   // 描述
   final String strValue;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 历史度量
   final List<XThingAttrHistroy>? histroy;
+
   // 度量的标准
   final XAttribute? attribute;
+
   // 度量的物
   final XThing? thing;
+
   // 关系的引用
   final XRelation? relation;
+
   // 关系的引用
   final XMarketRelation? marketrelation;
 
@@ -5614,7 +6468,10 @@ class XThingAttr {
         marketrelation = XMarketRelation.fromJson(json["marketrelation"]);
 
   //通过动态数组解析成List
-  static List<XThingAttr> fromList(List<Map<String, dynamic>> list) {
+  static List<XThingAttr> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XThingAttr> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -5652,10 +6509,13 @@ class XThingAttr {
 class XThingAttrArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XThingAttr>? result;
 
@@ -5675,7 +6535,10 @@ class XThingAttrArray {
         result = XThingAttr.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XThingAttrArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XThingAttrArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XThingAttrArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -5700,24 +6563,34 @@ class XThingAttrArray {
 class XThingAttrHistroy {
   // 雪花ID
   final String id;
+
   // 最新度量ID
   final String thingAttrId;
+
   // 数值
   final double numValue;
+
   // 描述
   final String strValue;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 最新度量
   final XThingAttr? thingAttr;
 
@@ -5752,6 +6625,9 @@ class XThingAttrHistroy {
 
   //通过动态数组解析成List
   static List<XThingAttrHistroy> fromList(List<Map<String, dynamic>> list) {
+    if (list == null) {
+      return [];
+    }
     List<XThingAttrHistroy> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -5783,10 +6659,13 @@ class XThingAttrHistroy {
 class XThingAttrHistroyArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XThingAttrHistroy>? result;
 
@@ -5807,7 +6686,10 @@ class XThingAttrHistroyArray {
 
   //通过动态数组解析成List
   static List<XThingAttrHistroyArray> fromList(
-      List<Map<String, dynamic>> list) {
+      List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XThingAttrHistroyArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -5832,24 +6714,34 @@ class XThingAttrHistroyArray {
 class XThingRelation {
   // 雪花ID
   final String id;
+
   // 物ID
   final String thingId;
+
   // 零件ID
   final String subThingId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 合成物
   final XThing? thing;
+
   // 零部件
   final XThing? subThing;
 
@@ -5883,7 +6775,10 @@ class XThingRelation {
         subThing = XThing.fromJson(json["subThing"]);
 
   //通过动态数组解析成List
-  static List<XThingRelation> fromList(List<Map<String, dynamic>> list) {
+  static List<XThingRelation> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XThingRelation> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -5915,10 +6810,13 @@ class XThingRelation {
 class XThingRelationArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XThingRelation>? result;
 
@@ -5938,7 +6836,10 @@ class XThingRelationArray {
         result = XThingRelation.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XThingRelationArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XThingRelationArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XThingRelationArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -5963,24 +6864,34 @@ class XThingRelationArray {
 class XThingSpec {
   // 雪花ID
   final String id;
+
   // 类别ID
   final String speciesId;
+
   // 元数据ID
   final String thingId;
+
   // 状态
   final int status;
+
   // 创建人员ID
   final String createUser;
+
   // 更新人员ID
   final String updateUser;
+
   // 修改次数
   final String version;
+
   // 创建时间
   final String createTime;
+
   // 更新时间
   final String updateTime;
+
   // 类别
   final XSpecies? species;
+
   // 物
   final XThing? thing;
 
@@ -6014,7 +6925,10 @@ class XThingSpec {
         thing = XThing.fromJson(json["thing"]);
 
   //通过动态数组解析成List
-  static List<XThingSpec> fromList(List<Map<String, dynamic>> list) {
+  static List<XThingSpec> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XThingSpec> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
@@ -6046,10 +6960,13 @@ class XThingSpec {
 class XThingSpecArray {
   // 便宜量
   final int offset;
+
   // 最大数量
   final int limit;
+
   // 总数
   final int total;
+
   // 结果
   final List<XThingSpec>? result;
 
@@ -6069,7 +6986,10 @@ class XThingSpecArray {
         result = XThingSpec.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XThingSpecArray> fromList(List<Map<String, dynamic>> list) {
+  static List<XThingSpecArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
     List<XThingSpecArray> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {

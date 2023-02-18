@@ -66,33 +66,44 @@ class Tabs extends StatelessWidget {
   }
 
   Widget _main(List<Widget> children) {
-    return Expanded(child: TabBarView(children: children));
+    return Expanded(child: TabBarView(controller: tabCtrl, children: children));
   }
 }
 
 abstract class TabsController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  late TabController _tabController;
-  late RxList<XTab> _tabs;
-
-  get tabController => _tabController;
+  late TabController tabController;
+  final List<XTab> tabs = [];
+  final RxnInt initialIndex = RxnInt();
 
   @override
   void onInit() {
     super.onInit();
     initTabs();
-    _tabController = TabController(length: _tabs.length, vsync: this);
+    tabController = TabController(length: tabs.length, vsync: this);
+    initListeners();
   }
 
+  /// 初始化 tab
   initTabs();
 
+  /// 初始化监听器
+  initListeners();
+
+  /// 注册 tab
   registerTab(XTab tab) {
-    _tabs.add(tab);
+    tabs.add(tab);
   }
 
+  /// 注册监听器
   registerListens(Function(int) callback) {
-    _tabController.addListener(() {
-      callback(_tabController.index);
+    tabController.addListener(() {
+      callback(tabController.index);
     });
+  }
+
+  /// 设置当前 tab 索引
+  setIndex(int index) {
+    initialIndex.value = index;
   }
 }

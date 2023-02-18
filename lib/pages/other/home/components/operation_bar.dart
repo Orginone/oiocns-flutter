@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/config/forms.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/ts/controller/setting/index.dart';
+import 'package:orginone/dart/controller/setting/index.dart';
 import 'package:orginone/routers.dart';
 
 class OperationBar extends StatelessWidget {

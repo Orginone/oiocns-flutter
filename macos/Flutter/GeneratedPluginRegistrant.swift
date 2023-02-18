@@ -8,7 +8,7 @@ import Foundation
 import emoji_picker_flutter
 import flutter_local_notifications
 import package_info_plus_macos
-import path_provider_macos
+import path_provider_foundation
 import shared_preferences_foundation
 import sqflite
 

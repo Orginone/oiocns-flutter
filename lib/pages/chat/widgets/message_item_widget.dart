@@ -5,12 +5,11 @@ import 'package:getwidget/getwidget.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/components/widgets/text_avatar.dart';
 import 'package:orginone/components/widgets/text_tag.dart';
-import 'package:orginone/config/enum.dart';
 import 'package:orginone/dart/controller/chat/index.dart';
+import 'package:orginone/dart/controller/setting/index.dart';
 import 'package:orginone/dart/core/chat/chat.dart';
 import 'package:orginone/dart/core/chat/ichat.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/ts/controller/setting/index.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_util.dart';
 
@@ -183,27 +182,17 @@ class MessageItemWidget extends GetView<ChatController> {
       showTxt = "$name:";
     }
 
-    var messageType = EnumMap.messageMap[lastMessage.msgType];
-    switch (messageType) {
-      case MessageType.text:
-        showTxt = "$showTxt${lastMessage.showTxt}";
-        break;
-      case MessageType.recall:
-        showTxt = "$showTxt撤回了一条消息";
-        break;
-      case MessageType.image:
-        showTxt = "$showTxt[图片]";
-        break;
-      case MessageType.video:
-        showTxt = "$showTxt[视频]";
-        break;
-      case MessageType.voice:
-        showTxt = "$showTxt[语音]";
-        break;
-      case MessageType.readed:
-        break;
-      default:
-        break;
+    var messageType = lastMessage.msgType;
+    if (messageType == MessageType.text.label) {
+      showTxt = "$showTxt${lastMessage.showTxt}";
+    } else if (messageType == MessageType.recall.label) {
+      showTxt = "$showTxt撤回了一条消息";
+    } else if (messageType == MessageType.image.label) {
+      showTxt = "$showTxt[图片]";
+    } else if (messageType == MessageType.video.label) {
+      showTxt = "$showTxt[视频]";
+    } else if (messageType == MessageType.voice.label) {
+      showTxt = "$showTxt[语音]";
     }
 
     return Text(

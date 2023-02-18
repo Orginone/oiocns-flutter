@@ -50,13 +50,13 @@ class AnyStore {
   /// @param {string} domain 对象所在域, 个人域(user),单位域(company),开放域(all)
   /// @param {(data:any)=>void} callback 变更回调，默认回调一次
   /// @returns {void} 无返回值
-  subscribed<T>(String key, String domain, Function(dynamic)? callback) async {
+  subscribed(String key, String domain, Function(dynamic)? callback) async {
     if (callback != null) {
       final fullKey = "$key|$domain";
       _subscribeCallbacks[fullKey] = callback;
       if (_storeHub.isConnected) {
-        final ResultType<T> res =
-            await _storeHub.invoke<T>('Subscribed', args: [key, domain]);
+        final ResultType<dynamic> res =
+            await _storeHub.invoke('Subscribed', args: [key, domain]);
         if (res.success && res.data != null) {
           callback(res.data);
         }
@@ -80,8 +80,8 @@ class AnyStore {
   /// @param {string} key 对象名称（eg: rootName.person.name）
   /// @param {string} domain 对象所在域, 个人域(user),单位域(company),开放域(all)
   /// @returns {ResultType} 对象异步结果
-  Future<ResultType<T>> get<T>(String key, String domain) async {
-    return await _storeHub.invoke<T>('Get', args: [key, domain]);
+  Future<ResultType<dynamic>> get(String key, String domain) async {
+    return await _storeHub.invoke('Get', args: [key, domain]);
   }
 
   /// 修改对象
@@ -91,7 +91,7 @@ class AnyStore {
   /// @returns {ResultType} 变更异步结果
   Future<ResultType<dynamic>> set(
       String key, dynamic setData, String domain) async {
-    return await _storeHub.invoke<dynamic>('Set', args: [key, setData, domain]);
+    return await _storeHub.invoke('Set', args: [key, setData, domain]);
   }
 
   /// 删除对象
@@ -99,7 +99,7 @@ class AnyStore {
   /// @param {string} domain 对象所在域, 个人域(user),单位域(company),开放域(all)
   /// @returns {ResultType} 删除异步结果
   Future<ResultType<dynamic>> delete(String key, String domain) async {
-    return await _storeHub.invoke<dynamic>('Delete', args: [key, domain]);
+    return await _storeHub.invoke('Delete', args: [key, domain]);
   }
 
   /// 添加数据到数据集
@@ -110,7 +110,7 @@ class AnyStore {
   Future<ResultType<dynamic>> insert(
       String collName, dynamic data, String domain) async {
     return await _storeHub
-        .invoke<dynamic>('Insert', args: [collName, data, domain]);
+        .invoke('Insert', args: [collName, data, domain]);
   }
 
   /// 更新数据到数据集
@@ -121,7 +121,7 @@ class AnyStore {
   Future<ResultType<dynamic>> update(
       String collName, dynamic update, String domain) async {
     return await _storeHub
-        .invoke<dynamic>('Update', args: [collName, update, domain]);
+        .invoke('Update', args: [collName, update, domain]);
   }
 
   /// 从数据集移除数据
@@ -132,7 +132,7 @@ class AnyStore {
   Future<ResultType<dynamic>> remove(
       String collName, dynamic match, String domain) async {
     return await _storeHub
-        .invoke<dynamic>('Remove', args: [collName, match, domain]);
+        .invoke('Remove', args: [collName, match, domain]);
   }
 
   /// 从数据集查询数据
@@ -143,15 +143,15 @@ class AnyStore {
   Future<ResultType<dynamic>> aggregate(
       String collName, dynamic options, String domain) async {
     return await _storeHub
-        .invoke<dynamic>('Aggregate', args: [collName, options, domain]);
+        .invoke('Aggregate', args: [collName, options, domain]);
   }
 
   /// 桶操作
   /// @param data 操作携带的数据
   /// @returns {ResultType<T>} 移除异步结果
-  Future<ResultType<T>> bucketOpreate<T>(BucketOpreateModel data) async {
+  Future<ResultType<dynamic>> bucketOpreate(BucketOpreateModel data) async {
     if (_storeHub.isConnected) {
-      return await _storeHub.invoke<T>('BucketOpreate', args: [data]);
+      return await _storeHub.invoke('BucketOpreate', args: [data]);
     }
     return await _restRequest('Bucket', 'Operate', data);
   }

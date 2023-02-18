@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:orginone/dart/core/market/model.dart';
 import 'package:orginone/dart/core/target/university.dart';
 import '../../base/common/uint.dart';
@@ -15,10 +16,10 @@ class Person extends MarketTarget implements IPerson {
   late List<ICohort> cohorts;
 
   @override
-  late List<ICompany> joinedCompany;
+  late RxList<ICompany> joinedCompany;
 
   @override
-  late List<XTarget> joinedFriend;
+  late RxList<XTarget> joinedFriend;
 
   @override
   set spaceData(SpaceType _) {}
@@ -31,6 +32,7 @@ class Person extends MarketTarget implements IPerson {
 
   @override
   late List<IMarket> publicMarkets;
+
   Person(XTarget target) : super(target) {
     super.searchTargetType = [
       TargetType.cohort,
@@ -45,7 +47,10 @@ class Person extends MarketTarget implements IPerson {
     ];
     createTargetType = [TargetType.cohort, ...companyTypes];
     extendTargetType = [TargetType.cohort, TargetType.person];
+    joinedCompany = <ICompany>[].obs;
+    joinedFriend = <XTarget>[].obs;
   }
+
   @override
   Future<List<ITarget>> loadSubTeam({bool reload = false}) async {
     return [];
@@ -111,7 +116,6 @@ class Person extends MarketTarget implements IPerson {
     }
     final res = await getjoinedTargets(companyTypes, id);
     if (res.result != null) {
-      joinedCompany = [];
       for (var a in res.result!) {
         late ICompany company;
         switch (a.typeName as TargetType) {
@@ -225,7 +229,7 @@ class Person extends MarketTarget implements IPerson {
       belongId: id,
     ));
     if (res.success) {
-      joinedCompany = joinedCompany.where((a) => a.id != id).toList();
+      joinedCompany.removeWhere((a) => a.id != id);
     }
     return res.success;
   }
@@ -273,8 +277,7 @@ class Person extends MarketTarget implements IPerson {
       targetType: TargetType.person.name,
     ));
     if (res.success) {
-      joinedCompany =
-          joinedCompany.where((company) => company.id != id).toList();
+      joinedCompany.removeWhere((company) => company.id != id);
     }
     return res.success;
   }
@@ -284,7 +287,7 @@ class Person extends MarketTarget implements IPerson {
     if (joinedFriend.isEmpty) {
       final data = await super.loadMembers(page);
       if (data.result != null) {
-        joinedFriend = data.result!;
+        joinedFriend.addAll(data.result!);
       }
     }
     return XTargetArray(
@@ -321,8 +324,7 @@ class Person extends MarketTarget implements IPerson {
           targetType: TargetType.person.name,
         ));
       }
-      joinedFriend =
-          joinedFriend.where((item) => !ids.contains(item.id)).toList();
+      joinedFriend.removeWhere((item) => !ids.contains(item.id));
       return true;
     }
     return false;

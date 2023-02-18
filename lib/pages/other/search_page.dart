@@ -11,8 +11,8 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/components/widgets/text_avatar.dart';
 import 'package:orginone/components/widgets/text_search.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/controller/setting/index.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/ts/controller/setting/index.dart';
 
 class SearchPage extends GetView<SearchController> {
   const SearchPage({Key? key}) : super(key: key);

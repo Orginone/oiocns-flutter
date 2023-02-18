@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/widgets/text_avatar.dart';
 import 'package:orginone/components/unified.dart';
-import 'package:orginone/dart/ts/controller/setting/index.dart';
+import 'package:orginone/dart/controller/setting/index.dart';
 import 'package:orginone/routers.dart';
 
 class UserBar extends GetView<SettingController> {
@@ -11,7 +11,7 @@ class UserBar extends GetView<SettingController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => controller.signedIn ? _container : _empty);
+    return Obx(() => controller.signed ? _container : _empty);
   }
 
   Widget get _empty => Container();
