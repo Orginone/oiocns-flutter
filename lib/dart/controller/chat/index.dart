@@ -112,6 +112,8 @@ class ChatController extends GetxController {
       }
       _appendChats(curChat);
       await _cacheChats();
+    } else {
+      _curChat.value = null;
     }
   }
 

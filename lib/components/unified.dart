@@ -448,4 +448,49 @@ class XFonts {
   static get size28WhiteW700 {
     return TextStyle(fontSize: 28.sp, color: XColors.white, fontWeight: w700);
   }
+
+  static get size12ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 12.sp, color: theme, fontWeight: w700);
+  }
+
+  static get size14ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 14.sp, color: theme, fontWeight: w700);
+  }
+
+  static get size16ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 16.sp, color: theme, fontWeight: w700);
+  }
+
+  static get size18ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 18.sp, color: theme, fontWeight: w700);
+  }
+
+  static get size20ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 20.sp, color: theme, fontWeight: w700);
+  }
+
+  static get size22ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 22.sp, color: theme, fontWeight: w700);
+  }
+
+  static get size24ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 24.sp, color: theme, fontWeight: w700);
+  }
+
+  static get size26ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 26.sp, color: theme, fontWeight: w700);
+  }
+
+  static get size28ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 28.sp, color: theme, fontWeight: w700);
+  }
 }

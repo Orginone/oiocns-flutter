@@ -12,6 +12,9 @@ import 'package:orginone/pages/other/login.dart';
 import 'package:orginone/pages/other/scanning/scanning_page.dart';
 import 'package:orginone/pages/other/scanning/scanning_result_pge.dart';
 import 'package:orginone/pages/other/search_page.dart';
+import 'package:orginone/pages/setting/contact_page.dart';
+import 'package:orginone/pages/setting/mine_unit_page.dart';
+import 'package:orginone/pages/setting/new_friend_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 
 class Routers {
@@ -43,6 +46,12 @@ class Routers {
   static const String message = "/message";
   static const String chat = "/chat";
   static const String moreMessage = "/moreMessage";
+
+  // 设置
+  static const String mineUnit = "/mineUnit";
+  static const String newFriends = "/newFriends";
+  static const String contact = "/contact";
+  static const String cohorts = "/cohorts";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -89,6 +98,25 @@ class Routers {
       GetPage(
         name: Routers.moreMessage,
         page: () => const MoreMessagePage(),
+      ),
+      GetPage(
+        name: Routers.mineUnit,
+        page: () => const MineUnitPage(),
+      ),
+      GetPage(
+        name: Routers.newFriends,
+        page: () => const NewFriendsPage(),
+        binding: NewFriendsBinding(),
+      ),
+      GetPage(
+        name: Routers.contact,
+        page: () => const ContactPage(),
+        binding: ContactBinding(),
+      ),
+      GetPage(
+        name: Routers.cohorts,
+        page: () => const ContactPage(),
+        binding: ContactBinding(),
       ),
     ];
   }
