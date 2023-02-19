@@ -9,7 +9,8 @@ import 'package:orginone/dart/core/chat/chat.dart';
 import 'package:orginone/dart/core/chat/ichat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/util/event_bus.dart';
-import 'package:orginone/util/logger.dart';
+
+const chatsObjectName = "userchat";
 
 class ChatController extends GetxController {
   String _userId = "";
@@ -32,7 +33,6 @@ class ChatController extends GetxController {
 
   @override
   void onInit() async {
-    super.onInit();
     _signInSub = XEventBus.instance.on<SignIn>().listen((event) {
       var settingCtrl = Get.find<SettingController>();
       _userId = settingCtrl.user?.id ?? "";
@@ -44,6 +44,7 @@ class ChatController extends GetxController {
     _signOutSub = XEventBus.instance.on<SignOut>().listen((event) {
       clear();
     });
+    super.onInit();
   }
 
   @override
@@ -125,16 +126,10 @@ class ChatController extends GetxController {
 
   /// 缓存当前会话
   _cacheChats() async {
-    var chats = _chats
-        .map((c) {
-          return c.getCache().toJson();
-        })
-        .toList()
-        .reversed
-        .toList();
-    Log.info(chats);
+    mapping(c) => c.getCache().toJson();
+    var chats = _chats.map(mapping).toList().reversed.toList();
     await KernelApi.getInstance().anystore.set(
-          "chatsObjectName",
+          chatsObjectName,
           {
             "operation": "replaceAll",
             "data": {"chats": chats}
@@ -149,7 +144,7 @@ class ChatController extends GetxController {
     var kennel = KernelApi.getInstance();
     kennel.on('RecvMsg', onReceiveMessage);
     kennel.on('ChatRefresh', chatRefresh);
-    kennel.anystore.subscribed('userchat', 'user', _updateMails);
+    kennel.anystore.subscribed(chatsObjectName, 'user', _updateMails);
   }
 
   Future<List<IChatGroup>> loadChats(String userId) async {
@@ -163,10 +158,10 @@ class ChatController extends GetxController {
       res.data?.groups?.forEach((group) {
         int index = 0;
         var chats = (group.chats ?? [])
-            .map((item) => createChat(group.id, item.name, item, userId))
+            .map((item) => createChat(group.id, group.name, item, userId))
             .toList();
-        groups
-            .add(BaseChatGroup(group.id, group.name, index++ == 0, chats.obs));
+        var base = BaseChatGroup(group.id, group.name, index++ == 0, chats.obs);
+        groups.add(base);
       });
     }
     return groups;

@@ -43,12 +43,7 @@ class DetailItemWidget extends GetView<ChatController> {
   Widget _messageDetail(BuildContext context) {
     List<Widget> children = [];
     bool isCenter = false;
-    if (msg.msgType == MessageType.text.label ||
-        msg.msgType == MessageType.image.label ||
-        msg.msgType == MessageType.voice.label) {
-      children.add(_getAvatar());
-      children.add(_getChat(context));
-    } else if (msg.msgType == MessageType.recall.label) {
+    if (msg.msgType == MessageType.recall.label) {
       String msgBody = StringUtil.getDetailRecallBody(
         fromId: msg.fromId,
         userId: controller.userId,
@@ -56,6 +51,9 @@ class DetailItemWidget extends GetView<ChatController> {
       );
       children.add(Text(msgBody, style: XFonts.size18Black9));
       isCenter = true;
+    } else {
+      children.add(_getAvatar());
+      children.add(_getChat(context));
     }
     return Container(
       margin: EdgeInsets.only(top: 8.h, bottom: 8.h),

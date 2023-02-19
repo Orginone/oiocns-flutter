@@ -152,7 +152,7 @@ class MessageItemWidget extends GetView<ChatController> {
           children: [
             Expanded(child: _showTxt()),
             TextTag(
-              target.typeName,
+              chat.spaceName,
               bgColor: Colors.white,
               textStyle: TextStyle(
                 color: XColors.designBlue,
