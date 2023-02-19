@@ -9,11 +9,11 @@ import 'package:orginone/util/encryption_util.dart';
 const hisMsgCollName = 'chat-message';
 
 class BaseChat extends IChat {
-  BaseChat(String spaceId, String name, ChatModel m, String userId) {
+  BaseChat(String spaceId, String name, ChatModel model, String userId) {
     this.userId = userId;
     this.spaceId = spaceId;
     spaceName = name;
-    target = m;
+    target = model;
     messages = <XImMsg>[].obs;
     persons = <XTarget>[].obs;
     personCount = 0.obs;
@@ -46,14 +46,15 @@ class BaseChat extends IChat {
 
   @override
   loadCache(ChatCache chatCache) {
-    if (chatCache.lastMessage?.id != lastMessage.value?.id) {
-      if (chatCache.lastMessage != null) {
-        messages.insert(0, chatCache.lastMessage!);
+    var newLastMessage = chatCache.lastMessage;
+    if (newLastMessage?.id != lastMessage.value?.id) {
+      if (newLastMessage != null) {
+        messages.insert(0, newLastMessage);
       }
     }
     isTopping.value = chatCache.isTopping;
     noReadCount.value = chatCache.noReadCount;
-    lastMessage.value = chatCache.lastMessage;
+    lastMessage.value = newLastMessage;
   }
 
   @override

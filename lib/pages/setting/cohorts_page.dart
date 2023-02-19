@@ -8,7 +8,7 @@ import 'package:orginone/components/widgets/text_avatar.dart';
 import 'package:orginone/components/widgets/text_search.dart';
 import 'package:orginone/components/widgets/text_tag.dart';
 import 'package:orginone/config/forms.dart';
-import 'package:orginone/dart/controller/setting/index.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/pages/other/search_page.dart';
 import 'package:orginone/routers.dart';

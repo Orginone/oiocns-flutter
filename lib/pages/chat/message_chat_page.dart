@@ -5,7 +5,7 @@ import 'package:getwidget/getwidget.dart';
 import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/chat/index.dart';
+import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';

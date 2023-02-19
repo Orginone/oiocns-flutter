@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/controller/setting/index.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 
 enum OrgAuths {

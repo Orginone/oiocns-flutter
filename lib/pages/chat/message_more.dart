@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/unified.dart';
-import 'package:orginone/dart/controller/chat/index.dart';
+import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/pages/chat/widgets/group_item_widget.dart';
 
 class MoreMessagePage extends GetView<ChatController> {

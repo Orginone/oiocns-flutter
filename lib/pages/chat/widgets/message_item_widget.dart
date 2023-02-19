@@ -5,8 +5,8 @@ import 'package:getwidget/getwidget.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/components/widgets/text_avatar.dart';
 import 'package:orginone/components/widgets/text_tag.dart';
-import 'package:orginone/dart/controller/chat/index.dart';
-import 'package:orginone/dart/controller/setting/index.dart';
+import 'package:orginone/dart/controller/chat/chat_controller.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/chat.dart';
 import 'package:orginone/dart/core/chat/ichat.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -176,7 +176,7 @@ class MessageItemWidget extends GetView<ChatController> {
     if (chat is PersonChat) {
       var settingCtrl = Get.find<SettingController>();
       if (lastMessage.fromId != settingCtrl.user!.target.id) {
-        showTxt = "对方：";
+        showTxt = "对方:";
       }
     } else {
       showTxt = "$name:";

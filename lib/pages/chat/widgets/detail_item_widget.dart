@@ -12,8 +12,9 @@ import 'package:orginone/components/widgets/photo_widget.dart';
 import 'package:orginone/components/widgets/text_avatar.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/chat/index.dart';
+import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/string_util.dart';
 
 enum Direction { leftStart, rightStart }
@@ -223,7 +224,13 @@ class DetailItemWidget extends GetView<ChatController> {
     required BuildContext context,
   }) {
     /// 解析参数
-    Map<String, dynamic> msgBody = jsonDecode(msg.showTxt);
+    Map<String, dynamic> msgBody = {};
+    try {
+      msgBody = jsonDecode(msg.showTxt);
+    } catch (error) {
+      Log.info("参数解析失败，msg.showTxt:${msg.showTxt}");
+      return Container();
+    }
     String link = msgBody["shareLink"] ?? "";
 
     /// 限制大小

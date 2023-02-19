@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/widgets/text_avatar.dart';
 import 'package:orginone/components/unified.dart';
-import 'package:orginone/dart/controller/setting/index.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/routers.dart';
 
 class UserBar extends GetView<SettingController> {
@@ -22,8 +22,6 @@ class UserBar extends GetView<SettingController> {
       child: Row(children: [
         Expanded(
           child: Obx(() {
-            var target = controller.space.target;
-            var spaceName = target.name;
             return GestureDetector(
               onTap: () => Get.toNamed(Routers.spaces),
               child: Row(
@@ -33,7 +31,7 @@ class UserBar extends GetView<SettingController> {
                   _avatar(EdgeInsets.only(left: 20.w)),
                   Container(margin: EdgeInsets.only(left: 10.w)),
                   Text(
-                    spaceName,
+                    controller.space.name,
                     style: XFonts.size22Black0,
                     overflow: TextOverflow.ellipsis,
                   ),

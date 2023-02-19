@@ -58,6 +58,10 @@ class SettingController extends GetxController {
     return _user.value!;
   }
 
+  String spaceName(ISpace space) {
+    return space.id == user?.id ? "个人空间" : space.name;
+  }
+
   /// 设置当前空间
   setCurSpace(String id) async {
     if (id == space.id) {

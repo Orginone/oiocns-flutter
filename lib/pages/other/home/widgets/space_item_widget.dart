@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/components/widgets/text_avatar.dart';
 import 'package:orginone/components/widgets/text_tag.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 
-class SpaceItemWidget extends StatelessWidget {
+class SpaceItemWidget extends GetView<SettingController> {
   final Function(ISpace)? onTap;
   final ISpace space;
   final bool isCurrent;
@@ -34,14 +36,15 @@ class SpaceItemWidget extends StatelessWidget {
   }
 
   Widget get _body {
+    var spaceName = controller.spaceName(space);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        TextAvatar(avatarName: space.target.name.substring(0, 1)),
+        TextAvatar(avatarName: spaceName.substring(0, 1)),
         Container(margin: EdgeInsets.only(left: 10.w)),
         Expanded(
           child: Text(
-            space.target.name,
+            spaceName,
             style: XFonts.size18Black0,
             overflow: TextOverflow.ellipsis,
           ),

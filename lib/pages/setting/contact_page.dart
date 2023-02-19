@@ -8,8 +8,8 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/components/widgets/index_bar.dart';
 import 'package:orginone/components/widgets/text_avatar.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/chat/index.dart';
-import 'package:orginone/dart/controller/setting/index.dart';
+import 'package:orginone/dart/controller/chat/chat_controller.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/other/search_page.dart';
 import 'package:orginone/routers.dart';
 

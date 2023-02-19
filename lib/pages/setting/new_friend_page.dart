@@ -8,7 +8,7 @@ import 'package:orginone/components/template/base_list_view.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/components/widgets/dialog_confirm.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/chat/index.dart';
+import 'package:orginone/dart/controller/chat/chat_controller.dart';
 
 class NewFriendsPage extends BaseListView<NewFriendsController> {
   const NewFriendsPage({Key? key}) : super(key: key);

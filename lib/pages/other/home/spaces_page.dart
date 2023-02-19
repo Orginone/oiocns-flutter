@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/unified.dart';
-import 'package:orginone/dart/controller/setting/index.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/pages/other/home/widgets/space_item_widget.dart';
 
@@ -41,7 +41,7 @@ class SpacesPage extends GetView<SettingController> {
   Widget _item(ISpace space) {
     return SpaceItemWidget(
       space: space,
-      isCurrent: controller.user!.target.id == space.target.id,
+      isCurrent: controller.space.id == space.target.id,
       onTap: (company) async {
         await controller.setCurSpace(company.target.id);
         Get.back();
