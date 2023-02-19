@@ -147,7 +147,7 @@ class ChatController extends GetxController {
   _initialization() async {
     _groups.addAll(await loadChats(_userId));
     var kennel = KernelApi.getInstance();
-    kennel.on('RecvMsg', (message) => onReceiveMessage([message]));
+    kennel.on('RecvMsg', onReceiveMessage);
     kennel.on('ChatRefresh', chatRefresh);
     kennel.anystore.subscribed('userchat', 'user', _updateMails);
   }
@@ -165,7 +165,8 @@ class ChatController extends GetxController {
         var chats = (group.chats ?? [])
             .map((item) => createChat(group.id, item.name, item, userId))
             .toList();
-        groups.add(BaseChatGroup(group.id, group.name, index++ == 0, chats.obs));
+        groups
+            .add(BaseChatGroup(group.id, group.name, index++ == 0, chats.obs));
       });
     }
     return groups;
@@ -237,24 +238,22 @@ class ChatController extends GetxController {
   }
 
   /// 接受消息
-  Future<void> onReceiveMessage(List<dynamic> messages) async {
-    for (var item in messages) {
-      var message = XImMsg.fromJson(item);
-      var sessionId = message.toId;
-      if (message.toId == _userId) {
-        sessionId = message.fromId;
-      }
-      for (var chatGroup in _groups) {
-        for (var chat in chatGroup.chats) {
-          bool isMatched = chat.chatId == sessionId;
-          if (isMatched && chat.target.typeName == TargetType.person.label) {
-            isMatched = message.spaceId == chat.spaceId;
-          }
-          if (!isMatched) {
-            chat.receiveMessage(message, _curChat.value != chat);
-            _appendChats(chat);
-            _cacheChats();
-          }
+  Future<void> onReceiveMessage(dynamic item) async {
+    var message = XImMsg.fromJson(item);
+    var sessionId = message.toId;
+    if (message.toId == _userId) {
+      sessionId = message.fromId;
+    }
+    for (var group in _groups) {
+      for (var one in group.chats) {
+        bool isMatched = one.target.id == sessionId;
+        if (isMatched && one.target.typeName == TargetType.person.label) {
+          isMatched = message.spaceId == one.spaceId;
+        }
+        if (isMatched) {
+          one.receiveMessage(message, _curChat.value != one);
+          _appendChats(one);
+          _cacheChats();
         }
       }
     }

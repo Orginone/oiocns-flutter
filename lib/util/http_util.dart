@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
-import 'package:orginone/dart/base/model.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class HttpUtil {

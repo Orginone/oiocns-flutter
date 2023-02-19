@@ -1,15 +1,10 @@
-import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/chat/index.dart';
 import 'package:orginone/dart/core/chat/chat.dart';
 import 'package:orginone/dart/core/chat/ichat.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/pages/chat/message_page.dart';
 
 class StringUtil {
   static String getDetailRecallBody({
-    required ChatModel item,
     required String fromId,
     required String name,
     required String userId,
@@ -17,8 +12,6 @@ class StringUtil {
     String msgBody = "撤回了一条消息";
     if (userId == fromId) {
       msgBody = "您$msgBody";
-    } else if (item.typeName == TargetType.person.label) {
-      msgBody = "对方$msgBody";
     } else {
       msgBody = "$name$msgBody";
     }

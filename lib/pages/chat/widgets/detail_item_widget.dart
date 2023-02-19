@@ -11,7 +11,6 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/components/widgets/photo_widget.dart';
 import 'package:orginone/components/widgets/text_avatar.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
-import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/chat/index.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -32,13 +31,8 @@ double defaultWidth = 10.w;
 
 class DetailItemWidget extends GetView<ChatController> {
   final XImMsg msg;
-  final ChatModel model;
 
-  const DetailItemWidget({
-    Key? key,
-    required this.msg,
-    required this.model,
-  }) : super(key: key);
+  const DetailItemWidget({Key? key, required this.msg}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +50,6 @@ class DetailItemWidget extends GetView<ChatController> {
       children.add(_getChat(context));
     } else if (msg.msgType == MessageType.recall.label) {
       String msgBody = StringUtil.getDetailRecallBody(
-        item: model,
         fromId: msg.fromId,
         userId: controller.userId,
         name: controller.getName(msg.fromId),
@@ -79,14 +72,14 @@ class DetailItemWidget extends GetView<ChatController> {
   }
 
   /// 目标名称
-  String targetName() {
+  String getName() {
     return controller.getName(msg.fromId);
   }
 
   /// 获取头像
   Widget _getAvatar() {
     return TextAvatar(
-      avatarName: model.name.substring(0, 2),
+      avatarName: getName().substring(0, 2),
       textStyle: XFonts.size16WhiteW700,
       radius: 9999,
     );
@@ -96,11 +89,10 @@ class DetailItemWidget extends GetView<ChatController> {
   Widget _getChat(BuildContext context) {
     List<Widget> content = <Widget>[];
 
-    if (model.typeName != TargetType.person.label &&
-        msg.fromId != controller.userId) {
+    if (msg.fromId != controller.userId) {
       content.add(Container(
         margin: EdgeInsets.only(left: 10.w),
-        child: Text(targetName(), style: XFonts.size16Black3),
+        child: Text(getName(), style: XFonts.size16Black3),
       ));
     }
 

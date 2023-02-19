@@ -121,10 +121,12 @@ dependencies:
   flutter_background_service: ^2.4.5
 
   # 日志收集工具
-  flutter_bugly: 0.4.4
+  flutter_bugly: ^0.4.4
 
   # 消息总线
-  event_bus: 2.0.0
+  event_bus: ^2.0.0
+  # 数据本地化
+  shared_preferences: ^2.0.17
 
 dev_dependencies:
   flutter_test:

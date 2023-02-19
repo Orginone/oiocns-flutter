@@ -7,18 +7,14 @@ import 'package:orginone/components/widgets/loading_button.dart';
 import 'package:orginone/dart/controller/setting/index.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/load_image.dart';
+import 'package:orginone/util/local_store.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class LoginPage extends GetView<SettingController> {
-  final accountCtrl = TextEditingController();
-  final passwordCtrl = TextEditingController();
-
-  LoginPage({Key? key}) : super(key: key);
+class LoginPage extends GetView<LoginController> {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    accountCtrl.text = "15168347908";
-    passwordCtrl.text = "38179960Jzy~";
     return Scaffold(body: _form());
   }
 
@@ -47,7 +43,7 @@ class LoginPage extends GetView<SettingController> {
     return Container(
       padding: EdgeInsets.only(left: 40.w, top: 10.h, right: 40.w),
       child: TextFormField(
-        controller: accountCtrl,
+        controller: controller.accountCtrl,
         decoration: const InputDecoration(hintText: '请输入账号'),
         validator: (value) => TextUtil.isEmpty(value) ? "账号不能为空!" : null,
       ),
@@ -58,7 +54,8 @@ class LoginPage extends GetView<SettingController> {
     return Container(
       padding: EdgeInsets.only(left: 40.w, top: 10.h, right: 40.w),
       child: TextFormField(
-        controller: passwordCtrl,
+        obscureText: true,
+        controller: controller.passwordCtrl,
         decoration: const InputDecoration(hintText: '请输入密码'),
         validator: (value) => TextUtil.isEmpty(value) ? "账号不能为空!" : null,
       ),
@@ -72,7 +69,8 @@ class LoginPage extends GetView<SettingController> {
         loadingBtnCtrl: LoadingButtonController(),
         callback: () async {
           if (!formKey.currentState!.validate()) return;
-          var res = await controller.login(accountCtrl.text, passwordCtrl.text);
+          var settingCtrl = Get.find<SettingController>();
+          var res = await settingCtrl.login(controller.accountCtrl.text, controller.passwordCtrl.text);
           if (res.success) {
             [Permission.storage, Permission.notification].request();
             Get.toNamed(Routers.home);
@@ -86,5 +84,28 @@ class LoginPage extends GetView<SettingController> {
         ),
       ),
     );
+  }
+}
+
+class LoginBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => LoginController());
+  }
+}
+
+class LoginController extends GetxController {
+  final accountCtrl = TextEditingController();
+  final passwordCtrl = TextEditingController();
+
+  @override
+  void onInit() async {
+    var store = await LocalStore.instance;
+    var account = store.getStringList("account");
+    if (account != null){
+      accountCtrl.text = account[0];
+      passwordCtrl.text = account[1];
+    }
+    super.onInit();
   }
 }

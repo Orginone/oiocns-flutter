@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/unified.dart';
-import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/chat/index.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -76,9 +75,8 @@ class ChatPage extends GetView<ChatController> {
 
   Widget _chatItem(int index) {
     var chat = controller.chat!;
-    ChatModel model = chat.target;
     XImMsg msg = chat.messages[index];
-    Widget currentWidget = DetailItemWidget(msg: msg, model: model);
+    Widget currentWidget = DetailItemWidget(msg: msg);
 
     var time = _time(msg.createTime);
     var item = Column(children: [currentWidget]);

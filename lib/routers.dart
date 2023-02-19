@@ -57,8 +57,8 @@ class Routers {
     return [
       GetPage(
         name: Routers.main,
-        page: () => LoginPage(),
-        bindings: [SettingBinding(), ChatBinding()],
+        page: () => const LoginPage(),
+        bindings: [SettingBinding(), ChatBinding(), LoginBinding()],
       ),
       GetPage(
         name: Routers.home,
