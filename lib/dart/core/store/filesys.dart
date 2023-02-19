@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/market/model.dart';
+import 'package:orginone/dart/core/store/ifilesys.dart';
 import 'package:uuid/uuid.dart';
-import './ifilesys.dart';
 
 /// 分片大小
 const chunkSize = 1024 * 1024;
@@ -73,7 +73,7 @@ class FileSystemItem implements IFileSystemItem {
   Future<bool> rename(String name) async {
     if (this.name != name && (await _findByName(name)) != null) {
       var res =
-          await kernel.anystore.bucketOpreate<FileItemModel>(BucketOpreateModel(
+          await kernel.anystore.bucketOpreate(BucketOpreateModel(
         name: name,
         shareDomain: 'user',
         key: _formatKey(),
@@ -94,7 +94,7 @@ class FileSystemItem implements IFileSystemItem {
     var exist = await _findByName(name);
     if (exist != null) {
       var res =
-          await kernel.anystore.bucketOpreate<FileItemModel>(BucketOpreateModel(
+          await kernel.anystore.bucketOpreate(BucketOpreateModel(
         shareDomain: 'user',
         key: _formatKey(subName: name),
         operate: BucketOpreates.create,
@@ -111,8 +111,7 @@ class FileSystemItem implements IFileSystemItem {
 
   @override
   Future<bool> delete() async {
-    var res = await kernel.anystore
-        .bucketOpreate<List<FileItemModel>>(BucketOpreateModel(
+    var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
       shareDomain: 'user',
       key: _formatKey(),
       operate: BucketOpreates.delete,
@@ -130,8 +129,7 @@ class FileSystemItem implements IFileSystemItem {
   @override
   Future<bool> copy(IFileSystemItem destination) async {
     if (destination.target!.isDirectory && key != destination.key) {
-      var res = await kernel.anystore
-          .bucketOpreate<List<FileItemModel>>(BucketOpreateModel(
+      var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
         shareDomain: 'user',
         key: _formatKey(),
         destination: destination.key,
@@ -149,8 +147,7 @@ class FileSystemItem implements IFileSystemItem {
   @override
   Future<bool> move(IFileSystemItem destination) async {
     if (destination.target!.isDirectory && key != destination.key) {
-      var res = await kernel.anystore
-          .bucketOpreate<List<FileItemModel>>(BucketOpreateModel(
+      var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
         shareDomain: 'user',
         key: _formatKey(),
         destination: destination.key,
@@ -173,8 +170,7 @@ class FileSystemItem implements IFileSystemItem {
   Future<bool> loadChildren({bool? reload}) async {
     reload ??= false;
     if (target!.isDirectory && (reload || children!.isEmpty)) {
-      var res = await kernel.anystore
-          .bucketOpreate<List<FileItemModel>>(BucketOpreateModel(
+      var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
         shareDomain: 'user',
         key: _formatKey(),
         operate: BucketOpreates.list,
@@ -224,10 +220,10 @@ class FileSystemItem implements IFileSystemItem {
           data: [], dataUrl: '',
           // dataUrl: await blobToDataUrl(file.slice(start, end)),
         );
-        var res = await kernel.anystore.bucketOpreate<FileItemModel>(data);
+        var res = await kernel.anystore.bucketOpreate(data);
         if (!res.success) {
           data.operate = BucketOpreates.abortUpload;
-          await kernel.anystore.bucketOpreate<bool>(data);
+          await kernel.anystore.bucketOpreate(data);
           task.finished = -1;
           p?.call(-1);
           // return;

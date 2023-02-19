@@ -1,23 +1,25 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
-import 'package:logging/logging.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/chat/chat.dart';
 import 'package:orginone/dart/core/chat/ichat.dart';
-import 'package:orginone/dart/core/chat/index.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/util/event_bus.dart';
 
-const chatsObjectName = 'userchat';
+const chatsObjectName = "userchat";
 
-class MessageController extends GetxController {
-  final Logger log = Logger("MessageController");
-
-  final String _userId = "";
+class ChatController extends GetxController {
+  String _userId = "";
+  String _userName = "";
   final RxList<IChatGroup> _groups = <IChatGroup>[].obs;
   final RxList<IChat> _chats = <IChat>[].obs;
   final Rx<IChat?> _curChat = Rxn();
+  StreamSubscription<SignIn>? _signInSub;
+  StreamSubscription<SignOut>? _signOutSub;
 
   List<IChatGroup> get groups => _groups;
 
@@ -27,10 +29,37 @@ class MessageController extends GetxController {
 
   String get userId => _userId;
 
+  String get userName => _userName;
+
   @override
   void onInit() async {
+    _signInSub = XEventBus.instance.on<SignIn>().listen((event) {
+      var settingCtrl = Get.find<SettingController>();
+      _userId = settingCtrl.user?.id ?? "";
+      _userName = settingCtrl.user?.name ?? "";
+      if (_userId != "") {
+        _initialization();
+      }
+    });
+    _signOutSub = XEventBus.instance.on<SignOut>().listen((event) {
+      clear();
+    });
     super.onInit();
-    _initialization();
+  }
+
+  @override
+  onClose() {
+    _signInSub?.cancel();
+    _signOutSub?.cancel();
+    clear();
+    super.onClose();
+  }
+
+  clear() {
+    _userId = "";
+    _groups.clear();
+    _chats.clear();
+    _curChat.value = null;
   }
 
   /// 获取名称
@@ -84,6 +113,8 @@ class MessageController extends GetxController {
       }
       _appendChats(curChat);
       await _cacheChats();
+    } else {
+      _curChat.value = null;
     }
   }
 
@@ -95,14 +126,13 @@ class MessageController extends GetxController {
 
   /// 缓存当前会话
   _cacheChats() async {
+    mapping(c) => c.getCache().toJson();
+    var chats = _chats.map(mapping).toList().reversed.toList();
     await KernelApi.getInstance().anystore.set(
-          "chatsObjectName",
+          chatsObjectName,
           {
             "operation": "replaceAll",
-            "data": {
-              "chats":
-                  _chats.map((c) => c.getCache()).toList().reversed.toList()
-            }
+            "data": {"chats": chats}
           },
           "user",
         );
@@ -110,15 +140,35 @@ class MessageController extends GetxController {
 
   /// 初始化监听器
   _initialization() async {
-    _groups.value = await loadChats(userId);
-    var anystore = KernelApi.getInstance();
-    anystore.on('RecvMsg', (message) => onReceiveMessage([message]));
-    anystore.on('ChatRefresh', chatRefresh);
-    anystore.anystore.subscribed(chatsObjectName, 'user', _updateMails);
+    _groups.addAll(await loadChats(_userId));
+    var kennel = KernelApi.getInstance();
+    kennel.on('RecvMsg', onReceiveMessage);
+    kennel.on('ChatRefresh', chatRefresh);
+    kennel.anystore.subscribed(chatsObjectName, 'user', _updateMails);
+  }
+
+  Future<List<IChatGroup>> loadChats(String userId) async {
+    List<IChatGroup> groups = [];
+    var res = await KernelApi.getInstance().queryImChats(ChatsReqModel(
+      spaceId: userId,
+      cohortName: TargetType.cohort.label,
+      spaceTypeName: TargetType.company.label,
+    ));
+    if (res.success) {
+      res.data?.groups?.forEach((group) {
+        int index = 0;
+        var chats = (group.chats ?? [])
+            .map((item) => createChat(group.id, group.name, item, userId))
+            .toList();
+        var base = BaseChatGroup(group.id, group.name, index++ == 0, chats.obs);
+        groups.add(base);
+      });
+    }
+    return groups;
   }
 
   chatRefresh() async {
-    _groups.value = await loadChats(userId);
+    _groups.value = await loadChats(_userId);
     setCurrent(_curChat.value?.spaceId ?? "", _curChat.value?.chatId ?? "");
   }
 
@@ -160,8 +210,8 @@ class MessageController extends GetxController {
   IChat? findChat(String spaceId, String chatId) {
     for (var chatGroup in _groups) {
       for (var inner in chatGroup.chats) {
-        if (inner.chatId == spaceId && inner.spaceId == chatId) {
-          return chat;
+        if (inner.spaceId == spaceId && inner.chatId == chatId) {
+          return inner;
         }
       }
     }
@@ -183,33 +233,31 @@ class MessageController extends GetxController {
   }
 
   /// 接受消息
-  Future<void> onReceiveMessage(List<dynamic> messages) async {
-    for (var item in messages) {
-      var message = XImMsg.fromJson(item);
-      var sessionId = message.toId;
-      if (message.toId == _userId) {
-        sessionId = message.fromId;
-      }
-      for (var chatGroup in _groups) {
-        for (var chat in chatGroup.chats) {
-          bool isMatched = chat.chatId == sessionId;
-          if (isMatched && chat.target.typeName == TargetType.person.label) {
-            isMatched = message.spaceId == chat.spaceId;
-          }
-          if (!isMatched) {
-            chat.receiveMessage(message, _curChat.value != chat);
-            _appendChats(chat);
-            _cacheChats();
-          }
+  Future<void> onReceiveMessage(dynamic item) async {
+    var message = XImMsg.fromJson(item);
+    var sessionId = message.toId;
+    if (message.toId == _userId) {
+      sessionId = message.fromId;
+    }
+    for (var group in _groups) {
+      for (var one in group.chats) {
+        bool isMatched = one.target.id == sessionId;
+        if (isMatched && one.target.typeName == TargetType.person.label) {
+          isMatched = message.spaceId == one.spaceId;
+        }
+        if (isMatched) {
+          one.receiveMessage(message, _curChat.value != one);
+          _appendChats(one);
+          _cacheChats();
         }
       }
     }
   }
 }
 
-class MessageBinding extends Bindings {
+class ChatBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => MessageController());
+    Get.put(ChatController(), permanent: true);
   }
 }

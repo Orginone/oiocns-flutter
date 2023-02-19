@@ -5,40 +5,32 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/components/unified_colors.dart';
+import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/notification_util.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 void main() async {
-  FlutterBugly.postCatchedException(() async {
-    // 逻辑绑定
-    WidgetsFlutterBinding.ensureInitialized();
+  // 逻辑绑定
+  WidgetsFlutterBinding.ensureInitialized();
 
-    // 初始化通知配置
-    NotificationUtil.initNotification();
+  // 初始化通知配置
+  NotificationUtil.initNotification();
 
-    // 日志初始化
-    Logger.root.level = Level.ALL;
-    Logger.root.onRecord.listen((event) {
-      if (kDebugMode) {
-        print('${event.level.name}: ${event.time}: ${event.message}');
-      }
-    });
+  // 日志初始化
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((event) {
+    if (kDebugMode) {
+      print('${event.level.name}: ${event.time}: ${event.message}');
+    }
+  });
 
-    // 启动连接
-    KernelApi.getInstance().start();
+  // 启动连接
+  KernelApi.getInstance().start();
 
-    // 开启 app
-    runApp(const ScreenInit());
-
-    // 日志收集工具
-    FlutterBugly.init(
-      androidAppId: "e36da6d5e9",
-      iOSAppId: "af89f332-ed6c-42dc-8eb1-fb63cea1a39d",
-    );
-  }, debugUpload: true);
+  // 开启 app
+  runApp(const ScreenInit());
 }
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -59,7 +51,7 @@ class ScreenInit extends StatelessWidget {
           footerTriggerDistance: 15,
           dragSpeedRatio: 0.91,
           headerBuilder: () => const MaterialClassicHeader(
-            color: UnifiedColors.themeColor,
+            color: XColors.themeColor,
           ),
           footerBuilder: () => const ClassicFooter(
               loadingText: "努力加载中...",
