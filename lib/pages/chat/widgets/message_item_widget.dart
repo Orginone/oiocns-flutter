@@ -171,7 +171,7 @@ class MessageItemWidget extends GetView<ChatController> {
     if (lastMessage == null) {
       return Container();
     }
-    var name = controller.getName(lastMessage.id);
+    var name = controller.getName(lastMessage.fromId);
     var showTxt = "";
     if (chat is PersonChat) {
       var settingCtrl = Get.find<SettingController>();

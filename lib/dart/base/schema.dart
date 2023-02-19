@@ -2545,6 +2545,7 @@ class XImMsg {
     required this.createTime,
     required this.updateTime,
     required this.showTxt,
+    required this.allowEdit,
   });
 
   //通过JSON构造
@@ -2592,6 +2593,7 @@ class XImMsg {
     json["version"] = version;
     json["createTime"] = createTime;
     json["updateTime"] = updateTime;
+    json["showTxt"] = showTxt;
     return json;
   }
 }
