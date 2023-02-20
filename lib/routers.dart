@@ -71,10 +71,16 @@ import 'pages/other/center_function/create_claim/binding.dart';
 import 'pages/other/center_function/create_claim/view.dart';
 import 'pages/other/storage_location/binding.dart';
 import 'pages/other/storage_location/view.dart';
+import 'package:orginone/pages/todo/todo_detail.dart';
+import 'package:orginone/pages/todo/todo_tab_page.dart';
+import 'package:orginone/pages/todo/todo_page.dart';
 
 class Routers {
   // 首页
   static const String home = "/home";
+  static const String todo = "/todo";
+  static const String todoList = "/todoList";
+  static const String todoDetail = "/todoDetail";
 
   // 登录
   static const String login = "/login";
@@ -380,6 +386,21 @@ class Routers {
         name: Routers.webView,
         page: () => WebViewPage(),
         binding: WebViewBinding(),
+      ),
+      GetPage(
+        name: Routers.todo,
+        page: () => TodoPage(),
+        binding: TodoBinding(),
+      ),
+      GetPage(
+        name: Routers.todoList,
+        page: () => const TodoTabPage(),
+        binding: TodoListBinding(),
+      ),
+      GetPage(
+        name: Routers.todoDetail,
+        page: () => const TodoDetail(),
+        binding: TodoDetailBinding(),
       ),
     ];
   }
