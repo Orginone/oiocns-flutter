@@ -62,7 +62,7 @@ class Department extends BaseTarget implements IDepartment {
     if (!reload && departments.isNotEmpty) {
       return departments;
     }
-    final res = await super.getSubTargets(departmentTypes);
+    final res = await super.getSubTargets(targetDepartmentTypes);
     if (res.success && res.data?.result != null) {
       departments = res.data!.result
               ?.map((a) => Department(

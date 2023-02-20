@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/appbar/gf_appbar.dart';
-import 'package:orginone/components/unified_colors.dart';
+import 'package:orginone/components/unified.dart';
 
 const double defaultAppBarPercent = 0.07;
-const Color defaultAppBarColor = UnifiedColors.navigatorBgColor;
+const Color defaultAppBarColor = XColors.navigatorBgColor;
 const Color defaultBgColor = Colors.white;
 
 class OrginoneScaffold extends StatelessWidget {

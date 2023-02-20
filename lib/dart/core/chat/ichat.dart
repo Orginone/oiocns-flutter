@@ -45,14 +45,14 @@ abstract class IChat {
   Future<bool> clearMessage();
 
   /// 接收消息
-  receiveMessage(XImMsg detail, bool noRead);
+  receiveMessage(XImMsg msg, bool noRead);
 }
 
 /// 会话组的抽象
 abstract class IChatGroup {
   late String spaceId;
   late String spaceName;
-  late bool isOpened;
+  late RxBool isOpened;
   late RxList<IChat> chats;
 }
 
@@ -76,7 +76,7 @@ class ChatCache {
       : chatId = map["chatId"],
         spaceId = map["spaceId"],
         noReadCount = map["noReadCount"],
-        isTopping = map["isToping"],
+        isTopping = map["isToping"] ?? false,
         lastMessage = map["lastMessage"] == null
             ? null
             : XImMsg.fromJson(map["lastMessage"]);

@@ -21,7 +21,7 @@ class Company extends MarketTarget implements ICompany {
 
   Company(XTarget target, String userId) : super(target) {
     userId = userId;
-    departmentTypes = departmentTypes;
+    departmentTypes = targetDepartmentTypes;
     subTeamTypes = [...departmentTypes, TargetType.working];
     extendTargetType = [...subTeamTypes, ...companyTypes];
     joinTargetType = [TargetType.group];

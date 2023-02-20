@@ -8,12 +8,15 @@ import 'package:orginone/dart/core/target/authority/identity.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
 import 'package:orginone/dart/core/target/species/ispecies.dart';
 import 'package:orginone/dart/core/target/species/species.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../base/common/uint.dart';
 import '../enum.dart';
 import 'itarget.dart';
 
 class BaseTarget extends ITarget {
+  static Uuid uuid = const Uuid();
+
   late List<TargetType> memberTypes;
   late List<TargetType> createTargetType;
 
@@ -50,8 +53,8 @@ class BaseTarget extends ITarget {
   KernelApi kernel = KernelApi.getInstance();
 
   BaseTarget(XTarget target) {
-    // key = generateUuid();
-    target = target;
+    key = uuid.v4();
+    this.target = target;
     createTargetType = [];
     joinTargetType = [];
     searchTargetType = [];
@@ -252,7 +255,7 @@ class BaseTarget extends ITarget {
           typeName: target.typeName,
           page: PageRequest(offset: 0, filter: '', limit: Constants.maxUint16),
           spaceId: spaceId,
-          joinTypeNames: List<String>.from(typeNames)));
+          joinTypeNames: typeNames.map((item) => item.label).toList()));
       if (res.data != null) {
         return res.data!;
       }
