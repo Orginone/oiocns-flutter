@@ -1,0 +1,133 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:orginone/components/unified.dart';
+import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/widget/common_widget.dart';
+
+import '../../add_asset/item.dart';
+import 'logic.dart';
+import 'state.dart';
+
+
+class CreateHandOverPage extends BaseGetView<CreateHandOverController,CreateHandOverState>{
+  @override
+  Widget buildView() {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("${state.isEdit ? "提交" : "创建"}交回"),
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: XColors.themeColor,
+      ),
+      backgroundColor: Colors.grey.shade200,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    basicInfo(),
+                    transferInfo(),
+                    CommonWidget.commonAddDetailedWidget(
+                        text: "选择资产",
+                        onTap: () {
+                          controller.jumpAddAsset();
+                        })
+                  ],
+                ),
+              ),
+            ),
+            CommonWidget.commonCreateSubmitWidget(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget basicInfo() {
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CommonWidget.commonHeadInfoWidget("基本信息"),
+          CommonWidget.commonTextTile(
+            "单据编号",
+            "xxxxxxx",
+            enabled: false,
+            textStyle: TextStyle(
+                color: Colors.black,
+                fontSize: 24.sp,
+                fontWeight: FontWeight.w500),
+          ),
+          SizedBox(
+            height: 10.h,
+          ),
+          CommonWidget.commonTextTile("交回人与交回部门", "xxxx-公司信息",
+              enabled: false, showLine: true),
+          Obx(() {
+            return CommonWidget.commonChoiceTile(
+                "交回至人员", state.selectedUser.value?.realName ?? "",
+                showLine: true, onTap: () {
+              controller.choicePeople();
+            });
+          }),
+          Obx(() {
+            return CommonWidget.commonChoiceTile(
+                "交回至部门", state.selectedDepartment.value?.agencyName ?? "",
+                showLine: true, onTap: () {
+              controller.choiceDepartment();
+            });
+          }),
+          CommonWidget.commonTextTile("交回原因", "",
+              hint: "请填写交回原因",
+              maxLine: 4,
+              controller: state.reasonController,
+              required: true),
+        ],
+      ),
+    );
+  }
+
+  Widget transferInfo() {
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CommonWidget.commonHeadInfoWidget("交回明细",
+              action: GestureDetector(
+                child: const Text(
+                  "批量删除",
+                  style: TextStyle(color: Colors.blue),
+                ),
+                onTap: () {
+                  controller.jumpBulkRemovalAsset();
+                },
+              )),
+          Obx(() {
+            return ListView.builder(
+              itemBuilder: (context, index) {
+                return Item(
+                  assetItem: state.selectAssetList[index],
+                  openInfo: () {
+                    controller.openInfo(index);
+                  },
+                  supportSideslip: true,
+                  delete: () {
+                    controller.removeItem(index);
+                  },
+                );
+              },
+              itemCount: state.selectAssetList.length,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+            );
+          })
+        ],
+      ),
+    );
+  }
+}

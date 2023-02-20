@@ -6,6 +6,32 @@ import 'package:orginone/pages/chat/message_more.dart';
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
+import 'package:orginone/pages/other/add_asset/binding.dart';
+import 'package:orginone/pages/other/add_asset/view.dart';
+import 'package:orginone/pages/other/bulk_removal_asset/binding.dart';
+import 'package:orginone/pages/other/bulk_removal_asset/view.dart';
+import 'package:orginone/pages/other/center_function/approve_documents/binding.dart';
+import 'package:orginone/pages/other/center_function/approve_documents/view.dart';
+import 'package:orginone/pages/other/center_function/assets_check/binding.dart';
+import 'package:orginone/pages/other/center_function/assets_check/view.dart';
+import 'package:orginone/pages/other/center_function/asstes_details/binding.dart';
+import 'package:orginone/pages/other/center_function/asstes_details/view.dart';
+import 'package:orginone/pages/other/center_function/binding.dart';
+import 'package:orginone/pages/other/center_function/create_dispose/binding.dart';
+import 'package:orginone/pages/other/center_function/create_dispose/view.dart';
+import 'package:orginone/pages/other/center_function/create_hand_over/binding.dart';
+import 'package:orginone/pages/other/center_function/create_hand_over/view.dart';
+import 'package:orginone/pages/other/center_function/general_details/binding.dart';
+import 'package:orginone/pages/other/center_function/general_details/view.dart';
+import 'package:orginone/pages/other/center_function/view.dart';
+import 'package:orginone/pages/other/choice_assets/binding.dart';
+import 'package:orginone/pages/other/choice_assets/choice_specific_assets/binding.dart';
+import 'package:orginone/pages/other/choice_assets/choice_specific_assets/view.dart';
+import 'package:orginone/pages/other/choice_assets/view.dart';
+import 'package:orginone/pages/other/choice_department/binding.dart';
+import 'package:orginone/pages/other/choice_department/view.dart';
+import 'package:orginone/pages/other/choice_people/binding.dart';
+import 'package:orginone/pages/other/choice_people/view.dart';
 import 'package:orginone/pages/other/home/home_page.dart';
 import 'package:orginone/pages/other/home/spaces_page.dart';
 import 'package:orginone/pages/other/login.dart';
@@ -16,6 +42,9 @@ import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
+
+import 'pages/other/storage_location/binding.dart';
+import 'pages/other/storage_location/view.dart';
 
 class Routers {
   // 入口页面
@@ -52,6 +81,52 @@ class Routers {
   static const String newFriends = "/newFriends";
   static const String contact = "/contact";
   static const String cohorts = "/cohorts";
+
+  //选择资产分类
+  static const String choiceAssets = "/choiceAssets";
+  static const String choiceSpecificAssets = "/choiceSpecificAssets";
+
+  //添加资产
+  static const String addAsset = "/addAsset";
+
+  //批量移除资产
+  static const String bulkRemovalAsset = "/bulkRemovalAsset";
+
+  //选择地点
+  static const String storageLocation = "/storageLocation";
+
+  //选择人员
+  static const String choicePeople = "/choicePeople";
+
+  //选择人员
+  static const String choiceDepartment = "/choiceDepartment";
+
+  //资产详情
+  static const String asstesDetails = "/asstesDetails";
+
+  //创建盘点
+  static const String createClaim = "/createClaim";
+
+  //创建移交
+  static const String createTransfer = "/createTransfer";
+
+  //创建申购
+  static const String createDispose = "/createDispose";
+
+  //创建交回
+  static const String createHandOver = "/createHandOver";
+
+  //资产盘点
+  static const String assetsCheck = "/assetsCheck";
+
+  //资产模块通用详情
+  static const String generalDetails = "/generalDetails";
+
+  //审批单据
+  static const String approveDocuments = "/approveDocuments";
+
+  //资产模块功能页
+  static const String centerFunction = "/centerFunction";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -117,6 +192,76 @@ class Routers {
         name: Routers.cohorts,
         page: () => const ContactPage(),
         binding: ContactBinding(),
+      ),
+      GetPage(
+        name: Routers.centerFunction,
+        page: () => CenterFunctionPage(),
+        binding: CenterFunctionBinding(),
+      ),
+      GetPage(
+        name: Routers.choiceAssets,
+        page: () => ChoiceAssetsPage(),
+        binding: ChoiceAssetsBinding(),
+      ),
+      GetPage(
+        name: Routers.choiceSpecificAssets,
+        page: () => ChoiceSpecificAssetsPage(),
+        binding: ChoiceSpecificAssetsBinding(),
+      ),
+      GetPage(
+        name: Routers.storageLocation,
+        page: () => StorageLocationPage(),
+        binding: StorageLocationBinding(),
+      ),
+      GetPage(
+        name: Routers.addAsset,
+        page: () => AddAssetPage(),
+        binding: AddAssetBinding(),
+      ),
+      GetPage(
+        name: Routers.bulkRemovalAsset,
+        page: () => BulkRemovalAssetPage(),
+        binding: BulkRemovalAssetBinding(),
+      ),
+      GetPage(
+        name: Routers.choicePeople,
+        page: () => ChoicePeoplePage(),
+        binding: ChoicePeopleBinding(),
+      ),
+      GetPage(
+        name: Routers.choiceDepartment,
+        page: () => ChoiceDepartmentPage(),
+        binding: ChoiceDepartmentBinding(),
+      ),
+      GetPage(
+        name: Routers.createDispose,
+        page: () => CreateDisposePage(),
+        binding: CreateDisposeBinding(),
+      ),
+      GetPage(
+        name: Routers.createHandOver,
+        page: () => CreateHandOverPage(),
+        binding: CreateHandOverBinding(),
+      ),
+      GetPage(
+        name: Routers.assetsCheck,
+        page: () => AssetsCheckPage(),
+        binding: AssetsCheckBinding(),
+      ),
+      GetPage(
+        name: Routers.asstesDetails,
+        page: () => AsstesDetailsPage(),
+        binding: AsstesDetailsBinding(),
+      ),
+      GetPage(
+        name: Routers.generalDetails,
+        page: () => GeneralDetailsPage(),
+        binding: GeneralDetailsBinding(),
+      ),
+      GetPage(
+        name: Routers.approveDocuments,
+        page: () => ApproveDocumentsPage(),
+        binding: ApproveDocumentsBinding(),
       ),
     ];
   }
