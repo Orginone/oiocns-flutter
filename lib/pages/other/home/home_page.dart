@@ -4,11 +4,14 @@ import 'package:get/get.dart';
 import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/template/tabs.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/event_bus.dart';
+import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
 
@@ -121,6 +124,19 @@ class HomeController extends TabsController {
       icon: XImage.localImage("setting", size: size),
     ));
     setIndex(tabs.indexOf(center));
+  }
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    var user = HiveUtils.getUser();
+    if(user!=null){
+      KernelApi.getInstance().anystore.updateToken(user.accessToken!);
+      XEventBus.instance.fire(User(user.person!.toJson()));
+      XEventBus.instance.fire(SignIn());
+    }
+
   }
 }
 

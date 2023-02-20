@@ -4,6 +4,8 @@ import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/api/anystore.dart';
 import 'package:orginone/dart/base/api/storehub.dart';
+import 'package:orginone/model/user_model.dart';
+import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/http_util.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -97,6 +99,7 @@ class KernelApi {
     }
     var res = ResultType.fromJson(raw);
     if (res.success) {
+      HiveUtils.putUser(UserModel.fromJson(raw['data']));
       _anystore.updateToken(res.data["accessToken"]);
     }
     return res;

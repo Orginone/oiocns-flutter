@@ -42,14 +42,12 @@ import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
+import 'package:orginone/util/hive_utils.dart';
 
 import 'pages/other/storage_location/binding.dart';
 import 'pages/other/storage_location/view.dart';
 
 class Routers {
-  // 入口页面
-  static const String main = "/";
-
   // 首页
   static const String home = "/home";
 
@@ -128,17 +126,32 @@ class Routers {
   //资产模块功能页
   static const String centerFunction = "/centerFunction";
 
+  static String get main {
+    var user = HiveUtils.getUser();
+    if (user != null) {
+      return home;
+    } else {
+      return login;
+    }
+  }
+
   static List<GetPage> getInitRouters() {
     return [
       GetPage(
-        name: Routers.main,
+        name: Routers.login,
         page: () => const LoginPage(),
         bindings: [SettingBinding(), ChatBinding(), LoginBinding()],
       ),
       GetPage(
         name: Routers.home,
         page: () => const HomePage(),
-        bindings: [HomeBinding(), SetHomeBinding(), MessageBinding()],
+        bindings: [
+          HomeBinding(),
+          SetHomeBinding(),
+          MessageBinding(),
+          SettingBinding(),
+          ChatBinding()
+        ],
       ),
       GetPage(
         name: Routers.spaces,

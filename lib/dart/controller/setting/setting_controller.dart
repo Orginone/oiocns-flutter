@@ -18,8 +18,21 @@ class SettingController extends GetxController {
   final Rx<IPerson?> _user = Rxn();
   final Rx<ICompany?> _curSpace = Rxn();
 
+  StreamSubscription<User>? _userSub;
+
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    _userSub = XEventBus.instance.on<User>().listen((event) {
+        _loadUser(XTarget.fromJson(event.person));
+    });
+  }
+
   @override
   void onClose() {
+    _userSub?.cancel();
     clear();
     super.onClose();
   }

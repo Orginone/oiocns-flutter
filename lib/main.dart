@@ -11,9 +11,13 @@ import 'package:orginone/routers.dart';
 import 'package:orginone/util/notification_util.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import 'util/hive_utils.dart';
+
 void main() async {
   // 逻辑绑定
   WidgetsFlutterBinding.ensureInitialized();
+
+  await HiveUtils.init();
 
   // 初始化通知配置
   NotificationUtil.initNotification();
