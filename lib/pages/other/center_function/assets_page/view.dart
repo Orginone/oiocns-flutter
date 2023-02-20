@@ -24,7 +24,8 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
         }
         return CommonItem(assetsListType, assetsType);
       },
-      itemCount: state.dataList.length,
+      itemCount:
+          assetsListType == AssetsListType.myGoods ? 0 : state.dataList.length,
     );
   }
 

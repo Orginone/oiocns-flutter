@@ -25,8 +25,8 @@ class SettingController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    _userSub = XEventBus.instance.on<User>().listen((event) {
-        _loadUser(XTarget.fromJson(event.person));
+    _userSub = XEventBus.instance.on<User>().listen((event) async{
+        await _loadUser(XTarget.fromJson(event.person));
     });
   }
 

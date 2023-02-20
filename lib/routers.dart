@@ -55,7 +55,7 @@ class Routers {
   static const String login = "/login";
 
   // 空间选择
-  static const String spaces = "/login";
+  static const String spaces = "/spaces";
 
   // 简单表单编辑器
   static const String form = "/form";
@@ -127,12 +127,13 @@ class Routers {
   static const String centerFunction = "/centerFunction";
 
   static String get main {
-    var user = HiveUtils.getUser();
-    if (user != null) {
-      return home;
-    } else {
-      return login;
-    }
+    return login;
+    // var user = HiveUtils.getUser();
+    // if (user != null) {
+    //   return home;
+    // } else {
+    //   return login;
+    // }
   }
 
   static List<GetPage> getInitRouters() {

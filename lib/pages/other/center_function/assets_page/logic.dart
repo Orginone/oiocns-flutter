@@ -11,6 +11,15 @@ class AssetsController extends BaseListController<AssetsState> {
 
   AssetsController(this.assetsListType);
 
+
+
+  @override
+  void onInit() async{
+    // TODO: implement onInit
+    super.onInit();
+
+  }
+
   @override
   void search(String value) {}
 

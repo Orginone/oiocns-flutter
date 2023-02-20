@@ -26,4 +26,8 @@ class HiveUtils {
   static UserModel? getUser() {
     return _userBox.get("user");
   }
+
+  static Future<void> clean() async{
+    await _userBox.clear();
+  }
 }
