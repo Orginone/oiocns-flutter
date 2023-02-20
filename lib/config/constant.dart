@@ -2,8 +2,10 @@ class Constant {
   static const projectName = "Orginone";
 
   static const host = "http://anyinone.com:800";
-  static const hub = "$host/orginone/orgchat/msghub";
-  static const anyStore = "$host/orginone/anydata/hub";
+  static const messageHub = "$host/orginone/orgchat/msghub";
+  static const anyStoreHub = "$host/orginone/anydata/hub";
+  static const kernelHub = "$host/orginone/kernel/hub";
+  static const kernel = "$host/orginone/kernel/rest";
   static const person = "$host/orginone/organization/person";
   static const company = "$host/orginone/organization/company";
   static const cohort = "$host/orginone/organization/cohort";

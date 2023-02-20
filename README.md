@@ -1,6 +1,6 @@
 <img width="1060" alt="image" src="https://user-images.githubusercontent.com/8328012/201800690-9f5e989e-4ed3-4817-85b9-b594ac89fd31.png">  
-奥集能是面向下一代互联网发展趋势，以所有权作为第一优先级，运用零信任安全机制，面向组织提炼和抽象沟通、办事、仓库、商店和设置等基础功能，融合b端和c端全场景业务的新一代分布式应用架构。本仓库是奥集能的前端 flutter 实现。
-2023年2月20日
+奥集能是面向下一代互联网发展趋势，基于动态演化的复杂系统多主体建模方法，以所有权作为第一优先级，运用零信任安全机制，按自组织分形方法提炼和抽象“沟通、办事、仓库、商店、市场和设置”等基础功能，为b端和c端融合的全场景业务的提供新一代分布式应用架构。
+
 # 项目目录
 
 ```
@@ -12,20 +12,19 @@
 ├── macos                               // macos 原生实现
 ├── windows                             // windows 原生实现
 └── lib                                 // flutter 实现
-    ├── api                             // 后端接口
-    ├── api_resp                        // 实体
+    ├── components                      // 通用组件
     ├── config                          // 配置
-    ├── enumeration                     // 枚举
-    ├── component                       // 通用组件
-    ├── logic                           // 逻辑
-    ├── page                            // 页面
-    	├── Home                        // 首页
-        ├── ...
+    ├── dart                            // 核心
+    ├── pages                           // 页面
+    	├── chat                        // 沟通
+        ├── market                      // 市场
+        ├── ohter                       // 其他页面
+        ├── setting                     // 设置
+        ├── work                        // 办事
     ├── util                            // 工具库
     ├── main.dart                       // 入口
     ├── routers.dart                    // 路由
-    ├── screen_init                     // 屏幕适配
-├── .gitignore                          // 忽视文件、、
+├── .gitignore                          // 忽视文件
 ├── .metadata                           // 元数据
 ├── pubspec.yaml                        // 包依赖配置
 ```
@@ -34,9 +33,9 @@
 
 目前官方 Flutter 版本迭代较快，其中引用的一些库在新版本中并没有适配,，建议 Flutter 版本与以下相同，后期考虑兼容升级。
 
-1. Flutter 3.0.5
-2. Dart 2.17.6
-3. DevTools 2.12.2 
+1. Flutter 3.7.0
+2. Dart 2.19.0
+3. DevTools 2.20.1 
 
 Flutter 安装过程可以参考 [Flutter 中文开发者网站 - Flutter](https://flutter.cn/docs)
 

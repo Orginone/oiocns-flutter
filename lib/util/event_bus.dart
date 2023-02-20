@@ -1,0 +1,14 @@
+import 'package:event_bus/event_bus.dart';
+
+class XEventBus {
+  static EventBus? _instance;
+
+  static EventBus get instance {
+    _instance ??= EventBus();
+    return _instance!;
+  }
+}
+
+class SignIn {}
+
+class SignOut {}

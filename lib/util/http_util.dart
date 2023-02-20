@@ -1,13 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/util/api_exception.dart';
-import 'package:orginone/util/hive_util.dart';
+import 'package:orginone/config/constant.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-
-import '../api_resp/api_resp.dart';
-import '../config/constant.dart';
-import 'api_exception.dart';
 
 class HttpUtil {
   HttpUtil._();
@@ -21,8 +16,8 @@ class HttpUtil {
   Logger log = Logger("HttpLogger");
   var dio = Dio(BaseOptions(
     baseUrl: Constant.host,
-    connectTimeout: 30000,
-    receiveTimeout: 30000,
+    connectTimeout: 10000,
+    receiveTimeout: 10000,
   ));
 
   void init() {
@@ -41,7 +36,7 @@ class HttpUtil {
   }
 
   Future<Options> addTokenHeader(Options? options) async {
-    var accessToken = await HiveUtil().accessToken;
+    var accessToken = "getAccessToken";
     log.info("====> accessToken：$accessToken");
     if (options == null) {
       return Options(headers: {"Authorization": accessToken});
@@ -79,33 +74,28 @@ class HttpUtil {
           cancelToken: cancelToken,
           onReceiveProgress: onReceiveProgress);
 
-      return _parseResp(result);
-    } on ApiException catch (error) {
-      if (showError!) {
-        Fluttertoast.showToast(msg: error.message);
-      }
-      rethrow;
+      return result.data!;
     } on DioError catch (error) {
-      if (showError!) {
-        Fluttertoast.showToast(msg: error.message);
-      }
-    } catch (error) {
-      Fluttertoast.showToast(msg: "请求异常,请联系管理员处理!");
+      _onDioError(error, showError!);
+    } on Exception catch (error) {
+      _onExceptionError(error, showError!);
       rethrow;
     } finally {
       log.info("================End Get Http Request================");
     }
   }
 
-  Future<dynamic> post(String path,
-      {dynamic data,
-      Map<String, dynamic>? queryParameters,
-      Options? options,
-      CancelToken? cancelToken,
-      ProgressCallback? onSendProgress,
-      ProgressCallback? onReceiveProgress,
-      bool? hasToken,
-      bool? showError = true}) async {
+  Future<dynamic> post(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+    bool? hasToken,
+    bool? showError = true,
+  }) async {
     log.info("================Post Http Request================");
     try {
       log.info("====> path: $path");
@@ -126,36 +116,35 @@ class HttpUtil {
         onReceiveProgress: onReceiveProgress,
       );
 
-      return _parseResp(result);
-    } on ApiException catch (error) {
-      if (showError!) {
-        Fluttertoast.showToast(msg: error.message);
-      }
-      rethrow;
+      return result.data!;
     } on DioError catch (error) {
-      if (showError!) {
-        Fluttertoast.showToast(msg: error.message);
-      }
+      _onDioError(error, showError!);
       rethrow;
-    } catch (error) {
-      Fluttertoast.showToast(msg: "请求异常,请联系管理员处理!");
+    } on Exception catch (error) {
+      _onExceptionError(error, showError!);
       rethrow;
     } finally {
       log.info("================End Post Http Request================");
     }
   }
 
-  dynamic _parseResp(Response response) {
-    if (response.statusCode != 200) {
-      throw Exception(response.statusMessage);
-    } else {
-      log.info(response.data!);
-      var resp = ApiResp.fromJson(response.data!);
-      if (resp.code == 200) {
-        return resp.data;
-      }
-      throw ApiException(resp.msg);
+  _onExceptionError(Exception error, bool showToast) {
+    log.info("errorInfo =====> ${error.toString()}");
+    if (showToast) {
+      Fluttertoast.showToast(msg: error.toString());
     }
+  }
+
+  _onDioError(DioError error, bool showToast) {
+    if (error.response == null) return;
+    Response response = error.response!;
+    var statusCode = response.statusCode;
+    if (statusCode == 400 || statusCode == 500) {
+      log.info("errorInfo =====> ${response.statusMessage}");
+      if (showToast) {
+        Fluttertoast.showToast(msg: response.statusMessage ?? "");
+      }
+    } else if (statusCode == 401) {}
   }
 
   Future<dynamic> download({
