@@ -1,12 +1,56 @@
 import 'package:flutter/material.dart';
-
-// 引入轮播图插件
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:getwidget/getwidget.dart';
+
+// import 'package:orginone/components/unified.dart';
+
+// TODO 先完成界面设计，再完成功能，界面兼容性，最后整理代码
 
 class IndexPage extends StatefulWidget {
   IndexPage({Key? key}) : super(key: key);
   @override
   _SwiperPageState createState() => _SwiperPageState();
+}
+
+class TestFlowDelegate extends FlowDelegate {
+  EdgeInsets margin;
+
+  TestFlowDelegate({this.margin = EdgeInsets.zero});
+
+  double width = 0;
+  double height = 0;
+
+  @override
+  void paintChildren(FlowPaintingContext context) {
+    var x = margin.left;
+    var y = margin.top;
+    //计算每一个子widget的位置
+    for (int i = 0; i < context.childCount; i++) {
+      var w = context.getChildSize(i)!.width + x + margin.right;
+      if (w < context.size.width) {
+        context.paintChild(i, transform: Matrix4.translationValues(x, y, 0.0));
+        x = w + margin.left;
+      } else {
+        x = margin.left;
+        y += context.getChildSize(i)!.height + margin.top + margin.bottom;
+        //绘制子widget(有优化)
+        context.paintChild(i, transform: Matrix4.translationValues(x, y, 0.0));
+        x += context.getChildSize(i)!.width + margin.left + margin.right;
+      }
+    }
+  }
+
+  @override
+  Size getSize(BoxConstraints constraints) {
+    // 指定Flow的大小，简单起见我们让宽度竟可能大，但高度指定为200，
+    // 实际开发中我们需要根据子元素所占用的具体宽高来设置Flow大小
+    return Size(double.infinity, 160.0);
+  }
+
+  @override
+  bool shouldRepaint(FlowDelegate oldDelegate) {
+    return oldDelegate != this;
+  }
 }
 
 class _SwiperPageState extends State<IndexPage> {
@@ -34,7 +78,7 @@ class _SwiperPageState extends State<IndexPage> {
                 icon: Icon(Icons.cabin_sharp),
                 label: Text("")),
           ),
-          Container(
+          const SizedBox(
             height: 30,
             width: 80,
           ),
@@ -95,22 +139,232 @@ class _SwiperPageState extends State<IndexPage> {
       ),
       Container(
         // 快捷入口
-        height: 130,
-        width: 430,
-        color: Colors.blue,
+        child: Column(
+          children: [
+            Container(
+                padding: const EdgeInsets.fromLTRB(11.0, 0, 0, 0),
+                alignment: Alignment.topLeft,
+                child: const Text("快捷入口")),
+            Container(
+              padding: const EdgeInsets.fromLTRB(11.0, 0, 0, 0),
+              child: Row(
+                children: [
+                  Container(
+                    width: 60.0,
+                    height: 60.0,
+                    color: Colors.red,
+                  ),
+                  SizedBox(width: 20),
+                  Container(
+                    width: 60.0,
+                    height: 60.0,
+                    color: Colors.green,
+                  ),
+                  SizedBox(width: 20),
+                  Container(
+                    width: 60.0,
+                    height: 60.0,
+                    color: Colors.blue,
+                  ),
+                  SizedBox(width: 20),
+                  Container(
+                    width: 60.0,
+                    height: 60.0,
+                    color: Colors.green,
+                  ),
+                  SizedBox(width: 20),
+                  Container(
+                    width: 60.0,
+                    height: 60.0,
+                    color: Colors.blue,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
       Container(
-        // 常用应用
-        height: 180,
-        width: 430,
-        color: Colors.red,
-      ),
+          // 常用应用
+          child: Column(
+        children: [
+          Container(
+              padding: const EdgeInsets.fromLTRB(11.0, 0, 0, 0),
+              alignment: Alignment.topLeft,
+              child: Text("常用应用")),
+          Flow(
+            delegate: TestFlowDelegate(margin: EdgeInsets.all(10.0)),
+            children: <Widget>[
+              Container(
+                width: 60.0,
+                height: 60.0,
+                // color: Colors.red,
+                decoration: BoxDecoration(
+                    image: const DecorationImage(
+                        image: AssetImage("images/bg_center1.png"),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(1000)),
+                child: const Text(
+                  '资产监管平台',
+                  textDirection: TextDirection.ltr,
+                  textAlign: TextAlign.center, // 文本水平对齐方式
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Container(
+                width: 60.0,
+                height: 60.0,
+                // color: Colors.blue,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("images/bg_center1.png"),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(1000)),
+              ),
+              Container(
+                width: 60.0,
+                height: 60.0,
+                // color: Colors.blue,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("images/bg_center1.png"),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(1000)),
+              ),
+              Container(
+                width: 60.0,
+                height: 60.0,
+                // color: Colors.yellow,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("images/bg_center1.png"),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(1000)),
+              ),
+              Container(
+                width: 60.0,
+                height: 60.0,
+                // color: Colors.brown,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("images/bg_center1.png"),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(1000)),
+              ),
+              Container(
+                width: 60.0,
+                height: 60.0,
+                // color: Colors.purple,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("images/bg_center1.png"),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(1000)),
+              ),
+              Container(
+                width: 60.0,
+                height: 60.0,
+                // color: Colors.blue,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("images/bg_center1.png"),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(1000)),
+              ),
+              Container(
+                width: 60.0,
+                height: 60.0,
+                // color: Colors.yellow,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("images/bg_center1.png"),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(1000)),
+              ),
+              Container(
+                width: 60.0,
+                height: 60.0,
+                // color: Colors.brown,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("images/bg_center1.png"),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(1000)),
+              ),
+              Container(
+                width: 60.0,
+                height: 60.0,
+                // color: Colors.purple,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage("images/bg_center1.png"),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(1000)),
+              ),
+            ],
+          ),
+        ],
+      )),
       Container(
-        // 数据监测
-        height: 220,
-        width: 430,
-        color: Colors.green,
-      ),
+          // 数据监测
+          child: Column(
+        children: [
+          Container(
+              padding: const EdgeInsets.fromLTRB(11.0, 0, 0, 0),
+              alignment: Alignment.topLeft,
+              child: Text("数据检测")),
+          Container(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.all(13.0),
+                    width: 180.0,
+                    height: 90.0,
+                    color: Colors.red,
+                  ),
+                  Container(
+                    width: 11,
+                  ),
+                  Container(
+                    width: 180.0,
+                    height: 90.0,
+                    color: Colors.green,
+                  ),
+                ],
+              ),
+            ],
+          )),
+          Container(
+            height: 1,
+          ),
+          Container(
+              child: Column(
+            children: [
+              Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.all(13.0),
+                    width: 180.0,
+                    height: 90.0,
+                    color: Colors.red,
+                  ),
+                  Container(
+                    width: 11,
+                  ),
+                  Container(
+                    width: 180.0,
+                    height: 90.0,
+                    color: Colors.green,
+                  ),
+                ],
+              ),
+            ],
+          )),
+        ],
+      )),
     ]));
   }
 }

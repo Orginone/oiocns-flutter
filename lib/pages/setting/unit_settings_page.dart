@@ -7,6 +7,7 @@ import 'package:orginone/config/forms.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/other/search_page.dart';
 import 'package:orginone/routers.dart';
+import 'package:getwidget/getwidget.dart';
 
 // 设置-单位设置
 class UnitSettingsPage extends GetView<SettingController> {
@@ -23,8 +24,21 @@ class UnitSettingsPage extends GetView<SettingController> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Container(
-              // 操作（三个点），分享、评论
-              ),
+            child: GFIconButton(
+              iconSize: 52,
+              onPressed: () {},
+              icon: Icon(Icons.facebook_rounded),
+            ),
+          ),
+          Container(
+            child: GFIconButton(
+              iconSize: 52,
+              onPressed: () {},
+              icon: Icon(Icons.facebook),
+            ),
+            // borderShape
+            // 操作（三个点），分享、评论
+          ),
           Container(
               // 搜索框
               ),
