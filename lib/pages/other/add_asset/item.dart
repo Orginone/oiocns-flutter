@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get/get.dart';
+import 'package:hive/hive.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/model/my_assets_list.dart';
 import 'package:orginone/pages/other/add_asset/state.dart';
+import 'package:orginone/util/date_utils.dart';
+import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/custom_paint.dart';
 
@@ -9,7 +15,7 @@ class Item extends StatelessWidget {
   final VoidCallback? openInfo;
   final VoidCallback? onTap;
   final bool showChoiceButton;
-  final SelectAssetList assetItem;
+  final MyAssetsList assets;
   final ValueChanged<bool>? changed;
   final bool supportSideslip;
   final VoidCallback? delete;
@@ -18,14 +24,16 @@ class Item extends StatelessWidget {
       {Key? key,
       this.openInfo,
       this.showChoiceButton = false,
-      required this.assetItem,
+      required this.assets,
       this.changed,  this.supportSideslip = false, this.delete, this.onTap})
       : super(key: key);
+
+  SettingController get settingController => Get.find<SettingController>();
 
   @override
   Widget build(BuildContext context) {
 
-    Widget child = assetItem.isOpen ? open() : putAway();
+    Widget child = assets.isOpen ? open() : putAway();
 
 
     return GestureDetector(
@@ -34,7 +42,7 @@ class Item extends StatelessWidget {
         margin: EdgeInsets.only(top: 10.h),
         padding: EdgeInsets.symmetric(horizontal: 24.w),
         child:  Slidable(
-          key: const ValueKey("AssetItem"),
+          key: const ValueKey("assets"),
           enabled: supportSideslip,
           endActionPane: ActionPane(
             motion: const ScrollMotion(),
@@ -77,7 +85,7 @@ class Item extends StatelessWidget {
               children: [
                 showChoiceButton?Container(
                   child: CommonWidget.commonMultipleChoiceButtonWidget(
-                      isSelected: assetItem.isSelected, changed: changed),
+                      isSelected: assets.isSelected, changed: changed),
                   margin: EdgeInsets.only(right: 10.w),
                 ):Container(),
                 Expanded(
@@ -88,14 +96,14 @@ class Item extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            assetItem.zICHANMC??"",
+                            assets.assetName??"",
                             style: TextStyle(
                                 fontSize: 24.sp,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.black),
                           ),
                           Text(
-                            "x${assetItem.sHULIANG}",
+                            "x${assets.numOrArea??0}",
                             style: TextStyle(
                                 fontSize: 24.sp,
                                 fontWeight: FontWeight.w500,
@@ -109,7 +117,7 @@ class Item extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            "净值￥${assetItem.pRICE}",
+                            "净值￥${assets.netVal??0}",
                             style: TextStyle(
                                 fontSize: 20.sp,
                                 fontWeight: FontWeight.w500,
@@ -119,7 +127,7 @@ class Item extends StatelessWidget {
                             width: 50.w,
                           ),
                           Text(
-                            "原值￥${assetItem.pRICE}",
+                            "原值￥${assets.netVal??0}",
                             style: TextStyle(
                                 fontSize: 20.sp,
                                 fontWeight: FontWeight.w500,
@@ -142,7 +150,7 @@ class Item extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  assetItem.zICHANBH??"",
+                  assets.assetCode??"",
                   style: TextStyle(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w500,
@@ -192,7 +200,7 @@ class Item extends StatelessWidget {
             children: [
               showChoiceButton?Container(
                 child: CommonWidget.commonMultipleChoiceButtonWidget(
-                    isSelected: assetItem.isSelected, changed: changed),
+                    isSelected: assets.isSelected, changed: changed),
                 margin: EdgeInsets.only(top: 15.h),
               ):Container(),
               Expanded(
@@ -205,14 +213,14 @@ class Item extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            assetItem.zICHANMC??"",
+                            assets.assetName??"",
                             style: TextStyle(
                                 fontSize: 24.sp,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.white),
                           ),
                           Text(
-                            "x${assetItem.sHULIANG}",
+                            "x${assets.numOrArea??0}",
                             style: TextStyle(
                                 fontSize: 24.sp,
                                 fontWeight: FontWeight.w500,
@@ -225,7 +233,7 @@ class Item extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                "净值￥${assetItem.pRICE}",
+                                "净值￥${assets.netVal??0}",
                                 style: TextStyle(
                                     fontSize: 20.sp,
                                     fontWeight: FontWeight.w500,
@@ -235,7 +243,7 @@ class Item extends StatelessWidget {
                                 width: 50.w,
                               ),
                               Text(
-                                "原值￥${assetItem.pRICE}",
+                                "原值￥${assets.netVal??0}",
                                 style: TextStyle(
                                     fontSize: 20.sp,
                                     fontWeight: FontWeight.w500,
@@ -283,7 +291,7 @@ class Item extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  assetItem.zICHANBH??"",
+                                  assets.assetCode??"",
                                   style: TextStyle(
                                       fontSize: 24.sp,
                                       fontWeight: FontWeight.w500,
@@ -306,19 +314,19 @@ class Item extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  "名字",
+                                  HiveUtils.getUser()?.userName??"",
                                   style: TextStyle(
                                       fontSize: 20.sp,
                                       fontWeight: FontWeight.w500,
                                       color: Colors.white),
                                 ),
-                                Text(
-                                  "顶级节点",
-                                  style: TextStyle(
-                                      fontSize: 20.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white),
-                                ),
+                                // Text(
+                                //   settingController.user?.name??"",
+                                //   style: TextStyle(
+                                //       fontSize: 20.sp,
+                                //       fontWeight: FontWeight.w500,
+                                //       color: Colors.white),
+                                // ),
                               ],
                             ),
                           )
@@ -338,9 +346,9 @@ class Item extends StatelessWidget {
                 child: Column(
                   children: [
                     CommonWidget.commonTextContentWidget(
-                        "取得日期", assetItem.qUDERQ??''),
-                    CommonWidget.commonTextContentWidget("规格型号", assetItem.gUIGEXH??""),
-                    CommonWidget.commonTextContentWidget("品牌", assetItem.pINPAI??""),
+                        "取得日期", DateTime.tryParse(assets.quderq??"")?.format()??""),
+                    CommonWidget.commonTextContentWidget("规格型号", assets.specMod??""),
+                    CommonWidget.commonTextContentWidget("品牌", assets.brand??""),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 15.h),
                       child: GestureDetector(

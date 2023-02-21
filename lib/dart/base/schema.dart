@@ -5794,7 +5794,7 @@ class XTargetArray {
   XTargetArray.fromJson(Map<String, dynamic> json)
       : offset = json["offset"] ?? 0,
         limit = json["limit"],
-        total = json["total"],
+        total = json["total"]??0,
         result = XTarget.fromList(json["result"]);
 
   //通过动态数组解析成List

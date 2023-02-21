@@ -111,7 +111,7 @@ class CreateHandOverPage extends BaseGetView<CreateHandOverController,CreateHand
             return ListView.builder(
               itemBuilder: (context, index) {
                 return Item(
-                  assetItem: state.selectAssetList[index],
+                  assets: state.selectAssetList[index],
                   openInfo: () {
                     controller.openInfo(index);
                   },

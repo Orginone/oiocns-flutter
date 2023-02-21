@@ -81,7 +81,7 @@ class AddAssetPage extends BaseGetView<AddAssetController, AddAssetState> {
         itemBuilder: (context, index) {
           return Item(
             showChoiceButton: state.selectAssetList[index].notLockStatus,
-            assetItem: state.selectAssetList[index],
+            assets: state.selectAssetList[index],
             openInfo: () {
               controller.openItem(index);
             },

@@ -307,6 +307,7 @@ class Company extends MarketTarget implements ICompany {
     if (!reload && departments.isNotEmpty) {
       return departments;
     }
+    departments = [];
     final res = await getSubTargets(departmentTypes);
     if (res.success && res.data?.result != null) {
       departments = res.data!.result

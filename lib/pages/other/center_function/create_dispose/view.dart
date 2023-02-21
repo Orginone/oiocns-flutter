@@ -20,25 +20,35 @@ class CreateDisposePage
         backgroundColor: XColors.themeColor,
       ),
       backgroundColor: Colors.grey.shade200,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      basicInfo(),
-                      disposeInfo(),
-                      CommonWidget.commonAddDetailedWidget(
-                          text: "选择资产",
-                          onTap: () {
-                            controller.jumpAddAsset();
-                          })
-                    ],
-                  ),
-                )),
-            CommonWidget.commonCreateSubmitWidget(),
-          ],
+      body: WillPopScope(
+
+        onWillPop: () {
+          return controller.back();
+        },
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        basicInfo(),
+                        disposeInfo(),
+                        CommonWidget.commonAddDetailedWidget(
+                            text: "选择资产",
+                            onTap: () {
+                              controller.jumpAddAsset();
+                            })
+                      ],
+                    ),
+                  )),
+              CommonWidget.commonCreateSubmitWidget(draft: (){
+                controller.draft();
+              },submit: (){
+                controller.submit();
+              }),
+            ],
+          ),
         ),
       ),
     );
@@ -90,7 +100,7 @@ class CreateDisposePage
             return ListView.builder(
               itemBuilder: (context, index) {
                 return Item(
-                  assetItem: state.selectAssetList[index],
+                  assets: state.selectAssetList[index],
                   openInfo: () {
                     controller.openInfo(index);
                   },

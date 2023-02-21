@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/other/center_function/create_transfer/state.dart';
+import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 
 import '../../add_asset/item.dart';
@@ -11,8 +14,11 @@ import 'logic.dart';
 
 class CreateTransferPage
     extends BaseGetView<CreateTransferController, CreateTransferState> {
+
+
   @override
   Widget buildView() {
+
     return Scaffold(
       appBar: AppBar(
         title: Text("${state.isEdit ? "提交" : "创建"}移交"),
@@ -53,19 +59,23 @@ class CreateTransferPage
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CommonWidget.commonHeadInfoWidget("基本信息"),
-          CommonWidget.commonTextTile(
-            "单据编号",
-            "xxxxxxx",
-            enabled: false,
-            textStyle: TextStyle(
-                color: Colors.black,
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w500),
-          ),
+          Obx(() {
+            return CommonWidget.commonTextTile(
+              "单据编号",
+              state.orderNum.value,
+              enabled: false,
+              textStyle: TextStyle(
+                  color: Colors.black,
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.w500),
+            );
+          }),
           SizedBox(
             height: 10.h,
           ),
-          CommonWidget.commonTextTile("移交人与部门", "xxxx-公司信息",
+          CommonWidget.commonTextTile("移交人与部门", "${HiveUtils
+              .getUser()
+              ?.userName ?? ""}-公司信息",
               enabled: false, showLine: true),
           Obx(() {
             return CommonWidget.commonChoiceTile(
@@ -111,7 +121,7 @@ class CreateTransferPage
             return ListView.builder(
               itemBuilder: (context, index) {
                 return Item(
-                  assetItem: state.selectAssetList[index],
+                  assets: state.selectAssetList[index],
                   openInfo: () {
                     controller.openInfo(index);
                   },

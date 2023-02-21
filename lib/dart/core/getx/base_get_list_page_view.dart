@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/widgets/loading_widget.dart';
+import 'package:orginone/widget/load_state_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'base_controller.dart';
@@ -26,13 +28,22 @@ abstract class BaseGetListPageView<T extends BaseListController, S extends BaseG
         headWidget(),
         Expanded(
           child: Obx(() {
-            return SmartRefresher(
-              controller: controller.refreshController,
-              enablePullDown: true,
-              enablePullUp: true,
-              onRefresh: () => controller.onRefresh(),
-              onLoading: () => controller.onLoadMore(),
-              child: buildView(),
+            return LoadStateWidget(
+              isSuccess: state.isSuccess.value,
+              isLoading: state.isLoading.value,
+              onRetry: (){
+                controller.loadData();
+              },
+              builder: (){
+                return SmartRefresher(
+                  controller: controller.refreshController,
+                  enablePullDown: true,
+                  enablePullUp: true,
+                  onRefresh: () => controller.onRefresh(),
+                  onLoading: () => controller.onLoadMore(),
+                  child: buildView(),
+                );
+              },
             );
           }),
         ),

@@ -3,7 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/dart/core/target/department.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/pages/other/choice_people/state.dart';
+import 'package:orginone/util/department_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'item.dart';
 import 'logic.dart';
@@ -44,7 +47,7 @@ class ChoiceDepartmentPage
             ),
             Obx(() {
               return CommonWidget.commonShowChoiceDataInfo(
-                  state.selectedDepartment.value?.agencyName ?? "", onTap: () {
+                  state.selectedDepartment.value?.name ?? "", onTap: () {
                 controller.back();
               });
             }),
@@ -59,7 +62,7 @@ class ChoiceDepartmentPage
       itemBuilder: (context, index) {
         var item = state.searchList[index];
         return Obx(() {
-          return CommonWidget.commonRadioTextWidget(item.agencyName ?? "", item,
+          return CommonWidget.commonRadioTextWidget(item.name ?? "", item,
               groupValue: state.selectedDepartment.value, onChanged: (v) {
                 controller.selectedDepartment(item);
               }, keyWord: state.searchController.text);
@@ -74,13 +77,13 @@ class ChoiceDepartmentPage
       child: Column(
         children: [
           Obx(() {
-            var data = state.choicePeople.value?.children;
+            var data = state.departments.value;
             if (state.selectedGroup.isNotEmpty) {
-              data = state.selectedGroup.last.children;
+              data = state.selectedGroup.last.departments;
             }
             return ListView.builder(
               itemBuilder: (context, index) {
-                var item = data![index];
+                var item = data[index];
                 return Obx(() {
                   return Item(
                     choicePeople: item,
@@ -95,7 +98,7 @@ class ChoiceDepartmentPage
                 });
               },
               shrinkWrap: true,
-              itemCount: data?.length ?? 0,
+              itemCount: data.length ?? 0,
               physics: const NeverScrollableScrollPhysics(),
             );
           }),
@@ -111,7 +114,7 @@ class ChoiceDepartmentPage
     TextStyle unSelectedTextStyle =
     TextStyle(fontSize: 20.sp, color: Colors.grey.shade300);
 
-    Widget level(ChoicePeople department) {
+    Widget level(IDepartment department) {
       int index = state.selectedGroup.indexOf(department);
       return GestureDetector(
         onTap: () {
@@ -127,7 +130,7 @@ class ChoiceDepartmentPage
                   ),
                   alignment: PlaceholderAlignment.middle),
               TextSpan(
-                  text: "${department.agencyName}",
+                  text: "${department.name}",
                   style: index == state.selectedGroup.length - 1
                       ? selectedTextStyle
                       : unSelectedTextStyle),
@@ -166,7 +169,7 @@ class ChoiceDepartmentPage
                         ),
                         alignment: PlaceholderAlignment.middle),
                     TextSpan(
-                        text: state.choicePeople.value?.agencyName ?? "",
+                        text: DepartmentUtils().getCurrentCompanyName(),
                         style: state.selectedGroup.isEmpty
                             ? selectedTextStyle
                             : unSelectedTextStyle)

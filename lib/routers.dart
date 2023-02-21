@@ -21,6 +21,8 @@ import 'package:orginone/pages/other/center_function/create_dispose/binding.dart
 import 'package:orginone/pages/other/center_function/create_dispose/view.dart';
 import 'package:orginone/pages/other/center_function/create_hand_over/binding.dart';
 import 'package:orginone/pages/other/center_function/create_hand_over/view.dart';
+import 'package:orginone/pages/other/center_function/create_transfer/binding.dart';
+import 'package:orginone/pages/other/center_function/create_transfer/view.dart';
 import 'package:orginone/pages/other/center_function/general_details/binding.dart';
 import 'package:orginone/pages/other/center_function/general_details/view.dart';
 import 'package:orginone/pages/other/center_function/view.dart';
@@ -44,6 +46,8 @@ import 'package:orginone/pages/setting/new_friend_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/util/hive_utils.dart';
 
+import 'pages/other/center_function/create_claim/binding.dart';
+import 'pages/other/center_function/create_claim/view.dart';
 import 'pages/other/storage_location/binding.dart';
 import 'pages/other/storage_location/view.dart';
 
@@ -100,7 +104,7 @@ class Routers {
   static const String choiceDepartment = "/choiceDepartment";
 
   //资产详情
-  static const String asstesDetails = "/asstesDetails";
+  static const String assetsDetails = "/assetsDetails";
 
   //创建盘点
   static const String createClaim = "/createClaim";
@@ -128,12 +132,12 @@ class Routers {
 
   static String get main {
     return login;
-    // var user = HiveUtils.getUser();
-    // if (user != null) {
-    //   return home;
-    // } else {
-    //   return login;
-    // }
+    var user = HiveUtils.getUser();
+    if (user != null) {
+      return home;
+    } else {
+      return login;
+    }
   }
 
   static List<GetPage> getInitRouters() {
@@ -150,8 +154,6 @@ class Routers {
           HomeBinding(),
           SetHomeBinding(),
           MessageBinding(),
-          SettingBinding(),
-          ChatBinding()
         ],
       ),
       GetPage(
@@ -263,9 +265,9 @@ class Routers {
         binding: AssetsCheckBinding(),
       ),
       GetPage(
-        name: Routers.asstesDetails,
-        page: () => AsstesDetailsPage(),
-        binding: AsstesDetailsBinding(),
+        name: Routers.assetsDetails,
+        page: () => AssetsDetailsPage(),
+        binding: AssetsDetailsBinding(),
       ),
       GetPage(
         name: Routers.generalDetails,
@@ -276,6 +278,16 @@ class Routers {
         name: Routers.approveDocuments,
         page: () => ApproveDocumentsPage(),
         binding: ApproveDocumentsBinding(),
+      ),
+      GetPage(
+        name: Routers.createClaim,
+        page: () => CreateClaimPage(),
+        binding: CreateClaimBinding(),
+      ),
+      GetPage(
+        name: Routers.createTransfer,
+        page: () => CreateTransferPage(),
+        binding: CreateTransferBinding(),
       ),
     ];
   }

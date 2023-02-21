@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/pages/other/assets_config.dart';
@@ -17,16 +18,18 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
 
   @override
   Widget buildView() {
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        if (assetsType == AssetsType.myAssets) {
-          return MyAssetsItem();
-        }
-        return CommonItem(assetsListType, assetsType);
-      },
-      itemCount:
-          assetsListType == AssetsListType.myGoods ? 0 : state.dataList.length,
-    );
+    return Obx((){
+      return ListView.builder(
+        itemBuilder: (context, index) {
+          if (assetsType == AssetsType.myAssets) {
+            return MyAssetsItem(assets: state.dataList[index],);
+          }
+          return CommonItem(assetsListType, assetsType);
+        },
+        itemCount:
+        assetsListType == AssetsListType.myGoods ? 0 : state.dataList.length,
+      );
+    });
   }
 
   @override
@@ -95,7 +98,7 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
                 color: Colors.white, borderRadius: BorderRadius.circular(8.w)),
             child: TextField(
               textInputAction: TextInputAction.done,
-              onSubmitted: (str) {
+              onChanged: (str) {
                 controller.search(str);
               },
               decoration: InputDecoration(
@@ -124,7 +127,7 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
     }
 
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         controller.create(assetsType);
       },
       child: Container(
@@ -149,8 +152,8 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
     );
   }
 
-  Widget myAssetsInfo(){
-    if(assetsListType != AssetsListType.myAssets){
+  Widget myAssetsInfo() {
+    if (assetsListType != AssetsListType.myAssets) {
       return Container();
     }
     return Container(
@@ -191,13 +194,19 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
                                   color: Colors.white,
                                   fontSize: 20.sp,
                                   fontWeight: FontWeight.w500)),
-                          Text(
-                            "121.00",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24.sp,
-                                fontWeight: FontWeight.w500),
-                          ),
+                          Obx(() {
+                            double grossValue = 0;
+                            for (var element in state.dataList) {
+                              grossValue += element.netVal ?? 0;
+                            }
+                            return Text(
+                              "$grossValue",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24.sp,
+                                  fontWeight: FontWeight.w500),
+                            );
+                          }),
                         ],
                       ),
                     )
@@ -244,13 +253,20 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
                                   color: Colors.white,
                                   fontSize: 20.sp,
                                   fontWeight: FontWeight.w500)),
-                          Text(
-                            "2",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24.sp,
-                                fontWeight: FontWeight.w500),
-                          ),
+                          Obx(() {
+                            int count = 0;
+                            for (var element in state.dataList) {
+                              count +=
+                              (int.tryParse(element.numOrArea.toString()) ?? 0);
+                            }
+                            return Text(
+                              "$count",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24.sp,
+                                  fontWeight: FontWeight.w500),
+                            );
+                          }),
                         ],
                       ),
                     )

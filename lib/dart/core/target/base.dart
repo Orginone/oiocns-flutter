@@ -60,7 +60,7 @@ class BaseTarget extends ITarget {
     searchTargetType = [];
     ownIdentitys = [];
     identitys = [];
-    memberTypes = [];
+    memberTypes = [TargetType.person];
     typeName = target.typeName;
     // appendTarget(target);
   }
@@ -75,7 +75,7 @@ class BaseTarget extends ITarget {
       ),
       id: target.id,
       typeNames: [target.typeName],
-      subTypeNames: List<String>.from(memberTypes),
+      subTypeNames: memberTypes.map((e) => e.label).toList(),
     ));
     // appendTarget(res.data);
     return res.data!;
@@ -271,7 +271,7 @@ class BaseTarget extends ITarget {
     return await kernel.querySubTargetById(IDReqSubModel(
       id: id,
       typeNames: [target.typeName],
-      subTypeNames: List<String>.from(typeNames),
+      subTypeNames: typeNames.map((e) => e.label).toList(),
       page: PageRequest(offset: 0, filter: '', limit: Constants.maxUint16),
     ));
   }

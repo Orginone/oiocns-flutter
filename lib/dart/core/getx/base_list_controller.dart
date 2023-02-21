@@ -27,12 +27,30 @@ abstract class BaseListController<S extends BaseGetListState> extends BaseContro
 
   /// 下拉刷新使用
   Future onRefresh() async{
-
+    return await loadData().then((value){
+      refreshController.refreshCompleted();
+    }).onError((err,stack){
+      refreshController.refreshFailed();
+    });
   }
 
   /// 加载更多使用
   Future onLoadMore() async{
+    return await loadData().then((value){
+      refreshController.loadComplete();
+    }).onError((err,stack){
+      refreshController.loadFailed();
+    });
+  }
 
+  void loadSuccess(){
+    state.isSuccess.value = true;
+    state.isLoading.value = false;
+  }
+
+  void loadFailed(){
+    state.isSuccess.value = false;
+    state.isLoading.value = false;
   }
 
   /// 搜索时需要刷新页面

@@ -1,9 +1,10 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:orginone/model/my_assets_list.dart';
+import 'package:orginone/util/asset_management.dart';
 import 'package:worker_manager/worker_manager.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
-import 'mock.dart';
 import 'state.dart';
 
 class AddAssetController extends BaseController<AddAssetState> {
@@ -24,10 +25,18 @@ class AddAssetController extends BaseController<AddAssetState> {
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
-    var mockList = await Executor().execute(
-        arg1: AddAssetMock['data']['list'] as List<Map<String, dynamic>>,
-        fun1: getMockListModel);
-    state.selectAssetList.addAll(mockList);
+
+    var list  = AssetManagement().deepCopyAssets();
+
+    List<MyAssetsList> selected = Get.arguments?['selected'] ?? [];
+    if(selected.isNotEmpty){
+      for (var element in selected) {
+        list.where((element1) => element.assetCode == element1.assetCode).first.isSelected = true;
+      }
+    }
+
+    state.selectAssetList.addAll(list);
+
   }
 
   void openItem(int index) {
@@ -61,17 +70,4 @@ class AddAssetController extends BaseController<AddAssetState> {
 
     Get.back(result: selected.toList());
   }
-}
-
-Future<List<SelectAssetList>> getMockListModel(
-    List<Map<String, dynamic>> json, TypeSendPort sendPort) async {
-  List<SelectAssetList> list = [];
-
-  if (json.isNotEmpty) {
-    for (var value in json) {
-      list.add(SelectAssetList.fromJson(value));
-    }
-  }
-
-  return list;
 }

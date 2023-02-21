@@ -3,10 +3,10 @@ import 'package:orginone/dart/core/getx/base_bindings.dart';
 
 import 'logic.dart';
 
-class AsstesDetailsBinding extends BaseBindings<AsstesDetailsController> {
+class AssetsDetailsBinding extends BaseBindings<AssetsDetailsController> {
   @override
-  AsstesDetailsController getController() {
-   return AsstesDetailsController();
+  AssetsDetailsController getController() {
+   return AssetsDetailsController();
   }
 
 }

@@ -1,11 +1,23 @@
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/routers.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
+import '../../../../util/production_order_utils.dart';
 import 'state.dart';
 
 class CreateTransferController extends BaseController<CreateTransferState> {
   final CreateTransferState state = CreateTransferState();
+
+
+  @override
+  void onReady() async{
+    // TODO: implement onReady
+    super.onReady();
+    state.orderNum.value = await ProductionOrderUtils.productionSingleOrder("ZCYJ");
+  }
 
   void choicePeople() {
     Get.toNamed(Routers.choicePeople)?.then((value) {
@@ -20,7 +32,7 @@ class CreateTransferController extends BaseController<CreateTransferState> {
   }
 
   void jumpAddAsset() {
-    Get.toNamed(Routers.addAsset)?.then((value) {
+    Get.toNamed(Routers.addAsset,arguments: {"selected": state.selectAssetList})?.then((value) {
       if (value != null) {
         state.selectAssetList.clear();
         state.selectAssetList.addAll(value);

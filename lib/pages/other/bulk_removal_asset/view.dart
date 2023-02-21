@@ -44,7 +44,7 @@ class BulkRemovalAssetPage
         itemBuilder: (context, index) {
           return Item(
             showChoiceButton: true,
-            assetItem: state.selectAssetList[index],
+            assets: state.selectAssetList[index],
             openInfo: () {
               controller.openItem(index);
             },

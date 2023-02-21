@@ -177,3 +177,5 @@ final List<String> DisposeTyep = [
 ];
 
 final List<String> ApprovalStatus = ["全部状态", "通过", "未通过"];
+
+final List<String> DraftTips = ["保存草稿","放弃更改","取消"];

@@ -4,14 +4,18 @@ import 'package:get/get.dart';
 import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/template/tabs.dart';
 import 'package:orginone/components/unified.dart';
-import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/event/home_data.dart';
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/event_bus.dart';
-import 'package:orginone/util/hive_utils.dart';
+import 'package:orginone/util/asset_management.dart';
+import 'package:orginone/util/department_utils.dart';
+import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
 
@@ -46,6 +50,7 @@ class HomeBinding extends Bindings {
 }
 
 class HomeController extends TabsController {
+
   @override
   initTabs() {
     var size = Size(32.w, 32.w);
@@ -130,13 +135,27 @@ class HomeController extends TabsController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    var user = HiveUtils.getUser();
-    if(user!=null){
-      KernelApi.getInstance().anystore.updateToken(user.accessToken!);
-      XEventBus.instance.fire(User(user.person!.toJson()));
-      XEventBus.instance.fire(SignIn());
-    }
+    EventBusHelper.register(this, (event) {
+      if (event is InitHomeData) {
+        initData();
+      }
+    });
 
+    initData();
+  }
+
+  Future<void> initData() async {
+    Future.delayed(Duration(seconds: 1), () async {
+      await AssetManagement().initAssets();
+      await DepartmentUtils().initDepartment();
+    });
+  }
+
+  @override
+  void onClose() {
+    // TODO: implement onClose
+    super.onClose();
+    EventBusHelper.unregister(this);
   }
 }
 

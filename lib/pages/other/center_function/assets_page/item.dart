@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/model/my_assets_list.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/custom_paint.dart';
@@ -213,13 +214,15 @@ class CommonItem extends StatelessWidget {
 }
 
 class MyAssetsItem extends StatelessWidget {
-  const MyAssetsItem({Key? key}) : super(key: key);
+  final MyAssetsList assets;
+
+  const MyAssetsItem({Key? key, required this.assets}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed(Routers.asstesDetails);
+        Get.toNamed(Routers.assetsDetails,arguments: {"assets":assets});
       },
       child: Container(
         margin: EdgeInsets.only(left: 16.w, right: 16.w, top: 20.h),
@@ -249,7 +252,7 @@ class MyAssetsItem extends StatelessWidget {
   }
 
   Widget statusInfo() {
-    if(false){//资产变动逻辑
+    if(!assets.notLockStatus){//资产变动逻辑
       return Container();
     }
     return Row(
@@ -257,7 +260,7 @@ class MyAssetsItem extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            Get.toNamed(Routers.createDispose);
+            Get.toNamed(Routers.createDispose,arguments: {"selected":[assets]});
           },
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 8.w),
@@ -283,7 +286,7 @@ class MyAssetsItem extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            Get.toNamed(Routers.createTransfer);
+            Get.toNamed(Routers.createTransfer,arguments: {"selected":[assets]});
           },
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 8.w),
@@ -317,7 +320,7 @@ class MyAssetsItem extends StatelessWidget {
           Row(
             children: [
               Text(
-                "测试1",
+                assets.assetName??"",
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 24.sp,
@@ -328,7 +331,7 @@ class MyAssetsItem extends StatelessWidget {
                   child: Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  "x1",
+                  "x${assets.numOrArea??0}",
                   style: TextStyle(
                       color: XColors.themeColor,
                       fontSize: 20.sp,
@@ -341,7 +344,7 @@ class MyAssetsItem extends StatelessWidget {
             height: 5.h,
           ),
           Text(
-            "xxxxxxxxxxxxxxxx",
+            assets.assetCode??"",
             style: TextStyle(
               color: Colors.grey.shade300,
               fontSize: 20.sp,
@@ -364,7 +367,7 @@ class MyAssetsItem extends StatelessWidget {
           width: 5.w,
         ),
         Text(
-          "100",
+          "${assets.netVal??0}",
           style: TextStyle(
               color: Colors.black,
               fontSize: 16.sp,

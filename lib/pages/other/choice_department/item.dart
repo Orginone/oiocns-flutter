@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/widget/common_widget.dart';
 
 import '../choice_people/state.dart';
 
 class Item extends StatelessWidget {
-  final ChoicePeople choicePeople;
+  final IDepartment choicePeople;
 
   final VoidCallback? next;
 
   final ValueChanged? onChanged;
 
-  final ChoicePeople? selected;
+  final IDepartment? selected;
 
   const Item(
       {Key? key,
@@ -35,7 +36,7 @@ class Item extends StatelessWidget {
           children: [
             Expanded(
               child: CommonWidget.commonRadioTextWidget(
-                choicePeople.agencyName ?? "",
+                choicePeople.name ?? "",
                 choicePeople,
                 groupValue: selected,
                 onChanged: (v) {

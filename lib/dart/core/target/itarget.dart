@@ -489,6 +489,9 @@ abstract class IDepartment implements ITarget {
   /// 子部门
   late List<IDepartment> departments;
 
+  bool isSelected = false;
+
+
   /// 获取子部门
   /// @param reload 是否强制刷新
   Future<List<IDepartment>> getDepartments({bool reload});
