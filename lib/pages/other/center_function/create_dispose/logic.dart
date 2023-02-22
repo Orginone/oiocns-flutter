@@ -28,7 +28,10 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
         });
       }
     }
-    return false;
+    if (state.isEdit) {
+      return true;
+    }
+    return true;
   }
 
   void showProcessingMethod() {
@@ -73,7 +76,7 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
   void draft() {
     addedDraft = true;
     KernelApi.getInstance().anystore.insert(
-        "create_dispose_draft",
+        "dispose_draft",
         {
           "DISPOSE_CODE": DisposeTyep.indexOf(state.disposeTyep.value),
           "REASON": state.reasonController.text,

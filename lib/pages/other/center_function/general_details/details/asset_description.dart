@@ -3,10 +3,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:orginone/pages/other/center_function/general_details/state.dart';
 import 'package:orginone/widget/custom_paint.dart';
 
 class AssetDescription{
- static Widget transferDescription() {
+ static Widget transferDescription(GeneralDetailsState state) {
     return Column(
       children: [
         Row(
@@ -72,10 +73,10 @@ class AssetDescription{
                             Text(
                               "移交人",
                               style: TextStyle(
-                                  color: Colors.grey.shade300, fontSize: 16.sp),
+                                  color: Colors.grey.shade400, fontSize: 16.sp),
                             ),
                             Text(
-                              "xxx",
+                              state.assetUse.oldUserId??"",
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20.sp,
@@ -93,10 +94,10 @@ class AssetDescription{
                             Text(
                               "接收人",
                               style: TextStyle(
-                                  color: Colors.grey.shade300, fontSize: 16.sp),
+                                  color: Colors.grey.shade400, fontSize: 16.sp),
                             ),
                             Text(
-                              "xxx",
+                              state.assetUse.keeperId??"",
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20.sp,
@@ -113,22 +114,22 @@ class AssetDescription{
             Expanded(
               child: Container(
                 alignment: Alignment.centerRight,
-                child: CustomPaint(
-                  painter: CustomAssetsListItemButton(Colors.deepOrangeAccent),
-                  size: Size(100.w, 40.h),
-                  child: Container(
-                    width: 100.w,
-                    height: 40.h,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "退回",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24.sp,
-                      ),
-                    ),
-                  ),
-                ),
+                // child: CustomPaint(
+                //   painter: CustomAssetsListItemButton(Colors.deepOrangeAccent),
+                //   size: Size(100.w, 40.h),
+                //   child: Container(
+                //     width: 100.w,
+                //     height: 40.h,
+                //     alignment: Alignment.center,
+                //     child: Text(
+                //       "退回",
+                //       style: TextStyle(
+                //         color: Colors.white,
+                //         fontSize: 24.sp,
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ),
             ),
           ],
@@ -144,7 +145,7 @@ class AssetDescription{
               width: 5.w,
             ),
             Text(
-              "工作需要",
+              state.assetUse.applyRemark??"",
               style: TextStyle(fontSize: 16.sp, color: Colors.black),
             ),
           ],

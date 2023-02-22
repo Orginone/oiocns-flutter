@@ -28,6 +28,47 @@ class DepartmentUtils {
     }
   }
 
+  ITarget? findITargetById(String id){
+    var list = getAllDepartment(_departments);
+    if(list.isNotEmpty){
+      return list.where((element) => element.id == id || element.name == id).first;
+    }
+    return null;
+  }
+
+  List<ITarget>  getAllDepartment(List<ITarget> departments) {
+    List<ITarget> list = [];
+    for (var element in departments) {
+      list.add(element);
+      if (element.subTeam.isNotEmpty) {
+        list.addAll(getAllDepartment(element.subTeam));
+      }
+    }
+
+    return list;
+  }
+
+
+  XTarget? findXTargetById(String id){
+    var list = getAllUser(_departments);
+    if(list.isNotEmpty){
+      return list.where((element) => element.id == id || element.name == id).first;
+    }
+    return null;
+  }
+
+  List<XTarget> getAllUser(List<ITarget> departments) {
+    List<XTarget> list = [];
+    for (var element in departments) {
+      list.addAll(element.members);
+      if (element.subTeam.isNotEmpty) {
+        list.addAll(getAllUser(element.subTeam));
+      }
+    }
+    return list;
+  }
+
+
   Future<void> loopDepartment(List<ITarget> department) async {
     for (var element in department) {
       element.subTeam = await element.loadSubTeam(reload: true);

@@ -1,12 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/widgets/loading_widget.dart';
 import 'package:orginone/widget/load_state_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import 'base_controller.dart';
 import 'base_get_list_state.dart';
-import 'base_get_state.dart';
 import 'base_list_controller.dart';
 
 abstract class BaseGetListPageView<T extends BaseListController, S extends BaseGetListState>

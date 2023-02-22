@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/model/asset_use.dart';
 import 'package:orginone/model/my_assets_list.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/custom_paint.dart';
 
 class CommonItem extends StatelessWidget {
@@ -12,7 +14,13 @@ class CommonItem extends StatelessWidget {
 
   final AssetsType assetsType;
 
-  const CommonItem(this.assetsListType, this.assetsType, {Key? key})
+  final AssetUse assetUse;
+
+  const CommonItem(
+      {Key? key,
+      required this.assetUse,
+      required this.assetsListType,
+      required this.assetsType})
       : super(key: key);
 
   @override
@@ -23,9 +31,10 @@ class CommonItem extends StatelessWidget {
           Get.toNamed(Routers.assetsCheck);
         } else if (assetsListType != AssetsListType.draft) {
           Get.toNamed(Routers.generalDetails,
-              arguments: {"AssetsType": assetsType});
+              arguments: {"assetsType": assetsType,"assetUse":assetUse});
         } else {
-          Get.toNamed(assetsType.createRoute, arguments: {"isEdit": true});
+          Get.toNamed(assetsType.createRoute,
+              arguments: {"isEdit": true, "assetUse": assetUse,});
         }
       },
       child: Container(
@@ -113,6 +122,7 @@ class CommonItem extends StatelessWidget {
         ],
       );
     }
+    return Container();
     return CustomPaint(
       painter: CustomAssetsListItemButton(Colors.deepOrangeAccent),
       size: Size(100.w, 40.h),
@@ -132,9 +142,9 @@ class CommonItem extends StatelessWidget {
 
   Widget taskInfo(){
     String title = "单据编号";
-    String content = "xxxxxxxxxxxxxxxx";
+    String content = assetUse.billCode ?? "";
     Widget status = Container();
-    if(assetsListType == AssetsListType.check){
+    if (assetsListType == AssetsListType.check) {
       title = "盘点任务";
       content = "111";
       status = Container(
@@ -165,7 +175,12 @@ class CommonItem extends StatelessWidget {
                     fontWeight: FontWeight.w500),
               ),
               status,
-              const Expanded(child: Align(child: Text("02/13 09:21:23",),alignment: Alignment.centerRight,)),
+              Expanded(
+                  child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                    assetUse.approvalDocument?.createTime?.format(format: "MM/DD HH:MM:SS") ?? ""),
+              )),
             ],
           ),
           SizedBox(
@@ -183,7 +198,24 @@ class CommonItem extends StatelessWidget {
     );
   }
 
-  Widget otherInfo(){
+  Widget otherInfo() {
+    String tips = "";
+    switch (assetsType) {
+      case AssetsType.check:
+        break;
+      case AssetsType.claim:
+        // TODO: Handle this case.
+        break;
+      case AssetsType.dispose:
+        // TODO: Handle this case.
+        break;
+      case AssetsType.transfer:
+        tips = "移交人";
+        break;
+      case AssetsType.handOver:
+        // TODO: Handle this case.
+        break;
+    }
     Widget child = Row(
       children: [
         Image.network(
@@ -195,7 +227,7 @@ class CommonItem extends StatelessWidget {
           width: 10.w,
         ),
         Text(
-          "领用人-xxx",
+          "$tips-${assetUse.oldUserId ?? ""}",
           style: TextStyle(
               color: Colors.black,
               fontSize: 16.sp,

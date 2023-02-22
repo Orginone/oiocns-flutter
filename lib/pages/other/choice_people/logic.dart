@@ -29,17 +29,7 @@ class ChoicePeopleController extends BaseController<ChoicePeopleState> {
     super.onReady();
 
     state.departments.value = DepartmentUtils().departments;
-    state.allUser = [];
-    getAllUser(state.departments);
-  }
-
-  void getAllUser(List<ITarget> departments) {
-    for (var element in departments) {
-      state.allUser.addAll(element.members);
-      if (element.subTeam.isNotEmpty) {
-        getAllUser(element.subTeam);
-      }
-    }
+    state.allUser = DepartmentUtils().getAllUser(state.departments);
   }
 
   void search(String str) {

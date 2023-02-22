@@ -18,16 +18,28 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
 
   @override
   Widget buildView() {
-    return Obx((){
+    return Obx(() {
+      int length = state.useList.length;
+      if (assetsListType == AssetsListType.myGoods) {
+        length = 0;
+      }
+      if (assetsListType == AssetsListType.myAssets) {
+        length = state.dataList.length;
+      }
       return ListView.builder(
         itemBuilder: (context, index) {
           if (assetsType == AssetsType.myAssets) {
-            return MyAssetsItem(assets: state.dataList[index],);
+            return MyAssetsItem(
+              assets: state.dataList[index],
+            );
           }
-          return CommonItem(assetsListType, assetsType);
+          return CommonItem(
+            assetUse: state.useList[index],
+            assetsListType: assetsListType,
+            assetsType: assetsType,
+          );
         },
-        itemCount:
-        assetsListType == AssetsListType.myGoods ? 0 : state.dataList.length,
+        itemCount: length,
       );
     });
   }
@@ -282,7 +294,7 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
 
   @override
   AssetsController getController() {
-    return AssetsController(assetsListType);
+    return AssetsController(assetsListType, assetsType);
   }
 
   @override

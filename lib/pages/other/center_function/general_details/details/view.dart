@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
+import 'package:orginone/model/my_assets_list.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/center_function/general_details/details/asset_description.dart';
+import 'package:orginone/pages/other/center_function/general_details/logic.dart';
+import 'package:orginone/pages/other/center_function/general_details/state.dart';
+import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/custom_paint.dart';
 
@@ -15,6 +20,11 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
 
   DetailsPage(this.assetsType);
 
+  GeneralDetailsController get detailsController =>
+      Get.find<GeneralDetailsController>();
+
+  GeneralDetailsState get dstate => detailsController.state;
+
   @override
   Widget buildView() {
     return Column(
@@ -24,7 +34,14 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
             child: Column(
               children: [
                 headInfo(),
-                detailedInfo(items),
+                ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, int index) {
+                    return detailedInfo(items(index+1,dstate.assetUse.approvalDocument!.detail![index]));
+                  },
+                  itemCount: dstate.assetUse.approvalDocument?.detail?.length??0,
+                ),
                 checkDetailedInfo(),
               ],
             ),
@@ -51,7 +68,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
         case AssetsType.dispose:
           return AssetDescription.disposeDescription();
         case AssetsType.transfer:
-          return AssetDescription.transferDescription();
+          return AssetDescription.transferDescription(dstate);
         case AssetsType.borrow:
           return Container();
         case AssetsType.revert:
@@ -103,7 +120,9 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
                         ],
                       ),
                     ),
-                    const Text("2023-01-05 12:21:22"),
+                    Text(dstate.assetUse.approvalDocument?.createTime
+                            ?.format(format: "yyyy-MM-DD HH:mm:ss") ??
+                        ""),
                   ],
                 ),
               ),
@@ -120,7 +139,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "xxxxxxxxx",
+                          dstate.assetUse.billCode ?? "",
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 25.sp,
@@ -151,7 +170,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
                           style: TextStyle(color: Colors.grey, fontSize: 18.sp),
                         ),
                         Text(
-                          "芳",
+                          dstate.assetUse.oldUserId ?? "",
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 25.sp,
@@ -209,7 +228,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
     );
   }
 
-  List<Widget> get items {
+  List<Widget> items(int index,MyAssetsList assets) {
     switch (assetsType) {
       case AssetsType.check:
         return [
@@ -220,7 +239,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
       case AssetsType.claim:
         return [
           Text(
-            "申请明细1",
+            "申请明细$index",
             style: TextStyle(
                 color: Colors.black,
                 fontSize: 20.sp,
@@ -235,11 +254,10 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
           CommonWidget.commonTextContentWidget("存放地点", ""),
           CommonWidget.commonTextContentWidget("是否信创", ""),
         ];
-        break;
       case AssetsType.dispose:
         return [
           Text(
-            "处置明细1",
+            "处置明细$index",
             style: TextStyle(
                 color: Colors.black,
                 fontSize: 20.sp,
@@ -254,29 +272,27 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
           CommonWidget.commonTextContentWidget("规格型号", ""),
           CommonWidget.commonTextContentWidget("品牌", ""),
         ];
-        break;
       case AssetsType.transfer:
         return [
           Text(
-            "移交明细1",
+            "移交明细$index",
             style: TextStyle(
                 color: Colors.black,
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w500),
           ),
-          CommonWidget.commonTextContentWidget("资产编号", "xxxxxxxx"),
-          CommonWidget.commonTextContentWidget("资产名称", "xxx"),
-          CommonWidget.commonTextContentWidget("资产分类", "xxxx"),
-          CommonWidget.commonTextContentWidget("数量", "0"),
-          CommonWidget.commonTextContentWidget("规格型号", ""),
-          CommonWidget.commonTextContentWidget("品牌", ""),
-          CommonWidget.commonTextContentWidget("存放地点", ""),
+          CommonWidget.commonTextContentWidget("资产编号", assets.assetCode??""),
+          CommonWidget.commonTextContentWidget("资产名称", assets.assetName??""),
+          CommonWidget.commonTextContentWidget("资产分类", assets.assetType?['value']??""),
+          CommonWidget.commonTextContentWidget("数量", "${assets.numOrArea??0}"),
+          CommonWidget.commonTextContentWidget("规格型号", assets.specMod??""),
+          CommonWidget.commonTextContentWidget("品牌", assets.brand??""),
+          CommonWidget.commonTextContentWidget("存放地点", assets.location??""),
         ];
-        break;
       case AssetsType.handOver:
         return [
           Text(
-            "交回明细1",
+            "交回明细$index",
             style: TextStyle(
                 color: Colors.black,
                 fontSize: 20.sp,

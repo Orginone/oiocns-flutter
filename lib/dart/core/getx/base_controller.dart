@@ -24,13 +24,13 @@ abstract class BaseController<S extends BaseGetState> extends GetxController{
   void onReady() {
     // TODO: implement onReady
     super.onReady();
-    EventBusHelper.register(context, onReceivedEvent);
+    EventBusHelper.register(this, onReceivedEvent);
   }
 
   @override
   void onClose() {
     super.onClose();
-    EventBusHelper.unregister(context);
+    EventBusHelper.unregister(this);
   }
 
   Future<void> loadData() async{

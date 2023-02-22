@@ -45,7 +45,7 @@ class AssetManagement {
   }
 
   Future<void> updateAssets(UpdateAssetsRequest request) async {
-    ResultType result = await KernelApi.getInstance().anystore.update(
+     await KernelApi.getInstance().anystore.update(
         "assets_data",
         {
           "match": {
@@ -58,7 +58,15 @@ class AssetManagement {
             }
           }
         },
-        "company");
+        "company").then((value){
+          if(value.success){
+           var data =  _assets.where((element) => element.assetCode == request.assetCode);
+           if(data.isNotEmpty){
+             data.first.update(request.updateData);
+           }
+          }
+     });
+
   }
 
   Future<void> updateAssetsForList(List<UpdateAssetsRequest> requests) async {

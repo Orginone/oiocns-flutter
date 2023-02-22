@@ -121,14 +121,59 @@ class MyAssetsList {
     kapianzt = json['KAPIANZT'];
   }
 
+  update(Map<String, dynamic> json) {
+    if (json['fileList'] != null) {
+      fileList = [];
+      json[fileList]?.forEach((json) {
+        fileList!.add(FileData.fromJson(json));
+      });
+    }
+    assetType = json['ASSET_TYPE'] ?? assetType;
+    assetName = json['ASSET_NAME'] ?? assetName;
+    assetCode = json['ASSET_CODE'] ?? assetCode;
+    startDate = json['START_DATE'] ?? startDate;
+    useDept = json['USE_DEPT'] ?? useDept;
+    fixedAssAcqCode = json['FIXED_ASS_ACQ_CODE'] ?? fixedAssAcqCode;
+    estimatedUsefulLife = json['ESTIMATED_USEFUL_LIFE'] ?? estimatedUsefulLife;
+    quderq = json['QUDERQ'] ?? quderq;
+    numOrArea = json['NUM_OR_AREA'] ?? numOrArea;
+    numUnit = json['NUM_UNIT'] ?? numUnit;
+    haveUsedIt = json['HAVE_USED_IT'] ?? haveUsedIt;
+    netVal = json['NET_VAL'] ?? netVal;
+    residualRate = json['RESIDUAL_RATE'] ?? residualRate;
+    monthAccDep = json['MONTH_ACC_DEP'] ?? monthAccDep;
+    accDepMonth = json['ACC_DEP_MONTH'] ?? accDepMonth;
+    depreciationMethod = json['DEPRECIATION_METHOD'] ?? depreciationMethod;
+    accDep = json['ACC_DEP'] ?? accDep;
+    canZhi = json['CANZHI'] ?? canZhi;
+    initAssetVal = json['INIT_ASSET_VAL'] ?? initAssetVal;
+    liuCzt = json['LIUCZT'] ?? liuCzt;
+    id = json['id'] ?? id;
+    gmtCreate = json['gmtCreate'] ?? gmtCreate;
+    updateTime = json['UPDATE_TIME'] ?? updateTime;
+    brand = json['BRAND'] ?? brand;
+    specMod = json['SPEC_MOD'] ?? specMod;
+    location = json['LOCATION'] ?? location;
+    invoiceNo = json['INVOICE_NO'] ?? invoiceNo;
+    sourcesOfFunding = json['SOURCES_OF_FUNDING'] ?? sourcesOfFunding;
+    user = json['USER'] ?? user;
+    manufacturer = json['MANUFACTURER'] ?? manufacturer;
+    fixedAssetStateCode = json['FIXED_ASSET_STATE_CODE'] ?? fixedAssetStateCode;
+    supplier = json['SUPPLIER'] ?? supplier;
+    remark = json['REMARK'] ?? remark;
+    theDepository = json['THE_DEPOSITORY'] ?? theDepository;
+    gs1 = json['GS1'] ?? gs1;
+    minimumLimit = json['MINIMUM_LIMIT'] ?? minimumLimit;
+    acquirementWay = json['ACQUIREMENT_WAY'] ?? acquirementWay;
+    kapianzt = json['KAPIANZT'] ?? kapianzt;
+  }
+
   bool get notLockStatus =>
       kapianzt != '07' &&
-          kapianzt != '08' &&
-          kapianzt != '09' &&
-          kapianzt != '11' &&
-          kapianzt != '12';
-
-
+      kapianzt != '08' &&
+      kapianzt != '09' &&
+      kapianzt != '11' &&
+      kapianzt != '12';
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

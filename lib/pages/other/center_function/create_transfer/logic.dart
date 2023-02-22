@@ -1,16 +1,16 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/event/load_assets.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/asset_management.dart';
-import 'package:orginone/util/department_utils.dart';
-import 'package:orginone/util/hive_utils.dart';
+import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
 import '../../../../util/production_order_utils.dart';
+import 'network.dart';
 import 'state.dart';
 
 class CreateTransferController extends BaseController<CreateTransferState> {
@@ -22,8 +22,10 @@ class CreateTransferController extends BaseController<CreateTransferState> {
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
-    state.orderNum.value =
-        await ProductionOrderUtils.productionSingleOrder("ZCYJ");
+    if (!state.isEdit) {
+      state.orderNum.value =
+          await ProductionOrderUtils.productionSingleOrder("ZCYJ");
+    }
   }
 
   void choicePeople() {
@@ -70,32 +72,20 @@ class CreateTransferController extends BaseController<CreateTransferState> {
     });
   }
 
-  void draft() {
-    KernelApi.getInstance().anystore.insert(
-        "create_dispose_draft",
-        {
-          "BILL_CODE": state.orderNum,
-          "REASON": state.reasonController.text,
-          "TRANSFER_PERSON": {
-            "ID": state.selectedUser.value?.id,
-            "NAME": state.selectedUser.value?.name,
-          },
-          "TRANSFER_DEPARTMENT": {
-            "ID": state.selectedDepartment.value?.id,
-            "NAME": state.selectedDepartment.value?.name,
-          },
-          "ASSET":
-              state.selectAssetList.map((element) => element.toJson()).toList()
-        },
-        "user");
+  void draft() async {
+    addedDraft = true;
+    await TransferNetWork.createTransfer(
+        billCode: state.orderNum.value,
+        remark: state.reasonController.text,
+        assets: state.selectAssetList, keeperId: state.selectedUser.value!.name, keepOrgId: state.selectedDepartment.value!.name,isDraft: true);
   }
 
-  void submit() async{
+  void submit() async {
     if (state.reasonController.text.isEmpty) {
       Fluttertoast.showToast(msg: "请输入移交原因");
       return;
     }
-    if(state.selectAssetList.isEmpty){
+    if (state.selectAssetList.isEmpty) {
       Fluttertoast.showToast(msg: "请至少选择一项资产");
       return;
     }
@@ -109,22 +99,20 @@ class CreateTransferController extends BaseController<CreateTransferState> {
             UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
               "USER": user,
               "USE_DEPT": dept,
+              "KAPIANZT":08,
             }))
         .toList();
 
     await AssetManagement().updateAssetsForList(request);
+    await TransferNetWork.createTransfer(
+        billCode: state.orderNum.value,
+        keeperId: state.selectedUser.value!.name,
+        keepOrgId: state.selectedDepartment.value!.name,
+        remark: state.reasonController.text, assets: state.selectAssetList);
 
-    await KernelApi.getInstance().anystore.insert("asset_transfer", {
-      "BILL_CODE":state.orderNum.value,
-      "KEEPER_ID":state.selectedUser.value?.id,
-      "KEEP_ORG_ID":state.selectedDepartment.value?.id,
-      "OLD_ORG_NAME":DepartmentUtils().currentDepartment?.name,
-      "OLD_ORG_ID":DepartmentUtils().currentDepartment?.id,
-      "OLD_USER_ID":HiveUtils.getUser()?.person?.id,
-      "APPLY_REMARK":state.reasonController.text,
-    }, "company");
-
+    AssetManagement().initAssets();
     LoadingDialog.dismiss(context);
+    EventBusHelper.fire(LoadAssets());
     Get.back();
   }
 
@@ -143,6 +131,9 @@ class CreateTransferController extends BaseController<CreateTransferState> {
         });
       }
     }
-    return false;
+    if(state.isEdit){
+      return true;
+    }
+    return true;
   }
 }

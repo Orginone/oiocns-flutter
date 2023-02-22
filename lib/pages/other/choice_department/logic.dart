@@ -27,17 +27,7 @@ class ChoiceDepartmentController extends BaseController<ChoiceDepartmentState> {
     // TODO: implement onReady
     super.onReady();
     state.departments.value = DepartmentUtils().departments;
-    state.allDepartment = [];
-    getAllDepartment(state.departments);
-  }
-
-  void getAllDepartment(List<ITarget> departments) {
-    for (var element in departments) {
-      state.allDepartment.add(element);
-      if (element.subTeam.isNotEmpty) {
-        getAllDepartment(element.subTeam);
-      }
-    }
+    state.allDepartment = DepartmentUtils().getAllDepartment(state.departments);
   }
 
   void search(String str) {
