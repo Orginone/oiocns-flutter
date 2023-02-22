@@ -51,6 +51,7 @@ class Routers {
 
   // 首页
   static const String index = "/index";
+  static const String index2 = "/index2";
 
   // 设置
   static const String mineUnit = "/mineUnit";
