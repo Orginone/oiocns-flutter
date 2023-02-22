@@ -79,7 +79,7 @@ class ChoiceDepartmentPage
           Obx(() {
             var data = state.departments.value;
             if (state.selectedGroup.isNotEmpty) {
-              data = state.selectedGroup.last.departments;
+              data = state.selectedGroup.last.subTeam;
             }
             return ListView.builder(
               itemBuilder: (context, index) {
@@ -114,7 +114,7 @@ class ChoiceDepartmentPage
     TextStyle unSelectedTextStyle =
     TextStyle(fontSize: 20.sp, color: Colors.grey.shade300);
 
-    Widget level(IDepartment department) {
+    Widget level(ITarget department) {
       int index = state.selectedGroup.indexOf(department);
       return GestureDetector(
         onTap: () {

@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/util/department_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 
 import 'item.dart';
@@ -44,7 +46,7 @@ class ChoicePeoplePage
             ),
             Obx(() {
               return CommonWidget.commonShowChoiceDataInfo(
-                  state.selectedUser.value?.realName ?? "",onTap: (){
+                  state.selectedUser.value?.name ?? "",onTap: (){
                     controller.back();
               });
             }),
@@ -59,7 +61,7 @@ class ChoicePeoplePage
       itemBuilder: (context, index) {
         var item = state.searchList[index];
         return Obx(() {
-          return CommonWidget.commonRadioTextWidget(item.realName ?? "", item,
+          return CommonWidget.commonRadioTextWidget(item.name ?? "", item,
               groupValue: state.selectedUser.value, onChanged: (v) {
                 controller.selectedUser(item);
               }, keyWord: state.searchController.text);
@@ -74,37 +76,37 @@ class ChoicePeoplePage
       child: Column(
         children: [
           Obx(() {
-            var data = state.choicePeople.value?.children;
+            var data = state.departments.value;
             if (state.selectedGroup.isNotEmpty) {
-              data = state.selectedGroup.last.children;
+              data = state.selectedGroup.last.subTeam;
             }
             return Container(
               margin: EdgeInsets.only(
-                  bottom: (data?.isNotEmpty ?? false) ? 10.h : 0),
+                  bottom: (data.isNotEmpty ?? false) ? 10.h : 0),
               child: ListView.builder(
                 itemBuilder: (context, index) {
-                  var item = data![index];
+                  var item = data[index];
                   return GroupItem(
-                    choicePeople: item,
+                    department: item,
                     onTap: () {
                       controller.selectGroup(item);
                     },
                   );
                 },
                 shrinkWrap: true,
-                itemCount: data?.length ?? 0,
+                itemCount: data.length ?? 0,
                 physics: const NeverScrollableScrollPhysics(),
               ),
             );
           }),
           Obx(() {
-            var data = state.choicePeople.value?.zcyUserPos;
+            var data = [];
             if (state.selectedGroup.isNotEmpty) {
-              data = state.selectedGroup.last.zcyUserPos;
+              data = state.selectedGroup.last.members;
             }
             return ListView.builder(
               itemBuilder: (context, index) {
-                var item = data![index];
+                var item = data[index];
                 return PeopleItem(
                   people: item,
                   onChanged: (v) {
@@ -113,7 +115,7 @@ class ChoicePeoplePage
                 );
               },
               shrinkWrap: true,
-              itemCount: data?.length ?? 0,
+              itemCount: data.length ?? 0,
               physics: const NeverScrollableScrollPhysics(),
             );
           }),
@@ -129,7 +131,7 @@ class ChoicePeoplePage
     TextStyle unSelectedTextStyle =
     TextStyle(fontSize: 20.sp, color: Colors.grey.shade300);
 
-    Widget level(ChoicePeople department) {
+    Widget level(ITarget department) {
       int index = state.selectedGroup.indexOf(department);
       return GestureDetector(
         onTap: () {
@@ -145,7 +147,7 @@ class ChoicePeoplePage
                   ),
                   alignment: PlaceholderAlignment.middle),
               TextSpan(
-                  text: "${department.agencyName}",
+                  text: department.name,
                   style: index == state.selectedGroup.length - 1
                       ? selectedTextStyle
                       : unSelectedTextStyle),
@@ -184,7 +186,7 @@ class ChoicePeoplePage
                         ),
                         alignment: PlaceholderAlignment.middle),
                     TextSpan(
-                        text: state.choicePeople.value?.agencyName ?? "",
+                        text: DepartmentUtils().getCurrentCompanyName(),
                         style: state.selectedGroup.isEmpty
                             ? selectedTextStyle
                             : unSelectedTextStyle)

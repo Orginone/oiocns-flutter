@@ -160,4 +160,8 @@ class Department extends BaseTarget implements IDepartment {
 
   @override
   bool isSelected = false;
+
+  @override
+  List<XTarget> departmentMembers = [];
+
 }

@@ -69,14 +69,14 @@ class CreateHandOverPage extends BaseGetView<CreateHandOverController,CreateHand
               enabled: false, showLine: true),
           Obx(() {
             return CommonWidget.commonChoiceTile(
-                "交回至人员", state.selectedUser.value?.realName ?? "",
+                "交回至人员", state.selectedUser.value?.name ?? "",
                 showLine: true, onTap: () {
               controller.choicePeople();
             });
           }),
           Obx(() {
             return CommonWidget.commonChoiceTile(
-                "交回至部门", state.selectedDepartment.value?.agencyName ?? "",
+                "交回至部门", state.selectedDepartment.value?.name ?? "",
                 showLine: true, onTap: () {
               controller.choiceDepartment();
             });
@@ -131,3 +131,4 @@ class CreateHandOverPage extends BaseGetView<CreateHandOverController,CreateHand
     );
   }
 }
+

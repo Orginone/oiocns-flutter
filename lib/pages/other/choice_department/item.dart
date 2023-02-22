@@ -6,13 +6,13 @@ import 'package:orginone/widget/common_widget.dart';
 import '../choice_people/state.dart';
 
 class Item extends StatelessWidget {
-  final IDepartment choicePeople;
+  final ITarget choicePeople;
 
   final VoidCallback? next;
 
   final ValueChanged? onChanged;
 
-  final IDepartment? selected;
+  final ITarget? selected;
 
   const Item(
       {Key? key,

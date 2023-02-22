@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/widget/common_widget.dart';
+
 import '../../add_asset/item.dart';
 import 'logic.dart';
 import 'state.dart';
@@ -21,7 +22,6 @@ class CreateDisposePage
       ),
       backgroundColor: Colors.grey.shade200,
       body: WillPopScope(
-
         onWillPop: () {
           return controller.back();
         },

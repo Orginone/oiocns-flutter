@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/widget/common_widget.dart';
 
 import 'logic.dart';
 import 'state.dart';
 
 class GroupItem extends StatelessWidget {
-  final ChoicePeople choicePeople;
+  final ITarget department;
 
   final VoidCallback? onTap;
 
-  const GroupItem({Key? key, required this.choicePeople, this.onTap})
+  const GroupItem({Key? key, required this.department, this.onTap})
       : super(key: key);
 
   @override
@@ -35,12 +37,10 @@ class GroupItem extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  choicePeople.agencyName ?? "",
+                  department.name ?? "",
                   style: TextStyle(
                       color: Colors.black,
-                      fontWeight:
-                          choicePeople.hasSelectedUser() ? FontWeight.w500 : null,
-                      fontSize:  choicePeople.hasSelectedUser()?24.sp:20.sp),
+                      fontSize:  20.sp),
                 ),
               ),
               Icon(
@@ -56,7 +56,7 @@ class GroupItem extends StatelessWidget {
 }
 
 class PeopleItem extends StatelessWidget {
-  final ZcyUserPos people;
+  final XTarget people;
 
   final ValueChanged? onChanged;
 
@@ -73,7 +73,7 @@ class PeopleItem extends StatelessWidget {
 
   Widget radio() {
     return Obx(() {
-      return CommonWidget.commonRadioTextWidget(people.realName ?? "", people,
+      return CommonWidget.commonRadioTextWidget(people.name ?? "", people,
           groupValue: choicePeopleController.state.selectedUser.value,
           onChanged: (v) {
         people.isSelected = !people.isSelected;

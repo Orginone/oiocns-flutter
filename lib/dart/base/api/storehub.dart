@@ -135,6 +135,7 @@ class StoreHub {
       return res;
     } catch (err) {
       log.info("========== storeHub-invoke-end =============");
+      log.info("=====> err: $err");
       return {"code": 400, "msg": "请求异常", "success": false};
     }
   }

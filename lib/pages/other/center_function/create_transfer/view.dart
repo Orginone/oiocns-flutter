@@ -6,6 +6,7 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/other/center_function/create_transfer/state.dart';
+import 'package:orginone/util/department_utils.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 
@@ -27,26 +28,35 @@ class CreateTransferPage
         backgroundColor: XColors.themeColor,
       ),
       backgroundColor: Colors.grey.shade200,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    basicInfo(),
-                    transferInfo(),
-                    CommonWidget.commonAddDetailedWidget(
-                        text: "选择资产",
-                        onTap: () {
-                          controller.jumpAddAsset();
-                        })
-                  ],
+      body: WillPopScope(
+        onWillPop: () {
+          return controller.back();
+        },
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      basicInfo(),
+                      transferInfo(),
+                      CommonWidget.commonAddDetailedWidget(
+                          text: "选择资产",
+                          onTap: () {
+                            controller.jumpAddAsset();
+                          })
+                    ],
+                  ),
                 ),
               ),
-            ),
-            CommonWidget.commonCreateSubmitWidget(),
-          ],
+              CommonWidget.commonCreateSubmitWidget(draft: (){
+                controller.draft();
+              },submit: (){
+                controller.submit();
+              }),
+            ],
+          ),
         ),
       ),
     );
@@ -75,18 +85,17 @@ class CreateTransferPage
           ),
           CommonWidget.commonTextTile("移交人与部门", "${HiveUtils
               .getUser()
-              ?.userName ?? ""}-公司信息",
-              enabled: false, showLine: true),
+              ?.userName??""}-${DepartmentUtils().currentDepartment?.name??""}"),
           Obx(() {
             return CommonWidget.commonChoiceTile(
-                "移交至人员", state.selectedUser.value?.realName ?? "",
+                "移交至人员", state.selectedUser.value?.name ?? "",
                 showLine: true, onTap: () {
               controller.choicePeople();
             });
           }),
           Obx(() {
             return CommonWidget.commonChoiceTile(
-                "移交至部门", state.selectedDepartment.value?.agencyName ?? "",
+                "移交至部门", state.selectedDepartment.value?.name ?? "",
                 showLine: true, onTap: () {
               controller.choiceDepartment();
             });

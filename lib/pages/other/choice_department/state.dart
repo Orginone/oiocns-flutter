@@ -8,16 +8,17 @@ import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/pages/other/choice_people/state.dart';
 
 class ChoiceDepartmentState extends BaseGetState{
-  var departments = <IDepartment>[].obs;
+  var departments = <ITarget>[].obs;
 
   TextEditingController searchController = TextEditingController();
 
-  var selectedDepartment = Rxn<IDepartment>();
+  var selectedDepartment = Rxn<ITarget>();
 
-  var selectedGroup = <IDepartment>[].obs;
+  var selectedGroup = <ITarget>[].obs;
 
+  late List<ITarget> allDepartment;
 
-  var searchList = <IDepartment>[].obs;
+  var searchList = <ITarget>[].obs;
 
 
   //显示搜索页面

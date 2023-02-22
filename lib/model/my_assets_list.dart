@@ -27,7 +27,7 @@ class MyAssetsList {
   String? updateTime;
   String? brand;
   String? specMod;
-  String? loction;
+  String? location;
   String? invoiceNo;
   String? sourcesOfFunding;
   Map<String,dynamic>? user;
@@ -106,7 +106,7 @@ class MyAssetsList {
     updateTime = json['UPDATE_TIME'];
     brand = json['BRAND'];
     specMod = json['SPEC_MOD'];
-    loction = json['LOCATION'];
+    location = json['LOCATION'];
     invoiceNo = json['INVOICE_NO'];
     sourcesOfFunding = json['SOURCES_OF_FUNDING'];
     user = json['USER'];
@@ -161,7 +161,7 @@ class MyAssetsList {
     data['UPDATE_TIME'] = this.updateTime;
     data['SPEC_MOD'] = this.specMod;
     data['BRAND'] = this.brand;
-    data['LOCATION'] = this.loction;
+    data['LOCATION'] = this.location;
     data['INVOICE_NO'] = this.invoiceNo;
     data['SOURCES_OF_FUNDING'] = this.sourcesOfFunding;
     data['USER'] = this.user;

@@ -1,13 +1,13 @@
 import 'package:get/get.dart';
-import 'package:worker_manager/worker_manager.dart';
+import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/util/department_utils.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
-import 'mock.dart';
 import 'state.dart';
 
 class ChoicePeopleController extends BaseController<ChoicePeopleState> {
   final ChoicePeopleState state = ChoicePeopleState();
-
 
   @override
   void onInit() {
@@ -28,18 +28,25 @@ class ChoicePeopleController extends BaseController<ChoicePeopleState> {
     // TODO: implement onReady
     super.onReady();
 
-    state.choicePeople.value = await Executor().execute(
-        arg1: PeopleMock['data'] as Map<String, dynamic>, fun1: getMockModel);
+    state.departments.value = DepartmentUtils().departments;
+    state.allUser = [];
+    getAllUser(state.departments);
+  }
+
+  void getAllUser(List<ITarget> departments) {
+    for (var element in departments) {
+      state.allUser.addAll(element.members);
+      if (element.subTeam.isNotEmpty) {
+        getAllUser(element.subTeam);
+      }
+    }
   }
 
   void search(String str) {
     state.searchList.clear();
-    List<ZcyUserPos> allList = [];
 
-    allList.addAll(state.choicePeople.value?.getAllUser()??[]);
-
-    var filter = allList
-        .where((element) => (element.realName?.contains(str)) ?? false);
+    var filter =
+        state.allUser.where((element) => (element.name.contains(str)) ?? false);
     if (filter.isNotEmpty) {
       state.searchList.addAll(filter);
     }
@@ -58,23 +65,13 @@ class ChoicePeopleController extends BaseController<ChoicePeopleState> {
     Get.back(result: state.selectedUser.value);
   }
 
-  void selectGroup(ChoicePeople item) {
+  void selectGroup(ITarget item) {
     state.selectedGroup.add(item);
   }
 
-  void selectedUser(ZcyUserPos item) {
+  void selectedUser(XTarget item) {
     state.selectedUser.value?.isSelected = false;
     state.selectedUser.value = item;
   }
 }
 
-Future<ChoicePeople?> getMockModel(
-    Map<String, dynamic> json, TypeSendPort sendPort) async {
-  ChoicePeople? choicePeople;
-
-  if (json.isNotEmpty) {
-    choicePeople = ChoicePeople.fromJson(json);
-  }
-
-  return choicePeople;
-}

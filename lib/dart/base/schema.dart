@@ -5616,6 +5616,8 @@ class XTarget {
   // 个人审批记录
   final List<XFlowRecord>? flowRecords;
 
+  bool isSelected = false;
+
   //构造方法
   XTarget({
     required this.id,
@@ -5705,6 +5707,7 @@ class XTarget {
         distributes = XExtend.fromList(json["distributes"]),
         flowDefines = XFlowDefine.fromList(json["flowDefines"]),
         flowRecords = XFlowRecord.fromList(json["flowRecords"]);
+
 
   //通过动态数组解析成List
   static List<XTarget> fromList(List<dynamic>? list) {

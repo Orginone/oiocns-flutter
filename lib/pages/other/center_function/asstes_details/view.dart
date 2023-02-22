@@ -45,7 +45,7 @@ class AssetsDetailsPage
                   textSize: 22, contentSize: 22, padding: defaultPadding),
               CommonWidget.commonTextContentWidget("规格型号", state.assets.specMod??"",
                   textSize: 22, contentSize: 22, padding: defaultPadding),
-              CommonWidget.commonTextContentWidget("存放地点", state.assets.loction??"",
+              CommonWidget.commonTextContentWidget("存放地点", state.assets.location??"",
                   textSize: 22, contentSize: 22, padding: defaultPadding),
               CommonWidget.commonTextContentWidget("原值", "${state.assets.netVal??0}",
                   textSize: 22, contentSize: 22, padding: defaultPadding),

@@ -71,6 +71,7 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
   }
 
   void draft() {
+    addedDraft = true;
     KernelApi.getInstance().anystore.insert(
         "create_dispose_draft",
         {
@@ -95,6 +96,9 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
       Fluttertoast.showToast(msg: "请至少选择一项资产");
       return;
     }
+    KernelApi.getInstance().anystore.update("asset_disposal", {
+
+    }, "company");
     Get.back();
   }
 }

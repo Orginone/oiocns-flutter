@@ -1,10 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
-import 'package:orginone/pages/other/choice_people/logic.dart';
-import 'package:orginone/pages/other/choice_people/mock.dart';
-import 'package:orginone/pages/other/choice_people/state.dart';
 import 'package:orginone/util/department_utils.dart';
-import 'package:worker_manager/worker_manager.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
@@ -31,26 +27,34 @@ class ChoiceDepartmentController extends BaseController<ChoiceDepartmentState> {
     // TODO: implement onReady
     super.onReady();
     state.departments.value = DepartmentUtils().departments;
+    state.allDepartment = [];
+    getAllDepartment(state.departments);
+  }
+
+  void getAllDepartment(List<ITarget> departments) {
+    for (var element in departments) {
+      state.allDepartment.add(element);
+      if (element.subTeam.isNotEmpty) {
+        getAllDepartment(element.subTeam);
+      }
+    }
   }
 
   void search(String str) {
-   state.searchList.clear();
-   List<ChoicePeople> allList = [];
+    state.searchList.clear();
 
-   // allList.addAll(state.departments.value?.getAllDepartment()??[]);
-   //
-   // var filter = allList
-   //     .where((element) => (element.agencyName?.contains(str)) ?? false);
-   // if (filter.isNotEmpty) {
-   //  state.searchList.addAll(filter);
-   // }
+    var filter = state.allDepartment
+        .where((element) => (element.name.contains(str)) ?? false);
+    if (filter.isNotEmpty) {
+      state.searchList.addAll(filter);
+    }
   }
 
   void back() {
    Get.back(result: state.selectedDepartment.value);
   }
 
-  void selectedDepartment(IDepartment item) {
+  void selectedDepartment(ITarget item) {
     state.selectedDepartment.value?.isSelected = false;
     state.selectedDepartment.value = item;
   }
@@ -64,7 +68,7 @@ class ChoiceDepartmentController extends BaseController<ChoiceDepartmentState> {
     state.selectedGroup.clear();
   }
 
-  void selectGroup(IDepartment item) {
+  void selectGroup(ITarget item) {
     state.selectedGroup.add(item);
   }
 }
