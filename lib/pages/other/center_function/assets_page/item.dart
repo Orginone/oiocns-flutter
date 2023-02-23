@@ -28,7 +28,7 @@ class CommonItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (assetsListType == AssetsListType.check) {
-          Get.toNamed(Routers.assetsCheck);
+          Get.toNamed(Routers.assetsCheck,arguments: {"assetUse":assetUse});
         } else if (assetsListType != AssetsListType.draft) {
           Get.toNamed(Routers.generalDetails,
               arguments: {"assetsType": assetsType,"assetUse":assetUse});
@@ -146,7 +146,7 @@ class CommonItem extends StatelessWidget {
     Widget status = Container();
     if (assetsListType == AssetsListType.check) {
       title = "盘点任务";
-      content = "111";
+      content = assetUse.stockTaskName??"";
       status = Container(
         padding: EdgeInsets.symmetric(horizontal: 5.w),
         margin: EdgeInsets.only(left: 5.w),
@@ -154,7 +154,7 @@ class CommonItem extends StatelessWidget {
           color: XColors.themeColor.withOpacity(0.2),
           borderRadius: BorderRadius.circular(2.w),
         ),
-        child: Text("进行中",style: TextStyle(color: XColors.themeColor,fontSize: 14.sp),),
+        child: Text(CheckStatus[(assetUse.stockStatus??0)]!,style: TextStyle(color: XColors.themeColor,fontSize: 14.sp),),
       );
     }
     return  Container(
@@ -208,7 +208,8 @@ class CommonItem extends StatelessWidget {
         // TODO: Handle this case.
         break;
       case AssetsType.dispose:
-        // TODO: Handle this case.
+        tips = "提交人";
+        name = assetUse.submitterName ?? "";
         break;
       case AssetsType.transfer:
         tips = "移交人";
@@ -239,7 +240,7 @@ class CommonItem extends StatelessWidget {
       ],
     );
     if(assetsListType == AssetsListType.check){
-      child = Text("xxxxxxxxxxx",style: TextStyle(color: Colors.grey.shade500,fontSize: 16.sp),);
+      child = Text(assetUse.billCode??"",style: TextStyle(color: Colors.grey.shade500,fontSize: 16.sp),);
     }
     return Container(
       padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 10.h),

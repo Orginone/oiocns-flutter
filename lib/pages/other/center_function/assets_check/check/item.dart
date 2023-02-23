@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/model/my_assets_list.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/center_function/assets_check/check/state.dart';
 import 'package:orginone/routers.dart';
@@ -10,7 +11,8 @@ class Item extends StatelessWidget {
   final CheckType checkType;
   final VoidCallback? onRecheck;
   final ValueChanged<CheckType>? onInventory;
-  const Item({Key? key, required this.checkType, this.onRecheck, this.onInventory}) : super(key: key);
+  final MyAssetsList assets;
+  const Item({Key? key, required this.checkType, this.onRecheck, this.onInventory, required this.assets}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -117,8 +119,8 @@ class Item extends StatelessWidget {
   }
 
   Widget taskInfo() {
-    String title = "排队取号机";
-    String content = "xxxxxxxxxxxxxxxx";
+    String title = assets.assetName??"";
+    String content = assets.assetCode??"";
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
       decoration: BoxDecoration(
@@ -152,7 +154,7 @@ class Item extends StatelessWidget {
     Widget child = Row(
       children: [
         Image.network(
-          "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/default-avatar1.png",
+          "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/rmb-icon.png",
           width: 20.w,
           height: 20.h,
         ),
@@ -160,7 +162,7 @@ class Item extends StatelessWidget {
           width: 10.w,
         ),
         Text(
-          "310000",
+          "${assets.netVal??0}",
           style: TextStyle(
               color: Colors.black,
               fontSize: 16.sp,

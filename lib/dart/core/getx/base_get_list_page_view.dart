@@ -35,7 +35,7 @@ abstract class BaseGetListPageView<T extends BaseListController, S extends BaseG
                 return SmartRefresher(
                   controller: controller.refreshController,
                   enablePullDown: true,
-                  enablePullUp: true,
+                  enablePullUp: false,
                   onRefresh: () => controller.onRefresh(),
                   onLoading: () => controller.onLoadMore(),
                   child: buildView(),

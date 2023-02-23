@@ -127,7 +127,7 @@ class CheckDialog{
   }
 
 
-  static Future<void> showAllInventoryDialog(BuildContext context,{VoidCallback? onSubmit}) {
+  static Future<void> showAllInventoryDialog(BuildContext context,{VoidCallback? onSubmit,int count = 0}) {
     return showDialog(context: context, builder: (context){
       return Dialog(
         backgroundColor: Colors.transparent,
@@ -163,9 +163,9 @@ class CheckDialog{
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text("盘存：11，未盘存：197"),
-                        Text("未盘点将自动算为盘存"),
+                      children:  [
+                        Text("未盘存：$count"),
+                        const Text("未盘点将自动算为盘存"),
                       ],
                     ),
                   ),

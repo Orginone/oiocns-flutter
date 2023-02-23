@@ -127,6 +127,14 @@ extension ExDocumentsType on DocumentsType{
   }
 }
 
+//
+final Map<int,String> CheckStatus ={
+  0:"未盘点",
+  1:"盘点中",
+  2:"完成盘点",
+  3:"终止盘点",
+};
+
 
 //CenterFunction用的tab显示字段
 final Map<AssetsType, List<String>> CenterFunctionTabTitle = {

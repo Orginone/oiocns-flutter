@@ -45,6 +45,12 @@ class AssetUse {
   String? verificationManName;
   List<String>? detail;
 
+  //资产盘点
+  String? stockTaskName;
+  dynamic stockMethod;
+  int? stockStatus;
+  String? submitUserId;
+
 
 
   AssetUse(
@@ -57,7 +63,7 @@ class AssetUse {
         this.approvalDocument});
 
   AssetUse.fromJson(Map<String, dynamic> json) {
-    billCode = json['BILL_CODE'];
+    billCode = json['stockTaskCode']??json['BILL_CODE'];
     applyRemark = json['APPLY_REMARK']??json['REMARK']??json['applyRemark'];
     type = json['type'];
     oldUserId = json['OLD_USER_ID'];
@@ -67,7 +73,7 @@ class AssetUse {
         ? new ApprovalDocument.fromJson(json['approvalDocument'])
         : null;
 
-    submitterName = json['SUBMITTER_NAME'];
+    submitterName = json['submitterName']??json['SUBMITTER_NAME'];
     submitUserName = json['submitUserName'];
     userName = json['USER_NAME'];
     status = json['status'];
@@ -105,6 +111,10 @@ class AssetUse {
         }
       }
     }
+    stockTaskName = json['stockTaskName'];
+    stockMethod = json['stockMethod'];
+    stockStatus = json['stockStatus'];
+    submitUserId = json['submitUserId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -147,6 +157,10 @@ class AssetUse {
     if (this.approvalDocument != null) {
       data['approvalDocument'] = this.approvalDocument!.toJson();
     }
+    data['stockTaskName'] = this.stockTaskName;
+    data['stockMethod'] = this.stockMethod;
+    data['stockStatus'] = this.stockStatus;
+    data['submitUserId'] = this.submitUserId;
     return data;
   }
 }

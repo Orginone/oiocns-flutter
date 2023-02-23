@@ -44,7 +44,7 @@ class AssetsController extends BaseListController<AssetsState> {
         loadAssets(code: code);
         break;
       case AssetsType.check:
-        // TODO: Handle this case.
+        await loadAssetUse("asset_check", code: code);
         break;
       case AssetsType.claim:
         // TODO: Handle this case.
@@ -70,14 +70,19 @@ class AssetsController extends BaseListController<AssetsState> {
       } else if (assetsListType == AssetsListType.submitted) {
         filter["verificationStatus"] = 0;
       }
-    } else {
+    } else if (assetsListType != AssetsListType.check) {
       filter['status'] = assetsListType == AssetsListType.draft ? 0 : 1;
     }
 
     var data = await AssetNetWork.getAssetUseList(name: name, filter: filter);
     if (code != null && code.isNotEmpty) {
-      var flitter =
-          data.where((element) => element.billCode?.contains(code) ?? false);
+      var flitter = data.where((element) {
+        if (assetsType == AssetsType.check) {
+          return element.stockTaskName?.contains(code) ?? false;
+        } else {
+          return element.billCode?.contains(code) ?? false;
+        }
+      });
       data = flitter.toList();
     }
     state.useList.value = data;
@@ -95,14 +100,6 @@ class AssetsController extends BaseListController<AssetsState> {
     state.dataList.value = data;
     loadSuccess();
   }
-
-  @override
-  void onReady() async{
-    // TODO: implement onReady
-    super.onReady();
-    await loadData();
-  }
-
 
   void create(AssetsType assetsType) {
     Get.toNamed(assetsType.createRoute);

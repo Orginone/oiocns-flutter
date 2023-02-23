@@ -18,30 +18,34 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
 
   @override
   Widget buildView() {
-    return Obx(() {
-      int length = state.useList.length;
-      if (assetsListType == AssetsListType.myGoods) {
-        length = 0;
-      }
-      if (assetsListType == AssetsListType.myAssets) {
-        length = state.dataList.length;
-      }
-      return ListView.builder(
-        itemBuilder: (context, index) {
-          if (assetsType == AssetsType.myAssets) {
-            return MyAssetsItem(
-              assets: state.dataList[index],
+    return SingleChildScrollView(
+      child: Obx(() {
+        int length = state.useList.length;
+        if (assetsListType == AssetsListType.myGoods) {
+          length = 0;
+        }
+        if (assetsListType == AssetsListType.myAssets) {
+          length = state.dataList.length;
+        }
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            if (assetsType == AssetsType.myAssets) {
+              return MyAssetsItem(
+                assets: state.dataList[index],
+              );
+            }
+            return CommonItem(
+              assetUse: state.useList[index],
+              assetsListType: assetsListType,
+              assetsType: assetsType,
             );
-          }
-          return CommonItem(
-            assetUse: state.useList[index],
-            assetsListType: assetsListType,
-            assetsType: assetsType,
-          );
-        },
-        itemCount: length,
-      );
-    });
+          },
+          itemCount: length,
+        );
+      }),
+    );
   }
 
   @override

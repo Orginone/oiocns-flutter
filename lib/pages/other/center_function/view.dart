@@ -109,23 +109,18 @@ class CenterFunctionPage
     }
     return Container(
       color: XColors.themeColor,
-      child: Column(
-        children: [
-          TabBar(
-              controller: state.tabController,
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              tabs: state.tabTitle
-                  .map((e) => Tab(
-                        text: e,
-                      ))
-                  .toList(),
-              indicatorColor: Colors.white,
-              indicatorSize: TabBarIndicatorSize.label,
-              unselectedLabelStyle:
-                  TextStyle(fontSize: 21.sp, color: Colors.grey),
-              labelStyle: TextStyle(fontSize: 21.sp, color: Colors.white)),
-        ],
-      ),
+      child: TabBar(
+          controller: state.tabController,
+          tabs: state.tabTitle
+              .map((e) => Tab(
+                    text: e,
+                  ))
+              .toList(),
+          indicatorColor: Colors.white,
+          indicatorSize: TabBarIndicatorSize.label,
+          unselectedLabelStyle:
+              TextStyle(fontSize: 21.sp, color: Colors.grey),
+          labelStyle: TextStyle(fontSize: 21.sp, color: Colors.white)),
     );
   }
 }

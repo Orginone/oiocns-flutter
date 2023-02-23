@@ -43,6 +43,11 @@ class MyAssetsList {
 
   String? kapianzt;
 
+  int? status;
+  String? stockTaskCode;
+  String? assetRemark;
+
+
   bool isOpen = false;
 
   bool isSelected = false;
@@ -119,6 +124,9 @@ class MyAssetsList {
     minimumLimit = json['MINIMUM_LIMIT'];
     acquirementWay = json['ACQUIREMENT_WAY'];
     kapianzt = json['KAPIANZT'];
+    status = json['status'];
+    assetRemark = json['assetRemark'];
+    stockTaskCode = json['stockTaskCode'];
   }
 
   update(Map<String, dynamic> json) {
@@ -219,6 +227,9 @@ class MyAssetsList {
     data['MINIMUM_LIMIT'] = minimumLimit;
     data['ACQUIREMENT_WAY'] = acquirementWay;
     data['KAPIANZT'] = this.kapianzt;
+    data['status'] = this.status;
+    data["stockTaskCode"] = this.stockTaskCode;
+    data['assetRemark'] = this.assetRemark;
     return data;
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 
 import 'item.dart';
@@ -12,21 +13,32 @@ class CheckPage extends BaseGetListPageView<CheckController, CheckState> {
 
   @override
   Widget buildView() {
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        return Item(
-          checkType: checkType,
-          onInventory: (type) {
-            controller.inventory(type);
+    return SingleChildScrollView(
+      child: Obx(() {
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            return Item(
+              checkType: checkType,
+              onInventory: (type) {
+                controller.inventory(type,index);
+              },
+              onRecheck: () {
+                controller.recheck(index);
+              }, assets: state.dataList[index],
+            );
           },
-          onRecheck: () {
-            controller.recheck();
-          },
+          itemCount: state.dataList.length,
         );
-      },
-      itemCount: state.dataList.length,
+      }),
     );
-    ;
+  }
+
+  @override
+  Widget headWidget() {
+    // TODO: implement headWidget
+    return super.headWidget();
   }
 
   @override

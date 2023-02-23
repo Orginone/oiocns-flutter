@@ -21,10 +21,11 @@ abstract class BaseController<S extends BaseGetState> extends GetxController{
   }
 
   @override
-  void onReady() {
+  void onReady() async{
     // TODO: implement onReady
     super.onReady();
     EventBusHelper.register(this, onReceivedEvent);
+    await loadData();
   }
 
   @override
