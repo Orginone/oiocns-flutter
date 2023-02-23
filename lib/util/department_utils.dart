@@ -20,12 +20,15 @@ class DepartmentUtils {
 
   Future<void> initDepartment() async {
     _departments = [];
-    var list = await setting.company!.loadSubTeam(reload: true);
-    _departments.addAll(list);
-    if (_departments.isNotEmpty) {
-      await loopDepartment(_departments);
-      await loopMembers(_departments);
+    var list = await setting.company?.loadSubTeam(reload: true)??[];
+    if(list.isNotEmpty){
+      _departments.addAll(list);
+      if (_departments.isNotEmpty) {
+        await loopDepartment(_departments);
+        await loopMembers(_departments);
+      }
     }
+
   }
 
   ITarget? findITargetById(String id){

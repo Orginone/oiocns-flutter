@@ -7,11 +7,11 @@ import 'package:orginone/model/asset_use.dart';
 
 class AssetNetWork{
 
-  static Future<List<AssetUse>> getAssetUseList({int status = 0,required String name}) async{
+  static Future<List<AssetUse>> getAssetUseList({required String name,Map<String,dynamic>? filter}) async{
     List<AssetUse> use = [];
     ResultType result = await KernelApi.getInstance().anystore.aggregate(name, {
       "match": {
-        "status":status
+       ...?filter,
       },
       "sort": {"UPDATE_TIME": -1},
       "skip": 0,

@@ -1,3 +1,5 @@
+import 'package:orginone/util/asset_management.dart';
+
 import 'my_assets_list.dart';
 
 class AssetUse {
@@ -20,6 +22,29 @@ class AssetUse {
   String? submitUserName;
   String? userName;
 
+  //资产处置
+  int? way;
+  int? evaluated;
+  dynamic assetsTotal;
+  dynamic depreciationTotal;
+  dynamic netWorthTotal;
+  dynamic count;
+  int? editStatus;
+  int? approvalEnd;
+  int? approvalStatus;
+  int? verificationStatus;
+  int? readStatus;
+  String? keepOrgName;
+  int? keepOrgType;
+  String? keepOrgPhomeNumber;
+  DateTime? gmtCreate;
+  String? id;
+  String? verificationDate;
+  String? verificationDocumentsNumber;
+  String? verificationManId;
+  String? verificationManName;
+  List<String>? detail;
+
 
 
   AssetUse(
@@ -33,7 +58,7 @@ class AssetUse {
 
   AssetUse.fromJson(Map<String, dynamic> json) {
     billCode = json['BILL_CODE'];
-    applyRemark = json['APPLY_REMARK'];
+    applyRemark = json['APPLY_REMARK']??json['REMARK']??json['applyRemark'];
     type = json['type'];
     oldUserId = json['OLD_USER_ID'];
     keeperId = json['KEEPER_ID'];
@@ -48,6 +73,38 @@ class AssetUse {
     status = json['status'];
     createTime = DateTime.tryParse(json['CREATE_TIME']??"");
     updateTime = DateTime.tryParse(json['UPDATE_TIME']??"");
+    way = int.tryParse(json['way'].toString());
+    keepOrgName = json['ACC_UNIT']??json['keepOrgName'];
+    keepOrgType = int.tryParse(json['IS_SYS_UNIT']??json['keepOrgType']??"");
+    evaluated = json['evaluated'];
+    assetsTotal = json['SHEJIZCZZ']??json['assetsTotal'];
+    keepOrgPhomeNumber = json['keepOrgPhomeNumber'];
+    depreciationTotal = json['LEIJIZJHJ']??json['depreciationTotal'];
+    netWorthTotal = json['JINGZHIHJ']??json['netWorthTotal'];
+    count = int.tryParse(json['count'].toString());
+    editStatus = json['editStatus'];
+    approvalEnd = int.tryParse(json['approvalEnd'].toString());
+    approvalStatus = int.tryParse(json['approvalStatus'].toString());
+    verificationStatus = int.tryParse(json['verificationStatus'].toString());
+    readStatus = json['readStatus'];
+    gmtCreate = DateTime.tryParse(json['gmtCreate']??"");
+    id = json['id'];
+    verificationDate = json['verificationDate'];
+    verificationDocumentsNumber = json['verificationDocumentsNumber'];
+    verificationManId = json['verificationManId'];
+    verificationManName = json['verificationManName'];
+    if (json['detail'] != null) {
+      detail = <String>[];
+      json['detail'].forEach((v) {
+        detail!.add(v);
+      });
+      if(detail!.isNotEmpty){
+        approvalDocument = ApprovalDocument()..detail = [];
+        for (var value in detail!) {
+          approvalDocument!.detail!.add( AssetManagement().findAsset(value));
+        }
+      }
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -64,6 +121,29 @@ class AssetUse {
     data['status'] = this.status;
     data['CREATE_TIME'] = this.createTime;
     data['UPDATE_TIME'] = this.updateTime;
+    data['way'] = this.way;
+    data['evaluated'] = this.evaluated;
+    data['SHEJIZCZZ'] = this.assetsTotal;
+    data['LEIJIZJHJ'] = this.depreciationTotal;
+    data['JINGZHIHJ'] = this.netWorthTotal;
+    data['ACC_UNIT'] = keepOrgName ;
+    data['IS_SYS_UNIT'] =  keepOrgType;
+    data['count'] = this.count;
+    data['keepOrgPhomeNumber'] =keepOrgPhomeNumber;
+    data['editStatus'] = this.editStatus;
+    data['approvalEnd'] = this.approvalEnd;
+    data['approvalStatus'] = this.approvalStatus;
+    data['verificationStatus'] = this.verificationStatus;
+    data['readStatus'] = this.readStatus;
+    data['gmtCreate'] = this.gmtCreate;
+    data['id'] = this.id;
+    data['verificationDate'] = this.verificationDate;
+    data['verificationDocumentsNumber'] = this.verificationDocumentsNumber;
+    data['verificationManId'] = this.verificationManId;
+    data['verificationManName'] = this.verificationManName;
+    if (this.detail != null) {
+      data['detail'] = this.detail;
+    }
     if (this.approvalDocument != null) {
       data['approvalDocument'] = this.approvalDocument!.toJson();
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
@@ -63,9 +64,39 @@ class CreateDisposePage
           CommonWidget.commonHeadInfoWidget("基本信息"),
           Obx(() {
             return CommonWidget.commonChoiceTile(
-                "处置方法", state.disposeTyep.value, showLine: true, onTap: () {
+                "处置方法", state.disposeType.value,
+                showLine: true, onTap: () {
               controller.showProcessingMethod();
             }, required: true);
+          }),
+          Obx(() {
+            return CommonWidget.commonChoiceTile(
+                "资产接受单位类型", state.unitType.value,
+                showLine: true, onTap: () {
+              controller.showUnit();
+            });
+          }),
+          CommonWidget.commonTextTile(
+            "资产接受单位名称",
+            "",
+            hint: "请填写资产接受单位名称",
+            controller: state.unitController,
+          ),
+          CommonWidget.commonTextTile(
+            "资产接受单位电话",
+            "",
+            hint: "请填写资产接受单位电话",
+            controller: state.phoneNumberController,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+            ],
+          ),
+          Obx(() {
+            return CommonWidget.commonChoiceTile(
+                "是否评估", state.assessment.value,
+                showLine: true, onTap: () {
+              controller.showAssessment();
+            });
           }),
           SizedBox(
             height: 10.h,
@@ -86,7 +117,7 @@ class CreateDisposePage
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CommonWidget.commonHeadInfoWidget("移交信息",
+          CommonWidget.commonHeadInfoWidget("处置明细",
               action: GestureDetector(
                 child: const Text(
                   "批量删除",

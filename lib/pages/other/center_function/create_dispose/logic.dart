@@ -1,11 +1,12 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/production_order_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
+import 'network.dart';
 import 'state.dart';
 
 class CreateDisposeController extends BaseController<CreateDisposeState> {
@@ -15,7 +16,7 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
 
   Future<bool> back() async {
     if (!addedDraft) {
-      if ((state.disposeTyep.isNotEmpty ||
+      if ((state.disposeType.isNotEmpty ||
           state.reasonController.text.isNotEmpty ||
           state.selectAssetList.isNotEmpty) && !state.isEdit) {
         YYBottomSheetDialog(context, DraftTips, callback: (i, str) {
@@ -34,10 +35,20 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
     return true;
   }
 
+  @override
+  void onReady() async {
+    // TODO: implement onReady
+    super.onReady();
+    if (!state.isEdit) {
+      state.orderNum =
+          await ProductionOrderUtils.productionSingleOrder("ZCCZ");
+    }
+  }
+
   void showProcessingMethod() {
     PickerUtils.showListStringPicker(context, titles: DisposeTyep,
         callback: (str) {
-      state.disposeTyep.value = str;
+      state.disposeType.value = str;
     });
   }
 
@@ -75,19 +86,10 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
 
   void draft() {
     addedDraft = true;
-    KernelApi.getInstance().anystore.insert(
-        "dispose_draft",
-        {
-          "DISPOSE_CODE": DisposeTyep.indexOf(state.disposeTyep.value),
-          "REASON": state.reasonController.text,
-          "ASSET":
-              state.selectAssetList.map((element) => element.toJson()).toList()
-        },
-        "user");
   }
 
-  void submit() {
-    if (state.disposeTyep.value.isEmpty) {
+  void submit() async {
+    if (state.disposeType.value.isEmpty) {
       Fluttertoast.showToast(msg: "请选择处置方式");
       return;
     }
@@ -99,9 +101,49 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
       Fluttertoast.showToast(msg: "请至少选择一项资产");
       return;
     }
-    KernelApi.getInstance().anystore.update("asset_disposal", {
+    create();
 
-    }, "company");
-    Get.back();
+  }
+
+  void showUnit() {
+    PickerUtils.showListStringPicker(context, titles: AssetAcceptanceUnitType,
+        callback: (str) {
+      state.unitType.value = str;
+    });
+  }
+
+  void showAssessment() {
+    PickerUtils.showListStringPicker(context, titles: Whether, callback: (str) {
+      state.assessment.value = str;
+    });
+  }
+
+  void create({bool isDraft = false}) async{
+    int keepOrgType = 0;
+    int evaluated = 0;
+    if(state.unitType.value.isNotEmpty){
+      keepOrgType = AssetAcceptanceUnitType.indexOf(state.unitType.value);
+    }
+    if(state.assessment.value.isNotEmpty){
+      evaluated = Whether.indexOf(state.assessment.value);
+    }
+    int phoneNum = 0;
+    if(state.phoneNumberController.text.isNotEmpty){
+      if(state.phoneNumberController.text.length!=11){
+        Fluttertoast.showToast(msg: "请输入正确的手机号");
+      }else{
+        phoneNum = int.parse(state.phoneNumberController.text);
+      }
+    }
+
+    await DisposeNetwork.createDispose(
+        way: DisposeTyep.indexOf(state.disposeType.value),
+        keepOrgType: keepOrgType,
+        keepOrgName: state.unitController.text,
+        evaluated: evaluated,
+        phoneNumber: phoneNum,
+        billCode: state.orderNum,
+        assets: state.selectAssetList,
+        remark: state.reasonController.text,isDraft: isDraft);
   }
 }

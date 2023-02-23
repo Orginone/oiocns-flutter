@@ -74,10 +74,7 @@ class CreateTransferController extends BaseController<CreateTransferState> {
 
   void draft() async {
     addedDraft = true;
-    await TransferNetWork.createTransfer(
-        billCode: state.orderNum.value,
-        remark: state.reasonController.text,
-        assets: state.selectAssetList, keeperId: state.selectedUser.value!.name, keepOrgId: state.selectedDepartment.value!.name,isDraft: true);
+    create(isDraft: true);
   }
 
   void submit() async {
@@ -92,14 +89,19 @@ class CreateTransferController extends BaseController<CreateTransferState> {
 
     LoadingDialog.showLoading(context);
 
+    create();
 
+    LoadingDialog.dismiss(context);
+
+  }
+
+
+  void create({bool isDraft = false}) async{
     await TransferNetWork.createTransfer(
         billCode: state.orderNum.value,
         keeperId: state.selectedUser.value!.name,
         keepOrgId: state.selectedDepartment.value!.name,
-        remark: state.reasonController.text, assets: state.selectAssetList);
-    LoadingDialog.dismiss(context);
-
+        remark: state.reasonController.text, assets: state.selectAssetList,isDraft: isDraft);
   }
 
   Future<bool> back() async {

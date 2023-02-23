@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/widget/text_high_light.dart';
@@ -145,7 +146,7 @@ class CommonWidget {
       int? maxLine,
       bool enabled = true,
       TextStyle? textStyle,
-      bool required = false}) {
+      bool required = false,List<TextInputFormatter>? inputFormatters}) {
     return Stack(
       children: [
         Container(
@@ -170,6 +171,7 @@ class CommonWidget {
                 TextField(
                   controller: controller ?? TextEditingController(text: content),
                   maxLines: maxLine,
+                  inputFormatters: inputFormatters,
                   enabled: enabled,
                   style:
                       textStyle ?? TextStyle(color: Colors.black, fontSize: 20.sp),

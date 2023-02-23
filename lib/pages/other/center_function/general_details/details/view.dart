@@ -66,7 +66,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
         case AssetsType.subscribe:
           return Container();
         case AssetsType.dispose:
-          return AssetDescription.disposeDescription();
+          return AssetDescription.disposeDescription(dstate);
         case AssetsType.transfer:
           return AssetDescription.transferDescription(dstate);
         case AssetsType.borrow:
@@ -74,7 +74,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
         case AssetsType.revert:
           return Container();
         case AssetsType.handOver:
-          return AssetDescription.handOverDescription();
+          return AssetDescription.handOverDescription(dstate);
         case AssetsType.store:
           return Container();
         case AssetsType.more:
@@ -263,14 +263,17 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w500),
           ),
-          CommonWidget.commonTextContentWidget("资产编号", "xxxxxxxx"),
-          CommonWidget.commonTextContentWidget("资产名称", "xxx"),
-          CommonWidget.commonTextContentWidget("资产分类", "xxxx"),
-          CommonWidget.commonTextContentWidget("原值", "￥0"),
-          CommonWidget.commonTextContentWidget("数量", "0"),
-          CommonWidget.commonTextContentWidget("取得日期", ""),
-          CommonWidget.commonTextContentWidget("规格型号", ""),
-          CommonWidget.commonTextContentWidget("品牌", ""),
+          CommonWidget.commonTextContentWidget("资产编号", assets.assetCode ?? ""),
+          CommonWidget.commonTextContentWidget("资产名称", assets.assetName ?? ""),
+          CommonWidget.commonTextContentWidget(
+              "资产分类", assets.assetType?['value'] ?? ""),
+          CommonWidget.commonTextContentWidget("原值", "￥${assets.netVal ?? 0}"),
+          CommonWidget.commonTextContentWidget(
+              "数量", "${assets.numOrArea ?? 0}"),
+          CommonWidget.commonTextContentWidget(
+              "取得日期", DateTime.tryParse(assets.quderq ?? "")?.format() ?? ""),
+          CommonWidget.commonTextContentWidget("规格型号", assets.specMod ?? ""),
+          CommonWidget.commonTextContentWidget("品牌", assets.brand ?? ""),
         ];
       case AssetsType.transfer:
         return [
@@ -298,14 +301,17 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w500),
           ),
-          CommonWidget.commonTextContentWidget("资产编号", "xxxxxxxx"),
-          CommonWidget.commonTextContentWidget("资产名称", "xxx"),
-          CommonWidget.commonTextContentWidget("资产分类", "xxxx"),
-          CommonWidget.commonTextContentWidget("数量", "0"),
-          CommonWidget.commonTextContentWidget("规格型号", ""),
-          CommonWidget.commonTextContentWidget("品牌", ""),
-          CommonWidget.commonTextContentWidget("存放地点", ""),
-          CommonWidget.commonTextContentWidget("原使用人", ""),
+          CommonWidget.commonTextContentWidget("资产编号", assets.assetCode ?? ""),
+          CommonWidget.commonTextContentWidget("资产名称", assets.assetName ?? ""),
+          CommonWidget.commonTextContentWidget(
+              "资产分类", assets.assetType?['value'] ?? ""),
+          CommonWidget.commonTextContentWidget(
+              "数量", "${assets.numOrArea ?? 0}"),
+          CommonWidget.commonTextContentWidget("规格型号", assets.specMod ?? ""),
+          CommonWidget.commonTextContentWidget("品牌", assets.brand ?? ""),
+          CommonWidget.commonTextContentWidget("存放地点", assets.location ?? ""),
+          CommonWidget.commonTextContentWidget(
+              "原使用人", dstate.assetUse.submitterName ?? ""),
         ];
       default:
         return <Widget>[];

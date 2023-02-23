@@ -82,22 +82,13 @@ class CreateHandOverController extends BaseController<CreateHandOverState> {
     LoadingDialog.showLoading(context);
 
 
-    await HandOverNetWork.createHandOver(
-        billCode: state.orderNum.value,
-        remark: state.reasonController.text,
-        assets: state.selectAssetList,
-        userName: state.selectedUser.value!.name);
+    create();
     LoadingDialog.dismiss(context);
   }
 
   void draft() async {
     addedDraft = true;
-    await HandOverNetWork.createHandOver(
-        billCode: state.orderNum.value,
-        remark: state.reasonController.text,
-        assets: state.selectAssetList,
-        userName: state.selectedUser.value!.name,
-        isDraft: true);
+    create(isDraft: true);
   }
 
   Future<bool> back() async {
@@ -119,5 +110,13 @@ class CreateHandOverController extends BaseController<CreateHandOverState> {
       return true;
     }
     return true;
+  }
+
+  void create({bool  isDraft = false}) async{
+    await HandOverNetWork.createHandOver(
+        billCode: state.orderNum.value,
+        remark: state.reasonController.text,
+        assets: state.selectAssetList,
+        userName: state.selectedUser.value!.name,isDraft: isDraft);
   }
 }
