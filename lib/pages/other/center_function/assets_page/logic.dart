@@ -26,11 +26,11 @@ class AssetsController extends BaseListController<AssetsState> {
   }
 
   @override
-  void onReceivedEvent(event) {
+  void onReceivedEvent(event) async{
     // TODO: implement onReceivedEvent
     super.onReceivedEvent(event);
-    if(event is LoadAssets && assetsListType == AssetsListType.myAssets){
-      loadData();
+    if(event is LoadAssets){
+      await loadData();
     }
   }
 
@@ -56,17 +56,16 @@ class AssetsController extends BaseListController<AssetsState> {
         // TODO: Handle this case.
         break;
       case AssetsType.transfer:
-        loadAssetUse("asset_transfer",code: code);
+        await loadAssetUse("asset_transfer",code: code);
         break;
       case AssetsType.handOver:
-        // TODO: Handle this case.
+        await loadAssetUse("asset_restore",code: code);
         break;
     }
 
   }
 
-
-  void loadAssetUse(String name,{String? code}) async{
+  Future<void> loadAssetUse(String name,{String? code}) async{
     var data = await AssetNetWork.getAssetUseList(name: name,status: assetsListType == AssetsListType.draft?0:1);
     if(code!=null && code.isNotEmpty){
       var flitter = data.where((element) => element.billCode?.contains(code)??false);
@@ -88,17 +87,12 @@ class AssetsController extends BaseListController<AssetsState> {
   }
 
   @override
-  void onReady() {
+  void onReady() async{
     // TODO: implement onReady
     super.onReady();
-    loadData();
+    await loadData();
   }
 
-  @override
-  Future onLoadMore() {
-    // TODO: implement onLoadMore
-    return super.onLoadMore();
-  }
 
   void create(AssetsType assetsType) {
     Get.toNamed(assetsType.createRoute);

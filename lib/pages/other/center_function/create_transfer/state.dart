@@ -19,7 +19,7 @@ class CreateTransferState extends BaseGetState{
 
   var orderNum = ''.obs;
 
-  late AssetUse draft;
+  late AssetUse assetUse;
 
   TextEditingController reasonController = TextEditingController();
 
@@ -28,12 +28,12 @@ class CreateTransferState extends BaseGetState{
     selectAssetList.addAll(selected);
     isEdit = Get.arguments?['isEdit'] ?? false;
     if(isEdit){
-      draft = Get.arguments?['draft'];
-      selectAssetList.addAll(draft.approvalDocument?.detail??[]);
-      selectedUser.value =  DepartmentUtils().findXTargetById(draft.keeperId??"");
-      selectedDepartment.value = DepartmentUtils().findITargetById(draft.keeperOrgId??"");
-      orderNum.value = draft.billCode??"";
-      reasonController.text = draft.applyRemark??"";
+      assetUse = Get.arguments?['assetUse'];
+      selectAssetList.addAll(assetUse.approvalDocument?.detail??[]);
+      selectedUser.value =  DepartmentUtils().findXTargetById(assetUse.keeperId??"");
+      selectedDepartment.value = DepartmentUtils().findITargetById(assetUse.keeperOrgId??"");
+      orderNum.value = assetUse.billCode??"";
+      reasonController.text = assetUse.applyRemark??"";
     }
   }
 }

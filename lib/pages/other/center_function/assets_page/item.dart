@@ -200,6 +200,7 @@ class CommonItem extends StatelessWidget {
 
   Widget otherInfo() {
     String tips = "";
+    String name = "";
     switch (assetsType) {
       case AssetsType.check:
         break;
@@ -211,9 +212,11 @@ class CommonItem extends StatelessWidget {
         break;
       case AssetsType.transfer:
         tips = "移交人";
+        name = assetUse.oldUserId ?? "";
         break;
       case AssetsType.handOver:
-        // TODO: Handle this case.
+        tips = "交回人";
+        name = assetUse.submitterName ?? "";
         break;
     }
     Widget child = Row(
@@ -227,7 +230,7 @@ class CommonItem extends StatelessWidget {
           width: 10.w,
         ),
         Text(
-          "$tips-${assetUse.oldUserId ?? ""}",
+          "$tips-$name",
           style: TextStyle(
               color: Colors.black,
               fontSize: 16.sp,

@@ -92,28 +92,14 @@ class CreateTransferController extends BaseController<CreateTransferState> {
 
     LoadingDialog.showLoading(context);
 
-    Map<String, dynamic> user = {"value": state.selectedUser.value?.name};
-    Map<String, dynamic> dept = {"value": state.selectedDepartment.value?.name};
-    List<UpdateAssetsRequest> request = state.selectAssetList
-        .map((element) =>
-            UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
-              "USER": user,
-              "USE_DEPT": dept,
-              "KAPIANZT":08,
-            }))
-        .toList();
 
-    await AssetManagement().updateAssetsForList(request);
     await TransferNetWork.createTransfer(
         billCode: state.orderNum.value,
         keeperId: state.selectedUser.value!.name,
         keepOrgId: state.selectedDepartment.value!.name,
         remark: state.reasonController.text, assets: state.selectAssetList);
-
-    AssetManagement().initAssets();
     LoadingDialog.dismiss(context);
-    EventBusHelper.fire(LoadAssets());
-    Get.back();
+
   }
 
   Future<bool> back() async {

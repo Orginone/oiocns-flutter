@@ -85,7 +85,7 @@ class CreateTransferPage
           ),
           CommonWidget.commonTextTile("移交人与部门", "${HiveUtils
               .getUser()
-              ?.userName??""}-${DepartmentUtils().currentDepartment?.name??""}"),
+              ?.userName??""}-${DepartmentUtils().currentDepartment?.name??""}",enabled: false, showLine: true),
           Obx(() {
             return CommonWidget.commonChoiceTile(
                 "移交至人员", state.selectedUser.value?.name ?? "",

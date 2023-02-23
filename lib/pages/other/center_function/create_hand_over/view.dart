@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/util/department_utils.dart';
+import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 
 import '../../add_asset/item.dart';
@@ -10,7 +12,8 @@ import 'logic.dart';
 import 'state.dart';
 
 
-class CreateHandOverPage extends BaseGetView<CreateHandOverController,CreateHandOverState>{
+class CreateHandOverPage
+    extends BaseGetView<CreateHandOverController, CreateHandOverState> {
   @override
   Widget buildView() {
     return Scaffold(
@@ -39,7 +42,11 @@ class CreateHandOverPage extends BaseGetView<CreateHandOverController,CreateHand
                 ),
               ),
             ),
-            CommonWidget.commonCreateSubmitWidget(),
+            CommonWidget.commonCreateSubmitWidget(submit: (){
+              controller.submit();
+            },draft: (){
+              controller.draft();
+            }),
           ],
         ),
       ),
@@ -53,19 +60,24 @@ class CreateHandOverPage extends BaseGetView<CreateHandOverController,CreateHand
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CommonWidget.commonHeadInfoWidget("基本信息"),
-          CommonWidget.commonTextTile(
-            "单据编号",
-            "xxxxxxx",
-            enabled: false,
-            textStyle: TextStyle(
-                color: Colors.black,
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w500),
-          ),
+          Obx(() {
+            return CommonWidget.commonTextTile(
+              "单据编号",
+              state.orderNum.value,
+              enabled: false,
+              textStyle: TextStyle(
+                  color: Colors.black,
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.w500),
+            );
+          }),
           SizedBox(
             height: 10.h,
           ),
-          CommonWidget.commonTextTile("交回人与交回部门", "xxxx-公司信息",
+          CommonWidget.commonTextTile("交回人与交回部门", "${HiveUtils
+              .getUser()
+              ?.userName ?? ""}-${DepartmentUtils().currentDepartment?.name ??
+              ""}",
               enabled: false, showLine: true),
           Obx(() {
             return CommonWidget.commonChoiceTile(
@@ -74,13 +86,13 @@ class CreateHandOverPage extends BaseGetView<CreateHandOverController,CreateHand
               controller.choicePeople();
             });
           }),
-          Obx(() {
-            return CommonWidget.commonChoiceTile(
-                "交回至部门", state.selectedDepartment.value?.name ?? "",
-                showLine: true, onTap: () {
-              controller.choiceDepartment();
-            });
-          }),
+          // Obx(() {
+          //   return CommonWidget.commonChoiceTile(
+          //       "交回至部门", state.selectedDepartment.value?.name ?? "",
+          //       showLine: true, onTap: () {
+          //     controller.choiceDepartment();
+          //   });
+          // }),
           CommonWidget.commonTextTile("交回原因", "",
               hint: "请填写交回原因",
               maxLine: 4,

@@ -16,8 +16,7 @@ class AssetNetWork{
       "sort": {"UPDATE_TIME": -1},
       "skip": 0,
       "limit": 9999,
-    }, status == 0?"user":"company");
-
+    },"company");
     if(result.success){
       result.data.forEach((json){
         use.add(AssetUse.fromJson(json));
