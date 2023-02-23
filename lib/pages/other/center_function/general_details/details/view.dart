@@ -5,6 +5,7 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/model/my_assets_list.dart';
 import 'package:orginone/pages/other/assets_config.dart';
+import 'package:orginone/pages/other/center_function/assets_check/check/state.dart';
 import 'package:orginone/pages/other/center_function/general_details/details/asset_description.dart';
 import 'package:orginone/pages/other/center_function/general_details/logic.dart';
 import 'package:orginone/pages/other/center_function/general_details/state.dart';
@@ -38,9 +39,11 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemBuilder: (BuildContext context, int index) {
-                    return detailedInfo(items(index+1,dstate.assetUse.approvalDocument!.detail![index]));
+                    return detailedInfo(items(index + 1,
+                        dstate.assetUse!.approvalDocument!.detail![index]));
                   },
-                  itemCount: dstate.assetUse.approvalDocument?.detail?.length??0,
+                  itemCount:
+                      dstate.assetUse?.approvalDocument?.detail?.length ?? 0,
                 ),
                 checkDetailedInfo(),
               ],
@@ -60,7 +63,25 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
         case AssetsType.approve:
           return Container();
         case AssetsType.check:
-          return Container();
+          return Row(
+            children: [
+              Image.network(
+                "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/rmb-icon.png",
+                width: 20.w,
+                height: 20.h,
+              ),
+              SizedBox(
+                width: 10.w,
+              ),
+              Text(
+                "${dstate.assets!.netVal ?? 0}",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500),
+              ),
+            ],
+          );
         case AssetsType.claim:
           return AssetDescription.claimDescription();
         case AssetsType.subscribe:
@@ -120,7 +141,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
                         ],
                       ),
                     ),
-                    Text(dstate.assetUse.approvalDocument?.createTime
+                    Text(dstate.assetUse?.approvalDocument?.createTime
                             ?.format(format: "yyyy-MM-DD HH:mm:ss") ??
                         ""),
                   ],
@@ -139,7 +160,9 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          dstate.assetUse.billCode ?? "",
+                          assetsType == AssetsType.check
+                              ? dstate.assets?.assetCode ?? ""
+                              : dstate.assetUse?.billCode ?? "",
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 25.sp,
@@ -166,11 +189,13 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
                           height: 5.h,
                         ),
                         Text(
-                          "提交人",
+                          assetsType == AssetsType.check ? "领用人" : "提交人",
                           style: TextStyle(color: Colors.grey, fontSize: 18.sp),
                         ),
                         Text(
-                          dstate.assetUse.oldUserId ?? "",
+                          assetsType == AssetsType.check
+                              ? (dstate.assets!.user?['value'] ?? "")
+                              : (dstate.assetUse?.oldUserId ?? ""),
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 25.sp,
@@ -196,18 +221,36 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
     if (assetsType != AssetsType.check) {
       return Container();
     }
-    return detailedInfo([
-      CommonWidget.commonTextContentWidget("GS1编号", ""),
-      CommonWidget.commonTextContentWidget("财务同步状态", ""),
-      CommonWidget.commonTextContentWidget("资产原值", ""),
-      CommonWidget.commonTextContentWidget("取得日期", ""),
-      CommonWidget.commonTextContentWidget("数量", ""),
-      CommonWidget.commonTextContentWidget("品牌", ""),
-      CommonWidget.commonTextContentWidget("规格型号", ""),
-      CommonWidget.commonTextContentWidget("存放地点", ""),
-      CommonWidget.commonTextContentWidget("取得方式", ""),
-      CommonWidget.commonTextContentWidget("预计使用期限(月)", ""),
-    ]);
+    return Column(
+      children: [
+        detailedInfo(
+          items(0, dstate.assets!),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        detailedInfo([
+          CommonWidget.commonTextContentWidget(
+              "GS1编号", dstate.assets!.gs1 ?? ""),
+          CommonWidget.commonTextContentWidget("财务同步状态", ""),
+          CommonWidget.commonTextContentWidget(
+              "资产原值", "${dstate.assets!.netVal ?? 0}"),
+          CommonWidget.commonTextContentWidget("取得日期",
+              DateTime.tryParse(dstate.assets!.quderq ?? "")?.format() ?? ""),
+          CommonWidget.commonTextContentWidget(
+              "数量", "${dstate.assets!.numOrArea ?? 0}"),
+          CommonWidget.commonTextContentWidget(
+              "品牌", dstate.assets!.brand ?? ""),
+          CommonWidget.commonTextContentWidget(
+              "规格型号", dstate.assets!.specMod ?? ""),
+          CommonWidget.commonTextContentWidget(
+              "存放地点", dstate.assets!.location ?? ""),
+          CommonWidget.commonTextContentWidget("取得方式", ""),
+          CommonWidget.commonTextContentWidget(
+              "预计使用期限(月)", dstate.assets!.minimumLimit ?? ""),
+        ]),
+      ],
+    );
   }
 
   Widget detailedInfo(List<Widget> items) {
@@ -232,9 +275,10 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
     switch (assetsType) {
       case AssetsType.check:
         return [
-          CommonWidget.commonTextContentWidget("资产编号", "xxxxxxxx"),
-          CommonWidget.commonTextContentWidget("资产分类", "xxxx"),
-          CommonWidget.commonTextContentWidget("资产名称", "xxx"),
+          CommonWidget.commonTextContentWidget("资产编号", assets.assetCode ?? ""),
+          CommonWidget.commonTextContentWidget("资产名称", assets.assetName ?? ""),
+          CommonWidget.commonTextContentWidget(
+              "资产分类", assets.assetType?['value'] ?? ""),
         ];
       case AssetsType.claim:
         return [
@@ -311,7 +355,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
           CommonWidget.commonTextContentWidget("品牌", assets.brand ?? ""),
           CommonWidget.commonTextContentWidget("存放地点", assets.location ?? ""),
           CommonWidget.commonTextContentWidget(
-              "原使用人", dstate.assetUse.submitterName ?? ""),
+              "原使用人", dstate.assetUse?.submitterName ?? ""),
         ];
       default:
         return <Widget>[];
@@ -321,9 +365,21 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
   Widget bottomButton() {
     switch (assetsType) {
       case AssetsType.handOver:
+        return Container();
         return CommonWidget.commonSubmitWidget(text: "重新提交");
       case AssetsType.check:
-        return CommonWidget.commonMultipleSubmitWidget(str1: "盘亏",str2: "盘存");
+        if (dstate.assets!.status != 0) {
+          return Container();
+        }
+        return CommonWidget.commonMultipleSubmitWidget(
+            str1: "盘亏",
+            str2: "盘存",
+            onTap1: () {
+              controller.inventory(CheckType.loss);
+            },
+            onTap2: () {
+              controller.inventory(CheckType.saved);
+            });
       default:
         return Container();
     }

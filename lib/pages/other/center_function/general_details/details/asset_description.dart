@@ -77,7 +77,7 @@ class AssetDescription{
                                   color: Colors.grey.shade400, fontSize: 16.sp),
                             ),
                             Text(
-                              state.assetUse.oldUserId??"",
+                              state.assetUse!.oldUserId??"",
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20.sp,
@@ -98,7 +98,7 @@ class AssetDescription{
                                   color: Colors.grey.shade400, fontSize: 16.sp),
                             ),
                             Text(
-                              state.assetUse.keeperId??"",
+                              state.assetUse!.keeperId??"",
                               style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20.sp,
@@ -146,7 +146,7 @@ class AssetDescription{
               width: 5.w,
             ),
             Text(
-              state.assetUse.applyRemark??"",
+              state.assetUse!.applyRemark??"",
               style: TextStyle(fontSize: 16.sp, color: Colors.black),
             ),
           ],
@@ -225,7 +225,7 @@ class AssetDescription{
                                  color: Colors.grey.shade300, fontSize: 16.sp),
                            ),
                            Text(
-                             state.assetUse.submitterName??"",
+                             state.assetUse!.submitterName??"",
                              style: TextStyle(
                                  color: Colors.black,
                                  fontSize: 20.sp,
@@ -246,7 +246,7 @@ class AssetDescription{
                                  color: Colors.grey.shade300, fontSize: 16.sp),
                            ),
                            Text(
-                             state.assetUse.userName??"",
+                             state.assetUse!.userName??"",
                              style: TextStyle(
                                  color: Colors.black,
                                  fontSize: 20.sp,
@@ -294,7 +294,7 @@ class AssetDescription{
              width: 5.w,
            ),
            Text(
-             state.assetUse.applyRemark??"",
+             state.assetUse!.applyRemark??"",
              style: TextStyle(fontSize: 16.sp, color: Colors.black),
            ),
          ],
@@ -302,6 +302,7 @@ class AssetDescription{
      ],
    );
  }
+
 
  static Widget claimDescription() {
     return Row(
@@ -362,7 +363,7 @@ class AssetDescription{
                  children: [
                    Text("处置方式",style: TextStyle(color: Colors.grey,fontSize: 16.sp),),
                    SizedBox(width: 5.w,),
-                   Text(DisposeTyep[state.assetUse.way!],style: TextStyle(color: Colors.black,fontSize: 16.sp),),
+                   Text(DisposeTyep[state.assetUse!.way!],style: TextStyle(color: Colors.black,fontSize: 16.sp),),
                  ],
                ),
              ),
@@ -400,7 +401,7 @@ class AssetDescription{
              width: 5.w,
            ),
            Text(
-             state.assetUse.applyRemark??"",
+             state.assetUse!.applyRemark??"",
              style: TextStyle(fontSize: 16.sp, color: Colors.black),
            ),
          ],

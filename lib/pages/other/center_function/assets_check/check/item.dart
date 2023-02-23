@@ -18,7 +18,7 @@ class Item extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed(Routers.generalDetails,arguments: {"AssetsType":AssetsType.check});
+        Get.toNamed(Routers.generalDetails,arguments: {"assetsType":AssetsType.check,"assets":assets});
       },
       child: Container(
         margin: EdgeInsets.only(left: 16.w, right: 16.w, top: 20.h),
