@@ -168,6 +168,7 @@ class CommonWidget {
                   title,
                   style: TextStyle(color: Colors.black, fontSize: 20.sp),
                 ),
+                SizedBox(height: 10.h,),
                 TextField(
                   controller: controller ?? TextEditingController(text: content),
                   maxLines: maxLine,

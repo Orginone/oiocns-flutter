@@ -110,7 +110,7 @@ class CreateClaimPage
               hint: "请填写资产名称",
               controller: state.detailedData[index].assetNameController,
               showLine: true),
-          CommonWidget.commonTextTile("领用人与部门", "xxxxxxx", showLine: true),
+          CommonWidget.commonTextTile("领用人与部门", "xxxxxxx", showLine: true,enabled: false),
           CommonWidget.commonTextTile("数量", "",
               hint: "请填写数量",
               controller: state.detailedData[index].quantityController,

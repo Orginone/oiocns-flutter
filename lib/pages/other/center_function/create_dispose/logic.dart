@@ -17,8 +17,12 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
   Future<bool> back() async {
     if (!addedDraft) {
       if ((state.disposeType.isNotEmpty ||
-          state.reasonController.text.isNotEmpty ||
-          state.selectAssetList.isNotEmpty) && !state.isEdit) {
+              state.reasonController.text.isNotEmpty ||
+              state.selectAssetList.isNotEmpty ||
+              state.assessment.value.isNotEmpty ||
+              state.phoneNumberController.text.isNotEmpty ||
+              state.unitController.text.isNotEmpty||state.unitType.value.isNotEmpty || state.assessment.value.isNotEmpty) &&
+          !state.isEdit) {
         YYBottomSheetDialog(context, DraftTips, callback: (i, str) {
           if (i == 0) {
             draft();

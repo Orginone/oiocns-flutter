@@ -94,7 +94,7 @@ class CreateHandOverController extends BaseController<CreateHandOverState> {
   Future<bool> back() async {
     if (!addedDraft) {
       if ((state.reasonController.text.isNotEmpty ||
-              state.selectAssetList.isNotEmpty) &&
+              state.selectAssetList.isNotEmpty || state.selectedUser.value!=null) &&
           !state.isEdit) {
         YYBottomSheetDialog(context, DraftTips, callback: (i, str) {
           if (i == 0) {

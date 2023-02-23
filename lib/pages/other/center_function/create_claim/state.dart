@@ -7,6 +7,8 @@ class CreateClaimState extends BaseGetState {
 
   TextEditingController reasonController = TextEditingController();
 
+  var orderNum = ''.obs;
+
   var detailedData = RxList<DetailedData>();
 
   CreateClaimState() {
