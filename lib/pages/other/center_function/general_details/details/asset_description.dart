@@ -304,7 +304,7 @@ class AssetDescription{
  }
 
 
- static Widget claimDescription() {
+ static Widget claimDescription(GeneralDetailsState state) {
     return Row(
       children: [
         Text(
@@ -315,28 +315,28 @@ class AssetDescription{
           width: 5.w,
         ),
         Text(
-          "工作需要",
+          state.assetUse?.applyRemark??"",
           style: TextStyle(fontSize: 16.sp, color: Colors.black),
         ),
         Expanded(
           child: Container(
             alignment: Alignment.centerRight,
-            child: CustomPaint(
-              painter: CustomAssetsListItemButton(Colors.deepOrangeAccent),
-              size: Size(100.w, 40.h),
-              child: Container(
-                width: 100.w,
-                height: 40.h,
-                alignment: Alignment.center,
-                child: Text(
-                  "退回",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24.sp,
-                  ),
-                ),
-              ),
-            ),
+            // child: CustomPaint(
+            //   painter: CustomAssetsListItemButton(Colors.deepOrangeAccent),
+            //   size: Size(100.w, 40.h),
+            //   child: Container(
+            //     width: 100.w,
+            //     height: 40.h,
+            //     alignment: Alignment.center,
+            //     child: Text(
+            //       "退回",
+            //       style: TextStyle(
+            //         color: Colors.white,
+            //         fontSize: 24.sp,
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ),
         )
       ],

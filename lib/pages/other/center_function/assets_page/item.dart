@@ -205,7 +205,8 @@ class CommonItem extends StatelessWidget {
       case AssetsType.check:
         break;
       case AssetsType.claim:
-        // TODO: Handle this case.
+        tips = "领用人";
+        name = assetUse.submitUserName ?? "";
         break;
       case AssetsType.dispose:
         tips = "提交人";

@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/event/choice_assets.dart';
+import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:worker_manager/worker_manager.dart';
 
@@ -29,30 +31,20 @@ class ChoiceAssetsController extends BaseController<ChoiceAssetsState> {
     // TODO: implement onReady
     super.onReady();
 
-    var mockList = await Executor().execute(
-        arg1:
-            ChoiceAssetMock['data']['childList'] as List<Map<String, dynamic>>,
-        fun1: getMockListModel);
-
-    state.mockList.addAll(mockList);
+    state.assetsCategory.addAll(CommonTreeManagement().assetsCategory);
   }
 
   void search(String str) {
     state.searchList.clear();
-    List<ChildList> allList = [];
 
-    for (var element in state.mockList) {
-      allList.addAll(element.getAllLastList());
-    }
-
-    var filter = allList
-        .where((element) => (element.categoryName?.contains(str)) ?? false);
+    var filter = state.assetsCategory
+        .where((element) => (element.name.contains(str)));
     if (filter.isNotEmpty) {
       state.searchList.addAll(filter);
     }
   }
 
-  void selectItem(ChildList item) {
+  void selectItem(XDictItem item) {
     state.selectedAsset.value = item;
   }
 
@@ -61,17 +53,4 @@ class ChoiceAssetsController extends BaseController<ChoiceAssetsState> {
 
     Get.back();
   }
-}
-
-Future<List<ChildList>> getMockListModel(
-    List<Map<String, dynamic>> json, TypeSendPort sendPort) async {
-  List<ChildList> list = [];
-
-  if (json.isNotEmpty) {
-    for (var value in json) {
-      list.add(ChildList.fromJson(value));
-    }
-  }
-
-  return list;
 }

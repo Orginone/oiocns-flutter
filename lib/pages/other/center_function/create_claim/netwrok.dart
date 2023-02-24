@@ -1,7 +1,6 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
-import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/event/load_assets.dart';
 import 'package:orginone/pages/other/center_function/create_claim/state.dart';
 import 'package:orginone/util/department_management.dart';
@@ -19,10 +18,11 @@ class ClaimNetWork {
         {
           "BILL_CODE": billCode,
           "APPLY_REMARK": remark,
+          "submitUserName": HiveUtils.getUser()?.userName ?? "",
           "approvalDocument":{
-            "details":detail.map((e){
+            "detail":detail.map((e){
               return {
-                "ASSET_TYPE": {e.assetType!.id: e.assetType!.name},
+                "ASSET_TYPE": {"value": e.assetType!.name},
                 "ASSET_NAME": e.assetNameController.text,
                 "CREATE_USER": HiveUtils.getUser()?.person?.id ?? "",
                 "submitUserName": HiveUtils.getUser()?.userName ?? "",
@@ -30,11 +30,11 @@ class ClaimNetWork {
                 "USE_DEPT": {
                   "value": DepartmentManagement().currentDepartment?.name ?? ""
                 },
-                "NUM_OR_AREA": e.quantityController.text,
+                "NUM_OR_AREA": int.tryParse(e.quantityController.text),
                 "SPEC_MOD": e.modelController.text,
                 "BRAND": e.brandController.text,
                 "LOCATION": "",
-                "isDistribution": e.newCreate,
+                "isDistribution": e.isDistribution,
               };
             }).toList()
           },

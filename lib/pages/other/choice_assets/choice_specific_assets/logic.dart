@@ -31,7 +31,7 @@ class ChoiceSpecificAssetsController
   }
 
   void selectItem(ChildList item) {
-   choiceAssetController.selectItem(item);
+   // choiceAssetController.selectItem(item);
   }
 
   void back() {

@@ -6,15 +6,15 @@ class ProductionOrderUtils {
   static const int _count = 0;
 
   static Future<String> productionSingleOrder(String type) async {
-    String ymd = DateTime.now().format(format: "yyyyMMDD");
+    String ymd = DateTime.now().format(format: "yyyyMMdd");
     String key = '${type}_$ymd';
 
     ResultType result =
         await KernelApi.getInstance().anystore.get(key, "company");
     if (result.success) {
-      int latestCount = _count + 1;
+      int latestCount = (result.data["count"]??_count )+ 1;
 
-      ResultType result = await KernelApi.getInstance().anystore.set(
+      ResultType result1 = await KernelApi.getInstance().anystore.set(
           key,
           {
             "operation": "replaceAll",
@@ -23,7 +23,7 @@ class ProductionOrderUtils {
             }
           },
           "company");
-      if(result.success){
+      if(result1.success){
         String countStr = '$latestCount ';
         return type + ymd + '00000000'.substring(0, 8 - countStr.length) + countStr;
       }

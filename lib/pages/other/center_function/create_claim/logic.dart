@@ -62,8 +62,7 @@ class CreateClaimController extends BaseController<CreateClaimState> {
     super.onReceivedEvent(event);
     if (event is ChoiceAssets) {
       if (event.selectedAsset != null) {
-        state.detailedData[index].assetClassification =
-            event.selectedAsset!.categoryName!;
+        state.detailedData[index].assetType = event.selectedAsset!;
         state.detailedData.refresh();
       }
     }
@@ -73,7 +72,7 @@ class CreateClaimController extends BaseController<CreateClaimState> {
     this.index = index;
     Get.toNamed(Routers.storageLocation)?.then((value){
       if(value!=null && value is StorageLocation){
-        state.detailedData[index].place = value.placeName??"";
+        state.detailedData[index].location = value.placeName??"";
         state.detailedData.refresh();
       }
     });
@@ -82,7 +81,7 @@ class CreateClaimController extends BaseController<CreateClaimState> {
   void newCreate(int index) {
     List<String> title = ["是", "否"];
     PickerUtils.showListStringPicker(context, titles: title, callback: (str) {
-      state.detailedData[index].newCreate = title.indexOf(str) == 0;
+      state.detailedData[index].isDistribution = title.indexOf(str) == 0;
       state.detailedData.refresh();
     });
   }
@@ -96,6 +95,7 @@ class CreateClaimController extends BaseController<CreateClaimState> {
   }
 
   void draft() {
+    addedDraft = true;
     create(isDraft: true);
   }
 

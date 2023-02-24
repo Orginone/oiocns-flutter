@@ -8,6 +8,7 @@ import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
 import 'package:orginone/pages/other/add_asset/binding.dart';
 import 'package:orginone/pages/other/add_asset/view.dart';
+import 'package:orginone/pages/other/batch_operation_asset/view.dart';
 import 'package:orginone/pages/other/bulk_removal_asset/binding.dart';
 import 'package:orginone/pages/other/bulk_removal_asset/view.dart';
 import 'package:orginone/pages/other/center_function/approve_documents/binding.dart';
@@ -46,6 +47,7 @@ import 'package:orginone/pages/setting/new_friend_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/util/hive_utils.dart';
 
+import 'pages/other/batch_operation_asset/binding.dart';
 import 'pages/other/center_function/create_claim/binding.dart';
 import 'pages/other/center_function/create_claim/view.dart';
 import 'pages/other/storage_location/binding.dart';
@@ -93,6 +95,9 @@ class Routers {
 
   //批量移除资产
   static const String bulkRemovalAsset = "/bulkRemovalAsset";
+
+  //批量操作资产
+  static const String batchOperationAsset = "/batchOperationAsset";
 
   //选择地点
   static const String storageLocation = "/storageLocation";
@@ -288,6 +293,11 @@ class Routers {
         name: Routers.createTransfer,
         page: () => CreateTransferPage(),
         binding: CreateTransferBinding(),
+      ),
+      GetPage(
+        name: Routers.batchOperationAsset,
+        page: () => BatchOperationAssetPage(),
+        binding: BatchOperationAssetBinding(),
       ),
     ];
   }

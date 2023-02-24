@@ -1,19 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 
 class ChoiceAssetsState extends BaseGetState {
   TextEditingController searchController = TextEditingController();
 
-  var mockList = <ChildList>[].obs;
+  var assetsCategory = <XDictItem>[].obs;
 
   //显示搜索页面
   var showSearchPage = false.obs;
 
   //选择的资产
-  var selectedAsset = Rxn<ChildList>();
+  var selectedAsset = Rxn<XDictItem>();
 
-  var searchList = <ChildList>[].obs;
+  var searchList = <XDictItem>[].obs;
 
   ChoiceAssetState() {
 

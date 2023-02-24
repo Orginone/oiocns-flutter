@@ -34,4 +34,12 @@ class CommonTreeManagement {
       _assetsCategory.addAll(res.data!.result!);
     }
   }
+
+  XDictItem? findTree(String name) {
+   var item =  _assetsCategory.where((element) => element.name == name);
+   if(item.isNotEmpty){
+     return item.first;
+   }
+   return null;
+  }
 }

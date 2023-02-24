@@ -47,6 +47,7 @@ class MyAssetsList {
   String? stockTaskCode;
   String? assetRemark;
 
+  bool? isDistribution;
 
   bool isOpen = false;
 
@@ -127,6 +128,7 @@ class MyAssetsList {
     status = json['status'];
     assetRemark = json['assetRemark'];
     stockTaskCode = json['stockTaskCode'];
+    isDistribution = json['isDistribution'];
   }
 
   update(Map<String, dynamic> json) {
@@ -174,6 +176,7 @@ class MyAssetsList {
     minimumLimit = json['MINIMUM_LIMIT'] ?? minimumLimit;
     acquirementWay = json['ACQUIREMENT_WAY'] ?? acquirementWay;
     kapianzt = json['KAPIANZT'] ?? kapianzt;
+    isDistribution = json['isDistribution']??isDistribution;
   }
 
   bool get notLockStatus =>
@@ -230,6 +233,7 @@ class MyAssetsList {
     data['status'] = this.status;
     data["stockTaskCode"] = this.stockTaskCode;
     data['assetRemark'] = this.assetRemark;
+    data['isDistribution'] = this.isDistribution;
     return data;
   }
 

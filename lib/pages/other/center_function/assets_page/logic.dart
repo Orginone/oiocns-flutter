@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:orginone/event/load_assets.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/center_function/assets_page/network.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/util/asset_management.dart';
 
 import '../../../../../dart/core/getx/base_list_controller.dart';
@@ -103,5 +104,16 @@ class AssetsController extends BaseListController<AssetsState> {
 
   void create(AssetsType assetsType) {
     Get.toNamed(assetsType.createRoute);
+  }
+
+  void jumpBatchAssets() {
+
+    var list =  state.dataList.where((p0) => p0.notLockStatus).toList();
+    Get.toNamed(
+      Routers.batchOperationAsset,
+      arguments: {
+        "list": list,
+      },
+    );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -80,7 +81,9 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
 
   Widget batchDelete() {
     return IconButton(
-      onPressed: () {},
+      onPressed: () {
+        controller.jumpBatchAssets();
+      },
       icon: Icon(
         Icons.batch_prediction,
         size: 32.w,

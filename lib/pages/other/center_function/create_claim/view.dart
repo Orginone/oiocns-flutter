@@ -89,7 +89,7 @@ class CreateClaimPage
             height: 10.h,
           ),
           CommonWidget.commonTextTile("申领事由", "",
-              hint: "请填写申领事由", maxLine: 4, controller: state.reasonController),
+              hint: "请填写申领事由", maxLine: 4, controller: state.reasonController,required: true),
         ],
       ),
     );
@@ -116,7 +116,7 @@ class CreateClaimPage
                 : Container(),
           ),
           CommonWidget.commonChoiceTile(
-              "资产分类", state.detailedData[index].assetClassification,
+              "资产分类", state.detailedData[index].assetType?.name??"",
               required: true, onTap: () {
             controller.choiceAssetClassification(index);
           }, showLine: true),
@@ -148,7 +148,7 @@ class CreateClaimPage
           //       controller.choicePlace(index);
           //     }, showLine: true),
           CommonWidget.commonChoiceTile(
-              "是否信创", state.detailedData[index].newCreate ? "是" : "否",
+              "是否信创", state.detailedData[index].isDistribution ? "是" : "否",
               onTap: () {
             controller.newCreate(index);
           }, showLine: true),

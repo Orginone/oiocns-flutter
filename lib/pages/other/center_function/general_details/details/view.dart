@@ -10,6 +10,8 @@ import 'package:orginone/pages/other/center_function/general_details/details/ass
 import 'package:orginone/pages/other/center_function/general_details/logic.dart';
 import 'package:orginone/pages/other/center_function/general_details/state.dart';
 import 'package:orginone/util/date_utils.dart';
+import 'package:orginone/util/department_management.dart';
+import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/custom_paint.dart';
 
@@ -83,7 +85,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
             ],
           );
         case AssetsType.claim:
-          return AssetDescription.claimDescription();
+          return AssetDescription.claimDescription(dstate);
         case AssetsType.subscribe:
           return Container();
         case AssetsType.dispose:
@@ -195,7 +197,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
                         Text(
                           assetsType == AssetsType.check
                               ? (dstate.assets!.user?['value'] ?? "")
-                              : (dstate.assetUse?.oldUserId ?? ""),
+                              : (dstate.assetUse?.oldUserId ?? dstate.assetUse?.submitterName??dstate.assetUse?.submitUserName??""),
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 25.sp,
@@ -289,14 +291,17 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w500),
           ),
-          CommonWidget.commonTextContentWidget("资产分类", "对讲机"),
-          CommonWidget.commonTextContentWidget("资产明细", "对讲机"),
-          CommonWidget.commonTextContentWidget("领用人和部门", "芳-测试部"),
-          CommonWidget.commonTextContentWidget("数量", "0"),
-          CommonWidget.commonTextContentWidget("规格型号", ""),
-          CommonWidget.commonTextContentWidget("品牌", ""),
-          CommonWidget.commonTextContentWidget("存放地点", ""),
-          CommonWidget.commonTextContentWidget("是否信创", ""),
+          CommonWidget.commonTextContentWidget("资产分类", assets.assetType?['value']??""),
+          CommonWidget.commonTextContentWidget("资产名称", assets.assetType?['value']??""),
+          CommonWidget.commonTextContentWidget("领用人和部门",  "${HiveUtils
+              .getUser()
+              ?.userName ?? ""}-${DepartmentManagement().currentDepartment?.name ??
+              ""}"),
+          CommonWidget.commonTextContentWidget("数量", "${assets.numOrArea??0}"),
+          CommonWidget.commonTextContentWidget("规格型号", assets.specMod??""),
+          CommonWidget.commonTextContentWidget("品牌", assets.brand??""),
+          CommonWidget.commonTextContentWidget("存放地点", assets.location??""),
+          CommonWidget.commonTextContentWidget("是否信创", assets.isDistribution==null?"":assets.isDistribution!?"是":"否"),
         ];
       case AssetsType.dispose:
         return [

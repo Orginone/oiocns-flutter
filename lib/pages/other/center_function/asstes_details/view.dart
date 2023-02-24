@@ -83,7 +83,7 @@ class AssetsDetailsPage
                   textSize: 22, contentSize: 22, padding: defaultPadding),
               CommonWidget.commonTextContentWidget("GS1编码", state.assets.gs1??"",
                   textSize: 22, contentSize: 22, padding: defaultPadding),
-              CommonWidget.commonTextContentWidget("是否信创", "",
+              CommonWidget.commonTextContentWidget("是否信创", state.assets.isDistribution==null?"":state.assets.isDistribution!?"是":"否",
                   textSize: 22, contentSize: 22, padding: defaultPadding),
               CommonWidget.commonTextContentWidget("实际使用人", state.assets.user?["value"]??"",
                   textSize: 22, contentSize: 22, padding: defaultPadding),

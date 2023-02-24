@@ -56,9 +56,9 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
   }
 
   Widget classificationName() {
-    if (choiceAssetController.state.selectedAsset.value?.childList?.isEmpty ?? false) {
-      return Container();
-    }
+    // if (choiceAssetController.state.selectedAsset.value?.childList?.isEmpty ?? false) {
+    //   return Container();
+    // }
     return Container(
       color: Colors.white,
       width: double.infinity,
@@ -341,7 +341,7 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
               ),
               Obx(() {
                 return Text(
-                  choiceAssetController.state.selectedAsset.value?.categoryName ?? "",
+                  choiceAssetController.state.selectedAsset.value?.name ?? "",
                   style: TextStyle(
                       color: XColors.themeColor,
                       fontSize: 20.sp,
