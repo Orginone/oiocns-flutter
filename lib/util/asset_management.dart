@@ -25,7 +25,6 @@ class AssetManagement {
         "company");
     _assets.clear();
     if (result.success) {
-      _assets.clear();
       for (var json in result.data) {
         _assets.add(MyAssetsList.fromJson(json));
       }
@@ -37,7 +36,7 @@ class AssetManagement {
   }
 
   List<MyAssetsList> deepCopyAssets() {
-    var list = _assets!.map((e) => e.toJson()).toList();
+    var list = _assets.map((e) => e.toJson()).toList();
     return list.map((e) => MyAssetsList.fromJson(e)).toList();
   }
 

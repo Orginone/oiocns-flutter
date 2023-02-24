@@ -143,7 +143,7 @@ class HomeController extends TabsController {
   }
 
   Future<void> initData() async {
-    Future.delayed(const Duration(milliseconds: 200), () async {
+    Future.delayed(const Duration(milliseconds: 400), () async {
       Future.wait([
         AssetManagement().initAssets(),
         DepartmentManagement().initDepartment(),
