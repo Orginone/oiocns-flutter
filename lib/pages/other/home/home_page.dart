@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -5,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/template/tabs.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/other/assets_config.dart';
@@ -131,39 +134,40 @@ class HomeController extends TabsController {
     setIndex(tabs.indexOf(center));
   }
 
-  @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
-    EventBusHelper.register(this, (event) async{
-      if (event is InitHomeData) {
-        await initData();
-      }
-    });
-
-  }
 
   Future<void> initData() async {
-    LoadingDialog.showLoading(Get.context!,msg: "加载数据中");
+
     try{
-      await Future.delayed(const Duration(seconds:1), () async {
-        Future.wait([
+      if(KernelApi.getInstance().anystore.isOnline){
+        log('连接成功---------${KernelApi.getInstance().anystore.isOnline}');
+        Fluttertoast.showToast(msg:"连接成功 开始加载数据");
+        await Future.wait([
           AssetManagement().initAssets(),
           DepartmentManagement().initDepartment(),
           CommonTreeManagement().initTree(),
         ]);
-      });
+        log('数据加载完成');
+        Fluttertoast.showToast(msg:"加载数据成功");
+      }else{
+       await Future.delayed(Duration(milliseconds: 200),() async{
+         log('尝试重新连接---------${KernelApi.getInstance().anystore.isOnline}');
+          await initData();
+        });
+      }
+
     }catch(e){
       Fluttertoast.showToast(msg: e.toString());
     }
-    LoadingDialog.dismiss(Get.context!);
+
   }
 
   @override
   void onReady() async{
     // TODO: implement onReady
     super.onReady();
+    LoadingDialog.showLoading(Get.context!,msg: "加载数据中");
     await initData();
+    LoadingDialog.dismiss(Get.context!);
   }
 
   @override
