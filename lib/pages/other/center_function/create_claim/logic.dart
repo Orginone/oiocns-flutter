@@ -1,10 +1,14 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/event/choice_assets.dart';
 import 'package:orginone/pages/other/storage_location/state.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/production_order_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
+import '../../assets_config.dart';
+import 'netwrok.dart';
 import 'state.dart';
 
 class CreateClaimController extends BaseController<CreateClaimState> {
@@ -13,18 +17,38 @@ class CreateClaimController extends BaseController<CreateClaimState> {
 
   //明细下标用于数据填充
   int index = 0;
-  @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
 
+  bool addedDraft = false;
+
+  Future<bool> back() async {
+    if (!addedDraft) {
+      if ((state.detailedData.isNotEmpty ||
+          state.reasonController.text.isNotEmpty ||
+          state.orderNum.isEmpty) &&
+          !state.isEdit) {
+        YYBottomSheetDialog(context, DraftTips, callback: (i, str) {
+          if (i == 0) {
+            draft();
+          } else if (i == 1) {
+            Get.back();
+          }
+        });
+      }
+    }
+    if (state.isEdit) {
+      return true;
+    }
+    return true;
   }
 
   @override
-  void onReady() {
+  void onReady() async{
     // TODO: implement onReady
     super.onReady();
-    state.detailedData.add(DetailedData());
+    if (!state.isEdit) {
+      state.orderNum.value =
+          await ProductionOrderUtils.productionSingleOrder("ZCSY");
+    }
   }
 
   void choiceAssetClassification(int index) {
@@ -64,10 +88,31 @@ class CreateClaimController extends BaseController<CreateClaimState> {
   }
 
   void addDetailed() {
-    state.detailedData.add(DetailedData());
+    state.detailedData.add(ClaimDetailed());
   }
 
   void deleteDetailed(int index) {
     state.detailedData.removeAt(index);
+  }
+
+  void draft() {
+    create(isDraft: true);
+  }
+
+  Future submit() async{
+    if(state.reasonController.text.isEmpty){
+      return Fluttertoast.showToast(msg: "请输入申领事由");
+    }
+    if(state.detailedData.where((p0) => p0.assetType == null).isNotEmpty){
+      return Fluttertoast.showToast(msg: "请选择资产分类");
+    }
+    if(state.detailedData.where((p0) => p0.assetNameController.text.isEmpty).isNotEmpty){
+      return Fluttertoast.showToast(msg: "请输入资产名称");
+    }
+    create();
+  }
+
+  void create({bool isDraft = false}){
+    ClaimNetWork.creteClaim(billCode: state.orderNum.value, remark: state.reasonController.text, detail: state.detailedData,isDraft: isDraft);
   }
 }

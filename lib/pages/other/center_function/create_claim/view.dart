@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/util/department_management.dart';
+import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 
 import 'logic.dart';
@@ -19,24 +22,33 @@ class CreateClaimPage
         centerTitle: true,
         backgroundColor: XColors.themeColor,
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    basicInfo(),
-                    detailedList(),
-                    CommonWidget.commonAddDetailedWidget(onTap: () {
-                      controller.addDetailed();
-                    }, text: '添加明细'),
-                  ],
+      body: WillPopScope(
+        onWillPop: () {
+          return controller.back();
+        },
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      basicInfo(),
+                      detailedList(),
+                      CommonWidget.commonAddDetailedWidget(onTap: () {
+                        controller.addDetailed();
+                      }, text: '添加明细'),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            CommonWidget.commonCreateSubmitWidget(),
-          ],
+              CommonWidget.commonCreateSubmitWidget(submit: (){
+                controller.submit();
+              },draft: (){
+                controller.draft();
+              }),
+            ],
+          ),
         ),
       ),
     );
@@ -62,15 +74,17 @@ class CreateClaimPage
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CommonWidget.commonHeadInfoWidget("基本信息"),
-          CommonWidget.commonTextTile(
-            "单据编号",
-            "xxxxxxx",
-            enabled: false,
-            textStyle: TextStyle(
-                color: Colors.black,
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w500),
-          ),
+          Obx(() {
+            return CommonWidget.commonTextTile(
+              "单据编号",
+              state.orderNum.value,
+              enabled: false,
+              textStyle: TextStyle(
+                  color: Colors.black,
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.w500),
+            );
+          }),
           SizedBox(
             height: 10.h,
           ),
@@ -91,14 +105,14 @@ class CreateClaimPage
             "申领明细-${index + 1}",
             action: index > 0
                 ? GestureDetector(
-                    child: Text(
-                      "删除",
-                      style: TextStyle(color: Colors.blue, fontSize: 16.sp),
-                    ),
-                    onTap: () {
-                      controller.deleteDetailed(index);
-                    },
-                  )
+              child: Text(
+                "删除",
+                style: TextStyle(color: Colors.blue, fontSize: 16.sp),
+              ),
+              onTap: () {
+                controller.deleteDetailed(index);
+              },
+            )
                 : Container(),
           ),
           CommonWidget.commonChoiceTile(
@@ -109,8 +123,12 @@ class CreateClaimPage
           CommonWidget.commonTextTile("资产名称", "",
               hint: "请填写资产名称",
               controller: state.detailedData[index].assetNameController,
-              showLine: true),
-          CommonWidget.commonTextTile("领用人与部门", "xxxxxxx", showLine: true,enabled: false),
+              showLine: true,required: true),
+          CommonWidget.commonTextTile(
+              "领用人与部门", "${HiveUtils
+              .getUser()
+              ?.userName ?? ""}-${DepartmentManagement().currentDepartment?.name ??
+              ""}", showLine: true, enabled: false),
           CommonWidget.commonTextTile("数量", "",
               hint: "请填写数量",
               controller: state.detailedData[index].quantityController,
@@ -118,18 +136,20 @@ class CreateClaimPage
           CommonWidget.commonTextTile("规格型号", "",
               hint: "请填写规格型号",
               controller: state.detailedData[index].modelController,
-              showLine: true),
+              showLine: true,inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+              ]),
           CommonWidget.commonTextTile("品牌", "",
               hint: "请填写品牌",
               controller: state.detailedData[index].brandController,
               showLine: true),
-          CommonWidget.commonChoiceTile("存放地点", state.detailedData[index].place,
-              required: true, onTap: () {
-            controller.choicePlace(index);
-          }, showLine: true),
+          // CommonWidget.commonChoiceTile("存放地点", state.detailedData[index].place,
+          //     required: true, onTap: () {
+          //       controller.choicePlace(index);
+          //     }, showLine: true),
           CommonWidget.commonChoiceTile(
               "是否信创", state.detailedData[index].newCreate ? "是" : "否",
-              required: true, onTap: () {
+              onTap: () {
             controller.newCreate(index);
           }, showLine: true),
         ],

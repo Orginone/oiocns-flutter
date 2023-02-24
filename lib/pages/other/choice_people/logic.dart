@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
-import 'package:orginone/util/department_utils.dart';
+import 'package:orginone/util/department_management.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
@@ -28,8 +28,8 @@ class ChoicePeopleController extends BaseController<ChoicePeopleState> {
     // TODO: implement onReady
     super.onReady();
 
-    state.departments.value = DepartmentUtils().departments;
-    state.allUser = DepartmentUtils().getAllUser(state.departments);
+    state.departments.value = DepartmentManagement().departments;
+    state.allUser = DepartmentManagement().getAllUser(state.departments);
   }
 
   void search(String str) {

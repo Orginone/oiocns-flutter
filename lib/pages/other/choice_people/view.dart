@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
-import 'package:orginone/util/department_utils.dart';
+import 'package:orginone/util/department_management.dart';
 import 'package:orginone/widget/common_widget.dart';
 
 import 'item.dart';
@@ -186,7 +186,7 @@ class ChoicePeoplePage
                         ),
                         alignment: PlaceholderAlignment.middle),
                     TextSpan(
-                        text: DepartmentUtils().getCurrentCompanyName(),
+                        text: DepartmentManagement().getCurrentCompanyName(),
                         style: state.selectedGroup.isEmpty
                             ? selectedTextStyle
                             : unSelectedTextStyle)

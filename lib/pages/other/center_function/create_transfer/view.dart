@@ -3,10 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:orginone/components/unified.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/other/center_function/create_transfer/state.dart';
-import 'package:orginone/util/department_utils.dart';
+import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 
@@ -85,7 +84,7 @@ class CreateTransferPage
           ),
           CommonWidget.commonTextTile("移交人与部门", "${HiveUtils
               .getUser()
-              ?.userName??""}-${DepartmentUtils().currentDepartment?.name??""}",enabled: false, showLine: true),
+              ?.userName??""}-${DepartmentManagement().currentDepartment?.name??""}",enabled: false, showLine: true),
           Obx(() {
             return CommonWidget.commonChoiceTile(
                 "移交至人员", state.selectedUser.value?.name ?? "",

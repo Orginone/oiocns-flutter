@@ -622,7 +622,7 @@ class XDictItem {
   final String value;
 
   // 公开的
-  final bool public;
+  final bool? public;
 
   // 创建组织/个人
   final String belongId;
@@ -686,18 +686,20 @@ class XDictItem {
         version = json["version"],
         createTime = json["createTime"],
         updateTime = json["updateTime"],
-        dict = XDict.fromJson(json["dict"]),
-        belong = XTarget.fromJson(json["belong"]);
+        dict = json["dict"]!=null?XDict.fromJson(json["dict"]):null,
+        belong =json["belong"]!=null?XTarget.fromJson(json["belong"]):null;
 
   //通过动态数组解析成List
-  static List<XDictItem> fromList(List<Map<String, dynamic>>? list) {
+  static List<XDictItem> fromList(List<dynamic>? list) {
     if (list == null) {
       return [];
     }
     List<XDictItem> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
-        retList.add(XDictItem.fromJson(item));
+        if(item is Map<String,dynamic>){
+          retList.add(XDictItem.fromJson(item));
+        }
       }
     }
     return retList;
@@ -727,13 +729,13 @@ class XDictItem {
 //枚举字典项查询返回集合
 class XDictItemArray {
   // 便宜量
-  final int offset;
+  final int? offset;
 
   // 最大数量
-  final int limit;
+  final int? limit;
 
   // 总数
-  final int total;
+  final int? total;
 
   // 结果
   final List<XDictItem>? result;

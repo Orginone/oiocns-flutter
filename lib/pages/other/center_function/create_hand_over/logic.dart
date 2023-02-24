@@ -70,14 +70,13 @@ class CreateHandOverController extends BaseController<CreateHandOverState> {
     });
   }
 
-  void submit() async {
+  Future submit() async {
     if (state.reasonController.text.isEmpty) {
-      Fluttertoast.showToast(msg: "请输入移交原因");
-      return;
+      return Fluttertoast.showToast(msg: "请输入移交原因");
     }
     if (state.selectAssetList.isEmpty) {
-      Fluttertoast.showToast(msg: "请至少选择一项资产");
-      return;
+      return Fluttertoast.showToast(msg: "请至少选择一项资产");
+
     }
     LoadingDialog.showLoading(context);
 
@@ -99,7 +98,6 @@ class CreateHandOverController extends BaseController<CreateHandOverState> {
         YYBottomSheetDialog(context, DraftTips, callback: (i, str) {
           if (i == 0) {
             draft();
-            Get.back();
           } else if (i == 1) {
             Get.back();
           }

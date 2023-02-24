@@ -267,7 +267,7 @@ class KernelApi {
     return await request(
       ReqestType(
         module: 'thing',
-        action: 'UpdateDictItem',
+        action: 'QueryDictItems',
         params: params,
       ),
       XDictItemArray.fromJson,

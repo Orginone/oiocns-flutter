@@ -6,7 +6,7 @@ import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/model/asset_use.dart';
 import 'package:orginone/model/my_assets_list.dart';
-import 'package:orginone/util/department_utils.dart';
+import 'package:orginone/util/department_management.dart';
 
 class CreateTransferState extends BaseGetState{
   late bool isEdit;
@@ -30,8 +30,8 @@ class CreateTransferState extends BaseGetState{
     if(isEdit){
       assetUse = Get.arguments?['assetUse'];
       selectAssetList.addAll(assetUse.approvalDocument?.detail??[]);
-      selectedUser.value =  DepartmentUtils().findXTargetById(assetUse.keeperId??"");
-      selectedDepartment.value = DepartmentUtils().findITargetById(assetUse.keeperOrgId??"");
+      selectedUser.value =  DepartmentManagement().findXTargetById(assetUse.keeperId??"");
+      selectedDepartment.value = DepartmentManagement().findITargetById(assetUse.keeperOrgId??"");
       orderNum.value = assetUse.billCode??"";
       reasonController.text = assetUse.applyRemark??"";
     }

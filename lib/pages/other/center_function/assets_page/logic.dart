@@ -47,7 +47,7 @@ class AssetsController extends BaseListController<AssetsState> {
         await loadAssetUse("asset_check", code: code);
         break;
       case AssetsType.claim:
-        // TODO: Handle this case.
+        loadAssetUse("asset_receive", code: code);
         break;
       case AssetsType.dispose:
         await loadAssetUse("disposal", code: code);

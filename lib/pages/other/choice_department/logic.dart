@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
-import 'package:orginone/util/department_utils.dart';
+import 'package:orginone/util/department_management.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
@@ -26,8 +26,8 @@ class ChoiceDepartmentController extends BaseController<ChoiceDepartmentState> {
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
-    state.departments.value = DepartmentUtils().departments;
-    state.allDepartment = DepartmentUtils().getAllDepartment(state.departments);
+    state.departments.value = DepartmentManagement().departments;
+    state.allDepartment = DepartmentManagement().getAllDepartment(state.departments);
   }
 
   void search(String str) {

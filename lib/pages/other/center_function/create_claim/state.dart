@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 
 class CreateClaimState extends BaseGetState {
@@ -9,7 +10,7 @@ class CreateClaimState extends BaseGetState {
 
   var orderNum = ''.obs;
 
-  var detailedData = RxList<DetailedData>();
+  var detailedData = RxList<ClaimDetailed>();
 
   CreateClaimState() {
     isEdit = Get.arguments?['isEdit'] ?? false;
@@ -18,7 +19,7 @@ class CreateClaimState extends BaseGetState {
 }
 
 
-class DetailedData {
+class ClaimDetailed {
 
   TextEditingController assetNameController = TextEditingController();
 
@@ -27,6 +28,8 @@ class DetailedData {
   TextEditingController modelController = TextEditingController();
 
   TextEditingController brandController = TextEditingController();
+
+  XDictItem? assetType;
 
   bool newCreate = false;
 

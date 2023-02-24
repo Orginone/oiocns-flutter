@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/util/department_utils.dart';
+import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 
@@ -24,30 +24,35 @@ class CreateHandOverPage
         backgroundColor: XColors.themeColor,
       ),
       backgroundColor: Colors.grey.shade200,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    basicInfo(),
-                    transferInfo(),
-                    CommonWidget.commonAddDetailedWidget(
-                        text: "选择资产",
-                        onTap: () {
-                          controller.jumpAddAsset();
-                        })
-                  ],
+      body: WillPopScope(
+        onWillPop: () {
+          return controller.back();
+        },
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      basicInfo(),
+                      transferInfo(),
+                      CommonWidget.commonAddDetailedWidget(
+                          text: "选择资产",
+                          onTap: () {
+                            controller.jumpAddAsset();
+                          })
+                    ],
+                  ),
                 ),
               ),
-            ),
-            CommonWidget.commonCreateSubmitWidget(submit: (){
-              controller.submit();
-            },draft: (){
-              controller.draft();
-            }),
-          ],
+              CommonWidget.commonCreateSubmitWidget(submit: (){
+                controller.submit();
+              },draft: (){
+                controller.draft();
+              }),
+            ],
+          ),
         ),
       ),
     );
@@ -76,7 +81,7 @@ class CreateHandOverPage
           ),
           CommonWidget.commonTextTile("交回人与交回部门", "${HiveUtils
               .getUser()
-              ?.userName ?? ""}-${DepartmentUtils().currentDepartment?.name ??
+              ?.userName ?? ""}-${DepartmentManagement().currentDepartment?.name ??
               ""}",
               enabled: false, showLine: true),
           Obx(() {

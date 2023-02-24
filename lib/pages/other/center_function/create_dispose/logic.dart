@@ -26,7 +26,6 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
         YYBottomSheetDialog(context, DraftTips, callback: (i, str) {
           if (i == 0) {
             draft();
-            Get.back();
           } else if (i == 1) {
             Get.back();
           }
@@ -92,18 +91,15 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
     addedDraft = true;
   }
 
-  void submit() async {
+  Future submit() async {
     if (state.disposeType.value.isEmpty) {
-      Fluttertoast.showToast(msg: "请选择处置方式");
-      return;
+      return Fluttertoast.showToast(msg: "请选择处置方式");
     }
     if (state.reasonController.text.isEmpty) {
-      Fluttertoast.showToast(msg: "请输入申请原因");
-      return;
+      return Fluttertoast.showToast(msg: "请输入申请原因");
     }
     if (state.selectAssetList.isEmpty) {
-      Fluttertoast.showToast(msg: "请至少选择一项资产");
-      return;
+      return Fluttertoast.showToast(msg: "请至少选择一项资产");
     }
     create();
 

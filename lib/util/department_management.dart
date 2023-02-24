@@ -5,22 +5,22 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/util/hive_utils.dart';
 
-class DepartmentUtils {
-  static final DepartmentUtils _instance = DepartmentUtils._();
+class DepartmentManagement {
+  static final DepartmentManagement _instance = DepartmentManagement._();
 
-  factory DepartmentUtils() => _instance;
+  factory DepartmentManagement() => _instance;
 
-  DepartmentUtils._();
+  DepartmentManagement._();
 
   SettingController get setting => Get.find<SettingController>();
 
-  late List<ITarget> _departments;
+  final List<ITarget> _departments = [];
 
   List<ITarget> get departments => _departments;
 
   Future<void> initDepartment() async {
-    _departments = [];
     var list = await setting.company?.loadSubTeam(reload: true)??[];
+    _departments.clear();
     if(list.isNotEmpty){
       _departments.addAll(list);
       if (_departments.isNotEmpty) {

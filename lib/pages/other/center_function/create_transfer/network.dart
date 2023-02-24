@@ -5,12 +5,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/event/load_assets.dart';
 import 'package:orginone/model/my_assets_list.dart';
 import 'package:orginone/util/asset_management.dart';
-import 'package:orginone/util/department_utils.dart';
+import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/hive_utils.dart';
 
@@ -36,8 +34,8 @@ class TransferNetWork{
       "BILL_CODE":billCode,
       "KEEPER_ID":keeperId,
       "KEEP_ORG_ID":keepOrgId,
-      "OLD_ORG_NAME":DepartmentUtils().currentDepartment?.name,
-      "OLD_ORG_ID":DepartmentUtils().currentDepartment?.name,
+      "OLD_ORG_NAME":DepartmentManagement().currentDepartment?.name,
+      "OLD_ORG_ID":DepartmentManagement().currentDepartment?.name,
       "OLD_USER_ID":HiveUtils.getUser()?.person?.name,
       "APPLY_REMARK":remark,
       "status": isDraft?0:1,
@@ -48,8 +46,8 @@ class TransferNetWork{
         "KEEPER_ID": keeperId,
         "KEEP_ORG_ID": keepOrgId,
         "CREATE_USER": HiveUtils.getUser()?.person?.id,
-        "OLD_ORG_ID": DepartmentUtils().currentDepartment?.name,
-        "OLD_ORG_NAME": DepartmentUtils().currentDepartment?.name,
+        "OLD_ORG_ID": DepartmentManagement().currentDepartment?.name,
+        "OLD_ORG_NAME": DepartmentManagement().currentDepartment?.name,
         "detail": assets.map((e) => e.toJson()).toList(),
         "submitUserName": HiveUtils.getUser()?.person?.name,
       }

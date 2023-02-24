@@ -14,9 +14,6 @@ class AssetManagement {
   List<MyAssetsList> get assets => _assets;
 
   Future<void> initAssets() async {
-    if(_assets.isNotEmpty){
-      return;
-    }
     ResultType result = await KernelApi.getInstance().anystore.aggregate(
         "assets_data",
         {
