@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/other/assets_config.dart';
+import 'package:orginone/widget/keep_alive_widget.dart';
 
 import 'approval_process/view.dart';
 import 'details/view.dart';
@@ -71,8 +72,8 @@ class GeneralDetailsPage
     return TabBarView(
       controller: state.tabController,
       children: [
-        KeepAlive(keepAlive: true, child: DetailsPage(state.assetsType)),
-        KeepAlive(keepAlive: true, child: ApprovalProcessPage()),
+        KeepAliveWidget(child: DetailsPage(state.assetsType)),
+        KeepAliveWidget(child: ApprovalProcessPage()),
       ],
     );
   }
