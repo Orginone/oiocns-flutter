@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/template/tabs.dart';
@@ -16,6 +17,7 @@ import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
+import 'package:orginone/widget/loading_dialog.dart';
 
 class HomePage extends GetView<HomeController> {
   const HomePage({Key? key}) : super(key: key);
@@ -133,23 +135,35 @@ class HomeController extends TabsController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    EventBusHelper.register(this, (event) {
+    EventBusHelper.register(this, (event) async{
       if (event is InitHomeData) {
-        initData();
+        await initData();
       }
     });
 
-    initData();
   }
 
   Future<void> initData() async {
-    Future.delayed(const Duration(milliseconds: 400), () async {
-      Future.wait([
-        AssetManagement().initAssets(),
-        DepartmentManagement().initDepartment(),
-        CommonTreeManagement().initTree(),
-      ]);
-    });
+    LoadingDialog.showLoading(Get.context!,msg: "加载数据中");
+    try{
+      await Future.delayed(const Duration(seconds:1), () async {
+        Future.wait([
+          AssetManagement().initAssets(),
+          DepartmentManagement().initDepartment(),
+          CommonTreeManagement().initTree(),
+        ]);
+      });
+    }catch(e){
+      Fluttertoast.showToast(msg: e.toString());
+    }
+    LoadingDialog.dismiss(Get.context!);
+  }
+
+  @override
+  void onReady() async{
+    // TODO: implement onReady
+    super.onReady();
+    await initData();
   }
 
   @override
