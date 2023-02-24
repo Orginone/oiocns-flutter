@@ -5,8 +5,12 @@ import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/template/tabs.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/pages/chat/message_page.dart';
+import 'package:orginone/pages/index/fl_chart/LineChart3.dart';
+import 'package:orginone/pages/index/fl_chart/barChart.dart';
+import 'package:orginone/pages/index/fl_chart/pieChart.dart';
+import 'package:orginone/pages/index/fl_chart/pieChart2.dart';
+import 'package:orginone/pages/index/indexok_page.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
-import 'package:orginone/pages/other/home/index_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
@@ -73,6 +77,10 @@ class HomeController extends TabsController {
     var center = XTab(
       body: XImage.localImage("logo_not_bg", size: Size(36.w, 36.w)),
       view: IndexPage(),
+      // view: LineChartSample(),
+      // view: BarChartWidget(),
+      // view: PieChartSample(),
+      // view: PieChartWidget(),
       iconMargin: EdgeInsets.zero,
     );
     registerTab(center);

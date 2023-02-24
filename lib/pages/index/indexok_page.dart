@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/pages/index/a1.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:orginone/pages/index/fl_chart/pieChart2.dart';
+// import 'package:orginone/pages/index/syncfusion_flutter_charts/splineArea.dart'
 
 // TODO 先完成界面设计，再完成功能，界面兼容性，最后整理代码
 
@@ -23,14 +27,93 @@ class _SwiperPageState extends State<IndexPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(children: <Widget>[
-      _topMemuRowButton(),
-      _carousel(imageList),
-      _expressEntrance(),
-      _commonApplications(),
-      _dataMonitoring()
-    ]));
+      appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            tooltip: '搜索',
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(Icons.add),
+            tooltip: '增加',
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(Icons.save),
+            tooltip: '保存',
+            onPressed: () {},
+          ),
+        ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text(
+                'Drawer Header',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.favorite),
+              title: Text('Favorite'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Settings'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+      body: ListView(
+          shrinkWrap: true,
+          // padding: const EdgeInsets.all(20.0),
+          children: <Widget>[
+            // _topMemuRowButton(),
+            _carousel(imageList),
+            Container(
+                padding: const EdgeInsets.fromLTRB(11.0, 0, 0, 0),
+                alignment: Alignment.topLeft,
+                child: Text("快捷入口")),
+            // _expressEntrance(),
+            ScrollableMenu(),
+            _commonApplications(),
+            // _dataMonitoring(),
+            _dataMonitoringListView(),
+          ]),
+    );
   }
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //       body: Column(children: <Widget>[
+  //     _topMemuRowButton(),
+  //     _carousel(imageList),
+  //     Container(
+  //         padding: const EdgeInsets.fromLTRB(11.0, 0, 0, 0),
+  //         alignment: Alignment.topLeft,
+  //         child: Text("快捷入口")),
+  //     // _expressEntrance(),
+  //     ScrollableMenu(),
+  //     _commonApplications(),
+  //     // _dataMonitoring(),
+  //     _dataMonitoringListView(),
+  //   ]));
+  // }
 
 // 封装widget start
   /// _topMemuRowButton 顶部菜单行按钮（4个按钮：主页、搜索、添加、操作）
@@ -47,33 +130,33 @@ class _SwiperPageState extends State<IndexPage> {
           width: 130,
           child: OutlinedButton.icon(
               onPressed: () {
-                print("object");
+                Get.snackbar("Snackbar 标题", "欢迎使用Snackbar");
               },
               icon: Icon(Icons.cabin_sharp),
               label: Text("")),
         ),
         const SizedBox(
           height: 30,
-          width: 80,
+          width: 75,
         ),
         Wrap(
           spacing: 4,
           children: [
             OutlinedButton.icon(
                 onPressed: () {
-                  print("object");
+                  Get.snackbar("Snackbar 标题", "欢迎使用Snackbar");
                 },
                 icon: Icon(Icons.search),
                 label: Text("")),
             OutlinedButton.icon(
                 onPressed: () {
-                  print("object");
+                  Get.snackbar("Snackbar 标题", "欢迎使用Snackbar");
                 },
                 icon: Icon(Icons.add),
                 label: Text("")),
             OutlinedButton.icon(
                 onPressed: () {
-                  print("object");
+                  Get.snackbar("Snackbar 标题", "欢迎使用Snackbar");
                 },
                 icon: Icon(Icons.format_line_spacing_outlined),
                 label: Text("")),
@@ -293,7 +376,16 @@ class _SwiperPageState extends State<IndexPage> {
     ));
   }
 
-  /// _dataMonitoring 数据检测
+  ///   _dataMonitoringListView  数据检测ListView
+  Widget _dataMonitoringListView() {
+    return ListView(
+      shrinkWrap: true,
+      padding: const EdgeInsets.all(20.0),
+      children: <Widget>[_dataMonitoring(), _dataMonitoring()],
+    );
+  }
+
+  /// _dataMonitoring 数据检测container
   Widget _dataMonitoring() {
     return Container(
         // 数据监测
@@ -310,19 +402,73 @@ class _SwiperPageState extends State<IndexPage> {
             Row(
               children: [
                 Container(
+                  // 面积图
                   margin: EdgeInsets.all(13.0),
-                  width: 180.0,
-                  height: 90.0,
-                  color: Colors.red,
+                  width: 300.0,
+                  height: 80.0,
+                  // color: Colors.red,
+                  child: SfCartesianChart(
+                    primaryXAxis: CategoryAxis(),
+                    series: <SplineAreaSeries<TemperatureData, String>>[
+                      SplineAreaSeries<TemperatureData, String>(
+                        dataSource: <TemperatureData>[
+                          TemperatureData('Jan', 30, 18),
+                          TemperatureData('Feb', 42, 20),
+                          TemperatureData('Mar', 15, 22),
+                          TemperatureData('Apr', 68, 25),
+                          TemperatureData('May', 40, 28),
+                          TemperatureData('Jun', 38, 27),
+                          TemperatureData('Jul', 47, 26),
+                          TemperatureData('Aug', 36, 25),
+                          TemperatureData('Sep', 35, 24),
+                          TemperatureData('Oct', 72, 22),
+                          TemperatureData('Nov', 70, 20),
+                          TemperatureData('Dec', 28, 18),
+                        ],
+                        xValueMapper: (TemperatureData temperature, _) =>
+                            temperature.month,
+                        yValueMapper: (TemperatureData temperature, _) =>
+                            temperature.high,
+                        // Optional: to show the range between high and low temperatures
+                        // color can be customized as required
+                        color: Colors.blue.withOpacity(0.2),
+                        borderGradient: LinearGradient(
+                          colors: [
+                            Colors.blueAccent,
+                            Colors.blue.withOpacity(0.4)
+                          ],
+                          stops: [0.2, 1],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        borderColor: Colors.blue,
+                        borderWidth: 2,
+                      ),
+                    ],
+                  ),
                 ),
-                Container(
-                  width: 11,
-                ),
-                Container(
-                  width: 180.0,
-                  height: 90.0,
-                  color: Colors.green,
-                ),
+                // Container(
+                //   width: 11,
+                // ),
+                // Container(
+                //   // 柱状图
+                //   width: 180.0,
+                //   height: 80.0,
+                //   // color: Colors.green,
+                //   child: SfCartesianChart(
+                //       primaryXAxis: CategoryAxis(),
+                //       primaryYAxis:
+                //           NumericAxis(minimum: 0, maximum: 40, interval: 10),
+                //       tooltipBehavior: _tooltip,
+                //       series: <ChartSeries<_ChartData, String>>[
+                //         ColumnSeries<_ChartData, String>(
+                //             dataSource: data,
+                //             xValueMapper: (_ChartData data, _) => data.x,
+                //             yValueMapper: (_ChartData data, _) => data.y,
+                //             name: 'Gold',
+                //             color: Color.fromRGBO(8, 142, 255, 1))
+                //       ]),
+                // ),
               ],
             ),
           ],
@@ -336,19 +482,78 @@ class _SwiperPageState extends State<IndexPage> {
             Row(
               children: [
                 Container(
-                  margin: EdgeInsets.all(13.0),
-                  width: 180.0,
-                  height: 90.0,
-                  color: Colors.red,
-                ),
-                Container(
-                  width: 11,
-                ),
-                Container(
-                  width: 180.0,
-                  height: 90.0,
-                  color: Colors.green,
-                ),
+                    // 饼图
+                    width: 300.0,
+                    height: 80.0,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        // BoxShadow(
+                        //   color:
+                        //       Color.fromARGB(255, 33, 27, 125).withOpacity(0.8),
+                        //   spreadRadius: 5,
+                        //   blurRadius: 7,
+                        //   offset: Offset(0, 3), // changes position of shadow
+                        // ),
+                      ],
+                      border: Border.all(
+                        color:
+                            Color.fromARGB(255, 33, 27, 125).withOpacity(0.8),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    margin: EdgeInsets.all(13.0),
+
+                    // color: Colors.red,
+                    // child: PieChartWidget()
+                    child: Container(
+                      width: 180.0,
+                      height: 80.0,
+                      child: SfCircularChart(
+                        // title: ChartTitle(text: 'Sales Data'),
+                        // legend: Legend(isVisible: true),
+                        series: <CircularSeries>[
+                          PieSeries<pieChartSalesData, String>(
+                            dataSource: <pieChartSalesData>[
+                              pieChartSalesData('Jan', 35),
+                              pieChartSalesData('Feb', 15),
+                              pieChartSalesData('Mar', 34),
+                              pieChartSalesData('Apr', 16),
+                              // pieChartSalesData('May', 40)
+                            ],
+                            xValueMapper: (pieChartSalesData sales, _) =>
+                                sales.year,
+                            yValueMapper: (pieChartSalesData sales, _) =>
+                                sales.sales,
+                            dataLabelSettings:
+                                DataLabelSettings(isVisible: true),
+                          )
+                        ],
+                      ),
+                    )),
+                // Container(
+                //   width: 11,
+                // ),
+                // Container(
+                //   width: 180.0,
+                //   height: 80.0,
+                //   // color: Colors.green,
+                //   child: ElevatedButton.icon(
+                //     style: ButtonStyle(
+                //         backgroundColor:
+                //             MaterialStateProperty.all(Colors.white)),
+                //     icon: Icon(
+                //       Icons.add,
+                //       color: Colors.grey,
+                //     ),
+                //     onPressed: () {
+                //       Get.defaultDialog();
+                //     },
+                //     // label: Text(menuItems[index]),
+                //     label: Text(''),
+                //   ),
+                // ),
               ],
             ),
           ],
@@ -359,6 +564,68 @@ class _SwiperPageState extends State<IndexPage> {
 
 // 封装widget end
 }
+
+// 初始化数据 start
+class TemperatureData {
+  final String month;
+  final double high;
+  final double low;
+
+  TemperatureData(this.month, this.high, this.low);
+}
+
+class SalesData {
+  SalesData(this.year, this.sales);
+  final String year;
+  final double sales;
+}
+
+// 2222222
+late List<_ChartData> data = [
+  _ChartData('CHN', 12),
+  _ChartData('GER', 15),
+  _ChartData('RUS', 30),
+  _ChartData('BRZ', 6.4),
+  _ChartData('IND', 14)
+];
+late TooltipBehavior _tooltip = TooltipBehavior(enable: true);
+
+class _ChartData {
+  _ChartData(this.x, this.y);
+  final String x;
+  final double y;
+}
+
+// 222222222
+
+// 333333333333333
+class CircularChartData {
+  final String place;
+  final double temperature;
+
+  CircularChartData(this.place, this.temperature);
+}
+
+List<CircularChartData> getCircularChartData() {
+  return <CircularChartData>[
+    CircularChartData('New York', 25),
+    CircularChartData('Paris', 20),
+    CircularChartData('Tokyo', 28),
+    CircularChartData('Sydney', 30),
+    CircularChartData('London', 18),
+  ];
+}
+// 333333333333333
+
+// 33333333333333++++
+class pieChartSalesData {
+  final String year;
+  final double sales;
+
+  pieChartSalesData(this.year, this.sales);
+}
+// 33333333333333++++
+// 初始化数据 end
 
 class TestFlowDelegate extends FlowDelegate {
   EdgeInsets margin;

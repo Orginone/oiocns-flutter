@@ -129,6 +129,11 @@ dependencies:
   # 配置轮播图插件
   flutter_swiper: ^1.1.6
 
+  # 图表
+  syncfusion_flutter_charts: ^19.3.49
+  fl_chart: ^0.61.0
+  google_fonts: ^4.0.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -6,8 +6,8 @@ import 'package:orginone/pages/chat/message_more.dart';
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
+import 'package:orginone/pages/index/indexok_page.dart';
 import 'package:orginone/pages/other/home/home_page.dart';
-import 'package:orginone/pages/other/home/index_page.dart';
 import 'package:orginone/pages/other/home/spaces_page.dart';
 import 'package:orginone/pages/other/login.dart';
 import 'package:orginone/pages/other/scanning/scanning_page.dart';
@@ -51,7 +51,6 @@ class Routers {
 
   // 首页
   static const String index = "/index";
-  static const String index2 = "/index2";
 
   // 设置
   static const String mineUnit = "/mineUnit";
@@ -127,13 +126,13 @@ class Routers {
       ),
       GetPage(
         name: Routers.uintSettings,
-        page: () => const UnitSettingsPage(),
-        binding: ContactBinding(),
+        page: () => UintSettingsPage(),
+        binding: UintSettingsBinding(),
       ),
       GetPage(
         name: Routers.index,
         page: () => IndexPage(),
-        binding: ContactBinding(),
+        // binding: IndexHomeBinding(),
       ),
     ];
   }
