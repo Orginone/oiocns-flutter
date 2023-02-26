@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/ichat.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/util/encryption_util.dart';
 
 const hisMsgCollName = 'chat-message';
@@ -22,15 +25,20 @@ class BaseChat extends IChat {
     isTopping = false.obs;
     fullId = '$spaceId-${target.id}';
     lastMessage = Rxn();
-    // appendShare(target.id, shareInfo());
+    appendShare(target.id, shareInfo);
   }
 
-  TargetShare shareInfo() {
-    return TargetShare(
+  @override
+  TargetShare get shareInfo {
+    var share = TargetShare(
       name: target.name,
       typeName: target.typeName,
-      avatar: "", //parseAvatar(target.photo),
     );
+    if (target.photo?.isNotEmpty ?? false) {
+      var map = jsonDecode(target.photo!);
+      share.avatar = FileItemShare.fromJson(map);
+    }
+    return share;
   }
 
   @override
