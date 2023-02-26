@@ -7,8 +7,12 @@ import 'package:get/get.dart';
 import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/template/tabs.dart';
 import 'package:orginone/components/unified.dart';
+<<<<<<< HEAD
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/event/home_data.dart';
+=======
+import 'package:orginone/dart/controller/chat/chat_controller.dart';
+>>>>>>> ab93d19 (feat: 统一头像组件，加载头像)
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
@@ -32,7 +36,7 @@ class HomePage extends GetView<HomeController> {
       resizeToAvoidBottomInset: false,
       appBarElevation: 0,
       appBarHeight: 0,
-      body: Tabs(
+      body: TabsView(
         tabCtrl: controller.tabController,
         top: const UserBar(),
         views: controller.tabs.map((e) => e.toTabView()).toList(),
@@ -53,30 +57,31 @@ class HomeBinding extends Bindings {
 }
 
 class HomeController extends TabsController {
+<<<<<<< HEAD
+=======
+  var chatCtrl = Get.find<ChatController>();
+>>>>>>> ab93d19 (feat: 统一头像组件，加载头像)
 
   @override
   initTabs() {
     var size = Size(32.w, 32.w);
-    registerTab(
-      XTab(
-        customTab: SizedBox(
-          width: 200.w,
-          child: Stack(
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: Tab(
-                  iconMargin: const EdgeInsets.all(4),
-                  icon: XImage.localImage("chat", size: Size(38.w, 32.w)),
-                  child: Text("沟通", style: XFonts.size14Black3),
-                ),
-              ),
-            ],
-          ),
-        ),
-        view: const MessagePage(),
-      ),
-    );
+    registerTab(XTab(
+      body: Text("沟通", style: XFonts.size14Black3),
+      view: const MessagePage(),
+      icon: XImage.localImage("chat", size: Size(38.w, 32.w)),
+      children: [
+        Positioned(
+          top: 0,
+          right: 0,
+          child: Obx(() {
+            var chatCtrl = Get.find<ChatController>();
+            return chatCtrl.hasNoRead()
+                ? Icon(Icons.circle, color: Colors.redAccent, size: 10.w)
+                : Container();
+          }),
+        )
+      ],
+    ));
     registerTab(XTab(
       body: Text('办事', style: XFonts.size14Black3),
       view: Container(),
