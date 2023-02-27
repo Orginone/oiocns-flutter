@@ -9,6 +9,7 @@ import 'package:orginone/pages/index/fl_chart/LineChart3.dart';
 import 'package:orginone/pages/index/fl_chart/barChart.dart';
 import 'package:orginone/pages/index/fl_chart/pieChart.dart';
 import 'package:orginone/pages/index/fl_chart/pieChart2.dart';
+import 'package:orginone/pages/index/indexBaseView.dart';
 import 'package:orginone/pages/index/indexok_page.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
@@ -76,7 +77,8 @@ class HomeController extends TabsController {
     ));
     var center = XTab(
       body: XImage.localImage("logo_not_bg", size: Size(36.w, 36.w)),
-      view: IndexPage(),
+      // view: IndexPage(),
+      view:  IndexPage(),
       // view: LineChartSample(),
       // view: BarChartWidget(),
       // view: PieChartSample(),

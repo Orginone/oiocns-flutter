@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/unified.dart';
 
 class ScrollableMenu extends StatefulWidget {
   @override
@@ -7,12 +8,15 @@ class ScrollableMenu extends StatefulWidget {
 }
 
 class _ScrollableMenuState extends State<ScrollableMenu> {
+  // TODO 改为名称、icon、func
   List<String> menuItems = ["加好友", "创单位", "邀成员", "建应用", "逛商城", "创单位", "邀请员"];
   int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(
+          color: XColors.white, borderRadius: BorderRadius.circular(10)),
       height: 70,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,

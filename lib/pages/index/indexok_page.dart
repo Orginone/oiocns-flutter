@@ -1,7 +1,12 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:orginone/pages/index/a1.dart';
+import 'package:logging/logging.dart';
+import 'package:orginone/components/unified.dart';
+import 'package:orginone/pages/index/ScrollableMenu.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:orginone/pages/index/fl_chart/pieChart2.dart';
@@ -9,13 +14,58 @@ import 'package:orginone/pages/index/fl_chart/pieChart2.dart';
 
 // TODO 先完成界面设计，再完成功能，界面兼容性，最后整理代码
 
-class IndexPage extends StatefulWidget {
-  IndexPage({Key? key}) : super(key: key);
+class IndexPageLowVersion extends StatefulWidget {
+  static final Logger log = Logger("UintSettingsPage");
+  static final LinkedHashMap map = LinkedHashMap();
+
+  IndexPageLowVersion({Key? key}) : super(key: key) {
+    map["配置中心"] = [
+      {"id": 0, "icon": "icon", "cardName": "单位设置"},
+      {"id": 1, "icon": "icon", "cardName": "数据设置"},
+      {"id": 2, "icon": "icon", "cardName": "应用设置"},
+      {"id": 4, "icon": "icon", "cardName": "流程设置"},
+      {"id": 5, "icon": "icon", "cardName": "标准设置"},
+      {"id": 6, "icon": "icon", "cardName": "权限设置"},
+      {"id": 6, "icon": "icon", "cardName": "权限设置"},
+      {
+        "id": 7,
+        "icon": "icon",
+        "cardName": "更新版本",
+        "func": () {
+          // Get.toNamed(Routers.version);
+        }
+      },
+      {"id": 8, "icon": "icon", "cardName": "标准设置11"},
+      {"id": 9, "icon": "icon", "cardName": "权限设置22"},
+    ];
+  }
+    List<Widget> _getItems() {
+    List<Widget> children = [];
+    debugPrint("--->size:${map.length}");
+    map.forEach((key, value) {
+      children.add(CardChildWidget(key, value));
+    });
+    return children;
+  }
+    Widget _commonApplicationsGenerate(BuildContext context) {
+    return Container(
+      color: XColors.bgColor,
+      padding: EdgeInsets.only(left: 12.w, right: 12.w),
+      child: ListView(
+        shrinkWrap: true,
+        children: _getItems()
+          ..add(Container(
+            margin: EdgeInsets.only(left: 20.w, bottom: 10.h, right: 20.w),
+          )),
+      ),
+    );
+  }
   @override
   _SwiperPageState createState() => _SwiperPageState();
 }
 
-class _SwiperPageState extends State<IndexPage> {
+class _SwiperPageState extends State<IndexPageLowVersion> {
+  
   // 轮播图片
   List<String> imageList = [
     "images/bg_center1.png",
@@ -30,18 +80,18 @@ class _SwiperPageState extends State<IndexPage> {
       appBar: AppBar(
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             tooltip: '搜索',
             onPressed: () {},
           ),
           IconButton(
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
             tooltip: '增加',
             onPressed: () {},
           ),
           IconButton(
-            icon: Icon(Icons.save),
-            tooltip: '保存',
+            icon: const Icon(Icons.more_horiz_outlined),
+            tooltip: '更多',
             onPressed: () {},
           ),
         ],
@@ -50,12 +100,12 @@ class _SwiperPageState extends State<IndexPage> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
+            const DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.blue,
               ),
               child: Text(
-                'Drawer Header',
+                '抽屉',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -63,15 +113,22 @@ class _SwiperPageState extends State<IndexPage> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.favorite),
-              title: Text('Favorite'),
+              leading: const Icon(Icons.favorite),
+              title: const Text('Favorite'),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
+              leading: const Icon(Icons.settings),
+              title: const Text('Settings'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.wallet),
+              title: const Text('wallet'),
               onTap: () {
                 Navigator.pop(context);
               },
@@ -88,9 +145,10 @@ class _SwiperPageState extends State<IndexPage> {
             Container(
                 padding: const EdgeInsets.fromLTRB(11.0, 0, 0, 0),
                 alignment: Alignment.topLeft,
-                child: Text("快捷入口")),
+                child: const Text("快捷入口")),
             // _expressEntrance(),
             ScrollableMenu(),
+            // _commonApplicationsGenerate(),
             _commonApplications(),
             // _dataMonitoring(),
             _dataMonitoringListView(),
@@ -250,6 +308,12 @@ class _SwiperPageState extends State<IndexPage> {
       ),
     );
   }
+
+  /// _commonApplicationsGenerate 常用应用 start
+
+
+
+  /// _commonApplicationsGenerate 常用应用 end
 
   /// _commonApplications 常用应用
   Widget _commonApplications() {
@@ -665,5 +729,74 @@ class TestFlowDelegate extends FlowDelegate {
   @override
   bool shouldRepaint(FlowDelegate oldDelegate) {
     return oldDelegate != this;
+  }
+}
+
+class CardChildWidget extends StatelessWidget {
+  String itemName;
+
+  List value;
+
+  CardChildWidget(this.itemName, this.value);
+
+  @override
+  Widget build(BuildContext context) {
+    debugPrint("--->key:item$itemName | value :${value}");
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          itemName,
+          style: XFonts.size24Black3W700,
+        ),
+        SizedBox(
+          height: 12.h,
+        ),
+        Container(
+          decoration: BoxDecoration(
+              color: XColors.white, borderRadius: BorderRadius.circular(10)),
+          child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.only(top: 20.h, bottom: 20.h),
+              shrinkWrap: true,
+              itemCount: value.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 5,
+              ),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    var func = value[index]["func"];
+                    if (func != null) {
+                      func();
+                    }
+                  },
+                  child: Column(
+                    children: [
+                      // AImage.netImageRadius(AIcons.back_black,
+                      //     size: Size(64.w, 64.w)),
+                      Container(
+                          width: 64.w,
+                          height: 64.w,
+                          color: XColors.navigatorBgColor),
+                      // AImage.netImage(AIcons.placeholder,
+                      //     url: value[index]['icon'], size: Size()),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      Text(
+                        value[index]['cardName'],
+                        style: XFonts.size18Black6,
+                      ),
+                    ],
+                  ),
+                );
+              }),
+        ),
+        SizedBox(
+          height: 24.h,
+        ),
+      ],
+    );
   }
 }
