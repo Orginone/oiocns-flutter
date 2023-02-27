@@ -241,7 +241,7 @@ class CommonItem extends StatelessWidget {
         Expanded(
           child: Align(
             alignment: Alignment.centerRight,
-            child: Text(assetUse.createTime?.format(format: "yyyy-MM-dd hh:mm:ss")??""),
+            child: Text(assetUse.createTime?.format(format: "yyyy-MM-dd HH:mm:ss")??""),
           ),
         ),
       ],

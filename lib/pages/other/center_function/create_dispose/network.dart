@@ -7,6 +7,7 @@ import 'package:orginone/model/my_assets_list.dart';
 import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/hive_utils.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:uuid/uuid_util.dart';
 
 class DisposeNetwork {
@@ -85,11 +86,11 @@ class DisposeNetwork {
         "company");
 
     if (resultType.success) {
-      Fluttertoast.showToast(msg: "提交成功");
+      ToastUtils.showMsg(msg: "提交成功");
       EventBusHelper.fire(LoadAssets());
       Get.back();
     } else {
-      Fluttertoast.showToast(msg: "提交失败");
+      ToastUtils.showMsg(msg: "提交失败");
     }
   }
 }

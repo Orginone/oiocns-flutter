@@ -2,6 +2,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/model/my_assets_list.dart';
 import 'package:orginone/util/asset_management.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:worker_manager/worker_manager.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
@@ -46,7 +47,7 @@ class AddAssetController extends BaseController<AddAssetState> {
 
   void selectItem(int index) {
     if(!state.selectAssetList[index].notLockStatus){
-      Fluttertoast.showToast(msg: "该资产已锁定");
+      ToastUtils.showMsg(msg: "该资产已锁定");
       return;
     }
     state.selectAssetList[index].isSelected = !state.selectAssetList[index].isSelected;

@@ -107,7 +107,10 @@ class AssetUse {
       if(detail!.isNotEmpty){
         approvalDocument = ApprovalDocument()..detail = [];
         for (var value in detail!) {
-          approvalDocument!.detail!.add( AssetManagement().findAsset(value));
+          var item =  AssetManagement().findAsset(value);
+          if(item!=null){
+            approvalDocument!.detail!.add(item);
+          }
         }
       }
     }
@@ -197,9 +200,14 @@ class ApprovalDocument {
     keepOrgId = json['KEEP_ORG_ID'];
     oldOrgId = json['OLD_ORG_ID'];
     oldOrgName = json['OLD_ORG_NAME'];
+    detail = <MyAssetsList>[];
     if (json['detail'] != null) {
-      detail = <MyAssetsList>[];
       json['detail'].forEach((v) {
+        detail!.add(new MyAssetsList.fromJson(v));
+      });
+    }
+    if (json['details'] != null) {
+      json['details'].forEach((v) {
         detail!.add(new MyAssetsList.fromJson(v));
       });
     }

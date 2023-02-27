@@ -103,7 +103,7 @@ class AssetsCheckPage extends BaseGetView<AssetsCheckController,AssetsCheckState
           SizedBox(width: 20.w,),
           GestureDetector(
             onTap: (){
-
+              controller.qrScan();
             },
             child: Container(
               width: 150.w,

@@ -21,6 +21,7 @@ import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
 class HomePage extends GetView<HomeController> {
@@ -137,14 +138,14 @@ class HomeController extends TabsController {
     try {
       if (KernelApi.getInstance().anystore.isOnline) {
         log('连接成功---------${KernelApi.getInstance().anystore.isOnline}');
-        Fluttertoast.showToast(msg: "连接成功 开始加载数据");
+        ToastUtils.showMsg(msg: "连接成功 开始加载数据");
         await Future.wait([
           AssetManagement().initAssets(),
           DepartmentManagement().initDepartment(),
           CommonTreeManagement().initTree(),
         ]);
         log('数据加载完成');
-        Fluttertoast.showToast(msg: "加载数据成功");
+        ToastUtils.showMsg(msg: "加载数据成功");
       } else {
         await Future.delayed(Duration(milliseconds: 200), () async {
           log('尝试重新连接---------${KernelApi.getInstance().anystore.isOnline}');
@@ -152,7 +153,7 @@ class HomeController extends TabsController {
         });
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: e.toString());
+      ToastUtils.showMsg(msg: e.toString());
     }
   }
 

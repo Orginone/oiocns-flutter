@@ -6,6 +6,7 @@ import 'package:orginone/pages/other/center_function/create_claim/state.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/hive_utils.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 class ClaimNetWork {
   static Future<void> creteClaim(
@@ -20,7 +21,7 @@ class ClaimNetWork {
           "APPLY_REMARK": remark,
           "submitUserName": HiveUtils.getUser()?.userName ?? "",
           "approvalDocument":{
-            "detail":detail.map((e){
+            "details":detail.map((e){
               return {
                 "ASSET_TYPE": {"value": e.assetType!.name},
                 "ASSET_NAME": e.assetNameController.text,
@@ -44,11 +45,11 @@ class ClaimNetWork {
         },
         "company").then((value){
           if(value.success){
-            Fluttertoast.showToast(msg: "提交成功");
+            ToastUtils.showMsg(msg: "提交成功");
             EventBusHelper.fire(LoadAssets());
             Get.back();
           }else{
-            Fluttertoast.showToast(msg: "提交失败");
+            ToastUtils.showMsg(msg: "提交失败");
           }
     });
   }

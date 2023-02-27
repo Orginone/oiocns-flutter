@@ -5,6 +5,7 @@ import 'package:orginone/pages/other/center_function/create_hand_over/network.da
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/production_order_utils.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
@@ -72,10 +73,10 @@ class CreateHandOverController extends BaseController<CreateHandOverState> {
 
   Future submit() async {
     if (state.reasonController.text.isEmpty) {
-      return Fluttertoast.showToast(msg: "请输入移交原因");
+      return ToastUtils.showMsg(msg: "请输入移交原因");
     }
     if (state.selectAssetList.isEmpty) {
-      return Fluttertoast.showToast(msg: "请至少选择一项资产");
+      return ToastUtils.showMsg(msg: "请至少选择一项资产");
 
     }
     LoadingDialog.showLoading(context);

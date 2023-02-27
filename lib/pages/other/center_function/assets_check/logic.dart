@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/pages/other/assets_config.dart';
+import 'package:orginone/routers.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
 import 'check/logic.dart';
@@ -23,5 +24,11 @@ class AssetsCheckController extends BaseController<AssetsCheckState> with GetTic
         count: checkController.state.dataList.length, onSubmit: () {
           checkController.allInventory();
         });
+  }
+
+  void qrScan() {
+    Get.toNamed(Routers.qrScan)?.then((value){
+
+    });
   }
 }

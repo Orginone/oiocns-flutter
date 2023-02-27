@@ -4,6 +4,7 @@ import 'package:orginone/event/choice_assets.dart';
 import 'package:orginone/pages/other/storage_location/state.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/production_order_utils.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
@@ -101,13 +102,13 @@ class CreateClaimController extends BaseController<CreateClaimState> {
 
   Future submit() async{
     if(state.reasonController.text.isEmpty){
-      return Fluttertoast.showToast(msg: "请输入申领事由");
+      return ToastUtils.showMsg(msg: "请输入申领事由");
     }
     if(state.detailedData.where((p0) => p0.assetType == null).isNotEmpty){
-      return Fluttertoast.showToast(msg: "请选择资产分类");
+      return ToastUtils.showMsg(msg: "请选择资产分类");
     }
     if(state.detailedData.where((p0) => p0.assetNameController.text.isEmpty).isNotEmpty){
-      return Fluttertoast.showToast(msg: "请输入资产名称");
+      return ToastUtils.showMsg(msg: "请输入资产名称");
     }
     create();
   }

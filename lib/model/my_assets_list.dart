@@ -13,7 +13,7 @@ class MyAssetsList {
   dynamic numOrArea;
   String? numUnit;
   dynamic haveUsedIt;
-  dynamic netVal;
+  int? netVal;
   dynamic residualRate;
   dynamic monthAccDep;
   dynamic accDepMonth;
@@ -22,7 +22,7 @@ class MyAssetsList {
   dynamic canZhi;
   dynamic initAssetVal;
   int? liuCzt;
-  String? id;
+  dynamic id;
   String? gmtCreate;
   String? updateTime;
   String? brand;
@@ -98,7 +98,7 @@ class MyAssetsList {
     numOrArea = json['NUM_OR_AREA'];
     numUnit = json['NUM_UNIT'];
     haveUsedIt = json['HAVE_USED_IT'];
-    netVal = json['NET_VAL'];
+    netVal = json['NET_VAL']!=null?int.tryParse(json['NET_VAL'].toString()):0;
     residualRate = json['RESIDUAL_RATE'];
     monthAccDep = json['MONTH_ACC_DEP'];
     accDepMonth = json['ACC_DEP_MONTH'];

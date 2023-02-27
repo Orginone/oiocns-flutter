@@ -11,6 +11,7 @@ import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/hive_utils.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 class TransferNetWork{
   static createTransfer({
@@ -54,11 +55,11 @@ class TransferNetWork{
     },"company");
 
     if(resultType.success){
-      Fluttertoast.showToast(msg: "提交成功");
+      ToastUtils.showMsg(msg: "提交成功");
       EventBusHelper.fire(LoadAssets());
       Get.back();
     }else{
-      Fluttertoast.showToast(msg: "提交失败");
+      ToastUtils.showMsg(msg: "提交失败");
     }
   }
 

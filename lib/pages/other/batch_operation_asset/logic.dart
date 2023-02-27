@@ -2,6 +2,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/pages/other/assets_config.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 import 'state.dart';
 
@@ -43,7 +44,7 @@ class BatchOperationAssetController
 
   Future jump(AssetsType type) async {
     if (state.selectAssetList.isEmpty) {
-      return Fluttertoast.showToast(msg: "至少选中一项资产");
+      return ToastUtils.showMsg(msg: "至少选中一项资产");
     }
     var selected = state.selectAssetList.where((p0) => p0.isSelected);
     Get.back();

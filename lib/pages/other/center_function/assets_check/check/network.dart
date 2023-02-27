@@ -4,6 +4,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/event/check_reload.dart';
 import 'package:orginone/model/my_assets_list.dart';
 import 'package:orginone/util/event_bus_helper.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 class CheckNetwork {
   static Future<List<MyAssetsList>> queryCheckList(
@@ -51,7 +52,7 @@ class CheckNetwork {
             "company")
         .then((value) {
       if (value.success) {
-        Fluttertoast.showToast(msg: "操作成功");
+        ToastUtils.showMsg(msg: "操作成功");
         EventBusHelper.fire(CheckReload());
       }
     });
@@ -74,7 +75,7 @@ class CheckNetwork {
           },
           "company");
     }
-    Fluttertoast.showToast(msg: "操作成功");
+    ToastUtils.showMsg(msg: "操作成功");
     EventBusHelper.fire(CheckReload());
   }
 }

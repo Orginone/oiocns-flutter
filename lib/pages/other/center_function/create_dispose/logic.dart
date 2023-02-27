@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/production_order_utils.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
@@ -94,13 +95,13 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
 
   Future submit() async {
     if (state.disposeType.value.isEmpty) {
-      return Fluttertoast.showToast(msg: "请选择处置方式");
+      return ToastUtils.showMsg(msg: "请选择处置方式");
     }
     if (state.reasonController.text.isEmpty) {
-      return Fluttertoast.showToast(msg: "请输入申请原因");
+      return ToastUtils.showMsg(msg: "请输入申请原因");
     }
     if (state.selectAssetList.isEmpty) {
-      return Fluttertoast.showToast(msg: "请至少选择一项资产");
+      return ToastUtils.showMsg(msg: "请至少选择一项资产");
     }
     create();
 
@@ -131,7 +132,7 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
     int phoneNum = 0;
     if(state.phoneNumberController.text.isNotEmpty){
       if(state.phoneNumberController.text.length!=11){
-        Fluttertoast.showToast(msg: "请输入正确的手机号");
+        ToastUtils.showMsg(msg: "请输入正确的手机号");
       }else{
         phoneNum = int.parse(state.phoneNumberController.text);
       }

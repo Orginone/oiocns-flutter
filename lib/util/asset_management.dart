@@ -34,8 +34,12 @@ class AssetManagement {
     }
   }
 
-  MyAssetsList findAsset(String code) {
-    return _assets.where((element) => element.assetCode == code).first;
+  MyAssetsList? findAsset(String code) {
+    var list = _assets.where((element) => element.assetCode == code);
+    if(list.isEmpty){
+      return null;
+    }
+    return list.first;
   }
 
   List<MyAssetsList> deepCopyAssets() {
