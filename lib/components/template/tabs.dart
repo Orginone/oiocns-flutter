@@ -72,7 +72,7 @@ class TabsView extends StatelessWidget {
 }
 
 abstract class TabsController extends GetxController
-    with GetSingleTickerProviderStateMixin {
+    with GetTickerProviderStateMixin {
   late TabController tabController;
   final List<XTab> tabs = [];
   final RxnInt initialIndex = RxnInt();

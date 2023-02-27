@@ -23,7 +23,9 @@ class UserBar extends GetView<SettingController> {
         Expanded(
           child: Obx(() {
             return GestureDetector(
-              onTap: () => Get.toNamed(Routers.spaces),
+              onTap: (){
+                controller.jumpSpaces();
+              },
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,

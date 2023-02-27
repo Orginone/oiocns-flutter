@@ -48,7 +48,7 @@ class SpacesPage extends GetView<SettingController> {
       isCurrent: controller.space.id == space.target.id,
       onTap: (company) async {
         await controller.setCurSpace(company.target.id);
-        Get.offAllNamed(Routers.home);
+        Get.back(result: true);
       },
     );
   }

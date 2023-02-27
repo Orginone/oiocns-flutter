@@ -133,7 +133,7 @@ class HomeController extends TabsController {
     setIndex(tabs.indexOf(center));
   }
 
-  Future<void> initData() async {
+  Future<void> loadData() async {
     try {
       if (KernelApi.getInstance().anystore.isOnline) {
         log('连接成功---------${KernelApi.getInstance().anystore.isOnline}');
@@ -157,11 +157,26 @@ class HomeController extends TabsController {
   }
 
   @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    EventBusHelper.register(this, (event) async{
+      if(event is InitHomeData){
+        await initData();
+      }
+    });
+  }
+
+  @override
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
-    LoadingDialog.showLoading(Get.context!, msg: "加载数据中");
     await initData();
+  }
+
+  Future<void> initData() async{
+    LoadingDialog.showLoading(Get.context!, msg: "加载数据中");
+    await loadData();
     LoadingDialog.dismiss(Get.context!);
   }
 
