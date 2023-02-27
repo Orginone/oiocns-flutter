@@ -23,7 +23,7 @@ class CheckController extends BaseListController<CheckState> {
   }
 
   @override
-  Future<void> loadData() async {
+  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
     state.dataList.value = await CheckNetwork.queryCheckList(
         stockTaskCode: assetsCheckController.state.assetUse.billCode ?? "",
         status: checkType.index);

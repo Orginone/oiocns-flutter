@@ -24,25 +24,20 @@ class AssetsController extends BaseListController<AssetsState> {
   }
 
   @override
-  void onReceivedEvent(event) async{
+  void onReceivedEvent(event) async {
     // TODO: implement onReceivedEvent
     super.onReceivedEvent(event);
-    if(event is LoadAssets){
+    if (event is LoadAssets) {
       await loadData();
     }
   }
 
   @override
-  void search(String value) async{
-    await loadData(code: value);
-  }
-
-  @override
-  Future<void> loadData({String? code}) async {
-
-    switch(assetsType){
+  Future<void> loadData(
+      {bool isRefresh = false, bool isLoad = false, String? code}) async {
+    switch (assetsType) {
       case AssetsType.myAssets:
-        loadAssets(code: code);
+        await loadAssets(code: code, isRefresh: isRefresh);
         break;
       case AssetsType.check:
         await loadAssetUse("asset_check", code: code);
@@ -60,6 +55,11 @@ class AssetsController extends BaseListController<AssetsState> {
         await loadAssetUse("asset_restore", code: code);
         break;
     }
+  }
+
+  @override
+  void search(String value) async {
+    await loadData(code: value);
   }
 
   Future<void> loadAssetUse(String name, {String? code}) async {
@@ -91,7 +91,10 @@ class AssetsController extends BaseListController<AssetsState> {
     loadSuccess();
   }
 
-  void loadAssets({String? code}) {
+  Future<void> loadAssets({String? code, bool isRefresh = false}) async {
+    if (isRefresh) {
+      await AssetManagement().initAssets();
+    }
     var data = AssetManagement().deepCopyAssets();
     if (code != null && code.isNotEmpty) {
       var flitter =
@@ -107,13 +110,18 @@ class AssetsController extends BaseListController<AssetsState> {
   }
 
   void jumpBatchAssets() {
-
-    var list =  state.dataList.where((p0) => p0.notLockStatus).toList();
+    var list = state.dataList.where((p0) => p0.notLockStatus).toList();
     Get.toNamed(
       Routers.batchOperationAsset,
       arguments: {
         "list": list,
       },
     );
+  }
+
+  void qrScan() {
+    Get.toNamed(Routers.qrScan)?.then((value) {
+      if (value != null) {}
+    });
   }
 }

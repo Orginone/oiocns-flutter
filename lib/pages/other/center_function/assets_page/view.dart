@@ -94,7 +94,9 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
 
   Widget scan() {
     return IconButton(
-      onPressed: () {},
+      onPressed: () {
+        controller.qrScan();
+      },
       icon: Icon(
         Icons.qr_code_scanner,
         size: 32.w,
@@ -107,6 +109,9 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
     String hint = "请输入${assetsType.name}单据编号";
     if (assetsType == AssetsType.check) {
       hint = "请输入盘点任务名称";
+    }
+    if(assetsType == AssetsType.myAssets){
+      hint = "请输入资产编号";
     }
     return Row(
       children: [

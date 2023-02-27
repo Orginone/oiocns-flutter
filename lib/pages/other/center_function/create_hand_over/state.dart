@@ -31,7 +31,7 @@ class CreateHandOverState extends BaseGetState{
     if(isEdit){
       assetUse = Get.arguments?['assetUse'];
       selectAssetList.addAll(assetUse.approvalDocument?.detail??[]);
-      selectedUser.value =  DepartmentManagement().findXTargetById(assetUse.userName??"");
+      selectedUser.value =  DepartmentManagement().findXTargetByIdOrName(name: assetUse.userName??"");
       orderNum.value = assetUse.billCode??"";
       reasonController.text = assetUse.applyRemark??"";
     }

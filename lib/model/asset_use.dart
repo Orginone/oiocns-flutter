@@ -35,8 +35,8 @@ class AssetUse {
   int? verificationStatus;
   int? readStatus;
   String? keepOrgName;
-  int? keepOrgType;
-  String? keepOrgPhomeNumber;
+  dynamic keepOrgType;
+  dynamic keepOrgPhomeNumber;
   DateTime? gmtCreate;
   String? id;
   String? verificationDate;
@@ -81,7 +81,7 @@ class AssetUse {
     updateTime = DateTime.tryParse(json['UPDATE_TIME']??"");
     way = int.tryParse(json['way'].toString());
     keepOrgName = json['ACC_UNIT']??json['keepOrgName'];
-    keepOrgType = int.tryParse(json['IS_SYS_UNIT']??json['keepOrgType']??"");
+    keepOrgType = json['IS_SYS_UNIT']??json['keepOrgType']??0;
     evaluated = json['evaluated'];
     assetsTotal = json['SHEJIZCZZ']??json['assetsTotal'];
     keepOrgPhomeNumber = json['keepOrgPhomeNumber'];

@@ -63,7 +63,7 @@ class CreateHandOverController extends BaseController<CreateHandOverState> {
         ?.then((value) {
       if (value != null) {
         for (var element in value) {
-          state.selectAssetList.removeWhere((p0) => p0.id == element);
+          state.selectAssetList.removeWhere((p0) => p0.assetCode == element);
         }
         state.selectAssetList.refresh();
       }

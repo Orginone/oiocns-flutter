@@ -27,7 +27,7 @@ abstract class BaseListController<S extends BaseGetListState> extends BaseContro
 
   /// 下拉刷新使用
   Future onRefresh() async{
-    return await loadData().then((value){
+    return await loadData(isRefresh: true).then((value){
       refreshController.refreshCompleted();
     }).onError((err,stack){
       refreshController.refreshFailed();
@@ -104,7 +104,7 @@ abstract class BaseListController<S extends BaseGetListState> extends BaseContro
     super.onClose();
   }
 
-  Future<void> loadData() async{
+  Future<void> loadData({bool isRefresh = false,bool isLoad = false}) async{
 
   }
 

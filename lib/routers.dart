@@ -38,6 +38,8 @@ import 'package:orginone/pages/other/choice_people/view.dart';
 import 'package:orginone/pages/other/home/home_page.dart';
 import 'package:orginone/pages/other/home/spaces_page.dart';
 import 'package:orginone/pages/other/login.dart';
+import 'package:orginone/pages/other/qr_scan/binding.dart';
+import 'package:orginone/pages/other/qr_scan/view.dart';
 import 'package:orginone/pages/other/scanning/scanning_page.dart';
 import 'package:orginone/pages/other/scanning/scanning_result_pge.dart';
 import 'package:orginone/pages/other/search_page.dart';
@@ -134,6 +136,10 @@ class Routers {
 
   //资产模块功能页
   static const String centerFunction = "/centerFunction";
+
+
+  //扫描二维码
+  static const String qrScan = "/qrScan";
 
   static String get main {
     return login;
@@ -298,6 +304,11 @@ class Routers {
         name: Routers.batchOperationAsset,
         page: () => BatchOperationAssetPage(),
         binding: BatchOperationAssetBinding(),
+      ),
+      GetPage(
+        name: Routers.qrScan,
+        page: () => QrScanPage(),
+        binding: QrScanBinding(),
       ),
     ];
   }

@@ -45,7 +45,7 @@ class CreateDisposeState extends BaseGetState{
         assessment.value = Whether[assetUse.evaluated!];
       }
       unitController.text = assetUse.keepOrgName??"";
-      phoneNumberController.text = assetUse.keepOrgPhomeNumber??"";
+      phoneNumberController.text = assetUse.keepOrgPhomeNumber.toString()??"";
 
       orderNum = assetUse.billCode??"";
       reasonController.text = assetUse.applyRemark??"";

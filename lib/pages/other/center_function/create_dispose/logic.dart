@@ -60,7 +60,7 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
             arguments: {"list": state.selectAssetList.value,"info":"处置明细"})?.then((value) {
       if (value != null) {
         for (var element in value) {
-          state.selectAssetList.removeWhere((p0) => p0.id == element);
+          state.selectAssetList.removeWhere((p0) => p0.assetCode == element);
         }
         state.selectAssetList.refresh();
       }
@@ -89,6 +89,7 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
 
   void draft() {
     addedDraft = true;
+    create(isDraft: true);
   }
 
   Future submit() async {

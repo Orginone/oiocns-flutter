@@ -1,3 +1,4 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/util/date_utils.dart';
@@ -26,7 +27,11 @@ class ProductionOrderUtils {
       if(result1.success){
         String countStr = '$latestCount ';
         return type + ymd + '00000000'.substring(0, 8 - countStr.length) + countStr;
+      }else{
+        Fluttertoast.showToast(msg: result1.msg);
       }
+    }else{
+      Fluttertoast.showToast(msg: result.msg);
     }
     return "";
   }

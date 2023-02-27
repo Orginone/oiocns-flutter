@@ -40,6 +40,6 @@ class BulkRemovalAssetController extends BaseController<BulkRemovalAssetState> {
 
   void delete() {
     var selected = state.selectAssetList.where((p0) => p0.isSelected);
-    Get.back(result: selected.map((e) => e.id).toList());
+    Get.back(result: selected.map((e) => e.assetCode).toList());
   }
 }

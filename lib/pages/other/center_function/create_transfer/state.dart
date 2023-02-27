@@ -30,8 +30,8 @@ class CreateTransferState extends BaseGetState{
     if(isEdit){
       assetUse = Get.arguments?['assetUse'];
       selectAssetList.addAll(assetUse.approvalDocument?.detail??[]);
-      selectedUser.value =  DepartmentManagement().findXTargetById(assetUse.keeperId??"");
-      selectedDepartment.value = DepartmentManagement().findITargetById(assetUse.keeperOrgId??"");
+      selectedUser.value =  DepartmentManagement().findXTargetByIdOrName(name: assetUse.keeperId??"");
+      selectedDepartment.value = DepartmentManagement().findITargetByIdOrName(name: assetUse.keeperOrgId??"");
       orderNum.value = assetUse.billCode??"";
       reasonController.text = assetUse.applyRemark??"";
     }

@@ -31,10 +31,14 @@ class DepartmentManagement {
 
   }
 
-  ITarget? findITargetById(String id){
+  ITarget? findITargetByIdOrName({String? id, String? name}) {
     var list = getAllDepartment(_departments);
-    if(list.isNotEmpty){
-      return list.where((element) => element.id == id || element.name == id).first;
+    if (list.isNotEmpty) {
+      var iter =
+          list.where((element) => element.id == id || element.name == name);
+      if (iter.isNotEmpty) {
+        return iter.first;
+      }
     }
     return null;
   }
@@ -52,10 +56,14 @@ class DepartmentManagement {
   }
 
 
-  XTarget? findXTargetById(String id){
+  XTarget? findXTargetByIdOrName({String? id, String? name}) {
     var list = getAllUser(_departments);
-    if(list.isNotEmpty){
-      return list.where((element) => element.id == id || element.name == id).first;
+    if (list.isNotEmpty) {
+      var iter =
+          list.where((element) => element.id == id || element.name == name);
+      if (iter.isNotEmpty) {
+        return iter.first;
+      }
     }
     return null;
   }
@@ -98,8 +106,22 @@ class DepartmentManagement {
   String getCurrentCompanyName() {
     return setting.company?.name ?? "";
   }
+
   ITarget? get currentDepartment => _getCurrentDepartment(_departments);
 
+  ITarget? getAppointPersonDepartment(String name) {
+    ITarget? department;
+    for (var element in _departments) {
+      if (element.members.where((element) => element.name == name).isNotEmpty) {
+        department = element;
+      } else {
+        if (element.subTeam.isNotEmpty) {
+          department = _getCurrentDepartment(element.subTeam);
+        }
+      }
+    }
+    return department;
+  }
 
   ITarget? _getCurrentDepartment(List<ITarget> target) {
     ITarget? department;

@@ -1,6 +1,7 @@
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/model/my_assets_list.dart';
+import 'package:orginone/util/hive_utils.dart';
 
 class AssetManagement {
   static final AssetManagement _instance = AssetManagement._();
@@ -17,7 +18,9 @@ class AssetManagement {
     ResultType result = await KernelApi.getInstance().anystore.aggregate(
         "assets_data",
         {
-          "match": {},
+          "match": {
+            "USER":{"value":HiveUtils.getUser()?.userName??""}
+          },
           "sort": {"UPDATE_TIME": 1},
           "skip": 0,
           "limit": 9999,

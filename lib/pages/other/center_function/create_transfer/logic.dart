@@ -4,6 +4,7 @@ import 'package:orginone/event/load_assets.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/asset_management.dart';
+import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 import 'package:orginone/widget/loading_dialog.dart';
@@ -30,7 +31,10 @@ class CreateTransferController extends BaseController<CreateTransferState> {
 
   void choicePeople() {
     Get.toNamed(Routers.choicePeople)?.then((value) {
-      state.selectedUser.value = value;
+      if(value!=null){
+        state.selectedUser.value = value;
+        state.selectedDepartment.value = DepartmentManagement().getAppointPersonDepartment(state.selectedUser.value!.name);
+      }
     });
   }
 
@@ -65,7 +69,7 @@ class CreateTransferController extends BaseController<CreateTransferState> {
         ?.then((value) {
       if (value != null) {
         for (var element in value) {
-          state.selectAssetList.removeWhere((p0) => p0.id == element);
+          state.selectAssetList.removeWhere((p0) => p0.assetCode == element);
         }
         state.selectAssetList.refresh();
       }
@@ -97,8 +101,8 @@ class CreateTransferController extends BaseController<CreateTransferState> {
   void create({bool isDraft = false}) async{
     await TransferNetWork.createTransfer(
         billCode: state.orderNum.value,
-        keeperId: state.selectedUser.value!.name,
-        keepOrgId: state.selectedDepartment.value!.name,
+        keeperId: state.selectedUser.value?.name??"",
+        keepOrgId: state.selectedDepartment.value?.name??"",
         remark: state.reasonController.text, assets: state.selectAssetList,isDraft: isDraft);
   }
 
