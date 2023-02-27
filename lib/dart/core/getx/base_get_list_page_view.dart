@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/widget/load_state_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -38,7 +40,12 @@ abstract class BaseGetListPageView<T extends BaseListController, S extends BaseG
                   enablePullUp: false,
                   onRefresh: () => controller.onRefresh(),
                   onLoading: () => controller.onLoadMore(),
-                  child: buildView(),
+                  child: Obx((){
+                    if(state.dataList.isEmpty){
+                      return noData();
+                    }
+                    return buildView();
+                  }),
                 );
               },
             );
@@ -46,6 +53,16 @@ abstract class BaseGetListPageView<T extends BaseListController, S extends BaseG
         ),
         bottomWidget(),
       ],
+    );
+  }
+
+  Widget noData(){
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      alignment: Alignment.center,
+      color: Colors.grey.shade200,
+      child: Image.asset("images/no_data_icon.png",width: 300.w,height: 400.w,),
     );
   }
 

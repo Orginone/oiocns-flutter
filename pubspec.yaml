@@ -157,6 +157,7 @@ flutter:
     - images/person_empty.png
     - images/person_card_bg.png
     - images/logo.png
+    - images/no_data_icon.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

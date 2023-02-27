@@ -86,7 +86,7 @@ class AssetsController extends BaseListController<AssetsState> {
       });
       data = flitter.toList();
     }
-    state.useList.value = data;
+    state.dataList.value = data;
 
     loadSuccess();
   }

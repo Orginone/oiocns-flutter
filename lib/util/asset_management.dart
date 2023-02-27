@@ -19,9 +19,9 @@ class AssetManagement {
         "assets_data",
         {
           "match": {
-            "USER":{"value":HiveUtils.getUser()?.userName??""}
+
           },
-          "sort": {"UPDATE_TIME": 1},
+          "sort": {"UPDATE_TIME": -1},
           "skip": 0,
           "limit": 9999,
         },

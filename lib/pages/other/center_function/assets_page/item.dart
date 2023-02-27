@@ -238,6 +238,12 @@ class CommonItem extends StatelessWidget {
               fontSize: 16.sp,
               fontWeight: FontWeight.w500),
         ),
+        Expanded(
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Text(assetUse.createTime?.format(format: "yyyy-MM-dd hh:mm:ss")??""),
+          ),
+        ),
       ],
     );
     if(assetsListType == AssetsListType.check){
@@ -290,7 +296,17 @@ class MyAssetsItem extends StatelessWidget {
 
   Widget statusInfo() {
     if(!assets.notLockStatus){//资产变动逻辑
-      return Container();
+      String text = "";
+      if(assets.kapianzt == "08"){
+        text = "资产移交中";
+      }
+      if(assets.kapianzt == "09"){
+        text = "资产处置中";
+      }
+      if(assets.kapianzt == "12"){
+        text = "资产交回中";
+      }
+      return Text(text);
     }
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
