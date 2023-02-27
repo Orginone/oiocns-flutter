@@ -9,6 +9,7 @@ import 'package:orginone/components/template/tabs.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/event/home_data.dart';
+import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
@@ -32,7 +33,7 @@ class HomePage extends GetView<HomeController> {
       resizeToAvoidBottomInset: false,
       appBarElevation: 0,
       appBarHeight: 0,
-      body: Tabs(
+      body: TabsView(
         tabCtrl: controller.tabController,
         top: const UserBar(),
         views: controller.tabs.map((e) => e.toTabView()).toList(),
@@ -53,30 +54,28 @@ class HomeBinding extends Bindings {
 }
 
 class HomeController extends TabsController {
+  var chatCtrl = Get.find<ChatController>();
 
   @override
   initTabs() {
     var size = Size(32.w, 32.w);
-    registerTab(
-      XTab(
-        customTab: SizedBox(
-          width: 200.w,
-          child: Stack(
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: Tab(
-                  iconMargin: const EdgeInsets.all(4),
-                  icon: XImage.localImage("chat", size: Size(38.w, 32.w)),
-                  child: Text("沟通", style: XFonts.size14Black3),
-                ),
-              ),
-            ],
-          ),
-        ),
-        view: const MessagePage(),
-      ),
-    );
+    registerTab(XTab(
+      body: Text("沟通", style: XFonts.size14Black3),
+      view: const MessagePage(),
+      icon: XImage.localImage("chat", size: Size(38.w, 32.w)),
+      children: [
+        Positioned(
+          top: 0,
+          right: 0,
+          child: Obx(() {
+            var chatCtrl = Get.find<ChatController>();
+            return chatCtrl.hasNoRead()
+                ? Icon(Icons.circle, color: Colors.redAccent, size: 10.w)
+                : Container();
+          }),
+        )
+      ],
+    ));
     registerTab(XTab(
       body: Text('办事', style: XFonts.size14Black3),
       view: Container(),
@@ -84,18 +83,18 @@ class HomeController extends TabsController {
     ));
     var center = XTab(
       body: XImage.localImage("logo_not_bg", size: Size(36.w, 36.w)),
-      view:  GridView.count(
+      view: GridView.count(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
         crossAxisCount: 5,
         childAspectRatio: 80 / 100,
-        children: items.map((item){
+        children: items.map((item) {
           Color iconColor = Colors.black;
 
           return GestureDetector(
-            onTap: (){
-              Get.toNamed(Routers.centerFunction,arguments: {"info":item});
+            onTap: () {
+              Get.toNamed(Routers.centerFunction, arguments: {"info": item});
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -107,11 +106,11 @@ class HomeController extends TabsController {
                     borderRadius: BorderRadius.all(Radius.circular(40.w)),
                     color: Colors.white,
                   ),
-                  child:Icon(Icons.transform, color: iconColor),
+                  child: Icon(Icons.transform, color: iconColor),
                 ),
                 Container(
                   margin: EdgeInsets.only(top: 6.5.w),
-                  child: Text(item.name, style:XFonts.size12Black3),
+                  child: Text(item.name, style: XFonts.size12Black3),
                 ),
               ],
             ),
@@ -134,38 +133,34 @@ class HomeController extends TabsController {
     setIndex(tabs.indexOf(center));
   }
 
-
   Future<void> initData() async {
-
-    try{
-      if(KernelApi.getInstance().anystore.isOnline){
+    try {
+      if (KernelApi.getInstance().anystore.isOnline) {
         log('连接成功---------${KernelApi.getInstance().anystore.isOnline}');
-        Fluttertoast.showToast(msg:"连接成功 开始加载数据");
+        Fluttertoast.showToast(msg: "连接成功 开始加载数据");
         await Future.wait([
           AssetManagement().initAssets(),
           DepartmentManagement().initDepartment(),
           CommonTreeManagement().initTree(),
         ]);
         log('数据加载完成');
-        Fluttertoast.showToast(msg:"加载数据成功");
-      }else{
-       await Future.delayed(Duration(milliseconds: 200),() async{
-         log('尝试重新连接---------${KernelApi.getInstance().anystore.isOnline}');
+        Fluttertoast.showToast(msg: "加载数据成功");
+      } else {
+        await Future.delayed(Duration(milliseconds: 200), () async {
+          log('尝试重新连接---------${KernelApi.getInstance().anystore.isOnline}');
           await initData();
         });
       }
-
-    }catch(e){
+    } catch (e) {
       Fluttertoast.showToast(msg: e.toString());
     }
-
   }
 
   @override
-  void onReady() async{
+  void onReady() async {
     // TODO: implement onReady
     super.onReady();
-    LoadingDialog.showLoading(Get.context!,msg: "加载数据中");
+    LoadingDialog.showLoading(Get.context!, msg: "加载数据中");
     await initData();
     LoadingDialog.dismiss(Get.context!);
   }
@@ -178,7 +173,6 @@ class HomeController extends TabsController {
   }
 }
 
-
 class CenterItem {
   final String name;
   final String iconUrl;
@@ -186,7 +180,6 @@ class CenterItem {
 
   CenterItem(this.name, this.iconUrl, this.type);
 }
-
 
 final List<CenterItem> items = [
   CenterItem("我的资产", "", AssetsType.myAssets),
