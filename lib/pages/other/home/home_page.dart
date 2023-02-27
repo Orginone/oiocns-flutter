@@ -7,12 +7,9 @@ import 'package:get/get.dart';
 import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/template/tabs.dart';
 import 'package:orginone/components/unified.dart';
-<<<<<<< HEAD
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/event/home_data.dart';
-=======
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
->>>>>>> ab93d19 (feat: 统一头像组件，加载头像)
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
@@ -57,10 +54,7 @@ class HomeBinding extends Bindings {
 }
 
 class HomeController extends TabsController {
-<<<<<<< HEAD
-=======
   var chatCtrl = Get.find<ChatController>();
->>>>>>> ab93d19 (feat: 统一头像组件，加载头像)
 
   @override
   initTabs() {
@@ -89,18 +83,18 @@ class HomeController extends TabsController {
     ));
     var center = XTab(
       body: XImage.localImage("logo_not_bg", size: Size(36.w, 36.w)),
-      view:  GridView.count(
+      view: GridView.count(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
         crossAxisCount: 5,
         childAspectRatio: 80 / 100,
-        children: items.map((item){
+        children: items.map((item) {
           Color iconColor = Colors.black;
 
           return GestureDetector(
-            onTap: (){
-              Get.toNamed(Routers.centerFunction,arguments: {"info":item});
+            onTap: () {
+              Get.toNamed(Routers.centerFunction, arguments: {"info": item});
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -112,11 +106,11 @@ class HomeController extends TabsController {
                     borderRadius: BorderRadius.all(Radius.circular(40.w)),
                     color: Colors.white,
                   ),
-                  child:Icon(Icons.transform, color: iconColor),
+                  child: Icon(Icons.transform, color: iconColor),
                 ),
                 Container(
                   margin: EdgeInsets.only(top: 6.5.w),
-                  child: Text(item.name, style:XFonts.size12Black3),
+                  child: Text(item.name, style: XFonts.size12Black3),
                 ),
               ],
             ),
@@ -139,38 +133,34 @@ class HomeController extends TabsController {
     setIndex(tabs.indexOf(center));
   }
 
-
   Future<void> initData() async {
-
-    try{
-      if(KernelApi.getInstance().anystore.isOnline){
+    try {
+      if (KernelApi.getInstance().anystore.isOnline) {
         log('连接成功---------${KernelApi.getInstance().anystore.isOnline}');
-        Fluttertoast.showToast(msg:"连接成功 开始加载数据");
+        Fluttertoast.showToast(msg: "连接成功 开始加载数据");
         await Future.wait([
           AssetManagement().initAssets(),
           DepartmentManagement().initDepartment(),
           CommonTreeManagement().initTree(),
         ]);
         log('数据加载完成');
-        Fluttertoast.showToast(msg:"加载数据成功");
-      }else{
-       await Future.delayed(Duration(milliseconds: 200),() async{
-         log('尝试重新连接---------${KernelApi.getInstance().anystore.isOnline}');
+        Fluttertoast.showToast(msg: "加载数据成功");
+      } else {
+        await Future.delayed(Duration(milliseconds: 200), () async {
+          log('尝试重新连接---------${KernelApi.getInstance().anystore.isOnline}');
           await initData();
         });
       }
-
-    }catch(e){
+    } catch (e) {
       Fluttertoast.showToast(msg: e.toString());
     }
-
   }
 
   @override
-  void onReady() async{
+  void onReady() async {
     // TODO: implement onReady
     super.onReady();
-    LoadingDialog.showLoading(Get.context!,msg: "加载数据中");
+    LoadingDialog.showLoading(Get.context!, msg: "加载数据中");
     await initData();
     LoadingDialog.dismiss(Get.context!);
   }
@@ -183,7 +173,6 @@ class HomeController extends TabsController {
   }
 }
 
-
 class CenterItem {
   final String name;
   final String iconUrl;
@@ -191,7 +180,6 @@ class CenterItem {
 
   CenterItem(this.name, this.iconUrl, this.type);
 }
-
 
 final List<CenterItem> items = [
   CenterItem("我的资产", "", AssetsType.myAssets),
