@@ -28,10 +28,10 @@ class CreateClaimState extends BaseGetState {
           detailedData.add(ClaimDetailed(location: value.location,
               brand: value.brand ?? "",
               model: value.specMod ?? "",
-              quantity:"${value.numOrArea}",
+              quantity:"${value.numOrArea??0}",
               assetName:value.assetName??"",
               isDistribution: value.isDistribution??false,
-              assetType: CommonTreeManagement().findTree(value.assetType?['value']),
+              assetType: CommonTreeManagement().findTree(value.assetType?['value']??""),
           ));
         }
       }
