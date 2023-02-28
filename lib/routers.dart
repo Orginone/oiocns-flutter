@@ -43,6 +43,8 @@ import 'package:orginone/pages/other/qr_scan/view.dart';
 import 'package:orginone/pages/other/scanning/scanning_page.dart';
 import 'package:orginone/pages/other/scanning/scanning_result_pge.dart';
 import 'package:orginone/pages/other/search_page.dart';
+import 'package:orginone/pages/other/web_view/binding.dart';
+import 'package:orginone/pages/other/web_view/view.dart';
 import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
@@ -137,9 +139,11 @@ class Routers {
   //资产模块功能页
   static const String centerFunction = "/centerFunction";
 
-
   //扫描二维码
   static const String qrScan = "/qrScan";
+
+  //扫描二维码
+  static const String webView = "/webView";
 
   static String get main {
     return login;
@@ -309,6 +313,11 @@ class Routers {
         name: Routers.qrScan,
         page: () => QrScanPage(),
         binding: QrScanBinding(),
+      ),
+      GetPage(
+        name: Routers.webView,
+        page: () => WebViewPage(),
+        binding: WebViewBinding(),
       ),
     ];
   }

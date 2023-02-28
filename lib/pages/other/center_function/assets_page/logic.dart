@@ -121,7 +121,13 @@ class AssetsController extends BaseListController<AssetsState> {
 
   void qrScan() {
     Get.toNamed(Routers.qrScan)?.then((value) {
-      if (value != null) {}
+      if (value != null) {
+        AssetNetWork.getQrScanData().then((value){
+          if(value!=null){
+            Get.toNamed(Routers.assetsDetails,arguments: {"assets":value});
+          }
+        });
+      }
     });
   }
 }
