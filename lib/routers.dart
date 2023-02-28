@@ -6,7 +6,7 @@ import 'package:orginone/pages/chat/message_more.dart';
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
-import 'package:orginone/pages/index/indexBaseView.dart';
+import 'package:orginone/pages/index/index_page.dart';
 // import 'package:orginone/pages/index/indexok_page.dart';
 import 'package:orginone/pages/other/home/home_page.dart';
 import 'package:orginone/pages/other/home/spaces_page.dart';
@@ -71,6 +71,7 @@ class Routers {
         name: Routers.home,
         page: () => const HomePage(),
         bindings: [
+          ChatBinding(),
           HomeBinding(),
           SetHomeBinding(),
           MessageBinding(),
@@ -138,7 +139,15 @@ class Routers {
       GetPage(
         name: Routers.index,
         page: () => IndexPage(),
-        bindings: [HomeBinding(), IndexPageBinding()],
+        bindings: [
+          HomeBinding(),
+          IndexPageBinding(),
+          ChatBinding(),
+          MessageBinding(),
+          ChatBoxBinding(),
+          PlayBinding(),
+          SetHomeBinding(),
+        ],
       ),
     ];
   }

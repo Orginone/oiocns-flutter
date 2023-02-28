@@ -5,12 +5,9 @@ import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/template/tabs.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/pages/chat/message_page.dart';
-import 'package:orginone/pages/index/fl_chart/LineChart3.dart';
-import 'package:orginone/pages/index/fl_chart/barChart.dart';
-import 'package:orginone/pages/index/fl_chart/pieChart.dart';
-import 'package:orginone/pages/index/fl_chart/pieChart2.dart';
-import 'package:orginone/pages/index/indexBaseView.dart';
-import 'package:orginone/pages/index/indexok_page.dart';
+import 'package:orginone/pages/index/a.dart';
+import 'package:orginone/pages/index/index_page.dart';
+import 'package:orginone/pages/other/home/components/operation_bar.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/util/load_image.dart';
@@ -78,7 +75,7 @@ class HomeController extends TabsController {
     var center = XTab(
       body: XImage.localImage("logo_not_bg", size: Size(36.w, 36.w)),
       // view: IndexPage(),
-      view:  IndexPage(),
+      view: IndexPage(),
       // view: LineChartSample(),
       // view: BarChartWidget(),
       // view: PieChartSample(),
@@ -88,7 +85,8 @@ class HomeController extends TabsController {
     registerTab(center);
     registerTab(XTab(
       body: Text('仓库', style: XFonts.size14Black3),
-      view: Container(),
+      // view: Container(),
+      view: const OperationBar(),
       icon: XImage.localImage("warehouse", size: size),
     ));
     registerTab(XTab(
