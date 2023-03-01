@@ -38,7 +38,7 @@ class CommonItem extends StatelessWidget {
         }
       },
       child: Container(
-        margin: EdgeInsets.only(left: 16.w, right: 16.w, top: 20.h),
+        margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 15.h),
         decoration: BoxDecoration(
             color: Colors.white, borderRadius: BorderRadius.circular(8.w)),
         child: Stack(
@@ -268,7 +268,7 @@ class MyAssetsItem extends StatelessWidget {
         Get.toNamed(Routers.assetsDetails,arguments: {"assets":assets});
       },
       child: Container(
-        margin: EdgeInsets.only(left: 16.w, right: 16.w, top: 20.h),
+        margin: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 15.h),
         decoration: BoxDecoration(
             color: Colors.white, borderRadius: BorderRadius.circular(8.w)),
         child: Stack(

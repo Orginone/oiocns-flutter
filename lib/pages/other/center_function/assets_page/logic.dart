@@ -95,13 +95,15 @@ class AssetsController extends BaseListController<AssetsState> {
     if (isRefresh) {
       await AssetManagement().initAssets();
     }
-    var data = AssetManagement().deepCopyAssets();
-    if (code != null && code.isNotEmpty) {
-      var flitter =
-          data.where((element) => element.assetCode?.contains(code) ?? false);
-      data = flitter.toList();
+    if(assetsListType != AssetsListType.myGoods) {
+      var data = AssetManagement().deepCopyAssets();
+      if (code != null && code.isNotEmpty) {
+        var flitter =
+        data.where((element) => element.assetCode?.contains(code) ?? false);
+        data = flitter.toList();
+      }
+      state.dataList.value = data;
     }
-    state.dataList.value = data;
     loadSuccess();
   }
 
@@ -119,15 +121,4 @@ class AssetsController extends BaseListController<AssetsState> {
     );
   }
 
-  void qrScan() {
-    Get.toNamed(Routers.qrScan)?.then((value) {
-      if (value != null) {
-        AssetNetWork.getQrScanData().then((value){
-          if(value!=null){
-            Get.toNamed(Routers.assetsDetails,arguments: {"assets":value});
-          }
-        });
-      }
-    });
-  }
 }

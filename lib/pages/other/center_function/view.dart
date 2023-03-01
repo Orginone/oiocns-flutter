@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 
 import '../assets_config.dart';
@@ -14,12 +15,22 @@ class CenterFunctionPage
     extends BaseGetView<CenterFunctionController, CenterFunctionState> {
   @override
   Widget buildView() {
+    List<Widget> actions = [];
+    if (state.info.type == AssetsType.myAssets) {
+      actions.add(CommonWidget.commonIconButtonWidget(
+          iconPath: 'images/qr_scan_icon.png',
+          callback: () {
+            controller.qrScan();
+          }));
+    }
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
         title: Text(state.info.name),
         backgroundColor: XColors.themeColor,
+        centerTitle: true,
         elevation: 0,
+        actions: actions,
       ),
       body: Column(
         children: [
@@ -34,8 +45,11 @@ class CenterFunctionPage
 
 
   Widget body(){
-    if(state.info.type == AssetsType.check){
+    if (state.info.type == AssetsType.check) {
       return AssetsPage(AssetsListType.check, state.info.type);
+    }
+    if (state.info.type == AssetsType.myAssets) {
+      return AssetsPage(AssetsListType.myAssets, state.info.type);
     }
     return TabBarView(
       controller: state.tabController,
@@ -104,18 +118,21 @@ class CenterFunctionPage
   }
 
   Widget tabBar() {
-    if(state.info.type == AssetsType.check){
+    if (state.info.type == AssetsType.check ||
+        state.info.type == AssetsType.myAssets) {
       return Container();
     }
     return Container(
       color: XColors.themeColor,
+      padding: EdgeInsets.only(bottom: 10.h),
       child: TabBar(
           controller: state.tabController,
-          tabs: state.tabTitle
-              .map((e) => Tab(
-                    text: e,
-                  ))
-              .toList(),
+          tabs: state.tabTitle.map((e) {
+            return Tab(
+              text: e,
+              height: 40.h,
+            );
+          }).toList(),
           indicatorColor: Colors.white,
           indicatorSize: TabBarIndicatorSize.label,
           unselectedLabelStyle:

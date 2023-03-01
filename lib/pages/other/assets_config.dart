@@ -7,7 +7,7 @@ enum AssetsListType {
   approved,//已审批
   check,//盘点
   myAssets,//我的资产
-  myGoods,
+  myGoods,//我的物品
 }
 
 

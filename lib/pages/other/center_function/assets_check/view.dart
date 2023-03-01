@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/other/assets_config.dart';
@@ -57,11 +56,12 @@ class AssetsCheckPage extends BaseGetView<AssetsCheckController,AssetsCheckState
           TabBar(
               controller: state.tabController,
               padding: const EdgeInsets.symmetric(vertical: 10),
-              tabs: AssetsCheckTabTitle
-                  .map((e) => Tab(
-                text: e,
-              ))
-                  .toList(),
+              tabs: AssetsCheckTabTitle.map((e) {
+                return Tab(
+                  text: e,
+                  height: 40.h,
+                );
+              }).toList(),
               indicatorColor: Colors.white,
               indicatorSize: TabBarIndicatorSize.label,
               unselectedLabelStyle:
@@ -106,16 +106,29 @@ class AssetsCheckPage extends BaseGetView<AssetsCheckController,AssetsCheckState
               controller.qrScan();
             },
             child: Container(
-              width: 150.w,
+              width: 170.w,
               height: 50.h,
               decoration: BoxDecoration(
                 color: Colors.blueAccent,
                 borderRadius: BorderRadius.circular(4.w),
               ),
-              alignment: Alignment.center,
-              child: Text(
-                "扫一扫",
-                style: TextStyle(color: Colors.white, fontSize: 16.sp),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "images/qr_scan_icon.png",
+                    color: Colors.white,
+                    width: 24.w,
+                    height: 24.w,
+                  ),
+                  SizedBox(
+                    width: 10.w,
+                  ),
+                  Text(
+                    "扫一扫",
+                    style: TextStyle(color: Colors.white, fontSize: 16.sp),
+                  ),
+                ],
               ),
             ),
           ),

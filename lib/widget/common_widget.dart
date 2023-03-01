@@ -364,9 +364,9 @@ class CommonWidget {
     );
   }
 
-  static commonHeadInfoWidget(String info,{Widget? action}){
+  static commonHeadInfoWidget(String info,{Widget? action,EdgeInsetsGeometry? padding}){
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
+      padding: padding??EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -487,6 +487,51 @@ class CommonWidget {
           )
         ],
       ),
+    );
+  }
+
+  static Widget commonIconButtonWidget(
+      {required String iconPath,
+      VoidCallback? callback,
+      double size = 30,
+      Color color = Colors.white,
+      String? tips,
+      MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
+      CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center}) {
+    Widget icon = Image.asset(
+      iconPath,
+      color: color,
+      height: size.w,
+      width: size.w,
+    );
+    if (tips != null) {
+      return GestureDetector(
+        onTap: callback,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.w),
+          child: Row(
+            mainAxisAlignment: mainAxisAlignment,
+            crossAxisAlignment: crossAxisAlignment,
+            children: [
+              icon,
+              SizedBox(
+                width: 10.w,
+              ),
+              Text(
+                tips,
+                style: TextStyle(color: color, fontSize: 18.sp),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return IconButton(
+      padding: EdgeInsets.symmetric(horizontal: 10.w),
+      constraints: BoxConstraints(maxHeight: 64.w, maxWidth: 64.w),
+      onPressed: callback,
+      icon: icon,
     );
   }
 }

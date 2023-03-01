@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:getwidget/colors/gf_color.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/pages/other/assets_config.dart';
+import 'package:orginone/widget/common_widget.dart';
 
 import 'item.dart';
 import 'logic.dart';
@@ -20,6 +22,7 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
   @override
   Widget buildView() {
     return SingleChildScrollView(
+      padding: EdgeInsets.only(top: 10.h),
       child: Obx(() {
         return ListView.builder(
           shrinkWrap: true,
@@ -42,16 +45,11 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
     );
   }
 
+  
 
   @override
   Widget headWidget() {
     // TODO: implement headWidget
-    List<Widget> children = [];
-    children.add(Expanded(child: searchBar()));
-    if (assetsListType == AssetsListType.myAssets) {
-      children.insert(0, scan());
-      children.insert(2, batchDelete());
-    }
 
     return Column(
       children: [
@@ -60,10 +58,9 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
           child: Column(
             children: [
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                child: Row(
-                  children: children,
-                ),
+                margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
+                padding: EdgeInsets.only(bottom: 5.h),
+                child: searchBar(),
               ),
             ],
           ),
@@ -73,31 +70,6 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
     );
   }
 
-  Widget batchDelete() {
-    return IconButton(
-      onPressed: () {
-        controller.jumpBatchAssets();
-      },
-      icon: Icon(
-        Icons.batch_prediction,
-        size: 32.w,
-      ),
-      color: Colors.white,
-    );
-  }
-
-  Widget scan() {
-    return IconButton(
-      onPressed: () {
-        controller.qrScan();
-      },
-      icon: Icon(
-        Icons.qr_code_scanner,
-        size: 32.w,
-      ),
-      color: Colors.white,
-    );
-  }
 
   Widget searchBar() {
     String hint = "请输入${assetsType.name}单据编号";
@@ -176,123 +148,131 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
     }
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Expanded(
-            child: Container(
-              height: 75.w,
-              decoration: BoxDecoration(
-                image: const DecorationImage(
-                    image: NetworkImage(
-                        "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/totalValue-bg.png"),
-                    fit: BoxFit.cover),
-                borderRadius: BorderRadius.circular(4.w),
-              ),
-              child: Container(
-                margin: EdgeInsets.only(top: 10.h, left: 10.w),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                        margin: EdgeInsets.only(
-                            top: 5.h
-                        ),
-                        child: Image.network(
-                          "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/totalValue-icon.png",
-                          width: 16.w,
-                          height: 16.w,
-                        )),
-                    Container(
-                      margin: EdgeInsets.only(left: 5.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("资产总值",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.w500)),
-                          Obx(() {
-                            double grossValue = 0;
-                            for (var element in state.dataList) {
-                              grossValue += element.netVal ?? 0;
-                            }
-                            return Text(
-                              "$grossValue",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 24.sp,
-                                  fontWeight: FontWeight.w500),
-                            );
-                          }),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 10.w,
-          ),
-          Expanded(
-            child: Container(
-              height: 75.w,
-              decoration: BoxDecoration(
-                image: const DecorationImage(
-                    image: NetworkImage(
-                        "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/totalValue-bg.png"),
-                    fit: BoxFit.cover),
-                borderRadius: BorderRadius.circular(4.w),
-              ),
-              child: Container(
-                margin: EdgeInsets.only(top: 10.h, left: 10.w),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(
-                          top: 5.h
-                      ),
-                      child: Image.network(
-                        "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/totalNum-icon.png",
-                        width: 16.w,
-                        height: 16.w,
-                      ),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 75.w,
+                  decoration: BoxDecoration(
+                    image: const DecorationImage(
+                        image: NetworkImage(
+                            "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/totalValue-bg.png"),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(4.w),
+                  ),
+                  child: Container(
+                    margin: EdgeInsets.only(top: 10.h, left: 10.w),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                            margin: EdgeInsets.only(
+                                top: 5.h
+                            ),
+                            child: Image.network(
+                              "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/totalValue-icon.png",
+                              width: 16.w,
+                              height: 16.w,
+                            )),
+                        Container(
+                          margin: EdgeInsets.only(left: 5.w),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("资产总值",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20.sp,
+                                      fontWeight: FontWeight.w500)),
+                              Obx(() {
+                                double grossValue = 0;
+                                for (var element in state.dataList) {
+                                  grossValue += element.netVal ?? 0;
+                                }
+                                return Text(
+                                  "$grossValue",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 24.sp,
+                                      fontWeight: FontWeight.w500),
+                                );
+                              }),
+                            ],
+                          ),
+                        )
+                      ],
                     ),
-                    Container(
-                      margin: EdgeInsets.only(left: 5.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("资产数量",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.w500)),
-                          Obx(() {
-                            int count = 0;
-                            for (var element in state.dataList) {
-                              count +=
-                              (int.tryParse(element.numOrArea.toString()) ?? 0);
-                            }
-                            return Text(
-                              "$count",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 24.sp,
-                                  fontWeight: FontWeight.w500),
-                            );
-                          }),
-                        ],
-                      ),
-                    )
-                  ],
+                  ),
                 ),
               ),
-            ),
+              SizedBox(
+                width: 10.w,
+              ),
+              Expanded(
+                child: Container(
+                  height: 75.w,
+                  decoration: BoxDecoration(
+                    image: const DecorationImage(
+                        image: NetworkImage(
+                            "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/totalValue-bg.png"),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(4.w),
+                  ),
+                  child: Container(
+                    margin: EdgeInsets.only(top: 10.h, left: 10.w),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(
+                              top: 5.h
+                          ),
+                          child: Image.network(
+                            "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/totalNum-icon.png",
+                            width: 16.w,
+                            height: 16.w,
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(left: 5.w),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("资产数量",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20.sp,
+                                      fontWeight: FontWeight.w500)),
+                              Obx(() {
+                                int count = 0;
+                                for (var element in state.dataList) {
+                                  count +=
+                                  (int.tryParse(element.numOrArea.toString()) ?? 0);
+                                }
+                                return Text(
+                                  "$count",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 24.sp,
+                                      fontWeight: FontWeight.w500),
+                                );
+                              }),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
+          CommonWidget.commonHeadInfoWidget("资产列表",action: CommonWidget.commonIconButtonWidget(iconPath: "images/batch_operation_icon.png",callback: (){
+            controller.jumpBatchAssets();
+          },color: XColors.themeColor,tips: "批量操作"),padding: EdgeInsets.symmetric(vertical: 10.h)),
         ],
       ),
     );
