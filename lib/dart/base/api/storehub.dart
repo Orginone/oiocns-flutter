@@ -1,6 +1,6 @@
 import 'package:logging/logging.dart';
+import 'package:orginone/util/logger.dart';
 import 'package:signalr_core/signalr_core.dart';
-import 'package:orginone/dart/base/model.dart';
 
 /// 存储集线器
 class StoreHub {
@@ -27,7 +27,16 @@ class StoreHub {
     int timeout = 8000,
     int interval = 3000,
   })  : _timeout = timeout,
-        _connection = HubConnectionBuilder().withUrl(url).build() {
+        _connection = HubConnectionBuilder()
+            .withUrl(
+                url,
+                HttpConnectionOptions(
+                    skipNegotiation: true,
+                    transport: HttpTransportType.webSockets,
+                    logging: (level, message) {
+                      Log.info(message);
+                    }))
+            .build() {
     _connection.keepAliveIntervalInMilliseconds = interval;
     _connection.serverTimeoutInMilliseconds = timeout;
     _connection.onclose((err) {

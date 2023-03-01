@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
@@ -12,6 +13,7 @@ class SysUtil {
   static Logger log = Logger("SysUtil");
 
   static void setStatusBarBright() {
+    if(kIsWeb)return;
     // 设置 Android 头部的导航栏透明
     if (Platform.isAndroid) {
       SystemUiOverlayStyle systemUiOverlayStyle = const SystemUiOverlayStyle(
