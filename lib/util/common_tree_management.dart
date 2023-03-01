@@ -3,6 +3,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/market/model.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 class CommonTreeManagement {
   static final CommonTreeManagement _instance = CommonTreeManagement._();
@@ -32,6 +33,8 @@ class CommonTreeManagement {
     _assetsCategory.clear();
     if(res.success && (res.data?.result?.isNotEmpty??false)){
       _assetsCategory.addAll(res.data!.result!);
+    }else{
+      ToastUtils.showMsg(msg: "获取资产分类数据失败");
     }
   }
 

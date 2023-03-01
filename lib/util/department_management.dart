@@ -5,6 +5,8 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/util/hive_utils.dart';
 
+import 'toast_utils.dart';
+
 class DepartmentManagement {
   static final DepartmentManagement _instance = DepartmentManagement._();
 
@@ -27,8 +29,9 @@ class DepartmentManagement {
         await loopDepartment(_departments);
         await loopMembers(_departments);
       }
+    }else{
+      ToastUtils.showMsg(msg: "获取分组分类数据失败");
     }
-
   }
 
   ITarget? findITargetByIdOrName({String? id, String? name}) {

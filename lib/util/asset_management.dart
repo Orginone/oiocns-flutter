@@ -3,6 +3,8 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/model/my_assets_list.dart';
 import 'package:orginone/util/hive_utils.dart';
 
+import 'toast_utils.dart';
+
 class AssetManagement {
   static final AssetManagement _instance = AssetManagement._();
 
@@ -31,6 +33,8 @@ class AssetManagement {
       for (var json in result.data) {
         _assets.add(MyAssetsList.fromJson(json));
       }
+    }else{
+      ToastUtils.showMsg(msg: "获取资产数据失败");
     }
   }
 
