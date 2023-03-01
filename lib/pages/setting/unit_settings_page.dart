@@ -7,7 +7,6 @@ import 'package:logging/logging.dart';
 import 'package:orginone/config/enum.dart';
 import 'package:orginone/components/template/base_view.dart';
 import 'package:orginone/components/unified.dart';
-import 'package:orginone/pages/index/ScrollableMenu.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus.dart';
 
@@ -90,7 +89,7 @@ class UintSettingsPage extends BaseView<UintSettingsController> {
     return Container(
       color: XColors.bgColor,
       padding: EdgeInsets.only(left: 12.w, right: 12.w),
-      child: ScrollableMenu(),
+      child: Container(),
     );
   }
 

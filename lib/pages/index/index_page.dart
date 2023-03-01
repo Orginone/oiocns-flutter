@@ -11,7 +11,7 @@ import 'package:orginone/config/enum.dart';
 import 'package:orginone/config/forms.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/pages/index/ScrollableMenu.dart';
+import 'package:orginone/pages/index/HorizontalScrollMenu/MyMenuItem.dart';
 import 'package:orginone/pages/other/home/components/operation_bar.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/load_image.dart';
@@ -45,7 +45,15 @@ class IndexPage extends BaseView<IndexPageController> {
 // TODO 常用应用，超过五个字屏幕会越界
   IndexPage({Key? key}) : super(key: key) {
     map["常用应用"] = [
-      {"id": 0, "icon": "icon", "cardName": "资产应用一"},
+      {
+        "id": 0,
+        "icon": "icon",
+        "cardName": "资产应用一",
+        "func": () {
+          Get.toNamed(Routers.scanning);
+          print('Go to home page');
+        }
+      },
       {"id": 1, "icon": "icon", "cardName": "资产应用2"},
       {"id": 2, "icon": "icon", "cardName": "资产应用3"},
       {"id": 4, "icon": "icon", "cardName": "资产应用4"},
@@ -68,6 +76,50 @@ class IndexPage extends BaseView<IndexPageController> {
   @override
   Widget builder(BuildContext context) {
     double x = 0, y = 0;
+    // LinkedHashMap<String, dynamic> testData = LinkedHashMap.from({
+    //   '1': {
+    //     'id': '1',
+    //     'icon': Icons.home,
+    //     'cardName': '加好友',
+    //     'func': () => print('Home pressed')
+    //   },
+    //   '2': {
+    //     'id': '2',
+    //     'icon': Icons.settings,
+    //     'cardName': '创单位',
+    //     'func': () => print('Settings pressed')
+    //   },
+    //   '3': {
+    //     'id': '3',
+    //     'icon': Icons.person,
+    //     'cardName': '邀成员',
+    //     'func': () => print('Profile pressed')
+    //   },
+    //   '4': {
+    //     'id': '4',
+    //     'icon': Icons.notifications,
+    //     'cardName': '建应用',
+    //     'func': () => print('Notifications pressed')
+    //   },
+    //   '5': {
+    //     'id': '5',
+    //     'icon': Icons.settings,
+    //     'cardName': '逛商店',
+    //     'func': () => print('Settings pressed')
+    //   },
+    //   '6': {
+    //     'id': '6',
+    //     'icon': Icons.person,
+    //     'cardName': '邀成员',
+    //     'func': () => print('Profile pressed')
+    //   },
+    //   '7': {
+    //     'id': '7',
+    //     'icon': Icons.notifications,
+    //     'cardName': '建应用',
+    //     'func': () => print('Notifications pressed')
+    //   },
+    // });
 
     return Scaffold(
       drawer: Drawer(
@@ -255,7 +307,8 @@ class IndexPage extends BaseView<IndexPageController> {
         ],
       ),
       body: ListView(
-          shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          // shrinkWrap: true,
           // padding: const EdgeInsets.all(20.0),
           children: <Widget>[
             _carousel(imageList),
@@ -273,8 +326,9 @@ class IndexPage extends BaseView<IndexPageController> {
                 padding: const EdgeInsets.fromLTRB(11.0, 0, 0, 0),
                 alignment: Alignment.topLeft,
                 child: const Text("快捷入口")),
-            // _expressEntrance(),
-            ScrollableMenu(),
+            // HorizontalMenu(),
+            // MyHorizontalMenu(),
+            MyHorizontalMenu(),
             Container(
                 decoration: BoxDecoration(
                     color: XColors.white,
@@ -693,9 +747,8 @@ class CardChildWidget extends StatelessWidget {
               height: 12.h,
             ),
             Container(
-              decoration: BoxDecoration(
-                  color: XColors.white,
-                  borderRadius: BorderRadius.circular(10)),
+              // color: XColors.navigatorBgColor,
+
               child: GridView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.only(top: 10.h, bottom: 20.h),
@@ -717,9 +770,17 @@ class CardChildWidget extends StatelessWidget {
                           // AImage.netImageRadius(AIcons.back_black,
                           //     size: Size(64.w, 64.w)),
                           Container(
-                              width: 64.w,
-                              height: 64.w,
-                              color: XColors.navigatorBgColor),
+                            decoration: BoxDecoration(
+                              // image: DecorationImage(
+                              //     image: NetworkImage(
+                              //         'https://s3.bmp.ovh/imgs/2023/02/28/3d1e012ec88ff534.jpg')),
+                              borderRadius: BorderRadius.circular(60),
+                              color: XColors.navigatorBgColor,
+                            ),
+                            width: 64.w,
+                            height: 64.w,
+                            // color: XColors.navigatorBgColor,
+                          ),
                           // AImage.netImage(AIcons.placeholder,
                           //     url: value[index]['icon'], size: Size()),
                           SizedBox(

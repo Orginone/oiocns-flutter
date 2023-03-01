@@ -5,7 +5,6 @@ import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/template/tabs.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/pages/chat/message_page.dart';
-import 'package:orginone/pages/index/a.dart';
 import 'package:orginone/pages/index/index_page.dart';
 import 'package:orginone/pages/other/home/components/operation_bar.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
