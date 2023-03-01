@@ -49,29 +49,6 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
 
   @override
   Widget headWidget() {
-    // TODO: implement headWidget
-
-    return Column(
-      children: [
-        Container(
-          color: XColors.themeColor,
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
-                padding: EdgeInsets.only(bottom: 5.h),
-                child: searchBar(),
-              ),
-            ],
-          ),
-        ),
-        myAssetsInfo(),
-      ],
-    );
-  }
-
-
-  Widget searchBar() {
     String hint = "请输入${assetsType.name}单据编号";
     if (assetsType == AssetsType.check) {
       hint = "请输入盘点任务名称";
@@ -79,32 +56,19 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
     if(assetsType == AssetsType.myAssets){
       hint = "请输入资产编号";
     }
-    return Row(
+
+    return Column(
       children: [
-        Expanded(
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 12.w, horizontal: 10.h),
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(8.w)),
-            child: TextField(
-              textInputAction: TextInputAction.done,
-              onChanged: (str) {
-                controller.search(str);
-              },
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.zero,
-                isDense: true,
-                hintText: hint,
-                border: InputBorder.none,
-                icon: Icon(
-                  Icons.search,
-                  color: Colors.black,
-                  size: 24.w,
-                ),
-              ),
-            ),
-          ),
+        CommonWidget.commonSearchBarWidget(
+          searchColor: Colors.white,
+          backgroundColor:  XColors.themeColor,
+          margin: EdgeInsets.only(left: 16.w,right: 16.w,bottom: 10.w),
+          hint: hint,
+          onChanged: (str){
+            controller.search(str);
+          }
         ),
+        myAssetsInfo(),
       ],
     );
   }

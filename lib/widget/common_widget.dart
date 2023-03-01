@@ -302,44 +302,51 @@ class CommonWidget {
   static Widget commonSearchBarWidget(
       {TextEditingController? controller,
       ValueChanged<String>? onSubmitted,
+        ValueChanged<String>? onChanged,
       String hint = "",
-      bool showLine = false}) {
+      bool showLine = false,
+      Color? backgroundColor,
+      Color? searchColor,
+      EdgeInsetsGeometry? margin,
+      EdgeInsetsGeometry? padding}) {
     return Container(
       decoration: BoxDecoration(
-        color: XColors.white,
+        color: backgroundColor ?? XColors.white,
         border: showLine
             ? Border(bottom: BorderSide(color: Colors.grey.shade300))
             : null,
       ),
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        child: Row(
-          children: [
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 12.w, horizontal: 10.h),
-                decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8.w)),
-                child: TextField(
-                  controller: controller,
-                  textInputAction: TextInputAction.done,
-                  onSubmitted: onSubmitted,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.zero,
-                    isDense: true,
-                    hintText: hint,
-                    border: InputBorder.none,
-                    icon: Icon(
-                      Icons.search,
-                      color: Colors.black,
-                      size: 24.w,
+        margin:
+            margin ?? EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+        padding: padding,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 12.w, horizontal: 10.h),
+          decoration: BoxDecoration(
+              color: searchColor ?? Colors.blue.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8.w)),
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  child: TextField(
+                    controller: controller,
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: onSubmitted,
+                    onChanged:onChanged ,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.zero,
+                      isDense: true,
+                      hintText: hint,
+                      border: InputBorder.none,
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+              SizedBox(width: 5.w,),
+              Image.asset("images/search.png",width: 28.w,height: 28.w,),
+            ],
+          ),
         ),
       ),
     );
