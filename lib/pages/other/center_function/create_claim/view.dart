@@ -22,33 +22,28 @@ class CreateClaimPage
         centerTitle: true,
         backgroundColor: XColors.themeColor,
       ),
-      body: WillPopScope(
-        onWillPop: () {
-          return controller.back();
-        },
-        child: SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      basicInfo(),
-                      detailedList(),
-                      CommonWidget.commonAddDetailedWidget(onTap: () {
-                        controller.addDetailed();
-                      }, text: '添加明细'),
-                    ],
-                  ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    basicInfo(),
+                    detailedList(),
+                    CommonWidget.commonAddDetailedWidget(onTap: () {
+                      controller.addDetailed();
+                    }, text: '添加明细'),
+                  ],
                 ),
               ),
-              CommonWidget.commonCreateSubmitWidget(submit: (){
-                controller.submit();
-              },draft: (){
-                controller.draft();
-              }),
-            ],
-          ),
+            ),
+            CommonWidget.commonCreateSubmitWidget(submit: (){
+              controller.submit();
+            },draft: (){
+              controller.draft();
+            }),
+          ],
         ),
       ),
     );
