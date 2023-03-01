@@ -9,11 +9,22 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/components/widgets/photo_widget.dart';
+<<<<<<< HEAD
 import 'package:orginone/components/widgets/text_avatar.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
+=======
+import 'package:orginone/components/widgets/team_avatar.dart';
+import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/controller/chat/chat_controller.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/target/targetMap.dart';
+>>>>>>> main
 import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/string_util.dart';
 
@@ -77,11 +88,22 @@ class DetailItemWidget extends GetView<ChatController> {
 
   /// 获取头像
   Widget _getAvatar() {
+<<<<<<< HEAD
     return TextAvatar(
       avatarName: getName().substring(0, 2),
       textStyle: XFonts.size16WhiteW700,
       radius: 9999,
     );
+=======
+    late TargetShare shareInfo;
+    if (msg.fromId == controller.userId) {
+      var settingCtrl = Get.find<SettingController>();
+      shareInfo = settingCtrl.user!.shareInfo;
+    } else {
+      shareInfo = findTargetShare(msg.fromId);
+    }
+    return TeamAvatar(info: TeamTypeInfo(share: shareInfo));
+>>>>>>> main
   }
 
   /// 获取会话

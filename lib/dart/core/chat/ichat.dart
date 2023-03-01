@@ -17,6 +17,10 @@ abstract class IChat {
   late RxList<XImMsg> messages;
   late RxList<XTarget> persons;
   late Rx<XImMsg?> lastMessage;
+<<<<<<< HEAD
+=======
+  late TargetShare shareInfo;
+>>>>>>> main
 
   /// 获取会话缓存
   ChatCache getCache();
