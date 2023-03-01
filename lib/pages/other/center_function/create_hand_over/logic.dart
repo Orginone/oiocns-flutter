@@ -72,7 +72,7 @@ class CreateHandOverController extends BaseController<CreateHandOverState> {
   }
 
   Future submit() async {
-    if (state.reasonController.text.isEmpty) {
+    if (state.reasonController.text.trim().isEmpty) {
       return ToastUtils.showMsg(msg: "请输入移交原因");
     }
     if (state.selectAssetList.isEmpty) {

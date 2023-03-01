@@ -97,7 +97,7 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
     if (state.disposeType.value.isEmpty) {
       return ToastUtils.showMsg(msg: "请选择处置方式");
     }
-    if (state.reasonController.text.isEmpty) {
+    if (state.reasonController.text.trim().isEmpty) {
       return ToastUtils.showMsg(msg: "请输入申请原因");
     }
     if (state.selectAssetList.isEmpty) {

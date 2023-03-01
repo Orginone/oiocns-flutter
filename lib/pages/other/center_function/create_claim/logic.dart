@@ -101,13 +101,13 @@ class CreateClaimController extends BaseController<CreateClaimState> {
   }
 
   Future submit() async{
-    if(state.reasonController.text.isEmpty){
+    if(state.reasonController.text.trim().isEmpty){
       return ToastUtils.showMsg(msg: "请输入申领事由");
     }
     if(state.detailedData.where((p0) => p0.assetType == null).isNotEmpty){
       return ToastUtils.showMsg(msg: "请选择资产分类");
     }
-    if(state.detailedData.where((p0) => p0.assetNameController.text.isEmpty).isNotEmpty){
+    if(state.detailedData.where((p0) => p0.assetNameController.text.trim().isEmpty).isNotEmpty){
       return ToastUtils.showMsg(msg: "请输入资产名称");
     }
     create();
