@@ -3,11 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/components/unified.dart';
-<<<<<<< HEAD
 import 'package:orginone/components/widgets/text_avatar.dart';
-=======
-import 'package:orginone/components/widgets/team_avatar.dart';
->>>>>>> main
 import 'package:orginone/components/widgets/text_tag.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
@@ -96,7 +92,6 @@ class MessageItemWidget extends GetView<ChatController> {
     );
   }
 
-<<<<<<< HEAD
   Widget _avatar() {
     var noRead = chat.noReadCount.value;
     return Stack(
@@ -124,28 +119,6 @@ class MessageItemWidget extends GetView<ChatController> {
         )
       ],
     );
-=======
-  Widget get _avatar {
-    return Obx(() {
-      var noRead = chat.noReadCount.value;
-      return TeamAvatar(
-        info: TeamTypeInfo(share: chat.shareInfo),
-        children: [
-          Visibility(
-            visible: noRead > 0,
-            child: Align(
-              alignment: Alignment.topRight,
-              child: GFBadge(
-                shape: GFBadgeShape.circle,
-                color: Colors.red,
-                child: Text("${noRead > 99 ? "99+" : noRead}"),
-              ),
-            ),
-          )
-        ],
-      );
-    });
->>>>>>> main
   }
 
   Widget _avatarContainer() {
@@ -153,11 +126,7 @@ class MessageItemWidget extends GetView<ChatController> {
       alignment: Alignment.center,
       width: defaultAvatarWidth,
       height: defaultAvatarWidth,
-<<<<<<< HEAD
       child: Obx(() => _avatar()),
-=======
-      child: _avatar,
->>>>>>> main
     );
   }
 

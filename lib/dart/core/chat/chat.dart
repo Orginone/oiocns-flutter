@@ -1,18 +1,12 @@
-<<<<<<< HEAD
-=======
 import 'dart:convert';
 
->>>>>>> main
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/ichat.dart';
 import 'package:orginone/dart/core/enum.dart';
-<<<<<<< HEAD
-=======
 import 'package:orginone/dart/core/target/targetMap.dart';
->>>>>>> main
 import 'package:orginone/util/encryption_util.dart';
 
 const hisMsgCollName = 'chat-message';
@@ -31,17 +25,6 @@ class BaseChat extends IChat {
     isTopping = false.obs;
     fullId = '$spaceId-${target.id}';
     lastMessage = Rxn();
-<<<<<<< HEAD
-    // appendShare(target.id, shareInfo());
-  }
-
-  TargetShare shareInfo() {
-    return TargetShare(
-      name: target.name,
-      typeName: target.typeName,
-      avatar: "", //parseAvatar(target.photo),
-    );
-=======
     appendShare(target.id, shareInfo);
   }
 
@@ -56,7 +39,6 @@ class BaseChat extends IChat {
       share.avatar = FileItemShare.fromJson(map);
     }
     return share;
->>>>>>> main
   }
 
   @override

@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-import 'dart:convert';
-
->>>>>>> main
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -51,14 +46,7 @@ class BaseTarget extends ITarget {
       name: teamName,
       typeName: typeName,
     );
-<<<<<<< HEAD
     // result.avatar = parseAvatar(target.avatar);
-=======
-    if (target.avatar.isNotEmpty) {
-      var map = jsonDecode(target.avatar);
-      result.avatar = FileItemShare.fromJson(map);
-    }
->>>>>>> main
     return result;
   }
 

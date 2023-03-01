@@ -67,7 +67,6 @@ class ScanningPage extends GetView<ScanningController> {
               color: Colors.grey.withAlpha(200),
             ),
           ),
-<<<<<<< HEAD
           Positioned(
             left: 60.w,
             bottom: 60.h,
@@ -80,8 +79,6 @@ class ScanningPage extends GetView<ScanningController> {
               color: Colors.grey.withAlpha(200),
             ),
           ),
-=======
->>>>>>> main
         ],
       ),
     );
