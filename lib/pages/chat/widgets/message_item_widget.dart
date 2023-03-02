@@ -1,219 +1,479 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_sound/public/flutter_sound_player.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/components/widgets/photo_widget.dart';
 import 'package:orginone/components/widgets/text_avatar.dart';
-import 'package:orginone/components/widgets/text_tag.dart';
+import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/chat/chat.dart';
-import 'package:orginone/dart/core/chat/ichat.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/util/date_util.dart';
+import 'package:orginone/util/logger.dart';
+import 'package:orginone/util/string_util.dart';
 
-double defaultAvatarWidth = 66.w;
+enum Direction { leftStart, rightStart }
 
-enum ChatFunc {
-  // topping("置顶会话"),
-  // cancelTopping("取消置顶"),
-  remove("删除会话");
+enum DetailFunc {
+  recall("撤回"),
+  remove("删除");
+
+  const DetailFunc(this.label);
 
   final String label;
-
-  const ChatFunc(this.label);
 }
 
-class MessageItemWidget extends GetView<ChatController> {
-  // 用户信息
-  final IChat chat;
-  final Function? remove;
+double defaultWidth = 10.w;
 
-  const MessageItemWidget({
-    Key? key,
-    required this.chat,
-    this.remove,
-  }) : super(key: key);
+class DetailItemWidget extends GetView<ChatController> {
+  final XImMsg msg;
+
+  const DetailItemWidget({Key? key, required this.msg}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    return _messageDetail(context);
+  }
+
+  /// 消息详情
+  Widget _messageDetail(BuildContext context) {
+    List<Widget> children = [];
+    bool isCenter = false;
+    if (msg.msgType == MessageType.recall.label) {
+      String msgBody = StringUtil.getDetailRecallBody(
+        fromId: msg.fromId,
+        userId: controller.userId,
+        name: controller.getName(msg.fromId),
+      );
+      children.add(Text(msgBody, style: XFonts.size18Black9));
+      isCenter = true;
+    } else {
+      children.add(_getAvatar());
+      children.add(_getChat(context));
+    }
+    return Container(
+      margin: EdgeInsets.only(top: 8.h, bottom: 8.h),
+      child: Row(
+        textDirection: msg.fromId == controller.userId
+            ? TextDirection.rtl
+            : TextDirection.ltr,
+        mainAxisAlignment:
+            isCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    );
+  }
+
+  /// 目标名称
+  String getName() {
+    return controller.getName(msg.fromId);
+  }
+
+  /// 获取头像
+  Widget _getAvatar() {
+    return TextAvatar(
+      avatarName: getName().substring(0, 2),
+      textStyle: XFonts.size16WhiteW700,
+      radius: 9999,
+    );
+  }
+
+  /// 获取会话
+  Widget _getChat(BuildContext context) {
+    List<Widget> content = <Widget>[];
+
+    if (msg.fromId != controller.userId) {
+      content.add(Container(
+        margin: EdgeInsets.only(left: 10.w),
+        child: Text(getName(), style: XFonts.size16Black3),
+      ));
+    }
+
+    Widget body;
+    var mySend = msg.fromId == controller.userId;
+    var rtl = TextDirection.rtl;
+    var ltr = TextDirection.ltr;
+    var textDirection = mySend ? rtl : ltr;
+
+    if (msg.msgType == MessageType.text.label) {
+      body = _detail(
+        textDirection: textDirection,
+        body: Text(
+          msg.showTxt,
+          style: XFonts.size22Black3W700,
+        ),
+        padding: EdgeInsets.only(
+          left: 16.w,
+          right: 16.w,
+          top: 10.w,
+          bottom: 10.w,
+        ),
+      );
+    } else if (msg.msgType == MessageType.image.label) {
+      body = _image(textDirection: textDirection, context: context);
+    } else if (msg.msgType == MessageType.voice.label) {
+      body = _voice(textDirection: textDirection);
+    } else {
+      body = Container();
+    }
+
+    // 添加长按手势
     double x = 0, y = 0;
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    var currentChat = controller.chat!;
+    String spaceId = currentChat.spaceId;
+    var chat = GestureDetector(
       onPanDown: (position) {
         x = position.globalPosition.dx;
         y = position.globalPosition.dy;
       },
       onLongPress: () async {
-        final result = await showMenu(
+        List<DetailFunc> items = [];
+        if (msg.fromId == controller.userId && msg.createTime != null) {
+          var parsedCreateTime = DateTime.parse(msg.createTime!);
+          var diff = parsedCreateTime.difference(DateTime.now());
+          if (diff.inSeconds.abs() < 2 * 60) {
+            items.add(DetailFunc.recall);
+          }
+        }
+        if (spaceId == controller.userId) {
+          items.add(DetailFunc.remove);
+        }
+        if (items.isEmpty) {
+          return;
+        }
+        var top = y - 50;
+        var right = MediaQuery.of(context).size.width - x;
+        final result = await showMenu<DetailFunc>(
           context: context,
-          position: RelativeRect.fromLTRB(
-            x,
-            y - 50,
-            MediaQuery.of(context).size.width - x,
-            0,
-          ),
-          items: ChatFunc.values.map((item) {
-            return PopupMenuItem(value: item, child: Text(item.label));
+          position: RelativeRect.fromLTRB(x, top, right, 0),
+          items: items.map((item) {
+            return PopupMenuItem(
+              value: item,
+              child: Text(item.label),
+            );
           }).toList(),
         );
         if (result != null) {
           switch (result) {
-            case ChatFunc.remove:
-              if (remove != null) {
-                remove!(chat);
-              }
+            case DetailFunc.recall:
+              break;
+            case DetailFunc.remove:
+              controller.chat?.deleteMessage(msg.id);
               break;
           }
         }
       },
-      onTap: () async {
-        if (Get.isRegistered<ChatController>()) {
-          var chatCtrl = Get.find<ChatController>();
-          await chatCtrl.setCurrent(chat.spaceId, chat.chatId);
-          Get.offNamedUntil(
-            Routers.chat,
-            (router) => router.settings.name == Routers.home,
-          );
-        }
-      },
-      child: Container(
-        padding: EdgeInsets.only(left: 25.w, top: 16.h, right: 25.w),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _avatarContainer(),
-            _contentContainer(),
-          ],
-        ),
+      child: body,
+    );
+    content.add(chat);
+
+    return Container(
+      margin: msg.fromId == controller.userId
+          ? EdgeInsets.only(right: 2.w)
+          : EdgeInsets.only(left: 2.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: content,
       ),
     );
   }
 
-  Widget _avatar() {
-    var noRead = chat.noReadCount.value;
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.center,
-          child: TextAvatar(
-            avatarName: chat.target.name.substring(0, 2),
-            width: defaultAvatarWidth,
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomLeft,
-          child: TextTag(chat.target.label ?? ""),
-        ),
-        Visibility(
-          visible: noRead > 0,
-          child: Align(
-            alignment: Alignment.topRight,
-            child: GFBadge(
-              color: XColors.cardBorder,
-              child: Text("${noRead > 99 ? "99+" : noRead}"),
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _avatarContainer() {
+  /// 会话详情
+  Widget _detail({
+    required TextDirection textDirection,
+    required Widget body,
+    BoxConstraints? constraints,
+    Clip? clipBehavior,
+    EdgeInsets? padding,
+  }) {
     return Container(
-      alignment: Alignment.center,
-      width: defaultAvatarWidth,
-      height: defaultAvatarWidth,
-      child: Obx(() => _avatar()),
+      constraints: constraints ?? BoxConstraints(maxWidth: 350.w),
+      padding: padding ?? EdgeInsets.all(defaultWidth),
+      margin: textDirection == TextDirection.ltr
+          ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
+          : EdgeInsets.only(right: defaultWidth),
+      decoration: BoxDecoration(
+        color: msg.fromId == controller.userId
+            ? XColors.tinyLightBlue
+            : Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(defaultWidth)),
+        boxShadow: const [
+          //阴影效果
+          BoxShadow(
+            offset: Offset(0, 2), //阴影在X轴和Y轴上的偏移
+            color: Colors.black12, //阴影颜色
+            blurRadius: 3.0, //阴影程度
+            spreadRadius: 0, //阴影扩散的程度 取值可以正数,也可以是负数
+          ),
+        ],
+      ),
+      clipBehavior: clipBehavior ?? Clip.none,
+      child: body,
     );
   }
 
-  Widget _content() {
-    var target = chat.target;
-    var lastMessage = chat.lastMessage;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(target.name, style: XFonts.size22Black0W700),
-            Text(
-              CustomDateUtil.getSessionTime(lastMessage.value?.createTime),
-              style: XFonts.size18Black0,
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(child: _showTxt()),
-            TextTag(
-              chat.spaceName,
-              bgColor: Colors.white,
-              textStyle: TextStyle(
-                color: XColors.designBlue,
-                fontSize: 12.sp,
-              ),
-              borderColor: XColors.tinyBlue,
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _showTxt() {
-    var lastMessage = chat.lastMessage.value;
-    if (lastMessage == null) {
+  /// 图片详情
+  Widget _image({
+    required TextDirection textDirection,
+    required BuildContext context,
+  }) {
+    /// 解析参数
+    Map<String, dynamic> msgBody = {};
+    try {
+      msgBody = jsonDecode(msg.showTxt);
+    } catch (error) {
+      Log.info("参数解析失败，msg.showTxt:${msg.showTxt}");
       return Container();
     }
-    var name = controller.getName(lastMessage.fromId);
-    var showTxt = "";
-    if (chat is PersonChat) {
-      var settingCtrl = Get.find<SettingController>();
-      if (lastMessage.fromId != settingCtrl.user!.target.id) {
-        showTxt = "对方:";
-      }
-    } else {
-      showTxt = "$name:";
-    }
+    String link = msgBody["shareLink"] ?? "";
 
-    var messageType = lastMessage.msgType;
-    if (messageType == MessageType.text.label) {
-      showTxt = "$showTxt${lastMessage.showTxt}";
-    } else if (messageType == MessageType.recall.label) {
-      showTxt = "$showTxt撤回了一条消息";
-    } else if (messageType == MessageType.image.label) {
-      showTxt = "$showTxt[图片]";
-    } else if (messageType == MessageType.video.label) {
-      showTxt = "$showTxt[视频]";
-    } else if (messageType == MessageType.voice.label) {
-      showTxt = "$showTxt[语音]";
-    }
+    /// 限制大小
+    BoxConstraints boxConstraints = BoxConstraints(maxWidth: 200.w);
 
-    return Text(
-      showTxt,
-      style: TextStyle(
-        color: XColors.black9,
-        fontSize: 20.sp,
+    Map<String, String> headers = {
+      "Authorization": KernelApi.getInstance().anystore.accessToken,
+    };
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(DialogRoute(
+            context: context,
+            builder: (BuildContext context) {
+              return PhotoWidget(
+                imageProvider: CachedNetworkImageProvider(link),
+              );
+            }));
+      },
+      child: _detail(
+        constraints: boxConstraints,
+        textDirection: textDirection,
+        body: CachedNetworkImage(imageUrl: link, httpHeaders: headers),
+        clipBehavior: Clip.hardEdge,
+        padding: EdgeInsets.zero,
       ),
-      textAlign: TextAlign.left,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
     );
   }
 
-  Widget _contentContainer() {
-    return Expanded(
-      child: Container(
-        padding: EdgeInsets.only(left: 20.w, top: 2.h, bottom: 2.h),
-        height: defaultAvatarWidth,
-        child: Obx(() => _content()),
+  /// 语音详情
+  Widget _voice({required TextDirection textDirection}) {
+    // 初始化语音输入
+    var playCtrl = Get.find<PlayController>();
+    playCtrl.putPlayerStatusIfAbsent(msg);
+    var voicePlay = playCtrl.getPlayerStatus(msg.id)!;
+    var seconds = voicePlay.initProgress ~/ 1000;
+    seconds = seconds > 60 ? 60 : seconds;
+
+    return _detail(
+      textDirection: textDirection,
+      body: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          GestureDetector(
+            onTap: () async {
+              if (voicePlay.bytes.isEmpty) {
+                Fluttertoast.showToast(msg: "未获取到语音，播放失败！");
+                return;
+              }
+              if (voicePlay.status.value == VoiceStatus.stop) {
+                playCtrl.startPlayVoice(msg.id, voicePlay.bytes);
+              } else {
+                playCtrl.stopPrePlayVoice();
+              }
+            },
+            child: Obx(() {
+              var status = voicePlay.status;
+              return status.value == VoiceStatus.stop
+                  ? const Icon(Icons.play_arrow, color: Colors.black)
+                  : const Icon(Icons.stop, color: Colors.black);
+            }),
+          ),
+          Padding(padding: EdgeInsets.only(left: 5.w)),
+          SizedBox(
+            height: 12.h,
+            width: 60.w + seconds * 2.w,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    height: 16.h,
+                    decoration: BoxDecoration(
+                      color: XColors.lineLight,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(2.w),
+                      ),
+                    ),
+                  ),
+                ),
+                Obx(() {
+                  var status = voicePlay.status;
+                  if (status.value == VoiceStatus.stop) {
+                    return Align(
+                      alignment: Alignment.centerLeft,
+                      child: Icon(Icons.circle, size: 12.h),
+                    );
+                  } else {
+                    return AlignTransition(
+                      alignment: playCtrl.animation!,
+                      child: Icon(Icons.circle, size: 12.h),
+                    );
+                  }
+                }),
+              ],
+            ),
+          ),
+          Padding(padding: EdgeInsets.only(left: 10.w)),
+          Obx(() {
+            var progress = voicePlay.progress;
+            return Text(
+              StringUtil.getMinusShow(progress.value ~/ 1000),
+              style: XFonts.size22Black3,
+            );
+          })
+        ],
       ),
     );
+  }
+}
+
+enum VoiceStatus { stop, playing }
+
+class PlayerStatus {
+  final Rx<VoiceStatus> status;
+  final int initProgress;
+  final RxInt progress;
+  final Uint8List bytes;
+
+  const PlayerStatus({
+    required this.status,
+    required this.initProgress,
+    required this.progress,
+    required this.bytes,
+  });
+}
+
+class PlayBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => PlayController());
+  }
+}
+
+class PlayController extends GetxController with GetTickerProviderStateMixin {
+  // 语音相关
+  final Map<String, PlayerStatus> _playStatuses = {};
+  FlutterSoundPlayer? _soundPlayer;
+  StreamSubscription? _mt;
+  AnimationController? _animationController;
+  Animation<AlignmentGeometry>? _animation;
+  PlayerStatus? _currentVoicePlay;
+
+  get animation => _animation;
+
+  /// 获取一个播放状态
+  PlayerStatus? getPlayerStatus(String id) {
+    return _playStatuses[id];
+  }
+
+  /// 不存在就推入状态
+  putPlayerStatusIfAbsent(XImMsg msg) {
+    if (!_playStatuses.containsKey(msg.id)) {
+      try {
+        Map<String, dynamic> data = jsonDecode(msg.showTxt);
+        int milliseconds = data["milliseconds"] ?? 0;
+        List<dynamic> rowBytes = data["bytes"] ?? [];
+        List<int> tempBytes = rowBytes.map((byte) => byte as int).toList();
+        _playStatuses[msg.id] = PlayerStatus(
+          status: VoiceStatus.stop.obs,
+          initProgress: milliseconds,
+          progress: milliseconds.obs,
+          bytes: Uint8List.fromList(tempBytes),
+        );
+      } catch (error) {
+        _playStatuses[msg.id] = PlayerStatus(
+          status: VoiceStatus.stop.obs,
+          initProgress: 0,
+          progress: 0.obs,
+          bytes: Uint8List.fromList([]),
+        );
+      }
+    }
+  }
+
+  @override
+  onClose() {
+    _soundPlayer?.stopPlayer();
+    _mt?.cancel();
+    _animationController?.dispose();
+    _animation = null;
+    _playStatuses.clear();
+    _currentVoicePlay = null;
+    super.onClose();
+  }
+
+  /// 开始播放
+  startPlayVoice(String id, Uint8List bytes) async {
+    await stopPrePlayVoice();
+
+    // 动画效果
+    _currentVoicePlay = _playStatuses[id];
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: _currentVoicePlay!.initProgress),
+    );
+    _animation = Tween<AlignmentGeometry>(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+    ).animate(CurvedAnimation(
+      parent: _animationController!,
+      curve: Curves.linear,
+    ));
+    _animationController!.forward();
+
+    // 监听进度
+    _soundPlayer ??= await FlutterSoundPlayer().openPlayer();
+    _soundPlayer!.setSubscriptionDuration(const Duration(milliseconds: 50));
+    _mt = _soundPlayer!.onProgress!.listen((event) {
+      _currentVoicePlay!.progress.value = event.position.inMilliseconds;
+    });
+    _soundPlayer!
+        .startPlayer(
+          fromDataBuffer: bytes,
+          whenFinished: () => stopPrePlayVoice(),
+        )
+        .catchError((error) => stopPrePlayVoice());
+
+    // 重新开始播放
+    _currentVoicePlay!.status.value = VoiceStatus.playing;
+  }
+
+  /// 停止播放
+  stopPrePlayVoice() async {
+    if (_currentVoicePlay != null) {
+      // 改状态
+      _currentVoicePlay!.status.value = VoiceStatus.stop;
+      _currentVoicePlay!.progress.value = _currentVoicePlay!.initProgress;
+
+      // 关闭播放
+      await _soundPlayer?.stopPlayer();
+      _mt?.cancel();
+      _mt = null;
+      _soundPlayer = null;
+
+      // 关闭动画
+      _animation = null;
+      _animationController?.stop();
+      _animationController?.dispose();
+      _animationController = null;
+
+      // 空引用
+      _currentVoicePlay = null;
+    }
   }
 }
