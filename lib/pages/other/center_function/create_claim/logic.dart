@@ -23,9 +23,8 @@ class CreateClaimController extends BaseController<CreateClaimState> {
 
   Future<bool> back() async {
     if (!addedDraft) {
-      if ((state.detailedData.isNotEmpty ||
-          state.reasonController.text.isNotEmpty ||
-          state.orderNum.isEmpty) &&
+      if ((state.detailedData.where((p0) => p0.hasData()).isNotEmpty ||
+          state.reasonController.text.isNotEmpty) &&
           !state.isEdit) {
         YYBottomSheetDialog(context, DraftTips, callback: (i, str) {
           if (i == 0) {

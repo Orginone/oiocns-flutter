@@ -143,7 +143,7 @@ class CreateClaimPage
           //       controller.choicePlace(index);
           //     }, showLine: true),
           CommonWidget.commonChoiceTile(
-              "是否信创", state.detailedData[index].isDistribution ? "是" : "否",
+              "是否信创", (state.detailedData[index]?.isDistribution??false) ? "是" : "否",
               onTap: () {
             controller.newCreate(index);
           }, showLine: true),

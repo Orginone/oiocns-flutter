@@ -54,20 +54,30 @@ class ClaimDetailed {
 
   XDictItem? assetType;
 
-  bool isDistribution = false;
+  bool? isDistribution;
 
   String? location;
 
-  ClaimDetailed({String assetName = "",
-    String quantity = "",
-    String model = "",
-    String brand = "",
-    this.assetType,
-    this.isDistribution = false,
-    this.location = ""}) {
+  ClaimDetailed(
+      {String assetName = "",
+      String quantity = "",
+      String model = "",
+      String brand = "",
+      this.assetType,
+      this.isDistribution = false,
+      this.location = ""}) {
     assetNameController.text = assetName;
     quantityController.text = quantity;
     modelController.text = model;
     brandController.text = brand;
+  }
+
+  bool hasData() {
+    return assetNameController.text.trim().isNotEmpty ||
+        quantityController.text.trim().isNotEmpty ||
+        modelController.text.trim().isNotEmpty ||
+        brandController.text.trim().isNotEmpty ||
+        assetType != null ||
+        isDistribution != null;
   }
 }
