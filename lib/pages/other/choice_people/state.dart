@@ -15,6 +15,8 @@ class ChoicePeopleState extends BaseGetState{
 
   var selectedGroup = <ITarget>[].obs;
 
+  ITarget? selectedUserDepartment;
+
 
   var searchList = <XTarget>[].obs;
 

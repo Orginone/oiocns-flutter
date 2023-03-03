@@ -112,18 +112,17 @@ class DepartmentManagement {
 
   ITarget? get currentDepartment => _getCurrentDepartment(_departments);
 
-  ITarget? getAppointPersonDepartment(String name) {
-    ITarget? department;
-    for (var element in _departments) {
-      if (element.members.where((element) => element.name == name).isNotEmpty) {
-        department = element;
-      } else {
-        if (element.subTeam.isNotEmpty) {
-          department = _getCurrentDepartment(element.subTeam);
-        }
+  List<XTarget> _getAllPerson(List<ITarget> target){
+    List<XTarget> persons = [];
+
+    for (var value in target) {
+      persons.addAll(value.members);
+      if(value.subTeam.isNotEmpty){
+        persons.addAll(_getAllPerson(value.subTeam));
       }
     }
-    return department;
+
+    return persons;
   }
 
   ITarget? _getCurrentDepartment(List<ITarget> target) {

@@ -29,7 +29,9 @@ class CreateHandOverController extends BaseController<CreateHandOverState> {
 
   void choicePeople() {
     Get.toNamed(Routers.choicePeople)?.then((value) {
-      state.selectedUser.value = value;
+       if(value!=null){
+         state.selectedUser.value = value['user'];
+       }
     });
   }
 
@@ -73,7 +75,7 @@ class CreateHandOverController extends BaseController<CreateHandOverState> {
 
   Future submit() async {
     if (state.reasonController.text.trim().isEmpty) {
-      return ToastUtils.showMsg(msg: "请输入移交原因");
+      return ToastUtils.showMsg(msg: "请输入交回原因");
     }
     if (state.selectAssetList.isEmpty) {
       return ToastUtils.showMsg(msg: "请至少选择一项资产");

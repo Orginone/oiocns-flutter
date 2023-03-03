@@ -52,7 +52,14 @@ class ChoicePeopleController extends BaseController<ChoicePeopleState> {
   }
 
   void back() {
-    Get.back(result: state.selectedUser.value);
+    Map<String, dynamic>? data;
+    if (state.selectedUser.value != null) {
+      data = {
+        "user": state.selectedUser.value,
+        "department": state.selectedUserDepartment
+      };
+    }
+    Get.back(result: data);
   }
 
   void selectGroup(ITarget item) {
@@ -60,6 +67,7 @@ class ChoicePeopleController extends BaseController<ChoicePeopleState> {
   }
 
   void selectedUser(XTarget item) {
+    state.selectedUserDepartment = state.selectedGroup.last;
     state.selectedUser.value?.isSelected = false;
     state.selectedUser.value = item;
   }

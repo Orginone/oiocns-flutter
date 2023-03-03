@@ -33,8 +33,8 @@ class CreateTransferController extends BaseController<CreateTransferState> {
   void choicePeople() {
     Get.toNamed(Routers.choicePeople)?.then((value) {
       if(value!=null){
-        state.selectedUser.value = value;
-        state.selectedDepartment.value = DepartmentManagement().getAppointPersonDepartment(state.selectedUser.value!.name);
+        state.selectedUser.value = value['user'];
+        state.selectedDepartment.value = value['department'];
       }
     });
   }
