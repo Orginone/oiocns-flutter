@@ -2,11 +2,12 @@ import 'package:orginone/model/file_data.dart';
 
 class MyAssetsList {
   List<FileData>? fileList;
-  Map<String, dynamic>? assetType;
+  String? assetType;
   String? assetName;
   String? assetCode;
   String? startDate;
-  Map<String, dynamic>? useDept;
+  String? useDept;
+  String? useDeptName;
   String? fixedAssAcqCode;
   dynamic estimatedUsefulLife;
   String? quderq;
@@ -30,7 +31,8 @@ class MyAssetsList {
   String? location;
   String? invoiceNo;
   String? sourcesOfFunding;
-  Map<String,dynamic>? user;
+  String? user;
+  String? userName;
   String? manufacturer;
   String? fixedAssetStateCode;
   String? supplier;
@@ -92,6 +94,7 @@ class MyAssetsList {
     assetCode = json['ASSET_CODE'];
     startDate = json['START_DATE'];
     useDept = json['USE_DEPT'];
+    useDeptName = json['USE_DEPT_NAME'];
     fixedAssAcqCode = json['FIXED_ASS_ACQ_CODE'];
     estimatedUsefulLife = json['ESTIMATED_USEFUL_LIFE'];
     quderq = json['QUDERQ'];
@@ -116,6 +119,7 @@ class MyAssetsList {
     invoiceNo = json['INVOICE_NO'];
     sourcesOfFunding = json['SOURCES_OF_FUNDING'];
     user = json['USER'];
+    userName = json['USER_NAME'];
     manufacturer = json['MANUFACTURER'];
     fixedAssetStateCode = json['FIXED_ASSET_STATE_CODE'];
     supplier = json['SUPPLIER'];
@@ -234,6 +238,8 @@ class MyAssetsList {
     data["stockTaskCode"] = this.stockTaskCode;
     data['assetRemark'] = this.assetRemark;
     data['isDistribution'] = this.isDistribution;
+    data['USE_DEPT_NAME'] = this.useDeptName;
+    data['USER_NAME'] = this.userName;
     return data;
   }
 

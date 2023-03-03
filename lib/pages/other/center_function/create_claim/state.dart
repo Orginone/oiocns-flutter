@@ -31,7 +31,7 @@ class CreateClaimState extends BaseGetState {
               quantity:"${value.numOrArea??0}",
               assetName:value.assetName??"",
               isDistribution: value.isDistribution??false,
-              assetType: CommonTreeManagement().findTree(value.assetType?['value']??""),
+              assetType: CommonTreeManagement().findTree(value.assetType??""),
           ));
         }
       }

@@ -196,7 +196,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
                         ),
                         Text(
                           assetsType == AssetsType.check
-                              ? (dstate.assets!.user?['value'] ?? "")
+                              ? (dstate.assets!.userName ?? "")
                               : (dstate.assetUse?.oldUserId ?? dstate.assetUse?.submitterName??dstate.assetUse?.submitUserName??""),
                           style: TextStyle(
                               color: Colors.black,
@@ -280,7 +280,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
           CommonWidget.commonTextContentWidget("资产编号", assets.assetCode ?? ""),
           CommonWidget.commonTextContentWidget("资产名称", assets.assetName ?? ""),
           CommonWidget.commonTextContentWidget(
-              "资产分类", assets.assetType?['value'] ?? ""),
+              "资产分类", assets.userName ?? ""),
         ];
       case AssetsType.claim:
         return [
@@ -291,8 +291,8 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w500),
           ),
-          CommonWidget.commonTextContentWidget("资产分类", assets.assetType?['value']??""),
-          CommonWidget.commonTextContentWidget("资产名称", assets.assetType?['value']??""),
+          CommonWidget.commonTextContentWidget("资产分类", assets.userName??""),
+          CommonWidget.commonTextContentWidget("资产名称", assets.userName??""),
           CommonWidget.commonTextContentWidget("领用人和部门",  "${HiveUtils
               .getUser()
               ?.userName ?? ""}-${DepartmentManagement().currentDepartment?.name ??
@@ -315,7 +315,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
           CommonWidget.commonTextContentWidget("资产编号", assets.assetCode ?? ""),
           CommonWidget.commonTextContentWidget("资产名称", assets.assetName ?? ""),
           CommonWidget.commonTextContentWidget(
-              "资产分类", assets.assetType?['value'] ?? ""),
+              "资产分类", assets.userName ?? ""),
           CommonWidget.commonTextContentWidget("原值", "￥${assets.netVal ?? 0}"),
           CommonWidget.commonTextContentWidget(
               "数量", "${assets.numOrArea ?? 0}"),
@@ -335,7 +335,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
           ),
           CommonWidget.commonTextContentWidget("资产编号", assets.assetCode??""),
           CommonWidget.commonTextContentWidget("资产名称", assets.assetName??""),
-          CommonWidget.commonTextContentWidget("资产分类", assets.assetType?['value']??""),
+          CommonWidget.commonTextContentWidget("资产分类", assets.userName??""),
           CommonWidget.commonTextContentWidget("数量", "${assets.numOrArea??0}"),
           CommonWidget.commonTextContentWidget("规格型号", assets.specMod??""),
           CommonWidget.commonTextContentWidget("品牌", assets.brand??""),
@@ -353,7 +353,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
           CommonWidget.commonTextContentWidget("资产编号", assets.assetCode ?? ""),
           CommonWidget.commonTextContentWidget("资产名称", assets.assetName ?? ""),
           CommonWidget.commonTextContentWidget(
-              "资产分类", assets.assetType?['value'] ?? ""),
+              "资产分类", assets.userName ?? ""),
           CommonWidget.commonTextContentWidget(
               "数量", "${assets.numOrArea ?? 0}"),
           CommonWidget.commonTextContentWidget("规格型号", assets.specMod ?? ""),

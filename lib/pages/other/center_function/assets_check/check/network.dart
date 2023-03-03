@@ -98,7 +98,7 @@ class CheckNetwork {
     if(result.success){
       if(result.data.isNotEmpty){
         var data = MyAssetsList.fromJson(result.data.first);
-        if(data.user?['value'] != HiveUtils.getUser()?.userName){
+        if(data.userName != HiveUtils.getUser()?.userName){
           ToastUtils.showMsg(msg: "这个二维码的使用人并非当前登录用户");
         }else{
           assets = data;
