@@ -27,7 +27,7 @@ class CommonItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (assetsListType == AssetsListType.check) {
+        if (  assetsListType == AssetsListType.check) {
           Get.toNamed(Routers.assetsCheck,arguments: {"assetUse":assetUse});
         } else if (assetsListType != AssetsListType.draft) {
           Get.toNamed(Routers.generalDetails,
@@ -200,25 +200,21 @@ class CommonItem extends StatelessWidget {
 
   Widget otherInfo() {
     String tips = "";
-    String name = "";
+    String name = assetUse.submitterName ?? "";
     switch (assetsType) {
       case AssetsType.check:
         break;
       case AssetsType.claim:
         tips = "领用人";
-        name = assetUse.submitUserName ?? "";
         break;
       case AssetsType.dispose:
         tips = "提交人";
-        name = assetUse.submitterName ?? "";
         break;
       case AssetsType.transfer:
         tips = "移交人";
-        name = assetUse.oldUserId ?? "";
         break;
       case AssetsType.handOver:
         tips = "交回人";
-        name = assetUse.submitterName ?? "";
         break;
     }
     Widget child = Row(

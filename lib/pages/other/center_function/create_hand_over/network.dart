@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/event/load_assets.dart';
 import 'package:orginone/model/my_assets_list.dart';
 import 'package:orginone/util/asset_management.dart';
@@ -14,36 +15,53 @@ import 'package:orginone/util/toast_utils.dart';
 
 class HandOverNetWork{
   static createHandOver({
-    required String billCode,required String userName,required String remark
-    ,required List<MyAssetsList> assets,bool isDraft = false}) async{
+    required String billCode, XTarget? user,required String remark
+    ,required List<MyAssetsList> assets,bool isDraft = false,bool isEdit = false}) async{
 
-    Map<String, dynamic> user = {"value": userName};
-    List<UpdateAssetsRequest> request = assets
-        .map((element) =>
-        UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
-          "USER": user,
-          "KAPIANZT": "12",
-        }))
-        .toList();
 
-    await AssetManagement().updateAssetsForList(request);
+    if(!isDraft){
+      List<UpdateAssetsRequest> request = assets
+          .map((element) =>
+          UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
+            "USER_NAME": user?.name??"",
+            "USER":user?.id??"",
+            "KAPIANZT": "12",
+          }))
+          .toList();
 
-   ResultType resultType =  await KernelApi.getInstance().anystore.insert("asset_transfer", {
+      await AssetManagement().updateAssetsForList(request);
+    }
+
+    Map<String,dynamic> data = {
       "BILL_CODE":billCode,
       "SUBMITTER_NAME":HiveUtils.getUser()?.person?.name,
-      "USER_NAME":userName,
+      "USER_NAME":user?.name??"",
       "APPLY_REMARK":remark,
       "CREATE_USER": HiveUtils.getUser()?.person?.id,
-      "submitUserName": HiveUtils.getUser()?.person?.name,
       "CREATE_TIME": DateTime.now().toString(),
       "UPDATE_TIME": DateTime.now().toString(),
       "status": isDraft?0:1,
       "approvalDocument": {
         "SUBMITTER_NAME":HiveUtils.getUser()?.person?.name,
-        "USER_NAME":userName,
+        "USER_NAME":user?.name??"",
         "detail": assets.map((e) => e.toJson()).toList(),
       }
-    },"company");
+    };
+
+   ResultType resultType;
+
+   if(isEdit){
+     resultType = await KernelApi.getInstance().anystore.update("asset_restore",{
+       "match":{
+         "BILL_CODE":billCode,
+       },
+       "update":{
+         "_set_":data,
+       }
+     },"company");
+   }else{
+     resultType = await KernelApi.getInstance().anystore.insert("asset_restore", data,"company");
+   }
 
    if(resultType.success){
      ToastUtils.showMsg(msg: "提交成功");

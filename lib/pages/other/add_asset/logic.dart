@@ -16,7 +16,9 @@ class AddAssetController extends BaseController<AddAssetState> {
   void selectAll(bool value) {
     state.selectAll.value = value;
     for (var element in state.selectAssetList) {
-      element.isSelected = value;
+       if(element.notLockStatus){
+         element.isSelected = value;
+       }
     }
     state.selectAssetList.refresh();
     state.selectCount.value =  state.selectAssetList.where((p0) => p0.isSelected).length;
@@ -35,17 +37,17 @@ class AddAssetController extends BaseController<AddAssetState> {
         list.where((element1) => element.assetCode == element1.assetCode).first.isSelected = true;
       }
     }
-
     state.selectAssetList.addAll(list);
-
   }
 
-  void openItem(int index) {
+  void openItem(MyAssetsList item) {
+    int index = state.selectAssetList.indexOf(item);
     state.selectAssetList[index].isOpen = !state.selectAssetList[index].isOpen;
     state.selectAssetList.refresh();
   }
 
-  void selectItem(int index) {
+  void selectItem(MyAssetsList item) {
+    int index = state.selectAssetList.indexOf(item);
     if(!state.selectAssetList[index].notLockStatus){
       ToastUtils.showMsg(msg: "该资产已锁定");
       return;
@@ -70,5 +72,16 @@ class AddAssetController extends BaseController<AddAssetState> {
     var selected = state.selectAssetList.where((p0) => p0.isSelected);
 
     Get.back(result: selected.toList());
+  }
+
+  void search(String str) {
+     if(str.isEmpty){
+       state.searchList.clear();
+     }else{
+       var flitter = state.selectAssetList.where((p0) => p0.assetCode?.contains(str)??false);
+       if(flitter.isNotEmpty){
+         state.searchList.value = flitter.toList();
+       }
+     }
   }
 }

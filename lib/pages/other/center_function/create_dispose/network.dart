@@ -1,4 +1,3 @@
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -11,22 +10,28 @@ import 'package:orginone/util/toast_utils.dart';
 import 'package:uuid/uuid_util.dart';
 
 class DisposeNetwork {
-  static Future<void> createDispose({required int way,
-    required int keepOrgType,
-    required String keepOrgName,
-    required int evaluated,
-    required String billCode,
-    required List<MyAssetsList> assets,
-    bool isDraft = false,
-    String remark = "",int? phoneNumber}) async {
-    List<UpdateAssetsRequest> request = assets
-        .map((element) =>
-        UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
-          "KAPIANZT": "09",
-        }))
-        .toList();
+  static Future<void> createDispose(
+      {required int way,
+      required int keepOrgType,
+      required String keepOrgName,
+      required int evaluated,
+      required String billCode,
+      required List<MyAssetsList> assets,
+      bool isDraft = false,
+      String remark = "",
+      int? phoneNumber,
+      bool isEdit = false}) async {
 
-    await AssetManagement().updateAssetsForList(request);
+    if(!isDraft){
+      List<UpdateAssetsRequest> request = assets
+          .map((element) =>
+          UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
+            "KAPIANZT": "09",
+          }))
+          .toList();
+
+      await AssetManagement().updateAssetsForList(request);
+    }
 
     double assetsTotal = 0;
     double count = 0;
@@ -36,54 +41,55 @@ class DisposeNetwork {
       assetsTotal += element.netVal ?? 0;
       netWorthTotal += element.netVal ?? 0;
       count += element.numOrArea ?? 0;
-      depreciationTotal = double.tryParse(element.quderq??"0")??0;
-
-
+      depreciationTotal = double.tryParse(element.quderq ?? "0") ?? 0;
     }
-    ResultType resultType = await KernelApi
-        .getInstance()
-        .anystore
-        .insert(
-        "disposal",
-        {
-          "way": way,
-          "IS_SYS_UNIT": keepOrgType,
-          "APPLY_UNIT": keepOrgName,
-          "keepOrgPhomeNumber":phoneNumber,
-          "evaluated": evaluated,
-          "SHEJIZCZZ": assetsTotal,
-          "LEIJIZJHJ": depreciationTotal,
-          "JINGZHIHJ": netWorthTotal,
-          "count": count,
-          "submitterName": HiveUtils
-              .getUser()
-              ?.person
-              ?.name,
-          "submitterId": HiveUtils
-              .getUser()
-              ?.person
-              ?.id,
-          "approvalEnd": 0,
-          "approvalStatus": 3,
-          "verificationStatus": 10,
-          "readStatus": isDraft ? 0 : 1,
-          "gmtCreate": DateTime.now().toString(),
-          "id": UuidUtil.cryptoRNG().toString(),
-          "detail": assets.map((e) => e.assetCode).toList(),
-          "BILL_CODE": billCode,
-          "REMARK": remark,
-          "CREATE_USER": HiveUtils
-              .getUser()
-              ?.person
-              ?.id,
-          "submitUserName": HiveUtils
-              .getUser()
-              ?.person
-              ?.name,
-          "CREATE_TIME": DateTime.now().toString(),
-          "UPDATE_TIME": DateTime.now().toString(),
-        },
-        "company");
+
+    Map<String, dynamic> data = {
+      "way": way,
+      "IS_SYS_UNIT": keepOrgType,
+      "APPLY_UNIT": keepOrgName,
+      "keepOrgPhomeNumber": phoneNumber,
+      "evaluated": evaluated,
+      "SHEJIZCZZ": assetsTotal,
+      "LEIJIZJHJ": depreciationTotal,
+      "JINGZHIHJ": netWorthTotal,
+      "count": count,
+      "submitterName": HiveUtils.getUser()?.person?.name,
+      "submitterId": HiveUtils.getUser()?.person?.id,
+      "approvalEnd": 0,
+      "approvalStatus": 3,
+      "verificationStatus": 10,
+      "readStatus": isDraft ? 0 : 1,
+      "gmtCreate": DateTime.now().toString(),
+      "id": UuidUtil.cryptoRNG().toString(),
+      "detail": assets.map((e) => e.assetCode).toList(),
+      "BILL_CODE": billCode,
+      "REMARK": remark,
+      "CREATE_USER": HiveUtils.getUser()?.person?.id,
+      "SUBMITTER_NAME": HiveUtils.getUser()?.person?.name,
+      "CREATE_TIME": DateTime.now().toString(),
+      "UPDATE_TIME": DateTime.now().toString(),
+    };
+
+    ResultType resultType;
+
+    if (isEdit) {
+      resultType = await KernelApi.getInstance().anystore.update(
+          "disposal",
+          {
+            "match": {
+              "BILL_CODE": billCode,
+            },
+            "update": {
+              "_set_": data,
+            }
+          },
+          "company");
+    } else {
+      resultType = await KernelApi.getInstance()
+          .anystore
+          .insert("disposal", data, "company");
+    }
 
     if (resultType.success) {
       ToastUtils.showMsg(msg: "提交成功");

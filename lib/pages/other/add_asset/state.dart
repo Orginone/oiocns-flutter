@@ -15,6 +15,7 @@ class AddAssetState extends BaseGetState{
 
   var selectAssetList = <MyAssetsList>[].obs;
 
+  var searchList = <MyAssetsList>[].obs;
 
   AddAssetState(){
 

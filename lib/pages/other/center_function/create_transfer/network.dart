@@ -16,28 +16,29 @@ import 'package:orginone/util/toast_utils.dart';
 class TransferNetWork{
   static createTransfer({
     required String billCode,required String keeperId,required String keepOrgId,required String remark
-,required List<MyAssetsList> assets,bool isDraft = false}) async{
+,required List<MyAssetsList> assets,bool isDraft = false,bool isEdit = false}) async{
 
-    Map<String, dynamic> user = {"value": keeperId};
-    Map<String, dynamic> dept = {"value": keepOrgId};
-    List<UpdateAssetsRequest> request = assets
-        .map((element) =>
-        UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
-          "USER": user,
-          "USE_DEPT": dept,
-          "KAPIANZT":"08",
-        }))
-        .toList();
+    if(!isDraft){
+      List<UpdateAssetsRequest> request = assets
+          .map((element) =>
+          UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
+            "USER": keeperId,
+            "USE_DEPT": keepOrgId,
+            "KAPIANZT":"08",
+          }))
+          .toList();
 
-    await AssetManagement().updateAssetsForList(request);
+      await AssetManagement().updateAssetsForList(request);
+    }
 
-    ResultType resultType =   await KernelApi.getInstance().anystore.insert("asset_transfer", {
+    Map<String,dynamic> data = {
       "BILL_CODE":billCode,
       "KEEPER_ID":keeperId,
       "KEEP_ORG_ID":keepOrgId,
       "OLD_ORG_NAME":DepartmentManagement().currentDepartment?.name,
       "OLD_ORG_ID":DepartmentManagement().currentDepartment?.name,
       "OLD_USER_ID":HiveUtils.getUser()?.person?.name,
+      "SUBMITTER_NAME": HiveUtils.getUser()?.person?.name,
       "APPLY_REMARK":remark,
       "status": isDraft?0:1,
       "CREATE_TIME": DateTime.now().toString(),
@@ -50,9 +51,24 @@ class TransferNetWork{
         "OLD_ORG_ID": DepartmentManagement().currentDepartment?.name,
         "OLD_ORG_NAME": DepartmentManagement().currentDepartment?.name,
         "detail": assets.map((e) => e.toJson()).toList(),
-        "submitUserName": HiveUtils.getUser()?.person?.name,
+        "SUBMITTER_NAME": HiveUtils.getUser()?.person?.name,
       }
-    },"company");
+    };
+
+    ResultType resultType;
+
+    if(isEdit){
+      resultType = await KernelApi.getInstance().anystore.update("asset_transfer",{
+        "match":{
+          "BILL_CODE":billCode,
+        },
+        "update":{
+          "_set_":data,
+        }
+      },"company");
+    }else{
+      resultType = await KernelApi.getInstance().anystore.insert("asset_transfer", data,"company");
+    }
 
     if(resultType.success){
       ToastUtils.showMsg(msg: "提交成功");

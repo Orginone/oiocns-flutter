@@ -197,7 +197,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
                         Text(
                           assetsType == AssetsType.check
                               ? (dstate.assets!.userName ?? "")
-                              : (dstate.assetUse?.oldUserId ?? dstate.assetUse?.submitterName??dstate.assetUse?.submitUserName??""),
+                              : (dstate.assetUse?.oldUserId ?? dstate.assetUse?.submitterName??""),
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 25.sp,
@@ -280,7 +280,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
           CommonWidget.commonTextContentWidget("资产编号", assets.assetCode ?? ""),
           CommonWidget.commonTextContentWidget("资产名称", assets.assetName ?? ""),
           CommonWidget.commonTextContentWidget(
-              "资产分类", assets.userName ?? ""),
+              "资产分类", assets.assetType ?? ""),
         ];
       case AssetsType.claim:
         return [
@@ -291,8 +291,8 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w500),
           ),
-          CommonWidget.commonTextContentWidget("资产分类", assets.userName??""),
-          CommonWidget.commonTextContentWidget("资产名称", assets.userName??""),
+          CommonWidget.commonTextContentWidget("资产分类", assets.assetType??""),
+          CommonWidget.commonTextContentWidget("资产名称", assets.assetName??""),
           CommonWidget.commonTextContentWidget("领用人和部门",  "${HiveUtils
               .getUser()
               ?.userName ?? ""}-${DepartmentManagement().currentDepartment?.name ??

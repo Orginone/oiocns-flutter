@@ -104,7 +104,7 @@ class CreateTransferController extends BaseController<CreateTransferState> {
         billCode: state.orderNum.value,
         keeperId: state.selectedUser.value?.name??"",
         keepOrgId: state.selectedDepartment.value?.name??"",
-        remark: state.reasonController.text, assets: state.selectAssetList,isDraft: isDraft);
+        remark: state.reasonController.text, assets: state.selectAssetList,isDraft: isDraft,isEdit: state.isEdit);
   }
 
   Future<bool> back() async {

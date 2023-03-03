@@ -4,6 +4,7 @@ import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/center_function/assets_page/network.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/asset_management.dart';
+import 'package:orginone/util/hive_utils.dart';
 
 import '../../../../../dart/core/getx/base_list_controller.dart';
 import 'state.dart';
@@ -67,13 +68,12 @@ class AssetsController extends BaseListController<AssetsState> {
     if (assetsType == AssetsType.dispose) {
       filter["readStatus"] = assetsListType == AssetsListType.draft ? 0 : 1;
       if (assetsListType == AssetsListType.approved) {
-        filter["verificationStatus"] = 10;
-      } else if (assetsListType == AssetsListType.submitted) {
-        filter["verificationStatus"] = 0;
+        filter["APPROVAL_STATUS"] = 3;
       }
     } else if (assetsListType != AssetsListType.check) {
       filter['status'] = assetsListType == AssetsListType.draft ? 0 : 1;
     }
+    filter['SUBMITTER_NAME'] = HiveUtils.getUser()?.userName??"";
 
     var data = await AssetNetWork.getAssetUseList(name: name, filter: filter);
     if (code != null && code.isNotEmpty) {

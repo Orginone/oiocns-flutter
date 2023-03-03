@@ -19,7 +19,7 @@ class AssetUse {
 
   //资产交回
   String? submitterName;
-  String? submitUserName;
+  // String? submitUserName;
   String? userName;
 
   //资产处置
@@ -74,7 +74,7 @@ class AssetUse {
         : null;
 
     submitterName = json['submitterName']??json['SUBMITTER_NAME'];
-    submitUserName = json['submitUserName'];
+    // submitUserName = json['submitUserName'];
     userName = json['USER_NAME'];
     status = json['status'];
     createTime = DateTime.tryParse(json['CREATE_TIME']??"");
@@ -90,7 +90,7 @@ class AssetUse {
     count = int.tryParse(json['count'].toString());
     editStatus = json['editStatus'];
     approvalEnd = int.tryParse(json['approvalEnd'].toString());
-    approvalStatus = int.tryParse(json['approvalStatus'].toString());
+    approvalStatus = int.tryParse(json['APPROVAL_STATUS'].toString());
     verificationStatus = int.tryParse(json['verificationStatus'].toString());
     readStatus = json['readStatus'];
     gmtCreate = DateTime.tryParse(json['gmtCreate']??"");
@@ -117,7 +117,7 @@ class AssetUse {
     stockTaskName = json['stockTaskName'];
     stockMethod = json['stockMethod'];
     stockStatus = json['stockStatus'];
-    submitUserId = json['submitUserId'];
+    submitUserId = json['submitUserId']??json['SUBMITTER_ID'];
   }
 
   Map<String, dynamic> toJson() {
@@ -128,7 +128,7 @@ class AssetUse {
     data['OLD_USER_ID'] = this.oldUserId;
     data['KEEPER_ID'] = this.keeperId;
     data['KEEP_ORG_ID'] = this.keeperOrgId;
-    data['submitUserName'] = this.submitUserName;
+    // data['submitUserName'] = this.submitUserName;
     data['SUBMITTER_NAME'] = this.submitterName;
     data['USER_NAME'] = this.userName;
     data['status'] = this.status;
@@ -145,7 +145,7 @@ class AssetUse {
     data['keepOrgPhomeNumber'] =keepOrgPhomeNumber;
     data['editStatus'] = this.editStatus;
     data['approvalEnd'] = this.approvalEnd;
-    data['approvalStatus'] = this.approvalStatus;
+    data['APPROVAL_STATUS'] = this.approvalStatus;
     data['verificationStatus'] = this.verificationStatus;
     data['readStatus'] = this.readStatus;
     data['gmtCreate'] = this.gmtCreate;

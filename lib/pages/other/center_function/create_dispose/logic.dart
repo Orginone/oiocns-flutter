@@ -146,6 +146,6 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
         phoneNumber: phoneNum,
         billCode: state.orderNum,
         assets: state.selectAssetList,
-        remark: state.reasonController.text,isDraft: isDraft);
+        remark: state.reasonController.text,isDraft: isDraft,isEdit: state.isEdit);
   }
 }

@@ -118,6 +118,6 @@ class CreateHandOverController extends BaseController<CreateHandOverState> {
         billCode: state.orderNum.value,
         remark: state.reasonController.text,
         assets: state.selectAssetList,
-        userName: state.selectedUser.value!.name,isDraft: isDraft);
+        user: state.selectedUser.value,isDraft: isDraft,isEdit: state.isEdit);
   }
 }

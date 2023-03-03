@@ -40,14 +40,23 @@ class AddAssetPage extends BaseGetView<AddAssetController, AddAssetState> {
   Widget searchBar(){
     return  Row(
       children: [
-        Expanded(child: CommonWidget.commonSearchBarWidget(
-            controller: state.searchController, hint: "请输入资产名称")),
+        Expanded(
+          child: CommonWidget.commonSearchBarWidget(
+            controller: state.searchController,
+            hint: "请输入资产名称",
+            onChanged: (str) {
+              controller.search(str);
+            },
+          ),
+        ),
         Container(
           padding: EdgeInsets.symmetric(vertical: 10.h),
           color: Colors.white,
-          child: IconButton(onPressed: () {
-            controller.showFilter();
-          }, icon: const Icon(Icons.filter_list)),
+          child: IconButton(
+              onPressed: () {
+                controller.showFilter();
+              },
+              icon: const Icon(Icons.filter_list)),
         )
       ],
     );
@@ -79,21 +88,22 @@ class AddAssetPage extends BaseGetView<AddAssetController, AddAssetState> {
     return Obx(() {
       return ListView.builder(
         itemBuilder: (context, index) {
+          var item =  state.searchList.isNotEmpty?state.searchList[index]:state.selectAssetList[index];
           return Item(
-            showChoiceButton: state.selectAssetList[index].notLockStatus,
-            assets: state.selectAssetList[index],
+            showChoiceButton: item.notLockStatus,
+            assets: item,
             openInfo: () {
-              controller.openItem(index);
+              controller.openItem(item);
             },
             changed: (select) {
-              controller.selectItem(index);
+              controller.selectItem(item);
             },
             onTap: () {
-              controller.selectItem(index);
+              controller.selectItem(item);
             },
           );
         },
-        itemCount: state.selectAssetList.length,
+        itemCount: state.searchList.isNotEmpty?state.searchList.length:state.selectAssetList.length,
       );
     });
   }

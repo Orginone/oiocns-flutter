@@ -2,11 +2,11 @@ import 'package:orginone/model/file_data.dart';
 
 class MyAssetsList {
   List<FileData>? fileList;
-  String? assetType;
+  dynamic assetType;
   String? assetName;
   String? assetCode;
   String? startDate;
-  String? useDept;
+  dynamic useDept;
   String? useDeptName;
   String? fixedAssAcqCode;
   dynamic estimatedUsefulLife;
@@ -19,7 +19,7 @@ class MyAssetsList {
   dynamic monthAccDep;
   dynamic accDepMonth;
   String? depreciationMethod;
-  String? accDep;
+  dynamic accDep;
   dynamic canZhi;
   dynamic initAssetVal;
   int? liuCzt;
@@ -29,9 +29,9 @@ class MyAssetsList {
   String? brand;
   String? specMod;
   String? location;
-  String? invoiceNo;
+  dynamic invoiceNo;
   String? sourcesOfFunding;
-  String? user;
+  dynamic user;
   String? userName;
   String? manufacturer;
   String? fixedAssetStateCode;
@@ -89,7 +89,7 @@ class MyAssetsList {
         fileList!.add(FileData.fromJson(json));
       });
     }
-    assetType = json['ASSET_TYPE'];
+    assetType = json['ASSET_TYPE']??json['category'];
     assetName = json['ASSET_NAME'];
     assetCode = json['ASSET_CODE'];
     startDate = json['START_DATE'];
@@ -113,12 +113,12 @@ class MyAssetsList {
     id = json['id'];
     gmtCreate = json['gmtCreate'];
     updateTime = json['UPDATE_TIME'];
-    brand = json['BRAND'];
-    specMod = json['SPEC_MOD'];
+    brand = json['BRAND']??json['PINPAI'];
+    specMod = json['SPEC_MOD']??json['GUIGEXH'];
     location = json['LOCATION'];
     invoiceNo = json['INVOICE_NO'];
     sourcesOfFunding = json['SOURCES_OF_FUNDING'];
-    user = json['USER'];
+    user = json['USER'].toString();
     userName = json['USER_NAME'];
     manufacturer = json['MANUFACTURER'];
     fixedAssetStateCode = json['FIXED_ASSET_STATE_CODE'];
@@ -198,9 +198,7 @@ class MyAssetsList {
     data['ASSET_NAME'] = this.assetName;
     data['ASSET_CODE'] = this.assetCode;
     data['START_DATE'] = this.startDate;
-    if (this.useDept != null) {
-      data['USE_DEPT'] = this.useDept;
-    }
+    data['USE_DEPT'] = this.useDept;
     data['FIXED_ASS_ACQ_CODE'] = this.fixedAssAcqCode;
     data['ESTIMATED_USEFUL_LIFE'] = this.estimatedUsefulLife;
     data['QUDERQ'] = this.quderq;
