@@ -40,10 +40,17 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  # 本地代理
+  shelf_proxy: ^1.0.2
+
   # 启动图标
   flutter_app_name: ^0.1.1
   flutter_launcher_icons: ^0.10.0
   ota_update: ^4.0.1
+
+  # 存储库
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 
   # 网络库，日志库，工具库，路径库，压缩库
   dio: ^4.0.4
@@ -54,7 +61,7 @@ dependencies:
   jiffy: ^5.0.0
   uuid: ^3.0.6
   archive: ^3.3.1
-  file_picker: ^4.6.1
+  file_picker: ^4.0.0
 
   # 注解
   json_annotation: ^4.6.0
@@ -83,7 +90,7 @@ dependencies:
   flutter_form_builder: ^7.7.0
   flutter_treeview: ^1.0.7+1
   photo_view: ^0.14.0
-  package_info_plus: ^1.4.2
+  package_info_plus: ^1.0.5
   flutter_advanced_avatar: ^1.1.0
 
   # 音频录制以及音频播放
@@ -93,6 +100,9 @@ dependencies:
 
   # 组件管理库
   get: ^4.6.5
+
+  # 流畅度优化框架
+  keframe: ^3.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -112,12 +122,16 @@ dependencies:
   flutter_background_service: ^2.4.5
 
   # 日志收集工具
-  flutter_bugly: ^0.4.4
+  flutter_bugly: 0.4.4
 
-  # 消息总线
-  event_bus: ^2.0.0
-  # 数据本地化
+    # 消息总线
+  event_bus: 2.0.0
+    # 数据本地化
   shared_preferences: ^2.0.17
+  # 图表
+  syncfusion_flutter_charts: ^19.3.49
+  fl_chart: ^0.61.0
+  google_fonts: ^4.0.3
 
 dev_dependencies:
   flutter_test:

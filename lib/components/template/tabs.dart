@@ -5,31 +5,30 @@ import 'package:get/get.dart';
 class XTab {
   final Widget? body;
   final Widget view;
+  final Widget? customTab;
   final Widget? icon;
+  final double? tabHeight;
   final EdgeInsets? iconMargin;
-  final List<Widget> children;
 
   const XTab({
     Key? key,
     required this.view,
+    this.customTab,
     this.body,
     this.icon,
+    this.tabHeight,
     this.iconMargin = const EdgeInsets.all(4),
-    this.children = const <Widget>[],
   });
 
   Widget toTab() {
-    return UnconstrainedBox(
-      child: Stack(
-        children: [
-          Tab(
-            iconMargin: iconMargin!,
-            icon: icon,
-            child: body,
-          ),
-          for (var one in children) one,
-        ],
-      ),
+    if (customTab != null) {
+      return customTab!;
+    }
+    return Tab(
+      height: tabHeight ?? 84.h,
+      iconMargin: iconMargin!,
+      icon: icon,
+      child: body,
     );
   }
 
@@ -39,13 +38,13 @@ class XTab {
 }
 
 /// Tab 模板
-class TabsView extends StatelessWidget {
+class Tabs extends StatelessWidget {
   final Widget? top;
   final List<Widget> views;
   final Widget? bottom;
   final TabController tabCtrl;
 
-  const TabsView({
+  const Tabs({
     super.key,
     required this.tabCtrl,
     this.top,
@@ -83,13 +82,6 @@ abstract class TabsController extends GetxController
     initTabs();
     tabController = TabController(length: tabs.length, vsync: this);
     initListeners();
-  }
-
-  @override
-  void onClose() {
-    tabs.clear();
-    tabController.dispose();
-    super.onClose();
   }
 
   /// 初始化 tab
