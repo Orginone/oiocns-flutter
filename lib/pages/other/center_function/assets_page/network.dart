@@ -24,6 +24,8 @@ class AssetNetWork{
       result.data.forEach((json){
         use.add(AssetUse.fromJson(json));
       });
+    }else{
+      ToastUtils.showMsg(msg: "获取内容失败:${result.msg}");
     }
     return use;
   }
@@ -53,7 +55,7 @@ class AssetNetWork{
         }
       }
    }else{
-     ToastUtils.showMsg(msg: "获取内容失败");
+     ToastUtils.showMsg(msg: "获取内容失败:${result.msg}");
    }
 
     return qrScanData;

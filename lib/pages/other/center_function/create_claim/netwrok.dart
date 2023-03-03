@@ -49,7 +49,7 @@ class ClaimNetWork {
             EventBusHelper.fire(LoadAssets());
             Get.back();
           }else{
-            ToastUtils.showMsg(msg: "提交失败");
+            ToastUtils.showMsg(msg: "提交失败:${value.msg}");
           }
     });
   }
