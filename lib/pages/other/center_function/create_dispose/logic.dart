@@ -121,18 +121,18 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
   }
 
   void create({bool isDraft = false}) async{
-    int keepOrgType = 0;
-    int evaluated = 0;
+    int? keepOrgType;
+    int? evaluated;
+    int? phoneNum;
     if(state.unitType.value.isNotEmpty){
       keepOrgType = AssetAcceptanceUnitType.indexOf(state.unitType.value);
     }
     if(state.assessment.value.isNotEmpty){
       evaluated = Whether.indexOf(state.assessment.value);
     }
-    int phoneNum = 0;
-    if(state.phoneNumberController.text.isNotEmpty){
+    if(state.phoneNumberController.text.trim().isNotEmpty){
       if(state.phoneNumberController.text.length!=11){
-        ToastUtils.showMsg(msg: "请输入正确的手机号");
+       return ToastUtils.showMsg(msg: "请输入正确的手机号");
       }else{
         phoneNum = int.parse(state.phoneNumberController.text);
       }

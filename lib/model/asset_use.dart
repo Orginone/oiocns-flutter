@@ -36,7 +36,7 @@ class AssetUse {
   int? readStatus;
   String? keepOrgName;
   dynamic keepOrgType;
-  dynamic keepOrgPhomeNumber;
+  dynamic keepOrgPhoneNumber;
   DateTime? gmtCreate;
   String? id;
   String? verificationDate;
@@ -81,10 +81,10 @@ class AssetUse {
     updateTime = DateTime.tryParse(json['UPDATE_TIME']??"");
     way = int.tryParse(json['way'].toString());
     keepOrgName = json['ACC_UNIT']??json['keepOrgName'];
-    keepOrgType = json['IS_SYS_UNIT']??json['keepOrgType']??0;
+    keepOrgType = json['IS_SYS_UNIT']??json['keepOrgType'];
     evaluated = json['evaluated'];
     assetsTotal = json['SHEJIZCZZ']??json['assetsTotal'];
-    keepOrgPhomeNumber = json['keepOrgPhomeNumber'];
+    keepOrgPhoneNumber = json['keepOrgPhoneNumber'];
     depreciationTotal = json['LEIJIZJHJ']??json['depreciationTotal'];
     netWorthTotal = json['JINGZHIHJ']??json['netWorthTotal'];
     count = int.tryParse(json['count'].toString());
@@ -142,7 +142,7 @@ class AssetUse {
     data['ACC_UNIT'] = keepOrgName ;
     data['IS_SYS_UNIT'] =  keepOrgType;
     data['count'] = this.count;
-    data['keepOrgPhomeNumber'] =keepOrgPhomeNumber;
+    data['keepOrgPhoneNumber'] =keepOrgPhoneNumber;
     data['editStatus'] = this.editStatus;
     data['approvalEnd'] = this.approvalEnd;
     data['APPROVAL_STATUS'] = this.approvalStatus;

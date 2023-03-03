@@ -18,19 +18,16 @@ class TransferNetWork{
     required String billCode,required String keeperId,required String keepOrgId,required String remark
 ,required List<MyAssetsList> assets,bool isDraft = false,bool isEdit = false}) async{
 
-    if(!isDraft){
-      List<UpdateAssetsRequest> request = assets
-          .map((element) =>
-          UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
-            "USER": keeperId,
-            "USE_DEPT": keepOrgId,
-            "KAPIANZT":"08",
-          }))
-          .toList();
+    List<UpdateAssetsRequest> request = assets
+        .map((element) =>
+        UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
+          "USER": keeperId,
+          "USE_DEPT": keepOrgId,
+          "KAPIANZT":"08",
+        }))
+        .toList();
 
-      await AssetManagement().updateAssetsForList(request);
-    }
-
+    await AssetManagement().updateAssetsForList(request);
     Map<String,dynamic> data = {
       "BILL_CODE":billCode,
       "KEEPER_ID":keeperId,

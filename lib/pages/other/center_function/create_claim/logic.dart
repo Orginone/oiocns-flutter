@@ -113,6 +113,6 @@ class CreateClaimController extends BaseController<CreateClaimState> {
   }
 
   void create({bool isDraft = false}){
-    ClaimNetWork.creteClaim(billCode: state.orderNum.value, remark: state.reasonController.text, detail: state.detailedData,isDraft: isDraft);
+    ClaimNetWork.creteClaim(billCode: state.orderNum.value, remark: state.reasonController.text, detail: state.detailedData,isDraft: isDraft,isEdit: state.isEdit);
   }
 }

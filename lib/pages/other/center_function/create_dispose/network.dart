@@ -12,9 +12,9 @@ import 'package:uuid/uuid_util.dart';
 class DisposeNetwork {
   static Future<void> createDispose(
       {required int way,
-      required int keepOrgType,
+      int? keepOrgType,
       required String keepOrgName,
-      required int evaluated,
+      int? evaluated,
       required String billCode,
       required List<MyAssetsList> assets,
       bool isDraft = false,
@@ -22,17 +22,14 @@ class DisposeNetwork {
       int? phoneNumber,
       bool isEdit = false}) async {
 
-    if(!isDraft){
-      List<UpdateAssetsRequest> request = assets
-          .map((element) =>
-          UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
-            "KAPIANZT": "09",
-          }))
-          .toList();
+    List<UpdateAssetsRequest> request = assets
+        .map((element) =>
+        UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
+          "KAPIANZT": "09",
+        }))
+        .toList();
 
-      await AssetManagement().updateAssetsForList(request);
-    }
-
+    await AssetManagement().updateAssetsForList(request);
     double assetsTotal = 0;
     double count = 0;
     double netWorthTotal = 0;
@@ -48,7 +45,7 @@ class DisposeNetwork {
       "way": way,
       "IS_SYS_UNIT": keepOrgType,
       "APPLY_UNIT": keepOrgName,
-      "keepOrgPhomeNumber": phoneNumber,
+      "keepOrgPhoneNumber": phoneNumber,
       "evaluated": evaluated,
       "SHEJIZCZZ": assetsTotal,
       "LEIJIZJHJ": depreciationTotal,

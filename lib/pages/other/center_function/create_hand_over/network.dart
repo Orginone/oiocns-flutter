@@ -19,19 +19,16 @@ class HandOverNetWork{
     ,required List<MyAssetsList> assets,bool isDraft = false,bool isEdit = false}) async{
 
 
-    if(!isDraft){
-      List<UpdateAssetsRequest> request = assets
-          .map((element) =>
-          UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
-            "USER_NAME": user?.name??"",
-            "USER":user?.id??"",
-            "KAPIANZT": "12",
-          }))
-          .toList();
+    List<UpdateAssetsRequest> request = assets
+        .map((element) =>
+        UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
+          "USER_NAME": user?.name??"",
+          "USER":user?.id??"",
+          "KAPIANZT": "12",
+        }))
+        .toList();
 
-      await AssetManagement().updateAssetsForList(request);
-    }
-
+    await AssetManagement().updateAssetsForList(request);
     Map<String,dynamic> data = {
       "BILL_CODE":billCode,
       "SUBMITTER_NAME":HiveUtils.getUser()?.person?.name,

@@ -23,7 +23,7 @@ class ClaimNetWork {
       "approvalDocument":{
         "details":detail.map((e){
           return {
-            "ASSET_TYPE": {"value": e.assetType!.name},
+            "ASSET_TYPE": e.assetType!.name,
             "ASSET_NAME": e.assetNameController.text,
             "CREATE_USER": HiveUtils.getUser()?.person?.id ?? "",
             "SUBMITTER_NAME": HiveUtils.getUser()?.userName ?? "",
