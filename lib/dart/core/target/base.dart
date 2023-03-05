@@ -247,8 +247,7 @@ class BaseTarget extends ITarget {
     List<TargetType> typeNames,
     String spaceId,
   ) async {
-    typeNames =
-        typeNames.where((a) => joinTargetType.contains(a)).toList();
+    typeNames = typeNames.where((a) => joinTargetType.contains(a)).toList();
     if (typeNames.isNotEmpty) {
       final res = await kernel.queryJoinedTargetById(IDReqJoinedModel(
           id: target.id,
@@ -367,8 +366,9 @@ class BaseTarget extends ITarget {
       return authorityTree;
     }
     await getOwnIdentitys(reload: reload);
-    final res = await kernel.queryAuthorityTree(IDBelongReq(
-      id: target.id,
+    final res = await kernel.queryAuthorityTree(IdSpaceReq(
+      id: '0',
+      spaceId: target.id,
       page: PageRequest(
         offset: 0,
         filter: '',

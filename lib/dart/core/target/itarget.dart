@@ -254,7 +254,7 @@ abstract class IFlow {
 
   ///查询流程定义绑定项
   ///@param reload 是否强制刷新
-  Future<List<XFlowRelation>> queryFlowRelation({bool reload = false});
+  Future<List<XOperation>> queryFlowRelation({bool reload = false});
 
   ///发布流程定义（包含创建、更新）
   ///@param data
@@ -270,11 +270,7 @@ abstract class IFlow {
 
   /// 绑定应用业务与流程定义
   /// @param params
-  Future<XFlowRelation?> bindingFlowRelation(FlowRelationModel params);
-
-  /// 解绑应用业务与流程定义
-  /// @param params
-  Future<bool> unbindingFlowRelation(FlowRelationModel params);
+  Future<bool> bindingFlowRelation(FlowRelationModel params);
 }
 
 abstract class ISpace implements IFlow, IMTarget, ITarget {

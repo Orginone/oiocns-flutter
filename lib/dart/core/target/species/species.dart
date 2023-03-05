@@ -90,10 +90,13 @@ class SpeciesItem extends ISpeciesItem {
   }
 
   @override
-  Future<XAttributeArray> loadAttrs(String id, PageRequest page) async {
-    final res = await kernel.querySpeciesAttrs(IdSpaceReq(
+  Future<XAttributeArray> loadAttrs(String id, bool recursionOrg,
+      bool recursionSpecies, PageRequest page) async {
+    final res = await kernel.querySpeciesAttrs(IdSpeciesReq(
         id: this.id,
         spaceId: id,
+        recursionOrg: recursionOrg,
+        recursionSpecies: recursionSpecies,
         page: PageRequest(
           offset: page.offset,
           limit: page.limit,
@@ -119,10 +122,14 @@ class SpeciesItem extends ISpeciesItem {
   }
 
   @override
-  Future<XOperationArray> loadOperations(String id, PageRequest page) async {
-    final res = await kernel.querySpeciesOperation(IdSpaceReq(
+  Future<XOperationArray> loadOperations(String id, bool filterAuth,
+      bool recursionOrg, bool recursionSpecies, PageRequest page) async {
+    final res = await kernel.querySpeciesOperation(IdOperationReq(
         id: this.id,
         spaceId: id,
+        filterAuth: filterAuth,
+        recursionOrg: recursionOrg,
+        recursionSpecies: recursionSpecies,
         page: PageRequest(
           offset: page.offset,
           limit: page.limit,

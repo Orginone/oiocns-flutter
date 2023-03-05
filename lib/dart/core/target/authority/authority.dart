@@ -97,32 +97,14 @@ class Authority extends IAuthority {
   }
 
   @override
-  Future<List<IAuthority>> getSubAuthoritys(bool reload) async {
-    if (!reload && children.isNotEmpty) {
-      return children;
-    }
-    final res = await kernel.querySubAuthoritys(IDBelongReq(
-        id: _authority.id,
-        page: PageRequest(
-          offset: 0,
-          filter: '',
-          limit: Constants.maxUint16,
-        )));
-    if (res.success && res.data != null) {
-      res.data!.result?.forEach(
-          (XAuthority auth) => {children.add(Authority(auth, _belongId))});
-    }
-    return children;
-  }
-
-  @override
   Future<List<IIdentity>> queryAuthorityIdentity(bool reload) async {
     if (!reload && identitys.isNotEmpty) {
       return identitys;
     }
-    final res = await kernel.queryAuthorityIdentitys(IDBelongReq(
+    final res = await kernel.queryAuthorityIdentitys(IdSpaceReq(
         id: _authority.id,
-        page: PageRequest(offset: 0, filter: '', limit: Constants.maxUint16)));
+        page: PageRequest(offset: 0, filter: '', limit: Constants.maxUint16),
+        spaceId: ''));
     if (res.success && res.data != null) {
       res.data!.result?.forEach((element) {
         identitys.add(Identity(element));

@@ -53,10 +53,4 @@ abstract class IAuthority {
   ///  @param reload 是否强制刷新
   /// @returns
   Future<List<IIdentity>> queryAuthorityIdentity(bool reload);
-
-  /// 查询职权子职权
-  ///  @param reload 是否强制刷新
-  /// @returns
-
-  Future<List<IAuthority>> getSubAuthoritys(bool reload);
 }

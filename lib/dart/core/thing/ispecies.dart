@@ -36,9 +36,11 @@ abstract class ISpeciesItem {
   /* 加载信息 */
   Future<ISpeciesItem> loadInfo(TargetShare info);
   /* 加载分类特性 */
-  Future<XAttributeArray> loadAttrs(String id, PageRequest page);
+  Future<XAttributeArray> loadAttrs(
+      String id, bool recursionOrg, bool recursionSpecies, PageRequest page);
   /* 加载业务标准 */
-  Future<XOperationArray> loadOperations(String id, PageRequest page);
+  Future<XOperationArray> loadOperations(String id, bool filterAuth,
+      bool recursionOrg, bool recursionSpecies, PageRequest page);
   /*
    * 创建标准分类项
    * @param data 创建参数
