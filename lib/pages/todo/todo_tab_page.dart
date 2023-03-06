@@ -1,11 +1,10 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/unified_colors.dart';
-import 'package:orginone/components/unified_scaffold.dart';
-import 'package:orginone/pages/todo/todo_page.dart';
+import 'package:orginone/components/template/originone_scaffold.dart';
+import 'package:orginone/components/unified.dart';
+import 'package:orginone/pages/todo/work_page.dart';
 
 class TodoTabPage extends StatefulWidget {
   const TodoTabPage({Key? key}) : super(key: key);
@@ -34,7 +33,7 @@ class _TodoTabPageState extends State<TodoTabPage> with AutomaticKeepAliveClient
 
 
 
-class AffairsTab extends GetView<TodoController> {
+class AffairsTab extends GetView<WorkController> {
   final int index;
   const AffairsTab(this.index, {Key? key}) : super(key: key);
 
@@ -50,15 +49,15 @@ class AffairsTab extends GetView<TodoController> {
   }
 
   Widget _tabBar() {
-    return GetBuilder<TodoController>(
+    return GetBuilder<WorkController>(
         init: controller,
         builder: (controller) {
           return Container(
-            color: UnifiedColors.white,
+            color: XColors.white,
             child: SizedBox(
               height: 60.h,
               child: TabBar(
-                controller: controller.mTabController,
+                controller: controller.tabController,
                 tabs: controller.mTabs.map((item) => item.body!).toList(),
               ),
             ),
@@ -85,10 +84,10 @@ class AffairsTab extends GetView<TodoController> {
                   ? Container(
                 width: 1.w,
                 height: 30.h,
-                color: UnifiedColors.lineLight2,
+                color: XColors.lineLight2,
               )
                   : Container(
-                  width: 1.w, height: 30.h, color: UnifiedColors.transparent)
+                  width: 1.w, height: 30.h, color: XColors.transparent)
             ],
           ),
         ));
@@ -98,7 +97,7 @@ class AffairsTab extends GetView<TodoController> {
     return Expanded(
       flex: 1,
       child: TabBarView(
-        controller: controller.mTabController,
+        controller: controller.tabController,
         children: controller.mTabs.map((item) => item.tabView).toList(),
       ),
     );
@@ -107,14 +106,14 @@ class AffairsTab extends GetView<TodoController> {
   _line() {
     return Divider(
       height: 1.h,
-      color: UnifiedColors.lineLight,
+      color: XColors.lineLight,
     );
   }
 }
-
-class TodoListBinding extends Bindings {
-  @override
-  void dependencies() {
-    Get.lazyPut(() => TodoController());
-  }
-}
+//
+// class TodoListBinding extends Bindings {
+//   @override
+//   void dependencies() {
+//     Get.lazyPut(() => WorkController());
+//   }
+// }

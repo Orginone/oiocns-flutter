@@ -1,9 +1,11 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/a_font.dart';
 import 'package:orginone/components/bread_crumb.dart';
 import 'package:orginone/components/tab_combine.dart';
+import 'package:orginone/components/unified.dart';
 import 'package:orginone/pages/todo/todo_list_page.dart';
 import 'package:orginone/routers.dart';
 
@@ -14,7 +16,7 @@ Map<String,dynamic> getCards(){
   Map<String, dynamic> mData = {};
   todoFunc(int index) =>
       Get.toNamed(Routers.todoList, arguments: {"index": index});
-  mData["常办事项"] = [
+  mData["常用业务"] = [
     {
       "icon": "",
       "name": "待办",
@@ -23,28 +25,23 @@ Map<String,dynamic> getCards(){
     },
     {
       "icon": "",
-      "name": "已办",
+      "name": "我的发起",
       "action": "QueryTeamJoinApproval",
       "func": () => todoFunc(1)
-    },
-    {
-      "icon": "",
-      "name": "已完成",
-      "action": "QueryJoinTeamApply",
-      "func": () => todoFunc(2)
-    },
-    {
-      "icon": "",
-      "name": "我的发起",
-      "action": "QueryJoinTeamApply",
-      "func": () => todoFunc(3)
-    },
-    {"icon": "", "name": "草稿", "action": "draft"},
+    }
   ];
-  mData["_1"] = [
+  mData["全部业务"] = [
+    {"icon": "", "name": "具体业务", "action": "QueryTeamJoinApproval"},
+    {"icon": "", "name": "具体业务", "action": "QueryTeamJoinApproval"},
+    {"icon": "", "name": "具体业务", "action": "QueryTeamJoinApproval"},
+    {"icon": "", "name": "具体业务", "action": "QueryTeamJoinApproval"},
+    {"icon": "", "name": "具体业务", "action": "QueryTeamJoinApproval"},
     {"icon": "", "name": "目录", "action": "QueryTeamJoinApproval"},
-    {"icon": "", "name": "资产申领单", "action": "QueryTeamJoinApproval"},
-    {"icon": "", "name": "监管平台", "action": "QueryJoinTeamApply"},
+    {"icon": "", "name": "目录", "action": "QueryJoinTeamApply"},
+    {"icon": "", "name": "具体业务", "action": "QueryTeamJoinApproval"},
+    {"icon": "", "name": "具体业务", "action": "QueryTeamJoinApproval"},
+    {"icon": "", "name": "具体业务", "action": "QueryTeamJoinApproval"},
+    {"icon": "", "name": "目录", "action": "QueryTeamJoinApproval"},
   ];
   return mData;
 }
@@ -86,4 +83,49 @@ List<TabCombine> getTabs(TabController tabController) {
     preIndex = tabController.index;
   });
   return tabs;
+}
+
+List<PopupMenuEntry> getMenu(){
+  List<PopupMenuEntry> list = List.empty(growable: true);
+  PopupMenuItem popupMenuItem1 = PopupMenuItem(
+    value: 1,
+    child: Row(
+      children: [
+        Icon(
+          Icons.drafts_outlined,
+          color: XColors.black6,
+          size: 20.w,
+        ),
+        SizedBox(
+          width: 10.w,
+        ),
+        Text(
+          "已办业务",
+          style: XFonts.size18Black6,
+        ),
+      ],
+    ),
+  );
+  PopupMenuItem popupMenuItem2 = PopupMenuItem(
+    value: 2,
+    child: Row(
+      children: [
+        Icon(
+          Icons.assignment_outlined,
+          color: XColors.black6,
+          size: 20.w,
+        ),
+        SizedBox(
+          width: 10.w,
+        ),
+        Text(
+          "草稿箱",
+          style: XFonts.size18Black6,
+        ),
+      ],
+    ),
+  );
+  list.add(popupMenuItem1);
+  list.add(popupMenuItem2);
+  return list;
 }

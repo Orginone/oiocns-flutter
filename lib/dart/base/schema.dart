@@ -4573,9 +4573,9 @@ class XRelationArray {
 
   //通过JSON构造
   XRelationArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
+      : offset = json["offset"]?? 0,
+        limit = json["limit"]?? 2^64 - 1,
+        total = json["total"] ?? 0,
         result = XRelation.fromList(json["result"]);
 
   //通过动态数组解析成List

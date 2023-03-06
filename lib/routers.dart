@@ -18,7 +18,8 @@ import 'package:orginone/pages/setting/new_friend_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/pages/todo/todo_detail.dart';
 import 'package:orginone/pages/todo/todo_tab_page.dart';
-import 'package:orginone/pages/todo/todo_page.dart';
+import 'package:orginone/pages/todo/work_page.dart';
+import 'package:orginone/pages/todo/workbench_page.dart';
 
 class Routers {
   // 入口页面
@@ -59,6 +60,9 @@ class Routers {
   static const String contact = "/contact";
   static const String cohorts = "/cohorts";
 
+  //办事
+  // static const String
+
   static List<GetPage> getInitRouters() {
     return [
       GetPage(
@@ -69,7 +73,7 @@ class Routers {
       GetPage(
         name: Routers.home,
         page: () => const HomePage(),
-        bindings: [HomeBinding(), SetHomeBinding(), MessageBinding()],
+        bindings: [HomeBinding(), WorkBinding(),SetHomeBinding(), MessageBinding()],
       ),
       GetPage(
         name: Routers.spaces,
@@ -126,13 +130,12 @@ class Routers {
       ),
       GetPage(
         name: Routers.todo,
-        page: () => TodoPage(),
-        binding: TodoBinding(),
+        page: () => WorkbenchPage(),
+        binding: WorkBinding(),
       ),
       GetPage(
         name: Routers.todoList,
         page: () => const TodoTabPage(),
-        binding: TodoListBinding(),
       ),
       GetPage(
         name: Routers.todoDetail,
