@@ -1,13 +1,12 @@
-import { model, schema } from '@/ts/base';
-import { PageRequest, TargetModel, TargetShare } from '@/ts/base/model';
-import { XIdentity, XTarget, XTargetArray } from '@/ts/base/schema';
-import { TargetType } from '../enum';
-import { IMarket, Market } from '../market';
-import IProduct from '../market/iproduct';
-import { IAuthority } from './authority/iauthority';
-import { IIdentity } from './authority/iidentity';
-import { ISpeciesItem } from './species/ispecies';
-export type TargetParam = Omit<TargetModel, 'id' | 'belongId'>;
+import { model, schema } from "@/ts/base";
+import { PageRequest, TargetModel, TargetShare } from "@/ts/base/model";
+import { XIdentity, XTarget, XTargetArray } from "@/ts/base/schema";
+import { TargetType } from "../enum";
+import { IMarket, Market } from "../market";
+import IProduct from "../market/iproduct";
+import { IAuthority } from "./authority/iauthority";
+import { IIdentity } from "./authority/iidentity";
+export type TargetParam = Omit<TargetModel, "id" | "belongId">;
 
 /** 空间类型数据 */
 export type SpaceType = {
@@ -35,8 +34,6 @@ export interface ITarget {
   typeName: TargetType;
   /** 职权树 */
   authorityTree: IAuthority | undefined;
-  /** 分类标准树 */
-  speciesTree: ISpeciesItem | undefined;
   /** 拥有的身份 */
   ownIdentitys: schema.XIdentity[];
   /** 组织的身份 */
@@ -71,11 +68,6 @@ export interface ITarget {
    */
   loadAuthorityTree(reload?: boolean): Promise<IAuthority | undefined>;
   /**
-   * 获取分类标准树
-   * @param reload 是否强制刷新
-   */
-  loadSpeciesTree(reload?: boolean): Promise<ISpeciesItem | undefined>;
-  /**
    * 判断是否拥有该身份
    * @param id 身份id
    */
@@ -90,7 +82,7 @@ export interface ITarget {
    * @param {model.IdentityModel} params 参数
    */
   createIdentity(
-    params: Omit<model.IdentityModel, 'id' | 'belongId'>,
+    params: Omit<model.IdentityModel, "id" | "belongId">
   ): Promise<IIdentity | undefined>;
   /**
    * 删除身份
@@ -169,13 +161,16 @@ export interface IMTarget {
   /**
    * 查询购买订单
    */
-  getBuyOrders(status: number, page: model.PageRequest): Promise<schema.XOrderArray>;
+  getBuyOrders(
+    status: number,
+    page: model.PageRequest
+  ): Promise<schema.XOrderArray>;
   /**
    * 查询售卖订单
    */
   getSellOrders(
     status: number,
-    page: model.PageRequest,
+    page: model.PageRequest
   ): Promise<schema.XOrderDetailArray>;
   /**
    * 查询加入市场的审批
@@ -230,7 +225,9 @@ export interface IMTarget {
     code,
     remark,
     samrId,
-    ispublic,
+    joinPublic,
+    sellPublic,
+    buyPublic,
   }: {
     // 名称
     name: string;
@@ -240,15 +237,19 @@ export interface IMTarget {
     remark: string;
     // 监管组织/个人
     samrId: string;
-    // 产品类型名
-    ispublic: boolean;
+    // 是否公开加入权限
+    joinPublic: boolean;
+    // 是否公开售卖权限
+    sellPublic: boolean;
+    // 是否公开购买权限
+    buyPublic: boolean;
   }): Promise<IMarket | undefined>;
   /**
    * 创建应用
    * @param  {model.ProductModel} 产品基础信息
    */
   createProduct(
-    data: Omit<model.ProductModel, 'id' | 'belongId'>,
+    data: Omit<model.ProductModel, "id" | "belongId">
   ): Promise<IProduct | undefined>;
   /**
    * 删除市场
@@ -292,7 +293,7 @@ export interface IMTarget {
     name: string,
     code: string,
     spaceId: string,
-    merchandiseIds: string[],
+    merchandiseIds: string[]
   ): Promise<schema.XOrder>;
 }
 export interface IFlow {
@@ -307,13 +308,13 @@ export interface IFlow {
    * 查询流程定义绑定项
    * @param reload 是否强制刷新
    */
-  queryFlowRelation(reload: boolean): Promise<schema.XFlowRelation[]>;
+  queryFlowRelation(reload: boolean): Promise<schema.XOperation[]>;
   /**
    * 发布流程定义（包含创建、更新）
    * @param data
    */
   publishDefine(
-    data: Omit<model.CreateDefineReq, 'belongId'>,
+    data: Omit<model.CreateDefineReq, "belongId">
   ): Promise<schema.XFlowDefine>;
   /**
    * 删除流程定义
@@ -329,19 +330,15 @@ export interface IFlow {
    * 绑定应用业务与流程定义
    * @param params
    */
-  bindingFlowRelation(params: model.FlowRelationModel): Promise<schema.XFlowRelation>;
-  /**
-   * 解绑应用业务与流程定义
-   * @param params
-   */
-  unbindingFlowRelation(params: model.FlowRelationModel): Promise<boolean>;
+  bindingFlowRelation(params: model.FlowRelationModel): Promise<boolean>;
 }
 export interface ISpace extends IFlow, IMTarget, ITarget {
   /** 我的群组 */
   cohorts: ICohort[];
   /** 空间类型数据 */
   spaceData: SpaceType;
-
+  /** 空间职权树 */
+  spaceAuthorityTree: IAuthority | undefined;
   /**
    * @description: 查询群
    * @param reload 是否强制刷新
@@ -355,6 +352,11 @@ export interface ISpace extends IFlow, IMTarget, ITarget {
    * @returns
    */
   deleteCohort(id: string): Promise<boolean>;
+  /**
+   * 加载空间职权树
+   * @param reload 重新加载
+   */
+  loadSpaceAuthorityTree(reload?: boolean): Promise<IAuthority | undefined>;
 }
 /** 群组操作 */
 export interface ICohort extends ITarget {
@@ -415,7 +417,10 @@ export interface IPerson extends ISpace, ITarget {
    * @param status 状态
    * @returns
    */
-  approvalFriendApply(relation: schema.XRelation, status: number): Promise<boolean>;
+  approvalFriendApply(
+    relation: schema.XRelation,
+    status: number
+  ): Promise<boolean>;
   /** 查询我的申请 */
   queryJoinApply(): Promise<schema.XRelationArray>;
   /** 查询我的审批 */

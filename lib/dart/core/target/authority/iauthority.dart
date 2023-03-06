@@ -32,6 +32,9 @@ abstract class IAuthority {
     String remark,
   );
 
+  /// 删除职权
+  Future<ResultType> delete();
+
   /// 删除子职权
   /// @param id 子职权Id
   Future<ResultType> deleteSubAuthority(String id);

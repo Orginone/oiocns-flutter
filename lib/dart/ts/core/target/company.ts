@@ -1,11 +1,11 @@
-import Group from './group';
-import consts from '../consts';
-import MarketTarget from './mbase';
-import { companyTypes, departmentTypes, TargetType } from '../enum';
-import { TargetModel } from '@/ts/base/model';
-import Department from './department';
-import { validIsSocialCreditCode } from '@/utils/tools';
-import { schema, kernel, common } from '@/ts/base';
+import Group from "./group";
+import consts from "../consts";
+import MarketTarget from "./mbase";
+import { companyTypes, departmentTypes, TargetType } from "../enum";
+import { TargetModel } from "@/ts/base/model";
+import Department from "./department";
+import { validIsSocialCreditCode } from "@/utils/tools";
+import { schema, kernel, common } from "@/ts/base";
 import {
   IGroup,
   ICompany,
@@ -16,11 +16,13 @@ import {
   TargetParam,
   ICohort,
   IStation,
-} from './itarget';
-import Working from './working';
-import Station from './station';
-import { logger } from '@/ts/base/common';
-import Cohort from './cohort';
+} from "./itarget";
+import Working from "./working";
+import Station from "./station";
+import { logger } from "@/ts/base/common";
+import Cohort from "./cohort";
+import { IAuthority } from "./authority/iauthority";
+import Authority from "./authority/authority";
 /**
  * 公司的元操作
  */
@@ -32,6 +34,7 @@ export default class Company extends MarketTarget implements ICompany {
   cohorts: ICohort[] = [];
   workings: IWorking[] = [];
   departmentTypes: TargetType[] = [];
+  spaceAuthorityTree: IAuthority | undefined;
 
   constructor(target: schema.XTarget, userId: string) {
     super(target);
@@ -48,6 +51,26 @@ export default class Company extends MarketTarget implements ICompany {
     ];
     this.searchTargetType = [TargetType.Person, TargetType.Group];
   }
+  async loadSpaceAuthorityTree(
+    reload: boolean = false
+  ): Promise<IAuthority | undefined> {
+    if (!reload && this.spaceAuthorityTree != undefined) {
+      return this.spaceAuthorityTree;
+    }
+    const res = await kernel.queryAuthorityTree({
+      id: "0",
+      spaceId: this.id,
+      page: {
+        offset: 0,
+        filter: "",
+        limit: common.Constants.MAX_UINT_16,
+      },
+    });
+    if (res.success) {
+      this.authorityTree = new Authority(res.data, this.id);
+    }
+    return this.authorityTree;
+  }
   public get subTeam(): ITarget[] {
     return [...this.departments, ...this.workings];
   }
@@ -60,7 +83,7 @@ export default class Company extends MarketTarget implements ICompany {
       typeName: TargetType.Person,
       page: {
         offset: 0,
-        filter: '',
+        filter: "",
         limit: common.Constants.MAX_UINT_16,
       },
       spaceId: this.id,
@@ -108,7 +131,10 @@ export default class Company extends MarketTarget implements ICompany {
   private async createGroup(data: TargetParam): Promise<IGroup | undefined> {
     const tres = await this.searchTargetByName(data.code, [TargetType.Group]);
     if (!tres.result) {
-      const res = await this.createTarget({ ...data, belongId: this.target.id });
+      const res = await this.createTarget({
+        ...data,
+        belongId: this.target.id,
+      });
       if (res.success) {
         const group = new Group(res.data, () => {
           this.joinedGroup = this.joinedGroup.filter((item) => {
@@ -120,19 +146,22 @@ export default class Company extends MarketTarget implements ICompany {
         return group;
       }
     } else {
-      logger.warn('该集团已存在!');
+      logger.warn("该集团已存在!");
     }
   }
   private async createDepartment(
-    data: Omit<TargetModel, 'id' | 'belongId'>,
+    data: Omit<TargetModel, "id" | "belongId">
   ): Promise<IDepartment | undefined> {
-    data.teamCode = data.teamCode == '' ? data.code : data.teamCode;
-    data.teamName = data.teamName == '' ? data.name : data.teamName;
+    data.teamCode = data.teamCode == "" ? data.code : data.teamCode;
+    data.teamName = data.teamName == "" ? data.name : data.teamName;
     if (!this.departmentTypes.includes(data.typeName as TargetType)) {
-      logger.warn('不支持该机构');
+      logger.warn("不支持该机构");
       return;
     }
-    const res = await this.createSubTarget({ ...data, belongId: this.target.id });
+    const res = await this.createSubTarget({
+      ...data,
+      belongId: this.target.id,
+    });
     if (res.success) {
       const department = new Department(res.data, () => {
         this.departments = this.departments.filter((item) => {
@@ -144,12 +173,15 @@ export default class Company extends MarketTarget implements ICompany {
     }
   }
   private async createStation(
-    data: Omit<TargetModel, 'id' | 'belongId'>,
+    data: Omit<TargetModel, "id" | "belongId">
   ): Promise<IStation | undefined> {
-    data.teamCode = data.teamCode == '' ? data.code : data.teamCode;
-    data.teamName = data.teamName == '' ? data.name : data.teamName;
+    data.teamCode = data.teamCode == "" ? data.code : data.teamCode;
+    data.teamName = data.teamName == "" ? data.name : data.teamName;
     data.typeName = TargetType.Station;
-    const res = await this.createSubTarget({ ...data, belongId: this.target.id });
+    const res = await this.createSubTarget({
+      ...data,
+      belongId: this.target.id,
+    });
     if (res.success) {
       const station = new Station(res.data, () => {
         this.stations = this.stations.filter((item) => {
@@ -161,12 +193,15 @@ export default class Company extends MarketTarget implements ICompany {
     }
   }
   private async createWorking(
-    data: Omit<TargetModel, 'id' | 'belongId'>,
+    data: Omit<TargetModel, "id" | "belongId">
   ): Promise<IWorking | undefined> {
-    data.teamCode = data.teamCode == '' ? data.code : data.teamCode;
-    data.teamName = data.teamName == '' ? data.name : data.teamName;
+    data.teamCode = data.teamCode == "" ? data.code : data.teamCode;
+    data.teamName = data.teamName == "" ? data.name : data.teamName;
     data.typeName = TargetType.Working;
-    const res = await this.createSubTarget({ ...data, belongId: this.target.id });
+    const res = await this.createSubTarget({
+      ...data,
+      belongId: this.target.id,
+    });
     if (res.success) {
       const working = new Working(res.data, () => {
         this.workings = this.workings.filter((item) => {
@@ -213,7 +248,11 @@ export default class Company extends MarketTarget implements ICompany {
       return department.id == id;
     });
     if (department) {
-      let res = await this.deleteSubTarget(id, department.target.typeName, this.id);
+      let res = await this.deleteSubTarget(
+        id,
+        department.target.typeName,
+        this.id
+      );
       if (res.success) {
         this.departments = this.departments.filter((department) => {
           return department.id != id;
@@ -229,7 +268,11 @@ export default class Company extends MarketTarget implements ICompany {
       return department.id == id;
     });
     if (station) {
-      let res = await this.deleteSubTarget(id, station.target.typeName, this.id);
+      let res = await this.deleteSubTarget(
+        id,
+        station.target.typeName,
+        this.id
+      );
       if (res.success) {
         this.stations = this.stations.filter((station) => {
           return station.id != id;
@@ -363,7 +406,7 @@ export default class Company extends MarketTarget implements ICompany {
   }
   public async update(data: TargetParam): Promise<ICompany> {
     if (!validIsSocialCreditCode(data.code)) {
-      logger.warn('请填写正确的代码!');
+      logger.warn("请填写正确的代码!");
     }
     await super.update(data);
     return this;
@@ -383,7 +426,7 @@ export default class Company extends MarketTarget implements ICompany {
       id: this.target.id,
       page: {
         offset: 0,
-        filter: '',
+        filter: "",
         limit: common.Constants.MAX_UINT_16,
       },
     });
@@ -394,7 +437,7 @@ export default class Company extends MarketTarget implements ICompany {
       id: this.target.id,
       page: {
         offset: 0,
-        filter: '',
+        filter: "",
         limit: common.Constants.MAX_UINT_16,
       },
     });

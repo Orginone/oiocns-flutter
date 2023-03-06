@@ -4,9 +4,9 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
-import 'package:orginone/dart/core/target/species/ispecies.dart';
 
 import '../market/model.dart';
+import '../thing/ispecies.dart';
 
 /// 空间类型数据
 class SpaceType {
@@ -35,8 +35,6 @@ abstract class ITarget {
   late String typeName;
   // 职权树
   late IAuthority? authorityTree;
-  // 分类标准树
-  late ISpeciesItem? speciesTree;
   // 拥有的身份
   late List<XIdentity> ownIdentitys;
   // 组织的身份
@@ -66,10 +64,6 @@ abstract class ITarget {
   /// 获取职权树
   /// @param reload 是否强制刷新
   Future<IAuthority?> loadAuthorityTree({bool reload = false});
-
-  /// 获取分类标准树
-  /// @param reload 是否强制刷新
-  Future<ISpeciesItem?> loadSpeciesTree({bool reload = false});
 
   /// 判断是否拥有该身份
   /// @param id 身份id
@@ -280,6 +274,9 @@ abstract class ISpace implements IFlow, IMTarget, ITarget {
   /// 空间类型数据
   late SpaceType spaceData;
 
+  /// 空间职权树
+  late IAuthority? spaceAuthorityTree;
+
   /// @description: 查询群
   ///@param reload 是否强制刷新
   ///@return {*} 查询到的群组
@@ -290,6 +287,10 @@ abstract class ISpace implements IFlow, IMTarget, ITarget {
   /// @param belongId 群组归属id
   /// @returns
   Future<bool> deleteCohort(String id);
+
+  /// 加载空间职权树
+  /// @param reload 重新加载
+  Future<IAuthority?> loadSpaceAuthorityTree([bool reload = false]);
 }
 
 /// 群组操作
@@ -387,6 +388,9 @@ abstract class ICompany implements ISpace, ITarget {
 
   /// 当前用户Id
   late String userId;
+
+  ///加载空间职权树
+  Future<IAuthority?> loadSpaceAuthorityTree([bool reload = false]);
 
   /// 删除集团
   /// @param id 集团Id

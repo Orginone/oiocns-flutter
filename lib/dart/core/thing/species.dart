@@ -12,10 +12,10 @@
 // import { INullSpeciesItem, ISpeciesItem } from './ispecies';
 
 import 'package:orginone/dart/base/model.dart';
-import '../target/species/idict.dart' show IDict;
-import '../target/species/dict.dart' show Dict;
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import '../../base/schema.dart';
+import 'dict.dart';
+import 'idict.dart';
 import 'ispecies.dart';
 
 /*
@@ -53,6 +53,29 @@ class SpeciesItem extends ISpeciesItem {
           filter: '',
         )));
     return res.data!;
+  }
+
+  @override
+  Future<XDictArray?> loadDicts(
+    String id,
+    bool recursionOrg,
+    bool recursionSpecies,
+    PageRequest page,
+  ) async {
+    final res = await kernel.querySpeciesDict(
+      IdSpeciesReq(
+        id: this.id,
+        spaceId: id,
+        recursionOrg: recursionOrg,
+        recursionSpecies: recursionSpecies,
+        page: PageRequest(
+          offset: page.offset,
+          limit: page.limit,
+          filter: '',
+        ),
+      ),
+    );
+    return res.data;
   }
 
   @override
@@ -190,5 +213,37 @@ class SpeciesItem extends ISpeciesItem {
   Future<bool> deleteDict(String id) async {
     final res = await kernel.deleteDict(IdReqModel(id: id, typeName: ''));
     return res.success;
+  }
+
+  @override
+  Future<XFlowDefine?> createFlowDefine(CreateDefineReq data) async {
+    final res = await kernel.publishDefine(data);
+    return res.data;
+  }
+
+  @override
+  Future<bool> updateFlowDefine(CreateDefineReq data) async {
+    final res = await kernel.publishDefine(data);
+    return res.success;
+  }
+
+  @override
+  Future<bool> deleteFlowDefine(String id) async {
+    final res = await kernel.deleteDefine(IdReq(id: id));
+    return res.success;
+  }
+
+  @override
+  Future<XFlowDefineArray> loadFlowDefines(String id, PageRequest page) async {
+    final res = await kernel.queryDefine(QueryDefineReq(
+      speciesId: target.id,
+      spaceId: id,
+      page: PageRequest(
+        offset: page.offset,
+        limit: page.limit,
+        filter: '',
+      ),
+    ));
+    return res.data!;
   }
 }

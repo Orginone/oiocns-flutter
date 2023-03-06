@@ -1,6 +1,6 @@
-import { TodoType } from '../enum';
-import { model } from '../../base';
-import { XOrder } from '@/ts/base/schema';
+import { TodoType } from "../enum";
+import { model } from "../../base";
+import { XOrder } from "@/ts/base/schema";
 
 export interface IApprovalItemResult {
   result: IApprovalItem[];

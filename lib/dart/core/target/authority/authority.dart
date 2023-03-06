@@ -81,6 +81,16 @@ class Authority extends IAuthority {
   }
 
   @override
+  Future<ResultType> delete() async {
+    final res = await kernel.deleteAuthority(IdReqModel(
+      id: id,
+      belongId: _belongId,
+      typeName: '',
+    ));
+    return res;
+  }
+
+  @override
   Future<ResultType> deleteSubAuthority(String id) async {
     final index = children.where((IAuthority auth) => auth.id == id).toList();
     if (index.isNotEmpty) {
@@ -104,7 +114,7 @@ class Authority extends IAuthority {
     final res = await kernel.queryAuthorityIdentitys(IdSpaceReq(
         id: _authority.id,
         page: PageRequest(offset: 0, filter: '', limit: Constants.maxUint16),
-        spaceId: ''));
+        spaceId: id));
     if (res.success && res.data != null) {
       res.data!.result?.forEach((element) {
         identitys.add(Identity(element));
