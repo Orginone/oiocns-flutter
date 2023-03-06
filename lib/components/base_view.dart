@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:orginone/components/a_font.dart';
 import 'package:orginone/components/base_controller.dart';
-import 'package:orginone/components/unified_colors.dart';
-import 'package:orginone/components/unified_scaffold.dart';
-import 'package:orginone/components/loading_widget.dart';
+import 'package:orginone/components/template/originone_scaffold.dart';
+import 'package:orginone/components/unified.dart';
+import 'package:orginone/components/widgets/loading_widget.dart';
+import 'package:orginone/config/enum.dart';
 import 'package:orginone/util/widget_util.dart';
 
 abstract class BaseView<T extends BaseController> extends GetView<T> {
@@ -21,7 +22,7 @@ abstract class BaseView<T extends BaseController> extends GetView<T> {
             ),
             appBarLeading: WidgetUtil.defaultBackBtn,
             appBarActions: actions(),
-            bgColor: UnifiedColors.white,
+            bgColor: XColors.white,
             body: _loadingWidget(),
             resizeToAvoidBottomInset: false)
         : _loadingWidget();
@@ -29,9 +30,8 @@ abstract class BaseView<T extends BaseController> extends GetView<T> {
 
   _loadingWidget() {
     return LoadingWidget(
-        initStatus: initStatus(),
-        builder: (context) => builder(context),
-        controller: controller);
+        currStatus: initStatus(),
+        builder: (context) => builder(context));
   }
 
   Widget builder(BuildContext context);

@@ -22,6 +22,8 @@ import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
+import 'package:orginone/pages/todo/work_page.dart';
+import 'package:orginone/pages/todo/workbench_page.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
 import '../home/ware_house/ware_house.dart';
@@ -83,7 +85,7 @@ class HomeController extends TabsController {
     ));
     registerTab(XTab(
       body: Text('办事', style: XFonts.size14Black3),
-      view: Container(),
+      view: WorkPage(),
       icon: XImage.localImage("work", size: size),
     ));
     var center = XTab(

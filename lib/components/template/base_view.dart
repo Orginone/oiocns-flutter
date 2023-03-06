@@ -20,17 +20,9 @@ abstract class BaseView<T extends BaseController> extends GetView<T> {
             appBarLeading: XWidgets.defaultBackBtn,
             appBarActions: actions(),
             bgColor: XColors.white,
-            body: _loadingWidget(),
+            body: builder(context),
             resizeToAvoidBottomInset: false)
-        : _loadingWidget();
-  }
-
-  _loadingWidget() {
-    return LoadingWidget(
-      initStatus: initStatus(),
-      builder: (context) => builder(context),
-      controller: controller,
-    );
+        : builder(context);
   }
 
   Widget builder(BuildContext context);

@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_button.dart';
 import 'package:orginone/components/a_font.dart';
-import 'package:orginone/components/base_controller.dart';
-import 'package:orginone/components/tab_combine.dart';
-import 'package:orginone/components/unified_colors.dart';
-import 'package:orginone/pages/todo/config.dart';
-import 'package:orginone/routers.dart';
+import 'package:orginone/components/unified.dart';
+import 'package:orginone/pages/todo/work_page.dart';
 
-class TodoPage extends GetView<TodoController>{
+/// 办事-工作台
+class WorkbenchPage extends GetView<WorkController>{
+  const WorkbenchPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: UnifiedColors.white,
+      color: XColors.white,
       child: Stack(
         children: [
           ListView(
@@ -30,10 +29,12 @@ class TodoPage extends GetView<TodoController>{
               child: GFButton(
                 text: "+",
                 textStyle: TextStyle(
-                  color: UnifiedColors.white,
+                  color: XColors.white,
                   fontSize: 40.sp,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  controller.createInstance();
+                },
                 borderShape: const CircleBorder(),
               ),
             ),
@@ -89,7 +90,7 @@ class CardChildWidget extends StatelessWidget {
                     Container(
                         width: 64.w,
                         height: 64.w,
-                        color: UnifiedColors.navigatorBgColor),
+                        color: XColors.navigatorBgColor),
                     SizedBox(
                       height: 10.h,
                     ),
@@ -109,7 +110,7 @@ class CardChildWidget extends StatelessWidget {
     if (title.startsWith('_')) {
       return Divider(
         height: 2.h,
-        color: UnifiedColors.lineLight,
+        color: XColors.lineLight,
       );
     }
     return Padding(
@@ -121,13 +122,13 @@ class CardChildWidget extends StatelessWidget {
     );
   }
 }
+/*
 
-class TodoController extends BaseController with GetSingleTickerProviderStateMixin{
+class WorkbenchController extends BaseController with GetSingleTickerProviderStateMixin{
 
   Map<String, dynamic> mData = {};
   late List<TabCombine> mTabs;
   late TabController mTabController;
-  List<dynamic> mDataList = [];
 
   @override
   void onInit() {
@@ -144,9 +145,9 @@ class TodoController extends BaseController with GetSingleTickerProviderStateMix
   }
 }
 
-class TodoBinding extends Bindings {
+class WorkbenchBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => TodoController());
+    Get.lazyPut(() => WorkbenchController());
   }
-}
+}*/

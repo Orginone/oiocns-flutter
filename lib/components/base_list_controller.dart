@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/components/base_controller.dart';
-import 'package:orginone/components/loading_widget.dart';
+import 'package:orginone/config/enum.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
