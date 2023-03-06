@@ -67,6 +67,18 @@ class ScanningPage extends GetView<ScanningController> {
               color: Colors.grey.withAlpha(200),
             ),
           ),
+          Positioned(
+            left: 60.w,
+            bottom: 60.h,
+            child: GFIconButton(
+              onPressed: () async {
+                print('跳转到二维码界面');
+                // TODO 跳转到二维码界面
+              },
+              icon: const Icon(Icons.qr_code),
+              color: Colors.grey.withAlpha(200),
+            ),
+          ),
         ],
       ),
     );

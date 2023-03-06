@@ -6,6 +6,8 @@ import 'package:orginone/pages/chat/message_more.dart';
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
+import 'package:orginone/pages/index/index_page.dart';
+// import 'package:orginone/pages/index/indexok_page.dart';
 import 'package:orginone/pages/other/home/home_page.dart';
 import 'package:orginone/pages/other/home/spaces_page.dart';
 import 'package:orginone/pages/other/login.dart';
@@ -16,6 +18,7 @@ import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
+import 'package:orginone/pages/setting/unit_settings_page.dart';
 import 'package:orginone/pages/todo/todo_detail.dart';
 import 'package:orginone/pages/todo/todo_tab_page.dart';
 import 'package:orginone/pages/todo/work_page.dart';
@@ -54,14 +57,15 @@ class Routers {
   static const String chat = "/chat";
   static const String moreMessage = "/moreMessage";
 
+  // 首页
+  static const String index = "/index";
+
   // 设置
   static const String mineUnit = "/mineUnit";
   static const String newFriends = "/newFriends";
   static const String contact = "/contact";
   static const String cohorts = "/cohorts";
-
-  //办事
-  // static const String
+  static const String uintSettings = "/uintSettings";
 
   static List<GetPage> getInitRouters() {
     return [
@@ -73,7 +77,14 @@ class Routers {
       GetPage(
         name: Routers.home,
         page: () => const HomePage(),
-        bindings: [HomeBinding(), WorkBinding(),SetHomeBinding(), MessageBinding()],
+        bindings: [
+          ChatBinding(),
+          HomeBinding(),
+          WorkBinding(),
+          SetHomeBinding(),
+          MessageBinding(),
+          IndexPageBinding()
+        ],
       ),
       GetPage(
         name: Routers.spaces,
@@ -127,6 +138,24 @@ class Routers {
         name: Routers.cohorts,
         page: () => const ContactPage(),
         binding: ContactBinding(),
+      ),
+      GetPage(
+        name: Routers.uintSettings,
+        page: () => UintSettingsPage(),
+        binding: UintSettingsBinding(),
+      ),
+      GetPage(
+        name: Routers.index,
+        page: () => IndexPage(),
+        bindings: [
+          HomeBinding(),
+          IndexPageBinding(),
+          ChatBinding(),
+          MessageBinding(),
+          ChatBoxBinding(),
+          PlayBinding(),
+          SetHomeBinding(),
+        ],
       ),
       GetPage(
         name: Routers.todo,

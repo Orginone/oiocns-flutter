@@ -52,9 +52,12 @@ class OperationBar extends StatelessWidget {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(left: 10.w, right: 20.w),
-            child: const Icon(Icons.more_horiz, color: Colors.black),
-          ),
+              margin: EdgeInsets.only(left: 10.w, right: 20.w),
+              child: GestureDetector(
+                  child: Icon(Icons.more_horiz, color: Colors.black),
+                  onTap: () {
+                    print('1111');
+                  })),
         ],
       ),
     );

@@ -3953,18 +3953,18 @@ class ApprovalTaskReq {
 // 文件系统项分享数据
 class TargetShare {
   // 名称
-  final String? name;
+  final String name;
 
   // 类型
-  final String? typeName;
+  final String typeName;
 
   // 头像
-  final String? avatar;
+  FileItemShare? avatar;
 
   //构造方法
   TargetShare({
-    this.name,
-    this.typeName,
+    required this.name,
+    required this.typeName,
     this.avatar,
   });
 
@@ -3972,7 +3972,8 @@ class TargetShare {
   TargetShare.fromJson(Map<String, dynamic> json)
       : name = json["name"],
         typeName = json["typeName"],
-        avatar = json["avatar"];
+        avatar = json["avatar"] != null ?
+                FileItemShare.fromJson(json["avatar"]) : null;
 
   //通过动态数组解析成List
   static List<TargetShare> fromList(List<dynamic>? list) {
@@ -3993,7 +3994,7 @@ class TargetShare {
     Map<String, dynamic> json = {};
     json["name"] = name;
     json["typeName"] = typeName;
-    json["avatar"] = avatar;
+    json["avatar"] = avatar?.toJson();
     return json;
   }
 }

@@ -10,10 +10,10 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus.dart';
 
-/// 设置首页
+// 设置-单位设置
 @immutable
-class SetHomePage extends BaseView<SetHomeController> {
-  final Logger log = Logger("SetHomePage");
+class UintSettingsPage extends BaseView<UintSettingsController> {
+  final Logger log = Logger("UintSettingsPage");
 
   LinkedHashMap map = LinkedHashMap();
 
@@ -27,8 +27,8 @@ class SetHomePage extends BaseView<SetHomeController> {
     return LoadStatusX.success;
   }
 
-  SetHomePage({Key? key}) : super(key: key) {
-    map["组织设置"] = [
+  UintSettingsPage({Key? key}) : super(key: key) {
+    map["单位设置11"] = [
       {
         "id": 0,
         "icon":
@@ -70,14 +70,17 @@ class SetHomePage extends BaseView<SetHomeController> {
       {"id": 4, "icon": "icon", "cardName": "流程设置"},
       {"id": 5, "icon": "icon", "cardName": "标准设置"},
       {"id": 6, "icon": "icon", "cardName": "权限设置"},
+      {"id": 6, "icon": "icon", "cardName": "权限设置"},
       {
         "id": 7,
         "icon": "icon",
         "cardName": "更新版本",
-        "func": () async {
+        "func": () {
           // Get.toNamed(Routers.version);
-        },
-      }
+        }
+      },
+      {"id": 8, "icon": "icon", "cardName": "标准设置11"},
+      {"id": 9, "icon": "icon", "cardName": "权限设置22"},
     ];
   }
 
@@ -86,24 +89,33 @@ class SetHomePage extends BaseView<SetHomeController> {
     return Container(
       color: XColors.bgColor,
       padding: EdgeInsets.only(left: 12.w, right: 12.w),
-      child: ListView(
-        shrinkWrap: true,
-        children: _getItems()
-          ..add(Container(
-            margin: EdgeInsets.only(left: 20.w, bottom: 10.h, right: 20.w),
-            child: GFButton(
-              onPressed: () async {
-                Get.offAllNamed(Routers.main);
-                XEventBus.instance.fire(SignOut());
-              },
-              color: Colors.redAccent,
-              text: "注销",
-              blockButton: true,
-            ),
-          )),
-      ),
+      child: Container(),
     );
   }
+
+  // @override
+  // Widget builder(BuildContext context) {
+  //   return Container(
+  //     color: XColors.bgColor,
+  //     padding: EdgeInsets.only(left: 12.w, right: 12.w),
+  //     child: ListView(
+  //       shrinkWrap: true,
+  //       children: _getItems()
+  //         ..add(Container(
+  //           margin: EdgeInsets.only(left: 20.w, bottom: 10.h, right: 20.w),
+  //           child: GFButton(
+  //             onPressed: () async {
+  //               Get.offAllNamed(Routers.main);
+  //               XEventBus.instance.fire(SignOut());
+  //             },
+  //             color: Colors.redAccent,
+  //             text: "注销",
+  //             blockButton: true,
+  //           ),
+  //         )),
+  //     ),
+  //   );
+  // }
 
   List<Widget> _getItems() {
     List<Widget> children = [];
@@ -125,6 +137,8 @@ class CardChildWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     debugPrint("--->key:item$itemName | value :${value}");
+    print("22222222222221111111");
+    print("--->2222key:item$itemName | value :${value}");
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -184,11 +198,11 @@ class CardChildWidget extends StatelessWidget {
   }
 }
 
-class SetHomeController extends BaseController {}
+class UintSettingsController extends BaseController {}
 
-class SetHomeBinding extends Bindings {
+class UintSettingsBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => SetHomeController());
+    Get.lazyPut(() => UintSettingsController());
   }
 }
