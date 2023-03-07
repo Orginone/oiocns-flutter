@@ -5777,7 +5777,7 @@ class XTargetArray {
   final int limit;
 
   // 总数
-  final int total;
+  final int? total;
 
   // 结果
   final List<XTarget>? result;
