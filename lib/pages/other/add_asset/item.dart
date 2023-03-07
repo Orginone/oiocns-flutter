@@ -4,7 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/model/my_assets_list.dart';
+import 'package:orginone/model/assets_info.dart';
 import 'package:orginone/pages/other/add_asset/state.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/hive_utils.dart';
@@ -15,7 +15,7 @@ class Item extends StatelessWidget {
   final VoidCallback? openInfo;
   final VoidCallback? onTap;
   final bool showChoiceButton;
-  final MyAssetsList assets;
+  final AssetsInfo assets;
   final ValueChanged<bool>? changed;
   final bool supportSideslip;
   final VoidCallback? delete;

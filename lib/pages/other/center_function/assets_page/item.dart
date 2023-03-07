@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/images.dart';
 import 'package:orginone/model/asset_use.dart';
-import 'package:orginone/model/my_assets_list.dart';
+import 'package:orginone/model/assets_info.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_utils.dart';
@@ -219,8 +220,8 @@ class CommonItem extends StatelessWidget {
     }
     Widget child = Row(
       children: [
-        Image.network(
-          "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/default-avatar1.png",
+        Image.asset(
+          Images.defaultAvatar,
           width: 20.w,
           height: 20.h,
         ),
@@ -253,7 +254,7 @@ class CommonItem extends StatelessWidget {
 }
 
 class MyAssetsItem extends StatelessWidget {
-  final MyAssetsList assets;
+  final AssetsInfo assets;
 
   const MyAssetsItem({Key? key, required this.assets}) : super(key: key);
 
@@ -292,16 +293,7 @@ class MyAssetsItem extends StatelessWidget {
 
   Widget statusInfo() {
     if(!assets.notLockStatus){//资产变动逻辑
-      String text = "";
-      if(assets.kapianzt == "08"){
-        text = "资产移交中";
-      }
-      if(assets.kapianzt == "09"){
-        text = "资产处置中";
-      }
-      if(assets.kapianzt == "12"){
-        text = "资产交回中";
-      }
+      String text = assets.kapianzt?.string??"";
       return Text(text);
     }
     return Row(
@@ -407,8 +399,8 @@ class MyAssetsItem extends StatelessWidget {
   Widget otherInfo() {
     Widget child = Row(
       children: [
-        Image.network(
-          "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/rmb-icon.png",
+        Image.asset(
+          Images.rmbIcon,
           width: 20.w,
           height: 20.h,
         ),

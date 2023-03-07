@@ -7,7 +7,7 @@ import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/event/load_assets.dart';
-import 'package:orginone/model/my_assets_list.dart';
+import 'package:orginone/model/assets_info.dart';
 import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/hive_utils.dart';
@@ -16,7 +16,7 @@ import 'package:orginone/util/toast_utils.dart';
 class HandOverNetWork{
   static createHandOver({
     required String billCode, XTarget? user,required String remark
-    ,required List<MyAssetsList> assets,bool isDraft = false,bool isEdit = false}) async{
+    ,required List<AssetsInfo> assets,bool isDraft = false,bool isEdit = false}) async{
 
 
     List<UpdateAssetsRequest> request = assets
@@ -24,7 +24,7 @@ class HandOverNetWork{
         UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
           "USER_NAME": user?.name??"",
           "USER":user?.id??"",
-          "KAPIANZT": "12",
+          "KAPIANZT": CardStatus.handOver.toStatusId,
         }))
         .toList();
 

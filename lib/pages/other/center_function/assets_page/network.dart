@@ -4,7 +4,7 @@
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/model/asset_use.dart';
-import 'package:orginone/model/my_assets_list.dart';
+import 'package:orginone/model/assets_info.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
 
@@ -30,8 +30,8 @@ class AssetNetWork{
     return use;
   }
 
-  static Future<MyAssetsList?> getQrScanData() async{
-    MyAssetsList? qrScanData;
+  static Future<AssetsInfo?> getQrScanData() async{
+    AssetsInfo? qrScanData;
 
    ResultType result = await KernelApi.getInstance().anystore.aggregate(
         "assets_data",
@@ -47,7 +47,7 @@ class AssetNetWork{
     );
    if(result.success){
       if(result.data.isNotEmpty){
-        var data = MyAssetsList.fromJson(result.data.first);
+        var data = AssetsInfo.fromJson(result.data.first);
         if(data.userName != HiveUtils.getUser()?.userName){
           ToastUtils.showMsg(msg: "这个二维码的使用人并非当前登录用户");
         }else{

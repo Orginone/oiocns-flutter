@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/model/my_assets_list.dart';
+import 'package:orginone/model/assets_info.dart';
 
 import '../../../dart/core/getx/base_get_state.dart';
 
@@ -13,9 +13,9 @@ class AddAssetState extends BaseGetState{
 
   var selectAll = false.obs;
 
-  var selectAssetList = <MyAssetsList>[].obs;
+  var selectAssetList = <AssetsInfo>[].obs;
 
-  var searchList = <MyAssetsList>[].obs;
+  var searchList = <AssetsInfo>[].obs;
 
   AddAssetState(){
 

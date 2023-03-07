@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/event/load_assets.dart';
-import 'package:orginone/model/my_assets_list.dart';
+import 'package:orginone/model/assets_info.dart';
 import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/hive_utils.dart';
@@ -16,7 +16,7 @@ class DisposeNetwork {
       required String keepOrgName,
       int? evaluated,
       required String billCode,
-      required List<MyAssetsList> assets,
+      required List<AssetsInfo> assets,
       bool isDraft = false,
       String remark = "",
       int? phoneNumber,
@@ -25,7 +25,7 @@ class DisposeNetwork {
     List<UpdateAssetsRequest> request = assets
         .map((element) =>
         UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
-          "KAPIANZT": "09",
+          "KAPIANZT": CardStatus.dispose.toStatusId,
         }))
         .toList();
 

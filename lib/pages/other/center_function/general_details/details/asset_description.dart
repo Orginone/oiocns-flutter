@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:orginone/images.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/center_function/general_details/state.dart';
 import 'package:orginone/widget/custom_paint.dart';
@@ -35,8 +36,8 @@ class AssetDescription{
                             border: Border.all(color: Colors.blue, width: 0.5),
                             shape: BoxShape.circle,
                             image: const DecorationImage(
-                              image: NetworkImage(
-                                "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/default-avatar1.png",
+                              image: AssetImage(
+                                Images.defaultAvatar,
                               ),
                             ),
                           ),
@@ -53,8 +54,8 @@ class AssetDescription{
                             border: Border.all(color: Colors.blue, width: 0.5),
                             shape: BoxShape.circle,
                             image: const DecorationImage(
-                              image: NetworkImage(
-                                "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/default-avatar1.png",
+                              image: AssetImage(
+                                Images.defaultAvatar,
                               ),
                             ),
                           ),
@@ -183,8 +184,8 @@ class AssetDescription{
                            border: Border.all(color: Colors.blue, width: 0.5),
                            shape: BoxShape.circle,
                            image: const DecorationImage(
-                             image: NetworkImage(
-                               "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/default-avatar1.png",
+                             image: AssetImage(
+                               Images.defaultAvatar,
                              ),
                            ),
                          ),
@@ -201,8 +202,8 @@ class AssetDescription{
                            border: Border.all(color: Colors.blue, width: 0.5),
                            shape: BoxShape.circle,
                            image: const DecorationImage(
-                             image: NetworkImage(
-                               "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/default-avatar1.png",
+                             image: AssetImage(
+                               Images.defaultAvatar,
                              ),
                            ),
                          ),

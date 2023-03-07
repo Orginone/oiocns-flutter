@@ -3,7 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/model/my_assets_list.dart';
+import 'package:orginone/images.dart';
+import 'package:orginone/model/assets_info.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/center_function/assets_check/check/state.dart';
 import 'package:orginone/pages/other/center_function/general_details/details/asset_description.dart';
@@ -67,8 +68,8 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
         case AssetsType.check:
           return Row(
             children: [
-              Image.network(
-                "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/rmb-icon.png",
+              Image.asset(
+                Images.rmbIcon,
                 width: 20.w,
                 height: 20.h,
               ),
@@ -182,8 +183,8 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.network(
-                          "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/default-avatar1.png",
+                        Image.asset(
+                          Images.defaultAvatar,
                           width: 32.w,
                           height: 32.h,
                         ),
@@ -273,7 +274,7 @@ class DetailsPage extends BaseGetPageView<DetailsController, DetailsState> {
     );
   }
 
-  List<Widget> items(int index,MyAssetsList assets) {
+  List<Widget> items(int index,AssetsInfo assets) {
     switch (assetsType) {
       case AssetsType.check:
         return [

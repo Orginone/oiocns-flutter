@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/images.dart';
 import 'package:orginone/widget/text_high_light.dart';
 
 class CommonWidget {
@@ -344,7 +345,7 @@ class CommonWidget {
                 ),
               ),
               SizedBox(width: 5.w,),
-              Image.asset("images/search.png",width: 28.w,height: 28.w,),
+              Image.asset(Images.searchIcon,width: 28.w,height: 28.w,),
             ],
           ),
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/images.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 
@@ -116,7 +117,7 @@ class AssetsCheckPage extends BaseGetView<AssetsCheckController,AssetsCheckState
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    "images/qr_scan_icon.png",
+                    Images.qrScanIcon,
                     color: Colors.white,
                     width: 24.w,
                     height: 24.w,

@@ -1,6 +1,6 @@
 import 'package:orginone/util/asset_management.dart';
 
-import 'my_assets_list.dart';
+import 'assets_info.dart';
 
 class AssetUse {
   String? billCode;
@@ -174,7 +174,7 @@ class ApprovalDocument {
   String? keepOrgId;
   String? oldOrgId;
   String? oldOrgName;
-  List<MyAssetsList>? detail;
+  List<AssetsInfo>? detail;
   String? createUser;
   String? submitUserName;
   dynamic status;
@@ -200,15 +200,15 @@ class ApprovalDocument {
     keepOrgId = json['KEEP_ORG_ID'];
     oldOrgId = json['OLD_ORG_ID'];
     oldOrgName = json['OLD_ORG_NAME'];
-    detail = <MyAssetsList>[];
+    detail = <AssetsInfo>[];
     if (json['detail'] != null) {
       json['detail'].forEach((v) {
-        detail!.add(new MyAssetsList.fromJson(v));
+        detail!.add(new AssetsInfo.fromJson(v));
       });
     }
     if (json['details'] != null) {
       json['details'].forEach((v) {
-        detail!.add(new MyAssetsList.fromJson(v));
+        detail!.add(new AssetsInfo.fromJson(v));
       });
     }
     createUser = json['CREATE_USER'];

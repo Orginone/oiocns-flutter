@@ -1,6 +1,6 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:orginone/model/my_assets_list.dart';
+import 'package:orginone/model/assets_info.dart';
 import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:worker_manager/worker_manager.dart';
@@ -31,7 +31,7 @@ class AddAssetController extends BaseController<AddAssetState> {
 
     var list  = AssetManagement().deepCopyAssets();
 
-    List<MyAssetsList> selected = Get.arguments?['selected'] ?? [];
+    List<AssetsInfo> selected = Get.arguments?['selected'] ?? [];
     if(selected.isNotEmpty){
       for (var element in selected) {
         list.where((element1) => element.assetCode == element1.assetCode).first.isSelected = true;
@@ -40,13 +40,13 @@ class AddAssetController extends BaseController<AddAssetState> {
     state.selectAssetList.addAll(list);
   }
 
-  void openItem(MyAssetsList item) {
+  void openItem(AssetsInfo item) {
     int index = state.selectAssetList.indexOf(item);
     state.selectAssetList[index].isOpen = !state.selectAssetList[index].isOpen;
     state.selectAssetList.refresh();
   }
 
-  void selectItem(MyAssetsList item) {
+  void selectItem(AssetsInfo item) {
     int index = state.selectAssetList.indexOf(item);
     if(!state.selectAssetList[index].notLockStatus){
       ToastUtils.showMsg(msg: "该资产已锁定");

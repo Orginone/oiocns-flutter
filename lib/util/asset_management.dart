@@ -1,6 +1,6 @@
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/model/my_assets_list.dart';
+import 'package:orginone/model/assets_info.dart';
 import 'package:orginone/util/hive_utils.dart';
 
 import 'toast_utils.dart';
@@ -12,9 +12,9 @@ class AssetManagement {
 
   AssetManagement._();
 
-  final List<MyAssetsList> _assets = [];
+  final List<AssetsInfo> _assets = [];
 
-  List<MyAssetsList> get assets => _assets;
+  List<AssetsInfo> get assets => _assets;
 
   Future<void> initAssets() async {
     ResultType result = await KernelApi.getInstance().anystore.aggregate(
@@ -31,14 +31,14 @@ class AssetManagement {
     _assets.clear();
     if (result.success) {
       for (var json in result.data) {
-        _assets.add(MyAssetsList.fromJson(json));
+        _assets.add(AssetsInfo.fromJson(json));
       }
     }else{
       ToastUtils.showMsg(msg: "获取资产数据失败");
     }
   }
 
-  MyAssetsList? findAsset(String code) {
+  AssetsInfo? findAsset(String code) {
     var list = _assets.where((element) => element.assetCode == code);
     if(list.isEmpty){
       return null;
@@ -46,9 +46,9 @@ class AssetManagement {
     return list.first;
   }
 
-  List<MyAssetsList> deepCopyAssets() {
+  List<AssetsInfo> deepCopyAssets() {
     var list = _assets.map((e) => e.toJson()).toList();
-    return list.map((e) => MyAssetsList.fromJson(e)).toList();
+    return list.map((e) => AssetsInfo.fromJson(e)).toList();
   }
 
   Future<void> updateAssets(UpdateAssetsRequest request) async {

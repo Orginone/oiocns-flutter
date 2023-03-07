@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
-import 'package:orginone/model/my_assets_list.dart';
+import 'package:orginone/images.dart';
+import 'package:orginone/model/assets_info.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/center_function/assets_check/check/state.dart';
 import 'package:orginone/routers.dart';
@@ -11,7 +12,7 @@ class Item extends StatelessWidget {
   final CheckType checkType;
   final VoidCallback? onRecheck;
   final ValueChanged<CheckType>? onInventory;
-  final MyAssetsList assets;
+  final AssetsInfo assets;
   const Item({Key? key, required this.checkType, this.onRecheck, this.onInventory, required this.assets}) : super(key: key);
 
   @override
@@ -153,8 +154,8 @@ class Item extends StatelessWidget {
   Widget otherInfo() {
     Widget child = Row(
       children: [
-        Image.network(
-          "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/rmb-icon.png",
+        Image.asset(
+          Images.rmbIcon,
           width: 20.w,
           height: 20.h,
         ),

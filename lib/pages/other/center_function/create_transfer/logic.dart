@@ -102,8 +102,8 @@ class CreateTransferController extends BaseController<CreateTransferState> {
   void create({bool isDraft = false}) async{
     await TransferNetWork.createTransfer(
         billCode: state.orderNum.value,
-        keeperId: state.selectedUser.value?.name??"",
-        keepOrgId: state.selectedDepartment.value?.name??"",
+        keeper: state.selectedUser.value,
+        keepOrg: state.selectedDepartment.value,
         remark: state.reasonController.text, assets: state.selectAssetList,isDraft: isDraft,isEdit: state.isEdit);
   }
 

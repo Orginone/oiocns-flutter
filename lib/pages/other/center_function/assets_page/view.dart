@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/colors/gf_color.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
+import 'package:orginone/images.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/widget/common_widget.dart';
 
@@ -122,8 +121,8 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
                   height: 75.w,
                   decoration: BoxDecoration(
                     image: const DecorationImage(
-                        image: NetworkImage(
-                            "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/totalValue-bg.png"),
+                        image: AssetImage(
+                            Images.totalValueBg),
                         fit: BoxFit.cover),
                     borderRadius: BorderRadius.circular(4.w),
                   ),
@@ -136,8 +135,8 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
                             margin: EdgeInsets.only(
                                 top: 5.h
                             ),
-                            child: Image.network(
-                              "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/totalValue-icon.png",
+                            child: Image.asset(
+                              Images.totalValueIcon,
                               width: 16.w,
                               height: 16.w,
                             )),
@@ -180,8 +179,8 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
                   height: 75.w,
                   decoration: BoxDecoration(
                     image: const DecorationImage(
-                        image: NetworkImage(
-                            "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/totalValue-bg.png"),
+                        image: AssetImage(
+                            Images.totalValueBg),
                         fit: BoxFit.cover),
                     borderRadius: BorderRadius.circular(4.w),
                   ),
@@ -194,8 +193,8 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
                           margin: EdgeInsets.only(
                               top: 5.h
                           ),
-                          child: Image.network(
-                            "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/totalNum-icon.png",
+                          child: Image.asset(
+                            Images.totalNumIcon,
                             width: 16.w,
                             height: 16.w,
                           ),
@@ -234,9 +233,15 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
               ),
             ],
           ),
-          CommonWidget.commonHeadInfoWidget("资产列表",action: CommonWidget.commonIconButtonWidget(iconPath: "images/batch_operation_icon.png",callback: (){
-            controller.jumpBatchAssets();
-          },color: XColors.themeColor,tips: "批量操作"),padding: EdgeInsets.symmetric(vertical: 10.h)),
+          CommonWidget.commonHeadInfoWidget("资产列表",
+              action: CommonWidget.commonIconButtonWidget(
+                  iconPath: Images.batchOperationIcon,
+                  callback: () {
+                    controller.jumpBatchAssets();
+                  },
+                  color: XColors.themeColor,
+                  tips: "批量操作"),
+              padding: EdgeInsets.symmetric(vertical: 10.h)),
         ],
       ),
     );

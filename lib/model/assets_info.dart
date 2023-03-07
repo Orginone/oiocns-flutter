@@ -1,6 +1,56 @@
 import 'package:orginone/model/file_data.dart';
 
-class MyAssetsList {
+enum CardStatus {
+  normal,
+  transfer,
+  handOver,
+  dispose,
+  change,
+  borrow,
+  returned,
+}
+
+extension ExCardStatus on CardStatus {
+  String get string {
+    switch (this) {
+      case CardStatus.normal:
+        return "正常";
+      case CardStatus.transfer:
+        return "资产移交中";
+      case CardStatus.handOver:
+        return "资产交回中";
+      case CardStatus.dispose:
+        return "资产处置中";
+      case CardStatus.change:
+        return "资产变动中";
+      case CardStatus.borrow:
+        return "资产借用中";
+      case CardStatus.returned:
+        return "已交回";
+    }
+  }
+
+  String get toStatusId {
+    switch (this) {
+      case CardStatus.normal:
+        return "00";
+      case CardStatus.transfer:
+        return "08";
+      case CardStatus.handOver:
+        return "12";
+      case CardStatus.dispose:
+        return "09";
+      case CardStatus.change:
+        return "07";
+      case CardStatus.borrow:
+        return "11";
+      case CardStatus.returned:
+        return "13";
+    }
+  }
+}
+
+class AssetsInfo {
   List<FileData>? fileList;
   dynamic assetType;
   String? assetName;
@@ -37,13 +87,13 @@ class MyAssetsList {
   String? fixedAssetStateCode;
   String? supplier;
   String? remark;
-  Map<String,dynamic>? theDepository;
+  Map<String, dynamic>? theDepository;
   String? gs1;
   String? minimumLimit;
 
   String? acquirementWay;
 
-  String? kapianzt;
+  CardStatus? kapianzt;
 
   int? status;
   String? stockTaskCode;
@@ -55,8 +105,7 @@ class MyAssetsList {
 
   bool isSelected = false;
 
-
-  MyAssetsList(
+  AssetsInfo(
       {this.fileList,
       this.assetType,
       this.assetName,
@@ -82,7 +131,7 @@ class MyAssetsList {
       this.gmtCreate,
       this.updateTime});
 
-  MyAssetsList.fromJson(Map<String, dynamic> json) {
+  AssetsInfo.fromJson(Map<String, dynamic> json) {
     if (json['fileList'] != null) {
       fileList = [];
       json[fileList]?.forEach((json) {
@@ -128,7 +177,7 @@ class MyAssetsList {
     gs1 = json['GS1'];
     minimumLimit = json['MINIMUM_LIMIT'];
     acquirementWay = json['ACQUIREMENT_WAY'];
-    kapianzt = json['KAPIANZT'];
+    kapianzt = toStatus(json['KAPIANZT']??"");
     status = json['status'];
     assetRemark = json['assetRemark'];
     stockTaskCode = json['stockTaskCode'];
@@ -179,16 +228,38 @@ class MyAssetsList {
     gs1 = json['GS1'] ?? gs1;
     minimumLimit = json['MINIMUM_LIMIT'] ?? minimumLimit;
     acquirementWay = json['ACQUIREMENT_WAY'] ?? acquirementWay;
-    kapianzt = json['KAPIANZT'] ?? kapianzt;
+    kapianzt = toStatus(json['KAPIANZT']??"") ?? kapianzt;
     isDistribution = json['isDistribution']??isDistribution;
   }
 
   bool get notLockStatus =>
-      kapianzt != '07' &&
-      kapianzt != '08' &&
-      kapianzt != '09' &&
-      kapianzt != '11' &&
-      kapianzt != '12';
+      kapianzt != CardStatus.change &&
+      kapianzt != CardStatus.transfer &&
+      kapianzt != CardStatus.dispose &&
+      kapianzt != CardStatus.borrow &&
+      kapianzt != CardStatus.handOver;
+
+
+  CardStatus? toStatus(String status) {
+    switch (status) {
+      case "11":
+        return CardStatus.borrow;
+      case "12":
+        return CardStatus.handOver;
+      case "13":
+        return CardStatus.returned;
+      case "00":
+        return CardStatus.normal;
+      case "07":
+        return CardStatus.change;
+      case "08":
+        return CardStatus.transfer;
+      case "09":
+        return CardStatus.dispose;
+      default:
+        return null;
+    }
+  }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -231,7 +302,7 @@ class MyAssetsList {
     data['GS1'] = gs1;
     data['MINIMUM_LIMIT'] = minimumLimit;
     data['ACQUIREMENT_WAY'] = acquirementWay;
-    data['KAPIANZT'] = this.kapianzt;
+    data['KAPIANZT'] = this.kapianzt?.toStatusId;
     data['status'] = this.status;
     data["stockTaskCode"] = this.stockTaskCode;
     data['assetRemark'] = this.assetRemark;

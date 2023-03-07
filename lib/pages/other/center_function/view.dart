@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/images.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 
@@ -18,7 +19,7 @@ class CenterFunctionPage
     List<Widget> actions = [];
     if (state.info.type == AssetsType.myAssets) {
       actions.add(CommonWidget.commonIconButtonWidget(
-          iconPath: 'images/qr_scan_icon.png',
+          iconPath: Images.qrScanIcon,
           callback: () {
             controller.qrScan();
           }));

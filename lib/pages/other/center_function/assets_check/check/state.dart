@@ -3,10 +3,9 @@
 
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_list_state.dart';
-import 'package:orginone/model/asset_use.dart';
-import 'package:orginone/model/my_assets_list.dart';
+import 'package:orginone/model/assets_info.dart';
 
-class CheckState extends BaseGetListState<MyAssetsList>{
+class CheckState extends BaseGetListState<AssetsInfo>{
 
 
 }
