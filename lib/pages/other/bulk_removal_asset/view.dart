@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 
 import '../add_asset/item.dart';
 import 'logic.dart';
@@ -13,27 +14,19 @@ class BulkRemovalAssetPage
     extends BaseGetView<BulkRemovalAssetController, BulkRemovalAssetState> {
   @override
   Widget buildView() {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("批量删除资产"),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: XColors.themeColor,
-      ),
-      backgroundColor: Colors.grey.shade200,
-      body: SafeArea(
-        child: Column(
-          children: [
-            CommonWidget.commonHeadInfoWidget(state.info),
-            allSelectButton(),
-            Expanded(
-              child: list(),
-            ),
-            CommonWidget.commonDeleteWidget(delete: (){
-              controller.delete();
-            })
-          ],
-        ),
+    return GyScaffold(
+      titleName: "批量删除资产",
+      body: Column(
+        children: [
+          CommonWidget.commonHeadInfoWidget(state.info),
+          allSelectButton(),
+          Expanded(
+            child: list(),
+          ),
+          CommonWidget.commonDeleteWidget(delete: (){
+            controller.delete();
+          })
+        ],
       ),
     );
   }

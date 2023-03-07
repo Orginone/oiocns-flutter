@@ -6,6 +6,7 @@ import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 
 import '../../add_asset/item.dart';
 import 'logic.dart';
@@ -16,39 +17,31 @@ class CreateHandOverPage
     extends BaseGetView<CreateHandOverController, CreateHandOverState> {
   @override
   Widget buildView() {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("${state.isEdit ? "提交" : "创建"}交回"),
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: XColors.themeColor,
-      ),
-      backgroundColor: Colors.grey.shade200,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    basicInfo(),
-                    transferInfo(),
-                    CommonWidget.commonAddDetailedWidget(
-                        text: "选择资产",
-                        onTap: () {
-                          controller.jumpAddAsset();
-                        })
-                  ],
-                ),
+    return GyScaffold(
+      titleName: "${state.isEdit ? "提交" : "创建"}交回",
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  basicInfo(),
+                  transferInfo(),
+                  CommonWidget.commonAddDetailedWidget(
+                      text: "选择资产",
+                      onTap: () {
+                        controller.jumpAddAsset();
+                      })
+                ],
               ),
             ),
-            CommonWidget.commonCreateSubmitWidget(submit: (){
-              controller.submit();
-            },draft: (){
-              controller.draft();
-            }),
-          ],
-        ),
+          ),
+          CommonWidget.commonCreateSubmitWidget(submit: (){
+            controller.submit();
+          },draft: (){
+            controller.draft();
+          }),
+        ],
       ),
     );
   }

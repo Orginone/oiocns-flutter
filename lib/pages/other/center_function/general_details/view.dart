@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/other/assets_config.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 
 import 'approval_process/view.dart';
@@ -14,27 +15,19 @@ class GeneralDetailsPage
     extends BaseGetView<GeneralDetailsController, GeneralDetailsState> {
   @override
   Widget buildView() {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade200,
-      appBar: AppBar(
-        title: Text("${state.assetsType.name}详情"),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: XColors.themeColor,
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              color: XColors.themeColor,
-              child: tabBar(),
-            ),
-            Expanded(
-              child: body(),
-            )
-          ],
-        ),
+    return GyScaffold(
+      titleName: "${state.assetsType.name}详情",
+      body: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            color: XColors.themeColor,
+            child: tabBar(),
+          ),
+          Expanded(
+            child: body(),
+          )
+        ],
       ),
     );
   }

@@ -8,6 +8,7 @@ import 'package:orginone/pages/other/center_function/create_transfer/state.dart'
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 
 import '../../add_asset/item.dart';
 import 'logic.dart';
@@ -18,40 +19,31 @@ class CreateTransferPage
 
   @override
   Widget buildView() {
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("${state.isEdit ? "提交" : "创建"}移交"),
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: XColors.themeColor,
-      ),
-      backgroundColor: Colors.grey.shade200,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    basicInfo(),
-                    transferInfo(),
-                    CommonWidget.commonAddDetailedWidget(
-                        text: "选择资产",
-                        onTap: () {
-                          controller.jumpAddAsset();
-                        })
-                  ],
-                ),
+    return GyScaffold(
+      titleName: "${state.isEdit ? "提交" : "创建"}移交",
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  basicInfo(),
+                  transferInfo(),
+                  CommonWidget.commonAddDetailedWidget(
+                      text: "选择资产",
+                      onTap: () {
+                        controller.jumpAddAsset();
+                      })
+                ],
               ),
             ),
-            CommonWidget.commonCreateSubmitWidget(draft: (){
-              controller.draft();
-            },submit: (){
-              controller.submit();
-            }),
-          ],
-        ),
+          ),
+          CommonWidget.commonCreateSubmitWidget(draft: (){
+            controller.draft();
+          },submit: (){
+            controller.submit();
+          }),
+        ],
       ),
     );
   }

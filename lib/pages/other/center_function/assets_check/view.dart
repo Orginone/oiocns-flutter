@@ -4,6 +4,7 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/pages/other/assets_config.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 
 import 'check/state.dart';
@@ -16,35 +17,27 @@ import 'state.dart';
 class AssetsCheckPage extends BaseGetView<AssetsCheckController,AssetsCheckState>{
   @override
   Widget buildView() {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade200,
-      appBar: AppBar(
-        title: const Text("资产盘点"),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: XColors.themeColor,
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              color: XColors.themeColor,
-              child: tabBar(),
+    return GyScaffold(
+      titleName: "资产盘点",
+      body: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            color: XColors.themeColor,
+            child: tabBar(),
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: state.tabController,
+              children: [
+                KeepAliveWidget(child: CheckPage(CheckType.notStarted)),
+                KeepAliveWidget(child: CheckPage(CheckType.saved)),
+                KeepAliveWidget(child: CheckPage(CheckType.loss)),
+              ],
             ),
-            Expanded(
-              child: TabBarView(
-                controller: state.tabController,
-                children: [
-                  KeepAliveWidget(child: CheckPage(CheckType.notStarted)),
-                  KeepAliveWidget(child: CheckPage(CheckType.saved)),
-                  KeepAliveWidget(child: CheckPage(CheckType.loss)),
-                ],
-              ),
-            ),
-            bottomButton(),
-          ],
-        ),
+          ),
+          bottomButton(),
+        ],
       ),
     );
   }

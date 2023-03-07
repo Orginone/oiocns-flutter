@@ -137,7 +137,7 @@ class _LoadStateWidgetState extends State<LoadStateWidget> {
     if (showRetryButton) {
       children.add(TextWidget(
         text: buttonText,
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: 30,
           vertical: 5,
         ),
@@ -147,10 +147,10 @@ class _LoadStateWidgetState extends State<LoadStateWidget> {
           color: widget.antiColor ? Theme.of(context).accentColor: Color(0xFFFFFFFF),
           fontSize: 16,
         ),
-        borderRadius: BorderRadius.all(
+        borderRadius: const BorderRadius.all(
           Radius.circular(50),
         ),
-        margin: EdgeInsets.only(top: 30),
+        margin: const EdgeInsets.only(top: 30),
       ));
     }
     var column = Column(

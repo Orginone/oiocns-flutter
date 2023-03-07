@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/other/assets_config.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 
 import 'logic.dart';
 import 'state.dart';
@@ -12,35 +13,29 @@ class ApproveDocumentsPage
     extends BaseGetView<ApproveDocumentsController, ApproveDocumentsState> {
   @override
   Widget buildView() {
-    return Scaffold(
+    return GyScaffold(
       backgroundColor: Colors.grey.shade300,
-      appBar: AppBar(
-        title: const Text("审批单据"),
-        backgroundColor: XColors.themeColor,
-        elevation: 0,
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 8.w, vertical: 16.h),
-                  child: Column(
-                    children: [
-                      DocumentsInfo(),
-                      detailed(),
-                      stepper(),
-                      opinion(),
-                    ],
-                  ),
+      titleName: "审批单据",
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding:
+                    EdgeInsets.symmetric(horizontal: 8.w, vertical: 16.h),
+                child: Column(
+                  children: [
+                    DocumentsInfo(),
+                    detailed(),
+                    stepper(),
+                    opinion(),
+                  ],
                 ),
               ),
             ),
-            bottomButton(),
-          ],
-        ),
+          ),
+          bottomButton(),
+        ],
       ),
     );
   }

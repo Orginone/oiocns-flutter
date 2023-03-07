@@ -4,6 +4,7 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 
 import '../assets_config.dart';
@@ -24,15 +25,9 @@ class CenterFunctionPage
             controller.qrScan();
           }));
     }
-    return Scaffold(
-      backgroundColor: Colors.grey.shade200,
-      appBar: AppBar(
-        title: Text(state.info.name),
-        backgroundColor: XColors.themeColor,
-        centerTitle: true,
-        elevation: 0,
-        actions: actions,
-      ),
+    return GyScaffold(
+      titleName: state.info.name,
+      actions: actions,
       body: Column(
         children: [
           tabBar(),

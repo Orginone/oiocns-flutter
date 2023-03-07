@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 
 import '../../../components/unified.dart';
 import '../../../dart/core/getx/base_get_view.dart';
@@ -12,27 +13,19 @@ import 'state.dart';
 class AddAssetPage extends BaseGetView<AddAssetController, AddAssetState> {
   @override
   Widget buildView() {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("添加资产"),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: XColors.themeColor,
-      ),
-      backgroundColor: Colors.grey.shade200,
-      body: SafeArea(
-        child: Column(
-          children: [
-            searchBar(),
-            allSelectButton(),
-            Expanded(
-              child: list(),
-            ),
-            CommonWidget.commonSubmitWidget(submit: () {
-              controller.submit();
-            })
-          ],
-        ),
+    return GyScaffold(
+      titleName: "添加资产",
+      body: Column(
+        children: [
+          searchBar(),
+          allSelectButton(),
+          Expanded(
+            child: list(),
+          ),
+          CommonWidget.commonSubmitWidget(submit: () {
+            controller.submit();
+          })
+        ],
       ),
     );
   }

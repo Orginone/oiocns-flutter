@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 
 import '../../add_asset/item.dart';
 import 'logic.dart';
@@ -14,38 +14,30 @@ class CreateDisposePage
     extends BaseGetView<CreateDisposeController, CreateDisposeState> {
   @override
   Widget buildView() {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("${state.isEdit ? "提交" : "创建"}处置"),
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: XColors.themeColor,
-      ),
-      backgroundColor: Colors.grey.shade200,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      basicInfo(),
-                      disposeInfo(),
-                      CommonWidget.commonAddDetailedWidget(
-                          text: "选择资产",
-                          onTap: () {
-                            controller.jumpAddAsset();
-                          })
-                    ],
-                  ),
-                )),
-            CommonWidget.commonCreateSubmitWidget(draft: (){
-              controller.draft();
-            },submit: (){
-              controller.submit();
-            }),
-          ],
-        ),
+    return GyScaffold(
+      titleName: "${state.isEdit ? "提交" : "创建"}处置",
+      body: Column(
+        children: [
+          Expanded(
+              child: SingleChildScrollView(
+            child: Column(
+              children: [
+                basicInfo(),
+                disposeInfo(),
+                CommonWidget.commonAddDetailedWidget(
+                    text: "选择资产",
+                    onTap: () {
+                      controller.jumpAddAsset();
+                    })
+              ],
+            ),
+          )),
+          CommonWidget.commonCreateSubmitWidget(draft: () {
+            controller.draft();
+          }, submit: () {
+            controller.submit();
+          }),
+        ],
       ),
     );
   }

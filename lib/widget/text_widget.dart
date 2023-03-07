@@ -18,7 +18,7 @@ class TextWidget extends BaseCommonWidget {
   final List<InlineSpan>? spanList;
   final double? textScaleFactor;
 
-  TextWidget({
+  const TextWidget({
     Key? key,
     this.text,
     this.formatParams,

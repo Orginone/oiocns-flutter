@@ -7,6 +7,7 @@ import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 
 import 'logic.dart';
 import 'state.dart';
@@ -15,36 +16,29 @@ class CreateClaimPage
     extends BaseGetView<CreateClaimController, CreateClaimState> {
   @override
   Widget buildView() {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("${state.isEdit ? "提交" : "创建"}申领"),
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: XColors.themeColor,
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    basicInfo(),
-                    detailedList(),
-                    CommonWidget.commonAddDetailedWidget(onTap: () {
-                      controller.addDetailed();
-                    }, text: '添加明细'),
-                  ],
-                ),
+    return GyScaffold(
+      titleName: "${state.isEdit ? "提交" : "创建"}申领",
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  basicInfo(),
+                  detailedList(),
+                  CommonWidget.commonAddDetailedWidget(onTap: () {
+                    controller.addDetailed();
+                  }, text: '添加明细'),
+                ],
               ),
             ),
-            CommonWidget.commonCreateSubmitWidget(submit: (){
-              controller.submit();
-            },draft: (){
-              controller.draft();
-            }),
-          ],
-        ),
+          ),
+          CommonWidget.commonCreateSubmitWidget(submit: (){
+            controller.submit();
+          },draft: (){
+            controller.draft();
+          }),
+        ],
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 
 import '../add_asset/item.dart';
 import 'logic.dart';
@@ -14,34 +15,26 @@ class BatchOperationAssetPage extends BaseGetView<BatchOperationAssetController,
     BatchOperationAssetState> {
   @override
   Widget buildView() {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("数字云资产"),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: XColors.themeColor,
-      ),
-      backgroundColor: Colors.grey.shade200,
-      body: SafeArea(
-        child: Column(
-          children: [
-            CommonWidget.commonHeadInfoWidget("我的资产"),
-            allSelectButton(),
-            Expanded(
-              child: list(),
-            ),
-            CommonWidget.commonMultipleSubmitWidget(
-              str1: "处置",
-              str2: "移交",
-              onTap1: () {
-                controller.jump(AssetsType.dispose);
-              },
-              onTap2: () {
-                controller.jump(AssetsType.transfer);
-              },
-            )
-          ],
-        ),
+    return GyScaffold(
+      titleName: "数字云资产",
+      body: Column(
+        children: [
+          CommonWidget.commonHeadInfoWidget("我的资产"),
+          allSelectButton(),
+          Expanded(
+            child: list(),
+          ),
+          CommonWidget.commonMultipleSubmitWidget(
+            str1: "处置",
+            str2: "移交",
+            onTap1: () {
+              controller.jump(AssetsType.dispose);
+            },
+            onTap2: () {
+              controller.jump(AssetsType.transfer);
+            },
+          )
+        ],
       ),
     );
   }
