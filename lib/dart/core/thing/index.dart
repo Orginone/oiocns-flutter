@@ -9,7 +9,7 @@ import '../../base/schema.dart';
 KernelApi kernel = KernelApi.getInstance();
 Future<ISpeciesItem?> loadSpeciesTree(String id) async {
   ISpeciesItem? item;
-  final res = await kernel.querySpeciesTree(IDBelongReq(id: id));
+  final res = await kernel.querySpeciesTree(id);
   if (res.success) {
     item = SpeciesItem(res.data as XSpecies, null);
   }

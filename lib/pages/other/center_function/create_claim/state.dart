@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
+import 'package:orginone/dart/core/target/species/ispecies.dart';
 import 'package:orginone/model/asset_use.dart';
 import 'package:orginone/util/common_tree_management.dart';
 
@@ -31,7 +32,7 @@ class CreateClaimState extends BaseGetState {
               quantity:"${value.numOrArea??0}",
               assetName:value.assetName??"",
               isDistribution: value.isDistribution??false,
-              assetType: CommonTreeManagement().findTree(value.assetType??""),
+              assetType: CommonTreeManagement().findSpeciesTree(value.assetType??""),
           ));
         }
       }
@@ -52,7 +53,7 @@ class ClaimDetailed {
 
   TextEditingController brandController = TextEditingController();
 
-  XDictItem? assetType;
+  ISpeciesItem? assetType;
 
   bool? isDistribution;
 

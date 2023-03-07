@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
+import 'package:orginone/dart/core/target/species/ispecies.dart';
 import 'package:orginone/event/choice_assets.dart';
-import 'package:orginone/pages/other/choice_assets/state.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 
@@ -25,13 +25,13 @@ class ChoiceSpecificAssetsController
     }
   }
 
-  void selectLevelItem(ChildList item,int index) {
+  void selectLevelItem(ISpeciesItem item,int index) {
     state.selectedSecondLevelAsset.value = item;
     changeSecondLevelChildIndex(index);
   }
 
-  void selectItem(ChildList item) {
-   // choiceAssetController.selectItem(item);
+  void selectItem(ISpeciesItem item) {
+   choiceAssetController.selectItem(item);
   }
 
   void back() {

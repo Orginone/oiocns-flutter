@@ -473,12 +473,17 @@ class KernelApi {
   /// 查询分类树
   /// @param {IDBelongReq} params 请求参数
   /// @returns {ResultType<XSpecies>} 请求结果
-  Future<ResultType<XSpecies>> querySpeciesTree(IDBelongReq params) async {
+  Future<ResultType<XSpecies>> querySpeciesTree(String id) async {
     return await request(
       ReqestType(
         module: 'thing',
         action: 'QuerySpeciesTree',
-        params: params,
+        params: {
+          "id":id,
+          "page": {
+            "filter": "",
+          },
+        },
       ),
       XSpecies.fromJson,
     );

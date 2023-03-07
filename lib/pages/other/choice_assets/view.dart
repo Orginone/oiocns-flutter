@@ -39,18 +39,9 @@ class ChoiceAssetsPage
                   Expanded(
                     child: ListView.builder(
                       itemBuilder: (context, index) {
-                        return Obx(() {
-                          var item = state.assetsCategory[index];
-                          return CommonWidget.commonRadioTextWidget(
-                              item.name ?? "", item,
-                              groupValue: state.selectedAsset.value,
-                              onChanged: (v) {
-                                controller.selectItem(item);
-                              },
-                              keyWord: state.searchController.text);
-                        });
+                        return Item(speciesItem: state.items[index]);
                       },
-                      itemCount: state.assetsCategory.length,
+                      itemCount: state.items.length,
                     ),
                   ),
                   selectedItem(),

@@ -5203,39 +5203,43 @@ class XSpecies {
 
   //通过JSON构造
   XSpecies.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        name = json["name"],
-        code = json["code"],
-        remark = json["remark"],
-        public = json["public"],
-        parentId = json["parentId"],
-        belongId = json["belongId"],
-        authId = json["authId"],
-        status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"],
+      : id = json["id"]??"",
+        name = json["name"]??"",
+        code = json["code"]??"",
+        remark = json["remark"]??"",
+        public = json["public"]??false,
+        parentId  = json["parentId"]??"",
+        belongId = json["belongId"]??"",
+        authId = json["authId"]??"",
+        status = json["status"]??0,
+        createUser = json["createUser"]??"",
+        updateUser = json["updateUser"]??"",
+        version = json["version"]??"",
+        createTime = json["createTime"]??"",
+        updateTime = json["updateTime"]??"",
         specThings = XThingSpec.fromList(json["specThings"]),
         things = XThing.fromList(json["things"]),
         dicts = XDict.fromList(json["dicts"]),
         attributes = XAttribute.fromList(json["attributes"]),
         operations = XOperation.fromList(json["operations"]),
-        parent = XSpecies.fromJson(json["parent"]),
+        parent = json["parent"]!=null?XSpecies.fromJson(json["parent"]):null,
         nodes = XSpecies.fromList(json["nodes"]),
-        authority = XAuthority.fromJson(json["authority"]),
-        belong = XTarget.fromJson(json["belong"]);
+        authority = json["authority"]!=null?XAuthority.fromJson(json["authority"]):null,
+        belong = json["belong"]!=null?XTarget.fromJson(json["belong"]):null;
 
   //通过动态数组解析成List
-  static List<XSpecies> fromList(List<Map<String, dynamic>>? list) {
+  static List<XSpecies> fromList(List? list) {
     if (list == null) {
       return [];
     }
     List<XSpecies> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
-        retList.add(XSpecies.fromJson(item));
+        if(item is Map<String,dynamic>){
+          retList.add(XSpecies.fromJson(item));
+        }else{
+          item;
+        }
       }
     }
     return retList;
@@ -5690,7 +5694,7 @@ class XTarget {
         samrMarkets = XMarket.fromList(json["samrMarkets"]),
         things = XThing.fromList(json["things"]),
         relations = XRelation.fromList(json["relations"]),
-        team = XTeam.fromJson(json["team"]),
+        team = json["team"]!=null?XTeam.fromJson(json["team"]):null,
         dicts = XDict.fromList(json["dicts"]),
         sellOrder = XOrderDetail.fromList(json["sellOrder"]),
         dictItems = XDictItem.fromList(json["dictItems"]),

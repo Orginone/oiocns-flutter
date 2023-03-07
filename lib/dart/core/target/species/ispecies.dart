@@ -11,7 +11,7 @@ abstract class ISpeciesItem {
   // 标准分类项对应的目标
   late XSpecies target;
   // 上级标准分类项
-  late ISpeciesItem? parent;
+  ISpeciesItem? parent;
   // 下级标准分类项数组
   late List<ISpeciesItem> children;
   // 归属信息
@@ -96,4 +96,26 @@ abstract class ISpeciesItem {
   /// 删除标准分类项
 
   Future<bool> delete();
+
+  bool isAllLast(){
+    if(children.isEmpty){
+      return true;
+    }
+    return children.where((element) => element.children.isNotEmpty).isEmpty;
+  }
+
+
+  List<ISpeciesItem> getAllLastList(){
+    List<ISpeciesItem> list = [];
+
+    for (var element in children) {
+      if(element.children.isEmpty){
+        list.add(element);
+      }else{
+        list.addAll(element.getAllLastList());
+      }
+    }
+
+    return list;
+  }
 }

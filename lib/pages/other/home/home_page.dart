@@ -7,6 +7,8 @@ import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/template/tabs.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/thing/index.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/pages/chat/message_page.dart';

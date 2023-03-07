@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/dart/core/target/species/ispecies.dart';
 import 'package:orginone/pages/other/choice_assets/logic.dart';
 import 'package:orginone/widget/common_widget.dart';
 
@@ -14,13 +15,14 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
     ChoiceSpecificAssetsController,
     ChoiceSpecificAssetsState> {
 
-  ChoiceAssetsController get choiceAssetController => Get.find<ChoiceAssetsController>();
+  ChoiceAssetsController get choiceAssetController =>
+      Get.find<ChoiceAssetsController>();
 
   @override
   Widget buildView() {
     return Scaffold(
       appBar: AppBar(
-        title: Text("${state.selectedMock.categoryName}"),
+        title: Text(state.selectedSpecies.name),
         centerTitle: true,
         backgroundColor: XColors.themeColor,
         elevation: 0,
@@ -66,8 +68,7 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
       child: Obx(() {
         Widget nextStep = Container();
         bool verification = state.selectedSecondLevelAsset.value != null &&
-            (state.selectedSecondLevelAsset.value!.childList?.isNotEmpty ??
-                false);
+            (state.selectedSecondLevelAsset.value!.children.isNotEmpty);
 
         TextStyle selectedTextStyle =
         TextStyle(fontSize: 20.sp, color: Colors.black);
@@ -86,7 +87,7 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
                     alignment: PlaceholderAlignment.middle),
                 TextSpan(
                     text:
-                    "${state.selectedSecondLevelAsset.value!.categoryName}",
+                    state.selectedSecondLevelAsset.value!.name,
                     style: selectedTextStyle),
               ],
             ),
@@ -110,7 +111,7 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
                         ),
                         alignment: PlaceholderAlignment.middle),
                     TextSpan(
-                        text: "${state.selectedMock.categoryName}",
+                        text: state.selectedSpecies.name,
                         style: verification
                             ? unSelectedTextStyle
                             : selectedTextStyle)
@@ -126,19 +127,20 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
   }
 
   Widget listView() {
-    if (state.selectedMock.isAllLast()) {
+    if (state.selectedSpecies.isAllLast()) {
       return ListView.builder(
         itemBuilder: (context, index) {
-          var item = state.selectedMock.childList![index];
+          var item = state.selectedSpecies.children[index];
           return Obx(() {
             return CommonWidget.commonRadioTextWidget(
-                item.categoryName ?? "", item,
-                groupValue: choiceAssetController.state.selectedAsset.value, onChanged: (i) {
-              controller.selectItem(item);
-            });
+                item.name ?? "", item,
+                groupValue: choiceAssetController.state.selectedAsset.value,
+                onChanged: (i) {
+                  controller.selectItem(item);
+                });
           });
         },
-        itemCount: state.selectedMock.childList!.length,
+        itemCount: state.selectedSpecies.children.length,
       );
     }
     return Row(
@@ -149,7 +151,7 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
             color: Colors.blue.shade50,
             child: ListView.builder(
               itemBuilder: (context, index) {
-                var item = state.selectedMock.childList![index];
+                var item = state.selectedSpecies.children[index];
                 return Obx(() {
                   return GestureDetector(
                     onTap: () {
@@ -165,7 +167,7 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
                             : Colors.transparent,
                       ),
                       child: Text(
-                        item.categoryName ?? '',
+                        item.name ?? '',
                         style: TextStyle(
                             color: state.selectedChildIndex.value == index
                                 ? XColors.themeColor
@@ -175,7 +177,8 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
                   );
                 });
               },
-              itemCount: state.selectedMock.childList!.length,
+              itemCount: state.selectedSpecies.children
+                  .length,
             ),
           ),
         ),
@@ -187,38 +190,41 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
               return ListView.builder(
                 itemBuilder: (context, index) {
                   var item = state
-                      .selectedMock
-                      .childList![state.selectedChildIndex.value]
-                      .childList![index];
+                      .selectedSpecies
+                      .children[state.selectedChildIndex.value]
+                      .children[index];
                   if (state
-                      .selectedMock.childList![state.selectedChildIndex.value]
+                      .selectedSpecies.children[state.selectedChildIndex.value]
                       .isAllLast()) {
-                    return CommonWidget.commonRadioTextWidget(
-                        item.categoryName ?? "", item,
-                        groupValue: choiceAssetController.state.selectedAsset.value, onChanged: (i) {
-                      controller.selectItem(item);
+                    return Obx(() {
+                      return CommonWidget.commonRadioTextWidget(
+                          item.name, item,
+                          groupValue: choiceAssetController.state.selectedAsset
+                              .value, onChanged: (i) {
+                        controller.selectItem(item);
+                      });
                     });
                   }
                   return GestureDetector(
                     onTap: () {
-                      controller.selectLevelItem(state.selectedMock
-                          .childList![state.selectedChildIndex.value],index);
+                      controller.selectLevelItem(state.selectedSpecies
+                          .children[state.selectedChildIndex.value], index);
                     },
                     child: Container(
                       width: double.infinity,
                       height: 70.h,
                       alignment: Alignment.center,
                       child: Text(
-                        item.categoryName ?? "",
+                        item.name ?? "",
                         style: TextStyle(fontSize: 20.sp),
                       ),
                     ),
                   );
                 },
                 itemCount: state
-                    .selectedMock
-                    .childList![state.selectedChildIndex.value]
-                    .childList!
+                    .selectedSpecies
+                    .children[state.selectedChildIndex.value]
+                    .children
                     .length,
               );
             }),
@@ -232,8 +238,8 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
     int assetLength = state
         .selectedSecondLevelAsset
         .value!
-        .childList![state.selectedSecondLevelChildIndex.value]
-        .childList!
+        .children[state.selectedSecondLevelChildIndex.value]
+        .children
         .length;
 
     return Row(
@@ -245,9 +251,9 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
             child: ListView.builder(
               itemBuilder: (context, index) {
                 var item = state
-                    .selectedMock
-                    .childList![state.selectedChildIndex.value]
-                    .childList![index];
+                    .selectedSpecies
+                    .children[state.selectedChildIndex.value]
+                    .children[index];
                 return Obx(() {
                   return GestureDetector(
                     onTap: () {
@@ -264,7 +270,7 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
                             : Colors.transparent,
                       ),
                       child: Text(
-                        item.categoryName ?? '',
+                        item.name ?? '',
                         style: TextStyle(
                             color: state.selectedSecondLevelChildIndex.value ==
                                 index
@@ -276,8 +282,8 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
                   );
                 });
               },
-              itemCount: state.selectedMock
-                  .childList![state.selectedChildIndex.value].childList!.length,
+              itemCount: state.selectedSpecies
+                  .children[state.selectedChildIndex.value].children.length,
             ),
           ),
         ),
@@ -288,23 +294,24 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
             child: Obx(() {
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  ChildList item;
+                  ISpeciesItem item;
 
                   if (assetLength == 0) {
                     item = state.selectedSecondLevelAsset.value!
-                        .childList![state.selectedSecondLevelChildIndex.value];
+                        .children[state.selectedSecondLevelChildIndex.value];
                   } else {
                     item = state
                         .selectedSecondLevelAsset
                         .value!
-                        .childList![state.selectedSecondLevelChildIndex.value]
-                        .childList![index];
+                        .children[state.selectedSecondLevelChildIndex.value]
+                        .children[index];
                   }
 
                   return Obx(() {
                     return CommonWidget.commonRadioTextWidget(
-                        item.categoryName ?? "", item,
-                        groupValue: choiceAssetController.state.selectedAsset.value, onChanged: (i) {
+                        item.name, item,
+                        groupValue: choiceAssetController.state.selectedAsset
+                            .value, onChanged: (i) {
                       controller.selectItem(item);
                     });
                   });

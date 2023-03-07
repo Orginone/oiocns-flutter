@@ -1,12 +1,11 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/target/species/ispecies.dart';
 import 'package:orginone/event/choice_assets.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
-import 'package:worker_manager/worker_manager.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
-import 'mock.dart';
 import 'state.dart';
 
 class ChoiceAssetsController extends BaseController<ChoiceAssetsState> {
@@ -32,19 +31,25 @@ class ChoiceAssetsController extends BaseController<ChoiceAssetsState> {
     super.onReady();
 
     state.assetsCategory.addAll(CommonTreeManagement().assetsCategory);
+    state.items.addAll(CommonTreeManagement().species);
   }
 
   void search(String str) {
     state.searchList.clear();
 
-    var filter = state.assetsCategory
+    List<ISpeciesItem> list = [];
+   for (var value in  state.items) {
+     var items = value.getAllLastList();
+     list.addAll(items);
+   }
+    var filter = list
         .where((element) => (element.name.contains(str)));
     if (filter.isNotEmpty) {
       state.searchList.addAll(filter);
     }
   }
 
-  void selectItem(XDictItem item) {
+  void selectItem(ISpeciesItem item) {
     state.selectedAsset.value = item;
   }
 

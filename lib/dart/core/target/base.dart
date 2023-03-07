@@ -388,8 +388,8 @@ class BaseTarget extends ITarget {
 
   @override
   Future<ISpeciesItem?> loadSpeciesTree({bool reload = false}) async {
-    if (reload || speciesTree != null) {
-      final res = await kernel.querySpeciesTree(IDBelongReq(id: id));
+    if (reload) {
+      final res = await kernel.querySpeciesTree(id);
       if (res.success) {
         speciesTree = SpeciesItem(res.data!, null);
       }

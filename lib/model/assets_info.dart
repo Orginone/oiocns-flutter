@@ -53,6 +53,15 @@ extension ExCardStatus on CardStatus {
 class AssetsInfo {
   List<FileData>? fileList;
   dynamic assetType;
+  String? assetTypeCodeAssetTypeCode;
+  String? assetsEnglishName;
+  String? geographicInformation;
+  String? ownershipFormCode;
+  String? ownershipCert;
+  String? certifiDate;
+  String? ownershipNo;
+  double? ownershipArea;
+  String? owner;
   String? assetName;
   String? assetCode;
   String? startDate;
@@ -105,6 +114,7 @@ class AssetsInfo {
 
   bool isSelected = false;
 
+  Map<String, dynamic>? allJson;
   AssetsInfo(
       {this.fileList,
       this.assetType,
@@ -132,6 +142,7 @@ class AssetsInfo {
       this.updateTime});
 
   AssetsInfo.fromJson(Map<String, dynamic> json) {
+    allJson = json;
     if (json['fileList'] != null) {
       fileList = [];
       json[fileList]?.forEach((json) {
@@ -139,6 +150,15 @@ class AssetsInfo {
       });
     }
     assetType = json['ASSET_TYPE']??json['category'];
+    assetTypeCodeAssetTypeCode = json['ASSET_TYPE_CODE_ASSET_TYPE_CODE'];
+    assetsEnglishName = json['ASSETS_ENGLISH_NAME'];
+    geographicInformation = json['GEOGRAPHIC_INFORMATION'];
+    ownershipFormCode = json['OWNERSHIP_FORM_CODE'];
+    ownershipCert = json['OWNERSHIP_CERT'];
+    certifiDate = json['CERTIFI_DATE'];
+    ownershipNo = json['OWNERSHIP_NO'];
+    ownershipArea = json['OWNERSHIP_AREA'];
+    owner = json['OWNER'];
     assetName = json['ASSET_NAME'];
     assetCode = json['ASSET_CODE'];
     startDate = json['START_DATE'];
@@ -193,6 +213,15 @@ class AssetsInfo {
     }
     assetType = json['ASSET_TYPE'] ?? assetType;
     assetName = json['ASSET_NAME'] ?? assetName;
+    assetTypeCodeAssetTypeCode = json['ASSET_TYPE_CODE_ASSET_TYPE_CODE']??assetName;
+    assetsEnglishName = json['ASSETS_ENGLISH_NAME']??assetsEnglishName;
+    geographicInformation = json['GEOGRAPHIC_INFORMATION']??geographicInformation;
+    ownershipFormCode = json['OWNERSHIP_FORM_CODE']??ownershipFormCode;
+    ownershipCert = json['OWNERSHIP_CERT']??ownershipCert;
+    certifiDate = json['CERTIFI_DATE']??certifiDate;
+    ownershipNo = json['OWNERSHIP_NO']??ownershipNo;
+    ownershipArea = json['OWNERSHIP_AREA']??ownershipArea;
+    owner = json['OWNER']??owner;
     assetCode = json['ASSET_CODE'] ?? assetCode;
     startDate = json['START_DATE'] ?? startDate;
     useDept = json['USE_DEPT'] ?? useDept;
@@ -267,6 +296,15 @@ class AssetsInfo {
       data['ASSET_TYPE'] = this.assetType;
     }
     data['ASSET_NAME'] = this.assetName;
+    data['ASSET_TYPE_CODE_ASSET_TYPE_CODE'] = this.assetTypeCodeAssetTypeCode;
+    data['ASSETS_ENGLISH_NAME'] = this.assetsEnglishName;
+    data['GEOGRAPHIC_INFORMATION'] = this.geographicInformation;
+    data['OWNERSHIP_FORM_CODE'] = this.ownershipFormCode;
+    data['OWNERSHIP_CERT'] = this.ownershipCert;
+    data['CERTIFI_DATE'] = this.certifiDate;
+    data['OWNERSHIP_NO'] = this.ownershipNo;
+    data['OWNERSHIP_AREA'] = this.ownershipArea;
+    data['OWNER'] = this.owner;
     data['ASSET_CODE'] = this.assetCode;
     data['START_DATE'] = this.startDate;
     data['USE_DEPT'] = this.useDept;
