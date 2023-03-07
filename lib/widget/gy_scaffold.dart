@@ -81,6 +81,45 @@ class _GyScaffoldState extends State<GyScaffold> {
   }
 
   @override
+  void didUpdateWidget(covariant GyScaffold oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    if(oldWidget.body != widget.body){
+      body = widget.body ?? Container();
+    }
+    if(oldWidget.supportSafeArea != widget.supportSafeArea){
+      supportSafeArea = widget.supportSafeArea;
+    }
+    if(oldWidget.backgroundColor != widget.backgroundColor){
+      backgroundColor = widget.backgroundColor ?? Colors.grey.shade200;
+    }
+    if(oldWidget.appBarColor != widget.appBarColor){
+      appBarColor = widget.appBarColor ?? XColors.themeColor;
+    }
+    if(oldWidget.titleName != widget.titleName){
+      titleName = widget.titleName ?? "";
+    }
+    if(oldWidget.titleWidget != widget.titleWidget){
+      titleWidget = widget.titleWidget;
+    }
+    if(oldWidget.titleStyle != widget.titleStyle){
+      titleStyle = widget.titleStyle;
+    }
+    if(oldWidget.centerTitle != widget.centerTitle){
+      centerTitle = widget.centerTitle;
+    }
+    if(oldWidget.actions != widget.actions){
+      actions = widget.actions;
+    }
+    if(oldWidget.leading != widget.leading){
+      leading = widget.leading;
+    }
+    if(oldWidget.elevation != widget.elevation){
+      elevation = widget.elevation;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (supportSafeArea) {
       body = SafeArea(

@@ -75,7 +75,7 @@ class SettingController extends GetxController {
   }
 
   String spaceName(ISpace space) {
-    return space.id == user?.id ? "个人空间" : space.name;
+    return space.id == user?.id ? "个人空间" : space.target.team?.name??"";
   }
 
   /// 设置当前空间
