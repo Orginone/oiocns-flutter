@@ -38,6 +38,7 @@ class AddAssetController extends BaseController<AddAssetState> {
       }
     }
     state.selectAssetList.addAll(list);
+    state.selectCount.value = state.selectAssetList.length;
   }
 
   void openItem(AssetsInfo item) {
@@ -78,7 +79,7 @@ class AddAssetController extends BaseController<AddAssetState> {
      if(str.isEmpty){
        state.searchList.clear();
      }else{
-       var flitter = state.selectAssetList.where((p0) => p0.assetCode?.contains(str)??false);
+       var flitter = state.selectAssetList.where((p0) => p0.assetName?.contains(str)??false);
        if(flitter.isNotEmpty){
          state.searchList.value = flitter.toList();
        }
