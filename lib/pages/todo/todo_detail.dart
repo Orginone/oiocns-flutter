@@ -145,7 +145,7 @@ class _TodoDetailState extends State<TodoDetail> {
           children: [
             SizedBox(
               width: 300.w,
-              height: 50.h,
+              height: 70.h,
               child: GFButton(
                 color: XColors.themeColor,
                 onPressed: () {
@@ -174,7 +174,7 @@ class _TodoDetailState extends State<TodoDetail> {
             ),
             SizedBox(height: 15.h,),
             SizedBox(
-              height: 50.h,
+              height: 70.h,
               width: 300.w,
               child: GFButton(
                 size: GFSize.LARGE,
@@ -200,6 +200,7 @@ class _TodoDetailState extends State<TodoDetail> {
                 textStyle: AFont.instance.size22WhiteW500,
               ),
             ),
+            SizedBox(height: 40.h,),
           ],
         ));
   }
