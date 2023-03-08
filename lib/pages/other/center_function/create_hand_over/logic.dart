@@ -102,6 +102,9 @@ class CreateHandOverController extends BaseController<CreateHandOverState> {
   }
 
   void create({bool  isDraft = false}) async{
+    if (state.reasonController.text.trim().isEmpty) {
+      return ToastUtils.showMsg(msg: "请输入交回原因");
+    }
     if (state.selectAssetList.isEmpty) {
       return ToastUtils.showMsg(msg: "请至少选择一项资产");
     }

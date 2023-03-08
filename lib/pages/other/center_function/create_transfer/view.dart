@@ -95,6 +95,7 @@ class CreateTransferPage
               hint: "请填写移交原因",
               maxLine: 4,
               controller: state.reasonController,
+            required: true
             ),
         ],
       ),

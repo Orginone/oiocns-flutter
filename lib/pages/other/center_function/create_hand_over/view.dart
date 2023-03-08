@@ -95,7 +95,7 @@ class CreateHandOverPage
           CommonWidget.commonTextTile("交回原因", "",
               hint: "请填写交回原因",
               maxLine: 4,
-              controller: state.reasonController,
+              controller: state.reasonController,required: true
           ),
         ],
       ),

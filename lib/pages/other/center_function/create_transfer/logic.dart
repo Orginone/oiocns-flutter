@@ -89,6 +89,9 @@ class CreateTransferController extends BaseController<CreateTransferState> {
   }
 
   void create({bool isDraft = false}) async{
+    if (state.reasonController.text.trim().isEmpty) {
+      return ToastUtils.showMsg(msg: "请输入移交原因");
+    }
     if (state.selectAssetList.isEmpty) {
       return ToastUtils.showMsg(msg: "请至少选择一项资产");
     }
