@@ -47,8 +47,7 @@ class TransferNetWork{
     };
 
     ResultType resultType;
-    LoadingDialog.showLoading(Get.context!);
-    if(!isEdit){
+    if(!isDraft){
       List<UpdateAssetsRequest> request = assets
           .map((element) =>
           UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
@@ -77,12 +76,10 @@ class TransferNetWork{
     }
 
     if(resultType.success){
-      LoadingDialog.dismiss(Get.context!);
       ToastUtils.showMsg(msg: "提交成功");
       EventBusHelper.fire(LoadAssets());
       Get.back();
     }else{
-      LoadingDialog.dismiss(Get.context!);
       ToastUtils.showMsg(msg: "提交失败:${resultType.msg}");
     }
   }

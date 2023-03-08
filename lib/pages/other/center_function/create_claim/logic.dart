@@ -99,9 +99,6 @@ class CreateClaimController extends BaseController<CreateClaimState> {
   }
 
   Future submit() async{
-    if(state.detailedData.where((p0) => p0.assetNameController.text.trim().isEmpty).isNotEmpty){
-      return ToastUtils.showMsg(msg: "请输入资产名称");
-    }
     create();
   }
 
@@ -111,6 +108,9 @@ class CreateClaimController extends BaseController<CreateClaimState> {
     }
     if(state.detailedData.where((p0) => p0.assetType == null).isNotEmpty){
       return ToastUtils.showMsg(msg: "请选择资产分类");
+    }
+    if(state.detailedData.where((p0) => p0.assetNameController.text.trim().isEmpty).isNotEmpty){
+      return ToastUtils.showMsg(msg: "请输入资产名称");
     }
     addedDraft = true;
     ClaimNetWork.creteClaim(billCode: state.orderNum.value, remark: state.reasonController.text, detail: state.detailedData,isDraft: isDraft,isEdit: state.isEdit);

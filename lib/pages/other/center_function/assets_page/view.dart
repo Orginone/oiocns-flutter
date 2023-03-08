@@ -240,7 +240,7 @@ class AssetsPage extends BaseGetListPageView<AssetsController, AssetsState> {
                     controller.jumpBatchAssets();
                   },
                   color: XColors.themeColor,
-                  tips: "批量操作"),
+                  tips: "批量处理"),
               padding: EdgeInsets.symmetric(vertical: 10.h)),
         ],
       ),

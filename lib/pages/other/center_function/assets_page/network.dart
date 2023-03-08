@@ -14,7 +14,7 @@ class AssetNetWork{
     List<AssetUse> use = [];
     ResultType result = await KernelApi.getInstance().anystore.aggregate(name, {
       "match": {
-       // ...?filter,
+       ...?filter,
       },
       "sort": {"UPDATE_TIME": -1},
       "skip": 0,

@@ -44,7 +44,6 @@ class ClaimNetWork {
     };
 
     ResultType result;
-    LoadingDialog.showLoading(Get.context!);
     if(isEdit){
       result = await KernelApi.getInstance().anystore.update(
           "asset_receive",
@@ -67,11 +66,9 @@ class ClaimNetWork {
     if(result.success){
       ToastUtils.showMsg(msg: "提交成功");
       EventBusHelper.fire(LoadAssets());
-      LoadingDialog.showLoading(Get.context!);
       Get.back();
     }else{
       LoadingDialog.dismiss(Get.context!);
-      ToastUtils.showMsg(msg: "提交失败:${result.msg}");
     }
   }
 }

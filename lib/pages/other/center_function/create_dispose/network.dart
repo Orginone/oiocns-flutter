@@ -61,8 +61,7 @@ class DisposeNetwork {
     };
 
     ResultType resultType;
-    LoadingDialog.showLoading(Get.context!);
-    if(!isEdit){
+    if(!isDraft){
       List<UpdateAssetsRequest> request = assets
           .map((element) =>
           UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
@@ -92,13 +91,10 @@ class DisposeNetwork {
     }
 
     if (resultType.success) {
-      LoadingDialog.showLoading(Get.context!);
       ToastUtils.showMsg(msg: "提交成功");
       EventBusHelper.fire(LoadAssets());
-      LoadingDialog.dismiss(Get.context!);
       Get.back();
     } else {
-      LoadingDialog.dismiss(Get.context!);
       ToastUtils.showMsg(msg: "提交失败:${resultType.msg}");
     }
   }
