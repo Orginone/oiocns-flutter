@@ -22,7 +22,8 @@ class _TodoListPageState extends State<TodoListPage> with AutomaticKeepAliveClie
 
   @override
   Widget build(BuildContext context) {
-    return TodoList();
+    super.build(context);
+    return const TodoList();
   }
 
   @override
@@ -107,13 +108,13 @@ class TodoList extends GetView<WorkController> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                       '李二黑',
-                      style: AFont.instance.size22Black3W500),
+                      style: AFont.instance.size24Black3W500),
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
                   padding: EdgeInsets.only(top: 5.h),
                   child: Text( "李二黑",
-                      style: AFont.instance.size18Black9),
+                      style: AFont.instance.size20Black9),
                 ),
                 SizedBox(
                   height: 30.h,

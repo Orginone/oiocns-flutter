@@ -94,14 +94,14 @@ List<PopupMenuEntry> getMenu(){
         Icon(
           Icons.drafts_outlined,
           color: XColors.black6,
-          size: 20.w,
+          size: 25.w,
         ),
         SizedBox(
           width: 10.w,
         ),
         Text(
           "已办业务",
-          style: XFonts.size18Black6,
+          style: XFonts.size22Black6,
         ),
       ],
     ),
@@ -113,14 +113,14 @@ List<PopupMenuEntry> getMenu(){
         Icon(
           Icons.assignment_outlined,
           color: XColors.black6,
-          size: 20.w,
+          size: 25.w,
         ),
         SizedBox(
           width: 10.w,
         ),
         Text(
           "草稿箱",
-          style: XFonts.size18Black6,
+          style: XFonts.size22Black6,
         ),
       ],
     ),

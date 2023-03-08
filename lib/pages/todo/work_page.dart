@@ -44,8 +44,8 @@ class WorkPage extends GetView<WorkController> {
               child: GestureDetector(
                 onTap: () => _showMenu(context),
                 child: Container(
-                  width: 30.w,
-                  height: 30.w,
+                  width: 40.w,
+                  height: 35.w,
                   decoration: const BoxDecoration(
                       border: Border(
                           left:
@@ -53,7 +53,7 @@ class WorkPage extends GetView<WorkController> {
                   child: Icon(
                     Icons.more_vert,
                     color: XColors.black6,
-                    size: 30.w,
+                    size: 35.w,
                   ),
                 ),
               ),
@@ -166,11 +166,11 @@ class WorkController extends TabsController {
     var spaceID1 = settingCtrl.company?.id ?? "";
     var spaceID2 = settingCtrl.user?.id ?? "";
     FlowTarget ft = FlowTarget(space.target);
-    var defines = ft.getDefines();
+    // var defines = ft.getDefines();
     var data = await ft.createInstance(FlowInstanceModel(
         productId: '373521708516249601',
-        functionCode: '调休',
-        spaceId: spaceID2,
+        functionCode: '请假',
+        spaceId: "373520388493283329",
         content: 'https://www.npmjs.com/',
         contentType: 'string',
         data: '{}',

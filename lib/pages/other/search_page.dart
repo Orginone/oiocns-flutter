@@ -13,6 +13,7 @@ import 'package:orginone/components/widgets/text_search.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/target/person.dart';
 
 class SearchPage extends GetView<SearchController> {
   const SearchPage({Key? key}) : super(key: key);
@@ -294,6 +295,13 @@ class SearchController extends GetxController with GetTickerProviderStateMixin {
     try {
       switch (searchItems[tabController.index]) {
         case SearchItem.friends:
+          var settingCtrl = Get.find<SettingController>();
+          var person = settingCtrl.user;
+          await person?.searchPerson(filter).then((value){
+            print('value:$value');
+          }).onError((error, stackTrace) {
+            print('error:$error');
+          });
           // personRes = SearchParams();
           // var pageResp = await PersonApi.searchPersons(
           //   keyword: filter,
