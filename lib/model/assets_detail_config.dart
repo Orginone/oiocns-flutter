@@ -82,7 +82,7 @@ class FieldList {
   String? formType;
   bool? required;
   bool? disabled;
-  String? fmtKey;
+  dynamic fmtKey;
 
   FieldList(
       {this.id,

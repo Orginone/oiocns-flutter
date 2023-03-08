@@ -401,11 +401,12 @@ class CommonWidget {
     );
   }
 
-  static commonTextContentWidget(String text,String content,{double textSize = 20,double contentSize = 20,EdgeInsetsGeometry? padding}){
+  static commonTextContentWidget(String text,String content,{double textSize = 20,double contentSize = 20,EdgeInsetsGeometry? padding,Color? color}){
     return Container(
       padding: padding??EdgeInsets.symmetric(vertical: 15.h),
       width: double.infinity,
       decoration: BoxDecoration(
+          color: color,
           border: Border(
               bottom: BorderSide(color: Colors.grey.shade300, width: 0.5))),
       child: Row(
