@@ -152,7 +152,7 @@ Map<String,dynamic> defaultConfig = {
           "name":"使用部门",
         },
         {
-          "code":"USE_NAME",
+          "code":"USER_NAME",
           "name":"使用人",
         },
         {

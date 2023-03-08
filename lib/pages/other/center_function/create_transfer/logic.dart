@@ -41,6 +41,9 @@ class CreateTransferController extends BaseController<CreateTransferState> {
 
   void choiceDepartment() {
     Get.toNamed(Routers.choiceDepartment)?.then((value) {
+      if(value!=state.selectedDepartment.value){
+        state.selectedUser.value = null;
+      }
       state.selectedDepartment.value = value;
     });
   }
@@ -78,28 +81,18 @@ class CreateTransferController extends BaseController<CreateTransferState> {
   }
 
   void draft() async {
-    addedDraft = true;
     create(isDraft: true);
   }
 
   Future submit() async {
-    if (state.reasonController.text.trim().isEmpty) {
-      return ToastUtils.showMsg(msg: "请输入移交原因");
-    }
+    create();
+  }
+
+  void create({bool isDraft = false}) async{
     if (state.selectAssetList.isEmpty) {
       return ToastUtils.showMsg(msg: "请至少选择一项资产");
     }
-
-    LoadingDialog.showLoading(context);
-
-    create();
-
-    LoadingDialog.dismiss(context);
-
-  }
-
-
-  void create({bool isDraft = false}) async{
+    addedDraft = isDraft;
     await TransferNetWork.createTransfer(
         billCode: state.orderNum.value,
         keeper: state.selectedUser.value,

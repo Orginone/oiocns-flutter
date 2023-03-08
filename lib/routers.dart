@@ -142,7 +142,7 @@ class Routers {
   //扫描二维码
   static const String qrScan = "/qrScan";
 
-  //扫描二维码
+  //webView
   static const String webView = "/webView";
 
   static String get main {

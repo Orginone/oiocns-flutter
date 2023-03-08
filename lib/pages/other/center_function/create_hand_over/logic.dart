@@ -74,22 +74,10 @@ class CreateHandOverController extends BaseController<CreateHandOverState> {
   }
 
   Future submit() async {
-    if (state.reasonController.text.trim().isEmpty) {
-      return ToastUtils.showMsg(msg: "请输入交回原因");
-    }
-    if (state.selectAssetList.isEmpty) {
-      return ToastUtils.showMsg(msg: "请至少选择一项资产");
-
-    }
-    LoadingDialog.showLoading(context);
-
-
     create();
-    LoadingDialog.dismiss(context);
   }
 
   void draft() async {
-    addedDraft = true;
     create(isDraft: true);
   }
 
@@ -114,10 +102,15 @@ class CreateHandOverController extends BaseController<CreateHandOverState> {
   }
 
   void create({bool  isDraft = false}) async{
+    if (state.selectAssetList.isEmpty) {
+      return ToastUtils.showMsg(msg: "请至少选择一项资产");
+    }
+    addedDraft = isDraft;
     await HandOverNetWork.createHandOver(
         billCode: state.orderNum.value,
         remark: state.reasonController.text,
         assets: state.selectAssetList,
         user: state.selectedUser.value,isDraft: isDraft,isEdit: state.isEdit);
+
   }
 }

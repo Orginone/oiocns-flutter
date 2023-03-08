@@ -21,7 +21,8 @@ class AssetManagement {
         "assets_data",
         {
           "match": {
-            "USER":HiveUtils.getUser()?.person?.id??""
+            "USER":HiveUtils.getUser()?.person?.id??"",
+            "LIUCZT":3,
           },
           "sort": {"UPDATE_TIME": -1},
           "skip": 0,

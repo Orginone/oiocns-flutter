@@ -7,6 +7,7 @@ import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
+import 'package:orginone/widget/loading_dialog.dart';
 import 'package:uuid/uuid_util.dart';
 
 class DisposeNetwork {
@@ -22,14 +23,7 @@ class DisposeNetwork {
       int? phoneNumber,
       bool isEdit = false}) async {
 
-    List<UpdateAssetsRequest> request = assets
-        .map((element) =>
-        UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
-          "KAPIANZT": CardStatus.dispose.toStatusId,
-        }))
-        .toList();
 
-    await AssetManagement().updateAssetsForList(request);
     double assetsTotal = 0;
     double count = 0;
     double netWorthTotal = 0;
@@ -54,7 +48,7 @@ class DisposeNetwork {
       "submitterName": HiveUtils.getUser()?.person?.name,
       "submitterId": HiveUtils.getUser()?.person?.id,
       "approvalEnd": 0,
-      "approvalStatus": 3,
+      "APPROVAL_STATUS": 3,
       "verificationStatus": 10,
       "readStatus": isDraft ? 0 : 1,
       "gmtCreate": DateTime.now().toString(),
@@ -69,6 +63,17 @@ class DisposeNetwork {
     };
 
     ResultType resultType;
+    LoadingDialog.showLoading(Get.context!);
+    if(!isEdit){
+      List<UpdateAssetsRequest> request = assets
+          .map((element) =>
+          UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
+            "KAPIANZT": CardStatus.dispose.toStatusId,
+          }))
+          .toList();
+
+      await AssetManagement().updateAssetsForList(request);
+    }
 
     if (isEdit) {
       resultType = await KernelApi.getInstance().anystore.update(
@@ -89,10 +94,13 @@ class DisposeNetwork {
     }
 
     if (resultType.success) {
+      LoadingDialog.showLoading(Get.context!);
       ToastUtils.showMsg(msg: "提交成功");
       EventBusHelper.fire(LoadAssets());
+      LoadingDialog.dismiss(Get.context!);
       Get.back();
     } else {
+      LoadingDialog.dismiss(Get.context!);
       ToastUtils.showMsg(msg: "提交失败:${resultType.msg}");
     }
   }

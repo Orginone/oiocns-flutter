@@ -38,7 +38,7 @@ class AddAssetController extends BaseController<AddAssetState> {
       }
     }
     state.selectAssetList.addAll(list);
-    state.selectCount.value = state.selectAssetList.length;
+    state.selectCount.value = state.selectAssetList.where((p0) => p0.isSelected).length;
   }
 
   void openItem(AssetsInfo item) {

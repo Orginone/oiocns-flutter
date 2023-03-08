@@ -5,6 +5,7 @@ import 'package:orginone/routers.dart';
 import 'package:orginone/util/production_order_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
+import 'package:orginone/widget/loading_dialog.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
 import 'network.dart';
@@ -89,20 +90,10 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
   }
 
   void draft() {
-    addedDraft = true;
     create(isDraft: true);
   }
 
   Future submit() async {
-    if (state.disposeType.value.isEmpty) {
-      return ToastUtils.showMsg(msg: "请选择处置方式");
-    }
-    if (state.reasonController.text.trim().isEmpty) {
-      return ToastUtils.showMsg(msg: "请输入申请原因");
-    }
-    if (state.selectAssetList.isEmpty) {
-      return ToastUtils.showMsg(msg: "请至少选择一项资产");
-    }
     create();
 
   }
@@ -121,6 +112,16 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
   }
 
   void create({bool isDraft = false}) async{
+    if (state.disposeType.value.isEmpty) {
+      return ToastUtils.showMsg(msg: "请选择处置方式");
+    }
+    if (state.reasonController.text.trim().isEmpty) {
+      return ToastUtils.showMsg(msg: "请输入申请原因");
+    }
+    if (state.selectAssetList.isEmpty) {
+      return ToastUtils.showMsg(msg: "请至少选择一项资产");
+    }
+    addedDraft = isDraft;
     int? keepOrgType;
     int? evaluated;
     int? phoneNum;
@@ -137,7 +138,6 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
         phoneNum = int.parse(state.phoneNumberController.text);
       }
     }
-
     await DisposeNetwork.createDispose(
         way: DisposeTyep.indexOf(state.disposeType.value),
         keepOrgType: keepOrgType,

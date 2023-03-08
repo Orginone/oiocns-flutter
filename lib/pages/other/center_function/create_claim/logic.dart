@@ -94,25 +94,25 @@ class CreateClaimController extends BaseController<CreateClaimState> {
     state.detailedData.removeAt(index);
   }
 
-  void draft() {
-    addedDraft = true;
+  Future draft() async{
     create(isDraft: true);
   }
 
   Future submit() async{
-    if(state.reasonController.text.trim().isEmpty){
-      return ToastUtils.showMsg(msg: "请输入申领事由");
-    }
-    if(state.detailedData.where((p0) => p0.assetType == null).isNotEmpty){
-      return ToastUtils.showMsg(msg: "请选择资产分类");
-    }
     if(state.detailedData.where((p0) => p0.assetNameController.text.trim().isEmpty).isNotEmpty){
       return ToastUtils.showMsg(msg: "请输入资产名称");
     }
     create();
   }
 
-  void create({bool isDraft = false}){
+  Future create({bool isDraft = false}) async{
+    if(state.reasonController.text.trim().isEmpty){
+      return ToastUtils.showMsg(msg: "请输入申领事由");
+    }
+    if(state.detailedData.where((p0) => p0.assetType == null).isNotEmpty){
+      return ToastUtils.showMsg(msg: "请选择资产分类");
+    }
+    addedDraft = true;
     ClaimNetWork.creteClaim(billCode: state.orderNum.value, remark: state.reasonController.text, detail: state.detailedData,isDraft: isDraft,isEdit: state.isEdit);
   }
 }

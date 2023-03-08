@@ -18,27 +18,32 @@ class CreateClaimPage
   Widget buildView() {
     return GyScaffold(
       titleName: "${state.isEdit ? "提交" : "创建"}申领",
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  basicInfo(),
-                  detailedList(),
-                  CommonWidget.commonAddDetailedWidget(onTap: () {
-                    controller.addDetailed();
-                  }, text: '添加明细'),
-                ],
+      body: WillPopScope(
+        onWillPop: () {
+          return controller.back();
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    basicInfo(),
+                    detailedList(),
+                    CommonWidget.commonAddDetailedWidget(onTap: () {
+                      controller.addDetailed();
+                    }, text: '添加明细'),
+                  ],
+                ),
               ),
             ),
-          ),
-          CommonWidget.commonCreateSubmitWidget(submit: (){
-            controller.submit();
-          },draft: (){
-            controller.draft();
-          }),
-        ],
+            CommonWidget.commonCreateSubmitWidget(submit: (){
+              controller.submit();
+            },draft: (){
+              controller.draft();
+            }),
+          ],
+        ),
       ),
     );
   }

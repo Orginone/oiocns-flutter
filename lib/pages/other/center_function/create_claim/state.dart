@@ -29,7 +29,7 @@ class CreateClaimState extends BaseGetState {
           detailedData.add(ClaimDetailed(location: value.location,
               brand: value.brand ?? "",
               model: value.specMod ?? "",
-              quantity:"${value.numOrArea??0}",
+              quantity:"${value.numOrArea??""}",
               assetName:value.assetName??"",
               isDistribution: value.isDistribution??false,
               assetType: CommonTreeManagement().findSpeciesTree(value.assetType??""),

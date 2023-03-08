@@ -8,6 +8,7 @@ import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
+import 'package:orginone/widget/loading_dialog.dart';
 
 class ClaimNetWork {
   static Future<void> creteClaim(
@@ -23,7 +24,7 @@ class ClaimNetWork {
       "approvalDocument":{
         "details":detail.map((e){
           return {
-            "ASSET_TYPE": e.assetType!.name,
+            "ASSET_TYPE": e.assetType?.name,
             "ASSET_NAME": e.assetNameController.text,
             "CREATE_USER": HiveUtils.getUser()?.person?.id ?? "",
             "SUBMITTER_NAME": HiveUtils.getUser()?.userName ?? "",
@@ -43,7 +44,7 @@ class ClaimNetWork {
     };
 
     ResultType result;
-
+    LoadingDialog.showLoading(Get.context!);
     if(isEdit){
       result = await KernelApi.getInstance().anystore.update(
           "asset_receive",
@@ -66,8 +67,10 @@ class ClaimNetWork {
     if(result.success){
       ToastUtils.showMsg(msg: "提交成功");
       EventBusHelper.fire(LoadAssets());
+      LoadingDialog.showLoading(Get.context!);
       Get.back();
     }else{
+      LoadingDialog.dismiss(Get.context!);
       ToastUtils.showMsg(msg: "提交失败:${result.msg}");
     }
   }

@@ -67,8 +67,9 @@ class AssetsController extends BaseListController<AssetsState> {
     Map<String, dynamic> filter = {};
     if (assetsType == AssetsType.dispose) {
       filter["readStatus"] = assetsListType == AssetsListType.draft ? 0 : 1;
-      if (assetsListType == AssetsListType.approved) {
-        filter["APPROVAL_STATUS"] = 3;
+      if (assetsListType != AssetsListType.draft) {
+        filter["APPROVAL_STATUS"] =
+            assetsListType == AssetsListType.approved ? 3 : 4;
       }
     } else if (assetsListType != AssetsListType.check) {
       filter['status'] = assetsListType == AssetsListType.draft ? 0 : 1;

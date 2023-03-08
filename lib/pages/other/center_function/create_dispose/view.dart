@@ -16,28 +16,33 @@ class CreateDisposePage
   Widget buildView() {
     return GyScaffold(
       titleName: "${state.isEdit ? "提交" : "创建"}处置",
-      body: Column(
-        children: [
-          Expanded(
-              child: SingleChildScrollView(
-            child: Column(
-              children: [
-                basicInfo(),
-                disposeInfo(),
-                CommonWidget.commonAddDetailedWidget(
-                    text: "选择资产",
-                    onTap: () {
-                      controller.jumpAddAsset();
-                    })
-              ],
-            ),
-          )),
-          CommonWidget.commonCreateSubmitWidget(draft: () {
-            controller.draft();
-          }, submit: () {
-            controller.submit();
-          }),
-        ],
+      body: WillPopScope(
+        onWillPop: () {
+          return controller.back();
+        },
+        child: Column(
+          children: [
+            Expanded(
+                child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  basicInfo(),
+                  disposeInfo(),
+                  CommonWidget.commonAddDetailedWidget(
+                      text: "选择资产",
+                      onTap: () {
+                        controller.jumpAddAsset();
+                      })
+                ],
+              ),
+            )),
+            CommonWidget.commonCreateSubmitWidget(draft: () {
+              controller.draft();
+            }, submit: () {
+              controller.submit();
+            }),
+          ],
+        ),
       ),
     );
   }
@@ -88,8 +93,8 @@ class CreateDisposePage
           SizedBox(
             height: 10.h,
           ),
-          CommonWidget.commonTextTile("申请原因", "",
-              hint: "请填写申请事由",
+          CommonWidget.commonTextTile("处置原因", "",
+              hint: "请填写处置事由",
               maxLine: 4,
               controller: state.reasonController,
               required: true),

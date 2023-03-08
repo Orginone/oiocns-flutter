@@ -12,6 +12,7 @@ import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
+import 'package:orginone/widget/loading_dialog.dart';
 
 class HandOverNetWork{
   static createHandOver({
@@ -19,16 +20,9 @@ class HandOverNetWork{
     ,required List<AssetsInfo> assets,bool isDraft = false,bool isEdit = false}) async{
 
 
-    List<UpdateAssetsRequest> request = assets
-        .map((element) =>
-        UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
-          "USER_NAME": user?.name??"",
-          "USER":user?.id??"",
-          "KAPIANZT": CardStatus.handOver.toStatusId,
-        }))
-        .toList();
 
-    await AssetManagement().updateAssetsForList(request);
+
+
     Map<String,dynamic> data = {
       "BILL_CODE":billCode,
       "SUBMITTER_NAME":HiveUtils.getUser()?.person?.name,
@@ -46,6 +40,18 @@ class HandOverNetWork{
     };
 
    ResultType resultType;
+    LoadingDialog.showLoading(Get.context!);
+    if(!isEdit){
+      List<UpdateAssetsRequest> request = assets
+          .map((element) =>
+          UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
+            "USER_NAME": user?.name??"",
+            "USER":user?.id??"",
+            "KAPIANZT": CardStatus.handOver.toStatusId,
+          }))
+          .toList();
+      await AssetManagement().updateAssetsForList(request);
+    }
 
    if(isEdit){
      resultType = await KernelApi.getInstance().anystore.update("asset_restore",{
@@ -61,10 +67,12 @@ class HandOverNetWork{
    }
 
    if(resultType.success){
+     LoadingDialog.dismiss(Get.context!);
      ToastUtils.showMsg(msg: "提交成功");
      EventBusHelper.fire(LoadAssets());
      Get.back();
    }else{
+     LoadingDialog.dismiss(Get.context!);
      ToastUtils.showMsg(msg: "提交失败:${resultType.msg}");
    }
   }

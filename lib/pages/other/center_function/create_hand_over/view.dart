@@ -19,29 +19,35 @@ class CreateHandOverPage
   Widget buildView() {
     return GyScaffold(
       titleName: "${state.isEdit ? "提交" : "创建"}交回",
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  basicInfo(),
-                  transferInfo(),
-                  CommonWidget.commonAddDetailedWidget(
-                      text: "选择资产",
-                      onTap: () {
-                        controller.jumpAddAsset();
-                      })
-                ],
+      body: WillPopScope(
+
+        onWillPop: () {
+          return controller.back();
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    basicInfo(),
+                    transferInfo(),
+                    CommonWidget.commonAddDetailedWidget(
+                        text: "选择资产",
+                        onTap: () {
+                          controller.jumpAddAsset();
+                        })
+                  ],
+                ),
               ),
             ),
-          ),
-          CommonWidget.commonCreateSubmitWidget(submit: (){
-            controller.submit();
-          },draft: (){
-            controller.draft();
-          }),
-        ],
+            CommonWidget.commonCreateSubmitWidget(submit: (){
+              controller.submit();
+            },draft: (){
+              controller.draft();
+            }),
+          ],
+        ),
       ),
     );
   }
@@ -90,7 +96,7 @@ class CreateHandOverPage
               hint: "请填写交回原因",
               maxLine: 4,
               controller: state.reasonController,
-              required: true),
+          ),
         ],
       ),
     );
