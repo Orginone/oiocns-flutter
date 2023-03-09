@@ -21,34 +21,29 @@ class CreateTransferPage
   Widget buildView() {
     return GyScaffold(
       titleName: "${state.isEdit ? "提交" : "创建"}移交",
-      body: WillPopScope(
-        onWillPop: () {
-          return controller.back();
-        },
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    basicInfo(),
-                    transferInfo(),
-                    CommonWidget.commonAddDetailedWidget(
-                        text: "选择资产",
-                        onTap: () {
-                          controller.jumpAddAsset();
-                        })
-                  ],
-                ),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  basicInfo(),
+                  transferInfo(),
+                  CommonWidget.commonAddDetailedWidget(
+                      text: "选择资产",
+                      onTap: () {
+                        controller.jumpAddAsset();
+                      })
+                ],
               ),
             ),
-            CommonWidget.commonCreateSubmitWidget(draft: (){
-              controller.draft();
-            },submit: (){
-              controller.submit();
-            }),
-          ],
-        ),
+          ),
+          CommonWidget.commonCreateSubmitWidget(draft: (){
+            controller.draft();
+          },submit: (){
+            controller.submit();
+          }),
+        ],
       ),
     );
   }

@@ -21,24 +21,24 @@ class CreateClaimController extends BaseController<CreateClaimState> {
 
   Fields? fields;
 
-  Future<bool> back() async {
-    if (!addedDraft) {
-      if (((state.detailedData.where((p0) => p0.hasFilled()).isNotEmpty) || !state.config.config![0].hasFilled()) &&
-          !state.isEdit) {
-        YYBottomSheetDialog(context, DraftTips, callback: (i, str) {
-          if (i == 0) {
-            draft();
-          } else if (i == 1) {
-            Get.back();
-          }
-        });
-      }
-    }
-    if (state.isEdit) {
-      return true;
-    }
-    return true;
-  }
+  // Future<bool> back() async {
+  //   if (!addedDraft) {
+  //     if (((state.detailedData.where((p0) => p0.hasFilled()).isNotEmpty) || !state.config.config![0].hasFilled()) &&
+  //         !state.isEdit) {
+  //       YYBottomSheetDialog(context, DraftTips, callback: (i, str) {
+  //         if (i == 0) {
+  //           draft();
+  //         } else if (i == 1) {
+  //           Get.back();
+  //         }
+  //       });
+  //     }
+  //   }
+  //   if (state.isEdit) {
+  //     return true;
+  //   }
+  //   return true;
+  // }
 
 
   void choiceAssetClassification(int index) {

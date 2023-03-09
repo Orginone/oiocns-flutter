@@ -16,33 +16,28 @@ class CreateDisposePage
   Widget buildView() {
     return GyScaffold(
       titleName: "${state.isEdit ? "提交" : "创建"}处置",
-      body: WillPopScope(
-        onWillPop: () {
-          return controller.back();
-        },
-        child: Column(
-          children: [
-            Expanded(
-                child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  basicInfo(),
-                  disposeInfo(),
-                  CommonWidget.commonAddDetailedWidget(
-                      text: "选择资产",
-                      onTap: () {
-                        controller.jumpAddAsset();
-                      })
-                ],
-              ),
-            )),
-            CommonWidget.commonCreateSubmitWidget(draft: () {
-              controller.draft();
-            }, submit: () {
-              controller.submit();
-            }),
-          ],
-        ),
+      body: Column(
+        children: [
+          Expanded(
+              child: SingleChildScrollView(
+            child: Column(
+              children: [
+                basicInfo(),
+                disposeInfo(),
+                CommonWidget.commonAddDetailedWidget(
+                    text: "选择资产",
+                    onTap: () {
+                      controller.jumpAddAsset();
+                    })
+              ],
+            ),
+          )),
+          CommonWidget.commonCreateSubmitWidget(draft: () {
+            controller.draft();
+          }, submit: () {
+            controller.submit();
+          }),
+        ],
       ),
     );
   }
