@@ -3,82 +3,49 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/target/species/ispecies.dart';
+import 'package:orginone/model/acc.dart';
+import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/model/asset_use.dart';
 import 'package:orginone/util/common_tree_management.dart';
 
 class CreateClaimState extends BaseGetState {
   late bool isEdit;
 
-  TextEditingController reasonController = TextEditingController();
-
-  var orderNum = ''.obs;
-
-  var detailedData = <ClaimDetailed>[].obs;
+  var detailedData = <Config>[].obs;
 
   late AssetUse assetUse;
 
+  late AssetCreationConfig config;
+
   CreateClaimState() {
+    config = AssetCreationConfig.fromJson(acc);
     isEdit = Get.arguments?['isEdit'] ?? false;
     if (isEdit) {
       assetUse = Get.arguments?['assetUse'];
-      orderNum.value = assetUse.billCode ?? "";
-      reasonController.text = assetUse.applyRemark ?? "";
+      Map<String, dynamic> assetUseJson = assetUse.toJson();
+
+      for (var element in config.config![0].fields!) {
+        element.defaultData.value = assetUseJson[element.code!];
+      }
       if (assetUse.approvalDocument?.detail?.isNotEmpty ?? false) {
         var assets = assetUse.approvalDocument!.detail!;
         for (var value in assets) {
-          detailedData.add(ClaimDetailed(location: value.location,
-              brand: value.brand ?? "",
-              model: value.specMod ?? "",
-              quantity:"${value.numOrArea??""}",
-              assetName:value.assetName??"",
-              isDistribution: value.isDistribution??false,
-              assetType: CommonTreeManagement().findSpeciesTree(value.assetType??""),
-          ));
+          Map<String, dynamic> assetsJson = value.toJson();
+          Config c = config.config![1].toNewConfig();
+          for (var element in c.fields!) {
+            if (element.code == "ASSET_TYPE") {
+              element.defaultData.value = CommonTreeManagement().findSpeciesTree(assetsJson[element.code!]??"");
+            } else if(element.code == "SFXC" && assetsJson[element.code!]!=null){
+              element.defaultData.value = {assetsJson[element.code!]?"是":"否":assetsJson[element.code!]};
+            }else {
+              element.defaultData.value = assetsJson[element.code!];
+            }
+          }
+          detailedData.add(c);
         }
       }
     } else {
-      detailedData.add(ClaimDetailed());
+      detailedData.add(config.config![1].toNewConfig());
     }
-  }
-}
-
-
-class ClaimDetailed {
-
-  TextEditingController assetNameController = TextEditingController();
-
-  TextEditingController quantityController = TextEditingController();
-
-  TextEditingController modelController = TextEditingController();
-
-  TextEditingController brandController = TextEditingController();
-
-  ISpeciesItem? assetType;
-
-  bool? isDistribution;
-
-  String? location;
-
-  ClaimDetailed(
-      {String assetName = "",
-      String quantity = "",
-      String model = "",
-      String brand = "",
-      this.assetType,
-      this.isDistribution = false,
-      this.location = ""}) {
-    assetNameController.text = assetName;
-    quantityController.text = quantity;
-    modelController.text = model;
-    brandController.text = brand;
-  }
-
-  bool hasData() {
-    return assetNameController.text.trim().isNotEmpty ||
-        quantityController.text.trim().isNotEmpty ||
-        modelController.text.trim().isNotEmpty ||
-        brandController.text.trim().isNotEmpty ||
-        assetType != null ||
-        isDistribution != null;
   }
 }

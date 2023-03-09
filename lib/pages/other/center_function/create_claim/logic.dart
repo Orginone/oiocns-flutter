@@ -1,30 +1,29 @@
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/event/choice_assets.dart';
-import 'package:orginone/pages/other/storage_location/state.dart';
+import 'package:orginone/model/asset_creation_config.dart';
+import 'package:orginone/pages/other/assets_config.dart';
+import 'package:orginone/pages/other/center_function/create_claim/netwrok.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/production_order_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
-import '../../assets_config.dart';
-import 'netwrok.dart';
 import 'state.dart';
 
 class CreateClaimController extends BaseController<CreateClaimState> {
   final CreateClaimState state = CreateClaimState();
-
 
   //明细下标用于数据填充
   int index = 0;
 
   bool addedDraft = false;
 
+  Fields? fields;
+
   Future<bool> back() async {
     if (!addedDraft) {
-      if ((state.detailedData.where((p0) => p0.hasData()).isNotEmpty ||
-          state.reasonController.text.isNotEmpty) &&
+      if (((state.detailedData.where((p0) => p0.hasFilled()).isNotEmpty) || !state.config.config![0].hasFilled()) &&
           !state.isEdit) {
         YYBottomSheetDialog(context, DraftTips, callback: (i, str) {
           if (i == 0) {
@@ -41,15 +40,6 @@ class CreateClaimController extends BaseController<CreateClaimState> {
     return true;
   }
 
-  @override
-  void onReady() async{
-    // TODO: implement onReady
-    super.onReady();
-    if (!state.isEdit) {
-      state.orderNum.value =
-          await ProductionOrderUtils.productionSingleOrder("ZCSY");
-    }
-  }
 
   void choiceAssetClassification(int index) {
     this.index = index;
@@ -62,7 +52,7 @@ class CreateClaimController extends BaseController<CreateClaimState> {
     super.onReceivedEvent(event);
     if (event is ChoiceAssets) {
       if (event.selectedAsset != null) {
-        state.detailedData[index].assetType = event.selectedAsset!;
+        fields!.defaultData.value = event.selectedAsset!;
         state.detailedData.refresh();
       }
     }
@@ -70,24 +60,16 @@ class CreateClaimController extends BaseController<CreateClaimState> {
 
   void choicePlace(int index) {
     this.index = index;
-    Get.toNamed(Routers.storageLocation)?.then((value){
-      if(value!=null && value is StorageLocation){
-        state.detailedData[index].location = value.placeName??"";
-        state.detailedData.refresh();
-      }
-    });
-  }
-
-  void newCreate(int index) {
-    List<String> title = ["是", "否"];
-    PickerUtils.showListStringPicker(context, titles: title, callback: (str) {
-      state.detailedData[index].isDistribution = title.indexOf(str) == 0;
-      state.detailedData.refresh();
-    });
+    // Get.toNamed(Routers.storageLocation)?.then((value){
+    //   if(value!=null && value is StorageLocation){
+    //     state.detailedData[index].location = value.placeName??"";
+    //     state.detailedData.refresh();
+    //   }
+    // });
   }
 
   void addDetailed() {
-    state.detailedData.add(ClaimDetailed());
+    state.detailedData.add(state.config.config![1].toNewConfig());
   }
 
   void deleteDetailed(int index) {
@@ -102,17 +84,38 @@ class CreateClaimController extends BaseController<CreateClaimState> {
     create();
   }
 
-  Future create({bool isDraft = false}) async{
-    if(state.reasonController.text.trim().isEmpty){
-      return ToastUtils.showMsg(msg: "请输入申领事由");
+  Future create({bool isDraft = false}) async {
+
+    for (var element in state.config.config![0].fields!) {
+      if(element.required??false){
+        if(element.defaultData.value == null){
+          return ToastUtils.showMsg(msg: element.hint??"");
+        }
+      }
     }
-    if(state.detailedData.where((p0) => p0.assetType == null).isNotEmpty){
-      return ToastUtils.showMsg(msg: "请选择资产分类");
-    }
-    if(state.detailedData.where((p0) => p0.assetNameController.text.trim().isEmpty).isNotEmpty){
-      return ToastUtils.showMsg(msg: "请输入资产名称");
+    for (var element in state.detailedData) {
+      for (var element1 in element.fields!) {
+        if(element1.required??false){
+          if(element1.defaultData.value == null){
+            return ToastUtils.showMsg(msg: element1.hint??"");
+          }
+        }
+      }
     }
     addedDraft = true;
-    ClaimNetWork.creteClaim(billCode: state.orderNum.value, remark: state.reasonController.text, detail: state.detailedData,isDraft: isDraft,isEdit: state.isEdit);
+    ClaimNetWork.creteClaim(basic: state.config.config?[0].fields??[], detail: state.detailedData,isDraft: isDraft,isEdit: state.isEdit);
+  }
+
+  void functionAlloc(Fields e) {
+    fields = e;
+    if (e.type == "router") {
+      Get.toNamed(e.router!);
+    }
+    if (e.type == "select") {
+      PickerUtils.showListStringPicker(context, titles: e.select!.keys.toList(),
+          callback: (str) {
+        e.defaultData.value = {str: e.select![str]};
+      });
+    }
   }
 }

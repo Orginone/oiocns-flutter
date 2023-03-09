@@ -4,10 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/model/asset_creation_config.dart';
+import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/widget/shine_widget.dart';
 
 import 'logic.dart';
 import 'state.dart';
@@ -67,36 +70,25 @@ class CreateClaimPage
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CommonWidget.commonHeadInfoWidget("基本信息"),
-          Obx(() {
-            return CommonWidget.commonTextTile(
-              "单据编号",
-              state.orderNum.value,
-              enabled: false,
-              textStyle: TextStyle(
-                  color: Colors.black,
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.w500),
-            );
+          CommonWidget.commonHeadInfoWidget(state.config.config![0].title??""),
+          ...state.config.config![0].fields!.map((e){
+             Widget child = testShine[e.type??""]!(e,isEdit: state.isEdit,assetsType: AssetsType.claim);
+             return child;
           }),
-          SizedBox(
-            height: 10.h,
-          ),
-          CommonWidget.commonTextTile("申领事由", "",
-              hint: "请填写申领事由", maxLine: 4, controller: state.reasonController,required: true),
         ],
       ),
     );
   }
 
   Widget detailed(int index) {
+    Config config =  state.detailedData[index];
     return SizedBox(
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CommonWidget.commonHeadInfoWidget(
-            "申领明细-${index + 1}",
+            "${config.title}-${index + 1}",
             action: index > 0
                 ? GestureDetector(
               child: Text(
@@ -109,43 +101,13 @@ class CreateClaimPage
             )
                 : Container(),
           ),
-          CommonWidget.commonChoiceTile(
-              "资产分类", state.detailedData[index].assetType?.name??"",
-              required: true, onTap: () {
-            controller.choiceAssetClassification(index);
-          }, showLine: true),
-          CommonWidget.commonTextTile("资产名称", "",
-              hint: "请填写资产名称",
-              controller: state.detailedData[index].assetNameController,
-              showLine: true,required: true),
-          CommonWidget.commonTextTile(
-              "领用人与部门", "${HiveUtils
-              .getUser()
-              ?.userName ?? ""}-${DepartmentManagement().currentDepartment?.name ??
-              ""}", showLine: true, enabled: false),
-          CommonWidget.commonTextTile("数量", "",
-              hint: "请填写数量",
-              controller: state.detailedData[index].quantityController,
-              showLine: true,inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-              ]),
-          CommonWidget.commonTextTile("规格型号", "",
-              hint: "请填写规格型号",
-              controller: state.detailedData[index].modelController,
-              showLine: true),
-          CommonWidget.commonTextTile("品牌", "",
-              hint: "请填写品牌",
-              controller: state.detailedData[index].brandController,
-              showLine: true),
-          // CommonWidget.commonChoiceTile("存放地点", state.detailedData[index].place,
-          //     required: true, onTap: () {
-          //       controller.choicePlace(index);
-          //     }, showLine: true),
-          CommonWidget.commonChoiceTile(
-              "是否信创", (state.detailedData[index]?.isDistribution??false) ? "是" : "否",
-              onTap: () {
-            controller.newCreate(index);
-          }, showLine: true),
+          ...config.fields!.map((e){
+            e.function = (){
+              controller.functionAlloc(e);
+            };
+            Widget child = testShine[e.type??""]!(e,isEdit: state.isEdit,assetsType: AssetsType.claim);
+            return child;
+          }).toList(),
         ],
       ),
     );

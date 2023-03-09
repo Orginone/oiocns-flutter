@@ -27,6 +27,28 @@ enum AssetsType {
 }
 
 extension ExAssetsType on AssetsType {
+  String get billHeader{
+    switch (this) {
+      case AssetsType.myAssets:
+      case AssetsType.approve:
+      case AssetsType.check:
+      case AssetsType.subscribe:
+      case AssetsType.borrow:
+      case AssetsType.revert:
+      case AssetsType.store:
+      case AssetsType.more:
+       return "";
+      case AssetsType.dispose:
+        return "ZCCZ";
+      case AssetsType.transfer:
+        return "ZCYJ";
+      case AssetsType.handOver:
+        return "ZCJH";
+      case AssetsType.claim:
+        return "ZCSY";
+    }
+  }
+
   String get name {
     switch (this) {
       case AssetsType.myAssets:

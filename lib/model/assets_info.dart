@@ -102,6 +102,8 @@ class AssetsInfo {
 
   String? acquirementWay;
 
+  bool? sfxc;
+
   CardStatus? kapianzt;
 
   int? status;
@@ -179,6 +181,7 @@ class AssetsInfo {
     canZhi = json['CANZHI'];
     initAssetVal = json['INIT_ASSET_VAL'];
     liuCzt = json['LIUCZT'];
+    sfxc = json['SFXC'];
     id = json['id'];
     gmtCreate = json['gmtCreate'];
     updateTime = json['UPDATE_TIME'];
@@ -259,6 +262,7 @@ class AssetsInfo {
     acquirementWay = json['ACQUIREMENT_WAY'] ?? acquirementWay;
     kapianzt = toStatus(json['KAPIANZT']??"") ?? kapianzt;
     isDistribution = json['isDistribution']??isDistribution;
+    sfxc = json['SFXC']??sfxc;
   }
 
   bool get notLockStatus =>
@@ -347,6 +351,7 @@ class AssetsInfo {
     data['isDistribution'] = this.isDistribution;
     data['USE_DEPT_NAME'] = this.useDeptName;
     data['USER_NAME'] = this.userName;
+    data['SFXC'] = sfxc;
     return data;
   }
 

@@ -145,6 +145,8 @@ class CommonWidget {
       TextEditingController? controller,
       String? hint,
       int? maxLine,
+        ValueChanged<String>? onSubmitted,
+        ValueChanged<String>? onChanged,
       bool enabled = true,
       TextStyle? textStyle,
       bool required = false,List<TextInputFormatter>? inputFormatters}) {
@@ -175,6 +177,8 @@ class CommonWidget {
                   maxLines: maxLine,
                   inputFormatters: inputFormatters,
                   enabled: enabled,
+                  onChanged: onChanged,
+                  onSubmitted: onSubmitted,
                   style:
                       textStyle ?? TextStyle(color: Colors.black, fontSize: 20.sp),
                   decoration: InputDecoration(
