@@ -80,14 +80,14 @@ class CheckNetwork {
   }
 
 
-  static Future<AssetsInfo?> getQrScanData() async {
+  static Future<AssetsInfo?> getQrScanData(String code) async {
     AssetsInfo? assets;
 
     ResultType result = await KernelApi.getInstance().anystore.aggregate(
         "asset_checklist",
         {
           "match": {
-            "ASSET_CODE":"ZCGL2023022800000043",
+            "ASSET_CODE":code,
           },
           "sort": {"UPDATE_TIME": -1},
           "skip": 0,
@@ -97,11 +97,12 @@ class CheckNetwork {
     if(result.success){
       if(result.data.isNotEmpty){
         var data = AssetsInfo.fromJson(result.data.first);
-        if(data.userName != HiveUtils.getUser()?.userName){
-          ToastUtils.showMsg(msg: "这个二维码的使用人并非当前登录用户");
-        }else{
-          assets = data;
-        }
+        assets = data;
+        // if(data.userName != HiveUtils.getUser()?.userName){
+        //   ToastUtils.showMsg(msg: "这个二维码的使用人并非当前登录用户");
+        // }else{
+        //   assets = data;
+        // }
       }
     }else{
       ToastUtils.showMsg(msg: "获取内容失败");

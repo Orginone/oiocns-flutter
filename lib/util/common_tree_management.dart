@@ -6,6 +6,7 @@ import 'package:orginone/dart/core/market/model.dart';
 import 'package:orginone/dart/core/target/species/ispecies.dart';
 import 'package:orginone/util/toast_utils.dart';
 
+
 class CommonTreeManagement {
   static final CommonTreeManagement _instance = CommonTreeManagement._();
 
@@ -15,20 +16,12 @@ class CommonTreeManagement {
 
   SettingController get setting => Get.find<SettingController>();
 
-  final List<XDictItem> _assetsCategory = [];
+  final List<AssetsCategoryGroup> _category = [];
 
-  List<XDictItem> get assetsCategory => _assetsCategory;
-
-  final List<ISpeciesItem> _species = [];
-
-  List<ISpeciesItem> get species => _species;
+  List<AssetsCategoryGroup> get category => _category;
 
   Future<void> initTree() async {
-    var item  = await setting.space.loadSpeciesTree(reload: true);
-    if(item!=null){
-      _species.clear();
-      _species.add(item);
-    }
+    _category.clear();
     ResultType<XDictItemArray> res = await kernel.queryDictItems(
       IdSpaceReq(
         id: "27466608056615936",
@@ -40,35 +33,153 @@ class CommonTreeManagement {
         ),
       ),
     );
-    _assetsCategory.clear();
     if(res.success && (res.data?.result?.isNotEmpty??false)){
-      _assetsCategory.addAll(res.data!.result!);
+      _category.addAll(_handleGroupCategory(res.data!.result!));
     }else{
       ToastUtils.showMsg(msg: "获取资产分类数据失败");
     }
   }
 
-  ISpeciesItem? findSpeciesTree(String name) {
-    List<ISpeciesItem> list = [];
-    for (var value in  _species) {
-      var items = value.getAllLastList();
-      list.addAll(items);
+  List<AssetsCategoryGroup> get nonLevelCategory{
+    List<AssetsCategoryGroup> category = [];
+
+    for (var value in _category) {
+      if(!value.hasNextLevel){
+        category.add(value);
+      }else{
+        category.addAll(value.nonLevel);
+      }
     }
-    var item = list.where((element) => element.name == name);
-    if(item.isNotEmpty){
-      return item.first;
-    }
-    return null;
+
+    return category;
+
   }
 
-  XDictItem? findTree(String name) {
-   var item =  _assetsCategory.where((element) => element.name == name);
-   if(item.isNotEmpty){
-     return item.first;
-   }
-   return null;
+  AssetsCategoryGroup? findCategoryTree(String id){
+    try{
+      return nonLevelCategory.firstWhere((element) => element.id == id);
+    }catch(e){
+      return null;
+    }
   }
 
+  List<AssetsCategoryGroup> _handleGroupCategory(List<XDictItem> items) {
+    List<AssetsCategoryGroup> category = [];
 
+    //获取一级分类
+    for (var item in items) {
+      if (item.value.isEmpty) {
+        continue;
+      }
+      int code = int.parse(item.value);
+      AssetsCategoryGroup group = AssetsCategoryGroup(
+        name: item.name,
+        code: code,
+        id: item.id,
+        nextLevel: [],
+      );
+      int divisibleCode = code ~/ 10000000;
+      double exceptCode = code / 10000000;
 
+      //只有可以整除的才能作为一级分类
+      if (exceptCode == divisibleCode) {
+        category.add(group);
+      } else if (code < (divisibleCode + 1) * 10000000) {
+        //获取可作为范围内的数据
+        int index = divisibleCode - 1;
+        if (index >= 0) {
+          category[index].nextLevel.add(group);
+        }
+      }
+    }
+
+    //获取后续的分类
+    List<AssetsCategoryGroup> getNextLevel(
+        AssetsCategoryGroup parent, List<AssetsCategoryGroup> list, int lv) {
+      List<AssetsCategoryGroup> category = [];
+
+      int i = 0;
+      int j = 10000000;
+      while (i <= lv) {
+        j = j ~/ 10;
+        i++;
+      }
+      for (var value in list) {
+        int code = value.code - parent.code;
+        if (code == (j * (category.length + 1)) && (code ~/ j == category.length + 1)) {
+          category.add(value);
+        } else if (code ~/ j == category.length && category.isNotEmpty) {
+          category[category.length - 1].nextLevel.add(value);
+        }
+      }
+      for (var value1 in category) {
+        int nextLv = lv+1;
+        if (value1.nextLevel.isNotEmpty) {
+          var data = getNextLevel(value1, value1.nextLevel, nextLv);
+          if(data.isEmpty){
+            nextLv++;
+            value1.nextLevel = getNextLevel(value1, value1.nextLevel, nextLv);
+          }
+        }
+      }
+      return category;
+    }
+
+    for (var element in category) {
+      if (element.nextLevel.isNotEmpty) {
+        element.nextLevel = getNextLevel(element, element.nextLevel, 2);
+      }
+    }
+
+    return category;
+  }
+}
+
+class AssetsCategoryGroup {
+  late String name;
+  late  int code;
+  late String id;
+  late List<AssetsCategoryGroup> nextLevel;
+
+  AssetsCategoryGroup(
+      {this.name = '',
+      this.code = 0,
+      this.id = '',
+      this.nextLevel = const []});
+
+  AssetsCategoryGroup.formJson( Map<String,dynamic> json){
+    name = json['name'];
+    code = json['code'];
+    id = json['id'];
+    if(json['nextLevel']!=null){
+      nextLevel = [];
+      json['nextLevel'].forEach((json){
+        nextLevel.add(AssetsCategoryGroup.formJson(json));
+      });
+    }
+  }
+
+  Map<String,dynamic> toJson(){
+    return {
+      "name":name,
+      "code":code,
+      "id":id,
+      "nextLevel":nextLevel.map((e) => e.toJson()).toList()
+    };
+  }
+
+  bool get hasNextLevel => nextLevel.isNotEmpty;
+
+  List<AssetsCategoryGroup> get nonLevel{
+    List<AssetsCategoryGroup> data = [];
+
+    for (var value in nextLevel) {
+      if(!value.hasNextLevel){
+        data.add(value);
+      }else{
+        data.addAll(value.nonLevel);
+      }
+    }
+    return data;
+  }
 }

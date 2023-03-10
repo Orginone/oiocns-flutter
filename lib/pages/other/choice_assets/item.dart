@@ -4,14 +4,15 @@ import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/target/species/ispecies.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/common_tree_management.dart';
 
 
 
 
 class Item extends StatelessWidget {
-  final ISpeciesItem speciesItem;
+  final AssetsCategoryGroup categoryGroup;
 
-  const Item({Key? key, required this.speciesItem}) : super(key: key);
+  const Item({Key? key, required this.categoryGroup}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class Item extends StatelessWidget {
                     ),
                     alignment: PlaceholderAlignment.middle),
                 TextSpan(
-                    text: speciesItem.name,
+                    text: categoryGroup.name,
                     style: TextStyle(fontSize: 20.sp, color: Colors.black))
               ],
             ),
@@ -47,7 +48,7 @@ class Item extends StatelessWidget {
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: (){
-                  ISpeciesItem selected = speciesItem.children[index];
+                  AssetsCategoryGroup selected = categoryGroup.nextLevel[index];
                   Get.toNamed(Routers.choiceSpecificAssets,arguments:{"selected":selected});
                 },
                 child: SizedBox(
@@ -59,7 +60,7 @@ class Item extends StatelessWidget {
                       SizedBox(width: 10.w,),
                       Expanded(
                         child: Text(
-                          speciesItem.children[index].name,
+                          categoryGroup.nextLevel[index].name,
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w500,
@@ -71,7 +72,7 @@ class Item extends StatelessWidget {
                 ),
               );
             },
-            itemCount: speciesItem.children.length,
+            itemCount: categoryGroup.nextLevel.length,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
           )

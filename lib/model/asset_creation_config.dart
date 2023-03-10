@@ -136,7 +136,7 @@ class Fields {
 
     data[code!] = defaultData.value??"";
     if(code == "ASSET_TYPE"){
-      data[code!] = defaultData.value?.name;
+      data[code!] = defaultData.value?.title;
     } else if(code == "USER_NAME"){
       data["USER"] = HiveUtils.getUser()?.person?.id;
     }else if(code == "USE_DEPT_NAME"){

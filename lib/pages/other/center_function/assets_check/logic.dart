@@ -29,7 +29,7 @@ class AssetsCheckController extends BaseController<AssetsCheckState> with GetTic
 
   void qrScan() {
     Get.toNamed(Routers.qrScan)?.then((value){
-      CheckNetwork.getQrScanData().then((value){
+      CheckNetwork.getQrScanData(value).then((value){
         if(value!=null){
           Get.toNamed(Routers.generalDetails,arguments: {"assetsType":AssetsType.check,"assets":value});
         }

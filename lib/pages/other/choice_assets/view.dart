@@ -39,9 +39,9 @@ class ChoiceAssetsPage
                   Expanded(
                     child: ListView.builder(
                       itemBuilder: (context, index) {
-                        return Item(speciesItem: state.items[index]);
+                        return Item(categoryGroup: state.assetsCategory[index]);
                       },
-                      itemCount: state.items.length,
+                      itemCount: state.assetsCategory.length,
                     ),
                   ),
                   selectedItem(),

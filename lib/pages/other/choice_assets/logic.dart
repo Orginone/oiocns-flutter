@@ -30,26 +30,23 @@ class ChoiceAssetsController extends BaseController<ChoiceAssetsState> {
     // TODO: implement onReady
     super.onReady();
 
-    state.assetsCategory.addAll(CommonTreeManagement().assetsCategory);
-    state.items.addAll(CommonTreeManagement().species);
+    state.assetsCategory.addAll(CommonTreeManagement().category);
+    state.items.addAll(CommonTreeManagement().nonLevelCategory);
   }
 
   void search(String str) {
     state.searchList.clear();
 
     List<ISpeciesItem> list = [];
-   for (var value in  state.items) {
-     var items = value.getAllLastList();
-     list.addAll(items);
-   }
-    var filter = list
+
+    var filter = state.items
         .where((element) => (element.name.contains(str)));
     if (filter.isNotEmpty) {
       state.searchList.addAll(filter);
     }
   }
 
-  void selectItem(ISpeciesItem item) {
+  void selectItem(AssetsCategoryGroup item) {
     state.selectedAsset.value = item;
   }
 

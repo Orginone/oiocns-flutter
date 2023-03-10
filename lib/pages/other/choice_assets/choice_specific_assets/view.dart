@@ -5,7 +5,9 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/dart/core/target/species/ispecies.dart';
 import 'package:orginone/pages/other/choice_assets/logic.dart';
+import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 
 import '../state.dart';
 import 'logic.dart';
@@ -20,14 +22,8 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
 
   @override
   Widget buildView() {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(state.selectedSpecies.name),
-        centerTitle: true,
-        backgroundColor: XColors.themeColor,
-        elevation: 0,
-      ),
-      backgroundColor: Colors.grey.shade200,
+    return GyScaffold(
+      titleName: state.selectedCategory.name,
       body: SafeArea(
         child: Column(
           children: [
@@ -68,7 +64,7 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
       child: Obx(() {
         Widget nextStep = Container();
         bool verification = state.selectedSecondLevelAsset.value != null &&
-            (state.selectedSecondLevelAsset.value!.children.isNotEmpty);
+            (state.selectedSecondLevelAsset.value!.nextLevel.isNotEmpty);
 
         TextStyle selectedTextStyle =
         TextStyle(fontSize: 20.sp, color: Colors.black);
@@ -111,7 +107,7 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
                         ),
                         alignment: PlaceholderAlignment.middle),
                     TextSpan(
-                        text: state.selectedSpecies.name,
+                        text: state.selectedCategory.name,
                         style: verification
                             ? unSelectedTextStyle
                             : selectedTextStyle)
@@ -127,10 +123,10 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
   }
 
   Widget listView() {
-    if (state.selectedSpecies.isAllLast()) {
+    if (!state.selectedCategory.hasNextLevel) {
       return ListView.builder(
         itemBuilder: (context, index) {
-          var item = state.selectedSpecies.children[index];
+          var item = state.selectedCategory.nextLevel[index];
           return Obx(() {
             return CommonWidget.commonRadioTextWidget(
                 item.name ?? "", item,
@@ -140,7 +136,7 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
                 });
           });
         },
-        itemCount: state.selectedSpecies.children.length,
+        itemCount: state.selectedCategory.nextLevel.length,
       );
     }
     return Row(
@@ -151,7 +147,7 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
             color: Colors.blue.shade50,
             child: ListView.builder(
               itemBuilder: (context, index) {
-                var item = state.selectedSpecies.children[index];
+                var item = state.selectedCategory.nextLevel[index];
                 return Obx(() {
                   return GestureDetector(
                     onTap: () {
@@ -177,7 +173,7 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
                   );
                 });
               },
-              itemCount: state.selectedSpecies.children
+              itemCount: state.selectedCategory.nextLevel
                   .length,
             ),
           ),
@@ -187,15 +183,21 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
           child: Container(
             color: Colors.white,
             child: Obx(() {
+              var category=state
+                  .selectedCategory
+                  .nextLevel[state.selectedChildIndex.value];
+              if(!category.hasNextLevel){
+                category.nextLevel.add(AssetsCategoryGroup.formJson(category.toJson()));
+              }
+
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  var item = state
-                      .selectedSpecies
-                      .children[state.selectedChildIndex.value]
-                      .children[index];
-                  if (state
-                      .selectedSpecies.children[state.selectedChildIndex.value]
-                      .isAllLast()) {
+                  AssetsCategoryGroup  item = state
+                      .selectedCategory
+                      .nextLevel[state.selectedChildIndex.value]
+                      .nextLevel[index];
+
+                  if (!item.hasNextLevel) {
                     return Obx(() {
                       return CommonWidget.commonRadioTextWidget(
                           item.name, item,
@@ -207,8 +209,8 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
                   }
                   return GestureDetector(
                     onTap: () {
-                      controller.selectLevelItem(state.selectedSpecies
-                          .children[state.selectedChildIndex.value], index);
+                      controller.selectLevelItem(state.selectedCategory
+                          .nextLevel[state.selectedChildIndex.value], index);
                     },
                     child: Container(
                       width: double.infinity,
@@ -222,9 +224,9 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
                   );
                 },
                 itemCount: state
-                    .selectedSpecies
-                    .children[state.selectedChildIndex.value]
-                    .children
+                    .selectedCategory
+                    .nextLevel[state.selectedChildIndex.value]
+                    .nextLevel
                     .length,
               );
             }),
@@ -238,8 +240,8 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
     int assetLength = state
         .selectedSecondLevelAsset
         .value!
-        .children[state.selectedSecondLevelChildIndex.value]
-        .children
+        .nextLevel[state.selectedSecondLevelChildIndex.value]
+        .nextLevel
         .length;
 
     return Row(
@@ -251,9 +253,9 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
             child: ListView.builder(
               itemBuilder: (context, index) {
                 var item = state
-                    .selectedSpecies
-                    .children[state.selectedChildIndex.value]
-                    .children[index];
+                    .selectedCategory
+                    .nextLevel[state.selectedChildIndex.value]
+                    .nextLevel[index];
                 return Obx(() {
                   return GestureDetector(
                     onTap: () {
@@ -282,8 +284,8 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
                   );
                 });
               },
-              itemCount: state.selectedSpecies
-                  .children[state.selectedChildIndex.value].children.length,
+              itemCount: state.selectedCategory
+                  .nextLevel[state.selectedChildIndex.value].nextLevel.length,
             ),
           ),
         ),
@@ -294,17 +296,17 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
             child: Obx(() {
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  ISpeciesItem item;
+                  AssetsCategoryGroup item;
 
                   if (assetLength == 0) {
                     item = state.selectedSecondLevelAsset.value!
-                        .children[state.selectedSecondLevelChildIndex.value];
+                        .nextLevel[state.selectedSecondLevelChildIndex.value];
                   } else {
                     item = state
                         .selectedSecondLevelAsset
                         .value!
-                        .children[state.selectedSecondLevelChildIndex.value]
-                        .children[index];
+                        .nextLevel[state.selectedSecondLevelChildIndex.value]
+                        .nextLevel[index];
                   }
 
                   return Obx(() {

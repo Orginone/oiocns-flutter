@@ -34,7 +34,7 @@ class CreateClaimState extends BaseGetState {
           Config c = config.config![1].toNewConfig();
           for (var element in c.fields!) {
             if (element.code == "ASSET_TYPE") {
-              element.defaultData.value = CommonTreeManagement().findSpeciesTree(assetsJson[element.code!]??"");
+              element.defaultData.value = CommonTreeManagement().findCategoryTree(assetsJson[element.code!]??"");
             } else if(element.code == "SFXC" && assetsJson[element.code!]!=null){
               element.defaultData.value = {assetsJson[element.code!]?"是":"否":assetsJson[element.code!]};
             }else {

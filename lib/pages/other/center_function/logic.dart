@@ -20,7 +20,7 @@ class CenterFunctionController extends BaseController<CenterFunctionState> with 
  void qrScan() {
    Get.toNamed(Routers.qrScan)?.then((value) {
      if (value != null) {
-       AssetNetWork.getQrScanData().then((value){
+       AssetNetWork.getQrScanData(value).then((value){
          if(value!=null){
            Get.toNamed(Routers.assetsDetails,arguments: {"assets":value});
          }
