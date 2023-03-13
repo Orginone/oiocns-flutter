@@ -103,19 +103,4 @@ class CreateClaimController extends BaseController<CreateClaimState> {
     addedDraft = true;
     ClaimNetWork.creteClaim(basic: state.config.config?[0].fields??[], detail: state.detailedData,isDraft: isDraft,isEdit: state.isEdit);
   }
-
-  void functionAlloc(Fields e) {
-    fields = e;
-    if (e.type == "router") {
-      Get.toNamed(e.router!);
-    }
-    if (e.type == "select") {
-      PickerUtils.showListStringPicker(context, titles: e.select!.values.toList(),
-          callback: (str) {
-        int index = e.select!.values.toList().indexOf(str);
-        dynamic key = e.select!.keys.toList()[index];
-        e.defaultData.value = {key: str};
-      });
-    }
-  }
 }

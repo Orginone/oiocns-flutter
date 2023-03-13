@@ -4,6 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/hive_utils.dart';
+import 'package:orginone/widget/bottom_sheet_dialog.dart';
 
 part 'asset_creation_config.g.dart';
 
@@ -107,7 +108,7 @@ class Fields {
   int? maxLine;
   Rxn<dynamic> defaultData = Rxn<dynamic>();
   TextEditingController? controller;
-  VoidCallback? function;
+  late VoidCallback function;
   @HiveField(10)
   double? marginTop;
   @HiveField(11)
@@ -157,6 +158,19 @@ class Fields {
         type == "text") {
       defaultData.value = HiveUtils.getUser()?.userName;
     }
+    function = (){
+      if (type == "router") {
+        Get.toNamed(router!);
+      }
+      if (type == "select") {
+        PickerUtils.showListStringPicker(Get.context!, titles: select!.values.toList(),
+            callback: (str) {
+              int index = select!.values.toList().indexOf(str);
+              dynamic key = select!.keys.toList()[index];
+              defaultData.value = {key: str};
+            });
+      }
+    };
   }
 
   bool get isBillCode => code == "BILL_CODE";

@@ -124,9 +124,4 @@ class CreateTransferController extends BaseController<CreateTransferState> {
   //   return true;
   // }
 
-  void functionAlloc(Fields e) {
-    if (e.type == "router") {
-      Get.toNamed(e.router!);
-    }
-  }
 }

@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/pages/other/assets_config.dart';
-import 'package:orginone/util/department_management.dart';
-import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/shine_widget.dart';
@@ -97,9 +93,6 @@ class CreateClaimPage
                 : Container(),
           ),
           ...config.fields!.map((e){
-            e.function = (){
-              controller.functionAlloc(e);
-            };
             Widget child = testShine[e.type??""]!(e,isEdit: state.isEdit,assetsType: AssetsType.claim);
             return child;
           }).toList(),

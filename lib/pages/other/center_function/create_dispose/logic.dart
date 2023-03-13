@@ -102,14 +102,4 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
         isDraft: isDraft,isEdit: state.isEdit);
   }
 
-  void functionAlloc(Fields e) {
-    if (e.type == "select") {
-      PickerUtils.showListStringPicker(context, titles: e.select!.values.toList(),
-          callback: (str) {
-            int index = e.select!.values.toList().indexOf(str);
-            dynamic key = e.select!.keys.toList()[index];
-            e.defaultData.value = {key: str};
-          });
-    }
-  }
 }

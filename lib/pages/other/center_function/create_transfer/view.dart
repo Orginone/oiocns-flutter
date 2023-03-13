@@ -58,9 +58,6 @@ class CreateTransferPage
         children: [
           CommonWidget.commonHeadInfoWidget(state.config.config![0].title??""),
           ...state.config.config![0].fields!.map((e){
-            e.function = (){
-              controller.functionAlloc(e);
-            };
             Widget child = testShine[e.type??""]!(e,isEdit: state.isEdit,assetsType: AssetsType.transfer);
             return child;
           }),

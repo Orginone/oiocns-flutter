@@ -112,9 +112,4 @@ class CreateHandOverController extends BaseController<CreateHandOverState> {
 
   }
 
-  void functionAlloc(Fields e) {
-    if (e.type == "router") {
-      Get.toNamed(e.router!);
-    }
-  }
 }
