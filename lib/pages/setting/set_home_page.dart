@@ -107,7 +107,7 @@ class SetHomePage extends BaseView<SetHomeController> {
 
   List<Widget> _getItems() {
     List<Widget> children = [];
-    debugPrint("--->size:${map.length}");
+    // debugPrint("--->size:${map.length}");
     map.forEach((key, value) {
       children.add(CardChildWidget(key, value));
     });
@@ -124,7 +124,7 @@ class CardChildWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("--->key:item$itemName | value :${value}");
+    // debugPrint("--->key:item$itemName | value :${value}");
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
