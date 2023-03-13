@@ -1,23 +1,28 @@
-import { kernel } from './../../base/index';
-import BaseTarget from './base';
-import { model, schema } from '../../base';
+import { kernel } from "./../../base/index";
+import BaseTarget from "./base";
+import { model, schema } from "../../base";
 
 export default class FlowTarget extends BaseTarget {
   defines: schema.XFlowDefine[] = [];
-  defineRelations: schema.XFlowRelation[] = [];
+  defineRelations: schema.XOperation[] = [];
   async getDefines(reload: boolean = false): Promise<schema.XFlowDefine[]> {
     if (!reload && this.defines.length > 0) {
       return this.defines;
     }
-
-    const res = await kernel.queryDefine({ id: this.target.id });
+    const res = await kernel.queryDefine({
+      speciesId: this.target.id,
+      spaceId: "",
+      page: { offset: 0, limit: 1, filter: "" },
+    });
 
     if (res.success && res.data.result) {
       this.defines = res.data.result;
     }
     return this.defines;
   }
-  async queryFlowRelation(reload: boolean = false): Promise<schema.XFlowRelation[]> {
+  async queryFlowRelation(
+    reload: boolean = false
+  ): Promise<schema.XOperation[]> {
     if (!reload && this.defineRelations.length > 0) {
       return this.defineRelations;
     }
@@ -30,9 +35,12 @@ export default class FlowTarget extends BaseTarget {
     return this.defineRelations;
   }
   async publishDefine(
-    data: Omit<model.CreateDefineReq, 'belongId'>,
+    data: Omit<model.CreateDefineReq, "belongId">
   ): Promise<schema.XFlowDefine> {
-    const res = await kernel.publishDefine({ ...data, belongId: this.target.id });
+    const res = await kernel.publishDefine({
+      ...data,
+      belongId: this.target.id,
+    });
     if (res.success) {
       if (data.id) {
         this.defines = this.defines.filter((a) => {
@@ -52,28 +60,13 @@ export default class FlowTarget extends BaseTarget {
     }
     return res.success;
   }
-  async createInstance(data: model.FlowInstanceModel): Promise<schema.XFlowInstance> {
+  async createInstance(
+    data: model.FlowInstanceModel
+  ): Promise<schema.XFlowInstance> {
     return (await kernel.createInstance(data)).data;
   }
-  async bindingFlowRelation(
-    data: model.FlowRelationModel,
-  ): Promise<schema.XFlowRelation> {
+  async bindingFlowRelation(data: model.FlowRelationModel): Promise<boolean> {
     const res = await kernel.createFlowRelation(data);
-    if (res.success) {
-      this.defineRelations = this.defineRelations.filter(
-        (a) => a.productId != data.productId || a.functionCode != data.functionCode,
-      );
-      this.defineRelations.push(res.data);
-    }
     return res.data;
-  }
-  async unbindingFlowRelation(data: model.FlowRelationModel): Promise<boolean> {
-    const res = await kernel.deleteFlowRelation(data);
-    if (res.success) {
-      this.defineRelations = this.defineRelations.filter(
-        (a) => a.productId != data.productId || a.functionCode != data.functionCode,
-      );
-    }
-    return res.success;
   }
 }

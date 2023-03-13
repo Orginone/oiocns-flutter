@@ -1,5 +1,5 @@
-import { IIdentity } from './iidentity';
-import { model, schema } from '@/ts/base';
+import { IIdentity } from "./iidentity";
+import { model, schema } from "@/ts/base";
 
 export interface IAuthority {
   /** 职权Id */
@@ -28,8 +28,13 @@ export interface IAuthority {
     name: string,
     code: string,
     ispublic: boolean,
-    remark: string,
+    remark: string
   ): Promise<model.ResultType<schema.XAuthority>>;
+  /**
+   * 删除职权
+   * @returns
+   */
+  delete(): Promise<model.ResultType<any>>;
   /**
    * 删除子职权
    * @param id 子职权Id
@@ -48,7 +53,7 @@ export interface IAuthority {
     name: string,
     code: string,
     ispublic: boolean,
-    remark: string,
+    remark: string
   ): Promise<model.ResultType<schema.XAuthority>>;
   /**
    * 查询指定职权下的身份列表
@@ -56,10 +61,4 @@ export interface IAuthority {
    * @returns
    */
   queryAuthorityIdentity(reload: boolean): Promise<IIdentity[]>;
-  /**
-   * 查询职权子职权
-   *  @param reload 是否强制刷新
-   * @returns
-   */
-  getSubAuthoritys(reload: boolean): Promise<IAuthority[]>;
 }

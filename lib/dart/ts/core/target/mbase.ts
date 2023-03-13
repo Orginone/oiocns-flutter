@@ -1,11 +1,11 @@
-import { IMarket, WebApp } from '@/ts/core/market';
-import { common, kernel, model, schema } from '../../base';
-import { Market } from '../market';
-import { ProductType, TargetType } from '../enum';
-import { IMTarget } from './itarget';
-import FlowTarget from './flow';
-import IProduct from '../market/iproduct';
-import { XOrder } from '@/ts/base/schema';
+import { IMarket, WebApp } from "@/ts/core/market";
+import { common, kernel, model, schema } from "../../base";
+import { Market } from "../market";
+import { ProductType, TargetType } from "../enum";
+import { IMTarget } from "./itarget";
+import FlowTarget from "./flow";
+import IProduct from "../market/iproduct";
+import { XOrder } from "@/ts/base/schema";
 
 export default class MarketTarget extends FlowTarget implements IMTarget {
   joinedMarkets: Market[];
@@ -45,7 +45,7 @@ export default class MarketTarget extends FlowTarget implements IMTarget {
       id: this.target.id,
       page: {
         offset: 0,
-        filter: '',
+        filter: "",
         limit: common.Constants.MAX_UINT_8,
       },
     });
@@ -65,7 +65,7 @@ export default class MarketTarget extends FlowTarget implements IMTarget {
     }
     const res = await kernel.queryOwnMarket({
       id: this.target.id,
-      page: { offset: 0, limit: common.Constants.MAX_UINT_16, filter: '' },
+      page: { offset: 0, limit: common.Constants.MAX_UINT_16, filter: "" },
     });
     if (res.success && res.data.result) {
       this.joinedMarkets = res.data.result.map((a) => {
@@ -88,7 +88,7 @@ export default class MarketTarget extends FlowTarget implements IMTarget {
   }
   public async getBuyOrders(
     status: number,
-    page: model.PageRequest,
+    page: model.PageRequest
   ): Promise<schema.XOrderArray> {
     return (
       await kernel.queryBuyOrderList({
@@ -100,7 +100,7 @@ export default class MarketTarget extends FlowTarget implements IMTarget {
   }
   public async getSellOrders(
     status: number,
-    page: model.PageRequest,
+    page: model.PageRequest
   ): Promise<schema.XOrderDetailArray> {
     const res = await kernel.querySellOrderList({
       id: this.target.id,
@@ -116,7 +116,7 @@ export default class MarketTarget extends FlowTarget implements IMTarget {
         page: {
           offset: 0,
           limit: common.Constants.MAX_UINT_16,
-          filter: '',
+          filter: "",
         },
       })
     ).data;
@@ -130,7 +130,7 @@ export default class MarketTarget extends FlowTarget implements IMTarget {
       page: {
         offset: 0,
         limit: common.Constants.MAX_UINT_16,
-        filter: '',
+        filter: "",
       },
     });
     if (res.success && res.data?.result != undefined) {
@@ -139,7 +139,8 @@ export default class MarketTarget extends FlowTarget implements IMTarget {
     return this.joinMarketApplys;
   }
   public async applyJoinMarket(id: string): Promise<boolean> {
-    return (await kernel.applyJoinMarket({ id: id, belongId: this.target.id })).success;
+    return (await kernel.applyJoinMarket({ id: id, belongId: this.target.id }))
+      .success;
   }
   public async cancelJoinMarketApply(id: string): Promise<boolean> {
     const res = await kernel.cancelJoinMarket({
@@ -157,19 +158,25 @@ export default class MarketTarget extends FlowTarget implements IMTarget {
   public async queryPublicApproval(): Promise<schema.XMerchandiseArray> {
     return (
       await kernel.queryPublicApproval({
-        id: this.target.typeName == TargetType.Person ? '0' : this.target.id,
+        id: this.target.typeName == TargetType.Person ? "0" : this.target.id,
         page: {
           offset: 0,
           limit: common.Constants.MAX_UINT_16,
-          filter: '',
+          filter: "",
         },
       })
     ).data;
   }
-  public async approvalJoinMarketApply(id: string, status: number): Promise<boolean> {
+  public async approvalJoinMarketApply(
+    id: string,
+    status: number
+  ): Promise<boolean> {
     return (await kernel.approvalJoinApply({ id, status })).success;
   }
-  public async approvalPublishApply(id: string, status: number): Promise<boolean> {
+  public async approvalPublishApply(
+    id: string,
+    status: number
+  ): Promise<boolean> {
     return (await kernel.approvalMerchandise({ id, status })).success;
   }
   public async createMarket({
@@ -178,13 +185,17 @@ export default class MarketTarget extends FlowTarget implements IMTarget {
     remark,
     samrId,
     photo,
-    ispublic = true,
+    joinPublic = true,
+    sellPublic = false,
+    buyPublic = false,
   }: {
     name: string;
     code: string;
     remark: string;
     samrId: string;
-    ispublic: boolean;
+    joinPublic: boolean;
+    sellPublic: boolean;
+    buyPublic: boolean;
     photo: string;
   }): Promise<IMarket | undefined> {
     const res = await kernel.createMarket({
@@ -193,8 +204,10 @@ export default class MarketTarget extends FlowTarget implements IMTarget {
       remark,
       samrId,
       photo,
+      joinPublic,
+      sellPublic,
+      buyPublic,
       id: undefined,
-      public: ispublic,
       belongId: this.target.id,
     });
     if (res.success) {
@@ -204,7 +217,7 @@ export default class MarketTarget extends FlowTarget implements IMTarget {
     }
   }
   public async createProduct(
-    data: Omit<model.ProductModel, 'id' | 'belongId'>,
+    data: Omit<model.ProductModel, "id" | "belongId">
   ): Promise<IProduct | undefined> {
     const res = await kernel.createProduct({
       ...data,
@@ -261,7 +274,9 @@ export default class MarketTarget extends FlowTarget implements IMTarget {
     }
     return false;
   }
-  public async getUsefulProduct(reload: boolean = false): Promise<schema.XProduct[]> {
+  public async getUsefulProduct(
+    reload: boolean = false
+  ): Promise<schema.XProduct[]> {
     if (!reload && this.usefulProduct.length > 0) {
       return this.usefulProduct;
     }
@@ -276,9 +291,13 @@ export default class MarketTarget extends FlowTarget implements IMTarget {
   }
   public async getUsefulResource(
     id: string,
-    reload: boolean = false,
+    reload: boolean = false
   ): Promise<schema.XResource[]> {
-    if (!reload && this.usefulResource.has(id) && this.usefulResource[id].length > 0) {
+    if (
+      !reload &&
+      this.usefulResource.has(id) &&
+      this.usefulResource[id].length > 0
+    ) {
       return this.usefulResource[id];
     }
     const res = await kernel.queryUsefulResource({
@@ -296,7 +315,7 @@ export default class MarketTarget extends FlowTarget implements IMTarget {
     name: string,
     code: string,
     spaceId: string,
-    merchandiseIds: string[],
+    merchandiseIds: string[]
   ): Promise<XOrder> {
     return (
       await kernel.createOrder({

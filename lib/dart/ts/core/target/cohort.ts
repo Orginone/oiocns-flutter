@@ -1,7 +1,7 @@
-import { TargetType } from '../enum';
-import BaseTarget from './base';
-import { schema } from '../../base';
-import { ICohort } from './itarget';
+import { TargetType } from "../enum";
+import BaseTarget from "./base";
+import { schema } from "../../base";
+import { ICohort } from "./itarget";
 
 export default class Cohort extends BaseTarget implements ICohort {
   private _onDeleted: Function;

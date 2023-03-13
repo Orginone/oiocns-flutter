@@ -6,12 +6,12 @@ import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/authority/identity.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
-import 'package:orginone/dart/core/target/species/ispecies.dart';
-import 'package:orginone/dart/core/target/species/species.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../base/common/uint.dart';
 import '../enum.dart';
+import '../thing/ispecies.dart';
+import '../thing/species.dart';
 import 'itarget.dart';
 
 class BaseTarget extends ITarget {
@@ -247,8 +247,7 @@ class BaseTarget extends ITarget {
     List<TargetType> typeNames,
     String spaceId,
   ) async {
-    typeNames =
-        typeNames.where((a) => joinTargetType.contains(a)).toList();
+    typeNames = typeNames.where((a) => joinTargetType.contains(a)).toList();
     if (typeNames.isNotEmpty) {
       final res = await kernel.queryJoinedTargetById(IDReqJoinedModel(
           id: target.id,
@@ -367,8 +366,9 @@ class BaseTarget extends ITarget {
       return authorityTree;
     }
     await getOwnIdentitys(reload: reload);
-    final res = await kernel.queryAuthorityTree(IDBelongReq(
-      id: target.id,
+    final res = await kernel.queryAuthorityTree(IdSpaceReq(
+      id: '0',
+      spaceId: target.id,
       page: PageRequest(
         offset: 0,
         filter: '',
@@ -379,17 +379,6 @@ class BaseTarget extends ITarget {
       authorityTree = Authority(res.data!, id);
     }
     return authorityTree;
-  }
-
-  @override
-  Future<ISpeciesItem?> loadSpeciesTree({bool reload = false}) async {
-    if (reload || speciesTree != null) {
-      final res = await kernel.querySpeciesTree(IDBelongReq(id: id));
-      if (res.success) {
-        speciesTree = SpeciesItem(res.data!, null);
-      }
-    }
-    return speciesTree;
   }
 
   @override

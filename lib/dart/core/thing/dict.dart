@@ -1,7 +1,8 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
-import 'package:orginone/dart/core/target/species/idict.dart';
+
+import 'idict.dart'; 
 
 // 分类系统项实现
 class Dict extends IDict {

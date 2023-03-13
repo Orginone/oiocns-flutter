@@ -1,24 +1,21 @@
-import consts from '../consts';
-import { TargetType } from '../enum';
-import { appendTarget } from './targetMap';
-import { kernel, model, common, schema, parseAvatar } from '../../base';
-import Authority from './authority/authority';
-import { IAuthority } from './authority/iauthority';
-import { IIdentity } from './authority/iidentity';
-import { ITarget, TargetParam } from './itarget';
-import Identity from './authority/identity';
-import { generateUuid, logger, sleep } from '@/ts/base/common';
-import { XTarget, XTargetArray } from '@/ts/base/schema';
-import { TargetModel, TargetShare } from '@/ts/base/model';
-import { ISpeciesItem } from './species/ispecies';
-import { SpeciesItem } from './species/species';
+import consts from "../consts";
+import { TargetType } from "../enum";
+import { appendTarget } from "./targetMap";
+import { kernel, model, common, schema, parseAvatar } from "../../base";
+import Authority from "./authority/authority";
+import { IAuthority } from "./authority/iauthority";
+import { IIdentity } from "./authority/iidentity";
+import { ITarget, TargetParam } from "./itarget";
+import Identity from "./authority/identity";
+import { generateUuid, logger, sleep } from "@/ts/base/common";
+import { XTarget, XTargetArray } from "@/ts/base/schema";
+import { TargetModel, TargetShare } from "@/ts/base/model";
 export default class BaseTarget implements ITarget {
   public key: string;
   public typeName: TargetType;
   public subTeamTypes: TargetType[] = [];
   protected memberTypes: TargetType[] = [TargetType.Person];
   public readonly target: schema.XTarget;
-  public speciesTree: ISpeciesItem | undefined;
   public authorityTree: Authority | undefined;
   public ownIdentitys: schema.XIdentity[];
   public identitys: IIdentity[];
@@ -62,7 +59,7 @@ export default class BaseTarget implements ITarget {
     appendTarget(target);
   }
   delete(): Promise<boolean> {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
   async loadMembers(page: model.PageRequest): Promise<XTargetArray> {
     const res = await kernel.querySubTargetById({
@@ -81,7 +78,10 @@ export default class BaseTarget implements ITarget {
   async pullMember(target: XTarget): Promise<boolean> {
     return this.pullMembers([target.id], target.typeName);
   }
-  async pullMembers(ids: string[], type: TargetType | string): Promise<boolean> {
+  async pullMembers(
+    ids: string[],
+    type: TargetType | string
+  ): Promise<boolean> {
     const targetType: TargetType = type as TargetType;
     if (this.memberTypes.includes(targetType)) {
       const res = await kernel.pullAnyToTeam({
@@ -97,7 +97,10 @@ export default class BaseTarget implements ITarget {
   async removeMember(target: XTarget): Promise<boolean> {
     return this.removeMembers([target.id], target.typeName);
   }
-  async removeMembers(ids: string[], type: TargetType | string): Promise<boolean> {
+  async removeMembers(
+    ids: string[],
+    type: TargetType | string
+  ): Promise<boolean> {
     const targetType: TargetType = type as TargetType;
     if (this.memberTypes.includes(targetType)) {
       const res = await kernel.removeAnyOfTeam({
@@ -127,7 +130,7 @@ export default class BaseTarget implements ITarget {
     return false;
   }
   async createIdentity(
-    params: Omit<model.IdentityModel, 'id' | 'belongId'>,
+    params: Omit<model.IdentityModel, "id" | "belongId">
   ): Promise<IIdentity | undefined> {
     const res = await kernel.createIdentity({
       ...params,
@@ -166,7 +169,7 @@ export default class BaseTarget implements ITarget {
       id: this.target.id,
       page: {
         offset: 0,
-        filter: '',
+        filter: "",
         limit: common.Constants.MAX_UINT_16,
       },
     });
@@ -179,7 +182,7 @@ export default class BaseTarget implements ITarget {
   }
 
   protected async createSubTarget(
-    data: Omit<model.TargetModel, 'id'>,
+    data: Omit<model.TargetModel, "id">
   ): Promise<model.ResultType<schema.XTarget>> {
     if (this.createTargetType.includes(data.typeName as TargetType)) {
       const res = await this.createTarget(data);
@@ -199,7 +202,7 @@ export default class BaseTarget implements ITarget {
   protected async deleteSubTarget(
     id: string,
     typeName: string,
-    spaceId: string,
+    spaceId: string
   ): Promise<model.ResultType<any>> {
     return await kernel.deleteTarget({
       id: id,
@@ -224,7 +227,7 @@ export default class BaseTarget implements ITarget {
    */
   protected async searchTargetByName(
     code: string,
-    typeNames: TargetType[],
+    typeNames: TargetType[]
   ): Promise<schema.XTargetArray> {
     typeNames = this.searchTargetType.filter((a) => {
       return typeNames.includes(a);
@@ -252,7 +255,10 @@ export default class BaseTarget implements ITarget {
    * @param typeName 对象
    * @returns
    */
-  public async applyJoin(destId: string, typeName: TargetType): Promise<boolean> {
+  public async applyJoin(
+    destId: string,
+    typeName: TargetType
+  ): Promise<boolean> {
     if (this.joinTargetType.includes(typeName)) {
       const res = await kernel.applyJoinTeam({
         id: destId,
@@ -287,7 +293,7 @@ export default class BaseTarget implements ITarget {
    */
   protected async approvalJoinApply(
     id: string,
-    status: number,
+    status: number
   ): Promise<model.ResultType<any>> {
     return await kernel.joinTeamApproval({
       id,
@@ -296,7 +302,7 @@ export default class BaseTarget implements ITarget {
   }
   protected async getjoinedTargets(
     typeNames: TargetType[],
-    spaceId: string,
+    spaceId: string
   ): Promise<schema.XTargetArray | undefined> {
     typeNames = typeNames.filter((a) => {
       return this.joinTargetType.includes(a);
@@ -308,7 +314,7 @@ export default class BaseTarget implements ITarget {
           typeName: this.target.typeName,
           page: {
             offset: 0,
-            filter: '',
+            filter: "",
             limit: common.Constants.MAX_UINT_16,
           },
           spaceId: spaceId,
@@ -323,7 +329,7 @@ export default class BaseTarget implements ITarget {
    * @returns 返回好友列表
    */
   protected async getSubTargets(
-    typeNames: TargetType[],
+    typeNames: TargetType[]
   ): Promise<model.ResultType<schema.XTargetArray>> {
     return await kernel.querySubTargetById({
       id: this.target.id,
@@ -331,7 +337,7 @@ export default class BaseTarget implements ITarget {
       subTypeNames: typeNames,
       page: {
         offset: 0,
-        filter: '',
+        filter: "",
         limit: common.Constants.MAX_UINT_16,
       },
     });
@@ -365,7 +371,7 @@ export default class BaseTarget implements ITarget {
    * @returns
    */
   protected async createTarget(
-    data: Omit<model.TargetModel, 'id'>,
+    data: Omit<model.TargetModel, "id">
   ): Promise<model.ResultType<schema.XTarget>> {
     if (this.createTargetType.includes(<TargetType>data.typeName)) {
       return await kernel.createTarget({
@@ -400,9 +406,11 @@ export default class BaseTarget implements ITarget {
    * @param teamRemark team备注
    * @returns
    */
-  protected async updateTarget(data: Omit<model.TargetModel, 'id'>): Promise<boolean> {
-    data.teamCode = data.teamCode == '' ? data.code : data.teamCode;
-    data.teamName = data.teamName == '' ? data.name : data.teamName;
+  protected async updateTarget(
+    data: Omit<model.TargetModel, "id">
+  ): Promise<boolean> {
+    data.teamCode = data.teamCode == "" ? data.code : data.teamCode;
+    data.teamName = data.teamName == "" ? data.name : data.teamName;
     let res = await kernel.updateTarget({
       ...data,
       id: this.target.id,
@@ -431,7 +439,8 @@ export default class BaseTarget implements ITarget {
       await this.getOwnIdentitys(true);
     }
     return (
-      this.ownIdentitys.find((a) => codes.includes(a.authority?.code ?? '')) != undefined
+      this.ownIdentitys.find((a) => codes.includes(a.authority?.code ?? "")) !=
+      undefined
     );
   }
 
@@ -452,7 +461,7 @@ export default class BaseTarget implements ITarget {
    * @returns
    */
   public async loadAuthorityTree(
-    reload: boolean = false,
+    reload: boolean = false
   ): Promise<IAuthority | undefined> {
     if (!reload && this.authorityTree != undefined) {
       return this.authorityTree;
@@ -460,9 +469,10 @@ export default class BaseTarget implements ITarget {
     await this.getOwnIdentitys(reload);
     const res = await kernel.queryAuthorityTree({
       id: this.target.id,
+      spaceId: "0",
       page: {
         offset: 0,
-        filter: '',
+        filter: "",
         limit: common.Constants.MAX_UINT_16,
       },
     });
@@ -471,17 +481,4 @@ export default class BaseTarget implements ITarget {
     }
     return this.authorityTree;
   }
-
-  public async loadSpeciesTree(
-    reload: boolean = false,
-  ): Promise<ISpeciesItem | undefined> {
-    if (reload || !this.speciesTree) {
-      const res = await kernel.querySpeciesTree(this.id, '');
-      if (res.success) {
-        this.speciesTree = new SpeciesItem(res.data, undefined);
-      }
-    }
-    return this.speciesTree;
-  }
-
 }

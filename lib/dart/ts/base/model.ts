@@ -1,4 +1,7 @@
 /* eslint-disable no-unused-vars */
+
+import { FlowNode as SchemaFlowNode } from "./schema";
+
 // 请求类型定义
 export type ReqestType = {
   // 模块
@@ -84,6 +87,48 @@ export type IdSpaceReq = {
   spaceId?: string;
   // 分页
   page?: PageRequest;
+};
+
+export type IdSpeciesReq = {
+  // 唯一ID
+  id: string;
+  // 工作空间ID
+  spaceId: string;
+  // 是否递归组织
+  recursionOrg: boolean;
+  // 是否递归分类
+  recursionSpecies: boolean;
+  // 分页
+  page: PageRequest;
+};
+export type IdOperationReq = {
+  // 唯一ID
+  id: string;
+  // 工作空间ID
+  spaceId: string;
+  // 是否职权过滤
+  filterAuth: boolean;
+  // 是否递归组织
+  recursionOrg: boolean;
+  // 是否递归分类
+  recursionSpecies: boolean;
+  // 分页
+  page: PageRequest;
+};
+export type IdArraySpaceReq = {
+  // 唯一ID
+  ids: string[];
+  // 工作空间ID
+  spaceId: string;
+};
+
+export type QueryDefineReq = {
+  // 分类ID
+  speciesId: string;
+  // 空间ID
+  spaceId: string;
+  // 分页
+  page: PageRequest;
 };
 
 export type SpaceAuthReq = {
@@ -338,23 +383,43 @@ export type OperationModel = {
   belongId: string;
   // 类别Id
   speciesId: string;
+  // 流程定义Id
+  defineId?: string;
+  // 业务发起职权Id
+  beginAuthId?: string;
+  // 子项列表
+  items: OperationItem[];
 };
 
 export type OperationItemModel = {
-  // 唯一ID
-  id?: string;
+  // 创建组织/个人
+  spaceId: string;
+  // 业务Id
+  operationId: string;
+  // 子项集合
+  operationItems: OperationItem[];
+};
+
+export type OperationRelation = {
+  // 规则
+  rule: string;
+  // 备注
+  speciesId: string;
+};
+
+export type OperationItem = {
   // 名称
   name: string;
   // 编号
   code: string;
+  // 绑定的特性ID
+  attrId: string;
   // 规则
   rule: string;
   // 备注
   remark: string;
-  // 创建组织/个人
-  belongId: string;
-  // 业务Id
-  operationId: string;
+  // 子表项下的分类Id集合
+  speciesIds: string[];
 };
 
 export type AuthorityModel = {
@@ -451,8 +516,12 @@ export type MarketModel = {
   samrId: string;
   // 备注
   remark: string;
-  // 是否公开
-  public: boolean;
+  // 加入操作是否公开
+  joinPublic: boolean;
+  // 售卖操作是否公开
+  sellPublic: boolean;
+  // 购买操作是否公开
+  buyPublic: boolean;
   // 图片
   photo: string;
 };
@@ -779,10 +848,8 @@ export type ChatModel = {
 };
 
 export type FlowInstanceModel = {
-  // 应用Id
-  productId: string;
-  // 功能标识编号
-  functionCode: string;
+  // 流程定义Id
+  defineId: string;
   // 空间Id
   SpaceId: string;
   // 展示内容
@@ -807,11 +874,17 @@ export type CreateDefineReq = {
   // 备注
   remark: string;
   // 节点信息
-  resource?: FlowNode;
+  resource?: SchemaFlowNode;
   // 归属Id
   belongId: string;
   // 流程字段json
   fields?: string;
+  //分类id
+  speciesId?: string;
+  // 职权ID
+  authId?: string;
+  //是否公开
+  public?: boolean;
 };
 
 export type FlowNode = {
@@ -824,6 +897,7 @@ export type FlowNode = {
   props: Prop;
   children: FlowNode;
   branches: Branche[];
+  belongId: string;
 };
 
 export type Branche = {
@@ -834,6 +908,7 @@ export type Branche = {
   type: string;
   conditions: Condition[];
   children: FlowNode;
+  belongId?: string;
 };
 
 export type Condition = {
@@ -871,23 +946,19 @@ export type Refuse = {
 export type FlowRelationModel = {
   //流程定义Id
   defineId: string;
-  // 应用Id
-  productId: string;
-  // 功能标识编号
-  functionCode: string;
-  // 空间Id
-  spaceId: string;
+  // 业务标准Id
+  operationId: string;
 };
 
 export type FlowReq = {
-  // 应用Id
-  productId: string;
+  // 流程实例Id
+  id?: string;
   // 空间Id
   spaceId?: string;
   // 状态
-  status: number;
+  status?: number;
   // 分页
-  page?: PageRequest;
+  page: PageRequest;
 };
 
 export type ApprovalTaskReq = {
@@ -944,14 +1015,14 @@ export type FileItemModel = {
 
 /** 桶支持的操作 */
 export enum BucketOpreates {
-  List = 'List',
-  Create = 'Create',
-  Rename = 'Rename',
-  Move = 'Move',
-  Copy = 'Copy',
-  Delete = 'Delete',
-  Upload = 'Upload',
-  AbortUpload = 'AbortUpload',
+  List = "List",
+  Create = "Create",
+  Rename = "Rename",
+  Move = "Move",
+  Copy = "Copy",
+  Delete = "Delete",
+  Upload = "Upload",
+  AbortUpload = "AbortUpload",
 }
 
 /** 桶操作携带的数据模型 */
@@ -986,8 +1057,8 @@ export type FileChunkData = {
 
 /** 请求失败 */
 export const badRequest = (
-  msg: string = '请求失败',
-  code: number = 400,
+  msg: string = "请求失败",
+  code: number = 400
 ): ResultType<any> => {
   return { success: false, msg: msg, code: code, data: false };
 };

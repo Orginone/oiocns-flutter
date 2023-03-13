@@ -26,7 +26,9 @@ class Market implements IMarket {
     String code,
     String samrId,
     String remark,
-    bool ispublic,
+    bool joinPublic,
+    bool buyPublic,
+    bool sellPublic,
     String photo,
   ) async {
     ResultType res = await kernel.updateMarket(MarketModel(
@@ -36,7 +38,9 @@ class Market implements IMarket {
         samrId: samrId,
         remark: remark,
         photo: photo,
-        public: ispublic,
+        joinPublic: joinPublic,
+        buyPublic: buyPublic,
+        sellPublic: sellPublic,
         belongId: market.belongId));
     if (res.success) {
       XMarket xMarket = XMarket(
@@ -44,7 +48,9 @@ class Market implements IMarket {
         code: code,
         samrId: samrId,
         remark: remark,
-        public: ispublic,
+        joinPublic: joinPublic,
+        buyPublic: buyPublic,
+        sellPublic: sellPublic,
         id: market.id,
         photo: photo,
         belongId: market.belongId,

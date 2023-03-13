@@ -1,3 +1,5 @@
+import 'package:orginone/dart/base/schema.dart';
+
 /// 统一返回结构模型
 class ResultType<T> {
   // 代码，成功为200
@@ -243,13 +245,23 @@ class CreateDefineReq {
   // 备注
   late String remark;
 
-  // 节点信息
-  // FlowNode? resource;
+  //节点信息
+  FlowNode? resource;
+
   // 归属Id
   late String belongId;
 
   // 流程字段json
-  String? fields;
+  late String? fields;
+
+  //分类id
+  late String? speciesId;
+
+  // 职权ID
+  late String? authId;
+
+  //是否公开
+  late bool public;
 }
 
 class NameModel {
@@ -473,6 +485,111 @@ class IdSpaceReq {
     json["page"] = page?.toJson();
     return json;
   }
+}
+
+class IdSpeciesReq {
+  // 唯一ID
+  final String id;
+
+  // 工作空间ID
+  final String spaceId;
+  // 是否递归组织
+  final bool recursionOrg;
+  // 是否递归分类
+  final bool recursionSpecies;
+
+  // 分页
+  final PageRequest? page;
+
+  //构造方法
+  IdSpeciesReq({
+    required this.id,
+    required this.spaceId,
+    required this.recursionOrg,
+    required this.recursionSpecies,
+    required this.page,
+  });
+
+  //通过JSON构造
+  IdSpeciesReq.fromJson(Map<String, dynamic> json)
+      : id = json["id"],
+        spaceId = json["spaceId"],
+        recursionOrg = json["recursionOrg"],
+        recursionSpecies = json["recursionSpecies"],
+        page = PageRequest.fromJson(json["page"]);
+
+  //通过动态数组解析成List
+  static List<IdSpaceReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<IdSpaceReq> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(IdSpaceReq.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["spaceId"] = spaceId;
+    json["recursionOrg"] = recursionOrg;
+    json["recursionSpecies"] = recursionSpecies;
+    json["page"] = page?.toJson();
+    return json;
+  }
+}
+
+class IdOperationReq {
+  // 唯一ID
+  final String id;
+  // 工作空间ID
+  final String spaceId;
+  // 是否职权过滤
+  final bool filterAuth;
+  // 是否递归组织
+  final bool recursionOrg;
+  // 是否递归分类
+  final bool recursionSpecies;
+  // 分页
+  final PageRequest page;
+  IdOperationReq({
+    required this.id,
+    required this.spaceId,
+    required this.filterAuth,
+    required this.recursionOrg,
+    required this.recursionSpecies,
+    required this.page,
+  });
+}
+
+class IdArraySpaceReq {
+  // 唯一ID
+  final List<String> ids;
+  // 工作空间ID
+  final String spaceId;
+  IdArraySpaceReq({
+    required this.ids,
+    required this.spaceId,
+  });
+}
+
+class QueryDefineReq {
+  // 分类ID
+  final String speciesId;
+  // 空间ID
+  final String spaceId;
+  // 分页
+  final PageRequest page;
+  QueryDefineReq({
+    required this.speciesId,
+    required this.spaceId,
+    required this.page,
+  });
 }
 
 class SpaceAuthReq {
@@ -1427,6 +1544,15 @@ class OperationModel {
   // 类别Id
   late String? speciesId;
 
+  // 流程定义Id
+  late String? defineId;
+
+  // 业务发起职权Id
+  late String? beginAuthId;
+
+  // 子项列表
+  late List<OperationItem>? items;
+
   // 备注
   final String? remark;
 
@@ -1438,6 +1564,9 @@ class OperationModel {
     this.public,
     this.belongId,
     this.speciesId,
+    this.defineId,
+    this.beginAuthId,
+    this.items,
     this.remark,
   });
 
@@ -1480,47 +1609,27 @@ class OperationModel {
 }
 
 class OperationItemModel {
-  // 唯一ID
-  final String? id;
-
-  // 名称
-  final String? name;
-
-  // 编号
-  final String? code;
-
-  // 规则
-  final String? rule;
-
   // 创建组织/个人
-  final String? belongId;
+  final String spaceId;
 
   // 业务Id
-  final String? operationId;
+  final String operationId;
 
-  // 备注
-  final String? remark;
+  // 子项集合
+  final List<OperationItem> operationItems;
 
   //构造方法
   OperationItemModel({
-    this.id,
-    this.name,
-    this.code,
-    this.rule,
-    this.belongId,
-    this.operationId,
-    this.remark,
+    required this.spaceId,
+    required this.operationId,
+    required this.operationItems,
   });
 
   //通过JSON构造
   OperationItemModel.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        name = json["name"],
-        code = json["code"],
-        rule = json["rule"],
-        belongId = json["belongId"],
+      : spaceId = json["spaceId"],
         operationId = json["operationId"],
-        remark = json["remark"];
+        operationItems = json["operationItems"];
 
   //通过动态数组解析成List
   static List<OperationItemModel> fromList(List<dynamic>? list) {
@@ -1539,15 +1648,53 @@ class OperationItemModel {
   //转成JSON
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["name"] = name;
-    json["code"] = code;
-    json["rule"] = rule;
-    json["belongId"] = belongId;
+    json["spaceId"] = spaceId;
     json["operationId"] = operationId;
-    json["remark"] = remark;
+    json["operationItems"] = operationItems;
     return json;
   }
+}
+
+class OperationRelation {
+  // 规则
+  final String? rule;
+
+  // 备注
+  final String speciesId;
+
+  OperationRelation({
+    this.rule,
+    required this.speciesId,
+  });
+}
+
+class OperationItem {
+  // 名称
+  final String name;
+
+  // 编号
+  final String code;
+
+  // 绑定的特性ID
+  final String attrId;
+
+  // 规则
+  final String rule;
+
+  // 备注
+  final String remark;
+
+  // 子表项下的分类Id集合
+  final List<String> speciesIds;
+
+  OperationItem({
+    required this.name,
+    required this.code,
+    required this.attrId,
+    required this.rule,
+    required this.remark,
+    required this.speciesIds,
+  });
 }
 
 class ThingModel {
@@ -2155,8 +2302,14 @@ class MarketModel {
   // 备注
   final String? remark;
 
-  // 是否公开
-  final bool? public;
+  // 加入操作是否公开
+  final bool? joinPublic;
+
+  // 售卖操作是否公开
+  final bool? sellPublic;
+
+  // 购买操作是否公开
+  final bool? buyPublic;
 
   // 照片
   final String? photo;
@@ -2169,7 +2322,9 @@ class MarketModel {
     this.belongId,
     this.samrId,
     this.remark,
-    this.public,
+    this.joinPublic,
+    this.sellPublic,
+    this.buyPublic,
     this.photo,
   });
 
@@ -2181,7 +2336,9 @@ class MarketModel {
         belongId = json["belongId"],
         samrId = json["samrId"],
         remark = json["remark"],
-        public = json["public"],
+        joinPublic = json["joinPublic"],
+        sellPublic = json["sellPublic"],
+        buyPublic = json["buyPublic"],
         photo = json["photo"];
 
   //通过动态数组解析成List
@@ -2207,7 +2364,9 @@ class MarketModel {
     json["belongId"] = belongId;
     json["samrId"] = samrId;
     json["remark"] = remark;
-    json["public"] = public;
+    json["joinPublic"] = joinPublic;
+    json["sellPublic"] = sellPublic;
+    json["buyPublic"] = buyPublic;
     json["photo"] = photo;
     return json;
   }
@@ -3695,11 +3854,8 @@ class ChatModel {
 }
 
 class FlowInstanceModel {
-  // 应用Id
-  final String? productId;
-
-  // 功能标识编号
-  final String? functionCode;
+  // 流程定义Id
+  final String defineId;
 
   // 空间Id
   final String? spaceId;
@@ -3721,8 +3877,7 @@ class FlowInstanceModel {
 
   //构造方法
   FlowInstanceModel({
-    this.productId,
-    this.functionCode,
+    required this.defineId,
     this.spaceId,
     this.content,
     this.contentType,
@@ -3733,8 +3888,7 @@ class FlowInstanceModel {
 
   //通过JSON构造
   FlowInstanceModel.fromJson(Map<String, dynamic> json)
-      : productId = json["productId"],
-        functionCode = json["functionCode"],
+      : defineId = json["defineId"],
         spaceId = json["SpaceId"],
         content = json["content"],
         contentType = json["contentType"],
@@ -3759,8 +3913,7 @@ class FlowInstanceModel {
   //转成JSON
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    json["productId"] = productId;
-    json["functionCode"] = functionCode;
+    json["defineId"] = defineId;
     json["SpaceId"] = spaceId;
     json["content"] = content;
     json["contentType"] = contentType;
@@ -3775,29 +3928,19 @@ class FlowRelationModel {
   //流程定义Id
   final String? defineId;
 
-  // 应用Id
-  final String? productId;
-
-  // 功能标识编号
-  final String? functionCode;
-
-  // 空间Id
-  final String? spaceId;
+  // 业务标准Id
+  final String? operationId;
 
   //构造方法
   FlowRelationModel({
     this.defineId,
-    this.productId,
-    this.functionCode,
-    this.spaceId,
+    this.operationId,
   });
 
   //通过JSON构造
   FlowRelationModel.fromJson(Map<String, dynamic> json)
       : defineId = json["defineId"],
-        productId = json["productId"],
-        functionCode = json["functionCode"],
-        spaceId = json["spaceId"];
+        operationId = json["operationId"];
 
   //通过动态数组解析成List
   static List<FlowRelationModel> fromList(List<dynamic>? list) {
@@ -3817,16 +3960,14 @@ class FlowRelationModel {
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json["defineId"] = defineId;
-    json["productId"] = productId;
-    json["functionCode"] = functionCode;
-    json["spaceId"] = spaceId;
+    json["operationId"] = operationId;
     return json;
   }
 }
 
 class FlowReq {
-  // 应用Id
-  final String? productId;
+  // 流程实例Id
+  final String? id;
 
   // 空间Id
   final String? spaceId;
@@ -3839,7 +3980,7 @@ class FlowReq {
 
   //构造方法
   FlowReq({
-    this.productId,
+    this.id,
     this.spaceId,
     this.status,
     this.page,
@@ -3847,7 +3988,7 @@ class FlowReq {
 
   //通过JSON构造
   FlowReq.fromJson(Map<String, dynamic> json)
-      : productId = json["productId"],
+      : id = json["id"],
         spaceId = json["spaceId"],
         status = json["status"],
         page = PageRequest.fromJson(json["page"]);
@@ -3869,7 +4010,7 @@ class FlowReq {
   //转成JSON
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    json["productId"] = productId;
+    json["id"] = id;
     json["spaceId"] = spaceId;
     json["status"] = status;
     json["page"] = page?.toJson();
@@ -3946,8 +4087,9 @@ class TargetShare {
   TargetShare.fromJson(Map<String, dynamic> json)
       : name = json["name"],
         typeName = json["typeName"],
-        avatar = json["avatar"] != null ?
-                FileItemShare.fromJson(json["avatar"]) : null;
+        avatar = json["avatar"] != null
+            ? FileItemShare.fromJson(json["avatar"])
+            : null;
 
   //通过动态数组解析成List
   static List<TargetShare> fromList(List<dynamic>? list) {
