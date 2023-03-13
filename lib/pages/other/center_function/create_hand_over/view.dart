@@ -3,10 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/widget/shine_widget.dart';
 
 import '../../add_asset/item.dart';
 import 'logic.dart';
@@ -52,45 +54,14 @@ class CreateHandOverPage
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CommonWidget.commonHeadInfoWidget("基本信息"),
-          Obx(() {
-            return CommonWidget.commonTextTile(
-              "单据编号",
-              state.orderNum.value,
-              enabled: false,
-              textStyle: TextStyle(
-                  color: Colors.black,
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.w500),
-            );
+          CommonWidget.commonHeadInfoWidget(state.config.config![0].title??""),
+          ...state.config.config![0].fields!.map((e){
+            e.function = (){
+              controller.functionAlloc(e);
+            };
+            Widget child = testShine[e.type??""]!(e,isEdit: state.isEdit,assetsType: AssetsType.handOver);
+            return child;
           }),
-          SizedBox(
-            height: 10.h,
-          ),
-          CommonWidget.commonTextTile("交回人与交回部门", "${HiveUtils
-              .getUser()
-              ?.userName ?? ""}-${DepartmentManagement().currentDepartment?.name ??
-              ""}",
-              enabled: false, showLine: true),
-          Obx(() {
-            return CommonWidget.commonChoiceTile(
-                "交回至人员", state.selectedUser.value?.name ?? "",
-                showLine: true, onTap: () {
-              controller.choicePeople();
-            });
-          }),
-          // Obx(() {
-          //   return CommonWidget.commonChoiceTile(
-          //       "交回至部门", state.selectedDepartment.value?.name ?? "",
-          //       showLine: true, onTap: () {
-          //     controller.choiceDepartment();
-          //   });
-          // }),
-          CommonWidget.commonTextTile("交回原因", "",
-              hint: "请填写交回原因",
-              maxLine: 4,
-              controller: state.reasonController,required: true
-          ),
         ],
       ),
     );

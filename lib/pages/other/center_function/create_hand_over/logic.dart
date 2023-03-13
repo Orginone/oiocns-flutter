@@ -1,5 +1,7 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:orginone/event/choice.dart';
+import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/center_function/create_hand_over/network.dart';
 import 'package:orginone/routers.dart';
@@ -18,28 +20,20 @@ class CreateHandOverController extends BaseController<CreateHandOverState> {
   bool addedDraft = false;
 
   @override
-  void onReady() async {
-    // TODO: implement onReady
-    super.onReady();
-    if (!state.isEdit) {
-      state.orderNum.value =
-          await ProductionOrderUtils.productionSingleOrder("ZCJH");
+  void onReceivedEvent(event) {
+    // TODO: implement onReceivedEvent
+    super.onReceivedEvent(event);
+    if (event is ChoicePeople) {
+      for (var element in state.config.config!) {
+        for (var element in element.fields!) {
+          if (element.code == "USER_NAME") {
+            element.defaultData.value = event.user;
+          }
+        }
+      }
     }
   }
 
-  void choicePeople() {
-    Get.toNamed(Routers.choicePeople)?.then((value) {
-       if(value!=null){
-         state.selectedUser.value = value['user'];
-       }
-    });
-  }
-
-  void choiceDepartment() {
-    Get.toNamed(Routers.choiceDepartment)?.then((value) {
-      state.selectedDepartment.value = value;
-    });
-  }
 
   void jumpAddAsset() {
     Get.toNamed(Routers.addAsset)?.then((value) {
@@ -81,39 +75,46 @@ class CreateHandOverController extends BaseController<CreateHandOverState> {
     create(isDraft: true);
   }
 
-  Future<bool> back() async {
-    if (!addedDraft) {
-      if ((state.reasonController.text.isNotEmpty ||
-              state.selectAssetList.isNotEmpty || state.selectedUser.value!=null) &&
-          !state.isEdit) {
-        YYBottomSheetDialog(context, DraftTips, callback: (i, str) {
-          if (i == 0) {
-            draft();
-          } else if (i == 1) {
-            Get.back();
-          }
-        });
-      }
-    }
-    if (state.isEdit) {
-      return true;
-    }
-    return true;
-  }
+  // Future<bool> back() async {
+  //   if (!addedDraft) {
+  //     if ((state.reasonController.text.isNotEmpty ||
+  //             state.selectAssetList.isNotEmpty || state.selectedUser.value!=null) &&
+  //         !state.isEdit) {
+  //       YYBottomSheetDialog(context, DraftTips, callback: (i, str) {
+  //         if (i == 0) {
+  //           draft();
+  //         } else if (i == 1) {
+  //           Get.back();
+  //         }
+  //       });
+  //     }
+  //   }
+  //   if (state.isEdit) {
+  //     return true;
+  //   }
+  //   return true;
+  // }
 
   void create({bool  isDraft = false}) async{
-    if (state.reasonController.text.trim().isEmpty) {
-      return ToastUtils.showMsg(msg: "请输入交回原因");
+    for (var element in state.config.config![0].fields!) {
+      if(element.required??false){
+        if(element.defaultData.value == null){
+          return ToastUtils.showMsg(msg: element.hint??"");
+        }
+      }
     }
     if (state.selectAssetList.isEmpty) {
       return ToastUtils.showMsg(msg: "请至少选择一项资产");
     }
     addedDraft = isDraft;
     await HandOverNetWork.createHandOver(
-        billCode: state.orderNum.value,
-        remark: state.reasonController.text,
-        assets: state.selectAssetList,
-        user: state.selectedUser.value,isDraft: isDraft,isEdit: state.isEdit);
+        assets: state.selectAssetList, isDraft: isDraft,isEdit: state.isEdit, basic: state.config.config?[0].fields??[]);
 
+  }
+
+  void functionAlloc(Fields e) {
+    if (e.type == "router") {
+      Get.toNamed(e.router!);
+    }
   }
 }

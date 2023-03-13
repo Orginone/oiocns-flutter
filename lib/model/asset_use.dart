@@ -75,7 +75,7 @@ class AssetUse {
 
     submitterName = json['submitterName']??json['SUBMITTER_NAME'];
     // submitUserName = json['submitUserName'];
-    userName = json['USER_NAME'];
+    userName = json['USER_NAME'].toString();
     status = json['status'];
     createTime = DateTime.tryParse(json['CREATE_TIME']??"");
     updateTime = DateTime.tryParse(json['UPDATE_TIME']??"");

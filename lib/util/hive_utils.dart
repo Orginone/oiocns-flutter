@@ -70,6 +70,9 @@ class HiveUtils {
        case "transfer":
          assetConfig = AssetCreationConfig.fromJson(transferConfig);
          break;
+       case "handOver":
+         assetConfig =AssetCreationConfig.fromJson(handOverConfig);
+         break;
      }
    }
 

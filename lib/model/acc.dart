@@ -301,3 +301,61 @@ Map<String, dynamic> transferConfig = {
     }
   ]
 };
+
+Map<String, dynamic> handOverConfig = {
+  "businessName": "资产交回",
+  "businessCode": "handOver",
+  "text": [
+    {
+      "title": "基本信息",
+      "sort": 0,
+      "fields": [
+        {
+          "title": "单据编号",
+          "code": "BILL_CODE",
+          "type": "text",
+          "required": false,
+          "readOnly": true,
+          "regx": null,
+          "hidden": false
+        }, {
+          "title": "交回人",
+          "code": "SUBMITTER_NAME",
+          "type": "text",
+          "readOnly": true,
+          "align": "left",
+          "regx": null,
+          "hidden": false
+        }, {
+          "title": "交回部门",
+          "code": "USE_DEPT_NAME",
+          "type": "text",
+          "readOnly": true,
+          "align": "left",
+          "regx": null,
+          "hidden": false
+        }, {
+          "title": "交回至人员",
+          "code": "USER_NAME",
+          "type": "router",
+          "router": "/choicePeople",
+          "required": false,
+          "readOnly": false,
+          "regx": null,
+          "hidden": false
+        }, {
+          "title": "移交原因",
+          "code": "APPLY_REMARK",
+          "hint": "请填写移交原因",
+          "type": "input",
+          "maxLine": 4,
+          "required": true,
+          "readOnly": false,
+          "regx": null,
+          "hidden": false
+        }
+      ]
+    }
+  ]
+};
+

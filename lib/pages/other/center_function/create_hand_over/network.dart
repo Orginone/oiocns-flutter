@@ -1,67 +1,65 @@
 
 
 
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/event/load_assets.dart';
+import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/model/assets_info.dart';
 import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
-import 'package:orginone/widget/loading_dialog.dart';
 
 class HandOverNetWork{
   static createHandOver({
-    required String billCode, XTarget? user,required String remark
-    ,required List<AssetsInfo> assets,bool isDraft = false,bool isEdit = false}) async{
-
-
+    required List<Fields> basic,required List<AssetsInfo> assets,bool isDraft = false,bool isEdit = false}) async{
 
 
 
     Map<String,dynamic> data = {
-      "BILL_CODE":billCode,
-      "SUBMITTER_NAME":HiveUtils.getUser()?.person?.name,
-      "USER_NAME":user?.name??"",
-      "APPLY_REMARK":remark,
       "CREATE_USER": HiveUtils.getUser()?.person?.id,
       "CREATE_TIME": DateTime.now().toString(),
       "UPDATE_TIME": DateTime.now().toString(),
-      "status": isDraft?0:1,
+      "status": isDraft ? 0 : 1,
       "approvalDocument": {
-        "SUBMITTER_NAME":HiveUtils.getUser()?.person?.name,
-        "USER_NAME":user?.name??"",
+        "SUBMITTER_NAME": HiveUtils.getUser()?.person?.name,
         "detail": assets.map((e) => e.toJson()).toList(),
+        "SUBMITTER_ID": HiveUtils.getUser()?.person?.id,
       }
     };
+    for (var element in basic) {
+      data.addAll(element.toUploadJson());
+      data['approvalDocument'].addAll(element.toUploadJson());
+    }
 
-   ResultType resultType;
-    if(!isDraft){
+    ResultType resultType;
+    if (!isDraft) {
       List<UpdateAssetsRequest> request = assets
           .map((element) =>
-          UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
-            "USER_NAME": user?.name??"",
-            "USER":user?.id??"",
-            "KAPIANZT": CardStatus.handOver.toStatusId,
-          }))
+              UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
+                "USER_NAME": data['USER_NAME'],
+                "USER": data['USER'],
+                "KAPIANZT": CardStatus.handOver.toStatusId,
+              }))
           .toList();
       await AssetManagement().updateAssetsForList(request);
     }
 
-   if(isEdit){
-     resultType = await KernelApi.getInstance().anystore.update("asset_restore",{
-       "match":{
-         "BILL_CODE":billCode,
-       },
-       "update":{
-         "_set_":data,
-       }
-     },"company");
-   }else{
+    if (isEdit) {
+      resultType = await KernelApi.getInstance().anystore.update(
+          "asset_restore",
+          {
+            "match": {
+              "BILL_CODE": data['BILL_CODE'],
+            },
+            "update": {
+              "_set_": data,
+            }
+          },
+          "company");
+    }else{
      resultType = await KernelApi.getInstance().anystore.insert("asset_restore", data,"company");
    }
 

@@ -96,9 +96,9 @@ class CreateTransferController extends BaseController<CreateTransferState> {
         }
       }
     }
-    // if (state.selectAssetList.isEmpty) {
-    //   return ToastUtils.showMsg(msg: "请至少选择一项资产");
-    // }
+    if (state.selectAssetList.isEmpty) {
+      return ToastUtils.showMsg(msg: "请至少选择一项资产");
+    }
     addedDraft = isDraft;
     await TransferNetWork.createTransfer(
         assets: state.selectAssetList,isDraft: isDraft,isEdit: state.isEdit, basic: state.config.config?[0].fields??[],);

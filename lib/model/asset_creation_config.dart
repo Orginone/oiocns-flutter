@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/hive_utils.dart';
-import 'package:hive/hive.dart';
+
 part 'asset_creation_config.g.dart';
 
 @HiveType(typeId: 4)
@@ -146,10 +147,14 @@ class Fields {
     if (type == "input") {
       controller = TextEditingController();
     }
-    if (code == "USE_DEPT_NAME" || code == "OLD_ORG_NAME") {
-      defaultData.value = DepartmentManagement().currentDepartment?.name??"个人中心";
+    if ((code == "USE_DEPT_NAME" || code == "OLD_ORG_NAME") && type == "text") {
+      defaultData.value =
+          DepartmentManagement().currentDepartment?.name ?? "个人中心";
     }
-    if (code == "USER_NAME" || code == "OLD_USER_NAME") {
+    if ((code == "USER_NAME" ||
+            code == "OLD_USER_NAME" ||
+            code == "SUBMITTER_NAME") &&
+        type == "text") {
       defaultData.value = HiveUtils.getUser()?.userName;
     }
   }
@@ -168,12 +173,18 @@ class Fields {
     if(type == "select"){
       data[code!] = defaultData.value?.keys.first;
     }
-    switch(code){
+    switch (code) {
       case "ASSET_TYPE":
         data[code!] = defaultData.value?.name;
         break;
       case "USER_NAME":
-        data["USER"] = HiveUtils.getUser()?.person?.id;
+      case "SUBMITTER_NAME":
+        if (type == "text") {
+          data["USER"] = HiveUtils.getUser()?.person?.id;
+        } else {
+          data["USER"] = defaultData.value?.id;
+          data["USER_NAME"] = defaultData.value?.name;
+        }
         break;
       case 'OLD_USER_NAME':
         data["OLD_USER_ID"] = HiveUtils.getUser()?.person?.id;
@@ -221,31 +232,37 @@ class Fields {
   }
 
   void initDefaultData(Map<String,dynamic> assetsJson) {
-
-    switch(code){
+    var value = assetsJson[code!];
+    if (value != null) {
+      defaultData.value = value;
+    }
+    switch (code) {
       case "ASSET_TYPE":
-        defaultData.value = CommonTreeManagement().findCategoryTree(assetsJson[code!]??"");
+        defaultData.value =
+            CommonTreeManagement().findCategoryTree(assetsJson[code!] ?? "");
         break;
       case "SFXC":
       case "DISPOSE_TYPE":
       case "IS_SYS_UNIT":
       case "evaluated":
-        if(assetsJson[code!]!=null){
+        if (assetsJson[code!] != null) {
           dynamic key = assetsJson[code!];
           dynamic value = select![assetsJson[code!]];
-          defaultData.value = {key:value};
+          defaultData.value = {key: value};
         }
         break;
       case "KEEPER_NAME":
-        defaultData.value = DepartmentManagement().findXTargetByIdOrName(id: assetsJson['KEEPER_ID']);
+        defaultData.value = DepartmentManagement()
+            .findXTargetByIdOrName(id: assetsJson['KEEPER_ID']);
         break;
       case "KEEP_ORG_NAME":
-        defaultData.value = DepartmentManagement().findITargetByIdOrName(id: assetsJson['KEEP_ORG_ID']);
+        defaultData.value = DepartmentManagement()
+            .findITargetByIdOrName(id: assetsJson['KEEP_ORG_ID']);
         break;
-      default:
-        var value = assetsJson[code!];
-        if(value!=null){
-          defaultData.value = value;
+      case "USER_NAME":
+        if (type != "text") {
+          defaultData.value = DepartmentManagement()
+              .findXTargetByIdOrName(name: assetsJson['USER_NAME']);
         }
         break;
     }
