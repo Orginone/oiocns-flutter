@@ -13,6 +13,7 @@ import 'package:orginone/pages/todo/work_page.dart';
 import 'package:orginone/pages/todo/workbench_page.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
+import '../home/ware_house/ware_house.dart';
 
 class HomePage extends GetView<HomeController> {
   const HomePage({Key? key}) : super(key: key);
@@ -86,8 +87,7 @@ class HomeController extends TabsController {
     registerTab(center);
     registerTab(XTab(
       body: Text('仓库', style: XFonts.size14Black3),
-      // view: Container(),
-      view: const OperationBar(),
+      view: const WareHouse(),
       icon: XImage.localImage("warehouse", size: size),
     ));
     registerTab(XTab(

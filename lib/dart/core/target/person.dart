@@ -5,6 +5,8 @@ import '../../base/common/uint.dart';
 import '../../base/model.dart';
 import '../../base/schema.dart';
 import '../enum.dart';
+import 'authority/authority.dart';
+import 'authority/iauthority.dart';
 import 'cohort.dart';
 import 'company.dart';
 import 'hospital.dart';
@@ -32,6 +34,9 @@ class Person extends MarketTarget implements IPerson {
 
   @override
   late List<IMarket> publicMarkets;
+
+  @override
+  late IAuthority? spaceAuthorityTree;
 
   Person(XTarget target) : super(target) {
     super.searchTargetType = [
@@ -64,6 +69,26 @@ class Person extends MarketTarget implements IPerson {
     res.share = shareInfo;
     res.typeName = target.typeName as TargetType;
     return res;
+  }
+
+  @override
+  Future<IAuthority?> loadSpaceAuthorityTree([bool reload = false]) async {
+    if (!reload && spaceAuthorityTree != null) {
+      return spaceAuthorityTree;
+    }
+    final res = await kernel.queryAuthorityTree(IdSpaceReq(
+      id: '0',
+      spaceId: id,
+      page: PageRequest(
+        offset: 0,
+        filter: '',
+        limit: Constants.maxUint16,
+      ),
+    ));
+    if (res.success) {
+      authorityTree = Authority(res.data!, id);
+    }
+    return authorityTree;
   }
 
   @override

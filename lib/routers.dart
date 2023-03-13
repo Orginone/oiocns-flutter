@@ -19,6 +19,15 @@ import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/pages/setting/unit_settings_page.dart';
+// 仓库
+import './pages/other/home/ware_house/recently_opened_binding.dart';
+import './pages/other/home/ware_house/often_use_binding.dart';
+// 资产管理
+import './pages/other/home/ware_house/assets_management/assets_management_page.dart';
+import './pages/other/home/ware_house/assets_management/assets_management_binding.dart';
+// 资产管理
+import './pages/other/home/ware_house/market/market_page.dart';
+import './pages/other/home/ware_house/market/market_binding.dart';
 import 'package:orginone/pages/todo/todo_detail.dart';
 import 'package:orginone/pages/todo/todo_tab_page.dart';
 import 'package:orginone/pages/todo/work_page.dart';
@@ -67,6 +76,12 @@ class Routers {
   static const String cohorts = "/cohorts";
   static const String uintSettings = "/uintSettings";
 
+  // 仓库相关
+  // 资产管理
+  static const String assetsManagement = "/assetsManagement";
+  // 杭商城
+  static const String market = "/market";
+
   static List<GetPage> getInitRouters() {
     return [
       GetPage(
@@ -83,7 +98,12 @@ class Routers {
           WorkBinding(),
           SetHomeBinding(),
           MessageBinding(),
-          IndexPageBinding()
+          IndexPageBinding(),
+          HomeBinding(),
+          SetHomeBinding(),
+          MessageBinding(),
+          RecentlyOpenedBinding(),
+          OftenUseBinding()
         ],
       ),
       GetPage(
@@ -156,6 +176,18 @@ class Routers {
           PlayBinding(),
           SetHomeBinding(),
         ],
+      ),
+      // 资产管理
+      GetPage(
+        name: Routers.assetsManagement,
+        page: () => const AssetsManagementPage(),
+        binding: AssetsManagementBinding(),
+      ),
+      // 杭商城
+      GetPage(
+        name: Routers.market,
+        page: () => const MarketPage(),
+        binding: MarketBinding(),
       ),
       GetPage(
         name: Routers.todo,
