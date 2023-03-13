@@ -88,12 +88,8 @@ dependencies:
   flutter_form_builder: ^7.7.0
   flutter_treeview: ^1.0.7+1
   photo_view: ^0.14.0
-<<<<<<< HEAD
-  package_info_plus: ^1.0.5
-=======
   package_info_plus: ^1.4.2
   flutter_custom_dialog: ^1.0.20
->>>>>>> feature/old_to_neo
   flutter_advanced_avatar: ^1.1.0
 
   # 音频录制以及音频播放

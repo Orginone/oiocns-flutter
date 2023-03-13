@@ -387,20 +387,6 @@ class BaseTarget extends ITarget {
   }
 
   @override
-<<<<<<< HEAD
-=======
-  Future<ISpeciesItem?> loadSpeciesTree({bool reload = false}) async {
-    if (reload) {
-      final res = await kernel.querySpeciesTree(id);
-      if (res.success) {
-        speciesTree = SpeciesItem(res.data!, null);
-      }
-    }
-    return speciesTree;
-  }
-
-  @override
->>>>>>> feature/old_to_neo
   Future<ITarget?> create(TargetModel data) async {
     await Future.delayed(Duration.zero);
     return null;

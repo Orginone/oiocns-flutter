@@ -4087,14 +4087,9 @@ class TargetShare {
   TargetShare.fromJson(Map<String, dynamic> json)
       : name = json["name"],
         typeName = json["typeName"],
-<<<<<<< HEAD
         avatar = json["avatar"] != null
             ? FileItemShare.fromJson(json["avatar"])
             : null;
-=======
-        avatar = json["avatar"] != null ?
-                FileItemShare.fromJson(json["avatar"]) : null;
->>>>>>> feature/old_to_neo
 
   //通过动态数组解析成List
   static List<TargetShare> fromList(List<dynamic>? list) {
