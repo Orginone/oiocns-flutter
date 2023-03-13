@@ -32,6 +32,9 @@ abstract class IAuthority {
     String remark,
   );
 
+  /// 删除职权
+  Future<ResultType> delete();
+
   /// 删除子职权
   /// @param id 子职权Id
   Future<ResultType> deleteSubAuthority(String id);
@@ -53,10 +56,4 @@ abstract class IAuthority {
   ///  @param reload 是否强制刷新
   /// @returns
   Future<List<IIdentity>> queryAuthorityIdentity(bool reload);
-
-  /// 查询职权子职权
-  ///  @param reload 是否强制刷新
-  /// @returns
-
-  Future<List<IAuthority>> getSubAuthoritys(bool reload);
 }

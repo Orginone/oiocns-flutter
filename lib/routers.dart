@@ -6,6 +6,10 @@ import 'package:orginone/pages/chat/message_more.dart';
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
+<<<<<<< HEAD
+import 'package:orginone/pages/index/index_page.dart';
+// import 'package:orginone/pages/index/indexok_page.dart';
+=======
 import 'package:orginone/pages/other/add_asset/binding.dart';
 import 'package:orginone/pages/other/add_asset/view.dart';
 import 'package:orginone/pages/other/batch_operation_asset/view.dart';
@@ -35,6 +39,7 @@ import 'package:orginone/pages/other/choice_department/binding.dart';
 import 'package:orginone/pages/other/choice_department/view.dart';
 import 'package:orginone/pages/other/choice_people/binding.dart';
 import 'package:orginone/pages/other/choice_people/view.dart';
+>>>>>>> feature/old_to_neo
 import 'package:orginone/pages/other/home/home_page.dart';
 import 'package:orginone/pages/other/home/spaces_page.dart';
 import 'package:orginone/pages/other/login.dart';
@@ -49,7 +54,20 @@ import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
+<<<<<<< HEAD
+import 'package:orginone/pages/setting/unit_settings_page.dart';
+// 仓库
+import './pages/other/home/ware_house/recently_opened_binding.dart';
+import './pages/other/home/ware_house/often_use_binding.dart';
+// 资产管理
+import './pages/other/home/ware_house/assets_management/assets_management_page.dart';
+import './pages/other/home/ware_house/assets_management/assets_management_binding.dart';
+// 资产管理
+import './pages/other/home/ware_house/market/market_page.dart';
+import './pages/other/home/ware_house/market/market_binding.dart';
+=======
 import 'package:orginone/util/hive_utils.dart';
+>>>>>>> feature/old_to_neo
 
 import 'pages/other/batch_operation_asset/binding.dart';
 import 'pages/other/center_function/create_claim/binding.dart';
@@ -84,11 +102,21 @@ class Routers {
   static const String chat = "/chat";
   static const String moreMessage = "/moreMessage";
 
+  // 首页
+  static const String index = "/index";
+
   // 设置
   static const String mineUnit = "/mineUnit";
   static const String newFriends = "/newFriends";
   static const String contact = "/contact";
   static const String cohorts = "/cohorts";
+  static const String uintSettings = "/uintSettings";
+
+  // 仓库相关
+  // 资产管理
+  static const String assetsManagement = "/assetsManagement";
+  // 杭商城
+  static const String market = "/market";
 
   //选择资产分类
   static const String choiceAssets = "/choiceAssets";
@@ -166,9 +194,22 @@ class Routers {
         name: Routers.home,
         page: () => const HomePage(),
         bindings: [
+<<<<<<< HEAD
+          ChatBinding(),
           HomeBinding(),
           SetHomeBinding(),
           MessageBinding(),
+          IndexPageBinding(),
+          HomeBinding(),
+          SetHomeBinding(),
+          MessageBinding(),
+          RecentlyOpenedBinding(),
+          OftenUseBinding()
+=======
+          HomeBinding(),
+          SetHomeBinding(),
+          MessageBinding(),
+>>>>>>> feature/old_to_neo
         ],
       ),
       GetPage(
@@ -225,6 +266,36 @@ class Routers {
         binding: ContactBinding(),
       ),
       GetPage(
+<<<<<<< HEAD
+        name: Routers.uintSettings,
+        page: () => UintSettingsPage(),
+        binding: UintSettingsBinding(),
+      ),
+      GetPage(
+        name: Routers.index,
+        page: () => IndexPage(),
+        bindings: [
+          HomeBinding(),
+          IndexPageBinding(),
+          ChatBinding(),
+          MessageBinding(),
+          ChatBoxBinding(),
+          PlayBinding(),
+          SetHomeBinding(),
+        ],
+      ),
+      // 资产管理
+      GetPage(
+        name: Routers.assetsManagement,
+        page: () => const AssetsManagementPage(),
+        binding: AssetsManagementBinding(),
+      ),
+      // 杭商城
+      GetPage(
+        name: Routers.market,
+        page: () => const MarketPage(),
+        binding: MarketBinding(),
+=======
         name: Routers.centerFunction,
         page: () => CenterFunctionPage(),
         binding: CenterFunctionBinding(),
@@ -318,6 +389,7 @@ class Routers {
         name: Routers.webView,
         page: () => WebViewPage(),
         binding: WebViewBinding(),
+>>>>>>> feature/old_to_neo
       ),
     ];
   }

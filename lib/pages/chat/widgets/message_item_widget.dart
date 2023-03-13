@@ -13,8 +13,6 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_util.dart';
 
-double defaultAvatarWidth = 66.w;
-
 enum ChatFunc {
   // topping("置顶会话"),
   // cancelTopping("取消置顶"),
@@ -84,15 +82,20 @@ class MessageItemWidget extends GetView<ChatController> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _avatarContainer(),
-            _contentContainer(),
+            _avatarContainer,
+            Padding(padding: EdgeInsets.only(left: 20.w)),
+            Expanded(child: Obx(() => _content)),
           ],
         ),
       ),
     );
   }
 
+<<<<<<< HEAD
+  Widget get _avatarContainer {
+=======
   Widget get _avatar {
+>>>>>>> feature/old_to_neo
     return Obx(() {
       var noRead = chat.noReadCount.value;
       return TeamAvatar(
@@ -114,6 +117,9 @@ class MessageItemWidget extends GetView<ChatController> {
     });
   }
 
+<<<<<<< HEAD
+  Widget get _content {
+=======
   Widget _avatarContainer() {
     return Container(
       alignment: Alignment.center,
@@ -124,6 +130,7 @@ class MessageItemWidget extends GetView<ChatController> {
   }
 
   Widget _content() {
+>>>>>>> feature/old_to_neo
     var target = chat.target;
     var lastMessage = chat.lastMessage;
     return Column(
@@ -141,7 +148,7 @@ class MessageItemWidget extends GetView<ChatController> {
           ],
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(child: _showTxt()),
             TextTag(
@@ -197,16 +204,6 @@ class MessageItemWidget extends GetView<ChatController> {
       textAlign: TextAlign.left,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
-    );
-  }
-
-  Widget _contentContainer() {
-    return Expanded(
-      child: Container(
-        padding: EdgeInsets.only(left: 20.w, top: 2.h, bottom: 2.h),
-        height: defaultAvatarWidth,
-        child: Obx(() => _content()),
-      ),
     );
   }
 }

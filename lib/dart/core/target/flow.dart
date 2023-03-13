@@ -1,11 +1,12 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 
+import '../../base/common/uint.dart';
 import '../../base/schema.dart';
 import 'base.dart';
 
 class FlowTarget extends BaseTarget implements IFlow {
-  late List<XFlowRelation> defineRelations;
+  late List<XOperation> defineRelations;
   FlowTarget(XTarget target) : super(target);
   @override
   Future<List<XFlowDefine>> getDefines({bool reload = false}) async {
@@ -13,7 +14,14 @@ class FlowTarget extends BaseTarget implements IFlow {
       return defines;
     }
 
-    final res = await kernel.queryDefine(IdReq(id: target.id));
+    final res = await kernel.queryDefine(QueryDefineReq(
+        spaceId: target.id,
+        speciesId: '',
+        page: PageRequest(
+          offset: 0,
+          filter: "",
+          limit: Constants.maxUint16,
+        )));
     if (res.success && res.data?.result != null) {
       defines = res.data!.result!;
     }
@@ -21,11 +29,11 @@ class FlowTarget extends BaseTarget implements IFlow {
   }
 
   @override
-  Future<List<XFlowRelation>> queryFlowRelation({bool reload = false}) async {
+  Future<List<XOperation>> queryFlowRelation({bool reload = false}) async {
     if (!reload && defineRelations.isNotEmpty) {
       return defineRelations;
     }
-    final res = await kernel.queryDefineRelation(IdReq(id: id));
+    final res = await kernel.queryDefineRelation(IDBelongReq(id: id));
     if (res.success && res.data?.result != null) {
       defineRelations = res.data!.result!;
     }
@@ -63,35 +71,8 @@ class FlowTarget extends BaseTarget implements IFlow {
   }
 
   @override
-  Future<XFlowRelation?> bindingFlowRelation(FlowRelationModel data) async {
+  Future<bool> bindingFlowRelation(FlowRelationModel data) async {
     final res = await kernel.createFlowRelation(data);
-    if (res.success) {
-      defineRelations = defineRelations
-          .where(
-            (a) =>
-                a.productId != data.productId ||
-                a.functionCode != data.functionCode,
-          )
-          .toList();
-      if (res.data != null) {
-        defineRelations.add(res.data!);
-      }
-    }
-    return res.data;
-  }
-
-  @override
-  Future<bool> unbindingFlowRelation(FlowRelationModel data) async {
-    final res = await kernel.deleteFlowRelation(data);
-    if (res.success) {
-      defineRelations = defineRelations
-          .where(
-            (a) =>
-                a.productId != data.productId ||
-                a.functionCode != data.functionCode,
-          )
-          .toList();
-    }
     return res.success;
   }
 

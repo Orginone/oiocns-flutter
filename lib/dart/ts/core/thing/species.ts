@@ -1,16 +1,17 @@
-import { kernel, parseAvatar, schema } from '../../base';
-import { Dict } from '../target/species/dict';
-import { INullDict } from '../target/species/idict';
+import { XDict, XFlowDefine } from "@/ts/base/schema";
+import { kernel, model, parseAvatar, schema } from "../../base";
 import {
   AttributeModel,
+  CreateDefineReq,
   DictModel,
   OperationModel,
   PageRequest,
   SpeciesModel,
   TargetShare,
-} from '../../base/model';
-import { INullSpeciesItem, ISpeciesItem } from './ispecies';
-
+} from "../../base/model";
+import { Dict } from "./dict";
+import { IDict, INullDict } from "./idict";
+import { INullSpeciesItem, ISpeciesItem } from "./ispecies";
 /**
  * 分类系统项实现
  */
@@ -34,52 +35,137 @@ export class SpeciesItem implements ISpeciesItem {
         this.children.push(new SpeciesItem(item, this));
       }
     }
-    this.belongInfo = { name: '奥集能平台', typeName: '平台' };
+    this.belongInfo = { name: "奥集能平台", typeName: "平台" };
   }
-  async loadAttrs(id: string, page: PageRequest): Promise<schema.XAttributeArray> {
+  async loadAttrs(
+    id: string,
+    recursionOrg: boolean,
+    recursionSpecies: boolean,
+    page: PageRequest
+  ): Promise<schema.XAttributeArray> {
     const res = await kernel.querySpeciesAttrs({
       id: this.id,
       spaceId: id,
+      recursionOrg: recursionOrg,
+      recursionSpecies: recursionSpecies,
       page: {
         offset: page.offset,
         limit: page.limit,
-        filter: '',
+        filter: "",
       },
     });
     return res.data;
   }
 
-  async loadOperations(id: string, page: PageRequest): Promise<schema.XOperationArray> {
+  async loadDicts(
+    id: string,
+    recursionOrg: boolean,
+    recursionSpecies: boolean,
+    page: PageRequest
+  ): Promise<schema.XDictArray> {
+    const res = await kernel.querySpeciesDict({
+      id: this.id,
+      spaceId: id,
+      recursionOrg: recursionOrg,
+      recursionSpecies: recursionSpecies,
+      page: {
+        offset: page.offset,
+        limit: page.limit,
+        filter: "",
+      },
+    });
+    return res.data;
+  }
+
+  async loadDictsEntity(
+    spaceId: string,
+    recursionOrg: boolean,
+    recursionSpecies: boolean,
+    page: PageRequest
+  ): Promise<IDict[]> {
+    const res = await kernel.querySpeciesDict({
+      id: this.id,
+      spaceId: spaceId,
+      recursionOrg: recursionOrg,
+      recursionSpecies: recursionSpecies,
+      page: {
+        offset: page.offset,
+        limit: page.limit,
+        filter: "",
+      },
+    });
+    return (
+      res.data.result?.map((item: XDict) => {
+        return new Dict(item);
+      }) || []
+    );
+  }
+
+  async loadOperations(
+    id: string,
+    filterAuth: boolean,
+    recursionOrg: boolean,
+    recursionSpecies: boolean,
+    page: PageRequest
+  ): Promise<schema.XOperationArray> {
     const res = await kernel.querySpeciesOperation({
       id: this.id,
+      spaceId: id,
+      filterAuth,
+      recursionOrg,
+      recursionSpecies,
+      page: {
+        offset: page.offset,
+        limit: page.limit,
+        filter: "",
+      },
+    });
+    return res.data;
+  }
+
+  async loadFlowDefines(
+    id: string,
+    page: PageRequest
+  ): Promise<schema.XFlowDefineArray> {
+    const res = await kernel.queryDefine({
+      speciesId: this.target.id,
       spaceId: id,
       page: {
         offset: page.offset,
         limit: page.limit,
-        filter: '',
+        filter: "",
       },
     });
     return res.data;
   }
 
   async loadInfo(info: TargetShare): Promise<ISpeciesItem> {
-    if (info.typeName != '未知') {
+    if (info.typeName != "未知") {
       this.belongInfo = info;
     }
     if (!this.belongInfo && this.target.belongId) {
       const res = await kernel.queryNameBySnowId(this.target.belongId);
       if (res.success && res.data) {
-        this.belongInfo = { name: res.data.name, typeName: '未知' } as TargetShare;
+        this.belongInfo = {
+          name: res.data.name,
+          typeName: "未知",
+        } as TargetShare;
         const avator = parseAvatar(res.data.photo);
         if (avator) {
-          this.belongInfo = { ...avator, name: res.data.name, typeName: '未知' };
+          this.belongInfo = {
+            ...avator,
+            name: res.data.name,
+            typeName: "未知",
+          };
         }
       }
     }
     return this;
   }
 
-  async create(data: Omit<SpeciesModel, 'id' | 'parentId'>): Promise<INullSpeciesItem> {
+  async create(
+    data: Omit<SpeciesModel, "id" | "parentId">
+  ): Promise<INullSpeciesItem> {
     const res = await kernel.createSpecies({
       parentId: this.id,
       ...data,
@@ -93,10 +179,13 @@ export class SpeciesItem implements ISpeciesItem {
     return;
   }
 
-  async createDict(data: Omit<DictModel, 'id' | 'parentId'>): Promise<INullDict> {
+  async createDict(
+    data: Omit<DictModel, "id" | "parentId">
+  ): Promise<INullDict> {
     const res = await kernel.createDict({
       ...data,
       id: undefined,
+      speciesId: this.id,
     });
     if (res.success) {
       const newItem = new Dict(res.data);
@@ -105,16 +194,15 @@ export class SpeciesItem implements ISpeciesItem {
     return;
   }
 
-  async updateDict(data: Omit<DictModel, 'speciesId' | 'speciesCode'>): Promise<boolean> {
+  async updateDict(data: DictModel): Promise<boolean> {
     const res = await kernel.updateDict({
       ...data,
-      speciesId: this.target.id,
     });
     return res.success;
   }
 
   async update(
-    data: Omit<SpeciesModel, 'id' | 'parentId' | 'code'>,
+    data: Omit<SpeciesModel, "id" | "parentId" | "code">
   ): Promise<ISpeciesItem> {
     const res = await kernel.updateSpecies({
       ...data,
@@ -134,7 +222,7 @@ export class SpeciesItem implements ISpeciesItem {
   async delete(): Promise<boolean> {
     const res = await kernel.deleteSpecies({
       id: this.id,
-      typeName: '',
+      typeName: "",
     });
     if (res.success && this.parent) {
       this.parent.children = this.parent.children.filter((i) => {
@@ -144,7 +232,7 @@ export class SpeciesItem implements ISpeciesItem {
     return res.success;
   }
   async createAttr(
-    data: Omit<AttributeModel, 'id' | 'speciesId' | 'speciesCode'>,
+    data: Omit<AttributeModel, "id" | "speciesId" | "speciesCode">
   ): Promise<boolean> {
     const res = await kernel.createAttribute({
       id: undefined,
@@ -155,7 +243,7 @@ export class SpeciesItem implements ISpeciesItem {
     return res.success;
   }
   async updateAttr(
-    data: Omit<AttributeModel, 'speciesId' | 'speciesCode'>,
+    data: Omit<AttributeModel, "speciesId" | "speciesCode">
   ): Promise<boolean> {
     const res = await kernel.updateAttribute({
       ...data,
@@ -167,28 +255,25 @@ export class SpeciesItem implements ISpeciesItem {
   async deleteAttr(id: string): Promise<boolean> {
     const res = await kernel.deleteAttribute({
       id: id,
-      typeName: '',
+      typeName: "",
     });
     return res.success;
   }
 
   async createOperation(
-    data: Omit<OperationModel, 'id' | 'speciesId' | 'speciesCode'>,
-  ): Promise<boolean> {
-    const res = await kernel.createOperation({
+    data: Omit<OperationModel, "id" | "speciesId" | "speciesCode">
+  ): Promise<model.ResultType<schema.XOperation>> {
+    return await kernel.createOperation({
       id: undefined,
       speciesId: this.id,
       ...data,
     });
-    return res.success;
   }
 
-  async updateOperation(
-    data: Omit<OperationModel, 'speciesId' | 'speciesCode'>,
-  ): Promise<boolean> {
+  async updateOperation(data: OperationModel): Promise<boolean> {
     const res = await kernel.updateOperation({
       ...data,
-      speciesId: this.target.id,
+      speciesId: data.speciesId || this.target.id,
     });
     return res.success;
   }
@@ -196,7 +281,7 @@ export class SpeciesItem implements ISpeciesItem {
   async deleteOperation(id: string): Promise<boolean> {
     const res = await kernel.deleteOperation({
       id: id,
-      typeName: '',
+      typeName: "",
     });
     return res.success;
   }
@@ -204,8 +289,27 @@ export class SpeciesItem implements ISpeciesItem {
   async deleteDict(id: string): Promise<boolean> {
     const res = await kernel.deleteDict({
       id: id,
-      typeName: '',
+      typeName: "",
     });
+    return res.success;
+  }
+
+  async createFlowDefine(
+    data: Omit<CreateDefineReq, "id" | "speciesId">
+  ): Promise<XFlowDefine> {
+    const res = await kernel.publishDefine({ ...data, speciesId: this.id });
+    return res.data;
+  }
+
+  async updateFlowDefine(data: CreateDefineReq): Promise<boolean> {
+    const res = await kernel.publishDefine({
+      ...data,
+    });
+    return res.success;
+  }
+
+  async deleteFlowDefine(id: string): Promise<boolean> {
+    const res = await kernel.deleteDefine({ id });
     return res.success;
   }
 }

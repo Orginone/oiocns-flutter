@@ -1,5 +1,5 @@
-import { kernel, parseAvatar, schema } from '../../../base';
-import { DictItemModel, PageRequest, DictModel, TargetShare } from '../../../base/model';
+import { kernel, parseAvatar, schema } from '../../base';
+import { DictItemModel, PageRequest, DictModel, TargetShare } from '../../base/model';
 import { INullDict, IDict } from './idict';
 /**
  * 分类系统项实现

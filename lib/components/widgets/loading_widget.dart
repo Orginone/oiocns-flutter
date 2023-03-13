@@ -23,7 +23,7 @@ class LoadingWidget extends StatelessWidget {
     required this.controller,
   }) : super(key: key) {
     controller.loadStatus.value = initStatus;
-    debugPrint("--->重新初始化了LoadingWidget:$controller");
+    // debugPrint("--->重新初始化了LoadingWidget:$controller");
   }
 
   @override
@@ -35,7 +35,7 @@ class LoadingWidget extends StatelessWidget {
   }
 
   Widget _getView(BuildContext context) {
-    debugPrint('---->loadStatus:${controller.loadStatus.value}');
+    // debugPrint('---->loadStatus:${controller.loadStatus.value}');
     if (controller.loadStatus.value == LoadStatusX.loading) {
       return _loadingView();
     } else if (controller.loadStatus.value == LoadStatusX.error) {

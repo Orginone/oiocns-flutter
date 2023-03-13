@@ -162,6 +162,23 @@ class KernelApi {
     );
   }
 
+  /*
+   * 创建业务标准子项
+   * @param {model.OperationItemModel} params 请求参数
+   * @returns {model.ResultType<boolean>} 请求结果
+   */
+  Future<ResultType<bool>> createOperationItems(
+      OperationItemModel params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'CreateOperationItems',
+        params: params,
+      ),
+      (item) => item as bool,
+    );
+  }
+
   /// 创建日志记录
   /// @param {LogModel} params 请求参数
   /// @returns {ResultType<XLog>} 请求结果
@@ -257,6 +274,22 @@ class KernelApi {
         params: params,
       ),
       XDictItem.fromJson,
+    );
+  }
+
+  /*
+   * 根据id查询分类
+   * @param {model.IdArrayReq} params 请求参数
+   * @returns {model.ResultType<schema.XSpeciesArray>} 请求结果
+   */
+  Future<ResultType<XSpeciesArray>> querySpeciesById(IdArrayReq params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'QuerySpeciesById',
+        params: params,
+      ),
+      XSpeciesArray.fromJson,
     );
   }
 
@@ -489,11 +522,27 @@ class KernelApi {
     );
   }
 
+  /*
+   * 查询分类字典
+   * @param {model.IdSpeciesReq} params 请求参数
+   * @returns {model.ResultType<schema.XDictArray>} 请求结果
+   */
+  Future<ResultType<XDictArray>> querySpeciesDict(IdSpeciesReq params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'QuerySpeciesDict',
+        params: params,
+      ),
+      XDictArray.fromJson,
+    );
+  }
+
   /// 查询分类的度量标准
-  /// @param {IdSpaceReq} params 请求参数
+  /// @param {IdSpeciesReq} params 请求参数
   /// @returns {ResultType<XAttributeArray>} 请求结果
   Future<ResultType<XAttributeArray>> querySpeciesAttrs(
-      IdSpaceReq params) async {
+      IdSpeciesReq params) async {
     return await request(
       ReqestType(
         module: 'thing',
@@ -508,7 +557,7 @@ class KernelApi {
   /// @param {IdSpaceReq} params 请求参数
   /// @returns {ResultType<XOperationArray>} 请求结果
   Future<ResultType<XOperationArray>> querySpeciesOperation(
-      IdSpaceReq params) async {
+      IdOperationReq params) async {
     return await request(
       ReqestType(
         module: 'thing',
@@ -1134,9 +1183,9 @@ class KernelApi {
   }
 
   /// 查询组织职权树
-  /// @param {IDBelongReq} params 请求参数
+  /// @param {IdSpaceReq} params 请求参数
   /// @returns {ResultType<XAuthority>} 请求结果
-  Future<ResultType<XAuthority>> queryAuthorityTree(IDBelongReq params) async {
+  Future<ResultType<XAuthority>> queryAuthorityTree(IdSpaceReq params) async {
     return await request(
       ReqestType(
         module: 'target',
@@ -1144,36 +1193,6 @@ class KernelApi {
         params: params,
       ),
       XAuthority.fromJson,
-    );
-  }
-
-  /// 查询职权子职权
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XAuthorityArray>} 请求结果
-  Future<ResultType<XAuthorityArray>> querySubAuthoritys(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QuerySubAuthoritys',
-        params: params,
-      ),
-      XAuthorityArray.fromJson,
-    );
-  }
-
-  /// 查询组织职权
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XAuthorityArray>} 请求结果
-  Future<ResultType<XAuthorityArray>> queryTargetAuthoritys(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryTargetAuthoritys',
-        params: params,
-      ),
-      XAuthorityArray.fromJson,
     );
   }
 
@@ -1193,10 +1212,10 @@ class KernelApi {
   }
 
   /// 查询职权身份
-  /// @param {IDBelongReq} params 请求参数
+  /// @param {IdSpaceReq} params 请求参数
   /// @returns {ResultType<XIdentityArray>} 请求结果
   Future<ResultType<XIdentityArray>> queryAuthorityIdentitys(
-      IDBelongReq params) async {
+      IdSpaceReq params) async {
     return await request(
       ReqestType(
         module: 'target',
@@ -1204,6 +1223,40 @@ class KernelApi {
         params: params,
       ),
       XIdentityArray.fromJson,
+    );
+  }
+
+  /*
+   * 查询拥有的职权
+   * @param {model.PageRequest} params 请求参数
+   * @returns {model.ResultType<schema.XAuthorityArray>} 请求结果
+   */
+  Future<ResultType<XAuthorityArray>> queryOwnAuthoritys(
+      PageRequest params) async {
+    return await request(
+      ReqestType(
+        module: 'target',
+        action: 'QueryOwnAuthoritys',
+        params: params,
+      ),
+      XAuthorityArray.fromJson,
+    );
+  }
+
+  /*
+   * 查询职权下的所有人员
+   * @param {model.PageRequest} params 请求参数
+   * @returns {model.ResultType<schema.XTargetArray>} 请求结果
+   */
+  Future<ResultType<XTargetArray>> queryAuthorityPerson(
+      IDBelongReq params) async {
+    return await request(
+      ReqestType(
+        module: 'target',
+        action: 'QueryAuthorityPerson',
+        params: params,
+      ),
+      XTargetArray.fromJson,
     );
   }
 
@@ -2172,20 +2225,6 @@ class KernelApi {
     );
   }
 
-  /// 创建流程定义
-  /// @param {XFlowDefine} params 请求参数
-  /// @returns {ResultType<XFlowDefine>} 请求结果
-  Future<ResultType<XFlowDefine>> createDefine(XFlowDefine params) async {
-    return await request(
-      ReqestType(
-        module: 'flow',
-        action: 'CreateDefine',
-        params: params,
-      ),
-      XFlowDefine.fromJson,
-    );
-  }
-
   /// 创建流程实例(启动流程)
   /// @param {FlowInstanceModel} params 请求参数
   /// @returns {ResultType<XFlowInstance>} 请求结果
@@ -2203,16 +2242,15 @@ class KernelApi {
 
   /// 创建流程绑定
   /// @param {FlowRelationModel} params 请求参数
-  /// @returns {ResultType<XFlowRelation>} 请求结果
-  Future<ResultType<XFlowRelation>> createFlowRelation(
-      FlowRelationModel params) async {
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType<bool>> createFlowRelation(FlowRelationModel params) async {
     return await request(
       ReqestType(
         module: 'flow',
         action: 'CreateFlowRelation',
         params: params,
       ),
-      XFlowRelation.fromJson,
+      (item) => item as bool,
     );
   }
 
@@ -2244,24 +2282,11 @@ class KernelApi {
     );
   }
 
-  /// 删除流程绑定
-  /// @param {FlowRelationModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> deleteFlowRelation(FlowRelationModel params) async {
-    return await request(
-      ReqestType(
-        module: 'flow',
-        action: 'DeleteFlowRelation',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
   /// 查询流程定义
-  /// @param {IdReq} params 请求参数
+  /// @param {QueryDefineReq} params 请求参数
   /// @returns {ResultType<XFlowDefineArray>} 请求结果
-  Future<ResultType<XFlowDefineArray>> queryDefine(IdReq params) async {
+  Future<ResultType<XFlowDefineArray>> queryDefine(
+      QueryDefineReq params) async {
     return await request(
       ReqestType(
         module: 'flow',
@@ -2272,18 +2297,34 @@ class KernelApi {
     );
   }
 
+  /*
+   * 查询流程节点(复现流程图)
+   * @param {model.IdReq} params 请求参数
+   * @returns {model.ResultType<schema.XFlowDefineArray>} 请求结果
+   */
+  Future<ResultType<FlowNode>> queryNodes(IdSpaceReq params) async {
+    return await request(
+      ReqestType(
+        module: 'flow',
+        action: 'QueryNodes',
+        params: params,
+      ),
+      FlowNode.fromJson,
+    );
+  }
+
   /// 查询流程绑定
-  /// @param {IdReq} params 请求参数
-  /// @returns {ResultType<XFlowRelationArray>} 请求结果
-  Future<ResultType<XFlowRelationArray>> queryDefineRelation(
-      IdReq params) async {
+  /// @param {IDBelongReq} params 请求参数
+  /// @returns {ResultType<XOperationArray>} 请求结果
+  Future<ResultType<XOperationArray>> queryDefineRelation(
+      IDBelongReq params) async {
     return await request(
       ReqestType(
         module: 'flow',
         action: 'QueryDefineRelation',
         params: params,
       ),
-      XFlowRelationArray.fromJson,
+      XOperationArray.fromJson,
     );
   }
 
@@ -2367,20 +2408,6 @@ class KernelApi {
       ReqestType(
         module: 'flow',
         action: 'PublishDefine',
-        params: params,
-      ),
-      XFlowDefine.fromJson,
-    );
-  }
-
-  /// 重置流程定义
-  /// @param {XFlowDefine} params 请求参数
-  /// @returns {ResultType<XFlowDefine>} 请求结果
-  Future<ResultType<XFlowDefine>> resetDefine(XFlowDefine params) async {
-    return await request(
-      ReqestType(
-        module: 'flow',
-        action: 'ResetDefine',
         params: params,
       ),
       XFlowDefine.fromJson,

@@ -26,7 +26,9 @@ abstract class IMarket {
     String code,
     String samrId,
     String remark,
-    bool ispublic,
+    bool joinPublic,
+    bool buyPublic,
+    bool sellPublic,
     String photo,
   );
 

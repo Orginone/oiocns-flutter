@@ -1,5 +1,4 @@
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -36,7 +35,10 @@ class SetHomePage extends BaseView<SetHomeController> {
         "id": 0,
         "icon":
             "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.soutu123.com%2Felement_origin_min_pic%2F16%2F07%2F16%2F165789f1f5c750d.jpg%21%2Ffw%2F700%2Fquality%2F90%2Funsharp%2Ftrue%2Fcompress%2Ftrue&refer=http%3A%2F%2Fpic.soutu123.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1670660931&t=bd4182732ed268476fd12a0896003457",
-        "cardName": "单位设置"
+        "cardName": "单位设置",
+        "func": () {
+          Get.toNamed(Routers.uintSettings);
+        },
       },
       {
         "id": 1,
@@ -108,7 +110,7 @@ class SetHomePage extends BaseView<SetHomeController> {
 
   List<Widget> _getItems() {
     List<Widget> children = [];
-    debugPrint("--->size:${map.length}");
+    // debugPrint("--->size:${map.length}");
     map.forEach((key, value) {
       children.add(CardChildWidget(key, value));
     });
@@ -125,7 +127,7 @@ class CardChildWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("--->key:item$itemName | value :${value}");
+    // debugPrint("--->key:item$itemName | value :${value}");
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
