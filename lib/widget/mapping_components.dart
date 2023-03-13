@@ -7,16 +7,16 @@ import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/util/production_order_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 
-typedef ShineWidgetCallback = Widget Function(Fields data, {bool isEdit, AssetsType? assetsType});
+typedef MappingComponentsCallback = Widget Function(Fields data, {bool isEdit, AssetsType? assetsType});
 
-Map<String, ShineWidgetCallback> testShine = {
-  "text": shineTextWidget,
-  "input": shineInputWidget,
-  "select": shineSelectBoxWidget,
-  "router": shineRouteWidget,
+Map<String, MappingComponentsCallback> testMappingComponents = {
+  "text": mappingTextWidget,
+  "input": mappingInputWidget,
+  "select": mappingSelectBoxWidget,
+  "router": mappingRouteWidget,
 };
 
-ShineWidgetCallback shineTextWidget = (Fields data,
+MappingComponentsCallback mappingTextWidget = (Fields data,
     {bool isEdit = false, AssetsType? assetsType}) {
   if (data.isBillCode && !isEdit) {
     ProductionOrderUtils.productionSingleOrder(assetsType!.billHeader).then((
@@ -40,7 +40,7 @@ ShineWidgetCallback shineTextWidget = (Fields data,
   });
 };
 
-ShineWidgetCallback shineInputWidget = (Fields data,
+MappingComponentsCallback mappingInputWidget = (Fields data,
     {bool isEdit = false, AssetsType? assetsType}) {
   List<TextInputFormatter>? inputFormatters;
   TextEditingController controller = TextEditingController(text: data.defaultData.value?.toString()??"");
@@ -70,7 +70,7 @@ ShineWidgetCallback shineInputWidget = (Fields data,
   );
 };
 
-ShineWidgetCallback shineSelectBoxWidget = (Fields data,
+MappingComponentsCallback mappingSelectBoxWidget = (Fields data,
     {bool isEdit = false, AssetsType? assetsType}) {
   if(data.hidden??false){
     return Container();
@@ -92,7 +92,7 @@ ShineWidgetCallback shineSelectBoxWidget = (Fields data,
 };
 
 
-ShineWidgetCallback shineRouteWidget = (Fields data,
+MappingComponentsCallback mappingRouteWidget = (Fields data,
     {bool isEdit = false, AssetsType? assetsType}) {
   if(data.hidden??false){
     return Container();

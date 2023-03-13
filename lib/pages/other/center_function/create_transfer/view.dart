@@ -10,7 +10,7 @@ import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
-import 'package:orginone/widget/shine_widget.dart';
+import 'package:orginone/widget/mapping_components.dart';
 
 import '../../add_asset/item.dart';
 import 'logic.dart';
@@ -58,7 +58,7 @@ class CreateTransferPage
         children: [
           CommonWidget.commonHeadInfoWidget(state.config.config![0].title??""),
           ...state.config.config![0].fields!.map((e){
-            Widget child = testShine[e.type??""]!(e,isEdit: state.isEdit,assetsType: AssetsType.transfer);
+            Widget child = testMappingComponents[e.type??""]!(e,isEdit: state.isEdit,assetsType: AssetsType.transfer);
             return child;
           }),
         ],

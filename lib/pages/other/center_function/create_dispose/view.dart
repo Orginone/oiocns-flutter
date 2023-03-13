@@ -6,7 +6,7 @@ import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
-import 'package:orginone/widget/shine_widget.dart';
+import 'package:orginone/widget/mapping_components.dart';
 
 import '../../add_asset/item.dart';
 import 'logic.dart';
@@ -52,7 +52,7 @@ class CreateDisposePage
         children: [
           CommonWidget.commonHeadInfoWidget(state.config.config![0].title??""),
           ...state.config.config![0].fields!.map((e){
-            Widget child = testShine[e.type??""]!(e,isEdit: state.isEdit,assetsType: AssetsType.dispose);
+            Widget child = testMappingComponents[e.type??""]!(e,isEdit: state.isEdit,assetsType: AssetsType.dispose);
             return child;
           }),
         ],
