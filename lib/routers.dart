@@ -52,17 +52,20 @@ import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/pages/setting/unit_settings_page.dart';
-// 仓库
-import './pages/other/home/ware_house/recently_opened_binding.dart';
-import './pages/other/home/ware_house/often_use_binding.dart';
-// 资产管理
-import './pages/other/home/ware_house/assets_management/assets_management_page.dart';
-import './pages/other/home/ware_house/assets_management/assets_management_binding.dart';
-// 资产管理
-import './pages/other/home/ware_house/market/market_page.dart';
-import './pages/other/home/ware_house/market/market_binding.dart';
 import 'package:orginone/util/hive_utils.dart';
 
+import './pages/other/home/ware_house/assets_management/assets_management_binding.dart';
+
+// 资产管理
+import './pages/other/home/ware_house/assets_management/assets_management_page.dart';
+import './pages/other/home/ware_house/market/market_binding.dart';
+
+// 资产管理
+import './pages/other/home/ware_house/market/market_page.dart';
+import './pages/other/home/ware_house/often_use_binding.dart';
+
+// 仓库
+import './pages/other/home/ware_house/recently_opened_binding.dart';
 import 'pages/other/batch_operation_asset/binding.dart';
 import 'pages/other/center_function/create_claim/binding.dart';
 import 'pages/other/center_function/create_claim/view.dart';
@@ -247,6 +250,11 @@ class Routers {
         name: Routers.contact,
         page: () => const ContactPage(),
         binding: ContactBinding(),
+      ),
+      GetPage(
+        name: Routers.centerFunction,
+        page: () => CenterFunctionPage(),
+        binding: CenterFunctionBinding(),
       ),
       GetPage(
         name: Routers.cohorts,

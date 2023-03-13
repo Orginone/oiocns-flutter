@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/event/load_assets.dart';
+import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/model/assets_info.dart';
 import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
@@ -12,15 +13,9 @@ import 'package:uuid/uuid_util.dart';
 
 class DisposeNetwork {
   static Future<void> createDispose(
-      {required int way,
-      int? keepOrgType,
-      required String keepOrgName,
-      int? evaluated,
-      required String billCode,
+      {required List<Fields> basic,
       required List<AssetsInfo> assets,
       bool isDraft = false,
-      String remark = "",
-      int? phoneNumber,
       bool isEdit = false}) async {
 
 
@@ -36,11 +31,6 @@ class DisposeNetwork {
     }
 
     Map<String, dynamic> data = {
-      "way": way,
-      "IS_SYS_UNIT": keepOrgType,
-      "APPLY_UNIT": keepOrgName,
-      "keepOrgPhoneNumber": phoneNumber,
-      "evaluated": evaluated,
       "SHEJIZCZZ": assetsTotal,
       "LEIJIZJHJ": depreciationTotal,
       "JINGZHIHJ": netWorthTotal,
@@ -53,13 +43,13 @@ class DisposeNetwork {
       "readStatus": isDraft ? 0 : 1,
       "id": UuidUtil.cryptoRNG().toString(),
       "detail": assets.map((e) => e.assetCode).toList(),
-      "BILL_CODE": billCode,
-      "REMARK": remark,
       "CREATE_USER": HiveUtils.getUser()?.person?.id,
       "CREATE_TIME": DateTime.now().toString(),
       "UPDATE_TIME": DateTime.now().toString(),
     };
-
+    for (var element in basic) {
+      data.addAll(element.toUploadJson());
+    }
     ResultType resultType;
     if(!isDraft){
       List<UpdateAssetsRequest> request = assets
@@ -77,7 +67,7 @@ class DisposeNetwork {
           "disposal",
           {
             "match": {
-              "BILL_CODE": billCode,
+              "BILL_CODE":  data['BILL_CODE'],
             },
             "update": {
               "_set_": data,

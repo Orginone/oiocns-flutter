@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/widget/shine_widget.dart';
 
 import '../../add_asset/item.dart';
 import 'logic.dart';
@@ -48,51 +50,14 @@ class CreateDisposePage
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CommonWidget.commonHeadInfoWidget("基本信息"),
-          Obx(() {
-            return CommonWidget.commonChoiceTile(
-                "处置方法", state.disposeType.value,
-                showLine: true, onTap: () {
-              controller.showProcessingMethod();
-            }, required: true);
+          CommonWidget.commonHeadInfoWidget(state.config.config![0].title??""),
+          ...state.config.config![0].fields!.map((e){
+            e.function = (){
+              controller.functionAlloc(e);
+            };
+            Widget child = testShine[e.type??""]!(e,isEdit: state.isEdit,assetsType: AssetsType.dispose);
+            return child;
           }),
-          Obx(() {
-            return CommonWidget.commonChoiceTile(
-                "资产接受单位类型", state.unitType.value,
-                showLine: true, onTap: () {
-              controller.showUnit();
-            });
-          }),
-          CommonWidget.commonTextTile(
-            "资产接受单位名称",
-            "",
-            hint: "请填写资产接受单位名称",
-            controller: state.unitController,
-          ),
-          CommonWidget.commonTextTile(
-            "资产接受单位电话",
-            "",
-            hint: "请填写资产接受单位电话",
-            controller: state.phoneNumberController,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-            ],
-          ),
-          Obx(() {
-            return CommonWidget.commonChoiceTile(
-                "是否评估", state.assessment.value,
-                showLine: true, onTap: () {
-              controller.showAssessment();
-            });
-          }),
-          SizedBox(
-            height: 10.h,
-          ),
-          CommonWidget.commonTextTile("处置原因", "",
-              hint: "请填写处置事由",
-              maxLine: 4,
-              controller: state.reasonController,
-              required: true),
         ],
       ),
     );

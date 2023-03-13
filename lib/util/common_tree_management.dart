@@ -55,9 +55,9 @@ class CommonTreeManagement {
 
   }
 
-  AssetsCategoryGroup? findCategoryTree(String id){
+  AssetsCategoryGroup? findCategoryTree(String name){
     try{
-      return nonLevelCategory.firstWhere((element) => element.id == id);
+      return nonLevelCategory.firstWhere((element) => element.name == name);
     }catch(e){
       return null;
     }

@@ -181,7 +181,7 @@ class AssetsInfo {
     canZhi = json['CANZHI'];
     initAssetVal = json['INIT_ASSET_VAL'];
     liuCzt = json['LIUCZT'];
-    sfxc = json['SFXC'];
+    sfxc = json['SFXC'] is bool?json['SFXC']:false;
     id = json['id'];
     gmtCreate = json['gmtCreate'];
     updateTime = json['UPDATE_TIME'];

@@ -24,6 +24,9 @@ ShineWidgetCallback shineTextWidget = (Fields data,
       data.defaultData.value = value;
     });
   }
+  if(data.hidden??false){
+    return Container();
+  }
   return Obx(() {
     return Container(
         margin: EdgeInsets.only(
@@ -33,7 +36,7 @@ ShineWidgetCallback shineTextWidget = (Fields data,
             bottom: (data.marginBottom ?? 0).h),
         child: CommonWidget.commonTextTile(
             data.title ?? "", data.defaultData.value ?? "",
-            required: data.required ?? false,enabled: !(data.readOnly??false)),);
+            required: data.required ?? false,enabled: !(data.readOnly??false),showLine: true),);
   });
 };
 
@@ -45,6 +48,9 @@ ShineWidgetCallback shineInputWidget = (Fields data,
     inputFormatters = [
       FilteringTextInputFormatter.allow(RegExp(data.regx!)),
     ];
+  }
+  if(data.hidden??false){
+    return Container();
   }
   return Container(
     margin: EdgeInsets.only(
@@ -60,12 +66,15 @@ ShineWidgetCallback shineInputWidget = (Fields data,
         data.defaultData.value = str;
       },
       required: data.required ?? false,
-      inputFormatters: inputFormatters,enabled: !(data.readOnly??false),),
+      inputFormatters: inputFormatters,enabled: !(data.readOnly??false),showLine: true),
   );
 };
 
 ShineWidgetCallback shineSelectBoxWidget = (Fields data,
     {bool isEdit = false, AssetsType? assetsType}) {
+  if(data.hidden??false){
+    return Container();
+  }
   return Obx(() {
     return Container(
       margin: EdgeInsets.only(
@@ -74,7 +83,7 @@ ShineWidgetCallback shineSelectBoxWidget = (Fields data,
           top: (data.marginTop ?? 0).h,
           bottom: (data.marginBottom ?? 0).h),
       child: CommonWidget.commonChoiceTile(
-          data.title ?? "", data.defaultData.value?.keys?.first ?? "",
+          data.title ?? "", data.defaultData.value?.values?.first.toString() ?? "",
           onTap: data.function,
           showLine: true,
           required: data.required ?? false),
@@ -85,6 +94,9 @@ ShineWidgetCallback shineSelectBoxWidget = (Fields data,
 
 ShineWidgetCallback shineRouteWidget = (Fields data,
     {bool isEdit = false, AssetsType? assetsType}) {
+  if(data.hidden??false){
+    return Container();
+  }
   return Obx(() {
     return CommonWidget.commonChoiceTile(
         data.title??"", data.defaultData.value?.name ?? "",

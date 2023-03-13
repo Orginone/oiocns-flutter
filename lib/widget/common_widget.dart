@@ -188,7 +188,8 @@ class CommonWidget {
                       hintStyle:
                           TextStyle(color: Colors.grey.shade300, fontSize: 20.sp),
                       border: InputBorder.none),
-                )
+                ),
+                SizedBox(height: 10.h,),
               ],
             ),
           ),

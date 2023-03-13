@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/target/species/ispecies.dart';
+import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/hive_utils.dart';
+import 'package:hive/hive.dart';
+part 'asset_creation_config.g.dart';
 
+@HiveType(typeId: 4)
 class AssetCreationConfig {
+  @HiveField(0)
   String? businessName;
+  @HiveField(1)
   String? businessCode;
+  @HiveField(2)
   List<Config>? config;
 
   AssetCreationConfig({this.businessName, this.businessCode, this.config});
@@ -35,9 +41,13 @@ class AssetCreationConfig {
   }
 }
 
+@HiveType(typeId: 5)
 class Config {
+  @HiveField(0)
   String? title;
+  @HiveField(1)
   int? sort;
+  @HiveField(2)
   List<Fields>? fields;
 
   Config({this.title, this.sort, this.fields});
@@ -72,24 +82,40 @@ class Config {
   }
 }
 
+@HiveType(typeId: 6)
 class Fields {
+  @HiveField(0)
   String? title;
+  @HiveField(1)
   String? hint;
+  @HiveField(2)
   String? code;
+  @HiveField(3)
   String? type;
+  @HiveField(4)
   bool? required;
+  @HiveField(5)
   bool? readOnly;
+  @HiveField(6)
   String? regx;
-  Map<String, dynamic>? select;
+  @HiveField(7)
+  Map<dynamic, String>? select;
+  @HiveField(8)
   bool? hidden;
+  @HiveField(9)
   int? maxLine;
   Rxn<dynamic> defaultData = Rxn<dynamic>();
   TextEditingController? controller;
   VoidCallback? function;
+  @HiveField(10)
   double? marginTop;
+  @HiveField(11)
   double? marginBottom;
+  @HiveField(12)
   double? marginLeft;
+  @HiveField(13)
   double? marginRight;
+  @HiveField(14)
   String? router;
 
   Fields(
@@ -135,14 +161,18 @@ class Fields {
     final Map<String, dynamic> data = new Map<String, dynamic>();
 
     data[code!] = defaultData.value??"";
+    if(code!.contains("Number")){
+      data[code!] = int.tryParse(defaultData.value??"");
+    }
+
     if(code == "ASSET_TYPE"){
-      data[code!] = defaultData.value?.title;
+      data[code!] = defaultData.value?.name;
     } else if(code == "USER_NAME"){
       data["USER"] = HiveUtils.getUser()?.person?.id;
     }else if(code == "USE_DEPT_NAME"){
       data["USE_DEPT"] = DepartmentManagement().currentDepartment?.id;
     }else if(type == "select"){
-      data[code!] = defaultData.value?.values.first;
+      data[code!] = defaultData.value?.keys.first;
     }
     return data;
   }
@@ -169,5 +199,18 @@ class Fields {
     data['marginRight'] = marginRight;
     data['router'] = router;
     return data;
+  }
+
+  void initDefaultData(Map<String,dynamic> assetsJson) {
+    defaultData.value = assetsJson[code!];
+    if (code == "ASSET_TYPE") {
+      defaultData.value = CommonTreeManagement().findCategoryTree(assetsJson[code!]??"");
+    } else if((code == "SFXC" || code == "DISPOSE_TYPE" || code == "IS_SYS_UNIT" || code == "evaluated") && assetsJson[code!]!=null){
+      dynamic key = assetsJson[code!];
+      dynamic value = select![assetsJson[code!]];
+      defaultData.value = {key:value};
+    }else {
+      defaultData.value = assetsJson[code!];
+    }
   }
 }

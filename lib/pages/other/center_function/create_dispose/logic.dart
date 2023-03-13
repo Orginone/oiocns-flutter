@@ -1,5 +1,6 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/production_order_utils.dart';
@@ -16,46 +17,30 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
 
   bool addedDraft = false;
 
-  Future<bool> back() async {
-    if (!addedDraft) {
-      if ((state.disposeType.isNotEmpty ||
-              state.reasonController.text.isNotEmpty ||
-              state.selectAssetList.isNotEmpty ||
-              state.assessment.value.isNotEmpty ||
-              state.phoneNumberController.text.isNotEmpty ||
-              state.unitController.text.isNotEmpty||state.unitType.value.isNotEmpty || state.assessment.value.isNotEmpty) &&
-          !state.isEdit) {
-        YYBottomSheetDialog(context, DraftTips, callback: (i, str) {
-          if (i == 0) {
-            draft();
-          } else if (i == 1) {
-            Get.back();
-          }
-        });
-      }
-    }
-    if (state.isEdit) {
-      return true;
-    }
-    return true;
-  }
+  // Future<bool> back() async {
+  //   if (!addedDraft) {
+  //     if ((state.disposeType.isNotEmpty ||
+  //             state.reasonController.text.isNotEmpty ||
+  //             state.selectAssetList.isNotEmpty ||
+  //             state.assessment.value.isNotEmpty ||
+  //             state.phoneNumberController.text.isNotEmpty ||
+  //             state.unitController.text.isNotEmpty||state.unitType.value.isNotEmpty || state.assessment.value.isNotEmpty) &&
+  //         !state.isEdit) {
+  //       YYBottomSheetDialog(context, DraftTips, callback: (i, str) {
+  //         if (i == 0) {
+  //           draft();
+  //         } else if (i == 1) {
+  //           Get.back();
+  //         }
+  //       });
+  //     }
+  //   }
+  //   if (state.isEdit) {
+  //     return true;
+  //   }
+  //   return true;
+  // }
 
-  @override
-  void onReady() async {
-    // TODO: implement onReady
-    super.onReady();
-    if (!state.isEdit) {
-      state.orderNum =
-          await ProductionOrderUtils.productionSingleOrder("ZCCZ");
-    }
-  }
-
-  void showProcessingMethod() {
-    PickerUtils.showListStringPicker(context, titles: DisposeTyep,
-        callback: (str) {
-      state.disposeType.value = str;
-    });
-  }
 
   void jumpBulkRemovalAsset() {
     Get.toNamed(Routers.bulkRemovalAsset,
@@ -98,54 +83,33 @@ class CreateDisposeController extends BaseController<CreateDisposeState> {
 
   }
 
-  void showUnit() {
-    PickerUtils.showListStringPicker(context, titles: AssetAcceptanceUnitType,
-        callback: (str) {
-      state.unitType.value = str;
-    });
-  }
-
-  void showAssessment() {
-    PickerUtils.showListStringPicker(context, titles: Whether, callback: (str) {
-      state.assessment.value = str;
-    });
-  }
 
   void create({bool isDraft = false}) async{
-    if (state.disposeType.value.isEmpty) {
-      return ToastUtils.showMsg(msg: "请选择处置方式");
-    }
-    if (state.reasonController.text.trim().isEmpty) {
-      return ToastUtils.showMsg(msg: "请输入处置原因");
+
+    for (var element in state.config.config![0].fields!) {
+      if(element.required??false){
+        if(element.defaultData.value == null){
+          return ToastUtils.showMsg(msg: element.hint??"");
+        }
+      }
     }
     if (state.selectAssetList.isEmpty) {
       return ToastUtils.showMsg(msg: "请至少选择一项资产");
     }
-    addedDraft = isDraft;
-    int? keepOrgType;
-    int? evaluated;
-    int? phoneNum;
-    if(state.unitType.value.isNotEmpty){
-      keepOrgType = AssetAcceptanceUnitType.indexOf(state.unitType.value);
-    }
-    if(state.assessment.value.isNotEmpty){
-      evaluated = Whether.indexOf(state.assessment.value);
-    }
-    if(state.phoneNumberController.text.trim().isNotEmpty){
-      if(state.phoneNumberController.text.length!=11){
-       return ToastUtils.showMsg(msg: "请输入正确的手机号");
-      }else{
-        phoneNum = int.parse(state.phoneNumberController.text);
-      }
-    }
     await DisposeNetwork.createDispose(
-        way: DisposeTyep.indexOf(state.disposeType.value),
-        keepOrgType: keepOrgType,
-        keepOrgName: state.unitController.text,
-        evaluated: evaluated,
-        phoneNumber: phoneNum,
-        billCode: state.orderNum,
+        basic: state.config.config?[0].fields??[],
         assets: state.selectAssetList,
-        remark: state.reasonController.text,isDraft: isDraft,isEdit: state.isEdit);
+        isDraft: isDraft,isEdit: state.isEdit);
+  }
+
+  void functionAlloc(Fields e) {
+    if (e.type == "select") {
+      PickerUtils.showListStringPicker(context, titles: e.select!.values.toList(),
+          callback: (str) {
+            int index = e.select!.values.toList().indexOf(str);
+            dynamic key = e.select!.keys.toList()[index];
+            e.defaultData.value = {key: str};
+          });
+    }
   }
 }

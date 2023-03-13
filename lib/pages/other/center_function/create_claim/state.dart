@@ -6,7 +6,7 @@ import 'package:orginone/dart/core/target/species/ispecies.dart';
 import 'package:orginone/model/acc.dart';
 import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/model/asset_use.dart';
-import 'package:orginone/util/common_tree_management.dart';
+import 'package:orginone/util/hive_utils.dart';
 
 class CreateClaimState extends BaseGetState {
   late bool isEdit;
@@ -18,14 +18,13 @@ class CreateClaimState extends BaseGetState {
   late AssetCreationConfig config;
 
   CreateClaimState() {
-    config = AssetCreationConfig.fromJson(acc);
+    config = HiveUtils.getConfig("claim");
     isEdit = Get.arguments?['isEdit'] ?? false;
     if (isEdit) {
       assetUse = Get.arguments?['assetUse'];
       Map<String, dynamic> assetUseJson = assetUse.toJson();
-
       for (var element in config.config![0].fields!) {
-        element.defaultData.value = assetUseJson[element.code!];
+        element.initDefaultData(assetUseJson);
       }
       if (assetUse.approvalDocument?.detail?.isNotEmpty ?? false) {
         var assets = assetUse.approvalDocument!.detail!;
@@ -33,13 +32,7 @@ class CreateClaimState extends BaseGetState {
           Map<String, dynamic> assetsJson = value.toJson();
           Config c = config.config![1].toNewConfig();
           for (var element in c.fields!) {
-            if (element.code == "ASSET_TYPE") {
-              element.defaultData.value = CommonTreeManagement().findCategoryTree(assetsJson[element.code!]??"");
-            } else if(element.code == "SFXC" && assetsJson[element.code!]!=null){
-              element.defaultData.value = {assetsJson[element.code!]?"是":"否":assetsJson[element.code!]};
-            }else {
-              element.defaultData.value = assetsJson[element.code!];
-            }
+            element.initDefaultData(assetsJson);
           }
           detailedData.add(c);
         }

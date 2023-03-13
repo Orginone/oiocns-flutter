@@ -1,4 +1,4 @@
-Map<String,dynamic> acc = {
+Map<String, dynamic> claimConfig = {
   "businessName": "资产申领",
   "businessCode": "claim",
   "text": [
@@ -20,9 +20,6 @@ Map<String,dynamic> acc = {
           "code": "APPLY_REMARK",
           "type": "input",
           "marginTop":10.0,
-          "marginBottom":0.0,
-          "marginLeft":0.0,
-          "marginRight":0.0,
           "required": true,
           "readOnly": false,
           "regx": null,
@@ -115,15 +112,118 @@ Map<String,dynamic> acc = {
           "title": "是否信创",
           "code": "SFXC",
           "type": "select",
-          "select": {
-            "是": true,
-            "否": false
-          },
+          "select": {true: "是", false: "否"},
           "align": "left",
           "required": false,
           "readOnly": false,
           "regx": null,
           "hidden": false
+        }
+      ]
+    }
+  ]
+};
+
+Map<String, dynamic> disposeConfig = {
+  "businessName": "资产处置",
+  "businessCode": "dispose",
+  "text": [
+    {
+      "title": "基本信息",
+      "sort": 0,
+      "fields": [
+        {
+          "title": "单据编号",
+          "code": "BILL_CODE",
+          "type": "text",
+          "required": true,
+          "readOnly": true,
+          "regx": null,
+          "hidden": true,
+        },
+        {
+          "title": "处置方法",
+          "code": "DISPOSE_TYPE",
+          "type": "select",
+          "select": {
+            0: "报废",
+            1: "报损",
+            2: "无偿调拨（划转）",
+            3: "出售/出让/转让",
+            4: "核销",
+            5: "对外捐赠",
+            6: "置换",
+            7: "其他",
+            8: "投资收回",
+            9: "错账更正",
+            10: "货币型损失",
+            11: "退货",
+          },
+          "required": true,
+          "readOnly": false,
+          "regx": null,
+          "hidden": false
+        },
+        {
+          "title": "资产接收单位类型",
+          "code": "IS_SYS_UNIT",
+          "type": "select",
+          "select": {
+            0: "行政机关",
+            1: "事业单位",
+            2: "国有企业",
+            3: "国有控股企业	",
+            4: "外资企业	",
+            5: "合资企业	",
+            6: "社会团体	",
+            7: "其他"
+          },
+          "required": false,
+          "readOnly": false,
+          "regx": null,
+          "hidden": false
+        },
+        {
+          "title": "资产接收单位名称",
+          "code": "keepOrgName",
+          "type": "input",
+          "hint": "请填写资产接受单位名称",
+          "required": false,
+          "readOnly": false,
+          "regx": null,
+          "hidden": false
+        },
+        {
+          "title": "资产接收单位电话",
+          "code": "keepOrgPhoneNumber",
+          "type": "input",
+          "hint": "请填写资产接受单位电话",
+          "required": false,
+          "readOnly": false,
+          "regx": r"[0-9]",
+          "hidden": false
+        },
+        {
+          "title": "是否评估",
+          "code": "evaluated",
+          "type": "select",
+          "select": {1:"是", 0:"否"},
+          "required": false,
+          "readOnly": false,
+          "regx": null,
+          "hidden": false
+        },
+        {
+          "title": "申请原因",
+          "code": "REMARK",
+          "type": "input",
+          "hint": "请填写处置事由",
+          "marginTop": 10.0,
+          "required": true,
+          "readOnly": false,
+          "regx": null,
+          "hidden": false,
+          "maxLine":4
         }
       ]
     }
