@@ -49,6 +49,12 @@ class AnyStore {
     await _storeHub.dispose();
   }
 
+  /// 是否在线
+  /// @returns {boolean} 在线状态
+  bool get isOnline {
+    return _storeHub.isConnected;
+  }
+
   /// 更新token
   /// @param accessToken token
   updateToken(String accessToken) {

@@ -91,7 +91,11 @@ class MessageItemWidget extends GetView<ChatController> {
     );
   }
 
+<<<<<<< HEAD
   Widget get _avatarContainer {
+=======
+  Widget get _avatar {
+>>>>>>> feature/old_to_neo
     return Obx(() {
       var noRead = chat.noReadCount.value;
       return TeamAvatar(
@@ -113,7 +117,20 @@ class MessageItemWidget extends GetView<ChatController> {
     });
   }
 
+<<<<<<< HEAD
   Widget get _content {
+=======
+  Widget _avatarContainer() {
+    return Container(
+      alignment: Alignment.center,
+      width: defaultAvatarWidth,
+      height: defaultAvatarWidth,
+      child: _avatar,
+    );
+  }
+
+  Widget _content() {
+>>>>>>> feature/old_to_neo
     var target = chat.target;
     var lastMessage = chat.lastMessage;
     return Column(

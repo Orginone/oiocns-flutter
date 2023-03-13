@@ -6,7 +6,10 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/dart/core/target/person.dart';
+import 'package:orginone/event/home_data.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus.dart';
+import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/local_store.dart';
 
 const sessionUserName = 'sessionUser';
@@ -18,8 +21,21 @@ class SettingController extends GetxController {
   final Rx<IPerson?> _user = Rxn();
   final Rx<ICompany?> _curSpace = Rxn();
 
+  StreamSubscription<User>? _userSub;
+
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    _userSub = XEventBus.instance.on<User>().listen((event) async{
+        await _loadUser(XTarget.fromJson(event.person));
+    });
+  }
+
   @override
   void onClose() {
+    _userSub?.cancel();
     clear();
     super.onClose();
   }
@@ -59,7 +75,7 @@ class SettingController extends GetxController {
   }
 
   String spaceName(ISpace space) {
-    return space.id == user?.id ? "个人空间" : space.name;
+    return space.id == user?.id ? "个人空间" : space.target.team?.name??"";
   }
 
   /// 设置当前空间
@@ -180,6 +196,14 @@ class SettingController extends GetxController {
       }
     }
     return null;
+  }
+
+  void jumpSpaces() {
+    Get.toNamed(Routers.spaces)?.then((value){
+      if(value!=null && value){
+        EventBusHelper.fire(InitHomeData());
+      }
+    });
   }
 }
 

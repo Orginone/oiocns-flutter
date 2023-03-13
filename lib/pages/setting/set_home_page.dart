@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:hive/hive.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/config/enum.dart';
 import 'package:orginone/components/template/base_view.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus.dart';
+import 'package:orginone/util/hive_utils.dart';
 
 /// 设置首页
 @immutable
@@ -93,6 +95,7 @@ class SetHomePage extends BaseView<SetHomeController> {
             margin: EdgeInsets.only(left: 20.w, bottom: 10.h, right: 20.w),
             child: GFButton(
               onPressed: () async {
+                await HiveUtils.clean();
                 Get.offAllNamed(Routers.main);
                 XEventBus.instance.fire(SignOut());
               },
