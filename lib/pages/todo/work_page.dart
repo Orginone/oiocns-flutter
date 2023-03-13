@@ -162,20 +162,18 @@ class WorkController extends TabsController {
     var space = settingCtrl.space;
     var company = settingCtrl.company;
     var define = await KernelApi.getInstance().queryDefine(
-        IdReq(id: space.target.id));
+        QueryDefineReq(speciesId: '', spaceId: '', page: PageRequest(offset: 0, limit: 20, filter: '')));
     var spaceID1 = settingCtrl.company?.id ?? "";
     var spaceID2 = settingCtrl.user?.id ?? "";
     FlowTarget ft = FlowTarget(space.target);
     // var defines = ft.getDefines();
     var data = await ft.createInstance(FlowInstanceModel(
-        productId: '373521708516249601',
-        functionCode: '请假',
         spaceId: "373520388493283329",
         content: 'https://www.npmjs.com/',
         contentType: 'string',
         data: '{}',
         title: '',
-        hook: ''));
+        hook: '', defineId: ''));
     print('---->');
     //TODO:测试发起用例
   }
