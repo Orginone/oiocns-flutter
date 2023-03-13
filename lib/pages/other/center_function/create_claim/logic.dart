@@ -1,10 +1,8 @@
 import 'package:get/get.dart';
-import 'package:orginone/event/choice_assets.dart';
+import 'package:orginone/event/choice.dart';
 import 'package:orginone/model/asset_creation_config.dart';
-import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/center_function/create_claim/netwrok.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/production_order_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 

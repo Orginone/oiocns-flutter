@@ -67,6 +67,9 @@ class HiveUtils {
        case "dispose":
          assetConfig = AssetCreationConfig.fromJson(disposeConfig);
          break;
+       case "transfer":
+         assetConfig = AssetCreationConfig.fromJson(transferConfig);
+         break;
      }
    }
 

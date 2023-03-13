@@ -223,7 +223,79 @@ Map<String, dynamic> disposeConfig = {
           "readOnly": false,
           "regx": null,
           "hidden": false,
-          "maxLine":4
+          "maxLine": 4
+        }
+      ]
+    }
+  ]
+};
+
+Map<String, dynamic> transferConfig = {
+  "businessName": "资产移交",
+  "businessCode": "transfer",
+  "text": [
+    {
+      "title": "基本信息",
+      "sort": 0,
+      "fields": [
+        {
+          "title": "单据编号",
+          "code": "BILL_CODE",
+          "type": "text",
+          "required": true,
+          "readOnly": true,
+          "regx": null,
+          "hidden": false
+        },
+        {
+          "title": "移交人",
+          "code": "OLD_USER_NAME",
+          "type": "text",
+          "required": false,
+          "readOnly": true,
+          "regx": null,
+          "hidden": false
+        },
+        {
+          "title": "移交部门",
+          "code": "OLD_ORG_NAME",
+          "type": "text",
+          "required": false,
+          "readOnly": true,
+          "regx": null,
+          "hidden": false
+        },
+        {
+          "title": "移交至人员",
+          "code": "KEEPER_NAME",
+          "type": "router",
+          "router": "/choicePeople",
+          "required": false,
+          "readOnly": false,
+          "regx": null,
+          "hidden": false
+        },
+        {
+          "title": "移交至部门",
+          "code": "KEEP_ORG_NAME",
+          "type": "router",
+          "router": "/choiceDepartment",
+          "required": false,
+          "readOnly": false,
+          "regx": null,
+          "hidden": false
+        },
+        {
+          "title": "移交原因",
+          "code": "APPLY_REMARK",
+          "type": "input",
+          "hint": "请填写移交原因",
+          "marginTop": 10.0,
+          "maxLine": 4,
+          "required": true,
+          "readOnly": false,
+          "regx": null,
+          "hidden": false
         }
       ]
     }

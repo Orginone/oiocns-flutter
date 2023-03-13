@@ -8,6 +8,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/event/load_assets.dart';
+import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/model/assets_info.dart';
 import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/department_management.dart';
@@ -18,43 +19,36 @@ import 'package:orginone/widget/loading_dialog.dart';
 
 class TransferNetWork{
   static createTransfer({
-    required String billCode, XTarget? keeper, ITarget? keepOrg,required String remark
-,required List<AssetsInfo> assets,bool isDraft = false,bool isEdit = false}) async{
+    required  List<Fields> basic, required List<AssetsInfo> assets,bool isDraft = false,bool isEdit = false}) async{
 
 
     Map<String,dynamic> data = {
-      "BILL_CODE":billCode,
-      "KEEPER_ID":keeper?.name,
-      "KEEP_ORG_ID":keepOrg?.name,
-      "OLD_ORG_NAME":DepartmentManagement().currentDepartment?.name,
-      "OLD_ORG_ID":DepartmentManagement().currentDepartment?.name,
-      "OLD_USER_ID":HiveUtils.getUser()?.person?.name,
       "SUBMITTER_NAME": HiveUtils.getUser()?.person?.name,
-      "APPLY_REMARK":remark,
       "status": isDraft?0:1,
       "CREATE_TIME": DateTime.now().toString(),
       "UPDATE_TIME": DateTime.now().toString(),
+      "SUBMITTER_ID": HiveUtils.getUser()?.person?.id,
       "approvalDocument": {
-        "OLD_USER_ID": HiveUtils.getUser()?.person?.name,
-        "KEEPER_ID": keeper?.name,
-        "KEEP_ORG_ID": keepOrg?.name,
         "CREATE_USER": HiveUtils.getUser()?.person?.id,
-        "OLD_ORG_ID": DepartmentManagement().currentDepartment?.name,
-        "OLD_ORG_NAME": DepartmentManagement().currentDepartment?.name,
         "detail": assets.map((e) => e.toJson()).toList(),
         "SUBMITTER_NAME": HiveUtils.getUser()?.person?.name,
+        "SUBMITTER_ID": HiveUtils.getUser()?.person?.id,
       }
     };
+    for (var element in basic) {
+      data.addAll(element.toUploadJson());
+      data['approvalDocument'].addAll(element.toUploadJson());
+    }
 
     ResultType resultType;
     if(!isDraft){
       List<UpdateAssetsRequest> request = assets
           .map((element) =>
           UpdateAssetsRequest(assetCode: element.assetCode!, updateData: {
-            "USER": keeper?.id,
-            "USER_NAME": keeper?.name,
-            "USE_DEPT": keepOrg?.id,
-            "USE_DEPT_NAME": keepOrg?.name,
+            "USER": data['KEEPER_ID'],
+            "USER_NAME": data['KEEPER_NAME'],
+            "USE_DEPT": data['KEEP_ORG_ID'],
+            "USE_DEPT_NAME": data['KEEP_ORG_NAME'],
             "KAPIANZT":CardStatus.transfer.toStatusId,
           }))
           .toList();
@@ -65,7 +59,7 @@ class TransferNetWork{
     if(isEdit){
       resultType = await KernelApi.getInstance().anystore.update("asset_transfer",{
         "match":{
-          "BILL_CODE":billCode,
+          "BILL_CODE":data["BILL_CODE"],
         },
         "update":{
           "_set_":data,

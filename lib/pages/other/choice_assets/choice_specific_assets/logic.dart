@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/target/species/ispecies.dart';
-import 'package:orginone/event/choice_assets.dart';
+import 'package:orginone/event/choice.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';

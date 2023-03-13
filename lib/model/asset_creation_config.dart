@@ -146,10 +146,10 @@ class Fields {
     if (type == "input") {
       controller = TextEditingController();
     }
-    if (code == "USE_DEPT_NAME") {
+    if (code == "USE_DEPT_NAME" || code == "OLD_ORG_NAME") {
       defaultData.value = DepartmentManagement().currentDepartment?.name??"个人中心";
     }
-    if (code == "USER_NAME") {
+    if (code == "USER_NAME" || code == "OLD_USER_NAME") {
       defaultData.value = HiveUtils.getUser()?.userName;
     }
   }
@@ -165,14 +165,33 @@ class Fields {
       data[code!] = int.tryParse(defaultData.value??"");
     }
 
-    if(code == "ASSET_TYPE"){
-      data[code!] = defaultData.value?.name;
-    } else if(code == "USER_NAME"){
-      data["USER"] = HiveUtils.getUser()?.person?.id;
-    }else if(code == "USE_DEPT_NAME"){
-      data["USE_DEPT"] = DepartmentManagement().currentDepartment?.id;
-    }else if(type == "select"){
+    if(type == "select"){
       data[code!] = defaultData.value?.keys.first;
+    }
+    switch(code){
+      case "ASSET_TYPE":
+        data[code!] = defaultData.value?.name;
+        break;
+      case "USER_NAME":
+        data["USER"] = HiveUtils.getUser()?.person?.id;
+        break;
+      case 'OLD_USER_NAME':
+        data["OLD_USER_ID"] = HiveUtils.getUser()?.person?.id;
+        break;
+      case "USE_DEPT_NAME":
+        data["USE_DEPT"] = DepartmentManagement().currentDepartment?.id;
+        break;
+      case "OLD_ORG_NAME":
+        data['OLD_ORG_ID'] = DepartmentManagement().currentDepartment?.id;
+        break;
+      case "KEEPER_NAME":
+        data['KEEPER_NAME'] = defaultData.value?.name;
+        data['KEEPER_ID'] = defaultData.value?.id;
+        break;
+      case 'KEEP_ORG_NAME':
+        data['KEEP_ORG_NAME'] = defaultData.value?.name;
+        data['KEEP_ORG_ID'] = defaultData.value?.id;
+        break;
     }
     return data;
   }
@@ -202,15 +221,33 @@ class Fields {
   }
 
   void initDefaultData(Map<String,dynamic> assetsJson) {
-    defaultData.value = assetsJson[code!];
-    if (code == "ASSET_TYPE") {
-      defaultData.value = CommonTreeManagement().findCategoryTree(assetsJson[code!]??"");
-    } else if((code == "SFXC" || code == "DISPOSE_TYPE" || code == "IS_SYS_UNIT" || code == "evaluated") && assetsJson[code!]!=null){
-      dynamic key = assetsJson[code!];
-      dynamic value = select![assetsJson[code!]];
-      defaultData.value = {key:value};
-    }else {
-      defaultData.value = assetsJson[code!];
+
+    switch(code){
+      case "ASSET_TYPE":
+        defaultData.value = CommonTreeManagement().findCategoryTree(assetsJson[code!]??"");
+        break;
+      case "SFXC":
+      case "DISPOSE_TYPE":
+      case "IS_SYS_UNIT":
+      case "evaluated":
+        if(assetsJson[code!]!=null){
+          dynamic key = assetsJson[code!];
+          dynamic value = select![assetsJson[code!]];
+          defaultData.value = {key:value};
+        }
+        break;
+      case "KEEPER_NAME":
+        defaultData.value = DepartmentManagement().findXTargetByIdOrName(id: assetsJson['KEEPER_ID']);
+        break;
+      case "KEEP_ORG_NAME":
+        defaultData.value = DepartmentManagement().findITargetByIdOrName(id: assetsJson['KEEP_ORG_ID']);
+        break;
+      default:
+        var value = assetsJson[code!];
+        if(value!=null){
+          defaultData.value = value;
+        }
+        break;
     }
   }
 }

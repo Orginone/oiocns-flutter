@@ -134,7 +134,7 @@ class Routers {
   //选择人员
   static const String choicePeople = "/choicePeople";
 
-  //选择人员
+  //选择部门
   static const String choiceDepartment = "/choiceDepartment";
 
   //资产详情
