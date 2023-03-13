@@ -12,12 +12,9 @@ import 'package:orginone/dart/core/thing/index.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/pages/chat/message_page.dart';
-<<<<<<< HEAD
 import 'package:orginone/pages/index/index_page.dart';
 import 'package:orginone/pages/other/home/components/operation_bar.dart';
-=======
 import 'package:orginone/pages/other/assets_config.dart';
->>>>>>> feature/old_to_neo
 import 'package:orginone/pages/other/home/components/user_bar.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/routers.dart';
@@ -27,12 +24,9 @@ import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
-<<<<<<< HEAD
 import '../home/ware_house/ware_house.dart';
-=======
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
->>>>>>> feature/old_to_neo
 
 class HomePage extends GetView<HomeController> {
   const HomePage({Key? key}) : super(key: key);
@@ -94,14 +88,6 @@ class HomeController extends TabsController {
     ));
     var center = XTab(
       body: XImage.localImage("logo_not_bg", size: Size(36.w, 36.w)),
-<<<<<<< HEAD
-      // view: IndexPage(),
-      view: IndexPage(),
-      // view: LineChartSample(),
-      // view: BarChartWidget(),
-      // view: PieChartSample(),
-      // view: PieChartWidget(),
-=======
       view: GridView.count(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
@@ -136,7 +122,6 @@ class HomeController extends TabsController {
           );
         }).toList(),
       ),
->>>>>>> feature/old_to_neo
       iconMargin: EdgeInsets.zero,
     );
     registerTab(center);
@@ -180,8 +165,8 @@ class HomeController extends TabsController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    EventBusHelper.register(this, (event) async{
-      if(event is InitHomeData){
+    EventBusHelper.register(this, (event) async {
+      if (event is InitHomeData) {
         await initData();
       }
     });
@@ -194,7 +179,7 @@ class HomeController extends TabsController {
     await initData();
   }
 
-  Future<void> initData() async{
+  Future<void> initData() async {
     LoadingDialog.showLoading(Get.context!, msg: "加载数据中");
     await loadData();
     LoadingDialog.dismiss(Get.context!);

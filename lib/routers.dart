@@ -6,10 +6,8 @@ import 'package:orginone/pages/chat/message_more.dart';
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
-<<<<<<< HEAD
 import 'package:orginone/pages/index/index_page.dart';
 // import 'package:orginone/pages/index/indexok_page.dart';
-=======
 import 'package:orginone/pages/other/add_asset/binding.dart';
 import 'package:orginone/pages/other/add_asset/view.dart';
 import 'package:orginone/pages/other/batch_operation_asset/view.dart';
@@ -39,7 +37,6 @@ import 'package:orginone/pages/other/choice_department/binding.dart';
 import 'package:orginone/pages/other/choice_department/view.dart';
 import 'package:orginone/pages/other/choice_people/binding.dart';
 import 'package:orginone/pages/other/choice_people/view.dart';
->>>>>>> feature/old_to_neo
 import 'package:orginone/pages/other/home/home_page.dart';
 import 'package:orginone/pages/other/home/spaces_page.dart';
 import 'package:orginone/pages/other/login.dart';
@@ -54,7 +51,6 @@ import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
-<<<<<<< HEAD
 import 'package:orginone/pages/setting/unit_settings_page.dart';
 // 仓库
 import './pages/other/home/ware_house/recently_opened_binding.dart';
@@ -65,9 +61,7 @@ import './pages/other/home/ware_house/assets_management/assets_management_bindin
 // 资产管理
 import './pages/other/home/ware_house/market/market_page.dart';
 import './pages/other/home/ware_house/market/market_binding.dart';
-=======
 import 'package:orginone/util/hive_utils.dart';
->>>>>>> feature/old_to_neo
 
 import 'pages/other/batch_operation_asset/binding.dart';
 import 'pages/other/center_function/create_claim/binding.dart';
@@ -194,7 +188,6 @@ class Routers {
         name: Routers.home,
         page: () => const HomePage(),
         bindings: [
-<<<<<<< HEAD
           ChatBinding(),
           HomeBinding(),
           SetHomeBinding(),
@@ -205,11 +198,6 @@ class Routers {
           MessageBinding(),
           RecentlyOpenedBinding(),
           OftenUseBinding()
-=======
-          HomeBinding(),
-          SetHomeBinding(),
-          MessageBinding(),
->>>>>>> feature/old_to_neo
         ],
       ),
       GetPage(
@@ -266,7 +254,6 @@ class Routers {
         binding: ContactBinding(),
       ),
       GetPage(
-<<<<<<< HEAD
         name: Routers.uintSettings,
         page: () => UintSettingsPage(),
         binding: UintSettingsBinding(),
@@ -295,10 +282,6 @@ class Routers {
         name: Routers.market,
         page: () => const MarketPage(),
         binding: MarketBinding(),
-=======
-        name: Routers.centerFunction,
-        page: () => CenterFunctionPage(),
-        binding: CenterFunctionBinding(),
       ),
       GetPage(
         name: Routers.choiceAssets,
@@ -389,7 +372,6 @@ class Routers {
         name: Routers.webView,
         page: () => WebViewPage(),
         binding: WebViewBinding(),
->>>>>>> feature/old_to_neo
       ),
     ];
   }

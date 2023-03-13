@@ -1,7 +1,8 @@
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/thing/idict.dart';
 
-import 'idict.dart';
+// import 'idict.dart';
 
 abstract class ISpeciesItem {
   // 主键,唯一
@@ -97,21 +98,20 @@ abstract class ISpeciesItem {
 
   Future<bool> delete();
 
-  bool isAllLast(){
-    if(children.isEmpty){
+  bool isAllLast() {
+    if (children.isEmpty) {
       return true;
     }
     return children.where((element) => element.children.isNotEmpty).isEmpty;
   }
 
-
-  List<ISpeciesItem> getAllLastList(){
+  List<ISpeciesItem> getAllLastList() {
     List<ISpeciesItem> list = [];
 
     for (var element in children) {
-      if(element.children.isEmpty){
+      if (element.children.isEmpty) {
         list.add(element);
-      }else{
+      } else {
         list.addAll(element.getAllLastList());
       }
     }
