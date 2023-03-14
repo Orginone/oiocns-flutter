@@ -47,6 +47,9 @@ import 'package:orginone/pages/other/scanning/scanning_result_pge.dart';
 import 'package:orginone/pages/other/search_page.dart';
 import 'package:orginone/pages/other/web_view/binding.dart';
 import 'package:orginone/pages/other/web_view/view.dart';
+import 'package:orginone/pages/other/work/process_approval/view.dart';
+import 'package:orginone/pages/other/work/process_details/logic.dart';
+import 'package:orginone/pages/other/work/process_details/view.dart';
 import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
@@ -71,6 +74,7 @@ import 'pages/other/center_function/create_claim/binding.dart';
 import 'pages/other/center_function/create_claim/view.dart';
 import 'pages/other/storage_location/binding.dart';
 import 'pages/other/storage_location/view.dart';
+import 'pages/other/work/process_details/binding.dart';
 
 class Routers {
   // 首页
@@ -169,6 +173,8 @@ class Routers {
 
   //webView
   static const String webView = "/webView";
+
+  static const String processDetails = '/processDetails';
 
   static String get main {
     return login;
@@ -380,6 +386,11 @@ class Routers {
         name: Routers.webView,
         page: () => WebViewPage(),
         binding: WebViewBinding(),
+      ),
+      GetPage(
+        name: Routers.processDetails,
+        page: () => ProcessDetailsPage(),
+        binding: ProcessDetailsBinding(),
       ),
     ];
   }
