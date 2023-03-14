@@ -19,7 +19,7 @@ class MessagePage extends GetView<MessageController> {
 
   @override
   Widget build(BuildContext context) {
-    return TabsView(
+    return Tabs(
       tabCtrl: controller.tabController,
       top: TabBar(
         controller: controller.tabController,

@@ -77,9 +77,14 @@ import 'package:orginone/pages/todo/todo_tab_page.dart';
 import 'package:orginone/pages/todo/work_page.dart';
 import 'package:orginone/pages/todo/workbench_page.dart';
 
+import 'pages/other/work/process_details/view.dart';
+
 class Routers {
   // 首页
   static const String home = "/home";
+  static const String todo = "/todo";
+  static const String todoList = "/todoList";
+  static const String todoDetail = "/todoDetail";
 
   // 登录
   static const String login = "/login";
@@ -187,8 +192,6 @@ class Routers {
     }
   }
 
-  //办事
-  // static const String
 
   static List<GetPage> getInitRouters() {
     return [
@@ -201,6 +204,7 @@ class Routers {
         name: Routers.home,
         page: () => const HomePage(),
         bindings: [
+          WorkBinding(),
           ChatBinding(),
           HomeBinding(),
           SetHomeBinding(),
