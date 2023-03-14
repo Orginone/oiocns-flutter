@@ -28,6 +28,10 @@ import './pages/other/home/ware_house/assets_management/assets_management_bindin
 // 资产管理
 import './pages/other/home/ware_house/market/market_page.dart';
 import './pages/other/home/ware_house/market/market_binding.dart';
+import 'package:orginone/pages/todo/todo_detail.dart';
+import 'package:orginone/pages/todo/todo_tab_page.dart';
+import 'package:orginone/pages/todo/work_page.dart';
+import 'package:orginone/pages/todo/workbench_page.dart';
 
 class Routers {
   // 入口页面
@@ -35,6 +39,9 @@ class Routers {
 
   // 首页
   static const String home = "/home";
+  static const String todo = "/todo";
+  static const String todoList = "/todoList";
+  static const String todoDetail = "/todoDetail";
 
   // 登录
   static const String login = "/login";
@@ -88,6 +95,7 @@ class Routers {
         bindings: [
           ChatBinding(),
           HomeBinding(),
+          WorkBinding(),
           SetHomeBinding(),
           MessageBinding(),
           IndexPageBinding(),
@@ -180,6 +188,20 @@ class Routers {
         name: Routers.market,
         page: () => const MarketPage(),
         binding: MarketBinding(),
+      ),
+      GetPage(
+        name: Routers.todo,
+        page: () => WorkbenchPage(),
+        binding: WorkBinding(),
+      ),
+      GetPage(
+        name: Routers.todoList,
+        page: () => const TodoTabPage(),
+      ),
+      GetPage(
+        name: Routers.todoDetail,
+        page: () => const TodoDetail(),
+        binding: TodoDetailBinding(),
       ),
     ];
   }

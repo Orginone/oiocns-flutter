@@ -190,7 +190,7 @@ class BaseTarget extends ITarget {
     if (typeNames.isNotEmpty) {
       final res = await kernel.searchTargetByName(NameTypeModel(
           name: code,
-          typeNames: List<String>.from(typeNames),
+          typeNames: typeNames.map((person) => person.name).toList(),
           page: PageRequest(
             offset: 0,
             filter: code,

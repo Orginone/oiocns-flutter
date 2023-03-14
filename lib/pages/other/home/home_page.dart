@@ -9,6 +9,8 @@ import 'package:orginone/pages/index/index_page.dart';
 import 'package:orginone/pages/other/home/components/operation_bar.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
+import 'package:orginone/pages/todo/work_page.dart';
+import 'package:orginone/pages/todo/workbench_page.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
 import '../home/ware_house/ware_house.dart';
@@ -69,7 +71,7 @@ class HomeController extends TabsController {
     );
     registerTab(XTab(
       body: Text('办事', style: XFonts.size14Black3),
-      view: Container(),
+      view:  WorkPage(),
       icon: XImage.localImage("work", size: size),
     ));
     var center = XTab(
