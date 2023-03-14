@@ -47,9 +47,6 @@ import 'package:orginone/pages/other/scanning/scanning_result_pge.dart';
 import 'package:orginone/pages/other/search_page.dart';
 import 'package:orginone/pages/other/web_view/binding.dart';
 import 'package:orginone/pages/other/web_view/view.dart';
-import 'package:orginone/pages/other/work/process_approval/view.dart';
-import 'package:orginone/pages/other/work/process_details/logic.dart';
-import 'package:orginone/pages/other/work/process_details/view.dart';
 import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
@@ -75,6 +72,10 @@ import 'pages/other/center_function/create_claim/view.dart';
 import 'pages/other/storage_location/binding.dart';
 import 'pages/other/storage_location/view.dart';
 import 'pages/other/work/process_details/binding.dart';
+import 'package:orginone/pages/todo/todo_detail.dart';
+import 'package:orginone/pages/todo/todo_tab_page.dart';
+import 'package:orginone/pages/todo/work_page.dart';
+import 'package:orginone/pages/todo/workbench_page.dart';
 
 class Routers {
   // 首页
@@ -185,6 +186,9 @@ class Routers {
       return login;
     }
   }
+
+  //办事
+  // static const String
 
   static List<GetPage> getInitRouters() {
     return [
@@ -391,6 +395,20 @@ class Routers {
         name: Routers.processDetails,
         page: () => ProcessDetailsPage(),
         binding: ProcessDetailsBinding(),
+      ),
+      GetPage(
+        name: Routers.todo,
+        page: () => WorkbenchPage(),
+        binding: WorkBinding(),
+      ),
+      GetPage(
+        name: Routers.todoList,
+        page: () => const TodoTabPage(),
+      ),
+      GetPage(
+        name: Routers.todoDetail,
+        page: () => const TodoDetail(),
+        binding: TodoDetailBinding(),
       ),
     ];
   }

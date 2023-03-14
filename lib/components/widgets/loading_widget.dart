@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:orginone/config/enum.dart';
 import 'package:orginone/components/template/base_view.dart';
@@ -7,40 +8,41 @@ import 'package:orginone/components/unified.dart';
 
 class LoadingWidget extends StatelessWidget {
   ///内容页面
-  final BaseController controller;
-
-  ///内容页面
   final WidgetBuilder builder;
 
   ///是否显示loading
   /// 初始化状态，默认显示页面内容
-  LoadStatusX initStatus = LoadStatusX.loading;
+  // Rx<LoadStatusX> currStatus = Rx(LoadStatusX.loading);
+  LoadStatusX currStatus = LoadStatusX.loading;
 
   LoadingWidget({
     Key? key,
-    this.initStatus = LoadStatusX.loading,
+    this.currStatus = LoadStatusX.loading,
     required this.builder,
-    required this.controller,
-  }) : super(key: key) {
-    controller.loadStatus.value = initStatus;
-    // debugPrint("--->重新初始化了LoadingWidget:$controller");
-  }
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: const BoxConstraints.expand(),
-      child: Obx(() => _getView(context)),
+      // child: Obx(() => _getView(context)),
+      child: _getView(context),
     );
   }
+  // @override
+  // Widget build(BuildContext context) {
+  //   return ConstrainedBox(
+  //     constraints: const BoxConstraints.expand(),
+  //     child: Obx(() => _getView(context)),
+  //   );
+  // }
 
   Widget _getView(BuildContext context) {
-    // debugPrint('---->loadStatus:${controller.loadStatus.value}');
-    if (controller.loadStatus.value == LoadStatusX.loading) {
+    if (currStatus == LoadStatusX.loading) {
       return _loadingView();
-    } else if (controller.loadStatus.value == LoadStatusX.error) {
+    } else if (currStatus == LoadStatusX.error) {
       return _errorView();
-    } else if (controller.loadStatus.value == LoadStatusX.empty) {
+    } else if (currStatus == LoadStatusX.empty) {
       return _emptyView();
     } else {
       return builder(context);
