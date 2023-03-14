@@ -40,7 +40,7 @@ class HomePage extends GetView<HomeController> {
       resizeToAvoidBottomInset: false,
       appBarElevation: 0,
       appBarHeight: 0,
-      body: TabsView(
+      body: Tabs(
         tabCtrl: controller.tabController,
         top: const UserBar(),
         views: controller.tabs.map((e) => e.toTabView()).toList(),
