@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 
@@ -6,9 +7,9 @@ import '../enum.dart';
 import 'itodo.dart';
 
 class OrgTodo extends ITodoGroup {
-  final List<ApprovalItem> _todoList = [];
-  final List<ApprovalItem> _doList = [];
-  final List<ApplyItem> _applyList = [];
+  final RxList<ApprovalItem> _todoList = RxList();
+  final RxList<ApprovalItem> _doList = RxList();
+  final RxList<ApplyItem> _applyList = RxList();
 
   OrgTodo(String id, String name, String icon) {
     this.id = id;
@@ -30,7 +31,7 @@ class OrgTodo extends ITodoGroup {
       }
     }
     return IApplyItemResult(
-        _applyList, res.data!.total, page.offset, page.limit);
+        _applyList, res.data?.total?? 0, page.offset, page.limit);
   }
 
   @override

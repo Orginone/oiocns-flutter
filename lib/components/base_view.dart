@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:orginone/config/enum.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:orginone/components/a_font.dart';
+import 'package:orginone/components/base_controller.dart';
 import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/components/widgets/loading_widget.dart';
+import 'package:orginone/config/enum.dart';
+import 'package:orginone/util/widget_util.dart';
 
 abstract class BaseView<T extends BaseController> extends GetView<T> {
   const BaseView({Key? key}) : super(key: key);
@@ -15,14 +18,20 @@ abstract class BaseView<T extends BaseController> extends GetView<T> {
             appBarCenterTitle: true,
             appBarTitle: Text(
               getTitle(),
-              style: XFonts.size22Black3,
+              style: AFont.instance.size22Black3,
             ),
-            appBarLeading: XWidgets.defaultBackBtn,
+            appBarLeading: WidgetUtil.defaultBackBtn,
             appBarActions: actions(),
             bgColor: XColors.white,
-            body: builder(context),
+            body: _loadingWidget(),
             resizeToAvoidBottomInset: false)
-        : builder(context);
+        : _loadingWidget();
+  }
+
+  _loadingWidget() {
+    return LoadingWidget(
+        currStatus: initStatus(),
+        builder: (context) => builder(context));
   }
 
   Widget builder(BuildContext context);
@@ -45,16 +54,5 @@ abstract class BaseView<T extends BaseController> extends GetView<T> {
   /// 标题右侧按钮
   List<Widget>? actions() {
     return null;
-  }
-}
-
-abstract class BaseController extends GetxController {
-  final Rx<LoadStatusX> loadStatus = LoadStatusX.loading.obs;
-
-  updateLoadStatus(LoadStatusX status) {
-    debugPrint("---->1$status");
-    if (status != loadStatus.value) {
-      loadStatus.value = status;
-    }
   }
 }

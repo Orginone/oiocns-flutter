@@ -3,32 +3,53 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_icon_button.dart';
+import 'package:lpinyin/lpinyin.dart';
 import 'package:orginone/components/template/base_view.dart';
+import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/components/widgets/index_bar.dart';
+import 'package:orginone/components/widgets/loading_widget.dart';
 import 'package:orginone/components/widgets/text_avatar.dart';
+import 'package:orginone/config/enum.dart';
+import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/base/common/uint.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/other/search_page.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/string_util.dart';
 
 ///联系人页面
-class ContactPage extends BaseView<ContactController> {
+class ContactPage extends GetView<ContactController> {
   const ContactPage({Key? key}) : super(key: key);
 
   @override
-  String getTitle() {
-    return "我的联系人";
+  Widget build(BuildContext context) {
+    return OrginoneScaffold(
+        appBarCenterTitle: true,
+        appBarTitle: Text(
+          "我的联系人",
+          style: XFonts.size22Black3,
+        ),
+        appBarLeading: XWidgets.defaultBackBtn,
+        appBarActions: _actions(),
+        bgColor: XColors.white,
+        body: Obx(() {
+          return LoadingWidget(
+            currStatus: controller.mLoadStatus.value,
+            builder: (BuildContext context) {
+              return Stack(
+                  children: [_contactList(), _indexList(), _stickIndexBar()]);
+            },
+          );
+        }),
+        resizeToAvoidBottomInset: false);
   }
 
-  @override
-  bool isUseScaffold() {
-    return true;
-  }
-
-  @override
-  List<Widget> actions() {
+  List<Widget> _actions() {
     return [
       GFIconButton(
         color: Colors.white.withOpacity(0),
@@ -44,24 +65,20 @@ class ContactPage extends BaseView<ContactController> {
     ];
   }
 
-  @override
-  Widget builder(BuildContext context) {
-    return Stack(children: [_contactList(), _indexList(), _stickIndexBar()]);
-  }
-
   /// 联系人列表
   Widget _contactList() {
     return GetBuilder<ContactController>(
       init: controller,
-      builder: (controller) => ListView.builder(
-          key: controller.mGlobalKey,
-          shrinkWrap: true,
-          controller: controller.mScrollController,
-          scrollDirection: Axis.vertical,
-          itemCount: controller.mData.length,
-          itemBuilder: (context, index) {
-            return item(controller.mData[index]);
-          }),
+      builder: (controller) =>
+          ListView.builder(
+              key: controller.mGlobalKey,
+              shrinkWrap: true,
+              controller: controller.mScrollController,
+              scrollDirection: Axis.vertical,
+              itemCount: controller.mData.length,
+              itemBuilder: (context, index) {
+                return item(controller.mData[index]);
+              }),
     );
   }
 
@@ -112,17 +129,19 @@ class ContactPage extends BaseView<ContactController> {
       alignment: Alignment.centerRight,
       child: GetBuilder<ContactController>(
           init: controller,
-          builder: (controller) => IndexBar(
-              mData: controller.mIndex,
-              indexBarCallBack: (str, index, touchUp) {
-                controller.updateIndex(index, touchUp);
-              })),
+          builder: (controller) =>
+              IndexBar(
+                  mData: controller.mIndex,
+                  indexBarCallBack: (str, index, touchUp) {
+                    controller.updateIndex(index, touchUp);
+                  })),
     );
   }
 
   /// 触摸索引显示的view
   _stickIndexBar() {
-    return Obx(() => Visibility(
+    return Obx(() =>
+        Visibility(
           visible: !controller.mTouchUp.value,
           child: Align(
             alignment: Alignment.center,
@@ -141,6 +160,7 @@ class ContactPage extends BaseView<ContactController> {
           ),
         ));
   }
+
 }
 
 class ContactBinding extends Bindings {
@@ -153,13 +173,12 @@ class ContactBinding extends Bindings {
 get typeChar => "-101";
 
 class ContactController extends BaseController {
-  int limit = 20;
-  int offset = 0;
   int mSelectIndex = -1;
   RxBool mTouchUp = RxBool(true);
   RxString mTouchChar = RxString("");
   List<XTarget> mData = [];
   double _listAllItemHeight = 0;
+  final Rx<LoadStatusX> mLoadStatus = LoadStatusX.loading.obs;
 
   //索引
   List<String> mIndex = [];
@@ -174,55 +193,96 @@ class ContactController extends BaseController {
 
   /// 一次性加载全部好友，并提取索引
   Future<void> loadAllContact(String filter) async {
-    // await PersonApi.friends(limit, offset, filter).then((pageResp) {
-    //   if (pageResp.result.length < limit) {
-    //     mData.addAll(pageResp.result);
-    //
-    //     /// 提取首字符
-    //     List<String> firstChars = [];
-    //     List<int> insertPos = [];
-    //     for (var value in mData) {
-    //       firstChars.add(StringUtil.getStrFirstUpperChar(
-    //           PinyinHelper.getFirstWordPinyin(value.name)));
-    //     }
-    //
-    //     /// 记录内容区域插入索引的位置
-    //     for (var index = 0; index < firstChars.length; index++) {
-    //       if (index == 0) {
-    //         insertPos.add(0);
-    //       } else if (firstChars[index - 1] != firstChars[index]) {
-    //         insertPos.add(index);
-    //       }
-    //     }
-    //     //插入字符
-    //     var index = 0;
-    //     for (var pos in insertPos) {
-    //       var targetResp = Target(
-    //         id: typeChar,
-    //         name: firstChars[pos],
-    //         code: "",
-    //         typeName: "",
-    //         thingId: "",
-    //         status: 1,
-    //       );
-    //       mData.insert(pos + index, targetResp);
-    //       index++;
-    //     }
-    //     mIndex.addAll(firstChars.toSet().toList());
-    //     for (var value1 in mData) {
-    //       logger.info("====>1 名称：${value1.name}");
-    //     }
-    //     updateLoadStatus(LoadStatusX.success);
-    //     _calcAllItemHeight();
-    //     update();
-    //   } else {
-    //     offset++;
-    //     mData.addAll(pageResp.result);
-    //     loadAllContact(filter);
-    //   }
-    // }).onError((error, stackTrace) {
-    //   updateLoadStatus(LoadStatusX.error);
-    // });
+    var settingCtrl = Get.find<SettingController>();
+    var target = settingCtrl.space;
+    await KernelApi.getInstance()
+        .querySubTargetById(IDReqSubModel(
+      id: target.id,
+      typeNames: [target.typeName],
+      subTypeNames: [TargetType.person.label],
+      page: PageRequest(
+        limit: Constants.maxUint16,
+        offset: 0,
+        filter: filter,
+      ),
+    ))
+        .then((pageResp) {
+      if (pageResp.data == null || pageResp.data!.result?.isEmpty == true) {
+        mLoadStatus.value = LoadStatusX.empty;
+        return;
+      }
+      mData.addAll(pageResp.data!.result!);
+      /// 排序
+      mData.sort((a, b) => a.name.compareTo(b.name));
+      /// 提取首字符
+      List<String> firstChars = [];
+      List<int> insertPos = [];
+      for (var value in mData) {
+        firstChars.add(StringUtil.getStrFirstUpperChar(
+            PinyinHelper.getFirstWordPinyin(value.name)));
+      }
+
+      /// 记录内容区域插入索引的位置
+      for (var index = 0; index < firstChars.length; index++) {
+        if (index == 0) {
+          insertPos.add(0);
+        } else if (firstChars[index - 1] != firstChars[index]) {
+          insertPos.add(index);
+        }
+      }
+      //插入字符
+      var index = 0;
+      for (var pos in insertPos) {
+        var targetResp = XTarget(
+          id: typeChar,
+          name: firstChars[pos],
+          code: "",
+          typeName: "",
+          thingId: "",
+          status: 1,
+          avatar: '',
+          belongId: '',
+          createUser: '',
+          updateUser: '',
+          idProofs: [],
+          version: '',
+          createTime: '',
+          updateTime: '',
+          orders: [],
+          markets: [],
+          ruleStds: [],
+          stags: [],
+          products: [],
+          identitys: [],
+          samrMarkets: [],
+          things: [],
+          relations: [],
+          team: null,
+          dicts: [],
+          sellOrder: [],
+          dictItems: [],
+          species: [],
+          attributes: [],
+          authority: [],
+          marketRelations: [],
+          relTeams: [],
+          operations: [],
+          operationItems: [],
+          givenIdentitys: [],
+          belong: null,
+          targets: [],
+          thing: null,
+          distributes: [],
+          flowDefines: [],
+          flowRecords: [],
+        );
+        mData.insert(pos + index, targetResp);
+        index++;
+      }
+      mIndex.addAll(firstChars.toSet().toList());
+      _calcAllItemHeight();
+      mLoadStatus.value = LoadStatusX.success;
+    });
   }
 
   String getBarStr() {
