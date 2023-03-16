@@ -61,7 +61,6 @@ import './pages/other/home/ware_house/assets_management/assets_management_bindin
 // 资产管理
 import './pages/other/home/ware_house/market/market_page.dart';
 import './pages/other/home/ware_house/market/market_binding.dart';
-<<<<<<< HEAD
 import 'package:orginone/util/hive_utils.dart';
 
 import 'pages/other/batch_operation_asset/binding.dart';
@@ -69,12 +68,10 @@ import 'pages/other/center_function/create_claim/binding.dart';
 import 'pages/other/center_function/create_claim/view.dart';
 import 'pages/other/storage_location/binding.dart';
 import 'pages/other/storage_location/view.dart';
-=======
 import 'package:orginone/pages/todo/todo_detail.dart';
 import 'package:orginone/pages/todo/todo_tab_page.dart';
 import 'package:orginone/pages/todo/work_page.dart';
 import 'package:orginone/pages/todo/workbench_page.dart';
->>>>>>> 426c4511c9f6972963b3a21fa9b5dc592b04e039
 
 class Routers {
   // 首页
@@ -295,7 +292,6 @@ class Routers {
         binding: MarketBinding(),
       ),
       GetPage(
-<<<<<<< HEAD
         name: Routers.choiceAssets,
         page: () => ChoiceAssetsPage(),
         binding: ChoiceAssetsBinding(),
@@ -384,11 +380,10 @@ class Routers {
         name: Routers.webView,
         page: () => WebViewPage(),
         binding: WebViewBinding(),
-=======
-        name: Routers.todo,
-        page: () => WorkbenchPage(),
-        binding: WorkBinding(),
       ),
+      GetPage( name: Routers.todo,
+        page: () => const WorkbenchPage(),
+        binding: WorkBinding(),),
       GetPage(
         name: Routers.todoList,
         page: () => const TodoTabPage(),
@@ -397,7 +392,6 @@ class Routers {
         name: Routers.todoDetail,
         page: () => const TodoDetail(),
         binding: TodoDetailBinding(),
->>>>>>> 426c4511c9f6972963b3a21fa9b5dc592b04e039
       ),
     ];
   }

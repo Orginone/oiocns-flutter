@@ -23,7 +23,7 @@ class WorkPage extends GetView<WorkController> {
 
   @override
   Widget build(BuildContext context) {
-    return Tabs(
+    return TabsView(
       tabCtrl: controller.tabController,
       top: SizedBox(
         height: 60.h,

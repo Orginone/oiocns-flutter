@@ -17,16 +17,13 @@ import 'package:orginone/pages/other/home/components/operation_bar.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
-<<<<<<< HEAD
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
-=======
 import 'package:orginone/pages/todo/work_page.dart';
 import 'package:orginone/pages/todo/workbench_page.dart';
->>>>>>> 426c4511c9f6972963b3a21fa9b5dc592b04e039
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
 import '../home/ware_house/ware_house.dart';
