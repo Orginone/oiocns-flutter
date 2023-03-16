@@ -1,3 +1,4 @@
+import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/schema.dart';
 
 /// 统一返回结构模型
@@ -149,6 +150,15 @@ class BucketOpreateModel {
     this.destination,
     this.fileItem,
   });
+
+  Map<String,dynamic> toJson(){
+    return {
+      "key":key,
+      "shareDomain":shareDomain,
+      "operate":operate.label,
+      "fileItem":fileItem?.toJson(),
+    };
+}
 }
 
 /// 上传文件携带的数据
@@ -172,42 +182,51 @@ class FileChunkData {
     this.dataUrl,
     required List data,
   });
+
+  Map<String,dynamic> toJson() {
+    return {
+      "index":index,
+      "size":size,
+      "uploadId":uploadId,
+      "dataUrl":dataUrl,
+    };
+  }
 }
 
 /// 文件系统项数据模型
 class FileItemModel {
   // 完整路径
-  String key;
+  String? key;
 
   // 完整路径
-  int size;
+  int? size;
 
   // 名称
-  String name;
+  String? name;
 
   // 共享链接
-  String shareLink;
+  String? shareLink;
 
   // 拓展名
-  String extension;
+  String? extension;
 
   // 缩略图
-  String thumbnail;
+  String? thumbnail;
 
   // 创建时间
-  DateTime dateCreated;
+  DateTime? dateCreated;
 
   // 修改时间
-  DateTime dateModified;
+  DateTime? dateModified;
 
   // 文件类型
-  String contentType;
+  String? contentType;
 
   // 是否是目录
-  bool isDirectory;
+  bool? isDirectory;
 
   // 是否包含子目录
-  bool hasSubDirectories;
+  bool? hasSubDirectories;
 
   FileItemModel({
     required this.key,
@@ -222,6 +241,32 @@ class FileItemModel {
     required this.isDirectory,
     required this.hasSubDirectories,
   });
+
+  FileItemModel.formJson(Map<String,dynamic> json){
+    key = json['key'];
+    size = json['size'];
+    name = json['name'];
+    shareLink = json['shareLink'];
+    isDirectory = json['isDirectory'];
+    thumbnail = json['thumbnail'];
+    extension = json['extension'];
+    contentType = json['contentType'];
+    dateCreated = DateTime.tryParse(json['dateCreated']??"");
+    dateModified = DateTime.tryParse(json['dateModified']??"");
+    hasSubDirectories = json['hasSubDirectories'];
+  }
+
+  Map<String,dynamic> shareInfo(){
+    String imageUrl =
+        "${Constant.host}/orginone/anydata/bucket/load/$shareLink";
+    return {
+      "shareLink": imageUrl,
+      "size":size,
+      "name": name,
+      "extension":extension,
+      "thumbnail":thumbnail,
+    };
+  }
 }
 
 class IdReq {

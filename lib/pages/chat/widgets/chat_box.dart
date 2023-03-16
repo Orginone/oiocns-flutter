@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:audio_wave/audio_wave.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -164,12 +165,10 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
         }
       },
       onLongPress: () {
-        _permissionMicrophone(context, () {
-          controller.startRecord().then((value) async {
-            Vibration.hasVibrator()
-                .then((value) => Vibration.vibrate(duration: 100));
-            Overlay.of(context)!.insert(voiceWave);
-          });
+        controller.startRecord().then((value) async {
+          Vibration.hasVibrator()
+              .then((value) => Vibration.vibrate(duration: 100));
+          Overlay.of(context)!.insert(voiceWave);
         });
       },
       onLongPressEnd: (details) async {
@@ -242,7 +241,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
     return GestureDetector(
       onTap: () {
         controller.eventFire(context, InputEvent.clickVoice);
-        _permissionMicrophone(context, controller.openRecorder);
+        // _permissionMicrophone(context, controller.openRecorder);
       },
       child: _leftIcon(Icons.settings_voice_outlined),
     );
@@ -542,8 +541,16 @@ class ChatBoxController extends FullLifeCycleController
   Duration? get currentDuration => _currentDuration;
 
   @override
+  void onInit() async{
+    // TODO: implement onInit
+    super.onInit();
+    await openRecorder();
+  }
+
+  @override
   onClose() {
     super.onClose();
+    _recorder?.dispositionStream();
     inputController.dispose();
     focusNode.dispose();
     blankNode.dispose();
@@ -609,24 +616,24 @@ class ChatBoxController extends FullLifeCycleController
         var gallery = ImageSource.gallery;
         XFile? pickedImage = await picker.pickImage(source: gallery);
         if (pickedImage != null) {
-          // chatCtrl.imagePicked(pickedImage);
+          chatCtrl.imagePicked(pickedImage);
         }
         break;
       case MoreFunction.camera:
         var camera = ImageSource.camera;
-        // try {
-        //   XFile? pickedImage = await picker.pickImage(source: camera);
-        //   if (pickedImage != null) {
-        //     // chatCtrl.imagePicked(pickedImage);
-        //   }
-        // } on PlatformException catch (error) {
-        //   if (error.code == "camera_access_denied") {
-        //     PermissionUtil.showPermissionDialog(context, Permission.camera);
-        //   }
-        // } catch (error) {
-        //   error.printError();
-        //   Fluttertoast.showToast(msg: "打开相机时发生异常!");
-        // }
+        try {
+          XFile? pickedImage = await picker.pickImage(source: camera);
+          if (pickedImage != null) {
+            chatCtrl.imagePicked(pickedImage);
+          }
+        } on PlatformException catch (error) {
+          if (error.code == "camera_access_denied") {
+            PermissionUtil.showPermissionDialog(context, Permission.camera);
+          }
+        } catch (error) {
+          error.printError();
+          Fluttertoast.showToast(msg: "打开相机时发生异常!");
+        }
         break;
     }
   }

@@ -1,13 +1,19 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/controller/store/index.dart';
 import 'package:orginone/dart/core/chat/chat.dart';
 import 'package:orginone/dart/core/chat/ichat.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/store/ifilesys.dart';
 import 'package:orginone/util/event_bus.dart';
 
 const chatsObjectName = "userchat";
@@ -31,9 +37,11 @@ class ChatController extends GetxController {
 
   String get userName => _userName;
 
+  var sctr = StoreController();
+
   @override
   void onInit() async {
-    _signInSub = XEventBus.instance.on<SignIn>().listen((event) {
+    _signInSub = XEventBus.instance.on<SignIn>().listen((event) async {
       var settingCtrl = Get.find<SettingController>();
       _userId = settingCtrl.user?.id ?? "";
       _userName = settingCtrl.user?.name ?? "";
@@ -252,6 +260,23 @@ class ChatController extends GetxController {
         }
       }
     }
+  }
+
+  void imagePicked(XFile pickedImage) async {
+    await sctr.constructor();
+    sctr.home?.create("沟通").then((docDir) async {
+      IObjectItem item = await docDir.upload(
+          pickedImage.name, File(pickedImage.path), (progress) {});
+      if (item.target != null) {
+        _curChat.value?.sendMessage(
+            MessageType.image,
+            jsonEncode(item.target!.shareInfo()));
+      }
+    });
+
+    // getFileSysItemRoot.create("主目录").then((value){
+    //
+    // });
   }
 }
 

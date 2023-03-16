@@ -162,7 +162,7 @@ class WorkController extends TabsController {
     var space = settingCtrl.space;
     var company = settingCtrl.company;
     var define = await KernelApi.getInstance().queryDefine(
-        QueryDefineReq(speciesId: '', spaceId: '', page: PageRequest(offset: 0, limit: 20, filter: '')));
+        QueryDefineReq(speciesId: '', spaceId: space.id, page: PageRequest(offset: 0, limit: 20, filter: '')));
     var spaceID1 = settingCtrl.company?.id ?? "";
     var spaceID2 = settingCtrl.user?.id ?? "";
     FlowTarget ft = FlowTarget(space.target);

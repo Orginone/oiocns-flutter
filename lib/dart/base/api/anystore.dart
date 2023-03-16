@@ -175,7 +175,7 @@ class AnyStore {
   /// @returns {ResultType<T>} 移除异步结果
   Future<ResultType<dynamic>> bucketOpreate(BucketOpreateModel data) async {
     if (_storeHub.isConnected) {
-      var raw = await _storeHub.invoke('BucketOpreate', args: [data]);
+      var raw = await _storeHub.invoke('BucketOpreate', args: [data.toJson()]);
       return ResultType.fromJson(raw);
     }
     var raw = await _restRequest('Bucket', 'Operate', data);

@@ -91,7 +91,7 @@ Map<String, dynamic> claimConfig = {
           "code": "SPEC_MOD",
           "type": "input",
           "align": "left",
-          "text":"请填写规格型号",
+          "hint":"请填写规格型号",
           "required": false,
           "readOnly": false,
           "regx": null,
