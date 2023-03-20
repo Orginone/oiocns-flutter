@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/getx/base_get_page_view.dart';
+import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
+import 'package:orginone/pages/other/work/state.dart';
 import 'item.dart';
 import 'logic.dart';
 import 'state.dart';
 
 
-class ProcessApprovalPage extends BaseGetPageView<ProcessApprovalController,ProcessApprovalState>{
-  final String str;
-  ProcessApprovalPage(this.str);
+class ProcessApprovalPage extends BaseGetListPageView<ProcessApprovalController,ProcessApprovalState>{
+  final WorkEnum type;
+  ProcessApprovalPage(this.type);
 
   @override
   Widget buildView() {
@@ -19,8 +20,12 @@ class ProcessApprovalPage extends BaseGetPageView<ProcessApprovalController,Proc
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(str,style: TextStyle(fontSize: 21.sp,color: Colors.black),),
-          Item(),
+          Text(type.label,style: TextStyle(fontSize: 21.sp,color: Colors.black),),
+          Expanded(
+            child: ListView.builder(itemBuilder: (context,index){
+              return Item(task: state.dataList[index],);
+            },itemCount: state.dataList.length,),
+          )
         ],
       ),
     );
@@ -28,12 +33,12 @@ class ProcessApprovalPage extends BaseGetPageView<ProcessApprovalController,Proc
 
   @override
   ProcessApprovalController getController() {
-     return ProcessApprovalController();
+     return ProcessApprovalController(type);
   }
 
   @override
   String tag() {
     // TODO: implement tag
-    return "${this.toString()}$str";
+    return "${this.toString()}${type.label}";
   }
 }

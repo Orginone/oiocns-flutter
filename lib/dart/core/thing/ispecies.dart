@@ -127,5 +127,25 @@ abstract class ISpeciesItem {
    */
   Future<bool> delete();
 
+  bool isAllLast() {
+    if (children.isEmpty) {
+      return true;
+    }
+    return children.where((element) => element.children.isNotEmpty).isEmpty;
+  }
+
+  List<ISpeciesItem> getAllLastList() {
+    List<ISpeciesItem> list = [];
+
+    for (var element in children) {
+      if (element.children.isEmpty) {
+        list.add(element);
+      } else {
+        list.addAll(element.getAllLastList());
+      }
+    }
+
+    return list;
+  }
 
 }

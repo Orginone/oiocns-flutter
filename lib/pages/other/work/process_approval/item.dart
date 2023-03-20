@@ -3,11 +3,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/date_utils.dart';
+import 'package:orginone/util/department_management.dart';
 
 class Item extends StatelessWidget {
-  const Item({Key? key}) : super(key: key);
+
+  final XFlowTask task;
+
+  const Item({Key? key, required this.task}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +42,10 @@ class Item extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: (){
-          Get.toNamed(Routers.processDetails);
+          Get.toNamed(Routers.processDetails,arguments: {"task":task});
         },
         child: Container(
+          margin: EdgeInsets.only(top: 10.h),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.w),
@@ -54,7 +61,7 @@ class Item extends StatelessWidget {
                     width: 20.w,
                   ),
                   Text(
-                    "资产入账单",
+                    task.flowInstance?.title??"",
                     style: TextStyle(fontSize: 18.sp),
                   ),
                   Expanded(
@@ -85,7 +92,7 @@ class Item extends StatelessWidget {
                 children: [
                   Text.rich(TextSpan(
                     children: [
-                      TextSpan(text: "李晋晋",style: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w500)),
+                      TextSpan(text: DepartmentManagement().findXTargetByIdOrName(id: task.createUser??"")?.team?.name??"",style: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w500)),
                       TextSpan(text: "发起",style: TextStyle(fontSize: 16.sp,color: Colors.grey)),
                     ]
                   )),
@@ -101,7 +108,7 @@ class Item extends StatelessWidget {
                     width: 20.w,
                   ),
                   Text(
-                    "2022-07-07 20:24:15",
+                    DateTime.tryParse(task.flowInstance?.createTime??"")?.format(format: "yyyy-MM-dd HH:mm:ss")??"",
                     style: TextStyle(fontSize: 18.sp),
                   ),
                   Expanded(

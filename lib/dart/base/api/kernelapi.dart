@@ -2291,7 +2291,7 @@ class KernelApi {
       ReqestType(
         module: 'flow',
         action: 'QueryDefine',
-        params: params,
+        params: params.toJson(),
       ),
       XFlowDefineArray.fromJson,
     );
@@ -2336,7 +2336,7 @@ class KernelApi {
       ReqestType(
         module: 'flow',
         action: 'QueryInstance',
-        params: params,
+        params: params.toJson(),
       ),
       XFlowInstanceArray.fromJson,
     );

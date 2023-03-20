@@ -30,6 +30,7 @@ class SpeciesItem extends ISpeciesItem {
     parent = parent;
     id = target.id;
     name = target.name;
+    attrs = [];
     isRoot = parent == null;
     if (target.nodes!.isNotEmpty) {
       for (var item in target.nodes!) {
@@ -52,6 +53,7 @@ class SpeciesItem extends ISpeciesItem {
           limit: page.limit,
           filter: '',
         )));
+    attrs = res.data!.result??[];
     return res.data!;
   }
 

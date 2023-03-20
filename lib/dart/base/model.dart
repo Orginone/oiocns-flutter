@@ -661,6 +661,14 @@ class QueryDefineReq {
     required this.spaceId,
     required this.page,
   });
+
+  Map<String,dynamic> toJson(){
+    return {
+      "speciesId":speciesId,
+      "spaceId":spaceId,
+      "page":page.toJson(),
+    };
+  }
 }
 
 class SpaceAuthReq {

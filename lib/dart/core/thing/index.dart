@@ -6,10 +6,9 @@ import '../../base/schema.dart';
 
 // 加载分类树
 // @param id 组织id
-KernelApi kernel = KernelApi.getInstance();
-Future<ISpeciesItem?> loadSpeciesTree(String id) async {
-  ISpeciesItem? item;
-  final res = await kernel.querySpeciesTree(id);
+Future<SpeciesItem?> loadSpeciesTree(String id) async {
+  SpeciesItem? item;
+  final res = await KernelApi.getInstance().querySpeciesTree(id);
   if (res.success) {
     item = SpeciesItem(res.data as XSpecies, null);
   }

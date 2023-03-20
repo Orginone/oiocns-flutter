@@ -20,9 +20,9 @@ class WorkPage extends BaseGetPageView<WorkController, WorkState> {
             child: TabBarView(
               controller: state.tabController,
               children: [
-                KeepAliveWidget(child: ProcessApprovalPage("待办")),
-                KeepAliveWidget(child: ProcessApprovalPage("已办")),
-                KeepAliveWidget(child: ProcessApprovalPage("办结")),
+                KeepAliveWidget(child: ProcessApprovalPage(WorkEnum.todo)),
+                KeepAliveWidget(child: ProcessApprovalPage(WorkEnum.done)),
+                KeepAliveWidget(child: ProcessApprovalPage(WorkEnum.copy)),
               ],
             ),
           )

@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/images.dart';
+import 'package:orginone/util/date_utils.dart';
+import 'package:orginone/util/department_management.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -27,8 +30,12 @@ class ProcessDetailsPage
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _title(),
-                    _basicInfo(),
-                    _assetDetails(),
+                    Obx(() {
+                      return Column(
+                          children: state.xAttribute.keys.map((title) {
+                        return _info(title, state.xAttribute[title]!);
+                      }).toList());
+                    }),
                     _timeLine(),
                     _annex(),
                     _opinion(),
@@ -81,7 +88,7 @@ class ProcessDetailsPage
                 width: 15.w,
               ),
               Text(
-                "资产入账单",
+                state.task.flowInstance?.title ?? "",
                 style: TextStyle(fontSize: 18.sp),
               ),
               SizedBox(
@@ -104,7 +111,7 @@ class ProcessDetailsPage
             height: 5.h,
           ),
           Text(
-            "发起时间: 2023-03-14 16:26:49",
+            "发起时间: ${DateTime.tryParse(state.task.flowInstance?.createTime ?? "")?.format(format: "yyyy-MM-dd HH:mm:ss") ?? ""}",
             style: TextStyle(color: Colors.grey, fontSize: 16.sp),
           ),
         ],
@@ -112,54 +119,14 @@ class ProcessDetailsPage
     );
   }
 
-  Widget _basicInfo() {
+  Widget _info(String title, Map<XAttribute, dynamic> info) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
             padding: EdgeInsets.symmetric(vertical: 15.h),
             child: Text(
-              "基本信息",
-              style: TextStyle(color: Colors.black, fontSize: 20.sp),
-            )),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.w),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8.w),
-          ),
-          child:Column(
-            children: [
-              _text(title: '单据编号',content: "ZCCZ20210316001128"),
-              _text(title: '处置方式',content: "无偿调拨（划转）"),
-              _text(title: '申请单位',content: "资产云开放协同创新中心"),
-              _text(title: '是否评估',content: "否"),
-              _text(title: '累计折旧合计',content: "900"),
-              _text(title: '净值合计',content: "0"),
-              _text(title: '资产接收单位类型',content: "系统外（填备注）"),
-              _text(title: '资产接收单位',content: ""),
-              _text(title: '涉及资产总值',content: "960"),
-              _text(title: '数量',content: "1"),
-              _text(title: '基准日',content: ""),
-              _text(title: '有效期',content: ""),
-              _text(title: '产权交易机构',content: ""),
-              _remake(title: "申请原因",content: "xxxxx"),
-              _remake(title: "备注",content: "xxxxx"),
-            ],
-          )
-        ),
-      ],
-    );
-  }
-
-  Widget _assetDetails(){
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-            padding: EdgeInsets.symmetric(vertical: 15.h),
-            child: Text(
-              "资产明细",
+              title,
               style: TextStyle(color: Colors.black, fontSize: 20.sp),
             )),
         Container(
@@ -168,32 +135,20 @@ class ProcessDetailsPage
               color: Colors.white,
               borderRadius: BorderRadius.circular(8.w),
             ),
-            child:Column(
-              children: [
-                _text(title: '累计折旧',content: "960"),
-                _text(title: '资产大类',content: "通用设备"),
-                _text(title: '面积',content: ""),
-                _text(title: '车牌号',content: ""),
-                _text(title: '数量',content: "1"),
-                _text(title: '取得日期',content: "2014-12-01"),
-                _text(title: '原值',content: "960"),
-                _text(title: '预计使用年限',content: "72"),
-                _text(title: '型号规格',content: ""),
-                _text(title: '净值',content: "0"),
-                _text(title: '已使用期数',content: "79"),
-                _text(title: '存放地点',content: ""),
-                _text(title: '资产名称',content: "tttt"),
-                _text(title: '品牌',content: ""),
-                _text(title: '计量单位',content: ""),
-                _text(title: '坐落位置',content: ""),
-                _text(title: '资产分类',content: "投影仪"),
-                _text(title: '资产编号',content: "ZCJJ2021011402389"),
-              ],
-            )
-        ),
+            child: Column(
+                children: info.keys.map((e) {
+              String content = "${info[e]}";
+              if (e.valueType == "选择型") {
+                content = e.dict!.dictItems!
+                    .firstWhere((element) => element.value == info[e])
+                    .name;
+              }
+              return _text(title: e.name ?? "", content: content);
+            }).toList())),
       ],
     );
   }
+
 
   Widget _timeLine() {
     return Column(
@@ -214,10 +169,7 @@ class ProcessDetailsPage
           child: Obx(() {
             Widget hide = Container();
 
-            int length = state.maxLength;
-
             if (state.hideProcess.value) {
-              length = 2;
               hide = Container(
                 width: double.infinity,
                 height: 40.h,
@@ -231,7 +183,7 @@ class ProcessDetailsPage
                         borderRadius: BorderRadius.circular(16.w),
                         border: Border.all(color: XColors.themeColor)),
                     child: Text(
-                      "查看全部流程(${state.maxLength})>",
+                      "查看全部流程(${state.flowInstacne?.flowTaskHistory?.length??0})>",
                       style:
                           TextStyle(color: XColors.themeColor, fontSize: 20.sp),
                     ),
@@ -247,12 +199,12 @@ class ProcessDetailsPage
               alignment: Alignment.bottomCenter,
               children: [
                 ListView.builder(
-                  itemCount: length,
+                  itemCount: state.flowInstacne?.flowTaskHistory?.length??0,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return Container(
-                      child: _buildTimelineTile(index),
+                      child: _buildTimelineTile(index,state.flowInstacne!.flowTaskHistory![index].flowNode!),
                     );
                   },
                 ),
@@ -298,47 +250,49 @@ class ProcessDetailsPage
           ),
         ),
         Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.w),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8.w),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "意见",
-                  style: TextStyle(color: Colors.black, fontSize: 20.sp),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8.w),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "意见",
+                style: TextStyle(color: Colors.black, fontSize: 20.sp),
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade200),
+                    borderRadius: BorderRadius.circular(16.w)),
+                child: TextField(
+                  maxLines: 4,
+                  maxLength: 140,
+                  decoration: InputDecoration(
+                      hintText: "请输入您的意见",
+                      hintStyle: TextStyle(
+                          color: Colors.grey.shade200, fontSize: 24.sp),
+                      border: InputBorder.none),
                 ),
-                SizedBox(
-                  height: 10.h,
-                ),
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade200),
-                      borderRadius: BorderRadius.circular(16.w)),
-                  child: TextField(
-                    maxLines: 4,
-                    maxLength: 140,
-                    decoration: InputDecoration(
-                        hintText: "请输入您的意见",
-                        hintStyle: TextStyle(
-                            color: Colors.grey.shade200, fontSize: 24.sp),
-                        border: InputBorder.none),
-                  ),
-                ),
-              ],
-            ),),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildTimelineTile(int index) {
+  Widget _buildTimelineTile(int index,XFlowNode node) {
+    XTarget? user = DepartmentManagement().findXTargetByIdOrName(id: node.createUser??"");
+    bool isLast = index == state.flowInstacne!.flowTaskHistory!.length - 1 ? true : false;
     return TimelineTile(
         isFirst: index == 0 ? true : false,
-        isLast: index == state.maxLength - 1 ? true : false,
+        isLast: isLast,
         indicatorStyle: IndicatorStyle(
           width: 20.w,
           height: 20.w,
@@ -360,11 +314,11 @@ class ProcessDetailsPage
                 children: [
                   Text.rich(TextSpan(children: [
                     TextSpan(
-                      text: "经办人 ",
+                      text: "${node.name} ",
                       style: TextStyle(color: Colors.black, fontSize: 20.sp),
                     ),
                     TextSpan(
-                      text: "星星",
+                      text: user?.team?.name??"",
                       style: TextStyle(color: Colors.grey, fontSize: 18.sp),
                     )
                   ])),
@@ -375,7 +329,7 @@ class ProcessDetailsPage
                         style: TextStyle(color: Colors.black, fontSize: 16.sp),
                       ),
                       TextSpan(
-                        text: "同意",
+                        text: node.nodeType??"",
                         style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                       )
                     ]),
@@ -387,13 +341,13 @@ class ProcessDetailsPage
                         style: TextStyle(color: Colors.black, fontSize: 16.sp),
                       ),
                       TextSpan(
-                        text: "发起",
+                        text: node.remark??"",
                         style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                       )
                     ]),
                   ),
                   Text(
-                    "2022-05-13 13:46:47",
+                    DateTime.tryParse(node.createTime??"")?.format(format: "yyyy-MM-dd HH:mm:ss")??"",
                     style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                   )
                 ],
@@ -404,7 +358,7 @@ class ProcessDetailsPage
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("13750835892",
+                      Text(user?.team?.name??"",
                           style:
                               TextStyle(color: Colors.black, fontSize: 18.sp)),
                       Text.rich(
@@ -415,7 +369,7 @@ class ProcessDetailsPage
                                 TextStyle(color: Colors.black, fontSize: 16.sp),
                           ),
                           TextSpan(
-                            text: "发起",
+                            text: node.nodeType??"",
                             style:
                                 TextStyle(color: Colors.grey, fontSize: 16.sp),
                           )
@@ -428,7 +382,7 @@ class ProcessDetailsPage
               SizedBox(
                 width: 20.w,
               ),
-              Container(
+              !isLast?Container(
                 width: 25.w,
                 height: 25.w,
                 decoration: const BoxDecoration(
@@ -438,7 +392,8 @@ class ProcessDetailsPage
                   size: 20.w,
                   color: Colors.white,
                 ),
-              )
+              ):SizedBox( width: 25.w,
+                height: 25.w,),
             ],
           ),
         ));
@@ -466,14 +421,14 @@ class ProcessDetailsPage
     );
   }
 
-  Widget _remake({String? title,String? content}){
-    return    Container(
+  Widget _remake({String? title, String? content}) {
+    return Container(
       margin: EdgeInsets.only(top: 10.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title??"",
+            title ?? "",
             style: TextStyle(color: Colors.black, fontSize: 20.sp),
           ),
           SizedBox(
@@ -486,8 +441,7 @@ class ProcessDetailsPage
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey.shade200),
                   borderRadius: BorderRadius.circular(16.w)),
-              child: Text(content??"")
-          ),
+              child: Text(content ?? "")),
         ],
       ),
     );
