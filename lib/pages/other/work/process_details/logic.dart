@@ -15,7 +15,7 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> {
     // TODO: implement onReady
     super.onReady();
 
-    state.flowInstacne =
+    state.flowInstacne.value =
         await WorkNetWork.getFlowInstance(id: state.task.instanceId ?? "");
     await loadDataInfo();
 
@@ -27,21 +27,25 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> {
 
   Future<void> loadDataInfo() async {
     Map<String, dynamic> data = jsonDecode(state.task.flowInstance?.data ?? "");
-    if (data.isEmpty || state.flowInstacne == null) {
+    if (data.isEmpty || state.flowInstacne.value == null) {
       return;
     }
-    for (var element in state.flowInstacne!.flowTaskHistory!) {
-      for (var bindOperation in element.flowNode!.bindOperations!) {
-        Map<String, Map<XAttribute, dynamic>> bindOperationInfo = {bindOperation.name!: {}};
-        for (var key in data.keys) {
-          XAttribute? x = await CommonTreeManagement().findXAttribute(
-              specieId: bindOperation.speciesId ?? "", attributeId: key);
-          if (x != null) {
-            bindOperationInfo[bindOperation.name!]!.addAll({x: data[key]});
+    try{
+      for (var element in state.flowInstacne.value!.flowTaskHistory!) {
+        for (var bindOperation in element.flowNode!.bindOperations!) {
+          Map<String, Map<XAttribute, dynamic>> bindOperationInfo = {bindOperation.name!: {}};
+          for (var key in data.keys) {
+            XAttribute? x = await CommonTreeManagement().findXAttribute(
+                specieId: bindOperation.speciesId ?? "", attributeId: key);
+            if (x != null) {
+              bindOperationInfo[bindOperation.name!]!.addAll({x: data[key]});
+            }
           }
+          state.xAttribute.addAll(bindOperationInfo);
         }
-        state.xAttribute.addAll(bindOperationInfo);
       }
+    }catch(e){
+      throw e;
     }
   }
 }

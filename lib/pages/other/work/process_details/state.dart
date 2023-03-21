@@ -10,7 +10,7 @@ class ProcessDetailsState extends BaseGetState{
 
   late XFlowTask task;
 
-  XFlowInstance? flowInstacne;
+  var flowInstacne = Rxn<XFlowInstance>();
 
   var xAttribute = <String,Map<XAttribute,dynamic>>{}.obs;
 

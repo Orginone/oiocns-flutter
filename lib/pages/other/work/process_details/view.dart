@@ -33,6 +33,9 @@ class ProcessDetailsPage
                     Obx(() {
                       return Column(
                           children: state.xAttribute.keys.map((title) {
+                        if (state.xAttribute[title]!.isEmpty) {
+                          return Container();
+                        }
                         return _info(title, state.xAttribute[title]!);
                       }).toList());
                     }),
@@ -169,7 +172,9 @@ class ProcessDetailsPage
           child: Obx(() {
             Widget hide = Container();
 
-            if (state.hideProcess.value) {
+            int length = state.flowInstacne.value?.flowTaskHistory?.length ?? 0;
+
+            if (state.hideProcess.value && length > 2) {
               hide = Container(
                 width: double.infinity,
                 height: 40.h,
@@ -183,7 +188,7 @@ class ProcessDetailsPage
                         borderRadius: BorderRadius.circular(16.w),
                         border: Border.all(color: XColors.themeColor)),
                     child: Text(
-                      "查看全部流程(${state.flowInstacne?.flowTaskHistory?.length??0})>",
+                      "查看全部流程($length)>",
                       style:
                           TextStyle(color: XColors.themeColor, fontSize: 20.sp),
                     ),
@@ -199,12 +204,16 @@ class ProcessDetailsPage
               alignment: Alignment.bottomCenter,
               children: [
                 ListView.builder(
-                  itemCount: state.flowInstacne?.flowTaskHistory?.length??0,
+                  itemCount:
+                      (length > 2 && state.hideProcess.value) ? 2 : length,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return Container(
-                      child: _buildTimelineTile(index,state.flowInstacne!.flowTaskHistory![index].flowNode!),
+                      child: _buildTimelineTile(
+                          index,
+                          state.flowInstacne.value!.flowTaskHistory![index]
+                              .flowNode!),
                     );
                   },
                 ),
@@ -288,8 +297,11 @@ class ProcessDetailsPage
   }
 
   Widget _buildTimelineTile(int index,XFlowNode node) {
-    XTarget? user = DepartmentManagement().findXTargetByIdOrName(id: node.createUser??"");
-    bool isLast = index == state.flowInstacne!.flowTaskHistory!.length - 1 ? true : false;
+    XTarget? user =
+        DepartmentManagement().findXTargetByIdOrName(id: node.createUser ?? "");
+    bool isLast = index == state.flowInstacne.value!.flowTaskHistory!.length - 1
+        ? true
+        : false;
     return TimelineTile(
         isFirst: index == 0 ? true : false,
         isLast: isLast,
