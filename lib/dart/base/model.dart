@@ -257,10 +257,10 @@ class FileItemModel {
   }
 
   Map<String,dynamic> shareInfo(){
-    String imageUrl =
+    String url =
         "${Constant.host}/orginone/anydata/bucket/load/$shareLink";
     return {
-      "shareLink": imageUrl,
+      "shareLink": url,
       "size":size,
       "name": name,
       "extension":extension,

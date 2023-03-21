@@ -226,7 +226,7 @@ class ProcessDetailsPage
                       child: _buildTimelineTile(
                           index,
                           state.flowInstacne.value!.flowTaskHistory![index]
-                              .flowNode!),
+                              .flowNode),
                     );
                   },
                 ),
@@ -313,9 +313,9 @@ class ProcessDetailsPage
     );
   }
 
-  Widget _buildTimelineTile(int index,XFlowNode node) {
+  Widget _buildTimelineTile(int index,XFlowNode? node) {
     XTarget? user =
-        DepartmentManagement().findXTargetByIdOrName(id: node.createUser ?? "");
+        DepartmentManagement().findXTargetByIdOrName(id: node?.createUser ?? "");
     bool isLast = index == state.flowInstacne.value!.flowTaskHistory!.length - 1
         ? true
         : false;
@@ -343,7 +343,7 @@ class ProcessDetailsPage
                 children: [
                   Text.rich(TextSpan(children: [
                     TextSpan(
-                      text: "${node.name} ",
+                      text: "${node?.name} ",
                       style: TextStyle(color: Colors.black, fontSize: 20.sp),
                     ),
                     TextSpan(
@@ -358,7 +358,7 @@ class ProcessDetailsPage
                         style: TextStyle(color: Colors.black, fontSize: 16.sp),
                       ),
                       TextSpan(
-                        text: node.nodeType??"",
+                        text: node?.nodeType??"",
                         style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                       )
                     ]),
@@ -370,13 +370,13 @@ class ProcessDetailsPage
                         style: TextStyle(color: Colors.black, fontSize: 16.sp),
                       ),
                       TextSpan(
-                        text: node.remark??"",
+                        text: node?.remark??"",
                         style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                       )
                     ]),
                   ),
                   Text(
-                    DateTime.tryParse(node.createTime??"")?.format(format: "yyyy-MM-dd HH:mm:ss")??"",
+                    DateTime.tryParse(node?.createTime??"")?.format(format: "yyyy-MM-dd HH:mm:ss")??"",
                     style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                   )
                 ],
@@ -398,7 +398,7 @@ class ProcessDetailsPage
                                 TextStyle(color: Colors.black, fontSize: 16.sp),
                           ),
                           TextSpan(
-                            text: node.nodeType??"",
+                            text: node?.nodeType??"",
                             style:
                                 TextStyle(color: Colors.grey, fontSize: 16.sp),
                           )

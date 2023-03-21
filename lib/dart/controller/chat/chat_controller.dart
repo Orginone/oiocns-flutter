@@ -278,6 +278,20 @@ class ChatController extends GetxController {
     //
     // });
   }
+
+
+  void voice(String path,int time) async {
+    _curChat.value?.sendMessage(
+        MessageType.voice,
+        jsonEncode({
+          "milliseconds":time,
+          "bytes":File(path).readAsBytesSync(),
+        }));
+
+    // getFileSysItemRoot.create("主目录").then((value){
+    //
+    // });
+  }
 }
 
 class ChatBinding extends Bindings {

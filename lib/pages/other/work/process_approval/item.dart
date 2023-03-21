@@ -74,9 +74,9 @@ class Item extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Image.asset(Images.defaultAvatar),
+                  Image.asset(Images.defaultAvatar,width: 30.w,height: 30.w,),
                   SizedBox(
-                    width: 20.w,
+                    width: 10.w,
                   ),
                   Text(
                     title,

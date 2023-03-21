@@ -30,6 +30,10 @@ class WorkNetWork {
 
     SettingController setting = Get.find<SettingController>();
 
+    await KernelApi.getInstance()
+        .queryNoticeTask(IdReq(
+        id: '366950230895235072'));
+
     ResultType<XFlowTaskHistoryArray> result = await KernelApi.getInstance()
         .queryRecord(IdSpaceReq(
             spaceId: setting.space.id,

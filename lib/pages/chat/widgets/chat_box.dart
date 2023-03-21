@@ -179,16 +179,18 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
           // 记录
           var duration = controller.currentDuration ?? Duration.zero;
           await controller.stopRecord();
+          print("${duration.inMilliseconds}-------------------sssssss${controller.currentFile}");
           if (duration.inMilliseconds < 2000) {
             Fluttertoast.showToast(msg: '时间太短啦!');
             return;
           }
 
           var path = controller.currentFile;
+          var name = controller.currentFileName;
           var time = duration.inMilliseconds;
           if (Get.isRegistered<ChatController>()) {
             var chatCtrl = Get.find<ChatController>();
-            chatCtrl.chat?.sendMessage(MessageType.voice, "time");
+            chatCtrl.voice(path!,time);
           }
         } else if (recordStatus == RecordStatus.pausing) {
           // 停止记录
@@ -650,12 +652,12 @@ class ChatBoxController extends FullLifeCycleController
     try {
       // 状态变化
       _recordStatus.value = RecordStatus.recoding;
-
       // 监听音浪
       _level ??= 0.0.obs;
       _maxLevel ??= 60.0;
       _recorder!.setSubscriptionDuration(const Duration(milliseconds: 50));
       _mt = _recorder?.onProgress?.listen((e) {
+        print("$e--------------dddddd");
         _level!.value = e.decibels ?? 0;
         _maxLevel = max(_maxLevel!, _level!.value);
         _currentDuration = e.duration;
@@ -666,7 +668,7 @@ class ChatBoxController extends FullLifeCycleController
       var key = DateTime.now().millisecondsSinceEpoch;
       _currentFileName = "$key${ext[Codec.aacADTS.index]}";
       _currentFile = "${tempDir.path}/$_currentFileName";
-
+      print("voiceFile--------------$_currentFile");
       // 开启监听
       await _recorder!.startRecorder(
         toFile: _currentFile,
