@@ -29,8 +29,11 @@ class ProcessApprovalController
 
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
-
-    state.dataList.value = await WorkNetWork.getApproveTask(type: type.label);
+    if(type == WorkEnum.done){
+      state.dataList.value = await WorkNetWork.getRecord();
+    }else{
+      state.dataList.value = await WorkNetWork.getApproveTask(type: type.label);
+    }
     loadSuccess();
   }
 }

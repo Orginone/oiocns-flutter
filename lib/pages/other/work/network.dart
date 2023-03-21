@@ -33,7 +33,7 @@ class WorkNetWork {
     ResultType<XFlowTaskHistoryArray> result = await KernelApi.getInstance()
         .queryRecord(IdSpaceReq(
             spaceId: setting.space.id,
-            page: PageRequest(offset: 0, limit: 9999, filter: ''), id: ''));
+            page: PageRequest(offset: 0, limit: 9999, filter: ''), id: '366950230895235072'));
 
     if (result.success) {
       tasks = result.data?.result ?? [];

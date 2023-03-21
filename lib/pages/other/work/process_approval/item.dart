@@ -12,14 +12,23 @@ import 'package:orginone/util/department_management.dart';
 
 class Item extends StatelessWidget {
 
-  final XFlowTask task;
+  final XFlowTask? task;
 
   final WorkEnum type;
 
-  const Item({Key? key, required this.task, required this.type}) : super(key: key);
+  final XFlowTaskHistory? history;
+
+  const Item({Key? key, this.task, required this.type, this.history}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    String title = '';
+    if(type == WorkEnum.done){
+      title = history?.historyTask?.flowInstance?.title??"";
+    }else{
+      title = task?.flowInstance?.title??"";
+    }
+
     return Slidable(
       key: const ValueKey("assets"),
       endActionPane: ActionPane(
@@ -45,7 +54,13 @@ class Item extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: (){
-          Get.toNamed(Routers.processDetails,arguments: {"task":task,"type":type});
+          var data;
+          if(type == WorkEnum.done){
+            data = history?.historyTask;
+          }else{
+            data = task;
+          }
+          Get.toNamed(Routers.processDetails,arguments: {"task":data,"type":type});
         },
         child: Container(
           margin: EdgeInsets.only(top: 10.h),
@@ -64,7 +79,7 @@ class Item extends StatelessWidget {
                     width: 20.w,
                   ),
                   Text(
-                    task.flowInstance?.title??"",
+                    title,
                     style: TextStyle(fontSize: 18.sp),
                   ),
                   Expanded(
@@ -86,58 +101,103 @@ class Item extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 20.h,),
-              Text("紧急程度:中",style: TextStyle(color: Colors.black87, fontSize: 16.sp),),
-              SizedBox(height: 20.h,),
-              Text("单据编号:NKZCBX20220707000086",style: TextStyle(color: Colors.black87, fontSize: 16.sp),),
-              SizedBox(height: 20.h,),
-              Row(
-                children: [
-                  Text.rich(TextSpan(
-                    children: [
-                      TextSpan(text: DepartmentManagement().findXTargetByIdOrName(id: task.createUser??"")?.team?.name??"",style: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w500)),
-                      TextSpan(text: "发起",style: TextStyle(fontSize: 16.sp,color: Colors.grey)),
-                    ]
-                  )),
-                  SizedBox(
-                    width: 20.w,
-                  ),
-                 Container(
-                   height: 20.h,
-                   width: 0.5,
-                   color: Colors.grey,
-                 ),
-                  SizedBox(
-                    width: 20.w,
-                  ),
-                  Text(
-                    DateTime.tryParse(task.flowInstance?.createTime??"")?.format(format: "yyyy-MM-dd HH:mm:ss")??"",
-                    style: TextStyle(fontSize: 18.sp),
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: type==WorkEnum.todo?Container(
-                        padding:
-                        EdgeInsets.symmetric(vertical: 5.h, horizontal: 20.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16.w),
-                          color: XColors.themeColor,
-                          border: Border.all(color: Colors.grey, width: 0.5),
-                        ),
-                        child: Text(
-                          "去审批",
-                          style: TextStyle(color: Colors.white, fontSize: 16.sp),
-                        ),
-                      ):Container(),
-                    ),
-                  ),
-                ],
+              SizedBox(
+                height: 20.h,
               ),
+              Text(
+                "单据编号:NKZCBX20220707000086",
+                style: TextStyle(color: Colors.black87, fontSize: 16.sp),
+              ),
+              comment(),
+              SizedBox(
+                height: 20.h,
+              ),
+              role(),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget comment(){
+    if(type != WorkEnum.done){
+      return Container();
+    }
+    return Container(margin: EdgeInsets.only(top: 20.h),child: Text("备注:${history?.comment??""}"));
+  }
+
+  Widget role() {
+    String roleType = type == WorkEnum.done ? "审批" : "发起";
+    String dateTime = DateTime.tryParse((type == WorkEnum.done
+                    ? history!.updateTime
+                    : task!.flowInstance?.createTime) ??
+                "")
+            ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
+        "";
+    Widget button = Container(
+      padding:
+      EdgeInsets.symmetric(vertical: 5.h, horizontal: 20.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16.w),
+        color: XColors.themeColor,
+        border: Border.all(color: Colors.grey, width: 0.5),
+      ),
+      child: Text(
+        "去审批",
+        style: TextStyle(color: Colors.white, fontSize: 16.sp),
+      ),
+    );
+    if(type == WorkEnum.done){
+      Color textColor = history!.status == 100?Colors.green:Colors.red;
+
+      button = Container(
+        padding: EdgeInsets.symmetric(horizontal: 3.w,vertical: 2.h),
+        decoration: BoxDecoration(
+          color: textColor.withOpacity(0.4),
+          borderRadius: BorderRadius.circular(4.w),
+          border: Border.all(color: textColor,width: 0.5),
+        ),
+        child: Text(history!.status == 100?"已同意":"已拒绝",style: TextStyle(color: textColor,fontSize: 14.sp),),
+      );
+    }else if(type == WorkEnum.copy){
+      button = Container();
+    }
+
+    String userId = (type == WorkEnum.done?history!.createUser:task!.createUser)??"";
+
+
+    return Row(
+      children: [
+        Text.rich(TextSpan(children: [
+          TextSpan(
+              text: DepartmentManagement()
+                      .findXTargetByIdOrName(id:  userId?? "")
+                      ?.team
+                      ?.name ??
+                  "",
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500)),
+          TextSpan(
+              text: roleType,
+              style: TextStyle(fontSize: 16.sp, color: Colors.grey)),
+        ])),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 20.w),
+          height: 20.h,
+          width: 0.5,
+          color: Colors.grey,
+        ),
+        Text(
+          dateTime,
+          style: TextStyle(fontSize: 18.sp),
+        ),
+        Expanded(
+          child: Align(
+            alignment: Alignment.centerRight,
+            child:button,
+          ),
+        ),
+      ],
     );
   }
 }

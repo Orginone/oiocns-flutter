@@ -2367,17 +2367,22 @@ class XFlowTaskHistory {
   // 更新时间
    String? updateTime;
 
+   //备注
+   String? comment;
+
   // 流程节点记录
-   List<XFlowRecord>? flowRecords;
+  List<XFlowRecord>? flowRecords;
 
   // 任务审批的身份
-   XIdentity? identity;
+  XIdentity? identity;
 
   // 流程节点
-   XFlowNode? flowNode;
+  XFlowNode? flowNode;
 
   // 流程的定义
-   XFlowInstance? flowInstance;
+  XFlowInstance? flowInstance;
+
+  XFlowTask? historyTask;
 
   //构造方法
   XFlowTaskHistory({
@@ -2409,15 +2414,22 @@ class XFlowTaskHistory {
     version = json["version"];
     createTime = json["createTime"];
     updateTime = json["updateTime"];
-    if(json["records"]!=null){
+    comment = json["comment"];
+    if (json["records"] != null) {
       flowRecords = [];
-      json["records"].forEach((json){
+      json["records"].forEach((json) {
         flowRecords!.add(XFlowRecord.fromJson(json));
       });
     }
-    identity = json["identity"]!=null?XIdentity.fromJson(json["identity"]):null;
-    flowNode = json["node"]!=null?XFlowNode.fromJson(json["node"]):null;
-    flowInstance = json["flowInstance"]!=null?XFlowInstance.fromJson(json["flowInstance"]):null;
+    identity =
+        json["identity"] != null ? XIdentity.fromJson(json["identity"]) : null;
+    flowNode = json["node"] != null ? XFlowNode.fromJson(json["node"]) : null;
+    historyTask = json['historyTask'] != null
+        ? XFlowTask.fromJson(json['historyTask'])
+        : null;
+    flowInstance = json["flowInstance"] != null
+        ? XFlowInstance.fromJson(json["flowInstance"])
+        : null;
   }
 
   //通过动态数组解析成List
@@ -2467,7 +2479,7 @@ class XFlowTaskHistoryArray {
   int? total;
 
   // 结果
-  final List<XFlowTaskHistory>? result;
+  List<XFlowTaskHistory>? result;
 
   //构造方法
   XFlowTaskHistoryArray({
@@ -2478,11 +2490,20 @@ class XFlowTaskHistoryArray {
   });
 
   //通过JSON构造
-  XFlowTaskHistoryArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XFlowTaskHistory.fromList(json["result"]);
+  XFlowTaskHistoryArray.fromJson(Map<String, dynamic> json) {
+    offset = json["offset"];
+    limit = json["limit"];
+    total = json["total"];
+    List<XFlowTaskHistory> retList = [];
+    List<Map<String, dynamic>> list = [];
+
+    if (json["result"] != null) {
+      json["result"].forEach((e) {
+        list.add(e);
+      });
+    }
+    result = XFlowTaskHistory.fromList(list);
+  }
 
   //通过动态数组解析成List
   static List<XFlowTaskHistoryArray> fromList(
