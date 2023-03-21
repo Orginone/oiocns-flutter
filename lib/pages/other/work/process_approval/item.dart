@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/images.dart';
+import 'package:orginone/pages/other/work/state.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/department_management.dart';
@@ -13,7 +14,9 @@ class Item extends StatelessWidget {
 
   final XFlowTask task;
 
-  const Item({Key? key, required this.task}) : super(key: key);
+  final WorkEnum type;
+
+  const Item({Key? key, required this.task, required this.type}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +45,7 @@ class Item extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: (){
-          Get.toNamed(Routers.processDetails,arguments: {"task":task});
+          Get.toNamed(Routers.processDetails,arguments: {"task":task,"type":type});
         },
         child: Container(
           margin: EdgeInsets.only(top: 10.h),
@@ -114,7 +117,7 @@ class Item extends StatelessWidget {
                   Expanded(
                     child: Align(
                       alignment: Alignment.centerRight,
-                      child: Container(
+                      child: type==WorkEnum.todo?Container(
                         padding:
                         EdgeInsets.symmetric(vertical: 5.h, horizontal: 20.w),
                         decoration: BoxDecoration(
@@ -126,7 +129,7 @@ class Item extends StatelessWidget {
                           "去审批",
                           style: TextStyle(color: Colors.white, fontSize: 16.sp),
                         ),
-                      ),
+                      ):Container(),
                     ),
                   ),
                 ],

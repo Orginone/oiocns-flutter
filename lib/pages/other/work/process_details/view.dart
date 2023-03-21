@@ -5,6 +5,7 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/images.dart';
+import 'package:orginone/pages/other/work/state.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
@@ -47,26 +48,38 @@ class ProcessDetailsPage
               ),
             ),
           ),
-          Container(
-            width: double.infinity,
-            height: 75.h,
-            color: Colors.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _button(
-                    text: '终止流程', textColor: Colors.white, color: Colors.red),
-                _button(
-                    text: '不同意',
-                    textColor: XColors.themeColor,
-                    border: Border.all(width: 0.5, color: XColors.themeColor)),
-                _button(
-                    text: '同意',
-                    textColor: Colors.white,
-                    color: XColors.themeColor),
-              ],
-            ),
-          ),
+          _approval(),
+        ],
+      ),
+    );
+  }
+
+
+  Widget _approval(){
+    if(state.type != WorkEnum.todo){
+      return Container();
+    }
+    return Container(
+      width: double.infinity,
+      height: 120.h,
+      color: Colors.white,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          // _button(
+          //     text: '终止流程', textColor: Colors.white, color: Colors.red),
+          _button(
+              text: '不同意',
+              textColor: XColors.themeColor,
+              border: Border.all(width: 0.5, color: XColors.themeColor),onTap: (){
+            controller.approval(200);
+          }),
+          _button(
+              text: '同意',
+              textColor: Colors.white,
+              color: XColors.themeColor,onTap: (){
+            controller.approval(100);
+          }),
         ],
       ),
     );
@@ -248,6 +261,9 @@ class ProcessDetailsPage
   }
 
   Widget _opinion() {
+    if(state.type != WorkEnum.todo){
+      return Container();
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -281,6 +297,7 @@ class ProcessDetailsPage
                     borderRadius: BorderRadius.circular(16.w)),
                 child: TextField(
                   maxLines: 4,
+                  controller: state.comment,
                   maxLength: 140,
                   decoration: InputDecoration(
                       hintText: "请输入您的意见",
@@ -470,7 +487,7 @@ class ProcessDetailsPage
       child: Container(
         alignment: Alignment.center,
         height: 45.h,
-        width: 140.w,
+        width: 200.w,
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(16.w),

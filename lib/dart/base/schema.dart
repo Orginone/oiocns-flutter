@@ -2458,13 +2458,13 @@ class XFlowTaskHistory {
 //流程任务查询返回集合
 class XFlowTaskHistoryArray {
   // 便宜量
-  final int offset;
+  int? offset;
 
   // 最大数量
-  final int limit;
+  int? limit;
 
   // 总数
-  final int total;
+  int? total;
 
   // 结果
   final List<XFlowTaskHistory>? result;

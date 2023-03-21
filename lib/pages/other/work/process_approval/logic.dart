@@ -1,3 +1,4 @@
+import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/pages/other/work/network.dart';
 import 'package:orginone/pages/other/work/state.dart';
 
@@ -18,7 +19,17 @@ class ProcessApprovalController
   }
 
   @override
+  void onReceivedEvent(event) async{
+    // TODO: implement onReceivedEvent
+    super.onReceivedEvent(event);
+    if(event is WorkReload){
+      await loadData();
+    }
+  }
+
+  @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
+
     state.dataList.value = await WorkNetWork.getApproveTask(type: type.label);
     loadSuccess();
   }

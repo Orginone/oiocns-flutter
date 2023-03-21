@@ -2380,7 +2380,7 @@ class KernelApi {
       ReqestType(
         module: 'flow',
         action: 'QueryRecord',
-        params: params,
+        params: params.toJson(),
       ),
       XFlowTaskHistoryArray.fromJson,
     );
@@ -2394,7 +2394,7 @@ class KernelApi {
       ReqestType(
         module: 'flow',
         action: 'ApprovalTask',
-        params: params,
+        params: params.toJson(),
       ),
       (item) => item as bool,
     );

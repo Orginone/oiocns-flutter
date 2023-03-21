@@ -31,7 +31,7 @@ class ResultType<T> {
   ResultType.fromJsonSerialize(
       Map<String, dynamic> json, T Function(Map<String, dynamic>) serialize)
       : msg = json["msg"],
-        data = json["data"] == null ? null : serialize(json["data"]),
+        data = (json["data"] != null && json["data"] is Map) ?  serialize(json["data"]) : null,
         code = json["code"],
         success = json["success"];
 }

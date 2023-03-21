@@ -23,7 +23,7 @@ class ProcessApprovalPage extends BaseGetListPageView<ProcessApprovalController,
           Text(type.label,style: TextStyle(fontSize: 21.sp,color: Colors.black),),
           Expanded(
             child: ListView.builder(itemBuilder: (context,index){
-              return Item(task: state.dataList[index],);
+              return Item(task: state.dataList[index],type: type,);
             },itemCount: state.dataList.length,),
           )
         ],

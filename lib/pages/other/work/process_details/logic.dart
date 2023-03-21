@@ -4,6 +4,8 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/pages/other/work/network.dart';
 import 'package:orginone/util/common_tree_management.dart';
+import 'package:orginone/util/toast_utils.dart';
+import 'package:orginone/widget/loading_dialog.dart';
 
 import 'state.dart';
 
@@ -14,11 +16,11 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> {
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
-
+    LoadingDialog.showLoading(context);
     state.flowInstacne.value =
         await WorkNetWork.getFlowInstance(id: state.task.instanceId ?? "");
     await loadDataInfo();
-
+    LoadingDialog.dismiss(context);
   }
 
   void showAllProcess() {
@@ -32,20 +34,28 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> {
     }
     try{
       for (var element in state.flowInstacne.value!.flowTaskHistory!) {
-        for (var bindOperation in element.flowNode!.bindOperations!) {
-          Map<String, Map<XAttribute, dynamic>> bindOperationInfo = {bindOperation.name!: {}};
-          for (var key in data.keys) {
-            XAttribute? x = await CommonTreeManagement().findXAttribute(
-                specieId: bindOperation.speciesId ?? "", attributeId: key);
-            if (x != null) {
-              bindOperationInfo[bindOperation.name!]!.addAll({x: data[key]});
+        if(element.flowNode?.bindOperations!=null){
+          for (var bindOperation in element.flowNode!.bindOperations!) {
+            Map<String, Map<XAttribute, dynamic>> bindOperationInfo = {bindOperation.name!: {}};
+            for (var key in data.keys) {
+              XAttribute? x = await CommonTreeManagement().findXAttribute(
+                  specieId: bindOperation.speciesId ?? "", attributeId: key);
+              if (x != null) {
+                bindOperationInfo[bindOperation.name!]!.addAll({x: data[key]});
+              }
             }
+            state.xAttribute.addAll(bindOperationInfo);
           }
-          state.xAttribute.addAll(bindOperationInfo);
         }
+
       }
     }catch(e){
-      throw e;
+       ToastUtils.showMsg(msg: e.toString());
     }
   }
+
+  void approval(int status) async{
+    await WorkNetWork.approvalTask(id: state.task.id??"", status: status,comment: state.comment.text);
+  }
+
 }
