@@ -5,6 +5,8 @@ import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/event/work_reload.dart';
+import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 class WorkStartNetWork {
@@ -54,6 +56,7 @@ class WorkStartNetWork {
     );
     if (result.success) {
       ToastUtils.showMsg(msg: "提交成功");
+      EventBusHelper.fire(WorkReload());
       Get.back();
     }else{
       ToastUtils.showMsg(msg: result.msg);

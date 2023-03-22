@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:orginone/event/choice.dart';
 import 'package:orginone/pages/other/work/work_start/network.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -14,6 +15,21 @@ class CreateWorkController extends BaseController<CreateWorkState> {
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
+  }
+
+  @override
+  void onReceivedEvent(event) {
+    // TODO: implement onReceivedEvent
+    super.onReceivedEvent(event);
+    if (event is ChoicePeople) {
+      for (var element in state.node.operations!) {
+        for (var element in element.operationItems) {
+            if(element.fields?.router == Routers.choicePeople){
+              element.fields?.defaultData.value = event.user;
+            }
+        }
+      }
+    }
   }
 
   Future init() async{
@@ -47,6 +63,8 @@ class CreateWorkController extends BaseController<CreateWorkState> {
                }else{
                  data[element.attrId!] = element.fields?.defaultData.value;
                }
+             }else if(element.fields?.type == "router"){
+               data[element.attrId!] = element.fields?.defaultData.value.name;
              }else{
                data[element.attrId!] = element.fields?.defaultData.value;
              }

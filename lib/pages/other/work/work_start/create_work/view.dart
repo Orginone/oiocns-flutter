@@ -31,6 +31,11 @@ class CreateWorkPage
                           children: [
                             CommonWidget.commonHeadInfoWidget(e.name ?? ""),
                             ...e.operationItems.map((e) {
+                              if(e
+                                  .fields!
+                                  .type == null){
+                                return Container();
+                              }
                               Widget child =
                               testMappingComponents[e
                                   .fields!

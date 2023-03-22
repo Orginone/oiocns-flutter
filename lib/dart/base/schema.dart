@@ -4133,10 +4133,14 @@ class XOperationItem {
 
   Fields toFields() {
     String? type;
-    if (rule?.widget == "text") {
+    String? router;
+    if (rule?.widget == "text" || rule?.widget == "number") {
       type = "input";
-    } else if (rule?.widget == "dict" || rule?.widget == "date") {
+    } else if (rule?.widget == "dict" || (rule?.widget?.contains('date')??false)) {
       type = "select";
+    } else if(rule?.widget == "person"){
+      type = "router";
+      router = "/choicePeople";
     }
 
     Map<dynamic, String> select = {};
@@ -4152,6 +4156,7 @@ class XOperationItem {
       code: code,
       hint: rule?.placeholder,
       select: select,
+      router: router,
     );
   }
 
