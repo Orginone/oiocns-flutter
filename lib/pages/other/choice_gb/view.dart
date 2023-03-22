@@ -3,50 +3,46 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
-import 'package:orginone/util/department_management.dart';
+import 'package:orginone/dart/core/thing/ispecies.dart';
+import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
-
 import 'item.dart';
 import 'logic.dart';
 import 'state.dart';
 
-class ChoicePeoplePage
-    extends BaseGetView<ChoicePeopleController, ChoicePeopleState> {
+class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: '人员',
-      body: SafeArea(
-        child: Column(
-          children: [
-            classificationName(),
-            CommonWidget.commonSearchBarWidget(
-                controller: state.searchController,
-                onSubmitted: (str) {
-                  controller.search(str);
-                },
-                hint: "请输入姓名"),
-            SizedBox(
-              height: 10.h,
-            ),
-            Expanded(
-              child: Obx(() {
-                if(state.showSearchPage.value){
-                  return search();
-                }
-                return body();
-              }),
-            ),
-            Obx(() {
-              return CommonWidget.commonShowChoiceDataInfo(
-                  state.selectedUser.value?.name ?? "",onTap: (){
-                    controller.back();
-              });
+      titleName: "分类标准",
+      body: Column(
+        children: [
+          classificationName(),
+          CommonWidget.commonSearchBarWidget(
+              controller: state.searchController,
+              onSubmitted: (str) {
+                controller.search(str);
+              },
+              hint: "请输入分类标准名称"),
+          SizedBox(
+            height: 10.h,
+          ),
+          Expanded(
+            child: Obx(() {
+              if (state.showSearchPage.value) {
+                return search();
+              }
+              return body();
             }),
-          ],
-        ),
+          ),
+          Obx(() {
+            return CommonWidget.commonShowChoiceDataInfo(
+                state.selectedGb.value?.name ?? "", onTap: () {
+              controller.back();
+            });
+          }),
+        ],
       ),
     );
   }
@@ -57,8 +53,8 @@ class ChoicePeoplePage
         var item = state.searchList[index];
         return Obx(() {
           return CommonWidget.commonRadioTextWidget(item.name ?? "", item,
-              groupValue: state.selectedUser.value, onChanged: (v) {
-                controller.selectedUser(item);
+              groupValue: state.selectedGb.value, onChanged: (v) {
+                controller.selectedGb(item);
               }, keyWord: state.searchController.text);
         });
       },
@@ -71,47 +67,33 @@ class ChoicePeoplePage
       child: Column(
         children: [
           Obx(() {
-            var data = state.departments.value;
+            var data = state.gb.value;
             if (state.selectedGroup.isNotEmpty) {
-              data = state.selectedGroup.last.subTeam;
+              data = state.selectedGroup.last.children;
             }
             return Container(
               margin: EdgeInsets.only(
-                  bottom: (data.isNotEmpty ?? false) ? 10.h : 0),
+                  bottom: (data.isNotEmpty) ? 10.h : 0),
               child: ListView.builder(
                 itemBuilder: (context, index) {
                   var item = data[index];
-                  return GroupItem(
-                    department: item,
-                    onTap: () {
-                      controller.selectGroup(item);
-                    },
-                  );
+                  return Obx(() {
+                    return Item(
+                      item: item,
+                      selected: state.selectedGb.value,
+                      next: () {
+                        controller.selectGroup(item);
+                      },
+                      onChanged: (value) {
+                        controller.selectedGb(item);
+                      },
+                    );
+                  });
                 },
                 shrinkWrap: true,
-                itemCount: data.length ?? 0,
+                itemCount: data.length,
                 physics: const NeverScrollableScrollPhysics(),
               ),
-            );
-          }),
-          Obx(() {
-            var data = [];
-            if (state.selectedGroup.isNotEmpty) {
-              data = state.selectedGroup.last.members;
-            }
-            return ListView.builder(
-              itemBuilder: (context, index) {
-                var item = data[index];
-                return PeopleItem(
-                  people: item,
-                  onChanged: (v) {
-                    controller.selectedUser(item);
-                  },
-                );
-              },
-              shrinkWrap: true,
-              itemCount: data.length ?? 0,
-              physics: const NeverScrollableScrollPhysics(),
             );
           }),
         ],
@@ -126,8 +108,8 @@ class ChoicePeoplePage
     TextStyle unSelectedTextStyle =
     TextStyle(fontSize: 20.sp, color: Colors.grey.shade300);
 
-    Widget level(ITarget department) {
-      int index = state.selectedGroup.indexOf(department);
+    Widget level(ISpeciesItem group) {
+      int index = state.selectedGroup.indexOf(group);
       return GestureDetector(
         onTap: () {
           controller.removeGroup(index);
@@ -142,7 +124,7 @@ class ChoicePeoplePage
                   ),
                   alignment: PlaceholderAlignment.middle),
               TextSpan(
-                  text: department.name,
+                  text: group.name,
                   style: index == state.selectedGroup.length - 1
                       ? selectedTextStyle
                       : unSelectedTextStyle),
@@ -164,7 +146,7 @@ class ChoicePeoplePage
           }
         }
         return SingleChildScrollView(
-          scrollDirection:Axis.horizontal,
+          scrollDirection: Axis.horizontal,
           child: Row(
             children: [
               GestureDetector(
@@ -183,7 +165,7 @@ class ChoicePeoplePage
                           ),
                           alignment: PlaceholderAlignment.middle),
                       TextSpan(
-                          text: DepartmentManagement().getCurrentCompanyName(),
+                          text: CommonTreeManagement().species?.name ?? "",
                           style: state.selectedGroup.isEmpty
                               ? selectedTextStyle
                               : unSelectedTextStyle)

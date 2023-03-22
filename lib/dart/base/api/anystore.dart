@@ -131,6 +131,7 @@ class AnyStore {
   /// @returns {ResultType} 添加异步结果
   Future<ResultType<dynamic>> insert(
       String collName, dynamic data, String domain) async {
+    data['hook'] = "https://548a32268z.goho.co:443/flow/saveResult";
     var raw = await _storeHub.invoke('Insert', args: [collName, data, domain]);
     return ResultType.fromJson(raw);
   }
@@ -167,6 +168,11 @@ class AnyStore {
       String collName, dynamic options, String domain) async {
     var raw =
         await _storeHub.invoke('Aggregate', args: [collName, options, domain]);
+    return ResultType.fromJson(raw);
+  }
+
+  Future<ResultType<dynamic>> loadThing<T>(dynamic options, String domain) async {
+    var raw = await _storeHub.invoke('Load', args: [options, domain]);
     return ResultType.fromJson(raw);
   }
 

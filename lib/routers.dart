@@ -37,6 +37,7 @@ import 'package:orginone/pages/other/choice_department/binding.dart';
 import 'package:orginone/pages/other/choice_department/view.dart';
 import 'package:orginone/pages/other/choice_people/binding.dart';
 import 'package:orginone/pages/other/choice_people/view.dart';
+import 'package:orginone/pages/other/choice_thing/binding.dart';
 import 'package:orginone/pages/other/home/home_page.dart';
 import 'package:orginone/pages/other/home/spaces_page.dart';
 import 'package:orginone/pages/other/login.dart';
@@ -47,11 +48,16 @@ import 'package:orginone/pages/other/scanning/scanning_result_pge.dart';
 import 'package:orginone/pages/other/search_page.dart';
 import 'package:orginone/pages/other/web_view/binding.dart';
 import 'package:orginone/pages/other/web_view/view.dart';
+import 'package:orginone/pages/other/work/work_start/view.dart';
 import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/pages/setting/unit_settings_page.dart';
+import 'package:orginone/pages/todo/todo_detail.dart';
+import 'package:orginone/pages/todo/todo_tab_page.dart';
+import 'package:orginone/pages/todo/work_page.dart';
+import 'package:orginone/pages/todo/workbench_page.dart';
 import 'package:orginone/util/hive_utils.dart';
 
 import './pages/other/home/ware_house/assets_management/assets_management_binding.dart';
@@ -69,15 +75,16 @@ import './pages/other/home/ware_house/recently_opened_binding.dart';
 import 'pages/other/batch_operation_asset/binding.dart';
 import 'pages/other/center_function/create_claim/binding.dart';
 import 'pages/other/center_function/create_claim/view.dart';
+import 'pages/other/choice_gb/binding.dart';
+import 'pages/other/choice_gb/view.dart';
+import 'pages/other/choice_thing/view.dart';
 import 'pages/other/storage_location/binding.dart';
 import 'pages/other/storage_location/view.dart';
 import 'pages/other/work/process_details/binding.dart';
-import 'package:orginone/pages/todo/todo_detail.dart';
-import 'package:orginone/pages/todo/todo_tab_page.dart';
-import 'package:orginone/pages/todo/work_page.dart';
-import 'package:orginone/pages/todo/workbench_page.dart';
-
 import 'pages/other/work/process_details/view.dart';
+import 'pages/other/work/work_start/binding.dart';
+import 'pages/other/work/work_start/create_work/binding.dart';
+import 'pages/other/work/work_start/create_work/view.dart';
 
 class Routers {
   // 首页
@@ -180,7 +187,20 @@ class Routers {
   //webView
   static const String webView = "/webView";
 
+  //审批详情
   static const String processDetails = '/processDetails';
+
+  //选择标准分类
+  static const String choiceGb = '/choiceGb';
+
+  //发起事项
+  static const String workStart = '/workStart';
+
+  //创建办事
+  static const String createWork = '/createWork';
+
+  //创建办事
+  static const String choiceThing = '/choiceThing';
 
   static String get main {
     return login;
@@ -191,7 +211,6 @@ class Routers {
       return login;
     }
   }
-
 
   static List<GetPage> getInitRouters() {
     return [
@@ -413,6 +432,26 @@ class Routers {
         name: Routers.todoDetail,
         page: () => const TodoDetail(),
         binding: TodoDetailBinding(),
+      ),
+      GetPage(
+        name: Routers.choiceGb,
+        page: () => ChoiceGbPage(),
+        binding: ChoiceGbBinding(),
+      ),
+      GetPage(
+        name: Routers.workStart,
+        page: () => WorkStartPage(),
+        binding: WorkStartBinding(),
+      ),
+      GetPage(
+        name: Routers.createWork,
+        page: () => CreateWorkPage(),
+        binding: CreateWorkBinding(),
+      ),
+      GetPage(
+        name: Routers.choiceThing,
+        page: () => ChoiceThingPage(),
+        binding: ChoiceThingBinding(),
       ),
     ];
   }

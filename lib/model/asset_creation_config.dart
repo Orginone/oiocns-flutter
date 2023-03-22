@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:orginone/util/common_tree_management.dart';
+import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
@@ -127,7 +129,9 @@ class Fields {
       this.required,
       this.readOnly,
       this.regx,
-      this.hidden});
+      this.hidden,this.router,this.hint,this.select}){
+    initData();
+  }
 
   Fields.fromJson(Map<String, dynamic> json) {
     title = json['title'];
@@ -145,6 +149,10 @@ class Fields {
     hint = json['hint'];
     router = json['router'];
     select = json['select'];
+    initData();
+  }
+
+  initData(){
     if (type == "input") {
       controller = TextEditingController();
     }
@@ -153,22 +161,28 @@ class Fields {
           DepartmentManagement().currentDepartment?.name ?? "个人中心";
     }
     if ((code == "USER_NAME" ||
-            code == "OLD_USER_NAME" ||
-            code == "SUBMITTER_NAME") &&
+        code == "OLD_USER_NAME" ||
+        code == "SUBMITTER_NAME") &&
         type == "text") {
-      defaultData.value = HiveUtils.getUser()?.userName;
+      defaultData.value = HiveUtils.getUser()?.person?.team?.name;
     }
     function = (){
       if (type == "router") {
         Get.toNamed(router!);
       }
       if (type == "select") {
-        PickerUtils.showListStringPicker(Get.context!, titles: select!.values.toList(),
-            callback: (str) {
-              int index = select!.values.toList().indexOf(str);
-              dynamic key = select!.keys.toList()[index];
-              defaultData.value = {key: str};
-            });
+         if(code?.contains("DATE")??false){
+           DatePicker.showDateTimePicker(Get.context!,currentTime: DateTime.now(),locale: LocaleType.zh,onConfirm: (date){
+                 defaultData.value = date.format(format: "yyyy-MM-dd HH:mm");
+               });
+         }else{
+           PickerUtils.showListStringPicker(Get.context!, titles: select!.values.toList(),
+               callback: (str) {
+                 int index = select!.values.toList().indexOf(str);
+                 dynamic key = select!.keys.toList()[index];
+                 defaultData.value = {key: str};
+               });
+         }
       }
     };
   }

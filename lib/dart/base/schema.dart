@@ -1,40 +1,50 @@
 //度量特性定义
+import 'dart:convert';
+
+import 'package:get/get.dart';
+import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/model/asset_creation_config.dart';
+import 'package:orginone/util/common_tree_management.dart';
+
+import 'model.dart';
+
 class XAttribute {
   // 雪花ID
-   String? id;
+  String? id;
 
   // 名称
-   String? name;
+  String? name;
 
   // 编号
-   String? code;
+  String? code;
 
   // 值类型
-   String? valueType;
+  String? valueType;
 
   // 公开的
-   bool? public;
+  bool? public;
 
   // 单位
-   String? unit;
+  String? unit;
 
   // 选择字典的类型ID
-   String? dictId;
+  String? dictId;
 
   // 备注
-   String? remark;
+  String? remark;
 
   // 类别ID
-   String? speciesId;
+  String? speciesId;
 
   // 创建组织/个人
-   String? belongId;
+  String? belongId;
 
   // 工作职权Id
-   String? authId;
+  String? authId;
 
   // 状态
-   int? status;
+  int? status;
 
   // 创建人员ID
    String? createUser;
@@ -1447,27 +1457,41 @@ class XFlowInstance {
 
 class FlowNode {
   // 雪花ID
-  final String id;
+  String? id;
+
   // 前端定义的编码 代替原先的NodeId
-  final String code;
+  String? code;
+
   // 节点类型
-  final String type;
+  String? type;
+
   // 节点名称
-  final String name;
+  String? name;
+
   // 审批数量
-  final int num;
+  int? num;
+
   // 节点审批操作人类型 暂只支持 '身份'
-  final String destType;
+  String? destType;
+
   // 节点审批操作Id 如 '身份Id'
-  final String? destId;
+  String? destId;
+
   // 节点审批操作名称 如 '身份名称'
-  final String destName;
+  String? destName;
+
   // 子节点
-  final FlowNode? children;
+  FlowNode? children;
+
   // 分支节点
-  final List<Branche> branches;
+  List<Branche>? branches;
+
   // 节点归属
-  final String belongId;
+  String? belongId;
+
+  //绑定基本信息
+  List<XBindOperation>? operations;
+
   //构造方法
   FlowNode({
     required this.id,
@@ -1482,18 +1506,25 @@ class FlowNode {
     required this.branches,
     required this.belongId,
   }); //通过JSON构造
-  FlowNode.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        code = json["code"],
-        belongId = json["belongId"],
-        type = json["type"],
-        name = json["name"],
-        num = json["num"],
-        destType = json["destType"],
-        destId = json["destId"],
-        destName = json["destName"],
-        children = json["children"],
-        branches = json["branches"];
+  FlowNode.fromJson(Map<String, dynamic> json) {
+    id = json["id"];
+    code = json["code"];
+    belongId = json["belongId"];
+    type = json["type"];
+    name = json["name"];
+    num = json["num"];
+    destType = json["destType"];
+    destId = json["destId"];
+    destName = json["destName"];
+    children =
+        json["children"] != null ? FlowNode.fromJson(json["children"]) : null;
+    if (json['operations'] != null) {
+      operations = [];
+      json['operations'].forEach((json) {
+        operations!.add(XBindOperation.fromJson(json));
+      });
+    }
+  }
 
   //通过动态数组解析成List
   static List<FlowNode> fromList(List<Map<String, dynamic>> list) {
@@ -1790,10 +1821,11 @@ class XBindOperation{
   String? version;
   String? createTime;
   String? updateTime;
+  List<XOperationItem> operationItems = [];
 
   XBindOperation();
 
-  XBindOperation.fromJson(Map<String,dynamic> json){
+  XBindOperation.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     code = json['code'];
@@ -1807,7 +1839,27 @@ class XBindOperation{
     version = json['version'];
     createTime = json['createTime'];
     updateTime = json['updateTime'];
+  }
 
+  Future<void> getOperationItems() async {
+    var settingCtrl = Get.find<SettingController>();
+    var space = settingCtrl.space;
+    ResultType<XOperationItemArray> result = await KernelApi.getInstance()
+        .queryOperationItems(IdSpaceReq(
+            id: id!,
+            spaceId: space.id,
+            page: PageRequest(offset: 0, limit: 20, filter: '')));
+    operationItems = result.data?.result ?? [];
+    for (var element in operationItems) {
+      if (element.rule?.widget == "dict") {
+        XAttribute? attr = await CommonTreeManagement().findXAttribute(
+            specieId: speciesId!, attributeId: element.attrId ?? "");
+        if (attr != null) {
+          element.rule!.dictItems = attr.dict!.dictItems;
+        }
+      }
+      element.fields = element.toFields();
+    }
   }
 }
 //流程定义节点查询返回集合
@@ -3954,61 +4006,63 @@ class XOperationArray {
 //业务单项
 class XOperationItem {
   // 雪花ID
-  final String id;
+  String? id;
 
   // 名称
-  final String name;
+  String? name;
 
   // 编号
-  final String code;
+  String? code;
 
   // 绑定的特性ID
-  final String attrId;
+  String? attrId;
 
   // 规则
-  final String rule;
+  Rule? rule;
 
   // 备注
-  final String remark;
+  String? remark;
 
   // 业务Id
-  final String operationId;
+  String? operationId;
 
   // 创建组织/个人
-  final String belongId;
+  String? belongId;
 
   // 状态
-  final int status;
+  int? status;
 
   // 创建人员ID
-  final String createUser;
+  String? createUser;
 
   // 更新人员ID
-  final String updateUser;
+  String? updateUser;
 
   // 修改次数
-  final String version;
+  String? version;
 
   // 创建时间
-  final String createTime;
+  String? createTime;
 
   // 更新时间
-  final String updateTime;
+  String? updateTime;
 
   // 业务单
-  final XOperation? operation;
+  XOperation? operation;
 
   // 创建度量标准的组织/个人
-  final XTarget? belong;
+  XTarget? belong;
 
   // 绑定的特性
-  final XAttribute? attr;
+  XAttribute? attr;
 
   // 子表关联的分类
-  final List<XSpecies>? containSpecies;
+  List<XSpecies>? containSpecies;
 
   // 子项与分类的关联
-  final List<XOperationRelation> operationRelations;
+  List<XOperationRelation>? operationRelations;
+
+  Fields? fields;
 
   //构造方法
   XOperationItem({
@@ -4034,27 +4088,34 @@ class XOperationItem {
   });
 
   //通过JSON构造
-  XOperationItem.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        name = json["name"],
-        code = json["code"],
-        rule = json["rule"],
-        attrId = json["attrId"],
-        remark = json["remark"],
-        operationId = json["operationId"],
-        belongId = json["belongId"],
-        status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"],
-        operation = XOperation.fromJson(json["operation"]),
-        belong = XTarget.fromJson(json["belong"]),
-        attr = XAttribute.fromJson(json["attr"]),
-        containSpecies = XSpecies.fromList(json["containSpecies"]),
-        operationRelations =
-            XOperationRelation.fromList(json["operationRelations"]);
+  XOperationItem.fromJson(Map<String, dynamic> json) {
+    id = json["id"];
+    name = json["name"];
+    code = json["code"];
+    rule =
+        json["rule"] != null ? Rule.fromJson(jsonDecode(json["rule"])) : null;
+    attrId = json["attrId"];
+    remark = json["remark"];
+    operationId = json["operationId"];
+    belongId = json["belongId"];
+    status = json["status"];
+    createUser = json["createUser"];
+    updateUser = json["updateUser"];
+    version = json["version"];
+    createTime = json["createTime"];
+    updateTime = json["updateTime"];
+    operation = json["operation"] != null
+        ? XOperation.fromJson(json["operation"])
+        : null;
+    belong = json["belong"] != null ? XTarget.fromJson(json["belong"]) : null;
+    attr = json["attr"] != null ? XAttribute.fromJson(json["attr"]) : null;
+    containSpecies = json["containSpecies"] != null
+        ? XSpecies.fromList(json["containSpecies"])
+        : null;
+    operationRelations = json["operationRelations"] != null
+        ? XOperationRelation.fromList(json["operationRelations"])
+        : null;
+  }
 
   //通过动态数组解析成List
   static List<XOperationItem> fromList(List<Map<String, dynamic>>? list) {
@@ -4068,6 +4129,30 @@ class XOperationItem {
       }
     }
     return retList;
+  }
+
+  Fields toFields() {
+    String? type;
+    if (rule?.widget == "text") {
+      type = "input";
+    } else if (rule?.widget == "dict" || rule?.widget == "date") {
+      type = "select";
+    }
+
+    Map<dynamic, String> select = {};
+    rule?.dictItems?.forEach((element) {
+      select[element.value] = element.name;
+    });
+    return Fields(
+      title: rule?.title,
+      type: type,
+      required: rule?.required,
+      hidden: rule?.hidden,
+      readOnly: rule?.readOnly,
+      code: code,
+      hint: rule?.placeholder,
+      select: select,
+    );
   }
 
   //转成JSON
@@ -4092,19 +4177,48 @@ class XOperationItem {
   }
 }
 
+class Rule {
+  String? title;
+  String? type;
+  String? widget;
+  bool? required;
+  String? description;
+  String? dictId;
+  String? placeholder;
+  bool? hidden;
+  bool? readOnly;
+
+  // 字典项
+  List<XDictItem>? dictItems;
+
+  Rule();
+
+  Rule.fromJson(Map<String, dynamic> json) {
+    title = json['title'];
+    type = json['type'];
+    widget = json['widget'];
+    required = json['required'];
+    description = json['description'];
+    dictId = json['dictId'];
+    placeholder = json['placeholder'];
+    hidden = json['hidden'];
+    readOnly = json['readOnly'];
+  }
+}
+
 //业务单项查询返回集合
 class XOperationItemArray {
   // 便宜量
-  final int offset;
+  int? offset;
 
   // 最大数量
-  final int limit;
+  int? limit;
 
   // 总数
-  final int total;
+  int? total;
 
   // 结果
-  final List<XOperationItem>? result;
+  List<XOperationItem>? result;
 
   //构造方法
   XOperationItemArray({
@@ -4115,11 +4229,18 @@ class XOperationItemArray {
   });
 
   //通过JSON构造
-  XOperationItemArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XOperationItem.fromList(json["result"]);
+  XOperationItemArray.fromJson(Map<String, dynamic> json) {
+    offset = json["offset"];
+    limit = json["limit"];
+    total = json["total"];
+
+    if (json['result'] != null) {
+      result = [];
+      json['result'].forEach((json) {
+        result!.add(XOperationItem.fromJson(json));
+      });
+    }
+  }
 
   //通过动态数组解析成List
   static List<XOperationItemArray> fromList(List<Map<String, dynamic>>? list) {

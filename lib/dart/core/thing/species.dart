@@ -32,6 +32,7 @@ class SpeciesItem extends ISpeciesItem {
     name = target.name;
     attrs = [];
     isRoot = parent == null;
+    isSelected = false;
     if (target.nodes!.isNotEmpty) {
       for (var item in target.nodes!) {
         children.add(SpeciesItem(item, this));

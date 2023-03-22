@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
-import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/pages/todo/workbench_page.dart';
+import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 
 import 'logic.dart';
-import 'process_approval/view.dart';
+import 'start/view.dart';
 import 'state.dart';
 
-class WorkPage extends BaseGetPageView<WorkController, WorkState> {
+
+class WorkStartPage extends BaseGetView<WorkStartController,WorkStartState>{
   @override
   Widget buildView() {
-    return Container(
-      color: Colors.grey.shade50,
-      child: Column(
+    return GyScaffold(
+      titleName: "事项",
+      body: Column(
         children: [
           tabBar(),
           Expanded(
             child: TabBarView(
-              controller: state.tabController,
               children: [
-                KeepAliveWidget(child: ProcessApprovalPage(WorkEnum.todo)),
-                KeepAliveWidget(child: ProcessApprovalPage(WorkEnum.done)),
-                KeepAliveWidget(child: ProcessApprovalPage(WorkEnum.copy)),
-                KeepAliveWidget(child: WorkbenchPage()),
+                KeepAliveWidget(child: StartPage(state.species)),
+                KeepAliveWidget(child: Container()),
               ],
+              controller: state.tabController,
             ),
           )
         ],
@@ -42,7 +42,7 @@ class WorkPage extends BaseGetPageView<WorkController, WorkState> {
         tabs: tabTitle.map((e) {
           return Tab(
             text: e,
-            height: 40.h,
+            height: 70.h,
           );
         }).toList(),
         indicatorColor: XColors.themeColor,
@@ -54,16 +54,5 @@ class WorkPage extends BaseGetPageView<WorkController, WorkState> {
         isScrollable: true,
       ),
     );
-  }
-
-  @override
-  WorkController getController() {
-    return WorkController();
-  }
-
-  @override
-  String tag() {
-    // TODO: implement tag
-    return this.toString();
   }
 }

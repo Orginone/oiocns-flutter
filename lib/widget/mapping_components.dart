@@ -16,6 +16,10 @@ Map<String, MappingComponentsCallback> testMappingComponents = {
   "router": mappingRouteWidget,
 };
 
+
+
+
+
 MappingComponentsCallback mappingTextWidget = (Fields data,
     {bool isEdit = false, AssetsType? assetsType}) {
   if (data.isBillCode && !isEdit) {
@@ -76,6 +80,12 @@ MappingComponentsCallback mappingSelectBoxWidget = (Fields data,
     return Container();
   }
   return Obx(() {
+    String content = '';
+    if(data.code?.contains("DATE")??false){
+      content = data.defaultData.value??"";
+    }else{
+      content = data.defaultData.value?.values?.first.toString() ?? "";
+    }
     return Container(
       margin: EdgeInsets.only(
           left: (data.marginLeft ?? 0).h,
@@ -83,7 +93,7 @@ MappingComponentsCallback mappingSelectBoxWidget = (Fields data,
           top: (data.marginTop ?? 0).h,
           bottom: (data.marginBottom ?? 0).h),
       child: CommonWidget.commonChoiceTile(
-          data.title ?? "", data.defaultData.value?.values?.first.toString() ?? "",
+          data.title ?? "",content,
           onTap: data.function,
           showLine: true,
           required: data.required ?? false),

@@ -3954,6 +3954,8 @@ class FlowInstanceModel {
   // 回调地址
   final String? hook;
 
+  final List<String>? thingIds;
+
   //构造方法
   FlowInstanceModel({
     required this.defineId,
@@ -3963,6 +3965,7 @@ class FlowInstanceModel {
     this.data,
     this.title,
     this.hook,
+    this.thingIds,
   });
 
   //通过JSON构造
@@ -3973,7 +3976,7 @@ class FlowInstanceModel {
         contentType = json["contentType"],
         data = json["data"],
         title = json["title"],
-        hook = json["hook"];
+        hook = json["hook"],thingIds = json['thingIds'];
 
   //通过动态数组解析成List
   static List<FlowInstanceModel> fromList(List<dynamic>? list) {
@@ -3999,6 +4002,7 @@ class FlowInstanceModel {
     json["data"] = data;
     json["title"] = title;
     json["hook"] = hook;
+    json['thingIds'] = thingIds;
     return json;
   }
 }

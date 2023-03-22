@@ -6,6 +6,7 @@ import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 import 'item.dart';
 import 'logic.dart';
 import 'state.dart';
@@ -14,43 +15,35 @@ class ChoiceDepartmentPage
     extends BaseGetView<ChoiceDepartmentController, ChoiceDepartmentState> {
   @override
   Widget buildView() {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("部门"),
-        centerTitle: true,
-        backgroundColor: XColors.themeColor,
-        elevation: 0,
-      ),
-      backgroundColor: Colors.grey.shade200,
-      body: SafeArea(
-        child: Column(
-          children: [
-            classificationName(),
-            CommonWidget.commonSearchBarWidget(
-                controller: state.searchController,
-                onSubmitted: (str) {
-                  controller.search(str);
-                },
-                hint: "请输入部门"),
-            SizedBox(
-              height: 10.h,
-            ),
-            Expanded(
-              child: Obx(() {
-                if (state.showSearchPage.value) {
-                  return search();
-                }
-                return body();
-              }),
-            ),
-            Obx(() {
-              return CommonWidget.commonShowChoiceDataInfo(
-                  state.selectedDepartment.value?.name ?? "", onTap: () {
-                controller.back();
-              });
+    return GyScaffold(
+      titleName: "部门",
+      body: Column(
+        children: [
+          classificationName(),
+          CommonWidget.commonSearchBarWidget(
+              controller: state.searchController,
+              onSubmitted: (str) {
+                controller.search(str);
+              },
+              hint: "请输入部门"),
+          SizedBox(
+            height: 10.h,
+          ),
+          Expanded(
+            child: Obx(() {
+              if (state.showSearchPage.value) {
+                return search();
+              }
+              return body();
             }),
-          ],
-        ),
+          ),
+          Obx(() {
+            return CommonWidget.commonShowChoiceDataInfo(
+                state.selectedDepartment.value?.name ?? "", onTap: () {
+              controller.back();
+            });
+          }),
+        ],
       ),
     );
   }

@@ -4,11 +4,11 @@ import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/api/anystore.dart';
 import 'package:orginone/dart/base/api/storehub.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/model/user_model.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/http_util.dart';
-import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/base/schema.dart';
 
 class KernelApi {
   final Logger log = Logger("KernelApi");
@@ -2234,7 +2234,7 @@ class KernelApi {
       ReqestType(
         module: 'flow',
         action: 'CreateInstance',
-        params: params,
+        params: params.toJson(),
       ),
       XFlowInstance.fromJson,
     );
@@ -2311,6 +2311,22 @@ class KernelApi {
       ),
       FlowNode.fromJson,
     );
+  }
+
+  /**
+   * 查询分类的业务标准项
+   * @param {model.IdSpaceReq} params 请求参数
+   * @returns {model.ResultType<schema.XOperationItemArray>} 请求结果
+   */
+  Future<ResultType<XOperationItemArray>> queryOperationItems(
+      IdSpaceReq params) async {
+    return await request(
+        ReqestType(
+          module: 'thing',
+          action: 'QueryOperationItems',
+          params: params,
+        ),
+        XOperationItemArray.fromJson);
   }
 
   /// 查询流程绑定

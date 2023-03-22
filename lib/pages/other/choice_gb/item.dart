@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/thing/ispecies.dart';
 import 'package:orginone/widget/common_widget.dart';
 
+import 'logic.dart';
+import 'state.dart';
 
 class Item extends StatelessWidget {
-  final ITarget choicePeople;
+  final ISpeciesItem item;
 
   final VoidCallback? next;
 
   final ValueChanged? onChanged;
 
-  final ITarget? selected;
+  final ISpeciesItem? selected;
 
   const Item(
       {Key? key,
-      required this.choicePeople,
-      this.next,
-      this.onChanged,
-      this.selected})
+        required this.item,
+        this.next,
+        this.onChanged,
+        this.selected})
       : super(key: key);
 
   @override
@@ -35,24 +40,24 @@ class Item extends StatelessWidget {
           children: [
             Expanded(
               child: CommonWidget.commonRadioTextWidget(
-                choicePeople.name ?? "",
-                choicePeople,
+                item.name,
+                item,
                 groupValue: selected,
                 onChanged: (v) {
-                  choicePeople.isSelected = !choicePeople.isSelected;
+                  item.isSelected = !item.isSelected;
                   if (onChanged != null) {
                     onChanged!(v);
                   }
                 },
               ),
             ),
-            GestureDetector(
+            item.children.isNotEmpty?GestureDetector(
               onTap: next,
               child: Icon(
                 Icons.navigate_next,
                 size: 32.w,
               ),
-            )
+            ):const SizedBox(),
           ],
         ),
       ),
