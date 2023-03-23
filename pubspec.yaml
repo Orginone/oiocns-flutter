@@ -93,7 +93,7 @@ dependencies:
   flutter_advanced_avatar: ^1.1.0
   flutter_datetime_picker: ^1.5.1
   # 音频录制以及音频播放
-  flutter_sound: ^9.2.13
+  flutter_sound_lite: ^8.5.0
   audio_wave: ^0.1.4
   vibration: ^1.7.5
 

@@ -7,13 +7,9 @@ import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/template/tabs.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/thing/index.dart';
-import 'package:orginone/event/home_data.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
+import 'package:orginone/event/home_data.dart';
 import 'package:orginone/pages/chat/message_page.dart';
-import 'package:orginone/pages/index/index_page.dart';
-import 'package:orginone/pages/other/home/components/operation_bar.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
 import 'package:orginone/pages/other/work/view.dart';
@@ -23,13 +19,12 @@ import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
-// import 'package:orginone/pages/todo/work_page.dart';
-import 'package:orginone/pages/todo/workbench_page.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
-import '../home/ware_house/ware_house.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
+
+import '../home/ware_house/ware_house.dart';
 
 class HomePage extends GetView<HomeController> {
   const HomePage({Key? key}) : super(key: key);
@@ -103,7 +98,6 @@ class HomeController extends TabsController {
         crossAxisCount: 5,
         childAspectRatio: 80 / 100,
         children: items.map((item) {
-          Color iconColor = Colors.black;
 
           return GestureDetector(
             onTap: () {
@@ -119,11 +113,11 @@ class HomeController extends TabsController {
                     borderRadius: BorderRadius.all(Radius.circular(40.w)),
                     color: Colors.white,
                   ),
-                  child: Icon(Icons.transform, color: iconColor),
+                  child: Image.network(item.iconUrl,),
                 ),
                 Container(
                   margin: EdgeInsets.only(top: 6.5.w),
-                  child: Text(item.name, style: XFonts.size12Black3),
+                  child: Text(item.name, style: XFonts.size22Black3),
                 ),
               ],
             ),
@@ -210,10 +204,60 @@ class CenterItem {
 }
 
 final List<CenterItem> items = [
-  CenterItem("我的资产", "", AssetsType.myAssets),
-  CenterItem("资产申领", "", AssetsType.claim),
-  CenterItem("资产盘点", "", AssetsType.check),
-  CenterItem("资产处置", "", AssetsType.dispose),
-  CenterItem("资产移交", "", AssetsType.transfer),
-  CenterItem("资产交回", "", AssetsType.handOver),
+  CenterItem(
+      "我的资产",
+      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-approve.png",
+      AssetsType.myAssets),
+  CenterItem(
+      "资产申领",
+      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-claim.png",
+      AssetsType.claim),
+  CenterItem(
+      "资产盘点",
+      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-check.png",
+      AssetsType.check),
+  CenterItem(
+      "资产处置",
+      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-dispose.png",
+      AssetsType.dispose),
+  CenterItem(
+      "资产移交",
+      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-transfer.png",
+      AssetsType.transfer),
+  CenterItem(
+      "资产交回",
+      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-transfer.png",
+      AssetsType.handOver),
+  CenterItem(
+      "资产归还",
+      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-dispose.png",
+      AssetsType.revert),
+  CenterItem(
+      "资产借用",
+      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-check.png",
+      AssetsType.borrow),
+  CenterItem(
+      "资产申购",
+      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-subscribe.png",
+      AssetsType.subscribe),
+  CenterItem(
+      "审批中心",
+      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-approve.png",
+      AssetsType.approve),
+  CenterItem(
+      "巡检任务",
+      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/inspection-icon.png",
+      AssetsType.more),
+  CenterItem(
+      "维修上报",
+      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/report-icon.png",
+      AssetsType.more),
+  CenterItem(
+      "工单处理",
+      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/work-order-icon.png",
+      AssetsType.more),
+  CenterItem(
+      "物品领用",
+      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/collect.png",
+      AssetsType.more),
 ];
