@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/widgets/loading_button.dart';
+import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/load_image.dart';
@@ -68,6 +69,9 @@ class LoginPage extends GetView<LoginController> {
       child: LoadingButton(
         loadingBtnCtrl: LoadingButtonController(),
         callback: () async {
+          if(!KernelApi.getInstance().isOnline){
+            KernelApi.getInstance().start();
+          }
           if (!formKey.currentState!.validate()) return;
           var settingCtrl = Get.find<SettingController>();
           var res = await settingCtrl.login(controller.accountCtrl.text, controller.passwordCtrl.text);
