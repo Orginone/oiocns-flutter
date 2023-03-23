@@ -12,7 +12,7 @@ const List<String> tabTitle = [
   '待办',
   '已办',
   '抄送',
-  '发起业务',
+  '发起',
 ];
 
 enum WorkEnum{

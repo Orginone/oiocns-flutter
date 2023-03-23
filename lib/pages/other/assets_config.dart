@@ -1,5 +1,14 @@
 import 'package:orginone/routers.dart';
 
+class FunctionItem {
+  final String name;
+  final String iconUrl;
+  final AssetsType type;
+
+  FunctionItem(this.name, this.iconUrl, this.type);
+}
+
+
 //资产列表页功能区分
 enum AssetsListType {
   draft,//草稿

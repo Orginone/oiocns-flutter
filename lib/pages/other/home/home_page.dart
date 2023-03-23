@@ -10,7 +10,13 @@ import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/pages/chat/message_page.dart';
+import 'package:orginone/pages/index/fl_chart/LineChart3.dart';
+import 'package:orginone/pages/index/fl_chart/barChart.dart';
+import 'package:orginone/pages/index/fl_chart/pieChart.dart';
+import 'package:orginone/pages/index/fl_chart/pieChart2.dart';
+import 'package:orginone/pages/index/index_page.dart';
 import 'package:orginone/pages/other/assets_config.dart';
+import 'package:orginone/pages/other/assets_internal_control/view.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
 import 'package:orginone/pages/other/work/view.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
@@ -22,9 +28,11 @@ import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:orginone/util/toast_utils.dart';
+import 'package:orginone/widget/keep_alive_widget.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
 import '../home/ware_house/ware_house.dart';
+import 'function_page.dart';
 
 class HomePage extends GetView<HomeController> {
   const HomePage({Key? key}) : super(key: key);
@@ -91,39 +99,7 @@ class HomeController extends TabsController {
       // view: BarChartWidget(),
       // view: PieChartSample(),
       // view: PieChartWidget(),
-      view: GridView.count(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        crossAxisCount: 5,
-        childAspectRatio: 80 / 100,
-        children: items.map((item) {
-
-          return GestureDetector(
-            onTap: () {
-              Get.toNamed(Routers.centerFunction, arguments: {"info": item});
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  width: 80.w,
-                  height: 80.w,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(40.w)),
-                    color: Colors.white,
-                  ),
-                  child: Image.network(item.iconUrl,),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 6.5.w),
-                  child: Text(item.name, style: XFonts.size22Black3),
-                ),
-              ],
-            ),
-          );
-        }).toList(),
-      ),
+      view: KeepAliveWidget(child: FunctionPage()),
       iconMargin: EdgeInsets.zero,
     );
     registerTab(center);
@@ -146,7 +122,6 @@ class HomeController extends TabsController {
         log('连接成功---------${KernelApi.getInstance().anystore.isOnline}');
         ToastUtils.showMsg(msg: "连接成功 开始加载数据");
         await Future.wait([
-          AssetManagement().initAssets(),
           DepartmentManagement().initDepartment(),
           CommonTreeManagement().initTree(),
         ]);
@@ -195,69 +170,3 @@ class HomeController extends TabsController {
   }
 }
 
-class CenterItem {
-  final String name;
-  final String iconUrl;
-  final AssetsType type;
-
-  CenterItem(this.name, this.iconUrl, this.type);
-}
-
-final List<CenterItem> items = [
-  CenterItem(
-      "我的资产",
-      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-approve.png",
-      AssetsType.myAssets),
-  CenterItem(
-      "资产申领",
-      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-claim.png",
-      AssetsType.claim),
-  CenterItem(
-      "资产盘点",
-      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-check.png",
-      AssetsType.check),
-  CenterItem(
-      "资产处置",
-      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-dispose.png",
-      AssetsType.dispose),
-  CenterItem(
-      "资产移交",
-      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-transfer.png",
-      AssetsType.transfer),
-  CenterItem(
-      "资产交回",
-      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-transfer.png",
-      AssetsType.handOver),
-  CenterItem(
-      "资产归还",
-      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-dispose.png",
-      AssetsType.revert),
-  CenterItem(
-      "资产借用",
-      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-check.png",
-      AssetsType.borrow),
-  CenterItem(
-      "资产申购",
-      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-subscribe.png",
-      AssetsType.subscribe),
-  CenterItem(
-      "审批中心",
-      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-approve.png",
-      AssetsType.approve),
-  CenterItem(
-      "巡检任务",
-      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/inspection-icon.png",
-      AssetsType.more),
-  CenterItem(
-      "维修上报",
-      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/report-icon.png",
-      AssetsType.more),
-  CenterItem(
-      "工单处理",
-      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/work-order-icon.png",
-      AssetsType.more),
-  CenterItem(
-      "物品领用",
-      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/collect.png",
-      AssetsType.more),
-];

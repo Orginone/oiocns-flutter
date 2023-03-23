@@ -14,9 +14,9 @@ class OftenUseController extends GetxController {
   @override
   void onInit() {
     debugPrint('---————————————>oftencontroller onInit');
-    for (var i = 0; i < 24; i++) {
+    for (var i = 0; i < 1; i++) {
       oftenUseList.add(
-          Recent("$i", "资产监管", "http://anyinone.com:800/img/logo/logo3.jpg"));
+          Recent("$i", "资产内控", "http://anyinone.com:888/img/logo/logo3.jpg"));
     }
     super.onInit();
   }
