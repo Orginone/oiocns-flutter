@@ -110,7 +110,6 @@ class Routers {
   // 杭商城
   static const String market = "/market";
 
-
   //添加资产
   static const String addAsset = "/addAsset";
 
@@ -263,8 +262,6 @@ class Routers {
         binding: MarketBinding(),
       ),
       GetPage(
-<<<<<<< HEAD
-=======
         name: Routers.storageLocation,
         page: () => StorageLocationPage(),
         binding: StorageLocationBinding(),
@@ -300,7 +297,6 @@ class Routers {
         binding: ProcessDetailsBinding(),
       ),
       GetPage(
->>>>>>> feature/mian
         name: Routers.todo,
         page: () => WorkbenchPage(),
         binding: WorkBinding(),
@@ -314,8 +310,6 @@ class Routers {
         page: () => const TodoDetail(),
         binding: TodoDetailBinding(),
       ),
-<<<<<<< HEAD
-=======
       GetPage(
         name: Routers.choiceGb,
         page: () => ChoiceGbPage(),
@@ -336,7 +330,6 @@ class Routers {
         page: () => ChoiceThingPage(),
         binding: ChoiceThingBinding(),
       ),
->>>>>>> feature/mian
     ];
   }
 }

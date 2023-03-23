@@ -14,14 +14,9 @@ import 'package:orginone/pages/index/index_page.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
 import 'package:orginone/pages/other/work/view.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
-<<<<<<< HEAD
-import 'package:orginone/pages/todo/work_page.dart';
-import 'package:orginone/pages/todo/workbench_page.dart';
-=======
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
->>>>>>> feature/mian
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -84,11 +79,7 @@ class HomeController extends TabsController {
     ));
     registerTab(XTab(
       body: Text('办事', style: XFonts.size14Black3),
-<<<<<<< HEAD
-      view:  WorkPage(),
-=======
       view: WorkPage(),
->>>>>>> feature/mian
       icon: XImage.localImage("work", size: size),
     ));
     var center = XTab(
@@ -163,4 +154,3 @@ class HomeController extends TabsController {
     EventBusHelper.unregister(this);
   }
 }
-
