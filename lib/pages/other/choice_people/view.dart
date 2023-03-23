@@ -6,6 +6,7 @@ import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 
 import 'item.dart';
 import 'logic.dart';
@@ -15,14 +16,8 @@ class ChoicePeoplePage
     extends BaseGetView<ChoicePeopleController, ChoicePeopleState> {
   @override
   Widget buildView() {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("人员"),
-        centerTitle: true,
-        backgroundColor: XColors.themeColor,
-        elevation: 0,
-      ),
-      backgroundColor: Colors.grey.shade200,
+    return GyScaffold(
+      titleName: '人员',
       body: SafeArea(
         child: Column(
           children: [
@@ -168,34 +163,37 @@ class ChoicePeoplePage
             nextStep.add(level(value));
           }
         }
-        return Row(
-          children: [
-            GestureDetector(
-              onTap: () {
-                controller.clearGroup();
-              },
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    WidgetSpan(
-                        child: Container(
-                          width: 5.w,
-                          height: 25.h,
-                          margin: EdgeInsets.only(right: 15.w),
-                          color: XColors.themeColor,
-                        ),
-                        alignment: PlaceholderAlignment.middle),
-                    TextSpan(
-                        text: DepartmentManagement().getCurrentCompanyName(),
-                        style: state.selectedGroup.isEmpty
-                            ? selectedTextStyle
-                            : unSelectedTextStyle)
-                  ],
+        return SingleChildScrollView(
+          scrollDirection:Axis.horizontal,
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  controller.clearGroup();
+                },
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      WidgetSpan(
+                          child: Container(
+                            width: 5.w,
+                            height: 25.h,
+                            margin: EdgeInsets.only(right: 15.w),
+                            color: XColors.themeColor,
+                          ),
+                          alignment: PlaceholderAlignment.middle),
+                      TextSpan(
+                          text: DepartmentManagement().getCurrentCompanyName(),
+                          style: state.selectedGroup.isEmpty
+                              ? selectedTextStyle
+                              : unSelectedTextStyle)
+                    ],
+                  ),
                 ),
               ),
-            ),
-            ...nextStep,
-          ],
+              ...nextStep,
+            ],
+          ),
         );
       }),
     );

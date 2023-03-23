@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/event/choice.dart';
 import 'package:orginone/util/department_management.dart';
+import 'package:orginone/util/event_bus_helper.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
@@ -52,14 +54,10 @@ class ChoicePeopleController extends BaseController<ChoicePeopleState> {
   }
 
   void back() {
-    Map<String, dynamic>? data;
     if (state.selectedUser.value != null) {
-      data = {
-        "user": state.selectedUser.value,
-        "department": state.selectedUserDepartment
-      };
+      EventBusHelper.fire(ChoicePeople(user: state.selectedUser.value!, department: state.selectedUserDepartment!));
     }
-    Get.back(result: data);
+    Get.back();
   }
 
   void selectGroup(ITarget item) {

@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/event/choice.dart';
 import 'package:orginone/util/department_management.dart';
+import 'package:orginone/util/event_bus_helper.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
@@ -41,7 +43,11 @@ class ChoiceDepartmentController extends BaseController<ChoiceDepartmentState> {
   }
 
   void back() {
-   Get.back(result: state.selectedDepartment.value);
+    if (state.selectedDepartment.value != null) {
+      EventBusHelper.fire(
+          ChoiceDepartment(department: state.selectedDepartment.value!));
+    }
+    Get.back();
   }
 
   void selectedDepartment(ITarget item) {

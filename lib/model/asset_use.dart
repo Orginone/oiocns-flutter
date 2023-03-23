@@ -75,14 +75,14 @@ class AssetUse {
 
     submitterName = json['submitterName']??json['SUBMITTER_NAME'];
     // submitUserName = json['submitUserName'];
-    userName = json['USER_NAME'];
+    userName = json['USER_NAME'].toString();
     status = json['status'];
     createTime = DateTime.tryParse(json['CREATE_TIME']??"");
     updateTime = DateTime.tryParse(json['UPDATE_TIME']??"");
-    way = int.tryParse(json['way'].toString());
+    way = int.tryParse(json['way'].toString())??int.tryParse(json['DISPOSE_TYPE'].toString());
     keepOrgName = json['ACC_UNIT']??json['keepOrgName'];
     keepOrgType = json['IS_SYS_UNIT']??json['keepOrgType'];
-    evaluated = json['evaluated'];
+    evaluated = json['evaluated'] is int?json['evaluated']:null;
     assetsTotal = json['SHEJIZCZZ']??json['assetsTotal'];
     keepOrgPhoneNumber = json['keepOrgPhoneNumber'];
     depreciationTotal = json['LEIJIZJHJ']??json['depreciationTotal'];
@@ -124,6 +124,8 @@ class AssetUse {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['BILL_CODE'] = this.billCode;
     data['APPLY_REMARK'] = this.applyRemark;
+    data['REMARK'] = this.applyRemark;
+    data['applyRemark'] = this.applyRemark;
     data['type'] = this.type;
     data['OLD_USER_ID'] = this.oldUserId;
     data['KEEPER_ID'] = this.keeperId;
@@ -135,12 +137,15 @@ class AssetUse {
     data['CREATE_TIME'] = this.createTime;
     data['UPDATE_TIME'] = this.updateTime;
     data['way'] = this.way;
+    data['DISPOSE_TYPE'] = this.way;
     data['evaluated'] = this.evaluated;
     data['SHEJIZCZZ'] = this.assetsTotal;
     data['LEIJIZJHJ'] = this.depreciationTotal;
     data['JINGZHIHJ'] = this.netWorthTotal;
-    data['ACC_UNIT'] = keepOrgName ;
+    data['ACC_UNIT'] = keepOrgName;
+    data['keepOrgName'] = keepOrgName;
     data['IS_SYS_UNIT'] =  keepOrgType;
+    data['keepOrgType'] = keepOrgType;
     data['count'] = this.count;
     data['keepOrgPhoneNumber'] =keepOrgPhoneNumber;
     data['editStatus'] = this.editStatus;

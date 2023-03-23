@@ -3,9 +3,10 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/market/model.dart';
-import 'package:orginone/dart/core/target/species/ispecies.dart';
+import 'package:orginone/dart/core/thing/index.dart';
 import 'package:orginone/util/toast_utils.dart';
 
+import '../dart/core/thing/species.dart';
 
 class CommonTreeManagement {
   static final CommonTreeManagement _instance = CommonTreeManagement._();
@@ -20,7 +21,12 @@ class CommonTreeManagement {
 
   List<AssetsCategoryGroup> get category => _category;
 
+  SpeciesItem? _species;
+
+  SpeciesItem? get species => _species;
+
   Future<void> initTree() async {
+    _species = await loadSpeciesTree(setting.space.id);
     _category.clear();
     ResultType<XDictItemArray> res = await kernel.queryDictItems(
       IdSpaceReq(
@@ -55,9 +61,9 @@ class CommonTreeManagement {
 
   }
 
-  AssetsCategoryGroup? findCategoryTree(String id){
+  AssetsCategoryGroup? findCategoryTree(String name){
     try{
-      return nonLevelCategory.firstWhere((element) => element.id == id);
+      return nonLevelCategory.firstWhere((element) => element.name == name);
     }catch(e){
       return null;
     }
@@ -132,6 +138,26 @@ class CommonTreeManagement {
     }
 
     return category;
+  }
+
+  Future<XAttribute?> findXAttribute(
+      {required String specieId, required String attributeId}) async {
+
+    if (_species == null) {
+      return null;
+    }
+    try{
+      var data = _species!
+          .getAllLastList()
+          .firstWhere((element) => element.id == specieId);
+      if (data.attrs.isEmpty) {
+        await data.loadAttrs(setting.space.id, true, true,
+            PageRequest(offset: 0, limit: 9999, filter: ''));
+      }
+      return data.attrs.firstWhere((element) => element.id == attributeId);
+    }catch(e){
+      return null;
+    }
   }
 }
 

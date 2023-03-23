@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_sound/public/flutter_sound_player.dart';
+import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
@@ -269,6 +269,23 @@ class DetailItemWidget extends GetView<ChatController> {
   /// 语音详情
   Widget _voice({required TextDirection textDirection}) {
     // 初始化语音输入
+
+    Map<String, dynamic> msgBody = {};
+    try {
+      msgBody = jsonDecode(msg.showTxt);
+    } catch (error) {
+      Log.info("参数解析失败，msg.showTxt:${msg.showTxt}");
+      return Container();
+    }
+    String link = msgBody["shareLink"] ?? "";
+
+    /// 限制大小
+    BoxConstraints boxConstraints = BoxConstraints(maxWidth: 200.w);
+
+    Map<String, String> headers = {
+      "Authorization": KernelApi.getInstance().anystore.accessToken,
+    };
+
     var playCtrl = Get.find<PlayController>();
     playCtrl.putPlayerStatusIfAbsent(msg);
     var voicePlay = playCtrl.getPlayerStatus(msg.id)!;
@@ -443,7 +460,7 @@ class PlayController extends GetxController with GetTickerProviderStateMixin {
     _animationController!.forward();
 
     // 监听进度
-    _soundPlayer ??= await FlutterSoundPlayer().openPlayer();
+    _soundPlayer ??= await FlutterSoundPlayer().openAudioSession();
     _soundPlayer!.setSubscriptionDuration(const Duration(milliseconds: 50));
     _mt = _soundPlayer!.onProgress!.listen((event) {
       _currentVoicePlay!.progress.value = event.position.inMilliseconds;

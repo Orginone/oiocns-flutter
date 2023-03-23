@@ -7,23 +7,16 @@ import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/template/tabs.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/thing/index.dart';
-import 'package:orginone/event/home_data.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
+import 'package:orginone/event/home_data.dart';
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/index/index_page.dart';
-import 'package:orginone/pages/other/home/components/operation_bar.dart';
-import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
+import 'package:orginone/pages/other/work/view.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
-import 'package:orginone/pages/todo/work_page.dart';
-import 'package:orginone/pages/todo/workbench_page.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
 import '../home/ware_house/ware_house.dart';
@@ -40,7 +33,7 @@ class HomePage extends GetView<HomeController> {
       resizeToAvoidBottomInset: false,
       appBarElevation: 0,
       appBarHeight: 0,
-      body: TabsView(
+      body: Tabs(
         tabCtrl: controller.tabController,
         top: const UserBar(),
         views: controller.tabs.map((e) => e.toTabView()).toList(),
@@ -85,45 +78,12 @@ class HomeController extends TabsController {
     ));
     registerTab(XTab(
       body: Text('办事', style: XFonts.size14Black3),
-      view:  WorkPage(),
+      view: WorkPage(),
       icon: XImage.localImage("work", size: size),
     ));
     var center = XTab(
       body: XImage.localImage("logo_not_bg", size: Size(36.w, 36.w)),
-      view: GridView.count(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        crossAxisCount: 5,
-        childAspectRatio: 80 / 100,
-        children: items.map((item) {
-          Color iconColor = Colors.black;
-
-          return GestureDetector(
-            onTap: () {
-              Get.toNamed(Routers.centerFunction, arguments: {"info": item});
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  width: 80.w,
-                  height: 80.w,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(40.w)),
-                    color: Colors.white,
-                  ),
-                  child: Icon(Icons.transform, color: iconColor),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 6.5.w),
-                  child: Text(item.name, style: XFonts.size12Black3),
-                ),
-              ],
-            ),
-          );
-        }).toList(),
-      ),
+      view: IndexPage(),
       iconMargin: EdgeInsets.zero,
     );
     registerTab(center);
@@ -146,7 +106,6 @@ class HomeController extends TabsController {
         log('连接成功---------${KernelApi.getInstance().anystore.isOnline}');
         ToastUtils.showMsg(msg: "连接成功 开始加载数据");
         await Future.wait([
-          AssetManagement().initAssets(),
           DepartmentManagement().initDepartment(),
           CommonTreeManagement().initTree(),
         ]);
@@ -195,19 +154,3 @@ class HomeController extends TabsController {
   }
 }
 
-class CenterItem {
-  final String name;
-  final String iconUrl;
-  final AssetsType type;
-
-  CenterItem(this.name, this.iconUrl, this.type);
-}
-
-final List<CenterItem> items = [
-  CenterItem("我的资产", "", AssetsType.myAssets),
-  CenterItem("资产申领", "", AssetsType.claim),
-  CenterItem("资产盘点", "", AssetsType.check),
-  CenterItem("资产处置", "", AssetsType.dispose),
-  CenterItem("资产移交", "", AssetsType.transfer),
-  CenterItem("资产交回", "", AssetsType.handOver),
-];

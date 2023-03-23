@@ -2,8 +2,6 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/thing/idict.dart';
 
-// import 'idict.dart';
-
 abstract class ISpeciesItem {
   // 主键,唯一
   late String id;

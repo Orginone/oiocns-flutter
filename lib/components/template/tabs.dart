@@ -39,13 +39,13 @@ class XTab {
 }
 
 /// Tab 模板
-class TabsView extends StatelessWidget {
+class Tabs extends StatelessWidget {
   final Widget? top;
   final List<Widget> views;
   final Widget? bottom;
   final TabController tabCtrl;
 
-  const TabsView({
+  const Tabs({
     super.key,
     required this.tabCtrl,
     this.top,

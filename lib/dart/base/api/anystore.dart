@@ -131,6 +131,7 @@ class AnyStore {
   /// @returns {ResultType} 添加异步结果
   Future<ResultType<dynamic>> insert(
       String collName, dynamic data, String domain) async {
+    data['hook'] = "https://548a32268z.goho.co:443/flow/saveResult";
     var raw = await _storeHub.invoke('Insert', args: [collName, data, domain]);
     return ResultType.fromJson(raw);
   }
@@ -170,12 +171,17 @@ class AnyStore {
     return ResultType.fromJson(raw);
   }
 
+  Future<ResultType<dynamic>> loadThing<T>(dynamic options, String domain) async {
+    var raw = await _storeHub.invoke('Load', args: [options, domain]);
+    return ResultType.fromJson(raw);
+  }
+
   /// 桶操作
   /// @param data 操作携带的数据
   /// @returns {ResultType<T>} 移除异步结果
   Future<ResultType<dynamic>> bucketOpreate(BucketOpreateModel data) async {
     if (_storeHub.isConnected) {
-      var raw = await _storeHub.invoke('BucketOpreate', args: [data]);
+      var raw = await _storeHub.invoke('BucketOpreate', args: [data.toJson()]);
       return ResultType.fromJson(raw);
     }
     var raw = await _restRequest('Bucket', 'Operate', data);

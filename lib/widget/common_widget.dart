@@ -188,7 +188,8 @@ class CommonWidget {
                       hintStyle:
                           TextStyle(color: Colors.grey.shade300, fontSize: 20.sp),
                       border: InputBorder.none),
-                )
+                ),
+                SizedBox(height: 10.h,),
               ],
             ),
           ),
@@ -359,19 +360,26 @@ class CommonWidget {
 
   static commonRadioTextWidget<T>(String name, T value,
       {T? groupValue, ValueChanged<T?>? onChanged,String? keyWord}) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 5.h,horizontal: 16.w),
-      width: double.infinity,
-      color: Colors.white,
-      child: Row(
-        children: [
-          Radio<T>(
-            value: value,
-            groupValue: groupValue,
-            onChanged: onChanged,
-          ),
-          TextHighlight(content: name,keyWord: keyWord,normalStyle: TextStyle(fontSize: 16.sp,color: Colors.black87),highlightStyle: TextStyle(fontSize: 18.sp,color: Colors.black),)
-        ],
+    return GestureDetector(
+      onTap: (){
+        if(onChanged!=null){
+          onChanged(value);
+        }
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 5.h,horizontal: 16.w),
+        width: double.infinity,
+        color: Colors.white,
+        child: Row(
+          children: [
+            Radio<T>(
+              value: value,
+              groupValue: groupValue,
+              onChanged: onChanged,
+            ),
+            TextHighlight(content: name,keyWord: keyWord,normalStyle: TextStyle(fontSize: 16.sp,color: Colors.black87),highlightStyle: TextStyle(fontSize: 18.sp,color: Colors.black),)
+          ],
+        ),
       ),
     );
   }

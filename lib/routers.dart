@@ -10,33 +10,11 @@ import 'package:orginone/pages/index/index_page.dart';
 // import 'package:orginone/pages/index/indexok_page.dart';
 import 'package:orginone/pages/other/add_asset/binding.dart';
 import 'package:orginone/pages/other/add_asset/view.dart';
-import 'package:orginone/pages/other/batch_operation_asset/view.dart';
-import 'package:orginone/pages/other/bulk_removal_asset/binding.dart';
-import 'package:orginone/pages/other/bulk_removal_asset/view.dart';
-import 'package:orginone/pages/other/center_function/approve_documents/binding.dart';
-import 'package:orginone/pages/other/center_function/approve_documents/view.dart';
-import 'package:orginone/pages/other/center_function/assets_check/binding.dart';
-import 'package:orginone/pages/other/center_function/assets_check/view.dart';
-import 'package:orginone/pages/other/center_function/asstes_details/binding.dart';
-import 'package:orginone/pages/other/center_function/asstes_details/view.dart';
-import 'package:orginone/pages/other/center_function/binding.dart';
-import 'package:orginone/pages/other/center_function/create_dispose/binding.dart';
-import 'package:orginone/pages/other/center_function/create_dispose/view.dart';
-import 'package:orginone/pages/other/center_function/create_hand_over/binding.dart';
-import 'package:orginone/pages/other/center_function/create_hand_over/view.dart';
-import 'package:orginone/pages/other/center_function/create_transfer/binding.dart';
-import 'package:orginone/pages/other/center_function/create_transfer/view.dart';
-import 'package:orginone/pages/other/center_function/general_details/binding.dart';
-import 'package:orginone/pages/other/center_function/general_details/view.dart';
-import 'package:orginone/pages/other/center_function/view.dart';
-import 'package:orginone/pages/other/choice_assets/binding.dart';
-import 'package:orginone/pages/other/choice_assets/choice_specific_assets/binding.dart';
-import 'package:orginone/pages/other/choice_assets/choice_specific_assets/view.dart';
-import 'package:orginone/pages/other/choice_assets/view.dart';
 import 'package:orginone/pages/other/choice_department/binding.dart';
 import 'package:orginone/pages/other/choice_department/view.dart';
 import 'package:orginone/pages/other/choice_people/binding.dart';
 import 'package:orginone/pages/other/choice_people/view.dart';
+import 'package:orginone/pages/other/choice_thing/binding.dart';
 import 'package:orginone/pages/other/home/home_page.dart';
 import 'package:orginone/pages/other/home/spaces_page.dart';
 import 'package:orginone/pages/other/login.dart';
@@ -47,31 +25,45 @@ import 'package:orginone/pages/other/scanning/scanning_result_pge.dart';
 import 'package:orginone/pages/other/search_page.dart';
 import 'package:orginone/pages/other/web_view/binding.dart';
 import 'package:orginone/pages/other/web_view/view.dart';
+import 'package:orginone/pages/other/work/work_start/view.dart';
 import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/pages/setting/unit_settings_page.dart';
-// 仓库
-import './pages/other/home/ware_house/recently_opened_binding.dart';
-import './pages/other/home/ware_house/often_use_binding.dart';
+import 'package:orginone/pages/todo/todo_detail.dart';
+import 'package:orginone/pages/todo/todo_tab_page.dart';
+import 'package:orginone/pages/todo/work_page.dart';
+import 'package:orginone/pages/todo/workbench_page.dart';
+import 'package:orginone/util/hive_utils.dart';
+
+import './pages/other/home/ware_house/assets_management/assets_management_binding.dart';
+
 // 资产管理
 import './pages/other/home/ware_house/assets_management/assets_management_page.dart';
-import './pages/other/home/ware_house/assets_management/assets_management_binding.dart';
+import './pages/other/home/ware_house/market/market_binding.dart';
+
 // 资产管理
 import './pages/other/home/ware_house/market/market_page.dart';
 import './pages/other/home/ware_house/market/market_binding.dart';
 import 'package:orginone/util/hive_utils.dart';
-
-import 'pages/other/batch_operation_asset/binding.dart';
-import 'pages/other/center_function/create_claim/binding.dart';
-import 'pages/other/center_function/create_claim/view.dart';
+import './pages/other/home/ware_house/often_use_binding.dart';
+// 仓库
+import './pages/other/home/ware_house/recently_opened_binding.dart';
+import 'pages/other/choice_gb/binding.dart';
+import 'pages/other/choice_gb/view.dart';
+import 'pages/other/choice_thing/view.dart';
 import 'pages/other/storage_location/binding.dart';
 import 'pages/other/storage_location/view.dart';
 import 'package:orginone/pages/todo/todo_detail.dart';
 import 'package:orginone/pages/todo/todo_tab_page.dart';
 import 'package:orginone/pages/todo/work_page.dart';
 import 'package:orginone/pages/todo/workbench_page.dart';
+import 'pages/other/work/process_details/binding.dart';
+import 'pages/other/work/process_details/view.dart';
+import 'pages/other/work/work_start/binding.dart';
+import 'pages/other/work/work_start/create_work/binding.dart';
+import 'pages/other/work/work_start/create_work/view.dart';
 
 class Routers {
   // 首页
@@ -119,18 +111,9 @@ class Routers {
   // 杭商城
   static const String market = "/market";
 
-  //选择资产分类
-  static const String choiceAssets = "/choiceAssets";
-  static const String choiceSpecificAssets = "/choiceSpecificAssets";
 
   //添加资产
   static const String addAsset = "/addAsset";
-
-  //批量移除资产
-  static const String bulkRemovalAsset = "/bulkRemovalAsset";
-
-  //批量操作资产
-  static const String batchOperationAsset = "/batchOperationAsset";
 
   //选择地点
   static const String storageLocation = "/storageLocation";
@@ -138,41 +121,29 @@ class Routers {
   //选择人员
   static const String choicePeople = "/choicePeople";
 
-  //选择人员
+  //选择部门
   static const String choiceDepartment = "/choiceDepartment";
-
-  //资产详情
-  static const String assetsDetails = "/assetsDetails";
-
-  //创建盘点
-  static const String createClaim = "/createClaim";
-
-  //创建移交
-  static const String createTransfer = "/createTransfer";
-
-  //创建申购
-  static const String createDispose = "/createDispose";
-
-  //创建交回
-  static const String createHandOver = "/createHandOver";
-
-  //资产盘点
-  static const String assetsCheck = "/assetsCheck";
-
-  //资产模块通用详情
-  static const String generalDetails = "/generalDetails";
-
-  //审批单据
-  static const String approveDocuments = "/approveDocuments";
-
-  //资产模块功能页
-  static const String centerFunction = "/centerFunction";
 
   //扫描二维码
   static const String qrScan = "/qrScan";
 
   //webView
   static const String webView = "/webView";
+
+  //审批详情
+  static const String processDetails = '/processDetails';
+
+  //选择标准分类
+  static const String choiceGb = '/choiceGb';
+
+  //发起事项
+  static const String workStart = '/workStart';
+
+  //创建办事
+  static const String createWork = '/createWork';
+
+  //创建办事
+  static const String choiceThing = '/choiceThing';
 
   static String get main {
     return login;
@@ -195,6 +166,7 @@ class Routers {
         name: Routers.home,
         page: () => const HomePage(),
         bindings: [
+          WorkBinding(),
           ChatBinding(),
           HomeBinding(),
           WorkBinding(),
@@ -292,16 +264,6 @@ class Routers {
         binding: MarketBinding(),
       ),
       GetPage(
-        name: Routers.choiceAssets,
-        page: () => ChoiceAssetsPage(),
-        binding: ChoiceAssetsBinding(),
-      ),
-      GetPage(
-        name: Routers.choiceSpecificAssets,
-        page: () => ChoiceSpecificAssetsPage(),
-        binding: ChoiceSpecificAssetsBinding(),
-      ),
-      GetPage(
         name: Routers.storageLocation,
         page: () => StorageLocationPage(),
         binding: StorageLocationBinding(),
@@ -312,11 +274,6 @@ class Routers {
         binding: AddAssetBinding(),
       ),
       GetPage(
-        name: Routers.bulkRemovalAsset,
-        page: () => BulkRemovalAssetPage(),
-        binding: BulkRemovalAssetBinding(),
-      ),
-      GetPage(
         name: Routers.choicePeople,
         page: () => ChoicePeoplePage(),
         binding: ChoicePeopleBinding(),
@@ -325,51 +282,6 @@ class Routers {
         name: Routers.choiceDepartment,
         page: () => ChoiceDepartmentPage(),
         binding: ChoiceDepartmentBinding(),
-      ),
-      GetPage(
-        name: Routers.createDispose,
-        page: () => CreateDisposePage(),
-        binding: CreateDisposeBinding(),
-      ),
-      GetPage(
-        name: Routers.createHandOver,
-        page: () => CreateHandOverPage(),
-        binding: CreateHandOverBinding(),
-      ),
-      GetPage(
-        name: Routers.assetsCheck,
-        page: () => AssetsCheckPage(),
-        binding: AssetsCheckBinding(),
-      ),
-      GetPage(
-        name: Routers.assetsDetails,
-        page: () => AssetsDetailsPage(),
-        binding: AssetsDetailsBinding(),
-      ),
-      GetPage(
-        name: Routers.generalDetails,
-        page: () => GeneralDetailsPage(),
-        binding: GeneralDetailsBinding(),
-      ),
-      GetPage(
-        name: Routers.approveDocuments,
-        page: () => ApproveDocumentsPage(),
-        binding: ApproveDocumentsBinding(),
-      ),
-      GetPage(
-        name: Routers.createClaim,
-        page: () => CreateClaimPage(),
-        binding: CreateClaimBinding(),
-      ),
-      GetPage(
-        name: Routers.createTransfer,
-        page: () => CreateTransferPage(),
-        binding: CreateTransferBinding(),
-      ),
-      GetPage(
-        name: Routers.batchOperationAsset,
-        page: () => BatchOperationAssetPage(),
-        binding: BatchOperationAssetBinding(),
       ),
       GetPage(
         name: Routers.qrScan,
@@ -385,6 +297,16 @@ class Routers {
         page: () => const WorkbenchPage(),
         binding: WorkBinding(),),
       GetPage(
+        name: Routers.processDetails,
+        page: () => ProcessDetailsPage(),
+        binding: ProcessDetailsBinding(),
+      ),
+      GetPage(
+        name: Routers.todo,
+        page: () => WorkbenchPage(),
+        binding: WorkBinding(),
+      ),
+      GetPage(
         name: Routers.todoList,
         page: () => const TodoTabPage(),
       ),
@@ -392,6 +314,26 @@ class Routers {
         name: Routers.todoDetail,
         page: () => const TodoDetail(),
         binding: TodoDetailBinding(),
+      ),
+      GetPage(
+        name: Routers.choiceGb,
+        page: () => ChoiceGbPage(),
+        binding: ChoiceGbBinding(),
+      ),
+      GetPage(
+        name: Routers.workStart,
+        page: () => WorkStartPage(),
+        binding: WorkStartBinding(),
+      ),
+      GetPage(
+        name: Routers.createWork,
+        page: () => CreateWorkPage(),
+        binding: CreateWorkBinding(),
+      ),
+      GetPage(
+        name: Routers.choiceThing,
+        page: () => ChoiceThingPage(),
+        binding: ChoiceThingBinding(),
       ),
     ];
   }

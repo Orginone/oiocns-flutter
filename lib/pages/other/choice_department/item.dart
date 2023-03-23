@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/widget/common_widget.dart';
 
-import '../choice_people/state.dart';
 
 class Item extends StatelessWidget {
   final ITarget choicePeople;
@@ -50,7 +49,7 @@ class Item extends StatelessWidget {
             GestureDetector(
               onTap: next,
               child: Icon(
-                Icons.speaker_group,
+                Icons.navigate_next,
                 size: 32.w,
               ),
             )

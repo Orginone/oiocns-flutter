@@ -21,7 +21,6 @@ class LoadingWidget extends StatelessWidget {
     required this.builder,
   }) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(

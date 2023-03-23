@@ -51,5 +51,13 @@
     <true/>
     <key>NSCameraUsageDescription</key>
     <string>此应用程序需要摄像头才能扫描二维码</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>此应用程序需要访问你的相册</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>此应用程序需要使用麦克风</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>此应用程序需要语音识别</string>
+    <key>UIApplicationSupportsIndirectInputEvents</key>
+    <true/>
 </dict>
 </plist>

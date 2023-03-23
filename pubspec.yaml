@@ -91,9 +91,9 @@ dependencies:
   package_info_plus: ^1.4.2
   flutter_custom_dialog: ^1.0.20
   flutter_advanced_avatar: ^1.1.0
-
+  flutter_datetime_picker: ^1.5.1
   # 音频录制以及音频播放
-  flutter_sound: ^9.2.13
+  flutter_sound_lite: ^8.5.0
   audio_wave: ^0.1.4
   vibration: ^1.7.5
 
@@ -128,6 +128,8 @@ dependencies:
   syncfusion_flutter_charts: ^19.3.49
   fl_chart: ^0.61.0
   google_fonts: ^4.0.3
+  #时间线进度
+  timeline_tile: ^2.0.0
 
 dev_dependencies:
   flutter_test:
