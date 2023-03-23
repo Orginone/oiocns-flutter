@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:audio_wave/audio_wave.dart';
@@ -96,13 +97,15 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   /// 麦克风权限
   _permissionMicrophone(BuildContext context, Function callback) {
     Permission.microphone.request().then((permissionStatus) {
-      try {
-        if (permissionStatus != PermissionStatus.granted) {
-          throw RecordingPermissionException(
-              "Microphone permission not granted");
+      if(Platform.isAndroid){
+        try {
+          if (permissionStatus != PermissionStatus.granted) {
+            throw RecordingPermissionException(
+                "Microphone permission not granted");
+          }
+        } on RecordingPermissionException {
+          PermissionUtil.showPermissionDialog(context, Permission.microphone);
         }
-      } on RecordingPermissionException {
-        PermissionUtil.showPermissionDialog(context, Permission.microphone);
       }
       callback();
     });
@@ -165,10 +168,12 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
         }
       },
       onLongPress: () {
-        controller.startRecord().then((value) async {
-          Vibration.hasVibrator()
-              .then((value) => Vibration.vibrate(duration: 100));
-          Overlay.of(context)!.insert(voiceWave);
+        _permissionMicrophone(context, () {
+          controller.startRecord().then((value) async {
+            Vibration.hasVibrator()
+                .then((value) => Vibration.vibrate(duration: 100));
+            Overlay.of(context)!.insert(voiceWave);
+          });
         });
       },
       onLongPressEnd: (details) async {
@@ -243,7 +248,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
     return GestureDetector(
       onTap: () {
         controller.eventFire(context, InputEvent.clickVoice);
-        // _permissionMicrophone(context, controller.openRecorder);
+        _permissionMicrophone(context, controller.openRecorder);
       },
       child: _leftIcon(Icons.settings_voice_outlined),
     );
@@ -657,7 +662,6 @@ class ChatBoxController extends FullLifeCycleController
       _maxLevel ??= 60.0;
       _recorder!.setSubscriptionDuration(const Duration(milliseconds: 50));
       _mt = _recorder?.onProgress?.listen((e) {
-        print("$e--------------dddddd");
         _level!.value = e.decibels ?? 0;
         _maxLevel = max(_maxLevel!, _level!.value);
         _currentDuration = e.duration;
