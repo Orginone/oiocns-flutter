@@ -20,7 +20,10 @@ class LoadingWidget extends StatelessWidget {
     this.currStatus = LoadStatusX.loading,
     required this.builder,
   }) : super(key: key);
+<<<<<<< HEAD
 
+=======
+>>>>>>> feature/mian
 
   @override
   Widget build(BuildContext context) {

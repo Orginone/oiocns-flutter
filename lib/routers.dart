@@ -8,35 +8,63 @@ import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
 import 'package:orginone/pages/index/index_page.dart';
 // import 'package:orginone/pages/index/indexok_page.dart';
+import 'package:orginone/pages/other/add_asset/binding.dart';
+import 'package:orginone/pages/other/add_asset/view.dart';
+import 'package:orginone/pages/other/choice_department/binding.dart';
+import 'package:orginone/pages/other/choice_department/view.dart';
+import 'package:orginone/pages/other/choice_people/binding.dart';
+import 'package:orginone/pages/other/choice_people/view.dart';
+import 'package:orginone/pages/other/choice_thing/binding.dart';
 import 'package:orginone/pages/other/home/home_page.dart';
 import 'package:orginone/pages/other/home/spaces_page.dart';
 import 'package:orginone/pages/other/login.dart';
+import 'package:orginone/pages/other/qr_scan/binding.dart';
+import 'package:orginone/pages/other/qr_scan/view.dart';
 import 'package:orginone/pages/other/scanning/scanning_page.dart';
 import 'package:orginone/pages/other/scanning/scanning_result_pge.dart';
 import 'package:orginone/pages/other/search_page.dart';
+import 'package:orginone/pages/other/web_view/binding.dart';
+import 'package:orginone/pages/other/web_view/view.dart';
+import 'package:orginone/pages/other/work/work_start/view.dart';
 import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/pages/setting/unit_settings_page.dart';
-// 仓库
-import './pages/other/home/ware_house/recently_opened_binding.dart';
-import './pages/other/home/ware_house/often_use_binding.dart';
+import 'package:orginone/pages/todo/todo_detail.dart';
+import 'package:orginone/pages/todo/todo_tab_page.dart';
+import 'package:orginone/pages/todo/work_page.dart';
+import 'package:orginone/pages/todo/workbench_page.dart';
+import 'package:orginone/util/hive_utils.dart';
+
+import './pages/other/home/ware_house/assets_management/assets_management_binding.dart';
+
 // 资产管理
 import './pages/other/home/ware_house/assets_management/assets_management_page.dart';
-import './pages/other/home/ware_house/assets_management/assets_management_binding.dart';
-// 资产管理
-import './pages/other/home/ware_house/market/market_page.dart';
 import './pages/other/home/ware_house/market/market_binding.dart';
 import 'package:orginone/pages/todo/todo_detail.dart';
 import 'package:orginone/pages/todo/todo_tab_page.dart';
 import 'package:orginone/pages/todo/work_page.dart';
 import 'package:orginone/pages/todo/workbench_page.dart';
 
-class Routers {
-  // 入口页面
-  static const String main = "/";
+// 资产管理
+import './pages/other/home/ware_house/market/market_page.dart';
+import './pages/other/home/ware_house/often_use_binding.dart';
 
+// 仓库
+import './pages/other/home/ware_house/recently_opened_binding.dart';
+import 'pages/other/choice_gb/binding.dart';
+import 'pages/other/choice_gb/view.dart';
+import 'pages/other/choice_thing/view.dart';
+import 'pages/other/storage_location/binding.dart';
+import 'pages/other/storage_location/view.dart';
+import 'pages/other/work/process_details/binding.dart';
+import 'pages/other/work/process_details/view.dart';
+import 'pages/other/work/work_start/binding.dart';
+import 'pages/other/work/work_start/create_work/binding.dart';
+import 'pages/other/work/work_start/create_work/view.dart';
+
+class Routers {
   // 首页
   static const String home = "/home";
   static const String todo = "/todo";
@@ -47,7 +75,7 @@ class Routers {
   static const String login = "/login";
 
   // 空间选择
-  static const String spaces = "/login";
+  static const String spaces = "/spaces";
 
   // 简单表单编辑器
   static const String form = "/form";
@@ -82,10 +110,54 @@ class Routers {
   // 杭商城
   static const String market = "/market";
 
+
+  //添加资产
+  static const String addAsset = "/addAsset";
+
+  //选择地点
+  static const String storageLocation = "/storageLocation";
+
+  //选择人员
+  static const String choicePeople = "/choicePeople";
+
+  //选择部门
+  static const String choiceDepartment = "/choiceDepartment";
+
+  //扫描二维码
+  static const String qrScan = "/qrScan";
+
+  //webView
+  static const String webView = "/webView";
+
+  //审批详情
+  static const String processDetails = '/processDetails';
+
+  //选择标准分类
+  static const String choiceGb = '/choiceGb';
+
+  //发起事项
+  static const String workStart = '/workStart';
+
+  //创建办事
+  static const String createWork = '/createWork';
+
+  //创建办事
+  static const String choiceThing = '/choiceThing';
+
+  static String get main {
+    return login;
+    var user = HiveUtils.getUser();
+    if (user != null) {
+      return home;
+    } else {
+      return login;
+    }
+  }
+
   static List<GetPage> getInitRouters() {
     return [
       GetPage(
-        name: Routers.main,
+        name: Routers.login,
         page: () => const LoginPage(),
         bindings: [SettingBinding(), ChatBinding(), LoginBinding()],
       ),
@@ -93,6 +165,7 @@ class Routers {
         name: Routers.home,
         page: () => const HomePage(),
         bindings: [
+          WorkBinding(),
           ChatBinding(),
           HomeBinding(),
           WorkBinding(),
@@ -190,6 +263,44 @@ class Routers {
         binding: MarketBinding(),
       ),
       GetPage(
+<<<<<<< HEAD
+=======
+        name: Routers.storageLocation,
+        page: () => StorageLocationPage(),
+        binding: StorageLocationBinding(),
+      ),
+      GetPage(
+        name: Routers.addAsset,
+        page: () => AddAssetPage(),
+        binding: AddAssetBinding(),
+      ),
+      GetPage(
+        name: Routers.choicePeople,
+        page: () => ChoicePeoplePage(),
+        binding: ChoicePeopleBinding(),
+      ),
+      GetPage(
+        name: Routers.choiceDepartment,
+        page: () => ChoiceDepartmentPage(),
+        binding: ChoiceDepartmentBinding(),
+      ),
+      GetPage(
+        name: Routers.qrScan,
+        page: () => QrScanPage(),
+        binding: QrScanBinding(),
+      ),
+      GetPage(
+        name: Routers.webView,
+        page: () => WebViewPage(),
+        binding: WebViewBinding(),
+      ),
+      GetPage(
+        name: Routers.processDetails,
+        page: () => ProcessDetailsPage(),
+        binding: ProcessDetailsBinding(),
+      ),
+      GetPage(
+>>>>>>> feature/mian
         name: Routers.todo,
         page: () => WorkbenchPage(),
         binding: WorkBinding(),
@@ -203,6 +314,29 @@ class Routers {
         page: () => const TodoDetail(),
         binding: TodoDetailBinding(),
       ),
+<<<<<<< HEAD
+=======
+      GetPage(
+        name: Routers.choiceGb,
+        page: () => ChoiceGbPage(),
+        binding: ChoiceGbBinding(),
+      ),
+      GetPage(
+        name: Routers.workStart,
+        page: () => WorkStartPage(),
+        binding: WorkStartBinding(),
+      ),
+      GetPage(
+        name: Routers.createWork,
+        page: () => CreateWorkPage(),
+        binding: CreateWorkBinding(),
+      ),
+      GetPage(
+        name: Routers.choiceThing,
+        page: () => ChoiceThingPage(),
+        binding: ChoiceThingBinding(),
+      ),
+>>>>>>> feature/mian
     ];
   }
 }

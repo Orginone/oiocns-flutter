@@ -14,6 +14,10 @@ import 'package:orginone/dart/core/todo/orgrelation.dart';
 import 'package:orginone/pages/todo/config.dart';
 import 'package:orginone/pages/todo/todo_list_page.dart';
 import 'package:orginone/pages/todo/workbench_page.dart';
+<<<<<<< HEAD
+=======
+import 'package:orginone/routers.dart';
+>>>>>>> feature/mian
 
 /// 办事-待办
 class WorkPage extends GetView<WorkController> {
@@ -157,6 +161,7 @@ class WorkController extends TabsController {
   }
 
   createInstance() async {
+<<<<<<< HEAD
     //TODO:测试发起用例
     var settingCtrl = Get.find<SettingController>();
     var space = settingCtrl.space;
@@ -176,6 +181,33 @@ class WorkController extends TabsController {
         hook: '', defineId: ''));
     print('---->');
     //TODO:测试发起用例
+=======
+    Get.toNamed(Routers.choiceGb)?.then((value){
+      if(value!=null){
+        Get.toNamed(Routers.workStart,arguments: {"species":value});
+      }
+    });
+    // //TODO:测试发起用例
+    // var settingCtrl = Get.find<SettingController>();
+    // var space = settingCtrl.space;
+    // var define = await KernelApi.getInstance().queryDefine(
+    //     QueryDefineReq(speciesId: '', spaceId: space.id, page: PageRequest(offset: 0, limit: 20, filter: '')));
+    // var company = settingCtrl.company;
+    //
+    // var spaceID1 = settingCtrl.company?.id ?? "";
+    // var spaceID2 = settingCtrl.user?.id ?? "";
+    // FlowTarget ft = FlowTarget(space.target);
+    // // var defines = ft.getDefines();
+    // var data = await ft.createInstance(FlowInstanceModel(
+    //     spaceId: "373520388493283329",
+    //     content: 'https://www.npmjs.com/',
+    //     contentType: 'string',
+    //     data: '{}',
+    //     title: '',
+    //     hook: '', defineId: ''));
+    // print('---->');
+    // //TODO:测试发起用例
+>>>>>>> feature/mian
   }
 }
 

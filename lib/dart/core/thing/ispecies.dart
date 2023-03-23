@@ -35,6 +35,8 @@ abstract class ISpeciesItem {
   late TargetShare belongInfo;
   /* 属性 */
   late List<XAttribute> attrs;
+
+  late bool isSelected;
   /* 加载信息 */
   Future<ISpeciesItem> loadInfo(TargetShare info);
   /* 加载分类特性 */
@@ -126,4 +128,39 @@ abstract class ISpeciesItem {
    * 删除标准分类项
    */
   Future<bool> delete();
+
+  bool isAllLast() {
+    if (children.isEmpty) {
+      return true;
+    }
+    return children.where((element) => element.children.isNotEmpty).isEmpty;
+  }
+
+  List<ISpeciesItem> getAllList() {
+    List<ISpeciesItem> list = [];
+
+    for (var element in children) {
+      list.add(element);
+      if (element.children.isNotEmpty) {
+        list.addAll(element.getAllLastList());
+      }
+    }
+
+    return list;
+  }
+
+  List<ISpeciesItem> getAllLastList() {
+    List<ISpeciesItem> list = [];
+
+    for (var element in children) {
+      if (element.children.isEmpty) {
+        list.add(element);
+      } else {
+        list.addAll(element.getAllLastList());
+      }
+    }
+
+    return list;
+  }
+
 }
