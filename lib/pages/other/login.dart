@@ -95,8 +95,8 @@ class LoginBinding extends Bindings {
 }
 
 class LoginController extends GetxController {
-  final accountCtrl = TextEditingController();
-  final passwordCtrl = TextEditingController();
+  final accountCtrl = TextEditingController(text: "17602173727");
+  final passwordCtrl = TextEditingController(text: "Zcy_123456");
 
   @override
   void onInit() async {

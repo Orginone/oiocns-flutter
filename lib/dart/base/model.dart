@@ -4058,21 +4058,25 @@ class FlowReq {
   // 状态
   final int? status;
 
+  final String? speciesId;
+
   // 分页
   final PageRequest? page;
 
   //构造方法
-  FlowReq({
+  FlowReq( {
     this.id,
     this.spaceId,
     this.status,
     this.page,
+    this.speciesId,
   });
 
   //通过JSON构造
   FlowReq.fromJson(Map<String, dynamic> json)
       : id = json["id"],
         spaceId = json["spaceId"],
+        speciesId = json['speciesId'],
         status = json["status"],
         page = PageRequest.fromJson(json["page"]);
 
@@ -4095,6 +4099,7 @@ class FlowReq {
     Map<String, dynamic> json = {};
     json["id"] = id;
     json["spaceId"] = spaceId;
+    json['speciesId'] = speciesId;
     json["status"] = status;
     json["page"] = page?.toJson();
     return json;

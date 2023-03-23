@@ -47,11 +47,12 @@ class WorkNetWork {
     return tasks;
   }
 
-  static Future<XFlowInstance?> getFlowInstance({required String id}) async {
+  static Future<XFlowInstance?> getFlowInstance({String? id,String? speciesId}) async {
     XFlowInstance? flowInstacne;
+    SettingController setting = Get.find<SettingController>();
     ResultType<XFlowInstanceArray> result = await KernelApi.getInstance()
         .queryInstance(FlowReq(
-            id: id, page: PageRequest(offset: 0, limit: 9999, filter: '')));
+            id: id,spaceId: setting.space.id,speciesId: speciesId, page: PageRequest(offset: 0, limit: 9999, filter: '')));
 
     if (result.success) {
       flowInstacne = result.data!.result!.first;

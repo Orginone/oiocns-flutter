@@ -19,7 +19,7 @@ class ProcessDetailsPage
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: "待办详情",
+      titleName: "${state.type.label}详情",
       backgroundColor: Colors.grey.shade100,
       body: Column(
         children: [

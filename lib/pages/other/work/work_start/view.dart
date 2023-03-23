@@ -6,6 +6,7 @@ import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 
+import 'have_initiated/view.dart';
 import 'logic.dart';
 import 'start/view.dart';
 import 'state.dart';
@@ -21,11 +22,11 @@ class WorkStartPage extends BaseGetView<WorkStartController,WorkStartState>{
           tabBar(),
           Expanded(
             child: TabBarView(
+              controller: state.tabController,
               children: [
                 KeepAliveWidget(child: StartPage(state.species)),
-                KeepAliveWidget(child: Container()),
+                KeepAliveWidget(child: HaveInitiatedPage(state.species)),
               ],
-              controller: state.tabController,
             ),
           )
         ],

@@ -62,4 +62,19 @@ class WorkStartNetWork {
       ToastUtils.showMsg(msg: result.msg);
     }
   }
+
+  static Future<List<XFlowInstance>> getFlowInstance({String? id,String? speciesId}) async {
+    List<XFlowInstance> flowInstacnes = [];
+    SettingController setting = Get.find<SettingController>();
+    ResultType<XFlowInstanceArray> result = await KernelApi.getInstance()
+        .queryInstance(FlowReq(
+        id: id,spaceId: setting.space.id,speciesId: speciesId, page: PageRequest(offset: 0, limit: 9999, filter: '')));
+
+    if (result.success) {
+      flowInstacnes = result.data?.result??[];
+    } else {
+      ToastUtils.showMsg(msg: result.msg);
+    }
+    return flowInstacnes;
+  }
 }
