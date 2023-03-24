@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:orginone/dart/core/thing/ispecies.dart';
 import 'package:orginone/images.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/widget/common_widget.dart';
 
 import 'state.dart';
@@ -94,7 +96,9 @@ class Item extends StatelessWidget {
 
   Widget details() {
     return GestureDetector(
-      onTap: next,
+      onTap: (){
+        Get.toNamed(Routers.thing,arguments: {"id":item.id,"title":item.name});
+      },
       child: Image.asset(
         Images.moreIcon,
         width: 26.w,

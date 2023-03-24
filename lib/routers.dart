@@ -85,6 +85,8 @@ import 'pages/other/choice_thing/view.dart';
 import 'pages/other/home/ware_house/ware_house.dart';
 import 'pages/other/storage_location/binding.dart';
 import 'pages/other/storage_location/view.dart';
+import 'pages/other/thing/binding.dart';
+import 'pages/other/thing/view.dart';
 import 'pages/other/work/process_details/binding.dart';
 import 'pages/other/work/process_details/view.dart';
 import 'pages/other/work/work_start/binding.dart';
@@ -212,6 +214,8 @@ class Routers {
 
   static const String applicationDetails = '/applicationDetails';
 
+  //实体列表
+  static const String thing = '/thing';
 
   static String get main {
     return login;
@@ -470,6 +474,11 @@ class Routers {
         name: Routers.applicationDetails,
         page: () => ApplicationDetailsPage(),
         binding:ApplicationDetailsBinding(),
+      ),
+      GetPage(
+        name: Routers.thing,
+        page: () => ThingPage(),
+        binding:ThingBinding(),
       ),
     ];
   }

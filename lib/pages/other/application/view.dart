@@ -14,6 +14,7 @@ class ApplicationPage
   Widget buildView() {
     return GyScaffold(
       titleName: "应用",
+      backgroundColor: Colors.grey.shade100,
       body: Column(
         children: [
           application(),
@@ -98,7 +99,7 @@ class ApplicationPage
 
   Widget tabBar() {
     return Container(
-      color: Colors.grey.shade200,
+      color: Colors.grey.shade100,
       alignment: Alignment.centerLeft,
       child: TabBar(
         controller: state.tabController,
