@@ -4,7 +4,11 @@ import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/event/home_data.dart';
 import 'package:orginone/pages/other/home/widgets/space_item_widget.dart';
+import 'package:orginone/routers.dart';
+import 'package:orginone/util/asset_management.dart';
+import 'package:orginone/util/event_bus_helper.dart';
 
 class SpacesPage extends GetView<SettingController> {
   const SpacesPage({Key? key}) : super(key: key);
@@ -44,7 +48,7 @@ class SpacesPage extends GetView<SettingController> {
       isCurrent: controller.space.id == space.target.id,
       onTap: (company) async {
         await controller.setCurSpace(company.target.id);
-        Get.back();
+        Get.back(result: true);
       },
     );
   }

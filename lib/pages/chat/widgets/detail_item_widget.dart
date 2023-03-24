@@ -4,16 +4,19 @@ import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_sound/public/flutter_sound_player.dart';
+import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/components/widgets/photo_widget.dart';
-import 'package:orginone/components/widgets/text_avatar.dart';
+import 'package:orginone/components/widgets/team_avatar.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/string_util.dart';
 
@@ -77,11 +80,14 @@ class DetailItemWidget extends GetView<ChatController> {
 
   /// 获取头像
   Widget _getAvatar() {
-    return TextAvatar(
-      avatarName: getName().substring(0, 2),
-      textStyle: XFonts.size16WhiteW700,
-      radius: 9999,
-    );
+    late TargetShare shareInfo;
+    if (msg.fromId == controller.userId) {
+      var settingCtrl = Get.find<SettingController>();
+      shareInfo = settingCtrl.user!.shareInfo;
+    } else {
+      shareInfo = findTargetShare(msg.fromId);
+    }
+    return TeamAvatar(info: TeamTypeInfo(share: shareInfo));
   }
 
   /// 获取会话
@@ -263,6 +269,23 @@ class DetailItemWidget extends GetView<ChatController> {
   /// 语音详情
   Widget _voice({required TextDirection textDirection}) {
     // 初始化语音输入
+
+    Map<String, dynamic> msgBody = {};
+    try {
+      msgBody = jsonDecode(msg.showTxt);
+    } catch (error) {
+      Log.info("参数解析失败，msg.showTxt:${msg.showTxt}");
+      return Container();
+    }
+    String link = msgBody["shareLink"] ?? "";
+
+    /// 限制大小
+    BoxConstraints boxConstraints = BoxConstraints(maxWidth: 200.w);
+
+    Map<String, String> headers = {
+      "Authorization": KernelApi.getInstance().anystore.accessToken,
+    };
+
     var playCtrl = Get.find<PlayController>();
     playCtrl.putPlayerStatusIfAbsent(msg);
     var voicePlay = playCtrl.getPlayerStatus(msg.id)!;
@@ -437,7 +460,7 @@ class PlayController extends GetxController with GetTickerProviderStateMixin {
     _animationController!.forward();
 
     // 监听进度
-    _soundPlayer ??= await FlutterSoundPlayer().openPlayer();
+    _soundPlayer ??= await FlutterSoundPlayer().openAudioSession();
     _soundPlayer!.setSubscriptionDuration(const Duration(milliseconds: 50));
     _mt = _soundPlayer!.onProgress!.listen((event) {
       _currentVoicePlay!.progress.value = event.position.inMilliseconds;

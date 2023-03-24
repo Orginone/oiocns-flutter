@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 
@@ -92,7 +93,7 @@ class FileSystemItem implements IFileSystemItem {
   @override
   Future<IObjectItem> create(String name) async {
     var exist = await _findByName(name);
-    if (exist != null) {
+    if (exist == null) {
       var res =
           await kernel.anystore.bucketOpreate(BucketOpreateModel(
         shareDomain: 'user',
@@ -101,7 +102,7 @@ class FileSystemItem implements IFileSystemItem {
       ));
       if (res.success && res.data != null) {
         target!.hasSubDirectories = true;
-        var node = FileSystemItem(target: res.data, parent: parent);
+        var node = FileSystemItem(target: FileItemModel.formJson(res.data), parent: parent,children: []);
         children!.add(node);
         return node;
       }
@@ -128,7 +129,7 @@ class FileSystemItem implements IFileSystemItem {
 
   @override
   Future<bool> copy(IFileSystemItem destination) async {
-    if (destination.target!.isDirectory && key != destination.key) {
+    if (destination.target!.isDirectory! && key != destination.key) {
       var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
         shareDomain: 'user',
         key: _formatKey(),
@@ -146,7 +147,7 @@ class FileSystemItem implements IFileSystemItem {
 
   @override
   Future<bool> move(IFileSystemItem destination) async {
-    if (destination.target!.isDirectory && key != destination.key) {
+    if (destination.target!.isDirectory! && key != destination.key) {
       var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
         shareDomain: 'user',
         key: _formatKey(),
@@ -169,16 +170,17 @@ class FileSystemItem implements IFileSystemItem {
   @override
   Future<bool> loadChildren({bool? reload}) async {
     reload ??= false;
-    if (target!.isDirectory && (reload || children!.isEmpty)) {
+    if (target!.isDirectory! && (reload || children!.isEmpty)) {
       var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
         shareDomain: 'user',
         key: _formatKey(),
         operate: BucketOpreates.list,
       ));
       if (res.success && res.data!.isNotEmpty) {
-        children = res.data!
-            .map((item) => FileSystemItem(target: item, parent: parent))
-            .toList();
+        for(var json in res.data!){
+          children ??= [];
+          children!.add(FileSystemItem(target: FileItemModel.formJson(json), parent: parent,children: []));
+        }
         return true;
       }
     }
@@ -190,7 +192,7 @@ class FileSystemItem implements IFileSystemItem {
   Future<IObjectItem> upload(String name, File file,
       [OnProgressType? p]) async {
     var exist = await _findByName(name);
-    if (exist != null) {
+    if (exist == null) {
       p?.call(0);
       var task = TaskModel(
           name: name,
@@ -213,12 +215,14 @@ class FileSystemItem implements IFileSystemItem {
         if (end > file.lengthSync().floorToDouble()) {
           end = file.lengthSync();
         }
+        List<int> bytes = file.readAsBytesSync();
+        bytes = bytes.sublist(start,end);
+        String url =  base64.encode(bytes);
         data.fileItem = FileChunkData(
           index: index,
           uploadId: uuid,
           size: file.lengthSync(),
-          data: [], dataUrl: '',
-          // dataUrl: await blobToDataUrl(file.slice(start, end)),
+          data: [], dataUrl: url,
         );
         var res = await kernel.anystore.bucketOpreate(data);
         if (!res.success) {
@@ -229,10 +233,10 @@ class FileSystemItem implements IFileSystemItem {
           // return;
         }
         index++;
-        task.finished = end as double?;
-        p?.call(end as double);
+        task.finished = end.toDouble();
+        p?.call(end.toDouble());
         if (end == file.lengthSync() && res.data != null) {
-          var node = FileSystemItem(target: res.data, parent: this);
+          var node = FileSystemItem(target: FileItemModel.formJson(res.data), parent: this);
           children!.add(node);
           return node;
         }
@@ -253,25 +257,17 @@ class FileSystemItem implements IFileSystemItem {
 
   /// 格式化key,主要针对路径中的中文
   /// @returns 格式化后的key
-  _formatKey({String? subName}) {
-    if (target?.key != null && subName != null) {
+  _formatKey({String subName = ''}) {
+    if (target?.key != null && subName == '') {
       return '';
     }
     try {
-      var keys = target?.key != null ? [] : [target!.key];
-      if (subName != '' && subName!.isNotEmpty) {
-        String outputUrl = subName;
-        bool boolIsChinese = isChinese(subName);
-        if (Platform.isIOS && boolIsChinese) {
-          outputUrl = Uri.encodeFull(subName);
-        } else {}
-        return keys.add(subName);
+      var keys = target?.key != null ? [target!.key] : [];
+      if (subName.isNotEmpty) {
+        keys.add(subName);
       }
-
-// ignore: todo
-//TODO:格式化key,主要针对路径中的中文 可能不对
-
-      // return btoa(unescape(encodeURIComponent(keys.join('/'))));
+      print('base64------------${base64.encode(utf8.encode(keys.join('/')))}');
+      return base64.encode(utf8.encode(keys.join('/')));
     } catch (err) {
       return '';
     }
@@ -281,9 +277,8 @@ class FileSystemItem implements IFileSystemItem {
   /// @param name 名称
   Future<IFileSystemItem?> _findByName(String name) async {
     await loadChildren();
-
     for (var item in children!) {
-      if (item.name == name) {
+      if (item.target?.name?.split('/').last == name) {
         return item;
       }
     }
@@ -330,6 +325,7 @@ class FileSystemItem implements IFileSystemItem {
 var getFileSysItemRoot = FileSystemItem(
     key: "",
     name: "根目录",
+    children: [],
     target: FileItemModel(
       key: '',
       size: 0,

@@ -14,6 +14,7 @@ import 'package:orginone/dart/core/todo/orgrelation.dart';
 import 'package:orginone/pages/todo/config.dart';
 import 'package:orginone/pages/todo/todo_list_page.dart';
 import 'package:orginone/pages/todo/workbench_page.dart';
+import 'package:orginone/routers.dart';
 
 /// 办事-待办
 class WorkPage extends GetView<WorkController> {
@@ -49,7 +50,7 @@ class WorkPage extends GetView<WorkController> {
                   decoration: const BoxDecoration(
                       border: Border(
                           left:
-                          BorderSide(width: 1, color: XColors.lineLight2))),
+                              BorderSide(width: 1, color: XColors.lineLight2))),
                   child: Icon(
                     Icons.more_vert,
                     color: XColors.black6,
@@ -67,7 +68,7 @@ class WorkPage extends GetView<WorkController> {
 
   _showMenu(BuildContext context) {
     final RenderBox? renderBox =
-    _keyGreen.currentContext?.findRenderObject() as RenderBox?;
+        _keyGreen.currentContext?.findRenderObject() as RenderBox?;
     final overlay = renderBox?.localToGlobal(Offset.zero);
     if (renderBox == null || overlay == null) return;
     RelativeRect position = RelativeRect.fromRect(
@@ -76,10 +77,10 @@ class WorkPage extends GetView<WorkController> {
       Offset.zero & renderBox.size,
     );
     showMenu(
-        context: context,
-        shadowColor: XColors.black6,
-        position: position,
-        items: getMenu())
+            context: context,
+            shadowColor: XColors.black6,
+            position: position,
+            items: getMenu())
         .then((value) {
       if (value == 1) {}
       if (value == 2) {}
@@ -119,10 +120,13 @@ class WorkController extends TabsController {
   }
 
   //查询待办列表
-  getTodoList(bool isRefresh,) async {
+  getTodoList(
+    bool isRefresh,
+  ) async {
     List<XRelation> list = [];
     for (int i = 0; i < 10; i++) {
-      XRelation xRelation = XRelation(id: "id",
+      XRelation xRelation = XRelation(
+          id: "id",
           targetId: "targetId",
           teamId: "teamId",
           status: 0,
@@ -136,7 +140,7 @@ class WorkController extends TabsController {
           target: null);
       list.add(xRelation);
     }
-    Future.delayed(const Duration(seconds: 2),(){
+    Future.delayed(const Duration(seconds: 2), () {
       _todoList.addAll(list);
       todoLoadStatus.value = LoadStatusX.success;
     });
@@ -157,25 +161,31 @@ class WorkController extends TabsController {
   }
 
   createInstance() async {
-    //TODO:测试发起用例
-    var settingCtrl = Get.find<SettingController>();
-    var space = settingCtrl.space;
-    var company = settingCtrl.company;
-    var define = await KernelApi.getInstance().queryDefine(
-        QueryDefineReq(speciesId: '', spaceId: '', page: PageRequest(offset: 0, limit: 20, filter: '')));
-    var spaceID1 = settingCtrl.company?.id ?? "";
-    var spaceID2 = settingCtrl.user?.id ?? "";
-    FlowTarget ft = FlowTarget(space.target);
-    // var defines = ft.getDefines();
-    var data = await ft.createInstance(FlowInstanceModel(
-        spaceId: "373520388493283329",
-        content: 'https://www.npmjs.com/',
-        contentType: 'string',
-        data: '{}',
-        title: '',
-        hook: '', defineId: ''));
-    print('---->');
-    //TODO:测试发起用例
+    Get.toNamed(Routers.choiceGb)?.then((value) {
+      if (value != null) {
+        Get.toNamed(Routers.workStart, arguments: {"species": value});
+      }
+    });
+    // //TODO:测试发起用例
+    // var settingCtrl = Get.find<SettingController>();
+    // var space = settingCtrl.space;
+    // var define = await KernelApi.getInstance().queryDefine(
+    //     QueryDefineReq(speciesId: '', spaceId: space.id, page: PageRequest(offset: 0, limit: 20, filter: '')));
+    // var company = settingCtrl.company;
+    //
+    // var spaceID1 = settingCtrl.company?.id ?? "";
+    // var spaceID2 = settingCtrl.user?.id ?? "";
+    // FlowTarget ft = FlowTarget(space.target);
+    // // var defines = ft.getDefines();
+    // var data = await ft.createInstance(FlowInstanceModel(
+    //     spaceId: "373520388493283329",
+    //     content: 'https://www.npmjs.com/',
+    //     contentType: 'string',
+    //     data: '{}',
+    //     title: '',
+    //     hook: '', defineId: ''));
+    // print('---->');
+    // //TODO:测试发起用例
   }
 }
 
