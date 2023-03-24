@@ -17,14 +17,10 @@ class ThingNetWork{
       "searchOperation": 'contains',
       "searchValue": null,
       "userData": [
-
+        "S$id"
       ],
       "options": {
-        "match": {
-          "_id":{
-            "_eq_": id
-          }
-        },
+        "match": {},
       },
     }, settingCtrl.isPersonSpace?"user":'company');
 

@@ -11,11 +11,11 @@ class ThingController extends BaseController<ThingState> {
 
 
   @override
-  void onReady() {
+  void onReady() async{
     // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
-    ThingNetWork.getThing(state.id);
+    state.things.value = await ThingNetWork.getThing(state.id);
     LoadingDialog.dismiss(context);
   }
 }
