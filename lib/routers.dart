@@ -111,7 +111,6 @@ class Routers {
   // 杭商城
   static const String market = "/market";
 
-
   //添加资产
   static const String addAsset = "/addAsset";
 
@@ -166,10 +165,8 @@ class Routers {
         name: Routers.home,
         page: () => const HomePage(),
         bindings: [
-          WorkBinding(),
           ChatBinding(),
           HomeBinding(),
-          WorkBinding(),
           SetHomeBinding(),
           MessageBinding(),
           IndexPageBinding(),
@@ -293,18 +290,10 @@ class Routers {
         page: () => WebViewPage(),
         binding: WebViewBinding(),
       ),
-      GetPage( name: Routers.todo,
-        page: () => const WorkbenchPage(),
-        binding: WorkBinding(),),
       GetPage(
         name: Routers.processDetails,
         page: () => ProcessDetailsPage(),
         binding: ProcessDetailsBinding(),
-      ),
-      GetPage(
-        name: Routers.todo,
-        page: () => WorkbenchPage(),
-        binding: WorkBinding(),
       ),
       GetPage(
         name: Routers.todoList,

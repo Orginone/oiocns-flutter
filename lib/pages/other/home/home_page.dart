@@ -153,4 +153,3 @@ class HomeController extends TabsController {
     EventBusHelper.unregister(this);
   }
 }
-
