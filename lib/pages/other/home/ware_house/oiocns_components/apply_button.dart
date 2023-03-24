@@ -40,9 +40,11 @@ class ApplyButton extends StatelessWidget {
                 )),
             Text(
               applyName,
+              maxLines: 1,
               style: TextStyle(
                 fontSize: 14.sp,
                 color: const Color.fromARGB(255, 52, 52, 54),
+                overflow: TextOverflow.ellipsis
                 // color: Colors.black
               ),
             )
