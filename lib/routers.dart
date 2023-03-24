@@ -72,12 +72,15 @@ import './pages/other/home/ware_house/often_use_binding.dart';
 
 // 仓库
 import './pages/other/home/ware_house/recently_opened_binding.dart';
+import 'pages/other/application/binding.dart';
+import 'pages/other/application/view.dart';
 import 'pages/other/batch_operation_asset/binding.dart';
 import 'pages/other/center_function/create_claim/binding.dart';
 import 'pages/other/center_function/create_claim/view.dart';
 import 'pages/other/choice_gb/binding.dart';
 import 'pages/other/choice_gb/view.dart';
 import 'pages/other/choice_thing/view.dart';
+import 'pages/other/home/ware_house/ware_house.dart';
 import 'pages/other/storage_location/binding.dart';
 import 'pages/other/storage_location/view.dart';
 import 'pages/other/work/process_details/binding.dart';
@@ -202,6 +205,10 @@ class Routers {
   //创建办事
   static const String choiceThing = '/choiceThing';
 
+  //应用
+  static const String application = '/application';
+
+
   static String get main {
     return login;
     var user = HiveUtils.getUser();
@@ -229,9 +236,6 @@ class Routers {
           SetHomeBinding(),
           MessageBinding(),
           IndexPageBinding(),
-          HomeBinding(),
-          SetHomeBinding(),
-          MessageBinding(),
           RecentlyOpenedBinding(),
           OftenUseBinding()
         ],
@@ -452,6 +456,11 @@ class Routers {
         name: Routers.choiceThing,
         page: () => ChoiceThingPage(),
         binding: ChoiceThingBinding(),
+      ),
+      GetPage(
+        name: Routers.application,
+        page: () => ApplicationPage(),
+        binding:ApplicationBinding(),
       ),
     ];
   }

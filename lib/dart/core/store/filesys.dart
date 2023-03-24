@@ -176,6 +176,7 @@ class FileSystemItem implements IFileSystemItem {
         key: _formatKey(),
         operate: BucketOpreates.list,
       ));
+      print('key---------${_formatKey()}');
       if (res.success && res.data!.isNotEmpty) {
         for(var json in res.data!){
           children ??= [];
@@ -258,7 +259,7 @@ class FileSystemItem implements IFileSystemItem {
   /// 格式化key,主要针对路径中的中文
   /// @returns 格式化后的key
   _formatKey({String subName = ''}) {
-    if (target?.key != null && subName == '') {
+    if (target?.key == null && subName == '') {
       return '';
     }
     try {
@@ -338,4 +339,5 @@ var getFileSysItemRoot = FileSystemItem(
       hasSubDirectories: true,
       dateCreated: DateTime.now(),
       dateModified: DateTime.now(),
-    ));
+    ),
+);

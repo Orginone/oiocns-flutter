@@ -14,14 +14,14 @@ class DepartmentManagement {
 
   DepartmentManagement._();
 
-  SettingController get setting => Get.find<SettingController>();
+  SettingController get _setting => Get.find<SettingController>();
 
   final List<ITarget> _departments = [];
 
   List<ITarget> get departments => _departments;
 
   Future<void> initDepartment() async {
-    var list = await setting.company?.loadSubTeam(reload: true)??[];
+    var list = await _setting.company?.loadSubTeam(reload: true)??[];
     _departments.clear();
     if(list.isNotEmpty){
       _departments.addAll(list);
@@ -107,7 +107,7 @@ class DepartmentManagement {
   }
 
   String getCurrentCompanyName() {
-    return setting.company?.name ?? "";
+    return _setting.company?.name ?? "";
   }
 
   ITarget? get currentDepartment => _getCurrentDepartment(_departments);

@@ -334,18 +334,16 @@ class CommonWidget {
           child: Row(
             children: [
               Expanded(
-                child: Container(
-                  child: TextField(
-                    controller: controller,
-                    textInputAction: TextInputAction.done,
-                    onSubmitted: onSubmitted,
-                    onChanged:onChanged ,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.zero,
-                      isDense: true,
-                      hintText: hint,
-                      border: InputBorder.none,
-                    ),
+                child: TextField(
+                  controller: controller,
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: onSubmitted,
+                  onChanged:onChanged ,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.zero,
+                    isDense: true,
+                    hintText: hint,
+                    border: InputBorder.none,
                   ),
                 ),
               ),

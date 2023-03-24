@@ -15,10 +15,10 @@ class RecentlyOpenedController extends GetxController {
   @override
   void onInit() {
     debugPrint('---————————————>recentlycontroller onInit');
-    for (var i = 0; i < 7; i++) {
-      recentlyList.add(
-          Recent("$i", "资产监管", "http://anyinone.com:800/img/logo/logo3.jpg"));
-    }
+    recentlyList.add(
+        Recent("0000", "资产内控", "http://anyinone.com:888/img/logo/logo3.jpg"));
+    recentlyList.add(
+        Recent("0001", "一警一档", "http://anyinone.com:888/img/logo/logo3.jpg"));
     super.onInit();
   }
 

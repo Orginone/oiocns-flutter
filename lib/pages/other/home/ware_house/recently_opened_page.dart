@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+
 import './oiocns_components/apply_button.dart';
 import './recently_opened_controller.dart';
 
@@ -28,9 +29,12 @@ class RecentlyOpenedPage extends StatelessWidget {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-
-                  ],
+                  children: controller.getList(index).map((value) {
+                    return ApplyButton(
+                      url: value.url,
+                      applyName: value.name,
+                    );
+                  }).toList(),
                 );
               },
               onPageChanged: (index) {

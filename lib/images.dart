@@ -17,4 +17,7 @@ class Images{
   static const String defaultAvatar = "images/default_avatar.png";
 
   static const String rmbIcon = "images/rmb_icon.png";
+
+  static const String moreIcon = "images/icon_more.png";
+
 }

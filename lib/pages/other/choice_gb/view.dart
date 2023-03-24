@@ -19,12 +19,12 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
       body: Column(
         children: [
           classificationName(),
-          CommonWidget.commonSearchBarWidget(
+          state.showSearch?CommonWidget.commonSearchBarWidget(
               controller: state.searchController,
               onSubmitted: (str) {
                 controller.search(str);
               },
-              hint: "请输入分类标准名称"),
+              hint: "请输入分类标准名称"):const SizedBox(),
           SizedBox(
             height: 10.h,
           ),
@@ -36,7 +36,7 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
               return body();
             }),
           ),
-          Obx(() {
+          !state.showChoice?const SizedBox():Obx(() {
             return CommonWidget.commonShowChoiceDataInfo(
                 state.selectedGb.value?.name ?? "", onTap: () {
               controller.back();
@@ -79,6 +79,8 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
                   var item = data[index];
                   return Obx(() {
                     return Item(
+                      showChoice: state.showChoice,
+                      showFunctionButton: state.showFunctionButton,
                       item: item,
                       selected: state.selectedGb.value,
                       next: () {
@@ -165,7 +167,7 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
                           ),
                           alignment: PlaceholderAlignment.middle),
                       TextSpan(
-                          text: CommonTreeManagement().species?.name ?? "",
+                          text: state.head,
                           style: state.selectedGroup.isEmpty
                               ? selectedTextStyle
                               : unSelectedTextStyle)

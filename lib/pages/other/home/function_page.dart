@@ -8,6 +8,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
+import 'package:orginone/images.dart';
 import 'package:orginone/pages/other/assets_internal_control/view.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 
@@ -25,6 +26,7 @@ class FunctionPage extends BaseGetPageView<FunctionController,FunctionState>{
             controller: state.tabController,
             children: [
               KeepAliveWidget(child: AssetsInternalControlPage()),
+              Container(),
             ],
           ),
         )
@@ -38,25 +40,42 @@ class FunctionPage extends BaseGetPageView<FunctionController,FunctionState>{
   }
 
   Widget tabBar() {
-    return Container(
-      color: Colors.white,
-      alignment: Alignment.centerLeft,
-      child: TabBar(
-        controller: state.tabController,
-        tabs: tabTitle.map((e) {
-          return Tab(
-            text: e,
-            height: 40.h,
-          );
-        }).toList(),
-        indicatorColor: XColors.themeColor,
-        indicatorSize: TabBarIndicatorSize.label,
-        unselectedLabelColor: Colors.grey,
-        unselectedLabelStyle: TextStyle(fontSize: 18.sp),
-        labelColor: XColors.themeColor,
-        labelStyle: TextStyle(fontSize: 21.sp),
-        isScrollable: true,
-      ),
+    return Row(
+      children: [
+         Expanded(child: Container(
+           color: Colors.white,
+           alignment: Alignment.centerLeft,
+           child: TabBar(
+             controller: state.tabController,
+             tabs: tabTitle.map((e) {
+               return Tab(
+                 text: e,
+                 height: 40.h,
+               );
+             }).toList(),
+             indicatorColor: XColors.themeColor,
+             indicatorSize: TabBarIndicatorSize.label,
+             unselectedLabelColor: Colors.grey,
+             unselectedLabelStyle: TextStyle(fontSize: 18.sp),
+             labelColor: XColors.themeColor,
+             labelStyle: TextStyle(fontSize: 21.sp),
+             isScrollable: true,
+           ),
+         ),),
+        GestureDetector(
+          onTap: (){
+
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Image.asset(
+              Images.moreIcon,
+              width: 30.w,
+              height: 25.w,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -82,5 +101,6 @@ class FunctionState extends BaseGetState{
 }
 
 const List<String> tabTitle = [
-   "资产内控"
+   "资产内控",
+  "一警一档"
 ];

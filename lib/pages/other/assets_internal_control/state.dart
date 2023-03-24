@@ -30,4 +30,16 @@ final List<FunctionItem> items = [
       "资产交回",
       "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/home-transfer.png",
       AssetsType.handOver),
+  FunctionItem(
+      "巡检任务",
+      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/inspection-icon.png",
+      AssetsType.more),
+  FunctionItem(
+      "维修上报",
+      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/report-icon.png",
+      AssetsType.more),
+  FunctionItem(
+      "工单处理",
+      "https://gysz-nk.oss-cn-hangzhou.aliyuncs.com/assetControl/app/work-order-icon.png",
+      AssetsType.more),
 ];

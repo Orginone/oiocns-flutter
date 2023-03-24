@@ -36,7 +36,7 @@ class AssetsInternalControlPage extends BaseGetListPageView<AssetsInternalContro
         color: Colors.white
       ),
       alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(vertical: 15.h),
+      padding: EdgeInsets.only(top: 25.h,bottom: 15.h),
       margin: EdgeInsets.symmetric(vertical: 10.h,horizontal: 16.w),
       child: GridView.count(
         padding: EdgeInsets.zero,
@@ -201,7 +201,7 @@ class AssetsInternalControlPage extends BaseGetListPageView<AssetsInternalContro
               ),
             ],
           ),
-          CommonWidget.commonHeadInfoWidget("资产列表",
+          CommonWidget.commonHeadInfoWidget("我的资产",
               action: CommonWidget.commonIconButtonWidget(
                   iconPath: Images.batchOperationIcon,
                   callback: () {

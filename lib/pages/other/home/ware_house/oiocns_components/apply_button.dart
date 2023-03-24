@@ -4,10 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ApplyButton extends StatelessWidget {
   final String url;
   final String applyName;
+  final VoidCallback? onTap;
   const ApplyButton({
     Key? key,
     String? url,
-    String? applyName,
+    String? applyName, this.onTap,
   })  : url = url ?? 'http://anyinone.com:800/img/logo/logo3.jpg',
         applyName = applyName ?? '资产管理',
         super(key: key);
@@ -22,6 +23,9 @@ class ApplyButton extends StatelessWidget {
           // color: Colors.white,
           ),
       child: GestureDetector(
+        onTap:onTap, //点击
+        onDoubleTap: () => print("DoubleTap"), //双击
+        onLongPress: () => print("LongPress"),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -35,7 +39,7 @@ class ApplyButton extends StatelessWidget {
                       fit: BoxFit.cover, image: NetworkImage(url)),
                 )),
             Text(
-              "资产监管",
+              applyName,
               style: TextStyle(
                 fontSize: 14.sp,
                 color: const Color.fromARGB(255, 52, 52, 54),
@@ -43,10 +47,7 @@ class ApplyButton extends StatelessWidget {
               ),
             )
           ],
-        ),
-        onTap: () => print("Tap"), //点击
-        onDoubleTap: () => print("DoubleTap"), //双击
-        onLongPress: () => print("LongPress"), //长按
+        ), //长按
       ),
     );
   }

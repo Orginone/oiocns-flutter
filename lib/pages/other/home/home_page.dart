@@ -25,6 +25,7 @@ import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
+import 'package:orginone/util/file_management.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -120,15 +121,14 @@ class HomeController extends TabsController {
     try {
       if (KernelApi.getInstance().anystore.isOnline) {
         log('连接成功---------${KernelApi.getInstance().anystore.isOnline}');
-        ToastUtils.showMsg(msg: "连接成功 开始加载数据");
         await Future.wait([
           DepartmentManagement().initDepartment(),
           CommonTreeManagement().initTree(),
+          FileManagement().initFileDir(),
         ]);
         log('数据加载完成');
-        ToastUtils.showMsg(msg: "加载数据成功");
       } else {
-        await Future.delayed(Duration(milliseconds: 200), () async {
+        await Future.delayed(const Duration(milliseconds: 200), () async {
           log('尝试重新连接---------${KernelApi.getInstance().anystore.isOnline}');
           await initData();
         });
@@ -157,9 +157,7 @@ class HomeController extends TabsController {
   }
 
   Future<void> initData() async {
-    LoadingDialog.showLoading(Get.context!, msg: "加载数据中");
     await loadData();
-    LoadingDialog.dismiss(Get.context!);
   }
 
   @override
@@ -168,5 +166,6 @@ class HomeController extends TabsController {
     super.onClose();
     EventBusHelper.unregister(this);
   }
+
 }
 
