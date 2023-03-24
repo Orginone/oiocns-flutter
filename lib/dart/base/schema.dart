@@ -4797,76 +4797,76 @@ class XOrderPayArray {
 //产品信息
 class XProduct {
   // 雪花ID
-  final String id;
+  String? id;
 
   // 名称
-  String name;
+  String? name;
 
   // 编号
-  String code;
+  String? code;
 
   // 来源
-  final String source;
+  String? source;
 
   // 权属
-  final String authority;
+  String? authority;
 
   // 对哪一类制定的标准
-  String typeName;
+  String? typeName;
 
   // 归属组织/个人
-  late String belongId;
+  String? belongId;
 
   // 元数据Id
-  final String thingId;
+   String? thingId;
 
   // 订单ID
-  final String orderId;
+   String? orderId;
 
   // 过期时间
-  final String endTime;
+   String? endTime;
 
   // 图片
-  final String photo;
+   String? photo;
 
   // 备注
-  String remark;
+  String? remark;
 
   // 状态
-  final int status;
+   int? status;
 
   // 创建人员ID
-  final String createUser;
+  String? createUser;
 
   // 更新人员ID
-  final String updateUser;
+  String? updateUser;
 
   // 修改次数
-  final String version;
+  String? version;
 
   // 创建时间
-  final String createTime;
+   String? createTime;
 
   // 更新时间
-  final String updateTime;
+   String? updateTime;
 
   // 产品的资源
-  final List<XResource> resource;
+  List<XResource>? resource;
 
   // 上架的商品
-  final List<XMerchandise> merchandises;
+  List<XMerchandise>? merchandises;
 
   // 流程对应
-  final List<XFlowRelation> flowRelations;
+  List<XFlowRelation>? flowRelations;
 
   // 产品的本质
-  final XThing thing;
+  XThing? thing;
 
   // 订单ID
-  final XOrderDetail orderSource;
+  XOrderDetail? orderSource;
 
   // 产品归属的组织/个人
-  final XTarget belong;
+  XTarget? belong;
 
   //构造方法
   XProduct({
@@ -4897,31 +4897,47 @@ class XProduct {
   });
 
   //通过JSON构造
-  XProduct.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        name = json["name"],
-        code = json["code"],
-        source = json["source"],
-        authority = json["authority"],
-        typeName = json["typeName"],
-        belongId = json["belongId"],
-        thingId = json["thingId"],
-        orderId = json["orderId"],
-        endTime = json["endTime"],
-        photo = json["photo"],
-        remark = json["remark"],
-        status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"],
-        resource = XResource.fromList(json["resource"]),
-        merchandises = XMerchandise.fromList(json["merchandises"]),
-        flowRelations = XFlowRelation.fromList(json["flowRelations"]),
-        thing = XThing.fromJson(json["thing"]),
-        orderSource = XOrderDetail.fromJson(json["orderSource"]),
-        belong = XTarget.fromJson(json["belong"]);
+  XProduct.fromJson(Map<String, dynamic> json){
+    id = json["id"];
+    name = json["name"];
+    code = json["code"];
+    source = json["source"];
+    authority = json["authority"];
+    typeName = json["typeName"];
+    belongId = json["belongId"];
+    thingId = json["thingId"];
+    orderId = json["orderId"];
+    endTime = json["endTime"];
+    photo = json["photo"];
+    remark = json["remark"];
+    status = json["status"];
+    createUser = json["createUser"];
+    updateUser = json["updateUser"];
+    version = json["version"];
+    createTime = json["createTime"];
+    updateTime = json["updateTime"];
+    if(json["resource"]!=null){
+      resource = [];
+      json["resource"].forEach((json){
+        resource!.add(XResource.fromJson(json));
+      });
+    }
+    if(json["merchandises"]!=null){
+      merchandises = [];
+      json["merchandises"].forEach((json){
+        merchandises!.add(XMerchandise.fromJson(json));
+      });
+    }
+    if(json["flowRelations"]!=null){
+      flowRelations = [];
+      json["flowRelations"].forEach((json){
+        flowRelations!.add(XFlowRelation.fromJson(json));
+      });
+    }
+    thing =json["thing"]!=null?XThing.fromJson(json["thing"]):null;
+    orderSource = json["orderSource"]!=null?XOrderDetail.fromJson(json["belong"]):null;
+    belong = json["belong"]!=null?XTarget.fromJson(json["belong"]):null;
+  }
 
   //通过动态数组解析成List
   static List<XProduct> fromList(List<Map<String, dynamic>>? list) {
@@ -4961,9 +4977,9 @@ class XProduct {
     json["resource"] = resource;
     json["merchandises"] = merchandises;
     json["flowRelations"] = flowRelations;
-    json["thing"] = thing.toJson();
-    json["orderSource"] = orderSource.toJson();
-    json["belong"] = belong.toJson();
+    json["thing"] = thing?.toJson();
+    json["orderSource"] = orderSource?.toJson();
+    json["belong"] = belong?.toJson();
     return json;
   }
 }
@@ -4971,16 +4987,16 @@ class XProduct {
 //产品信息查询返回集合
 class XProductArray {
   // 便宜量
-  final int offset;
+  int? offset;
 
   // 最大数量
-  final int limit;
+  int? limit;
 
   // 总数
-  final int total;
+  int? total;
 
   // 结果
-  final List<XProduct>? result;
+  List<XProduct>? result;
 
   //构造方法
   XProductArray({
@@ -4991,11 +5007,17 @@ class XProductArray {
   });
 
   //通过JSON构造
-  XProductArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XProduct.fromList(json["result"]);
+  XProductArray.fromJson(Map<String, dynamic> json){
+    offset = json["offset"];
+    limit = json["limit"];
+    total = json["total"];
+    if(json["result"]!=null){
+      result = [];
+      json["result"].forEach((json){
+        result!.add(XProduct.fromJson(json));
+      });
+    }
+  }
 
   //通过动态数组解析成List
   static List<XProductArray> fromList(List<Map<String, dynamic>>? list) {
@@ -5181,49 +5203,49 @@ class XRelationArray {
 //应用资源
 class XResource {
   // 雪花ID
-  final String id;
+   String? id;
 
   // 编号
-  final String code;
+   String? code;
 
   // 名称
-  final String name;
+   String? name;
 
   // 产品ID
-  final String productId;
+   String? productId;
 
   // 访问私钥
-  final String privateKey;
+   String? privateKey;
 
   // 入口
-  final String link;
+   String? link;
 
   // 流程项
-  final String flows;
+   String? flows;
 
   // 组件
-  final String components;
+   String? components;
 
   // 状态
-  final int status;
+   int? status;
 
   // 创建人员ID
-  final String createUser;
+   String? createUser;
 
   // 更新人员ID
-  final String updateUser;
+   String? updateUser;
 
   // 修改次数
-  final String version;
+   String? version;
 
   // 创建时间
-  final String createTime;
+   String? createTime;
 
   // 更新时间
-  final String updateTime;
+   String? updateTime;
 
   //
-  late XProduct? product;
+   XProduct? product;
 
   //构造方法
   XResource({
@@ -5245,22 +5267,23 @@ class XResource {
   });
 
   //通过JSON构造
-  XResource.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        code = json["code"],
-        name = json["name"],
-        productId = json["productId"],
-        privateKey = json["privateKey"],
-        link = json["link"],
-        flows = json["flows"],
-        components = json["components"],
-        status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"],
-        product = XProduct.fromJson(json["product"]);
+  XResource.fromJson(Map<String, dynamic> json){
+    id = json["id"];
+    code = json["code"];
+    name = json["name"];
+    productId = json["productId"];
+    privateKey = json["privateKey"];
+    link = json["link"];
+    flows = json["flows"];
+    components = json["components"];
+    status = json["status"];
+    createUser = json["createUser"];
+    updateUser = json["updateUser"];
+    version = json["version"];
+    createTime = json["createTime"];
+    updateTime = json["updateTime"];
+    product =json["product"]!=null?XProduct.fromJson(json["product"]):null;
+  }
 
   //通过动态数组解析成List
   static List<XResource> fromList(List<Map<String, dynamic>>? list) {

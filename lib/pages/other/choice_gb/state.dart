@@ -30,11 +30,19 @@ class ChoiceGbState extends BaseGetState{
 
   late bool showSearch;
 
+  late FunctionMenu menu;
+
   ChoiceGbState(){
     showChoice = Get.arguments?['showChoice'] ?? true;
     showFunctionButton = Get.arguments?['showFunctionButton'] ?? false;
     head = Get.arguments?['head']??CommonTreeManagement().species?.name??"";
     showSearch =  Get.arguments?['showSearch'] ?? true;
+    menu = Get.arguments?['menu'] ??FunctionMenu.next;
   }
+}
+
+enum FunctionMenu{
+  thing,
+  next,
 }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/pages/other/choice_gb/state.dart';
 import 'package:orginone/routers.dart';
 
 class Recent {
@@ -36,7 +37,8 @@ class OftenUseController extends GetxController {
               "showChoice": false,
               "showFunctionButton": true,
               "head": "实体",
-              "showSearch": false
+              "showSearch": false,
+              "menu": FunctionMenu.thing,
             })));
     super.onInit();
   }

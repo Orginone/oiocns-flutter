@@ -84,11 +84,13 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
                       item: item,
                       selected: state.selectedGb.value,
                       next: () {
-                        controller.selectGroup(item);
+                        if(item.children.isNotEmpty){
+                          controller.selectGroup(item);
+                        }
                       },
                       onChanged: (value) {
                         controller.selectedGb(item);
-                      },
+                      }, functionMenu: state.menu,
                     );
                   });
                 },

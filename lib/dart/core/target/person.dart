@@ -224,7 +224,7 @@ class Person extends MarketTarget implements IPerson {
     if (prod != null) {
       usefulProduct.add(prod.prod);
       if (prod.prod.resource != null) {
-        usefulResource[prod.prod.id] = prod.prod.resource;
+        usefulResource[prod.prod.id!] = prod.prod.resource!;
       }
     }
     return prod;

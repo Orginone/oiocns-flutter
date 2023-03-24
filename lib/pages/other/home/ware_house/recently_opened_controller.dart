@@ -16,7 +16,7 @@ class RecentlyOpenedController extends GetxController {
   void onInit() {
     debugPrint('---————————————>recentlycontroller onInit');
     recentlyList.add(
-        Recent("0000", "资产内控", "http://anyinone.com:888/img/logo/logo3.jpg"));
+        Recent("0000", "资产管家", "http://anyinone.com:888/img/logo/logo3.jpg"));
     recentlyList.add(
         Recent("0001", "一警一档", "http://anyinone.com:888/img/logo/logo3.jpg"));
     super.onInit();

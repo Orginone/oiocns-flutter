@@ -106,10 +106,7 @@ class LoginController extends GetxController {
   void onInit() async {
     var store = await LocalStore.instance;
     var account = store.getStringList("account");
-    if (account != null){
-      accountCtrl.text = account[0];
-      passwordCtrl.text = account[1];
-    }
+
     super.onInit();
   }
 }

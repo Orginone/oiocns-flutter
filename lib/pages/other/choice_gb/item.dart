@@ -4,6 +4,8 @@ import 'package:orginone/dart/core/thing/ispecies.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/widget/common_widget.dart';
 
+import 'state.dart';
+
 class Item extends StatelessWidget {
   final ISpeciesItem item;
 
@@ -17,6 +19,8 @@ class Item extends StatelessWidget {
 
   final bool showFunctionButton;
 
+  final FunctionMenu functionMenu;
+
   const Item(
       {Key? key,
       required this.item,
@@ -24,27 +28,30 @@ class Item extends StatelessWidget {
       this.onChanged,
       this.selected,
       this.showChoice = true,
-      this.showFunctionButton = false})
+      this.showFunctionButton = false, required this.functionMenu})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
+    return GestureDetector(
+      onTap: next,
       child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(color: Colors.grey.shade200, width: 0.5)),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: title(),
-            ),
-            more(),
-            _popupMenuButton(context),
-          ],
+        color: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(color: Colors.grey.shade200, width: 0.5)),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: title(),
+              ),
+              functionMenu == FunctionMenu.next?more():details(),
+              showFunctionButton?_popupMenuButton():Container(),
+            ],
+          ),
         ),
       ),
     );
@@ -77,19 +84,26 @@ class Item extends StatelessWidget {
 
   Widget more() {
     if (item.children.isNotEmpty) {
-      return GestureDetector(
-        onTap: next,
-        child: Image.asset(
-          Images.moreIcon,
-          width: 26.w,
-          height: 26.w,
-        ),
+      return Icon(
+        Icons.navigate_next,
+        size: 32.w,
       );
     }
     return const SizedBox();
   }
 
-  PopupMenuButton _popupMenuButton(BuildContext context){
+  Widget details() {
+    return GestureDetector(
+      onTap: next,
+      child: Image.asset(
+        Images.moreIcon,
+        width: 26.w,
+        height: 26.w,
+      ),
+    );
+  }
+
+  Widget _popupMenuButton(){
     return PopupMenuButton(
       icon:Icon(
         Icons.more_vert_outlined,

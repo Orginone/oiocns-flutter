@@ -9,6 +9,7 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/images.dart';
+import 'package:orginone/pages/index/index_page.dart';
 import 'package:orginone/pages/other/assets_internal_control/view.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 
@@ -25,6 +26,7 @@ class FunctionPage extends BaseGetPageView<FunctionController,FunctionState>{
           child: TabBarView(
             controller: state.tabController,
             children: [
+              IndexPage(),
               KeepAliveWidget(child: AssetsInternalControlPage()),
               Container(),
             ],
@@ -91,7 +93,7 @@ class FunctionPage extends BaseGetPageView<FunctionController,FunctionState>{
 class FunctionController extends BaseController<FunctionState> with GetTickerProviderStateMixin{
  final FunctionState state = FunctionState();
  FunctionController(){
-   state.tabController = TabController(length: tabTitle.length, vsync: this);
+   state.tabController = TabController(length: tabTitle.length, vsync: this,initialIndex: 1);
  }
 }
 
@@ -101,6 +103,7 @@ class FunctionState extends BaseGetState{
 }
 
 const List<String> tabTitle = [
-   "资产内控",
-  "一警一档"
+  "工作台",
+   "资产管家",
+  "一警一档",
 ];

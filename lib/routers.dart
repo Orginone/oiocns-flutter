@@ -72,6 +72,8 @@ import './pages/other/home/ware_house/often_use_binding.dart';
 
 // 仓库
 import './pages/other/home/ware_house/recently_opened_binding.dart';
+import 'pages/other/application/application_details/binding.dart';
+import 'pages/other/application/application_details/view.dart';
 import 'pages/other/application/binding.dart';
 import 'pages/other/application/view.dart';
 import 'pages/other/batch_operation_asset/binding.dart';
@@ -207,6 +209,8 @@ class Routers {
 
   //应用
   static const String application = '/application';
+
+  static const String applicationDetails = '/applicationDetails';
 
 
   static String get main {
@@ -461,6 +465,11 @@ class Routers {
         name: Routers.application,
         page: () => ApplicationPage(),
         binding:ApplicationBinding(),
+      ),
+      GetPage(
+        name: Routers.applicationDetails,
+        page: () => ApplicationDetailsPage(),
+        binding:ApplicationDetailsBinding(),
       ),
     ];
   }
