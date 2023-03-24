@@ -419,12 +419,16 @@ class CommonWidget {
             text,
             style: TextStyle(color: Colors.grey, fontSize: textSize.sp),
           ),
-          Text(
-            content,
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: contentSize.sp,
-                fontWeight: FontWeight.w700),
+          Expanded(
+            child: Text(
+              content,
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: contentSize.sp,
+                  fontWeight: FontWeight.w700,overflow: TextOverflow.ellipsis),
+              maxLines: 1,
+              textAlign: TextAlign.right,
+            ),
           ),
         ],
       ),
