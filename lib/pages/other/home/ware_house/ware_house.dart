@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/keep_alive_widget.dart';
 import '../../../../routers.dart';
 import '../ware_house/recently_opened_page.dart';
 import 'often_use_page.dart';
@@ -95,7 +96,7 @@ class WareHouse extends StatelessWidget {
             ),
           ),
           // 最近打开滑动页
-          const RecentlyOpenedPage(),
+          KeepAliveWidget(child: RecentlyOpenedPage()),
           // 分隔线
           Container(
             height: 1,

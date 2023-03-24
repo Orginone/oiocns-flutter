@@ -40,7 +40,7 @@ class ApplicationDetailsPage
     );
   }
 
-  Widget bottomButton(){
+  Widget bottomButton() {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(vertical: 15.h),
@@ -52,20 +52,28 @@ class ApplicationDetailsPage
             margin: EdgeInsets.only(left: 32.w),
             alignment: Alignment.center,
             child: GestureDetector(
-              onTap: (){},
-              child: Container(
-                width: 300.w,
-                height: 50.h,
-                decoration: BoxDecoration(
-                  color: Colors.blueAccent,
-                  borderRadius: BorderRadius.circular(4.w),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  "设为常用",
-                  style: TextStyle(color: Colors.white, fontSize: 16.sp),
-                ),
-              ),
+              onTap: () {
+                controller.addCommon();
+              },
+              child: Obx(() {
+                bool has = controller.roController.hasProduct(state.product);
+                return Container(
+                  width: 300.w,
+                  height: 50.h,
+                  decoration: BoxDecoration(
+                    color: has?Colors.white:Colors.blueAccent,
+                    borderRadius: BorderRadius.circular(4.w),
+                    border:has?Border.all(color: Colors.blueAccent):null
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                     has
+                        ? "取消常用"
+                        : "设为常用",
+                    style: TextStyle(color: has?Colors.blueAccent:Colors.white, fontSize: 16.sp),
+                  ),
+                );
+              }),
             ),
           ),),
           _popupMenuButton(),
@@ -74,15 +82,15 @@ class ApplicationDetailsPage
     );
   }
 
-  Widget _popupMenuButton(){
+  Widget _popupMenuButton() {
     return PopupMenuButton(
-      icon:Icon(
+      icon: Icon(
         Icons.more_vert_outlined,
         size: 32.w,
       ),
-      itemBuilder: (BuildContext context){
+      itemBuilder: (BuildContext context) {
         return [
-          const PopupMenuItem(value: "createThing",child: Text("退订"),),
+          const PopupMenuItem(value: "createThing", child: Text("退订"),),
         ];
       },
     );
@@ -148,7 +156,9 @@ class ApplicationDetailsPage
                       width: 20.w,
                     ),
                     Text(
-                        "订阅到期时间:${DateTime.tryParse(state.product.prod.createTime ?? "")!.format(format: "yyyy-MM-dd HH:mm")}",
+                        "订阅到期时间:${DateTime.tryParse(
+                            state.product.prod.createTime ?? "")!.format(
+                            format: "yyyy-MM-dd HH:mm")}",
                         style: TextStyle(
                           fontSize: 16.sp,
                         ))
