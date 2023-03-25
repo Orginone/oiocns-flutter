@@ -35,8 +35,12 @@ class BaseChat extends IChat {
       typeName: target.typeName,
     );
     if (target.photo?.isNotEmpty ?? false) {
-      var map = jsonDecode(target.photo!);
-      share.avatar = FileItemShare.fromJson(map);
+       try{
+         var map = jsonDecode(target.photo!);
+         share.avatar = FileItemShare.fromJson(map);
+       }catch(e){
+
+       }
     }
     return share;
   }

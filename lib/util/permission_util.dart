@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PermissionUtil {
@@ -8,6 +9,9 @@ class PermissionUtil {
   };
 
   static showPermissionDialog(BuildContext context, Permission permission) {
+    if(kIsWeb){
+      return;
+    }
     var name = permissionNameMap[permission];
     String title = '您需要授予$name权限';
     String content = '"请转到您的手机设置打开相应$name的权限"';

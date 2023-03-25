@@ -28,12 +28,9 @@ class RecentlyOpenedPage extends StatelessWidget {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: controller.getList(index).map((value) {
-                    return ApplyButton(
-                      url: value.url,
-                      applyName: value.name,
-                    );
-                  }).toList(),
+                  children: [
+
+                  ],
                 );
               },
               onPageChanged: (index) {

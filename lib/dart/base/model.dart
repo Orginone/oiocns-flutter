@@ -1,3 +1,4 @@
+import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/schema.dart';
 
 /// 统一返回结构模型
@@ -30,7 +31,7 @@ class ResultType<T> {
   ResultType.fromJsonSerialize(
       Map<String, dynamic> json, T Function(Map<String, dynamic>) serialize)
       : msg = json["msg"],
-        data = json["data"] == null ? null : serialize(json["data"]),
+        data = (json["data"] != null && json["data"] is Map) ?  serialize(json["data"]) : null,
         code = json["code"],
         success = json["success"];
 }
@@ -149,6 +150,15 @@ class BucketOpreateModel {
     this.destination,
     this.fileItem,
   });
+
+  Map<String,dynamic> toJson(){
+    return {
+      "key":key,
+      "shareDomain":shareDomain,
+      "operate":operate.label,
+      "fileItem":fileItem?.toJson(),
+    };
+}
 }
 
 /// 上传文件携带的数据
@@ -172,42 +182,51 @@ class FileChunkData {
     this.dataUrl,
     required List data,
   });
+
+  Map<String,dynamic> toJson() {
+    return {
+      "index":index,
+      "size":size,
+      "uploadId":uploadId,
+      "dataUrl":dataUrl,
+    };
+  }
 }
 
 /// 文件系统项数据模型
 class FileItemModel {
   // 完整路径
-  String key;
+  String? key;
 
   // 完整路径
-  int size;
+  int? size;
 
   // 名称
-  String name;
+  String? name;
 
   // 共享链接
-  String shareLink;
+  String? shareLink;
 
   // 拓展名
-  String extension;
+  String? extension;
 
   // 缩略图
-  String thumbnail;
+  String? thumbnail;
 
   // 创建时间
-  DateTime dateCreated;
+  DateTime? dateCreated;
 
   // 修改时间
-  DateTime dateModified;
+  DateTime? dateModified;
 
   // 文件类型
-  String contentType;
+  String? contentType;
 
   // 是否是目录
-  bool isDirectory;
+  bool? isDirectory;
 
   // 是否包含子目录
-  bool hasSubDirectories;
+  bool? hasSubDirectories;
 
   FileItemModel({
     required this.key,
@@ -222,6 +241,32 @@ class FileItemModel {
     required this.isDirectory,
     required this.hasSubDirectories,
   });
+
+  FileItemModel.formJson(Map<String,dynamic> json){
+    key = json['key'];
+    size = json['size'];
+    name = json['name'];
+    shareLink = json['shareLink'];
+    isDirectory = json['isDirectory'];
+    thumbnail = json['thumbnail'];
+    extension = json['extension'];
+    contentType = json['contentType'];
+    dateCreated = DateTime.tryParse(json['dateCreated']??"");
+    dateModified = DateTime.tryParse(json['dateModified']??"");
+    hasSubDirectories = json['hasSubDirectories'];
+  }
+
+  Map<String,dynamic> shareInfo(){
+    String url =
+        "${Constant.host}/orginone/anydata/bucket/load/$shareLink";
+    return {
+      "shareLink": url,
+      "size":size,
+      "name": name,
+      "extension":extension,
+      "thumbnail":thumbnail,
+    };
+  }
 }
 
 class IdReq {
@@ -616,6 +661,14 @@ class QueryDefineReq {
     required this.spaceId,
     required this.page,
   });
+
+  Map<String,dynamic> toJson(){
+    return {
+      "speciesId":speciesId,
+      "spaceId":spaceId,
+      "page":page.toJson(),
+    };
+  }
 }
 
 class SpaceAuthReq {
@@ -3901,6 +3954,8 @@ class FlowInstanceModel {
   // 回调地址
   final String? hook;
 
+  final List<String>? thingIds;
+
   //构造方法
   FlowInstanceModel({
     required this.defineId,
@@ -3910,6 +3965,7 @@ class FlowInstanceModel {
     this.data,
     this.title,
     this.hook,
+    this.thingIds,
   });
 
   //通过JSON构造
@@ -3920,7 +3976,7 @@ class FlowInstanceModel {
         contentType = json["contentType"],
         data = json["data"],
         title = json["title"],
-        hook = json["hook"];
+        hook = json["hook"],thingIds = json['thingIds'];
 
   //通过动态数组解析成List
   static List<FlowInstanceModel> fromList(List<dynamic>? list) {
@@ -3946,6 +4002,7 @@ class FlowInstanceModel {
     json["data"] = data;
     json["title"] = title;
     json["hook"] = hook;
+    json['thingIds'] = thingIds;
     return json;
   }
 }
@@ -4001,21 +4058,25 @@ class FlowReq {
   // 状态
   final int? status;
 
+  final String? speciesId;
+
   // 分页
   final PageRequest? page;
 
   //构造方法
-  FlowReq({
+  FlowReq( {
     this.id,
     this.spaceId,
     this.status,
     this.page,
+    this.speciesId,
   });
 
   //通过JSON构造
   FlowReq.fromJson(Map<String, dynamic> json)
       : id = json["id"],
         spaceId = json["spaceId"],
+        speciesId = json['speciesId'],
         status = json["status"],
         page = PageRequest.fromJson(json["page"]);
 
@@ -4038,6 +4099,7 @@ class FlowReq {
     Map<String, dynamic> json = {};
     json["id"] = id;
     json["spaceId"] = spaceId;
+    json['speciesId'] = speciesId;
     json["status"] = status;
     json["page"] = page?.toJson();
     return json;
