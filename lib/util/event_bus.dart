@@ -9,6 +9,11 @@ class XEventBus {
   }
 }
 
+class User{
+  late Map<String,dynamic> person;
+  User(this.person);
+}
+
 class SignIn {}
 
 class SignOut {}

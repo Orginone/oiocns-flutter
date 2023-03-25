@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:core';
+
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -46,7 +49,10 @@ class BaseTarget extends ITarget {
       name: teamName,
       typeName: typeName,
     );
-    // result.avatar = parseAvatar(target.avatar);
+    if (target.avatar.isNotEmpty) {
+      var map = jsonDecode(target.avatar);
+      result.avatar = FileItemShare.fromJson(map);
+    }
     return result;
   }
 
@@ -60,7 +66,7 @@ class BaseTarget extends ITarget {
     searchTargetType = [];
     ownIdentitys = [];
     identitys = [];
-    memberTypes = [];
+    memberTypes = [TargetType.person];
     typeName = target.typeName;
     // appendTarget(target);
   }
@@ -75,7 +81,7 @@ class BaseTarget extends ITarget {
       ),
       id: target.id,
       typeNames: [target.typeName],
-      subTypeNames: List<String>.from(memberTypes),
+      subTypeNames: memberTypes.map((e) => e.label).toList(),
     ));
     // appendTarget(res.data);
     return res.data!;
@@ -270,7 +276,7 @@ class BaseTarget extends ITarget {
     return await kernel.querySubTargetById(IDReqSubModel(
       id: id,
       typeNames: [target.typeName],
-      subTypeNames: List<String>.from(typeNames),
+      subTypeNames: typeNames.map((e) => e.label).toList(),
       page: PageRequest(offset: 0, filter: '', limit: Constants.maxUint16),
     ));
   }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/template/choose_item.dart';
 import 'package:orginone/components/template/tabs.dart';
 import 'package:orginone/components/unified.dart';
-import 'package:orginone/components/widgets/icon_avatar.dart';
+import 'package:orginone/components/widgets/team_avatar.dart';
 import 'package:orginone/components/widgets/text_avatar.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
@@ -20,12 +21,9 @@ class MessagePage extends GetView<MessageController> {
   Widget build(BuildContext context) {
     return Tabs(
       tabCtrl: controller.tabController,
-      top: SizedBox(
-        height: 60.h,
-        child: TabBar(
-          controller: controller.tabController,
-          tabs: controller.tabs.map((item) => item.toTab()).toList(),
-        ),
+      top: TabBar(
+        controller: controller.tabController,
+        tabs: controller.tabs.map((item) => item.toTab()).toList(),
       ),
       views: controller.tabs.map((item) => item.toTabView()).toList(),
     );
@@ -40,34 +38,31 @@ class MessageBinding extends Bindings {
 }
 
 class MessageController extends TabsController {
+  var chatCtrl = Get.find<ChatController>();
+
   @override
   initTabs() {
-    registerTab(XTab(view: const Recent(), body: _chatTab));
-    registerTab(XTab(view: const Relation(), body: _chatEmail));
-  }
-
-  Widget get _chatTab {
-    return SizedBox(
-      child: Stack(children: [
-        Align(
-          alignment: Alignment.center,
-          child: Text(
-            "会话",
-            style: XFonts.size22Black3,
-          ),
-        ),
-        Align(
-          alignment: Alignment.topRight,
-          child: Obx(() => Get.find<ChatController>().getNoReadCount() > 0
+    registerTab(XTab(
+      view: const Recent(),
+      body: Container(
+        alignment: Alignment.center,
+        width: 100.w,
+        child: Text("会话", style: XFonts.size22Black3),
+      ),
+      children: [
+        Positioned(
+          top: 0,
+          right: 0,
+          child: Obx(() => chatCtrl.hasNoRead()
               ? Icon(Icons.circle, color: Colors.redAccent, size: 10.w)
               : Container()),
         )
-      ]),
-    );
-  }
-
-  Widget get _chatEmail {
-    return Text("通讯录", style: XFonts.size22Black3);
+      ],
+    ));
+    registerTab(XTab(
+      view: const Relation(),
+      body: Text("通讯录", style: XFonts.size22Black3),
+    ));
   }
 }
 
@@ -249,9 +244,13 @@ class Relation extends GetView<ChatController> {
                     borderRadius: BorderRadius.all(Radius.circular(6.w)),
                   ),
                   margin: EdgeInsets.only(right: 15.w),
-                  child: TextAvatar(
-                    width: avatarWidth,
-                    avatarName: chat.target.name.substring(0, 1),
+                  child: TeamAvatar(
+                    size: avatarWidth,
+                    info: TeamTypeInfo(share: chat.shareInfo),
+                    child: Text(
+                      chat.target.name.substring(0, 1),
+                      style: XFonts.size16WhiteW700,
+                    ),
                   ),
                 ),
               );
@@ -295,10 +294,13 @@ class Relation extends GetView<ChatController> {
   // }
 
   Widget _header(IconData icon) {
-    return IconAvatar(
-      width: 60.w,
-      icon: Icon(icon, color: Colors.white),
-      padding: EdgeInsets.zero,
+    return AdvancedAvatar(
+      size: 60.w,
+      decoration: BoxDecoration(
+        color: XColors.themeColor,
+        borderRadius: BorderRadius.all(Radius.circular(8.w)),
+      ),
+      child: Icon(icon, color: Colors.white),
     );
   }
 

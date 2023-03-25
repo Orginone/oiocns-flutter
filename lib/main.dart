@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bugly/flutter_bugly.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -11,9 +10,13 @@ import 'package:orginone/routers.dart';
 import 'package:orginone/util/notification_util.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import 'util/hive_utils.dart';
+
 void main() async {
   // 逻辑绑定
   WidgetsFlutterBinding.ensureInitialized();
+
+  await HiveUtils.init();
 
   // 初始化通知配置
   NotificationUtil.initNotification();

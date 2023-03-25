@@ -1,11 +1,13 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:audio_wave/audio_wave.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_sound/flutter_sound.dart';
+import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,6 +27,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   final RxDouble bottomHeight = defaultBottomHeight.obs;
 
   ChatBox({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -92,20 +95,6 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
     );
   }
 
-  /// 麦克风权限
-  _permissionMicrophone(BuildContext context, Function callback) {
-    Permission.microphone.request().then((permissionStatus) {
-      try {
-        if (permissionStatus != PermissionStatus.granted) {
-          throw RecordingPermissionException(
-              "Microphone permission not granted");
-        }
-      } on RecordingPermissionException {
-        PermissionUtil.showPermissionDialog(context, Permission.microphone);
-      }
-      callback();
-    });
-  }
 
   /// 输入
   Widget _input(BuildContext context) {
@@ -164,12 +153,10 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
         }
       },
       onLongPress: () {
-        _permissionMicrophone(context, () {
-          controller.startRecord().then((value) async {
-            Vibration.hasVibrator()
-                .then((value) => Vibration.vibrate(duration: 100));
-            Overlay.of(context)!.insert(voiceWave);
-          });
+        controller.startRecord().then((value) async {
+          Vibration.hasVibrator()
+              .then((value) => Vibration.vibrate(duration: 100));
+          Overlay.of(context)!.insert(voiceWave);
         });
       },
       onLongPressEnd: (details) async {
@@ -180,16 +167,18 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
           // 记录
           var duration = controller.currentDuration ?? Duration.zero;
           await controller.stopRecord();
+          print("${duration.inMilliseconds}-------------------sssssss${controller.currentFile}");
           if (duration.inMilliseconds < 2000) {
             Fluttertoast.showToast(msg: '时间太短啦!');
             return;
           }
 
           var path = controller.currentFile;
+          var name = controller.currentFileName;
           var time = duration.inMilliseconds;
           if (Get.isRegistered<ChatController>()) {
             var chatCtrl = Get.find<ChatController>();
-            chatCtrl.chat?.sendMessage(MessageType.voice, "time");
+            chatCtrl.voice(path!,time);
           }
         } else if (recordStatus == RecordStatus.pausing) {
           // 停止记录
@@ -242,7 +231,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
     return GestureDetector(
       onTap: () {
         controller.eventFire(context, InputEvent.clickVoice);
-        _permissionMicrophone(context, controller.openRecorder);
+        // _permissionMicrophone(context, controller.openRecorder);
       },
       child: _leftIcon(Icons.settings_voice_outlined),
     );
@@ -517,7 +506,8 @@ class ChatBoxController extends FullLifeCycleController
   final ImagePicker picker = ImagePicker();
 
   final Rx<RecordStatus> _recordStatus = RecordStatus.stop.obs;
-  FlutterSoundRecorder? _recorder;
+  FlutterSoundRecorder _recorder = FlutterSoundRecorder();
+
   StreamSubscription? _mt;
   String? _currentFile;
   String? _currentFileName;
@@ -541,9 +531,18 @@ class ChatBoxController extends FullLifeCycleController
 
   Duration? get currentDuration => _currentDuration;
 
+
+  @override
+  void onInit() async{
+    // TODO: implement onInit
+    super.onInit();
+    await Permission.microphone.request();
+  }
+
   @override
   onClose() {
     super.onClose();
+    _recorder.dispositionStream();
     inputController.dispose();
     focusNode.dispose();
     blankNode.dispose();
@@ -609,64 +608,60 @@ class ChatBoxController extends FullLifeCycleController
         var gallery = ImageSource.gallery;
         XFile? pickedImage = await picker.pickImage(source: gallery);
         if (pickedImage != null) {
-          // chatCtrl.imagePicked(pickedImage);
+          chatCtrl.imagePicked(pickedImage);
         }
         break;
       case MoreFunction.camera:
         var camera = ImageSource.camera;
-        // try {
-        //   XFile? pickedImage = await picker.pickImage(source: camera);
-        //   if (pickedImage != null) {
-        //     // chatCtrl.imagePicked(pickedImage);
-        //   }
-        // } on PlatformException catch (error) {
-        //   if (error.code == "camera_access_denied") {
-        //     PermissionUtil.showPermissionDialog(context, Permission.camera);
-        //   }
-        // } catch (error) {
-        //   error.printError();
-        //   Fluttertoast.showToast(msg: "打开相机时发生异常!");
-        // }
+        try {
+          XFile? pickedImage = await picker.pickImage(source: camera);
+          if (pickedImage != null) {
+            chatCtrl.imagePicked(pickedImage);
+          }
+        } on PlatformException catch (error) {
+          if (error.code == "camera_access_denied") {
+            PermissionUtil.showPermissionDialog(context, Permission.camera);
+          }
+        } catch (error) {
+          error.printError();
+          Fluttertoast.showToast(msg: "打开相机时发生异常!");
+        }
         break;
     }
   }
 
   openRecorder() async {
-    _recorder ??= await FlutterSoundRecorder().openRecorder();
+    await _recorder.openAudioSession();
+    await _recorder.setSubscriptionDuration(const Duration(milliseconds: 50));
+    await _recorder.isEncoderSupported(Codec.aacMP4);
   }
 
   /// 开始录音
   Future<void> startRecord() async {
-    if (_recorder == null) {
-      return;
-    }
     try {
+      await openRecorder();
       // 状态变化
       _recordStatus.value = RecordStatus.recoding;
-
       // 监听音浪
       _level ??= 0.0.obs;
       _maxLevel ??= 60.0;
-      _recorder!.setSubscriptionDuration(const Duration(milliseconds: 50));
-      _mt = _recorder?.onProgress?.listen((e) {
+      // 创建临时文件
+      var tempDir = await getTemporaryDirectory();
+      _currentFile = '${tempDir.path}/orginone${ext[Codec.aacMP4.index]}';
+      print("voiceFile--------------$_currentFile");
+      // 开启监听
+      await _recorder.startRecorder(
+        toFile: _currentFile,
+        codec: Codec.aacMP4,
+        bitRate: 8000,
+        sampleRate: 8000,
+      );
+      _mt = _recorder.onProgress?.listen((e) {
+        print('e------------------${e.duration}');
         _level!.value = e.decibels ?? 0;
         _maxLevel = max(_maxLevel!, _level!.value);
         _currentDuration = e.duration;
       });
-
-      // 创建临时文件
-      var tempDir = await getTemporaryDirectory();
-      var key = DateTime.now().millisecondsSinceEpoch;
-      _currentFileName = "$key${ext[Codec.aacADTS.index]}";
-      _currentFile = "${tempDir.path}/$_currentFileName";
-
-      // 开启监听
-      await _recorder!.startRecorder(
-        toFile: _currentFile,
-        codec: Codec.aacADTS,
-        bitRate: 8000,
-        sampleRate: 8000,
-      );
     } catch (error) {
       await stopRecord();
       rethrow;
@@ -675,14 +670,13 @@ class ChatBoxController extends FullLifeCycleController
 
   /// 停止录音
   stopRecord() async {
-    if (_recorder == null) {
-      return;
+    await _recorder.stopRecorder();
+    await _recorder.closeAudioSession();
+    if (_mt != null) {
+      _mt!.cancel();
+      _mt = null;
     }
-    await _recorder!.stopRecorder();
-    _mt?.cancel();
-    _mt = null;
     _level = null;
-
     _recordStatus.value = RecordStatus.stop;
   }
 

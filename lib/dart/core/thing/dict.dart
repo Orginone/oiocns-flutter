@@ -9,15 +9,15 @@ class Dict extends IDict {
   KernelApi kernel = KernelApi.getInstance();
   Dict(XDict target1) {
     target = target1;
-    id = target.id;
-    name = target.name;
+    id = target.id??"";
+    name = target.name??"";
     belongInfo = TargetShare(name: "奥集能平台", typeName: "平台");
   }
 
   @override
   Future<XDictItemArray> loadItems(String spaceId, PageRequest page) async {
     final res = await kernel.queryDictItems(IdSpaceReq(
-      id: target.id,
+      id: target.id??"",
       spaceId: spaceId,
       page: PageRequest(
         offset: page.offset,
@@ -61,8 +61,8 @@ class Dict extends IDict {
     if (info.typeName != '未知') {
       belongInfo = info;
     }
-    if (belongInfo != null && target.belongId.isNotEmpty) {
-      final res = await kernel.queryNameBySnowId(IdReq(id: target.belongId));
+    if (belongInfo != null && (target.belongId?.isNotEmpty??false)) {
+      final res = await kernel.queryNameBySnowId(IdReq(id: target.belongId??""));
       if (res.success && res.data != null) {
         belongInfo = TargetShare(name: res.data!.name, typeName: '未知');
         // const avator = parseAvatar(res.data.photo);
@@ -77,7 +77,7 @@ class Dict extends IDict {
 
   @override
   Future<IDict> update(DictModel data) async {
-    data.code = target.code;
+    data.code = target.code??"";
     data.id = id;
     final res = await kernel.updateDict(data);
     if (res.success) {

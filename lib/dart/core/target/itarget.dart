@@ -50,6 +50,10 @@ abstract class ITarget {
   // 共享信息
   late TargetShare shareInfo;
 
+  List<XTarget> members = [];
+
+  bool isSelected = false;
+
   /// 新增
   /// @param data
   Future<ITarget?> create(TargetModel data);
@@ -488,6 +492,12 @@ abstract class IDepartment implements ITarget {
 
   /// 子部门
   late List<IDepartment> departments;
+
+
+  List<XTarget> departmentMembers = [];
+
+  bool isSelected = false;
+
 
   /// 获取子部门
   /// @param reload 是否强制刷新

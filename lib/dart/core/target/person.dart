@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/core/market/model.dart';
 import 'package:orginone/dart/core/target/university.dart';
 import '../../base/common/uint.dart';
