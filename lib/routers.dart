@@ -42,15 +42,12 @@ import './pages/other/home/ware_house/assets_management/assets_management_bindin
 // 资产管理
 import './pages/other/home/ware_house/assets_management/assets_management_page.dart';
 import './pages/other/home/ware_house/market/market_binding.dart';
-import 'package:orginone/pages/todo/todo_detail.dart';
-import 'package:orginone/pages/todo/todo_tab_page.dart';
-import 'package:orginone/pages/todo/work_page.dart';
-import 'package:orginone/pages/todo/workbench_page.dart';
 
 // 资产管理
 import './pages/other/home/ware_house/market/market_page.dart';
+import './pages/other/home/ware_house/market/market_binding.dart';
+import 'package:orginone/util/hive_utils.dart';
 import './pages/other/home/ware_house/often_use_binding.dart';
-
 // 仓库
 import './pages/other/home/ware_house/recently_opened_binding.dart';
 import 'pages/other/choice_gb/binding.dart';
@@ -58,6 +55,10 @@ import 'pages/other/choice_gb/view.dart';
 import 'pages/other/choice_thing/view.dart';
 import 'pages/other/storage_location/binding.dart';
 import 'pages/other/storage_location/view.dart';
+import 'package:orginone/pages/todo/todo_detail.dart';
+import 'package:orginone/pages/todo/todo_tab_page.dart';
+import 'package:orginone/pages/todo/work_page.dart';
+import 'package:orginone/pages/todo/workbench_page.dart';
 import 'pages/other/work/process_details/binding.dart';
 import 'pages/other/work/process_details/view.dart';
 import 'pages/other/work/work_start/binding.dart';
@@ -109,7 +110,6 @@ class Routers {
   static const String assetsManagement = "/assetsManagement";
   // 杭商城
   static const String market = "/market";
-
 
   //添加资产
   static const String addAsset = "/addAsset";
@@ -165,7 +165,6 @@ class Routers {
         name: Routers.home,
         page: () => const HomePage(),
         bindings: [
-          WorkBinding(),
           ChatBinding(),
           HomeBinding(),
           SetHomeBinding(),

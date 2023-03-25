@@ -19,10 +19,9 @@ import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
+import '../home/ware_house/ware_house.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
-
-import '../home/ware_house/ware_house.dart';
 
 class HomePage extends GetView<HomeController> {
   const HomePage({Key? key}) : super(key: key);
@@ -79,7 +78,7 @@ class HomeController extends TabsController {
     ));
     registerTab(XTab(
       body: Text('办事', style: XFonts.size14Black3),
-      view:  WorkPage(),
+      view: WorkPage(),
       icon: XImage.localImage("work", size: size),
     ));
     var center = XTab(
@@ -154,4 +153,3 @@ class HomeController extends TabsController {
     EventBusHelper.unregister(this);
   }
 }
-
