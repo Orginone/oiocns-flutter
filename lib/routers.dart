@@ -168,7 +168,6 @@ class Routers {
           WorkBinding(),
           ChatBinding(),
           HomeBinding(),
-          WorkBinding(),
           SetHomeBinding(),
           MessageBinding(),
           IndexPageBinding(),
