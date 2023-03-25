@@ -170,6 +170,7 @@ class Routers {
           SetHomeBinding(),
           MessageBinding(),
           IndexPageBinding(),
+          WorkBinding(),
           HomeBinding(),
           SetHomeBinding(),
           MessageBinding(),
