@@ -296,6 +296,11 @@ class Routers {
         binding: ProcessDetailsBinding(),
       ),
       GetPage(
+        name: Routers.todo,
+        page: () => WorkbenchPage(),
+        binding: WorkBinding(),
+      ),
+      GetPage(
         name: Routers.todoList,
         page: () => const TodoTabPage(),
       ),

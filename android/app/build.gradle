@@ -66,10 +66,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("keystore.jks")
-            storePassword 'gy123456'
-            keyAlias 'gykj'
-            keyPassword 'gy123456'
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file('key/orocns.jks')
+            storePassword keystoreProperties['storePassword']
         }
     }
     buildTypes {

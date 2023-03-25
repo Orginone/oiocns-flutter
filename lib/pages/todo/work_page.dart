@@ -161,9 +161,9 @@ class WorkController extends TabsController {
   }
 
   createInstance() async {
-    Get.toNamed(Routers.choiceGb)?.then((value) {
-      if (value != null) {
-        Get.toNamed(Routers.workStart, arguments: {"species": value});
+    Get.toNamed(Routers.choiceGb)?.then((value){
+      if(value!=null){
+        Get.toNamed(Routers.workStart,arguments: {"species":value});
       }
     });
 
