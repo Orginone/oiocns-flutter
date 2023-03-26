@@ -7593,3 +7593,429 @@ class XThingSpecArray {
     return json;
   }
 }
+
+
+class VersionEntity {
+  String? key;
+  String? name;
+  String? updateTime;
+  List<VersionVersionMes>? versionMes;
+
+  VersionEntity({
+    required this.key,
+    required this.name,
+    required this.updateTime,
+    required this.versionMes,
+  });
+
+  VersionEntity.fromJson(Map<String, dynamic> json)
+      : key = json["Key"],
+        name = json["Name"],
+        updateTime = json["UpdateTime"],
+        versionMes = VersionVersionMes.fromList(json["versionMes"]);
+
+  static List<VersionEntity> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<VersionEntity> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(VersionEntity.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["key"] = key;
+    json["name"] = name;
+    json["updateTime"] = updateTime;
+    json["versionMes"] = versionMes;
+    return json;
+  }
+
+  @override
+  String toString() {
+    return jsonEncode(this);
+  }
+}
+
+class VersionVersionMes {
+  VersionVersionMesUploadName? uploadName;
+  String? appName;
+  String? publisher;
+  int? version;
+  String? remark;
+  String? id;
+  VersionVersionMesPubTeam? pubTeam;
+  VersionVersionMesPubAuthor? pubAuthor;
+  String? platform;
+  String? pubTime;
+  int? size;
+  String? name;
+  String? extension;
+  String? shareLink;
+  String? thumbnail;
+
+  VersionVersionMes();
+
+  VersionVersionMes.fromJson(Map<String, dynamic> json)
+      : uploadName = VersionVersionMesUploadName.fromJson(json["uploadName"]),
+        appName = json["appName"],
+        publisher = json["publisher"],
+        version = json["version"],
+        remark = json["remark"],
+        id = json["id"],
+        pubTeam = VersionVersionMesPubTeam.fromJson(json["pubTeam"]),
+        pubAuthor = VersionVersionMesPubAuthor.fromJson(json["pubAuthor"]),
+        platform = json["platform"],
+        pubTime = json["pubTime"],
+        size = json["size"],
+        name = json["name"],
+        extension = json["extension"],
+        shareLink = json["shareLink"],
+        thumbnail = json["thumbnail"];
+
+  static List<VersionVersionMes> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<VersionVersionMes> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(VersionVersionMes.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["uploadName"] = uploadName?.toJson();
+    json["appName"] = appName;
+    json["publisher"] = publisher;
+    json["version"] = version;
+    json["remark"] = remark;
+    json["id"] = id;
+    json["pubTeam"] = pubTeam?.toJson();
+    json["pubAuthor"] = pubAuthor?.toJson();
+    json["platform"] = platform;
+    json["pubTime"] = pubTime;
+    json["size"] = size;
+    json["name"] = name;
+    json["extension"] = extension;
+    json["shareLink"] = shareLink;
+    json["thumbnail"] = thumbnail;
+    return json;
+  }
+}
+
+class VersionVersionMesUploadName {
+  int? size;
+  String? name;
+  String? extension;
+  String? shareLink;
+  String? thumbnail;
+
+  VersionVersionMesUploadName();
+
+//通过JSON构造
+  VersionVersionMesUploadName.fromJson(Map<String, dynamic>? json)
+      : size = json?["size"] ?? 0,
+        name = json?["name"] ?? "",
+        extension = json?["extension"] ?? "",
+        shareLink = json?["shareLink"] ?? "",
+        thumbnail = json?["thumbnail"] ?? "";
+
+  //通过动态数组解析成List
+  static List<VersionVersionMesUploadName> fromList(
+      List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<VersionVersionMesUploadName> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(VersionVersionMesUploadName.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["size"] = size;
+    json["name"] = name;
+    json["extension"] = extension;
+    json["shareLink"] = shareLink;
+    json["thumbnail"] = thumbnail;
+    return json;
+  }
+}
+
+class VersionVersionMesPubTeam {
+  String? value;
+  String? label;
+  String? id;
+  String? name;
+  String? code;
+  String? typeName;
+  String? belongId;
+  String? thingId;
+  int? status;
+  String? createUser;
+  String? updateUser;
+  String? version;
+  String? createTime;
+  String? updateTime;
+  VersionVersionMesPubTeamTeam? team;
+
+  VersionVersionMesPubTeam();
+
+//通过JSON构造
+  VersionVersionMesPubTeam.fromJson(dynamic json)
+      : value = json["value"],
+        label = json["label"],
+        id = json["id"],
+        name = json["name"],
+        code = json["code"],
+        typeName = json["typeName"],
+        belongId = json["belongId"],
+        thingId = json["thingId"],
+        status = json["status"],
+        createUser = json["createUser"],
+        updateUser = json["updateUser"],
+        version = json["version"],
+        createTime = json["createTime"],
+        updateTime = json["updateTime"],
+        team = VersionVersionMesPubTeamTeam.fromJson(json["team"]);
+
+  //通过动态数组解析成List
+  static List<VersionVersionMesPubTeam> fromList(
+      List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<VersionVersionMesPubTeam> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(VersionVersionMesPubTeam.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["value"] = value;
+    json["label"] = label;
+    json["id"] = id;
+    json["name"] = name;
+    json["code"] = code;
+    json["typeName"] = typeName;
+    json["belongId"] = belongId;
+    json["thingId"] = thingId;
+    json["status"] = status;
+    json["createUser"] = createUser;
+    json["updateUser"] = updateUser;
+    json["version"] = version;
+    json["createTime"] = createTime;
+    json["updateTime"] = updateTime;
+    json["team"] = team?.toJson();
+    return json;
+  }
+}
+
+class VersionVersionMesPubTeamTeam {
+  String? id;
+  String? name;
+  String? code;
+  String? targetId;
+  int? status;
+  String? createUser;
+  String? updateUser;
+  String? version;
+  String? createTime;
+  String? updateTime;
+  String? remark;
+
+  VersionVersionMesPubTeamTeam();
+
+//通过JSON构造
+  VersionVersionMesPubTeamTeam.fromJson(Map<String, dynamic>? json)
+      : id = json?["id"] ?? "",
+        name = json?["name"] ?? "",
+        code = json?["code"] ?? "",
+        targetId = json?["targetId"] ?? "",
+        status = json?["status"] ?? 0,
+        createUser = json?["createUser"] ?? "",
+        updateUser = json?["updateUser"] ?? "",
+        version = json?["version"] ?? "",
+        createTime = json?["createTime"] ?? "",
+        updateTime = json?["updateTime"] ?? "",
+        remark = json?["remark"] ?? "";
+
+  //通过动态数组解析成List
+  static List<VersionVersionMesPubTeamTeam> fromList(
+      List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<VersionVersionMesPubTeamTeam> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(VersionVersionMesPubTeamTeam.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["name"] = name;
+    json["code"] = code;
+    json["targetId"] = targetId;
+    json["status"] = status;
+    json["createUser"] = createUser;
+    json["updateUser"] = updateUser;
+    json["version"] = version;
+    json["createTime"] = createTime;
+    json["updateTime"] = updateTime;
+    json["remark"] = remark;
+    return json;
+  }
+}
+
+class VersionVersionMesPubAuthor {
+  String? id;
+  String? name;
+  String? code;
+  String? typeName;
+  String? thingId;
+  int? status;
+  String? createUser;
+  String? updateUser;
+  String? version;
+  String? createTime;
+  String? updateTime;
+  VersionVersionMesPubAuthorTeam? team;
+
+  VersionVersionMesPubAuthor();
+
+//通过JSON构造
+  VersionVersionMesPubAuthor.fromJson(dynamic json)
+      : id = json["id"],
+        name = json["name"],
+        code = json["code"],
+        typeName = json["typeName"],
+        thingId = json["thingId"],
+        status = json["status"],
+        createUser = json["createUser"],
+        updateUser = json["updateUser"],
+        version = json["version"],
+        createTime = json["createTime"],
+        updateTime = json["updateTime"];
+
+  //通过动态数组解析成List
+  static List<VersionVersionMesPubAuthor> fromList(
+      List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<VersionVersionMesPubAuthor> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(VersionVersionMesPubAuthor.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["name"] = name;
+    json["code"] = code;
+    json["typeName"] = typeName;
+    json["thingId"] = thingId;
+    json["status"] = status;
+    json["createUser"] = createUser;
+    json["updateUser"] = updateUser;
+    json["version"] = version;
+    json["createTime"] = createTime;
+    json["updateTime"] = updateTime;
+    return json;
+  }
+}
+
+class VersionVersionMesPubAuthorTeam {
+  String? id;
+  String? name;
+  String? code;
+  String? targetId;
+  String? remark;
+  int? status;
+  String? createUser;
+  String? updateUser;
+  String? version;
+  String? createTime;
+  String? updateTime;
+
+  VersionVersionMesPubAuthorTeam();
+
+//通过JSON构造
+  VersionVersionMesPubAuthorTeam.fromJson(Map<String, dynamic> json)
+      : id = json["id"],
+        name = json["name"],
+        code = json["code"],
+        targetId = json["targetId"],
+        remark = json["remark"],
+        status = json["status"],
+        createUser = json["createUser"],
+        updateUser = json["updateUser"],
+        version = json["version"],
+        createTime = json["createTime"],
+        updateTime = json["updateTime"];
+
+  //通过动态数组解析成List
+  static List<VersionVersionMesPubAuthorTeam> fromList(
+      List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<VersionVersionMesPubAuthorTeam> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(VersionVersionMesPubAuthorTeam.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["name"] = name;
+    json["code"] = code;
+    json["targetId"] = targetId;
+    json["remark"] = remark;
+    json["status"] = status;
+    json["createUser"] = createUser;
+    json["updateUser"] = updateUser;
+    json["version"] = version;
+    json["createTime"] = createTime;
+    json["updateTime"] = updateTime;
+    return json;
+  }
+}
+

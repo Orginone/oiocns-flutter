@@ -29,8 +29,10 @@ import 'package:orginone/pages/other/work/work_start/view.dart';
 import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
+import 'package:orginone/pages/setting/publisher_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/pages/setting/unit_settings_page.dart';
+import 'package:orginone/pages/setting/version_page.dart';
 import 'package:orginone/pages/todo/todo_detail.dart';
 import 'package:orginone/pages/todo/todo_tab_page.dart';
 import 'package:orginone/pages/todo/work_page.dart';
@@ -104,6 +106,8 @@ class Routers {
   static const String contact = "/contact";
   static const String cohorts = "/cohorts";
   static const String uintSettings = "/uintSettings";
+  static const String publisher = "/publisher";
+  static const String version = "/version";
 
   // 仓库相关
   // 资产管理
@@ -174,7 +178,8 @@ class Routers {
           SetHomeBinding(),
           MessageBinding(),
           RecentlyOpenedBinding(),
-          OftenUseBinding()
+          OftenUseBinding(),
+          UpdateBinding()
         ],
       ),
       GetPage(
@@ -246,6 +251,7 @@ class Routers {
           ChatBoxBinding(),
           PlayBinding(),
           SetHomeBinding(),
+          UpdateBinding()
         ],
       ),
       // 资产管理
@@ -328,6 +334,16 @@ class Routers {
         name: Routers.choiceThing,
         page: () => ChoiceThingPage(),
         binding: ChoiceThingBinding(),
+      ),
+      GetPage(
+        name: Routers.version,
+        page: () => const VersionPage(),
+        binding: VersionBinding(),
+      ),
+      GetPage(
+        name: Routers.publisher,
+        page: () => PublisherPage(),
+        binding: PublisherBinding(),
       ),
     ];
   }
