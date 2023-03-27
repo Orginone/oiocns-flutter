@@ -500,7 +500,7 @@ class Routers {
       GetPage(
         name: Routers.thingDetails,
         page: () => ThingDetailsPage(),
-        binding:ThingDetailsBinding(),
+        binding: ThingDetailsBinding(),
       ),
       GetPage(
         name: Routers.file,
