@@ -19,7 +19,7 @@ class ProcessDetailsPage
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: "${state.type.label}详情",
+      titleName: "${state.type?.label ?? ""}详情",
       backgroundColor: Colors.grey.shade100,
       body: Column(
         children: [
@@ -34,11 +34,11 @@ class ProcessDetailsPage
                     Obx(() {
                       return Column(
                           children: state.xAttribute.keys.map((title) {
-                        if (state.xAttribute[title]!.isEmpty) {
-                          return Container();
-                        }
-                        return _info(title, state.xAttribute[title]!);
-                      }).toList());
+                            if (state.xAttribute[title]!.isEmpty) {
+                              return Container();
+                            }
+                            return _info(title, state.xAttribute[title]!);
+                          }).toList());
                     }),
                     _timeLine(),
                     _annex(),
@@ -55,8 +55,8 @@ class ProcessDetailsPage
   }
 
 
-  Widget _approval(){
-    if(state.type != WorkEnum.todo){
+  Widget _approval() {
+    if (state.type != WorkEnum.todo) {
       return Container();
     }
     return Container(
@@ -71,13 +71,14 @@ class ProcessDetailsPage
           _button(
               text: '不同意',
               textColor: XColors.themeColor,
-              border: Border.all(width: 0.5, color: XColors.themeColor),onTap: (){
-            controller.approval(200);
-          }),
+              border: Border.all(width: 0.5, color: XColors.themeColor),
+              onTap: () {
+                controller.approval(200);
+              }),
           _button(
               text: '同意',
               textColor: Colors.white,
-              color: XColors.themeColor,onTap: (){
+              color: XColors.themeColor, onTap: () {
             controller.approval(100);
           }),
         ],
@@ -104,10 +105,12 @@ class ProcessDetailsPage
               SizedBox(
                 width: 15.w,
               ),
-              Text(
-                state.task.flowInstance?.title ?? "",
-                style: TextStyle(fontSize: 18.sp),
-              ),
+              Obx(() {
+                return Text(
+                  state.flowInstance.value?.title ?? "",
+                  style: TextStyle(fontSize: 18.sp),
+                );
+              }),
               SizedBox(
                 width: 20.w,
               ),
@@ -121,16 +124,20 @@ class ProcessDetailsPage
             height: 10.h,
           ),
           Text(
-            "单据编号：ZCCZ20210316001128",
+            "单据编号：",
             style: TextStyle(color: Colors.grey, fontSize: 16.sp),
           ),
           SizedBox(
             height: 5.h,
           ),
-          Text(
-            "发起时间: ${DateTime.tryParse(state.task.flowInstance?.createTime ?? "")?.format(format: "yyyy-MM-dd HH:mm:ss") ?? ""}",
-            style: TextStyle(color: Colors.grey, fontSize: 16.sp),
-          ),
+          Obx(() {
+            return Text(
+              "发起时间: ${DateTime.tryParse(
+                  state.flowInstance.value?.createTime ?? "")?.format(
+                  format: "yyyy-MM-dd HH:mm:ss") ?? ""}",
+              style: TextStyle(color: Colors.grey, fontSize: 16.sp),
+            );
+          }),
         ],
       ),
     );
@@ -154,14 +161,14 @@ class ProcessDetailsPage
             ),
             child: Column(
                 children: info.keys.map((e) {
-              String content = "${info[e]}";
-              if (e.valueType == "选择型") {
-                content = e.dict!.dictItems!
-                    .firstWhere((element) => element.value == info[e])
-                    .name;
-              }
-              return _text(title: e.name ?? "", content: content);
-            }).toList())),
+                  String content = "${info[e]}";
+                  if (e.valueType == "选择型") {
+                    content = e.dict!.dictItems!
+                        .firstWhere((element) => element.value == info[e])
+                        .name;
+                  }
+                  return _text(title: e.name ?? "", content: content);
+                }).toList())),
       ],
     );
   }
@@ -186,7 +193,7 @@ class ProcessDetailsPage
           child: Obx(() {
             Widget hide = Container();
 
-            int length = state.flowInstacne.value?.flowTaskHistory?.length ?? 0;
+            int length = state.flowInstance.value?.flowTaskHistory?.length ?? 0;
 
             if (state.hideProcess.value && length > 2) {
               hide = Container(
@@ -197,14 +204,14 @@ class ProcessDetailsPage
                 child: GestureDetector(
                   child: Container(
                     padding:
-                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 3.h),
+                    EdgeInsets.symmetric(horizontal: 20.w, vertical: 3.h),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16.w),
                         border: Border.all(color: XColors.themeColor)),
                     child: Text(
-                      "查看全部流程($length)>",
+                      "查看全部流程($length)",
                       style:
-                          TextStyle(color: XColors.themeColor, fontSize: 20.sp),
+                      TextStyle(color: XColors.themeColor, fontSize: 20.sp),
                     ),
                   ),
                   onTap: () {
@@ -219,14 +226,14 @@ class ProcessDetailsPage
               children: [
                 ListView.builder(
                   itemCount:
-                      (length > 2 && state.hideProcess.value) ? 2 : length,
+                  (length > 2 && state.hideProcess.value) ? 2 : length,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return Container(
                       child: _buildTimelineTile(
                           index,
-                          state.flowInstacne.value!.flowTaskHistory![index]
+                          state.flowInstance.value!.flowTaskHistory![index]
                               .flowNode),
                     );
                   },
@@ -262,7 +269,7 @@ class ProcessDetailsPage
   }
 
   Widget _opinion() {
-    if(state.type != WorkEnum.todo){
+    if (state.type != WorkEnum.todo) {
       return Container();
     }
     return Column(
@@ -314,10 +321,10 @@ class ProcessDetailsPage
     );
   }
 
-  Widget _buildTimelineTile(int index,XFlowNode? node) {
+  Widget _buildTimelineTile(int index, XFlowNode? node) {
     XTarget? user =
-        DepartmentManagement().findXTargetByIdOrName(id: node?.createUser ?? "");
-    bool isLast = index == state.flowInstacne.value!.flowTaskHistory!.length - 1
+    DepartmentManagement().findXTargetByIdOrName(id: node?.createUser ?? "");
+    bool isLast = index == state.flowInstance.value!.flowTaskHistory!.length - 1
         ? true
         : false;
     return TimelineTile(
@@ -330,9 +337,9 @@ class ProcessDetailsPage
           indicatorXY: 0,
         ),
         afterLineStyle:
-            const LineStyle(thickness: 1, color: XColors.themeColor),
+        const LineStyle(thickness: 1, color: XColors.themeColor),
         beforeLineStyle:
-            const LineStyle(thickness: 1, color: XColors.themeColor),
+        const LineStyle(thickness: 1, color: XColors.themeColor),
         endChild: Container(
           padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Row(
@@ -348,7 +355,7 @@ class ProcessDetailsPage
                       style: TextStyle(color: Colors.black, fontSize: 20.sp),
                     ),
                     TextSpan(
-                      text: user?.team?.name??"",
+                      text: user?.team?.name ?? "",
                       style: TextStyle(color: Colors.grey, fontSize: 18.sp),
                     )
                   ])),
@@ -359,7 +366,7 @@ class ProcessDetailsPage
                         style: TextStyle(color: Colors.black, fontSize: 16.sp),
                       ),
                       TextSpan(
-                        text: node?.nodeType??"",
+                        text: node?.nodeType ?? "",
                         style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                       )
                     ]),
@@ -371,13 +378,14 @@ class ProcessDetailsPage
                         style: TextStyle(color: Colors.black, fontSize: 16.sp),
                       ),
                       TextSpan(
-                        text: node?.remark??"",
+                        text: node?.remark ?? "",
                         style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                       )
                     ]),
                   ),
                   Text(
-                    DateTime.tryParse(node?.createTime??"")?.format(format: "yyyy-MM-dd HH:mm:ss")??"",
+                    DateTime.tryParse(node?.createTime ?? "")?.format(
+                        format: "yyyy-MM-dd HH:mm:ss") ?? "",
                     style: TextStyle(color: Colors.grey, fontSize: 16.sp),
                   )
                 ],
@@ -388,20 +396,20 @@ class ProcessDetailsPage
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(user?.team?.name??"",
+                      Text(user?.team?.name ?? "",
                           style:
-                              TextStyle(color: Colors.black, fontSize: 18.sp)),
+                          TextStyle(color: Colors.black, fontSize: 18.sp)),
                       Text.rich(
                         TextSpan(children: [
                           TextSpan(
                             text: "流程节点: ",
                             style:
-                                TextStyle(color: Colors.black, fontSize: 16.sp),
+                            TextStyle(color: Colors.black, fontSize: 16.sp),
                           ),
                           TextSpan(
-                            text: node?.nodeType??"",
+                            text: node?.nodeType ?? "",
                             style:
-                                TextStyle(color: Colors.grey, fontSize: 16.sp),
+                            TextStyle(color: Colors.grey, fontSize: 16.sp),
                           )
                         ]),
                       ),
@@ -412,7 +420,7 @@ class ProcessDetailsPage
               SizedBox(
                 width: 20.w,
               ),
-              !isLast?Container(
+              !isLast ? Container(
                 width: 25.w,
                 height: 25.w,
                 decoration: const BoxDecoration(
@@ -422,7 +430,7 @@ class ProcessDetailsPage
                   size: 20.w,
                   color: Colors.white,
                 ),
-              ):SizedBox( width: 25.w,
+              ) : SizedBox(width: 25.w,
                 height: 25.w,),
             ],
           ),
@@ -477,12 +485,11 @@ class ProcessDetailsPage
     );
   }
 
-  Widget _button(
-      {VoidCallback? onTap,
-      required String text,
-      Color? textColor,
-      Color? color,
-      BoxBorder? border}) {
+  Widget _button({VoidCallback? onTap,
+    required String text,
+    Color? textColor,
+    Color? color,
+    BoxBorder? border}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(

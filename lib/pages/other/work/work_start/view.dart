@@ -6,7 +6,6 @@ import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 
-import 'have_initiated/view.dart';
 import 'logic.dart';
 import 'start/view.dart';
 import 'state.dart';

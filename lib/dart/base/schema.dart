@@ -1358,7 +1358,7 @@ class XFlowInstance {
    List<XFlowTask>? flowTasks;
 
   // 流程实例任务
-   List<XFlowTaskHistory>? flowTaskHistory;
+   List<XFlowTask>? flowTaskHistory;
 
   // 流程的定义
    XFlowDefine? flowDefine;
@@ -1412,7 +1412,7 @@ class XFlowInstance {
         if(json["historyTasks"]!=null){
           flowTaskHistory = [];
           json["historyTasks"].forEach((json){
-            flowTaskHistory!.add(XFlowTaskHistory.fromJson(json));
+            flowTaskHistory!.add(XFlowTask.fromJson(json));
           });
         }
 
@@ -2255,6 +2255,8 @@ class XFlowTask {
   // 流程的定义
    XFlowInstance? flowInstance;
 
+   // 流程节点记录
+   List<XFlowRecord>? flowRecords;
   //构造方法
   XFlowTask({
     required this.id,
@@ -2274,21 +2276,28 @@ class XFlowTask {
   });
 
   //通过JSON构造
-  XFlowTask.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        nodeId = json["nodeId"],
-        instanceId = json["instanceId"],
-        identityId = json["identityId"],
-        personIds = json["personIds"],
-        status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"],
-        identity = json["identity"]!=null?XIdentity.fromJson(json["identity"]):null,
-        flowNode = json["node"]!=null?XFlowNode.fromJson(json["node"]):null,
+  XFlowTask.fromJson(Map<String, dynamic> json){
+        id = json["id"];
+        nodeId = json["nodeId"];
+        instanceId = json["instanceId"];
+        identityId = json["identityId"];
+        personIds = json["personIds"];
+        status = json["status"];
+        createUser = json["createUser"];
+        updateUser = json["updateUser"];
+        version = json["version"];
+        createTime = json["createTime"];
+        updateTime = json["updateTime"];
+        identity = json["identity"]!=null?XIdentity.fromJson(json["identity"]):null;
+        flowNode = json["node"]!=null?XFlowNode.fromJson(json["node"]):null;
         flowInstance = json["instance"]!=null?XFlowInstance.fromJson(json["instance"]):null;
+        if (json["records"] != null) {
+          flowRecords = [];
+          json["records"].forEach((json) {
+            flowRecords!.add(XFlowRecord.fromJson(json));
+          });
+        }
+  }
 
   //通过动态数组解析成List
   static List<XFlowTask> fromList(List<Map<String, dynamic>>? list) {
@@ -2321,6 +2330,7 @@ class XFlowTask {
     json["identity"] = identity?.toJson();
     json["flowNode"] = flowNode?.toJson();
     json["flowInstance"] = flowInstance?.toJson();
+    json["flowRecords"] = flowRecords?.map((e) => e.toJson()).toList();
     return json;
   }
 }
@@ -2511,7 +2521,7 @@ class XFlowTaskHistory {
     json["version"] = version;
     json["createTime"] = createTime;
     json["updateTime"] = updateTime;
-    json["flowRecords"] = flowRecords;
+    json["flowRecords"] = flowRecords?.map((e) => e.toJson()).toList();
     json["identity"] = identity?.toJson();
     json["flowNode"] = flowNode?.toJson();
     json["flowInstance"] = flowInstance?.toJson();

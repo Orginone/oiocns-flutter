@@ -15,14 +15,14 @@ class ProcessDetailsState extends BaseGetState{
 
   late XFlowTask task;
 
-  var flowInstacne = Rxn<XFlowInstance>();
+  var flowInstance = Rxn<XFlowInstance>();
 
   var xAttribute = <String,Map<XAttribute,dynamic>>{}.obs;
 
-  late WorkEnum type;
+  WorkEnum? type;
 
   ProcessDetailsState(){
-    task = Get.arguments['task'];
-    type = Get.arguments['type'];
+    task = Get.arguments?['task'];
+    type = Get.arguments?['type'];
   }
 }
