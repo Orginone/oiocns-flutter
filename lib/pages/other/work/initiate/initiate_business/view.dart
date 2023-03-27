@@ -16,7 +16,59 @@ class InitiateBusinessPage extends BaseGetPageView<InitiateBusinessController,In
     return Scaffold(
       body:ListView(
         shrinkWrap: true,
-        children: _getItems(),
+        children: [
+          Container(
+          color: XColors.white,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+               const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  "常用应用",
+                ),
+              ),
+              Container(
+
+                child: GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.only(top: 10.h, bottom: 20.h),
+                    shrinkWrap: true,
+                    itemCount: 4,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 5,
+                    ),
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+
+                        },
+                        child: Column(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(60),
+                                color: XColors.navigatorBgColor,
+                              ),
+                              width: 64.w,
+                              height: 64.w,
+                            ),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            Text(
+                              "具体业务",
+                              style: XFonts.size18Black6,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                ),
+              ),
+            ],
+          )),
+        ],
       ),
       floatingActionButton: SizedBox(
         height: 50.w,
@@ -34,14 +86,6 @@ class InitiateBusinessPage extends BaseGetPageView<InitiateBusinessController,In
         ),
       ),
     );
-  }
-
-  List<Widget> _getItems() {
-    List<Widget> children = [];
-    getCards().forEach((key, value) {
-      children.add(CardChildWidget(key, value));
-    });
-    return children;
   }
 
   @override
