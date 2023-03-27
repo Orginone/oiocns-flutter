@@ -73,6 +73,11 @@ import './pages/other/home/ware_house/often_use_binding.dart';
 
 // 仓库
 import './pages/other/home/ware_house/recently_opened_binding.dart';
+// import 'pages/other/application/application_details/binding.dart';
+// import 'pages/other/application/application_details/view.dart';
+import 'pages/other/add_friend/add_friend.dart';
+// import 'pages/other/application/binding.dart';
+// import 'pages/other/application/view.dart';
 import 'pages/other/batch_operation_asset/binding.dart';
 import 'pages/other/center_function/create_claim/binding.dart';
 import 'pages/other/center_function/create_claim/view.dart';
@@ -113,6 +118,7 @@ class Routers {
 
   // 二维码扫描
   static const String scanning = "/scanning";
+  static const String addFriend = "/addFriend";
   static const String scanningResult = "/scanningResult";
 
   // 搜索
@@ -298,6 +304,11 @@ class Routers {
         binding: NewFriendsBinding(),
       ),
       GetPage(
+        name: Routers.addFriend,
+        page: () => AddFriendPage(),
+        binding: AddFriendBinding(),
+      ),
+      GetPage(
         name: Routers.contact,
         page: () => const ContactPage(),
         binding: ContactBinding(),
@@ -471,15 +482,20 @@ class Routers {
         page: () => ChoiceThingPage(),
         binding: ChoiceThingBinding(),
       ),
+      // GetPage(
+      //   name: Routers.application,
+      //   page: () => ApplicationPage(),
+      //   binding: ApplicationBinding(),
+      // ),
       GetPage(
         name: Routers.applicationDetails,
         page: () => ApplicationDetailsPage(),
-        binding:ApplicationDetailsBinding(),
+        binding: ApplicationDetailsBinding(),
       ),
       GetPage(
         name: Routers.thing,
         page: () => ThingPage(),
-        binding:ThingBinding(),
+        binding: ThingBinding(),
       ),
       GetPage(
         name: Routers.thingDetails,
@@ -489,7 +505,7 @@ class Routers {
       GetPage(
         name: Routers.file,
         page: () => FilePage(),
-        binding:FileBinding(),
+        binding: FileBinding(),
       ),
     ];
   }

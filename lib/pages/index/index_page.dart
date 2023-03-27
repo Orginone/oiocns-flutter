@@ -50,7 +50,7 @@ class IndexPage extends BaseView<IndexPageController> {
         "icon": "icon",
         "cardName": "资产应用一",
         "func": () {
-          Get.toNamed(Routers.scanning);
+          Get.toNamed(Routers.addFriend);
           print('Go to home page');
         }
       },
@@ -205,7 +205,7 @@ class IndexPage extends BaseView<IndexPageController> {
                         icon: Icon(Icons.qr_code_scanner_outlined),
                         onPressed: () {
                           // Navigator.pop(context); // 关闭Drawer
-                          Get.toNamed(Routers.scanning);
+                          Get.toNamed(Routers.addFriend);
                         },
                       ),
                     ],
