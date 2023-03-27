@@ -30,7 +30,8 @@ class DepartmentManagement {
         await loopMembers(_departments);
       }
     }else{
-      ToastUtils.showMsg(msg: "获取分组分类数据失败");
+      // ToastUtils.showMsg(msg: "获取分组分类数据失败");
+      print('获取分组分类数据失败');
     }
   }
 

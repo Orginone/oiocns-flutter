@@ -70,11 +70,7 @@ class FunctionPage extends BaseGetPageView<FunctionController,FunctionState>{
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Image.asset(
-              Images.moreIcon,
-              width: 30.w,
-              height: 25.w,
-            ),
+            child: Icon(Icons.more_vert,)
           ),
         ),
       ],
@@ -105,5 +101,9 @@ class FunctionState extends BaseGetState{
 const List<String> tabTitle = [
   "工作台",
    "资产管家",
-  "一警一档",
+  "一警一档"
+  "看板",
+  "新闻",
+  "共享",
+  "交易"
 ];

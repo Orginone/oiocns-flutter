@@ -580,10 +580,10 @@ class CommonWidget {
 
   static Widget commonBreadcrumbNavWidget({required String firstTitle,required List<String> allTitle,VoidCallback? onTapFirst,ValueChanged? onTapTitle}) {
     TextStyle selectedTextStyle =
-    TextStyle(fontSize: 20.sp, color: Colors.black);
+    TextStyle(fontSize: 20.sp, color: XColors.themeColor);
 
     TextStyle unSelectedTextStyle =
-    TextStyle(fontSize: 20.sp, color: Colors.grey.shade300);
+    TextStyle(fontSize: 20.sp, color: Colors.black);
 
     Widget level(String title) {
       int index = allTitle.indexOf(title);
@@ -596,12 +596,9 @@ class CommonWidget {
         child: Text.rich(
           TextSpan(
             children: [
-              WidgetSpan(
-                  child: Icon(
-                    Icons.chevron_right,
-                    size: 32.w,
-                  ),
-                  alignment: PlaceholderAlignment.middle),
+              TextSpan(
+                  text: " • ",
+                  style: unSelectedTextStyle),
               TextSpan(
                   text: title,
                   style: index == allTitle.length - 1

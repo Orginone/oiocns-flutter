@@ -40,7 +40,8 @@ class AssetManagement {
         _assets.add(AssetsInfo.fromJson(json));
       }
     }else{
-      ToastUtils.showMsg(msg: "获取资产数据失败");
+      // ToastUtils.showMsg(msg: "获取资产数据失败");
+      print('获取资产数据失败');
     }
   }
 

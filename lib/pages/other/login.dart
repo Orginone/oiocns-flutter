@@ -77,7 +77,7 @@ class LoginPage extends GetView<LoginController> {
           var res = await settingCtrl.login(controller.accountCtrl.text, controller.passwordCtrl.text);
           if (res.success) {
             [Permission.storage, Permission.notification].request();
-            Get.toNamed(Routers.home);
+            Get.offAndToNamed(Routers.home);
           } else {
             Fluttertoast.showToast(msg: res.msg);
           }

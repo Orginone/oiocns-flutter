@@ -244,68 +244,6 @@ class IndexPage extends BaseView<IndexPageController> {
           ],
         ),
       ),
-      appBar: AppBar(
-        backgroundColor: XColors.navigatorBgColor,
-        leading: Builder(builder: (context) {
-          return GestureDetector(
-            onPanDown: (position) {
-              x = position.globalPosition.dx;
-              y = position.globalPosition.dy;
-            },
-            onTap: () {
-              showMenu(
-                context: context,
-                position: RelativeRect.fromLTRB(
-                  x - 20.w,
-                  y + 20.h,
-                  x + 20.w,
-                  y + 40.h,
-                ),
-                items: _popupMenus(context),
-              );
-            },
-            // onTap: () {
-            //   // 处理单击事件
-            //   Scaffold.of(context).openDrawer();
-
-            //   print('处理单击事件Leading button long pressed');
-            // },
-            onLongPress: () {
-              // 处理长按事件
-              print('处理长按事件Leading button long pressed');
-              Scaffold.of(context).openDrawer();
-              // Get.toNamed(Routers.mineUnit);
-            },
-            child: Icon(
-              Icons.menu,
-              color: Colors.black,
-            ),
-          );
-        }),
-        // automaticallyImplyLeading: false,
-        actions: <Widget>[
-          OperationBar()
-          // IconButton(
-          //   icon: const Icon(Icons.search),
-          //   tooltip: '搜索',
-          //   onPressed: () {
-          //     Get.toNamed(Routers.search);
-          //   },
-          // ),
-          // IconButton(
-          //   icon: const Icon(Icons.add),
-          //   tooltip: '增加',
-          //   onPressed: () {
-          //     Get.toNamed(Routers.contact);
-          //   },
-          // ),
-          // IconButton(
-          //   icon: const Icon(Icons.more_horiz_outlined),
-          //   tooltip: '更多',
-          //   onPressed: () {},
-          // ),
-        ],
-      ),
       body: ListView(
           scrollDirection: Axis.vertical,
           // shrinkWrap: true,

@@ -42,7 +42,8 @@ class CommonTreeManagement {
     if(res.success && (res.data?.result?.isNotEmpty??false)){
       _category.addAll(_handleGroupCategory(res.data!.result!));
     }else{
-      ToastUtils.showMsg(msg: "获取资产分类数据失败");
+      // ToastUtils.showMsg(msg: "获取资产分类数据失败");
+      print('获取资产分类数据失败');
     }
   }
 
