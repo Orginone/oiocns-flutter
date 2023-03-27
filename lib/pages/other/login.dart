@@ -99,17 +99,17 @@ class LoginBinding extends Bindings {
 }
 
 class LoginController extends GetxController {
-  final accountCtrl = TextEditingController(text: "17602173727");
-  final passwordCtrl = TextEditingController(text: "Zcy_123456");
+  final accountCtrl = TextEditingController(text: "WEIXIAYING");
+  final passwordCtrl = TextEditingController(text: "@Shen0813");
 
   @override
   void onInit() async {
     var store = await LocalStore.instance;
     var account = store.getStringList("account");
-    if (account != null){
-      accountCtrl.text = account[0];
-      passwordCtrl.text = account[1];
-    }
+    // if (account != null){
+    //   accountCtrl.text = account[0];
+    //   passwordCtrl.text = account[1];
+    // }
     super.onInit();
   }
 }

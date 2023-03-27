@@ -3,19 +3,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
-import 'package:orginone/pages/other/choice_gb/state.dart';
 import 'package:orginone/pages/other/ware_house/ware_house_management/state.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/common_tree_management.dart';
-import 'package:orginone/util/file_management.dart';
 import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/pages/other/file/item.dart' as files;
-import 'package:orginone/pages/other/choice_gb/item.dart' as gb;
 import 'item.dart';
 import 'logic.dart';
 
 class WareHouseManagementPage extends BaseGetListPageView<
-    WareHouseManagementController, WareHouseManagementState> {
+    WareHouseManagementController,
+    WareHouseManagementState> {
   @override
   Widget buildView() {
     return Container(
@@ -24,9 +20,7 @@ class WareHouseManagementPage extends BaseGetListPageView<
         child: Column(
           children: [
             RecentlyOpened(),
-            file(),
             entity(),
-            product(),
           ],
         ),
       ),
@@ -41,8 +35,8 @@ class WareHouseManagementPage extends BaseGetListPageView<
       children: [
         CommonWidget.commonNonIndicatorTabBar(state.tabController, tabTitle,
             onTap: (int index) {
-          controller.changeIndex(index);
-        }),
+              controller.changeIndex(index);
+            }),
       ],
     );
   }
@@ -51,13 +45,14 @@ class WareHouseManagementPage extends BaseGetListPageView<
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
-          border: Border(bottom: BorderSide(color: Colors.grey.shade200,width: 0.5))
+          border: Border(
+              bottom: BorderSide(color: Colors.grey.shade200, width: 0.5))
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 20.w,top: 10.h),
+            padding: EdgeInsets.only(left: 20.w, top: 10.h),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -73,20 +68,20 @@ class WareHouseManagementPage extends BaseGetListPageView<
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: 20.w,vertical: 10.h),
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: state.recentlyList.map((value) {
-
                 Widget child = button(value);
-                if(state.recentlyList.indexOf(value)!=(state.recentlyList.length - 1)){
+                if (state.recentlyList.indexOf(value) !=
+                    (state.recentlyList.length - 1)) {
                   child = Container(
                     margin: EdgeInsets.only(right: 15.w),
                     child: child,
                   );
                 }
-                return child ;
+                return child;
               }).toList(),
             ),
           ),
@@ -97,7 +92,7 @@ class WareHouseManagementPage extends BaseGetListPageView<
 
   Widget button(Recent recent) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         Get.toNamed(Routers.file);
       },
       child: Column(
@@ -128,76 +123,47 @@ class WareHouseManagementPage extends BaseGetListPageView<
     );
   }
 
-  Widget entity(){
+  Widget entity() {
     return Container(
       decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: Colors.grey.shade200,width: 0.5))
+          border: Border(
+              bottom: BorderSide(color: Colors.grey.shade200, width: 0.5))
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            color: Colors.white,
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 20.w),
-            child: Text(
-              "实体",
-              style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color.fromARGB(255, 51, 52, 54)),
-            ),
-          ),
-          ...?CommonTreeManagement().species?.children.map((e) => gb.Item(item: e,functionMenu: FunctionMenu.next,  showChoice: false,
-      showFunctionButton: true,)).toList(),
+          Obx(() {
+            return CommonWidget.commonBreadcrumbNavWidget(
+                firstTitle: "仓库",
+                allTitle: state.selectedSpecies
+                    .map((element) => element.name)
+                    .toList(), onTapFirst: () {
+              controller.clearSpecies();
+            }, onTapTitle: (index) {
+              controller.removeSpecies(index);
+            });
+          }),
+          Obx(() {
+            var list = state.species;
+            if (state.selectedSpecies.isNotEmpty) {
+              list = state.selectedSpecies.last.children;
+            }
+            return Column(
+              children: list.map(
+                    (e) {
+                  return GbItem(
+                    item: e,
+                    next: () {
+                      controller.selectSpecies(e);
+                    },
+                  );
+                },
+              ).toList(),
+            );
+          })
         ],
       ),
     );
-  }
-
-  Widget file(){
-    return Container(
-      decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: Colors.grey.shade200,width: 0.5))
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            color: Colors.white,
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 20.w),
-            child: Text(
-              "文件",
-              style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: const Color.fromARGB(255, 51, 52, 54)),
-            ),
-          ),
-          ...?FileManagement().directory.children?.map((e) => files.Item(file: e,onTap: (){
-            controller.jumpFile(e);
-          },)).toList(),
-        ],
-      ),
-    );
-  }
-
-  Widget product() {
-    return Obx(() {
-      return ListView.builder(
-        padding: EdgeInsets.only(top: 10.h),
-        itemBuilder: (BuildContext context, int index) {
-          var item = state.dataList[index];
-          return Item(
-            product: item,
-          );
-        },
-        itemCount: state.dataList.length,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-      );
-    });
   }
 
   @override

@@ -4,6 +4,7 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/market/index.dart';
 import 'package:orginone/dart/core/store/ifilesys.dart';
+import 'package:orginone/dart/core/thing/ispecies.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
@@ -30,39 +31,26 @@ class WareHouseManagementController
 
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
-    // TODO: implement loadData
-    await initData();
-  }
-
-  Future<void> initData() async{
-   var data  = await settingCtrl.user!.getOwnProducts();
-   List<IProduct> products = [];
-   String status = tabTitle[state.index];
-   if (status == "全部") {
-    products = data;
-   } else {
-    var list;
-    if(status == "共享的"){
-     list = data.where((p0) => p0.prod.belongId != settingCtrl.space.id);
-    }else{
-     list = data.where((p0) => p0.prod.source == status && p0.prod.belongId == settingCtrl.space.id);
-    }
-    if (list.isNotEmpty) {
-     products = list.toList();
-    }
-   }
-   state.dataList.value = products;
-   loadSuccess();
+    loadSuccess();
   }
 
   void changeIndex(int index) {
    if(state.index != index){
     state.index = index;
-    loadData();
    }
   }
 
-  void jumpFile(IFileSystemItem file) {
-    Get.toNamed(Routers.file,arguments: {'file':file});
+  void selectSpecies(ISpeciesItem item) {
+    state.selectedSpecies.add(item);
   }
+
+  void clearSpecies() {
+    state.selectedSpecies.clear();
+  }
+
+  void removeSpecies(index) {
+    state.selectedSpecies.removeRange(index + 1, state.selectedSpecies.length);
+    state.selectedSpecies.refresh();
+  }
+
 }

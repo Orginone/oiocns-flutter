@@ -6,8 +6,10 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/pages/index/index_page.dart';
+import 'package:orginone/pages/other/ware_house/ware_house_management/item.dart';
 import 'package:orginone/pages/other/work/initiate/initiate_business/state.dart';
 import 'package:orginone/pages/todo/config.dart';
+import 'package:orginone/widget/common_widget.dart';
 
 import 'logic.dart';
 
@@ -31,7 +33,6 @@ class InitiateBusinessPage extends BaseGetPageView<InitiateBusinessController,In
                 ),
               ),
               Container(
-
                 child: GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     padding: EdgeInsets.only(top: 10.h, bottom: 20.h),
@@ -68,25 +69,58 @@ class InitiateBusinessPage extends BaseGetPageView<InitiateBusinessController,In
                     },
                 ),
               ),
+              Obx(() {
+                return CommonWidget.commonBreadcrumbNavWidget(
+                    firstTitle: "全部业务",
+                    allTitle: state.selectedSpecies
+                        .map((element) => element.name)
+                        .toList(), onTapFirst: () {
+                  controller.clearSpecies();
+                }, onTapTitle: (index) {
+                  controller.removeSpecies(index);
+                });
+              }),
+              Obx(() {
+                var list = state.species;
+                if (state.selectedSpecies.isNotEmpty) {
+                  list = state.selectedSpecies.last.children;
+                }
+                return Column(
+                  children: list.map(
+                        (e) {
+                      return GbItem(
+                        item: e,
+                        showPopupMenu: false,
+                        next: () {
+                          controller.selectSpecies(e);
+                        },
+                        onTap: (){
+                          controller.createInstance(e);
+                        },
+                      );
+                    },
+                  ).toList(),
+                );
+              })
             ],
           )),
         ],
       ),
-      floatingActionButton: SizedBox(
-        height: 50.w,
-        width: 50.w,
-        child: GFButton(
-          text: "+",
-          textStyle: TextStyle(
-            color: XColors.white,
-            fontSize: 40.sp,
-          ),
-          onPressed: () {
-            controller.createInstance();
-          },
-          borderShape: const CircleBorder(),
-        ),
-      ),
+      // floatingActionButton: SizedBox(
+      //   height: 50.w,
+      //   width: 50.w,
+      //   child: GFButton(
+      //     text: "+",
+      //     textStyle: TextStyle(
+      //       color: XColors.white,
+      //       fontSize: 40.sp,
+      //     ),
+      //     onPressed: () {
+      //       controller.createInstance();
+      //     },
+      //     borderShape: const CircleBorder(),
+      //   ),
+      // ),
     );
   }
 
