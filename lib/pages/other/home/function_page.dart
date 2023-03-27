@@ -29,6 +29,10 @@ class FunctionPage extends BaseGetPageView<FunctionController,FunctionState>{
               IndexPage(),
               KeepAliveWidget(child: AssetsInternalControlPage()),
               Container(),
+              Container(),
+              Container(),
+              Container(),
+              Container(),
             ],
           ),
         )
