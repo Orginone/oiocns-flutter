@@ -3,13 +3,14 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 
-class WorkState extends BaseGetState{
+class InitiateState extends BaseGetState{
   late TabController tabController;
-
 }
 
-const List<String> tabTitle = [
-  '待办',
-  '发起',
-];
 
+const List<String> tabTitle = [
+  '发起',
+  '草稿',
+  '已发起',
+  '已完结'
+];

@@ -5,7 +5,7 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/images.dart';
-import 'package:orginone/pages/other/work/state.dart';
+import 'package:orginone/pages/other/work/to_do/state.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
@@ -87,6 +87,7 @@ class ProcessDetailsPage
 
   Widget _title() {
     return Container(
+      margin: EdgeInsets.only(top: 10.h),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.w), color: Colors.white),
       padding: EdgeInsets.symmetric(vertical: 10.w, horizontal: 16.w),
@@ -487,7 +488,7 @@ class ProcessDetailsPage
       child: Container(
         alignment: Alignment.center,
         height: 45.h,
-        width: 200.w,
+        width: 300.w,
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(16.w),

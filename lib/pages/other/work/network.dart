@@ -18,6 +18,9 @@ class WorkNetWork {
 
     if (result.success) {
       tasks = result.data?.result ?? [];
+      if(type == "待办"){
+        type = "审批";
+      }
       tasks.removeWhere((element) => element.flowNode?.nodeType != type);
     } else {
       ToastUtils.showMsg(msg: result.msg);

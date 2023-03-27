@@ -11,9 +11,7 @@ import 'state.dart';
 class HaveInitiatedController extends BaseListController<HaveInitiatedState> {
  final HaveInitiatedState state = HaveInitiatedState();
 
- final ISpeciesItem species;
-
-  HaveInitiatedController(this.species);
+  HaveInitiatedController();
 
 
 
@@ -26,7 +24,7 @@ class HaveInitiatedController extends BaseListController<HaveInitiatedState> {
 
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async{
-     state.dataList.value = await WorkStartNetWork.getFlowInstance(speciesId: species.id);
+     state.dataList.value = await WorkStartNetWork.getFlowInstance();
      loadSuccess();
   }
 

@@ -6,6 +6,7 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/pages/other/work/state.dart';
+import 'package:orginone/pages/other/work/to_do/state.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/department_management.dart';
@@ -105,7 +106,7 @@ class Item extends StatelessWidget {
                 height: 20.h,
               ),
               Text(
-                "单据编号:NKZCBX20220707000086",
+                "单据编号:",
                 style: TextStyle(color: Colors.black87, fontSize: 16.sp),
               ),
               comment(),

@@ -787,7 +787,7 @@ class CardChildWidget extends StatelessWidget {
                             height: 10.h,
                           ),
                           Text(
-                            value[index]['cardName'],
+                            value[index]['name'],
                             style: XFonts.size18Black6,
                           ),
                         ],

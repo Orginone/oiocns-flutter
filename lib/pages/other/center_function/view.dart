@@ -28,6 +28,9 @@ class CenterFunctionPage
     return GyScaffold(
       titleName: state.info.name,
       actions: actions,
+      titleStyle: TextStyle(color: Colors.white),
+      appBarColor: XColors.themeColor,
+      backColor: Colors.white,
       body: Column(
         children: [
           tabBar(),
