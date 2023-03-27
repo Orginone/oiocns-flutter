@@ -69,12 +69,13 @@ class LoginPage extends GetView<LoginController> {
       child: LoadingButton(
         loadingBtnCtrl: LoadingButtonController(),
         callback: () async {
-          if(!KernelApi.getInstance().isOnline){
+          if (!KernelApi.getInstance().isOnline) {
             KernelApi.getInstance().start();
           }
           if (!formKey.currentState!.validate()) return;
           var settingCtrl = Get.find<SettingController>();
-          var res = await settingCtrl.login(controller.accountCtrl.text, controller.passwordCtrl.text);
+          var res = await settingCtrl.login(
+              controller.accountCtrl.text, controller.passwordCtrl.text);
           if (res.success) {
             [Permission.storage, Permission.notification].request();
             Get.offAndToNamed(Routers.home);
@@ -99,8 +100,8 @@ class LoginBinding extends Bindings {
 }
 
 class LoginController extends GetxController {
-  final accountCtrl = TextEditingController(text: "SEN");
-  final passwordCtrl = TextEditingController(text: "Sen_123");
+  final accountCtrl = TextEditingController(text: "WEIXIAYING");
+  final passwordCtrl = TextEditingController(text: "@Shen0813");
 
   @override
   void onInit() async {

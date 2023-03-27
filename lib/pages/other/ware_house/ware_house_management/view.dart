@@ -5,14 +5,12 @@ import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/pages/other/ware_house/ware_house_management/state.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'item.dart';
 import 'logic.dart';
 
 class WareHouseManagementPage extends BaseGetListPageView<
-    WareHouseManagementController,
-    WareHouseManagementState> {
+    WareHouseManagementController, WareHouseManagementState> {
   @override
   Widget buildView() {
     return Container(
@@ -28,7 +26,6 @@ class WareHouseManagementPage extends BaseGetListPageView<
     );
   }
 
-
   @override
   Widget headWidget() {
     // TODO: implement headWidget
@@ -36,8 +33,8 @@ class WareHouseManagementPage extends BaseGetListPageView<
       children: [
         CommonWidget.commonNonIndicatorTabBar(state.tabController, tabTitle,
             onTap: (int index) {
-              controller.changeIndex(index);
-            }),
+          controller.changeIndex(index);
+        }),
       ],
     );
   }
@@ -47,8 +44,7 @@ class WareHouseManagementPage extends BaseGetListPageView<
       decoration: BoxDecoration(
           color: Colors.white,
           border: Border(
-              bottom: BorderSide(color: Colors.grey.shade200, width: 0.5))
-      ),
+              bottom: BorderSide(color: Colors.grey.shade200, width: 0.5))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -107,8 +103,11 @@ class WareHouseManagementPage extends BaseGetListPageView<
               color: Colors.black,
               image: DecorationImage(
                   fit: BoxFit.cover, image: NetworkImage(recent.url)),
-            ),),
-          SizedBox(height: 5.h,),
+            ),
+          ),
+          SizedBox(
+            height: 5.h,
+          ),
           Text(
             recent.name,
             maxLines: 1,
@@ -116,8 +115,8 @@ class WareHouseManagementPage extends BaseGetListPageView<
                 fontSize: 14.sp,
                 color: const Color.fromARGB(255, 52, 52, 54),
                 overflow: TextOverflow.ellipsis
-              // color: Colors.black
-            ),
+                // color: Colors.black
+                ),
           )
         ],
       ),
@@ -128,8 +127,7 @@ class WareHouseManagementPage extends BaseGetListPageView<
     return Container(
       decoration: BoxDecoration(
           border: Border(
-              bottom: BorderSide(color: Colors.grey.shade200, width: 0.5))
-      ),
+              bottom: BorderSide(color: Colors.grey.shade200, width: 0.5))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -138,26 +136,22 @@ class WareHouseManagementPage extends BaseGetListPageView<
                 firstTitle: "仓库",
                 allTitle: state.selectedSpecies
                     .map((element) => element.name)
-                    .toList(), onTapFirst: () {
-              controller.clearSpecies();
-            }, onTapTitle: (index) {
-              controller.removeSpecies(index);
-            });
+                    .toList(),
+                onTapFirst: () {
+                  controller.clearSpecies();
+                },
+                onTapTitle: (index) {
+                  controller.removeSpecies(index);
+                });
           }),
           Obx(() {
-            var list = [];
+            var list = state.species;
             if (state.selectedSpecies.isNotEmpty) {
               list = state.selectedSpecies.last.children;
-            }else{
-              CommonTreeManagement().species?.children.forEach((element) {
-                if(element.name == "财物"){
-                  list.addAll(element.children);
-                }
-              });
             }
             return Column(
               children: list.map(
-                    (e) {
+                (e) {
                   return GbItem(
                     item: e,
                     next: () {

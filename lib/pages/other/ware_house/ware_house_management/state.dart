@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_list_state.dart';
@@ -7,7 +6,7 @@ import 'package:orginone/dart/core/market/index.dart';
 import 'package:orginone/dart/core/thing/ispecies.dart';
 import 'package:orginone/util/common_tree_management.dart';
 
-class WareHouseManagementState extends BaseGetListState<IProduct>{
+class WareHouseManagementState extends BaseGetListState<IProduct> {
   late TabController tabController;
 
   int index = 0;
@@ -18,9 +17,8 @@ class WareHouseManagementState extends BaseGetListState<IProduct>{
 
   late List<ISpeciesItem> species;
 
-  WareHouseManagementState(){
-    species = [];
-
+  WareHouseManagementState() {
+    species = CommonTreeManagement().species?.children ?? [];
   }
 }
 

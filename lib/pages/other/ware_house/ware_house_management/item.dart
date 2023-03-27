@@ -1,6 +1,3 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -12,7 +9,6 @@ import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 class ApplicationItem extends StatelessWidget {
-
   final IProduct product;
 
   const ApplicationItem({Key? key, required this.product}) : super(key: key);
@@ -20,16 +16,17 @@ class ApplicationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        Get.toNamed(Routers.applicationDetails,arguments: {"product":product});
+      onTap: () {
+        Get.toNamed(Routers.applicationDetails,
+            arguments: {"product": product});
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-            border: Border(bottom: BorderSide(color: Colors.grey.shade200,width: 0.5),)
-        ),
-        padding: EdgeInsets.symmetric(
-            vertical: 10.h, horizontal: 10.w),
+            color: Colors.white,
+            border: Border(
+              bottom: BorderSide(color: Colors.grey.shade200, width: 0.5),
+            )),
+        padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
         child: Row(
           children: [
             Container(
@@ -41,33 +38,67 @@ class ApplicationItem extends StatelessWidget {
                       image: NetworkImage(
                           "http://anyinone.com:888/img/logo/logo3.jpg"))),
             ),
-            SizedBox(width: 20.w,),
+            SizedBox(
+              width: 20.w,
+            ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(product.prod.name??"",style: TextStyle(color: Colors.black,fontSize: 16.sp),maxLines: 1,overflow: TextOverflow.ellipsis,),
-                  SizedBox(height: 5.h,),
-                  Text("备注:${product.prod.remark??""}",style: TextStyle(color: Colors.grey.shade400,fontSize: 14.sp,),maxLines: 1,overflow: TextOverflow.ellipsis,),
-                  SizedBox(height: 5.h,),
+                  Text(
+                    product.prod.name ?? "",
+                    style: TextStyle(color: Colors.black, fontSize: 16.sp),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  Text(
+                    "备注:${product.prod.remark ?? ""}",
+                    style: TextStyle(
+                      color: Colors.grey.shade400,
+                      fontSize: 14.sp,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("应用类型:${product.prod.typeName}",style:TextStyle(color: Colors.grey.shade500,fontSize: 14.sp,)),
-                      Text(DateTime.tryParse(product.prod.createTime ?? "")!.format(format: "yyyy-MM-dd HH:mm"),style:TextStyle(color: Colors.grey.shade500,fontSize: 14.sp,))
+                      Text("应用类型:${product.prod.typeName}",
+                          style: TextStyle(
+                            color: Colors.grey.shade500,
+                            fontSize: 14.sp,
+                          )),
+                      Text(
+                          DateTime.tryParse(product.prod.createTime ?? "")!
+                              .format(format: "yyyy-MM-dd HH:mm"),
+                          style: TextStyle(
+                            color: Colors.grey.shade500,
+                            fontSize: 14.sp,
+                          ))
                     ],
                   )
                 ],
               ),
             ),
-            SizedBox(width: 20.w,),
+            SizedBox(
+              width: 20.w,
+            ),
             Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.blueAccent,width: 1),
+                border: Border.all(color: Colors.blueAccent, width: 1),
                 borderRadius: BorderRadius.circular(16.w),
               ),
-              padding: EdgeInsets.symmetric(vertical: 2.h,horizontal: 15.w),
-              child: Text("更多",style: TextStyle(color: Colors.blueAccent,fontSize: 16.sp),),
+              padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 15.w),
+              child: Text(
+                "更多",
+                style: TextStyle(color: Colors.blueAccent, fontSize: 16.sp),
+              ),
             )
           ],
         ),
@@ -75,7 +106,6 @@ class ApplicationItem extends StatelessWidget {
     );
   }
 }
-
 
 class GbItem extends StatelessWidget {
   final ISpeciesItem item;
@@ -85,22 +115,23 @@ class GbItem extends StatelessWidget {
   final bool showPopupMenu;
 
   final VoidCallback? onTap;
-  const GbItem(
-      {Key? key,
-        required this.item,
-        this.next, this.showPopupMenu = true, this.onTap,
-       })
-      : super(key: key);
+  const GbItem({
+    Key? key,
+    required this.item,
+    this.next,
+    this.showPopupMenu = true,
+    this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        if(item.children.isNotEmpty){
-          if(next!=null){
+      onTap: () {
+        if (item.children.isNotEmpty) {
+          if (next != null) {
             next!();
           }
-        }else{
+        } else {
           ToastUtils.showMsg(msg: "已经到底了");
         }
       },
@@ -117,7 +148,8 @@ class GbItem extends StatelessWidget {
               Expanded(
                 child: title(),
               ),
-              popupMenuButton(),
+              details(),
+              _popupMenuButton(),
               more(),
             ],
           ),
@@ -139,36 +171,57 @@ class GbItem extends StatelessWidget {
   }
 
   Widget more() {
+    return Icon(
+      Icons.navigate_next,
+      size: 32.w,
+    );
+  }
+
+  Widget details() {
     return GestureDetector(
-      onTap: (){
-        if(onTap!=null){
+      onTap: () {
+        if (onTap != null) {
           onTap!();
-        }else{
-          Get.toNamed(Routers.thing,arguments: {"id":item.id,"title":item.name});
+        } else {
+          Get.toNamed(Routers.thing,
+              arguments: {"id": item.id, "title": item.name});
         }
       },
-      child: Icon(
-        Icons.navigate_next,
-        size: 32.w,
+      child: Image.asset(
+        Images.moreIcon,
+        width: 26.w,
+        height: 26.w,
       ),
     );
   }
 
-  Widget popupMenuButton(){
-    if(!showPopupMenu){
+  Widget _popupMenuButton() {
+    if (!showPopupMenu) {
       return Container();
     }
     return PopupMenuButton(
-      icon:Icon(
+      icon: Icon(
         Icons.more_vert_outlined,
         size: 32.w,
       ),
-      itemBuilder: (BuildContext context){
+      itemBuilder: (BuildContext context) {
         return [
-          const PopupMenuItem(value: "createThing",child: Text("新建文件夹"),),
-          const PopupMenuItem(value: "createThing",child: Text("刷新文件夹"),),
-          const PopupMenuItem(value: "createThing",child: Text("上传文件"),),
-          const PopupMenuItem(value: "createThing",child: Text("创建实体"),),
+          const PopupMenuItem(
+            value: "createThing",
+            child: Text("新建文件夹"),
+          ),
+          const PopupMenuItem(
+            value: "createThing",
+            child: Text("刷新文件夹"),
+          ),
+          const PopupMenuItem(
+            value: "createThing",
+            child: Text("上传文件"),
+          ),
+          const PopupMenuItem(
+            value: "createThing",
+            child: Text("创建实体"),
+          ),
         ];
       },
     );
