@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/components/unified.dart';
-import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/pages/todo/workbench_page.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 
-import 'initiate/view.dart';
 import 'logic.dart';
-import 'process_approval/view.dart';
 import 'state.dart';
-import 'to_do/view.dart';
+import 'store/view.dart';
+import 'ware_house_management/view.dart';
 
-class WorkPage extends BaseGetPageView<WorkController, WorkState> {
+class WareHousePage
+    extends BaseGetPageView<WareHouseController, WareHouseState> {
   @override
   Widget buildView() {
     return Column(
@@ -22,13 +20,18 @@ class WorkPage extends BaseGetPageView<WorkController, WorkState> {
           child: TabBarView(
             controller: state.tabController,
             children: [
-              KeepAliveWidget(child: ToDoPage()),
-              KeepAliveWidget(child: InitiatePage()),
+              KeepAliveWidget(child: WareHouseManagementPage()),
+              KeepAliveWidget(child: StorePage()),
             ],
           ),
         )
       ],
     );
+  }
+
+  @override
+  WareHouseController getController() {
+    return WareHouseController();
   }
 
   Widget tabBar() {
@@ -53,13 +56,8 @@ class WorkPage extends BaseGetPageView<WorkController, WorkState> {
   }
 
   @override
-  WorkController getController() {
-    return WorkController();
-  }
-
-  @override
   String tag() {
     // TODO: implement tag
-    return this.toString();
+    return "WareHouse";
   }
 }

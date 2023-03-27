@@ -102,7 +102,7 @@ class FileSystemItem implements IFileSystemItem {
       ));
       if (res.success && res.data != null) {
         target!.hasSubDirectories = true;
-        var node = FileSystemItem(target: FileItemModel.formJson(res.data), parent: parent,children: []);
+        var node = FileSystemItem(target: FileItemModel.formJson(res.data), parent: this,children: []);
         children!.add(node);
         return node;
       }
@@ -180,7 +180,7 @@ class FileSystemItem implements IFileSystemItem {
       if (res.success && res.data!.isNotEmpty) {
         for(var json in res.data!){
           children ??= [];
-          children!.add(FileSystemItem(target: FileItemModel.formJson(json), parent: parent,children: []));
+          children!.add(FileSystemItem(target: FileItemModel.formJson(json), parent: this,children: []));
         }
         return true;
       }

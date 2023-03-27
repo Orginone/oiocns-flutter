@@ -38,6 +38,7 @@ import 'package:orginone/pages/other/choice_department/view.dart';
 import 'package:orginone/pages/other/choice_people/binding.dart';
 import 'package:orginone/pages/other/choice_people/view.dart';
 import 'package:orginone/pages/other/choice_thing/binding.dart';
+import 'package:orginone/pages/other/file/view.dart';
 import 'package:orginone/pages/other/home/home_page.dart';
 import 'package:orginone/pages/other/home/spaces_page.dart';
 import 'package:orginone/pages/other/login.dart';
@@ -72,21 +73,20 @@ import './pages/other/home/ware_house/often_use_binding.dart';
 
 // 仓库
 import './pages/other/home/ware_house/recently_opened_binding.dart';
-import 'pages/other/application/application_details/binding.dart';
-import 'pages/other/application/application_details/view.dart';
-import 'pages/other/application/binding.dart';
-import 'pages/other/application/view.dart';
 import 'pages/other/batch_operation_asset/binding.dart';
 import 'pages/other/center_function/create_claim/binding.dart';
 import 'pages/other/center_function/create_claim/view.dart';
 import 'pages/other/choice_gb/binding.dart';
 import 'pages/other/choice_gb/view.dart';
 import 'pages/other/choice_thing/view.dart';
+import 'pages/other/file/binding.dart';
 import 'pages/other/home/ware_house/ware_house.dart';
 import 'pages/other/storage_location/binding.dart';
 import 'pages/other/storage_location/view.dart';
 import 'pages/other/thing/binding.dart';
 import 'pages/other/thing/view.dart';
+import 'pages/other/ware_house/ware_house_management/application_details/binding.dart';
+import 'pages/other/ware_house/ware_house_management/application_details/view.dart';
 import 'pages/other/work/process_details/binding.dart';
 import 'pages/other/work/process_details/view.dart';
 import 'pages/other/work/work_start/binding.dart';
@@ -206,16 +206,17 @@ class Routers {
   //创建办事
   static const String createWork = '/createWork';
 
-  //创建办事
+  //选择物
   static const String choiceThing = '/choiceThing';
 
-  //应用
-  static const String application = '/application';
-
+  //应用详情
   static const String applicationDetails = '/applicationDetails';
 
   //实体列表
   static const String thing = '/thing';
+
+  //文件夹
+  static const String file = '/file';
 
   static String get main {
     return login;
@@ -466,11 +467,6 @@ class Routers {
         binding: ChoiceThingBinding(),
       ),
       GetPage(
-        name: Routers.application,
-        page: () => ApplicationPage(),
-        binding:ApplicationBinding(),
-      ),
-      GetPage(
         name: Routers.applicationDetails,
         page: () => ApplicationDetailsPage(),
         binding:ApplicationDetailsBinding(),
@@ -479,6 +475,11 @@ class Routers {
         name: Routers.thing,
         page: () => ThingPage(),
         binding:ThingBinding(),
+      ),
+      GetPage(
+        name: Routers.file,
+        page: () => FilePage(),
+        binding:FileBinding(),
       ),
     ];
   }

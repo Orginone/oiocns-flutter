@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/dart/core/thing/ispecies.dart';
-import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
+
 import 'item.dart';
 import 'logic.dart';
 import 'state.dart';
@@ -18,13 +18,29 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
       titleName: "分类标准",
       body: Column(
         children: [
-          classificationName(),
-          state.showSearch?CommonWidget.commonSearchBarWidget(
-              controller: state.searchController,
-              onSubmitted: (str) {
-                controller.search(str);
-              },
-              hint: "请输入分类标准名称"):const SizedBox(),
+          Obx(
+            () {
+              return CommonWidget.commonBreadcrumbNavWidget(
+                  firstTitle: state.head,
+                  allTitle: state.selectedGroup
+                      .map((element) => element.name)
+                      .toList(),
+                  onTapFirst: () {
+                    controller.clearGroup();
+                  },
+                  onTapTitle: (index) {
+                    controller.removeGroup(index);
+                  });
+            },
+          ),
+          state.showSearch
+              ? CommonWidget.commonSearchBarWidget(
+                  controller: state.searchController,
+                  onSubmitted: (str) {
+                    controller.search(str);
+                  },
+                  hint: "请输入分类标准名称")
+              : const SizedBox(),
           SizedBox(
             height: 10.h,
           ),
@@ -36,12 +52,14 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
               return body();
             }),
           ),
-          !state.showChoice?const SizedBox():Obx(() {
-            return CommonWidget.commonShowChoiceDataInfo(
-                state.selectedGb.value?.name ?? "", onTap: () {
-              controller.back();
-            });
-          }),
+          !state.showChoice
+              ? const SizedBox()
+              : Obx(() {
+                  return CommonWidget.commonShowChoiceDataInfo(
+                      state.selectedGb.value?.name ?? "", onTap: () {
+                    controller.back();
+                  });
+                }),
         ],
       ),
     );
@@ -84,13 +102,14 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
                       item: item,
                       selected: state.selectedGb.value,
                       next: () {
-                        if(item.children.isNotEmpty){
+                        if (item.children.isNotEmpty) {
                           controller.selectGroup(item);
                         }
                       },
                       onChanged: (value) {
                         controller.selectedGb(item);
-                      }, functionMenu: state.menu,
+                      },
+                      functionMenu: state.menu,
                     );
                   });
                 },
@@ -102,86 +121,6 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
           }),
         ],
       ),
-    );
-  }
-
-  Widget classificationName() {
-    TextStyle selectedTextStyle =
-    TextStyle(fontSize: 20.sp, color: Colors.black);
-
-    TextStyle unSelectedTextStyle =
-    TextStyle(fontSize: 20.sp, color: Colors.grey.shade300);
-
-    Widget level(ISpeciesItem group) {
-      int index = state.selectedGroup.indexOf(group);
-      return GestureDetector(
-        onTap: () {
-          controller.removeGroup(index);
-        },
-        child: Text.rich(
-          TextSpan(
-            children: [
-              WidgetSpan(
-                  child: Icon(
-                    Icons.chevron_right,
-                    size: 32.w,
-                  ),
-                  alignment: PlaceholderAlignment.middle),
-              TextSpan(
-                  text: group.name,
-                  style: index == state.selectedGroup.length - 1
-                      ? selectedTextStyle
-                      : unSelectedTextStyle),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return Container(
-      color: Colors.white,
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
-      child: Obx(() {
-        List<Widget> nextStep = [];
-        if (state.selectedGroup.isNotEmpty) {
-          for (var value in state.selectedGroup) {
-            nextStep.add(level(value));
-          }
-        }
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  controller.clearGroup();
-                },
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      WidgetSpan(
-                          child: Container(
-                            width: 5.w,
-                            height: 25.h,
-                            margin: EdgeInsets.only(right: 15.w),
-                            color: XColors.themeColor,
-                          ),
-                          alignment: PlaceholderAlignment.middle),
-                      TextSpan(
-                          text: state.head,
-                          style: state.selectedGroup.isEmpty
-                              ? selectedTextStyle
-                              : unSelectedTextStyle)
-                    ],
-                  ),
-                ),
-              ),
-              ...nextStep,
-            ],
-          ),
-        );
-      }),
     );
   }
 }

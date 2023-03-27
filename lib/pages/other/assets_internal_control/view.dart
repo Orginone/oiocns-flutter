@@ -226,4 +226,10 @@ class AssetsInternalControlPage extends BaseGetListPageView<AssetsInternalContro
     // TODO: implement tag
     return this.toString();
   }
+
+  @override
+  bool displayNoDataWidget() {
+    // TODO: implement displayNoDataWidget
+    return false;
+  }
 }

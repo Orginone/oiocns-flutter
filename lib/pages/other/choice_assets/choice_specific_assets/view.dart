@@ -3,13 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/dart/core/target/species/ispecies.dart';
 import 'package:orginone/pages/other/choice_assets/logic.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 
-import '../state.dart';
 import 'logic.dart';
 import 'state.dart';
 
@@ -27,7 +25,23 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
       body: SafeArea(
         child: Column(
           children: [
-            classificationName(),
+            Obx(
+              () {
+                bool verification =
+                    state.selectedSecondLevelAsset.value != null &&
+                        (state.selectedSecondLevelAsset.value!.nextLevel
+                            .isNotEmpty);
+                return CommonWidget.commonBreadcrumbNavWidget(
+                  firstTitle: state.selectedCategory.name,
+                  allTitle: verification
+                      ? [state.selectedSecondLevelAsset.value!.name]
+                      : [],
+                  onTapFirst: () {
+                    controller.previousStep();
+                  },
+                );
+              },
+            ),
             SizedBox(
               height: 10.h,
             ),
@@ -53,74 +67,6 @@ class ChoiceSpecificAssetsPage extends BaseGetView<
     );
   }
 
-  Widget classificationName() {
-    // if (choiceAssetController.state.selectedAsset.value?.childList?.isEmpty ?? false) {
-    //   return Container();
-    // }
-    return Container(
-      color: Colors.white,
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
-      child: Obx(() {
-        Widget nextStep = Container();
-        bool verification = state.selectedSecondLevelAsset.value != null &&
-            (state.selectedSecondLevelAsset.value!.nextLevel.isNotEmpty);
-
-        TextStyle selectedTextStyle =
-        TextStyle(fontSize: 20.sp, color: Colors.black);
-
-        TextStyle unSelectedTextStyle =
-        TextStyle(fontSize: 20.sp, color: Colors.grey.shade300);
-        if (verification) {
-          nextStep = Text.rich(
-            TextSpan(
-              children: [
-                WidgetSpan(
-                    child: Icon(
-                      Icons.chevron_right,
-                      size: 32.w,
-                    ),
-                    alignment: PlaceholderAlignment.middle),
-                TextSpan(
-                    text:
-                    state.selectedSecondLevelAsset.value!.name,
-                    style: selectedTextStyle),
-              ],
-            ),
-          );
-        }
-        return Row(
-          children: [
-            GestureDetector(
-              onTap: () {
-                controller.previousStep();
-              },
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    WidgetSpan(
-                        child: Container(
-                          width: 5.w,
-                          height: 25.h,
-                          margin: EdgeInsets.only(right: 15.w),
-                          color: XColors.themeColor,
-                        ),
-                        alignment: PlaceholderAlignment.middle),
-                    TextSpan(
-                        text: state.selectedCategory.name,
-                        style: verification
-                            ? unSelectedTextStyle
-                            : selectedTextStyle)
-                  ],
-                ),
-              ),
-            ),
-            nextStep,
-          ],
-        );
-      }),
-    );
-  }
 
   Widget listView() {
     if (!state.selectedCategory.hasNextLevel) {

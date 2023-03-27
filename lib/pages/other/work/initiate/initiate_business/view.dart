@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/pages/index/index_page.dart';
 import 'package:orginone/pages/other/work/initiate/initiate_business/state.dart';
@@ -14,6 +15,7 @@ class InitiateBusinessPage extends BaseGetPageView<InitiateBusinessController,In
   @override
   Widget buildView() {
     return Scaffold(
+      backgroundColor: GYColors.backgroundColor,
       body:ListView(
         shrinkWrap: true,
         children: [

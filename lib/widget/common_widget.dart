@@ -550,4 +550,111 @@ class CommonWidget {
       icon: icon,
     );
   }
+
+
+  static Widget commonNonIndicatorTabBar(TabController tabController,List<String> tabTitle,{ValueChanged<int>? onTap}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(bottom: BorderSide(color: Colors.grey.shade200,width: 0.5))
+      ),
+      alignment: Alignment.centerLeft,
+      child: TabBar(
+        controller: tabController,
+        tabs: tabTitle.map((e) {
+          return Tab(
+            text: e,
+            height: 50.h,
+          );
+        }).toList(),
+        unselectedLabelColor: Colors.grey,
+        unselectedLabelStyle: TextStyle(fontSize: 18.sp),
+        labelColor: XColors.themeColor,
+        labelStyle: TextStyle(fontSize: 18.sp),
+        isScrollable: true,
+        indicator: const BoxDecoration(),
+        onTap:onTap,
+      ),
+    );
+  }
+
+  static Widget commonBreadcrumbNavWidget({required String firstTitle,required List<String> allTitle,VoidCallback? onTapFirst,ValueChanged? onTapTitle}) {
+    TextStyle selectedTextStyle =
+    TextStyle(fontSize: 20.sp, color: Colors.black);
+
+    TextStyle unSelectedTextStyle =
+    TextStyle(fontSize: 20.sp, color: Colors.grey.shade300);
+
+    Widget level(String title) {
+      int index = allTitle.indexOf(title);
+      return GestureDetector(
+        onTap: () {
+         if(onTapTitle!=null){
+           onTapTitle(index);
+         }
+        },
+        child: Text.rich(
+          TextSpan(
+            children: [
+              WidgetSpan(
+                  child: Icon(
+                    Icons.chevron_right,
+                    size: 32.w,
+                  ),
+                  alignment: PlaceholderAlignment.middle),
+              TextSpan(
+                  text: title,
+                  style: index == allTitle.length - 1
+                      ? selectedTextStyle
+                      : unSelectedTextStyle),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      color: Colors.white,
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
+      child: LayoutBuilder(builder: (context,type) {
+        List<Widget> nextStep = [];
+        if (allTitle.isNotEmpty) {
+          for (var value in allTitle) {
+            nextStep.add(level(value));
+          }
+        }
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: onTapFirst,
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      WidgetSpan(
+                          child: Container(
+                            width: 5.w,
+                            height: 25.h,
+                            margin: EdgeInsets.only(right: 15.w),
+                            color: XColors.themeColor,
+                          ),
+                          alignment: PlaceholderAlignment.middle),
+                      TextSpan(
+                          text: firstTitle,
+                          style: allTitle.isEmpty
+                              ? selectedTextStyle
+                              : unSelectedTextStyle)
+                    ],
+                  ),
+                ),
+              ),
+              ...nextStep,
+            ],
+          ),
+        );
+      }),
+    );
+  }
 }

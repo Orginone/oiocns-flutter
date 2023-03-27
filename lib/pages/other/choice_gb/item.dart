@@ -50,8 +50,8 @@ class Item extends StatelessWidget {
               Expanded(
                 child: title(),
               ),
-              functionMenu == FunctionMenu.next?more():details(),
               showFunctionButton?_popupMenuButton():Container(),
+              functionMenu == FunctionMenu.next?more():details(),
             ],
           ),
         ),

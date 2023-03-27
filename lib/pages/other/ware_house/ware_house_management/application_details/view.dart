@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -55,8 +54,8 @@ class ApplicationDetailsPage
               onTap: () {
                 controller.addCommon();
               },
-              child: Obx(() {
-                bool has = controller.roController.hasProduct(state.product);
+              child: LayoutBuilder(builder:(context, type) {
+                bool has = false;
                 return Container(
                   width: 300.w,
                   height: 50.h,
@@ -73,7 +72,7 @@ class ApplicationDetailsPage
                     style: TextStyle(color: has?Colors.blueAccent:Colors.white, fontSize: 16.sp),
                   ),
                 );
-              }),
+              },),
             ),
           ),),
           _popupMenuButton(),

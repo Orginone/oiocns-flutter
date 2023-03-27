@@ -23,12 +23,10 @@ class Item extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(4.w),
+            border: Border(bottom: BorderSide(color: Colors.grey.shade200,width: 0.5),)
         ),
         padding: EdgeInsets.symmetric(
             vertical: 10.h, horizontal: 10.w),
-        margin:
-        EdgeInsets.only(top: 10.h, right: 16.w, left: 16.w),
         child: Row(
           children: [
             Container(

@@ -18,6 +18,7 @@ import 'package:orginone/pages/index/index_page.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/pages/other/assets_internal_control/view.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
+import 'package:orginone/pages/other/ware_house/view.dart';
 import 'package:orginone/pages/other/work/view.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/routers.dart';
@@ -106,7 +107,7 @@ class HomeController extends TabsController {
     registerTab(center);
     registerTab(XTab(
       body: Text('仓库', style: XFonts.size14Black3),
-      view: const WareHouse(),
+      view: WareHousePage(),
       icon: XImage.localImage("warehouse", size: size),
     ));
     registerTab(XTab(

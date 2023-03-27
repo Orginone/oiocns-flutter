@@ -21,8 +21,7 @@ class OftenUseController extends GetxController {
     oftenUseList.add(Recent(
         "0",
         "应用",
-        "http://anyinone.com:888/img/logo/logo3.jpg",
-        () => Get.toNamed(Routers.application)));
+        "http://anyinone.com:888/img/logo/logo3.jpg",(){}));
     oftenUseList.add(
         Recent("1", "文件", "http://anyinone.com:888/img/logo/logo3.jpg", () {}));
     oftenUseList.add(
