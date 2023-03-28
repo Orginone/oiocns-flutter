@@ -42,6 +42,6 @@ class ProcessApprovalPage extends BaseGetListPageView<ProcessApprovalController,
   @override
   String tag() {
     // TODO: implement tag
-    return "${this.toString()}${type.label}";
+    return "ProcessApproval_${type.label}";
   }
 }

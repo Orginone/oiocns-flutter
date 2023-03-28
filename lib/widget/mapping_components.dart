@@ -17,9 +17,6 @@ Map<String, MappingComponentsCallback> testMappingComponents = {
 };
 
 
-
-
-
 MappingComponentsCallback mappingTextWidget = (Fields data,
     {bool isEdit = false, AssetsType? assetsType}) {
   if (data.isBillCode && !isEdit) {

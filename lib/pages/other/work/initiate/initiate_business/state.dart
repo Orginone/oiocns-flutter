@@ -9,9 +9,4 @@ class InitiateBusinessState extends BaseGetState{
 
   var selectedSpecies = <ISpeciesItem>[].obs;
 
-  late List<ISpeciesItem> species;
-
-  InitiateBusinessState(){
-    species =  CommonTreeManagement().species?.children??[];
-  }
 }

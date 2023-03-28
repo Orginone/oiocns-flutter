@@ -84,6 +84,8 @@ import 'pages/other/home/ware_house/ware_house.dart';
 import 'pages/other/storage_location/binding.dart';
 import 'pages/other/storage_location/view.dart';
 import 'pages/other/thing/binding.dart';
+import 'pages/other/thing/thing_details/binding.dart';
+import 'pages/other/thing/thing_details/view.dart';
 import 'pages/other/thing/view.dart';
 import 'pages/other/ware_house/ware_house_management/application_details/binding.dart';
 import 'pages/other/ware_house/ware_house_management/application_details/view.dart';
@@ -214,6 +216,9 @@ class Routers {
 
   //实体列表
   static const String thing = '/thing';
+
+  //实体详情
+  static const String thingDetails = '/thingDetails';
 
   //文件夹
   static const String file = '/file';
@@ -475,6 +480,11 @@ class Routers {
         name: Routers.thing,
         page: () => ThingPage(),
         binding:ThingBinding(),
+      ),
+      GetPage(
+        name: Routers.thingDetails,
+        page: () => ThingDetailsPage(),
+        binding:ThingDetailsBinding(),
       ),
       GetPage(
         name: Routers.file,

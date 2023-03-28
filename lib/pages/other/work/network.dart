@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -66,14 +68,16 @@ class WorkNetWork {
   }
 
   static Future<void> approvalTask(
-      {required String id, required int status, String? comment}) async {
+      {required String id, required int status, String? comment,VoidCallback? onSuccess}) async {
     ResultType req = await KernelApi.getInstance().approvalTask(
         ApprovalTaskReq(id: id, status: status, comment: comment));
 
     if (req.success) {
       ToastUtils.showMsg(msg: "成功");
       EventBusHelper.fire(WorkReload());
-      Get.back();
+      if(onSuccess!=null){
+        onSuccess();
+      }
     } else {
       ToastUtils.showMsg(msg: req.msg);
     }

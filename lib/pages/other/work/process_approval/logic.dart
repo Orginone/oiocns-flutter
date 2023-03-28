@@ -34,4 +34,9 @@ class ProcessApprovalController
     }
     loadSuccess();
   }
+
+  void approval(String id,int status) async{
+    await WorkNetWork.approvalTask(id: id??"", status: status,comment: '');
+  }
+
 }

@@ -5,6 +5,7 @@ import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/pages/other/ware_house/ware_house_management/state.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'item.dart';
 import 'logic.dart';
@@ -144,9 +145,15 @@ class WareHouseManagementPage extends BaseGetListPageView<
             });
           }),
           Obx(() {
-            var list = state.species;
+            var list = [];
             if (state.selectedSpecies.isNotEmpty) {
               list = state.selectedSpecies.last.children;
+            }else{
+              CommonTreeManagement().species?.children.forEach((element) {
+                if(element.name == "财物"){
+                  list.addAll(element.children);
+                }
+              });
             }
             return Column(
               children: list.map(

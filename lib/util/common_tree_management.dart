@@ -21,12 +21,12 @@ class CommonTreeManagement {
 
   List<AssetsCategoryGroup> get category => _category;
 
-  SpeciesItem? _species;
+  var _species = Rxn<SpeciesItem>();
 
-  SpeciesItem? get species => _species;
+  SpeciesItem? get species => _species.value;
 
   Future<void> initTree() async {
-    _species = await loadSpeciesTree(_setting.space.id);
+    _species.value = await loadSpeciesTree(_setting.space.id);
     _category.clear();
     ResultType<XDictItemArray> res = await kernel.queryDictItems(
       IdSpaceReq(
@@ -148,7 +148,7 @@ class CommonTreeManagement {
       return null;
     }
     try{
-      var data = _species!
+      var data = _species.value!
           .getAllLastList()
           .firstWhere((element) => element.id == specieId);
       if (data.attrs.isEmpty) {

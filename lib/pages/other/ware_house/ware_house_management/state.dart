@@ -19,7 +19,8 @@ class WareHouseManagementState extends BaseGetListState<IProduct>{
   late List<ISpeciesItem> species;
 
   WareHouseManagementState(){
-    species =  CommonTreeManagement().species?.children??[];
+    species = [];
+
   }
 }
 

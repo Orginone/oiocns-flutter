@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/config/color.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/widget/text_high_light.dart';
 
@@ -654,4 +655,58 @@ class CommonWidget {
       }),
     );
   }
+
+
+  static Widget commonFormWidget({required List<Widget> formItem}){
+    return  Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: GYColors.formBackgroundColor,
+        borderRadius: BorderRadius.circular(8.w),
+      ),
+      margin: EdgeInsets.symmetric(horizontal: 15.w),
+      padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 15.h),
+      child: Column(
+        children: formItem,
+      ),
+    );
+  }
+
+  static Widget commonFormItem({required String title,String content = ""}){
+    return  Row(
+      children: [
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.grey.shade200,width: 0.5))
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 10.w),
+                    color: GYColors.formTitleBackgroundColor,
+                    height: 55.h,
+                    child: Text(title),
+                  ),
+                ),
+                SizedBox(height: 55.h,width: 0.5,),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+
+                    padding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 10.w),
+                    color: Colors.white,
+                    height: 55.h,
+                    child: Text(content),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
+

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/pages/other/work/network.dart';
@@ -9,8 +11,12 @@ import 'package:orginone/widget/loading_dialog.dart';
 
 import 'state.dart';
 
-class ProcessDetailsController extends BaseController<ProcessDetailsState> {
+class ProcessDetailsController extends BaseController<ProcessDetailsState> with GetTickerProviderStateMixin{
   final ProcessDetailsState state = ProcessDetailsState();
+
+  ProcessDetailsController(){
+    state.tabController = TabController(length: tabTitle.length, vsync: this);
+  }
 
   @override
   void onReady() async {
@@ -18,7 +24,7 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> {
     super.onReady();
     LoadingDialog.showLoading(context);
 
-    state.flowInstance.value ??= await WorkNetWork.getFlowInstance(id: state.task!.instanceId ?? "");
+    state.flowInstance.value ??= await WorkNetWork.getFlowInstance(id: state.task.instanceId ?? "");
     await loadDataInfo();
     LoadingDialog.dismiss(context);
   }
@@ -58,8 +64,5 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> {
     }
   }
 
-  void approval(int status) async{
-    await WorkNetWork.approvalTask(id: state.task!.id??"", status: status,comment: state.comment.text);
-  }
 
 }

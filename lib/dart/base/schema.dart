@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/model/asset_creation_config.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/util/common_tree_management.dart';
 
 import 'model.dart';
@@ -1107,6 +1108,8 @@ class XFlowDefine {
   // 名称
   final String? name;
 
+  final bool? isCreate;
+
   // 编码
   final String? code;
 
@@ -1179,6 +1182,7 @@ class XFlowDefine {
     required this.flowInstances,
     required this.flowRelations,
     required this.target,
+    required this.isCreate,
   });
 
   //通过JSON构造
@@ -1198,6 +1202,7 @@ class XFlowDefine {
         version = json["version"],
         createTime = json["createTime"],
         updateTime = json["updateTime"],
+        isCreate = json['isCreate'],
         flowNodes = json["flowNodes"]!=null?XFlowNode.fromList(json["flowNodes"]):null,
         flowInstances = json["flowInstances"]!=null?XFlowInstance.fromList(json["flowInstances"]):null,
         flowRelations = json["flowRelations"]!=null?XFlowRelation.fromList(json["flowRelations"]):null,
@@ -2211,16 +2216,78 @@ class XFlowRelationArray {
   }
 }
 
+class XThingArchives {
+  String? id;
+  String? creater;
+  String? createTime;
+  String? modifiedTime;
+  String? status;
+  bool isSelected = false;
+  List<Archive>? archives;
+
+  XThingArchives(
+      {this.id, this.creater, this.createTime, this.modifiedTime, this.status});
+
+  XThingArchives.fromJson(Map<String, dynamic> json) {
+    id = json['Id'];
+    creater = json['Creater'];
+    createTime = json['CreateTime'];
+    modifiedTime = json['ModifiedTime'];
+    status = json['Status'];
+    archives = [];
+    json.keys.forEach((element) {
+      if (element.length >= 15 && element.contains("T")) {
+        archives!.add(Archive.fromJson(json[element], element));
+      }
+    });
+  }
+}
+
+class Archive {
+  // 流程的定义
+  XFlowInstance? flowInstance;
+
+  // 流程节点
+  XFlowNode? flowNode;
+
+  XFlowRecord? flowRecord;
+
+  int? personId;
+
+  String? data;
+
+  String? id;
+
+  Archive(
+      {this.id,
+      this.flowInstance,
+      this.flowNode,
+      this.flowRecord,
+      this.data,
+      this.personId});
+
+  Archive.fromJson(Map<String, dynamic> json, this.id) {
+    flowInstance = json['instance'] != null
+        ? XFlowInstance.fromJson(json['instance'])
+        : null;
+    flowNode = json['node'] != null ? XFlowNode.fromJson(json['node']) : null;
+    flowRecord =
+        json['record'] != null ? XFlowRecord.fromJson(json['record']) : null;
+    personId = json['personId'];
+    data = json['data'];
+  }
+}
+
 //流程任务
 class XFlowTask {
   // 雪花ID
-   String? id;
+  String? id;
 
   // 流程定义节点id
-   String? nodeId;
+  String? nodeId;
 
   // 流程实例id
-   String? instanceId;
+  String? instanceId;
 
   // 节点分配目标Id
    String? identityId;
@@ -4150,7 +4217,10 @@ class XOperationItem {
       type = "select";
     } else if(rule?.widget == "person"){
       type = "router";
-      router = "/choicePeople";
+      router = Routers.choicePeople;
+    }else if(rule?.widget == "dept"){
+      type = "router";
+      router = Routers.choiceDepartment;
     }
 
     Map<dynamic, String> select = {};
