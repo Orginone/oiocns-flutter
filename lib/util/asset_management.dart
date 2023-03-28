@@ -1,5 +1,7 @@
+import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/model/assets_info.dart';
 import 'package:orginone/util/hive_utils.dart';
 
@@ -16,6 +18,9 @@ class AssetManagement {
 
   List<AssetsInfo> get assets => _assets;
 
+
+  SettingController get _settingCtrl => Get.find<SettingController>();
+
   Future<void> initAssets() async {
     ResultType result = await KernelApi.getInstance().anystore.aggregate(
         "assets_data",
@@ -28,14 +33,15 @@ class AssetManagement {
           "skip": 0,
           "limit": 9999,
         },
-        "company");
+        _settingCtrl.isUserSpace()?"user":"company");
     _assets.clear();
     if (result.success) {
       for (var json in result.data) {
         _assets.add(AssetsInfo.fromJson(json));
       }
     }else{
-      ToastUtils.showMsg(msg: "获取资产数据失败");
+      // ToastUtils.showMsg(msg: "获取资产数据失败");
+      print('获取资产数据失败');
     }
   }
 

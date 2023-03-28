@@ -6,9 +6,13 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/pages/other/work/state.dart';
+import 'package:orginone/pages/other/work/to_do/state.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/department_management.dart';
+
+import 'logic.dart';
+import 'view.dart';
 
 class Item extends StatelessWidget {
 
@@ -20,6 +24,8 @@ class Item extends StatelessWidget {
 
   const Item({Key? key, this.task, required this.type, this.history}) : super(key: key);
 
+
+  ProcessApprovalController get controller => Get.find(tag: 'ProcessApproval_${type.label}');
   @override
   Widget build(BuildContext context) {
     String title = '';
@@ -69,55 +75,88 @@ class Item extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.w),
           ),
           padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 10.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Row(
-                children: [
-                  Image.asset(Images.defaultAvatar,width: 30.w,height: 30.w,),
-                  SizedBox(
-                    width: 10.w,
-                  ),
-                  Text(
-                    title,
-                    style: TextStyle(fontSize: 18.sp),
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5.h, horizontal: 5.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16.w),
-                          border: Border.all(color: Colors.grey, width: 0.5),
-                        ),
-                        child: Text(
-                          "资产管理应用",
-                          style: TextStyle(color: Colors.grey, fontSize: 16.sp),
-                        ),
-                      ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(fontSize: 18.sp),
                     ),
-                  ),
-                ],
+                    comment(),
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                    role(),
+                  ],
+                ),
               ),
-              SizedBox(
-                height: 20.h,
-              ),
-              Text(
-                "单据编号:NKZCBX20220707000086",
-                style: TextStyle(color: Colors.black87, fontSize: 16.sp),
-              ),
-              comment(),
-              SizedBox(
-                height: 20.h,
-              ),
-              role(),
+              button(),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget button(){
+    Widget button = Column(
+      children: [
+        GestureDetector(
+          onTap: (){
+            controller.approval(task?.id??"", 100);
+          },
+          child: Container(
+            padding:
+            EdgeInsets.symmetric(vertical: 5.h, horizontal: 20.w),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.w),
+              color: XColors.themeColor,
+            ),
+            child: Text(
+              "通过",
+              style: TextStyle(color: Colors.white, fontSize: 16.sp),
+            ),
+          ),
+        ),
+        SizedBox(height: 10.h,),
+        GestureDetector(
+          onTap: (){
+            controller.approval(task?.id??"", 200);
+          },
+          child: Container(
+            padding:
+            EdgeInsets.symmetric(vertical: 5.h, horizontal: 20.w),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.w),
+              color: Colors.red,
+            ),
+            child: Text(
+              "退回",
+              style: TextStyle(color: Colors.white, fontSize: 16.sp),
+            ),
+          ),
+        )
+      ],
+    );
+    if(type == WorkEnum.done){
+      Color textColor = history!.status == 100?Colors.green:Colors.red;
+
+      button = Container(
+        padding: EdgeInsets.symmetric(horizontal: 3.w,vertical: 2.h),
+        decoration: BoxDecoration(
+          color: textColor.withOpacity(0.4),
+          borderRadius: BorderRadius.circular(4.w),
+          border: Border.all(color: textColor,width: 0.5),
+        ),
+        child: Text(history!.status == 100?"已同意":"已拒绝",style: TextStyle(color: textColor,fontSize: 14.sp),),
+      );
+    }else if(type == WorkEnum.copy){
+      button = Container();
+    }
+    return button;
   }
 
   Widget comment(){
@@ -135,34 +174,6 @@ class Item extends StatelessWidget {
                 "")
             ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
         "";
-    Widget button = Container(
-      padding:
-      EdgeInsets.symmetric(vertical: 5.h, horizontal: 20.w),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.w),
-        color: XColors.themeColor,
-        border: Border.all(color: Colors.grey, width: 0.5),
-      ),
-      child: Text(
-        "去审批",
-        style: TextStyle(color: Colors.white, fontSize: 16.sp),
-      ),
-    );
-    if(type == WorkEnum.done){
-      Color textColor = history!.status == 100?Colors.green:Colors.red;
-
-      button = Container(
-        padding: EdgeInsets.symmetric(horizontal: 3.w,vertical: 2.h),
-        decoration: BoxDecoration(
-          color: textColor.withOpacity(0.4),
-          borderRadius: BorderRadius.circular(4.w),
-          border: Border.all(color: textColor,width: 0.5),
-        ),
-        child: Text(history!.status == 100?"已同意":"已拒绝",style: TextStyle(color: textColor,fontSize: 14.sp),),
-      );
-    }else if(type == WorkEnum.copy){
-      button = Container();
-    }
 
     String userId = (type == WorkEnum.done?history!.createUser:task!.createUser)??"";
 
@@ -190,12 +201,6 @@ class Item extends StatelessWidget {
         Text(
           dateTime,
           style: TextStyle(fontSize: 18.sp),
-        ),
-        Expanded(
-          child: Align(
-            alignment: Alignment.centerRight,
-            child:button,
-          ),
         ),
       ],
     );

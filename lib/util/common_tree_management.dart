@@ -15,23 +15,23 @@ class CommonTreeManagement {
 
   CommonTreeManagement._();
 
-  SettingController get setting => Get.find<SettingController>();
+  SettingController get _setting => Get.find<SettingController>();
 
   final List<AssetsCategoryGroup> _category = [];
 
   List<AssetsCategoryGroup> get category => _category;
 
-  SpeciesItem? _species;
+  var _species = Rxn<SpeciesItem>();
 
-  SpeciesItem? get species => _species;
+  SpeciesItem? get species => _species.value;
 
   Future<void> initTree() async {
-    _species = await loadSpeciesTree(setting.space.id);
+    _species.value = await loadSpeciesTree(_setting.space.id);
     _category.clear();
     ResultType<XDictItemArray> res = await kernel.queryDictItems(
       IdSpaceReq(
         id: "27466608056615936",
-        spaceId: setting.space.id ?? "",
+        spaceId: _setting.space.id ?? "",
         page: PageRequest(
           offset: 0,
           limit: 99999,
@@ -42,7 +42,8 @@ class CommonTreeManagement {
     if(res.success && (res.data?.result?.isNotEmpty??false)){
       _category.addAll(_handleGroupCategory(res.data!.result!));
     }else{
-      ToastUtils.showMsg(msg: "获取资产分类数据失败");
+      // ToastUtils.showMsg(msg: "获取资产分类数据失败");
+      print('获取资产分类数据失败');
     }
   }
 
@@ -147,11 +148,11 @@ class CommonTreeManagement {
       return null;
     }
     try{
-      var data = _species!
+      var data = _species.value!
           .getAllLastList()
           .firstWhere((element) => element.id == specieId);
       if (data.attrs.isEmpty) {
-        await data.loadAttrs(setting.space.id, true, true,
+        await data.loadAttrs(_setting.space.id, true, true,
             PageRequest(offset: 0, limit: 9999, filter: ''));
       }
       return data.attrs.firstWhere((element) => element.id == attributeId);

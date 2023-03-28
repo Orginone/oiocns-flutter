@@ -69,15 +69,16 @@ class LoginPage extends GetView<LoginController> {
       child: LoadingButton(
         loadingBtnCtrl: LoadingButtonController(),
         callback: () async {
-          if(!KernelApi.getInstance().isOnline){
+          if (!KernelApi.getInstance().isOnline) {
             KernelApi.getInstance().start();
           }
           if (!formKey.currentState!.validate()) return;
           var settingCtrl = Get.find<SettingController>();
-          var res = await settingCtrl.login(controller.accountCtrl.text, controller.passwordCtrl.text);
+          var res = await settingCtrl.login(
+              controller.accountCtrl.text, controller.passwordCtrl.text);
           if (res.success) {
             [Permission.storage, Permission.notification].request();
-            Get.toNamed(Routers.home);
+            Get.offAndToNamed(Routers.home);
           } else {
             Fluttertoast.showToast(msg: res.msg);
           }
@@ -99,17 +100,17 @@ class LoginBinding extends Bindings {
 }
 
 class LoginController extends GetxController {
-  final accountCtrl = TextEditingController(text: "17602173727");
-  final passwordCtrl = TextEditingController(text: "Zcy_123456");
+  final accountCtrl = TextEditingController(text: "SEN");
+  final passwordCtrl = TextEditingController(text: "Sen_123");
 
   @override
   void onInit() async {
     var store = await LocalStore.instance;
     var account = store.getStringList("account");
-    if (account != null){
-      accountCtrl.text = account[0];
-      passwordCtrl.text = account[1];
-    }
+    // if (account != null){
+    //   accountCtrl.text = account[0];
+    //   passwordCtrl.text = account[1];
+    // }
     super.onInit();
   }
 }

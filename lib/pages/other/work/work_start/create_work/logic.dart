@@ -30,6 +30,15 @@ class CreateWorkController extends BaseController<CreateWorkState> {
         }
       }
     }
+    if (event is ChoiceDepartment) {
+      for (var element in state.node.operations!) {
+        for (var element in element.operationItems) {
+          if(element.fields?.router == Routers.choiceDepartment){
+            element.fields?.defaultData.value = event.department;
+          }
+        }
+      }
+    }
   }
 
   Future init() async{
@@ -49,7 +58,7 @@ class CreateWorkController extends BaseController<CreateWorkState> {
         }
       }
     }
-    if(state.selectedThings.isEmpty){
+    if(state.selectedThings.isEmpty && (!(state.define.isCreate??false))){
       return ToastUtils.showMsg(msg:"请至少选择一条实体");
     }
     Map<String,dynamic> data = {};

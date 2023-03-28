@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/config/color.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/widget/text_high_light.dart';
 
@@ -334,18 +335,16 @@ class CommonWidget {
           child: Row(
             children: [
               Expanded(
-                child: Container(
-                  child: TextField(
-                    controller: controller,
-                    textInputAction: TextInputAction.done,
-                    onSubmitted: onSubmitted,
-                    onChanged:onChanged ,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.zero,
-                      isDense: true,
-                      hintText: hint,
-                      border: InputBorder.none,
-                    ),
+                child: TextField(
+                  controller: controller,
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: onSubmitted,
+                  onChanged:onChanged ,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.zero,
+                    isDense: true,
+                    hintText: hint,
+                    border: InputBorder.none,
                   ),
                 ),
               ),
@@ -360,26 +359,19 @@ class CommonWidget {
 
   static commonRadioTextWidget<T>(String name, T value,
       {T? groupValue, ValueChanged<T?>? onChanged,String? keyWord}) {
-    return GestureDetector(
-      onTap: (){
-        if(onChanged!=null){
-          onChanged(value);
-        }
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 5.h,horizontal: 16.w),
-        width: double.infinity,
-        color: Colors.white,
-        child: Row(
-          children: [
-            Radio<T>(
-              value: value,
-              groupValue: groupValue,
-              onChanged: onChanged,
-            ),
-            TextHighlight(content: name,keyWord: keyWord,normalStyle: TextStyle(fontSize: 16.sp,color: Colors.black87),highlightStyle: TextStyle(fontSize: 18.sp,color: Colors.black),)
-          ],
-        ),
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 5.h,horizontal: 16.w),
+      width: double.infinity,
+      color: Colors.white,
+      child: Row(
+        children: [
+          Radio<T>(
+            value: value,
+            groupValue: groupValue,
+            onChanged: onChanged,
+          ),
+          TextHighlight(content: name,keyWord: keyWord,normalStyle: TextStyle(fontSize: 16.sp,color: Colors.black87),highlightStyle: TextStyle(fontSize: 18.sp,color: Colors.black),)
+        ],
       ),
     );
   }
@@ -428,12 +420,16 @@ class CommonWidget {
             text,
             style: TextStyle(color: Colors.grey, fontSize: textSize.sp),
           ),
-          Text(
-            content,
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: contentSize.sp,
-                fontWeight: FontWeight.w700),
+          Expanded(
+            child: Text(
+              content,
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: contentSize.sp,
+                  fontWeight: FontWeight.w700,overflow: TextOverflow.ellipsis),
+              maxLines: 1,
+              textAlign: TextAlign.right,
+            ),
           ),
         ],
       ),
@@ -555,4 +551,162 @@ class CommonWidget {
       icon: icon,
     );
   }
+
+
+  static Widget commonNonIndicatorTabBar(TabController tabController,List<String> tabTitle,{ValueChanged<int>? onTap}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(bottom: BorderSide(color: Colors.grey.shade200,width: 0.5))
+      ),
+      alignment: Alignment.centerLeft,
+      child: TabBar(
+        controller: tabController,
+        tabs: tabTitle.map((e) {
+          return Tab(
+            text: e,
+            height: 50.h,
+          );
+        }).toList(),
+        unselectedLabelColor: Colors.grey,
+        unselectedLabelStyle: TextStyle(fontSize: 18.sp),
+        labelColor: XColors.themeColor,
+        labelStyle: TextStyle(fontSize: 18.sp),
+        isScrollable: true,
+        indicator: const BoxDecoration(),
+        onTap:onTap,
+      ),
+    );
+  }
+
+  static Widget commonBreadcrumbNavWidget({required String firstTitle,required List<String> allTitle,VoidCallback? onTapFirst,ValueChanged? onTapTitle}) {
+    TextStyle selectedTextStyle =
+    TextStyle(fontSize: 20.sp, color: XColors.themeColor);
+
+    TextStyle unSelectedTextStyle =
+    TextStyle(fontSize: 20.sp, color: Colors.black);
+
+    Widget level(String title) {
+      int index = allTitle.indexOf(title);
+      return GestureDetector(
+        onTap: () {
+         if(onTapTitle!=null){
+           onTapTitle(index);
+         }
+        },
+        child: Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                  text: " • ",
+                  style: unSelectedTextStyle),
+              TextSpan(
+                  text: title,
+                  style: index == allTitle.length - 1
+                      ? selectedTextStyle
+                      : unSelectedTextStyle),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      color: Colors.white,
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
+      child: LayoutBuilder(builder: (context,type) {
+        List<Widget> nextStep = [];
+        if (allTitle.isNotEmpty) {
+          for (var value in allTitle) {
+            nextStep.add(level(value));
+          }
+        }
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: onTapFirst,
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      WidgetSpan(
+                          child: Container(
+                            width: 5.w,
+                            height: 25.h,
+                            margin: EdgeInsets.only(right: 15.w),
+                            color: XColors.themeColor,
+                          ),
+                          alignment: PlaceholderAlignment.middle),
+                      TextSpan(
+                          text: firstTitle,
+                          style: allTitle.isEmpty
+                              ? selectedTextStyle
+                              : unSelectedTextStyle)
+                    ],
+                  ),
+                ),
+              ),
+              ...nextStep,
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
+
+  static Widget commonFormWidget({required List<Widget> formItem}){
+    return  Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: GYColors.formBackgroundColor,
+        borderRadius: BorderRadius.circular(8.w),
+      ),
+      margin: EdgeInsets.symmetric(horizontal: 15.w),
+      padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 15.h),
+      child: Column(
+        children: formItem,
+      ),
+    );
+  }
+
+  static Widget commonFormItem({required String title,String content = ""}){
+    return  Row(
+      children: [
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.grey.shade200,width: 0.5))
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 10.w),
+                    color: GYColors.formTitleBackgroundColor,
+                    height: 55.h,
+                    child: Text(title),
+                  ),
+                ),
+                SizedBox(height: 55.h,width: 0.5,),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+
+                    padding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 10.w),
+                    color: Colors.white,
+                    height: 55.h,
+                    child: Text(content),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
+

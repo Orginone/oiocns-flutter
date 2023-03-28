@@ -31,7 +31,7 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
         icon: Icons.add,
         cardName: '加好友',
         func: () {
-          Get.toNamed(Routers.scanning);
+          Get.toNamed(Routers.addFriend);
           print('Go to home page');
         }),
     2: MyMenuItem(
