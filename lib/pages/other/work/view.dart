@@ -33,7 +33,10 @@ class WorkPage extends BaseGetPageView<WorkController, WorkState> {
 
   Widget tabBar() {
     return Container(
-      color: Colors.white,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(bottom: BorderSide(color: Colors.grey.shade200,width: 1))
+      ),
       alignment: Alignment.centerLeft,
       child: TabBar(
         controller: state.tabController,
