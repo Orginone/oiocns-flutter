@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/util/date_utils.dart';
@@ -23,30 +24,19 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.w),
       height: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8.w),
-      ),
+      color: GYColors.backgroundColor,
       child: Obx(() {
-        Widget hide = Container();
-
         int length = state.archives.value?.archives?.length ?? 0;
 
-        return Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            ListView.builder(
-              itemCount: length,
-              itemBuilder: (context, index) {
-                return Container(
-                  child: _buildTimelineTile(
-                      index,
-                      state.archives.value!.archives![index]),
-                );
-              },
-            ),
-            hide,
-          ],
+        return ListView.builder(
+          itemCount: length,
+          itemBuilder: (context, index) {
+            return Container(
+              child: _buildTimelineTile(
+                  index,
+                  state.archives.value!.archives![index]),
+            );
+          },
         );
       }),
     );
@@ -62,8 +52,8 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
         isFirst: index == 0 ? true : false,
         isLast: isLast,
         indicatorStyle: IndicatorStyle(
-          width: 20.w,
-          height: 20.w,
+          width: 15.w,
+          height: 15.w,
           color: XColors.themeColor,
           indicatorXY: 0,
         ),
@@ -71,100 +61,36 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
         const LineStyle(thickness: 1, color: XColors.themeColor),
         beforeLineStyle:
         const LineStyle(thickness: 1, color: XColors.themeColor),
-        endChild: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        endChild:Container(
+          margin: EdgeInsets.only(left: 15.h),
+          child: Card(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.w,vertical: 10.h),
+              child: Column(
                 children: [
-                  Text.rich(TextSpan(children: [
-                    TextSpan(
-                      text: "${archive.flowInstance?.title} ",
-                      style: TextStyle(color: Colors.black, fontSize: 20.sp),
-                    ),
-                    TextSpan(
-                      text: user?.team?.name ?? "",
-                      style: TextStyle(color: Colors.grey, fontSize: 18.sp),
-                    )
-                  ])),
-                  Text.rich(
-                    TextSpan(children: [
-                      TextSpan(
-                        text: "流程: ",
-                        style: TextStyle(color: Colors.black, fontSize: 16.sp),
-                      ),
-                      TextSpan(
-                        text: archive.flowNode?.nodeType ?? "",
-                        style: TextStyle(color: Colors.grey, fontSize: 16.sp),
-                      )
-                    ]),
-                  ),
-                  Text.rich(
-                    TextSpan(children: [
-                      TextSpan(
-                        text: "意见: ",
-                        style: TextStyle(color: Colors.black, fontSize: 16.sp),
-                      ),
-                      TextSpan(
-                        text: archive.flowRecord?.comment ?? "",
-                        style: TextStyle(color: Colors.grey, fontSize: 16.sp),
-                      )
-                    ]),
-                  ),
-                  Text(
-                    DateTime.tryParse(archive.flowInstance?.createTime ?? "")?.format(
-                        format: "yyyy-MM-dd HH:mm:ss") ?? "",
-                    style: TextStyle(color: Colors.grey, fontSize: 16.sp),
-                  )
-                ],
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
                     children: [
-                      Text(user?.team?.name ?? "",
-                          style:
-                          TextStyle(color: Colors.black, fontSize: 18.sp)),
-                      Text.rich(
-                        TextSpan(children: [
-                          TextSpan(
-                            text: "流程节点: ",
-                            style:
-                            TextStyle(color: Colors.black, fontSize: 16.sp),
-                          ),
-                          TextSpan(
-                            text: archive.flowNode?.nodeType ?? "",
-                            style:
-                            TextStyle(color: Colors.grey, fontSize: 16.sp),
-                          )
-                        ]),
-                      ),
+                      Text(archive.flowRecord?.status == 100?"已通过":archive.flowRecord?.status == 1?"待审核":"未通过"),
+                      SizedBox(width: 20.w,),
+                      Expanded(child: Text('${user?.team?.name??''}(${user?.team?.code??''})')),
+                      Text("审核节点:${archive.flowNode?.nodeType}"),
                     ],
                   ),
-                ),
+                  SizedBox(height:30.h,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("审批意见:${archive.flowRecord?.comment??""}"),
+                      Text(DateTime.tryParse(archive.flowInstance?.createTime ?? "")?.format(
+                          format: "yyyy-MM-dd HH:mm:ss") ?? ""),
+                    ],
+                  ),
+                ],
               ),
-              SizedBox(
-                width: 20.w,
-              ),
-              Container(
-                width: 25.w,
-                height: 25.w,
-                decoration: const BoxDecoration(
-                    color: Colors.green, shape: BoxShape.circle),
-                child: Icon(
-                  Icons.done,
-                  size: 20.w,
-                  color: Colors.white,
-                ),
-              ),
-            ],
+            ),
           ),
-        ));
+        ),
+    );
   }
 
 
