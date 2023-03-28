@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/template/tabs.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/components/widgets/progress_dialog.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
