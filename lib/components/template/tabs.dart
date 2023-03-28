@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class XTab {
@@ -87,9 +86,9 @@ abstract class TabsController extends GetxController
 
   @override
   void onClose() {
+    super.onClose();
     tabs.clear();
     tabController.dispose();
-    super.onClose();
   }
 
   /// 初始化 tab

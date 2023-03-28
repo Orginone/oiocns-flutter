@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -18,6 +20,9 @@ class WorkNetWork {
 
     if (result.success) {
       tasks = result.data?.result ?? [];
+      if(type == "待办"){
+        type = "审批";
+      }
       tasks.removeWhere((element) => element.flowNode?.nodeType != type);
     } else {
       ToastUtils.showMsg(msg: result.msg);
@@ -48,29 +53,31 @@ class WorkNetWork {
   }
 
   static Future<XFlowInstance?> getFlowInstance({String? id,String? speciesId}) async {
-    XFlowInstance? flowInstacne;
+    XFlowInstance? flowInstance;
     SettingController setting = Get.find<SettingController>();
     ResultType<XFlowInstanceArray> result = await KernelApi.getInstance()
         .queryInstance(FlowReq(
             id: id,spaceId: setting.space.id,speciesId: speciesId, page: PageRequest(offset: 0, limit: 9999, filter: '')));
 
     if (result.success) {
-      flowInstacne = result.data!.result!.first;
+      flowInstance = result.data!.result!.first;
     } else {
       ToastUtils.showMsg(msg: result.msg);
     }
-    return flowInstacne;
+    return flowInstance;
   }
 
   static Future<void> approvalTask(
-      {required String id, required int status, String? comment}) async {
+      {required String id, required int status, String? comment,VoidCallback? onSuccess}) async {
     ResultType req = await KernelApi.getInstance().approvalTask(
         ApprovalTaskReq(id: id, status: status, comment: comment));
 
     if (req.success) {
       ToastUtils.showMsg(msg: "成功");
       EventBusHelper.fire(WorkReload());
-      Get.back();
+      if(onSuccess!=null){
+        onSuccess();
+      }
     } else {
       ToastUtils.showMsg(msg: req.msg);
     }

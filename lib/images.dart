@@ -17,4 +17,18 @@ class Images{
   static const String defaultAvatar = "images/default_avatar.png";
 
   static const String rmbIcon = "images/rmb_icon.png";
+
+  static const String moreIcon = "images/icon_more.png";
+
+  static const String excelIcon = "images/icon_excel.png";
+
+  static const String otherIcon = "images/icon_other.png";
+
+  static const String pdfIcon = "images/icon_pdf.png";
+
+  static const String pptIcon = "images/icon_ppt.png";
+
+  static const String wordIcon = "images/icon_word.png";
+
+  static const String dirIcon = "images/icon_dir.png";
 }

@@ -20,7 +20,7 @@ class ChoiceThingNetWork{
       "options": {
         "match": {},
       },
-    }, settingCtrl.isPersonSpace?"user":'company');
+    }, settingCtrl.isUserSpace()?"user":'company');
 
     if(result.success){
       result.data['data'].forEach((json){

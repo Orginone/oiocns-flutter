@@ -15,6 +15,7 @@ import 'package:orginone/pages/other/choice_department/view.dart';
 import 'package:orginone/pages/other/choice_people/binding.dart';
 import 'package:orginone/pages/other/choice_people/view.dart';
 import 'package:orginone/pages/other/choice_thing/binding.dart';
+import 'package:orginone/pages/other/file/view.dart';
 import 'package:orginone/pages/other/home/home_page.dart';
 import 'package:orginone/pages/other/home/spaces_page.dart';
 import 'package:orginone/pages/other/login.dart';
@@ -26,7 +27,10 @@ import 'package:orginone/pages/other/search_page.dart';
 import 'package:orginone/pages/other/web_view/binding.dart';
 import 'package:orginone/pages/other/web_view/view.dart';
 import 'package:orginone/pages/other/work/work_start/view.dart';
+import 'package:orginone/pages/setting/company_info.dart';
 import 'package:orginone/pages/setting/contact_page.dart';
+import 'package:orginone/pages/setting/home/binding.dart';
+import 'package:orginone/pages/setting/home/view.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
@@ -50,15 +54,20 @@ import 'package:orginone/util/hive_utils.dart';
 import './pages/other/home/ware_house/often_use_binding.dart';
 // 仓库
 import './pages/other/home/ware_house/recently_opened_binding.dart';
+import 'pages/other/add_friend/add_friend.dart';
 import 'pages/other/choice_gb/binding.dart';
 import 'pages/other/choice_gb/view.dart';
 import 'pages/other/choice_thing/view.dart';
+import 'pages/other/file/binding.dart';
+import 'pages/other/home/ware_house/ware_house.dart';
 import 'pages/other/storage_location/binding.dart';
 import 'pages/other/storage_location/view.dart';
-import 'package:orginone/pages/todo/todo_detail.dart';
-import 'package:orginone/pages/todo/todo_tab_page.dart';
-import 'package:orginone/pages/todo/work_page.dart';
-import 'package:orginone/pages/todo/workbench_page.dart';
+import 'pages/other/thing/binding.dart';
+import 'pages/other/thing/thing_details/binding.dart';
+import 'pages/other/thing/thing_details/view.dart';
+import 'pages/other/thing/view.dart';
+import 'pages/other/ware_house/ware_house_management/application_details/binding.dart';
+import 'pages/other/ware_house/ware_house_management/application_details/view.dart';
 import 'pages/other/work/process_details/binding.dart';
 import 'pages/other/work/process_details/view.dart';
 import 'pages/other/work/work_start/binding.dart';
@@ -83,6 +92,7 @@ class Routers {
 
   // 二维码扫描
   static const String scanning = "/scanning";
+  static const String addFriend = "/addFriend";
   static const String scanningResult = "/scanningResult";
 
   // 搜索
@@ -99,11 +109,13 @@ class Routers {
   static const String index = "/index";
 
   // 设置
+  static const String setting = "/setting";
   static const String mineUnit = "/mineUnit";
   static const String newFriends = "/newFriends";
   static const String contact = "/contact";
   static const String cohorts = "/cohorts";
   static const String uintSettings = "/uintSettings";
+  static const String companyInfo = "/companyInfo";
 
   // 仓库相关
   // 资产管理
@@ -141,8 +153,20 @@ class Routers {
   //创建办事
   static const String createWork = '/createWork';
 
-  //创建办事
+  //选择物
   static const String choiceThing = '/choiceThing';
+
+  //应用详情
+  static const String applicationDetails = '/applicationDetails';
+
+  //实体列表
+  static const String thing = '/thing';
+
+  //实体详情
+  static const String thingDetails = '/thingDetails';
+
+  //文件夹
+  static const String file = '/file';
 
   static String get main {
     return login;
@@ -220,6 +244,11 @@ class Routers {
         name: Routers.newFriends,
         page: () => const NewFriendsPage(),
         binding: NewFriendsBinding(),
+      ),
+      GetPage(
+        name: Routers.addFriend,
+        page: () => AddFriendPage(),
+        binding: AddFriendBinding(),
       ),
       GetPage(
         name: Routers.contact,
@@ -329,6 +358,36 @@ class Routers {
         name: Routers.choiceThing,
         page: () => ChoiceThingPage(),
         binding: ChoiceThingBinding(),
+      ),
+      GetPage(
+        name: Routers.applicationDetails,
+        page: () => ApplicationDetailsPage(),
+        binding: ApplicationDetailsBinding(),
+      ),
+      GetPage(
+        name: Routers.thing,
+        page: () => ThingPage(),
+        binding: ThingBinding(),
+      ),
+      GetPage(
+        name: Routers.thingDetails,
+        page: () => ThingDetailsPage(),
+        binding: ThingDetailsBinding(),
+      ),
+      GetPage(
+        name: Routers.file,
+        page: () => FilePage(),
+        binding: FileBinding(),
+      ),
+      GetPage(
+        name: Routers.setting,
+        page: () => SettingCenterPage(),
+        binding: SettingCenterBinding(),
+      ),
+      GetPage(
+        name: Routers.companyInfo,
+        page: () => CompanyInfoPage(),
+        binding: CompanyInfoBingding(),
       ),
     ];
   }

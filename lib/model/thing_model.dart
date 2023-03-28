@@ -5,6 +5,7 @@ class ThingModel {
   String? modifiedTime;
   String? status;
   bool isSelected = false;
+  List<Map<String,dynamic>>? data;
   ThingModel(
       {this.id, this.creater, this.createTime, this.modifiedTime, this.status});
 
@@ -14,6 +15,15 @@ class ThingModel {
     createTime = json['CreateTime'];
     modifiedTime = json['ModifiedTime'];
     status = json['Status'];
+    data = [];
+    json.keys.forEach((element) {
+      if(element.length>15 && element.contains("S")){
+        data!.add({
+          element:json[element],
+        });
+      }
+    });
+
   }
 
   Map<String, dynamic> toJson() {

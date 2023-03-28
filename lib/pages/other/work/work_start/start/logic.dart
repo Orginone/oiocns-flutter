@@ -15,8 +15,6 @@ class StartController extends BaseListController<StartState> {
 
   StartController(this.species);
 
-
-
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async{
    state.dataList.value = await WorkStartNetWork.getFlowDefine(species.id);
