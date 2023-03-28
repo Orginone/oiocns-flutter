@@ -11,33 +11,39 @@ import '../center_function/assets_page/item.dart';
 import 'logic.dart';
 import 'state.dart';
 
-class AssetsInternalControlPage extends BaseGetListPageView<AssetsInternalControlController,AssetsInternalControlState>{
+class AssetsInternalControlPage
+    extends BaseGetListPageView<
+        AssetsInternalControlController,
+        AssetsInternalControlState> {
   @override
   Widget buildView() {
     return Container(
       height: double.infinity,
       color: Colors.grey.shade200,
       child: SingleChildScrollView(
-        child: Column(
-          children: [
-            function(),
-            myAssetsInfo(),
-            ...state.dataList.map((element) => MyAssetsItem(assets: element,)).toList()
-          ],
-        ),
+        child: Obx(() {
+          return Column(
+            children: [
+              function(),
+              myAssetsInfo(),
+              ...state.dataList.map((element) => MyAssetsItem(assets: element,))
+                  .toList()
+            ],
+          );
+        }),
       ),
     );
   }
 
-  Widget function(){
+  Widget function() {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.w),
-        color: Colors.white
+          borderRadius: BorderRadius.circular(8.w),
+          color: Colors.white
       ),
       alignment: Alignment.center,
-      padding: EdgeInsets.only(top: 25.h,bottom: 15.h),
-      margin: EdgeInsets.symmetric(vertical: 10.h,horizontal: 16.w),
+      padding: EdgeInsets.only(top: 25.h, bottom: 15.h),
+      margin: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
       child: GridView.count(
         padding: EdgeInsets.zero,
         physics: const NeverScrollableScrollPhysics(),
@@ -46,7 +52,7 @@ class AssetsInternalControlPage extends BaseGetListPageView<AssetsInternalContro
         crossAxisCount: 4,
         crossAxisSpacing: 10.w,
         mainAxisSpacing: 10.w,
-        childAspectRatio:4/3,
+        childAspectRatio: 4 / 3,
         children: items.map((item) {
           return GestureDetector(
             onTap: () {
@@ -88,7 +94,7 @@ class AssetsInternalControlPage extends BaseGetListPageView<AssetsInternalContro
                 child: Container(
                   height: 75.w,
                   decoration: BoxDecoration(
-                    image:  const DecorationImage(
+                    image: const DecorationImage(
                         image: AssetImage(
                             Images.totalValueBg),
                         fit: BoxFit.cover),
@@ -181,7 +187,8 @@ class AssetsInternalControlPage extends BaseGetListPageView<AssetsInternalContro
                                 int count = 0;
                                 for (var element in state.dataList) {
                                   count +=
-                                  (int.tryParse(element.numOrArea.toString()) ?? 0);
+                                  (int.tryParse(element.numOrArea.toString()) ??
+                                      0);
                                 }
                                 return Text(
                                   "$count",

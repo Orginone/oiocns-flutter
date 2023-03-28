@@ -8,33 +8,22 @@ import 'package:orginone/components/template/tabs.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/pages/chat/message_page.dart';
-import 'package:orginone/pages/index/fl_chart/LineChart3.dart';
-import 'package:orginone/pages/index/fl_chart/barChart.dart';
-import 'package:orginone/pages/index/fl_chart/pieChart.dart';
-import 'package:orginone/pages/index/fl_chart/pieChart2.dart';
-import 'package:orginone/pages/index/index_page.dart';
-import 'package:orginone/pages/other/assets_config.dart';
-import 'package:orginone/pages/other/assets_internal_control/view.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
 import 'package:orginone/pages/other/ware_house/view.dart';
 import 'package:orginone/pages/other/work/view.dart';
 import 'package:orginone/pages/setting/home/view.dart';
-import 'package:orginone/pages/setting/set_home_page.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/file_management.dart';
 import 'package:orginone/util/load_image.dart';
+import 'package:orginone/util/setting_management.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
-import 'package:orginone/widget/loading_dialog.dart';
-
-import '../home/ware_house/ware_house.dart';
 import 'function_page.dart';
 
 class HomePage extends GetView<HomeController> {
@@ -127,6 +116,7 @@ class HomeController extends TabsController {
           DepartmentManagement().initDepartment(),
           CommonTreeManagement().initTree(),
           FileManagement().initFileDir(),
+          SettingManagement().initSetting(),
         ]);
         log('数据加载完成');
       } else {
@@ -137,6 +127,7 @@ class HomeController extends TabsController {
       }
     } catch (e) {
       ToastUtils.showMsg(msg: e.toString());
+      print(e);
     }
   }
 

@@ -78,8 +78,6 @@ class SettingController extends GetxController {
     return space.id == user?.id ? "个人空间" : space.target.team?.name ?? "";
   }
 
-  bool get isPersonSpace => space.id == user?.id;
-
   /// 设置当前空间
   setCurSpace(String id) async {
     if (id == space.id) {

@@ -151,6 +151,7 @@ class Person extends MarketTarget implements IPerson {
         } else {
           company = Company(a, id);
         }
+        company.userId = id;
         joinedCompany.add(company);
       }
     }

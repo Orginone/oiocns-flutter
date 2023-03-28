@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/template/choose_item.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/routers.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/widget/common_widget.dart';
 
+import 'item.dart';
 import 'logic.dart';
-
 import 'state.dart';
 
 class SettingCenterPage
@@ -18,94 +17,56 @@ class SettingCenterPage
     return Padding(
         padding: const EdgeInsets.all(10),
         child: Column(
-          children: [tabBar(), searchBar(), list()],
+          children: [
+            tabBar(),
+            Obx(() {
+              return CommonWidget.commonBreadcrumbNavWidget(
+                  firstTitle: "关系",
+                  allTitle: state.selectedGroup.value,
+                  onTapFirst: () {
+                    controller.clearGroup();
+                  },
+                  onTapTitle: (index) {
+                    controller.removeGroup(index);
+                  });
+            }),
+            Expanded(child: list())
+          ],
         ));
   }
 
-  Widget searchBar() {
-    return TextField(
-      decoration: InputDecoration(
-        hintText: "关系",
-        suffixIcon: IconButton(
-          icon: const Icon(Icons.search_rounded),
-          onPressed: () {},
-        ),
-      ),
-    );
-  }
-
-  Widget _header(IconData icon) {
-    return AdvancedAvatar(
-      size: 60.w,
-      decoration: BoxDecoration(
-        color: XColors.themeColor,
-        borderRadius: BorderRadius.all(Radius.circular(8.w)),
-      ),
-      child: Icon(icon, color: Colors.white),
-    );
-  }
-
   Widget list() {
-    return Column(
-      children: [
-        ChooseItem(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          header: _header(Icons.location_city),
-          body: Container(
-            margin: EdgeInsets.only(left: 15.w),
-            child: Text("杭州共裕数字技术科技有限公司", style: XFonts.size22Black3W700),
-          ),
-          func: () {
-            Get.toNamed(Routers.companyInfo);
+    return Obx(() {
+      if(state.groupData.value!=null){
+        return ListView.builder(
+          itemBuilder: (BuildContext context, int index) {
+           var e = CompanySpaceEnum.findEnum(controller.getGroupName());
+           var item = state.groupData.value[index];
+           switch(e){
+             case CompanySpaceEnum.innerAgency:
+             return Item(innerAgency: item,);
+             case CompanySpaceEnum.outAgency:
+               return Item(outAgency: item,);
+             case CompanySpaceEnum.stationSetting:
+               return Item(station: item,);
+             case CompanySpaceEnum.companyCohort:
+               return Item(cohort: item,);
+           }
           },
-        ),
-        ChooseItem(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          header: _header(Icons.account_balance_outlined),
-          body: Container(
-            margin: EdgeInsets.only(left: 15.w),
-            child: Text("内设机构", style: XFonts.size22Black3W700),
-          ),
-          func: () {
-            Get.toNamed(Routers.mineUnit);
-          },
-        ),
-        ChooseItem(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          header: _header(Icons.account_tree_outlined),
-          body: Container(
-            margin: EdgeInsets.only(left: 15.w),
-            child: Text("外部机构", style: XFonts.size22Black3W700),
-          ),
-          func: () {
-            Get.toNamed(Routers.mineUnit);
-          },
-        ),
-        ChooseItem(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          header: _header(Icons.location_history_rounded),
-          body: Container(
-            margin: EdgeInsets.only(left: 15.w),
-            child: Text("岗位设置", style: XFonts.size22Black3W700),
-          ),
-          func: () {
-            Get.toNamed(Routers.mineUnit);
-          },
-        ),
-        ChooseItem(
-          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-          header: _header(Icons.chat_rounded),
-          body: Container(
-            margin: EdgeInsets.only(left: 15.w),
-            child: Text("单位群组", style: XFonts.size22Black3W700),
-          ),
-          func: () {
-            Get.toNamed(Routers.mineUnit);
-          },
-        )
-      ],
-    );
+          itemCount: state.groupData.value.length??0,
+        );
+      }
+      return Column(
+          children: CompanySpaceEnum.values
+              .map((e) =>
+              Item(
+                companySpaceEnum: e,
+              ))
+              .toList());
+    });
   }
+
+
 
   Widget tabBar() {
     return Container(
@@ -136,6 +97,6 @@ class SettingCenterPage
   @override
   String tag() {
     // TODO: implement tag
-    return this.toString();
+    return 'SettingCenter';
   }
 }
