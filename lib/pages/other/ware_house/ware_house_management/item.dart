@@ -148,7 +148,6 @@ class GbItem extends StatelessWidget {
               Expanded(
                 child: title(),
               ),
-              details(),
               _popupMenuButton(),
               more(),
             ],
@@ -171,15 +170,8 @@ class GbItem extends StatelessWidget {
   }
 
   Widget more() {
-    return Icon(
-      Icons.navigate_next,
-      size: 32.w,
-    );
-  }
-
-  Widget details() {
     return GestureDetector(
-      onTap: () {
+      onTap: (){
         if (onTap != null) {
           onTap!();
         } else {
@@ -187,10 +179,9 @@ class GbItem extends StatelessWidget {
               arguments: {"id": item.id, "title": item.name});
         }
       },
-      child: Image.asset(
-        Images.moreIcon,
-        width: 26.w,
-        height: 26.w,
+      child: Icon(
+        Icons.navigate_next,
+        size: 32.w,
       ),
     );
   }

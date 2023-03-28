@@ -40,7 +40,7 @@ class StorePage extends BaseGetPageView<StoreController,StoreState>{
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "最近打开",
+                  "热门应用",
                   style: TextStyle(
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w600,

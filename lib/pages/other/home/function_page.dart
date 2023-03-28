@@ -98,4 +98,12 @@ class FunctionState extends BaseGetState {
   late TabController tabController;
 }
 
-const List<String> tabTitle = ["工作台", "资产内控", "一警一档"];
+const List<String> tabTitle = [
+  "工作台",
+  "资产管家",
+  "一警一档"
+      "看板",
+  "新闻",
+  "共享",
+  "交易"
+];
