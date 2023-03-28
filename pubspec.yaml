@@ -130,7 +130,8 @@ dependencies:
   google_fonts: ^4.0.3
   #时间线进度
   timeline_tile: ^2.0.0
-
+  #生成二维码
+  ai_barcode: ^3.2.4
 dev_dependencies:
   flutter_test:
     sdk: flutter

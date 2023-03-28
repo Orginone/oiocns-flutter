@@ -9,9 +9,8 @@ import 'state.dart';
 
 class HaveInitiatedPage
     extends BaseGetListPageView<HaveInitiatedController, HaveInitiatedState> {
-  final ISpeciesItem species;
 
-  HaveInitiatedPage(this.species);
+  HaveInitiatedPage();
 
   @override
   Widget buildView() {
@@ -33,6 +32,6 @@ class HaveInitiatedPage
 
   @override
   HaveInitiatedController getController() {
-    return HaveInitiatedController(species);
+    return HaveInitiatedController();
   }
 }

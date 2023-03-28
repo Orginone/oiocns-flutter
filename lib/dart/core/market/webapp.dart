@@ -25,7 +25,7 @@ class WebApp implements IProduct {
   WebApp(this.prod) {
     merchandises = [];
     resource = [];
-    prod.resource.forEach((a) => {resource.add(Resource(a, prod))});
+    prod.resource?.forEach((a) => {resource.add(Resource(a, prod))});
   }
 
   @override
@@ -35,7 +35,7 @@ class WebApp implements IProduct {
     }
 
     IDBelongReq idBelongReq = IDBelongReq(
-        id: prod.id, page: PageRequest(offset: 0, limit: 10, filter: ''));
+        id: prod.id??"", page: PageRequest(offset: 0, limit: 10, filter: ''));
     ResultType res = await KernelApi.getInstance()
         .queryMerchandiseListByProduct(idBelongReq);
 
@@ -116,7 +116,7 @@ class WebApp implements IProduct {
   @override
   Future<bool> unPublish(String id) async {
     var res = await kernel
-        .deleteMerchandise(IDWithBelongReq(id: id, belongId: prod.belongId));
+        .deleteMerchandise(IDWithBelongReq(id: id, belongId: prod.belongId??""));
     if (res.success) {
       merchandises = merchandises.where((a) => a.merchandise.id != id).toList();
     }
@@ -140,7 +140,7 @@ class WebApp implements IProduct {
         remark: remark,
         photo: photo,
         thingId: prod.thingId,
-        belongId: prod.belongId,
+        belongId: prod.belongId??"",
         resources: resources));
     if (res.success) {
       prod.name = name;
@@ -149,7 +149,7 @@ class WebApp implements IProduct {
       prod.remark = remark;
       resource = [];
 
-      res.data?.resource.forEach((a) => {resource.add(Resource(a, prod))});
+      res.data?.resource?.forEach((a) => {resource.add(Resource(a, prod))});
     }
     return res.success;
   }

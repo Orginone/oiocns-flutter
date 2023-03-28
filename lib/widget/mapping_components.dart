@@ -15,9 +15,6 @@ Map<String, MappingComponentsCallback> testMappingComponents = {
 };
 
 
-
-
-
 MappingComponentsCallback mappingTextWidget = (Fields data,
     {bool isEdit = false, }) {
   if(data.hidden??false){

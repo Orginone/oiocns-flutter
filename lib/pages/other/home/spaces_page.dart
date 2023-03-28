@@ -31,6 +31,7 @@ class SpacesPage extends GetView<SettingController> {
       child: Obx(() {
         var joinedCompanies = controller.user!.joinedCompany;
         var spaces = <ISpace>[...joinedCompanies, controller.user!];
+        spaces.removeWhere((element) => controller.space.id == element.target.id);
         return ListView.builder(
           scrollDirection: Axis.vertical,
           itemCount: spaces.length,

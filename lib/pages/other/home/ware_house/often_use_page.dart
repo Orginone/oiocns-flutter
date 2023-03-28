@@ -20,6 +20,7 @@ class OftenUsePage extends StatelessWidget {
             return ApplyButton(
               url: controller.oftenUseList[index].url,
               applyName: controller.oftenUseList[index].name,
+              onTap: controller.oftenUseList[index].onTap,
             );
           });
     });

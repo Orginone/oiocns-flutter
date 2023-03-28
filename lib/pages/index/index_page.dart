@@ -13,6 +13,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/index/HorizontalScrollMenu/MyMenuItem.dart';
 import 'package:orginone/pages/other/home/components/operation_bar.dart';
+import 'package:orginone/pages/setting/home/logic.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -50,7 +51,7 @@ class IndexPage extends BaseView<IndexPageController> {
         "icon": "icon",
         "cardName": "资产应用一",
         "func": () {
-          Get.toNamed(Routers.scanning);
+          Get.toNamed(Routers.addFriend);
           print('Go to home page');
         }
       },
@@ -205,7 +206,7 @@ class IndexPage extends BaseView<IndexPageController> {
                         icon: Icon(Icons.qr_code_scanner_outlined),
                         onPressed: () {
                           // Navigator.pop(context); // 关闭Drawer
-                          Get.toNamed(Routers.scanning);
+                          Get.toNamed(Routers.addFriend);
                         },
                       ),
                     ],
@@ -243,68 +244,6 @@ class IndexPage extends BaseView<IndexPageController> {
             ),
           ],
         ),
-      ),
-      appBar: AppBar(
-        backgroundColor: XColors.navigatorBgColor,
-        leading: Builder(builder: (context) {
-          return GestureDetector(
-            onPanDown: (position) {
-              x = position.globalPosition.dx;
-              y = position.globalPosition.dy;
-            },
-            onTap: () {
-              showMenu(
-                context: context,
-                position: RelativeRect.fromLTRB(
-                  x - 20.w,
-                  y + 20.h,
-                  x + 20.w,
-                  y + 40.h,
-                ),
-                items: _popupMenus(context),
-              );
-            },
-            // onTap: () {
-            //   // 处理单击事件
-            //   Scaffold.of(context).openDrawer();
-
-            //   print('处理单击事件Leading button long pressed');
-            // },
-            onLongPress: () {
-              // 处理长按事件
-              print('处理长按事件Leading button long pressed');
-              Scaffold.of(context).openDrawer();
-              // Get.toNamed(Routers.mineUnit);
-            },
-            child: Icon(
-              Icons.menu,
-              color: Colors.black,
-            ),
-          );
-        }),
-        // automaticallyImplyLeading: false,
-        actions: <Widget>[
-          OperationBar()
-          // IconButton(
-          //   icon: const Icon(Icons.search),
-          //   tooltip: '搜索',
-          //   onPressed: () {
-          //     Get.toNamed(Routers.search);
-          //   },
-          // ),
-          // IconButton(
-          //   icon: const Icon(Icons.add),
-          //   tooltip: '增加',
-          //   onPressed: () {
-          //     Get.toNamed(Routers.contact);
-          //   },
-          // ),
-          // IconButton(
-          //   icon: const Icon(Icons.more_horiz_outlined),
-          //   tooltip: '更多',
-          //   onPressed: () {},
-          // ),
-        ],
       ),
       body: ListView(
           scrollDirection: Axis.vertical,

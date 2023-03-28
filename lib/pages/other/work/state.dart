@@ -10,17 +10,6 @@ class WorkState extends BaseGetState{
 
 const List<String> tabTitle = [
   '待办',
-  '已办',
-  '抄送',
   '发起',
 ];
 
-enum WorkEnum{
-  todo("审批"),
-  done("已办"),
-  copy("抄送");
-
-  final String label;
-
-  const WorkEnum(this.label);
-}
