@@ -77,7 +77,7 @@ class SetHomePage extends BaseView<SetHomeController> {
         "icon": "icon",
         "cardName": "更新版本",
         "func": () async {
-          // Get.toNamed(Routers.version);
+          Get.toNamed(Routers.version);
         },
       }
     ];
