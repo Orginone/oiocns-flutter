@@ -1407,7 +1407,6 @@ class XFlowInstance {
         version = json["version"];
         createTime = json["createTime"];
         updateTime = json["updateTime"];
-        flowTasks = json["tasks"]!=null?XFlowTask.fromList(json["tasks"]):null;
         if(json["tasks"]!=null){
           flowTasks = [];
           json["tasks"].forEach((json){
@@ -2274,7 +2273,7 @@ class Archive {
     flowRecord =
         json['record'] != null ? XFlowRecord.fromJson(json['record']) : null;
     personId = json['personId'];
-    data = json['data'];
+    // data = json['data'];
   }
 }
 

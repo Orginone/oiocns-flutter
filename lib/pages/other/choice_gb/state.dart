@@ -22,27 +22,11 @@ class ChoiceGbState extends BaseGetState{
   //显示搜索页面
   var showSearchPage = false.obs;
 
-  late bool showChoice;
-
-  late bool showFunctionButton;
-
   late String head;
 
-  late bool showSearch;
-
-  late FunctionMenu menu;
 
   ChoiceGbState(){
-    showChoice = Get.arguments?['showChoice'] ?? true;
-    showFunctionButton = Get.arguments?['showFunctionButton'] ?? false;
     head = Get.arguments?['head']??CommonTreeManagement().species?.name??"";
-    showSearch =  Get.arguments?['showSearch'] ?? true;
-    menu = Get.arguments?['menu'] ??FunctionMenu.next;
   }
-}
-
-enum FunctionMenu{
-  thing,
-  next,
 }
 

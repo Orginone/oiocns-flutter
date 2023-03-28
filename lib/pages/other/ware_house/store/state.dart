@@ -5,6 +5,7 @@ import 'package:orginone/dart/core/getx/base_get_state.dart';
 
 class StoreState extends BaseGetState{
   late TabController tabController;
+  var recentlyList = <Popular>[];
 }
 
 const List<String> tabTitle = [
@@ -13,3 +14,12 @@ const List<String> tabTitle = [
   '自建商店',
   '加入商店',
 ];
+
+
+class Popular {
+  final String id;
+  final String name;
+  final String url;
+
+  Popular(this.id, this.name, this.url);
+}

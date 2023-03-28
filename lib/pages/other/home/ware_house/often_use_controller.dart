@@ -33,11 +33,7 @@ class OftenUseController extends GetxController {
         "实体",
         "http://anyinone.com:888/img/logo/logo3.jpg",
         () => Get.toNamed(Routers.choiceGb, arguments: {
-              "showChoice": false,
-              "showFunctionButton": true,
               "head": "实体",
-              "showSearch": false,
-              "menu": FunctionMenu.thing,
             })));
     super.onInit();
   }

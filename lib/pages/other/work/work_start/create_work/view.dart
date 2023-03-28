@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/widgets/loading_widget.dart';
 import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/other/work/work_start/create_work/state.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/widget/load_state_widget.dart';
 import 'package:orginone/widget/mapping_components.dart';
 import 'package:orginone/pages/other/choice_thing/item.dart';
 import 'logic.dart';
@@ -23,6 +25,9 @@ class CreateWorkPage
               future:controller.init(),
               builder: (context, snapshot) {
                 if(snapshot.connectionState != ConnectionState.done){
+                  return LoadStateWidget(isLoading: true,isSuccess: false,);
+                }
+                if(snapshot.hasError){
                   return Container();
                 }
                 return SingleChildScrollView(
