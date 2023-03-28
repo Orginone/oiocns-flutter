@@ -68,14 +68,14 @@ class Company extends MarketTarget implements ICompany {
     }
     final res = await kernel.queryJoinedTargetById(IDReqJoinedModel(
       id: userId,
-      typeName: TargetType.person.name,
+      typeName: TargetType.person.label,
       page: PageRequest(
         offset: 0,
         filter: "",
         limit: Constants.maxUint16,
       ),
       spaceId: id,
-      joinTypeNames: [TargetType.cohort.name],
+      joinTypeNames: [TargetType.cohort.label],
     ));
     if (res.success && res.data?.result != null) {
       cohorts = res.data!.result

@@ -41,7 +41,7 @@ abstract class BaseGetListPageView<T extends BaseListController, S extends BaseG
                   onRefresh: () => controller.onRefresh(),
                   onLoading: () => controller.onLoadMore(),
                   child: Obx((){
-                    if(state.dataList.isEmpty){
+                    if(state.dataList.isEmpty && displayNoDataWidget()){
                       return noData();
                     }
                     return buildView();
@@ -82,4 +82,6 @@ abstract class BaseGetListPageView<T extends BaseListController, S extends BaseG
   String tag() {
     return "";
   }
+
+  bool displayNoDataWidget()=>true;
 }

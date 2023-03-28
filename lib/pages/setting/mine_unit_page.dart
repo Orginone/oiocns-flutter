@@ -85,7 +85,9 @@ class MineUnitPage extends GetView<SettingController> {
                   onForegroundImageError: (error, stackTrace) {},
                   radius: 15,
                 ),
-                body: Column(children: [
+                body: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                   Text(company.target.code),
                   Text(company.target.name)
                 ]),

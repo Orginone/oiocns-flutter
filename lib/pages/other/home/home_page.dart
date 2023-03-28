@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:orginone/components/template/originone_scaffold.dart';
 import 'package:orginone/components/template/tabs.dart';
 import 'package:orginone/components/unified.dart';
-import 'package:orginone/components/widgets/progress_dialog.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
@@ -16,18 +15,19 @@ import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/index/index_page.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
+import 'package:orginone/pages/other/ware_house/view.dart';
 import 'package:orginone/pages/other/work/view.dart';
-import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/pages/setting/version_page.dart';
+import 'package:orginone/pages/setting/home/view.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
+import 'package:orginone/util/file_management.dart';
 import 'package:orginone/util/load_image.dart';
+import 'package:orginone/util/setting_management.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import '../home/ware_house/ware_house.dart';
 import 'package:orginone/util/toast_utils.dart';
-import 'package:orginone/widget/loading_dialog.dart';
 
 class HomePage extends GetView<HomeController> {
   const HomePage({Key? key}) : super(key: key);
@@ -96,12 +96,12 @@ class HomeController extends TabsController {
     registerTab(center);
     registerTab(XTab(
       body: Text('仓库', style: XFonts.size14Black3),
-      view: const WareHouse(),
+      view: WareHousePage(),
       icon: XImage.localImage("warehouse", size: size),
     ));
     registerTab(XTab(
       body: Text('设置', style: XFonts.size14Black3),
-      view: SetHomePage(),
+      view: SettingCenterPage(),
       icon: XImage.localImage("setting", size: size),
     ));
     setIndex(tabs.indexOf(center));
@@ -111,21 +111,22 @@ class HomeController extends TabsController {
     try {
       if (KernelApi.getInstance().anystore.isOnline) {
         log('连接成功---------${KernelApi.getInstance().anystore.isOnline}');
-        ToastUtils.showMsg(msg: "连接成功 开始加载数据");
         await Future.wait([
           DepartmentManagement().initDepartment(),
           CommonTreeManagement().initTree(),
+          FileManagement().initFileDir(),
+          SettingManagement().initSetting(),
         ]);
         log('数据加载完成');
-        ToastUtils.showMsg(msg: "加载数据成功");
       } else {
-        await Future.delayed(Duration(milliseconds: 200), () async {
+        await Future.delayed(const Duration(milliseconds: 200), () async {
           log('尝试重新连接---------${KernelApi.getInstance().anystore.isOnline}');
           await initData();
         });
       }
     } catch (e) {
       ToastUtils.showMsg(msg: e.toString());
+      print(e);
     }
   }
 
@@ -149,9 +150,7 @@ class HomeController extends TabsController {
   }
 
   Future<void> initData() async {
-    LoadingDialog.showLoading(Get.context!, msg: "加载数据中");
     await loadData();
-    LoadingDialog.dismiss(Get.context!);
   }
 
   _update() async{

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/thing/ispecies.dart';
+import 'package:orginone/util/common_tree_management.dart';
 
 class ChoiceGbState extends BaseGetState{
   var gb = <ISpeciesItem>[].obs;
@@ -20,5 +21,12 @@ class ChoiceGbState extends BaseGetState{
 
   //显示搜索页面
   var showSearchPage = false.obs;
+
+  late String head;
+
+
+  ChoiceGbState(){
+    head = Get.arguments?['head']??CommonTreeManagement().species?.name??"";
+  }
 }
 
