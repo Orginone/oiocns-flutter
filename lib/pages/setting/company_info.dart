@@ -33,13 +33,13 @@ class CompanyInfoPage
         CommonWidget.commonBreadcrumbNavWidget(
             firstTitle: "关系", allTitle: List.empty()),
         SizedBox(height: 16.0),
-        const Column(
+        Column(
           children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: const [
               Text("单位名称"),
               Text("杭州共裕数字技术有限公司", style: TextStyle(color: Colors.black45))
             ]),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: const [
               Text("社会统一信用代码"),
               Text(
                 "12345667908",
@@ -48,7 +48,7 @@ class CompanyInfoPage
                 ),
               )
             ]),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: const [
               Text("团队简称"),
               Text(
                 "共裕",
@@ -57,7 +57,7 @@ class CompanyInfoPage
                 ),
               )
             ]),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: const [
               Text("团队代号"),
               Text(
                 "共裕",
@@ -66,7 +66,7 @@ class CompanyInfoPage
                 ),
               )
             ]),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: const [
               Text("单位简介"),
               Text(
                 "无",

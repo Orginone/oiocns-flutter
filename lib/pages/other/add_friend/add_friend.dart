@@ -32,12 +32,12 @@ class AddFriendPage extends StatelessWidget {
       } else {
         // context
         widgets.addAll([
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           InkWell(
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
+              children: const [
                 SizedBox(width: 10),
                 Text("我的二维码:"),
                 Icon(Icons.qr_code),
