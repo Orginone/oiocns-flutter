@@ -20,6 +20,7 @@ import 'package:orginone/pages/other/assets_internal_control/view.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
 import 'package:orginone/pages/other/ware_house/view.dart';
 import 'package:orginone/pages/other/work/view.dart';
+import 'package:orginone/pages/setting/home/view.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/asset_management.dart';
@@ -112,7 +113,7 @@ class HomeController extends TabsController {
     ));
     registerTab(XTab(
       body: Text('设置', style: XFonts.size14Black3),
-      view: SetHomePage(),
+      view: SettingCenterPage(),
       icon: XImage.localImage("setting", size: size),
     ));
     setIndex(tabs.indexOf(center));
@@ -167,6 +168,4 @@ class HomeController extends TabsController {
     super.onClose();
     EventBusHelper.unregister(this);
   }
-
 }
-

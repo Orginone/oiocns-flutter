@@ -7,6 +7,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/event/home_data.dart';
+import 'package:orginone/pages/setting/home/logic.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus.dart';
 import 'package:orginone/util/event_bus_helper.dart';
@@ -23,13 +24,12 @@ class SettingController extends GetxController {
 
   StreamSubscription<User>? _userSub;
 
-
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    _userSub = XEventBus.instance.on<User>().listen((event) async{
-        await _loadUser(XTarget.fromJson(event.person));
+    _userSub = XEventBus.instance.on<User>().listen((event) async {
+      await _loadUser(XTarget.fromJson(event.person));
     });
   }
 
@@ -75,10 +75,10 @@ class SettingController extends GetxController {
   }
 
   String spaceName(ISpace space) {
-    return space.id == user?.id ? "个人空间" : space.target.team?.name??"";
+    return space.id == user?.id ? "个人空间" : space.target.team?.name ?? "";
   }
 
-  bool get isPersonSpace=>space.id == user?.id;
+  bool get isPersonSpace => space.id == user?.id;
 
   /// 设置当前空间
   setCurSpace(String id) async {
@@ -201,8 +201,8 @@ class SettingController extends GetxController {
   }
 
   void jumpSpaces() {
-    Get.toNamed(Routers.spaces)?.then((value){
-      if(value!=null && value){
+    Get.toNamed(Routers.spaces)?.then((value) {
+      if (value != null && value) {
         EventBusHelper.fire(InitHomeData());
       }
     });

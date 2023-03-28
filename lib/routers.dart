@@ -50,7 +50,10 @@ import 'package:orginone/pages/other/search_page.dart';
 import 'package:orginone/pages/other/web_view/binding.dart';
 import 'package:orginone/pages/other/web_view/view.dart';
 import 'package:orginone/pages/other/work/work_start/view.dart';
+import 'package:orginone/pages/setting/company_info.dart';
 import 'package:orginone/pages/setting/contact_page.dart';
+import 'package:orginone/pages/setting/home/binding.dart';
+import 'package:orginone/pages/setting/home/view.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
@@ -73,11 +76,7 @@ import './pages/other/home/ware_house/often_use_binding.dart';
 
 // 仓库
 import './pages/other/home/ware_house/recently_opened_binding.dart';
-// import 'pages/other/application/application_details/binding.dart';
-// import 'pages/other/application/application_details/view.dart';
 import 'pages/other/add_friend/add_friend.dart';
-// import 'pages/other/application/binding.dart';
-// import 'pages/other/application/view.dart';
 import 'pages/other/batch_operation_asset/binding.dart';
 import 'pages/other/center_function/create_claim/binding.dart';
 import 'pages/other/center_function/create_claim/view.dart';
@@ -135,11 +134,13 @@ class Routers {
   static const String index = "/index";
 
   // 设置
+  static const String setting = "/setting";
   static const String mineUnit = "/mineUnit";
   static const String newFriends = "/newFriends";
   static const String contact = "/contact";
   static const String cohorts = "/cohorts";
   static const String uintSettings = "/uintSettings";
+  static const String companyInfo = "/companyInfo";
 
   // 仓库相关
   // 资产管理
@@ -482,11 +483,6 @@ class Routers {
         page: () => ChoiceThingPage(),
         binding: ChoiceThingBinding(),
       ),
-      // GetPage(
-      //   name: Routers.application,
-      //   page: () => ApplicationPage(),
-      //   binding: ApplicationBinding(),
-      // ),
       GetPage(
         name: Routers.applicationDetails,
         page: () => ApplicationDetailsPage(),
@@ -506,6 +502,16 @@ class Routers {
         name: Routers.file,
         page: () => FilePage(),
         binding: FileBinding(),
+      ),
+      GetPage(
+        name: Routers.setting,
+        page: () => SettingCenterPage(),
+        binding: SettingCenterBinding(),
+      ),
+      GetPage(
+        name: Routers.companyInfo,
+        page: () => CompanyInfoPage(),
+        binding: CompanyInfoBingding(),
       ),
     ];
   }

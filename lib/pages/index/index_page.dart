@@ -13,6 +13,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/index/HorizontalScrollMenu/MyMenuItem.dart';
 import 'package:orginone/pages/other/home/components/operation_bar.dart';
+import 'package:orginone/pages/setting/home/logic.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
