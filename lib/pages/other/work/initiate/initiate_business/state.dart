@@ -6,9 +6,7 @@ import 'package:orginone/util/common_tree_management.dart';
 class InitiateBusinessState extends BaseGetState {
   var selectedSpecies = <ISpeciesItem>[].obs;
 
-  late List<ISpeciesItem> species;
 
   InitiateBusinessState() {
-    species = CommonTreeManagement().species?.children ?? [];
   }
 }

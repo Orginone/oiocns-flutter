@@ -9,6 +9,7 @@ import 'package:orginone/pages/index/index_page.dart';
 import 'package:orginone/pages/other/ware_house/ware_house_management/item.dart';
 import 'package:orginone/pages/other/work/initiate/initiate_business/state.dart';
 import 'package:orginone/pages/todo/config.dart';
+import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/widget/common_widget.dart';
 
 import 'logic.dart';
@@ -83,9 +84,15 @@ class InitiateBusinessPage
                         });
                   }),
                   Obx(() {
-                    var list = state.species;
+                    var list = [];
                     if (state.selectedSpecies.isNotEmpty) {
                       list = state.selectedSpecies.last.children;
+                    }else{
+                      CommonTreeManagement().species?.children.forEach((element) {
+                        if(element.name == "事项"){
+                          list.addAll(element.children);
+                        }
+                      });
                     }
                     return Column(
                       children: list.map(
