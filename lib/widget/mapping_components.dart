@@ -3,11 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/model/asset_creation_config.dart';
-import 'package:orginone/pages/other/assets_config.dart';
-import 'package:orginone/util/production_order_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 
-typedef MappingComponentsCallback = Widget Function(Fields data, {bool isEdit, AssetsType? assetsType});
+typedef MappingComponentsCallback = Widget Function(Fields data, {bool isEdit});
 
 Map<String, MappingComponentsCallback> testMappingComponents = {
   "text": mappingTextWidget,
@@ -18,13 +16,7 @@ Map<String, MappingComponentsCallback> testMappingComponents = {
 
 
 MappingComponentsCallback mappingTextWidget = (Fields data,
-    {bool isEdit = false, AssetsType? assetsType}) {
-  if (data.isBillCode && !isEdit) {
-    ProductionOrderUtils.productionSingleOrder(assetsType!.billHeader).then((
-        value) {
-      data.defaultData.value = value;
-    });
-  }
+    {bool isEdit = false, }) {
   if(data.hidden??false){
     return Container();
   }
@@ -42,7 +34,7 @@ MappingComponentsCallback mappingTextWidget = (Fields data,
 };
 
 MappingComponentsCallback mappingInputWidget = (Fields data,
-    {bool isEdit = false, AssetsType? assetsType}) {
+    {bool isEdit = false, }) {
   List<TextInputFormatter>? inputFormatters;
   TextEditingController controller = TextEditingController(text: data.defaultData.value?.toString()??"");
   if (data.regx != null) {
@@ -72,7 +64,7 @@ MappingComponentsCallback mappingInputWidget = (Fields data,
 };
 
 MappingComponentsCallback mappingSelectBoxWidget = (Fields data,
-    {bool isEdit = false, AssetsType? assetsType}) {
+    {bool isEdit = false, }) {
   if(data.hidden??false){
     return Container();
   }
@@ -100,7 +92,7 @@ MappingComponentsCallback mappingSelectBoxWidget = (Fields data,
 
 
 MappingComponentsCallback mappingRouteWidget = (Fields data,
-    {bool isEdit = false, AssetsType? assetsType}) {
+    {bool isEdit = false, }) {
   if(data.hidden??false){
     return Container();
   }

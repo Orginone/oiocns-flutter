@@ -41,7 +41,7 @@ class XIcons {
   }
 
   static get loading32 {
-    return Icon(const IconData(0xe891), color: Colors.black, size: 32.w);
+    return Icon(Icons.add, color: Colors.black, size: 32.w);
   }
 }
 
