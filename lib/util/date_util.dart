@@ -12,7 +12,11 @@ class CustomDateUtil {
     "周日"
   ];
 
-  static String getSessionTime(DateTime? targetTime) {
+  static String getSessionTime(String? rawTime) {
+    if (rawTime == null || rawTime.isEmpty){
+      return "";
+    }
+    var targetTime = DateUtil.getDateTime(rawTime);
     if (targetTime == null) {
       return "";
     }

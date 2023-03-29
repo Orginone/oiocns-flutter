@@ -1,11 +1,12 @@
+import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
-import 'package:orginone/dart/core/target/species/ispecies.dart';
 
 import '../market/model.dart';
+import '../thing/ispecies.dart';
 
 /// 空间类型数据
 class SpaceType {
@@ -34,8 +35,6 @@ abstract class ITarget {
   late String typeName;
   // 职权树
   late IAuthority? authorityTree;
-  // 分类标准树
-  late ISpeciesItem? speciesTree;
   // 拥有的身份
   late List<XIdentity> ownIdentitys;
   // 组织的身份
@@ -51,6 +50,10 @@ abstract class ITarget {
   // 共享信息
   late TargetShare shareInfo;
 
+  List<XTarget> members = [];
+
+  bool isSelected = false;
+
   /// 新增
   /// @param data
   Future<ITarget?> create(TargetModel data);
@@ -65,10 +68,6 @@ abstract class ITarget {
   /// 获取职权树
   /// @param reload 是否强制刷新
   Future<IAuthority?> loadAuthorityTree({bool reload = false});
-
-  /// 获取分类标准树
-  /// @param reload 是否强制刷新
-  Future<ISpeciesItem?> loadSpeciesTree({bool reload = false});
 
   /// 判断是否拥有该身份
   /// @param id 身份id
@@ -253,7 +252,7 @@ abstract class IFlow {
 
   ///查询流程定义绑定项
   ///@param reload 是否强制刷新
-  Future<List<XFlowRelation>> queryFlowRelation({bool reload = false});
+  Future<List<XOperation>> queryFlowRelation({bool reload = false});
 
   ///发布流程定义（包含创建、更新）
   ///@param data
@@ -269,11 +268,7 @@ abstract class IFlow {
 
   /// 绑定应用业务与流程定义
   /// @param params
-  Future<XFlowRelation?> bindingFlowRelation(FlowRelationModel params);
-
-  /// 解绑应用业务与流程定义
-  /// @param params
-  Future<bool> unbindingFlowRelation(FlowRelationModel params);
+  Future<bool> bindingFlowRelation(FlowRelationModel params);
 }
 
 abstract class ISpace implements IFlow, IMTarget, ITarget {
@@ -282,6 +277,9 @@ abstract class ISpace implements IFlow, IMTarget, ITarget {
 
   /// 空间类型数据
   late SpaceType spaceData;
+
+  /// 空间职权树
+  late IAuthority? spaceAuthorityTree;
 
   /// @description: 查询群
   ///@param reload 是否强制刷新
@@ -293,6 +291,10 @@ abstract class ISpace implements IFlow, IMTarget, ITarget {
   /// @param belongId 群组归属id
   /// @returns
   Future<bool> deleteCohort(String id);
+
+  /// 加载空间职权树
+  /// @param reload 重新加载
+  Future<IAuthority?> loadSpaceAuthorityTree([bool reload = false]);
 }
 
 /// 群组操作
@@ -305,10 +307,10 @@ abstract class ICohort implements ITarget {
 /// 人员操作
 abstract class IPerson implements ISpace, ITarget {
   /// 我的好友列表
-  late List<XTarget> joinedFriend;
+  late RxList<XTarget> joinedFriend;
 
   /// 我加入的单位
-  late List<ICompany> joinedCompany;
+  late RxList<ICompany> joinedCompany;
 
   /// 退出群组
   /// @param id 群组Id
@@ -390,6 +392,9 @@ abstract class ICompany implements ISpace, ITarget {
 
   /// 当前用户Id
   late String userId;
+
+  ///加载空间职权树
+  Future<IAuthority?> loadSpaceAuthorityTree([bool reload = false]);
 
   /// 删除集团
   /// @param id 集团Id
@@ -487,6 +492,12 @@ abstract class IDepartment implements ITarget {
 
   /// 子部门
   late List<IDepartment> departments;
+
+
+  List<XTarget> departmentMembers = [];
+
+  bool isSelected = false;
+
 
   /// 获取子部门
   /// @param reload 是否强制刷新

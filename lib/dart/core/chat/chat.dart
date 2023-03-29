@@ -1,34 +1,48 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/ichat.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/util/encryption_util.dart';
 
 const hisMsgCollName = 'chat-message';
 
 class BaseChat extends IChat {
-  BaseChat(String id, String name, ChatModel m, String userId) {
-    spaceId = id;
+  BaseChat(String spaceId, String name, ChatModel model, String userId) {
+    this.userId = userId;
+    this.spaceId = spaceId;
     spaceName = name;
-    target = m;
+    target = model;
     messages = <XImMsg>[].obs;
     persons = <XTarget>[].obs;
     personCount = 0.obs;
     chatId = target.id;
     noReadCount = 0.obs;
     isTopping = false.obs;
-    fullId = '$id-${target.id}';
-    // appendShare(target.id, shareInfo());
+    fullId = '$spaceId-${target.id}';
+    lastMessage = Rxn();
+    appendShare(target.id, shareInfo);
   }
 
-  TargetShare shareInfo() {
-    return TargetShare(
+  @override
+  TargetShare get shareInfo {
+    var share = TargetShare(
       name: target.name,
       typeName: target.typeName,
-      avatar: "", //parseAvatar(target.photo),
     );
+    if (target.photo?.isNotEmpty ?? false) {
+       try{
+         var map = jsonDecode(target.photo!);
+         share.avatar = FileItemShare.fromJson(map);
+       }catch(e){
+
+       }
+    }
+    return share;
   }
 
   @override
@@ -44,14 +58,15 @@ class BaseChat extends IChat {
 
   @override
   loadCache(ChatCache chatCache) {
-    if (chatCache.lastMessage?.id != lastMessage.value?.id) {
-      if (chatCache.lastMessage != null) {
-        messages.insert(0, chatCache.lastMessage!);
+    var newLastMessage = chatCache.lastMessage;
+    if (newLastMessage?.id != lastMessage.value?.id) {
+      if (newLastMessage != null) {
+        messages.insert(0, newLastMessage);
       }
     }
     isTopping.value = chatCache.isTopping;
     noReadCount.value = chatCache.noReadCount;
-    lastMessage.value = chatCache.lastMessage;
+    lastMessage.value = newLastMessage;
   }
 
   @override
@@ -135,7 +150,7 @@ class BaseChat extends IChat {
       message["id"] = message["chatId"];
       var detail = XImMsg.fromJson(message);
       detail.showTxt = EncryptionUtil.inflate(detail.msgBody);
-      messages.add(detail);
+      this.messages.add(detail);
     }
   }
 
@@ -170,13 +185,13 @@ class BaseChatGroup extends IChatGroup {
   ) {
     this.spaceId = spaceId;
     this.spaceName = spaceName;
-    this.isOpened = isOpened;
+    this.isOpened = isOpened.obs;
     this.chats = chats;
   }
 }
 
 class PersonChat extends BaseChat {
-  PersonChat(super.id, super.name, super.m, super.userId);
+  PersonChat(super.spaceId, super.name, super.m, super.userId);
 
   @override
   Future<int> moreMessage({String? filter}) async {

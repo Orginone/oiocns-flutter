@@ -1,9 +1,13 @@
+import 'package:get/get.dart';
+import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/core/market/model.dart';
 import 'package:orginone/dart/core/target/university.dart';
 import '../../base/common/uint.dart';
 import '../../base/model.dart';
 import '../../base/schema.dart';
 import '../enum.dart';
+import 'authority/authority.dart';
+import 'authority/iauthority.dart';
 import 'cohort.dart';
 import 'company.dart';
 import 'hospital.dart';
@@ -15,10 +19,10 @@ class Person extends MarketTarget implements IPerson {
   late List<ICohort> cohorts;
 
   @override
-  late List<ICompany> joinedCompany;
+  late RxList<ICompany> joinedCompany;
 
   @override
-  late List<XTarget> joinedFriend;
+  late RxList<XTarget> joinedFriend;
 
   @override
   set spaceData(SpaceType _) {}
@@ -31,6 +35,10 @@ class Person extends MarketTarget implements IPerson {
 
   @override
   late List<IMarket> publicMarkets;
+
+  @override
+  late IAuthority? spaceAuthorityTree;
+
   Person(XTarget target) : super(target) {
     super.searchTargetType = [
       TargetType.cohort,
@@ -45,7 +53,10 @@ class Person extends MarketTarget implements IPerson {
     ];
     createTargetType = [TargetType.cohort, ...companyTypes];
     extendTargetType = [TargetType.cohort, TargetType.person];
+    joinedCompany = <ICompany>[].obs;
+    joinedFriend = <XTarget>[].obs;
   }
+
   @override
   Future<List<ITarget>> loadSubTeam({bool reload = false}) async {
     return [];
@@ -59,6 +70,26 @@ class Person extends MarketTarget implements IPerson {
     res.share = shareInfo;
     res.typeName = target.typeName as TargetType;
     return res;
+  }
+
+  @override
+  Future<IAuthority?> loadSpaceAuthorityTree([bool reload = false]) async {
+    if (!reload && spaceAuthorityTree != null) {
+      return spaceAuthorityTree;
+    }
+    final res = await kernel.queryAuthorityTree(IdSpaceReq(
+      id: '0',
+      spaceId: id,
+      page: PageRequest(
+        offset: 0,
+        filter: '',
+        limit: Constants.maxUint16,
+      ),
+    ));
+    if (res.success) {
+      authorityTree = Authority(res.data!, id);
+    }
+    return authorityTree;
   }
 
   @override
@@ -111,19 +142,14 @@ class Person extends MarketTarget implements IPerson {
     }
     final res = await getjoinedTargets(companyTypes, id);
     if (res.result != null) {
-      joinedCompany = [];
       for (var a in res.result!) {
         late ICompany company;
-        switch (a.typeName as TargetType) {
-          case TargetType.university:
-            company = University(a, id);
-            break;
-          case TargetType.hospital:
-            company = Hospital(a, id);
-            break;
-          default:
-            company = Company(a, id);
-            break;
+        if (a.typeName == TargetType.university.label) {
+          company = University(a, id);
+        } else if (a.typeName == TargetType.university.label) {
+          company = Hospital(a, id);
+        } else {
+          company = Company(a, id);
         }
         joinedCompany.add(company);
       }
@@ -225,7 +251,7 @@ class Person extends MarketTarget implements IPerson {
       belongId: id,
     ));
     if (res.success) {
-      joinedCompany = joinedCompany.where((a) => a.id != id).toList();
+      joinedCompany.removeWhere((a) => a.id != id);
     }
     return res.success;
   }
@@ -273,8 +299,7 @@ class Person extends MarketTarget implements IPerson {
       targetType: TargetType.person.name,
     ));
     if (res.success) {
-      joinedCompany =
-          joinedCompany.where((company) => company.id != id).toList();
+      joinedCompany.removeWhere((company) => company.id != id);
     }
     return res.success;
   }
@@ -284,7 +309,7 @@ class Person extends MarketTarget implements IPerson {
     if (joinedFriend.isEmpty) {
       final data = await super.loadMembers(page);
       if (data.result != null) {
-        joinedFriend = data.result!;
+        joinedFriend.addAll(data.result!);
       }
     }
     return XTargetArray(
@@ -321,8 +346,7 @@ class Person extends MarketTarget implements IPerson {
           targetType: TargetType.person.name,
         ));
       }
-      joinedFriend =
-          joinedFriend.where((item) => !ids.contains(item.id)).toList();
+      joinedFriend.removeWhere((item) => !ids.contains(item.id));
       return true;
     }
     return false;

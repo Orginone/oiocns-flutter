@@ -5,10 +5,13 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/market/model.dart';
 import 'package:orginone/dart/core/target/station.dart';
 import 'package:orginone/dart/core/target/working.dart';
+import 'package:orginone/util/authority.dart';
 
 import '../../base/common/uint.dart';
 import '../../base/schema.dart';
 import '../enum.dart';
+import 'authority/authority.dart';
+import 'authority/iauthority.dart';
 import 'cohort.dart';
 import 'department.dart';
 import 'group.dart';
@@ -18,10 +21,11 @@ import 'mbase.dart';
 class Company extends MarketTarget implements ICompany {
   late List<IStation> stations;
   late List<TargetType> departmentTypes;
+  late IAuthority? spaceAuthorityTree;
 
   Company(XTarget target, String userId) : super(target) {
     userId = userId;
-    departmentTypes = departmentTypes;
+    departmentTypes = targetDepartmentTypes;
     subTeamTypes = [...departmentTypes, TargetType.working];
     extendTargetType = [...subTeamTypes, ...companyTypes];
     joinTargetType = [TargetType.group];
@@ -36,6 +40,25 @@ class Company extends MarketTarget implements ICompany {
   @override
   List<ITarget> get subTeam {
     return [...departments, ...workings];
+  }
+
+  @override
+  Future<IAuthority?> loadSpaceAuthorityTree([bool reload = false]) async {
+    if (!reload && spaceAuthorityTree != null) {
+      return spaceAuthorityTree;
+    }
+    final res = await kernel.queryAuthorityTree(IdSpaceReq(
+        id: '0',
+        spaceId: id,
+        page: PageRequest(
+          offset: 0,
+          filter: '',
+          limit: Constants.maxUint16,
+        )));
+    if (res.success) {
+      authorityTree = Authority(res.data!, id);
+    }
+    return authorityTree;
   }
 
   @override
@@ -307,6 +330,7 @@ class Company extends MarketTarget implements ICompany {
     if (!reload && departments.isNotEmpty) {
       return departments;
     }
+    departments = [];
     final res = await getSubTargets(departmentTypes);
     if (res.success && res.data?.result != null) {
       departments = res.data!.result

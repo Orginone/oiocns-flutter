@@ -32,23 +32,22 @@ class XColors {
   static const Color transparent = Color(0x00ffffff);
   static const Color bgGrayLight = Color(0xFFF5F5F5);
   static const Color yellow = Color(0xFFF1B463);
+  static const Color orange = Color(0xFFFB8F11);
 }
 
 class XIcons {
-  static get arrowBack {
+  static get arrowBack32 {
     return Icon(Icons.arrow_back_outlined, color: Colors.black, size: 32.w);
+  }
+
+  static get loading32 {
+    return Icon(Icons.add, color: Colors.black, size: 32.w);
   }
 }
 
 class XWidgets {
   static get defaultBackBtn {
-    return IconButton(icon: XIcons.arrowBack, onPressed: () => Get.back());
-  }
-}
-
-class XInsets {
-  static get l20r20t10 {
-    return EdgeInsets.only(left: 20.w, right: 20.w, top: 10.w);
+    return IconButton(icon: XIcons.arrowBack32, onPressed: () => Get.back());
   }
 }
 
@@ -413,5 +412,86 @@ class XFonts {
 
   static get size28Black9W700 {
     return TextStyle(fontSize: 28.sp, color: XColors.black9, fontWeight: w700);
+  }
+
+  static get size12WhiteW700 {
+    return TextStyle(fontSize: 12.sp, color: XColors.white, fontWeight: w700);
+  }
+
+  static get size14WhiteW700 {
+    return TextStyle(fontSize: 14.sp, color: XColors.white, fontWeight: w700);
+  }
+
+  static get size16WhiteW700 {
+    return TextStyle(fontSize: 16.sp, color: XColors.white, fontWeight: w700);
+  }
+
+  static get size18WhiteW700 {
+    return TextStyle(fontSize: 18.sp, color: XColors.white, fontWeight: w700);
+  }
+
+  static get size20WhiteW700 {
+    return TextStyle(fontSize: 20.sp, color: XColors.white, fontWeight: w700);
+  }
+
+  static get size22WhiteW700 {
+    return TextStyle(fontSize: 22.sp, color: XColors.white, fontWeight: w700);
+  }
+
+  static get size24WhiteW700 {
+    return TextStyle(fontSize: 24.sp, color: XColors.white, fontWeight: w700);
+  }
+
+  static get size26WhiteW700 {
+    return TextStyle(fontSize: 26.sp, color: XColors.white, fontWeight: w700);
+  }
+
+  static get size28WhiteW700 {
+    return TextStyle(fontSize: 28.sp, color: XColors.white, fontWeight: w700);
+  }
+
+  static get size12ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 12.sp, color: theme, fontWeight: w700);
+  }
+
+  static get size14ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 14.sp, color: theme, fontWeight: w700);
+  }
+
+  static get size16ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 16.sp, color: theme, fontWeight: w700);
+  }
+
+  static get size18ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 18.sp, color: theme, fontWeight: w700);
+  }
+
+  static get size20ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 20.sp, color: theme, fontWeight: w700);
+  }
+
+  static get size22ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 22.sp, color: theme, fontWeight: w700);
+  }
+
+  static get size24ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 24.sp, color: theme, fontWeight: w700);
+  }
+
+  static get size26ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 26.sp, color: theme, fontWeight: w700);
+  }
+
+  static get size28ThemeW700 {
+    var theme = XColors.themeColor;
+    return TextStyle(fontSize: 28.sp, color: theme, fontWeight: w700);
   }
 }

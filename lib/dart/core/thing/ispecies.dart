@@ -13,9 +13,9 @@
 // export type INullSpeciesItem = ISpeciesItem | undefined;
 /* 可为空的进度回调 */
 // export type OnProgressType = (p: number) => void | undefined;
-import '../target/species/idict.dart' show IDict;
 import '../../base/model.dart';
 import '../../base/schema.dart';
+import 'idict.dart';
 
 /*
  * 标准分类系统项接口
@@ -33,12 +33,27 @@ abstract class ISpeciesItem {
   late List<ISpeciesItem> children;
   /* 归属信息 */
   late TargetShare belongInfo;
+  /* 属性 */
+  late List<XAttribute> attrs;
+
+  late bool isSelected;
   /* 加载信息 */
   Future<ISpeciesItem> loadInfo(TargetShare info);
   /* 加载分类特性 */
-  Future<XAttributeArray> loadAttrs(String id, PageRequest page);
+  Future<XAttributeArray> loadAttrs(
+      String id, bool recursionOrg, bool recursionSpecies, PageRequest page);
+  /* 加载分类字典 */
+  Future<XDictArray?> loadDicts(
+    String id,
+    bool recursionOrg,
+    bool recursionSpecies,
+    PageRequest page,
+  );
   /* 加载业务标准 */
-  Future<XOperationArray> loadOperations(String id, PageRequest page);
+  Future<XOperationArray> loadOperations(String id, bool filterAuth,
+      bool recursionOrg, bool recursionSpecies, PageRequest page);
+  /* 加载流程设计 */
+  Future<XFlowDefineArray> loadFlowDefines(String id, PageRequest page);
   /*
    * 创建标准分类项
    * @param data 创建参数
@@ -80,6 +95,21 @@ abstract class ISpeciesItem {
    */
   Future<bool> deleteAttr(String id);
   /*
+   * 创建流程设计
+   * @param data 创建参数
+   */
+  Future<XFlowDefine?> createFlowDefine(CreateDefineReq data);
+  /*
+   * 更新流程设计
+   * @param data 创建参数
+   */
+  Future<bool> updateFlowDefine(CreateDefineReq data);
+  /*
+   * 删除流程设计
+   * @param id 流程设计id
+   */
+  Future<bool> deleteFlowDefine(String id);
+  /*
    * 创建业务标准
    * @param data 创建参数
    */
@@ -98,4 +128,39 @@ abstract class ISpeciesItem {
    * 删除标准分类项
    */
   Future<bool> delete();
+
+  bool isAllLast() {
+    if (children.isEmpty) {
+      return true;
+    }
+    return children.where((element) => element.children.isNotEmpty).isEmpty;
+  }
+
+  List<ISpeciesItem> getAllList() {
+    List<ISpeciesItem> list = [];
+
+    for (var element in children) {
+      list.add(element);
+      if (element.children.isNotEmpty) {
+        list.addAll(element.getAllLastList());
+      }
+    }
+
+    return list;
+  }
+
+  List<ISpeciesItem> getAllLastList() {
+    List<ISpeciesItem> list = [];
+
+    for (var element in children) {
+      if (element.children.isEmpty) {
+        list.add(element);
+      } else {
+        list.addAll(element.getAllLastList());
+      }
+    }
+
+    return list;
+  }
+
 }

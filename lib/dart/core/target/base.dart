@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:core';
+
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -6,14 +9,17 @@ import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/authority/identity.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
-import 'package:orginone/dart/core/target/species/ispecies.dart';
-import 'package:orginone/dart/core/target/species/species.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../base/common/uint.dart';
 import '../enum.dart';
+import '../thing/ispecies.dart';
+import '../thing/species.dart';
 import 'itarget.dart';
 
 class BaseTarget extends ITarget {
+  static Uuid uuid = const Uuid();
+
   late List<TargetType> memberTypes;
   late List<TargetType> createTargetType;
 
@@ -43,21 +49,24 @@ class BaseTarget extends ITarget {
       name: teamName,
       typeName: typeName,
     );
-    // result.avatar = parseAvatar(target.avatar);
+    if (target.avatar.isNotEmpty) {
+      var map = jsonDecode(target.avatar);
+      result.avatar = FileItemShare.fromJson(map);
+    }
     return result;
   }
 
   KernelApi kernel = KernelApi.getInstance();
 
   BaseTarget(XTarget target) {
-    // key = generateUuid();
-    target = target;
+    key = uuid.v4();
+    this.target = target;
     createTargetType = [];
     joinTargetType = [];
     searchTargetType = [];
     ownIdentitys = [];
     identitys = [];
-    memberTypes = [];
+    memberTypes = [TargetType.person];
     typeName = target.typeName;
     // appendTarget(target);
   }
@@ -72,7 +81,7 @@ class BaseTarget extends ITarget {
       ),
       id: target.id,
       typeNames: [target.typeName],
-      subTypeNames: List<String>.from(memberTypes),
+      subTypeNames: memberTypes.map((e) => e.label).toList(),
     ));
     // appendTarget(res.data);
     return res.data!;
@@ -187,7 +196,7 @@ class BaseTarget extends ITarget {
     if (typeNames.isNotEmpty) {
       final res = await kernel.searchTargetByName(NameTypeModel(
           name: code,
-          typeNames: List<String>.from(typeNames),
+          typeNames: typeNames.map((person) => person.name).toList(),
           page: PageRequest(
             offset: 0,
             filter: code,
@@ -244,15 +253,14 @@ class BaseTarget extends ITarget {
     List<TargetType> typeNames,
     String spaceId,
   ) async {
-    typeNames =
-        typeNames.where((a) => joinTargetType.contains(a)).toList();
+    typeNames = typeNames.where((a) => joinTargetType.contains(a)).toList();
     if (typeNames.isNotEmpty) {
       final res = await kernel.queryJoinedTargetById(IDReqJoinedModel(
           id: target.id,
           typeName: target.typeName,
           page: PageRequest(offset: 0, filter: '', limit: Constants.maxUint16),
           spaceId: spaceId,
-          joinTypeNames: List<String>.from(typeNames)));
+          joinTypeNames: typeNames.map((item) => item.label).toList()));
       if (res.data != null) {
         return res.data!;
       }
@@ -268,7 +276,7 @@ class BaseTarget extends ITarget {
     return await kernel.querySubTargetById(IDReqSubModel(
       id: id,
       typeNames: [target.typeName],
-      subTypeNames: List<String>.from(typeNames),
+      subTypeNames: typeNames.map((e) => e.label).toList(),
       page: PageRequest(offset: 0, filter: '', limit: Constants.maxUint16),
     ));
   }
@@ -364,8 +372,9 @@ class BaseTarget extends ITarget {
       return authorityTree;
     }
     await getOwnIdentitys(reload: reload);
-    final res = await kernel.queryAuthorityTree(IDBelongReq(
-      id: target.id,
+    final res = await kernel.queryAuthorityTree(IdSpaceReq(
+      id: '0',
+      spaceId: target.id,
       page: PageRequest(
         offset: 0,
         filter: '',
@@ -376,17 +385,6 @@ class BaseTarget extends ITarget {
       authorityTree = Authority(res.data!, id);
     }
     return authorityTree;
-  }
-
-  @override
-  Future<ISpeciesItem?> loadSpeciesTree({bool reload = false}) async {
-    if (reload || speciesTree != null) {
-      final res = await kernel.querySpeciesTree(IDBelongReq(id: id));
-      if (res.success) {
-        speciesTree = SpeciesItem(res.data!, null);
-      }
-    }
-    return speciesTree;
   }
 
   @override

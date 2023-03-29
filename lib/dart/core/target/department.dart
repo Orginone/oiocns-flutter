@@ -12,11 +12,12 @@ import 'itarget.dart';
 class Department extends BaseTarget implements IDepartment {
   final Function _onDeleted;
 
+
   Department(XTarget target, this._onDeleted) : super(target) {
     workings = [];
     departments = [];
     if ([TargetType.department, TargetType.college]
-        .contains(typeName as TargetType)) {
+        .map((e) => e.label).toList().contains(typeName)) {
       subTeamTypes = [...subDepartmentTypes, TargetType.working];
     } else {
       subTeamTypes = [TargetType.jobCohort, TargetType.working];
@@ -62,7 +63,7 @@ class Department extends BaseTarget implements IDepartment {
     if (!reload && departments.isNotEmpty) {
       return departments;
     }
-    final res = await super.getSubTargets(departmentTypes);
+    final res = await super.getSubTargets(targetDepartmentTypes);
     if (res.success && res.data?.result != null) {
       departments = res.data!.result
               ?.map((a) => Department(
@@ -156,4 +157,11 @@ class Department extends BaseTarget implements IDepartment {
 
   @override
   late List<IWorking> workings;
+
+  @override
+  bool isSelected = false;
+
+  @override
+  List<XTarget> departmentMembers = [];
+
 }

@@ -1,19 +1,24 @@
 import 'package:logging/logging.dart';
+import 'package:orginone/util/logger.dart';
 import 'package:signalr_core/signalr_core.dart';
-import 'package:orginone/dart/base/model.dart';
 
 /// 存储集线器
 class StoreHub {
   // 是否已经启动
   bool _isStarted = false;
+
   // 超时重试时间
   final int _timeout;
+
   // signalr 连接
   final HubConnection _connection;
+
   // 连接成功回调
   List<Function> _connectedCallbacks = [];
+
   // 日志
   final Logger log = Logger("StoreHub");
+
   // 连接断开回调
   List<Function(Exception?)> _disconnectedCallbacks = [];
 
@@ -22,7 +27,16 @@ class StoreHub {
     int timeout = 8000,
     int interval = 3000,
   })  : _timeout = timeout,
-        _connection = HubConnectionBuilder().withUrl(url).build() {
+        _connection = HubConnectionBuilder()
+            .withUrl(
+                url,
+                HttpConnectionOptions(
+                    skipNegotiation: true,
+                    transport: HttpTransportType.webSockets,
+                    logging: (level, message) {
+                      Log.info(message);
+                    }))
+            .build() {
     _connection.keepAliveIntervalInMilliseconds = interval;
     _connection.serverTimeoutInMilliseconds = timeout;
     _connection.onclose((err) {
@@ -120,21 +134,18 @@ class StoreHub {
   /// @param {string} methodName 方法名
   /// @param {any[]} args 参数
   /// @returns {Promise<ResultType>} 异步结果
-  Future<ResultType<T>> invoke<T>(String methodName,
-      {List<dynamic>? args}) async {
+  Future<dynamic> invoke(String methodName, {List<dynamic>? args}) async {
+    log.info("========== storeHub-invoke-start =============");
+    log.info("=====> methodName: $methodName");
     try {
-      var raw = await _connection.invoke(methodName, args: args);
-      final ResultType<T> res = ResultType.fromJson(raw);
-
-      if (res.code == 401) {
-        log.warning("登录已过期");
-      }
-      if (!res.success) {
-        log.warning("操作失败,错误消息${res.msg}");
-      }
+      var res = await _connection.invoke(methodName, args: args);
+      log.info("=====> res: $res");
+      log.info("========== storeHub-invoke-end =============");
       return res;
     } catch (err) {
-      return ResultType(code: 400, msg: "请求异常", success: false);
+      log.info("========== storeHub-invoke-end =============");
+      log.info("=====> err: $err");
+      return {"code": 400, "msg": "请求异常", "success": false};
     }
   }
 }
