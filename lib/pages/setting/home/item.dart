@@ -76,7 +76,7 @@ class Item extends StatelessWidget {
         cohort?.teamName ??
         "";
     if (companySpaceEnum == CompanySpaceEnum.company) {
-      name = settingController.space.teamName;
+      name = settingController.space.name;
     }
     return Container(
       padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
