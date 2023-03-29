@@ -62,11 +62,6 @@ class ChoiceGbController extends BaseController<ChoiceGbState> {
     state.selectedGroup.add(item);
   }
 
-  void selectedGb(ISpeciesItem item) {
-    state.selectedGb.value?.isSelected = false;
-    state.selectedGb.value = item;
-  }
-
   void onTap(ISpeciesItem item) {
     switch(state.function){
       case GbFunction.work:

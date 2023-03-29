@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/config/color.dart';
 import 'package:orginone/images.dart';
@@ -574,25 +575,30 @@ class CommonWidget {
         labelStyle: TextStyle(fontSize: 18.sp),
         isScrollable: true,
         indicator: const BoxDecoration(),
-        onTap:onTap,
+        onTap: onTap,
       ),
     );
   }
 
-  static Widget commonBreadcrumbNavWidget({required String firstTitle,required List<String> allTitle,VoidCallback? onTapFirst,ValueChanged? onTapTitle}) {
+  static Widget commonBreadcrumbNavWidget(
+      {required String firstTitle,
+      required List<String> allTitle,
+      VoidCallback? onTapFirst,
+      ValueChanged? onTapTitle,
+      EdgeInsetsGeometry? padding}) {
     TextStyle selectedTextStyle =
-    TextStyle(fontSize: 20.sp, color: XColors.themeColor);
+        TextStyle(fontSize: 20.sp, color: XColors.themeColor);
 
     TextStyle unSelectedTextStyle =
-    TextStyle(fontSize: 20.sp, color: Colors.black);
+        TextStyle(fontSize: 20.sp, color: Colors.black);
 
     Widget level(String title) {
       int index = allTitle.indexOf(title);
       return GestureDetector(
         onTap: () {
-         if(onTapTitle!=null){
-           onTapTitle(index);
-         }
+          if (onTapTitle != null) {
+            onTapTitle(index);
+          }
         },
         child: Text.rich(
           TextSpan(
@@ -614,8 +620,9 @@ class CommonWidget {
     return Container(
       color: Colors.white,
       width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
-      child: LayoutBuilder(builder: (context,type) {
+      padding:
+          padding ?? EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
+      child: LayoutBuilder(builder: (context, type) {
         List<Widget> nextStep = [];
         if (allTitle.isNotEmpty) {
           for (var value in allTitle) {
@@ -706,6 +713,113 @@ class CommonWidget {
           ),
         ),
       ],
+    );
+  }
+
+  static Widget commonDocumentWidget(
+      {required List<String> title,
+      required List<List<String>> content,
+      double? contentWidth,
+      bool showOperation = false,
+      ValueChanged<dynamic>? onOperation,
+        List<PopupMenuItem>? popupMenus,
+      }) {
+    List<List<String>> data = [];
+
+    for (int i = 0; i < title.length; i++) {
+      List<String> key = [];
+      if (key.isEmpty) {
+        key.add(title[i]);
+      }
+      for (var value in content) {
+        key.add(value[i]);
+      }
+      data.add(key);
+    }
+    if (showOperation) {
+      var operation =
+          List.generate(data.first.length, (index) => index == 0 ? "操作" : "");
+      data.add(operation);
+    }
+
+    Widget titleWidget(String title) {
+      return Container(
+        margin: EdgeInsets.symmetric(horizontal: 10.w),
+        alignment: Alignment.center,
+        constraints: BoxConstraints(minWidth: contentWidth ?? 120.w),
+        height: 50.h,
+        child: Text(
+          title,
+        ),
+      );
+    }
+
+    Widget contentWidget(String content) {
+      return Container(
+        alignment: Alignment.center,
+        margin: EdgeInsets.symmetric(horizontal: 10.w),
+        constraints: BoxConstraints(minWidth: contentWidth ?? 120.w,maxWidth: 200.w),
+        height: 50.h,
+        child: Text(
+          content,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      );
+    }
+
+    return Container(
+      color: Colors.white,
+      width: double.infinity,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: data.map((title) {
+              return Column(
+                children: title.map((str) {
+                  int index = title.indexOf(str);
+                  if (index == 0) {
+                    return titleWidget(str);
+                  }
+                  if (showOperation &&
+                      (data.indexOf(title) == data.length - 1)) {
+                    double x = 0;
+                    double y = 0;
+                    return GestureDetector(
+                      onPanDown: (position) {
+                        x = position.globalPosition.dx;
+                        y = position.globalPosition.dy;
+                      },
+                      onTap: () async {
+                        await showMenu(
+                          context: Get.context!,
+                          items: popupMenus??[],
+                          position: RelativeRect.fromLTRB(
+                            x,
+                            y - 50,
+                            MediaQuery.of(Get.context!).size.width - x,
+                            0,
+                          ),
+                        ).then((value) {
+                           if(value!=null){
+                             if (onOperation != null) {
+                               onOperation!(value);
+                             }
+                           }
+                        });
+                      },
+                      child: SizedBox(
+                        height: 50.h,
+                        child: const Icon(Icons.more_horiz),
+                      ),
+                    );
+                  }
+                  return contentWidget(str);
+                }).toList(),
+              );
+            }).toList()),
+      ),
     );
   }
 }

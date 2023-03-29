@@ -28,7 +28,7 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
                },
                onTapTitle: (index) {
                  controller.removeGroup(index);
-               });
+               },padding: EdgeInsets.zero);
          },
        ),
       leadingWidth: 0,

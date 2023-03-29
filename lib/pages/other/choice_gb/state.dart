@@ -12,8 +12,6 @@ class ChoiceGbState extends BaseGetState{
 
   TextEditingController searchController = TextEditingController();
 
-  var selectedGb = Rxn<ISpeciesItem>();
-
   var selectedGroup = <ISpeciesItem>[].obs;
 
   var searchList = <ISpeciesItem>[].obs;
