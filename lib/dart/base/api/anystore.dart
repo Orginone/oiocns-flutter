@@ -153,8 +153,8 @@ class AnyStore {
   /// @param {any} match 匹配信息
   /// @param {string} domain 对象所在域, 个人域(user),单位域(company),开放域(all)
   /// @returns {ResultType} 移除异步结果
-  Future<ResultType<dynamic>> remove(
-      String collName, dynamic match, String domain) async {
+  Future<ResultType<dynamic>> remove(String collName, dynamic match,
+      String domain) async {
     var raw = await _storeHub.invoke('Remove', args: [collName, match, domain]);
     return ResultType.fromJson(raw);
   }
@@ -164,15 +164,22 @@ class AnyStore {
   /// @param {any} options 聚合管道(eg: {match:{a:1},skip:10,limit:10})
   /// @param {string} domain 对象所在域, 个人域(user),单位域(company),开放域(all)
   /// @returns {ResultType} 移除异步结果
-  Future<ResultType<dynamic>> aggregate(
-      String collName, dynamic options, String domain) async {
+  Future<ResultType<dynamic>> aggregate(String collName, dynamic options,
+      String domain) async {
     var raw =
-        await _storeHub.invoke('Aggregate', args: [collName, options, domain]);
+    await _storeHub.invoke('Aggregate', args: [collName, options, domain]);
     return ResultType.fromJson(raw);
   }
 
-  Future<ResultType<dynamic>> loadThing<T>(dynamic options, String domain) async {
+  Future<ResultType<dynamic>> loadThing<T>(dynamic options,
+      String domain) async {
     var raw = await _storeHub.invoke('Load', args: [options, domain]);
+    return ResultType.fromJson(raw);
+  }
+
+  Future<ResultType<dynamic>> loadThingArchives<T>(dynamic options,
+      String domain,) async {
+    var raw = await _storeHub.invoke('LoadArchives', args: [options, domain]);
     return ResultType.fromJson(raw);
   }
 

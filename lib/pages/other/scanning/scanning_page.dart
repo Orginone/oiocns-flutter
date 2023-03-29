@@ -14,6 +14,7 @@ import 'package:orginone/util/sys_util.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:scan/scan.dart';
+// import 'package:ai_barcode/ai_barcode.dart';
 
 class ScanningPage extends GetView<ScanningController> {
   const ScanningPage({Key? key}) : super(key: key);

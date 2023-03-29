@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
@@ -21,7 +19,22 @@ class ChoicePeoplePage
       body: SafeArea(
         child: Column(
           children: [
-            classificationName(),
+            Obx(
+              () {
+                return CommonWidget.commonBreadcrumbNavWidget(
+                  firstTitle: DepartmentManagement().getCurrentCompanyName(),
+                  allTitle: state.selectedGroup
+                      .map((element) => element.name)
+                      .toList(),
+                  onTapFirst: () {
+                    controller.clearGroup();
+                  },
+                  onTapTitle: (index) {
+                    controller.removeGroup(index);
+                  },
+                );
+              },
+            ),
             CommonWidget.commonSearchBarWidget(
                 controller: state.searchController,
                 onSubmitted: (str) {
@@ -119,83 +132,4 @@ class ChoicePeoplePage
     );
   }
 
-  Widget classificationName() {
-    TextStyle selectedTextStyle =
-    TextStyle(fontSize: 20.sp, color: Colors.black);
-
-    TextStyle unSelectedTextStyle =
-    TextStyle(fontSize: 20.sp, color: Colors.grey.shade300);
-
-    Widget level(ITarget department) {
-      int index = state.selectedGroup.indexOf(department);
-      return GestureDetector(
-        onTap: () {
-          controller.removeGroup(index);
-        },
-        child: Text.rich(
-          TextSpan(
-            children: [
-              WidgetSpan(
-                  child: Icon(
-                    Icons.chevron_right,
-                    size: 32.w,
-                  ),
-                  alignment: PlaceholderAlignment.middle),
-              TextSpan(
-                  text: department.name,
-                  style: index == state.selectedGroup.length - 1
-                      ? selectedTextStyle
-                      : unSelectedTextStyle),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return Container(
-      color: Colors.white,
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
-      child: Obx(() {
-        List<Widget> nextStep = [];
-        if (state.selectedGroup.isNotEmpty) {
-          for (var value in state.selectedGroup) {
-            nextStep.add(level(value));
-          }
-        }
-        return SingleChildScrollView(
-          scrollDirection:Axis.horizontal,
-          child: Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  controller.clearGroup();
-                },
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      WidgetSpan(
-                          child: Container(
-                            width: 5.w,
-                            height: 25.h,
-                            margin: EdgeInsets.only(right: 15.w),
-                            color: XColors.themeColor,
-                          ),
-                          alignment: PlaceholderAlignment.middle),
-                      TextSpan(
-                          text: DepartmentManagement().getCurrentCompanyName(),
-                          style: state.selectedGroup.isEmpty
-                              ? selectedTextStyle
-                              : unSelectedTextStyle)
-                    ],
-                  ),
-                ),
-              ),
-              ...nextStep,
-            ],
-          ),
-        );
-      }),
-    );
-  }
 }

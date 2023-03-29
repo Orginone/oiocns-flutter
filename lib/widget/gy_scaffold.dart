@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
+import 'package:orginone/config/color.dart';
 
 class GyScaffold extends StatefulWidget {
   final Widget? body;
@@ -23,6 +26,8 @@ class GyScaffold extends StatefulWidget {
   final  Widget? leading;
 
   final double elevation;
+
+  final Color? backColor;
   const GyScaffold(
       {Key? key,
       this.body,
@@ -30,7 +35,7 @@ class GyScaffold extends StatefulWidget {
       this.backgroundColor,
       this.appBarColor,
       this.titleName,
-      this.titleWidget, this.titleStyle,  this.centerTitle = true, this.actions, this.leading, this.elevation = 0})
+      this.titleWidget, this.titleStyle,  this.centerTitle = true, this.actions, this.leading, this.elevation = 0, this.backColor})
       : super(key: key);
 
   @override
@@ -59,6 +64,8 @@ class _GyScaffoldState extends State<GyScaffold> {
   Widget? leading;
 
   late double elevation;
+
+  late Color backColor;
   @override
   void initState() {
     // TODO: implement initState
@@ -69,8 +76,8 @@ class _GyScaffoldState extends State<GyScaffold> {
   void init() {
     body = widget.body ?? Container();
     supportSafeArea = widget.supportSafeArea;
-    backgroundColor = widget.backgroundColor ?? Colors.grey.shade200;
-    appBarColor = widget.appBarColor ?? XColors.themeColor;
+    backgroundColor = widget.backgroundColor ?? GYColors.backgroundColor;
+    appBarColor = widget.appBarColor ?? Colors.white;
     titleName = widget.titleName ?? "";
     titleWidget = widget.titleWidget;
     titleStyle = widget.titleStyle;
@@ -78,6 +85,7 @@ class _GyScaffoldState extends State<GyScaffold> {
     actions = widget.actions;
     leading = widget.leading;
     elevation = widget.elevation;
+    backColor = widget.backColor??Colors.black;
   }
 
   @override
@@ -91,7 +99,7 @@ class _GyScaffoldState extends State<GyScaffold> {
       supportSafeArea = widget.supportSafeArea;
     }
     if(oldWidget.backgroundColor != widget.backgroundColor){
-      backgroundColor = widget.backgroundColor ?? Colors.grey.shade200;
+      backgroundColor = widget.backgroundColor ?? GYColors.backgroundColor;
     }
     if(oldWidget.appBarColor != widget.appBarColor){
       appBarColor = widget.appBarColor ?? XColors.themeColor;
@@ -117,6 +125,9 @@ class _GyScaffoldState extends State<GyScaffold> {
     if(oldWidget.elevation != widget.elevation){
       elevation = widget.elevation;
     }
+    if(oldWidget.backColor != widget.backColor){
+      backColor = widget.backColor??Colors.black;
+    }
   }
 
   @override
@@ -129,12 +140,12 @@ class _GyScaffoldState extends State<GyScaffold> {
 
     return Scaffold(
         appBar: AppBar(
-          title: titleWidget ?? Text(titleName,style: titleStyle,),
+          title: titleWidget ?? Text(titleName,style: titleStyle??TextStyle(color: Colors.black,fontSize: 24.sp),),
           centerTitle: centerTitle,
           elevation: elevation,
           backgroundColor: appBarColor,
           actions: actions,
-          leading: leading,
+          leading: leading??BackButton(color:backColor),
         ),
         backgroundColor: backgroundColor,
         body: body);
