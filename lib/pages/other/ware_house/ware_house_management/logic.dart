@@ -5,6 +5,7 @@ import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/market/index.dart';
 import 'package:orginone/dart/core/store/ifilesys.dart';
 import 'package:orginone/dart/core/thing/ispecies.dart';
+import 'package:orginone/pages/other/choice_gb/state.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
@@ -41,16 +42,8 @@ class WareHouseManagementController
   }
 
   void selectSpecies(ISpeciesItem item) {
-    state.selectedSpecies.add(item);
+    Get.toNamed(Routers.choiceGb,arguments: {"head":"仓库",'gb':item,'function':GbFunction.wareHouse});
   }
 
-  void clearSpecies() {
-    state.selectedSpecies.clear();
-  }
-
-  void removeSpecies(index) {
-    state.selectedSpecies.removeRange(index + 1, state.selectedSpecies.length);
-    state.selectedSpecies.refresh();
-  }
 
 }

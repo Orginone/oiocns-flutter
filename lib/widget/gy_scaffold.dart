@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/config/color.dart';
 
@@ -23,11 +22,14 @@ class GyScaffold extends StatefulWidget {
 
   final List<Widget>? actions;
 
-  final  Widget? leading;
+  final Widget? leading;
 
   final double elevation;
 
   final Color? backColor;
+
+  final double? leadingWidth;
+
   const GyScaffold(
       {Key? key,
       this.body,
@@ -35,7 +37,14 @@ class GyScaffold extends StatefulWidget {
       this.backgroundColor,
       this.appBarColor,
       this.titleName,
-      this.titleWidget, this.titleStyle,  this.centerTitle = true, this.actions, this.leading, this.elevation = 0, this.backColor})
+      this.titleWidget,
+      this.titleStyle,
+      this.centerTitle = true,
+      this.actions,
+      this.leading,
+      this.elevation = 0,
+      this.backColor,
+      this.leadingWidth})
       : super(key: key);
 
   @override
@@ -66,6 +75,9 @@ class _GyScaffoldState extends State<GyScaffold> {
   late double elevation;
 
   late Color backColor;
+
+  late double leadingWidth;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -85,7 +97,8 @@ class _GyScaffoldState extends State<GyScaffold> {
     actions = widget.actions;
     leading = widget.leading;
     elevation = widget.elevation;
-    backColor = widget.backColor??Colors.black;
+    backColor = widget.backColor ?? Colors.black;
+    leadingWidth = widget.leadingWidth ?? kToolbarHeight;
   }
 
   @override
@@ -128,6 +141,9 @@ class _GyScaffoldState extends State<GyScaffold> {
     if(oldWidget.backColor != widget.backColor){
       backColor = widget.backColor??Colors.black;
     }
+    if(oldWidget.leadingWidth != widget.leadingWidth){
+      leadingWidth = widget.leadingWidth??kToolbarHeight;
+    }
   }
 
   @override
@@ -140,12 +156,18 @@ class _GyScaffoldState extends State<GyScaffold> {
 
     return Scaffold(
         appBar: AppBar(
-          title: titleWidget ?? Text(titleName,style: titleStyle??TextStyle(color: Colors.black,fontSize: 24.sp),),
+          title: titleWidget ??
+              Text(
+                titleName,
+                style: titleStyle ??
+                    TextStyle(color: Colors.black, fontSize: 24.sp),
+              ),
           centerTitle: centerTitle,
           elevation: elevation,
           backgroundColor: appBarColor,
           actions: actions,
-          leading: leading??BackButton(color:backColor),
+          leading: leading ?? BackButton(color: backColor),
+          leadingWidth: leadingWidth,
         ),
         backgroundColor: backgroundColor,
         body: body);

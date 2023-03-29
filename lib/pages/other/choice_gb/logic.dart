@@ -3,6 +3,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/dart/core/thing/ispecies.dart';
 import 'package:orginone/event/choice.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
@@ -31,14 +32,18 @@ class ChoiceGbController extends BaseController<ChoiceGbState> {
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
-    state.gb.value = CommonTreeManagement().species?.children??[];
-
   }
 
   void search(String str) {
     state.searchList.clear();
 
-    var filter = CommonTreeManagement().species?.getAllList().where((element) => (element.name.contains(str)));
+
+    List<ISpeciesItem> allList = [];
+
+    for (var value in state.gb) {
+      allList.addAll(value.getAllList());
+    }
+    var filter = allList.where((element) => (element.name.contains(str)));
     if (filter!=null && filter.isNotEmpty) {
       state.searchList.addAll(filter);
     }
@@ -49,12 +54,8 @@ class ChoiceGbController extends BaseController<ChoiceGbState> {
     state.selectedGroup.refresh();
   }
 
-  void clearGroup() {
-    state.selectedGroup.clear();
-  }
-
   void back() {
-    Get.back(result: state.selectedGb.value);
+    Get.back();
   }
 
   void selectGroup(ISpeciesItem item) {
@@ -64,6 +65,18 @@ class ChoiceGbController extends BaseController<ChoiceGbState> {
   void selectedGb(ISpeciesItem item) {
     state.selectedGb.value?.isSelected = false;
     state.selectedGb.value = item;
+  }
+
+  void onTap(ISpeciesItem item) {
+    switch(state.function){
+      case GbFunction.work:
+        Get.toNamed(Routers.workStart,arguments: {"species":item});
+        break;
+      case GbFunction.wareHouse:
+        Get.toNamed(Routers.thing,
+            arguments: {"id": item.id, "title": item.name});
+        break;
+    }
   }
 }
 
