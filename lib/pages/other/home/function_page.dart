@@ -5,9 +5,13 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
+import 'package:orginone/images.dart';
 import 'package:orginone/pages/index/index_page.dart';
+import 'package:orginone/pages/other/assets_internal_control/view.dart';
+import 'package:orginone/widget/keep_alive_widget.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
+import '../../../dart/core/getx/base_get_view.dart';
 
 class FunctionPage extends BaseGetPageView<FunctionController, FunctionState> {
   @override
@@ -20,6 +24,8 @@ class FunctionPage extends BaseGetPageView<FunctionController, FunctionState> {
             controller: state.tabController,
             children: [
               IndexPage(),
+              KeepAliveWidget(child: AssetsInternalControlPage()),
+              Container(),
               Container(),
               Container(),
               Container(),
@@ -94,8 +100,12 @@ class FunctionState extends BaseGetState {
 
 const List<String> tabTitle = [
   "工作台",
+  "资产管家",
+  "一警一档",
+  "看板",
   "看板",
   "新闻",
   "共享",
   "交易"
 ];
+

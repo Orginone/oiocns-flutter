@@ -30,6 +30,8 @@ import 'package:orginone/util/sys_util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:orginone/util/toast_utils.dart';
 
+import 'function_page.dart';
+
 class HomePage extends GetView<HomeController> {
   const HomePage({Key? key}) : super(key: key);
 
@@ -91,7 +93,7 @@ class HomeController extends TabsController {
     ));
     var center = XTab(
       body: XImage.localImage("logo_not_bg", size: Size(36.w, 36.w)),
-      view: IndexPage(),
+      view: FunctionPage(),
       iconMargin: EdgeInsets.zero,
     );
     registerTab(center);
