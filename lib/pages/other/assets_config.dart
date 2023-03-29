@@ -96,19 +96,19 @@ extension ExAssetsType on AssetsType {
       case AssetsType.check:
         return "";
       case AssetsType.claim:
-        return Routers.createClaim;
+        return '';
       case AssetsType.subscribe:
         return "";
       case AssetsType.dispose:
-        return Routers.createDispose;
+        return '';
       case AssetsType.transfer:
-        return Routers.createTransfer;
+        return '';
       case AssetsType.borrow:
         return "";
       case AssetsType.revert:
         return "";
       case AssetsType.handOver:
-        return Routers.createHandOver;
+        return '';
       case AssetsType.store:
         return "";
       case AssetsType.more:
