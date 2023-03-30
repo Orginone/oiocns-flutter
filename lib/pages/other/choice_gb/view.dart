@@ -4,10 +4,10 @@ import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/dart/core/thing/ispecies.dart';
+import 'package:orginone/pages/other/ware_house/ware_house_management/item.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 
-import 'item.dart';
 import 'logic.dart';
 import 'state.dart';
 
@@ -15,24 +15,26 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: "分类标准",
+      centerTitle: false,
+       titleWidget: Obx(
+             () {
+           return CommonWidget.commonBreadcrumbNavWidget(
+               firstTitle: state.head,
+               allTitle: state.selectedGroup
+                   .map((element) => element.name)
+                   .toList(),
+               onTapFirst: () {
+                 controller.back();
+               },
+               onTapTitle: (index) {
+                 controller.removeGroup(index);
+               },padding: EdgeInsets.zero);
+         },
+       ),
+      leadingWidth: 0,
+      leading: const SizedBox(),
       body: Column(
         children: [
-          Obx(
-            () {
-              return CommonWidget.commonBreadcrumbNavWidget(
-                  firstTitle: state.head,
-                  allTitle: state.selectedGroup
-                      .map((element) => element.name)
-                      .toList(),
-                  onTapFirst: () {
-                    controller.clearGroup();
-                  },
-                  onTapTitle: (index) {
-                    controller.removeGroup(index);
-                  });
-            },
-          ),
           CommonWidget.commonSearchBarWidget(
               controller: state.searchController,
               onSubmitted: (str) {
@@ -50,12 +52,6 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
               return body();
             }),
           ),
-          Obx(() {
-            return CommonWidget.commonShowChoiceDataInfo(
-                state.selectedGb.value?.name ?? "", onTap: () {
-              controller.back();
-            });
-          }),
         ],
       ),
     );
@@ -66,10 +62,18 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
       itemBuilder: (context, index) {
         var item = state.searchList[index];
         return Obx(() {
-          return CommonWidget.commonRadioTextWidget(item.name ?? "", item,
-              groupValue: state.selectedGb.value, onChanged: (v) {
-                controller.selectedGb(item);
-              }, keyWord: state.searchController.text);
+          return GbItem(
+            item: item,
+            showPopupMenu: state.showPopupMenu,
+            next: () {
+              if (item.children.isNotEmpty) {
+                controller.selectGroup(item);
+              }
+            },
+            onTap: () {
+              controller.onTap(item);
+            },
+          );
         });
       },
       itemCount: state.searchList.length,
@@ -91,20 +95,18 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
               child: ListView.builder(
                 itemBuilder: (context, index) {
                   var item = data[index];
-                  return Obx(() {
-                    return Item(
-                      item: item,
-                      selected: state.selectedGb.value,
-                      next: () {
-                        if (item.children.isNotEmpty) {
-                          controller.selectGroup(item);
-                        }
-                      },
-                      onChanged: (value) {
-                        controller.selectedGb(item);
-                      },
-                    );
-                  });
+                  return GbItem(
+                    item: item,
+                    showPopupMenu: state.showPopupMenu,
+                    next: () {
+                      if (item.children.isNotEmpty) {
+                        controller.selectGroup(item);
+                      }
+                    },
+                    onTap: () {
+                      controller.onTap(item);
+                    },
+                  );
                 },
                 shrinkWrap: true,
                 itemCount: data.length,

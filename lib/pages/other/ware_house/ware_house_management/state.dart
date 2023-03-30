@@ -13,10 +13,6 @@ class WareHouseManagementState extends BaseGetListState<IProduct> {
 
   var recentlyList = [];
 
-  var selectedSpecies = <ISpeciesItem>[].obs;
-
-  WareHouseManagementState() {
-  }
 }
 
 const List<String> tabTitle = [

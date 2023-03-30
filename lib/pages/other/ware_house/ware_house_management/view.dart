@@ -132,30 +132,17 @@ class WareHouseManagementPage extends BaseGetListPageView<
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Obx(() {
-            return CommonWidget.commonBreadcrumbNavWidget(
-                firstTitle: "仓库",
-                allTitle: state.selectedSpecies
-                    .map((element) => element.name)
-                    .toList(),
-                onTapFirst: () {
-                  controller.clearSpecies();
-                },
-                onTapTitle: (index) {
-                  controller.removeSpecies(index);
-                });
-          }),
+          CommonWidget.commonBreadcrumbNavWidget(
+            firstTitle: "仓库",
+            allTitle: [],
+          ),
           Obx(() {
             var list = [];
-            if (state.selectedSpecies.isNotEmpty) {
-              list = state.selectedSpecies.last.children;
-            }else{
-              CommonTreeManagement().species?.children.forEach((element) {
-                if(element.name == "财物"){
-                  list.addAll(element.children);
-                }
-              });
-            }
+            CommonTreeManagement().species?.children.forEach((element) {
+              if(element.name == "财物"){
+                list.addAll(element.children);
+              }
+            });
             return Column(
               children: list.map(
                 (e) {
