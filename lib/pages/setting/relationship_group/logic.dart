@@ -126,10 +126,10 @@ class RelationGroupController extends BaseController<RelationGroupState> {
         Get.toNamed(Routers.outAgencyInfo,arguments: {'group':outAgency});
         break;
       case CompanySpaceEnum.stationSetting:
-        // TODO: Handle this case.
+        Get.toNamed(Routers.stationInfo,arguments: {'station':station});
         break;
       case CompanySpaceEnum.companyCohort:
-        // TODO: Handle this case.
+        Get.toNamed(Routers.cohortInfo,arguments: {'cohort':cohort});
         break;
     }
   }

@@ -10,12 +10,12 @@ class Identity extends IIdentity {
 
   @override
   String get id {
-    return target.id;
+    return target.id??"";
   }
 
   @override
   String get name {
-    return target.name;
+    return target.name??"";
   }
 
   Identity(XIdentity identity) {

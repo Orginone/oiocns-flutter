@@ -2812,64 +2812,64 @@ class XIdProofArray {
 //身份
 class XIdentity {
   // 雪花ID
-  final String id;
+  String? id;
 
   // 名称
-  String name;
+  String? name;
 
   // 编号
-  String code;
+  String? code;
 
   // 备注
-  String remark;
+  String? remark;
 
   // 职权Id
-  final String authId;
+   String? authId;
 
   // 创建组织/个人
-  final String belongId;
+   String? belongId;
 
   // 状态
-  final int status;
+   int? status;
 
   // 创建人员ID
-  final String createUser;
+   String? createUser;
 
   // 更新人员ID
-  final String updateUser;
+   String? updateUser;
 
   // 修改次数
-  final String version;
+   String? version;
 
   // 创建时间
-  final String createTime;
+   String? createTime;
 
   // 更新时间
-  String updateTime;
+  String? updateTime;
 
   // 身份证明
-  final List<XIdProof>? idProofs;
+   List<XIdProof>? idProofs;
 
   // 身份集关系
-  final List<XTeamIdentity>? identityTeams;
+   List<XTeamIdentity>? identityTeams;
 
   // 赋予身份的组织/个人
-  final List<XTarget>? givenTargets;
+   List<XTarget>? givenTargets;
 
   // 身份所属的未完成流程的任务
-  final List<XFlowTask>? flowTasks;
+   List<XFlowTask>? flowTasks;
 
   // 身份所属的未完成流程的任务
-  final List<XFlowTaskHistory>? flowTaskHistory;
+   List<XFlowTaskHistory>? flowTaskHistory;
 
   // 身份集对于组织
-  final List<XTeam>? teams;
+   List<XTeam>? teams;
 
   // 身份的类别
-  final XAuthority? authority;
+   XAuthority? authority;
 
   // 创建身份的组织/个人
-  final XTarget? belong;
+   XTarget? belong;
 
   //构造方法
   XIdentity({
@@ -2896,27 +2896,64 @@ class XIdentity {
   });
 
   //通过JSON构造
-  XIdentity.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        name = json["name"],
-        code = json["code"],
-        remark = json["remark"],
-        authId = json["authId"],
-        belongId = json["belongId"],
-        status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"],
-        idProofs = XIdProof.fromList(json["idProofs"]),
-        identityTeams = XTeamIdentity.fromList(json["identityTeams"]),
-        givenTargets = XTarget.fromList(json["givenTargets"]),
-        flowTasks = XFlowTask.fromList(json["flowTasks"]),
-        flowTaskHistory = XFlowTaskHistory.fromList(json["flowTaskHistory"]),
-        teams = XTeam.fromList(json["teams"]),
-        authority = XAuthority.fromJson(json["authority"]),
-        belong = XTarget.fromJson(json["belong"]);
+  XIdentity.fromJson(Map<String, dynamic> json){
+    id = json["id"];
+    name = json["name"];
+    code = json["code"];
+    remark = json["remark"];
+    authId = json["authId"];
+    belongId = json["belongId"];
+    status = json["status"];
+    createUser = json["createUser"];
+    updateUser = json["updateUser"];
+    version = json["version"];
+    createTime = json["createTime"];
+    updateTime = json["updateTime"];
+
+    if(json["idProofs"]!=null){
+      idProofs = [];
+      json["idProofs"].forEach((json){
+        idProofs!.add(XIdProof.fromJson(json));
+      });
+    }
+
+    if(json["identityTeams"]!=null){
+      identityTeams = [];
+      json["identityTeams"].forEach((json){
+        identityTeams!.add(XTeamIdentity.fromJson(json));
+      });
+    }
+
+    if(json["givenTargets"]!=null){
+      givenTargets = [];
+      json["givenTargets"].forEach((json){
+        givenTargets!.add(XTarget.fromJson(json));
+      });
+    }
+
+    if(json["flowTasks"]!=null){
+      flowTasks = [];
+      json["flowTasks"].forEach((json){
+        flowTasks!.add(XFlowTask.fromJson(json));
+      });
+    }
+
+    if(json["flowTaskHistory"]!=null){
+      flowTaskHistory = [];
+      json["flowTaskHistory"].forEach((json){
+        flowTaskHistory!.add(XFlowTaskHistory.fromJson(json));
+      });
+    }
+
+    if(json["teams"]!=null){
+      teams = [];
+      json["teams"].forEach((json){
+        teams!.add(XTeam.fromJson(json));
+      });
+    }
+    authority = json["authority"]!=null?XAuthority.fromJson(json["authority"]):null;
+    belong = json["belong"]!=null?XTarget.fromJson(json["belong"]):null;
+  }
 
   //通过动态数组解析成List
   static List<XIdentity> fromList(List<Map<String, dynamic>>? list) {
@@ -2962,16 +2999,16 @@ class XIdentity {
 //身份查询返回集合
 class XIdentityArray {
   // 便宜量
-  final int offset;
+   int? offset;
 
   // 最大数量
-  final int limit;
+   int? limit;
 
   // 总数
-  final int total;
+  int? total;
 
   // 结果
-  final List<XIdentity>? result;
+   List<XIdentity>? result;
 
   //构造方法
   XIdentityArray({
@@ -2982,11 +3019,17 @@ class XIdentityArray {
   });
 
   //通过JSON构造
-  XIdentityArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XIdentity.fromList(json["result"]);
+  XIdentityArray.fromJson(Map<String, dynamic> json){
+    offset = json["offset"];
+    limit = json["limit"];
+    total = json["total"];
+    if(json["result"]!=null){
+      result = [];
+      json["result"].forEach((json){
+        result!.add(XIdentity.fromJson(json));
+      });
+    }
+  }
 
   //通过动态数组解析成List
   static List<XIdentityArray> fromList(List<Map<String, dynamic>>? list) {
