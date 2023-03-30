@@ -55,6 +55,7 @@ import 'package:orginone/pages/setting/home/binding.dart';
 import 'package:orginone/pages/setting/home/view.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
+import 'package:orginone/pages/setting/person/view.dart';
 import 'package:orginone/pages/setting/publisher_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/pages/setting/unit_settings_page.dart';
@@ -267,6 +268,7 @@ class Routers {
 
   //添加角色
   static const String addMembers = '/addMembers';
+  static const String personPage = "/personPage";
 
   static String get main {
     return login;
@@ -610,6 +612,11 @@ class Routers {
         name: Routers.addMembers,
         page: () => AddMembersPage(),
         binding: AddMembersBinding(),
+      ),
+      GetPage(
+        name: Routers.personPage,
+        page: () => PersonPage(),
+        binding: PersonBinding(),
       ),
     ];
   }
