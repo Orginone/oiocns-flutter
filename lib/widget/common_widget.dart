@@ -8,6 +8,8 @@ import 'package:orginone/config/color.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/widget/text_high_light.dart';
 
+typedef DocumentOperation =  Function(dynamic type,String data);
+
 class CommonWidget {
   static Widget commonCreateSubmitWidget({VoidCallback? draft,VoidCallback? submit}) {
     return Container(
@@ -721,10 +723,13 @@ class CommonWidget {
       required List<List<String>> content,
       double? contentWidth,
       bool showOperation = false,
-      ValueChanged<dynamic>? onOperation,
+        bool showMultiple = false,
+        DocumentOperation? onOperation,
         List<PopupMenuItem>? popupMenus,
       }) {
     List<List<String>> data = [];
+
+
 
     for (int i = 0; i < title.length; i++) {
       List<String> key = [];
@@ -738,8 +743,14 @@ class CommonWidget {
     }
     if (showOperation) {
       var operation =
-          List.generate(data.first.length, (index) => index == 0 ? "操作" : "");
+          List.generate(data.first.length, (index) => index == 0 ? "操作" : index.toString());
       data.add(operation);
+    }
+
+    if (showMultiple) {
+      var multiple =
+      List.generate(data.first.length, (index) => index == 0 ? "多选" : index.toString());
+      data.insert(0,multiple);
     }
 
     Widget titleWidget(String title) {
@@ -804,7 +815,7 @@ class CommonWidget {
                         ).then((value) {
                            if(value!=null){
                              if (onOperation != null) {
-                               onOperation!(value);
+                               onOperation(value,data[0][index]);
                              }
                            }
                         });

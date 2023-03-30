@@ -38,7 +38,7 @@ class StationInfoPage extends BaseGetView<StationInfoController,StationInfoState
                       popupMenus: [
                         const PopupMenuItem(value: 'out', child: Text("移除")),
                       ],
-                      onOperation: (str) {});
+                      onOperation: (type,data) {});
                 }),
               ],
             ),
@@ -64,7 +64,7 @@ class StationInfoPage extends BaseGetView<StationInfoController,StationInfoState
                       popupMenus: [
                         const PopupMenuItem(value: 'out', child: Text("移除")),
                       ],
-                      onOperation: (str) {});
+                      onOperation: (type,data) {});
                 }),
               ],
             ),

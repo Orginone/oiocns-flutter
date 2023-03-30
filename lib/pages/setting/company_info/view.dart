@@ -21,12 +21,61 @@ class CompanyInfoPage
             SizedBox(
               height: 10.h,
             ),
-            CommonWidget.commonNonIndicatorTabBar(state.tabController, tabTitle,onTap: (index){
-              controller.changeView(index);
-            }),
+            Container(
+              color: Colors.white,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CommonWidget.commonNonIndicatorTabBar(state.tabController, tabTitle,onTap: (index){
+                      controller.changeView(index);
+                    }),
+                  ),
+                  popupMenuButton(),
+                ],
+              ),
+            ),
             body(),
           ],
         ),
+      ),
+    );
+  }
+
+
+  Widget popupMenuButton() {
+    return Container(
+      height: 50.h,
+      color: Colors.white,
+      child: PopupMenuButton(
+        icon: Icon(
+          Icons.more_vert_outlined,
+          size: 32.w,
+        ),
+        itemBuilder: (BuildContext context) {
+          return [
+            const PopupMenuItem(
+              value: CompanyFunction.roleSettings,
+              child: Text("角色设置"),
+            ),
+            const PopupMenuItem(
+              value: CompanyFunction.addUser,
+              child: Text("邀请成员"),
+            ),
+            const PopupMenuItem(
+              value: CompanyFunction.addGroup,
+              child: Text("加入集团"),
+            ),
+          ];
+        },
+        onSelected: (CompanyFunction function){
+          controller.companyOperation(function);
+        },
+        onCanceled: (){
+
+        },
+        onOpened: (){
+
+        },
       ),
     );
   }
@@ -66,7 +115,7 @@ class CompanyInfoPage
           popupMenus: [
             const PopupMenuItem(value: 'out', child: Text("踢出")),
           ],
-          onOperation: (str) {});
+          onOperation: (type,data) {});
     });
   }
 

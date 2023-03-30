@@ -391,61 +391,61 @@ class XOperationRelationArray {
 //职权定义
 class XAuthority {
   // 雪花ID
-  final String id;
+   String? id;
 
   // 名称
-  String name;
+  String? name;
 
   // 编号
-  String code;
+  String? code;
 
   // 备注
-  String remark;
+  String? remark;
 
   // 公开的
-  bool public;
+  bool? public;
 
   // 上级职权ID
-  final String parentId;
+  String? parentId;
 
   // 创建组织/个人
-  final String belongId;
+  String? belongId;
 
   // 状态
-  final int status;
+  int? status;
 
   // 创建人员ID
-  final String createUser;
+  String? createUser;
 
   // 更新人员ID
-  final String updateUser;
+  String? updateUser;
 
   // 修改次数
-  final String version;
+  String? version;
 
   // 创建时间
-  final String createTime;
+  String? createTime;
 
   // 更新时间
-  String updateTime;
+  String? updateTime;
 
   // 上下级职权
-  final XAuthority? parent;
+  XAuthority? parent;
 
   // 上下级职权
-  final List<XAuthority>? nodes;
+  List<XAuthority>? nodes;
 
   // 创建职权标准的组织/个人
-  final XTarget? belong;
+  XTarget? belong;
 
   // 职权对应的身份
-  final List<XIdentity>? identitys;
+  List<XIdentity>? identitys;
 
   // 职权可操作的类别
-  final List<XSpecies>? authSpecies;
+  List<XSpecies>? authSpecies;
 
   // 职权可操作的度量
-  final List<XAttribute>? autAttrs;
+  List<XAttribute>? autAttrs;
 
   //构造方法
   XAuthority({
@@ -471,26 +471,51 @@ class XAuthority {
   });
 
   //通过JSON构造
-  XAuthority.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        name = json["name"],
-        code = json["code"],
-        remark = json["remark"],
-        public = json["public"],
-        parentId = json["parentId"],
-        belongId = json["belongId"],
-        status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"],
-        parent = XAuthority.fromJson(json["parent"]),
-        nodes = XAuthority.fromList(json["nodes"]),
-        belong = XTarget.fromJson(json["belong"]),
-        identitys = XIdentity.fromList(json["identitys"]),
-        authSpecies = XSpecies.fromList(json["authSpecies"]),
-        autAttrs = XAttribute.fromList(json["autAttrs"]);
+  XAuthority.fromJson(Map<String, dynamic> json) {
+    id = json["id"];
+    name = json["name"];
+    code = json["code"];
+    remark = json["remark"];
+    public = json["public"];
+    parentId = json["parentId"];
+    belongId = json["belongId"];
+    status = json["status"];
+    createUser = json["createUser"];
+    updateUser = json["updateUser"];
+    version = json["version"];
+    createTime = json["createTime"];
+    updateTime = json["updateTime"];
+    parent =
+        json["parent"] != null ? XAuthority.fromJson(json["parent"]) : null;
+    belong = json["belong"] != null ? XTarget.fromJson(json["belong"]) : null;
+
+    if (json["nodes"] != null) {
+      nodes = [];
+      json["nodes"].forEach((json) {
+        nodes!.add(XAuthority.fromJson(json));
+      });
+    }
+
+    if (json["identitys"] != null) {
+      identitys = [];
+      json["identitys"].forEach((json) {
+        identitys!.add(XIdentity.fromJson(json));
+      });
+    }
+
+    if (json["authSpecies"] != null) {
+      authSpecies = [];
+      json["authSpecies"].forEach((json) {
+        authSpecies!.add(XSpecies.fromJson(json));
+      });
+    }
+    if (json["autAttrs"] != null) {
+      autAttrs = [];
+      json["autAttrs"].forEach((json) {
+        autAttrs!.add(XAttribute.fromJson(json));
+      });
+    }
+  }
 
   //通过动态数组解析成List
   static List<XAuthority> fromList(List<Map<String, dynamic>>? list) {

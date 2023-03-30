@@ -40,7 +40,7 @@ class CohortInfoPage extends BaseGetView<CohortInfoController,CohortInfoState>{
                       popupMenus: [
                         const PopupMenuItem(value: 'out', child: Text("移除")),
                       ],
-                      onOperation: (str) {});
+                      onOperation: (type,data) {});
                 }),
               ],
             ),

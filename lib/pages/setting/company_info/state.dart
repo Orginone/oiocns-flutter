@@ -20,6 +20,12 @@ class CompanyInfoState extends BaseGetState {
   var index = 0.obs;
 }
 
+enum CompanyFunction{
+  roleSettings,
+  addUser,
+  addGroup,
+}
+
 List<String> tabTitle = [
   "单位成员",
   "加入集团",

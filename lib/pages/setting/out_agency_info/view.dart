@@ -85,7 +85,7 @@ class OutAgencyInfoPage
           popupMenus: [
             const PopupMenuItem(value: 'out', child: Text("移除单位")),
           ],
-          onOperation: (str) {});
+          onOperation: (type,data) {});
     });
   }
 }

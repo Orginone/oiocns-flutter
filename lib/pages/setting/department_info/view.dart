@@ -94,7 +94,7 @@ class DepartmentInfoPage
           popupMenus: [
             const PopupMenuItem(value: 'out', child: Text("踢出")),
           ],
-          onOperation: (str) {});
+          onOperation: (type,data) {});
     });
   }
 }

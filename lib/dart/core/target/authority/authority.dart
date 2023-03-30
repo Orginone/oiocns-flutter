@@ -36,27 +36,27 @@ class Authority extends IAuthority {
 
   @override
   String get id {
-    return _authority.id;
+    return _authority.id??"";
   }
 
   @override
   String get name {
-    return _authority.name;
+    return _authority.name??"";
   }
 
   @override
   String get code {
-    return _authority.code;
+    return _authority.code??"";
   }
 
   @override
   String get belongId {
-    return _authority.belongId;
+    return _authority.belongId??"";
   }
 
   @override
   String get remark {
-    return _authority.remark;
+    return _authority.remark??"";
   }
 
   @override
@@ -112,7 +112,7 @@ class Authority extends IAuthority {
       return identitys;
     }
     final res = await kernel.queryAuthorityIdentitys(IdSpaceReq(
-        id: _authority.id,
+        id: _authority.id??"",
         page: PageRequest(offset: 0, filter: '', limit: Constants.maxUint16),
         spaceId: id));
     if (res.success && res.data != null) {

@@ -25,7 +25,7 @@ class Identity extends IIdentity {
   Future<XTargetArray?> loadMembers(PageRequest page) async {
     final res = await kernel.queryIdentityTargets(IDBelongTargetReq(
       id: id,
-      targetType: TargetType.person.name,
+      targetType: TargetType.person.label,
       page: page,
     ));
     return res.data;

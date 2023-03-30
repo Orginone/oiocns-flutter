@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/routers.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
@@ -27,6 +28,21 @@ class CompanyInfoController extends BaseController<CompanyInfoState>
   void changeView(int index) {
     if(state.index.value!=index){
       state.index.value = index;
+    }
+  }
+
+  void companyOperation(CompanyFunction function) {
+    switch(function){
+
+      case CompanyFunction.roleSettings:
+         Get.toNamed(Routers.roleSettings,arguments: {"company":state.company});
+        break;
+      case CompanyFunction.addUser:
+        // TODO: Handle this case.
+        break;
+      case CompanyFunction.addGroup:
+        // TODO: Handle this case.
+        break;
     }
   }
 }

@@ -98,6 +98,8 @@ import 'pages/other/work/process_details/view.dart';
 import 'pages/other/work/work_start/binding.dart';
 import 'pages/other/work/work_start/create_work/binding.dart';
 import 'pages/other/work/work_start/create_work/view.dart';
+import 'pages/setting/add_members/binding.dart';
+import 'pages/setting/add_members/view.dart';
 import 'pages/setting/cohort_info/binding.dart';
 import 'pages/setting/cohort_info/view.dart';
 import 'pages/setting/company_info/binding.dart';
@@ -108,6 +110,8 @@ import 'pages/setting/out_agency_info/binding.dart';
 import 'pages/setting/out_agency_info/view.dart';
 import 'pages/setting/relationship_group/binding.dart';
 import 'pages/setting/relationship_group/view.dart';
+import 'pages/setting/role_settings/binding.dart';
+import 'pages/setting/role_settings/view.dart';
 import 'pages/setting/station_info/binding.dart';
 import 'pages/setting/station_info/view.dart';
 
@@ -252,12 +256,17 @@ class Routers {
   //外部机构详情
   static const String outAgencyInfo = '/outAgencyInfo';
 
-  //外部机构详情
+  //岗位详情
   static const String stationInfo = '/stationInfo';
 
-  //外部机构详情
+  //单位群组详情
   static const String cohortInfo = '/cohortInfo';
 
+  //角色设置
+  static const String roleSettings = '/roleSettings';
+
+  //添加角色
+  static const String addMembers = '/addMembers';
 
   static String get main {
     return login;
@@ -591,6 +600,16 @@ class Routers {
         name: Routers.cohortInfo,
         page: () => CohortInfoPage(),
         binding: CohortInfoBinding(),
+      ),
+      GetPage(
+        name: Routers.roleSettings,
+        page: () => RoleSettingsPage(),
+        binding: RoleSettingsBinding(),
+      ),
+      GetPage(
+        name: Routers.addMembers,
+        page: () => AddMembersPage(),
+        binding: AddMembersBinding(),
       ),
     ];
   }
