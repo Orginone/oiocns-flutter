@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
+import 'package:orginone/pages/setting/cofig.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 
@@ -63,19 +64,19 @@ class IdentityInfoPage
               identity.value.name, action: memberPopupMenuButton());
         }),
         Obx(() {
-          List<List<String>> docContent = [];
+          List<List<String>> content = [];
           for (var user in state.unitMember) {
-            docContent.add([
+            content.add([
               user.code,
               user.name,
               user.team?.name ?? "",
-              user.team?.remark ?? "",
               user.team?.code ?? "",
+              user.team?.remark ?? "",
             ]);
           }
           return CommonWidget.commonDocumentWidget(
-              title: docTitle,
-              content: docContent,
+              title: memberTitle,
+              content: content,
               showOperation: true,
               popupMenus: [
                 const PopupMenuItem(value: 'out', child: Text("移除")),

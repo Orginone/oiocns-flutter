@@ -17,19 +17,3 @@ class StationInfoState extends BaseGetState{
   }
 }
 
-List<String> identityTitle = [
-  "ID",
-  "角色编号",
-  "角色名称",
-  "权限",
-  "组织",
-  "备注",
-];
-
-List<String> memberTitle = [
-  "账号",
-  "昵称",
-  "姓名",
-  "手机号",
-  "签名",
-];

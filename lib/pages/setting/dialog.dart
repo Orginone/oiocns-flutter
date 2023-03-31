@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/unified.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -13,6 +17,7 @@ typedef IdentityChangeCallBack = Function(
 typedef CreateIdentityCallBack = Function(
     String name, String code, String authID,String remark);
 
+SettingController get setting => Get.find();
 
 Future<void> showEditIdentityDialog(IIdentity identity, BuildContext context,
     {IdentityChangeCallBack? callBack}) async {
@@ -62,7 +67,6 @@ Future<void> showEditIdentityDialog(IIdentity identity, BuildContext context,
 
 Future<void> showCreateIdentityDialog(BuildContext context,
     {CreateIdentityCallBack? onCreate}) async {
-  SettingController setting = Get.find();
   IAuthority? auth = await setting.company!.loadSpaceAuthorityTree();
 
   List<IAuthority> getAllAuth(IAuthority auth) {
@@ -143,6 +147,183 @@ Future<void> showCreateIdentityDialog(BuildContext context,
                         Navigator.pop(context);
                       }
                     }),
+                  ],
+                ),
+              );
+            });
+          }));
+    },
+  );
+}
+
+Future<void> showSearchDialog(BuildContext context, TargetType targetType,
+    {String title = '', String hint = '',ValueChanged<List<XTarget>>? onSelected}) async {
+
+  TextEditingController searchController = TextEditingController();
+
+  List<XTarget> data = [];
+
+  List<XTarget> selected = [];
+
+  Widget item(XTarget item,{VoidCallback? onTap}) {
+    bool isSelected = selected.contains(item);
+
+    List<Widget> children = [];
+
+    if(targetType == TargetType.person){
+      children = [
+        Row(
+          children: [
+            Text(item.name),
+            SizedBox(
+              width: 10.w,
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 2.h,horizontal: 4.w),
+              decoration: BoxDecoration(
+                color: Colors.blue.withOpacity(0.2),
+                border: Border.all(color: Colors.blue,width: 0.5),
+                borderRadius: BorderRadius.circular(4.w),
+              ),
+              child: Text("账号:${item.code}",style: TextStyle(fontSize: 14.sp,color: Colors.blue),),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("姓名:${item.team?.name}"),
+            Text("手机号:${item.team?.code}"),
+          ],
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        Text("座右铭:${item.team?.remark??""}"),
+      ];
+    }
+    if(targetType == TargetType.group){
+      children = [
+        Row(
+          children: [
+            Text(item.name),
+            SizedBox(
+              width: 10.w,
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 2.h,horizontal: 4.w),
+              decoration: BoxDecoration(
+                color: Colors.blue.withOpacity(0.2),
+                border: Border.all(color: Colors.blue,width: 0.5),
+                borderRadius: BorderRadius.circular(4.w),
+              ),
+              child: Text("集团编码:${item.code}",style: TextStyle(fontSize: 14.sp,color: Colors.blue),),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        Text("集团简介:${item.team?.remark??""}"),
+      ];
+    }
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.only(bottom: 10.h),
+        width: 400.w,
+        decoration: BoxDecoration(
+            color: isSelected?XColors.themeColor.withOpacity(0.2):Colors.white,
+            borderRadius: BorderRadius.circular(4.w),
+            border: Border.all(color: isSelected?XColors.themeColor:Colors.grey.shade400, width: 0.5)),
+        padding: EdgeInsets.symmetric(vertical: 15.w, horizontal: 20.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children,
+        ),
+      ),
+    );
+  }
+
+
+
+  Future<List<XTarget>> search(String code) async {
+    XTargetArray? xTargetArray;
+    switch (targetType) {
+      case TargetType.group:
+        xTargetArray = await setting.company?.searchGroup(code);
+        break;
+      case TargetType.person:
+        xTargetArray = await setting.user?.searchPerson(code);
+        break;
+      case TargetType.company:
+      case TargetType.hospital:
+      case TargetType.university:
+        xTargetArray = await setting.user?.searchCompany(code);
+        break;
+    }
+    if (xTargetArray != null) {
+      return xTargetArray.result ?? [];
+    }
+    return [];
+  }
+
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+          alignment: Alignment.center,
+          child: Builder(builder: (context) {
+            return StatefulBuilder(builder: (context, state) {
+              return SizedBox(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CommonWidget.commonHeadInfoWidget(title),
+                    CommonWidget.commonSearchBarWidget(
+                        controller: searchController,
+                        onChanged: (code) async {
+                          search(code).then((value) {
+                            state(() {
+                              data = value;
+                            });
+                          });
+                        },hint: hint),
+                    data.isEmpty
+                        ? Container()
+                        : SizedBox(
+                           height: 400.h,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: data.map((e) {
+                                  return item(e,onTap: (){
+                                    state((){
+                                         if(selected.contains(e)){
+                                           selected.remove(e);
+                                         }else{
+                                           selected.add(e);
+                                         }
+                                    });
+                                  });
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+                    CommonWidget.commonMultipleSubmitWidget(
+                      onTap1: (){
+                        Navigator.pop(context);
+                      },
+                      onTap2: (){
+                        if(onSelected!=null){
+                          onSelected(selected);
+                        }
+                        Navigator.pop(context);
+                      }
+                    ),
                   ],
                 ),
               );

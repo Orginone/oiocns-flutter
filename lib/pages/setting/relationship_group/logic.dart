@@ -1,13 +1,8 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
-import 'package:orginone/dart/core/thing/ispecies.dart';
-import 'package:orginone/event/choice.dart';
-import 'package:orginone/pages/setting/home/state.dart';
+import 'package:orginone/pages/setting/cofig.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/department_management.dart';
-import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/setting_management.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';

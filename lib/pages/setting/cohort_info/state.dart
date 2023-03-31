@@ -13,11 +13,3 @@ class CohortInfoState extends BaseGetState{
     cohort = Get.arguments['cohort'];
   }
 }
-
-List<String> memberTitle = [
-  "账号",
-  "昵称",
-  "姓名",
-  "手机号",
-  "签名",
-];

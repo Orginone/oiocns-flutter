@@ -6,6 +6,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/dart/core/thing/ispecies.dart';
+import 'package:orginone/pages/setting/cofig.dart';
 import 'package:orginone/pages/setting/home/state.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/department_management.dart';

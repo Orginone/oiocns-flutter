@@ -94,7 +94,7 @@ class BaseTarget extends ITarget {
 
   @override
   Future<bool> pullMembers(List<String> ids, String type) async {
-    if (memberTypes.contains(type as TargetType)) {
+    if (TargetType.values.map((e) => e.label).contains(type)) {
       final res = await kernel.pullAnyToTeam(TeamPullModel(
         id: target.id,
         targetIds: ids,
@@ -196,7 +196,7 @@ class BaseTarget extends ITarget {
     if (typeNames.isNotEmpty) {
       final res = await kernel.searchTargetByName(NameTypeModel(
           name: code,
-          typeNames: typeNames.map((person) => person.name).toList(),
+          typeNames: typeNames.map((person) => person.label).toList(),
           page: PageRequest(
             offset: 0,
             filter: code,

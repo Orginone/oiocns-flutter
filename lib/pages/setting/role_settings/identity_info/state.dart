@@ -6,17 +6,5 @@ class IdentityInfoState extends BaseGetState {
   var unitMember = <XTarget>[].obs;
 }
 
-List<String> docTitle = [
-  "账号",
-  "昵称",
-  "姓名",
-  "备注",
-  "手机号",
-];
 
 
-enum IdentityFunction{
-  edit,
-  delete,
-  addMember,
-}

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/pages/setting/cofig.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
@@ -79,7 +80,7 @@ class OutAgencyInfoPage
         ]);
       }
       return CommonWidget.commonDocumentWidget(
-          title: memberTitle,
+          title: outGroupTitle,
           content: content,
           showOperation: true,
           popupMenus: [
