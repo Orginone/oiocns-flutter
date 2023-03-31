@@ -34,8 +34,6 @@ class SettingCenterPage
         ));
   }
 
-
-
   Widget tabBar() {
     return Container(
       color: Colors.white,
