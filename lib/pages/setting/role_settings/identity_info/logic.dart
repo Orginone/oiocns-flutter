@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/pages/setting/role_settings/logic.dart';
@@ -22,8 +23,13 @@ class IdentityInfoController extends BaseController<IdentityInfoState> {
   void onReady() async{
     // TODO: implement onReady
     super.onReady();
-   var users =  await identity.value.loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
-   state.unitMember.addAll(users?.result??[]);
+    await loadMembers();
+  }
+
+  Future<void> loadMembers() async{
+    var users =  await identity.value.loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
+    state.unitMember.clear();
+    state.unitMember.addAll(users?.result??[]);
   }
 
   void removeRole(String code) async{
@@ -64,7 +70,15 @@ class IdentityInfoController extends BaseController<IdentityInfoState> {
         roleSetting.deleteIdentity(identity.value);
         break;
       case IdentityFunction.addMember:
-        Get.toNamed(Routers.addMembers,arguments: {"title":"指派角色"});
+        Get.toNamed(Routers.addMembers,arguments: {"title":"指派角色"})?.then((value) async{
+          var selected = (value as List<XTarget>);
+          if(selected.isNotEmpty){
+            bool success = await identity.value.pullMembers(selected.map((e) => e.id).toList());
+            if(success){
+              await loadMembers();
+            }
+          }
+        });
         break;
     }
   }

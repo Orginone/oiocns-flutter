@@ -18,7 +18,7 @@ class RoleSettingsPage
       titleName: "角色设置",
       actions: [
         IconButton(onPressed: () {
-          controller.addIdentity();
+          controller.createIdentity();
         }, icon: Icon(Icons.add, color: Colors.black, size: 36.w,))
       ],
       body: Column(

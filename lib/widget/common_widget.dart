@@ -443,11 +443,19 @@ class CommonWidget {
       {bool isSelected = false, ValueChanged<bool>? changed}) {
     return GestureDetector(
       child: isSelected
-          ? Icon(
-              CupertinoIcons.smallcircle_fill_circle_fill,
-              size: 32.w,
-              color: Colors.blue,
-            )
+          ? Container(
+           width: 32.w,
+            height: 32.w,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: XColors.themeColor,
+            ),
+            child: Icon(
+                Icons.done,
+                size: 24.w,
+                color: Colors.white,
+              ),
+          )
           : Icon(
               Icons.radio_button_off,
               size: 32.w,
