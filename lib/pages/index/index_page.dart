@@ -12,6 +12,7 @@ import 'package:orginone/config/forms.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/index/HorizontalScrollMenu/MyMenuItem.dart';
+import 'package:orginone/pages/index/news/searchBarWidget.dart';
 import 'package:orginone/pages/other/home/components/operation_bar.dart';
 import 'package:orginone/pages/setting/home/logic.dart';
 import 'package:orginone/routers.dart';
@@ -77,51 +78,6 @@ class IndexPage extends BaseView<IndexPageController> {
   @override
   Widget builder(BuildContext context) {
     double x = 0, y = 0;
-    // LinkedHashMap<String, dynamic> testData = LinkedHashMap.from({
-    //   '1': {
-    //     'id': '1',
-    //     'icon': Icons.home,
-    //     'cardName': '加好友',
-    //     'func': () => print('Home pressed')
-    //   },
-    //   '2': {
-    //     'id': '2',
-    //     'icon': Icons.settings,
-    //     'cardName': '创单位',
-    //     'func': () => print('Settings pressed')
-    //   },
-    //   '3': {
-    //     'id': '3',
-    //     'icon': Icons.person,
-    //     'cardName': '邀成员',
-    //     'func': () => print('Profile pressed')
-    //   },
-    //   '4': {
-    //     'id': '4',
-    //     'icon': Icons.notifications,
-    //     'cardName': '建应用',
-    //     'func': () => print('Notifications pressed')
-    //   },
-    //   '5': {
-    //     'id': '5',
-    //     'icon': Icons.settings,
-    //     'cardName': '逛商店',
-    //     'func': () => print('Settings pressed')
-    //   },
-    //   '6': {
-    //     'id': '6',
-    //     'icon': Icons.person,
-    //     'cardName': '邀成员',
-    //     'func': () => print('Profile pressed')
-    //   },
-    //   '7': {
-    //     'id': '7',
-    //     'icon': Icons.notifications,
-    //     'cardName': '建应用',
-    //     'func': () => print('Notifications pressed')
-    //   },
-    // });
-
     return Scaffold(
       drawer: Drawer(
         width: MediaQuery.of(context).size.width,
@@ -286,7 +242,7 @@ class IndexPage extends BaseView<IndexPageController> {
                     )),
               ),
             ),
-            _dataMonitoring(),
+            _dataMonitoring,
           ]),
     );
   }
@@ -438,9 +394,11 @@ class IndexPage extends BaseView<IndexPageController> {
     );
   }
 
+
+}
 // 数据检测 start
   /// _dataMonitoring 数据检测container
-  Widget _dataMonitoring() {
+  Widget get _dataMonitoring {
     return Container(
         color: XColors.white,
         // 数据监测
@@ -661,8 +619,6 @@ class IndexPage extends BaseView<IndexPageController> {
         ));
   }
 // 数据检测 end
-}
-
 class CardChildWidget extends StatelessWidget {
   String itemName;
 
@@ -777,5 +733,6 @@ class IndexPageBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => IndexPageController());
+    Get.lazyPut(() => SearchBarController());
   }
 }

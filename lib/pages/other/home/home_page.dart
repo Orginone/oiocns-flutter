@@ -15,6 +15,8 @@ import 'package:orginone/event/home_data.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/index/index_page.dart';
+import 'package:orginone/pages/index/index_pageV2.dart';
+import 'package:orginone/pages/index/index_pageV2ok.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
 import 'package:orginone/pages/other/ware_house/view.dart';
 import 'package:orginone/pages/other/work/view.dart';
@@ -93,7 +95,8 @@ class HomeController extends TabsController {
     ));
     var center = XTab(
       body: XImage.localImage("logo_not_bg", size: Size(36.w, 36.w)),
-      view: FunctionPage(),
+      view: IndexTabPageok(),
+      // view: FunctionPage(),
       iconMargin: EdgeInsets.zero,
     );
     registerTab(center);

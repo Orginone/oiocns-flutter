@@ -1,20 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/pages/index/index_page.dart';
+import 'package:orginone/pages/index/news/news_page.dart';
+import 'package:orginone/pages/index/widgets/IndexTodoTabBar.dart';
 import 'package:orginone/pages/index/widgets/dataMonitoring.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
 import '../../../dart/core/getx/base_get_view.dart';
-import '../../index/index_page.dart';
 
-class FunctionPage extends BaseGetPageView<FunctionController, FunctionState> {
+class IndexTabPageok
+    extends BaseGetPageView<FunctionController, FunctionState> {
   @override
   Widget buildView() {
     return Column(
@@ -24,14 +27,12 @@ class FunctionPage extends BaseGetPageView<FunctionController, FunctionState> {
           child: TabBarView(
             controller: state.tabController,
             children: [
-              IndexPage(),
-              Container(),
-              Container(
-                child: DataMonitoring(),
-              ),
-              Container(),
-              Container(),
-              Container(),
+              KeepAliveWidget(child: IndexPage()),
+              KeepAliveWidget(child: IndexTodoTabBarWidget()),
+              KeepAliveWidget(child: DataMonitoring()),
+              KeepAliveWidget(child: IndexNewsPage()),
+              KeepAliveWidget(child: DataMonitoring()),
+              KeepAliveWidget(child: IndexNewsPage()),
             ],
           ),
         )
@@ -70,7 +71,7 @@ class FunctionPage extends BaseGetPageView<FunctionController, FunctionState> {
           ),
         ),
         GestureDetector(
-          onTap: () {},
+          onTap: () {Get.snackbar("奥集能", "欢迎！欢迎！热烈欢迎");},
           child: const Padding(
               padding: EdgeInsets.all(8.0),
               child: Icon(
