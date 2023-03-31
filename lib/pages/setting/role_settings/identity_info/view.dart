@@ -34,7 +34,18 @@ class IdentityInfoPage
     return Column(
       children: [
         CommonWidget.commonHeadInfoWidget(
-            "角色信息", action: identityPopupMenuButton()),
+            "角色信息", action: popupMenuButton(items: [
+          const PopupMenuItem(
+            value: IdentityFunction.edit,
+            child: Text("编辑"),
+          ),
+          const PopupMenuItem(
+            value: IdentityFunction.delete,
+            child: Text("删除"),
+          ),
+        ], onSelected: (IdentityFunction function) {
+          controller.identityOperation(function);
+        },color: Colors.transparent),),
         Obx(() {
           return CommonWidget.commonFormWidget(formItem: [
             CommonWidget.commonFormItem(
@@ -60,8 +71,15 @@ class IdentityInfoPage
     return Column(
       children: [
         Obx(() {
-          return CommonWidget.commonHeadInfoWidget(
-              identity.value.name, action: memberPopupMenuButton());
+          return CommonWidget.commonHeadInfoWidget(identity.value.name,
+              action: popupMenuButton(items: [
+                const PopupMenuItem(
+                  value: IdentityFunction.addMember,
+                  child: Text("指派角色"),
+                ),
+              ], onSelected: (IdentityFunction function) {
+                controller.identityOperation(function);
+              },color: Colors.transparent));
         }),
         Obx(() {
           List<List<String>> content = [];
@@ -86,54 +104,6 @@ class IdentityInfoPage
               });
         }),
       ],
-    );
-  }
-
-  Widget identityPopupMenuButton() {
-    return PopupMenuButton(
-      icon: Icon(
-        Icons.more_vert_outlined,
-        size: 32.w,
-      ),
-      itemBuilder: (BuildContext context) {
-        return [
-          const PopupMenuItem(
-            value: IdentityFunction.edit,
-            child: Text("编辑"),
-          ),
-          const PopupMenuItem(
-            value: IdentityFunction.delete,
-            child: Text("删除"),
-          ),
-        ];
-      },
-      onSelected: (IdentityFunction function) {
-        controller.identityOperation(function);
-      },
-      onCanceled: () {},
-      onOpened: () {},
-    );
-  }
-
-  Widget memberPopupMenuButton() {
-    return PopupMenuButton(
-      icon: Icon(
-        Icons.more_vert_outlined,
-        size: 32.w,
-      ),
-      itemBuilder: (BuildContext context) {
-        return [
-          const PopupMenuItem(
-            value: IdentityFunction.addMember,
-            child: Text("指派角色"),
-          ),
-        ];
-      },
-      onSelected: (IdentityFunction function) {
-        controller.identityOperation(function);
-      },
-      onCanceled: () {},
-      onOpened: () {},
     );
   }
 

@@ -1,19 +1,60 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/pages/setting/cofig.dart';
+import 'package:orginone/routers.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
 class CohortInfoController extends BaseController<CohortInfoState> {
- final CohortInfoState state = CohortInfoState();
+  final CohortInfoState state = CohortInfoState();
 
-
- @override
-  void onReady() async{
+  @override
+  void onReady() async {
     // TODO: implement onReady
     super.onReady();
+    await init();
+  }
+
+  Future<void> init() async {
     var users = await state.cohort.loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
-    state.unitMember.addAll(users.result??[]);
+    state.unitMember.clear();
+    state.unitMember.addAll(users.result ?? []);
+  }
+
+  void companyOperation(CompanyFunction function) {
+    switch (function) {
+      case CompanyFunction.roleSettings:
+        Get.toNamed(Routers.roleSettings, arguments: {"cohort": state.cohort});
+        break;
+      case CompanyFunction.addUser:
+        Get.toNamed(Routers.addMembers, arguments: {"title": "指派角色"})
+            ?.then((value) async {
+          var selected = (value as List<XTarget>);
+          if (selected.isNotEmpty) {
+            bool success = await state.cohort.pullMembers(
+                selected.map((e) => e.id).toList(), TargetType.person.label);
+            if (success) {
+              await init();
+            }
+          }
+        });
+        break;
+    }
+  }
+
+  void removeMember(String data) async{
+    var user = state.unitMember
+        .firstWhere((element) => element.code == data);
+    bool success = await state.cohort.removeMember(user);
+    if (success) {
+      state.unitMember.removeWhere((element) => element.code == data);
+      state.unitMember.refresh();
+    } else {
+      ToastUtils.showMsg(msg: "移除失败");
+    }
   }
 }

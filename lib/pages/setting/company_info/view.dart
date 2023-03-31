@@ -27,11 +27,30 @@ class CompanyInfoPage
               child: Row(
                 children: [
                   Expanded(
-                    child: CommonWidget.commonNonIndicatorTabBar(state.tabController, tabTitle,onTap: (index){
+                    child: CommonWidget.commonNonIndicatorTabBar(
+                        state.tabController, tabTitle, onTap: (index) {
                       controller.changeView(index);
                     }),
                   ),
-                  popupMenuButton(),
+                  popupMenuButton(
+                      items: [
+                        const PopupMenuItem(
+                          value: CompanyFunction.roleSettings,
+                          child: Text("角色设置"),
+                        ),
+                        const PopupMenuItem(
+                          value: CompanyFunction.addUser,
+                          child: Text("邀请成员"),
+                        ),
+                        const PopupMenuItem(
+                          value: CompanyFunction.addGroup,
+                          child: Text("加入集团"),
+                        ),
+                      ],
+                      onSelected: (CompanyFunction function) {
+                        controller.companyOperation(function);
+                      },
+                      color: Colors.transparent),
                 ],
               ),
             ),
@@ -42,48 +61,9 @@ class CompanyInfoPage
     );
   }
 
-
-  Widget popupMenuButton() {
-    return Container(
-      height: 50.h,
-      color: Colors.white,
-      child: PopupMenuButton(
-        icon: Icon(
-          Icons.more_vert_outlined,
-          size: 32.w,
-        ),
-        itemBuilder: (BuildContext context) {
-          return [
-            const PopupMenuItem(
-              value: CompanyFunction.roleSettings,
-              child: Text("角色设置"),
-            ),
-            const PopupMenuItem(
-              value: CompanyFunction.addUser,
-              child: Text("邀请成员"),
-            ),
-            const PopupMenuItem(
-              value: CompanyFunction.addGroup,
-              child: Text("加入集团"),
-            ),
-          ];
-        },
-        onSelected: (CompanyFunction function){
-          controller.companyOperation(function);
-        },
-        onCanceled: (){
-
-        },
-        onOpened: (){
-
-        },
-      ),
-    );
-  }
-
-  Widget body(){
-    return  Obx(() {
-      if(state.index.value == 1){
+  Widget body() {
+    return Obx(() {
+      if (state.index.value == 1) {
         List<List<String>> groupContent = [];
         for (var group in state.joinGroup) {
           groupContent.add([

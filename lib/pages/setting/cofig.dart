@@ -1,5 +1,8 @@
 
 
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 enum CompanySpaceEnum {
   company('单位'),
   innerAgency("内部机构"),
@@ -79,4 +82,21 @@ enum CompanyFunction{
   roleSettings,
   addUser,
   addGroup,
+}
+
+Widget popupMenuButton<T>({PopupMenuItemSelected<T>? onSelected,required List<PopupMenuItem<T>> items,Color? color}) {
+  return Container(
+    height: 50.h,
+    color: color??Colors.white,
+    child: PopupMenuButton<T>(
+      icon: Icon(
+        Icons.more_vert_outlined,
+        size: 32.w,
+      ),
+      itemBuilder: (BuildContext context) {
+        return items;
+      },
+      onSelected: onSelected,
+    ),
+  );
 }

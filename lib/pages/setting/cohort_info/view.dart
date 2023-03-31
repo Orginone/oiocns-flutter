@@ -22,7 +22,21 @@ class CohortInfoPage extends BaseGetView<CohortInfoController,CohortInfoState>{
             cohortInfo(),
             Column(
               children: [
-                CommonWidget.commonHeadInfoWidget("群组人员"),
+                CommonWidget.commonHeadInfoWidget("群组人员",action: popupMenuButton(
+                  items: [
+                    const PopupMenuItem(
+                      value: CompanyFunction.roleSettings,
+                      child: Text("角色设置"),
+                    ),
+                    const PopupMenuItem(
+                      value: CompanyFunction.addUser,
+                      child: Text("邀请成员"),
+                    ),
+                  ],
+                  onSelected: (CompanyFunction function) {
+                    controller.companyOperation(function);
+                  },color: Colors.transparent
+                ),),
                 Obx((){
                   List<List<String>> memberContent = [];
                   for (var user in state.unitMember) {
@@ -41,7 +55,9 @@ class CohortInfoPage extends BaseGetView<CohortInfoController,CohortInfoState>{
                       popupMenus: [
                         const PopupMenuItem(value: 'out', child: Text("移除")),
                       ],
-                      onOperation: (type,data) {});
+                      onOperation: (type,data) {
+                        controller.removeMember(data);
+                      });
                 }),
               ],
             ),
@@ -50,6 +66,7 @@ class CohortInfoPage extends BaseGetView<CohortInfoController,CohortInfoState>{
       ),
     );
   }
+
 
   Widget cohortInfo() {
     return Container(
