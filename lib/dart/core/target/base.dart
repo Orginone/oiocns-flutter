@@ -113,7 +113,7 @@ class BaseTarget extends ITarget {
 
   @override
   Future<bool> removeMembers(List<String> ids, {String type = ''}) async {
-    if (memberTypes.contains(type as TargetType)) {
+    if (TargetType.values.map((e) => e.label).contains(type)) {
       final res = await kernel.removeAnyOfTeam(TeamPullModel(
         id: target.id,
         targetIds: ids,

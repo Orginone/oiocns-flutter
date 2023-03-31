@@ -115,7 +115,9 @@ class CompanyInfoPage
           popupMenus: [
             const PopupMenuItem(value: 'out', child: Text("踢出")),
           ],
-          onOperation: (type,data) {});
+          onOperation: (type,data) {
+            controller.removeMember(data);
+          });
     });
   }
 
