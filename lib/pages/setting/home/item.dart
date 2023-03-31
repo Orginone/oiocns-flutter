@@ -4,25 +4,35 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/pages/setting/cofig.dart';
-
 
 class Item extends StatelessWidget {
   final CompanySpaceEnum? companySpaceEnum;
+  final StandardEnum? standardEnum;
   final ITarget? innerAgency;
   final IGroup? outAgency;
   final IStation? station;
   final ICohort? cohort;
+  final IAuthority? iAuthority;
+  final SpeciesItem? species;
   final VoidCallback? nextLv;
   final VoidCallback? onTap;
+
   const Item(
       {Key? key,
       this.companySpaceEnum,
       this.innerAgency,
       this.outAgency,
       this.station,
-      this.cohort, this.onTap,this.nextLv})
+      this.cohort,
+      this.onTap,
+      this.nextLv,
+      this.standardEnum,
+      this.iAuthority,
+      this.species})
       : super(key: key);
 
   SettingController get settingController => Get.find<SettingController>();
@@ -33,20 +43,26 @@ class Item extends StatelessWidget {
     return GestureDetector(
       onTap: (){
         bool hasNextLvData = true;
-        if(innerAgency!=null){
-          hasNextLvData = innerAgency?.subTeam.isNotEmpty??false;
+        if (innerAgency != null) {
+          hasNextLvData = innerAgency?.subTeam.isNotEmpty ?? false;
         }
-        if(outAgency!=null){
-          hasNextLvData = outAgency?.subGroup.isNotEmpty??false;
+        if (outAgency != null) {
+          hasNextLvData = outAgency?.subGroup.isNotEmpty ?? false;
         }
-        if(station!=null){
+        if (iAuthority != null) {
+          hasNextLvData = iAuthority?.children.isNotEmpty ?? false;
+        }
+        if (species != null) {
+          hasNextLvData = species?.children.isNotEmpty ?? false;
+        }
+        if (station != null) {
           hasNextLvData = false;
         }
-        if(cohort!=null){
+        if (cohort != null) {
           hasNextLvData = false;
         }
-        if(hasNextLvData){
-          if(nextLv!=null){
+        if (hasNextLvData) {
+          if (nextLv != null) {
             nextLv!();
           }
         }else{
@@ -81,10 +97,13 @@ class Item extends StatelessWidget {
 
   Widget title() {
     String name = companySpaceEnum?.label ??
+        standardEnum?.label ??
         innerAgency?.teamName ??
         outAgency?.teamName ??
         station?.teamName ??
         cohort?.teamName ??
+        iAuthority?.name ??
+        species?.name ??
         "";
     if (companySpaceEnum == CompanySpaceEnum.company) {
       name = settingController.space.teamName;
@@ -129,25 +148,6 @@ class Item extends StatelessWidget {
 
   Widget _header() {
     IconData icon = Icons.account_balance_rounded;
-    if (companySpaceEnum != null) {
-      switch (companySpaceEnum) {
-        case CompanySpaceEnum.company:
-          icon = Icons.location_city;
-          break;
-        case CompanySpaceEnum.innerAgency:
-          icon = Icons.account_balance_outlined;
-          break;
-        case CompanySpaceEnum.outAgency:
-          icon = Icons.account_tree_outlined;
-          break;
-        case CompanySpaceEnum.stationSetting:
-          icon = Icons.location_history_rounded;
-          break;
-        case CompanySpaceEnum.companyCohort:
-          icon = Icons.chat_rounded;
-          break;
-      }
-    }
 
     return AdvancedAvatar(
       size: 60.w,

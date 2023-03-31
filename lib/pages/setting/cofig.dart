@@ -30,6 +30,25 @@ enum CompanySpaceEnum {
   }
 }
 
+
+enum UserSpaceEnum{
+  personInfo('个人信息'),
+  personGroup("个人群组");
+
+  final String label;
+
+  const UserSpaceEnum(this.label);
+}
+
+enum StandardEnum{
+  permissionCriteria("权限标准"),
+  classCriteria('分类标准');
+
+  final String label;
+
+  const StandardEnum(this.label);
+}
+
 const companySpace = [
   '内部机构',
   '外部机构',

@@ -5,9 +5,11 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/pages/setting/cofig.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/keep_alive_widget.dart';
 
-import 'item.dart';
 import 'logic.dart';
+import 'relation/view.dart';
+import 'standard/view.dart';
 import 'state.dart';
 
 class SettingCenterPage
@@ -19,34 +21,20 @@ class SettingCenterPage
         child: Column(
           children: [
             tabBar(),
-            CommonWidget.commonBreadcrumbNavWidget(
-              firstTitle: "关系",
-              allTitle: [],
-            ),
-            Expanded(child: list())
+            Expanded(
+              child: TabBarView(
+                controller: state.tabController,
+                children: [
+                  KeepAliveWidget(child: RelationPage()),
+                  KeepAliveWidget(child: StandardPage()),
+                ],
+              ),
+            )
           ],
         ));
   }
 
-  Widget list() {
-    return Obx(() {
-      if(state.setting.isCompanySpace()){
-        return Column(
-          children: CompanySpaceEnum.values
-              .map((e) =>
-              Item(
-                companySpaceEnum: e,
-                nextLv: () {
-                  controller.nextLvForEnum(e);
-                },
-              ))
-              .toList(),
-        );
-      }else{
-        return Container();
-      }
-    });
-  }
+
 
   Widget tabBar() {
     return Container(

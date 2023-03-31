@@ -279,7 +279,7 @@ abstract class ISpace implements IFlow, IMTarget, ITarget {
   late SpaceType spaceData;
 
   /// 空间职权树
-  late IAuthority? spaceAuthorityTree;
+  IAuthority? spaceAuthorityTree;
 
   /// @description: 查询群
   ///@param reload 是否强制刷新

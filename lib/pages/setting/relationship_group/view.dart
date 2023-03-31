@@ -40,31 +40,48 @@ class RelationGroupPage
       return ListView.builder(
         itemBuilder: (BuildContext context, int index) {
           var item = state.groupData.value[index];
-          switch (state.companySpaceEnum) {
-            case CompanySpaceEnum.innerAgency:
-              return Item(innerAgency: item, nextLv: () {
-                controller.nextLv(innerAgency: item);
-              },onTap: (){
-                controller.onTap(innerAgency: item);
-              });
-            case CompanySpaceEnum.outAgency:
-              return Item(outAgency: item, nextLv: () {
-                controller.nextLv(outAgency: item);
-              },onTap: (){
-                controller.onTap(outAgency: item);
-              });
-            case CompanySpaceEnum.stationSetting:
-              return Item(station: item, nextLv: () {
-                controller.nextLv(station: item);
-              },onTap: (){
-                controller.onTap(station: item);
-              });
-            case CompanySpaceEnum.companyCohort:
-              return Item(cohort: item, nextLv: () {
-                controller.nextLv(cohort: item);
-              },onTap: (){
-                controller.onTap(cohort: item);
-              },);
+          if(state.standardEnum!=null){
+            switch (state.standardEnum) {
+              case StandardEnum.permissionCriteria:
+                return Item(iAuthority: item, nextLv: () {
+                  controller.nextLv(iAuthority: item);
+                },onTap: (){
+                  controller.onTap(iAuthority: item);
+                });
+              case StandardEnum.classCriteria:
+                return Item(species: item, nextLv: () {
+                  controller.nextLv(species: item);
+                },onTap: (){
+                  controller.onTap(species: item);
+                });
+            }
+          }else if(state.companySpaceEnum!=null){
+            switch (state.companySpaceEnum) {
+              case CompanySpaceEnum.innerAgency:
+                return Item(innerAgency: item, nextLv: () {
+                  controller.nextLv(innerAgency: item);
+                },onTap: (){
+                  controller.onTap(innerAgency: item);
+                });
+              case CompanySpaceEnum.outAgency:
+                return Item(outAgency: item, nextLv: () {
+                  controller.nextLv(outAgency: item);
+                },onTap: (){
+                  controller.onTap(outAgency: item);
+                });
+              case CompanySpaceEnum.stationSetting:
+                return Item(station: item, nextLv: () {
+                  controller.nextLv(station: item);
+                },onTap: (){
+                  controller.onTap(station: item);
+                });
+              case CompanySpaceEnum.companyCohort:
+                return Item(cohort: item, nextLv: () {
+                  controller.nextLv(cohort: item);
+                },onTap: (){
+                  controller.onTap(cohort: item);
+                },);
+            }
           }
         },
         itemCount: state.groupData.value.length ?? 0,

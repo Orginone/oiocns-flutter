@@ -17,13 +17,7 @@ class SettingCenterController extends BaseController<SettingCenterState>
     state.tabController = TabController(length: tabTitle.length, vsync: this);
   }
 
-  void nextLvForEnum(CompanySpaceEnum companySpaceEnum) {
-    if (companySpaceEnum != CompanySpaceEnum.company) {
-      Get.toNamed(Routers.relationGroup,arguments: {"companySpaceEnum":companySpaceEnum});
-    }else{
-      Get.toNamed(Routers.companyInfo);
-    }
-  }
+
 
 
 }
