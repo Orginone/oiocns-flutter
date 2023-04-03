@@ -29,10 +29,3 @@ List<String> tabTitle = [
   "集团应用",
 ];
 
-List<String> memberTitle = [
-  "单位简称",
-  "社会统一信用",
-  "单位全称",
-  "单位代码",
-  "单位简介",
-];

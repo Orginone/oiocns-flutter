@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/pages/setting/cofig.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 
@@ -21,9 +22,38 @@ class CompanyInfoPage
             SizedBox(
               height: 10.h,
             ),
-            CommonWidget.commonNonIndicatorTabBar(state.tabController, tabTitle,onTap: (index){
-              controller.changeView(index);
-            }),
+            Container(
+              color: Colors.white,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CommonWidget.commonNonIndicatorTabBar(
+                        state.tabController, tabTitle, onTap: (index) {
+                      controller.changeView(index);
+                    }),
+                  ),
+                  popupMenuButton(
+                      items: [
+                        const PopupMenuItem(
+                          value: CompanyFunction.roleSettings,
+                          child: Text("角色设置"),
+                        ),
+                        const PopupMenuItem(
+                          value: CompanyFunction.addUser,
+                          child: Text("邀请成员"),
+                        ),
+                        const PopupMenuItem(
+                          value: CompanyFunction.addGroup,
+                          child: Text("加入集团"),
+                        ),
+                      ],
+                      onSelected: (CompanyFunction function) {
+                        controller.companyOperation(function);
+                      },
+                      color: Colors.transparent),
+                ],
+              ),
+            ),
             body(),
           ],
         ),
@@ -31,9 +61,9 @@ class CompanyInfoPage
     );
   }
 
-  Widget body(){
-    return  Obx(() {
-      if(state.index.value == 1){
+  Widget body() {
+    return Obx(() {
+      if (state.index.value == 1) {
         List<List<String>> groupContent = [];
         for (var group in state.joinGroup) {
           groupContent.add([
@@ -60,13 +90,15 @@ class CompanyInfoPage
         ]);
       }
       return CommonWidget.commonDocumentWidget(
-          title: docTitle,
+          title: memberTitle,
           content: docContent,
           showOperation: true,
           popupMenus: [
             const PopupMenuItem(value: 'out', child: Text("踢出")),
           ],
-          onOperation: (str) {});
+          onOperation: (type,data) {
+            controller.removeMember(data);
+          });
     });
   }
 
