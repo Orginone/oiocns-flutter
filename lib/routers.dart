@@ -7,6 +7,7 @@ import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
 import 'package:orginone/pages/index/index_page.dart';
+import 'package:orginone/pages/index/news/searchBarWidget.dart';
 // import 'package:orginone/pages/index/indexok_page.dart';
 import 'package:orginone/pages/other/add_asset/binding.dart';
 import 'package:orginone/pages/other/add_asset/view.dart';
@@ -246,7 +247,8 @@ class Routers {
           MessageBinding(),
           RecentlyOpenedBinding(),
           OftenUseBinding(),
-          UpdateBinding()
+          UpdateBinding(),
+
         ],
       ),
       GetPage(
