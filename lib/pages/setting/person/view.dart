@@ -13,8 +13,6 @@ import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 
-import 'Item.dart';
-
 class PersonPage extends BaseGetPageView<PersonController, PersonState> {
   var list = List.of(['carBag', 'security', 'dynamic', 'mark']);
   @override
@@ -162,7 +160,7 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
               onTap: () {
                 Get.toNamed(Routers.login);
               },
-              child:  Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
                   Text.rich(TextSpan(text: "注 销 登 录"),

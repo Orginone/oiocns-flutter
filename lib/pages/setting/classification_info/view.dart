@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/setting/classification_info/classification_basic_info.dart';
-import 'package:orginone/util/date_utils.dart';
-import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 
 import 'classification_attrs.dart';
 import 'logic.dart';
 import 'state.dart';
-
-
 
 
 class ClassificationInfoPage extends BaseGetView<ClassificationInfoController,ClassificationInfoState>{
