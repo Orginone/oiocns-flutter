@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/pages/setting/cofig.dart';
+import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 
+import '../widget.dart';
 import 'logic.dart';
 import 'state.dart';
 
@@ -22,13 +23,13 @@ class CohortInfoPage extends BaseGetView<CohortInfoController,CohortInfoState>{
             cohortInfo(),
             Column(
               children: [
-                CommonWidget.commonHeadInfoWidget("群组人员",action: popupMenuButton(
-                  items: [
-                    const PopupMenuItem(
+                CommonWidget.commonHeadInfoWidget("群组人员",action: PopupMenu(
+                  items: const [
+                    PopupMenuItem(
                       value: CompanyFunction.roleSettings,
                       child: Text("角色设置"),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: CompanyFunction.addUser,
                       child: Text("邀请成员"),
                     ),

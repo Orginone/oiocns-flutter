@@ -192,7 +192,7 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
         Text("座右铭:${item.team?.remark??""}"),
       ];
     }
-    if(targetType == TargetType.group){
+    if(targetType == TargetType.group || targetType == TargetType.company){
       children = [
         Row(
           children: [

@@ -7,7 +7,7 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/dart/core/thing/species.dart';
-import 'package:orginone/pages/setting/cofig.dart';
+import 'package:orginone/pages/setting/config.dart';
 
 class Item extends StatelessWidget {
   final CompanySpaceEnum? companySpaceEnum;

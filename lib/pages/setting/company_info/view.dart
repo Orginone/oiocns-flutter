@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/pages/setting/cofig.dart';
+import 'package:orginone/pages/setting/config.dart';
+import 'package:orginone/pages/setting/widget.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 
@@ -32,17 +33,17 @@ class CompanyInfoPage
                       controller.changeView(index);
                     }),
                   ),
-                  popupMenuButton(
-                      items: [
-                        const PopupMenuItem(
+                  PopupMenu(
+                      items: const [
+                        PopupMenuItem(
                           value: CompanyFunction.roleSettings,
                           child: Text("角色设置"),
                         ),
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: CompanyFunction.addUser,
                           child: Text("邀请成员"),
                         ),
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: CompanyFunction.addGroup,
                           child: Text("加入集团"),
                         ),
@@ -79,26 +80,13 @@ class CompanyInfoPage
           content: groupContent,
         );
       }
-      List<List<String>> docContent = [];
-      for (var user in state.unitMember) {
-        docContent.add([
-          user.code,
-          user.name,
-          user.team?.name ?? "",
-          user.team?.code ?? "",
-          user.team?.remark ?? ""
-        ]);
-      }
-      return CommonWidget.commonDocumentWidget(
-          title: memberTitle,
-          content: docContent,
-          showOperation: true,
-          popupMenus: [
-            const PopupMenuItem(value: 'out', child: Text("踢出")),
+      return UserDocument(
+          popupMenus: const [
+            PopupMenuItem(value: 'out', child: Text("踢出")),
           ],
           onOperation: (type,data) {
             controller.removeMember(data);
-          });
+          }, unitMember: state.unitMember.value,);
     });
   }
 

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/pages/setting/cofig.dart';
+import 'package:orginone/pages/setting/config.dart';
+import 'package:orginone/pages/setting/widget.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
@@ -21,10 +22,35 @@ class OutAgencyInfoPage
           children: [
             info(),
             SizedBox(height: 10.h,),
-            CommonWidget.commonNonIndicatorTabBar(state.tabController, tabTitle,
-                onTap: (index) {
-                  controller.changeView(index);
-                }),
+            Row(
+              children: [
+                Expanded(
+                  child: CommonWidget.commonNonIndicatorTabBar(state.tabController, tabTitle,
+                      onTap: (index) {
+                        controller.changeView(index);
+                      }),
+                ),
+                PopupMenu(
+                    items: const [
+                      PopupMenuItem(
+                        value: CompanyFunction.roleSettings,
+                        child: Text("角色设置"),
+                      ),
+                      PopupMenuItem(
+                        value: CompanyFunction.addUser,
+                        child: Text("邀请成员"),
+                      ),
+                      PopupMenuItem(
+                        value: CompanyFunction.addGroup,
+                        child: Text("加入集团"),
+                      ),
+                    ],
+                    onSelected: (CompanyFunction function) {
+                      controller.companyOperation(function);
+                    },
+                   )
+              ],
+            ),
             body(),
           ],
         ),
@@ -86,7 +112,9 @@ class OutAgencyInfoPage
           popupMenus: [
             const PopupMenuItem(value: 'out', child: Text("移除单位")),
           ],
-          onOperation: (type,data) {});
+          onOperation: (type,data) {
+            controller.removeMember(data);
+          });
     });
   }
 }

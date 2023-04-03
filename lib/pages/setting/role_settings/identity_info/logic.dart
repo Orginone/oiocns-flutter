@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
-import 'package:orginone/pages/setting/cofig.dart';
+import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/pages/setting/role_settings/logic.dart';
 import 'package:orginone/routers.dart';

@@ -3,7 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/pages/setting/cofig.dart';
+import 'package:orginone/pages/setting/config.dart';
+import 'package:orginone/pages/setting/widget.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -34,12 +35,12 @@ class DepartmentInfoPage
                       controller.changeView(index);
                     }),
                   ),
-                  popupMenuButton(items: [
-                    const PopupMenuItem(
+                  PopupMenu(items: const [
+                    PopupMenuItem(
                       value: CompanyFunction.roleSettings,
                       child: Text("角色设置"),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: CompanyFunction.addUser,
                       child: Text("添加成员"),
                     ),
@@ -97,27 +98,13 @@ class DepartmentInfoPage
       if (state.index.value == 1) {
         return Container();
       }
-      List<XTarget> users = state.depart.value.members;
-      List<List<String>> userContent = [];
-      for (var user in users) {
-        userContent.add([
-          user.code,
-          user.name,
-          user.team?.name ?? "",
-          user.team?.code ?? "",
-          user.team?.remark ?? ""
-        ]);
-      }
-      return CommonWidget.commonDocumentWidget(
-          title: memberTitle,
-          content: userContent,
-          showOperation: true,
-          popupMenus: [
-            const PopupMenuItem(value: 'out', child: Text("踢出")),
+      return UserDocument(
+          popupMenus: const [
+            PopupMenuItem(value: 'out', child: Text("踢出")),
           ],
           onOperation: (type,data) {
             controller.removeMember(data);
-          });
+          }, unitMember: state.depart.value.members,);
     });
   }
 

@@ -3,8 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/pages/setting/cofig.dart';
-import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 
 import 'logic.dart';

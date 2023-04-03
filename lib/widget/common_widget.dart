@@ -703,7 +703,7 @@ class CommonWidget {
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 10.w),
                     color: GYColors.formTitleBackgroundColor,
-                    height: 55.h,
+                    height: 60.h,
                     child: Text(title),
                   ),
                 ),
@@ -711,10 +711,9 @@ class CommonWidget {
                 Expanded(
                   flex: 2,
                   child: Container(
-
                     padding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 10.w),
                     color: Colors.white,
-                    height: 55.h,
+                    height: 60.h,
                     child: Text(content),
                   ),
                 ),

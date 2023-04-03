@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:orginone/pages/setting/cofig.dart';
+import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/routers.dart';
 
 import '../../../../dart/core/getx/base_controller.dart';

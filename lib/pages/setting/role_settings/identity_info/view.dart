@@ -3,7 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
-import 'package:orginone/pages/setting/cofig.dart';
+import 'package:orginone/pages/setting/config.dart';
+import 'package:orginone/pages/setting/widget.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 
@@ -34,12 +35,12 @@ class IdentityInfoPage
     return Column(
       children: [
         CommonWidget.commonHeadInfoWidget(
-            "角色信息", action: popupMenuButton(items: [
-          const PopupMenuItem(
+            "角色信息", action: PopupMenu(items: const [
+          PopupMenuItem(
             value: IdentityFunction.edit,
             child: Text("编辑"),
           ),
-          const PopupMenuItem(
+          PopupMenuItem(
             value: IdentityFunction.delete,
             child: Text("删除"),
           ),
@@ -72,8 +73,8 @@ class IdentityInfoPage
       children: [
         Obx(() {
           return CommonWidget.commonHeadInfoWidget(identity.value.name,
-              action: popupMenuButton(items: [
-                const PopupMenuItem(
+              action: PopupMenu(items: const [
+                PopupMenuItem(
                   value: IdentityFunction.addMember,
                   child: Text("指派角色"),
                 ),
@@ -82,26 +83,13 @@ class IdentityInfoPage
               },color: Colors.transparent));
         }),
         Obx(() {
-          List<List<String>> content = [];
-          for (var user in state.unitMember) {
-            content.add([
-              user.code,
-              user.name,
-              user.team?.name ?? "",
-              user.team?.code ?? "",
-              user.team?.remark ?? "",
-            ]);
-          }
-          return CommonWidget.commonDocumentWidget(
-              title: memberTitle,
-              content: content,
-              showOperation: true,
-              popupMenus: [
-                const PopupMenuItem(value: 'out', child: Text("移除")),
+          return UserDocument(
+              popupMenus: const [
+                PopupMenuItem(value: 'out', child: Text("移除")),
               ],
               onOperation: (type, data) {
                 controller.removeRole(data);
-              });
+              }, unitMember: state.unitMember.value,);
         }),
       ],
     );
