@@ -81,9 +81,9 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
         ),
         child: Container(
           padding: const EdgeInsets.fromLTRB(30, 10, 20, 10),
-          child: const Row(
+          child:  Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: const [
                 Text.rich(TextSpan(text: "卡包")),
                 Icon(
                   Icons.navigate_next,
@@ -101,9 +101,9 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
         ),
         child: Container(
           padding: const EdgeInsets.fromLTRB(30, 5, 20, 5),
-          child: const Row(
+          child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: const [
                 Text.rich(TextSpan(text: "安全")),
                 Icon(
                   Icons.navigate_next,
@@ -120,9 +120,9 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
         ),
         child: Container(
           padding: const EdgeInsets.fromLTRB(30, 5, 20, 5),
-          child: const Row(
+          child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: const [
                 Text.rich(TextSpan(text: "动态")),
                 Icon(
                   Icons.navigate_next,
@@ -139,9 +139,9 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
         ),
         child: Container(
           padding: const EdgeInsets.fromLTRB(30, 5, 20, 5),
-          child: const Row(
+          child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: const [
                 Text.rich(TextSpan(text: "收藏")),
                 Icon(
                   Icons.navigate_next,
@@ -162,9 +162,9 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
               onTap: () {
                 Get.toNamed(Routers.login);
               },
-              child: const Row(
+              child:  Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: const [
                   Text.rich(TextSpan(text: "注 销 登 录"),
                       style: TextStyle(color: Colors.red)),
                 ],
