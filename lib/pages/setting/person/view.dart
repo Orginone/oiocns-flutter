@@ -10,9 +10,13 @@ import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/target/person.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 
+import 'Item.dart';
+
 class PersonPage extends BaseGetPageView<PersonController, PersonState> {
+  var list = List.of(['carBag', 'security', 'dynamic', 'mark']);
   @override
   Widget buildView() {
     return GyScaffold(
@@ -40,7 +44,7 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [getAvatar, getName]),
             )),
-        //卡包
+        // 卡包
         Container(
           height: 5,
         ),
@@ -154,11 +158,17 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
         ),
         child: Container(
           padding: const EdgeInsets.fromLTRB(10, 5, 20, 5),
-          child:
-              const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text.rich(TextSpan(text: "注 销 登 录"),
-                style: TextStyle(color: Colors.red)),
-          ]),
+          child: GestureDetector(
+              onTap: () {
+                Get.toNamed(Routers.login);
+              },
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text.rich(TextSpan(text: "注 销 登 录"),
+                      style: TextStyle(color: Colors.red)),
+                ],
+              )),
         ));
   }
 
@@ -192,16 +202,7 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
   }
 }
 
-class PersonController extends BaseController<PersonState> {
-  // final Rx<IPerson?> _user = Rxn();
-  // IPerson? get user => _user.value;
-  // StreamSubscription<User>? _userSub;
-
-  // /// 是否已登录
-  // bool get signed {
-  //   return _user.value?.target.id != null;
-  // }
-}
+class PersonController extends BaseController<PersonState> {}
 
 class PersonState extends BaseGetState {
   late final Person person;
@@ -212,14 +213,4 @@ class PersonBinding extends BaseBindings<PersonController> {
   PersonController getController() {
     return PersonController();
   }
-}
-
-enum PersonCenter {
-  carBag("卡包"),
-  security("安全"),
-  dynamic("动态"),
-  mark("收藏");
-
-  final String key;
-  const PersonCenter(this.key);
 }
