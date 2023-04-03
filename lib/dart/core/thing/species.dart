@@ -26,8 +26,8 @@ class SpeciesItem extends ISpeciesItem {
   KernelApi kernel = KernelApi.getInstance();
   SpeciesItem(XSpecies target, ISpeciesItem? parent) {
     children = [];
-    target = target;
-    parent = parent;
+    this.target = target;
+    this.parent = parent;
     id = target.id;
     name = target.name;
     attrs = [];

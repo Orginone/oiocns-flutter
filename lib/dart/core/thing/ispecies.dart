@@ -137,7 +137,7 @@ abstract class ISpeciesItem {
   }
 
   List<ISpeciesItem> getAllList() {
-    List<ISpeciesItem> list = [];
+    List<ISpeciesItem> list = [this];
 
     for (var element in children) {
       list.add(element);

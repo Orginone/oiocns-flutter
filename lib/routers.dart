@@ -76,6 +76,8 @@ import 'pages/other/work/work_start/create_work/binding.dart';
 import 'pages/other/work/work_start/create_work/view.dart';
 import 'pages/setting/add_members/binding.dart';
 import 'pages/setting/add_members/view.dart';
+import 'pages/setting/classification_info/binding.dart';
+import 'pages/setting/classification_info/view.dart';
 import 'pages/setting/cohort_info/binding.dart';
 import 'pages/setting/cohort_info/view.dart';
 import 'pages/setting/company_info/binding.dart';
@@ -213,6 +215,10 @@ class Routers {
 
   //权限标准详情
   static const String permissionInfo = "/permissionInfo";
+
+  //分类标准详情
+  static const String classificationInfo = "/classificationInfo";
+
 
 
   static String get main {
@@ -493,6 +499,11 @@ class Routers {
         name: Routers.permissionInfo,
         page: () => PermissionInfoPage(),
         binding: PermissionInfoBinding(),
+      ),
+      GetPage(
+        name: Routers.classificationInfo,
+        page: () => ClassificationInfoPage(),
+        binding: ClassificationInfoBinding(),
       ),
     ];
   }

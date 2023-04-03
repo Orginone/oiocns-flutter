@@ -151,7 +151,7 @@ class RelationGroupController extends BaseController<RelationGroupState> {
           Get.toNamed(Routers.permissionInfo,arguments: {"authority":iAuthority});
           break;
         case StandardEnum.classCriteria:
-          // TODO: Handle this case.
+          Get.toNamed(Routers.classificationInfo,arguments: {"species":species});
           break;
       }
     }

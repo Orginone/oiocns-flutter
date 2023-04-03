@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -684,6 +683,7 @@ class CommonWidget {
       margin: EdgeInsets.symmetric(horizontal: 15.w),
       padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 15.h),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: formItem,
       ),
     );
@@ -711,10 +711,15 @@ class CommonWidget {
                 Expanded(
                   flex: 2,
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 10.w),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15.h, horizontal: 10.w),
                     color: Colors.white,
                     height: 60.h,
-                    child: Text(content),
+                    child: Text(
+                      content,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
               ],
@@ -730,7 +735,6 @@ class CommonWidget {
       required List<List<String>> content,
       double? contentWidth,
       bool showOperation = false,
-        bool showMultiple = false,
         DocumentOperation? onOperation,
         List<PopupMenuItem>? popupMenus,
       }) {
@@ -754,17 +758,11 @@ class CommonWidget {
       data.add(operation);
     }
 
-    if (showMultiple) {
-      var multiple =
-      List.generate(data.first.length, (index) => index == 0 ? "多选" : index.toString());
-      data.insert(0,multiple);
-    }
-
     Widget titleWidget(String title) {
       return Container(
         margin: EdgeInsets.symmetric(horizontal: 10.w),
         alignment: Alignment.center,
-        constraints: BoxConstraints(minWidth: contentWidth ?? 120.w),
+        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w),
         height: 50.h,
         child: Text(
           title,
@@ -776,7 +774,7 @@ class CommonWidget {
       return Container(
         alignment: Alignment.center,
         margin: EdgeInsets.symmetric(horizontal: 10.w),
-        constraints: BoxConstraints(minWidth: contentWidth ?? 120.w,maxWidth: 200.w),
+        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w,maxWidth: 200.w),
         height: 50.h,
         child: Text(
           content,
