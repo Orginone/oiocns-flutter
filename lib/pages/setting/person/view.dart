@@ -17,7 +17,7 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
   Widget buildView() {
     return GyScaffold(
       titleName: '个人中心',
-      body: title,
+      body: body,
     );
   }
 
@@ -26,19 +26,140 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
     return PersonController();
   }
 
-  Widget get title {
+  Widget get body {
     return Container(
-      height: 180.h,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-      ),
-      padding: const EdgeInsets.fromLTRB(20, 30, 30, 20),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [getAvatar, getName]),
+        Container(
+            height: 170.h,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+            ),
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [getAvatar, getName]),
+            )),
+        //卡包
+        Container(
+          height: 5,
+        ),
+        cardBag,
+        Container(
+          height: 5,
+        ),
+        //安全
+        security,
+        Container(
+          height: 5,
+        ),
+        //动态
+        dynamic,
+        Container(
+          height: 5,
+        ),
+        //收藏
+        mark,
+        Container(
+          height: 5,
+        ),
+        //注销登录
+        logout
       ]),
     );
+  }
+
+  Widget get cardBag {
+    return Container(
+        height: 80.h,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+        ),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(30, 10, 20, 10),
+          child: const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text.rich(TextSpan(text: "卡包")),
+                Icon(
+                  Icons.navigate_next,
+                  // size: 32,
+                )
+              ]),
+        ));
+  }
+
+  Widget get security {
+    return Container(
+        height: 80.h,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+        ),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(30, 5, 20, 5),
+          child: const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text.rich(TextSpan(text: "安全")),
+                Icon(
+                  Icons.navigate_next,
+                )
+              ]),
+        ));
+  }
+
+  Widget get dynamic {
+    return Container(
+        height: 80.h,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+        ),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(30, 5, 20, 5),
+          child: const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text.rich(TextSpan(text: "动态")),
+                Icon(
+                  Icons.navigate_next,
+                )
+              ]),
+        ));
+  }
+
+  Widget get mark {
+    return Container(
+        height: 80.h,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+        ),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(30, 5, 20, 5),
+          child: const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text.rich(TextSpan(text: "收藏")),
+                Icon(
+                  Icons.navigate_next,
+                )
+              ]),
+        ));
+  }
+
+  Widget get logout {
+    return Container(
+        height: 80.h,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+        ),
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(10, 5, 20, 5),
+          child:
+              const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Text.rich(TextSpan(text: "注 销 登 录"),
+                style: TextStyle(color: Colors.red)),
+          ]),
+        ));
   }
 
   Widget get getName {
@@ -91,4 +212,14 @@ class PersonBinding extends BaseBindings<PersonController> {
   PersonController getController() {
     return PersonController();
   }
+}
+
+enum PersonCenter {
+  carBag("卡包"),
+  security("安全"),
+  dynamic("动态"),
+  mark("收藏");
+
+  final String key;
+  const PersonCenter(this.key);
 }
