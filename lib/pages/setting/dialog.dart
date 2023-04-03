@@ -7,6 +7,7 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
+import 'package:orginone/util/setting_management.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -67,23 +68,9 @@ Future<void> showEditIdentityDialog(IIdentity identity, BuildContext context,
 
 Future<void> showCreateIdentityDialog(BuildContext context,
     {CreateIdentityCallBack? onCreate}) async {
-  IAuthority? auth = await setting.company!.loadSpaceAuthorityTree();
 
-  List<IAuthority> getAllAuth(IAuthority auth) {
-    List<IAuthority> allAuth = [];
-    allAuth.add(auth);
-    if (auth.children.isNotEmpty) {
-      for (var element in auth.children) {
-        allAuth.addAll(getAllAuth(element));
-      }
-    }
-    return allAuth;
-  }
 
-  List<IAuthority> allAuth = [];
-  if (auth != null) {
-    allAuth.addAll(getAllAuth(auth));
-  }
+  List<IAuthority> allAuth = SettingManagement().getAllAuthority(SettingManagement().authority);
 
   TextEditingController name = TextEditingController();
   TextEditingController code = TextEditingController();

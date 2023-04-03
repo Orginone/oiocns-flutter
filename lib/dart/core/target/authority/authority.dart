@@ -59,6 +59,14 @@ class Authority extends IAuthority {
     return _authority.remark??"";
   }
 
+  String get createTime {
+    return _authority.createTime??"";
+  }
+
+  String get createUser {
+    return _authority.createUser??"";
+  }
+
   @override
   Future<ResultType<XAuthority>> createSubAuthority(
       String name, String code, bool ispublic, String remark) async {

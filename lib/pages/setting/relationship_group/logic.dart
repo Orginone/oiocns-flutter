@@ -14,18 +14,6 @@ import 'state.dart';
 class RelationGroupController extends BaseController<RelationGroupState> {
   final RelationGroupState state = RelationGroupState();
 
-  @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
-  }
-
-  @override
-  void onReady() async {
-    // TODO: implement onReady
-    super.onReady();
-  }
-
   void removeGroup(int index) {
     state.selectedGroup.removeRange(index + 1, state.selectedGroup.length);
 
@@ -160,7 +148,7 @@ class RelationGroupController extends BaseController<RelationGroupState> {
     }else if(state.standardEnum!=null){
       switch(state.standardEnum){
         case StandardEnum.permissionCriteria:
-          // TODO: Handle this case.
+          Get.toNamed(Routers.permissionInfo,arguments: {"authority":iAuthority});
           break;
         case StandardEnum.classCriteria:
           // TODO: Handle this case.

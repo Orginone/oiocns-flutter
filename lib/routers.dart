@@ -109,6 +109,8 @@ import 'pages/setting/department_info/binding.dart';
 import 'pages/setting/department_info/view.dart';
 import 'pages/setting/out_agency_info/binding.dart';
 import 'pages/setting/out_agency_info/view.dart';
+import 'pages/setting/permission_info/binding.dart';
+import 'pages/setting/permission_info/view.dart';
 import 'pages/setting/relationship_group/binding.dart';
 import 'pages/setting/relationship_group/view.dart';
 import 'pages/setting/role_settings/binding.dart';
@@ -269,6 +271,10 @@ class Routers {
   //添加角色
   static const String addMembers = '/addMembers';
   static const String personPage = "/personPage";
+
+  //权限标准详情
+  static const String permissionInfo = "/permissionInfo";
+
 
   static String get main {
     return login;
@@ -617,6 +623,11 @@ class Routers {
         name: Routers.personPage,
         page: () => PersonPage(),
         binding: PersonBinding(),
+      ),
+      GetPage(
+        name: Routers.permissionInfo,
+        page: () => PermissionInfoPage(),
+        binding: PermissionInfoBinding(),
       ),
     ];
   }

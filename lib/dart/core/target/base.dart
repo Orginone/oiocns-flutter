@@ -83,7 +83,6 @@ class BaseTarget extends ITarget {
       typeNames: [target.typeName],
       subTypeNames: memberTypes.map((e) => e.label).toList(),
     ));
-    // appendTarget(res.data);
     return res.data!;
   }
 
