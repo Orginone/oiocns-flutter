@@ -40,11 +40,12 @@ class StoreHub {
     _connection.keepAliveIntervalInMilliseconds = interval;
     _connection.serverTimeoutInMilliseconds = timeout;
     _connection.onclose((err) {
-      if (_isStarted && err != null) {
+      if (!isConnected) {
         for (final callback in _disconnectedCallbacks) {
           callback(err);
         }
-        log.warning("连接断开,${_timeout}ms后重试。${err.toString()}`");
+        log.warning(
+            "连接断开,${_timeout}ms后重试。${err != null ? err.toString() : ''}`");
         Future.delayed(Duration(milliseconds: _timeout), () {
           _starting();
         });
@@ -89,12 +90,15 @@ class StoreHub {
   /// 开始连接
   /// @returns {void} 无返回值
   void _starting() {
+    if (isConnected) {
+      _connection.stop();
+    }
     _connection.start()?.then((_) {
       for (final callback in _connectedCallbacks) {
         callback();
       }
     }, onError: (err) {
-      log.warning("连接失败,${_timeout}ms后重试。${err.toString()}`");
+      log.warning("连接失败,${_timeout}ms后重试。${err != null ? err.toString() : ''}");
       for (final callback in _disconnectedCallbacks) {
         callback(err);
       }

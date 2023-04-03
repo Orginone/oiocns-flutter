@@ -100,7 +100,18 @@ class AnyStore {
   /// @param {string} domain 对象所在域, 个人域(user),单位域(company),开放域(all)
   /// @returns {ResultType} 对象异步结果
   Future<ResultType<dynamic>> get(String key, String domain) async {
-    var raw = await _storeHub.invoke('Get', args: [key, domain]);
+    if (_storeHub.isConnected) {
+      var raw = await _storeHub.invoke('Get', args: [key, domain]);
+      return ResultType.fromJson(raw);
+    }
+    var raw = await _restRequest(
+      'Object',
+      'Get/$key',
+      {
+        "shareDomain": domain,
+      },
+      {},
+    );
     return ResultType.fromJson(raw);
   }
 
@@ -111,7 +122,18 @@ class AnyStore {
   /// @returns {ResultType} 变更异步结果
   Future<ResultType<dynamic>> set(
       String key, dynamic setData, String domain) async {
-    var raw = await _storeHub.invoke('Set', args: [key, setData, domain]);
+    if (_storeHub.isConnected) {
+      var raw = await _storeHub.invoke('Set', args: [key, setData, domain]);
+      return ResultType.fromJson(raw);
+    }
+    var raw = await _restRequest(
+      'Object',
+      'Set/$key',
+      {
+        "shareDomain": domain,
+      },
+      {},
+    );
     return ResultType.fromJson(raw);
   }
 
@@ -120,7 +142,18 @@ class AnyStore {
   /// @param {string} domain 对象所在域, 个人域(user),单位域(company),开放域(all)
   /// @returns {ResultType} 删除异步结果
   Future<ResultType<dynamic>> delete(String key, String domain) async {
-    var raw = await _storeHub.invoke('Delete', args: [key, domain]);
+    if (_storeHub.isConnected) {
+      var raw = await _storeHub.invoke('Delete', args: [key, domain]);
+      return ResultType.fromJson(raw);
+    }
+    var raw = await _restRequest(
+      'Object',
+      'Delete/$key',
+      {
+        "shareDomain": domain,
+      },
+      {},
+    );
     return ResultType.fromJson(raw);
   }
 
@@ -131,8 +164,19 @@ class AnyStore {
   /// @returns {ResultType} 添加异步结果
   Future<ResultType<dynamic>> insert(
       String collName, dynamic data, String domain) async {
-    data['hook'] = "https://548a32268z.goho.co:443/flow/saveResult";
-    var raw = await _storeHub.invoke('Insert', args: [collName, data, domain]);
+    if (_storeHub.isConnected) {
+      data['hook'] = "https://548a32268z.goho.co:443/flow/saveResult";
+      var raw =
+          await _storeHub.invoke('Insert', args: [collName, data, domain]);
+      return ResultType.fromJson(raw);
+    }
+    var raw = await _restRequest(
+        'Object',
+        'Update/$collName',
+        {
+          "shareDomain": domain,
+        },
+        data);
     return ResultType.fromJson(raw);
   }
 
@@ -143,8 +187,18 @@ class AnyStore {
   /// @returns {ResultType} 更新异步结果
   Future<ResultType<dynamic>> update(
       String collName, dynamic update, String domain) async {
-    var raw =
-        await _storeHub.invoke('Update', args: [collName, update, domain]);
+    if (_storeHub.isConnected) {
+      var raw =
+          await _storeHub.invoke('Update', args: [collName, update, domain]);
+      return ResultType.fromJson(raw);
+    }
+    var raw = await _restRequest(
+        'Collection',
+        'Update/$collName',
+        {
+          "shareDomain": domain,
+        },
+        update);
     return ResultType.fromJson(raw);
   }
 
@@ -153,9 +207,20 @@ class AnyStore {
   /// @param {any} match 匹配信息
   /// @param {string} domain 对象所在域, 个人域(user),单位域(company),开放域(all)
   /// @returns {ResultType} 移除异步结果
-  Future<ResultType<dynamic>> remove(String collName, dynamic match,
-      String domain) async {
-    var raw = await _storeHub.invoke('Remove', args: [collName, match, domain]);
+  Future<ResultType<dynamic>> remove(
+      String collName, dynamic match, String domain) async {
+    if (_storeHub.isConnected) {
+      var raw =
+          await _storeHub.invoke('Remove', args: [collName, match, domain]);
+      return ResultType.fromJson(raw);
+    }
+    var raw = await _restRequest(
+        'Collection',
+        'Remove/$collName',
+        {
+          "shareDomain": domain,
+        },
+        match);
     return ResultType.fromJson(raw);
   }
 
@@ -164,22 +229,20 @@ class AnyStore {
   /// @param {any} options 聚合管道(eg: {match:{a:1},skip:10,limit:10})
   /// @param {string} domain 对象所在域, 个人域(user),单位域(company),开放域(all)
   /// @returns {ResultType} 移除异步结果
-  Future<ResultType<dynamic>> aggregate(String collName, dynamic options,
-      String domain) async {
-    var raw =
-    await _storeHub.invoke('Aggregate', args: [collName, options, domain]);
-    return ResultType.fromJson(raw);
-  }
-
-  Future<ResultType<dynamic>> loadThing<T>(dynamic options,
-      String domain) async {
-    var raw = await _storeHub.invoke('Load', args: [options, domain]);
-    return ResultType.fromJson(raw);
-  }
-
-  Future<ResultType<dynamic>> loadThingArchives<T>(dynamic options,
-      String domain,) async {
-    var raw = await _storeHub.invoke('LoadArchives', args: [options, domain]);
+  Future<ResultType<dynamic>> aggregate(
+      String collName, dynamic options, String domain) async {
+    if (_storeHub.isConnected) {
+      var raw = await _storeHub
+          .invoke('Aggregate', args: [collName, options, domain]);
+      return ResultType.fromJson(raw);
+    }
+    var raw = await _restRequest(
+        'Collection',
+        'Aggregate/$collName',
+        {
+          "shareDomain": domain,
+        },
+        options);
     return ResultType.fromJson(raw);
   }
 
@@ -191,7 +254,59 @@ class AnyStore {
       var raw = await _storeHub.invoke('BucketOpreate', args: [data.toJson()]);
       return ResultType.fromJson(raw);
     }
-    var raw = await _restRequest('Bucket', 'Operate', data);
+    var raw = await _restRequest('Bucket', 'Operate', {}, data.toJson());
+    return ResultType.fromJson(raw);
+  }
+
+  /// 加载物
+  /// @param  过滤参数
+  /// @returns {ResultType<T>} 移除异步结果
+  Future<ResultType<dynamic>> loadThing<T>(
+      dynamic options, String domain) async {
+    if (_storeHub.isConnected) {
+      var raw = await _storeHub.invoke('Load', args: [options, domain]);
+      return ResultType.fromJson(raw);
+    }
+    var raw = await _restRequest('Thing', 'Load', options, {});
+    return ResultType.fromJson(raw);
+  }
+
+  ///
+  /// 加载物的归档信息
+  /// @param  过滤参数
+  /// * @returns {ResultType<T>} 移除异步结果
+  Future<ResultType<dynamic>> loadThingArchives<T>(
+    Map<String, dynamic> options,
+    String domain,
+  ) async {
+    if (_storeHub.isConnected) {
+      var raw = await _storeHub.invoke('LoadArchives', args: [options, domain]);
+      return ResultType.fromJson(raw);
+    }
+    options.addAll({"shareDomain": domain});
+    var raw = await _restRequest('Thing', 'LoadArchives', options, {});
+    return ResultType.fromJson(raw);
+  }
+
+  /// 创建物
+  /// @param  创建数量
+  /// @returns {ResultType<T>} 移除异步结果
+  Future<ResultType<T>> createThing<T>(
+    int number,
+    String domain,
+  ) async {
+    if (_storeHub.isConnected) {
+      var raw = await _storeHub.invoke('Create', args: [number, domain]);
+      return ResultType.fromJson(raw);
+    }
+    var raw = await _restRequest(
+      'Thing',
+      'Create',
+      {
+        "shareDomain": domain,
+      },
+      number,
+    );
     return ResultType.fromJson(raw);
   }
 
@@ -215,15 +330,18 @@ class AnyStore {
 
   /// 使用rest请求后端
   /// @param methodName 方法
-  /// @param data 参数
+  /// @param data 内容体数据
+  /// @param params 查询参数
   /// @returns 返回结果
   Future<dynamic> _restRequest(
     String controller,
     String methodName,
+    Map<String, dynamic> params,
     dynamic data,
   ) async {
     return await _requester.post(
       "/orginone/anydata/$controller/$methodName",
+      queryParameters: params,
       data: data,
     );
   }
