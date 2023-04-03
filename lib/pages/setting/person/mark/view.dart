@@ -1,23 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/images.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 
 import 'index.dart';
-import 'widgets/widgets.dart';
 
 class MarkPage extends GetView<MarkController> {
   const MarkPage({Key? key}) : super(key: key);
 
   // 主视图
   Widget _buildView() {
-    return const HelloWidget();
+    return Center(
+      child: Column(children: [
+        Image.asset(
+          Images.star,
+          width: 28.w,
+          height: 28.w,
+        ),
+        const Text.rich(TextSpan(text: '收藏夹空空如也'))
+      ]),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<MarkController>(
       builder: (_) {
-        return Scaffold(
-          appBar: AppBar(title: const Text("mark")),
+        return GyScaffold(
+          backgroundColor: Colors.white,
+          titleName: '收藏',
           body: SafeArea(
             child: _buildView(),
           ),

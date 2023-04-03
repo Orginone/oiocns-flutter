@@ -33,6 +33,8 @@ import 'package:orginone/pages/setting/home/binding.dart';
 import 'package:orginone/pages/setting/home/view.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
+import 'package:orginone/pages/setting/person/mark/bindings.dart';
+import 'package:orginone/pages/setting/person/mark/view.dart';
 import 'package:orginone/pages/setting/person/view.dart';
 import 'package:orginone/pages/setting/publisher_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
@@ -211,15 +213,16 @@ class Routers {
 
   //添加角色
   static const String addMembers = '/addMembers';
+
+  //个人中心
   static const String personPage = "/personPage";
+  static const String mark = "/mark";
 
   //权限标准详情
   static const String permissionInfo = "/permissionInfo";
 
   //分类标准详情
   static const String classificationInfo = "/classificationInfo";
-
-
 
   static String get main {
     return login;
@@ -254,7 +257,6 @@ class Routers {
           RecentlyOpenedBinding(),
           OftenUseBinding(),
           UpdateBinding(),
-
         ],
       ),
       GetPage(
@@ -504,6 +506,11 @@ class Routers {
         name: Routers.classificationInfo,
         page: () => ClassificationInfoPage(),
         binding: ClassificationInfoBinding(),
+      ),
+      GetPage(
+        name: Routers.mark,
+        page: () => MarkPage(),
+        binding: MarkBinding(),
       ),
     ];
   }

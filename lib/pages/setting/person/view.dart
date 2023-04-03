@@ -79,13 +79,12 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
         ),
         child: Container(
           padding: const EdgeInsets.fromLTRB(30, 10, 20, 10),
-          child:  Row(
+          child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: const [
                 Text.rich(TextSpan(text: "卡包")),
                 Icon(
                   Icons.navigate_next,
-                  // size: 32,
                 )
               ]),
         ));
@@ -135,17 +134,21 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
         decoration: const BoxDecoration(
           color: Colors.white,
         ),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(30, 5, 20, 5),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text.rich(TextSpan(text: "收藏")),
-                Icon(
-                  Icons.navigate_next,
-                )
-              ]),
-        ));
+        child: GestureDetector(
+            onTap: () {
+              Get.toNamed(Routers.mark);
+            },
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(30, 5, 20, 5),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Text.rich(TextSpan(text: "收藏")),
+                    Icon(
+                      Icons.navigate_next,
+                    )
+                  ]),
+            )));
   }
 
   Widget get logout {
@@ -186,7 +189,6 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
     var size = 100.w;
     return AdvancedAvatar(
       decoration: const BoxDecoration(
-        // shape: BoxShape.rectangle,
         borderRadius: BorderRadius.all(Radius.circular(18.0)),
       ),
       child: Image(
