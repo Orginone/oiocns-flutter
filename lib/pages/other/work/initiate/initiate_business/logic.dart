@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/thing/ispecies.dart';
+import 'package:orginone/pages/other/choice_gb/state.dart';
 import 'package:orginone/routers.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
@@ -19,16 +20,8 @@ class InitiateBusinessController extends BaseController<InitiateBusinessState> {
    // });
  }
 
- void clearSpecies() {
-   state.selectedSpecies.clear();
- }
-
- void removeSpecies(index) {
-   state.selectedSpecies.removeRange(index + 1, state.selectedSpecies.length);
-   state.selectedSpecies.refresh();
- }
 
   void selectSpecies(ISpeciesItem item) {
-    state.selectedSpecies.add(item);
+     Get.toNamed(Routers.choiceGb,arguments: {"head":"全部业务",'gb':item,"showPopupMenu":false,'function':GbFunction.work});
   }
 }

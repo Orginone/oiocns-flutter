@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/widget/common_widget.dart';
 
 import 'item.dart';
@@ -19,17 +18,10 @@ class SettingCenterPage
         child: Column(
           children: [
             tabBar(),
-            Obx(() {
-              return CommonWidget.commonBreadcrumbNavWidget(
-                  firstTitle: "关系",
-                  allTitle: state.selectedGroup.value,
-                  onTapFirst: () {
-                    controller.clearGroup();
-                  },
-                  onTapTitle: (index) {
-                    controller.removeGroup(index);
-                  });
-            }),
+            CommonWidget.commonBreadcrumbNavWidget(
+              firstTitle: "关系",
+              allTitle: [],
+            ),
             Expanded(child: list())
           ],
         ));
@@ -37,36 +29,23 @@ class SettingCenterPage
 
   Widget list() {
     return Obx(() {
-      if(state.groupData.value!=null){
-        return ListView.builder(
-          itemBuilder: (BuildContext context, int index) {
-           var e = CompanySpaceEnum.findEnum(controller.getGroupName());
-           var item = state.groupData.value[index];
-           switch(e){
-             case CompanySpaceEnum.innerAgency:
-             return Item(innerAgency: item,);
-             case CompanySpaceEnum.outAgency:
-               return Item(outAgency: item,);
-             case CompanySpaceEnum.stationSetting:
-               return Item(station: item,);
-             case CompanySpaceEnum.companyCohort:
-               return Item(cohort: item,);
-           }
-          },
-          itemCount: state.groupData.value.length??0,
-        );
-      }
-      return Column(
+      if(state.setting.isCompanySpace()){
+        return Column(
           children: CompanySpaceEnum.values
               .map((e) =>
               Item(
                 companySpaceEnum: e,
+                nextLv: () {
+                  controller.nextLvForEnum(e);
+                },
               ))
-              .toList());
+              .toList(),
+        );
+      }else{
+        return Container();
+      }
     });
   }
-
-
 
   Widget tabBar() {
     return Container(

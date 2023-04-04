@@ -70,30 +70,17 @@ class InitiateBusinessPage
                       },
                     ),
                   ),
-                  Obx(() {
-                    return CommonWidget.commonBreadcrumbNavWidget(
-                        firstTitle: "全部业务",
-                        allTitle: state.selectedSpecies
-                            .map((element) => element.name)
-                            .toList(),
-                        onTapFirst: () {
-                          controller.clearSpecies();
-                        },
-                        onTapTitle: (index) {
-                          controller.removeSpecies(index);
-                        });
-                  }),
+        CommonWidget.commonBreadcrumbNavWidget(
+          firstTitle: "全部业务",
+          allTitle: [],
+        ),
                   Obx(() {
                     var list = [];
-                    if (state.selectedSpecies.isNotEmpty) {
-                      list = state.selectedSpecies.last.children;
-                    }else{
-                      CommonTreeManagement().species?.children.forEach((element) {
-                        if(element.name == "事项"){
-                          list.addAll(element.children);
-                        }
-                      });
-                    }
+                    CommonTreeManagement().species?.children.forEach((element) {
+                      if(element.name == "事项"){
+                        list.addAll(element.children);
+                      }
+                    });
                     return Column(
                       children: list.map(
                         (e) {
@@ -102,9 +89,6 @@ class InitiateBusinessPage
                             showPopupMenu: false,
                             next: () {
                               controller.selectSpecies(e);
-                            },
-                            onTap: () {
-                              controller.createInstance(e);
                             },
                           );
                         },

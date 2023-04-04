@@ -7,6 +7,7 @@ import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
 import 'package:orginone/pages/index/index_page.dart';
+import 'package:orginone/pages/index/news/searchBarWidget.dart';
 // import 'package:orginone/pages/index/indexok_page.dart';
 import 'package:orginone/pages/other/add_asset/binding.dart';
 import 'package:orginone/pages/other/add_asset/view.dart';
@@ -27,7 +28,6 @@ import 'package:orginone/pages/other/search_page.dart';
 import 'package:orginone/pages/other/web_view/binding.dart';
 import 'package:orginone/pages/other/web_view/view.dart';
 import 'package:orginone/pages/other/work/work_start/view.dart';
-import 'package:orginone/pages/setting/company_info.dart';
 import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/home/binding.dart';
 import 'package:orginone/pages/setting/home/view.dart';
@@ -51,8 +51,6 @@ import './pages/other/home/ware_house/market/market_binding.dart';
 
 // 资产管理
 import './pages/other/home/ware_house/market/market_page.dart';
-import './pages/other/home/ware_house/market/market_binding.dart';
-import 'package:orginone/util/hive_utils.dart';
 import './pages/other/home/ware_house/often_use_binding.dart';
 // 仓库
 import './pages/other/home/ware_house/recently_opened_binding.dart';
@@ -75,6 +73,14 @@ import 'pages/other/work/process_details/view.dart';
 import 'pages/other/work/work_start/binding.dart';
 import 'pages/other/work/work_start/create_work/binding.dart';
 import 'pages/other/work/work_start/create_work/view.dart';
+import 'pages/setting/company_info/binding.dart';
+import 'pages/setting/company_info/view.dart';
+import 'pages/setting/department_info/binding.dart';
+import 'pages/setting/department_info/view.dart';
+import 'pages/setting/out_agency_info/binding.dart';
+import 'pages/setting/out_agency_info/view.dart';
+import 'pages/setting/relationship_group/binding.dart';
+import 'pages/setting/relationship_group/view.dart';
 
 class Routers {
   // 首页
@@ -172,6 +178,16 @@ class Routers {
   //文件夹
   static const String file = '/file';
 
+  //关系列表
+  static const String relationGroup = '/relationGroup';
+
+  //内部机构详情
+  static const String departmentInfo = '/departmentInfo';
+
+  //外部机构详情
+  static const String outAgencyInfo = '/outAgencyInfo';
+
+
   static String get main {
     return login;
     var user = HiveUtils.getUser();
@@ -204,7 +220,8 @@ class Routers {
           MessageBinding(),
           RecentlyOpenedBinding(),
           OftenUseBinding(),
-          UpdateBinding()
+          UpdateBinding(),
+
         ],
       ),
       GetPage(
@@ -393,7 +410,7 @@ class Routers {
       GetPage(
         name: Routers.companyInfo,
         page: () => CompanyInfoPage(),
-        binding: CompanyInfoBingding(),
+        binding: CompanyInfoBinding(),
       ),
       GetPage(
         name: Routers.version,
@@ -404,6 +421,21 @@ class Routers {
         name: Routers.publisher,
         page: () => PublisherPage(),
         binding: PublisherBinding(),
+      ),
+      GetPage(
+        name: Routers.relationGroup,
+        page: () => RelationGroupPage(),
+        binding: RelationGroupBinding(),
+      ),
+      GetPage(
+        name: Routers.departmentInfo,
+        page: () => DepartmentInfoPage(),
+        binding: DepartmentInfoBinding(),
+      ),
+      GetPage(
+        name: Routers.outAgencyInfo,
+        page: () => OutAgencyInfoPage(),
+        binding: OutAgencyInfoBinding(),
       ),
     ];
   }

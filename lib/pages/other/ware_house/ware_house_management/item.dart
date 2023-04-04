@@ -132,7 +132,9 @@ class GbItem extends StatelessWidget {
             next!();
           }
         } else {
-          ToastUtils.showMsg(msg: "已经到底了");
+          if (onTap != null) {
+            onTap!();
+          }
         }
       },
       child: Container(
@@ -171,14 +173,7 @@ class GbItem extends StatelessWidget {
 
   Widget more() {
     return GestureDetector(
-      onTap: (){
-        if (onTap != null) {
-          onTap!();
-        } else {
-          Get.toNamed(Routers.thing,
-              arguments: {"id": item.id, "title": item.name});
-        }
-      },
+      onTap: onTap,
       child: Icon(
         Icons.navigate_next,
         size: 32.w,

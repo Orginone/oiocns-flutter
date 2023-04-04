@@ -15,33 +15,45 @@ class Item extends StatelessWidget {
   final IGroup? outAgency;
   final IStation? station;
   final ICohort? cohort;
-
+  final VoidCallback? nextLv;
+  final VoidCallback? onTap;
   const Item(
       {Key? key,
       this.companySpaceEnum,
       this.innerAgency,
       this.outAgency,
       this.station,
-      this.cohort})
+      this.cohort, this.onTap,this.nextLv})
       : super(key: key);
 
   SettingController get settingController => Get.find<SettingController>();
 
-  SettingCenterController get settingCenterController =>
-      Get.find<SettingCenterController>(tag: "SettingCenter");
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        if (companySpaceEnum != null) {
-          settingCenterController.nextLvForEnum(companySpaceEnum!);
-        } else {
-          settingCenterController.nextLvForGroup(
-              innerAgency: innerAgency,
-              outAgency: outAgency,
-              station: station,
-              cohort: cohort);
+      onTap: (){
+        bool hasNextLvData = true;
+        if(innerAgency!=null){
+          hasNextLvData = innerAgency?.subTeam.isNotEmpty??false;
+        }
+        if(outAgency!=null){
+          hasNextLvData = outAgency?.subGroup.isNotEmpty??false;
+        }
+        if(station!=null){
+          hasNextLvData = false;
+        }
+        if(cohort!=null){
+          hasNextLvData = false;
+        }
+        if(hasNextLvData){
+          if(nextLv!=null){
+            nextLv!();
+          }
+        }else{
+          if(onTap!=null){
+            onTap!();
+          }
         }
       },
       child: Container(
@@ -76,7 +88,7 @@ class Item extends StatelessWidget {
         cohort?.teamName ??
         "";
     if (companySpaceEnum == CompanySpaceEnum.company) {
-      name = settingController.space.name;
+      name = settingController.space.teamName;
     }
     return Container(
       padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
@@ -91,7 +103,7 @@ class Item extends StatelessWidget {
 
   Widget more() {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: Icon(
         Icons.navigate_next,
         size: 32.w,

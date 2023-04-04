@@ -4,9 +4,6 @@ import 'package:orginone/dart/core/thing/ispecies.dart';
 import 'package:orginone/util/common_tree_management.dart';
 
 class InitiateBusinessState extends BaseGetState {
-  var selectedSpecies = <ISpeciesItem>[].obs;
-
-
   InitiateBusinessState() {
   }
 }
