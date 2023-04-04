@@ -6,6 +6,7 @@ import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'logic.dart';
 import 'state.dart';
@@ -27,40 +28,37 @@ class DictDetailsPage
               size: 36.w,
             ))
       ],
-      body: Column(
-        children: [
-          SizedBox(
-            height: 10.h,
+      body: SmartRefresher(
+        controller: state.refreshController,
+        enablePullDown: true,
+        enablePullUp: true,
+        onRefresh: () => controller.onRefresh(),
+        onLoading: () => controller.onLoadMore(),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                height: 10.h,
+              ),
+              Obx(() {
+                List<List<String>> content = [];
+                for (var value in state.dictItem) {
+                  content.add([
+                    value.name,
+                    value.value,
+                    findTargetShare(value.belongId).name,
+                    DateTime.tryParse(value.createTime ?? "")!
+                        .format(format: "yyyy-MM-dd HH:mm")
+                  ]);
+                }
+                return CommonWidget.commonDocumentWidget(
+                    title: ["名称", "值", "共享组织", "创建时间"],
+                    content: content,
+                );
+              }),
+            ],
           ),
-          Obx(() {
-            List<List<String>> content = [];
-            for (var value in state.dictItem) {
-              content.add([
-                value.name,
-                value.value,
-                findTargetShare(value.belongId).name,
-                DateTime.tryParse(value.createTime ?? "")!
-                    .format(format: "yyyy-MM-dd HH:mm")
-              ]);
-            }
-            return CommonWidget.commonDocumentWidget(
-                title: ["名称", "值", "共享组织", "创建时间"],
-                content: content,
-                showOperation: true,
-                popupMenus: [
-                  const PopupMenuItem(
-                    value: "edit",
-                    child: Text("编辑"),
-                  ),
-                  const PopupMenuItem(
-                    value: "delete",
-                    child: Text("删除"),
-                  ),
-                ],onOperation: (key,data){
-                  controller.operation(key,data);
-            });
-          }),
-        ],
+        ),
       ),
     );
   }

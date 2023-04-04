@@ -762,10 +762,14 @@ class CommonWidget {
       return Container(
         margin: EdgeInsets.symmetric(horizontal: 10.w),
         alignment: Alignment.center,
-        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w),
+        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w,maxWidth: 140.w),
+        decoration: BoxDecoration(
+            border: Border(right: BorderSide(color: Colors.grey.shade200,width: 0.5))
+        ),
         height: 50.h,
         child: Text(
           title,
+          style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 18.sp),
         ),
       );
     }
@@ -774,10 +778,14 @@ class CommonWidget {
       return Container(
         alignment: Alignment.center,
         margin: EdgeInsets.symmetric(horizontal: 10.w),
-        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w),
+        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w,maxWidth: 140.w),
         height: 50.h,
+        decoration: BoxDecoration(
+          border: Border(right: BorderSide(color: Colors.grey.shade200,width: 0.5))
+        ),
         child: Text(
           content,
+          style: TextStyle(color: Colors.grey,fontSize: 18.sp),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
