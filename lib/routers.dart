@@ -33,8 +33,14 @@ import 'package:orginone/pages/setting/home/binding.dart';
 import 'package:orginone/pages/setting/home/view.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
+import 'package:orginone/pages/setting/person/cardbag/bindings.dart';
+import 'package:orginone/pages/setting/person/cardbag/index.dart';
+import 'package:orginone/pages/setting/person/dynamic/bindings.dart';
+import 'package:orginone/pages/setting/person/dynamic/index.dart';
 import 'package:orginone/pages/setting/person/mark/bindings.dart';
 import 'package:orginone/pages/setting/person/mark/view.dart';
+import 'package:orginone/pages/setting/person/security/bindings.dart';
+import 'package:orginone/pages/setting/person/security/index.dart';
 import 'package:orginone/pages/setting/person/view.dart';
 import 'package:orginone/pages/setting/publisher_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
@@ -218,7 +224,11 @@ class Routers {
 
   //个人中心
   static const String personPage = "/personPage";
+
+  static const String cardbag = "/cardbag";
+  static const String dynamic = "/dynamic";
   static const String mark = "/mark";
+  static const String security = "/security";
 
   //权限标准详情
   static const String permissionInfo = "/permissionInfo";
@@ -228,7 +238,6 @@ class Routers {
 
   //字段定义详情
   static const String dictDetails = "/dictDetails";
-
 
   static String get main {
     return login;
@@ -522,6 +531,21 @@ class Routers {
         name: Routers.dictDetails,
         page: () => DictDetailsPage(),
         binding: DictDetailsBinding(),
+      ),
+      GetPage(
+        name: Routers.dynamic,
+        page: () => DynamicPage(),
+        binding: DynamicBinding(),
+      ),
+      GetPage(
+        name: Routers.security,
+        page: () => SecurityPage(),
+        binding: SecurityBinding(),
+      ),
+      GetPage(
+        name: Routers.cardbag,
+        page: () => CardbagPage(),
+        binding: CardbagBinding(),
       ),
     ];
   }

@@ -5,14 +5,14 @@ import 'package:orginone/images.dart';
 
 import 'index.dart';
 
-class CardbagPage extends StatefulWidget {
-  const CardbagPage({Key? key}) : super(key: key);
+class SecurityPage extends StatefulWidget {
+  const SecurityPage({Key? key}) : super(key: key);
 
   @override
-  State<CardbagPage> createState() => _CardbagPageState();
+  State<SecurityPage> createState() => _SecurityPageState();
 }
 
-class _CardbagPageState extends State<CardbagPage>
+class _SecurityPageState extends State<SecurityPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
@@ -20,12 +20,12 @@ class _CardbagPageState extends State<CardbagPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return const _CardbagViewGetX();
+    return const _SecurityViewGetX();
   }
 }
 
-class _CardbagViewGetX extends GetView<CardbagController> {
-  const _CardbagViewGetX({Key? key}) : super(key: key);
+class _SecurityViewGetX extends GetView<SecurityController> {
+  const _SecurityViewGetX({Key? key}) : super(key: key);
 
   // 主视图
   Widget _buildView() {
@@ -43,12 +43,12 @@ class _CardbagViewGetX extends GetView<CardbagController> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<CardbagController>(
-      init: CardbagController(),
-      id: "cardbag",
+    return GetBuilder<SecurityController>(
+      init: SecurityController(),
+      id: "security",
       builder: (_) {
         return Scaffold(
-          appBar: AppBar(title: const Text("卡包")),
+          appBar: AppBar(title: const Text("安全")),
           body: SafeArea(
             child: _buildView(),
           ),

@@ -30,4 +30,6 @@ class Images {
   static const String dirIcon = "images/icon_dir.png";
 
   static const String star = "images/stars.png";
+
+  static const String empty = "images/empty.png";
 }
