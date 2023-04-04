@@ -77,17 +77,21 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
         decoration: const BoxDecoration(
           color: Colors.white,
         ),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(30, 10, 20, 10),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text.rich(TextSpan(text: "卡包")),
-                Icon(
-                  Icons.navigate_next,
-                )
-              ]),
-        ));
+        child: GestureDetector(
+            onTap: () {
+              Get.toNamed(Routers.cardbag);
+            },
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(30, 10, 20, 10),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Text.rich(TextSpan(text: "卡包")),
+                    Icon(
+                      Icons.navigate_next,
+                    )
+                  ]),
+            )));
   }
 
   Widget get security {
@@ -96,17 +100,21 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
         decoration: const BoxDecoration(
           color: Colors.white,
         ),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(30, 5, 20, 5),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text.rich(TextSpan(text: "安全")),
-                Icon(
-                  Icons.navigate_next,
-                )
-              ]),
-        ));
+        child: GestureDetector(
+            onTap: () {
+              Get.toNamed(Routers.dynamic);
+            },
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(30, 5, 20, 5),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Text.rich(TextSpan(text: "安全")),
+                    Icon(
+                      Icons.navigate_next,
+                    )
+                  ]),
+            )));
   }
 
   Widget get dynamic {
@@ -115,17 +123,21 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
         decoration: const BoxDecoration(
           color: Colors.white,
         ),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(30, 5, 20, 5),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text.rich(TextSpan(text: "动态")),
-                Icon(
-                  Icons.navigate_next,
-                )
-              ]),
-        ));
+        child: GestureDetector(
+            onTap: () {
+              Get.toNamed(Routers.dynamic);
+            },
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(30, 5, 20, 5),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Text.rich(TextSpan(text: "动态")),
+                    Icon(
+                      Icons.navigate_next,
+                    )
+                  ]),
+            )));
   }
 
   Widget get mark {

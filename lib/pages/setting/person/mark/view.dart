@@ -15,8 +15,8 @@ class MarkPage extends GetView<MarkController> {
       child: Column(children: [
         Image.asset(
           Images.star,
-          width: 28.w,
-          height: 28.w,
+          width: 280.w,
+          height: 280.w,
         ),
         const Text.rich(TextSpan(text: '收藏夹空空如也'))
       ]),
