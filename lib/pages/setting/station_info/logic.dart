@@ -40,14 +40,27 @@ class StationInfoController extends BaseController<StationInfoState> {
        Get.toNamed(Routers.addMembers,arguments: {"title":"添加岗位人员"})?.then((value) async{
          var selected = (value as List<XTarget>);
          if(selected.isNotEmpty){
-           bool success = await state.station.pullMembers(selected.map((e) => e.id).toList(),TargetType.person.label);
-           if(success){
-             state.unitMember.addAll(selected);
-             state.unitMember.refresh();
-           }
-         }
-       });
-       break;
-   }
+            bool success = await state.station.pullMembers(
+                selected.map((e) => e.id).toList(), TargetType.person.label);
+            if (success) {
+              state.unitMember.addAll(selected);
+              state.unitMember.refresh();
+            }
+          }
+        });
+        break;
+    }
+  }
+
+  void removeAdmin(String data) async {
+    try {
+      var user = state.identitys.firstWhere((element) => element.id == data);
+      bool success = await state.station.removeIdentitys([data]);
+      if (success) {
+        state.identitys.remove(user);
+      }
+    } catch (e) {
+      ToastUtils.showMsg(msg: "移除失败");
+    }
   }
 }

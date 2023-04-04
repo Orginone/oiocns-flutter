@@ -41,7 +41,9 @@ class StationInfoPage
                       popupMenus: [
                         const PopupMenuItem(value: 'out', child: Text("移除")),
                       ],
-                      onOperation: (type,data) {});
+                      onOperation: (type,data) {
+                        controller.removeAdmin(data);
+                      });
                 }),
               ],
             ),

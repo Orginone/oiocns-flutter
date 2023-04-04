@@ -344,7 +344,7 @@ class BaseTarget extends ITarget {
   /// @param codes 职权编号集合
   @override
   Future<bool> judgeHasIdentity(List<String> codes) async {
-    if (ownIdentitys.isNotEmpty) {
+    if (ownIdentitys.isEmpty) {
       await getOwnIdentitys(reload: true);
     }
     return ownIdentitys
