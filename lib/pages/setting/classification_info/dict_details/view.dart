@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
@@ -37,7 +38,7 @@ class DictDetailsPage
               content.add([
                 value.name,
                 value.value,
-                value.belongId,
+                findTargetShare(value.belongId).name,
                 DateTime.tryParse(value.createTime ?? "")!
                     .format(format: "yyyy-MM-dd HH:mm")
               ]);

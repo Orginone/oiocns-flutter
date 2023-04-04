@@ -11,6 +11,8 @@ import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/widget.dart';
 import 'package:orginone/widget/common_widget.dart';
 
+import 'popup_menu_widget.dart';
+
 class Item extends StatelessWidget {
   final CompanySpaceEnum? companySpaceEnum;
   final StandardEnum? standardEnum;
@@ -88,14 +90,7 @@ class Item extends StatelessWidget {
               Expanded(
                 child: title(),
               ),
-              CommonWidget.commonPopupMenuButton(
-                items: const [
-                  PopupMenuItem(
-                    value: "createThing",
-                    child: Text("创建实体"),
-                  ),
-                ],
-              ),
+              PopupMenuWidget(target: innerAgency??outAgency??station??cohort,companySpaceEnum: companySpaceEnum,standardEnum: standardEnum,),
               more(),
             ],
           ),

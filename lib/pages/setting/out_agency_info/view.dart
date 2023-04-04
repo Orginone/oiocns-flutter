@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/widget.dart';
 import 'package:orginone/util/date_utils.dart';
@@ -78,7 +79,7 @@ class OutAgencyInfoPage
           CommonWidget.commonTextContentWidget(
               "团队标识", state.group.target.team?.code ?? ""),
           CommonWidget.commonTextContentWidget(
-              "创建人", state.group.target.team?.createUser ?? ""),
+              "创建人", findTargetShare(state.group.target.team?.createUser??"").name),
           CommonWidget.commonTextContentWidget(
               "创建时间",
               DateTime.tryParse(state.group.target.team?.createTime ?? "")!

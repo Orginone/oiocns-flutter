@@ -16,6 +16,7 @@ import '../enum.dart';
 import '../thing/ispecies.dart';
 import '../thing/species.dart';
 import 'itarget.dart';
+import 'targetMap.dart';
 
 class BaseTarget extends ITarget {
   static Uuid uuid = const Uuid();
@@ -68,7 +69,7 @@ class BaseTarget extends ITarget {
     identitys = [];
     memberTypes = [TargetType.person];
     typeName = target.typeName;
-    // appendTarget(target);
+    appendTarget([target]);
   }
 
   @override
@@ -202,7 +203,7 @@ class BaseTarget extends ITarget {
             limit: Constants.maxUint16,
           )));
       if (res.success && res.data != null) {
-        // appendTarget(res.data);
+        appendTarget(res.data?.result??[]);
         return res.data!;
       }
     }

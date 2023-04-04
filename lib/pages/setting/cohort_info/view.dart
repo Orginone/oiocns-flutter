@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/department_management.dart';
@@ -90,7 +91,7 @@ class CohortInfoPage extends BaseGetView<CohortInfoController,CohortInfoState>{
           CommonWidget.commonTextContentWidget(
               "团队标识", state.cohort.target.team?.code??""),
           CommonWidget.commonTextContentWidget(
-              "创建人", DepartmentManagement().findXTargetByIdOrName(id: state.cohort.target.createUser)?.name??""),
+              "创建人", findTargetShare(state.cohort.target.createUser).name),
           CommonWidget.commonTextContentWidget(
               "创建时间", DateTime.tryParse(
               state.cohort.target.team?.createTime ?? "")!

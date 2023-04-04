@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/widget.dart';
 import 'package:orginone/util/date_utils.dart';
@@ -75,12 +76,7 @@ class DepartmentInfoPage
               content: state.settingController.company?.teamName ?? ""),
           CommonWidget.commonFormItem(
               title: "创建人",
-              content: DepartmentManagement()
-                  .findXTargetByIdOrName(
-                  id: state.depart.value.target.team?.createUser)
-                  ?.team
-                  ?.name ??
-                  ""),
+              content: findTargetShare(state.depart.value.target.team?.createUser??"").name),
           CommonWidget.commonFormItem(
               title: "创建时间",
               content: DateTime.tryParse(

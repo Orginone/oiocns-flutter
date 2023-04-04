@@ -12,7 +12,7 @@ import 'state.dart';
 class DictDetailsController extends BaseController<DictDetailsState> {
   final DictDetailsState state = DictDetailsState();
 
-  SettingController get _setting => Get.find<SettingController>();
+
   ClassificationInfoController  get infoController => Get.find<ClassificationInfoController>();
   @override
   void onReady() async {
@@ -24,7 +24,7 @@ class DictDetailsController extends BaseController<DictDetailsState> {
   Future<void> init() async{
     XDictItemArray res =
         await state.dict.loadItems(
-          _setting.space.id ?? "",
+          state.setting.space.id ?? "",
            PageRequest(
             offset: 0,
             limit: 99999,

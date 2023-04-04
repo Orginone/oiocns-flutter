@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
+import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/widget.dart';
 import 'package:orginone/util/date_utils.dart';
@@ -54,7 +55,7 @@ class IdentityInfoPage
             CommonWidget.commonFormItem(
                 title: "编码", content: identity.value.target.code ?? ""),
             CommonWidget.commonFormItem(
-                title: "创建人", content: identity.value.target.createUser ?? ""),
+                title: "创建人", content: findTargetShare(identity.value.target.createUser??"").name),
             CommonWidget.commonFormItem(
                 title: "创建时间",
                 content: DateTime.tryParse(

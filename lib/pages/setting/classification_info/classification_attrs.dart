@@ -14,20 +14,22 @@ class ClassificationAttrs extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 10.h),
-      child: Column(
-        children: [
-          CommonWidget.commonDocumentWidget(
-              title: ["特性编号", "特性名称", "特性分类", "特性类型", "选择字典", "共享组织", "特性定义"],
-              content: species.attrs.map((e){
-                String speciesName = '';
-                try{
-                  speciesName = CommonTreeManagement().species?.getAllList().firstWhere((element) => element.id == e.speciesId).name??"";
-                }catch(e){
-                  speciesName = '';
-                }
-                return [e.code??"",e.name??"",speciesName,e.valueType??"",e.dict?.name??"",species.name,e.remark??""];
-              }).toList()),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            CommonWidget.commonDocumentWidget(
+                title: ["特性编号", "特性名称", "特性分类", "特性类型", "选择字典", "共享组织", "特性定义"],
+                content: species.attrs.map((e){
+                  String speciesName = '';
+                  try{
+                    speciesName = CommonTreeManagement().species?.getAllList().firstWhere((element) => element.id == e.speciesId).name??"";
+                  }catch(e){
+                    speciesName = '';
+                  }
+                  return [e.code??"",e.name??"",speciesName,e.valueType??"",e.dict?.name??"",species.name,e.remark??""];
+                }).toList()),
+          ],
+        ),
       ),
     );
   }
