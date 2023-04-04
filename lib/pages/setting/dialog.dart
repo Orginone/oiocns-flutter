@@ -327,16 +327,24 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
 
 
 Future<void> showCreateDictItemDialog(BuildContext context,
-    {CreateDictChangeCallBack? onCreate}) async {
+    {CreateDictChangeCallBack? onCreate,String name = '',String code = '',String remark = '',String? targetId}) async {
 
 
   List<ITarget> teamTree = await setting.getTeamTree(true);
 
-  TextEditingController name = TextEditingController();
-  TextEditingController code = TextEditingController();
-  TextEditingController remark = TextEditingController();
+  TextEditingController nameCtr = TextEditingController(text: name);
+  TextEditingController codeCtr = TextEditingController(text: code);
+  TextEditingController remarkCtr = TextEditingController(text:remark);
 
   ITarget? selectedITarget;
+
+  if(targetId!=null){
+    try{
+      selectedITarget = teamTree.firstWhere((element) => element.id == targetId);
+    }catch(e){
+
+    }
+  }
 
   return showDialog(
     context: context,
@@ -352,12 +360,12 @@ Future<void> showCreateDictItemDialog(BuildContext context,
                   children: [
                     CommonWidget.commonHeadInfoWidget("新增字典项"),
                     CommonWidget.commonTextTile("名称", '',
-                        controller: name,
+                        controller: nameCtr,
                         showLine: true,
                         required: true,
                         hint: "请输入"),
                     CommonWidget.commonTextTile("值", '',
-                        controller: code,
+                        controller: codeCtr,
                         showLine: true,
                         required: true,
                         hint: "请输入"),
@@ -375,22 +383,22 @@ Future<void> showCreateDictItemDialog(BuildContext context,
                               });
                         }, hint: "请选择"),
                     CommonWidget.commonTextTile("备注", '',
-                        controller: remark,
+                        controller: remarkCtr,
                         showLine: true,
                         maxLine: 4,
                         hint: "请输入"),
                     CommonWidget.commonMultipleSubmitWidget(onTap1: () {
                       Navigator.pop(context);
                     }, onTap2: () {
-                      if (name.text.isEmpty) {
+                      if (nameCtr.text.isEmpty) {
                         ToastUtils.showMsg(msg: "请输入名称");
-                      } else if (code.text.isEmpty) {
+                      } else if (codeCtr.text.isEmpty) {
                         ToastUtils.showMsg(msg: "请输入值");
                       } else if (selectedITarget==null) {
                         ToastUtils.showMsg(msg: "请选择制定组织");
                       } else {
                         if (onCreate != null) {
-                          onCreate(name.text, code.text,selectedITarget!.id,remark.text);
+                          onCreate(nameCtr.text, codeCtr.text,selectedITarget!.id,remarkCtr.text);
                         }
                         Navigator.pop(context);
                       }

@@ -1567,6 +1567,7 @@ class DictItemModel {
     this.value,
     this.public,
     this.belongId,
+    this.dictId,
   });
 
   //通过JSON构造

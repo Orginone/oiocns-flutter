@@ -44,7 +44,21 @@ class DictDetailsPage
               ]);
             }
             return CommonWidget.commonDocumentWidget(
-                title: ["名称", "值", "共享组织", "创建时间"], content: content);
+                title: ["名称", "值", "共享组织", "创建时间"],
+                content: content,
+                showOperation: true,
+                popupMenus: [
+                  const PopupMenuItem(
+                    value: "edit",
+                    child: Text("编辑"),
+                  ),
+                  const PopupMenuItem(
+                    value: "delete",
+                    child: Text("删除"),
+                  ),
+                ],onOperation: (key,data){
+                  controller.operation(key,data);
+            });
           }),
         ],
       ),

@@ -44,4 +44,25 @@ class DictDetailsController extends BaseController<DictDetailsState> {
     });
   }
 
+  void operation(String key,String data) async{
+    try{
+      var item = state.dictItem.firstWhere((element) => element.name == data);
+      if(key == 'delete'){
+        bool success = await state.dict.deleteItem(item.id);
+        if(success){
+          state.dictItem.remove(item);
+        }
+      }else if(key == 'edit'){
+        showCreateDictItemDialog(context,code: item.value,name: item.name,targetId: item.belongId,remark: item.dictId,onCreate: (name,value,id,remark,{bool? public}) async{
+          bool success = await state.dict.updateItem(DictItemModel(id: item.id,belongId: id,public: true,name: name,value: value,dictId: remark));
+          if(success){
+            await init();
+          }
+        });
+      }
+    }catch(e){
+
+    }
+  }
+
 }
