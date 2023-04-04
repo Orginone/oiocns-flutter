@@ -193,6 +193,10 @@ class ChatController extends GetxController {
       if (matchedChat != null) {
         matchedChat.loadCache(ChatCache.fromMap(chat));
         _appendChats(matchedChat);
+        // var ids = _chats.map((IChat ct) => ct.chatId).toList();
+        // if (ids.contains(chatId)) {
+        //   _appendChats(matchedChat);
+        // }
       }
     }
   }
@@ -269,8 +273,7 @@ class ChatController extends GetxController {
           pickedImage.name, File(pickedImage.path), (progress) {});
       if (item.target != null) {
         _curChat.value?.sendMessage(
-            MessageType.image,
-            jsonEncode(item.target!.shareInfo()));
+            MessageType.image, jsonEncode(item.target!.shareInfo()));
       }
     });
 
@@ -279,13 +282,12 @@ class ChatController extends GetxController {
     // });
   }
 
-
-  void voice(String path,int time) async {
+  void voice(String path, int time) async {
     _curChat.value?.sendMessage(
         MessageType.voice,
         jsonEncode({
-          "milliseconds":time,
-          "bytes":File(path).readAsBytesSync(),
+          "milliseconds": time,
+          "bytes": File(path).readAsBytesSync(),
         }));
 
     // getFileSysItemRoot.create("主目录").then((value){
