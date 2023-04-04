@@ -8,6 +8,8 @@ import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/pages/setting/config.dart';
+import 'package:orginone/pages/setting/widget.dart';
+import 'package:orginone/widget/common_widget.dart';
 
 class Item extends StatelessWidget {
   final CompanySpaceEnum? companySpaceEnum;
@@ -86,7 +88,14 @@ class Item extends StatelessWidget {
               Expanded(
                 child: title(),
               ),
-              _popupMenuButton(),
+              CommonWidget.commonPopupMenuButton(
+                items: const [
+                  PopupMenuItem(
+                    value: "createThing",
+                    child: Text("创建实体"),
+                  ),
+                ],
+              ),
               more(),
             ],
           ),
@@ -126,23 +135,6 @@ class Item extends StatelessWidget {
         Icons.navigate_next,
         size: 32.w,
       ),
-    );
-  }
-
-  Widget _popupMenuButton() {
-    return PopupMenuButton(
-      icon: Icon(
-        Icons.more_vert_outlined,
-        size: 32.w,
-      ),
-      itemBuilder: (BuildContext context) {
-        return [
-          const PopupMenuItem(
-            value: "createThing",
-            child: Text("创建实体"),
-          ),
-        ];
-      },
     );
   }
 

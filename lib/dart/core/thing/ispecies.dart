@@ -36,6 +36,8 @@ abstract class ISpeciesItem {
   /* 属性 */
   late List<XAttribute> attrs;
 
+  late List<XDict> dict;
+
   late bool isSelected;
   /* 加载信息 */
   Future<ISpeciesItem> loadInfo(TargetShare info);

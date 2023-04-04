@@ -7,6 +7,7 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/util/setting_management.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
@@ -14,6 +15,10 @@ import 'package:orginone/widget/common_widget.dart';
 
 typedef IdentityChangeCallBack = Function(
     String name, String code, String remark);
+
+
+typedef CreateDictChangeCallBack = Function(
+    String name, String code,String id, String remark,{bool? public});
 
 typedef CreateIdentityCallBack = Function(
     String name, String code, String authID,String remark);
@@ -319,3 +324,173 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
     },
   );
 }
+
+
+Future<void> showCreateDictItemDialog(BuildContext context,
+    {CreateDictChangeCallBack? onCreate}) async {
+
+
+  List<ITarget> teamTree = await setting.getTeamTree(true);
+
+  TextEditingController name = TextEditingController();
+  TextEditingController code = TextEditingController();
+  TextEditingController remark = TextEditingController();
+
+  ITarget? selectedITarget;
+
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+          alignment: Alignment.center,
+          child: Builder(builder: (context) {
+            return StatefulBuilder(builder: (context, state) {
+
+              return SizedBox(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CommonWidget.commonHeadInfoWidget("新增字典项"),
+                    CommonWidget.commonTextTile("名称", '',
+                        controller: name,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
+                    CommonWidget.commonTextTile("值", '',
+                        controller: code,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
+                    CommonWidget.commonChoiceTile("选择制定组织", selectedITarget?.name ?? "",
+                        showLine: true, required: true, onTap: () {
+                          PickerUtils.showListStringPicker(Get.context!,
+                              titles: teamTree.map((e) => e.name).toList(),
+                              callback: (str) {
+                                state(() {
+                                  try {
+                                    selectedITarget = teamTree
+                                        .firstWhere((element) => element.name == str);
+                                  } catch (e) {}
+                                });
+                              });
+                        }, hint: "请选择"),
+                    CommonWidget.commonTextTile("备注", '',
+                        controller: remark,
+                        showLine: true,
+                        maxLine: 4,
+                        hint: "请输入"),
+                    CommonWidget.commonMultipleSubmitWidget(onTap1: () {
+                      Navigator.pop(context);
+                    }, onTap2: () {
+                      if (name.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入名称");
+                      } else if (code.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入值");
+                      } else if (selectedITarget==null) {
+                        ToastUtils.showMsg(msg: "请选择制定组织");
+                      } else {
+                        if (onCreate != null) {
+                          onCreate(name.text, code.text,selectedITarget!.id,remark.text);
+                        }
+                        Navigator.pop(context);
+                      }
+                    }),
+                  ],
+                ),
+              );
+            });
+          }));
+    },
+  );
+}
+
+Future<void> showCreateDictDialog(BuildContext context,
+    {CreateDictChangeCallBack? onCreate}) async {
+
+
+  List<ITarget> teamTree = await setting.getTeamTree(true);
+
+  TextEditingController name = TextEditingController();
+  TextEditingController code = TextEditingController();
+  TextEditingController remark = TextEditingController();
+
+  ITarget? selectedITarget;
+
+  bool public = true;
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+          alignment: Alignment.center,
+          child: Builder(builder: (context) {
+            return StatefulBuilder(builder: (context, state) {
+
+              return SizedBox(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CommonWidget.commonHeadInfoWidget("新增"),
+                    CommonWidget.commonTextTile("字典名称", '',
+                        controller: name,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
+                    CommonWidget.commonTextTile("字典代码", '',
+                        controller: code,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
+                    CommonWidget.commonChoiceTile("选择制定组织", selectedITarget?.name ?? "",
+                        showLine: true, required: true, onTap: () {
+                          PickerUtils.showListStringPicker(Get.context!,
+                              titles: teamTree.map((e) => e.name).toList(),
+                              callback: (str) {
+                                state(() {
+                                  try {
+                                    selectedITarget = teamTree
+                                        .firstWhere((element) => element.name == str);
+                                  } catch (e) {}
+                                });
+                              });
+                        }, hint: "请选择"),
+                    CommonWidget.commonChoiceTile("向下组织公开", public?"公开":'不公开',
+                        showLine: true, required: true, onTap: () {
+                          PickerUtils.showListStringPicker(Get.context!,
+                              titles:['公开',"不公开"],
+                              callback: (str) {
+                                state(() {
+                                  public =  str == "公开";
+                                });
+                              });
+                        }, hint: "请选择"),
+                    CommonWidget.commonTextTile("备注", '',
+                        controller: remark,
+                        showLine: true,
+                        maxLine: 4,
+                        hint: "请输入"),
+                    CommonWidget.commonMultipleSubmitWidget(onTap1: () {
+                      Navigator.pop(context);
+                    }, onTap2: () {
+                      if (name.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入名称");
+                      } else if (code.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入字典代码");
+                      } else if (selectedITarget==null) {
+                        ToastUtils.showMsg(msg: "请选择制定组织");
+                      } else {
+                        if (onCreate != null) {
+                          onCreate(name.text, code.text,selectedITarget!.id,remark.text,public: public);
+                        }
+                        Navigator.pop(context);
+                      }
+                    }),
+                  ],
+                ),
+              );
+            });
+          }));
+    },
+  );
+}
+
+

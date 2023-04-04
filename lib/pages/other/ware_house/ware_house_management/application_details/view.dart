@@ -75,25 +75,14 @@ class ApplicationDetailsPage
               },),
             ),
           ),),
-          _popupMenuButton(),
+          CommonWidget.commonPopupMenuButton(items: const [
+             PopupMenuItem(value: "createThing", child: Text("退订"),),
+          ],),
         ],
       ),
     );
   }
 
-  Widget _popupMenuButton() {
-    return PopupMenuButton(
-      icon: Icon(
-        Icons.more_vert_outlined,
-        size: 32.w,
-      ),
-      itemBuilder: (BuildContext context) {
-        return [
-          const PopupMenuItem(value: "createThing", child: Text("退订"),),
-        ];
-      },
-    );
-  }
 
   Widget header() {
     return Container(

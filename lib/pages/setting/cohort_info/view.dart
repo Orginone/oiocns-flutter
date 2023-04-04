@@ -23,7 +23,7 @@ class CohortInfoPage extends BaseGetView<CohortInfoController,CohortInfoState>{
             cohortInfo(),
             Column(
               children: [
-                CommonWidget.commonHeadInfoWidget("群组人员",action: PopupMenu(
+                CommonWidget.commonHeadInfoWidget("群组人员",action: CommonWidget.commonPopupMenuButton(
                   items: const [
                     PopupMenuItem(
                       value: CompanyFunction.roleSettings,

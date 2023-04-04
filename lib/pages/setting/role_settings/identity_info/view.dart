@@ -35,7 +35,7 @@ class IdentityInfoPage
     return Column(
       children: [
         CommonWidget.commonHeadInfoWidget(
-            "角色信息", action: PopupMenu(items: const [
+            "角色信息", action: CommonWidget.commonPopupMenuButton(items: const [
           PopupMenuItem(
             value: IdentityFunction.edit,
             child: Text("编辑"),
@@ -73,7 +73,7 @@ class IdentityInfoPage
       children: [
         Obx(() {
           return CommonWidget.commonHeadInfoWidget(identity.value.name,
-              action: PopupMenu(items: const [
+              action: CommonWidget.commonPopupMenuButton(items: const [
                 PopupMenuItem(
                   value: IdentityFunction.addMember,
                   child: Text("指派角色"),

@@ -48,7 +48,7 @@ class StationInfoPage
             SizedBox(height: 10.h,),
             Column(
               children: [
-                CommonWidget.commonHeadInfoWidget("岗位人员",action: PopupMenu(
+                CommonWidget.commonHeadInfoWidget("岗位人员",action: CommonWidget.commonPopupMenuButton(
                     items: const [
                       PopupMenuItem(
                         value: CompanyFunction.addUser,

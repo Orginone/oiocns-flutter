@@ -30,7 +30,7 @@ class OutAgencyInfoPage
                         controller.changeView(index);
                       }),
                 ),
-                PopupMenu(
+                CommonWidget.commonPopupMenuButton(
                     items: const [
                       PopupMenuItem(
                         value: CompanyFunction.roleSettings,

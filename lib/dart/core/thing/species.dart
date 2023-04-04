@@ -78,6 +78,7 @@ class SpeciesItem extends ISpeciesItem {
         ),
       ),
     );
+    dict = res.data!.result??[];
     return res.data;
   }
 

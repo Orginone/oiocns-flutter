@@ -748,16 +748,16 @@ class XDict {
 //字典类型查询返回集合
 class XDictArray {
   // 便宜量
-  final int offset;
+  int? offset;
 
   // 最大数量
-  final int limit;
+  int? limit;
 
   // 总数
-  final int total;
+  int? total;
 
   // 结果
-  final List<XDict>? result;
+  List<XDict>? result;
 
   //构造方法
   XDictArray({
@@ -768,11 +768,17 @@ class XDictArray {
   });
 
   //通过JSON构造
-  XDictArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XDict.fromList(json["result"]);
+  XDictArray.fromJson(Map<String, dynamic> json){
+    offset = json["offset"];
+    limit = json["limit"];
+    total = json["total"];
+    if(json["result"]!=null){
+      result = [];
+      json["result"].forEach((json){
+        result!.add(XDict.fromJson(json));
+      });
+    }
+  }
 
   //通过动态数组解析成List
   static List<XDictArray> fromList(List<Map<String, dynamic>>? list) {

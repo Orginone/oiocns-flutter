@@ -35,7 +35,7 @@ class DepartmentInfoPage
                       controller.changeView(index);
                     }),
                   ),
-                  PopupMenu(items: const [
+                  CommonWidget.commonPopupMenuButton(items: const [
                     PopupMenuItem(
                       value: CompanyFunction.roleSettings,
                       child: Text("角色设置"),

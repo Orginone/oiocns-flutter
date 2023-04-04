@@ -42,28 +42,3 @@ class UserDocument extends StatelessWidget {
     );
   }
 }
-
-class PopupMenu<T> extends StatelessWidget {
- final PopupMenuItemSelected<T>? onSelected;
- final List<PopupMenuItem<T>> items;
- final Color? color;
-  const PopupMenu({Key? key, this.onSelected, required this.items, this.color}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 50.h,
-      color: color??Colors.white,
-      child: PopupMenuButton<T>(
-        icon: Icon(
-          Icons.more_vert_outlined,
-          size: 32.w,
-        ),
-        itemBuilder: (BuildContext context) {
-          return items;
-        },
-        onSelected: onSelected,
-      ),
-    );
-  }
-}

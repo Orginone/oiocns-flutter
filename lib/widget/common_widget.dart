@@ -774,7 +774,7 @@ class CommonWidget {
       return Container(
         alignment: Alignment.center,
         margin: EdgeInsets.symmetric(horizontal: 10.w),
-        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w,maxWidth: 200.w),
+        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w),
         height: 50.h,
         child: Text(
           content,
@@ -838,5 +838,26 @@ class CommonWidget {
       ),
     );
   }
-}
 
+  static Widget commonPopupMenuButton<T>(
+      {PopupMenuItemSelected<T>? onSelected,
+    required List<PopupMenuItem<T>> items,
+    Color? color,
+    IconData? icon}
+  ) {
+    return Container(
+      height: 50.h,
+      color: color ?? Colors.white,
+      child: PopupMenuButton<T>(
+        icon: Icon(
+          icon ?? Icons.more_vert_outlined,
+          size: 32.w,
+        ),
+        itemBuilder: (BuildContext context) {
+          return items;
+        },
+        onSelected: onSelected,
+      ),
+    );
+  }
+}

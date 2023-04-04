@@ -55,6 +55,7 @@ class Person extends MarketTarget implements IPerson {
     extendTargetType = [TargetType.cohort, TargetType.person];
     joinedCompany = <ICompany>[].obs;
     joinedFriend = <XTarget>[].obs;
+    cohorts = [];
   }
 
   @override

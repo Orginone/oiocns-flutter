@@ -142,7 +142,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'CreateDict',
-        params: params,
+        params: params.toJson(),
       ),
       XDict.fromJson,
     );

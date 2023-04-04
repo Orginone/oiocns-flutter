@@ -79,6 +79,8 @@ import 'pages/other/work/work_start/create_work/view.dart';
 import 'pages/setting/add_members/binding.dart';
 import 'pages/setting/add_members/view.dart';
 import 'pages/setting/classification_info/binding.dart';
+import 'pages/setting/classification_info/dict_details/binding.dart';
+import 'pages/setting/classification_info/dict_details/view.dart';
 import 'pages/setting/classification_info/view.dart';
 import 'pages/setting/cohort_info/binding.dart';
 import 'pages/setting/cohort_info/view.dart';
@@ -223,6 +225,10 @@ class Routers {
 
   //分类标准详情
   static const String classificationInfo = "/classificationInfo";
+
+  //字段定义详情
+  static const String dictDetails = "/dictDetails";
+
 
   static String get main {
     return login;
@@ -511,6 +517,11 @@ class Routers {
         name: Routers.mark,
         page: () => MarkPage(),
         binding: MarkBinding(),
+      ),
+      GetPage(
+        name: Routers.dictDetails,
+        page: () => DictDetailsPage(),
+        binding: DictDetailsBinding(),
       ),
     ];
   }
