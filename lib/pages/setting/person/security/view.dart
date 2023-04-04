@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/images.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 
 import 'index.dart';
 
@@ -47,8 +48,9 @@ class _SecurityViewGetX extends GetView<SecurityController> {
       init: SecurityController(),
       id: "security",
       builder: (_) {
-        return Scaffold(
-          appBar: AppBar(title: const Text("安全")),
+        return GyScaffold(
+          backgroundColor: Colors.white,
+          titleName: '安全',
           body: SafeArea(
             child: _buildView(),
           ),
