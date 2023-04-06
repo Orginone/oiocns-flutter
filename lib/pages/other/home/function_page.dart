@@ -7,7 +7,7 @@ import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/pages/index/index_page.dart';
-import 'package:orginone/pages/other/assets_internal_control/view.dart';
+import 'package:orginone/pages/index/widgets/dataMonitoring.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
@@ -24,7 +24,9 @@ class FunctionPage extends BaseGetPageView<FunctionController, FunctionState> {
             controller: state.tabController,
             children: [
               IndexPage(),
-              KeepAliveWidget(child: AssetsInternalControlPage()),
+              Container(
+                child: DataMonitoring(),
+              ),
               Container(),
               Container(),
               Container(),

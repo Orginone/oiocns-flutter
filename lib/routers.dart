@@ -7,29 +7,6 @@ import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
 import 'package:orginone/pages/index/index_page.dart';
-import 'package:orginone/pages/other/batch_operation_asset/view.dart';
-import 'package:orginone/pages/other/bulk_removal_asset/binding.dart';
-import 'package:orginone/pages/other/bulk_removal_asset/view.dart';
-import 'package:orginone/pages/other/center_function/approve_documents/binding.dart';
-import 'package:orginone/pages/other/center_function/approve_documents/view.dart';
-import 'package:orginone/pages/other/center_function/assets_check/binding.dart';
-import 'package:orginone/pages/other/center_function/assets_check/view.dart';
-import 'package:orginone/pages/other/center_function/asstes_details/binding.dart';
-import 'package:orginone/pages/other/center_function/asstes_details/view.dart';
-import 'package:orginone/pages/other/center_function/binding.dart';
-import 'package:orginone/pages/other/center_function/create_dispose/binding.dart';
-import 'package:orginone/pages/other/center_function/create_dispose/view.dart';
-import 'package:orginone/pages/other/center_function/create_hand_over/binding.dart';
-import 'package:orginone/pages/other/center_function/create_hand_over/view.dart';
-import 'package:orginone/pages/other/center_function/create_transfer/binding.dart';
-import 'package:orginone/pages/other/center_function/create_transfer/view.dart';
-import 'package:orginone/pages/other/center_function/general_details/binding.dart';
-import 'package:orginone/pages/other/center_function/general_details/view.dart';
-import 'package:orginone/pages/other/center_function/view.dart';
-import 'package:orginone/pages/other/choice_assets/binding.dart';
-import 'package:orginone/pages/other/choice_assets/choice_specific_assets/binding.dart';
-import 'package:orginone/pages/other/choice_assets/choice_specific_assets/view.dart';
-import 'package:orginone/pages/other/choice_assets/view.dart';
 import 'package:orginone/pages/index/news/searchBarWidget.dart';
 // import 'package:orginone/pages/index/indexok_page.dart';
 import 'package:orginone/pages/other/add_asset/binding.dart';
@@ -87,9 +64,6 @@ import './pages/other/home/ware_house/often_use_binding.dart';
 // 仓库
 import './pages/other/home/ware_house/recently_opened_binding.dart';
 import 'pages/other/add_friend/add_friend.dart';
-import 'pages/other/batch_operation_asset/binding.dart';
-import 'pages/other/center_function/create_claim/binding.dart';
-import 'pages/other/center_function/create_claim/view.dart';
 import 'pages/other/choice_gb/binding.dart';
 import 'pages/other/choice_gb/view.dart';
 import 'pages/other/choice_thing/view.dart';
@@ -389,81 +363,6 @@ class Routers {
         name: Routers.contact,
         page: () => const ContactPage(),
         binding: ContactBinding(),
-      ),
-      GetPage(
-        name: Routers.choiceAssets,
-        page: () => ChoiceAssetsPage(),
-        binding: ChoiceAssetsBinding(),
-      ),
-      GetPage(
-        name: Routers.choiceSpecificAssets,
-        page: () => ChoiceSpecificAssetsPage(),
-        binding: ChoiceSpecificAssetsBinding(),
-      ),
-      GetPage(
-        name: Routers.centerFunction,
-        page: () => CenterFunctionPage(),
-        binding: CenterFunctionBinding(),
-      ),
-      GetPage(
-        name: Routers.choiceAssets,
-        page: () => ChoiceAssetsPage(),
-        binding: ChoiceAssetsBinding(),
-      ),
-      GetPage(
-        name: Routers.choiceSpecificAssets,
-        page: () => ChoiceSpecificAssetsPage(),
-        binding: ChoiceSpecificAssetsBinding(),
-      ),
-      GetPage(
-        name: Routers.bulkRemovalAsset,
-        page: () => BulkRemovalAssetPage(),
-        binding: BulkRemovalAssetBinding(),
-      ),
-      GetPage(
-        name: Routers.createDispose,
-        page: () => CreateDisposePage(),
-        binding: CreateDisposeBinding(),
-      ),
-      GetPage(
-        name: Routers.createHandOver,
-        page: () => CreateHandOverPage(),
-        binding: CreateHandOverBinding(),
-      ),
-      GetPage(
-        name: Routers.assetsCheck,
-        page: () => AssetsCheckPage(),
-        binding: AssetsCheckBinding(),
-      ),
-      GetPage(
-        name: Routers.assetsDetails,
-        page: () => AssetsDetailsPage(),
-        binding: AssetsDetailsBinding(),
-      ),
-      GetPage(
-        name: Routers.generalDetails,
-        page: () => GeneralDetailsPage(),
-        binding: GeneralDetailsBinding(),
-      ),
-      GetPage(
-        name: Routers.approveDocuments,
-        page: () => ApproveDocumentsPage(),
-        binding: ApproveDocumentsBinding(),
-      ),
-      GetPage(
-        name: Routers.createClaim,
-        page: () => CreateClaimPage(),
-        binding: CreateClaimBinding(),
-      ),
-      GetPage(
-        name: Routers.createTransfer,
-        page: () => CreateTransferPage(),
-        binding: CreateTransferBinding(),
-      ),
-      GetPage(
-        name: Routers.batchOperationAsset,
-        page: () => BatchOperationAssetPage(),
-        binding: BatchOperationAssetBinding(),
       ),
       GetPage(
         name: Routers.cohorts,
