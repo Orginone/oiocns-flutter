@@ -1,9 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:orginone/images.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:orginone/components/unified.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 import 'index.dart';
 
 class CardbagPage extends StatefulWidget {
@@ -30,14 +32,18 @@ class _CardbagViewGetX extends GetView<CardbagController> {
 
   // 主视图
   Widget _buildView() {
+    var settingCtrl = Get.find<SettingController>();
+    var avatar = settingCtrl.user!.shareInfo.avatar;
     return Center(
-      child: Column(children: [
-        Image.asset(
-          Images.empty,
-          width: 280.w,
-          height: 280.w,
-        ),
-        const Text.rich(TextSpan(text: '暂无内容'))
+      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+        card,
+        butn,
+        ICard(
+          asset: 180.0,
+          cnName: '比特币',
+          name: 'BTC',
+          avatar: avatar,
+        )
       ]),
     );
   }
@@ -49,13 +55,182 @@ class _CardbagViewGetX extends GetView<CardbagController> {
       id: "cardbag",
       builder: (_) {
         return GyScaffold(
-          backgroundColor: Colors.white,
+          // backgroundColor: Colors.white,
           titleName: '卡包',
           body: SafeArea(
-            child: _buildView(),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+              child: _buildView(),
+            ),
           ),
         );
       },
     );
+  }
+
+  Widget get butn {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // RaisedButton(),
+          Container(
+              height: 50,
+              width: 160,
+              decoration: const BoxDecoration(
+                color: Colors.orange,
+                borderRadius: BorderRadius.all(Radius.circular(50.0)),
+              ),
+              child: const Center(
+                child: Text(
+                  '创建',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              )),
+          Container(
+              height: 50,
+              width: 160,
+              decoration: const BoxDecoration(
+                color: XColors.themeColor,
+                borderRadius: BorderRadius.all(Radius.circular(50.0)),
+              ),
+              child: const Center(
+                child: Text(
+                  '添加',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              )),
+        ],
+      ),
+    );
+  }
+
+  Widget get card {
+    var settingCtrl = Get.find<SettingController>();
+    var avatar = settingCtrl.user!.shareInfo.avatar;
+    var thumbnail = avatar!.thumbnail!.split(",")[1];
+    thumbnail = thumbnail.replaceAll('\r', '').replaceAll('\n', '');
+    return Container(
+        height: 150,
+        decoration: const BoxDecoration(
+            color: XColors.designBlue,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            gradient: LinearGradient(colors: [
+              Color.fromARGB(255, 58, 95, 227),
+              Color.fromARGB(255, 5, 40, 136),
+            ])),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 20, 30, 30),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 50.0,
+                            height: 50.0,
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                image: DecorationImage(
+                                  image: MemoryImage(base64Decode(thumbnail)),
+                                  fit: BoxFit.fill,
+                                ),
+                                shape: BoxShape.circle),
+                          ),
+                          Container(
+                            width: 20,
+                          ),
+                          Text(settingCtrl.user!.shareInfo.name,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 15)),
+                        ],
+                      ),
+                      const Icon(
+                        Icons.more_horiz_sharp,
+                        color: Colors.white60,
+                        size: 30,
+                      )
+                    ]),
+                const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('账户余额：￥180.00',
+                          style:
+                              TextStyle(color: Colors.white60, fontSize: 15)),
+                      Icon(Icons.add_circle_outline_rounded,
+                          color: Colors.white60, size: 30)
+                    ]),
+              ]),
+        ));
+  }
+}
+
+class ICard extends StatelessWidget {
+  final String? name;
+  final String? cnName;
+  final double? asset;
+  final FileItemShare? avatar;
+  final VoidCallback? onTap;
+
+  const ICard({
+    super.key,
+    this.name,
+    this.cnName,
+    this.asset,
+    required this.avatar,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    var thumbnail = avatar!.thumbnail!.split(",")[1];
+    return Container(
+        height: 90,
+        decoration: const BoxDecoration(
+          color: XColors.white,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 40.0,
+                    height: 40.0,
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        image: DecorationImage(
+                          image: MemoryImage(base64Decode(thumbnail)),
+                          fit: BoxFit.fill,
+                        ),
+                        shape: BoxShape.circle),
+                  ),
+                  Container(
+                    width: 20,
+                  ),
+                  Text('$name', style: const TextStyle(fontSize: 18)),
+                  Container(
+                    width: 20,
+                  ),
+                  Text('($cnName)',
+                      style: const TextStyle(fontSize: 15, color: Colors.grey)),
+                ],
+              ),
+              Text(
+                '￥ $asset',
+                style: const TextStyle(fontSize: 14),
+              )
+            ],
+          ),
+        ));
   }
 }
