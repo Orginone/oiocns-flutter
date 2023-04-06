@@ -226,3 +226,13 @@ class PersonBinding extends BaseBindings<PersonController> {
     return PersonController();
   }
 }
+
+enum PersonCenter {
+  carBag("卡包"),
+  security("安全"),
+  dynamic("动态"),
+  mark("收藏");
+
+  final String key;
+  const PersonCenter(this.key);
+}

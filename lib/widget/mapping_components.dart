@@ -78,7 +78,7 @@ MappingComponentsCallback mappingSelectBoxWidget = (Fields data,
   }
   return Obx(() {
     String content = '';
-    if(data.code?.contains("DATE")??false){
+    if((data.code?.contains("DATE")??false)||(data.code?.contains('date')??false) || data.code == 'DKGMSJ'){
       content = data.defaultData.value??"";
     }else{
       content = data.defaultData.value?.values?.first.toString() ?? "";

@@ -46,12 +46,13 @@ class UserBar extends GetView<SettingController> {
         ),
         Padding(
           padding: EdgeInsets.only(right: 10.w),
-          child: GestureDetector(
+          child: Expanded(
+              child: GestureDetector(
             child: _avatar(EdgeInsets.only(right: 10.w)),
             onTap: () {
-          Get.toNamed(Routers.personPage);
+              Get.toNamed(Routers.personPage);
             },
-          ),
+          )),
         ),
       ]),
     );

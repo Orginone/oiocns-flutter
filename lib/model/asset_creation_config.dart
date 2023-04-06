@@ -171,7 +171,7 @@ class Fields {
         Get.toNamed(router!);
       }
       if (type == "select") {
-         if(code?.contains("DATE")??false){
+         if((code?.contains("DATE")??false)||(code?.contains('date')??false) || code == 'DKGMSJ'){
            DatePicker.showDateTimePicker(Get.context!,currentTime: DateTime.now(),locale: LocaleType.zh,onConfirm: (date){
                  defaultData.value = date.format(format: "yyyy-MM-dd HH:mm");
                });
