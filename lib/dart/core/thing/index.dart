@@ -8,7 +8,7 @@ import '../../base/schema.dart';
 // @param id 组织id
 Future<SpeciesItem?> loadSpeciesTree(String id) async {
   SpeciesItem? item;
-  final res = await KernelApi.getInstance().querySpeciesTree(IDBelongReq(id: id));
+  final res = await KernelApi.getInstance().querySpeciesTree(id);
   if (res.success) {
     item = SpeciesItem(res.data as XSpecies, null);
   }
