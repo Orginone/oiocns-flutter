@@ -23,7 +23,7 @@ class CreateWorkController extends BaseController<CreateWorkState> {
     super.onReceivedEvent(event);
     if (event is ChoicePeople) {
       for (var element in state.node.operations!) {
-        for (var element in element.operationItems) {
+        for (var element in element.items!) {
             if(element.fields?.router == Routers.choicePeople){
               element.fields?.defaultData.value = event.user;
             }
@@ -32,7 +32,7 @@ class CreateWorkController extends BaseController<CreateWorkState> {
     }
     if (event is ChoiceDepartment) {
       for (var element in state.node.operations!) {
-        for (var element in element.operationItems) {
+        for (var element in element.items!) {
           if(element.fields?.router == Routers.choiceDepartment){
             element.fields?.defaultData.value = event.department;
           }
@@ -43,14 +43,16 @@ class CreateWorkController extends BaseController<CreateWorkState> {
 
   Future init() async{
     for (var element in state.node.operations!) {
-      await element.getOperationItems();
+       if(element.items==null){
+         await element.getOperationItems();
+       }
     }
     state.show.value = true;
   }
 
   Future<void> submit() async{
     for (var element in state.node.operations!) {
-      for (var element in element.operationItems) {
+      for (var element in element.items!) {
         if (element.fields?.required??false) {
           if(element.fields!.defaultData.value == null){
             return ToastUtils.showMsg(msg: element.fields!.hint!);
@@ -64,7 +66,7 @@ class CreateWorkController extends BaseController<CreateWorkState> {
     Map<String,dynamic> data = {};
 
     for (var element in state.node.operations!) {
-      for (var element in element.operationItems) {
+      for (var element in element.items!) {
           if(element.fields?.defaultData.value!=null){
              if(element.fields?.type == "select"){
                if(!element.fields!.code!.contains("DATE")){

@@ -53,7 +53,7 @@ class Station extends BaseTarget implements IStation {
     if (identitys.isNotEmpty) {
       final res = await kernel.pullIdentityToTeam(TeamPullModel(
         id: id,
-        targetIds: identitys.map((a) => a.id??"").toList(),
+        targetIds: identitys.map((a) => (a.id??"").toString()).toList(),
         targetType: '',
         teamTypes: [target.typeName],
       ));
