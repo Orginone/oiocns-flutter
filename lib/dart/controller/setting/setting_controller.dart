@@ -74,6 +74,19 @@ class SettingController extends GetxController {
     return _user.value!;
   }
 
+  String findTargetShare(String id){
+    String targetName = "奥集能平台";
+    if(_user.value?.joinedFriend.isNotEmpty??false){
+       try{
+         targetName = _user.value!.joinedFriend.firstWhere((element) => element.id==id).team?.name??"";
+       }catch(e){
+         return targetName;
+       }
+    }
+
+    return targetName;
+  }
+
   String spaceName(ISpace space) {
     return space.id == user?.id ? "个人空间" : space.target.team?.name ?? "";
   }
@@ -185,6 +198,7 @@ class SettingController extends GetxController {
     _user.value = Person(person);
     _curSpace.value = null;
     await _user.value?.getJoinedCompanys();
+    await _user.value?.loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
   }
 
   ICompany? _findCompany(String id) {

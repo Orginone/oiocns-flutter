@@ -37,7 +37,7 @@ class CreateWorkPage
                         return Column(
                           children: [
                             CommonWidget.commonHeadInfoWidget(e.name ?? ""),
-                            ...e.operationItems.map((e) {
+                            ...e.items!.map((e) {
                               if(e
                                   .fields!
                                   .type == null){

@@ -1479,7 +1479,7 @@ class ApprovalModel {
 
 class DictModel {
   // 唯一ID
-  late String? id;
+  String? id;
 
   // 名称
   final String name;
@@ -1504,6 +1504,7 @@ class DictModel {
     required this.name,
     required this.public,
     required this.belongId,
+    required this.code,
     required this.speciesId,
     required this.remark,
   });
@@ -1572,6 +1573,7 @@ class DictItemModel {
     this.value,
     this.public,
     this.belongId,
+    this.dictId,
   });
 
   //通过JSON构造

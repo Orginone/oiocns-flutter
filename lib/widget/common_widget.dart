@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,6 +6,8 @@ import 'package:orginone/components/unified.dart';
 import 'package:orginone/config/color.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/widget/text_high_light.dart';
+
+typedef DocumentOperation =  Function(dynamic type,String data);
 
 class CommonWidget {
   static Widget commonCreateSubmitWidget({VoidCallback? draft,VoidCallback? submit}) {
@@ -441,11 +442,19 @@ class CommonWidget {
       {bool isSelected = false, ValueChanged<bool>? changed}) {
     return GestureDetector(
       child: isSelected
-          ? Icon(
-              CupertinoIcons.smallcircle_fill_circle_fill,
-              size: 32.w,
-              color: Colors.blue,
-            )
+          ? Container(
+           width: 32.w,
+            height: 32.w,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: XColors.themeColor,
+            ),
+            child: Icon(
+                Icons.done,
+                size: 24.w,
+                color: Colors.white,
+              ),
+          )
           : Icon(
               Icons.radio_button_off,
               size: 32.w,
@@ -674,6 +683,7 @@ class CommonWidget {
       margin: EdgeInsets.symmetric(horizontal: 15.w),
       padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 15.h),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: formItem,
       ),
     );
@@ -693,7 +703,7 @@ class CommonWidget {
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 10.w),
                     color: GYColors.formTitleBackgroundColor,
-                    height: 55.h,
+                    height: 60.h,
                     child: Text(title),
                   ),
                 ),
@@ -701,11 +711,15 @@ class CommonWidget {
                 Expanded(
                   flex: 2,
                   child: Container(
-
-                    padding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 10.w),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15.h, horizontal: 10.w),
                     color: Colors.white,
-                    height: 55.h,
-                    child: Text(content),
+                    height: 60.h,
+                    child: Text(
+                      content,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
               ],
@@ -721,10 +735,12 @@ class CommonWidget {
       required List<List<String>> content,
       double? contentWidth,
       bool showOperation = false,
-      ValueChanged<dynamic>? onOperation,
+        DocumentOperation? onOperation,
         List<PopupMenuItem>? popupMenus,
       }) {
     List<List<String>> data = [];
+
+
 
     for (int i = 0; i < title.length; i++) {
       List<String> key = [];
@@ -738,7 +754,7 @@ class CommonWidget {
     }
     if (showOperation) {
       var operation =
-          List.generate(data.first.length, (index) => index == 0 ? "操作" : "");
+          List.generate(data.first.length, (index) => index == 0 ? "操作" : index.toString());
       data.add(operation);
     }
 
@@ -746,10 +762,14 @@ class CommonWidget {
       return Container(
         margin: EdgeInsets.symmetric(horizontal: 10.w),
         alignment: Alignment.center,
-        constraints: BoxConstraints(minWidth: contentWidth ?? 120.w),
+        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w,maxWidth: 140.w),
+        decoration: BoxDecoration(
+            border: Border(right: BorderSide(color: Colors.grey.shade200,width: 0.5))
+        ),
         height: 50.h,
         child: Text(
           title,
+          style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 18.sp),
         ),
       );
     }
@@ -758,10 +778,14 @@ class CommonWidget {
       return Container(
         alignment: Alignment.center,
         margin: EdgeInsets.symmetric(horizontal: 10.w),
-        constraints: BoxConstraints(minWidth: contentWidth ?? 120.w,maxWidth: 200.w),
+        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w,maxWidth: 140.w),
         height: 50.h,
+        decoration: BoxDecoration(
+          border: Border(right: BorderSide(color: Colors.grey.shade200,width: 0.5))
+        ),
         child: Text(
           content,
+          style: TextStyle(color: Colors.grey,fontSize: 18.sp),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -804,7 +828,7 @@ class CommonWidget {
                         ).then((value) {
                            if(value!=null){
                              if (onOperation != null) {
-                               onOperation!(value);
+                               onOperation(value,data[0][index]);
                              }
                            }
                         });
@@ -822,5 +846,26 @@ class CommonWidget {
       ),
     );
   }
-}
 
+  static Widget commonPopupMenuButton<T>(
+      {PopupMenuItemSelected<T>? onSelected,
+    required List<PopupMenuItem<T>> items,
+    Color? color,
+    IconData? icon}
+  ) {
+    return Container(
+      height: 50.h,
+      color: color ?? Colors.white,
+      child: PopupMenuButton<T>(
+        icon: Icon(
+          icon ?? Icons.more_vert_outlined,
+          size: 32.w,
+        ),
+        itemBuilder: (BuildContext context) {
+          return items;
+        },
+        onSelected: onSelected,
+      ),
+    );
+  }
+}

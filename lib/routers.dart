@@ -33,6 +33,15 @@ import 'package:orginone/pages/setting/home/binding.dart';
 import 'package:orginone/pages/setting/home/view.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
+import 'package:orginone/pages/setting/person/cardbag/bindings.dart';
+import 'package:orginone/pages/setting/person/cardbag/index.dart';
+import 'package:orginone/pages/setting/person/dynamic/bindings.dart';
+import 'package:orginone/pages/setting/person/dynamic/index.dart';
+import 'package:orginone/pages/setting/person/mark/bindings.dart';
+import 'package:orginone/pages/setting/person/mark/view.dart';
+import 'package:orginone/pages/setting/person/security/bindings.dart';
+import 'package:orginone/pages/setting/person/security/index.dart';
+import 'package:orginone/pages/setting/person/view.dart';
 import 'package:orginone/pages/setting/publisher_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/pages/setting/unit_settings_page.dart';
@@ -73,14 +82,28 @@ import 'pages/other/work/process_details/view.dart';
 import 'pages/other/work/work_start/binding.dart';
 import 'pages/other/work/work_start/create_work/binding.dart';
 import 'pages/other/work/work_start/create_work/view.dart';
+import 'pages/setting/add_members/binding.dart';
+import 'pages/setting/add_members/view.dart';
+import 'pages/setting/classification_info/binding.dart';
+import 'pages/setting/classification_info/dict_details/binding.dart';
+import 'pages/setting/classification_info/dict_details/view.dart';
+import 'pages/setting/classification_info/view.dart';
+import 'pages/setting/cohort_info/binding.dart';
+import 'pages/setting/cohort_info/view.dart';
 import 'pages/setting/company_info/binding.dart';
 import 'pages/setting/company_info/view.dart';
 import 'pages/setting/department_info/binding.dart';
 import 'pages/setting/department_info/view.dart';
 import 'pages/setting/out_agency_info/binding.dart';
 import 'pages/setting/out_agency_info/view.dart';
+import 'pages/setting/permission_info/binding.dart';
+import 'pages/setting/permission_info/view.dart';
 import 'pages/setting/relationship_group/binding.dart';
 import 'pages/setting/relationship_group/view.dart';
+import 'pages/setting/role_settings/binding.dart';
+import 'pages/setting/role_settings/view.dart';
+import 'pages/setting/station_info/binding.dart';
+import 'pages/setting/station_info/view.dart';
 
 class Routers {
   // 首页
@@ -187,6 +210,34 @@ class Routers {
   //外部机构详情
   static const String outAgencyInfo = '/outAgencyInfo';
 
+  //岗位详情
+  static const String stationInfo = '/stationInfo';
+
+  //单位群组详情
+  static const String cohortInfo = '/cohortInfo';
+
+  //角色设置
+  static const String roleSettings = '/roleSettings';
+
+  //添加角色
+  static const String addMembers = '/addMembers';
+
+  //个人中心
+  static const String personPage = "/personPage";
+
+  static const String cardbag = "/cardbag";
+  static const String dynamic = "/dynamic";
+  static const String mark = "/mark";
+  static const String security = "/security";
+
+  //权限标准详情
+  static const String permissionInfo = "/permissionInfo";
+
+  //分类标准详情
+  static const String classificationInfo = "/classificationInfo";
+
+  //字段定义详情
+  static const String dictDetails = "/dictDetails";
 
   static String get main {
     return login;
@@ -221,7 +272,6 @@ class Routers {
           RecentlyOpenedBinding(),
           OftenUseBinding(),
           UpdateBinding(),
-
         ],
       ),
       GetPage(
@@ -436,6 +486,66 @@ class Routers {
         name: Routers.outAgencyInfo,
         page: () => OutAgencyInfoPage(),
         binding: OutAgencyInfoBinding(),
+      ),
+      GetPage(
+        name: Routers.stationInfo,
+        page: () => StationInfoPage(),
+        binding: StationInfoBinding(),
+      ),
+      GetPage(
+        name: Routers.cohortInfo,
+        page: () => CohortInfoPage(),
+        binding: CohortInfoBinding(),
+      ),
+      GetPage(
+        name: Routers.roleSettings,
+        page: () => RoleSettingsPage(),
+        binding: RoleSettingsBinding(),
+      ),
+      GetPage(
+        name: Routers.addMembers,
+        page: () => AddMembersPage(),
+        binding: AddMembersBinding(),
+      ),
+      GetPage(
+        name: Routers.personPage,
+        page: () => PersonPage(),
+        binding: PersonBinding(),
+      ),
+      GetPage(
+        name: Routers.permissionInfo,
+        page: () => PermissionInfoPage(),
+        binding: PermissionInfoBinding(),
+      ),
+      GetPage(
+        name: Routers.classificationInfo,
+        page: () => ClassificationInfoPage(),
+        binding: ClassificationInfoBinding(),
+      ),
+      GetPage(
+        name: Routers.mark,
+        page: () => MarkPage(),
+        binding: MarkBinding(),
+      ),
+      GetPage(
+        name: Routers.dictDetails,
+        page: () => DictDetailsPage(),
+        binding: DictDetailsBinding(),
+      ),
+      GetPage(
+        name: Routers.dynamic,
+        page: () => DynamicPage(),
+        binding: DynamicBinding(),
+      ),
+      GetPage(
+        name: Routers.security,
+        page: () => SecurityPage(),
+        binding: SecurityBinding(),
+      ),
+      GetPage(
+        name: Routers.cardbag,
+        page: () => CardbagPage(),
+        binding: CardbagBinding(),
       ),
     ];
   }

@@ -20,23 +20,10 @@ class CompanyInfoState extends BaseGetState {
   var index = 0.obs;
 }
 
+
 List<String> tabTitle = [
   "单位成员",
   "加入集团",
 ];
 
-List<String> docTitle = [
-  "账号",
-  "昵称",
-  "姓名",
-  "手机号",
-  "签名",
-];
 
-List<String> groupTitle = [
-  "集团简称",
-  "集团编码",
-  "集团全称",
-  "集团代码",
-  "集团简介",
-];

@@ -398,61 +398,61 @@ class XOperationRelationArray {
 //权限定义
 class XAuthority {
   // 雪花ID
-  final String id;
+   String? id;
 
   // 名称
-  String name;
+  String? name;
 
   // 编号
-  String code;
+  String? code;
 
   // 备注
-  String remark;
+  String? remark;
 
   // 公开的
-  bool public;
+  bool? public;
 
-  // 上级权限ID
-  final String parentId;
+  String? parentId;
 
   // 创建组织/个人
-  final String belongId;
+  String? belongId;
 
   // 状态
-  final int status;
+  int? status;
 
   // 创建人员ID
-  final String createUser;
+  String? createUser;
 
   // 更新人员ID
-  final String updateUser;
+  String? updateUser;
 
   // 修改次数
-  final String version;
+  String? version;
 
   // 创建时间
-  final String createTime;
+  String? createTime;
 
   // 更新时间
-  String updateTime;
+  String? updateTime;
 
-  // 上下级权限
-  final XAuthority? parent;
+  // 上下级职权
+  XAuthority? parent;
 
-  // 上下级权限
-  final List<XAuthority>? nodes;
+  // 上下级职权
+  List<XAuthority>? nodes;
 
-  // 创建权限标准的组织/个人
-  final XTarget? belong;
+  // 创建职权标准的组织/个人
+  XTarget? belong;
+
 
   // 职权对应的身份
-  final List<XIdentity>? identitys;
+  List<XIdentity>? identitys;
 
   // 职权可操作的类别
-  final List<XSpecies>? authSpecies;
+  List<XSpecies>? authSpecies;
 
   // 职权可操作的度量
-  final List<XAttribute>? autAttrs;
+  List<XAttribute>? autAttrs;
 
   //构造方法
   XAuthority({
@@ -478,26 +478,51 @@ class XAuthority {
   });
 
   //通过JSON构造
-  XAuthority.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        name = json["name"],
-        code = json["code"],
-        remark = json["remark"],
-        public = json["public"],
-        parentId = json["parentId"],
-        belongId = json["belongId"],
-        status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"],
-        parent = XAuthority.fromJson(json["parent"]),
-        nodes = XAuthority.fromList(json["nodes"]),
-        belong = XTarget.fromJson(json["belong"]),
-        identitys = XIdentity.fromList(json["identitys"]),
-        authSpecies = XSpecies.fromList(json["authSpecies"]),
-        autAttrs = XAttribute.fromList(json["autAttrs"]);
+  XAuthority.fromJson(Map<String, dynamic> json) {
+    id = json["id"];
+    name = json["name"];
+    code = json["code"];
+    remark = json["remark"];
+    public = json["public"];
+    parentId = json["parentId"];
+    belongId = json["belongId"];
+    status = json["status"];
+    createUser = json["createUser"];
+    updateUser = json["updateUser"];
+    version = json["version"];
+    createTime = json["createTime"];
+    updateTime = json["updateTime"];
+    parent =
+        json["parent"] != null ? XAuthority.fromJson(json["parent"]) : null;
+    belong = json["belong"] != null ? XTarget.fromJson(json["belong"]) : null;
+
+    if (json["nodes"] != null) {
+      nodes = [];
+      json["nodes"].forEach((json) {
+        nodes!.add(XAuthority.fromJson(json));
+      });
+    }
+
+    if (json["identitys"] != null) {
+      identitys = [];
+      json["identitys"].forEach((json) {
+        identitys!.add(XIdentity.fromJson(json));
+      });
+    }
+
+    if (json["authSpecies"] != null) {
+      authSpecies = [];
+      json["authSpecies"].forEach((json) {
+        authSpecies!.add(XSpecies.fromJson(json));
+      });
+    }
+    if (json["autAttrs"] != null) {
+      autAttrs = [];
+      json["autAttrs"].forEach((json) {
+        autAttrs!.add(XAttribute.fromJson(json));
+      });
+    }
+  }
 
   //通过动态数组解析成List
   static List<XAuthority> fromList(List<Map<String, dynamic>>? list) {
@@ -734,16 +759,16 @@ class XDict {
 //字典类型查询返回集合
 class XDictArray {
   // 便宜量
-  final int offset;
+  int? offset;
 
   // 最大数量
-  final int limit;
+  int? limit;
 
   // 总数
-  final int total;
+  int? total;
 
   // 结果
-  final List<XDict>? result;
+  List<XDict>? result;
 
   //构造方法
   XDictArray({
@@ -754,11 +779,17 @@ class XDictArray {
   });
 
   //通过JSON构造
-  XDictArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XDict.fromList(json["result"]);
+  XDictArray.fromJson(Map<String, dynamic> json){
+    offset = json["offset"];
+    limit = json["limit"];
+    total = json["total"];
+    if(json["result"]!=null){
+      result = [];
+      json["result"].forEach((json){
+        result!.add(XDict.fromJson(json));
+      });
+    }
+  }
 
   //通过动态数组解析成List
   static List<XDictArray> fromList(List<Map<String, dynamic>>? list) {
@@ -1397,10 +1428,10 @@ class XFlowInstance {
   List<XFlowTaskHistory>? historyTasks;
 
   // 填写的表单Id集合
-  late String operationIds;
+  String? operationIds;
 
   // 物的Id集合
-  late String thingIds;
+  String? thingIds;
 
   //构造方法
   XFlowInstance({
@@ -1701,34 +1732,34 @@ class XFlowInstanceArray {
 //流程定义节点
 class XFlowNode {
   // 雪花ID
-  late String id;
+  String? id;
 
   // 节点编号
-  late String code;
+  String? code;
 
   // 节点类型
-  late String nodeType;
+  String? nodeType;
 
   // 节点名称
-  late String name;
+  String? name;
 
   // 审批数量
-  late int count;
+   int? count;
 
   // 节点审批操作人类型 暂只支持 '角色'
-  late String destType;
+  String? destType;
 
   // 节点审批操作Id 如 '角色Id'
-  late int destId;
+  dynamic destId;
 
   // 节点审批操作名称 如 '角色名称'
-  late String destName;
+  String? destName;
 
   // 节点归属
-  late String belongId;
+  String? belongId;
 
   // 节点绑定的表单
-  late List<XOperation> bindOperations;
+  List<XOperation>? bindOperations;
 
   //绑定基本信息
   // List<XBindOperation>? bindOperations;
@@ -1760,7 +1791,7 @@ class XFlowNode {
     if (json['bindOperations'] != null) {
       bindOperations = [];
       json['bindOperations'].forEach((json) {
-        bindOperations.add(XOperation.fromJson(json));
+        bindOperations!.add(XOperation.fromJson(json));
       });
     }
   }
@@ -2273,6 +2304,9 @@ class XFlowTask {
   // 节点分配目标Id
   String? identityId;
 
+  // 审批人员
+   String? personIds;
+
   // 状态
   int? status;
 
@@ -2301,14 +2335,16 @@ class XFlowTask {
   XFlowInstance? flowInstance;
 
   // 流程节点记录
-  late XFlowNode? node;
-
+  XFlowNode? node;
+  // 流程节点记录
+  List<XFlowRecord>? flowRecords;
   //构造方法
   XFlowTask({
     required this.id,
     required this.nodeId,
     required this.instanceId,
     required this.identityId,
+    required this.personIds,
     required this.status,
     required this.createUser,
     required this.updateUser,
@@ -2340,6 +2376,12 @@ class XFlowTask {
         ? XFlowInstance.fromJson(json["instance"])
         : null;
     node = json["node"] != null ? XFlowNode.fromJson(json["node"]) : null;
+    if (json["records"] != null) {
+      flowRecords = [];
+      json["records"].forEach((json) {
+        flowRecords!.add(XFlowRecord.fromJson(json));
+      });
+    }
   }
 
   //通过动态数组解析成List
@@ -2788,64 +2830,60 @@ class XIdProofArray {
 //角色
 class XIdentity {
   // 雪花ID
-  final String id;
+  String? id;
 
   // 名称
-  String name;
+  String? name;
 
   // 编号
-  String code;
+  String? code;
 
   // 备注
-  String remark;
+  String? remark;
 
-  // 权限Id
-  final String authId;
+  String? authId;
 
   // 创建组织/个人
-  final String belongId;
+   String? belongId;
 
   // 状态
-  final int status;
+   int? status;
 
   // 创建人员ID
-  final String createUser;
+   String? createUser;
 
   // 更新人员ID
-  final String updateUser;
+   String? updateUser;
 
   // 修改次数
-  final String version;
+   String? version;
 
   // 创建时间
-  final String createTime;
+   String? createTime;
 
   // 更新时间
-  String updateTime;
+  String? updateTime;
 
   // 身份证明
-  final List<XIdProof>? idProofs;
+   List<XIdProof>? idProofs;
 
   // 身份集关系
-  final List<XTeamIdentity>? identityTeams;
+   List<XTeamIdentity>? identityTeams;
 
-  // 赋予角色的组织/个人
-  final List<XTarget>? givenTargets;
+   List<XTarget>? givenTargets;
+  // 身份所属的未完成流程的任务
+   List<XFlowTask>? flowTasks;
 
   // 身份所属的未完成流程的任务
-  final List<XFlowTask>? flowTasks;
-
-  // 身份所属的未完成流程的任务
-  final List<XFlowTaskHistory>? flowTaskHistory;
+   List<XFlowTaskHistory>? flowTaskHistory;
 
   // 身份集对于组织
-  final List<XTeam>? teams;
+   List<XTeam>? teams;
 
-  // 角色的类别
-  final XAuthority? authority;
+   XAuthority? authority;
 
-  // 创建角色的组织/个人
-  final XTarget? belong;
+  // 创建身份的组织/个人
+   XTarget? belong;
 
   //构造方法
   XIdentity({
@@ -2872,27 +2910,64 @@ class XIdentity {
   });
 
   //通过JSON构造
-  XIdentity.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        name = json["name"],
-        code = json["code"],
-        remark = json["remark"],
-        authId = json["authId"],
-        belongId = json["belongId"],
-        status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"],
-        idProofs = XIdProof.fromList(json["idProofs"]),
-        identityTeams = XTeamIdentity.fromList(json["identityTeams"]),
-        givenTargets = XTarget.fromList(json["givenTargets"]),
-        flowTasks = XFlowTask.fromList(json["flowTasks"]),
-        flowTaskHistory = XFlowTaskHistory.fromList(json["flowTaskHistory"]),
-        teams = XTeam.fromList(json["teams"]),
-        authority = XAuthority.fromJson(json["authority"]),
-        belong = XTarget.fromJson(json["belong"]);
+  XIdentity.fromJson(Map<String, dynamic> json){
+    id = json["id"];
+    name = json["name"];
+    code = json["code"];
+    remark = json["remark"];
+    authId = json["authId"];
+    belongId = json["belongId"];
+    status = json["status"];
+    createUser = json["createUser"];
+    updateUser = json["updateUser"];
+    version = json["version"];
+    createTime = json["createTime"];
+    updateTime = json["updateTime"];
+
+    if(json["idProofs"]!=null){
+      idProofs = [];
+      json["idProofs"].forEach((json){
+        idProofs!.add(XIdProof.fromJson(json));
+      });
+    }
+
+    if(json["identityTeams"]!=null){
+      identityTeams = [];
+      json["identityTeams"].forEach((json){
+        identityTeams!.add(XTeamIdentity.fromJson(json));
+      });
+    }
+
+    if(json["givenTargets"]!=null){
+      givenTargets = [];
+      json["givenTargets"].forEach((json){
+        givenTargets!.add(XTarget.fromJson(json));
+      });
+    }
+
+    if(json["flowTasks"]!=null){
+      flowTasks = [];
+      json["flowTasks"].forEach((json){
+        flowTasks!.add(XFlowTask.fromJson(json));
+      });
+    }
+
+    if(json["flowTaskHistory"]!=null){
+      flowTaskHistory = [];
+      json["flowTaskHistory"].forEach((json){
+        flowTaskHistory!.add(XFlowTaskHistory.fromJson(json));
+      });
+    }
+
+    if(json["teams"]!=null){
+      teams = [];
+      json["teams"].forEach((json){
+        teams!.add(XTeam.fromJson(json));
+      });
+    }
+    authority = json["authority"]!=null?XAuthority.fromJson(json["authority"]):null;
+    belong = json["belong"]!=null?XTarget.fromJson(json["belong"]):null;
+  }
 
   //通过动态数组解析成List
   static List<XIdentity> fromList(List<Map<String, dynamic>>? list) {
@@ -2938,16 +3013,16 @@ class XIdentity {
 //角色查询返回集合
 class XIdentityArray {
   // 便宜量
-  final int offset;
+   int? offset;
 
   // 最大数量
-  final int limit;
+   int? limit;
 
   // 总数
-  final int total;
+  int? total;
 
   // 结果
-  final List<XIdentity>? result;
+   List<XIdentity>? result;
 
   //构造方法
   XIdentityArray({
@@ -2958,11 +3033,17 @@ class XIdentityArray {
   });
 
   //通过JSON构造
-  XIdentityArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XIdentity.fromList(json["result"]);
+  XIdentityArray.fromJson(Map<String, dynamic> json){
+    offset = json["offset"];
+    limit = json["limit"];
+    total = json["total"];
+    if(json["result"]!=null){
+      result = [];
+      json["result"].forEach((json){
+        result!.add(XIdentity.fromJson(json));
+      });
+    }
+  }
 
   //通过动态数组解析成List
   static List<XIdentityArray> fromList(List<Map<String, dynamic>>? list) {
@@ -3861,60 +3942,60 @@ class XMerchandiseArray {
 //业务操作定义
 class XOperation {
   // 雪花ID
-  final String id;
+  String? id;
 
   // 名称
-  final String name;
+   String? name;
 
   // 编号
-  final String code;
+   String? code;
 
   // 公开的
-  final bool public;
+   bool? public;
 
   // 备注
-  final String remark;
+   String? remark;
 
   // 类别ID
-  final String speciesId;
+   String? speciesId;
 
   // 创建组织/个人
-  final String belongId;
+   String? belongId;
 
   // 绑定的流程ID
-  // final String? defineId;
+   String? defineId;
 
   // 角色ID
-  // final String? beginAuthId;
+   String? beginAuthId;
 
   // 状态
-  final int status;
+   int? status;
 
   // 创建人员ID
-  final String createUser;
+   String? createUser;
 
   // 更新人员ID
-  final String updateUser;
+   String? updateUser;
 
   // 修改次数
-  final String version;
+   String? version;
 
   // 创建时间
-  final String createTime;
+   String? createTime;
 
   // 更新时间
-  final String updateTime;
+   String? updateTime;
   // 绑定的流程
-  // final XFlowDefine? flow;
+   XFlowDefine? flow;
 
   // 业务单详情项
-  final List<XOperationItem>? items;
+  List<XOperationItem>? items;
 
   // 业务单针对的分类
-  final XSpecies? species;
+  XSpecies? species;
 
   // 创建度量标准的组织/个人
-  final XTarget? belong;
+  XTarget? belong;
 
   //构造方法
   XOperation({
@@ -3933,27 +4014,39 @@ class XOperation {
     required this.updateTime,
     required this.items,
     required this.species,
-    required this.belong,
+    this.belong,
+    required this.beginAuthId,
+    required this.defineId,
+    required this.flow,
   });
 
   //通过JSON构造
-  XOperation.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        name = json["name"],
-        code = json["code"],
-        public = json["public"],
-        remark = json["remark"],
-        speciesId = json["speciesId"],
-        belongId = json["belongId"],
-        status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"],
-        items = XOperationItem.fromList(json["items"]),
-        species = XSpecies.fromJson(json["species"]),
-        belong = XTarget.fromJson(json["belong"]);
+  XOperation.fromJson(Map<String, dynamic> json){
+    id = json["id"];
+    name = json["name"];
+    code = json["code"];
+    public = json["public"];
+    remark = json["remark"];
+    speciesId = json["speciesId"];
+    belongId = json["belongId"];
+    beginAuthId = json["beginAuthId"];
+    defineId = json["defineId"];
+    status = json["status"];
+    createUser = json["createUser"];
+    updateUser = json["updateUser"];
+    version = json["version"];
+    createTime = json["createTime"];
+    updateTime = json["updateTime"];
+    flow = json["flow"]!=null?XFlowDefine.fromJson(json["flow"]):null;
+    if(json["items"]!=null){
+      items = [];
+      json["items"].forEach((json){
+        items!.add(XOperationItem.fromJson(json));
+      });
+    }
+    species = json["species"]!=null?XSpecies.fromJson(json["species"]):null;
+    belong = json["belong"]!=null?XTarget.fromJson(json["belong"]):null;
+  }
 
   //通过动态数组解析成List
   static List<XOperation> fromList(List<Map<String, dynamic>>? list) {
@@ -3969,6 +4062,27 @@ class XOperation {
     return retList;
   }
 
+  Future<void> getOperationItems() async {
+    var settingCtrl = Get.find<SettingController>();
+    var space = settingCtrl.space;
+    ResultType<XOperationItemArray> result = await KernelApi.getInstance()
+        .queryOperationItems(IdSpaceReq(
+        id: id!,
+        spaceId: space.id,
+        page: PageRequest(offset: 0, limit: 20, filter: '')));
+    items = result.data?.result ?? [];
+    for (var element in items!) {
+      if (element.rule?.widget == "dict") {
+        XAttribute? attr = await CommonTreeManagement().findXAttribute(
+            specieId: speciesId!, attributeId: element.attrId ?? "");
+        if (attr != null) {
+          element.rule!.dictItems = attr.dict!.dictItems;
+        }
+      }
+      element.fields = element.toFields();
+    }
+  }
+
   //转成JSON
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -3979,6 +4093,8 @@ class XOperation {
     json["remark"] = remark;
     json["speciesId"] = speciesId;
     json["belongId"] = belongId;
+    json["defineId"] = defineId;
+    json["beginAuthId"] = beginAuthId;
     json["status"] = status;
     json["createUser"] = createUser;
     json["updateUser"] = updateUser;
@@ -3986,6 +4102,7 @@ class XOperation {
     json["createTime"] = createTime;
     json["updateTime"] = updateTime;
     json["items"] = items;
+    json["flow"] = flow;
     json["species"] = species?.toJson();
     json["belong"] = belong?.toJson();
     return json;

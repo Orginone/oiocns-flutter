@@ -55,6 +55,7 @@ class Person extends MarketTarget implements IPerson {
     extendTargetType = [TargetType.cohort, TargetType.person];
     joinedCompany = <ICompany>[].obs;
     joinedFriend = <XTarget>[].obs;
+    cohorts = [];
   }
 
   @override
@@ -140,6 +141,7 @@ class Person extends MarketTarget implements IPerson {
     if (!reload && joinedCompany.isNotEmpty) {
       return joinedCompany;
     }
+    joinedCompany.clear();
     final res = await getjoinedTargets(companyTypes, id);
     if (res.result != null) {
       for (var a in res.result!) {

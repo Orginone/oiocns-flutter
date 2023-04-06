@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/pages/setting/config.dart';
+import 'package:orginone/pages/setting/widget.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 
@@ -21,9 +23,38 @@ class CompanyInfoPage
             SizedBox(
               height: 10.h,
             ),
-            CommonWidget.commonNonIndicatorTabBar(state.tabController, tabTitle,onTap: (index){
-              controller.changeView(index);
-            }),
+            Container(
+              color: Colors.white,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CommonWidget.commonNonIndicatorTabBar(
+                        state.tabController, tabTitle, onTap: (index) {
+                      controller.changeView(index);
+                    }),
+                  ),
+                  CommonWidget.commonPopupMenuButton(
+                      items: const [
+                        PopupMenuItem(
+                          value: CompanyFunction.roleSettings,
+                          child: Text("角色设置"),
+                        ),
+                        PopupMenuItem(
+                          value: CompanyFunction.addUser,
+                          child: Text("邀请成员"),
+                        ),
+                        PopupMenuItem(
+                          value: CompanyFunction.addGroup,
+                          child: Text("加入集团"),
+                        ),
+                      ],
+                      onSelected: (CompanyFunction function) {
+                        controller.companyOperation(function);
+                      },
+                      color: Colors.transparent),
+                ],
+              ),
+            ),
             body(),
           ],
         ),
@@ -31,9 +62,9 @@ class CompanyInfoPage
     );
   }
 
-  Widget body(){
-    return  Obx(() {
-      if(state.index.value == 1){
+  Widget body() {
+    return Obx(() {
+      if (state.index.value == 1) {
         List<List<String>> groupContent = [];
         for (var group in state.joinGroup) {
           groupContent.add([
@@ -49,24 +80,13 @@ class CompanyInfoPage
           content: groupContent,
         );
       }
-      List<List<String>> docContent = [];
-      for (var user in state.unitMember) {
-        docContent.add([
-          user.code,
-          user.name,
-          user.team?.name ?? "",
-          user.team?.code ?? "",
-          user.team?.remark ?? ""
-        ]);
-      }
-      return CommonWidget.commonDocumentWidget(
-          title: docTitle,
-          content: docContent,
-          showOperation: true,
-          popupMenus: [
-            const PopupMenuItem(value: 'out', child: Text("踢出")),
+      return UserDocument(
+          popupMenus: const [
+            PopupMenuItem(value: 'out', child: Text("踢出")),
           ],
-          onOperation: (str) {});
+          onOperation: (type,data) {
+            controller.removeMember(data);
+          }, unitMember: state.unitMember.value,);
     });
   }
 
