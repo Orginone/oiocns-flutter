@@ -1781,7 +1781,7 @@ class XFlowNode {
   XFlowNode.fromJson(Map<String, dynamic> json) {
     id = json["id"];
     code = json["code"];
-    code = json["nodeType"];
+    nodeType = json["nodeType"];
     name = json["name"];
     count = json["count"];
     destType = json["destType"];
