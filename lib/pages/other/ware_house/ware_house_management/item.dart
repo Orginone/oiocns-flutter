@@ -3,9 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/market/model.dart';
 import 'package:orginone/dart/core/thing/ispecies.dart';
+import 'package:orginone/images.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_utils.dart';
-import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 class ApplicationItem extends StatelessWidget {
   final IProduct product;
@@ -184,25 +185,31 @@ class GbItem extends StatelessWidget {
     if (!showPopupMenu) {
       return Container();
     }
-    return CommonWidget.commonPopupMenuButton(
-      items: [
-        const PopupMenuItem(
-          value: "createThing",
-          child: Text("新建文件夹"),
-        ),
-        const PopupMenuItem(
-          value: "createThing",
-          child: Text("刷新文件夹"),
-        ),
-        const PopupMenuItem(
-          value: "createThing",
-          child: Text("上传文件"),
-        ),
-        const PopupMenuItem(
-          value: "createThing",
-          child: Text("创建实体"),
-        ),
-      ],
+    return PopupMenuButton(
+      icon: Icon(
+        Icons.more_vert_outlined,
+        size: 32.w,
+      ),
+      itemBuilder: (BuildContext context) {
+        return [
+          const PopupMenuItem(
+            value: "createThing",
+            child: Text("新建文件夹"),
+          ),
+          const PopupMenuItem(
+            value: "createThing",
+            child: Text("刷新文件夹"),
+          ),
+          const PopupMenuItem(
+            value: "createThing",
+            child: Text("上传文件"),
+          ),
+          const PopupMenuItem(
+            value: "createThing",
+            child: Text("创建实体"),
+          ),
+        ];
+      },
     );
   }
 }

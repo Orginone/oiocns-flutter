@@ -4294,7 +4294,7 @@ class XOperationItem {
   Fields toFields() {
     String? type;
     String? router;
-    if (rule?.widget == "text" || rule?.widget == "number") {
+    if (rule?.widget == "text" || rule?.widget == "number" || rule?.widget == 'money') {
       type = "input";
     } else if (rule?.widget == "dict" ||
         (rule?.widget?.contains('date') ?? false)) {

@@ -7,12 +7,11 @@ import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/pages/index/index_page.dart';
-import 'package:orginone/pages/index/widgets/dataMonitoring.dart';
+import 'package:orginone/pages/other/assets_internal_control/view.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
 import '../../../dart/core/getx/base_get_view.dart';
-import '../../index/index_page.dart';
 
 class FunctionPage extends BaseGetPageView<FunctionController, FunctionState> {
   @override
@@ -25,10 +24,9 @@ class FunctionPage extends BaseGetPageView<FunctionController, FunctionState> {
             controller: state.tabController,
             children: [
               IndexPage(),
+              KeepAliveWidget(child: AssetsInternalControlPage()),
               Container(),
-              Container(
-                child: DataMonitoring(),
-              ),
+              Container(),
               Container(),
               Container(),
               Container(),
@@ -71,8 +69,8 @@ class FunctionPage extends BaseGetPageView<FunctionController, FunctionState> {
         ),
         GestureDetector(
           onTap: () {},
-          child: const Padding(
-              padding: EdgeInsets.all(8.0),
+          child: Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Icon(
                 Icons.more_vert,
               )),
@@ -100,5 +98,13 @@ class FunctionState extends BaseGetState {
   late TabController tabController;
 }
 
-// TODO 单位管理员显示控制台
-const List<String> tabTitle = ["首页", "工作台", "看板", "新闻", "共享", "交易"];
+const List<String> tabTitle = [
+  "工作台",
+  "资产管家",
+  "一警一档",
+  "看板",
+  "新闻",
+  "共享",
+  "交易"
+];
+
