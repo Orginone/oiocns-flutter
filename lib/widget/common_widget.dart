@@ -760,9 +760,9 @@ class CommonWidget {
 
     Widget titleWidget(String title) {
       return Container(
-        margin: EdgeInsets.symmetric(horizontal: 10.w),
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
         alignment: Alignment.center,
-        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w,maxWidth: 140.w),
+        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w,maxWidth: title == "操作"?60.w:170.w),
         decoration: BoxDecoration(
             border: Border(right: BorderSide(color: Colors.grey.shade200,width: 0.5))
         ),
@@ -777,8 +777,8 @@ class CommonWidget {
     Widget contentWidget(String content) {
       return Container(
         alignment: Alignment.center,
-        margin: EdgeInsets.symmetric(horizontal: 10.w),
-        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w,maxWidth: 140.w),
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
+        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w,maxWidth: 170.w),
         height: 50.h,
         decoration: BoxDecoration(
           border: Border(right: BorderSide(color: Colors.grey.shade200,width: 0.5))
@@ -834,6 +834,7 @@ class CommonWidget {
                         });
                       },
                       child: SizedBox(
+                        width: 40.w,
                         height: 50.h,
                         child: const Icon(Icons.more_horiz),
                       ),

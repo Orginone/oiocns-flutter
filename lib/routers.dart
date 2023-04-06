@@ -104,6 +104,8 @@ import 'pages/setting/role_settings/binding.dart';
 import 'pages/setting/role_settings/view.dart';
 import 'pages/setting/station_info/binding.dart';
 import 'pages/setting/station_info/view.dart';
+import 'pages/setting/user_info/binding.dart';
+import 'pages/setting/user_info/view.dart';
 
 class Routers {
   // 首页
@@ -149,7 +151,7 @@ class Routers {
   static const String companyInfo = "/companyInfo";
   static const String publisher = "/publisher";
   static const String version = "/version";
-
+  static const String userInfo = "/userInfo";
   // 仓库相关
   // 资产管理
   static const String assetsManagement = "/assetsManagement";
@@ -546,6 +548,11 @@ class Routers {
         name: Routers.cardbag,
         page: () => CardbagPage(),
         binding: CardbagBinding(),
+      ),
+      GetPage(
+        name: Routers.userInfo,
+        page: () => UserInfoPage(),
+        binding: UserInfoBinding(),
       ),
     ];
   }

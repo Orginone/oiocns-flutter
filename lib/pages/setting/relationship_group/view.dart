@@ -83,6 +83,11 @@ class RelationGroupPage
                 },);
             }
           }
+          return Item(cohort: item, nextLv: () {
+            controller.nextLv(cohort: item);
+          },onTap: (){
+            controller.onTap(cohort: item);
+          });
         },
         itemCount: state.groupData.value.length ?? 0,
       );

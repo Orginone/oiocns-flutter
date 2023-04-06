@@ -216,17 +216,13 @@ class BaseTarget extends ITarget {
   /// @param typeName 对象
   /// @returns
   Future<bool> applyJoin(String destId, TargetType typeName) async {
-    if (joinTargetType.contains(typeName.name as TargetType)) {
-      final res = await kernel.applyJoinTeam(JoinTeamModel(
-        id: destId,
-        targetId: target.id,
-        teamType: typeName.name,
-        targetType: target.typeName,
-      ));
-      return res.success;
-    }
-    // logger.warn(unAuthorizedError);
-    return false;
+    final res = await kernel.applyJoinTeam(JoinTeamModel(
+      id: destId,
+      targetId: target.id,
+      teamType: typeName.name,
+      targetType: target.typeName,
+    ));
+    return res.success;
   }
 
   /// 取消加入组织/个人
