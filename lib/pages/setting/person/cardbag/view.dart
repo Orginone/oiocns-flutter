@@ -156,7 +156,7 @@ class _CardbagViewGetX extends GetView<CardbagController> {
                           size: 30,
                         )
                       ]),
-                  const Row(
+                  Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('账户余额：￥180.00',
@@ -216,7 +216,7 @@ class _CardbagViewGetX extends GetView<CardbagController> {
                         size: 30,
                       )
                     ]),
-                const Row(
+                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('账户余额：￥180.00',

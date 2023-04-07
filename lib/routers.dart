@@ -8,6 +8,8 @@ import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
 import 'package:orginone/pages/index/index_page.dart';
 import 'package:orginone/pages/index/news/searchBarWidget.dart';
+import 'package:orginone/pages/login/binding.dart';
+import 'package:orginone/pages/login/view.dart';
 // import 'package:orginone/pages/index/indexok_page.dart';
 import 'package:orginone/pages/other/add_asset/binding.dart';
 import 'package:orginone/pages/other/add_asset/view.dart';
@@ -19,7 +21,6 @@ import 'package:orginone/pages/other/choice_thing/binding.dart';
 import 'package:orginone/pages/other/file/view.dart';
 import 'package:orginone/pages/other/home/home_page.dart';
 import 'package:orginone/pages/other/home/spaces_page.dart';
-import 'package:orginone/pages/other/login.dart';
 import 'package:orginone/pages/other/qr_scan/binding.dart';
 import 'package:orginone/pages/other/qr_scan/view.dart';
 import 'package:orginone/pages/other/scanning/scanning_page.dart';
@@ -63,6 +64,10 @@ import './pages/other/home/ware_house/market/market_page.dart';
 import './pages/other/home/ware_house/often_use_binding.dart';
 // 仓库
 import './pages/other/home/ware_house/recently_opened_binding.dart';
+import 'pages/login/register/binding.dart';
+import 'pages/login/register/view.dart';
+import 'pages/login/verification_code/binding.dart';
+import 'pages/login/verification_code/view.dart';
 import 'pages/other/add_friend/add_friend.dart';
 import 'pages/other/choice_gb/binding.dart';
 import 'pages/other/choice_gb/view.dart';
@@ -116,6 +121,14 @@ class Routers {
 
   // 登录
   static const String login = "/login";
+
+  //验证码
+  static const String verificationCode = "/verificationCode";
+
+  //注册
+  static const String register = "/register";
+
+
 
   // 空间选择
   static const String spaces = "/spaces";
@@ -290,8 +303,18 @@ class Routers {
     return [
       GetPage(
         name: Routers.login,
-        page: () => const LoginPage(),
+        page: () => LoginPage(),
         bindings: [SettingBinding(), ChatBinding(), LoginBinding()],
+      ),
+      GetPage(
+        name: Routers.verificationCode,
+        page: () => VerificationCodePage(),
+        binding:VerificationCodeBinding(),
+      ),
+      GetPage(
+        name: Routers.register,
+        page: () => RegisterPage(),
+        bindings: [SettingBinding(), RegisterBinding()],
       ),
       GetPage(
         name: Routers.home,

@@ -439,25 +439,25 @@ class CommonWidget {
   }
 
   static commonMultipleChoiceButtonWidget(
-      {bool isSelected = false, ValueChanged<bool>? changed}) {
+      {bool isSelected = false, ValueChanged<bool>? changed,double? iconSize}) {
     return GestureDetector(
       child: isSelected
           ? Container(
-           width: 32.w,
-            height: 32.w,
+           width: iconSize??32.w,
+            height: iconSize??32.w,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
               color: XColors.themeColor,
             ),
             child: Icon(
                 Icons.done,
-                size: 24.w,
+                size: 20.w,
                 color: Colors.white,
               ),
           )
           : Icon(
               Icons.radio_button_off,
-              size: 32.w,
+              size: iconSize??32.w,
             ),
       onTap: () {
         if (changed != null) {

@@ -115,7 +115,8 @@ class KernelApi {
     }
     var res = ResultType.fromJson(raw);
     if (res.success) {
-      _anystore.updateToken(res.data ?? "");
+      HiveUtils.putUser(UserModel.fromJson(raw['data']));
+      _anystore.updateToken(res.data["accessToken"]);
     }
     return res;
   }

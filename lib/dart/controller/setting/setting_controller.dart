@@ -168,12 +168,15 @@ class SettingController extends GetxController {
 
   /// 注册用户
   /// @param {RegisterType} params 参数
-  Future<ResultType<dynamic>> register(RegisterType params) async {
+  Future<XTarget?> register(RegisterType params) async {
+    XTarget? xTarget;
     var res = await KernelApi.getInstance().register(params);
     if (res.success) {
-      await _loadUser(XTarget.fromJson(res.data["person"]));
+      xTarget = XTarget.fromJson(res.data["person"]);
+      await _loadUser(xTarget);
+      XEventBus.instance.fire(SignIn());
     }
-    return res;
+    return xTarget;
   }
 
   /// 变更密码
