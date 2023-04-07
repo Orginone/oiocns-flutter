@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
@@ -55,7 +54,6 @@ class _CardbagViewGetX extends GetView<CardbagController> {
       id: "cardbag",
       builder: (_) {
         return GyScaffold(
-          // backgroundColor: Colors.white,
           titleName: '卡包',
           body: SafeArea(
             child: Padding(
@@ -108,6 +106,68 @@ class _CardbagViewGetX extends GetView<CardbagController> {
 
   Widget get card {
     var settingCtrl = Get.find<SettingController>();
+    var name = settingCtrl.user!.name.substring(0, 1);
+    if (settingCtrl.user!.shareInfo.avatar == null) {
+      return Container(
+          height: 150,
+          decoration: const BoxDecoration(
+              color: XColors.designBlue,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              gradient: LinearGradient(colors: [
+                Color.fromARGB(255, 58, 95, 227),
+                Color.fromARGB(255, 5, 40, 136),
+              ])),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 30, 30),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 50.0,
+                              height: 50.0,
+                              decoration: const BoxDecoration(
+                                  color: XColors.themeColor,
+                                  shape: BoxShape.circle),
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  name,
+                                  style: XFonts.size28White,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 20,
+                            ),
+                            Text(settingCtrl.user!.shareInfo.name,
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 15)),
+                          ],
+                        ),
+                        const Icon(
+                          Icons.more_horiz_sharp,
+                          color: Colors.white60,
+                          size: 30,
+                        )
+                      ]),
+                  const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('账户余额：￥180.00',
+                            style:
+                                TextStyle(color: Colors.white60, fontSize: 15)),
+                        Icon(Icons.add_circle_outline_rounded,
+                            color: Colors.white60, size: 30)
+                      ]),
+                ]),
+          ));
+    }
     var avatar = settingCtrl.user!.shareInfo.avatar;
     var thumbnail = avatar!.thumbnail!.split(",")[1];
     thumbnail = thumbnail.replaceAll('\r', '').replaceAll('\n', '');
@@ -135,7 +195,7 @@ class _CardbagViewGetX extends GetView<CardbagController> {
                             width: 50.0,
                             height: 50.0,
                             decoration: BoxDecoration(
-                                color: Colors.grey,
+                                color: XColors.themeColor,
                                 image: DecorationImage(
                                   image: MemoryImage(base64Decode(thumbnail)),
                                   fit: BoxFit.fill,
@@ -156,7 +216,7 @@ class _CardbagViewGetX extends GetView<CardbagController> {
                         size: 30,
                       )
                     ]),
-                Row(
+                const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('账户余额：￥180.00',
@@ -182,13 +242,12 @@ class ICard extends StatelessWidget {
     this.name,
     this.cnName,
     this.asset,
-    required this.avatar,
+    this.avatar,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    var thumbnail = avatar!.thumbnail!.split(",")[1];
     return Container(
         height: 90,
         decoration: const BoxDecoration(
@@ -203,17 +262,7 @@ class ICard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Container(
-                    width: 40.0,
-                    height: 40.0,
-                    decoration: BoxDecoration(
-                        color: Colors.grey,
-                        image: DecorationImage(
-                          image: MemoryImage(base64Decode(thumbnail)),
-                          fit: BoxFit.fill,
-                        ),
-                        shape: BoxShape.circle),
-                  ),
+                  image,
                   Container(
                     width: 20,
                   ),
@@ -232,5 +281,23 @@ class ICard extends StatelessWidget {
             ],
           ),
         ));
+  }
+
+  Widget get image {
+    return Container(
+      width: 50.0,
+      height: 50.0,
+      decoration: const BoxDecoration(
+        color: XColors.themeColor,
+        shape: BoxShape.circle,
+      ),
+      child: Align(
+        alignment: Alignment.center,
+        child: Text(
+          name!.substring(0, 1),
+          style: XFonts.size28White,
+        ),
+      ),
+    );
   }
 }
