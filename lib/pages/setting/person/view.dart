@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/text_avatar.dart';
+import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/base_bindings.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
@@ -196,9 +198,40 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
   Widget get getAvatar {
     var settingCtrl = Get.find<SettingController>();
     var avatar = settingCtrl.user!.shareInfo.avatar;
+    var name = settingCtrl.user!.name.substring(0, 1);
+    var size = 100.w;
+    if (settingCtrl.user!.shareInfo.avatar == null) {
+      return AdvancedAvatar(
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            color: XColors.themeColor,
+            shape: BoxShape.rectangle,
+          ),
+          child: Container(
+            alignment: Alignment.center,
+            width: size,
+            height: size,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: AlignmentDirectional.topEnd,
+                  child: Container(
+                    margin: const EdgeInsets.all(2),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    name,
+                    style: XFonts.size28White,
+                  ),
+                )
+              ],
+            ),
+          ));
+    }
     var thumbnail = avatar!.thumbnail!.split(",")[1];
     thumbnail = thumbnail.replaceAll('\r', '').replaceAll('\n', '');
-    var size = 100.w;
     return AdvancedAvatar(
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(18.0)),
