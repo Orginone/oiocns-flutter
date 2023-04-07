@@ -4294,17 +4294,46 @@ class XOperationItem {
   Fields toFields() {
     String? type;
     String? router;
-    if (rule?.widget == "text" || rule?.widget == "number" || rule?.widget == 'money') {
-      type = "input";
-    } else if (rule?.widget == "dict" ||
-        (rule?.widget?.contains('date') ?? false)) {
-      type = "select";
-    } else if (rule?.widget == "person") {
-      type = "router";
-      router = Routers.choicePeople;
-    } else if (rule?.widget == "dept") {
-      type = "router";
-      router = Routers.choiceDepartment;
+    if (rule?.widget != null) {
+      switch (rule?.widget) {
+        case "text":
+        case "number":
+        case 'digit':
+        case "money":
+        case "string":
+          type = "input";
+          break;
+        case "dict":
+        case "select":
+        case "treeSelect":
+          type = "select";
+          break;
+        case "date":
+        case "datetime":
+        case "dateTimeRange":
+          type = "selectDate";
+          break;
+        case "person":
+          type = "router";
+          router = Routers.choicePeople;
+          break;
+        case "dept":
+        case "department":
+          type = "router";
+          router = Routers.choiceDepartment;
+          break;
+        case "identity":
+        case "auth":
+        case "group":
+        case 'radio':
+        case 'checkbox':
+        case 'file':
+        case 'upload':
+          break;
+        default:
+          type = 'input';
+          break;
+      }
     }
 
     Map<dynamic, String> select = {};
