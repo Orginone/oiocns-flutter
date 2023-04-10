@@ -29,7 +29,7 @@ class Item extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String title = '';
-    if(type == WorkEnum.done){
+    if(type == WorkEnum.done || type == WorkEnum.completed){
       title = history?.historyTask?.flowInstance?.title??"";
     }else{
       title = task?.flowInstance?.title??"";
@@ -61,7 +61,7 @@ class Item extends StatelessWidget {
       child: GestureDetector(
         onTap: (){
           var data;
-          if(type == WorkEnum.done){
+          if(type == WorkEnum.done || type == WorkEnum.completed ){
             data = history?.historyTask;
           }else{
             data = task;
@@ -141,7 +141,7 @@ class Item extends StatelessWidget {
         )
       ],
     );
-    if(type == WorkEnum.done){
+    if(type == WorkEnum.done || type == WorkEnum.completed){
       Color textColor = history!.status == 100?Colors.green:Colors.red;
 
       button = Container(
@@ -167,15 +167,15 @@ class Item extends StatelessWidget {
   }
 
   Widget role() {
-    String roleType = type == WorkEnum.done ? "审批" : "发起";
-    String dateTime = DateTime.tryParse((type == WorkEnum.done
-                    ? history!.updateTime
-                    : task!.flowInstance?.createTime) ??
+    String roleType = type == WorkEnum.done ||type == WorkEnum.completed? "审批" : "发起";
+    String dateTime = DateTime.tryParse((type == WorkEnum.done ||type == WorkEnum.completed
+                    ? history?.updateTime
+                    : task?.flowInstance?.createTime) ??
                 "")
             ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
         "";
 
-    String userId = (type == WorkEnum.done?history!.createUser:task!.createUser)??"";
+    String userId = (type == WorkEnum.done||type == WorkEnum.completed?history?.createUser:task?.createUser)??"";
 
 
     return Row(

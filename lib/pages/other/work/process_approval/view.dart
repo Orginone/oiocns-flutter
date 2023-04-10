@@ -22,9 +22,9 @@ class ProcessApprovalPage extends BaseGetListPageView<ProcessApprovalController,
       child: ListView.builder(
         itemBuilder: (context, index) {
           return Item(
-            task: type!=WorkEnum.done?state.dataList[index]:null,
+            task: type!=WorkEnum.done && type!=WorkEnum.completed?state.dataList[index]:null,
             type: type,
-            history:type==WorkEnum.done?state.dataList[index]:null,
+            history:type==WorkEnum.done||type==WorkEnum.completed?state.dataList[index]:null,
           );
         },
         itemCount: state.dataList.length,
