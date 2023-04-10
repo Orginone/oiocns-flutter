@@ -16,14 +16,14 @@ abstract class BaseListController<S extends BaseGetListState> extends BaseContro
 
   BaseListController();
 
+  RefreshController get refreshController => state.refreshController;
+
   @override
   void onInit() {
     log = Logger(this.toString());
     super.onInit();
   }
 
-  /// 刷新控制器
-  RefreshController refreshController = RefreshController();
 
   /// 下拉刷新使用
   Future onRefresh() async{

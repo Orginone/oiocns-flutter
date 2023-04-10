@@ -188,7 +188,11 @@ class Item extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(30, 5, 20, 5),
           child: GestureDetector(
               onTap: () {
-                Get.toNamed(goTo);
+                if(goTo == Routers.login){
+                  Get.offAllNamed(goTo);
+                }else{
+                  Get.toNamed(goTo);
+                }
               },
               child: Row(
                 mainAxisAlignment: alignment,
