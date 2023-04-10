@@ -77,7 +77,9 @@ class LoginController extends BaseController<LoginState> {
         arguments: {"phoneNumber": state.phoneNumberController.text});
   }
 
-  void retrievePassword() {}
+  void forgotPassword() {
+    Get.toNamed(Routers.forgotPassword);
+  }
 
   void register() {
     Get.toNamed(

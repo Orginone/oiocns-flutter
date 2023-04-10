@@ -64,6 +64,8 @@ import './pages/other/home/ware_house/market/market_page.dart';
 import './pages/other/home/ware_house/often_use_binding.dart';
 // 仓库
 import './pages/other/home/ware_house/recently_opened_binding.dart';
+import 'pages/login/forgot_password/binding.dart';
+import 'pages/login/forgot_password/view.dart';
 import 'pages/login/register/binding.dart';
 import 'pages/login/register/view.dart';
 import 'pages/login/verification_code/binding.dart';
@@ -127,6 +129,9 @@ class Routers {
 
   //注册
   static const String register = "/register";
+
+  //忘记密码
+  static const String forgotPassword = "/forgotPassword";
 
 
 
@@ -315,6 +320,11 @@ class Routers {
         name: Routers.register,
         page: () => RegisterPage(),
         bindings: [SettingBinding(), RegisterBinding()],
+      ),
+      GetPage(
+        name: Routers.forgotPassword,
+        page: () => ForgotPasswordPage(),
+        binding: ForgotPasswordBinding(),
       ),
       GetPage(
         name: Routers.home,

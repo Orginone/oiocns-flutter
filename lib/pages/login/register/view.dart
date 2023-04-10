@@ -71,10 +71,10 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
     return Obx(() {
       return Column(
         children: [
-          textField(controller: state.userNameController,
+          CommonWidget.commonTextField(controller: state.userNameController,
               hint: "请输入用户名",
               title: "用户名"),
-          textField(controller: state.passWordController,
+          CommonWidget.commonTextField(controller: state.passWordController,
               hint: "请输入密码",
               title: "密码",
               obscureText: state.passwordUnVisible.value,
@@ -89,16 +89,16 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                     size: 24.w,
                     color: Colors.grey,
                   ))),
-          textField(controller: state.verifyPassWordController,
+          CommonWidget.commonTextField(controller: state.verifyPassWordController,
               hint: "请再次输入密码",
               title: "确认密码",
-              obscureText: state.passwordUnVisible.value,
+              obscureText: state.verifyPassWordUnVisible.value,
               action: IconButton(
                   onPressed: () {
-                    controller.showPassWord();
+                    controller.showVerifyPassWord();
                   },
                   icon: Icon(
-                    state.passwordUnVisible.value
+                    state.verifyPassWordUnVisible.value
                         ? Icons.visibility_off
                         : Icons.visibility,
                     size: 24.w,
@@ -112,18 +112,18 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
   Widget stepTwo() {
     return Column(
       children: [
-        textField(controller: state.phoneNumberController,
+        CommonWidget.commonTextField(controller: state.phoneNumberController,
             hint: "请输入电话号码",
             title: "手机号"),
-        textField(controller: state.nickNameController,
+        CommonWidget.commonTextField(controller: state.nickNameController,
           hint: "请输入昵称",
           title: "昵称",
         ),
-        textField(controller: state.realNameController,
+        CommonWidget.commonTextField(controller: state.realNameController,
           hint: "请输入真实姓名",
           title: "姓名",
         ),
-        textField(controller: state.remarkController,
+        CommonWidget.commonTextField(controller: state.remarkController,
           hint: "请输入座右铭",
           title: "座右铭",
         ),
@@ -222,40 +222,4 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
     );
   }
 
-  Widget textField({required TextEditingController controller,
-    String hint = '',
-    String title = '',
-    List<TextInputFormatter>? inputFormatters,
-    bool obscureText = false,
-    Widget? action}) {
-    return Container(
-      decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(color: Colors.grey.shade300, width: 0.5))),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 100.w,
-            child: Text(
-              title,
-              style: TextStyle(fontSize: 22.sp),
-            ),
-          ),
-          Expanded(
-            child: TextField(
-              controller: controller,
-              inputFormatters: inputFormatters,
-              obscureText: obscureText,
-              decoration: InputDecoration(
-                  hintText: hint,
-                  hintStyle:
-                  TextStyle(color: Colors.grey.shade400, fontSize: 20.sp),
-                  border: InputBorder.none),
-            ),
-          ),
-          action ?? Container(),
-        ],
-      ),
-    );
-  }
 }

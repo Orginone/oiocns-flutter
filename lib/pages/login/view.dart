@@ -77,7 +77,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
   Widget loginBox() {
     return Obx(() {
       if (state.phoneNumberLogin.value) {
-        return textField(
+        return CommonWidget.commonTextField(
             controller: state.phoneNumberController,
             hint: '请输入手机号',
             title: "手机号",
@@ -87,11 +87,11 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
       }
       return Column(
         children: [
-          textField(
+          CommonWidget.commonTextField(
               controller: state.accountController,
               hint: '请输入用户名或手机号码',
               title: "用户名"),
-          textField(
+          CommonWidget.commonTextField(
               controller: state.passWordController,
               hint: '请输入密码',
               title: '密码',
@@ -143,7 +143,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
           }
           return GestureDetector(
             onTap: () {
-              controller.retrievePassword();
+              controller.forgotPassword();
             },
             child: const Text(
               "忘记密码",
@@ -237,43 +237,6 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
             },
             child: Text("注册账号",style: TextStyle(color: XColors.themeColor,fontSize: 20.sp),),
           )
-        ],
-      ),
-    );
-  }
-
-  Widget textField({required TextEditingController controller,
-    String hint = '',
-    String title = '',
-    List<TextInputFormatter>? inputFormatters,
-    bool obscureText = false,
-    Widget? action}) {
-    return Container(
-      decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(color: Colors.grey.shade300, width: 0.5))),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 100.w,
-            child: Text(
-              title,
-              style: TextStyle(fontSize: 22.sp),
-            ),
-          ),
-          Expanded(
-            child: TextField(
-              controller: controller,
-              inputFormatters: inputFormatters,
-              obscureText: obscureText,
-              decoration: InputDecoration(
-                  hintText: hint,
-                  hintStyle:
-                  TextStyle(color: Colors.grey.shade400, fontSize: 20.sp),
-                  border: InputBorder.none),
-            ),
-          ),
-          action ?? Container(),
         ],
       ),
     );

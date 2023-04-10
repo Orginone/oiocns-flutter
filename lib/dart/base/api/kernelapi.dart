@@ -918,7 +918,7 @@ class KernelApi {
       ReqestType(
         module: 'target',
         action: 'ResetPassword',
-        params: params,
+        params: params.toJson(),
       ),
       (item) => item as bool,
     );

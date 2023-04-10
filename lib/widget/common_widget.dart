@@ -869,4 +869,41 @@ class CommonWidget {
       ),
     );
   }
+
+  static Widget commonTextField({required TextEditingController controller,
+    String hint = '',
+    String title = '',
+    List<TextInputFormatter>? inputFormatters,
+    bool obscureText = false,
+    Widget? action}) {
+    return Container(
+      decoration: BoxDecoration(
+          border: Border(
+              bottom: BorderSide(color: Colors.grey.shade300, width: 0.5))),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 100.w,
+            child: Text(
+              title,
+              style: TextStyle(fontSize: 22.sp),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              inputFormatters: inputFormatters,
+              obscureText: obscureText,
+              decoration: InputDecoration(
+                  hintText: hint,
+                  hintStyle:
+                  TextStyle(color: Colors.grey.shade400, fontSize: 20.sp),
+                  border: InputBorder.none),
+            ),
+          ),
+          action ?? Container(),
+        ],
+      ),
+    );
+  }
 }

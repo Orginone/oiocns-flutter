@@ -18,4 +18,6 @@ class RegisterState extends BaseGetState{
   var agreeTerms = true.obs;
 
   var passwordUnVisible = true.obs;
+
+  var verifyPassWordUnVisible = true.obs;
 }

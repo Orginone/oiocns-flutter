@@ -75,4 +75,8 @@ class RegisterController extends BaseController<RegisterState> {
       ToastUtils.showMsg(msg: "注册失败");
     }
   }
+
+  void showVerifyPassWord() {
+    state.verifyPassWordUnVisible.value = !state.verifyPassWordUnVisible.value;
+  }
 }

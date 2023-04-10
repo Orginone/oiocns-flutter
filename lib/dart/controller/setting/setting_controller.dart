@@ -12,6 +12,7 @@ import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/local_store.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 const sessionUserName = 'sessionUser';
 const sessionSpaceName = 'sessionSpace';
@@ -172,6 +173,7 @@ class SettingController extends GetxController {
     XTarget? xTarget;
     var res = await KernelApi.getInstance().register(params);
     if (res.success) {
+      ToastUtils.showMsg(msg: "您的账号私有密钥是————${res.data['privateKey']}");
       xTarget = XTarget.fromJson(res.data["person"]);
       await _loadUser(xTarget);
       XEventBus.instance.fire(SignIn());
@@ -184,17 +186,12 @@ class SettingController extends GetxController {
   /// @param password 密码
   /// @param privateKey 私钥
   /// @returns
-  Future<ResultType<dynamic>> resetPassword(
+  Future<ResultType<bool>> resetPassword(
     String account,
     String password,
     String privateKey,
   ) async {
-    var req = {
-      "code": account,
-      "password": password,
-      "privateKey": privateKey,
-    } as ResetPwdModel;
-    return await KernelApi.getInstance().resetPassword(req);
+    return await KernelApi.getInstance().resetPassword(ResetPwdModel(code: account, password: password, privateKey: privateKey));
   }
 
   _loadUser(XTarget person) async {
