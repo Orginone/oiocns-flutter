@@ -30,19 +30,15 @@ class WorkNetWork {
     return tasks;
   }
 
-  static Future<List<XFlowTaskHistory>> getRecord() async {
+  static Future<List<XFlowTaskHistory>> getRecord(List<int> status) async {
     List<XFlowTaskHistory> tasks = [];
 
     SettingController setting = Get.find<SettingController>();
 
-    await KernelApi.getInstance()
-        .queryNoticeTask(IdReq(
-        id: '366950230895235072'));
-
     ResultType<XFlowTaskHistoryArray> result = await KernelApi.getInstance()
-        .queryRecord(IdSpaceReq(
+        .queryRecord(RecordSpaceReq(
             spaceId: setting.space.id,
-            page: PageRequest(offset: 0, limit: 9999, filter: ''), id: '366950230895235072'));
+            page: PageRequest(offset: 0, limit: 9999, filter: ''), status: status));
 
     if (result.success) {
       tasks = result.data?.result ?? [];

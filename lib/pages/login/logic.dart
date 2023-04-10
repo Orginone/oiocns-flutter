@@ -16,13 +16,13 @@ class LoginController extends BaseController<LoginState> {
   void onInit() async {
     // TODO: implement onInit
     super.onInit();
-    var store = await LocalStore.instance;
-    var account = store.getStringList("account");
-    if (account != null) {
-      state.accountController.text = account[0];
-      state.phoneNumberController.text = account[0];
-      state.passWordController.text = account[1];
-    }
+    // var store = await LocalStore.instance;
+    // var account = store.getStringList("account");
+    // if (account != null) {
+    //   state.accountController.text = account[0];
+    //   state.phoneNumberController.text = account[0];
+    //   state.passWordController.text = account[1];
+    // }
   }
 
   void showPassWord() {

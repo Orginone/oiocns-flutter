@@ -2435,7 +2435,7 @@ class KernelApi {
   /// @param {IdSpaceReq} params 请求参数
   /// @returns {ResultType<XFlowTaskHistoryArray>} 请求结果
   Future<ResultType<XFlowTaskHistoryArray>> queryRecord(
-      IdSpaceReq params) async {
+      RecordSpaceReq params) async {
     return await request(
       ReqestType(
         module: 'flow',
