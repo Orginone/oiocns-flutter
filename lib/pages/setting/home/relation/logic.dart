@@ -11,7 +11,7 @@ class RelationController extends BaseController<RelationState> {
 
  void nextLvForEnum({CompanySpaceEnum? companySpaceEnum,UserSpaceEnum? userSpaceEnum}) {
    if (companySpaceEnum != null) {
-     if(companySpace != CompanySpaceEnum.company){
+     if(companySpaceEnum != CompanySpaceEnum.company){
        Get.toNamed(Routers.relationGroup,arguments: {"companySpaceEnum":companySpaceEnum,"head":"关系"});
      }else{
        Get.toNamed(Routers.companyInfo);
