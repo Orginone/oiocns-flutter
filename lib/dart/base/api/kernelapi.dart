@@ -2388,21 +2388,22 @@ class KernelApi {
     );
   }
 
+
   /// 查询发起的流程实例
   /// @param {FlowReq} params 请求参数
   /// @returns {ResultType<XFlowInstanceArray>} 请求结果
-  Future<ResultType<XFlowInstanceArray>> queryInstance(FlowReq params) async {
+  Future<ResultType<XFlowInstanceArray>> queryInstanceByApply(FlowReq params) async {
     return await request(
       ReqestType(
         module: 'flow',
-        action: 'QueryInstance',
+        action: 'QueryInstanceByApply',
         params: params.toJson(),
       ),
       XFlowInstanceArray.fromJson,
     );
   }
 
-  /// 查询发起的流程实例
+  /// 根据Id查询流程实例
   /// @param {FlowReq} params 请求参数
   /// @returns {ResultType<XFlowInstanceArray>} 请求结果
   Future<ResultType<XFlowInstance>> queryInstanceById(IdReq params) async {

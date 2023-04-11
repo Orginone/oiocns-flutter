@@ -163,7 +163,7 @@ class Item extends StatelessWidget {
   }
 
   Widget comment(){
-    if(type != WorkEnum.done){
+    if(type != WorkEnum.done && type != WorkEnum.completed){
       return Container();
     }
     return Container(margin: EdgeInsets.only(top: 20.h),child: Text("备注:${history?.comment??""}"));
