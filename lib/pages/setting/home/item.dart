@@ -8,8 +8,6 @@ import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/pages/setting/config.dart';
-import 'package:orginone/pages/setting/widget.dart';
-import 'package:orginone/widget/common_widget.dart';
 
 import 'popup_menu_widget.dart';
 
@@ -24,6 +22,7 @@ class Item extends StatelessWidget {
   final SpeciesItem? species;
   final VoidCallback? nextLv;
   final VoidCallback? onTap;
+  final UserSpaceEnum? userSpaceEnum;
 
   const Item(
       {Key? key,
@@ -36,7 +35,8 @@ class Item extends StatelessWidget {
       this.nextLv,
       this.standardEnum,
       this.iAuthority,
-      this.species})
+      this.species,
+      this.userSpaceEnum})
       : super(key: key);
 
   SettingController get settingController => Get.find<SettingController>();
@@ -101,6 +101,7 @@ class Item extends StatelessWidget {
 
   Widget title() {
     String name = companySpaceEnum?.label ??
+        userSpaceEnum?.label ??
         standardEnum?.label ??
         innerAgency?.teamName ??
         outAgency?.teamName ??

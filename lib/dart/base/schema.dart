@@ -1464,7 +1464,6 @@ class XFlowInstance {
     operationIds = json["operationIds"];
     thingIds = json["thingIds"];
     defineId = json["defineId"];
-    historyTasks = json["historyTasks"];
     belongId = json["belongId"];
     productId = json["productId"];
     title = json["title"];
@@ -1781,7 +1780,7 @@ class XFlowNode {
   XFlowNode.fromJson(Map<String, dynamic> json) {
     id = json["id"];
     code = json["code"];
-    code = json["nodeType"];
+    nodeType = json["nodeType"];
     name = json["name"];
     count = json["count"];
     destType = json["destType"];
@@ -1946,7 +1945,7 @@ class XFlowRecord {
   String? comment;
 
   // 内容
-  late String data;
+  String? data;
 
   // 状态
   int? status;
@@ -1967,7 +1966,7 @@ class XFlowRecord {
   String? updateTime;
 
   // 历史
-  late XFlowTaskHistory historyTask;
+  XFlowTaskHistory? historyTask;
 
   //构造方法
   XFlowRecord(
@@ -1997,7 +1996,7 @@ class XFlowRecord {
     version = json["version"];
     createTime = json["createTime"];
     updateTime = json["updateTime"];
-    historyTask = XFlowTaskHistory.fromJson(json["historyTask"]);
+    historyTask = json["historyTask"]!=null?XFlowTaskHistory.fromJson(json["historyTask"]):null;
   }
 
   //通过动态数组解析成List
@@ -2028,7 +2027,7 @@ class XFlowRecord {
     json["version"] = version;
     json["createTime"] = createTime;
     json["updateTime"] = updateTime;
-    json["historyTask"] = historyTask.toJson();
+    json["historyTask"] = historyTask?.toJson();
     return json;
   }
 }
@@ -4294,17 +4293,46 @@ class XOperationItem {
   Fields toFields() {
     String? type;
     String? router;
-    if (rule?.widget == "text" || rule?.widget == "number") {
-      type = "input";
-    } else if (rule?.widget == "dict" ||
-        (rule?.widget?.contains('date') ?? false)) {
-      type = "select";
-    } else if (rule?.widget == "person") {
-      type = "router";
-      router = Routers.choicePeople;
-    } else if (rule?.widget == "dept") {
-      type = "router";
-      router = Routers.choiceDepartment;
+    if (rule?.widget != null) {
+      switch (rule?.widget) {
+        case "text":
+        case "number":
+        case 'digit':
+        case "money":
+        case "string":
+          type = "input";
+          break;
+        case "dict":
+        case "select":
+        case "treeSelect":
+          type = "select";
+          break;
+        case "date":
+        case "datetime":
+        case "dateTimeRange":
+          type = "selectDate";
+          break;
+        case "person":
+          type = "router";
+          router = Routers.choicePeople;
+          break;
+        case "dept":
+        case "department":
+          type = "router";
+          router = Routers.choiceDepartment;
+          break;
+        case "identity":
+        case "auth":
+        case "group":
+        case 'radio':
+        case 'checkbox':
+        case 'file':
+        case 'upload':
+          break;
+        default:
+          type = 'input';
+          break;
+      }
     }
 
     Map<dynamic, String> select = {};

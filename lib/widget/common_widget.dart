@@ -439,25 +439,25 @@ class CommonWidget {
   }
 
   static commonMultipleChoiceButtonWidget(
-      {bool isSelected = false, ValueChanged<bool>? changed}) {
+      {bool isSelected = false, ValueChanged<bool>? changed,double? iconSize}) {
     return GestureDetector(
       child: isSelected
           ? Container(
-           width: 32.w,
-            height: 32.w,
+           width: iconSize??32.w,
+            height: iconSize??32.w,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
               color: XColors.themeColor,
             ),
             child: Icon(
                 Icons.done,
-                size: 24.w,
+                size: 20.w,
                 color: Colors.white,
               ),
           )
           : Icon(
               Icons.radio_button_off,
-              size: 32.w,
+              size: iconSize??32.w,
             ),
       onTap: () {
         if (changed != null) {
@@ -760,9 +760,9 @@ class CommonWidget {
 
     Widget titleWidget(String title) {
       return Container(
-        margin: EdgeInsets.symmetric(horizontal: 10.w),
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
         alignment: Alignment.center,
-        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w,maxWidth: 140.w),
+        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w,maxWidth: title == "操作"?60.w:170.w),
         decoration: BoxDecoration(
             border: Border(right: BorderSide(color: Colors.grey.shade200,width: 0.5))
         ),
@@ -777,8 +777,8 @@ class CommonWidget {
     Widget contentWidget(String content) {
       return Container(
         alignment: Alignment.center,
-        margin: EdgeInsets.symmetric(horizontal: 10.w),
-        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w,maxWidth: 140.w),
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
+        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w,maxWidth: 170.w),
         height: 50.h,
         decoration: BoxDecoration(
           border: Border(right: BorderSide(color: Colors.grey.shade200,width: 0.5))
@@ -834,6 +834,7 @@ class CommonWidget {
                         });
                       },
                       child: SizedBox(
+                        width: 40.w,
                         height: 50.h,
                         child: const Icon(Icons.more_horiz),
                       ),
@@ -865,6 +866,43 @@ class CommonWidget {
           return items;
         },
         onSelected: onSelected,
+      ),
+    );
+  }
+
+  static Widget commonTextField({required TextEditingController controller,
+    String hint = '',
+    String title = '',
+    List<TextInputFormatter>? inputFormatters,
+    bool obscureText = false,
+    Widget? action}) {
+    return Container(
+      decoration: BoxDecoration(
+          border: Border(
+              bottom: BorderSide(color: Colors.grey.shade300, width: 0.5))),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 100.w,
+            child: Text(
+              title,
+              style: TextStyle(fontSize: 22.sp),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              inputFormatters: inputFormatters,
+              obscureText: obscureText,
+              decoration: InputDecoration(
+                  hintText: hint,
+                  hintStyle:
+                  TextStyle(color: Colors.grey.shade400, fontSize: 20.sp),
+                  border: InputBorder.none),
+            ),
+          ),
+          action ?? Container(),
+        ],
       ),
     );
   }

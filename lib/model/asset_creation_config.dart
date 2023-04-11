@@ -171,18 +171,17 @@ class Fields {
         Get.toNamed(router!);
       }
       if (type == "select") {
-         if(code?.contains("DATE")??false){
-           DatePicker.showDateTimePicker(Get.context!,currentTime: DateTime.now(),locale: LocaleType.zh,onConfirm: (date){
-                 defaultData.value = date.format(format: "yyyy-MM-dd HH:mm");
-               });
-         }else{
-           PickerUtils.showListStringPicker(Get.context!, titles: select!.values.toList(),
-               callback: (str) {
-                 int index = select!.values.toList().indexOf(str);
-                 dynamic key = select!.keys.toList()[index];
-                 defaultData.value = {key: str};
-               });
-         }
+        PickerUtils.showListStringPicker(Get.context!, titles: select!.values.toList(),
+            callback: (str) {
+              int index = select!.values.toList().indexOf(str);
+              dynamic key = select!.keys.toList()[index];
+              defaultData.value = {key: str};
+            });
+      }
+      if(type == 'selectDate'){
+        DatePicker.showDateTimePicker(Get.context!,currentTime: DateTime.now(),locale: LocaleType.zh,onConfirm: (date){
+          defaultData.value = date.format(format: "yyyy-MM-dd HH:mm");
+        });
       }
     };
   }

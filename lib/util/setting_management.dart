@@ -48,7 +48,7 @@ class SettingManagement{
      if(stations!=null){
        this.stations.addAll(stations);
      }
-     var cohorts = await settingController.company?.getCohorts(reload: true);
+     var cohorts = await settingController.space.getCohorts(reload: true);
      if(cohorts!=null){
        this.cohorts.addAll(cohorts);
      }

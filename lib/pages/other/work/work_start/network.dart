@@ -67,7 +67,7 @@ class WorkStartNetWork {
     List<XFlowInstance> flowInstacnes = [];
     SettingController setting = Get.find<SettingController>();
     ResultType<XFlowInstanceArray> result = await KernelApi.getInstance()
-        .queryInstance(FlowReq(
+        .queryInstanceByApply(FlowReq(
         id: id,spaceId: setting.space.id,speciesId: speciesId, page: PageRequest(offset: 0, limit: 9999, filter: '')));
 
     if (result.success) {

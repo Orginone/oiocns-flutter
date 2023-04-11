@@ -71,7 +71,7 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
     );
   }
 
-  Widget _info(String title, Map<XAttribute, dynamic> info) {
+  Widget _info(String title, Map<XOperationItem, dynamic> info) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -79,16 +79,6 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
         CommonWidget.commonFormWidget(
             formItem: info.keys.map((e) {
               String content = "${info[e]}";
-              if (e.valueType == "选择型") {
-                try {
-                  content = e.dict!.dictItems!
-                      .firstWhere((element) => element.value == info[e])
-                      .name;
-                } catch (e) {
-                  content = "";
-                }
-              }
-
               return CommonWidget.commonFormItem(
                   title: e.name ?? "", content: content);
             }).toList()),

@@ -60,8 +60,8 @@ class RelationGroupController extends BaseController<RelationGroupState> {
           case StandardEnum.permissionCriteria:
             state.groupData.value = SettingManagement().authority;
             break;
-          case StandardEnum.permissionCriteria:
-            state.groupData.value = CommonTreeManagement().species;
+          case StandardEnum.classCriteria:
+            state.groupData.value = [CommonTreeManagement().species];
             break;
         }
       }else{
@@ -78,12 +78,16 @@ class RelationGroupController extends BaseController<RelationGroupState> {
             var list = CommonTreeManagement().getAllSpecies([CommonTreeManagement().species!]);
             try{
               state.groupData.value = list.firstWhere((element) => element.name == state.selectedGroup.last).children;
-              print('sss');
             }catch(e){
               state.groupData.value = null;
             }
             break;
         }
+      }
+    }
+    if(state.userSpaceEnum!=null){
+      if(state.selectedGroup.last == state.userSpaceEnum!.label){
+        state.groupData.value = SettingManagement().cohorts;
       }
     }
     state.selectedGroup.refresh();
@@ -154,6 +158,8 @@ class RelationGroupController extends BaseController<RelationGroupState> {
           Get.toNamed(Routers.classificationInfo,arguments: {"species":species});
           break;
       }
+    }else if(state.userSpaceEnum!=null){
+      Get.toNamed(Routers.cohortInfo,arguments: {'cohort':cohort});
     }
   }
 }

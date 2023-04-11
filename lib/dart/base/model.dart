@@ -564,6 +564,39 @@ class IdSpaceReq {
   }
 }
 
+class RecordSpaceReq {
+  // 唯一ID
+  final List<int> status;
+
+  // 工作空间ID
+  final String spaceId;
+
+  // 分页
+  final PageRequest? page;
+
+  //构造方法
+  RecordSpaceReq({
+    required this.status,
+    required this.spaceId,
+    required this.page,
+  });
+
+  //通过JSON构造
+  RecordSpaceReq.fromJson(Map<String, dynamic> json)
+      : status = json["status"],
+        spaceId = json["spaceId"],
+        page = PageRequest.fromJson(json["page"]);
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["status"] = status;
+    json["spaceId"] = spaceId;
+    json["page"] = page?.toJson();
+    return json;
+  }
+}
+
 class IdSpeciesReq {
   // 唯一ID
   final String id;

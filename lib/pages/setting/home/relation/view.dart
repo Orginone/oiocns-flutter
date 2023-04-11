@@ -34,13 +34,23 @@ class RelationPage extends BaseGetPageView<RelationController,RelationState>{
               Item(
                 companySpaceEnum: e,
                 nextLv: () {
-                  controller.nextLvForEnum(e);
+                  controller.nextLvForEnum(companySpaceEnum: e);
                 },
               ))
               .toList(),
         );
       }else{
-        return Container();
+        return Column(
+          children: UserSpaceEnum.values
+              .map((e) =>
+              Item(
+                userSpaceEnum: e,
+                nextLv: () {
+                  controller.nextLvForEnum(userSpaceEnum: e);
+                },
+              ))
+              .toList(),
+        );
       }
     });
   }

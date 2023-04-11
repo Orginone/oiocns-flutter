@@ -23,6 +23,8 @@ class RelationGroupState extends BaseGetState{
 
   StandardEnum? standardEnum;
 
+  UserSpaceEnum? userSpaceEnum;
+
   RelationGroupState(){
 
     showPopupMenu = Get.arguments?['showPopupMenu']?? true;
@@ -30,6 +32,9 @@ class RelationGroupState extends BaseGetState{
     companySpaceEnum = Get.arguments?['companySpaceEnum'];
 
     standardEnum = Get.arguments?['standardEnum'];
+
+    userSpaceEnum = Get.arguments?['userSpaceEnum'];
+
     head = Get.arguments?['head'];
     if(companySpaceEnum!=null){
       selectedGroup.add(companySpaceEnum!.label);
@@ -49,6 +54,7 @@ class RelationGroupState extends BaseGetState{
       }
     }
     if(standardEnum!=null){
+      selectedGroup.add(standardEnum!.label);
       switch(standardEnum){
         case StandardEnum.permissionCriteria:
           groupData.value = SettingManagement().authority;
@@ -57,6 +63,10 @@ class RelationGroupState extends BaseGetState{
           groupData.value = [CommonTreeManagement().species];
           break;
       }
+    }
+    if(userSpaceEnum!=null){
+      selectedGroup.add(userSpaceEnum!.label);
+      groupData.value = SettingManagement().cohorts;
     }
   }
 }

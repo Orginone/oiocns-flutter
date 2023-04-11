@@ -115,7 +115,8 @@ class KernelApi {
     }
     var res = ResultType.fromJson(raw);
     if (res.success) {
-      _anystore.updateToken(res.data ?? "");
+      HiveUtils.putUser(UserModel.fromJson(raw['data']));
+      _anystore.updateToken(res.data["accessToken"]);
     }
     return res;
   }
@@ -520,12 +521,17 @@ class KernelApi {
   /// 查询分类树
   /// @param {IDBelongReq} params 请求参数
   /// @returns {ResultType<XSpecies>} 请求结果
-  Future<ResultType<XSpecies>> querySpeciesTree(IDBelongReq params) async {
+  Future<ResultType<XSpecies>> querySpeciesTree(String id) async {
     return await request(
       ReqestType(
         module: 'thing',
         action: 'QuerySpeciesTree',
-        params: params,
+        params: {
+          "id":id,
+          "page": {
+            "filter": "",
+          },
+        },
       ),
       XSpecies.fromJson,
     );
@@ -912,7 +918,7 @@ class KernelApi {
       ReqestType(
         module: 'target',
         action: 'ResetPassword',
-        params: params,
+        params: params.toJson(),
       ),
       (item) => item as bool,
     );
@@ -2382,17 +2388,32 @@ class KernelApi {
     );
   }
 
+
   /// 查询发起的流程实例
   /// @param {FlowReq} params 请求参数
   /// @returns {ResultType<XFlowInstanceArray>} 请求结果
-  Future<ResultType<XFlowInstanceArray>> queryInstance(FlowReq params) async {
+  Future<ResultType<XFlowInstanceArray>> queryInstanceByApply(FlowReq params) async {
     return await request(
       ReqestType(
         module: 'flow',
-        action: 'QueryInstance',
+        action: 'QueryInstanceByApply',
         params: params.toJson(),
       ),
       XFlowInstanceArray.fromJson,
+    );
+  }
+
+  /// 根据Id查询流程实例
+  /// @param {FlowReq} params 请求参数
+  /// @returns {ResultType<XFlowInstanceArray>} 请求结果
+  Future<ResultType<XFlowInstance>> queryInstanceById(IdReq params) async {
+    return await request(
+      ReqestType(
+        module: 'flow',
+        action: 'QueryInstanceById',
+        params: params.toJson(),
+      ),
+      XFlowInstance.fromJson,
     );
   }
 
@@ -2429,7 +2450,7 @@ class KernelApi {
   /// @param {IdSpaceReq} params 请求参数
   /// @returns {ResultType<XFlowTaskHistoryArray>} 请求结果
   Future<ResultType<XFlowTaskHistoryArray>> queryRecord(
-      IdSpaceReq params) async {
+      RecordSpaceReq params) async {
     return await request(
       ReqestType(
         module: 'flow',

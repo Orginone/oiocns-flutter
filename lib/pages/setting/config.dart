@@ -65,6 +65,14 @@ List<String> memberTitle = [
   "签名",
 ];
 
+List<String> spaceTitle = [
+  "单位简称",
+  "社会统一信用代码",
+  "单位全称",
+  "单位代码",
+  "单位简介",
+];
+
 List<String> groupTitle = [
   "集团简称",
   "集团编码",
@@ -99,6 +107,12 @@ enum IdentityFunction{
 
 enum CompanyFunction{
   roleSettings,
+  addUser,
+  addGroup,
+}
+
+enum UserFunction{
+  record,
   addUser,
   addGroup,
 }

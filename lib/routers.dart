@@ -8,6 +8,8 @@ import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
 import 'package:orginone/pages/index/index_page.dart';
 import 'package:orginone/pages/index/news/searchBarWidget.dart';
+import 'package:orginone/pages/login/binding.dart';
+import 'package:orginone/pages/login/view.dart';
 // import 'package:orginone/pages/index/indexok_page.dart';
 import 'package:orginone/pages/other/add_asset/binding.dart';
 import 'package:orginone/pages/other/add_asset/view.dart';
@@ -19,7 +21,6 @@ import 'package:orginone/pages/other/choice_thing/binding.dart';
 import 'package:orginone/pages/other/file/view.dart';
 import 'package:orginone/pages/other/home/home_page.dart';
 import 'package:orginone/pages/other/home/spaces_page.dart';
-import 'package:orginone/pages/other/login.dart';
 import 'package:orginone/pages/other/qr_scan/binding.dart';
 import 'package:orginone/pages/other/qr_scan/view.dart';
 import 'package:orginone/pages/other/scanning/scanning_page.dart';
@@ -63,6 +64,12 @@ import './pages/other/home/ware_house/market/market_page.dart';
 import './pages/other/home/ware_house/often_use_binding.dart';
 // 仓库
 import './pages/other/home/ware_house/recently_opened_binding.dart';
+import 'pages/login/forgot_password/binding.dart';
+import 'pages/login/forgot_password/view.dart';
+import 'pages/login/register/binding.dart';
+import 'pages/login/register/view.dart';
+import 'pages/login/verification_code/binding.dart';
+import 'pages/login/verification_code/view.dart';
 import 'pages/other/add_friend/add_friend.dart';
 import 'pages/other/choice_gb/binding.dart';
 import 'pages/other/choice_gb/view.dart';
@@ -104,6 +111,8 @@ import 'pages/setting/role_settings/binding.dart';
 import 'pages/setting/role_settings/view.dart';
 import 'pages/setting/station_info/binding.dart';
 import 'pages/setting/station_info/view.dart';
+import 'pages/setting/user_info/binding.dart';
+import 'pages/setting/user_info/view.dart';
 
 class Routers {
   // 首页
@@ -114,6 +123,17 @@ class Routers {
 
   // 登录
   static const String login = "/login";
+
+  //验证码
+  static const String verificationCode = "/verificationCode";
+
+  //注册
+  static const String register = "/register";
+
+  //忘记密码
+  static const String forgotPassword = "/forgotPassword";
+
+
 
   // 空间选择
   static const String spaces = "/spaces";
@@ -149,7 +169,7 @@ class Routers {
   static const String companyInfo = "/companyInfo";
   static const String publisher = "/publisher";
   static const String version = "/version";
-
+  static const String userInfo = "/userInfo";
   // 仓库相关
   // 资产管理
   static const String assetsManagement = "/assetsManagement";
@@ -167,7 +187,42 @@ class Routers {
 
   //选择部门
   static const String choiceDepartment = "/choiceDepartment";
+  //选择资产分类
+  static const String choiceAssets = "/choiceAssets";
+  static const String choiceSpecificAssets = "/choiceSpecificAssets";
 
+  //资产详情
+  static const String assetsDetails = "/assetsDetails";
+
+  //创建盘点
+  static const String createClaim = "/createClaim";
+
+  //创建移交
+  static const String createTransfer = "/createTransfer";
+
+  //创建申购
+  static const String createDispose = "/createDispose";
+
+  //创建交回
+  static const String createHandOver = "/createHandOver";
+
+  //资产盘点
+  static const String assetsCheck = "/assetsCheck";
+
+  //资产模块通用详情
+  static const String generalDetails = "/generalDetails";
+
+  //审批单据
+  static const String approveDocuments = "/approveDocuments";
+
+  //资产模块功能页
+  static const String centerFunction = "/centerFunction";
+
+//批量移除资产
+  static const String bulkRemovalAsset = "/bulkRemovalAsset";
+
+  //批量操作资产
+  static const String batchOperationAsset = "/batchOperationAsset";
   //扫描二维码
   static const String qrScan = "/qrScan";
 
@@ -253,8 +308,23 @@ class Routers {
     return [
       GetPage(
         name: Routers.login,
-        page: () => const LoginPage(),
+        page: () => LoginPage(),
         bindings: [SettingBinding(), ChatBinding(), LoginBinding()],
+      ),
+      GetPage(
+        name: Routers.verificationCode,
+        page: () => VerificationCodePage(),
+        binding:VerificationCodeBinding(),
+      ),
+      GetPage(
+        name: Routers.register,
+        page: () => RegisterPage(),
+        bindings: [SettingBinding(), RegisterBinding()],
+      ),
+      GetPage(
+        name: Routers.forgotPassword,
+        page: () => ForgotPasswordPage(),
+        binding: ForgotPasswordBinding(),
       ),
       GetPage(
         name: Routers.home,
@@ -546,6 +616,11 @@ class Routers {
         name: Routers.cardbag,
         page: () => CardbagPage(),
         binding: CardbagBinding(),
+      ),
+      GetPage(
+        name: Routers.userInfo,
+        page: () => UserInfoPage(),
+        binding: UserInfoBinding(),
       ),
     ];
   }
