@@ -162,7 +162,7 @@ class CommonTreeManagement {
     }
     try{
       var data = _species.value!
-          .getAllLastList()
+          .getAllList()
           .firstWhere((element) => element.id == specieId);
       if (data.attrs.isEmpty) {
         await data.loadAttrs(_setting.space.id, true, true,

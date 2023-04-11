@@ -24,7 +24,7 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
     super.onReady();
     LoadingDialog.showLoading(context);
 
-    state.flowInstance.value ??= await WorkNetWork.getFlowInstance(id: state.task.instanceId ?? "");
+    state.flowInstance.value ??= await WorkNetWork.getFlowInstance(state.task.instanceId ?? "");
     await loadDataInfo();
     LoadingDialog.dismiss(context);
   }
@@ -46,13 +46,15 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
       for (var element in state.flowInstance.value!.flowTaskHistory!) {
         if(element.flowNode?.bindOperations!=null){
           for (var bindOperation in element.flowNode!.bindOperations!) {
-            Map<String, Map<XAttribute, dynamic>> bindOperationInfo = {bindOperation.name!: {}};
+            Map<String, Map<XOperationItem, dynamic>> bindOperationInfo = {bindOperation.name!: {}};
+           List<XOperationItem> items = await WorkNetWork.getOperationItems(bindOperation.id??"");
             for (var key in data.keys) {
-              XAttribute? x = await CommonTreeManagement().findXAttribute(
-                  specieId: bindOperation.speciesId ?? "", attributeId: key);
-              if (x != null) {
-                bindOperationInfo[bindOperation.name!]!.addAll({x: data[key]});
-              }
+               try{
+                 XOperationItem item = items.firstWhere((element) => element.attrId == key);
+                 bindOperationInfo[bindOperation.name!]!.addAll({item: data[key]});
+               }catch(e){
+
+               }
             }
             state.xAttribute.addAll(bindOperationInfo);
           }

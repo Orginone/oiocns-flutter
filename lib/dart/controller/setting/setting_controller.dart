@@ -198,7 +198,8 @@ class SettingController extends GetxController {
     _user.value = Person(person);
     _curSpace.value = null;
     await _user.value?.getJoinedCompanys();
-    await _user.value?.loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
+    _user.value?.joinedFriend.add(person);
+    await space.loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
   }
 
   ICompany? _findCompany(String id) {

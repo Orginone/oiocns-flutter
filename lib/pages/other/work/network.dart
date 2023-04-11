@@ -48,19 +48,32 @@ class WorkNetWork {
     return tasks;
   }
 
-  static Future<XFlowInstance?> getFlowInstance({String? id,String? speciesId}) async {
+  static Future<XFlowInstance?> getFlowInstance(String id) async {
     XFlowInstance? flowInstance;
-    SettingController setting = Get.find<SettingController>();
-    ResultType<XFlowInstanceArray> result = await KernelApi.getInstance()
-        .queryInstance(FlowReq(
-            id: id,spaceId: setting.space.id,speciesId: speciesId, page: PageRequest(offset: 0, limit: 9999, filter: '')));
+    ResultType<XFlowInstance> result = await KernelApi.getInstance()
+        .queryInstanceById(IdReq(
+        id: id));
 
     if (result.success) {
-      flowInstance = result.data!.result!.first;
+      flowInstance = result.data;
     } else {
       ToastUtils.showMsg(msg: result.msg);
     }
     return flowInstance;
+  }
+
+  static Future<List<XOperationItem>> getOperationItems(String id) async {
+    List<XOperationItem> items = [];
+    SettingController setting = Get.find<SettingController>();
+    ResultType<XOperationItemArray> result = await KernelApi.getInstance()
+        .queryOperationItems(IdSpaceReq(id: id,spaceId: setting.space.id, page: PageRequest(offset: 0, limit: 9999, filter: '')));
+
+    if (result.success) {
+      items = result.data?.result??[];
+    } else {
+      ToastUtils.showMsg(msg: result.msg);
+    }
+    return items;
   }
 
   static Future<void> approvalTask(

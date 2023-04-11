@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/pages/other/work/state.dart';
 import 'package:orginone/pages/other/work/to_do/state.dart';
@@ -26,6 +27,8 @@ class Item extends StatelessWidget {
 
 
   ProcessApprovalController get controller => Get.find(tag: 'ProcessApproval_${type.label}');
+
+
   @override
   Widget build(BuildContext context) {
     String title = '';
@@ -176,17 +179,13 @@ class Item extends StatelessWidget {
         "";
 
     String userId = (type == WorkEnum.done||type == WorkEnum.completed?history?.createUser:task?.createUser)??"";
-
+    SettingController setting = Get.find<SettingController>();
 
     return Row(
       children: [
         Text.rich(TextSpan(children: [
           TextSpan(
-              text: DepartmentManagement()
-                      .findXTargetByIdOrName(id:  userId?? "")
-                      ?.team
-                      ?.name ??
-                  "",
+              text: setting.findTargetShare(userId),
               style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500)),
           TextSpan(
               text: roleType,

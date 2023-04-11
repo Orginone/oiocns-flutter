@@ -20,5 +20,5 @@ class ProcessInfoState extends BaseGetState{
 
   XFlowInstance? get flowInstance => processDetailsController.state.flowInstance.value;
 
-  Map<String,Map<XAttribute,dynamic>> get xAttribute => processDetailsController.state.xAttribute;
+  Map<String,Map<XOperationItem,dynamic>> get xAttribute => processDetailsController.state.xAttribute;
 }

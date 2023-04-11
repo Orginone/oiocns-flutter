@@ -1464,7 +1464,6 @@ class XFlowInstance {
     operationIds = json["operationIds"];
     thingIds = json["thingIds"];
     defineId = json["defineId"];
-    historyTasks = json["historyTasks"];
     belongId = json["belongId"];
     productId = json["productId"];
     title = json["title"];
@@ -1946,7 +1945,7 @@ class XFlowRecord {
   String? comment;
 
   // 内容
-  late String data;
+  String? data;
 
   // 状态
   int? status;
@@ -1967,7 +1966,7 @@ class XFlowRecord {
   String? updateTime;
 
   // 历史
-  late XFlowTaskHistory historyTask;
+  XFlowTaskHistory? historyTask;
 
   //构造方法
   XFlowRecord(
@@ -1997,7 +1996,7 @@ class XFlowRecord {
     version = json["version"];
     createTime = json["createTime"];
     updateTime = json["updateTime"];
-    historyTask = XFlowTaskHistory.fromJson(json["historyTask"]);
+    historyTask = json["historyTask"]!=null?XFlowTaskHistory.fromJson(json["historyTask"]):null;
   }
 
   //通过动态数组解析成List
@@ -2028,7 +2027,7 @@ class XFlowRecord {
     json["version"] = version;
     json["createTime"] = createTime;
     json["updateTime"] = updateTime;
-    json["historyTask"] = historyTask.toJson();
+    json["historyTask"] = historyTask?.toJson();
     return json;
   }
 }
