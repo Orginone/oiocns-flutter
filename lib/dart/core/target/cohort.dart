@@ -7,6 +7,7 @@ class Cohort extends BaseTarget implements ICohort {
   final Function _onDeleted;
   Cohort(XTarget target, this._onDeleted) : super(target) {
     searchTargetType = [TargetType.person];
+    subTeamTypes = [];
   }
   @override
   Future<XTargetArray> searchPerson(String code) async {

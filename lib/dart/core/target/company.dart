@@ -91,7 +91,7 @@ class Company extends MarketTarget implements ICompany {
 
   @override
   Future<ITarget?> create(TargetModel data) async {
-    switch (data.typeName as TargetType) {
+    switch (TargetType.getType(data.typeName)) {
       case TargetType.group:
         return _createGroup(data);
       case TargetType.working:
@@ -177,7 +177,7 @@ class Company extends MarketTarget implements ICompany {
     data.belongId = target.id;
     data.teamCode = data.teamCode == "" ? data.code : data.teamCode;
     data.teamName = data.teamName == "" ? data.name : data.teamName;
-    data.typeName = TargetType.station.name;
+    data.typeName = TargetType.station.label;
     final res = await createSubTarget(data);
     if (res.success) {
       final station = Station(
@@ -196,7 +196,7 @@ class Company extends MarketTarget implements ICompany {
     data.belongId = target.id;
     data.teamCode = data.teamCode == "" ? data.code : data.teamCode;
     data.teamName = data.teamName == "" ? data.name : data.teamName;
-    data.typeName = TargetType.working.name;
+    data.typeName = TargetType.working.label;
     final res = await createSubTarget(data);
     if (res.success) {
       final working = Working(
@@ -213,7 +213,7 @@ class Company extends MarketTarget implements ICompany {
 
   Future<ICohort?> _createCohort(TargetModel data) async {
     data.belongId = target.id;
-    data.typeName = TargetType.cohort.name;
+    data.typeName = TargetType.cohort.label;
     data.teamCode = data.code;
     data.teamName = data.name;
     final res = await createTarget(data);
@@ -233,7 +233,7 @@ class Company extends MarketTarget implements ICompany {
   Future<bool> deleteCohort(String id) async {
     final res = await kernel.deleteTarget(IdReqModel(
       id: id,
-      typeName: TargetType.cohort.name,
+      typeName: TargetType.cohort.label,
       belongId: id,
     ));
     if (res.success) {

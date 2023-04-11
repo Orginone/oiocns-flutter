@@ -47,13 +47,17 @@ class RelationGroupPage
                   controller.nextLv(iAuthority: item);
                 },onTap: (){
                   controller.onTap(iAuthority: item);
-                });
+                },onSelected: (value){
+
+                },);
               case StandardEnum.classCriteria:
                 return Item(species: item, nextLv: () {
                   controller.nextLv(species: item);
                 },onTap: (){
                   controller.onTap(species: item);
-                });
+                },onSelected: (value){
+
+                },);
             }
           }else if(state.companySpaceEnum!=null){
             switch (state.companySpaceEnum) {
@@ -62,24 +66,32 @@ class RelationGroupPage
                   controller.nextLv(innerAgency: item);
                 },onTap: (){
                   controller.onTap(innerAgency: item);
-                });
+                },onSelected: (value){
+                  controller.operation(item,value);
+                },);
               case CompanySpaceEnum.outAgency:
                 return Item(outAgency: item, nextLv: () {
                   controller.nextLv(outAgency: item);
                 },onTap: (){
                   controller.onTap(outAgency: item);
-                });
+                },onSelected: (value){
+                  controller.operation(item,value);
+                },);
               case CompanySpaceEnum.stationSetting:
                 return Item(station: item, nextLv: () {
                   controller.nextLv(station: item);
                 },onTap: (){
                   controller.onTap(station: item);
-                });
+                },onSelected: (value){
+                  controller.operation(item,value);
+                },);
               case CompanySpaceEnum.companyCohort:
                 return Item(cohort: item, nextLv: () {
                   controller.nextLv(cohort: item);
                 },onTap: (){
                   controller.onTap(cohort: item);
+                },onSelected: (value){
+                  controller.operation(item,value);
                 },);
             }
           }
@@ -87,7 +99,9 @@ class RelationGroupPage
             controller.nextLv(cohort: item);
           },onTap: (){
             controller.onTap(cohort: item);
-          });
+          },onSelected: (value){
+            controller.operation(item,value);
+          },);
         },
         itemCount: state.groupData.value.length ?? 0,
       );

@@ -24,6 +24,10 @@ enum TargetType {
   static String getName(TargetType type) {
     return type.label;
   }
+
+  static TargetType getType(String name) {
+    return TargetType.values.firstWhere((element) => element.label == name);
+  }
 }
 
 /// 消息类型

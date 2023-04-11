@@ -6,13 +6,18 @@ import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/util/authority.dart';
 import 'package:orginone/widget/common_widget.dart';
 
-class PopupMenuWidget extends StatefulWidget {
+class PopupMenuWidget<T> extends StatefulWidget {
   final ITarget? target;
   final CompanySpaceEnum? companySpaceEnum;
-  final StandardEnum? standardEnum;
+  final UserSpaceEnum? userSpaceEnum;
+  final PopupMenuItemSelected<T>? onSelected;
 
   const PopupMenuWidget(
-      {Key? key, this.target, this.companySpaceEnum, this.standardEnum})
+      {Key? key,
+      this.target,
+      this.companySpaceEnum,
+      this.userSpaceEnum,
+      this.onSelected})
       : super(key: key);
 
   @override
@@ -30,36 +35,55 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    init();
+  }
+
+  void init() {
+    popupMenuItem.clear();
     target = widget.target;
-    if(widget.companySpaceEnum!=null){
-      switch(widget.companySpaceEnum){
+    if (widget.companySpaceEnum != null) {
+      switch (widget.companySpaceEnum) {
         case CompanySpaceEnum.company:
           target = settingController.space;
           break;
         case CompanySpaceEnum.innerAgency:
-          popupMenuItem.add(newPopupMenuItem("新建部门","createDept"));
+          popupMenuItem.add(newPopupMenuItem("新建部门", "create"));
           break;
         case CompanySpaceEnum.outAgency:
-          popupMenuItem.add(newPopupMenuItem("新建集团","createGroup"));
+          popupMenuItem.add(newPopupMenuItem("新建集团", "create"));
           break;
         case CompanySpaceEnum.stationSetting:
-          popupMenuItem.add(newPopupMenuItem("新建岗位","createStation"));
+          popupMenuItem.add(newPopupMenuItem("新建岗位", "create"));
           break;
         case CompanySpaceEnum.companyCohort:
-          popupMenuItem.add(newPopupMenuItem("新建群组","createCohort"));
+          popupMenuItem.add(newPopupMenuItem("新建群组", "create"));
           break;
       }
     }
+    if (widget.userSpaceEnum != null) {
+      switch (widget.userSpaceEnum) {
+        case UserSpaceEnum.personInfo:
+          popupMenuItem.add(newPopupMenuItem("编辑", "edit"));
+          break;
+        case UserSpaceEnum.personGroup:
+          popupMenuItem.add(newPopupMenuItem("新建群组", "create"));
+          break;
+      }
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await initPopupMenuItem();
+    });
   }
 
   Future<bool> initPopupMenuItem() async {
-    if(target == null){
+    if (target == null) {
       return popupMenuItem.isNotEmpty;
     }
     bool isSuperAdmin = await Auth.isSuperAdmin(target!);
-    if (target!.subTeamTypes.isNotEmpty) {
+    if (target?.subTeamTypes.isNotEmpty??false) {
       if (isSuperAdmin) {
-        popupMenuItem.add(newPopupMenuItem("新建子组织", "createOrganization"));
+        popupMenuItem.add(newPopupMenuItem("新建子组织", "create"));
       }
     }
     if (isSuperAdmin) {
@@ -75,6 +99,7 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
       }
     }
 
+    setState(() {});
     return popupMenuItem.isNotEmpty;
   }
 
@@ -86,20 +111,21 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
   }
 
   @override
+  void didUpdateWidget(covariant PopupMenuWidget oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.target != widget.target ||
+        oldWidget.companySpaceEnum != widget.companySpaceEnum ||
+        oldWidget.userSpaceEnum != widget.userSpaceEnum) {
+      init();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: initPopupMenuItem(),
-      builder: (context, snapshot) {
-        if(!snapshot.hasData){
-          return SizedBox();
-        }
-        if(!snapshot.data!){
-          return SizedBox();
-        }
-        return CommonWidget.commonPopupMenuButton(
-          items: popupMenuItem,
-        );
-      }
+    return CommonWidget.commonPopupMenuButton(
+      items: popupMenuItem,
+      onSelected: widget.onSelected,
     );
   }
 }

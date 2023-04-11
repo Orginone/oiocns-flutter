@@ -126,7 +126,7 @@ class BaseTarget extends ITarget {
   }
 
   Future<bool> pullSubTeam(XTarget team) async {
-    if (subTeamTypes.contains(team.typeName as TargetType)) {
+    if (subTeamTypes.contains(TargetType.getType(team.typeName))) {
       final res = await kernel.pullAnyToTeam(TeamPullModel(
         id: target.id,
         targetIds: [team.id],
@@ -151,7 +151,7 @@ class BaseTarget extends ITarget {
   }
 
   Future<ResultType<XTarget>> createSubTarget(TargetModel data) async {
-    if (createTargetType.contains(data.typeName as TargetType)) {
+    if (createTargetType.contains(TargetType.getType(data.typeName))) {
       final res = await createTarget(data);
       if (res.success) {
         await kernel.pullAnyToTeam(TeamPullModel(
@@ -281,7 +281,7 @@ class BaseTarget extends ITarget {
   /// @param target 目标对象
   /// @returns
   Future<ResultType<dynamic>> join(XTarget target) async {
-    if (joinTargetType.contains(target.typeName as TargetType)) {
+    if (joinTargetType.contains(TargetType.getType(target.typeName))) {
       return await kernel.pullAnyToTeam(TeamPullModel(
         id: target.id,
         teamTypes: [target.typeName],
@@ -301,7 +301,7 @@ class BaseTarget extends ITarget {
   /// @param teamRemark team备注
   /// @returns
   Future<ResultType<XTarget>> createTarget(TargetModel data) async {
-    if (createTargetType.contains(data.typeName as TargetType)) {
+    if (createTargetType.contains(TargetType.getType(data.typeName))) {
       return await kernel.createTarget(data);
     } else {
       return ResultType<XTarget>(
