@@ -123,6 +123,9 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if(popupMenuItem.isEmpty){
+      return Container();
+    }
     return CommonWidget.commonPopupMenuButton(
       items: popupMenuItem,
       onSelected: widget.onSelected,
