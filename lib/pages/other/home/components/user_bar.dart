@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -34,7 +36,7 @@ class UserBar extends GetView<SettingController> {
                 Obx(() {
                   return Text(
                     controller.signed
-                        ? controller.space.target.team?.name ?? ""
+                        ? controller.space.teamName
                         : "",
                     style: XFonts.size22Black0,
                     overflow: TextOverflow.ellipsis,
@@ -61,11 +63,13 @@ class UserBar extends GetView<SettingController> {
 
   Widget _avatar(EdgeInsets insets) {
     return Obx(() {
-      return TextAvatar(
-        radius: 45.w,
+      var avatar = controller.signed?controller.space.shareInfo.avatar!.thumbnail!.split(",")[1].replaceAll('\r', '').replaceAll('\n', ''):"";
+      return Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          image: DecorationImage(image:  MemoryImage(base64Decode(avatar),),fit: BoxFit.fill)
+        ),
         width: 45.w,
-        avatarName: controller.user?.name.substring(0, 1) ?? "",
-        textStyle: XFonts.size22White,
         margin: insets,
       );
     });
