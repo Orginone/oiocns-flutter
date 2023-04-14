@@ -151,6 +151,9 @@ class WareHouseManagementPage extends BaseGetListPageView<
                     next: () {
                       controller.selectSpecies(e);
                     },
+                    onTap: (){
+                      controller.toThing(e);
+                    },
                   );
                 },
               ).toList(),

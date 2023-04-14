@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/event/home_data.dart';
@@ -161,8 +162,6 @@ class SettingController extends GetxController {
     if (res.success) {
       await _loadUser(XTarget.fromJson(res.data["person"]));
       XEventBus.instance.fire(SignIn());
-      var store = await LocalStore.instance;
-      store.setStringList("account", [account, password]);
     }
     return res;
   }
@@ -174,9 +173,6 @@ class SettingController extends GetxController {
     var res = await KernelApi.getInstance().register(params);
     if (res.success) {
       ToastUtils.showMsg(msg: "您的账号私有密钥是————${res.data['privateKey']}");
-      xTarget = XTarget.fromJson(res.data["person"]);
-      await _loadUser(xTarget);
-      XEventBus.instance.fire(SignIn());
     }
     return xTarget;
   }
@@ -197,9 +193,22 @@ class SettingController extends GetxController {
   _loadUser(XTarget person) async {
     _user.value = Person(person);
     _curSpace.value = null;
-    await _user.value?.getJoinedCompanys();
-    _user.value?.joinedFriend.add(person);
-    await space.loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
+    await load(person);
+  }
+
+  Future<void> load(XTarget person) async{
+    if(KernelApi.getInstance().isOnline){
+      await _user.value?.getJoinedCompanys(reload: true);
+      _user.value?.joinedFriend.add(person);
+      await space.loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
+      print('获取用户关系成功');
+      XEventBus.instance.fire(SignIn());
+    }else{
+      Future.delayed(const Duration(milliseconds: 100),() async{
+        await load(person);
+      });
+    }
+
   }
 
   ICompany? _findCompany(String id) {
@@ -226,5 +235,6 @@ class SettingBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(SettingController(), permanent: true);
+    Get.put(ChatController(), permanent: true);
   }
 }

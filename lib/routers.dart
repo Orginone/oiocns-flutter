@@ -295,7 +295,7 @@ class Routers {
   static const String dictDetails = "/dictDetails";
 
   static String get main {
-    return login;
+    // return login;
     var user = HiveUtils.getUser();
     if (user != null) {
       return home;
@@ -309,7 +309,7 @@ class Routers {
       GetPage(
         name: Routers.login,
         page: () => LoginPage(),
-        bindings: [SettingBinding(), ChatBinding(), LoginBinding()],
+        binding: LoginBinding(),
       ),
       GetPage(
         name: Routers.verificationCode,
@@ -319,7 +319,7 @@ class Routers {
       GetPage(
         name: Routers.register,
         page: () => RegisterPage(),
-        bindings: [SettingBinding(), RegisterBinding()],
+        binding: RegisterBinding()
       ),
       GetPage(
         name: Routers.forgotPassword,
@@ -330,7 +330,6 @@ class Routers {
         name: Routers.home,
         page: () => const HomePage(),
         bindings: [
-          ChatBinding(),
           HomeBinding(),
           SetHomeBinding(),
           MessageBinding(),

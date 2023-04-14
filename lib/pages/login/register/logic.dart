@@ -66,11 +66,7 @@ class RegisterController extends BaseController<RegisterState> {
         avatar: ''));
     LoadingDialog.dismiss(context);
     if (res != null) {
-       ToastUtils.showMsg(msg: "注册成功,自动为您登录");
-       var store = await LocalStore.instance;
-       store.setStringList("account", [state.userNameController.text, state.passWordController.text]);
-       [Permission.storage, Permission.notification].request();
-       Get.offAndToNamed(Routers.home);
+       ToastUtils.showMsg(msg: "注册成功,请返回登录");
     } else {
       ToastUtils.showMsg(msg: "注册失败");
     }

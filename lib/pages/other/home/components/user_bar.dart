@@ -11,7 +11,7 @@ class UserBar extends GetView<SettingController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => controller.signed ? _container : _empty);
+    return _container;
   }
 
   Widget get _empty => Container();
@@ -21,28 +21,30 @@ class UserBar extends GetView<SettingController> {
       height: 74.h,
       child: Row(children: [
         Expanded(
-          child: Obx(() {
-            return GestureDetector(
-              onTap: () {
-                controller.jumpSpaces();
-              },
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  _avatar(EdgeInsets.only(left: 20.w)),
-                  Container(margin: EdgeInsets.only(left: 10.w)),
-                  Text(
-                    controller.space.target.team?.name ?? "",
+          child: GestureDetector(
+            onTap: () {
+              controller.jumpSpaces();
+            },
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                _avatar(EdgeInsets.only(left: 20.w)),
+                Container(margin: EdgeInsets.only(left: 10.w)),
+                Obx(() {
+                  return Text(
+                    controller.signed
+                        ? controller.space.target.team?.name ?? ""
+                        : "",
                     style: XFonts.size22Black0,
                     overflow: TextOverflow.ellipsis,
-                  ),
-                  Container(margin: EdgeInsets.only(left: 2.w)),
-                  const Icon(Icons.arrow_drop_down, color: XColors.black)
-                ],
-              ),
-            );
-          }),
+                  );
+                }),
+                Container(margin: EdgeInsets.only(left: 2.w)),
+                const Icon(Icons.arrow_drop_down, color: XColors.black)
+              ],
+            ),
+          ),
         ),
         Padding(
           padding: EdgeInsets.only(right: 10.w),
@@ -58,12 +60,14 @@ class UserBar extends GetView<SettingController> {
   }
 
   Widget _avatar(EdgeInsets insets) {
-    return TextAvatar(
-      radius: 45.w,
-      width: 45.w,
-      avatarName: controller.user!.name.substring(0, 1),
-      textStyle: XFonts.size22White,
-      margin: insets,
-    );
+    return Obx(() {
+      return TextAvatar(
+        radius: 45.w,
+        width: 45.w,
+        avatarName: controller.user?.name.substring(0, 1) ?? "",
+        textStyle: XFonts.size22White,
+        margin: insets,
+      );
+    });
   }
 }

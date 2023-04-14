@@ -45,5 +45,10 @@ class WareHouseManagementController
     Get.toNamed(Routers.choiceGb,arguments: {"head":"仓库",'gb':item,'function':GbFunction.wareHouse});
   }
 
+  void toThing(ISpeciesItem item) {
+    Get.toNamed(Routers.thing,
+        arguments: {"id": item.id, "title": item.name});
+  }
+
 
 }

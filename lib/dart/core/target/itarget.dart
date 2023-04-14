@@ -34,7 +34,7 @@ abstract class ITarget {
   // 类型
   late String typeName;
   // 职权树
-  late IAuthority? authorityTree;
+  IAuthority? authorityTree;
   // 拥有的身份
   late List<XIdentity> ownIdentitys;
   // 组织的身份
