@@ -40,12 +40,11 @@ class StoreHub {
     _connection.keepAliveIntervalInMilliseconds = interval;
     _connection.serverTimeoutInMilliseconds = timeout;
     _connection.onclose((err) {
-      if (!isConnected) {
+      if (!isConnected && err != null) {
         for (final callback in _disconnectedCallbacks) {
           callback(err);
         }
-        log.warning(
-            "连接断开,${_timeout}ms后重试。${err != null ? err.toString() : ''}`");
+        log.warning("连接断开,${_timeout}ms后重试。${err.toString()}`");
         Future.delayed(Duration(milliseconds: _timeout), () {
           _starting();
         });
