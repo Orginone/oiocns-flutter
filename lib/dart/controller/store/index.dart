@@ -11,9 +11,7 @@ class StoreController {
   IObjectItem? _home;
   IFileSystemItem _root = getFileSysItemRoot;
   constructor() async{
-    if(_home == null){
-      _home = await _root.create('主目录');
-    }
+    _home ??= await _root.create('主目录');
   }
   /** 根目录 */
   IFileSystemItem get root{

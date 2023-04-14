@@ -16,6 +16,7 @@ import '../enum.dart';
 import '../thing/ispecies.dart';
 import '../thing/species.dart';
 import 'itarget.dart';
+import 'targetMap.dart';
 
 class BaseTarget extends ITarget {
   static Uuid uuid = const Uuid();
@@ -68,7 +69,7 @@ class BaseTarget extends ITarget {
     identitys = [];
     memberTypes = [TargetType.person];
     typeName = target.typeName;
-    // appendTarget(target);
+    appendTarget([target]);
   }
 
   @override
@@ -83,7 +84,6 @@ class BaseTarget extends ITarget {
       typeNames: [target.typeName],
       subTypeNames: memberTypes.map((e) => e.label).toList(),
     ));
-    // appendTarget(res.data);
     return res.data!;
   }
 
@@ -94,7 +94,7 @@ class BaseTarget extends ITarget {
 
   @override
   Future<bool> pullMembers(List<String> ids, String type) async {
-    if (memberTypes.contains(type as TargetType)) {
+    if (TargetType.values.map((e) => e.label).contains(type)) {
       final res = await kernel.pullAnyToTeam(TeamPullModel(
         id: target.id,
         targetIds: ids,
@@ -113,7 +113,7 @@ class BaseTarget extends ITarget {
 
   @override
   Future<bool> removeMembers(List<String> ids, {String type = ''}) async {
-    if (memberTypes.contains(type as TargetType)) {
+    if (TargetType.values.map((e) => e.label).contains(type)) {
       final res = await kernel.removeAnyOfTeam(TeamPullModel(
         id: target.id,
         targetIds: ids,
@@ -196,14 +196,14 @@ class BaseTarget extends ITarget {
     if (typeNames.isNotEmpty) {
       final res = await kernel.searchTargetByName(NameTypeModel(
           name: code,
-          typeNames: typeNames.map((person) => person.name).toList(),
+          typeNames: typeNames.map((person) => person.label).toList(),
           page: PageRequest(
             offset: 0,
             filter: code,
             limit: Constants.maxUint16,
           )));
       if (res.success && res.data != null) {
-        // appendTarget(res.data);
+        appendTarget(res.data?.result??[]);
         return res.data!;
       }
     }
@@ -216,17 +216,13 @@ class BaseTarget extends ITarget {
   /// @param typeName 对象
   /// @returns
   Future<bool> applyJoin(String destId, TargetType typeName) async {
-    if (joinTargetType.contains(typeName.name as TargetType)) {
-      final res = await kernel.applyJoinTeam(JoinTeamModel(
-        id: destId,
-        targetId: target.id,
-        teamType: typeName.name,
-        targetType: target.typeName,
-      ));
-      return res.success;
-    }
-    // logger.warn(unAuthorizedError);
-    return false;
+    final res = await kernel.applyJoinTeam(JoinTeamModel(
+      id: destId,
+      targetId: target.id,
+      teamType: typeName.name,
+      targetType: target.typeName,
+    ));
+    return res.success;
   }
 
   /// 取消加入组织/个人
@@ -344,7 +340,7 @@ class BaseTarget extends ITarget {
   /// @param codes 职权编号集合
   @override
   Future<bool> judgeHasIdentity(List<String> codes) async {
-    if (ownIdentitys.isNotEmpty) {
+    if (ownIdentitys.isEmpty) {
       await getOwnIdentitys(reload: true);
     }
     return ownIdentitys

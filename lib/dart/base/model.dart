@@ -31,7 +31,9 @@ class ResultType<T> {
   ResultType.fromJsonSerialize(
       Map<String, dynamic> json, T Function(Map<String, dynamic>) serialize)
       : msg = json["msg"],
-        data = (json["data"] != null && json["data"] is Map) ?  serialize(json["data"]) : null,
+        data = (json["data"] != null && json["data"] is Map)
+            ? serialize(json["data"])
+            : null,
         code = json["code"],
         success = json["success"];
 }
@@ -60,7 +62,6 @@ class PageResp<T> {
     return json;
   }
 }
-
 
 /// 内核请求模型
 class ReqestType {
@@ -151,14 +152,14 @@ class BucketOpreateModel {
     this.fileItem,
   });
 
-  Map<String,dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     return {
-      "key":key,
-      "shareDomain":shareDomain,
-      "operate":operate.label,
-      "fileItem":fileItem?.toJson(),
+      "key": key,
+      "shareDomain": shareDomain,
+      "operate": operate.label,
+      "fileItem": fileItem?.toJson(),
     };
-}
+  }
 }
 
 /// 上传文件携带的数据
@@ -183,12 +184,12 @@ class FileChunkData {
     required List data,
   });
 
-  Map<String,dynamic> toJson() {
+  Map<String, dynamic> toJson() {
     return {
-      "index":index,
-      "size":size,
-      "uploadId":uploadId,
-      "dataUrl":dataUrl,
+      "index": index,
+      "size": size,
+      "uploadId": uploadId,
+      "dataUrl": dataUrl,
     };
   }
 }
@@ -242,7 +243,7 @@ class FileItemModel {
     required this.hasSubDirectories,
   });
 
-  FileItemModel.formJson(Map<String,dynamic> json){
+  FileItemModel.formJson(Map<String, dynamic> json) {
     key = json['key'];
     size = json['size'];
     name = json['name'];
@@ -251,20 +252,19 @@ class FileItemModel {
     thumbnail = json['thumbnail'];
     extension = json['extension'];
     contentType = json['contentType'];
-    dateCreated = DateTime.tryParse(json['dateCreated']??"");
-    dateModified = DateTime.tryParse(json['dateModified']??"");
+    dateCreated = DateTime.tryParse(json['dateCreated'] ?? "");
+    dateModified = DateTime.tryParse(json['dateModified'] ?? "");
     hasSubDirectories = json['hasSubDirectories'];
   }
 
-  Map<String,dynamic> shareInfo(){
-    String url =
-        "${Constant.host}/orginone/anydata/bucket/load/$shareLink";
+  Map<String, dynamic> shareInfo() {
+    String url = "${Constant.host}/orginone/anydata/bucket/load/$shareLink";
     return {
       "shareLink": url,
-      "size":size,
+      "size": size,
       "name": name,
-      "extension":extension,
-      "thumbnail":thumbnail,
+      "extension": extension,
+      "thumbnail": thumbnail,
     };
   }
 }
@@ -328,11 +328,17 @@ class CreateDefineReq {
   //分类id
   late String? speciesId;
 
-  // 职权ID
+  // 权限ID
   late String? authId;
 
   //是否公开
   late bool public;
+
+  //数据源id
+  late String? sourceIds;
+
+  //是否创建实体
+  late bool isCreate;
 }
 
 class NameModel {
@@ -558,6 +564,39 @@ class IdSpaceReq {
   }
 }
 
+class RecordSpaceReq {
+  // 唯一ID
+  final List<int> status;
+
+  // 工作空间ID
+  final String spaceId;
+
+  // 分页
+  final PageRequest? page;
+
+  //构造方法
+  RecordSpaceReq({
+    required this.status,
+    required this.spaceId,
+    required this.page,
+  });
+
+  //通过JSON构造
+  RecordSpaceReq.fromJson(Map<String, dynamic> json)
+      : status = json["status"],
+        spaceId = json["spaceId"],
+        page = PageRequest.fromJson(json["page"]);
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["status"] = status;
+    json["spaceId"] = spaceId;
+    json["page"] = page?.toJson();
+    return json;
+  }
+}
+
 class IdSpeciesReq {
   // 唯一ID
   final String id;
@@ -620,7 +659,7 @@ class IdOperationReq {
   final String id;
   // 工作空间ID
   final String spaceId;
-  // 是否职权过滤
+  // 是否权限过滤
   final bool filterAuth;
   // 是否递归组织
   final bool recursionOrg;
@@ -651,7 +690,7 @@ class IdArraySpaceReq {
 
 class QueryDefineReq {
   // 分类ID
-  final String speciesId;
+  final String? speciesId;
   // 空间ID
   final String spaceId;
   // 分页
@@ -662,17 +701,17 @@ class QueryDefineReq {
     required this.page,
   });
 
-  Map<String,dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     return {
-      "speciesId":speciesId,
-      "spaceId":spaceId,
-      "page":page.toJson(),
+      "speciesId": speciesId,
+      "spaceId": spaceId,
+      "page": page.toJson(),
     };
   }
 }
 
 class SpaceAuthReq {
-  // 职权ID
+  // 权限ID
   final String authId;
 
   // 工作空间ID
@@ -1473,7 +1512,7 @@ class ApprovalModel {
 
 class DictModel {
   // 唯一ID
-  late String? id;
+  String? id;
 
   // 名称
   final String name;
@@ -1498,6 +1537,7 @@ class DictModel {
     required this.name,
     required this.public,
     required this.belongId,
+    required this.code,
     required this.speciesId,
     required this.remark,
   });
@@ -1566,6 +1606,7 @@ class DictItemModel {
     this.value,
     this.public,
     this.belongId,
+    this.dictId,
   });
 
   //通过JSON构造
@@ -1626,7 +1667,7 @@ class OperationModel {
   // 流程定义Id
   late String? defineId;
 
-  // 业务发起职权Id
+  // 业务发起权限Id
   late String? beginAuthId;
 
   // 子项列表
@@ -1776,43 +1817,48 @@ class OperationItem {
   });
 }
 
+class FlowDefineModel {
+  final String? id;
+
+  // 类别id
+  final String? speciesId;
+
+  // 空间id
+  final String? spaceId;
+
+  // 状态
+  final int? status;
+
+  FlowDefineModel(
+    this.id,
+    this.spaceId,
+    this.speciesId,
+    this.status,
+  );
+}
+
 class ThingModel {
   // 唯一ID
   final String? id;
 
-  // 名称
-  final String? name;
+  // 内容
+  final String data;
 
-  // 编号
-  final String? code;
-
-  // 链上ID
-  final String? chainId;
-
-  // 创建组织/个人
+  // 归属id
   final String? belongId;
-
-  // 备注
-  final String? remark;
 
   //构造方法
   ThingModel({
     this.id,
-    this.name,
-    this.code,
-    this.chainId,
+    required this.data,
     this.belongId,
-    this.remark,
   });
 
   //通过JSON构造
   ThingModel.fromJson(Map<String, dynamic> json)
       : id = json["id"],
-        name = json["name"],
-        code = json["code"],
-        chainId = json["chainId"],
-        belongId = json["belongId"],
-        remark = json["remark"];
+        data = json["data"],
+        belongId = json["belongId"];
 
   //通过动态数组解析成List
   static List<ThingModel> fromList(List<dynamic>? list) {
@@ -1832,11 +1878,8 @@ class ThingModel {
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json["id"] = id;
-    json["name"] = name;
-    json["code"] = code;
-    json["chainId"] = chainId;
+    json["data"] = data;
     json["belongId"] = belongId;
-    json["remark"] = remark;
     return json;
   }
 }
@@ -1860,7 +1903,7 @@ class SpeciesModel {
   // 创建组织/个人
   final String belongId;
 
-  // 工作职权Id
+  // 工作权限Id
   final String authId;
 
   // 备注
@@ -1952,7 +1995,7 @@ class AttributeModel {
   // 类别代码
   late String? speciesCode;
 
-  // 工作职权Id
+  // 工作权限Id
   final String? authId;
 
   //构造方法
@@ -2100,7 +2143,7 @@ class IdentityModel {
   // 编号
   final String? code;
 
-  // 职权Id
+  // 权限Id
   final String? authId;
 
   // 创建组织/个人
@@ -3315,7 +3358,7 @@ class CreateOrderByStagingModel {
 }
 
 class GiveIdentityModel {
-  // 身份ID
+  // 角色ID
   final String? id;
 
   // 人员ID
@@ -3976,7 +4019,8 @@ class FlowInstanceModel {
         contentType = json["contentType"],
         data = json["data"],
         title = json["title"],
-        hook = json["hook"],thingIds = json['thingIds'];
+        hook = json["hook"],
+        thingIds = json['thingIds'];
 
   //通过动态数组解析成List
   static List<FlowInstanceModel> fromList(List<dynamic>? list) {
@@ -4003,6 +4047,38 @@ class FlowInstanceModel {
     json["title"] = title;
     json["hook"] = hook;
     json['thingIds'] = thingIds;
+    return json;
+  }
+}
+
+class QueryTaskReq {
+  // 流程定义Id
+  final String defineId;
+  // 任务类型 审批、抄送
+  final String typeName;
+  QueryTaskReq(this.defineId, this.typeName);
+
+  QueryTaskReq.fromJson(Map<String, dynamic> json)
+      : defineId = json["defineId"],
+        typeName = json["typeName"];
+
+  static List<QueryTaskReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<QueryTaskReq> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(QueryTaskReq.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["defineId"] = defineId;
+    json["typeName"] = typeName;
     return json;
   }
 }
@@ -4064,7 +4140,7 @@ class FlowReq {
   final PageRequest? page;
 
   //构造方法
-  FlowReq( {
+  FlowReq({
     this.id,
     this.spaceId,
     this.status,
@@ -4116,18 +4192,23 @@ class ApprovalTaskReq {
   // 评论
   final String? comment;
 
+  // 数据
+  final String? data;
+
   //构造方法
   ApprovalTaskReq({
     this.id,
     this.status,
     this.comment,
+    this.data,
   });
 
   //通过JSON构造
   ApprovalTaskReq.fromJson(Map<String, dynamic> json)
       : id = json["id"],
         status = json["status"],
-        comment = json["comment"];
+        comment = json["comment"],
+        data = json["data"];
 
   //通过动态数组解析成List
   static List<ApprovalTaskReq> fromList(List<dynamic>? list) {
@@ -4149,6 +4230,7 @@ class ApprovalTaskReq {
     json["id"] = id;
     json["status"] = status;
     json["comment"] = comment;
+    json["data"] = data;
     return json;
   }
 }
@@ -4332,4 +4414,3 @@ class RegisterType {
     return json;
   }
 }
-

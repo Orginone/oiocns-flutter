@@ -132,8 +132,8 @@ dependencies:
   timeline_tile: ^2.0.0
   #启动辅助库
   url_launcher: ^6.1.10
-  #生成二维码
-  ai_barcode: ^3.2.4
+  #验证码输入框
+  pin_input_text_field: ^4.5.0
 
 dev_dependencies:
   flutter_test:

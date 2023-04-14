@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/store/filesys.dart';
 import 'package:orginone/dart/core/store/ifilesys.dart';
+import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 
 class SettingManagement{
@@ -17,13 +18,19 @@ class SettingManagement{
 
   SettingController get settingController => Get.find<SettingController>();
 
-  var  outAgencyGroup = <IGroup>[].obs;
+  var outAgencyGroup = <IGroup>[].obs;
 
   var stations = <IStation>[].obs;
 
   var cohorts = <ICohort>[].obs;
 
+  var authority = <IAuthority>[].obs;
+
   Future<void>  initSetting() async{
+     this.outAgencyGroup.clear();
+     this.stations.clear();
+     this.cohorts.clear();
+     this.authority.clear();
      Future<void> getNextLvOutAgency(List<IGroup> group) async {
        for (var value in group) {
          value.subGroup = await value.getSubGroups(reload: true);
@@ -32,7 +39,6 @@ class SettingManagement{
          }
        }
      }
-
      var group = await settingController.company?.getJoinedGroups(reload: true);
      if(group!=null){
        await getNextLvOutAgency(group);
@@ -42,9 +48,13 @@ class SettingManagement{
      if(stations!=null){
        this.stations.addAll(stations);
      }
-     var cohorts = await settingController.company?.getCohorts(reload: true);
+     var cohorts = await settingController.space.getCohorts(reload: true);
      if(cohorts!=null){
        this.cohorts.addAll(cohorts);
+     }
+     var authority = await settingController.space.loadAuthorityTree(reload: true);
+     if(authority!=null){
+       this.authority.add(authority);
      }
   }
 
@@ -54,6 +64,18 @@ class SettingManagement{
       list.add(element);
       if (element.subGroup.isNotEmpty) {
         list.addAll(getAllOutAgency(element.subGroup));
+      }
+    }
+
+    return list;
+  }
+
+  List<IAuthority> getAllAuthority(List<IAuthority> authority) {
+    List<IAuthority> list = [];
+    for (var element in authority) {
+      list.add(element);
+      if (element.children.isNotEmpty) {
+        list.addAll(getAllAuthority(element.children));
       }
     }
 

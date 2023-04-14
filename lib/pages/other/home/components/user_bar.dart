@@ -23,7 +23,7 @@ class UserBar extends GetView<SettingController> {
         Expanded(
           child: Obx(() {
             return GestureDetector(
-              onTap: (){
+              onTap: () {
                 controller.jumpSpaces();
               },
               child: Row(
@@ -33,7 +33,7 @@ class UserBar extends GetView<SettingController> {
                   _avatar(EdgeInsets.only(left: 20.w)),
                   Container(margin: EdgeInsets.only(left: 10.w)),
                   Text(
-                    controller.space.target.team?.name??"",
+                    controller.space.target.team?.name ?? "",
                     style: XFonts.size22Black0,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -44,8 +44,15 @@ class UserBar extends GetView<SettingController> {
             );
           }),
         ),
-        Padding(padding: EdgeInsets.only(left: 10.w)),
-        _avatar(EdgeInsets.only(right: 20.w)),
+        Padding(
+          padding: EdgeInsets.only(right: 10.w),
+          child: GestureDetector(
+            child: _avatar(EdgeInsets.only(right: 10.w)),
+            onTap: () {
+              Get.toNamed(Routers.personPage);
+            },
+          ),
+        ),
       ]),
     );
   }

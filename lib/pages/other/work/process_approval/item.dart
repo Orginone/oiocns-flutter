@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/pages/other/work/state.dart';
 import 'package:orginone/pages/other/work/to_do/state.dart';
@@ -26,10 +27,12 @@ class Item extends StatelessWidget {
 
 
   ProcessApprovalController get controller => Get.find(tag: 'ProcessApproval_${type.label}');
+
+
   @override
   Widget build(BuildContext context) {
     String title = '';
-    if(type == WorkEnum.done){
+    if(type == WorkEnum.done || type == WorkEnum.completed){
       title = history?.historyTask?.flowInstance?.title??"";
     }else{
       title = task?.flowInstance?.title??"";
@@ -61,7 +64,7 @@ class Item extends StatelessWidget {
       child: GestureDetector(
         onTap: (){
           var data;
-          if(type == WorkEnum.done){
+          if(type == WorkEnum.done || type == WorkEnum.completed ){
             data = history?.historyTask;
           }else{
             data = task;
@@ -141,7 +144,7 @@ class Item extends StatelessWidget {
         )
       ],
     );
-    if(type == WorkEnum.done){
+    if(type == WorkEnum.done || type == WorkEnum.completed){
       Color textColor = history!.status == 100?Colors.green:Colors.red;
 
       button = Container(
@@ -160,33 +163,29 @@ class Item extends StatelessWidget {
   }
 
   Widget comment(){
-    if(type != WorkEnum.done){
+    if(type != WorkEnum.done && type != WorkEnum.completed){
       return Container();
     }
     return Container(margin: EdgeInsets.only(top: 20.h),child: Text("备注:${history?.comment??""}"));
   }
 
   Widget role() {
-    String roleType = type == WorkEnum.done ? "审批" : "发起";
-    String dateTime = DateTime.tryParse((type == WorkEnum.done
-                    ? history!.updateTime
-                    : task!.flowInstance?.createTime) ??
+    String roleType = type == WorkEnum.done ||type == WorkEnum.completed? "审批" : "发起";
+    String dateTime = DateTime.tryParse((type == WorkEnum.done ||type == WorkEnum.completed
+                    ? history?.updateTime
+                    : task?.flowInstance?.createTime) ??
                 "")
             ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
         "";
 
-    String userId = (type == WorkEnum.done?history!.createUser:task!.createUser)??"";
-
+    String userId = (type == WorkEnum.done||type == WorkEnum.completed?history?.createUser:task?.createUser)??"";
+    SettingController setting = Get.find<SettingController>();
 
     return Row(
       children: [
         Text.rich(TextSpan(children: [
           TextSpan(
-              text: DepartmentManagement()
-                      .findXTargetByIdOrName(id:  userId?? "")
-                      ?.team
-                      ?.name ??
-                  "",
+              text: setting.findTargetShare(userId),
               style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500)),
           TextSpan(
               text: roleType,

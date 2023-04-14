@@ -1,7 +1,4 @@
-
-
-
-class Images{
+class Images {
   static const String batchOperationIcon = "images/batch_operation_icon.png";
 
   static const String qrScanIcon = "images/qr_scan_icon.png";
@@ -31,4 +28,8 @@ class Images{
   static const String wordIcon = "images/icon_word.png";
 
   static const String dirIcon = "images/icon_dir.png";
+
+  static const String star = "images/stars.png";
+
+  static const String empty = "images/empty.png";
 }

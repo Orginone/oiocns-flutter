@@ -4,6 +4,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/market/model.dart';
 import 'package:orginone/dart/core/thing/index.dart';
+import 'package:orginone/dart/core/thing/ispecies.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 import '../dart/core/thing/species.dart';
@@ -45,6 +46,18 @@ class CommonTreeManagement {
       // ToastUtils.showMsg(msg: "获取资产分类数据失败");
       print('获取资产分类数据失败');
     }
+  }
+
+  List<ISpeciesItem> getAllSpecies(List<ISpeciesItem> species) {
+    List<ISpeciesItem> list = [];
+    for (var element in species) {
+      list.add(element);
+      if (element.children.isNotEmpty) {
+        list.addAll(getAllSpecies(element.children));
+      }
+    }
+
+    return list;
   }
 
   List<AssetsCategoryGroup> get nonLevelCategory{
@@ -149,7 +162,7 @@ class CommonTreeManagement {
     }
     try{
       var data = _species.value!
-          .getAllLastList()
+          .getAllList()
           .firstWhere((element) => element.id == specieId);
       if (data.attrs.isEmpty) {
         await data.loadAttrs(_setting.space.id, true, true,

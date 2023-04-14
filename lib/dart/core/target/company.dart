@@ -21,7 +21,7 @@ import 'mbase.dart';
 class Company extends MarketTarget implements ICompany {
   late List<IStation> stations;
   late List<TargetType> departmentTypes;
-  late IAuthority? spaceAuthorityTree;
+  IAuthority? spaceAuthorityTree;
 
   Company(XTarget target, String userId) : super(target) {
     userId = userId;

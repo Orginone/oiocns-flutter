@@ -5,7 +5,6 @@
 import FlutterMacOS
 import Foundation
 
-import ai_barcode
 import emoji_picker_flutter
 import flutter_local_notifications
 import package_info_plus_macos
@@ -15,7 +14,6 @@ import sqflite
 import url_launcher_macos
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
-  AiBarcodePlugin.register(with: registry.registrar(forPlugin: "AiBarcodePlugin"))
   EmojiPickerFlutterPlugin.register(with: registry.registrar(forPlugin: "EmojiPickerFlutterPlugin"))
   FlutterLocalNotificationsPlugin.register(with: registry.registrar(forPlugin: "FlutterLocalNotificationsPlugin"))
   FLTPackageInfoPlusPlugin.register(with: registry.registrar(forPlugin: "FLTPackageInfoPlusPlugin"))

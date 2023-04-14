@@ -16,7 +16,7 @@ class ProcessDetailsState extends BaseGetState{
 
   var flowInstance = Rxn<XFlowInstance>();
 
-  var xAttribute = <String,Map<XAttribute,dynamic>>{}.obs;
+  var xAttribute = <String,Map<XOperationItem,dynamic>>{}.obs;
 
   WorkEnum? type;
 
