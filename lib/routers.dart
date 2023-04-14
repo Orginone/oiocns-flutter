@@ -331,13 +331,10 @@ class Routers {
         page: () => const HomePage(),
         bindings: [
           HomeBinding(),
-          SetHomeBinding(),
           MessageBinding(),
           IndexPageBinding(),
           WorkBinding(),
-          HomeBinding(),
           SetHomeBinding(),
-          MessageBinding(),
           RecentlyOpenedBinding(),
           OftenUseBinding(),
           UpdateBinding(),
