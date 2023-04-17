@@ -173,6 +173,8 @@ class SettingController extends GetxController {
     var res = await KernelApi.getInstance().register(params);
     if (res.success) {
       ToastUtils.showMsg(msg: "您的账号私有密钥是————${res.data['privateKey']}");
+    }else{
+      ToastUtils.showMsg(msg: res.msg);
     }
     return xTarget;
   }

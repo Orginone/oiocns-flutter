@@ -90,6 +90,9 @@ class InitiateBusinessPage
                             next: () {
                               controller.selectSpecies(e);
                             },
+                            onTap: (){
+                              controller.workStart(e);
+                            },
                           );
                         },
                       ).toList(),
@@ -99,21 +102,6 @@ class InitiateBusinessPage
               )),
         ],
       ),
-      // floatingActionButton: SizedBox(
-      //   height: 50.w,
-      //   width: 50.w,
-      //   child: GFButton(
-      //     text: "+",
-      //     textStyle: TextStyle(
-      //       color: XColors.white,
-      //       fontSize: 40.sp,
-      //     ),
-      //     onPressed: () {
-      //       controller.createInstance();
-      //     },
-      //     borderShape: const CircleBorder(),
-      //   ),
-      // ),
     );
   }
 

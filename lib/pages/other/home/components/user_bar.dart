@@ -63,11 +63,11 @@ class UserBar extends GetView<SettingController> {
 
   Widget _avatar(EdgeInsets insets) {
     return Obx(() {
-      var avatar = controller.signed?controller.space.shareInfo.avatar!.thumbnail!.split(",")[1].replaceAll('\r', '').replaceAll('\n', ''):"";
+      var avatar = controller.signed?controller.space.shareInfo.avatar?.thumbnail?.split(",")[1].replaceAll('\r', '').replaceAll('\n', ''):"";
       return Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          image: DecorationImage(image:  MemoryImage(base64Decode(avatar),),fit: BoxFit.fill)
+          image: DecorationImage(image:  MemoryImage(base64Decode(avatar??""),),fit: BoxFit.fill)
         ),
         width: 45.w,
         margin: insets,

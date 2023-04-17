@@ -24,4 +24,8 @@ class InitiateBusinessController extends BaseController<InitiateBusinessState> {
   void selectSpecies(ISpeciesItem item) {
      Get.toNamed(Routers.choiceGb,arguments: {"head":"全部业务",'gb':item,"showPopupMenu":false,'function':GbFunction.work});
   }
+
+  void workStart(ISpeciesItem item) {
+    Get.toNamed(Routers.workStart,arguments: {"species":item});
+  }
 }

@@ -67,8 +67,6 @@ class RegisterController extends BaseController<RegisterState> {
     LoadingDialog.dismiss(context);
     if (res != null) {
        ToastUtils.showMsg(msg: "注册成功,请返回登录");
-    } else {
-      ToastUtils.showMsg(msg: "注册失败");
     }
   }
 

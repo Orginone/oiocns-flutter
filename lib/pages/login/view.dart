@@ -230,12 +230,18 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
               );
             }),
           ),
-          SizedBox(height: 10.h,),
           GestureDetector(
-            onTap: (){
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
               controller.register();
             },
-            child: Text("注册账号",style: TextStyle(color: XColors.themeColor,fontSize: 20.sp),),
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 10.h,horizontal: 15.w),
+              child: Text(
+                "注册用户",
+                style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),
+              ),
+            ),
           )
         ],
       ),
