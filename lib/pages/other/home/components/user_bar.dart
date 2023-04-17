@@ -67,7 +67,7 @@ class UserBar extends GetView<SettingController> {
       return Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          image: DecorationImage(image:  MemoryImage(base64Decode(avatar??""),),fit: BoxFit.fill)
+          image: DecorationImage(image:  MemoryImage(base64Decode(avatar??""),))
         ),
         width: 45.w,
         margin: insets,
