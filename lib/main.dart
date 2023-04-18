@@ -6,11 +6,16 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/notification_util.dart';
+import 'package:orginone/widget/loading_dialog.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import 'event/home_data.dart';
+import 'util/event_bus_helper.dart';
 import 'util/hive_utils.dart';
+import 'util/local_store.dart';
 
 void main() async {
   // 逻辑绑定
@@ -21,6 +26,7 @@ void main() async {
   // 初始化通知配置
   NotificationUtil.initNotification();
 
+  await LocalStore.instance();
   // 日志初始化
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((event) {
@@ -31,7 +37,6 @@ void main() async {
 
   // 启动连接
   KernelApi.getInstance().start();
-
   // 开启 app
   runApp(const ScreenInit());
 }
@@ -43,6 +48,9 @@ const Size screenSize = Size(540, 1170);
 class ScreenInit extends StatelessWidget {
   const ScreenInit({Key? key}) : super(key: key);
 
+  List<String>? get account => LocalStore.getStore().getStringList("account");
+
+  SettingController get settingCtrl => Get.find<SettingController>();
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -71,6 +79,10 @@ class ScreenInit extends StatelessWidget {
           child: GetMaterialApp(
             navigatorObservers: [routeObserver],
             navigatorKey: navigatorKey,
+            initialBinding: SettingBinding(),
+            onInit: () async {
+              await automaticLogon();
+            },
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
@@ -82,12 +94,32 @@ class ScreenInit extends StatelessWidget {
             ],
             darkTheme: ThemeData(useMaterial3: true),
             textDirection: TextDirection.ltr,
-            initialRoute: Routers.main,
+            initialRoute: account != null ? Routers.home : Routers.login,
             getPages: Routers.getInitRouters(),
           ),
         );
       },
     );
+  }
+
+  Future<void> automaticLogon() async{
+    Future<void> login() async {
+      String accountName = account![0];
+      String passWord = account![1];
+      await settingCtrl.login(accountName, passWord);
+      print('登录成功');
+      EventBusHelper.fire(InitHomeData());
+    }
+
+    if (account != null) {
+      if (KernelApi.getInstance().isOnline) {
+        await login();
+      } else {
+        Future.delayed(const Duration(milliseconds: 100), () async {
+          await automaticLogon();
+        });
+      }
+    }
   }
 }
 

@@ -16,12 +16,15 @@ import 'package:orginone/widget/common_widget.dart';
 typedef IdentityChangeCallBack = Function(
     String name, String code, String remark);
 
-
 typedef CreateDictChangeCallBack = Function(
-    String name, String code,String id, String remark,{bool? public});
+    String name, String code, String id, String remark,
+    {bool? public});
+
+typedef CreateOrganizationChangeCallBack = Function(String name, String code,
+    String nickName, String identify, String remark, TargetType type);
 
 typedef CreateIdentityCallBack = Function(
-    String name, String code, String authID,String remark);
+    String name, String code, String authID, String remark);
 
 SettingController get setting => Get.find();
 
@@ -501,4 +504,94 @@ Future<void> showCreateDictDialog(BuildContext context,
   );
 }
 
+Future<void> showCreateOrganizationDialog(
+    BuildContext context, List<TargetType> targetType,
+    {String name = '',
+    String code = '',
+    String nickName = '',
+    String identify = '',
+    String remark = '',
+    TargetType? type,CreateOrganizationChangeCallBack? callBack}) async {
+  TextEditingController nameController = TextEditingController(text: name);
+  TextEditingController codeController = TextEditingController(text: code);
+  TextEditingController nickNameController =
+      TextEditingController(text: nickName);
+  TextEditingController identifyController =
+      TextEditingController(text: identify);
+  TextEditingController remarkController = TextEditingController(text: remark);
 
+  TargetType selectedTarget = type ?? targetType.first;
+
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+          alignment: Alignment.center,
+          child: Builder(builder: (context) {
+            return StatefulBuilder(builder: (context, state) {
+              return SizedBox(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CommonWidget.commonHeadInfoWidget("新建"),
+                    CommonWidget.commonTextTile("名称", '',
+                        controller: nameController,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
+                    CommonWidget.commonTextTile("代码", '',
+                        controller: codeController,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
+                    CommonWidget.commonTextTile("简称", '',
+                        controller: nickNameController,
+                        showLine: true,
+                        hint: "请输入"),
+                    CommonWidget.commonChoiceTile(
+                        "选择制定组织", selectedTarget.label,
+                        showLine: true, required: true, onTap: () {
+                      PickerUtils.showListStringPicker(Get.context!,
+                          titles: targetType.map((e) => e.label).toList(),
+                          callback: (str) {
+                        state(() {
+                          try {
+                            selectedTarget = targetType
+                                .firstWhere((element) => element.label == str);
+                          } catch (e) {}
+                        });
+                      });
+                    }, hint: "请选择"),
+                    CommonWidget.commonTextTile("标识", '',
+                        controller: identifyController,
+                        showLine: true,
+                        hint: "请输入"),
+                    CommonWidget.commonTextTile("备注", '',
+                        controller: remarkController,
+                        showLine: true,
+                        maxLine: 4,
+                        hint: "请输入"),
+                    CommonWidget.commonMultipleSubmitWidget(onTap1: () {
+                      Navigator.pop(context);
+                    }, onTap2: () {
+                      if (nameController.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入名称");
+                      } else if (codeController.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入代码");
+                      } else if (remarkController.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入简介");
+                      } else {
+                        if(callBack!=null){
+                          callBack(nameController.text,codeController.text,nickNameController.text,identifyController.text,remarkController.text,selectedTarget);
+                        }
+                        Navigator.pop(context);
+                      }
+                    }),
+                  ],
+                ),
+              );
+            });
+          }));
+    },
+  );
+}

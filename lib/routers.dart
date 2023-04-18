@@ -82,8 +82,12 @@ import 'pages/other/thing/binding.dart';
 import 'pages/other/thing/thing_details/binding.dart';
 import 'pages/other/thing/thing_details/view.dart';
 import 'pages/other/thing/view.dart';
-import 'pages/other/ware_house/ware_house_management/application_details/binding.dart';
-import 'pages/other/ware_house/ware_house_management/application_details/view.dart';
+import 'pages/other/ware_house/application_details/binding.dart';
+import 'pages/other/ware_house/application_details/view.dart';
+import 'pages/other/ware_house/warehouse_management/binding.dart';
+import 'pages/other/ware_house/warehouse_management/view.dart';
+import 'pages/other/work/initiate_work/binding.dart';
+import 'pages/other/work/initiate_work/view.dart';
 import 'pages/other/work/process_details/binding.dart';
 import 'pages/other/work/process_details/view.dart';
 import 'pages/other/work/work_start/binding.dart';
@@ -113,6 +117,8 @@ import 'pages/setting/station_info/binding.dart';
 import 'pages/setting/station_info/view.dart';
 import 'pages/setting/user_info/binding.dart';
 import 'pages/setting/user_info/view.dart';
+import 'pages/universal_navigator/binding.dart';
+import 'pages/universal_navigator/view.dart';
 
 class Routers {
   // 首页
@@ -235,7 +241,10 @@ class Routers {
   //选择标准分类
   static const String choiceGb = '/choiceGb';
 
-  //发起事项
+  //发起办事
+  static const String initiateWork = '/initiateWork';
+
+  //事项
   static const String workStart = '/workStart';
 
   //创建办事
@@ -294,8 +303,15 @@ class Routers {
   //字段定义详情
   static const String dictDetails = "/dictDetails";
 
+  //通用多层级导航
+  static const String universalNavigator = "/universalNavigator";
+
+  static const String warehouseManagement = "/warehouseManagement";
+
+
+
   static String get main {
-    return login;
+    // return login;
     var user = HiveUtils.getUser();
     if (user != null) {
       return home;
@@ -309,7 +325,7 @@ class Routers {
       GetPage(
         name: Routers.login,
         page: () => LoginPage(),
-        bindings: [SettingBinding(), ChatBinding(), LoginBinding()],
+        binding: LoginBinding(),
       ),
       GetPage(
         name: Routers.verificationCode,
@@ -319,7 +335,7 @@ class Routers {
       GetPage(
         name: Routers.register,
         page: () => RegisterPage(),
-        bindings: [SettingBinding(), RegisterBinding()],
+        binding: RegisterBinding()
       ),
       GetPage(
         name: Routers.forgotPassword,
@@ -330,15 +346,11 @@ class Routers {
         name: Routers.home,
         page: () => const HomePage(),
         bindings: [
-          ChatBinding(),
           HomeBinding(),
-          SetHomeBinding(),
           MessageBinding(),
           IndexPageBinding(),
           WorkBinding(),
-          HomeBinding(),
           SetHomeBinding(),
-          MessageBinding(),
           RecentlyOpenedBinding(),
           OftenUseBinding(),
           UpdateBinding(),
@@ -488,6 +500,11 @@ class Routers {
         binding: ChoiceGbBinding(),
       ),
       GetPage(
+        name: Routers.initiateWork,
+        page: () => InitiateWorkPage(),
+        binding: InitiateWorkBinding(),
+      ),
+      GetPage(
         name: Routers.workStart,
         page: () => WorkStartPage(),
         binding: WorkStartBinding(),
@@ -621,6 +638,16 @@ class Routers {
         name: Routers.userInfo,
         page: () => UserInfoPage(),
         binding: UserInfoBinding(),
+      ),
+      GetPage(
+        name: Routers.universalNavigator,
+        page: () => UniversalNavigatorPage(),
+        binding:UniversalNavigatorBinding(),
+      ),
+      GetPage(
+        name: Routers.warehouseManagement,
+        page: () => WarehouseManagementPage(),
+        binding:WarehouseManagementBinding(),
       ),
     ];
   }

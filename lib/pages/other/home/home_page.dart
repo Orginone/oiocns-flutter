@@ -11,11 +11,13 @@ import 'package:orginone/components/widgets/progress_dialog.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/index/index_page.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
+import 'package:orginone/pages/other/shop/view.dart';
 import 'package:orginone/pages/other/ware_house/view.dart';
 import 'package:orginone/pages/other/work/view.dart';
 import 'package:orginone/pages/setting/version_page.dart';
@@ -24,13 +26,17 @@ import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/file_management.dart';
+import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/setting_management.dart';
 import 'package:orginone/util/sys_util.dart';
+import 'package:orginone/widget/loading_dialog.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 import 'function_page.dart';
+
+DateTime? _lastCloseApp;
 
 class HomePage extends GetView<HomeController> {
   const HomePage({Key? key}) : super(key: key);
@@ -38,17 +44,31 @@ class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     SysUtil.setStatusBarBright();
-    return OrginoneScaffold(
-      resizeToAvoidBottomInset: false,
-      appBarElevation: 0,
-      appBarHeight: 0,
-      body: Tabs(
-        tabCtrl: controller.tabController,
-        top: const UserBar(),
-        views: controller.tabs.map((e) => e.toTabView()).toList(),
-        bottom: TabBar(
-          controller: controller.tabController,
-          tabs: controller.tabs.map((item) => item.toTab()).toList(),
+    return WillPopScope(
+      onWillPop: () async {
+        if (_lastCloseApp == null ||
+            DateTime.now().difference(_lastCloseApp!) > const Duration(seconds: 1)) {
+          _lastCloseApp = DateTime.now();
+          ToastUtils.showMsg(msg: '再按一次退出');
+          return false;
+        }
+        return true;
+      },
+      child: OrginoneScaffold(
+        resizeToAvoidBottomInset: false,
+        appBarElevation: 0,
+        appBarHeight: 0,
+        body: Tabs(
+          tabCtrl: controller.tabController,
+          top: const UserBar(),
+          views: controller.tabs.map((e) => e.toTabView()).toList(),
+          bottom: TabBar(
+            controller: controller.tabController,
+            tabs: controller.tabs.map((item) => item.toTab()).toList(),
+            onTap: (index){
+              controller.changeTab(index);
+            },
+          ),
         ),
       ),
     );
@@ -66,6 +86,8 @@ class HomeBinding extends Bindings {
 class HomeController extends TabsController {
   var chatCtrl = Get.find<ChatController>();
   var updateCtrl = Get.find<UpdateController>();
+  var settingCtrl = Get.find<SettingController>();
+
   @override
   initTabs() {
     var size = Size(32.w, 32.w);
@@ -103,9 +125,9 @@ class HomeController extends TabsController {
       icon: XImage.localImage("warehouse", size: size),
     ));
     registerTab(XTab(
-      body: Text('设置', style: XFonts.size14Black3),
-      view: SettingCenterPage(),
-      icon: XImage.localImage("setting", size: size),
+      body: Text('商店', style: XFonts.size14Black3),
+      view: ShopPage(),
+      icon: XImage.localImage("shop", size: size),
     ));
     setIndex(tabs.indexOf(center));
   }
@@ -128,7 +150,6 @@ class HomeController extends TabsController {
         });
       }
     } catch (e) {
-      ToastUtils.showMsg(msg: e.toString());
       print(e);
     }
   }
@@ -153,7 +174,9 @@ class HomeController extends TabsController {
   }
 
   Future<void> initData() async {
+    LoadingDialog.showLoading(Get.context!,msg: "加载数据中");
     await loadData();
+    LoadingDialog.dismiss(Get.context!);
   }
 
   _update() async{
@@ -190,6 +213,12 @@ class HomeController extends TabsController {
           }
         }
       }
+    }
+  }
+
+  void changeTab(int index) {
+    if(index!=settingCtrl.homeEnum.value.index){
+      settingCtrl.setHomeEnum(HomeEnum.values[index]);
     }
   }
 

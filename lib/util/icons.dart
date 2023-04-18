@@ -15,7 +15,8 @@ class AIcons {
 			"placeholder": "assets/icons/placeholder.png",
 			"setting": "assets/icons/setting.png",
 			"warehouse": "assets/icons/warehouse.png",
-			"work": "assets/icons/work.png"
+			"work": "assets/icons/work.png",
+			"shop": "assets/icons/shop.png"
 		},
 		"2x": {
 			"back_black": "assets/icons/2.0x/back_black.png",

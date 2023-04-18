@@ -95,7 +95,7 @@ class Person extends MarketTarget implements IPerson {
 
   @override
   Future<ITarget?> create(TargetModel data) async {
-    switch (data.typeName as TargetType) {
+    switch (TargetType.getType(data.typeName)) {
       case TargetType.university:
       case TargetType.hospital:
       case TargetType.company:
@@ -168,7 +168,7 @@ class Person extends MarketTarget implements IPerson {
       teamCode: code,
       teamName: name,
       belongId: id,
-      typeName: TargetType.cohort.name,
+      typeName: TargetType.cohort.label,
       teamRemark: remark,
     ));
     if (res.success && res.data != null) {

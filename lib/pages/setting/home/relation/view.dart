@@ -36,6 +36,16 @@ class RelationPage extends BaseGetPageView<RelationController,RelationState>{
                 nextLv: () {
                   controller.nextLvForEnum(companySpaceEnum: e);
                 },
+                onSelected: (value){
+                  switch(value){
+                    case "create":
+                      controller.createOrganization(companySpaceEnum: e);
+                      break;
+                    case "edit":
+                      controller.editOrganization(companySpaceEnum: e);
+                      break;
+                  }
+                },
               ))
               .toList(),
         );
@@ -47,6 +57,16 @@ class RelationPage extends BaseGetPageView<RelationController,RelationState>{
                 userSpaceEnum: e,
                 nextLv: () {
                   controller.nextLvForEnum(userSpaceEnum: e);
+                },
+                onSelected: (value){
+                  switch(value){
+                    case "create":
+                      controller.createOrganization(userSpaceEnum: e);
+                      break;
+                    case "edit":
+                      controller.editOrganization(userSpaceEnum: e);
+                      break;
+                  }
                 },
               ))
               .toList(),

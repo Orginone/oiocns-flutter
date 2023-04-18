@@ -13,7 +13,7 @@ class RelationGroupState extends BaseGetState{
 
   var selectedGroup = <String>[].obs;
 
-  var groupData = Rxn();
+  var groupData = <dynamic>[].obs;
 
   late String head;
 
@@ -67,6 +67,7 @@ class RelationGroupState extends BaseGetState{
     if(userSpaceEnum!=null){
       selectedGroup.add(userSpaceEnum!.label);
       groupData.value = SettingManagement().cohorts;
+
     }
   }
 }

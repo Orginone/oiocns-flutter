@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/pages/other/work/process_details/logic.dart';
-import 'package:orginone/pages/other/work/to_do/state.dart';
+import 'package:orginone/pages/other/work/state.dart';
 
 class UseTracesState extends BaseGetState{
 

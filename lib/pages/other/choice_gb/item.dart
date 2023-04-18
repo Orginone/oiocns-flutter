@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/market/model.dart';
 import 'package:orginone/dart/core/thing/ispecies.dart';
 import 'package:orginone/images.dart';
@@ -147,6 +149,15 @@ class GbItem extends StatelessWidget {
           ),
           child: Row(
             children: [
+              AdvancedAvatar(
+                size: 60.w,
+                decoration: BoxDecoration(
+                  color: XColors.themeColor,
+                  borderRadius: BorderRadius.all(Radius.circular(8.w)),
+                ),
+                child: const Icon(Icons.account_balance_rounded,
+                    color: Colors.white),
+              ),
               Expanded(
                 child: title(),
               ),

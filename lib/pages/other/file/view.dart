@@ -39,7 +39,7 @@ class FilePage extends BaseGetView<FileController, FileState> {
                 hint: "请输入文件或文件夹名称"),
             Expanded(
               child: Obx(() {
-                var list = state.file.value!.children;
+                var list = state.file.value?.children;
                 if(state.selectedDir.isNotEmpty){
                   list = state.selectedDir.last.children;
                 }
