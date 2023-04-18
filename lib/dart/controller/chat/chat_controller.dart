@@ -273,6 +273,7 @@ class ChatController extends GetxController {
         one.receiveMessage(message, _curChat.value != one);
         _appendChats(one);
         _cacheChats();
+        return;
       }
     }
     _createRevMsgChat(message, sessionId);

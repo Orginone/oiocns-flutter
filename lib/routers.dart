@@ -3,7 +3,6 @@ import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/chat/message_chat_page.dart';
 import 'package:orginone/pages/chat/message_more.dart';
-import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
 import 'package:orginone/pages/index/index_page.dart';
@@ -333,12 +332,10 @@ class Routers {
           ChatBinding(),
           HomeBinding(),
           SetHomeBinding(),
-          MessageBinding(),
           IndexPageBinding(),
           WorkBinding(),
           HomeBinding(),
           SetHomeBinding(),
-          MessageBinding(),
           RecentlyOpenedBinding(),
           OftenUseBinding(),
           UpdateBinding(),
@@ -414,7 +411,6 @@ class Routers {
           HomeBinding(),
           IndexPageBinding(),
           ChatBinding(),
-          MessageBinding(),
           ChatBoxBinding(),
           PlayBinding(),
           SetHomeBinding(),

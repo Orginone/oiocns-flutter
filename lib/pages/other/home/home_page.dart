@@ -13,8 +13,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/chat/message_page.dart';
-import 'package:orginone/pages/index/index_page.dart';
+import 'package:orginone/pages/chat/message_rent.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
 import 'package:orginone/pages/other/ware_house/view.dart';
 import 'package:orginone/pages/other/work/view.dart';
@@ -71,7 +70,7 @@ class HomeController extends TabsController {
     var size = Size(32.w, 32.w);
     registerTab(XTab(
       body: Text("沟通", style: XFonts.size14Black3),
-      view: const MessagePage(),
+      view: const MessageRecent(),
       icon: XImage.localImage("chat", size: Size(38.w, 32.w)),
       children: [
         Positioned(

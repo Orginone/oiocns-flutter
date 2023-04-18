@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:audio_wave/audio_wave.dart';
@@ -27,7 +26,6 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   final RxDouble bottomHeight = defaultBottomHeight.obs;
 
   ChatBox({Key? key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +93,6 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
     );
   }
 
-
   /// 输入
   Widget _input(BuildContext context) {
     return Expanded(child: Obx(() {
@@ -156,7 +153,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
         controller.startRecord().then((value) async {
           Vibration.hasVibrator()
               .then((value) => Vibration.vibrate(duration: 100));
-          Overlay.of(context)!.insert(voiceWave);
+          Overlay.of(context).insert(voiceWave);
         });
       },
       onLongPressEnd: (details) async {
@@ -167,18 +164,16 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
           // 记录
           var duration = controller.currentDuration ?? Duration.zero;
           await controller.stopRecord();
-          print("${duration.inMilliseconds}-------------------sssssss${controller.currentFile}");
           if (duration.inMilliseconds < 2000) {
             Fluttertoast.showToast(msg: '时间太短啦!');
             return;
           }
 
           var path = controller.currentFile;
-          var name = controller.currentFileName;
           var time = duration.inMilliseconds;
           if (Get.isRegistered<ChatController>()) {
             var chatCtrl = Get.find<ChatController>();
-            chatCtrl.voice(path!,time);
+            chatCtrl.voice(path!, time);
           }
         } else if (recordStatus == RecordStatus.pausing) {
           // 停止记录
@@ -506,7 +501,7 @@ class ChatBoxController extends FullLifeCycleController
   final ImagePicker picker = ImagePicker();
 
   final Rx<RecordStatus> _recordStatus = RecordStatus.stop.obs;
-  FlutterSoundRecorder _recorder = FlutterSoundRecorder();
+  final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
 
   StreamSubscription? _mt;
   String? _currentFile;
@@ -531,9 +526,8 @@ class ChatBoxController extends FullLifeCycleController
 
   Duration? get currentDuration => _currentDuration;
 
-
   @override
-  void onInit() async{
+  void onInit() async {
     // TODO: implement onInit
     super.onInit();
     await Permission.microphone.request();
@@ -682,22 +676,16 @@ class ChatBoxController extends FullLifeCycleController
 
   /// 暂停录音
   pauseRecord() async {
-    if (_recorder == null) {
-      return;
-    }
-    if (_recorder!.isRecording) {
-      await _recorder!.pauseRecorder();
+    if (_recorder.isRecording) {
+      await _recorder.pauseRecorder();
       recordStatus.value = RecordStatus.pausing;
     }
   }
 
   /// 继续录音
   resumeRecord() async {
-    if (_recorder == null) {
-      return;
-    }
-    if (_recorder!.isPaused) {
-      await _recorder!.resumeRecorder();
+    if (_recorder.isPaused) {
+      await _recorder.resumeRecorder();
       recordStatus.value = RecordStatus.recoding;
     }
   }

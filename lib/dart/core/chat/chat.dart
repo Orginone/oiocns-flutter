@@ -48,11 +48,6 @@ class BaseChat implements IChat {
   @override
   Rx<XImMsg?> lastMessage;
 
-  @override
-  set shareInfo(TargetShare shareInfo) {
-    this.shareInfo = shareInfo;
-  }
-
   int? lastMsgTime;
 
   BaseChat(this.spaceId, String name, ChatModel model, this.userId)
@@ -80,6 +75,11 @@ class BaseChat implements IChat {
       share.avatar = FileItemShare.fromJson(map);
     }
     return share;
+  }
+
+  @override
+  set shareInfo(TargetShare shareInfo) {
+    this.shareInfo = shareInfo;
   }
 
   @override
