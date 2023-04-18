@@ -35,22 +35,29 @@ class NavigatorModel{
   late String id;
   late String title;
   late List<NavigatorModel> children;
+  dynamic source;
 
-  NavigatorModel({this.id = '',this.title = '',this.children =const []});
+  NavigatorModel(
+      {this.id = '', this.title = '', this.children = const [], this.source});
 
-  NavigatorModel.formSpecies(ISpeciesItem iSpeciesItem){
-    id: iSpeciesItem.id;
-    title:iSpeciesItem.name;
-    children: getSpeciesChildren(iSpeciesItem.children);
+  NavigatorModel.formSpecies(ISpeciesItem iSpeciesItem) {
+    id = iSpeciesItem.id;
+    title =  iSpeciesItem.name;
+    children =   getSpeciesChildren(iSpeciesItem.children);
+    source = iSpeciesItem;
   }
 
-  List<NavigatorModel> getSpeciesChildren(List<ISpeciesItem> iSpeciesItems){
+  List<NavigatorModel> getSpeciesChildren(List<ISpeciesItem> iSpeciesItems) {
     List<NavigatorModel> children = [];
     if(iSpeciesItems.isEmpty){
       return children;
     }
     for (var element in iSpeciesItems) {
-      children.add(NavigatorModel(id: element.id,title:element.name,children: getSpeciesChildren(element.children)));
+      children.add(NavigatorModel(
+          id: element.id,
+          title: element.name,
+          children: getSpeciesChildren(element.children),
+          source: element));
     }
     return children;
   }

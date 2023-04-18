@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:orginone/event/tap_navigator.dart';
+import 'package:orginone/util/event_bus_helper.dart';
 
 import '../../dart/core/getx/base_controller.dart';
 import 'state.dart';
@@ -18,5 +20,7 @@ class UniversalNavigatorController extends BaseController<UniversalNavigatorStat
 
   }
 
-  void selectItem(NavigatorModel item) {}
+  void selectItem(NavigatorModel item) {
+   EventBusHelper.fire(TapNavigator(item));
+  }
 }

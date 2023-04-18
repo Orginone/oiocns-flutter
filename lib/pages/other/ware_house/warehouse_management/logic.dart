@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:orginone/event/tap_navigator.dart';
 import 'package:orginone/pages/universal_navigator/state.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/common_tree_management.dart';
@@ -9,6 +10,16 @@ import 'state.dart';
 class WarehouseManagementController
     extends BaseController<WarehouseManagementState> {
   final WarehouseManagementState state = WarehouseManagementState();
+
+
+  @override
+  void onReceivedEvent(event) {
+    // TODO: implement onReceivedEvent
+    super.onReceivedEvent(event);
+    if(event is TapNavigator){
+
+    }
+  }
 
   void jumpUniversalNavigator(String name) {
     List<NavigatorModel> data = [];
