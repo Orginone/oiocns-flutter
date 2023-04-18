@@ -25,7 +25,7 @@ class Item extends StatelessWidget {
   const Item({Key? key, this.task, required this.type, this.history}) : super(key: key);
 
 
-  ProcessApprovalController get controller => Get.find(tag: 'ProcessApproval_${type.label}');
+  WorkController get controller => Get.find<WorkController>(tag: 'work');
 
 
   @override

@@ -176,18 +176,21 @@ class FileChunkData {
   // 分片数据编码字符串
   final String? dataUrl;
 
+  final List data;
+
   FileChunkData({
+    required this.data,
     required this.index,
     required this.size,
     required this.uploadId,
     this.dataUrl,
-    required List data,
   });
 
   Map<String, dynamic> toJson() {
     return {
       "index": index,
       "size": size,
+      'data':data,
       "uploadId": uploadId,
       "dataUrl": dataUrl,
     };

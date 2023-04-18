@@ -24,6 +24,8 @@ class SettingController extends GetxController {
   final Rx<IPerson?> _user = Rxn();
   final Rx<ICompany?> _curSpace = Rxn();
 
+  var homeEnum = HomeEnum.chat.obs;
+
   StreamSubscription<User>? _userSub;
 
   @override
@@ -231,6 +233,27 @@ class SettingController extends GetxController {
       }
     });
   }
+
+  void setHomeEnum(HomeEnum value) {
+    homeEnum.value = value;
+  }
+
+  void jumpInitiate() {
+    switch(homeEnum.value){
+      case HomeEnum.chat:
+        // TODO: Handle this case.
+        break;
+      case HomeEnum.work:
+        Get.toNamed(Routers.initiateWork);
+        break;
+      case HomeEnum.warehouse:
+        Get.toNamed(Routers.warehouseManagement);
+        break;
+      case HomeEnum.shop:
+        // TODO: Handle this case.
+        break;
+    }
+  }
 }
 
 class SettingBinding extends Bindings {
@@ -239,4 +262,15 @@ class SettingBinding extends Bindings {
     Get.put(SettingController(), permanent: true);
     Get.put(ChatController(), permanent: true);
   }
+}
+
+
+enum HomeEnum{
+  chat("沟通"),
+  work("办事"),
+  door("门户"),
+  warehouse("仓库"),
+  shop("商店");
+  final String label;
+  const HomeEnum(this.label);
 }

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/unified.dart';
 import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
+import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
 
+import '../ware_house/state.dart';
 import 'logic.dart';
 import 'state.dart';
-class WareHousePage
-    extends BaseGetPageView<WareHouseController, WareHouseState> {
+
+class ShopPage extends BaseGetPageView<ShopController,ShopState>{
   @override
   Widget buildView() {
     return Container(
@@ -71,16 +71,14 @@ class WareHousePage
     );
   }
 
-
   @override
-  WareHouseController getController() {
-    return WareHouseController();
+  ShopController getController() {
+    return ShopController();
   }
-
 
   @override
   String tag() {
     // TODO: implement tag
-    return "WareHouse";
+    return "shop";
   }
 }

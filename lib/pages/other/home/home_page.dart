@@ -17,6 +17,7 @@ import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/index/index_page.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
+import 'package:orginone/pages/other/shop/view.dart';
 import 'package:orginone/pages/other/ware_house/view.dart';
 import 'package:orginone/pages/other/work/view.dart';
 import 'package:orginone/pages/setting/version_page.dart';
@@ -64,6 +65,9 @@ class HomePage extends GetView<HomeController> {
           bottom: TabBar(
             controller: controller.tabController,
             tabs: controller.tabs.map((item) => item.toTab()).toList(),
+            onTap: (index){
+              controller.changeTab(index);
+            },
           ),
         ),
       ),
@@ -82,6 +86,7 @@ class HomeBinding extends Bindings {
 class HomeController extends TabsController {
   var chatCtrl = Get.find<ChatController>();
   var updateCtrl = Get.find<UpdateController>();
+  var settingCtrl = Get.find<SettingController>();
 
   @override
   initTabs() {
@@ -120,9 +125,9 @@ class HomeController extends TabsController {
       icon: XImage.localImage("warehouse", size: size),
     ));
     registerTab(XTab(
-      body: Text('设置', style: XFonts.size14Black3),
-      view: SettingCenterPage(),
-      icon: XImage.localImage("setting", size: size),
+      body: Text('商店', style: XFonts.size14Black3),
+      view: ShopPage(),
+      icon: XImage.localImage("shop", size: size),
     ));
     setIndex(tabs.indexOf(center));
   }
@@ -208,6 +213,12 @@ class HomeController extends TabsController {
           }
         }
       }
+    }
+  }
+
+  void changeTab(int index) {
+    if(index!=settingCtrl.homeEnum.value.index){
+      settingCtrl.setHomeEnum(HomeEnum.values[index]);
     }
   }
 
