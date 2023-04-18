@@ -67,14 +67,11 @@ class MessageItemWidget extends GetView<ChatController> {
         }
       },
       onTap: () async {
-        if (Get.isRegistered<ChatController>()) {
-          var chatCtrl = Get.find<ChatController>();
-          await chatCtrl.setCurrent(chat.spaceId, chat.chatId);
-          Get.offNamedUntil(
-            Routers.chat,
-            (router) => router.settings.name == Routers.home,
-          );
-        }
+        await controller.setCurrent(chat);
+        Get.offNamedUntil(
+          Routers.chat,
+          (router) => router.settings.name == Routers.home,
+        );
       },
       child: Container(
         padding: EdgeInsets.only(left: 25.w, top: 16.h, right: 25.w),
@@ -115,7 +112,6 @@ class MessageItemWidget extends GetView<ChatController> {
 
   Widget get _content {
     var target = chat.target;
-    var lastMessage = chat.lastMessage;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,7 +121,7 @@ class MessageItemWidget extends GetView<ChatController> {
           children: [
             Text(target.name, style: XFonts.size22Black0W700),
             Text(
-              CustomDateUtil.getSessionTime(lastMessage.value?.createTime),
+              CustomDateUtil.getSessionTime(chat.lastMessage.value?.createTime),
               style: XFonts.size18Black0,
             ),
           ],

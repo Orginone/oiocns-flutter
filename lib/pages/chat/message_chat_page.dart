@@ -55,8 +55,7 @@ class ChatPage extends GetView<ChatController> {
             size: 32.w,
           ),
           onPressed: () async {
-            var chat = controller.chat!;
-            await controller.setCurrent(chat.spaceId, chat.chatId);
+            await controller.setCurrent(controller.chat!);
             Get.toNamed("");
           },
         ),

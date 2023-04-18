@@ -39,10 +39,6 @@ class LoginController extends BaseController<LoginState> {
   }
 
   void login() async {
-    if (!KernelApi.getInstance().isOnline) {
-      KernelApi.getInstance().start();
-    }
-
     if (state.accountController.text.isEmpty ||
         state.passWordController.text.isEmpty) {
       ToastUtils.showMsg(msg: "账号或密码不能为空");

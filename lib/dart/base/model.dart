@@ -131,9 +131,6 @@ class BucketOpreateModel {
   // 名称
   final String? name;
 
-  // 共享域
-  final String shareDomain;
-
   // 目标
   final String? destination;
 
@@ -146,7 +143,6 @@ class BucketOpreateModel {
   BucketOpreateModel({
     required this.key,
     this.name,
-    required this.shareDomain,
     required this.operate,
     this.destination,
     this.fileItem,
@@ -155,7 +151,6 @@ class BucketOpreateModel {
   Map<String, dynamic> toJson() {
     return {
       "key": key,
-      "shareDomain": shareDomain,
       "operate": operate.label,
       "fileItem": fileItem?.toJson(),
     };
@@ -486,7 +481,7 @@ class IdArrayReq {
   //构造方法
   IdArrayReq({
     required this.ids,
-    required this.page,
+    this.page,
   });
 
   //通过JSON构造

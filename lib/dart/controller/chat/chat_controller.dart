@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:orginone/config/constant.dart';
+import 'package:logging/logging.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -14,16 +14,23 @@ import 'package:orginone/dart/core/chat/chat.dart';
 import 'package:orginone/dart/core/chat/ichat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/store/ifilesys.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/util/event_bus.dart';
 
-const chatsObjectName = "userchat";
+const chatsObjectName = "chatscache";
 
 class ChatController extends GetxController {
+  final Logger log = Logger("ChatController");
+
+  final settingCtrl = Get.find<SettingController>();
+
   String _userId = "";
   String _userName = "";
+
   final RxList<IChatGroup> _groups = <IChatGroup>[].obs;
   final RxList<IChat> _chats = <IChat>[].obs;
   final Rx<IChat?> _curChat = Rxn();
+
   StreamSubscription<SignIn>? _signInSub;
   StreamSubscription<SignOut>? _signOutSub;
 
@@ -41,6 +48,7 @@ class ChatController extends GetxController {
 
   @override
   void onInit() async {
+    kernelApi.on('RecvMsg', onReceiveMessage);
     _signInSub = XEventBus.instance.on<SignIn>().listen((event) async {
       var settingCtrl = Get.find<SettingController>();
       _userId = settingCtrl.user?.id ?? "";
@@ -110,49 +118,42 @@ class ChatController extends GetxController {
   }
 
   /// 通过空间 ID，会话 ID设置
-  Future<void> setCurrent(String spaceId, String chatId) async {
-    _curChat.value = findChat(spaceId, chatId);
-    var curChat = _curChat.value;
-    if (curChat != null) {
-      curChat.noReadCount.value = 0;
-      await curChat.moreMessage();
-      if (curChat.persons.isEmpty) {
-        await curChat.morePersons();
+  Future<void> setCurrent(IChat? chat) async {
+    if (chat != null && isCurrent(chat.fullId)) return;
+    if (chat != null) {
+      chat.noReadCount.value = 0;
+      await chat.moreMessage();
+      if (chat.persons.isEmpty) {
+        await chat.morePersons();
       }
-      _appendChats(curChat);
+      _appendChats(chat);
       await _cacheChats();
-    } else {
-      _curChat.value = null;
     }
+    _curChat.value = chat;
   }
 
   /// 是否为当前会话
-  bool isCurrent(String spaceId, String chatId) {
-    return _curChat.value?.spaceId == spaceId &&
-        _curChat.value?.chatId == chatId;
+  bool isCurrent(String fullId) {
+    return _curChat.value?.fullId == fullId;
   }
 
   /// 缓存当前会话
   _cacheChats() async {
     mapping(c) => c.getCache().toJson();
-    var chats = _chats.map(mapping).toList().reversed.toList();
     await KernelApi.getInstance().anystore.set(
           chatsObjectName,
           {
             "operation": "replaceAll",
-            "data": {"chats": chats}
+            "data": {"chats": _chats.map(mapping).toList().reversed.toList()}
           },
-          "user",
+          settingCtrl.space.id,
         );
   }
 
   /// 初始化监听器
   _initialization() async {
-    _groups.addAll(await loadChats(_userId));
-    var kennel = KernelApi.getInstance();
-    kennel.on('RecvMsg', onReceiveMessage);
-    kennel.on('ChatRefresh', chatRefresh);
-    kennel.anystore.subscribed(chatsObjectName, 'user', _updateMails);
+    kernelApi.anystore
+        .subscribed(chatsObjectName, settingCtrl.space.id, _updateMails);
   }
 
   Future<List<IChatGroup>> loadChats(String userId) async {
@@ -175,30 +176,49 @@ class ChatController extends GetxController {
     return groups;
   }
 
-  chatRefresh() async {
-    _groups.value = await loadChats(_userId);
-    setCurrent(_curChat.value?.spaceId ?? "", _curChat.value?.chatId ?? "");
+  targetChat(
+    XTarget target,
+    String userId,
+    String spaceId,
+    String spaceName,
+    String label,
+  ) {
+    var chatModel = ChatModel(
+      id: target.id,
+      name: target.team?.name ?? "",
+      typeName: target.typeName,
+      photo: target.avatar,
+      label: label,
+    );
+    return createChat(spaceId, spaceName, chatModel, userId);
   }
 
   /// 更新视图
   _updateMails(dynamic data) {
+    log.info("data:$data");
     List<dynamic> chats = data["chats"] ?? [];
+    List<IChat> newChats = [];
     for (Map<String, dynamic>? chat in chats) {
       if (chat == null) {
         continue;
       }
+      var chatModel = createChat(
+        chat["spaceId"],
+        chat["spaceName"],
+        ChatModel.fromJson(chat["target"]),
+        userId,
+      );
       var spaceId = chat["spaceId"];
       var chatId = chat["chatId"];
-      var matchedChat = findChat(spaceId, chatId);
+      var fullId = "$spaceId-$chatId";
+      var matchedChat = findChat(fullId);
       if (matchedChat != null) {
-        matchedChat.loadCache(ChatCache.fromMap(chat));
-        _appendChats(matchedChat);
-        // var ids = _chats.map((IChat ct) => ct.chatId).toList();
-        // if (ids.contains(chatId)) {
-        //   _appendChats(matchedChat);
-        // }
+        chatModel = matchedChat;
       }
+      chatModel.loadCache(ChatCache.fromMap(chat));
+      newChats.add(chatModel);
     }
+    _chats.value = newChats;
   }
 
   /// 获取会话的位置
@@ -219,15 +239,8 @@ class ChatController extends GetxController {
   }
 
   /// 获取存在的会话
-  IChat? findChat(String spaceId, String chatId) {
-    for (var chatGroup in _groups) {
-      for (var inner in chatGroup.chats) {
-        if (inner.spaceId == spaceId && inner.chatId == chatId) {
-          return inner;
-        }
-      }
-    }
-    return null;
+  IChat? findChat(String fullId) {
+    return _chats.firstWhereOrNull((item) => item.fullId == fullId);
   }
 
   /// 设置置顶
@@ -251,18 +264,64 @@ class ChatController extends GetxController {
     if (message.toId == _userId) {
       sessionId = message.fromId;
     }
-    for (var group in _groups) {
-      for (var one in group.chats) {
-        bool isMatched = one.target.id == sessionId;
-        if (isMatched && one.target.typeName == TargetType.person.label) {
-          isMatched = message.spaceId == one.spaceId;
-        }
-        if (isMatched) {
-          one.receiveMessage(message, _curChat.value != one);
-          _appendChats(one);
-          _cacheChats();
-        }
+    for (var one in _chats) {
+      bool isMatched = one.target.id == sessionId;
+      if (isMatched && one.target.typeName == TargetType.person.label) {
+        isMatched = message.spaceId == one.spaceId;
       }
+      if (isMatched) {
+        one.receiveMessage(message, _curChat.value != one);
+        _appendChats(one);
+        _cacheChats();
+      }
+    }
+    _createRevMsgChat(message, sessionId);
+  }
+
+  IChat findTargetChat(
+    XTarget target,
+    String spaceId,
+    String spaceName,
+    String label,
+  ) {
+    var chat = findChat('$spaceId-${target.id}');
+    if (chat != null) return chat;
+    return targetChat(target, _userId, spaceId, spaceName, label);
+  }
+
+  void _createRevMsgChat(XImMsg data, String sessionId) async {
+    var id = IdArrayReq(ids: [data.spaceId, sessionId]);
+    var result = await KernelApi.getInstance().queryTargetById(id);
+    if (result.data?.result?.isNotEmpty ?? false) {
+      var target = result.data!.result!
+          .where((item) => item.id == sessionId)
+          .toList()[0];
+      var spaceTarget = result.data!.result!
+          .where((item) => item.id == data.spaceId)
+          .toList()[0];
+      var label = '好友';
+      if (target.typeName == TargetType.cohort.label) {
+        label = "群组";
+      } else if (target.typeName == TargetType.person.label) {
+        if (spaceTarget.typeName != TargetType.person.label) {
+          label = '同事';
+        }
+      } else {
+        label = '${target.typeName}群';
+      }
+      var chat = findTargetChat(
+        target,
+        spaceTarget.typeName == TargetType.person.label
+            ? _userId
+            : data.spaceId,
+        spaceTarget.typeName == TargetType.person.label
+            ? '我的'
+            : (spaceTarget.team?.name ?? spaceTarget.name),
+        label,
+      );
+      chat.receiveMessage(data, true);
+      _appendChats(chat);
+      _cacheChats();
     }
   }
 

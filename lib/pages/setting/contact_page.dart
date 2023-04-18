@@ -69,16 +69,15 @@ class ContactPage extends GetView<ContactController> {
   Widget _contactList() {
     return GetBuilder<ContactController>(
       init: controller,
-      builder: (controller) =>
-          ListView.builder(
-              key: controller.mGlobalKey,
-              shrinkWrap: true,
-              controller: controller.mScrollController,
-              scrollDirection: Axis.vertical,
-              itemCount: controller.mData.length,
-              itemBuilder: (context, index) {
-                return item(controller.mData[index]);
-              }),
+      builder: (controller) => ListView.builder(
+          key: controller.mGlobalKey,
+          shrinkWrap: true,
+          controller: controller.mScrollController,
+          scrollDirection: Axis.vertical,
+          itemCount: controller.mData.length,
+          itemBuilder: (context, index) {
+            return item(controller.mData[index]);
+          }),
     );
   }
 
@@ -101,9 +100,14 @@ class ContactPage extends GetView<ContactController> {
         height: 110.h,
         child: ListTile(
             onTap: () async {
-              var settingCtrl = Get.find<SettingController>();
               var chatCtrl = Get.find<ChatController>();
-              await chatCtrl.setCurrent(settingCtrl.space.id, target.id);
+              var settingCtrl = Get.find<SettingController>();
+              await chatCtrl.setCurrent(chatCtrl.findTargetChat(
+                target,
+                settingCtrl.space.id,
+                settingCtrl.space.name,
+                "好友",
+              ));
               if (chatCtrl.chat == null) {
                 Fluttertoast.showToast(msg: "未获取到会话信息！");
                 return;
@@ -129,19 +133,17 @@ class ContactPage extends GetView<ContactController> {
       alignment: Alignment.centerRight,
       child: GetBuilder<ContactController>(
           init: controller,
-          builder: (controller) =>
-              IndexBar(
-                  mData: controller.mIndex,
-                  indexBarCallBack: (str, index, touchUp) {
-                    controller.updateIndex(index, touchUp);
-                  })),
+          builder: (controller) => IndexBar(
+              mData: controller.mIndex,
+              indexBarCallBack: (str, index, touchUp) {
+                controller.updateIndex(index, touchUp);
+              })),
     );
   }
 
   /// 触摸索引显示的view
   _stickIndexBar() {
-    return Obx(() =>
-        Visibility(
+    return Obx(() => Visibility(
           visible: !controller.mTouchUp.value,
           child: Align(
             alignment: Alignment.center,
@@ -160,7 +162,6 @@ class ContactPage extends GetView<ContactController> {
           ),
         ));
   }
-
 }
 
 class ContactBinding extends Bindings {
@@ -212,8 +213,10 @@ class ContactController extends BaseController {
         return;
       }
       mData.addAll(pageResp.data!.result!);
+
       /// 排序
       mData.sort((a, b) => a.name.compareTo(b.name));
+
       /// 提取首字符
       List<String> firstChars = [];
       List<int> insertPos = [];

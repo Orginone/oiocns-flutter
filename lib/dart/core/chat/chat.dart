@@ -11,20 +11,61 @@ import 'package:orginone/util/encryption_util.dart';
 
 const hisMsgCollName = 'chat-message';
 
-class BaseChat extends IChat {
-  BaseChat(String spaceId, String name, ChatModel model, String userId) {
-    this.userId = userId;
-    this.spaceId = spaceId;
-    spaceName = name;
-    target = model;
-    messages = <XImMsg>[].obs;
-    persons = <XTarget>[].obs;
-    personCount = 0.obs;
-    chatId = target.id;
-    noReadCount = 0.obs;
-    isTopping = false.obs;
-    fullId = '$spaceId-${target.id}';
-    lastMessage = Rxn();
+class BaseChat implements IChat {
+  @override
+  String chatId;
+
+  @override
+  String fullId;
+
+  @override
+  RxBool isTopping;
+
+  @override
+  RxList<XImMsg> messages;
+
+  @override
+  RxInt noReadCount;
+
+  @override
+  RxInt personCount;
+
+  @override
+  RxList<XTarget> persons;
+
+  @override
+  String spaceId;
+
+  @override
+  String spaceName;
+
+  @override
+  ChatModel target;
+
+  @override
+  String userId;
+
+  @override
+  Rx<XImMsg?> lastMessage;
+
+  @override
+  set shareInfo(TargetShare shareInfo) {
+    this.shareInfo = shareInfo;
+  }
+
+  int? lastMsgTime;
+
+  BaseChat(this.spaceId, String name, ChatModel model, this.userId)
+      : spaceName = name,
+        target = model,
+        messages = <XImMsg>[].obs,
+        persons = <XTarget>[].obs,
+        personCount = 0.obs,
+        chatId = model.id,
+        noReadCount = 0.obs,
+        isTopping = false.obs,
+        fullId = '$spaceId-${model.id}',
+        lastMessage = Rxn() {
     appendShare(target.id, shareInfo);
   }
 
@@ -35,12 +76,8 @@ class BaseChat extends IChat {
       typeName: target.typeName,
     );
     if (target.photo?.isNotEmpty ?? false) {
-       try{
-         var map = jsonDecode(target.photo!);
-         share.avatar = FileItemShare.fromJson(map);
-       }catch(e){
-
-       }
+      var map = jsonDecode(target.photo!);
+      share.avatar = FileItemShare.fromJson(map);
     }
     return share;
   }
@@ -48,11 +85,13 @@ class BaseChat extends IChat {
   @override
   ChatCache getCache() {
     return ChatCache(
-      chatId: chatId,
+      target: target,
       spaceId: spaceId,
+      spaceName: spaceName,
       noReadCount: noReadCount.value,
-      lastMessage: lastMessage.value,
       isTopping: isTopping.value,
+      lastMsgTime: lastMsgTime,
+      lastMessage: lastMessage.value,
     );
   }
 

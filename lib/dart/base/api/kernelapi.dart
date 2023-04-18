@@ -26,6 +26,17 @@ class KernelApi {
         _requester = request,
         _anystore = AnyStore.getInstance() {
     _storeHub.on("Receive", receive);
+    _storeHub.onConnected(() {
+      if (_anystore.accessToken.isNotEmpty) {
+        var args = [_anystore.accessToken];
+        _storeHub.invoke("TokenAuth", args: args).then((value) {
+          log.info(value);
+        }).catchError((err) {
+          log.info(err);
+        });
+      }
+    });
+    _storeHub.start();
   }
 
   /// 获取单例
@@ -46,11 +57,6 @@ class KernelApi {
   /// @returns {boolean} 在线状态
   bool get isOnline {
     return _storeHub.isConnected;
-  }
-
-  start() async {
-    await _anystore.start();
-    _storeHub.start();
   }
 
   stop() async {

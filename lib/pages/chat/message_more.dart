@@ -15,9 +15,7 @@ class MoreMessagePage extends GetView<ChatController> {
       appBarCenterTitle: true,
       appBarLeading: XWidgets.defaultBackBtn,
       body: RefreshIndicator(
-        onRefresh: () async {
-          await controller.chatRefresh();
-        },
+        onRefresh: () async {},
         child: Obx(() {
           return ListView.builder(
             scrollDirection: Axis.vertical,

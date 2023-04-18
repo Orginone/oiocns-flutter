@@ -76,7 +76,6 @@ class FileSystemItem implements IFileSystemItem {
       var res =
           await kernel.anystore.bucketOpreate(BucketOpreateModel(
         name: name,
-        shareDomain: 'user',
         key: _formatKey(),
         operate: BucketOpreates.rename,
       ));
@@ -96,7 +95,6 @@ class FileSystemItem implements IFileSystemItem {
     if (exist == null) {
       var res =
           await kernel.anystore.bucketOpreate(BucketOpreateModel(
-        shareDomain: 'user',
         key: _formatKey(subName: name),
         operate: BucketOpreates.create,
       ));
@@ -113,7 +111,6 @@ class FileSystemItem implements IFileSystemItem {
   @override
   Future<bool> delete() async {
     var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
-      shareDomain: 'user',
       key: _formatKey(),
       operate: BucketOpreates.delete,
     ));
@@ -131,7 +128,6 @@ class FileSystemItem implements IFileSystemItem {
   Future<bool> copy(IFileSystemItem destination) async {
     if (destination.target!.isDirectory! && key != destination.key) {
       var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
-        shareDomain: 'user',
         key: _formatKey(),
         destination: destination.key,
         operate: BucketOpreates.copy,
@@ -149,7 +145,6 @@ class FileSystemItem implements IFileSystemItem {
   Future<bool> move(IFileSystemItem destination) async {
     if (destination.target!.isDirectory! && key != destination.key) {
       var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
-        shareDomain: 'user',
         key: _formatKey(),
         destination: destination.key,
         operate: BucketOpreates.move,
@@ -172,7 +167,6 @@ class FileSystemItem implements IFileSystemItem {
     reload ??= false;
     if (target!.isDirectory! && (reload || children!.isEmpty)) {
       var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
-        shareDomain: 'user',
         key: _formatKey(),
         operate: BucketOpreates.list,
       ));
@@ -204,7 +198,6 @@ class FileSystemItem implements IFileSystemItem {
 
       _taskList.add(task);
       var data = BucketOpreateModel(
-        shareDomain: 'user',
         key: _formatKey(subName: name),
         operate: BucketOpreates.upload,
       );

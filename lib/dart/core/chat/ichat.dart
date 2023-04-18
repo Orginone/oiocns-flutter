@@ -59,35 +59,43 @@ abstract class IChatGroup {
 
 /// 单个会话缓存
 class ChatCache {
-  final String chatId;
+  final ChatModel target;
   final String spaceId;
+  final String spaceName;
   final bool isTopping;
   final int noReadCount;
+  final int? lastMsgTime;
   final XImMsg? lastMessage;
 
   const ChatCache({
-    required this.chatId,
+    required this.target,
     required this.spaceId,
+    required this.spaceName,
     required this.isTopping,
     required this.noReadCount,
+    this.lastMsgTime,
     this.lastMessage,
   });
 
   ChatCache.fromMap(Map<String, dynamic> map)
-      : chatId = map["chatId"],
+      : target = ChatModel.fromJson(map["target"]),
         spaceId = map["spaceId"],
+        spaceName = map["spaceName"],
         noReadCount = map["noReadCount"],
         isTopping = map["isToping"] ?? false,
+        lastMsgTime = map["lastMsgTime"],
         lastMessage = map["lastMessage"] == null
             ? null
             : XImMsg.fromJson(map["lastMessage"]);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    json["chatId"] = chatId;
+    json["target"] = target.toJson();
     json["spaceId"] = spaceId;
+    json["spaceName"] = spaceName;
     json["isToping"] = isTopping;
     json["noReadCount"] = noReadCount;
+    json["lastMsgTime"] = lastMsgTime;
     json["lastMessage"] = lastMessage?.toJson();
     return json;
   }
