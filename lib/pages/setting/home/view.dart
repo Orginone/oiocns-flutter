@@ -1,67 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:orginone/components/unified.dart';
-import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/pages/setting/config.dart';
-import 'package:orginone/widget/keep_alive_widget.dart';
+import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/pages/universal_navigator/item.dart';
+import 'package:orginone/pages/universal_navigator/state.dart';
+import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 
 import 'logic.dart';
-import 'relation/view.dart';
-import 'standard/view.dart';
 import 'state.dart';
 
 class SettingCenterPage
-    extends BaseGetPageView<SettingCenterController, SettingCenterState> {
+    extends BaseGetView<SettingCenterController, SettingCenterState> {
   @override
   Widget buildView() {
-    return Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            tabBar(),
-            Expanded(
-              child: TabBarView(
-                controller: state.tabController,
-                children: [
-                  KeepAliveWidget(child: RelationPage()),
-                  KeepAliveWidget(child: StandardPage()),
-                ],
-              ),
-            )
-          ],
-        ));
-  }
+    return GyScaffold(
+      titleName: "设置",
+      backgroundColor: Colors.white,
 
-  Widget tabBar() {
-    return Container(
-      color: Colors.white,
-      alignment: Alignment.centerLeft,
-      child: TabBar(
-        controller: state.tabController,
-        tabs: tabTitle.map((e) {
-          return Tab(
-            text: e,
-            height: 60.h,
-          );
-        }).toList(),
-        indicatorColor: XColors.themeColor,
-        unselectedLabelColor: Colors.grey,
-        unselectedLabelStyle: TextStyle(fontSize: 21.sp),
-        labelColor: XColors.themeColor,
-        labelStyle: TextStyle(fontSize: 23.sp),
+      body: SingleChildScrollView(
+        child: Column(
+          children: state.spaces
+              .map(
+                (e) => NavigatorItem(
+              item: NavigatorModel(title: e.teamName),
+              onTap: () {
+                controller.jumpInfo(e);
+              },
+              next: (){
+                controller.jumpSetting(e);
+              },
+            ),
+          )
+              .toList(),
+        ),
+      ),
+      bottomNavigationBar:  SizedBox(
+        height: 140.h,
+        child: CommonWidget.commonSubmitWidget(text: "退出登录",submit: (){
+          controller.jumpLogin();
+        }),
       ),
     );
   }
 
-  @override
-  SettingCenterController getController() {
-    return SettingCenterController();
-  }
 
-  @override
-  String tag() {
-    // TODO: implement tag
-    return 'SettingCenter';
-  }
 }

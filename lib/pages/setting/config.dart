@@ -3,45 +3,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-enum CompanySpaceEnum {
-  company('单位'),
+enum SpaceEnum {
   innerAgency("内部机构"),
   outAgency("外部机构"),
   stationSetting("岗位设置"),
-  companyCohort("单位群组");
+  companyCohort("单位群组"),
+
+  personGroup("个人群组");
+
 
   final  String label;
 
-  const CompanySpaceEnum(this.label);
+  const SpaceEnum(this.label);
 
-  static CompanySpaceEnum findEnum(String label){
+  static SpaceEnum findEnum(String label){
     switch(label){
       case "内部机构":
-        return CompanySpaceEnum.innerAgency;
+        return SpaceEnum.innerAgency;
       case "外部机构":
-        return CompanySpaceEnum.outAgency;
+        return SpaceEnum.outAgency;
       case "岗位设置":
-        return CompanySpaceEnum.stationSetting;
+        return SpaceEnum.stationSetting;
       case "单位群组":
-        return CompanySpaceEnum.companyCohort;
+        return SpaceEnum.companyCohort;
+      case "个人群组":
+        return SpaceEnum.personGroup;
       default:
-        return CompanySpaceEnum.company;
+        return SpaceEnum.personGroup;
     }
   }
 }
 
-
-enum UserSpaceEnum{
-  personInfo('个人信息'),
-  personGroup("个人群组");
-
-  final String label;
-
-  const UserSpaceEnum(this.label);
-}
-
 enum StandardEnum{
-  permissionCriteria("权限标准"),
+  permission("权限设置"),
+  dict("字典设置"),
+  form("表单设置"),
   classCriteria('分类标准');
 
   final String label;

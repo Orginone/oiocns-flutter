@@ -30,6 +30,8 @@ class GyScaffold extends StatefulWidget {
 
   final double? leadingWidth;
 
+  final Widget? bottomNavigationBar;
+
   const GyScaffold(
       {Key? key,
       this.body,
@@ -44,7 +46,7 @@ class GyScaffold extends StatefulWidget {
       this.leading,
       this.elevation = 0,
       this.backColor,
-      this.leadingWidth})
+      this.leadingWidth, this.bottomNavigationBar})
       : super(key: key);
 
   @override
@@ -78,6 +80,7 @@ class _GyScaffoldState extends State<GyScaffold> {
 
   late double leadingWidth;
 
+  Widget? bottomNavigationBar;
   @override
   void initState() {
     // TODO: implement initState
@@ -99,6 +102,7 @@ class _GyScaffoldState extends State<GyScaffold> {
     elevation = widget.elevation;
     backColor = widget.backColor ?? Colors.black;
     leadingWidth = widget.leadingWidth ?? kToolbarHeight;
+    bottomNavigationBar = widget.bottomNavigationBar;
   }
 
   @override
@@ -144,6 +148,9 @@ class _GyScaffoldState extends State<GyScaffold> {
     if(oldWidget.leadingWidth != widget.leadingWidth){
       leadingWidth = widget.leadingWidth??kToolbarHeight;
     }
+    if(oldWidget.bottomNavigationBar != widget.bottomNavigationBar){
+      bottomNavigationBar = widget.bottomNavigationBar;
+    }
   }
 
   @override
@@ -170,6 +177,6 @@ class _GyScaffoldState extends State<GyScaffold> {
           leadingWidth: leadingWidth,
         ),
         backgroundColor: backgroundColor,
-        body: body);
+        body: body,bottomNavigationBar: bottomNavigationBar,);
   }
 }

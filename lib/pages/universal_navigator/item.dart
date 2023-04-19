@@ -29,14 +29,10 @@ class NavigatorItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (item.children.isNotEmpty) {
-          if (next != null) {
-            next!();
-          }
-        } else {
-          if (onTap != null) {
-            onTap!();
-          }
+        if (next != null) {
+          next!();
+        } else if (onTap != null) {
+          onTap!();
         }
       },
       child: Container(

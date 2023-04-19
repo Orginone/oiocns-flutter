@@ -61,7 +61,7 @@ class UserBar extends GetView<SettingController> {
       child: Row(children: [
         Expanded(
           child: GestureDetector(
-            onTap: () {
+            onLongPress: () {
               controller.jumpSpaces();
             },
             child: Row(
@@ -78,7 +78,6 @@ class UserBar extends GetView<SettingController> {
                   );
                 }),
                 Container(margin: EdgeInsets.only(left: 2.w)),
-                const Icon(Icons.arrow_drop_down, color: XColors.black)
               ],
             ),
           ),
@@ -88,7 +87,7 @@ class UserBar extends GetView<SettingController> {
           child: GestureDetector(
             child: _imgAvatar(EdgeInsets.only(right: 10.w)),
             onTap: () {
-              Get.toNamed(Routers.personPage);
+              Get.toNamed(Routers.settingCenter);
             },
           ),
         ),
@@ -101,7 +100,7 @@ class UserBar extends GetView<SettingController> {
       return TextAvatar(
         radius: 45.w,
         width: 45.w,
-        avatarName: controller.user?.name.substring(0, 1) ?? "",
+        avatarName: controller.space?.name.substring(0, 1) ?? "",
         textStyle: XFonts.size22White,
         margin: insets,
       );
@@ -122,7 +121,7 @@ class UserBar extends GetView<SettingController> {
             image: DecorationImage(
                 image: MemoryImage(
               base64Decode(avatar ?? ""),
-            ))),
+            ),fit: BoxFit.cover),),
         width: 45.w,
         margin: insets,
       );

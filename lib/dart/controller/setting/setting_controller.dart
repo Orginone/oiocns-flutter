@@ -197,6 +197,7 @@ class SettingController extends GetxController {
   _loadUser(XTarget person) async {
     _user.value = Person(person);
     _curSpace.value = null;
+    homeEnum.value = HomeEnum.chat;
     await load(person);
   }
 

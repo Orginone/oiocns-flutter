@@ -19,36 +19,34 @@ class RelationGroupState extends BaseGetState{
 
   late bool showPopupMenu;
 
-  CompanySpaceEnum? companySpaceEnum;
-
+  SpaceEnum? spaceEnum;
   StandardEnum? standardEnum;
 
-  UserSpaceEnum? userSpaceEnum;
 
+  bool get isStandard => standardEnum!=null;
   RelationGroupState(){
 
     showPopupMenu = Get.arguments?['showPopupMenu']?? true;
 
-    companySpaceEnum = Get.arguments?['companySpaceEnum'];
+    spaceEnum = Get.arguments?['spaceEnum'];
 
     standardEnum = Get.arguments?['standardEnum'];
 
-    userSpaceEnum = Get.arguments?['userSpaceEnum'];
-
     head = Get.arguments?['head'];
-    if(companySpaceEnum!=null){
-      selectedGroup.add(companySpaceEnum!.label);
-      switch (companySpaceEnum) {
-        case CompanySpaceEnum.innerAgency:
+    if(spaceEnum!=null){
+      selectedGroup.add(spaceEnum!.label);
+      switch (spaceEnum) {
+        case SpaceEnum.innerAgency:
           groupData.value = DepartmentManagement().departments;
           break;
-        case CompanySpaceEnum.outAgency:
+        case SpaceEnum.outAgency:
           groupData.value = SettingManagement().outAgencyGroup;
           break;
-        case CompanySpaceEnum.stationSetting:
+        case SpaceEnum.stationSetting:
           groupData.value = SettingManagement().stations;
           break;
-        case CompanySpaceEnum.companyCohort:
+        case SpaceEnum.personGroup:
+        case SpaceEnum.companyCohort:
           groupData.value = SettingManagement().cohorts;
           break;
       }
@@ -56,18 +54,13 @@ class RelationGroupState extends BaseGetState{
     if(standardEnum!=null){
       selectedGroup.add(standardEnum!.label);
       switch(standardEnum){
-        case StandardEnum.permissionCriteria:
+        case StandardEnum.permission:
           groupData.value = SettingManagement().authority;
           break;
         case StandardEnum.classCriteria:
           groupData.value = [CommonTreeManagement().species];
           break;
       }
-    }
-    if(userSpaceEnum!=null){
-      selectedGroup.add(userSpaceEnum!.label);
-      groupData.value = SettingManagement().cohorts;
-
     }
   }
 }

@@ -21,25 +21,26 @@ class RelationGroupController extends BaseController<RelationGroupState> {
   void removeGroup(int index) {
     state.selectedGroup.removeRange(index + 1, state.selectedGroup.length);
 
-    if(state.companySpaceEnum!=null){
-      if(state.selectedGroup.last == state.companySpaceEnum!.label){
-        switch (state.companySpaceEnum) {
-          case CompanySpaceEnum.innerAgency:
+    if(!state.isStandard){
+      if(state.selectedGroup.last == state.spaceEnum!.label){
+        switch (state.spaceEnum) {
+          case SpaceEnum.innerAgency:
             state.groupData.value = DepartmentManagement().departments;
             break;
-          case CompanySpaceEnum.outAgency:
+          case SpaceEnum.outAgency:
             state.groupData.value = SettingManagement().outAgencyGroup;
             break;
-          case CompanySpaceEnum.stationSetting:
+          case SpaceEnum.stationSetting:
             state.groupData.value = SettingManagement().stations;
             break;
-          case CompanySpaceEnum.companyCohort:
+          case SpaceEnum.personGroup:
+          case SpaceEnum.companyCohort:
             state.groupData.value = SettingManagement().cohorts;
             break;
         }
       }else{
-        switch(state.companySpaceEnum){
-          case CompanySpaceEnum.innerAgency:
+        switch(state.spaceEnum){
+          case SpaceEnum.innerAgency:
             var list = DepartmentManagement().getAllDepartment(DepartmentManagement().departments);
             try{
               state.groupData.value = list.firstWhere((element) => element.teamName == state.selectedGroup.last).subTeam;
@@ -47,7 +48,7 @@ class RelationGroupController extends BaseController<RelationGroupState> {
               state.groupData.value = [];
             }
             break;
-          case CompanySpaceEnum.outAgency:
+          case SpaceEnum.outAgency:
             var list = SettingManagement().getAllOutAgency(SettingManagement().outAgencyGroup);
             try{
               state.groupData.value = list.firstWhere((element) => element.teamName == state.selectedGroup.last).subGroup;
@@ -57,11 +58,10 @@ class RelationGroupController extends BaseController<RelationGroupState> {
             break;
         }
       }
-    }
-    if(state.standardEnum!=null){
+    }else{
       if(state.selectedGroup.last == state.standardEnum!.label){
         switch (state.standardEnum) {
-          case StandardEnum.permissionCriteria:
+          case StandardEnum.permission:
             state.groupData.value = SettingManagement().authority;
             break;
           case StandardEnum.classCriteria:
@@ -70,7 +70,7 @@ class RelationGroupController extends BaseController<RelationGroupState> {
         }
       }else{
         switch(state.standardEnum){
-          case StandardEnum.permissionCriteria:
+          case StandardEnum.permission:
             var list = SettingManagement().getAllAuthority(SettingManagement().authority);
             try{
               state.groupData.value = list.firstWhere((element) => element.name == state.selectedGroup.last).children;
@@ -89,11 +89,6 @@ class RelationGroupController extends BaseController<RelationGroupState> {
         }
       }
     }
-    if(state.userSpaceEnum!=null){
-      if(state.selectedGroup.last == state.userSpaceEnum!.label){
-        state.groupData.value = SettingManagement().cohorts;
-      }
-    }
     state.selectedGroup.refresh();
   }
 
@@ -102,26 +97,11 @@ class RelationGroupController extends BaseController<RelationGroupState> {
   }
 
   void nextLv(
-      {ITarget? innerAgency,
-        IGroup? outAgency,
-        IStation? station,
-        ICohort? cohort,
+      {ITarget? target,
         IAuthority? iAuthority,SpeciesItem? species}) {
-    if(innerAgency!=null){
-      state.selectedGroup.add(innerAgency.teamName);
-      state.groupData.value = innerAgency.subTeam;
-    }
-    if(outAgency!=null){
-      state.selectedGroup.add(outAgency.teamName);
-      state.groupData.value = outAgency.subGroup;
-    }
-    if(station!=null){
-      state.selectedGroup.add(station.teamName);
-      state.groupData.value = station.subTeam;
-    }
-    if(cohort!=null){
-      state.selectedGroup.add(cohort.teamName);
-      state.groupData.value = cohort.subTeam;
+    if(target!=null){
+      state.selectedGroup.add(target.teamName);
+      state.groupData.value = target.subTeam;
     }
     if(iAuthority!=null){
       state.selectedGroup.add(iAuthority.name);
@@ -133,29 +113,27 @@ class RelationGroupController extends BaseController<RelationGroupState> {
     }
   }
 
-  void onTap({ITarget? innerAgency,
-    IGroup? outAgency,
-    IStation? station,
-    ICohort? cohort,
+  void onTap({ITarget? target,
     IAuthority? iAuthority,SpeciesItem? species}) {
-    if(state.companySpaceEnum!=null){
-      switch(state.companySpaceEnum){
-        case CompanySpaceEnum.innerAgency:
-          Get.toNamed(Routers.departmentInfo,arguments: {'depart':innerAgency});
+    if(!state.isStandard){
+      switch(state.spaceEnum){
+        case SpaceEnum.innerAgency:
+          Get.toNamed(Routers.departmentInfo,arguments: {'depart':target});
           break;
-        case CompanySpaceEnum.outAgency:
-          Get.toNamed(Routers.outAgencyInfo,arguments: {'group':outAgency});
+        case SpaceEnum.outAgency:
+          Get.toNamed(Routers.outAgencyInfo,arguments: {'group':target});
           break;
-        case CompanySpaceEnum.stationSetting:
-          Get.toNamed(Routers.stationInfo,arguments: {'station':station});
+        case SpaceEnum.stationSetting:
+          Get.toNamed(Routers.stationInfo,arguments: {'station':target});
           break;
-        case CompanySpaceEnum.companyCohort:
-          Get.toNamed(Routers.cohortInfo,arguments: {'cohort':cohort});
+        case SpaceEnum.personGroup:
+        case SpaceEnum.companyCohort:
+          Get.toNamed(Routers.cohortInfo,arguments: {'cohort':target});
           break;
       }
-    }else if(state.standardEnum!=null){
+    }else{
       switch (state.standardEnum) {
-        case StandardEnum.permissionCriteria:
+        case StandardEnum.permission:
           Get.toNamed(Routers.permissionInfo,
               arguments: {"authority": iAuthority});
           break;
@@ -164,8 +142,6 @@ class RelationGroupController extends BaseController<RelationGroupState> {
               arguments: {"species": species});
           break;
       }
-    } else if (state.userSpaceEnum != null) {
-      Get.toNamed(Routers.cohortInfo, arguments: {'cohort': cohort});
     }
   }
 
