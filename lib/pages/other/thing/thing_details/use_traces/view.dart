@@ -80,7 +80,7 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("审批意见:${archive.flowRecord?.comment??""}"),
+                      Expanded(child: Text("审批意见:${archive.flowRecord?.comment??""}",overflow: TextOverflow.ellipsis,maxLines: 1,)),
                       Text(DateTime.tryParse(archive.flowInstance?.createTime ?? "")?.format(
                           format: "yyyy-MM-dd HH:mm:ss") ?? ""),
                     ],

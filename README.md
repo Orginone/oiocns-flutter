@@ -17,10 +17,11 @@
     ├── dart                            // 核心
     ├── pages                           // 页面
     	├── chat                        // 沟通
-        ├── market                      // 市场
         ├── ohter                       // 其他页面
         ├── setting                     // 设置
         ├── work                        // 办事
+        ├── login                       // 登录
+        ├── universal_navigator         // 通用导航
     ├── util                            // 工具库
     ├── main.dart                       // 入口
     ├── routers.dart                    // 路由

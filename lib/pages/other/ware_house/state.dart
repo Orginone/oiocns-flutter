@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 
 class WareHouseState extends BaseGetState{
-  late TabController tabController;
+
+  var recentlyList = [];
 }
 
 
- const List<String> tabTitle = [
-  '仓库',
-  '商店',
-];
+class Recent {
+  final String id;
+  final String name;
+  final String url;
+
+  Recent(this.id, this.name, this.url);
+}

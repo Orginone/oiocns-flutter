@@ -8,6 +8,7 @@ import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/pages/setting/config.dart';
+import 'package:orginone/pages/setting/dialog.dart';
 
 import 'popup_menu_widget.dart';
 
@@ -23,7 +24,7 @@ class Item extends StatelessWidget {
   final VoidCallback? nextLv;
   final VoidCallback? onTap;
   final UserSpaceEnum? userSpaceEnum;
-
+  final PopupMenuItemSelected? onSelected;
   const Item(
       {Key? key,
       this.companySpaceEnum,
@@ -36,7 +37,7 @@ class Item extends StatelessWidget {
       this.standardEnum,
       this.iAuthority,
       this.species,
-      this.userSpaceEnum})
+      this.userSpaceEnum, this.onSelected})
       : super(key: key);
 
   SettingController get settingController => Get.find<SettingController>();
@@ -90,7 +91,12 @@ class Item extends StatelessWidget {
               Expanded(
                 child: title(),
               ),
-              PopupMenuWidget(target: innerAgency??outAgency??station??cohort,companySpaceEnum: companySpaceEnum,standardEnum: standardEnum,),
+              PopupMenuWidget(
+                target: innerAgency ?? outAgency ?? station ?? cohort,
+                companySpaceEnum: companySpaceEnum,
+                userSpaceEnum: userSpaceEnum,
+                onSelected:onSelected,
+              ),
               more(),
             ],
           ),

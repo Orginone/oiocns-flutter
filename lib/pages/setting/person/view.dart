@@ -11,6 +11,8 @@ import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/hive_utils.dart';
+import 'package:orginone/util/local_store.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 
 class PersonPage extends BaseGetPageView<PersonController, PersonState> {
@@ -190,6 +192,8 @@ class Item extends StatelessWidget {
               onTap: () {
                 if(goTo == Routers.login){
                   Get.offAllNamed(goTo);
+                  LocalStore.getStore().remove('account');
+                  HiveUtils.clean();
                 }else{
                   Get.toNamed(goTo);
                 }

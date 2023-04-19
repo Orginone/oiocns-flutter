@@ -1,12 +1,16 @@
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/pages/setting/config.dart';
+import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/setting_management.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
@@ -40,7 +44,7 @@ class RelationGroupController extends BaseController<RelationGroupState> {
             try{
               state.groupData.value = list.firstWhere((element) => element.teamName == state.selectedGroup.last).subTeam;
             }catch(e){
-              state.groupData.value = null;
+              state.groupData.value = [];
             }
             break;
           case CompanySpaceEnum.outAgency:
@@ -48,7 +52,7 @@ class RelationGroupController extends BaseController<RelationGroupState> {
             try{
               state.groupData.value = list.firstWhere((element) => element.teamName == state.selectedGroup.last).subGroup;
             }catch(e){
-              state.groupData.value = null;
+              state.groupData.value = [];
             }
             break;
         }
@@ -71,7 +75,7 @@ class RelationGroupController extends BaseController<RelationGroupState> {
             try{
               state.groupData.value = list.firstWhere((element) => element.name == state.selectedGroup.last).children;
             }catch(e){
-              state.groupData.value = null;
+              state.groupData.value = [];
             }
             break;
           case StandardEnum.classCriteria:
@@ -79,7 +83,7 @@ class RelationGroupController extends BaseController<RelationGroupState> {
             try{
               state.groupData.value = list.firstWhere((element) => element.name == state.selectedGroup.last).children;
             }catch(e){
-              state.groupData.value = null;
+              state.groupData.value = [];
             }
             break;
         }
@@ -150,16 +154,70 @@ class RelationGroupController extends BaseController<RelationGroupState> {
           break;
       }
     }else if(state.standardEnum!=null){
-      switch(state.standardEnum){
+      switch (state.standardEnum) {
         case StandardEnum.permissionCriteria:
-          Get.toNamed(Routers.permissionInfo,arguments: {"authority":iAuthority});
+          Get.toNamed(Routers.permissionInfo,
+              arguments: {"authority": iAuthority});
           break;
         case StandardEnum.classCriteria:
-          Get.toNamed(Routers.classificationInfo,arguments: {"species":species});
+          Get.toNamed(Routers.classificationInfo,
+              arguments: {"species": species});
           break;
       }
-    }else if(state.userSpaceEnum!=null){
-      Get.toNamed(Routers.cohortInfo,arguments: {'cohort':cohort});
+    } else if (state.userSpaceEnum != null) {
+      Get.toNamed(Routers.cohortInfo, arguments: {'cohort': cohort});
+    }
+  }
+
+  void operation(dynamic item, String value) async {
+    switch (value) {
+      case "create":
+        showCreateOrganizationDialog(context, item.subTeamTypes,
+            callBack: (String name, String code, String nickName,
+                String identify, String remark, TargetType type) async {
+              var model = TargetModel(
+                  name: nickName,
+                  code: code,
+                  typeName: type.label,
+                  teamName: name,
+                  teamCode: code,
+                  teamRemark: remark,
+                  avatar: '',
+                  belongId: '');
+                await item.create(model);
+            });
+        break;
+      case "edit":
+        showCreateOrganizationDialog(context, item.subTeamTypes,
+            callBack: (String name, String code, String nickName,
+                String identify, String remark, TargetType type) async {
+              var model = TargetModel(
+                  id: item.id,
+                  name: nickName,
+                  code: code,
+                  typeName: type.label,
+                  teamName: name,
+                  teamCode: code,
+                  teamRemark: remark,
+                  avatar: '',
+                  belongId: item.target.belongId);
+              await item.update(model);
+            },
+            code: item.target.code,
+            name: item.teamName,
+            nickName: item.name,
+            identify: item.target.team?.code ?? "",
+            remark: item.target.team?.remark ?? "",
+            type: TargetType.getType(item.typeName));
+        break;
+      case "delete":
+        bool success = await item.delete();
+        if(success){
+          state.groupData.remove(item);
+        }else{
+          ToastUtils.showMsg(msg: "删除失败");
+        }
+        break;
     }
   }
 }

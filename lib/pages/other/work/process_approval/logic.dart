@@ -2,8 +2,6 @@ import 'package:orginone/event/home_data.dart';
 import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/pages/other/work/network.dart';
 import 'package:orginone/pages/other/work/state.dart';
-import 'package:orginone/pages/other/work/to_do/state.dart';
-import 'package:orginone/util/event_bus_helper.dart';
 
 import '../../../../dart/core/getx/base_list_controller.dart';
 import 'state.dart';
