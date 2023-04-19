@@ -23,6 +23,32 @@ class UserBar extends GetView<SettingController> {
 
 
   Widget get _other {
+
+    List<Widget> action = [];
+    action.add( IconButton(
+      icon: const Icon(Icons.search),
+      onPressed: () {},
+      constraints: BoxConstraints(maxWidth: 50.w),
+    ));
+    if(controller.homeEnum == HomeEnum.chat || controller.homeEnum == HomeEnum.work){
+      action.add(
+        IconButton(
+          icon: const Icon(Icons.add),
+          onPressed: () {
+
+          },
+          constraints: BoxConstraints(maxWidth: 40.w),
+        ),
+      );
+      action.add(
+        IconButton(
+          icon: const Icon(Icons.more_vert),
+          onPressed: () {},
+          constraints: BoxConstraints(maxWidth: 40.w),
+        ),
+      );
+    }
+
     return SizedBox(
       height: 74.h,
       child: Row(children: [
@@ -34,23 +60,7 @@ class UserBar extends GetView<SettingController> {
         ),
         Text(controller.homeEnum.value.label),
         const Expanded(child: SizedBox()),
-        IconButton(
-          icon: const Icon(Icons.search),
-          onPressed: () {},
-          constraints: BoxConstraints(maxWidth: 40.w),
-        ),
-        IconButton(
-          icon: const Icon(Icons.add),
-          onPressed: () {
-
-          },
-          constraints: BoxConstraints(maxWidth: 40.w),
-        ),
-        IconButton(
-          icon: const Icon(Icons.more_vert),
-          onPressed: () {},
-          constraints: BoxConstraints(maxWidth: 40.w),
-        ),
+        ...action,
       ]),
     );
   }
@@ -70,13 +80,11 @@ class UserBar extends GetView<SettingController> {
               children: [
                 _textAvatar(EdgeInsets.only(left: 20.w)),
                 Container(margin: EdgeInsets.only(left: 10.w)),
-                Obx(() {
-                  return Text(
-                    controller.signed ? controller.space.teamName : "",
-                    style: XFonts.size22Black0,
-                    overflow: TextOverflow.ellipsis,
-                  );
-                }),
+                Text(
+                  "奥集能",
+                  style: XFonts.size22Black0,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 Container(margin: EdgeInsets.only(left: 2.w)),
               ],
             ),

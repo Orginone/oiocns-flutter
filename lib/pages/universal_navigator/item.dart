@@ -45,9 +45,8 @@ class NavigatorItem extends StatelessWidget {
               decoration: BoxDecoration(
                 color: XColors.themeColor,
                 borderRadius: BorderRadius.all(Radius.circular(8.w)),
+                image: item.image!=null?DecorationImage(image: MemoryImage(item.image!),fit: BoxFit.cover):null
               ),
-              child: const Icon(Icons.account_balance_rounded,
-                  color: Colors.white),
             ),
             Expanded(
               child: title(),

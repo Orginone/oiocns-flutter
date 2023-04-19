@@ -46,7 +46,7 @@ class CompanyInfoController extends BaseController<CompanyInfoState>
     switch (function) {
       case CompanyFunction.roleSettings:
         Get.toNamed(Routers.roleSettings,
-            arguments: {"company": state.company});
+            arguments: {"target": state.company});
         break;
       case CompanyFunction.addUser:
         showSearchDialog(context, TargetType.person,

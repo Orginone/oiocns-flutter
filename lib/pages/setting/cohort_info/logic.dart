@@ -28,7 +28,7 @@ class CohortInfoController extends BaseController<CohortInfoState> {
   void companyOperation(CompanyFunction function) {
     switch (function) {
       case CompanyFunction.roleSettings:
-        Get.toNamed(Routers.roleSettings, arguments: {"cohort": state.cohort});
+        Get.toNamed(Routers.roleSettings, arguments: {"target": state.cohort});
         break;
       case CompanyFunction.addUser:
         Get.toNamed(Routers.addMembers, arguments: {"title": "指派角色"})

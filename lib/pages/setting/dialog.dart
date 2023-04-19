@@ -8,10 +8,11 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
-import 'package:orginone/util/setting_management.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 import 'package:orginone/widget/common_widget.dart';
+
+import 'config.dart';
 
 typedef IdentityChangeCallBack = Function(
     String name, String code, String remark);
@@ -74,11 +75,12 @@ Future<void> showEditIdentityDialog(IIdentity identity, BuildContext context,
   );
 }
 
-Future<void> showCreateIdentityDialog(BuildContext context,
+Future<void> showCreateIdentityDialog(BuildContext context,List<IAuthority> authority,
     {CreateIdentityCallBack? onCreate}) async {
 
 
-  List<IAuthority> allAuth = SettingManagement().getAllAuthority(SettingManagement().authority);
+
+  List<IAuthority> allAuth = getAllAuthority(authority);
 
   TextEditingController name = TextEditingController();
   TextEditingController code = TextEditingController();
@@ -595,3 +597,5 @@ Future<void> showCreateOrganizationDialog(
     },
   );
 }
+
+

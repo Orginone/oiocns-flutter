@@ -31,7 +31,7 @@ class InitiateWorkPage
               }).toList(),
               CommonWidget.commonHeadInfoWidget("组织"),
               ...state.spaces.map((e){
-                return NavigatorItem(item: NavigatorModel(title: e.name),onTap: (){
+                return NavigatorItem(item: NavigatorModel(title: e.name,image:e.target.avatarThumbnail()),onTap: (){
                   controller.jumpUniversalNavigator(e.name);
                 },);
               }),

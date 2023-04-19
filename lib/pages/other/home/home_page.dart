@@ -28,7 +28,6 @@ import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/file_management.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/load_image.dart';
-import 'package:orginone/util/setting_management.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -140,7 +139,6 @@ class HomeController extends TabsController {
           DepartmentManagement().initDepartment(),
           CommonTreeManagement().initTree(),
           FileManagement().initFileDir(),
-          SettingManagement().initSetting(),
         ]);
         log('数据加载完成');
       } else {

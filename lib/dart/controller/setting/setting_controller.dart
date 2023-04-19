@@ -60,10 +60,12 @@ class SettingController extends GetxController {
     return _curSpace.value != null;
   }
 
-  bool isUserSpace() {
+  bool isUserSpace({ISpace? space}) {
+    if(space!=null){
+      return space.id == user?.id;
+    }
     return !isCompanySpace();
   }
-
   /// 当前用户
   IPerson? get user => _user.value;
 

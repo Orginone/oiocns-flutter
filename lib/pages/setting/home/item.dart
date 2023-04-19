@@ -111,15 +111,14 @@ class Item extends StatelessWidget {
   }
 
   Widget _header() {
-    IconData icon = Icons.account_balance_rounded;
-
+    var image = target?.target.avatarThumbnail();
     return AdvancedAvatar(
       size: 60.w,
       decoration: BoxDecoration(
         color: XColors.themeColor,
         borderRadius: BorderRadius.all(Radius.circular(8.w)),
+          image:image!=null?DecorationImage(image: MemoryImage(image),fit: BoxFit.cover):null
       ),
-      child: Icon(icon, color: Colors.white),
     );
   }
 }

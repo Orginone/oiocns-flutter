@@ -20,18 +20,17 @@ class SettingCenterPage
       body: SingleChildScrollView(
         child: Column(
           children: state.spaces
-              .map(
-                (e) => NavigatorItem(
-              item: NavigatorModel(title: e.teamName),
+              .map((e) {
+            return NavigatorItem(
+              item: NavigatorModel(title: e.teamName, image: e.target.avatarThumbnail()),
               onTap: () {
                 controller.jumpInfo(e);
               },
-              next: (){
+              next: () {
                 controller.jumpSetting(e);
               },
-            ),
-          )
-              .toList(),
+            );
+          }).toList(),
         ),
       ),
       bottomNavigationBar:  SizedBox(

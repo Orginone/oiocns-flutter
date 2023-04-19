@@ -70,6 +70,7 @@ class BaseTarget extends ITarget {
     memberTypes = [TargetType.person];
     typeName = target.typeName;
     appendTarget([target]);
+    subTeamTypes = [];
   }
 
   @override

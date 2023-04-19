@@ -13,7 +13,11 @@ class UniversalNavigatorController extends BaseController<UniversalNavigatorStat
   }
 
  void selectGroup(NavigatorModel item) {
-  state.selectedData.add(item);
+    if(item.children.isNotEmpty){
+     state.selectedData.add(item);
+    }else{
+     selectItem(item);
+    }
  }
 
   void removeGroup(index) {

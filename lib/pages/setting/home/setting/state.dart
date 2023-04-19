@@ -18,11 +18,11 @@ class SettingFunctionState extends BaseGetState{
 
   SettingFunctionState(){
     space = Get.arguments['space'];
-    spaceEnum = [];
-    if(setting.isCompanySpace()){
-      spaceEnum.addAll([SpaceEnum.innerAgency,SpaceEnum.outAgency,SpaceEnum.stationSetting,SpaceEnum.companyCohort]);
+    spaceEnum = [SpaceEnum.standardSettings];
+    if(setting.isUserSpace(space: space)){
+      spaceEnum.addAll([SpaceEnum.cardbag,SpaceEnum.security,SpaceEnum.dynamic,SpaceEnum.mark,SpaceEnum.personGroup]);
     }else{
-      spaceEnum.addAll([SpaceEnum.personGroup]);
+      spaceEnum.addAll([SpaceEnum.innerAgency,SpaceEnum.outAgency,SpaceEnum.stationSetting,SpaceEnum.companyCohort]);
     }
   }
 }

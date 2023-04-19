@@ -38,7 +38,7 @@ class OutAgencyInfoController extends BaseController<OutAgencyInfoState>
     switch (function) {
       case CompanyFunction.roleSettings:
         Get.toNamed(Routers.roleSettings,
-            arguments: {"outAgency": state.group});
+            arguments: {"target": state.group});
         break;
       case CompanyFunction.addUser:
         showSearchDialog(context, TargetType.company,

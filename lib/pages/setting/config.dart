@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:orginone/dart/core/target/authority/iauthority.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
 
 enum SpaceEnum {
   innerAgency("内部机构"),
@@ -9,8 +11,12 @@ enum SpaceEnum {
   stationSetting("岗位设置"),
   companyCohort("单位群组"),
 
-  personGroup("个人群组");
-
+  personGroup("个人群组"),
+  standardSettings("标准设置"),
+  cardbag("卡包"),
+  security("安全"),
+  dynamic("动态"),
+  mark("收藏");
 
   final  String label;
 
@@ -28,6 +34,8 @@ enum SpaceEnum {
         return SpaceEnum.companyCohort;
       case "个人群组":
         return SpaceEnum.personGroup;
+      case "标准设置":
+        return SpaceEnum.standardSettings;
       default:
         return SpaceEnum.personGroup;
     }
@@ -113,3 +121,25 @@ enum UserFunction{
   addGroup,
 }
 
+List<IAuthority> getAllAuthority(List<IAuthority> authority) {
+  List<IAuthority> list = [];
+  for (var element in authority) {
+    list.add(element);
+    if (element.children.isNotEmpty) {
+      list.addAll(getAllAuthority(element.children));
+    }
+  }
+  return list;
+}
+
+List<IGroup> getAllOutAgency(List<IGroup> outAgencyGroup) {
+  List<IGroup> list = [];
+  for (var element in outAgencyGroup) {
+    list.add(element);
+    if (element.subGroup.isNotEmpty) {
+      list.addAll(getAllOutAgency(element.subGroup));
+    }
+  }
+
+  return list;
+}

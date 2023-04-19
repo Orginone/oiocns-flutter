@@ -14,7 +14,7 @@ class SettingCenterController extends BaseController<SettingCenterState>{
   final SettingCenterState state = SettingCenterState();
 
   void jumpInfo(ISpace space) {
-    if(space.id == state.settingCtrl.user!.id){
+    if(state.settingCtrl.isUserSpace(space: space)){
       Get.toNamed(Routers.userInfo);
     }else{
       Get.toNamed(Routers.companyInfo,arguments: {"company":space});
