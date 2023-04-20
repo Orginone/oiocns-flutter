@@ -28,6 +28,7 @@ class TeamAvatar extends StatelessWidget {
   final double size;
   final Widget? child;
   final List<Widget>? children;
+  final BoxDecoration? decoration;
 
   TeamAvatar({
     super.key,
@@ -35,7 +36,12 @@ class TeamAvatar extends StatelessWidget {
     double? size,
     this.child,
     this.children,
-  }) : size = size ?? 66.w;
+  })  : size = size ?? 66.w,
+        decoration = BoxDecoration(
+          color: XColors.themeColor,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.all(Radius.circular(6.w)),
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +52,7 @@ class TeamAvatar extends StatelessWidget {
       return AdvancedAvatar(
         size: size,
         children: children ?? [],
+        decoration: decoration,
         child: Image(
           width: size,
           height: size,
@@ -91,10 +98,7 @@ class TeamAvatar extends StatelessWidget {
     return AdvancedAvatar(
       size: size,
       children: children ?? [],
-      decoration: const BoxDecoration(
-        color: XColors.themeColor,
-        shape: BoxShape.circle,
-      ),
+      decoration: decoration,
       child: child,
     );
   }
