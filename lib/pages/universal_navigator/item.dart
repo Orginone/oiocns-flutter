@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/components/unified.dart';
+import 'package:orginone/widget/unified.dart';
 
 import 'state.dart';
 
@@ -29,14 +29,10 @@ class NavigatorItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (item.children.isNotEmpty) {
-          if (next != null) {
-            next!();
-          }
-        } else {
-          if (onTap != null) {
-            onTap!();
-          }
+        if (next != null) {
+          next!();
+        } else if (onTap != null) {
+          onTap!();
         }
       },
       child: Container(
@@ -49,9 +45,8 @@ class NavigatorItem extends StatelessWidget {
               decoration: BoxDecoration(
                 color: XColors.themeColor,
                 borderRadius: BorderRadius.all(Radius.circular(8.w)),
+                image: item.image!=null?DecorationImage(image: MemoryImage(item.image!),fit: BoxFit.cover):null
               ),
-              child: const Icon(Icons.account_balance_rounded,
-                  color: Colors.white),
             ),
             Expanded(
               child: title(),

@@ -1,6 +1,7 @@
 //度量特性定义
 import 'dart:convert';
 
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
@@ -6521,6 +6522,25 @@ class XTarget {
       }
     }
     return retList;
+  }
+
+  Uint8List avatarThumbnail() {
+    if(avatar==''){
+      return Uint8List.fromList([]);
+    }
+    try{
+      var map = jsonDecode(avatar);
+      FileItemShare share = FileItemShare.fromJson(map);
+
+      var thumbnail = share.thumbnail
+          ?.split(",")[1]
+          .replaceAll('\r', '')
+          .replaceAll('\n', '') ??
+          "";
+      return base64Decode(thumbnail);
+    }catch(e){
+      return Uint8List.fromList([]);
+    }
   }
 
   //转成JSON

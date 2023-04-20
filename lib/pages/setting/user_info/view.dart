@@ -14,7 +14,7 @@ class UserInfoPage extends BaseGetView<UserInfoController, UserInfoState> {
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: "公司信息",
+      titleName: "个人信息",
       body: SingleChildScrollView(
         child: Column(
           children: [

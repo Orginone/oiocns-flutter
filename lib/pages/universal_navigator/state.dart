@@ -1,5 +1,6 @@
 
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
@@ -35,10 +36,11 @@ class NavigatorModel{
   late String id;
   late String title;
   late List<NavigatorModel> children;
+  Uint8List? image;
   dynamic source;
 
   NavigatorModel(
-      {this.id = '', this.title = '', this.children = const [], this.source});
+      {this.id = '', this.title = '', this.children = const [], this.source,this.image});
 
   NavigatorModel.formSpecies(ISpeciesItem iSpeciesItem) {
     id = iSpeciesItem.id;

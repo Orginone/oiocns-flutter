@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/template/originone_scaffold.dart';
-import 'package:orginone/components/template/tabs.dart';
-import 'package:orginone/components/unified.dart';
-import 'package:orginone/components/widgets/progress_dialog.dart';
+import 'package:orginone/widget/template/originone_scaffold.dart';
+import 'package:orginone/widget/template/tabs.dart';
+import 'package:orginone/widget/unified.dart';
+import 'package:orginone/widget/widgets/progress_dialog.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
@@ -27,7 +27,6 @@ import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/file_management.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/load_image.dart';
-import 'package:orginone/util/setting_management.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -139,7 +138,6 @@ class HomeController extends TabsController {
           DepartmentManagement().initDepartment(),
           CommonTreeManagement().initTree(),
           FileManagement().initFileDir(),
-          SettingManagement().initSetting(),
         ]);
         log('数据加载完成');
       } else {

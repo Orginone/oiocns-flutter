@@ -7,9 +7,9 @@ import 'package:orginone/dart/core/target/itarget.dart';
 
 class CompanyInfoState extends BaseGetState {
 
-  SettingController settingController = Get.find<SettingController>();
-
-  ICompany? get company => settingController.company;
+  // SettingController settingController = Get.find<SettingController>();
+  //
+  // ICompany? get company => settingController.company;
 
   var unitMember = <XTarget>[].obs;
 
@@ -18,6 +18,12 @@ class CompanyInfoState extends BaseGetState {
   late TabController tabController;
 
   var index = 0.obs;
+
+  late ICompany company;
+
+  CompanyInfoState(){
+    company = Get.arguments['company'];
+  }
 }
 
 

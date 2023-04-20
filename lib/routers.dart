@@ -30,6 +30,7 @@ import 'package:orginone/pages/other/web_view/view.dart';
 import 'package:orginone/pages/other/work/work_start/view.dart';
 import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/home/binding.dart';
+import 'package:orginone/pages/setting/home/setting/binding.dart';
 import 'package:orginone/pages/setting/home/view.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/new_friend_page.dart';
@@ -104,6 +105,7 @@ import 'pages/setting/company_info/binding.dart';
 import 'pages/setting/company_info/view.dart';
 import 'pages/setting/department_info/binding.dart';
 import 'pages/setting/department_info/view.dart';
+import 'pages/setting/home/setting/view.dart';
 import 'pages/setting/out_agency_info/binding.dart';
 import 'pages/setting/out_agency_info/view.dart';
 import 'pages/setting/permission_info/binding.dart';
@@ -165,7 +167,8 @@ class Routers {
   static const String index = "/index";
 
   // 设置
-  static const String setting = "/setting";
+  static const String settingCenter = "/settingCenter";
+  static const String settingFunction = "/settingFunction";
   static const String mineUnit = "/mineUnit";
   static const String newFriends = "/newFriends";
   static const String contact = "/contact";
@@ -539,9 +542,14 @@ class Routers {
         binding: FileBinding(),
       ),
       GetPage(
-        name: Routers.setting,
+        name: Routers.settingCenter,
         page: () => SettingCenterPage(),
         binding: SettingCenterBinding(),
+      ),
+      GetPage(
+        name: Routers.settingFunction,
+        page: () => SettingFunctionPage(),
+        binding: SettingFunctionBinding(),
       ),
       GetPage(
         name: Routers.companyInfo,

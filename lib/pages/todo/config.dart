@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/a_font.dart';
-import 'package:orginone/components/bread_crumb.dart';
-import 'package:orginone/components/tab_combine.dart';
-import 'package:orginone/components/unified.dart';
+import 'package:orginone/widget/a_font.dart';
+import 'package:orginone/widget/bread_crumb.dart';
+import 'package:orginone/widget/tab_combine.dart';
+import 'package:orginone/widget/unified.dart';
 import 'package:orginone/pages/todo/todo_list_page.dart';
 import 'package:orginone/routers.dart';
 

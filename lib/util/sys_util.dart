@@ -4,9 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/components/unified.dart';
-import 'package:orginone/config/constant.dart';
-import 'package:orginone/util/encryption_util.dart';
+import 'package:orginone/widget/unified.dart';
 import 'package:ota_update/ota_update.dart';
 
 class SysUtil {

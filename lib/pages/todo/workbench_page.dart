@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_button.dart';
-import 'package:orginone/components/a_font.dart';
-import 'package:orginone/components/unified.dart';
+import 'package:orginone/widget/a_font.dart';
+import 'package:orginone/widget/unified.dart';
 import 'package:orginone/pages/todo/work_page.dart';
 
 /// 办事-工作台

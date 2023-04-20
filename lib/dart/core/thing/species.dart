@@ -54,7 +54,7 @@ class SpeciesItem extends ISpeciesItem {
           limit: page.limit,
           filter: '',
         )));
-    attrs = res.data!.result??[];
+    attrs = res.data?.result??[];
     return res.data!;
   }
 

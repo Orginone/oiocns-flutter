@@ -3,7 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/components/template/base_list_view.dart';
+import 'package:orginone/widget/template/base_list_view.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/routers.dart';
 

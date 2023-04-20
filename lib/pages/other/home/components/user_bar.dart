@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/unified.dart';
-import 'package:orginone/components/widgets/text_avatar.dart';
+import 'package:orginone/widget/unified.dart';
+import 'package:orginone/widget/widgets/text_avatar.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/routers.dart';
 
@@ -23,6 +23,32 @@ class UserBar extends GetView<SettingController> {
 
 
   Widget get _other {
+
+    List<Widget> action = [];
+    action.add( IconButton(
+      icon: const Icon(Icons.search),
+      onPressed: () {},
+      constraints: BoxConstraints(maxWidth: 50.w),
+    ));
+    if(controller.homeEnum == HomeEnum.chat || controller.homeEnum == HomeEnum.work){
+      action.add(
+        IconButton(
+          icon: const Icon(Icons.add),
+          onPressed: () {
+
+          },
+          constraints: BoxConstraints(maxWidth: 40.w),
+        ),
+      );
+      action.add(
+        IconButton(
+          icon: const Icon(Icons.more_vert),
+          onPressed: () {},
+          constraints: BoxConstraints(maxWidth: 40.w),
+        ),
+      );
+    }
+
     return SizedBox(
       height: 74.h,
       child: Row(children: [
@@ -34,23 +60,7 @@ class UserBar extends GetView<SettingController> {
         ),
         Text(controller.homeEnum.value.label),
         const Expanded(child: SizedBox()),
-        IconButton(
-          icon: const Icon(Icons.search),
-          onPressed: () {},
-          constraints: BoxConstraints(maxWidth: 40.w),
-        ),
-        IconButton(
-          icon: const Icon(Icons.add),
-          onPressed: () {
-
-          },
-          constraints: BoxConstraints(maxWidth: 40.w),
-        ),
-        IconButton(
-          icon: const Icon(Icons.more_vert),
-          onPressed: () {},
-          constraints: BoxConstraints(maxWidth: 40.w),
-        ),
+        ...action,
       ]),
     );
   }
@@ -61,7 +71,7 @@ class UserBar extends GetView<SettingController> {
       child: Row(children: [
         Expanded(
           child: GestureDetector(
-            onTap: () {
+            onLongPress: () {
               controller.jumpSpaces();
             },
             child: Row(
@@ -70,15 +80,12 @@ class UserBar extends GetView<SettingController> {
               children: [
                 _textAvatar(EdgeInsets.only(left: 20.w)),
                 Container(margin: EdgeInsets.only(left: 10.w)),
-                Obx(() {
-                  return Text(
-                    controller.signed ? controller.space.teamName : "",
-                    style: XFonts.size22Black0,
-                    overflow: TextOverflow.ellipsis,
-                  );
-                }),
+                Text(
+                  "奥集能",
+                  style: XFonts.size22Black0,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 Container(margin: EdgeInsets.only(left: 2.w)),
-                const Icon(Icons.arrow_drop_down, color: XColors.black)
               ],
             ),
           ),
@@ -88,7 +95,7 @@ class UserBar extends GetView<SettingController> {
           child: GestureDetector(
             child: _imgAvatar(EdgeInsets.only(right: 10.w)),
             onTap: () {
-              Get.toNamed(Routers.personPage);
+              Get.toNamed(Routers.settingCenter);
             },
           ),
         ),
@@ -101,7 +108,7 @@ class UserBar extends GetView<SettingController> {
       return TextAvatar(
         radius: 45.w,
         width: 45.w,
-        avatarName: controller.user?.name.substring(0, 1) ?? "",
+        avatarName: controller.space?.name.substring(0, 1) ?? "",
         textStyle: XFonts.size22White,
         margin: insets,
       );
@@ -122,7 +129,7 @@ class UserBar extends GetView<SettingController> {
             image: DecorationImage(
                 image: MemoryImage(
               base64Decode(avatar ?? ""),
-            ))),
+            ),fit: BoxFit.cover),),
         width: 45.w,
         margin: insets,
       );

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/event/tap_navigator.dart';
 import 'package:orginone/pages/universal_navigator/state.dart';
 import 'package:orginone/routers.dart';
@@ -8,18 +9,9 @@ import '../../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
 class WarehouseManagementController
-    extends BaseController<WarehouseManagementState> {
+    extends BaseBreadcrumbNavController<WarehouseManagementState> {
   final WarehouseManagementState state = WarehouseManagementState();
 
-
-  @override
-  void onReceivedEvent(event) {
-    // TODO: implement onReceivedEvent
-    super.onReceivedEvent(event);
-    if(event is TapNavigator){
-
-    }
-  }
 
   void jumpUniversalNavigator(String name) {
     List<NavigatorModel> data = [];
