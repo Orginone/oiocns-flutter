@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/components/unified.dart';
+import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/universal_navigator/item.dart';
 import 'package:orginone/pages/universal_navigator/state.dart';
@@ -31,7 +31,7 @@ class InitiateWorkPage
               }).toList(),
               CommonWidget.commonHeadInfoWidget("组织"),
               ...state.spaces.map((e){
-                return NavigatorItem(item: NavigatorModel(title: e.name),onTap: (){
+                return NavigatorItem(item: NavigatorModel(title: e.name,image:e.target.avatarThumbnail()),onTap: (){
                   controller.jumpUniversalNavigator(e.name);
                 },);
               }),

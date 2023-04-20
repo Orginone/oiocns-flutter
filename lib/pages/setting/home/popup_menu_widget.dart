@@ -8,15 +8,13 @@ import 'package:orginone/widget/common_widget.dart';
 
 class PopupMenuWidget<T> extends StatefulWidget {
   final ITarget? target;
-  final CompanySpaceEnum? companySpaceEnum;
-  final UserSpaceEnum? userSpaceEnum;
+  final SpaceEnum? spaceEnum;
   final PopupMenuItemSelected<T>? onSelected;
 
   const PopupMenuWidget(
       {Key? key,
       this.target,
-      this.companySpaceEnum,
-      this.userSpaceEnum,
+      required this.spaceEnum,
       this.onSelected})
       : super(key: key);
 
@@ -41,31 +39,19 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
   void init() {
     popupMenuItem.clear();
     target = widget.target;
-    if (widget.companySpaceEnum != null) {
-      switch (widget.companySpaceEnum) {
-        case CompanySpaceEnum.company:
-          target = settingController.space;
-          break;
-        case CompanySpaceEnum.innerAgency:
+    if(widget.spaceEnum!=null){
+      switch (widget.spaceEnum) {
+        case SpaceEnum.innerAgency:
           popupMenuItem.add(newPopupMenuItem("新建部门", "create"));
           break;
-        case CompanySpaceEnum.outAgency:
+        case SpaceEnum.outAgency:
           popupMenuItem.add(newPopupMenuItem("新建集团", "create"));
           break;
-        case CompanySpaceEnum.stationSetting:
+        case SpaceEnum.stationSetting:
           popupMenuItem.add(newPopupMenuItem("新建岗位", "create"));
           break;
-        case CompanySpaceEnum.companyCohort:
-          popupMenuItem.add(newPopupMenuItem("新建群组", "create"));
-          break;
-      }
-    }
-    if (widget.userSpaceEnum != null) {
-      switch (widget.userSpaceEnum) {
-        case UserSpaceEnum.personInfo:
-          popupMenuItem.add(newPopupMenuItem("编辑", "edit"));
-          break;
-        case UserSpaceEnum.personGroup:
+        case SpaceEnum.personGroup:
+        case SpaceEnum.companyCohort:
           popupMenuItem.add(newPopupMenuItem("新建群组", "create"));
           break;
       }
@@ -115,8 +101,7 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
     // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
     if (oldWidget.target != widget.target ||
-        oldWidget.companySpaceEnum != widget.companySpaceEnum ||
-        oldWidget.userSpaceEnum != widget.userSpaceEnum) {
+        oldWidget.spaceEnum != widget.spaceEnum ) {
       init();
     }
   }

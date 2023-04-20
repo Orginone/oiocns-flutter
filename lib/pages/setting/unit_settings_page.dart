@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/config/enum.dart';
-import 'package:orginone/components/template/base_view.dart';
-import 'package:orginone/components/unified.dart';
+import 'package:orginone/widget/template/base_view.dart';
+import 'package:orginone/widget/unified.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus.dart';
 

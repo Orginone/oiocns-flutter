@@ -40,7 +40,7 @@ class DepartmentInfoController extends BaseController<DepartmentInfoState>
     switch (function) {
       case CompanyFunction.roleSettings:
         Get.toNamed(Routers.roleSettings,
-            arguments: {"innerAgency": state.depart.value});
+            arguments: {"target": state.depart.value});
         break;
       case CompanyFunction.addUser:
         Get.toNamed(Routers.addMembers, arguments: {"title": "指派角色"})

@@ -2,46 +2,50 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:orginone/dart/core/target/authority/iauthority.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
 
-enum CompanySpaceEnum {
-  company('单位'),
+enum SpaceEnum {
   innerAgency("内部机构"),
   outAgency("外部机构"),
   stationSetting("岗位设置"),
-  companyCohort("单位群组");
+  companyCohort("单位群组"),
+
+  personGroup("个人群组"),
+  standardSettings("标准设置"),
+  cardbag("卡包"),
+  security("安全"),
+  dynamic("动态"),
+  mark("收藏");
 
   final  String label;
 
-  const CompanySpaceEnum(this.label);
+  const SpaceEnum(this.label);
 
-  static CompanySpaceEnum findEnum(String label){
+  static SpaceEnum findEnum(String label){
     switch(label){
       case "内部机构":
-        return CompanySpaceEnum.innerAgency;
+        return SpaceEnum.innerAgency;
       case "外部机构":
-        return CompanySpaceEnum.outAgency;
+        return SpaceEnum.outAgency;
       case "岗位设置":
-        return CompanySpaceEnum.stationSetting;
+        return SpaceEnum.stationSetting;
       case "单位群组":
-        return CompanySpaceEnum.companyCohort;
+        return SpaceEnum.companyCohort;
+      case "个人群组":
+        return SpaceEnum.personGroup;
+      case "标准设置":
+        return SpaceEnum.standardSettings;
       default:
-        return CompanySpaceEnum.company;
+        return SpaceEnum.personGroup;
     }
   }
 }
 
-
-enum UserSpaceEnum{
-  personInfo('个人信息'),
-  personGroup("个人群组");
-
-  final String label;
-
-  const UserSpaceEnum(this.label);
-}
-
 enum StandardEnum{
-  permissionCriteria("权限标准"),
+  permission("权限设置"),
+  dict("字典设置"),
+  form("表单设置"),
   classCriteria('分类标准');
 
   final String label;
@@ -117,3 +121,25 @@ enum UserFunction{
   addGroup,
 }
 
+List<IAuthority> getAllAuthority(List<IAuthority> authority) {
+  List<IAuthority> list = [];
+  for (var element in authority) {
+    list.add(element);
+    if (element.children.isNotEmpty) {
+      list.addAll(getAllAuthority(element.children));
+    }
+  }
+  return list;
+}
+
+List<IGroup> getAllOutAgency(List<IGroup> outAgencyGroup) {
+  List<IGroup> list = [];
+  for (var element in outAgencyGroup) {
+    list.add(element);
+    if (element.subGroup.isNotEmpty) {
+      list.addAll(getAllOutAgency(element.subGroup));
+    }
+  }
+
+  return list;
+}

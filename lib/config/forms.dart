@@ -1,5 +1,5 @@
-import 'package:orginone/components/widgets/form/form_widget.dart';
 import 'package:orginone/config/enum.dart';
+import 'package:orginone/widget/widgets/form/form_widget.dart';
 
 class FormConfig {
   final String title;

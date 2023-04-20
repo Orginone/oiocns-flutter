@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/unified.dart';
+import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/core/market/model.dart';
 import 'package:orginone/dart/core/thing/ispecies.dart';
 import 'package:orginone/images.dart';

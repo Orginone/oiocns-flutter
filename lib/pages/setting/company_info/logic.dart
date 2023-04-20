@@ -27,10 +27,9 @@ class CompanyInfoController extends BaseController<CompanyInfoState>
   }
 
   Future<void> init() async {
-    var users = await state.settingController.space
+    var users = await state.company
         .loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
-    var group =
-        await state.settingController.company?.getJoinedGroups(reload: true);
+    var group = await state.company.getJoinedGroups(reload: true);
     state.unitMember.clear();
     state.joinGroup.clear();
     state.unitMember.addAll(users.result ?? []);
@@ -47,14 +46,14 @@ class CompanyInfoController extends BaseController<CompanyInfoState>
     switch (function) {
       case CompanyFunction.roleSettings:
         Get.toNamed(Routers.roleSettings,
-            arguments: {"company": state.company});
+            arguments: {"target": state.company});
         break;
       case CompanyFunction.addUser:
         showSearchDialog(context, TargetType.person,
             title: "邀请成员",
             hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {
-            bool success = await state.settingController.space.pullMembers(
+            bool success = await state.company.pullMembers(
                 list.map((e) => e.id).toList(), TargetType.person.label);
             if (success) {
               ToastUtils.showMsg(msg: "添加成功");
@@ -73,8 +72,7 @@ class CompanyInfoController extends BaseController<CompanyInfoState>
           if (list.isNotEmpty) {
             try {
               for (var element in list) {
-                await state.settingController.company
-                    ?.applyJoinGroup(element.id);
+                await state.company.applyJoinGroup(element.id);
               }
               ToastUtils.showMsg(msg: "发送成功");
             } catch (e) {
@@ -88,13 +86,12 @@ class CompanyInfoController extends BaseController<CompanyInfoState>
 
   void removeMember(String data) async{
     var user = state.unitMember.firstWhere((element) => element.code == data);
-    bool success = await  state.settingController.space.removeMember(user);
-    if(success){
+    bool success = await state.company.removeMember(user);
+    if (success) {
       state.unitMember.removeWhere((element) => element.code == data);
       state.unitMember.refresh();
-    }else{
+    } else {
       ToastUtils.showMsg(msg: "移除失败");
     }
-
   }
 }

@@ -5,18 +5,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/components/template/base_view.dart';
-import 'package:orginone/components/unified.dart';
+import 'package:orginone/widget/template/base_view.dart';
+import 'package:orginone/widget/unified.dart';
 import 'package:orginone/config/enum.dart';
 import 'package:orginone/config/forms.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/index/HorizontalScrollMenu/MyMenuItem.dart';
 import 'package:orginone/pages/index/news/searchBarWidget.dart';
-import 'package:orginone/pages/other/home/components/operation_bar.dart';
-import 'package:orginone/pages/setting/home/logic.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/load_image.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 /// 设置首页

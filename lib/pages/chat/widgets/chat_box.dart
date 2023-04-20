@@ -11,7 +11,7 @@ import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:orginone/components/unified.dart';
+import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/util/permission_util.dart';

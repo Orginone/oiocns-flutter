@@ -6,17 +6,11 @@ import 'package:orginone/dart/core/target/itarget.dart';
 
 class RoleSettingsState extends BaseGetState {
   late TabController tabController;
-  ITarget? innerAgency;
-  IGroup? outAgency;
-  ICohort? cohort;
-  ICompany? company;
+  late ITarget target;
 
   var identitys = <IIdentity>[].obs;
 
   RoleSettingsState(){
-    company = Get.arguments?['company'];
-    innerAgency = Get.arguments?['innerAgency'];
-    outAgency = Get.arguments?['outAgency'];
-    cohort = Get.arguments?['cohort'];
+    target = Get.arguments?['target'];
   }
 }

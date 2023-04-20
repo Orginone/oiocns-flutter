@@ -3,10 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_button.dart';
 import 'package:getwidget/size/gf_size.dart';
-import 'package:orginone/components/a_font.dart';
-import 'package:orginone/components/base_controller.dart';
-import 'package:orginone/components/template/originone_scaffold.dart';
-import 'package:orginone/components/unified.dart';
+import 'package:orginone/widget/a_font.dart';
+import 'package:orginone/widget/base_controller.dart';
+import 'package:orginone/widget/template/originone_scaffold.dart';
+import 'package:orginone/widget/unified.dart';
 import 'package:orginone/util/string_util.dart';
 import 'package:orginone/util/widget_util.dart';
 

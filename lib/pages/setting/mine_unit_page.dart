@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/template/choose_item.dart';
-import 'package:orginone/components/template/originone_scaffold.dart';
-import 'package:orginone/components/unified.dart';
+import 'package:orginone/widget/template/choose_item.dart';
+import 'package:orginone/widget/template/originone_scaffold.dart';
+import 'package:orginone/widget/unified.dart';
 import 'package:orginone/config/forms.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/other/search_page.dart';

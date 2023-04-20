@@ -1,13 +1,9 @@
 
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/pages/setting/config.dart';
-import 'package:orginone/util/common_tree_management.dart';
-import 'package:orginone/util/department_management.dart';
-import 'package:orginone/util/setting_management.dart';
 
 class RelationGroupState extends BaseGetState{
 
@@ -19,55 +15,24 @@ class RelationGroupState extends BaseGetState{
 
   late bool showPopupMenu;
 
-  CompanySpaceEnum? companySpaceEnum;
+  SpaceEnum? spaceEnum;
 
   StandardEnum? standardEnum;
 
-  UserSpaceEnum? userSpaceEnum;
+  late ISpace space;
+
+  bool get isStandard => standardEnum!=null;
+
 
   RelationGroupState(){
-
     showPopupMenu = Get.arguments?['showPopupMenu']?? true;
 
-    companySpaceEnum = Get.arguments?['companySpaceEnum'];
+    spaceEnum = Get.arguments?['spaceEnum'];
 
     standardEnum = Get.arguments?['standardEnum'];
 
-    userSpaceEnum = Get.arguments?['userSpaceEnum'];
+    space = Get.arguments['space'];
 
-    head = Get.arguments?['head'];
-    if(companySpaceEnum!=null){
-      selectedGroup.add(companySpaceEnum!.label);
-      switch (companySpaceEnum) {
-        case CompanySpaceEnum.innerAgency:
-          groupData.value = DepartmentManagement().departments;
-          break;
-        case CompanySpaceEnum.outAgency:
-          groupData.value = SettingManagement().outAgencyGroup;
-          break;
-        case CompanySpaceEnum.stationSetting:
-          groupData.value = SettingManagement().stations;
-          break;
-        case CompanySpaceEnum.companyCohort:
-          groupData.value = SettingManagement().cohorts;
-          break;
-      }
-    }
-    if(standardEnum!=null){
-      selectedGroup.add(standardEnum!.label);
-      switch(standardEnum){
-        case StandardEnum.permissionCriteria:
-          groupData.value = SettingManagement().authority;
-          break;
-        case StandardEnum.classCriteria:
-          groupData.value = [CommonTreeManagement().species];
-          break;
-      }
-    }
-    if(userSpaceEnum!=null){
-      selectedGroup.add(userSpaceEnum!.label);
-      groupData.value = SettingManagement().cohorts;
-
-    }
+    head = space.teamName;
   }
 }
