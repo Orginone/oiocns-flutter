@@ -44,9 +44,13 @@ abstract class BaseBreadcrumbNavController<S extends BaseBreadcrumbNavState>
   }
 
   void pop(int index) {
-    String routeName = state.bcNav[index].route;
+    String routerName = state.bcNav[index].route;
     Get.until((route){
-      return Get.currentRoute == routeName;
+      if(route.settings.arguments==null){
+        return Get.currentRoute == routerName;
+      }
+      var name = (route.settings.arguments as Map)['data'].name;
+      return Get.currentRoute == routerName && state.bcNav[index].data?.name == name;
     },);
   }
 
