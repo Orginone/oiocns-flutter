@@ -4,9 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_button.dart';
-import 'package:orginone/components/template/base_list_view.dart';
-import 'package:orginone/components/unified.dart';
-import 'package:orginone/components/widgets/dialog_confirm.dart';
+import 'package:orginone/widget/template/base_list_view.dart';
+import 'package:orginone/widget/unified.dart';
+import 'package:orginone/widget/widgets/dialog_confirm.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/chat/chat_controller.dart';
 

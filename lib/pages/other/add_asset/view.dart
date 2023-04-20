@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 
-import '../../../components/unified.dart';
+import '../../../widget/unified.dart';
 import '../../../dart/core/getx/base_get_view.dart';
 import 'item.dart';
 import 'logic.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/components/unified.dart';
+import 'package:orginone/widget/unified.dart';
 import 'package:orginone/config/color.dart';
 
 class GyScaffold extends StatefulWidget {

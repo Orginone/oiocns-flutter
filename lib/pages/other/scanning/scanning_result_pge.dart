@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/template/originone_scaffold.dart';
-import 'package:orginone/components/unified.dart';
+import 'package:orginone/widget/template/originone_scaffold.dart';
+import 'package:orginone/widget/unified.dart';
 import 'package:orginone/util/regex_util.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
