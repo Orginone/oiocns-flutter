@@ -36,6 +36,8 @@ class Company extends MarketTarget implements ICompany {
     ];
     stations = [];
     workings = [];
+    departments = [];
+    cohorts = [];
     searchTargetType = [TargetType.person, TargetType.group];
   }
   @override

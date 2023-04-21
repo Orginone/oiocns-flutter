@@ -5,7 +5,7 @@ class Demo1State extends BaseBreadcrumbNavState {
 
   Demo1State() {
     model = Get.arguments?['data'] ?? testModel[0];
-    title = model?.name??"";
+    title = model.value?.name??"";
   }
 }
 

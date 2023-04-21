@@ -35,15 +35,6 @@ class DepartmentManagement {
     }
   }
 
-  Future<List<ITarget>> spaceGetDepartment(ISpace space) async {
-    var list = await space.loadSubTeam(reload: true)??[];
-    _departments.clear();
-    if(list.isNotEmpty){
-      await loopDepartment(list);
-      await loopMembers(list);
-    }
-    return list;
-  }
 
   ITarget? findITargetByIdOrName({String? id, String? name}) {
     var list = getAllDepartment(_departments);

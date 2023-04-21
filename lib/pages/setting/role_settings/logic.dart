@@ -41,7 +41,7 @@ class RoleSettingsController extends BaseController<RoleSettingsState>
 
   void createIdentity() async{
 
-    List<IAuthority> auth = await SettingNetWork.initAuthority(state.target);
+    List<IAuthority> auth = await SettingNetWork.getAuthority(state.target);
     showCreateIdentityDialog(context,auth,onCreate: (String name, String code, String authID,String remark) async{
      var model = IdentityModel(name: name,code: code,authId: authID,remark: remark);
      IIdentity? identity = await state.target.createIdentity(model);

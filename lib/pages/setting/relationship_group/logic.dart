@@ -1,12 +1,15 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/company.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/thing/ispecies.dart';
 import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
+import 'package:orginone/pages/setting/home/setting/state.dart';
 import 'package:orginone/pages/setting/network.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/common_tree_management.dart';
@@ -16,7 +19,7 @@ import 'package:orginone/util/toast_utils.dart';
 import '../../../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
-class RelationGroupController extends BaseController<RelationGroupState> {
+class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupState> {
   final RelationGroupState state = RelationGroupState();
 
 
@@ -24,164 +27,101 @@ class RelationGroupController extends BaseController<RelationGroupState> {
   void onReady() async{
     // TODO: implement onReady
     super.onReady();
-    await initData();
+    if(state.model.value!.children.isEmpty){
+      await initData();
+    }
   }
 
 
   Future<void> initData() async{
+    var spaceEnum = state.model.value!.spaceEnum;
+    var standardEnum = state.model.value!.standardEnum;
     if(!state.isStandard){
-      state.selectedGroup.add(state.spaceEnum!.label);
-      switch (state.spaceEnum) {
+      switch (spaceEnum) {
         case SpaceEnum.innerAgency:
-          state.groupData.value =await DepartmentManagement().spaceGetDepartment(state.space);
+          await SettingNetWork.initDepartment(state.model.value!);
           break;
         case SpaceEnum.outAgency:
-          state.groupData.value =await SettingNetWork.initGroup(state.space as ICompany);
+           await SettingNetWork.initGroup(state.model.value!);
           break;
         case SpaceEnum.stationSetting:
-          state.groupData.value = await SettingNetWork.initStations(state.space as ICompany);
+        await SettingNetWork.initStations(state.model.value!);
           break;
         case SpaceEnum.personGroup:
         case SpaceEnum.companyCohort:
-          state.groupData.value = await SettingNetWork.initCohorts(state.space);
+           await SettingNetWork.initCohorts(state.model.value!);
           break;
       }
     } else {
-      state.selectedGroup.add(state.standardEnum!.label);
-      switch(state.standardEnum){
+      switch(standardEnum){
         case StandardEnum.permission:
-          state.groupData.value = await SettingNetWork.initAuthority(state.space);
+         await SettingNetWork.initAuthority(state.model.value!);
           break;
         case StandardEnum.classCriteria:
-          state.groupData.value = [CommonTreeManagement().species];
+          if(CommonTreeManagement().species!=null){
+            loopSpecies([CommonTreeManagement().species!],state.model.value!);
+          }
           break;
       }
     }
+    state.model.refresh();
   }
 
-  void removeGroup(int index) {
-    state.selectedGroup.removeRange(index + 1, state.selectedGroup.length);
-
-    if(!state.isStandard){
-      if(state.selectedGroup.last == state.spaceEnum!.label){
-        switch (state.spaceEnum) {
-          case SpaceEnum.innerAgency:
-            state.groupData.value = (state.space as ICompany).departments;
-            break;
-          case SpaceEnum.outAgency:
-            state.groupData.value = (state.space as ICompany).joinedGroup;
-            break;
-          case SpaceEnum.stationSetting:
-            state.groupData.value = (state.space as Company).stations;
-            break;
-          case SpaceEnum.personGroup:
-          case SpaceEnum.companyCohort:
-            state.groupData.value = state.space.cohorts;
-            break;
-        }
-      }else{
-        switch(state.spaceEnum){
-          case SpaceEnum.innerAgency:
-            var list = DepartmentManagement().getAllDepartment((state.space as ICompany).departments);
-            try{
-              state.groupData.value = list.firstWhere((element) => element.teamName == state.selectedGroup.last).subTeam;
-            }catch(e){
-              state.groupData.value = [];
-            }
-            break;
-          case SpaceEnum.outAgency:
-            var list = getAllOutAgency((ISpace as ICompany).joinedGroup);
-            try{
-              state.groupData.value = list.firstWhere((element) => element.teamName == state.selectedGroup.last).subGroup;
-            }catch(e){
-              state.groupData.value = [];
-            }
-            break;
-        }
+  void loopSpecies(List<ISpeciesItem> species,SettingFunctionBreadcrumbNavModel model){
+    model.children = [];
+    for (var value in species) {
+      var child = SettingFunctionBreadcrumbNavModel(
+          space: model.space,
+          spaceEnum: model.spaceEnum,
+          source: value,
+          standardEnum: model.standardEnum,
+          name: value.name);
+      if(value.children.isNotEmpty){
+        loopSpecies(value.children,child);
       }
+      model.children.add(child);
+    }
+  }
+
+  void nextLv(SettingFunctionBreadcrumbNavModel model) {
+    if(model.children.isNotEmpty){
+      Get.toNamed(Routers.relationGroup, arguments: {
+        "data":model,
+      },preventDuplicates: false);
     }else{
-      if(state.selectedGroup.last == state.standardEnum!.label){
-        switch (state.standardEnum) {
-          case StandardEnum.permission:
-            state.groupData.value = state.space.authorityTree!=null?[state.space.authorityTree!]:[];
-            break;
-          case StandardEnum.classCriteria:
-            state.groupData.value = [CommonTreeManagement().species];
-            break;
-        }
-      }else{
-        switch(state.standardEnum){
-          case StandardEnum.permission:
-            List<IAuthority>  authority = state.space.authorityTree!=null?[state.space.authorityTree!]:[];
-            var list = getAllAuthority(authority);
-            try{
-              state.groupData.value = list.firstWhere((element) => element.name == state.selectedGroup.last).children;
-            }catch(e){
-              state.groupData.value = [];
-            }
-            break;
-          case StandardEnum.classCriteria:
-            var list = CommonTreeManagement().getAllSpecies([CommonTreeManagement().species!]);
-            try{
-              state.groupData.value = list.firstWhere((element) => element.name == state.selectedGroup.last).children;
-            }catch(e){
-              state.groupData.value = [];
-            }
-            break;
-        }
-      }
-    }
-    state.selectedGroup.refresh();
-  }
-
-  void back() {
-    Get.back();
-  }
-
-  void nextLv(
-      {ITarget? target,
-        IAuthority? iAuthority,SpeciesItem? species}) {
-    if(target!=null){
-      state.selectedGroup.add(target.teamName);
-      state.groupData.value = target.subTeam;
-    }
-    if(iAuthority!=null){
-      state.selectedGroup.add(iAuthority.name);
-      state.groupData.value = iAuthority.children;
-    }
-    if(species!=null){
-      state.selectedGroup.add(species.name);
-      state.groupData.value = species.children;
+      onTap(model);
     }
   }
 
-  void onTap({ITarget? target,
-    IAuthority? iAuthority,SpeciesItem? species}) {
+
+  void onTap(SettingFunctionBreadcrumbNavModel model) {
+    var spaceEnum = state.model.value!.spaceEnum;
+    var standardEnum = state.model.value!.standardEnum;
     if(!state.isStandard){
-      switch(state.spaceEnum){
+      switch(spaceEnum){
         case SpaceEnum.innerAgency:
-          Get.toNamed(Routers.departmentInfo,arguments: {'depart':target});
+          Get.toNamed(Routers.departmentInfo,arguments: {'depart':model.source});
           break;
         case SpaceEnum.outAgency:
-          Get.toNamed(Routers.outAgencyInfo,arguments: {'group':target});
+          Get.toNamed(Routers.outAgencyInfo,arguments: {'group':model.source});
           break;
         case SpaceEnum.stationSetting:
-          Get.toNamed(Routers.stationInfo,arguments: {'station':target});
+          Get.toNamed(Routers.stationInfo,arguments: {'station':model.source});
           break;
         case SpaceEnum.personGroup:
         case SpaceEnum.companyCohort:
-          Get.toNamed(Routers.cohortInfo,arguments: {'cohort':target});
+          Get.toNamed(Routers.cohortInfo,arguments: {'cohort':model.source});
           break;
       }
     }else{
-      switch (state.standardEnum) {
+      switch (standardEnum) {
         case StandardEnum.permission:
           Get.toNamed(Routers.permissionInfo,
-              arguments: {"authority": iAuthority});
+              arguments: {"authority": model.source});
           break;
         case StandardEnum.classCriteria:
           Get.toNamed(Routers.classificationInfo,
-              arguments: {"species": species});
+              arguments: {"species": model.source});
           break;
       }
     }
@@ -231,7 +171,8 @@ class RelationGroupController extends BaseController<RelationGroupState> {
       case "delete":
         bool success = await item.delete();
         if(success){
-          state.groupData.remove(item);
+          state.model.value!.children.remove(item);
+          state.model.refresh();
         }else{
           ToastUtils.showMsg(msg: "删除失败");
         }

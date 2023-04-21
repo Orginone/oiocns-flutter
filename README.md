@@ -12,7 +12,7 @@
 ├── macos                               // macos 原生实现
 ├── windows                             // windows 原生实现
 └── lib                                 // flutter 实现
-    ├── components                      // 通用组件
+    ├── widget                          // 通用组件
     ├── config                          // 配置
     ├── dart                            // 核心
     ├── pages                           // 页面
@@ -21,7 +21,6 @@
         ├── setting                     // 设置
         ├── work                        // 办事
         ├── login                       // 登录
-        ├── universal_navigator         // 通用导航
     ├── util                            // 工具库
     ├── main.dart                       // 入口
     ├── routers.dart                    // 路由

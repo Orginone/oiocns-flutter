@@ -1,31 +1,20 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/event/tap_navigator.dart';
+import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
+import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
-import 'package:orginone/pages/universal_navigator/state.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
-
-import '../../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
-class SettingFunctionController extends BaseController<SettingFunctionState> {
+class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunctionState> {
  final SettingFunctionState state = SettingFunctionState();
 
-  @override
-  void onReceivedEvent(event) {
-    // TODO: implement onReceivedEvent
-    super.onReceivedEvent(event);
-    if(event is TapNavigator){
-      Get.toNamed(Routers.relationGroup,arguments: {"standardEnum":event.model.source,"space": state.space});
-    }
-  }
 
-
- void nextLvForSpaceEnum(SpaceEnum spaceEnum) {
-    switch (spaceEnum) {
+ void nextLvForSpaceEnum(SettingFunctionBreadcrumbNavModel model) {
+    switch (model.spaceEnum) {
       case SpaceEnum.cardbag:
         Get.toNamed(
           Routers.cardbag,
@@ -47,25 +36,25 @@ class SettingFunctionController extends BaseController<SettingFunctionState> {
         );
         break;
       case SpaceEnum.standardSettings:
-        List<NavigatorModel> data = [];
+        List<SettingFunctionBreadcrumbNavModel> data = [];
         for (var element in StandardEnum.values) {
-          data.add(NavigatorModel(title: element.label,source: element));
+          data.add(SettingFunctionBreadcrumbNavModel(name: element.label,standardEnum: element, space: state.space));
         }
-        Get.toNamed(Routers.universalNavigator,arguments: {"title": state.space.teamName, 'data': data});
+        model.children = data;
+        Get.toNamed(Routers.settingFunction,arguments: {'data': model},preventDuplicates: false);
         break;
       default:
         Get.toNamed(Routers.relationGroup, arguments: {
-          "spaceEnum": spaceEnum,
-          "space": state.space
+          "data":model,
         });
         break;
     }
   }
 
-  void createOrganization(SpaceEnum spaceEnum) {
+  void createOrganization(BaseBreadcrumbNavModel model) {
   showCreateOrganizationDialog(
       context,
-      getTargetType(spaceEnum),
+      getTargetType(model),
       callBack: (String name, String code, String nickName, String identify,
           String remark, TargetType type) async {
        var model = TargetModel(
@@ -87,9 +76,9 @@ class SettingFunctionController extends BaseController<SettingFunctionState> {
     });
  }
 
- void editOrganization(SpaceEnum spaceEnum) {
+ void editOrganization(BaseBreadcrumbNavModel model) {
   showCreateOrganizationDialog(
-      context, getTargetType(spaceEnum),
+      context, getTargetType(model),
         name: state.space.teamName,
         nickName: state.space.name,
         code: state.space.target.code,
@@ -115,9 +104,9 @@ class SettingFunctionController extends BaseController<SettingFunctionState> {
     });
  }
 
- List<TargetType> getTargetType(SpaceEnum spaceEnum) {
+ List<TargetType> getTargetType(BaseBreadcrumbNavModel model) {
   List<TargetType> targetType = [];
-  switch (spaceEnum) {
+  switch (model.source) {
    case SpaceEnum.innerAgency:
     targetType.addAll(setting.space.subTeamTypes);
     break;

@@ -7,7 +7,7 @@ import 'package:orginone/util/authority.dart';
 import 'package:orginone/widget/common_widget.dart';
 
 class PopupMenuWidget<T> extends StatefulWidget {
-  final ITarget? target;
+  final dynamic target;
   final SpaceEnum? spaceEnum;
   final PopupMenuItemSelected<T>? onSelected;
 
@@ -38,7 +38,7 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
 
   void init() {
     popupMenuItem.clear();
-    target = widget.target;
+    target = (widget.target is ITarget)?widget.target:null;
     if(widget.spaceEnum!=null){
       switch (widget.spaceEnum) {
         case SpaceEnum.innerAgency:

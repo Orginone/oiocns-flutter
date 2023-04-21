@@ -48,11 +48,11 @@ abstract class BaseBreadcrumbNavPage<T extends BaseBreadcrumbNavController,S ext
                     TextSpan(
                       children: [
                         WidgetSpan(
-                            child: Container(
-                              width: 5.w,
-                              height: 25.h,
-                              margin: EdgeInsets.only(right: 15.w),
-                              color: XColors.themeColor,
+                            child:GestureDetector(
+                              onTap: (){
+                                controller.popAll();
+                              },
+                              child: Icon(Icons.arrow_back_ios,color: Colors.black,),
                             ),
                             alignment: PlaceholderAlignment.middle),
                         TextSpan(

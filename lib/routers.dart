@@ -119,8 +119,6 @@ import 'pages/setting/station_info/binding.dart';
 import 'pages/setting/station_info/view.dart';
 import 'pages/setting/user_info/binding.dart';
 import 'pages/setting/user_info/view.dart';
-import 'pages/universal_navigator/binding.dart';
-import 'pages/universal_navigator/view.dart';
 
 class Routers {
   // 首页
@@ -305,9 +303,6 @@ class Routers {
 
   //字段定义详情
   static const String dictDetails = "/dictDetails";
-
-  //通用多层级导航
-  static const String universalNavigator = "/universalNavigator";
 
   static const String warehouseManagement = "/warehouseManagement";
 
@@ -646,11 +641,6 @@ class Routers {
         name: Routers.userInfo,
         page: () => UserInfoPage(),
         binding: UserInfoBinding(),
-      ),
-      GetPage(
-        name: Routers.universalNavigator,
-        page: () => UniversalNavigatorPage(),
-        binding:UniversalNavigatorBinding(),
       ),
       GetPage(
         name: Routers.warehouseManagement,

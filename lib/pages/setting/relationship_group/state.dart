@@ -2,37 +2,20 @@
 
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
+import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/pages/setting/config.dart';
+import 'package:orginone/pages/setting/home/setting/state.dart';
 
-class RelationGroupState extends BaseGetState{
+class RelationGroupState extends BaseBreadcrumbNavState<SettingFunctionBreadcrumbNavModel>{
 
-  var selectedGroup = <String>[].obs;
 
-  var groupData = <dynamic>[].obs;
-
-  late String head;
-
-  late bool showPopupMenu;
-
-  SpaceEnum? spaceEnum;
-
-  StandardEnum? standardEnum;
-
-  late ISpace space;
-
-  bool get isStandard => standardEnum!=null;
-
+  bool get isStandard => model.value?.standardEnum!=null;
 
   RelationGroupState(){
-    showPopupMenu = Get.arguments?['showPopupMenu']?? true;
-
-    spaceEnum = Get.arguments?['spaceEnum'];
-
-    standardEnum = Get.arguments?['standardEnum'];
-
-    space = Get.arguments['space'];
-
-    head = space.teamName;
+    if(Get.arguments?['data']!=null){
+      model.value = Get.arguments['data'];
+      title = model.value?.name??"";
+    }
   }
 }
