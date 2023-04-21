@@ -11,9 +11,7 @@ abstract class BaseBreadcrumbNavController<S extends BaseBreadcrumbNavState>
     extends BaseController<S> {
 
 
-  String? tag;
-
-  BaseBreadcrumbNavController({this.tag});
+  BaseBreadcrumbNavController();
 
   @override
   void onInit() {

@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/event/tap_navigator.dart';
 import 'package:orginone/pages/universal_navigator/state.dart';
@@ -9,14 +11,27 @@ import 'package:orginone/util/common_tree_management.dart';
 import '../../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
-class InitiateWorkController extends BaseController<InitiateWorkState> {
+class InitiateWorkController extends BaseBreadcrumbNavController<InitiateWorkState> {
   final InitiateWorkState state = InitiateWorkState();
 
-  @override
-  void onReceivedEvent(event) {
-    // TODO: implement onReceivedEvent
-    super.onReceivedEvent(event);
-    if (event is TapNavigator) {
+  void jumpNext(WorkBreadcrumbNav work){
+    if(work.source is ISpace){
+     Get.toNamed(Routers.initiateWork,preventDuplicates: false,arguments: {"data":work});
+    }else{
+      switch(work.source as WorkEnum){
+        case WorkEnum.addFriends:
+          // TODO: Handle this case.
+          break;
+        case WorkEnum.addUnits:
+          // TODO: Handle this case.
+          break;
+        case WorkEnum.addGroup:
+          // TODO: Handle this case.
+          break;
+        case WorkEnum.work:
+          // TODO: Handle this case.
+          break;
+      }
     }
   }
 

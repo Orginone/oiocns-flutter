@@ -32,7 +32,7 @@ class Demo1Page extends BaseBreadcrumbNavMultiplexPage<Demo1Controller,Demo1Stat
 
   @override
   Demo1Controller getController() {
-     return Demo1Controller()..tag = hashCode.toString();
+     return Demo1Controller();
   }
 
   @override
