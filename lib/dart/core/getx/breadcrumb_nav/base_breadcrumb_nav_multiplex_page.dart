@@ -51,7 +51,7 @@ abstract class BaseBreadcrumbNavMultiplexPage<T extends BaseBreadcrumbNavControl
                       WidgetSpan(
                           child:GestureDetector(
                             onTap: (){
-                              controller.popAll();
+                              controller.back();
                             },
                             child: Icon(Icons.arrow_back_ios,color: Colors.black,),
                           ),

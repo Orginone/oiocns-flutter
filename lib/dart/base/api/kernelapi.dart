@@ -294,6 +294,87 @@ class KernelApi {
     );
   }
 
+  /*
+   * 创建元属性
+   * @param {model.PropertyModel} params 请求参数
+   * @returns {model.ResultType<schema.XProperty>} 请求结果
+   */
+  Future<ResultType<XProperty>> createProperty(PropertyModel params) async{
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'CreateProperty',
+        params: params.toJson(),
+      ),
+      XProperty.fromJson,
+    );
+  }
+
+  /*
+   * 更新元属性
+   * @param {model.PropertyModel} params 请求参数
+   * @returns {model.ResultType<schema.XProperty>} 请求结果
+   */
+  Future<ResultType<XProperty>> updateProperty(PropertyModel params) async{
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'UpdateProperty',
+        params: params.toJson(),
+      ),
+      XProperty.fromJson,
+    );
+  }
+
+  /*
+   * 更新元属性
+   * @param {model.PropertyModel} params 请求参数
+   * @returns {model.ResultType<schema.XProperty>} 请求结果
+   */
+  Future<ResultType<bool>> deleteProperty(IdReq params) async{
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'DeleteProperty',
+        params: params.toJson(),
+      ),
+          (item) => item as bool,
+    );
+  }
+
+
+  /*
+   * 根据id查询分类
+   * @param {model.IdBelongReq} params 请求参数
+   * @returns {model.ResultType<schema.XPropertyArray>} 请求结果
+   */
+  Future<ResultType<XPropertyArray>> queryPropertys(IdBelongReq params) async{
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'QueryPropertys',
+        params: params.toJson(),
+      ),
+      XPropertyArray.fromJson,
+    );
+  }
+
+  /*
+   * 根据id查询分类
+   * @param {model.IdBelongReq} params 请求参数
+   * @returns {model.ResultType<schema.XDictArray>} 请求结果
+   */
+  Future<ResultType<XDictArray>> queryDict(IdBelongReq params) async{
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'QueryDict',
+        params: params.toJson(),
+      ),
+      XDictArray.fromJson,
+    );
+  }
+
   /// 更新字典项
   /// @param {DictItemModel} params 请求参数
   /// @returns {ResultType<XDictItem>} 请求结果
@@ -302,7 +383,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'QueryDictItems',
-        params: params,
+        params: params.toJson(),
       ),
       XDictItemArray.fromJson,
     );
@@ -521,19 +602,14 @@ class KernelApi {
   /// 查询分类树
   /// @param {IDBelongReq} params 请求参数
   /// @returns {ResultType<XSpecies>} 请求结果
-  Future<ResultType<XSpecies>> querySpeciesTree(String id) async {
+  Future<ResultType<XSpeciesArray>> querySpeciesTree(GetSpeciesModel params) async {
     return await request(
       ReqestType(
         module: 'thing',
         action: 'QuerySpeciesTree',
-        params: {
-          "id":id,
-          "page": {
-            "filter": "",
-          },
-        },
+        params: params.toJson(),
       ),
-      XSpecies.fromJson,
+      XSpeciesArray.fromJson,
     );
   }
 
@@ -562,7 +638,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'QuerySpeciesAttrs',
-        params: params,
+        params: params.toJson(),
       ),
       XAttributeArray.fromJson,
     );
@@ -2637,4 +2713,6 @@ class KernelApi {
       hasToken: hasToken,
     );
   }
+
+
 }

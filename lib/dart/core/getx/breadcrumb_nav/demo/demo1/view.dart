@@ -16,7 +16,7 @@ class Demo1Page extends BaseBreadcrumbNavMultiplexPage<Demo1Controller,Demo1Stat
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Column(
-            children: state.model?.children.map((e){
+            children: state.model.value?.children.map((e){
               return BreadcrumbNavItem(item: e,onNext: (){
                 Get.toNamed("/demo1",arguments: {'data':e},preventDuplicates: false);
               },);
@@ -32,7 +32,7 @@ class Demo1Page extends BaseBreadcrumbNavMultiplexPage<Demo1Controller,Demo1Stat
 
   @override
   Demo1Controller getController() {
-     return Demo1Controller()..tag = hashCode.toString();
+     return Demo1Controller();
   }
 
   @override

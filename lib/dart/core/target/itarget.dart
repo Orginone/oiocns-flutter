@@ -4,6 +4,9 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
+import 'package:orginone/dart/core/thing/dict.dart';
+import 'package:orginone/dart/core/thing/flowDefine.dart';
+import 'package:orginone/dart/core/thing/property.dart';
 
 import '../market/model.dart';
 import '../thing/ispecies.dart';
@@ -52,6 +55,12 @@ abstract class ITarget {
 
   List<XTarget> members = [];
 
+  List<ISpeciesItem> species = [];
+
+  late FlowDefine define;
+
+  late Property property;
+
   bool isSelected = false;
 
   /// 新增
@@ -68,6 +77,10 @@ abstract class ITarget {
   /// 获取职权树
   /// @param reload 是否强制刷新
   Future<IAuthority?> loadAuthorityTree({bool reload = false});
+
+  /// 加载分类树
+  /// @param reload 是否强制刷新
+  Future<List<ISpeciesItem>> loadSpeciesTree({bool reload = false});
 
   /// 判断是否拥有该身份
   /// @param id 身份id
@@ -280,6 +293,8 @@ abstract class ISpace implements IFlow, IMTarget, ITarget {
 
   /// 空间职权树
   IAuthority? spaceAuthorityTree;
+
+  late Dict dict;
 
   /// @description: 查询群
   ///@param reload 是否强制刷新

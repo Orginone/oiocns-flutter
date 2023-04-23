@@ -11,16 +11,14 @@ abstract class BaseBreadcrumbNavController<S extends BaseBreadcrumbNavState>
     extends BaseController<S> {
 
 
-  String? tag;
-
-  BaseBreadcrumbNavController({this.tag});
+  BaseBreadcrumbNavController();
 
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
     var previous = BreadcrumbNavInstance().previous()?.state.bcNav;
-    state.bcNav.add(BaseBreadcrumbNavInfo(title: state.title,data: state.model));
+    state.bcNav.add(BaseBreadcrumbNavInfo(title: state.title,data: state.model.value));
     if (previous != null) {
       for (int i = previous.length - 1; i >= 0 ; i--) {
         state.bcNav
@@ -49,7 +47,10 @@ abstract class BaseBreadcrumbNavController<S extends BaseBreadcrumbNavState>
       if(route.settings.arguments==null){
         return Get.currentRoute == routerName;
       }
-      var name = (route.settings.arguments as Map)['data'].name;
+      var name = (route.settings.arguments as Map)['data']?.name??"";
+      if(name == ''){
+        return Get.currentRoute == routerName;
+      }
       return Get.currentRoute == routerName && state.bcNav[index].data?.name == name;
     },);
   }
@@ -58,5 +59,9 @@ abstract class BaseBreadcrumbNavController<S extends BaseBreadcrumbNavState>
     Get.until((route){
       return Get.currentRoute == Routers.home;
     },);
+  }
+
+  void back(){
+    Get.back();
   }
 }

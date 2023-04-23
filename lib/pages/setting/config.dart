@@ -1,7 +1,5 @@
 
 
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 
@@ -42,11 +40,11 @@ enum SpaceEnum {
   }
 }
 
-enum StandardEnum{
-  permission("权限设置"),
-  dict("字典设置"),
-  form("表单设置"),
-  classCriteria('分类标准');
+enum StandardEnum {
+  permission("权限定义"),
+  dict("字典定义"),
+  attribute("属性定义"),
+  classCriteria('分类定义');
 
   final String label;
 
@@ -93,7 +91,6 @@ List<String> outGroupTitle = [
   "单位简介",
 ];
 
-
 List<String> identityTitle = [
   "ID",
   "角色编号",
@@ -103,13 +100,24 @@ List<String> identityTitle = [
   "备注",
 ];
 
-enum IdentityFunction{
+List<String> ValueType = [
+  '数值型',
+  '描述型',
+  '选择型',
+  '分类型',
+  '附件型',
+  '日期型',
+  '时间型',
+  '用户型',
+];
+
+enum IdentityFunction {
   edit,
   delete,
   addMember,
 }
 
-enum CompanyFunction{
+enum CompanyFunction {
   roleSettings,
   addUser,
   addGroup,

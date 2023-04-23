@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
+import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_page.dart';
 
 import '../item.dart';
 import 'logic.dart';
 import 'state.dart';
 
 
-class SettingFunctionPage extends BaseGetView<SettingFunctionController,SettingFunctionState>{
-
-
+class SettingFunctionPage extends BaseBreadcrumbNavMultiplexPage<
+    SettingFunctionController, SettingFunctionState> {
   @override
-  Widget buildView() {
-    return GyScaffold(
-        titleName: state.space.teamName,
-        backgroundColor: Colors.white,
-        body: Column(
-          children: state.spaceEnum.map((e) {
+  Widget body() {
+    return Column(
+      children: state.model.value?.children.map((e) {
             return Item(
-              spaceEnum: e,
-              nextLv: () {
+              onNext: () {
                 controller.nextLvForSpaceEnum(e);
               },
               onSelected: (value) {
@@ -32,8 +27,21 @@ class SettingFunctionPage extends BaseGetView<SettingFunctionController,SettingF
                     break;
                 }
               },
+              item: e,
             );
-          }).toList(),
-        ));
+          }).toList() ??
+          [],
+    );
   }
+
+  @override
+  SettingFunctionController getController() {
+   return SettingFunctionController();
+  }
+  @override
+  String tag() {
+    // TODO: implement tag
+    return hashCode.toString();
+  }
+
 }
