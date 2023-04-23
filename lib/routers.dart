@@ -30,6 +30,7 @@ import 'package:orginone/pages/other/web_view/binding.dart';
 import 'package:orginone/pages/other/web_view/view.dart';
 import 'package:orginone/pages/other/work/work_start/view.dart';
 import 'package:orginone/pages/setting/contact_page.dart';
+import 'package:orginone/pages/setting/dict_info/view.dart';
 import 'package:orginone/pages/setting/home/binding.dart';
 import 'package:orginone/pages/setting/home/setting/binding.dart';
 import 'package:orginone/pages/setting/home/view.dart';
@@ -96,9 +97,9 @@ import 'pages/other/work/work_start/create_work/binding.dart';
 import 'pages/other/work/work_start/create_work/view.dart';
 import 'pages/setting/add_members/binding.dart';
 import 'pages/setting/add_members/view.dart';
+import 'pages/setting/attribute_info/binding.dart';
+import 'pages/setting/attribute_info/view.dart';
 import 'pages/setting/classification_info/binding.dart';
-import 'pages/setting/classification_info/dict_details/binding.dart';
-import 'pages/setting/classification_info/dict_details/view.dart';
 import 'pages/setting/classification_info/view.dart';
 import 'pages/setting/cohort_info/binding.dart';
 import 'pages/setting/cohort_info/view.dart';
@@ -106,6 +107,7 @@ import 'pages/setting/company_info/binding.dart';
 import 'pages/setting/company_info/view.dart';
 import 'pages/setting/department_info/binding.dart';
 import 'pages/setting/department_info/view.dart';
+import 'pages/setting/dict_info/binding.dart';
 import 'pages/setting/home/setting/view.dart';
 import 'pages/setting/out_agency_info/binding.dart';
 import 'pages/setting/out_agency_info/view.dart';
@@ -302,7 +304,10 @@ class Routers {
   static const String classificationInfo = "/classificationInfo";
 
   //字段定义详情
-  static const String dictDetails = "/dictDetails";
+  static const String dictInfo = "/dictInfo";
+
+  //属性定义详情
+  static const String attributeInfo = "/attributeInfo";
 
   static const String warehouseManagement = "/warehouseManagement";
 
@@ -618,11 +623,6 @@ class Routers {
         binding: MarkBinding(),
       ),
       GetPage(
-        name: Routers.dictDetails,
-        page: () => DictDetailsPage(),
-        binding: DictDetailsBinding(),
-      ),
-      GetPage(
         name: Routers.dynamic,
         page: () => DynamicPage(),
         binding: DynamicBinding(),
@@ -646,6 +646,16 @@ class Routers {
         name: Routers.warehouseManagement,
         page: () => WarehouseManagementPage(),
         binding:WarehouseManagementBinding(),
+      ),
+      GetPage(
+        name: Routers.dictInfo,
+        page: () => DictInfoPage(),
+        binding:DictInfoBinding(),
+      ),
+      GetPage(
+        name: Routers.attributeInfo,
+        page: () => AttributeInfoPage(),
+        binding:AttributeInfoBinding(),
       ),
     ];
   }

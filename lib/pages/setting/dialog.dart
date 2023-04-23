@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -11,21 +10,28 @@ import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/unified.dart';
 
 import 'config.dart';
 
 typedef IdentityChangeCallBack = Function(
     String name, String code, String remark);
 
-typedef CreateDictChangeCallBack = Function(
-    String name, String code, String id, String remark,
-    {bool? public});
+typedef CreateDictChangeCallBack
+    = Function(String name, String code, String remark, {bool? public});
 
 typedef CreateOrganizationChangeCallBack = Function(String name, String code,
     String nickName, String identify, String remark, TargetType type);
 
 typedef CreateIdentityCallBack = Function(
     String name, String code, String authID, String remark);
+
+typedef CreateAttributeChangeCallBack = Function(
+  String name,
+  String code,
+  String valueType,
+  String remark,
+);
 
 SettingController get setting => Get.find();
 
@@ -330,26 +336,15 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
   );
 }
 
-
 Future<void> showCreateDictItemDialog(BuildContext context,
-    {CreateDictChangeCallBack? onCreate,String name = '',String code = '',String remark = '',String? targetId}) async {
-
-
-  List<ITarget> teamTree = await setting.getTeamTree(true);
-
+    {CreateDictChangeCallBack? onCreate,
+    String name = '',
+    String code = '',
+    String remark = '',
+    bool isEdit = false}) async {
   TextEditingController nameCtr = TextEditingController(text: name);
   TextEditingController codeCtr = TextEditingController(text: code);
-  TextEditingController remarkCtr = TextEditingController(text:remark);
-
-  ITarget? selectedITarget;
-
-  if(targetId!=null){
-    try{
-      selectedITarget = teamTree.firstWhere((element) => element.id == targetId);
-    }catch(e){
-
-    }
-  }
+  TextEditingController remarkCtr = TextEditingController(text: remark);
 
   return showDialog(
     context: context,
@@ -363,7 +358,8 @@ Future<void> showCreateDictItemDialog(BuildContext context,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    CommonWidget.commonHeadInfoWidget("新增字典项"),
+                    CommonWidget.commonHeadInfoWidget(
+                        "${isEdit ? "编辑" : "新增"}字典项"),
                     CommonWidget.commonTextTile("名称", '',
                         controller: nameCtr,
                         showLine: true,
@@ -374,19 +370,6 @@ Future<void> showCreateDictItemDialog(BuildContext context,
                         showLine: true,
                         required: true,
                         hint: "请输入"),
-                    CommonWidget.commonChoiceTile("选择制定组织", selectedITarget?.name ?? "",
-                        showLine: true, required: true, onTap: () {
-                          PickerUtils.showListStringPicker(Get.context!,
-                              titles: teamTree.map((e) => e.name).toList(),
-                              callback: (str) {
-                                state(() {
-                                  try {
-                                    selectedITarget = teamTree
-                                        .firstWhere((element) => element.name == str);
-                                  } catch (e) {}
-                                });
-                              });
-                        }, hint: "请选择"),
                     CommonWidget.commonTextTile("备注", '',
                         controller: remarkCtr,
                         showLine: true,
@@ -399,11 +382,9 @@ Future<void> showCreateDictItemDialog(BuildContext context,
                         ToastUtils.showMsg(msg: "请输入名称");
                       } else if (codeCtr.text.isEmpty) {
                         ToastUtils.showMsg(msg: "请输入值");
-                      } else if (selectedITarget==null) {
-                        ToastUtils.showMsg(msg: "请选择制定组织");
                       } else {
                         if (onCreate != null) {
-                          onCreate(nameCtr.text, codeCtr.text,selectedITarget!.id,remarkCtr.text);
+                          onCreate(nameCtr.text, codeCtr.text, remarkCtr.text);
                         }
                         Navigator.pop(context);
                       }
@@ -421,13 +402,10 @@ Future<void> showCreateDictDialog(BuildContext context,
     {CreateDictChangeCallBack? onCreate}) async {
 
 
-  List<ITarget> teamTree = await setting.getTeamTree(true);
-
   TextEditingController name = TextEditingController();
   TextEditingController code = TextEditingController();
   TextEditingController remark = TextEditingController();
 
-  ITarget? selectedITarget;
 
   bool public = true;
   return showDialog(
@@ -453,19 +431,6 @@ Future<void> showCreateDictDialog(BuildContext context,
                         showLine: true,
                         required: true,
                         hint: "请输入"),
-                    CommonWidget.commonChoiceTile("选择制定组织", selectedITarget?.name ?? "",
-                        showLine: true, required: true, onTap: () {
-                          PickerUtils.showListStringPicker(Get.context!,
-                              titles: teamTree.map((e) => e.name).toList(),
-                              callback: (str) {
-                                state(() {
-                                  try {
-                                    selectedITarget = teamTree
-                                        .firstWhere((element) => element.name == str);
-                                  } catch (e) {}
-                                });
-                              });
-                        }, hint: "请选择"),
                     CommonWidget.commonChoiceTile("向下组织公开", public?"公开":'不公开',
                         showLine: true, required: true, onTap: () {
                           PickerUtils.showListStringPicker(Get.context!,
@@ -488,11 +453,10 @@ Future<void> showCreateDictDialog(BuildContext context,
                         ToastUtils.showMsg(msg: "请输入名称");
                       } else if (code.text.isEmpty) {
                         ToastUtils.showMsg(msg: "请输入字典代码");
-                      } else if (selectedITarget==null) {
-                        ToastUtils.showMsg(msg: "请选择制定组织");
                       } else {
                         if (onCreate != null) {
-                          onCreate(name.text, code.text,selectedITarget!.id,remark.text,public: public);
+                          onCreate(name.text, code.text, remark.text,
+                              public: public);
                         }
                         Navigator.pop(context);
                       }
@@ -598,4 +562,76 @@ Future<void> showCreateOrganizationDialog(
   );
 }
 
+Future<void> showCreateAttributeDialog(BuildContext context,
+    {CreateAttributeChangeCallBack? onCreate,
+    bool isEdit = false,
+    String name = '',
+    String code = '',
+    String remark = '',String valueType = ''}) async {
+  TextEditingController nameCtr = TextEditingController(text: name);
+  TextEditingController codeCtr = TextEditingController(text: code);
+  TextEditingController remarkCtr = TextEditingController(text: remark);
 
+  String type = valueType;
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+          alignment: Alignment.center,
+          child: Builder(builder: (context) {
+            return StatefulBuilder(builder: (context, state) {
+              return SizedBox(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CommonWidget.commonHeadInfoWidget(isEdit ? "编辑" : "新增"),
+                    CommonWidget.commonTextTile("属性名称", '',
+                        controller: nameCtr,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
+                    CommonWidget.commonTextTile("字典代码", '',
+                        controller: codeCtr,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入",enabled: !isEdit),
+                    CommonWidget.commonChoiceTile("属性类型", type,
+                        showLine: true, required: true, onTap: () {
+                      PickerUtils.showListStringPicker(Get.context!,
+                          titles: ValueType, callback: (str) {
+                        state(() {
+                          type = str;
+                        });
+                      });
+                    }, hint: "请选择"),
+                    CommonWidget.commonTextTile("属性定义", '',
+                        controller: remarkCtr,
+                        showLine: true,
+                        maxLine: 4,
+                        hint: "请输入"),
+                    CommonWidget.commonMultipleSubmitWidget(onTap1: () {
+                      Navigator.pop(context);
+                    }, onTap2: () {
+                      if (nameCtr.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入名称");
+                      } else if (codeCtr.text.isEmpty && !isEdit) {
+                        ToastUtils.showMsg(msg: "请输入字典代码");
+                      } else if(type.isEmpty){
+                        ToastUtils.showMsg(msg: "请选择属性类型");
+                      } else if(remarkCtr.text.isEmpty){
+                        ToastUtils.showMsg(msg: "请选择属性类型");
+                      } else{
+                        if (onCreate != null) {
+                          onCreate(nameCtr.text, codeCtr.text, type,remarkCtr.text);
+                        }
+                        Navigator.pop(context);
+                      }
+                    }),
+                  ],
+                ),
+              );
+            });
+          }));
+    },
+  );
+}

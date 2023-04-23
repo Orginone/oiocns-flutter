@@ -6,7 +6,7 @@ import 'package:orginone/pages/setting/config.dart';
 import 'popup_menu_widget.dart';
 import 'setting/state.dart';
 
-class Item extends BaseBreadcrumbNavItem<SettingFunctionBreadcrumbNavModel> {
+class Item extends BaseBreadcrumbNavItem<SettingNavModel> {
   final PopupMenuItemSelected? onSelected;
   const Item(
       {Key? key,
@@ -18,9 +18,7 @@ class Item extends BaseBreadcrumbNavItem<SettingFunctionBreadcrumbNavModel> {
   Widget action() {
     // TODO: implement action
     return PopupMenuWidget(
-      target: item.source,
-      spaceEnum: item.spaceEnum,
-      onSelected:onSelected,
+      onSelected:onSelected, model: item,
     );
   }
 }

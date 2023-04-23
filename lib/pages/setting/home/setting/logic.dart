@@ -13,42 +13,63 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
  final SettingFunctionState state = SettingFunctionState();
 
 
- void nextLvForSpaceEnum(SettingFunctionBreadcrumbNavModel model) {
-    switch (model.spaceEnum) {
-      case SpaceEnum.cardbag:
-        Get.toNamed(
-          Routers.cardbag,
-        );
-        break;
-      case SpaceEnum.security:
-        Get.toNamed(
-          Routers.security,
-        );
-        break;
-      case SpaceEnum.dynamic:
-        Get.toNamed(
-          Routers.dynamic,
-        );
-        break;
-      case SpaceEnum.mark:
-        Get.toNamed(
-          Routers.mark,
-        );
-        break;
-      case SpaceEnum.standardSettings:
-        List<SettingFunctionBreadcrumbNavModel> data = [];
-        for (var element in StandardEnum.values) {
-          data.add(SettingFunctionBreadcrumbNavModel(name: element.label,standardEnum: element, space: state.space));
-        }
-        model.children = data;
-        Get.toNamed(Routers.settingFunction,arguments: {'data': model},preventDuplicates: false);
-        break;
-      default:
-        Get.toNamed(Routers.relationGroup, arguments: {
-          "data":model,
-        });
-        break;
-    }
+ void nextLvForSpaceEnum(SettingNavModel model) {
+
+   if(model.spaceEnum!=null){
+     switch (model.spaceEnum) {
+       case SpaceEnum.cardbag:
+         Get.toNamed(
+           Routers.cardbag,
+         );
+         break;
+       case SpaceEnum.security:
+         Get.toNamed(
+           Routers.security,
+         );
+         break;
+       case SpaceEnum.dynamic:
+         Get.toNamed(
+           Routers.dynamic,
+         );
+         break;
+       case SpaceEnum.mark:
+         Get.toNamed(
+           Routers.mark,
+         );
+         break;
+       case SpaceEnum.standardSettings:
+         List<SettingNavModel> data = [];
+         for (var element in StandardEnum.values) {
+           data.add(SettingNavModel(name: element.label,standardEnum: element, space: state.space));
+         }
+         model.children = data;
+         Get.toNamed(Routers.settingFunction,arguments: {'data': model},preventDuplicates: false);
+         break;
+       default:
+         Get.toNamed(Routers.relationGroup, arguments: {
+           "data":model,
+         });
+         break;
+     }
+   } else if(model.standardEnum!=null){
+     switch(model.standardEnum){
+
+       case StandardEnum.permission:
+       case StandardEnum.dict:
+       case StandardEnum.classCriteria:
+          Get.toNamed(Routers.relationGroup, arguments: {
+         "data":model,
+       });
+         break;
+       case StandardEnum.attribute:
+         Get.toNamed(Routers.attributeInfo, arguments: {
+           "data":model,
+         });
+         break;
+     }
+   }
+
+
   }
 
   void createOrganization(BaseBreadcrumbNavModel model) {

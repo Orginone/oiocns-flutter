@@ -6,15 +6,15 @@ import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/util/authority.dart';
 import 'package:orginone/widget/common_widget.dart';
 
+import 'setting/state.dart';
+
 class PopupMenuWidget<T> extends StatefulWidget {
-  final dynamic target;
-  final SpaceEnum? spaceEnum;
+  final SettingNavModel model;
   final PopupMenuItemSelected<T>? onSelected;
 
   const PopupMenuWidget(
       {Key? key,
-      this.target,
-      required this.spaceEnum,
+       required this.model,
       this.onSelected})
       : super(key: key);
 
@@ -38,9 +38,9 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
 
   void init() {
     popupMenuItem.clear();
-    target = (widget.target is ITarget)?widget.target:null;
-    if(widget.spaceEnum!=null){
-      switch (widget.spaceEnum) {
+    target = (widget.model.source is ITarget)?widget.model.source:null;
+    if(widget.model.spaceEnum!=null){
+      switch (widget.model.spaceEnum) {
         case SpaceEnum.innerAgency:
           popupMenuItem.add(newPopupMenuItem("新建部门", "create"));
           break;
@@ -55,11 +55,31 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
           popupMenuItem.add(newPopupMenuItem("新建群组", "create"));
           break;
       }
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+        await initPopupMenuItem();
+      });
     }
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await initPopupMenuItem();
-    });
+    if(widget.model.standardEnum!=null){
+      switch (widget.model.standardEnum) {
+        case StandardEnum.permission:
+          // TODO: Handle this case.
+          break;
+        case StandardEnum.dict:
+          if(widget.model.source == null){
+            popupMenuItem.add(newPopupMenuItem("新建字典", "create"));
+          }else{
+            popupMenuItem.add(newPopupMenuItem("编辑字典", "edit"));
+            popupMenuItem.add(newPopupMenuItem("删除字典", "delete"));
+          }
+          break;
+        case StandardEnum.attribute:
+          // TODO: Handle this case.
+          break;
+        case StandardEnum.classCriteria:
+          // TODO: Handle this case.
+          break;
+      }
+    }
   }
 
   Future<bool> initPopupMenuItem() async {
@@ -100,8 +120,7 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
   void didUpdateWidget(covariant PopupMenuWidget oldWidget) {
     // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.target != widget.target ||
-        oldWidget.spaceEnum != widget.spaceEnum ) {
+    if (oldWidget.model != widget.model) {
       init();
     }
   }

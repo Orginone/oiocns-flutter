@@ -5,6 +5,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/market/model.dart';
 import 'package:orginone/dart/core/target/station.dart';
 import 'package:orginone/dart/core/target/working.dart';
+import 'package:orginone/dart/core/thing/dict.dart';
 
 import '../../base/common/uint.dart';
 import '../../base/schema.dart';
@@ -34,6 +35,7 @@ class Company extends MarketTarget implements ICompany {
       TargetType.group,
       TargetType.cohort,
     ];
+    dict = Dict(target.id);
     stations = [];
     workings = [];
     departments = [];
@@ -489,4 +491,7 @@ class Company extends MarketTarget implements ICompany {
 
   @override
   late List<IMarket> publicMarkets;
+
+  @override
+  late Dict dict;
 }

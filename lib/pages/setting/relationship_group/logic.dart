@@ -58,19 +58,26 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
          await SettingNetWork.initAuthority(state.model.value!);
           break;
         case StandardEnum.classCriteria:
+          await SettingNetWork.initSpecies(state.model.value!);
           if(CommonTreeManagement().species!=null){
             loopSpecies([CommonTreeManagement().species!],state.model.value!);
           }
+          break;
+        case StandardEnum.dict:
+          await SettingNetWork.initDict(state.model.value!);
+          break;
+        case StandardEnum.attribute:
+          // TODO: Handle this case.
           break;
       }
     }
     state.model.refresh();
   }
 
-  void loopSpecies(List<ISpeciesItem> species,SettingFunctionBreadcrumbNavModel model){
+  void loopSpecies(List<ISpeciesItem> species,SettingNavModel model){
     model.children = [];
     for (var value in species) {
-      var child = SettingFunctionBreadcrumbNavModel(
+      var child = SettingNavModel(
           space: model.space,
           spaceEnum: model.spaceEnum,
           source: value,
@@ -83,7 +90,7 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
     }
   }
 
-  void nextLv(SettingFunctionBreadcrumbNavModel model) {
+  void nextLv(SettingNavModel model) {
     if(model.children.isNotEmpty){
       Get.toNamed(Routers.relationGroup, arguments: {
         "data":model,
@@ -94,7 +101,7 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
   }
 
 
-  void onTap(SettingFunctionBreadcrumbNavModel model) {
+  void onTap(SettingNavModel model) {
     var spaceEnum = state.model.value!.spaceEnum;
     var standardEnum = state.model.value!.standardEnum;
     if(!state.isStandard){
@@ -122,6 +129,14 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
         case StandardEnum.classCriteria:
           Get.toNamed(Routers.classificationInfo,
               arguments: {"species": model.source});
+          break;
+        case StandardEnum.dict:
+          Get.toNamed(Routers.dictInfo,
+              arguments: {"data": model});
+          break;
+        case StandardEnum.attribute:
+          Get.toNamed(Routers.dictInfo,
+              arguments: {"data": model});
           break;
       }
     }

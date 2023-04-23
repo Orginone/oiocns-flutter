@@ -24,18 +24,19 @@ import 'ispecies.dart';
 class SpeciesItem extends ISpeciesItem {
   late bool isRoot;
   KernelApi kernel = KernelApi.getInstance();
-  SpeciesItem(XSpecies target, ISpeciesItem? parent) {
+  SpeciesItem(XSpecies target, ISpeciesItem? parent,String spaceId) {
     children = [];
     this.target = target;
     this.parent = parent;
     id = target.id;
     name = target.name;
+    this.spaceId = spaceId;
     attrs = [];
     isRoot = parent == null;
     isSelected = false;
     if (target.nodes!.isNotEmpty) {
       for (var item in target.nodes!) {
-        children.add(SpeciesItem(item, this));
+        children.add(SpeciesItem(item, this,spaceId));
       }
     }
     belongInfo = TargetShare(name: '奥集能平台', typeName: '平台');
@@ -58,29 +59,6 @@ class SpeciesItem extends ISpeciesItem {
     return res.data!;
   }
 
-  @override
-  Future<XDictArray?> loadDicts(
-    String id,
-    bool recursionOrg,
-    bool recursionSpecies,
-    PageRequest page,
-  ) async {
-    final res = await kernel.querySpeciesDict(
-      IdSpeciesReq(
-        id: this.id,
-        spaceId: id,
-        recursionOrg: recursionOrg,
-        recursionSpecies: recursionSpecies,
-        page: PageRequest(
-          offset: page.offset,
-          limit: page.limit,
-          filter: '',
-        ),
-      ),
-    );
-    dict = res.data!.result??[];
-    return res.data;
-  }
 
   @override
   Future<XOperationArray> loadOperations(String id, bool filterAuth,
@@ -122,27 +100,11 @@ class SpeciesItem extends ISpeciesItem {
     data.parentId = id;
     final res = await kernel.createSpecies(data);
     if (res.success && res.data != null) {
-      final newItem = SpeciesItem(res.data!, this);
+      final newItem = SpeciesItem(res.data!, this,spaceId);
       children.add(newItem);
       return newItem;
     }
     return null;
-  }
-
-  @override
-  Future<IDict?> createDict(DictModel data) async {
-    data.speciesId = id;
-    final res = await kernel.createDict(data);
-    if (res.success && res.data != null) {
-      return Dict(res.data!);
-    }
-    return null;
-  }
-
-  @override
-  Future<bool> updateDict(DictModel data) async {
-    final res = await kernel.updateDict(data);
-    return res.success;
   }
 
   @override

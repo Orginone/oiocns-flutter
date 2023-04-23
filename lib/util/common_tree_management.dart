@@ -27,7 +27,7 @@ class CommonTreeManagement {
   SpeciesItem? get species => _species.value;
 
   Future<void> initTree() async {
-    _species.value = await loadSpeciesTree(_setting.space.id);
+    // _species.value = await loadSpeciesTree("",_setting.space.id);
     _category.clear();
     ResultType<XDictItemArray> res = await kernel.queryDictItems(
       IdSpaceReq(

@@ -7,7 +7,7 @@ import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/home/setting/state.dart';
 
-class RelationGroupState extends BaseBreadcrumbNavState<SettingFunctionBreadcrumbNavModel>{
+class RelationGroupState extends BaseBreadcrumbNavState<SettingNavModel>{
 
 
   bool get isStandard => model.value?.standardEnum!=null;

@@ -396,10 +396,124 @@ class XOperationRelationArray {
   }
 }
 
+//权限定义查询返回集合
+class XPropertyArray {
+  // 便宜量
+  int? offset;
+
+  // 最大数量
+  int? limit;
+
+  // 总数
+  int? total;
+
+  // 结果
+  List<XProperty>? result;
+
+  //构造方法
+  XPropertyArray({
+    required this.offset,
+    required this.limit,
+    required this.total,
+    required this.result,
+  });
+
+  //通过JSON构造
+  XPropertyArray.fromJson(Map<String, dynamic> json) {
+    offset = json["offset"];
+    limit = json["limit"];
+    total = json["total"];
+    if (json["result"] != null) {
+      result = [];
+      json["result"].forEach((json) {
+        result!.add(XProperty.fromJson(json));
+      });
+    }
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["offset"] = offset;
+    json["limit"] = limit;
+    json["total"] = total;
+    json["result"] = result;
+    return json;
+  }
+}
+
+class XProperty {
+  // 雪花ID
+  String? id;
+
+  // 名称
+  String? name;
+
+  // 编号
+   String? code;
+
+ // 类型
+  String? valueType;
+
+ // 单位
+  String? unit;
+
+ // 字典Id
+  String? dictId;
+
+ // 备注
+  String? remark;
+
+  // 创建组织/个人
+  String? belongId;
+
+  // 状态
+  int? status;
+
+  // 创建人员ID
+  String? createUser;
+
+  // 更新人员ID
+  String? updateUser;
+
+  // 修改次数
+  String? version;
+
+  // 创建时间
+  String? createTime;
+
+  // 更新时间
+  String? updateTime;
+
+  XDict? dict;
+
+  // 创建度量标准的组织/个人
+  XTarget? belong;
+
+  XProperty.fromJson(Map<String,dynamic> json){
+    id = json["id"];
+    name = json["name"];
+    code = json["code"];
+    unit = json['unit'];
+    valueType = json['valueType'];
+    remark = json["remark"];
+    belongId = json["belongId"];
+    dictId = json['dictId'];
+    status = json["status"];
+    createUser = json["createUser"];
+    updateUser = json["updateUser"];
+    version = json["version"];
+    createTime = json["createTime"];
+    updateTime = json["updateTime"];
+    belong = json['belong']!=null?XTarget.fromJson(json['belong']):null;
+    dict = json['dict']!=null?XDict.fromJson(json['dict']):null;
+  }
+}
+
 //权限定义
 class XAuthority {
   // 雪花ID
-   String? id;
+  String? id;
 
   // 名称
   String? name;
@@ -823,43 +937,43 @@ class XDictItem {
   final String id;
 
   // 名称
-  final String name;
+  String name;
 
   // 值
-  final String value;
+  String value;
 
   // 公开的
-  final bool? public;
+  bool? public;
 
   // 创建组织/个人
-  final String belongId;
+  String belongId;
 
   // 字典类型ID
-  final String dictId;
+  String dictId;
 
   // 状态
-  final int status;
+  int status;
 
   // 创建人员ID
-  final String createUser;
+  String createUser;
 
   // 更新人员ID
-  final String updateUser;
+  String updateUser;
 
   // 修改次数
-  final String version;
+  String version;
 
   // 创建时间
-  final String createTime;
+  String createTime;
 
   // 更新时间
-  final String updateTime;
+  String updateTime;
 
   // 字典类型
-  final XDict? dict;
+  XDict? dict;
 
   // 创建类别标准的组织/个人
-  final XTarget? belong;
+  XTarget? belong;
 
   //构造方法
   XDictItem({
@@ -6074,16 +6188,16 @@ class XSpecies {
 //类别定义查询返回集合
 class XSpeciesArray {
   // 便宜量
-  final int offset;
+  int? offset;
 
   // 最大数量
-  final int limit;
+  int? limit;
 
   // 总数
-  final int total;
+  int? total;
 
   // 结果
-  final List<XSpecies>? result;
+  List<XSpecies>? result;
 
   //构造方法
   XSpeciesArray({
@@ -6094,11 +6208,17 @@ class XSpeciesArray {
   });
 
   //通过JSON构造
-  XSpeciesArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XSpecies.fromList(json["result"]);
+  XSpeciesArray.fromJson(Map<String, dynamic> json) {
+    offset = json["offset"];
+    limit = json["limit"];
+    total = json["total"];
+    if (json["result"] != null) {
+      result = [];
+      json["result"].forEach((json) {
+        result!.add(XSpecies.fromJson(json));
+      });
+    }
+  }
 
   //通过动态数组解析成List
   static List<XSpeciesArray> fromList(List<Map<String, dynamic>>? list) {

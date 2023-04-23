@@ -5,7 +5,7 @@ import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/pages/setting/config.dart';
 
-class SettingFunctionState extends BaseBreadcrumbNavState<SettingFunctionBreadcrumbNavModel> {
+class SettingFunctionState extends BaseBreadcrumbNavState<SettingNavModel> {
   late ISpace space;
 
 
@@ -18,64 +18,64 @@ class SettingFunctionState extends BaseBreadcrumbNavState<SettingFunctionBreadcr
       model.value = Get.arguments?['data'];
     } else if (Get.arguments?['space'] != null) {
       space = Get.arguments['space'];
-      List<SettingFunctionBreadcrumbNavModel> function = [];
+      List<SettingNavModel> function = [];
       function = [
-        SettingFunctionBreadcrumbNavModel(
+        SettingNavModel(
             name: SpaceEnum.standardSettings.label,
             spaceEnum: SpaceEnum.standardSettings,
             space: space)
       ];
       if (setting.isUserSpace(space: space)) {
-        function!.addAll([
-          SettingFunctionBreadcrumbNavModel(
+        function.addAll([
+          SettingNavModel(
               name: SpaceEnum.cardbag.label,
               spaceEnum: SpaceEnum.cardbag,
               space: space),
-          SettingFunctionBreadcrumbNavModel(
+          SettingNavModel(
               name: SpaceEnum.security.label,
               spaceEnum: SpaceEnum.security,
               space: space),
-          SettingFunctionBreadcrumbNavModel(
+          SettingNavModel(
               name: SpaceEnum.mark.label,
               spaceEnum: SpaceEnum.mark,
               space: space),
-          SettingFunctionBreadcrumbNavModel(
+          SettingNavModel(
               name: SpaceEnum.personGroup.label,
               spaceEnum: SpaceEnum.personGroup,
               space: space),
         ]);
       } else {
-        function!.addAll([
-          SettingFunctionBreadcrumbNavModel(
+        function.addAll([
+          SettingNavModel(
               name: SpaceEnum.innerAgency.label,
               spaceEnum: SpaceEnum.innerAgency,
               space: space),
-          SettingFunctionBreadcrumbNavModel(
+          SettingNavModel(
               name: SpaceEnum.outAgency.label,
               spaceEnum: SpaceEnum.outAgency,
               space: space),
-          SettingFunctionBreadcrumbNavModel(
+          SettingNavModel(
               name: SpaceEnum.stationSetting.label,
               spaceEnum: SpaceEnum.stationSetting,
               space: space),
-          SettingFunctionBreadcrumbNavModel(
+          SettingNavModel(
               name: SpaceEnum.companyCohort.label,
               spaceEnum: SpaceEnum.companyCohort,
               space: space),
         ]);
       }
-      model.value = SettingFunctionBreadcrumbNavModel(name: space.teamName, space: space,children: function);
+      model.value = SettingNavModel(name: space.teamName, space: space,children: function);
     }
     title = model.value?.name??"";
   }
 }
 
-class SettingFunctionBreadcrumbNavModel extends BaseBreadcrumbNavModel<SettingFunctionBreadcrumbNavModel> {
+class SettingNavModel extends BaseBreadcrumbNavModel<SettingNavModel> {
   SpaceEnum? spaceEnum;
   StandardEnum? standardEnum;
   late ISpace space;
 
-  SettingFunctionBreadcrumbNavModel(
+  SettingNavModel(
       {super.id = '',
       super.name = '',
       super.children = const [],
