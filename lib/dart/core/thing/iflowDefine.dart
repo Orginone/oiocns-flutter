@@ -8,7 +8,7 @@ abstract class IFlowDefine{
 
 
    ///加载办事
-   Future<XFlowDefineArray?> loadFlowDefine(String speciesId);
+   Future<List<XFlowDefine>> loadFlowDefine(String speciesId);
 
    ///发布办事
    Future<XFlowDefine?> publishDefine(CreateDefineReq data);

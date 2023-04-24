@@ -35,6 +35,8 @@ abstract class ISpeciesItem {
   late TargetShare belongInfo;
   /* 属性 */
   late List<XAttribute> attrs;
+  /* 表单 */
+  late List<XOperation> operation;
 
   late bool isSelected;
 
@@ -42,11 +44,11 @@ abstract class ISpeciesItem {
   /* 加载信息 */
   Future<ISpeciesItem> loadInfo(TargetShare info);
   /* 加载分类特性 */
-  Future<XAttributeArray> loadAttrs(
-      String id, bool recursionOrg, bool recursionSpecies, PageRequest page);
+  Future<List<XAttribute>> loadAttrs(
+      String id, bool recursionOrg, bool recursionSpecies, PageRequest page,{bool reload = false});
   /* 加载业务标准 */
-  Future<XOperationArray> loadOperations(String id, bool filterAuth,
-      bool recursionOrg, bool recursionSpecies, PageRequest page);
+  Future<List<XOperation>> loadOperations(String id, bool filterAuth,
+      bool recursionOrg, bool recursionSpecies, PageRequest page,{bool reload = false});
   /* 加载流程设计 */
   Future<XFlowDefineArray> loadFlowDefines(String id, PageRequest page);
   /*

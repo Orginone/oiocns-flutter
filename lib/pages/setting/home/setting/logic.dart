@@ -27,14 +27,14 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
            Routers.security,
          );
          break;
-       case SpaceEnum.dynamic:
+       case SpaceEnum.gateway:
          Get.toNamed(
-           Routers.dynamic,
+           Routers.security,
          );
          break;
-       case SpaceEnum.mark:
+       case SpaceEnum.theme:
          Get.toNamed(
-           Routers.mark,
+           Routers.security,
          );
          break;
        case SpaceEnum.standardSettings:

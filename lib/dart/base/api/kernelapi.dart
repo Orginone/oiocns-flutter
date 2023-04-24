@@ -9,6 +9,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/model/user_model.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/http_util.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 class KernelApi {
   final Logger log = Logger("KernelApi");
@@ -157,7 +158,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'CreateOperation',
-        params: params,
+        params: params.toJson(),
       ),
       XOperation.fromJson,
     );
@@ -230,7 +231,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'DeleteOperation',
-        params: params,
+        params: params.toJson(),
       ),
       (item) => item as bool,
     );
@@ -523,7 +524,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'UpdateOperation',
-        params: params,
+        params: params.toJson(),
       ),
       XOperation.fromJson,
     );
@@ -653,7 +654,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'QuerySpeciesOperation',
-        params: params,
+        params: params.toJson(),
       ),
       XOperationArray.fromJson,
     );
@@ -2383,7 +2384,7 @@ class KernelApi {
       ReqestType(
         module: 'flow',
         action: 'DeleteDefine',
-        params: params,
+        params: params.toJson(),
       ),
       (item) => item as bool,
     );
@@ -2686,6 +2687,9 @@ class KernelApi {
       raw = await _storeHub.invoke('Request', args: [req]);
     } else {
       raw = await _restRequest('Request', req);
+    }
+    if(!raw['success']){
+      ToastUtils.showMsg(msg: raw['msg']);
     }
     if (cvt != null) {
       return ResultType.fromJsonSerialize(raw, cvt);

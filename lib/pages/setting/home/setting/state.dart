@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
-import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/pages/setting/config.dart';
 
@@ -26,24 +25,38 @@ class SettingFunctionState extends BaseBreadcrumbNavState<SettingNavModel> {
             space: space)
       ];
       if (setting.isUserSpace(space: space)) {
-        function.addAll([
+        function.insert(
+            0,
+            SettingNavModel(
+                name: SpaceEnum.security.label,
+                spaceEnum: SpaceEnum.security,
+                space: space));
+        function.insert(
+            1,
+            SettingNavModel(
+                name: SpaceEnum.cardbag.label,
+                spaceEnum: SpaceEnum.cardbag,
+                space: space));
+        function.insert(
+          2,
           SettingNavModel(
-              name: SpaceEnum.cardbag.label,
-              spaceEnum: SpaceEnum.cardbag,
+              name: SpaceEnum.gateway.label,
+              spaceEnum: SpaceEnum.gateway,
               space: space),
+        );
+        function.insert(
+          3,
           SettingNavModel(
-              name: SpaceEnum.security.label,
-              spaceEnum: SpaceEnum.security,
+              name: SpaceEnum.theme.label,
+              spaceEnum: SpaceEnum.theme,
               space: space),
-          SettingNavModel(
-              name: SpaceEnum.mark.label,
-              spaceEnum: SpaceEnum.mark,
-              space: space),
+        );
+        function.add(
           SettingNavModel(
               name: SpaceEnum.personGroup.label,
               spaceEnum: SpaceEnum.personGroup,
               space: space),
-        ]);
+        );
       } else {
         function.addAll([
           SettingNavModel(

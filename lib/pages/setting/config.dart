@@ -2,6 +2,8 @@
 
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/thing/ispecies.dart';
+import 'package:orginone/dart/core/thing/species.dart';
 
 enum SpaceEnum {
   innerAgency("内部机构"),
@@ -11,10 +13,10 @@ enum SpaceEnum {
 
   personGroup("个人群组"),
   standardSettings("标准设置"),
-  cardbag("卡包"),
-  security("安全"),
-  dynamic("动态"),
-  mark("收藏");
+  cardbag("卡包设置"),
+  security("账号与安全"),
+  gateway("门户设置"),
+  theme("主题设置");
 
   final  String label;
 
@@ -135,6 +137,17 @@ List<IAuthority> getAllAuthority(List<IAuthority> authority) {
     list.add(element);
     if (element.children.isNotEmpty) {
       list.addAll(getAllAuthority(element.children));
+    }
+  }
+  return list;
+}
+
+List<ISpeciesItem> getAllSpecies(List<ISpeciesItem> species) {
+  List<ISpeciesItem> list = [];
+  for (var element in species) {
+    list.add(element);
+    if (element.children.isNotEmpty) {
+      list.addAll(getAllSpecies(element.children));
     }
   }
   return list;

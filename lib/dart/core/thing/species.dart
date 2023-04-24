@@ -13,6 +13,7 @@
 
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/util/toast_utils.dart';
 import '../../base/schema.dart';
 import 'dict.dart';
 import 'idict.dart';
@@ -32,6 +33,7 @@ class SpeciesItem extends ISpeciesItem {
     name = target.name;
     this.spaceId = spaceId;
     attrs = [];
+    operation = [];
     isRoot = parent == null;
     isSelected = false;
     if (target.nodes!.isNotEmpty) {
@@ -43,8 +45,11 @@ class SpeciesItem extends ISpeciesItem {
   }
 
   @override
-  Future<XAttributeArray> loadAttrs(String id, bool recursionOrg,
-      bool recursionSpecies, PageRequest page) async {
+  Future<List<XAttribute>> loadAttrs(String id, bool recursionOrg,
+      bool recursionSpecies, PageRequest page,{bool reload = false}) async {
+    if(!reload && attrs.isNotEmpty){
+      return attrs;
+    }
     final res = await kernel.querySpeciesAttrs(IdSpeciesReq(
         id: this.id,
         spaceId: id,
@@ -56,13 +61,18 @@ class SpeciesItem extends ISpeciesItem {
           filter: '',
         )));
     attrs = res.data?.result??[];
-    return res.data!;
+    return res.data?.result??[];
   }
 
 
   @override
-  Future<XOperationArray> loadOperations(String id, bool filterAuth,
-      bool recursionOrg, bool recursionSpecies, PageRequest page) async {
+  Future<List<XOperation>> loadOperations(String id, bool filterAuth,
+      bool recursionOrg, bool recursionSpecies, PageRequest page,{bool reload = false}) async {
+
+    if(!reload && operation.isNotEmpty){
+      return operation;
+    }
+
     final res = await kernel.querySpeciesOperation(IdOperationReq(
         id: this.id,
         spaceId: id,
@@ -74,7 +84,8 @@ class SpeciesItem extends ISpeciesItem {
           limit: page.limit,
           filter: '',
         )));
-    return res.data!;
+    operation = res.data?.result??[];
+    return res.data?.result??[];
   }
 
   @override
@@ -172,6 +183,9 @@ class SpeciesItem extends ISpeciesItem {
   @override
   Future<bool> deleteOperation(String id) async {
     final res = await kernel.deleteOperation(IdReq(id: id));
+    if(res.success){
+      operation.removeWhere((element) => element.id == id);
+    }
     return res.success;
   }
 

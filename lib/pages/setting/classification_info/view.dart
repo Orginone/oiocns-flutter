@@ -34,17 +34,23 @@ class ClassificationInfoPage
                       species: state.species,
                     );
                   case ClassificationEnum.attrs:
-                    return ClassificationAttrs(
-                      species: state.species,
-                    );
+                    return Obx(() {
+                      return ClassificationAttrs(
+                        attrs: state.attrs.value,
+                      );
+                    });
                   case ClassificationEnum.form:
-                    return ClassificationForm(
-                      species: state.species,
-                    );
+                    return Obx(() {
+                      return ClassificationForm(
+                        operation: state.operation.value,
+                      );
+                    });
                   case ClassificationEnum.work:
-                    return ClassificationWork(
-                      species: state.species,
-                    );
+                    return Obx(() {
+                      return ClassificationWork(
+                        flow: state.flow.value,
+                      );
+                    });
                 }
               }).toList(),
             ),
@@ -82,10 +88,11 @@ class ClassificationInfoPage
             ),
           ),
           Obx(() {
-            if(state.currentIndex.value == 0){
+            if (state.currentIndex.value == 0) {
               return Container();
             }
-            String text = state.currentIndex.value == 1?'新增特性':state.currentIndex.value == 2?"新增表单":"新增办事";
+            String text = state.currentIndex.value == 1 ? '新增特性' : state
+                .currentIndex.value == 2 ? "新增表单" : "新增办事";
 
             return CommonWidget.commonPopupMenuButton(items: [
               PopupMenuItem(

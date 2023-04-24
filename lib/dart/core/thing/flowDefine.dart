@@ -4,6 +4,7 @@
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 import 'iflowDefine.dart';
 
@@ -22,9 +23,9 @@ class FlowDefine extends IFlowDefine{
   }
 
   @override
-  Future<XFlowDefineArray?> loadFlowDefine(String speciesId) async{
+  Future<List<XFlowDefine>> loadFlowDefine(String speciesId) async{
     var result = await kernel.queryDefine(QueryDefineReq(speciesId: speciesId,spaceId: belongId));
-    return result.data;
+    return result.data?.result??[];
   }
 
   @override

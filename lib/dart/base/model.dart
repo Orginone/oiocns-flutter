@@ -311,37 +311,67 @@ class CreateDefineReq {
   String? id;
 
   // 名称
-  late String name;
+  String? name;
 
   // 编号
-  late String code;
+  String? code;
 
   // 备注
-  late String remark;
+  String? remark;
 
   //节点信息
   FlowNode? resource;
 
   // 归属Id
-  late String belongId;
-
-  // 流程字段json
-  late String? fields;
+  String? belongId;
 
   //分类id
-  late String? speciesId;
+  String? speciesId;
 
   // 权限ID
-  late String? authId;
+  String? authId;
 
   //是否公开
-  late bool public;
+  bool? public;
 
   //数据源id
-  late String? sourceIds;
+  String? sourceIds;
 
   //是否创建实体
-  late bool isCreate;
+  bool? isCreate;
+
+  CreateDefineReq({this.id,this.name,this.code,this.remark,this.belongId,this.speciesId,this.authId,this.public,this.sourceIds,this.isCreate,this.resource});
+
+  CreateDefineReq.fromJson(Map<String,dynamic> json){
+    id = json['id'];
+    name = json['name'];
+    code = json['code'];
+    remark = json['remark'];
+    belongId = json['belongId'];
+    speciesId = json['speciesId'];
+    authId = json['authId'];
+    public = json['public'];
+    sourceIds = json['sourceIds'];
+    isCreate = json['isCreate'];
+    resource = json['resource']!=null?FlowNode.fromJson(json['resource']):null;
+  }
+
+  Map<String,dynamic> toJson(){
+    return {
+      "id":id,
+      "name":name,
+      "code":code,
+      "remark":remark,
+      "belongId":belongId,
+      "speciesId":speciesId,
+      "authId":authId,
+      "public":public,
+      "isCreate":isCreate,
+      "sourceIds":sourceIds,
+      "resource":resource?.toJson(),
+    };
+  }
+
 }
 
 class NameModel {
@@ -641,17 +671,17 @@ class RecordSpaceReq {
 
 class IdSpeciesReq {
   // 唯一ID
-  final String id;
+  String? id;
 
   // 工作空间ID
-  final String spaceId;
+  String? spaceId;
   // 是否递归组织
-  final bool recursionOrg;
+  bool? recursionOrg;
   // 是否递归分类
-  final bool recursionSpecies;
+  bool? recursionSpecies;
 
   // 分页
-  final PageRequest? page;
+  PageRequest? page;
 
   //构造方法
   IdSpeciesReq({
@@ -698,17 +728,19 @@ class IdSpeciesReq {
 
 class IdOperationReq {
   // 唯一ID
-  final String id;
+  String? id;
   // 工作空间ID
-  final String spaceId;
+  String? spaceId;
   // 是否权限过滤
-  final bool filterAuth;
+  bool? filterAuth;
   // 是否递归组织
-  final bool recursionOrg;
+  bool? recursionOrg;
   // 是否递归分类
-  final bool recursionSpecies;
+  bool? recursionSpecies;
+
   // 分页
-  final PageRequest page;
+  PageRequest? page;
+
   IdOperationReq({
     required this.id,
     required this.spaceId,
@@ -717,6 +749,17 @@ class IdOperationReq {
     required this.recursionSpecies,
     required this.page,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "spaceId": spaceId,
+      "filterAuth": filterAuth,
+      "recursionOrg": recursionOrg,
+      "recursionSpecies": recursionSpecies,
+      "page": page?.toJson(),
+    };
+  }
 }
 
 class IdArraySpaceReq {
@@ -1745,34 +1788,34 @@ class DictItemModel {
 
 class OperationModel {
   // 唯一ID
-  final String? id;
+  String? id;
 
   // 名称
-  final String? name;
+  String? name;
 
   // 编号
-  final String? code;
+  String? code;
 
   // 公开的
-  final bool? public;
+  bool? public;
 
   // 创建组织/个人
-  final String? belongId;
+  String? belongId;
 
   // 类别Id
-  late String? speciesId;
+  String? speciesId;
 
   // 流程定义Id
-  late String? defineId;
+  String? defineId;
 
   // 业务发起权限Id
-  late String? beginAuthId;
+  String? beginAuthId;
 
   // 子项列表
-  late List<OperationItem>? items;
+  List<OperationItem>? items;
 
   // 备注
-  final String? remark;
+  String? remark;
 
   //构造方法
   OperationModel({
@@ -2061,40 +2104,42 @@ class SpeciesModel {
 
 class AttributeModel {
   // 唯一ID
-  final String? id;
+  String? id;
 
   // 名称
-  final String? name;
+  String? name;
 
   // 编号
-  final String? code;
+  String? code;
 
   // 公开的
-  final bool? public;
+  bool? public;
 
   // 值类型
-  final String? valueType;
+  String? valueType;
 
   // 单位
-  final String? unit;
+  String? unit;
 
   // 选择字典的类型ID
-  final String? dictId;
+  String? dictId;
 
   // 备注
-  final String? remark;
+  String? remark;
 
   // 创建组织/个人
-  final String? belongId;
+  String? belongId;
 
   // 类别Id
-  late String? speciesId;
+  String? speciesId;
 
   // 类别代码
-  late String? speciesCode;
+  String? speciesCode;
 
   // 工作权限Id
-  final String? authId;
+  String? authId;
+
+  String? propId;
 
   //构造方法
   AttributeModel({
@@ -2110,6 +2155,7 @@ class AttributeModel {
     this.speciesId,
     this.speciesCode,
     this.authId,
+    this.propId,
   });
 
   //通过JSON构造
@@ -2125,6 +2171,7 @@ class AttributeModel {
         belongId = json["belongId"],
         speciesId = json["speciesId"],
         speciesCode = json["speciesCode"],
+        propId = json['propId'],
         authId = json["authId"];
 
   //通过动态数组解析成List
@@ -2156,6 +2203,7 @@ class AttributeModel {
     json["speciesId"] = speciesId;
     json["speciesCode"] = speciesCode;
     json["authId"] = authId;
+    json['propId'] = propId;
     return json;
   }
 }
