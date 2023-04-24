@@ -4,10 +4,10 @@ import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/widget/common_widget.dart';
 
-class ClassificationAttrs extends StatelessWidget {
+class ClassificationWork extends StatelessWidget {
   final SpeciesItem species;
 
-  const ClassificationAttrs({Key? key, required this.species})
+  const ClassificationWork({Key? key, required this.species})
       : super(key: key);
 
   @override
@@ -18,7 +18,7 @@ class ClassificationAttrs extends StatelessWidget {
         child: Column(
           children: [
             CommonWidget.commonDocumentWidget(
-                title: ["特性编号", "特性名称", "特性分类", "属性", "共享组织", "特性定义"],
+                title: ["办事名称", "需求主体", "创建时间", "备注"],
                 content: species.attrs.map((e){
                   String speciesName = '';
                   try{
@@ -26,7 +26,7 @@ class ClassificationAttrs extends StatelessWidget {
                   }catch(e){
                     speciesName = '';
                   }
-                  return [e.code??"",e.name??"",speciesName,e.valueType??"",species.name,e.remark??""];
+                  return [e.code??"",e.name??"",speciesName,species.name];
                 }).toList()),
           ],
         ),

@@ -427,6 +427,20 @@ class IdReqModel {
   }
 }
 
+class GetSpeciesModel{
+  final String id;
+  final bool upTeam;
+
+  GetSpeciesModel({required this.id,required this.upTeam});
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["upTeam"] = upTeam;
+    return json;
+  }
+}
+
 class ResetPwdModel {
   // 唯一ID
   final String code;
@@ -515,6 +529,31 @@ class IdArrayReq {
   }
 }
 
+class IdBelongReq{
+  // 唯一ID
+  final String belongId;
+
+  final PageRequest page;
+
+  IdBelongReq({
+    required this.belongId,
+    required this.page,
+  });
+
+  //通过JSON构造
+  IdBelongReq.fromJson(Map<String, dynamic> json)
+      : belongId = json["id"],
+        page = PageRequest.fromJson(json["page"]);
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = belongId;
+    json["page"] = page.toJson();
+    return json;
+  }
+}
+
 class IdSpaceReq {
   // 唯一ID
   final String id;
@@ -523,13 +562,13 @@ class IdSpaceReq {
   final String spaceId;
 
   // 分页
-  final PageRequest? page;
+  PageRequest? page;
 
   //构造方法
   IdSpaceReq({
     required this.id,
     required this.spaceId,
-    required this.page,
+    this.page,
   });
 
   //通过JSON构造
@@ -692,18 +731,18 @@ class QueryDefineReq {
   // 空间ID
   final String spaceId;
   // 分页
-  final PageRequest page;
+  PageRequest? page;
   QueryDefineReq({
     required this.speciesId,
     required this.spaceId,
-    required this.page,
+    this.page,
   });
 
   Map<String, dynamic> toJson() {
     return {
       "speciesId": speciesId,
       "spaceId": spaceId,
-      "page": page.toJson(),
+      "page": page?.toJson(),
     };
   }
 }
@@ -1508,33 +1547,89 @@ class ApprovalModel {
   }
 }
 
+class PropertyModel {
+  // 唯一ID
+  String? id;
+
+  // 名称
+  String? name;
+
+  // 编号
+  String? code;
+
+  // 值类型
+  String? valueType;
+
+  // 单位
+  String? unit;
+
+  // 类别Id
+  String? dictId;
+
+  // 创建用户
+  String? belongId;
+
+  // 来源用户
+  String? sourceId;
+
+  // 备注
+  String? remark;
+
+  //构造方法
+  PropertyModel({
+    this.id,
+    this.name,
+    this.code,
+    this.remark,
+    this.valueType,
+    this.dictId,
+    this.belongId,
+    this.sourceId,
+  });
+
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["name"] = name;
+    json["code"] = code;
+    json["valueType"] = valueType;
+    json["belongId"] = belongId;
+    json["dictId"] = dictId;
+    json["remark"] = remark;
+    json["sourceId"] = sourceId;
+    return json;
+  }
+}
+
 class DictModel {
   // 唯一ID
   String? id;
 
   // 名称
-  final String name;
+  String? name;
 
   // 编号
   late String code;
 
   // 公开的
-  final bool public;
+  bool? public;
 
   // 创建组织/个人
-  final String belongId;
+  String? belongId;
 
   // 类别Id
   late String speciesId;
 
   // 备注
-  final String remark;
+  String? remark;
 
   //构造方法
   DictModel({
     required this.name,
     required this.public,
-    required this.belongId,
+    this.belongId,
     required this.code,
     required this.speciesId,
     required this.remark,
@@ -1580,19 +1675,19 @@ class DictModel {
 
 class DictItemModel {
   // 唯一ID
-  final String? id;
+  String? id;
 
   // 名称
-  final String? name;
+  String? name;
 
   // 编号
-  final String? value;
+  String? value;
 
   // 公开的
-  final bool? public;
+  bool? public;
 
   // 创建组织/个人
-  final String? belongId;
+  String? belongId;
 
   // 备注
   String? dictId;

@@ -9,8 +9,10 @@ import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/authority/identity.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
+import 'package:orginone/dart/core/thing/flowDefine.dart';
+import 'package:orginone/dart/core/thing/property.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:orginone/dart/core/thing/index.dart' as thing; 
 import '../../base/common/uint.dart';
 import '../enum.dart';
 import '../thing/ispecies.dart';
@@ -70,6 +72,8 @@ class BaseTarget extends ITarget {
     memberTypes = [TargetType.person];
     typeName = target.typeName;
     appendTarget([target]);
+    define = FlowDefine(target.id);
+    property = Property(target.id);
     subTeamTypes = [];
   }
 
@@ -86,6 +90,16 @@ class BaseTarget extends ITarget {
       subTypeNames: memberTypes.map((e) => e.label).toList(),
     ));
     return res.data!;
+  }
+
+  @override
+  Future<List<ISpeciesItem>> loadSpeciesTree({bool reload = false,bool upTeam = false,}) async{
+    if(!reload && species.isNotEmpty){
+      return species;
+    }
+    species = await thing.loadSpeciesTree(id,target.belongId,upTeam);
+
+    return species;
   }
 
   @override
@@ -446,4 +460,7 @@ class BaseTarget extends ITarget {
   Future<bool> delete() async {
     return false;
   }
+
+
+
 }

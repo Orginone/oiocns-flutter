@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/core/market/model.dart';
 import 'package:orginone/dart/core/target/university.dart';
+import 'package:orginone/dart/core/thing/dict.dart';
+import 'package:orginone/dart/core/thing/ispecies.dart';
 import '../../base/common/uint.dart';
 import '../../base/model.dart';
 import '../../base/schema.dart';
@@ -51,6 +53,7 @@ class Person extends MarketTarget implements IPerson {
       TargetType.cohort,
       ...companyTypes,
     ];
+    dict = Dict(target.id);
     createTargetType = [TargetType.cohort, ...companyTypes];
     extendTargetType = [TargetType.cohort, TargetType.person];
     joinedCompany = <ICompany>[].obs;
@@ -409,4 +412,8 @@ class Person extends MarketTarget implements IPerson {
             code: target.code, password: password, privateKey: privateKey)))
         .success;
   }
+
+  @override
+  late Dict dict;
+
 }
