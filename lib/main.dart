@@ -108,7 +108,6 @@ class ScreenInit extends StatelessWidget {
       String passWord = account![1];
       await settingCtrl.login(accountName, passWord);
       print('登录成功');
-      EventBusHelper.fire(InitHomeData());
     }
 
     if (account != null) {
