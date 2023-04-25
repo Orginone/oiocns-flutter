@@ -47,19 +47,18 @@ class SpeciesItem extends ISpeciesItem {
   }
 
   @override
-  Future<List<XAttribute>> loadAttrs(String id, bool recursionOrg,
-      bool recursionSpecies, PageRequest page,{bool reload = false}) async {
+  Future<List<XAttribute>> loadAttrs(String id,{bool reload = true}) async {
     if(!reload && attrs.isNotEmpty){
-      return attrs;
+    return attrs;
     }
     final res = await kernel.querySpeciesAttrs(IdSpeciesReq(
         id: this.id,
         spaceId: id,
-        recursionOrg: recursionOrg,
-        recursionSpecies: recursionSpecies,
+        recursionOrg: true,
+        recursionSpecies: true,
         page: PageRequest(
-          offset: page.offset,
-          limit: page.limit,
+          offset: 0,
+          limit: 100000,
           filter: '',
         )));
     attrs = res.data?.result??[];

@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/routers.dart';
 
@@ -92,8 +93,8 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
               menuItem?.func();
             },
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 12),
-              padding: EdgeInsets.all(12),
+              margin: EdgeInsets.symmetric(horizontal: 12.h),
+              padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
                 color:
                     itemId == _selectedItemId ? Colors.blue : Colors.grey[300],
@@ -106,7 +107,7 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
                       color: itemId == _selectedItemId
                           ? Colors.white
                           : Colors.black),
-                  SizedBox(height: 6),
+                  SizedBox(height: 6.h),
                   Text(menuItem!.cardName,
                       style: TextStyle(
                           color: itemId == _selectedItemId

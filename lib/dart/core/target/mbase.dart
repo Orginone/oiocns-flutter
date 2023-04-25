@@ -11,7 +11,7 @@ import 'itarget.dart';
 abstract class MarketTarget extends FlowTarget implements IMTarget {
   late List<TargetType> extendTargetType;
 
-  MarketTarget(XTarget target,ISpace? space) : super(target,space) {
+  MarketTarget(XTarget target, ISpace? space, String userId) : super(target, space, userId) {
     ownProducts = [];
     joinedMarkets = [];
     joinMarketApplys = [];

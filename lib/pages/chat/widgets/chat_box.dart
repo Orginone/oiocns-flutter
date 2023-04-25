@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -11,8 +12,10 @@ import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/store/ifilesys.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
 import 'package:orginone/widget/unified.dart';
-import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/util/permission_util.dart';
 import 'package:path_provider/path_provider.dart';
@@ -25,9 +28,9 @@ double defaultBottomHeight = 300.h;
 
 class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   final RxDouble bottomHeight = defaultBottomHeight.obs;
+  final IChat chat;
 
-  ChatBox({Key? key}) : super(key: key);
-
+  ChatBox({Key? key, required this.chat}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +98,6 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
     );
   }
 
-
   /// 输入
   Widget _input(BuildContext context) {
     return Expanded(child: Obx(() {
@@ -120,8 +122,8 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
         keyboardType: TextInputType.multiline,
         focusNode: controller.focusNode,
         onChanged: (text) =>
-            controller.eventFire(context, InputEvent.clickInput),
-        onTap: () => controller.eventFire(context, InputEvent.clickInput),
+            controller.eventFire(context, InputEvent.clickInput, chat),
+        onTap: () => controller.eventFire(context, InputEvent.clickInput, chat),
         style: XFonts.size22Black3W700,
         controller: controller.inputController,
         decoration: InputDecoration(
@@ -156,7 +158,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
         controller.startRecord().then((value) async {
           Vibration.hasVibrator()
               .then((value) => Vibration.vibrate(duration: 100));
-          Overlay.of(context)!.insert(voiceWave);
+          Overlay.of(context).insert(voiceWave);
         });
       },
       onLongPressEnd: (details) async {
@@ -167,18 +169,22 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
           // 记录
           var duration = controller.currentDuration ?? Duration.zero;
           await controller.stopRecord();
-          print("${duration.inMilliseconds}-------------------sssssss${controller.currentFile}");
           if (duration.inMilliseconds < 2000) {
             Fluttertoast.showToast(msg: '时间太短啦!');
             return;
           }
 
           var path = controller.currentFile;
-          var name = controller.currentFileName;
           var time = duration.inMilliseconds;
-          if (Get.isRegistered<ChatController>()) {
-            var chatCtrl = Get.find<ChatController>();
-            chatCtrl.voice(path!,time);
+
+          if (path?.isNotEmpty ?? false) {
+            chat.sendMessage(
+              MessageType.voice,
+              jsonEncode({
+                "milliseconds": time,
+                "bytes": File(path!).readAsBytesSync(),
+              }),
+            );
           }
         } else if (recordStatus == RecordStatus.pausing) {
           // 停止记录
@@ -213,7 +219,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   /// 表情包按钮
   Widget _emojiBtn(BuildContext context) {
     return GestureDetector(
-      onTap: () => controller.eventFire(context, InputEvent.clickEmoji),
+      onTap: () => controller.eventFire(context, InputEvent.clickEmoji, chat),
       child: _rightIcon(Icons.emoji_emotions_outlined),
     );
   }
@@ -221,7 +227,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   /// 更多操作
   Widget _moreBtn(BuildContext context) {
     return GestureDetector(
-      onTap: () => controller.eventFire(context, InputEvent.clickMore),
+      onTap: () => controller.eventFire(context, InputEvent.clickMore, chat),
       child: _rightIcon(Icons.add),
     );
   }
@@ -230,8 +236,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   Widget _voiceBtn(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        controller.eventFire(context, InputEvent.clickVoice);
-        // _permissionMicrophone(context, controller.openRecorder);
+        controller.eventFire(context, InputEvent.clickVoice, chat);
       },
       child: _leftIcon(Icons.settings_voice_outlined),
     );
@@ -240,7 +245,8 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   /// 键盘按钮
   Widget _leftKeyBoardBtn(BuildContext context) {
     return GestureDetector(
-      onTap: () => controller.eventFire(context, InputEvent.clickKeyBoard),
+      onTap: () =>
+          controller.eventFire(context, InputEvent.clickKeyBoard, chat),
       child: _leftIcon(Icons.keyboard_alt_outlined),
     );
   }
@@ -248,7 +254,8 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   /// 键盘按钮
   Widget _keyBoardBtn(BuildContext context) {
     return GestureDetector(
-      onTap: () => controller.eventFire(context, InputEvent.clickKeyBoard),
+      onTap: () =>
+          controller.eventFire(context, InputEvent.clickKeyBoard, chat),
       child: _rightIcon(Icons.keyboard_alt_outlined),
     );
   }
@@ -280,7 +287,8 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
     return Container(
       margin: EdgeInsets.only(left: 8.w),
       child: ElevatedButton(
-        onPressed: () => controller.eventFire(context, InputEvent.clickSendBtn),
+        onPressed: () =>
+            controller.eventFire(context, InputEvent.clickSendBtn, chat),
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Colors.blueAccent),
           minimumSize: MaterialStateProperty.all(Size(10.w, boxDefaultHeight)),
@@ -332,7 +340,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
               offset: inputController.text.length,
             ),
           );
-        controller.eventFire(context, InputEvent.inputEmoji);
+        controller.eventFire(context, InputEvent.inputEmoji, chat);
       },
     );
   }
@@ -357,7 +365,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
   Widget _funcIcon(MoreFunction moreFunction, BuildContext context) {
     return GestureDetector(
       onTap: () {
-        controller.execute(moreFunction, context);
+        controller.execute(moreFunction, context, chat);
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -506,7 +514,7 @@ class ChatBoxController extends FullLifeCycleController
   final ImagePicker picker = ImagePicker();
 
   final Rx<RecordStatus> _recordStatus = RecordStatus.stop.obs;
-  FlutterSoundRecorder _recorder = FlutterSoundRecorder();
+  final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
 
   StreamSubscription? _mt;
   String? _currentFile;
@@ -531,9 +539,8 @@ class ChatBoxController extends FullLifeCycleController
 
   Duration? get currentDuration => _currentDuration;
 
-
   @override
-  void onInit() async{
+  void onInit() async {
     // TODO: implement onInit
     super.onInit();
     await Permission.microphone.request();
@@ -550,7 +557,7 @@ class ChatBoxController extends FullLifeCycleController
   }
 
   /// 事件触发器
-  eventFire(BuildContext context, InputEvent inputEvent) async {
+  eventFire(BuildContext context, InputEvent inputEvent, IChat chat) async {
     switch (inputEvent) {
       case InputEvent.clickInput:
       case InputEvent.inputText:
@@ -579,9 +586,7 @@ class ChatBoxController extends FullLifeCycleController
         _inputStatus.value = InputStatus.inputtingEmoji;
         break;
       case InputEvent.clickSendBtn:
-        var chatCtrl = Get.find<ChatController>();
-        var currentChat = chatCtrl.chat;
-        await currentChat!.sendMessage(MessageType.text, inputController.text);
+        await chat.sendMessage(MessageType.text, inputController.text);
         inputController.clear();
         if (_inputStatus.value == InputStatus.inputtingText) {
           _inputStatus.value = InputStatus.focusing;
@@ -601,14 +606,26 @@ class ChatBoxController extends FullLifeCycleController
     }
   }
 
-  execute(MoreFunction moreFunction, BuildContext context) async {
-    var chatCtrl = Get.find<ChatController>();
+  void imagePicked(XFile pickedImage, IChat chat) async {
+    var settingCtrl = Get.find<SettingController>();
+    var docDir = await settingCtrl.user.home?.create("沟通");
+    var item = await docDir?.upload(
+      pickedImage.name,
+      File(pickedImage.path),
+      (progress) {},
+    );
+    if (item != null) {
+      chat.sendMessage(MessageType.image, jsonEncode(item.target.shareInfo()));
+    }
+  }
+
+  execute(MoreFunction moreFunction, BuildContext context, IChat chat) async {
     switch (moreFunction) {
       case MoreFunction.photo:
         var gallery = ImageSource.gallery;
         XFile? pickedImage = await picker.pickImage(source: gallery);
         if (pickedImage != null) {
-          chatCtrl.imagePicked(pickedImage);
+          imagePicked(pickedImage, chat);
         }
         break;
       case MoreFunction.camera:
@@ -616,7 +633,7 @@ class ChatBoxController extends FullLifeCycleController
         try {
           XFile? pickedImage = await picker.pickImage(source: camera);
           if (pickedImage != null) {
-            chatCtrl.imagePicked(pickedImage);
+            imagePicked(pickedImage, chat);
           }
         } on PlatformException catch (error) {
           if (error.code == "camera_access_denied") {
@@ -682,22 +699,16 @@ class ChatBoxController extends FullLifeCycleController
 
   /// 暂停录音
   pauseRecord() async {
-    if (_recorder == null) {
-      return;
-    }
-    if (_recorder!.isRecording) {
-      await _recorder!.pauseRecorder();
+    if (_recorder.isRecording) {
+      await _recorder.pauseRecorder();
       recordStatus.value = RecordStatus.pausing;
     }
   }
 
   /// 继续录音
   resumeRecord() async {
-    if (_recorder == null) {
-      return;
-    }
-    if (_recorder!.isPaused) {
-      await _recorder!.resumeRecorder();
+    if (_recorder.isPaused) {
+      await _recorder.resumeRecorder();
       recordStatus.value = RecordStatus.recoding;
     }
   }

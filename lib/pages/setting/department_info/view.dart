@@ -73,7 +73,9 @@ class DepartmentInfoPage
               title: "团队标识", content: state.depart.value.target.team?.code ?? ""),
           CommonWidget.commonFormItem(
               title: "所属单位",
-              content: state.settingController.company?.teamName ?? ""),
+              // content: state.settingController.company?.teamName ?? ""
+              content: ""
+          ),
           CommonWidget.commonFormItem(
               title: "创建人",
               content: findTargetShare(state.depart.value.target.team?.createUser??"").name),

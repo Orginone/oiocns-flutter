@@ -35,12 +35,11 @@ void main() async {
     }
   });
 
-  // 启动连接
-  KernelApi.getInstance().start();
   // 开启 app
   runApp(const ScreenInit());
 }
 
+final kernelApi = KernelApi.getInstance();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver();
 const Size screenSize = Size(540, 1170);
@@ -106,7 +105,7 @@ class ScreenInit extends StatelessWidget {
     Future<void> login() async {
       String accountName = account![0];
       String passWord = account![1];
-      await settingCtrl.login(accountName, passWord);
+      await settingCtrl.provider.login(accountName, passWord);
       print('登录成功');
     }
 

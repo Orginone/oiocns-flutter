@@ -7,13 +7,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/photo_widget.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/targetMap.dart';
@@ -33,14 +33,20 @@ enum DetailFunc {
 
 double defaultWidth = 10.w;
 
-class DetailItemWidget extends GetView<ChatController> {
+class DetailItemWidget extends GetView<SettingController> {
+  final IChat chat;
   final XImMsg msg;
 
-  const DetailItemWidget({Key? key, required this.msg}) : super(key: key);
+  const DetailItemWidget({Key? key, required this.chat, required this.msg})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return _messageDetail(context);
+  }
+
+  bool get isSelf {
+    return msg.fromId == controller.user.id;
   }
 
   /// 消息详情
@@ -50,8 +56,8 @@ class DetailItemWidget extends GetView<ChatController> {
     if (msg.msgType == MessageType.recall.label) {
       String msgBody = StringUtil.getDetailRecallBody(
         fromId: msg.fromId,
-        userId: controller.userId,
-        name: controller.getName(msg.fromId),
+        userId: controller.user.id,
+        name: getName(),
       );
       children.add(Text(msgBody, style: XFonts.size18Black9));
       isCenter = true;
@@ -62,11 +68,11 @@ class DetailItemWidget extends GetView<ChatController> {
     return Container(
       margin: EdgeInsets.only(top: 8.h, bottom: 8.h),
       child: Row(
-        textDirection: msg.fromId == controller.userId
+        textDirection: isSelf
             ? TextDirection.rtl
             : TextDirection.ltr,
         mainAxisAlignment:
-            isCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
+        isCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: children,
       ),
@@ -75,15 +81,15 @@ class DetailItemWidget extends GetView<ChatController> {
 
   /// 目标名称
   String getName() {
-    return controller.getName(msg.fromId);
+    return controller.provider.findNameById(msg.fromId);
   }
 
   /// 获取头像
   Widget _getAvatar() {
     late TargetShare shareInfo;
-    if (msg.fromId == controller.userId) {
+    if (isSelf) {
       var settingCtrl = Get.find<SettingController>();
-      shareInfo = settingCtrl.user!.shareInfo;
+      shareInfo = settingCtrl.user.shareInfo;
     } else {
       shareInfo = findTargetShare(msg.fromId);
     }
@@ -94,7 +100,7 @@ class DetailItemWidget extends GetView<ChatController> {
   Widget _getChat(BuildContext context) {
     List<Widget> content = <Widget>[];
 
-    if (msg.fromId != controller.userId) {
+    if (!isSelf) {
       content.add(Container(
         margin: EdgeInsets.only(left: 10.w),
         child: Text(getName(), style: XFonts.size16Black3),
@@ -102,10 +108,9 @@ class DetailItemWidget extends GetView<ChatController> {
     }
 
     Widget body;
-    var mySend = msg.fromId == controller.userId;
     var rtl = TextDirection.rtl;
     var ltr = TextDirection.ltr;
-    var textDirection = mySend ? rtl : ltr;
+    var textDirection = isSelf ? rtl : ltr;
 
     if (msg.msgType == MessageType.text.label) {
       body = _detail(
@@ -130,31 +135,34 @@ class DetailItemWidget extends GetView<ChatController> {
     }
 
     // 添加长按手势
-    double x = 0, y = 0;
-    var currentChat = controller.chat!;
-    String spaceId = currentChat.spaceId;
-    var chat = GestureDetector(
+    double x = 0,
+        y = 0;
+    String spaceId = chat.spaceId;
+    var gesture = GestureDetector(
       onPanDown: (position) {
         x = position.globalPosition.dx;
         y = position.globalPosition.dy;
       },
       onLongPress: () async {
         List<DetailFunc> items = [];
-        if (msg.fromId == controller.userId && msg.createTime != null) {
+        if (isSelf && msg.createTime != null) {
           var parsedCreateTime = DateTime.parse(msg.createTime!);
           var diff = parsedCreateTime.difference(DateTime.now());
           if (diff.inSeconds.abs() < 2 * 60) {
             items.add(DetailFunc.recall);
           }
         }
-        if (spaceId == controller.userId) {
+        if (spaceId == controller.user.id) {
           items.add(DetailFunc.remove);
         }
         if (items.isEmpty) {
           return;
         }
         var top = y - 50;
-        var right = MediaQuery.of(context).size.width - x;
+        var right = MediaQuery
+            .of(context)
+            .size
+            .width - x;
         final result = await showMenu<DetailFunc>(
           context: context,
           position: RelativeRect.fromLTRB(x, top, right, 0),
@@ -170,17 +178,17 @@ class DetailItemWidget extends GetView<ChatController> {
             case DetailFunc.recall:
               break;
             case DetailFunc.remove:
-              controller.chat?.deleteMessage(msg.id);
+              chat.deleteMessage(msg.id);
               break;
           }
         }
       },
       child: body,
     );
-    content.add(chat);
+    content.add(gesture);
 
     return Container(
-      margin: msg.fromId == controller.userId
+      margin: isSelf
           ? EdgeInsets.only(right: 2.w)
           : EdgeInsets.only(left: 2.w),
       child: Column(
@@ -205,7 +213,7 @@ class DetailItemWidget extends GetView<ChatController> {
           ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
           : EdgeInsets.only(right: defaultWidth),
       decoration: BoxDecoration(
-        color: msg.fromId == controller.userId
+        color: isSelf
             ? XColors.tinyLightBlue
             : Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(defaultWidth)),
@@ -243,7 +251,10 @@ class DetailItemWidget extends GetView<ChatController> {
     BoxConstraints boxConstraints = BoxConstraints(maxWidth: 200.w);
 
     Map<String, String> headers = {
-      "Authorization": KernelApi.getInstance().anystore.accessToken,
+      "Authorization": KernelApi
+          .getInstance()
+          .anystore
+          .accessToken,
     };
 
     return GestureDetector(
@@ -283,7 +294,10 @@ class DetailItemWidget extends GetView<ChatController> {
     BoxConstraints boxConstraints = BoxConstraints(maxWidth: 200.w);
 
     Map<String, String> headers = {
-      "Authorization": KernelApi.getInstance().anystore.accessToken,
+      "Authorization": KernelApi
+          .getInstance()
+          .anystore
+          .accessToken,
     };
 
     var playCtrl = Get.find<PlayController>();
@@ -467,9 +481,9 @@ class PlayController extends GetxController with GetTickerProviderStateMixin {
     });
     _soundPlayer!
         .startPlayer(
-          fromDataBuffer: bytes,
-          whenFinished: () => stopPrePlayVoice(),
-        )
+      fromDataBuffer: bytes,
+      whenFinished: () => stopPrePlayVoice(),
+    )
         .catchError((error) => stopPrePlayVoice());
 
     // 重新开始播放

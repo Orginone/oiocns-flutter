@@ -1,23 +1,44 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
 
 abstract class IAuthority {
   // 职权Id
-  late String id;
+  String get id;
+
   // 职权名称
-  late String name;
+  String get name;
+
   // 职权编号
-  late String code;
+  String get code;
+
   // 职权归属ID
-  late String belongId;
+  late String userId;
+
+  // 职权归属ID
+  String get belongId;
+
   // 备注
-  late String remark;
+  String get remark;
+
+  // 数据
+  late XAuthority target;
+
   // 子职权
   late List<IAuthority> children;
 
-  /// 职权下的身份
+  // 职权下的身份
   late List<IIdentity> identitys;
+
+  // 加载的空间
+  ISpace? space;
+
+  // 权限群
+  late IChat chat;
+
+  List<IChat> allChats();
 
   /// 创建子职权
   /// @param name 名称

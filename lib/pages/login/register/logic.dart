@@ -56,7 +56,7 @@ class RegisterController extends BaseController<RegisterState> {
   void register() async {
     LoadingDialog.showLoading(context);
     var settingCtrl = Get.find<SettingController>();
-    var res = await settingCtrl.register(RegisterType(
+    var res = await settingCtrl.provider.register(RegisterType(
         nickName: state.nickNameController.text,
         name: state.realNameController.text,
         phone: state.phoneNumberController.text,

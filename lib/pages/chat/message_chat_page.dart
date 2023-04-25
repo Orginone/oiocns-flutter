@@ -2,41 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
 import 'package:orginone/widget/template/originone_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
 import 'package:orginone/util/date_util.dart';
 
-class ChatPage extends GetView<ChatController> {
+class ChatPage extends StatelessWidget {
   const ChatPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var chat = Get.arguments;
     return OrginoneScaffold(
       appBarHeight: 74.h,
       appBarBgColor: XColors.navigatorBgColor,
       resizeToAvoidBottomInset: false,
       appBarLeading: XWidgets.defaultBackBtn,
-      appBarTitle: _title,
+      appBarTitle: _title(chat),
       appBarCenterTitle: true,
       appBarActions: _actions,
-      body: _body(context),
+      body: _body(context, chat),
     );
   }
 
-  get _title {
+  Widget _title(IChat chat) {
     return Obx(() {
-      var chat = controller.chat;
-      var messageItem = chat!.target;
+      var messageItem = chat.target;
+      var personCount = chat.personCount.value;
       String name = messageItem.name;
       if (messageItem.typeName != TargetType.person.label) {
-        name += "(${chat.personCount})";
+        name += "($personCount)";
       }
-      String spaceName = "${chat.spaceName} | ${messageItem.label}";
+      var spaceName = messageItem.labels.join(" | ");
       return Column(
         children: [
           Text(name, style: XFonts.size22Black3),
@@ -55,9 +56,6 @@ class ChatPage extends GetView<ChatController> {
             size: 32.w,
           ),
           onPressed: () async {
-            var chat = controller.chat!;
-            await controller.setCurrent(chat.spaceId, chat.chatId);
-            Get.toNamed("");
           },
         ),
       ];
@@ -73,10 +71,9 @@ class ChatPage extends GetView<ChatController> {
     );
   }
 
-  Widget _chatItem(int index) {
-    var chat = controller.chat!;
+  Widget _item(int index, IChat chat) {
     XImMsg msg = chat.messages[index];
-    Widget currentWidget = DetailItemWidget(msg: msg);
+    Widget currentWidget = DetailItemWidget(msg: msg, chat: chat);
 
     var time = _time(msg.createTime);
     var item = Column(children: [currentWidget]);
@@ -101,12 +98,12 @@ class ChatPage extends GetView<ChatController> {
     }
   }
 
-  Widget _body(BuildContext context) {
+  Widget _body(BuildContext context, IChat chat) {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
         ChatBoxController chatBoxController = Get.find<ChatBoxController>();
-        chatBoxController.eventFire(context, InputEvent.clickBlank);
+        chatBoxController.eventFire(context, InputEvent.clickBlank, chat);
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -115,7 +112,7 @@ class ChatPage extends GetView<ChatController> {
             child: Container(
               color: XColors.bgColor,
               child: RefreshIndicator(
-                onRefresh: () => controller.chat!.moreMessage(),
+                onRefresh: () => chat.moreMessage(),
                 child: Container(
                   padding: EdgeInsets.only(left: 10.w, right: 10.w),
                   child: Obx(
@@ -124,9 +121,9 @@ class ChatPage extends GetView<ChatController> {
                       shrinkWrap: true,
                       controller: ScrollController(),
                       scrollDirection: Axis.vertical,
-                      itemCount: controller.chat!.messages.length,
+                      itemCount: chat.messages.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return _chatItem(index);
+                        return _item(index, chat);
                       },
                     ),
                   ),
@@ -134,7 +131,7 @@ class ChatPage extends GetView<ChatController> {
               ),
             ),
           ),
-          ChatBox()
+          ChatBox(chat: chat)
         ],
       ),
     );

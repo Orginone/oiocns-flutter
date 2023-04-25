@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/dart/core/target/chat/chat.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 import 'package:orginone/widget/widgets/text_tag.dart';
-import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/chat/chat.dart';
-import 'package:orginone/dart/core/chat/ichat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_util.dart';
@@ -23,15 +22,13 @@ enum ChatFunc {
   const ChatFunc(this.label);
 }
 
-class MessageItemWidget extends GetView<ChatController> {
+class MessageItemWidget extends GetView<SettingController> {
   // 用户信息
   final IChat chat;
-  final Function? remove;
 
   const MessageItemWidget({
     Key? key,
     required this.chat,
-    this.remove,
   }) : super(key: key);
 
   @override
@@ -59,22 +56,16 @@ class MessageItemWidget extends GetView<ChatController> {
         if (result != null) {
           switch (result) {
             case ChatFunc.remove:
-              if (remove != null) {
-                remove!(chat);
-              }
               break;
           }
         }
       },
       onTap: () async {
-        if (Get.isRegistered<ChatController>()) {
-          var chatCtrl = Get.find<ChatController>();
-          await chatCtrl.setCurrent(chat.spaceId, chat.chatId);
-          Get.offNamedUntil(
-            Routers.chat,
-            (router) => router.settings.name == Routers.home,
-          );
-        }
+        Get.offNamedUntil(
+          Routers.chat,
+          (router) => router.settings.name == Routers.home,
+          arguments: chat,
+        );
       },
       child: Container(
         padding: EdgeInsets.only(left: 25.w, top: 16.h, right: 25.w),
@@ -115,7 +106,19 @@ class MessageItemWidget extends GetView<ChatController> {
 
   Widget get _content {
     var target = chat.target;
-    var lastMessage = chat.lastMessage;
+    var labels = <Widget>[];
+    for (var item in chat.target.labels) {
+      labels.add(TextTag(
+        item,
+        bgColor: Colors.white,
+        textStyle: TextStyle(
+          color: XColors.designBlue,
+          fontSize: 12.sp,
+        ),
+        borderColor: XColors.tinyBlue,
+      ));
+      labels.add(Padding(padding: EdgeInsets.only(left: 4.w)));
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,25 +128,14 @@ class MessageItemWidget extends GetView<ChatController> {
           children: [
             Text(target.name, style: XFonts.size22Black0W700),
             Text(
-              CustomDateUtil.getSessionTime(lastMessage.value?.createTime),
+              CustomDateUtil.getSessionTime(chat.lastMessage.value?.createTime),
               style: XFonts.size18Black0,
             ),
           ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(child: _showTxt()),
-            TextTag(
-              chat.spaceName,
-              bgColor: Colors.white,
-              textStyle: TextStyle(
-                color: XColors.designBlue,
-                fontSize: 12.sp,
-              ),
-              borderColor: XColors.tinyBlue,
-            ),
-          ],
+          children: [Expanded(child: _showTxt()), ...labels],
         ),
       ],
     );
@@ -154,11 +146,11 @@ class MessageItemWidget extends GetView<ChatController> {
     if (lastMessage == null) {
       return Container();
     }
-    var name = controller.getName(lastMessage.fromId);
+    var name = controller.provider.findNameById(lastMessage.fromId);
     var showTxt = "";
     if (chat is PersonChat) {
       var settingCtrl = Get.find<SettingController>();
-      if (lastMessage.fromId != settingCtrl.user!.target.id) {
+      if (lastMessage.fromId != settingCtrl.user.target.id) {
         showTxt = "对方:";
       }
     } else {

@@ -9,13 +9,14 @@ import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/authority/identity.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
+import 'package:orginone/dart/core/target/chat/chat.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
 import 'package:orginone/dart/core/thing/property.dart';
 import 'package:uuid/uuid.dart';
-import 'package:orginone/dart/core/thing/index.dart' as thing; 
+import 'package:orginone/dart/core/thing/index.dart' as thing;
 import '../../base/common/uint.dart';
 import '../enum.dart';
 import '../thing/ispecies.dart';
-import '../thing/species.dart';
 import 'itarget.dart';
 import 'targetMap.dart';
 
@@ -24,6 +25,7 @@ class BaseTarget extends ITarget {
 
   late List<TargetType> memberTypes;
   late List<TargetType> createTargetType;
+  late String userId;
 
   @override
   String get id {
@@ -60,7 +62,7 @@ class BaseTarget extends ITarget {
 
   KernelApi kernel = KernelApi.getInstance();
 
-  BaseTarget(XTarget target, ISpace? iSpace) {
+  BaseTarget(XTarget target, ISpace? space, this.userId) {
     key = uuid.v4();
     this.target = target;
     createTargetType = [];
@@ -68,12 +70,16 @@ class BaseTarget extends ITarget {
     searchTargetType = [];
     ownIdentitys = [];
     identitys = [];
+    this.space = space;
     memberTypes = [TargetType.person];
     typeName = target.typeName;
     appendTarget([target]);
     property = Property(target.id);
-    space = iSpace;
     subTeamTypes = [];
+    chat = createChat(userId, space?.id??"", target, [
+      space?.teamName??"",
+      "${target.typeName}群"
+    ]);
   }
 
   @override
@@ -392,7 +398,7 @@ class BaseTarget extends ITarget {
       ),
     ));
     if (res.success) {
-      authorityTree = Authority(res.data!, id);
+      authorityTree = Authority(res.data!, space, userId);
     }
     return authorityTree;
   }
@@ -458,6 +464,11 @@ class BaseTarget extends ITarget {
   @override
   Future<bool> delete() async {
     return false;
+  }
+
+  @override
+  List<IChat> allChats() {
+    return [chat];
   }
 
 

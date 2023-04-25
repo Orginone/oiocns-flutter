@@ -5,7 +5,7 @@ import 'itarget.dart';
 
 class Cohort extends BaseTarget implements ICohort {
   final Function _onDeleted;
-  Cohort(XTarget target,ISpace? space, this._onDeleted) : super(target,space) {
+  Cohort(XTarget target, ISpace space, String userId, this._onDeleted) : super(target, space, userId) {
     searchTargetType = [TargetType.person];
     subTeamTypes = [];
   }

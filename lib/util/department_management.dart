@@ -21,7 +21,8 @@ class DepartmentManagement {
   List<ITarget> get departments => _departments;
 
   Future<void> initDepartment() async {
-    var list = await _setting.company?.loadSubTeam(reload: true)??[];
+    // var list = await _setting.company?.loadSubTeam(reload: true)??[];
+    var list = <IDepartment>[];
     _departments.clear();
     if(list.isNotEmpty){
       _departments.addAll(list);
@@ -108,7 +109,8 @@ class DepartmentManagement {
   }
 
   String getCurrentCompanyName() {
-    return _setting.company?.name ?? "";
+    // return _setting.company?.name ?? "";
+    return "";
   }
 
   ITarget? get currentDepartment => _getCurrentDepartment(_departments);

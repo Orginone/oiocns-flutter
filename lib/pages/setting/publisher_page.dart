@@ -2,20 +2,17 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/widget/a_font.dart';
-import 'package:orginone/widget/base_list_controller.dart';
 import 'package:orginone/widget/template/originone_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/chat/chat_controller.dart';
-import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/string_util.dart';
 import 'package:orginone/util/widget_util.dart';
 
 class PublisherPage extends GetView<PublisherController> {
   late VersionVersionMes version;
-  var chatCtrl = Get.find<ChatController>();
 
   PublisherPage({Key? key}) : super(key: key) {
     version = Get.arguments as VersionVersionMes;
@@ -111,7 +108,7 @@ class PublisherPage extends GetView<PublisherController> {
                     Padding(
                       padding: EdgeInsets.only(left: 20.w, top: 10.h),
                       child: Text(
-                        "　设立人：${chatCtrl.getName(version.pubTeam?.createUser ?? '')}",
+                        "　设立人：${findTargetShare(version.pubTeam?.createUser ?? '').name}",
                         style: AFont.instance.size22Black6,
                       ),
                     ),

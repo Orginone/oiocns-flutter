@@ -15,7 +15,6 @@ import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/common/uint.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/other/search_page.dart';
@@ -69,16 +68,15 @@ class ContactPage extends GetView<ContactController> {
   Widget _contactList() {
     return GetBuilder<ContactController>(
       init: controller,
-      builder: (controller) =>
-          ListView.builder(
-              key: controller.mGlobalKey,
-              shrinkWrap: true,
-              controller: controller.mScrollController,
-              scrollDirection: Axis.vertical,
-              itemCount: controller.mData.length,
-              itemBuilder: (context, index) {
-                return item(controller.mData[index]);
-              }),
+      builder: (controller) => ListView.builder(
+          key: controller.mGlobalKey,
+          shrinkWrap: true,
+          controller: controller.mScrollController,
+          scrollDirection: Axis.vertical,
+          itemCount: controller.mData.length,
+          itemBuilder: (context, index) {
+            return item(controller.mData[index]);
+          }),
     );
   }
 
@@ -101,13 +99,6 @@ class ContactPage extends GetView<ContactController> {
         height: 110.h,
         child: ListTile(
             onTap: () async {
-              var settingCtrl = Get.find<SettingController>();
-              var chatCtrl = Get.find<ChatController>();
-              await chatCtrl.setCurrent(settingCtrl.space.id, target.id);
-              if (chatCtrl.chat == null) {
-                Fluttertoast.showToast(msg: "未获取到会话信息！");
-                return;
-              }
               Get.toNamed(Routers.chat);
             },
             leading: TextAvatar(
@@ -129,19 +120,17 @@ class ContactPage extends GetView<ContactController> {
       alignment: Alignment.centerRight,
       child: GetBuilder<ContactController>(
           init: controller,
-          builder: (controller) =>
-              IndexBar(
-                  mData: controller.mIndex,
-                  indexBarCallBack: (str, index, touchUp) {
-                    controller.updateIndex(index, touchUp);
-                  })),
+          builder: (controller) => IndexBar(
+              mData: controller.mIndex,
+              indexBarCallBack: (str, index, touchUp) {
+                controller.updateIndex(index, touchUp);
+              })),
     );
   }
 
   /// 触摸索引显示的view
   _stickIndexBar() {
-    return Obx(() =>
-        Visibility(
+    return Obx(() => Visibility(
           visible: !controller.mTouchUp.value,
           child: Align(
             alignment: Alignment.center,
@@ -160,7 +149,6 @@ class ContactPage extends GetView<ContactController> {
           ),
         ));
   }
-
 }
 
 class ContactBinding extends Bindings {
@@ -194,95 +182,97 @@ class ContactController extends BaseController {
   /// 一次性加载全部好友，并提取索引
   Future<void> loadAllContact(String filter) async {
     var settingCtrl = Get.find<SettingController>();
-    var target = settingCtrl.space;
-    await KernelApi.getInstance()
-        .querySubTargetById(IDReqSubModel(
-      id: target.id,
-      typeNames: [target.typeName],
-      subTypeNames: [TargetType.person.label],
-      page: PageRequest(
-        limit: Constants.maxUint16,
-        offset: 0,
-        filter: filter,
-      ),
-    ))
-        .then((pageResp) {
-      if (pageResp.data == null || pageResp.data!.result?.isEmpty == true) {
-        mLoadStatus.value = LoadStatusX.empty;
-        return;
-      }
-      mData.addAll(pageResp.data!.result!);
-      /// 排序
-      mData.sort((a, b) => a.name.compareTo(b.name));
-      /// 提取首字符
-      List<String> firstChars = [];
-      List<int> insertPos = [];
-      for (var value in mData) {
-        firstChars.add(StringUtil.getStrFirstUpperChar(
-            PinyinHelper.getFirstWordPinyin(value.name)));
-      }
-
-      /// 记录内容区域插入索引的位置
-      for (var index = 0; index < firstChars.length; index++) {
-        if (index == 0) {
-          insertPos.add(0);
-        } else if (firstChars[index - 1] != firstChars[index]) {
-          insertPos.add(index);
-        }
-      }
-      //插入字符
-      var index = 0;
-      for (var pos in insertPos) {
-        var targetResp = XTarget(
-          id: typeChar,
-          name: firstChars[pos],
-          code: "",
-          typeName: "",
-          thingId: "",
-          status: 1,
-          avatar: '',
-          belongId: '',
-          createUser: '',
-          updateUser: '',
-          idProofs: [],
-          version: '',
-          createTime: '',
-          updateTime: '',
-          orders: [],
-          markets: [],
-          ruleStds: [],
-          stags: [],
-          products: [],
-          identitys: [],
-          samrMarkets: [],
-          things: [],
-          relations: [],
-          team: null,
-          dicts: [],
-          sellOrder: [],
-          dictItems: [],
-          species: [],
-          attributes: [],
-          authority: [],
-          marketRelations: [],
-          relTeams: [],
-          operations: [],
-          operationItems: [],
-          givenIdentitys: [],
-          belong: null,
-          targets: [],
-          thing: null,
-          distributes: [],
-          flowDefines: [],
-          flowRecords: [],
-        );
-        mData.insert(pos + index, targetResp);
-        index++;
-      }
-      mIndex.addAll(firstChars.toSet().toList());
-      _calcAllItemHeight();
-      mLoadStatus.value = LoadStatusX.success;
-    });
+    // var target = settingCtrl.space;
+    // await KernelApi.getInstance()
+    //     .querySubTargetById(IDReqSubModel(
+    //   id: target.id,
+    //   typeNames: [target.typeName],
+    //   subTypeNames: [TargetType.person.label],
+    //   page: PageRequest(
+    //     limit: Constants.maxUint16,
+    //     offset: 0,
+    //     filter: filter,
+    //   ),
+    // ))
+    //     .then((pageResp) {
+    //   if (pageResp.data == null || pageResp.data!.result?.isEmpty == true) {
+    //     mLoadStatus.value = LoadStatusX.empty;
+    //     return;
+    //   }
+    //   mData.addAll(pageResp.data!.result!);
+    //
+    //   /// 排序
+    //   mData.sort((a, b) => a.name.compareTo(b.name));
+    //
+    //   /// 提取首字符
+    //   List<String> firstChars = [];
+    //   List<int> insertPos = [];
+    //   for (var value in mData) {
+    //     firstChars.add(StringUtil.getStrFirstUpperChar(
+    //         PinyinHelper.getFirstWordPinyin(value.name)));
+    //   }
+    //
+    //   /// 记录内容区域插入索引的位置
+    //   for (var index = 0; index < firstChars.length; index++) {
+    //     if (index == 0) {
+    //       insertPos.add(0);
+    //     } else if (firstChars[index - 1] != firstChars[index]) {
+    //       insertPos.add(index);
+    //     }
+    //   }
+    //   //插入字符
+    //   var index = 0;
+    //   for (var pos in insertPos) {
+    //     var targetResp = XTarget(
+    //       id: typeChar,
+    //       name: firstChars[pos],
+    //       code: "",
+    //       typeName: "",
+    //       thingId: "",
+    //       status: 1,
+    //       avatar: '',
+    //       belongId: '',
+    //       createUser: '',
+    //       updateUser: '',
+    //       idProofs: [],
+    //       version: '',
+    //       createTime: '',
+    //       updateTime: '',
+    //       orders: [],
+    //       markets: [],
+    //       ruleStds: [],
+    //       stags: [],
+    //       products: [],
+    //       identitys: [],
+    //       samrMarkets: [],
+    //       things: [],
+    //       relations: [],
+    //       team: null,
+    //       dicts: [],
+    //       sellOrder: [],
+    //       dictItems: [],
+    //       species: [],
+    //       attributes: [],
+    //       authority: [],
+    //       marketRelations: [],
+    //       relTeams: [],
+    //       operations: [],
+    //       operationItems: [],
+    //       givenIdentitys: [],
+    //       belong: null,
+    //       targets: [],
+    //       thing: null,
+    //       distributes: [],
+    //       flowDefines: [],
+    //       flowRecords: [],
+    //     );
+    //     mData.insert(pos + index, targetResp);
+    //     index++;
+    //   }
+    //   mIndex.addAll(firstChars.toSet().toList());
+    //   _calcAllItemHeight();
+    //   mLoadStatus.value = LoadStatusX.success;
+    // });
   }
 
   String getBarStr() {

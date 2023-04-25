@@ -47,8 +47,7 @@ abstract class ISpeciesItem {
   /* 加载信息 */
   Future<ISpeciesItem> loadInfo(TargetShare info);
   /* 加载分类特性 */
-  Future<List<XAttribute>> loadAttrs(
-      String id, bool recursionOrg, bool recursionSpecies, PageRequest page,{bool reload = false});
+  Future<List<XAttribute>> loadAttrs(String id,{bool reload});
   /* 加载业务标准 */
   Future<List<XOperation>> loadOperations(String id, bool filterAuth,
       bool recursionOrg, bool recursionSpecies, PageRequest page,{bool reload = false});

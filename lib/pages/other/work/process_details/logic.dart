@@ -43,23 +43,23 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
       return;
     }
     try{
-      for (var element in state.flowInstance.value!.flowTaskHistory!) {
-        if(element.flowNode?.bindOperations!=null){
-          for (var bindOperation in element.flowNode!.bindOperations!) {
-            Map<String, Map<XOperationItem, dynamic>> bindOperationInfo = {bindOperation.name!: {}};
-           List<XOperationItem> items = await WorkNetWork.getOperationItems(bindOperation.id??"");
-            for (var key in data.keys) {
-               try{
-                 XOperationItem item = items.firstWhere((element) => element.attrId == key);
-                 bindOperationInfo[bindOperation.name!]!.addAll({item: data[key]});
-               }catch(e){
-
-               }
-            }
-            state.xAttribute.addAll(bindOperationInfo);
-          }
-        }
-      }
+      // for (var element in state.flowInstance.value!.flowTaskHistory!) {
+      //   if(element.flowNode?.bindOperations!=null){
+      //     for (var bindOperation in element.flowNode!.bindOperations!) {
+      //       Map<String, Map<XOperationItem, dynamic>> bindOperationInfo = {bindOperation.name!: {}};
+      //      List<XOperationItem> items = await WorkNetWork.getOperationItems(bindOperation.id??"");
+      //       for (var key in data.keys) {
+      //          try{
+      //            XOperationItem item = items.firstWhere((element) => element.attrId == key);
+      //            bindOperationInfo[bindOperation.name!]!.addAll({item: data[key]});
+      //          }catch(e){
+      //
+      //          }
+      //       }
+      //       state.xAttribute.addAll(bindOperationInfo);
+      //     }
+      //   }
+      // }
       state.xAttribute.refresh();
     }catch(e){
        ToastUtils.showMsg(msg: e.toString());

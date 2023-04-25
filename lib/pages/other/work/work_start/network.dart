@@ -13,11 +13,11 @@ class WorkStartNetWork {
   static Future<List<XFlowDefine>> getFlowDefine(String speciesId) async {
     List<XFlowDefine> defines = [];
     var settingCtrl = Get.find<SettingController>();
-    var space = settingCtrl.space;
+    // var space = settingCtrl.space;
     ResultType<XFlowDefineArray> result = await KernelApi.getInstance()
         .queryDefine(QueryDefineReq(
             speciesId: speciesId,
-            spaceId: space.id,
+            spaceId: '0',
             page: PageRequest(offset: 0, limit: 20, filter: '')));
     if (result.success) {
       defines = result.data?.result ?? [];
@@ -28,11 +28,11 @@ class WorkStartNetWork {
   static Future<FlowNode?> getDefineNode(String id) async {
     FlowNode? node;
     var settingCtrl = Get.find<SettingController>();
-    var space = settingCtrl.space;
+    // var space = settingCtrl.space;
     ResultType<FlowNode> result = await KernelApi.getInstance().queryNodes(
         IdSpaceReq(
             id: id,
-            spaceId: space.id,
+            spaceId: '0',
             page: PageRequest(offset: 0, limit: 20, filter: '')));
     node = result.data;
     return node;
@@ -41,11 +41,11 @@ class WorkStartNetWork {
   static Future<void> createInstance(XFlowDefine define,
       Map<String, dynamic> data, List<String> thingIds) async {
     var settingCtrl = Get.find<SettingController>();
-    var space = settingCtrl.space;
+    // var space = settingCtrl.space;
     ResultType result = await KernelApi.getInstance().createInstance(
       FlowInstanceModel(
         defineId: define.id!,
-        spaceId: space.id,
+        spaceId: '0',
         content: "",
         contentType: "Text",
         data: jsonEncode(data),
@@ -68,7 +68,7 @@ class WorkStartNetWork {
     SettingController setting = Get.find<SettingController>();
     ResultType<XFlowInstanceArray> result = await KernelApi.getInstance()
         .queryInstanceByApply(FlowReq(
-        id: id,spaceId: setting.space.id,speciesId: speciesId, page: PageRequest(offset: 0, limit: 9999, filter: '')));
+        id: id,spaceId: '0',speciesId: speciesId, page: PageRequest(offset: 0, limit: 9999, filter: '')));
 
     if (result.success) {
       flowInstacnes = result.data?.result??[];

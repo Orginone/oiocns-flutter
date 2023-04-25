@@ -38,10 +38,6 @@ class LoginController extends BaseController<LoginState> {
   }
 
   void login() async {
-    if (!KernelApi.getInstance().isOnline) {
-      KernelApi.getInstance().start();
-    }
-
     if (state.accountController.text.isEmpty ||
         state.passWordController.text.isEmpty) {
       ToastUtils.showMsg(msg: "账号或密码不能为空");
@@ -53,8 +49,10 @@ class LoginController extends BaseController<LoginState> {
     }
 
     var settingCtrl = Get.find<SettingController>();
-    var res = await settingCtrl.login(
-        state.accountController.text, state.passWordController.text);
+    var res = await settingCtrl.provider.login(
+      state.accountController.text,
+      state.passWordController.text,
+    );
     if (res.success) {
       [Permission.storage, Permission.notification].request();
       LocalStore.getStore().setStringList("account",

@@ -131,9 +131,6 @@ class BucketOpreateModel {
   // 名称
   final String? name;
 
-  // 共享域
-  final String shareDomain;
-
   // 目标
   final String? destination;
 
@@ -146,7 +143,6 @@ class BucketOpreateModel {
   BucketOpreateModel({
     required this.key,
     this.name,
-    required this.shareDomain,
     required this.operate,
     this.destination,
     this.fileItem,
@@ -155,7 +151,6 @@ class BucketOpreateModel {
   Map<String, dynamic> toJson() {
     return {
       "key": key,
-      "shareDomain": shareDomain,
       "operate": operate.label,
       "fileItem": fileItem?.toJson(),
     };
@@ -190,7 +185,7 @@ class FileChunkData {
     return {
       "index": index,
       "size": size,
-      'data':data,
+      'data': data,
       "uploadId": uploadId,
       "dataUrl": dataUrl,
     };
@@ -198,24 +193,9 @@ class FileChunkData {
 }
 
 /// 文件系统项数据模型
-class FileItemModel {
+class FileItemModel extends FileItemShare {
   // 完整路径
-  String? key;
-
-  // 完整路径
-  int? size;
-
-  // 名称
-  String? name;
-
-  // 共享链接
-  String? shareLink;
-
-  // 拓展名
-  String? extension;
-
-  // 缩略图
-  String? thumbnail;
+  String key;
 
   // 创建时间
   DateTime? dateCreated;
@@ -224,41 +204,42 @@ class FileItemModel {
   DateTime? dateModified;
 
   // 文件类型
-  String? contentType;
+  String contentType;
 
   // 是否是目录
-  bool? isDirectory;
+  bool isDirectory;
 
   // 是否包含子目录
-  bool? hasSubDirectories;
+  bool hasSubDirectories;
 
   FileItemModel({
     required this.key,
-    required this.size,
-    required this.name,
-    required this.shareLink,
-    required this.extension,
-    required this.thumbnail,
     required this.dateCreated,
     required this.dateModified,
     required this.contentType,
     required this.isDirectory,
     required this.hasSubDirectories,
+    required super.size,
+    required super.name,
+    required super.shareLink,
+    required super.extension,
+    required super.thumbnail,
   });
 
-  FileItemModel.formJson(Map<String, dynamic> json) {
-    key = json['key'];
-    size = json['size'];
-    name = json['name'];
-    shareLink = json['shareLink'];
-    isDirectory = json['isDirectory'];
-    thumbnail = json['thumbnail'];
-    extension = json['extension'];
-    contentType = json['contentType'];
-    dateCreated = DateTime.tryParse(json['dateCreated'] ?? "");
-    dateModified = DateTime.tryParse(json['dateModified'] ?? "");
-    hasSubDirectories = json['hasSubDirectories'];
-  }
+  FileItemModel.formJson(Map<String, dynamic> json)
+      : key = json['key'],
+        isDirectory = json['isDirectory'],
+        contentType = json['contentType'],
+        dateCreated = DateTime.tryParse(json['dateCreated'] ?? ""),
+        dateModified = DateTime.tryParse(json['dateModified'] ?? ""),
+        hasSubDirectories = json['hasSubDirectories'],
+        super(
+          size: json["size"],
+          name: json["name"],
+          shareLink: json["shareLink"],
+          extension: json["extension"],
+          thumbnail: json["thumbnail"],
+        );
 
   Map<String, dynamic> shareInfo() {
     String url = "${Constant.host}/orginone/anydata/bucket/load/$shareLink";
@@ -462,11 +443,11 @@ class IdReqModel {
   }
 }
 
-class GetSpeciesModel{
+class GetSpeciesModel {
   final String id;
   final bool upTeam;
 
-  GetSpeciesModel({required this.id,required this.upTeam});
+  GetSpeciesModel({required this.id, required this.upTeam});
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -533,7 +514,7 @@ class IdArrayReq {
   //构造方法
   IdArrayReq({
     required this.ids,
-    required this.page,
+    this.page,
   });
 
   //通过JSON构造
@@ -564,7 +545,7 @@ class IdArrayReq {
   }
 }
 
-class IdBelongReq{
+class IdBelongReq {
   // 唯一ID
   final String belongId;
 
@@ -677,6 +658,7 @@ class IdSpeciesReq {
   String? spaceId;
   // 是否递归组织
   bool? recursionOrg;
+
   // 是否递归分类
   bool? recursionSpecies;
 
@@ -741,6 +723,7 @@ class IdOperationReq {
   // 分页
   PageRequest? page;
 
+
   IdOperationReq({
     required this.id,
     required this.spaceId,
@@ -765,8 +748,10 @@ class IdOperationReq {
 class IdArraySpaceReq {
   // 唯一ID
   final List<String> ids;
+
   // 工作空间ID
   final String spaceId;
+
   IdArraySpaceReq({
     required this.ids,
     required this.spaceId,
@@ -776,10 +761,13 @@ class IdArraySpaceReq {
 class QueryDefineReq {
   // 分类ID
   final String? speciesId;
+
   // 空间ID
   final String spaceId;
+
   // 分页
   PageRequest? page;
+
   QueryDefineReq({
     required this.speciesId,
     required this.spaceId,
@@ -1634,7 +1622,6 @@ class PropertyModel {
     this.belongId,
     this.sourceId,
   });
-
 
   //转成JSON
   Map<String, dynamic> toJson() {
@@ -4046,37 +4033,25 @@ class ChatModel {
   final String name;
 
   // 头像
-  final String? photo;
+  final String photo;
 
   // 标签
-  final String? label;
+  final List<String> labels;
 
   // 备注
-  final String? remark;
+  final String remark;
 
   // 类型名称
   final String typeName;
-
-  // 消息体
-  final String? msgType;
-
-  // 消息体
-  final String? msgBody;
-
-  // 消息时间
-  final String? msgTime;
 
   //构造方法
   ChatModel({
     required this.id,
     required this.name,
-    this.photo,
-    this.label,
-    this.remark,
+    required this.photo,
+    required this.labels,
+    required this.remark,
     required this.typeName,
-    this.msgType,
-    this.msgBody,
-    this.msgTime,
   });
 
   //通过JSON构造
@@ -4084,12 +4059,9 @@ class ChatModel {
       : id = json["id"],
         name = json["name"],
         photo = json["photo"],
-        label = json["label"],
+        labels = json["labels"],
         remark = json["remark"],
-        typeName = json["typeName"],
-        msgType = json["msgType"],
-        msgBody = json["msgBody"],
-        msgTime = json["msgTime"];
+        typeName = json["typeName"];
 
   //通过动态数组解析成List
   static List<ChatModel> fromList(List<dynamic>? list) {
@@ -4111,12 +4083,9 @@ class ChatModel {
     json["id"] = id;
     json["name"] = name;
     json["photo"] = photo;
-    json["label"] = label;
+    json["labels"] = labels;
     json["remark"] = remark;
     json["typeName"] = typeName;
-    json["msgType"] = msgType;
-    json["msgBody"] = msgBody;
-    json["msgTime"] = msgTime;
     return json;
   }
 }
@@ -4200,8 +4169,10 @@ class FlowInstanceModel {
 class QueryTaskReq {
   // 流程定义Id
   final String defineId;
+
   // 任务类型 审批、抄送
   final String typeName;
+
   QueryTaskReq(this.defineId, this.typeName);
 
   QueryTaskReq.fromJson(Map<String, dynamic> json)
@@ -4434,26 +4405,26 @@ class TargetShare {
 // 文件系统项数据模型
 class FileItemShare {
   // 大小
-  final int? size;
+  final int size;
 
   // 名称
-  final String? name;
+  final String name;
 
   // 共享链接
-  final String? shareLink;
+  final String shareLink;
 
   // 拓展名
-  final String? extension;
+  final String extension;
 
   // 缩略图
-  final String? thumbnail;
+  final String thumbnail;
 
   FileItemShare({
-    this.size,
-    this.name,
-    this.shareLink,
-    this.extension,
-    this.thumbnail,
+    required this.size,
+    required this.name,
+    required this.shareLink,
+    required this.extension,
+    required this.thumbnail,
   });
 
   //通过JSON构造

@@ -14,6 +14,6 @@ class User{
   User(this.person);
 }
 
-class SignIn {}
-
 class SignOut {}
+
+class UserLoaded {}

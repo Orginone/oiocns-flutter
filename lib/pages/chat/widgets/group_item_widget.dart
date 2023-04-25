@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
 import 'package:orginone/widget/unified.dart';
-import 'package:orginone/dart/core/chat/ichat.dart';
 import 'package:orginone/pages/chat/widgets/message_item_widget.dart';
 
 class GroupItemWidget extends StatelessWidget {

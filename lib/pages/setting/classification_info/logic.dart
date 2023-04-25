@@ -46,6 +46,7 @@ class ClassificationInfoController
     // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
+
     await loadFlow();
     await loadAttrs();
     await loadOperation();
@@ -224,9 +225,7 @@ class ClassificationInfoController
   }
 
   Future<void> loadAttrs({bool reload = false}) async {
-    state.attrs.value = await state.species.loadAttrs(state.data.space.id, true,
-        true, PageRequest(offset: 0, limit: 999, filter: ''),
-        reload: reload);
+    state.attrs.value = await state.species.loadAttrs(state.data.space.id);
   }
 
   Future<void> loadOperation({bool reload = false}) async {

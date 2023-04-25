@@ -32,10 +32,7 @@ class StoreHub {
                 url,
                 HttpConnectionOptions(
                     skipNegotiation: true,
-                    transport: HttpTransportType.webSockets,
-                    logging: (level, message) {
-                      Log.info(message);
-                    }))
+                    transport: HttpTransportType.webSockets))
             .build() {
     _connection.keepAliveIntervalInMilliseconds = interval;
     _connection.serverTimeoutInMilliseconds = timeout;
@@ -89,14 +86,12 @@ class StoreHub {
   /// 开始连接
   /// @returns {void} 无返回值
   void _starting() {
-    if (isConnected) {
-      _connection.stop();
-    }
     _connection.start()?.then((_) {
       for (final callback in _connectedCallbacks) {
         callback();
       }
     }, onError: (err) {
+      log.warning("url: ${_connection.baseUrl}");
       log.warning("连接失败,${_timeout}ms后重试。${err != null ? err.toString() : ''}");
       for (final callback in _disconnectedCallbacks) {
         callback(err);
@@ -139,7 +134,9 @@ class StoreHub {
   /// @returns {Promise<ResultType>} 异步结果
   Future<dynamic> invoke(String methodName, {List<dynamic>? args}) async {
     log.info("========== storeHub-invoke-start =============");
+    log.info("=====> url: ${_connection.baseUrl}");
     log.info("=====> methodName: $methodName");
+    log.info("=====> args: $args");
     try {
       var res = await _connection.invoke(methodName, args: args);
       log.info("=====> res: $res");

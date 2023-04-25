@@ -16,8 +16,8 @@ class FileManagement{
 
   IFileSystemItem? get directory => _directory;
 
-  Future<void>  initFileDir() async{
-     IFileSystemItem _root = getFileSysItemRoot;
+  Future<void>  initFileDir(String belongId) async{
+     IFileSystemItem _root = getFileSysItemRoot(belongId);
      _directory = await _root.create("主目录");
      if(_directory!=null){
        await loadSubFileDir(_directory!);

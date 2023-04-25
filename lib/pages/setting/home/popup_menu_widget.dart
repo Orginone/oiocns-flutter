@@ -94,13 +94,17 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
     }
     if (isSuperAdmin) {
       popupMenuItem.add(newPopupMenuItem("编辑", "edit"));
-      if (target != settingController.user &&
-          target != settingController.company) {
+      if (target != settingController.user
+          // && target != settingController.company
+      ) {
         popupMenuItem.add(newPopupMenuItem("删除", "delete"));
       }
-    } else if (await Auth.isSuperAdmin(settingController.space)) {
-      if (target != settingController.user &&
-          target != settingController.company) {
+    } else if (true
+    // await Auth.isSuperAdmin(settingController.space)
+    ) {
+      if (target != settingController.user
+          // && target != settingController.company
+      ) {
         popupMenuItem.add(newPopupMenuItem("退出${target!.typeName}", "signOut"));
       }
     }

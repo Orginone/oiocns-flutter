@@ -15,10 +15,10 @@ class AddMembersController extends BaseController<AddMembersState> {
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
-    var users = await setting.space
-        .loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
+    // var users = await setting.space
+    //     .loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
 
-    state.unitMember.addAll(users.result ?? []);
+    // state.unitMember.addAll(users.result ?? []);
   }
 
   void selectAll() {

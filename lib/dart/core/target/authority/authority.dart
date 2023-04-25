@@ -1,5 +1,8 @@
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/target/chat/chat.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
 import '../../../base/api/kernelapi.dart';
 import '../../../base/schema.dart';
 import '../../enum.dart';
@@ -8,18 +11,59 @@ import 'identity.dart';
 import 'package:orginone/dart/base/common/uint.dart';
 import 'package:orginone/dart/core/consts.dart';
 
-class Authority extends IAuthority {
-  late String _belongId;
-  late XAuthority _authority;
+class Authority implements IAuthority {
+  @override
+  IChat chat;
+
+  @override
+  List<IAuthority> children;
+
+  @override
+  String userId;
+
+  @override
+  List<IIdentity> identitys;
+
+  @override
+  ISpace? space;
+
+  @override
+  XAuthority target;
+
+  @override
+  get belongId {
+    return target.belongId!;
+  }
+
+  @override
+  get id {
+    return target.id!;
+  }
+
+  @override
+  get code {
+    return target.code!;
+  }
+
+  @override
+  get name {
+    return target.name!;
+  }
+
+  @override
+  get remark {
+    return target.remark!;
+  }
+
   KernelApi kernel = KernelApi.getInstance();
-  Authority(XAuthority auth, String belongId) {
-    _authority = auth;
-    _belongId = belongId;
-    children = [];
-    identitys = [];
-    if (auth.nodes != null && auth.nodes!.isNotEmpty) {
-      for (var item in auth.nodes!) {
-        children.add(Authority(item, belongId));
+
+  Authority(this.target, this.space, this.userId)
+      : children = [],
+        identitys = [],
+        chat = createAuthChat(userId, space?.id??"", space?.teamName??"", target) {
+    if (target.nodes != null && target.nodes!.isNotEmpty) {
+      for (var item in target.nodes!) {
+        children.add(Authority(item, space, userId));
       }
     }
   }
@@ -35,39 +79,6 @@ class Authority extends IAuthority {
   }
 
   @override
-  String get id {
-    return _authority.id??"";
-  }
-
-  @override
-  String get name {
-    return _authority.name??"";
-  }
-
-  @override
-  String get code {
-    return _authority.code??"";
-  }
-
-  @override
-  String get belongId {
-    return _authority.belongId??"";
-  }
-
-  @override
-  String get remark {
-    return _authority.remark??"";
-  }
-
-  String get createTime {
-    return _authority.createTime??"";
-  }
-
-  String get createUser {
-    return _authority.createUser??"";
-  }
-
-  @override
   Future<ResultType<XAuthority>> createSubAuthority(
       String name, String code, bool ispublic, String remark) async {
     if (existAuthority.indexOf(code) > 0) {
@@ -80,10 +91,10 @@ class Authority extends IAuthority {
       remark: remark,
       public: ispublic,
       parentId: id,
-      belongId: _belongId,
+      belongId: belongId,
     ));
     if (res.success && res.data != null) {
-      children.add(Authority(res.data!, _belongId));
+      children.add(Authority(res.data!, space, userId));
     }
     return res;
   }
@@ -92,7 +103,7 @@ class Authority extends IAuthority {
   Future<ResultType> delete() async {
     final res = await kernel.deleteAuthority(IdReqModel(
       id: id,
-      belongId: _belongId,
+      belongId: belongId,
       typeName: '',
     ));
     return res;
@@ -120,7 +131,7 @@ class Authority extends IAuthority {
       return identitys;
     }
     final res = await kernel.queryAuthorityIdentitys(IdSpaceReq(
-        id: _authority.id??"",
+        id: id ?? "",
         page: PageRequest(offset: 0, filter: '', limit: Constants.maxUint16),
         spaceId: id));
     if (res.success && res.data != null) {
@@ -135,20 +146,29 @@ class Authority extends IAuthority {
   Future<ResultType<XAuthority>> updateAuthority(
       String name, String code, bool ispublic, String remark) async {
     final res = await kernel.updateAuthority(AuthorityModel(
-        id: _authority.id,
+        id: id,
         name: name,
         code: code,
         public: ispublic,
-        parentId: _authority.parentId,
-        belongId: _authority.belongId,
+        parentId: target.parentId,
+        belongId: belongId,
         remark: remark));
     if (res.success) {
-      _authority.name = name;
-      _authority.code = code;
-      _authority.public = ispublic;
-      _authority.remark = remark;
-      _authority.updateTime = res.data!.updateTime;
+      target.name = name;
+      target.code = code;
+      target.public = ispublic;
+      target.remark = remark;
+      target.updateTime = res.data!.updateTime;
     }
     return res;
+  }
+
+  @override
+  List<IChat> allChats() {
+    var chats = [chat];
+    for (var item in children) {
+      chats.addAll(item.allChats());
+    }
+    return chats;
   }
 }

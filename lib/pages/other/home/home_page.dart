@@ -10,12 +10,10 @@ import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/progress_dialog.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/chat/message_page.dart';
-import 'package:orginone/pages/index/index_page.dart';
+import 'package:orginone/pages/chat/message_rent.dart';
 import 'package:orginone/pages/other/home/components/user_bar.dart';
 import 'package:orginone/pages/other/shop/view.dart';
 import 'package:orginone/pages/other/ware_house/view.dart';
@@ -83,7 +81,6 @@ class HomeBinding extends Bindings {
 }
 
 class HomeController extends TabsController {
-  var chatCtrl = Get.find<ChatController>();
   var updateCtrl = Get.find<UpdateController>();
   var settingCtrl = Get.find<SettingController>();
 
@@ -92,18 +89,13 @@ class HomeController extends TabsController {
     var size = Size(32.w, 32.w);
     registerTab(XTab(
       body: Text("沟通", style: XFonts.size14Black3),
-      view: const MessagePage(),
+      view: const MessageRecent(),
       icon: XImage.localImage("chat", size: Size(38.w, 32.w)),
       children: [
         Positioned(
           top: 0,
           right: 0,
-          child: Obx(() {
-            var chatCtrl = Get.find<ChatController>();
-            return chatCtrl.hasNoRead()
-                ? Icon(Icons.circle, color: Colors.redAccent, size: 10.w)
-                : Container();
-          }),
+          child: Container(),
         )
       ],
     ));

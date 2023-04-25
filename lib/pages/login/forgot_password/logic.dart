@@ -46,10 +46,11 @@ class ForgotPasswordController extends BaseController<ForgotPasswordState> {
       return;
     }
     var settingCtrl = Get.find<SettingController>();
-    ResultType<bool> result = await settingCtrl.resetPassword(
+    ResultType<bool> result = await settingCtrl.provider.resetPassword(
         state.accountController.text,
         state.passWordController.text,
-        state.keyController.text);
+        state.keyController.text,
+    );
 
     if (result.success) {
       ToastUtils.showMsg(msg: '重置密码成功！');

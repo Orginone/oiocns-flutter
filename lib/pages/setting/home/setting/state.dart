@@ -24,7 +24,7 @@ class SettingFunctionState extends BaseBreadcrumbNavState<SettingNavModel> {
             spaceEnum: SpaceEnum.standardSettings,
             space: space)
       ];
-      if (setting.isUserSpace(space: space)) {
+      if (setting.user.id == space.id) {
         function.insert(
             0,
             SettingNavModel(
