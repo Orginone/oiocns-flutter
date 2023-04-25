@@ -19,13 +19,13 @@ class WarehouseManagementPage extends BaseBreadcrumbNavMultiplexPage<WarehouseMa
          children: [
            CommonWidget.commonHeadInfoWidget("个人"),
            ...personalWork.map((e) {
-             return BaseBreadcrumbNavItem(item: BaseBreadcrumbNavModel(name: e),onTap: (){
+             return BaseBreadcrumbNavItem(item: BaseBreadcrumbNavModel(name: e, children: []),onTap: (){
                controller.jumpUniversalNavigator(e);
              },);
            }).toList(),
            CommonWidget.commonHeadInfoWidget("组织"),
            ...state.spaces.map((e){
-             return BaseBreadcrumbNavItem(item: BaseBreadcrumbNavModel(name: e.name),onTap: (){
+             return BaseBreadcrumbNavItem(item: BaseBreadcrumbNavModel(name: e.name, children: []),onTap: (){
                controller.jumpUniversalNavigator(e.name);
              },);
            }),

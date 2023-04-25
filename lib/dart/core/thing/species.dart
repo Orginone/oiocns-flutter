@@ -13,6 +13,7 @@
 
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/util/toast_utils.dart';
 import '../../base/schema.dart';
 import 'dict.dart';
@@ -25,7 +26,7 @@ import 'ispecies.dart';
 class SpeciesItem extends ISpeciesItem {
   late bool isRoot;
   KernelApi kernel = KernelApi.getInstance();
-  SpeciesItem(XSpecies target, ISpeciesItem? parent,String spaceId) {
+  SpeciesItem(XSpecies target, ISpeciesItem? parent,String spaceId,ITarget team) {
     children = [];
     this.target = target;
     this.parent = parent;
@@ -36,9 +37,10 @@ class SpeciesItem extends ISpeciesItem {
     operation = [];
     isRoot = parent == null;
     isSelected = false;
+    this.team = team;
     if (target.nodes!.isNotEmpty) {
       for (var item in target.nodes!) {
-        children.add(SpeciesItem(item, this,spaceId));
+        children.add(SpeciesItem(item, this,spaceId,team));
       }
     }
     belongInfo = TargetShare(name: '奥集能平台', typeName: '平台');
@@ -111,7 +113,7 @@ class SpeciesItem extends ISpeciesItem {
     data.parentId = id;
     final res = await kernel.createSpecies(data);
     if (res.success && res.data != null) {
-      final newItem = SpeciesItem(res.data!, this,spaceId);
+      final newItem = SpeciesItem(res.data!, this,spaceId,team);
       children.add(newItem);
       return newItem;
     }
@@ -225,5 +227,31 @@ class SpeciesItem extends ISpeciesItem {
       ),
     ));
     return res.data!;
+  }
+
+  @override
+  Future<bool> deleteWork(String id) async{
+    var result = await kernel.deleteDefine(IdReq(id: id));
+    return result.data??false;
+  }
+
+  @override
+  Future<List<XFlowDefine>> loadWork({PageRequest? page}) async{
+    var result = await kernel.queryDefine(QueryDefineReq(speciesId: id,spaceId: team.id,page: page));
+    return result.data?.result??[];
+  }
+
+  @override
+  Future<XFlowDefine?> publishWork(CreateDefineReq data) async{
+    data.belongId = team.space?.id;
+    data.speciesId = id;
+    var result = await kernel.publishDefine(data);
+    return result.data;
+  }
+
+  @override
+  Future<FlowNode?> loadWorkNode(String id) async{
+    var result = await kernel.queryNodes(IdSpaceReq(id: id, spaceId: ''));
+    return result.data;
   }
 }

@@ -13,6 +13,8 @@
 // export type INullSpeciesItem = ISpeciesItem | undefined;
 /* 可为空的进度回调 */
 // export type OnProgressType = (p: number) => void | undefined;
+import 'package:orginone/dart/core/target/itarget.dart';
+
 import '../../base/model.dart';
 import '../../base/schema.dart';
 import 'idict.dart';
@@ -38,6 +40,7 @@ abstract class ISpeciesItem {
   /* 表单 */
   late List<XOperation> operation;
 
+  late ITarget team;
   late bool isSelected;
 
   late String spaceId;
@@ -110,6 +113,18 @@ abstract class ISpeciesItem {
    * 删除标准分类项
    */
   Future<bool> delete();
+
+  ///加载办事
+  Future<List<XFlowDefine>> loadWork({PageRequest? page});
+
+  ///发布办事
+  Future<XFlowDefine?> publishWork(CreateDefineReq data);
+
+  ///删除办事
+  Future<bool> deleteWork(String id);
+
+  ///查询办事节点
+  Future<FlowNode?> loadWorkNode(String id);
 
   bool isAllLast() {
     if (children.isEmpty) {

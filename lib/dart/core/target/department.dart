@@ -13,7 +13,7 @@ class Department extends BaseTarget implements IDepartment {
   final Function _onDeleted;
 
 
-  Department(XTarget target, this._onDeleted) : super(target) {
+  Department(XTarget target,ISpace? space, this._onDeleted) : super(target,space) {
     workings = [];
     departments = [];
     if ([TargetType.department, TargetType.college]
@@ -67,7 +67,7 @@ class Department extends BaseTarget implements IDepartment {
     if (res.success && res.data?.result != null) {
       departments = res.data!.result
               ?.map((a) => Department(
-                  a,
+                  a,space,
                   () => {
                         departments =
                             departments.where((i) => i.id != a.id).toList()
@@ -86,7 +86,7 @@ class Department extends BaseTarget implements IDepartment {
     final res = await super.getSubTargets([TargetType.working]);
     if (res.success && res.data?.result != null) {
       res.data!.result?.map((a) => Working(
-          a, () => {workings = workings.where((i) => i.id != a.id).toList()}));
+          a,space, () => {workings = workings.where((i) => i.id != a.id).toList()}));
     }
     return workings;
   }
@@ -103,7 +103,7 @@ class Department extends BaseTarget implements IDepartment {
     final res = await super.createSubTarget(data);
     if (res.success && res.data != null) {
       final department = Department(
-          res.data!,
+          res.data!,space,
           () => {
                 departments =
                     departments.where((i) => i.id != res.data!.id).toList()
@@ -131,7 +131,7 @@ class Department extends BaseTarget implements IDepartment {
     final res = await super.createSubTarget(data);
     if (res.success) {
       final working = Working(
-          res.data!,
+          res.data!,space,
           () => {
                 workings = workings.where((i) => i.id != res.data!.id).toList()
               });

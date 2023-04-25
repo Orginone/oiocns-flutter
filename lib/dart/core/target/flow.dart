@@ -7,7 +7,7 @@ import 'base.dart';
 
 class FlowTarget extends BaseTarget implements IFlow {
   late List<XOperation> defineRelations;
-  FlowTarget(XTarget target) : super(target);
+  FlowTarget(XTarget target,ISpace? space,) : super(target,space);
   @override
   Future<List<XFlowDefine>> getDefines({bool reload = false}) async {
     if (!reload && defines.isNotEmpty) {

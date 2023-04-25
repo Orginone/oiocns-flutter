@@ -23,7 +23,7 @@ class Company extends MarketTarget implements ICompany {
   late List<TargetType> departmentTypes;
   IAuthority? spaceAuthorityTree;
 
-  Company(XTarget target, String userId) : super(target) {
+  Company(XTarget target, String userId) : super(target,null) {
     userId = userId;
     departmentTypes = targetDepartmentTypes;
     subTeamTypes = [...departmentTypes, TargetType.working];
@@ -38,6 +38,7 @@ class Company extends MarketTarget implements ICompany {
     dict = Dict(target.id);
     stations = [];
     workings = [];
+    joinedGroup = [];
     departments = [];
     cohorts = [];
     searchTargetType = [TargetType.person, TargetType.group];
@@ -85,7 +86,7 @@ class Company extends MarketTarget implements ICompany {
     if (res.success && res.data?.result != null) {
       cohorts = res.data!.result
               ?.map((a) => Cohort(
-                  a,
+                  a,this,
                   () =>
                       {cohorts = cohorts.where((i) => i.id != a.id).toList()}))
               .toList() ??
@@ -139,7 +140,7 @@ class Company extends MarketTarget implements ICompany {
       final res = await createTarget(data);
       if (res.success) {
         final group = Group(
-            res.data!,
+            res.data!,space,
             () => {
                   joinedGroup = joinedGroup
                       .where((item) => item.id != res.data!.id)
@@ -166,7 +167,7 @@ class Company extends MarketTarget implements ICompany {
     final res = await createSubTarget(data);
     if (res.success) {
       final department = Department(
-          res.data!,
+          res.data!,this,
           () => {
                 departments = departments
                     .where((item) => item.id != res.data!.id)
@@ -186,7 +187,7 @@ class Company extends MarketTarget implements ICompany {
     final res = await createSubTarget(data);
     if (res.success) {
       final station = Station(
-          res.data!,
+          res.data!,this,
           () => {
                 stations =
                     stations.where((item) => item.id != res.data!.id).toList()
@@ -205,7 +206,7 @@ class Company extends MarketTarget implements ICompany {
     final res = await createSubTarget(data);
     if (res.success) {
       final working = Working(
-          res.data!,
+          res.data!,this,
           () => {
                 workings =
                     workings.where((item) => item.id != res.data!.id).toList()
@@ -224,7 +225,7 @@ class Company extends MarketTarget implements ICompany {
     final res = await createTarget(data);
     if (res.success && res.data != null) {
       final cohort = Cohort(
-          res.data!,
+          res.data!,this,
           () =>
               {cohorts = cohorts.where((i) => i.id != res.data!.id).toList()});
       cohorts.add(cohort);
@@ -340,7 +341,7 @@ class Company extends MarketTarget implements ICompany {
     if (res.success && res.data?.result != null) {
       departments = res.data!.result
               ?.map((a) => Department(
-                  a,
+                  a,this,
                   () => {
                         departments = departments
                             .where((item) => item.id != a.id)
@@ -361,7 +362,7 @@ class Company extends MarketTarget implements ICompany {
     if (res.success && res.data?.result != null) {
       stations = res.data!.result
               ?.map((a) => Station(
-                  a,
+                  a,this,
                   () => {
                         stations =
                             stations.where((item) => item.id != a.id).toList()
@@ -381,7 +382,7 @@ class Company extends MarketTarget implements ICompany {
     if (res.success && res.data?.result != null) {
       workings = res.data!.result
               ?.map((a) => Working(
-                  a,
+                  a,this,
                   () => {
                         workings =
                             workings.where((item) => item.id != a.id).toList()
@@ -401,7 +402,7 @@ class Company extends MarketTarget implements ICompany {
     if (res.result != null) {
       joinedGroup = res.result
               ?.map((a) => Group(
-                  a,
+                  a,this,
                   () => {
                         joinedGroup = joinedGroup
                             .where((item) => item.id != a.id)

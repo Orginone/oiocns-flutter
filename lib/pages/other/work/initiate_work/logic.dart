@@ -1,17 +1,42 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/pages/other/work/network.dart';
 import 'package:orginone/routers.dart';
+
 import 'state.dart';
 
 class InitiateWorkController extends BaseBreadcrumbNavController<InitiateWorkState> {
   final InitiateWorkState state = InitiateWorkState();
 
-  void jumpNext(WorkBreadcrumbNav work){
-    if(work.source is ISpace){
-     Get.toNamed(Routers.initiateWork,preventDuplicates: false,arguments: {"data":work});
-    }else{
-      switch(work.source as WorkEnum){
+  @override
+  void onReady() async {
+    // TODO: implement onReady
+    super.onReady();
+    if (state.model.value!.workEnum != null) {
+      switch (state.model.value!.workEnum) {
+        case WorkEnum.outAgency:
+          await WorkNetWork.initGroup(state.model.value!);
+          break;
+        case WorkEnum.workCohort:
+          await WorkNetWork.initCohorts(state.model.value!);
+          break;
+      }
+    }
+    if(state.model.value?.name == "发起办事"){
+      await WorkNetWork.initSpecies(state.model.value!.children[0]);
+    }
+    if(state.model.value?.name == state.model.value?.space?.teamName){
+      await WorkNetWork.initSpecies(state.model.value!);
+    }
+    state.model.refresh();
+  }
+
+  void jumpNext(WorkBreadcrumbNav work) {
+    if (work.space != null) {
+      Get.toNamed(Routers.initiateWork,
+          preventDuplicates: false, arguments: {"data": work});
+    } else {
+      switch (work.workEnum!) {
         case WorkEnum.addFriends:
           // TODO: Handle this case.
           break;
@@ -21,7 +46,10 @@ class InitiateWorkController extends BaseBreadcrumbNavController<InitiateWorkSta
         case WorkEnum.addGroup:
           // TODO: Handle this case.
           break;
-        case WorkEnum.work:
+        case WorkEnum.outAgency:
+          // TODO: Handle this case.
+          break;
+        case WorkEnum.workCohort:
           // TODO: Handle this case.
           break;
       }

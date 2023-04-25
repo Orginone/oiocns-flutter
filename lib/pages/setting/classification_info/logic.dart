@@ -74,7 +74,7 @@ class ClassificationInfoController
     try {
       var flow = state.flow.firstWhere((element) => element.name == name);
       if (operation == "delete") {
-        var success = await state.data.space.define.deleteDefine(flow.id!);
+        var success = await state.species.deleteWork(flow.id!);
         if (success) {
           state.flow.remove(flow);
           state.flow.refresh();
@@ -211,7 +211,7 @@ class ClassificationInfoController
             sourceIds: selected.map((e) => e.id).join(','));
 
       }
-      data = await state.data.space.define.publishDefine(model);
+      data = await state.species.publishWork(model);
       if (data != null) {
         await loadFlow();
       }
@@ -220,7 +220,7 @@ class ClassificationInfoController
 
   Future<void> loadFlow() async {
     state.flow.value =
-        await state.data.space.define.loadFlowDefine(state.species.id);
+        await state.species.loadWork();
   }
 
   Future<void> loadAttrs({bool reload = false}) async {

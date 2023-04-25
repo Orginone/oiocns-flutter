@@ -9,7 +9,6 @@ import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/authority/identity.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
-import 'package:orginone/dart/core/thing/flowDefine.dart';
 import 'package:orginone/dart/core/thing/property.dart';
 import 'package:uuid/uuid.dart';
 import 'package:orginone/dart/core/thing/index.dart' as thing; 
@@ -61,7 +60,7 @@ class BaseTarget extends ITarget {
 
   KernelApi kernel = KernelApi.getInstance();
 
-  BaseTarget(XTarget target) {
+  BaseTarget(XTarget target, ISpace? iSpace) {
     key = uuid.v4();
     this.target = target;
     createTargetType = [];
@@ -72,8 +71,8 @@ class BaseTarget extends ITarget {
     memberTypes = [TargetType.person];
     typeName = target.typeName;
     appendTarget([target]);
-    define = FlowDefine(target.id);
     property = Property(target.id);
+    space = iSpace;
     subTeamTypes = [];
   }
 
@@ -97,7 +96,7 @@ class BaseTarget extends ITarget {
     if(!reload && species.isNotEmpty){
       return species;
     }
-    species = await thing.loadSpeciesTree(id,target.belongId,upTeam);
+    species = await thing.loadSpeciesTree(id,target.belongId,this,upTeam);
 
     return species;
   }

@@ -8,7 +8,7 @@ class Group extends BaseTarget implements IGroup {
   @override
   late List<IGroup> subGroup;
   final Function _onDeleted;
-  Group(XTarget target, this._onDeleted) : super(target) {
+  Group(XTarget target, ISpace? space,this._onDeleted) : super(target,space) {
     subGroup = [];
     memberTypes = companyTypes;
     subTeamTypes = [TargetType.group];
@@ -59,7 +59,7 @@ class Group extends BaseTarget implements IGroup {
       final res = await createTarget(data);
       if (res.success) {
         final group = Group(
-            res.data!,
+            res.data!,space,
             () => {
                   subGroup =
                       subGroup.where((item) => item.id != res.data!.id).toList()
@@ -100,7 +100,7 @@ class Group extends BaseTarget implements IGroup {
     if (res.success && res.data?.result != null) {
       subGroup = res.data!.result
               ?.map((a) => Group(
-                  a,
+                  a,space,
                   () => {
                         subGroup =
                             subGroup.where((item) => item.id != a.id).toList()

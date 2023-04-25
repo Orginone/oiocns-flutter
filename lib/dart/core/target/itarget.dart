@@ -5,7 +5,6 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/thing/dict.dart';
-import 'package:orginone/dart/core/thing/flowDefine.dart';
 import 'package:orginone/dart/core/thing/property.dart';
 
 import '../market/model.dart';
@@ -53,11 +52,13 @@ abstract class ITarget {
   // 共享信息
   late TargetShare shareInfo;
 
+  //加载组织的空间
+  ISpace? space;
+
   List<XTarget> members = [];
 
   List<ISpeciesItem> species = [];
 
-  late FlowDefine define;
 
   late Property property;
 

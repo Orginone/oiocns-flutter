@@ -51,7 +51,7 @@ class SettingNetWork {
       }
     }
 
-    var group = await (model.space as ICompany).getJoinedGroups(reload: true);
+    var group = await (model.space as ICompany).getJoinedGroups();
     await getNextLvOutAgency(group,model);
   }
 

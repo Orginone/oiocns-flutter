@@ -41,7 +41,7 @@ class Person extends MarketTarget implements IPerson {
   @override
   late IAuthority? spaceAuthorityTree;
 
-  Person(XTarget target) : super(target) {
+  Person(XTarget target,) : super(target,null) {
     super.searchTargetType = [
       TargetType.cohort,
       TargetType.person,
@@ -134,7 +134,7 @@ class Person extends MarketTarget implements IPerson {
     final res = await getjoinedTargets([TargetType.cohort], id);
     if (res.result != null) {
       cohorts = res.result?.map((a) => Cohort(
-          a, () => {cohorts = cohorts.where((i) => i.id != a.id).toList()})).toList()??[];
+          a, space,() => {cohorts = cohorts.where((i) => i.id != a.id).toList()})).toList()??[];
     }
     return cohorts;
   }
@@ -176,7 +176,7 @@ class Person extends MarketTarget implements IPerson {
     ));
     if (res.success && res.data != null) {
       final cohort = Cohort(
-          res.data!,
+          res.data!,space,
           () =>
               {cohorts = cohorts.where((i) => i.id != res.data!.id).toList()});
       cohorts.add(cohort);
