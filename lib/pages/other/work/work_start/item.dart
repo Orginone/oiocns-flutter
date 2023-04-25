@@ -16,11 +16,13 @@ class Item extends StatelessWidget {
 
   const Item({Key? key, required this.define}) : super(key: key);
 
+
+  WorkStartController get work => Get.find<WorkStartController>();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        FlowNode? node = await WorkStartNetWork.getDefineNode(define.id!);
+        FlowNode? node = await work.state.work.space!.loadWorkNode(define.id!);
         if (node != null &&
             node.operations != null &&
             node.operations!.isNotEmpty) {
@@ -53,7 +55,7 @@ class Item extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "备注:${define.remark ?? ""}",
+                  "需求主体:${work.state.work.space?.teamName ?? ""}",
                   style: TextStyle(color: Colors.black38, fontSize: 16.sp),
                 ),
                 Text(

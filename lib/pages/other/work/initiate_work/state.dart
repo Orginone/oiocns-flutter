@@ -19,6 +19,7 @@ class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
               name: value.teamName,
               id: value.id,
               space: value,
+              workType: WorkType.organization,
               children: [
                 WorkBreadcrumbNav(
                     name: WorkEnum.outAgency.label,
@@ -64,7 +65,7 @@ class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
 class WorkBreadcrumbNav extends BaseBreadcrumbNavModel<WorkBreadcrumbNav> {
   WorkEnum? workEnum;
   ISpace? space;
-
+  WorkType? workType;
   WorkBreadcrumbNav(
       {super.id = '',
       super.name = '',
@@ -72,17 +73,16 @@ class WorkBreadcrumbNav extends BaseBreadcrumbNavModel<WorkBreadcrumbNav> {
       super.image,
       super.source,
       this.workEnum,
-      this.space}){
+      this.space,this.workType}){
    this.children = children;
   }
 }
 
 enum WorkType {
   personal("个人"),
-  organization("组织");
-
+  organization("组织"),
+  group("组");
   final String label;
-
   const WorkType(this.label);
 }
 

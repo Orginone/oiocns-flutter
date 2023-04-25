@@ -3,23 +3,19 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/thing/ispecies.dart';
+import 'package:orginone/pages/other/work/initiate_work/state.dart';
 
 class WorkStartState extends BaseGetState{
-  late TabController tabController;
 
-  late ISpeciesItem species;
+  late WorkBreadcrumbNav work;
 
+  var define = <XFlowDefine>[].obs;
 
   WorkStartState(){
-    species = Get.arguments['species'];
+    work = Get.arguments['data'];
   }
 
 }
-
-
-const List<String> tabTitle = [
-  '发起',
-  '已发起',
-];

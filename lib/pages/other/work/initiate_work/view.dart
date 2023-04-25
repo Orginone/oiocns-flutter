@@ -37,6 +37,7 @@ class InitiateWorkPage extends BaseBreadcrumbNavMultiplexPage<
           ...child.children.map((e) {
             return InitiateWorkItem(
               item: e,
+              showCreateIcon: e.space!=null,
               onTap: () {
                 controller.jumpWorkList(e);
               },

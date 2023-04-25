@@ -10,7 +10,12 @@ class WorkListPage extends BaseGetView<WorkListController,WorkListState>{
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: state.data.name,
+      titleName: state.work.name,
+      actions: [
+        IconButton(onPressed: (){
+          controller.createWork();
+    }, icon: Icon(Icons.add,color: Colors.black,)),
+      ],
     );
   }
 }

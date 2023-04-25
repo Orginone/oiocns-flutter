@@ -473,5 +473,17 @@ class BaseTarget extends ITarget {
   }
 
 
+  @override
+  Future<List<XFlowDefine>> loadWork({PageRequest? page}) async{
+    var result = await kernel.queryDefine(QueryDefineReq(speciesId: '0',spaceId:id,page: page));
+    return result.data?.result??[];
+  }
+
+
+  @override
+  Future<FlowNode?> loadWorkNode(String id) async{
+    var result = await kernel.queryNodes(IdSpaceReq(id: id, spaceId: ''));
+    return result.data;
+  }
 
 }

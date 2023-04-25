@@ -24,10 +24,10 @@ class InitiateWorkController extends BaseBreadcrumbNavController<InitiateWorkSta
     }
     if(state.model.value?.name == "发起办事"){
       await WorkNetWork.initSpecies(state.model.value!.children[0]);
-    }
-    if(state.model.value?.name == state.model.value?.space?.teamName){
+    }else if(state.model.value?.workType == WorkType.organization){
       await WorkNetWork.initSpecies(state.model.value!);
     }
+
     state.model.refresh();
   }
 
@@ -37,7 +37,7 @@ class InitiateWorkController extends BaseBreadcrumbNavController<InitiateWorkSta
   }
 
   void createWork(WorkBreadcrumbNav work) {
-
+    Get.toNamed(Routers.workStart,arguments: {"data":work});
   }
 
   void jumpWorkList(WorkBreadcrumbNav work) {

@@ -1,22 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
-import 'package:orginone/widget/keep_alive_widget.dart';
-
+import 'item.dart';
 import 'logic.dart';
-import 'start/view.dart';
 import 'state.dart';
 
 
-class WorkStartPage extends BaseGetView<WorkStartController,WorkStartState>{
+class WorkStartPage extends BaseGetView<WorkStartController, WorkStartState> {
   @override
   Widget buildView() {
     return GyScaffold(
       titleName: "事项",
-      body:  KeepAliveWidget(child: StartPage(state.species)),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.only(top: 10.h),
+          child: Obx(() {
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return Item(
+                  define: state.define[index],
+                );
+              },
+              itemCount: state.define.length,
+            );
+          }),
+        ),
+      ),
     );
   }
 }

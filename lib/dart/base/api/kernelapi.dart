@@ -2456,7 +2456,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'QueryOperationItems',
-        params: params,
+        params: params.toJson(),
       ),
       XOperationItemArray.fromJson,
     );

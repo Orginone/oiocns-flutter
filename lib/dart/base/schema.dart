@@ -1933,61 +1933,6 @@ class XFlowNode {
   }
 }
 
-class XBindOperation {
-  String? id;
-  String? name;
-  String? code;
-  bool? public;
-  String? remake;
-  String? speciesId;
-  String? belongId;
-  int? status;
-  String? createUser;
-  String? updateUser;
-  String? version;
-  String? createTime;
-  String? updateTime;
-  List<XOperationItem> operationItems = [];
-
-  XBindOperation();
-
-  XBindOperation.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    code = json['code'];
-    public = json['public'];
-    remake = json['remake'];
-    speciesId = json['speciesId'];
-    belongId = json['belongId'];
-    status = json['status'];
-    createUser = json['createUser'];
-    updateUser = json['updateUser'];
-    version = json['version'];
-    createTime = json['createTime'];
-    updateTime = json['updateTime'];
-  }
-
-  Future<void> getOperationItems() async {
-    var orgCtrl = Get.find<SettingController>();
-    ResultType<XOperationItemArray> result = await KernelApi.getInstance()
-        .queryOperationItems(IdSpaceReq(
-            id: id!,
-            spaceId: orgCtrl.user?.id??"",
-            page: PageRequest(offset: 0, limit: 20, filter: '')));
-    operationItems = result.data?.result ?? [];
-    for (var element in operationItems) {
-      if (element.rule?.widget == "dict") {
-        XAttribute? attr = await CommonTreeManagement().findXAttribute(
-            specieId: speciesId!, attributeId: element.attrId ?? "");
-        if (attr != null) {
-          element.rule!.dictItems = attr.dict!.dictItems;
-        }
-      }
-      element.fields = element.toFields();
-    }
-  }
-}
-
 //流程定义节点查询返回集合
 class XFlowNodeArray {
   // 便宜量
@@ -4170,12 +4115,12 @@ class XOperation {
     return retList;
   }
 
-  Future<void> getOperationItems() async {
+  Future<void> getOperationItems(String spaceId) async {
     var orgCtrl = Get.find<SettingController>();
     ResultType<XOperationItemArray> result = await KernelApi.getInstance()
         .queryOperationItems(IdSpaceReq(
             id: id!,
-            spaceId: orgCtrl.user?.id??"",
+            spaceId: spaceId,
             page: PageRequest(offset: 0, limit: 20, filter: '')));
     items = result.data?.result ?? [];
     for (var element in items!) {

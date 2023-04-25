@@ -101,7 +101,7 @@ class WorkNetWork {
             space: model.space,
             source: value,
             image: value.target.avatarThumbnail(),
-            name: value.teamName, children: []);
+            name: value.teamName, children: [],workType: WorkType.group);
         value.subGroup = await value.getSubGroups();
         if (value.subTeam.isNotEmpty) {
           await getNextLvOutAgency(value.subGroup, child);
@@ -124,6 +124,7 @@ class WorkNetWork {
           source: value,
           image: value.target.avatarThumbnail(),
           name: value.teamName, children: [],
+          workType: WorkType.group
          );
       await WorkNetWork.initSpecies(child);
       model.children.add(child);
@@ -131,13 +132,16 @@ class WorkNetWork {
   }
 
   static Future<void> initSpecies(WorkBreadcrumbNav model) async{
+    if(model.children.where((element) => element.source?.target?.code == 'matters').isNotEmpty){
+      return;
+    }
     List<ISpeciesItem>? species = await model.space?.loadSpeciesTree();
     void loopSpeciesTree(List<ISpeciesItem> tree,WorkBreadcrumbNav model){
       for (var element in tree) {
         var child = WorkBreadcrumbNav(
             space: model.space,
             source: element,
-            name: element.name, children: []);
+            name: element.name, children: [],workType: WorkType.group);
         if(element.children.isNotEmpty){
           loopSpeciesTree(element.children,child);
         }

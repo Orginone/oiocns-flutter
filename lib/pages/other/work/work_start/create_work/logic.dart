@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/event/choice.dart';
+import 'package:orginone/pages/other/work/work_start/logic.dart';
 import 'package:orginone/pages/other/work/work_start/network.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -9,6 +10,8 @@ import 'state.dart';
 
 class CreateWorkController extends BaseController<CreateWorkState> {
   final CreateWorkState state = CreateWorkState();
+
+  WorkStartController get work => Get.find<WorkStartController>();
 
   @override
   void onReady() async {
@@ -43,7 +46,7 @@ class CreateWorkController extends BaseController<CreateWorkState> {
   Future init() async{
     for (var element in state.node.operations!) {
       if (element.items == null) {
-        await element.getOperationItems();
+        await element.getOperationItems(work.state.work.space!.id);
       }
     }
     state.show.value = true;
