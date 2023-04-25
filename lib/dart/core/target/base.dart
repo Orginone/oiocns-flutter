@@ -76,6 +76,7 @@ class BaseTarget extends ITarget {
     appendTarget([target]);
     property = Property(target.id);
     subTeamTypes = [];
+    species = [];
     chat = createChat(userId, space?.id??"", target, [
       space?.teamName??"",
       "${target.typeName}群"

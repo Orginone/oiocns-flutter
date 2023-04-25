@@ -11,9 +11,9 @@ class SettingCenterState extends BaseBreadcrumbNavState {
 
   SettingCenterState(){
     spaces = [];
-    var joinedCompanies = settingCtrl.user!.joinedCompany;
+    var joinedCompanies = settingCtrl.user.joinedCompany;
     spaces.add(
-        BaseBreadcrumbNavModel(name: settingCtrl.user?.teamName??"",id:  settingCtrl.user?.id??"",image:settingCtrl.user?.target.avatarThumbnail(),source:  settingCtrl.user, children: [])
+        BaseBreadcrumbNavModel(name: settingCtrl.user.teamName??"",id:  settingCtrl.user?.id??"",image:settingCtrl.user?.target.avatarThumbnail(),source:  settingCtrl.user, children: [])
     );
     for (var element in joinedCompanies) {
       spaces.add(
