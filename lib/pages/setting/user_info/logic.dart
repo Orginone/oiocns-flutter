@@ -27,13 +27,13 @@ class UserInfoController extends BaseController<UserInfoState>
   }
 
   Future<void> init() async {
-    var users = await state.settingController.space
-        .loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
+    // var users = await state.settingController.space
+    //     .loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
     var company =
         await state.settingController.user?.getJoinedCompanys(reload: true);
     state.unitMember.clear();
     state.joinCompany.clear();
-    state.unitMember.addAll(users.result ?? []);
+    // state.unitMember.addAll(users.result ?? []);
     state.joinCompany.addAll(company ?? []);
   }
 

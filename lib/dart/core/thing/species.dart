@@ -43,16 +43,15 @@ class SpeciesItem extends ISpeciesItem {
   }
 
   @override
-  Future<XAttributeArray> loadAttrs(String id, bool recursionOrg,
-      bool recursionSpecies, PageRequest page) async {
+  Future<XAttributeArray> loadAttrs({bool reload = true}) async {
     final res = await kernel.querySpeciesAttrs(IdSpeciesReq(
-        id: this.id,
+        id: id,
         spaceId: id,
-        recursionOrg: recursionOrg,
-        recursionSpecies: recursionSpecies,
+        recursionOrg: true,
+        recursionSpecies: true,
         page: PageRequest(
-          offset: page.offset,
-          limit: page.limit,
+          offset: 0,
+          limit: 100000,
           filter: '',
         )));
     attrs = res.data?.result??[];

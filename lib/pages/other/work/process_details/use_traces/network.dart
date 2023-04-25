@@ -16,7 +16,7 @@ class UseTracesNetWork {
         },
       },
       "userData": [],
-    }, setting.isUserSpace()?"user":"company");
+    }, setting.user.id);
     if(result.success){
       return XThingArchives.fromJson(result.data['data'][0]);
     }

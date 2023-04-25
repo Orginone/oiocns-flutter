@@ -129,7 +129,7 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
   List<TargetType> targetType = [];
   switch (model.source) {
    case SpaceEnum.innerAgency:
-    targetType.addAll(setting.space.subTeamTypes);
+    // targetType.addAll(setting.space.subTeamTypes);
     break;
    case SpaceEnum.outAgency:
     targetType.add(TargetType.group);

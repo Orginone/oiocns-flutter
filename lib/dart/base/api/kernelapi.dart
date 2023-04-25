@@ -305,7 +305,7 @@ class KernelApi {
    * @param {model.PropertyModel} params 请求参数
    * @returns {model.ResultType<schema.XProperty>} 请求结果
    */
-  Future<ResultType<XProperty>> createProperty(PropertyModel params) async{
+  Future<ResultType<XProperty>> createProperty(PropertyModel params) async {
     return await request(
       ReqestType(
         module: 'thing',
@@ -321,7 +321,7 @@ class KernelApi {
    * @param {model.PropertyModel} params 请求参数
    * @returns {model.ResultType<schema.XProperty>} 请求结果
    */
-  Future<ResultType<XProperty>> updateProperty(PropertyModel params) async{
+  Future<ResultType<XProperty>> updateProperty(PropertyModel params) async {
     return await request(
       ReqestType(
         module: 'thing',
@@ -337,24 +337,23 @@ class KernelApi {
    * @param {model.PropertyModel} params 请求参数
    * @returns {model.ResultType<schema.XProperty>} 请求结果
    */
-  Future<ResultType<bool>> deleteProperty(IdReq params) async{
+  Future<ResultType<bool>> deleteProperty(IdReq params) async {
     return await request(
       ReqestType(
         module: 'thing',
         action: 'DeleteProperty',
         params: params.toJson(),
       ),
-          (item) => item as bool,
+      (item) => item as bool,
     );
   }
-
 
   /*
    * 根据id查询分类
    * @param {model.IdBelongReq} params 请求参数
    * @returns {model.ResultType<schema.XPropertyArray>} 请求结果
    */
-  Future<ResultType<XPropertyArray>> queryPropertys(IdBelongReq params) async{
+  Future<ResultType<XPropertyArray>> queryPropertys(IdBelongReq params) async {
     return await request(
       ReqestType(
         module: 'thing',
@@ -370,7 +369,7 @@ class KernelApi {
    * @param {model.IdBelongReq} params 请求参数
    * @returns {model.ResultType<schema.XDictArray>} 请求结果
    */
-  Future<ResultType<XDictArray>> queryDict(IdBelongReq params) async{
+  Future<ResultType<XDictArray>> queryDict(IdBelongReq params) async {
     return await request(
       ReqestType(
         module: 'thing',
@@ -608,7 +607,8 @@ class KernelApi {
   /// 查询分类树
   /// @param {IDBelongReq} params 请求参数
   /// @returns {ResultType<XSpecies>} 请求结果
-  Future<ResultType<XSpeciesArray>> querySpeciesTree(GetSpeciesModel params) async {
+  Future<ResultType<XSpeciesArray>> querySpeciesTree(
+      GetSpeciesModel params) async {
     return await request(
       ReqestType(
         module: 'thing',
@@ -995,15 +995,21 @@ class KernelApi {
   /// 重置密码
   /// @param {IdReqModel} params 请求参数
   /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> resetPassword(ResetPwdModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'ResetPassword',
-        params: params.toJson(),
-      ),
-      (item) => item as bool,
-    );
+  Future<ResultType<bool>> resetPassword(
+    String userName,
+    String password,
+    String privateKey,
+  ) async {
+    var req = {
+      "userName": userName,
+      "password": password,
+      "privateKey": privateKey
+    };
+    if (_storeHub.isConnected) {
+      return await _storeHub.invoke('ResetPassword', args: [req]);
+    } else {
+      return await _restRequest('resetpassword', req);
+    }
   }
 
   /*
@@ -2470,11 +2476,11 @@ class KernelApi {
     );
   }
 
-
   /// 查询发起的流程实例
   /// @param {FlowReq} params 请求参数
   /// @returns {ResultType<XFlowInstanceArray>} 请求结果
-  Future<ResultType<XFlowInstanceArray>> queryInstanceByApply(FlowReq params) async {
+  Future<ResultType<XFlowInstanceArray>> queryInstanceByApply(
+      FlowReq params) async {
     return await request(
       ReqestType(
         module: 'flow',
@@ -2502,14 +2508,14 @@ class KernelApi {
   /// 查询待审批任务、待审阅抄送
   /// @param {IdReq} params 请求参数
   /// @returns {ResultType<XFlowTaskArray>} 请求结果
-  Future<ResultType<XFlowTaskArray>> queryApproveTask(IdReq params) async {
+  Future<ResultType<XFlowTaskHistoryArray>> queryApproveTask() async {
     return await request(
       ReqestType(
         module: 'flow',
         action: 'QueryApproveTask',
-        params: params,
+        params: {},
       ),
-      XFlowTaskArray.fromJson,
+      XFlowTaskHistoryArray.fromJson,
     );
   }
 
@@ -2685,7 +2691,9 @@ class KernelApi {
   }
 
   Future<ResultType<T>> request<T>(
-      ReqestType req, T Function(Map<String, dynamic>)? cvt) async {
+    ReqestType req,
+    T Function(Map<String, dynamic>)? cvt,
+  ) async {
     dynamic raw;
     if (_storeHub.isConnected) {
       log.info("====> req:${req.toJson()}");
@@ -2719,6 +2727,4 @@ class KernelApi {
       hasToken: hasToken,
     );
   }
-
-
 }

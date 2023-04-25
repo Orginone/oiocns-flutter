@@ -32,7 +32,7 @@ class CommonTreeManagement {
     ResultType<XDictItemArray> res = await kernel.queryDictItems(
       IdSpaceReq(
         id: "27466608056615936",
-        spaceId: _setting.space.id ?? "",
+        spaceId: '0',
         page: PageRequest(
           offset: 0,
           limit: 99999,
@@ -165,8 +165,7 @@ class CommonTreeManagement {
           .getAllList()
           .firstWhere((element) => element.id == specieId);
       if (data.attrs.isEmpty) {
-        await data.loadAttrs(_setting.space.id, true, true,
-            PageRequest(offset: 0, limit: 9999, filter: ''));
+        await data.loadAttrs();
       }
       return data.attrs.firstWhere((element) => element.id == attributeId);
     }catch(e){

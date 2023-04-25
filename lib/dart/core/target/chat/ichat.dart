@@ -10,17 +10,20 @@ abstract class IChat {
   late String chatId;
   late RxBool isTopping;
   late String spaceId;
-  late String spaceName;
   late RxInt noReadCount;
   late RxInt personCount;
   late ChatModel target;
   late RxList<XImMsg> messages;
   late RxList<XTarget> persons;
-  late Rx<XImMsg?> lastMessage;
   late TargetShare shareInfo;
+  late int lastMsgTime;
+  late Rx<XImMsg?> lastMessage;
 
   /// 获取会话缓存
   ChatCache getCache();
+
+  /// 销毁会话
+  destroy();
 
   /// 加载会话缓存
   /// [chatCache] 缓存数据
@@ -46,7 +49,7 @@ abstract class IChat {
   Future<bool> clearMessage();
 
   /// 接收消息
-  receiveMessage(XImMsg msg, bool noRead);
+  receiveMessage(XImMsg msg);
 }
 
 /// 会话组的抽象
@@ -59,18 +62,14 @@ abstract class IChatGroup {
 
 /// 单个会话缓存
 class ChatCache {
-  final ChatModel target;
-  final String spaceId;
-  final String spaceName;
+  final String fullId;
   final bool isTopping;
   final int noReadCount;
   final int? lastMsgTime;
   final XImMsg? lastMessage;
 
   const ChatCache({
-    required this.target,
-    required this.spaceId,
-    required this.spaceName,
+    required this.fullId,
     required this.isTopping,
     required this.noReadCount,
     this.lastMsgTime,
@@ -78,9 +77,7 @@ class ChatCache {
   });
 
   ChatCache.fromMap(Map<String, dynamic> map)
-      : target = ChatModel.fromJson(map["target"]),
-        spaceId = map["spaceId"],
-        spaceName = map["spaceName"],
+      : fullId = map["fullId"],
         noReadCount = map["noReadCount"],
         isTopping = map["isToping"] ?? false,
         lastMsgTime = map["lastMsgTime"],
@@ -90,9 +87,7 @@ class ChatCache {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    json["target"] = target.toJson();
-    json["spaceId"] = spaceId;
-    json["spaceName"] = spaceName;
+    json["fullId"] = fullId;
     json["isToping"] = isTopping;
     json["noReadCount"] = noReadCount;
     json["lastMsgTime"] = lastMsgTime;

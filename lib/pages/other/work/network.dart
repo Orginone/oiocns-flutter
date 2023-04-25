@@ -13,20 +13,18 @@ class WorkNetWork {
   static Future<List<XFlowTask>> getApproveTask({required String type}) async {
     List<XFlowTask> tasks = [];
 
-    SettingController setting = Get.find<SettingController>();
-
-    ResultType<XFlowTaskArray> result = await KernelApi.getInstance()
-        .queryApproveTask(IdReq(id: setting.space.id));
-
-    if (result.success) {
-      tasks = result.data?.result ?? [];
-      if(type == "待办"){
-        type = "审批";
-      }
-      tasks.removeWhere((element) => element.flowNode?.nodeType != type);
-    } else {
-      ToastUtils.showMsg(msg: result.msg);
-    }
+    // ResultType<XFlowTaskArray> result = await KernelApi.getInstance()
+    //     .queryApproveTask(IdReq(id: '0'));
+    //
+    // if (result.success) {
+    //   tasks = result.data?.result ?? [];
+    //   if(type == "待办"){
+    //     type = "审批";
+    //   }
+    //   tasks.removeWhere((element) => element.flowNode?.nodeType != type);
+    // } else {
+    //   ToastUtils.showMsg(msg: result.msg);
+    // }
     return tasks;
   }
 
@@ -37,7 +35,7 @@ class WorkNetWork {
 
     ResultType<XFlowTaskHistoryArray> result = await KernelApi.getInstance()
         .queryRecord(RecordSpaceReq(
-            spaceId: setting.space.id,
+            spaceId: '0',
             page: PageRequest(offset: 0, limit: 9999, filter: ''), status: status));
 
     if (result.success) {
@@ -66,7 +64,7 @@ class WorkNetWork {
     List<XOperationItem> items = [];
     SettingController setting = Get.find<SettingController>();
     ResultType<XOperationItemArray> result = await KernelApi.getInstance()
-        .queryOperationItems(IdSpaceReq(id: id,spaceId: setting.space.id, page: PageRequest(offset: 0, limit: 9999, filter: '')));
+        .queryOperationItems(IdSpaceReq(id: id,spaceId: '0', page: PageRequest(offset: 0, limit: 9999, filter: '')));
 
     if (result.success) {
       items = result.data?.result??[];

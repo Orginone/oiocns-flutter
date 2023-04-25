@@ -30,7 +30,7 @@ class Item extends StatelessWidget {
   Widget build(BuildContext context) {
     String title = '';
     if(type == WorkEnum.done || type == WorkEnum.completed){
-      title = history?.historyTask?.flowInstance?.title??"";
+      // title = history?.historyTask?.flowInstance?.title??"";
     }else{
       title = task?.flowInstance?.title??"";
     }
@@ -62,7 +62,7 @@ class Item extends StatelessWidget {
         onTap: (){
           var data;
           if(type == WorkEnum.done || type == WorkEnum.completed ){
-            data = history?.historyTask;
+            // data = history?.historyTask;
           }else{
             data = task;
           }
@@ -163,7 +163,8 @@ class Item extends StatelessWidget {
     if(type != WorkEnum.done && type != WorkEnum.completed){
       return Container();
     }
-    return Container(margin: EdgeInsets.only(top: 20.h),child: Text("备注:${history?.comment??""}"));
+    // return Container(margin: EdgeInsets.only(top: 20.h),child: Text("备注:${history?.comment??""}"));
+    return Container(margin: EdgeInsets.only(top: 20.h),child: Text("备注:${""}"));
   }
 
   Widget role() {
@@ -182,7 +183,7 @@ class Item extends StatelessWidget {
       children: [
         Text.rich(TextSpan(children: [
           TextSpan(
-              text: setting.findTargetShare(userId),
+              text: setting.provider.findNameById(userId),
               style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500)),
           TextSpan(
               text: roleType,

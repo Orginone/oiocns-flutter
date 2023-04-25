@@ -41,8 +41,7 @@ class ClassificationInfoController extends BaseController<ClassificationInfoStat
     // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
-    await state.species.loadAttrs(state.species.target.belongId, true, true,
-        PageRequest(offset: 0, limit: 999, filter: ''));
+    await state.species.loadAttrs();
     LoadingDialog.dismiss(context);
   }
 

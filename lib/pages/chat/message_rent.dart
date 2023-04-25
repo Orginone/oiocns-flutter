@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/controller/chat/chat_controller.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/chat/widgets/message_item_widget.dart';
 
-class MessageRecent extends GetView<ChatController> {
+class MessageRecent extends GetView<SettingController> {
   const MessageRecent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      int chatSize = controller.getChatSize();
+      var chats = controller.user.allChats();
       return ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
-        itemCount: chatSize,
+        itemCount: chats.length,
         itemBuilder: (BuildContext context, int index) {
-          var chat = controller.chats[index];
-          return MessageItemWidget(chat: chat, remove: controller.removeChat);
+          var chat = chats[index];
+          return MessageItemWidget(chat: chat);
         },
       );
     });

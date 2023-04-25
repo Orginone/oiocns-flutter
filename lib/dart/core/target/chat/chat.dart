@@ -4,12 +4,14 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/chat/ichat.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
 import 'package:orginone/dart/core/target/targetMap.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/util/encryption_util.dart';
 
 const hisMsgCollName = 'chat-message';
+var nullTime = DateTime(2022, 7, 1).millisecondsSinceEpoch;
 
 class BaseChat implements IChat {
   @override
@@ -37,22 +39,19 @@ class BaseChat implements IChat {
   String spaceId;
 
   @override
-  String spaceName;
-
-  @override
   ChatModel target;
 
   @override
   String userId;
 
   @override
+  int lastMsgTime;
+
+  @override
   Rx<XImMsg?> lastMessage;
 
-  int? lastMsgTime;
-
-  BaseChat(this.spaceId, String name, ChatModel model, this.userId)
-      : spaceName = name,
-        target = model,
+  BaseChat(this.spaceId, ChatModel model, this.userId)
+      : target = model,
         messages = <XImMsg>[].obs,
         persons = <XTarget>[].obs,
         personCount = 0.obs,
@@ -60,9 +59,19 @@ class BaseChat implements IChat {
         noReadCount = 0.obs,
         isTopping = false.obs,
         fullId = '$spaceId-${model.id}',
+        lastMsgTime = nullTime,
         lastMessage = Rxn() {
     appendShare(target.id, shareInfo);
+    kernelApi.anystore.subscribed("$hisMsgCollName.T$fullId", userId, (data) {
+      if (data.length == 0) {
+        return;
+      }
+      loadCache(ChatCache.fromMap(data));
+    });
   }
+
+  @override
+  destroy() {}
 
   @override
   TargetShare get shareInfo {
@@ -70,8 +79,8 @@ class BaseChat implements IChat {
       name: target.name,
       typeName: target.typeName,
     );
-    if (target.photo?.isNotEmpty ?? false) {
-      var map = jsonDecode(target.photo!);
+    if (target.photo.isNotEmpty && "{}" != target.photo) {
+      var map = jsonDecode(target.photo);
       share.avatar = FileItemShare.fromJson(map);
     }
     return share;
@@ -85,9 +94,7 @@ class BaseChat implements IChat {
   @override
   ChatCache getCache() {
     return ChatCache(
-      target: target,
-      spaceId: spaceId,
-      spaceName: spaceName,
+      fullId: fullId,
       noReadCount: noReadCount.value,
       isTopping: isTopping.value,
       lastMsgTime: lastMsgTime,
@@ -96,16 +103,22 @@ class BaseChat implements IChat {
   }
 
   @override
-  loadCache(ChatCache chatCache) {
-    var newLastMessage = chatCache.lastMessage;
-    if (newLastMessage?.id != lastMessage.value?.id) {
-      if (newLastMessage != null) {
-        messages.insert(0, newLastMessage);
+  loadCache(ChatCache cache) {
+    isTopping.value = cache.isTopping;
+    if (cache.noReadCount != noReadCount.value) {
+      noReadCount.value = cache.noReadCount;
+    }
+    lastMsgTime = cache.lastMsgTime ?? nullTime;
+    if (cache.lastMessage != null &&
+        cache.lastMessage?.id != lastMessage.value?.id) {
+      lastMessage.value = cache.lastMessage;
+      var index = messages.indexWhere((i) => i.id == cache.lastMessage?.id);
+      if (index > -1) {
+        messages[index] = cache.lastMessage!;
+      } else {
+        messages.insert(0, cache.lastMessage!);
       }
     }
-    isTopping.value = chatCache.isTopping;
-    noReadCount.value = chatCache.noReadCount;
-    lastMessage.value = newLastMessage;
   }
 
   @override
@@ -151,6 +164,24 @@ class BaseChat implements IChat {
 
   @override
   Future<int> moreMessage({String? filter}) async {
+    var res = await kernelApi.anystore.aggregate(
+        hisMsgCollName,
+        {
+          "match": {
+            "sessionId": target.id,
+            "belongId": spaceId,
+          },
+          "sort": {
+            "createTime": -1,
+          },
+          "skip": messages.length,
+          "limit": 30,
+        },
+        userId);
+    if (res.success) {
+      loadMessages(res.data);
+      return res.data.length;
+    }
     return 0;
   }
 
@@ -167,7 +198,7 @@ class BaseChat implements IChat {
   }
 
   @override
-  receiveMessage(XImMsg msg, bool noRead) async {
+  receiveMessage(XImMsg msg) async {
     if (msg.msgType == "recall") {
       msg.showTxt = '撤回一条消息';
       msg.allowEdit = true;
@@ -180,7 +211,7 @@ class BaseChat implements IChat {
       msg.showTxt = EncryptionUtil.inflate(msg.msgBody);
       messages.insert(0, msg);
     }
-    noReadCount.value += noRead ? 1 : 0;
+    noReadCount.value += 1;
     lastMessage.value = msg;
   }
 
@@ -230,61 +261,11 @@ class BaseChatGroup extends IChatGroup {
 }
 
 class PersonChat extends BaseChat {
-  PersonChat(super.spaceId, super.name, super.m, super.userId);
-
-  @override
-  Future<int> moreMessage({String? filter}) async {
-    if (spaceId == userId) {
-      return await loadCacheMessages();
-    } else {
-      var res = await KernelApi.getInstance().queryFriendImMsgs(IdSpaceReq(
-        id: target.id,
-        spaceId: spaceId,
-        page: PageRequest(
-          limit: 30,
-          offset: messages.length,
-          filter: filter ?? "",
-        ),
-      ));
-      if (res.success && res.data != null && res.data?.result != null) {
-        for (var detail in res.data!.result!) {
-          detail.showTxt = EncryptionUtil.inflate(detail.msgBody);
-          messages.add(detail);
-        }
-        return res.data!.result!.length;
-      }
-    }
-    return 0;
-  }
+  PersonChat(super.spaceId, super.m, super.userId);
 }
 
 class CohortChat extends BaseChat {
-  CohortChat(super.id, super.name, super.m, super.userId);
-
-  @override
-  moreMessage({String? filter}) async {
-    if (spaceId == userId) {
-      return await loadCacheMessages();
-    } else {
-      var params = IDBelongReq(
-        id: target.id,
-        page: PageRequest(
-          limit: 30,
-          offset: messages.length,
-          filter: filter ?? "",
-        ),
-      );
-      var res = await KernelApi.getInstance().queryCohortImMsgs(params);
-      if (res.success && res.data != null && res.data?.result != null) {
-        for (var detail in res.data!.result!) {
-          detail.showTxt = EncryptionUtil.inflate(detail.msgBody);
-          messages.add(detail);
-        }
-        return res.data!.result!.length;
-      }
-    }
-    return 0;
-  }
+  CohortChat(super.id, super.m, super.userId);
 
   @override
   morePersons({String? filter}) async {
@@ -308,15 +289,45 @@ class CohortChat extends BaseChat {
   }
 }
 
+/// 创建用户会话
 IChat createChat(
+  String userId,
+  String spaceId,
+  XTarget target,
+  List<String> labels,
+) {
+  if (userId == target.id) {
+    labels = ["本人"];
+  }
+  var data = ChatModel(
+    id: target.id,
+    name: target.team?.name ?? target.name,
+    photo: target.avatar.isNotEmpty ? target.avatar : "{}",
+    labels: labels,
+    remark: target.team?.remark ?? "",
+    typeName: target.typeName,
+  );
+  if (target.typeName == TargetType.person.label) {
+    return PersonChat(spaceId, data, userId);
+  } else {
+    return CohortChat(spaceId, data, userId);
+  }
+}
+
+/// 创建权限会话
+IChat createAuthChat(
+  String userId,
   String spaceId,
   String spaceName,
-  ChatModel target,
-  String userId,
+  XAuthority target,
 ) {
-  if (target.typeName == TargetType.person.label) {
-    return PersonChat(spaceId, spaceName, target, userId);
-  } else {
-    return CohortChat(spaceId, spaceName, target, userId);
-  }
+  var data = ChatModel(
+    id: target.id!,
+    labels: [spaceName, '权限群'],
+    typeName: '权限',
+    photo: '{}',
+    remark: target.remark ?? "",
+    name: target.name!,
+  );
+  return CohortChat(spaceId, data, userId);
 }

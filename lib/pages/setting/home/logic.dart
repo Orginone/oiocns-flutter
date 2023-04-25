@@ -16,11 +16,11 @@ class SettingCenterController extends BaseBreadcrumbNavController<SettingCenterS
   final SettingCenterState state = SettingCenterState();
 
   void jumpInfo(BaseBreadcrumbNavModel model) {
-    if(state.settingCtrl.isUserSpace(space: model.source)){
-      Get.toNamed(Routers.userInfo);
-    }else{
-      Get.toNamed(Routers.companyInfo,arguments: {"company":model.source});
-    }
+    // if(state.settingCtrl.isUserSpace(space: model.source)){
+    //   Get.toNamed(Routers.userInfo);
+    // }else{
+    //   Get.toNamed(Routers.companyInfo,arguments: {"company":model.source});
+    // }
 
   }
 

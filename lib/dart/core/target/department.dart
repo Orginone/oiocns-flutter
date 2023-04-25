@@ -12,12 +12,14 @@ import 'itarget.dart';
 class Department extends BaseTarget implements IDepartment {
   final Function _onDeleted;
 
-
-  Department(XTarget target, this._onDeleted) : super(target) {
+  Department(XTarget target, ISpace space, String userId, this._onDeleted)
+      : super(target, space, userId) {
     workings = [];
     departments = [];
     if ([TargetType.department, TargetType.college]
-        .map((e) => e.label).toList().contains(typeName)) {
+        .map((e) => e.label)
+        .toList()
+        .contains(typeName)) {
       subTeamTypes = [...subDepartmentTypes, TargetType.working];
     } else {
       subTeamTypes = [TargetType.jobCohort, TargetType.working];
@@ -27,6 +29,7 @@ class Department extends BaseTarget implements IDepartment {
     }
     createTargetType = [...subTeamTypes];
   }
+
   @override
   List<ITarget> get subTeam {
     return [...departments, ...workings];
@@ -68,6 +71,8 @@ class Department extends BaseTarget implements IDepartment {
       departments = res.data!.result
               ?.map((a) => Department(
                   a,
+                  space,
+                  userId,
                   () => {
                         departments =
                             departments.where((i) => i.id != a.id).toList()
@@ -85,8 +90,8 @@ class Department extends BaseTarget implements IDepartment {
     }
     final res = await super.getSubTargets([TargetType.working]);
     if (res.success && res.data?.result != null) {
-      res.data!.result?.map((a) => Working(
-          a, () => {workings = workings.where((i) => i.id != a.id).toList()}));
+      res.data!.result?.map((a) => Working(a, space, userId,
+          () => {workings = workings.where((i) => i.id != a.id).toList()}));
     }
     return workings;
   }
@@ -104,6 +109,8 @@ class Department extends BaseTarget implements IDepartment {
     if (res.success && res.data != null) {
       final department = Department(
           res.data!,
+          space,
+          userId,
           () => {
                 departments =
                     departments.where((i) => i.id != res.data!.id).toList()
@@ -132,6 +139,8 @@ class Department extends BaseTarget implements IDepartment {
     if (res.success) {
       final working = Working(
           res.data!,
+          space,
+          userId,
           () => {
                 workings = workings.where((i) => i.id != res.data!.id).toList()
               });
@@ -164,4 +173,11 @@ class Department extends BaseTarget implements IDepartment {
   @override
   List<XTarget> departmentMembers = [];
 
+  @override
+  Future<void> deepLoad({bool reload = false}) async {
+    await loadSubTeam(reload: reload);
+    for (var item in departments) {
+      await item.deepLoad(reload: reload);
+    }
+  }
 }

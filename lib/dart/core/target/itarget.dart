@@ -2,8 +2,11 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/store/ifilesys.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
+import 'package:orginone/dart/core/target/todo/work.dart';
 import 'package:orginone/dart/core/thing/dict.dart';
 import 'package:orginone/dart/core/thing/flowDefine.dart';
 import 'package:orginone/dart/core/thing/property.dart';
@@ -53,15 +56,20 @@ abstract class ITarget {
   // 共享信息
   late TargetShare shareInfo;
 
-  List<XTarget> members = [];
+  late List<XTarget> members;
 
-  List<ISpeciesItem> species = [];
+  late List<ISpeciesItem> species;
 
   late FlowDefine define;
 
   late Property property;
 
   bool isSelected = false;
+  // 会话
+  late IChat chat;
+
+  /// 当前的会话
+  List<IChat> allChats();
 
   /// 新增
   /// @param data
@@ -294,7 +302,17 @@ abstract class ISpace implements IFlow, IMTarget, ITarget {
   /// 空间职权树
   IAuthority? spaceAuthorityTree;
 
+  /// 字典
   late Dict dict;
+
+  /// 文件系统
+  late IFileSystemItem root;
+
+  /// 成员会话
+  late List<IChat> memberChats;
+
+  /// 全员
+  late List<XTarget> members;
 
   /// @description: 查询群
   ///@param reload 是否强制刷新
@@ -322,10 +340,13 @@ abstract class ICohort implements ITarget {
 /// 人员操作
 abstract class IPerson implements ISpace, ITarget {
   /// 我的好友列表
-  late RxList<XTarget> joinedFriend;
+  late IWork work;
 
   /// 我加入的单位
   late RxList<ICompany> joinedCompany;
+
+  /// 主目录
+  late IObjectItem? home;
 
   /// 退出群组
   /// @param id 群组Id
@@ -473,6 +494,9 @@ abstract class ICompany implements ISpace, ITarget {
   /// 查询集团
   /// @param code 集团编号
   Future<XTargetArray> searchGroup(String code);
+
+  /// 加载所有相关组织
+  Future<void> deepLoad({bool reload});
 }
 
 /// 集团操作
@@ -498,6 +522,9 @@ abstract class IGroup implements ITarget {
   /// @param reload 是否强制刷新
   /// @returns
   Future<List<IGroup>> getSubGroups({bool reload});
+
+  /// 加载所有相关组织
+  Future<void> deepLoad({bool reload});
 }
 
 /// 部门操作
@@ -533,6 +560,9 @@ abstract class IDepartment implements ITarget {
 
   /// 删除工作组
   Future<bool> deleteWorking(String id);
+
+  /// 加载所有相关组织
+  Future<void> deepLoad({bool reload});
 }
 
 /// 工作组

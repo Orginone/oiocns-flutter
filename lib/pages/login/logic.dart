@@ -49,8 +49,10 @@ class LoginController extends BaseController<LoginState> {
     }
 
     var settingCtrl = Get.find<SettingController>();
-    var res = await settingCtrl.login(
-        state.accountController.text, state.passWordController.text);
+    var res = await settingCtrl.provider.login(
+      state.accountController.text,
+      state.passWordController.text,
+    );
     if (res.success) {
       [Permission.storage, Permission.notification].request();
       LocalStore.getStore().setStringList("account",

@@ -26,14 +26,17 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
       height: double.infinity,
       color: GYColors.backgroundColor,
       child: Obx(() {
-        int length = state.flowInstance?.flowTaskHistory?.length ?? 0;
+        // int length = state.flowInstance?.flowTaskHistory?.length ?? 0;
+        int length = 0;
         return ListView.builder(
           itemCount: length,
           itemBuilder: (context, index) {
             return Container(
               child: _buildTimelineTile(
                   index,
-                  state.flowInstance!.flowTaskHistory![index]),
+                  null,
+                  // state.flowInstance!.flowTaskHistory![index],
+              ),
             );
           },
         );
@@ -44,9 +47,10 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
   Widget _buildTimelineTile(int index, XFlowTask? task) {
     XTarget? user =
     DepartmentManagement().findXTargetByIdOrName(id: task?.createUser ?? "");
-    bool isLast = index == state.flowInstance!.flowTaskHistory!.length - 1
-        ? true
-        : false;
+    // bool isLast = index == state.flowInstance!.flowTaskHistory!.length - 1
+    //     ? true
+    //     : false;
+    bool isLast = true;
 
     return TimelineTile(
         isFirst: index == 0 ? true : false,

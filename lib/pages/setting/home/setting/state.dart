@@ -25,45 +25,45 @@ class SettingFunctionState extends BaseBreadcrumbNavState<SettingNavModel> {
             spaceEnum: SpaceEnum.standardSettings,
             space: space)
       ];
-      if (setting.isUserSpace(space: space)) {
-        function.addAll([
-          SettingNavModel(
-              name: SpaceEnum.cardbag.label,
-              spaceEnum: SpaceEnum.cardbag,
-              space: space),
-          SettingNavModel(
-              name: SpaceEnum.security.label,
-              spaceEnum: SpaceEnum.security,
-              space: space),
-          SettingNavModel(
-              name: SpaceEnum.mark.label,
-              spaceEnum: SpaceEnum.mark,
-              space: space),
-          SettingNavModel(
-              name: SpaceEnum.personGroup.label,
-              spaceEnum: SpaceEnum.personGroup,
-              space: space),
-        ]);
-      } else {
-        function.addAll([
-          SettingNavModel(
-              name: SpaceEnum.innerAgency.label,
-              spaceEnum: SpaceEnum.innerAgency,
-              space: space),
-          SettingNavModel(
-              name: SpaceEnum.outAgency.label,
-              spaceEnum: SpaceEnum.outAgency,
-              space: space),
-          SettingNavModel(
-              name: SpaceEnum.stationSetting.label,
-              spaceEnum: SpaceEnum.stationSetting,
-              space: space),
-          SettingNavModel(
-              name: SpaceEnum.companyCohort.label,
-              spaceEnum: SpaceEnum.companyCohort,
-              space: space),
-        ]);
-      }
+      // if (setting.isUserSpace(space: space)) {
+      //   function.addAll([
+      //     SettingNavModel(
+      //         name: SpaceEnum.cardbag.label,
+      //         spaceEnum: SpaceEnum.cardbag,
+      //         space: space),
+      //     SettingNavModel(
+      //         name: SpaceEnum.security.label,
+      //         spaceEnum: SpaceEnum.security,
+      //         space: space),
+      //     SettingNavModel(
+      //         name: SpaceEnum.mark.label,
+      //         spaceEnum: SpaceEnum.mark,
+      //         space: space),
+      //     SettingNavModel(
+      //         name: SpaceEnum.personGroup.label,
+      //         spaceEnum: SpaceEnum.personGroup,
+      //         space: space),
+      //   ]);
+      // } else {
+      //   function.addAll([
+      //     SettingNavModel(
+      //         name: SpaceEnum.innerAgency.label,
+      //         spaceEnum: SpaceEnum.innerAgency,
+      //         space: space),
+      //     SettingNavModel(
+      //         name: SpaceEnum.outAgency.label,
+      //         spaceEnum: SpaceEnum.outAgency,
+      //         space: space),
+      //     SettingNavModel(
+      //         name: SpaceEnum.stationSetting.label,
+      //         spaceEnum: SpaceEnum.stationSetting,
+      //         space: space),
+      //     SettingNavModel(
+      //         name: SpaceEnum.companyCohort.label,
+      //         spaceEnum: SpaceEnum.companyCohort,
+      //         space: space),
+      //   ]);
+      // }
       model.value = SettingNavModel(name: space.teamName, space: space,children: function);
     }
     title = model.value?.name??"";

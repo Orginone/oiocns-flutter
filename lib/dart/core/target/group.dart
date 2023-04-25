@@ -8,7 +8,9 @@ class Group extends BaseTarget implements IGroup {
   @override
   late List<IGroup> subGroup;
   final Function _onDeleted;
-  Group(XTarget target, this._onDeleted) : super(target) {
+
+  Group(XTarget target, ISpace space, String userId, this._onDeleted)
+      : super(target, space, userId) {
     subGroup = [];
     memberTypes = companyTypes;
     subTeamTypes = [TargetType.group];
@@ -16,6 +18,7 @@ class Group extends BaseTarget implements IGroup {
     createTargetType = [TargetType.group];
     searchTargetType = [...companyTypes, TargetType.group];
   }
+
   @override
   List<ITarget> get subTeam {
     return subGroup;
@@ -60,6 +63,8 @@ class Group extends BaseTarget implements IGroup {
       if (res.success) {
         final group = Group(
             res.data!,
+            space,
+            userId,
             () => {
                   subGroup =
                       subGroup.where((item) => item.id != res.data!.id).toList()
@@ -101,6 +106,8 @@ class Group extends BaseTarget implements IGroup {
       subGroup = res.data!.result
               ?.map((a) => Group(
                   a,
+                  space,
+                  userId,
                   () => {
                         subGroup =
                             subGroup.where((item) => item.id != a.id).toList()
@@ -109,5 +116,13 @@ class Group extends BaseTarget implements IGroup {
           [];
     }
     return subGroup;
+  }
+
+  @override
+  Future<void> deepLoad({bool reload = false}) async {
+    await loadSubTeam(reload: reload);
+    for (var item in subGroup) {
+      await item.deepLoad(reload: reload);
+    }
   }
 }

@@ -10,7 +10,6 @@ import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/progress_dialog.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/main.dart';
@@ -82,7 +81,6 @@ class HomeBinding extends Bindings {
 }
 
 class HomeController extends TabsController {
-  var chatCtrl = Get.find<ChatController>();
   var updateCtrl = Get.find<UpdateController>();
   var settingCtrl = Get.find<SettingController>();
 
@@ -97,12 +95,7 @@ class HomeController extends TabsController {
         Positioned(
           top: 0,
           right: 0,
-          child: Obx(() {
-            var chatCtrl = Get.find<ChatController>();
-            return chatCtrl.hasNoRead()
-                ? Icon(Icons.circle, color: Colors.redAccent, size: 10.w)
-                : Container();
-          }),
+          child: Container(),
         )
       ],
     ));
@@ -137,7 +130,7 @@ class HomeController extends TabsController {
         await Future.wait([
           DepartmentManagement().initDepartment(),
           CommonTreeManagement().initTree(),
-          FileManagement().initFileDir(),
+          FileManagement().initFileDir(settingCtrl.user.id),
         ]);
         log('数据加载完成');
       } else {

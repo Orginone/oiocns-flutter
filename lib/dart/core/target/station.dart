@@ -12,7 +12,7 @@ import 'itarget.dart';
 class Station extends BaseTarget implements IStation {
   final Function _onDeleted;
   late List<XIdentity> _identitys;
-  Station(XTarget target, this._onDeleted) : super(target);
+  Station(XTarget target, ISpace space, String userId, this._onDeleted) : super(target, space, userId);
   @override
   Future<bool> delete() async {
     final res = await deleteTarget();

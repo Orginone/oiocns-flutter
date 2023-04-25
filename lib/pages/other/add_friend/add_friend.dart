@@ -3,8 +3,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/widget/template/base_list_view.dart';
-import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/routers.dart';
 
 class AddFriendPage extends StatelessWidget {
@@ -217,8 +217,8 @@ class AddFriendController extends BaseListController<XRelation> {
   }
 
   String getName(String userId) {
-    var chatCtrl = Get.find<ChatController>();
-    return chatCtrl.getName(userId);
+    var orgCtrl = Get.find<SettingController>();
+    return orgCtrl.provider.findNameById(userId);
   }
 
   void joinSuccess(XRelation friends) async {

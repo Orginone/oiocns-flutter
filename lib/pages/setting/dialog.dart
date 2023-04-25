@@ -258,15 +258,15 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
     XTargetArray? xTargetArray;
     switch (targetType) {
       case TargetType.group:
-        xTargetArray = await setting.company?.searchGroup(code);
+        // xTargetArray = await setting.company?.searchGroup(code);
         break;
       case TargetType.person:
-        xTargetArray = await setting.user?.searchPerson(code);
+        xTargetArray = await setting.user.searchPerson(code);
         break;
       case TargetType.company:
       case TargetType.hospital:
       case TargetType.university:
-        xTargetArray = await setting.user?.searchCompany(code);
+        xTargetArray = await setting.user.searchCompany(code);
         break;
     }
     if (xTargetArray != null) {

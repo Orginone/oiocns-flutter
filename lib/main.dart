@@ -80,7 +80,7 @@ class ScreenInit extends StatelessWidget {
             navigatorKey: navigatorKey,
             initialBinding: SettingBinding(),
             onInit: () async {
-              await automaticLogon();
+              // await automaticLogon();
             },
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
@@ -93,7 +93,7 @@ class ScreenInit extends StatelessWidget {
             ],
             darkTheme: ThemeData(useMaterial3: true),
             textDirection: TextDirection.ltr,
-            initialRoute: account != null ? Routers.home : Routers.login,
+            initialRoute: Routers.login,
             getPages: Routers.getInitRouters(),
           ),
         );
@@ -105,7 +105,7 @@ class ScreenInit extends StatelessWidget {
     Future<void> login() async {
       String accountName = account![0];
       String passWord = account![1];
-      await settingCtrl.login(accountName, passWord);
+      await settingCtrl.provider.login(accountName, passWord);
       print('登录成功');
       EventBusHelper.fire(InitHomeData());
     }

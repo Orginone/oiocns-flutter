@@ -1,9 +1,12 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/core/market/model.dart';
+import 'package:orginone/dart/core/store/filesys.dart';
+import 'package:orginone/dart/core/store/ifilesys.dart';
+import 'package:orginone/dart/core/target/chat/chat.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
+import 'package:orginone/dart/core/target/todo/work.dart';
 import 'package:orginone/dart/core/target/university.dart';
 import 'package:orginone/dart/core/thing/dict.dart';
-import 'package:orginone/dart/core/thing/ispecies.dart';
 import '../../base/common/uint.dart';
 import '../../base/model.dart';
 import '../../base/schema.dart';
@@ -24,9 +27,6 @@ class Person extends MarketTarget implements IPerson {
   late RxList<ICompany> joinedCompany;
 
   @override
-  late RxList<XTarget> joinedFriend;
-
-  @override
   set spaceData(SpaceType _) {}
 
   @override
@@ -41,7 +41,26 @@ class Person extends MarketTarget implements IPerson {
   @override
   late IAuthority? spaceAuthorityTree;
 
-  Person(XTarget target) : super(target) {
+  @override
+  late IObjectItem? home;
+
+  @override
+  late List<IChat> memberChats = <IChat>[].obs;
+
+  @override
+  late Dict dict;
+
+  @override
+  late List<XTarget> members;
+
+  @override
+  late IFileSystemItem root;
+
+  @override
+  late IWork work;
+
+  Person(XTarget target) : super(target, null, target.id) {
+    work = Work();
     super.searchTargetType = [
       TargetType.cohort,
       TargetType.person,
@@ -57,8 +76,13 @@ class Person extends MarketTarget implements IPerson {
     createTargetType = [TargetType.cohort, ...companyTypes];
     extendTargetType = [TargetType.cohort, TargetType.person];
     joinedCompany = <ICompany>[].obs;
-    joinedFriend = <XTarget>[].obs;
     cohorts = [];
+    Future.delayed(const Duration(milliseconds: 200), () async {
+      home = await root.create('主目录');
+    });
+    members = [];
+    memberChats = <IChat>[].obs;
+    root = getFileSysItemRoot(target.id);
   }
 
   @override
@@ -91,7 +115,7 @@ class Person extends MarketTarget implements IPerson {
       ),
     ));
     if (res.success) {
-      authorityTree = Authority(res.data!, id);
+      authorityTree = Authority(res.data!, space, userId);
     }
     return authorityTree;
   }
@@ -133,8 +157,15 @@ class Person extends MarketTarget implements IPerson {
     }
     final res = await getjoinedTargets([TargetType.cohort], id);
     if (res.result != null) {
-      cohorts = res.result?.map((a) => Cohort(
-          a, () => {cohorts = cohorts.where((i) => i.id != a.id).toList()})).toList()??[];
+      cohorts = res.result
+              ?.map((a) => Cohort(
+                  a,
+                  this,
+                  userId,
+                  () =>
+                      {cohorts = cohorts.where((i) => i.id != a.id).toList()}))
+              .toList() ??
+          [];
     }
     return cohorts;
   }
@@ -156,11 +187,26 @@ class Person extends MarketTarget implements IPerson {
         } else {
           company = Company(a, id);
         }
-        company.userId = id;
         joinedCompany.add(company);
       }
     }
     return joinedCompany;
+  }
+
+  @override
+  List<IChat> allChats() {
+    var chats = [chat];
+    for (var item in joinedCompany) {
+      chats.addAll(item.allChats());
+    }
+    for (var item in cohorts) {
+      chats.addAll(item.allChats());
+    }
+    if (authorityTree != null) {
+      chats.addAll(authorityTree!.allChats());
+    }
+    chats.addAll(memberChats);
+    return chats;
   }
 
   Future<ICohort?> _createCohort(avatar, name, code, remark) async {
@@ -177,6 +223,8 @@ class Person extends MarketTarget implements IPerson {
     if (res.success && res.data != null) {
       final cohort = Cohort(
           res.data!,
+          this,
+          userId,
           () =>
               {cohorts = cohorts.where((i) => i.id != res.data!.id).toList()});
       cohorts.add(cohort);
@@ -312,27 +360,34 @@ class Person extends MarketTarget implements IPerson {
 
   @override
   Future<XTargetArray> loadMembers(PageRequest page) async {
-    if (joinedFriend.isEmpty) {
+    if (members.isEmpty) {
       final data = await super.loadMembers(page);
       if (data.result != null) {
-        joinedFriend.addAll(data.result!);
+        members.addAll(data.result!);
+        members = [];
+        memberChats = [];
+        for (var item in data.result!) {
+          members.add(item);
+          memberChats.add(createChat(userId, id, item, ['好友']));
+        }
       }
     }
     return XTargetArray(
-        offset: page.offset,
-        limit: page.limit,
-        result: joinedFriend
-            .where((a) =>
-                a.code.contains(page.filter) || a.name.contains(page.filter))
-            .skip(page.offset)
-            .take(page.limit)
-            .toList(),
-        total: joinedFriend.length);
+      offset: page.offset,
+      limit: page.limit,
+      result: members
+          .where((a) =>
+              a.code.contains(page.filter) || a.name.contains(page.filter))
+          .skip(page.offset)
+          .take(page.limit)
+          .toList(),
+      total: members.length,
+    );
   }
 
   @override
   Future<bool> applyFriend(XTarget target) async {
-    final joinedTarget = joinedFriend.firstWhere((a) => a.id == target.id);
+    final joinedTarget = members.firstWhere((a) => a.id == target.id);
     if (joinedTarget.id == '') {
       if (await pullMember(target)) {
         return await applyJoin(target.id, TargetType.person);
@@ -352,7 +407,7 @@ class Person extends MarketTarget implements IPerson {
           targetType: TargetType.person.name,
         ));
       }
-      joinedFriend.removeWhere((item) => !ids.contains(item.id));
+      members.removeWhere((item) => !ids.contains(item.id));
       return true;
     }
     return false;
@@ -365,7 +420,7 @@ class Person extends MarketTarget implements IPerson {
         status < CommonStatus.rejectStartStatus.value &&
         res.success &&
         relation.target != null) {
-      joinedFriend.add(relation.target!);
+      members.add(relation.target!);
     }
     return false;
   }
@@ -408,12 +463,7 @@ class Person extends MarketTarget implements IPerson {
 
   @override
   Future<bool> resetPassword(String password, String privateKey) async {
-    return (await kernel.resetPassword(ResetPwdModel(
-            code: target.code, password: password, privateKey: privateKey)))
+    return (await kernel.resetPassword(target.code, password, privateKey))
         .success;
   }
-
-  @override
-  late Dict dict;
-
 }

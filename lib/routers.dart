@@ -1,8 +1,6 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
-import 'package:orginone/dart/controller/chat/chat_controller.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/chat/message_chat_page.dart';
-import 'package:orginone/pages/chat/message_more.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
 import 'package:orginone/pages/index/index_page.dart';
@@ -19,7 +17,6 @@ import 'package:orginone/pages/other/choice_people/view.dart';
 import 'package:orginone/pages/other/choice_thing/binding.dart';
 import 'package:orginone/pages/other/file/view.dart';
 import 'package:orginone/pages/other/home/home_page.dart';
-import 'package:orginone/pages/other/home/spaces_page.dart';
 import 'package:orginone/pages/other/qr_scan/binding.dart';
 import 'package:orginone/pages/other/qr_scan/view.dart';
 import 'package:orginone/pages/other/scanning/scanning_page.dart';
@@ -139,11 +136,6 @@ class Routers {
 
   //忘记密码
   static const String forgotPassword = "/forgotPassword";
-
-
-
-  // 空间选择
-  static const String spaces = "/spaces";
 
   // 简单表单编辑器
   static const String form = "/form";
@@ -313,13 +305,13 @@ class Routers {
 
 
   static String get main {
-    // return login;
-    var user = HiveUtils.getUser();
-    if (user != null) {
-      return home;
-    } else {
-      return login;
-    }
+    return login;
+    // var user = HiveUtils.getUser();
+    // if (user != null) {
+    //   return home;
+    // } else {
+    //   return login;
+    // }
   }
 
   static List<GetPage> getInitRouters() {
@@ -348,7 +340,6 @@ class Routers {
         name: Routers.home,
         page: () => const HomePage(),
         bindings: [
-          ChatBinding(),
           HomeBinding(),
           SetHomeBinding(),
           IndexPageBinding(),
@@ -360,19 +351,9 @@ class Routers {
         ],
       ),
       GetPage(
-        name: Routers.spaces,
-        page: () => const SpacesPage(),
-        binding: SettingBinding(),
-      ),
-      GetPage(
         name: Routers.scanning,
         page: () => const ScanningPage(),
         binding: ScanningBinding(),
-      ),
-      GetPage(
-        name: Routers.spaces,
-        page: () => const ScanningResultPage(),
-        binding: ScanningResultBinding(),
       ),
       GetPage(
         name: Routers.search,
@@ -388,10 +369,6 @@ class Routers {
         name: Routers.chat,
         page: () => const ChatPage(),
         bindings: [ChatBoxBinding(), PlayBinding()],
-      ),
-      GetPage(
-        name: Routers.moreMessage,
-        page: () => const MoreMessagePage(),
       ),
       GetPage(
         name: Routers.mineUnit,
@@ -428,7 +405,6 @@ class Routers {
         bindings: [
           HomeBinding(),
           IndexPageBinding(),
-          ChatBinding(),
           ChatBoxBinding(),
           PlayBinding(),
           SetHomeBinding(),
