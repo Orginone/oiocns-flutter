@@ -84,6 +84,8 @@ class XAttribute {
   // 创建度量标准的组织/个人
   XTarget? belong;
 
+  //属性
+  XProperty? property;
   //构造方法
   XAttribute({
     required this.id,
@@ -145,6 +147,7 @@ class XAttribute {
         ? XAuthority.fromJson(json["authority"])
         : null;
     belong = json["belong"] != null ? XTarget.fromJson(json["belong"]) : null;
+    property = json['property']!=null? XProperty.fromJson(json['property']):null;
   }
 
   //通过动态数组解析成List
@@ -1969,7 +1972,7 @@ class XBindOperation {
     ResultType<XOperationItemArray> result = await KernelApi.getInstance()
         .queryOperationItems(IdSpaceReq(
             id: id!,
-            spaceId: orgCtrl.user.id,
+            spaceId: orgCtrl.user?.id??"",
             page: PageRequest(offset: 0, limit: 20, filter: '')));
     operationItems = result.data?.result ?? [];
     for (var element in operationItems) {
@@ -4172,7 +4175,7 @@ class XOperation {
     ResultType<XOperationItemArray> result = await KernelApi.getInstance()
         .queryOperationItems(IdSpaceReq(
             id: id!,
-            spaceId: orgCtrl.user.id,
+            spaceId: orgCtrl.user?.id??"",
             page: PageRequest(offset: 0, limit: 20, filter: '')));
     items = result.data?.result ?? [];
     for (var element in items!) {
@@ -4216,16 +4219,16 @@ class XOperation {
 //业务操作定义查询返回集合
 class XOperationArray {
   // 便宜量
-  final int offset;
+  int? offset;
 
   // 最大数量
-  final int limit;
+  int? limit;
 
   // 总数
-  final int total;
+  int? total;
 
   // 结果
-  final List<XOperation>? result;
+  List<XOperation>? result;
 
   //构造方法
   XOperationArray({
@@ -4236,11 +4239,17 @@ class XOperationArray {
   });
 
   //通过JSON构造
-  XOperationArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XOperation.fromList(json["result"]);
+  XOperationArray.fromJson(Map<String, dynamic> json){
+    offset = json["offset"];
+    limit = json["limit"];
+    total = json["total"];
+    if(json["result"]!=null){
+      result = [];
+      json["result"].forEach((json){
+        result!.add(XOperation.fromJson(json));
+      });
+    }
+  }
 
   //通过动态数组解析成List
   static List<XOperationArray> fromList(List<Map<String, dynamic>>? list) {

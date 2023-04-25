@@ -8,7 +8,6 @@ import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/chat/ichat.dart';
 import 'package:orginone/dart/core/target/todo/work.dart';
 import 'package:orginone/dart/core/thing/dict.dart';
-import 'package:orginone/dart/core/thing/flowDefine.dart';
 import 'package:orginone/dart/core/thing/property.dart';
 
 import '../market/model.dart';
@@ -56,11 +55,12 @@ abstract class ITarget {
   // 共享信息
   late TargetShare shareInfo;
 
+  ISpace? space;
+
   late List<XTarget> members;
 
   late List<ISpeciesItem> species;
 
-  late FlowDefine define;
 
   late Property property;
 

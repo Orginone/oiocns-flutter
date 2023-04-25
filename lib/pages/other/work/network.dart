@@ -5,7 +5,10 @@ import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/thing/ispecies.dart';
 import 'package:orginone/event/work_reload.dart';
+import 'package:orginone/pages/other/work/initiate_work/state.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/toast_utils.dart';
 
@@ -82,11 +85,67 @@ class WorkNetWork {
     if (req.success) {
       ToastUtils.showMsg(msg: "成功");
       EventBusHelper.fire(WorkReload());
-      if(onSuccess!=null){
+      if (onSuccess != null) {
         onSuccess();
       }
     } else {
       ToastUtils.showMsg(msg: req.msg);
+    }
+  }
+
+  static Future<void> initGroup(WorkBreadcrumbNav model) async {
+    Future<void> getNextLvOutAgency(
+        List<IGroup> group, WorkBreadcrumbNav model) async {
+      for (var value in group) {
+        var child = WorkBreadcrumbNav(
+            space: model.space,
+            source: value,
+            image: value.target.avatarThumbnail(),
+            name: value.teamName, children: []);
+        value.subGroup = await value.getSubGroups();
+        if (value.subTeam.isNotEmpty) {
+          await getNextLvOutAgency(value.subGroup, child);
+        }else{
+          await WorkNetWork.initSpecies(child);
+        }
+        model.children.add(child);
+      }
+    }
+
+    var group = await (model.space as ICompany).getJoinedGroups();
+    await getNextLvOutAgency(group, model);
+  }
+
+  static Future<void> initCohorts(WorkBreadcrumbNav model) async {
+    var cohorts = await model.space!.getCohorts();
+    for (var value in cohorts) {
+      var child = WorkBreadcrumbNav(
+          space: model.space,
+          source: value,
+          image: value.target.avatarThumbnail(),
+          name: value.teamName, children: [],
+         );
+      await WorkNetWork.initSpecies(child);
+      model.children.add(child);
+    }
+  }
+
+  static Future<void> initSpecies(WorkBreadcrumbNav model) async{
+    List<ISpeciesItem>? species = await model.space?.loadSpeciesTree();
+    void loopSpeciesTree(List<ISpeciesItem> tree,WorkBreadcrumbNav model){
+      for (var element in tree) {
+        var child = WorkBreadcrumbNav(
+            space: model.space,
+            source: element,
+            name: element.name, children: []);
+        if(element.children.isNotEmpty){
+          loopSpeciesTree(element.children,child);
+        }
+        model.children.add(child);
+      }
+    }
+    if(species!=null){
+      loopSpeciesTree(species.where((element) => element.target.code == 'matters').toList(),model);
     }
   }
 }

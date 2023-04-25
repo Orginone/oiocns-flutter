@@ -11,13 +11,13 @@ class SettingCenterState extends BaseBreadcrumbNavState {
 
   SettingCenterState(){
     spaces = [];
-    var joinedCompanies = settingCtrl.user!.joinedCompany;
+    var joinedCompanies = settingCtrl.user.joinedCompany;
     spaces.add(
-        BaseBreadcrumbNavModel(name: settingCtrl.user?.teamName??"",id:  settingCtrl.user?.id??"",image:settingCtrl.user?.target.avatarThumbnail(),source:  settingCtrl.user)
+        BaseBreadcrumbNavModel(name: settingCtrl.user.teamName??"",id:  settingCtrl.user?.id??"",image:settingCtrl.user?.target.avatarThumbnail(),source:  settingCtrl.user, children: [])
     );
     for (var element in joinedCompanies) {
       spaces.add(
-          BaseBreadcrumbNavModel(name: element.teamName,id: element.id,image: element.target.avatarThumbnail(),source: element)
+          BaseBreadcrumbNavModel(name: element.teamName,id: element.id,image: element.target.avatarThumbnail(),source: element, children: [])
       );
     }
     title = "设置";

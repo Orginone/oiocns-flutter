@@ -123,51 +123,21 @@ class HomeController extends TabsController {
     setIndex(tabs.indexOf(center));
   }
 
-  Future<void> loadData() async {
-    try {
-      if (KernelApi.getInstance().anystore.isOnline) {
-        log('连接成功---------${KernelApi.getInstance().anystore.isOnline}');
-        await Future.wait([
-          DepartmentManagement().initDepartment(),
-          CommonTreeManagement().initTree(),
-          FileManagement().initFileDir(settingCtrl.user.id),
-        ]);
-        log('数据加载完成');
-      } else {
-        await Future.delayed(const Duration(milliseconds: 200), () async {
-          log('尝试重新连接---------${KernelApi.getInstance().anystore.isOnline}');
-          await initData();
-        });
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
 
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    EventBusHelper.register(this, (event) async {
-      if (event is InitHomeData) {
-        await initData();
-      }
-    });
+
   }
 
   @override
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
-    await initData();
     _update();
   }
 
-  Future<void> initData() async {
-    LoadingDialog.showLoading(Get.context!,msg: "加载数据中");
-    await loadData();
-    LoadingDialog.dismiss(Get.context!);
-  }
 
   _update() async{
     // 获取当前 apk 版本

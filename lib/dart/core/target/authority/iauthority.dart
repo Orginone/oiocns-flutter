@@ -33,7 +33,7 @@ abstract class IAuthority {
   late List<IIdentity> identitys;
 
   // 加载的空间
-  late ISpace space;
+  ISpace? space;
 
   // 权限群
   late IChat chat;

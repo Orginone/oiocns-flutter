@@ -50,7 +50,7 @@ class SettingController extends GetxController {
     var result = <ITarget>[];
     result.add(space);
     if (space == user) {
-      result.addAll([...(await user.getCohorts(reload: false))]);
+      result.addAll([...(await user?.getCohorts(reload: false))??[]]);
     } else if (isShare) {
       result.addAll(
           [...(await (space as ICompany).getJoinedGroups(reload: false))]);

@@ -70,7 +70,7 @@ class Company extends MarketTarget implements ICompany {
   @override
   late Dict dict;
 
-  Company(XTarget target, String userId) : super(target, null, userId) {
+  Company(XTarget target, this.userId) : super(target, null, userId) {
     departmentTypes = targetDepartmentTypes;
     subTeamTypes = [...departmentTypes, TargetType.working];
     extendTargetType = [...subTeamTypes, ...companyTypes];
@@ -84,6 +84,7 @@ class Company extends MarketTarget implements ICompany {
     dict = Dict(target.id);
     stations = [];
     workings = [];
+    joinedGroup = [];
     departments = [];
     cohorts = [];
     searchTargetType = [TargetType.person, TargetType.group];

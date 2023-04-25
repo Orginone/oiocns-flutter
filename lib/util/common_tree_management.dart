@@ -165,7 +165,7 @@ class CommonTreeManagement {
           .getAllList()
           .firstWhere((element) => element.id == specieId);
       if (data.attrs.isEmpty) {
-        await data.loadAttrs();
+        await data.loadAttrs(_setting.user.id,);
       }
       return data.attrs.firstWhere((element) => element.id == attributeId);
     }catch(e){

@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
-import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/pages/setting/config.dart';
 
@@ -25,45 +24,59 @@ class SettingFunctionState extends BaseBreadcrumbNavState<SettingNavModel> {
             spaceEnum: SpaceEnum.standardSettings,
             space: space)
       ];
-      // if (setting.isUserSpace(space: space)) {
-      //   function.addAll([
-      //     SettingNavModel(
-      //         name: SpaceEnum.cardbag.label,
-      //         spaceEnum: SpaceEnum.cardbag,
-      //         space: space),
-      //     SettingNavModel(
-      //         name: SpaceEnum.security.label,
-      //         spaceEnum: SpaceEnum.security,
-      //         space: space),
-      //     SettingNavModel(
-      //         name: SpaceEnum.mark.label,
-      //         spaceEnum: SpaceEnum.mark,
-      //         space: space),
-      //     SettingNavModel(
-      //         name: SpaceEnum.personGroup.label,
-      //         spaceEnum: SpaceEnum.personGroup,
-      //         space: space),
-      //   ]);
-      // } else {
-      //   function.addAll([
-      //     SettingNavModel(
-      //         name: SpaceEnum.innerAgency.label,
-      //         spaceEnum: SpaceEnum.innerAgency,
-      //         space: space),
-      //     SettingNavModel(
-      //         name: SpaceEnum.outAgency.label,
-      //         spaceEnum: SpaceEnum.outAgency,
-      //         space: space),
-      //     SettingNavModel(
-      //         name: SpaceEnum.stationSetting.label,
-      //         spaceEnum: SpaceEnum.stationSetting,
-      //         space: space),
-      //     SettingNavModel(
-      //         name: SpaceEnum.companyCohort.label,
-      //         spaceEnum: SpaceEnum.companyCohort,
-      //         space: space),
-      //   ]);
-      // }
+      if (setting.user.id == space.id) {
+        function.insert(
+            0,
+            SettingNavModel(
+                name: SpaceEnum.security.label,
+                spaceEnum: SpaceEnum.security,
+                space: space));
+        function.insert(
+            1,
+            SettingNavModel(
+                name: SpaceEnum.cardbag.label,
+                spaceEnum: SpaceEnum.cardbag,
+                space: space));
+        function.insert(
+          2,
+          SettingNavModel(
+              name: SpaceEnum.gateway.label,
+              spaceEnum: SpaceEnum.gateway,
+              space: space),
+        );
+        function.insert(
+          3,
+          SettingNavModel(
+              name: SpaceEnum.theme.label,
+              spaceEnum: SpaceEnum.theme,
+              space: space),
+        );
+        function.add(
+          SettingNavModel(
+              name: SpaceEnum.personGroup.label,
+              spaceEnum: SpaceEnum.personGroup,
+              space: space),
+        );
+      } else {
+        function.addAll([
+          SettingNavModel(
+              name: SpaceEnum.innerAgency.label,
+              spaceEnum: SpaceEnum.innerAgency,
+              space: space),
+          SettingNavModel(
+              name: SpaceEnum.outAgency.label,
+              spaceEnum: SpaceEnum.outAgency,
+              space: space),
+          SettingNavModel(
+              name: SpaceEnum.stationSetting.label,
+              spaceEnum: SpaceEnum.stationSetting,
+              space: space),
+          SettingNavModel(
+              name: SpaceEnum.companyCohort.label,
+              spaceEnum: SpaceEnum.companyCohort,
+              space: space),
+        ]);
+      }
       model.value = SettingNavModel(name: space.teamName, space: space,children: function);
     }
     title = model.value?.name??"";

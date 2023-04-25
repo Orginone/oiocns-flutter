@@ -128,7 +128,7 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
           break;
         case StandardEnum.classCriteria:
           Get.toNamed(Routers.classificationInfo,
-              arguments: {"species": model.source});
+              arguments: {"data": model});
           break;
         case StandardEnum.dict:
           Get.toNamed(Routers.dictInfo,

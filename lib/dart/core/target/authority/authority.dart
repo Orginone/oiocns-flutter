@@ -25,7 +25,7 @@ class Authority implements IAuthority {
   List<IIdentity> identitys;
 
   @override
-  ISpace space;
+  ISpace? space;
 
   @override
   XAuthority target;
@@ -60,7 +60,7 @@ class Authority implements IAuthority {
   Authority(this.target, this.space, this.userId)
       : children = [],
         identitys = [],
-        chat = createAuthChat(userId, space.id, space.teamName, target) {
+        chat = createAuthChat(userId, space?.id??"", space?.teamName??"", target) {
     if (target.nodes != null && target.nodes!.isNotEmpty) {
       for (var item in target.nodes!) {
         children.add(Authority(item, space, userId));

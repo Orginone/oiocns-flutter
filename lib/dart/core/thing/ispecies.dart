@@ -13,6 +13,8 @@
 // export type INullSpeciesItem = ISpeciesItem | undefined;
 /* 可为空的进度回调 */
 // export type OnProgressType = (p: number) => void | undefined;
+import 'package:orginone/dart/core/target/itarget.dart';
+
 import '../../base/model.dart';
 import '../../base/schema.dart';
 import 'idict.dart';
@@ -35,17 +37,20 @@ abstract class ISpeciesItem {
   late TargetShare belongInfo;
   /* 属性 */
   late List<XAttribute> attrs;
+  /* 表单 */
+  late List<XOperation> operation;
 
+  late ITarget team;
   late bool isSelected;
 
   late String spaceId;
   /* 加载信息 */
   Future<ISpeciesItem> loadInfo(TargetShare info);
   /* 加载分类特性 */
-  Future<XAttributeArray> loadAttrs({bool reload});
+  Future<List<XAttribute>> loadAttrs(String id,{bool reload});
   /* 加载业务标准 */
-  Future<XOperationArray> loadOperations(String id, bool filterAuth,
-      bool recursionOrg, bool recursionSpecies, PageRequest page);
+  Future<List<XOperation>> loadOperations(String id, bool filterAuth,
+      bool recursionOrg, bool recursionSpecies, PageRequest page,{bool reload = false});
   /* 加载流程设计 */
   Future<XFlowDefineArray> loadFlowDefines(String id, PageRequest page);
   /*
@@ -107,6 +112,18 @@ abstract class ISpeciesItem {
    * 删除标准分类项
    */
   Future<bool> delete();
+
+  ///加载办事
+  Future<List<XFlowDefine>> loadWork({PageRequest? page});
+
+  ///发布办事
+  Future<XFlowDefine?> publishWork(CreateDefineReq data);
+
+  ///删除办事
+  Future<bool> deleteWork(String id);
+
+  ///查询办事节点
+  Future<FlowNode?> loadWorkNode(String id);
 
   bool isAllLast() {
     if (children.isEmpty) {

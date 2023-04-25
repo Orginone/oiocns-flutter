@@ -11,7 +11,6 @@ import 'package:orginone/dart/core/target/authority/identity.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
 import 'package:orginone/dart/core/target/chat/chat.dart';
 import 'package:orginone/dart/core/target/chat/ichat.dart';
-import 'package:orginone/dart/core/thing/flowDefine.dart';
 import 'package:orginone/dart/core/thing/property.dart';
 import 'package:uuid/uuid.dart';
 import 'package:orginone/dart/core/thing/index.dart' as thing;
@@ -27,7 +26,6 @@ class BaseTarget extends ITarget {
   late List<TargetType> memberTypes;
   late List<TargetType> createTargetType;
   late String userId;
-  late ISpace space;
 
   @override
   String get id {
@@ -64,24 +62,23 @@ class BaseTarget extends ITarget {
 
   KernelApi kernel = KernelApi.getInstance();
 
-  BaseTarget(XTarget target, ISpace? space, String userId) {
+  BaseTarget(XTarget target, ISpace? space, this.userId) {
     key = uuid.v4();
     this.target = target;
-    this.space = space ?? this as ISpace;
-    this.userId = userId;
     createTargetType = [];
     joinTargetType = [];
     searchTargetType = [];
     ownIdentitys = [];
     identitys = [];
+    this.space = space;
     memberTypes = [TargetType.person];
     typeName = target.typeName;
     appendTarget([target]);
-    define = FlowDefine(target.id);
     property = Property(target.id);
     subTeamTypes = [];
-    chat = createChat(userId, this.space.id, target, [
-      this.space.teamName,
+    species = [];
+    chat = createChat(userId, space?.id??"", target, [
+      space?.teamName??"",
       "${target.typeName}群"
     ]);
   }
@@ -106,7 +103,7 @@ class BaseTarget extends ITarget {
     if(!reload && species.isNotEmpty){
       return species;
     }
-    species = await thing.loadSpeciesTree(id,target.belongId,upTeam);
+    species = await thing.loadSpeciesTree(id,target.belongId,this,upTeam);
 
     return species;
   }

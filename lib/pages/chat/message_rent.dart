@@ -9,7 +9,10 @@ class MessageRecent extends GetView<SettingController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      var chats = controller.user.allChats();
+      var chats = controller.provider.user?.allChats();
+      if(chats==null){
+        return const SizedBox();
+      }
       return ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.vertical,

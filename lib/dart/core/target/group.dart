@@ -8,8 +8,7 @@ class Group extends BaseTarget implements IGroup {
   @override
   late List<IGroup> subGroup;
   final Function _onDeleted;
-
-  Group(XTarget target, ISpace space, String userId, this._onDeleted)
+  Group(XTarget target, ISpace? space, String userId, this._onDeleted)
       : super(target, space, userId) {
     subGroup = [];
     memberTypes = companyTypes;

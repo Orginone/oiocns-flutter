@@ -12,7 +12,7 @@ import 'itarget.dart';
 class Department extends BaseTarget implements IDepartment {
   final Function _onDeleted;
 
-  Department(XTarget target, ISpace space, String userId, this._onDeleted)
+  Department(XTarget target, ISpace? space, String userId, this._onDeleted)
       : super(target, space, userId) {
     workings = [];
     departments = [];
