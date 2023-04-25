@@ -7,7 +7,6 @@ import 'package:orginone/pages/chat/message_page.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
 import 'package:orginone/pages/index/index_page.dart';
-import 'package:orginone/pages/index/news/searchBarWidget.dart';
 import 'package:orginone/pages/login/binding.dart';
 import 'package:orginone/pages/login/view.dart';
 // import 'package:orginone/pages/index/indexok_page.dart';
@@ -28,6 +27,7 @@ import 'package:orginone/pages/other/scanning/scanning_result_pge.dart';
 import 'package:orginone/pages/other/search_page.dart';
 import 'package:orginone/pages/other/web_view/binding.dart';
 import 'package:orginone/pages/other/web_view/view.dart';
+import 'package:orginone/pages/other/work/work_list/view.dart';
 import 'package:orginone/pages/other/work/work_start/view.dart';
 import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/dict_info/view.dart';
@@ -56,11 +56,9 @@ import 'package:orginone/pages/todo/workbench_page.dart';
 import 'package:orginone/util/hive_utils.dart';
 
 import './pages/other/home/ware_house/assets_management/assets_management_binding.dart';
-
 // 资产管理
 import './pages/other/home/ware_house/assets_management/assets_management_page.dart';
 import './pages/other/home/ware_house/market/market_binding.dart';
-
 // 资产管理
 import './pages/other/home/ware_house/market/market_page.dart';
 import './pages/other/home/ware_house/often_use_binding.dart';
@@ -77,7 +75,6 @@ import 'pages/other/choice_gb/binding.dart';
 import 'pages/other/choice_gb/view.dart';
 import 'pages/other/choice_thing/view.dart';
 import 'pages/other/file/binding.dart';
-import 'pages/other/home/ware_house/ware_house.dart';
 import 'pages/other/storage_location/binding.dart';
 import 'pages/other/storage_location/view.dart';
 import 'pages/other/thing/binding.dart';
@@ -92,6 +89,7 @@ import 'pages/other/work/initiate_work/binding.dart';
 import 'pages/other/work/initiate_work/view.dart';
 import 'pages/other/work/process_details/binding.dart';
 import 'pages/other/work/process_details/view.dart';
+import 'pages/other/work/work_list/binding.dart';
 import 'pages/other/work/work_start/binding.dart';
 import 'pages/other/work/work_start/create_work/binding.dart';
 import 'pages/other/work/work_start/create_work/view.dart';
@@ -309,9 +307,10 @@ class Routers {
   //属性定义详情
   static const String attributeInfo = "/attributeInfo";
 
+  //属性定义详情
+  static const String workList = "/workList";
+
   static const String warehouseManagement = "/warehouseManagement";
-
-
 
   static String get main {
     // return login;
@@ -650,12 +649,17 @@ class Routers {
       GetPage(
         name: Routers.dictInfo,
         page: () => DictInfoPage(),
-        binding:DictInfoBinding(),
+        binding: DictInfoBinding(),
       ),
       GetPage(
         name: Routers.attributeInfo,
         page: () => AttributeInfoPage(),
-        binding:AttributeInfoBinding(),
+        binding: AttributeInfoBinding(),
+      ),
+      GetPage(
+        name: Routers.workList,
+        page: () => WorkListPage(),
+        binding: WorkListBinding(),
       ),
     ];
   }

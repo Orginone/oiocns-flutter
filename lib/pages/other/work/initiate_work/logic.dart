@@ -32,28 +32,16 @@ class InitiateWorkController extends BaseBreadcrumbNavController<InitiateWorkSta
   }
 
   void jumpNext(WorkBreadcrumbNav work) {
-    if (work.space != null) {
-      Get.toNamed(Routers.initiateWork,
-          preventDuplicates: false, arguments: {"data": work});
-    } else {
-      switch (work.workEnum!) {
-        case WorkEnum.addFriends:
-          // TODO: Handle this case.
-          break;
-        case WorkEnum.addUnits:
-          // TODO: Handle this case.
-          break;
-        case WorkEnum.addGroup:
-          // TODO: Handle this case.
-          break;
-        case WorkEnum.outAgency:
-          // TODO: Handle this case.
-          break;
-        case WorkEnum.workCohort:
-          // TODO: Handle this case.
-          break;
-      }
-    }
+    Get.toNamed(Routers.initiateWork,
+        preventDuplicates: false, arguments: {"data": work});
+  }
+
+  void createWork(WorkBreadcrumbNav work) {
+
+  }
+
+  void jumpWorkList(WorkBreadcrumbNav work) {
+    Get.toNamed(Routers.workList,arguments: {"data": work});
   }
 
 }

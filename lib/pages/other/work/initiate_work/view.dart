@@ -5,6 +5,7 @@ import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
 import 'package:orginone/widget/common_widget.dart';
 
+import 'item.dart';
 import 'logic.dart';
 import 'state.dart';
 
@@ -34,10 +35,16 @@ class InitiateWorkPage extends BaseBreadcrumbNavMultiplexPage<
         children: [
           CommonWidget.commonHeadInfoWidget(child.name),
           ...child.children.map((e) {
-            return BaseBreadcrumbNavItem<WorkBreadcrumbNav>(
+            return InitiateWorkItem(
               item: e,
               onTap: () {
+                controller.jumpWorkList(e);
+              },
+              onNext: (){
                 controller.jumpNext(e);
+              },
+              onCreateWork: (){
+                controller.createWork(e);
               },
             );
           }).toList(),
@@ -51,10 +58,16 @@ class InitiateWorkPage extends BaseBreadcrumbNavMultiplexPage<
     List<Widget> children = [];
     for (var child in state.model.value!.children) {
       children.add(
-        BaseBreadcrumbNavItem<WorkBreadcrumbNav>(
+        InitiateWorkItem(
           item: child,
           onTap: () {
+            controller.jumpWorkList(child);
+          },
+          onNext: (){
             controller.jumpNext(child);
+          },
+          onCreateWork: (){
+            controller.createWork(child);
           },
         ),
       );
