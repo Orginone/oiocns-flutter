@@ -35,10 +35,12 @@ flutter_app_name:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  flutter:
-    sdk: flutter
-  flutter_localizations:
-    sdk: flutter
+
+  # mpflutter
+  flutter: ^1.2.0
+  flutter_web_plugins: ^1.2.0
+  mpcore: ^1.2.0
+  mp_build_tools: ^1.2.0
 
   # 本地代理
   shelf_proxy: ^1.0.2
@@ -51,7 +53,7 @@ dependencies:
   ota_update: ^4.0.1
 
   # 网络库，日志库，工具库，路径库，压缩库
-  dio: ^4.0.4
+  dio: ^4.0.1+1
   pretty_dio_logger: ^1.2.0-beta-1
   logging: ^1.0.2
   common_utils: ^2.1.0
@@ -98,7 +100,7 @@ dependencies:
   vibration: ^1.7.5
 
   # 组件管理库
-  get: ^4.6.5
+  get: ^4.3.9
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -122,8 +124,6 @@ dependencies:
 
     # 消息总线
   event_bus: 2.0.0
-    # 数据本地化
-  shared_preferences: ^2.0.17
   # 图表
   syncfusion_flutter_charts: ^19.3.49
   fl_chart: ^0.61.0
@@ -136,8 +136,6 @@ dependencies:
   pin_input_text_field: ^4.5.0
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
