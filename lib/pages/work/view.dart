@@ -11,13 +11,12 @@ class WorkPage extends BaseGetListPageView<WorkController, WorkState> {
   Widget buildView() {
     return Container(
       color: GYColors.backgroundColor,
+      height: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 18.w),
       child: ListView.builder(
         itemBuilder: (context, index) {
           return Item(
-            task: state.type!=WorkEnum.done && state.type!=WorkEnum.completed?state.dataList[index]:null,
-            type: state.type,
-            history:state.type==WorkEnum.done||state.type==WorkEnum.completed?state.dataList[index]:null,
+             todo: state.dataList[index],
           );
         },
         itemCount: state.dataList.length,

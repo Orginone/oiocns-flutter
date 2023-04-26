@@ -19,7 +19,7 @@ abstract class IWork {
   );
 
   /// 审批办事
-  Future<bool> approval(ITodo todo, int status, String comment, String data);
+  Future<bool> approval(ITodo todo, int status, String? comment, String? data);
 }
 
 class Work extends IWork {
@@ -45,11 +45,11 @@ class Work extends IWork {
   Future<bool> approval(
     ITodo todo,
     int status,
-    String comment,
-    String data,
+    String? comment,
+    String? data,
   ) async {
-    var success = false;
-    if (await todo.approval(status, comment, data)) {
+    var success = await todo.approval(status, comment, data);
+    if (success) {
       orgTodo.value = orgTodo.where((a) => a.id != todo.id).toList();
       flowTodo.value = flowTodo.where((a) => a.id != todo.id).toList();
     }

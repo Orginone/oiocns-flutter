@@ -1,30 +1,29 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
+import 'package:orginone/dart/core/target/todo/todo.dart';
+import 'package:orginone/event/work_reload.dart';
 
 import 'network.dart';
 import 'state.dart';
 
-class WorkController extends BaseListController<WorkState> with GetTickerProviderStateMixin{
- final WorkState state = WorkState();
+class WorkController extends BaseListController<WorkState> {
+  final WorkState state = WorkState();
 
+  @override
+  void onReceivedEvent(event) async{
+    // TODO: implement onReceivedEvent
+    super.onReceivedEvent(event);
+    if(event is WorkReload){
+     await loadData();
+    }
+  }
 
+  @override
+  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
+    state.dataList.value = await WorkNetWork.getTodo();
+    loadSuccess();
+  }
 
-
-
- @override
- Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
-   if(state.type == WorkEnum.done || state.type == WorkEnum.completed){
-     state.dataList.value = await WorkNetWork.getRecord(state.type == WorkEnum.done?[1]:[100,200]);
-   }else{
-     state.dataList.value = await WorkNetWork.getApproveTask(type: state.type.label);
-   }
-   loadSuccess();
- }
-
- void approval(String id,int status) async{
-   await WorkNetWork.approvalTask(id: id??"", status: status,comment: '');
- }
-
+  void approval(ITodo todo, int status) async {
+    await WorkNetWork.approvalTask(status: status, comment: '', todo: todo);
+  }
 }

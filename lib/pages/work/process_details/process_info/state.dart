@@ -14,9 +14,7 @@ class ProcessInfoState extends BaseGetState{
 
   ProcessDetailsController processDetailsController = Get.find<ProcessDetailsController>();
 
-  WorkEnum? get type =>processDetailsController.state.type;
-
-  XFlowTask get task => processDetailsController.state.task;
+  XFlowTaskHistory get task => processDetailsController.state.todo.target;
 
   XFlowInstance? get flowInstance => processDetailsController.state.flowInstance.value;
 

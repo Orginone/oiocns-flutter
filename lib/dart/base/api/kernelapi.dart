@@ -1161,7 +1161,7 @@ class KernelApi {
       ReqestType(
         module: 'target',
         action: 'QueryTargetById',
-        params: params,
+        params: params.toJson(),
       ),
       XTargetArray.fromJson,
     );

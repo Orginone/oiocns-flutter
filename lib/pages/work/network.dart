@@ -6,47 +6,23 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/target/todo/todo.dart';
 import 'package:orginone/dart/core/thing/ispecies.dart';
 import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/pages/work/initiate_work/state.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/toast_utils.dart';
 
+
+SettingController setting = Get.find<SettingController>();
+
 class WorkNetWork {
-  static Future<List<XFlowTask>> getApproveTask({required String type}) async {
-    List<XFlowTask> tasks = [];
 
-    // ResultType<XFlowTaskArray> result = await KernelApi.getInstance()
-    //     .queryApproveTask(IdReq(id: '0'));
-    //
-    // if (result.success) {
-    //   tasks = result.data?.result ?? [];
-    //   if(type == "待办"){
-    //     type = "审批";
-    //   }
-    //   tasks.removeWhere((element) => element.flowNode?.nodeType != type);
-    // } else {
-    //   ToastUtils.showMsg(msg: result.msg);
-    // }
-    return tasks;
-  }
+  static Future<List<ITodo>> getTodo() async {
 
-  static Future<List<XFlowTaskHistory>> getRecord(List<int> status) async {
-    List<XFlowTaskHistory> tasks = [];
+    var result = await setting.user.work.loadTodo(reload: true);
 
-    SettingController setting = Get.find<SettingController>();
-
-    ResultType<XFlowTaskHistoryArray> result = await KernelApi.getInstance()
-        .queryRecord(RecordSpaceReq(
-            spaceId: '0',
-            page: PageRequest(offset: 0, limit: 9999, filter: ''), status: status));
-
-    if (result.success) {
-      tasks = result.data?.result ?? [];
-    } else {
-      ToastUtils.showMsg(msg: result.msg);
-    }
-    return tasks;
+    return result;
   }
 
   static Future<XFlowInstance?> getFlowInstance(String id) async {
@@ -57,17 +33,15 @@ class WorkNetWork {
 
     if (result.success) {
       flowInstance = result.data;
-    } else {
-      ToastUtils.showMsg(msg: result.msg);
     }
     return flowInstance;
   }
 
-  static Future<List<XOperationItem>> getOperationItems(String id) async {
+  static Future<List<XOperationItem>> getOperationItems(String id,String spaceId) async {
     List<XOperationItem> items = [];
-    SettingController setting = Get.find<SettingController>();
+
     ResultType<XOperationItemArray> result = await KernelApi.getInstance()
-        .queryOperationItems(IdSpaceReq(id: id,spaceId: '0', page: PageRequest(offset: 0, limit: 9999, filter: '')));
+        .queryOperationItems(IdSpaceReq(id: id,spaceId: spaceId, page: PageRequest(offset: 0, limit: 9999, filter: '')));
 
     if (result.success) {
       items = result.data?.result??[];
@@ -78,18 +52,15 @@ class WorkNetWork {
   }
 
   static Future<void> approvalTask(
-      {required String id, required int status, String? comment,VoidCallback? onSuccess}) async {
-    ResultType req = await KernelApi.getInstance().approvalTask(
-        ApprovalTaskReq(id: id, status: status, comment: comment));
+      {required ITodo todo, required int status, String? comment,VoidCallback? onSuccess}) async {
 
-    if (req.success) {
+    bool success = await setting.user.work.approval(todo, status, comment??"",null);
+    if (success) {
       ToastUtils.showMsg(msg: "成功");
       EventBusHelper.fire(WorkReload());
       if (onSuccess != null) {
         onSuccess();
       }
-    } else {
-      ToastUtils.showMsg(msg: req.msg);
     }
   }
 

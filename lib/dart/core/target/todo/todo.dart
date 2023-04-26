@@ -37,7 +37,7 @@ abstract class ITodo {
   late int status;
 
   /// 审批办事
-  Future<bool> approval(int status, String comment, String data);
+  Future<bool> approval(int status, String? comment, String? data);
 }
 
 class FlowTodo implements ITodo {
@@ -75,20 +75,20 @@ class FlowTodo implements ITodo {
   String type;
 
   FlowTodo(XFlowTaskHistory task)
-      : id = task.id,
-        name = task.instance!.title,
+      : id = task.id??'',
+        name = task.instance?.title??"",
         target = task,
         type = '事项',
         remark = '',
-        status = task.status,
-        createTime = task.createTime,
-        shareId = task.instance!.belongId,
-        spaceId = task.instance!.belongId,
-        createUser = task.instance!.createUser,
-        speciesId = task.instance!.define?.speciesId ?? '';
+        status = task.status??0,
+        createTime = task.createTime??"",
+        shareId = task.instance?.belongId??"",
+        spaceId = task.instance?.belongId??"",
+        createUser = task.instance?.createUser??"",
+        speciesId = task.instance?.define?.speciesId ?? '';
 
   @override
-  Future<bool> approval(int status, String comment, String data) async {
+  Future<bool> approval(int status, String? comment, String? data) async {
     var res = await kernelApi.approvalTask(ApprovalTaskReq(
       id: id,
       comment: comment,
@@ -147,7 +147,7 @@ class OrgTodo implements ITodo {
         createUser = task.targetId;
 
   @override
-  Future<bool> approval(int status, String comment, String data) async {
+  Future<bool> approval(int status, String? comment, String? data) async {
     var res = await kernelApi.joinTeamApproval(ApprovalModel(
       id: id,
       status: status,

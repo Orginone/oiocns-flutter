@@ -43,7 +43,7 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
 
 
   Widget _approval() {
-    if (state.type != WorkEnum.todo) {
+    if (state.task.status != 1) {
       return Container();
     }
     return Container(
@@ -87,11 +87,10 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
   }
 
   Widget _opinion() {
-    if (state.type != WorkEnum.todo) {
+    if (state.task.status != 1) {
       return Container();
     }
     return Container(
-
       margin: EdgeInsets.only(bottom: 10.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

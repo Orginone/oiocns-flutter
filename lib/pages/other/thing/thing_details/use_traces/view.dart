@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -43,8 +45,8 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
   }
 
   Widget _buildTimelineTile(int index, Archive archive) {
-    XTarget? user =
-    DepartmentManagement().findXTargetByIdOrName(id: archive.flowInstance?.createUser ?? "");
+    TargetShare user =
+    findTargetShare(archive.flowInstance?.createUser ?? "");
     bool isLast = index == state.archives.value!.archives!.length - 1
         ? true
         : false;
@@ -72,7 +74,7 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
                     children: [
                       Text(archive.flowRecord?.status == 100?"已通过":archive.flowRecord?.status == 1?"待审核":"未通过"),
                       SizedBox(width: 20.w,),
-                      Expanded(child: Text('${user?.team?.name??''}(${user?.team?.code??''})')),
+                      Expanded(child: Text(user.name)),
                       Text("审核节点:${archive.flowNode?.nodeType}"),
                     ],
                   ),

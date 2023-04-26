@@ -12,6 +12,4 @@ class UseTracesState extends BaseGetState{
 
   XFlowInstance? get flowInstance => processDetailsController.state.flowInstance.value;
 
-  WorkEnum? get type =>processDetailsController.state.type;
-
 }

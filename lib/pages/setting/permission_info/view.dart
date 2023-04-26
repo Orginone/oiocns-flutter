@@ -14,6 +14,8 @@ import 'state.dart';
 SettingController get setting => Get.find();
 
 class PermissionInfoPage extends BaseGetView<PermissionInfoController,PermissionInfoState>{
+
+
   @override
   Widget buildView() {
     // setting.space.loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));

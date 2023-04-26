@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
+import 'package:orginone/dart/core/target/todo/todo.dart';
 import 'package:orginone/pages/work/state.dart';
 
 
@@ -13,19 +14,17 @@ class ProcessDetailsState extends BaseGetState{
 
   var hideProcess = true.obs;
 
-  late XFlowTask task;
+  late ITodo todo;
 
   var flowInstance = Rxn<XFlowInstance>();
 
   var xAttribute = <String,Map<XOperationItem,dynamic>>{}.obs;
 
-  WorkEnum? type;
 
   late TabController tabController;
 
   ProcessDetailsState(){
-    task = Get.arguments?['task'];
-    type = Get.arguments?['type'];
+    todo = Get.arguments?['todo'];
   }
 }
 

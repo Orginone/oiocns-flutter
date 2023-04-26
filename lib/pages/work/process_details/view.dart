@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/pages/other/thing/thing_details/use_traces/view.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'logic.dart';
 import 'process_info/view.dart';
 import 'state.dart';
+import 'use_traces/view.dart';
 
 class ProcessDetailsPage
     extends BaseGetView<ProcessDetailsController, ProcessDetailsState> {
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: state.task.flowInstance?.title ?? "",
+      titleName: "办事详情",
       body: Column(
         children: [
           tabBar(),

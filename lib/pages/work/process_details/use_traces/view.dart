@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/target/targetMap.dart';
+import 'package:orginone/pages/work/state.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -26,16 +29,14 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
       height: double.infinity,
       color: GYColors.backgroundColor,
       child: Obx(() {
-        // int length = state.flowInstance?.flowTaskHistory?.length ?? 0;
-        int length = 0;
+        int length = state.flowInstance?.historyTasks?.length ?? 0;
         return ListView.builder(
           itemCount: length,
           itemBuilder: (context, index) {
             return Container(
               child: _buildTimelineTile(
                   index,
-                  null,
-                  // state.flowInstance!.flowTaskHistory![index],
+                  state.flowInstance!.historyTasks![index],
               ),
             );
           },
@@ -44,13 +45,11 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
     );
   }
 
-  Widget _buildTimelineTile(int index, XFlowTask? task) {
-    XTarget? user =
-    DepartmentManagement().findXTargetByIdOrName(id: task?.createUser ?? "");
-    // bool isLast = index == state.flowInstance!.flowTaskHistory!.length - 1
-    //     ? true
-    //     : false;
-    bool isLast = true;
+  Widget _buildTimelineTile(int index, XFlowTaskHistory task) {
+    TargetShare user = findTargetShare(task.createUser ?? "");
+    bool isLast = index == state.flowInstance!.historyTasks!.length - 1
+        ? true
+        : false;
 
     return TimelineTile(
         isFirst: index == 0 ? true : false,
@@ -74,18 +73,18 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
                 children: [
                   Row(
                     children: [
-                      Text(task?.status == 100?"已通过":task?.status == 1?"待审核":"未通过"),
+                      Text(statusMap[task.status]!.text),
                       SizedBox(width: 20.w,),
-                      Expanded(child: Text('${user?.team?.name??''}(${user?.team?.code??''})')),
-                      Text("审核节点:${task?.flowNode?.nodeType}"),
+                      Expanded(child: Text(user.name)),
+                      Text("审核节点:${task.node?.nodeType}"),
                     ],
                   ),
                   SizedBox(height:30.h,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(child: Text("审批意见:${task?.flowRecords?.last.comment??""}",overflow: TextOverflow.ellipsis,maxLines: 1,)),
-                      Text(DateTime.tryParse(task?.createTime ?? "")?.format(
+                      Expanded(child: Text("审批意见:${task.records?.last.comment??""}",overflow: TextOverflow.ellipsis,maxLines: 1,)),
+                      Text(DateTime.tryParse(task.createTime ?? "")?.format(
                           format: "yyyy-MM-dd HH:mm:ss") ?? ""),
                     ],
                   ),

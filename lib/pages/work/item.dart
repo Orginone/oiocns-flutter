@@ -2,38 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:orginone/widget/unified.dart';
-import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/pages/work/state.dart';
+import 'package:orginone/dart/core/target/todo/todo.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/date_utils.dart';
+import 'package:orginone/widget/unified.dart';
 
 import 'logic.dart';
-import 'view.dart';
+import 'state.dart';
 
 class Item extends StatelessWidget {
+  final ITodo todo;
 
-  final XFlowTask? task;
-
-  final WorkEnum type;
-
-  final XFlowTaskHistory? history;
-
-  const Item({Key? key, this.task, required this.type, this.history}) : super(key: key);
-
+  const Item({Key? key, required this.todo}) : super(key: key);
 
   WorkController get controller => Get.find<WorkController>(tag: 'work');
 
+  SettingController get setting => Get.find<SettingController>();
 
   @override
   Widget build(BuildContext context) {
     String title = '';
-    if(type == WorkEnum.done || type == WorkEnum.completed){
-      // title = history?.historyTask?.flowInstance?.title??"";
-    }else{
-      title = task?.flowInstance?.title??"";
-    }
 
     return Slidable(
       key: const ValueKey("assets"),
@@ -60,13 +48,7 @@ class Item extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: (){
-          var data;
-          if(type == WorkEnum.done || type == WorkEnum.completed ){
-            // data = history?.historyTask;
-          }else{
-            data = task;
-          }
-          Get.toNamed(Routers.processDetails,arguments: {"task":data,"type":type});
+          Get.toNamed(Routers.processDetails,arguments: {"todo":todo});
         },
         child: Container(
           margin: EdgeInsets.only(top: 10.h),
@@ -81,9 +63,32 @@ class Item extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
-                      style: TextStyle(fontSize: 18.sp),
+                    Row(
+                      children: [
+                        Text(
+                          todo.type,
+                          style: TextStyle(fontSize: 18.sp),
+                        ),
+                        SizedBox(width: 20.w,),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 3.w, vertical: 2.h),
+                          decoration: BoxDecoration(
+                            color:
+                                statusMap[todo.status]!.color.withOpacity(0.4),
+                            borderRadius: BorderRadius.circular(4.w),
+                            border: Border.all(
+                                color: statusMap[todo.status]!.color,
+                                width: 0.5),
+                          ),
+                          child: Text(
+                            statusMap[todo.status]!.text,
+                            style: TextStyle(
+                                color: statusMap[todo.status]!.color,
+                                fontSize: 14.sp),
+                          ),
+                        ),
+                      ],
                     ),
                     comment(),
                     SizedBox(
@@ -106,7 +111,7 @@ class Item extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: (){
-            controller.approval(task?.id??"", 100);
+            controller.approval(todo, 100);
           },
           child: Container(
             padding:
@@ -124,7 +129,7 @@ class Item extends StatelessWidget {
         SizedBox(height: 10.h,),
         GestureDetector(
           onTap: (){
-            controller.approval(task?.id??"", 200);
+            controller.approval(todo, 200);
           },
           child: Container(
             padding:
@@ -141,53 +146,24 @@ class Item extends StatelessWidget {
         )
       ],
     );
-    if(type == WorkEnum.done || type == WorkEnum.completed){
-      Color textColor = history!.status == 100?Colors.green:Colors.red;
-
-      button = Container(
-        padding: EdgeInsets.symmetric(horizontal: 3.w,vertical: 2.h),
-        decoration: BoxDecoration(
-          color: textColor.withOpacity(0.4),
-          borderRadius: BorderRadius.circular(4.w),
-          border: Border.all(color: textColor,width: 0.5),
-        ),
-        child: Text(history!.status == 100?"已同意":"已拒绝",style: TextStyle(color: textColor,fontSize: 14.sp),),
-      );
-    }else if(type == WorkEnum.copy){
-      button = Container();
-    }
     return button;
   }
 
   Widget comment(){
-    if(type != WorkEnum.done && type != WorkEnum.completed){
-      return Container();
-    }
-    // return Container(margin: EdgeInsets.only(top: 20.h),child: Text("备注:${history?.comment??""}"));
-    return Container(margin: EdgeInsets.only(top: 20.h),child: Text("备注:${""}"));
+    return Container(
+        margin: EdgeInsets.only(top: 20.h), child: Text("备注:${todo.remark}"));
   }
 
   Widget role() {
-    String roleType = type == WorkEnum.done ||type == WorkEnum.completed? "审批" : "发起";
-    String dateTime = DateTime.tryParse((type == WorkEnum.done ||type == WorkEnum.completed
-                    ? history?.updateTime
-                    : task?.flowInstance?.createTime) ??
-                "")
-            ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
-        "";
-
-    String userId = (type == WorkEnum.done||type == WorkEnum.completed?history?.createUser:task?.createUser)??"";
-    SettingController setting = Get.find<SettingController>();
 
     return Row(
       children: [
         Text.rich(TextSpan(children: [
           TextSpan(
-              text: setting.provider.findNameById(userId),
+              text: setting.provider.findNameById(todo.createUser),
               style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500)),
           TextSpan(
-              text: roleType,
-              style: TextStyle(fontSize: 16.sp, color: Colors.grey)),
+              text: '', style: TextStyle(fontSize: 16.sp, color: Colors.grey)),
         ])),
         Container(
           margin: EdgeInsets.symmetric(horizontal: 20.w),
@@ -196,10 +172,11 @@ class Item extends StatelessWidget {
           color: Colors.grey,
         ),
         Text(
-          dateTime,
+          setting.provider.findNameById(todo.shareId),
           style: TextStyle(fontSize: 18.sp),
         ),
       ],
     );
   }
 }
+

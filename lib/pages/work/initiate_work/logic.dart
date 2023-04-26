@@ -32,8 +32,17 @@ class InitiateWorkController extends BaseBreadcrumbNavController<InitiateWorkSta
   }
 
   void jumpNext(WorkBreadcrumbNav work) {
-    Get.toNamed(Routers.initiateWork,
-        preventDuplicates: false, arguments: {"data": work});
+    if(work.children.isEmpty){
+      if(work.workType == WorkType.group){
+        jumpWorkList(work);
+      }else{
+        Get.toNamed(Routers.initiateWork,
+            preventDuplicates: false, arguments: {"data": work});
+      }
+    }else{
+      Get.toNamed(Routers.initiateWork,
+          preventDuplicates: false, arguments: {"data": work});
+    }
   }
 
   void createWork(WorkBreadcrumbNav work) {
