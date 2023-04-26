@@ -18,9 +18,13 @@
     ├── pages                           // 页面
     	├── chat                        // 沟通
         ├── ohter                       // 其他页面
+        ├── home                        // 主页
         ├── setting                     // 设置
         ├── work                        // 办事
         ├── login                       // 登录
+        ├── shop                        // 商店
+        ├── work                        // 办事
+        ├── ware_house                  // 仓库
     ├── util                            // 工具库
     ├── main.dart                       // 入口
     ├── routers.dart                    // 路由
