@@ -119,13 +119,13 @@ class Company extends MarketTarget implements ICompany {
   }
 
   @override
-  Future<XTargetArray> loadMembers(PageRequest page) async {
+  Future<List<XTarget>> loadMembers(PageRequest page) async {
     if (members.isEmpty) {
       var data = await super.loadMembers(page);
-      if (data.result != null) {
+      if (data.isEmpty) {
         members = [];
         memberChats = <IChat>[].obs;
-        for (var item in data.result!) {
+        for (var item in data) {
           members.add(item);
           memberChats.add(
             createChat(userId, id, item, [teamName, '同事']),
@@ -133,17 +133,12 @@ class Company extends MarketTarget implements ICompany {
         }
       }
     }
-    return XTargetArray(
-      offset: page.offset,
-      limit: page.limit,
-      result: members
-          .where((a) =>
-              a.code.contains(page.filter) || a.name.contains(page.filter))
-          .skip(page.offset)
-          .take(page.limit)
-          .toList(),
-      total: members.length,
-    );
+    return  members
+        .where((a) =>
+    a.code.contains(page.filter) || a.name.contains(page.filter))
+        .skip(page.offset)
+        .take(page.limit)
+        .toList();
   }
 
   @override

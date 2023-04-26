@@ -96,11 +96,9 @@ class DepartmentManagement {
 
   Future<void> loopMembers(List<ITarget> department) async {
     for (var element in department) {
-      XTargetArray members = await element
+      var members = await element
           .loadMembers(PageRequest(offset: 0, limit: 20000, filter: ""));
-      if (members.result != null) {
-        element.members = members.result!;
-      }
+      element.members = members;
 
       if (element.subTeam.isNotEmpty) {
         await loopMembers(element.subTeam);

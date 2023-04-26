@@ -84,7 +84,7 @@ class BaseTarget extends ITarget {
   }
 
   @override
-  Future<XTargetArray> loadMembers(PageRequest page) async {
+  Future<List<XTarget>> loadMembers(PageRequest page) async {
     final res = await kernel.querySubTargetById(IDReqSubModel(
       page: PageRequest(
         limit: page.limit,
@@ -95,7 +95,7 @@ class BaseTarget extends ITarget {
       typeNames: [target.typeName],
       subTypeNames: memberTypes.map((e) => e.label).toList(),
     ));
-    return res.data!;
+    return res.data?.result??[];
   }
 
   @override

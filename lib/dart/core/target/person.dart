@@ -359,30 +359,25 @@ class Person extends MarketTarget implements IPerson {
   }
 
   @override
-  Future<XTargetArray> loadMembers(PageRequest page) async {
+  Future<List<XTarget>> loadMembers(PageRequest page) async {
     if (members.isEmpty) {
       final data = await super.loadMembers(page);
-      if (data.result != null) {
-        members.addAll(data.result!);
+      if (data.isNotEmpty) {
+        members.addAll(data);
         members = [];
         memberChats = [];
-        for (var item in data.result!) {
+        for (var item in data) {
           members.add(item);
           memberChats.add(createChat(userId, id, item, ['好友']));
         }
       }
     }
-    return XTargetArray(
-      offset: page.offset,
-      limit: page.limit,
-      result: members
-          .where((a) =>
-              a.code.contains(page.filter) || a.name.contains(page.filter))
-          .skip(page.offset)
-          .take(page.limit)
-          .toList(),
-      total: members.length,
-    );
+    return members
+        .where((a) =>
+    a.code.contains(page.filter) || a.name.contains(page.filter))
+        .skip(page.offset)
+        .take(page.limit)
+        .toList();
   }
 
   @override

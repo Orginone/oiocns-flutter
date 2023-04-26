@@ -4372,13 +4372,11 @@ class XOperationItem {
           type = "selectDate";
           break;
         case "person":
-          type = "router";
-          router = Routers.choicePeople;
+          type = "selectPerson";
           break;
         case "dept":
         case "department":
-          type = "router";
-          router = Routers.choiceDepartment;
+          type = "selectDepartment";
           break;
         case "identity":
         case "auth":

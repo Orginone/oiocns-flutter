@@ -111,7 +111,7 @@ abstract class ITarget {
 
   /// 加载组织成员
   /// @param page 分页请求
-  Future<XTargetArray> loadMembers(PageRequest page);
+  Future<List<XTarget>> loadMembers(PageRequest page);
 
   /// 拉取成员加入群组
   /// @param {XTarget} target 成员

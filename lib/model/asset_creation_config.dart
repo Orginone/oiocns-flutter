@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/department_management.dart';
@@ -153,6 +157,7 @@ class Fields {
   }
 
   initData(){
+    SettingController setting = Get.find();
     if (type == "input") {
       controller = TextEditingController();
     }
@@ -166,7 +171,7 @@ class Fields {
         type == "text") {
       defaultData.value = HiveUtils.getUser()?.person?.team?.name;
     }
-    function = (){
+    function = () async{
       if (type == "router") {
         Get.toNamed(router!);
       }
@@ -182,6 +187,20 @@ class Fields {
         DatePicker.showDateTimePicker(Get.context!,currentTime: DateTime.now(),locale: LocaleType.zh,onConfirm: (date){
           defaultData.value = date.format(format: "yyyy-MM-dd HH:mm");
         });
+      }
+      if(type == 'selectPerson'){
+        var users = await setting.user.loadMembers(PageRequest(offset: 0, limit: 10000, filter: ''));
+        PickerUtils.showListStringPicker(Get.context!, titles: users.map((e) => e.name).toList(),
+            callback: (str) {
+              defaultData.value = users.firstWhere((element) => element.name == str);
+            });
+      }
+      if(type == 'selectDepartment'){
+        List<ITarget> team = await setting.getTeamTree(setting.user, true);
+        PickerUtils.showListStringPicker(Get.context!, titles: team.map((e) => e.teamName).toList(),
+            callback: (str) {
+              defaultData.value = team.firstWhere((element) => element.teamName == str);
+            });
       }
     };
   }
@@ -199,6 +218,9 @@ class Fields {
 
     if(type == "select"){
       data[code!] = defaultData.value?.keys.first;
+    }
+    if(type == "selectDepartment" || type == 'selectDepartment'){
+      data[code!] = defaultData.value.id;
     }
     switch (code) {
       case "ASSET_TYPE":

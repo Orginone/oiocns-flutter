@@ -19,7 +19,7 @@ class StationInfoController extends BaseController<StationInfoState> {
     super.onReady();
     state.identitys.value =  await state.station.loadIdentitys(reload: true);
     var users =  await state.station.loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
-    state.unitMember.addAll(users.result??[]);
+    state.unitMember.addAll(users);
   }
 
   void removeMember(String data) async{
