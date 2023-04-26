@@ -1489,46 +1489,46 @@ class XFlowDefineArray {
 //流程实例
 class XFlowInstance {
   // 雪花ID
-  String id;
+  String? id;
 
   // 流程定义Id
-  String defineId;
+  String? defineId;
 
   // 应用Id
-  String productId;
+  String? productId;
 
   // 标题
-  String title;
+  String? title;
 
   // 展示内容类型
-  String contentType;
+  String? contentType;
 
   // 展示内容
-  String content;
+  String? content;
 
   // 表单数据
-  String data;
+  String? data;
 
   // 回调钩子
-  String hook;
+  String? hook;
 
   // 状态
-  int status;
+  int? status;
 
   // 创建人员ID
-  String createUser;
+  String? createUser;
 
   // 更新人员ID
-  String updateUser;
+  String? updateUser;
 
   // 修改次数
-  String version;
+  String? version;
 
   // 创建时间
-  String createTime;
+  String? createTime;
 
   // 更新时间
-  String updateTime;
+  String? updateTime;
 
   // 流程的定义
   XFlowDefine? define;
@@ -1537,13 +1537,13 @@ class XFlowInstance {
   List<XFlowTaskHistory>? historyTasks;
 
   // 归属
-  String belongId;
+  String? belongId;
 
   // 填写的表单Id集合
-  String operationIds;
+  String? operationIds;
 
   // 物的Id集合
-  String thingIds;
+  String? thingIds;
 
   //构造方法
   XFlowInstance({
@@ -1569,24 +1569,24 @@ class XFlowInstance {
   });
 
   //通过JSON构造
-  XFlowInstance.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        operationIds = json["operationIds"],
-        thingIds = json["thingIds"],
-        defineId = json["defineId"],
-        belongId = json["belongId"],
-        productId = json["productId"],
-        title = json["title"],
-        contentType = json["contentType"],
-        content = json["content"],
-        data = json["data"],
-        hook = json["hook"],
-        status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"] {
+  XFlowInstance.fromJson(Map<String, dynamic> json) {
+    id = json["id"];
+    operationIds = json["operationIds"];
+    thingIds = json["thingIds"];
+    defineId = json["defineId"];
+    belongId = json["belongId"];
+    productId = json["productId"];
+    title = json["title"];
+    contentType = json["contentType"];
+    content = json["content"];
+    data = json["data"];
+    hook = json["hook"];
+    status = json["status"];
+    createUser = json["createUser"];
+    updateUser = json["updateUser"];
+    version = json["version"];
+    createTime = json["createTime"];
+    updateTime = json["updateTime"];
     if (json["historyTasks"] != null) {
       historyTasks = [];
       json["historyTasks"].forEach((json) {
@@ -1930,61 +1930,6 @@ class XFlowNode {
     json["belongId"] = belongId;
     json["bindOperations"] = bindOperations;
     return json;
-  }
-}
-
-class XBindOperation {
-  String? id;
-  String? name;
-  String? code;
-  bool? public;
-  String? remake;
-  String? speciesId;
-  String? belongId;
-  int? status;
-  String? createUser;
-  String? updateUser;
-  String? version;
-  String? createTime;
-  String? updateTime;
-  List<XOperationItem> operationItems = [];
-
-  XBindOperation();
-
-  XBindOperation.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    code = json['code'];
-    public = json['public'];
-    remake = json['remake'];
-    speciesId = json['speciesId'];
-    belongId = json['belongId'];
-    status = json['status'];
-    createUser = json['createUser'];
-    updateUser = json['updateUser'];
-    version = json['version'];
-    createTime = json['createTime'];
-    updateTime = json['updateTime'];
-  }
-
-  Future<void> getOperationItems() async {
-    var orgCtrl = Get.find<SettingController>();
-    ResultType<XOperationItemArray> result = await KernelApi.getInstance()
-        .queryOperationItems(IdSpaceReq(
-            id: id!,
-            spaceId: orgCtrl.user?.id??"",
-            page: PageRequest(offset: 0, limit: 20, filter: '')));
-    operationItems = result.data?.result ?? [];
-    for (var element in operationItems) {
-      if (element.rule?.widget == "dict") {
-        XAttribute? attr = await CommonTreeManagement().findXAttribute(
-            specieId: speciesId!, attributeId: element.attrId ?? "");
-        if (attr != null) {
-          element.rule!.dictItems = attr.dict!.dictItems;
-        }
-      }
-      element.fields = element.toFields();
-    }
   }
 }
 
@@ -2596,34 +2541,34 @@ class XFlowTaskArray {
 //流程任务
 class XFlowTaskHistory {
   // 雪花ID
-  String id;
+  String? id;
 
   // 流程定义节点id
-  String nodeId;
+  String? nodeId;
 
   // 流程实例id
-  String instanceId;
+  String? instanceId;
 
   // 节点分配目标Id
-  String identityId;
+  String? identityId;
 
   // 状态
-  int status;
+  int? status;
 
   // 创建人员ID
-  String createUser;
+  String? createUser;
 
   // 更新人员ID
-  String updateUser;
+  String? updateUser;
 
   // 修改次数
-  String version;
+  String? version;
 
   // 创建时间
-  String createTime;
+  String? createTime;
 
   // 更新时间
-  String updateTime;
+  String? updateTime;
 
   // 流程节点记录
   List<XFlowRecord>? records;
@@ -2656,24 +2601,24 @@ class XFlowTaskHistory {
   });
 
   //通过JSON构造
-  XFlowTaskHistory.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        nodeId = json["nodeId"],
-        instanceId = json["instanceId"],
-        identityId = json["identityId"],
-        status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"],
-        identity = json["identity"] != null
-            ? XIdentity.fromJson(json["identity"])
-            : null,
-        node = json["node"] != null ? XFlowNode.fromJson(json["node"]) : null,
-        instance = json["flowInstance"] != null
-            ? XFlowInstance.fromJson(json["flowInstance"])
-            : null {
+  XFlowTaskHistory.fromJson(Map<String, dynamic> json){
+    id = json["id"];
+    nodeId = json["nodeId"];
+    instanceId = json["instanceId"];
+    identityId = json["identityId"];
+    status = json["status"];
+    createUser = json["createUser"];
+    updateUser = json["updateUser"];
+    version = json["version"];
+    createTime = json["createTime"];
+    updateTime = json["updateTime"];
+    identity = json["identity"] != null
+    ? XIdentity.fromJson(json["identity"])
+        : null;
+    node = json["node"] != null ? XFlowNode.fromJson(json["node"]) : null;
+    instance = json["instance"] != null
+    ? XFlowInstance.fromJson(json["instance"])
+        : null;
     if (json["records"] != null) {
       records = [];
       json["records"].forEach((json) {
@@ -4170,12 +4115,12 @@ class XOperation {
     return retList;
   }
 
-  Future<void> getOperationItems() async {
+  Future<void> getOperationItems(String spaceId) async {
     var orgCtrl = Get.find<SettingController>();
     ResultType<XOperationItemArray> result = await KernelApi.getInstance()
         .queryOperationItems(IdSpaceReq(
             id: id!,
-            spaceId: orgCtrl.user?.id??"",
+            spaceId: spaceId,
             page: PageRequest(offset: 0, limit: 20, filter: '')));
     items = result.data?.result ?? [];
     for (var element in items!) {
@@ -4427,13 +4372,11 @@ class XOperationItem {
           type = "selectDate";
           break;
         case "person":
-          type = "router";
-          router = Routers.choicePeople;
+          type = "selectPerson";
           break;
         case "dept":
         case "department":
-          type = "router";
-          router = Routers.choiceDepartment;
+          type = "selectDepartment";
           break;
         case "identity":
         case "auth":

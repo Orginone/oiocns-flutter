@@ -48,7 +48,7 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
         await SettingNetWork.initStations(state.model.value!);
           break;
         case SpaceEnum.personGroup:
-        case SpaceEnum.companyCohort:
+        case SpaceEnum.externalCohort:
            await SettingNetWork.initCohorts(state.model.value!);
           break;
       }
@@ -116,7 +116,7 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
           Get.toNamed(Routers.stationInfo,arguments: {'station':model.source});
           break;
         case SpaceEnum.personGroup:
-        case SpaceEnum.companyCohort:
+        case SpaceEnum.externalCohort:
           Get.toNamed(Routers.cohortInfo,arguments: {'cohort':model.source});
           break;
       }

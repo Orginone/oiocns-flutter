@@ -34,37 +34,14 @@ abstract class BaseBreadcrumbNavMultiplexPage<T extends BaseBreadcrumbNavControl
           List<Widget> nextStep = [];
           if (state.bcNav.isNotEmpty) {
             for (var value in state.bcNav) {
-               if(value != state.bcNav.first){
-                 nextStep.add(_level(value));
-               }
+              nextStep.add(_level(value));
             }
           }
           return Row(
             children: [
-              GestureDetector(
-                onTap: (){
-                  controller.pop(0);
-                },
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      WidgetSpan(
-                          child:GestureDetector(
-                            onTap: (){
-                              controller.back();
-                            },
-                            child: Icon(Icons.arrow_back_ios,color: Colors.black,),
-                          ),
-                          alignment: PlaceholderAlignment.middle),
-                      TextSpan(
-                          text: state.bcNav.first.title,
-                          style: state.bcNav.isEmpty
-                              ? _selectedTextStyle
-                              : _unSelectedTextStyle)
-                    ],
-                  ),
-                ),
-              ),
+              IconButton(onPressed: (){
+                controller.popAll();
+              }, icon: const Icon(Icons.arrow_back_ios,color: Colors.black,),constraints: BoxConstraints(maxWidth: 40.w),),
               Expanded(
                 child: SingleChildScrollView(scrollDirection: Axis.horizontal,child: Row(children:nextStep,),),
               )
@@ -79,22 +56,23 @@ abstract class BaseBreadcrumbNavMultiplexPage<T extends BaseBreadcrumbNavControl
 
   Widget _level(BaseBreadcrumbNavInfo info) {
     int index = state.bcNav.indexOf(info);
+    List<InlineSpan> children = [
+      TextSpan(
+          text: info.title,
+          style: index == state.bcNav.length - 1
+              ? _selectedTextStyle
+              : _unSelectedTextStyle),
+    ];
+    if ((index+1) != state.bcNav.length) {
+      children.add(TextSpan(text: " • ", style: _unSelectedTextStyle));
+    }
     return GestureDetector(
       onTap: () {
         controller.pop(index);
       },
       child: Text.rich(
         TextSpan(
-          children: [
-            TextSpan(
-                text: " • ",
-                style: _unSelectedTextStyle),
-            TextSpan(
-                text: info.title,
-                style: index == state.bcNav.length - 1
-                    ? _selectedTextStyle
-                    : _unSelectedTextStyle),
-          ],
+          children: children,
         ),
       ),
     );

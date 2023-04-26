@@ -32,7 +32,7 @@ class Authority implements IAuthority {
 
   @override
   get belongId {
-    return target.belongId!;
+    return target.belongId??"";
   }
 
   @override

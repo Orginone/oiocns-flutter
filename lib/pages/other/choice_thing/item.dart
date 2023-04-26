@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/model/thing_model.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/department_management.dart';
@@ -84,7 +85,7 @@ class Item extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "创建人:${DepartmentManagement().findXTargetByIdOrName(id: item.creater ?? "")?.name ?? ""}",
+                          "创建人:${findTargetShare(item.creater ?? "").name}",
                           style: TextStyle(fontSize: 18.sp),
                         ),
                         statusWidget,

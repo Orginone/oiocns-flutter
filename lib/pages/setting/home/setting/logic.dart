@@ -137,7 +137,7 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
    case SpaceEnum.stationSetting:
     targetType.add(TargetType.station);
     break;
-   case SpaceEnum.companyCohort:
+   case SpaceEnum.externalCohort:
     targetType.add(TargetType.cohort);
     break;
    case SpaceEnum.personGroup:

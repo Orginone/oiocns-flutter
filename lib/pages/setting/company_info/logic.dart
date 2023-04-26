@@ -32,7 +32,7 @@ class CompanyInfoController extends BaseController<CompanyInfoState>
     var group = await state.company.getJoinedGroups(reload: true);
     state.unitMember.clear();
     state.joinGroup.clear();
-    state.unitMember.addAll(users.result ?? []);
+    state.unitMember.addAll(users);
     state.joinGroup.addAll(group ?? []);
   }
 

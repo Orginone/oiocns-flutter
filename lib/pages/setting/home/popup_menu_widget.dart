@@ -51,7 +51,7 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
           popupMenuItem.add(newPopupMenuItem("新建岗位", "create"));
           break;
         case SpaceEnum.personGroup:
-        case SpaceEnum.companyCohort:
+        case SpaceEnum.externalCohort:
           popupMenuItem.add(newPopupMenuItem("新建群组", "create"));
           break;
       }

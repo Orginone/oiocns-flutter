@@ -111,7 +111,7 @@ abstract class ITarget {
 
   /// 加载组织成员
   /// @param page 分页请求
-  Future<XTargetArray> loadMembers(PageRequest page);
+  Future<List<XTarget>> loadMembers(PageRequest page);
 
   /// 拉取成员加入群组
   /// @param {XTarget} target 成员
@@ -130,6 +130,11 @@ abstract class ITarget {
   /// @param {string[]} ids 成员ID数组
   /// @param {TargetType} type 成员类型
   Future<bool> removeMembers(List<String> ids, {String type});
+
+  Future<List<XFlowDefine>> loadWork({PageRequest? page});
+
+  ///查询办事节点
+  Future<FlowNode?> loadWorkNode(String id);
 }
 
 /// 市场相关操作方法

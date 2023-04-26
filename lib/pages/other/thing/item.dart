@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/model/thing_model.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_utils.dart';
@@ -49,7 +50,7 @@ class Item extends StatelessWidget {
                             height: 10.h,
                           ),
                           Text(
-                            "创建人:${DepartmentManagement().findXTargetByIdOrName(id: item.creater ?? "")?.name ?? ""}",
+                            "创建人:${findTargetShare(item.creater ?? "")}",
                             style: TextStyle(fontSize: 18.sp),
                           ),
                           SizedBox(

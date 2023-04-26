@@ -22,7 +22,7 @@ class CohortInfoController extends BaseController<CohortInfoState> {
   Future<void> init() async {
     var users = await state.cohort.loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
     state.unitMember.clear();
-    state.unitMember.addAll(users.result ?? []);
+    state.unitMember.addAll(users);
   }
 
   void companyOperation(CompanyFunction function) {

@@ -3,7 +3,6 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/chat/message_chat_page.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
-import 'package:orginone/pages/index/index_page.dart';
 import 'package:orginone/pages/login/binding.dart';
 import 'package:orginone/pages/login/view.dart';
 // import 'package:orginone/pages/index/indexok_page.dart';
@@ -15,7 +14,7 @@ import 'package:orginone/pages/other/choice_people/binding.dart';
 import 'package:orginone/pages/other/choice_people/view.dart';
 import 'package:orginone/pages/other/choice_thing/binding.dart';
 import 'package:orginone/pages/other/file/view.dart';
-import 'package:orginone/pages/other/home/home_page.dart';
+import 'package:orginone/pages/home/home_page.dart';
 import 'package:orginone/pages/other/qr_scan/binding.dart';
 import 'package:orginone/pages/other/qr_scan/view.dart';
 import 'package:orginone/pages/other/scanning/scanning_page.dart';
@@ -23,8 +22,8 @@ import 'package:orginone/pages/other/scanning/scanning_result_pge.dart';
 import 'package:orginone/pages/other/search_page.dart';
 import 'package:orginone/pages/other/web_view/binding.dart';
 import 'package:orginone/pages/other/web_view/view.dart';
-import 'package:orginone/pages/other/work/work_list/view.dart';
-import 'package:orginone/pages/other/work/work_start/view.dart';
+import 'package:orginone/pages/work/work_list/view.dart';
+import 'package:orginone/pages/work/work_start/view.dart';
 import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/dict_info/view.dart';
 import 'package:orginone/pages/setting/home/binding.dart';
@@ -45,21 +44,11 @@ import 'package:orginone/pages/setting/publisher_page.dart';
 import 'package:orginone/pages/setting/set_home_page.dart';
 import 'package:orginone/pages/setting/unit_settings_page.dart';
 import 'package:orginone/pages/setting/version_page.dart';
-import 'package:orginone/pages/todo/todo_detail.dart';
-import 'package:orginone/pages/todo/todo_tab_page.dart';
-import 'package:orginone/pages/todo/work_page.dart';
-import 'package:orginone/pages/todo/workbench_page.dart';
-import 'package:orginone/util/hive_utils.dart';
 
-import './pages/other/home/ware_house/assets_management/assets_management_binding.dart';
 // 资产管理
-import './pages/other/home/ware_house/assets_management/assets_management_page.dart';
-import './pages/other/home/ware_house/market/market_binding.dart';
 // 资产管理
-import './pages/other/home/ware_house/market/market_page.dart';
-import './pages/other/home/ware_house/often_use_binding.dart';
 // 仓库
-import './pages/other/home/ware_house/recently_opened_binding.dart';
+import 'pages/home/index/index_page.dart';
 import 'pages/login/forgot_password/binding.dart';
 import 'pages/login/forgot_password/view.dart';
 import 'pages/login/register/binding.dart';
@@ -77,18 +66,18 @@ import 'pages/other/thing/binding.dart';
 import 'pages/other/thing/thing_details/binding.dart';
 import 'pages/other/thing/thing_details/view.dart';
 import 'pages/other/thing/view.dart';
-import 'pages/other/ware_house/application_details/binding.dart';
-import 'pages/other/ware_house/application_details/view.dart';
-import 'pages/other/ware_house/warehouse_management/binding.dart';
-import 'pages/other/ware_house/warehouse_management/view.dart';
-import 'pages/other/work/initiate_work/binding.dart';
-import 'pages/other/work/initiate_work/view.dart';
-import 'pages/other/work/process_details/binding.dart';
-import 'pages/other/work/process_details/view.dart';
-import 'pages/other/work/work_list/binding.dart';
-import 'pages/other/work/work_start/binding.dart';
-import 'pages/other/work/work_start/create_work/binding.dart';
-import 'pages/other/work/work_start/create_work/view.dart';
+import 'pages/ware_house/application_details/binding.dart';
+import 'pages/ware_house/application_details/view.dart';
+import 'pages/ware_house/warehouse_management/binding.dart';
+import 'pages/ware_house/warehouse_management/view.dart';
+import 'pages/work/initiate_work/binding.dart';
+import 'pages/work/initiate_work/view.dart';
+import 'pages/work/process_details/binding.dart';
+import 'pages/work/process_details/view.dart';
+import 'pages/work/work_list/binding.dart';
+import 'pages/work/work_start/binding.dart';
+import 'pages/work/work_start/create_work/binding.dart';
+import 'pages/work/work_start/create_work/view.dart';
 import 'pages/setting/add_members/binding.dart';
 import 'pages/setting/add_members/view.dart';
 import 'pages/setting/attribute_info/binding.dart';
@@ -342,10 +331,7 @@ class Routers {
           HomeBinding(),
           SetHomeBinding(),
           IndexPageBinding(),
-          WorkBinding(),
           SetHomeBinding(),
-          RecentlyOpenedBinding(),
-          OftenUseBinding(),
           UpdateBinding(),
         ],
       ),
@@ -410,18 +396,6 @@ class Routers {
           UpdateBinding()
         ],
       ),
-      // 资产管理
-      GetPage(
-        name: Routers.assetsManagement,
-        page: () => const AssetsManagementPage(),
-        binding: AssetsManagementBinding(),
-      ),
-      // 杭商城
-      GetPage(
-        name: Routers.market,
-        page: () => const MarketPage(),
-        binding: MarketBinding(),
-      ),
       GetPage(
         name: Routers.storageLocation,
         page: () => StorageLocationPage(),
@@ -456,20 +430,6 @@ class Routers {
         name: Routers.processDetails,
         page: () => ProcessDetailsPage(),
         binding: ProcessDetailsBinding(),
-      ),
-      GetPage(
-        name: Routers.todo,
-        page: () => WorkbenchPage(),
-        binding: WorkBinding(),
-      ),
-      GetPage(
-        name: Routers.todoList,
-        page: () => const TodoTabPage(),
-      ),
-      GetPage(
-        name: Routers.todoDetail,
-        page: () => const TodoDetail(),
-        binding: TodoDetailBinding(),
       ),
       GetPage(
         name: Routers.choiceGb,

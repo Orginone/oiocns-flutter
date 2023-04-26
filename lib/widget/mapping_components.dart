@@ -14,6 +14,8 @@ Map<String, MappingComponentsCallback> testMappingComponents = {
   "input": mappingInputWidget,
   "select": mappingSelectBoxWidget,
   "selectDate": mappingSelectDateBoxWidget,
+  "selectPerson":mappingSelectPersonBoxWidget,
+  "selectDepartment":mappingSelectDepartmentBoxWidget,
   "router": mappingRouteWidget,
 };
 
@@ -122,6 +124,52 @@ MappingComponentsCallback mappingSelectDateBoxWidget = (Fields data,
   });
 };
 
+
+MappingComponentsCallback mappingSelectPersonBoxWidget = (Fields data,
+    {bool isEdit = false, AssetsType? assetsType}) {
+  if(data.hidden??false){
+    return Container();
+  }
+  return Obx(() {
+    String content = '';
+    content = data.defaultData.value?.name??"";
+    return Container(
+      margin: EdgeInsets.only(
+          left: (data.marginLeft ?? 0).h,
+          right: (data.marginRight ?? 0).h,
+          top: (data.marginTop ?? 0).h,
+          bottom: (data.marginBottom ?? 0).h),
+      child: CommonWidget.commonChoiceTile(
+          data.title ?? "",content,
+          onTap: data.function,
+          showLine: true,
+          required: data.required ?? false),
+    );
+  });
+};
+
+MappingComponentsCallback mappingSelectDepartmentBoxWidget = (Fields data,
+    {bool isEdit = false, AssetsType? assetsType}) {
+  if(data.hidden??false){
+    return Container();
+  }
+  return Obx(() {
+    String content = '';
+    content = data.defaultData.value?.teamName??"";
+    return Container(
+      margin: EdgeInsets.only(
+          left: (data.marginLeft ?? 0).h,
+          right: (data.marginRight ?? 0).h,
+          top: (data.marginTop ?? 0).h,
+          bottom: (data.marginBottom ?? 0).h),
+      child: CommonWidget.commonChoiceTile(
+          data.title ?? "",content,
+          onTap: data.function,
+          showLine: true,
+          required: data.required ?? false),
+    );
+  });
+};
 
 MappingComponentsCallback mappingRouteWidget = (Fields data,
     {bool isEdit = false, AssetsType? assetsType}) {
