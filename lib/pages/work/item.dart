@@ -67,15 +67,26 @@ class Item extends StatelessWidget {
                       children: [
                         Text(
                           todo.type,
+                          style: TextStyle(fontSize: 16.sp),
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10.w),
+                          height: 20.h,
+                          width: 0.5,
+                          color: Colors.grey,
+                        ),
+                        Text(
+                          todo.name,
                           style: TextStyle(fontSize: 18.sp),
                         ),
-                        SizedBox(width: 20.w,),
+
+                        SizedBox(width: 10.w,),
                         Container(
                           padding: EdgeInsets.symmetric(
                               horizontal: 3.w, vertical: 2.h),
                           decoration: BoxDecoration(
                             color:
-                                statusMap[todo.status]!.color.withOpacity(0.4),
+                                statusMap[todo.status]!.color.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(4.w),
                             border: Border.all(
                                 color: statusMap[todo.status]!.color,
@@ -151,7 +162,7 @@ class Item extends StatelessWidget {
 
   Widget comment(){
     return Container(
-        margin: EdgeInsets.only(top: 20.h), child: Text("备注:${todo.remark}"));
+        margin: EdgeInsets.only(top: 20.h), child: Text("备注:${todo.remark}",style: TextStyle(fontSize: 16.sp),));
   }
 
   Widget role() {
@@ -166,14 +177,14 @@ class Item extends StatelessWidget {
               text: '', style: TextStyle(fontSize: 16.sp, color: Colors.grey)),
         ])),
         Container(
-          margin: EdgeInsets.symmetric(horizontal: 20.w),
+          margin: EdgeInsets.symmetric(horizontal: 10.w),
           height: 20.h,
           width: 0.5,
           color: Colors.grey,
         ),
         Text(
           setting.provider.findNameById(todo.shareId),
-          style: TextStyle(fontSize: 18.sp),
+          style: TextStyle(fontSize: 16.sp),
         ),
       ],
     );

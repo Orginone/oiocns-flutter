@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/event/home_data.dart';
 import 'package:orginone/widget/badge_widget.dart';
+import 'package:orginone/widget/loading_dialog.dart';
 import 'package:orginone/widget/template/originone_scaffold.dart';
 import 'package:orginone/widget/template/tabs.dart';
 import 'package:orginone/widget/unified.dart';
@@ -25,6 +27,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 import 'function_page.dart';
+import 'index/index_pageV2.dart';
 
 DateTime? _lastCloseApp;
 
@@ -109,7 +112,7 @@ class HomeController extends TabsController {
       }),
     ));
     var center = XTab(
-      view: FunctionPage(),
+      view: IndexTabPage(),
       tab: BadgeTabWidget(
         body: XImage.localImage("logo_not_bg", size: Size(36.w, 36.w)),
         iconMargin: EdgeInsets.zero,
@@ -138,6 +141,15 @@ class HomeController extends TabsController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    EventBusHelper.register(this, (event) async {
+      if (event is ShowLoading) {
+        if(event.isShow){
+          LoadingDialog.showLoading(Get.context!,msg: "加载数据中");
+        }else{
+          LoadingDialog.dismiss(Get.context!);
+        }
+      }
+    });
   }
 
   @override

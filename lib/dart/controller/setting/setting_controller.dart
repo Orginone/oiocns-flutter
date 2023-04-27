@@ -24,7 +24,9 @@ class SettingController extends GetxController {
     super.onInit();
     _provider = UserProvider();
     _userSub = XEventBus.instance.on<UserLoaded>().listen((event) async {
+      EventBusHelper.fire(ShowLoading(true));
       await _provider.reload();
+      EventBusHelper.fire(ShowLoading(false));
     });
   }
 
@@ -50,7 +52,7 @@ class SettingController extends GetxController {
     var result = <ITarget>[];
     result.add(space);
     if (space == user) {
-      result.addAll([...(await user?.getCohorts(reload: false))??[]]);
+      result.addAll([...(await user.getCohorts(reload: false))??[]]);
     } else if (isShare) {
       result.addAll(
           [...(await (space as ICompany).getJoinedGroups(reload: false))]);
