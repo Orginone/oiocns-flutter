@@ -15,7 +15,7 @@ abstract class IChat {
   late ChatModel target;
   late RxList<XImMsg> messages;
   late RxList<XTarget> persons;
-  late TargetShare shareInfo;
+  TargetShare get shareInfo;
   late int lastMsgTime;
   late Rx<XImMsg?> lastMessage;
 
@@ -27,6 +27,9 @@ abstract class IChat {
 
   /// 销毁会话
   destroy();
+
+  /// 会话初始化
+  onMessage();
 
   /// 加载会话缓存
   /// [chatCache] 缓存数据
@@ -53,14 +56,6 @@ abstract class IChat {
 
   /// 接收消息
   receiveMessage(XImMsg msg);
-}
-
-/// 会话组的抽象
-abstract class IChatGroup {
-  late String spaceId;
-  late String spaceName;
-  late RxBool isOpened;
-  late RxList<IChat> chats;
 }
 
 /// 单个会话缓存

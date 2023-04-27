@@ -111,8 +111,15 @@ class BaseChat implements IChat {
   }
 
   @override
-  set shareInfo(TargetShare shareInfo) {
-    this.shareInfo = shareInfo;
+  onMessage() {
+    if (noReadCount.value > 0) {
+      noReadCount.value = 0;
+    }
+    cache();
+    if (messages.length < 10) {
+      moreMessage();
+    }
+    morePersons();
   }
 
   @override
