@@ -90,7 +90,7 @@ class TeamAvatar extends StatelessWidget {
       } else if (typeName == TargetType.person.label) {
         child = Icon(Icons.group, size: info.fontSize, color: Colors.white);
       } else {
-        child = Icon(Icons.group, size: info.fontSize);
+        child = Icon(Icons.group, size: info.fontSize, color: Colors.white);
       }
     } else {
       child = this.child!;
