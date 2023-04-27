@@ -434,9 +434,6 @@ abstract class ICompany implements ISpace, ITarget {
   /// 当前用户Id
   late String userId;
 
-  ///加载空间职权树
-  Future<IAuthority?> loadSpaceAuthorityTree([bool reload = false]);
-
   /// 删除集团
   /// @param id 集团Id
   Future<bool> deleteGroup(String id);

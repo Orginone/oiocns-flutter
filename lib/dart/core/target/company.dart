@@ -113,7 +113,7 @@ class Company extends MarketTarget implements ICompany {
           limit: Constants.maxUint16,
         )));
     if (res.success) {
-      authorityTree = Authority(res.data!, space, userId);
+      authorityTree = Authority(res.data!, this, userId);
     }
     return authorityTree;
   }

@@ -115,7 +115,7 @@ class Person extends MarketTarget implements IPerson {
       ),
     ));
     if (res.success) {
-      authorityTree = Authority(res.data!, space, userId);
+      authorityTree = Authority(res.data!, this, userId);
     }
     return authorityTree;
   }
