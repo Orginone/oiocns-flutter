@@ -16,7 +16,7 @@ class UserProvider {
 
   UserProvider() {
     kernelApi.on('ChatRefresh', () async {
-      await refresh();
+      await reload();
     });
     kernelApi.on('RecvMsg', (data) {
       var item = XImMsg.fromJson(data);
@@ -87,10 +87,11 @@ class UserProvider {
   }
 
   /// 重载数据
-  Future<void> refresh() async {
+  Future<void> reload() async {
     _inited.value = false;
     await _user.value?.getCohorts();
     await _user.value?.loadMembers(pageAll());
+    await _user.value?.work.loadTodo();
     var companys = await _user.value?.getJoinedCompanys() ?? [];
     for (var company in companys) {
       await company.deepLoad();
@@ -101,6 +102,11 @@ class UserProvider {
       _recvMessage(item);
       return false;
     }).toList();
+    refresh();
+  }
+
+  void refresh(){
+    _user.refresh();
   }
 
   /// 接收到新信息

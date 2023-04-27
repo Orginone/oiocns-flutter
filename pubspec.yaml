@@ -96,6 +96,7 @@ dependencies:
   flutter_sound_lite: ^8.5.0
   audio_wave: ^0.1.4
   vibration: ^1.7.5
+  badges: ^3.1.1
 
   # 组件管理库
   get: ^4.6.5

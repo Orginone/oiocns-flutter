@@ -21,7 +21,6 @@ class WorkNetWork {
   static Future<List<ITodo>> getTodo() async {
 
     var result = await setting.user.work.loadTodo(reload: true);
-
     return result;
   }
 

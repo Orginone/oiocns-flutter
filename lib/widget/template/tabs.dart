@@ -2,40 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class XTab {
-  final Widget? body;
   final Widget view;
-  final Widget? icon;
-  final EdgeInsets? iconMargin;
-  final List<Widget> children;
-
+  final Widget tab;
   const XTab({
     Key? key,
     required this.view,
-    this.body,
-    this.icon,
-    this.iconMargin = const EdgeInsets.all(4),
-    this.children = const <Widget>[],
+    required this.tab,
   });
 
   Widget toTab() {
-    return UnconstrainedBox(
-      child: Stack(
-        children: [
-          Tab(
-            iconMargin: iconMargin!,
-            icon: icon,
-            child: body,
-          ),
-          for (var one in children) one,
-        ],
-      ),
-    );
+    return tab;
   }
 
   Widget toTabView() {
     return view;
   }
 }
+
+
+
 
 /// Tab 模板
 class Tabs extends StatelessWidget {

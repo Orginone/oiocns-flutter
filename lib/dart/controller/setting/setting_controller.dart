@@ -24,7 +24,7 @@ class SettingController extends GetxController {
     super.onInit();
     _provider = UserProvider();
     _userSub = XEventBus.instance.on<UserLoaded>().listen((event) async {
-      await _provider.refresh();
+      await _provider.reload();
     });
   }
 
