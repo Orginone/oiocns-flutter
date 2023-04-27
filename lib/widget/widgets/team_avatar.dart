@@ -28,7 +28,7 @@ class TeamAvatar extends StatelessWidget {
   final double size;
   final Widget? child;
   final List<Widget>? children;
-  final BoxDecoration? decoration;
+  final BoxDecoration decoration;
 
   TeamAvatar({
     super.key,
@@ -47,7 +47,7 @@ class TeamAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     var avatar = info.share.avatar;
     if (avatar?.thumbnail != null) {
-      var thumbnail = avatar!.thumbnail!.split(",")[1];
+      var thumbnail = avatar!.thumbnail.split(",")[1];
       thumbnail = thumbnail.replaceAll('\r', '').replaceAll('\n', '');
       return AdvancedAvatar(
         size: size,
