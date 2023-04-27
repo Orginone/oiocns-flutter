@@ -11,15 +11,18 @@ class WorkPage extends BaseGetListPageView<WorkController, WorkState> {
   Widget buildView() {
     return Container(
       color: GYColors.backgroundColor,
-      height: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 18.w),
-      child: ListView.builder(
-        itemBuilder: (context, index) {
-          return Item(
-             todo: state.dataList[index],
-          );
-        },
-        itemCount: state.dataList.length,
+      child: SingleChildScrollView(
+        child: ListView.builder(
+          padding: EdgeInsets.symmetric(horizontal: 18.w,vertical: 10.h),
+          itemBuilder: (context, index) {
+            return Item(
+               todo: state.dataList[index],
+            );
+          },
+          itemCount: state.dataList.length,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+        ),
       ),
     );
   }

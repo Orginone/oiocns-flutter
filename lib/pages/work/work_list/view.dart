@@ -11,16 +11,18 @@ import 'logic.dart';
 class WorkListPage extends BaseGetListView<WorkListController,WorkListState>{
   @override
   Widget buildView() {
-    return ListView.builder(
-      padding: EdgeInsets.symmetric(horizontal: 18.w),
-      itemBuilder: (context, index) {
-        return Item(
-          todo: state.dataList[index],
-        );
-      },
-      itemCount: state.dataList.length,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+    return SingleChildScrollView(
+      child: ListView.builder(
+        padding: EdgeInsets.symmetric(horizontal: 18.w,vertical: 10.h),
+        itemBuilder: (context, index) {
+          return Item(
+            todo: state.dataList[index],
+          );
+        },
+        itemCount: state.dataList.length,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+      ),
     );
   }
 
