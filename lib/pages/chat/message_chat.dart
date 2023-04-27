@@ -8,7 +8,7 @@ import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
-import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
+import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/util/date_util.dart';
 
 class MessageChat extends StatelessWidget {

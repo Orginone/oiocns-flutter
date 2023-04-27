@@ -2,7 +2,7 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
-import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
+import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/pages/login/binding.dart';
 import 'package:orginone/pages/login/view.dart';
 // import 'package:orginone/pages/index/indexok_page.dart';
