@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/target/todo/todo.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/unified.dart';
 
 import 'logic.dart';
@@ -57,59 +58,69 @@ class Item extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.w),
           ),
           padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 10.w),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          todo.type,
-                          style: TextStyle(fontSize: 16.sp),
-                        ),
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 10.w),
-                          height: 20.h,
-                          width: 0.5,
-                          color: Colors.grey,
-                        ),
-                        Text(
-                          todo.name,
-                          style: TextStyle(fontSize: 18.sp),
-                        ),
+              Row(
+                children: [
+                  Text(
+                    todo.type,
+                    style: TextStyle(fontSize: 16.sp),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 10.w),
+                    height: 20.h,
+                    width: 0.5,
+                    color: Colors.grey,
+                  ),
+                  Text(
+                    todo.name,
+                    style: TextStyle(fontSize: 18.sp),
+                  ),
 
-                        SizedBox(width: 10.w,),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 3.w, vertical: 2.h),
-                          decoration: BoxDecoration(
-                            color:
-                                statusMap[todo.status]!.color.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(4.w),
-                            border: Border.all(
-                                color: statusMap[todo.status]!.color,
-                                width: 0.5),
-                          ),
-                          child: Text(
-                            statusMap[todo.status]!.text,
-                            style: TextStyle(
-                                color: statusMap[todo.status]!.color,
-                                fontSize: 14.sp),
-                          ),
+                  SizedBox(width: 10.w,),
+                  Text(
+                    DateTime.tryParse(todo.createTime)?.format(format: "yyyy-MM-dd HH:mm:ss")??"",
+                    style: TextStyle(fontSize: 16.sp),
+                  ),
+                  SizedBox(width: 10.w,),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 3.w, vertical: 2.h),
+                    decoration: BoxDecoration(
+                      color:
+                      statusMap[todo.status]!.color.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(4.w),
+                      border: Border.all(
+                          color: statusMap[todo.status]!.color,
+                          width: 0.5),
+                    ),
+                    child: Text(
+                      statusMap[todo.status]!.text,
+                      style: TextStyle(
+                          color: statusMap[todo.status]!.color,
+                          fontSize: 14.sp),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        comment(),
+                        SizedBox(
+                          height: 20.h,
                         ),
+                        role(),
                       ],
                     ),
-                    comment(),
-                    SizedBox(
-                      height: 20.h,
-                    ),
-                    role(),
-                  ],
-                ),
-              ),
-              button(),
+                  ),
+                  button(),
+                ],
+              )
             ],
           ),
         ),
@@ -171,10 +182,10 @@ class Item extends StatelessWidget {
       children: [
         Text.rich(TextSpan(children: [
           TextSpan(
+              text: '创建人:', style: TextStyle(fontSize: 16.sp, color: Colors.grey)),
+          TextSpan(
               text: setting.provider.findNameById(todo.createUser),
               style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500)),
-          TextSpan(
-              text: '', style: TextStyle(fontSize: 16.sp, color: Colors.grey)),
         ])),
         Container(
           margin: EdgeInsets.symmetric(horizontal: 10.w),

@@ -20,8 +20,6 @@ class WorkPage extends BaseGetListPageView<WorkController, WorkState> {
           );
         },
         itemCount: state.dataList.length,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
       ),
     );
   }
