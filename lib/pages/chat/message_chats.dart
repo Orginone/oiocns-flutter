@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/chat/widgets/message_item_widget.dart';
 
-class MessageRecent extends GetView<SettingController> {
-  const MessageRecent({Key? key}) : super(key: key);
+class MessageChats extends GetView<SettingController> {
+  const MessageChats({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

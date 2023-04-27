@@ -352,7 +352,7 @@ class Routers {
       ),
       GetPage(
         name: Routers.chat,
-        page: () => const ChatPage(),
+        page: () => const MessageChat(),
         bindings: [ChatBoxBinding(), PlayBinding()],
       ),
       GetPage(

@@ -11,8 +11,8 @@ import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/detail_item_widget.dart';
 import 'package:orginone/util/date_util.dart';
 
-class ChatPage extends StatelessWidget {
-  const ChatPage({Key? key}) : super(key: key);
+class MessageChat extends StatelessWidget {
+  const MessageChat({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
