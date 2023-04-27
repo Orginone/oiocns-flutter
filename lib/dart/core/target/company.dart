@@ -39,7 +39,6 @@ class Company extends MarketTarget implements ICompany {
   @override
   late IFileSystemItem root;
 
-
   @override
   late List<ICohort> cohorts;
 
@@ -92,6 +91,8 @@ class Company extends MarketTarget implements ICompany {
     members = <XTarget>[].obs;
     root = getFileSysItemRoot(target.id);
     joinedGroup = [];
+    var labels = [teamName, "${target.typeName}群"];
+    chat = createChat(userId, id, target, labels);
   }
 
   @override
@@ -133,9 +134,9 @@ class Company extends MarketTarget implements ICompany {
         }
       }
     }
-    return  members
-        .where((a) =>
-    a.code.contains(page.filter) || a.name.contains(page.filter))
+    return members
+        .where(
+            (a) => a.code.contains(page.filter) || a.name.contains(page.filter))
         .skip(page.offset)
         .take(page.limit)
         .toList();
