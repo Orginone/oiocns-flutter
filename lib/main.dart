@@ -39,7 +39,7 @@ void main() async {
   runApp(const ScreenInit());
 }
 
-final kernelApi = KernelApi.getInstance();
+final kernel = KernelApi.getInstance();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver();
 const Size screenSize = Size(540, 1170);

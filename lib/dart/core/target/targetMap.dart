@@ -27,7 +27,7 @@ appendShare(String id, TargetShare share) {
 
 TargetShare findTargetShare(String targetId) {
   if (!targetMap.containsKey(targetId)) {
-    kernelApi.queryTargetById(IdArrayReq(ids: [targetId])).then((res) {
+    kernel.queryTargetById(IdArrayReq(ids: [targetId])).then((res) {
       if (res.success) {
         appendTarget(res.data?.result ?? []);
       }

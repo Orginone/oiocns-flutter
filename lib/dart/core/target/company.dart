@@ -34,9 +34,6 @@ class Company extends MarketTarget implements ICompany {
   late List<IChat> memberChats;
 
   @override
-  late List<XTarget> members;
-
-  @override
   late IFileSystemItem root;
 
   @override
@@ -47,9 +44,6 @@ class Company extends MarketTarget implements ICompany {
 
   @override
   late List<IGroup> joinedGroup;
-
-  @override
-  late String userId;
 
   @override
   late List<IWorking> workings;
@@ -69,7 +63,7 @@ class Company extends MarketTarget implements ICompany {
   @override
   late Dict dict;
 
-  Company(XTarget target, this.userId) : super(target, null, userId) {
+  Company(XTarget target, String userId) : super(target, null, userId) {
     departmentTypes = targetDepartmentTypes;
     subTeamTypes = [...departmentTypes, TargetType.working];
     extendTargetType = [...subTeamTypes, ...companyTypes];
@@ -93,6 +87,7 @@ class Company extends MarketTarget implements ICompany {
     joinedGroup = [];
     var labels = [teamName, "${target.typeName}群"];
     chat = createChat(userId, id, target, labels);
+    space = this;
   }
 
   @override

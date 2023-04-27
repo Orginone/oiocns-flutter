@@ -22,6 +22,9 @@ abstract class IChat {
   /// 获取会话缓存
   ChatCache getCache();
 
+  /// 缓存会话
+  cache();
+
   /// 销毁会话
   destroy();
 
