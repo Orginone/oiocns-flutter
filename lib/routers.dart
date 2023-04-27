@@ -1,6 +1,7 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
+import 'package:orginone/pages/chat/message_setting.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/pages/login/binding.dart';
@@ -138,9 +139,7 @@ class Routers {
 
   // 消息
   static const String messageSetting = "/messageSetting";
-  static const String message = "/message";
-  static const String chat = "/chat";
-  static const String moreMessage = "/moreMessage";
+  static const String messageChat = "/messageChat";
 
   // 首页
   static const String index = "/index";
@@ -351,7 +350,11 @@ class Routers {
         binding: ScanningResultBinding(),
       ),
       GetPage(
-        name: Routers.chat,
+        name: Routers.messageSetting,
+        page: () => const MessageSetting(),
+      ),
+      GetPage(
+        name: Routers.messageChat,
         page: () => const MessageChat(),
         bindings: [ChatBoxBinding(), PlayBinding()],
       ),

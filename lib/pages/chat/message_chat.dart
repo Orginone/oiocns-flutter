@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/dart/core/target/chat/ichat.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/widget/template/originone_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -24,7 +25,7 @@ class MessageChat extends StatelessWidget {
       appBarLeading: XWidgets.defaultBackBtn,
       appBarTitle: _title(chat),
       appBarCenterTitle: true,
-      appBarActions: _actions,
+      appBarActions: _actions(chat),
       body: _body(context, chat),
     );
   }
@@ -47,18 +48,21 @@ class MessageChat extends StatelessWidget {
     });
   }
 
-  get _actions => <Widget>[
-        GFIconButton(
-          color: Colors.white.withOpacity(0),
-          icon: Icon(
-            Icons.more_horiz,
-            color: XColors.black3,
-            size: 32.w,
-          ),
-          onPressed: () async {
-          },
+  List<Widget> _actions(IChat chat) {
+    return <Widget>[
+      GFIconButton(
+        color: Colors.white.withOpacity(0),
+        icon: Icon(
+          Icons.more_horiz,
+          color: XColors.black3,
+          size: 32.w,
         ),
-      ];
+        onPressed: () async {
+          Get.toNamed(Routers.messageSetting, arguments: chat);
+        },
+      ),
+    ];
+  }
 
   Widget _time(String? dateTime) {
     var content = dateTime != null
