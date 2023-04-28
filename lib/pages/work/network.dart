@@ -20,9 +20,8 @@ class WorkNetWork {
 
   static Future<List<ITodo>> getTodo() async {
 
-    var result = await setting.user.work.loadTodo(reload: true);
-
-    return result;
+    var result = await setting.provider.user?.work.loadTodo(reload: true);
+    return result??[];
   }
 
   static Future<XFlowInstance?> getFlowInstance(String id) async {
