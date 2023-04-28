@@ -27,8 +27,6 @@ class FunctionPage extends BaseGetPageView<FunctionController, FunctionState> {
               Container(),
               Container(),
               Container(),
-              Container(),
-              Container(),
             ],
           ),
         )
@@ -99,8 +97,6 @@ class FunctionState extends BaseGetState {
 
 const List<String> tabTitle = [
   "工作台",
-  "资产管家",
-  "一警一档",
   "看板",
   "新闻",
   "共享",

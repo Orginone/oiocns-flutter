@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/index.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/target/todo/todo.dart';
 import 'package:orginone/main.dart';
 
@@ -23,9 +24,13 @@ abstract class IWork {
 }
 
 class Work extends IWork {
-  RxList<ITodo> orgTodo = <ITodo>[].obs;
-  RxList<ITodo> flowTodo = <ITodo>[].obs;
+  List<ITodo> orgTodo = [];
+  List<ITodo> flowTodo = [];
+  SettingController setting = Get.find<SettingController>();
 
+  Work(){
+    todos = [];
+  }
   @override
   Future<bool> approvals(
     List<ITodo> todos,
@@ -36,8 +41,10 @@ class Work extends IWork {
     for (var todo in todos) {
       await todo.approval(status, comment, data);
     }
-    orgTodo.value = orgTodo.where((a) => !todos.contains(a)).toList();
-    flowTodo.value = flowTodo.where((a) => !todos.contains(a)).toList();
+    orgTodo = orgTodo.where((a) => !todos.contains(a)).toList();
+    flowTodo = flowTodo.where((a) => !todos.contains(a)).toList();
+    todos = [...orgTodo,...flowTodo];
+    setting.provider.refresh();
     return true;
   }
 
@@ -50,8 +57,10 @@ class Work extends IWork {
   ) async {
     var success = await todo.approval(status, comment, data);
     if (success) {
-      orgTodo.value = orgTodo.where((a) => a.id != todo.id).toList();
-      flowTodo.value = flowTodo.where((a) => a.id != todo.id).toList();
+      orgTodo = orgTodo.where((a) => a.id != todo.id).toList();
+      flowTodo = flowTodo.where((a) => a.id != todo.id).toList();
+      todos = [...orgTodo,...flowTodo];
+      setting.provider.refresh();
     }
     return success;
   }
@@ -64,15 +73,17 @@ class Work extends IWork {
         page: pageAll(),
       ));
       if (org.success) {
-        orgTodo.value = org.data?.result?.map((a) => OrgTodo(a)).toList() ?? [];
+        orgTodo = org.data?.result?.map((a) => OrgTodo(a)).toList() ?? [];
       }
     }
     if (reload || flowTodo.isEmpty) {
       var res = await kernelApi.queryApproveTask();
       if (res.success) {
-        flowTodo.value = res.data?.result?.map((a) => FlowTodo(a)).toList() ?? [];
+        flowTodo = res.data?.result?.map((a) => FlowTodo(a)).toList() ?? [];
       }
     }
-    return [...this.orgTodo, ...this.flowTodo];
+    todos = [...orgTodo, ...flowTodo];
+    setting.provider.refresh();
+    return todos;
   }
 }
