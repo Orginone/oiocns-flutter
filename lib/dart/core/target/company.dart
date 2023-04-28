@@ -34,11 +34,7 @@ class Company extends MarketTarget implements ICompany {
   late List<IChat> memberChats;
 
   @override
-  late List<XTarget> members;
-
-  @override
   late IFileSystemItem root;
-
 
   @override
   late List<ICohort> cohorts;
@@ -48,9 +44,6 @@ class Company extends MarketTarget implements ICompany {
 
   @override
   late List<IGroup> joinedGroup;
-
-  @override
-  late String userId;
 
   @override
   late List<IWorking> workings;
@@ -70,7 +63,7 @@ class Company extends MarketTarget implements ICompany {
   @override
   late Dict dict;
 
-  Company(XTarget target, this.userId) : super(target, null, userId) {
+  Company(XTarget target, String userId) : super(target, null, userId) {
     departmentTypes = targetDepartmentTypes;
     subTeamTypes = [...departmentTypes, TargetType.working];
     extendTargetType = [...subTeamTypes, ...companyTypes];
@@ -92,6 +85,9 @@ class Company extends MarketTarget implements ICompany {
     members = <XTarget>[].obs;
     root = getFileSysItemRoot(target.id);
     joinedGroup = [];
+    var labels = [teamName, "${target.typeName}群"];
+    chat = createChat(userId, id, target, labels);
+    space = this;
   }
 
   @override
@@ -113,7 +109,7 @@ class Company extends MarketTarget implements ICompany {
           limit: Constants.maxUint16,
         )));
     if (res.success) {
-      authorityTree = Authority(res.data!, space, userId);
+      authorityTree = Authority(res.data!, this, userId);
     }
     return authorityTree;
   }
@@ -133,9 +129,9 @@ class Company extends MarketTarget implements ICompany {
         }
       }
     }
-    return  members
-        .where((a) =>
-    a.code.contains(page.filter) || a.name.contains(page.filter))
+    return members
+        .where(
+            (a) => a.code.contains(page.filter) || a.name.contains(page.filter))
         .skip(page.offset)
         .take(page.limit)
         .toList();

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -9,6 +8,7 @@ import 'package:orginone/dart/core/target/chat/ichat.dart';
 import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/encryption_util.dart';
+import 'package:orginone/util/logger.dart';
 
 const hisMsgCollName = 'chat-message';
 var nullTime = DateTime(2022, 7, 1).millisecondsSinceEpoch;
@@ -62,7 +62,7 @@ class BaseChat implements IChat {
         lastMsgTime = nullTime,
         lastMessage = Rxn() {
     appendShare(target.id, shareInfo);
-    kernelApi.anystore.subscribed("$hisMsgCollName.T$fullId", userId, (data) {
+    kernel.anystore.subscribed("$hisMsgCollName.T$fullId", userId, (data) {
       if (data.length == 0) {
         return;
       }
@@ -71,7 +71,27 @@ class BaseChat implements IChat {
   }
 
   @override
-  destroy() {}
+  cache() {
+    kernel.anystore.set(
+      "$hisMsgCollName.T$fullId",
+      {
+        "operation": "replaceAll",
+        "data": {
+          "fullId": fullId,
+          "isToping": isTopping,
+          "noReadCount": noReadCount,
+          "lastMsgTime": lastMsgTime,
+          "lastMessage": lastMessage.value,
+        },
+      },
+      userId,
+    );
+  }
+
+  @override
+  destroy() {
+    kernel.anystore.unSubscribed("$hisMsgCollName.T$fullId", userId);
+  }
 
   @override
   TargetShare get shareInfo {
@@ -80,19 +100,26 @@ class BaseChat implements IChat {
       typeName: target.typeName,
     );
     if (target.photo.isNotEmpty && "{}" != target.photo) {
-      try{
+      try {
         var map = jsonDecode(target.photo);
         share.avatar = FileItemShare.fromJson(map);
-      }catch(e){
-
+      } catch (e) {
+        Log.info("photo converting error:$e");
       }
     }
     return share;
   }
 
   @override
-  set shareInfo(TargetShare shareInfo) {
-    this.shareInfo = shareInfo;
+  onMessage() {
+    if (noReadCount.value > 0) {
+      noReadCount.value = 0;
+    }
+    cache();
+    if (messages.length < 10) {
+      moreMessage();
+    }
+    morePersons();
   }
 
   @override
@@ -128,7 +155,7 @@ class BaseChat implements IChat {
   @override
   clearMessage() async {
     if (spaceId == userId) {
-      var res = await KernelApi.getInstance().anystore.remove(
+      var res = await kernel.anystore.remove(
           hisMsgCollName, {"sessionId": target.id, "spaceId": spaceId}, 'user');
       if (res.success) {
         messages.clear();
@@ -141,7 +168,7 @@ class BaseChat implements IChat {
   @override
   Future<bool> deleteMessage(String id) async {
     if (userId == spaceId) {
-      var res = await KernelApi.getInstance()
+      var res = await kernel
           .anystore
           .remove(hisMsgCollName, {"chatId": id}, 'user');
       if (res.success && res.data > 0) {
@@ -156,7 +183,7 @@ class BaseChat implements IChat {
   Future<void> recallMessage(String id) async {
     for (var message in messages) {
       if (message.id == id) {
-        await KernelApi.getInstance().recallImMsg(message);
+        await kernel.recallImMsg(message);
       }
     }
   }
@@ -168,7 +195,7 @@ class BaseChat implements IChat {
 
   @override
   Future<int> moreMessage({String? filter}) async {
-    var res = await kernelApi.anystore.aggregate(
+    var res = await kernel.anystore.aggregate(
         hisMsgCollName,
         {
           "match": {
@@ -191,7 +218,7 @@ class BaseChat implements IChat {
 
   @override
   Future<bool> sendMessage(MessageType type, String msgBody) async {
-    var res = await KernelApi.getInstance().createImMsg(ImMsgModel(
+    var res = await kernel.createImMsg(ImMsgModel(
       msgType: type.label,
       msgBody: EncryptionUtil.deflate(msgBody),
       spaceId: spaceId,
@@ -217,6 +244,7 @@ class BaseChat implements IChat {
     }
     noReadCount.value += 1;
     lastMessage.value = msg;
+    cache();
   }
 
   loadMessages(List<dynamic> messages) {
@@ -229,7 +257,7 @@ class BaseChat implements IChat {
   }
 
   Future<int> loadCacheMessages() async {
-    var res = await KernelApi.getInstance().anystore.aggregate(
+    var res = await kernel.anystore.aggregate(
           hisMsgCollName,
           {
             "match": {
@@ -250,20 +278,6 @@ class BaseChat implements IChat {
   }
 }
 
-class BaseChatGroup extends IChatGroup {
-  BaseChatGroup(
-    String spaceId,
-    String spaceName,
-    bool isOpened,
-    RxList<IChat> chats,
-  ) {
-    this.spaceId = spaceId;
-    this.spaceName = spaceName;
-    this.isOpened = isOpened.obs;
-    this.chats = chats;
-  }
-}
-
 class PersonChat extends BaseChat {
   PersonChat(super.spaceId, super.m, super.userId);
 }
@@ -273,7 +287,7 @@ class CohortChat extends BaseChat {
 
   @override
   morePersons({String? filter}) async {
-    var res = await KernelApi.getInstance().querySubTargetById(IDReqSubModel(
+    var res = await kernel.querySubTargetById(IDReqSubModel(
       id: target.id,
       typeNames: [target.typeName],
       subTypeNames: [TargetType.person.label],

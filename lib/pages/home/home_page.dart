@@ -14,7 +14,7 @@ import 'package:orginone/widget/widgets/progress_dialog.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/chat/message_rent.dart';
+import 'package:orginone/pages/chat/message_chats.dart';
 import 'package:orginone/pages/home/components/user_bar.dart';
 import 'package:orginone/pages/shop/view.dart';
 import 'package:orginone/pages/ware_house/view.dart';
@@ -87,7 +87,7 @@ class HomeController extends TabsController {
   initTabs() {
     var size = Size(32.w, 32.w);
     registerTab(XTab(
-      view: const MessageRecent(),
+      view: const MessageChats(),
       tab: Obx(() {
        var chats = settingCtrl.provider.user?.allChats();
        int mgsCount = 0;

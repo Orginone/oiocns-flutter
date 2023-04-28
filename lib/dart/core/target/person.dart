@@ -51,9 +51,6 @@ class Person extends MarketTarget implements IPerson {
   late Dict dict;
 
   @override
-  late List<XTarget> members;
-
-  @override
   late IFileSystemItem root;
 
   @override
@@ -83,6 +80,9 @@ class Person extends MarketTarget implements IPerson {
     members = [];
     memberChats = <IChat>[].obs;
     root = getFileSysItemRoot(target.id);
+    var labels = [space?.teamName ?? "", "${target.typeName}群"];
+    chat = createChat(userId, id, target, labels);
+    space = this;
   }
 
   @override
@@ -115,7 +115,7 @@ class Person extends MarketTarget implements IPerson {
       ),
     ));
     if (res.success) {
-      authorityTree = Authority(res.data!, space, userId);
+      authorityTree = Authority(res.data!, this, userId);
     }
     return authorityTree;
   }
@@ -373,8 +373,8 @@ class Person extends MarketTarget implements IPerson {
       }
     }
     return members
-        .where((a) =>
-    a.code.contains(page.filter) || a.name.contains(page.filter))
+        .where(
+            (a) => a.code.contains(page.filter) || a.name.contains(page.filter))
         .skip(page.offset)
         .take(page.limit)
         .toList();

@@ -61,8 +61,9 @@ class MessageItemWidget extends GetView<SettingController> {
         }
       },
       onTap: () async {
+        chat.onMessage();
         Get.offNamedUntil(
-          Routers.chat,
+          Routers.messageChat,
           (router) => router.settings.name == Routers.home,
           arguments: chat,
         );
