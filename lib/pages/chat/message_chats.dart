@@ -13,6 +13,7 @@ class MessageChats extends GetView<SettingController> {
       if (chats == null) {
         return const SizedBox();
       }
+      chats.sort((f, s) => s.lastMsgTime - f.lastMsgTime);
       return ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.vertical,

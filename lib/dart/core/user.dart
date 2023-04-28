@@ -15,7 +15,7 @@ class UserProvider {
   List<XImMsg> _preMessages = [];
 
   UserProvider() {
-    kernelApi.on('ChatRefresh', () async {
+    kernel.on('ChatRefresh', () async {
       await reload();
     });
     kernel.on('RecvMsg', (data) {
