@@ -200,12 +200,10 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
       var dict =await item.space.dict.updateDict(DictModel(name: name, public: true, code: code, remark: remark,id: item.source.id));
       if(dict!=null){
         ToastUtils.showMsg(msg: "更新成功");
-        var index = state.model.value!.children.indexOf(item);
-        var model = state.model.value!.children[index];
-        model.source.name = name;
-        model.source.code = code;
-        model.source.remark = remark;
-        model.name = name;
+        item.source.name = name;
+        item.source.code = code;
+        item.source.remark = remark;
+        item.name = name;
         state.model.refresh();
       }
     },name: item.source.name,code: item.source.code,remark: item.source.remark??"");
