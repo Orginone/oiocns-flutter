@@ -89,7 +89,7 @@ class FlowTodo implements ITodo {
 
   @override
   Future<bool> approval(int status, String? comment, String? data) async {
-    var res = await kernelApi.approvalTask(ApprovalTaskReq(
+    var res = await kernel.approvalTask(ApprovalTaskReq(
       id: id,
       comment: comment,
       status: status,
@@ -148,7 +148,7 @@ class OrgTodo implements ITodo {
 
   @override
   Future<bool> approval(int status, String? comment, String? data) async {
-    var res = await kernelApi.joinTeamApproval(ApprovalModel(
+    var res = await kernel.joinTeamApproval(ApprovalModel(
       id: id,
       status: status,
     ));

@@ -15,10 +15,10 @@ class UserProvider {
   List<XImMsg> _preMessages = [];
 
   UserProvider() {
-    kernelApi.on('ChatRefresh', () async {
+    kernel.on('ChatRefresh', () async {
       await reload();
     });
-    kernelApi.on('RecvMsg', (data) {
+    kernel.on('RecvMsg', (data) {
       var item = XImMsg.fromJson(data);
       if (_inited.value) {
         _recvMessage(item);
@@ -50,7 +50,7 @@ class UserProvider {
   /// @param account 账户
   /// @param password 密码
   Future<dynamic> login(String account, String password) async {
-    var res = await kernelApi.login(account, password);
+    var res = await kernel.login(account, password);
     if (res.success) {
       await _loadUser(XTarget.fromJson(res.data["person"]));
     }
@@ -60,7 +60,7 @@ class UserProvider {
   /// 注册用户
   /// @param {RegisterType} params 参数
   register(RegisterType params) async {
-    var res = await kernelApi.register(params);
+    var res = await kernel.register(params);
     if (res.success) {
       await _loadUser(XTarget.fromJson(res.data["person"]));
     }
@@ -77,7 +77,7 @@ class UserProvider {
     String password,
     String privateKey,
   ) async {
-    return await kernelApi.resetPassword(account, password, privateKey);
+    return await kernel.resetPassword(account, password, privateKey);
   }
 
   /// 加载用户

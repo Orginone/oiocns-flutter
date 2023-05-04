@@ -3886,27 +3886,27 @@ class NameCodeModel {
 
 class ImMsgModel {
   // 工作空间ID
-  final String? spaceId;
+  final String spaceId;
 
   // 发起方Id
-  final String? fromId;
+  final String fromId;
 
   // 接收方Id
-  final String? toId;
+  final String toId;
 
   // 消息类型
-  final String? msgType;
+  final String msgType;
 
   // 消息体
-  final String? msgBody;
+  final String msgBody;
 
   //构造方法
   ImMsgModel({
-    this.spaceId,
-    this.fromId,
-    this.toId,
-    this.msgType,
-    this.msgBody,
+    required this.spaceId,
+    required this.fromId,
+    required this.toId,
+    required this.msgType,
+    required this.msgBody,
   });
 
   //通过JSON构造

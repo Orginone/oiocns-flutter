@@ -68,7 +68,7 @@ class Work extends IWork {
   @override
   Future<List<ITodo>> loadTodo({bool reload = false}) async {
     if (reload || orgTodo.isEmpty) {
-      var org = await kernelApi.queryTeamJoinApproval(IDBelongReq(
+      var org = await kernel.queryTeamJoinApproval(IDBelongReq(
         id: '0',
         page: pageAll(),
       ));
@@ -77,7 +77,7 @@ class Work extends IWork {
       }
     }
     if (reload || flowTodo.isEmpty) {
-      var res = await kernelApi.queryApproveTask();
+      var res = await kernel.queryApproveTask();
       if (res.success) {
         flowTodo = res.data?.result?.map((a) => FlowTodo(a)).toList() ?? [];
       }

@@ -99,7 +99,7 @@ class ContactPage extends GetView<ContactController> {
         height: 110.h,
         child: ListTile(
             onTap: () async {
-              Get.toNamed(Routers.chat);
+              Get.toNamed(Routers.messageChat);
             },
             leading: TextAvatar(
               avatarName: target.name.substring(0, 2),
