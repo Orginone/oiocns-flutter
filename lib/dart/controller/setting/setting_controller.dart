@@ -105,7 +105,7 @@ class SettingController extends GetxController {
   void jumpInitiate() {
     switch (homeEnum.value) {
       case HomeEnum.chat:
-        // TODO: Handle this case.
+        Get.toNamed(Routers.initiateChat);
         break;
       case HomeEnum.work:
         Get.toNamed(Routers.initiateWork);
