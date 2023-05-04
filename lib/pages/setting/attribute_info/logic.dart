@@ -26,21 +26,24 @@ class AttributeInfoController extends BaseController<AttributeInfoState> {
           state.propertys.firstWhere((element) => element.code == code);
 
       if (operation == "edit") {
+       var dictArray = await state.data.space.dict.loadDict(PageRequest(offset: 0, limit: 1000, filter: ''));
         showCreateAttributeDialog(context,
-            onCreate: (name, code, type, remark) async {
+            onCreate: (name, code, type, remark,unit,dict) async {
          var pro = await state.data.space.property.updateProperty(PropertyModel(
               id: property.id,
               name: name,
               code: code,
               valueType: type,
               remark: remark,
-              dictId: property.dictId,
-              belongId: property.belongId));
+              dictId: dict==null?property.dictId:dict.id,
+              belongId: property.belongId,unit: unit??property.unit));
          if(pro!=null){
            property.name = name;
            property.code = code;
            property.valueType = type;
            property.remark = remark;
+           property.unit = unit;
+           property.dict = dict;
            state.propertys.refresh();
            ToastUtils.showMsg(msg: "修改成功");
          }else{
@@ -51,7 +54,9 @@ class AttributeInfoController extends BaseController<AttributeInfoState> {
             code: property.code ?? "",
             remark: property.remark ?? "",
             valueType: property.valueType ?? "",
-            isEdit: true);
+            unit: property.unit??"",
+            dict: property.dict,
+            isEdit: true,dictList: dictArray.result??[]);
       } else if (operation == 'delete') {
         bool success =
             await state.data.space.property.deleteProperty(property.id!);

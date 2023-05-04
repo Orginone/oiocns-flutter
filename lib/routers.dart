@@ -581,7 +581,7 @@ class Routers {
       ),
       GetPage(
         name: Routers.warehouseManagement,
-        page: () => WarehouseManagementPage(),
+        page: () => WareHouseManagementPage(),
         binding:WarehouseManagementBinding(),
       ),
       GetPage(

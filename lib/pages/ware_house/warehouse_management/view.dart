@@ -7,7 +7,7 @@ import 'package:orginone/widget/common_widget.dart';
 import 'logic.dart';
 import 'state.dart';
 
-class WarehouseManagementPage extends BaseBreadcrumbNavMultiplexPage<WarehouseManagementController,WarehouseManagementState>{
+class WareHouseManagementPage extends BaseBreadcrumbNavMultiplexPage<WareHouseManagementController,WareHouseManagementState>{
 
 
   @override
@@ -16,28 +16,39 @@ class WarehouseManagementPage extends BaseBreadcrumbNavMultiplexPage<WarehouseMa
      child: Padding(
        padding: EdgeInsets.symmetric(vertical: 15.h),
        child: Column(
-         children: [
-           CommonWidget.commonHeadInfoWidget("个人"),
-           ...personalWork.map((e) {
-             return BaseBreadcrumbNavItem(item: BaseBreadcrumbNavModel(name: e, children: []),onTap: (){
-               controller.jumpUniversalNavigator(e);
-             },);
-           }).toList(),
-           CommonWidget.commonHeadInfoWidget("组织"),
-           ...state.spaces.map((e){
-             return BaseBreadcrumbNavItem(item: BaseBreadcrumbNavModel(name: e.name, children: []),onTap: (){
-               controller.jumpUniversalNavigator(e.name);
-             },);
-           }),
-         ],
+         children: wareHouseData(),
        ),
      ),
    );
   }
 
+
+  List<Widget> wareHouseData() {
+    List<Widget> children = [];
+    for (var child in state.model.value!.children) {
+      children.add(Column(
+        children: [
+          CommonWidget.commonHeadInfoWidget(child.name),
+          ...child.children.map((e) {
+            return BaseBreadcrumbNavItem<WareHouseBreadcrumbNav>(
+              item: e,
+              onTap: () {
+
+              },
+              onNext: (){
+              },
+
+            );
+          }).toList(),
+        ],
+      ));
+    }
+    return children;
+  }
+
   @override
-  WarehouseManagementController getController() {
-    return WarehouseManagementController();
+  WareHouseManagementController getController() {
+    return WareHouseManagementController();
   }
 
 }

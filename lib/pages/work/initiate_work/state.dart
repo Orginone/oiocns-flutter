@@ -7,7 +7,7 @@ class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
   SettingController get settingCtrl => Get.find<SettingController>();
 
   InitiateWorkState() {
-    var joinedCompanies = settingCtrl.user!.joinedCompany;
+    var joinedCompanies = settingCtrl.user.joinedCompany;
 
     model.value = Get.arguments?['data'];
 

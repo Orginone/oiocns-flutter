@@ -24,7 +24,26 @@ class RelationGroupPage
           },onTap: (){
             controller.onTap(item);
           },onSelected: (value){
-            controller.operation(item,value);
+            switch(value){
+              case "create":
+                controller.createGroup(item.source);
+                break;
+              case "edit":
+                if(item.standardEnum == StandardEnum.dict){
+                  controller.editDict(item);
+                }else{
+                  controller.editGroup(item.source);
+                }
+                break;
+              case "delete":
+                if(item.standardEnum == StandardEnum.dict){
+                  controller.removeDict(item);
+                }else{
+                  controller.removeGroup(item.source);
+                }
+                break;
+            }
+
           },);
         },
         itemCount: state.model.value?.children.length??0,

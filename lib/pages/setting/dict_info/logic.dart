@@ -14,17 +14,25 @@ class DictInfoController extends BaseController<DictInfoState> {
     // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
+   await loadDictItems();
+    LoadingDialog.dismiss(context);
+  }
+
+  Future<void> loadDictItems()async{
     var data = await state.data.space.dict.loadDictItems(
         state.data.source.id, PageRequest(offset: 0, limit: 1000, filter: ''));
     state.dictItems.addAll(data.result ?? []);
-    LoadingDialog.dismiss(context);
   }
 
   void onCreate() {
     showCreateDictItemDialog(context,
         onCreate: (String name, String code, String remark,
             {bool? public}) async{
-         await state.data.space.dict.createDict(DictModel(name: name, public: public, code: code, speciesId: '', remark: remark));
+        bool success =  await state.data.space.dict.createItem(DictItemModel(name: name, public: public, value: code, dictId: state.data.source.id));
+        if(success){
+          ToastUtils.showMsg(msg: "创建成功");
+          await loadDictItems();
+        }
         });
   }
 
@@ -37,12 +45,16 @@ class DictInfoController extends BaseController<DictInfoState> {
        showCreateDictItemDialog(context,
            onCreate: (String name, String code, String remark,
                {bool? public}) async{
-            dictItem.name = name;
-            dictItem.value =code;
-            state.dictItems.refresh();
+             bool success = await state.data.space.dict.updateDictItem(DictItemModel(name: name, public: public, value: code, dictId: state.data.source.id,id: dictItem.id));
+             if(success){
+               ToastUtils.showMsg(msg: "更新成功");
+               dictItem.name = name;
+               dictItem.value =code;
+               state.dictItems.refresh();
+             }
            },name: dictItem.name,code: dictItem.value,remark:"",isEdit:true);
       }else if(operation == 'delete'){
-       bool success = await state.data.space.dict.deleteDictItem(state.data.source.id);
+       bool success = await state.data.space.dict.deleteDictItem(dictItem.id);
        if(success){
         state.dictItems.remove(dictItem);
         ToastUtils.showMsg(msg: "删除成功");

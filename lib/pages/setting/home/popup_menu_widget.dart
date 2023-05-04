@@ -40,20 +40,22 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
     popupMenuItem.clear();
     target = (widget.model.source is ITarget)?widget.model.source:null;
     if(widget.model.spaceEnum!=null){
-      switch (widget.model.spaceEnum) {
-        case SpaceEnum.innerAgency:
-          popupMenuItem.add(newPopupMenuItem("新建部门", "create"));
-          break;
-        case SpaceEnum.outAgency:
-          popupMenuItem.add(newPopupMenuItem("新建集团", "create"));
-          break;
-        case SpaceEnum.stationSetting:
-          popupMenuItem.add(newPopupMenuItem("新建岗位", "create"));
-          break;
-        case SpaceEnum.personGroup:
-        case SpaceEnum.externalCohort:
-          popupMenuItem.add(newPopupMenuItem("新建群组", "create"));
-          break;
+      if(widget.model.source==null){
+        switch (widget.model.spaceEnum) {
+          case SpaceEnum.innerAgency:
+            popupMenuItem.add(newPopupMenuItem("新建部门", "create"));
+            break;
+          case SpaceEnum.outAgency:
+            popupMenuItem.add(newPopupMenuItem("新建集团", "create"));
+            break;
+          case SpaceEnum.stationSetting:
+            popupMenuItem.add(newPopupMenuItem("新建岗位", "create"));
+            break;
+          case SpaceEnum.personGroup:
+          case SpaceEnum.externalCohort:
+            popupMenuItem.add(newPopupMenuItem("新建群组", "create"));
+            break;
+        }
       }
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
         await initPopupMenuItem();
@@ -73,7 +75,7 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
           }
           break;
         case StandardEnum.attribute:
-          // TODO: Handle this case.
+          popupMenuItem.add(newPopupMenuItem("新建属性", "create"));
           break;
         case StandardEnum.classCriteria:
           // TODO: Handle this case.

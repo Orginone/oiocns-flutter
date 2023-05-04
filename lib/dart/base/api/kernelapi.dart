@@ -209,7 +209,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'CreateDictItem',
-        params: params,
+        params: params.toJson(),
       ),
       XDictItem.fromJson,
     );

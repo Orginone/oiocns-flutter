@@ -134,6 +134,14 @@ enum UserFunction{
   addGroup,
 }
 
+// enum AttributeType{
+//
+//
+//   String label,
+//   const AttributeType(this.label);
+//
+// }
+
 List<IAuthority> getAllAuthority(List<IAuthority> authority) {
   List<IAuthority> list = [];
   for (var element in authority) {
@@ -167,3 +175,5 @@ List<IGroup> getAllOutAgency(List<IGroup> outAgencyGroup) {
 
   return list;
 }
+
+

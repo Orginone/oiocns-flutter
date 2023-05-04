@@ -1621,6 +1621,7 @@ class PropertyModel {
     this.dictId,
     this.belongId,
     this.sourceId,
+    this.unit,
   });
 
   //转成JSON
@@ -1634,6 +1635,7 @@ class PropertyModel {
     json["dictId"] = dictId;
     json["remark"] = remark;
     json["sourceId"] = sourceId;
+    json['unit'] = unit;
     return json;
   }
 }
@@ -1654,9 +1656,6 @@ class DictModel {
   // 创建组织/个人
   String? belongId;
 
-  // 类别Id
-  late String speciesId;
-
   // 备注
   String? remark;
 
@@ -1666,8 +1665,8 @@ class DictModel {
     required this.public,
     this.belongId,
     required this.code,
-    required this.speciesId,
     required this.remark,
+    this.id,
   });
 
   //通过JSON构造
@@ -1677,7 +1676,6 @@ class DictModel {
         code = json["code"],
         public = json["public"],
         belongId = json["belongId"],
-        speciesId = json["speciesId"],
         remark = json["remark"];
 
   //通过动态数组解析成List
@@ -1702,7 +1700,6 @@ class DictModel {
     json["code"] = code;
     json["public"] = public;
     json["belongId"] = belongId;
-    json["speciesId"] = speciesId;
     json["remark"] = remark;
     return json;
   }

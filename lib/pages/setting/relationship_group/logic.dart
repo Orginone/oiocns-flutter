@@ -142,58 +142,82 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
     }
   }
 
-  void operation(dynamic item, String value) async {
-    switch (value) {
-      case "create":
-        showCreateOrganizationDialog(context, item.subTeamTypes,
-            callBack: (String name, String code, String nickName,
-                String identify, String remark, TargetType type) async {
-              var model = TargetModel(
-                  name: nickName,
-                  code: code,
-                  typeName: type.label,
-                  teamName: name,
-                  teamCode: code,
-                  teamRemark: remark,
-                  avatar: '',
-                  belongId: '');
-                await item.create(model);
-            });
-        break;
-      case "edit":
-        showCreateOrganizationDialog(context, item.subTeamTypes,
-            callBack: (String name, String code, String nickName,
-                String identify, String remark, TargetType type) async {
-              var model = TargetModel(
-                  id: item.id,
-                  name: nickName,
-                  code: code,
-                  typeName: type.label,
-                  teamName: name,
-                  teamCode: code,
-                  teamRemark: remark,
-                  avatar: '',
-                  belongId: item.target.belongId);
-              await item.update(model);
-            },
-            code: item.target.code,
-            name: item.teamName,
-            nickName: item.name,
-            identify: item.target.team?.code ?? "",
-            remark: item.target.team?.remark ?? "",
-            type: TargetType.getType(item.typeName));
-        break;
-      case "delete":
-        bool success = await item.delete();
-        if(success){
-          state.model.value!.children.remove(item);
-          state.model.refresh();
-        }else{
-          ToastUtils.showMsg(msg: "删除失败");
-        }
-        break;
+  void createGroup(dynamic item){
+    showCreateOrganizationDialog(context, item.subTeamTypes,
+        callBack: (String name, String code, String nickName,
+            String identify, String remark, TargetType type) async {
+          var model = TargetModel(
+              name: nickName,
+              code: code,
+              typeName: type.label,
+              teamName: name,
+              teamCode: code,
+              teamRemark: remark,
+              avatar: '',
+              belongId: '');
+          await item.create(model);
+        });
+  }
+
+
+  void editGroup(dynamic item) {
+    showCreateOrganizationDialog(context, item.subTeamTypes,
+        callBack: (String name, String code, String nickName,
+            String identify, String remark, TargetType type) async {
+          var model = TargetModel(
+              id: item.id,
+              name: nickName,
+              code: code,
+              typeName: type.label,
+              teamName: name,
+              teamCode: code,
+              teamRemark: remark,
+              avatar: '',
+              belongId: item.target.belongId);
+          await item.update(model);
+        },
+        code: item.target.code,
+        name: item.teamName,
+        nickName: item.name,
+        identify: item.target.team?.code ?? "",
+        remark: item.target.team?.remark ?? "",
+        type: TargetType.getType(item.typeName));
+  }
+
+
+  void removeGroup(dynamic item) async{
+    bool success = await item.delete();
+    if(success){
+      state.model.value!.children.remove(item);
+      state.model.refresh();
+    }else{
+      ToastUtils.showMsg(msg: "删除失败");
     }
   }
 
+  void editDict(SettingNavModel item) {
+    showCreateDictDialog(context,onCreate: (name,code,remark) async{
+      var dict =await item.space.dict.updateDict(DictModel(name: name, public: true, code: code, remark: remark,id: item.source.id));
+      if(dict!=null){
+        ToastUtils.showMsg(msg: "更新成功");
+        var index = state.model.value!.children.indexOf(item);
+        var model = state.model.value!.children[index];
+        model.source.name = name;
+        model.source.code = code;
+        model.source.remark = remark;
+        model.name = name;
+        state.model.refresh();
+      }
+    },name: item.source.name,code: item.source.code,remark: item.source.remark??"");
+  }
+
+  void removeDict(SettingNavModel item) async{
+    bool success = await item.space.dict.deleteDict(item.source.id);
+    if(success){
+      ToastUtils.showMsg(msg: "删除成功");
+      state.model.value!.children.remove(item);
+      state.model.refresh();
+    }
+  }
 }
 
