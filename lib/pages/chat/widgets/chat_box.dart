@@ -12,15 +12,20 @@ import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/store/ifilesys.dart';
-import 'package:orginone/dart/core/target/chat/ichat.dart';
-import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/target/chat/chat.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
+import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/permission_util.dart';
+import 'package:orginone/widget/unified.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vibration/vibration.dart';
+
+import 'text/at_person_dialog.dart';
+import 'text/at_textfield.dart';
 
 double defaultBorderRadius = 6.w;
 double boxDefaultHeight = 40.h;
@@ -117,7 +122,8 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
         borderRadius: BorderRadius.all(Radius.circular(defaultBorderRadius)),
       ),
       alignment: Alignment.center,
-      child: TextField(
+      child: AtTextFiled(
+        key: controller.atKey,
         maxLines: null,
         keyboardType: TextInputType.multiline,
         focusNode: controller.focusNode,
@@ -134,6 +140,12 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
             maxHeight: 144.h,
           ),
         ),
+        triggerAtCallback: () async{
+          if(chat is CohortChat){
+            var target = await AtPersonDialog.showDialog(context, chat);
+            return target;
+          }
+        },
       ),
     );
   }
@@ -523,8 +535,6 @@ class ChatBoxController extends FullLifeCycleController
   RxDouble? _level;
   double? _maxLevel;
 
-  ChatBoxController();
-
   InputStatus get inputStatus => _inputStatus.value;
 
   Rx<RecordStatus> get recordStatus => _recordStatus;
@@ -539,16 +549,24 @@ class ChatBoxController extends FullLifeCycleController
 
   Duration? get currentDuration => _currentDuration;
 
+  late GlobalKey<AtTextFiledState> atKey;
   @override
   void onInit() async {
     // TODO: implement onInit
     super.onInit();
+    EventBusHelper.register(this, (event) {
+      if(event is XTarget){
+        atKey.currentState!.addTarget(event);
+      }
+    });
+    atKey = GlobalKey();
     await Permission.microphone.request();
   }
 
   @override
   onClose() {
     super.onClose();
+    EventBusHelper.unregister(this);
     _recorder.dispositionStream();
     inputController.dispose();
     focusNode.dispose();

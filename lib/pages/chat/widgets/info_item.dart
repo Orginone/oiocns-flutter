@@ -1,24 +1,26 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/target/chat/ichat.dart';
-import 'package:orginone/widget/unified.dart';
-import 'package:orginone/widget/widgets/photo_widget.dart';
-import 'package:orginone/widget/widgets/team_avatar.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
 import 'package:orginone/dart/core/target/targetMap.dart';
+import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/string_util.dart';
+import 'package:orginone/widget/unified.dart';
+import 'package:orginone/widget/widgets/photo_widget.dart';
+import 'package:orginone/widget/widgets/team_avatar.dart';
 
 enum Direction { leftStart, rightStart }
 
@@ -93,7 +95,10 @@ class DetailItemWidget extends GetView<SettingController> {
     } else {
       shareInfo = findTargetShare(msg.fromId);
     }
-    return TeamAvatar(info: TeamTypeInfo(share: shareInfo));
+    return GestureDetector(
+        child: TeamAvatar(info: TeamTypeInfo(share: shareInfo),),onLongPress: (){
+          EventBusHelper.fire(chat.persons[0]);
+    },);
   }
 
   /// 获取会话
