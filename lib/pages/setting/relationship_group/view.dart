@@ -26,11 +26,17 @@ class RelationGroupPage
           },onSelected: (value){
             switch(value){
               case "create":
-                controller.createGroup(item.source);
+                 if(item.standardEnum == StandardEnum.permission){
+                   controller.createAuth(item);
+                 }else{
+                   controller.createGroup(item.source);
+                 }
                 break;
               case "edit":
                 if(item.standardEnum == StandardEnum.dict){
                   controller.editDict(item);
+                } else if(item.standardEnum == StandardEnum.permission){
+                  controller.editAuth(item);
                 }else{
                   controller.editGroup(item.source);
                 }
@@ -38,7 +44,9 @@ class RelationGroupPage
               case "delete":
                 if(item.standardEnum == StandardEnum.dict){
                   controller.removeDict(item);
-                }else{
+                }else if(item.standardEnum == StandardEnum.permission){
+                  controller.removeAuth(item);
+                } else {
                   controller.removeGroup(item.source);
                 }
                 break;

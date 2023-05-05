@@ -153,6 +153,17 @@ List<IAuthority> getAllAuthority(List<IAuthority> authority) {
   return list;
 }
 
+List<ITarget> getAllTarget(List<ITarget> targets) {
+  List<ITarget> list = [];
+  for (var element in targets) {
+    list.add(element);
+    if (element.subTeam.isNotEmpty) {
+      list.addAll(getAllTarget(element.subTeam));
+    }
+  }
+  return list;
+}
+
 List<ISpeciesItem> getAllSpecies(List<ISpeciesItem> species) {
   List<ISpeciesItem> list = [];
   for (var element in species) {

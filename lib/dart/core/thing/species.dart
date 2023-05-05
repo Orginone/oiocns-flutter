@@ -253,4 +253,8 @@ class SpeciesItem extends ISpeciesItem {
     var result = await kernel.queryNodes(IdSpaceReq(id: id, spaceId: ''));
     return result.data;
   }
+
+  @override
+  // TODO: implement belongId
+  String get belongId => target.belongId;
 }

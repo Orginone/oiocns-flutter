@@ -64,7 +64,13 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
     if(widget.model.standardEnum!=null){
       switch (widget.model.standardEnum) {
         case StandardEnum.permission:
-          // TODO: Handle this case.
+          if(widget.model.source != null){
+            popupMenuItem.add(newPopupMenuItem("新增权限", "create"));
+            if(widget.model.source.belongId.isNotEmpty){
+              popupMenuItem.add(newPopupMenuItem("编辑权限", "edit"));
+              popupMenuItem.add(newPopupMenuItem("删除权限", "delete"));
+            }
+          }
           break;
         case StandardEnum.dict:
           if(widget.model.source == null){
@@ -78,7 +84,13 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
           popupMenuItem.add(newPopupMenuItem("新建属性", "create"));
           break;
         case StandardEnum.classCriteria:
-          // TODO: Handle this case.
+          if(widget.model.source != null){
+            popupMenuItem.add(newPopupMenuItem("新增分类", "create"));
+            if(widget.model.source.belongId.isNotEmpty){
+              popupMenuItem.add(newPopupMenuItem("编辑分类", "edit"));
+              popupMenuItem.add(newPopupMenuItem("删除分类", "delete"));
+            }
+          }
           break;
       }
     }

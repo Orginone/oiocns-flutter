@@ -1,5 +1,8 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
@@ -212,6 +215,45 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
   void removeDict(SettingNavModel item) async{
     bool success = await item.space.dict.deleteDict(item.source.id);
     if(success){
+      ToastUtils.showMsg(msg: "删除成功");
+      state.model.value!.children.remove(item);
+      state.model.refresh();
+    }
+  }
+
+  void createAuth(SettingNavModel item) async{
+    SettingController settingController = Get.find();
+    List<ITarget> targets =  await settingController.getTeamTree(item.space);
+    showCreateAuthDialog(context,getAllTarget(targets), target: item.space,callBack: (name,code,target,isPublic,remark) async{
+      ResultType<XAuthority> result = await item.source.createSubAuthority(name, code, isPublic, remark,item.space.target.id);
+      if(result.success){
+        ToastUtils.showMsg(msg: "创建成功");
+        await SettingNetWork.initAuthority(state.model.value!);
+        state.model.refresh();
+      }
+    });
+  }
+
+  void editAuth(SettingNavModel item) async{
+    SettingController settingController = Get.find();
+    List<ITarget> targets =  await settingController.getTeamTree(item.space);
+    showCreateAuthDialog(context,getAllTarget(targets), target: getAllTarget(targets).firstWhere((element) => element.teamName == item.source.target.belong.name),callBack: (name,code,target,isPublic,remark) async{
+      ResultType<XAuthority> result = await item.source.updateAuthority(name, code, isPublic, remark);
+      if(result.success){
+        ToastUtils.showMsg(msg: "修改成功");
+        item.source.target.name = name;
+        item.source.target.public = isPublic;
+        item.source.target.remark = remark;
+        item.source.target.code = code;
+        item.name = name;
+        state.model.refresh();
+      }
+    },isEdit: true,name:item.source.target.name,public: item.source.target.public,remark: item.source.target.remark,code: item.source.target.code);
+  }
+
+  void removeAuth(SettingNavModel item) async{
+    ResultType result = await item.source.delete();
+    if(result.success){
       ToastUtils.showMsg(msg: "删除成功");
       state.model.value!.children.remove(item);
       state.model.refresh();

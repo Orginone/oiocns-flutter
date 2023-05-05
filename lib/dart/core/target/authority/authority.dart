@@ -80,12 +80,12 @@ class Authority implements IAuthority {
 
   @override
   Future<ResultType<XAuthority>> createSubAuthority(
-      String name, String code, bool ispublic, String remark) async {
+      String name, String code, bool ispublic, String remark,String belongId) async {
     if (existAuthority.indexOf(code) > 0) {
       throw unAuthorizedError;
     }
     final res = await kernel.createAuthority(AuthorityModel(
-      id: '',
+      id: null,
       name: name,
       code: code,
       remark: remark,

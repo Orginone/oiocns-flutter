@@ -51,6 +51,7 @@ abstract class IAuthority {
     String code,
     bool ispublic,
     String remark,
+      String belongId,
   );
 
   /// 删除职权

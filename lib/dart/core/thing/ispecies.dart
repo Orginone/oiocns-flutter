@@ -44,6 +44,9 @@ abstract class ISpeciesItem {
   late bool isSelected;
 
   late String spaceId;
+
+  String get belongId;
+
   /* 加载信息 */
   Future<ISpeciesItem> loadInfo(TargetShare info);
   /* 加载分类特性 */

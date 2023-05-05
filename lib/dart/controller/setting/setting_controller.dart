@@ -47,7 +47,7 @@ class SettingController extends GetxController {
   /// 组织树
   Future<List<ITarget>> getTeamTree(
     ISpace space,
-    bool isShare,
+    [bool isShare = true]
   ) async {
     var result = <ITarget>[];
     result.add(space);
