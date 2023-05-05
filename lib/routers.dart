@@ -2,6 +2,7 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/pages/chat/message_setting.dart';
+import 'package:orginone/pages/chat/messages.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/pages/login/binding.dart';
@@ -221,6 +222,9 @@ class Routers {
   //选择标准分类
   static const String choiceGb = '/choiceGb';
 
+  //发起会话
+  static const String initiateChat = '/initiateChat';
+
   //发起办事
   static const String initiateWork = '/initiateWork';
 
@@ -438,6 +442,11 @@ class Routers {
         name: Routers.choiceGb,
         page: () => ChoiceGbPage(),
         binding: ChoiceGbBinding(),
+      ),
+      GetPage(
+        name: Routers.initiateChat,
+        page: () => Messages(),
+        binding: MessagesBinding(),
       ),
       GetPage(
         name: Routers.initiateWork,
