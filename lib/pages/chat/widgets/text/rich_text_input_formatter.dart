@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'dart:math' as math;
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:orginone/dart/base/schema.dart';
 
 /// recording attributes of rich text segments
@@ -45,20 +45,18 @@ class RichTextInputFormatter extends TextInputFormatter {
 
   List<Rule> get rules => _rules.map((Rule rule) => rule.copy()).toList();
 
-  RichTextInputFormatter(
-      {required TriggerAtCallback triggerAtCallback,
-      ValueChangedCallback? valueChangedCallback,
-      required this.controller,
-      this.triggerSymbol = "@",
-     })
+  RichTextInputFormatter({required TriggerAtCallback triggerAtCallback,
+    ValueChangedCallback? valueChangedCallback,
+    required this.controller,
+    this.triggerSymbol = "@",
+  })
       : assert(triggerAtCallback != null && controller != null),
         _rules = [],
         _triggerAtCallback = triggerAtCallback,
         _valueChangedCallback = valueChangedCallback;
 
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     if (_flag) {
       /// compatible with Xiaomi
       return oldValue;
@@ -70,7 +68,7 @@ class RichTextInputFormatter extends TextInputFormatter {
       /// adding
       if (newValue.text.length - oldValue.text.length == 1 &&
           newValue.text.substring(
-                  newValue.selection.start - 1, newValue.selection.end) ==
+              newValue.selection.start - 1, newValue.selection.end) ==
               triggerSymbol) {
         /// the adding char is [triggerSymbol]
         triggerAt(oldValue, newValue);
@@ -115,7 +113,7 @@ class RichTextInputFormatter extends TextInputFormatter {
     if (target!=null) {
       int startIndex = selStart - 1; // 新值的选中光标的后面一个的字符
       String newString;
-      String currentText = controller.text;
+      String currentText = t!=null?"${controller.text}@":controller.text;
       if (selStart < currentText.length) {
         /// 如果光标是在原来字符的中间
         newString =
@@ -141,8 +139,7 @@ class RichTextInputFormatter extends TextInputFormatter {
   }
 
   /// 检查被删除/替换的内容是否涉及到rules里的特殊segment并处理，另外作字符的处理替换
-  TextEditingValue checkRules(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue checkRules(TextEditingValue oldValue, TextEditingValue newValue) {
     /// 旧的文本的光标是否选中了部分
     bool isOldSelectedPart = oldValue.selection.start != oldValue.selection.end;
 
@@ -177,7 +174,7 @@ class RichTextInputFormatter extends TextInputFormatter {
     String newStartSelBeforeStr = newValue.text.substring(
         0, newValue.selection.start < 0 ? 0 : newValue.selection.start);
     String oldStartSelBeforeStr =
-        oldValue.text.substring(0, oldValue.selection.start);
+    oldValue.text.substring(0, oldValue.selection.start);
     String middleStr = "";
     if (newStartSelBeforeStr.length >= oldStartSelBeforeStr.length &&
         (oldValue.selection.end != oldValue.selection.start) &&
@@ -190,13 +187,13 @@ class RichTextInputFormatter extends TextInputFormatter {
     }
 
     int leftSubStringEndIndex =
-        startIndex > oldValue.text.length ? oldValue.text.length : startIndex;
+    startIndex > oldValue.text.length ? oldValue.text.length : startIndex;
     String leftValue =
-        startIndex == 0 ? "" : oldValue.text.substring(0, leftSubStringEndIndex);
+    startIndex == 0 ? "" : oldValue.text.substring(0, leftSubStringEndIndex);
 
     String middleValue = middleStr;
     String rightValue =
-        endIndex == oldValue.text.length ? "" : oldValue.text.substring(endIndex, oldValue.text.length);
+    endIndex == oldValue.text.length ? "" : oldValue.text.substring(endIndex, oldValue.text.length);
     String value = "$leftValue$middleValue$rightValue";
 
     /// 计算最终光标位置
@@ -220,9 +217,19 @@ class RichTextInputFormatter extends TextInputFormatter {
     );
   }
 
- void manualAdd(XTarget target){
-   triggerAt(controller.value,TextEditingValue(text: "${controller.value.text}@",selection: controller.value.selection),t: target);
- }
+  void manualAdd(XTarget target){
+   var textSelection = TextSelection(
+      baseOffset: controller.value.selection.baseOffset+1,
+      extentOffset: controller.value.selection.extentOffset+1,
+    );
+    triggerAt(
+        controller.value,
+        TextEditingValue(
+            text: "${controller.value.text}@",
+            selection: textSelection),
+        t: target);
+  }
+
   void clear() {
     _rules.clear();
   }
