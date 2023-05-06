@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
@@ -26,7 +27,10 @@ enum Direction { leftStart, rightStart }
 
 enum DetailFunc {
   recall("撤回"),
-  remove("删除");
+  remove("删除"),
+  forward("转发"),
+  reply("回复"),
+  multipleChoice("多选");
 
   const DetailFunc(this.label);
 
@@ -139,63 +143,62 @@ class DetailItemWidget extends GetView<SettingController> {
       body = Container();
     }
 
-    // 添加长按手势
-    double x = 0,
-        y = 0;
-    String spaceId = chat.spaceId;
-    var gesture = GestureDetector(
-      onPanDown: (position) {
-        x = position.globalPosition.dx;
-        y = position.globalPosition.dy;
-      },
-      onLongPress: () async {
-        List<DetailFunc> items = [];
-        if (isSelf && msg.createTime != null) {
-          var parsedCreateTime = DateTime.parse(msg.createTime!);
-          var diff = parsedCreateTime.difference(DateTime.now());
-          if (diff.inSeconds.abs() < 2 * 60) {
-            items.add(DetailFunc.recall);
-          }
-        }
-        if (spaceId == controller.user.id) {
-          items.add(DetailFunc.remove);
-        }
-        if (items.isEmpty) {
-          return;
-        }
-        var top = y - 50;
-        var right = MediaQuery
-            .of(context)
-            .size
-            .width - x;
-        final result = await showMenu<DetailFunc>(
-          context: context,
-          position: RelativeRect.fromLTRB(x, top, right, 0),
-          items: items.map((item) {
-            return PopupMenuItem(
-              value: item,
-              child: Text(item.label),
-            );
-          }).toList(),
-        );
-        if (result != null) {
-          switch (result) {
-            case DetailFunc.recall:
-              break;
-            case DetailFunc.remove:
-              chat.deleteMessage(msg.id);
-              break;
-          }
-        }
-      },
-      child: body,
+    String userId = chat.userId;
+    List<DetailFunc> func = [
+      DetailFunc.multipleChoice,
+      DetailFunc.forward,
+      DetailFunc.reply,
+    ];
+    if (userId == controller.user.id) {
+      func.add(DetailFunc.remove);
+    }
+    if (isSelf && msg.createTime != null) {
+      var parsedCreateTime = DateTime.parse(msg.createTime!);
+      var diff = parsedCreateTime.difference(DateTime.now());
+      if (diff.inSeconds.abs() < 2 * 60) {
+        func.add(DetailFunc.recall);
+      }
+    }
+
+    Widget _buildLongPressMenu() {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(5),
+        child: Container(
+          height: 50.h,
+          width: 50.w * func.length,
+          color: const Color(0xFF4C4C4C),
+          child: Row(
+            children: func
+                .map(
+                  (item) => Container(
+                    width: 40.w,
+                    margin: EdgeInsets.symmetric(horizontal: 5.w),
+                    alignment: Alignment.center,
+                    child: Text(
+                      item.label,
+                      style: const TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      );
+    }
+
+    content.add(
+      CustomPopupMenu(
+        child: body,
+        position: PreferredPosition.bottom,
+        menuBuilder: _buildLongPressMenu,
+        barrierColor: Colors.transparent,
+        pressType: PressType.longPress,
+        verticalMargin: 0,
+      ),
     );
-    content.add(gesture);
 
     return Container(
-      margin: isSelf
-          ? EdgeInsets.only(right: 2.w)
-          : EdgeInsets.only(left: 2.w),
+      margin: isSelf ? EdgeInsets.only(right: 2.w) : EdgeInsets.only(left: 2.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: content,

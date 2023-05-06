@@ -135,6 +135,8 @@ dependencies:
   url_launcher: ^6.1.10
   #验证码输入框
   pin_input_text_field: ^4.5.0
+  #uikit菜单弹框
+  custom_pop_up_menu: ^1.2.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
