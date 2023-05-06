@@ -37,8 +37,8 @@ enum MessageType {
   video("视频"),
   voice("语音"),
   recall("撤回"),
-  readed("已读");
-
+  readed("已读"),
+  file("文件");
   const MessageType(this.label);
 
   final String label;

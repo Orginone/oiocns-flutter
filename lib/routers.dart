@@ -50,6 +50,7 @@ import 'package:orginone/pages/setting/version_page.dart';
 // 资产管理
 // 资产管理
 // 仓库
+import 'pages/chat/message_file.dart';
 import 'pages/home/index/index_page.dart';
 import 'pages/login/forgot_password/binding.dart';
 import 'pages/login/forgot_password/view.dart';
@@ -295,6 +296,7 @@ class Routers {
 
   static const String warehouseManagement = "/warehouseManagement";
 
+  static const String messageFile = "/messageFile";
   static String get main {
     return login;
     // var user = HiveUtils.getUser();
@@ -607,6 +609,10 @@ class Routers {
         name: Routers.workList,
         page: () => WorkListPage(),
         binding: WorkListBinding(),
+      ),
+      GetPage(
+        name: Routers.messageFile,
+        page: () => const MessageFile(),
       ),
     ];
   }

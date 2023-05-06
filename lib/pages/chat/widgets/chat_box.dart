@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:audio_wave/audio_wave.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -507,8 +508,8 @@ enum InputEvent {
 
 enum MoreFunction {
   photo("相册", Icons.photo),
-  camera("拍摄", Icons.camera_alt);
-  // file("文件", Icons.upload);
+  camera("拍摄", Icons.camera_alt),
+  file("文件", Icons.upload);
 
   final String label;
   final IconData iconData;
@@ -637,6 +638,19 @@ class ChatBoxController extends FullLifeCycleController
     }
   }
 
+  Future<void> filePicked(PlatformFile file, IChat chat) async {
+    var settingCtrl = Get.find<SettingController>();
+    var docDir = await settingCtrl.user.home?.create("沟通");
+    var item = await docDir?.upload(
+      file.name,
+      File(file.path!),
+          (progress) {},
+    );
+    if (item != null) {
+      chat.sendMessage(MessageType.file, jsonEncode(item.target.shareInfo()));
+    }
+  }
+
   execute(MoreFunction moreFunction, BuildContext context, IChat chat) async {
     switch (moreFunction) {
       case MoreFunction.photo:
@@ -661,6 +675,17 @@ class ChatBoxController extends FullLifeCycleController
           error.printError();
           Fluttertoast.showToast(msg: "打开相机时发生异常!");
         }
+        break;
+      case MoreFunction.file:
+       FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.any
+        );
+       if(result!=null){
+         for (var file in result.files) {
+           await filePicked(file,chat);
+         }
+       }
+
         break;
     }
   }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -16,6 +17,7 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/chat/ichat.dart';
 import 'package:orginone/dart/core/target/targetMap.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/string_util.dart';
@@ -139,6 +141,8 @@ class DetailItemWidget extends GetView<SettingController> {
       body = _image(textDirection: textDirection, context: context);
     } else if (msg.msgType == MessageType.voice.label) {
       body = _voice(textDirection: textDirection);
+    } else if (msg.msgType == MessageType.file.label) {
+      body = _file(textDirection: textDirection, context: context);
     } else {
       body = Container();
     }
@@ -188,12 +192,12 @@ class DetailItemWidget extends GetView<SettingController> {
 
     content.add(
       CustomPopupMenu(
-        child: body,
         position: PreferredPosition.bottom,
         menuBuilder: _buildLongPressMenu,
         barrierColor: Colors.transparent,
         pressType: PressType.longPress,
         verticalMargin: 0,
+        child: body,
       ),
     );
 
@@ -385,9 +389,92 @@ class DetailItemWidget extends GetView<SettingController> {
       ),
     );
   }
+
+  Widget _file({
+    required TextDirection textDirection,
+    required BuildContext context,
+  }) {
+    /// 解析参数
+    Map<String, dynamic> msgBody = {};
+    try {
+      msgBody = jsonDecode(msg.showTxt);
+    } catch (error) {
+      Log.info("参数解析失败，msg.showTxt:${msg.showTxt}");
+      return Container();
+    }
+
+    String extension = msgBody["extension"];
+    if (imageExtension.contains(extension.toLowerCase())) {
+      return _image(textDirection: textDirection, context: context);
+    }
+
+    /// 限制大小
+    BoxConstraints boxConstraints = BoxConstraints(maxWidth: 200.w);
+
+    return GestureDetector(
+      onTap: () {
+        Get.toNamed(Routers.messageFile,arguments: msgBody);
+      },
+      child: _detail(
+        constraints: boxConstraints,
+        textDirection: textDirection,
+        clipBehavior: Clip.hardEdge,
+        padding: EdgeInsets.zero,
+        body: Container(
+          width: 250.w,
+          height: 70.h,
+          color: Colors.white,
+          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        msgBody['name'],
+                        style: XFonts.size20Black0,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Text(
+                      getFileSizeString(bytes: msgBody['size']),
+                      style: XFonts.size16Black9,
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.file_copy),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 enum VoiceStatus { stop, playing }
+
+String getFileSizeString({required int bytes, int decimals = 0}) {
+  const suffixes = ["B", "KB", "MB", "GB", "TB"];
+  var i = (log(bytes) / log(1024)).floor();
+  return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + suffixes[i];
+}
+
+List<String> imageExtension = [
+  '.jpg',
+  '.png',
+  '.bmp',
+  '.tif',
+  '.webp',
+];
 
 class PlayerStatus {
   final Rx<VoiceStatus> status;

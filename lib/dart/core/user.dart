@@ -88,20 +88,24 @@ class UserProvider {
 
   /// 重载数据
   Future<void> reload() async {
-    _inited.value = false;
-    await _user.value?.getCohorts();
-    await _user.value?.loadMembers(pageAll());
-    await _user.value?.work.loadTodo();
-    var companys = await _user.value?.getJoinedCompanys() ?? [];
-    for (var company in companys) {
-      await company.deepLoad();
-      await company.loadMembers(pageAll());
+    try{
+      _inited.value = false;
+      await _user.value?.getCohorts();
+      await _user.value?.loadMembers(pageAll());
+      await _user.value?.work.loadTodo();
+      var companys = await _user.value?.getJoinedCompanys() ?? [];
+      for (var company in companys) {
+        await company.deepLoad();
+        await company.loadMembers(pageAll());
+      }
+      _inited.value = true;
+      _preMessages = _preMessages.where((item) {
+        _recvMessage(item);
+        return false;
+      }).toList();
+    }catch(e){
+      print(e);
     }
-    _inited.value = true;
-    _preMessages = _preMessages.where((item) {
-      _recvMessage(item);
-      return false;
-    }).toList();
     refresh();
   }
 

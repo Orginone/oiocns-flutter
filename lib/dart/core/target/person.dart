@@ -74,8 +74,8 @@ class Person extends MarketTarget implements IPerson {
     extendTargetType = [TargetType.cohort, TargetType.person];
     joinedCompany = <ICompany>[].obs;
     cohorts = [];
-    Future.delayed(const Duration(milliseconds: 200), () async {
-      // home = await root.create('主目录');
+    Future.delayed(const Duration(milliseconds:500), () async {
+      home = await root.create('主目录');
     });
     members = [];
     memberChats = <IChat>[].obs;
