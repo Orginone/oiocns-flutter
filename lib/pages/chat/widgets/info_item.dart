@@ -45,9 +45,11 @@ class DetailItemWidget extends GetView<SettingController> {
   final IChat chat;
   final XImMsg msg;
 
-  const DetailItemWidget({Key? key, required this.chat, required this.msg})
+  DetailItemWidget({Key? key, required this.chat, required this.msg})
       : super(key: key);
 
+
+  CustomPopupMenuController popCtrl = CustomPopupMenuController();
   @override
   Widget build(BuildContext context) {
     return _messageDetail(context);
@@ -185,7 +187,6 @@ class DetailItemWidget extends GetView<SettingController> {
                     ),
                     onTap: (){
                        switch(item){
-
                          case DetailFunc.recall:
                            chat.recallMessage(msg.id);
                            break;
@@ -199,6 +200,7 @@ class DetailItemWidget extends GetView<SettingController> {
                            // TODO: Handle this case.
                            break;
                        }
+                       popCtrl.hideMenu();
                     },
                   ),
                 )
@@ -210,6 +212,7 @@ class DetailItemWidget extends GetView<SettingController> {
 
     content.add(
       CustomPopupMenu(
+        controller: popCtrl,
         position: PreferredPosition.bottom,
         menuBuilder: _buildLongPressMenu,
         barrierColor: Colors.transparent,
