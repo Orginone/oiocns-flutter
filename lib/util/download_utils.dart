@@ -8,8 +8,6 @@ import 'package:open_file/open_file.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 String directory = '';
 
 class DownloadModel {
@@ -65,7 +63,7 @@ class DownloadUtils {
   Stream<List<DownloadTaskInfo>> get _stream => _streamController.stream;
 
   Future<void> init() async {
-    await FlutterDownloader.initialize(debug: true);
+    await FlutterDownloader.initialize(debug: true,ignoreSsl: true);
     await _loadAllDownloadTask();
     _bindBackgroundIsolate();
   }
@@ -83,7 +81,7 @@ class DownloadUtils {
               name: element.filename ?? "",
               downloadUrl: element.url,
               filePath: element.savedDir,
-              type: ".${element.filename!.split('.').last}",
+              type: ".${element.filename?.split('.').last}",
             ),
           ),
         );
@@ -133,12 +131,14 @@ class DownloadUtils {
   }
 
   Future<String> _findLocalPath() async {
-    Directory? directory = Platform.isAndroid
-        ? await getExternalStorageDirectory()
-        : await getApplicationDocumentsDirectory();
-    String localPath = Platform.isAndroid
-        ? "${directory!.parent.parent.parent.parent.path}/Download/orginone"
-        : '${directory!.path}/Download';
+    String localPath = '';
+
+    if (Platform.isAndroid) {
+      localPath = "${(await getExternalStorageDirectory())!.path}/orginone";
+    }
+    if (Platform.isIOS) {
+      localPath = "${(await getApplicationDocumentsDirectory()).path}/orginone";
+    }
 
     final savedDir = Directory(localPath);
     bool hasExisted = await savedDir.exists();
@@ -158,7 +158,6 @@ class DownloadUtils {
           Permission.storage,
           Permission.manageExternalStorage
         ].request();
-        ;
         if (request[Permission.storage] == PermissionStatus.granted &&
             request[Permission.manageExternalStorage] ==
                 PermissionStatus.granted) {
@@ -199,15 +198,18 @@ class DownloadUtils {
           element.downloadInfo!.name == download.downloadInfo!.name);
       ToastUtils.showMsg(msg: "文件已存在");
       return;
-    } catch (e) {}
+    } catch (e) {
+
+    }
 
     download.taskId = await FlutterDownloader.enqueue(
         url: download.downloadInfo!.downloadUrl,
+        fileName: download.downloadInfo!.name,
         savedDir: Platform.isAndroid
             ? download.downloadInfo!.filePath!
             : Uri.encodeFull(download.downloadInfo!.filePath!),
-        showNotification: true,
-        openFileFromNotification: true);
+        saveInPublicStorage: true,
+        openFileFromNotification: false);
     cacheTasks.add(download);
   }
 
@@ -284,10 +286,9 @@ class DownloadUtils {
 
   open(DownloadTaskInfo info) async{
     if (info.taskId == null) return;
-    if(await FlutterDownloader.open(taskId: info.taskId!)){
-
-    }else{
-      await OpenFile.open(info.downloadInfo!.filePath);
+    if (!await FlutterDownloader.open(taskId: info.taskId!)) {
+      await OpenFile.open(
+          "${info.downloadInfo!.filePath}/${info.downloadInfo!.name}");
     }
   }
 }

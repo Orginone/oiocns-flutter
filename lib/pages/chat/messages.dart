@@ -14,9 +14,9 @@ import 'package:orginone/widget/common_widget.dart';
 class Messages extends BaseBreadcrumbNavMultiplexPage<Controller, State> {
   @override
   Widget body() {
-    var userName = controller.settingCtrl.user.name;
+    var userName = controller.settingCtrl.provider.user?.name;
     var companies = <Widget>[];
-    for (var e in state.settingCtrl.user.joinedCompany) {
+    for (var e in state.settingCtrl.provider.user?.joinedCompany??[]) {
       companies.add(CommonWidget.commonHeadInfoWidget(e.name));
       companies.add(BaseBreadcrumbNavItem(
         item: BaseBreadcrumbNavModel(name: e.name, children: []),
@@ -39,9 +39,9 @@ class Messages extends BaseBreadcrumbNavMultiplexPage<Controller, State> {
         padding: EdgeInsets.symmetric(vertical: 15.h),
         child: Column(
           children: [
-            CommonWidget.commonHeadInfoWidget(userName),
+            CommonWidget.commonHeadInfoWidget(userName??""),
             BaseBreadcrumbNavItem(
-              item: BaseBreadcrumbNavModel(name: userName, children: []),
+              item: BaseBreadcrumbNavModel(name: userName??"", children: []),
               onTap: () {
                 // controller.jumpUniversalNavigator(e);
               },
@@ -78,11 +78,11 @@ class State extends BaseBreadcrumbNavState {
   SettingController get settingCtrl => Get.find<SettingController>();
 
   State() {
-    var joinedCompanies = settingCtrl.user.joinedCompany;
+    var joinedCompanies = settingCtrl.provider.user?.joinedCompany;
 
     model.value = Get.arguments?['data'];
 
-    if (model.value == null) {
+    if (model.value == null && joinedCompanies!=null) {
       List<ChatBreadcrumbNav> organization = [];
       for (var value in joinedCompanies) {
         organization.add(
@@ -127,7 +127,7 @@ class State extends BaseBreadcrumbNavState {
       );
     }
 
-    title = model.value!.name;
+    title = model.value?.name??"";
   }
 }
 
