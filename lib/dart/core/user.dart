@@ -51,8 +51,8 @@ class UserProvider {
   /// @param password 密码
   Future<dynamic> login(String account, String password) async {
     var res = await kernel.login(account, password);
-    if (res.success && res.data?["person"]!=null) {
-      await _loadUser(XTarget.fromJson(res.data["person"]));
+    if (res.success) {
+      await _loadUser(XTarget.fromJson(res.data["target"]));
     }
     return res;
   }
