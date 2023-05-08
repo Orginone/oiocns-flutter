@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
@@ -13,6 +14,7 @@ import 'package:orginone/widget/loading_dialog.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'event/home_data.dart';
+import 'util/download_utils.dart';
 import 'util/event_bus_helper.dart';
 import 'util/hive_utils.dart';
 import 'util/local_store.dart';
@@ -25,7 +27,7 @@ void main() async {
 
   // 初始化通知配置
   NotificationUtil.initNotification();
-
+  await DownloadUtils().init();
   await LocalStore.instance();
   // 日志初始化
   Logger.root.level = Level.ALL;
@@ -105,8 +107,13 @@ class ScreenInit extends StatelessWidget {
     Future<void> login() async {
       String accountName = account![0];
       String passWord = account![1];
-      await settingCtrl.provider.login(accountName, passWord);
-      print('登录成功');
+      var login = await settingCtrl.provider.login(accountName, passWord);
+      if(login.success){
+        print('登录成功');
+      }else{
+        ToastUtils.showMsg(msg: login.msg);
+        Get.offAllNamed(Routers.login);
+      }
     }
 
     if (account != null) {

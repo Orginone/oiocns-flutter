@@ -3,10 +3,10 @@ import 'package:orginone/dart/core/getx/base_bindings.dart';
 
 import 'logic.dart';
 
-class WarehouseManagementBinding extends BaseBindings<WarehouseManagementController> {
+class WarehouseManagementBinding extends BaseBindings<WareHouseManagementController> {
   @override
-  WarehouseManagementController getController() {
-   return WarehouseManagementController();
+  WareHouseManagementController getController() {
+   return WareHouseManagementController();
   }
 
 }

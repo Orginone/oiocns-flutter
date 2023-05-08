@@ -209,7 +209,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'CreateDictItem',
-        params: params,
+        params: params.toJson(),
       ),
       XDictItem.fromJson,
     );
@@ -734,7 +734,7 @@ class KernelApi {
       ReqestType(
         module: 'target',
         action: 'CreateAuthority',
-        params: params,
+        params: params.toJson(),
       ),
       XAuthority.fromJson,
     );

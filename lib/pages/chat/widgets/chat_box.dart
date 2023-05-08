@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:audio_wave/audio_wave.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,15 +13,20 @@ import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/store/ifilesys.dart';
-import 'package:orginone/dart/core/target/chat/ichat.dart';
-import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/target/chat/chat.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
+import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/permission_util.dart';
+import 'package:orginone/widget/unified.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vibration/vibration.dart';
+
+import 'text/at_person_dialog.dart';
+import 'text/at_textfield.dart';
 
 double defaultBorderRadius = 6.w;
 double boxDefaultHeight = 40.h;
@@ -117,7 +123,8 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
         borderRadius: BorderRadius.all(Radius.circular(defaultBorderRadius)),
       ),
       alignment: Alignment.center,
-      child: TextField(
+      child: AtTextFiled(
+        key: controller.atKey,
         maxLines: null,
         keyboardType: TextInputType.multiline,
         focusNode: controller.focusNode,
@@ -134,6 +141,12 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
             maxHeight: 144.h,
           ),
         ),
+        triggerAtCallback: () async{
+          if(chat is CohortChat){
+            var target = await AtPersonDialog.showDialog(context, chat);
+            return target;
+          }
+        },
       ),
     );
   }
@@ -495,8 +508,8 @@ enum InputEvent {
 
 enum MoreFunction {
   photo("相册", Icons.photo),
-  camera("拍摄", Icons.camera_alt);
-  // file("文件", Icons.upload);
+  camera("拍摄", Icons.camera_alt),
+  file("文件", Icons.upload);
 
   final String label;
   final IconData iconData;
@@ -523,8 +536,6 @@ class ChatBoxController extends FullLifeCycleController
   RxDouble? _level;
   double? _maxLevel;
 
-  ChatBoxController();
-
   InputStatus get inputStatus => _inputStatus.value;
 
   Rx<RecordStatus> get recordStatus => _recordStatus;
@@ -539,16 +550,24 @@ class ChatBoxController extends FullLifeCycleController
 
   Duration? get currentDuration => _currentDuration;
 
+  late GlobalKey<AtTextFiledState> atKey;
   @override
   void onInit() async {
     // TODO: implement onInit
     super.onInit();
+    EventBusHelper.register(this, (event) {
+      if(event is XTarget){
+        atKey.currentState!.addTarget(event);
+      }
+    });
+    atKey = GlobalKey();
     await Permission.microphone.request();
   }
 
   @override
   onClose() {
     super.onClose();
+    EventBusHelper.unregister(this);
     _recorder.dispositionStream();
     inputController.dispose();
     focusNode.dispose();
@@ -619,6 +638,19 @@ class ChatBoxController extends FullLifeCycleController
     }
   }
 
+  Future<void> filePicked(PlatformFile file, IChat chat) async {
+    var settingCtrl = Get.find<SettingController>();
+    var docDir = await settingCtrl.user.home?.create("沟通");
+    var item = await docDir?.upload(
+      file.name,
+      File(file.path!),
+          (progress) {},
+    );
+    if (item != null) {
+      chat.sendMessage(MessageType.file, jsonEncode(item.target.shareInfo()));
+    }
+  }
+
   execute(MoreFunction moreFunction, BuildContext context, IChat chat) async {
     switch (moreFunction) {
       case MoreFunction.photo:
@@ -643,6 +675,17 @@ class ChatBoxController extends FullLifeCycleController
           error.printError();
           Fluttertoast.showToast(msg: "打开相机时发生异常!");
         }
+        break;
+      case MoreFunction.file:
+       FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.any
+        );
+       if(result!=null){
+         for (var file in result.files) {
+           await filePicked(file,chat);
+         }
+       }
+
         break;
     }
   }

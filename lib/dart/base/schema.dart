@@ -3186,11 +3186,11 @@ class XImMsg {
 
   //通过JSON构造
   XImMsg.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        belongId = json["belongId"],
-        fromId = json["fromId"],
-        toId = json["toId"],
-        msgType = json["msgType"],
+      : id = json["id"] ?? "",
+        belongId = json["belongId"]??"",
+        fromId = json["fromId"]??"",
+        toId = json["toId"]??"",
+        msgType = json["msgType"]??"",
         msgBody = json["msgBody"] ?? "",
         status = json["status"],
         createUser = json["createUser"] ?? "",

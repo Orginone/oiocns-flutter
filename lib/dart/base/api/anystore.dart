@@ -246,9 +246,9 @@ class AnyStore {
   /// 桶操作
   /// @param data 操作携带的数据
   /// @returns {ResultType<T>} 移除异步结果
-  Future<ResultType<dynamic>> bucketOpreate(BucketOpreateModel data) async {
+  Future<ResultType<dynamic>> bucketOpreate(String belongId,BucketOpreateModel data) async {
     if (_storeHub.isConnected) {
-      var raw = await _storeHub.invoke('BucketOpreate', args: [data.toJson()]);
+      var raw = await _storeHub.invoke('BucketOpreate', args: [belongId,data.toJson()]);
       return ResultType.fromJson(raw);
     }
     var raw = await _restRequest('Bucket', 'Operate', {}, data.toJson());

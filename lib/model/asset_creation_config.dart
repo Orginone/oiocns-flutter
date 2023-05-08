@@ -196,7 +196,7 @@ class Fields {
             });
       }
       if(type == 'selectDepartment'){
-        List<ITarget> team = await setting.getTeamTree(setting.user, true);
+        List<ITarget> team = await setting.getTeamTree(setting.user);
         PickerUtils.showListStringPicker(Get.context!, titles: team.map((e) => e.teamName).toList(),
             callback: (str) {
               defaultData.value = team.firstWhere((element) => element.teamName == str);

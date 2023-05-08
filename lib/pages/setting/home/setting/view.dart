@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_page.dart';
+import 'package:orginone/pages/setting/config.dart';
 
 import '../item.dart';
 import 'logic.dart';
@@ -20,10 +21,24 @@ class SettingFunctionPage extends BaseBreadcrumbNavMultiplexPage<
               onSelected: (value) {
                 switch (value) {
                   case "create":
-                    controller.createOrganization(e);
+                    if(e.spaceEnum!=null){
+                      controller.createOrganization(e);
+                    }else if(e.standardEnum!=null){
+                      switch(e.standardEnum){
+                        case StandardEnum.dict:
+                          controller.createDict(e);
+                          break;
+                        case StandardEnum.attribute:
+                          controller.createAttribute(e);
+                          break;
+                      }
+                    }
+
                     break;
                   case "edit":
-                    controller.editOrganization(e);
+                    if(e.spaceEnum!=null){
+                      controller.editOrganization(e);
+                    }
                     break;
                 }
               },

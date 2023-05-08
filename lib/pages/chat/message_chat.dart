@@ -2,22 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:orginone/dart/core/target/chat/ichat.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/widget/template/originone_scaffold.dart';
-import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_util.dart';
+import 'package:orginone/widget/template/originone_scaffold.dart';
+import 'package:orginone/widget/unified.dart';
 
-class MessageChat extends StatelessWidget {
+class MessageChat extends StatefulWidget {
   const MessageChat({Key? key}) : super(key: key);
 
   @override
+  State<MessageChat> createState() => _MessageChatState();
+}
+
+class _MessageChatState extends State<MessageChat> {
+  late var chat;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    chat = Get.arguments;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var chat = Get.arguments;
     return OrginoneScaffold(
       appBarHeight: 74.h,
       appBarBgColor: XColors.navigatorBgColor,
@@ -120,7 +133,7 @@ class MessageChat extends StatelessWidget {
                 child: Container(
                   padding: EdgeInsets.only(left: 10.w, right: 10.w),
                   child: Obx(
-                    () => ListView.builder(
+                        () => ListView.builder(
                       reverse: true,
                       shrinkWrap: true,
                       controller: ScrollController(),

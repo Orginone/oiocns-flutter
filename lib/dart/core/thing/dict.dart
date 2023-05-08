@@ -42,6 +42,7 @@ class Dict extends IDict {
 
   @override
   Future<XDict?> createDict(DictModel data) async {
+    data.belongId = belongId;
     final res = await kernel.createDict(data);
     if (res.success) {
       return res.data;
@@ -81,6 +82,7 @@ class Dict extends IDict {
 
   @override
   Future<bool> updateDictItem(DictItemModel data) async {
+    data.belongId = belongId;
     final res = await kernel.updateDictItem(data);
     return res.success;
   }

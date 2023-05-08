@@ -171,8 +171,9 @@ class BaseChat implements IChat {
       var res = await kernel
           .anystore
           .remove(hisMsgCollName, {"chatId": id}, 'user');
-      if (res.success && res.data > 0) {
+      if (res.success) {
         messages.removeWhere((item) => item.id == id);
+        messages.refresh();
         return true;
       }
     }
@@ -181,11 +182,16 @@ class BaseChat implements IChat {
 
   @override
   Future<void> recallMessage(String id) async {
-    for (var message in messages) {
-      if (message.id == id) {
-        await kernel.recallImMsg(message);
-      }
-    }
+     try{
+       var message = messages.firstWhere((element) => element.id == id);
+       var msg = await kernel.recallImMsg(message);
+       if(msg.success){
+         messages.remove(message);
+         messages.refresh();
+       }
+     }catch(e){
+
+     }
   }
 
   @override

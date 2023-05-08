@@ -80,7 +80,7 @@ class FileSystemItem implements IFileSystemItem {
   @override
   Future<bool> rename(String name) async {
     if (this.name != name && (await _findByName(name)) != null) {
-      var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
+      var res = await kernel.anystore.bucketOpreate(belongId,BucketOpreateModel(
         name: name,
         key: _formatKey(),
         operate: BucketOpreates.rename,
@@ -99,7 +99,7 @@ class FileSystemItem implements IFileSystemItem {
   Future<IObjectItem> create(String name) async {
     var exist = await _findByName(name);
     if (exist == null) {
-      var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
+      var res = await kernel.anystore.bucketOpreate(belongId,BucketOpreateModel(
         key: _formatKey(subName: name),
         operate: BucketOpreates.create,
       ));
@@ -119,7 +119,7 @@ class FileSystemItem implements IFileSystemItem {
 
   @override
   Future<bool> delete() async {
-    var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
+    var res = await kernel.anystore.bucketOpreate(belongId,BucketOpreateModel(
       key: _formatKey(),
       operate: BucketOpreates.delete,
     ));
@@ -136,7 +136,7 @@ class FileSystemItem implements IFileSystemItem {
   @override
   Future<bool> copy(IFileSystemItem destination) async {
     if (destination.target.isDirectory && key != destination.key) {
-      var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
+      var res = await kernel.anystore.bucketOpreate(belongId,BucketOpreateModel(
         key: _formatKey(),
         destination: destination.key,
         operate: BucketOpreates.copy,
@@ -153,7 +153,7 @@ class FileSystemItem implements IFileSystemItem {
   @override
   Future<bool> move(IFileSystemItem destination) async {
     if (destination.target.isDirectory && key != destination.key) {
-      var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
+      var res = await kernel.anystore.bucketOpreate(belongId,BucketOpreateModel(
         key: _formatKey(),
         destination: destination.key,
         operate: BucketOpreates.move,
@@ -175,7 +175,7 @@ class FileSystemItem implements IFileSystemItem {
   Future<bool> loadChildren({bool? reload}) async {
     reload ??= false;
     if (target.isDirectory && (reload || children.isEmpty)) {
-      var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
+      var res = await kernel.anystore.bucketOpreate(belongId,BucketOpreateModel(
         key: _formatKey(),
         operate: BucketOpreates.list,
       ));
@@ -232,10 +232,10 @@ class FileSystemItem implements IFileSystemItem {
           data: [],
           dataUrl: url,
         );
-        var res = await kernel.anystore.bucketOpreate(data);
+        var res = await kernel.anystore.bucketOpreate(belongId,data);
         if (!res.success) {
           data.operate = BucketOpreates.abortUpload;
-          await kernel.anystore.bucketOpreate(data);
+          await kernel.anystore.bucketOpreate(belongId,data);
           task.finished = -1;
           p?.call(-1);
           // return;

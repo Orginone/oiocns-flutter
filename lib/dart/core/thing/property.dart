@@ -17,6 +17,7 @@ class Property extends IProperty{
 
   @override
   Future<XProperty?> createProperty(PropertyModel data) async{
+    data.belongId = belongId;
     var res = await kernel.createProperty(data);
     return res.data;
   }
@@ -35,6 +36,7 @@ class Property extends IProperty{
 
   @override
   Future<XProperty?> updateProperty(PropertyModel data) async{
+    data.belongId = belongId;
     var res = await kernel.updateProperty(data);
     return res.data;
   }

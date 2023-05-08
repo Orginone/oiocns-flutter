@@ -1,30 +1,38 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/target/chat/ichat.dart';
-import 'package:orginone/widget/unified.dart';
-import 'package:orginone/widget/widgets/photo_widget.dart';
-import 'package:orginone/widget/widgets/team_avatar.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
 import 'package:orginone/dart/core/target/targetMap.dart';
+import 'package:orginone/routers.dart';
+import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/string_util.dart';
+import 'package:orginone/widget/unified.dart';
+import 'package:orginone/widget/widgets/photo_widget.dart';
+import 'package:orginone/widget/widgets/team_avatar.dart';
 
 enum Direction { leftStart, rightStart }
 
 enum DetailFunc {
   recall("撤回"),
-  remove("删除");
+  remove("删除"),
+  forward("转发"),
+  reply("回复");
+  // multipleChoice("多选");
 
   const DetailFunc(this.label);
 
@@ -37,9 +45,11 @@ class DetailItemWidget extends GetView<SettingController> {
   final IChat chat;
   final XImMsg msg;
 
-  const DetailItemWidget({Key? key, required this.chat, required this.msg})
+  DetailItemWidget({Key? key, required this.chat, required this.msg})
       : super(key: key);
 
+
+  CustomPopupMenuController popCtrl = CustomPopupMenuController();
   @override
   Widget build(BuildContext context) {
     return _messageDetail(context);
@@ -93,7 +103,10 @@ class DetailItemWidget extends GetView<SettingController> {
     } else {
       shareInfo = findTargetShare(msg.fromId);
     }
-    return TeamAvatar(info: TeamTypeInfo(share: shareInfo));
+    return GestureDetector(
+        child: TeamAvatar(info: TeamTypeInfo(share: shareInfo),),onLongPress: (){
+          EventBusHelper.fire(chat.persons[0]);
+    },);
   }
 
   /// 获取会话
@@ -130,67 +143,87 @@ class DetailItemWidget extends GetView<SettingController> {
       body = _image(textDirection: textDirection, context: context);
     } else if (msg.msgType == MessageType.voice.label) {
       body = _voice(textDirection: textDirection);
+    } else if (msg.msgType == MessageType.file.label) {
+      body = _file(textDirection: textDirection, context: context);
     } else {
       body = Container();
     }
 
-    // 添加长按手势
-    double x = 0,
-        y = 0;
-    String spaceId = chat.spaceId;
-    var gesture = GestureDetector(
-      onPanDown: (position) {
-        x = position.globalPosition.dx;
-        y = position.globalPosition.dy;
-      },
-      onLongPress: () async {
-        List<DetailFunc> items = [];
-        if (isSelf && msg.createTime != null) {
-          var parsedCreateTime = DateTime.parse(msg.createTime!);
-          var diff = parsedCreateTime.difference(DateTime.now());
-          if (diff.inSeconds.abs() < 2 * 60) {
-            items.add(DetailFunc.recall);
-          }
-        }
-        if (spaceId == controller.user.id) {
-          items.add(DetailFunc.remove);
-        }
-        if (items.isEmpty) {
-          return;
-        }
-        var top = y - 50;
-        var right = MediaQuery
-            .of(context)
-            .size
-            .width - x;
-        final result = await showMenu<DetailFunc>(
-          context: context,
-          position: RelativeRect.fromLTRB(x, top, right, 0),
-          items: items.map((item) {
-            return PopupMenuItem(
-              value: item,
-              child: Text(item.label),
-            );
-          }).toList(),
-        );
-        if (result != null) {
-          switch (result) {
-            case DetailFunc.recall:
-              break;
-            case DetailFunc.remove:
-              chat.deleteMessage(msg.id);
-              break;
-          }
-        }
-      },
-      child: body,
+    String userId = chat.userId;
+    List<DetailFunc> func = [
+      DetailFunc.forward,
+      DetailFunc.reply,
+    ];
+    if (userId == controller.user.id) {
+      func.add(DetailFunc.remove);
+    }
+    if (isSelf && msg.createTime != null) {
+      var parsedCreateTime = DateTime.parse(msg.createTime!);
+      var diff = parsedCreateTime.difference(DateTime.now());
+      if (diff.inSeconds.abs() < 2 * 60) {
+        func.add(DetailFunc.recall);
+      }
+    }
+
+    Widget _buildLongPressMenu() {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(5),
+        child: Container(
+          height: 50.h,
+          width: 50.w * func.length,
+          color: const Color(0xFF4C4C4C),
+          child: Row(
+            children: func
+                .map(
+                  (item) => GestureDetector(
+                    child: Container(
+                      width: 40.w,
+                      margin: EdgeInsets.symmetric(horizontal: 5.w),
+                      alignment: Alignment.center,
+                      child: Text(
+                        item.label,
+                        style: const TextStyle(color: Colors.white, fontSize: 12),
+                      ),
+                    ),
+                    onTap: (){
+                       switch(item){
+                         case DetailFunc.recall:
+                           chat.recallMessage(msg.id);
+                           break;
+                         case DetailFunc.remove:
+                           chat.deleteMessage(msg.id);
+                           break;
+                         case DetailFunc.forward:
+                           // TODO: Handle this case.
+                           break;
+                         case DetailFunc.reply:
+                           // TODO: Handle this case.
+                           break;
+                       }
+                       popCtrl.hideMenu();
+                    },
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      );
+    }
+
+    content.add(
+      CustomPopupMenu(
+        controller: popCtrl,
+        position: PreferredPosition.bottom,
+        menuBuilder: _buildLongPressMenu,
+        barrierColor: Colors.transparent,
+        pressType: PressType.longPress,
+        verticalMargin: 0,
+        child: body,
+      ),
     );
-    content.add(gesture);
 
     return Container(
-      margin: isSelf
-          ? EdgeInsets.only(right: 2.w)
-          : EdgeInsets.only(left: 2.w),
+      margin: isSelf ? EdgeInsets.only(right: 2.w) : EdgeInsets.only(left: 2.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: content,
@@ -377,9 +410,92 @@ class DetailItemWidget extends GetView<SettingController> {
       ),
     );
   }
+
+  Widget _file({
+    required TextDirection textDirection,
+    required BuildContext context,
+  }) {
+    /// 解析参数
+    Map<String, dynamic> msgBody = {};
+    try {
+      msgBody = jsonDecode(msg.showTxt);
+    } catch (error) {
+      Log.info("参数解析失败，msg.showTxt:${msg.showTxt}");
+      return Container();
+    }
+
+    String extension = msgBody["extension"];
+    if (imageExtension.contains(extension.toLowerCase())) {
+      return _image(textDirection: textDirection, context: context);
+    }
+
+    /// 限制大小
+    BoxConstraints boxConstraints = BoxConstraints(maxWidth: 200.w);
+
+    return GestureDetector(
+      onTap: () {
+        Get.toNamed(Routers.messageFile,arguments: msgBody);
+      },
+      child: _detail(
+        constraints: boxConstraints,
+        textDirection: textDirection,
+        clipBehavior: Clip.hardEdge,
+        padding: EdgeInsets.zero,
+        body: Container(
+          width: 250.w,
+          height: 70.h,
+          color: Colors.white,
+          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        msgBody['name'],
+                        style: XFonts.size20Black0,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Text(
+                      getFileSizeString(bytes: msgBody['size']),
+                      style: XFonts.size16Black9,
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.file_copy),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 enum VoiceStatus { stop, playing }
+
+String getFileSizeString({required int bytes, int decimals = 0}) {
+  const suffixes = ["B", "KB", "MB", "GB", "TB"];
+  var i = (log(bytes) / log(1024)).floor();
+  return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + suffixes[i];
+}
+
+List<String> imageExtension = [
+  '.jpg',
+  '.png',
+  '.bmp',
+  '.tif',
+  '.webp',
+];
 
 class PlayerStatus {
   final Rx<VoiceStatus> status;

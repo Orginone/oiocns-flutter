@@ -56,6 +56,7 @@ dependencies:
   logging: ^1.0.2
   common_utils: ^2.1.0
   path_provider: ^2.0.11
+  android_path_provider: ^0.3.0
   jiffy: ^5.0.0
   uuid: ^3.0.6
   archive: ^3.3.1
@@ -135,6 +136,12 @@ dependencies:
   url_launcher: ^6.1.10
   #验证码输入框
   pin_input_text_field: ^4.5.0
+  #uikit菜单弹框
+  custom_pop_up_menu: ^1.2.4
+  #下载工具
+  flutter_downloader: ^1.10.2
+  #打开文件
+  open_file: ^3.2.1
 
 dev_dependencies:
   flutter_test:

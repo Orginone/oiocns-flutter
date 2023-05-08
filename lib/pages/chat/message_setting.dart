@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/chat/ichat.dart';
@@ -15,6 +16,8 @@ import 'package:orginone/widget/template/choose_item.dart';
 import 'package:orginone/widget/template/originone_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
+
+import '../../dart/base/model.dart';
 
 Size defaultBtnSize = Size(400.w, 70.h);
 
@@ -38,7 +41,7 @@ class MessageSetting extends GetView<SettingController> {
         Padding(padding: EdgeInsets.only(top: 50.h)),
         _interruption,
         _top,
-        _searchChat,
+        _searchChat(chat),
       ];
     } else {
       children = [
@@ -56,7 +59,7 @@ class MessageSetting extends GetView<SettingController> {
         ),
         _interruption,
         _top,
-        _searchChat,
+        _searchChat(chat),
       ];
     }
 
@@ -97,12 +100,14 @@ class MessageSetting extends GetView<SettingController> {
       children: [
         TeamAvatar(info: TeamTypeInfo(share: findTargetShare(chat.chatId))),
         Padding(padding: EdgeInsets.only(left: 10.w)),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(name, style: XFonts.size22Black3W700),
-            Text(messageItem.remark ?? "", style: XFonts.size16Black6)
-          ],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(name, style: XFonts.size22Black3W700),
+              Text(messageItem.remark ?? "", style: XFonts.size16Black6,maxLines: 2,overflow: TextOverflow.ellipsis,)
+            ],
+          ),
         )
       ],
     );
@@ -136,8 +141,11 @@ class MessageSetting extends GetView<SettingController> {
   }
 
   /// 查找聊天记录
-  get _searchChat {
+  Widget _searchChat(IChat chat) {
     return ChooseItem(
+      func: (){
+        KernelApi.getInstance().queryCohortImMsgs(IDBelongReq(id: chat.chatId));
+      },
       padding: EdgeInsets.zero,
       header: Text(
         "查找聊天记录",

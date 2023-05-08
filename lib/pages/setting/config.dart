@@ -134,12 +134,31 @@ enum UserFunction{
   addGroup,
 }
 
+// enum AttributeType{
+//
+//
+//   String label,
+//   const AttributeType(this.label);
+//
+// }
+
 List<IAuthority> getAllAuthority(List<IAuthority> authority) {
   List<IAuthority> list = [];
   for (var element in authority) {
     list.add(element);
     if (element.children.isNotEmpty) {
       list.addAll(getAllAuthority(element.children));
+    }
+  }
+  return list;
+}
+
+List<ITarget> getAllTarget(List<ITarget> targets) {
+  List<ITarget> list = [];
+  for (var element in targets) {
+    list.add(element);
+    if (element.subTeam.isNotEmpty) {
+      list.addAll(getAllTarget(element.subTeam));
     }
   }
   return list;
@@ -167,3 +186,5 @@ List<IGroup> getAllOutAgency(List<IGroup> outAgencyGroup) {
 
   return list;
 }
+
+

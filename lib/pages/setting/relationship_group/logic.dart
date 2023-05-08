@@ -1,5 +1,8 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
@@ -142,58 +145,119 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
     }
   }
 
-  void operation(dynamic item, String value) async {
-    switch (value) {
-      case "create":
-        showCreateOrganizationDialog(context, item.subTeamTypes,
-            callBack: (String name, String code, String nickName,
-                String identify, String remark, TargetType type) async {
-              var model = TargetModel(
-                  name: nickName,
-                  code: code,
-                  typeName: type.label,
-                  teamName: name,
-                  teamCode: code,
-                  teamRemark: remark,
-                  avatar: '',
-                  belongId: '');
-                await item.create(model);
-            });
-        break;
-      case "edit":
-        showCreateOrganizationDialog(context, item.subTeamTypes,
-            callBack: (String name, String code, String nickName,
-                String identify, String remark, TargetType type) async {
-              var model = TargetModel(
-                  id: item.id,
-                  name: nickName,
-                  code: code,
-                  typeName: type.label,
-                  teamName: name,
-                  teamCode: code,
-                  teamRemark: remark,
-                  avatar: '',
-                  belongId: item.target.belongId);
-              await item.update(model);
-            },
-            code: item.target.code,
-            name: item.teamName,
-            nickName: item.name,
-            identify: item.target.team?.code ?? "",
-            remark: item.target.team?.remark ?? "",
-            type: TargetType.getType(item.typeName));
-        break;
-      case "delete":
-        bool success = await item.delete();
-        if(success){
-          state.model.value!.children.remove(item);
-          state.model.refresh();
-        }else{
-          ToastUtils.showMsg(msg: "删除失败");
-        }
-        break;
+  void createGroup(dynamic item){
+    showCreateOrganizationDialog(context, item.subTeamTypes,
+        callBack: (String name, String code, String nickName,
+            String identify, String remark, TargetType type) async {
+          var model = TargetModel(
+              name: nickName,
+              code: code,
+              typeName: type.label,
+              teamName: name,
+              teamCode: code,
+              teamRemark: remark,
+              avatar: '',
+              belongId: '');
+          await item.create(model);
+        });
+  }
+
+
+  void editGroup(dynamic item) {
+    showCreateOrganizationDialog(context, item.subTeamTypes,
+        callBack: (String name, String code, String nickName,
+            String identify, String remark, TargetType type) async {
+          var model = TargetModel(
+              id: item.id,
+              name: nickName,
+              code: code,
+              typeName: type.label,
+              teamName: name,
+              teamCode: code,
+              teamRemark: remark,
+              avatar: '',
+              belongId: item.target.belongId);
+          await item.update(model);
+        },
+        code: item.target.code,
+        name: item.teamName,
+        nickName: item.name,
+        identify: item.target.team?.code ?? "",
+        remark: item.target.team?.remark ?? "",
+        type: TargetType.getType(item.typeName));
+  }
+
+
+  void removeGroup(dynamic item) async{
+    bool success = await item.delete();
+    if(success){
+      state.model.value!.children.remove(item);
+      state.model.refresh();
+    }else{
+      ToastUtils.showMsg(msg: "删除失败");
     }
   }
 
+  void editDict(SettingNavModel item) {
+    showCreateDictDialog(context,onCreate: (name,code,remark) async{
+      var dict =await item.space.dict.updateDict(DictModel(name: name, public: true, code: code, remark: remark,id: item.source.id));
+      if(dict!=null){
+        ToastUtils.showMsg(msg: "更新成功");
+        item.source.name = name;
+        item.source.code = code;
+        item.source.remark = remark;
+        item.name = name;
+        state.model.refresh();
+      }
+    },name: item.source.name,code: item.source.code,remark: item.source.remark??"");
+  }
+
+  void removeDict(SettingNavModel item) async{
+    bool success = await item.space.dict.deleteDict(item.source.id);
+    if(success){
+      ToastUtils.showMsg(msg: "删除成功");
+      state.model.value!.children.remove(item);
+      state.model.refresh();
+    }
+  }
+
+  void createAuth(SettingNavModel item) async{
+    SettingController settingController = Get.find();
+    List<ITarget> targets =  await settingController.getTeamTree(item.space);
+    showCreateAuthDialog(context,getAllTarget(targets), target: item.space,callBack: (name,code,target,isPublic,remark) async{
+      ResultType<XAuthority> result = await item.source.createSubAuthority(name, code, isPublic, remark,item.space.target.id);
+      if(result.success){
+        ToastUtils.showMsg(msg: "创建成功");
+        await SettingNetWork.initAuthority(state.model.value!);
+        state.model.refresh();
+      }
+    });
+  }
+
+  void editAuth(SettingNavModel item) async{
+    SettingController settingController = Get.find();
+    List<ITarget> targets =  await settingController.getTeamTree(item.space);
+    showCreateAuthDialog(context,getAllTarget(targets), target: getAllTarget(targets).firstWhere((element) => element.teamName == item.source.target.belong.name),callBack: (name,code,target,isPublic,remark) async{
+      ResultType<XAuthority> result = await item.source.updateAuthority(name, code, isPublic, remark);
+      if(result.success){
+        ToastUtils.showMsg(msg: "修改成功");
+        item.source.target.name = name;
+        item.source.target.public = isPublic;
+        item.source.target.remark = remark;
+        item.source.target.code = code;
+        item.name = name;
+        state.model.refresh();
+      }
+    },isEdit: true,name:item.source.target.name,public: item.source.target.public,remark: item.source.target.remark,code: item.source.target.code);
+  }
+
+  void removeAuth(SettingNavModel item) async{
+    ResultType result = await item.source.delete();
+    if(result.success){
+      ToastUtils.showMsg(msg: "删除成功");
+      state.model.value!.children.remove(item);
+      state.model.refresh();
+    }
+  }
 }
 

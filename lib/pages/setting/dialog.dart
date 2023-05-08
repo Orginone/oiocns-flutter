@@ -6,8 +6,8 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/dart/core/thing/ispecies.dart';
-import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -17,7 +17,7 @@ import 'config.dart';
 import 'multiselect.dart';
 
 typedef CreateDictChangeCallBack
-    = Function(String name, String code, String remark, {bool? public});
+    = Function(String name, String code, String remark);
 
 typedef CreateOrganizationChangeCallBack = Function(String name, String code,
     String nickName, String identify, String remark, TargetType type);
@@ -32,6 +32,8 @@ typedef CreateAttributeCallBack = Function(
   String code,
   String valueType,
   String remark,
+  String? unit,
+  XDict? dict,
 );
 
 typedef CreateAttrCallBack = Function(String name, String code, String remark,
@@ -39,6 +41,8 @@ typedef CreateAttrCallBack = Function(String name, String code, String remark,
 
 typedef CreateWorkCallBack = Function(
     String name, String remark, bool isCreate, List<ISpeciesItem> thing);
+
+typedef CreateAuthCallBack = Function(String name,String code,ITarget target,bool isPublic,String remark);
 
 SettingController get setting => Get.find();
 
@@ -364,15 +368,14 @@ Future<void> showCreateDictItemDialog(BuildContext context,
 }
 
 Future<void> showCreateDictDialog(BuildContext context,
-    {CreateDictChangeCallBack? onCreate}) async {
+    {CreateDictChangeCallBack? onCreate,bool isEdit = false,String name = '',String code = '',String remark = ''}) async {
 
 
-  TextEditingController name = TextEditingController();
-  TextEditingController code = TextEditingController();
-  TextEditingController remark = TextEditingController();
+  TextEditingController nameCtr = TextEditingController(text: name);
+  TextEditingController codeCtr = TextEditingController(text: code);
+  TextEditingController remarkCtr = TextEditingController(text: remark);
 
 
-  bool public = true;
   return showDialog(
     context: context,
     builder: (context) {
@@ -385,43 +388,32 @@ Future<void> showCreateDictDialog(BuildContext context,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    CommonWidget.commonHeadInfoWidget("新增"),
+                    CommonWidget.commonHeadInfoWidget(isEdit?"编辑":"新增"),
                     CommonWidget.commonTextTile("字典名称", '',
-                        controller: name,
+                        controller: nameCtr,
                         showLine: true,
                         required: true,
                         hint: "请输入"),
                     CommonWidget.commonTextTile("字典代码", '',
-                        controller: code,
+                        controller: codeCtr,
                         showLine: true,
                         required: true,
                         hint: "请输入"),
-                    CommonWidget.commonChoiceTile("向下组织公开", public?"公开":'不公开',
-                        showLine: true, required: true, onTap: () {
-                          PickerUtils.showListStringPicker(Get.context!,
-                              titles:['公开',"不公开"],
-                              callback: (str) {
-                                state(() {
-                                  public =  str == "公开";
-                                });
-                              });
-                        }, hint: "请选择"),
                     CommonWidget.commonTextTile("备注", '',
-                        controller: remark,
+                        controller: remarkCtr,
                         showLine: true,
                         maxLine: 4,
                         hint: "请输入"),
                     CommonWidget.commonMultipleSubmitWidget(onTap1: () {
                       Navigator.pop(context);
                     }, onTap2: () {
-                      if (name.text.isEmpty) {
+                      if (nameCtr.text.isEmpty) {
                         ToastUtils.showMsg(msg: "请输入名称");
-                      } else if (code.text.isEmpty) {
+                      } else if (codeCtr.text.isEmpty) {
                         ToastUtils.showMsg(msg: "请输入字典代码");
                       } else {
                         if (onCreate != null) {
-                          onCreate(name.text, code.text, remark.text,
-                              public: public);
+                          onCreate(nameCtr.text, codeCtr.text, remarkCtr.text);
                         }
                         Navigator.pop(context);
                       }
@@ -593,17 +585,20 @@ Future<void> showCreateOrganizationDialog(
 }
 
 Future<void> showCreateAttributeDialog(BuildContext context,
-    {CreateAttributeCallBack? onCreate,
+    {CreateAttributeCallBack? onCreate,List<XDict> dictList =const [],
     bool isEdit = false,
     String name = '',
     String code = '',
     String remark = '',
-    String valueType = ''}) async {
+    String valueType = '',String unit = '',XDict? dict}) async {
   TextEditingController nameCtr = TextEditingController(text: name);
   TextEditingController codeCtr = TextEditingController(text: code);
+  TextEditingController unitCtr = TextEditingController(text: unit);
   TextEditingController remarkCtr = TextEditingController(text: remark);
 
   String type = valueType;
+  XDict? dictValue = dict;
+
   return showDialog(
     context: context,
     builder: (context) {
@@ -621,11 +616,9 @@ Future<void> showCreateAttributeDialog(BuildContext context,
                         showLine: true,
                         required: true,
                         hint: "请输入"),
-                    CommonWidget.commonTextTile("字典代码", '',
+                    CommonWidget.commonTextTile("属性代码", '',
                         controller: codeCtr,
-                        showLine: true,
-                        required: true,
-                        hint: "请输入",enabled: !isEdit),
+                        showLine: true, enabled: true),
                     CommonWidget.commonChoiceTile("属性类型", type,
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
@@ -635,9 +628,24 @@ Future<void> showCreateAttributeDialog(BuildContext context,
                         });
                       });
                     }, hint: "请选择"),
+                    type == "选择型"? CommonWidget.commonChoiceTile("选择枚举字典", dictValue?.name??"",
+                        showLine: true, required: true, onTap: () {
+                          PickerUtils.showListStringPicker(Get.context!,
+                              titles: dictList.map((e) => e.name??"").toList(), callback: (str) {
+                                state(() {
+                                  dictValue = dictList.firstWhere((element) => element.name == str);
+                                });
+                              });
+                        }, hint: "请选择"):const SizedBox(),
+                    type == "数值型"? CommonWidget.commonTextTile("单位", '',
+                        controller: unitCtr,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"):const SizedBox(),
                     CommonWidget.commonTextTile("属性定义", '',
                         controller: remarkCtr,
                         showLine: true,
+                        required: true,
                         maxLine: 4,
                         hint: "请输入"),
                     CommonWidget.commonMultipleSubmitWidget(onTap1: () {
@@ -645,15 +653,17 @@ Future<void> showCreateAttributeDialog(BuildContext context,
                     }, onTap2: () {
                       if (nameCtr.text.isEmpty) {
                         ToastUtils.showMsg(msg: "请输入名称");
-                      } else if (codeCtr.text.isEmpty && !isEdit) {
-                        ToastUtils.showMsg(msg: "请输入字典代码");
                       } else if(type.isEmpty){
                         ToastUtils.showMsg(msg: "请选择属性类型");
                       } else if(remarkCtr.text.isEmpty){
-                        ToastUtils.showMsg(msg: "请选择属性类型");
-                      } else{
+                        ToastUtils.showMsg(msg: "请输入属性定义");
+                      } else if(type == "选择型" && dict == null){
+                        ToastUtils.showMsg(msg: "请选择枚举字典");
+                      } else if(type == "数值型" && unitCtr.text.isEmpty){
+                        ToastUtils.showMsg(msg: "请输入单位");
+                      }else{
                         if (onCreate != null) {
-                          onCreate(nameCtr.text, codeCtr.text, type,remarkCtr.text);
+                          onCreate(nameCtr.text, codeCtr.text, type,remarkCtr.text,unitCtr.text,dictValue);
                         }
                         Navigator.pop(context);
                       }
@@ -852,6 +862,95 @@ Future<void> showCreateWorkDialog(BuildContext context, List<ISpeciesItem> thing
                         if (onCreate != null) {
                           onCreate(nameCtr.text, remarkCtr.text, isCreate,
                               selectedThing);
+                        }
+                        Navigator.pop(context);
+                      }
+                    }),
+                  ],
+                ),
+              );
+            });
+          }));
+    },
+  );
+}
+
+Future<void> showCreateAuthDialog(
+    BuildContext context, List<ITarget> targets,
+    {String name = '',
+      String code = '',
+      String remark = '',
+      required ITarget target,bool public = false,bool isEdit = false,CreateAuthCallBack? callBack}) async {
+  TextEditingController nameController = TextEditingController(text: name);
+  TextEditingController codeController = TextEditingController(text: code);
+  TextEditingController remarkController = TextEditingController(text: remark);
+
+  bool isPublic = public;
+  ITarget selectedTarget = target;
+
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+          alignment: Alignment.center,
+          child: Builder(builder: (context) {
+            return StatefulBuilder(builder: (context, state) {
+              return SizedBox(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CommonWidget.commonHeadInfoWidget("${isEdit?"编辑":"新增"}权限"),
+                    CommonWidget.commonTextTile("名称", '',
+                        controller: nameController,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
+                    CommonWidget.commonTextTile("代码", '',
+                        controller: codeController,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
+                    CommonWidget.commonChoiceTile(
+                        "选择制定组织", selectedTarget?.teamName??"",
+                        showLine: true, required: true, onTap: () {
+                      PickerUtils.showListStringPicker(Get.context!,
+                          titles: targets.map((e) => e.teamName).toList(),
+                          callback: (str) {
+                            state(() {
+                              try {
+                                selectedTarget = targets
+                                    .firstWhere((element) => element.teamName == str);
+                              } catch (e) {}
+                            });
+                          });
+                    }, hint: "请选择"),
+                    CommonWidget.commonChoiceTile(
+                        "是否公开", isPublic ? "公开" : '不公开',
+                        showLine: true, required: true, onTap: () {
+                      PickerUtils.showListStringPicker(Get.context!,
+                          titles: ['公开', "不公开"], callback: (str) {
+                            state(() {
+                              isPublic = str == "公开";
+                            });
+                          });
+                    }, hint: "请选择"),
+                    CommonWidget.commonTextTile("备注", '',
+                        controller: remarkController,
+                        showLine: true,
+                        maxLine: 4,
+                        hint: "请输入"),
+                    CommonWidget.commonMultipleSubmitWidget(onTap1: () {
+                      Navigator.pop(context);
+                    }, onTap2: () {
+                      if (nameController.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入名称");
+                      } else if (codeController.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入代码");
+                      } else if (remarkController.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入简介");
+                      } else {
+                        if(callBack!=null){
+                          callBack(nameController.text,codeController.text,selectedTarget,isPublic,remarkController.text);
                         }
                         Navigator.pop(context);
                       }
