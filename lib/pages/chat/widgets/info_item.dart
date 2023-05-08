@@ -31,8 +31,8 @@ enum DetailFunc {
   recall("撤回"),
   remove("删除"),
   forward("转发"),
-  reply("回复"),
-  multipleChoice("多选");
+  reply("回复");
+  // multipleChoice("多选");
 
   const DetailFunc(this.label);
 
@@ -149,7 +149,6 @@ class DetailItemWidget extends GetView<SettingController> {
 
     String userId = chat.userId;
     List<DetailFunc> func = [
-      DetailFunc.multipleChoice,
       DetailFunc.forward,
       DetailFunc.reply,
     ];
@@ -174,14 +173,33 @@ class DetailItemWidget extends GetView<SettingController> {
           child: Row(
             children: func
                 .map(
-                  (item) => Container(
-                    width: 40.w,
-                    margin: EdgeInsets.symmetric(horizontal: 5.w),
-                    alignment: Alignment.center,
-                    child: Text(
-                      item.label,
-                      style: const TextStyle(color: Colors.white, fontSize: 12),
+                  (item) => GestureDetector(
+                    child: Container(
+                      width: 40.w,
+                      margin: EdgeInsets.symmetric(horizontal: 5.w),
+                      alignment: Alignment.center,
+                      child: Text(
+                        item.label,
+                        style: const TextStyle(color: Colors.white, fontSize: 12),
+                      ),
                     ),
+                    onTap: (){
+                       switch(item){
+
+                         case DetailFunc.recall:
+                           chat.recallMessage(msg.id);
+                           break;
+                         case DetailFunc.remove:
+                           chat.deleteMessage(msg.id);
+                           break;
+                         case DetailFunc.forward:
+                           // TODO: Handle this case.
+                           break;
+                         case DetailFunc.reply:
+                           // TODO: Handle this case.
+                           break;
+                       }
+                    },
                   ),
                 )
                 .toList(),

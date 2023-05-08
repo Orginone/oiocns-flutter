@@ -2,6 +2,7 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/pages/chat/widgets/info_item.dart';
 
 /// 单个会话的抽象
 abstract class IChat {
