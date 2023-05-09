@@ -4,7 +4,8 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/util/encryption_util.dart';
 
-import '../../market/model.dart';
+import '../../../main.dart';
+
 
 const hisMsgCollName = 'chat-message';
 var nullTime = DateTime(2022, 7, 1).millisecondsSinceEpoch;

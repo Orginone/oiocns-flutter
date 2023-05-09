@@ -3,7 +3,7 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
-import 'package:orginone/dart/core/target/chat/msgchat.dart';
+import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/dart/core/target/identity/identity.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/main.dart';

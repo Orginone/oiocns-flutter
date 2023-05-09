@@ -4,10 +4,11 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
-import 'package:orginone/dart/core/target/chat/msgchat.dart';
+import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/app/application.dart';
+import 'package:orginone/dart/core/thing/filesys/filesysItem.dart';
 import 'package:orginone/dart/core/work/todo.dart';
 import 'package:orginone/main.dart';
 
@@ -20,7 +21,7 @@ import 'team/university.dart';
 
 abstract class IPerson extends IBelong {
   //文件系统
-  // late IFileSystem fileSystem;
+  late IFileSystem fileSystem;
   //加入/管理的单位
   late RxList<ICompany> companys;
 
@@ -332,5 +333,8 @@ class Person extends Belong implements IPerson {
 
     superAuth?.deepLoad(reload: reload);
   }
+
+  @override
+  late IFileSystem fileSystem;
 
 }

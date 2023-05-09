@@ -6,7 +6,6 @@ import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/index.dart';
 import 'package:orginone/main.dart';
 
-import 'belong.dart';
 import 'team.dart';
 
 

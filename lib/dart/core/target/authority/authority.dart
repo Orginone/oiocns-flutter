@@ -1,7 +1,7 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
-import 'package:orginone/dart/core/target/chat/msgchat.dart';
+import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/main.dart';
 
 abstract class IAuthority implements IChat {
