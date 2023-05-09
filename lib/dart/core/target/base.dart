@@ -9,12 +9,14 @@ import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
 import 'package:orginone/dart/core/target/authority/identity.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
+import 'package:orginone/dart/core/target/chat/chat.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
+import 'package:orginone/dart/core/thing/property.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:orginone/dart/core/thing/index.dart' as thing;
 import '../../base/common/uint.dart';
 import '../enum.dart';
 import '../thing/ispecies.dart';
-import '../thing/species.dart';
 import 'itarget.dart';
 import 'targetMap.dart';
 
@@ -23,6 +25,7 @@ class BaseTarget extends ITarget {
 
   late List<TargetType> memberTypes;
   late List<TargetType> createTargetType;
+  late String userId;
 
   @override
   String get id {
@@ -59,7 +62,7 @@ class BaseTarget extends ITarget {
 
   KernelApi kernel = KernelApi.getInstance();
 
-  BaseTarget(XTarget target) {
+  BaseTarget(XTarget target, ISpace? space, this.userId) {
     key = uuid.v4();
     this.target = target;
     createTargetType = [];
@@ -67,13 +70,21 @@ class BaseTarget extends ITarget {
     searchTargetType = [];
     ownIdentitys = [];
     identitys = [];
+    this.space = space;
     memberTypes = [TargetType.person];
     typeName = target.typeName;
     appendTarget([target]);
+    property = Property(target.id);
+    subTeamTypes = [];
+    species = [];
+    chat = createChat(userId, space?.id??"", target, [
+      space?.teamName??"",
+      "${target.typeName}群"
+    ]);
   }
 
   @override
-  Future<XTargetArray> loadMembers(PageRequest page) async {
+  Future<List<XTarget>> loadMembers(PageRequest page) async {
     final res = await kernel.querySubTargetById(IDReqSubModel(
       page: PageRequest(
         limit: page.limit,
@@ -84,7 +95,17 @@ class BaseTarget extends ITarget {
       typeNames: [target.typeName],
       subTypeNames: memberTypes.map((e) => e.label).toList(),
     ));
-    return res.data!;
+    return res.data?.result??[];
+  }
+
+  @override
+  Future<List<ISpeciesItem>> loadSpeciesTree({bool reload = false,bool upTeam = false,}) async{
+    if(!reload && species.isNotEmpty){
+      return species;
+    }
+    species = await thing.loadSpeciesTree(id,target.belongId,this,upTeam);
+
+    return species;
   }
 
   @override
@@ -126,7 +147,7 @@ class BaseTarget extends ITarget {
   }
 
   Future<bool> pullSubTeam(XTarget team) async {
-    if (subTeamTypes.contains(team.typeName as TargetType)) {
+    if (subTeamTypes.contains(TargetType.getType(team.typeName))) {
       final res = await kernel.pullAnyToTeam(TeamPullModel(
         id: target.id,
         targetIds: [team.id],
@@ -151,7 +172,7 @@ class BaseTarget extends ITarget {
   }
 
   Future<ResultType<XTarget>> createSubTarget(TargetModel data) async {
-    if (createTargetType.contains(data.typeName as TargetType)) {
+    if (createTargetType.contains(TargetType.getType(data.typeName))) {
       final res = await createTarget(data);
       if (res.success) {
         await kernel.pullAnyToTeam(TeamPullModel(
@@ -216,17 +237,13 @@ class BaseTarget extends ITarget {
   /// @param typeName 对象
   /// @returns
   Future<bool> applyJoin(String destId, TargetType typeName) async {
-    if (joinTargetType.contains(typeName.name as TargetType)) {
-      final res = await kernel.applyJoinTeam(JoinTeamModel(
-        id: destId,
-        targetId: target.id,
-        teamType: typeName.name,
-        targetType: target.typeName,
-      ));
-      return res.success;
-    }
-    // logger.warn(unAuthorizedError);
-    return false;
+    final res = await kernel.applyJoinTeam(JoinTeamModel(
+      id: destId,
+      targetId: target.id,
+      teamType: typeName.name,
+      targetType: target.typeName,
+    ));
+    return res.success;
   }
 
   /// 取消加入组织/个人
@@ -285,7 +302,7 @@ class BaseTarget extends ITarget {
   /// @param target 目标对象
   /// @returns
   Future<ResultType<dynamic>> join(XTarget target) async {
-    if (joinTargetType.contains(target.typeName as TargetType)) {
+    if (joinTargetType.contains(TargetType.getType(target.typeName))) {
       return await kernel.pullAnyToTeam(TeamPullModel(
         id: target.id,
         teamTypes: [target.typeName],
@@ -305,7 +322,7 @@ class BaseTarget extends ITarget {
   /// @param teamRemark team备注
   /// @returns
   Future<ResultType<XTarget>> createTarget(TargetModel data) async {
-    if (createTargetType.contains(data.typeName as TargetType)) {
+    if (createTargetType.contains(TargetType.getType(data.typeName))) {
       return await kernel.createTarget(data);
     } else {
       return ResultType<XTarget>(
@@ -382,7 +399,7 @@ class BaseTarget extends ITarget {
       ),
     ));
     if (res.success) {
-      authorityTree = Authority(res.data!, id);
+      authorityTree = Authority(res.data!, space, userId);
     }
     return authorityTree;
   }
@@ -449,4 +466,24 @@ class BaseTarget extends ITarget {
   Future<bool> delete() async {
     return false;
   }
+
+  @override
+  List<IChat> allChats() {
+    return [chat];
+  }
+
+
+  @override
+  Future<List<XFlowDefine>> loadWork({PageRequest? page}) async{
+    var result = await kernel.queryDefine(QueryDefineReq(speciesId: '0',spaceId:id,page: page));
+    return result.data?.result??[];
+  }
+
+
+  @override
+  Future<FlowNode?> loadWorkNode(String id) async{
+    var result = await kernel.queryNodes(IdSpaceReq(id: id, spaceId: ''));
+    return result.data;
+  }
+
 }

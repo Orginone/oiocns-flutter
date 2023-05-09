@@ -12,6 +12,8 @@ abstract class BaseController<S extends BaseGetState> extends GetxController{
 
   late Logger log;
 
+  String? tag;
+
   BaseController();
 
   @override

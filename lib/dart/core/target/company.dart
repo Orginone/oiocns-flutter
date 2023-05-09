@@ -1,11 +1,16 @@
 /*
  * 公司的元操作
  */
+import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/market/model.dart';
+import 'package:orginone/dart/core/store/filesys.dart';
+import 'package:orginone/dart/core/store/ifilesys.dart';
+import 'package:orginone/dart/core/target/chat/chat.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
 import 'package:orginone/dart/core/target/station.dart';
 import 'package:orginone/dart/core/target/working.dart';
-import 'package:orginone/util/authority.dart';
+import 'package:orginone/dart/core/thing/dict.dart';
 
 import '../../base/common/uint.dart';
 import '../../base/schema.dart';
@@ -21,10 +26,44 @@ import 'mbase.dart';
 class Company extends MarketTarget implements ICompany {
   late List<IStation> stations;
   late List<TargetType> departmentTypes;
+
+  @override
   IAuthority? spaceAuthorityTree;
 
-  Company(XTarget target, String userId) : super(target) {
-    userId = userId;
+  @override
+  late List<IChat> memberChats;
+
+  @override
+  late IFileSystemItem root;
+
+  @override
+  late List<ICohort> cohorts;
+
+  @override
+  late List<IDepartment> departments;
+
+  @override
+  late List<IGroup> joinedGroup;
+
+  @override
+  late List<IWorking> workings;
+
+  @override
+  set spaceData(SpaceType _) {}
+
+  @override
+  late List<IMarket> joinedMarkets;
+
+  @override
+  late List<IProduct> ownProducts;
+
+  @override
+  late List<IMarket> publicMarkets;
+
+  @override
+  late Dict dict;
+
+  Company(XTarget target, String userId) : super(target, null, userId) {
     departmentTypes = targetDepartmentTypes;
     subTeamTypes = [...departmentTypes, TargetType.working];
     extendTargetType = [...subTeamTypes, ...companyTypes];
@@ -35,8 +74,22 @@ class Company extends MarketTarget implements ICompany {
       TargetType.group,
       TargetType.cohort,
     ];
+    dict = Dict(target.id);
+    stations = [];
+    workings = [];
+    joinedGroup = [];
+    departments = [];
+    cohorts = [];
     searchTargetType = [TargetType.person, TargetType.group];
+    memberChats = <IChat>[].obs;
+    members = <XTarget>[].obs;
+    root = getFileSysItemRoot(target.id);
+    joinedGroup = [];
+    var labels = [teamName, "${target.typeName}群"];
+    chat = createChat(userId, id, target, labels);
+    space = this;
   }
+
   @override
   List<ITarget> get subTeam {
     return [...departments, ...workings];
@@ -56,9 +109,32 @@ class Company extends MarketTarget implements ICompany {
           limit: Constants.maxUint16,
         )));
     if (res.success) {
-      authorityTree = Authority(res.data!, id);
+      authorityTree = Authority(res.data!, this, userId);
     }
     return authorityTree;
+  }
+
+  @override
+  Future<List<XTarget>> loadMembers(PageRequest page) async {
+    if (members.isEmpty) {
+      var data = await super.loadMembers(page);
+      if (data.isEmpty) {
+        members = [];
+        memberChats = <IChat>[].obs;
+        for (var item in data) {
+          members.add(item);
+          memberChats.add(
+            createChat(userId, id, item, [teamName, '同事']),
+          );
+        }
+      }
+    }
+    return members
+        .where(
+            (a) => a.code.contains(page.filter) || a.name.contains(page.filter))
+        .skip(page.offset)
+        .take(page.limit)
+        .toList();
   }
 
   @override
@@ -81,6 +157,8 @@ class Company extends MarketTarget implements ICompany {
       cohorts = res.data!.result
               ?.map((a) => Cohort(
                   a,
+                  this,
+                  userId,
                   () =>
                       {cohorts = cohorts.where((i) => i.id != a.id).toList()}))
               .toList() ??
@@ -91,7 +169,7 @@ class Company extends MarketTarget implements ICompany {
 
   @override
   Future<ITarget?> create(TargetModel data) async {
-    switch (data.typeName as TargetType) {
+    switch (TargetType.getType(data.typeName)) {
       case TargetType.group:
         return _createGroup(data);
       case TargetType.working:
@@ -135,6 +213,8 @@ class Company extends MarketTarget implements ICompany {
       if (res.success) {
         final group = Group(
             res.data!,
+            this,
+            userId,
             () => {
                   joinedGroup = joinedGroup
                       .where((item) => item.id != res.data!.id)
@@ -162,6 +242,8 @@ class Company extends MarketTarget implements ICompany {
     if (res.success) {
       final department = Department(
           res.data!,
+          this,
+          userId,
           () => {
                 departments = departments
                     .where((item) => item.id != res.data!.id)
@@ -177,11 +259,13 @@ class Company extends MarketTarget implements ICompany {
     data.belongId = target.id;
     data.teamCode = data.teamCode == "" ? data.code : data.teamCode;
     data.teamName = data.teamName == "" ? data.name : data.teamName;
-    data.typeName = TargetType.station.name;
+    data.typeName = TargetType.station.label;
     final res = await createSubTarget(data);
     if (res.success) {
       final station = Station(
           res.data!,
+          this,
+          userId,
           () => {
                 stations =
                     stations.where((item) => item.id != res.data!.id).toList()
@@ -196,11 +280,13 @@ class Company extends MarketTarget implements ICompany {
     data.belongId = target.id;
     data.teamCode = data.teamCode == "" ? data.code : data.teamCode;
     data.teamName = data.teamName == "" ? data.name : data.teamName;
-    data.typeName = TargetType.working.name;
+    data.typeName = TargetType.working.label;
     final res = await createSubTarget(data);
     if (res.success) {
       final working = Working(
           res.data!,
+          this,
+          userId,
           () => {
                 workings =
                     workings.where((item) => item.id != res.data!.id).toList()
@@ -213,13 +299,15 @@ class Company extends MarketTarget implements ICompany {
 
   Future<ICohort?> _createCohort(TargetModel data) async {
     data.belongId = target.id;
-    data.typeName = TargetType.cohort.name;
+    data.typeName = TargetType.cohort.label;
     data.teamCode = data.code;
     data.teamName = data.name;
     final res = await createTarget(data);
     if (res.success && res.data != null) {
       final cohort = Cohort(
           res.data!,
+          this,
+          userId,
           () =>
               {cohorts = cohorts.where((i) => i.id != res.data!.id).toList()});
       cohorts.add(cohort);
@@ -230,10 +318,32 @@ class Company extends MarketTarget implements ICompany {
   }
 
   @override
+  List<IChat> allChats() {
+    var chats = [chat];
+    for (var item in departments) {
+      chats.addAll(item.allChats());
+    }
+    for (var item in workings) {
+      chats.addAll(item.allChats());
+    }
+    for (var item in stations) {
+      chats.addAll(item.allChats());
+    }
+    for (var item in cohorts) {
+      chats.addAll(item.allChats());
+    }
+    if (authorityTree != null) {
+      chats.addAll(authorityTree!.allChats());
+    }
+    chats.addAll(memberChats);
+    return chats;
+  }
+
+  @override
   Future<bool> deleteCohort(String id) async {
     final res = await kernel.deleteTarget(IdReqModel(
       id: id,
-      typeName: TargetType.cohort.name,
+      typeName: TargetType.cohort.label,
       belongId: id,
     ));
     if (res.success) {
@@ -336,6 +446,8 @@ class Company extends MarketTarget implements ICompany {
       departments = res.data!.result
               ?.map((a) => Department(
                   a,
+                  this,
+                  userId,
                   () => {
                         departments = departments
                             .where((item) => item.id != a.id)
@@ -357,6 +469,8 @@ class Company extends MarketTarget implements ICompany {
       stations = res.data!.result
               ?.map((a) => Station(
                   a,
+                  this,
+                  userId,
                   () => {
                         stations =
                             stations.where((item) => item.id != a.id).toList()
@@ -377,6 +491,8 @@ class Company extends MarketTarget implements ICompany {
       workings = res.data!.result
               ?.map((a) => Working(
                   a,
+                  this,
+                  userId,
                   () => {
                         workings =
                             workings.where((item) => item.id != a.id).toList()
@@ -397,6 +513,8 @@ class Company extends MarketTarget implements ICompany {
       joinedGroup = res.result
               ?.map((a) => Group(
                   a,
+                  this,
+                  userId,
                   () => {
                         joinedGroup = joinedGroup
                             .where((item) => item.id != a.id)
@@ -461,29 +579,15 @@ class Company extends MarketTarget implements ICompany {
   }
 
   @override
-  late List<ICohort> cohorts;
-
-  @override
-  late List<IDepartment> departments;
-
-  @override
-  late List<IGroup> joinedGroup;
-
-  @override
-  late String userId;
-
-  @override
-  late List<IWorking> workings;
-
-  @override
-  set spaceData(SpaceType _) {}
-
-  @override
-  late List<IMarket> joinedMarkets;
-
-  @override
-  late List<IProduct> ownProducts;
-
-  @override
-  late List<IMarket> publicMarkets;
+  Future<void> deepLoad({bool reload = false}) async {
+    await loadSubTeam(reload: reload);
+    await getJoinedGroups(reload: reload);
+    for (var item in joinedGroup) {
+      await item.deepLoad(reload: reload);
+    }
+    for (var item in departments) {
+      await item.deepLoad(reload: reload);
+    }
+    await loadSpaceAuthorityTree();
+  }
 }

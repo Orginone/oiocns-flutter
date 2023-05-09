@@ -21,7 +21,8 @@ class DepartmentManagement {
   List<ITarget> get departments => _departments;
 
   Future<void> initDepartment() async {
-    var list = await _setting.company?.loadSubTeam(reload: true)??[];
+    // var list = await _setting.company?.loadSubTeam(reload: true)??[];
+    var list = <IDepartment>[];
     _departments.clear();
     if(list.isNotEmpty){
       _departments.addAll(list);
@@ -34,6 +35,7 @@ class DepartmentManagement {
       print('获取分组分类数据失败');
     }
   }
+
 
   ITarget? findITargetByIdOrName({String? id, String? name}) {
     var list = getAllDepartment(_departments);
@@ -83,7 +85,6 @@ class DepartmentManagement {
     return list;
   }
 
-
   Future<void> loopDepartment(List<ITarget> department) async {
     for (var element in department) {
       element.subTeam = await element.loadSubTeam(reload: true);
@@ -95,11 +96,9 @@ class DepartmentManagement {
 
   Future<void> loopMembers(List<ITarget> department) async {
     for (var element in department) {
-      XTargetArray members = await element
+      var members = await element
           .loadMembers(PageRequest(offset: 0, limit: 20000, filter: ""));
-      if (members.result != null) {
-        element.members = members.result!;
-      }
+      element.members = members;
 
       if (element.subTeam.isNotEmpty) {
         await loopMembers(element.subTeam);
@@ -108,7 +107,8 @@ class DepartmentManagement {
   }
 
   String getCurrentCompanyName() {
-    return _setting.company?.name ?? "";
+    // return _setting.company?.name ?? "";
+    return "";
   }
 
   ITarget? get currentDepartment => _getCurrentDepartment(_departments);

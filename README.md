@@ -12,15 +12,19 @@
 ├── macos                               // macos 原生实现
 ├── windows                             // windows 原生实现
 └── lib                                 // flutter 实现
-    ├── components                      // 通用组件
+    ├── widget                          // 通用组件
     ├── config                          // 配置
     ├── dart                            // 核心
     ├── pages                           // 页面
     	├── chat                        // 沟通
-        ├── market                      // 市场
         ├── ohter                       // 其他页面
+        ├── home                        // 主页
         ├── setting                     // 设置
         ├── work                        // 办事
+        ├── login                       // 登录
+        ├── shop                        // 商店
+        ├── work                        // 办事
+        ├── ware_house                  // 仓库
     ├── util                            // 工具库
     ├── main.dart                       // 入口
     ├── routers.dart                    // 路由

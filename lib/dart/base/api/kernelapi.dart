@@ -9,6 +9,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/model/user_model.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/http_util.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 class KernelApi {
   final Logger log = Logger("KernelApi");
@@ -26,6 +27,17 @@ class KernelApi {
         _requester = request,
         _anystore = AnyStore.getInstance() {
     _storeHub.on("Receive", receive);
+    _storeHub.onConnected(() {
+      if (_anystore.accessToken.isNotEmpty) {
+        var args = [_anystore.accessToken];
+        _storeHub.invoke("TokenAuth", args: args).then((value) {
+          log.info(value);
+        }).catchError((err) {
+          log.info(err);
+        });
+      }
+    });
+    _storeHub.start();
   }
 
   /// 获取单例
@@ -46,11 +58,6 @@ class KernelApi {
   /// @returns {boolean} 在线状态
   bool get isOnline {
     return _storeHub.isConnected;
-  }
-
-  start() async {
-    await _anystore.start();
-    _storeHub.start();
   }
 
   stop() async {
@@ -115,7 +122,8 @@ class KernelApi {
     }
     var res = ResultType.fromJson(raw);
     if (res.success) {
-      _anystore.updateToken(res.data ?? "");
+      HiveUtils.putUser(UserModel.fromJson(raw['data']));
+      _anystore.updateToken(res.data["accessToken"]);
     }
     return res;
   }
@@ -156,7 +164,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'CreateOperation',
-        params: params,
+        params: params.toJson(),
       ),
       XOperation.fromJson,
     );
@@ -201,7 +209,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'CreateDictItem',
-        params: params,
+        params: params.toJson(),
       ),
       XDictItem.fromJson,
     );
@@ -229,7 +237,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'DeleteOperation',
-        params: params,
+        params: params.toJson(),
       ),
       (item) => item as bool,
     );
@@ -293,6 +301,86 @@ class KernelApi {
     );
   }
 
+  /*
+   * 创建元属性
+   * @param {model.PropertyModel} params 请求参数
+   * @returns {model.ResultType<schema.XProperty>} 请求结果
+   */
+  Future<ResultType<XProperty>> createProperty(PropertyModel params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'CreateProperty',
+        params: params.toJson(),
+      ),
+      XProperty.fromJson,
+    );
+  }
+
+  /*
+   * 更新元属性
+   * @param {model.PropertyModel} params 请求参数
+   * @returns {model.ResultType<schema.XProperty>} 请求结果
+   */
+  Future<ResultType<XProperty>> updateProperty(PropertyModel params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'UpdateProperty',
+        params: params.toJson(),
+      ),
+      XProperty.fromJson,
+    );
+  }
+
+  /*
+   * 更新元属性
+   * @param {model.PropertyModel} params 请求参数
+   * @returns {model.ResultType<schema.XProperty>} 请求结果
+   */
+  Future<ResultType<bool>> deleteProperty(IdReq params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'DeleteProperty',
+        params: params.toJson(),
+      ),
+      (item) => item as bool,
+    );
+  }
+
+  /*
+   * 根据id查询分类
+   * @param {model.IdBelongReq} params 请求参数
+   * @returns {model.ResultType<schema.XPropertyArray>} 请求结果
+   */
+  Future<ResultType<XPropertyArray>> queryPropertys(IdBelongReq params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'QueryPropertys',
+        params: params.toJson(),
+      ),
+      XPropertyArray.fromJson,
+    );
+  }
+
+  /*
+   * 根据id查询分类
+   * @param {model.IdBelongReq} params 请求参数
+   * @returns {model.ResultType<schema.XDictArray>} 请求结果
+   */
+  Future<ResultType<XDictArray>> queryDict(IdBelongReq params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'QueryDict',
+        params: params.toJson(),
+      ),
+      XDictArray.fromJson,
+    );
+  }
+
   /// 更新字典项
   /// @param {DictItemModel} params 请求参数
   /// @returns {ResultType<XDictItem>} 请求结果
@@ -301,7 +389,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'QueryDictItems',
-        params: params,
+        params: params.toJson(),
       ),
       XDictItemArray.fromJson,
     );
@@ -441,7 +529,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'UpdateOperation',
-        params: params,
+        params: params.toJson(),
       ),
       XOperation.fromJson,
     );
@@ -520,14 +608,15 @@ class KernelApi {
   /// 查询分类树
   /// @param {IDBelongReq} params 请求参数
   /// @returns {ResultType<XSpecies>} 请求结果
-  Future<ResultType<XSpecies>> querySpeciesTree(IDBelongReq params) async {
+  Future<ResultType<XSpeciesArray>> querySpeciesTree(
+      GetSpeciesModel params) async {
     return await request(
       ReqestType(
         module: 'thing',
         action: 'QuerySpeciesTree',
-        params: params,
+        params: params.toJson(),
       ),
-      XSpecies.fromJson,
+      XSpeciesArray.fromJson,
     );
   }
 
@@ -556,7 +645,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'QuerySpeciesAttrs',
-        params: params,
+        params: params.toJson(),
       ),
       XAttributeArray.fromJson,
     );
@@ -571,7 +660,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'QuerySpeciesOperation',
-        params: params,
+        params: params.toJson(),
       ),
       XOperationArray.fromJson,
     );
@@ -645,7 +734,7 @@ class KernelApi {
       ReqestType(
         module: 'target',
         action: 'CreateAuthority',
-        params: params,
+        params: params.toJson(),
       ),
       XAuthority.fromJson,
     );
@@ -907,15 +996,21 @@ class KernelApi {
   /// 重置密码
   /// @param {IdReqModel} params 请求参数
   /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> resetPassword(ResetPwdModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'ResetPassword',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
+  Future<ResultType<bool>> resetPassword(
+    String userName,
+    String password,
+    String privateKey,
+  ) async {
+    var req = {
+      "userName": userName,
+      "password": password,
+      "privateKey": privateKey
+    };
+    if (_storeHub.isConnected) {
+      return await _storeHub.invoke('ResetPassword', args: [req]);
+    } else {
+      return await _restRequest('resetpassword', req);
+    }
   }
 
   /*
@@ -1066,7 +1161,7 @@ class KernelApi {
       ReqestType(
         module: 'target',
         action: 'QueryTargetById',
-        params: params,
+        params: params.toJson(),
       ),
       XTargetArray.fromJson,
     );
@@ -2301,7 +2396,7 @@ class KernelApi {
       ReqestType(
         module: 'flow',
         action: 'DeleteDefine',
-        params: params,
+        params: params.toJson(),
       ),
       (item) => item as bool,
     );
@@ -2361,7 +2456,7 @@ class KernelApi {
       ReqestType(
         module: 'thing',
         action: 'QueryOperationItems',
-        params: params,
+        params: params.toJson(),
       ),
       XOperationItemArray.fromJson,
     );
@@ -2385,28 +2480,43 @@ class KernelApi {
   /// 查询发起的流程实例
   /// @param {FlowReq} params 请求参数
   /// @returns {ResultType<XFlowInstanceArray>} 请求结果
-  Future<ResultType<XFlowInstanceArray>> queryInstance(FlowReq params) async {
+  Future<ResultType<XFlowInstanceArray>> queryInstanceByApply(
+      FlowReq params) async {
     return await request(
       ReqestType(
         module: 'flow',
-        action: 'QueryInstance',
+        action: 'QueryInstanceByApply',
         params: params.toJson(),
       ),
       XFlowInstanceArray.fromJson,
     );
   }
 
+  /// 根据Id查询流程实例
+  /// @param {FlowReq} params 请求参数
+  /// @returns {ResultType<XFlowInstanceArray>} 请求结果
+  Future<ResultType<XFlowInstance>> queryInstanceById(IdReq params) async {
+    return await request(
+      ReqestType(
+        module: 'flow',
+        action: 'QueryInstanceById',
+        params: params.toJson(),
+      ),
+      XFlowInstance.fromJson,
+    );
+  }
+
   /// 查询待审批任务、待审阅抄送
   /// @param {IdReq} params 请求参数
   /// @returns {ResultType<XFlowTaskArray>} 请求结果
-  Future<ResultType<XFlowTaskArray>> queryApproveTask(IdReq params) async {
+  Future<ResultType<XFlowTaskHistoryArray>> queryApproveTask() async {
     return await request(
       ReqestType(
         module: 'flow',
         action: 'QueryApproveTask',
-        params: params,
+        params: {},
       ),
-      XFlowTaskArray.fromJson,
+      XFlowTaskHistoryArray.fromJson,
     );
   }
 
@@ -2429,7 +2539,7 @@ class KernelApi {
   /// @param {IdSpaceReq} params 请求参数
   /// @returns {ResultType<XFlowTaskHistoryArray>} 请求结果
   Future<ResultType<XFlowTaskHistoryArray>> queryRecord(
-      IdSpaceReq params) async {
+      RecordSpaceReq params) async {
     return await request(
       ReqestType(
         module: 'flow',
@@ -2582,13 +2692,18 @@ class KernelApi {
   }
 
   Future<ResultType<T>> request<T>(
-      ReqestType req, T Function(Map<String, dynamic>)? cvt) async {
+    ReqestType req,
+    T Function(Map<String, dynamic>)? cvt,
+  ) async {
     dynamic raw;
     if (_storeHub.isConnected) {
       log.info("====> req:${req.toJson()}");
       raw = await _storeHub.invoke('Request', args: [req]);
     } else {
       raw = await _restRequest('Request', req);
+    }
+    if(!raw['success']){
+      ToastUtils.showMsg(msg: raw['msg']);
     }
     if (cvt != null) {
       return ResultType.fromJsonSerialize(raw, cvt);

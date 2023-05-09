@@ -13,6 +13,8 @@
 
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/util/toast_utils.dart';
 import '../../base/schema.dart';
 import 'dict.dart';
 import 'idict.dart';
@@ -24,67 +26,54 @@ import 'ispecies.dart';
 class SpeciesItem extends ISpeciesItem {
   late bool isRoot;
   KernelApi kernel = KernelApi.getInstance();
-  SpeciesItem(XSpecies target, ISpeciesItem? parent) {
+  SpeciesItem(XSpecies target, ISpeciesItem? parent,String spaceId,ITarget team) {
     children = [];
     this.target = target;
     this.parent = parent;
     id = target.id;
     name = target.name;
+    this.spaceId = spaceId;
     attrs = [];
+    operation = [];
     isRoot = parent == null;
     isSelected = false;
+    this.team = team;
     if (target.nodes!.isNotEmpty) {
       for (var item in target.nodes!) {
-        children.add(SpeciesItem(item, this));
+        children.add(SpeciesItem(item, this,spaceId,team));
       }
     }
     belongInfo = TargetShare(name: '奥集能平台', typeName: '平台');
   }
 
   @override
-  Future<XAttributeArray> loadAttrs(String id, bool recursionOrg,
-      bool recursionSpecies, PageRequest page) async {
+  Future<List<XAttribute>> loadAttrs(String id,{bool reload = true}) async {
+    if(!reload && attrs.isNotEmpty){
+    return attrs;
+    }
     final res = await kernel.querySpeciesAttrs(IdSpeciesReq(
         id: this.id,
         spaceId: id,
-        recursionOrg: recursionOrg,
-        recursionSpecies: recursionSpecies,
+        recursionOrg: true,
+        recursionSpecies: true,
         page: PageRequest(
-          offset: page.offset,
-          limit: page.limit,
+          offset: 0,
+          limit: 100000,
           filter: '',
         )));
-    attrs = res.data!.result??[];
-    return res.data!;
+    attrs = res.data?.result??[];
+    return res.data?.result??[];
   }
 
-  @override
-  Future<XDictArray?> loadDicts(
-    String id,
-    bool recursionOrg,
-    bool recursionSpecies,
-    PageRequest page,
-  ) async {
-    final res = await kernel.querySpeciesDict(
-      IdSpeciesReq(
-        id: this.id,
-        spaceId: id,
-        recursionOrg: recursionOrg,
-        recursionSpecies: recursionSpecies,
-        page: PageRequest(
-          offset: page.offset,
-          limit: page.limit,
-          filter: '',
-        ),
-      ),
-    );
-    dict = res.data!.result??[];
-    return res.data;
-  }
 
   @override
-  Future<XOperationArray> loadOperations(String id, bool filterAuth,
-      bool recursionOrg, bool recursionSpecies, PageRequest page) async {
+  Future<List<XOperation>> loadOperations(String id, bool filterAuth,
+      bool recursionOrg, bool recursionSpecies, PageRequest page,{bool reload = false}) async {
+
+    if(!reload && operation.isNotEmpty){
+      return operation;
+    }
+
     final res = await kernel.querySpeciesOperation(IdOperationReq(
         id: this.id,
         spaceId: id,
@@ -96,7 +85,8 @@ class SpeciesItem extends ISpeciesItem {
           limit: page.limit,
           filter: '',
         )));
-    return res.data!;
+    operation = res.data?.result??[];
+    return res.data?.result??[];
   }
 
   @override
@@ -122,27 +112,11 @@ class SpeciesItem extends ISpeciesItem {
     data.parentId = id;
     final res = await kernel.createSpecies(data);
     if (res.success && res.data != null) {
-      final newItem = SpeciesItem(res.data!, this);
+      final newItem = SpeciesItem(res.data!, this,spaceId,team);
       children.add(newItem);
       return newItem;
     }
     return null;
-  }
-
-  @override
-  Future<IDict?> createDict(DictModel data) async {
-    data.speciesId = id;
-    final res = await kernel.createDict(data);
-    if (res.success && res.data != null) {
-      return Dict(res.data!);
-    }
-    return null;
-  }
-
-  @override
-  Future<bool> updateDict(DictModel data) async {
-    final res = await kernel.updateDict(data);
-    return res.success;
   }
 
   @override
@@ -210,6 +184,9 @@ class SpeciesItem extends ISpeciesItem {
   @override
   Future<bool> deleteOperation(String id) async {
     final res = await kernel.deleteOperation(IdReq(id: id));
+    if(res.success){
+      operation.removeWhere((element) => element.id == id);
+    }
     return res.success;
   }
 
@@ -250,4 +227,34 @@ class SpeciesItem extends ISpeciesItem {
     ));
     return res.data!;
   }
+
+  @override
+  Future<bool> deleteWork(String id) async{
+    var result = await kernel.deleteDefine(IdReq(id: id));
+    return result.data??false;
+  }
+
+  @override
+  Future<List<XFlowDefine>> loadWork({PageRequest? page}) async{
+    var result = await kernel.queryDefine(QueryDefineReq(speciesId: id,spaceId: team.id,page: page));
+    return result.data?.result??[];
+  }
+
+  @override
+  Future<XFlowDefine?> publishWork(CreateDefineReq data) async{
+    data.belongId = team.space?.id;
+    data.speciesId = id;
+    var result = await kernel.publishDefine(data);
+    return result.data;
+  }
+
+  @override
+  Future<FlowNode?> loadWorkNode(String id) async{
+    var result = await kernel.queryNodes(IdSpaceReq(id: id, spaceId: ''));
+    return result.data;
+  }
+
+  @override
+  // TODO: implement belongId
+  String get belongId => target.belongId;
 }

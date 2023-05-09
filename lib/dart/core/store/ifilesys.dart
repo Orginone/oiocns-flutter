@@ -29,28 +29,31 @@ class TaskModel {
 /// 文件系统项接口
 abstract class IFileSystemItem {
   /// 主键,唯一
-  String? key;
+  late String fullKey;
+
+  /// 路径
+  late String key;
 
   /// 名称
-  String? name;
+  late String name;
 
   /// 是否为根路径
-  bool? isRoot;
+  late bool isRoot;
 
   /// 文件系统项对应的目标
-  FileItemModel? target;
+  late FileItemModel target;
 
   /// 上级文件系统项
-  IObjectItem? parent;
+  late IObjectItem? parent;
 
   /// 下级文件系统项数组
-  List<IFileSystemItem>? children;
+  late List<IFileSystemItem> children;
 
   /// 下级文件系统数据
-  List<FileItemModel>? childrenData;
+  late List<FileItemModel> childrenData;
 
   /// 上传任务列表
-  List<TaskModel>? taskList;
+  late List<TaskModel> taskList;
 
   /// 分享信息
   FileItemShare shareInfo();

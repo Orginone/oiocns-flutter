@@ -1,159 +1,262 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
+import 'package:orginone/dart/core/target/company.dart';
 import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/thing/ispecies.dart';
 import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/pages/setting/config.dart';
+import 'package:orginone/pages/setting/dialog.dart';
+import 'package:orginone/pages/setting/home/setting/state.dart';
+import 'package:orginone/pages/setting/network.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/department_management.dart';
-import 'package:orginone/util/setting_management.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
-class RelationGroupController extends BaseController<RelationGroupState> {
+class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupState> {
   final RelationGroupState state = RelationGroupState();
 
-  void removeGroup(int index) {
-    state.selectedGroup.removeRange(index + 1, state.selectedGroup.length);
 
-    if(state.companySpaceEnum!=null){
-      if(state.selectedGroup.last == state.companySpaceEnum!.label){
-        switch (state.companySpaceEnum) {
-          case CompanySpaceEnum.innerAgency:
-            state.groupData.value = DepartmentManagement().departments;
-            break;
-          case CompanySpaceEnum.outAgency:
-            state.groupData.value = SettingManagement().outAgencyGroup;
-            break;
-          case CompanySpaceEnum.stationSetting:
-            state.groupData.value = SettingManagement().stations;
-            break;
-          case CompanySpaceEnum.companyCohort:
-            state.groupData.value = SettingManagement().cohorts;
-            break;
-        }
-      }else{
-        switch(state.companySpaceEnum){
-          case CompanySpaceEnum.innerAgency:
-            var list = DepartmentManagement().getAllDepartment(DepartmentManagement().departments);
-            try{
-              state.groupData.value = list.firstWhere((element) => element.teamName == state.selectedGroup.last).subTeam;
-            }catch(e){
-              state.groupData.value = null;
-            }
-            break;
-          case CompanySpaceEnum.outAgency:
-            var list = SettingManagement().getAllOutAgency(SettingManagement().outAgencyGroup);
-            try{
-              state.groupData.value = list.firstWhere((element) => element.teamName == state.selectedGroup.last).subGroup;
-            }catch(e){
-              state.groupData.value = null;
-            }
-            break;
-        }
-      }
-    }
-    if(state.standardEnum!=null){
-      if(state.selectedGroup.last == state.standardEnum!.label){
-        switch (state.standardEnum) {
-          case StandardEnum.permissionCriteria:
-            state.groupData.value = SettingManagement().authority;
-            break;
-          case StandardEnum.permissionCriteria:
-            state.groupData.value = CommonTreeManagement().species;
-            break;
-        }
-      }else{
-        switch(state.standardEnum){
-          case StandardEnum.permissionCriteria:
-            var list = SettingManagement().getAllAuthority(SettingManagement().authority);
-            try{
-              state.groupData.value = list.firstWhere((element) => element.name == state.selectedGroup.last).children;
-            }catch(e){
-              state.groupData.value = null;
-            }
-            break;
-          case StandardEnum.classCriteria:
-            var list = CommonTreeManagement().getAllSpecies([CommonTreeManagement().species!]);
-            try{
-              state.groupData.value = list.firstWhere((element) => element.name == state.selectedGroup.last).children;
-              print('sss');
-            }catch(e){
-              state.groupData.value = null;
-            }
-            break;
-        }
-      }
-    }
-    state.selectedGroup.refresh();
-  }
-
-  void back() {
-    Get.back();
-  }
-
-  void nextLv(
-      {ITarget? innerAgency,
-        IGroup? outAgency,
-        IStation? station,
-        ICohort? cohort,
-        IAuthority? iAuthority,SpeciesItem? species}) {
-    if(innerAgency!=null){
-      state.selectedGroup.add(innerAgency.teamName);
-      state.groupData.value = innerAgency.subTeam;
-    }
-    if(outAgency!=null){
-      state.selectedGroup.add(outAgency.teamName);
-      state.groupData.value = outAgency.subGroup;
-    }
-    if(station!=null){
-      state.selectedGroup.add(station.teamName);
-      state.groupData.value = station.subTeam;
-    }
-    if(cohort!=null){
-      state.selectedGroup.add(cohort.teamName);
-      state.groupData.value = cohort.subTeam;
-    }
-    if(iAuthority!=null){
-      state.selectedGroup.add(iAuthority.name);
-      state.groupData.value = iAuthority.children;
-    }
-    if(species!=null){
-      state.selectedGroup.add(species.name);
-      state.groupData.value = species.children;
+  @override
+  void onReady() async{
+    // TODO: implement onReady
+    super.onReady();
+    if(state.model.value!.children.isEmpty){
+      await initData();
     }
   }
 
-  void onTap({ITarget? innerAgency,
-    IGroup? outAgency,
-    IStation? station,
-    ICohort? cohort,
-    IAuthority? iAuthority,SpeciesItem? species}) {
-    if(state.companySpaceEnum!=null){
-      switch(state.companySpaceEnum){
-        case CompanySpaceEnum.innerAgency:
-          Get.toNamed(Routers.departmentInfo,arguments: {'depart':innerAgency});
+
+  Future<void> initData() async{
+    var spaceEnum = state.model.value!.spaceEnum;
+    var standardEnum = state.model.value!.standardEnum;
+    if(!state.isStandard){
+      switch (spaceEnum) {
+        case SpaceEnum.innerAgency:
+          await SettingNetWork.initDepartment(state.model.value!);
           break;
-        case CompanySpaceEnum.outAgency:
-          Get.toNamed(Routers.outAgencyInfo,arguments: {'group':outAgency});
+        case SpaceEnum.outAgency:
+           await SettingNetWork.initGroup(state.model.value!);
           break;
-        case CompanySpaceEnum.stationSetting:
-          Get.toNamed(Routers.stationInfo,arguments: {'station':station});
+        case SpaceEnum.stationSetting:
+        await SettingNetWork.initStations(state.model.value!);
           break;
-        case CompanySpaceEnum.companyCohort:
-          Get.toNamed(Routers.cohortInfo,arguments: {'cohort':cohort});
+        case SpaceEnum.personGroup:
+        case SpaceEnum.externalCohort:
+           await SettingNetWork.initCohorts(state.model.value!);
           break;
       }
-    }else if(state.standardEnum!=null){
-      switch(state.standardEnum){
-        case StandardEnum.permissionCriteria:
-          Get.toNamed(Routers.permissionInfo,arguments: {"authority":iAuthority});
+    } else {
+      switch(standardEnum){
+        case StandardEnum.permission:
+         await SettingNetWork.initAuthority(state.model.value!);
           break;
         case StandardEnum.classCriteria:
-          Get.toNamed(Routers.classificationInfo,arguments: {"species":species});
+          await SettingNetWork.initSpecies(state.model.value!);
+          if(CommonTreeManagement().species!=null){
+            loopSpecies([CommonTreeManagement().species!],state.model.value!);
+          }
+          break;
+        case StandardEnum.dict:
+          await SettingNetWork.initDict(state.model.value!);
+          break;
+        case StandardEnum.attribute:
+          // TODO: Handle this case.
           break;
       }
+    }
+    state.model.refresh();
+  }
+
+  void loopSpecies(List<ISpeciesItem> species,SettingNavModel model){
+    model.children = [];
+    for (var value in species) {
+      var child = SettingNavModel(
+          space: model.space,
+          spaceEnum: model.spaceEnum,
+          source: value,
+          standardEnum: model.standardEnum,
+          name: value.name);
+      if(value.children.isNotEmpty){
+        loopSpecies(value.children,child);
+      }
+      model.children.add(child);
+    }
+  }
+
+  void nextLv(SettingNavModel model) {
+    if(model.children.isNotEmpty){
+      Get.toNamed(Routers.relationGroup, arguments: {
+        "data":model,
+      },preventDuplicates: false);
+    }else{
+      onTap(model);
+    }
+  }
+
+
+  void onTap(SettingNavModel model) {
+    var spaceEnum = state.model.value!.spaceEnum;
+    var standardEnum = state.model.value!.standardEnum;
+    if(!state.isStandard){
+      switch(spaceEnum){
+        case SpaceEnum.innerAgency:
+          Get.toNamed(Routers.departmentInfo,arguments: {'depart':model.source});
+          break;
+        case SpaceEnum.outAgency:
+          Get.toNamed(Routers.outAgencyInfo,arguments: {'group':model.source});
+          break;
+        case SpaceEnum.stationSetting:
+          Get.toNamed(Routers.stationInfo,arguments: {'station':model.source});
+          break;
+        case SpaceEnum.personGroup:
+        case SpaceEnum.externalCohort:
+          Get.toNamed(Routers.cohortInfo,arguments: {'cohort':model.source});
+          break;
+      }
+    }else{
+      switch (standardEnum) {
+        case StandardEnum.permission:
+          Get.toNamed(Routers.permissionInfo,
+              arguments: {"authority": model.source});
+          break;
+        case StandardEnum.classCriteria:
+          Get.toNamed(Routers.classificationInfo,
+              arguments: {"data": model});
+          break;
+        case StandardEnum.dict:
+          Get.toNamed(Routers.dictInfo,
+              arguments: {"data": model});
+          break;
+        case StandardEnum.attribute:
+          Get.toNamed(Routers.dictInfo,
+              arguments: {"data": model});
+          break;
+      }
+    }
+  }
+
+  void createGroup(dynamic item){
+    showCreateOrganizationDialog(context, item.subTeamTypes,
+        callBack: (String name, String code, String nickName,
+            String identify, String remark, TargetType type) async {
+          var model = TargetModel(
+              name: nickName,
+              code: code,
+              typeName: type.label,
+              teamName: name,
+              teamCode: code,
+              teamRemark: remark,
+              avatar: '',
+              belongId: '');
+          await item.create(model);
+        });
+  }
+
+
+  void editGroup(dynamic item) {
+    showCreateOrganizationDialog(context, item.subTeamTypes,
+        callBack: (String name, String code, String nickName,
+            String identify, String remark, TargetType type) async {
+          var model = TargetModel(
+              id: item.id,
+              name: nickName,
+              code: code,
+              typeName: type.label,
+              teamName: name,
+              teamCode: code,
+              teamRemark: remark,
+              avatar: '',
+              belongId: item.target.belongId);
+          await item.update(model);
+        },
+        code: item.target.code,
+        name: item.teamName,
+        nickName: item.name,
+        identify: item.target.team?.code ?? "",
+        remark: item.target.team?.remark ?? "",
+        type: TargetType.getType(item.typeName));
+  }
+
+
+  void removeGroup(dynamic item) async{
+    bool success = await item.delete();
+    if(success){
+      state.model.value!.children.remove(item);
+      state.model.refresh();
+    }else{
+      ToastUtils.showMsg(msg: "删除失败");
+    }
+  }
+
+  void editDict(SettingNavModel item) {
+    showCreateDictDialog(context,onCreate: (name,code,remark) async{
+      var dict =await item.space.dict.updateDict(DictModel(name: name, public: true, code: code, remark: remark,id: item.source.id));
+      if(dict!=null){
+        ToastUtils.showMsg(msg: "更新成功");
+        item.source.name = name;
+        item.source.code = code;
+        item.source.remark = remark;
+        item.name = name;
+        state.model.refresh();
+      }
+    },name: item.source.name,code: item.source.code,remark: item.source.remark??"");
+  }
+
+  void removeDict(SettingNavModel item) async{
+    bool success = await item.space.dict.deleteDict(item.source.id);
+    if(success){
+      ToastUtils.showMsg(msg: "删除成功");
+      state.model.value!.children.remove(item);
+      state.model.refresh();
+    }
+  }
+
+  void createAuth(SettingNavModel item) async{
+    SettingController settingController = Get.find();
+    List<ITarget> targets =  await settingController.getTeamTree(item.space);
+    showCreateAuthDialog(context,getAllTarget(targets), target: item.space,callBack: (name,code,target,isPublic,remark) async{
+      ResultType<XAuthority> result = await item.source.createSubAuthority(name, code, isPublic, remark,item.space.target.id);
+      if(result.success){
+        ToastUtils.showMsg(msg: "创建成功");
+        await SettingNetWork.initAuthority(state.model.value!);
+        state.model.refresh();
+      }
+    });
+  }
+
+  void editAuth(SettingNavModel item) async{
+    SettingController settingController = Get.find();
+    List<ITarget> targets =  await settingController.getTeamTree(item.space);
+    showCreateAuthDialog(context,getAllTarget(targets), target: getAllTarget(targets).firstWhere((element) => element.teamName == item.source.target.belong.name),callBack: (name,code,target,isPublic,remark) async{
+      ResultType<XAuthority> result = await item.source.updateAuthority(name, code, isPublic, remark);
+      if(result.success){
+        ToastUtils.showMsg(msg: "修改成功");
+        item.source.target.name = name;
+        item.source.target.public = isPublic;
+        item.source.target.remark = remark;
+        item.source.target.code = code;
+        item.name = name;
+        state.model.refresh();
+      }
+    },isEdit: true,name:item.source.target.name,public: item.source.target.public,remark: item.source.target.remark,code: item.source.target.code);
+  }
+
+  void removeAuth(SettingNavModel item) async{
+    ResultType result = await item.source.delete();
+    if(result.success){
+      ToastUtils.showMsg(msg: "删除成功");
+      state.model.value!.children.remove(item);
+      state.model.refresh();
     }
   }
 }

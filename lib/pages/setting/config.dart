@@ -1,48 +1,55 @@
 
 
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:orginone/dart/core/target/authority/iauthority.dart';
+import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/thing/ispecies.dart';
+import 'package:orginone/dart/core/thing/species.dart';
 
-enum CompanySpaceEnum {
-  company('单位'),
+enum SpaceEnum {
   innerAgency("内部机构"),
   outAgency("外部机构"),
-  stationSetting("岗位设置"),
-  companyCohort("单位群组");
+  stationSetting("单位岗位"),
+  internalCohort("内部群组"),
+  externalCohort("对外群组"),
+
+  personGroup("个人群组"),
+  standardSettings("标准设置"),
+  cardbag("卡包设置"),
+  security("账号与安全"),
+  gateway("门户设置"),
+  theme("主题设置");
 
   final  String label;
 
-  const CompanySpaceEnum(this.label);
+  const SpaceEnum(this.label);
 
-  static CompanySpaceEnum findEnum(String label){
+  static SpaceEnum findEnum(String label){
     switch(label){
       case "内部机构":
-        return CompanySpaceEnum.innerAgency;
+        return SpaceEnum.innerAgency;
       case "外部机构":
-        return CompanySpaceEnum.outAgency;
-      case "岗位设置":
-        return CompanySpaceEnum.stationSetting;
-      case "单位群组":
-        return CompanySpaceEnum.companyCohort;
+        return SpaceEnum.outAgency;
+      case "单位岗位":
+        return SpaceEnum.stationSetting;
+      case "内部群组":
+        return SpaceEnum.internalCohort;
+      case "对外群组":
+        return SpaceEnum.externalCohort;
+      case "个人群组":
+        return SpaceEnum.personGroup;
+      case "标准设置":
+        return SpaceEnum.standardSettings;
       default:
-        return CompanySpaceEnum.company;
+        return SpaceEnum.personGroup;
     }
   }
 }
 
-
-enum UserSpaceEnum{
-  personInfo('个人信息'),
-  personGroup("个人群组");
-
-  final String label;
-
-  const UserSpaceEnum(this.label);
-}
-
-enum StandardEnum{
-  permissionCriteria("权限标准"),
-  classCriteria('分类标准');
+enum StandardEnum {
+  permission("权限定义"),
+  dict("字典定义"),
+  attribute("属性定义"),
+  classCriteria('分类定义');
 
   final String label;
 
@@ -65,6 +72,14 @@ List<String> memberTitle = [
   "签名",
 ];
 
+List<String> spaceTitle = [
+  "单位简称",
+  "社会统一信用代码",
+  "单位全称",
+  "单位代码",
+  "单位简介",
+];
+
 List<String> groupTitle = [
   "集团简称",
   "集团编码",
@@ -81,7 +96,6 @@ List<String> outGroupTitle = [
   "单位简介",
 ];
 
-
 List<String> identityTitle = [
   "ID",
   "角色编号",
@@ -91,15 +105,86 @@ List<String> identityTitle = [
   "备注",
 ];
 
-enum IdentityFunction{
+List<String> ValueType = [
+  '数值型',
+  '描述型',
+  '选择型',
+  '分类型',
+  '附件型',
+  '日期型',
+  '时间型',
+  '用户型',
+];
+
+enum IdentityFunction {
   edit,
   delete,
   addMember,
 }
 
-enum CompanyFunction{
+enum CompanyFunction {
   roleSettings,
   addUser,
   addGroup,
 }
+
+enum UserFunction{
+  record,
+  addUser,
+  addGroup,
+}
+
+// enum AttributeType{
+//
+//
+//   String label,
+//   const AttributeType(this.label);
+//
+// }
+
+List<IAuthority> getAllAuthority(List<IAuthority> authority) {
+  List<IAuthority> list = [];
+  for (var element in authority) {
+    list.add(element);
+    if (element.children.isNotEmpty) {
+      list.addAll(getAllAuthority(element.children));
+    }
+  }
+  return list;
+}
+
+List<ITarget> getAllTarget(List<ITarget> targets) {
+  List<ITarget> list = [];
+  for (var element in targets) {
+    list.add(element);
+    if (element.subTeam.isNotEmpty) {
+      list.addAll(getAllTarget(element.subTeam));
+    }
+  }
+  return list;
+}
+
+List<ISpeciesItem> getAllSpecies(List<ISpeciesItem> species) {
+  List<ISpeciesItem> list = [];
+  for (var element in species) {
+    list.add(element);
+    if (element.children.isNotEmpty) {
+      list.addAll(getAllSpecies(element.children));
+    }
+  }
+  return list;
+}
+
+List<IGroup> getAllOutAgency(List<IGroup> outAgencyGroup) {
+  List<IGroup> list = [];
+  for (var element in outAgencyGroup) {
+    list.add(element);
+    if (element.subGroup.isNotEmpty) {
+      list.addAll(getAllOutAgency(element.subGroup));
+    }
+  }
+
+  return list;
+}
+
 

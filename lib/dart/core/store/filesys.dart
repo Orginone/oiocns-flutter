@@ -15,30 +15,39 @@ const chunkSize = 1024 * 1024;
  */
 class FileSystemItem implements IFileSystemItem {
   @override
-  String? key;
+  String fullKey;
 
   @override
-  String? name;
+  String key;
 
   @override
-  bool? isRoot;
+  String name;
 
   @override
-  FileItemModel? target;
+  bool isRoot;
+
+  @override
+  FileItemModel target;
+
   @override
   IObjectItem? parent;
 
   @override
-  List<IFileSystemItem>? children;
+  List<IFileSystemItem> children;
+
+  String belongId;
   List<TaskModel> _taskList = [];
 
-  FileSystemItem(
-      {this.key,
-      this.name,
-      this.isRoot,
-      this.target,
-      this.parent,
-      this.children});
+  FileSystemItem({
+    required this.target,
+    this.parent,
+    required String id,
+  })  : children = [],
+        key = target.key,
+        name = target.name,
+        isRoot = parent == null,
+        belongId = id,
+        fullKey = "$id-${target.key}";
 
   @override
   set taskList(List<TaskModel>? taskList) {
@@ -46,37 +55,33 @@ class FileSystemItem implements IFileSystemItem {
   }
 
   @override
-  List<TaskModel>? get taskList => _taskList;
+  List<TaskModel> get taskList => _taskList;
 
-//TODO:浏览器location.origin 获取浏览器地址需要重新 在flutter中实现
-//Location.origin + '/orginone/anydata/bucket/load/' + target?.shareLink,
   @override
   FileItemShare shareInfo() {
     return FileItemShare(
-      size: target?.size,
-      name: target?.name,
-      extension: target?.extension,
-      shareLink: '/orginone/anydata/bucket/load/${target?.shareLink}',
-      thumbnail: target?.thumbnail,
+      size: target.size,
+      name: target.name,
+      extension: target.extension,
+      shareLink: '/orginone/anydata/bucket/load/${target.shareLink}',
+      thumbnail: target.thumbnail,
     );
   }
 
   @override
-  set childrenData(List<FileItemModel>? _childrenData) {
-    childrenData = _childrenData;
+  set childrenData(List<FileItemModel>? childrenData) {
+    childrenData = childrenData;
   }
 
   @override
-  List<FileItemModel>? get childrenData =>
-      (children?.map((item) => (item.target!)).toList());
+  List<FileItemModel> get childrenData =>
+      (children.map((item) => (item.target)).toList());
 
   @override
   Future<bool> rename(String name) async {
     if (this.name != name && (await _findByName(name)) != null) {
-      var res =
-          await kernel.anystore.bucketOpreate(BucketOpreateModel(
+      var res = await kernel.anystore.bucketOpreate(belongId,BucketOpreateModel(
         name: name,
-        shareDomain: 'user',
         key: _formatKey(),
         operate: BucketOpreates.rename,
       ));
@@ -94,16 +99,18 @@ class FileSystemItem implements IFileSystemItem {
   Future<IObjectItem> create(String name) async {
     var exist = await _findByName(name);
     if (exist == null) {
-      var res =
-          await kernel.anystore.bucketOpreate(BucketOpreateModel(
-        shareDomain: 'user',
+      var res = await kernel.anystore.bucketOpreate(belongId,BucketOpreateModel(
         key: _formatKey(subName: name),
         operate: BucketOpreates.create,
       ));
       if (res.success && res.data != null) {
-        target!.hasSubDirectories = true;
-        var node = FileSystemItem(target: FileItemModel.formJson(res.data), parent: this,children: []);
-        children!.add(node);
+        target.hasSubDirectories = true;
+        var node = FileSystemItem(
+          target: FileItemModel.formJson(res.data),
+          parent: this,
+          id: belongId,
+        );
+        children.add(node);
         return node;
       }
     }
@@ -112,15 +119,14 @@ class FileSystemItem implements IFileSystemItem {
 
   @override
   Future<bool> delete() async {
-    var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
-      shareDomain: 'user',
+    var res = await kernel.anystore.bucketOpreate(belongId,BucketOpreateModel(
       key: _formatKey(),
       operate: BucketOpreates.delete,
     ));
     if (res.success) {
-      var index = parent?.children!.indexWhere((item) => item.key == key);
+      var index = parent?.children.indexWhere((item) => item.key == key);
       if (index != null && index > -1) {
-        parent?.children!.removeAt(index);
+        parent?.children.removeAt(index);
       }
       return true;
     }
@@ -129,16 +135,15 @@ class FileSystemItem implements IFileSystemItem {
 
   @override
   Future<bool> copy(IFileSystemItem destination) async {
-    if (destination.target!.isDirectory! && key != destination.key) {
-      var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
-        shareDomain: 'user',
+    if (destination.target.isDirectory && key != destination.key) {
+      var res = await kernel.anystore.bucketOpreate(belongId,BucketOpreateModel(
         key: _formatKey(),
         destination: destination.key,
         operate: BucketOpreates.copy,
       ));
       if (res.success) {
-        destination.target?.hasSubDirectories = true;
-        destination.children?.add(_newItemForDes(this, destination));
+        destination.target.hasSubDirectories = true;
+        destination.children.add(_newItemForDes(this, destination));
         return true;
       }
     }
@@ -147,20 +152,19 @@ class FileSystemItem implements IFileSystemItem {
 
   @override
   Future<bool> move(IFileSystemItem destination) async {
-    if (destination.target!.isDirectory! && key != destination.key) {
-      var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
-        shareDomain: 'user',
+    if (destination.target.isDirectory && key != destination.key) {
+      var res = await kernel.anystore.bucketOpreate(belongId,BucketOpreateModel(
         key: _formatKey(),
         destination: destination.key,
         operate: BucketOpreates.move,
       ));
       if (res.success) {
-        var index = parent?.children!.indexWhere((item) => item.key == key);
+        var index = parent?.children.indexWhere((item) => item.key == key);
         if (index != null && index > -1) {
-          parent?.children!.removeAt(index);
+          parent?.children.removeAt(index);
         }
-        destination.target!.hasSubDirectories = true;
-        destination.children!.add(_newItemForDes(this, destination));
+        destination.target.hasSubDirectories = true;
+        destination.children.add(_newItemForDes(this, destination));
         return true;
       }
     }
@@ -170,17 +174,20 @@ class FileSystemItem implements IFileSystemItem {
   @override
   Future<bool> loadChildren({bool? reload}) async {
     reload ??= false;
-    if (target!.isDirectory! && (reload || children!.isEmpty)) {
-      var res = await kernel.anystore.bucketOpreate(BucketOpreateModel(
-        shareDomain: 'user',
+    if (target.isDirectory && (reload || children.isEmpty)) {
+      var res = await kernel.anystore.bucketOpreate(belongId,BucketOpreateModel(
         key: _formatKey(),
         operate: BucketOpreates.list,
       ));
       print('key---------${_formatKey()}');
       if (res.success && res.data!.isNotEmpty) {
-        for(var json in res.data!){
+        for (var json in res.data!) {
           children ??= [];
-          children!.add(FileSystemItem(target: FileItemModel.formJson(json), parent: this,children: []));
+          children.add(FileSystemItem(
+            target: FileItemModel.formJson(json),
+            parent: this,
+            id: belongId,
+          ));
         }
         return true;
       }
@@ -204,7 +211,6 @@ class FileSystemItem implements IFileSystemItem {
 
       _taskList.add(task);
       var data = BucketOpreateModel(
-        shareDomain: 'user',
         key: _formatKey(subName: name),
         operate: BucketOpreates.upload,
       );
@@ -217,18 +223,19 @@ class FileSystemItem implements IFileSystemItem {
           end = file.lengthSync();
         }
         List<int> bytes = file.readAsBytesSync();
-        bytes = bytes.sublist(start,end);
-        String url =  base64.encode(bytes);
+        bytes = bytes.sublist(start, end);
+        String url = base64.encode(bytes);
         data.fileItem = FileChunkData(
           index: index,
           uploadId: uuid,
           size: file.lengthSync(),
-          data: [], dataUrl: url,
+          data: [],
+          dataUrl: url,
         );
-        var res = await kernel.anystore.bucketOpreate(data);
+        var res = await kernel.anystore.bucketOpreate(belongId,data);
         if (!res.success) {
           data.operate = BucketOpreates.abortUpload;
-          await kernel.anystore.bucketOpreate(data);
+          await kernel.anystore.bucketOpreate(belongId,data);
           task.finished = -1;
           p?.call(-1);
           // return;
@@ -237,8 +244,12 @@ class FileSystemItem implements IFileSystemItem {
         task.finished = end.toDouble();
         p?.call(end.toDouble());
         if (end == file.lengthSync() && res.data != null) {
-          var node = FileSystemItem(target: FileItemModel.formJson(res.data), parent: this);
-          children!.add(node);
+          var node = FileSystemItem(
+            target: FileItemModel.formJson(res.data),
+            parent: this,
+            id: belongId,
+          );
+          children.add(node);
           return node;
         }
       }
@@ -278,8 +289,8 @@ class FileSystemItem implements IFileSystemItem {
   /// @param name 名称
   Future<IFileSystemItem?> _findByName(String name) async {
     await loadChildren();
-    for (var item in children!) {
-      if (item.target?.name?.split('/').last == name) {
+    for (var item in children) {
+      if (item.target.name.split('/').last == name) {
         return item;
       }
     }
@@ -298,46 +309,44 @@ class FileSystemItem implements IFileSystemItem {
     IFileSystemItem destination,
   ) {
     var node = FileSystemItem(
-      name: source.name,
       parent: destination,
       target: FileItemModel(
-        size: source.target!.size,
+        size: source.target.size,
         key: '${destination.key}/${source.name}',
-        name: source.name!,
+        name: source.name,
         dateCreated: DateTime.now(),
         dateModified: DateTime.now(),
-        shareLink: source.target!.shareLink,
-        extension: source.target!.extension,
-        thumbnail: source.target!.thumbnail,
-        isDirectory: source.target!.isDirectory,
-        contentType: source.target!.contentType,
-        hasSubDirectories: source.target!.hasSubDirectories,
+        shareLink: source.target.shareLink,
+        extension: source.target.extension,
+        thumbnail: source.target.thumbnail,
+        isDirectory: source.target.isDirectory,
+        contentType: source.target.contentType,
+        hasSubDirectories: source.target.hasSubDirectories,
       ),
+      id: belongId,
     );
 
-    for (var item in source.children!) {
-      node.children!.add(_newItemForDes(item, node));
+    for (var item in source.children) {
+      node.children.add(_newItemForDes(item, node));
     }
     return node;
   }
 }
 
 /* 获取文件系统的根 */
-var getFileSysItemRoot = FileSystemItem(
-    key: "",
-    name: "根目录",
-    children: [],
-    target: FileItemModel(
-      key: '',
-      size: 0,
-      name: '根目录',
-      isDirectory: true,
-      extension: '',
-      thumbnail: '',
-      shareLink: '',
-      contentType: '',
-      hasSubDirectories: true,
-      dateCreated: DateTime.now(),
-      dateModified: DateTime.now(),
-    ),
+var getFileSysItemRoot = (belongId) => FileSystemItem(
+  target: FileItemModel(
+    key: '',
+    size: 0,
+    name: '根目录',
+    isDirectory: true,
+    extension: '',
+    thumbnail: '',
+    shareLink: '',
+    contentType: '',
+    hasSubDirectories: true,
+    dateCreated: DateTime.now(),
+    dateModified: DateTime.now(),
+  ),
+  id: belongId,
 );

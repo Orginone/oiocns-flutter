@@ -33,7 +33,7 @@ class AssetManagement {
           "skip": 0,
           "limit": 9999,
         },
-        _settingCtrl.isUserSpace()?"user":"company");
+        _settingCtrl.user.id);
     _assets.clear();
     if (result.success) {
       for (var json in result.data) {

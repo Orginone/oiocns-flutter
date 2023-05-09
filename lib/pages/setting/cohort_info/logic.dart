@@ -22,13 +22,13 @@ class CohortInfoController extends BaseController<CohortInfoState> {
   Future<void> init() async {
     var users = await state.cohort.loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
     state.unitMember.clear();
-    state.unitMember.addAll(users.result ?? []);
+    state.unitMember.addAll(users);
   }
 
   void companyOperation(CompanyFunction function) {
     switch (function) {
       case CompanyFunction.roleSettings:
-        Get.toNamed(Routers.roleSettings, arguments: {"cohort": state.cohort});
+        Get.toNamed(Routers.roleSettings, arguments: {"target": state.cohort});
         break;
       case CompanyFunction.addUser:
         Get.toNamed(Routers.addMembers, arguments: {"title": "指派角色"})

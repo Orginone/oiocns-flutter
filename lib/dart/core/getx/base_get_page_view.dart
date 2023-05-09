@@ -13,7 +13,7 @@ abstract class BaseGetPageView<T extends BaseController,S extends BaseGetState> 
 
   @override
   Widget build(BuildContext context) {
-    controller = Get.put(getController(),tag: tag());
+    controller = Get.put(getController()..tag = tag(),tag: tag());
     controller.context = context;
     return buildView();
   }

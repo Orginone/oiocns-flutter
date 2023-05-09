@@ -4,11 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_button.dart';
-import 'package:orginone/components/template/base_list_view.dart';
-import 'package:orginone/components/unified.dart';
-import 'package:orginone/components/widgets/dialog_confirm.dart';
+import 'package:orginone/dart/core/target/targetMap.dart';
+import 'package:orginone/widget/template/base_list_view.dart';
+import 'package:orginone/widget/unified.dart';
+import 'package:orginone/widget/widgets/dialog_confirm.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/chat/chat_controller.dart';
 
 class NewFriendsPage extends BaseListView<NewFriendsController> {
   const NewFriendsPage({Key? key}) : super(key: key);
@@ -86,7 +86,7 @@ class NewFriendsPage extends BaseListView<NewFriendsController> {
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.only(top: 8.h),
                     child: Text(
-                        "${controller.getName(item.createUser)}申请加入${(item.team?.name) ?? ""}",
+                        "${findTargetShare(item.createUser).name}申请加入${(item.team?.name) ?? ""}",
                         style: XFonts.size18Black9),
                   ),
                   SizedBox(
@@ -221,11 +221,6 @@ class NewFriendsController extends BaseListController<XRelation> {
   void onRefresh() async {
     // var pageResp = await PersonApi.approvalAll("0", limit, offset);
     // addData(true, pageResp);
-  }
-
-  String getName(String userId) {
-    var chatCtrl = Get.find<ChatController>();
-    return chatCtrl.getName(userId);
   }
 
   void joinSuccess(XRelation friends) async {

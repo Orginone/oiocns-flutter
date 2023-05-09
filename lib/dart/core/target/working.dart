@@ -8,7 +8,7 @@ import 'itarget.dart';
  */
 class Working extends BaseTarget implements IWorking {
   final Function _onDeleted;
-  Working(XTarget target, this._onDeleted) : super(target);
+  Working(XTarget target, ISpace? space, String userId, this._onDeleted) : super(target, space, userId);
   @override
   Future<bool> delete() async {
     final res = await deleteTarget();

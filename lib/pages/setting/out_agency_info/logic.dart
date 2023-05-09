@@ -24,7 +24,7 @@ class OutAgencyInfoController extends BaseController<OutAgencyInfoState>
     // TODO: implement onReady
     super.onReady();
     var users = await state.group.loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
-    state.unitMember.addAll(users.result??[]);
+    state.unitMember.addAll(users);
     print(users);
   }
 
@@ -38,7 +38,7 @@ class OutAgencyInfoController extends BaseController<OutAgencyInfoState>
     switch (function) {
       case CompanyFunction.roleSettings:
         Get.toNamed(Routers.roleSettings,
-            arguments: {"outAgency": state.group});
+            arguments: {"target": state.group});
         break;
       case CompanyFunction.addUser:
         showSearchDialog(context, TargetType.company,

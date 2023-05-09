@@ -2,8 +2,13 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/store/ifilesys.dart';
 import 'package:orginone/dart/core/target/authority/iidentity.dart';
 import 'package:orginone/dart/core/target/authority/iauthority.dart';
+import 'package:orginone/dart/core/target/chat/ichat.dart';
+import 'package:orginone/dart/core/target/todo/work.dart';
+import 'package:orginone/dart/core/thing/dict.dart';
+import 'package:orginone/dart/core/thing/property.dart';
 
 import '../market/model.dart';
 import '../thing/ispecies.dart';
@@ -34,7 +39,7 @@ abstract class ITarget {
   // 类型
   late String typeName;
   // 职权树
-  late IAuthority? authorityTree;
+  IAuthority? authorityTree;
   // 拥有的身份
   late List<XIdentity> ownIdentitys;
   // 组织的身份
@@ -50,9 +55,21 @@ abstract class ITarget {
   // 共享信息
   late TargetShare shareInfo;
 
-  List<XTarget> members = [];
+  ISpace? space;
+
+  late List<XTarget> members;
+
+  late List<ISpeciesItem> species;
+
+
+  late Property property;
 
   bool isSelected = false;
+  // 会话
+  late IChat chat;
+
+  /// 当前的会话
+  List<IChat> allChats();
 
   /// 新增
   /// @param data
@@ -68,6 +85,10 @@ abstract class ITarget {
   /// 获取职权树
   /// @param reload 是否强制刷新
   Future<IAuthority?> loadAuthorityTree({bool reload = false});
+
+  /// 加载分类树
+  /// @param reload 是否强制刷新
+  Future<List<ISpeciesItem>> loadSpeciesTree({bool reload = false});
 
   /// 判断是否拥有该身份
   /// @param id 身份id
@@ -90,7 +111,7 @@ abstract class ITarget {
 
   /// 加载组织成员
   /// @param page 分页请求
-  Future<XTargetArray> loadMembers(PageRequest page);
+  Future<List<XTarget>> loadMembers(PageRequest page);
 
   /// 拉取成员加入群组
   /// @param {XTarget} target 成员
@@ -109,6 +130,11 @@ abstract class ITarget {
   /// @param {string[]} ids 成员ID数组
   /// @param {TargetType} type 成员类型
   Future<bool> removeMembers(List<String> ids, {String type});
+
+  Future<List<XFlowDefine>> loadWork({PageRequest? page});
+
+  ///查询办事节点
+  Future<FlowNode?> loadWorkNode(String id);
 }
 
 /// 市场相关操作方法
@@ -281,6 +307,18 @@ abstract class ISpace implements IFlow, IMTarget, ITarget {
   /// 空间职权树
   IAuthority? spaceAuthorityTree;
 
+  /// 字典
+  late Dict dict;
+
+  /// 文件系统
+  late IFileSystemItem root;
+
+  /// 成员会话
+  late List<IChat> memberChats;
+
+  /// 全员
+  late List<XTarget> members;
+
   /// @description: 查询群
   ///@param reload 是否强制刷新
   ///@return {*} 查询到的群组
@@ -307,10 +345,13 @@ abstract class ICohort implements ITarget {
 /// 人员操作
 abstract class IPerson implements ISpace, ITarget {
   /// 我的好友列表
-  late RxList<XTarget> joinedFriend;
+  late IWork work;
 
   /// 我加入的单位
   late RxList<ICompany> joinedCompany;
+
+  /// 主目录
+  late IObjectItem? home;
 
   /// 退出群组
   /// @param id 群组Id
@@ -393,9 +434,6 @@ abstract class ICompany implements ISpace, ITarget {
   /// 当前用户Id
   late String userId;
 
-  ///加载空间职权树
-  Future<IAuthority?> loadSpaceAuthorityTree([bool reload = false]);
-
   /// 删除集团
   /// @param id 集团Id
   Future<bool> deleteGroup(String id);
@@ -458,6 +496,9 @@ abstract class ICompany implements ISpace, ITarget {
   /// 查询集团
   /// @param code 集团编号
   Future<XTargetArray> searchGroup(String code);
+
+  /// 加载所有相关组织
+  Future<void> deepLoad({bool reload});
 }
 
 /// 集团操作
@@ -483,6 +524,9 @@ abstract class IGroup implements ITarget {
   /// @param reload 是否强制刷新
   /// @returns
   Future<List<IGroup>> getSubGroups({bool reload});
+
+  /// 加载所有相关组织
+  Future<void> deepLoad({bool reload});
 }
 
 /// 部门操作
@@ -518,6 +562,9 @@ abstract class IDepartment implements ITarget {
 
   /// 删除工作组
   Future<bool> deleteWorking(String id);
+
+  /// 加载所有相关组织
+  Future<void> deepLoad({bool reload});
 }
 
 /// 工作组

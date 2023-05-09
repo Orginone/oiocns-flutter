@@ -11,7 +11,8 @@ import 'itarget.dart';
 abstract class MarketTarget extends FlowTarget implements IMTarget {
   late List<TargetType> extendTargetType;
 
-  MarketTarget(XTarget target) : super(target) {
+  MarketTarget(XTarget target, ISpace? space, String userId)
+      : super(target, space, userId) {
     ownProducts = [];
     joinedMarkets = [];
     joinMarketApplys = [];
@@ -20,6 +21,7 @@ abstract class MarketTarget extends FlowTarget implements IMTarget {
     usefulResource = {};
     extendTargetType = [];
   }
+
   @override
   Future<XMarketArray?> getMarketByCode(name) async {
     return (await kernel.queryMarketByCode(IDBelongReq(

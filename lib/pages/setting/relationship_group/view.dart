@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/home/state.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -10,82 +11,62 @@ import 'logic.dart';
 import 'state.dart';
 
 class RelationGroupPage
-    extends BaseGetView<RelationGroupController, RelationGroupState> {
-  @override
-  Widget buildView() {
-    return GyScaffold(
-      centerTitle: false,
-      backgroundColor: Colors.white,
-      titleWidget: Obx(
-            () {
-          return CommonWidget.commonBreadcrumbNavWidget(
-              firstTitle: state.head,
-              allTitle: state.selectedGroup.value,
-              onTapFirst: () {
-                controller.back();
-              },
-              onTapTitle: (index) {
-                controller.removeGroup(index);
-              },padding: EdgeInsets.zero);
-        },
-      ),
-      leadingWidth: 0,
-      leading: const SizedBox(),
-      body: body(),
-    );
-  }
+    extends BaseBreadcrumbNavMultiplexPage<RelationGroupController, RelationGroupState> {
 
+  @override
   Widget body() {
     return Obx(() {
       return ListView.builder(
         itemBuilder: (BuildContext context, int index) {
-          var item = state.groupData.value[index];
-          if(state.standardEnum!=null){
-            switch (state.standardEnum) {
-              case StandardEnum.permissionCriteria:
-                return Item(iAuthority: item, nextLv: () {
-                  controller.nextLv(iAuthority: item);
-                },onTap: (){
-                  controller.onTap(iAuthority: item);
-                });
-              case StandardEnum.classCriteria:
-                return Item(species: item, nextLv: () {
-                  controller.nextLv(species: item);
-                },onTap: (){
-                  controller.onTap(species: item);
-                });
+          var item = state.model.value!.children[index];
+          return Item(item: item, onNext: () {
+            controller.nextLv(item);
+          },onTap: (){
+            controller.onTap(item);
+          },onSelected: (value){
+            switch(value){
+              case "create":
+                 if(item.standardEnum == StandardEnum.permission){
+                   controller.createAuth(item);
+                 }else{
+                   controller.createGroup(item.source);
+                 }
+                break;
+              case "edit":
+                if(item.standardEnum == StandardEnum.dict){
+                  controller.editDict(item);
+                } else if(item.standardEnum == StandardEnum.permission){
+                  controller.editAuth(item);
+                }else{
+                  controller.editGroup(item.source);
+                }
+                break;
+              case "delete":
+                if(item.standardEnum == StandardEnum.dict){
+                  controller.removeDict(item);
+                }else if(item.standardEnum == StandardEnum.permission){
+                  controller.removeAuth(item);
+                } else {
+                  controller.removeGroup(item.source);
+                }
+                break;
             }
-          }else if(state.companySpaceEnum!=null){
-            switch (state.companySpaceEnum) {
-              case CompanySpaceEnum.innerAgency:
-                return Item(innerAgency: item, nextLv: () {
-                  controller.nextLv(innerAgency: item);
-                },onTap: (){
-                  controller.onTap(innerAgency: item);
-                });
-              case CompanySpaceEnum.outAgency:
-                return Item(outAgency: item, nextLv: () {
-                  controller.nextLv(outAgency: item);
-                },onTap: (){
-                  controller.onTap(outAgency: item);
-                });
-              case CompanySpaceEnum.stationSetting:
-                return Item(station: item, nextLv: () {
-                  controller.nextLv(station: item);
-                },onTap: (){
-                  controller.onTap(station: item);
-                });
-              case CompanySpaceEnum.companyCohort:
-                return Item(cohort: item, nextLv: () {
-                  controller.nextLv(cohort: item);
-                },onTap: (){
-                  controller.onTap(cohort: item);
-                },);
-            }
-          }
+
+          },);
         },
-        itemCount: state.groupData.value.length ?? 0,
+        itemCount: state.model.value?.children.length??0,
       );
     });
+  }
+
+  @override
+  RelationGroupController getController() {
+    return RelationGroupController();
+  }
+
+  @override
+  String tag() {
+    // TODO: implement tag
+    return hashCode.toString();
   }
 }

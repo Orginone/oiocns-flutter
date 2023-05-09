@@ -27,12 +27,12 @@ class CommonTreeManagement {
   SpeciesItem? get species => _species.value;
 
   Future<void> initTree() async {
-    _species.value = await loadSpeciesTree(_setting.space.id);
+    // _species.value = await loadSpeciesTree("",_setting.space.id);
     _category.clear();
     ResultType<XDictItemArray> res = await kernel.queryDictItems(
       IdSpaceReq(
         id: "27466608056615936",
-        spaceId: _setting.space.id ?? "",
+        spaceId: '0',
         page: PageRequest(
           offset: 0,
           limit: 99999,
@@ -162,11 +162,10 @@ class CommonTreeManagement {
     }
     try{
       var data = _species.value!
-          .getAllLastList()
+          .getAllList()
           .firstWhere((element) => element.id == specieId);
       if (data.attrs.isEmpty) {
-        await data.loadAttrs(_setting.space.id, true, true,
-            PageRequest(offset: 0, limit: 9999, filter: ''));
+        await data.loadAttrs(_setting.user.id,);
       }
       return data.attrs.firstWhere((element) => element.id == attributeId);
     }catch(e){

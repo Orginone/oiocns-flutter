@@ -6,13 +6,16 @@ import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/util/authority.dart';
 import 'package:orginone/widget/common_widget.dart';
 
-class PopupMenuWidget extends StatefulWidget {
-  final ITarget? target;
-  final CompanySpaceEnum? companySpaceEnum;
-  final StandardEnum? standardEnum;
+import 'setting/state.dart';
+
+class PopupMenuWidget<T> extends StatefulWidget {
+  final SettingNavModel model;
+  final PopupMenuItemSelected<T>? onSelected;
 
   const PopupMenuWidget(
-      {Key? key, this.target, this.companySpaceEnum, this.standardEnum})
+      {Key? key,
+       required this.model,
+      this.onSelected})
       : super(key: key);
 
   @override
@@ -30,51 +33,97 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    target = widget.target;
-    if(widget.companySpaceEnum!=null){
-      switch(widget.companySpaceEnum){
-        case CompanySpaceEnum.company:
-          target = settingController.space;
+    init();
+  }
+
+  void init() {
+    popupMenuItem.clear();
+    target = (widget.model.source is ITarget)?widget.model.source:null;
+    if(widget.model.spaceEnum!=null){
+      if(widget.model.source==null){
+        switch (widget.model.spaceEnum) {
+          case SpaceEnum.innerAgency:
+            popupMenuItem.add(newPopupMenuItem("新建部门", "create"));
+            break;
+          case SpaceEnum.outAgency:
+            popupMenuItem.add(newPopupMenuItem("新建集团", "create"));
+            break;
+          case SpaceEnum.stationSetting:
+            popupMenuItem.add(newPopupMenuItem("新建岗位", "create"));
+            break;
+          case SpaceEnum.personGroup:
+          case SpaceEnum.externalCohort:
+            popupMenuItem.add(newPopupMenuItem("新建群组", "create"));
+            break;
+        }
+      }
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+        await initPopupMenuItem();
+      });
+    }
+    if(widget.model.standardEnum!=null){
+      switch (widget.model.standardEnum) {
+        case StandardEnum.permission:
+          if(widget.model.source != null){
+            popupMenuItem.add(newPopupMenuItem("新增权限", "create"));
+            if(widget.model.source.belongId.isNotEmpty){
+              popupMenuItem.add(newPopupMenuItem("编辑权限", "edit"));
+              popupMenuItem.add(newPopupMenuItem("删除权限", "delete"));
+            }
+          }
           break;
-        case CompanySpaceEnum.innerAgency:
-          popupMenuItem.add(newPopupMenuItem("新建部门","createDept"));
+        case StandardEnum.dict:
+          if(widget.model.source == null){
+            popupMenuItem.add(newPopupMenuItem("新建字典", "create"));
+          }else{
+            popupMenuItem.add(newPopupMenuItem("编辑字典", "edit"));
+            popupMenuItem.add(newPopupMenuItem("删除字典", "delete"));
+          }
           break;
-        case CompanySpaceEnum.outAgency:
-          popupMenuItem.add(newPopupMenuItem("新建集团","createGroup"));
+        case StandardEnum.attribute:
+          popupMenuItem.add(newPopupMenuItem("新建属性", "create"));
           break;
-        case CompanySpaceEnum.stationSetting:
-          popupMenuItem.add(newPopupMenuItem("新建岗位","createStation"));
-          break;
-        case CompanySpaceEnum.companyCohort:
-          popupMenuItem.add(newPopupMenuItem("新建群组","createCohort"));
+        case StandardEnum.classCriteria:
+          if(widget.model.source != null){
+            popupMenuItem.add(newPopupMenuItem("新增分类", "create"));
+            if(widget.model.source.belongId.isNotEmpty){
+              popupMenuItem.add(newPopupMenuItem("编辑分类", "edit"));
+              popupMenuItem.add(newPopupMenuItem("删除分类", "delete"));
+            }
+          }
           break;
       }
     }
   }
 
   Future<bool> initPopupMenuItem() async {
-    if(target == null){
+    if (target == null) {
       return popupMenuItem.isNotEmpty;
     }
     bool isSuperAdmin = await Auth.isSuperAdmin(target!);
-    if (target!.subTeamTypes.isNotEmpty) {
+    if (target?.subTeamTypes.isNotEmpty??false) {
       if (isSuperAdmin) {
-        popupMenuItem.add(newPopupMenuItem("新建子组织", "createOrganization"));
+        popupMenuItem.add(newPopupMenuItem("新建子组织", "create"));
       }
     }
     if (isSuperAdmin) {
       popupMenuItem.add(newPopupMenuItem("编辑", "edit"));
-      if (target != settingController.user &&
-          target != settingController.company) {
+      if (target != settingController.user
+          // && target != settingController.company
+      ) {
         popupMenuItem.add(newPopupMenuItem("删除", "delete"));
       }
-    } else if (await Auth.isSuperAdmin(settingController.space)) {
-      if (target != settingController.user &&
-          target != settingController.company) {
+    } else if (true
+    // await Auth.isSuperAdmin(settingController.space)
+    ) {
+      if (target != settingController.user
+          // && target != settingController.company
+      ) {
         popupMenuItem.add(newPopupMenuItem("退出${target!.typeName}", "signOut"));
       }
     }
 
+    setState(() {});
     return popupMenuItem.isNotEmpty;
   }
 
@@ -86,20 +135,22 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
   }
 
   @override
+  void didUpdateWidget(covariant PopupMenuWidget oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.model != widget.model) {
+      init();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: initPopupMenuItem(),
-      builder: (context, snapshot) {
-        if(!snapshot.hasData){
-          return SizedBox();
-        }
-        if(!snapshot.data!){
-          return SizedBox();
-        }
-        return CommonWidget.commonPopupMenuButton(
-          items: popupMenuItem,
-        );
-      }
+    if(popupMenuItem.isEmpty){
+      return Container();
+    }
+    return CommonWidget.commonPopupMenuButton(
+      items: popupMenuItem,
+      onSelected: widget.onSelected,
     );
   }
 }

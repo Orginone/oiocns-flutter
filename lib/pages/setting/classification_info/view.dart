@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/setting/classification_info/classification_basic_info.dart';
-import 'package:orginone/pages/setting/classification_info/dict_definition.dart';
+import 'package:orginone/pages/setting/classification_info/classification_form.dart';
+import 'package:orginone/pages/setting/classification_info/classification_work.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/widget/unified.dart';
 
 import 'classification_attrs.dart';
 import 'logic.dart';
@@ -24,14 +25,34 @@ class ClassificationInfoPage
           tabBar(),
           Expanded(
             child: TabBarView(
+              physics: const NeverScrollableScrollPhysics(),
               controller: state.tabController,
-              children: [
-                ClassificationBasicInfo(species: state.species,),
-                ClassificationAttrs(species: state.species,),
-                Obx(() {
-                  return DictDefinition(dict: state.dict.value,);
-                }),
-              ],
+              children: state.tabTitle.map((e) {
+                switch (e) {
+                  case ClassificationEnum.info:
+                    return ClassificationBasicInfo(
+                      species: state.species,
+                    );
+                  case ClassificationEnum.attrs:
+                    return Obx(() {
+                      return ClassificationAttrs(
+                        attrs: state.attrs.value,
+                      );
+                    });
+                  case ClassificationEnum.form:
+                    return Obx(() {
+                      return ClassificationForm(
+                        operation: state.operation.value,
+                      );
+                    });
+                  case ClassificationEnum.work:
+                    return Obx(() {
+                      return ClassificationWork(
+                        flow: state.flow.value,
+                      );
+                    });
+                }
+              }).toList(),
             ),
           ),
         ],
@@ -48,9 +69,9 @@ class ClassificationInfoPage
           Expanded(
             child: TabBar(
               controller: state.tabController,
-              tabs: tabTitle.map((e) {
+              tabs: state.tabTitle.map((e) {
                 return Tab(
-                  text: e,
+                  text: e.label,
                   height: 40.h,
                 );
               }).toList(),
@@ -61,16 +82,27 @@ class ClassificationInfoPage
               labelColor: XColors.themeColor,
               labelStyle: TextStyle(fontSize: 21.sp),
               isScrollable: true,
+              onTap: (index) {
+                controller.changeIndex(index);
+              },
             ),
           ),
-          CommonWidget.commonPopupMenuButton(items: const [
-            PopupMenuItem(
-              value: 'createDict',
-              child: Text("新增字典"),
-            ),
-          ], onSelected: (str) {
-            controller.createDict();
-          },),
+          Obx(() {
+            if (state.currentIndex.value == 0) {
+              return Container();
+            }
+            String text = state.currentIndex.value == 1 ? '新增特性' : state
+                .currentIndex.value == 2 ? "新增表单" : "新增办事";
+
+            return CommonWidget.commonPopupMenuButton(items: [
+              PopupMenuItem(
+                value: 'create',
+                child: Text(text),
+              ),
+            ], onSelected: (str) {
+              controller.create();
+            },);
+          }),
         ],
       ),
     );

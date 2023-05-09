@@ -22,7 +22,7 @@ class ThingNetWork{
       "options": {
         "match": {},
       },
-    }, settingCtrl.isUserSpace()?"user":'company');
+    }, settingCtrl.user.id);
 
     if(result.success){
       result.data['data'].forEach((json){

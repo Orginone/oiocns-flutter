@@ -40,7 +40,7 @@ class DepartmentInfoController extends BaseController<DepartmentInfoState>
     switch (function) {
       case CompanyFunction.roleSettings:
         Get.toNamed(Routers.roleSettings,
-            arguments: {"innerAgency": state.depart.value});
+            arguments: {"target": state.depart.value});
         break;
       case CompanyFunction.addUser:
         Get.toNamed(Routers.addMembers, arguments: {"title": "指派角色"})
@@ -59,10 +59,10 @@ class DepartmentInfoController extends BaseController<DepartmentInfoState>
   }
 
   Future<void> reloadMembers() async {
-    XTargetArray user = await state.depart.value
+    var user = await state.depart.value
         .loadMembers(PageRequest(offset: 0, limit: 20000, filter: ""));
     state.depart.value.members.clear();
-    state.depart.value.members.addAll(user.result ?? []);
+    state.depart.value.members.addAll(user);
 
     state.depart.refresh();
   }

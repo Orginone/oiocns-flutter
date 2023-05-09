@@ -13,6 +13,8 @@
 // export type INullSpeciesItem = ISpeciesItem | undefined;
 /* 可为空的进度回调 */
 // export type OnProgressType = (p: number) => void | undefined;
+import 'package:orginone/dart/core/target/itarget.dart';
+
 import '../../base/model.dart';
 import '../../base/schema.dart';
 import 'idict.dart';
@@ -28,32 +30,30 @@ abstract class ISpeciesItem {
   /* 标准分类项对应的目标 */
   late XSpecies target;
   /* 上级标准分类项 */
-  late ISpeciesItem? parent;
+  ISpeciesItem? parent;
   /* 下级标准分类项数组 */
   late List<ISpeciesItem> children;
   /* 归属信息 */
   late TargetShare belongInfo;
   /* 属性 */
   late List<XAttribute> attrs;
+  /* 表单 */
+  late List<XOperation> operation;
 
-  late List<XDict> dict;
-
+  late ITarget team;
   late bool isSelected;
+
+  late String spaceId;
+
+  String get belongId;
+
   /* 加载信息 */
   Future<ISpeciesItem> loadInfo(TargetShare info);
   /* 加载分类特性 */
-  Future<XAttributeArray> loadAttrs(
-      String id, bool recursionOrg, bool recursionSpecies, PageRequest page);
-  /* 加载分类字典 */
-  Future<XDictArray?> loadDicts(
-    String id,
-    bool recursionOrg,
-    bool recursionSpecies,
-    PageRequest page,
-  );
+  Future<List<XAttribute>> loadAttrs(String id,{bool reload});
   /* 加载业务标准 */
-  Future<XOperationArray> loadOperations(String id, bool filterAuth,
-      bool recursionOrg, bool recursionSpecies, PageRequest page);
+  Future<List<XOperation>> loadOperations(String id, bool filterAuth,
+      bool recursionOrg, bool recursionSpecies, PageRequest page,{bool reload = false});
   /* 加载流程设计 */
   Future<XFlowDefineArray> loadFlowDefines(String id, PageRequest page);
   /*
@@ -61,21 +61,6 @@ abstract class ISpeciesItem {
    * @param data 创建参数
    */
   Future<ISpeciesItem?> create(SpeciesModel data);
-  /*
-   * 创建字典
-   * @param data 创建参数
-   */
-  Future<IDict?> createDict(DictModel data);
-  /*
-   * 更新分类特性项
-   * @param data 创建参数
-   */
-  Future<bool> updateDict(DictModel data);
-  /*
-   * 删除字典
-   * @param id 特性项id
-   */
-  Future<bool> deleteDict(String id);
   /*
    * 更新标准分类项
    * @param data 创建参数
@@ -130,6 +115,18 @@ abstract class ISpeciesItem {
    * 删除标准分类项
    */
   Future<bool> delete();
+
+  ///加载办事
+  Future<List<XFlowDefine>> loadWork({PageRequest? page});
+
+  ///发布办事
+  Future<XFlowDefine?> publishWork(CreateDefineReq data);
+
+  ///删除办事
+  Future<bool> deleteWork(String id);
+
+  ///查询办事节点
+  Future<FlowNode?> loadWorkNode(String id);
 
   bool isAllLast() {
     if (children.isEmpty) {

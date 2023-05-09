@@ -12,14 +12,16 @@ class FileManagement{
 
   FileManagement._();
 
-  late IFileSystemItem  _directory;
+  IFileSystemItem?  _directory;
 
-  IFileSystemItem get directory => _directory;
+  IFileSystemItem? get directory => _directory;
 
-  Future<void>  initFileDir() async{
-     IFileSystemItem _root = getFileSysItemRoot;
+  Future<void>  initFileDir(String belongId) async{
+     IFileSystemItem _root = getFileSysItemRoot(belongId);
      _directory = await _root.create("主目录");
-     await loadSubFileDir(_directory);
+     if(_directory!=null){
+       await loadSubFileDir(_directory!);
+     }
   }
 
   Future<void> loadSubFileDir(IFileSystemItem item) async{

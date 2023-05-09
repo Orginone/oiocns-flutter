@@ -24,6 +24,10 @@ enum TargetType {
   static String getName(TargetType type) {
     return type.label;
   }
+
+  static TargetType getType(String name) {
+    return TargetType.values.firstWhere((element) => element.label == name);
+  }
 }
 
 /// 消息类型
@@ -33,8 +37,8 @@ enum MessageType {
   video("视频"),
   voice("语音"),
   recall("撤回"),
-  readed("已读");
-
+  readed("已读"),
+  file("文件");
   const MessageType(this.label);
 
   final String label;

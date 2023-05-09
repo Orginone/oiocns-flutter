@@ -131,9 +131,6 @@ class BucketOpreateModel {
   // 名称
   final String? name;
 
-  // 共享域
-  final String shareDomain;
-
   // 目标
   final String? destination;
 
@@ -146,7 +143,6 @@ class BucketOpreateModel {
   BucketOpreateModel({
     required this.key,
     this.name,
-    required this.shareDomain,
     required this.operate,
     this.destination,
     this.fileItem,
@@ -155,7 +151,6 @@ class BucketOpreateModel {
   Map<String, dynamic> toJson() {
     return {
       "key": key,
-      "shareDomain": shareDomain,
       "operate": operate.label,
       "fileItem": fileItem?.toJson(),
     };
@@ -176,18 +171,21 @@ class FileChunkData {
   // 分片数据编码字符串
   final String? dataUrl;
 
+  final List data;
+
   FileChunkData({
+    required this.data,
     required this.index,
     required this.size,
     required this.uploadId,
     this.dataUrl,
-    required List data,
   });
 
   Map<String, dynamic> toJson() {
     return {
       "index": index,
       "size": size,
+      'data': data,
       "uploadId": uploadId,
       "dataUrl": dataUrl,
     };
@@ -195,24 +193,9 @@ class FileChunkData {
 }
 
 /// 文件系统项数据模型
-class FileItemModel {
+class FileItemModel extends FileItemShare {
   // 完整路径
-  String? key;
-
-  // 完整路径
-  int? size;
-
-  // 名称
-  String? name;
-
-  // 共享链接
-  String? shareLink;
-
-  // 拓展名
-  String? extension;
-
-  // 缩略图
-  String? thumbnail;
+  String key;
 
   // 创建时间
   DateTime? dateCreated;
@@ -221,41 +204,42 @@ class FileItemModel {
   DateTime? dateModified;
 
   // 文件类型
-  String? contentType;
+  String contentType;
 
   // 是否是目录
-  bool? isDirectory;
+  bool isDirectory;
 
   // 是否包含子目录
-  bool? hasSubDirectories;
+  bool hasSubDirectories;
 
   FileItemModel({
     required this.key,
-    required this.size,
-    required this.name,
-    required this.shareLink,
-    required this.extension,
-    required this.thumbnail,
     required this.dateCreated,
     required this.dateModified,
     required this.contentType,
     required this.isDirectory,
     required this.hasSubDirectories,
+    required super.size,
+    required super.name,
+    required super.shareLink,
+    required super.extension,
+    required super.thumbnail,
   });
 
-  FileItemModel.formJson(Map<String, dynamic> json) {
-    key = json['key'];
-    size = json['size'];
-    name = json['name'];
-    shareLink = json['shareLink'];
-    isDirectory = json['isDirectory'];
-    thumbnail = json['thumbnail'];
-    extension = json['extension'];
-    contentType = json['contentType'];
-    dateCreated = DateTime.tryParse(json['dateCreated'] ?? "");
-    dateModified = DateTime.tryParse(json['dateModified'] ?? "");
-    hasSubDirectories = json['hasSubDirectories'];
-  }
+  FileItemModel.formJson(Map<String, dynamic> json)
+      : key = json['key'],
+        isDirectory = json['isDirectory'],
+        contentType = json['contentType'],
+        dateCreated = DateTime.tryParse(json['dateCreated'] ?? ""),
+        dateModified = DateTime.tryParse(json['dateModified'] ?? ""),
+        hasSubDirectories = json['hasSubDirectories'],
+        super(
+          size: json["size"],
+          name: json["name"],
+          shareLink: json["shareLink"],
+          extension: json["extension"],
+          thumbnail: json["thumbnail"],
+        );
 
   Map<String, dynamic> shareInfo() {
     String url = "${Constant.host}/orginone/anydata/bucket/load/$shareLink";
@@ -308,37 +292,67 @@ class CreateDefineReq {
   String? id;
 
   // 名称
-  late String name;
+  String? name;
 
   // 编号
-  late String code;
+  String? code;
 
   // 备注
-  late String remark;
+  String? remark;
 
   //节点信息
   FlowNode? resource;
 
   // 归属Id
-  late String belongId;
-
-  // 流程字段json
-  late String? fields;
+  String? belongId;
 
   //分类id
-  late String? speciesId;
+  String? speciesId;
 
   // 权限ID
-  late String? authId;
+  String? authId;
 
   //是否公开
-  late bool public;
+  bool? public;
 
   //数据源id
-  late String? sourceIds;
+  String? sourceIds;
 
   //是否创建实体
-  late bool isCreate;
+  bool? isCreate;
+
+  CreateDefineReq({this.id,this.name,this.code,this.remark,this.belongId,this.speciesId,this.authId,this.public,this.sourceIds,this.isCreate,this.resource});
+
+  CreateDefineReq.fromJson(Map<String,dynamic> json){
+    id = json['id'];
+    name = json['name'];
+    code = json['code'];
+    remark = json['remark'];
+    belongId = json['belongId'];
+    speciesId = json['speciesId'];
+    authId = json['authId'];
+    public = json['public'];
+    sourceIds = json['sourceIds'];
+    isCreate = json['isCreate'];
+    resource = json['resource']!=null?FlowNode.fromJson(json['resource']):null;
+  }
+
+  Map<String,dynamic> toJson(){
+    return {
+      "id":id,
+      "name":name,
+      "code":code,
+      "remark":remark,
+      "belongId":belongId,
+      "speciesId":speciesId,
+      "authId":authId,
+      "public":public,
+      "isCreate":isCreate,
+      "sourceIds":sourceIds,
+      "resource":resource?.toJson(),
+    };
+  }
+
 }
 
 class NameModel {
@@ -429,6 +443,20 @@ class IdReqModel {
   }
 }
 
+class GetSpeciesModel {
+  final String id;
+  final bool upTeam;
+
+  GetSpeciesModel({required this.id, required this.upTeam});
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["upTeam"] = upTeam;
+    return json;
+  }
+}
+
 class ResetPwdModel {
   // 唯一ID
   final String code;
@@ -486,7 +514,7 @@ class IdArrayReq {
   //构造方法
   IdArrayReq({
     required this.ids,
-    required this.page,
+    this.page,
   });
 
   //通过JSON构造
@@ -517,6 +545,31 @@ class IdArrayReq {
   }
 }
 
+class IdBelongReq {
+  // 唯一ID
+  final String belongId;
+
+  final PageRequest page;
+
+  IdBelongReq({
+    required this.belongId,
+    required this.page,
+  });
+
+  //通过JSON构造
+  IdBelongReq.fromJson(Map<String, dynamic> json)
+      : belongId = json["id"],
+        page = PageRequest.fromJson(json["page"]);
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = belongId;
+    json["page"] = page.toJson();
+    return json;
+  }
+}
+
 class IdSpaceReq {
   // 唯一ID
   final String id;
@@ -525,13 +578,13 @@ class IdSpaceReq {
   final String spaceId;
 
   // 分页
-  final PageRequest? page;
+  PageRequest? page;
 
   //构造方法
   IdSpaceReq({
     required this.id,
     required this.spaceId,
-    required this.page,
+    this.page,
   });
 
   //通过JSON构造
@@ -564,19 +617,53 @@ class IdSpaceReq {
   }
 }
 
-class IdSpeciesReq {
+class RecordSpaceReq {
   // 唯一ID
-  final String id;
+  final List<int> status;
 
   // 工作空间ID
   final String spaceId;
-  // 是否递归组织
-  final bool recursionOrg;
-  // 是否递归分类
-  final bool recursionSpecies;
 
   // 分页
   final PageRequest? page;
+
+  //构造方法
+  RecordSpaceReq({
+    required this.status,
+    required this.spaceId,
+    required this.page,
+  });
+
+  //通过JSON构造
+  RecordSpaceReq.fromJson(Map<String, dynamic> json)
+      : status = json["status"],
+        spaceId = json["spaceId"],
+        page = PageRequest.fromJson(json["page"]);
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["status"] = status;
+    json["spaceId"] = spaceId;
+    json["page"] = page?.toJson();
+    return json;
+  }
+}
+
+class IdSpeciesReq {
+  // 唯一ID
+  String? id;
+
+  // 工作空间ID
+  String? spaceId;
+  // 是否递归组织
+  bool? recursionOrg;
+
+  // 是否递归分类
+  bool? recursionSpecies;
+
+  // 分页
+  PageRequest? page;
 
   //构造方法
   IdSpeciesReq({
@@ -623,17 +710,20 @@ class IdSpeciesReq {
 
 class IdOperationReq {
   // 唯一ID
-  final String id;
+  String? id;
   // 工作空间ID
-  final String spaceId;
+  String? spaceId;
   // 是否权限过滤
-  final bool filterAuth;
+  bool? filterAuth;
   // 是否递归组织
-  final bool recursionOrg;
+  bool? recursionOrg;
   // 是否递归分类
-  final bool recursionSpecies;
+  bool? recursionSpecies;
+
   // 分页
-  final PageRequest page;
+  PageRequest? page;
+
+
   IdOperationReq({
     required this.id,
     required this.spaceId,
@@ -642,13 +732,26 @@ class IdOperationReq {
     required this.recursionSpecies,
     required this.page,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "spaceId": spaceId,
+      "filterAuth": filterAuth,
+      "recursionOrg": recursionOrg,
+      "recursionSpecies": recursionSpecies,
+      "page": page?.toJson(),
+    };
+  }
 }
 
 class IdArraySpaceReq {
   // 唯一ID
   final List<String> ids;
+
   // 工作空间ID
   final String spaceId;
+
   IdArraySpaceReq({
     required this.ids,
     required this.spaceId,
@@ -658,21 +761,24 @@ class IdArraySpaceReq {
 class QueryDefineReq {
   // 分类ID
   final String? speciesId;
+
   // 空间ID
   final String spaceId;
+
   // 分页
-  final PageRequest page;
+  PageRequest? page;
+
   QueryDefineReq({
     required this.speciesId,
     required this.spaceId,
-    required this.page,
+    this.page,
   });
 
   Map<String, dynamic> toJson() {
     return {
       "speciesId": speciesId,
       "spaceId": spaceId,
-      "page": page.toJson(),
+      "page": page?.toJson(),
     };
   }
 }
@@ -1477,36 +1583,90 @@ class ApprovalModel {
   }
 }
 
+class PropertyModel {
+  // 唯一ID
+  String? id;
+
+  // 名称
+  String? name;
+
+  // 编号
+  String? code;
+
+  // 值类型
+  String? valueType;
+
+  // 单位
+  String? unit;
+
+  // 类别Id
+  String? dictId;
+
+  // 创建用户
+  String? belongId;
+
+  // 来源用户
+  String? sourceId;
+
+  // 备注
+  String? remark;
+
+  //构造方法
+  PropertyModel({
+    this.id,
+    this.name,
+    this.code,
+    this.remark,
+    this.valueType,
+    this.dictId,
+    this.belongId,
+    this.sourceId,
+    this.unit,
+  });
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["name"] = name;
+    json["code"] = code;
+    json["valueType"] = valueType;
+    json["belongId"] = belongId;
+    json["dictId"] = dictId;
+    json["remark"] = remark;
+    json["sourceId"] = sourceId;
+    json['unit'] = unit;
+    return json;
+  }
+}
+
 class DictModel {
   // 唯一ID
   String? id;
 
   // 名称
-  final String name;
+  String? name;
 
   // 编号
   late String code;
 
   // 公开的
-  final bool public;
+  bool? public;
 
   // 创建组织/个人
-  final String belongId;
-
-  // 类别Id
-  late String speciesId;
+  String? belongId;
 
   // 备注
-  final String remark;
+  String? remark;
 
   //构造方法
   DictModel({
     required this.name,
     required this.public,
-    required this.belongId,
+    this.belongId,
     required this.code,
-    required this.speciesId,
     required this.remark,
+    this.id,
   });
 
   //通过JSON构造
@@ -1516,7 +1676,6 @@ class DictModel {
         code = json["code"],
         public = json["public"],
         belongId = json["belongId"],
-        speciesId = json["speciesId"],
         remark = json["remark"];
 
   //通过动态数组解析成List
@@ -1541,7 +1700,6 @@ class DictModel {
     json["code"] = code;
     json["public"] = public;
     json["belongId"] = belongId;
-    json["speciesId"] = speciesId;
     json["remark"] = remark;
     return json;
   }
@@ -1549,19 +1707,19 @@ class DictModel {
 
 class DictItemModel {
   // 唯一ID
-  final String? id;
+  String? id;
 
   // 名称
-  final String? name;
+  String? name;
 
   // 编号
-  final String? value;
+  String? value;
 
   // 公开的
-  final bool? public;
+  bool? public;
 
   // 创建组织/个人
-  final String? belongId;
+  String? belongId;
 
   // 备注
   String? dictId;
@@ -1614,34 +1772,34 @@ class DictItemModel {
 
 class OperationModel {
   // 唯一ID
-  final String? id;
+  String? id;
 
   // 名称
-  final String? name;
+  String? name;
 
   // 编号
-  final String? code;
+  String? code;
 
   // 公开的
-  final bool? public;
+  bool? public;
 
   // 创建组织/个人
-  final String? belongId;
+  String? belongId;
 
   // 类别Id
-  late String? speciesId;
+  String? speciesId;
 
   // 流程定义Id
-  late String? defineId;
+  String? defineId;
 
   // 业务发起权限Id
-  late String? beginAuthId;
+  String? beginAuthId;
 
   // 子项列表
-  late List<OperationItem>? items;
+  List<OperationItem>? items;
 
   // 备注
-  final String? remark;
+  String? remark;
 
   //构造方法
   OperationModel({
@@ -1930,40 +2088,42 @@ class SpeciesModel {
 
 class AttributeModel {
   // 唯一ID
-  final String? id;
+  String? id;
 
   // 名称
-  final String? name;
+  String? name;
 
   // 编号
-  final String? code;
+  String? code;
 
   // 公开的
-  final bool? public;
+  bool? public;
 
   // 值类型
-  final String? valueType;
+  String? valueType;
 
   // 单位
-  final String? unit;
+  String? unit;
 
   // 选择字典的类型ID
-  final String? dictId;
+  String? dictId;
 
   // 备注
-  final String? remark;
+  String? remark;
 
   // 创建组织/个人
-  final String? belongId;
+  String? belongId;
 
   // 类别Id
-  late String? speciesId;
+  String? speciesId;
 
   // 类别代码
-  late String? speciesCode;
+  String? speciesCode;
 
   // 工作权限Id
-  final String? authId;
+  String? authId;
+
+  String? propId;
 
   //构造方法
   AttributeModel({
@@ -1979,6 +2139,7 @@ class AttributeModel {
     this.speciesId,
     this.speciesCode,
     this.authId,
+    this.propId,
   });
 
   //通过JSON构造
@@ -1994,6 +2155,7 @@ class AttributeModel {
         belongId = json["belongId"],
         speciesId = json["speciesId"],
         speciesCode = json["speciesCode"],
+        propId = json['propId'],
         authId = json["authId"];
 
   //通过动态数组解析成List
@@ -2025,6 +2187,7 @@ class AttributeModel {
     json["speciesId"] = speciesId;
     json["speciesCode"] = speciesCode;
     json["authId"] = authId;
+    json['propId'] = propId;
     return json;
   }
 }
@@ -3720,27 +3883,27 @@ class NameCodeModel {
 
 class ImMsgModel {
   // 工作空间ID
-  final String? spaceId;
+  final String spaceId;
 
   // 发起方Id
-  final String? fromId;
+  final String fromId;
 
   // 接收方Id
-  final String? toId;
+  final String toId;
 
   // 消息类型
-  final String? msgType;
+  final String msgType;
 
   // 消息体
-  final String? msgBody;
+  final String msgBody;
 
   //构造方法
   ImMsgModel({
-    this.spaceId,
-    this.fromId,
-    this.toId,
-    this.msgType,
-    this.msgBody,
+    required this.spaceId,
+    required this.fromId,
+    required this.toId,
+    required this.msgType,
+    required this.msgBody,
   });
 
   //通过JSON构造
@@ -3867,37 +4030,25 @@ class ChatModel {
   final String name;
 
   // 头像
-  final String? photo;
+  final String photo;
 
   // 标签
-  final String? label;
+  final List<String> labels;
 
   // 备注
-  final String? remark;
+  final String remark;
 
   // 类型名称
   final String typeName;
-
-  // 消息体
-  final String? msgType;
-
-  // 消息体
-  final String? msgBody;
-
-  // 消息时间
-  final String? msgTime;
 
   //构造方法
   ChatModel({
     required this.id,
     required this.name,
-    this.photo,
-    this.label,
-    this.remark,
+    required this.photo,
+    required this.labels,
+    required this.remark,
     required this.typeName,
-    this.msgType,
-    this.msgBody,
-    this.msgTime,
   });
 
   //通过JSON构造
@@ -3905,12 +4056,9 @@ class ChatModel {
       : id = json["id"],
         name = json["name"],
         photo = json["photo"],
-        label = json["label"],
+        labels = json["labels"],
         remark = json["remark"],
-        typeName = json["typeName"],
-        msgType = json["msgType"],
-        msgBody = json["msgBody"],
-        msgTime = json["msgTime"];
+        typeName = json["typeName"];
 
   //通过动态数组解析成List
   static List<ChatModel> fromList(List<dynamic>? list) {
@@ -3932,12 +4080,9 @@ class ChatModel {
     json["id"] = id;
     json["name"] = name;
     json["photo"] = photo;
-    json["label"] = label;
+    json["labels"] = labels;
     json["remark"] = remark;
     json["typeName"] = typeName;
-    json["msgType"] = msgType;
-    json["msgBody"] = msgBody;
-    json["msgTime"] = msgTime;
     return json;
   }
 }
@@ -4021,8 +4166,10 @@ class FlowInstanceModel {
 class QueryTaskReq {
   // 流程定义Id
   final String defineId;
+
   // 任务类型 审批、抄送
   final String typeName;
+
   QueryTaskReq(this.defineId, this.typeName);
 
   QueryTaskReq.fromJson(Map<String, dynamic> json)
@@ -4255,26 +4402,26 @@ class TargetShare {
 // 文件系统项数据模型
 class FileItemShare {
   // 大小
-  final int? size;
+  final int size;
 
   // 名称
-  final String? name;
+  final String name;
 
   // 共享链接
-  final String? shareLink;
+  final String shareLink;
 
   // 拓展名
-  final String? extension;
+  final String extension;
 
   // 缩略图
-  final String? thumbnail;
+  final String thumbnail;
 
   FileItemShare({
-    this.size,
-    this.name,
-    this.shareLink,
-    this.extension,
-    this.thumbnail,
+    required this.size,
+    required this.name,
+    required this.shareLink,
+    required this.extension,
+    required this.thumbnail,
   });
 
   //通过JSON构造

@@ -51,7 +51,7 @@ class IdentityInfoController extends BaseController<IdentityInfoState> {
   void identityOperation(IdentityFunction function) {
     switch(function){
       case IdentityFunction.edit:
-        showEditIdentityDialog(identity.value,context,callBack: (name,code,remark) async{
+        showCreateIdentityDialog(context,[],onCreate: (name,code,authId,remark) async{
           try{
             ResultType result =await identity.value.updateIdentity(name, code, remark);
             if(result.success){
@@ -65,7 +65,7 @@ class IdentityInfoController extends BaseController<IdentityInfoState> {
           }catch(e){
             ToastUtils.showMsg(msg: e.toString());
           }
-        });
+        },identity: identity.value);
         break;
       case IdentityFunction.delete:
         roleSetting.deleteIdentity(identity.value);
