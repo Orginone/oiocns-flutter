@@ -30,6 +30,31 @@ enum TargetType {
   }
 }
 
+enum SpeciesType {
+  /** 类别目录 */
+  fileSystem('文件系统'),
+  market('流通市场'),
+  resource('服务资源'),
+  propClass('属性分类'),
+  store('仓库物资'),
+  /** 类别类目 */
+  commodity('商品类别'),
+  speciesForm('表单类别'),
+  application('软件应用'),
+  appModule('应用模块'),
+  workItem('应用办事'),
+  workForm('应用表单'),
+  reportBI('应用报表');
+
+  final String label;
+
+  const SpeciesType(this.label);
+
+  static SpeciesType getType(String name) {
+    return SpeciesType.values.firstWhere((element) => element.label == name);
+  }
+}
+
 /// 消息类型
 enum MessageType {
   text("文本"),

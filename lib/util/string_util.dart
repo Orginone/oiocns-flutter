@@ -1,6 +1,5 @@
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/target/chat/chat.dart';
-import 'package:orginone/dart/core/target/chat/ichat.dart';
+import 'package:orginone/dart/core/target/chat/msgchat.dart';
 
 class StringUtil {
   static String getDetailRecallBody({

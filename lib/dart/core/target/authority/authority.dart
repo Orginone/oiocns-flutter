@@ -1,174 +1,204 @@
-import 'package:orginone/dart/core/target/authority/iidentity.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/core/target/chat/chat.dart';
-import 'package:orginone/dart/core/target/chat/ichat.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
-import '../../../base/api/kernelapi.dart';
-import '../../../base/schema.dart';
-import '../../enum.dart';
-import 'iauthority.dart';
-import 'identity.dart';
-import 'package:orginone/dart/base/common/uint.dart';
-import 'package:orginone/dart/core/consts.dart';
+import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/dart/core/target/chat/msgchat.dart';
+import 'package:orginone/main.dart';
 
-class Authority implements IAuthority {
-  @override
-  IChat chat;
+abstract class IAuthority implements IChat {
+  /// 数据实体
+  late XAuthority metadata;
+
+  /// 拥有该权限的成员
+  late List<XTarget> targets;
+
+  /// 加载权限的自归属用户
+  late IBelong space;
+
+  /// 父级权限
+  IAuthority? parent;
+
+  /// 子级权限
+  late List<IAuthority> children;
+
+  /// 用户相关的所有会话
+  List<IChat> get chats;
+
+  /// 深加载
+  Future<void> deepLoad({bool reload = false});
+
+  /// 加载成员用户实体
+  Future<List<XTarget>> loadMembers({bool reload = false});
+
+  /// 创建权限
+  Future<IAuthority?> create(AuthorityModel data);
+
+  /// 更新权限
+  Future<bool> update(AuthorityModel data);
+
+  /// 删除权限
+  Future<bool> delete();
+
+  /// 根据权限id查找权限实例
+  IAuthority? findAuthById(String authId, {IAuthority? auth});
+
+  /// 根据权限获取所有父级权限Id
+  List<String> loadParentAuthIds(List<String> authIds);
+
+  /// 判断是否拥有某些权限
+  bool hasAuthoritys(List<String> authIds);
+}
+
+class Authority extends MsgChat implements IAuthority {
 
   @override
-  List<IAuthority> children;
+  late List<IAuthority> children;
 
   @override
-  String userId;
+  late XAuthority metadata;
 
   @override
-  List<IIdentity> identitys;
+  IAuthority? parent;
 
   @override
-  ISpace? space;
+  late IBelong space;
 
   @override
-  XAuthority target;
+  late List<XTarget> targets;
 
-  @override
-  get belongId {
-    return target.belongId??"";
+  Authority(this.metadata, this.space, [this.parent])
+      : super(
+            space.user.metadata.id,
+            space.metadata.id,
+            metadata.id ?? "",
+            TargetShare(
+              name: metadata.name ?? "",
+              typeName: "权限",
+              avatar: FileItemShare.parseAvatar(metadata.icon),
+            ),
+            [space.metadata.name, '角色群'],
+            metadata.remark ?? ""){
+    targets = [];
+    children = [];
+    for (var node in metadata.nodes?? []) {
+      children.add(Authority(node, space, this));
+    }
   }
 
   @override
-  get id {
-    return target.id!;
+  Future<IAuthority?> create(AuthorityModel data) async{
+    data.parentId = metadata.id;
+    final res = await kernel.createAuthority(data);
+    if (res.success && res.data?.id != null) {
+      final authority = Authority(res.data!, space, this);
+      children.add(authority);
+      return authority;
+    }
+    return null;
   }
 
   @override
-  get code {
-    return target.code!;
+  Future<void> deepLoad({bool reload = false}) async{
+    await loadMembers(reload: reload);
+    for (final item in children) {
+      await item.deepLoad(reload: reload);
+    }
   }
 
   @override
-  get name {
-    return target.name!;
-  }
-
-  @override
-  get remark {
-    return target.remark!;
-  }
-
-  KernelApi kernel = KernelApi.getInstance();
-
-  Authority(this.target, this.space, this.userId)
-      : children = [],
-        identitys = [],
-        chat = createAuthChat(userId, space?.id??"", space?.teamName??"", target) {
-    if (target.nodes != null && target.nodes!.isNotEmpty) {
-      for (var item in target.nodes!) {
-        children.add(Authority(item, space, userId));
+  IAuthority? findAuthById(String authId, {IAuthority? auth}) {
+    auth = auth ?? space.superAuth;
+    if (auth?.metadata.id == authId) {
+      return auth;
+    } else {
+      for (final item in auth?.children??[]) {
+        final find = findAuthById(authId,auth: item);
+        if (find != null) {
+          return find;
+        }
       }
     }
   }
 
-  List<String> get existAuthority {
-    return [
-      AuthorityType.applicationAdmin.name,
-      AuthorityType.superAdmin.name,
-      AuthorityType.marketAdmin.name,
-      AuthorityType.relationAdmin.name,
-      AuthorityType.thingAdmin.name,
-    ];
-  }
-
   @override
-  Future<ResultType<XAuthority>> createSubAuthority(
-      String name, String code, bool ispublic, String remark,String belongId) async {
-    if (existAuthority.indexOf(code) > 0) {
-      throw unAuthorizedError;
+  bool hasAuthoritys(List<String> authIds) {
+    authIds = loadParentAuthIds(authIds);
+    final orgIds = [metadata.belongId??""];
+    if (metadata.shareId != null && metadata.shareId!=null) {
+      orgIds.add(metadata.shareId!);
     }
-    final res = await kernel.createAuthority(AuthorityModel(
-      id: null,
-      name: name,
-      code: code,
-      remark: remark,
-      public: ispublic,
-      parentId: id,
-      belongId: belongId,
-    ));
-    if (res.success && res.data != null) {
-      children.add(Authority(res.data!, space, userId));
-    }
-    return res;
+    return space.user.authenticate(orgIds, authIds);
   }
 
   @override
-  Future<ResultType> delete() async {
-    final res = await kernel.deleteAuthority(IdReqModel(
-      id: id,
-      belongId: belongId,
-      typeName: '',
-    ));
-    return res;
-  }
-
-  @override
-  Future<ResultType> deleteSubAuthority(String id) async {
-    final index = children.where((IAuthority auth) => auth.id == id).toList();
-    if (index.isNotEmpty) {
-      final res = await kernel.deleteAuthority(IdReqModel(
-        id: id,
-        typeName: '',
-      ));
-      if (res.success) {
-        children = children.where((IAuthority auth) => auth.id != id).toList();
+  Future<List<XTarget>> loadMembers({bool reload = false}) async{
+      if (targets.isEmpty || reload) {
+        final res = await kernel.queryAuthorityTargets(GainModel(id: metadata.id!,
+          subId: space.metadata.belongId,));
+        if (res.success) {
+          targets = res.data?.result ?? [];
+        }
       }
-      return res;
-    }
-    return ResultType(code: 400, msg: unAuthorizedError, success: false);
+      return targets;
   }
 
   @override
-  Future<List<IIdentity>> queryAuthorityIdentity(bool reload) async {
-    if (!reload && identitys.isNotEmpty) {
-      return identitys;
+  List<String> loadParentAuthIds(List<String> authIds) {
+    final result = <String>[];
+    for (final authId in authIds) {
+      final auth = findAuthById(authId);
+      if (auth != null) {
+        _appendParentId(auth, result);
+      }
     }
-    final res = await kernel.queryAuthorityIdentitys(IdSpaceReq(
-        id: id ?? "",
-        page: PageRequest(offset: 0, filter: '', limit: Constants.maxUint16),
-        spaceId: id));
-    if (res.success && res.data != null) {
-      res.data!.result?.forEach((element) {
-        identitys.add(Identity(element));
-      });
+    return result;
+  }
+
+  void _appendParentId(IAuthority auth, List<String> authIds) {
+    if (!authIds.contains(auth.metadata.id)) {
+      authIds.add(auth.metadata.id!);
     }
-    return identitys;
+    if (auth.parent != null) {
+      _appendParentId(auth.parent!, authIds);
+    }
   }
 
   @override
-  Future<ResultType<XAuthority>> updateAuthority(
-      String name, String code, bool ispublic, String remark) async {
-    final res = await kernel.updateAuthority(AuthorityModel(
-        id: id,
-        name: name,
-        code: code,
-        public: ispublic,
-        parentId: target.parentId,
-        belongId: belongId,
-        remark: remark));
-    if (res.success) {
-      target.name = name;
-      target.code = code;
-      target.public = ispublic;
-      target.remark = remark;
-      target.updateTime = res.data!.updateTime;
+  Future<bool> update(AuthorityModel data) async{
+    data.id = metadata.id;
+    data.shareId = metadata.shareId;
+    data.parentId = metadata.parentId;
+    data.name = data.name ?? metadata.name;
+    data.code = data.code ?? metadata.code;
+    data.icon = data.icon ?? metadata.icon;
+    data.remark = data.remark ?? metadata.remark;
+    final res = await kernel.updateAuthority(data);
+    if (res.success && res.data?.id != null) {
+      metadata = res.data!;
+      shareInfo = TargetShare(
+        name: metadata.name??"",
+        typeName: '权限',
+        avatar: FileItemShare.parseAvatar(metadata.icon),
+      );
     }
-    return res;
+    return res.success;
   }
 
   @override
-  List<IChat> allChats() {
-    var chats = [chat];
-    for (var item in children) {
-      chats.addAll(item.allChats());
+  Future<bool> delete() async{
+    final res = await kernel.deleteAuthority(IdReq(id: metadata.id!));
+    if (res.success && parent != null) {
+      parent!.children.removeWhere((i) => i!=this);
+    }
+    return res.success;
+  }
+
+  @override
+  List<IChat> get chats{
+    final chats = <IChat>[this];
+    for (final item in children) {
+      chats.addAll(item.chats);
     }
     return chats;
   }
+
 }
