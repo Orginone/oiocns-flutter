@@ -32,7 +32,7 @@ class RoleSettingsPage
               color: Colors.white,
               child: TabBar(
                 controller: state.tabController,
-                tabs: state.identitys.map((item) => Tab(text: item.name,))
+                tabs: state.identitys.map((item) => Tab(text: item.metadata.name,))
                     .toList(),
                 isScrollable: true,
                 unselectedLabelColor: Colors.black,

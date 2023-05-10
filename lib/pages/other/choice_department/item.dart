@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/widget/common_widget.dart';
 
 
@@ -35,11 +35,11 @@ class Item extends StatelessWidget {
           children: [
             Expanded(
               child: CommonWidget.commonRadioTextWidget(
-                choicePeople.name ?? "",
+                choicePeople.metadata.name ?? "",
                 choicePeople,
                 groupValue: selected,
                 onChanged: (v) {
-                  choicePeople.isSelected = !choicePeople.isSelected;
+                  // choicePeople.isSelected = !choicePeople.isSelected;
                   if (onChanged != null) {
                     onChanged!(v);
                   }

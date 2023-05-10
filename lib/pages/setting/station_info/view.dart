@@ -15,23 +15,23 @@ class StationInfoPage
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: state.station.teamName,
+      titleName: state.station.metadata.name,
       body: SingleChildScrollView(
         child:Column(
           children: [
             Column(
               children: [
-                CommonWidget.commonHeadInfoWidget(state.station.target.name),
+                CommonWidget.commonHeadInfoWidget(state.station.metadata.name),
                 Obx((){
                   List<List<String>> identityContent = [];
                   for (var identity in state.identitys) {
                     identityContent.add([
-                      identity.id??"",
-                      identity.code??"",
-                      identity.name??"",
-                      identity.name??"",
-                      identity.belongId??"",
-                      identity.remark ?? ""
+                      identity.metadata.id??"",
+                      identity.metadata.code??"",
+                      identity.metadata.name??"",
+                      identity.metadata.name??"",
+                      identity.metadata.belongId??"",
+                      identity.metadata.remark ?? ""
                     ]);
                   }
                   return CommonWidget.commonDocumentWidget(

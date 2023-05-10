@@ -1,23 +1,24 @@
-import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
-import 'ispecies.dart' show ISpeciesItem;
-import 'species.dart' show SpeciesItem;
-import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/thing/app/application.dart';
+import 'package:orginone/dart/core/thing/base/species.dart';
 import '../../base/schema.dart';
+import 'market/market.dart';
+import 'store/propclass.dart';
 
-// 加载分类树
-// @param id 组织id
-Future<List<SpeciesItem>> loadSpeciesTree(String id,String spaceId,ITarget team,[bool upTeam = false]) async {
-  List<SpeciesItem> item;
-  final res = await KernelApi.getInstance().querySpeciesTree(GetSpeciesModel(id: id, upTeam: upTeam));
-  if (res.success && res.data!=null) {
-    item = [];
-    for (var element in res.data!.result!) {
-      item.add(SpeciesItem(element, null,spaceId,team));
-    }
-    return item;
+
+ISpeciesItem createSpeciesForType(XSpecies metadata,ITarget current){
+  switch(SpeciesType.getType(metadata.typeName)){
+    case SpeciesType.store:
+    case SpeciesType.propClass:
+      return PropClass(metadata,current);
+    case SpeciesType.application:
+      return Application(metadata,current);
+    case SpeciesType.fileSystem:
+      // return FileSystem(metadata,current);
+    case SpeciesType.market:
+      return Market(metadata, current);
+    default:
+      return PropClass(metadata,current);
   }
-  return [];
 }
-
-// export type { INullSpeciesItem, ISpeciesItem } from './ispecies';

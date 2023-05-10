@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_icon_button.dart';
-import 'package:lpinyin/lpinyin.dart';
 import 'package:orginone/widget/template/base_view.dart';
 import 'package:orginone/widget/template/originone_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
@@ -11,15 +9,10 @@ import 'package:orginone/widget/widgets/index_bar.dart';
 import 'package:orginone/widget/widgets/loading_widget.dart';
 import 'package:orginone/widget/widgets/text_avatar.dart';
 import 'package:orginone/config/enum.dart';
-import 'package:orginone/dart/base/api/kernelapi.dart';
-import 'package:orginone/dart/base/common/uint.dart';
-import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/other/search_page.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/string_util.dart';
 
 ///联系人页面
 class ContactPage extends GetView<ContactController> {
@@ -105,7 +98,7 @@ class ContactPage extends GetView<ContactController> {
               avatarName: target.name.substring(0, 2),
             ),
             title: Text(target.name, style: XFonts.size22Black3),
-            subtitle: Text(target.team?.name ?? "", style: XFonts.size20Black9),
+            subtitle: Text(target.name, style: XFonts.size20Black9),
             contentPadding: EdgeInsets.only(left: 30.w)),
       ),
       Container(

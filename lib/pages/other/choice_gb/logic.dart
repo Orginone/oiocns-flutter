@@ -1,12 +1,6 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
-import 'package:orginone/dart/core/thing/ispecies.dart';
-import 'package:orginone/event/choice.dart';
+import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/common_tree_management.dart';
-import 'package:orginone/util/department_management.dart';
-import 'package:orginone/util/event_bus_helper.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
@@ -41,9 +35,9 @@ class ChoiceGbController extends BaseController<ChoiceGbState> {
     List<ISpeciesItem> allList = [];
 
     for (var value in state.gb) {
-      allList.addAll(value.getAllList());
+      // allList.addAll(value.c);
     }
-    var filter = allList.where((element) => (element.name.contains(str)));
+    var filter = allList.where((element) => (element.metadata.name.contains(str)));
     if (filter!=null && filter.isNotEmpty) {
       state.searchList.addAll(filter);
     }
@@ -69,7 +63,7 @@ class ChoiceGbController extends BaseController<ChoiceGbState> {
         break;
       case GbFunction.wareHouse:
         Get.toNamed(Routers.thing,
-            arguments: {"id": item.id, "title": item.name});
+            arguments: {"id": item.metadata.id, "title": item.metadata.name});
         break;
     }
   }

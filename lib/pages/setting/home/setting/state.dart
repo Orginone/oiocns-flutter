@@ -1,12 +1,11 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/pages/setting/config.dart';
 
 class SettingFunctionState extends BaseBreadcrumbNavState<SettingNavModel> {
-  late ISpace space;
-
+  late IBelong space;
 
 
   SettingController get setting => Get.find<SettingController>();
@@ -24,7 +23,7 @@ class SettingFunctionState extends BaseBreadcrumbNavState<SettingNavModel> {
             spaceEnum: SpaceEnum.standardSettings,
             space: space)
       ];
-      if (setting.user.id == space.id) {
+      if (setting.user.metadata.id == space.metadata.id) {
         function.insert(
             0,
             SettingNavModel(
@@ -81,7 +80,7 @@ class SettingFunctionState extends BaseBreadcrumbNavState<SettingNavModel> {
               space: space),
         ]);
       }
-      model.value = SettingNavModel(name: space.teamName, space: space,children: function);
+      model.value = SettingNavModel(name: space.metadata.name, space: space,children: function);
     }
     title = model.value?.name??"";
   }
@@ -90,7 +89,7 @@ class SettingFunctionState extends BaseBreadcrumbNavState<SettingNavModel> {
 class SettingNavModel extends BaseBreadcrumbNavModel<SettingNavModel> {
   SpaceEnum? spaceEnum;
   StandardEnum? standardEnum;
-  late ISpace space;
+  late IBelong space;
 
   SettingNavModel(
       {super.id = '',

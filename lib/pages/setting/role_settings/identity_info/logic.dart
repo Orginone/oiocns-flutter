@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/target/authority/iidentity.dart';
+import 'package:orginone/dart/core/target/identity/identity.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/pages/setting/role_settings/logic.dart';
@@ -28,15 +28,15 @@ class IdentityInfoController extends BaseController<IdentityInfoState> {
   }
 
   Future<void> loadMembers() async{
-    var users =  await identity.value.loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
+    var users =  await identity.value.loadMembers();
     state.unitMember.clear();
-    state.unitMember.addAll(users?.result??[]);
+    state.unitMember.addAll(users);
   }
 
   void removeRole(String code) async{
    try{
     var user = state.unitMember.firstWhere((element) => element.code == code);
-    bool success = await identity.value.removeMembers([user.id]);
+    bool success = await identity.value.removeMembers([user]);
     if(success){
      state.unitMember.removeWhere((element) => element.code == code);
      state.unitMember.refresh();
@@ -53,11 +53,11 @@ class IdentityInfoController extends BaseController<IdentityInfoState> {
       case IdentityFunction.edit:
         showCreateIdentityDialog(context,[],onCreate: (name,code,authId,remark) async{
           try{
-            ResultType result =await identity.value.updateIdentity(name, code, remark);
-            if(result.success){
-              identity.value.name = name;
-              identity.value.target.code = code;
-              identity.value.target.remark = remark;
+            bool success =await identity.value.update(IdentityModel(name:name, code:code, remark:remark));
+            if(success){
+              identity.value.metadata.name = name;
+              identity.value.metadata.code = code;
+              identity.value.metadata.remark = remark;
               identity.refresh();
             }else{
               ToastUtils.showMsg(msg: "修改失败");
@@ -74,7 +74,7 @@ class IdentityInfoController extends BaseController<IdentityInfoState> {
         Get.toNamed(Routers.addMembers,arguments: {"title":"指派角色"})?.then((value) async{
           var selected = (value as List<XTarget>);
           if(selected.isNotEmpty){
-            bool success = await identity.value.pullMembers(selected.map((e) => e.id).toList());
+            bool success = await identity.value.pullMembers(selected);
             if(success){
               await loadMembers();
             }

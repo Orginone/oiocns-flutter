@@ -28,9 +28,9 @@ class UserDocument extends StatelessWidget {
       docContent.add([
         user.code,
         user.name,
-        user.team?.name ?? "",
-        user.team?.code ?? "",
-        user.team?.remark ?? ""
+        user.name,
+        user.code,
+        user.remark ?? ""
       ]);
     }
     return CommonWidget.commonDocumentWidget(

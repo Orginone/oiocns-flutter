@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/target/chat/ichat.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/routers.dart';
@@ -45,13 +45,13 @@ class _MessageChatState extends State<MessageChat> {
 
   Widget _title(IChat chat) {
     return Obx(() {
-      var messageItem = chat.target;
-      var personCount = chat.personCount.value;
-      String name = messageItem.name;
-      if (messageItem.typeName != TargetType.person.label) {
+      var messageItem = chat.chatdata.value;
+      var personCount = chat.members.length;
+      String name = messageItem.chatName??"";
+      if (!(messageItem.labels?.contains(TargetType.person.label)??true)) {
         name += "($personCount)";
       }
-      var spaceName = messageItem.labels.join(" | ");
+      var spaceName = messageItem.labels?.join(" | ")??"";
       return Column(
         children: [
           Text(name, style: XFonts.size22Black3),

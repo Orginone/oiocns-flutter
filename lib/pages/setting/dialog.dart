@@ -4,15 +4,16 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/target/authority/iauthority.dart';
-import 'package:orginone/dart/core/target/authority/iidentity.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
-import 'package:orginone/dart/core/thing/ispecies.dart';
+import 'package:orginone/dart/core/thing/base/species.dart';
+import 'package:orginone/dart/core/thing/dict/dict.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/unified.dart';
 
+import '../../dart/core/target/authority/authority.dart';
+import '../../dart/core/target/base/target.dart';
+import '../../dart/core/target/identity/identity.dart';
 import 'config.dart';
 import 'multiselect.dart';
 
@@ -33,7 +34,7 @@ typedef CreateAttributeCallBack = Function(
   String valueType,
   String remark,
   String? unit,
-  XDict? dict,
+  IDict? dict,
 );
 
 typedef CreateAttrCallBack = Function(String name, String code, String remark,
@@ -51,11 +52,11 @@ Future<void> showCreateIdentityDialog(
     {CreateIdentityCallBack? onCreate, IIdentity? identity}) async {
   List<IAuthority> allAuth = getAllAuthority(authority);
 
-  TextEditingController name = TextEditingController(text: identity?.name);
+  TextEditingController name = TextEditingController(text: identity?.metadata.name);
   TextEditingController code =
-      TextEditingController(text: identity?.target.code);
+      TextEditingController(text: identity?.metadata.code);
   TextEditingController remark =
-      TextEditingController(text: identity?.target.remark);
+      TextEditingController(text: identity?.metadata.remark);
 
   IAuthority? selected;
   return showDialog(
@@ -84,15 +85,15 @@ Future<void> showCreateIdentityDialog(
                     identity != null
                         ? const SizedBox()
                         : CommonWidget.commonChoiceTile(
-                            "设置权限", selected?.name ?? "",
+                            "设置权限", selected?.metadata.name ?? "",
                             showLine: true, required: true, onTap: () {
                             PickerUtils.showListStringPicker(Get.context!,
-                                titles: allAuth.map((e) => e.name).toList(),
+                                titles: allAuth.map((e) => e.metadata.name??"").toList(),
                                 callback: (str) {
                               state(() {
                                 try {
                                   selected = allAuth.firstWhere(
-                                      (element) => element.name == str);
+                                      (element) => element.metadata.name == str);
                                 } catch (e) {}
                               });
                             });
@@ -113,7 +114,7 @@ Future<void> showCreateIdentityDialog(
                         ToastUtils.showMsg(msg: "请设置权限");
                       } else {
                         if (onCreate != null) {
-                          onCreate(name.text, code.text, selected?.id ?? "",
+                          onCreate(name.text, code.text, selected?.metadata.id ?? "",
                               remark.text);
                         }
                         Navigator.pop(context);
@@ -167,14 +168,14 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("姓名:${item.team?.name}"),
-            Text("手机号:${item.team?.code}"),
+            Text("姓名:${item.name}"),
+            Text("手机号:${item.code}"),
           ],
         ),
         SizedBox(
           height: 10.h,
         ),
-        Text("座右铭:${item.team?.remark??""}"),
+        Text("座右铭:${item.remark??""}"),
       ];
     }
     if(targetType == TargetType.group || targetType == TargetType.company){
@@ -199,7 +200,7 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
         SizedBox(
           height: 10.h,
         ),
-        Text("集团简介:${item.team?.remark??""}"),
+        Text("集团简介:${item.remark??""}"),
       ];
     }
 
@@ -224,24 +225,21 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
 
 
   Future<List<XTarget>> search(String code) async {
-    XTargetArray? xTargetArray;
+    List<XTarget>? targets;
     switch (targetType) {
       case TargetType.group:
         // xTargetArray = await setting.company?.searchGroup(code);
         break;
       case TargetType.person:
-        xTargetArray = await setting.user.searchPerson(code);
+        targets = await setting.user.searchTargets(code,[TargetType.person.label]);
         break;
       case TargetType.company:
       case TargetType.hospital:
       case TargetType.university:
-        xTargetArray = await setting.user.searchCompany(code);
+      targets = await setting.user.searchTargets(code,[TargetType.company.label,TargetType.hospital.label,TargetType.university.label]);
         break;
     }
-    if (xTargetArray != null) {
-      return xTargetArray.result ?? [];
-    }
-    return [];
+    return targets??[];
   }
 
   return showDialog(
@@ -585,19 +583,19 @@ Future<void> showCreateOrganizationDialog(
 }
 
 Future<void> showCreateAttributeDialog(BuildContext context,
-    {CreateAttributeCallBack? onCreate,List<XDict> dictList =const [],
+    {CreateAttributeCallBack? onCreate,List<IDict> dictList =const [],
     bool isEdit = false,
     String name = '',
     String code = '',
     String remark = '',
-    String valueType = '',String unit = '',XDict? dict}) async {
+    String valueType = '',String unit = '',Dict? dict}) async {
   TextEditingController nameCtr = TextEditingController(text: name);
   TextEditingController codeCtr = TextEditingController(text: code);
   TextEditingController unitCtr = TextEditingController(text: unit);
   TextEditingController remarkCtr = TextEditingController(text: remark);
 
   String type = valueType;
-  XDict? dictValue = dict;
+  IDict? dictValue = dict;
 
   return showDialog(
     context: context,
@@ -628,12 +626,12 @@ Future<void> showCreateAttributeDialog(BuildContext context,
                         });
                       });
                     }, hint: "请选择"),
-                    type == "选择型"? CommonWidget.commonChoiceTile("选择枚举字典", dictValue?.name??"",
+                    type == "选择型"? CommonWidget.commonChoiceTile("选择枚举字典", dictValue?.metadata.name??"",
                         showLine: true, required: true, onTap: () {
                           PickerUtils.showListStringPicker(Get.context!,
-                              titles: dictList.map((e) => e.name??"").toList(), callback: (str) {
+                              titles: dictList.map((e) => e.metadata.name??"").toList(), callback: (str) {
                                 state(() {
-                                  dictValue = dictList.firstWhere((element) => element.name == str);
+                                  dictValue = dictList.firstWhere((element) => element.metadata.name == str);
                                 });
                               });
                         }, hint: "请选择"):const SizedBox(),
@@ -722,14 +720,14 @@ Future<void> showCreateAttrDialog(BuildContext context,
                       });
                     }, hint: "请选择"),
                     CommonWidget.commonChoiceTile(
-                        "选择管理权限", authority?.name ?? "",
+                        "选择管理权限", authority?.metadata.name ?? "",
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
-                          titles: allAuth.map((e) => e.name ?? "").toList(),
+                          titles: allAuth.map((e) => e.metadata.name ?? "").toList(),
                           callback: (str) {
                         state(() {
                           authority = authoritys
-                              .firstWhere((element) => element.name == str);
+                              .firstWhere((element) => element.metadata.name == str);
                         });
                       });
                     }, hint: "请选择"),
@@ -795,7 +793,7 @@ Future<void> showCreateWorkDialog(BuildContext context, List<ISpeciesItem> thing
 
   if(selected.isNotEmpty){
     for (var value in selected) {
-      selectedThing.add(allThing.firstWhere((element) => element.id == value));
+      selectedThing.add(allThing.firstWhere((element) => element.metadata.id == value));
     }
   }
   return showDialog(
@@ -816,20 +814,20 @@ Future<void> showCreateWorkDialog(BuildContext context, List<ISpeciesItem> thing
                         required: true,
                         hint: "请输入"),
                     isCreate?SizedBox():CommonWidget.commonChoiceTile(
-                        "操作实体", selectedThing.map((e) => e.name).toList().join(','),
+                        "操作实体", selectedThing.map((e) => e.metadata.name).toList().join(','),
                         showLine: true, required: true, onTap: ()  {
                           showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return MultiSelect(
-                              items: allThing.map((e) => e.name).toList(), selected: selectedThing.map((e) => e.name).toList(),title: "选择操作实体",);
+                              items: allThing.map((e) => e.metadata.name).toList(), selected: selectedThing.map((e) => e.metadata.name).toList(),title: "选择操作实体",);
                         },
                       ).then((selectedStr){
                         if(selectedStr!=null){
                           state((){
                             selectedThing.clear();
                             for (var value in selectedStr) {
-                              selectedThing.add(allThing.firstWhere((element) => element.name == value));
+                              selectedThing.add(allThing.firstWhere((element) => element.metadata.name == value));
                             }
                           });
                         }
@@ -911,15 +909,15 @@ Future<void> showCreateAuthDialog(
                         required: true,
                         hint: "请输入"),
                     CommonWidget.commonChoiceTile(
-                        "选择制定组织", selectedTarget?.teamName??"",
+                        "选择制定组织", selectedTarget.metadata.name,
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
-                          titles: targets.map((e) => e.teamName).toList(),
+                          titles: targets.map((e) => e.metadata.name).toList(),
                           callback: (str) {
                             state(() {
                               try {
                                 selectedTarget = targets
-                                    .firstWhere((element) => element.teamName == str);
+                                    .firstWhere((element) => element.metadata.name == str);
                               } catch (e) {}
                             });
                           });

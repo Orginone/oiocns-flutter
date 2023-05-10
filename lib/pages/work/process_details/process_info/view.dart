@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/widget/unified.dart';
-import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/images.dart';
-import 'package:orginone/pages/work/state.dart';
-import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 
 import 'logic.dart';
@@ -25,10 +21,11 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
                 Obx(() {
                   return Column(
                       children: state.xAttribute.keys.map((title) {
+                        return Container();
                         if (state.xAttribute[title]!.isEmpty) {
-                          return Container();
+
                         }
-                        return _info(title, state.xAttribute[title]!);
+                        // return _info(title, state.xAttribute[title]!);
                       }).toList());
                 }),
                 _opinion(),
@@ -71,20 +68,20 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
     );
   }
 
-  Widget _info(String title, Map<XOperationItem, dynamic> info) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidget.commonHeadInfoWidget(title),
-        CommonWidget.commonFormWidget(
-            formItem: info.keys.map((e) {
-              String content = "${info[e]}";
-              return CommonWidget.commonFormItem(
-                  title: e.name ?? "", content: content);
-            }).toList()),
-      ],
-    );
-  }
+  // Widget _info(String title, Map<XOperationItem, dynamic> info) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       CommonWidget.commonHeadInfoWidget(title),
+  //       CommonWidget.commonFormWidget(
+  //           formItem: info.keys.map((e) {
+  //             String content = "${info[e]}";
+  //             return CommonWidget.commonFormItem(
+  //                 title: e.name ?? "", content: content);
+  //           }).toList()),
+  //     ],
+  //   );
+  // }
 
   Widget _opinion() {
     if (state.task.status != 1) {

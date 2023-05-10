@@ -111,13 +111,13 @@ class AddMembersPage
                         child: Text(
                           "昵称:${item.name}", style: TextStyle(color: Colors
                             .black54, fontSize: 16.sp),),),
-                      Text("姓名:${item.team?.name ?? ""}", style: TextStyle(
+                      Text("姓名:${item.name}", style: TextStyle(
                           color: Colors.black54, fontSize: 16.sp),),
                       SizedBox(width: 50.w,),
                     ],
                   ),
                   SizedBox(height: 20.h,),
-                  Text("手机号:${item.team?.code ?? ""}",
+                  Text("手机号:${item.code}",
                     style: TextStyle(color: Colors.black54, fontSize: 16.sp),),
                 ],
               ),

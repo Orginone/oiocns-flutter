@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/core/market/model.dart';
-import 'package:orginone/dart/core/thing/ispecies.dart';
-import 'package:orginone/images.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_utils.dart';
-import 'package:orginone/util/toast_utils.dart';
 
 class ApplicationItem extends StatelessWidget {
   final IProduct product;
@@ -176,7 +174,7 @@ class GbItem extends StatelessWidget {
       width: double.infinity,
       color: Colors.white,
       child: Text(
-        item.name,
+        item.metadata.name,
         style: TextStyle(fontSize: 18.sp, color: Colors.black),
       ),
     );

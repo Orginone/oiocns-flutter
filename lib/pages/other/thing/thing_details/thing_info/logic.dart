@@ -1,8 +1,7 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/thing/ispecies.dart';
+import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/model/thing_model.dart';
 import 'package:orginone/pages/other/thing/thing_details/logic.dart';
-import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
@@ -25,20 +24,20 @@ class ThingInfoController extends BaseController<ThingInfoState> {
     LoadingDialog.showLoading(context);
     List<Map<ISpeciesItem,Map<String,dynamic>>> currentSpecies = [];
     if(thing.data!=null){
-      CommonTreeManagement().species!.getAllList().forEach((specie) {
-        for (var data in thing.data!) {
-          String id = data.keys.first.substring(1);
-          if(id == specie.id){
-            currentSpecies.add({specie:data[data.keys.first]});
-          }
-        }
-      });
+      // CommonTreeManagement().species!.getAllList().forEach((specie) {
+      //   for (var data in thing.data!) {
+      //     String id = data.keys.first.substring(1);
+      //     if(id == specie.id){
+      //       currentSpecies.add({specie:data[data.keys.first]});
+      //     }
+      //   }
+      // });
     }
     for (var element in currentSpecies) {
       var data = element[element.keys.first];
       List<CardData> cardData = [];
       for (var attribute in data!.keys) {
-        var xAttr = await CommonTreeManagement().findXAttribute(specieId: element.keys.first.id, attributeId: attribute.substring(1));
+        var xAttr = null;
         if(xAttr!=null){
           cardData.add(CardData(xAttr, data[attribute]));
         }

@@ -1,464 +1,345 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/market/model.dart';
-import 'package:orginone/dart/core/store/filesys.dart';
-import 'package:orginone/dart/core/store/ifilesys.dart';
-import 'package:orginone/dart/core/target/chat/chat.dart';
-import 'package:orginone/dart/core/target/chat/ichat.dart';
-import 'package:orginone/dart/core/target/todo/work.dart';
-import 'package:orginone/dart/core/target/university.dart';
-import 'package:orginone/dart/core/thing/dict.dart';
-import '../../base/common/uint.dart';
+import 'package:orginone/dart/core/chat/msgchat.dart';
+import 'package:orginone/dart/core/consts.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/target/base/team.dart';
+import 'package:orginone/dart/core/target/out_team/cohort.dart';
+import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/thing/app/application.dart';
+import 'package:orginone/dart/core/thing/filesys/filesysItem.dart';
+import 'package:orginone/dart/core/work/todo.dart';
+import 'package:orginone/main.dart';
+
 import '../../base/model.dart';
 import '../../base/schema.dart';
 import '../enum.dart';
-import 'authority/authority.dart';
-import 'authority/iauthority.dart';
-import 'cohort.dart';
-import 'company.dart';
-import 'hospital.dart';
-import 'itarget.dart';
-import 'mbase.dart';
+import 'base/belong.dart';
+import 'team/hospital.dart';
+import 'team/university.dart';
 
-class Person extends MarketTarget implements IPerson {
-  @override
-  late List<ICohort> cohorts;
+abstract class IPerson extends IBelong {
+  //文件系统
+  late IFileSystem fileSystem;
+  //加入/管理的单位
+  late RxList<ICompany> companys;
 
-  @override
-  late RxList<ICompany> joinedCompany;
+  //待办
+  late RxList<ITodo> todos;
 
-  @override
-  set spaceData(SpaceType _) {}
+  //赋予人的身份(角色)实体
+  late List<XIdentity> givedIdentitys;
 
-  @override
-  late List<IMarket> joinedMarkets;
+  //根据ID查询共享信息
+  TargetShare findShareById(String id);
 
-  @override
-  late List<IProduct> ownProducts;
+  //判断是否拥有某些用户的权限
+  bool authenticate(List<String> orgIds, List<String> authIds);
 
-  @override
-  late List<IMarket> publicMarkets;
+  // 加载赋予人的身份(角色)实体
+  Future<List<XIdentity>> loadGivedIdentitys({bool reload = false});
 
-  @override
-  late IAuthority? spaceAuthorityTree;
+  //加载单位
+  Future<List<ICompany>> loadCompanys({bool reload = false});
 
-  @override
-  late IObjectItem? home;
+  //加载待办
+  Future<List<ITodo>> loadTodos({bool reload = false});
 
-  @override
-  late List<IChat> memberChats = <IChat>[].obs;
+  //创建单位
+  Future<ICompany?> createCompany(TargetModel data);
 
-  @override
-  late Dict dict;
+  //搜索用户
+  Future<List<XTarget>> searchTargets(String filter, List<String> typeNames);
+}
 
-  @override
-  late IFileSystemItem root;
+class Person extends Belong implements IPerson {
 
   @override
-  late IWork work;
+  late RxList<ICompany> companys;
 
-  Person(XTarget target) : super(target, null, target.id) {
-    work = Work();
-    super.searchTargetType = [
-      TargetType.cohort,
-      TargetType.person,
-      ...companyTypes,
-    ];
-    subTeamTypes = [];
-    joinTargetType = [
-      TargetType.person,
-      TargetType.cohort,
-      ...companyTypes,
-    ];
-    dict = Dict(target.id);
-    createTargetType = [TargetType.cohort, ...companyTypes];
-    extendTargetType = [TargetType.cohort, TargetType.person];
-    joinedCompany = <ICompany>[].obs;
-    cohorts = [];
-    Future.delayed(const Duration(milliseconds:500), () async {
-      home = await root.create('主目录');
-    });
-    members = [];
-    memberChats = <IChat>[].obs;
-    root = getFileSysItemRoot(target.id);
-    var labels = [space?.teamName ?? "", "${target.typeName}群"];
-    chat = createChat(userId, id, target, labels);
-    space = this;
+  @override
+  late List<XIdentity> givedIdentitys;
+
+  @override
+  late RxList<ITodo> todos;
+
+  Person(XTarget metadata):super(metadata,['本人']){
+    companys = <ICompany>[].obs;
+    givedIdentitys = [];
+    todos = <ITodo>[].obs;
+    fileSystem = new FileSystem(
+      XSpecies(id: metadata.id),
+      this,
+    );
+    userId = metadata.id;
   }
 
   @override
-  Future<List<ITarget>> loadSubTeam({bool reload = false}) async {
-    return [];
-  }
-
-  @override
-  SpaceType get spaceData {
-    final res = SpaceType();
-    res.id = id;
-    res.name = "个人空间";
-    res.share = shareInfo;
-    res.typeName = target.typeName as TargetType;
-    return res;
-  }
-
-  @override
-  Future<IAuthority?> loadSpaceAuthorityTree([bool reload = false]) async {
-    if (!reload && spaceAuthorityTree != null) {
-      return spaceAuthorityTree;
+  Future<bool> applyJoin(List<XTarget> members) async {
+    var filter = members.where((element) {
+      return [TargetType.person, TargetType.cohort, ...companyTypes]
+          .contains(TargetType.getType(element.typeName));
+    }).toList();
+    for (var value in filter) {
+      if (TargetType.getType(value.typeName) == TargetType.person) {
+        await pullMembers([value]);
+      }
+      await kernel.applyJoinTeam(GainModel(
+        id: value.id,
+        subId: metadata.id,
+      ));
     }
-    final res = await kernel.queryAuthorityTree(IdSpaceReq(
-      id: '0',
-      spaceId: id,
-      page: PageRequest(
-        offset: 0,
-        filter: '',
-        limit: Constants.maxUint16,
-      ),
-    ));
-    if (res.success) {
-      authorityTree = Authority(res.data!, this, userId);
-    }
-    return authorityTree;
+    return true;
   }
 
   @override
-  Future<ITarget?> create(TargetModel data) async {
+  bool authenticate(List<String> orgIds, List<String> authIds) {
+    return givedIdentitys
+        .where((element) =>
+    orgIds.contains(element.shareId) && authIds.contains(element.authId))
+        .isNotEmpty;
+  }
+
+  @override
+  Future<ICompany?> createCompany(TargetModel data) async {
+    if (!companyTypes.contains(TargetType.getType(data.typeName))) {
+      data.typeName = TargetType.company.label;
+    }
+    data.public = false;
+    data.teamCode = data.teamCode ?? data.code;
+    data.teamName = data.teamName ?? data.name;
+    var res = await kernel.createTarget(data);
+    if (res.success && res.data != null) {
+      var company = createCompanyForTarget(res.data!);
+      companys.add(company);
+      await company.pullMembers([metadata]);
+      return company;
+    }
+  }
+
+  @override
+  Future<ITeam?> createTarget(TargetModel data) {
     switch (TargetType.getType(data.typeName)) {
-      case TargetType.university:
-      case TargetType.hospital:
-      case TargetType.company:
-        return _createCompany(data);
       case TargetType.cohort:
-        return _createCohort(
-            data.avatar, data.name, data.code, data.teamRemark);
+        return createCohort(data);
       default:
-        return null;
+        return createCompany(data);
     }
   }
 
   @override
-  Future<XTargetArray> searchCohort(code) async {
-    return await searchTargetByName(code, [TargetType.cohort]);
-  }
-
-  @override
-  Future<XTargetArray> searchPerson(code) async {
-    return await searchTargetByName(code, [TargetType.person]);
-  }
-
-  @override
-  Future<XTargetArray> searchCompany(code) async {
-    return await searchTargetByName(code, companyTypes);
-  }
-
-  @override
-  Future<List<ICohort>> getCohorts({bool reload = false}) async {
-    if (!reload && cohorts.isNotEmpty) {
-      return cohorts;
-    }
-    final res = await getjoinedTargets([TargetType.cohort], id);
-    if (res.result != null) {
-      cohorts = res.result
-              ?.map((a) => Cohort(
-                  a,
-                  this,
-                  userId,
-                  () =>
-                      {cohorts = cohorts.where((i) => i.id != a.id).toList()}))
-              .toList() ??
-          [];
-    }
-    return cohorts;
-  }
-
-  @override
-  Future<List<ICompany>> getJoinedCompanys({bool reload = false}) async {
-    if (!reload && joinedCompany.isNotEmpty) {
-      return joinedCompany;
-    }
-    joinedCompany.clear();
-    final res = await getjoinedTargets(companyTypes, id);
-    if (res.result != null) {
-      for (var a in res.result!) {
-        late ICompany company;
-        if (a.typeName == TargetType.university.label) {
-          company = University(a, id);
-        } else if (a.typeName == TargetType.university.label) {
-          company = Hospital(a, id);
-        } else {
-          company = Company(a, id);
+  TargetShare findShareById(String id){
+    var share = ShareIdSet[id] ?? TargetShare(name: '未知', typeName: "未知");
+    if (share.avatar == null) {
+      kernel
+          .queryTargetById(IdArrayReq(ids: [id],
+        page: PageRequest(offset: 0, limit: 9999, filter: ''),)).then((res){
+        if (res.success && res.data?.result != null) {
+          res.data?.result?.forEach((item) {
+            ShareIdSet[item.id] = TargetShare(name: item.name,
+                typeName: item.typeName,
+                avatar: FileItemShare.parseAvatar(item.icon));
+          });
+          share = ShareIdSet[id]??share;
         }
-        joinedCompany.add(company);
+      });
+    }
+    return share;
+  }
+    @override
+    Future<List<ICompany>> loadCompanys({bool reload = false}) async {
+      if (!reload && companys.isNotEmpty) {
+        return companys;
+      }
+      companys.clear();
+      final res = await kernel.queryJoinedTargetById(GetJoinedModel(
+          id: metadata.id,
+          typeNames: [
+            TargetType.company.label,
+            TargetType.hospital.label,
+            TargetType.university.label
+          ],
+          page: PageRequest(offset: 0, limit: 9999, filter: '')));
+      if (res.success) {
+        res.data?.result?.forEach((element) {
+          companys.add(createCompanyForTarget(element));
+        });
+      }
+      return companys;
+    }
+
+    ICompany createCompanyForTarget(XTarget metadata) {
+      switch (TargetType.getType(metadata.typeName)) {
+        case TargetType.hospital:
+          return Hospital(metadata, this);
+        case TargetType.university:
+          return University(metadata, this);
+        default:
+          return Company(metadata, this);
       }
     }
-    return joinedCompany;
+
+    @override
+    Future<List<XIdentity>> loadGivedIdentitys({bool reload = false}) async{
+      if (givedIdentitys.isEmpty || reload) {
+        var res = await kernel.queryGivedIdentitys();
+        if (res.success) {
+          givedIdentitys = res.data?.result ?? [];
+        }
+      }
+      return givedIdentitys;
+    }
+
+    @override
+  Future<List<ICohort>> loadCohorts({bool reload = false}) async{
+      if (cohorts.isEmpty || reload) {
+        var res = await kernel.queryJoinedTargetById(GetJoinedModel(  id: metadata.id,
+          typeNames: [TargetType.cohort.label],
+          page: PageRequest(offset: 0, limit: 9999, filter: ''),));
+        if (res.success) {
+          res.data?.result?.forEach((element) {
+            cohorts.add(Cohort(this,element));
+          });
+        }
+      }
+      return cohorts;
+  }
+
+    @override
+    Future<List<ITodo>> loadTodos({bool reload = false}) async{
+      if (todos.isEmpty || reload) {
+        todos.clear();
+        var res = await kernel.queryApproveTask(IdReq(id: '0'));
+        if (res.success) {
+          res.data?.result?.forEach((element) {
+            todos.add(WorkTodo(element));
+          });
+        }
+      }
+      return todos;
+    }
+
+    @override
+    Future<List<XTarget>> searchTargets(String filter, List<String> typeNames) async{
+      var res = await kernel.searchTargets(NameTypeModel(
+        name: filter,
+        typeNames: typeNames,
+        page: PageRequest(offset: 0, limit: 9999, filter: ''),
+      ));
+      if (res.success) {
+        return res.data?.result ?? [];
+      }
+      return [];
+    }
+
+    @override
+  Future<bool> exit() async{
+    // TODO: implement exit
+    return false;
   }
 
   @override
-  List<IChat> allChats() {
-    var chats = [chat];
-    for (var item in joinedCompany) {
-      chats.addAll(item.allChats());
+  Future<bool> delete() async{
+    var res = await kernel.deleteTarget(IdReq(id: metadata.id));
+    return res.success;
+  }
+
+    @override
+    List<ITarget> get parentTarget {
+      return [this, ...cohorts];
     }
-    for (var item in cohorts) {
-      chats.addAll(item.allChats());
+
+    @override
+    List<ITarget> get subTarget {
+      return [];
     }
-    if (authorityTree != null) {
-      chats.addAll(authorityTree!.allChats());
+
+    @override
+  // TODO: implement chats
+  List<IChat> get chats{
+      List<IChat> chats = [this];
+      for (var item in companys) {
+      chats.addAll(item.chats);
+      }
+      chats.addAll(cohortChats);
+      chats.addAll(memberChats);
+      return chats;
+  }
+
+
+  @override
+  // TODO: implement cohortChats
+  List<IChat> get cohortChats{
+    List<IChat> chats = [];
+    for (var value in cohorts) {
+      chats.addAll(value.chats);
     }
-    chats.addAll(memberChats);
+    if (superAuth!=null) {
+      chats.addAll(superAuth!.chats);
+    }
     return chats;
   }
 
-  Future<ICohort?> _createCohort(avatar, name, code, remark) async {
-    final res = await createTarget(TargetModel(
-      code: code,
-      name: name,
-      avatar: avatar,
-      teamCode: code,
-      teamName: name,
-      belongId: id,
-      typeName: TargetType.cohort.label,
-      teamRemark: remark,
-    ));
-    if (res.success && res.data != null) {
-      final cohort = Cohort(
-          res.data!,
-          this,
-          userId,
-          () =>
-              {cohorts = cohorts.where((i) => i.id != res.data!.id).toList()});
-      cohorts.add(cohort);
-      cohort.pullMember(target);
-      return cohort;
+  @override
+  // TODO: implement workSpecies
+  List<IApplication> get workSpecies{
+    List<IApplication> items = (species.where((element) => element.metadata.typeName == SpeciesType.application.label).toList()) as List<IApplication>;
+    for (var item in companys) {
+      items.addAll(item.workSpecies);
     }
-    return null;
+    for (var item in cohorts) {
+      items.addAll(item.species.where(
+            (a) => a.metadata.typeName == SpeciesType.workItem.label,
+      ).toList() as List<IApplication>);
+    }
+
+    return items;
   }
 
-  Future<ICompany?> _createCompany(TargetModel data) async {
-    data.belongId = id;
-    if (!companyTypes.contains(data.typeName as TargetType)) {
-      // logger.warn("您无法创建该类型单位!");
-      return null;
-    }
-    // if (!validIsSocialCreditCode(data.code)) {
-    //   logger.warn("请填写正确的代码!");
-    //   return;
-    // }
-    final tres = await searchTargetByName(data.code, companyTypes);
-    if (tres.result == null) {
-      final res = await createTarget(data);
-      if (res.success && res.data != null) {
-        late ICompany company;
-        if (res.success) {
-          switch (data.typeName as TargetType) {
-            case TargetType.university:
-              company = University(res.data!, id);
-              break;
-            case TargetType.hospital:
-              company = Hospital(res.data!, id);
-              break;
-            default:
-              company = Company(res.data!, id);
-              break;
-          }
-          joinedCompany.add(company);
-          company.pullMember(target);
-          return company;
-        }
-      }
-    } else {
-      // logger.warn(consts.IsExistError);
-    }
-    return null;
-  }
 
   @override
-  Future<IProduct?> createProduct(ProductModel data) async {
-    final prod = await super.createProduct(data);
-    if (prod != null) {
-      usefulProduct.add(prod.prod);
-      if (prod.prod.resource != null) {
-        usefulResource[prod.prod.id!] = prod.prod.resource!;
+  void loadMemberChats(List<XTarget> members, bool isAdd) {
+    for (var member in members) {
+      if(isAdd){
+        memberChats.add(
+          PersonMsgChat(
+            metadata.id,
+            metadata.id,
+            member.id,
+            TargetShare(name: member.name,
+              typeName: member.typeName,
+              avatar: FileItemShare.parseAvatar(member.icon),),
+            ['好友'],
+            member.remark??"",
+          ),
+        );
+      }else{
+        memberChats.value = memberChats.where((p0) => !(p0.belongId == member.id && p0.chatId == member.id)).toList();
       }
     }
-    return prod;
+    memberChats.refresh();
   }
 
   @override
-  Future<bool> deleteCohort(String id) async {
-    final res = await kernel.deleteTarget(IdReqModel(
-      id: id,
-      typeName: TargetType.cohort.name,
-      belongId: id,
-    ));
-    if (res.success) {
-      cohorts = cohorts.where((a) => a.id != id).toList();
+  Future<void> deepLoad({bool reload = false}) async{
+    await loadGivedIdentitys(reload: reload);
+    await loadCompanys(reload: reload);
+    await loadCohorts(reload: reload);
+    await loadMembers(reload: reload);
+    await loadSuperAuth(reload: reload);
+    await loadDicts(reload: reload);
+    await loadSpecies(reload: reload);
+    for (var company in companys) {
+      await company.deepLoad(reload: reload);
     }
-    return res.success;
-  }
 
-  @override
-  Future<bool> deleteCompany(String id) async {
-    final res = await kernel.deleteTarget(IdReqModel(
-      id: id,
-      typeName: TargetType.company.name,
-      belongId: id,
-    ));
-    if (res.success) {
-      joinedCompany.removeWhere((a) => a.id != id);
+    for (var cohort in cohorts) {
+      await cohort.deepLoad(reload: reload);
     }
-    return res.success;
+
+    superAuth?.deepLoad(reload: reload);
   }
 
   @override
-  Future<bool> applyJoinCohort(String id) async {
-    final cohort = cohorts.firstWhere((cohort) => cohort.id == id);
-    if (cohort.id == '') {
-      return await applyJoin(id, TargetType.cohort);
-    }
-    // logger.warn(consts.IsJoinedError);
-    return false;
-  }
+  late IFileSystem fileSystem;
 
-  @override
-  Future<bool> applyJoinCompany(String id, TargetType typeName) async {
-    final company = joinedCompany.firstWhere((company) => company.id == id);
-    if (company.id == '') {
-      return await applyJoin(id, typeName);
-    }
-    // logger.warn(consts.IsJoinedError);
-    return false;
-  }
-
-  @override
-  Future<bool> quitCohorts(String id) async {
-    final res = await cancelJoinTeam(id);
-    if (res.success) {
-      cohorts = cohorts.where((cohort) => cohort.id != id).toList();
-    }
-    return res.success;
-  }
-
-  @override
-  Future<bool> quitCompany(String id) async {
-    final res = await kernel.exitAnyOfTeamAndBelong(ExitTeamModel(
-      id: id,
-      teamTypes: [
-        TargetType.jobCohort.name,
-        TargetType.department.name,
-        TargetType.cohort.name,
-        ...List<String>.from(companyTypes)
-      ],
-      targetId: id,
-      targetType: TargetType.person.name,
-    ));
-    if (res.success) {
-      joinedCompany.removeWhere((company) => company.id != id);
-    }
-    return res.success;
-  }
-
-  @override
-  Future<List<XTarget>> loadMembers(PageRequest page) async {
-    if (members.isEmpty) {
-      final data = await super.loadMembers(page);
-      if (data.isNotEmpty) {
-        members.addAll(data);
-        members = [];
-        memberChats = [];
-        for (var item in data) {
-          members.add(item);
-          memberChats.add(createChat(userId, id, item, ['好友']));
-        }
-      }
-    }
-    return members
-        .where(
-            (a) => a.code.contains(page.filter) || a.name.contains(page.filter))
-        .skip(page.offset)
-        .take(page.limit)
-        .toList();
-  }
-
-  @override
-  Future<bool> applyFriend(XTarget target) async {
-    final joinedTarget = members.firstWhere((a) => a.id == target.id);
-    if (joinedTarget.id == '') {
-      if (await pullMember(target)) {
-        return await applyJoin(target.id, TargetType.person);
-      }
-    }
-    // logger.warn(consts.IsExistError);
-    return false;
-  }
-
-  Future<bool> removeFriends(List<String> ids) async {
-    if (await super.removeMembers(ids, type: TargetType.person.name)) {
-      for (String id in ids) {
-        await kernel.exitAnyOfTeam(ExitTeamModel(
-          id: id,
-          teamTypes: [TargetType.person.name],
-          targetId: id,
-          targetType: TargetType.person.name,
-        ));
-      }
-      members.removeWhere((item) => !ids.contains(item.id));
-      return true;
-    }
-    return false;
-  }
-
-  @override
-  Future<bool> approvalFriendApply(XRelation relation, int status) async {
-    final res = await approvalJoinApply(relation.id, status);
-    if (status >= CommonStatus.approveStartStatus.value &&
-        status < CommonStatus.rejectStartStatus.value &&
-        res.success &&
-        relation.target != null) {
-      members.add(relation.target!);
-    }
-    return false;
-  }
-
-  @override
-  Future<XRelationArray?> queryJoinApply() async {
-    return (await kernel.queryJoinTeamApply(IDBelongReq(
-      id: id,
-      page: PageRequest(
-        offset: 0,
-        filter: "",
-        limit: Constants.maxUint16,
-      ),
-    )))
-        .data;
-  }
-
-  @override
-  Future<XRelationArray?> queryJoinApproval() async {
-    return (await kernel.queryTeamJoinApproval(IDBelongReq(
-      id: id,
-      page: PageRequest(
-        offset: 0,
-        filter: "",
-        limit: Constants.maxUint16,
-      ),
-    )))
-        .data;
-  }
-
-  @override
-  Future<bool> cancelJoinApply(id) async {
-    final res = await kernel.cancelJoinTeam(IdReqModel(
-      id: id,
-      typeName: TargetType.person.name,
-      belongId: id,
-    ));
-    return res.success;
-  }
-
-  @override
-  Future<bool> resetPassword(String password, String privateKey) async {
-    return (await kernel.resetPassword(target.code, password, privateKey))
-        .success;
-  }
 }

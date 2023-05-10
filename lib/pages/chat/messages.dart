@@ -7,16 +7,16 @@ import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_contr
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/common_widget.dart';
 
 class Messages extends BaseBreadcrumbNavMultiplexPage<Controller, State> {
   @override
   Widget body() {
-    var userName = controller.settingCtrl.provider.user?.name;
+    var userName = controller.settingCtrl.provider.user?.metadata.name;
     var companies = <Widget>[];
-    for (var e in state.settingCtrl.provider.user?.joinedCompany??[]) {
+    for (var e in state.settingCtrl.provider.user?.companys??[]) {
       companies.add(CommonWidget.commonHeadInfoWidget(e.name));
       companies.add(BaseBreadcrumbNavItem(
         item: BaseBreadcrumbNavModel(name: e.name, children: []),
@@ -78,7 +78,7 @@ class State extends BaseBreadcrumbNavState {
   SettingController get settingCtrl => Get.find<SettingController>();
 
   State() {
-    var joinedCompanies = settingCtrl.provider.user?.joinedCompany;
+    var joinedCompanies = settingCtrl.provider.user?.companys;
 
     model.value = Get.arguments?['data'];
 
@@ -87,8 +87,8 @@ class State extends BaseBreadcrumbNavState {
       for (var value in joinedCompanies) {
         organization.add(
           ChatBreadcrumbNav(
-            name: value.teamName,
-            id: value.id,
+            name: value.metadata.name,
+            id: value.metadata.id,
             space: value,
             children: [
               ChatBreadcrumbNav(
@@ -117,7 +117,7 @@ class State extends BaseBreadcrumbNavState {
                 children: [],
               ),
             ],
-            image: value.target.avatarThumbnail(),
+            image: value.metadata.avatarThumbnail(),
           ),
         );
       }
@@ -140,7 +140,7 @@ class MessagesBinding extends BaseBindings<Controller> {
 
 class ChatBreadcrumbNav extends BaseBreadcrumbNavModel<ChatBreadcrumbNav> {
   OrganizationEnum? organizationEnum;
-  ISpace? space;
+  IBelong? space;
   PersonEnum? workType;
 
   ChatBreadcrumbNav(

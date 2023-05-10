@@ -18,7 +18,7 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
            return CommonWidget.commonBreadcrumbNavWidget(
                firstTitle: state.head,
                allTitle: state.selectedGroup
-                   .map((element) => element.name)
+                   .map((element) => element.metadata.name)
                    .toList(),
                onTapFirst: () {
                  controller.back();

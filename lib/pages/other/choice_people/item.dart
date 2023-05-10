@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/widget/common_widget.dart';
 
 import 'logic.dart';
@@ -37,7 +37,7 @@ class GroupItem extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  department.name ?? "",
+                  department.metadata.name ?? "",
                   style: TextStyle(
                       color: Colors.black,
                       fontSize:  20.sp),

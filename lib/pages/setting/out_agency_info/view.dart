@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/pages/setting/config.dart';
-import 'package:orginone/pages/setting/widget.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
@@ -14,10 +13,14 @@ import 'state.dart';
 
 class OutAgencyInfoPage
     extends BaseGetView<OutAgencyInfoController, OutAgencyInfoState> {
+
+
+  SettingController get setting => Get.find();
+
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: state.group.teamName,
+      titleName: state.group.metadata.name??"",
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -72,20 +75,20 @@ class OutAgencyInfoPage
             style: TextStyle(fontSize: 21.sp),
           ),
           CommonWidget.commonTextContentWidget(
-              "集团名称", state.group.target.team?.name ?? ""),
+              "集团名称", state.group.metadata.name),
           CommonWidget.commonTextContentWidget(
-              "集团代码", state.group.target.code ?? ""),
-          CommonWidget.commonTextContentWidget("团队简称", state.group.name ?? ""),
+              "集团代码", state.group.metadata.code),
+          CommonWidget.commonTextContentWidget("团队简称", state.group.metadata.name),
           CommonWidget.commonTextContentWidget(
-              "团队标识", state.group.target.team?.code ?? ""),
+              "团队标识", state.group.metadata.code ?? ""),
           CommonWidget.commonTextContentWidget(
-              "创建人", findTargetShare(state.group.target.team?.createUser??"").name),
+              "创建人", setting.user.findShareById(state.group.metadata.createUser).name),
           CommonWidget.commonTextContentWidget(
               "创建时间",
-              DateTime.tryParse(state.group.target.team?.createTime ?? "")!
+              DateTime.tryParse(state.group.metadata.createTime)!
                   .format()),
           CommonWidget.commonTextContentWidget(
-              "简介", state.group.target.team?.remark ?? ""),
+              "简介", state.group.metadata.remark ?? ""),
         ],
       ),
     );
@@ -101,9 +104,9 @@ class OutAgencyInfoPage
         content.add([
           user.name,
           user.code,
-          user.team?.name ?? "",
-          user.team?.code ?? "",
-          user.team?.remark ?? ""
+          user.name ?? "",
+          user.code ?? "",
+          user.remark ?? ""
         ]);
       }
       return CommonWidget.commonDocumentWidget(

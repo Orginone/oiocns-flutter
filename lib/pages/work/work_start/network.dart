@@ -10,42 +10,38 @@ import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 class WorkStartNetWork {
-  static Future<List<XFlowDefine>> getFlowDefine(String speciesId) async {
-    List<XFlowDefine> defines = [];
-    var settingCtrl = Get.find<SettingController>();
-    // var space = settingCtrl.space;
-    ResultType<XFlowDefineArray> result = await KernelApi.getInstance()
-        .queryDefine(QueryDefineReq(
-            speciesId: speciesId,
-            spaceId: '0',
-            page: PageRequest(offset: 0, limit: 20, filter: '')));
-    if (result.success) {
-      defines = result.data?.result ?? [];
-    }
+  static Future<List<XWorkDefine>> getWorkDefine(String speciesId) async {
+    List<XWorkDefine> defines = [];
+    // ResultType<XWorkDefineArray> result = await KernelApi.getInstance()
+    //     .queryWorkDefine(GetSpeciesResourceModel(
+    //         speciesId: speciesId,
+    //         spaceId: '0',
+    //         page: PageRequest(offset: 0, limit: 20, filter: '')));
+    // if (result.success) {
+    //   defines = result.data?.result ?? [];
+    // }
     return defines;
   }
 
-  static Future<FlowNode?> getDefineNode(String id) async {
-    FlowNode? node;
+  static Future<WorkNodeModel?> getDefineNode(String id) async {
+    WorkNodeModel? node;
     var settingCtrl = Get.find<SettingController>();
     // var space = settingCtrl.space;
-    ResultType<FlowNode> result = await KernelApi.getInstance().queryNodes(
-        IdSpaceReq(
+    ResultType<WorkNodeModel> result = await KernelApi.getInstance().queryWorkNodes(
+        IdReq(
             id: id,
-            spaceId: '0',
-            page: PageRequest(offset: 0, limit: 20, filter: '')));
+        ));
     node = result.data;
     return node;
   }
 
-  static Future<void> createInstance(XFlowDefine define,
+  static Future<void> createInstance(XWorkDefine define,
       Map<String, dynamic> data, List<String> thingIds) async {
     var settingCtrl = Get.find<SettingController>();
     // var space = settingCtrl.space;
-    ResultType result = await KernelApi.getInstance().createInstance(
-      FlowInstanceModel(
+    ResultType result = await KernelApi.getInstance().createWorkInstance(
+      WorkInstanceModel(
         defineId: define.id!,
-        spaceId: '0',
         content: "",
         contentType: "Text",
         data: jsonEncode(data),
@@ -63,18 +59,18 @@ class WorkStartNetWork {
     }
   }
 
-  static Future<List<XFlowInstance>> getFlowInstance({String? id,String? speciesId}) async {
-    List<XFlowInstance> flowInstacnes = [];
+  static Future<List<XWorkInstance>> getWorkInstance({String? id,String? speciesId}) async {
+    List<XWorkInstance> WorkInstacnes = [];
     SettingController setting = Get.find<SettingController>();
-    ResultType<XFlowInstanceArray> result = await KernelApi.getInstance()
+    ResultType<XWorkInstanceArray> result = await KernelApi.getInstance()
         .queryInstanceByApply(FlowReq(
         id: id,spaceId: '0',speciesId: speciesId, page: PageRequest(offset: 0, limit: 9999, filter: '')));
 
     if (result.success) {
-      flowInstacnes = result.data?.result??[];
+      WorkInstacnes = result.data?.result??[];
     } else {
       ToastUtils.showMsg(msg: result.msg);
     }
-    return flowInstacnes;
+    return WorkInstacnes;
   }
 }

@@ -3,16 +3,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/thing/base/work.dart';
 import 'package:orginone/pages/work/work_start/logic.dart';
-import 'package:orginone/pages/work/work_start/network.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 class Item extends StatelessWidget {
-  final XFlowDefine define;
+  final XWorkDefine define;
 
   const Item({Key? key, required this.define}) : super(key: key);
 
@@ -22,10 +20,10 @@ class Item extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        FlowNode? node = await work.state.work.space!.loadWorkNode(define.id!);
+        WorkNodeModel? node = await (work.state.work.space! as IWork).loadWorkNode(define.id!);
         if (node != null &&
-            node.operations != null &&
-            node.operations!.isNotEmpty) {
+            node.forms != null &&
+            node.forms!.isNotEmpty) {
           Get.toNamed(Routers.createWork,arguments: {"define":define,"node":node});
         } else {
           return ToastUtils.showMsg(msg: "流程未绑定表单");
@@ -55,7 +53,7 @@ class Item extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "需求主体:${work.state.work.space?.teamName ?? ""}",
+                  "需求主体:${work.state.work.space?.metadata.name ?? ""}",
                   style: TextStyle(color: Colors.black38, fontSize: 16.sp),
                 ),
                 Text(

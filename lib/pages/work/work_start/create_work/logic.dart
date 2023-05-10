@@ -24,42 +24,42 @@ class CreateWorkController extends BaseController<CreateWorkState> {
     // TODO: implement onReceivedEvent
     super.onReceivedEvent(event);
     if (event is ChoicePeople) {
-      for (var element in state.node.operations!) {
+      for (var element in state.node.forms!) {
         for (var element in element.items!) {
-          if (element.fields?.router == Routers.choicePeople) {
-            element.fields?.defaultData.value = event.user;
-          }
+          // if (element.fields?.router == Routers.choicePeople) {
+          //   element.fields?.defaultData.value = event.user;
+          // }
         }
       }
     }
     if (event is ChoiceDepartment) {
-      for (var element in state.node.operations!) {
+      for (var element in state.node.forms!) {
         for (var element in element.items!) {
-          if (element.fields?.router == Routers.choiceDepartment) {
-            element.fields?.defaultData.value = event.department;
-          }
+          // if (element.fields?.router == Routers.choiceDepartment) {
+          //   element.fields?.defaultData.value = event.department;
+          // }
         }
       }
     }
   }
 
   Future init() async{
-    for (var element in state.node.operations!) {
+    for (var element in state.node.forms!) {
       if (element.items == null) {
-        await element.getOperationItems(work.state.work.space!.id);
+        // await element.getOperationItems(work.state.work.space!.id);
       }
     }
     state.show.value = true;
   }
 
   Future<void> submit() async{
-    for (var element in state.node.operations!) {
+    for (var element in state.node.forms!) {
       for (var element in element.items!) {
-        if (element.fields?.required ?? false) {
-          if (element.fields!.defaultData.value == null) {
-            return ToastUtils.showMsg(msg: element.fields!.hint!);
-          }
-        }
+        // if (element.fields?.required ?? false) {
+        //   if (element.fields!.defaultData.value == null) {
+        //     return ToastUtils.showMsg(msg: element.fields!.hint!);
+        //   }
+        // }
       }
     }
     if(state.selectedThings.isEmpty && (!(state.define.isCreate??false))){
@@ -67,25 +67,25 @@ class CreateWorkController extends BaseController<CreateWorkState> {
     }
     Map<String,dynamic> data = {};
 
-    for (var element in state.node.operations!) {
+    for (var element in state.node.forms!) {
       for (var element in element.items!) {
-        if (element.fields?.defaultData.value != null) {
-          if (element.fields?.type == "select") {
-            if (!element.fields!.code!.contains("DATE") &&
-                !element.fields!.code!.contains('date') &&
-                !(element.fields!.code == 'DKGMSJ')) {
-              data[element.attrId!] =
-                  element.fields!.defaultData.value?.values?.first.toString() ??
-                      "";
-            } else {
-              data[element.attrId!] = element.fields?.defaultData.value;
-            }
-          } else if (element.fields?.type == "router") {
-            data[element.attrId!] = element.fields?.defaultData.value.name;
-          } else {
-            data[element.attrId!] = element.fields?.defaultData.value;
-             }
-          }
+        // if (element.fields?.defaultData.value != null) {
+        //   if (element.fields?.type == "select") {
+        //     if (!element.fields!.code!.contains("DATE") &&
+        //         !element.fields!.code!.contains('date') &&
+        //         !(element.fields!.code == 'DKGMSJ')) {
+        //       data[element.attrId!] =
+        //           element.fields!.defaultData.value?.values?.first.toString() ??
+        //               "";
+        //     } else {
+        //       data[element.attrId!] = element.fields?.defaultData.value;
+        //     }
+        //   } else if (element.fields?.type == "router") {
+        //     data[element.attrId!] = element.fields?.defaultData.value.name;
+        //   } else {
+        //     data[element.attrId!] = element.fields?.defaultData.value;
+        //      }
+        //   }
       }
     }
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/core/target/authority/iauthority.dart';
-import 'package:orginone/dart/core/target/authority/iidentity.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/target/authority/authority.dart';
+import 'package:orginone/dart/core/target/identity/identity.dart';
+import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/pages/setting/network.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -30,7 +30,7 @@ class RoleSettingsController extends BaseController<RoleSettingsState>
 
   Future<void> initRole() async {
     state.identitys.clear();
-    state.identitys.value = await state.target.getIdentitys() ?? [];
+    state.identitys.value = await state.target.loadIdentitys();
     initTabController();
   }
 
@@ -41,8 +41,9 @@ class RoleSettingsController extends BaseController<RoleSettingsState>
 
   void createIdentity() async{
 
-    List<IAuthority> auth = await SettingNetWork.getAuthority(state.target);
-    showCreateIdentityDialog(context,auth,onCreate: (String name, String code, String authID,String remark) async{
+    IAuthority? auth = await state.target.space.loadSuperAuth();
+
+    showCreateIdentityDialog(context,auth!=null?getAllAuthority([auth]):[],onCreate: (String name, String code, String authID,String remark) async{
      var model = IdentityModel(name: name,code: code,authId: authID,remark: remark);
      IIdentity? identity = await state.target.createIdentity(model);
      if(identity!=null){
@@ -57,10 +58,9 @@ class RoleSettingsController extends BaseController<RoleSettingsState>
 
   void deleteIdentity(IIdentity identity) async {
     try {
-      bool success = await state.target?.deleteIdentity(identity.id) ??
-          false;
+      bool success = await identity.delete();
       if (success) {
-        state.identitys.removeWhere((element) => element.id == identity.id);
+        state.identitys.remove(identity);
         initTabController();
       } else {
         ToastUtils.showMsg(msg: "删除失败");

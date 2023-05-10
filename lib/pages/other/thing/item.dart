@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/target/targetMap.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/model/thing_model.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_utils.dart';
-import 'package:orginone/util/department_management.dart';
-import 'package:orginone/widget/common_widget.dart';
 
 class Item extends StatelessWidget {
   final ThingModel item;
@@ -17,6 +14,9 @@ class Item extends StatelessWidget {
       required this.item,
       })
       : super(key: key);
+
+
+  SettingController get settingCtrl => Get.find<SettingController>();
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class Item extends StatelessWidget {
                             height: 10.h,
                           ),
                           Text(
-                            "创建人:${findTargetShare(item.creater ?? "")}",
+                            "创建人:${settingCtrl.user.findShareById(item.creater ?? "")}",
                             style: TextStyle(fontSize: 18.sp),
                           ),
                           SizedBox(

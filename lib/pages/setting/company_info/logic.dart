@@ -28,8 +28,8 @@ class CompanyInfoController extends BaseController<CompanyInfoState>
 
   Future<void> init() async {
     var users = await state.company
-        .loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
-    var group = await state.company.getJoinedGroups(reload: true);
+        .loadMembers();
+    var group = await state.company.loadGroups(reload: true);
     state.unitMember.clear();
     state.joinGroup.clear();
     state.unitMember.addAll(users);
@@ -53,8 +53,7 @@ class CompanyInfoController extends BaseController<CompanyInfoState>
             title: "邀请成员",
             hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {
-            bool success = await state.company.pullMembers(
-                list.map((e) => e.id).toList(), TargetType.person.label);
+            bool success = await state.company.pullMembers(list);
             if (success) {
               ToastUtils.showMsg(msg: "添加成功");
               state.unitMember.addAll(list);
@@ -71,9 +70,7 @@ class CompanyInfoController extends BaseController<CompanyInfoState>
             hint: "请输入集团的编码", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {
             try {
-              for (var element in list) {
-                await state.company.applyJoinGroup(element.id);
-              }
+              await state.company.applyJoin(list);
               ToastUtils.showMsg(msg: "发送成功");
             } catch (e) {
               ToastUtils.showMsg(msg: "发送失败");
@@ -86,7 +83,7 @@ class CompanyInfoController extends BaseController<CompanyInfoState>
 
   void removeMember(String data) async{
     var user = state.unitMember.firstWhere((element) => element.code == data);
-    bool success = await state.company.removeMember(user);
+    bool success = await state.company.removeMembers([user]);
     if (success) {
       state.unitMember.removeWhere((element) => element.code == data);
       state.unitMember.refresh();

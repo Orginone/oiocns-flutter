@@ -1,4 +1,3 @@
-import 'package:orginone/util/asset_management.dart';
 
 import 'assets_info.dart';
 
@@ -107,7 +106,7 @@ class AssetUse {
       if(detail!.isNotEmpty){
         approvalDocument = ApprovalDocument()..detail = [];
         for (var value in detail!) {
-          var item =  AssetManagement().findAsset(value);
+          var item = null;
           if(item!=null){
             approvalDocument!.detail!.add(item);
           }

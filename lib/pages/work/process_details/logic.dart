@@ -2,10 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/pages/work/network.dart';
-import 'package:orginone/util/common_tree_management.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
@@ -18,13 +17,15 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
     state.tabController = TabController(length: tabTitle.length, vsync: this);
   }
 
+  SettingController get controller => Get.find();
+
   @override
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
 
-    state.flowInstance.value ??= await WorkNetWork.getFlowInstance(state.todo.target.instanceId ?? "");
+    state.workInstance.value ??= await WorkNetWork.getFlowInstance(state.todo.metadata.instanceId ?? "");
     await loadDataInfo();
     LoadingDialog.dismiss(context);
   }
@@ -35,27 +36,28 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
 
   Future<void> loadDataInfo() async {
 
-    if (state.flowInstance.value == null) {
+    if (state.workInstance.value == null) {
       return;
     }
-    Map<String, dynamic> data = jsonDecode(state.flowInstance.value?.data ?? "");
+    Map<String, dynamic> data = jsonDecode(state.workInstance.value?.data ?? "");
     if (data.isEmpty) {
       return;
     }
     try{
       var space =
-          setting.user.joinedCompany.firstWhere((a) => a.id == state.todo.spaceId);
-      for (var element in state.flowInstance.value!.historyTasks!) {
-        if(element.node?.bindOperations!=null){
-          for (var bindOperation in element.node!.bindOperations!) {
-            Map<String, Map<XOperationItem, dynamic>> bindOperationInfo = {bindOperation.name!: {}};
-           List<XOperationItem> items = await WorkNetWork.getOperationItems(bindOperation.id??"",space.id);
-            for (var item in items) {
-              bindOperationInfo[bindOperation.name!]!.addAll({item: data['formData'][item.attrId]??""});
-            }
-            state.xAttribute.addAll(bindOperationInfo);
-          }
-        }
+          setting.user.companys.firstWhere((a) => a.belongId == state.todo.metadata.belongId);
+
+      for (var element in state.workInstance.value!.historyTasks!) {
+        // if(element.node?.bindOperations!=null){
+        //   for (var bindOperation in element.node!.bindOperations!) {
+        //     Map<String, Map<XOperationItem, dynamic>> bindOperationInfo = {bindOperation.name!: {}};
+        //    List<XOperationItem> items = await WorkNetWork.getOperationItems(bindOperation.id??"",space.id);
+        //     for (var item in items) {
+        //       bindOperationInfo[bindOperation.name!]!.addAll({item: data['formData'][item.attrId]??""});
+        //     }
+        //     state.xAttribute.addAll(bindOperationInfo);
+        //   }
+        // }
       }
       state.xAttribute.refresh();
     }catch(e){

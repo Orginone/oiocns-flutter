@@ -30,25 +30,26 @@ class CreateWorkPage
                 return SingleChildScrollView(
                   child: Column(
                     children: [
-                      ...state.node.operations!.map((e) {
-                        return Column(
-                          children: [
-                            CommonWidget.commonHeadInfoWidget(e.name ?? ""),
-                            ...e.items!.map((e) {
-                              if(e
-                                  .fields!
-                                  .type == null){
-                                return Container();
-                              }
-                              Widget child =
-                              testMappingComponents[e
-                                  .fields!
-                                  .type ?? ""]!(
-                                  e.fields!);
-                              return child;
-                            }).toList()
-                          ],
-                        );
+                      ...state.node.forms!.map((e) {
+                        return Container();
+                        // return Column(
+                        //   children: [
+                        //     CommonWidget.commonHeadInfoWidget(e.name ?? ""),
+                        //     ...e.items!.map((e) {
+                        //       if(e
+                        //           .fields!
+                        //           .type == null){
+                        //         return Container();
+                        //       }
+                        //       Widget child =
+                        //       testMappingComponents[e
+                        //           .fields!
+                        //           .type ?? ""]!(
+                        //           e.fields!);
+                        //       return child;
+                        //     }).toList()
+                        //   ],
+                        // );
                       }).toList(),
                       entityInfo(),
                     ],

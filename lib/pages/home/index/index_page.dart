@@ -262,17 +262,17 @@ class IndexPage extends BaseView<IndexPageController> {
           Icons.calendar_month_outlined,
           "办事",
           () {
-            Get.toNamed(
-              Routers.form,
-              arguments: CreateCohort((value) {
-                if (Get.isRegistered<SettingController>()) {
-                  Get.find<SettingController>()
-                      .user
-                      ?.create(TargetModel.fromJson(value))
-                      .then((value) => Get.back());
-                }
-              }),
-            );
+            // Get.toNamed(
+            //   Routers.form,
+            //   arguments: CreateCohort((value) {
+            //     if (Get.isRegistered<SettingController>()) {
+            //       Get.find<SettingController>()
+            //           .user
+            //           ?.create(TargetModel.fromJson(value))
+            //           .then((value) => Get.back());
+            //     }
+            //   }),
+            // );
           },
         ),
       ),
@@ -282,17 +282,7 @@ class IndexPage extends BaseView<IndexPageController> {
           Icons.cabin,
           "仓库",
           () {
-            Get.toNamed(
-              Routers.form,
-              arguments: CreateCompany((value) {
-                if (Get.isRegistered<SettingController>()) {
-                  Get.find<SettingController>()
-                      .user
-                      ?.create(TargetModel.fromJson(value))
-                      .then((value) => Get.back());
-                }
-              }),
-            );
+
           },
         ),
       ),
@@ -302,17 +292,7 @@ class IndexPage extends BaseView<IndexPageController> {
           Icons.person_pin,
           "设置",
           () {
-            Get.toNamed(
-              Routers.form,
-              arguments: CreateCompany((value) {
-                if (Get.isRegistered<SettingController>()) {
-                  Get.find<SettingController>()
-                      .user
-                      ?.create(TargetModel.fromJson(value))
-                      .then((value) => Get.back());
-                }
-              }),
-            );
+
           },
         ),
       ),

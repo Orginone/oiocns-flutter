@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
-import 'package:orginone/util/department_management.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'item.dart';
@@ -22,9 +19,9 @@ class ChoiceDepartmentPage
           Obx(
                 () {
               return CommonWidget.commonBreadcrumbNavWidget(
-                firstTitle: DepartmentManagement().getCurrentCompanyName(),
+                firstTitle: '',
                 allTitle: state.selectedGroup
-                    .map((element) => element.name)
+                    .map((element) => element.metadata.name)
                     .toList(),
                 onTapFirst: () {
                   controller.clearGroup();
@@ -54,7 +51,7 @@ class ChoiceDepartmentPage
           ),
           Obx(() {
             return CommonWidget.commonShowChoiceDataInfo(
-                state.selectedDepartment.value?.name ?? "", onTap: () {
+                state.selectedDepartment.value?.metadata.name ?? "", onTap: () {
               controller.back();
             });
           }),
@@ -68,7 +65,7 @@ class ChoiceDepartmentPage
       itemBuilder: (context, index) {
         var item = state.searchList[index];
         return Obx(() {
-          return CommonWidget.commonRadioTextWidget(item.name ?? "", item,
+          return CommonWidget.commonRadioTextWidget(item.metadata.name ?? "", item,
               groupValue: state.selectedDepartment.value, onChanged: (v) {
                 controller.selectedDepartment(item);
               }, keyWord: state.searchController.text);
@@ -85,7 +82,7 @@ class ChoiceDepartmentPage
           Obx(() {
             var data = state.departments.value;
             if (state.selectedGroup.isNotEmpty) {
-              data = state.selectedGroup.last.subTeam;
+              data = state.selectedGroup.last.subTarget;
             }
             return ListView.builder(
               itemBuilder: (context, index) {

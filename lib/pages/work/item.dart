@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/target/todo/todo.dart';
+import 'package:orginone/dart/core/work/todo.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/unified.dart';
@@ -64,7 +64,7 @@ class Item extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    todo.type,
+                    todo.metadata.taskType??"",
                     style: TextStyle(fontSize: 16.sp),
                   ),
                   Container(
@@ -74,31 +74,27 @@ class Item extends StatelessWidget {
                     color: Colors.grey,
                   ),
                   Text(
-                    todo.name,
+                    todo.metadata.title??"",
                     style: TextStyle(fontSize: 18.sp),
                   ),
 
                   SizedBox(width: 10.w,),
-                  Text(
-                    DateTime.tryParse(todo.createTime)?.format(format: "yyyy-MM-dd HH:mm:ss")??"",
-                    style: TextStyle(fontSize: 16.sp),
-                  ),
                   SizedBox(width: 10.w,),
                   Container(
                     padding: EdgeInsets.symmetric(
                         horizontal: 3.w, vertical: 2.h),
                     decoration: BoxDecoration(
                       color:
-                      statusMap[todo.status]!.color.withOpacity(0.1),
+                      statusMap[todo.metadata.status]!.color.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(4.w),
                       border: Border.all(
-                          color: statusMap[todo.status]!.color,
+                          color: statusMap[todo.metadata.status]!.color,
                           width: 0.5),
                     ),
                     child: Text(
-                      statusMap[todo.status]!.text,
+                      statusMap[todo.metadata.status]!.text,
                       style: TextStyle(
-                          color: statusMap[todo.status]!.color,
+                          color: statusMap[todo.metadata.status]!.color,
                           fontSize: 14.sp),
                     ),
                   ),
@@ -120,7 +116,12 @@ class Item extends StatelessWidget {
                   ),
                   button(),
                 ],
-              )
+              ),
+              SizedBox(height: 10.h,),
+              Text(
+                DateTime.tryParse(todo.metadata.createTime??"")?.format(format: "yyyy-MM-dd HH:mm:ss")??"",
+                style: TextStyle(fontSize: 16.sp),
+              ),
             ],
           ),
         ),
@@ -173,7 +174,7 @@ class Item extends StatelessWidget {
 
   Widget comment(){
     return Container(
-        margin: EdgeInsets.only(top: 20.h), child: Text("备注:${todo.remark}",style: TextStyle(fontSize: 16.sp),));
+        margin: EdgeInsets.only(top: 20.h), child: Text("备注:",style: TextStyle(fontSize: 16.sp),));
   }
 
   Widget role() {
@@ -184,7 +185,7 @@ class Item extends StatelessWidget {
           TextSpan(
               text: '创建人:', style: TextStyle(fontSize: 16.sp, color: Colors.grey)),
           TextSpan(
-              text: setting.provider.findNameById(todo.createUser),
+              text: setting.user.findShareById(todo.metadata.createUser??"").name,
               style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500)),
         ])),
         Container(
@@ -194,7 +195,7 @@ class Item extends StatelessWidget {
           color: Colors.grey,
         ),
         Text(
-          setting.provider.findNameById(todo.shareId),
+          setting.user.findShareById(todo.metadata.shareId??"").name,
           style: TextStyle(fontSize: 16.sp),
         ),
       ],

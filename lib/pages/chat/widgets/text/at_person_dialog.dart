@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/target/chat/ichat.dart';
+import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/widget/text_avatar.dart';
 
 class AtPersonDialog {
@@ -16,7 +16,7 @@ class AtPersonDialog {
             width: double.infinity,
             child: ListView.builder(
               itemBuilder: (context, index) {
-                var item = chat.persons[index];
+                var item = chat.members[index];
                 return ListTile(
                   onTap: () {
                     Navigator.pop(context, item);
@@ -39,7 +39,7 @@ class AtPersonDialog {
                         ),
                 );
               },
-              itemCount: chat.persons.length,
+              itemCount: chat.members.length,
             ),
           );
         }).then((value) {

@@ -1,5 +1,5 @@
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
-import 'package:orginone/dart/core/target/todo/todo.dart';
+import 'package:orginone/dart/core/work/todo.dart';
 import 'package:orginone/event/work_reload.dart';
 
 import 'network.dart';

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/dart/core/target/authority/iidentity.dart';
-import 'package:orginone/dart/core/target/targetMap.dart';
+import 'package:orginone/dart/core/target/identity/identity.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/widget.dart';
 import 'package:orginone/util/date_utils.dart';
@@ -16,10 +15,13 @@ class IdentityInfoPage
     extends BaseGetPageView<IdentityInfoController, IdentityInfoState> {
   late Rx<IIdentity> identity;
 
+
+
   IdentityInfoPage(IIdentity identity) {
     this.identity = Rx(identity);
   }
 
+  SettingController get setting => Get.find();
   @override
   Widget buildView() {
     return SingleChildScrollView(
@@ -51,18 +53,18 @@ class IdentityInfoPage
         Obx(() {
           return CommonWidget.commonFormWidget(formItem: [
             CommonWidget.commonFormItem(
-                title: "名称", content: identity.value.target.name ?? ""),
+                title: "名称", content: identity.value.metadata.name ?? ""),
             CommonWidget.commonFormItem(
-                title: "编码", content: identity.value.target.code ?? ""),
+                title: "编码", content: identity.value.metadata.code ?? ""),
             CommonWidget.commonFormItem(
-                title: "创建人", content: findTargetShare(identity.value.target.createUser??"").name),
+                title: "创建人", content: setting.user.findShareById(identity.value.metadata.createUser??"").name),
             CommonWidget.commonFormItem(
                 title: "创建时间",
                 content: DateTime.tryParse(
-                    identity.value.target.createTime ?? "")!
+                    identity.value.metadata.createTime ?? "")!
                     .format()),
             CommonWidget.commonFormItem(
-                title: "描述", content: identity.value.target.remark ?? ""),
+                title: "描述", content: identity.value.metadata.remark ?? ""),
           ]);
         })
       ],
@@ -73,7 +75,7 @@ class IdentityInfoPage
     return Column(
       children: [
         Obx(() {
-          return CommonWidget.commonHeadInfoWidget(identity.value.name,
+          return CommonWidget.commonHeadInfoWidget(identity.value.metadata.name??"",
               action: CommonWidget.commonPopupMenuButton(items: const [
                 PopupMenuItem(
                   value: IdentityFunction.addMember,
@@ -106,6 +108,6 @@ class IdentityInfoPage
   @override
   String tag() {
     // TODO: implement tag
-    return "IdentityInfo_${identity.value.name}";
+    return "IdentityInfo_${identity.value.metadata.name}";
   }
 }

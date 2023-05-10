@@ -67,11 +67,11 @@ class UserInfoPage extends BaseGetView<UserInfoController, UserInfoState> {
         List<List<String>> companyContent = [];
         for (var company in state.joinCompany) {
           companyContent.add([
-            company.name,
-            company.target.code,
-            company.target.team?.name ?? "",
-            company.target.team?.code ?? "",
-            company.target.team?.remark ?? ""
+            company.metadata.name,
+            company.metadata.code,
+            company.metadata.name,
+            company.metadata.code,
+            company.metadata.remark ?? ""
           ]);
         }
         return CommonWidget.commonDocumentWidget(
@@ -110,15 +110,15 @@ class UserInfoPage extends BaseGetView<UserInfoController, UserInfoState> {
             style: TextStyle(fontSize: 21.sp),
           ),
           CommonWidget.commonTextContentWidget(
-              "昵称", state.user?.target.name ?? ""),
+              "昵称", state.user?.metadata.name ?? ""),
           CommonWidget.commonTextContentWidget(
-              "姓名", state.user?.target.team?.name ?? ""),
+              "姓名", state.user?.metadata.name ?? ""),
           CommonWidget.commonTextContentWidget(
-              "账号", state.user?.target.code ?? ""),
+              "账号", state.user?.metadata.code ?? ""),
           CommonWidget.commonTextContentWidget(
-              "联系方式", state.user?.target.team?.code ?? ""),
+              "联系方式", state.user?.metadata.code ?? ""),
           CommonWidget.commonTextContentWidget(
-              "座右铭", state.user?.target.team?.remark ?? ""),
+              "座右铭", state.user?.metadata.remark ?? "",maxLines: 3),
         ],
       ),
     );

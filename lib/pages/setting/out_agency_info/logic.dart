@@ -23,7 +23,7 @@ class OutAgencyInfoController extends BaseController<OutAgencyInfoState>
   void onReady() async{
     // TODO: implement onReady
     super.onReady();
-    var users = await state.group.loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
+    var users = await state.group.loadMembers();
     state.unitMember.addAll(users);
     print(users);
   }
@@ -46,7 +46,7 @@ class OutAgencyInfoController extends BaseController<OutAgencyInfoState>
             hint: "请输入单位的社会统一信用代码", onSelected: (List<XTarget> list) async {
               if (list.isNotEmpty) {
                 bool success = await state.group.pullMembers(
-                    list.map((e) => e.id).toList(), TargetType.person.label);
+                    list);
                 if (success) {
                   ToastUtils.showMsg(msg: "添加成功");
                   state.unitMember.addAll(list);
@@ -63,9 +63,7 @@ class OutAgencyInfoController extends BaseController<OutAgencyInfoState>
             hint: "请输入集团的编码", onSelected: (List<XTarget> list) async {
               if (list.isNotEmpty) {
                 try {
-                  for (var element in list) {
-                    await state.group.applyJoinGroup(element.id);
-                  }
+                  await state.group.company.applyJoin(list);
                   ToastUtils.showMsg(msg: "发送成功");
                 } catch (e) {
                   ToastUtils.showMsg(msg: "发送失败");
@@ -79,7 +77,7 @@ class OutAgencyInfoController extends BaseController<OutAgencyInfoState>
   void removeMember(String data) async{
     var user = state.unitMember
         .firstWhere((element) => element.name == data);
-    bool success = await state.group.removeMember(user);
+    bool success = await state.group.removeMembers([user]);
     if (success) {
       state.unitMember.removeWhere((element) => element.name == data);
       state.unitMember.refresh();

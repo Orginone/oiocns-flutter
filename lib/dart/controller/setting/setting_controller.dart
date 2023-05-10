@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/target/person.dart';
+import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/routers.dart';
@@ -46,16 +49,16 @@ class SettingController extends GetxController {
 
   /// 组织树
   Future<List<ITarget>> getTeamTree(
-    ISpace space,
+      IBelong space,
     [bool isShare = true]
   ) async {
     var result = <ITarget>[];
     result.add(space);
     if (space == user) {
-      result.addAll([...(await user.getCohorts(reload: false))??[]]);
+      result.addAll([...(await user.loadCohorts(reload: false))??[]]);
     } else if (isShare) {
       result.addAll(
-          [...(await (space as ICompany).getJoinedGroups(reload: false))]);
+          [...(await (space as ICompany).loadGroups(reload: false))]);
     }
     return result;
   }
@@ -68,34 +71,10 @@ class SettingController extends GetxController {
     var result = <ITarget>[];
     result.add(company);
     if (isShare) {
-      var groups = await company.getJoinedGroups(reload: false);
+      var groups = await company.loadGroups(reload: false);
       result.addAll([...groups]);
     }
     return result;
-  }
-
-  /// 加载组织树
-  buildTargetTree(List<ITarget> targets, Function(ITarget)? menus) {
-    var result = <Map<String, dynamic>>[];
-    for (var item in targets) {
-      result.add({
-        "id": item.id,
-        "item": item,
-        "isLeaf": item.subTeam.isEmpty,
-        "menus": menus != null ? menus(item) : [],
-        "name": item == user ? '我的好友' : item.name,
-        "children": buildTargetTree(item.subTeam, menus),
-      });
-    }
-    return result;
-  }
-
-  void jumpSpaces() {
-    // Get.toNamed(Routers.spaces)?.then((value) {
-    //   if (value != null && value) {
-    //     EventBusHelper.fire(InitHomeData());
-    //   }
-    // });
   }
 
   void setHomeEnum(HomeEnum value) {
@@ -120,6 +99,10 @@ class SettingController extends GetxController {
         // TODO: Handle this case.
         break;
     }
+  }
+
+  bool isUserSpace(space) {
+    return space == user;
   }
 }
 

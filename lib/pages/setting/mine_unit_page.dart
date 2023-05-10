@@ -72,7 +72,7 @@ class MineUnitPage extends GetView<SettingController> {
       body: Container(
         margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
         child: Obx(() {
-          var companies = controller.user?.joinedCompany ?? [];
+          var companies = controller.user.companys ?? [];
           return ListView.builder(
             itemCount: companies.length,
             itemBuilder: (BuildContext context, int index) {

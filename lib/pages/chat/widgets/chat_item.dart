@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:orginone/dart/core/target/chat/chat.dart';
-import 'package:orginone/dart/core/target/chat/ichat.dart';
+import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 import 'package:orginone/widget/widgets/text_tag.dart';
@@ -85,7 +84,7 @@ class MessageItemWidget extends GetView<SettingController> {
 
   Widget get _avatarContainer {
     return Obx(() {
-      var noRead = chat.noReadCount.value;
+      var noRead = chat.chatdata.value.noReadCount;
       return TeamAvatar(
         info: TeamTypeInfo(share: chat.shareInfo),
         children: [
@@ -106,9 +105,9 @@ class MessageItemWidget extends GetView<SettingController> {
   }
 
   Widget get _content {
-    var target = chat.target;
+    var target = chat.chatdata.value;
     var labels = <Widget>[];
-    for (var item in chat.target.labels) {
+    for (var item in chat.chatdata.value.labels??[]) {
       labels.add(TextTag(
         item,
         bgColor: Colors.white,
@@ -127,9 +126,9 @@ class MessageItemWidget extends GetView<SettingController> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(target.name, style: XFonts.size22Black0W700),
+            Text(target.chatName??"", style: XFonts.size22Black0W700),
             Text(
-              CustomDateUtil.getSessionTime(chat.lastMessage.value?.createTime),
+              CustomDateUtil.getSessionTime(chat.chatdata.value.lastMessage?.createTime),
               style: XFonts.size18Black0,
             ),
           ],
@@ -143,18 +142,16 @@ class MessageItemWidget extends GetView<SettingController> {
   }
 
   Widget _showTxt() {
-    var lastMessage = chat.lastMessage.value;
+    var lastMessage = chat.chatdata.value.lastMessage;
     if (lastMessage == null) {
       return Container();
     }
-    var name = controller.provider.findNameById(lastMessage.fromId);
+    var name = controller.user.findShareById(lastMessage.fromId);
     var showTxt = "";
-    if (chat is PersonChat) {
-      var settingCtrl = Get.find<SettingController>();
-      if (lastMessage.fromId != settingCtrl.user.target.id) {
-        showTxt = "对方:";
-      }
-    } else {
+    var settingCtrl = Get.find<SettingController>();
+    if (lastMessage.fromId != settingCtrl.user.metadata.id) {
+      showTxt = "对方:";
+    }else {
       showTxt = "$name:";
     }
 

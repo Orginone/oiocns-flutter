@@ -20,7 +20,7 @@ class CohortInfoController extends BaseController<CohortInfoState> {
   }
 
   Future<void> init() async {
-    var users = await state.cohort.loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
+    var users = await state.cohort.loadMembers();
     state.unitMember.clear();
     state.unitMember.addAll(users);
   }
@@ -35,8 +35,7 @@ class CohortInfoController extends BaseController<CohortInfoState> {
             ?.then((value) async {
           var selected = (value as List<XTarget>);
           if (selected.isNotEmpty) {
-            bool success = await state.cohort.pullMembers(
-                selected.map((e) => e.id).toList(), TargetType.person.label);
+            bool success = await state.cohort.pullMembers(selected);
             if (success) {
               await init();
             }
@@ -49,7 +48,7 @@ class CohortInfoController extends BaseController<CohortInfoState> {
   void removeMember(String data) async{
     var user = state.unitMember
         .firstWhere((element) => element.code == data);
-    bool success = await state.cohort.removeMember(user);
+    bool success = await state.cohort.removeMembers([user]);
     if (success) {
       state.unitMember.removeWhere((element) => element.code == data);
       state.unitMember.refresh();

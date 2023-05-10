@@ -18,14 +18,14 @@ class StationInfoController extends BaseController<StationInfoState> {
     // TODO: implement onReady
     super.onReady();
     state.identitys.value =  await state.station.loadIdentitys(reload: true);
-    var users =  await state.station.loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
+    var users =  await state.station.loadMembers(reload: true);
     state.unitMember.addAll(users);
   }
 
   void removeMember(String data) async{
     var user = state.unitMember
         .firstWhere((element) => element.code == data);
-    bool success = await state.station.removeMember(user);
+    bool success = await state.station.removeMembers([user]);
     if (success) {
       state.unitMember.removeWhere((element) => element.code == data);
       state.unitMember.refresh();
@@ -40,8 +40,7 @@ class StationInfoController extends BaseController<StationInfoState> {
        Get.toNamed(Routers.addMembers,arguments: {"title":"添加岗位人员"})?.then((value) async{
          var selected = (value as List<XTarget>);
          if(selected.isNotEmpty){
-            bool success = await state.station.pullMembers(
-                selected.map((e) => e.id).toList(), TargetType.person.label);
+            bool success = await state.station.pullMembers(selected);
             if (success) {
               state.unitMember.addAll(selected);
               state.unitMember.refresh();
@@ -54,8 +53,8 @@ class StationInfoController extends BaseController<StationInfoState> {
 
   void removeAdmin(String data) async {
     try {
-      var user = state.identitys.firstWhere((element) => element.id == data);
-      bool success = await state.station.removeIdentitys([data]);
+      var user = state.identitys.firstWhere((element) => element.metadata.id == data);
+      bool success = await state.station.removeIdentitys([user]);
       if (success) {
         state.identitys.remove(user);
       }

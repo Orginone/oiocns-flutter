@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/target/targetMap.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 
@@ -23,6 +23,8 @@ class Avatars extends StatelessWidget {
     this.addCallback,
     Key? key,
   }) : super(key: key);
+
+  SettingController get controller => Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -75,11 +77,11 @@ class Avatars extends StatelessWidget {
 
   /// 头像子项
   Widget _avatarItem(XTarget person) {
-    var name = person.team?.name ?? "";
+    var name = person.name;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        TeamAvatar(info: TeamTypeInfo(share: findTargetShare(person.id))),
+        TeamAvatar(info: TeamTypeInfo(share: controller.user.findShareById(person.id))),
         Padding(padding: EdgeInsets.only(top: 10.w)),
         Text(
           name,

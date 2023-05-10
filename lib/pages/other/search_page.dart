@@ -180,11 +180,9 @@ class SearchPage extends GetView<SearchController> {
                   // await PersonApi.join(target.id);
                   break;
                 case FunctionPoint.applyCohorts:
-                  await targetCtrl.user?.applyJoinCohort(target.id);
-                  break;
                 case FunctionPoint.applyCompanies:
                   await targetCtrl.user
-                      ?.applyJoinCompany(target.id, TargetType.company);
+                      .applyJoin([target]);
                   break;
               }
               Fluttertoast.showToast(msg: "申请成功");
@@ -297,7 +295,7 @@ class SearchController extends GetxController with GetTickerProviderStateMixin {
         case SearchItem.friends:
           var settingCtrl = Get.find<SettingController>();
           var person = settingCtrl.user;
-          await person?.searchPerson(filter).then((value){
+          await person.searchTargets(filter,[]).then((value){
             print('value:$value');
           }).onError((error, stackTrace) {
             print('error:$error');

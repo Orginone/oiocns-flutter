@@ -1,13 +1,8 @@
-
-
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/target/todo/todo.dart';
-import 'package:orginone/pages/work/state.dart';
+import 'package:orginone/dart/core/work/todo.dart';
 
 
 class ProcessDetailsState extends BaseGetState{
@@ -16,9 +11,9 @@ class ProcessDetailsState extends BaseGetState{
 
   late ITodo todo;
 
-  var flowInstance = Rxn<XFlowInstance>();
+  var workInstance = Rxn<XWorkInstance>();
 
-  var xAttribute = <String,Map<XOperationItem,dynamic>>{}.obs;
+  var xAttribute = {}.obs;
 
 
   late TabController tabController;

@@ -18,9 +18,9 @@ class FilePage extends BaseGetView<FileController, FileState> {
             Obx(
                   () {
                 return CommonWidget.commonBreadcrumbNavWidget(
-                  firstTitle: state.file.value?.target?.name ?? "",
+                  firstTitle: state.file.value?.metadata.name ?? "",
                   allTitle: state.selectedDir
-                      .map((element) => element.target?.name ?? "")
+                      .map((element) => element.metadata.name ?? "")
                       .toList(),
                   onTapFirst: () {
                     controller.clearGroup();

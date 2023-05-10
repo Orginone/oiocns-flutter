@@ -99,14 +99,14 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
     var settingCtrl = Get.find<SettingController>();
     return Padding(
       padding: const EdgeInsets.only(left: 20),
-      child: Text.rich(TextSpan(text: settingCtrl.user!.name)),
+      child: Text.rich(TextSpan(text: settingCtrl.user.metadata.name)),
     );
   }
 
   Widget get getAvatar {
     var settingCtrl = Get.find<SettingController>();
-    var avatar = settingCtrl.user!.shareInfo.avatar;
-    var name = settingCtrl.user!.name.substring(0, 1);
+    var avatar = settingCtrl.user.shareInfo.avatar;
+    var name = settingCtrl.user.metadata.name.substring(0, 1);
     var size = 100.w;
     if (avatar == null) {
       return AdvancedAvatar(

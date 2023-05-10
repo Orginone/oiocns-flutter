@@ -68,11 +68,11 @@ class CompanyInfoPage
         List<List<String>> groupContent = [];
         for (var group in state.joinGroup) {
           groupContent.add([
-            group.name,
-            group.target.code,
-            group.target.team?.name ?? "",
-            group.target.team?.code ?? "",
-            group.target.team?.remark ?? ""
+            group.metadata.name,
+            group.metadata.code,
+            group.metadata.name,
+            group.metadata.code,
+            group.metadata.remark ?? ""
           ]);
         }
         return CommonWidget.commonDocumentWidget(
@@ -103,15 +103,11 @@ class CompanyInfoPage
             style: TextStyle(fontSize: 21.sp),
           ),
           CommonWidget.commonTextContentWidget(
-              "单位名称", state.company?.target.team?.name ?? ""),
+              "单位名称", state.company.metadata.name),
           CommonWidget.commonTextContentWidget(
-              "社会统一信用代码", state.company?.target.code ?? ""),
+              "社会统一信用代码", state.company.metadata.code),
           CommonWidget.commonTextContentWidget(
-              "团队简称", state.company?.name ?? ""),
-          CommonWidget.commonTextContentWidget(
-              "团队代号", state.company?.teamName ?? ""),
-          CommonWidget.commonTextContentWidget(
-              "单位简介", state.company?.target.team?.remark ?? ""),
+              "单位简介", state.company.metadata.remark ?? "",maxLines: 3),
         ],
       ),
     );

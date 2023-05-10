@@ -1,5 +1,7 @@
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
+import 'package:orginone/dart/core/thing/dict/dict.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
@@ -14,7 +16,7 @@ class AttributeInfoController extends BaseController<AttributeInfoState> {
     // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
-    var res = await state.data.space.property
+    var res = await state.data.source
         .loadProperty(PageRequest(offset: 0, limit: 1000, filter: ''));
     state.propertys.addAll(res?.result ?? []);
     LoadingDialog.dismiss(context);
@@ -26,24 +28,24 @@ class AttributeInfoController extends BaseController<AttributeInfoState> {
           state.propertys.firstWhere((element) => element.code == code);
 
       if (operation == "edit") {
-       var dictArray = await state.data.space.dict.loadDict(PageRequest(offset: 0, limit: 1000, filter: ''));
+       var dictArray = await state.data.source.loadDict(PageRequest(offset: 0, limit: 1000, filter: ''));
         showCreateAttributeDialog(context,
             onCreate: (name, code, type, remark,unit,dict) async {
-         var pro = await state.data.space.property.updateProperty(PropertyModel(
+         var pro = await state.data.source.updateProperty(PropertyModel(
               id: property.id,
               name: name,
               code: code,
               valueType: type,
               remark: remark,
-              dictId: dict==null?property.dictId:dict.id,
-              belongId: property.belongId,unit: unit??property.unit));
+              dictId: dict==null?property.dictId:dict.metadata.id,
+             ));
          if(pro!=null){
            property.name = name;
            property.code = code;
            property.valueType = type;
            property.remark = remark;
            property.unit = unit;
-           property.dict = dict;
+           property.dict = dict as XDict?;
            state.propertys.refresh();
            ToastUtils.showMsg(msg: "修改成功");
          }else{
@@ -55,11 +57,11 @@ class AttributeInfoController extends BaseController<AttributeInfoState> {
             remark: property.remark ?? "",
             valueType: property.valueType ?? "",
             unit: property.unit??"",
-            dict: property.dict,
+            dict: property.dict as Dict,
             isEdit: true,dictList: dictArray.result??[]);
       } else if (operation == 'delete') {
         bool success =
-            await state.data.space.property.deleteProperty(property.id!);
+            await state.data.source.deleteProperty(property.id!);
         if (success) {
           state.propertys.remove(property);
           state.propertys.refresh();
