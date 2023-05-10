@@ -206,7 +206,7 @@ class FileItemModel extends FileItemShare {
   DateTime? dateModified;
 
   // 文件类型
-  String contentType;
+  String? contentType;
 
   // 是否是目录
   bool isDirectory;
@@ -218,14 +218,14 @@ class FileItemModel extends FileItemShare {
     required this.key,
     required this.dateCreated,
     required this.dateModified,
-    required this.contentType,
+    this.contentType,
     required this.isDirectory,
     required this.hasSubDirectories,
-    required super.size,
-    required super.name,
-    required super.shareLink,
-    required super.extension,
-    required super.thumbnail,
+    super.size,
+    super.name,
+    super.shareLink,
+    super.extension,
+    super.thumbnail,
   });
 
   FileItemModel.formJson(Map<String, dynamic> json)
@@ -4684,26 +4684,26 @@ class TargetShare {
 // 文件系统项数据模型
 class FileItemShare {
   // 大小
-  final int size;
+  int? size;
 
   // 名称
-  final String name;
+  String? name;
 
   // 共享链接
-  final String shareLink;
+  String? shareLink;
 
   // 拓展名
-  final String extension;
+  String? extension;
 
   // 缩略图
-  final String thumbnail;
+  String? thumbnail;
 
   FileItemShare({
-    required this.size,
-    required this.name,
-    required this.shareLink,
-    required this.extension,
-    required this.thumbnail,
+    this.size,
+    this.name,
+    this.shareLink,
+    this.extension,
+    this.thumbnail,
   });
 
   //通过JSON构造

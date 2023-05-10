@@ -123,6 +123,7 @@ class Company extends Belong implements ICompany {
         return department;
       }
     }
+    return null;
   }
 
   @override
@@ -135,6 +136,7 @@ class Company extends Belong implements ICompany {
       await group.pullMembers([metadata]);
       return group;
     }
+    return null;
   }
 
   @override
@@ -149,6 +151,7 @@ class Company extends Belong implements ICompany {
         return station;
       }
     }
+    return null;
   }
 
   @override

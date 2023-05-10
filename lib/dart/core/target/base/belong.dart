@@ -53,7 +53,7 @@ abstract class IBelong extends ITarget {
 }
 
 abstract class Belong extends Target implements IBelong {
-  Belong(super.metadata, super.labels, IPerson? user) {
+  Belong(super.metadata, super.labels, [IPerson? user]) {
     memberTypes = [TargetType.person];
     this.user = user ?? this as IPerson;
     dicts = [];

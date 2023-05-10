@@ -1,18 +1,19 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/event_bus.dart';
 
+import 'work/todo.dart';
+
 class UserProvider {
   final Rx<IPerson?> _user = Rxn();
   final RxBool _inited = false.obs;
   List<XImMsg> _preMessages = [];
+  var workTask = <XWorkTask>[].obs;
 
   UserProvider() {
     kernel.on('ChatRefresh', () async {
@@ -24,6 +25,14 @@ class UserProvider {
         _recvMessage(item);
       } else {
         _preMessages.add(item);
+      }
+    });
+    kernel.on('RecvTask', (data) {
+      var work = XWorkTask.fromJson(data);
+      if (_inited.value) {
+        _recvTask(data);
+      } else {
+        workTask.add(data);
       }
     });
   }
@@ -90,13 +99,13 @@ class UserProvider {
   Future<void> reload() async {
     try{
       _inited.value = false;
-      await _user.value?.getCohorts();
-      await _user.value?.loadMembers(pageAll());
-      await _user.value?.work.loadTodo();
-      var companys = await _user.value?.getJoinedCompanys() ?? [];
+      await _user.value?.loadCohorts(reload: true);
+      await _user.value?.loadMembers(reload: true);
+      await _user.value?.loadTodos(reload: true);
+      var companys = await _user.value?.loadCompanys(reload: true) ?? [];
       for (var company in companys) {
         await company.deepLoad();
-        await company.loadMembers(pageAll());
+        await company.loadMembers(reload: true);
       }
       _inited.value = true;
       _preMessages = _preMessages.where((item) {
@@ -117,18 +126,24 @@ class UserProvider {
   /// @param data 新消息
   /// @param cache 是否缓存
   Future<void> _recvMessage(XImMsg data) async {
-    var sessionId = data.toId;
-    if (data.toId == _user.value!.id) {
-      sessionId = data.fromId;
-    }
-    for (var c in user!.allChats()) {
-      var isMatch = sessionId == c.chatId;
-      if (c.target.typeName == TargetType.person.label && isMatch) {
-        isMatch = data.belongId == c.spaceId;
+    for (final c in user?.chats ?? []) {
+      bool isMatch = data.sessionId == c.chatId;
+      if ((c.share.typeName == TargetType.person || c.share.typeName == '权限') &&
+          isMatch) {
+        isMatch = data.belongId == c.belongId;
       }
       if (isMatch) {
         c.receiveMessage(data);
       }
     }
+  }
+
+  void _recvTask(XWorkTask data) {
+    if (data.status! >= 100) {
+      user!.todos = user!.todos.where((a) => a.metadata.id == data.id).toList();
+    } else {
+      user!.todos.insert(0, WorkTodo(data));
+    }
+    refresh();
   }
 }

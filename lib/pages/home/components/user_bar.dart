@@ -72,7 +72,6 @@ class UserBar extends GetView<SettingController> {
         Expanded(
           child: GestureDetector(
             onLongPress: () {
-              controller.jumpSpaces();
             },
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,

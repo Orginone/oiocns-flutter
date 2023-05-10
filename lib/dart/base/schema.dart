@@ -2947,129 +2947,81 @@ class XIdentityArray {
 }
 
 //及时通讯
+
 class XImMsg {
-  // 雪花ID
   String id;
-
-  // 归属 ID
+  String sessionId;
   String belongId;
-
-  // 发起方Id
   String fromId;
-
-  // 接收方Id
   String toId;
-
-  // 消息类型
   String msgType;
-
-  // 消息体
   String msgBody;
-
-  // 状态
-  int? status;
-
-  // 创建人员ID
-  String createUser;
-
-  // 更新人员ID
-  String updateUser;
-
-  // 修改次数
-  String? version;
-
-  // 创建时间
-  String? createTime;
-
-  // 更新时间
+  String createTime;
   String updateTime;
-
-  // 显示文本
   String showTxt;
+  bool allowEdit;
 
-  // 是否允许编辑
-  late bool allowEdit;
-
-  //构造方法
   XImMsg({
     required this.id,
+    required this.sessionId,
     required this.belongId,
     required this.fromId,
     required this.toId,
     required this.msgType,
     required this.msgBody,
-    required this.status,
-    required this.createUser,
-    required this.updateUser,
-    required this.version,
     required this.createTime,
     required this.updateTime,
     required this.showTxt,
     required this.allowEdit,
   });
 
-  //通过JSON构造
-  XImMsg.fromJson(Map<String, dynamic> json)
-      : id = json["id"] ?? "",
-        belongId = json["belongId"]??"",
-        fromId = json["fromId"]??"",
-        toId = json["toId"]??"",
-        msgType = json["msgType"]??"",
-        msgBody = json["msgBody"] ?? "",
-        status = json["status"],
-        createUser = json["createUser"] ?? "",
-        updateUser = json["updateUser"] ?? "",
-        version = json["version"],
-        showTxt = json["showTxt"] ?? "",
-        createTime = json["createTime"] ?? "",
-        updateTime = json["updateTime"] ?? "";
-
-  //通过动态数组解析成List
-  static List<XImMsg> fromList(List<dynamic>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XImMsg> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XImMsg.fromJson(item));
-      }
-    }
-    return retList;
+  factory XImMsg.fromJson(Map<String, dynamic> json) {
+    return XImMsg(
+      id: json['id'] as String,
+      sessionId: json['sessionId'] as String,
+      belongId: json['belongId'] as String,
+      fromId: json['fromId'] as String,
+      toId: json['toId'] as String,
+      msgType: json['msgType'] as String,
+      msgBody: json['msgBody'] as String,
+      createTime: json['createTime'] as String,
+      updateTime: json['updateTime'] as String,
+      showTxt: json['showTxt'] as String,
+      allowEdit: json['allowEdit'] as bool,
+    );
   }
 
-  //转成JSON
   Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["fromId"] = fromId;
-    json["toId"] = toId;
-    json["msgType"] = msgType;
-    json["msgBody"] = msgBody;
-    json["status"] = status;
-    json["createUser"] = createUser;
-    json["updateUser"] = updateUser;
-    json["version"] = version;
-    json["createTime"] = createTime;
-    json["updateTime"] = updateTime;
-    json["showTxt"] = showTxt;
-    return json;
+    return {
+      'id': id,
+      'sessionId': sessionId,
+      'belongId': belongId,
+      'fromId': fromId,
+      'toId': toId,
+      'msgType': msgType,
+      'msgBody': msgBody,
+      'createTime': createTime,
+      'updateTime': updateTime,
+      'showTxt': showTxt,
+      'allowEdit': allowEdit,
+    };
   }
 }
+
 
 //及时通讯查询返回集合
 class XImMsgArray {
   // 便宜量
-  final int offset;
+  int? offset;
 
   // 最大数量
-  final int limit;
+  int? limit;
 
   // 总数
-  final int total;
+  int? total;
 
   // 结果
-  final List<XImMsg>? result;
+  List<XImMsg>? result;
 
   //构造方法
   XImMsgArray({
@@ -3080,11 +3032,17 @@ class XImMsgArray {
   });
 
   //通过JSON构造
-  XImMsgArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"] ?? 0,
-        limit = json["limit"],
-        total = json["total"] ?? 0,
-        result = XImMsg.fromList(json["result"]);
+  XImMsgArray.fromJson(Map<String, dynamic> json){
+    offset = json["offset"] ?? 0;
+    limit = json["limit"];
+    total = json["total"] ?? 0;
+    if(json["result"]!=null){
+      result = [];
+      json["result"].forEach((json){
+        result!.add(XImMsg.fromJson(json));
+      });
+    }
+  }
 
   //通过动态数组解析成List
   static List<XImMsgArray> fromList(List<Map<String, dynamic>>? list) {

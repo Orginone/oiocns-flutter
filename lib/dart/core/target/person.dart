@@ -64,7 +64,7 @@ class Person extends Belong implements IPerson {
   @override
   late List<ITodo> todos;
 
-  Person(super.metadata, super.labels, super.user) {
+  Person(XTarget metadata):super(metadata,['本人']){
     companys = <ICompany>[].obs;
     givedIdentitys = [];
     todos = [];
