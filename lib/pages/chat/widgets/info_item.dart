@@ -14,9 +14,8 @@ import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/target/chat/ichat.dart';
-import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/logger.dart';
@@ -56,7 +55,7 @@ class DetailItemWidget extends GetView<SettingController> {
   }
 
   bool get isSelf {
-    return msg.fromId == controller.user.id;
+    return msg.fromId == controller.user.metadata.id;
   }
 
   /// 消息详情
@@ -66,7 +65,7 @@ class DetailItemWidget extends GetView<SettingController> {
     if (msg.msgType == MessageType.recall.label) {
       String msgBody = StringUtil.getDetailRecallBody(
         fromId: msg.fromId,
-        userId: controller.user.id,
+        userId: controller.user.metadata.id,
         name: getName(),
       );
       children.add(Text(msgBody, style: XFonts.size18Black9));
@@ -91,7 +90,7 @@ class DetailItemWidget extends GetView<SettingController> {
 
   /// 目标名称
   String getName() {
-    return controller.provider.findNameById(msg.fromId);
+    return controller.user.findShareById(msg.fromId).name;
   }
 
   /// 获取头像
@@ -101,11 +100,11 @@ class DetailItemWidget extends GetView<SettingController> {
       var settingCtrl = Get.find<SettingController>();
       shareInfo = settingCtrl.user.shareInfo;
     } else {
-      shareInfo = findTargetShare(msg.fromId);
+      shareInfo = controller.user.findShareById(msg.fromId);
     }
     return GestureDetector(
         child: TeamAvatar(info: TeamTypeInfo(share: shareInfo),),onLongPress: (){
-          EventBusHelper.fire(chat.persons[0]);
+          EventBusHelper.fire(chat.members[0]);
     },);
   }
 
@@ -154,7 +153,7 @@ class DetailItemWidget extends GetView<SettingController> {
       DetailFunc.forward,
       DetailFunc.reply,
     ];
-    if (userId == controller.user.id) {
+    if (userId == controller.user.metadata.id) {
       func.add(DetailFunc.remove);
     }
     if (isSelf && msg.createTime != null) {

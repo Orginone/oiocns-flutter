@@ -1,9 +1,7 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/model/assets_info.dart';
-import 'package:orginone/util/asset_management.dart';
 import 'package:orginone/util/toast_utils.dart';
-import 'package:worker_manager/worker_manager.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
@@ -29,7 +27,7 @@ class AddAssetController extends BaseController<AddAssetState> {
     // TODO: implement onReady
     super.onReady();
 
-    var list  = AssetManagement().deepCopyAssets();
+    var list  =[];
 
     List<AssetsInfo> selected = Get.arguments?['selected'] ?? [];
     if(selected.isNotEmpty){
@@ -37,7 +35,7 @@ class AddAssetController extends BaseController<AddAssetState> {
         list.where((element1) => element.assetCode == element1.assetCode).first.isSelected = true;
       }
     }
-    state.selectAssetList.addAll(list);
+    // state.selectAssetList.addAll(list);
     state.selectCount.value = state.selectAssetList.where((p0) => p0.isSelected).length;
   }
 

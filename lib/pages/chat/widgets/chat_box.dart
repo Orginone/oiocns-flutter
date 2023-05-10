@@ -15,9 +15,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/target/chat/chat.dart';
-import 'package:orginone/dart/core/target/chat/ichat.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/permission_util.dart';
 import 'package:orginone/widget/unified.dart';
@@ -142,10 +141,8 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
           ),
         ),
         triggerAtCallback: () async{
-          if(chat is CohortChat){
-            var target = await AtPersonDialog.showDialog(context, chat);
-            return target;
-          }
+          var target = await AtPersonDialog.showDialog(context, chat);
+          return target;
         },
       ),
     );
@@ -627,27 +624,27 @@ class ChatBoxController extends FullLifeCycleController
 
   void imagePicked(XFile pickedImage, IChat chat) async {
     var settingCtrl = Get.find<SettingController>();
-    var docDir = await settingCtrl.user.home?.create("沟通");
+    var docDir = await settingCtrl.user.fileSystem.home?.create("沟通");
     var item = await docDir?.upload(
       pickedImage.name,
       File(pickedImage.path),
       (progress) {},
     );
     if (item != null) {
-      chat.sendMessage(MessageType.image, jsonEncode(item.target.shareInfo()));
+      chat.sendMessage(MessageType.image, jsonEncode(item.metadata.shareInfo()));
     }
   }
 
   Future<void> filePicked(PlatformFile file, IChat chat) async {
     var settingCtrl = Get.find<SettingController>();
-    var docDir = await settingCtrl.user.home?.create("沟通");
+    var docDir = await settingCtrl.user.fileSystem.home?.create("沟通");
     var item = await docDir?.upload(
       file.name,
       File(file.path!),
           (progress) {},
     );
     if (item != null) {
-      chat.sendMessage(MessageType.file, jsonEncode(item.target.shareInfo()));
+      chat.sendMessage(MessageType.file, jsonEncode(item.metadata.shareInfo()));
     }
   }
 

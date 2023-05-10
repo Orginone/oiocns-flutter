@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -27,7 +25,7 @@ class DepartmentInfoController extends BaseController<DepartmentInfoState>
   void removeMember(String data) async {
     var user = state.depart.value.members
         .firstWhere((element) => element.code == data);
-    bool success = await state.depart.value.removeMember(user);
+    bool success = await state.depart.value.removeMembers([user]);
     if (success) {
       state.depart.value.members.removeWhere((element) => element.code == data);
       state.depart.refresh();
@@ -47,8 +45,7 @@ class DepartmentInfoController extends BaseController<DepartmentInfoState>
             ?.then((value) async {
           var selected = (value as List<XTarget>);
           if (selected.isNotEmpty) {
-            bool success = await state.depart.value.pullMembers(
-                selected.map((e) => e.id).toList(), TargetType.person.label);
+            bool success = await state.depart.value.pullMembers(selected);
             if (success) {
               await reloadMembers();
             }
@@ -59,8 +56,7 @@ class DepartmentInfoController extends BaseController<DepartmentInfoState>
   }
 
   Future<void> reloadMembers() async {
-    var user = await state.depart.value
-        .loadMembers(PageRequest(offset: 0, limit: 20000, filter: ""));
+    var user = await state.depart.value.loadMembers();
     state.depart.value.members.clear();
     state.depart.value.members.addAll(user);
 

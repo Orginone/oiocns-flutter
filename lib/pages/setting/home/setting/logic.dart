@@ -85,11 +85,11 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
               typeName: type.label,
               teamName: name,
           teamCode: code,
-          teamRemark: remark,
-          avatar: '',
+          remark: remark,
+          icon: '',
           belongId: '');
 
-      var data = await state.space.create(model);
+      var data = await state.space.createTarget(model);
       if (data != null) {
         ToastUtils.showMsg(msg: "创建成功");
       } else {
@@ -101,12 +101,12 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
  void editOrganization(SettingNavModel model) {
    showCreateOrganizationDialog(
        context, getTargetType(model),
-       name: state.space.teamName,
-       nickName: state.space.name,
-       code: state.space.target.code,
-       remark: state.space.target.team?.remark ?? "",
-       identify: state.space.target.team?.code ?? "",
-       type: TargetType.getType(state.space.typeName),
+       name: state.space.metadata.name,
+       nickName: state.space.metadata.name,
+       code: state.space.metadata.code,
+       remark: state.space.metadata.remark ?? "",
+       identify: state.space.metadata.code,
+       type: TargetType.getType(state.space.metadata.typeName),
        callBack: (String name,
            String code,
            String nickName,
@@ -114,15 +114,15 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
             String remark,
             TargetType type) async {
       await state.space.update(TargetModel(
-          id: state.space.id,
+          id: state.space.metadata.id,
           name: nickName,
           code: code,
           typeName: type.label,
-          avatar: state.space.target.avatar,
-          belongId: state.space.target.belongId,
+          icon: state.space.metadata.icon,
+          belongId: state.space.metadata.belongId,
           teamName: name,
           teamCode: code,
-          teamRemark: remark));
+          remark: remark));
       ToastUtils.showMsg(msg: "修改成功");
     });
  }
@@ -131,7 +131,7 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
    List<TargetType> targetType = [];
    switch (model.spaceEnum) {
      case SpaceEnum.innerAgency:
-       targetType.addAll(model.space.subTeamTypes);
+       targetType.addAll(model.space.memberTypes);
        break;
      case SpaceEnum.outAgency:
        targetType.add(TargetType.group);
@@ -151,7 +151,7 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
 
  void createDict(SettingNavModel item) {
    showCreateDictDialog(context,onCreate: (name,code,remark){
-     var dict = item.space.dict.createDict(DictModel(name: name, public: true, code: code, remark: remark));
+     var dict = item.space.createDict(DictModel(name: name, public: true, code: code, remark: remark));
      if(dict!=null){
        ToastUtils.showMsg(msg: "新建成功");
      }
@@ -159,15 +159,14 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
  }
 
  void createAttribute(SettingNavModel item) async {
-   var dictArray = await item.space.dict.loadDict(
-       PageRequest(offset: 0, limit: 1000, filter: ''));
+   var dictArray = await item.space.loadDicts();
    showCreateAttributeDialog(
        context, onCreate: (name, code, type, remark, unit, dict) {
-     var property = item.space.property.createProperty(PropertyModel(name: name,code: code,valueType: type,dictId: dict?.id,unit: unit,remark: remark));
+     var property = item.source.createProperty(PropertyModel(name: name,code: code,valueType: type,dictId: dict?.metadata.id,unit: unit,remark: remark));
      if(property!=null){
        ToastUtils.showMsg(msg: "新建成功");
      }
-   }, dictList: dictArray.result ?? []);
+   }, dictList: dictArray);
  }
 
 }

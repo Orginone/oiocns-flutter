@@ -87,7 +87,7 @@ class State extends BaseBreadcrumbNavState {
       for (var value in joinedCompanies) {
         organization.add(
           ChatBreadcrumbNav(
-            name: value.metadata.team?.name??"",
+            name: value.metadata.name,
             id: value.metadata.id,
             space: value,
             children: [

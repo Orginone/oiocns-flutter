@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/pages/work/state.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/util/date_utils.dart';
-import 'package:orginone/util/department_management.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 import '../../../../../dart/core/getx/base_get_page_view.dart';
+import '../../../../dart/controller/setting/setting_controller.dart';
 import 'logic.dart';
 import 'state.dart';
 
 class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
+
+  SettingController get setting => Get.find<SettingController>();
   @override
   Widget buildView() {
     return _timeLine();
@@ -45,8 +45,8 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
     );
   }
 
-  Widget _buildTimelineTile(int index, XFlowTaskHistory task) {
-    TargetShare user = findTargetShare(task.createUser ?? "");
+  Widget _buildTimelineTile(int index, XWorkTaskHistory task) {
+    TargetShare user = setting.user.findShareById(task.createUser ?? "");
     bool isLast = index == state.flowInstance!.historyTasks!.length - 1
         ? true
         : false;

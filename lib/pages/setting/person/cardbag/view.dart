@@ -106,8 +106,8 @@ class _CardbagViewGetX extends GetView<CardbagController> {
 
   Widget get card {
     var settingCtrl = Get.find<SettingController>();
-    var name = settingCtrl.user!.name.substring(0, 1);
-    if (settingCtrl.user!.shareInfo.avatar == null) {
+    var name = settingCtrl.user.metadata.name.substring(0, 1);
+    if (settingCtrl.user.shareInfo.avatar == null) {
       return Container(
           height: 150,
           decoration: const BoxDecoration(

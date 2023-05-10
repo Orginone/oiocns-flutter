@@ -170,7 +170,7 @@ class VersionPage extends GetView<VersionController> {
                         height: 42.h,
                         child: GFButton(
                           onPressed: () {
-                            Get.toNamed(Routers.publisher, arguments: value);
+
                           },
                           color: XColors.themeColor,
                           text: "查看详情",

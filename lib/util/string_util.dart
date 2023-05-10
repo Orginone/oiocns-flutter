@@ -1,5 +1,5 @@
+import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/target/chat/msgchat.dart';
 
 class StringUtil {
   static String getDetailRecallBody({
@@ -57,10 +57,8 @@ class StringUtil {
     required String userId,
   }) {
     var prefix = "";
-    if (chat is PersonChat) {
-      if (fromId != userId) {
-        prefix = "对方：";
-      }
+    if (fromId != userId) {
+      prefix = "对方：";
     } else {
       prefix = "$name:";
     }

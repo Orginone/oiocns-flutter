@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
 
 enum OrgAuths {
   superAdmin("super-admin"),
@@ -18,10 +18,10 @@ enum OrgAuths {
 class Auth {
   static Future<bool> isAuthorityAdmin(ITarget target, List<String> authorities) async {
     var settingCtrl = Get.find<SettingController>();
-    if (target.id == settingCtrl.user.id) {
+    if (target.metadata.id == settingCtrl.user.metadata.id) {
       return true;
     }
-    return await target.judgeHasIdentity(authorities);
+    return false;
   }
 
   /// 是否为组织管理员

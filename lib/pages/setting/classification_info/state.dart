@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/thing/species.dart';
+import 'package:orginone/dart/core/thing/base/form.dart';
+import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/pages/setting/home/setting/state.dart';
 
 class ClassificationInfoState extends BaseGetState{
@@ -16,9 +17,9 @@ class ClassificationInfoState extends BaseGetState{
 
   var attrs = <XAttribute>[].obs;
 
-  var operation = <XOperation>[].obs;
+  var operation = <IForm>[].obs;
 
-  var flow = <XFlowDefine>[].obs;
+  var flow = <XWorkDefine>[].obs;
 
   var currentIndex = 0.obs;
   ClassificationInfoState(){

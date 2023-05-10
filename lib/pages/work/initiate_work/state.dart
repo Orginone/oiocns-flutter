@@ -1,13 +1,13 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
 
 class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
   SettingController get settingCtrl => Get.find<SettingController>();
 
   InitiateWorkState() {
-    var joinedCompanies = settingCtrl.user.joinedCompany;
+    var joinedCompanies = settingCtrl.user.companys;
 
     model.value = Get.arguments?['data'];
 
@@ -16,8 +16,8 @@ class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
       for (var value in joinedCompanies) {
         organization.add(
           WorkBreadcrumbNav(
-              name: value.teamName,
-              id: value.id,
+              name: value.metadata.name??"",
+              id: value.metadata.id,
               space: value,
               workType: WorkType.organization,
               children: [
@@ -30,7 +30,7 @@ class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
                     workEnum: WorkEnum.workCohort,
                     space: value, children: []),
               ],
-              image: value.target.avatarThumbnail(),
+              image: value.metadata.avatarThumbnail(),
           ),
         );
       }
@@ -64,7 +64,7 @@ class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
 
 class WorkBreadcrumbNav extends BaseBreadcrumbNavModel<WorkBreadcrumbNav> {
   WorkEnum? workEnum;
-  ISpace? space;
+  IBelong? space;
   WorkType? workType;
   WorkBreadcrumbNav(
       {super.id = '',

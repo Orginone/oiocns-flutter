@@ -28,8 +28,8 @@ class AttributeInfoPage
                     element.valueType ?? "",
                     element.unit ?? "",
                     element.dict?.name ?? "",
-                    setting.provider.findNameById(element.createUser ?? ""),
-                    setting.provider.findNameById(element.belongId ?? ""),
+                    setting.user.findShareById(element.createUser ?? "").name,
+                    setting.user.findShareById(element.belongId ?? "").name,
                     element.remark ?? ""
                   ]);
                 }

@@ -218,7 +218,7 @@ class AddFriendController extends BaseListController<XRelation> {
 
   String getName(String userId) {
     var orgCtrl = Get.find<SettingController>();
-    return orgCtrl.provider.findNameById(userId);
+    return orgCtrl.user.findShareById(userId).name;
   }
 
   void joinSuccess(XRelation friends) async {

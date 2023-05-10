@@ -14,9 +14,9 @@ class ProcessInfoState extends BaseGetState{
 
   ProcessDetailsController processDetailsController = Get.find<ProcessDetailsController>();
 
-  XFlowTaskHistory get task => processDetailsController.state.todo.target;
+  XWorkTask get task => processDetailsController.state.todo.metadata;
 
-  XFlowInstance? get flowInstance => processDetailsController.state.flowInstance.value;
+  XWorkInstance? get flowInstance => processDetailsController.state.workInstance.value;
 
-  Map<String,Map<XOperationItem,dynamic>> get xAttribute => processDetailsController.state.xAttribute;
+  dynamic get xAttribute => processDetailsController.state.xAttribute;
 }

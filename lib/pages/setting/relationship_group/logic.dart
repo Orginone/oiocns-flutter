@@ -5,18 +5,13 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
-import 'package:orginone/dart/core/target/authority/iauthority.dart';
-import 'package:orginone/dart/core/target/company.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
-import 'package:orginone/dart/core/thing/ispecies.dart';
-import 'package:orginone/dart/core/thing/species.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/pages/setting/home/setting/state.dart';
 import 'package:orginone/pages/setting/network.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/common_tree_management.dart';
-import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
@@ -62,9 +57,9 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
           break;
         case StandardEnum.classCriteria:
           await SettingNetWork.initSpecies(state.model.value!);
-          if(CommonTreeManagement().species!=null){
-            loopSpecies([CommonTreeManagement().species!],state.model.value!);
-          }
+          // if(CommonTreeManagement().species!=null){
+          //   loopSpecies([CommonTreeManagement().species!],state.model.value!);
+          // }
           break;
         case StandardEnum.dict:
           await SettingNetWork.initDict(state.model.value!);
@@ -85,7 +80,7 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
           spaceEnum: model.spaceEnum,
           source: value,
           standardEnum: model.standardEnum,
-          name: value.name);
+          name: value.metadata.name);
       if(value.children.isNotEmpty){
         loopSpecies(value.children,child);
       }
@@ -155,8 +150,8 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
               typeName: type.label,
               teamName: name,
               teamCode: code,
-              teamRemark: remark,
-              avatar: '',
+              remark: remark,
+              icon: '',
               belongId: '');
           await item.create(model);
         });
@@ -174,16 +169,16 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
               typeName: type.label,
               teamName: name,
               teamCode: code,
-              teamRemark: remark,
-              avatar: '',
+              remark: remark,
+              icon: '',
               belongId: item.target.belongId);
           await item.update(model);
         },
         code: item.target.code,
         name: item.teamName,
         nickName: item.name,
-        identify: item.target.team?.code ?? "",
-        remark: item.target.team?.remark ?? "",
+        identify: item.target.code ?? "",
+        remark: item.target.remark ?? "",
         type: TargetType.getType(item.typeName));
   }
 
@@ -200,7 +195,7 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
 
   void editDict(SettingNavModel item) {
     showCreateDictDialog(context,onCreate: (name,code,remark) async{
-      var dict =await item.space.dict.updateDict(DictModel(name: name, public: true, code: code, remark: remark,id: item.source.id));
+      var dict =await item.source.updateDict(DictModel(name: name, public: true, code: code, remark: remark,id: item.source.id));
       if(dict!=null){
         ToastUtils.showMsg(msg: "更新成功");
         item.source.name = name;
@@ -213,7 +208,7 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
   }
 
   void removeDict(SettingNavModel item) async{
-    bool success = await item.space.dict.deleteDict(item.source.id);
+    bool success = await item.source.deleteDict(item.source.id);
     if(success){
       ToastUtils.showMsg(msg: "删除成功");
       state.model.value!.children.remove(item);
@@ -225,7 +220,7 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
     SettingController settingController = Get.find();
     List<ITarget> targets =  await settingController.getTeamTree(item.space);
     showCreateAuthDialog(context,getAllTarget(targets), target: item.space,callBack: (name,code,target,isPublic,remark) async{
-      ResultType<XAuthority> result = await item.source.createSubAuthority(name, code, isPublic, remark,item.space.target.id);
+      ResultType<XAuthority> result = await item.source.createSubAuthority(name, code, isPublic, remark,item.space.metadata.id);
       if(result.success){
         ToastUtils.showMsg(msg: "创建成功");
         await SettingNetWork.initAuthority(state.model.value!);
@@ -237,7 +232,7 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
   void editAuth(SettingNavModel item) async{
     SettingController settingController = Get.find();
     List<ITarget> targets =  await settingController.getTeamTree(item.space);
-    showCreateAuthDialog(context,getAllTarget(targets), target: getAllTarget(targets).firstWhere((element) => element.teamName == item.source.target.belong.name),callBack: (name,code,target,isPublic,remark) async{
+    showCreateAuthDialog(context,getAllTarget(targets), target: getAllTarget(targets).firstWhere((element) => element.metadata.name == item.source.target.belong.name),callBack: (name,code,target,isPublic,remark) async{
       ResultType<XAuthority> result = await item.source.updateAuthority(name, code, isPublic, remark);
       if(result.success){
         ToastUtils.showMsg(msg: "修改成功");

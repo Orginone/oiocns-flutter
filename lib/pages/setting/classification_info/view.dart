@@ -19,7 +19,7 @@ class ClassificationInfoPage
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: state.species.name,
+      titleName: state.species.metadata.name,
       body: Column(
         children: [
           tabBar(),

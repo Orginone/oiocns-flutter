@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/util/date_utils.dart';
-import 'package:orginone/util/department_management.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 
@@ -14,10 +13,13 @@ import 'logic.dart';
 import 'state.dart';
 
 class CohortInfoPage extends BaseGetView<CohortInfoController,CohortInfoState>{
+
+  SettingController get setting => Get.find();
+
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: state.cohort.teamName,
+      titleName: state.cohort.metadata.name??"",
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -45,9 +47,9 @@ class CohortInfoPage extends BaseGetView<CohortInfoController,CohortInfoState>{
                     memberContent.add([
                       user.code,
                       user.name,
-                      user.team?.name ?? "",
-                      user.team?.code ?? "",
-                      user.team?.remark ?? ""
+                      user.name ?? "",
+                      user.code ?? "",
+                      user.remark ?? ""
                     ]);
                   }
                   return CommonWidget.commonDocumentWidget(
@@ -83,21 +85,21 @@ class CohortInfoPage extends BaseGetView<CohortInfoController,CohortInfoState>{
             style: TextStyle(fontSize: 21.sp),
           ),
           CommonWidget.commonTextContentWidget(
-              "群组名称", state.cohort.target.team?.name ?? ""),
+              "群组名称", state.cohort.metadata.name),
           CommonWidget.commonTextContentWidget(
-              "群组代码", state.cohort.target.code),
+              "群组代码", state.cohort.metadata.code),
           CommonWidget.commonTextContentWidget(
-              "团队简称", state.cohort.name),
+              "团队简称", state.cohort.metadata.name),
           CommonWidget.commonTextContentWidget(
-              "团队标识", state.cohort.target.team?.code??""),
+              "团队标识", state.cohort.metadata.code),
           CommonWidget.commonTextContentWidget(
-              "创建人", findTargetShare(state.cohort.target.createUser).name),
+              "创建人", setting.user.findShareById(state.cohort.metadata.createUser).name),
           CommonWidget.commonTextContentWidget(
               "创建时间", DateTime.tryParse(
-              state.cohort.target.team?.createTime ?? "")!
+              state.cohort.metadata.createTime)!
               .format()),
           CommonWidget.commonTextContentWidget(
-              "简介", state.cohort.target.team?.remark ?? ""),
+              "简介", state.cohort.metadata.remark ?? ""),
         ],
       ),
     );

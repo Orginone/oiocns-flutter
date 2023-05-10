@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/util/authority.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -101,7 +101,7 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
       return popupMenuItem.isNotEmpty;
     }
     bool isSuperAdmin = await Auth.isSuperAdmin(target!);
-    if (target?.subTeamTypes.isNotEmpty??false) {
+    if (target?.speciesTypes.isNotEmpty??false) {
       if (isSuperAdmin) {
         popupMenuItem.add(newPopupMenuItem("新建子组织", "create"));
       }
@@ -119,7 +119,7 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
       if (target != settingController.user
           // && target != settingController.company
       ) {
-        popupMenuItem.add(newPopupMenuItem("退出${target!.typeName}", "signOut"));
+        popupMenuItem.add(newPopupMenuItem("退出${target!.metadata.typeName}", "signOut"));
       }
     }
 

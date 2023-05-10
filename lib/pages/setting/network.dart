@@ -1,7 +1,11 @@
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/core/target/authority/iauthority.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
-import 'package:orginone/dart/core/thing/ispecies.dart';
+import 'package:orginone/dart/core/target/authority/authority.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/target/innerTeam/department.dart';
+import 'package:orginone/dart/core/target/out_team/group.dart';
+import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/thing/base/species.dart';
 
 import 'home/setting/state.dart';
 
@@ -9,7 +13,7 @@ class SettingNetWork {
   static Future<void> initDepartment(
       SettingNavModel model) async {
 
-    Future<void> loopDepartment(List<ITarget> department,
+    Future<void> loopDepartment(List<IDepartment> department,
         SettingNavModel model) async {
       model.children = [];
       for (var element in department) {
@@ -18,16 +22,16 @@ class SettingNetWork {
             spaceEnum: model.spaceEnum,
             source: element,
             standardEnum: model.standardEnum,
-            image: element.target.avatarThumbnail(),name: element.teamName);
-        element.subTeam = await element.loadSubTeam();
-        if (element.subTeam.isNotEmpty) {
-          await loopDepartment(element.subTeam,child);
+            image: element.metadata.avatarThumbnail(),name: element.metadata.name);
+        element.children = await element.loadChildren();
+        if (element.children.isNotEmpty) {
+          await loopDepartment(element.children,child);
         }
         model.children.add(child);
       }
     }
 
-    var list = await model.space.loadSubTeam() ?? [];
+    var list = await model.source.loadSubTeam() ?? [];
     if (list.isNotEmpty) {
       await loopDepartment(list, model);
     }
@@ -42,21 +46,21 @@ class SettingNetWork {
             spaceEnum: model.spaceEnum,
             source: value,
             standardEnum: model.standardEnum,
-            image: value.target.avatarThumbnail(),name: value.teamName);
-        value.subGroup = await value.getSubGroups();
-        if (value.subTeam.isNotEmpty) {
-          await getNextLvOutAgency(value.subGroup,child);
+            image: value.metadata.avatarThumbnail(),name: value.metadata.name);
+        value.children = await value.loadChildren();
+        if (value.children.isNotEmpty) {
+          await getNextLvOutAgency(value.children,child);
         }
         model.children.add(child);
       }
     }
 
-    var group = await (model.space as ICompany).getJoinedGroups();
+    var group = await (model.space as ICompany).loadGroups();
     await getNextLvOutAgency(group,model);
   }
 
   static Future<void> initStations(SettingNavModel model) async {
-    var stations = await (model.space as ICompany).getStations();
+    var stations = await (model.space as ICompany).loadStations();
     model.children = [];
     for (var value in stations) {
       var child = SettingNavModel(
@@ -64,14 +68,14 @@ class SettingNetWork {
           spaceEnum: model.spaceEnum,
           source: value,
           standardEnum: model.standardEnum,
-          image: value.target.avatarThumbnail(),name: value.teamName);
+          image: value.metadata.avatarThumbnail(),name: value.metadata.name);
       model.children.add(child);
     }
 
   }
 
   static Future<void> initCohorts(SettingNavModel model) async {
-    var cohorts = await model.space.getCohorts();
+    var cohorts = await model.space.loadCohorts();
     model.children = [];
     for (var value in cohorts) {
       var child = SettingNavModel(
@@ -79,13 +83,13 @@ class SettingNetWork {
           spaceEnum: model.spaceEnum,
           source: value,
           standardEnum: model.standardEnum,
-          image: value.target.avatarThumbnail(),name: value.teamName);
+          image: value.metadata.avatarThumbnail(),name: value.metadata.name);
       model.children.add(child);
     }
   }
 
-  static Future<List<IAuthority>> getAuthority(ITarget space) async {
-    var authority = await space.loadAuthorityTree();
+  static Future<List<IAuthority>> getAuthority(IBelong space) async {
+    var authority = await space.loadSuperAuth();
 
     if (authority != null) {
        return [authority];
@@ -94,7 +98,7 @@ class SettingNetWork {
   }
 
   static Future<void> initAuthority(SettingNavModel model) async {
-    var authority = await model.space.loadAuthorityTree();
+    var authority = await model.space.loadSuperAuth();
     void loopAuth(List<IAuthority> auth,SettingNavModel model){
       model.children = [];
       for (var element in auth) {
@@ -103,7 +107,7 @@ class SettingNetWork {
             spaceEnum: model.spaceEnum,
             source: element,
             standardEnum: model.standardEnum,
-            name: element.name);
+            name: element.metadata.name??"");
         if(element.children.isNotEmpty){
           loopAuth(element.children,child);
         }
@@ -119,23 +123,23 @@ class SettingNetWork {
   }
 
   static Future<void> initDict(SettingNavModel model) async{
-    var dictArray = await model.space.dict.loadDict(PageRequest(offset: 0, limit: 1000, filter: ''));
-    if(dictArray.result!=null && dictArray.result!.isNotEmpty){
+    var dictArray = await model.space.loadDicts();
+    if(dictArray.isNotEmpty){
       model.children = [];
-      for (var value in dictArray.result!) {
+      for (var value in dictArray) {
         var child = SettingNavModel(
             space: model.space,
             spaceEnum: model.spaceEnum,
             source: value,
             standardEnum: model.standardEnum,
-            name: value.name??"");
+            name: value.metadata.name??"");
         model.children.add(child);
       }
     }
   }
 
   static Future<void> initSpecies(SettingNavModel model) async{
-    List<ISpeciesItem> species = await model.space.loadSpeciesTree();
+    List<ISpeciesItem> species = await model.space.loadSpecies();
     void loopSpeciesTree(List<ISpeciesItem> tree,SettingNavModel model){
       model.children = [];
       for (var element in tree) {
@@ -144,7 +148,7 @@ class SettingNetWork {
             spaceEnum: model.spaceEnum,
             source: element,
             standardEnum: model.standardEnum,
-            name: element.name);
+            name: element.metadata.name);
         if(element.children.isNotEmpty){
           loopSpeciesTree(element.children,child);
         }

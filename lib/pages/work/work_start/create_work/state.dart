@@ -1,14 +1,15 @@
 
 
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart' hide ThingModel;
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/model/thing_model.dart';
 
 class CreateWorkState extends BaseGetState{
-  late XFlowDefine define;
+  late XWorkDefine define;
 
-  late FlowNode node;
+  late WorkNodeModel node;
 
   var show = false.obs;
 

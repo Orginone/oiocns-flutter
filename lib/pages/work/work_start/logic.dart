@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
-import 'package:orginone/dart/core/target/todo/work.dart';
-import 'package:orginone/dart/core/thing/ispecies.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/thing/base/species.dart';
+import 'package:orginone/dart/core/thing/base/work.dart';
 import 'package:orginone/pages/work/initiate_work/state.dart';
 
 import '../../../../dart/core/getx/base_controller.dart';
@@ -19,9 +19,9 @@ class WorkStartController extends BaseController<WorkStartState> with GetTickerP
     // TODO: implement onReady
     super.onReady();
     if(state.work.workType == WorkType.organization){
-      state.define.value = await (state.work.space as ITarget).loadWork();
+      // state.define.value = await (state.work.space as ITarget).loadWork();
     } else if(state.work.workType == WorkType.group){
-      state.define.value = await (state.work.source as ISpeciesItem).loadWork();
+      state.define.value = await (state.work.source as IWork).loadWorkDefines();
     }
   }
 

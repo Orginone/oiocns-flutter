@@ -1,12 +1,5 @@
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
-import 'package:orginone/util/common_tree_management.dart';
-
-class ChoiceAssets {
-  late AssetsCategoryGroup? selectedAsset;
-
-  ChoiceAssets(this.selectedAsset);
-}
 
 
 class ChoicePeople{

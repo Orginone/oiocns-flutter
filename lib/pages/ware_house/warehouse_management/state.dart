@@ -3,9 +3,8 @@
 
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
 
 class WareHouseManagementState extends BaseBreadcrumbNavState{
   SettingController get settingCtrl => Get.find<SettingController>();
@@ -15,19 +14,19 @@ class WareHouseManagementState extends BaseBreadcrumbNavState{
     model.value = Get.arguments?['data'];
 
      if(model.value == null){
-       var joinedCompanies = settingCtrl.user.joinedCompany;
+       var joinedCompanies = settingCtrl.user.companys;
 
        List<WareHouseBreadcrumbNav> organization = [];
        for (var value in joinedCompanies) {
          organization.add(
            WareHouseBreadcrumbNav(
-             name: value.teamName,
-             id: value.id,
+             name: value.metadata.name??"",
+             id: value.metadata.id,
              space: value,
              wareHouseType: WareHouseType.organization,
              children: [
                ],
-             image: value.target.avatarThumbnail(),
+             image: value.metadata.avatarThumbnail(),
            ),
          );
        }
@@ -61,7 +60,7 @@ class WareHouseManagementState extends BaseBreadcrumbNavState{
 
 class WareHouseBreadcrumbNav extends BaseBreadcrumbNavModel<WareHouseBreadcrumbNav> {
   PersonalEnum? personalEnum;
-  ISpace? space;
+  IBelong? space;
   WareHouseType? wareHouseType;
   WareHouseBreadcrumbNav(
       {super.id = '',

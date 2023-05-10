@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/core/target/targetMap.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/util/date_utils.dart';
-import 'package:orginone/util/department_management.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 import '../../../../../dart/core/getx/base_get_page_view.dart';
@@ -16,6 +14,9 @@ import 'logic.dart';
 import 'state.dart';
 
 class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
+
+  SettingController get settingCtrl => Get.find<SettingController>();
+
   @override
   Widget buildView() {
     return _timeLine();
@@ -46,7 +47,7 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
 
   Widget _buildTimelineTile(int index, Archive archive) {
     TargetShare user =
-    findTargetShare(archive.flowInstance?.createUser ?? "");
+    settingCtrl.user.findShareById(archive.instance?.createUser ?? "");
     bool isLast = index == state.archives.value!.archives!.length - 1
         ? true
         : false;
@@ -72,18 +73,18 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
                 children: [
                   Row(
                     children: [
-                      Text(archive.flowRecord?.status == 100?"已通过":archive.flowRecord?.status == 1?"待审核":"未通过"),
+                      Text(archive.record?.status == 100?"已通过":archive.record?.status == 1?"待审核":"未通过"),
                       SizedBox(width: 20.w,),
                       Expanded(child: Text(user.name)),
-                      Text("审核节点:${archive.flowNode?.nodeType}"),
+                      Text("审核节点:${archive.node?.nodeType}"),
                     ],
                   ),
                   SizedBox(height:30.h,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(child: Text("审批意见:${archive.flowRecord?.comment??""}",overflow: TextOverflow.ellipsis,maxLines: 1,)),
-                      Text(DateTime.tryParse(archive.flowInstance?.createTime ?? "")?.format(
+                      Expanded(child: Text("审批意见:${archive.record?.comment??""}",overflow: TextOverflow.ellipsis,maxLines: 1,)),
+                      Text(DateTime.tryParse(archive.instance?.createTime ?? "")?.format(
                           format: "yyyy-MM-dd HH:mm:ss") ?? ""),
                     ],
                   ),

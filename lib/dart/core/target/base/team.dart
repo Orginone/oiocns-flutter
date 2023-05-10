@@ -3,6 +3,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/chat/msgchat.dart';
+import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/main.dart';
 
 import 'team.dart';
@@ -60,9 +61,6 @@ abstract class Team extends MsgChat implements ITeam {
     memberTypes = [TargetType.person];
     this.space = space ?? this as IBelong;
     userId = this.space.metadata.id;
-    if (this.space.user != null) {
-      userId = this.space.user.metadata.id;
-    }
   }
 
   @override
@@ -135,17 +133,19 @@ abstract class Team extends MsgChat implements ITeam {
 
   @override
   Future<bool> removeMembers(List<XTarget> members) async {
+    bool success = false;
     for (var member in members) {
       if (memberTypes.contains(TargetType.getType(member.typeName))) {
         var res = await kernel
             .removeOrExitOfTeam(GainModel(id: metadata.id, subId: member.id));
+        success = res.success;
         if (res.success) {
-          members.removeWhere((i) => i.id == member.id);
+          this.members.removeWhere((i) => i.id == member.id);
           loadMemberChats([member], false);
         }
       }
     }
-    return true;
+    return success;
   }
 
   @override

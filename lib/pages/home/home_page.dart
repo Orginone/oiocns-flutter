@@ -89,10 +89,10 @@ class HomeController extends TabsController {
     registerTab(XTab(
       view: const MessageChats(),
       tab: Obx(() {
-       var chats = settingCtrl.provider.user?.allChats();
+       var chats = settingCtrl.provider.user?.chats;
        int mgsCount = 0;
        chats?.forEach((element) {
-         mgsCount+=element.noReadCount.value;
+         mgsCount+=element.chatdata.value.noReadCount;
        });
         return BadgeTabWidget(
           icon: XImage.localImage("chat", size: Size(38.w, 32.w)),
@@ -107,7 +107,7 @@ class HomeController extends TabsController {
         return BadgeTabWidget(
           icon: XImage.localImage("work", size: size),
           body: Text('办事', style: XFonts.size14Black3),
-          mgsCount: settingCtrl.provider.user?.work.todos.length ?? 0,
+          mgsCount: settingCtrl.provider.user?.todos.length ?? 0,
         );
       }),
     ));

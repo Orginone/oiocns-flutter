@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/event/choice.dart';
-import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
@@ -28,15 +27,15 @@ class ChoiceDepartmentController extends BaseController<ChoiceDepartmentState> {
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
-    state.departments.value = DepartmentManagement().departments;
-    state.allDepartment = DepartmentManagement().getAllDepartment(state.departments);
+    state.departments.value = [];
+    state.allDepartment = [];
   }
 
   void search(String str) {
     state.searchList.clear();
 
     var filter = state.allDepartment
-        .where((element) => (element.name.contains(str)) ?? false);
+        .where((element) => (element.metadata.name.contains(str)) ?? false);
     if (filter.isNotEmpty) {
       state.searchList.addAll(filter);
     }
@@ -51,7 +50,7 @@ class ChoiceDepartmentController extends BaseController<ChoiceDepartmentState> {
   }
 
   void selectedDepartment(ITarget item) {
-    state.selectedDepartment.value?.isSelected = false;
+    // state.selectedDepartment.value?.isSelected = false;
     state.selectedDepartment.value = item;
   }
 

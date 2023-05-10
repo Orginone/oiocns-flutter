@@ -20,7 +20,7 @@ class ChoiceThingNetWork{
       "options": {
         "match": {},
       },
-    }, settingCtrl.user.id);
+    }, settingCtrl.user.metadata.id);
 
     if(result.success){
       result.data['data'].forEach((json){

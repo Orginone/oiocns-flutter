@@ -5,9 +5,10 @@ import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
-import 'package:orginone/dart/core/target/todo/todo.dart';
-import 'package:orginone/dart/core/thing/ispecies.dart';
+import 'package:orginone/dart/core/target/out_team/group.dart';
+import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/thing/base/species.dart';
+import 'package:orginone/dart/core/work/todo.dart';
 import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/pages/work/initiate_work/state.dart';
 import 'package:orginone/util/event_bus_helper.dart';
@@ -20,14 +21,14 @@ class WorkNetWork {
 
   static Future<List<ITodo>> getTodo() async {
 
-    var result = await setting.provider.user?.work.loadTodo(reload: true);
+    var result = await setting.provider.user?.loadTodos(reload: true);
     return result??[];
   }
 
-  static Future<XFlowInstance?> getFlowInstance(String id) async {
-    XFlowInstance? flowInstance;
-    ResultType<XFlowInstance> result = await KernelApi.getInstance()
-        .queryInstanceById(IdReq(
+  static Future<XWorkInstance?> getFlowInstance(String id) async {
+    XWorkInstance? flowInstance;
+    ResultType<XWorkInstance> result = await KernelApi.getInstance()
+        .queryWorkInstanceById(IdReq(
         id: id));
 
     if (result.success) {
@@ -36,27 +37,12 @@ class WorkNetWork {
     return flowInstance;
   }
 
-  static Future<List<XOperationItem>> getOperationItems(String id,String spaceId) async {
-    List<XOperationItem> items = [];
-
-    ResultType<XOperationItemArray> result = await KernelApi.getInstance()
-        .queryOperationItems(IdSpaceReq(id: id,spaceId: spaceId, page: PageRequest(offset: 0, limit: 9999, filter: '')));
-
-    if (result.success) {
-      items = result.data?.result??[];
-    } else {
-      ToastUtils.showMsg(msg: result.msg);
-    }
-    return items;
-  }
-
   static Future<void> approvalTask(
       {required ITodo todo, required int status, String? comment,VoidCallback? onSuccess}) async {
 
-    bool success = await setting.user.work.approval(todo, status, comment??"",null);
+    bool success = await todo.approval(status,comment: comment);
     if (success) {
       ToastUtils.showMsg(msg: "成功");
-      EventBusHelper.fire(WorkReload());
       if (onSuccess != null) {
         onSuccess();
       }
@@ -70,11 +56,11 @@ class WorkNetWork {
         var child = WorkBreadcrumbNav(
             space: model.space,
             source: value,
-            image: value.target.avatarThumbnail(),
-            name: value.teamName, children: [],workType: WorkType.group);
-        value.subGroup = await value.getSubGroups();
-        if (value.subTeam.isNotEmpty) {
-          await getNextLvOutAgency(value.subGroup, child);
+            image: value.metadata.avatarThumbnail(),
+            name: value.metadata.name, children: [],workType: WorkType.group);
+        value.children = await value.loadChildren();
+        if (value.children.isNotEmpty) {
+          await getNextLvOutAgency(value.children, child);
         }else{
           await WorkNetWork.initSpecies(child);
         }
@@ -82,18 +68,18 @@ class WorkNetWork {
       }
     }
 
-    var group = await (model.space as ICompany).getJoinedGroups();
+    var group = await (model.space as ICompany).loadGroups();
     await getNextLvOutAgency(group, model);
   }
 
   static Future<void> initCohorts(WorkBreadcrumbNav model) async {
-    var cohorts = await model.space!.getCohorts();
+    var cohorts = await model.space!.loadCohorts();
     for (var value in cohorts) {
       var child = WorkBreadcrumbNav(
           space: model.space,
           source: value,
-          image: value.target.avatarThumbnail(),
-          name: value.teamName, children: [],
+          image: value.metadata.avatarThumbnail(),
+          name: value.metadata.name??"", children: [],
           workType: WorkType.group
          );
       await WorkNetWork.initSpecies(child);
@@ -105,13 +91,13 @@ class WorkNetWork {
     if(model.children.where((element) => element.source?.target?.code == 'matters').isNotEmpty){
       return;
     }
-    List<ISpeciesItem>? species = await model.space?.loadSpeciesTree();
+    List<ISpeciesItem>? species = await model.space?.loadSpecies();
     void loopSpeciesTree(List<ISpeciesItem> tree,WorkBreadcrumbNav model){
       for (var element in tree) {
         var child = WorkBreadcrumbNav(
             space: model.space,
             source: element,
-            name: element.name, children: [],workType: WorkType.group);
+            name: element.metadata.name, children: [],workType: WorkType.group);
         if(element.children.isNotEmpty){
           loopSpeciesTree(element.children,child);
         }
@@ -119,7 +105,7 @@ class WorkNetWork {
       }
     }
     if(species!=null){
-      loopSpeciesTree(species.where((element) => element.target.code == 'matters').toList(),model);
+      loopSpeciesTree(species.where((element) => element.metadata.code == 'matters').toList(),model);
     }
   }
 }

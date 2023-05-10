@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/hive_utils.dart';
@@ -16,11 +15,11 @@ class SettingCenterController extends BaseBreadcrumbNavController<SettingCenterS
   final SettingCenterState state = SettingCenterState();
 
   void jumpInfo(BaseBreadcrumbNavModel model) {
-    // if(state.settingCtrl.isUserSpace(space: model.source)){
-    //   Get.toNamed(Routers.userInfo);
-    // }else{
-    //   Get.toNamed(Routers.companyInfo,arguments: {"company":model.source});
-    // }
+    if(state.settingCtrl.isUserSpace(model.source)){
+      Get.toNamed(Routers.userInfo);
+    }else{
+      Get.toNamed(Routers.companyInfo,arguments: {"company":model.source});
+    }
 
   }
 

@@ -16,7 +16,7 @@ class ThingInfoPage
             children: state.details.map((element) {
               return Column(
                 children: [
-                  CommonWidget.commonHeadInfoWidget(element.specie.name),
+                  CommonWidget.commonHeadInfoWidget(element.specie.metadata.name),
                   CommonWidget.commonFormWidget(
                       formItem: element.data.map((e) {
                         String value = e.value.toString();

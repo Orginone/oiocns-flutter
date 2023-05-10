@@ -32,15 +32,15 @@ enum TargetType {
 
 enum SpeciesType {
   /** 类别目录 */
-  fileSystem('文件系统'),
-  market('流通市场'),
-  resource('服务资源'),
+  fileSystem('文件类'),
+  market('流通类'),
+  resource('资源类'),
   propClass('属性分类'),
-  store('仓库物资'),
+  store('物资类'),
   /** 类别类目 */
-  commodity('商品类别'),
+  commodity('商品类'),
   speciesForm('表单类别'),
-  application('软件应用'),
+  application('应用类'),
   appModule('应用模块'),
   workItem('应用办事'),
   workForm('应用表单'),

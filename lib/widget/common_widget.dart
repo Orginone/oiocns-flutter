@@ -407,7 +407,7 @@ class CommonWidget {
     );
   }
 
-  static commonTextContentWidget(String text,String content,{double textSize = 20,double contentSize = 20,EdgeInsetsGeometry? padding,Color? color}){
+  static commonTextContentWidget(String text,String content,{double textSize = 20,double contentSize = 20,EdgeInsetsGeometry? padding,Color? color,int maxLines = 1}){
     return Container(
       padding: padding??EdgeInsets.symmetric(vertical: 15.h),
       width: double.infinity,
@@ -417,6 +417,7 @@ class CommonWidget {
               bottom: BorderSide(color: Colors.grey.shade300, width: 0.5))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             text,
@@ -429,7 +430,7 @@ class CommonWidget {
                   color: Colors.black,
                   fontSize: contentSize.sp,
                   fontWeight: FontWeight.w700,overflow: TextOverflow.ellipsis),
-              maxLines: 1,
+              maxLines: maxLines,
               textAlign: TextAlign.right,
             ),
           ),

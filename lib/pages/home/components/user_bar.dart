@@ -107,7 +107,7 @@ class UserBar extends GetView<SettingController> {
       return TextAvatar(
         radius: 45.w,
         width: 45.w,
-        avatarName: controller.provider.user?.name.substring(0, 1) ?? "",
+        avatarName: controller.provider.user?.metadata.name.substring(0, 1) ?? "",
         textStyle: XFonts.size22White,
         margin: insets,
       );
@@ -117,7 +117,7 @@ class UserBar extends GetView<SettingController> {
   Widget _imgAvatar(EdgeInsets insets) {
     return Obx(() {
       var avatar = controller.provider.user?.shareInfo.avatar?.thumbnail
-              .split(",")[1]
+              ?.split(",")[1]
               .replaceAll('\r', '')
               .replaceAll('\n', '');
       return Container(

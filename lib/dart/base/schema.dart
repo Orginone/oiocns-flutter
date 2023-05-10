@@ -1583,9 +1583,9 @@ class XWorkInstance {
     version = json["version"];
     createTime = json["createTime"];
     updateTime = json["updateTime"];
-    if (json["historyTasks"] != null) {
+    if (json["tasks"] != null) {
       historyTasks = [];
-      json["historyTasks"].forEach((json) {
+      json["tasks"].forEach((json) {
         historyTasks!.add(XWorkTaskHistory.fromJson(json));
       });
     }
@@ -2133,12 +2133,12 @@ class XThingArchives {
 
 class Archive {
   // 流程的定义
-  XWorkInstance? Instance;
+  XWorkInstance? instance;
 
   // 流程节点
-  XWorkNode? Node;
+  XWorkNode? node;
 
-  XWorkRecord? Record;
+  XWorkRecord? record;
 
   int? personId;
 
@@ -2148,18 +2148,18 @@ class Archive {
 
   Archive(
       {this.id,
-      this.Instance,
-      this.Node,
-      this.Record,
+      this.instance,
+      this.node,
+      this.record,
       this.data,
       this.personId});
 
   Archive.fromJson(Map<String, dynamic> json, this.id) {
-    Instance = json['instance'] != null
+    instance = json['instance'] != null
         ? XWorkInstance.fromJson(json['instance'])
         : null;
-    Node = json['node'] != null ? XWorkNode.fromJson(json['node']) : null;
-    Record =
+    node = json['node'] != null ? XWorkNode.fromJson(json['node']) : null;
+    record =
         json['record'] != null ? XWorkRecord.fromJson(json['record']) : null;
     personId = json['personId'];
     // data = json['data'];
@@ -2168,131 +2168,106 @@ class Archive {
 
 //流程任务
 class XWorkTask {
-  // 雪花ID
   String? id;
-
-  // 流程定义节点id
   String? nodeId;
-
-  // 流程实例id
+  String? title;
+  String? approveType;
+  String? taskType;
+  int? count;
+  String? defineId;
+  String? shareId;
+  String? belongId;
   String? instanceId;
-
-  // 节点分配目标Id
   String? identityId;
-
-  // 审批人员
-  String? personIds;
-
-  // 状态
+  String? remark;
   int? status;
-
-  // 创建人员ID
   String? createUser;
-
-  // 更新人员ID
   String? updateUser;
-
-  // 修改次数
   String? version;
-
-  // 创建时间
   String? createTime;
-
-  // 更新时间
   String? updateTime;
-
-  // 任务审批的角色
-  XIdentity? identity;
-
-  // 流程节点
-  XWorkNode? Node;
-
-  // 流程的定义
-  XWorkInstance? Instance;
-
-  // 流程节点记录
+  List<XWorkRecord>? records;
   XWorkNode? node;
+  XWorkInstance? instance;
 
-  // 流程节点记录
-  List<XWorkRecord>? Records;
-
-  //构造方法
   XWorkTask({
-    required this.id,
-    required this.nodeId,
-    required this.instanceId,
-    required this.identityId,
-    required this.personIds,
-    required this.status,
-    required this.createUser,
-    required this.updateUser,
-    required this.version,
-    required this.createTime,
-    required this.updateTime,
-    required this.identity,
-    required this.Node,
-    required this.Instance,
+    this.id,
+    this.nodeId,
+    this.title,
+    this.approveType,
+    this.taskType,
+    this.count,
+    this.defineId,
+    this.shareId,
+    this.belongId,
+    this.instanceId,
+    this.identityId,
+    this.remark,
+    this.status,
+    this.createUser,
+    this.updateUser,
+    this.version,
+    this.createTime,
+    this.updateTime,
+    this.records,
     this.node,
+    this.instance,
   });
 
-  //通过JSON构造
-  XWorkTask.fromJson(Map<String, dynamic> json) {
-    id = json["id"];
-    nodeId = json["nodeId"];
-    instanceId = json["instanceId"];
-    identityId = json["identityId"];
-    status = json["status"];
-    createUser = json["createUser"];
-    updateUser = json["updateUser"];
-    version = json["version"];
-    createTime = json["createTime"];
-    updateTime = json["updateTime"];
-    identity =
-        json["identity"] != null ? XIdentity.fromJson(json["identity"]) : null;
-    Node = json["node"] != null ? XWorkNode.fromJson(json["node"]) : null;
-    Instance = json["instance"] != null
-        ? XWorkInstance.fromJson(json["instance"])
-        : null;
-    node = json["node"] != null ? XWorkNode.fromJson(json["node"]) : null;
-    if (json["records"] != null) {
-      Records = [];
-      json["records"].forEach((json) {
-        Records!.add(XWorkRecord.fromJson(json));
-      });
-    }
-  }
-
-  //通过动态数组解析成List
-  static List<XWorkTask> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XWorkTask> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XWorkTask.fromJson(item));
-      }
-    }
-    return retList;
-  }
-
-  //转成JSON
   Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["nodeId"] = nodeId;
-    json["instanceId"] = instanceId;
-    json["identityId"] = identityId;
-    json["status"] = status;
-    json["createUser"] = createUser;
-    json["updateUser"] = updateUser;
-    json["version"] = version;
-    json["createTime"] = createTime;
-    json["updateTime"] = updateTime;
-    json["identity"] = identity?.toJson();
-    json["Instance"] = Instance?.toJson();
-    json["node"] = node?.toJson();
-    return json;
+    return {
+      'id': id,
+      'nodeId': nodeId,
+      'title': title,
+      'approveType': approveType,
+      'taskType': taskType,
+      'count': count,
+      'defineId': defineId,
+      'shareId': shareId,
+      'belongId': belongId,
+      'instanceId': instanceId,
+      'identityId': identityId,
+      'remark': remark,
+      'status': status,
+      'createUser': createUser,
+      'updateUser': updateUser,
+      'version': version,
+      'createTime': createTime,
+      'updateTime': updateTime,
+      'records': records?.map((record) => record.toJson()).toList(),
+      'node': node?.toJson(),
+      'instance': instance?.toJson(),
+    };
+  }
+
+  factory XWorkTask.fromJson(Map<String, dynamic> json) {
+    return XWorkTask(
+      id: json['id'],
+      nodeId: json['nodeId'],
+      title: json['title'],
+      approveType: json['approveType'],
+      taskType: json['taskType'],
+      count: json['count'],
+      defineId: json['defineId'],
+      shareId: json['shareId'],
+      belongId: json['belongId'],
+      instanceId: json['instanceId'],
+      identityId: json['identityId'],
+      remark: json['remark'],
+      status: json['status'],
+      createUser: json['createUser'],
+      updateUser: json['updateUser'],
+      version: json['version'],
+      createTime: json['createTime'],
+      updateTime: json['updateTime'],
+      records: (json['records'] as List<dynamic>?)
+          ?.map((record) => XWorkRecord.fromJson(record))
+          .toList(),
+      node: json['node'] != null ? XWorkNode.fromJson(json['node']) : null,
+      instance: json['instance'] != null
+          ? XWorkInstance.fromJson(json['instance'])
+          : null,
+    );
   }
 }
 
@@ -2323,15 +2298,13 @@ class XWorkTaskArray {
     offset = json["offset"];
     limit = json["limit"];
     total = json["total"];
-    List<Map<String, dynamic>>? list;
     if (json["result"] != null) {
-      list = [];
+      result = [];
       json["result"].forEach((e) {
-        list!.add(e);
+        result!.add(XWorkTask.fromJson(e));
       });
     }
 
-    result = XWorkTask.fromList(list);
   }
 
   //通过动态数组解析成List
@@ -2977,16 +2950,16 @@ class XImMsg {
 
   factory XImMsg.fromJson(Map<String, dynamic> json) {
     return XImMsg(
-      id: json['id'] as String,
-      sessionId: json['sessionId'] as String,
-      belongId: json['belongId'] as String,
-      fromId: json['fromId'] as String,
-      toId: json['toId'] as String,
-      msgType: json['msgType'] as String,
-      msgBody: json['msgBody'] as String,
-      createTime: json['createTime'] as String,
-      updateTime: json['updateTime'] as String,
-      showTxt: json['showTxt'] as String,
+      id: json['id'],
+      sessionId: json['sessionId'],
+      belongId: json['belongId'],
+      fromId: json['fromId'],
+      toId: json['toId'],
+      msgType: json['msgType'],
+      msgBody: json['msgBody'],
+      createTime: json['createTime'],
+      updateTime: json['updateTime'],
+      showTxt: json['showTxt'],
       allowEdit: json['allowEdit'] as bool,
     );
   }
@@ -5447,13 +5420,13 @@ class XSpeciesArray {
 //类别定义
 class XSpecies {
   // 雪花ID
-  final String id;
+  String id;
 
   // 名称
   String name;
 
   // 编号
-  final String code;
+  String code;
 
   // 备注
   String remark;
@@ -5461,14 +5434,14 @@ class XSpecies {
   // 公开的
   bool public;
 
-  final String typeName;
+  String typeName;
 
   // 父类别ID
-  final String parentId;
+  String parentId;
 
-  final String icon;
+  String icon;
 
-  final String shareId;
+  String shareId;
 
   // 创建组织/个人
   String belongId;
@@ -5477,75 +5450,74 @@ class XSpecies {
   String authId;
 
   // 状态
-  final int status;
+  int status;
 
   // 创建人员ID
-  final String createUser;
+  String createUser;
 
   // 更新人员ID
-  final String updateUser;
+  String updateUser;
 
   // 修改次数
-  final String version;
+  String version;
 
   // 创建时间
-  final String createTime;
+  String? createTime;
 
   // 更新时间
-  final String updateTime;
+  String? updateTime;
 
   // 该类别与物的关系
-  final List<XThingSpec>? specThings;
+  List<XThingSpec>? specThings;
 
   // 该类别的物
-  final List<XThing>? things;
+  List<XThing>? things;
 
   // 类别的字典
-  final List<XDict>? dicts;
+  List<XDict>? dicts;
 
   // 类别的度量标准
-  final List<XAttribute>? attributes;
-
-
-  // 分类的结构
-  final XSpecies? parent;
+  List<XAttribute>? attributes;
 
   // 分类的结构
-  final List<XSpecies>? nodes;
+  XSpecies? parent;
+
+  // 分类的结构
+  List<XSpecies>? nodes;
 
   // 工作权限
-  final XAuthority? authority;
+  XAuthority? authority;
 
   // 创建类别标准的组织/个人
-  final XTarget? belong;
+  XTarget? belong;
 
   //构造方法
   XSpecies({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.remark,
-    required this.public,
-    required this.parentId,
-    required this.belongId,
-    required this.authId,
-    required this.status,
-    required this.createUser,
-    required this.updateUser,
-    required this.version,
-    required this.createTime,
-    required this.updateTime,
-    required this.specThings,
-    required this.things,
-    required this.dicts,
-    required this.attributes,
-    required this.parent,
-    required this.nodes,
-    required this.authority,
-    required this.belong,
-    required this.typeName,
-    required this.icon,
-    required this.shareId,
+    this.id = '',
+    this.name = '',
+    this.code = '',
+    this.remark = '',
+    this.public = false,
+    this.parentId = '',
+    this.belongId = '',
+    this.authId = '',
+    this.status = 0,
+    this.createUser = '',
+    this.updateUser = '',
+    this.version = '',
+    this.createTime,
+    this.updateTime,
+    this.specThings,
+    this.things,
+    this.dicts,
+    this.attributes,
+    this.parent,
+    this.nodes,
+    this.authority,
+    this.belong,
+    this.typeName = '',
+    this.icon = '',
+    this.shareId = '',
   });
 
   //通过JSON构造
@@ -5562,9 +5534,9 @@ class XSpecies {
         createUser = json["createUser"] ?? "",
         updateUser = json["updateUser"] ?? "",
         version = json["version"] ?? "",
-        typeName = json['typeName'],
-        icon = json['icon'],
-        shareId = json['shareId'],
+        typeName = json['typeName']??"",
+        icon = json['icon']??"",
+        shareId = json['shareId']??"",
         createTime = json["createTime"] ?? "",
         updateTime = json["updateTime"] ?? "",
         specThings = XThingSpec.fromList(json["specThings"]),

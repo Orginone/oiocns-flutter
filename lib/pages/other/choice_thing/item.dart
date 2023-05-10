@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:orginone/dart/core/target/targetMap.dart';
+import 'package:get/get.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/model/thing_model.dart';
 import 'package:orginone/util/date_utils.dart';
-import 'package:orginone/util/department_management.dart';
 import 'package:orginone/widget/common_widget.dart';
 
 class Item extends StatelessWidget {
@@ -21,6 +21,9 @@ class Item extends StatelessWidget {
       this.showSelectButton = true,
       this.showDelete = false, this.delete})
       : super(key: key);
+
+
+  SettingController get settingCtrl => Get.find<SettingController>();
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +88,7 @@ class Item extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "创建人:${findTargetShare(item.creater ?? "").name}",
+                          "创建人:${settingCtrl.user.findShareById(item.creater ?? "").name}",
                           style: TextStyle(fontSize: 18.sp),
                         ),
                         statusWidget,

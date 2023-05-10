@@ -2,13 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
-import 'package:orginone/util/common_tree_management.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/util/date_utils.dart';
-import 'package:orginone/util/department_management.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 
@@ -163,7 +159,7 @@ class Fields {
     }
     if ((code == "USE_DEPT_NAME" || code == "OLD_ORG_NAME") && type == "text") {
       defaultData.value =
-          DepartmentManagement().currentDepartment?.name ?? "个人中心";
+         "" ?? "个人中心";
     }
     if ((code == "USER_NAME" ||
         code == "OLD_USER_NAME" ||
@@ -189,7 +185,7 @@ class Fields {
         });
       }
       if(type == 'selectPerson'){
-        var users = await setting.user.loadMembers(PageRequest(offset: 0, limit: 10000, filter: ''));
+        var users = await setting.user.loadMembers();
         PickerUtils.showListStringPicker(Get.context!, titles: users.map((e) => e.name).toList(),
             callback: (str) {
               defaultData.value = users.firstWhere((element) => element.name == str);
@@ -197,9 +193,9 @@ class Fields {
       }
       if(type == 'selectDepartment'){
         List<ITarget> team = await setting.getTeamTree(setting.user);
-        PickerUtils.showListStringPicker(Get.context!, titles: team.map((e) => e.teamName).toList(),
+        PickerUtils.showListStringPicker(Get.context!, titles: team.map((e) => e.metadata.name).toList(),
             callback: (str) {
-              defaultData.value = team.firstWhere((element) => element.teamName == str);
+              defaultData.value = team.firstWhere((element) => element.metadata.name == str);
             });
       }
     };
@@ -239,10 +235,10 @@ class Fields {
         data["OLD_USER_ID"] = HiveUtils.getUser()?.person?.id;
         break;
       case "USE_DEPT_NAME":
-        data["USE_DEPT"] = DepartmentManagement().currentDepartment?.id;
+        data["USE_DEPT"] = '';
         break;
       case "OLD_ORG_NAME":
-        data['OLD_ORG_ID'] = DepartmentManagement().currentDepartment?.id;
+        data['OLD_ORG_ID'] = '';
         break;
       case "KEEPER_NAME":
         data['KEEPER_NAME'] = defaultData.value?.name;
@@ -287,8 +283,7 @@ class Fields {
     }
     switch (code) {
       case "ASSET_TYPE":
-        defaultData.value =
-            CommonTreeManagement().findCategoryTree(assetsJson[code!] ?? "");
+        defaultData.value = '';
         break;
       case "SFXC":
       case "DISPOSE_TYPE":
@@ -301,17 +296,14 @@ class Fields {
         }
         break;
       case "KEEPER_NAME":
-        defaultData.value = DepartmentManagement()
-            .findXTargetByIdOrName(id: assetsJson['KEEPER_ID']);
+        defaultData.value = '';
         break;
       case "KEEP_ORG_NAME":
-        defaultData.value = DepartmentManagement()
-            .findITargetByIdOrName(id: assetsJson['KEEP_ORG_ID']);
+        defaultData.value = '';
         break;
       case "USER_NAME":
         if (type != "text") {
-          defaultData.value = DepartmentManagement()
-              .findXTargetByIdOrName(name: assetsJson['USER_NAME']);
+          defaultData.value = '';
         }
         break;
     }

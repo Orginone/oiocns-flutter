@@ -58,6 +58,7 @@ abstract class Belong extends Target implements IBelong {
     this.user = user ?? this as IPerson;
     dicts = [];
     cohorts = [];
+    speciesTypes = [SpeciesType.store];
     message = ChatMessage(this);
   }
 

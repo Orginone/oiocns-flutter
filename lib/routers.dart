@@ -32,7 +32,6 @@ import 'package:orginone/pages/setting/home/binding.dart';
 import 'package:orginone/pages/setting/home/setting/binding.dart';
 import 'package:orginone/pages/setting/home/view.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
-import 'package:orginone/pages/setting/new_friend_page.dart';
 import 'package:orginone/pages/setting/person/cardbag/bindings.dart';
 import 'package:orginone/pages/setting/person/cardbag/index.dart';
 import 'package:orginone/pages/setting/person/dynamic/bindings.dart';
@@ -42,9 +41,6 @@ import 'package:orginone/pages/setting/person/mark/view.dart';
 import 'package:orginone/pages/setting/person/security/bindings.dart';
 import 'package:orginone/pages/setting/person/security/index.dart';
 import 'package:orginone/pages/setting/person/view.dart';
-import 'package:orginone/pages/setting/publisher_page.dart';
-import 'package:orginone/pages/setting/set_home_page.dart';
-import 'package:orginone/pages/setting/unit_settings_page.dart';
 import 'package:orginone/pages/setting/version_page.dart';
 
 // 资产管理
@@ -150,12 +146,9 @@ class Routers {
   static const String settingCenter = "/settingCenter";
   static const String settingFunction = "/settingFunction";
   static const String mineUnit = "/mineUnit";
-  static const String newFriends = "/newFriends";
   static const String contact = "/contact";
   static const String cohorts = "/cohorts";
-  static const String uintSettings = "/uintSettings";
   static const String companyInfo = "/companyInfo";
-  static const String publisher = "/publisher";
   static const String version = "/version";
   static const String userInfo = "/userInfo";
   // 仓库相关
@@ -334,9 +327,7 @@ class Routers {
         page: () => const HomePage(),
         bindings: [
           HomeBinding(),
-          SetHomeBinding(),
           IndexPageBinding(),
-          SetHomeBinding(),
           UpdateBinding(),
         ],
       ),
@@ -369,11 +360,6 @@ class Routers {
         page: () => const MineUnitPage(),
       ),
       GetPage(
-        name: Routers.newFriends,
-        page: () => const NewFriendsPage(),
-        binding: NewFriendsBinding(),
-      ),
-      GetPage(
         name: Routers.addFriend,
         page: () => AddFriendPage(),
         binding: AddFriendBinding(),
@@ -389,11 +375,6 @@ class Routers {
         binding: ContactBinding(),
       ),
       GetPage(
-        name: Routers.uintSettings,
-        page: () => UintSettingsPage(),
-        binding: UintSettingsBinding(),
-      ),
-      GetPage(
         name: Routers.index,
         page: () => IndexPage(),
         bindings: [
@@ -401,7 +382,6 @@ class Routers {
           IndexPageBinding(),
           ChatBoxBinding(),
           PlayBinding(),
-          SetHomeBinding(),
           UpdateBinding()
         ],
       ),
@@ -509,11 +489,6 @@ class Routers {
         name: Routers.version,
         page: () => const VersionPage(),
         binding: VersionBinding(),
-      ),
-      GetPage(
-        name: Routers.publisher,
-        page: () => PublisherPage(),
-        binding: PublisherBinding(),
       ),
       GetPage(
         name: Routers.relationGroup,

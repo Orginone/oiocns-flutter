@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/other/choice_thing/network.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 

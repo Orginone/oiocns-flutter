@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
-import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
@@ -27,13 +25,11 @@ class UserInfoController extends BaseController<UserInfoState>
   }
 
   Future<void> init() async {
-    // var users = await state.settingController.space
-    //     .loadMembers(PageRequest(offset: 0, limit: 9999, filter: ''));
-    var company =
-        await state.settingController.user?.getJoinedCompanys(reload: true);
+    var users = await state.settingController.user.loadMembers();
+    var company = await state.settingController.user.loadCompanys(reload: true);
     state.unitMember.clear();
     state.joinCompany.clear();
-    // state.unitMember.addAll(users.result ?? []);
+    state.unitMember.addAll(users ?? []);
     state.joinCompany.addAll(company ?? []);
   }
 
@@ -52,8 +48,7 @@ class UserInfoController extends BaseController<UserInfoState>
             title: "添加成员",
             hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {
-            bool success = await state.settingController.user!.pullMembers(
-                list.map((e) => e.id).toList(), TargetType.person.label);
+            bool success = await state.settingController.user.pullMembers(list);
             if (success) {
               ToastUtils.showMsg(msg: "添加成功");
               state.unitMember.addAll(list);
@@ -70,9 +65,7 @@ class UserInfoController extends BaseController<UserInfoState>
             hint: "请输入单位的社会统一信用代码", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {
             try {
-              for (var element in list) {
-                await state.settingController.user!.applyJoinCompany(element.id,TargetType.company);
-              }
+              await state.settingController.user.applyJoin(list);
               ToastUtils.showMsg(msg: "发送成功");
             } catch (e) {
               ToastUtils.showMsg(msg: "发送失败");
@@ -85,23 +78,23 @@ class UserInfoController extends BaseController<UserInfoState>
 
   void removeMember(String data) async{
     var user = state.unitMember.firstWhere((element) => element.code == data);
-    bool success = await  state.settingController.user!.removeMember(user);
-    if(success){
+    bool success = await state.settingController.user.removeMembers([user]);
+    if (success) {
       state.unitMember.removeWhere((element) => element.code == data);
       state.unitMember.refresh();
-    }else{
+    } else {
       ToastUtils.showMsg(msg: "移除失败");
     }
-
   }
 
-  void removeCompany(String data) async{
-    var company = state.joinCompany.firstWhere((element) => element.name == data);
-    bool success = await  state.settingController.user!.deleteCompany(company.id);
-    if(success){
-      state.joinCompany.removeWhere((element) => element.name == data);
+  void removeCompany(String data) async {
+    var company = state.joinCompany
+        .firstWhere((element) => element.metadata.name == data);
+    bool success = await company.exit();
+    if (success) {
+      state.joinCompany.remove(company);
       state.joinCompany.refresh();
-    }else{
+    } else {
       ToastUtils.showMsg(msg: "移除失败");
     }
   }

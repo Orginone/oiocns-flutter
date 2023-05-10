@@ -1,9 +1,9 @@
 
 
-import 'package:orginone/dart/core/target/authority/iauthority.dart';
-import 'package:orginone/dart/core/target/itarget.dart';
-import 'package:orginone/dart/core/thing/ispecies.dart';
-import 'package:orginone/dart/core/thing/species.dart';
+import 'package:orginone/dart/core/target/authority/authority.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/target/out_team/group.dart';
+import 'package:orginone/dart/core/thing/base/species.dart';
 
 enum SpaceEnum {
   innerAgency("内部机构"),
@@ -157,8 +157,8 @@ List<ITarget> getAllTarget(List<ITarget> targets) {
   List<ITarget> list = [];
   for (var element in targets) {
     list.add(element);
-    if (element.subTeam.isNotEmpty) {
-      list.addAll(getAllTarget(element.subTeam));
+    if (element.subTarget.isNotEmpty) {
+      list.addAll(getAllTarget(element.subTarget));
     }
   }
   return list;
@@ -179,8 +179,8 @@ List<IGroup> getAllOutAgency(List<IGroup> outAgencyGroup) {
   List<IGroup> list = [];
   for (var element in outAgencyGroup) {
     list.add(element);
-    if (element.subGroup.isNotEmpty) {
-      list.addAll(getAllOutAgency(element.subGroup));
+    if (element.children.isNotEmpty) {
+      list.addAll(getAllOutAgency(element.children));
     }
   }
 

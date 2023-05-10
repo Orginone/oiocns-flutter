@@ -7,7 +7,6 @@ import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/target/targetMap.dart';
 import 'package:orginone/pages/chat/widgets/avatars.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/widget_util.dart';
@@ -97,7 +96,7 @@ class MessageSetting extends GetView<SettingController> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        TeamAvatar(info: TeamTypeInfo(share: findTargetShare(chat.chatId))),
+        TeamAvatar(info: TeamTypeInfo(share: controller.user.findShareById(chat.chatId))),
         Padding(padding: EdgeInsets.only(left: 10.w)),
         Expanded(
           child: Column(

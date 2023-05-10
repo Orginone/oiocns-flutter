@@ -73,6 +73,7 @@ abstract class Work extends SpeciesItem implements IWork {
       defines.add(res.data!);
       return res.data;
     }
+    return null;
   }
 
   @override

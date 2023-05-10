@@ -3,7 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/dart/core/store/ifilesys.dart';
+import 'package:orginone/dart/core/thing/filesys/filesystem.dart';
 import 'package:orginone/widget/file_image_widget.dart';
 
 class Item extends StatelessWidget {
@@ -25,7 +25,7 @@ class Item extends StatelessWidget {
           children: [
             FileImageWidget(file: file,size: 40.w,),
             SizedBox(width: 15.w,),
-            Expanded(child: Text(file.target?.name??"",maxLines: 1,overflow: TextOverflow.ellipsis,),),
+            Expanded(child: Text(file.metadata.name??"",maxLines: 1,overflow: TextOverflow.ellipsis,),),
             popupMenuButton(),
             more(),
           ],
@@ -46,7 +46,7 @@ class Item extends StatelessWidget {
 
   Widget popupMenuButton(){
     List<PopupMenuItem> children = [];
-    if(file.target?.isDirectory??false){
+    if(file.metadata.isDirectory??false){
       children = [
         const PopupMenuItem(value: "createDir",child: Text("新建文件夹"),),
         const PopupMenuItem(value: "refreshDir",child: Text("刷新文件夹"),),

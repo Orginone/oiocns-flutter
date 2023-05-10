@@ -1,10 +1,8 @@
-import 'dart:math';
-
 import 'package:get/get.dart';
+import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
-import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/app/application.dart';
@@ -26,13 +24,13 @@ abstract class IPerson extends IBelong {
   late RxList<ICompany> companys;
 
   //待办
-  late List<ITodo> todos;
+  late RxList<ITodo> todos;
 
   //赋予人的身份(角色)实体
   late List<XIdentity> givedIdentitys;
 
   //根据ID查询共享信息
-  Future<TargetShare> findShareById(String id);
+  TargetShare findShareById(String id);
 
   //判断是否拥有某些用户的权限
   bool authenticate(List<String> orgIds, List<String> authIds);
@@ -62,12 +60,17 @@ class Person extends Belong implements IPerson {
   late List<XIdentity> givedIdentitys;
 
   @override
-  late List<ITodo> todos;
+  late RxList<ITodo> todos;
 
   Person(XTarget metadata):super(metadata,['本人']){
     companys = <ICompany>[].obs;
     givedIdentitys = [];
-    todos = [];
+    todos = <ITodo>[].obs;
+    fileSystem = new FileSystem(
+      XSpecies(id: metadata.id),
+      this,
+    );
+    userId = metadata.id;
   }
 
   @override
@@ -124,20 +127,21 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  Future<TargetShare> findShareById(String id) async {
+  TargetShare findShareById(String id){
     var share = ShareIdSet[id] ?? TargetShare(name: '未知', typeName: "未知");
     if (share.avatar == null) {
-      var res = await kernel
+      kernel
           .queryTargetById(IdArrayReq(ids: [id],
-        page: PageRequest(offset: 0, limit: 9999, filter: ''),));
-      if (res.success && res.data?.result != null) {
-        res.data?.result?.forEach((item) {
-          ShareIdSet[item.id] = TargetShare(name: item.name,
-              typeName: item.typeName,
-              avatar: FileItemShare.parseAvatar(item.icon));
-        });
-        share = ShareIdSet[id]??share;
-      }
+        page: PageRequest(offset: 0, limit: 9999, filter: ''),)).then((res){
+        if (res.success && res.data?.result != null) {
+          res.data?.result?.forEach((item) {
+            ShareIdSet[item.id] = TargetShare(name: item.name,
+                typeName: item.typeName,
+                avatar: FileItemShare.parseAvatar(item.icon));
+          });
+          share = ShareIdSet[id]??share;
+        }
+      });
     }
     return share;
   }
@@ -203,6 +207,7 @@ class Person extends Belong implements IPerson {
     @override
     Future<List<ITodo>> loadTodos({bool reload = false}) async{
       if (todos.isEmpty || reload) {
+        todos.clear();
         var res = await kernel.queryApproveTask(IdReq(id: '0'));
         if (res.success) {
           res.data?.result?.forEach((element) {

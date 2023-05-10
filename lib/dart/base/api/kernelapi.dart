@@ -2419,8 +2419,8 @@ class KernelApi {
   }
 
   /// 创建流程实例(启动流程)
-  /// @param {FlowInstanceModel} params 请求参数
-  /// @returns {ResultType<XFlowInstance>} 请求结果
+  /// @param {workInstanceModel} params 请求参数
+  /// @returns {ResultType<XworkInstance>} 请求结果
   Future<ResultType<XWorkInstance>> createWorkInstance(
       WorkInstanceModel params) async {
     return await request(
@@ -2434,13 +2434,13 @@ class KernelApi {
   }
 
   /// 创建流程绑定
-  /// @param {FlowRelationModel} params 请求参数
+  /// @param {workRelationModel} params 请求参数
   /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> createFlowRelation(FlowRelationModel params) async {
+  Future<ResultType<bool>> createworkRelation(FlowRelationModel params) async {
     return await request(
       ReqestType(
-        module: 'flow',
-        action: 'CreateFlowRelation',
+        module: 'work',
+        action: 'CreateworkRelation',
         params: params,
       ),
       (item) => item as bool,
@@ -2467,7 +2467,7 @@ class KernelApi {
   Future<ResultType<bool>> deleteInstance(IdReq params) async {
     return await request(
       ReqestType(
-        module: 'flow',
+        module: 'work',
         action: 'DeleteInstance',
         params: params,
       ),
@@ -2477,7 +2477,7 @@ class KernelApi {
 
   /// 查询分类下的流程定义
   /// @param {QueryDefineReq} params 请求参数
-  /// @returns {ResultType<XFlowDefineArray>} 请求结果
+  /// @returns {ResultType<XworkDefineArray>} 请求结果
   Future<ResultType<XWorkDefineArray>> queryWorkDefine(
       GetSpeciesResourceModel params) async {
     return await request(
@@ -2493,7 +2493,7 @@ class KernelApi {
   /*
    * 查询流程节点(复现流程图)
    * @param {IdReq} params 请求参数
-   * @returns {ResultType<XFlowDefineArray>} 请求结果
+   * @returns {ResultType<XworkDefineArray>} 请求结果
    */
   Future<ResultType<WorkNodeModel>> queryWorkNodes(IdReq params) async {
     return await request(
@@ -2507,13 +2507,13 @@ class KernelApi {
   }
 
   /// 查询发起的流程实例
-  /// @param {FlowReq} params 请求参数
-  /// @returns {ResultType<XFlowInstanceArray>} 请求结果
+  /// @param {workReq} params 请求参数
+  /// @returns {ResultType<XworkInstanceArray>} 请求结果
   Future<ResultType<XWorkInstanceArray>> queryInstanceByApply(
       FlowReq params) async {
     return await request(
       ReqestType(
-        module: 'flow',
+        module: 'work',
         action: 'QueryInstanceByApply',
         params: params.toJson(),
       ),
@@ -2522,8 +2522,8 @@ class KernelApi {
   }
 
   /// 根据Id查询流程实例
-  /// @param {FlowReq} params 请求参数
-  /// @returns {ResultType<XFlowInstanceArray>} 请求结果
+  /// @param {workReq} params 请求参数
+  /// @returns {ResultType<XworkInstanceArray>} 请求结果
   Future<ResultType<XWorkInstance>> queryWorkInstanceById(IdReq params) async {
     return await request(
       ReqestType(
@@ -2537,11 +2537,11 @@ class KernelApi {
 
   /// 查询待审批任务、待审阅抄送
   /// @param {IdReq} params 请求参数
-  /// @returns {ResultType<XFlowTaskArray>} 请求结果
+  /// @returns {ResultType<XworkTaskArray>} 请求结果
   Future<ResultType<XWorkTaskArray>> queryApproveTask(IdReq params) async {
     return await request(
       ReqestType(
-        module: 'flow',
+        module: 'work',
         action: 'QueryApproveTask',
         params: params.toJson(),
       ),
@@ -2553,12 +2553,12 @@ class KernelApi {
 
   /// 查询审批记录
   /// @param {IdSpaceReq} params 请求参数
-  /// @returns {ResultType<XFlowTaskHistoryArray>} 请求结果
+  /// @returns {ResultType<XworkTaskHistoryArray>} 请求结果
   Future<ResultType<XWorkTaskHistoryArray>> queryRecord(
       RecordSpaceReq params) async {
     return await request(
       ReqestType(
-        module: 'flow',
+        module: 'work',
         action: 'QueryRecord',
         params: params.toJson(),
       ),
@@ -2581,8 +2581,8 @@ class KernelApi {
   }
 
   /// 发布流程定义
-  /// @param {XFlowDefine} params 请求参数
-  /// @returns {ResultType<XFlowDefine>} 请求结果
+  /// @param {XworkDefine} params 请求参数
+  /// @returns {ResultType<XworkDefine>} 请求结果
   Future<ResultType<XWorkDefine>> createWorkDefine(WorkDefineModel params) async {
     return await request(
       ReqestType(

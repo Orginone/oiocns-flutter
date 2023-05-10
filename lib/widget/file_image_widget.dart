@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:orginone/dart/core/store/ifilesys.dart';
+import 'package:orginone/dart/core/thing/filesys/filesystem.dart';
 import 'package:orginone/images.dart';
 
 class FileImageWidget extends StatelessWidget {
@@ -12,10 +12,10 @@ class FileImageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String img = Images.otherIcon;
-    String ext = file.target!.name!.split('.').last;
+    String ext = file.metadata!.name!.split('.').last;
     if (ext == 'jpg' || ext == 'jpeg' || ext == 'png' || ext == 'webp') {
       return Image.network(
-        file.target?.shareInfo()['shareLink'],
+        file.metadata?.shareInfo()['shareLink'],
         width: size,
         height: size,
       );
@@ -37,7 +37,7 @@ class FileImageWidget extends StatelessWidget {
           img = Images.wordIcon;
           break;
         default:
-          if(file.target?.isDirectory??false){
+          if(file.metadata.isDirectory??false){
             img = Images.dirIcon;
           }else{
             img = Images.otherIcon;

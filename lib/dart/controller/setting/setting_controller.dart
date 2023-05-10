@@ -100,6 +100,10 @@ class SettingController extends GetxController {
         break;
     }
   }
+
+  bool isUserSpace(space) {
+    return space == user;
+  }
 }
 
 class SettingBinding extends Bindings {
