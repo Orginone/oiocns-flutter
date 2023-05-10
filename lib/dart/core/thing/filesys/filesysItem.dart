@@ -39,3 +39,31 @@ abstract class IFileSystem extends ISpeciesItem {
   /// 任务变更
   void taskChanged(String id, TaskModel task);
 }
+
+class FileSystem extends SpeciesItem implements IFileSystem{
+  FileSystem(super.metadata, super.current){
+    taskList = [];
+  }
+
+  @override
+  IFileSystemItem? home;
+
+  @override
+  late List<TaskModel> taskList;
+
+  @override
+  void onTaskChange(void Function(List<TaskModel> p1) callback) {
+    // TODO: implement onTaskChange
+  }
+
+  @override
+  void taskChanged(String id, TaskModel task) {
+    // TODO: implement taskChanged
+  }
+
+  @override
+  void unTaskChange() {
+    // TODO: implement unTaskChange
+  }
+
+}

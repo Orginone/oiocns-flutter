@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/market/model.dart';
 
 import 'filesysItem.dart';
 
@@ -50,4 +51,98 @@ abstract class IFileSystemItem {
       [OnProgressType? onProgress]);
   //下载文件
   Future<void> download(String path, OnProgressType onProgress);
+}
+
+class FileSystemItem implements IFileSystemItem {
+  FileSystemItem(this.filesys, this.metadata, [this.parent]) {
+    children = [];
+    belongId = filesys.metadata.belongId;
+  }
+
+  @override
+  late List<IFileSystemItem> children;
+
+  late String belongId;
+
+  @override
+  IFileSystem filesys;
+
+  @override
+  FileItemModel metadata;
+
+  @override
+  IFileSystemItem? parent;
+
+  @override
+  Future<bool> copy(IFileSystemItem destination) {
+    // TODO: implement copy
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<IFileSystemItem?> create(String name) {
+    // TODO: implement create
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> delete() {
+    // TODO: implement delete
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> download(String path, OnProgressType onProgress) {
+    // TODO: implement download
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> loadChildren([bool reload = false]) {
+    // TODO: implement loadChildren
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> move(IFileSystemItem destination) {
+    // TODO: implement move
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> rename(String name) async {
+    if (metadata.name != name && !(await _findByName(name))) {
+      final res = await kernel.anystore.bucketOpreate<FileItemModel>(
+          belongId,
+          BucketOpreateModel(
+            name: name,
+            key: _formatKey(),
+            operate: BucketOpreates.rename,
+          ));
+      if (res.success && res.data != null) {
+        metadata = res.data!;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @override
+  FileItemShare shareInfo() {
+    // TODO: implement shareInfo
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<IFileSystemItem?> upload(String name, File file,
+      [OnProgressType? onProgress]) {
+    // TODO: implement upload
+    throw UnimplementedError();
+  }
+
+  List<FileItemModel> get childrenData {
+    return children.map((item) {
+      return item.metadata;
+    }).toList();
+  }
 }
