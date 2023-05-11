@@ -20,6 +20,7 @@ import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/string_util.dart';
+import 'package:orginone/widget/target_text.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/photo_widget.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
@@ -63,12 +64,18 @@ class DetailItemWidget extends GetView<SettingController> {
     List<Widget> children = [];
     bool isCenter = false;
     if (msg.msgType == MessageType.recall.label) {
-      String msgBody = StringUtil.getDetailRecallBody(
-        fromId: msg.fromId,
-        userId: controller.user.metadata.id,
-        name: getName(),
-      );
-      children.add(Text(msgBody, style: XFonts.size18Black9));
+      Widget child;
+      if(msg.fromId == controller.user.metadata.id){
+        child = Text("您撤回了一条消息", style: XFonts.size18Black9);
+      }else{
+        child = Text.rich(TextSpan(
+            children: [
+              WidgetSpan(child: TargetText(style: XFonts.size18Black9, userId: msg.fromId,)),
+              TextSpan(text: "撤回了一条消息", style: XFonts.size18Black9),
+            ]
+        ));
+      }
+      children.add(child);
       isCenter = true;
     } else {
       children.add(_getAvatar());
@@ -88,22 +95,18 @@ class DetailItemWidget extends GetView<SettingController> {
     );
   }
 
-  /// 目标名称
-  String getName() {
-    return controller.user.findShareById(msg.fromId).name;
-  }
 
   /// 获取头像
   Widget _getAvatar() {
-    late TargetShare shareInfo;
+    late String id;
     if (isSelf) {
       var settingCtrl = Get.find<SettingController>();
-      shareInfo = settingCtrl.user.shareInfo;
+      id = settingCtrl.user.metadata.id;
     } else {
-      shareInfo = controller.user.findShareById(msg.fromId);
+      id = msg.fromId;
     }
     return GestureDetector(
-        child: TeamAvatar(info: TeamTypeInfo(share: shareInfo),),onLongPress: (){
+        child: TeamAvatar(info: TeamTypeInfo(userId: id),),onLongPress: (){
           EventBusHelper.fire(chat.members[0]);
     },);
   }
@@ -115,7 +118,7 @@ class DetailItemWidget extends GetView<SettingController> {
     if (!isSelf) {
       content.add(Container(
         margin: EdgeInsets.only(left: 10.w),
-        child: Text(getName(), style: XFonts.size16Black3),
+        child: TargetText(userId: msg.fromId, style: XFonts.size16Black3),
       ));
     }
 

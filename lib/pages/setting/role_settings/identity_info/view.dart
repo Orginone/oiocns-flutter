@@ -57,7 +57,7 @@ class IdentityInfoPage
             CommonWidget.commonFormItem(
                 title: "编码", content: identity.value.metadata.code ?? ""),
             CommonWidget.commonFormItem(
-                title: "创建人", content: setting.user.findShareById(identity.value.metadata.createUser??"").name),
+                title: "创建人",userId: identity.value.metadata.createUser??""),
             CommonWidget.commonFormItem(
                 title: "创建时间",
                 content: DateTime.tryParse(

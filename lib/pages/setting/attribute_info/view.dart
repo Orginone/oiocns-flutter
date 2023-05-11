@@ -21,6 +21,8 @@ class AttributeInfoPage
             children: [
               Obx(() {
                 List<List<String>> content = [];
+
+
                 for (var element in state.propertys) {
                   content.add([
                     element.code ?? "",
@@ -28,8 +30,8 @@ class AttributeInfoPage
                     element.valueType ?? "",
                     element.unit ?? "",
                     element.dict?.name ?? "",
-                    setting.user.findShareById(element.createUser ?? "").name,
-                    setting.user.findShareById(element.belongId ?? "").name,
+                    element.createUser??"",
+                    element.belongId??"",
                     element.remark ?? ""
                   ]);
                 }

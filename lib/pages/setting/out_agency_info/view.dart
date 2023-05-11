@@ -80,9 +80,9 @@ class OutAgencyInfoPage
               "集团代码", state.group.metadata.code),
           CommonWidget.commonTextContentWidget("团队简称", state.group.metadata.name),
           CommonWidget.commonTextContentWidget(
-              "团队标识", state.group.metadata.code ?? ""),
+              "团队标识", state.group.metadata.code),
           CommonWidget.commonTextContentWidget(
-              "创建人", setting.user.findShareById(state.group.metadata.createUser).name),
+              "创建人",'', userId:state.group.metadata.createUser),
           CommonWidget.commonTextContentWidget(
               "创建时间",
               DateTime.tryParse(state.group.metadata.createTime)!

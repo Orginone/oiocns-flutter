@@ -327,4 +327,17 @@ class Company extends Belong implements ICompany {
       }
     });
   }
+
+  @override
+  // TODO: implement targets
+  List<ITarget> get targets {
+    List<ITarget> targets = [this];
+    for (var item in groups) {
+      targets.addAll(item.targets);
+    }
+    for (var item in departments) {
+      targets.addAll(item.targets);
+    }
+    return targets;
+  }
 }

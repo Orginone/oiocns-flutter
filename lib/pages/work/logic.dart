@@ -1,5 +1,5 @@
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
-import 'package:orginone/dart/core/work/todo.dart';
 import 'package:orginone/event/work_reload.dart';
 
 import 'network.dart';
@@ -23,7 +23,7 @@ class WorkController extends BaseListController<WorkState> {
     loadSuccess();
   }
 
-  void approval(ITodo todo, int status) async {
+  void approval(XWorkTask todo, int status) async {
     await WorkNetWork.approvalTask(status: status, comment: '', todo: todo);
   }
 }

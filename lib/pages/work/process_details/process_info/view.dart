@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -20,12 +21,8 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
               children: [
                 Obx(() {
                   return Column(
-                      children: state.xAttribute.keys.map((title) {
-                        return Container();
-                        if (state.xAttribute[title]!.isEmpty) {
-
-                        }
-                        // return _info(title, state.xAttribute[title]!);
+                      children: state.useForm.map((form) {
+                        return _info(form);
                       }).toList());
                 }),
                 _opinion(),
@@ -68,20 +65,20 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
     );
   }
 
-  // Widget _info(String title, Map<XOperationItem, dynamic> info) {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       CommonWidget.commonHeadInfoWidget(title),
-  //       CommonWidget.commonFormWidget(
-  //           formItem: info.keys.map((e) {
-  //             String content = "${info[e]}";
-  //             return CommonWidget.commonFormItem(
-  //                 title: e.name ?? "", content: content);
-  //           }).toList()),
-  //     ],
-  //   );
-  // }
+  Widget _info(XForm form) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidget.commonHeadInfoWidget(form.name??""),
+        CommonWidget.commonFormWidget(
+            formItem: form.items?.map((e) {
+              String content = "${e.value}";
+              return CommonWidget.commonFormItem(
+                  title: e.name ?? "", content: content);
+            }).toList()??[]),
+      ],
+    );
+  }
 
   Widget _opinion() {
     if (state.task.status != 1) {

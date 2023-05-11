@@ -2,6 +2,8 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 
 import 'model.dart';
 
@@ -438,6 +440,7 @@ class XPropertyArray {
     return json;
   }
 }
+SettingController setting = Get.find();
 
 class XProperty {
   // 雪花ID
@@ -495,9 +498,16 @@ class XProperty {
     valueType = json['valueType'];
     remark = json["remark"];
     belongId = json["belongId"];
+    setting.user.findShareById(belongId ?? "").then((value){
+      belongId = value.name;
+    });
     dictId = json['dictId'];
     status = json["status"];
     createUser = json["createUser"];
+
+    setting.user.findShareById(createUser ?? "").then((value){
+      createUser = value.name;
+    });
     updateUser = json["updateUser"];
     version = json["version"];
     createTime = json["createTime"];
@@ -1276,6 +1286,9 @@ class XWorkDefine {
   // 是否创建实体
   final bool? isCreate;
 
+
+  final String? icon;
+
   // 编码
   final String? code;
 
@@ -1348,6 +1361,7 @@ class XWorkDefine {
     required this.nodes,
     required this.instances,
     required this.target,
+    this.icon,
     required this.isCreate,
   });
 
@@ -1364,6 +1378,7 @@ class XWorkDefine {
         content = json["content"],
         remark = json["remark"],
         status = json["status"],
+        icon = json['icon'],
         createUser = json["createUser"],
         updateUser = json["updateUser"],
         version = json["version"],
@@ -5299,7 +5314,7 @@ class XFormItem {
   String? updateTime;
   XForm? form;
   XAttribute? attr;
-
+  String? value;
   XFormItem({
     required this.id,
     required this.name,

@@ -80,7 +80,7 @@ class DepartmentInfoPage
           ),
           CommonWidget.commonFormItem(
               title: "创建人",
-              content: setting.user.findShareById(state.depart.value.metadata.createUser).name),
+              userId: state.depart.value.metadata.createUser),
           CommonWidget.commonFormItem(
               title: "创建时间",
               content: DateTime.tryParse(

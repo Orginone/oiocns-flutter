@@ -2,19 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/work/todo.dart';
+import 'package:orginone/dart/core/thing/base/work.dart';
 
 
 class ProcessDetailsState extends BaseGetState{
 
   var hideProcess = true.obs;
 
-  late ITodo todo;
+  late XWorkTask todo;
 
-  var workInstance = Rxn<XWorkInstance>();
+  XWorkInstance? workInstance;
 
   var xAttribute = {}.obs;
 
+  IWorkDefine? define;
+
+
+  var useForm = <XForm>[].obs;
 
   late TabController tabController;
 

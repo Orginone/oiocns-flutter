@@ -14,9 +14,9 @@ class ProcessInfoState extends BaseGetState{
 
   ProcessDetailsController processDetailsController = Get.find<ProcessDetailsController>();
 
-  XWorkTask get task => processDetailsController.state.todo.metadata;
+  XWorkTask get task => processDetailsController.state.todo;
 
-  XWorkInstance? get flowInstance => processDetailsController.state.workInstance.value;
+  XWorkInstance? get flowInstance => processDetailsController.state.workInstance;
 
-  dynamic get xAttribute => processDetailsController.state.xAttribute;
+  List<XForm> get useForm => processDetailsController.state.useForm;
 }

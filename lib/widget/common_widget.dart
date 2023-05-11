@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/widget/unified.dart';
 import 'package:orginone/config/color.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/widget/text_high_light.dart';
+import 'package:orginone/widget/unified.dart';
 
-typedef DocumentOperation =  Function(dynamic type,String data);
+import 'target_text.dart';
+
+typedef DocumentOperation = Function(dynamic type, String data);
 
 class CommonWidget {
-  static Widget commonCreateSubmitWidget({VoidCallback? draft,VoidCallback? submit}) {
+  static Widget commonCreateSubmitWidget(
+      {VoidCallback? draft, VoidCallback? submit}) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 15.h),
       color: Colors.white,
@@ -407,7 +410,12 @@ class CommonWidget {
     );
   }
 
-  static commonTextContentWidget(String text,String content,{double textSize = 20,double contentSize = 20,EdgeInsetsGeometry? padding,Color? color,int maxLines = 1}){
+  static commonTextContentWidget(String text,String content,{double textSize = 20,double contentSize = 20,EdgeInsetsGeometry? padding,Color? color,int maxLines = 1,String userId = ''}){
+    TextStyle contentStyle = TextStyle(
+        color: Colors.black,
+        fontSize: contentSize.sp,
+        fontWeight: FontWeight.w700,overflow: TextOverflow.ellipsis);
+
     return Container(
       padding: padding??EdgeInsets.symmetric(vertical: 15.h),
       width: double.infinity,
@@ -424,12 +432,9 @@ class CommonWidget {
             style: TextStyle(color: Colors.grey, fontSize: textSize.sp),
           ),
           Expanded(
-            child: Text(
+            child: userId.isNotEmpty?TargetText(userId: userId,maxLines: maxLines,style: contentStyle,):Text(
               content,
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: contentSize.sp,
-                  fontWeight: FontWeight.w700,overflow: TextOverflow.ellipsis),
+              style: contentStyle,
               maxLines: maxLines,
               textAlign: TextAlign.right,
             ),
@@ -682,7 +687,7 @@ class CommonWidget {
         borderRadius: BorderRadius.circular(8.w),
       ),
       margin: EdgeInsets.symmetric(horizontal: 15.w),
-      padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 15.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: formItem,
@@ -690,19 +695,22 @@ class CommonWidget {
     );
   }
 
-  static Widget commonFormItem({required String title,String content = ""}){
-    return  Row(
+  static Widget commonFormItem(
+      {required String title, String content = "", String userId = ''}) {
+    return Row(
       children: [
         Expanded(
           child: Container(
             decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.grey.shade200,width: 0.5))
-            ),
+                border: Border(
+                    bottom:
+                        BorderSide(color: Colors.grey.shade200, width: 0.5))),
             child: Row(
               children: [
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 10.w),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15.h, horizontal: 10.w),
                     color: GYColors.formTitleBackgroundColor,
                     height: 60.h,
                     child: Text(title),
@@ -716,11 +724,17 @@ class CommonWidget {
                         EdgeInsets.symmetric(vertical: 15.h, horizontal: 10.w),
                     color: Colors.white,
                     height: 60.h,
-                    child: Text(
-                      content,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    child: userId.isNotEmpty
+                        ? TargetText(
+                            userId: userId,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          )
+                        : Text(
+                            content,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                   ),
                 ),
               ],

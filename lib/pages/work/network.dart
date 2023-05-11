@@ -8,10 +8,8 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
-import 'package:orginone/dart/core/work/todo.dart';
-import 'package:orginone/event/work_reload.dart';
+import 'package:orginone/dart/core/thing/base/work.dart';
 import 'package:orginone/pages/work/initiate_work/state.dart';
-import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 
@@ -19,28 +17,27 @@ SettingController setting = Get.find<SettingController>();
 
 class WorkNetWork {
 
-  static Future<List<ITodo>> getTodo() async {
+  static Future<List<XWorkTask>> getTodo() async {
 
-    var result = await setting.provider.user?.loadTodos(reload: true);
+    var result = await setting.provider.work?.loadTodos(reload: true);
     return result??[];
   }
 
-  static Future<XWorkInstance?> getFlowInstance(String id) async {
-    XWorkInstance? flowInstance;
-    ResultType<XWorkInstance> result = await KernelApi.getInstance()
-        .queryWorkInstanceById(IdReq(
-        id: id));
-
-    if (result.success) {
-      flowInstance = result.data;
-    }
+  static Future<XWorkInstance?> getFlowInstance(XWorkTask todo) async {
+    XWorkInstance? flowInstance = await setting.provider.work?.loadTaskDetail(todo);
     return flowInstance;
   }
 
-  static Future<void> approvalTask(
-      {required ITodo todo, required int status, String? comment,VoidCallback? onSuccess}) async {
+  static Future<IWorkDefine?> getFlowDefine(XWorkTask todo) async {
+    IWorkDefine? define = await setting.provider.work?.findFlowDefine(todo.defineId!);
+    return define;
+  }
 
-    bool success = await todo.approval(status,comment: comment);
+
+  static Future<void> approvalTask(
+      {required XWorkTask todo, required int status, String? comment,VoidCallback? onSuccess}) async {
+
+    bool success = await setting.provider.work!.approvalTask([todo],status,comment: comment);
     if (success) {
       ToastUtils.showMsg(msg: "成功");
       if (onSuccess != null) {

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/pages/work/state.dart';
+import 'package:orginone/widget/target_text.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -28,7 +29,7 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.w),
       height: double.infinity,
       color: GYColors.backgroundColor,
-      child: Obx(() {
+      child: Builder(builder: (context) {
         int length = state.flowInstance?.historyTasks?.length ?? 0;
         return ListView.builder(
           itemCount: length,
@@ -46,7 +47,6 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
   }
 
   Widget _buildTimelineTile(int index, XWorkTaskHistory task) {
-    TargetShare user = setting.user.findShareById(task.createUser ?? "");
     bool isLast = index == state.flowInstance!.historyTasks!.length - 1
         ? true
         : false;
@@ -75,7 +75,7 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
                     children: [
                       Text(statusMap[task.status]!.text),
                       SizedBox(width: 20.w,),
-                      Expanded(child: Text(user.name)),
+                      Expanded(child: TargetText(userId: task.createUser??"",)),
                       Text("审核节点:${task.node?.nodeType}"),
                     ],
                   ),

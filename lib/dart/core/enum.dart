@@ -30,6 +30,15 @@ enum TargetType {
   }
 }
 
+ enum TaskStatus {
+  applyStart(0),
+  approvalStart(100),
+  refuseStart(200);
+
+  final int status;
+  const TaskStatus(this.status);
+}
+
 enum SpeciesType {
   /** 类别目录 */
   fileSystem('文件类'),

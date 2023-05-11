@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/work/todo.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_utils.dart';
+import 'package:orginone/widget/target_text.dart';
 import 'package:orginone/widget/unified.dart';
 
 import 'logic.dart';
 import 'state.dart';
 
 class Item extends StatelessWidget {
-  final ITodo todo;
+  final XWorkTask todo;
 
   const Item({Key? key, required this.todo}) : super(key: key);
 
@@ -64,7 +65,7 @@ class Item extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    todo.metadata.taskType??"",
+                    todo.taskType ?? "",
                     style: TextStyle(fontSize: 16.sp),
                   ),
                   Container(
@@ -74,7 +75,7 @@ class Item extends StatelessWidget {
                     color: Colors.grey,
                   ),
                   Text(
-                    todo.metadata.title??"",
+                    todo.title ?? "",
                     style: TextStyle(fontSize: 18.sp),
                   ),
 
@@ -84,17 +85,15 @@ class Item extends StatelessWidget {
                     padding: EdgeInsets.symmetric(
                         horizontal: 3.w, vertical: 2.h),
                     decoration: BoxDecoration(
-                      color:
-                      statusMap[todo.metadata.status]!.color.withOpacity(0.1),
+                      color: statusMap[todo.status]!.color.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(4.w),
                       border: Border.all(
-                          color: statusMap[todo.metadata.status]!.color,
-                          width: 0.5),
+                          color: statusMap[todo.status]!.color, width: 0.5),
                     ),
                     child: Text(
-                      statusMap[todo.metadata.status]!.text,
+                      statusMap[todo.status]!.text,
                       style: TextStyle(
-                          color: statusMap[todo.metadata.status]!.color,
+                          color: statusMap[todo.status]!.color,
                           fontSize: 14.sp),
                     ),
                   ),
@@ -119,7 +118,9 @@ class Item extends StatelessWidget {
               ),
               SizedBox(height: 10.h,),
               Text(
-                DateTime.tryParse(todo.metadata.createTime??"")?.format(format: "yyyy-MM-dd HH:mm:ss")??"",
+                DateTime.tryParse(todo.createTime ?? "")
+                        ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
+                    "",
                 style: TextStyle(fontSize: 16.sp),
               ),
             ],
@@ -178,15 +179,17 @@ class Item extends StatelessWidget {
   }
 
   Widget role() {
-
     return Row(
       children: [
         Text.rich(TextSpan(children: [
           TextSpan(
-              text: '创建人:', style: TextStyle(fontSize: 16.sp, color: Colors.grey)),
-          TextSpan(
-              text: setting.user.findShareById(todo.metadata.createUser??"").name,
-              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500)),
+              text: '创建人:',
+              style: TextStyle(fontSize: 16.sp, color: Colors.grey)),
+          WidgetSpan(
+            child: TargetText(
+                userId: todo.createUser ?? "",
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500)),
+          ),
         ])),
         Container(
           margin: EdgeInsets.symmetric(horizontal: 10.w),
@@ -194,9 +197,9 @@ class Item extends StatelessWidget {
           width: 0.5,
           color: Colors.grey,
         ),
-        Text(
-          setting.user.findShareById(todo.metadata.shareId??"").name,
+        TargetText(
           style: TextStyle(fontSize: 16.sp),
+          userId: todo.shareId ?? "",
         ),
       ],
     );

@@ -26,7 +26,7 @@ class WorkListController extends BaseListController<WorkListState> {
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async{
     var todo = await WorkNetWork.getTodo();
-    state.dataList.value = todo.where((element) => element.metadata.belongId == state.work.space?.metadata.belongId).toList();
+    state.dataList.value = todo.where((element) => element.belongId == state.work.space?.metadata.belongId).toList();
     state.dataList.refresh();
     loadSuccess();
   }

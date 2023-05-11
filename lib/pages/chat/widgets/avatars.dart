@@ -81,7 +81,7 @@ class Avatars extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        TeamAvatar(info: TeamTypeInfo(share: controller.user.findShareById(person.id))),
+        TeamAvatar(info: TeamTypeInfo(userId: person.id)),
         Padding(padding: EdgeInsets.only(top: 10.w)),
         Text(
           name,

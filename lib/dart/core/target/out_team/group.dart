@@ -147,4 +147,14 @@ class Group extends Target implements IGroup {
       return null;
     }
   }
+
+  @override
+  // TODO: implement targets
+  List<ITarget> get targets {
+    List<ITarget> targets = [this];
+    for (var item in children) {
+      targets.addAll(item.targets);
+    }
+    return targets;
+  }
 }

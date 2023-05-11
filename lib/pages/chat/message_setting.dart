@@ -96,7 +96,7 @@ class MessageSetting extends GetView<SettingController> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        TeamAvatar(info: TeamTypeInfo(share: controller.user.findShareById(chat.chatId))),
+        TeamAvatar(info: TeamTypeInfo(userId: chat.chatId)),
         Padding(padding: EdgeInsets.only(left: 10.w)),
         Expanded(
           child: Column(

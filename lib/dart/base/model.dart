@@ -4952,17 +4952,17 @@ class Branche {
 }
 
 class WorkNodeModel {
-  String id;
-  String code;
-  String type;
-  String name;
+  String? id;
+  String? code;
+  String? type;
+  String? name;
   WorkNodeModel? children;
   List<Branche>? branches;
-  int num;
-  String destType;
-  String destId;
-  String destName;
-  String defineId;
+  int? num;
+  String? destType;
+  String? destId;
+  String? destName;
+  String? defineId;
   List<XForm>? forms;
 
   WorkNodeModel({
