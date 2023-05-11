@@ -1,25 +1,11 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_list_state.dart';
-import 'package:orginone/dart/core/work/todo.dart';
 
-class WorkState extends BaseGetListState<ITodo>{
-  WorkEnum type = WorkEnum.todo;
+class WorkState extends BaseGetListState<XWorkTask>{
 }
-
-
-enum WorkEnum{
-  todo("待办"),
-  done("已办"),
-  copy("抄送"),
-  completed("已完结");
-
-  final String label;
-
-  const WorkEnum(this.label);
-}
-
 
 
 Map<int, Status> statusMap = {

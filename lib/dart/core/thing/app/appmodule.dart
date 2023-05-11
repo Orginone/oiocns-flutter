@@ -5,12 +5,19 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
+import 'package:orginone/dart/core/thing/base/work.dart';
 
 import 'work/reportbi.dart';
 import 'work/workform.dart';
 import 'work/workitem.dart';
 
 abstract class  IAppModule extends ISpeciesItem {
+
+  late List<IWorkDefine> defines;
+
+
+  Future<List<IWorkDefine>> loadWorkDefines();
+
 //  表单
   Future<List<XForm>> loadForms();
 
@@ -20,6 +27,7 @@ abstract class  IAppModule extends ISpeciesItem {
 }
 class AppModule extends SpeciesItem implements IAppModule {
   AppModule(super.metadata, super.current,[super.parent]){
+    defines =[];
     speciesTypes = [
       SpeciesType.appModule,
       SpeciesType.workForm,
@@ -82,6 +90,25 @@ class AppModule extends SpeciesItem implements IAppModule {
       default:
         return null;
     }
+  }
+
+  @override
+  late List<IWorkDefine> defines;
+
+  @override
+  Future<List<IWorkDefine>> loadWorkDefines() async{
+    defines = [];
+    for (final item in children) {
+      switch (SpeciesType.getType(item.metadata.typeName)) {
+        case SpeciesType.workItem:
+          defines.addAll(await (item as IWork).loadWorkDefines());
+          break;
+        case SpeciesType.appModule:
+          defines.addAll(await (item as IAppModule).loadWorkDefines());
+          break;
+      }
+    }
+    return defines;
   }
 
 }

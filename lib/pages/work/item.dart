@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/work/todo.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_utils.dart';
+import 'package:orginone/widget/target_text.dart';
 import 'package:orginone/widget/unified.dart';
 
 import 'logic.dart';
 import 'state.dart';
 
 class Item extends StatelessWidget {
-  final ITodo todo;
+  final XWorkTask todo;
 
   const Item({Key? key, required this.todo}) : super(key: key);
 
@@ -24,112 +25,95 @@ class Item extends StatelessWidget {
   Widget build(BuildContext context) {
     String title = '';
 
-    return Slidable(
-      key: const ValueKey("assets"),
-      endActionPane: ActionPane(
-        motion: const ScrollMotion(),
-        children: [
-          SlidableAction(
-            backgroundColor: Colors.orange,
-            foregroundColor: Colors.white,
-            label: "标记已读",
-            onPressed: (BuildContext context) {
-
-            },
-          ),
-          SlidableAction(
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-            label: "删除",
-            onPressed: (BuildContext context) {
-
-            },
-          ),
-        ],
-      ),
-      child: GestureDetector(
-        onTap: (){
+    return GestureDetector(
+      onTap: (){
+        if(todo.taskType == "事项"){
           Get.toNamed(Routers.processDetails,arguments: {"todo":todo});
-        },
-        child: Container(
-          margin: EdgeInsets.only(top: 10.h),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8.w),
-          ),
-          padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 10.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    todo.metadata.taskType??"",
-                    style: TextStyle(fontSize: 16.sp),
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 10.w),
-                    height: 20.h,
-                    width: 0.5,
-                    color: Colors.grey,
-                  ),
-                  Text(
-                    todo.metadata.title??"",
-                    style: TextStyle(fontSize: 18.sp),
-                  ),
+        }
 
-                  SizedBox(width: 10.w,),
-                  SizedBox(width: 10.w,),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 3.w, vertical: 2.h),
-                    decoration: BoxDecoration(
-                      color:
-                      statusMap[todo.metadata.status]!.color.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(4.w),
-                      border: Border.all(
-                          color: statusMap[todo.metadata.status]!.color,
-                          width: 0.5),
-                    ),
-                    child: Text(
-                      statusMap[todo.metadata.status]!.text,
-                      style: TextStyle(
-                          color: statusMap[todo.metadata.status]!.color,
-                          fontSize: 14.sp),
-                    ),
+      },
+      child: Container(
+        margin: EdgeInsets.only(top: 10.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.w),
+        ),
+        padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 10.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  todo.taskType ?? "",
+                  style: TextStyle(fontSize: 16.sp),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 10.w),
+                  height: 20.h,
+                  width: 0.5,
+                  color: Colors.grey,
+                ),
+                Text(
+                  todo.title ?? "",
+                  style: TextStyle(fontSize: 18.sp),
+                ),
+
+                SizedBox(width: 10.w,),
+                SizedBox(width: 10.w,),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 3.w, vertical: 2.h),
+                  decoration: BoxDecoration(
+                    color: statusMap[todo.status]!.color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(4.w),
+                    border: Border.all(
+                        color: statusMap[todo.status]!.color, width: 0.5),
                   ),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        comment(),
-                        SizedBox(
-                          height: 20.h,
-                        ),
-                        role(),
-                      ],
-                    ),
+                  child: Text(
+                    statusMap[todo.status]!.text,
+                    style: TextStyle(
+                        color: statusMap[todo.status]!.color,
+                        fontSize: 14.sp),
                   ),
-                  button(),
-                ],
-              ),
-              SizedBox(height: 10.h,),
-              Text(
-                DateTime.tryParse(todo.metadata.createTime??"")?.format(format: "yyyy-MM-dd HH:mm:ss")??"",
-                style: TextStyle(fontSize: 16.sp),
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      comment(),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      role(),
+                    ],
+                  ),
+                ),
+                button(),
+              ],
+            ),
+            SizedBox(height: 10.h,),
+            Text(
+              DateTime.tryParse(todo.createTime ?? "")
+                      ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
+                  "",
+              style: TextStyle(fontSize: 16.sp),
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget button(){
+    if(todo.status !=0){
+      return Container();
+    }
+
     Widget button = Column(
       children: [
         GestureDetector(
@@ -178,15 +162,17 @@ class Item extends StatelessWidget {
   }
 
   Widget role() {
-
     return Row(
       children: [
         Text.rich(TextSpan(children: [
           TextSpan(
-              text: '创建人:', style: TextStyle(fontSize: 16.sp, color: Colors.grey)),
-          TextSpan(
-              text: setting.user.findShareById(todo.metadata.createUser??"").name,
-              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500)),
+              text: '创建人:',
+              style: TextStyle(fontSize: 16.sp, color: Colors.grey)),
+          WidgetSpan(
+            child: TargetText(
+                userId: todo.createUser ?? "",
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500)),
+          ),
         ])),
         Container(
           margin: EdgeInsets.symmetric(horizontal: 10.w),
@@ -194,9 +180,9 @@ class Item extends StatelessWidget {
           width: 0.5,
           color: Colors.grey,
         ),
-        Text(
-          setting.user.findShareById(todo.metadata.shareId??"").name,
+        TargetText(
           style: TextStyle(fontSize: 16.sp),
+          userId: todo.shareId ?? "",
         ),
       ],
     );

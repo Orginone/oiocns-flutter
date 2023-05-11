@@ -2506,6 +2506,22 @@ class KernelApi {
     );
   }
 
+  /*
+   * 删除办事实例(发起人撤回)
+   * @param {IdReq} params 请求参数
+   * @returns {ResultType} 请求结果
+   */
+  Future<ResultType> recallWorkInstance(IdReq params) async {
+    return await request(
+      ReqestType(
+        module: 'work',
+        action: 'RecallWorkInstance',
+        params: params,
+      ),
+      ResultType.fromJson,
+    );
+  }
+
   /// 查询发起的流程实例
   /// @param {workReq} params 请求参数
   /// @returns {ResultType<XworkInstanceArray>} 请求结果
@@ -2543,6 +2559,34 @@ class KernelApi {
       ReqestType(
         module: 'work',
         action: 'QueryApproveTask',
+        params: params.toJson(),
+      ),
+      XWorkTaskArray.fromJson,
+    );
+  }
+
+  /// 查询待审批任务、待审阅抄送
+  /// @param {IdReq} params 请求参数
+  /// @returns {ResultType<XWorkRecordArray>} 请求结果
+  Future<ResultType<XWorkRecordArray>> queryWorkRecord(IdReq params) async {
+    return await request(
+      ReqestType(
+        module: 'work',
+        action: 'QueryWorkRecord',
+        params: params.toJson(),
+      ),
+      XWorkRecordArray.fromJson,
+    );
+  }
+
+  /// 查询发起的办事
+  /// @param {IdReq} params 请求参数
+  /// @returns {ResultType<XWorkRecordArray>} 请求结果
+  Future<ResultType<XWorkTaskArray>> queryMyApply(IdReq params) async {
+    return await request(
+      ReqestType(
+        module: 'work',
+        action: 'QueryMyApply',
         params: params.toJson(),
       ),
       XWorkTaskArray.fromJson,

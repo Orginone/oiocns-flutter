@@ -72,5 +72,9 @@ class Cohort extends Target implements ICohort{
         .cast<IApplication>()
         .toList();
   }
+
+  @override
+  // TODO: implement targets
+  List<ITarget> get targets => [this];
   
 }

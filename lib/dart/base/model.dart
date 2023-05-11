@@ -285,6 +285,7 @@ class IdReq {
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json["id"] = id;
+    json['page'] = PageRequest(offset: 0, limit: 9999, filter: '').toJson();
     return json;
   }
 }
@@ -4899,13 +4900,13 @@ class WorkInstanceModel {
   List<String>? thingIds;
 
   WorkInstanceModel({
-    required this.defineId,
-    required this.content,
-    required this.contentType,
-    required this.data,
-    required this.title,
-    required this.hook,
-    required this.thingIds,
+    this.defineId,
+    this.content,
+    this.contentType,
+    this.data,
+    this.title,
+    this.hook,
+    this.thingIds,
   });
 
   Map<String, dynamic> toJson() {
@@ -4952,17 +4953,17 @@ class Branche {
 }
 
 class WorkNodeModel {
-  String id;
-  String code;
-  String type;
-  String name;
+  String? id;
+  String? code;
+  String? type;
+  String? name;
   WorkNodeModel? children;
   List<Branche>? branches;
-  int num;
-  String destType;
-  String destId;
-  String destName;
-  String defineId;
+  int? num;
+  String? destType;
+  String? destId;
+  String? destName;
+  String? defineId;
   List<XForm>? forms;
 
   WorkNodeModel({

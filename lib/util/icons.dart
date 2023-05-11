@@ -3,7 +3,7 @@ class AIcons {
 		"x": {
 			"back_black": "assets/icons/back_black.png",
 			"bg_center": "assets/icons/bg_center.png",
-			"chat": "assets/icons/chat.png",
+			"chat": "assets/icons/chat.svg",
 			"deep_logo_horizontal": "assets/icons/deep_logo_horizontal.png",
 			"deep_logo_vertical": "assets/icons/deep_logo_vertical.png",
 			"light_logo_horizontal": "assets/icons/light_logo_horizontal.png",
@@ -14,9 +14,10 @@ class AIcons {
 			"person_empty": "assets/icons/person_empty.png",
 			"placeholder": "assets/icons/placeholder.png",
 			"setting": "assets/icons/setting.png",
-			"warehouse": "assets/icons/warehouse.png",
-			"work": "assets/icons/work.png",
-			"shop": "assets/icons/shop.png"
+			"warehouse": "assets/icons/warehouse.svg",
+			"work": "assets/icons/work.svg",
+			"shop": "assets/icons/shop.svg",
+			"home": "assets/icons/home.svg"
 		},
 		"2x": {
 			"back_black": "assets/icons/2.0x/back_black.png",

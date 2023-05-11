@@ -32,4 +32,6 @@ class Images {
   static const String star = "images/stars.png";
 
   static const String empty = "images/empty.png";
+
+  static const String logOut = "images/icon_log_out.svg";
 }

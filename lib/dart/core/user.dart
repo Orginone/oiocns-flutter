@@ -3,16 +3,18 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/person.dart';
+import 'package:orginone/dart/core/thing/base/work.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/event_bus.dart';
 
-import 'work/todo.dart';
+import 'work/provider.dart';
+
 
 class UserProvider {
-  final Rx<IPerson?> _user = Rxn();
+  final Rxn<IPerson> _user = Rxn();
+  final Rxn<IWorkProvider> _work = Rxn();
   final RxBool _inited = false.obs;
   List<XImMsg> _preMessages = [];
-  var workTask = <XWorkTask>[].obs;
 
   UserProvider() {
     kernel.on('ChatRefresh', () async {
@@ -29,9 +31,7 @@ class UserProvider {
     kernel.on('RecvTask', (data) {
       var work = XWorkTask.fromJson(data);
       if (_inited.value) {
-        _recvTask(data);
-      } else {
-        workTask.add(data);
+        _work.value?.updateTask(data);
       }
     });
   }
@@ -39,6 +39,10 @@ class UserProvider {
   /// 当前用户
   IPerson? get user {
     return _user.value;
+  }
+
+  IWorkProvider? get work{
+    return _work.value;
   }
 
   /// 是否完成初始化
@@ -83,6 +87,9 @@ class UserProvider {
   /// 加载用户
   _loadUser(XTarget person) async {
     _user.value = Person(person);
+    if(_user.value!=null){
+      _work.value = WorkProvider(_user.value!);
+    }
     XEventBus.instance.fire(UserLoaded());
   }
 
@@ -91,7 +98,7 @@ class UserProvider {
     _inited.value = false;
     await _user.value?.loadCohorts(reload: true);
     await _user.value?.loadMembers(reload: true);
-    await _user.value?.loadTodos(reload: true);
+    await _work.value?.loadTodos(reload: true);
     var companys = await _user.value?.loadCompanys(reload: true) ?? [];
     for (var company in companys) {
       await company.deepLoad();
@@ -123,14 +130,5 @@ class UserProvider {
         c.receiveMessage(data);
       }
     }
-  }
-
-  void _recvTask(XWorkTask data) {
-    if (data.status! >= 100) {
-      user!.todos.value = user!.todos.where((a) => a.metadata.id == data.id).toList();
-    } else {
-      user!.todos.insert(0, WorkTodo(data));
-    }
-    user!.todos.refresh();
   }
 }

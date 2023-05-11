@@ -18,11 +18,6 @@ class WorkStartController extends BaseController<WorkStartState> with GetTickerP
   void onReady() async{
     // TODO: implement onReady
     super.onReady();
-    if(state.work.workType == WorkType.organization){
-      // state.define.value = await (state.work.space as ITarget).loadWork();
-    } else if(state.work.workType == WorkType.group){
-      state.define.value = await (state.work.source as IWork).loadWorkDefines();
-    }
   }
 
 }

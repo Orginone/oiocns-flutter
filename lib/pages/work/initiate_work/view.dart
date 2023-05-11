@@ -37,7 +37,7 @@ class InitiateWorkPage extends BaseBreadcrumbNavMultiplexPage<
           ...child.children.map((e) {
             return InitiateWorkItem(
               item: e,
-              showCreateIcon: e.space!=null,
+              showCreateIcon:  e.workEnum == WorkEnum.initiationWork,
               onTap: () {
                 controller.jumpWorkList(e);
               },
@@ -61,6 +61,7 @@ class InitiateWorkPage extends BaseBreadcrumbNavMultiplexPage<
       children.add(
         InitiateWorkItem(
           item: child,
+          showCreateIcon: child.workEnum == WorkEnum.initiationWork,
           onTap: () {
             controller.jumpWorkList(child);
           },

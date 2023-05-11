@@ -142,6 +142,8 @@ dependencies:
   flutter_downloader: ^1.10.2
   #打开文件
   open_file: ^3.2.1
+  #svg图标
+  flutter_svg: ^1.0.3
 
 dev_dependencies:
   flutter_test:

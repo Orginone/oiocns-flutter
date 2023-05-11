@@ -6,6 +6,7 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/model/thing_model.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/target_text.dart';
 
 class Item extends StatelessWidget {
   final ThingModel item;
@@ -88,9 +89,10 @@ class Item extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "创建人:${settingCtrl.user.findShareById(item.creater ?? "").name}",
+                          "创建人:",
                           style: TextStyle(fontSize: 18.sp),
                         ),
+                        TargetText(userId: item.creater??"",style: TextStyle(fontSize: 18.sp)),
                         statusWidget,
                       ],
                     ),

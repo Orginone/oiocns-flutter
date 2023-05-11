@@ -7,7 +7,6 @@ import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/app/application.dart';
 import 'package:orginone/dart/core/thing/filesys/filesysItem.dart';
-import 'package:orginone/dart/core/work/todo.dart';
 import 'package:orginone/main.dart';
 
 import '../../base/model.dart';
@@ -23,14 +22,12 @@ abstract class IPerson extends IBelong {
   //加入/管理的单位
   late RxList<ICompany> companys;
 
-  //待办
-  late RxList<ITodo> todos;
 
   //赋予人的身份(角色)实体
   late List<XIdentity> givedIdentitys;
 
   //根据ID查询共享信息
-  TargetShare findShareById(String id);
+  Future<TargetShare> findShareById(String id);
 
   //判断是否拥有某些用户的权限
   bool authenticate(List<String> orgIds, List<String> authIds);
@@ -40,9 +37,6 @@ abstract class IPerson extends IBelong {
 
   //加载单位
   Future<List<ICompany>> loadCompanys({bool reload = false});
-
-  //加载待办
-  Future<List<ITodo>> loadTodos({bool reload = false});
 
   //创建单位
   Future<ICompany?> createCompany(TargetModel data);
@@ -59,13 +53,9 @@ class Person extends Belong implements IPerson {
   @override
   late List<XIdentity> givedIdentitys;
 
-  @override
-  late RxList<ITodo> todos;
-
   Person(XTarget metadata):super(metadata,['本人']){
     companys = <ICompany>[].obs;
     givedIdentitys = [];
-    todos = <ITodo>[].obs;
     fileSystem = new FileSystem(
       XSpecies(id: metadata.id),
       this,
@@ -127,21 +117,21 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  TargetShare findShareById(String id){
+  Future<TargetShare> findShareById(String id) async{
     var share = ShareIdSet[id] ?? TargetShare(name: '未知', typeName: "未知");
     if (share.avatar == null) {
-      kernel
+      var res = await kernel
           .queryTargetById(IdArrayReq(ids: [id],
-        page: PageRequest(offset: 0, limit: 9999, filter: ''),)).then((res){
-        if (res.success && res.data?.result != null) {
-          res.data?.result?.forEach((item) {
-            ShareIdSet[item.id] = TargetShare(name: item.name,
-                typeName: item.typeName,
-                avatar: FileItemShare.parseAvatar(item.icon));
-          });
-          share = ShareIdSet[id]??share;
-        }
-      });
+        page: PageRequest(offset: 0, limit: 9999, filter: ''),));
+
+      if (res.success && res.data?.result != null) {
+        res.data?.result?.forEach((item) {
+          ShareIdSet[item.id] = TargetShare(name: item.name,
+              typeName: item.typeName,
+              avatar: FileItemShare.parseAvatar(item.icon));
+        });
+        share = ShareIdSet[id] ?? share;
+      }
     }
     return share;
   }
@@ -203,20 +193,6 @@ class Person extends Belong implements IPerson {
       }
       return cohorts;
   }
-
-    @override
-    Future<List<ITodo>> loadTodos({bool reload = false}) async{
-      if (todos.isEmpty || reload) {
-        todos.clear();
-        var res = await kernel.queryApproveTask(IdReq(id: '0'));
-        if (res.success) {
-          res.data?.result?.forEach((element) {
-            todos.add(WorkTodo(element));
-          });
-        }
-      }
-      return todos;
-    }
 
     @override
     Future<List<XTarget>> searchTargets(String filter, List<String> typeNames) async{
@@ -341,5 +317,18 @@ class Person extends Belong implements IPerson {
 
   @override
   late IFileSystem fileSystem;
+
+  @override
+  // TODO: implement targets
+  List<ITarget> get targets{
+    List<ITarget> targets = [this];
+    for (var item in companys) {
+      targets.addAll(item.targets);
+    }
+    for (var item in cohorts) {
+      targets.addAll(item.targets);
+    }
+    return targets;
+  }
 
 }

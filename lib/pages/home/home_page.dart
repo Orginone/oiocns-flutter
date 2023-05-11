@@ -107,14 +107,14 @@ class HomeController extends TabsController {
         return BadgeTabWidget(
           icon: XImage.localImage("work", size: size),
           body: Text('办事', style: XFonts.size14Black3),
-          mgsCount: settingCtrl.provider.user?.todos.length ?? 0,
+          mgsCount: settingCtrl.provider.work?.todos.length ?? 0,
         );
       }),
     ));
     var center = XTab(
       view: IndexTabPage(),
       tab: BadgeTabWidget(
-        body: XImage.localImage("logo_not_bg", size: Size(36.w, 36.w)),
+        body: XImage.localImage("home", size: Size(36.w, 36.w)),
         iconMargin: EdgeInsets.zero,
       ),
     );

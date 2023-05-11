@@ -18,44 +18,26 @@ class CreateWorkPage
       body: Column(
         children: [
           Expanded(
-            child: FutureBuilder(
-              future:controller.init(),
-              builder: (context, snapshot) {
-                if(snapshot.connectionState != ConnectionState.done){
-                  return LoadStateWidget(isLoading: true,isSuccess: false,);
-                }
-                if(snapshot.hasError){
-                  return Container();
-                }
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      ...state.node.forms!.map((e) {
-                        return Container();
-                        // return Column(
-                        //   children: [
-                        //     CommonWidget.commonHeadInfoWidget(e.name ?? ""),
-                        //     ...e.items!.map((e) {
-                        //       if(e
-                        //           .fields!
-                        //           .type == null){
-                        //         return Container();
-                        //       }
-                        //       Widget child =
-                        //       testMappingComponents[e
-                        //           .fields!
-                        //           .type ?? ""]!(
-                        //           e.fields!);
-                        //       return child;
-                        //     }).toList()
-                        //   ],
-                        // );
-                      }).toList(),
-                      entityInfo(),
-                    ],
-                  ),
-                );
-              }
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  ...state.node.forms!.map((e) {
+                    return Column(
+                      children: [
+                        CommonWidget.commonHeadInfoWidget(e.name ?? ""),
+                        ...e.items!.map((e) {
+                          if(e.fields?.type == null){
+                            return Container();
+                          }
+                          Widget child = testMappingComponents[e.fields!.type ?? ""]!(e.fields!);
+                          return child;
+                        }).toList()
+                      ],
+                    );
+                  }).toList(),
+                  entityInfo(),
+                ],
+              ),
             ),
           ),
           CommonWidget.commonSubmitWidget(
@@ -69,9 +51,6 @@ class CreateWorkPage
   }
 
   Widget entityInfo() {
-    if(state.define.isCreate??false){
-      return Container();
-    }
     return SizedBox(
       width: double.infinity,
       child: Column(

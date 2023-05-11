@@ -25,7 +25,7 @@ class ClassificationBasicInfo extends StatelessWidget {
             CommonWidget.commonFormItem(title: "共享组织",content: species.metadata.name),
             CommonWidget.commonFormItem(title: "分类编码",content: species.metadata.code),
             CommonWidget.commonFormItem(title: "开放域",content: species.metadata.public?"开放":"私有"),
-            CommonWidget.commonFormItem(title: "创建人",content: setting.user.findShareById(species.metadata.createUser).name),
+            CommonWidget.commonFormItem(title: "创建人",userId: species.metadata.createUser),
             CommonWidget.commonFormItem(title: "创建时间",content: DateTime.tryParse(species.metadata.createTime??"")?.format(format: "yyyy-MM-dd HH:mm")??""),
             CommonWidget.commonFormItem(title: "备注",content: species.metadata.remark),
           ]),

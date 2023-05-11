@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/widget/target_text.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -46,8 +47,6 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
   }
 
   Widget _buildTimelineTile(int index, Archive archive) {
-    TargetShare user =
-    settingCtrl.user.findShareById(archive.instance?.createUser ?? "");
     bool isLast = index == state.archives.value!.archives!.length - 1
         ? true
         : false;
@@ -75,7 +74,7 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
                     children: [
                       Text(archive.record?.status == 100?"已通过":archive.record?.status == 1?"待审核":"未通过"),
                       SizedBox(width: 20.w,),
-                      Expanded(child: Text(user.name)),
+                      Expanded(child: TargetText(userId: archive.instance?.createUser??"",)),
                       Text("审核节点:${archive.node?.nodeType}"),
                     ],
                   ),

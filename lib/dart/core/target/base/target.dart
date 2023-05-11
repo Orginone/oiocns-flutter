@@ -40,6 +40,9 @@ abstract class ITarget extends ITeam {
 
   List<ITarget> get subTarget;
 
+  /** 所有相关用户 */
+  List<ITarget> get targets;
+
   //退出用户群
   Future<bool> exit();
 

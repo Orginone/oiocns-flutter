@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -11,14 +13,16 @@ class TeamTypeInfo {
   final bool? preview;
   final int? number;
   final double fontSize;
-  final TargetShare share;
+  final String? userId;
+  final TargetShare? share;
   final bool? notAvatar;
 
-  TeamTypeInfo({
+  TeamTypeInfo( {
     this.preview,
     this.number,
     double? fontSize,
-    required this.share,
+    this.userId,
+    this.share,
     this.notAvatar,
   }) : fontSize = fontSize ?? 32.w;
 }
@@ -43,9 +47,25 @@ class TeamAvatar extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(6.w)),
         );
 
+  SettingController get setting => Get.find();
+
   @override
   Widget build(BuildContext context) {
-    var avatar = info.share.avatar;
+    if(info.share!=null){
+      return avatar(info.share!);
+    }
+
+    return FutureBuilder<TargetShare>(builder: (context,shot){
+      if(shot.hasData && shot.connectionState == ConnectionState.done){
+        avatar(shot.data!);
+      }
+      return SizedBox();
+    },future: setting.user.findShareById(info.userId!),);
+  }
+
+
+  Widget avatar(TargetShare share){
+    var avatar = share.avatar;
     if (avatar?.thumbnail != null) {
       var thumbnail = avatar!.thumbnail!.split(",")[1];
       thumbnail = thumbnail.replaceAll('\r', '').replaceAll('\n', '');
@@ -62,7 +82,7 @@ class TeamAvatar extends StatelessWidget {
         ),
       );
     }
-    var typeName = info.share.typeName;
+    var typeName = share.typeName;
     late Widget child;
     if (this.child == null) {
       if (typeName == TargetType.group.label) {

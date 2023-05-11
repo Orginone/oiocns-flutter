@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_page.dart';
+import 'package:orginone/images.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 
@@ -37,7 +38,7 @@ class SettingCenterPage
         SizedBox(
           child: CommonWidget.commonSubmitWidget(text: "退出登录",submit: (){
             controller.jumpLogin();
-          }),
+          },image: Images.logOut),
         ),
       ],
     );

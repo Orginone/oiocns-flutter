@@ -93,7 +93,7 @@ class CohortInfoPage extends BaseGetView<CohortInfoController,CohortInfoState>{
           CommonWidget.commonTextContentWidget(
               "团队标识", state.cohort.metadata.code),
           CommonWidget.commonTextContentWidget(
-              "创建人", setting.user.findShareById(state.cohort.metadata.createUser).name),
+              "创建人", "",userId: state.cohort.metadata.createUser),
           CommonWidget.commonTextContentWidget(
               "创建时间", DateTime.tryParse(
               state.cohort.metadata.createTime)!
