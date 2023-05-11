@@ -114,7 +114,7 @@ class HomeController extends TabsController {
     var center = XTab(
       view: IndexTabPage(),
       tab: BadgeTabWidget(
-        body: XImage.localImage("logo_not_bg", size: Size(36.w, 36.w)),
+        body: XImage.localImage("home", size: Size(36.w, 36.w)),
         iconMargin: EdgeInsets.zero,
       ),
     );

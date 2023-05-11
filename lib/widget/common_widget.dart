@@ -7,6 +7,7 @@ import 'package:orginone/images.dart';
 import 'package:orginone/widget/text_high_light.dart';
 import 'package:orginone/widget/unified.dart';
 
+import 'image_widget.dart';
 import 'target_text.dart';
 
 typedef DocumentOperation = Function(dynamic type, String data);
@@ -48,7 +49,7 @@ class CommonWidget {
     );
   }
 
-  static Widget commonSubmitWidget({VoidCallback? submit,String text = "确定"}) {
+  static Widget commonSubmitWidget({VoidCallback? submit,String text = "确定",String? image}) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(vertical: 15.h),
@@ -64,9 +65,15 @@ class CommonWidget {
             borderRadius: BorderRadius.circular(4.w),
           ),
           alignment: Alignment.center,
-          child: Text(
-            text,
-            style: TextStyle(color: Colors.white, fontSize: 16.sp),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              image!=null?ImageWidget(image,color: Colors.white,width: 32.w,height: 32.w,):SizedBox(),
+              Text(
+                text,
+                style: TextStyle(color: Colors.white, fontSize: 16.sp),
+              ),
+            ],
           ),
         ),
       ),

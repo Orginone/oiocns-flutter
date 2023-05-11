@@ -1,28 +1,23 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:orginone/widget/image_widget.dart';
 
 import 'icons.dart';
 
 class XImage {
   XImage._();
 
-  static Image localImage(String name, {Size? size, BoxFit? fit}) {
+  static Widget localImage(String name, {Size? size, BoxFit? fit}) {
     ///常规图
     String iconPath = (AIcons.icons['x']?[name]) ?? "";
 
-    if (size == null) {
-      return Image.asset(
-        iconPath,
-        fit: (fit ?? BoxFit.cover),
-      );
-    } else {
-      return Image.asset(
-        iconPath,
-        width: size.width,
-        height: size.height,
-        fit: (fit ?? BoxFit.cover),
-      );
-    }
+    return ImageWidget(
+      iconPath,
+      fit: fit ?? BoxFit.cover,
+      width: size?.width,
+      height: size?.height,
+    );
   }
 
   ///加载网络图片
