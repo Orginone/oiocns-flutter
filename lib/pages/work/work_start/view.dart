@@ -22,10 +22,10 @@ class WorkStartPage extends BaseGetView<WorkStartController, WorkStartState> {
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 return Item(
-                  define: state.define[index],
+                  define: state.defines[index],
                 );
               },
-              itemCount: state.define.length,
+              itemCount: state.defines.length,
             );
           }),
         ),

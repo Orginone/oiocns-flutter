@@ -5,6 +5,7 @@ import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/thing/base/work.dart';
 import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -35,27 +36,24 @@ class WorkStartNetWork {
     return node;
   }
 
-  static Future<void> createInstance(XWorkDefine define,
+  static Future<void> createInstance(IWorkDefine define,
       Map<String, dynamic> data, List<String> thingIds) async {
-    var settingCtrl = Get.find<SettingController>();
-    // var space = settingCtrl.space;
-    ResultType result = await KernelApi.getInstance().createWorkInstance(
+    XWorkInstance? result = await define.createWorkInstance(
       WorkInstanceModel(
-        defineId: define.id!,
+        defineId: define.metadata.id!,
         content: "",
         contentType: "Text",
         data: jsonEncode(data),
-        title: define.name!,
+        title: define.metadata.name!,
         thingIds: thingIds,
         hook: "",
       ),
     );
-    if (result.success) {
+
+    if (result!=null) {
       ToastUtils.showMsg(msg: "提交成功");
       EventBusHelper.fire(WorkReload());
       Get.back();
-    }else{
-      ToastUtils.showMsg(msg: result.msg);
     }
   }
 

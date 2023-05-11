@@ -19,16 +19,16 @@ class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
               name: value.metadata.name??"",
               id: value.metadata.id,
               space: value,
-              workType: WorkType.organization,
               children: [
                 WorkBreadcrumbNav(
-                    name: WorkEnum.outAgency.label,
-                    workEnum: WorkEnum.outAgency,
-                    space: value, children: []),
+                    name: WorkEnum.initiationWork.label,
+                    workEnum: WorkEnum.initiationWork, children: [],space: value),
                 WorkBreadcrumbNav(
-                    name: WorkEnum.workCohort.label,
-                    workEnum: WorkEnum.workCohort,
-                    space: value, children: []),
+                    name: WorkEnum.todo.label, workEnum: WorkEnum.todo, children: [],space: value),
+                WorkBreadcrumbNav(
+                    name: WorkEnum.completed.label, workEnum: WorkEnum.completed, children: [],space: value),
+                WorkBreadcrumbNav(
+                    name: WorkEnum.initiated.label, workEnum: WorkEnum.initiated, children: [],space: value),
               ],
               image: value.metadata.avatarThumbnail(),
           ),
@@ -38,20 +38,22 @@ class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
         name: "发起办事",
         children: [
           WorkBreadcrumbNav(
-            name: WorkType.personal.label,
+            name: "个人",
             children: [
               WorkBreadcrumbNav(
-                  name: WorkEnum.addFriends.label,
-                  workEnum: WorkEnum.addFriends, children: []),
+                  name: WorkEnum.initiationWork.label,
+                  workEnum: WorkEnum.initiationWork, children: [],space: settingCtrl.user),
               WorkBreadcrumbNav(
-                  name: WorkEnum.addUnits.label, workEnum: WorkEnum.addUnits, children: []),
+                  name: WorkEnum.todo.label, workEnum: WorkEnum.todo, children: [],space: settingCtrl.user),
               WorkBreadcrumbNav(
-                  name: WorkEnum.addGroup.label, workEnum: WorkEnum.addGroup, children: []),
+                  name: WorkEnum.completed.label, workEnum: WorkEnum.completed, children: [],space: settingCtrl.user),
+              WorkBreadcrumbNav(
+                  name: WorkEnum.initiated.label, workEnum: WorkEnum.initiated, children: [],space: settingCtrl.user),
             ],
             space: settingCtrl.user
           ),
           WorkBreadcrumbNav(
-            name: WorkType.organization.label,
+            name: '组织',
             children: organization,
           ),
         ],
@@ -65,7 +67,6 @@ class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
 class WorkBreadcrumbNav extends BaseBreadcrumbNavModel<WorkBreadcrumbNav> {
   WorkEnum? workEnum;
   IBelong? space;
-  WorkType? workType;
   WorkBreadcrumbNav(
       {super.id = '',
       super.name = '',
@@ -73,25 +74,16 @@ class WorkBreadcrumbNav extends BaseBreadcrumbNavModel<WorkBreadcrumbNav> {
       super.image,
       super.source,
       this.workEnum,
-      this.space,this.workType}){
+      this.space}){
    this.children = children;
   }
 }
 
-enum WorkType {
-  personal("个人"),
-  organization("组织"),
-  group("组");
-  final String label;
-  const WorkType(this.label);
-}
-
 enum WorkEnum {
-  addFriends("加好友"),
-  addUnits("加单位"),
-  addGroup("加群"),
-  outAgency("外部机构"),
-  workCohort("单位群组");
+  initiationWork("发起事项"),
+  todo("待办事项"),
+  completed("已办事项"),
+  initiated("我发起的");
 
   final String label;
 

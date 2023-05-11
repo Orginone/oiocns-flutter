@@ -25,112 +25,95 @@ class Item extends StatelessWidget {
   Widget build(BuildContext context) {
     String title = '';
 
-    return Slidable(
-      key: const ValueKey("assets"),
-      endActionPane: ActionPane(
-        motion: const ScrollMotion(),
-        children: [
-          SlidableAction(
-            backgroundColor: Colors.orange,
-            foregroundColor: Colors.white,
-            label: "标记已读",
-            onPressed: (BuildContext context) {
-
-            },
-          ),
-          SlidableAction(
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-            label: "删除",
-            onPressed: (BuildContext context) {
-
-            },
-          ),
-        ],
-      ),
-      child: GestureDetector(
-        onTap: (){
+    return GestureDetector(
+      onTap: (){
+        if(todo.taskType == "事项"){
           Get.toNamed(Routers.processDetails,arguments: {"todo":todo});
-        },
-        child: Container(
-          margin: EdgeInsets.only(top: 10.h),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8.w),
-          ),
-          padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 10.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    todo.taskType ?? "",
-                    style: TextStyle(fontSize: 16.sp),
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 10.w),
-                    height: 20.h,
-                    width: 0.5,
-                    color: Colors.grey,
-                  ),
-                  Text(
-                    todo.title ?? "",
-                    style: TextStyle(fontSize: 18.sp),
-                  ),
+        }
 
-                  SizedBox(width: 10.w,),
-                  SizedBox(width: 10.w,),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 3.w, vertical: 2.h),
-                    decoration: BoxDecoration(
-                      color: statusMap[todo.status]!.color.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(4.w),
-                      border: Border.all(
-                          color: statusMap[todo.status]!.color, width: 0.5),
-                    ),
-                    child: Text(
-                      statusMap[todo.status]!.text,
-                      style: TextStyle(
-                          color: statusMap[todo.status]!.color,
-                          fontSize: 14.sp),
-                    ),
+      },
+      child: Container(
+        margin: EdgeInsets.only(top: 10.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.w),
+        ),
+        padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 10.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  todo.taskType ?? "",
+                  style: TextStyle(fontSize: 16.sp),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 10.w),
+                  height: 20.h,
+                  width: 0.5,
+                  color: Colors.grey,
+                ),
+                Text(
+                  todo.title ?? "",
+                  style: TextStyle(fontSize: 18.sp),
+                ),
+
+                SizedBox(width: 10.w,),
+                SizedBox(width: 10.w,),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 3.w, vertical: 2.h),
+                  decoration: BoxDecoration(
+                    color: statusMap[todo.status]!.color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(4.w),
+                    border: Border.all(
+                        color: statusMap[todo.status]!.color, width: 0.5),
                   ),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        comment(),
-                        SizedBox(
-                          height: 20.h,
-                        ),
-                        role(),
-                      ],
-                    ),
+                  child: Text(
+                    statusMap[todo.status]!.text,
+                    style: TextStyle(
+                        color: statusMap[todo.status]!.color,
+                        fontSize: 14.sp),
                   ),
-                  button(),
-                ],
-              ),
-              SizedBox(height: 10.h,),
-              Text(
-                DateTime.tryParse(todo.createTime ?? "")
-                        ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
-                    "",
-                style: TextStyle(fontSize: 16.sp),
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      comment(),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      role(),
+                    ],
+                  ),
+                ),
+                button(),
+              ],
+            ),
+            SizedBox(height: 10.h,),
+            Text(
+              DateTime.tryParse(todo.createTime ?? "")
+                      ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
+                  "",
+              style: TextStyle(fontSize: 16.sp),
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget button(){
+    if(todo.status !=0){
+      return Container();
+    }
+
     Widget button = Column(
       children: [
         GestureDetector(

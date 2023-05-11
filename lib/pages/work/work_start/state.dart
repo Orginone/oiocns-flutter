@@ -10,12 +10,10 @@ import 'package:orginone/pages/work/initiate_work/state.dart';
 
 class WorkStartState extends BaseGetState{
 
-  late WorkBreadcrumbNav work;
-
-  var define = <IWorkDefine>[].obs;
+  var defines = <IWorkDefine>[].obs;
 
   WorkStartState(){
-    work = Get.arguments['data'];
+    defines.value = Get.arguments['defines'];
   }
 
 }

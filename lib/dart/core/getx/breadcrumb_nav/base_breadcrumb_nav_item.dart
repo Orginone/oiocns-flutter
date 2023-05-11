@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,6 +22,17 @@ import 'package:orginone/widget/unified.dart';
 
   @override
   Widget build(BuildContext context) {
+
+    ImageProvider? image;
+    if(item.image!=null){
+      if(item.image!.contains("http")){
+        image = NetworkImage(item.image!);
+      }
+      if(item.image is Uint8List){
+        image =  MemoryImage(item.image!);
+      }
+    }
+
     return GestureDetector(
       onTap: () {
         if (onNext != null) {
@@ -38,7 +51,7 @@ import 'package:orginone/widget/unified.dart';
               decoration: BoxDecoration(
                   color: XColors.themeColor,
                   borderRadius: BorderRadius.all(Radius.circular(8.w)),
-                  image: item.image!=null?DecorationImage(image: MemoryImage(item.image!),fit: BoxFit.cover):null
+                  image: item.image!=null?DecorationImage(image: image!,fit: BoxFit.cover):null
               ),
             ),
             Expanded(

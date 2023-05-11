@@ -7,6 +7,7 @@ import 'package:orginone/pages/work/work_start/logic.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
+import 'package:orginone/widget/target_text.dart';
 
 class Item extends StatelessWidget {
   final IWorkDefine define;
@@ -49,17 +50,24 @@ class Item extends StatelessWidget {
               height: 10.h,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "需求主体:${work.state.work.space?.metadata.name ?? ""}",
+                  define.metadata.code??"",
                   style: TextStyle(color: Colors.black38, fontSize: 16.sp),
                 ),
-                Text(
-                  DateTime.tryParse(define.metadata.createTime ?? "")
-                          ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
-                      "",
-                  style: TextStyle(fontSize: 16.sp),
+                  SizedBox(width: 20.w,),
+                  TargetText(
+                  userId: define.metadata.belongId??"",
+                  style: TextStyle(color: Colors.black38, fontSize: 16.sp),
+                ),
+                Expanded(
+                  child: Text(
+                    DateTime.tryParse(define.metadata.createTime ?? "")
+                            ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
+                        "",
+                    style: TextStyle(fontSize: 16.sp),
+                    textAlign: TextAlign.right,
+                  ),
                 ),
               ],
             )

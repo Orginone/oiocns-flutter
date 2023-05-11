@@ -16,7 +16,7 @@ abstract class BaseBreadcrumbNavState<T extends BaseBreadcrumbNavModel> extends 
   late String id;
   late String name;
   late List<T> children;
-  Uint8List? image;
+  dynamic image;
   dynamic source;
 
   BaseBreadcrumbNavModel({this.id = '',this.name = '',this.children = const [],this.source,this.image});

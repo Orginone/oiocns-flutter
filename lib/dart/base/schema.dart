@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/model/asset_creation_config.dart';
 
 import 'model.dart';
 
@@ -1558,25 +1559,25 @@ class XWorkInstance {
 
   //构造方法
   XWorkInstance({
-    required this.id,
-    required this.defineId,
-    required this.productId,
-    required this.belongId,
-    required this.title,
-    required this.contentType,
-    required this.content,
-    required this.data,
-    required this.hook,
-    required this.status,
-    required this.createUser,
-    required this.updateUser,
-    required this.version,
-    required this.createTime,
-    required this.updateTime,
+    this.id,
+    this.defineId,
+    this.productId,
+    this.belongId,
+    this.title,
+    this.contentType,
+    this.content,
+    this.data,
+    this.hook,
+    this.status,
+    this.createUser,
+    this.updateUser,
+    this.version,
+    this.createTime,
+    this.updateTime,
     this.define,
     this.historyTasks,
-    required this.operationIds,
-    required this.thingIds,
+    this.operationIds,
+    this.thingIds,
   });
 
   //通过JSON构造
@@ -1999,7 +2000,7 @@ class XWorkRecord {
   String? updateTime;
 
   // 历史
-  XWorkTaskHistory? historyTask;
+  XWorkTask? task;
 
   //构造方法
   XWorkRecord(
@@ -2014,7 +2015,7 @@ class XWorkRecord {
       required this.version,
       required this.createTime,
       required this.updateTime,
-      required this.historyTask});
+      required this.task});
 
   //通过JSON构造
   XWorkRecord.fromJson(Map<String, dynamic> json) {
@@ -2029,9 +2030,7 @@ class XWorkRecord {
     version = json["version"];
     createTime = json["createTime"];
     updateTime = json["updateTime"];
-    historyTask = json["historyTask"] != null
-        ? XWorkTaskHistory.fromJson(json["historyTask"])
-        : null;
+    task = json["task"] != null ? XWorkTask.fromJson(json["task"]) : null;
   }
 
   //通过动态数组解析成List
@@ -2062,7 +2061,7 @@ class XWorkRecord {
     json["version"] = version;
     json["createTime"] = createTime;
     json["updateTime"] = updateTime;
-    json["historyTask"] = historyTask?.toJson();
+    json["historyTask"] = task?.toJson();
     return json;
   }
 }
@@ -2070,16 +2069,16 @@ class XWorkRecord {
 //流程节点数据查询返回集合
 class XWorkRecordArray {
   // 便宜量
-  final int offset;
+  int? offset;
 
   // 最大数量
-  final int limit;
+  int? limit;
 
   // 总数
-  final int total;
+  int? total;
 
   // 结果
-  final List<XWorkRecord>? result;
+  List<XWorkRecord>? result;
 
   //构造方法
   XWorkRecordArray({
@@ -2090,11 +2089,17 @@ class XWorkRecordArray {
   });
 
   //通过JSON构造
-  XWorkRecordArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XWorkRecord.fromList(json["result"]);
+  XWorkRecordArray.fromJson(Map<String, dynamic> json) {
+    offset = json["offset"];
+    limit = json["limit"];
+    total = json["total"];
+    if (json["result"] != null) {
+      result = [];
+      json["result"].forEach((json) {
+        result!.add(XWorkRecord.fromJson(json));
+      });
+    }
+  }
 
   //通过动态数组解析成List
   static List<XWorkRecordArray> fromList(List<Map<String, dynamic>> list) {
@@ -5302,7 +5307,7 @@ class XFormItem {
   String? id;
   String? name;
   String? code;
-  String? rule;
+  Rule? rule;
   String? remark;
   String? attrId;
   String? formId;
@@ -5315,6 +5320,7 @@ class XFormItem {
   XForm? form;
   XAttribute? attr;
   String? value;
+  Fields? fields;
   XFormItem({
     required this.id,
     required this.name,
@@ -5333,23 +5339,85 @@ class XFormItem {
     this.attr,
   });
 
-  factory XFormItem.fromJson(Map<String, dynamic> json) {
-    return XFormItem(
-      id: json['id'],
-      name: json['name'],
-      code: json['code'],
-      rule: json['rule'],
-      remark: json['remark'],
-      attrId: json['attrId'],
-      formId: json['formId'],
-      status: json['status'],
-      createUser: json['createUser'],
-      updateUser: json['updateUser'],
-      version: json['version'],
-      createTime: json['createTime'],
-      updateTime: json['updateTime'],
-      form: json['form'] != null ? XForm.fromJson(json['form']) : null,
-      attr: json['attr'] != null ? XAttribute.fromJson(json['attr']) : null,
+  XFormItem.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    code = json['code'];
+    remark = json['remark'];
+    attrId = json['attrId'];
+    formId = json['formId'];
+    rule =
+        json["rule"] != null ? Rule.fromJson(jsonDecode(json["rule"])) : null;
+    status = json['status'];
+    createUser = json['createUser'];
+    updateUser = json['updateUser'];
+    version = json['version'];
+    createTime = json['createTime'];
+    updateTime = json['updateTime'];
+    form = json['form'] != null ? XForm.fromJson(json['form']) : null;
+    attr = json['attr'] != null ? XAttribute.fromJson(json['attr']) : null;
+    if(rule!=null){
+      fields = toFields();
+    }
+  }
+
+  Fields toFields() {
+    String? type;
+    String? router;
+    if (rule?.widget != null) {
+      switch (rule?.widget) {
+        case "text":
+        case "number":
+        case 'digit':
+        case "money":
+        case "string":
+          type = "input";
+          break;
+        case "dict":
+        case "select":
+        case "treeSelect":
+          type = "select";
+          break;
+        case "date":
+        case "datetime":
+        case "dateTimeRange":
+          type = "selectDate";
+          break;
+        case "person":
+          type = "selectPerson";
+          break;
+        case "dept":
+        case "department":
+          type = "selectDepartment";
+          break;
+        case "identity":
+        case "auth":
+        case "group":
+        case 'radio':
+        case 'checkbox':
+        case 'file':
+        case 'upload':
+          break;
+        default:
+          type = 'input';
+          break;
+      }
+    }
+
+    Map<dynamic, String> select = {};
+    rule?.dictItems?.forEach((element) {
+      select[element.value] = element.name;
+    });
+    return Fields(
+      title: rule?.title,
+      type: type,
+      required: rule?.required,
+      hidden: rule?.hidden,
+      readOnly: rule?.readOnly,
+      code: code,
+      hint: rule?.placeholder,
+      select: select,
+      router: router,
     );
   }
 
