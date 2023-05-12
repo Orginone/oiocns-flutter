@@ -41,7 +41,7 @@ typedef CreateAttrCallBack = Function(String name, String code, String remark,
     XProperty property, IAuthority authority, bool public);
 
 typedef CreateWorkCallBack = Function(
-    String name, String remark, bool isCreate, List<ISpeciesItem> thing);
+    String name, String code,String remark, bool isCreate);
 
 typedef CreateAuthCallBack = Function(String name,String code,ITarget target,bool isPublic,String remark);
 
@@ -588,14 +588,14 @@ Future<void> showCreateAttributeDialog(BuildContext context,
     String name = '',
     String code = '',
     String remark = '',
-    String valueType = '',String unit = '',Dict? dict}) async {
+    String valueType = '',String unit = '',String? dictId}) async {
   TextEditingController nameCtr = TextEditingController(text: name);
   TextEditingController codeCtr = TextEditingController(text: code);
   TextEditingController unitCtr = TextEditingController(text: unit);
   TextEditingController remarkCtr = TextEditingController(text: remark);
 
   String type = valueType;
-  IDict? dictValue = dict;
+  IDict? dictValue = dictId!=null?dictList.firstWhere((element) => element.metadata.id == dictId):null;
 
   return showDialog(
     context: context,
@@ -616,7 +616,7 @@ Future<void> showCreateAttributeDialog(BuildContext context,
                         hint: "请输入"),
                     CommonWidget.commonTextTile("属性代码", '',
                         controller: codeCtr,
-                        showLine: true, enabled: true),
+                        showLine: true, enabled: false,),
                     CommonWidget.commonChoiceTile("属性类型", type,
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
@@ -638,7 +638,6 @@ Future<void> showCreateAttributeDialog(BuildContext context,
                     type == "数值型"? CommonWidget.commonTextTile("单位", '',
                         controller: unitCtr,
                         showLine: true,
-                        required: true,
                         hint: "请输入"):const SizedBox(),
                     CommonWidget.commonTextTile("属性定义", '',
                         controller: remarkCtr,
@@ -655,11 +654,9 @@ Future<void> showCreateAttributeDialog(BuildContext context,
                         ToastUtils.showMsg(msg: "请选择属性类型");
                       } else if(remarkCtr.text.isEmpty){
                         ToastUtils.showMsg(msg: "请输入属性定义");
-                      } else if(type == "选择型" && dict == null){
+                      } else if(type == "选择型" && dictValue == null){
                         ToastUtils.showMsg(msg: "请选择枚举字典");
-                      } else if(type == "数值型" && unitCtr.text.isEmpty){
-                        ToastUtils.showMsg(msg: "请输入单位");
-                      }else{
+                      } else{
                         if (onCreate != null) {
                           onCreate(nameCtr.text, codeCtr.text, type,remarkCtr.text,unitCtr.text,dictValue);
                         }
@@ -677,15 +674,17 @@ Future<void> showCreateAttributeDialog(BuildContext context,
 
 Future<void> showCreateAttrDialog(BuildContext context,
     List<IAuthority> authoritys, List<XProperty> propertys,
-    {CreateAttrCallBack? onCreate}) async {
-  TextEditingController nameCtr = TextEditingController();
-  TextEditingController codeCtr = TextEditingController();
-  TextEditingController remarkCtr = TextEditingController();
+    {CreateAttrCallBack? onCreate,String name = '',String code = '',String remark = '', XProperty? pro,
+    String? authId,
+    bool public = false,}) async {
+  TextEditingController nameCtr = TextEditingController(text: name);
+  TextEditingController codeCtr = TextEditingController(text: code);
+  TextEditingController remarkCtr = TextEditingController(text: remark);
   List<IAuthority> allAuth = getAllAuthority(authoritys);
 
-  XProperty? property;
-  IAuthority? authority;
-  bool public = false;
+  XProperty? property = pro;
+  IAuthority? authority = authId!=null?allAuth.firstWhere((element) => element.metadata.id == authId):null;
+  bool isPublic = public;
   return showDialog(
     context: context,
     builder: (context) {
@@ -732,12 +731,12 @@ Future<void> showCreateAttrDialog(BuildContext context,
                       });
                     }, hint: "请选择"),
                     CommonWidget.commonChoiceTile(
-                        "向下组织公开", public ? "公开" : '不公开',
+                        "向下组织公开", isPublic ? "公开" : '不公开',
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
                           titles: ['公开', "不公开"], callback: (str) {
                         state(() {
-                          public = str == "公开";
+                          isPublic = str == "公开";
                         });
                       });
                     }, hint: "请选择"),
@@ -760,7 +759,7 @@ Future<void> showCreateAttrDialog(BuildContext context,
                       } else {
                         if (onCreate != null) {
                           onCreate(nameCtr.text, codeCtr.text, remarkCtr.text,
-                              property!, authority!, public);
+                              property!, authority!, isPublic);
                         }
                         Navigator.pop(context);
                       }
@@ -778,24 +777,14 @@ Future<void> showCreateWorkDialog(BuildContext context, List<ISpeciesItem> thing
     {CreateWorkCallBack? onCreate,
     String name = '',
     String remark = '',
+      String code = '',
     bool create = false,
-    List<String> selected = const [],
     bool isEdit = false}) async {
   TextEditingController nameCtr = TextEditingController(text: name);
+  TextEditingController codeCtr = TextEditingController(text: code);
   TextEditingController remarkCtr = TextEditingController(text: remark);
 
-
-  List<ISpeciesItem> allThing = getAllSpecies(thing);
-  bool isCreate = create;
-
-
-  List<ISpeciesItem> selectedThing = [];
-
-  if(selected.isNotEmpty){
-    for (var value in selected) {
-      selectedThing.add(allThing.firstWhere((element) => element.metadata.id == value));
-    }
-  }
+  bool isCreate = false;
   return showDialog(
     context: context,
     builder: (context) {
@@ -808,32 +797,16 @@ Future<void> showCreateWorkDialog(BuildContext context, List<ISpeciesItem> thing
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     CommonWidget.commonHeadInfoWidget(isEdit ? "编辑" : "新增"),
-                    CommonWidget.commonTextTile("办事名称", '',
+                    CommonWidget.commonTextTile("事项名称", '',
                         controller: nameCtr,
                         showLine: true,
                         required: true,
                         hint: "请输入"),
-                    isCreate?SizedBox():CommonWidget.commonChoiceTile(
-                        "操作实体", selectedThing.map((e) => e.metadata.name).toList().join(','),
-                        showLine: true, required: true, onTap: ()  {
-                          showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return MultiSelect(
-                              items: allThing.map((e) => e.metadata.name).toList(), selected: selectedThing.map((e) => e.metadata.name).toList(),title: "选择操作实体",);
-                        },
-                      ).then((selectedStr){
-                        if(selectedStr!=null){
-                          state((){
-                            selectedThing.clear();
-                            for (var value in selectedStr) {
-                              selectedThing.add(allThing.firstWhere((element) => element.metadata.name == value));
-                            }
-                          });
-                        }
-                      });
-
-                    }, hint: "请选择操作实体"),
+                    CommonWidget.commonTextTile("事项编号", '',
+                        controller: codeCtr,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
                     CommonWidget.commonChoiceTile(
                         "是否创建实体", isCreate ? "是" : '否',
                         showLine: true, required: true, onTap: () {
@@ -853,13 +826,12 @@ Future<void> showCreateWorkDialog(BuildContext context, List<ISpeciesItem> thing
                       Navigator.pop(context);
                     }, onTap2: () {
                       if (nameCtr.text.isEmpty) {
-                        ToastUtils.showMsg(msg: "请输入办事名称");
-                      } else if (selectedThing.isEmpty && !isCreate) {
-                        ToastUtils.showMsg(msg: "请选择操作实体");
-                      } else {
+                        ToastUtils.showMsg(msg: "请输入事项名称");
+                      } else if (codeCtr.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入事项编号");
+                      }  else {
                         if (onCreate != null) {
-                          onCreate(nameCtr.text, remarkCtr.text, isCreate,
-                              selectedThing);
+                          onCreate(nameCtr.text,codeCtr.text ,remarkCtr.text, isCreate);
                         }
                         Navigator.pop(context);
                       }

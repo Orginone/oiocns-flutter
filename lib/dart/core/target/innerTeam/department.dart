@@ -70,6 +70,9 @@ class Department extends Target implements IDepartment {
       case TargetType.laboratory:
         childrenTypes = [TargetType.working];
         break;
+      default:
+        childrenTypes = [];
+        break;
     }
   }
 

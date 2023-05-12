@@ -25,7 +25,6 @@ class OutAgencyInfoState extends BaseGetState{
 }
 
 List<String> tabTitle = [
-  "集团成员",
-  "集团应用",
+  "组织群成员",
 ];
 

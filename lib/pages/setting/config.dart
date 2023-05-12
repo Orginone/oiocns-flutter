@@ -7,10 +7,9 @@ import 'package:orginone/dart/core/thing/base/species.dart';
 
 enum SpaceEnum {
   innerAgency("内部机构"),
-  outAgency("外部机构"),
+  outAgency("组织群组"),
   stationSetting("单位岗位"),
-  internalCohort("内部群组"),
-  externalCohort("对外群组"),
+  externalCohort("外部群组"),
 
   personGroup("个人群组"),
   standardSettings("标准设置"),
@@ -31,9 +30,7 @@ enum SpaceEnum {
         return SpaceEnum.outAgency;
       case "单位岗位":
         return SpaceEnum.stationSetting;
-      case "内部群组":
-        return SpaceEnum.internalCohort;
-      case "对外群组":
+      case "外部群组":
         return SpaceEnum.externalCohort;
       case "个人群组":
         return SpaceEnum.personGroup;
@@ -48,7 +45,6 @@ enum SpaceEnum {
 enum StandardEnum {
   permission("权限定义"),
   dict("字典定义"),
-  attribute("属性定义"),
   classCriteria('分类定义');
 
   final String label;

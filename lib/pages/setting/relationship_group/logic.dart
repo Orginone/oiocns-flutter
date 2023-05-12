@@ -1,10 +1,10 @@
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
+import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/pages/setting/config.dart';
@@ -14,7 +14,6 @@ import 'package:orginone/pages/setting/network.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
 
-import '../../../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
 class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupState> {
@@ -40,36 +39,23 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
           await SettingNetWork.initDepartment(state.model.value!);
           break;
         case SpaceEnum.outAgency:
-           await SettingNetWork.initGroup(state.model.value!);
+          await SettingNetWork.initGroup(state.model.value!);
           break;
         case SpaceEnum.stationSetting:
-        await SettingNetWork.initStations(state.model.value!);
+          await SettingNetWork.initStations(state.model.value!);
           break;
         case SpaceEnum.personGroup:
         case SpaceEnum.externalCohort:
-           await SettingNetWork.initCohorts(state.model.value!);
+          await SettingNetWork.initCohorts(state.model.value!);
           break;
       }
+      state.model.refresh();
     } else {
-      switch(standardEnum){
-        case StandardEnum.permission:
-         await SettingNetWork.initAuthority(state.model.value!);
-          break;
-        case StandardEnum.classCriteria:
-          await SettingNetWork.initSpecies(state.model.value!);
-          // if(CommonTreeManagement().species!=null){
-          //   loopSpecies([CommonTreeManagement().species!],state.model.value!);
-          // }
-          break;
-        case StandardEnum.dict:
-          await SettingNetWork.initDict(state.model.value!);
-          break;
-        case StandardEnum.attribute:
-          // TODO: Handle this case.
-          break;
+      if (standardEnum == StandardEnum.dict) {
+        await SettingNetWork.initDict(state.model.value!);
+        state.model.refresh();
       }
     }
-    state.model.refresh();
   }
 
   void loopSpecies(List<ISpeciesItem> species,SettingNavModel model){
@@ -129,10 +115,6 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
               arguments: {"data": model});
           break;
         case StandardEnum.dict:
-          Get.toNamed(Routers.dictInfo,
-              arguments: {"data": model});
-          break;
-        case StandardEnum.attribute:
           Get.toNamed(Routers.dictInfo,
               arguments: {"data": model});
           break;
@@ -218,12 +200,25 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
 
   void createAuth(SettingNavModel item) async{
     SettingController settingController = Get.find();
-    List<ITarget> targets =  await settingController.getTeamTree(item.space);
-    showCreateAuthDialog(context,getAllTarget(targets), target: item.space,callBack: (name,code,target,isPublic,remark) async{
-      ResultType<XAuthority> result = await item.source.createSubAuthority(name, code, isPublic, remark,item.space.metadata.id);
-      if(result.success){
+    List<ITarget> targets = await settingController.getTeamTree(item.space);
+    showCreateAuthDialog(context, getAllTarget(targets), target: item.space,
+        callBack: (name, code, target, isPublic, remark) async {
+      var model = AuthorityModel();
+      model.name = name;
+      model.code = code;
+      model.public = isPublic;
+      model.remark = remark;
+      model.shareId = item.source.belongId;
+      IAuthority? result = await item.source.create(model);
+      if (result != null) {
         ToastUtils.showMsg(msg: "创建成功");
-        await SettingNetWork.initAuthority(state.model.value!);
+        item.children.add(SettingNavModel(
+          space: state.model.value!.space,
+          image: result.shareInfo.avatar?.shareLink,
+          name: result.metadata.name??"",
+          source: result,
+          standardEnum: StandardEnum.permission,
+        ));
         state.model.refresh();
       }
     });
@@ -233,8 +228,14 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
     SettingController settingController = Get.find();
     List<ITarget> targets =  await settingController.getTeamTree(item.space);
     showCreateAuthDialog(context,getAllTarget(targets), target: getAllTarget(targets).firstWhere((element) => element.metadata.name == item.source.target.belong.name),callBack: (name,code,target,isPublic,remark) async{
-      ResultType<XAuthority> result = await item.source.updateAuthority(name, code, isPublic, remark);
-      if(result.success){
+      var model = AuthorityModel();
+      model.name = name;
+      model.code = code;
+      model.public = isPublic;
+      model.remark = remark;
+      model.shareId = item.source.belongId;
+      IAuthority? result = await item.source.update(model);
+      if(result!=null){
         ToastUtils.showMsg(msg: "修改成功");
         item.source.target.name = name;
         item.source.target.public = isPublic;

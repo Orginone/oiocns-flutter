@@ -71,10 +71,6 @@ class SettingFunctionState extends BaseBreadcrumbNavState<SettingNavModel> {
               spaceEnum: SpaceEnum.stationSetting,
               space: space),
           SettingNavModel(
-              name: SpaceEnum.internalCohort.label,
-              spaceEnum: SpaceEnum.internalCohort,
-              space: space),
-          SettingNavModel(
               name: SpaceEnum.externalCohort.label,
               spaceEnum: SpaceEnum.externalCohort,
               space: space),

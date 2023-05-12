@@ -40,8 +40,6 @@ class IdentityInfoController extends BaseController<IdentityInfoState> {
     if(success){
      state.unitMember.removeWhere((element) => element.code == code);
      state.unitMember.refresh();
-    }else{
-     ToastUtils.showMsg(msg: "移除失败");
     }
    }catch(e){
     ToastUtils.showMsg(msg: e.toString()+code);

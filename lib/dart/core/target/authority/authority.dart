@@ -121,12 +121,12 @@ class Authority extends MsgChat implements IAuthority {
 
   @override
   bool hasAuthoritys(List<String> authIds) {
-    authIds = loadParentAuthIds(authIds);
+    var ids = loadParentAuthIds(authIds);
     final orgIds = [metadata.belongId??""];
     if (metadata.shareId != null && metadata.shareId!=null) {
       orgIds.add(metadata.shareId!);
     }
-    return space.user.authenticate(orgIds, authIds);
+    return space.user.authenticate(orgIds, ids);
   }
 
   @override

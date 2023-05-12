@@ -31,7 +31,7 @@ class AttributeInfoPage
                     element.unit ?? "",
                     element.dict?.name ?? "",
                     element.createUser??"",
-                    element.belongId??"",
+                    element.belong??"",
                     element.remark ?? ""
                   ]);
                 }

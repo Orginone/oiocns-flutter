@@ -81,8 +81,6 @@ class OutAgencyInfoController extends BaseController<OutAgencyInfoState>
     if (success) {
       state.unitMember.removeWhere((element) => element.name == data);
       state.unitMember.refresh();
-    } else {
-      ToastUtils.showMsg(msg: "移除失败");
     }
   }
 }

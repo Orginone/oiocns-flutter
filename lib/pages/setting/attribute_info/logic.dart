@@ -57,7 +57,7 @@ class AttributeInfoController extends BaseController<AttributeInfoState> {
             remark: property.remark ?? "",
             valueType: property.valueType ?? "",
             unit: property.unit??"",
-            dict: property.dict as Dict,
+            dictId: property.dict?.id,
             isEdit: true,dictList: dictArray.result??[]);
       } else if (operation == 'delete') {
         bool success =
