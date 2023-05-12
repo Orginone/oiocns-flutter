@@ -10,5 +10,18 @@ const isJoinedError = '抱歉,您已加入该组织.';
 const functionNotFoundError = '抱歉,未找到该方法.';
 
 
+enum OrgAuth{
+  // 超管权限
+  superAuthId("361356410044420096"),
+  // 关系管理权限
+  relationAuthId("361356410623234048"),
+  // 物，标准等管理权限
+  thingAuthId("361356410698731520"),
+  // 办事管理权限
+  workAuthId("361356410774228992");
+
+  final String label;
+  const OrgAuth(this.label);
+}
 
 var ShareIdSet = <String, TargetShare>{};

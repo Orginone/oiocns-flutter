@@ -28,8 +28,8 @@ class SettingFunctionPage extends BaseBreadcrumbNavMultiplexPage<
                         case StandardEnum.dict:
                           controller.createDict(e);
                           break;
-                        case StandardEnum.attribute:
-                          controller.createAttribute(e);
+                        case StandardEnum.permission:
+                          controller.createAuth(e);
                           break;
                       }
                     }

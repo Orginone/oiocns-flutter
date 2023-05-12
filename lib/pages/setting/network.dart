@@ -1,12 +1,11 @@
-import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
-import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 
+import 'config.dart';
 import 'home/setting/state.dart';
 
 class SettingNetWork {
@@ -31,7 +30,7 @@ class SettingNetWork {
       }
     }
 
-    var list = await model.source.loadSubTeam() ?? [];
+    var list = await (model.space as ICompany).loadDepartments() ?? [];
     if (list.isNotEmpty) {
       await loopDepartment(list, model);
     }
@@ -92,34 +91,51 @@ class SettingNetWork {
     var authority = await space.loadSuperAuth();
 
     if (authority != null) {
-       return [authority];
+      return [authority];
     }
     return [];
   }
 
-  static Future<void> initAuthority(SettingNavModel model) async {
+  static Future<SettingNavModel?> initAuthority(SettingNavModel model) async {
+    SettingNavModel? settingNavModel;
     var authority = await model.space.loadSuperAuth();
-    void loopAuth(List<IAuthority> auth,SettingNavModel model){
-      model.children = [];
+
+    void loopAuth(List<IAuthority> auth, List<SettingNavModel> children) {
       for (var element in auth) {
         var child = SettingNavModel(
             space: model.space,
             spaceEnum: model.spaceEnum,
             source: element,
-            standardEnum: model.standardEnum,
-            name: element.metadata.name??"");
-        if(element.children.isNotEmpty){
-          loopAuth(element.children,child);
+            image: element.shareInfo.avatar?.shareLink,
+            standardEnum: StandardEnum.permission,
+            name: element.metadata.name ?? "");
+        child.children = [];
+        if (element.children.isNotEmpty) {
+          loopAuth(element.children, child.children);
         }
-        model.children.add(child);
+        children.add(child);
       }
+    }
 
+    void loadAuth(IAuthority auth) {
+      settingNavModel = SettingNavModel(
+          space: model.space,
+          spaceEnum: model.spaceEnum,
+          source: auth,
+          image: auth.shareInfo.avatar?.shareLink,
+          standardEnum: StandardEnum.permission,
+          name: auth.metadata.name ?? "");
+      settingNavModel!.children = [];
+      if (authority!.children.isNotEmpty) {
+        loopAuth(authority.children, settingNavModel!.children);
+      }
     }
 
     if (authority != null) {
-      loopAuth([authority],model);
+      loadAuth(authority);
     }
 
+    return settingNavModel;
   }
 
   static Future<void> initDict(SettingNavModel model) async{
@@ -138,25 +154,29 @@ class SettingNetWork {
     }
   }
 
-  static Future<void> initSpecies(SettingNavModel model) async{
+  static Future<List<SettingNavModel>> initSpecies(SettingNavModel model) async{
+
+    List<SettingNavModel> navs = [];
     List<ISpeciesItem> species = await model.space.loadSpecies();
-    void loopSpeciesTree(List<ISpeciesItem> tree,SettingNavModel model){
-      model.children = [];
+    void loopSpeciesTree(List<ISpeciesItem> tree,List<SettingNavModel> navs){
       for (var element in tree) {
         var child = SettingNavModel(
             space: model.space,
             spaceEnum: model.spaceEnum,
             source: element,
-            standardEnum: model.standardEnum,
+            image: element.share.avatar?.shareLink,
+            standardEnum:StandardEnum.classCriteria,
             name: element.metadata.name);
+        child.children = [];
         if(element.children.isNotEmpty){
-          loopSpeciesTree(element.children,child);
+          loopSpeciesTree(element.children,child.children);
         }
-        model.children.add(child);
+        navs.add(child);
       }
     }
     if(species.isNotEmpty){
-      loopSpeciesTree(species,model);
+      loopSpeciesTree(species,navs);
     }
+    return navs;
   }
 }

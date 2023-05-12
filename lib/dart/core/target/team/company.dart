@@ -62,7 +62,13 @@ class Company extends Belong implements ICompany {
   late List<IStation> stations;
 
   Company(XTarget metadata,IPerson user):super(metadata,['全员群'],user){
-    departmentTypes = [];
+    departmentTypes = [
+      TargetType.office,
+      TargetType.working,
+      TargetType.research,
+      TargetType.laboratory,
+      TargetType.department,
+    ];
     departments = [];
     groups = [];
     stations = [];

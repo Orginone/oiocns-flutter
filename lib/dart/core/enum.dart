@@ -1,6 +1,6 @@
 /// 组织对象类型
 enum TargetType {
-  group("集团"),
+  group("组织群"),
   person("人员"),
   cohort("群组"),
   company("单位"),

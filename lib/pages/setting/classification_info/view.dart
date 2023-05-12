@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/pages/setting/classification_info/classification_basic_info.dart';
-import 'package:orginone/pages/setting/classification_info/classification_form.dart';
-import 'package:orginone/pages/setting/classification_info/classification_work.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/widget/keep_alive_widget.dart';
 import 'package:orginone/widget/unified.dart';
 
-import 'classification_attrs.dart';
+import 'attrs.dart';
+import 'basic_info.dart';
+import 'form.dart';
 import 'logic.dart';
+import 'property.dart';
 import 'state.dart';
+import 'work.dart';
 
 
 class ClassificationInfoPage
@@ -30,27 +32,17 @@ class ClassificationInfoPage
               children: state.tabTitle.map((e) {
                 switch (e) {
                   case ClassificationEnum.info:
-                    return ClassificationBasicInfo(
+                    return BasicInfo(
                       species: state.species,
                     );
+                  case ClassificationEnum.property:
+                    return KeepAliveWidget(child: PropertyPage());
                   case ClassificationEnum.attrs:
-                    return Obx(() {
-                      return ClassificationAttrs(
-                        attrs: state.attrs.value,
-                      );
-                    });
+                    return KeepAliveWidget(child: AttrsPage());
                   case ClassificationEnum.form:
-                    return Obx(() {
-                      return ClassificationForm(
-                        operation: state.operation.value,
-                      );
-                    });
+                    return KeepAliveWidget(child: FormPage());
                   case ClassificationEnum.work:
-                    return Obx(() {
-                      return ClassificationWork(
-                        flow: state.flow.value,
-                      );
-                    });
+                    return KeepAliveWidget(child: WorkPage());
                 }
               }).toList(),
             ),
@@ -97,11 +89,12 @@ class ClassificationInfoPage
             return CommonWidget.commonPopupMenuButton(items: [
               PopupMenuItem(
                 value: 'create',
-                child: Text(text),
-              ),
+                  child: Text(
+                      "新增${state.tabTitle[state.currentIndex.value].label}"),
+                ),
             ], onSelected: (str) {
-              controller.create();
-            },);
+              controller.create(state.tabTitle[state.currentIndex.value]);
+              },);
           }),
         ],
       ),

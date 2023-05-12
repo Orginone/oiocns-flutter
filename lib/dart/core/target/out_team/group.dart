@@ -44,6 +44,7 @@ class Group extends Target implements IGroup {
       : super(metadata, [metadata.belong?.name ?? '', '单位群'],
             space: company) {
     children = [];
+    memberTypes = companyTypes;
   }
 
   @override

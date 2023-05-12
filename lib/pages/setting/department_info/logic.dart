@@ -29,8 +29,6 @@ class DepartmentInfoController extends BaseController<DepartmentInfoState>
     if (success) {
       state.depart.value.members.removeWhere((element) => element.code == data);
       state.depart.refresh();
-    } else {
-      ToastUtils.showMsg(msg: "移除失败");
     }
   }
 

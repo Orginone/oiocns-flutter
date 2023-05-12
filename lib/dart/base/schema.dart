@@ -468,6 +468,11 @@ class XProperty {
   // 创建组织/个人
   String? belongId;
 
+  String? belong;
+
+  String? speciesId;
+
+  String? species;
   // 状态
   int? status;
 
@@ -488,8 +493,6 @@ class XProperty {
 
   XDict? dict;
 
-  // 创建度量标准的组织/个人
-  XTarget? belong;
 
   XProperty.fromJson(Map<String, dynamic> json) {
     id = json["id"];
@@ -499,8 +502,12 @@ class XProperty {
     valueType = json['valueType'];
     remark = json["remark"];
     belongId = json["belongId"];
+    speciesId = json["speciesId"];
     setting.user.findShareById(belongId ?? "").then((value){
-      belongId = value.name;
+      belong = value.name;
+    });
+    setting.user.findShareById(speciesId ?? "").then((value){
+      species = value.name;
     });
     dictId = json['dictId'];
     status = json["status"];
@@ -513,7 +520,6 @@ class XProperty {
     version = json["version"];
     createTime = json["createTime"];
     updateTime = json["updateTime"];
-    belong = json['belong'] != null ? XTarget.fromJson(json['belong']) : null;
     dict = json['dict'] != null ? XDict.fromJson(json['dict']) : null;
   }
 }
@@ -5219,7 +5225,9 @@ class XForm {
   String? remark;
   String? speciesId;
   String? shareId;
+  String? share;
   String? belongId;
+  String? belong;
   int? status;
   String? createUser;
   String? updateUser;
@@ -5228,9 +5236,8 @@ class XForm {
   String? updateTime;
   List<XFormItem>? items;
   List<XWorkNode>? bindNodes;
-  XSpecies? species;
-  XTarget? belong;
-
+  String? species;
+  bool? public;
   XForm({
     required this.id,
     required this.name,
@@ -5251,33 +5258,37 @@ class XForm {
     this.belong,
   });
 
-  factory XForm.fromJson(Map<String, dynamic> json) {
-    return XForm(
-      id: json['id'],
-      name: json['name'],
-      code: json['code'],
-      remark: json['remark'],
-      speciesId: json['speciesId'],
-      shareId: json['shareId'],
-      belongId: json['belongId'],
-      status: json['status'],
-      createUser: json['createUser'],
-      updateUser: json['updateUser'],
-      version: json['version'],
-      createTime: json['createTime'],
-      updateTime: json['updateTime'],
-      items: json['items'] != null
-          ? List<XFormItem>.from(
-              json['items'].map((x) => XFormItem.fromJson(x)))
-          : null,
-      bindNodes: json['bindNodes'] != null
-          ? List<XWorkNode>.from(
-              json['bindNodes'].map((x) => XWorkNode.fromJson(x)))
-          : null,
-      species:
-          json['species'] != null ? XSpecies.fromJson(json['species']) : null,
-      belong: json['belong'] != null ? XTarget.fromJson(json['belong']) : null,
-    );
+  XForm.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    code = json['code'];
+    remark = json['remark'];
+    speciesId = json['speciesId'];
+    shareId = json['shareId'];
+    belongId = json['belongId'];
+    status = json['status'];
+    createUser = json['createUser'];
+    updateUser = json['updateUser'];
+    version = json['version'];
+    createTime = json['createTime'];
+    updateTime = json['updateTime'];
+    public = json['public'];
+    items = json['items'] != null
+        ? List<XFormItem>.from(json['items'].map((x) => XFormItem.fromJson(x)))
+        : null;
+    bindNodes = json['bindNodes'] != null
+        ? List<XWorkNode>.from(
+            json['bindNodes'].map((x) => XWorkNode.fromJson(x)))
+        : null;
+    setting.user.findShareById(shareId ?? "").then((value){
+      share = value.name;
+    });
+    setting.user.findShareById(belongId ?? "").then((value){
+      belong = value.name;
+    });
+    setting.user.findShareById(speciesId ?? "").then((value){
+      species = value.name;
+    });
   }
 
   Map<String, dynamic> toJson() {
@@ -5294,11 +5305,10 @@ class XForm {
       'updateUser': updateUser,
       'version': version,
       'createTime': createTime,
+      'public':public,
       'updateTime': updateTime,
       'items': items?.map((item) => item.toJson()).toList(),
       'bindNodes': bindNodes?.map((node) => node.toJson()).toList(),
-      'species': species?.toJson(),
-      'belong': belong?.toJson(),
     };
   }
 }

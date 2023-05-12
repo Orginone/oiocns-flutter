@@ -439,7 +439,7 @@ class CommonWidget {
             style: TextStyle(color: Colors.grey, fontSize: textSize.sp),
           ),
           Expanded(
-            child: userId.isNotEmpty?TargetText(userId: userId,maxLines: maxLines,style: contentStyle,):Text(
+            child: userId.isNotEmpty?TargetText(userId: userId,maxLines: maxLines,style: contentStyle,textAlign: TextAlign.right,):Text(
               content,
               style: contentStyle,
               maxLines: maxLines,

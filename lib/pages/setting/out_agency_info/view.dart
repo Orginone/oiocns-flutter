@@ -44,10 +44,6 @@ class OutAgencyInfoPage
                         value: CompanyFunction.addUser,
                         child: Text("邀请成员"),
                       ),
-                      PopupMenuItem(
-                        value: CompanyFunction.addGroup,
-                        child: Text("加入集团"),
-                      ),
                     ],
                     onSelected: (CompanyFunction function) {
                       controller.companyOperation(function);
@@ -96,9 +92,6 @@ class OutAgencyInfoPage
 
   Widget body(){
     return  Obx(() {
-      if(state.index.value == 1){
-       return Container();
-      }
       List<List<String>> content = [];
       for (var user in state.unitMember) {
         content.add([

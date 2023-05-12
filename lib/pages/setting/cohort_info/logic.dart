@@ -52,8 +52,6 @@ class CohortInfoController extends BaseController<CohortInfoState> {
     if (success) {
       state.unitMember.removeWhere((element) => element.code == data);
       state.unitMember.refresh();
-    } else {
-      ToastUtils.showMsg(msg: "移除失败");
     }
   }
 }

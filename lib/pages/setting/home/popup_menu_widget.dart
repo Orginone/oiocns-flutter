@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/consts.dart';
+import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/util/authority.dart';
@@ -66,7 +68,7 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
         case StandardEnum.permission:
           if(widget.model.source != null){
             popupMenuItem.add(newPopupMenuItem("新增权限", "create"));
-            if(widget.model.source.belongId.isNotEmpty){
+            if((widget.model.source as IAuthority).hasAuthoritys([OrgAuth.relationAuthId.label])){
               popupMenuItem.add(newPopupMenuItem("编辑权限", "edit"));
               popupMenuItem.add(newPopupMenuItem("删除权限", "delete"));
             }
@@ -80,13 +82,10 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
             popupMenuItem.add(newPopupMenuItem("删除字典", "delete"));
           }
           break;
-        case StandardEnum.attribute:
-          popupMenuItem.add(newPopupMenuItem("新建属性", "create"));
-          break;
         case StandardEnum.classCriteria:
           if(widget.model.source != null){
-            popupMenuItem.add(newPopupMenuItem("新增分类", "create"));
-            if(widget.model.source.belongId.isNotEmpty){
+            popupMenuItem.add(newPopupMenuItem("新增类别", "create"));
+            if(widget.model.source.speciesTypes.isNotEmpty){
               popupMenuItem.add(newPopupMenuItem("编辑分类", "edit"));
               popupMenuItem.add(newPopupMenuItem("删除分类", "delete"));
             }

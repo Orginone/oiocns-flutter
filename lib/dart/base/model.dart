@@ -2261,42 +2261,44 @@ class SpeciesModel {
 
 class FormModel {
   // 唯一ID
-  String id;
+  String? id;
   // 名称
-  String name;
+  String? name;
   // 编号
-  String code;
+  String? code;
   // 备注
-  String remark;
+  String? remark;
   // 类别Id
-  String speciesId;
+  String? speciesId;
   // 共享用户Id
-  String shareId;
+  String? shareId;
   // 单项集合
   List<FormItemModel>? items;
 
+  bool? public;
+
   FormModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.remark,
-    required this.speciesId,
-    required this.shareId,
+    this.id,
+    this.name,
+    this.code,
+    this.remark,
+    this.speciesId,
+    this.shareId,
     this.items,
+    this.public,
   });
 
-  factory FormModel.fromJson(Map<String, dynamic> json) {
-    return FormModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      code: json['code'] as String,
-      remark: json['remark'] as String,
-      speciesId: json['speciesId'] as String,
-      shareId: json['shareId'] as String,
-      items: (json['items'] as List<dynamic>?)
-          ?.map((e) => FormItemModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
+   FormModel.fromJson(Map<String, dynamic> json) {
+     id = json['id'];
+     name = json['name'];
+     code = json['code'];
+     remark =json['remark'];
+     public = json['public'];
+     speciesId= json['speciesId'];
+     shareId = json['shareId'];
+     items = (json['items'] as List<dynamic>?)
+         ?.map((e) => FormItemModel.fromJson(e as Map<String, dynamic>))
+     .toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -2305,6 +2307,7 @@ class FormModel {
       'name': name,
       'code': code,
       'remark': remark,
+      'public':public,
       'speciesId': speciesId,
       'shareId': shareId,
       'items': items?.map((e) => e.toJson()).toList(),
@@ -4835,15 +4838,15 @@ class WorkDefineModel {
   bool? isCreate;
 
   WorkDefineModel({
-    required this.id,
-    required this.name,
-    required this.code,
+    this.id,
+    this.name,
+    this.code,
     this.resource,
-    required this.remark,
-    required this.shareId,
-    required this.speciesId,
-    required this.sourceIds,
-    required this.isCreate,
+    this.remark,
+    this.shareId,
+    this.speciesId,
+    this.sourceIds,
+    this.isCreate,
   });
 
   factory WorkDefineModel.fromJson(Map<String, dynamic> json) {
