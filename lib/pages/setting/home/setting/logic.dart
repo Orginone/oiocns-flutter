@@ -5,6 +5,7 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/pages/setting/network.dart';
@@ -15,6 +16,8 @@ import 'state.dart';
 
 class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunctionState> {
   final SettingFunctionState state = SettingFunctionState();
+
+  SettingController settingController = Get.find();
 
   void nextLvForSpaceEnum(SettingNavModel model) async {
     if (model.spaceEnum != null) {
@@ -49,7 +52,12 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
               name: StandardEnum.dict.label,
               standardEnum: StandardEnum.dict,
               space: state.space));
-          data.addAll(await SettingNetWork.initSpecies(state.model.value!));
+          var species = SettingNavModel(
+              name: StandardEnum.classCriteria.label,
+              standardEnum: StandardEnum.classCriteria,
+              space: state.space);
+          await SettingNetWork.initSpecies(species);
+          data.add(species);
           model.children = data;
           Get.toNamed(Routers.settingFunction,
               arguments: {'data': model}, preventDuplicates: false);
@@ -61,16 +69,14 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
           break;
       }
     } else if (model.standardEnum != null) {
-      if(model.children.isEmpty && model.source!=null){
-        if(model.standardEnum == StandardEnum.permission){
+      if (model.children.isEmpty && model.source != null) {
+        if (model.standardEnum == StandardEnum.permission) {
           Get.toNamed(Routers.permissionInfo,
               arguments: {"authority": model.source});
-        }else{
-          Get.toNamed(Routers.classificationInfo,
-              arguments: {"data": model});
+        } else {
+          Get.toNamed(Routers.classificationInfo, arguments: {"data": model});
         }
-
-      }else{
+      } else {
         Get.toNamed(Routers.relationGroup, arguments: {
           "data": model,
         });
@@ -78,62 +84,46 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
     }
   }
 
-  void createOrganization(SettingNavModel model) {
-    showCreateOrganizationDialog(
-        context,
-        getTargetType(model),
-        callBack: (String name, String code, String nickName, String identify,
-            String remark, TargetType type) async {
-          var model = TargetModel(
-              name: nickName,
-              code: code,
-              typeName: type.label,
-              teamName: name,
-          teamCode: code,
-          remark: remark,
-          icon: '',
-          belongId: '');
+  void createOrganization(SettingNavModel model, {bool isEdit = false}) {
+    showCreateOrganizationDialog(context, getTargetType(model), callBack:
+        (String name, String code, String nickName, String identify,
+        String remark, TargetType type) async {
+      var model = TargetModel(
+        name: nickName,
+        code: code,
+        typeName: type.label,
+        teamName: name,
+        teamCode: code,
+        remark: remark,
+        icon: '',
+      );
 
-      var data = await state.space.createTarget(model);
-      if (data != null) {
-        ToastUtils.showMsg(msg: "创建成功");
+      if (isEdit) {
+        model.icon = state.space.metadata.icon;
+        model.belongId = state.space.metadata.belongId;
+        model.id = state.space.metadata.id;
+        var success = await state.space.update(model);
+        if (success) {
+          ToastUtils.showMsg(msg: "修改成功");
+        }
       } else {
-        ToastUtils.showMsg(msg: "创建失败");
+        var data = await state.space.createTarget(model);
+        if (data != null) {
+          ToastUtils.showMsg(msg: "创建成功");
+        }
       }
-    });
- }
+    },
+        isEdit: isEdit,
+        name: isEdit ? state.space.metadata.name : "",
+        nickName: isEdit ? state.space.metadata.name : "",
+        code: isEdit ? state.space.metadata.code : "",
+        remark: isEdit ? state.space.metadata.remark ?? "" : "",
+        identify: isEdit ? state.space.metadata.code : "",
+        type:
+        isEdit ? TargetType.getType(state.space.metadata.typeName) : null);
+  }
 
- void editOrganization(SettingNavModel model) {
-   showCreateOrganizationDialog(
-       context, getTargetType(model),
-       name: state.space.metadata.name,
-       nickName: state.space.metadata.name,
-       code: state.space.metadata.code,
-       remark: state.space.metadata.remark ?? "",
-       identify: state.space.metadata.code,
-       type: TargetType.getType(state.space.metadata.typeName),
-       callBack: (String name,
-           String code,
-           String nickName,
-            String identify,
-            String remark,
-            TargetType type) async {
-      await state.space.update(TargetModel(
-          id: state.space.metadata.id,
-          name: nickName,
-          code: code,
-          typeName: type.label,
-          icon: state.space.metadata.icon,
-          belongId: state.space.metadata.belongId,
-          teamName: name,
-          teamCode: code,
-          remark: remark));
-      ToastUtils.showMsg(msg: "修改成功");
-    });
- }
-
-  void createAuth(SettingNavModel item) async{
-    SettingController settingController = Get.find();
+  void createAuth(SettingNavModel item) async {
     List<ITarget> targets = await settingController.getTeamTree(item.space);
     showCreateAuthDialog(context, getAllTarget(targets), target: item.space,
         callBack: (name, code, target, isPublic, remark) async {
@@ -149,7 +139,7 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
             item.children.add(SettingNavModel(
               space: state.model.value!.space,
               image: result.shareInfo.avatar?.shareLink,
-              name: result.metadata.name??"",
+              name: result.metadata.name ?? "",
               source: result,
               standardEnum: StandardEnum.permission,
             ));
@@ -180,14 +170,44 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
    return targetType;
  }
 
- void createDict(SettingNavModel item) {
-   showCreateDictDialog(context,onCreate: (name,code,remark){
-     var dict = item.space.createDict(DictModel(name: name, public: true, code: code, remark: remark));
-     if(dict!=null){
-       ToastUtils.showMsg(msg: "新建成功");
-     }
-   });
- }
+  void createDict(SettingNavModel item) {
+    showCreateDictDialog(context, onCreate: (name, code, remark) async {
+      var dict = await item.space.createDict(
+          DictModel(name: name, public: true, code: code, remark: remark));
+      if (dict != null) {
+        ToastUtils.showMsg(msg: "新建成功");
+      }
+    });
+  }
 
+  void createClassCriteria(SettingNavModel e) async {
+    List<ISpeciesItem> species = [];
+    for (var element in e.children) {
+      if (element.source.speciesTypes.isNotEmpty) {
+        species.add(element.source);
+      }
+    }
+    IAuthority? authority = await e.space.loadSuperAuth();
+    List<IAuthority> auth = [];
+    if (authority != null) {
+      auth.add(authority);
+    }
+    List<ITarget> targets = await settingController.getTeamTree(e.space);
 
+    showClassCriteriaDialog(
+        context, getAllTarget(targets), species, getAllAuthority(auth),
+        callBack: (name, code, target, specie, auth, public, remark) async {
+          var item = e.space.createSpecies(SpeciesModel(name: name,
+              code: code,
+              public: public,
+              typeName:specie.metadata.typeName,
+              shareId: target.metadata.id,
+              authId: auth.metadata.id ?? "",
+              remark: remark));
+
+          if(item!=null){
+            await SettingNetWork.initSpecies(e);
+          }
+        });
+  }
 }

@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
+import 'package:orginone/dart/core/thing/base/form.dart';
+import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/pages/setting/home/setting/state.dart';
 
 class ClassificationInfoState extends BaseGetState{
@@ -19,18 +21,22 @@ class ClassificationInfoState extends BaseGetState{
     data = Get.arguments['data'];
     species = data.source;
     tabTitle = [ClassificationEnum.info];
-    switch (SpeciesType.getType(species.metadata.typeName)) {
-      case SpeciesType.store:
-        tabTitle.add(ClassificationEnum.property);
-        break;
-      case SpeciesType.workForm:
-      case SpeciesType.commodity:
-        tabTitle.addAll([ClassificationEnum.attrs, ClassificationEnum.form]);
-        break;
-      case SpeciesType.market:
-      case SpeciesType.workItem:
-        tabTitle.add(ClassificationEnum.work);
-        break;
+    if(species is IForm){
+      tabTitle.addAll([ClassificationEnum.attrs, ClassificationEnum.form]);
+    }
+    if(species is ISpeciesItem){
+      switch (SpeciesType.getType(species.metadata.typeName)) {
+        case SpeciesType.store:
+          tabTitle.add(ClassificationEnum.property);
+          break;
+        case SpeciesType.commodity:
+          tabTitle.addAll([ClassificationEnum.attrs, ClassificationEnum.form]);
+          break;
+        case SpeciesType.market:
+        case SpeciesType.workItem:
+          tabTitle.add(ClassificationEnum.work);
+          break;
+      }
     }
   }
 }

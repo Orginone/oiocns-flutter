@@ -6,6 +6,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
+import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/pages/work/network.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
@@ -52,13 +53,13 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
     }
 
     WorkNodeModel? node = await state.define!.loadWorkNode();
-    List<XForm> forms = await state.define!.workItem.loadForms();
+    List<IForm> forms = await state.define!.workItem.loadForms();
 
 
 
     for (var form in forms) {
       try{
-        var item = node?.forms?.firstWhere((element) => element.id == form.id);
+        var item = node?.forms?.firstWhere((element) => element.id == form.metadata.id);
         if(item!=null){
           state.useForm.add(item);
         }

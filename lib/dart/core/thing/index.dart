@@ -10,7 +10,6 @@ import 'store/propclass.dart';
 ISpeciesItem createSpeciesForType(XSpecies metadata,ITarget current){
   switch(SpeciesType.getType(metadata.typeName)){
     case SpeciesType.store:
-    case SpeciesType.propClass:
       return PropClass(metadata,current);
     case SpeciesType.application:
       return Application(metadata,current);

@@ -154,18 +154,16 @@ class SettingNetWork {
     }
   }
 
-  static Future<List<SettingNavModel>> initSpecies(SettingNavModel model) async{
-
-    List<SettingNavModel> navs = [];
+  static Future<void> initSpecies(SettingNavModel model) async {
     List<ISpeciesItem> species = await model.space.loadSpecies();
-    void loopSpeciesTree(List<ISpeciesItem> tree,List<SettingNavModel> navs){
+    void loopSpeciesTree(List<ISpeciesItem> tree, List<SettingNavModel> navs) {
       for (var element in tree) {
         var child = SettingNavModel(
             space: model.space,
             spaceEnum: model.spaceEnum,
             source: element,
             image: element.share.avatar?.shareLink,
-            standardEnum:StandardEnum.classCriteria,
+            standardEnum: StandardEnum.classCriteria,
             name: element.metadata.name);
         child.children = [];
         if(element.children.isNotEmpty){
@@ -174,9 +172,9 @@ class SettingNetWork {
         navs.add(child);
       }
     }
-    if(species.isNotEmpty){
-      loopSpeciesTree(species,navs);
+    if(species.isNotEmpty) {
+      model.children = [];
+      loopSpeciesTree(species, model.children);
     }
-    return navs;
   }
 }

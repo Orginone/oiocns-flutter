@@ -683,17 +683,18 @@ class KernelApi {
   /// 查询分类的度量标准
   /// @param {IdSpeciesReq} params 请求参数
   /// @returns {ResultType<XAttributeArray>} 请求结果
-  Future<ResultType<XAttributeArray>> querySpeciesAttrs(
-      GetSpeciesResourceModel params) async {
+  Future<ResultType<XAttributeArray>> queryFormAttributes(
+      GainModel params) async {
     return await request(
       ReqestType(
         module: 'thing',
-        action: 'QuerySpeciesAttrs',
+        action: 'QueryFormAttributes',
         params: params.toJson(),
       ),
       XAttributeArray.fromJson,
     );
   }
+
 
 
   /// 物的元数据查询

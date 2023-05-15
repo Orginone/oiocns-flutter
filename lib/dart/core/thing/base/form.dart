@@ -1,82 +1,77 @@
-
-
-
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/thing/app/work/workform.dart';
 import 'package:orginone/dart/core/thing/store/propclass.dart';
 import 'package:orginone/main.dart';
 
 import 'species.dart';
 
-abstract class IForm implements ISpeciesItem {
-  //表单
-  late List<XForm> forms;
 
-  //表单特性
+abstract class IForm {
+  /// 表单元数据
+  late XForm metadata;
+
+  /// 表单分类
+  late ISpeciesItem species;
+
+  /// 表单特性
   late List<XAttribute> attributes;
 
-  //加载可选属性
+  /// 更新表单
+  Future<bool> update(FormModel data);
+
+  /// 删除表单
+  Future<bool> delete();
+
+  /// 加载可选属性
   Future<List<XProperty>> loadPropertys();
 
-  //加载表单
-  Future<List<XForm>> loadForms({bool reload = false});
+  /// 加载表单特性
+  Future<List<XAttribute>> loadAttributes({bool reload});
 
-  //新建表单
-  Future<XForm?> createForm(FormModel data);
+  /// 新建表单特性
+  Future<XAttribute?> createAttribute(AttributeModel data, XProperty property);
 
-  //更新表单
-  Future<bool> updateForm(FormModel data);
+  /// 更新表单特性
+  Future<bool> updateAttribute(AttributeModel data, [XProperty? property]);
 
-  //删除表单
-  Future<bool> deleteForm(XForm data);
-
-  //加载表单特性
-  Future<List<XAttribute>> loadAttributes({bool reload = false});
-
-  //新建表单特性
-  Future<XAttribute?> createAttribute(AttributeModel data);
-  //更新表单特性
-  Future<bool> updateAttribute(AttributeModel data);
-//删除表单特性
+  /// 删除表单特性
   Future<bool> deleteAttribute(XAttribute data);
 }
 
 
-abstract class Form extends SpeciesItem implements IForm {
-  Form(super.metadata, super.current,super.parent){
+class Form implements IForm {
+  Form(this.metadata, this.species) {
     attributes = [];
-    forms = [];
   }
 
   @override
   late List<XAttribute> attributes;
 
   @override
-  late List<XForm> forms;
+  late ISpeciesItem species;
 
   @override
-  Future<XAttribute?> createAttribute(AttributeModel data) async{
-    data.shareId = current.metadata.id;
-    data.speciesId = metadata.id;
+  late XForm metadata;
+
+  @override
+  Future<XAttribute?> createAttribute(AttributeModel data,
+      XProperty property) async {
+    data.formId = metadata.id;
+    data.propId = property.id;
+    if (data.authId != null || data.authId!.length < 5) {
+      data.authId = species.metadata.authId;
+    }
     final res = await kernel.createAttribute(data);
     if (res.success && res.data?.id != null) {
+      res.data!.property = property;
+      res.data!.linkPropertys = [property];
       attributes.add(res.data!);
       return res.data;
     }
   }
 
-  @override
-  Future<XForm?> createForm(FormModel data) async{
-    data.shareId = current.metadata.id;
-    data.speciesId = metadata.id;
-    final res = await kernel.createForm(data);
-    if (res.success && res.data!= null) {
-      forms.add(res.data!);
-      return res.data;
-    }
-  }
 
   @override
   Future<bool> deleteAttribute(XAttribute data) async{
@@ -92,27 +87,10 @@ abstract class Form extends SpeciesItem implements IForm {
   }
 
   @override
-  Future<bool> deleteForm(XForm data) async{
-    final index = forms.indexWhere((i) => i.id == data.id);
-    if (index > -1) {
-      final res = await kernel.deleteForm(IdReq(id: data.id!));
-      if (res.success) {
-        forms.removeAt(index);
-      }
-      return res.success;
-    }
-    return false;
-  }
-
-  @override
   Future<List<XAttribute>> loadAttributes({bool reload = false}) async{
     if (attributes.isEmpty || reload) {
-      final res = await kernel.querySpeciesAttrs(GetSpeciesResourceModel( id: current.metadata.id,
-        speciesId: metadata.id,
-        belongId: current.space.metadata.id,
-        upTeam: current.metadata.typeName == TargetType.group.label,
-        upSpecies: true,
-        page: PageRequest(offset: 0, limit: 9999, filter: ''),));
+      final res = await kernel.queryFormAttributes(
+          GainModel(id: metadata.id!, subId: species.belongId));
       if (res.success) {
         attributes = res.data?.result ?? [];
       }
@@ -122,28 +100,11 @@ abstract class Form extends SpeciesItem implements IForm {
   }
 
   @override
-  Future<List<XForm>> loadForms({bool reload = false}) async{
-    if (forms.isEmpty || reload) {
-      final res = await kernel.querySpeciesForms(GetSpeciesResourceModel( id: current.metadata.id,
-        speciesId: metadata.id,
-        belongId: current.space.metadata.id,
-        upTeam: current.metadata.typeName == TargetType.group.label,
-        upSpecies: true,
-        page: PageRequest(offset: 0, limit: 9999, filter: ''),));
-      if (res.success) {
-        forms = res.data?.result ?? [];
-      }
-    }
-    return forms;
-  }
-
-  @override
   Future<List<XProperty>> loadPropertys() async{
     List<XProperty> result = [];
-    for (ISpeciesItem item in current.space.species) {
+    for (ISpeciesItem item in species.current.space.species) {
       switch (SpeciesType.getType(item.metadata.typeName)) {
         case SpeciesType.store:
-        case SpeciesType.propClass:
           result.addAll(await (item as IPropClass).loadAllProperty());
           break;
       }
@@ -152,13 +113,21 @@ abstract class Form extends SpeciesItem implements IForm {
   }
 
   @override
-  Future<bool> updateAttribute(AttributeModel data) async{
+  Future<bool> updateAttribute(AttributeModel data,
+      [XProperty? property]) async {
     final index = attributes.indexWhere((i) => i.id == data.id);
     if (index > -1) {
-      data.shareId = current.metadata.id;
-      data.speciesId = metadata.id;
+      data.formId = metadata.id;
+      if (property != null) {
+        data.propId = property.id;
+      }
       final res = await kernel.updateAttribute(data);
       if (res.success && res.data?.id != null) {
+        res.data!.property = attributes[index].property;
+        res.data!.linkPropertys = attributes[index].linkPropertys;
+        if (property != null) {
+          res.data!.linkPropertys = [property];
+        }
         attributes[index] = res.data!;
       }
       return res.success;
@@ -167,20 +136,25 @@ abstract class Form extends SpeciesItem implements IForm {
   }
 
   @override
-  Future<bool> updateForm(FormModel data) async{
-    final index = forms.indexWhere((i) => i.id == data.id);
-    if (index > -1) {
-      data.shareId = current.metadata.id;
-      data.speciesId = metadata.id;
-      final res = await kernel.updateForm(data);
-      if (res.success && res.data?.id != null) {
-        forms[index] = res.data!;
+  Future<bool> delete() async {
+    var res = await kernel.deleteForm(IdReq(id: metadata.id!));
+    if (res.success) {
+      if (species.metadata.typeName == SpeciesType.workForm.label) {
+        var species = this.species as IWorkForm;
+        species.forms.removeWhere((i) => i == this);
       }
-      return res.success;
     }
-    return false;
+    return res.success;
   }
 
-
-
+  @override
+  Future<bool> update(FormModel data) async {
+    data.shareId = metadata.shareId;
+    data.speciesId = metadata.speciesId;
+    var res = await kernel.updateForm(data);
+    if (res.success && res.data != null) {
+      metadata = res.data!;
+    }
+    return res.success;
+  }
 }

@@ -33,7 +33,7 @@ class ClassificationInfoPage
                 switch (e) {
                   case ClassificationEnum.info:
                     return BasicInfo(
-                      species: state.species,
+                      species: state.species.metadata,
                     );
                   case ClassificationEnum.property:
                     return KeepAliveWidget(child: PropertyPage());

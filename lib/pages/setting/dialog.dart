@@ -45,6 +45,8 @@ typedef CreateWorkCallBack = Function(
 
 typedef CreateAuthCallBack = Function(String name,String code,ITarget target,bool isPublic,String remark);
 
+typedef CreateClassCriteriaCallBack = Function(String name,String code,ITarget target,ISpeciesItem specie,IAuthority auth,bool isPublic,String remark);
+
 SettingController get setting => Get.find();
 
 Future<void> showCreateIdentityDialog(
@@ -481,7 +483,7 @@ Future<void> showCreateOrganizationDialog(
     String nickName = '',
     String identify = '',
     String remark = '',
-    TargetType? type,CreateOrganizationChangeCallBack? callBack}) async {
+    TargetType? type,CreateOrganizationChangeCallBack? callBack,bool isEdit = false}) async {
   TextEditingController nameController = TextEditingController(text: name);
   TextEditingController codeController = TextEditingController(text: code);
   TextEditingController nickNameController =
@@ -503,7 +505,7 @@ Future<void> showCreateOrganizationDialog(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    CommonWidget.commonHeadInfoWidget("新建"),
+                    CommonWidget.commonHeadInfoWidget(isEdit?"编辑":"新建"),
                     CommonWidget.commonTextTile("名称", '',
                         controller: nameController,
                         showLine: true,
@@ -664,10 +666,9 @@ Future<void> showCreateAttrDialog(BuildContext context,
   TextEditingController nameCtr = TextEditingController(text: name);
   TextEditingController codeCtr = TextEditingController(text: code);
   TextEditingController remarkCtr = TextEditingController(text: remark);
-  List<IAuthority> allAuth = getAllAuthority(authoritys);
 
   XProperty? property = pro;
-  IAuthority? authority = authId!=null?allAuth.firstWhere((element) => element.metadata.id == authId):null;
+  IAuthority? authority = authId!=null?authoritys.firstWhere((element) => element.metadata.id == authId):null;
   bool isPublic = public;
   return showDialog(
     context: context,
@@ -706,7 +707,7 @@ Future<void> showCreateAttrDialog(BuildContext context,
                         "选择管理权限", authority?.metadata.name ?? "",
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
-                          titles: allAuth.map((e) => e.metadata.name ?? "").toList(),
+                          titles: authoritys.map((e) => e.metadata.name ?? "").toList(),
                           callback: (str) {
                         state(() {
                           authority = authoritys
@@ -905,6 +906,139 @@ Future<void> showCreateAuthDialog(
                       } else {
                         if(callBack!=null){
                           callBack(nameController.text,codeController.text,selectedTarget,isPublic,remarkController.text);
+                        }
+                        Navigator.pop(context);
+                      }
+                    }),
+                  ],
+                ),
+              );
+            });
+          }));
+    },
+  );
+}
+
+Future<void> showClassCriteriaDialog(
+    BuildContext context,
+    List<ITarget> targets,
+    List<ISpeciesItem> species,
+    List<IAuthority> authoritys,
+    {bool isEdit = false,
+    String? name,
+    String? code,
+    String? remark,
+    bool public = false,
+      ISpeciesItem? specie,
+    String? authId,
+    String? targetId,CreateClassCriteriaCallBack? callBack}) async {
+  TextEditingController nameController = TextEditingController(text: name);
+  TextEditingController codeController = TextEditingController(text: code);
+  TextEditingController remarkController = TextEditingController(text: remark);
+  bool isPublic = public;
+  ITarget? selectedTarget = targetId!=null?targets.firstWhere((element) => element.metadata.id == targetId):null;
+  ISpeciesItem? selectedSpecies = specie;
+  IAuthority? selectedAuth = authId!=null?authoritys.firstWhere((element) => element.metadata.id == authId):null;
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+          alignment: Alignment.center,
+          child: Builder(builder: (context) {
+            return StatefulBuilder(builder: (context, state) {
+              return SizedBox(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CommonWidget.commonHeadInfoWidget(
+                        "${isEdit ? "编辑" : "新增"}类别"),
+                    CommonWidget.commonTextTile("名称", '',
+                        controller: nameController,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
+                    CommonWidget.commonTextTile("代码", '',
+                        controller: codeController,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
+                    CommonWidget.commonChoiceTile(
+                        "选择类型", selectedSpecies?.metadata.name??"",
+                        showLine: true, required: true, onTap: () {
+                      PickerUtils.showListStringPicker(Get.context!,
+                          titles: species.map((e) => e.metadata.name).toList(),
+                          callback: (str) {
+                            state(() {
+                              try {
+                                selectedSpecies = species.firstWhere(
+                                        (element) => element.metadata.name == str);
+                              } catch (e) {}
+                            });
+                          });
+                    }, hint: "请选择"),
+                    CommonWidget.commonChoiceTile(
+                        "选择制定组织", selectedTarget?.metadata.name??"",
+                        showLine: true, required: true, onTap: () {
+                      PickerUtils.showListStringPicker(Get.context!,
+                          titles: targets.map((e) => e.metadata.name).toList(),
+                          callback: (str) {
+                        state(() {
+                          try {
+                            selectedTarget = targets.firstWhere(
+                                (element) => element.metadata.name == str);
+                          } catch (e) {}
+                        });
+                      });
+                    }, hint: "请选择"),
+                    CommonWidget.commonChoiceTile(
+                        "选择管理权限", selectedAuth?.metadata.name??"",
+                        showLine: true, required: true, onTap: () {
+                      PickerUtils.showListStringPicker(Get.context!,
+                          titles: authoritys.map((e) => e.metadata.name??"").toList(),
+                          callback: (str) {
+                            state(() {
+                              try {
+                                selectedAuth = authoritys.firstWhere(
+                                        (element) => element.metadata.name == str);
+                              } catch (e) {}
+                            });
+                          });
+                    }, hint: "请选择"),
+                    CommonWidget.commonChoiceTile(
+                        "是否公开", isPublic ? "公开" : '不公开',
+                        showLine: true, required: true, onTap: () {
+                      PickerUtils.showListStringPicker(Get.context!,
+                          titles: ['公开', "不公开"], callback: (str) {
+                        state(() {
+                          isPublic = str == "公开";
+                        });
+                      });
+                    }, hint: "请选择"),
+                    CommonWidget.commonTextTile("定义", '',
+                        controller: remarkController,
+                        showLine: true,
+                        required: true,
+                        maxLine: 4,
+                        hint: "请输入"),
+                    CommonWidget.commonMultipleSubmitWidget(onTap1: () {
+                      Navigator.pop(context);
+                    }, onTap2: () {
+                      if (nameController.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入名称");
+                      } else if (codeController.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入代码");
+                      } else if (selectedSpecies == null) {
+                        ToastUtils.showMsg(msg: "请选择类型");
+                      } else if (selectedAuth == null) {
+                        ToastUtils.showMsg(msg: "请选择管理权限");
+                      } else if (selectedTarget == null) {
+                        ToastUtils.showMsg(msg: "请选择制定组织");
+                      }else if (remarkController.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入定义");
+                      } else {
+                        if (callBack != null) {
+                          callBack(nameController.text, codeController.text,
+                              selectedTarget!,selectedSpecies!,selectedAuth!, isPublic, remarkController.text);
                         }
                         Navigator.pop(context);
                       }

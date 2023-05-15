@@ -97,7 +97,6 @@ class FormController
         isEdit: form != null,
         onCreate: (name, code, public) async {
           var model = FormModel();
-          model.public = public;
           model.speciesId = species.metadata.id;
           model.name = name;
           model.code = code;

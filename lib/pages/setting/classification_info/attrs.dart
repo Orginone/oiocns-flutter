@@ -7,6 +7,7 @@ import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
+import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -94,6 +95,7 @@ class AttrsController
     IAuthority? authority = await species.loadSuperAuth();
     if (authority != null) {
       auth.add(authority);
+      auth = getAllAuthority(auth);
     }
     await showCreateAttrDialog(context, auth, propertys,
         onCreate: (name, code, remark, property, authority, public) async {
@@ -104,8 +106,6 @@ class AttrsController
             code: code,
             remark: remark,
             id: authority.metadata.id,
-            speciesId: authority.metadata.belongId,
-            shareId: authority.metadata.shareId,
           );
           if (attr != null) {
             await species.updateAttribute(model);
@@ -119,7 +119,7 @@ class AttrsController
         remark: attr?.remark ?? "",
         pro: attr?.property,
         authId: attr?.authId,
-        public: attr?.public ?? false);
+        public:  false);
   }
 
   Future<void> loadAttrs({bool reload = false}) async {

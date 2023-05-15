@@ -45,7 +45,7 @@ enum SpaceEnum {
 enum StandardEnum {
   permission("权限定义"),
   dict("字典定义"),
-  classCriteria('分类定义');
+  classCriteria('数据标准');
 
   final String label;
 
@@ -77,10 +77,8 @@ List<String> spaceTitle = [
 ];
 
 List<String> groupTitle = [
-  "集团简称",
-  "集团编码",
-  "集团全称",
-  "集团代码",
+  "组织群名称",
+  "组织群编码",
   "集团简介",
 ];
 

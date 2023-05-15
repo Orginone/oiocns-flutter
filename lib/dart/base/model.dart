@@ -2181,38 +2181,38 @@ class SpeciesModel {
   String? id;
 
   // 名称
-  String name;
+  String? name;
 
   // 编号
-  String code;
+  String? code;
 
   // 公开的
-  bool public;
+  bool? public;
 
   // 父类别ID
   String? parentId;
 
   // 共享用户Id
-  String shareId;
+  String? shareId;
 
   // 工作权限Id
-  String authId;
+  String? authId;
 
   // 备注
-  String remark;
+  String? remark;
 
   String? typeName;
 
   //构造方法
   SpeciesModel({
     this.id,
-    required this.name,
-    required this.code,
-    required this.public,
-    required this.parentId,
-    required this.shareId,
-    required this.authId,
-    required this.remark,
+    this.name,
+    this.code,
+    this.public,
+    this.parentId,
+    this.shareId,
+    this.authId,
+     this.remark,
     this.typeName,
   });
 
@@ -2272,10 +2272,7 @@ class FormModel {
   String? speciesId;
   // 共享用户Id
   String? shareId;
-  // 单项集合
-  List<FormItemModel>? items;
-
-  bool? public;
+  String? rule;
 
   FormModel({
     this.id,
@@ -2284,8 +2281,7 @@ class FormModel {
     this.remark,
     this.speciesId,
     this.shareId,
-    this.items,
-    this.public,
+    this.rule,
   });
 
    FormModel.fromJson(Map<String, dynamic> json) {
@@ -2293,12 +2289,9 @@ class FormModel {
      name = json['name'];
      code = json['code'];
      remark =json['remark'];
-     public = json['public'];
+     rule = json['rule'];
      speciesId= json['speciesId'];
      shareId = json['shareId'];
-     items = (json['items'] as List<dynamic>?)
-         ?.map((e) => FormItemModel.fromJson(e as Map<String, dynamic>))
-     .toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -2307,10 +2300,9 @@ class FormModel {
       'name': name,
       'code': code,
       'remark': remark,
-      'public':public,
+      'rule':rule,
       'speciesId': speciesId,
       'shareId': shareId,
-      'items': items?.map((e) => e.toJson()).toList(),
     };
   }
 }
@@ -2365,85 +2357,68 @@ class FormItemModel {
 
 
 class AttributeModel {
-  // 唯一ID
+  /// 唯一ID
   String? id;
 
-  // 名称
+  /// 名称
   String? name;
 
-  // 编号
+  /// 编号
   String? code;
 
+  /// 规则
+  String? rule;
 
-  // 备注
-  String? remark;
-
-  // 创建组织/个人
-  String? belongId;
-
-  // 类别Id
-  String? speciesId;
-
-  // 工作权限Id
-  String? authId;
-
+  /// 属性Id
   String? propId;
 
-  String? shareId;
-  //构造方法
+  /// 工作职权Id
+  String? authId;
+
+  /// 表单项Id
+  String? formId;
+
+  /// 备注
+  String? remark;
+
   AttributeModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.speciesId,
-    required this.propId,
-    required this.authId,
-    required this.shareId,
-    required this.remark,
+     this.id,
+     this.name,
+     this.code,
+     this.rule,
+     this.propId,
+     this.authId,
+     this.formId,
+     this.remark,
   });
 
-
-
-  //通过JSON构造
-  AttributeModel.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        name = json["name"],
-        code = json["code"],
-        remark = json["remark"],
-        belongId = json["belongId"],
-        speciesId = json["speciesId"],
-        shareId = json['shareId'],
-        propId = json['propId'],
-        authId = json["authId"];
-
-  //通过动态数组解析成List
-  static List<AttributeModel> fromList(List<dynamic>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<AttributeModel> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(AttributeModel.fromJson(item));
-      }
-    }
-    return retList;
+  factory AttributeModel.fromJson(Map<String, dynamic> json) {
+    return AttributeModel(
+      id: json['id'],
+      name: json['name'],
+      code: json['code'] ,
+      rule: json['rule'] ,
+      propId: json['propId'] ,
+      authId: json['authId'] ,
+      formId: json['formId'] ,
+      remark: json['remark'],
+    );
   }
 
-  //转成JSON
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'code': code,
-      'speciesId': speciesId,
-      'propId': propId,
-      'authId': authId,
-      'shareId': shareId,
-      'remark': remark,
-    };
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['name'] = name;
+    data['code'] = code;
+    data['rule'] = rule;
+    data['propId'] = propId;
+    data['authId'] = authId;
+    data['formId'] = formId;
+    data['remark'] = remark;
+    return data;
   }
 }
+
 
 class AuthorityModel {
   // 唯一ID
@@ -2597,13 +2572,13 @@ class TargetModel {
   String? code;
 
   // 类型名
-  late String typeName;
+  String typeName;
 
   // 头像
-  String icon;
+  String? icon;
 
   // 创建组织/个人
-  String belongId;
+  String? belongId;
 
   // 团队名称
   String? teamName;
@@ -2619,14 +2594,14 @@ class TargetModel {
   //构造方法
   TargetModel({
     this.id,
-    required this.name,
-    required this.code,
+     this.name,
+     this.code,
     required this.typeName,
-    required this.icon,
-    required this.belongId,
-    required this.teamName,
-    required this.teamCode,
-    required this.remark,
+    this.icon,
+    this.belongId,
+    this.teamName,
+    this.teamCode,
+    this.remark,
     this.public,
   });
 

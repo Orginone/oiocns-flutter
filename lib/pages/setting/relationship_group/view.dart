@@ -28,6 +28,8 @@ class RelationGroupPage
               case "create":
                  if(item.standardEnum == StandardEnum.permission){
                    controller.createAuth(item);
+                 }else if(item.standardEnum == StandardEnum.classCriteria){
+                   controller.createClassCriteria(item);
                  }else{
                    controller.createGroup(item.source);
                  }
@@ -36,9 +38,11 @@ class RelationGroupPage
                 if(item.standardEnum == StandardEnum.dict){
                   controller.editDict(item);
                 } else if(item.standardEnum == StandardEnum.permission){
-                  controller.editAuth(item);
-                }else{
-                  controller.editGroup(item.source);
+                  controller.createAuth(item,isEdit: true);
+                } else if(item.standardEnum == StandardEnum.classCriteria){
+                  controller.createClassCriteria(item,isEdit: true);
+                } else{
+                  controller.createGroup(item.source,isEdit: true);
                 }
                 break;
               case "delete":
@@ -46,6 +50,8 @@ class RelationGroupPage
                   controller.removeDict(item);
                 }else if(item.standardEnum == StandardEnum.permission){
                   controller.removeAuth(item);
+                } else if(item.standardEnum == StandardEnum.classCriteria){
+                  controller.removeClassCriteria(item);
                 } else {
                   controller.removeGroup(item.source);
                 }

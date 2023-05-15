@@ -31,13 +31,16 @@ class SettingFunctionPage extends BaseBreadcrumbNavMultiplexPage<
                         case StandardEnum.permission:
                           controller.createAuth(e);
                           break;
+                        case StandardEnum.classCriteria:
+                          controller.createClassCriteria(e);
+                          break;
                       }
                     }
 
                     break;
                   case "edit":
                     if(e.spaceEnum!=null){
-                      controller.editOrganization(e);
+                      controller.createOrganization(e,isEdit: true);
                     }
                     break;
                 }

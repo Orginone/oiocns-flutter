@@ -4,6 +4,8 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/thing/base/form.dart';
+import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/util/authority.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -68,8 +70,11 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
         case StandardEnum.permission:
           if(widget.model.source != null){
             popupMenuItem.add(newPopupMenuItem("新增权限", "create"));
-            popupMenuItem.add(newPopupMenuItem("编辑权限", "edit"));
-            popupMenuItem.add(newPopupMenuItem("删除权限", "delete"));
+            if ((widget.model.source as IAuthority)
+                .hasAuthoritys([OrgAuth.relationAuthId.label])) {
+              popupMenuItem.add(newPopupMenuItem("编辑权限", "edit"));
+              popupMenuItem.add(newPopupMenuItem("删除权限", "delete"));
+            }
           }
           break;
         case StandardEnum.dict:
@@ -81,12 +86,20 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
           }
           break;
         case StandardEnum.classCriteria:
-          if(widget.model.source != null){
-            popupMenuItem.add(newPopupMenuItem("新增类别", "create"));
-            if(widget.model.source.speciesTypes.isNotEmpty){
+          if (widget.model.source != null) {
+            if(widget.model.source is ISpeciesItem){
+              if (widget.model.source.speciesTypes.isNotEmpty) {
+                popupMenuItem.add(newPopupMenuItem("新增类别", "create"));
+              }
               popupMenuItem.add(newPopupMenuItem("编辑分类", "edit"));
               popupMenuItem.add(newPopupMenuItem("删除分类", "delete"));
             }
+            if(widget.model.source is IForm){
+              popupMenuItem.add(newPopupMenuItem("编辑表单", "edit"));
+              popupMenuItem.add(newPopupMenuItem("删除表单", "delete"));
+            }
+          } else {
+            popupMenuItem.add(newPopupMenuItem("新增类别", "create"));
           }
           break;
       }
@@ -106,17 +119,8 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
     if (isSuperAdmin) {
       popupMenuItem.add(newPopupMenuItem("编辑", "edit"));
       if (target != settingController.user
-          // && target != settingController.company
       ) {
         popupMenuItem.add(newPopupMenuItem("删除", "delete"));
-      }
-    } else if (true
-    // await Auth.isSuperAdmin(settingController.space)
-    ) {
-      if (target != settingController.user
-          // && target != settingController.company
-      ) {
-        popupMenuItem.add(newPopupMenuItem("退出${target!.metadata.typeName}", "signOut"));
       }
     }
 
