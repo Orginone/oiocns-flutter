@@ -68,10 +68,8 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
         case StandardEnum.permission:
           if(widget.model.source != null){
             popupMenuItem.add(newPopupMenuItem("新增权限", "create"));
-            if((widget.model.source as IAuthority).hasAuthoritys([OrgAuth.relationAuthId.label])){
-              popupMenuItem.add(newPopupMenuItem("编辑权限", "edit"));
-              popupMenuItem.add(newPopupMenuItem("删除权限", "delete"));
-            }
+            popupMenuItem.add(newPopupMenuItem("编辑权限", "edit"));
+            popupMenuItem.add(newPopupMenuItem("删除权限", "delete"));
           }
           break;
         case StandardEnum.dict:

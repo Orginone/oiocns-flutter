@@ -120,10 +120,10 @@ class DownloadUtils {
 
   @pragma('vm:entry-point')
   static void _downloadCallback(
-      String id, DownloadTaskStatus status, int progress) {
+      String id, int status, int progress) {
     final SendPort send =
         IsolateNameServer.lookupPortByName('downloader_send_port')!;
-    send.send([id, status.value, progress]);
+    send.send([id, status, progress]);
   }
 
   void unbindBackgroundIsolate() {

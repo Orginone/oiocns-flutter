@@ -61,7 +61,7 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
           break;
       }
     } else if (model.standardEnum != null) {
-      if(model.children.isEmpty){
+      if(model.children.isEmpty && model.source!=null){
         if(model.standardEnum == StandardEnum.permission){
           Get.toNamed(Routers.permissionInfo,
               arguments: {"authority": model.source});

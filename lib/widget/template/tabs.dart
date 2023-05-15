@@ -59,13 +59,12 @@ abstract class TabsController extends GetxController
     with GetTickerProviderStateMixin {
   late TabController tabController;
   final List<XTab> tabs = [];
-  final RxnInt initialIndex = RxnInt();
 
   @override
   void onInit() {
     super.onInit();
     initTabs();
-    tabController = TabController(length: tabs.length, vsync: this);
+    tabController = TabController(length: tabs.length, vsync: this,initialIndex: initialIndex()??0);
     initListeners();
   }
 
@@ -80,7 +79,9 @@ abstract class TabsController extends GetxController
   initTabs();
 
   /// 初始化监听器
-  initListeners() {}
+  initListeners() {
+
+  }
 
   /// 注册 tab
   registerTab(XTab tab) {
@@ -95,7 +96,5 @@ abstract class TabsController extends GetxController
   }
 
   /// 设置当前 tab 索引
-  setIndex(int index) {
-    initialIndex.value = index;
-  }
+  int? initialIndex();
 }

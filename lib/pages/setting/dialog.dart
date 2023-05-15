@@ -180,23 +180,7 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
     }
     if(targetType == TargetType.group || targetType == TargetType.company){
       children = [
-        Row(
-          children: [
-            Text(item.name),
-            SizedBox(
-              width: 10.w,
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 2.h,horizontal: 4.w),
-              decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.2),
-                border: Border.all(color: Colors.blue,width: 0.5),
-                borderRadius: BorderRadius.circular(4.w),
-              ),
-              child: Text("集团编码:${item.code}",style: TextStyle(fontSize: 14.sp,color: Colors.blue),),
-            ),
-          ],
-        ),
+        Text(item.name),
         SizedBox(
           height: 10.h,
         ),

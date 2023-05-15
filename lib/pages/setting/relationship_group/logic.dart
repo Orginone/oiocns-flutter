@@ -227,29 +227,30 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
   void editAuth(SettingNavModel item) async{
     SettingController settingController = Get.find();
     List<ITarget> targets =  await settingController.getTeamTree(item.space);
-    showCreateAuthDialog(context,getAllTarget(targets), target: getAllTarget(targets).firstWhere((element) => element.metadata.name == item.source.target.belong.name),callBack: (name,code,target,isPublic,remark) async{
+    targets = getAllTarget(targets);
+
+    showCreateAuthDialog(context,targets, target: item.space,callBack: (name,code,target,isPublic,remark) async{
       var model = AuthorityModel();
       model.name = name;
       model.code = code;
       model.public = isPublic;
       model.remark = remark;
-      model.shareId = item.source.belongId;
-      IAuthority? result = await item.source.update(model);
-      if(result!=null){
+      bool success = await item.source.update(model);
+      if(success){
         ToastUtils.showMsg(msg: "修改成功");
-        item.source.target.name = name;
-        item.source.target.public = isPublic;
-        item.source.target.remark = remark;
-        item.source.target.code = code;
+        item.source.metadata.name = name;
+        item.source.metadata.public = isPublic;
+        item.source.metadata.remark = remark;
+        item.source.metadata.code = code;
         item.name = name;
         state.model.refresh();
       }
-    },isEdit: true,name:item.source.target.name,public: item.source.target.public,remark: item.source.target.remark,code: item.source.target.code);
+    },isEdit: true,name:item.source.metadata.name,public: item.source.metadata.public??false,remark: item.source.metadata.remark,code: item.source.metadata.code);
   }
 
   void removeAuth(SettingNavModel item) async{
-    ResultType result = await item.source.delete();
-    if(result.success){
+    bool success = await item.source.delete();
+    if(success){
       ToastUtils.showMsg(msg: "删除成功");
       state.model.value!.children.remove(item);
       state.model.refresh();

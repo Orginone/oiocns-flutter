@@ -217,7 +217,7 @@ class KernelApi {
   Future<ResultType<XTargetArray>> searchTargets(NameTypeModel params) async {
     return await request(
       ReqestType(
-        module: 'thing',
+        module: 'target',
         action: 'SearchTargets',
         params: params.toJson(),
       ),

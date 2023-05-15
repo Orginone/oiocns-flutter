@@ -43,7 +43,7 @@ class ImageWidget extends StatelessWidget {
 
   Widget svg() {
     return SvgPicture.asset(
-        path, fit: fit, width: width, height: height, color: color);
+        path, fit: fit, width: width, height: height, color: color,);
   }
 
   Widget asset(){

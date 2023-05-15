@@ -158,7 +158,7 @@ class Item extends StatelessWidget {
 
   Widget comment(){
     return Container(
-        margin: EdgeInsets.only(top: 20.h), child: Text("备注:",style: TextStyle(fontSize: 16.sp),));
+        margin: EdgeInsets.only(top: 20.h), child: Text("${todo.taskType == "事项"?"备注":"内容"}:",style: TextStyle(fontSize: 16.sp),));
   }
 
   Widget role() {

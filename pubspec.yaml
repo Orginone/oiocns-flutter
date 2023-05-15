@@ -45,8 +45,6 @@ dependencies:
   #多线程
   worker_manager: ^5.0.0
 
-  # 启动图标
-  flutter_app_name: ^0.1.1
   flutter_launcher_icons: ^0.10.0
   ota_update: ^4.0.1
 
@@ -143,7 +141,7 @@ dependencies:
   #打开文件
   open_file: ^3.2.1
   #svg图标
-  flutter_svg: ^1.0.3
+  flutter_svg: ^2.0.5
 
 dev_dependencies:
   flutter_test:
