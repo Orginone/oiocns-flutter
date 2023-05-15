@@ -137,7 +137,7 @@ dependencies:
   #uikit菜单弹框
   custom_pop_up_menu: ^1.2.4
   #下载工具
-  flutter_downloader: ^1.10.2
+  flutter_downloader: ^1.10.3
   #打开文件
   open_file: ^3.2.1
   #svg图标
