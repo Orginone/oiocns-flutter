@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:orginone/dart/core/chat/msgchat.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 import 'package:orginone/widget/widgets/text_tag.dart';

@@ -1,10 +1,10 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
-import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/innerTeam/station.dart';
 import 'package:orginone/dart/core/target/out_team/cohort.dart';

@@ -15,7 +15,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/chat/msgchat.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/permission_util.dart';

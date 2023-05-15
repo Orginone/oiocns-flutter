@@ -2,10 +2,8 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/util/encryption_util.dart';
-
-import '../../../main.dart';
-
 
 const hisMsgCollName = 'chat-message';
 var nullTime = DateTime(2022, 7, 1).millisecondsSinceEpoch;

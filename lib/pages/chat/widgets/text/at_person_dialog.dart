@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/chat/msgchat.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/widget/text_avatar.dart';
 
 class AtPersonDialog {

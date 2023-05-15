@@ -5,7 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/chat/msgchat.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/chat/widgets/avatars.dart';
 import 'package:orginone/routers.dart';
