@@ -42,9 +42,9 @@ class FormPage
                   content: state.form.map((e) {
                     return [
                       e.form?.name??"",
-                      e.code ,
-                      e.name ,
-                      e.remark,
+                      e.code??"" ,
+                      e.name??"" ,
+                      e.remark??"",
                     ];
                   }).toList(),
                  );

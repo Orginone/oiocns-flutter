@@ -10,52 +10,52 @@ import 'model.dart';
 
 class XAttribute {
   /// 雪花ID
-  String id;
+  String? id;
 
   /// 名称
-  String name;
+  String? name;
 
   /// 编号
-  String code;
+  String? code;
 
   /// 规则
-  String rule;
+  Rule? rule;
 
   /// 备注
-  String remark;
+  String? remark;
 
   /// 共享用户ID
-  String shareId;
+  String? shareId;
 
   /// 归属用户ID
-  String belongId;
+  String? belongId;
 
   /// 工作职权Id
-  String authId;
+  String? authId;
 
   /// 属性Id
-  String propId;
+  String? propId;
 
   /// 表单Id
-  String formId;
+  String? formId;
 
   /// 状态
-  int status;
+  int? status;
 
   /// 创建人员ID
-  String createUser;
+  String? createUser;
 
   /// 更新人员ID
-  String updateUser;
+  String? updateUser;
 
   /// 修改次数
-  String version;
+  String? version;
 
   /// 创建时间
-  String createTime;
+  String? createTime;
 
   /// 更新时间
-  String updateTime;
+  String? updateTime;
 
   /// 附加过属性的物
   List<XProperty>? linkPropertys;
@@ -75,68 +75,71 @@ class XAttribute {
   /// 创建度量标准的用户
   XTarget? belong;
 
+  Fields? fields;
+
   XAttribute({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.rule,
-    required this.remark,
-    required this.shareId,
-    required this.belongId,
-    required this.authId,
-    required this.propId,
-    required this.formId,
-    required this.status,
-    required this.createUser,
-    required this.updateUser,
-    required this.version,
-    required this.createTime,
-    required this.updateTime,
+    this.id,
+    this.name,
+    this.code,
+    this.rule,
+    this.remark,
+    this.shareId,
+    this.belongId,
+    this.authId,
+    this.propId,
+    this.formId,
+    this.status,
+    this.createUser,
+    this.updateUser,
+    this.version,
+    this.createTime,
+    this.updateTime,
     this.linkPropertys,
     this.links,
     this.property,
     this.authority,
     this.form,
     this.belong,
+    this.fields,
   });
 
-  factory XAttribute.fromJson(Map<String, dynamic> json) {
-    return XAttribute(
-        id: json['id']??"",
-        name: json['name']??"",
-        code: json['code']??"",
-        rule: json['rule']??"",
-        remark: json['remark']??"",
-        shareId: json['shareId']??"",
-        belongId: json['belongId']??"",
-        authId: json['authId']??"",
-        propId: json['propId']??"",
-        formId: json['formId']??"",
-        status: json['status']??"",
-        createUser: json['createUser']??"",
-        updateUser: json['updateUser']??"",
-        version: json['version']??"",
-        createTime: json['createTime']??"",
-        updateTime: json['updateTime']??"",
-        linkPropertys: (json['linkPropertys'] as List<dynamic>?)
-            ?.map((item) => XProperty.fromJson(item as Map<String, dynamic>))
-            .toList(),
-        links: (json['links'] as List<dynamic>?)
-            ?.map(
-                (item) => XAttrLinkProp.fromJson(item as Map<String, dynamic>))
-            .toList(),
-        property: json['property'] != null
-            ? XProperty.fromJson(json['property'] as Map<String, dynamic>)
-            : null,
-        authority: json['authority'] != null
-            ? XAuthority.fromJson(json['authority'] as Map<String, dynamic>)
-            : null,
-        form: json['form'] != null
-            ? XForm.fromJson(json['form'] as Map<String, dynamic>)
-            : null,
-        belong: json['belong'] != null
-            ? XTarget.fromJson(json['belong'] as Map<String, dynamic>)
-            : null);
+  XAttribute.fromJson(Map<String, dynamic> json) {
+    id = json['id'] ?? "";
+    name = json['name'] ?? "";
+    code = json['code'] ?? "";
+    rule =
+        json['rule'] != null ? Rule.fromJson(jsonDecode(json["rule"])) : null;
+    remark = json['remark'] ?? "";
+    shareId = json['shareId'] ?? "";
+    belongId = json['belongId'] ?? "";
+    authId = json['authId'] ?? "";
+    propId = json['propId'] ?? "";
+    formId = json['formId'] ?? "";
+    status = json['status'] ?? "";
+    createUser = json['createUser'] ?? "";
+    updateUser = json['updateUser'] ?? "";
+    version = json['version'] ?? "";
+    createTime = json['createTime'] ?? "";
+    updateTime = json['updateTime'] ?? "";
+    linkPropertys = (json['linkPropertys'] as List<dynamic>?)
+        ?.map((item) => XProperty.fromJson(item as Map<String, dynamic>))
+        .toList();
+    links = (json['links'] as List<dynamic>?)
+        ?.map((item) => XAttrLinkProp.fromJson(item as Map<String, dynamic>))
+        .toList();
+    property = json['property'] != null
+        ? XProperty.fromJson(json['property'] as Map<String, dynamic>)
+        : null;
+    authority = json['authority'] != null
+        ? XAuthority.fromJson(json['authority'] as Map<String, dynamic>)
+        : null;
+    form = json['form'] != null
+        ? XForm.fromJson(json['form'] as Map<String, dynamic>)
+        : null;
+    belong = json['belong'] != null
+        ? XTarget.fromJson(json['belong'] as Map<String, dynamic>)
+        : null;
+    fields = toFields();
   }
 
   Map<String, dynamic> toJson() {
@@ -176,6 +179,64 @@ class XAttribute {
       data['belong'] = belong!.toJson();
     }
     return data;
+  }
+
+  Fields toFields() {
+    String? type;
+    String? router;
+    switch (rule?.widget) {
+      case "text":
+      case "number":
+      case 'digit':
+      case "money":
+      case "string":
+        type = "input";
+        break;
+      case "dict":
+      case "select":
+      case "treeSelect":
+        type = "select";
+        break;
+      case "date":
+      case "datetime":
+      case "dateTimeRange":
+        type = "selectDate";
+        break;
+      case "person":
+        type = "selectPerson";
+        break;
+      case "dept":
+      case "department":
+        type = "selectDepartment";
+        break;
+      case "identity":
+      case "auth":
+      case "group":
+      case 'radio':
+      case 'checkbox':
+      case 'file':
+      case 'upload':
+        break;
+      default:
+        type = 'input';
+        break;
+    }
+
+    Map<dynamic, String> select = {};
+    rule?.dictItems?.forEach((element) {
+      select[element.value] = element.name;
+    });
+    return Fields(
+      title: name,
+      type: type,
+      required: rule?.required,
+      hidden: rule?.hidden,
+      readOnly: rule?.readOnly,
+      code: code,
+      hint: rule?.placeholder,
+      select: select,
+      router: router,
+    );
   }
 }
 
@@ -5681,70 +5742,9 @@ class XFormItem {
     updateTime = json['updateTime'];
     form = json['form'] != null ? XForm.fromJson(json['form']) : null;
     attr = json['attr'] != null ? XAttribute.fromJson(json['attr']) : null;
-    if(rule!=null){
-      fields = toFields();
-    }
   }
 
-  Fields toFields() {
-    String? type;
-    String? router;
-    if (rule?.widget != null) {
-      switch (rule?.widget) {
-        case "text":
-        case "number":
-        case 'digit':
-        case "money":
-        case "string":
-          type = "input";
-          break;
-        case "dict":
-        case "select":
-        case "treeSelect":
-          type = "select";
-          break;
-        case "date":
-        case "datetime":
-        case "dateTimeRange":
-          type = "selectDate";
-          break;
-        case "person":
-          type = "selectPerson";
-          break;
-        case "dept":
-        case "department":
-          type = "selectDepartment";
-          break;
-        case "identity":
-        case "auth":
-        case "group":
-        case 'radio':
-        case 'checkbox':
-        case 'file':
-        case 'upload':
-          break;
-        default:
-          type = 'input';
-          break;
-      }
-    }
 
-    Map<dynamic, String> select = {};
-    rule?.dictItems?.forEach((element) {
-      select[element.value] = element.name;
-    });
-    return Fields(
-      title: rule?.title,
-      type: type,
-      required: rule?.required,
-      hidden: rule?.hidden,
-      readOnly: rule?.readOnly,
-      code: code,
-      hint: rule?.placeholder,
-      select: select,
-      router: router,
-    );
-  }
 
   Map<String, dynamic> toJson() {
     return {

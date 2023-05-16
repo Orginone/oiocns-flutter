@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/pages/other/choice_thing/item.dart';
 import 'package:orginone/pages/work/work_start/create_work/state.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/load_state_widget.dart';
 import 'package:orginone/widget/mapping_components.dart';
-import 'package:orginone/pages/other/choice_thing/item.dart';
+
 import 'logic.dart';
 
 class CreateWorkPage
@@ -18,26 +19,39 @@ class CreateWorkPage
       body: Column(
         children: [
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  ...state.node.forms!.map((e) {
-                    return Column(
+            child: FutureBuilder(
+              future: controller.loadForm(),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return SingleChildScrollView(
+                    child: Column(
                       children: [
-                        CommonWidget.commonHeadInfoWidget(e.name ?? ""),
-                        // ...e.items?.map((e) {
-                        //   if(e.fields?.type == null){
-                        //     return Container();
-                        //   }
-                        //   Widget child = testMappingComponents[e.fields!.type ?? ""]!(e.fields!);
-                        //   return child;
-                        // }).toList()??[]
+                        ...state.node.value.forms!.map((e) {
+                          return Column(
+                            children: [
+                              CommonWidget.commonHeadInfoWidget(e.name ?? ""),
+                              ...e.attributes?.map((e) {
+                                    if (e.fields?.type == null) {
+                                      return Container();
+                                    }
+                                    Widget child = testMappingComponents[
+                                        e.fields!.type ?? ""]!(e.fields!);
+                                    return child;
+                                  }).toList() ??
+                                  []
+                            ],
+                          );
+                        }).toList(),
+                        entityInfo(),
                       ],
-                    );
-                  }).toList(),
-                  entityInfo(),
-                ],
-              ),
+                    ),
+                  );
+                }
+                return LoadStateWidget(
+                  isLoading: true,
+                  isSuccess: false,
+                );
+              },
             ),
           ),
           CommonWidget.commonSubmitWidget(
@@ -70,11 +84,16 @@ class CreateWorkPage
             return ListView.builder(
               itemBuilder: (context, index) {
                 var item = state.selectedThings[index];
-                return Item(item: item,showSelectButton: false,showDelete: true,delete: (){
-                  controller.delete(index);
-                },);
+                return Item(
+                  item: item,
+                  showSelectButton: false,
+                  showDelete: true,
+                  delete: () {
+                    controller.delete(index);
+                  },
+                );
               },
-              itemCount:state.selectedThings.length,
+              itemCount: state.selectedThings.length,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
             );
