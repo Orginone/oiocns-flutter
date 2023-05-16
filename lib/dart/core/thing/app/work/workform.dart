@@ -39,7 +39,7 @@ abstract class IWorkForm extends ISpeciesItem {
 
   @override
   Future<List<IForm>> loadForms({bool reload = false}) async{
-    if ( forms.isEmpty || reload) {
+    if (forms.isEmpty || reload) {
       final res = await kernel.querySpeciesForms(GetSpeciesResourceModel( id: current.metadata.id,
         speciesId: metadata.id,
         belongId: current.space.metadata.id,

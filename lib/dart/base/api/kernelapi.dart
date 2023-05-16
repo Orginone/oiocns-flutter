@@ -390,6 +390,22 @@ class KernelApi {
   }
 
   /*
+   * 查询属性关联的特性
+   * @param {model.IdModel} params 请求参数
+   * @returns {model.ResultType<schema.XAttributeArray>} 请求结果
+   */
+  Future<ResultType<XAttributeArray>> queryPropAttributes(IdReq params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'QueryPropAttributes',
+        params: params.toJson(),
+      ),
+      XAttributeArray.fromJson,
+    );
+  }
+
+  /*
    * 更新元属性
    * @param {model.PropertyModel} params 请求参数
    * @returns {model.ResultType<schema.XProperty>} 请求结果

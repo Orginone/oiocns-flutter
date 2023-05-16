@@ -9,6 +9,7 @@ import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
+import 'package:orginone/dart/core/thing/store/propclass.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/loading_dialog.dart';
@@ -21,6 +22,13 @@ class FormPage
     extends BaseGetPageView<
         FormController,
         FormState> {
+
+  final List<XProperty> propertys;
+
+  final IPropClass propClass;
+
+  FormPage(this.propertys, this.propClass);
+
   @override
   Widget buildView() {
     return Container(
@@ -30,24 +38,16 @@ class FormPage
           children: [
             Obx(() {
               return CommonWidget.commonDocumentWidget(
-                  title: ["编号", "名称", "表单类型", "共享用户", "归属用户"],
+                  title: ["表单名称", "表单编号", "特性名称", "特性定义"],
                   content: state.form.map((e) {
                     return [
-                      e.code ?? "",
-                      e.name ?? "",
-                      e.species ?? "",
-                      e.share ?? "",
-                      e.belong ?? ""
+                      e.form?.name??"",
+                      e.code ,
+                      e.name ,
+                      e.remark,
                     ];
                   }).toList(),
-                  showOperation: true,
-                  popupMenus: [
-                    const PopupMenuItem(child: Text("编辑"), value: "edit",),
-                    const PopupMenuItem(child: Text("删除"), value: "delete",),
-                  ],
-                  onOperation: (operation, code) {
-                    controller.onFormOperation(operation, code);
-                  });
+                 );
             }),
           ],
         ),
@@ -57,7 +57,7 @@ class FormPage
 
   @override
   FormController getController() {
-    return FormController();
+    return FormController(this.propertys,this.propClass);
   }
 
   @override
@@ -72,9 +72,13 @@ class FormController
     extends BaseController<FormState> {
   final FormState state = FormState();
 
-  ClassificationInfoController get info => Get.find();
 
-  dynamic get species =>info.state.species;
+  final List<XProperty> propertys;
+
+  final IPropClass propClass;
+
+  FormController(this.propertys, this.propClass);
+
   @override
   void onReady() async{
     // TODO: implement onReady
@@ -85,49 +89,52 @@ class FormController
   }
 
   Future<void> loadForm({bool reload = false}) async {
-    state.form.value = await species.loadForms(reload: reload);
+     state.form.clear();
+     for (var data in propertys) {
+       var value = await propClass.loadPropAttributes(data);
+       state.form.addAll(value);
+     }
   }
 
 
-  Future<void> createForm({XForm? form}) async {
-    showCreateFormDialog(context,
-        code: form?.code ?? "",
-        name: form?.name ?? "",
-        public: form?.public ?? true,
-        isEdit: form != null,
-        onCreate: (name, code, public) async {
-          var model = FormModel();
-          model.speciesId = species.metadata.id;
-          model.name = name;
-          model.code = code;
-          if (form != null) {
-            await species.updateForm(model);
-          } else {
-            await species.createForm(model);
-          }
-          loadForm(reload: true);
-        });
-  }
-
-
-  void onFormOperation(operation, String code) async {
-    try {
-      var op = state.form.firstWhere((element) => element.code == code);
-      if (operation == "delete") {
-        var success = await await species.deleteForm(op);
-        if (success) {
-          state.form.remove(op);
-          state.form.refresh();
-          ToastUtils.showMsg(msg: "删除成功");
-        }
-      } else if (operation == 'edit') {
-        await createForm(form: op);
-      }
-    } catch (e) {}
-  }
+  // Future<void> createForm({XForm? form}) async {
+  //   showCreateFormDialog(context,
+  //       code: form?.code ?? "",
+  //       name: form?.name ?? "",
+  //       isEdit: form != null,
+  //       onCreate: (name, code, public) async {
+  //         var model = FormModel();
+  //         model.speciesId = species.metadata.id;
+  //         model.name = name;
+  //         model.code = code;
+  //         if (form != null) {
+  //           await species.updateForm(model);
+  //         } else {
+  //           await species.createForm(model);
+  //         }
+  //         loadForm(reload: true);
+  //       });
+  // }
+  //
+  //
+  // void onFormOperation(operation, String code) async {
+  //   try {
+  //     var op = state.form.firstWhere((element) => element.code == code);
+  //     if (operation == "delete") {
+  //       var success = await await species.deleteForm(op);
+  //       if (success) {
+  //         state.form.remove(op);
+  //         state.form.refresh();
+  //         ToastUtils.showMsg(msg: "删除成功");
+  //       }
+  //     } else if (operation == 'edit') {
+  //       await createForm(form: op);
+  //     }
+  //   } catch (e) {}
+  // }
 }
 
 
 class FormState extends BaseGetState {
-  var form = <XForm>[].obs;
+  var form = <XAttribute>[].obs;
 }

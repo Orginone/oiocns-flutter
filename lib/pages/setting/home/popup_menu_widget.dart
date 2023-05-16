@@ -102,6 +102,14 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
             popupMenuItem.add(newPopupMenuItem("新增类别", "create"));
           }
           break;
+        case StandardEnum.propPackage:
+          if (widget.model.name ==  StandardEnum.propPackage.label) {
+            popupMenuItem.add(newPopupMenuItem("新增属性", "create"));
+          }else{
+            popupMenuItem.add(newPopupMenuItem("编辑属性", "edit"));
+            popupMenuItem.add(newPopupMenuItem("删除属性", "delete"));
+          }
+          break;
       }
     }
   }

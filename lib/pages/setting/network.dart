@@ -1,9 +1,14 @@
+import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/thing/app/work/workform.dart';
+import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
+import 'package:orginone/dart/core/thing/store/propclass.dart';
 
 import 'config.dart';
 import 'home/setting/state.dart';
@@ -156,8 +161,9 @@ class SettingNetWork {
 
   static Future<void> initSpecies(SettingNavModel model) async {
     List<ISpeciesItem> species = await model.space.loadSpecies();
-    void loopSpeciesTree(List<ISpeciesItem> tree, List<SettingNavModel> navs) {
+    Future<void> loopSpeciesTree(List<ISpeciesItem> tree, List<SettingNavModel> navs) async{
       for (var element in tree) {
+
         var child = SettingNavModel(
             space: model.space,
             spaceEnum: model.spaceEnum,
@@ -165,16 +171,42 @@ class SettingNetWork {
             image: element.share.avatar?.shareLink,
             standardEnum: StandardEnum.classCriteria,
             name: element.metadata.name);
-        child.children = [];
+
+        List<SettingNavModel> children = [];
+        if(element.metadata.typeName == SpeciesType.workForm.label){
+          List<IForm> forms = await (element as WorkForm).loadForms();
+
+          if (forms.isNotEmpty) {
+            children = forms.map((e) => SettingNavModel(space: model.space,
+                standardEnum: model.standardEnum,
+                source: e,
+                spaceEnum: model.spaceEnum,name: e.metadata.name??"")).toList();
+          }
+        }else if(element.metadata.typeName == SpeciesType.store.label){
+
+
+          List<XProperty> property = await (element as IPropClass).loadPropertys();
+
+          if(property.isNotEmpty){
+            children.add(SettingNavModel(space: model.space,
+                standardEnum: StandardEnum.propPackage,
+                source: element,
+                spaceEnum: model.spaceEnum,name: "类别属性",children: property.map((e) => SettingNavModel(space: model.space,
+                    standardEnum: StandardEnum.propPackage,
+                    source: element,
+                    spaceEnum: model.spaceEnum,name: e.name??"",id: e.id??"")).toList()));
+          }
+        }
+        child.children = children;
         if(element.children.isNotEmpty){
-          loopSpeciesTree(element.children,child.children);
+          await loopSpeciesTree(element.children,child.children);
         }
         navs.add(child);
       }
     }
     if(species.isNotEmpty) {
       model.children = [];
-      loopSpeciesTree(species, model.children);
+      await loopSpeciesTree(species, model.children);
     }
   }
 }

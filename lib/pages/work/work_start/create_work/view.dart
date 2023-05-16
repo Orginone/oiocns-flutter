@@ -25,13 +25,13 @@ class CreateWorkPage
                     return Column(
                       children: [
                         CommonWidget.commonHeadInfoWidget(e.name ?? ""),
-                        ...e.items!.map((e) {
-                          if(e.fields?.type == null){
-                            return Container();
-                          }
-                          Widget child = testMappingComponents[e.fields!.type ?? ""]!(e.fields!);
-                          return child;
-                        }).toList()
+                        // ...e.items?.map((e) {
+                        //   if(e.fields?.type == null){
+                        //     return Container();
+                        //   }
+                        //   Widget child = testMappingComponents[e.fields!.type ?? ""]!(e.fields!);
+                        //   return child;
+                        // }).toList()??[]
                       ],
                     );
                   }).toList(),

@@ -17,6 +17,8 @@ class ClassificationInfoState extends BaseGetState{
 
   var currentIndex = 0.obs;
 
+  List<XProperty> propertys = [];
+
   ClassificationInfoState() {
     data = Get.arguments['data'];
     species = data.source;
@@ -30,7 +32,7 @@ class ClassificationInfoState extends BaseGetState{
           tabTitle.add(ClassificationEnum.property);
           break;
         case SpeciesType.commodity:
-          tabTitle.addAll([ClassificationEnum.attrs, ClassificationEnum.form]);
+          tabTitle.addAll([ClassificationEnum.attrs]);
           break;
         case SpeciesType.market:
         case SpeciesType.workItem:

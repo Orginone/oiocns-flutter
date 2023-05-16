@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
@@ -30,7 +31,6 @@ class Item extends StatelessWidget {
         if(todo.taskType == "事项"){
           Get.toNamed(Routers.processDetails,arguments: {"todo":todo});
         }
-
       },
       child: Container(
         margin: EdgeInsets.only(top: 10.h),
@@ -99,7 +99,7 @@ class Item extends StatelessWidget {
             SizedBox(height: 10.h,),
             Text(
               DateTime.tryParse(todo.createTime ?? "")
-                      ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
+                  ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
                   "",
               style: TextStyle(fontSize: 16.sp),
             ),
@@ -156,9 +156,22 @@ class Item extends StatelessWidget {
     return button;
   }
 
-  Widget comment(){
+  Widget comment() {
+    String content = todo.content ?? "";
+    if (todo.taskType == '加用户') {
+      List<Map<String, dynamic>> json = jsonDecode(todo.content ?? "");
+      List<XTarget> targets = json.map((e) => XTarget.fromJson(e)).toList();
+      if (targets.length == 2) {
+        content =
+            "${targets[0].name}[${targets[0].typeName}]申请加入${targets[1].name}[${targets[1].typeName}]";
+      }
+    }
     return Container(
-        margin: EdgeInsets.only(top: 20.h), child: Text("${todo.taskType == "事项"?"备注":"内容"}:",style: TextStyle(fontSize: 16.sp),));
+        margin: EdgeInsets.only(top: 20.h),
+        child: Text(
+          "内容:$content",
+          style: TextStyle(fontSize: 16.sp),
+        ));
   }
 
   Widget role() {

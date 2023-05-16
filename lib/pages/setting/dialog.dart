@@ -571,16 +571,16 @@ Future<void> showCreateOrganizationDialog(
 Future<void> showCreateAttributeDialog(BuildContext context,
     {CreateAttributeCallBack? onCreate,List<IDict> dictList =const [],
     bool isEdit = false,
-    String name = '',
-    String code = '',
-    String remark = '',
-    String valueType = '',String unit = '',String? dictId}) async {
+    String? name,
+    String? code,
+    String? remark,
+    String? valueType,String? unit,String? dictId}) async {
   TextEditingController nameCtr = TextEditingController(text: name);
   TextEditingController codeCtr = TextEditingController(text: code);
   TextEditingController unitCtr = TextEditingController(text: unit);
   TextEditingController remarkCtr = TextEditingController(text: remark);
 
-  String type = valueType;
+  String? type = valueType;
   IDict? dictValue = dictId!=null?dictList.firstWhere((element) => element.metadata.id == dictId):null;
 
   return showDialog(
@@ -603,7 +603,7 @@ Future<void> showCreateAttributeDialog(BuildContext context,
                     CommonWidget.commonTextTile("属性代码", '',
                         controller: codeCtr,
                         showLine: true, enabled: false,),
-                    CommonWidget.commonChoiceTile("属性类型", type,
+                    CommonWidget.commonChoiceTile("属性类型", type??"",
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
                           titles: ValueType, callback: (str) {
@@ -636,7 +636,7 @@ Future<void> showCreateAttributeDialog(BuildContext context,
                     }, onTap2: () {
                       if (nameCtr.text.isEmpty) {
                         ToastUtils.showMsg(msg: "请输入名称");
-                      } else if(type.isEmpty){
+                      } else if(type == null){
                         ToastUtils.showMsg(msg: "请选择属性类型");
                       } else if(remarkCtr.text.isEmpty){
                         ToastUtils.showMsg(msg: "请输入属性定义");
@@ -644,7 +644,7 @@ Future<void> showCreateAttributeDialog(BuildContext context,
                         ToastUtils.showMsg(msg: "请选择枚举字典");
                       } else{
                         if (onCreate != null) {
-                          onCreate(nameCtr.text, codeCtr.text, type,remarkCtr.text,unitCtr.text,dictValue);
+                          onCreate(nameCtr.text, codeCtr.text, type!,remarkCtr.text,unitCtr.text,dictValue);
                         }
                         Navigator.pop(context);
                       }

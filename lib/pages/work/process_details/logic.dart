@@ -68,13 +68,13 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
       }
     }
     for (var form in state.useForm) {
-      for (var item in form.items??[]) {
-        data['formData'].forEach((key, value) {
-          if(item.attrId == key){
-            item.value = value;
-          }
-        });
-      }
+      // for (var item in form.items??[]) {
+      //   data['formData'].forEach((key, value) {
+      //     if(item.attrId == key){
+      //       item.value = value;
+      //     }
+      //   });
+      // }
     }
     state.useForm.refresh();
   }

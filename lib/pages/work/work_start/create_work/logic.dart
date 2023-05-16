@@ -26,8 +26,8 @@ class CreateWorkController extends BaseController<CreateWorkState> {
   }
 
   Future<void> submit() async{
-    for (var element in state.node.forms!) {
-      for (var element in element.items!) {
+    for (var element in state.node.forms??[]) {
+      for (var element in element.items??[]) {
         if (element.fields?.required ?? false) {
           if (element.fields!.defaultData.value == null) {
             return ToastUtils.showMsg(msg: element.fields!.hint!);
@@ -37,8 +37,8 @@ class CreateWorkController extends BaseController<CreateWorkState> {
     }
     Map<String,dynamic> data = {};
 
-    for (var element in state.node.forms!) {
-      for (var element in element.items!) {
+    for (var element in state.node.forms??[]) {
+      for (var element in element.items??[]) {
         if (element.fields?.defaultData.value != null) {
           data[element.attrId!] = element.fields?.defaultData.value;
         }

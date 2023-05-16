@@ -24,38 +24,23 @@ class RelationGroupPage
           },onTap: (){
             controller.onTap(item);
           },onSelected: (value){
-            switch(value){
-              case "create":
-                 if(item.standardEnum == StandardEnum.permission){
-                   controller.createAuth(item);
-                 }else if(item.standardEnum == StandardEnum.classCriteria){
-                   controller.createClassCriteria(item);
-                 }else{
-                   controller.createGroup(item.source);
-                 }
-                break;
-              case "edit":
-                if(item.standardEnum == StandardEnum.dict){
-                  controller.editDict(item);
-                } else if(item.standardEnum == StandardEnum.permission){
-                  controller.createAuth(item,isEdit: true);
-                } else if(item.standardEnum == StandardEnum.classCriteria){
-                  controller.createClassCriteria(item,isEdit: true);
-                } else{
-                  controller.createGroup(item.source,isEdit: true);
-                }
-                break;
-              case "delete":
-                if(item.standardEnum == StandardEnum.dict){
-                  controller.removeDict(item);
-                }else if(item.standardEnum == StandardEnum.permission){
-                  controller.removeAuth(item);
-                } else if(item.standardEnum == StandardEnum.classCriteria){
-                  controller.removeClassCriteria(item);
-                } else {
-                  controller.removeGroup(item.source);
-                }
-                break;
+            if(item.standardEnum!=null){
+              switch(item.standardEnum!){
+                case StandardEnum.permission:
+                  controller.operationPermission(item,value);
+                  break;
+                case StandardEnum.dict:
+                  controller.operationDict(item,value);
+                  break;
+                case StandardEnum.classCriteria:
+                  controller.operationClassCriteria(item,value);
+                  break;
+                case StandardEnum.propPackage:
+                  controller.operationPropPackage(item,value);
+                  break;
+              }
+            }else{
+              controller.operationGroup(item,value);
             }
 
           },);

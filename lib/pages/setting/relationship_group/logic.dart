@@ -1,19 +1,22 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
-import 'package:orginone/dart/core/thing/app/work/workform.dart';
-import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
+import 'package:orginone/dart/core/thing/store/propclass.dart';
+import 'package:orginone/pages/setting/classification_info/form.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/pages/setting/home/setting/state.dart';
 import 'package:orginone/pages/setting/network.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 
 import 'state.dart';
 
@@ -82,26 +85,6 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
             "data": model,
           },
           preventDuplicates: false);
-    } else if (model.standardEnum == StandardEnum.classCriteria) {
-      if ((model.source is ISpeciesItem) && (model.source?.metadata?.typeName == SpeciesType.workForm.label)) {
-        List<IForm> forms = await (model.source as WorkForm).loadForms();
-        if (forms.isNotEmpty) {
-          model.children = [];
-          for (var element in forms) {
-            model.children.add(SettingNavModel(space: model.space,
-                standardEnum: model.standardEnum,
-                source: element,
-                spaceEnum: model.spaceEnum,name: element.metadata.name??""));
-          }
-          Get.toNamed(Routers.relationGroup,
-              arguments: {
-                "data": model,
-              },
-              preventDuplicates: false);
-        }
-      } else {
-        onTap(model);
-      }
     } else {
       onTap(model);
     }
@@ -137,6 +120,17 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
           break;
         case StandardEnum.dict:
           Get.toNamed(Routers.dictInfo, arguments: {"data": model});
+          break;
+        case StandardEnum.propPackage:
+          var property = (model.source.propertys as List<XProperty>).firstWhere((element) => element.id == model.id);
+          Navigator.of(context).push(MaterialPageRoute(builder: (context){
+            return Material(
+              child: GyScaffold(
+                titleName: "表单列表",
+                body: FormPage([property],model.source),
+              ),
+            );
+          }));
           break;
       }
     }
@@ -255,9 +249,14 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
 
   void createClassCriteria(SettingNavModel e, {bool isEdit = false}) async {
     List<ISpeciesItem> species = [];
-    for (var element in e.children) {
-      if (element.source.speciesTypes.isNotEmpty) {
-        species.add(element.source);
+
+    if (e.name == SpeciesType.store.label) {
+      species.add(e.source);
+    } else {
+      for (var element in e.children) {
+        if (element.source.speciesTypes.isNotEmpty) {
+          species.add(element.source);
+        }
       }
     }
     IAuthority? authority = await e.space.loadSuperAuth();
@@ -291,17 +290,17 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
               e.name = name;
               state.model.refresh();
             }
-          } else {
-            var item = await e.source.create(model);
-          }
-        },
+      } else {
+        var item = await e.source.create(model);
+      }
+    },
         isEdit: isEdit,
         name: isEdit ? e.source.metadata.name : null,
         code: isEdit ? e.source.metadata.code : null,
         authId: isEdit ? e.source.metadata.authId : null,
         targetId: isEdit ? e.source.metadata.shareId : null,
         specie: isEdit ? e.source : null,
-        public: isEdit ? e.source.metadata.public : null,
+        public: isEdit ? e.source.metadata.public ?? false : false,
         remark: isEdit ? e.source.metadata.remark : null);
   }
 
@@ -321,6 +320,142 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
       state.model.value!.children.remove(item);
       state.model.refresh();
     }
+  }
+
+  void operationPermission(SettingNavModel item, value) {
+    switch (value) {
+      case "create":
+        createAuth(item);
+        break;
+      case "edit":
+        createAuth(item, isEdit: true);
+        break;
+      case "delete":
+        removeAuth(item);
+        break;
+    }
+  }
+
+  void operationDict(SettingNavModel item, value) {
+    switch (value) {
+      case "edit":
+        editDict(item);
+        break;
+      case "delete":
+        removeDict(item);
+        break;
+    }
+  }
+
+  void operationClassCriteria(SettingNavModel item, value) {
+    switch (value) {
+      case "create":
+        createClassCriteria(item);
+        break;
+      case "edit":
+        createClassCriteria(item, isEdit: true);
+        break;
+      case "delete":
+        removeClassCriteria(item);
+        break;
+    }
+  }
+
+  void operationGroup(SettingNavModel item, value) {
+    switch (value) {
+      case "create":
+        createGroup(item.source);
+        break;
+      case "edit":
+        createGroup(item, isEdit: true);
+        break;
+      case "delete":
+        removeGroup(item.source);
+        break;
+    }
+  }
+
+  void operationPropPackage(SettingNavModel item, value) {
+    switch (value) {
+      case "create":
+        createProperty(item);
+        break;
+      case "edit":
+        createProperty(item, isEdit: true);
+        break;
+      case "delete":
+        deleteProperty(item);
+        break;
+    }
+  }
+
+
+  void deleteProperty(SettingNavModel item) async{
+
+    var property = (item.source.propertys as List<XProperty>).firstWhere((element) => element.id == item.id);
+
+    bool success =
+        await item.source.deleteProperty(property);
+    if (success) {
+      state.model.value!.children.remove(item);
+      state.model.refresh();
+      ToastUtils.showMsg(msg: "删除成功");
+    }
+  }
+
+
+  void createProperty(SettingNavModel item, {bool isEdit = false}) async {
+
+    var property;
+    if(isEdit){
+      property = (item.source.propertys as List<XProperty>).firstWhere((element) => element.id == item.id);
+    }
+
+    showCreateAttributeDialog(context,
+        onCreate: (name, code, type, remark, unit, dict) async {
+      var model = PropertyModel(
+        name: name,
+        code: code,
+        valueType: type,
+        remark: remark,
+        unit: unit,
+        dictId: dict?.metadata.id,
+      );
+      if (isEdit) {
+        model.id = property.id;
+        var success = await item.source.updateProperty(model);
+        if (success) {
+          ToastUtils.showMsg(msg: "修改成功");
+          property.name = name;
+          property.code = code;
+          property.remark = remark;
+          property.valueType = type;
+          property.unit = unit;
+          item.name = name;
+          state.model.refresh();
+        }
+      } else {
+        XProperty? property = await item.source.createProperty(model);
+        if (property != null) {
+          ToastUtils.showMsg(msg: "创建成功");
+          item.children.add(SettingNavModel(
+              space: item.space,
+              spaceEnum: item.spaceEnum,
+              source: item.source,
+              name: property.name ?? "",
+              standardEnum: item.standardEnum,id: property.id??""));
+          state.model.refresh();
+        }
+      }
+    },
+        name: isEdit ? property.name ?? "" : null,
+        code: isEdit ? property.code ?? "" : null,
+        remark: isEdit ? property.remark ?? "" : null,
+        valueType: isEdit ? property.valueType ?? "" : null,
+        unit: isEdit ? property.unit ?? "" : null,
+        dictId: isEdit ? property.dict?.id : null,
+        isEdit: isEdit,
+        dictList: item.space.dicts ?? []);
   }
 }
 
