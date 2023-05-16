@@ -57,9 +57,12 @@ enum SpeciesType {
 
   const SpeciesType(this.label);
 
-  static SpeciesType getType(String name) {
-    return SpeciesType.values.firstWhere((element) => element.label == name,
-        orElse: () => SpeciesType.workItem);
+  static SpeciesType? getType(String name) {
+    try{
+      return SpeciesType.values.firstWhere((element) => element.label == name);
+    }catch(e){
+      return null;
+    }
   }
 }
 

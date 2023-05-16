@@ -37,7 +37,11 @@ class PropClass extends SpeciesItem implements IPropClass{
     for (var item in metadata.nodes ?? []) {
       children.add(PropClass(item, current, this));
     }
-    speciesTypes = [SpeciesType.getType(metadata.typeName)];
+    speciesTypes = [];
+    var speciesType = SpeciesType.getType(metadata.typeName);
+    if(speciesType!=null){
+      speciesTypes.add(speciesType);
+    }
   }
 
   @override
