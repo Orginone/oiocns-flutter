@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';

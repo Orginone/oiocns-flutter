@@ -1,8 +1,9 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/dart/core/chat/msgchat.dart';
+import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/main.dart';
 
 import 'team.dart';

@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
