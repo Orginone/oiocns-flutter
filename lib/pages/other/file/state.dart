@@ -1,21 +1,22 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/get_navigation.dart';
-import 'package:orginone/dart/core/getx/base_get_state.dart';
+import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
+import 'package:orginone/dart/core/thing/filesys/filesysItem.dart';
 import 'package:orginone/dart/core/thing/filesys/filesystem.dart';
 
-class FileState extends BaseGetState{
-   var file = Rxn<IFileSystemItem>();
+class FileState extends BaseBreadcrumbNavState {
+  TextEditingController searchController = TextEditingController();
 
-   var selectedDir = <IFileSystemItem>[].obs;
+  FileState(){
+    model.value = Get.arguments['data'];
+    if (model.value == null) {
+      IFileSystemItem file = Get.arguments?['file'];
+      model.value = BaseBreadcrumbNavModel(
+        source: file,
+        name: file.metadata.name??"",
+      );
+    }
 
-   var title = ''.obs;
-
-   TextEditingController searchController = TextEditingController();
-
-   FileState(){
-     file.value = Get.arguments?['file'];
-   }
+    title = model.value!.name;
+  }
 }

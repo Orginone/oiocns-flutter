@@ -39,7 +39,6 @@ class StoreTreePage
             return BaseBreadcrumbNavItem<StoreTreeNav>(
               item: e,
               onTap: () {
-
               },
               onNext: () {
                 controller.onNext(e);
@@ -57,7 +56,7 @@ class StoreTreePage
       return BaseBreadcrumbNavItem<StoreTreeNav>(
         item: e,
         onTap: () {
-
+          controller.jumpDetails(e);
         },
         onNext: () {
           controller.onNext(e);
@@ -71,4 +70,9 @@ class StoreTreePage
     return StoreTreeController();
   }
 
+  @override
+  String tag() {
+    // TODO: implement tag
+    return hashCode.toString();
+  }
 }

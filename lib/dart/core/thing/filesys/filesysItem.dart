@@ -46,6 +46,7 @@ abstract class IFileSystem extends ISpeciesItem {
 class FileSystem extends SpeciesItem implements IFileSystem{
   FileSystem(super.metadata, super.current){
     taskList = [];
+    loadTeamHome();
   }
 
   Map<String, TaskModel> _taskIdSet = {};

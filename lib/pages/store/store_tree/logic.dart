@@ -5,6 +5,7 @@ import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/app/work/workform.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/base/work.dart';
+import 'package:orginone/dart/core/thing/filesys/filesysItem.dart';
 import 'package:orginone/dart/core/thing/market/commodity.dart';
 import 'package:orginone/dart/core/thing/store/propclass.dart';
 import 'package:orginone/routers.dart';
@@ -116,11 +117,19 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
   }
 
   void jumpDetails(StoreTreeNav nav) {
+    if(nav.source.metadata.typeName == SpeciesType.fileSystem.label){
+      var home = (nav.source as FileSystem).home;
+      Get.toNamed(Routers.file,arguments: {"file":home});
+    }
 
   }
 
   void onNext(StoreTreeNav nav) {
-    Get.toNamed(Routers.storeTree,
-        preventDuplicates: false, arguments: {'data': nav});
+    if(nav.source is FileSystem){
+      jumpDetails(nav);
+    }else{
+      Get.toNamed(Routers.storeTree,
+          preventDuplicates: false, arguments: {'data': nav});
+    }
   }
 }

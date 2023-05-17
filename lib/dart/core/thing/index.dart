@@ -4,6 +4,7 @@ import 'package:orginone/dart/core/thing/app/application.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import '../../base/schema.dart';
 import 'dict/dictclass.dart';
+import 'filesys/filesysItem.dart';
 import 'market/market.dart';
 import 'store/propclass.dart';
 
@@ -17,7 +18,7 @@ ISpeciesItem createSpeciesForType(XSpecies metadata,ITarget current){
     case SpeciesType.application:
       return Application(metadata,current);
     case SpeciesType.fileSystem:
-      // return FileSystem(metadata,current);
+      return FileSystem(metadata,current);
     case SpeciesType.market:
       return Market(metadata, current);
     default:
