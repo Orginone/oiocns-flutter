@@ -12,7 +12,6 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
   SettingController get settingCtrl => Get.find<SettingController>();
 
   StoreTreeState() {
-    title = "仓库";
     model.value = Get.arguments?['data'];
 
     if (model.value == null) {

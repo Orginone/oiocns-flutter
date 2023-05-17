@@ -7,7 +7,7 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
-import 'package:orginone/pages/setting/home/setting/state.dart';
+import 'package:orginone/pages/setting/home/state.dart';
 
 class ClassificationInfoState extends BaseGetState{
   late dynamic species;

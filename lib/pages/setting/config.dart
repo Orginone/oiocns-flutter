@@ -5,6 +5,14 @@ import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 
+
+enum SettingType {
+  personal("个人"),
+  organization("组织");
+  final String label;
+  const SettingType(this.label);
+}
+
 enum SpaceEnum {
   innerAgency("内部机构"),
   outAgency("组织群组"),

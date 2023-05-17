@@ -34,7 +34,7 @@ class AttrsPage extends BaseGetPageView<
                       e.name ?? "",
                       controller.species.metadata.name.toString(),
                       e.property?.name ?? "",
-                      controller.info.state.data.space.metadata.name,
+                      controller.info.state.data.space!.metadata.name,
                       e.remark ?? ""
                     ];
                   }).toList(),
