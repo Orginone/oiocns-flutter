@@ -1,11 +1,13 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
+import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/app/work/workform.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/base/work.dart';
 import 'package:orginone/dart/core/thing/filesys/filesysItem.dart';
+import 'package:orginone/dart/core/thing/filesys/filesystem.dart';
 import 'package:orginone/dart/core/thing/market/commodity.dart';
 import 'package:orginone/dart/core/thing/store/propclass.dart';
 import 'package:orginone/routers.dart';
@@ -65,6 +67,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
               source: specie,
               speciesType: SpeciesType.fileSystem,
               name: SpeciesType.fileSystem.label,
+              personalEnum: PersonalEnum.file,
               space: space);
           navs.add(nav);
           break;
@@ -119,14 +122,23 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
   void jumpDetails(StoreTreeNav nav) {
     if(nav.source.metadata.typeName == SpeciesType.fileSystem.label){
       var home = (nav.source as FileSystem).home;
-      Get.toNamed(Routers.file,arguments: {"file":home});
+      jumpFile(home!);
     }
 
   }
 
+  void jumpFile(IFileSystemItem file){
+    Get.toNamed(Routers.file,arguments: {"file":file});
+  }
+
   void onNext(StoreTreeNav nav) {
-    if(nav.source is FileSystem){
-      jumpDetails(nav);
+    if(nav.personalEnum == PersonalEnum.file){
+      IFileSystemItem file;
+      if(nav.source is FileSystem){
+        file = (nav.source as FileSystem).home!;
+      }
+      file = (nav.space as IPerson).fileSystem.home!;
+      jumpFile(file);
     }else{
       Get.toNamed(Routers.storeTree,
           preventDuplicates: false, arguments: {'data': nav});

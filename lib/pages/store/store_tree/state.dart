@@ -3,10 +3,6 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
-import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/app/work/workform.dart';
-import 'package:orginone/dart/core/thing/base/species.dart';
-import 'package:orginone/widget/bread_crumb.dart';
 
 class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
   SettingController get settingCtrl => Get.find<SettingController>();
@@ -44,7 +40,8 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
                 StoreTreeNav(
                     name: PersonalEnum.file.label,
                     personalEnum: PersonalEnum.file,
-                    children: []),
+                    children: [],
+                    space: settingCtrl.user),
                 StoreTreeNav(
                     name: PersonalEnum.data.label,
                     personalEnum: PersonalEnum.data,

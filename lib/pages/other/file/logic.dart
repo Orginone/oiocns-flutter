@@ -35,7 +35,9 @@ class FileController extends BaseBreadcrumbNavController<FileState> {
   }
 
   void onNextLv(BaseBreadcrumbNavModel model) {
-    Get.toNamed(Routers.file,arguments: {'data':model},preventDuplicates: false);
+    if(model.source.metadata.isDirectory){
+      Get.toNamed(Routers.file,arguments: {'data':model},preventDuplicates: false);
+    }
   }
 
   void onSelected(BaseBreadcrumbNavModel item, String selected) async{
