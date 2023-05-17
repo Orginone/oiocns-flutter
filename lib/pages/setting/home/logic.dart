@@ -28,7 +28,7 @@ class SettingCenterController extends BaseBreadcrumbNavController<SettingCenterS
   }
 
   void jumpLogin() async{
-    await LocalStore.getStore().remove('account');
+    LocalStore.clear();
     await HiveUtils.clean();
     Get.offAllNamed(Routers.login);
   }

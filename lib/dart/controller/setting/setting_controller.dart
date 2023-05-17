@@ -20,7 +20,7 @@ class SettingController extends GetxController {
   StreamSubscription<UserLoaded>? _userSub;
   late UserProvider _provider;
 
-  var homeEnum = HomeEnum.chat.obs;
+  var homeEnum = HomeEnum.door.obs;
 
   @override
   void onInit() {

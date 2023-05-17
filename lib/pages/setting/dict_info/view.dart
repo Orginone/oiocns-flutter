@@ -19,11 +19,11 @@ class DictInfoPage extends BaseGetView<DictInfoController, DictInfoState> {
             CommonWidget.commonHeadInfoWidget("字典"),
             CommonWidget.commonFormWidget(formItem: [
               CommonWidget.commonFormItem(
-                  title: "字典名称", content: state.data.source.name ?? ""),
+                  title: "字典名称", content: state.data.source.metadata.name ?? ""),
               CommonWidget.commonFormItem(
-                  title: "字典代码", content: state.data.source.code ?? ""),
+                  title: "字典代码", content: state.data.source.metadata.code ?? ""),
               CommonWidget.commonFormItem(
-                  title: "备注", content: state.data.source.remark ?? ""),
+                  title: "备注", content: state.data.source.metadata.remark ?? ""),
             ]),
             CommonWidget.commonHeadInfoWidget("字典",action: CommonWidget.commonPopupMenuButton(
                 items: const [

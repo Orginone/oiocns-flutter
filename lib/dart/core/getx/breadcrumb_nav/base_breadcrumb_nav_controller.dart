@@ -32,6 +32,10 @@ abstract class BaseBreadcrumbNavController<S extends BaseBreadcrumbNavState>
     // TODO: implement onReady
     super.onReady();
     BreadcrumbNavInstance().put(this,tag: tag);
+
+    var maxPosition = state.navBarController.position.maxScrollExtent;
+    
+    state.navBarController.animateTo(maxPosition, duration: const Duration(microseconds: 300), curve: Curves.linear);
   }
 
   @override

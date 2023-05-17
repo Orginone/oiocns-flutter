@@ -12,6 +12,9 @@ abstract class ISpeciesItem {
   //当前加载分类的用户
   late ITarget current;
 
+  //当前归属用户Id
+  String get belongId;
+
   //支持的类别类型
   late List<SpeciesType> speciesTypes;
 
@@ -23,7 +26,8 @@ abstract class ISpeciesItem {
 
 //共享信息
   late TargetShare share;
-
+  //是否为继承的类别
+  late bool isInherited;
 //  删除
   Future<bool> delete();
 
@@ -44,8 +48,9 @@ abstract class SpeciesItem implements ISpeciesItem {
     ShareIdSet[metadata.id] = share;
     speciesTypes = [];
     children = [];
-
+    isInherited = metadata.belongId != current.space.metadata.belongId;
   }
+
 
   @override
   Future<ISpeciesItem?> create(SpeciesModel data) async{
@@ -116,4 +121,10 @@ abstract class SpeciesItem implements ISpeciesItem {
   @override
   late List<SpeciesType> speciesTypes;
 
+  @override
+  late bool isInherited;
+
+  @override
+  // TODO: implement belongId
+  String get belongId => current.space.metadata.id;
 }

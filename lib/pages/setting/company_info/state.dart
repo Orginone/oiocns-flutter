@@ -30,7 +30,7 @@ class CompanyInfoState extends BaseGetState {
 
 List<String> tabTitle = [
   "单位成员",
-  "加入集团",
+  "加入的组织群",
 ];
 
 

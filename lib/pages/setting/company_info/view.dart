@@ -39,14 +39,7 @@ class CompanyInfoPage
                           value: CompanyFunction.roleSettings,
                           child: Text("角色设置"),
                         ),
-                        PopupMenuItem(
-                          value: CompanyFunction.addUser,
-                          child: Text("邀请成员"),
-                        ),
-                        PopupMenuItem(
-                          value: CompanyFunction.addGroup,
-                          child: Text("加入集团"),
-                        ),
+
                       ],
                       onSelected: (CompanyFunction function) {
                         controller.companyOperation(function);
@@ -68,8 +61,6 @@ class CompanyInfoPage
         List<List<String>> groupContent = [];
         for (var group in state.joinGroup) {
           groupContent.add([
-            group.metadata.name,
-            group.metadata.code,
             group.metadata.name,
             group.metadata.code,
             group.metadata.remark ?? ""

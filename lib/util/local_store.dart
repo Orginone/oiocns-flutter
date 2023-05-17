@@ -11,4 +11,8 @@ class LocalStore {
     return _store!;
   }
 
+  static void clear(){
+     _store!.clear();
+  }
+
 }

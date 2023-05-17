@@ -37,6 +37,7 @@ abstract class BaseBreadcrumbNavPage<T extends BaseBreadcrumbNavController,S ext
             }
           }
           return SingleChildScrollView(
+            controller: state.navBarController,
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [

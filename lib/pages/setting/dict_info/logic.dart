@@ -18,22 +18,22 @@ class DictInfoController extends BaseController<DictInfoState> {
     LoadingDialog.dismiss(context);
   }
 
-  Future<void> loadDictItems()async{
-    var data = await state.data.source.loadItems(
-        state.data.source.id, PageRequest(offset: 0, limit: 1000, filter: ''));
-    state.dictItems.addAll(data.result ?? []);
+  Future<void> loadDictItems()async {
+    var data = await state.data.source.loadItems();
+    state.dictItems.addAll(data);
   }
 
   void onCreate() {
     showCreateDictItemDialog(context,
         onCreate: (String name, String code, String remark,
-            {bool? public}) async{
-        bool success =  await state.data.source.createItem(DictItemModel(name: name, public: public, value: code, dictId: state.data.source.id));
-        if(success){
-          ToastUtils.showMsg(msg: "创建成功");
-          await loadDictItems();
-        }
-        });
+            {bool? public}) async {
+      var item = await state.data.source
+          .createItem(DictItemModel(name: name, public: public, value: code));
+      if (item != null) {
+        ToastUtils.showMsg(msg: "创建成功");
+        await loadDictItems();
+      }
+    });
   }
 
   void onOperation(operation, String key) async{
@@ -45,7 +45,7 @@ class DictInfoController extends BaseController<DictInfoState> {
        showCreateDictItemDialog(context,
            onCreate: (String name, String code, String remark,
                {bool? public}) async{
-             bool success = await state.data.source.updateItem(DictItemModel(name: name, public: public, value: code, dictId: state.data.source.id,id: dictItem.id));
+             bool success = await state.data.source.updateItem(DictItemModel(name: name, public: public, value: code,id: dictItem.id));
              if(success){
                ToastUtils.showMsg(msg: "更新成功");
                dictItem.name = name;
@@ -54,14 +54,11 @@ class DictInfoController extends BaseController<DictInfoState> {
              }
            },name: dictItem.name,code: dictItem.value,remark:"",isEdit:true);
       }else if(operation == 'delete'){
-       bool success = await state.data.source.deleteItem(dictItem.id);
+       bool success = await state.data.source.deleteItem(dictItem);
        if(success){
         state.dictItems.remove(dictItem);
         ToastUtils.showMsg(msg: "删除成功");
-       }else{
-        ToastUtils.showMsg(msg: "删除失败");
        }
-
       }
 
     } catch (e) {

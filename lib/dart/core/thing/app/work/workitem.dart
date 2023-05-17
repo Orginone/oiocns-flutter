@@ -3,6 +3,7 @@
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/app/appmodule.dart';
+import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/work.dart';
 
 
@@ -26,7 +27,7 @@ abstract class IWorkItem extends IWork {
   }
 
   @override
-  Future<List<XForm>> loadForms() async{
+  Future<List<IForm>> loadForms() async{
     return await appModule.loadForms();
   }
 

@@ -48,36 +48,36 @@ class CompanyInfoController extends BaseController<CompanyInfoState>
         Get.toNamed(Routers.roleSettings,
             arguments: {"target": state.company});
         break;
-      case CompanyFunction.addUser:
-        showSearchDialog(context, TargetType.person,
-            title: "邀请成员",
-            hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
-          if (list.isNotEmpty) {
-            bool success = await state.company.pullMembers(list);
-            if (success) {
-              ToastUtils.showMsg(msg: "添加成功");
-              state.unitMember.addAll(list);
-              state.unitMember.refresh();
-            } else {
-              ToastUtils.showMsg(msg: "添加失败");
-            }
-          }
-        });
-        break;
-      case CompanyFunction.addGroup:
-        showSearchDialog(context, TargetType.group,
-            title: "加入集团",
-            hint: "请输入集团的编码", onSelected: (List<XTarget> list) async {
-          if (list.isNotEmpty) {
-            try {
-              await state.company.applyJoin(list);
-              ToastUtils.showMsg(msg: "发送成功");
-            } catch (e) {
-              ToastUtils.showMsg(msg: "发送失败");
-            }
-          }
-        });
-        break;
+      // case CompanyFunction.addUser:
+      //   showSearchDialog(context, TargetType.person,
+      //       title: "邀请成员",
+      //       hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
+      //     if (list.isNotEmpty) {
+      //       bool success = await state.company.pullMembers(list);
+      //       if (success) {
+      //         ToastUtils.showMsg(msg: "添加成功");
+      //         state.unitMember.addAll(list);
+      //         state.unitMember.refresh();
+      //       } else {
+      //         ToastUtils.showMsg(msg: "添加失败");
+      //       }
+      //     }
+      //   });
+      //   break;
+      // case CompanyFunction.addGroup:
+      //   showSearchDialog(context, TargetType.group,
+      //       title: "加入集团",
+      //       hint: "请输入集团的编码", onSelected: (List<XTarget> list) async {
+      //     if (list.isNotEmpty) {
+      //       try {
+      //         await state.company.applyJoin(list);
+      //         ToastUtils.showMsg(msg: "发送成功");
+      //       } catch (e) {
+      //         ToastUtils.showMsg(msg: "发送失败");
+      //       }
+      //     }
+      //   });
+      //   break;
     }
   }
 
