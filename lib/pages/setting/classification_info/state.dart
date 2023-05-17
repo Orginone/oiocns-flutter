@@ -24,7 +24,7 @@ class ClassificationInfoState extends BaseGetState{
     species = data.source;
     tabTitle = [ClassificationEnum.info];
     if(species is IForm){
-      tabTitle.addAll([ClassificationEnum.attrs, ClassificationEnum.form]);
+      tabTitle.addAll([ClassificationEnum.attrs]);
     }
     if(species is ISpeciesItem){
       switch (SpeciesType.getType(species.metadata.typeName)) {

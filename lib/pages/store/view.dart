@@ -9,8 +9,8 @@ import 'package:orginone/widget/gy_scaffold.dart';
 
 import 'logic.dart';
 import 'state.dart';
-class WareHousePage
-    extends BaseGetPageView<WareHouseController, WareHouseState> {
+class StorePage
+    extends BaseGetPageView<StoreController, StoreState> {
   @override
   Widget buildView() {
     return Container(
@@ -73,8 +73,8 @@ class WareHousePage
 
 
   @override
-  WareHouseController getController() {
-    return WareHouseController();
+  StoreController getController() {
+    return StoreController();
   }
 
 

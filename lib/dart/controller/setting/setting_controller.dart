@@ -89,10 +89,10 @@ class SettingController extends GetxController {
       case HomeEnum.work:
         Get.toNamed(Routers.initiateWork);
         break;
-      case HomeEnum.warehouse:
-        Get.toNamed(Routers.warehouseManagement);
+      case HomeEnum.store:
+        Get.toNamed(Routers.storeTree);
         break;
-      case HomeEnum.shop:
+      case HomeEnum.market:
         // TODO: Handle this case.
         break;
       case HomeEnum.door:
@@ -117,8 +117,8 @@ enum HomeEnum {
   chat("沟通"),
   work("办事"),
   door("门户"),
-  warehouse("仓库"),
-  shop("商店");
+  store("存储"),
+  market("流通");
 
   final String label;
 

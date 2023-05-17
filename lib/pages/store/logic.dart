@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import '../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
-class WareHouseController extends BaseController<WareHouseState>{
- final WareHouseState state = WareHouseState();
+class StoreController extends BaseController<StoreState>{
+ final StoreState state = StoreState();
 
  @override
   void onInit() {

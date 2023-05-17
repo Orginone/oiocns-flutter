@@ -5,6 +5,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/event/home_data.dart';
+import 'package:orginone/pages/store/view.dart';
 import 'package:orginone/widget/badge_widget.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 import 'package:orginone/widget/template/originone_scaffold.dart';
@@ -17,7 +18,6 @@ import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_chats.dart';
 import 'package:orginone/pages/home/components/user_bar.dart';
 import 'package:orginone/pages/shop/view.dart';
-import 'package:orginone/pages/ware_house/view.dart';
 import 'package:orginone/pages/work/view.dart';
 import 'package:orginone/pages/setting/version_page.dart';
 import 'package:orginone/util/event_bus_helper.dart';
@@ -98,7 +98,7 @@ class HomeController extends TabsController {
           imgPath: settingCtrl.homeEnum.value != HomeEnum.chat
               ? "unchat"
               : "chat",
-          body: Text("沟通", style: XFonts.size14Black3),
+          body: Text(HomeEnum.chat.label, style: XFonts.size14Black3),
           mgsCount: mgsCount,
         );
       }),
@@ -110,7 +110,7 @@ class HomeController extends TabsController {
           imgPath: settingCtrl.homeEnum.value != HomeEnum.work
               ? "unwork"
               : 'work',
-          body: Text('办事', style: XFonts.size14Black3),
+          body: Text(HomeEnum.work.label, style: XFonts.size14Black3),
           mgsCount: settingCtrl.provider.work?.todos.length ?? 0,
         );
       }),
@@ -122,18 +122,18 @@ class HomeController extends TabsController {
           imgPath: settingCtrl.homeEnum.value != HomeEnum.door
               ? "unhome"
               : "home",
-          body: Text('门户', style: XFonts.size14Black3),
+          body: Text(HomeEnum.door.label, style: XFonts.size14Black3),
         );
       }),
     ));
     registerTab(XTab(
-      view: WareHousePage(),
+      view: StorePage(),
       tab: Obx(() {
         return BadgeTabWidget(
-          imgPath: settingCtrl.homeEnum.value != HomeEnum.warehouse
+          imgPath: settingCtrl.homeEnum.value != HomeEnum.store
               ? "unwarehouse"
               : "warehouse",
-          body: Text('存储', style: XFonts.size14Black3),
+          body: Text(HomeEnum.store.label, style: XFonts.size14Black3),
         );
       }),
     ));
@@ -141,10 +141,10 @@ class HomeController extends TabsController {
       view: ShopPage(),
       tab: Obx(() {
         return BadgeTabWidget(
-          imgPath: settingCtrl.homeEnum.value != HomeEnum.shop
+          imgPath: settingCtrl.homeEnum.value != HomeEnum.market
               ? "unshop"
               : "shop",
-          body: Text('流通', style: XFonts.size14Black3),
+          body: Text(HomeEnum.market.label, style: XFonts.size14Black3),
         );
       }),
     ));
