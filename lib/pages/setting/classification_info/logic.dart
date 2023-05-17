@@ -35,7 +35,7 @@ class ClassificationInfoController
         break;
       case ClassificationEnum.form:
         var controller = Get.find<FormController>(tag: "form");
-        controller.createForm();
+        // controller.createForm();
         break;
       case ClassificationEnum.work:
         var controller = Get.find<WorkController>(tag: "work");

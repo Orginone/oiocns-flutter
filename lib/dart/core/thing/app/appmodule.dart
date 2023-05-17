@@ -19,7 +19,7 @@ abstract class  IAppModule extends ISpeciesItem {
   Future<List<IWorkDefine>> loadWorkDefines();
 
 //  表单
-  Future<List<XForm>> loadForms();
+  Future<List<IForm>> loadForms();
 
 //表单特性
   Future<List<XAttribute>> loadAttributes();
@@ -60,12 +60,12 @@ class AppModule extends SpeciesItem implements IAppModule {
   }
 
   @override
-  Future<List<XForm>> loadForms() async{
-    var result = <XForm>[];
+  Future<List<IForm>> loadForms() async{
+    var result = <IForm>[];
     for (var item in children) {
       switch (SpeciesType.getType(item.metadata.typeName)) {
         case SpeciesType.workForm:
-          await (item as IForm).loadForms();
+          await (item as IWorkForm).loadForms();
           result.addAll(item.forms);
           break;
         case SpeciesType.appModule:

@@ -27,6 +27,8 @@ abstract class IPropClass implements ISpeciesItem {
 
   /// 删除表单特性
   Future<bool> deleteProperty(XProperty data);
+
+  Future<List<XAttribute>> loadPropAttributes(XProperty data);
 }
 
 class PropClass extends SpeciesItem implements IPropClass{
@@ -35,7 +37,11 @@ class PropClass extends SpeciesItem implements IPropClass{
     for (var item in metadata.nodes ?? []) {
       children.add(PropClass(item, current, this));
     }
-    speciesTypes = [SpeciesType.getType(metadata.typeName)];
+    speciesTypes = [];
+    var speciesType = SpeciesType.getType(metadata.typeName);
+    if(speciesType!=null){
+      speciesTypes.add(speciesType);
+    }
   }
 
   @override
@@ -105,6 +111,18 @@ class PropClass extends SpeciesItem implements IPropClass{
       return res.success;
     }
     return false;
+  }
+
+  @override
+  Future<List<XAttribute>> loadPropAttributes(XProperty data) async{
+    int index = propertys.indexOf(data);
+    if (index > -1) {
+      var res = await kernel.queryPropAttributes(IdReq(id: data.id!));
+      if (res.success) {
+        return res.data?.result ?? [];
+      }
+    }
+    return [];
   }
 
 }

@@ -10,7 +10,7 @@ import 'package:orginone/model/thing_model.dart';
 class CreateWorkState extends BaseGetState{
   late IWorkDefine define;
 
-  late WorkNodeModel node;
+  late Rx<WorkNodeModel> node;
 
   var show = false.obs;
 
@@ -18,6 +18,6 @@ class CreateWorkState extends BaseGetState{
 
   CreateWorkState(){
     define = Get.arguments['define'];
-    node = Get.arguments['node'];
+    node = Rx(Get.arguments['node']);
   }
 }

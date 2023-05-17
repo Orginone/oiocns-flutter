@@ -3,6 +3,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/main.dart';
 
+import 'form.dart';
 import 'species.dart';
 
 
@@ -93,11 +94,8 @@ abstract class IWork extends ISpeciesItem {
   late List<IWorkDefine> defines;
 
   //加载所有可选表单
-  Future<List<XForm>> loadForms();
-
-  //表单特性
-  Future<List<XAttribute>> loadAttributes();
-
+  Future<List<IForm>> loadForms();
+  
   //加载办事
   Future<List<IWorkDefine>> loadWorkDefines({bool reload = false});
 

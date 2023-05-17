@@ -58,6 +58,7 @@ class HomePage extends GetView<HomeController> {
             top: const UserBar(),
             views: controller.tabs.map((e) => e.toTabView()).toList(),
             bottom: TabBar(
+              indicator: const UnderlineTabIndicator(),
               controller: controller.tabController,
               tabs: controller.tabs.map((item) => item.toTab()).toList(),
               onTap: (index) {
@@ -85,17 +86,18 @@ class HomeController extends TabsController {
 
   @override
   initTabs() {
-    var size = Size(32.w, 32.w);
     registerTab(XTab(
       view: const MessageChats(),
       tab: Obx(() {
-       var chats = settingCtrl.provider.user?.chats;
-       int mgsCount = 0;
-       chats?.forEach((element) {
-         mgsCount+=element.chatdata.value.noReadCount;
-       });
+        var chats = settingCtrl.provider.user?.chats;
+        int mgsCount = 0;
+        chats?.forEach((element) {
+          mgsCount += element.chatdata.value.noReadCount;
+        });
         return BadgeTabWidget(
-          icon: XImage.localImage("chat", size: Size(38.w, 32.w)),
+          imgPath: settingCtrl.homeEnum.value != HomeEnum.chat
+              ? "unchat"
+              : "chat",
           body: Text("沟通", style: XFonts.size14Black3),
           mgsCount: mgsCount,
         );
@@ -105,35 +107,47 @@ class HomeController extends TabsController {
       view: WorkPage(),
       tab: Obx(() {
         return BadgeTabWidget(
-          icon: XImage.localImage("work", size: size),
+          imgPath: settingCtrl.homeEnum.value != HomeEnum.work
+              ? "unwork"
+              : 'work',
           body: Text('办事', style: XFonts.size14Black3),
           mgsCount: settingCtrl.provider.work?.todos.length ?? 0,
         );
       }),
     ));
-    var center = XTab(
+    registerTab(XTab(
       view: IndexTabPage(),
-      tab: BadgeTabWidget(
-        body: XImage.localImage("home", size: Size(36.w, 36.w)),
-        iconMargin: EdgeInsets.zero,
-      ),
-    );
-    registerTab(center);
+      tab: Obx(() {
+        return BadgeTabWidget(
+          imgPath: settingCtrl.homeEnum.value != HomeEnum.door
+              ? "unhome"
+              : "home",
+          body: Text('门户', style: XFonts.size14Black3),
+        );
+      }),
+    ));
     registerTab(XTab(
       view: WareHousePage(),
-      tab: BadgeTabWidget(
-        icon: XImage.localImage("warehouse", size: size),
-        body: Text('仓库', style: XFonts.size14Black3),
-      ),
+      tab: Obx(() {
+        return BadgeTabWidget(
+          imgPath: settingCtrl.homeEnum.value != HomeEnum.warehouse
+              ? "unwarehouse"
+              : "warehouse",
+          body: Text('存储', style: XFonts.size14Black3),
+        );
+      }),
     ));
     registerTab(XTab(
       view: ShopPage(),
-      tab: BadgeTabWidget(
-        body: Text('商店', style: XFonts.size14Black3),
-        icon: XImage.localImage("shop", size: size),
-      ),
+      tab: Obx(() {
+        return BadgeTabWidget(
+          imgPath: settingCtrl.homeEnum.value != HomeEnum.shop
+              ? "unshop"
+              : "shop",
+          body: Text('流通', style: XFonts.size14Black3),
+        );
+      }),
     ));
-    setIndex(tabs.indexOf(center));
   }
 
 
@@ -143,9 +157,9 @@ class HomeController extends TabsController {
     super.onInit();
     EventBusHelper.register(this, (event) async {
       if (event is ShowLoading) {
-        if(event.isShow){
-          LoadingDialog.showLoading(Get.context!,msg: "加载数据中");
-        }else{
+        if (event.isShow) {
+          LoadingDialog.showLoading(Get.context!, msg: "加载数据中");
+        } else {
           LoadingDialog.dismiss(Get.context!);
         }
       }
@@ -208,5 +222,10 @@ class HomeController extends TabsController {
     // TODO: implement onClose
     super.onClose();
     EventBusHelper.unregister(this);
+  }
+
+  @override
+  int? initialIndex() {
+    return 2;
   }
 }

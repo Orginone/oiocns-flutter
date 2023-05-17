@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
@@ -10,6 +11,7 @@ abstract class BaseBreadcrumbNavState<T extends BaseBreadcrumbNavModel> extends 
 
   Rxn<T> model = Rxn();
 
+  final ScrollController navBarController = ScrollController();
 }
 
  class BaseBreadcrumbNavModel<T> {

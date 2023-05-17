@@ -1,9 +1,15 @@
+import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/thing/app/work/workform.dart';
+import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
+import 'package:orginone/dart/core/thing/dict/dictclass.dart';
+import 'package:orginone/dart/core/thing/store/propclass.dart';
 
 import 'config.dart';
 import 'home/setting/state.dart';
@@ -154,29 +160,84 @@ class SettingNetWork {
     }
   }
 
-  static Future<List<SettingNavModel>> initSpecies(SettingNavModel model) async{
-
-    List<SettingNavModel> navs = [];
+  static Future<void> initSpecies(SettingNavModel model) async {
     List<ISpeciesItem> species = await model.space.loadSpecies();
-    void loopSpeciesTree(List<ISpeciesItem> tree,List<SettingNavModel> navs){
+    Future<void> loopSpeciesTree(List<ISpeciesItem> tree, List<SettingNavModel> navs) async{
       for (var element in tree) {
         var child = SettingNavModel(
             space: model.space,
             spaceEnum: model.spaceEnum,
             source: element,
             image: element.share.avatar?.shareLink,
-            standardEnum:StandardEnum.classCriteria,
+            standardEnum: StandardEnum.classCriteria,
             name: element.metadata.name);
-        child.children = [];
-        if(element.children.isNotEmpty){
-          loopSpeciesTree(element.children,child.children);
+
+        List<SettingNavModel> children = [];
+        if (element.metadata.typeName == SpeciesType.workForm.label &&
+            element is WorkForm) {
+          List<IForm> forms = await element.loadForms();
+          if (forms.isNotEmpty) {
+            children = forms
+                .map((e) => SettingNavModel(
+                    space: model.space,
+                    standardEnum: model.standardEnum,
+                    source: e,
+                    spaceEnum: model.spaceEnum,
+                    name: e.metadata.name ?? ""))
+                .toList();
+          }
+        }
+        if (element.metadata.typeName == SpeciesType.store.label &&
+            element is IPropClass) {
+          List<XProperty> property = await element.loadPropertys();
+          if (property.isNotEmpty) {
+            children.add(SettingNavModel(
+                space: model.space,
+                standardEnum: StandardEnum.propPackage,
+                source: element,
+                spaceEnum: model.spaceEnum,
+                name: StandardEnum.propPackage.label,
+                children: property
+                    .map((e) => SettingNavModel(
+                        space: model.space,
+                        standardEnum: StandardEnum.propPackage,
+                        source: element,
+                        spaceEnum: model.spaceEnum,
+                        name: e.name ?? "",
+                        id: e.id ?? ""))
+                    .toList()));
+          }
+        }
+        if (element.metadata.typeName == SpeciesType.dict.label &&
+            element is IDictClass) {
+          var dicts = await element.loadDicts();
+          children.add(SettingNavModel(
+              space: model.space,
+              standardEnum: StandardEnum.dictPackage,
+              source: element,
+              spaceEnum: model.spaceEnum,
+              name: StandardEnum.dictPackage.label,
+              children: dicts
+                  .map((e) => SettingNavModel(
+                      space: model.space,
+                      standardEnum: model.standardEnum,
+                      source: e,
+                      spaceEnum: model.spaceEnum,
+                      name: e.metadata.name ?? "",
+                      id: e.metadata.id ?? ""))
+                  .toList()));
+        }
+
+        child.children = children;
+        if (element.children.isNotEmpty) {
+          await loopSpeciesTree(element.children, child.children);
         }
         navs.add(child);
       }
     }
-    if(species.isNotEmpty){
-      loopSpeciesTree(species,navs);
+    if(species.isNotEmpty) {
+      model.children = [];
+      await loopSpeciesTree(species, model.children);
     }
-    return navs;
   }
 }

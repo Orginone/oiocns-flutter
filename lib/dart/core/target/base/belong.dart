@@ -1,12 +1,13 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/msgchat.dart';
+import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/thing/dict/dict.dart';
+import 'package:orginone/dart/core/thing/dict/dictclass.dart';
 import 'package:orginone/main.dart';
 
 import 'target.dart';
@@ -39,14 +40,11 @@ abstract class IBelong extends ITarget {
   //加载超管权限
   Future<IAuthority?> loadSuperAuth({bool reload = false});
 
-  //加载元数据字典
-  Future<List<IDict>> loadDicts({bool reload = false});
+  //加载字典
+  Future<List<IDict>> loadDicts();
 
   //申请加用户
   Future<bool> applyJoin(List<XTarget> members);
-
-  //添加字典
-  Future<IDict?> createDict(DictModel data);
 
   //设立人员群
   Future<ICohort?> createCohort(TargetModel data);
@@ -58,7 +56,7 @@ abstract class Belong extends Target implements IBelong {
     this.user = user ?? this as IPerson;
     dicts = [];
     cohorts = [];
-    speciesTypes = [SpeciesType.store];
+    speciesTypes = [SpeciesType.store, SpeciesType.dict];
     message = ChatMessage(this);
   }
 
@@ -95,26 +93,16 @@ abstract class Belong extends Target implements IBelong {
   }
 
   @override
-  Future<IDict?> createDict(DictModel data) async {
-    data.belongId = metadata.id;
-    var res = await kernel.createDict(data);
-    if (res.success && res.data != null) {
-      var dict = Dict(res.data!, this);
-      dicts.add(dict);
-      return dict;
-    }
-  }
-
-
-  @override
-  Future<List<IDict>> loadDicts({bool reload = false}) async {
-    if (dicts.isEmpty || reload) {
-      var res = await kernel.queryDicts(IdReq(
-        id: metadata.id,
-      ));
-      if (res.success && res.data?.result != null) {
-        for (var element in res.data!.result!) {
-          dicts.add(Dict(element, this));
+  Future<List<IDict>> loadDicts() async {
+    for (var specie in species) {
+      if (specie.metadata.typeName == SpeciesType.dict.label) {
+        var subDicts = await (specie as IDictClass).loadAllDicts();
+        for (var item in subDicts) {
+          if (dicts.indexWhere(
+                  (element) => element.metadata.id == item.metadata.id) <
+              0) {
+            dicts.add(item);
+          }
         }
       }
     }

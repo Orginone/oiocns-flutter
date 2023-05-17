@@ -43,7 +43,7 @@ abstract class BaseBreadcrumbNavMultiplexPage<T extends BaseBreadcrumbNavControl
                 controller.popAll();
               }, icon: const Icon(Icons.arrow_back_ios,color: Colors.black,),constraints: BoxConstraints(maxWidth: 40.w),),
               Expanded(
-                child: SingleChildScrollView(scrollDirection: Axis.horizontal,child: Row(children:nextStep,),),
+                child: SingleChildScrollView(scrollDirection: Axis.horizontal,child: Row(children:nextStep,),controller: state.navBarController,),
               )
             ],
           );

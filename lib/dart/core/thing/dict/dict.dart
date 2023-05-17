@@ -4,11 +4,13 @@ import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/main.dart';
 
+import 'dictclass.dart';
+
 abstract class IDict{
   //数据实体
   late XDict metadata;
   //加载权限的自归属用户
-  late IBelong space;
+  late DictClass species;
   //共享信息
   late  TargetShare share;
   //字典项
@@ -30,7 +32,7 @@ abstract class IDict{
 
 class Dict  implements IDict{
 
-  Dict(this.metadata,this.space){
+  Dict(this.metadata,this.species){
     items = [];
     share = TargetShare(name: metadata.name??"", typeName: '字典',avatar: FileItemShare.parseAvatar(metadata.icon));
     ShareIdSet[metadata.id!]=share;
@@ -45,7 +47,7 @@ class Dict  implements IDict{
   late TargetShare share;
 
   @override
-  late IBelong space;
+  late DictClass species;
 
   @override
   Future<XDictItem?> createItem(DictItemModel data) async{
@@ -62,7 +64,7 @@ class Dict  implements IDict{
   Future<bool> delete() async{
     final res = await kernel.deleteDict(IdReq(id: metadata.id!));
     if (res.success) {
-      space.dicts.removeWhere((i) => i == this);
+      species.propertyChanged('deleted', [this]);
     }
     return res.success;
   }
@@ -90,7 +92,7 @@ class Dict  implements IDict{
   @override
   Future<bool> update(DictModel data) async{
     data.id = metadata.id;
-    data.belongId = space.metadata.id;
+    data.speciesId = species.metadata.id;
     final res = await kernel.updateDict(data);
     if (res.success && res.data?.id != null) {
       metadata = res.data!;

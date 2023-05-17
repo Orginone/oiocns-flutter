@@ -182,7 +182,6 @@ class Company extends Belong implements ICompany {
     await loadCohorts(reload: reload);
     await loadMembers(reload: reload);
     await loadSuperAuth(reload: reload);
-    await loadDicts(reload: reload);
     await loadSpecies(reload: reload);
     for (var group in groups) {
       await group.deepLoad(reload: reload);

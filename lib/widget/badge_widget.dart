@@ -4,20 +4,22 @@
 
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:orginone/util/load_image.dart';
 
 class BadgeTabWidget extends StatelessWidget {
   final int mgsCount;
   final Widget? body;
-  final Widget? icon;
+  final String? imgPath;
   final EdgeInsets iconMargin;
-  const BadgeTabWidget({Key? key,  this.mgsCount = 0, this.body, this.icon, this.iconMargin = const EdgeInsets.only(bottom: 10.0)}) : super(key: key);
+  const BadgeTabWidget({Key? key,  this.mgsCount = 0, this.body, this.imgPath, this.iconMargin = const EdgeInsets.only(bottom: 5.0)}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
     Widget child = Tab(
       iconMargin: iconMargin,
-      icon: icon,
+      icon: imgPath==null?null:XImage.localImage(imgPath!, size: Size(32.w, 32.w)),
       child: body,
     );
     if(mgsCount == 0){

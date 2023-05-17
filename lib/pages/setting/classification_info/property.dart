@@ -31,8 +31,8 @@ class PropertyPage extends BaseGetPageView<PropertyController, PropertyState> {
                   element.valueType ?? "",
                   element.unit ?? "",
                   element.dict?.name ?? "",
-                  element.belong??"",
-                  element.species??"",
+                  element.belong?.name??"",
+                  element.species?.name??"",
                   element.remark ?? ""
                 ]);
               }

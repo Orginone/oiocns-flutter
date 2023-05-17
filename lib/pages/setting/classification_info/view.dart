@@ -33,14 +33,14 @@ class ClassificationInfoPage
                 switch (e) {
                   case ClassificationEnum.info:
                     return BasicInfo(
-                      species: state.species,
+                      data: state.species.metadata,
                     );
                   case ClassificationEnum.property:
                     return KeepAliveWidget(child: PropertyPage());
                   case ClassificationEnum.attrs:
                     return KeepAliveWidget(child: AttrsPage());
                   case ClassificationEnum.form:
-                    return KeepAliveWidget(child: FormPage());
+                    return KeepAliveWidget(child: Container());
                   case ClassificationEnum.work:
                     return KeepAliveWidget(child: WorkPage());
                 }

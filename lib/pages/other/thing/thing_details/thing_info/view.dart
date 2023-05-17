@@ -17,24 +17,24 @@ class ThingInfoPage
               return Column(
                 children: [
                   CommonWidget.commonHeadInfoWidget(element.specie.metadata.name),
-                  CommonWidget.commonFormWidget(
-                      formItem: element.data.map((e) {
-                        String value = e.value.toString();
-                        if (e.xAttribute.valueType == "选择型") {
-                          try {
-                            value = e.xAttribute.dict?.dictItems
-                                ?.firstWhere((element) =>
-                            element.value == e.value)
-                                .name ??
-                                "";
-                          } catch (e) {
-                            value = "";
-                          }
-                        }
-
-                        return CommonWidget.commonFormItem(
-                            title: e.xAttribute.name ?? "", content: value);
-                      }).toList())
+                  // CommonWidget.commonFormWidget(
+                  //     formItem: element.data.map((e) {
+                  //       String value = e.value.toString();
+                  //       if (e.xAttribute.valueType == "选择型") {
+                  //         try {
+                  //           value = e.xAttribute.dict?.dictItems
+                  //               ?.firstWhere((element) =>
+                  //           element.value == e.value)
+                  //               .name ??
+                  //               "";
+                  //         } catch (e) {
+                  //           value = "";
+                  //         }
+                  //       }
+                  //
+                  //       return CommonWidget.commonFormItem(
+                  //           title: e.xAttribute.name ?? "", content: value);
+                  //     }).toList())
                 ],
               );
             }).toList());
