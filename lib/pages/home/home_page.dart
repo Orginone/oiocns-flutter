@@ -133,7 +133,7 @@ class HomeController extends TabsController {
           imgPath: settingCtrl.homeEnum.value != HomeEnum.warehouse
               ? "unwarehouse"
               : "warehouse",
-          body: Text('仓库', style: XFonts.size14Black3),
+          body: Text('存储', style: XFonts.size14Black3),
         );
       }),
     ));
@@ -144,7 +144,7 @@ class HomeController extends TabsController {
           imgPath: settingCtrl.homeEnum.value != HomeEnum.shop
               ? "unshop"
               : "shop",
-          body: Text('商店', style: XFonts.size14Black3),
+          body: Text('流通', style: XFonts.size14Black3),
         );
       }),
     ));
