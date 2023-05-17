@@ -29,9 +29,6 @@ class RelationGroupPage
                 case StandardEnum.permission:
                   controller.operationPermission(item,value);
                   break;
-                case StandardEnum.dict:
-                  controller.operationDict(item,value);
-                  break;
                 case StandardEnum.classCriteria:
                   controller.operationClassCriteria(item,value);
                   break;

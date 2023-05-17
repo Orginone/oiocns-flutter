@@ -8,6 +8,7 @@ import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_contr
 import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
+import 'package:orginone/dart/core/thing/dict/dict.dart';
 import 'package:orginone/dart/core/thing/store/propclass.dart';
 import 'package:orginone/pages/setting/classification_info/form.dart';
 import 'package:orginone/pages/setting/config.dart';
@@ -55,7 +56,7 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
       }
       state.model.refresh();
     } else {
-      if (standardEnum == StandardEnum.dict) {
+      if (standardEnum == StandardEnum.dictPackage) {
         await SettingNetWork.initDict(state.model.value!);
         state.model.refresh();
       }
@@ -118,7 +119,7 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
         case StandardEnum.classCriteria:
           Get.toNamed(Routers.classificationInfo, arguments: {"data": model});
           break;
-        case StandardEnum.dict:
+        case StandardEnum.dictPackage:
           Get.toNamed(Routers.dictInfo, arguments: {"data": model});
           break;
         case StandardEnum.propPackage:
@@ -179,7 +180,6 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
     showCreateDictDialog(context, onCreate: (name, code, remark) async {
       var success = await item.source.update(DictModel(
           name: name,
-          public: true,
           code: code,
           remark: remark,
           id: item.source.metadata.id));
@@ -348,6 +348,11 @@ class RelationGroupController extends BaseBreadcrumbNavController<RelationGroupS
   }
 
   void operationClassCriteria(SettingNavModel item, value) {
+
+    if(item.source is IDict){
+      operationDict(item,value);
+      return;
+    }
     switch (value) {
       case "create":
         createClassCriteria(item);

@@ -25,9 +25,6 @@ class SettingFunctionPage extends BaseBreadcrumbNavMultiplexPage<
                       controller.createOrganization(e);
                     }else if(e.standardEnum!=null){
                       switch(e.standardEnum){
-                        case StandardEnum.dict:
-                          controller.createDict(e);
-                          break;
                         case StandardEnum.permission:
                           controller.createAuth(e);
                           break;

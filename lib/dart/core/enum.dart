@@ -46,6 +46,7 @@ enum SpeciesType {
   resource('资源类'),
   store('属性类'),
   application('应用类'),
+  dict('字典类'),
   /** 类别类目 */
   commodity('商品类'),
   appModule('应用模块'),

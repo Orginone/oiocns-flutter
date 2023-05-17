@@ -1815,24 +1815,20 @@ class DictModel {
   String? name;
 
   // 编号
-  late String code;
+  String? code;
 
-  // 公开的
-  bool? public;
-
-  // 创建组织/个人
-  String? belongId;
+  // 分类id
+  String? speciesId;
 
   // 备注
   String? remark;
 
   //构造方法
   DictModel({
-    required this.name,
-    required this.public,
-    this.belongId,
-    required this.code,
-    required this.remark,
+    this.name,
+    this.speciesId,
+    this.code,
+    this.remark,
     this.id,
   });
 
@@ -1841,8 +1837,7 @@ class DictModel {
       : id = json["id"],
         name = json["name"],
         code = json["code"],
-        public = json["public"],
-        belongId = json["belongId"],
+        speciesId = json["speciesId"],
         remark = json["remark"];
 
   //通过动态数组解析成List
@@ -1865,8 +1860,7 @@ class DictModel {
     json["id"] = id;
     json["name"] = name;
     json["code"] = code;
-    json["public"] = public;
-    json["belongId"] = belongId;
+    json["speciesId"] = speciesId;
     json["remark"] = remark;
     return json;
   }

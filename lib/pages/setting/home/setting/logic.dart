@@ -48,10 +48,6 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
           if (nav != null) {
             data.add(nav);
           }
-          data.add(SettingNavModel(
-              name: StandardEnum.dict.label,
-              standardEnum: StandardEnum.dict,
-              space: state.space));
           var species = SettingNavModel(
               name: StandardEnum.classCriteria.label,
               standardEnum: StandardEnum.classCriteria,
@@ -172,11 +168,11 @@ class SettingFunctionController extends BaseBreadcrumbNavController<SettingFunct
 
   void createDict(SettingNavModel item) {
     showCreateDictDialog(context, onCreate: (name, code, remark) async {
-      var dict = await item.space.createDict(
-          DictModel(name: name, public: true, code: code, remark: remark));
-      if (dict != null) {
-        ToastUtils.showMsg(msg: "新建成功");
-      }
+      // var dict = await item.space.createDict(
+      //     DictModel(name: name, public: true, code: code, remark: remark));
+      // if (dict != null) {
+      //   ToastUtils.showMsg(msg: "新建成功");
+      // }
     });
   }
 

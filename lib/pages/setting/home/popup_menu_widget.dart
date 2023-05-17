@@ -6,6 +6,7 @@ import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
+import 'package:orginone/dart/core/thing/dict/dict.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/util/authority.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -77,14 +78,6 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
             }
           }
           break;
-        case StandardEnum.dict:
-          if(widget.model.source == null){
-            popupMenuItem.add(newPopupMenuItem("新建字典", "create"));
-          }else{
-            popupMenuItem.add(newPopupMenuItem("编辑字典", "edit"));
-            popupMenuItem.add(newPopupMenuItem("删除字典", "delete"));
-          }
-          break;
         case StandardEnum.classCriteria:
           if (widget.model.source != null) {
             if(widget.model.source is ISpeciesItem){
@@ -97,6 +90,14 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
             if(widget.model.source is IForm){
               popupMenuItem.add(newPopupMenuItem("编辑表单", "edit"));
               popupMenuItem.add(newPopupMenuItem("删除表单", "delete"));
+            }
+            if(widget.model.source is IDict){
+              if(widget.model.source == null){
+                popupMenuItem.add(newPopupMenuItem("新建字典", "create"));
+              }else{
+                popupMenuItem.add(newPopupMenuItem("编辑字典", "edit"));
+                popupMenuItem.add(newPopupMenuItem("删除字典", "delete"));
+              }
             }
           } else {
             popupMenuItem.add(newPopupMenuItem("新增类别", "create"));
