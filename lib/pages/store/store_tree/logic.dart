@@ -136,8 +136,9 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
       IFileSystemItem file;
       if(nav.source is FileSystem){
         file = (nav.source as FileSystem).home!;
+      }else{
+        file = (nav.space as IPerson).fileSystem.home!;
       }
-      file = (nav.space as IPerson).fileSystem.home!;
       jumpFile(file);
     }else{
       Get.toNamed(Routers.storeTree,
