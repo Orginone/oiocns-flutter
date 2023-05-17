@@ -8,12 +8,12 @@ class FileState extends BaseBreadcrumbNavState {
   TextEditingController searchController = TextEditingController();
 
   FileState(){
-    model.value = Get.arguments['data'];
+    model.value = Get.arguments?['data'];
     if (model.value == null) {
-      IFileSystemItem file = Get.arguments?['file'];
+      IFileSystemItem? file = Get.arguments?['file'];
       model.value = BaseBreadcrumbNavModel(
         source: file,
-        name: file.metadata.name??"",
+        name: file?.metadata?.name??"",
       );
     }
 
