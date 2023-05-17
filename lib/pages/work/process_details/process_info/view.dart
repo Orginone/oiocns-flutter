@@ -70,12 +70,12 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidget.commonHeadInfoWidget(form.name??""),
-        // CommonWidget.commonFormWidget(
-        //     formItem: form.items?.map((e) {
-        //       String content = "${e.value}";
-        //       return CommonWidget.commonFormItem(
-        //           title: e.name ?? "", content: content);
-        //     }).toList()??[]),
+        CommonWidget.commonFormWidget(
+            formItem: form.attributes?.map((e) {
+              String content = "${e.remark}";
+              return CommonWidget.commonFormItem(
+                  title: e.name ?? "", content: content);
+            }).toList()??[]),
       ],
     );
   }

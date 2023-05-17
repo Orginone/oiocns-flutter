@@ -29,10 +29,11 @@ class CreateWorkController extends BaseController<CreateWorkState> {
   }
 
   Future<void> loadForm() async{
+    List<IForm> iForms = (await state.define.workItem.loadForms());
+
     if(state.node.value.forms!=null){
       var formIds = state.node.value.forms!.map((i) => i.id).toList();
       for (var form in state.node.value.forms!) {
-        List<IForm> iForms = (await state.define.workItem.loadForms());
         try{
           var iForm = iForms.firstWhere((element) => formIds.contains(element.metadata.id));
           form.attributes = await iForm.loadAttributes();

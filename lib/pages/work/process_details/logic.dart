@@ -55,6 +55,18 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
     WorkNodeModel? node = await state.define!.loadWorkNode();
     List<IForm> forms = await state.define!.workItem.loadForms();
 
+    if(node?.forms!=null){
+      var formIds = node?.forms?.map((i) => i.id).toList();
+      for (var form in node?.forms??[]) {
+        try{
+          var iForm = forms.firstWhere((element) => formIds?.contains(element.metadata.id)??false);
+          form.attributes = await iForm.loadAttributes();
+          state.useForm.add(form);
+        }catch(e){
+
+        }
+      }
+    }
 
 
     for (var form in forms) {

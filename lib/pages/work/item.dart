@@ -157,9 +157,9 @@ class Item extends StatelessWidget {
   }
 
   Widget comment() {
-    String content = todo.content ?? "";
-    if (todo.taskType == '加用户') {
-      List<Map<String, dynamic>> json = jsonDecode(todo.content ?? "");
+    String content = todo.content;
+    if (todo.taskType == '加用户' && todo.content.isNotEmpty) {
+      List<dynamic> json = jsonDecode(todo.content);
       List<XTarget> targets = json.map((e) => XTarget.fromJson(e)).toList();
       if (targets.length == 2) {
         content =
