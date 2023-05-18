@@ -17,7 +17,6 @@ import 'package:orginone/config/enum.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/market/index.dart';
-import 'package:orginone/routers.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/string_util.dart';
 import 'package:package_info_plus/package_info_plus.dart';

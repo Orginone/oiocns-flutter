@@ -60,8 +60,8 @@ class Item extends BaseBreadcrumbNavItem<BaseBreadcrumbNavModel> {
       ];
     }else{
       children = [
-        const PopupMenuItem(value: "deleteFile",child: Text("删除文件"),),
         const PopupMenuItem(value: "rename",child: Text("重命名文件"),),
+        const PopupMenuItem(value: "deleteFile",child: Text("删除文件"),),
       ];
     }
 

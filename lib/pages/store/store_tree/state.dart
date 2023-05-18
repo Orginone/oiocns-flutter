@@ -63,7 +63,7 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
       );
     }
 
-    title = model.value!.name;
+    title = model.value?.name??"";
   }
 }
 

@@ -153,6 +153,7 @@ class BucketOpreateModel {
   Map<String, dynamic> toJson() {
     return {
       "key": key,
+      "name":name,
       "operate": operate.label,
       "fileItem": fileItem?.toJson(),
     };

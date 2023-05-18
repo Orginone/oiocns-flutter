@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/pages/store/view.dart';
@@ -21,12 +20,9 @@ import 'package:orginone/pages/shop/view.dart';
 import 'package:orginone/pages/work/view.dart';
 import 'package:orginone/pages/setting/version_page.dart';
 import 'package:orginone/util/event_bus_helper.dart';
-import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:orginone/util/toast_utils.dart';
-
-import 'function_page.dart';
 import 'index/index_pageV2.dart';
 
 DateTime? _lastCloseApp;

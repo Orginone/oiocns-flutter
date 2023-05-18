@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/market/model.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:uuid/uuid.dart';
 
 import 'filesysItem.dart';
@@ -168,7 +170,10 @@ class FileSystemItem implements IFileSystemItem {
 
   @override
   Future<bool> rename(String name) async {
-    if (metadata.name != name && (await _findByName(name)!=null)) {
+    if(!hasOperateAuth()){
+      return false;
+    }
+    if (metadata.name != name && (await _findByName(name)==null)) {
       final res = await kernel.anystore.bucketOpreate(
           belongId,
           BucketOpreateModel(
@@ -177,7 +182,8 @@ class FileSystemItem implements IFileSystemItem {
             operate: BucketOpreates.rename,
           ));
       if (res.success && res.data != null) {
-        metadata = res.data!;
+        FileItemModel model = FileItemModel.fromJson(res.data!);
+        metadata = model;
         return true;
       }
     }
@@ -319,4 +325,11 @@ class FileSystemItem implements IFileSystemItem {
     return node;
   }
 
+  bool hasOperateAuth() {
+    if (filesys.belong.hasAuthoritys([OrgAuth.thingAuthId.label])) {
+      ToastUtils.showMsg(msg: '抱歉,您没有权限操作.');
+      return false;
+    }
+    return true;
+  }
 }
