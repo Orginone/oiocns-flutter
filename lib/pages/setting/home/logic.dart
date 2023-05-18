@@ -57,7 +57,7 @@ class SettingCenterController
   }
 
   void onDetailsNextLv(SettingNavModel model) {
-    if (model.children.isEmpty) {
+    if (model.children.isEmpty && model.source!=null) {
       jumpDetails(model);
     } else {
       Get.toNamed(Routers.settingCenter,

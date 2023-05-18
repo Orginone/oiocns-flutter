@@ -20,9 +20,15 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
             name: value.metadata.name ?? "",
             id: value.metadata.id,
             space: value,
-            children: [],
+            children: [
+              StoreTreeNav(
+                  name: PersonalEnum.file.label,
+                  personalEnum: PersonalEnum.file,
+                  children: [],
+                  space: value),
+            ],
             image: value.metadata.avatarThumbnail(),
-            wareHouseType:WareHouseType.organization,
+            wareHouseType: WareHouseType.organization,
           ),
         );
       }

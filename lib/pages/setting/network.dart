@@ -5,7 +5,7 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/app/work/workform.dart';
+import 'package:orginone/dart/core/thing/app/workthing.dart';
 import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/dict/dictclass.dart';
@@ -173,8 +173,8 @@ class SettingNetWork {
             name: element.metadata.name);
 
         List<SettingNavModel> children = [];
-        if (element.metadata.typeName == SpeciesType.workForm.label &&
-            element is WorkForm) {
+        if (element.metadata.typeName == SpeciesType.workThing.label &&
+            element is WorkThing) {
           List<IForm> forms = await element.loadForms();
           if (forms.isNotEmpty) {
             children = forms

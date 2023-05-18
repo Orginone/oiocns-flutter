@@ -31,7 +31,7 @@ class ClassificationInfoState extends BaseGetState{
         case SpeciesType.store:
           tabTitle.add(ClassificationEnum.property);
           break;
-        case SpeciesType.commodity:
+        case SpeciesType.application:
           tabTitle.addAll([ClassificationEnum.attrs]);
           break;
         case SpeciesType.market:

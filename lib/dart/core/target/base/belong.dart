@@ -8,6 +8,7 @@ import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/thing/dict/dict.dart';
 import 'package:orginone/dart/core/thing/dict/dictclass.dart';
+import 'package:orginone/dart/core/thing/filesys/filesysItem.dart';
 import 'package:orginone/main.dart';
 
 import 'target.dart';
@@ -27,6 +28,8 @@ abstract class IBelong extends ITarget {
 
   //加入/管理的群
   late List<ICohort> cohorts;
+
+  late IFileSystem fileSystem;
 
   //上级用户
   List<ITarget> get parentTarget;
@@ -58,6 +61,7 @@ abstract class Belong extends Target implements IBelong {
     cohorts = [];
     speciesTypes = [SpeciesType.store, SpeciesType.dict];
     message = ChatMessage(this);
+    fileSystem = FileSystem(this);
   }
 
   @override
@@ -74,6 +78,10 @@ abstract class Belong extends Target implements IBelong {
 
   @override
   late IPerson user;
+
+
+  @override
+  late IFileSystem fileSystem;
 
   @override
   Future<ICohort?> createCohort(TargetModel data) async {

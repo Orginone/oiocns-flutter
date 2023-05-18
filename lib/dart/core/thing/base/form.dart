@@ -1,7 +1,7 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/thing/app/work/workform.dart';
+import 'package:orginone/dart/core/thing/app/workthing.dart';
 import 'package:orginone/dart/core/thing/store/propclass.dart';
 import 'package:orginone/main.dart';
 
@@ -137,10 +137,10 @@ class Form implements IForm {
 
   @override
   Future<bool> delete() async {
-    var res = await kernel.deleteForm(IdReq(id: metadata.id!));
+    var res = await kernel.deleteForm(IdReq(id: metadata.id));
     if (res.success) {
-      if (species.metadata.typeName == SpeciesType.workForm.label) {
-        var species = this.species as IWorkForm;
+      if (species.metadata.typeName == SpeciesType.workThing.label) {
+        var species = this.species as IWorkThing;
         species.forms.removeWhere((i) => i == this);
       }
     }
