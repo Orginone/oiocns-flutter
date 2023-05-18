@@ -122,8 +122,9 @@ class KernelApi {
     }
     var res = ResultType.fromJson(raw);
     if (res.success) {
-      HiveUtils.putUser(UserModel.fromJson(raw['data']));
-      _anystore.updateToken(res.data["accessToken"]);
+      ToastUtils.showMsg(msg: "私有key---${ res.data['privateKey']}");
+    }else{
+      ToastUtils.showMsg(msg: res.msg);
     }
     return res;
   }

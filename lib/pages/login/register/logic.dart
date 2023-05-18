@@ -65,8 +65,9 @@ class RegisterController extends BaseController<RegisterState> {
         motto: state.remarkController.text,
         avatar: ''));
     LoadingDialog.dismiss(context);
-    if (res != null) {
-       ToastUtils.showMsg(msg: "注册成功,请返回登录");
+    if (res.success) {
+       ToastUtils.showMsg(msg: "注册成功,请重新登录");
+       Get.back();
     }
   }
 
