@@ -1,28 +1,59 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/pages/setting/config.dart';
 
-class SettingCenterState extends BaseBreadcrumbNavState {
+class SettingCenterState extends BaseBreadcrumbNavState<SettingNavModel> {
   SettingController get settingCtrl => Get.find<SettingController>();
-  late List<BaseBreadcrumbNavModel> spaces;
 
-  SettingCenterState(){
-    spaces = [];
-    var joinedCompanies = settingCtrl.provider.user?.companys;
-    spaces.add(BaseBreadcrumbNavModel(
-        name: settingCtrl.provider.user?.metadata.name ?? "",
-        id: settingCtrl.provider.user?.metadata.id ?? "",
-        image: settingCtrl.provider.user?.metadata.avatarThumbnail(),
-        source: settingCtrl.provider.user,
-        children: []));
-    for (var element in joinedCompanies ?? []) {
-      spaces.add(BaseBreadcrumbNavModel(
-          name: element.metadata.name,
-          id: element.metadata.id,
-          image: element.metadata.avatarThumbnail(),
-          source: element,
-          children: []));
+  SettingCenterState() {
+    model.value = Get.arguments?['data'];
+
+    if (model.value == null) {
+      var joinedCompanies = settingCtrl.provider.user?.companys;
+      model.value = SettingNavModel(name: "设置", children: [
+        SettingNavModel(
+          name: settingCtrl.provider.user?.metadata.name ?? "",
+          id: settingCtrl.provider.user?.metadata.id ?? "",
+          image: settingCtrl.provider.user?.metadata.avatarThumbnail(),
+          children: [],
+          settingType: SettingType.personal,
+          space: settingCtrl.provider.user,
+        ),
+        ...joinedCompanies
+                ?.map((element) => SettingNavModel(
+                    name: element.metadata.name,
+                    id: element.metadata.id,
+                    image: element.metadata.avatarThumbnail(),
+                    space: element,
+                    settingType: SettingType.organization,
+                    children: []))
+                .toList() ??
+            [],
+      ]);
     }
-    title = "设置";
+
+    title = model.value!.name;
   }
+}
+
+
+
+class SettingNavModel extends BaseBreadcrumbNavModel<SettingNavModel> {
+  SpaceEnum? spaceEnum;
+  StandardEnum? standardEnum;
+  IBelong? space;
+  SettingType? settingType;
+  SettingNavModel(
+      {super.id = '',
+        super.name = '',
+        super.children = const [],
+        super.source,
+        super.image,
+        this.spaceEnum,
+        this.standardEnum,
+        this.space,
+        this.settingType,
+      });
 }

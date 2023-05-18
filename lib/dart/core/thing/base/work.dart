@@ -1,6 +1,7 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/thing/app/application.dart';
 import 'package:orginone/main.dart';
 
 import 'form.dart';
@@ -90,6 +91,8 @@ class FlowDefine  implements IWorkDefine{
 }
 
 abstract class IWork extends ISpeciesItem {
+  //对应的应用
+  late IApplication app;
   //流程定义
   late List<IWorkDefine> defines;
 
@@ -102,15 +105,19 @@ abstract class IWork extends ISpeciesItem {
   //新建办事
   Future<IWorkDefine?> createWorkDefine(WorkDefineModel data);
 
-}
+  //删除办事实例
+  Future<bool> deleteInstance(String id);
 
+}
 abstract class Work extends SpeciesItem implements IWork {
-  Work(super.metadata, super.current,[super.parent]){
+  Work(super.metadata, super.current,[IApplication? app,super.parent]){
     defines = [];
+    this.app = app??(this as IApplication);
   }
 
   @override
   late List<IWorkDefine> defines;
+
 
   @override
   Future<List<IWorkDefine>> loadWorkDefines({bool reload = false}) async{
@@ -141,4 +148,14 @@ abstract class Work extends SpeciesItem implements IWork {
     }
     return null;
   }
+
+  @override
+  late IApplication app;
+
+  @override
+  Future<bool> deleteInstance(String id) async{
+    return (await kernel.recallWorkInstance(IdReq(id: id))).success;
+  }
+
+
 }

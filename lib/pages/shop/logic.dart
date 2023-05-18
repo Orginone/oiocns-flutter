@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
+import 'package:orginone/pages/store/state.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
-import '../ware_house/state.dart';
 import 'state.dart';
 
 class ShopController extends BaseController<ShopState> {

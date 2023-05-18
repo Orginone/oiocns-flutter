@@ -109,7 +109,7 @@ class WorkController
   }
 
   Future<void> createWork({IWorkDefine? flow}) async {
-    showCreateWorkDialog(context, info.state.data.space.species,
+    showCreateWorkDialog(context, info.state.data.space!.species,
         isEdit: flow != null,
         name: flow?.metadata.name ?? "",
         remark: flow?.metadata.remark ?? "",

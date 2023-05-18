@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 
-class WareHouseState extends BaseGetState{
+class StoreState extends BaseGetState{
 
   var recentlyList = [];
 }

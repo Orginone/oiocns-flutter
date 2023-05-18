@@ -21,7 +21,7 @@ class ClassificationInfoPage
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: state.species.metadata.name,
+      titleName: state.species?.metadata?.name??"",
       body: Column(
         children: [
           tabBar(),
@@ -33,7 +33,7 @@ class ClassificationInfoPage
                 switch (e) {
                   case ClassificationEnum.info:
                     return BasicInfo(
-                      data: state.species.metadata,
+                      data: state.species?.metadata,
                     );
                   case ClassificationEnum.property:
                     return KeepAliveWidget(child: PropertyPage());

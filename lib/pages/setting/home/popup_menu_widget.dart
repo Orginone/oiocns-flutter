@@ -11,7 +11,8 @@ import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/util/authority.dart';
 import 'package:orginone/widget/common_widget.dart';
 
-import 'setting/state.dart';
+import 'state.dart';
+
 
 class PopupMenuWidget<T> extends StatefulWidget {
   final SettingNavModel model;

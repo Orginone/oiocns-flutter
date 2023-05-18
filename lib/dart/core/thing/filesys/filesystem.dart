@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/market/model.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:uuid/uuid.dart';
 
 import 'filesysItem.dart';
@@ -59,7 +61,7 @@ abstract class IFileSystemItem {
 class FileSystemItem implements IFileSystemItem {
   FileSystemItem(this.filesys, this.metadata, [this.parent]) {
     children = [];
-    belongId = filesys.metadata.belongId;
+    belongId = filesys.belong.belongId;
   }
 
   @override
@@ -79,7 +81,7 @@ class FileSystemItem implements IFileSystemItem {
   @override
   Future<bool> copy(IFileSystemItem destination) async{
     if (destination.metadata.isDirectory && metadata.key != destination.metadata.key) {
-      final res = await kernel.anystore.bucketOpreate<List<FileItemModel>>(belongId, BucketOpreateModel( key: _formatKey(),
+      final res = await kernel.anystore.bucketOpreate(belongId, BucketOpreateModel( key: _formatKey(),
         destination: destination.metadata.key,
         operate: BucketOpreates.copy,));
       if (res.success) {
@@ -95,11 +97,12 @@ class FileSystemItem implements IFileSystemItem {
   Future<IFileSystemItem?> create(String name) async{
     final exist = await _findByName(name);
     if (exist == null) {
-      final res = await kernel.anystore.bucketOpreate<FileItemModel>(belongId,BucketOpreateModel(  key: _formatKey(subName: name),
+      final res = await kernel.anystore.bucketOpreate(belongId,BucketOpreateModel(  key: _formatKey(subName: name),
         operate: BucketOpreates.create,));
       if (res.success && res.data != null) {
         metadata.hasSubDirectories = true;
-        final node = FileSystemItem(filesys, res.data!, this);
+        FileItemModel data = FileItemModel.fromJson(res.data!);
+        final node = FileSystemItem(filesys, data, this);
         children.add(node);
         return node;
       }
@@ -109,7 +112,7 @@ class FileSystemItem implements IFileSystemItem {
 
   @override
   Future<bool> delete() async{
-    final res = await kernel.anystore.bucketOpreate<List<FileItemModel>>(belongId, BucketOpreateModel( key: _formatKey(),
+    final res = await kernel.anystore.bucketOpreate(belongId, BucketOpreateModel( key: _formatKey(),
       operate: BucketOpreates.delete,));
     if (res.success) {
       final index = parent?.children.indexWhere((item) => item.metadata.key == metadata.key);
@@ -130,22 +133,26 @@ class FileSystemItem implements IFileSystemItem {
   @override
   Future<bool> loadChildren([bool reload = false]) async{
     if (metadata.isDirectory && (reload || children.isEmpty)) {
-      final res = await kernel.anystore.bucketOpreate<List<FileItemModel>>(belongId, BucketOpreateModel(
+      final res = await kernel.anystore.bucketOpreate(belongId, BucketOpreateModel(
           key: _formatKey(),
         operate: BucketOpreates.list,
       ));
       if (res.success && res.data!=null) {
-        children = res.data!.map((item) => FileSystemItem(filesys, item, this)).toList();
+        List<FileItemModel> list = [];
+        res.data.forEach((e) {
+          list.add(FileItemModel.fromJson(e));
+        });
+        children = list.map((item) => FileSystemItem(filesys, item, this)).toList();
         return true;
       }
     }
-    return false;
+    return children.isNotEmpty;
   }
 
   @override
   Future<bool> move(IFileSystemItem destination) async{
     if (destination.metadata.isDirectory && metadata.key != destination.metadata.key) {
-      final res = await kernel.anystore.bucketOpreate<List<FileItemModel>>(belongId, BucketOpreateModel(key: _formatKey(),
+      final res = await kernel.anystore.bucketOpreate(belongId, BucketOpreateModel(key: _formatKey(),
         destination: destination.metadata.key,
         operate: BucketOpreates.move,));
       if (res.success) {
@@ -163,8 +170,11 @@ class FileSystemItem implements IFileSystemItem {
 
   @override
   Future<bool> rename(String name) async {
-    if (metadata.name != name && (await _findByName(name)!=null)) {
-      final res = await kernel.anystore.bucketOpreate<FileItemModel>(
+    if(!hasOperateAuth()){
+      return false;
+    }
+    if (metadata.name != name && (await _findByName(name)==null)) {
+      final res = await kernel.anystore.bucketOpreate(
           belongId,
           BucketOpreateModel(
             name: name,
@@ -172,7 +182,8 @@ class FileSystemItem implements IFileSystemItem {
             operate: BucketOpreates.rename,
           ));
       if (res.success && res.data != null) {
-        metadata = res.data!;
+        FileItemModel model = FileItemModel.fromJson(res.data!);
+        metadata = model;
         return true;
       }
     }
@@ -254,7 +265,7 @@ class FileSystemItem implements IFileSystemItem {
         if (end == file.lengthSync() && res.data != null) {
           var node = FileSystemItem(
             filesys,
-            FileItemModel.formJson(res.data),
+            FileItemModel.fromJson(res.data),
             this,
           );
           children.add(node);
@@ -314,4 +325,11 @@ class FileSystemItem implements IFileSystemItem {
     return node;
   }
 
+  bool hasOperateAuth() {
+    if (filesys.belong.hasAuthoritys([OrgAuth.thingAuthId.label])) {
+      ToastUtils.showMsg(msg: '抱歉,您没有权限操作.');
+      return false;
+    }
+    return true;
+  }
 }

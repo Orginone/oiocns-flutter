@@ -1,62 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
+
 import 'item.dart';
 import 'logic.dart';
 import 'state.dart';
 
-class FilePage extends BaseGetView<FileController, FileState> {
+class FilePage
+    extends BaseBreadcrumbNavMultiplexPage<FileController, FileState> {
   @override
-  Widget buildView() {
-    return Obx(() {
-      return GyScaffold(
-        titleName: state.title.value,
-        body: Column(
-          children: [
-            Obx(
-                  () {
-                return CommonWidget.commonBreadcrumbNavWidget(
-                  firstTitle: state.file.value?.metadata.name ?? "",
-                  allTitle: state.selectedDir
-                      .map((element) => element.metadata.name ?? "")
-                      .toList(),
-                  onTapFirst: () {
-                    controller.clearGroup();
+  Widget body() {
+    return Column(
+      children: [
+        Expanded(
+          child: Obx(() {
+            return ListView.builder(
+              itemBuilder: (context, index) {
+                var item = state.model.value!.children[index];
+                return Item(
+                  item: item,
+                  onNext: (){
+                    controller.onNextLv(item);
                   },
-                  onTapTitle: (index) {
-                    controller.removeGroup(index);
+                  onSelected: (selected){
+                    controller.onSelected(item,selected);
                   },
                 );
               },
-            ),
-            CommonWidget.commonSearchBarWidget(
-                controller: state.searchController,
-                onSubmitted: (str) {
-                  controller.search(str);
-                },
-                hint: "请输入文件或文件夹名称"),
-            Expanded(
-              child: Obx(() {
-                var list = state.file.value?.children;
-                if(state.selectedDir.isNotEmpty){
-                  list = state.selectedDir.last.children;
-                }
-                return ListView.builder(
-                  itemBuilder: (context, index) {
-                    var item = list![index];
-                    return Item(file: item, onTap: () {
-                      controller.selectFile(item);
-                    },);
-                  },
-                  itemCount: list?.length ?? 0,
-                );
-              }),
-            )
-          ],
-        ),
-      );
-    });
+              itemCount: state.model.value!.children.length,
+            );
+          }),
+        )
+      ],
+    );
+  }
+
+  @override
+  FileController getController() {
+    return FileController();
   }
 }

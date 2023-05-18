@@ -3,6 +3,7 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/local_store.dart';
 import 'package:orginone/util/toast_utils.dart';
+import 'package:orginone/widget/loading_dialog.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../dart/core/getx/base_controller.dart';
@@ -53,6 +54,7 @@ class LoginController extends BaseController<LoginState> {
       state.passWordController.text,
     );
     if (res.success) {
+      ToastUtils.showMsg(msg: "登录成功");
       [Permission.storage, Permission.notification].request();
       LocalStore.getStore().setStringList("account",
           [state.accountController.text, state.passWordController.text]);

@@ -5,14 +5,14 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/app/work/workform.dart';
+import 'package:orginone/dart/core/thing/app/workthing.dart';
 import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/dict/dictclass.dart';
 import 'package:orginone/dart/core/thing/store/propclass.dart';
 
 import 'config.dart';
-import 'home/setting/state.dart';
+import 'home/state.dart';
 
 class SettingNetWork {
   static Future<void> initDepartment(
@@ -80,7 +80,7 @@ class SettingNetWork {
   }
 
   static Future<void> initCohorts(SettingNavModel model) async {
-    var cohorts = await model.space.loadCohorts();
+    var cohorts = await model.space!.loadCohorts();
     model.children = [];
     for (var value in cohorts) {
       var child = SettingNavModel(
@@ -104,7 +104,7 @@ class SettingNetWork {
 
   static Future<SettingNavModel?> initAuthority(SettingNavModel model) async {
     SettingNavModel? settingNavModel;
-    var authority = await model.space.loadSuperAuth();
+    var authority = await model.space!.loadSuperAuth();
 
     void loopAuth(List<IAuthority> auth, List<SettingNavModel> children) {
       for (var element in auth) {
@@ -145,7 +145,7 @@ class SettingNetWork {
   }
 
   static Future<void> initDict(SettingNavModel model) async{
-    var dictArray = await model.space.loadDicts();
+    var dictArray = await model.space!.loadDicts();
     if(dictArray.isNotEmpty){
       model.children = [];
       for (var value in dictArray) {
@@ -161,7 +161,7 @@ class SettingNetWork {
   }
 
   static Future<void> initSpecies(SettingNavModel model) async {
-    List<ISpeciesItem> species = await model.space.loadSpecies();
+    List<ISpeciesItem> species = await model.space!.loadSpecies();
     Future<void> loopSpeciesTree(List<ISpeciesItem> tree, List<SettingNavModel> navs) async{
       for (var element in tree) {
         var child = SettingNavModel(
@@ -173,8 +173,8 @@ class SettingNetWork {
             name: element.metadata.name);
 
         List<SettingNavModel> children = [];
-        if (element.metadata.typeName == SpeciesType.workForm.label &&
-            element is WorkForm) {
+        if (element.metadata.typeName == SpeciesType.workThing.label &&
+            element is WorkThing) {
           List<IForm> forms = await element.loadForms();
           if (forms.isNotEmpty) {
             children = forms

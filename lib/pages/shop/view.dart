@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/routers.dart';
 
-import '../ware_house/state.dart';
 import 'logic.dart';
 import 'state.dart';
 

@@ -1,6 +1,7 @@
 
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 
@@ -26,7 +27,10 @@ class TaskModel {
 typedef TaskChangeNotify = Function(List<TaskModel> taskList);
 
 /// 文件系统接口
-abstract class IFileSystem extends ISpeciesItem {
+abstract class IFileSystem{
+
+  late IBelong belong;
+
   /// 主目录
   IFileSystemItem? home;
 
@@ -43,9 +47,18 @@ abstract class IFileSystem extends ISpeciesItem {
   void taskChanged(String id, TaskModel task);
 }
 
-class FileSystem extends SpeciesItem implements IFileSystem{
-  FileSystem(super.metadata, super.current){
+class FileSystem  implements IFileSystem{
+  FileSystem(this.belong){
     taskList = [];
+    home = FileSystemItem(this, FileItemModel(
+      size: 0,
+      key: '',
+      name: '根目录',
+      isDirectory: true,
+      dateCreated: DateTime.now(),
+      dateModified: DateTime.now(),
+      hasSubDirectories: true, contentType: '',
+    ));
   }
 
   Map<String, TaskModel> _taskIdSet = {};
@@ -74,28 +87,7 @@ class FileSystem extends SpeciesItem implements IFileSystem{
     taskChangeNotify = null;
   }
 
-  Future<void> loadTeamHome() async {
-    final root = FileSystemItem(this, FileItemModel(
-      size: 0,
-      key: '',
-      name: '根目录',
-      isDirectory: true,
-      dateCreated: DateTime.now(),
-      dateModified: DateTime.now(),
-      hasSubDirectories: true, contentType: '',
-    ));
-    if (current.metadata.belongId != current.metadata.id) {
-      final teamRoot = await root.create(current.metadata.name);
-      if (teamRoot != null) {
-        home = await teamRoot.create(metadata.name);
-      }
-    } else {
-      home = root;
-    }
-  }
 
   @override
-  ISpeciesItem createChildren(XSpecies metadata, ITarget current) {
-    return FileSystem(metadata, current);
-  }
+  late IBelong belong;
 }
