@@ -52,9 +52,7 @@ enum SpaceEnum {
 
 enum StandardEnum {
   permission("权限定义"),
-  classCriteria('数据标准'),
-  propPackage("类别属性"),
-  dictPackage('类别字典');
+  classCriteria('数据标准');
   final String label;
 
   const StandardEnum(this.label);

@@ -191,41 +191,29 @@ class SettingNetWork {
             element is IPropClass) {
           List<XProperty> property = await element.loadPropertys();
           if (property.isNotEmpty) {
-            children.add(SettingNavModel(
+            children.addAll(property
+                .map((e) => SettingNavModel(
                 space: model.space,
-                standardEnum: StandardEnum.propPackage,
+                standardEnum:model.standardEnum,
                 source: element,
                 spaceEnum: model.spaceEnum,
-                name: StandardEnum.propPackage.label,
-                children: property
-                    .map((e) => SettingNavModel(
-                        space: model.space,
-                        standardEnum: StandardEnum.propPackage,
-                        source: element,
-                        spaceEnum: model.spaceEnum,
-                        name: e.name ?? "",
-                        id: e.id ?? ""))
-                    .toList()));
+                name: e.name ?? "",
+                id: e.id ?? ""))
+                .toList());
           }
         }
         if (element.metadata.typeName == SpeciesType.dict.label &&
             element is IDictClass) {
           var dicts = await element.loadDicts();
-          children.add(SettingNavModel(
+          children.addAll(dicts
+              .map((e) => SettingNavModel(
               space: model.space,
-              standardEnum: StandardEnum.dictPackage,
-              source: element,
+              standardEnum: model.standardEnum,
+              source: e,
               spaceEnum: model.spaceEnum,
-              name: StandardEnum.dictPackage.label,
-              children: dicts
-                  .map((e) => SettingNavModel(
-                      space: model.space,
-                      standardEnum: model.standardEnum,
-                      source: e,
-                      spaceEnum: model.spaceEnum,
-                      name: e.metadata.name ?? "",
-                      id: e.metadata.id ?? ""))
-                  .toList()));
+              name: e.metadata.name ?? "",
+              id: e.metadata.id ?? ""))
+              .toList());
         }
 
         child.children = children;
