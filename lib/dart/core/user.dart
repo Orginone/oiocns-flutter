@@ -6,6 +6,7 @@ import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/thing/base/work.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/event_bus.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 import 'work/provider.dart';
 
@@ -65,9 +66,6 @@ class UserProvider {
   /// @param {RegisterType} params 参数
   register(RegisterType params) async {
     var res = await kernel.register(params);
-    if (res.success) {
-      await _loadUser(XTarget.fromJson(res.data["person"]));
-    }
     return res;
   }
 

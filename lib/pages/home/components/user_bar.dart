@@ -70,22 +70,12 @@ class UserBar extends GetView<SettingController> {
       height: 74.h,
       child: Row(children: [
         Expanded(
-          child: GestureDetector(
-            onLongPress: () {
-            },
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                _textAvatar(EdgeInsets.only(left: 20.w)),
-                Container(margin: EdgeInsets.only(left: 10.w)),
-                Text(
-                  "奥集能",
-                  style: XFonts.size22Black0,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Container(margin: EdgeInsets.only(left: 2.w)),
-              ],
+          child: Container(
+            margin: EdgeInsets.only(left: 30.w),
+            child: Text(
+              "奥集能",
+              style: XFonts.size22Black0,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ),
@@ -120,6 +110,9 @@ class UserBar extends GetView<SettingController> {
               ?.split(",")[1]
               .replaceAll('\r', '')
               .replaceAll('\n', '');
+      if(avatar==null){
+       return _textAvatar(insets);
+      }
       return Container(
         decoration: BoxDecoration(
             shape: BoxShape.circle,

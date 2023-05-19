@@ -107,9 +107,11 @@ abstract class Target extends Team implements ITarget {
     data.parentId = '0';
     var res = await kernel.createSpecies(data);
     if (res.success && res.data?.id != null) {
-      var species = createSpeciesForType(res.data!, this);
-      this.species.add(species);
-      return species;
+      var item = createSpeciesForType(res.data!, this);
+      if(item!=null){
+        species.add(item);
+      }
+      return item;
     }
   }
 
@@ -138,28 +140,11 @@ abstract class Target extends Team implements ITarget {
         filter: '',
       ));
       if (res.success) {
-        bool hasFilesystem = false;
-        bool hasMarket = false;
-
-        if (res.data?.result != null) {
-          for (var element in res.data!.result!) {
-            if (element.typeName == SpeciesType.fileSystem.label) {
-              hasFilesystem = true;
-            }
-            if (element.typeName == SpeciesType.market.label) {
-              hasMarket = true;
-            }
-
-            species.add(createSpeciesForType(element, this));
+        for (var element in res.data?.result??[]) {
+          var item = createSpeciesForType(element, this);
+          if(item!=null){
+            species.add(item);
           }
-        }
-        if (!hasFilesystem) {
-          speciesTypes.add(SpeciesType.fileSystem);
-        }
-        if (!hasMarket &&
-            (metadata.typeName == TargetType.cohort.label ||
-                metadata.typeName == TargetType.group.label)) {
-          speciesTypes.add(SpeciesType.market);
         }
       }
     }

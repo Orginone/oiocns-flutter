@@ -12,7 +12,7 @@ class FileImageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String img = Images.otherIcon;
-    String ext = file.metadata!.name!.split('.').last;
+    String ext = file.metadata!.name!.split('.').last.toLowerCase();
     if (ext == 'jpg' || ext == 'jpeg' || ext == 'png' || ext == 'webp') {
       return Image.network(
         file.metadata?.shareInfo()['shareLink'],

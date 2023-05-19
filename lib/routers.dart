@@ -29,7 +29,6 @@ import 'package:orginone/pages/work/work_start/view.dart';
 import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/dict_info/view.dart';
 import 'package:orginone/pages/setting/home/binding.dart';
-import 'package:orginone/pages/setting/home/setting/binding.dart';
 import 'package:orginone/pages/setting/home/view.dart';
 import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/person/cardbag/bindings.dart';
@@ -65,10 +64,10 @@ import 'pages/other/thing/binding.dart';
 import 'pages/other/thing/thing_details/binding.dart';
 import 'pages/other/thing/thing_details/view.dart';
 import 'pages/other/thing/view.dart';
-import 'pages/ware_house/application_details/binding.dart';
-import 'pages/ware_house/application_details/view.dart';
-import 'pages/ware_house/warehouse_management/binding.dart';
-import 'pages/ware_house/warehouse_management/view.dart';
+import 'pages/store/application_details/binding.dart';
+import 'pages/store/application_details/view.dart';
+import 'pages/store/store_tree/binding.dart';
+import 'pages/store/store_tree/view.dart';
 import 'pages/work/initiate_work/binding.dart';
 import 'pages/work/initiate_work/view.dart';
 import 'pages/work/process_details/binding.dart';
@@ -90,13 +89,10 @@ import 'pages/setting/company_info/view.dart';
 import 'pages/setting/department_info/binding.dart';
 import 'pages/setting/department_info/view.dart';
 import 'pages/setting/dict_info/binding.dart';
-import 'pages/setting/home/setting/view.dart';
 import 'pages/setting/out_agency_info/binding.dart';
 import 'pages/setting/out_agency_info/view.dart';
 import 'pages/setting/permission_info/binding.dart';
 import 'pages/setting/permission_info/view.dart';
-import 'pages/setting/relationship_group/binding.dart';
-import 'pages/setting/relationship_group/view.dart';
 import 'pages/setting/role_settings/binding.dart';
 import 'pages/setting/role_settings/view.dart';
 import 'pages/setting/station_info/binding.dart';
@@ -144,7 +140,6 @@ class Routers {
 
   // 设置
   static const String settingCenter = "/settingCenter";
-  static const String settingFunction = "/settingFunction";
   static const String mineUnit = "/mineUnit";
   static const String contact = "/contact";
   static const String cohorts = "/cohorts";
@@ -243,9 +238,6 @@ class Routers {
   //文件夹
   static const String file = '/file';
 
-  //关系列表
-  static const String relationGroup = '/relationGroup';
-
   //内部机构详情
   static const String departmentInfo = '/departmentInfo';
 
@@ -287,7 +279,7 @@ class Routers {
   //属性定义详情
   static const String workList = "/workList";
 
-  static const String warehouseManagement = "/warehouseManagement";
+  static const String storeTree = "/storeTree";
 
   static const String messageFile = "/messageFile";
   static String get main {
@@ -476,11 +468,6 @@ class Routers {
         binding: SettingCenterBinding(),
       ),
       GetPage(
-        name: Routers.settingFunction,
-        page: () => SettingFunctionPage(),
-        binding: SettingFunctionBinding(),
-      ),
-      GetPage(
         name: Routers.companyInfo,
         page: () => CompanyInfoPage(),
         binding: CompanyInfoBinding(),
@@ -489,11 +476,6 @@ class Routers {
         name: Routers.version,
         page: () => const VersionPage(),
         binding: VersionBinding(),
-      ),
-      GetPage(
-        name: Routers.relationGroup,
-        page: () => RelationGroupPage(),
-        binding: RelationGroupBinding(),
       ),
       GetPage(
         name: Routers.departmentInfo,
@@ -566,9 +548,9 @@ class Routers {
         binding: UserInfoBinding(),
       ),
       GetPage(
-        name: Routers.warehouseManagement,
-        page: () => WareHouseManagementPage(),
-        binding:WarehouseManagementBinding(),
+        name: Routers.storeTree,
+        page: () => StoreTreePage(),
+        binding:StoreTreeBinding(),
       ),
       GetPage(
         name: Routers.dictInfo,

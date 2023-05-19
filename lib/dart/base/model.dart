@@ -153,6 +153,7 @@ class BucketOpreateModel {
   Map<String, dynamic> toJson() {
     return {
       "key": key,
+      "name":name,
       "operate": operate.label,
       "fileItem": fileItem?.toJson(),
     };
@@ -228,7 +229,7 @@ class FileItemModel extends FileItemShare {
     super.thumbnail,
   });
 
-  FileItemModel.formJson(Map<String, dynamic> json)
+  FileItemModel.fromJson(Map<String, dynamic> json)
       : key = json['key'],
         isDirectory = json['isDirectory'],
         contentType = json['contentType'],
@@ -254,6 +255,67 @@ class FileItemModel extends FileItemShare {
     };
   }
 }
+
+
+class FileItemArray {
+  // 便宜量
+  int? offset;
+
+  // 最大数量
+  int? limit;
+
+  // 总数
+  int? total;
+
+  // 结果
+  List<FileItemModel>? result;
+
+  //构造方法
+  FileItemArray({
+    required this.offset,
+    required this.limit,
+    required this.total,
+    required this.result,
+  });
+
+  //通过JSON构造
+  FileItemArray.fromJson(Map<String, dynamic> json) {
+    offset = json["offset"];
+    limit = json["limit"];
+    total = json["total"];
+    if (json["result"] != null) {
+      result = [];
+      json["result"].forEach((e) {
+        result!.add(FileItemModel.fromJson(e));
+      });
+    }
+  }
+
+  //通过动态数组解析成List
+  static List<XAttributeArray> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<XAttributeArray> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(XAttributeArray.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["offset"] = offset;
+    json["limit"] = limit;
+    json["total"] = total;
+    json["result"] = result;
+    return json;
+  }
+}
+
 
 class IdReq {
   // 唯一ID

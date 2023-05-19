@@ -7,11 +7,13 @@ import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/dict/dict.dart';
+import 'package:orginone/dart/core/thing/store/propclass.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/util/authority.dart';
 import 'package:orginone/widget/common_widget.dart';
 
-import 'setting/state.dart';
+import 'state.dart';
+
 
 class PopupMenuWidget<T> extends StatefulWidget {
   final SettingNavModel model;
@@ -99,16 +101,13 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
                 popupMenuItem.add(newPopupMenuItem("删除字典", "delete"));
               }
             }
+            if(widget.model.source is IPropClass){
+              popupMenuItem.add(newPopupMenuItem("新增属性", "create"));
+              popupMenuItem.add(newPopupMenuItem("编辑属性", "edit"));
+              popupMenuItem.add(newPopupMenuItem("删除属性", "delete"));
+            }
           } else {
             popupMenuItem.add(newPopupMenuItem("新增类别", "create"));
-          }
-          break;
-        case StandardEnum.propPackage:
-          if (widget.model.name ==  StandardEnum.propPackage.label) {
-            popupMenuItem.add(newPopupMenuItem("新增属性", "create"));
-          }else{
-            popupMenuItem.add(newPopupMenuItem("编辑属性", "edit"));
-            popupMenuItem.add(newPopupMenuItem("删除属性", "delete"));
           }
           break;
       }

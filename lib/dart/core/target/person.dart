@@ -17,8 +17,6 @@ import 'team/hospital.dart';
 import 'team/university.dart';
 
 abstract class IPerson extends IBelong {
-  //文件系统
-  late IFileSystem fileSystem;
   //加入/管理的单位
   late RxList<ICompany> companys;
 
@@ -56,10 +54,6 @@ class Person extends Belong implements IPerson {
   Person(XTarget metadata):super(metadata,['本人']){
     companys = <ICompany>[].obs;
     givedIdentitys = [];
-    fileSystem = new FileSystem(
-      XSpecies(id: metadata.id),
-      this,
-    );
     userId = metadata.id;
   }
 
@@ -118,8 +112,8 @@ class Person extends Belong implements IPerson {
 
   @override
   Future<TargetShare> findShareById(String id) async{
-    var share = ShareIdSet[id] ?? TargetShare(name: '未知', typeName: "未知");
-    if (share.avatar == null) {
+    var share = TargetShare(name: '未知', typeName: "未知");
+    if (!ShareIdSet.containsKey(id)) {
       var res = await kernel
           .queryTargetById(IdArrayReq(ids: [id],
         page: PageRequest(offset: 0, limit: 9999, filter: ''),));
@@ -132,6 +126,8 @@ class Person extends Belong implements IPerson {
         });
         share = ShareIdSet[id] ?? share;
       }
+    }else{
+      return ShareIdSet[id]!;
     }
     return share;
   }
@@ -313,9 +309,6 @@ class Person extends Belong implements IPerson {
 
     superAuth?.deepLoad(reload: reload);
   }
-
-  @override
-  late IFileSystem fileSystem;
 
   @override
   // TODO: implement targets

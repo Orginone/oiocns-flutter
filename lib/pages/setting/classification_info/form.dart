@@ -1,33 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/dart/core/thing/base/form.dart';
-import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/store/propclass.dart';
-import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
-import '../dialog.dart';
 import 'logic.dart';
 
 
-class FormPage
-    extends BaseGetPageView<
-        FormController,
-        FormState> {
-
-  final List<XProperty> propertys;
-
-  final IPropClass propClass;
-
-  FormPage(this.propertys, this.propClass);
+class FormPage extends BaseGetPageView<FormController, FormState> {
+  FormPage();
 
   @override
   Widget buildView() {
@@ -38,16 +24,16 @@ class FormPage
           children: [
             Obx(() {
               return CommonWidget.commonDocumentWidget(
-                  title: ["表单名称", "表单编号", "特性名称", "特性定义"],
-                  content: state.form.map((e) {
-                    return [
-                      e.form?.name??"",
-                      e.code??"" ,
-                      e.name??"" ,
-                      e.remark??"",
-                    ];
-                  }).toList(),
-                 );
+                title: ["表单名称", "表单编号", "特性名称", "特性定义"],
+                content: state.form.map((e) {
+                  return [
+                    e.form?.name ?? "",
+                    e.code ?? "",
+                    e.name ?? "",
+                    e.remark ?? "",
+                  ];
+                }).toList(),
+              );
             }),
           ],
         ),
@@ -57,7 +43,7 @@ class FormPage
 
   @override
   FormController getController() {
-    return FormController(this.propertys,this.propClass);
+    return FormController();
   }
 
   @override
@@ -73,11 +59,9 @@ class FormController
   final FormState state = FormState();
 
 
-  final List<XProperty> propertys;
+  ClassificationInfoController get info => Get.find();
 
-  final IPropClass propClass;
-
-  FormController(this.propertys, this.propClass);
+  dynamic get species => info.state.species;
 
   @override
   void onReady() async{
@@ -89,11 +73,13 @@ class FormController
   }
 
   Future<void> loadForm({bool reload = false}) async {
-     state.form.clear();
-     for (var data in propertys) {
-       var value = await propClass.loadPropAttributes(data);
-       state.form.addAll(value);
-     }
+
+    try{
+      var property = (species.propertys as List<XProperty>)
+          .firstWhere((element) => element.id == info.state.data.id);
+      state.form.value = await species.loadPropAttributes(property);
+    }catch(e){
+    }
   }
 
 

@@ -140,7 +140,7 @@ class PropertyController extends BaseController<PropertyState> {
         valueType: property?.valueType ?? "",
         unit: property?.unit??"",
         dictId: property?.dict?.id,
-        isEdit: true,dictList: info.state.data.space.dicts??[]);
+        isEdit: true,dictList: info.state.data.space!.dicts??[]);
   }
 
   Future<void> loadPropertys({bool reload = false}) async{

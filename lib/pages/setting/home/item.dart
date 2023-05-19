@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.dart';
-import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
-import 'package:orginone/pages/setting/config.dart';
 
 import 'popup_menu_widget.dart';
-import 'setting/state.dart';
+import 'state.dart';
 
 class Item extends BaseBreadcrumbNavItem<SettingNavModel> {
   final PopupMenuItemSelected? onSelected;
@@ -22,3 +20,4 @@ class Item extends BaseBreadcrumbNavItem<SettingNavModel> {
     );
   }
 }
+

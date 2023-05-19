@@ -41,18 +41,15 @@ enum TargetType {
 
 enum SpeciesType {
   /** 类别目录 */
-  fileSystem('文件类'),
   market('流通类'),
   resource('资源类'),
   store('属性类'),
   application('应用类'),
   dict('字典类'),
   /** 类别类目 */
-  commodity('商品类'),
-  appModule('应用模块'),
-  workItem('应用办事'),
-  workForm('应用表单'),
-  reportBI('应用报表');
+  workItem('办事类'),
+  workThing('事物类'),
+  data('数据类');
 
   final String label;
 

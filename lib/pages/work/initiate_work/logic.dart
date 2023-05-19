@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/thing/app/application.dart';
-import 'package:orginone/dart/core/thing/app/appmodule.dart';
 import 'package:orginone/dart/core/thing/base/work.dart';
 import 'package:orginone/dart/core/thing/market/market.dart';
 import 'package:orginone/routers.dart';
@@ -59,16 +58,16 @@ class InitiateWorkController
     for (var element in space!.targets) {
       for (var item in element.species) {
         List<WorkBreadcrumbNav> children = [];
-        if (SpeciesType.getType(item.metadata.typeName) ==
-                SpeciesType.application ||
-            SpeciesType.getType(item.metadata.typeName) == SpeciesType.market) {
+        if (item.metadata.typeName ==
+                SpeciesType.application.label ||
+            item.metadata.typeName == SpeciesType.market.label) {
           try {
             await (item as IMarket).loadWorkDefines();
           } catch (e) {
             await (item as IApplication).loadWorkDefines();
           }
           for (var element in item.children) {
-            if (element is IWork || element is IAppModule) {
+            if (element is IWork || element is IApplication) {
               if ((element as dynamic).defines.isNotEmpty) {
                 children.add(WorkBreadcrumbNav(
                     children: [],
