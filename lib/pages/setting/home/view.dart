@@ -72,9 +72,6 @@ class SettingCenterPage
                 case StandardEnum.classCriteria:
                   controller.operationClassCriteria(e,value);
                   break;
-                case StandardEnum.propPackage:
-                  controller.operationPropPackage(e,value);
-                  break;
                 default:
                   controller.operationGroup(e,value);
                   break;

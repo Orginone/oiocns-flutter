@@ -40,7 +40,7 @@ class ClassificationInfoPage
                   case ClassificationEnum.attrs:
                     return KeepAliveWidget(child: AttrsPage());
                   case ClassificationEnum.form:
-                    return KeepAliveWidget(child: Container());
+                    return KeepAliveWidget(child: FormPage());
                   case ClassificationEnum.work:
                     return KeepAliveWidget(child: WorkPage());
                 }
@@ -80,11 +80,9 @@ class ClassificationInfoPage
             ),
           ),
           Obx(() {
-            if (state.currentIndex.value == 0) {
+            if (state.currentIndex.value == 0 || state.tabTitle[state.currentIndex.value] == ClassificationEnum.form) {
               return Container();
             }
-            String text = state.currentIndex.value == 1 ? '新增特性' : state
-                .currentIndex.value == 2 ? "新增表单" : "新增办事";
 
             return CommonWidget.commonPopupMenuButton(items: [
               PopupMenuItem(

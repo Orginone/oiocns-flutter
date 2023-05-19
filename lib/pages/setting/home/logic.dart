@@ -9,6 +9,7 @@ import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/dict/dict.dart';
+import 'package:orginone/dart/core/thing/store/propclass.dart';
 import 'package:orginone/pages/setting/classification_info/form.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
@@ -79,21 +80,6 @@ class SettingCenterController
         break;
       case StandardEnum.classCriteria:
         Get.toNamed(Routers.classificationInfo, arguments: {"data": model});
-        break;
-      case StandardEnum.dictPackage:
-        Get.toNamed(Routers.dictInfo, arguments: {"data": model});
-        break;
-      case StandardEnum.propPackage:
-        var property = (model.source.propertys as List<XProperty>)
-            .firstWhere((element) => element.id == model.id);
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return Material(
-            child: GyScaffold(
-              titleName: "表单列表",
-              body: FormPage([property], model.source),
-            ),
-          );
-        }));
         break;
     }
     switch (model.spaceEnum) {
@@ -359,6 +345,10 @@ class SettingCenterController
   void operationClassCriteria(SettingNavModel item, value) {
     if (item.source is IDict) {
       operationDict(item, value);
+      return;
+    }
+    if (item.source is IPropClass) {
+      operationPropPackage(item, value);
       return;
     }
     switch (value) {

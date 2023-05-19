@@ -29,7 +29,7 @@ class ClassificationInfoState extends BaseGetState{
     if(species is ISpeciesItem){
       switch (SpeciesType.getType(species.metadata.typeName)) {
         case SpeciesType.store:
-          tabTitle.add(ClassificationEnum.property);
+          tabTitle.add(ClassificationEnum.form);
           break;
         case SpeciesType.application:
           tabTitle.addAll([ClassificationEnum.attrs]);
