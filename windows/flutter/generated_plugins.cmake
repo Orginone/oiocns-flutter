@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  dynamic_color
   emoji_picker_flutter
   permission_handler_windows
   url_launcher_windows
