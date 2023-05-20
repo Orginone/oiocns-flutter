@@ -118,7 +118,7 @@ abstract class IMsgChat extends IEntity {
   abstract ShareIcon share;
 
   /// 会话的历史消息
-  abstract List<MsgSaveModel> messages;
+  abstract RxList<MsgSaveModel> messages;
 
   /// 会话的成员
   abstract List<XTarget> members;
@@ -191,7 +191,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
           chatRemark: remark,
         ).obs,
         members = <XTarget>[],
-        messages = <MsgSaveModel>[],
+        messages = <MsgSaveModel>[].obs,
         memberChats = <PersonMsgChat>[].obs {
     this.space = space ?? this as IBelong;
   }
@@ -220,7 +220,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
   List<XTarget> members;
 
   @override
-  List<MsgSaveModel> messages;
+  RxList<MsgSaveModel> messages;
 
   @override
   List<PersonMsgChat> memberChats;

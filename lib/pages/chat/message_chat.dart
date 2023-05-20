@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
@@ -13,14 +12,19 @@ import 'package:orginone/util/date_util.dart';
 import 'package:orginone/widget/template/originone_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 
-class MessageChat extends GetView<SettingController> {
-  final chatBoxCtrl = ChatBoxController();
+class MessageChat extends StatefulWidget {
+  const MessageChat({super.key});
 
-  MessageChat({super.key});
+  @override
+  State<StatefulWidget> createState() => _MessageChatState();
+}
+
+class _MessageChatState extends State<MessageChat> {
+  final IMsgChat chat = Get.arguments;
+  final chatBoxCtrl = ChatBoxController();
 
   @override
   Widget build(BuildContext context) {
-    final IMsgChat chat = Get.arguments;
     return OrginoneScaffold(
       appBarHeight: 74.h,
       appBarBgColor: XColors.navigatorBgColor,
@@ -38,17 +42,23 @@ class MessageChat extends GetView<SettingController> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(child: _content(chat, chat.messages)),
-            ChatBox(chat: chat)
+            ChatBox(chat: chat, controller: chatBoxCtrl)
           ],
         ),
       ),
     );
   }
 
+  @override
+  void dispose() {
+    chatBoxCtrl.dispose();
+    super.dispose();
+  }
+
   Widget _title(IMsgChat chat) {
     String name = chat.chatdata.value.chatName ?? "";
-    if (!chat.chatdata.value.labels.contains(TargetType.person.label)) {
-      name += "($chat.members.length)";
+    if (chat.memberChats.length > 1) {
+      name += "(${chat.memberChats.length})";
     }
     var spaceName = chat.chatdata.value.labels.join(" | ");
     return Column(

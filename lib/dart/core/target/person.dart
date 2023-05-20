@@ -281,28 +281,33 @@ class Person extends Belong implements IPerson {
 
   @override
   void loadMemberChats(List<XTarget> members, bool isAdd) {
-    for (var member in members) {
-      if (isAdd) {
-        memberChats.add(
-          PersonMsgChat(
-            id,
-            member.id,
-            ShareIcon(
-              name: member.name,
-              typeName: member.typeName,
-              avatar: FileItemShare.parseAvatar(member.icon),
-            ),
-            ['好友'],
-            member.remark ?? "",
-            this,
+    members = members.where((i) => i.id != userId).toList();
+    if (isAdd) {
+      for (var i in members) {
+        var item = PersonMsgChat(
+          id,
+          i.id,
+          ShareIcon(
+            name: i.name,
+            typeName: i.typeName,
+            avatar: FileItemShare.parseAvatar(i.icon),
           ),
+          ['好友'],
+          i.remark ?? "",
+          this,
         );
-      } else {
-        memberChats = memberChats
-            .where(
-                (p0) => !(p0.belongId == member.id && p0.chatId == member.id))
-            .toList();
+        memberChats.add(item);
       }
+    } else {
+      var chats = <PersonMsgChat>[];
+      for (var a in memberChats) {
+        for (var i in members) {
+          if (a.chatId != i.id) {
+            chats.add(a);
+          }
+        }
+      }
+      memberChats = chats;
     }
   }
 
@@ -317,11 +322,9 @@ class Person extends Belong implements IPerson {
     for (var company in companys) {
       await company.deepLoad(reload: reload);
     }
-
     for (var cohort in cohorts) {
       await cohort.deepLoad(reload: reload);
     }
-
     superAuth?.deepLoad(reload: reload);
   }
 

@@ -31,11 +31,16 @@ double defaultBorderRadius = 6.w;
 double boxDefaultHeight = 40.h;
 double defaultBottomHeight = 300.h;
 
-class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
+class ChatBox extends StatelessWidget with WidgetsBindingObserver {
   final RxDouble bottomHeight = defaultBottomHeight.obs;
   final IMsgChat chat;
+  final ChatBoxController controller;
 
-  ChatBox({Key? key, required this.chat}) : super(key: key);
+  ChatBox({
+    Key? key,
+    required this.chat,
+    required this.controller,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -514,8 +519,7 @@ enum MoreFunction {
   const MoreFunction(this.label, this.iconData);
 }
 
-class ChatBoxController extends FullLifeCycleController
-    with GetSingleTickerProviderStateMixin, WidgetsBindingObserver {
+class ChatBoxController with WidgetsBindingObserver {
   final Rx<InputStatus> _inputStatus = InputStatus.notPopup.obs;
   final TextEditingController inputController = TextEditingController();
   final FocusNode focusNode = FocusNode();
@@ -549,22 +553,17 @@ class ChatBoxController extends FullLifeCycleController
 
   late GlobalKey<AtTextFiledState> atKey;
 
-  @override
-  void onInit() async {
-    // TODO: implement onInit
-    super.onInit();
+  ChatBoxController() {
     EventBusHelper.register(this, (event) {
       if (event is XTarget) {
         atKey.currentState!.addTarget(event);
       }
     });
     atKey = GlobalKey();
-    await Permission.microphone.request();
+    Permission.microphone.request();
   }
 
-  @override
-  onClose() {
-    super.onClose();
+  dispose() {
     EventBusHelper.unregister(this);
     _recorder.dispositionStream();
     inputController.dispose();
@@ -753,12 +752,5 @@ class ChatBoxController extends FullLifeCycleController
       await _recorder.resumeRecorder();
       recordStatus.value = RecordStatus.recoding;
     }
-  }
-}
-
-class ChatBoxBinding extends Bindings {
-  @override
-  void dependencies() {
-    Get.lazyPut(() => ChatBoxController());
   }
 }

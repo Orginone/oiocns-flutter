@@ -346,7 +346,7 @@ class Routers {
       ),
       GetPage(
         name: Routers.messageChat,
-        page: () => MessageChat(),
+        page: () => const MessageChat(),
         bindings: [PlayBinding()],
       ),
       GetPage(
@@ -374,7 +374,6 @@ class Routers {
         bindings: [
           HomeBinding(),
           IndexPageBinding(),
-          ChatBoxBinding(),
           PlayBinding(),
           UpdateBinding()
         ],
