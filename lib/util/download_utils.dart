@@ -115,7 +115,7 @@ class DownloadUtils {
       print("id===========$id");
       _sink.add(cacheTasks);
     });
-    // FlutterDownloader.registerCallback(_downloadCallback);
+    FlutterDownloader.registerCallback(_downloadCallback);
   }
 
   @pragma('vm:entry-point')
