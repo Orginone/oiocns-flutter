@@ -30,9 +30,9 @@ class ChatProvider implements IChatProvider {
   ChatProvider(this.user) : _preMessages = <MsgSaveModel>[].obs {
     kernel.on('RecvMsg', (data) {
       if (!_preMessage) {
-        _recvMessage(data);
+        _recvMessage(MsgSaveModel.fromJson(data));
       } else {
-        _preMessages.add(data);
+        _preMessages.add(MsgSaveModel.fromJson(data));
       }
     });
   }

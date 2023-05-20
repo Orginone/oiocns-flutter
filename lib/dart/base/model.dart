@@ -5150,8 +5150,8 @@ class MsgSaveModel {
         updateTime = json['updateTime'],
         id = json['id'],
         toId = json['toId'],
-        showTxt = json['showTxt'],
-        allowEdit = json['allowEdit'] {
+        showTxt = json['showTxt'] ?? "",
+        allowEdit = json['allowEdit'] ?? false {
     if (json['tags'] != null) {
       List<Map<String, String>> temp = json["tags"];
       tags = temp.map((item) => Tag.fromJson(item)).toList();

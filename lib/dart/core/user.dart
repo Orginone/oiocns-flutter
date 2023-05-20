@@ -14,19 +14,10 @@ class UserProvider {
   final Rxn<IWorkProvider> _work = Rxn();
   final Rxn<IChatProvider> _chat = Rxn();
   final RxBool _inited = false.obs;
-  List<MsgSaveModel> _preMessages = [];
 
   UserProvider() {
     kernel.on('ChatRefresh', () async {
       await reload();
-    });
-    kernel.on('RecvMsg', (data) {
-      var item = MsgSaveModel.fromJson(data);
-      if (_inited.value) {
-        _recvMessage(item);
-      } else {
-        _preMessages.add(item);
-      }
     });
     kernel.on('RecvTask', (data) {
       var work = XWorkTask.fromJson(data);
@@ -104,21 +95,5 @@ class UserProvider {
     _inited.value = true;
     _chat.value?.loadPreMessage();
     _user.refresh();
-  }
-
-  /// 接收到新信息
-  /// @param data 新消息
-  /// @param cache 是否缓存
-  Future<void> _recvMessage(MsgSaveModel data) async {
-    for (final c in user?.chats ?? []) {
-      bool isMatch = data.sessionId == c.chatId;
-      if ((c.share.typeName == TargetType.person || c.share.typeName == '权限') &&
-          isMatch) {
-        isMatch = data.belongId == c.belongId;
-      }
-      if (isMatch) {
-        c.receiveMessage(data);
-      }
-    }
   }
 }
