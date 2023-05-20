@@ -22,12 +22,12 @@ abstract class IChatProvider {
 
 class ChatProvider implements IChatProvider {
   bool _preMessage = true;
-  late final List<MsgSaveModel> _preMessages;
+  final RxList<MsgSaveModel> _preMessages;
+
   @override
   final IPerson user;
 
-  ChatProvider(this.user) {
-    _preMessages = [];
+  ChatProvider(this.user) : _preMessages = <MsgSaveModel>[].obs {
     kernel.on('RecvMsg', (data) {
       if (!_preMessage) {
         _recvMessage(data);
@@ -52,12 +52,12 @@ class ChatProvider implements IChatProvider {
                 res.data[key]['fullId'] != null) {
               var fullId = key.substring(1);
               var find =
-                  chats.firstWhereOrNull((i) => i.chatdata.fullId == fullId);
+                  chats.firstWhereOrNull((i) => i.chatdata.value.fullId == fullId);
               find?.loadCache(res.data[key]);
             }
           });
         }
-        _preMessages = _preMessages.where((item) {
+        _preMessages.value = _preMessages.where((item) {
           _recvMessage(item);
           return false;
         }).toList()

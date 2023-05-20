@@ -84,7 +84,7 @@ class MessageItemWidget extends GetView<SettingController> {
 
   Widget get _avatarContainer {
     return Obx(() {
-      var noRead = chat.chatdata.noReadCount;
+      var noRead = chat.chatdata.value.noReadCount;
       return TeamAvatar(
         info: TeamTypeInfo(share: chat.share),
         children: [
@@ -107,7 +107,7 @@ class MessageItemWidget extends GetView<SettingController> {
   Widget get _content {
     var target = chat.chatdata;
     var labels = <Widget>[];
-    for (var item in chat.chatdata.labels ?? []) {
+    for (var item in chat.chatdata.value.labels ?? []) {
       labels.add(TextTag(
         item,
         bgColor: Colors.white,
@@ -126,10 +126,10 @@ class MessageItemWidget extends GetView<SettingController> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(target.chatName ?? "", style: XFonts.size22Black0W700),
+            Text(target.value.chatName ?? "", style: XFonts.size22Black0W700),
             Text(
               CustomDateUtil.getSessionTime(
-                  chat.chatdata.lastMessage?.createTime),
+                  chat.chatdata.value.lastMessage?.createTime),
               style: XFonts.size18Black0,
             ),
           ],
@@ -143,7 +143,7 @@ class MessageItemWidget extends GetView<SettingController> {
   }
 
   Widget _showTxt() {
-    var lastMessage = chat.chatdata.lastMessage;
+    var lastMessage = chat.chatdata.value.lastMessage;
     if (lastMessage == null) {
       return Container();
     }

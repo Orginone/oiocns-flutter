@@ -98,7 +98,7 @@ class TagsMsgType {
 /// 单个会话的抽象
 abstract class IMsgChat extends IEntity {
   /// 消息类会话元数据
-  abstract MsgChatData chatdata;
+  abstract Rx<MsgChatData> chatdata;
 
   /// 回话的标签列表
   abstract List<String> labels;
@@ -129,11 +129,8 @@ abstract class IMsgChat extends IEntity {
   /// 是否为我的会话
   bool get isMyChat;
 
-  ///禁用通知
-  void unMessage();
-
   /// 会话初始化
-  void onMessage(void Function(List<MsgSaveModel>) messages);
+  void onMessage();
 
   /// 缓存会话
   void cache();
@@ -192,7 +189,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
           labels: labels,
           chatName: share.name,
           chatRemark: remark,
-        ),
+        ).obs,
         members = <XTarget>[],
         messages = <MsgSaveModel>[],
         memberChats = <PersonMsgChat>[].obs {
@@ -202,7 +199,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
   List<String>? findMe;
 
   @override
-  MsgChatData chatdata;
+  Rx<MsgChatData> chatdata;
 
   @override
   List<String> labels;
@@ -228,8 +225,6 @@ abstract class MsgChat extends Entity implements IMsgChat {
   @override
   List<PersonMsgChat> memberChats;
 
-  void Function(List<MsgSaveModel> messages)? _messageNotify;
-
   @override
   String get userId {
     return space.user.id;
@@ -237,22 +232,16 @@ abstract class MsgChat extends Entity implements IMsgChat {
 
   @override
   bool get isMyChat {
-    if (chatdata.noReadCount > 0 || share.typeName == TargetType.person.label) {
+    if (chatdata.value.noReadCount > 0 || share.typeName == TargetType.person.label) {
       return true;
     }
     return members.where((i) => i.id == userId).isNotEmpty;
   }
 
   @override
-  void unMessage() {
-    _messageNotify = null;
-  }
-
-  @override
-  onMessage(void Function(List<MsgSaveModel>) callback) {
-    _messageNotify = callback;
-    if (chatdata.noReadCount > 0) {
-      chatdata.noReadCount = 0;
+  onMessage() {
+    if (chatdata.value.noReadCount > 0) {
+      chatdata.value.noReadCount = 0;
       cache();
     }
     if (messages.length < 10) {
@@ -263,7 +252,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
   @override
   cache() {
     kernel.anystore.set(
-      "${StoreCollName.chatMessage}.T${chatdata.fullId}",
+      "${StoreCollName.chatMessage}.T${chatdata.value.fullId}",
       {
         "operation": "replaceAll",
         "data": chatdata.toJson(),
@@ -274,24 +263,23 @@ abstract class MsgChat extends Entity implements IMsgChat {
 
   @override
   loadCache(MsgChatData cache) {
-    if (chatdata.fullId == cache.fullId) {
-      chatdata.labels = Lists.union(chatdata.labels, cache.labels);
-      chatdata.chatName = cache.chatName ?? chatdata.chatName;
-      share.name = chatdata.chatName ?? "";
+    if (chatdata.value.fullId == cache.fullId) {
+      chatdata.value.labels = Lists.union(chatdata.value.labels, cache.labels);
+      chatdata.value.chatName = cache.chatName ?? chatdata.value.chatName;
+      share.name = chatdata.value.chatName ?? "";
       ShareIdSet[chatId] = share;
       cache.noReadCount = cache.noReadCount;
-      if (chatdata.noReadCount != cache.noReadCount) {
-        chatdata.noReadCount = cache.noReadCount;
+      if (chatdata.value.noReadCount != cache.noReadCount) {
+        chatdata.value.noReadCount = cache.noReadCount;
       }
-      chatdata.lastMsgTime = cache.lastMsgTime;
-      if (cache.lastMessage?.id != chatdata.lastMessage?.id) {
-        chatdata.lastMessage = cache.lastMessage;
+      chatdata.value.lastMsgTime = cache.lastMsgTime;
+      if (cache.lastMessage?.id != chatdata.value.lastMessage?.id) {
+        chatdata.value.lastMessage = cache.lastMessage;
         int index = messages.indexWhere((i) => i.id == cache.lastMessage?.id);
         if (index > -1) {
           messages[index] = cache.lastMessage!;
         } else {
           messages.add(cache.lastMessage!);
-          _messageNotify!.call(messages);
         }
       }
     }
@@ -359,8 +347,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
     );
     if (res.success) {
       messages.removeWhere((item) => item.id == id);
-      chatdata.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
-      _messageNotify?.call(messages);
+      chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
       return true;
     }
     return res.success;
@@ -378,8 +365,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
     );
     if (res.success) {
       messages.clear();
-      chatdata.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
-      _messageNotify?.call(messages);
+      chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
       return true;
     }
     return res.success;
@@ -405,13 +391,11 @@ abstract class MsgChat extends Entity implements IMsgChat {
       msg.showTxt = EncryptionUtil.inflate(msg.msgBody);
       messages.insert(0, msg);
     }
-    chatdata.noReadCount += 1;
+    chatdata.value.noReadCount += 1;
 
-    chatdata.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
-    chatdata.lastMessage = msg;
+    chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
+    chatdata.value.lastMessage = msg;
     cache();
-
-    _messageNotify?.call(messages);
   }
 
   void _loadMessages(List<dynamic> msgs) {
@@ -420,12 +404,9 @@ abstract class MsgChat extends Entity implements IMsgChat {
       item.showTxt = EncryptionUtil.inflate(item.msgBody);
       messages.insert(0, item);
     }
-    if (chatdata.lastMsgTime == nullTime && msgs.isNotEmpty) {
+    if (chatdata.value.lastMsgTime == nullTime && msgs.isNotEmpty) {
       var time = DateTime.parse(msgs[0].createTime).millisecondsSinceEpoch;
-      chatdata.lastMsgTime = time;
-    }
-    if (_messageNotify != null) {
-      _messageNotify!(messages);
+      chatdata.value.lastMsgTime = time;
     }
   }
 }

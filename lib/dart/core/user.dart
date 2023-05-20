@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/chat/provider.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/main.dart';
@@ -8,10 +9,10 @@ import 'package:orginone/util/event_bus.dart';
 
 import 'work/provider.dart';
 
-
 class UserProvider {
   final Rxn<IPerson> _user = Rxn();
   final Rxn<IWorkProvider> _work = Rxn();
+  final Rxn<IChatProvider> _chat = Rxn();
   final RxBool _inited = false.obs;
   List<MsgSaveModel> _preMessages = [];
 
@@ -40,8 +41,12 @@ class UserProvider {
     return _user.value;
   }
 
-  IWorkProvider? get work{
+  IWorkProvider? get work {
     return _work.value;
+  }
+
+  IChatProvider? get chat {
+    return _chat.value;
   }
 
   /// 是否完成初始化
@@ -83,8 +88,9 @@ class UserProvider {
   /// 加载用户
   _loadUser(XTarget person) async {
     _user.value = Person(person);
-    if(_user.value!=null){
+    if (_user.value != null) {
       _work.value = WorkProvider(_user.value!);
+      _chat.value = ChatProvider(_user.value!);
     }
     XEventBus.instance.fire(UserLoaded());
   }
@@ -108,7 +114,7 @@ class UserProvider {
     refresh();
   }
 
-  void refresh(){
+  void refresh() {
     _user.refresh();
   }
 

@@ -143,8 +143,6 @@ dependencies:
   #svg图标
   flutter_svg: ^2.0.5
   adaptive_dialog: ^1.8.3+1
-  # react hooks
-  flutter_hooks: ^0.18.6
 
 dev_dependencies:
   flutter_test:

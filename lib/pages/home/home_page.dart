@@ -88,7 +88,7 @@ class HomeController extends TabsController {
         var chats = settingCtrl.provider.user?.chats;
         int mgsCount = 0;
         chats?.forEach((element) {
-          mgsCount += element.chatdata.noReadCount;
+          mgsCount += element.chatdata.value.noReadCount;
         });
         return BadgeTabWidget(
           imgPath: settingCtrl.homeEnum.value != HomeEnum.chat

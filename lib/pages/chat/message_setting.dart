@@ -88,8 +88,8 @@ class MessageSetting extends GetView<SettingController> {
   /// 头像相关
   Widget _avatar(IMsgChat chat) {
     var messageItem = chat.chatdata;
-    String name = messageItem.chatName ?? "";
-    if (messageItem.labels.contains(TargetType.person.label) ?? false) {
+    String name = messageItem.value.chatName ?? "";
+    if (messageItem.value.labels.contains(TargetType.person.label) ?? false) {
       name += "(${chat.members.length})";
     }
     return Row(
@@ -103,7 +103,7 @@ class MessageSetting extends GetView<SettingController> {
             children: [
               Text(name, style: XFonts.size22Black3W700),
               Text(
-                messageItem.chatRemark ?? "",
+                messageItem.value.chatRemark ?? "",
                 style: XFonts.size16Black6,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -172,7 +172,7 @@ class MessageSetting extends GetView<SettingController> {
           context: context,
           builder: (context) {
             return CupertinoAlertDialog(
-              title: Text("您确定清空与${chat.chatdata.chatName}的聊天记录吗?"),
+              title: Text("您确定清空与${chat.chatdata.value.chatName}的聊天记录吗?"),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: const Text('取消'),
@@ -204,11 +204,11 @@ class MessageSetting extends GetView<SettingController> {
   Widget _exitTarget(BuildContext context, IMsgChat chat) {
     String remark = "";
     String btnName = "";
-    if (chat.chatdata.labels.contains(TargetType.person.label) ?? false) {
-      remark = "您确定删除好友${chat.chatdata.chatName}吗?";
+    if (chat.chatdata.value.labels.contains(TargetType.person.label) ?? false) {
+      remark = "您确定删除好友${chat.chatdata.value.chatName}吗?";
       btnName = "删除好友";
     } else {
-      remark = "您确定退出${chat.chatdata.chatName}吗?";
+      remark = "您确定退出${chat.chatdata.value.chatName}吗?";
       btnName = "退出群聊";
     }
     return ElevatedButton(

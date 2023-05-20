@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
@@ -13,7 +13,7 @@ import 'package:orginone/util/date_util.dart';
 import 'package:orginone/widget/template/originone_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 
-class MessageChat extends HookWidget {
+class MessageChat extends GetView<SettingController> {
   final chatBoxCtrl = ChatBoxController();
 
   MessageChat({super.key});
@@ -21,8 +21,6 @@ class MessageChat extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final IMsgChat chat = Get.arguments;
-    var messages = useState(chat.messages);
-
     return OrginoneScaffold(
       appBarHeight: 74.h,
       appBarBgColor: XColors.navigatorBgColor,
@@ -39,7 +37,7 @@ class MessageChat extends HookWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(child: _content(chat, messages.value)),
+            Expanded(child: _content(chat, chat.messages)),
             ChatBox(chat: chat)
           ],
         ),
@@ -48,11 +46,11 @@ class MessageChat extends HookWidget {
   }
 
   Widget _title(IMsgChat chat) {
-    String name = chat.chatdata.chatName ?? "";
-    if (!chat.chatdata.labels.contains(TargetType.person.label)) {
+    String name = chat.chatdata.value.chatName ?? "";
+    if (!chat.chatdata.value.labels.contains(TargetType.person.label)) {
       name += "($chat.members.length)";
     }
-    var spaceName = chat.chatdata.labels.join(" | ");
+    var spaceName = chat.chatdata.value.labels.join(" | ");
     return Column(
       children: [
         Text(name, style: XFonts.size22Black3),
@@ -84,15 +82,17 @@ class MessageChat extends HookWidget {
         onRefresh: () => chat.moreMessage(),
         child: Container(
           padding: EdgeInsets.only(left: 10.w, right: 10.w),
-          child: ListView.builder(
-            reverse: true,
-            shrinkWrap: true,
-            controller: ScrollController(),
-            scrollDirection: Axis.vertical,
-            itemCount: messages.length,
-            itemBuilder: (BuildContext context, int index) {
-              return _item(index, chat);
-            },
+          child: Obx(
+            () => ListView.builder(
+              reverse: true,
+              shrinkWrap: true,
+              controller: ScrollController(),
+              scrollDirection: Axis.vertical,
+              itemCount: messages.length,
+              itemBuilder: (BuildContext context, int index) {
+                return _item(index, chat);
+              },
+            ),
           ),
         ),
       ),

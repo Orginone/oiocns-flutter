@@ -144,9 +144,11 @@ class Routers {
   static const String companyInfo = "/companyInfo";
   static const String version = "/version";
   static const String userInfo = "/userInfo";
+
   // 仓库相关
   // 资产管理
   static const String assetsManagement = "/assetsManagement";
+
   // 杭商城
   static const String market = "/market";
 
@@ -161,6 +163,7 @@ class Routers {
 
   //选择部门
   static const String choiceDepartment = "/choiceDepartment";
+
   //选择资产分类
   static const String choiceAssets = "/choiceAssets";
   static const String choiceSpecificAssets = "/choiceSpecificAssets";
@@ -197,6 +200,7 @@ class Routers {
 
   //批量操作资产
   static const String batchOperationAsset = "/batchOperationAsset";
+
   //扫描二维码
   static const String qrScan = "/qrScan";
 
@@ -280,6 +284,7 @@ class Routers {
   static const String storeTree = "/storeTree";
 
   static const String messageFile = "/messageFile";
+
   static String get main {
     return login;
     // var user = HiveUtils.getUser();
@@ -300,13 +305,12 @@ class Routers {
       GetPage(
         name: Routers.verificationCode,
         page: () => VerificationCodePage(),
-        binding:VerificationCodeBinding(),
+        binding: VerificationCodeBinding(),
       ),
       GetPage(
-        name: Routers.register,
-        page: () => RegisterPage(),
-        binding: RegisterBinding()
-      ),
+          name: Routers.register,
+          page: () => RegisterPage(),
+          binding: RegisterBinding()),
       GetPage(
         name: Routers.forgotPassword,
         page: () => ForgotPasswordPage(),
@@ -343,7 +347,7 @@ class Routers {
       GetPage(
         name: Routers.messageChat,
         page: () => MessageChat(),
-        bindings: [ChatBoxBinding(), PlayBinding()],
+        bindings: [PlayBinding()],
       ),
       GetPage(
         name: Routers.mineUnit,
@@ -548,7 +552,7 @@ class Routers {
       GetPage(
         name: Routers.storeTree,
         page: () => StoreTreePage(),
-        binding:StoreTreeBinding(),
+        binding: StoreTreeBinding(),
       ),
       GetPage(
         name: Routers.dictInfo,
