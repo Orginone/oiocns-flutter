@@ -394,7 +394,6 @@ class IndexPage extends BaseView<IndexPageController> {
                     Container(
                       // 面积图
                       // margin: EdgeInsets.all(13.0),
-                      width: 380.0,
                       height: 100.0,
                       // color: Colors.red,
                       child: SfCartesianChart(
@@ -492,7 +491,7 @@ class IndexPage extends BaseView<IndexPageController> {
                   children: [
                     Container(
                         // 饼图
-                        width: 380.0,
+                      alignment: Alignment.center,
                         height: 100.0,
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -512,34 +511,29 @@ class IndexPage extends BaseView<IndexPageController> {
                           // ),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        margin: EdgeInsets.all(13.0),
 
                         // color: Colors.red,
                         // child: PieChartWidget()
-                        child: Container(
-                          width: 180.0,
-                          height: 180.0,
-                          child: SfCircularChart(
-                            // title: ChartTitle(text: 'Sales Data'),
-                            // legend: Legend(isVisible: true),
-                            series: <CircularSeries>[
-                              PieSeries<pieChartSalesData, String>(
-                                dataSource: <pieChartSalesData>[
-                                  pieChartSalesData('Jan', 35),
-                                  pieChartSalesData('Feb', 15),
-                                  pieChartSalesData('Mar', 34),
-                                  pieChartSalesData('Apr', 16),
-                                  // pieChartSalesData('May', 40)
-                                ],
-                                xValueMapper: (pieChartSalesData sales, _) =>
-                                    sales.year,
-                                yValueMapper: (pieChartSalesData sales, _) =>
-                                    sales.sales,
-                                dataLabelSettings:
-                                    DataLabelSettings(isVisible: true),
-                              )
-                            ],
-                          ),
+                        child: SfCircularChart(
+                          // title: ChartTitle(text: 'Sales Data'),
+                          // legend: Legend(isVisible: true),
+                          series: <CircularSeries>[
+                            PieSeries<pieChartSalesData, String>(
+                              dataSource: <pieChartSalesData>[
+                                pieChartSalesData('Jan', 35),
+                                pieChartSalesData('Feb', 15),
+                                pieChartSalesData('Mar', 34),
+                                pieChartSalesData('Apr', 16),
+                                // pieChartSalesData('May', 40)
+                              ],
+                              xValueMapper: (pieChartSalesData sales, _) =>
+                                  sales.year,
+                              yValueMapper: (pieChartSalesData sales, _) =>
+                                  sales.sales,
+                              dataLabelSettings:
+                                  DataLabelSettings(isVisible: true),
+                            )
+                          ],
                         )),
                     // Container(
                     //   width: 11,
