@@ -107,7 +107,7 @@ class MessageItemWidget extends GetView<SettingController> {
   Widget get _content {
     var target = chat.chatdata;
     var labels = <Widget>[];
-    for (var item in chat.chatdata.value.labels ?? []) {
+    for (var item in chat.chatdata.value.labels) {
       labels.add(TextTag(
         item,
         bgColor: Colors.white,

@@ -402,7 +402,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
     for (var msg in msgs) {
       var item = MsgSaveModel.fromJson(msg);
       item.showTxt = EncryptionUtil.inflate(item.msgBody);
-      messages.insert(0, item);
+      messages.add(item);
     }
     if (chatdata.value.lastMsgTime == nullTime && msgs.isNotEmpty) {
       var time = DateTime.parse(msgs[0].createTime).millisecondsSinceEpoch;
