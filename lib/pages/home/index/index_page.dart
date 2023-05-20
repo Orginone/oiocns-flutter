@@ -17,8 +17,7 @@ import 'package:orginone/routers.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 /// 设置首页
-@immutable
-class IndexPage extends BaseView<IndexPageController> {
+class IndexPage extends StatelessWidget {
   final Logger log = Logger("IndexPage");
 
   // 轮播图片
@@ -30,16 +29,6 @@ class IndexPage extends BaseView<IndexPageController> {
   ];
 
   LinkedHashMap map = LinkedHashMap();
-
-  @override
-  bool isUseScaffold() {
-    return false;
-  }
-
-  @override
-  LoadStatusX initStatus() {
-    return LoadStatusX.success;
-  }
 
 // TODO 常用应用，超过五个字屏幕会越界
   IndexPage({Key? key}) : super(key: key) {
@@ -73,7 +62,7 @@ class IndexPage extends BaseView<IndexPageController> {
   }
 
   @override
-  Widget builder(BuildContext context) {
+  Widget build(BuildContext context) {
     double x = 0, y = 0;
     return Scaffold(
       drawer: Drawer(
@@ -698,12 +687,9 @@ class pieChartSalesData {
 }
 // 数据检测 end
 
-class IndexPageController extends BaseController {}
-
 class IndexPageBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => IndexPageController());
     Get.lazyPut(() => SearchBarController());
   }
 }

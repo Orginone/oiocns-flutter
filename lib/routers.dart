@@ -374,7 +374,6 @@ class Routers {
         bindings: [
           HomeBinding(),
           IndexPageBinding(),
-          PlayBinding(),
           UpdateBinding()
         ],
       ),

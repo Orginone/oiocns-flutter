@@ -72,7 +72,6 @@ class HomeBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => HomeController());
-    Get.lazyPut(() => UpdateController());
   }
 }
 
@@ -112,7 +111,7 @@ class HomeController extends TabsController {
       }),
     ));
     registerTab(XTab(
-      view: IndexTabPage(),
+      view: const IndexTabPage(),
       tab: Obx(() {
         return BadgeTabWidget(
           imgPath: settingCtrl.homeEnum.value != HomeEnum.door
