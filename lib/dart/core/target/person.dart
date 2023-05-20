@@ -253,7 +253,7 @@ class Person extends Belong implements IPerson {
       }
     }
     if (superAuth != null) {
-      chats.addAll(superAuth!.chats);
+      // chats.addAll(superAuth!.chats);
     }
     return chats;
   }

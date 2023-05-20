@@ -110,7 +110,7 @@ class Company extends Belong implements ICompany {
       chats.addAll(item.chats);
     }
     if (superAuth != null) {
-      chats.addAll(superAuth!.chats);
+      // chats.addAll(superAuth!.chats);
     }
     return chats;
   }

@@ -1,7 +1,7 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/pages/chat/message_setting.dart';
-import 'package:orginone/pages/chat/messages.dart';
+import 'package:orginone/pages/chat/message_routers.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/pages/login/binding.dart';
@@ -419,7 +419,7 @@ class Routers {
       ),
       GetPage(
         name: Routers.initiateChat,
-        page: () => Messages(),
+        page: () => MessageRouters(),
         binding: MessagesBinding(),
       ),
       GetPage(
