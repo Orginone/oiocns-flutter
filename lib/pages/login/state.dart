@@ -11,9 +11,9 @@ class LoginState extends BaseGetState{
 
   var phoneNumberLogin = false.obs;
 
-  TextEditingController accountController = TextEditingController(text: "13322223333");
+  TextEditingController accountController = TextEditingController(text: "");
 
-  TextEditingController passWordController = TextEditingController(text: "38179960Jzy~");
+  TextEditingController passWordController = TextEditingController(text: "");
 
   TextEditingController phoneNumberController = TextEditingController();
 
