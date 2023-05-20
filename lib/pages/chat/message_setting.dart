@@ -4,8 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/chat/msgchat.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/chat/widgets/avatars.dart';
 import 'package:orginone/routers.dart';
@@ -14,8 +15,6 @@ import 'package:orginone/widget/template/choose_item.dart';
 import 'package:orginone/widget/template/originone_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
-
-import '../../dart/base/model.dart';
 
 Size defaultBtnSize = Size(400.w, 70.h);
 
@@ -31,9 +30,9 @@ class MessageSetting extends GetView<SettingController> {
     );
   }
 
-  Widget _body(BuildContext context, IChat chat) {
+  Widget _body(BuildContext context, IMsgChat chat) {
     List<Widget> children = [];
-    if (chat.shareInfo.typeName == TargetType.person.label) {
+    if (chat.share.typeName == TargetType.person.label) {
       children = [
         _avatar(chat),
         Padding(padding: EdgeInsets.only(top: 50.h)),
@@ -62,7 +61,7 @@ class MessageSetting extends GetView<SettingController> {
     }
 
     // 如果是群组,就有退出群组
-    var isPerson = chat.shareInfo.typeName != TargetType.person.label;
+    var isPerson = chat.share.typeName != TargetType.person.label;
     if (isPerson) {
       children.add(Padding(padding: EdgeInsets.only(top: 20.h)));
       children.add(_exitTarget(context, chat));
@@ -87,10 +86,10 @@ class MessageSetting extends GetView<SettingController> {
   }
 
   /// 头像相关
-  Widget _avatar(IChat chat) {
-    var messageItem = chat.chatdata.value;
-    String name = messageItem.chatName??"";
-    if (messageItem.labels?.contains(TargetType.person.label)??false) {
+  Widget _avatar(IMsgChat chat) {
+    var messageItem = chat.chatdata;
+    String name = messageItem.chatName ?? "";
+    if (messageItem.labels.contains(TargetType.person.label) ?? false) {
       name += "(${chat.members.length})";
     }
     return Row(
@@ -103,7 +102,12 @@ class MessageSetting extends GetView<SettingController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(name, style: XFonts.size22Black3W700),
-              Text(messageItem.chatRemark ?? "", style: XFonts.size16Black6,maxLines: 2,overflow: TextOverflow.ellipsis,)
+              Text(
+                messageItem.chatRemark ?? "",
+                style: XFonts.size16Black6,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              )
             ],
           ),
         )
@@ -139,9 +143,9 @@ class MessageSetting extends GetView<SettingController> {
   }
 
   /// 查找聊天记录
-  Widget _searchChat(IChat chat) {
+  Widget _searchChat(IMsgChat chat) {
     return ChooseItem(
-      func: (){
+      func: () {
         KernelApi.getInstance().queryCohortImMsgs(IDBelongReq(id: chat.chatId));
       },
       padding: EdgeInsets.zero,
@@ -157,7 +161,7 @@ class MessageSetting extends GetView<SettingController> {
   }
 
   /// 清空聊天记录
-  Widget _clear(BuildContext context, IChat chat) {
+  Widget _clear(BuildContext context, IMsgChat chat) {
     return ElevatedButton(
       style: ButtonStyle(
         fixedSize: MaterialStateProperty.all(defaultBtnSize),
@@ -168,7 +172,7 @@ class MessageSetting extends GetView<SettingController> {
           context: context,
           builder: (context) {
             return CupertinoAlertDialog(
-              title: Text("您确定清空与${chat.chatdata.value.chatName}的聊天记录吗?"),
+              title: Text("您确定清空与${chat.chatdata.chatName}的聊天记录吗?"),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: const Text('取消'),
@@ -197,14 +201,14 @@ class MessageSetting extends GetView<SettingController> {
   }
 
   /// 删除好友
-  Widget _exitTarget(BuildContext context, IChat chat) {
+  Widget _exitTarget(BuildContext context, IMsgChat chat) {
     String remark = "";
     String btnName = "";
-    if (chat.chatdata.value.labels?.contains(TargetType.person.label)??false) {
-      remark = "您确定删除好友${chat.chatdata.value.chatName}吗?";
+    if (chat.chatdata.labels.contains(TargetType.person.label) ?? false) {
+      remark = "您确定删除好友${chat.chatdata.chatName}吗?";
       btnName = "删除好友";
     } else {
-      remark = "您确定退出${chat.chatdata.value.chatName}吗?";
+      remark = "您确定退出${chat.chatdata.chatName}吗?";
       btnName = "退出群聊";
     }
     return ElevatedButton(

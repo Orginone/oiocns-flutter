@@ -16,7 +16,7 @@ abstract class IWorkDefine {
   late XWorkDefine metadata;
 
   /// 共享信息
-  late TargetShare share;
+  late ShareIcon share;
 
   /// 更新办事定义
   Future<bool> updateDefine(WorkDefineModel data);
@@ -37,14 +37,14 @@ abstract class IWorkDefine {
 class FlowDefine  implements IWorkDefine{
 
   FlowDefine(this.metadata,this.workItem){
-    share =  TargetShare(name: metadata.name??"", typeName: '办事项',avatar: FileItemShare.parseAvatar(metadata.icon));
+    share =  ShareIcon(name: metadata.name??"", typeName: '办事项',avatar: FileItemShare.parseAvatar(metadata.icon));
   }
 
   @override
   late XWorkDefine metadata;
 
   @override
-  late TargetShare share;
+  late ShareIcon share;
 
   @override
   late IWork workItem;

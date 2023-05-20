@@ -32,7 +32,7 @@ class _CardbagViewGetX extends GetView<CardbagController> {
   // 主视图
   Widget _buildView() {
     var settingCtrl = Get.find<SettingController>();
-    var avatar = settingCtrl.user!.shareInfo.avatar;
+    var avatar = settingCtrl.user!.share.avatar;
     return Center(
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         card,
@@ -107,7 +107,7 @@ class _CardbagViewGetX extends GetView<CardbagController> {
   Widget get card {
     var settingCtrl = Get.find<SettingController>();
     var name = settingCtrl.user.metadata.name.substring(0, 1);
-    if (settingCtrl.user.shareInfo.avatar == null) {
+    if (settingCtrl.user.share.avatar == null) {
       return Container(
           height: 150,
           decoration: const BoxDecoration(
@@ -145,7 +145,7 @@ class _CardbagViewGetX extends GetView<CardbagController> {
                             Container(
                               width: 20,
                             ),
-                            Text(settingCtrl.user!.shareInfo.name,
+                            Text(settingCtrl.user!.share.name,
                                 style: const TextStyle(
                                     color: Colors.white, fontSize: 15)),
                           ],
@@ -168,7 +168,7 @@ class _CardbagViewGetX extends GetView<CardbagController> {
                 ]),
           ));
     }
-    var avatar = settingCtrl.user!.shareInfo.avatar;
+    var avatar = settingCtrl.user!.share.avatar;
     var thumbnail = avatar!.thumbnail!.split(",")[1];
     thumbnail = thumbnail.replaceAll('\r', '').replaceAll('\n', '');
     return Container(
@@ -205,7 +205,7 @@ class _CardbagViewGetX extends GetView<CardbagController> {
                           Container(
                             width: 20,
                           ),
-                          Text(settingCtrl.user!.shareInfo.name,
+                          Text(settingCtrl.user!.share.name,
                               style: const TextStyle(
                                   color: Colors.white, fontSize: 15)),
                         ],

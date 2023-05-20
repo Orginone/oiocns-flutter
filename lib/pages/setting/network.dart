@@ -112,7 +112,7 @@ class SettingNetWork {
             space: model.space,
             spaceEnum: model.spaceEnum,
             source: element,
-            image: element.shareInfo.avatar?.shareLink,
+            image: element.share.avatar?.shareLink,
             standardEnum: StandardEnum.permission,
             name: element.metadata.name ?? "");
         child.children = [];
@@ -128,7 +128,7 @@ class SettingNetWork {
           space: model.space,
           spaceEnum: model.spaceEnum,
           source: auth,
-          image: auth.shareInfo.avatar?.shareLink,
+          image: auth.share.avatar?.shareLink,
           standardEnum: StandardEnum.permission,
           name: auth.metadata.name ?? "");
       settingNavModel!.children = [];

@@ -14,7 +14,7 @@ class TeamTypeInfo {
   final int? number;
   final double fontSize;
   final String? userId;
-  final TargetShare? share;
+  final ShareIcon? share;
   final bool? notAvatar;
 
   TeamTypeInfo( {
@@ -55,7 +55,7 @@ class TeamAvatar extends StatelessWidget {
       return avatar(info.share!);
     }
 
-    return FutureBuilder<TargetShare>(builder: (context,shot){
+    return FutureBuilder<ShareIcon>(builder: (context,shot){
       if(shot.hasData && shot.connectionState == ConnectionState.done){
         avatar(shot.data!);
       }
@@ -64,7 +64,7 @@ class TeamAvatar extends StatelessWidget {
   }
 
 
-  Widget avatar(TargetShare share){
+  Widget avatar(ShareIcon share){
     var avatar = share.avatar;
     if (avatar?.thumbnail != null) {
       var thumbnail = avatar!.thumbnail!.split(",")[1];

@@ -1,7 +1,7 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/chat/message.dart';
-import 'package:orginone/dart/core/chat/msgchat.dart';
+import 'package:orginone/dart/core/chat/message/message.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/out_team/cohort.dart';
@@ -35,7 +35,7 @@ abstract class IBelong extends ITarget {
   List<ITarget> get parentTarget;
 
   //群会话
-  List<IChat> get cohortChats;
+  List<IMsgChat> get cohortChats;
 
   //加载群
   Future<List<ICohort>> loadCohorts({bool reload = false});

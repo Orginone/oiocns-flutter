@@ -3,10 +3,8 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/person.dart';
-import 'package:orginone/dart/core/thing/base/work.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/event_bus.dart';
-import 'package:orginone/util/toast_utils.dart';
 
 import 'work/provider.dart';
 
@@ -15,14 +13,14 @@ class UserProvider {
   final Rxn<IPerson> _user = Rxn();
   final Rxn<IWorkProvider> _work = Rxn();
   final RxBool _inited = false.obs;
-  List<XImMsg> _preMessages = [];
+  List<MsgSaveModel> _preMessages = [];
 
   UserProvider() {
     kernel.on('ChatRefresh', () async {
       await reload();
     });
     kernel.on('RecvMsg', (data) {
-      var item = XImMsg.fromJson(data);
+      var item = MsgSaveModel.fromJson(data);
       if (_inited.value) {
         _recvMessage(item);
       } else {
@@ -117,7 +115,7 @@ class UserProvider {
   /// 接收到新信息
   /// @param data 新消息
   /// @param cache 是否缓存
-  Future<void> _recvMessage(XImMsg data) async {
+  Future<void> _recvMessage(MsgSaveModel data) async {
     for (final c in user?.chats ?? []) {
       bool isMatch = data.sessionId == c.chatId;
       if ((c.share.typeName == TargetType.person || c.share.typeName == '权限') &&

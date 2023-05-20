@@ -12,7 +12,7 @@ abstract class IDict{
   //加载权限的自归属用户
   late DictClass species;
   //共享信息
-  late  TargetShare share;
+  late  ShareIcon share;
   //字典项
   late List<XDictItem> items;
 
@@ -34,7 +34,7 @@ class Dict  implements IDict{
 
   Dict(this.metadata,this.species){
     items = [];
-    share = TargetShare(name: metadata.name??"", typeName: '字典',avatar: FileItemShare.parseAvatar(metadata.icon));
+    share = ShareIcon(name: metadata.name??"", typeName: '字典',avatar: FileItemShare.parseAvatar(metadata.icon));
     ShareIdSet[metadata.id!]=share;
   }
   @override
@@ -44,7 +44,7 @@ class Dict  implements IDict{
   late XDict metadata;
 
   @override
-  late TargetShare share;
+  late ShareIcon share;
 
   @override
   late DictClass species;

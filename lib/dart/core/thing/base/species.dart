@@ -25,7 +25,7 @@ abstract class ISpeciesItem {
   late List<ISpeciesItem> children;
 
 //共享信息
-  late TargetShare share;
+  late ShareIcon share;
   //是否为继承的类别
   late bool isInherited;
 //  删除
@@ -40,7 +40,7 @@ abstract class ISpeciesItem {
 
 abstract class SpeciesItem implements ISpeciesItem {
   SpeciesItem(this.metadata, this.current, [this.parent]){
-    share = TargetShare(
+    share = ShareIcon(
       name: metadata.name,
       typeName: metadata.typeName,
       avatar: FileItemShare.parseAvatar(metadata.icon),
@@ -94,7 +94,7 @@ abstract class SpeciesItem implements ISpeciesItem {
     var res = await kernel.updateSpecies(data);
     if (res.success && res.data != null) {
       metadata = res.data!;
-      share = TargetShare(
+      share = ShareIcon(
         name: metadata.name,
         typeName: metadata.typeName,
         avatar: FileItemShare.parseAvatar(metadata.icon),
@@ -116,7 +116,7 @@ abstract class SpeciesItem implements ISpeciesItem {
   ISpeciesItem? parent;
 
   @override
-  late TargetShare share;
+  late ShareIcon share;
 
   @override
   late List<SpeciesType> speciesTypes;

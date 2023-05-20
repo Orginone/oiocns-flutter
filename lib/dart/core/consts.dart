@@ -9,6 +9,11 @@ const notFoundError = '抱歉,未找到该数据.';
 const isJoinedError = '抱歉,您已加入该组织.';
 const functionNotFoundError = '抱歉,未找到该方法.';
 
+class StoreCollName {
+  static const wrkTask = 'work-task';
+  static const workInstance = 'work-instances';
+  static const chatMessage = 'chat-message';
+}
 
 enum OrgAuth{
   // 超管权限
@@ -24,4 +29,4 @@ enum OrgAuth{
   const OrgAuth(this.label);
 }
 
-var ShareIdSet = <String, TargetShare>{};
+var ShareIdSet = <String, ShareIcon>{};
