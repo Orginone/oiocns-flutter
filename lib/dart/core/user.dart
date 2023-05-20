@@ -31,7 +31,7 @@ class UserProvider {
     kernel.on('RecvTask', (data) {
       var work = XWorkTask.fromJson(data);
       if (_inited.value) {
-        _work.value?.updateTask(data);
+        _work.value?.updateTask(work);
       }
     });
   }
@@ -98,23 +98,11 @@ class UserProvider {
   /// 重载数据
   Future<void> reload() async {
     _inited.value = false;
-    await _user.value?.loadCohorts(reload: true);
-    await _user.value?.loadMembers(reload: true);
+    _chat.value?.preMessage();
+    await _user.value?.deepLoad(reload: true);
     await _work.value?.loadTodos(reload: true);
-    var companys = await _user.value?.loadCompanys(reload: true) ?? [];
-    for (var company in companys) {
-      await company.deepLoad();
-      await company.loadMembers(reload: true);
-    }
     _inited.value = true;
-    _preMessages = _preMessages.where((item) {
-      _recvMessage(item);
-      return false;
-    }).toList();
-    refresh();
-  }
-
-  void refresh() {
+    _chat.value?.loadPreMessage();
     _user.refresh();
   }
 

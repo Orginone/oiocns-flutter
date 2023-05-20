@@ -232,9 +232,6 @@ class Person extends Belong implements IPerson {
   // TODO: implement chats
   List<IMsgChat> get chats {
     List<IMsgChat> chats = [this];
-    for (var item in companys) {
-      chats.addAll(item.chats);
-    }
     chats.addAll(cohortChats);
     chats.addAll(memberChats);
     return chats;
@@ -244,8 +241,16 @@ class Person extends Belong implements IPerson {
   // TODO: implement cohortChats
   List<IMsgChat> get cohortChats {
     List<IMsgChat> chats = [];
+    var companyChatIds = <String>[];
+    for (var company in companys) {
+      for (var item in company.cohorts) {
+        companyChatIds.add(item.chatdata.value.fullId);
+      }
+    }
     for (var value in cohorts) {
-      chats.addAll(value.chats);
+      if (!companyChatIds.contains(value.chatdata.value.fullId)) {
+        chats.addAll(value.chats);
+      }
     }
     if (superAuth != null) {
       chats.addAll(superAuth!.chats);

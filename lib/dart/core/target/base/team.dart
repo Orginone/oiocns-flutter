@@ -74,6 +74,8 @@ abstract class Team extends MsgChat implements ITeam {
   @override
   late XTarget metadata;
 
+  bool _memberLoaded = false;
+
   Future<XTarget?> create(TargetModel data) async {
     data.belongId = space.metadata.id;
     data.teamCode = data.teamCode ?? data.code;
@@ -82,6 +84,7 @@ abstract class Team extends MsgChat implements ITeam {
     if (res.success && res.data != null) {
       return res.data;
     }
+    return null;
   }
 
   @override
@@ -96,14 +99,16 @@ abstract class Team extends MsgChat implements ITeam {
     memberChats = [];
   }
 
+  @override
   Future<List<XTarget>> loadMembers({bool reload = false}) async {
-    if (members.isEmpty || reload) {
+    if (!_memberLoaded || reload) {
       var res = await kernel.querySubTargetById(GetSubsModel(
         id: metadata.id,
         subTypeNames: memberTypes.map((e) => e.label).toList(),
         page: PageRequest(offset: 0, limit: 9999, filter: ''),
       ));
       if (res.success) {
+        _memberLoaded = true;
         members = res.data?.result ?? [];
         loadMemberChats(members, true);
       }

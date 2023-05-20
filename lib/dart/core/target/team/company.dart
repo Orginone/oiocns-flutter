@@ -309,27 +309,33 @@ class Company extends Belong implements ICompany {
 
   @override
   void loadMemberChats(List<XTarget> members, bool isAdd) {
-    members.where((i) => i.id != user.metadata.id).forEach((i) {
-      if (isAdd) {
-        memberChats.add(
-          PersonMsgChat(
-            id,
-            i.id,
-            ShareIcon(
-                name: i.name,
-                typeName: i.typeName,
-                avatar: FileItemShare.parseAvatar(i.icon)),
-            ['同事'],
-            i.remark ?? "",
-            this,
-          ),
+    members = members.where((i) => i.id != userId).toList();
+    if (isAdd) {
+      for (var i in members) {
+        var item = PersonMsgChat(
+          id,
+          i.id,
+          ShareIcon(
+              name: i.name,
+              typeName: i.typeName,
+              avatar: FileItemShare.parseAvatar(i.icon)),
+          ['同事'],
+          i.remark ?? "",
+          this,
         );
-      } else {
-        memberChats.removeWhere(
-          (a) => a.belongId == i.id && a.chatId == i.id,
-        );
+        memberChats.add(item);
       }
-    });
+    } else {
+      var chats = <PersonMsgChat>[];
+      for (var a in memberChats) {
+        for (var i in members) {
+          if (a.chatId != i.id) {
+            chats.add(a);
+          }
+        }
+      }
+      memberChats = chats;
+    }
   }
 
   @override
