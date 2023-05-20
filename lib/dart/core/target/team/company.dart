@@ -319,7 +319,7 @@ class Company extends Belong implements ICompany {
               name: i.name,
               typeName: i.typeName,
               avatar: FileItemShare.parseAvatar(i.icon)),
-          ['同事'],
+          [metadata.name, '同事'],
           i.remark ?? "",
           this,
         );
