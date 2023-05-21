@@ -90,22 +90,3 @@ class CustomSearchBar extends StatelessWidget {
     );
   }
 }
-
-void main() {
-// 所有 GetX 的功能都需要在 main 方法中进行初始化
-  runApp(GetMaterialApp(
-    home: Scaffold(
-      appBar: AppBar(),
-      body: CustomSearchBar(
-        onAddClicked: () {
-// 添加按钮的点击逻辑
-        },
-      ),
-    ),
-    initialBinding: BindingsBuilder(
-      () {
-        Get.put(SearchBarController());
-      },
-    ),
-  ));
-}

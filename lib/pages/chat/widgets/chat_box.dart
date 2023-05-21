@@ -15,7 +15,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/chat/msgchat.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/permission_util.dart';
@@ -31,11 +31,16 @@ double defaultBorderRadius = 6.w;
 double boxDefaultHeight = 40.h;
 double defaultBottomHeight = 300.h;
 
-class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
+class ChatBox extends StatelessWidget with WidgetsBindingObserver {
   final RxDouble bottomHeight = defaultBottomHeight.obs;
-  final IChat chat;
+  final IMsgChat chat;
+  final ChatBoxController controller;
 
-  ChatBox({Key? key, required this.chat}) : super(key: key);
+  ChatBox({
+    Key? key,
+    required this.chat,
+    required this.controller,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +145,7 @@ class ChatBox extends GetView<ChatBoxController> with WidgetsBindingObserver {
             maxHeight: 144.h,
           ),
         ),
-        triggerAtCallback: () async{
+        triggerAtCallback: () async {
           var target = await AtPersonDialog.showDialog(context, chat);
           return target;
         },
@@ -514,8 +519,7 @@ enum MoreFunction {
   const MoreFunction(this.label, this.iconData);
 }
 
-class ChatBoxController extends FullLifeCycleController
-    with GetSingleTickerProviderStateMixin, WidgetsBindingObserver {
+class ChatBoxController with WidgetsBindingObserver {
   final Rx<InputStatus> _inputStatus = InputStatus.notPopup.obs;
   final TextEditingController inputController = TextEditingController();
   final FocusNode focusNode = FocusNode();
@@ -548,22 +552,18 @@ class ChatBoxController extends FullLifeCycleController
   Duration? get currentDuration => _currentDuration;
 
   late GlobalKey<AtTextFiledState> atKey;
-  @override
-  void onInit() async {
-    // TODO: implement onInit
-    super.onInit();
+
+  ChatBoxController() {
     EventBusHelper.register(this, (event) {
-      if(event is XTarget){
+      if (event is XTarget) {
         atKey.currentState!.addTarget(event);
       }
     });
     atKey = GlobalKey();
-    await Permission.microphone.request();
+    Permission.microphone.request();
   }
 
-  @override
-  onClose() {
-    super.onClose();
+  dispose() {
     EventBusHelper.unregister(this);
     _recorder.dispositionStream();
     inputController.dispose();
@@ -573,7 +573,7 @@ class ChatBoxController extends FullLifeCycleController
   }
 
   /// 事件触发器
-  eventFire(BuildContext context, InputEvent inputEvent, IChat chat) async {
+  eventFire(BuildContext context, InputEvent inputEvent, IMsgChat chat) async {
     switch (inputEvent) {
       case InputEvent.clickInput:
       case InputEvent.inputText:
@@ -622,7 +622,7 @@ class ChatBoxController extends FullLifeCycleController
     }
   }
 
-  void imagePicked(XFile pickedImage, IChat chat) async {
+  void imagePicked(XFile pickedImage, IMsgChat chat) async {
     var settingCtrl = Get.find<SettingController>();
     var docDir = await settingCtrl.user.fileSystem.home?.create("沟通");
     var item = await docDir?.upload(
@@ -631,24 +631,26 @@ class ChatBoxController extends FullLifeCycleController
       (progress) {},
     );
     if (item != null) {
-      chat.sendMessage(MessageType.image, jsonEncode(item.metadata.shareInfo()));
+      chat.sendMessage(
+          MessageType.image, jsonEncode(item.metadata.shareInfo()));
     }
   }
 
-  Future<void> filePicked(PlatformFile file, IChat chat) async {
+  Future<void> filePicked(PlatformFile file, IMsgChat chat) async {
     var settingCtrl = Get.find<SettingController>();
     var docDir = await settingCtrl.user.fileSystem.home?.create("沟通");
     var item = await docDir?.upload(
       file.name,
       File(file.path!),
-          (progress) {},
+      (progress) {},
     );
     if (item != null) {
       chat.sendMessage(MessageType.file, jsonEncode(item.metadata.shareInfo()));
     }
   }
 
-  execute(MoreFunction moreFunction, BuildContext context, IChat chat) async {
+  execute(
+      MoreFunction moreFunction, BuildContext context, IMsgChat chat) async {
     switch (moreFunction) {
       case MoreFunction.photo:
         var gallery = ImageSource.gallery;
@@ -674,14 +676,13 @@ class ChatBoxController extends FullLifeCycleController
         }
         break;
       case MoreFunction.file:
-       FilePickerResult? result = await FilePicker.platform.pickFiles(
-          type: FileType.any
-        );
-       if(result!=null){
-         for (var file in result.files) {
-           await filePicked(file,chat);
-         }
-       }
+        FilePickerResult? result =
+            await FilePicker.platform.pickFiles(type: FileType.any);
+        if (result != null) {
+          for (var file in result.files) {
+            await filePicked(file, chat);
+          }
+        }
 
         break;
     }
@@ -751,12 +752,5 @@ class ChatBoxController extends FullLifeCycleController
       await _recorder.resumeRecorder();
       recordStatus.value = RecordStatus.recoding;
     }
-  }
-}
-
-class ChatBoxBinding extends Bindings {
-  @override
-  void dependencies() {
-    Get.lazyPut(() => ChatBoxController());
   }
 }

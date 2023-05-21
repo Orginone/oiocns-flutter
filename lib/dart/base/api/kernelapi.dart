@@ -1505,15 +1505,15 @@ class KernelApi {
 
   /// 创建即使消息
   /// @param {ImMsgModel} params 请求参数
-  /// @returns {ResultType<XImMsg>} 请求结果
-  Future<ResultType<XImMsg>> createImMsg(ImMsgModel params) async {
+  /// @returns {ResultType<MsgSaveModel>} 请求结果
+  Future<ResultType<MsgSendModel>> createImMsg(MsgSendModel params) async {
     return await request(
       ReqestType(
         module: 'chat',
         action: 'CreateImMsg',
         params: params,
       ),
-      XImMsg.fromJson,
+      MsgSendModel.fromJson,
     );
   }
 
@@ -1530,16 +1530,16 @@ class KernelApi {
   }
 
   /// 消息撤回
-  /// @param {XImMsg} params 请求参数
-  /// @returns {ResultType<XImMsg>} 请求结果
-  Future<ResultType<XImMsg>> recallImMsg(XImMsg params) async {
+  /// @param {MsgSaveModel} params 请求参数
+  /// @returns {ResultType<MsgSaveModel>} 请求结果
+  Future<ResultType<MsgSaveModel>> recallImMsg(MsgSaveModel params) async {
     return await request(
       ReqestType(
         module: 'chat',
         action: 'RecallImMsg',
         params: params,
       ),
-      XImMsg.fromJson,
+      MsgSaveModel.fromJson,
     );
   }
 

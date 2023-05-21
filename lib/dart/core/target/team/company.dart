@@ -1,10 +1,10 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
-import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/innerTeam/station.dart';
 import 'package:orginone/dart/core/target/out_team/cohort.dart';
@@ -61,7 +61,7 @@ class Company extends Belong implements ICompany {
   @override
   late List<IStation> stations;
 
-  Company(XTarget metadata,IPerson user):super(metadata,['全员群'],user){
+  Company(XTarget metadata, IPerson user) : super(metadata, ['全员群'], user) {
     departmentTypes = [
       TargetType.office,
       TargetType.working,
@@ -89,8 +89,8 @@ class Company extends Belong implements ICompany {
 
   @override
   // TODO: implement chats
-  List<IChat> get chats {
-    final chats = <IChat>[this];
+  List<IMsgChat> get chats {
+    final chats = <IMsgChat>[this];
     chats.addAll(cohortChats);
     chats.addAll(memberChats);
     return chats;
@@ -98,8 +98,8 @@ class Company extends Belong implements ICompany {
 
   @override
   // TODO: implement cohortChats
-  List<IChat> get cohortChats {
-    final chats = <IChat>[];
+  List<IMsgChat> get cohortChats {
+    final chats = <IMsgChat>[];
     for (final item in departments) {
       chats.addAll(item.chats);
     }
@@ -110,7 +110,7 @@ class Company extends Belong implements ICompany {
       chats.addAll(item.chats);
     }
     if (superAuth != null) {
-      chats.addAll(superAuth!.chats);
+      // chats.addAll(superAuth!.chats);
     }
     return chats;
   }
@@ -175,7 +175,7 @@ class Company extends Belong implements ICompany {
   }
 
   @override
-  Future<void> deepLoad({bool reload = false}) async{
+  Future<void> deepLoad({bool reload = false}) async {
     await loadGroups(reload: reload);
     await loadDepartments(reload: reload);
     await loadStations(reload: reload);
@@ -193,7 +193,7 @@ class Company extends Belong implements ICompany {
       await station.deepLoad(reload: reload);
     }
     for (var cohort in cohorts) {
-       cohort.deepLoad(reload: reload);
+      cohort.deepLoad(reload: reload);
     }
     superAuth?.deepLoad(reload: reload);
   }
@@ -227,7 +227,7 @@ class Company extends Belong implements ICompany {
         page: PageRequest(offset: 0, limit: 9999, filter: ''),
       ));
       if (res.success) {
-        cohorts = (res.data?.result ?? []).map((i) => Cohort(this,i)).toList();
+        cohorts = (res.data?.result ?? []).map((i) => Cohort(this, i)).toList();
       }
     }
     return cohorts;
@@ -296,7 +296,7 @@ class Company extends Belong implements ICompany {
   // TODO: implement workSpecies
   List<IApplication> get workSpecies {
     final workItems = species.where(
-          (a) => a.metadata.typeName == SpeciesType.application.label,
+      (a) => a.metadata.typeName == SpeciesType.application.label,
     ) as List<IApplication>;
     for (final item in cohorts) {
       workItems.addAll(item.workSpecies);
@@ -309,28 +309,33 @@ class Company extends Belong implements ICompany {
 
   @override
   void loadMemberChats(List<XTarget> members, bool isAdd) {
-    members
-        .where((i) => i.id != user.metadata.id)
-        .forEach((i) {
-      if (isAdd) {
-        memberChats.add(
-          PersonMsgChat(
-              user.metadata.id,
-              metadata.id,
-              i.id,
-              TargetShare(
-                  name: i.name, typeName: i.typeName,avatar: FileItemShare.
-                  parseAvatar(i.icon)),
-          ['同事'],
-          i.remark??"",
-        ),
-      );
-      } else {
-      memberChats.removeWhere(
-      (a) => a.belongId == i.id && a.chatId == i.id,
-      );
+    members = members.where((i) => i.id != userId).toList();
+    if (isAdd) {
+      for (var i in members) {
+        var item = PersonMsgChat(
+          id,
+          i.id,
+          ShareIcon(
+              name: i.name,
+              typeName: i.typeName,
+              avatar: FileItemShare.parseAvatar(i.icon)),
+          [metadata.name, '同事'],
+          i.remark ?? "",
+          this,
+        );
+        memberChats.add(item);
       }
-    });
+    } else {
+      var chats = <PersonMsgChat>[];
+      for (var a in memberChats) {
+        for (var i in members) {
+          if (a.chatId != i.id) {
+            chats.add(a);
+          }
+        }
+      }
+      memberChats = chats;
+    }
   }
 
   @override

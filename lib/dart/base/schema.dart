@@ -3196,69 +3196,6 @@ class XIdentityArray {
   }
 }
 
-//及时通讯
-
-class XImMsg {
-  String id;
-  String sessionId;
-  String belongId;
-  String fromId;
-  String toId;
-  String msgType;
-  String msgBody;
-  String createTime;
-  String updateTime;
-  String showTxt;
-  bool allowEdit;
-
-  XImMsg({
-    required this.id,
-    required this.sessionId,
-    required this.belongId,
-    required this.fromId,
-    required this.toId,
-    required this.msgType,
-    required this.msgBody,
-    required this.createTime,
-    required this.updateTime,
-    required this.showTxt,
-    required this.allowEdit,
-  });
-
-  factory XImMsg.fromJson(Map<String, dynamic> json) {
-    return XImMsg(
-      id: json['id'],
-      sessionId: json['sessionId'],
-      belongId: json['belongId'],
-      fromId: json['fromId'],
-      toId: json['toId'],
-      msgType: json['msgType'],
-      msgBody: json['msgBody'],
-      createTime: json['createTime'],
-      updateTime: json['updateTime'],
-      showTxt: json['showTxt'],
-      allowEdit: json['allowEdit'] as bool,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'sessionId': sessionId,
-      'belongId': belongId,
-      'fromId': fromId,
-      'toId': toId,
-      'msgType': msgType,
-      'msgBody': msgBody,
-      'createTime': createTime,
-      'updateTime': updateTime,
-      'showTxt': showTxt,
-      'allowEdit': allowEdit,
-    };
-  }
-}
-
-
 //及时通讯查询返回集合
 class XImMsgArray {
   // 便宜量
@@ -3271,7 +3208,7 @@ class XImMsgArray {
   int? total;
 
   // 结果
-  List<XImMsg>? result;
+  List<MsgSaveModel>? result;
 
   //构造方法
   XImMsgArray({
@@ -3289,7 +3226,7 @@ class XImMsgArray {
     if(json["result"]!=null){
       result = [];
       json["result"].forEach((json){
-        result!.add(XImMsg.fromJson(json));
+        result!.add(MsgSaveModel.fromJson(json));
       });
     }
   }

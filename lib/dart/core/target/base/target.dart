@@ -22,7 +22,7 @@ class SpaceType {
   late TargetType typeName;
 
   // 头像
-  late TargetShare share;
+  late ShareIcon share;
 }
 
 abstract class ITarget extends ITeam {

@@ -1,6 +1,3 @@
-import 'package:orginone/dart/core/chat/msgchat.dart';
-import 'package:orginone/dart/core/enum.dart';
-
 class StringUtil {
   static String getDetailRecallBody({
     required String fromId,
@@ -46,34 +43,6 @@ class StringUtil {
     if (str == null) return '';
     if (str.trim().isEmpty) return '';
     return str;
-  }
-
-  static String showTxt({
-    required IChat chat,
-    required String msgType,
-    required String fromId,
-    required String showTxt,
-    required String name,
-    required String userId,
-  }) {
-    var prefix = "";
-    if (fromId != userId) {
-      prefix = "对方：";
-    } else {
-      prefix = "$name:";
-    }
-    if (msgType == MessageType.text.label) {
-      return "$prefix$showTxt";
-    } else if (msgType == MessageType.recall.label) {
-      return "$showTxt撤回了一条消息";
-    } else if (msgType == MessageType.image.label) {
-      return "$prefix[图片]";
-    } else if (msgType == MessageType.video.label) {
-      return "$prefix[视频]";
-    } else if (msgType == MessageType.voice.label) {
-      return "$prefix[语音]";
-    }
-    return "";
   }
 
   /// size 单位为字节

@@ -1,12 +1,11 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/chat/msgchat.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/app/application.dart';
-import 'package:orginone/dart/core/thing/filesys/filesysItem.dart';
 import 'package:orginone/main.dart';
 
 import '../../base/model.dart';
@@ -20,12 +19,11 @@ abstract class IPerson extends IBelong {
   //加入/管理的单位
   late RxList<ICompany> companys;
 
-
   //赋予人的身份(角色)实体
   late List<XIdentity> givedIdentitys;
 
   //根据ID查询共享信息
-  Future<TargetShare> findShareById(String id);
+  Future<ShareIcon> findShareById(String id);
 
   //判断是否拥有某些用户的权限
   bool authenticate(List<String> orgIds, List<String> authIds);
@@ -44,17 +42,15 @@ abstract class IPerson extends IBelong {
 }
 
 class Person extends Belong implements IPerson {
-
   @override
   late RxList<ICompany> companys;
 
   @override
   late List<XIdentity> givedIdentitys;
 
-  Person(XTarget metadata):super(metadata,['本人']){
+  Person(XTarget metadata) : super(metadata, ['本人']) {
     companys = <ICompany>[].obs;
     givedIdentitys = [];
-    userId = metadata.id;
   }
 
   @override
@@ -79,7 +75,8 @@ class Person extends Belong implements IPerson {
   bool authenticate(List<String> orgIds, List<String> authIds) {
     return givedIdentitys
         .where((element) =>
-    orgIds.contains(element.shareId) && authIds.contains(element.authId))
+            orgIds.contains(element.shareId) &&
+            authIds.contains(element.authId))
         .isNotEmpty;
   }
 
@@ -111,188 +108,211 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  Future<TargetShare> findShareById(String id) async{
-    var share = TargetShare(name: '未知', typeName: "未知");
+  Future<ShareIcon> findShareById(String id) async {
+    var share = ShareIcon(name: '未知', typeName: "未知");
     if (!ShareIdSet.containsKey(id)) {
-      var res = await kernel
-          .queryTargetById(IdArrayReq(ids: [id],
-        page: PageRequest(offset: 0, limit: 9999, filter: ''),));
+      var res = await kernel.queryTargetById(IdArrayReq(
+        ids: [id],
+        page: PageRequest(offset: 0, limit: 9999, filter: ''),
+      ));
 
       if (res.success && res.data?.result != null) {
         res.data?.result?.forEach((item) {
-          ShareIdSet[item.id] = TargetShare(name: item.name,
+          ShareIdSet[item.id] = ShareIcon(
+              name: item.name,
               typeName: item.typeName,
               avatar: FileItemShare.parseAvatar(item.icon));
         });
         share = ShareIdSet[id] ?? share;
       }
-    }else{
+    } else {
       return ShareIdSet[id]!;
     }
     return share;
   }
-    @override
-    Future<List<ICompany>> loadCompanys({bool reload = false}) async {
-      if (!reload && companys.isNotEmpty) {
-        return companys;
-      }
-      companys.clear();
-      final res = await kernel.queryJoinedTargetById(GetJoinedModel(
-          id: metadata.id,
-          typeNames: [
-            TargetType.company.label,
-            TargetType.hospital.label,
-            TargetType.university.label
-          ],
-          page: PageRequest(offset: 0, limit: 9999, filter: '')));
-      if (res.success) {
-        res.data?.result?.forEach((element) {
-          companys.add(createCompanyForTarget(element));
-        });
-      }
+
+  @override
+  Future<List<ICompany>> loadCompanys({bool reload = false}) async {
+    if (!reload && companys.isNotEmpty) {
       return companys;
     }
-
-    ICompany createCompanyForTarget(XTarget metadata) {
-      switch (TargetType.getType(metadata.typeName)) {
-        case TargetType.hospital:
-          return Hospital(metadata, this);
-        case TargetType.university:
-          return University(metadata, this);
-        default:
-          return Company(metadata, this);
-      }
+    companys.clear();
+    final res = await kernel.queryJoinedTargetById(GetJoinedModel(
+        id: metadata.id,
+        typeNames: [
+          TargetType.company.label,
+          TargetType.hospital.label,
+          TargetType.university.label
+        ],
+        page: PageRequest(offset: 0, limit: 9999, filter: '')));
+    if (res.success) {
+      res.data?.result?.forEach((element) {
+        companys.add(createCompanyForTarget(element));
+      });
     }
-
-    @override
-    Future<List<XIdentity>> loadGivedIdentitys({bool reload = false}) async{
-      if (givedIdentitys.isEmpty || reload) {
-        var res = await kernel.queryGivedIdentitys();
-        if (res.success) {
-          givedIdentitys = res.data?.result ?? [];
-        }
-      }
-      return givedIdentitys;
-    }
-
-    @override
-  Future<List<ICohort>> loadCohorts({bool reload = false}) async{
-      if (cohorts.isEmpty || reload) {
-        var res = await kernel.queryJoinedTargetById(GetJoinedModel(  id: metadata.id,
-          typeNames: [TargetType.cohort.label],
-          page: PageRequest(offset: 0, limit: 9999, filter: ''),));
-        if (res.success) {
-          res.data?.result?.forEach((element) {
-            cohorts.add(Cohort(this,element));
-          });
-        }
-      }
-      return cohorts;
+    return companys;
   }
 
-    @override
-    Future<List<XTarget>> searchTargets(String filter, List<String> typeNames) async{
-      var res = await kernel.searchTargets(NameTypeModel(
-        name: filter,
-        typeNames: typeNames,
+  ICompany createCompanyForTarget(XTarget metadata) {
+    switch (TargetType.getType(metadata.typeName)) {
+      case TargetType.hospital:
+        return Hospital(metadata, this);
+      case TargetType.university:
+        return University(metadata, this);
+      default:
+        return Company(metadata, this);
+    }
+  }
+
+  @override
+  Future<List<XIdentity>> loadGivedIdentitys({bool reload = false}) async {
+    if (givedIdentitys.isEmpty || reload) {
+      var res = await kernel.queryGivedIdentitys();
+      if (res.success) {
+        givedIdentitys = res.data?.result ?? [];
+      }
+    }
+    return givedIdentitys;
+  }
+
+  @override
+  Future<List<ICohort>> loadCohorts({bool reload = false}) async {
+    if (cohorts.isEmpty || reload) {
+      var res = await kernel.queryJoinedTargetById(GetJoinedModel(
+        id: metadata.id,
+        typeNames: [TargetType.cohort.label],
         page: PageRequest(offset: 0, limit: 9999, filter: ''),
       ));
       if (res.success) {
-        return res.data?.result ?? [];
+        res.data?.result?.forEach((element) {
+          cohorts.add(Cohort(this, element));
+        });
       }
-      return [];
     }
+    return cohorts;
+  }
 
-    @override
-  Future<bool> exit() async{
+  @override
+  Future<List<XTarget>> searchTargets(
+      String filter, List<String> typeNames) async {
+    var res = await kernel.searchTargets(NameTypeModel(
+      name: filter,
+      typeNames: typeNames,
+      page: PageRequest(offset: 0, limit: 9999, filter: ''),
+    ));
+    if (res.success) {
+      return res.data?.result ?? [];
+    }
+    return [];
+  }
+
+  @override
+  Future<bool> exit() async {
     // TODO: implement exit
     return false;
   }
 
   @override
-  Future<bool> delete() async{
+  Future<bool> delete() async {
     var res = await kernel.deleteTarget(IdReq(id: metadata.id));
     return res.success;
   }
 
-    @override
-    List<ITarget> get parentTarget {
-      return [this, ...cohorts];
-    }
-
-    @override
-    List<ITarget> get subTarget {
-      return [];
-    }
-
-    @override
-  // TODO: implement chats
-  List<IChat> get chats{
-      List<IChat> chats = [this];
-      for (var item in companys) {
-      chats.addAll(item.chats);
-      }
-      chats.addAll(cohortChats);
-      chats.addAll(memberChats);
-      return chats;
+  @override
+  List<ITarget> get parentTarget {
+    return [this, ...cohorts];
   }
 
+  @override
+  List<ITarget> get subTarget {
+    return [];
+  }
+
+  @override
+  // TODO: implement chats
+  List<IMsgChat> get chats {
+    List<IMsgChat> chats = [this];
+    chats.addAll(cohortChats);
+    chats.addAll(memberChats);
+    return chats;
+  }
 
   @override
   // TODO: implement cohortChats
-  List<IChat> get cohortChats{
-    List<IChat> chats = [];
-    for (var value in cohorts) {
-      chats.addAll(value.chats);
+  List<IMsgChat> get cohortChats {
+    List<IMsgChat> chats = [];
+    var companyChatIds = <String>[];
+    for (var company in companys) {
+      for (var item in company.cohorts) {
+        companyChatIds.add(item.chatdata.value.fullId);
+      }
     }
-    if (superAuth!=null) {
-      chats.addAll(superAuth!.chats);
+    for (var value in cohorts) {
+      if (!companyChatIds.contains(value.chatdata.value.fullId)) {
+        chats.addAll(value.chats);
+      }
+    }
+    if (superAuth != null) {
+      // chats.addAll(superAuth!.chats);
     }
     return chats;
   }
 
   @override
   // TODO: implement workSpecies
-  List<IApplication> get workSpecies{
-    List<IApplication> items = (species.where((element) => element.metadata.typeName == SpeciesType.application.label).toList()) as List<IApplication>;
+  List<IApplication> get workSpecies {
+    List<IApplication> items = (species
+        .where((element) =>
+            element.metadata.typeName == SpeciesType.application.label)
+        .toList()) as List<IApplication>;
     for (var item in companys) {
       items.addAll(item.workSpecies);
     }
     for (var item in cohorts) {
-      items.addAll(item.species.where(
+      items.addAll(item.species
+          .where(
             (a) => a.metadata.typeName == SpeciesType.workItem.label,
-      ).toList() as List<IApplication>);
+          )
+          .toList() as List<IApplication>);
     }
 
     return items;
   }
 
-
   @override
   void loadMemberChats(List<XTarget> members, bool isAdd) {
-    for (var member in members) {
-      if(isAdd){
-        memberChats.add(
-          PersonMsgChat(
-            metadata.id,
-            metadata.id,
-            member.id,
-            TargetShare(name: member.name,
-              typeName: member.typeName,
-              avatar: FileItemShare.parseAvatar(member.icon),),
-            ['好友'],
-            member.remark??"",
+    members = members.where((i) => i.id != userId).toList();
+    if (isAdd) {
+      for (var i in members) {
+        var item = PersonMsgChat(
+          id,
+          i.id,
+          ShareIcon(
+            name: i.name,
+            typeName: i.typeName,
+            avatar: FileItemShare.parseAvatar(i.icon),
           ),
+          ['好友'],
+          i.remark ?? "",
+          this,
         );
-      }else{
-        memberChats.value = memberChats.where((p0) => !(p0.belongId == member.id && p0.chatId == member.id)).toList();
+        memberChats.add(item);
       }
+    } else {
+      var chats = <PersonMsgChat>[];
+      for (var a in memberChats) {
+        for (var i in members) {
+          if (a.chatId != i.id) {
+            chats.add(a);
+          }
+        }
+      }
+      memberChats = chats;
     }
-    memberChats.refresh();
   }
 
   @override
-  Future<void> deepLoad({bool reload = false}) async{
+  Future<void> deepLoad({bool reload = false}) async {
     await loadGivedIdentitys(reload: reload);
     await loadCompanys(reload: reload);
     await loadCohorts(reload: reload);
@@ -302,17 +322,15 @@ class Person extends Belong implements IPerson {
     for (var company in companys) {
       await company.deepLoad(reload: reload);
     }
-
     for (var cohort in cohorts) {
       await cohort.deepLoad(reload: reload);
     }
-
     superAuth?.deepLoad(reload: reload);
   }
 
   @override
   // TODO: implement targets
-  List<ITarget> get targets{
+  List<ITarget> get targets {
     List<ITarget> targets = [this];
     for (var item in companys) {
       targets.addAll(item.targets);
@@ -322,5 +340,4 @@ class Person extends Belong implements IPerson {
     }
     return targets;
   }
-
 }

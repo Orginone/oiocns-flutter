@@ -12,9 +12,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/chat/msgchat.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus_helper.dart';
@@ -42,14 +41,17 @@ enum DetailFunc {
 double defaultWidth = 10.w;
 
 class DetailItemWidget extends GetView<SettingController> {
-  final IChat chat;
-  final XImMsg msg;
+  final IMsgChat chat;
+  final MsgSaveModel msg;
 
-  DetailItemWidget({Key? key, required this.chat, required this.msg})
-      : super(key: key);
-
+  DetailItemWidget({
+    Key? key,
+    required this.chat,
+    required this.msg,
+  }) : super(key: key);
 
   CustomPopupMenuController popCtrl = CustomPopupMenuController();
+
   @override
   Widget build(BuildContext context) {
     return _messageDetail(context);
@@ -65,15 +67,17 @@ class DetailItemWidget extends GetView<SettingController> {
     bool isCenter = false;
     if (msg.msgType == MessageType.recall.label) {
       Widget child;
-      if(msg.fromId == controller.user.metadata.id){
+      if (msg.fromId == controller.user.metadata.id) {
         child = Text("您撤回了一条消息", style: XFonts.size18Black9);
-      }else{
-        child = Text.rich(TextSpan(
-            children: [
-              WidgetSpan(child: TargetText(style: XFonts.size18Black9, userId: msg.fromId,)),
-              TextSpan(text: "撤回了一条消息", style: XFonts.size18Black9),
-            ]
-        ));
+      } else {
+        child = Text.rich(TextSpan(children: [
+          WidgetSpan(
+              child: TargetText(
+            style: XFonts.size18Black9,
+            userId: msg.fromId,
+          )),
+          TextSpan(text: "撤回了一条消息", style: XFonts.size18Black9),
+        ]));
       }
       children.add(child);
       isCenter = true;
@@ -84,17 +88,14 @@ class DetailItemWidget extends GetView<SettingController> {
     return Container(
       margin: EdgeInsets.only(top: 8.h, bottom: 8.h),
       child: Row(
-        textDirection: isSelf
-            ? TextDirection.rtl
-            : TextDirection.ltr,
+        textDirection: isSelf ? TextDirection.rtl : TextDirection.ltr,
         mainAxisAlignment:
-        isCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
+            isCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: children,
       ),
     );
   }
-
 
   /// 获取头像
   Widget _getAvatar() {
@@ -106,9 +107,13 @@ class DetailItemWidget extends GetView<SettingController> {
       id = msg.fromId;
     }
     return GestureDetector(
-        child: TeamAvatar(info: TeamTypeInfo(userId: id),),onLongPress: (){
-          EventBusHelper.fire(chat.members[0]);
-    },);
+      child: TeamAvatar(
+        info: TeamTypeInfo(userId: id),
+      ),
+      onLongPress: () {
+        EventBusHelper.fire(chat.members[0]);
+      },
+    );
   }
 
   /// 获取会话
@@ -184,25 +189,26 @@ class DetailItemWidget extends GetView<SettingController> {
                       alignment: Alignment.center,
                       child: Text(
                         item.label,
-                        style: const TextStyle(color: Colors.white, fontSize: 12),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 12),
                       ),
                     ),
-                    onTap: (){
-                       switch(item){
-                         case DetailFunc.recall:
-                           chat.recallMessage(msg.id);
-                           break;
-                         case DetailFunc.remove:
-                           chat.deleteMessage(msg.id);
-                           break;
-                         case DetailFunc.forward:
-                           // TODO: Handle this case.
-                           break;
-                         case DetailFunc.reply:
-                           // TODO: Handle this case.
-                           break;
-                       }
-                       popCtrl.hideMenu();
+                    onTap: () {
+                      switch (item) {
+                        case DetailFunc.recall:
+                          chat.recallMessage(msg.id);
+                          break;
+                        case DetailFunc.remove:
+                          chat.deleteMessage(msg.id);
+                          break;
+                        case DetailFunc.forward:
+                          // TODO: Handle this case.
+                          break;
+                        case DetailFunc.reply:
+                          // TODO: Handle this case.
+                          break;
+                      }
+                      popCtrl.hideMenu();
                     },
                   ),
                 )
@@ -248,9 +254,7 @@ class DetailItemWidget extends GetView<SettingController> {
           ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
           : EdgeInsets.only(right: defaultWidth),
       decoration: BoxDecoration(
-        color: isSelf
-            ? XColors.tinyLightBlue
-            : Colors.white,
+        color: isSelf ? XColors.tinyLightBlue : Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(defaultWidth)),
         boxShadow: const [
           //阴影效果
@@ -286,10 +290,7 @@ class DetailItemWidget extends GetView<SettingController> {
     BoxConstraints boxConstraints = BoxConstraints(maxWidth: 200.w);
 
     Map<String, String> headers = {
-      "Authorization": KernelApi
-          .getInstance()
-          .anystore
-          .accessToken,
+      "Authorization": KernelApi.getInstance().anystore.accessToken,
     };
 
     return GestureDetector(
@@ -329,10 +330,7 @@ class DetailItemWidget extends GetView<SettingController> {
     BoxConstraints boxConstraints = BoxConstraints(maxWidth: 200.w);
 
     Map<String, String> headers = {
-      "Authorization": KernelApi
-          .getInstance()
-          .anystore
-          .accessToken,
+      "Authorization": KernelApi.getInstance().anystore.accessToken,
     };
 
     var playCtrl = Get.find<PlayController>();
@@ -436,7 +434,7 @@ class DetailItemWidget extends GetView<SettingController> {
 
     return GestureDetector(
       onTap: () {
-        Get.toNamed(Routers.messageFile,arguments: msgBody);
+        Get.toNamed(Routers.messageFile, arguments: msgBody);
       },
       child: _detail(
         constraints: boxConstraints,
@@ -537,7 +535,7 @@ class PlayController extends GetxController with GetTickerProviderStateMixin {
   }
 
   /// 不存在就推入状态
-  putPlayerStatusIfAbsent(XImMsg msg) {
+  putPlayerStatusIfAbsent(MsgSaveModel msg) {
     if (!_playStatuses.containsKey(msg.id)) {
       try {
         Map<String, dynamic> data = jsonDecode(msg.showTxt);
@@ -599,9 +597,9 @@ class PlayController extends GetxController with GetTickerProviderStateMixin {
     });
     _soundPlayer!
         .startPlayer(
-      fromDataBuffer: bytes,
-      whenFinished: () => stopPrePlayVoice(),
-    )
+          fromDataBuffer: bytes,
+          whenFinished: () => stopPrePlayVoice(),
+        )
         .catchError((error) => stopPrePlayVoice());
 
     // 重新开始播放

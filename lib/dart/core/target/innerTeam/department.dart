@@ -1,9 +1,9 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
-import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/app/application.dart';
 import 'package:orginone/main.dart';
@@ -43,8 +43,8 @@ class Department extends Target implements IDepartment {
   IDepartment? parent;
 
   Department(XTarget metadata, this.company, [this.parent])
-      : super( metadata,
-            [metadata.belong?.name ?? '', '${metadata.typeName}群'],space: company) {
+      : super(metadata, [metadata.belong?.name ?? '', '${metadata.typeName}群'],
+            space: company) {
     children = [];
     switch (TargetType.getType(metadata.typeName)) {
       case TargetType.college:
@@ -78,8 +78,8 @@ class Department extends Target implements IDepartment {
 
   @override
   // TODO: implement chats
-  List<IChat> get chats{
-    var chats = <IChat>[this];
+  List<IMsgChat> get chats {
+    var chats = <IMsgChat>[this];
     for (var item in children) {
       chats.addAll(item.chats);
     }
@@ -109,7 +109,7 @@ class Department extends Target implements IDepartment {
   }
 
   @override
-  Future<void> deepLoad({bool reload = false}) async{
+  Future<void> deepLoad({bool reload = false}) async {
     await loadChildren(reload: reload);
     await loadMembers(reload: reload);
     await loadSpecies(reload: reload);
@@ -119,7 +119,7 @@ class Department extends Target implements IDepartment {
   }
 
   @override
-  Future<bool> delete() async{
+  Future<bool> delete() async {
     var res = await kernel.deleteTarget(IdReq(id: metadata.id));
     if (res.success) {
       if (parent != null) {
@@ -176,7 +176,7 @@ class Department extends Target implements IDepartment {
   List<ITarget> get targets {
     List<ITarget> targets = [this];
     for (var item in children) {
-    targets.addAll(item.targets);
+      targets.addAll(item.targets);
     }
     return targets;
   }

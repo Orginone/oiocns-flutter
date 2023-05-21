@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:orginone/dart/core/chat/msgchat.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 import 'package:orginone/widget/widgets/text_tag.dart';
@@ -23,7 +23,7 @@ enum ChatFunc {
 
 class MessageItemWidget extends GetView<SettingController> {
   // 用户信息
-  final IChat chat;
+  final IMsgChat chat;
 
   const MessageItemWidget({
     Key? key,
@@ -86,7 +86,7 @@ class MessageItemWidget extends GetView<SettingController> {
     return Obx(() {
       var noRead = chat.chatdata.value.noReadCount;
       return TeamAvatar(
-        info: TeamTypeInfo(share: chat.shareInfo),
+        info: TeamTypeInfo(share: chat.share),
         children: [
           Visibility(
             visible: noRead > 0,
@@ -105,9 +105,9 @@ class MessageItemWidget extends GetView<SettingController> {
   }
 
   Widget get _content {
-    var target = chat.chatdata.value;
+    var target = chat.chatdata;
     var labels = <Widget>[];
-    for (var item in chat.chatdata.value.labels??[]) {
+    for (var item in chat.chatdata.value.labels) {
       labels.add(TextTag(
         item,
         bgColor: Colors.white,
@@ -126,9 +126,10 @@ class MessageItemWidget extends GetView<SettingController> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(target.chatName??"", style: XFonts.size22Black0W700),
+            Text(target.value.chatName ?? "", style: XFonts.size22Black0W700),
             Text(
-              CustomDateUtil.getSessionTime(chat.chatdata.value.lastMessage?.createTime),
+              CustomDateUtil.getSessionTime(
+                  chat.chatdata.value.lastMessage?.createTime),
               style: XFonts.size18Black0,
             ),
           ],
@@ -151,7 +152,7 @@ class MessageItemWidget extends GetView<SettingController> {
     var settingCtrl = Get.find<SettingController>();
     if (lastMessage.fromId != settingCtrl.user.metadata.id) {
       showTxt = "对方:";
-    }else {
+    } else {
       showTxt = "$name:";
     }
 

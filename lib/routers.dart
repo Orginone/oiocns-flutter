@@ -1,13 +1,11 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/pages/chat/message_setting.dart';
-import 'package:orginone/pages/chat/messages.dart';
+import 'package:orginone/pages/chat/message_routers.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/pages/login/binding.dart';
 import 'package:orginone/pages/login/view.dart';
-// import 'package:orginone/pages/index/indexok_page.dart';
 import 'package:orginone/pages/other/add_asset/binding.dart';
 import 'package:orginone/pages/other/add_asset/view.dart';
 import 'package:orginone/pages/other/choice_department/binding.dart';
@@ -146,9 +144,11 @@ class Routers {
   static const String companyInfo = "/companyInfo";
   static const String version = "/version";
   static const String userInfo = "/userInfo";
+
   // 仓库相关
   // 资产管理
   static const String assetsManagement = "/assetsManagement";
+
   // 杭商城
   static const String market = "/market";
 
@@ -163,6 +163,7 @@ class Routers {
 
   //选择部门
   static const String choiceDepartment = "/choiceDepartment";
+
   //选择资产分类
   static const String choiceAssets = "/choiceAssets";
   static const String choiceSpecificAssets = "/choiceSpecificAssets";
@@ -199,6 +200,7 @@ class Routers {
 
   //批量操作资产
   static const String batchOperationAsset = "/batchOperationAsset";
+
   //扫描二维码
   static const String qrScan = "/qrScan";
 
@@ -282,6 +284,7 @@ class Routers {
   static const String storeTree = "/storeTree";
 
   static const String messageFile = "/messageFile";
+
   static String get main {
     return login;
     // var user = HiveUtils.getUser();
@@ -302,13 +305,12 @@ class Routers {
       GetPage(
         name: Routers.verificationCode,
         page: () => VerificationCodePage(),
-        binding:VerificationCodeBinding(),
+        binding: VerificationCodeBinding(),
       ),
       GetPage(
-        name: Routers.register,
-        page: () => RegisterPage(),
-        binding: RegisterBinding()
-      ),
+          name: Routers.register,
+          page: () => RegisterPage(),
+          binding: RegisterBinding()),
       GetPage(
         name: Routers.forgotPassword,
         page: () => ForgotPasswordPage(),
@@ -345,7 +347,7 @@ class Routers {
       GetPage(
         name: Routers.messageChat,
         page: () => const MessageChat(),
-        bindings: [ChatBoxBinding(), PlayBinding()],
+        bindings: [PlayBinding()],
       ),
       GetPage(
         name: Routers.mineUnit,
@@ -372,8 +374,6 @@ class Routers {
         bindings: [
           HomeBinding(),
           IndexPageBinding(),
-          ChatBoxBinding(),
-          PlayBinding(),
           UpdateBinding()
         ],
       ),
@@ -419,7 +419,7 @@ class Routers {
       ),
       GetPage(
         name: Routers.initiateChat,
-        page: () => Messages(),
+        page: () => MessageRouters(),
         binding: MessagesBinding(),
       ),
       GetPage(
@@ -550,7 +550,7 @@ class Routers {
       GetPage(
         name: Routers.storeTree,
         page: () => StoreTreePage(),
-        binding:StoreTreeBinding(),
+        binding: StoreTreeBinding(),
       ),
       GetPage(
         name: Routers.dictInfo,

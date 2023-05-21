@@ -226,7 +226,7 @@ class SettingCenterController
           ToastUtils.showMsg(msg: "创建成功");
           item.children.add(SettingNavModel(
             space: state.model.value!.space,
-            image: result.shareInfo.avatar?.shareLink,
+            image: result.share.avatar?.shareLink,
             name: result.metadata.name ?? "",
             source: result,
             standardEnum: StandardEnum.permission,

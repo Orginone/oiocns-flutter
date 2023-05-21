@@ -1,9 +1,9 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
-import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/app/application.dart';
 import 'package:orginone/dart/core/thing/market/market.dart';
@@ -41,16 +41,15 @@ class Group extends Target implements IGroup {
   IGroup? parent;
 
   Group(XTarget metadata, this.company)
-      : super(metadata, [metadata.belong?.name ?? '', '单位群'],
-            space: company) {
+      : super(metadata, [metadata.belong?.name ?? '', '单位群'], space: company) {
     children = [];
     memberTypes = companyTypes;
   }
 
   @override
   // TODO: implement chats
-  List<IChat> get chats{
-    List<IChat> chats = [this];
+  List<IMsgChat> get chats {
+    List<IMsgChat> chats = [this];
     for (final item in children) {
       chats.addAll(item.chats);
     }
@@ -75,7 +74,7 @@ class Group extends Target implements IGroup {
   }
 
   @override
-  Future<void> deepLoad({bool reload = false}) async{
+  Future<void> deepLoad({bool reload = false}) async {
     await loadChildren(reload: reload);
     await loadMembers(reload: reload);
     await loadSpecies(reload: reload);
@@ -134,17 +133,21 @@ class Group extends Target implements IGroup {
 
   @override
   // TODO: implement workSpecies
-  List<IApplication> get workSpecies{
-    return species.where((a) => a.metadata.typeName == SpeciesType.application.label).cast<IApplication>().toList();
+  List<IApplication> get workSpecies {
+    return species
+        .where((a) => a.metadata.typeName == SpeciesType.application.label)
+        .cast<IApplication>()
+        .toList();
   }
 
   @override
   // TODO: implement market
   IMarket? get market {
-    try{
-      final find = species.firstWhere((i) => i.metadata.typeName == SpeciesType.market.label);
+    try {
+      final find = species
+          .firstWhere((i) => i.metadata.typeName == SpeciesType.market.label);
       return find as IMarket?;
-    }catch(e){
+    } catch (e) {
       return null;
     }
   }

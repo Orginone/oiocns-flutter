@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
+import 'package:orginone/dart/core/chat/provider.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
@@ -45,6 +46,10 @@ class SettingController extends GetxController {
 
   IPerson get user {
     return _provider.user!;
+  }
+
+  IChatProvider get chat {
+    return _provider.chat!;
   }
 
   /// 组织树

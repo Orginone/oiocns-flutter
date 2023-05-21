@@ -106,7 +106,7 @@ class UserBar extends GetView<SettingController> {
 
   Widget _imgAvatar(EdgeInsets insets) {
     return Obx(() {
-      var avatar = controller.provider.user?.shareInfo.avatar?.thumbnail
+      var avatar = controller.provider.user?.share.avatar?.thumbnail
               ?.split(",")[1]
               .replaceAll('\r', '')
               .replaceAll('\n', '');

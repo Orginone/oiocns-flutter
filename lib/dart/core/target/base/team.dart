@@ -1,14 +1,15 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
-import 'package:orginone/dart/core/chat/msgchat.dart';
-import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/main.dart';
 
 import 'team.dart';
 
-abstract class ITeam extends IChat {
+abstract class ITeam extends IMsgChat {
+  String get id;
+
   //加载用户的自归属用户
   late IBelong space;
 
@@ -19,7 +20,7 @@ abstract class ITeam extends IChat {
   late List<TargetType> memberTypes;
 
   //用户相关的所有会话
-  List<IChat> get chats;
+  List<IMsgChat> get chats;
 
   //深加载
   Future<void> deepLoad({bool reload = false});
@@ -46,40 +47,44 @@ abstract class ITeam extends IChat {
 }
 
 abstract class Team extends MsgChat implements ITeam {
-  Team(
-      this.metadata, List<String> labels,{IBelong? space})
+  Team(this.metadata, List<String> labels, {IBelong? space})
       : super(
-            metadata.id,
-            metadata.belongId,
-            metadata.id,
-            TargetShare(
-                name: metadata.name,
-                typeName: metadata.typeName,
-                avatar: FileItemShare.parseAvatar(metadata.icon)),
-            labels,
-         metadata.remark??"") {
+          metadata.belongId,
+          metadata.id,
+          ShareIcon(
+            name: metadata.name,
+            typeName: metadata.typeName,
+            avatar: FileItemShare.parseAvatar(metadata.icon),
+          ),
+          labels,
+          metadata.remark ?? "",
+          space,
+        ) {
     memberTypes = [TargetType.person];
-    this.space = space ?? this as IBelong;
-    userId = this.space.metadata.id;
+  }
+
+  @override
+  get id {
+    return metadata.id;
   }
 
   @override
   late List<TargetType> memberTypes;
 
   @override
-  late IBelong space;
-
-  @override
   late XTarget metadata;
 
-  Future<XTarget?> create(TargetModel data) async{
+  bool _memberLoaded = false;
+
+  Future<XTarget?> create(TargetModel data) async {
     data.belongId = space.metadata.id;
     data.teamCode = data.teamCode ?? data.code;
     data.teamName = data.teamName ?? data.name;
     var res = await kernel.createTarget(data);
-    if (res.success && res.data!=null) {
+    if (res.success && res.data != null) {
       return res.data;
     }
+    return null;
   }
 
   @override
@@ -91,18 +96,20 @@ abstract class Team extends MsgChat implements ITeam {
 
   @override
   void loadMemberChats(List<XTarget> members, bool isAdd) {
-    memberChats.value = [];
+    memberChats = [];
   }
 
+  @override
   Future<List<XTarget>> loadMembers({bool reload = false}) async {
-    if (members.isEmpty || reload) {
+    if (!_memberLoaded || reload) {
       var res = await kernel.querySubTargetById(GetSubsModel(
         id: metadata.id,
         subTypeNames: memberTypes.map((e) => e.label).toList(),
         page: PageRequest(offset: 0, limit: 9999, filter: ''),
       ));
       if (res.success) {
-        members.value = res.data?.result ?? [];
+        _memberLoaded = true;
+        members = res.data?.result ?? [];
         loadMemberChats(members, true);
       }
     }
@@ -162,9 +169,9 @@ abstract class Team extends MsgChat implements ITeam {
     var res = await kernel.updateTarget(data);
     if (res.success && res.data?.id != null) {
       metadata = res.data!;
-      shareInfo.typeName = metadata.typeName;
-      shareInfo.name = metadata.name;
-      shareInfo.avatar = FileItemShare.parseAvatar(metadata.icon);
+      share.typeName = metadata.typeName;
+      share.name = metadata.name;
+      share.avatar = FileItemShare.parseAvatar(metadata.icon);
     }
     return res.success;
   }

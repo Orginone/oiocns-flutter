@@ -25,7 +25,7 @@ class TargetText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  FutureBuilder<TargetShare>(builder: (context,snapshot) {
+    return  FutureBuilder<ShareIcon>(builder: (context,snapshot) {
       String name = '';
 
       if (snapshot.hasData) {

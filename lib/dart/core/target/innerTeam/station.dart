@@ -2,8 +2,8 @@
 
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
-import 'package:orginone/dart/core/chat/msgchat.dart';
 import 'package:orginone/dart/core/target/identity/identity.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/main.dart';
@@ -37,7 +37,7 @@ class Station extends Team implements IStation {
 
   @override
   // TODO: implement chats
-  List<IChat> get chats => [this];
+  List<IMsgChat> get chats => [this];
 
   @override
   Future<ITeam?> createTarget(TargetModel data) async{

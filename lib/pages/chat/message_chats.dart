@@ -9,11 +9,13 @@ class MessageChats extends GetView<SettingController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      var chats = controller.provider.user?.chats;
-      if (chats == null) {
-        return const SizedBox();
+      var chats = controller.chat.chats;
+      if (chats.isEmpty) {
+        return Container();
       }
-      chats.sort((f, s) => (s.chatdata.value.lastMsgTime??0) - (f.chatdata.value.lastMsgTime??0));
+      chats.sort((f, s) {
+        return (s.chatdata.value.lastMsgTime) - (f.chatdata.value.lastMsgTime);
+      });
       return ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
