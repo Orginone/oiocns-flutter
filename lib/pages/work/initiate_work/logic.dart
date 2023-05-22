@@ -58,9 +58,9 @@ class InitiateWorkController
     for (var element in space!.targets) {
       for (var item in element.species) {
         List<WorkBreadcrumbNav> children = [];
-        if (item.metadata.typeName ==
-                SpeciesType.application.label ||
-            item.metadata.typeName == SpeciesType.market.label) {
+        if ((item.metadata.typeName ==
+            SpeciesType.application.label ||
+            item.metadata.typeName == SpeciesType.market.label) && item.belongId == space.belongId) {
           try {
             await (item as IMarket).loadWorkDefines();
           } catch (e) {

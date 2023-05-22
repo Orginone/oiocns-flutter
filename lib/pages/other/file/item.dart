@@ -41,11 +41,18 @@ class Item extends BaseBreadcrumbNavItem<BaseBreadcrumbNavModel> {
               child: title(),
             ),
             popupMenuButton(file),
-            more(),
+            moreButton(file),
           ],
         ),
       ),
     );
+  }
+
+  Widget moreButton(IFileSystemItem file) {
+    if(!file.metadata.isDirectory){
+      return Container();
+    }
+    return super.more();
   }
 
   Widget popupMenuButton(IFileSystemItem file) {

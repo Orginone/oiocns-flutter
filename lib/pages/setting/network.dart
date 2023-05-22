@@ -5,10 +5,13 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/thing/app/workitem.dart';
 import 'package:orginone/dart/core/thing/app/workthing.dart';
 import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
+import 'package:orginone/dart/core/thing/base/work.dart';
 import 'package:orginone/dart/core/thing/dict/dictclass.dart';
+import 'package:orginone/dart/core/thing/market/market.dart';
 import 'package:orginone/dart/core/thing/store/propclass.dart';
 
 import 'config.dart';
@@ -43,25 +46,65 @@ class SettingNetWork {
   }
 
   static Future<void> initGroup(SettingNavModel model) async {
-    Future<void> getNextLvOutAgency(List<IGroup> group,SettingNavModel model) async {
-      model.children = [];
+    Future<List<SettingNavModel>> getSpecies(List<ISpeciesItem> species) async{
+      List<SettingNavModel> children = [];
+      for (var element in species) {
+        var nav = SettingNavModel(
+            space: model.space,
+            source: element,
+            standardEnum: StandardEnum.classCriteria,name: element.metadata.name??"");
+        List<dynamic> item = [];
+        switch(SpeciesType.getType(element.metadata.typeName)){
+          case SpeciesType.market:
+            item = await (element as IMarket).loadWorkDefines();
+            break;
+          case SpeciesType.workItem:
+            item = await (element as IWorkItem).loadWorkDefines();
+            break;
+          case SpeciesType.application:
+            break;
+          case SpeciesType.dict:
+            item = await (element as IDictClass).loadDicts();
+            break;
+          case SpeciesType.workThing:
+            item = await (element as IWorkThing).loadForms();
+            break;
+        }
+        nav.children = [];
+        nav.children.addAll(item.map((e) => SettingNavModel(
+            space: model.space,
+            source: e,
+            standardEnum: StandardEnum.classCriteria,name: e.metadata.name??"")).toList());
+        if(element.children.isNotEmpty){
+          nav.children.addAll(await getSpecies(element.children));
+        }
+        children.add(nav);
+      }
+      return children;
+    }
+
+    Future<List<SettingNavModel>> getNextLvOutAgency(List<IGroup> group) async {
+      List<SettingNavModel> children = [];
       for (var value in group) {
         var child = SettingNavModel(
             space: model.space,
             spaceEnum: model.spaceEnum,
             source: value,
+            children: [],
             standardEnum: model.standardEnum,
             image: value.metadata.avatarThumbnail(),name: value.metadata.name);
         value.children = await value.loadChildren();
+        child.children.addAll(await getSpecies(value.species));
         if (value.children.isNotEmpty) {
-          await getNextLvOutAgency(value.children,child);
+          child.children.addAll(await getNextLvOutAgency(value.children));
         }
-        model.children.add(child);
+        children.add(child);
       }
+      return children;
     }
 
     var group = await (model.space as ICompany).loadGroups();
-    await getNextLvOutAgency(group,model);
+    model.children = await getNextLvOutAgency(group);
   }
 
   static Future<void> initStations(SettingNavModel model) async {
