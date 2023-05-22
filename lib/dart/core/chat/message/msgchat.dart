@@ -5,8 +5,8 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/main.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/util/encryption_util.dart';
 
 var nullTime = DateTime(2022, 7, 1).millisecondsSinceEpoch;
@@ -159,7 +159,7 @@ abstract class IMsgChat extends IEntity {
   void tagHasReadMsg(List<MsgSaveModel> ms);
 
   /// 重写消息标记信息
-  overwriteMessagesTags(tagsMsgType);
+  overwriteMessagesTags(TagsMsgType tagsMsgType);
 
   /// 删除消息
   Future<bool> deleteMessage(String id);
@@ -225,6 +225,8 @@ abstract class MsgChat extends Entity implements IMsgChat {
   @override
   List<PersonMsgChat> memberChats;
 
+  List<String> _newTagInfo = [];
+
   @override
   String get userId {
     return space.user.id;
@@ -232,7 +234,8 @@ abstract class MsgChat extends Entity implements IMsgChat {
 
   @override
   bool get isMyChat {
-    if (chatdata.value.noReadCount > 0 || share.typeName == TargetType.person.label) {
+    if (chatdata.value.noReadCount > 0 ||
+        share.typeName == TargetType.person.label) {
       return true;
     }
     return members.where((i) => i.id == userId).isNotEmpty;
@@ -372,10 +375,45 @@ abstract class MsgChat extends Entity implements IMsgChat {
   }
 
   @override
-  void tagHasReadMsg(List<MsgSaveModel> ms) {}
+  void tagHasReadMsg(List<MsgSaveModel> ms) {
+    if (!isMyChat) {
+      return;
+    }
+    var needTagMsgs = ms.where((element) {
+      if (belongId != element.belongId || element.fromId == userId) {
+        return false;
+      }
+      // 会话信息是否包含标签
+      if (element.tags == null) {
+        return true;
+      }
+      return !element.tags!.any((s) => s.userId == userId && s.label == '已读');
+    }).toList();
+
+    if (needTagMsgs.isNotEmpty) {
+      var willtagMsgIds = needTagMsgs.map((e) => e.id).toSet();
+      if (_newTagInfo.join('-') == willtagMsgIds.join('-')) {
+        return;
+      }
+      _newTagInfo = willtagMsgIds.toList();
+      // 触发事件
+      tagMessage(_newTagInfo, ['已读']);
+    }
+  }
 
   @override
-  overwriteMessagesTags(tagsMsgType) {}
+  overwriteMessagesTags(TagsMsgType tagsMsgType) {
+    if (tagsMsgType.id != chatId) {
+      return;
+    }
+    for (var msg in messages) {
+      if (tagsMsgType.tags[0] == '已读' && msg.tags == null) {
+        msg.tags = [Tag(label: '已读', userId: tagsMsgType.id, time: '')];
+      }
+      return msg;
+    }
+    messages.refresh();
+  }
 
   @override
   receiveMessage(MsgSaveModel msg) {

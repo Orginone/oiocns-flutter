@@ -46,6 +46,10 @@ class WorkProvider implements IWorkProvider{
 
   WorkProvider(this.user){
     todos = <XWorkTask>[].obs;
+    kernel.on('RecvTask', (data) {
+      var work = XWorkTask.fromJson(data);
+      updateTask(work);
+    });
   }
 
   @override

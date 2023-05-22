@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/chat/provider.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/event_bus.dart';
@@ -13,17 +13,25 @@ class UserProvider {
   final Rxn<IPerson> _user = Rxn();
   final Rxn<IWorkProvider> _work = Rxn();
   final Rxn<IChatProvider> _chat = Rxn();
-  final RxBool _inited = false.obs;
+  bool _inited = false;
 
   UserProvider() {
     kernel.on('ChatRefresh', () async {
       await reload();
     });
-    kernel.on('RecvTask', (data) {
-      var work = XWorkTask.fromJson(data);
-      if (_inited.value) {
-        _work.value?.updateTask(work);
+    kernel.on('RecvTarget', (data) async {
+      if (_inited) {
+        _recvTarget(data);
       }
+    });
+    kernel.on('RecvTags', (data) async {
+       try{
+         TagsMsgType tagsMsgType = TagsMsgType.fromJson(data);
+         var currentChat = chat?.chats.firstWhere((element) => element.chatId==tagsMsgType.id && element.belongId == tagsMsgType.belongId);
+         currentChat?.overwriteMessagesTags(tagsMsgType);
+       }catch(e){
+
+       }
     });
   }
 
@@ -42,7 +50,7 @@ class UserProvider {
 
   /// 是否完成初始化
   bool get inited {
-    return _inited.value;
+    return _inited;
   }
 
   /// 登录
@@ -88,12 +96,27 @@ class UserProvider {
 
   /// 重载数据
   Future<void> reload() async {
-    _inited.value = false;
+    _inited = false;
     _chat.value?.preMessage();
     await _user.value?.deepLoad(reload: true);
     await _work.value?.loadTodos(reload: true);
-    _inited.value = true;
+    _inited = true;
     _chat.value?.loadPreMessage();
     _user.refresh();
+  }
+
+  void _recvTarget(data) {
+    switch(data['TypeName']){
+      case "Relation":
+        XTarget xTarget = XTarget.fromJson(data['Target']);
+        XTarget subTarget = XTarget.fromJson(data['SubTarget']);
+        var target = [_user.value, ...user!.targets].firstWhere((element) => element!.id == xTarget.id,orElse: ()=>null);
+        if(target!=null){
+          target.recvTarget(data['Operate'], true, subTarget);
+        }else if (_user.value!.id == subTarget.id) {
+          _user.value!.recvTarget(data['Operate'], false, xTarget);
+        }
+        break;
+    }
   }
 }

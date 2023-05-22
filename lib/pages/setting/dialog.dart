@@ -15,7 +15,6 @@ import '../../dart/core/target/authority/authority.dart';
 import '../../dart/core/target/base/target.dart';
 import '../../dart/core/target/identity/identity.dart';
 import 'config.dart';
-import 'multiselect.dart';
 
 typedef CreateDictChangeCallBack
     = Function(String name, String code, String remark);

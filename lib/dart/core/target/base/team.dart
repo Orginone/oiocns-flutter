@@ -44,6 +44,8 @@ abstract class ITeam extends IMsgChat {
   void loadMemberChats(List<XTarget> members, bool isAdd);
 
   bool hasAuthoritys(List<String> authIds);
+
+  void recvTarget(String operate,bool isChild,XTarget target);
 }
 
 abstract class Team extends MsgChat implements ITeam {
@@ -85,6 +87,24 @@ abstract class Team extends MsgChat implements ITeam {
       return res.data;
     }
     return null;
+  }
+
+  @override
+  void recvTarget(String operate, bool isChild, XTarget target) {
+     if(isChild && memberTypes.contains(TargetType.getType(target.typeName))){
+       switch (operate) {
+         case 'Add':
+           members.add(target);
+           loadMemberChats([target], true);
+           break;
+         case 'Remove':
+            members.removeWhere((a) => a.id == target.id);
+           loadMemberChats([target], false);
+           break;
+         default:
+           break;
+       }
+     }
   }
 
   @override
