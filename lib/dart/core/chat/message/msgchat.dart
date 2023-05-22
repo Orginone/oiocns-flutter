@@ -250,6 +250,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
     if (messages.length < 10) {
       moreMessage();
     }
+    chatdata.refresh();
   }
 
   @override
@@ -285,6 +286,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
           messages.add(cache.lastMessage!);
         }
       }
+      chatdata.refresh();
     }
   }
 
@@ -433,6 +435,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
 
     chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
     chatdata.value.lastMessage = msg;
+    chatdata.refresh();
     cache();
   }
 
@@ -446,6 +449,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
       var time = DateTime.parse(msgs[0].createTime).millisecondsSinceEpoch;
       chatdata.value.lastMsgTime = time;
     }
+    chatdata.refresh();
   }
 }
 
