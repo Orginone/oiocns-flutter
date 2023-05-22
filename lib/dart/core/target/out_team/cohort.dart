@@ -16,7 +16,9 @@ abstract class ICohort extends ITarget {
 class Cohort extends Target implements ICohort {
   Cohort(IBelong space, XTarget metadata)
       : super(metadata, [metadata.belong?.name ?? '', metadata.typeName],
-            space: space);
+            space: space){
+    speciesTypes.add(SpeciesType.market);
+  }
 
   @override
   IMarket? get market {

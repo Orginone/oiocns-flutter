@@ -16,10 +16,11 @@ import 'package:orginone/widget/widgets/progress_dialog.dart';
 import 'package:orginone/config/enum.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/market/index.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/string_util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+
+import '../../main.dart';
 
 class VersionPage extends GetView<VersionController> {
   const VersionPage({Key? key}) : super(key: key);

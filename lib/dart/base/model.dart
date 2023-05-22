@@ -5153,8 +5153,10 @@ class MsgSaveModel {
         showTxt = json['showTxt'] ?? "",
         allowEdit = json['allowEdit'] ?? false {
     if (json['tags'] != null) {
-      List<Map<String, String>> temp = json["tags"];
-      tags = temp.map((item) => Tag.fromJson(item)).toList();
+      tags = [];
+      json["tags"].forEach((json){
+        tags!.add(Tag.fromJson(json));
+      });
     }
   }
 

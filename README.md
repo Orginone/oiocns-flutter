@@ -22,9 +22,9 @@
         ├── setting                     // 设置
         ├── work                        // 办事
         ├── login                       // 登录
-        ├── shop                        // 商店
+        ├── market                      // 流通
         ├── work                        // 办事
-        ├── ware_house                  // 仓库
+        ├── store                       // 仓库
     ├── util                            // 工具库
     ├── main.dart                       // 入口
     ├── routers.dart                    // 路由

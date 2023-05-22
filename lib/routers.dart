@@ -6,6 +6,7 @@ import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/pages/login/binding.dart';
 import 'package:orginone/pages/login/view.dart';
+import 'package:orginone/pages/market/market_tree/view.dart';
 import 'package:orginone/pages/other/add_asset/binding.dart';
 import 'package:orginone/pages/other/add_asset/view.dart';
 import 'package:orginone/pages/other/choice_department/binding.dart';
@@ -24,11 +25,9 @@ import 'package:orginone/pages/other/web_view/binding.dart';
 import 'package:orginone/pages/other/web_view/view.dart';
 import 'package:orginone/pages/work/work_list/view.dart';
 import 'package:orginone/pages/work/work_start/view.dart';
-import 'package:orginone/pages/setting/contact_page.dart';
 import 'package:orginone/pages/setting/dict_info/view.dart';
 import 'package:orginone/pages/setting/home/binding.dart';
 import 'package:orginone/pages/setting/home/view.dart';
-import 'package:orginone/pages/setting/mine_unit_page.dart';
 import 'package:orginone/pages/setting/person/cardbag/bindings.dart';
 import 'package:orginone/pages/setting/person/cardbag/index.dart';
 import 'package:orginone/pages/setting/person/dynamic/bindings.dart';
@@ -51,6 +50,7 @@ import 'pages/login/register/binding.dart';
 import 'pages/login/register/view.dart';
 import 'pages/login/verification_code/binding.dart';
 import 'pages/login/verification_code/view.dart';
+import 'pages/market/market_tree/binding.dart';
 import 'pages/other/add_friend/add_friend.dart';
 import 'pages/other/choice_gb/binding.dart';
 import 'pages/other/choice_gb/view.dart';
@@ -138,9 +138,6 @@ class Routers {
 
   // 设置
   static const String settingCenter = "/settingCenter";
-  static const String mineUnit = "/mineUnit";
-  static const String contact = "/contact";
-  static const String cohorts = "/cohorts";
   static const String companyInfo = "/companyInfo";
   static const String version = "/version";
   static const String userInfo = "/userInfo";
@@ -283,6 +280,8 @@ class Routers {
 
   static const String storeTree = "/storeTree";
 
+  static const String marketTree = "/marketTree";
+
   static const String messageFile = "/messageFile";
 
   static String get main {
@@ -350,23 +349,9 @@ class Routers {
         bindings: [PlayBinding()],
       ),
       GetPage(
-        name: Routers.mineUnit,
-        page: () => const MineUnitPage(),
-      ),
-      GetPage(
         name: Routers.addFriend,
         page: () => AddFriendPage(),
         binding: AddFriendBinding(),
-      ),
-      GetPage(
-        name: Routers.contact,
-        page: () => const ContactPage(),
-        binding: ContactBinding(),
-      ),
-      GetPage(
-        name: Routers.cohorts,
-        page: () => const ContactPage(),
-        binding: ContactBinding(),
       ),
       GetPage(
         name: Routers.index,
@@ -551,6 +536,11 @@ class Routers {
         name: Routers.storeTree,
         page: () => StoreTreePage(),
         binding: StoreTreeBinding(),
+      ),
+      GetPage(
+        name: Routers.marketTree,
+        page: () => MarketTreePage(),
+        binding: MarketTreeBinding(),
       ),
       GetPage(
         name: Routers.dictInfo,

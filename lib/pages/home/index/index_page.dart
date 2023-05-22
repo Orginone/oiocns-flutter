@@ -233,61 +233,6 @@ class IndexPage extends StatelessWidget {
     );
   }
 
-  List<PopupMenuEntry> _popupMenus(BuildContext context) {
-    return [
-      PopupMenuItem(
-        child: _popMenuItem(
-          context,
-          Icons.chat,
-          "沟通",
-          () async {
-            Get.toNamed(Routers.mineUnit);
-          },
-        ),
-      ),
-      PopupMenuItem(
-        child: _popMenuItem(
-          context,
-          Icons.calendar_month_outlined,
-          "办事",
-          () {
-            // Get.toNamed(
-            //   Routers.form,
-            //   arguments: CreateCohort((value) {
-            //     if (Get.isRegistered<SettingController>()) {
-            //       Get.find<SettingController>()
-            //           .user
-            //           ?.create(TargetModel.fromJson(value))
-            //           .then((value) => Get.back());
-            //     }
-            //   }),
-            // );
-          },
-        ),
-      ),
-      PopupMenuItem(
-        child: _popMenuItem(
-          context,
-          Icons.cabin,
-          "仓库",
-          () {
-
-          },
-        ),
-      ),
-      PopupMenuItem(
-        child: _popMenuItem(
-          context,
-          Icons.person_pin,
-          "设置",
-          () {
-
-          },
-        ),
-      ),
-    ];
-  }
-
   Widget _popMenuItem(
     BuildContext context,
     IconData icon,

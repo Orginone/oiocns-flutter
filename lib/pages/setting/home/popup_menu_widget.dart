@@ -118,7 +118,7 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
     if (target == null) {
       return popupMenuItem.isNotEmpty;
     }
-    bool isSuperAdmin = await Auth.isSuperAdmin(target!);
+    bool isSuperAdmin = target!.hasAuthoritys([OrgAuth.relationAuthId.label]);
     if (target?.speciesTypes.isNotEmpty??false) {
       if (isSuperAdmin) {
         popupMenuItem.add(newPopupMenuItem("新建子组织", "create"));
@@ -126,8 +126,7 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
     }
     if (isSuperAdmin) {
       popupMenuItem.add(newPopupMenuItem("编辑", "edit"));
-      if (target != settingController.user
-      ) {
+      if (target != settingController.user) {
         popupMenuItem.add(newPopupMenuItem("删除", "delete"));
       }
     }

@@ -15,7 +15,6 @@ import '../../dart/core/target/authority/authority.dart';
 import '../../dart/core/target/base/target.dart';
 import '../../dart/core/target/identity/identity.dart';
 import 'config.dart';
-import 'multiselect.dart';
 
 typedef CreateDictChangeCallBack
     = Function(String name, String code, String remark);
@@ -45,7 +44,7 @@ typedef CreateWorkCallBack = Function(
 
 typedef CreateAuthCallBack = Function(String name,String code,ITarget target,bool isPublic,String remark);
 
-typedef CreateClassCriteriaCallBack = Function(String name,String code,ITarget target,ISpeciesItem specie,IAuthority auth,bool isPublic,String remark);
+typedef CreateClassCriteriaCallBack = Function(String name,String code,ITarget target,String specie,IAuthority auth,bool isPublic,String remark);
 
 SettingController get setting => Get.find();
 
@@ -922,14 +921,14 @@ Future<void> showCreateAuthDialog(
 Future<void> showClassCriteriaDialog(
     BuildContext context,
     List<ITarget> targets,
-    List<ISpeciesItem> species,
+    List<SpeciesType> speciesTypes,
     List<IAuthority> authoritys,
     {bool isEdit = false,
     String? name,
     String? code,
     String? remark,
     bool public = false,
-      ISpeciesItem? specie,
+      String? specie,
     String? authId,
     String? targetId,CreateClassCriteriaCallBack? callBack}) async {
   TextEditingController nameController = TextEditingController(text: name);
@@ -937,7 +936,7 @@ Future<void> showClassCriteriaDialog(
   TextEditingController remarkController = TextEditingController(text: remark);
   bool isPublic = public;
   ITarget? selectedTarget = targetId!=null?targets.firstWhere((element) => element.metadata.id == targetId):null;
-  ISpeciesItem? selectedSpecies = specie;
+  String? selectedSpecies = specie;
   IAuthority? selectedAuth = authId!=null?authoritys.firstWhere((element) => element.metadata.id == authId):null;
   return showDialog(
     context: context,
@@ -963,15 +962,15 @@ Future<void> showClassCriteriaDialog(
                         required: true,
                         hint: "请输入"),
                     CommonWidget.commonChoiceTile(
-                        "选择类型", selectedSpecies?.metadata.name??"",
+                        "选择类型", selectedSpecies??"",
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
-                          titles: species.map((e) => e.metadata.name).toList(),
+                          titles: speciesTypes.map((e) => e.label).toList(),
                           callback: (str) {
                             state(() {
                               try {
-                                selectedSpecies = species.firstWhere(
-                                        (element) => element.metadata.name == str);
+                                selectedSpecies = speciesTypes.firstWhere(
+                                        (element) => element.label == str).label;
                               } catch (e) {}
                             });
                           });

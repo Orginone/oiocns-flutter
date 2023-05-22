@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:get/get.dart';
 import 'package:orginone/event/home_data.dart';
+import 'package:orginone/pages/market/view.dart';
 import 'package:orginone/pages/store/view.dart';
 import 'package:orginone/widget/badge_widget.dart';
 import 'package:orginone/widget/loading_dialog.dart';
@@ -16,7 +17,6 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_chats.dart';
 import 'package:orginone/pages/home/components/user_bar.dart';
-import 'package:orginone/pages/shop/view.dart';
 import 'package:orginone/pages/work/view.dart';
 import 'package:orginone/pages/setting/version_page.dart';
 import 'package:orginone/util/event_bus_helper.dart';
@@ -133,7 +133,7 @@ class HomeController extends TabsController {
       }),
     ));
     registerTab(XTab(
-      view: ShopPage(),
+      view: MarketPage(),
       tab: Obx(() {
         return BadgeTabWidget(
           imgPath: settingCtrl.homeEnum.value != HomeEnum.market

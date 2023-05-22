@@ -40,6 +40,8 @@ class FileController extends BaseBreadcrumbNavController<FileState> {
   void onNextLv(BaseBreadcrumbNavModel model) {
     if(model.source.metadata.isDirectory){
       Get.toNamed(Routers.file,arguments: {'data':model},preventDuplicates: false);
+    }else{
+      Get.toNamed(Routers.messageFile,arguments: model.source.metadata.shareInfo());
     }
   }
 

@@ -10,7 +10,7 @@ import 'package:orginone/routers.dart';
 import 'logic.dart';
 import 'state.dart';
 
-class ShopPage extends BaseGetPageView<ShopController,ShopState>{
+class MarketPage extends BaseGetPageView<MarketController,MarketState>{
   @override
   Widget buildView() {
     return Container(
@@ -72,13 +72,13 @@ class ShopPage extends BaseGetPageView<ShopController,ShopState>{
   }
 
   @override
-  ShopController getController() {
-    return ShopController();
+  MarketController getController() {
+    return MarketController();
   }
 
   @override
   String tag() {
     // TODO: implement tag
-    return "shop";
+    return "market";
   }
 }

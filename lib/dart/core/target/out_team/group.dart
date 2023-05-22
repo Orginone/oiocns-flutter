@@ -43,6 +43,7 @@ class Group extends Target implements IGroup {
   Group(XTarget metadata, this.company)
       : super(metadata, [metadata.belong?.name ?? '', '单位群'], space: company) {
     children = [];
+    speciesTypes.add(SpeciesType.market);
     memberTypes = companyTypes;
   }
 

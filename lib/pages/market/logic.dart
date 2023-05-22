@@ -5,8 +5,8 @@ import 'package:orginone/pages/store/state.dart';
 import '../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
-class ShopController extends BaseController<ShopState> {
- final ShopState state = ShopState();
+class MarketController extends BaseController<MarketState> {
+ final MarketState state = MarketState();
 
 
  @override

@@ -98,7 +98,7 @@ class SettingController extends GetxController {
         Get.toNamed(Routers.storeTree);
         break;
       case HomeEnum.market:
-        // TODO: Handle this case.
+        Get.toNamed(Routers.marketTree);
         break;
       case HomeEnum.door:
         // TODO: Handle this case.

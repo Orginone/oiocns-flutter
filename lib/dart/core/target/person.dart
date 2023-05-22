@@ -329,6 +329,38 @@ class Person extends Belong implements IPerson {
   }
 
   @override
+  void recvTarget(String operate, bool isChild, XTarget target) {
+    // TODO: implement recvTarget
+    if(isChild){
+      super.recvTarget(operate, isChild, target);
+    }else{
+      switch (operate) {
+        case 'Add':
+          if (companyTypes.contains(TargetType.getType(target.typeName))) {
+            var company = createCompanyForTarget(target);
+            company.deepLoad();
+            companys.add(company);
+          } else if (target.typeName == TargetType.cohort.label) {
+            var cohort = Cohort(this,target);
+            cohort.deepLoad();
+            cohorts.add(cohort);
+          }
+          break;
+        case 'Remove':
+          if (companyTypes.contains(TargetType.getType(target.typeName))) {
+             companys.removeWhere((a) => a.id == target.id);
+          } else if (target.typeName == TargetType.cohort.label) {
+             cohorts.removeWhere((a) => a.id == target.id);
+          }
+          break;
+        default:
+          break;
+      }
+    }
+
+  }
+
+  @override
   // TODO: implement targets
   List<ITarget> get targets {
     List<ITarget> targets = [this];

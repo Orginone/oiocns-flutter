@@ -24,8 +24,6 @@ class Item extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String title = '';
-
     return GestureDetector(
       onTap: (){
         if(todo.taskType == "事项"){
