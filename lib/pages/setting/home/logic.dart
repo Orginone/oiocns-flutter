@@ -243,17 +243,6 @@ class SettingCenterController
   }
 
   void createClassCriteria(SettingNavModel e, {bool isEdit = false}) async {
-    List<ISpeciesItem> species = [];
-
-    if (e.name == SpeciesType.store.label) {
-      species.add(e.source);
-    } else {
-      for (var element in e.children) {
-        if (element.source.speciesTypes.isNotEmpty) {
-          species.add(element.source);
-        }
-      }
-    }
     IAuthority? authority = await e.space!.loadSuperAuth();
     List<IAuthority> auth = [];
     if (authority != null) {
@@ -263,13 +252,13 @@ class SettingCenterController
     List<ITarget> targets = await setting.getTeamTree(e.space!);
 
     showClassCriteriaDialog(
-        context, getAllTarget(targets), species, getAllAuthority(auth),
+        context, getAllTarget(targets),  e.source.speciesTypes, getAllAuthority(auth),
         callBack: (name, code, target, specie, auth, public, remark) async {
       var model = SpeciesModel(
           name: name,
           code: code,
           public: public,
-          typeName: specie.metadata.typeName,
+          typeName: specie,
           shareId: target.metadata.id,
           authId: auth.metadata.id ?? "",
           remark: remark);
@@ -294,7 +283,7 @@ class SettingCenterController
         code: isEdit ? e.source.metadata.code : null,
         authId: isEdit ? e.source.metadata.authId : null,
         targetId: isEdit ? e.source.metadata.shareId : null,
-        specie: isEdit ? e.source : null,
+        specie: isEdit ? e.source.metadata.typeName : null,
         public: isEdit ? e.source.metadata.public ?? false : false,
         remark: isEdit ? e.source.metadata.remark : null);
   }
