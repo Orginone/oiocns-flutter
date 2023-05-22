@@ -7,6 +7,8 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/target/innerTeam/department.dart';
+import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/dict/dict.dart';
 import 'package:orginone/dart/core/thing/store/propclass.dart';
@@ -123,7 +125,7 @@ class SettingCenterController
   void createGroup(SettingNavModel model, {bool isEdit = false}) {
     var item = model.source;
     showCreateOrganizationDialog(
-        context, item == null ? getTargetType(model) : item.subTeamTypes,
+        context, getTargetType(model),
         callBack: (String name, String code, String nickName, String identify,
             String remark, TargetType type) async {
       var target = TargetModel(
@@ -452,7 +454,11 @@ class SettingCenterController
     List<TargetType> targetType = [];
     switch (model.spaceEnum) {
       case SpaceEnum.innerAgency:
-        targetType.addAll(model.space!.memberTypes);
+        if(model.source == null){
+          targetType.addAll((model.space as ICompany).departmentTypes);
+        }else{
+          targetType.addAll((model.source as IDepartment).childrenTypes);
+        }
         break;
       case SpaceEnum.outAgency:
         targetType.add(TargetType.group);

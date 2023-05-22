@@ -18,7 +18,7 @@ enum OrgAuths {
 class Auth {
   static Future<bool> isAuthorityAdmin(ITarget target, List<String> authorities) async {
     var settingCtrl = Get.find<SettingController>();
-    if (target.metadata.id == settingCtrl.user.metadata.id) {
+    if (target.metadata.belongId == settingCtrl.user.metadata.belongId) {
       return true;
     }
     return false;
