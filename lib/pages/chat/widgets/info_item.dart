@@ -65,7 +65,7 @@ class DetailItemWidget extends GetView<SettingController> {
   Widget _messageDetail(BuildContext context) {
     List<Widget> children = [];
     bool isCenter = false;
-    if (msg.msgType == MessageType.recall.label) {
+    if (msg.msgType == "recall") {
       Widget child;
       if (msg.fromId == controller.user.metadata.id) {
         child = Text("您撤回了一条消息", style: XFonts.size18Black9);
@@ -75,7 +75,7 @@ class DetailItemWidget extends GetView<SettingController> {
               child: TargetText(
             style: XFonts.size18Black9,
             userId: msg.fromId,
-          )),
+          ),alignment: PlaceholderAlignment.middle),
           TextSpan(text: "撤回了一条消息", style: XFonts.size18Black9),
         ]));
       }

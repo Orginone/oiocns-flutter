@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/routers.dart';
+import 'package:orginone/util/date_util.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 import 'package:orginone/widget/widgets/text_tag.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/util/date_util.dart';
 
 enum ChatFunc {
   // topping("置顶会话"),
@@ -147,37 +149,44 @@ class MessageItemWidget extends GetView<SettingController> {
     if (lastMessage == null) {
       return Container();
     }
-    var name = controller.user.findShareById(lastMessage.fromId);
-    var showTxt = "";
-    var settingCtrl = Get.find<SettingController>();
-    if (lastMessage.fromId != settingCtrl.user.metadata.id) {
-      showTxt = "对方:";
-    } else {
-      showTxt = "$name:";
-    }
+    return FutureBuilder<ShareIcon>(
+        future: controller.user.findShareById(lastMessage.fromId),
+        builder: (context, snapshot) {
+          var showTxt = "";
+          if (snapshot.hasData) {
+            var name = snapshot.data?.name ?? "";
+            if (lastMessage.fromId != controller.user.metadata.id) {
+              if(chat is Company){
+                showTxt = "$name:";
+              }else{
+                showTxt = "对方:";
+              }
+            }
 
-    var messageType = lastMessage.msgType;
-    if (messageType == MessageType.text.label) {
-      showTxt = "$showTxt${lastMessage.showTxt}";
-    } else if (messageType == MessageType.recall.label) {
-      showTxt = "$showTxt撤回了一条消息";
-    } else if (messageType == MessageType.image.label) {
-      showTxt = "$showTxt[图片]";
-    } else if (messageType == MessageType.video.label) {
-      showTxt = "$showTxt[视频]";
-    } else if (messageType == MessageType.voice.label) {
-      showTxt = "$showTxt[语音]";
-    }
+            var messageType = lastMessage.msgType;
+            if (messageType == MessageType.text.label) {
+              showTxt = "$showTxt${lastMessage.showTxt}";
+            } else if (messageType == 'recall') {
+              showTxt = "$showTxt撤回了一条消息";
+            } else if (messageType == MessageType.image.label) {
+              showTxt = "$showTxt[图片]";
+            } else if (messageType == MessageType.video.label) {
+              showTxt = "$showTxt[视频]";
+            } else if (messageType == MessageType.voice.label) {
+              showTxt = "$showTxt[语音]";
+            }
+          }
 
-    return Text(
-      showTxt,
-      style: TextStyle(
-        color: XColors.black9,
-        fontSize: 20.sp,
-      ),
-      textAlign: TextAlign.left,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-    );
+          return Text(
+            showTxt,
+            style: TextStyle(
+              color: XColors.black9,
+              fontSize: 20.sp,
+            ),
+            textAlign: TextAlign.left,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          );
+        });
   }
 }

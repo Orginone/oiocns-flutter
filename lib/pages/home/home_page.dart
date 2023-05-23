@@ -84,11 +84,11 @@ class HomeController extends TabsController {
     registerTab(XTab(
       view: const MessageChats(),
       tab: Obx(() {
-        var chats = settingCtrl.provider.user?.chats;
+        var chats = settingCtrl.provider.chat?.chats??[];
         int mgsCount = 0;
-        chats?.forEach((element) {
+        for (var element in chats) {
           mgsCount += element.chatdata.value.noReadCount;
-        });
+        }
         return BadgeTabWidget(
           imgPath: settingCtrl.homeEnum.value != HomeEnum.chat
               ? "unchat"
