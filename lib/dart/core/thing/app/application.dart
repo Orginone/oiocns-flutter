@@ -41,7 +41,7 @@ class Application extends SpeciesItem implements IApplication {
   Future<List<IForm>> loadForms() async {
     var result = <IForm>[];
     for (var item in children) {
-      if (item.metadata.typeName == SpeciesType.workThing) {
+      if (item.metadata.typeName == SpeciesType.workThing.label) {
         var forms = await (item as IWorkThing).loadForms();
         result.addAll(forms);
       }
