@@ -164,8 +164,8 @@ class DetailItemWidget extends GetView<SettingController> {
     if (userId == controller.user.metadata.id) {
       func.add(DetailFunc.remove);
     }
-    if (isSelf && msg.createTime != null) {
-      var parsedCreateTime = DateTime.parse(msg.createTime!);
+    if (isSelf) {
+      var parsedCreateTime = DateTime.parse(msg.createTime);
       var diff = parsedCreateTime.difference(DateTime.now());
       if (diff.inSeconds.abs() < 2 * 60) {
         func.add(DetailFunc.recall);
@@ -316,23 +316,6 @@ class DetailItemWidget extends GetView<SettingController> {
   /// 语音详情
   Widget _voice({required TextDirection textDirection}) {
     // 初始化语音输入
-
-    Map<String, dynamic> msgBody = {};
-    try {
-      msgBody = jsonDecode(msg.showTxt);
-    } catch (error) {
-      Log.info("参数解析失败，msg.showTxt:${msg.showTxt}");
-      return Container();
-    }
-    String link = msgBody["shareLink"] ?? "";
-
-    /// 限制大小
-    BoxConstraints boxConstraints = BoxConstraints(maxWidth: 200.w);
-
-    Map<String, String> headers = {
-      "Authorization": KernelApi.getInstance().anystore.accessToken,
-    };
-
     var playCtrl = Get.find<PlayController>();
     playCtrl.putPlayerStatusIfAbsent(msg);
     var voicePlay = playCtrl.getPlayerStatus(msg.id)!;
