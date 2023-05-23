@@ -93,6 +93,7 @@ class WorkProvider implements IWorkProvider{
         }
       }
     }
+    return null;
   }
 
   @override

@@ -18,7 +18,7 @@ class MsgChatData {
   String? chatName;
   String chatRemark;
   bool isToping;
-  bool isFindme;
+  dynamic isFindme;
   int noReadCount;
   int lastMsgTime;
   MsgSaveModel? lastMessage;
@@ -37,16 +37,22 @@ class MsgChatData {
 
   MsgChatData.fromMap(Map<String, dynamic> map)
       : fullId = map["fullId"],
-        labels = map['labels'],
+        labels = [],
         chatName = map['chatName'],
         chatRemark = map['chatRemark'],
         noReadCount = map["noReadCount"],
         isToping = map["isToping"] ?? false,
-        isFindme = map["isFindme"] ?? false,
+        isFindme = map["isFindme"],
         lastMsgTime = map["lastMsgTime"],
         lastMessage = map["lastMessage"] == null
             ? null
-            : MsgSaveModel.fromJson(map["lastMessage"]);
+            : MsgSaveModel.fromJson(map["lastMessage"]){
+    if(map['labels']!=null){
+      map['labels'].forEach((str){
+        labels.add(str);
+      });
+    }
+  }
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -431,7 +437,9 @@ abstract class MsgChat extends Entity implements IMsgChat {
       msg.showTxt = EncryptionUtil.inflate(msg.msgBody);
       messages.insert(0, msg);
     }
-    chatdata.value.noReadCount += 1;
+    if(userId != msg.fromId){
+      chatdata.value.noReadCount += 1;
+    }
 
     chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
     chatdata.value.lastMessage = msg;

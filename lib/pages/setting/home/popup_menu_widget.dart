@@ -9,7 +9,6 @@ import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/dict/dict.dart';
 import 'package:orginone/dart/core/thing/store/propclass.dart';
 import 'package:orginone/pages/setting/config.dart';
-import 'package:orginone/util/authority.dart';
 import 'package:orginone/widget/common_widget.dart';
 
 import 'state.dart';

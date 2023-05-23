@@ -56,7 +56,7 @@ abstract class SpeciesItem implements ISpeciesItem {
   Future<ISpeciesItem?> create(SpeciesModel data) async{
     data.parentId = metadata.id;
     data.shareId = metadata.shareId;
-    if (speciesTypes.contains(data.typeName)) {
+    if (speciesTypes.contains(SpeciesType.getType(data.typeName??""))) {
       var res = await kernel.createSpecies(data);
       if (res.success && res.data != null) {
         var species = createChildren(res.data!, current);
@@ -66,6 +66,7 @@ abstract class SpeciesItem implements ISpeciesItem {
         }
       }
     }
+    return null;
   }
 
   ISpeciesItem? createChildren(XSpecies metadata, ITarget current) {

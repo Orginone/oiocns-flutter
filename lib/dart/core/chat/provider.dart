@@ -44,26 +44,25 @@ class ChatProvider implements IChatProvider {
 
   @override
   void loadPreMessage() {
-    kernel.anystore.get(user.id, StoreCollName.chatMessage).then((res) {
+    kernel.anystore.get(StoreCollName.chatMessage,user.id).then((res) {
       if (res.success) {
         if (res.data is Map<String, dynamic>) {
           res.data.keys.forEach((key) {
-            if (key?.startsWith('T') == true &&
+            if (key!.startsWith('T') &&
                 res.data[key]['fullId'] != null) {
               var fullId = key.substring(1);
               var find =
                   chats.firstWhereOrNull((i) => i.chatdata.value.fullId == fullId);
-              find?.loadCache(res.data[key]);
+              find?.loadCache(MsgChatData.fromMap(res.data[key]));
             }
           });
         }
-        _preMessages.value = _preMessages.where((item) {
-          _recvMessage(item);
-          return false;
-        }).toList()
-          ..sort((a, b) =>
-              DateTime.parse(a.createTime).millisecondsSinceEpoch -
-              DateTime.parse(b.createTime).millisecondsSinceEpoch);
+        _preMessages.sort((a, b){
+          return DateTime.parse(a.createTime).compareTo(DateTime.parse(b.createTime));
+        });
+        for (var element in _preMessages) {
+          _recvMessage(element);
+        }
         _preMessage = false;
       }
     });

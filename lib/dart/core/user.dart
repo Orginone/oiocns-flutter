@@ -29,9 +29,7 @@ class UserProvider {
          TagsMsgType tagsMsgType = TagsMsgType.fromJson(data);
          var currentChat = chat?.chats.firstWhere((element) => element.chatId==tagsMsgType.id && element.belongId == tagsMsgType.belongId);
          currentChat?.overwriteMessagesTags(tagsMsgType);
-       }catch(e){
-
-       }
+       }catch(e){}
     });
   }
 

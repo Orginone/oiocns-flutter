@@ -93,6 +93,7 @@ abstract class Target extends Team implements ITarget {
       identitys.add(identity);
       return identity;
     }
+    return null;
   }
 
   Future<bool> pullSubTarget(ITeam team) async {
@@ -113,6 +114,7 @@ abstract class Target extends Team implements ITarget {
       }
       return item;
     }
+    return null;
   }
 
   @override

@@ -57,7 +57,7 @@ class TeamAvatar extends StatelessWidget {
 
     return FutureBuilder<ShareIcon>(builder: (context,shot){
       if(shot.hasData && shot.connectionState == ConnectionState.done){
-        avatar(shot.data!);
+        return avatar(shot.data!);
       }
       return SizedBox();
     },future: setting.user.findShareById(info.userId!),);
@@ -83,7 +83,7 @@ class TeamAvatar extends StatelessWidget {
       );
     }
     var typeName = share.typeName;
-    late Widget child;
+    Widget? child;
     if (this.child == null) {
       if (typeName == TargetType.group.label) {
         child = Icon(Icons.groups, size: info.fontSize, color: Colors.white);

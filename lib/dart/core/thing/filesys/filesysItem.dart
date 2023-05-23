@@ -61,7 +61,7 @@ class FileSystem  implements IFileSystem{
     ));
   }
 
-  Map<String, TaskModel> _taskIdSet = {};
+  final Map<String, TaskModel> _taskIdSet = {};
 
   TaskChangeNotify? taskChangeNotify;
   @override

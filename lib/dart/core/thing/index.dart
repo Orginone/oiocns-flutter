@@ -21,5 +21,7 @@ ISpeciesItem? createSpeciesForType(XSpecies metadata,ITarget current){
       return Market(metadata, current);
     case SpeciesType.resource:
       return Resource(metadata, current);
+    default:
+      return null;
   }
 }

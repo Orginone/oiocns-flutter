@@ -98,6 +98,7 @@ abstract class Belong extends Target implements IBelong {
       await cohort.pullMembers([user.metadata]);
       return cohort;
     }
+    return null;
   }
 
   @override

@@ -33,25 +33,23 @@ class Avatars extends StatelessWidget {
 
   /// 头像组
   get _avatarGroup {
-    return Obx(() {
-      var mappedPerson = persons.map((item) {
-        return _avatarItem(item);
-      }).toList();
-      if (showCount != null && mappedPerson.length > showCount!) {
-        mappedPerson = mappedPerson.sublist(0, showCount!);
-      }
-      if (hasAdd) {
-        mappedPerson.add(_addItem);
-      }
-      return GridView.count(
-        padding: padding,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: 5,
-        childAspectRatio: 60 / 80,
-        children: mappedPerson,
-      );
-    });
+    var mappedPerson = persons.map((item) {
+      return _avatarItem(item);
+    }).toList();
+    if (showCount != null && mappedPerson.length > showCount!) {
+      mappedPerson = mappedPerson.sublist(0, showCount!);
+    }
+    if (hasAdd) {
+      mappedPerson.add(_addItem);
+    }
+    return GridView.count(
+      padding: padding,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 5,
+      childAspectRatio: 60 / 80,
+      children: mappedPerson,
+    );
   }
 
   /// 添加好友

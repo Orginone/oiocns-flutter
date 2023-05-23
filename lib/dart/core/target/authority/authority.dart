@@ -114,6 +114,7 @@ class Authority extends MsgChat implements IAuthority {
         }
       }
     }
+    return null;
   }
 
   @override

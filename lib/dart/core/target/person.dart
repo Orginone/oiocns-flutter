@@ -95,6 +95,7 @@ class Person extends Belong implements IPerson {
       await company.pullMembers([metadata]);
       return company;
     }
+    return null;
   }
 
   @override
