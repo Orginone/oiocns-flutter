@@ -13,6 +13,7 @@ class XColors {
   static const Color designBlue = Color(0xFF3D5ED1);
   static const Color designLightBlue = Color(0xFFEDEFFC);
   static const Color tinyBlue = Color(0xFFA8B5FF);
+  static const Color bgChat = Color(0xFFF0F2F7);
   static const Color tinyLightBlue = Color(0xFFCEDFFF);
   static const Color themeColor = Color(0xff3D5ED1);
   static const Color applicationColor = Color(0xff2F96F9);

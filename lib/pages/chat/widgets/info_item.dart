@@ -108,7 +108,12 @@ class DetailItemWidget extends GetView<SettingController> {
     }
     return GestureDetector(
       child: TeamAvatar(
+        size: 55.w,
         info: TeamTypeInfo(userId: id),
+        decoration: const BoxDecoration(
+          color: XColors.themeColor,
+          shape: BoxShape.circle,
+        ),
       ),
       onLongPress: () {
         EventBusHelper.fire(chat.members[0]);
@@ -120,7 +125,7 @@ class DetailItemWidget extends GetView<SettingController> {
   Widget _getChat(BuildContext context) {
     List<Widget> content = <Widget>[];
 
-    if (!isSelf) {
+    if (!isSelf && !(chat.share.typeName == TargetType.person.label)) {
       content.add(Container(
         margin: EdgeInsets.only(left: 10.w),
         child: TargetText(userId: msg.fromId, style: XFonts.size16Black3),
@@ -137,7 +142,7 @@ class DetailItemWidget extends GetView<SettingController> {
         textDirection: textDirection,
         body: Text(
           msg.showTxt,
-          style: XFonts.size22Black3W700,
+          style: XFonts.size22Black0,
         ),
         padding: EdgeInsets.only(
           left: 16.w,

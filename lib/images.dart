@@ -34,4 +34,11 @@ class Images {
   static const String empty = "images/empty.png";
 
   static const String logOut = "images/icon_log_out.svg";
+
+  static const String iconEmoji = "images/icon_emoji.png";
+
+  static const String iconVoice = "images/icon_voice.png";
+
+  static const String iconAddAction = "images/icon_add_action.png";
+
 }

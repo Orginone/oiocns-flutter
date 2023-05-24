@@ -377,6 +377,9 @@ abstract class MsgChat extends Entity implements IMsgChat {
     if (res.success) {
       messages.clear();
       chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
+      chatdata.value.lastMessage = null;
+      chatdata.refresh();
+      cache();
       return true;
     }
     return res.success;

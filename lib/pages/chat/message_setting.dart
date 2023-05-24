@@ -10,9 +10,8 @@ import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/chat/widgets/avatars.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/widget_util.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/template/choose_item.dart';
-import 'package:orginone/widget/template/originone_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 
@@ -23,9 +22,7 @@ class MessageSetting extends GetView<SettingController> {
 
   @override
   Widget build(BuildContext context) {
-    return OrginoneScaffold(
-      appBarLeading: WidgetUtil.defaultBackBtn,
-      appBarElevation: 0,
+    return GyScaffold(
       body: _body(context, Get.arguments),
     );
   }
@@ -35,10 +32,11 @@ class MessageSetting extends GetView<SettingController> {
     if (chat.share.typeName == TargetType.person.label) {
       children = [
         _avatar(chat),
-        Padding(padding: EdgeInsets.only(top: 50.h)),
-        _interruption,
-        _top,
+        Padding(padding: EdgeInsets.only(top: 30.h)),
+        // _interruption,
+        // _top,
         _searchChat(chat),
+        Padding(padding: EdgeInsets.only(top: 30.h)),
       ];
     } else {
       children = [
@@ -54,34 +52,47 @@ class MessageSetting extends GetView<SettingController> {
             // Get.toNamed(Routers.invite, arguments: args);
           },
         ),
-        _interruption,
-        _top,
+        // _interruption,
+        // _top,
         _searchChat(chat),
+        Padding(padding: EdgeInsets.only(top: 30.h)),
       ];
     }
 
     // 如果是群组,就有退出群组
-    var isPerson = chat.share.typeName != TargetType.person.label;
-    if (isPerson) {
-      children.add(Padding(padding: EdgeInsets.only(top: 20.h)));
-      children.add(_exitTarget(context, chat));
-    }
-
-    // 个人空间的, 有特殊按钮
-    if (chat.belongId == controller.user.metadata.id) {
-      // 如果是好友, 添加删除好友功能
-      if (isPerson) {
-        children.add(Padding(padding: EdgeInsets.only(top: 20.h)));
-        children.add(_exitTarget(context, chat));
-      }
-      // 个人空间可以清空会话
-      children.add(Padding(padding: EdgeInsets.only(top: 20.h)));
-      children.add(_clear(context, chat));
-    }
+    // var isPerson = chat.share.typeName != TargetType.person.label;
+    // if (isPerson) {
+    //   children.add(Padding(padding: EdgeInsets.only(top: 20.h)));
+    //   children.add(_exitTarget(context, chat));
+    // }
+    //
+    // // 个人空间的, 有特殊按钮
+    // if (chat.belongId == controller.user.metadata.id) {
+    //   // 如果是好友, 添加删除好友功能
+    //   if (isPerson) {
+    //     children.add(Padding(padding: EdgeInsets.only(top: 20.h)));
+    //     children.add(_exitTarget(context, chat));
+    //   }
+    //   // 个人空间可以清空会话
+    //   children.add(Padding(padding: EdgeInsets.only(top: 20.h)));
+    //   children.add(_clear(context, chat));
+    // }
     return Container(
-      padding: EdgeInsets.only(left: 30.w, right: 30.w),
-      color: XColors.navigatorBgColor,
-      child: ListView(children: children),
+      color: XColors.bgChat,
+      child: Column(children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.only(left: 30.w, right: 30.w),
+              color: Colors.white,
+              child: Column(
+                children: children,
+              ),
+            ),
+          ),
+        ),
+        _clear(context,chat),
+      ]),
     );
   }
 
@@ -162,12 +173,8 @@ class MessageSetting extends GetView<SettingController> {
 
   /// 清空聊天记录
   Widget _clear(BuildContext context, IMsgChat chat) {
-    return ElevatedButton(
-      style: ButtonStyle(
-        fixedSize: MaterialStateProperty.all(defaultBtnSize),
-        backgroundColor: MaterialStateProperty.all(XColors.themeColor),
-      ),
-      onPressed: () {
+    return GestureDetector(
+      onTap: () {
         showCupertinoDialog(
           context: context,
           builder: (context) {
@@ -193,9 +200,17 @@ class MessageSetting extends GetView<SettingController> {
           },
         );
       },
-      child: Text(
-        "清空聊天记录",
-        style: XFonts.size22WhiteW700,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 150.w),
+       
+        decoration: BoxDecoration(
+          color: XColors.themeColor,
+          borderRadius: BorderRadius.circular(32.w)
+        ),
+        child: Text(
+          "清空聊天记录",
+          style: XFonts.size22WhiteW700,
+        ),
       ),
     );
   }

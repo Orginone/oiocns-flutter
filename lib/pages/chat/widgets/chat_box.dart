@@ -17,8 +17,10 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/images.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/permission_util.dart';
+import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -94,8 +96,8 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
       }
     });
     return Container(
-      color: XColors.navigatorBgColor,
-      padding: EdgeInsets.fromLTRB(18.w, 10.h, 18.w, 10.h),
+      color: Color(0xFFFCFDFF),
+      padding: EdgeInsets.symmetric(vertical: 5.w,horizontal: 15.h),
       child: Column(
         children: [
           Row(
@@ -140,7 +142,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
         decoration: InputDecoration(
           isCollapsed: true,
           contentPadding: EdgeInsets.fromLTRB(10.w, 16.h, 10.w, 16.h),
-          border: InputBorder.none,
+          border: OutlineInputBorder(),
           constraints: BoxConstraints(
             maxHeight: 144.h,
           ),
@@ -235,7 +237,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
   Widget _emojiBtn(BuildContext context) {
     return GestureDetector(
       onTap: () => controller.eventFire(context, InputEvent.clickEmoji, chat),
-      child: _rightIcon(Icons.emoji_emotions_outlined),
+      child: _rightIcon(Images.iconEmoji),
     );
   }
 
@@ -243,7 +245,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
   Widget _moreBtn(BuildContext context) {
     return GestureDetector(
       onTap: () => controller.eventFire(context, InputEvent.clickMore, chat),
-      child: _rightIcon(Icons.add),
+      child: _rightIcon(Images.iconAddAction),
     );
   }
 
@@ -253,7 +255,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
       onTap: () {
         controller.eventFire(context, InputEvent.clickVoice, chat);
       },
-      child: _leftIcon(Icons.settings_voice_outlined),
+      child: _leftIcon(Images.iconVoice),
     );
   }
 
@@ -276,23 +278,25 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
   }
 
   // 左侧 Icon
-  Widget _leftIcon(IconData iconData) {
+  Widget _leftIcon(dynamic path) {
     return Container(
       padding: EdgeInsets.only(top: 8.h, bottom: 8.h, right: 8.w),
-      child: Icon(
-        iconData,
-        size: boxDefaultHeight,
+      child: ImageWidget(
+        path,
+        width: boxDefaultHeight,
+        height: boxDefaultHeight,
       ),
     );
   }
 
   /// 右侧 Icon
-  Widget _rightIcon(IconData iconData) {
+  Widget _rightIcon(dynamic path) {
     return Container(
       padding: EdgeInsets.only(left: 8.w, top: 8.h, bottom: 8.h),
-      child: Icon(
-        iconData,
-        size: boxDefaultHeight,
+      child: ImageWidget(
+        path,
+        width: boxDefaultHeight,
+        height: boxDefaultHeight,
       ),
     );
   }
