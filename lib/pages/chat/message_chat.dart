@@ -20,7 +20,7 @@ class MessageChat extends StatefulWidget {
 
 class _MessageChatState extends State<MessageChat> {
   final IMsgChat chat = Get.arguments;
-  final chatBoxCtrl = ChatBoxController();
+  ChatBoxController chatBoxCtrl = Get.find();
 
   @override
   Widget build(BuildContext context) {

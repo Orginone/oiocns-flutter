@@ -18,6 +18,7 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/images.dart';
+import 'package:orginone/pages/chat/text_replace_utils.dart';
 import 'package:orginone/pages/chat/widgets/text/rich_text_input_formatter.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/permission_util.dart';
@@ -128,36 +129,72 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(defaultBorderRadius)),
+        border: Border.all(color: Colors.grey),
       ),
       alignment: Alignment.center,
-      child: AtTextFiled(
-        key: controller.atKey,
-        maxLines: null,
-        keyboardType: TextInputType.multiline,
-        focusNode: controller.focusNode,
-        onChanged: (text) {
-          controller.eventFire(context, InputEvent.clickInput, chat);
-        },
-        onTap: () {
-          controller.eventFire(context, InputEvent.clickInput, chat);
-        },
-        valueChangedCallback: (rules, value) {
-          controller.rules = rules;
-        },
-        style: XFonts.size22Black3W700,
-        controller: controller.inputController,
-        decoration: InputDecoration(
-          isCollapsed: true,
-          contentPadding: EdgeInsets.fromLTRB(10.w, 16.h, 10.w, 16.h),
-          border: const OutlineInputBorder(),
-          constraints: BoxConstraints(
-            maxHeight: 144.h,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AtTextFiled(
+            key: controller.atKey,
+            maxLines: null,
+            keyboardType: TextInputType.multiline,
+            focusNode: controller.focusNode,
+            onChanged: (text) {
+              controller.eventFire(context, InputEvent.clickInput, chat);
+            },
+            onTap: () {
+              controller.eventFire(context, InputEvent.clickInput, chat);
+            },
+            valueChangedCallback: (rules, value) {
+              controller.rules = rules;
+            },
+            style: XFonts.size22Black3W700,
+            controller: controller.inputController,
+            decoration: InputDecoration(
+              isCollapsed: true,
+              contentPadding: EdgeInsets.fromLTRB(10.w, 16.h, 10.w, 16.h),
+              border: InputBorder.none,
+              constraints: BoxConstraints(
+                maxHeight: 144.h,
+              ),
+            ),
+            triggerAtCallback: () async {
+              var target = await AtPersonDialog.showDialog(context, chat);
+              return target;
+            },
           ),
-        ),
-        triggerAtCallback: () async {
-          var target = await AtPersonDialog.showDialog(context, chat);
-          return target;
-        },
+          Obx(() {
+            if (controller.replyText.value.isEmpty) {
+              return SizedBox();
+            }
+            return Container(
+              color: Colors.grey[200],
+              width: double.infinity,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.symmetric(vertical: 5.h,horizontal: 15.w),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      TextReplaceUtils.replace(
+                        controller.replyText.value,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  GestureDetector(
+                    child: Icon(Icons.close,size: 28.w,),
+                    onTap: (){
+                      controller.replyText.value = '';
+                    },
+                  )
+                ],
+              ),
+            );
+          }),
+        ],
       ),
     );
   }
@@ -567,6 +604,8 @@ class ChatBoxController with WidgetsBindingObserver {
 
   List<Rule> rules = [];
 
+  var replyText = ''.obs;
+
   ChatBoxController() {
     EventBusHelper.register(this, (event) {
       if (event is XTarget) {
@@ -617,23 +656,18 @@ class ChatBoxController with WidgetsBindingObserver {
         break;
       case InputEvent.clickSendBtn:
         String message = inputController.text;
+        if(replyText.value.isNotEmpty){
+          message = '$message\$CITEMESSAGE[${TextReplaceUtils.replace(replyText.value)}]';
+        }
         if (rules.isNotEmpty) {
-          for (int i = 0; i < rules.length; i++) {
-            var rule = rules[i];
-            String text =
-                "${inputController.text.substring(rule.startIndex, rule.endIndex)}\$FINDME[${rule.target!.belongId}]";
-            if (i == 0) {
-              message =
-                  message.replaceRange(rule.startIndex, rule.endIndex, text);
-            } else {
-              message = message.replaceRange(
-                  rule.startIndex + (27 * i), rule.endIndex + (27 * i), text);
-            }
+          for (var rule in rules) {
+            message = '$message\$FINDME[${rule.target!.belongId}]';
           }
         }
         await chat.sendMessage(MessageType.text,message);
         inputController.clear();
         atKey.currentState?.clearRules();
+        replyText.value = '';
         rules.clear();
         if (_inputStatus.value == InputStatus.inputtingText) {
           _inputStatus.value = InputStatus.focusing;
@@ -783,5 +817,12 @@ class ChatBoxController with WidgetsBindingObserver {
       await _recorder.resumeRecorder();
       recordStatus.value = RecordStatus.recoding;
     }
+  }
+}
+
+class ChatBoxBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => ChatBoxController());
   }
 }

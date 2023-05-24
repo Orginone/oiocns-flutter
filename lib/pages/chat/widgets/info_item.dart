@@ -25,6 +25,8 @@ import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/photo_widget.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 
+import 'chat_box.dart';
+
 enum Direction { leftStart, rightStart }
 
 enum DetailFunc {
@@ -139,19 +141,26 @@ class DetailItemWidget extends GetView<SettingController> {
     var textDirection = isSelf ? rtl : ltr;
 
     if (msg.msgType == MessageType.text.label) {
-      TextReplaceUtils.loadFindUserId(msg.showTxt);
-      body = _detail(
-        textDirection: textDirection,
-        body: Text(
-          TextReplaceUtils.replace(msg.showTxt),
-          style: XFonts.size22Black0,
-        ),
-        padding: EdgeInsets.only(
-          left: 16.w,
-          right: 16.w,
-          top: 10.w,
-          bottom: 10.w,
-        ),
+      String reply = TextReplaceUtils.getReplyMsg(msg.showTxt);
+      body = Column(
+        crossAxisAlignment: isSelf?CrossAxisAlignment.end:CrossAxisAlignment.start,
+        children: [
+          _detail(
+            textDirection: textDirection,
+            body: Text(
+              TextReplaceUtils.replace(msg.showTxt),
+              style: XFonts.size20Black0,
+            ),
+          ),
+          reply.isEmpty?const SizedBox():_detail(
+            textDirection: textDirection,
+            body: Text(
+              reply,
+              style: XFonts.size18Black0,
+            ),
+            bgColor: Colors.black.withOpacity(0.1)
+          ),
+        ],
       );
     } else if (msg.msgType == MessageType.image.label) {
       body = _image(textDirection: textDirection, context: context);
@@ -212,7 +221,8 @@ class DetailItemWidget extends GetView<SettingController> {
                           // TODO: Handle this case.
                           break;
                         case DetailFunc.reply:
-                          // TODO: Handle this case.
+                          ChatBoxController controller = Get.find<ChatBoxController>();
+                          controller.replyText.value = msg.showTxt;
                           break;
                       }
                       popCtrl.hideMenu();
@@ -253,7 +263,11 @@ class DetailItemWidget extends GetView<SettingController> {
     BoxConstraints? constraints,
     Clip? clipBehavior,
     EdgeInsets? padding,
+    Color? bgColor,
   }) {
+
+    Color color = bgColor??(isSelf ? XColors.tinyLightBlue : Colors.white);
+    
     return Container(
       constraints: constraints ?? BoxConstraints(maxWidth: 350.w),
       padding: padding ?? EdgeInsets.all(defaultWidth),
@@ -261,17 +275,8 @@ class DetailItemWidget extends GetView<SettingController> {
           ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
           : EdgeInsets.only(right: defaultWidth),
       decoration: BoxDecoration(
-        color: isSelf ? XColors.tinyLightBlue : Colors.white,
+        color: color,
         borderRadius: BorderRadius.all(Radius.circular(defaultWidth)),
-        boxShadow: const [
-          //阴影效果
-          BoxShadow(
-            offset: Offset(0, 2), //阴影在X轴和Y轴上的偏移
-            color: Colors.black12, //阴影颜色
-            blurRadius: 3.0, //阴影程度
-            spreadRadius: 0, //阴影扩散的程度 取值可以正数,也可以是负数
-          ),
-        ],
       ),
       clipBehavior: clipBehavior ?? Clip.none,
       child: body,
