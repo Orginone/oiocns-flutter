@@ -157,7 +157,7 @@ class MessageSetting extends GetView<SettingController> {
   Widget _searchChat(IMsgChat chat) {
     return ChooseItem(
       func: () {
-        KernelApi.getInstance().queryCohortImMsgs(IDBelongReq(id: chat.chatId));
+
       },
       padding: EdgeInsets.zero,
       header: Text(

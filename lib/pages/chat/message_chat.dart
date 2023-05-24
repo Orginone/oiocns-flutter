@@ -4,13 +4,11 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_util.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
-import 'package:orginone/widget/template/originone_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 
 class MessageChat extends StatefulWidget {
@@ -92,7 +90,6 @@ class _MessageChatState extends State<MessageChat> {
             () => ListView.builder(
               reverse: true,
               shrinkWrap: true,
-              controller: ScrollController(),
               scrollDirection: Axis.vertical,
               itemCount: messages.length,
               itemBuilder: (BuildContext context, int index) {
@@ -108,7 +105,6 @@ class _MessageChatState extends State<MessageChat> {
   Widget _item(int index, IMsgChat chat) {
     MsgSaveModel msg = chat.messages[index];
     Widget currentWidget = DetailItemWidget(msg: msg, chat: chat);
-
     var time = _time(msg.createTime);
     var item = Column(children: [currentWidget]);
     if (index == 0) {

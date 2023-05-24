@@ -13,11 +13,12 @@ import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/base/schema.dart' hide Rule;
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/images.dart';
+import 'package:orginone/pages/chat/widgets/text/rich_text_input_formatter.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/permission_util.dart';
 import 'package:orginone/widget/image_widget.dart';
@@ -134,15 +135,21 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
         maxLines: null,
         keyboardType: TextInputType.multiline,
         focusNode: controller.focusNode,
-        onChanged: (text) =>
-            controller.eventFire(context, InputEvent.clickInput, chat),
-        onTap: () => controller.eventFire(context, InputEvent.clickInput, chat),
+        onChanged: (text) {
+          controller.eventFire(context, InputEvent.clickInput, chat);
+        },
+        onTap: () {
+          controller.eventFire(context, InputEvent.clickInput, chat);
+        },
+        valueChangedCallback: (rules, value) {
+          controller.rules = rules;
+        },
         style: XFonts.size22Black3W700,
         controller: controller.inputController,
         decoration: InputDecoration(
           isCollapsed: true,
           contentPadding: EdgeInsets.fromLTRB(10.w, 16.h, 10.w, 16.h),
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
           constraints: BoxConstraints(
             maxHeight: 144.h,
           ),
@@ -306,8 +313,9 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
     return Container(
       margin: EdgeInsets.only(left: 8.w),
       child: ElevatedButton(
-        onPressed: () =>
-            controller.eventFire(context, InputEvent.clickSendBtn, chat),
+        onPressed: () {
+          controller.eventFire(context, InputEvent.clickSendBtn, chat);
+        },
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Colors.blueAccent),
           minimumSize: MaterialStateProperty.all(Size(10.w, boxDefaultHeight)),
@@ -557,6 +565,8 @@ class ChatBoxController with WidgetsBindingObserver {
 
   late GlobalKey<AtTextFiledState> atKey;
 
+  List<Rule> rules = [];
+
   ChatBoxController() {
     EventBusHelper.register(this, (event) {
       if (event is XTarget) {
@@ -606,8 +616,25 @@ class ChatBoxController with WidgetsBindingObserver {
         _inputStatus.value = InputStatus.inputtingEmoji;
         break;
       case InputEvent.clickSendBtn:
-        await chat.sendMessage(MessageType.text, inputController.text);
+        String message = inputController.text;
+        if (rules.isNotEmpty) {
+          for (int i = 0; i < rules.length; i++) {
+            var rule = rules[i];
+            String text =
+                "${inputController.text.substring(rule.startIndex, rule.endIndex)}\$FINDME[${rule.target!.belongId}]";
+            if (i == 0) {
+              message =
+                  message.replaceRange(rule.startIndex, rule.endIndex, text);
+            } else {
+              message = message.replaceRange(
+                  rule.startIndex + (27 * i), rule.endIndex + (27 * i), text);
+            }
+          }
+        }
+        await chat.sendMessage(MessageType.text,message);
         inputController.clear();
+        atKey.currentState?.clearRules();
+        rules.clear();
         if (_inputStatus.value == InputStatus.inputtingText) {
           _inputStatus.value = InputStatus.focusing;
         } else {

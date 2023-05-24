@@ -15,6 +15,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/pages/chat/text_replace_utils.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/logger.dart';
@@ -125,7 +126,7 @@ class DetailItemWidget extends GetView<SettingController> {
   Widget _getChat(BuildContext context) {
     List<Widget> content = <Widget>[];
 
-    if (!isSelf && !(chat.share.typeName == TargetType.person.label)) {
+    if (!isSelf && chat.share.typeName != TargetType.person.label) {
       content.add(Container(
         margin: EdgeInsets.only(left: 10.w),
         child: TargetText(userId: msg.fromId, style: XFonts.size16Black3),
@@ -138,10 +139,11 @@ class DetailItemWidget extends GetView<SettingController> {
     var textDirection = isSelf ? rtl : ltr;
 
     if (msg.msgType == MessageType.text.label) {
+      TextReplaceUtils.loadFindUserId(msg.showTxt);
       body = _detail(
         textDirection: textDirection,
         body: Text(
-          msg.showTxt,
+          TextReplaceUtils.replace(msg.showTxt),
           style: XFonts.size22Black0,
         ),
         padding: EdgeInsets.only(
