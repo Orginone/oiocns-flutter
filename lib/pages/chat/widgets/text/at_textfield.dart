@@ -25,6 +25,8 @@ class AtTextFiled extends StatefulWidget {
   final FocusNode? focusNode;
   final GestureTapCallback? onTap;
 
+  final ValueChangedCallback? valueChangedCallback;
+
   const AtTextFiled(
       {Key? key,
       required this.triggerAtCallback,
@@ -37,7 +39,8 @@ class AtTextFiled extends StatefulWidget {
       this.maxLines,
       this.keyboardType,
       this.focusNode,
-      this.onTap})
+      this.onTap,
+      this.valueChangedCallback})
       : super(key: key);
 
   @override
@@ -93,7 +96,10 @@ class AtTextFiledState extends State<AtTextFiled> {
         valueChangedCallback: (List<Rule> rules, String value) {
           _inputValue = value;
           _rules = rules;
-        },
+        if (widget.valueChangedCallback != null) {
+          widget.valueChangedCallback!(rules, value);
+        }
+      },
     );
     _controller.text = "";
     _inputValue = "";
@@ -103,5 +109,8 @@ class AtTextFiledState extends State<AtTextFiled> {
 
   void addTarget(XTarget target){
     _formatter.manualAdd(target);
+  }
+  void clearRules(){
+    _formatter.clear();
   }
 }

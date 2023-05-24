@@ -4,12 +4,11 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_util.dart';
-import 'package:orginone/widget/template/originone_scaffold.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 
 class MessageChat extends StatefulWidget {
@@ -21,18 +20,13 @@ class MessageChat extends StatefulWidget {
 
 class _MessageChatState extends State<MessageChat> {
   final IMsgChat chat = Get.arguments;
-  final chatBoxCtrl = ChatBoxController();
+  ChatBoxController chatBoxCtrl = Get.find();
 
   @override
   Widget build(BuildContext context) {
-    return OrginoneScaffold(
-      appBarHeight: 74.h,
-      appBarBgColor: XColors.navigatorBgColor,
-      resizeToAvoidBottomInset: false,
-      appBarLeading: XWidgets.defaultBackBtn,
-      appBarTitle: _title(chat),
-      appBarCenterTitle: true,
-      appBarActions: _actions(chat),
+    return GyScaffold(
+      titleWidget: _title(chat),
+      actions: _actions(chat),
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
@@ -74,7 +68,7 @@ class _MessageChatState extends State<MessageChat> {
       GFIconButton(
         color: Colors.white.withOpacity(0),
         icon: Icon(
-          Icons.more_horiz,
+          Icons.more_vert,
           color: XColors.black3,
           size: 32.w,
         ),
@@ -87,7 +81,7 @@ class _MessageChatState extends State<MessageChat> {
 
   Widget _content(IMsgChat chat, List<MsgSaveModel> messages) {
     return Container(
-      color: XColors.bgColor,
+      color: XColors.bgChat,
       child: RefreshIndicator(
         onRefresh: () => chat.moreMessage(),
         child: Container(
@@ -96,7 +90,6 @@ class _MessageChatState extends State<MessageChat> {
             () => ListView.builder(
               reverse: true,
               shrinkWrap: true,
-              controller: ScrollController(),
               scrollDirection: Axis.vertical,
               itemCount: messages.length,
               itemBuilder: (BuildContext context, int index) {
@@ -112,7 +105,6 @@ class _MessageChatState extends State<MessageChat> {
   Widget _item(int index, IMsgChat chat) {
     MsgSaveModel msg = chat.messages[index];
     Widget currentWidget = DetailItemWidget(msg: msg, chat: chat);
-
     var time = _time(msg.createTime);
     var item = Column(children: [currentWidget]);
     if (index == 0) {

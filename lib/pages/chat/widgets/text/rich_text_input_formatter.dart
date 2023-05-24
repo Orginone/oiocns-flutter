@@ -106,7 +106,7 @@ class RichTextInputFormatter extends TextInputFormatter {
   /// 触发[triggerSymbol]操作
   void triggerAt(TextEditingValue oldValue, TextEditingValue newValue,{XTarget? t}) async {
     /// 新值的选中光标的开始位置
-    int selStart = newValue.selection.start;
+    int selStart = math.max(newValue.selection.start, 1);
 
     /// 调用外部选人回调，返回具体参数
     XTarget? target = t??await _triggerAtCallback();

@@ -7,6 +7,7 @@ import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/pages/chat/text_replace_utils.dart';
 import 'package:orginone/util/encryption_util.dart';
 
 var nullTime = DateTime(2022, 7, 1).millisecondsSinceEpoch;
@@ -359,6 +360,13 @@ abstract class MsgChat extends Entity implements IMsgChat {
     if (res.success) {
       messages.removeWhere((item) => item.id == id);
       chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
+      try{
+        chatdata.value.lastMessage = messages.last;
+      }catch(e){
+        chatdata.value.lastMessage = null;
+      }
+      chatdata.refresh();
+      cache();
       return true;
     }
     return res.success;
@@ -377,6 +385,9 @@ abstract class MsgChat extends Entity implements IMsgChat {
     if (res.success) {
       messages.clear();
       chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
+      chatdata.value.lastMessage = null;
+      chatdata.refresh();
+      cache();
       return true;
     }
     return res.success;
@@ -443,6 +454,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
 
     chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
     chatdata.value.lastMessage = msg;
+    chatdata.value.isFindme = TextReplaceUtils.loadFindUserId(msg.msgBody);
     chatdata.refresh();
     cache();
   }

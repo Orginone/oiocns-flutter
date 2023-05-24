@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class ImageWidget extends StatelessWidget {
@@ -38,6 +40,9 @@ class ImageWidget extends StatelessWidget {
     if(path is Uint8List){
       return memory();
     }
+    if(path is IconData){
+      return icon();
+    }
     return asset();
   }
 
@@ -60,5 +65,9 @@ class ImageWidget extends StatelessWidget {
 
   Widget file(){
     return Image.file(path, fit: fit, width: width, height: height, color: color);
+  }
+
+  Widget icon(){
+    return Icon(path,size: max(width??24.w, height??24.h),color: color,);
   }
 }

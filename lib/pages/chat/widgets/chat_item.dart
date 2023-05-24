@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/pages/chat/text_replace_utils.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_util.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 import 'package:orginone/widget/widgets/text_tag.dart';
+import 'package:badges/badges.dart' as badges;
 
 enum ChatFunc {
   // topping("置顶会话"),
@@ -76,7 +76,7 @@ class MessageItemWidget extends GetView<SettingController> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _avatarContainer,
-            Padding(padding: EdgeInsets.only(left: 20.w)),
+            SizedBox(width: 15.w,),
             Expanded(child: Obx(() => _content)),
           ],
         ),
@@ -87,22 +87,26 @@ class MessageItemWidget extends GetView<SettingController> {
   Widget get _avatarContainer {
     return Obx(() {
       var noRead = chat.chatdata.value.noReadCount;
-      return TeamAvatar(
-        info: TeamTypeInfo(share: chat.share),
-        children: [
-          Visibility(
-            visible: noRead > 0,
-            child: Align(
-              alignment: Alignment.topRight,
-              child: GFBadge(
-                shape: GFBadgeShape.circle,
-                color: Colors.red,
-                child: Text("${noRead > 99 ? "99+" : noRead}"),
-              ),
-            ),
-          )
-        ],
-      );
+      Widget child = TeamAvatar(
+          info: TeamTypeInfo(share: chat.share),size: 55.w,);
+      if(noRead>0){
+       child = badges.Badge(
+           ignorePointer: false,
+           position: badges.BadgePosition.topEnd(top: -10),
+           badgeContent: Text(
+             "${noRead > 99 ? "99+" : noRead}",
+             style: const TextStyle(
+               color: Colors.white,
+               fontSize: 10,
+               letterSpacing: 1,
+               wordSpacing: 2,
+               height: 1,
+             ),
+           ),
+           child:child,
+       );
+      }
+     return child;
     });
   }
 
@@ -110,36 +114,40 @@ class MessageItemWidget extends GetView<SettingController> {
     var target = chat.chatdata;
     var labels = <Widget>[];
     for (var item in chat.chatdata.value.labels) {
-      labels.add(TextTag(
-        item,
-        bgColor: Colors.white,
-        textStyle: TextStyle(
-          color: XColors.designBlue,
-          fontSize: 12.sp,
-        ),
-        borderColor: XColors.tinyBlue,
-      ));
-      labels.add(Padding(padding: EdgeInsets.only(left: 4.w)));
+      if(item.isNotEmpty){
+        labels.add(TextTag(
+          item,
+          bgColor: Colors.white,
+          textStyle: TextStyle(
+            color: XColors.designBlue,
+            fontSize: 12.sp,
+          ),
+          borderColor: XColors.tinyBlue,
+        ));
+        labels.add(Padding(padding: EdgeInsets.only(left: 4.w)));
+      }
     }
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(target.value.chatName ?? "", style: XFonts.size22Black0W700),
-            Text(
-              CustomDateUtil.getSessionTime(
-                  chat.chatdata.value.lastMessage?.createTime),
-              style: XFonts.size18Black0,
+            Text(target.value.chatName ?? "", style: XFonts.size20Black0W700),
+            SizedBox(width: 10.w,),
+            ...labels,
+            Expanded(
+              child: Text(
+                CustomDateUtil.getSessionTime(
+                    chat.chatdata.value.lastMessage?.createTime),
+                style: XFonts.size18Black0,
+                textAlign: TextAlign.right,
+              ),
             ),
           ],
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [Expanded(child: _showTxt()), ...labels],
-        ),
+        SizedBox(height: 2.h,),
+        _showTxt(),
       ],
     );
   }
@@ -147,7 +155,9 @@ class MessageItemWidget extends GetView<SettingController> {
   Widget _showTxt() {
     var lastMessage = chat.chatdata.value.lastMessage;
     if (lastMessage == null) {
-      return Container();
+      return SizedBox(
+        height: 30.h,
+      );
     }
     return FutureBuilder<ShareIcon>(
         future: controller.user.findShareById(lastMessage.fromId),
@@ -156,7 +166,7 @@ class MessageItemWidget extends GetView<SettingController> {
           if (snapshot.hasData) {
             var name = snapshot.data?.name ?? "";
             if (lastMessage.fromId != controller.user.metadata.id) {
-              if(chat is Company){
+              if(chat.share.typeName != TargetType.person.label){
                 showTxt = "$name:";
               }else{
                 showTxt = "对方:";
@@ -165,7 +175,12 @@ class MessageItemWidget extends GetView<SettingController> {
 
             var messageType = lastMessage.msgType;
             if (messageType == MessageType.text.label) {
-              showTxt = "$showTxt${lastMessage.showTxt}";
+              var userIds = TextReplaceUtils.loadFindUserId(lastMessage.showTxt);
+              if(userIds.isNotEmpty && userIds.contains(controller.user.userId)){
+                showTxt = "有人@你";
+              }else{
+                showTxt = "$showTxt${TextReplaceUtils.replace(lastMessage.showTxt)}";
+              }
             } else if (messageType == 'recall') {
               showTxt = "$showTxt撤回了一条消息";
             } else if (messageType == MessageType.image.label) {
@@ -174,6 +189,8 @@ class MessageItemWidget extends GetView<SettingController> {
               showTxt = "$showTxt[视频]";
             } else if (messageType == MessageType.voice.label) {
               showTxt = "$showTxt[语音]";
+            } else if (messageType == MessageType.file.label) {
+              showTxt = "$showTxt[文件]";
             }
           }
 

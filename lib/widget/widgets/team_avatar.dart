@@ -40,8 +40,9 @@ class TeamAvatar extends StatelessWidget {
     double? size,
     this.child,
     this.children,
+    BoxDecoration? decoration,
   })  : size = size ?? 66.w,
-        decoration = BoxDecoration(
+        decoration = decoration??BoxDecoration(
           color: XColors.themeColor,
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.all(Radius.circular(6.w)),

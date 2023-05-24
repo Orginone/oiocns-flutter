@@ -13,12 +13,16 @@ import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/base/schema.dart' hide Rule;
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/images.dart';
+import 'package:orginone/pages/chat/text_replace_utils.dart';
+import 'package:orginone/pages/chat/widgets/text/rich_text_input_formatter.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/permission_util.dart';
+import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -94,8 +98,8 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
       }
     });
     return Container(
-      color: XColors.navigatorBgColor,
-      padding: EdgeInsets.fromLTRB(18.w, 10.h, 18.w, 10.h),
+      color: Color(0xFFFCFDFF),
+      padding: EdgeInsets.symmetric(vertical: 5.w,horizontal: 15.h),
       child: Column(
         children: [
           Row(
@@ -125,30 +129,72 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(defaultBorderRadius)),
+        border: Border.all(color: Colors.grey),
       ),
       alignment: Alignment.center,
-      child: AtTextFiled(
-        key: controller.atKey,
-        maxLines: null,
-        keyboardType: TextInputType.multiline,
-        focusNode: controller.focusNode,
-        onChanged: (text) =>
-            controller.eventFire(context, InputEvent.clickInput, chat),
-        onTap: () => controller.eventFire(context, InputEvent.clickInput, chat),
-        style: XFonts.size22Black3W700,
-        controller: controller.inputController,
-        decoration: InputDecoration(
-          isCollapsed: true,
-          contentPadding: EdgeInsets.fromLTRB(10.w, 16.h, 10.w, 16.h),
-          border: InputBorder.none,
-          constraints: BoxConstraints(
-            maxHeight: 144.h,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AtTextFiled(
+            key: controller.atKey,
+            maxLines: null,
+            keyboardType: TextInputType.multiline,
+            focusNode: controller.focusNode,
+            onChanged: (text) {
+              controller.eventFire(context, InputEvent.clickInput, chat);
+            },
+            onTap: () {
+              controller.eventFire(context, InputEvent.clickInput, chat);
+            },
+            valueChangedCallback: (rules, value) {
+              controller.rules = rules;
+            },
+            style: XFonts.size22Black3W700,
+            controller: controller.inputController,
+            decoration: InputDecoration(
+              isCollapsed: true,
+              contentPadding: EdgeInsets.fromLTRB(10.w, 16.h, 10.w, 16.h),
+              border: InputBorder.none,
+              constraints: BoxConstraints(
+                maxHeight: 144.h,
+              ),
+            ),
+            triggerAtCallback: () async {
+              var target = await AtPersonDialog.showDialog(context, chat);
+              return target;
+            },
           ),
-        ),
-        triggerAtCallback: () async {
-          var target = await AtPersonDialog.showDialog(context, chat);
-          return target;
-        },
+          Obx(() {
+            if (controller.replyText.value.isEmpty) {
+              return SizedBox();
+            }
+            return Container(
+              color: Colors.grey[200],
+              width: double.infinity,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.symmetric(vertical: 5.h,horizontal: 15.w),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      TextReplaceUtils.replace(
+                        controller.replyText.value,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  GestureDetector(
+                    child: Icon(Icons.close,size: 28.w,),
+                    onTap: (){
+                      controller.replyText.value = '';
+                    },
+                  )
+                ],
+              ),
+            );
+          }),
+        ],
       ),
     );
   }
@@ -235,7 +281,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
   Widget _emojiBtn(BuildContext context) {
     return GestureDetector(
       onTap: () => controller.eventFire(context, InputEvent.clickEmoji, chat),
-      child: _rightIcon(Icons.emoji_emotions_outlined),
+      child: _rightIcon(Images.iconEmoji),
     );
   }
 
@@ -243,7 +289,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
   Widget _moreBtn(BuildContext context) {
     return GestureDetector(
       onTap: () => controller.eventFire(context, InputEvent.clickMore, chat),
-      child: _rightIcon(Icons.add),
+      child: _rightIcon(Images.iconAddAction),
     );
   }
 
@@ -253,7 +299,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
       onTap: () {
         controller.eventFire(context, InputEvent.clickVoice, chat);
       },
-      child: _leftIcon(Icons.settings_voice_outlined),
+      child: _leftIcon(Images.iconVoice),
     );
   }
 
@@ -276,23 +322,25 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
   }
 
   // 左侧 Icon
-  Widget _leftIcon(IconData iconData) {
+  Widget _leftIcon(dynamic path) {
     return Container(
       padding: EdgeInsets.only(top: 8.h, bottom: 8.h, right: 8.w),
-      child: Icon(
-        iconData,
-        size: boxDefaultHeight,
+      child: ImageWidget(
+        path,
+        width: boxDefaultHeight,
+        height: boxDefaultHeight,
       ),
     );
   }
 
   /// 右侧 Icon
-  Widget _rightIcon(IconData iconData) {
+  Widget _rightIcon(dynamic path) {
     return Container(
       padding: EdgeInsets.only(left: 8.w, top: 8.h, bottom: 8.h),
-      child: Icon(
-        iconData,
-        size: boxDefaultHeight,
+      child: ImageWidget(
+        path,
+        width: boxDefaultHeight,
+        height: boxDefaultHeight,
       ),
     );
   }
@@ -302,8 +350,9 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
     return Container(
       margin: EdgeInsets.only(left: 8.w),
       child: ElevatedButton(
-        onPressed: () =>
-            controller.eventFire(context, InputEvent.clickSendBtn, chat),
+        onPressed: () {
+          controller.eventFire(context, InputEvent.clickSendBtn, chat);
+        },
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Colors.blueAccent),
           minimumSize: MaterialStateProperty.all(Size(10.w, boxDefaultHeight)),
@@ -553,6 +602,10 @@ class ChatBoxController with WidgetsBindingObserver {
 
   late GlobalKey<AtTextFiledState> atKey;
 
+  List<Rule> rules = [];
+
+  var replyText = ''.obs;
+
   ChatBoxController() {
     EventBusHelper.register(this, (event) {
       if (event is XTarget) {
@@ -602,8 +655,20 @@ class ChatBoxController with WidgetsBindingObserver {
         _inputStatus.value = InputStatus.inputtingEmoji;
         break;
       case InputEvent.clickSendBtn:
-        await chat.sendMessage(MessageType.text, inputController.text);
+        String message = inputController.text;
+        if(replyText.value.isNotEmpty){
+          message = '$message\$CITEMESSAGE[${TextReplaceUtils.replace(replyText.value)}]';
+        }
+        if (rules.isNotEmpty) {
+          for (var rule in rules) {
+            message = '$message\$FINDME[${rule.target!.belongId}]';
+          }
+        }
+        await chat.sendMessage(MessageType.text,message);
         inputController.clear();
+        atKey.currentState?.clearRules();
+        replyText.value = '';
+        rules.clear();
         if (_inputStatus.value == InputStatus.inputtingText) {
           _inputStatus.value = InputStatus.focusing;
         } else {
@@ -752,5 +817,12 @@ class ChatBoxController with WidgetsBindingObserver {
       await _recorder.resumeRecorder();
       recordStatus.value = RecordStatus.recoding;
     }
+  }
+}
+
+class ChatBoxBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => ChatBoxController());
   }
 }
