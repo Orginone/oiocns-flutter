@@ -131,13 +131,13 @@ class BucketOpreateModel {
   final String key;
 
   // 名称
-  final String? name;
+  String? name;
 
   // 目标
-  final String? destination;
+  String? destination;
 
   // 操作
-  BucketOpreates operate;
+  late BucketOpreates operate;
 
   // 携带的分片数据
   FileChunkData? fileItem;
@@ -156,6 +156,7 @@ class BucketOpreateModel {
       "name": name,
       "operate": operate.label,
       "fileItem": fileItem?.toJson(),
+      "destination":destination,
     };
   }
 }

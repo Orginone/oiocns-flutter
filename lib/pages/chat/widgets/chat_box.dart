@@ -20,6 +20,7 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/pages/chat/text_replace_utils.dart';
 import 'package:orginone/pages/chat/widgets/text/rich_text_input_formatter.dart';
+import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/permission_util.dart';
 import 'package:orginone/widget/image_widget.dart';
@@ -703,7 +704,7 @@ class ChatBoxController with WidgetsBindingObserver {
 
   Future<void> filePicked(PlatformFile file, IMsgChat chat) async {
     var settingCtrl = Get.find<SettingController>();
-    var docDir = await settingCtrl.user.fileSystem.home?.create("沟通");
+    var docDir = await settingCtrl.user.fileSystem.home?.create('沟通');
     var item = await docDir?.upload(
       file.name,
       File(file.path!),
