@@ -9,7 +9,6 @@ import 'package:flutter_svg/svg.dart';
 class ImageWidget extends StatelessWidget {
   final dynamic path;
 
-
   final double? width;
 
   final double? height;
@@ -18,32 +17,45 @@ class ImageWidget extends StatelessWidget {
 
   final BoxFit fit;
 
-  const ImageWidget(
-  this.path,{Key? key, this.width, this.height, this.color, this.fit = BoxFit
-          .contain}) : super(key: key);
+  final bool circular;
+
+  const ImageWidget(this.path,
+      {Key? key,
+      this.width,
+      this.height,
+      this.color,
+      this.fit = BoxFit.contain,
+      this.circular = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if(path is String){
-      if(path.contains('http')){
-        return network();
+    Widget child;
+    if (path is String) {
+      if (path.contains('http')) {
+        child = network();
       }
-      if(path.split('.').last.toLowerCase() == 'svg'){
-       return svg();
-      }else{
-        return asset();
+      if (path.split('.').last.toLowerCase() == 'svg') {
+        child = svg();
+      } else {
+        child = asset();
       }
+    } else if (path is File) {
+      child = file();
+    } else if (path is Uint8List) {
+      child = memory();
+    } else if (path is IconData) {
+      child = icon();
+    } else {
+      child = asset();
     }
-    if(path is File){
-      return file();
+
+    if (circular) {
+      child = ClipOval(
+        child: child,
+      );
     }
-    if(path is Uint8List){
-      return memory();
-    }
-    if(path is IconData){
-      return icon();
-    }
-    return asset();
+    return child;
   }
 
   Widget svg() {

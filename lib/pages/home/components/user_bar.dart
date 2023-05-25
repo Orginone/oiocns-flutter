@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/widget/unified.dart';
-import 'package:orginone/widget/widgets/text_avatar.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/icons.dart';
+import 'package:orginone/widget/image_widget.dart';
+import 'package:orginone/widget/unified.dart';
+import 'package:orginone/widget/widgets/text_avatar.dart';
 
 class UserBar extends GetView<SettingController> {
   const UserBar({super.key});
@@ -106,23 +108,23 @@ class UserBar extends GetView<SettingController> {
 
   Widget _imgAvatar(EdgeInsets insets) {
     return Obx(() {
-      var avatar = controller.provider.user?.share.avatar?.thumbnail
-              ?.split(",")[1]
-              .replaceAll('\r', '')
-              .replaceAll('\n', '');
-      if(avatar==null){
-       return _textAvatar(insets);
+      dynamic avatar = controller.provider.user?.share.avatar?.thumbnail
+          ?.split(",")[1]
+          .replaceAll('\r', '')
+          .replaceAll('\n', '');
+      if (avatar != null) {
+        avatar = base64Decode(avatar);
+      } else {
+        avatar = AIcons.icons['x']?['defalutAvatar'];
       }
       return Container(
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-                image: MemoryImage(
-              base64Decode(avatar ?? ""),
-            ),fit: BoxFit.cover),),
-        width: 45.w,
-        margin: insets,
-      );
+          margin: insets,
+          child: ImageWidget(
+            avatar,
+            fit: BoxFit.cover,
+            width: 45.w,
+            circular: true,
+          ));
     });
   }
 }
