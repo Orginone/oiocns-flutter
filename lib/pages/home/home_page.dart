@@ -54,13 +54,18 @@ class HomePage extends GetView<HomeController> {
             tabCtrl: controller.tabController,
             top: const UserBar(),
             views: controller.tabs.map((e) => e.toTabView()).toList(),
-            bottom: TabBar(
-              indicator: const UnderlineTabIndicator(),
-              controller: controller.tabController,
-              tabs: controller.tabs.map((item) => item.toTab()).toList(),
-              onTap: (index) {
-                controller.changeTab(index);
-              },
+            bottom: Container(
+              decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: Colors.grey.shade400,width: 0.4),)
+              ),
+              child: TabBar(
+                indicator: const UnderlineTabIndicator(),
+                controller: controller.tabController,
+                tabs: controller.tabs.map((item) => item.toTab()).toList(),
+                onTap: (index) {
+                  controller.changeTab(index);
+                },
+              ),
             ),
           ),
         ),

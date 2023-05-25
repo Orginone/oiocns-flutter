@@ -12,6 +12,7 @@ class MessageChats extends GetView<SettingController> {
   Widget build(BuildContext context) {
     return Obx(() {
       var chats = controller.chat.chats;
+      chats.removeWhere((element) => !element.isMyChat);
       if (chats.isEmpty) {
         return Container();
       }

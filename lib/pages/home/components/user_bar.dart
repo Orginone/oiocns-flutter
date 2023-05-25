@@ -16,10 +16,19 @@ class UserBar extends GetView<SettingController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
+      Widget child;
       if (controller.homeEnum.value != HomeEnum.door) {
-        return _other;
+        child = _other;
+      }else{
+        child = _door;
       }
-      return _door;
+
+      return Container(
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: Colors.grey.shade400,width: 0.4),)
+        ),
+        child: child,
+      );
     });
   }
 
