@@ -52,10 +52,11 @@ abstract class BaseBreadcrumbNavController<S extends BaseBreadcrumbNavState>
         return Get.currentRoute == routerName;
       }
       var name = (route.settings.arguments as Map)['data']?.name??"";
+      var id = (route.settings.arguments as Map)['data']?.id??"";
       if(name == ''){
         return Get.currentRoute == routerName;
       }
-      return Get.currentRoute == routerName && state.bcNav[index].data?.name == name;
+      return Get.currentRoute == routerName && state.bcNav[index].data?.name == name && state.bcNav[index].data?.id == id;
     },);
   }
 

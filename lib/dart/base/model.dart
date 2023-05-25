@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -4786,6 +4787,15 @@ class FileItemShare {
       }
     }
     return retList;
+  }
+
+  Uint8List get thumbnailUint8List{
+    var uint8ListStr = thumbnail
+        ?.split(",")[1]
+        .replaceAll('\r', '')
+        .replaceAll('\n', '') ??
+        "";
+    return  base64Decode(uint8ListStr);
   }
 
   //转成JSON
