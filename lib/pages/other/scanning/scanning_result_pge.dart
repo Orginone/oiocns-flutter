@@ -15,7 +15,7 @@ class ScanningResultPage extends GetView<ScanningResultController> {
     late Widget body = Obx(() {
       switch (controller.resultType.value) {
         case ScanResultType.website:
-          return WebView(initialUrl: controller.codeRes);
+          // return WebView(initialUrl: controller.codeRes);
         case ScanResultType.system:
           return Container();
         case ScanResultType.unknown:

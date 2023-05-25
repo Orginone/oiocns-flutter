@@ -174,11 +174,11 @@ class MessageItemWidget extends GetView<SettingController> {
 
             var messageType = lastMessage.msgType;
             if (messageType == MessageType.text.label) {
-              var userIds = TextReplaceUtils.loadFindUserId(lastMessage.showTxt);
+              var userIds = TextUtils.findUserId(lastMessage.showTxt);
               if(userIds.isNotEmpty && userIds.contains(controller.user.userId)){
                 showTxt = "有人@你";
               }else{
-                showTxt = "$showTxt${TextReplaceUtils.replace(lastMessage.showTxt)}";
+                showTxt = "$showTxt${TextUtils.textReplace(lastMessage.showTxt)}";
               }
             } else if (messageType == 'recall') {
               showTxt = "$showTxt撤回了一条消息";

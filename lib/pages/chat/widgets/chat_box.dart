@@ -178,7 +178,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
                 children: [
                   Expanded(
                     child: Text(
-                      TextReplaceUtils.replace(
+                      TextUtils.textReplace(
                         controller.replyText.value,
                       ),
                       maxLines: 2,
@@ -658,7 +658,7 @@ class ChatBoxController with WidgetsBindingObserver {
       case InputEvent.clickSendBtn:
         String message = inputController.text;
         if(replyText.value.isNotEmpty){
-          message = '$message\$CITEMESSAGE[${TextReplaceUtils.replace(replyText.value)}]';
+          message = '$message\$CITEMESSAGE[${TextUtils.textReplace(replyText.value)}]';
         }
         if (rules.isNotEmpty) {
           for (var rule in rules) {

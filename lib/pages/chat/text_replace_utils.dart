@@ -1,31 +1,58 @@
 
 
 
-class TextReplaceUtils{
-  static String replace(String text){
+import 'package:common_utils/common_utils.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+
+class TextUtils{
+  static String textReplace(String text){
     String str = '';
     var findMe = RegExp(r'\$FINDME\[([^\]]*)\]');
-    var citemessage = RegExp(r'\$CITEMESSAGE\[([^\]]*)\]');
+    var citeMessage = RegExp(r'\$CITEMESSAGE\[([^\]]*)\]');
     str = text.replaceAll(findMe, '');
-    str = str.replaceAll(citemessage, '');
+    str = str.replaceAll(citeMessage, '');
     return str;
   }
 
-  static List<String> loadFindUserId(String text) {
-    var findMe = RegExp(r'\$FINDME\[([^\]]*)\]');
+  static List<String> findUserId(String text) {
+    var reg = RegExp(r'\$FINDME\[([^\]]*)\]');
     List<String> user =
-        findMe.allMatches(text).map((e) => e.group(1) ?? "").toList();
+    reg.allMatches(text).map((e) => e.group(1) ?? "").toList();
     return user;
   }
 
-  static String getReplyMsg(String text) {
-    String msg = '';
-    var reply = RegExp(r'\$CITEMESSAGE\[([^\]]*)\]');
+  static String? isReplyMsg(String text) {
+    String? msg;
+    var reg = RegExp(r'\$CITEMESSAGE\[([^\]]*)\]');
     try {
-      msg = reply.allMatches(text).map((e) => e.group(1) ?? "").first;
+      msg = reg.allMatches(text).map((e) => e.group(1) ?? "").first;
     } catch (e) {
-
+      return msg;
     }
     return msg;
   }
+
+
+  static String? containsWebUrl(String text) {
+    String? msg;
+    var reg = RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
+    try {
+      Iterable<RegExpMatch> matches = reg.allMatches(text);
+      if(matches.isNotEmpty){
+        print('');
+      }
+    } catch (e) {
+      return msg;
+    }
+    return msg;
+  }
+
+
+}
+
+enum TextType{
+  web,
+  findme,
+  reply,
 }

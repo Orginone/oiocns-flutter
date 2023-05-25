@@ -454,7 +454,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
 
     chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
     chatdata.value.lastMessage = msg;
-    chatdata.value.isFindme = TextReplaceUtils.loadFindUserId(msg.msgBody);
+    chatdata.value.isFindme = TextUtils.findUserId(msg.msgBody);
     chatdata.refresh();
     cache();
   }

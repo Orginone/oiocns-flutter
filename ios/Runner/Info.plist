@@ -64,7 +64,8 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
     <dict>
-        <key>NSAllowsArbitraryLoads</key><true/>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
     </dict>
     <key>FDMaximumConcurrentTasks</key>
     <integer>5</integer>

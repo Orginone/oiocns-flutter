@@ -76,7 +76,7 @@ dependencies:
   qr_flutter: ^4.0.0
   image_picker: ^0.8.5+3
   scan: ^1.6.0
-  webview_flutter: ^3.0.4
+  webview_flutter: ^4.2.1
   flutter_local_notifications: ^11.0.0
   flutter_html: ^3.0.0-alpha.5
   emoji_picker_flutter: ^1.5.0
@@ -143,7 +143,7 @@ dependencies:
   #svg图标
   flutter_svg: ^2.0.5
   adaptive_dialog: ^1.8.3+1
-
+  flutter_link_previewer: ^3.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
