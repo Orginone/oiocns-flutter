@@ -85,6 +85,22 @@ class XFonts {
     return TextStyle(fontSize: 14.sp, color: XColors.black9);
   }
 
+  static get size15Black0 {
+    return TextStyle(fontSize: 15.sp, color: XColors.black);
+  }
+
+  static get size15Black3 {
+    return TextStyle(fontSize: 15.sp, color: XColors.black3);
+  }
+
+  static get size15Black6 {
+    return TextStyle(fontSize: 15.sp, color: XColors.black6);
+  }
+
+  static get size15Black9 {
+    return TextStyle(fontSize: 15.sp, color: XColors.black9);
+  }
+
   static get size16Black0 {
     return TextStyle(fontSize: 16.sp, color: XColors.black);
   }

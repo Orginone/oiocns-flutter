@@ -20,6 +20,7 @@ class BadgeTabWidget extends StatelessWidget {
     Widget child = Tab(
       iconMargin: iconMargin,
       icon: imgPath==null?null:XImage.localImage(imgPath!, size: Size(32.w, 32.w)),
+      height: 70,
       child: body,
     );
     if(mgsCount == 0){

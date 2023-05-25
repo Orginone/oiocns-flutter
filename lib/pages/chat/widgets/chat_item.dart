@@ -63,14 +63,13 @@ class MessageItemWidget extends GetView<SettingController> {
       },
       onTap: () async {
         chat.onMessage();
-        Get.offNamedUntil(
+        Get.toNamed(
           Routers.messageChat,
-          (router) => router.settings.name == Routers.home,
           arguments: chat,
         );
       },
       child: Container(
-        padding: EdgeInsets.only(left: 25.w, top: 16.h, right: 25.w),
+        padding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 25.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -88,7 +87,7 @@ class MessageItemWidget extends GetView<SettingController> {
     return Obx(() {
       var noRead = chat.chatdata.value.noReadCount;
       Widget child = TeamAvatar(
-          info: TeamTypeInfo(share: chat.share),size: 55.w,);
+          info: TeamTypeInfo(share: chat.share),size: 71.w,);
       if(noRead>0){
        child = badges.Badge(
            ignorePointer: false,
@@ -128,7 +127,7 @@ class MessageItemWidget extends GetView<SettingController> {
       }
     }
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
@@ -140,13 +139,13 @@ class MessageItemWidget extends GetView<SettingController> {
               child: Text(
                 CustomDateUtil.getSessionTime(
                     chat.chatdata.value.lastMessage?.createTime),
-                style: XFonts.size18Black0,
+                style: TextStyle(color: Colors.grey,fontSize: 18.sp),
                 textAlign: TextAlign.right,
               ),
             ),
           ],
         ),
-        SizedBox(height: 2.h,),
+        SizedBox(height: 15.h,),
         _showTxt(),
       ],
     );
@@ -175,11 +174,11 @@ class MessageItemWidget extends GetView<SettingController> {
 
             var messageType = lastMessage.msgType;
             if (messageType == MessageType.text.label) {
-              var userIds = TextReplaceUtils.loadFindUserId(lastMessage.showTxt);
+              var userIds = TextUtils.findUserId(lastMessage.showTxt);
               if(userIds.isNotEmpty && userIds.contains(controller.user.userId)){
                 showTxt = "有人@你";
               }else{
-                showTxt = "$showTxt${TextReplaceUtils.replace(lastMessage.showTxt)}";
+                showTxt = "$showTxt${TextUtils.textReplace(lastMessage.showTxt)}";
               }
             } else if (messageType == 'recall') {
               showTxt = "$showTxt撤回了一条消息";

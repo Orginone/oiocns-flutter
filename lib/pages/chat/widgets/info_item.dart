@@ -5,7 +5,9 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -141,25 +143,22 @@ class DetailItemWidget extends GetView<SettingController> {
     var textDirection = isSelf ? rtl : ltr;
 
     if (msg.msgType == MessageType.text.label) {
-      String reply = TextReplaceUtils.getReplyMsg(msg.showTxt);
+      String? reply = TextUtils.isReplyMsg(msg.showTxt);
+      String? url = TextUtils.containsWebUrl(msg.showTxt);
       body = Column(
-        crossAxisAlignment: isSelf?CrossAxisAlignment.end:CrossAxisAlignment.start,
+        crossAxisAlignment:
+            isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
-          _detail(
-            textDirection: textDirection,
-            body: Text(
-              TextReplaceUtils.replace(msg.showTxt),
-              style: XFonts.size20Black0,
-            ),
-          ),
-          reply.isEmpty?const SizedBox():_detail(
-            textDirection: textDirection,
-            body: Text(
-              reply,
-              style: XFonts.size18Black0,
-            ),
-            bgColor: Colors.black.withOpacity(0.1)
-          ),
+          _text(textDirection: textDirection),
+          reply == null
+              ? const SizedBox()
+              : _detail(
+                  textDirection: textDirection,
+                  body: Text(
+                    reply,
+                    style: XFonts.size18Black0,
+                  ),
+                  bgColor: Colors.black.withOpacity(0.1)),
         ],
       );
     } else if (msg.msgType == MessageType.image.label) {
@@ -472,6 +471,120 @@ class DetailItemWidget extends GetView<SettingController> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _text({required TextDirection textDirection}) {
+    List<InlineSpan> _contentList = [];
+
+    RegExp exp = RegExp(
+        r'((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?');
+
+    String text = TextUtils.textReplace(msg.showTxt);
+    Iterable<RegExpMatch> matches = exp.allMatches(text);
+
+    if (matches.isNotEmpty) {
+      int index = 0;
+      for (var match in matches) {
+        String url = text.substring(match.start, match.end);
+        if (match.start == index) {
+          index = match.end;
+        }
+        if (index < match.start) {
+          String a = text.substring(index + 1, match.start);
+          index = match.end;
+          _contentList.add(
+            TextSpan(text: a),
+          );
+        }
+        if (exp.hasMatch(url)) {
+          _contentList.add(TextSpan(
+              text: url,
+              style: TextStyle(color: Colors.blue),
+              recognizer: new TapGestureRecognizer()
+                ..onTap = () {
+                  Get.toNamed(Routers.webView, arguments: {'url': url});
+                }));
+        } else {
+          _contentList.add(
+            TextSpan(text: url),
+          );
+        }
+      }
+      if (index < text.length) {
+        String a = text.substring(index, text.length);
+        _contentList.add(
+          TextSpan(text: a),
+        );
+      }
+    }
+
+    if (_contentList.isNotEmpty) {
+      if (_contentList.length == 1) {
+        return _detail(
+            textDirection: textDirection,
+            body: PreViewUrl(
+              url: _contentList.first.toPlainText().replaceAll("www.", ''),
+            ));
+      } else {
+        return _detail(
+          textDirection: textDirection,
+          body: Text.rich(
+            TextSpan(
+              children: _contentList,
+              style: XFonts.size20Black0,
+            ),
+          ),
+        );
+      }
+    }
+
+    return _detail(
+      textDirection: textDirection,
+      body: Text(
+        TextUtils.textReplace(msg.showTxt),
+        style: XFonts.size20Black0,
+      ),
+    );
+  }
+}
+
+class PreViewUrl extends StatefulWidget {
+  final String url;
+
+  const PreViewUrl({Key? key, required this.url}) : super(key: key);
+
+  @override
+  State<PreViewUrl> createState() => _PreViewUrlState();
+}
+
+class _PreViewUrlState extends State<PreViewUrl> {
+  late String url;
+  dynamic previewData;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    url = widget.url;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LinkPreview(
+      onPreviewDataFetched: (data) {
+        setState(() {
+          previewData = data;
+        });
+      },
+      padding: EdgeInsets.zero,
+      previewData: previewData,
+      enableAnimation: true,
+      text: url,
+      width: 400.w,
+      onLinkPressed: (url) {
+        Get.toNamed(Routers.webView, arguments: {'url': url});
+      },
     );
   }
 }

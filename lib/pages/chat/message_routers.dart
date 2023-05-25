@@ -7,32 +7,29 @@ import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_contr
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
-import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/widget/common_widget.dart';
 
 class MessageRouters
     extends BaseBreadcrumbNavMultiplexPage<Controller, ChatBreadNavState> {
   @override
   Widget body() {
-    return SingleChildScrollView(child: Column(children: initiate()));
+    return SingleChildScrollView(child: Obx(() {
+      return Column(children: initiate());
+    }));
   }
 
   List<Widget> initiate() {
     List<Widget> children = [];
-    for (var child in state.model.value!.children) {
-      children.add(Column(
-        children: [
-          CommonWidget.commonHeadInfoWidget(child.name),
-          ...child.children.map((e) {
-            return BaseBreadcrumbNavItem<ChatBreadcrumbNav>(
-              item: e,
-              onNext: () {
-                e.event?.call(e.target, e);
-              },
-            );
-          }).toList(),
-        ],
+    for (var child in state.model.value?.children ?? []) {
+      children.add(BaseBreadcrumbNavItem<ChatBreadcrumbNav>(
+        item: child,
+        onNext: () {
+          controller.jumpNext(child);
+        },
+        onTap: () {
+          controller.jumpDetails(child);
+        },
       ));
     }
     return children;
@@ -49,98 +46,102 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
 
   @override
   final ChatBreadNavState state = ChatBreadNavState();
+
+  @override
+  void onReady() {
+    // TODO: implement onReady
+    super.onReady();
+    if (state.model.value == null) {
+      initChatBreadNav();
+    }
+  }
+
+  initChatBreadNav() async {
+    List<ChatBreadcrumbNav> companyItems = [];
+    for (var company in settingCtrl.user.companys) {
+      List<IMsgChat> chates = [];
+      for (var item in company.departments) {
+        chates.addAll(item.chats);
+      }
+      companyItems.add(
+        createNav(
+            company.id,
+            company,
+            [
+              createNav(
+                "${company.id}0",
+                company,
+                company.memberChats
+                    .map((item) => createNav(item.chatId, item, []))
+                    .toList(),
+              ),
+              ...company.cohortChats
+                  .where((i) => i.isMyChat)
+                  .map((item) => createNav(item.chatId, item, []))
+                  .toList(),
+            ],
+            type: ChatType.list),
+      );
+    }
+    state.model.value = ChatBreadcrumbNav(children: [
+      createNav(
+          settingCtrl.user.id,
+          settingCtrl.user,
+          [
+            createNav(
+              "${settingCtrl.user.id}0",
+              settingCtrl.user,
+              settingCtrl.user.memberChats
+                  .map((chat) => createNav(chat.chatId, chat, []))
+                  .toList(),
+            ),
+            ...settingCtrl.user.cohortChats
+                .where((i) => i.isMyChat)
+                .map((item) => createNav(item.chatId, item, []))
+                .toList(),
+          ],
+          type: ChatType.list),
+      ...companyItems,
+    ], name: "沟通");
+  }
+
+  ChatBreadcrumbNav createNav(
+      String id, IMsgChat target, List<ChatBreadcrumbNav> children,
+      {ChatType type = ChatType.chat}) {
+    return ChatBreadcrumbNav(
+        id: id,
+        type: type,
+        children: children,
+        name: target.chatdata.value.chatName ?? "",
+        target: target,
+        image: target.share.avatar?.thumbnailUint8List);
+  }
+
+  void jumpNext(ChatBreadcrumbNav chat) {
+    if (chat.children.isEmpty) {
+      jumpDetails(chat);
+    } else {
+      Get.toNamed(Routers.initiateChat,
+          preventDuplicates: false, arguments: {"data": chat});
+    }
+  }
+
+  void jumpDetails(ChatBreadcrumbNav chat) {
+     if(chat.type == ChatType.chat){
+       chat.target?.onMessage();
+       Get.toNamed(Routers.messageChat, arguments: chat.target);
+     }else{
+       Get.toNamed(Routers.messageChatsList, arguments: {"chats":(chat.target as ITeam).chats.where((element) => element.isMyChat).toList()});
+     }
+  }
 }
 
 class ChatBreadNavState extends BaseBreadcrumbNavState<ChatBreadcrumbNav> {
   SettingController get settingCtrl => Get.find<SettingController>();
 
   ChatBreadNavState() {
-    var joinedCompanies = settingCtrl.provider.user?.companys;
     model.value = Get.arguments?['data'];
-    if (model.value == null && joinedCompanies != null) {
-      List<ChatBreadcrumbNav> organization = [];
-      for (var value in joinedCompanies) {
-        organization.add(
-          ChatBreadcrumbNav(
-            name: value.metadata.name,
-            id: value.metadata.id,
-            target: value,
-            children: [],
-            image: value.metadata.avatarThumbnail(),
-            event: (target, nav) {
-              jumpNext(nav);
-            },
-          ),
-        );
-      }
-      var chats = settingCtrl.provider.user?.user.chats ?? [];
-      model.value = ChatBreadcrumbNav(
-        name: "沟通",
-        children: [
-          ChatBreadcrumbNav(
-            name: "个人",
-            children: chats
-                .map((item) => ChatBreadcrumbNav(
-                    target: item,
-                    name: item.chatdata.value.chatName ?? "",
-                    children: [],
-                    event: (chat, nav) {
-                      chat?.onMessage();
-                      Get.toNamed(Routers.messageChat, arguments: chat);
-                    }))
-                .toList(),
-          ),
-          ChatBreadcrumbNav(
-            name: "组织",
-            children: organization,
-          )
-        ],
-      );
-    }
-    var company = model.value?.target;
-    if (company != null && company is ICompany) {
-      model.value!.children = [
-        ChatBreadcrumbNav(
-            name: company.chatdata.value.chatName ?? "",
-            event: (chat, nav) {
-              chat?.onMessage();
-              Get.toNamed(Routers.messageChat, arguments: chat);
-            },
-            children: company.memberChats
-                .map((item) => ChatBreadcrumbNav(
-                    target: item,
-                    name: item.chatdata.value.chatName ?? "",
-                    children: [],
-                    event: (chat, nav) {
-                      chat?.onMessage();
-                      Get.toNamed(Routers.messageChat, arguments: chat);
-                    }))
-                .toList()),
-        ChatBreadcrumbNav(
-          name: "群组",
-          event: (chat, nav) {
-            chat?.onMessage();
-            Get.toNamed(Routers.messageChat, arguments: chat);
-          },
-          children: company.cohortChats
-              .map((item) => ChatBreadcrumbNav(
-                  target: item,
-                  name: item.chatdata.value.chatName ?? "",
-                  children: [],
-                  event: (chat, nav) {
-                    chat?.onMessage();
-                    Get.toNamed(Routers.messageChat, arguments: chat);
-                  }))
-              .toList(),
-        )
-      ];
-    }
-    title = model.value?.name ?? "";
-  }
-
-  void jumpNext(ChatBreadcrumbNav work) {
-    Get.toNamed(Routers.initiateChat,
-        preventDuplicates: false, arguments: {"data": work});
+    title = model.value?.name ?? HomeEnum.chat.label;
   }
 }
 
@@ -153,17 +154,23 @@ class MessagesBinding extends BaseBindings<Controller> {
 
 class ChatBreadcrumbNav extends BaseBreadcrumbNavModel<ChatBreadcrumbNav> {
   IMsgChat? target;
+  ChatType? type;
   void Function(IMsgChat?, ChatBreadcrumbNav)? event;
 
-  ChatBreadcrumbNav({
-    super.id = '',
-    super.name = '',
-    required List<ChatBreadcrumbNav> children,
-    super.image,
-    super.source,
-    this.target,
-    this.event,
-  }) {
+  ChatBreadcrumbNav(
+      {super.id = '',
+      super.name = '',
+      required List<ChatBreadcrumbNav> children,
+      super.image,
+      super.source,
+      this.target,
+      this.event,
+      this.type}) {
     this.children = children;
   }
+}
+
+enum ChatType {
+  chat,
+  list,
 }

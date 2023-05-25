@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -131,13 +132,13 @@ class BucketOpreateModel {
   final String key;
 
   // 名称
-  final String? name;
+  String? name;
 
   // 目标
-  final String? destination;
+  String? destination;
 
   // 操作
-  BucketOpreates operate;
+  late BucketOpreates operate;
 
   // 携带的分片数据
   FileChunkData? fileItem;
@@ -156,6 +157,7 @@ class BucketOpreateModel {
       "name": name,
       "operate": operate.label,
       "fileItem": fileItem?.toJson(),
+      "destination":destination,
     };
   }
 }
@@ -4785,6 +4787,15 @@ class FileItemShare {
       }
     }
     return retList;
+  }
+
+  Uint8List get thumbnailUint8List{
+    var uint8ListStr = thumbnail
+        ?.split(",")[1]
+        .replaceAll('\r', '')
+        .replaceAll('\n', '') ??
+        "";
+    return  base64Decode(uint8ListStr);
   }
 
   //转成JSON

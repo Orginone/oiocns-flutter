@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/pages/market/view.dart';
@@ -53,13 +54,18 @@ class HomePage extends GetView<HomeController> {
             tabCtrl: controller.tabController,
             top: const UserBar(),
             views: controller.tabs.map((e) => e.toTabView()).toList(),
-            bottom: TabBar(
-              indicator: const UnderlineTabIndicator(),
-              controller: controller.tabController,
-              tabs: controller.tabs.map((item) => item.toTab()).toList(),
-              onTap: (index) {
-                controller.changeTab(index);
-              },
+            bottom: Container(
+              decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: Colors.grey.shade400,width: 0.4),)
+              ),
+              child: TabBar(
+                indicator: const UnderlineTabIndicator(),
+                controller: controller.tabController,
+                tabs: controller.tabs.map((item) => item.toTab()).toList(),
+                onTap: (index) {
+                  controller.changeTab(index);
+                },
+              ),
             ),
           ),
         ),
@@ -93,7 +99,7 @@ class HomeController extends TabsController {
           imgPath: settingCtrl.homeEnum.value != HomeEnum.chat
               ? "unchat"
               : "chat",
-          body: Text(HomeEnum.chat.label, style: XFonts.size14Black3),
+          body: Text(HomeEnum.chat.label, style: XFonts.size15Black3),
           mgsCount: mgsCount,
         );
       }),
@@ -105,7 +111,7 @@ class HomeController extends TabsController {
           imgPath: settingCtrl.homeEnum.value != HomeEnum.work
               ? "unwork"
               : 'work',
-          body: Text(HomeEnum.work.label, style: XFonts.size14Black3),
+          body: Text(HomeEnum.work.label, style: XFonts.size15Black3),
           mgsCount: settingCtrl.provider.work?.todos.length ?? 0,
         );
       }),
@@ -117,7 +123,7 @@ class HomeController extends TabsController {
           imgPath: settingCtrl.homeEnum.value != HomeEnum.door
               ? "unhome"
               : "home",
-          body: Text(HomeEnum.door.label, style: XFonts.size14Black3),
+          body: Text(HomeEnum.door.label, style: XFonts.size15Black3),
         );
       }),
     ));
@@ -126,9 +132,9 @@ class HomeController extends TabsController {
       tab: Obx(() {
         return BadgeTabWidget(
           imgPath: settingCtrl.homeEnum.value != HomeEnum.store
-              ? "unwarehouse"
-              : "warehouse",
-          body: Text(HomeEnum.store.label, style: XFonts.size14Black3),
+              ? "unstore"
+              : "store",
+          body: Text(HomeEnum.store.label, style: XFonts.size15Black3),
         );
       }),
     ));
@@ -139,7 +145,7 @@ class HomeController extends TabsController {
           imgPath: settingCtrl.homeEnum.value != HomeEnum.market
               ? "unshop"
               : "shop",
-          body: Text(HomeEnum.market.label, style: XFonts.size14Black3),
+          body: Text(HomeEnum.market.label, style: XFonts.size15Black3),
         );
       }),
     ));

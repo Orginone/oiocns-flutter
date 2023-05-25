@@ -42,6 +42,7 @@ import 'package:orginone/pages/setting/version_page.dart';
 // 资产管理
 // 资产管理
 // 仓库
+import 'pages/chat/message_chats.dart';
 import 'pages/chat/message_file.dart';
 import 'pages/home/index/index_page.dart';
 import 'pages/login/forgot_password/binding.dart';
@@ -132,6 +133,7 @@ class Routers {
   // 消息
   static const String messageSetting = "/messageSetting";
   static const String messageChat = "/messageChat";
+  static const String messageChatsList = "/messageChatsList";
 
   // 首页
   static const String index = "/index";
@@ -342,6 +344,11 @@ class Routers {
       GetPage(
         name: Routers.messageSetting,
         page: () => const MessageSetting(),
+      ),
+      GetPage(
+        name: Routers.messageChatsList,
+        page: () => const MessageChatsList(),
+        bindings: [MessageChatsListBinding()],
       ),
       GetPage(
         name: Routers.messageChat,
