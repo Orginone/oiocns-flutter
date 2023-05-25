@@ -536,7 +536,7 @@ class DetailItemWidget extends GetView<SettingController> {
                 previewData: data,
                 enableAnimation: true,
                 text: _contentList.first.toPlainText().replaceAll("www.", ''),
-                width: 250.w,
+                width: 400.w,
                 onLinkPressed: (url) {
                   Get.toNamed(Routers.webView, arguments: {'url': url});
                 },

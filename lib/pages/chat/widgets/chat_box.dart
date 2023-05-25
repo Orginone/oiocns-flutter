@@ -150,7 +150,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
             valueChangedCallback: (rules, value) {
               controller.rules = rules;
             },
-            style: XFonts.size22Black3W700,
+            style: XFonts.size20Black3,
             controller: controller.inputController,
             decoration: InputDecoration(
               isCollapsed: true,
