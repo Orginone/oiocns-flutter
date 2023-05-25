@@ -4,7 +4,6 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:common_utils/common_utils.dart';
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -522,26 +521,11 @@ class DetailItemWidget extends GetView<SettingController> {
 
     if (_contentList.isNotEmpty) {
       if (_contentList.length == 1) {
-        var data;
         return _detail(
             textDirection: textDirection,
-            body: StatefulBuilder(builder: (context, state) {
-              return LinkPreview(
-                onPreviewDataFetched: (previewData) {
-                  state(() {
-                    data = previewData;
-                  });
-                },
-                padding: EdgeInsets.zero,
-                previewData: data,
-                enableAnimation: true,
-                text: _contentList.first.toPlainText().replaceAll("www.", ''),
-                width: 400.w,
-                onLinkPressed: (url) {
-                  Get.toNamed(Routers.webView, arguments: {'url': url});
-                },
-              );
-            }));
+            body: PreViewUrl(
+              url: _contentList.first.toPlainText().replaceAll("www.", ''),
+            ));
       } else {
         return _detail(
           textDirection: textDirection,
@@ -561,6 +545,46 @@ class DetailItemWidget extends GetView<SettingController> {
         TextUtils.textReplace(msg.showTxt),
         style: XFonts.size20Black0,
       ),
+    );
+  }
+}
+
+class PreViewUrl extends StatefulWidget {
+  final String url;
+
+  const PreViewUrl({Key? key, required this.url}) : super(key: key);
+
+  @override
+  State<PreViewUrl> createState() => _PreViewUrlState();
+}
+
+class _PreViewUrlState extends State<PreViewUrl> {
+  late String url;
+  dynamic previewData;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    url = widget.url;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LinkPreview(
+      onPreviewDataFetched: (data) {
+        setState(() {
+          previewData = data;
+        });
+      },
+      padding: EdgeInsets.zero,
+      previewData: previewData,
+      enableAnimation: true,
+      text: url,
+      width: 400.w,
+      onLinkPressed: (url) {
+        Get.toNamed(Routers.webView, arguments: {'url': url});
+      },
     );
   }
 }
