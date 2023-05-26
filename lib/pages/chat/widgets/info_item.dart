@@ -100,7 +100,7 @@ class DetailItemWidget extends GetView<SettingController> {
         textDirection: isSelf ? TextDirection.rtl : TextDirection.ltr,
         mainAxisAlignment:
             isCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: children,
       ),
     );
@@ -253,7 +253,7 @@ class DetailItemWidget extends GetView<SettingController> {
     return Container(
       margin: isSelf ? EdgeInsets.only(right: 2.w) : EdgeInsets.only(left: 2.w),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: content,
       ),
     );
@@ -272,8 +272,9 @@ class DetailItemWidget extends GetView<SettingController> {
     Color color = bgColor??(isSelf ? XColors.tinyLightBlue : Colors.white);
     
     return Container(
-      constraints: constraints ?? BoxConstraints(maxWidth: 350.w),
-      padding: padding ?? EdgeInsets.all(defaultWidth),
+      constraints: constraints ?? BoxConstraints(maxWidth: 350.w
+      ),
+      padding: padding ?? EdgeInsets.symmetric(horizontal: 15.w,vertical: 20.h),
       margin: textDirection == TextDirection.ltr
           ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
           : EdgeInsets.only(right: defaultWidth),

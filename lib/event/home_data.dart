@@ -7,3 +7,7 @@ class ShowLoading{
 
   ShowLoading(this.isShow);
 }
+
+class StartLoad{
+
+}

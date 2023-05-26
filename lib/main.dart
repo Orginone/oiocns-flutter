@@ -11,7 +11,6 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/notification_util.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'util/download_utils.dart';
 import 'util/hive_utils.dart';
 import 'util/local_store.dart';
 
@@ -23,7 +22,6 @@ void main() async {
 
   // 初始化通知配置
   NotificationUtil.initNotification();
-  await DownloadUtils().init();
   await LocalStore.instance();
   // 日志初始化
   Logger.root.level = Level.ALL;

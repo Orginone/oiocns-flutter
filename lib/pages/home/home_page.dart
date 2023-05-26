@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/pages/market/view.dart';
 import 'package:orginone/pages/store/view.dart';
+import 'package:orginone/util/event_bus.dart';
 import 'package:orginone/widget/badge_widget.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 import 'package:orginone/widget/template/originone_scaffold.dart';
@@ -169,6 +170,7 @@ class HomeController extends TabsController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    XEventBus.instance.fire(UserLoaded());
     EventBusHelper.register(this, (event) async {
       if (event is ShowLoading) {
         if (event.isShow) {
@@ -177,6 +179,9 @@ class HomeController extends TabsController {
           LoadingDialog.dismiss(Get.context!);
         }
       }
+      if (event is StartLoad) {
+        XEventBus.instance.fire(UserLoaded());
+      }
     });
   }
 
@@ -184,6 +189,7 @@ class HomeController extends TabsController {
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
+
     _update();
   }
 
