@@ -51,7 +51,7 @@ enum SpaceEnum {
 }
 
 enum StandardEnum {
-  permission("权限定义"),
+  permission("权限标准"),
   classCriteria('数据标准');
   final String label;
 

@@ -69,7 +69,7 @@ class UserBar extends GetView<SettingController> {
             controller.jumpInitiate();
           },
         ),
-        Text(controller.homeEnum.value.label),
+        Text(controller.homeEnum.value.label,style: TextStyle(fontSize: 30.sp),),
         const Expanded(child: SizedBox()),
         ...action,
       ]),
@@ -82,10 +82,10 @@ class UserBar extends GetView<SettingController> {
       child: Row(children: [
         Expanded(
           child: Container(
-            margin: EdgeInsets.only(left: 30.w),
+            margin: EdgeInsets.only(left: 20.w),
             child: Text(
               "奥集能",
-              style: XFonts.size22Black0,
+              style: TextStyle(fontSize: 30.sp),
               overflow: TextOverflow.ellipsis,
             ),
           ),

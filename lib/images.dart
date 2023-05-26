@@ -41,4 +41,6 @@ class Images {
 
   static const String iconAddAction = "images/icon_add_action.png";
 
+  static const String iconFile = "images/icon_file.png";
+
 }

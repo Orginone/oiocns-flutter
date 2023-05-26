@@ -79,20 +79,21 @@ class MessageSetting extends GetView<SettingController> {
     // }
     return Container(
       color: XColors.bgChat,
-      child: Column(children: [
-        Expanded(
-          child: SingleChildScrollView(
-            child: Container(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
               padding: EdgeInsets.only(left: 30.w, right: 30.w),
               color: Colors.white,
               child: Column(
                 children: children,
               ),
             ),
-          ),
+            SizedBox(height: 50.h,),
+            _clear(context,chat),
+          ],
         ),
-        _clear(context,chat),
-      ]),
+      ),
     );
   }
 

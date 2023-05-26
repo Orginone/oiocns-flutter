@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/pages/market/view.dart';
 import 'package:orginone/pages/store/view.dart';
+import 'package:orginone/util/event_bus.dart';
 import 'package:orginone/widget/badge_widget.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 import 'package:orginone/widget/template/originone_scaffold.dart';
@@ -87,6 +88,11 @@ class HomeController extends TabsController {
 
   @override
   initTabs() {
+
+    TextStyle unSelectedStyle = TextStyle(color: XColors.black3,fontSize: 18.sp);
+
+    TextStyle selectedStyle = TextStyle(color: XColors.selectedColor,fontSize: 18.sp);
+
     registerTab(XTab(
       view: const MessageChats(),
       tab: Obx(() {
@@ -95,11 +101,13 @@ class HomeController extends TabsController {
         for (var element in chats) {
           mgsCount += element.chatdata.value.noReadCount;
         }
+
+        var isSelected = settingCtrl.homeEnum.value == HomeEnum.chat;
         return BadgeTabWidget(
-          imgPath: settingCtrl.homeEnum.value != HomeEnum.chat
+          imgPath: !isSelected
               ? "unchat"
               : "chat",
-          body: Text(HomeEnum.chat.label, style: XFonts.size15Black3),
+          body: Text(HomeEnum.chat.label, style: isSelected?selectedStyle:unSelectedStyle),
           mgsCount: mgsCount,
         );
       }),
@@ -107,11 +115,13 @@ class HomeController extends TabsController {
     registerTab(XTab(
       view: WorkPage(),
       tab: Obx(() {
+
+        var isSelected = settingCtrl.homeEnum.value == HomeEnum.work;
         return BadgeTabWidget(
-          imgPath: settingCtrl.homeEnum.value != HomeEnum.work
+          imgPath: !isSelected
               ? "unwork"
               : 'work',
-          body: Text(HomeEnum.work.label, style: XFonts.size15Black3),
+          body: Text(HomeEnum.work.label, style: isSelected?selectedStyle:unSelectedStyle),
           mgsCount: settingCtrl.provider.work?.todos.length ?? 0,
         );
       }),
@@ -119,33 +129,37 @@ class HomeController extends TabsController {
     registerTab(XTab(
       view: const IndexTabPage(),
       tab: Obx(() {
+
+        var isSelected = settingCtrl.homeEnum.value == HomeEnum.door;
         return BadgeTabWidget(
-          imgPath: settingCtrl.homeEnum.value != HomeEnum.door
+          imgPath: !isSelected
               ? "unhome"
               : "home",
-          body: Text(HomeEnum.door.label, style: XFonts.size15Black3),
+          body: Text(HomeEnum.door.label, style: isSelected?selectedStyle:unSelectedStyle),
         );
       }),
     ));
     registerTab(XTab(
       view: StorePage(),
       tab: Obx(() {
+        var isSelected = settingCtrl.homeEnum.value == HomeEnum.store;
         return BadgeTabWidget(
-          imgPath: settingCtrl.homeEnum.value != HomeEnum.store
+          imgPath: !isSelected
               ? "unstore"
               : "store",
-          body: Text(HomeEnum.store.label, style: XFonts.size15Black3),
+          body: Text(HomeEnum.store.label, style: isSelected?selectedStyle:unSelectedStyle),
         );
       }),
     ));
     registerTab(XTab(
       view: MarketPage(),
       tab: Obx(() {
+        var isSelected = settingCtrl.homeEnum.value == HomeEnum.market;
         return BadgeTabWidget(
-          imgPath: settingCtrl.homeEnum.value != HomeEnum.market
+          imgPath: !isSelected
               ? "unshop"
               : "shop",
-          body: Text(HomeEnum.market.label, style: XFonts.size15Black3),
+          body: Text(HomeEnum.market.label, style: isSelected?selectedStyle:unSelectedStyle),
         );
       }),
     ));
@@ -156,6 +170,7 @@ class HomeController extends TabsController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    XEventBus.instance.fire(UserLoaded());
     EventBusHelper.register(this, (event) async {
       if (event is ShowLoading) {
         if (event.isShow) {
@@ -164,6 +179,9 @@ class HomeController extends TabsController {
           LoadingDialog.dismiss(Get.context!);
         }
       }
+      if (event is StartLoad) {
+        XEventBus.instance.fire(UserLoaded());
+      }
     });
   }
 
@@ -171,6 +189,7 @@ class HomeController extends TabsController {
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
+
     _update();
   }
 

@@ -18,6 +18,7 @@ class XColors {
   static const Color themeColor = Color(0xff3D5ED1);
   static const Color applicationColor = Color(0xff2F96F9);
   static const Color starColor = Color(0xff154AD8);
+  static const Color selectedColor = Color(0xFF3D5ED1);
   static const Color black = Color(0xff000000);
   static const Color black3 = Color(0xff303133);
   static const Color black6 = Color(0xff606266);

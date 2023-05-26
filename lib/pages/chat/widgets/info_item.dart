@@ -17,11 +17,14 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/images.dart';
+import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/pages/chat/text_replace_utils.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/string_util.dart';
+import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/target_text.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/photo_widget.dart';
@@ -57,6 +60,7 @@ class DetailItemWidget extends GetView<SettingController> {
 
   CustomPopupMenuController popCtrl = CustomPopupMenuController();
 
+  MessageChatController get chatController => Get.find();
   @override
   Widget build(BuildContext context) {
     return _messageDetail(context);
@@ -217,7 +221,7 @@ class DetailItemWidget extends GetView<SettingController> {
                           chat.deleteMessage(msg.id);
                           break;
                         case DetailFunc.forward:
-                          // TODO: Handle this case.
+                          chatController.forward(msg.msgType,msg.showTxt);
                           break;
                         case DetailFunc.reply:
                           ChatBoxController controller = Get.find<ChatBoxController>();
@@ -268,8 +272,9 @@ class DetailItemWidget extends GetView<SettingController> {
     Color color = bgColor??(isSelf ? XColors.tinyLightBlue : Colors.white);
     
     return Container(
-      constraints: constraints ?? BoxConstraints(maxWidth: 350.w),
-      padding: padding ?? EdgeInsets.all(defaultWidth),
+      constraints: constraints ?? BoxConstraints(maxWidth: 350.w
+      ),
+      padding: padding ?? EdgeInsets.symmetric(horizontal: 15.w,vertical: 20.h),
       margin: textDirection == TextDirection.ltr
           ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
           : EdgeInsets.only(right: defaultWidth),
@@ -424,22 +429,20 @@ class DetailItemWidget extends GetView<SettingController> {
     }
 
     /// 限制大小
-    BoxConstraints boxConstraints = BoxConstraints(maxWidth: 200.w);
+    BoxConstraints boxConstraints = BoxConstraints(minWidth: 200.w,minHeight: 70.h,maxWidth: 250.w,maxHeight: 100.h);
 
     return GestureDetector(
       onTap: () {
         Get.toNamed(Routers.messageFile, arguments: msgBody);
       },
       child: _detail(
-        constraints: boxConstraints,
         textDirection: textDirection,
         clipBehavior: Clip.hardEdge,
         padding: EdgeInsets.zero,
         body: Container(
-          width: 250.w,
-          height: 70.h,
+          constraints: boxConstraints,
           color: Colors.white,
-          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -452,7 +455,7 @@ class DetailItemWidget extends GetView<SettingController> {
                       child: Text(
                         msgBody['name'],
                         style: XFonts.size20Black0,
-                        maxLines: 1,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -466,7 +469,7 @@ class DetailItemWidget extends GetView<SettingController> {
                   ],
                 ),
               ),
-              const Icon(Icons.file_copy),
+              ImageWidget(Images.iconFile,width: 40.w,height: 40.w),
             ],
           ),
         ),
@@ -580,6 +583,8 @@ class _PreViewUrlState extends State<PreViewUrl> {
       padding: EdgeInsets.zero,
       previewData: previewData,
       enableAnimation: true,
+      openOnPreviewImageTap: true,
+      openOnPreviewTitleTap: true,
       text: url,
       width: 400.w,
       onLinkPressed: (url) {

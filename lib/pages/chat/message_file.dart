@@ -1,13 +1,10 @@
 
 
 
-import 'dart:io';
-
+import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/util/download_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
@@ -28,26 +25,26 @@ class _MessageFileState extends State<MessageFile> {
 
   late String extension;
 
-  late bool fileExists;
+  bool fileExists = false;
 
-  DownloadTaskInfo? info;
+  DownloadTask? task;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     url = Get.arguments['shareLink'];
     name = Get.arguments['name'];
-    info =  DownloadUtils().findFile(name);
-    fileExists = info!=null;
     extension = Get.arguments['extension'];
-    DownloadUtils().addTaskListen((event) {
-      if(event.last.status == DownloadTaskStatus.complete){
-        setState(() {
-          ToastUtils.showMsg(msg: "下载完成");
-          info = event.last;
-          fileExists = true;
-        });
-      }
+
+    FileDownloader().database.allRecords().then((records){
+      try{
+        task = records.firstWhere((element) => element.task.filename == name).task as DownloadTask;
+        fileExists = task != null;
+        setState(() {});
+      }catch(e){
+
+      };
     });
   }
 
@@ -61,24 +58,49 @@ class _MessageFileState extends State<MessageFile> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.file_open,size: 60.w,),
-            SizedBox(height: 40.h,),
+            Icon(
+              Icons.file_open,
+              size: 60.w,
+            ),
+            SizedBox(
+              height: 40.h,
+            ),
             Text(
               name,
               style: XFonts.size26Black0,
             ),
-            SizedBox(height: 100.h,),
-            CommonWidget.commonSubmitWidget(text: fileExists?"打开":"下载",submit: (){
-              if(fileExists){
-                DownloadUtils().open(info!);
-              }else{
-                DownloadUtils().save(DownloadModel(name: name, downloadUrl: url,type: extension));
-              }
-
-            })
+            SizedBox(
+              height: 100.h,
+            ),
+            CommonWidget.commonSubmitWidget(
+                text: fileExists ? "打开" : "下载",
+                submit: () async {
+                  if (fileExists) {
+                    openFile();
+                  } else {
+                    task = DownloadTask(
+                        url:url,
+                        baseDirectory: BaseDirectory.applicationSupport,
+                        filename: name);
+                    ToastUtils.showMsg(msg: "开始下载");
+                    await FileDownloader().download(task!,onProgress: (prpgress){
+                      if(prpgress == 1){
+                        FileDownloader().trackTasks();
+                        ToastUtils.showMsg(msg: "开始完成");
+                        setState(() {
+                          fileExists = true;
+                        });
+                      }
+                    });
+                  }
+                })
           ],
         ),
       ),
     );
+  }
+
+  void openFile() async{
+    await FileDownloader().openFile(task: task);
   }
 }

@@ -4,8 +4,10 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/chat/provider.dart';
 import 'package:orginone/dart/core/target/person.dart';
+import 'package:orginone/event/home_data.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/event_bus.dart';
+import 'package:orginone/util/event_bus_helper.dart';
 
 import 'work/provider.dart';
 
@@ -58,6 +60,7 @@ class UserProvider {
     var res = await kernel.login(account, password);
     if (res.success) {
       await _loadUser(XTarget.fromJson(res.data["target"]));
+
     }
     return res;
   }
@@ -88,19 +91,23 @@ class UserProvider {
     if (_user.value != null) {
       _work.value = WorkProvider(_user.value!);
       _chat.value = ChatProvider(_user.value!);
+      EventBusHelper.fire(StartLoad());
     }
-    XEventBus.instance.fire(UserLoaded());
   }
 
   /// 重载数据
   Future<void> reload() async {
-    _inited = false;
-    _chat.value?.preMessage();
-    await _user.value?.deepLoad(reload: true);
-    await _work.value?.loadTodos(reload: true);
-    _inited = true;
-    _chat.value?.loadPreMessage();
-    _user.refresh();
+     try{
+       _inited = false;
+       _chat.value?.preMessage();
+       await _user.value?.deepLoad(reload: true);
+       await _work.value?.loadTodos(reload: true);
+       _inited = true;
+       _chat.value?.loadPreMessage();
+       _user.refresh();
+     }catch(e){
+       throw e;
+     }
   }
 
   void _recvTarget(data) {
