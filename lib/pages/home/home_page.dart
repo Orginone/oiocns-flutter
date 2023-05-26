@@ -87,6 +87,11 @@ class HomeController extends TabsController {
 
   @override
   initTabs() {
+
+    TextStyle unSelectedStyle = TextStyle(color: XColors.black3,fontSize: 20.sp);
+
+    TextStyle selectedStyle = TextStyle(color: XColors.selectedColor,fontSize: 20.sp);
+
     registerTab(XTab(
       view: const MessageChats(),
       tab: Obx(() {
@@ -95,11 +100,13 @@ class HomeController extends TabsController {
         for (var element in chats) {
           mgsCount += element.chatdata.value.noReadCount;
         }
+
+        var isSelected = settingCtrl.homeEnum.value == HomeEnum.chat;
         return BadgeTabWidget(
-          imgPath: settingCtrl.homeEnum.value != HomeEnum.chat
+          imgPath: !isSelected
               ? "unchat"
               : "chat",
-          body: Text(HomeEnum.chat.label, style: XFonts.size15Black3),
+          body: Text(HomeEnum.chat.label, style: isSelected?selectedStyle:unSelectedStyle),
           mgsCount: mgsCount,
         );
       }),
@@ -107,11 +114,13 @@ class HomeController extends TabsController {
     registerTab(XTab(
       view: WorkPage(),
       tab: Obx(() {
+
+        var isSelected = settingCtrl.homeEnum.value == HomeEnum.work;
         return BadgeTabWidget(
-          imgPath: settingCtrl.homeEnum.value != HomeEnum.work
+          imgPath: !isSelected
               ? "unwork"
               : 'work',
-          body: Text(HomeEnum.work.label, style: XFonts.size15Black3),
+          body: Text(HomeEnum.work.label, style: isSelected?selectedStyle:unSelectedStyle),
           mgsCount: settingCtrl.provider.work?.todos.length ?? 0,
         );
       }),
@@ -119,33 +128,37 @@ class HomeController extends TabsController {
     registerTab(XTab(
       view: const IndexTabPage(),
       tab: Obx(() {
+
+        var isSelected = settingCtrl.homeEnum.value == HomeEnum.door;
         return BadgeTabWidget(
-          imgPath: settingCtrl.homeEnum.value != HomeEnum.door
+          imgPath: !isSelected
               ? "unhome"
               : "home",
-          body: Text(HomeEnum.door.label, style: XFonts.size15Black3),
+          body: Text(HomeEnum.door.label, style: isSelected?selectedStyle:unSelectedStyle),
         );
       }),
     ));
     registerTab(XTab(
       view: StorePage(),
       tab: Obx(() {
+        var isSelected = settingCtrl.homeEnum.value == HomeEnum.store;
         return BadgeTabWidget(
-          imgPath: settingCtrl.homeEnum.value != HomeEnum.store
+          imgPath: !isSelected
               ? "unstore"
               : "store",
-          body: Text(HomeEnum.store.label, style: XFonts.size15Black3),
+          body: Text(HomeEnum.store.label, style: isSelected?selectedStyle:unSelectedStyle),
         );
       }),
     ));
     registerTab(XTab(
       view: MarketPage(),
       tab: Obx(() {
+        var isSelected = settingCtrl.homeEnum.value == HomeEnum.market;
         return BadgeTabWidget(
-          imgPath: settingCtrl.homeEnum.value != HomeEnum.market
+          imgPath: !isSelected
               ? "unshop"
               : "shop",
-          body: Text(HomeEnum.market.label, style: XFonts.size15Black3),
+          body: Text(HomeEnum.market.label, style: isSelected?selectedStyle:unSelectedStyle),
         );
       }),
     ));

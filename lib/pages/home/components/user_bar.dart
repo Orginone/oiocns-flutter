@@ -82,7 +82,7 @@ class UserBar extends GetView<SettingController> {
       child: Row(children: [
         Expanded(
           child: Container(
-            margin: EdgeInsets.only(left: 30.w),
+            margin: EdgeInsets.only(left: 20.w),
             child: Text(
               "奥集能",
               style: XFonts.size22Black0,

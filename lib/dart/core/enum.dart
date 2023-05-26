@@ -80,6 +80,26 @@ enum MessageType {
   static String getName(MessageType type) {
     return type.label;
   }
+
+  static MessageType? getType(String str) {
+    switch(str){
+      case "文本":
+       return MessageType.text;
+      case "图片":
+        return MessageType.image;
+      case "视频":
+        return MessageType.video;
+      case "语音":
+        return MessageType.voice;
+      case "撤回":
+        return MessageType.recall;
+      case "已读":
+        return MessageType.readed;
+      case "文件":
+        return MessageType.file;
+    }
+    return null;
+  }
 }
 
 /// 职权类型

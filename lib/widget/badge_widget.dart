@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/util/load_image.dart';
+import 'package:orginone/widget/image_widget.dart';
 
 class BadgeTabWidget extends StatelessWidget {
   final int mgsCount;
@@ -17,11 +18,15 @@ class BadgeTabWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    Widget child = Tab(
-      iconMargin: iconMargin,
-      icon: imgPath==null?null:XImage.localImage(imgPath!, size: Size(32.w, 32.w)),
-      height: 70,
-      child: body,
+    Widget child = Container(
+      padding: EdgeInsets.only(top: 18.h,bottom: 5.h),
+      child: Column(
+        children: [
+          imgPath==null?const SizedBox():XImage.localImage(imgPath!, size: Size(41.w, 41.w)),
+          SizedBox(height: 7.h,),
+          body??const SizedBox(),
+        ],
+      ),
     );
     if(mgsCount == 0){
       return Container(
@@ -31,7 +36,7 @@ class BadgeTabWidget extends StatelessWidget {
     String msg = mgsCount>99?"99+":"$mgsCount";
     return badges.Badge(
       ignorePointer: false,
-      position: badges.BadgePosition.topEnd(top: 0),
+      position: badges.BadgePosition.topEnd(top: 5),
       badgeContent: Text(
         msg,
         style: const TextStyle(

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/util/encryption_util.dart';
 
 /// 统一返回结构模型
 class ResultType<T> {
@@ -5161,7 +5162,7 @@ class MsgSaveModel {
         updateTime = json['updateTime'],
         id = json['id'],
         toId = json['toId'],
-        showTxt = json['showTxt'] ?? "",
+        showTxt = EncryptionUtil.inflate(json['msgBody']),
         allowEdit = json['allowEdit'] ?? false {
     if (json['tags'] != null) {
       tags = [];

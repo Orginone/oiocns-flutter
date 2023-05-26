@@ -499,13 +499,13 @@ class SettingCenterController
           spaceEnum: SpaceEnum.personGroup,
           space: state.model.value!.space),
       SettingNavModel(
-          name: SpaceEnum.standardSettings.label,
-          spaceEnum: SpaceEnum.standardSettings,
+          name: StandardEnum.permission.label,
+          standardEnum: StandardEnum.permission,
           space: state.model.value!.space,
           children: [
             (await loadAuthority())!,
-            await loadSpecies(),
           ]),
+      await loadSpecies(),
     ];
     state.model.value!.children = function;
   }
@@ -513,13 +513,13 @@ class SettingCenterController
   Future<void> loadCompanySetting() async {
     List<SettingNavModel> function = [
       SettingNavModel(
-          name: SpaceEnum.standardSettings.label,
-          spaceEnum: SpaceEnum.standardSettings,
+          name: StandardEnum.permission.label,
+          standardEnum: StandardEnum.permission,
           space: state.model.value!.space,
           children: [
             (await loadAuthority())!,
-            await loadSpecies(),
           ]),
+      await loadSpecies(),
     ];
 
     var innerAgency = SettingNavModel(

@@ -69,7 +69,7 @@ class MessageItemWidget extends GetView<SettingController> {
         );
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 25.w),
+        padding: EdgeInsets.symmetric(vertical: 10.h,horizontal: 25.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -87,7 +87,7 @@ class MessageItemWidget extends GetView<SettingController> {
     return Obx(() {
       var noRead = chat.chatdata.value.noReadCount;
       Widget child = TeamAvatar(
-          info: TeamTypeInfo(share: chat.share),size: 71.w,);
+          info: TeamTypeInfo(share: chat.share),size: 65.w,);
       if(noRead>0){
        child = badges.Badge(
            ignorePointer: false,
@@ -126,8 +126,10 @@ class MessageItemWidget extends GetView<SettingController> {
         labels.add(Padding(padding: EdgeInsets.only(left: 4.w)));
       }
     }
+    if(target.value.chatName == "陈宣俊"){
+      print('');
+    }
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
@@ -145,7 +147,7 @@ class MessageItemWidget extends GetView<SettingController> {
             ),
           ],
         ),
-        SizedBox(height: 15.h,),
+        SizedBox(height: 7.h,),
         _showTxt(),
       ],
     );
@@ -162,7 +164,7 @@ class MessageItemWidget extends GetView<SettingController> {
         future: controller.user.findShareById(lastMessage.fromId),
         builder: (context, snapshot) {
           var showTxt = "";
-          if (snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.done) {
             var name = snapshot.data?.name ?? "";
             if (lastMessage.fromId != controller.user.metadata.id) {
               if(chat.share.typeName != TargetType.person.label){

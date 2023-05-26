@@ -4,6 +4,7 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:open_file/open_file.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:path_provider/path_provider.dart';
@@ -211,6 +212,7 @@ class DownloadUtils {
         saveInPublicStorage: true,
         openFileFromNotification: false);
     cacheTasks.add(download);
+    ToastUtils.showMsg(msg: "开始下载");
   }
 
   pauseDownload(DownloadTaskInfo info) async {

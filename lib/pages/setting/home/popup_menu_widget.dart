@@ -70,8 +70,8 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
     if(widget.model.standardEnum!=null){
       switch (widget.model.standardEnum) {
         case StandardEnum.permission:
+          popupMenuItem.add(newPopupMenuItem("新增权限", "create"));
           if(widget.model.source != null){
-            popupMenuItem.add(newPopupMenuItem("新增权限", "create"));
             if ((widget.model.source as IAuthority)
                 .hasAuthoritys([OrgAuth.relationAuthId.label])) {
               popupMenuItem.add(newPopupMenuItem("编辑权限", "edit"));

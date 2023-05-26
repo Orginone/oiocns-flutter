@@ -59,10 +59,6 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
   initChatBreadNav() async {
     List<ChatBreadcrumbNav> companyItems = [];
     for (var company in settingCtrl.user.companys) {
-      List<IMsgChat> chates = [];
-      for (var item in company.departments) {
-        chates.addAll(item.chats);
-      }
       companyItems.add(
         createNav(
             company.id,
