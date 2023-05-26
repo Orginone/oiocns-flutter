@@ -89,9 +89,9 @@ class HomeController extends TabsController {
   @override
   initTabs() {
 
-    TextStyle unSelectedStyle = TextStyle(color: XColors.black3,fontSize: 20.sp);
+    TextStyle unSelectedStyle = TextStyle(color: XColors.black3,fontSize: 18.sp);
 
-    TextStyle selectedStyle = TextStyle(color: XColors.selectedColor,fontSize: 20.sp);
+    TextStyle selectedStyle = TextStyle(color: XColors.selectedColor,fontSize: 18.sp);
 
     registerTab(XTab(
       view: const MessageChats(),

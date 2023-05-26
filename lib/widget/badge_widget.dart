@@ -22,8 +22,8 @@ class BadgeTabWidget extends StatelessWidget {
       padding: EdgeInsets.only(top: 18.h,bottom: 5.h),
       child: Column(
         children: [
-          imgPath==null?const SizedBox():XImage.localImage(imgPath!, size: Size(41.w, 41.w)),
-          SizedBox(height: 7.h,),
+          imgPath==null?const SizedBox():XImage.localImage(imgPath!, size: Size(36.w, 36.w)),
+          SizedBox(height: 3.h,),
           body??const SizedBox(),
         ],
       ),
