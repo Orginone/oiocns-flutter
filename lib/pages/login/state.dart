@@ -24,5 +24,4 @@ class LoginState extends BaseGetState{
   var passwordUnVisible = true.obs;
 
   var sendVerify = false.obs;
-
 }

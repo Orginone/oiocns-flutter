@@ -29,15 +29,15 @@ class _IndexPageState extends State<IndexTabPage>
   Widget build(BuildContext context) {
     var children = [
       IndexPage(),
-      IndexTodoTabBarWidget(),
-      DataMonitoring(),
-      IndexNewsPage(),
-      DataMonitoring(),
-      IndexNewsPage(),
+      // IndexTodoTabBarWidget(),
+      // DataMonitoring(),
+      // IndexNewsPage(),
+      // DataMonitoring(),
+      // IndexNewsPage(),
     ];
     return Column(
       children: [
-        tabBar(),
+        // tabBar(),
         Expanded(child: TabBarView(controller: tabCtrl, children: children))
       ],
     );
