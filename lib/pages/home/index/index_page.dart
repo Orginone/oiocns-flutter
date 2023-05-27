@@ -228,7 +228,7 @@ class IndexPage extends StatelessWidget {
                     )),
               ),
             ),
-            _dataMonitoring,
+            // _dataMonitoring,
           ]),
     );
   }

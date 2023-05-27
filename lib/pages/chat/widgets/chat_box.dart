@@ -20,7 +20,6 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/pages/chat/text_replace_utils.dart';
 import 'package:orginone/pages/chat/widgets/text/rich_text_input_formatter.dart';
-import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/permission_util.dart';
 import 'package:orginone/widget/image_widget.dart';
@@ -100,12 +99,15 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
     });
     return Container(
       color: Color(0xFFFCFDFF),
-      padding: EdgeInsets.symmetric(vertical: 5.w,horizontal: 15.h),
+      padding: EdgeInsets.symmetric(vertical: 5.h),
       child: Column(
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [voiceFunc, _input(context), otherFunc],
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15.w),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [voiceFunc, _input(context), otherFunc],
+            ),
           ),
           _bottomPopup(context),
         ],
@@ -260,6 +262,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(defaultBorderRadius)),
+          border: Border.all(color: Colors.grey, width: 0.5),
         ),
         alignment: Alignment.center,
         child: Obx(() {
@@ -379,9 +382,11 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
           break;
         case InputStatus.notPopup:
         case InputStatus.voice:
+        bottomHeight.value = 0;
           return Container();
         case InputStatus.focusing:
         case InputStatus.inputtingText:
+        bottomHeight.value = 0;
           body = Container();
           FocusScope.of(context).requestFocus(controller.focusNode);
           break;
@@ -414,6 +419,10 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
   Widget _more(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 20.h),
+      decoration: BoxDecoration(
+        border:
+            Border(top: BorderSide(color: Colors.grey.shade300, width: 0.5)),
+      ),
       child: GridView.count(
         shrinkWrap: true,
         mainAxisSpacing: 10.w,
@@ -439,7 +448,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
             width: 80.w,
             height: 80.w,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.grey.shade200,
               borderRadius: BorderRadius.all(Radius.circular(5.w)),
             ),
             margin: EdgeInsets.only(bottom: 10.h),
@@ -631,13 +640,15 @@ class ChatBoxController with WidgetsBindingObserver {
     switch (inputEvent) {
       case InputEvent.clickInput:
       case InputEvent.inputText:
-      case InputEvent.clickKeyBoard:
         var text = inputController.value.text;
         if (text.isNotEmpty) {
           _inputStatus.value = InputStatus.inputtingText;
         } else {
           _inputStatus.value = InputStatus.focusing;
         }
+        break;
+      case InputEvent.clickKeyBoard:
+        _inputStatus.value = InputStatus.notPopup;
         break;
       case InputEvent.clickEmoji:
         FocusScope.of(context).requestFocus(blankNode);
@@ -650,22 +661,29 @@ class ChatBoxController with WidgetsBindingObserver {
         break;
       case InputEvent.clickMore:
         FocusScope.of(context).requestFocus(blankNode);
-        _inputStatus.value = InputStatus.more;
+        if (_inputStatus.value != InputStatus.more) {
+          _inputStatus.value = InputStatus.more;
+        } else {
+          _inputStatus.value = InputStatus.notPopup;
+        }
         break;
       case InputEvent.inputEmoji:
-        _inputStatus.value = InputStatus.inputtingEmoji;
+        if (_inputStatus.value != InputStatus.inputtingEmoji) {
+          _inputStatus.value = InputStatus.inputtingEmoji;
+        }
         break;
       case InputEvent.clickSendBtn:
         String message = inputController.text;
-        if(replyText.value.isNotEmpty){
-          message = '$message\$CITEMESSAGE[${TextUtils.textReplace(replyText.value)}]';
+        if (replyText.value.isNotEmpty) {
+          message =
+              '$message\$CITEMESSAGE[${TextUtils.textReplace(replyText.value)}]';
         }
         if (rules.isNotEmpty) {
           for (var rule in rules) {
             message = '$message\$FINDME[${rule.target!.belongId}]';
           }
         }
-        await chat.sendMessage(MessageType.text,message);
+        await chat.sendMessage(MessageType.text, message);
         inputController.clear();
         atKey.currentState?.clearRules();
         replyText.value = '';

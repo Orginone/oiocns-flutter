@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
+import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/unified.dart';
 
  class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel> extends StatelessWidget {
@@ -51,8 +52,7 @@ import 'package:orginone/widget/unified.dart';
               decoration: BoxDecoration(
                   color: XColors.themeColor,
                   borderRadius: BorderRadius.all(Radius.circular(8.w)),
-                  image: item.image!=null?DecorationImage(image: image!,fit: BoxFit.cover):null
-              ),
+              ),child: item.image!=null?ImageWidget(item.image,color: (item.image is String) && (!item.image.contains('http'))?Colors.white:null,):null,
             ),
             Expanded(
               child: title(),

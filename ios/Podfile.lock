@@ -1,5 +1,6 @@
 PODS:
-  - Bugly (2.5.93)
+  - background_downloader (0.0.1):
+    - Flutter
   - DKImagePickerController/Core (4.3.4):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
@@ -39,12 +40,7 @@ PODS:
   - Flutter (1.0.0)
   - flutter_background_service_ios (0.0.3):
     - Flutter
-  - flutter_bugly (0.0.1):
-    - Bugly
-    - Flutter
   - flutter_custom_dialog (0.0.1):
-    - Flutter
-  - flutter_downloader (0.0.1):
     - Flutter
   - flutter_local_notifications (0.0.1):
     - Flutter
@@ -75,9 +71,9 @@ PODS:
     - MTBBarcodeScanner
   - scan (0.0.1):
     - Flutter
-  - SDWebImage (5.15.6):
-    - SDWebImage/Core (= 5.15.6)
-  - SDWebImage/Core (5.15.6)
+  - SDWebImage (5.15.8):
+    - SDWebImage/Core (= 5.15.8)
+  - SDWebImage/Core (5.15.8)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -94,13 +90,12 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - background_downloader (from `.symlinks/plugins/background_downloader/ios`)
   - emoji_picker_flutter (from `.symlinks/plugins/emoji_picker_flutter/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - flutter_background_service_ios (from `.symlinks/plugins/flutter_background_service_ios/ios`)
-  - flutter_bugly (from `.symlinks/plugins/flutter_bugly/ios`)
   - flutter_custom_dialog (from `.symlinks/plugins/flutter_custom_dialog/ios`)
-  - flutter_downloader (from `.symlinks/plugins/flutter_downloader/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_sound_lite (from `.symlinks/plugins/flutter_sound_lite/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
@@ -119,7 +114,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - Bugly
     - DKImagePickerController
     - DKPhotoGallery
     - flutter_sound_core
@@ -130,6 +124,8 @@ SPEC REPOS:
     - Toast
 
 EXTERNAL SOURCES:
+  background_downloader:
+    :path: ".symlinks/plugins/background_downloader/ios"
   emoji_picker_flutter:
     :path: ".symlinks/plugins/emoji_picker_flutter/ios"
   file_picker:
@@ -138,12 +134,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_background_service_ios:
     :path: ".symlinks/plugins/flutter_background_service_ios/ios"
-  flutter_bugly:
-    :path: ".symlinks/plugins/flutter_bugly/ios"
   flutter_custom_dialog:
     :path: ".symlinks/plugins/flutter_custom_dialog/ios"
-  flutter_downloader:
-    :path: ".symlinks/plugins/flutter_downloader/ios"
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_sound_lite:
@@ -176,20 +168,18 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
-  Bugly: b8715e6ec4004b7f7fbffab0643ba80545aee3da
+  background_downloader: 6f55e5548875be2ad4bb91b542558b5be22f339a
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   emoji_picker_flutter: df19dac03a2b39ac667dc8d1da939ef3a9e21347
   file_picker: 817ab1d8cd2da9d2da412a417162deee3500fc95
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_background_service_ios: e30e0d3ee69e4cee66272d0c78eacd48c2e94aac
-  flutter_bugly: c9800f4d5bc5bdc27ffdde3417a26ba44266e0c3
   flutter_custom_dialog: c0d222a3c35af5b57581e54ef8784c94037cd2ec
-  flutter_downloader: b7301ae057deadd4b1650dc7c05375f10ff12c39
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_sound_core: d9396f10752a0df9aa3197f4c431d62d934918cc
   flutter_sound_lite: 175808b357d0b3eeee1345843545bb2fbde06e6c
-  fluttertoast: eb263d302cc92e04176c053d2385237e9f43fad0
+  fluttertoast: fafc4fa4d01a6a9e4f772ecd190ffa525e9e2d9c
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   image_picker_ios: 4a8aadfbb6dc30ad5141a2ce3832af9214a705b5
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
@@ -199,7 +189,7 @@ SPEC CHECKSUMS:
   permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
   scan: aea35bb4aa59ccc8839c576a18cd57c7d492cc86
-  SDWebImage: d47d81bea8a77187896b620dc79c3c528e8906b9
+  SDWebImage: cb032eba469c54e0000e78bcb0a13cdde0a52798
   shared_preferences_foundation: e2dae3258e06f44cc55f49d42024fd8dd03c590c
   sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a
   SwiftyGif: 93a1cc87bf3a51916001cf8f3d63835fb64c819f

@@ -3,6 +3,8 @@ import 'dart:typed_data';
 
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/images.dart';
 import 'package:orginone/util/encryption_util.dart';
 
 /// 统一返回结构模型
@@ -4709,7 +4711,18 @@ class ShareIcon {
     required this.name,
     required this.typeName,
     this.avatar,
-  });
+  }){
+    String defaultAvatar = '';
+    if(typeName == TargetType.person.label){
+      defaultAvatar = Images.chatDefaultPerson;
+      avatar ??= FileItemShare(thumbnail: defaultAvatar);
+    }
+    if(typeName == TargetType.cohort.label){
+      defaultAvatar = Images.chatDefaultGroup;
+      avatar ??= FileItemShare(thumbnail: defaultAvatar);
+    }
+
+  }
 
   //通过JSON构造
   ShareIcon.fromJson(Map<String, dynamic> json)
@@ -4813,7 +4826,8 @@ class FileItemShare {
   static FileItemShare? parseAvatar(String? avatar) {
     if (avatar != null) {
       try {
-        return FileItemShare.fromJson(jsonDecode(avatar));
+        var share = FileItemShare.fromJson(jsonDecode(avatar));
+        return share;
       } catch (e) {
         return null;
       }

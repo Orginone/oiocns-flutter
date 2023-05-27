@@ -99,18 +99,26 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
           type: ChatType.list),
       ...companyItems,
     ], name: "沟通");
+    print('');
   }
 
   ChatBreadcrumbNav createNav(
       String id, IMsgChat target, List<ChatBreadcrumbNav> children,
       {ChatType type = ChatType.chat}) {
+
+    var image;
+    if(target.share.avatar?.thumbnail?.contains("default")??false){
+      image = target.share.avatar?.thumbnail;
+    }else{
+      image = target.share.avatar?.thumbnailUint8List;
+    }
     return ChatBreadcrumbNav(
         id: id,
         type: type,
         children: children,
         name: target.chatdata.value.chatName ?? "",
         target: target,
-        image: target.share.avatar?.thumbnailUint8List);
+        image: image);
   }
 
   void jumpNext(ChatBreadcrumbNav chat) {

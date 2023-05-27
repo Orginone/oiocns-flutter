@@ -147,7 +147,7 @@ class MessageItemWidget extends GetView<SettingController> {
             ),
           ],
         ),
-        SizedBox(height: 7.h,),
+        SizedBox(height: 3.h,),
         _showTxt(),
       ],
     );
