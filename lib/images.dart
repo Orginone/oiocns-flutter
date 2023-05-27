@@ -47,5 +47,4 @@ class Images {
 
   static const String chatDefaultPerson = "images/chat_default_person.png";
 
-
 }
