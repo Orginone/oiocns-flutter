@@ -22,6 +22,7 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
 
   SettingController get controller => Get.find();
 
+  SettingController get setting => Get.find<SettingController>();
   @override
   void onReady() async {
     // TODO: implement onReady
@@ -53,14 +54,14 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
     }
 
     WorkNodeModel? node = await state.define!.loadWorkNode();
-    List<IForm> forms = await state.define!.workItem.loadForms();
+    List<XForm> forms = node?.forms??[];
 
     if(node?.forms!=null){
       var formIds = node?.forms?.map((i) => i.id).toList();
       for (var form in node?.forms??[]) {
         try{
-          var iForm = forms.firstWhere((element) => formIds?.contains(element.metadata.id)??false);
-          form.attributes = await iForm.loadAttributes();
+          var iForm = forms.firstWhere((element) => formIds?.contains(element.id)??false);
+          form.attributes = await setting.provider.work!.loadAttributes(iForm.id,state.define!.workItem.belongId);
           state.useForm.add(form);
         }catch(e){
 
@@ -68,17 +69,6 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
       }
     }
 
-
-    for (var form in forms) {
-      try{
-        var item = node?.forms?.firstWhere((element) => element.id == form.metadata.id);
-        if(item!=null){
-          state.useForm.add(item);
-        }
-      }catch(e){
-
-      }
-    }
     for (var form in state.useForm) {
       // for (var item in form.items??[]) {
       //   data['formData'].forEach((key, value) {

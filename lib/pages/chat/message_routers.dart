@@ -106,12 +106,7 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
       String id, IMsgChat target, List<ChatBreadcrumbNav> children,
       {ChatType type = ChatType.chat}) {
 
-    var image;
-    if(target.share.avatar?.thumbnail?.contains("default")??false){
-      image = target.share.avatar?.thumbnail;
-    }else{
-      image = target.share.avatar?.thumbnailUint8List;
-    }
+    dynamic image = target.share.avatar?.thumbnailUint8List??target.share.avatar?.defaultAvatar;
     return ChatBreadcrumbNav(
         id: id,
         type: type,

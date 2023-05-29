@@ -1,4 +1,7 @@
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/event/choice.dart';
 import 'package:orginone/pages/work/work_start/logic.dart';
@@ -15,6 +18,7 @@ class CreateWorkController extends BaseController<CreateWorkState> {
 
   WorkStartController get work => Get.find<WorkStartController>();
 
+  SettingController get setting => Get.find<SettingController>();
   @override
   void onReady() async {
     // TODO: implement onReady
@@ -29,14 +33,15 @@ class CreateWorkController extends BaseController<CreateWorkState> {
   }
 
   Future<void> loadForm() async{
-    List<IForm> iForms = (await state.define.workItem.loadForms());
+    WorkNodeModel? node = (await state.define.loadWorkNode());
+    List<XForm> iForms = node?.forms??[];
 
     if(state.node.value.forms!=null){
       var formIds = state.node.value.forms!.map((i) => i.id).toList();
       for (var form in state.node.value.forms!) {
         try{
-          var iForm = iForms.firstWhere((element) => formIds.contains(element.metadata.id));
-          form.attributes = await iForm.loadAttributes();
+          var iForm = iForms.firstWhere((element) => formIds.contains(element.id));
+          form.attributes = await setting.provider.work!.loadAttributes(iForm.id,state.define.workItem.belongId);
         }catch(e){
 
         }

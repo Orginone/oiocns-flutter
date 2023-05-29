@@ -6,13 +6,13 @@ import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/app/workitem.dart';
-import 'package:orginone/dart/core/thing/app/workthing.dart';
 import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/base/work.dart';
 import 'package:orginone/dart/core/thing/dict/dictclass.dart';
 import 'package:orginone/dart/core/thing/market/market.dart';
 import 'package:orginone/dart/core/thing/store/propclass.dart';
+import 'package:orginone/dart/core/thing/store/thingclass.dart';
 
 import 'config.dart';
 import 'home/state.dart';
@@ -58,7 +58,7 @@ class SettingNetWork {
           case SpeciesType.market:
             item = await (element as IMarket).loadWorkDefines();
             break;
-          case SpeciesType.workItem:
+          case SpeciesType.work:
             item = await (element as IWorkItem).loadWorkDefines();
             break;
           case SpeciesType.application:
@@ -66,8 +66,8 @@ class SettingNetWork {
           case SpeciesType.dict:
             item = await (element as IDictClass).loadDicts();
             break;
-          case SpeciesType.workThing:
-            item = await (element as IWorkThing).loadForms();
+          case SpeciesType.thing:
+            item = await (element as IThingClass).loadForms();
             break;
         }
         nav.children = [];
@@ -216,9 +216,8 @@ class SettingNetWork {
             name: element.metadata.name);
 
         List<SettingNavModel> children = [];
-        if (element.metadata.typeName == SpeciesType.workThing.label &&
-            element is WorkThing) {
-          List<IForm> forms = await element.loadForms();
+        if (element.metadata.typeName == SpeciesType.thing.label) {
+          List<IForm> forms = await (element as IThingClass).loadForms();
           if (forms.isNotEmpty) {
             children = forms
                 .map((e) => SettingNavModel(

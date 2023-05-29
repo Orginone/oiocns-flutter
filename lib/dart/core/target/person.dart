@@ -5,7 +5,6 @@ import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/app/application.dart';
 import 'package:orginone/main.dart';
 
 import '../../base/model.dart';
@@ -20,7 +19,7 @@ abstract class IPerson extends IBelong {
   late RxList<ICompany> companys;
 
   //赋予人的身份(角色)实体
-  late List<XIdentity> givedIdentitys;
+  late List<XIdProof> givedIdentitys;
 
   //根据ID查询共享信息
   Future<ShareIcon> findShareById(String id);
@@ -29,7 +28,9 @@ abstract class IPerson extends IBelong {
   bool authenticate(List<String> orgIds, List<String> authIds);
 
   // 加载赋予人的身份(角色)实体
-  Future<List<XIdentity>> loadGivedIdentitys({bool reload = false});
+  Future<List<XIdProof>> loadGivedIdentitys({bool reload = false});
+
+  void removeGivedIdentity(List<String> identityIds, [String? teamId]);
 
   //加载单位
   Future<List<ICompany>> loadCompanys({bool reload = false});
@@ -46,7 +47,7 @@ class Person extends Belong implements IPerson {
   late RxList<ICompany> companys;
 
   @override
-  late List<XIdentity> givedIdentitys;
+  late List<XIdProof> givedIdentitys;
 
   Person(XTarget metadata) : super(metadata, ['本人']) {
     companys = <ICompany>[].obs;
@@ -74,9 +75,9 @@ class Person extends Belong implements IPerson {
   @override
   bool authenticate(List<String> orgIds, List<String> authIds) {
     return givedIdentitys
-        .where((element) =>
-            orgIds.contains(element.shareId) &&
-            authIds.contains(element.authId))
+        .where((element) => element.identity != null)
+        .where((element) => orgIds.contains(element.identity!.shareId))
+        .where((element) => authIds.contains(element.identity!.authId))
         .isNotEmpty;
   }
 
@@ -166,7 +167,7 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  Future<List<XIdentity>> loadGivedIdentitys({bool reload = false}) async {
+  Future<List<XIdProof>> loadGivedIdentitys({bool reload = false}) async {
     if (givedIdentitys.isEmpty || reload) {
       var res = await kernel.queryGivedIdentitys();
       if (res.success) {
@@ -257,27 +258,6 @@ class Person extends Belong implements IPerson {
       // chats.addAll(superAuth!.chats);
     }
     return chats;
-  }
-
-  @override
-  // TODO: implement workSpecies
-  List<IApplication> get workSpecies {
-    List<IApplication> items = (species
-        .where((element) =>
-            element.metadata.typeName == SpeciesType.application.label)
-        .toList()) as List<IApplication>;
-    for (var item in companys) {
-      items.addAll(item.workSpecies);
-    }
-    for (var item in cohorts) {
-      items.addAll(item.species
-          .where(
-            (a) => a.metadata.typeName == SpeciesType.workItem.label,
-          )
-          .toList() as List<IApplication>);
-    }
-
-    return items;
   }
 
   @override
@@ -372,5 +352,19 @@ class Person extends Belong implements IPerson {
       targets.addAll(item.targets);
     }
     return targets;
+  }
+
+  @override
+  void removeGivedIdentity(List<String> identityIds, [String? teamId]) {
+    var idProofs = givedIdentitys
+        .where((a) => identityIds.contains(a.identityId))
+        .toList();
+    if (teamId != null) {
+      idProofs = idProofs.where((a) => a.teamId == teamId).toList();
+    } else {
+      idProofs = idProofs.where((a) => a.teamId == null).toList();
+    }
+    givedIdentitys
+        .removeWhere((a) => idProofs.every((i) => i.id != a.identity?.id));
   }
 }

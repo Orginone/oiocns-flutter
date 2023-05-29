@@ -6,25 +6,25 @@ import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/main.dart';
 
-import 'application.dart';
+import '../app/application.dart';
 
-abstract class IWorkThing extends ISpeciesItem {
+abstract class IThingClass extends ISpeciesItem {
   late List<IForm> forms;
-
-  late IApplication app;
 
   Future<List<IForm>> loadForms({bool reload = false});
 
   Future<IForm?> createForm(FormModel data);
 
-  Future<List<IForm>> loadAllForms({bool reload = false});
 }
 
-class WorkThing extends SpeciesItem implements IWorkThing {
-  WorkThing(XSpecies metadata, this.app, [IWorkThing? parent])
-      : super(metadata, app.current, parent) {
+class ThingClass extends SpeciesItem implements IThingClass {
+  ThingClass(XSpecies metadata, ITarget current, [IThingClass? parent])
+      : super(metadata, current, parent) {
     for (var item in metadata.nodes ?? []) {
-      children.add(WorkThing(item, app, this));
+      var child = createChildren(item, current);
+      if(child!=null){
+        children.add(child);
+      }
     }
     speciesTypes = [];
     forms = [];
@@ -68,21 +68,14 @@ class WorkThing extends SpeciesItem implements IWorkThing {
     return forms;
   }
 
-  @override
-  late IApplication app;
 
-  @override
-  Future<List<IForm>> loadAllForms({bool reload = false}) async{
-    List<IForm> result = await loadForms();
-    for (var item in children) {
-    result.addAll(await (item as IWorkThing).loadAllForms());
-    }
-    return result;
-  }
 
   @override
   ISpeciesItem? createChildren(XSpecies metadata, ITarget current) {
     // TODO: implement createChildren
-    return WorkThing(metadata, app, this);
+    if(metadata.typeName == SpeciesType.thing.label){
+      return ThingClass(metadata, this.current, this);
+    }
+    return null;
   }
 }

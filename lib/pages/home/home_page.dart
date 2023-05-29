@@ -53,7 +53,7 @@ class HomePage extends GetView<HomeController> {
         body: SafeArea(
           child: Tabs(
             tabCtrl: controller.tabController,
-            top: const UserBar(),
+            top: UserBar(),
             views: controller.tabs.map((e) => e.toTabView()).toList(),
             bottom: Container(
               decoration: BoxDecoration(

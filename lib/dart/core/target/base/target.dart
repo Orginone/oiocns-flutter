@@ -32,9 +32,6 @@ abstract class ITarget extends ITeam {
   //用户设立的管理类别
   late List<ISpeciesItem> species;
 
-  //办事分类
-  List<IApplication> get workSpecies;
-
   //支持的类别类型
   late List<SpeciesType> speciesTypes;
 

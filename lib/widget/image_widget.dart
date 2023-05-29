@@ -32,6 +32,9 @@ class ImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if(path == null){
+      return SizedBox();
+    }
     Widget child;
     if (path is String) {
       if (path.contains('http')) {

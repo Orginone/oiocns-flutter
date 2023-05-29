@@ -12,11 +12,9 @@ import 'application.dart';
 
 
 abstract class IWorkItem extends IWork {
-
   // 加载所有的办事
   Future<List<IWorkDefine>> loadAllWorkDefines({bool reload = false});
 }
-
 
 
  class WorkItem extends Work implements IWorkItem {
@@ -32,25 +30,27 @@ abstract class IWorkItem extends IWork {
     }
   }
 
-
-  @override
-  Future<List<IForm>> loadForms() async{
-    return await app.loadForms();
-  }
-
-
   @override
   Future<List<IWorkDefine>> loadAllWorkDefines({bool reload = false}) async{
     List<IWorkDefine> works = [];
     works.addAll(await loadWorkDefines(reload: reload));
     for (var item in children) {
-      works.addAll(await (item as IWork).loadWorkDefines(reload: reload));
+      works.addAll(await (item as IWorkItem).loadWorkDefines(reload: reload));
     }
     return works;
   }
 
   @override
   ISpeciesItem? createChildren(XSpecies metadata, ITarget current) {
-    return WorkItem(metadata, app, this);
+     if(metadata.typeName == SpeciesType.work.label){
+       return WorkItem(metadata, app, this);
+     }
+     return null;
+  }
+
+  @override
+  Future<List<IForm>> loadForms() {
+    // TODO: implement loadForms
+    throw UnimplementedError();
   }
 }
