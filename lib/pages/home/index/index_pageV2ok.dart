@@ -9,6 +9,8 @@ import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
+import 'package:orginone/pages/home/index/widgets/dataMonitoringNew.dart';
+
 
 import '../../../dart/core/getx/base_controller.dart';
 import 'index_page.dart';
@@ -27,7 +29,7 @@ class IndexTabPageok
             children: [
               KeepAliveWidget(child: IndexPage()),
               KeepAliveWidget(child: IndexTodoTabBarWidget()),
-              KeepAliveWidget(child: DataMonitoring()),
+              KeepAliveWidget(child: DataMonitoringNew()),
               KeepAliveWidget(child: IndexNewsPage()),
               KeepAliveWidget(child: DataMonitoring()),
               KeepAliveWidget(child: IndexNewsPage()),
