@@ -8,6 +8,7 @@ import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/unified.dart';
 
 import 'message_routers.dart';
@@ -95,7 +96,6 @@ class _MessageForwardState extends State<MessageForward> {
       itemCount: list.length,
       itemBuilder: (BuildContext context, int index) {
         var item = list[index];
-        var uint8List = item.msg.share.avatar?.thumbnailUint8List;
         return Container(
           padding: EdgeInsets.only(top: 10.h,bottom: 10.h,left: leftPadding),
           child: Column(
@@ -144,11 +144,8 @@ class _MessageForwardState extends State<MessageForward> {
                       decoration: BoxDecoration(
                           color: XColors.themeColor,
                           borderRadius: BorderRadius.all(Radius.circular(8.w)),
-                          image: uint8List != null
-                              ? DecorationImage(
-                                  image: MemoryImage(uint8List),
-                                  fit: BoxFit.cover)
-                              : null),
+                         ),
+                      child: ImageWidget(item.msg.share.avatar?.thumbnailUint8List??item.msg.share.avatar?.defaultAvatar),
                     ),
                     SizedBox(
                       width: 15.w,

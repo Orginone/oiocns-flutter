@@ -23,17 +23,6 @@ import 'package:orginone/widget/unified.dart';
 
   @override
   Widget build(BuildContext context) {
-
-    ImageProvider? image;
-    if(item.image!=null){
-      if (item.image!.contains("http")) {
-        image = NetworkImage(item.image!);
-      }
-      if (item.image is Uint8List && (item.image as Uint8List).isNotEmpty) {
-        image = MemoryImage(item.image!);
-      }
-    }
-
     return GestureDetector(
       onTap: () {
         if (onNext != null) {
@@ -52,7 +41,7 @@ import 'package:orginone/widget/unified.dart';
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(8.w)),
               ),
-              child: image != null
+              child: item.image != null
                   ? ImageWidget(
                       item.image,
                       color: (item.image is String) &&

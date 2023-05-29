@@ -4715,11 +4715,11 @@ class ShareIcon {
     String defaultAvatar = '';
     if(typeName == TargetType.person.label){
       defaultAvatar = Images.chatDefaultPerson;
-      avatar ??= FileItemShare(thumbnail: defaultAvatar);
+      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
     }
     if(typeName == TargetType.cohort.label){
       defaultAvatar = Images.chatDefaultGroup;
-      avatar ??= FileItemShare(thumbnail: defaultAvatar);
+      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
     }
 
   }
@@ -4773,12 +4773,15 @@ class FileItemShare {
   // 缩略图
   String? thumbnail;
 
+  String? defaultAvatar;
+
   FileItemShare({
     this.size,
     this.name,
     this.shareLink,
     this.extension,
     this.thumbnail,
+    this.defaultAvatar,
   });
 
   //通过JSON构造
@@ -4804,14 +4807,19 @@ class FileItemShare {
   }
 
   Uint8List? get thumbnailUint8List{
-    var uint8ListStr = thumbnail
-        ?.split(",")[1]
-        .replaceAll('\r', '')
-        .replaceAll('\n', '');
-    if(uint8ListStr == null){
+    try{
+      var uint8ListStr = thumbnail
+          ?.split(",")[1]
+          .replaceAll('\r', '')
+          .replaceAll('\n', '');
+      if(uint8ListStr == null){
+        return null;
+      }
+      return  base64Decode(uint8ListStr);
+    }catch(e){
       return null;
     }
-    return  base64Decode(uint8ListStr);
+
   }
 
   //转成JSON

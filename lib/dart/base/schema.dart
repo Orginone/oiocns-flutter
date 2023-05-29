@@ -6382,22 +6382,16 @@ class XTarget {
     return retList;
   }
 
-  Uint8List avatarThumbnail() {
+  Uint8List? avatarThumbnail() {
     if (icon == '') {
-      return Uint8List.fromList([]);
+      return null;
     }
     try {
       var map = jsonDecode(icon);
       FileItemShare share = FileItemShare.fromJson(map);
-
-      var thumbnail = share.thumbnail
-              ?.split(",")[1]
-              .replaceAll('\r', '')
-              .replaceAll('\n', '') ??
-          "";
-      return base64Decode(thumbnail);
+      return share.thumbnailUint8List;
     } catch (e) {
-      return Uint8List.fromList([]);
+      return null;
     }
   }
 
