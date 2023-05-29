@@ -6,7 +6,6 @@ import 'package:orginone/dart/core/chat/provider.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/util/event_bus.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 
 import 'work/provider.dart';
@@ -97,7 +96,6 @@ class UserProvider {
 
   /// 重载数据
   Future<void> reload() async {
-     try{
        _inited = false;
        _chat.value?.preMessage();
        await _user.value?.deepLoad(reload: true);
@@ -105,9 +103,6 @@ class UserProvider {
        _inited = true;
        _chat.value?.loadPreMessage();
        _user.refresh();
-     }catch(e){
-       throw e;
-     }
   }
 
   void _recvTarget(data) {

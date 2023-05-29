@@ -32,13 +32,23 @@ abstract class IWorkProvider {
   void updateTask(XWorkTask task);
 
   /// 任务审批
-  Future<bool> approvalTask(List<XWorkTask> tasks, int status, {String? comment, String? data});
+  Future<bool> approvalTask(List<XWorkTask> tasks, int status,
+      {String? comment, String? data});
 
   /// 查询任务明细
   Future<XWorkInstance?> loadTaskDetail(XWorkTask task);
 
   /// 查询流程定义
   Future<IWorkDefine?> findFlowDefine(String defineId);
+
+  ///删除办事实例
+  Future<bool> deleteInstance(String id);
+
+  ///根据表单id查询表单特性
+  Future<List<XAttribute>> loadAttributes(String id, String belongId);
+
+  ///根据字典id查询字典项
+  Future<List<XDictItem>> loadItems(String id);
 }
 
 class WorkProvider implements IWorkProvider{
@@ -62,11 +72,14 @@ class WorkProvider implements IWorkProvider{
   Future<bool> approvalTask(List<XWorkTask> tasks, int status, {String? comment, String? data})async {
     bool success = true;
     for (final task in tasks) {
-      if (task.status == TaskStatus.applyStart.status) {
+      if (task.status < TaskStatus.approvalStart.status) {
         if (status == -1) {
           success = (await kernel.recallWorkInstance(IdReq(id: task.id!))).success;
         } else {
           success = (await kernel.approvalTask(ApprovalTaskReq(id: task.id,status: status,comment: comment,data: data))).success;
+        }
+        if(success){
+          todos.removeWhere((element) => element.id == task.id);
         }
       }
     }
@@ -140,4 +153,30 @@ class WorkProvider implements IWorkProvider{
     todos.refresh();
   }
 
+  @override
+  Future<bool> deleteInstance(String id) async {
+    var res = await kernel.recallWorkInstance(IdReq(id: id));
+    return res.success;
+  }
+
+  @override
+  Future<List<XAttribute>> loadAttributes(String id, String belongId) async {
+    var res = await kernel.queryFormAttributes(GainModel(
+      id: id,
+      subId: belongId,
+    ));
+    if (res.success) {
+      return res.data?.result ?? [];
+    }
+    return [];
+  }
+
+  @override
+  Future<List<XDictItem>> loadItems(String id) async{
+    var res = await kernel.queryDictItems(IdReq(id: id));
+    if (res.success) {
+      return res.data?.result ?? [];
+    }
+    return [];
+  }
 }

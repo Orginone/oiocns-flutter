@@ -108,7 +108,7 @@ class Item extends StatelessWidget {
   }
 
   Widget button(){
-    if(todo.status !=0){
+    if(todo.status !=1){
       return Container();
     }
 

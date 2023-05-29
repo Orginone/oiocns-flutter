@@ -3,10 +3,10 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
-import 'package:orginone/dart/core/thing/app/workthing.dart';
 import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/market/market.dart';
+import 'package:orginone/dart/core/thing/store/thingclass.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
@@ -50,8 +50,8 @@ class MarketTreeController
       List<BaseBreadcrumbNavModel> navs = [];
 
       for (var specie in species) {
-        if (specie.metadata.typeName == SpeciesType.workThing.label) {
-          List<IForm> form = await (specie as IWorkThing).loadForms();
+        if (specie.metadata.typeName == SpeciesType.thing.label) {
+          List<IForm> form = await (specie as IThingClass).loadForms();
           for (var element in form) {
             await element.loadAttributes();
           }

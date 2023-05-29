@@ -2248,13 +2248,11 @@ class XWorkNode {
   }
 
   //通过动态数组解析成List
-  static List<XWorkNode> fromList(List<Map<String, dynamic>> list) {
+  static List<XWorkNode> fromList(dynamic list) {
     List<XWorkNode> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XWorkNode.fromJson(item));
-      }
-    }
+    list.forEach((json){
+      retList.add(XWorkNode.fromJson(json));
+    });
     return retList;
   }
 
@@ -2798,120 +2796,101 @@ class XWorkTaskHistoryArray {
 
 //身份证明
 class XIdProof {
-  // 雪花ID
-  final String id;
+  String? id;
+  int? status;
+  String? createUser;
+  String? updateUser;
+  String? version;
+  String? createTime;
+  String? updateTime;
+  String? identityId;
+  String? targetId;
+  String? teamId;
+  XTarget? target;
+  XIdentity? identity;
 
-  // 身份ID
-  final String identityId;
-
-  // 对象ID
-  final String targetId;
-
-  // 状态
-  final int status;
-
-  // 创建人员ID
-  final String createUser;
-
-  // 更新人员ID
-  final String updateUser;
-
-  // 修改次数
-  final String version;
-
-  // 创建时间
-  final String createTime;
-
-  // 更新时间
-  final String updateTime;
-
-  // 身份证明证明的组织/个人
-  final XTarget? target;
-
-  // 身份证明证明的身份
-  final XIdentity? identity;
-
-  //构造方法
   XIdProof({
-    required this.id,
-    required this.identityId,
-    required this.targetId,
-    required this.status,
-    required this.createUser,
-    required this.updateUser,
-    required this.version,
-    required this.createTime,
-    required this.updateTime,
-    required this.target,
-    required this.identity,
+    this.id,
+    this.status,
+    this.createUser,
+    this.updateUser,
+    this.version,
+    this.createTime,
+    this.updateTime,
+    this.identityId,
+    this.targetId,
+    this.teamId,
+    this.target,
+    this.identity,
   });
 
-  //通过JSON构造
-  XIdProof.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        identityId = json["identityId"],
-        targetId = json["targetId"],
-        status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"],
-        target = XTarget.fromJson(json["target"]),
-        identity = XIdentity.fromJson(json["identity"]);
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'status': status,
+      'createUser': createUser,
+      'updateUser': updateUser,
+      'version': version,
+      'createTime': createTime,
+      'updateTime': updateTime,
+      'identityId': identityId,
+      'targetId': targetId,
+      'teamId': teamId,
+      'target': target?.toJson(),
+      'identity': identity?.toJson(),
+    };
+  }
 
-  //通过动态数组解析成List
-  static List<XIdProof> fromList(List<Map<String, dynamic>>? list) {
+  static List<XIdProof> fromList(dynamic list) {
     if (list == null) {
       return [];
     }
     List<XIdProof> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XIdProof.fromJson(item));
-      }
-    }
+    list.forEach((json) {
+      retList.add(XIdProof.fromJson(json));
+    });
+
     return retList;
   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["identityId"] = identityId;
-    json["targetId"] = targetId;
-    json["status"] = status;
-    json["createUser"] = createUser;
-    json["updateUser"] = updateUser;
-    json["version"] = version;
-    json["createTime"] = createTime;
-    json["updateTime"] = updateTime;
-    json["target"] = target?.toJson();
-    json["identity"] = identity?.toJson();
-    return json;
+  static XIdProof fromJson(Map<String, dynamic> json) {
+    return XIdProof(
+      id: json['id'],
+      status: json['status'],
+      createUser: json['createUser'],
+      updateUser: json['updateUser'],
+      version: json['version'],
+      createTime: json['createTime'],
+      updateTime: json['updateTime'],
+      identityId: json['identityId'],
+      targetId: json['targetId'],
+      teamId: json['teamId'],
+      target: json['target']!=null?XTarget.fromJson(json['target']):null,
+      identity: json['identity']!=null?XIdentity.fromJson(json['identity']):null,
+    );
   }
 }
 
 //身份证明查询返回集合
 class XIdProofArray {
   // 便宜量
-  final int offset;
+  final int? offset;
 
   // 最大数量
-  final int limit;
+  final int? limit;
 
   // 总数
-  final int total;
+  final int? total;
 
   // 结果
   final List<XIdProof>? result;
 
   //构造方法
   XIdProofArray({
-    required this.offset,
-    required this.limit,
-    required this.total,
-    required this.result,
+    this.offset,
+    this.limit,
+    this.total,
+    this.result,
   });
 
   //通过JSON构造
@@ -2922,16 +2901,15 @@ class XIdProofArray {
         result = XIdProof.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XIdProofArray> fromList(List<Map<String, dynamic>>? list) {
+  static List<XIdProofArray> fromList(dynamic list) {
     if (list == null) {
       return [];
     }
     List<XIdProofArray> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XIdProofArray.fromJson(item));
-      }
-    }
+    list.forEach((json) {
+      retList.add(XIdProofArray.fromJson(json));
+    });
+
     return retList;
   }
 

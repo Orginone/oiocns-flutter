@@ -27,9 +27,6 @@ abstract class IWorkDefine {
   /// 删除办事定义
   Future<bool> deleteDefine();
 
-  /// 删除办事实例
-  Future<bool> deleteInstance(String id);
-
   /// 新建办事实例
   Future<XWorkInstance?> createWorkInstance(WorkInstanceModel data);
 }
@@ -64,11 +61,6 @@ class FlowDefine  implements IWorkDefine{
   }
 
   @override
-  Future<bool> deleteInstance(String id) async{
-    return (await kernel.recallWorkInstance(IdReq(id: id))).success;
-  }
-
-  @override
   Future<WorkNodeModel?> loadWorkNode() async{
     final res = await kernel.queryWorkNodes(IdReq(id: metadata.id!));
     if (res.success) {
@@ -96,17 +88,11 @@ abstract class IWork extends ISpeciesItem {
   //流程定义
   late List<IWorkDefine> defines;
 
-  //加载所有可选表单
-  Future<List<IForm>> loadForms();
-  
   //加载办事
   Future<List<IWorkDefine>> loadWorkDefines({bool reload = false});
 
   //新建办事
   Future<IWorkDefine?> createWorkDefine(WorkDefineModel data);
-
-  //删除办事实例
-  Future<bool> deleteInstance(String id);
 
 }
 abstract class Work extends SpeciesItem implements IWork {
@@ -151,11 +137,5 @@ abstract class Work extends SpeciesItem implements IWork {
 
   @override
   late IApplication app;
-
-  @override
-  Future<bool> deleteInstance(String id) async{
-    return (await kernel.recallWorkInstance(IdReq(id: id))).success;
-  }
-
 
 }

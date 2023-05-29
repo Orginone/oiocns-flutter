@@ -4803,12 +4803,14 @@ class FileItemShare {
     return retList;
   }
 
-  Uint8List get thumbnailUint8List{
+  Uint8List? get thumbnailUint8List{
     var uint8ListStr = thumbnail
         ?.split(",")[1]
         .replaceAll('\r', '')
-        .replaceAll('\n', '') ??
-        "";
+        .replaceAll('\n', '');
+    if(uint8ListStr == null){
+      return null;
+    }
     return  base64Decode(uint8ListStr);
   }
 

@@ -21,12 +21,12 @@ class FunctionPage extends BaseGetPageView<FunctionController, FunctionState> {
             controller: state.tabController,
             children: [
               IndexPage(),
-              Container(
-                child: DataMonitoring(),
-              ),
-              Container(),
-              Container(),
-              Container(),
+              // Container(
+              //   child: DataMonitoring(),
+              // ),
+              // Container(),
+              // Container(),
+              // Container(),
             ],
           ),
         )

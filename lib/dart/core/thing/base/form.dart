@@ -1,8 +1,8 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/thing/app/workthing.dart';
 import 'package:orginone/dart/core/thing/store/propclass.dart';
+import 'package:orginone/dart/core/thing/store/thingclass.dart';
 import 'package:orginone/main.dart';
 
 import 'species.dart';
@@ -23,9 +23,6 @@ abstract class IForm {
 
   /// 删除表单
   Future<bool> delete();
-
-  /// 加载可选属性
-  Future<List<XProperty>> loadPropertys();
 
   /// 加载表单特性
   Future<List<XAttribute>> loadAttributes({bool reload});
@@ -70,6 +67,7 @@ class Form implements IForm {
       attributes.add(res.data!);
       return res.data;
     }
+    return null;
   }
 
 
@@ -99,18 +97,7 @@ class Form implements IForm {
 
   }
 
-  @override
-  Future<List<XProperty>> loadPropertys() async{
-    List<XProperty> result = [];
-    for (ISpeciesItem item in species.current.space.species) {
-      switch (SpeciesType.getType(item.metadata.typeName)) {
-        case SpeciesType.store:
-          result.addAll(await (item as IPropClass).loadAllProperty());
-          break;
-      }
-    }
-    return result;
-  }
+
 
   @override
   Future<bool> updateAttribute(AttributeModel data,
@@ -139,8 +126,8 @@ class Form implements IForm {
   Future<bool> delete() async {
     var res = await kernel.deleteForm(IdReq(id: metadata.id));
     if (res.success) {
-      if (species.metadata.typeName == SpeciesType.workThing.label) {
-        var species = this.species as IWorkThing;
+      if (species.metadata.typeName == SpeciesType.thing.label) {
+        var species = this.species as IThingClass;
         species.forms.removeWhere((i) => i == this);
       }
     }

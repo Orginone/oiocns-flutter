@@ -1216,14 +1216,14 @@ class KernelApi {
   }
 
   //查询赋予的身份
-  Future<ResultType<XIdentityArray>> queryGivedIdentitys() async {
+  Future<ResultType<XIdProofArray>> queryGivedIdentitys() async {
     return await request(
       ReqestType(
         module: 'target',
         action: 'QueryGivedIdentitys',
         params: {},
       ),
-      XIdentityArray.fromJson,
+      XIdProofArray.fromJson,
     );
   }
 
@@ -2631,14 +2631,14 @@ class KernelApi {
   /// 流程节点审批
   /// @param {ApprovalTaskReq} params 请求参数
   /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> approvalTask(ApprovalTaskReq params) async {
+  Future<ResultType> approvalTask(ApprovalTaskReq params) async {
     return await request(
       ReqestType(
         module: 'work',
         action: 'ApprovalTask',
         params: params.toJson(),
       ),
-      (item) => item as bool,
+      ResultType.fromJson,
     );
   }
 

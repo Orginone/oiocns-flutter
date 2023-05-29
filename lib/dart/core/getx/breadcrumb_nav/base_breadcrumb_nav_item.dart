@@ -26,11 +26,11 @@ import 'package:orginone/widget/unified.dart';
 
     ImageProvider? image;
     if(item.image!=null){
-      if(item.image!.contains("http")){
+      if (item.image!.contains("http")) {
         image = NetworkImage(item.image!);
       }
-      if(item.image is Uint8List){
-        image =  MemoryImage(item.image!);
+      if (item.image is Uint8List && (item.image as Uint8List).isNotEmpty) {
+        image = MemoryImage(item.image!);
       }
     }
 
@@ -50,9 +50,19 @@ import 'package:orginone/widget/unified.dart';
             AdvancedAvatar(
               size: 60.w,
               decoration: BoxDecoration(
-                  color: XColors.themeColor,
-                  borderRadius: BorderRadius.all(Radius.circular(8.w)),
-              ),child: item.image!=null?ImageWidget(item.image,color: (item.image is String) && (!item.image.contains('http'))?Colors.white:null,):null,
+                borderRadius: BorderRadius.all(Radius.circular(8.w)),
+              ),
+              child: image != null
+                  ? ImageWidget(
+                      item.image,
+                      color: (item.image is String) &&
+                              (!item.image.contains('http'))
+                          ? Colors.white
+                          : null,
+                    )
+                  : Container(
+                      color: XColors.themeColor,
+                    ),
             ),
             Expanded(
               child: title(),
