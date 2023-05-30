@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/model/asset_creation_config.dart';
-
+import 'package:orginone/model/thing_model.dart' as thing;
 import 'model.dart';
 
 class XAttribute {
@@ -5517,6 +5517,7 @@ class XForm {
   List<XWorkNode>? bindNodes;
   XSpecies? species;
   XTarget? belong;
+  List<thing.ThingModel> things = [];
 
   XForm({
     required this.id,
@@ -5604,6 +5605,12 @@ class XForm {
       'species': species != null ? species!.toJson() : null,
       'belong': belong != null ? belong!.toJson() : null,
     };
+  }
+
+  void reset(){
+    for (var element in attributes??[]) {
+      element.fields = element.toFields();
+    }
   }
 }
 

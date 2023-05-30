@@ -86,13 +86,13 @@ class Item extends StatelessWidget {
                       height: 10.h,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           "创建人:",
                           style: TextStyle(fontSize: 18.sp),
                         ),
                         TargetText(userId: item.creater??"",style: TextStyle(fontSize: 18.sp)),
+                        SizedBox(width: 10.w,),
                         statusWidget,
                       ],
                     ),

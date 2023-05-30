@@ -770,7 +770,14 @@ class CommonWidget {
         key.add(title[i]);
       }
       for (var value in content) {
-        key.add(value[i]);
+        String data;
+        if(value.length-1<i){
+          data = '';
+        }else{
+          data = value[i];
+        }
+        key.add(data);
+
       }
       data.add(key);
     }

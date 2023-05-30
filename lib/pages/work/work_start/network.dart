@@ -37,7 +37,9 @@ class WorkStartNetWork {
   }
 
   static Future<void> createInstance(IWorkDefine define,
-      Map<String, dynamic> data, List<String> thingIds) async {
+      Map<String, dynamic> headerData, List<Map<String,dynamic>> formData) async {
+
+    Map<String,dynamic> data = {"headerData":headerData,"formData":formData};
     XWorkInstance? result = await define.createWorkInstance(
       WorkInstanceModel(
         defineId: define.metadata.id!,
@@ -45,7 +47,6 @@ class WorkStartNetWork {
         contentType: "Text",
         data: jsonEncode(data),
         title: define.metadata.name!,
-        thingIds: thingIds,
         hook: "",
       ),
     );

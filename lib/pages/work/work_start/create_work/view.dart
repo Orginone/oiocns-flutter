@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/pages/other/choice_thing/item.dart';
 import 'package:orginone/pages/work/work_start/create_work/state.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
@@ -19,40 +19,20 @@ class CreateWorkPage
       body: Column(
         children: [
           Expanded(
-            child: FutureBuilder(
-              future: controller.loadForm(),
-              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        ...state.node.value.forms!.map((e) {
-                          return Column(
-                            children: [
-                              CommonWidget.commonHeadInfoWidget(e.name ?? ""),
-                              ...e.attributes?.map((e) {
-                                    if (e.fields?.type == null) {
-                                      return Container();
-                                    }
-                                    Widget child = testMappingComponents[
-                                        e.fields!.type ?? ""]!(e.fields!);
-                                    return child;
-                                  }).toList() ??
-                                  []
-                            ],
-                          );
-                        }).toList(),
-                        entityInfo(),
-                      ],
-                    ),
-                  );
-                }
-                return LoadStateWidget(
-                  isLoading: true,
-                  isSuccess: false,
-                );
-              },
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  mainTable(),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  subTable(),
+                ],
+              ),
             ),
+          ),
+          SizedBox(
+            height: 10.h,
           ),
           CommonWidget.commonSubmitWidget(
               submit: () {
@@ -64,47 +44,126 @@ class CreateWorkPage
     );
   }
 
-  Widget entityInfo() {
-    return SizedBox(
-      width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CommonWidget.commonHeadInfoWidget("实体明细",
-              action: GestureDetector(
-                child: const Text(
-                  "",
-                  style: TextStyle(color: Colors.blue),
-                ),
-                onTap: () {
-                  // controller.jumpBulkRemovalAsset();
-                },
-              )),
-          Obx(() {
-            return ListView.builder(
-              itemBuilder: (context, index) {
-                var item = state.selectedThings[index];
-                return Item(
-                  item: item,
-                  showSelectButton: false,
-                  showDelete: true,
-                  delete: () {
-                    controller.delete(index);
-                  },
-                );
-              },
-              itemCount: state.selectedThings.length,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-            );
-          }),
-          CommonWidget.commonAddDetailedWidget(
-              text: "选择实体",
-              onTap: () {
-                controller.jumpEntity();
-              }),
-        ],
-      ),
+  Widget mainTable() {
+    return FutureBuilder(
+      future: controller.loadMainTable(),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Column(
+            children: [
+              CommonWidget.commonHeadInfoWidget(
+                  state.workForm.value?.name ?? ""),
+              ...state.workForm.value?.attributes?.map((e) {
+                    if (e.fields?.type == null) {
+                      return Container();
+                    }
+                    Widget child =
+                        testMappingComponents[e.fields!.type ?? ""]!(e.fields!);
+                    return child;
+                  }).toList() ??
+                  [],
+            ],
+          );
+        }
+        return SizedBox(
+          height: Get.height,
+          child: LoadStateWidget(
+            isLoading: true,
+            isSuccess: false,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget subTable() {
+    return FutureBuilder(
+      future: controller.loadSubTable(),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: CommonWidget.commonNonIndicatorTabBar(
+                        state.tabController,
+                        state.thingForm
+                            .map((element) => element.name)
+                            .toList()),
+                  ),
+                  CommonWidget.commonPopupMenuButton(
+                    items: SubTableEnum.values.map((e) {
+                      String lable = e.lable;
+                      if (e != SubTableEnum.allChange) {
+                        lable = lable +
+                            state.thingForm[state.tabController.index].name;
+                      }
+                      return PopupMenuItem(
+                        value: e,
+                        child: Text(lable),
+                      );
+                    }).toList(),
+                    onSelected: (SubTableEnum function) {
+                      controller.subTableOperation(function);
+                    },
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 500.h,
+                child: Obx(() {
+                  return TabBarView(
+                    controller: state.tabController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: state.thingForm.map((element) {
+                      List<String> title = element.attributes
+                              ?.map((e) => e.name ?? "")
+                              .toList() ??
+                          [];
+                      List<List<String>> content = element.things.map((e) {
+                        List<String> data = e.data?.map((e) {
+                              String value = '';
+                              if(e.values.first!=null){
+                                value = e.values.first.toString();
+                              }
+                              return value;
+                            }).toList() ??
+                            [];
+                        return [
+                          e.id ?? "",
+                          e.status ?? "",
+                          e.createrName ?? "",
+                          ...data
+                        ];
+                      }).toList();
+
+                      return CommonWidget.commonDocumentWidget(
+                          title: ["标识", "创建者", "状态", ...title],
+                          content: content,
+                          showOperation: true,
+                          popupMenus: const [
+                            PopupMenuItem(
+                              value: "edit",
+                              child: Text("编辑"),
+                            ),
+                            PopupMenuItem(
+                              value: "delete",
+                              child: Text("删除"),
+                            ),
+                          ],
+                          onOperation: (function, key) {
+                            controller.subTableFormOperation(function, key);
+                          });
+                    }).toList(),
+                  );
+                }),
+              )
+            ],
+          );
+        }
+        return const SizedBox();
+      },
     );
   }
 }
