@@ -3,11 +3,10 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/app/workthing.dart';
 import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/filesys/filesystem.dart';
-import 'package:orginone/dart/core/thing/store/propclass.dart';
+import 'package:orginone/dart/core/thing/store/thingclass.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
@@ -35,37 +34,23 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
     List<StoreTreeNav> navs = [];
 
     for (var specie in species) {
-      var type = SpeciesType.getType(specie.metadata.typeName)!;
-      switch (type) {
-        case SpeciesType.market:
-        case SpeciesType.store:
-        case SpeciesType.application:
-        case SpeciesType.workThing:
-          List<StoreTreeNav> thing = [];
-          if (type == SpeciesType.workThing) {
-            List<IForm> forms = await (specie as IWorkThing).loadForms();
-            thing.addAll(forms
-                .map((e) => StoreTreeNav(
-                    children: [],
-                    source: e,
-                    name: e.metadata.name,
-                    speciesType: SpeciesType.workThing,
-                    space: space))
-                .toList());
-          }
-          if (type == SpeciesType.store) {
-            await (specie as IPropClass).loadPropertys();
-          }
-          var children = await buildSpeciesTree(specie.children, space);
-          var nav = StoreTreeNav(
-              children: [...thing, ...children],
-              source: specie,
-              speciesType: SpeciesType.getType(specie.metadata.typeName),
-              name: specie.metadata.name,
-              space: space);
-          navs.add(nav);
-          break;
-      }
+      List<StoreTreeNav> thing = [];
+      List<IForm> forms = await (specie as IThingClass).loadForms();
+      thing.addAll(forms
+          .map((e) => StoreTreeNav(
+              children: [],
+              source: e,
+              name: e.metadata.name,
+              speciesType: SpeciesType.thing,
+              space: space))
+          .toList());
+      var nav = StoreTreeNav(
+          children: [...thing],
+          source: specie,
+          speciesType: SpeciesType.getType(specie.metadata.typeName),
+          name: specie.metadata.name,
+          space: space);
+      navs.add(nav);
     }
     return navs;
   }
@@ -93,12 +78,8 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
     for (var element in state.model.value!.space!.targets) {
       if (element.space == space) {
         for (var s in element.species) {
-          switch (SpeciesType.getType(s.metadata.typeName)) {
-            case SpeciesType.store:
-            case SpeciesType.market:
-            case SpeciesType.application:
-              species.add(s);
-              break;
+          if (SpeciesType.thing.label == s.metadata.typeName) {
+            species.add(s);
           }
         }
       }

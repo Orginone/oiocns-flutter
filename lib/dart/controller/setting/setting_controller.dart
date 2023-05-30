@@ -1,19 +1,34 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/chat/provider.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/event/home_data.dart';
+import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus.dart';
 import 'package:orginone/util/event_bus_helper.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 const sessionUserName = 'sessionUser';
 const sessionSpaceName = 'sessionSpace';
+
+class ItemModel {
+  String name;
+  IconData icon;
+  TargetType targetType;
+  String title;
+  String hint;
+  ItemModel(this.name,this.icon,this.targetType,this.title,this.hint);
+}
+
 
 /// 设置控制器
 class SettingController extends GetxController {
@@ -22,6 +37,13 @@ class SettingController extends GetxController {
   late UserProvider _provider;
 
   var homeEnum = HomeEnum.door.obs;
+
+  var menuItems = [
+    ItemModel('添加朋友', Icons.group_add,TargetType.person,"添加好友","请输入用户的账号"),
+    ItemModel('加入群组', Icons.speaker_group,TargetType.cohort,"添加群组","请输入群组的编码"),
+    ItemModel('加入单位组织', Icons.compare,TargetType.company,"添加单位","请输入单位的社会统一代码"),
+    ItemModel('发起群聊', Icons.chat_bubble,TargetType.cohort,"",""),
+  ];
 
   @override
   void onInit() {
@@ -108,6 +130,33 @@ class SettingController extends GetxController {
 
   bool isUserSpace(space) {
     return space == user;
+  }
+
+  void showAddFeatures(int index, TargetType targetType, String title, String hint) {
+     if(index == menuItems.length - 1){
+       showCreateOrganizationDialog(
+           Get.context!, [targetType],
+           callBack: (String name, String code, String nickName, String identify,
+               String remark, TargetType type) async {
+             var target = TargetModel(
+               name: nickName,
+               code: code,
+               typeName: type.label,
+               teamName: name,
+               teamCode: code,
+               remark: remark,
+             );
+             await user.createCohort(target);
+           },
+       );
+     }else{
+       showSearchDialog(Get.context!,targetType,title: title,hint: hint,onSelected: (targets) async{
+         bool success = await user.applyJoin(targets);
+         if(success){
+           ToastUtils.showMsg(msg: "发送申请成功");
+         }
+       });
+     }
   }
 }
 

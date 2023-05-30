@@ -47,8 +47,8 @@ enum SpeciesType {
   application('应用类'),
   dict('字典类'),
   /** 类别类目 */
-  workItem('办事类'),
-  workThing('事物类'),
+  work('事项类'),
+  thing('实体类'),
   data('数据类');
 
   final String label;

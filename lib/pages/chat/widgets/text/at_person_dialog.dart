@@ -22,7 +22,7 @@ class AtPersonDialog {
                     Navigator.pop(context, item);
                   },
                   title: Text(item.name),
-                  leading: item.avatarThumbnail().isEmpty
+                  leading: item.avatarThumbnail()!=null
                       ? TextAvatar(
                           radius: 45.w,
                           width: 45.w,
@@ -32,7 +32,7 @@ class AtPersonDialog {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             image: DecorationImage(
-                                image: MemoryImage(item.avatarThumbnail()),
+                                image: MemoryImage(item.avatarThumbnail()!),
                                 fit: BoxFit.cover),
                           ),
                           width: 45.w,

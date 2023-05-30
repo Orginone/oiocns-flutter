@@ -292,20 +292,6 @@ class Company extends Belong implements ICompany {
     return [...departments, ...cohorts];
   }
 
-  @override
-  // TODO: implement workSpecies
-  List<IApplication> get workSpecies {
-    final workItems = species.where(
-      (a) => a.metadata.typeName == SpeciesType.application.label,
-    ) as List<IApplication>;
-    for (final item in cohorts) {
-      workItems.addAll(item.workSpecies);
-    }
-    for (final group in groups) {
-      workItems.addAll(group.workSpecies);
-    }
-    return workItems;
-  }
 
   @override
   void loadMemberChats(List<XTarget> members, bool isAdd) {
