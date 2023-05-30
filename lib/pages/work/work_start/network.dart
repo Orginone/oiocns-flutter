@@ -11,23 +11,8 @@ import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 class WorkStartNetWork {
-  static Future<List<XWorkDefine>> getWorkDefine(String speciesId) async {
-    List<XWorkDefine> defines = [];
-    // ResultType<XWorkDefineArray> result = await KernelApi.getInstance()
-    //     .queryWorkDefine(GetSpeciesResourceModel(
-    //         speciesId: speciesId,
-    //         spaceId: '0',
-    //         page: PageRequest(offset: 0, limit: 20, filter: '')));
-    // if (result.success) {
-    //   defines = result.data?.result ?? [];
-    // }
-    return defines;
-  }
-
   static Future<WorkNodeModel?> getDefineNode(String id) async {
     WorkNodeModel? node;
-    var settingCtrl = Get.find<SettingController>();
-    // var space = settingCtrl.space;
     ResultType<WorkNodeModel> result = await KernelApi.getInstance().queryWorkNodes(
         IdReq(
             id: id,
