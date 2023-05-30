@@ -37,6 +37,7 @@ class InitiateWorkController
   }
 
   void createWork(WorkBreadcrumbNav work) async{
+    await work.source.loadWorkDefines();
     var defines =await getAllDefine(work);
     Get.toNamed(Routers.workStart, arguments: {"defines": defines});
   }
@@ -121,7 +122,6 @@ class InitiateWorkController
   Future<List<IWorkDefine>> getAllDefine(WorkBreadcrumbNav model) async{
     List<IWorkDefine> list = [];
     if(model.source?.defines != null){
-      await model.source.loadWorkDefines();
       list.addAll(model.source?.defines);
     }else{
       for (var value in model.children) {

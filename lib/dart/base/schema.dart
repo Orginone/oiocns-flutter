@@ -1648,6 +1648,7 @@ class XWorkDefine {
   // 是否创建实体
   final bool? isCreate;
 
+  final String? shareId;
 
   final String? icon;
 
@@ -1725,6 +1726,7 @@ class XWorkDefine {
     required this.target,
     this.icon,
     required this.isCreate,
+    this.shareId,
   });
 
   //通过JSON构造
@@ -1746,6 +1748,7 @@ class XWorkDefine {
         version = json["version"],
         createTime = json["createTime"],
         updateTime = json["updateTime"],
+        shareId = json['shareId'],
         isCreate = json['isCreate'],
         nodes =
             json["nodes"] != null ? XWorkNode.fromList(json["nodes"]) : null,
@@ -1790,6 +1793,7 @@ class XWorkDefine {
     json["updateTime"] = updateTime;
     json["nodes"] = nodes;
     json["instances"] = instances;
+    json['shareId'] = shareId;
     json["target"] = target?.toJson();
     return json;
   }

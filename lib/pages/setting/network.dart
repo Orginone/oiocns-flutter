@@ -56,10 +56,8 @@ class SettingNetWork {
         List<dynamic> item = [];
         switch(SpeciesType.getType(element.metadata.typeName)){
           case SpeciesType.market:
-            item = await (element as IMarket).loadWorkDefines();
-            break;
           case SpeciesType.work:
-            item = await (element as IWorkItem).loadWorkDefines();
+            item = await (element as dynamic).loadWorkDefines();
             break;
           case SpeciesType.application:
             break;

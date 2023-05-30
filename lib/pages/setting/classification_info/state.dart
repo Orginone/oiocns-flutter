@@ -7,6 +7,7 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
+import 'package:orginone/dart/core/thing/base/work.dart';
 import 'package:orginone/pages/setting/home/state.dart';
 
 class ClassificationInfoState extends BaseGetState{
@@ -24,6 +25,9 @@ class ClassificationInfoState extends BaseGetState{
     species = data.source;
     tabTitle = [ClassificationEnum.info];
     if(species is IForm){
+      tabTitle.addAll([ClassificationEnum.attrs]);
+    }
+    if(species is FlowDefine){
       tabTitle.addAll([ClassificationEnum.attrs]);
     }
     if(species is ISpeciesItem){
