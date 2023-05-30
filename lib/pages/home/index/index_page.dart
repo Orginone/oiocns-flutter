@@ -34,16 +34,16 @@ class IndexPage extends StatelessWidget {
   IndexPage({Key? key}) : super(key: key) {
     map["常用应用"] = [
       {
-        "id": 0,
+        "id": 1,
         "icon": "icon",
-        "cardName": "资产应用一",
+        "cardName": "资产应用1",
         "func": () {
-          Get.toNamed(Routers.addFriend);
-          print('Go to home page');
+          // Get.toNamed(Routers.storageLocation);
+          HomeEnum.store;
         }
       },
-      {"id": 1, "icon": "icon", "cardName": "资产应用2"},
-      {"id": 2, "icon": "icon", "cardName": "资产应用3"},
+      {"id": 2, "icon": "icon", "cardName": "资产应用2"},
+      {"id": 3, "icon": "icon", "cardName": "资产应用3"},
       {"id": 4, "icon": "icon", "cardName": "资产应用4"},
       {"id": 5, "icon": "icon", "cardName": "资产应用5"},
       {"id": 6, "icon": "icon", "cardName": "资产应用6"},
@@ -58,6 +58,11 @@ class IndexPage extends StatelessWidget {
       {"id": 8, "icon": "icon", "cardName": "资产应用8"},
       {"id": 9, "icon": "icon", "cardName": "资产应用9"},
       {"id": 10, "icon": "icon", "cardName": "资产应用10"},
+      // {"id": 11, "icon": "icon", "cardName": "资产应用11"},
+      // {"id": 12, "icon": "icon", "cardName": "资产应用12"},
+      // {"id": 13, "icon": "icon", "cardName": "资产应用13"},
+      // {"id": 14, "icon": "icon", "cardName": "资产应用14"},
+      // {"id": 15, "icon": "icon", "cardName": "资产应用15"},
     ];
   }
 
@@ -65,6 +70,8 @@ class IndexPage extends StatelessWidget {
   Widget build(BuildContext context) {
     double x = 0, y = 0;
     return Scaffold(
+      backgroundColor: XColors.white,
+      drawerScrimColor: XColors.white,
       drawer: Drawer(
         width: MediaQuery.of(context).size.width,
         child: ListView(
@@ -201,12 +208,24 @@ class IndexPage extends StatelessWidget {
                   height: 12.h,
                 )),
             Container(
+              color: XColors.white,
+              child: SizedBox(
+                height: 12.h,
+              ),
+            ),
+            Container(
                 decoration: BoxDecoration(
                     color: XColors.white,
                     borderRadius: BorderRadius.circular(10)),
                 padding: const EdgeInsets.fromLTRB(11.0, 0, 0, 0),
                 alignment: Alignment.topLeft,
                 child: const Text("快捷入口")),
+            Container(
+              color: XColors.white,
+              child: SizedBox(
+                height: 12.h,
+              ),
+            ),
             // HorizontalMenu(),
             // MyHorizontalMenu(),
             MyHorizontalMenu(),
@@ -218,7 +237,7 @@ class IndexPage extends StatelessWidget {
                   height: 12.h,
                 )),
             Container(
-              color: XColors.bgColor,
+              color: XColors.white,
               padding: EdgeInsets.only(left: 12.w, right: 12.w),
               child: ListView(
                 shrinkWrap: true,
@@ -304,225 +323,225 @@ class IndexPage extends StatelessWidget {
       // },
     );
   }
-
-
 }
+
 // 数据检测 start
-  /// _dataMonitoring 数据检测container
-  Widget get _dataMonitoring {
-    return Container(
-        color: XColors.white,
-        // 数据监测
-        child: Column(
-          children: [
-            Container(
-                padding: const EdgeInsets.fromLTRB(13.0, 0, 0, 6),
-                alignment: Alignment.topLeft,
-                child: Text("数据检测")),
-            Container(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      // 面积图
-                      // margin: EdgeInsets.all(13.0),
-                      height: 100.0,
-                      // color: Colors.red,
-                      child: SfCartesianChart(
-                        primaryXAxis: CategoryAxis(),
-                        series: <SplineAreaSeries<TemperatureData, String>>[
-                          SplineAreaSeries<TemperatureData, String>(
-                            dataSource: <TemperatureData>[
-                              TemperatureData('Jan', 30, 18),
-                              TemperatureData('Feb', 42, 20),
-                              TemperatureData('Mar', 15, 22),
-                              TemperatureData('Apr', 68, 25),
-                              TemperatureData('May', 40, 28),
-                              TemperatureData('Jun', 38, 27),
-                              TemperatureData('Jul', 47, 26),
-                              TemperatureData('Aug', 36, 25),
-                              TemperatureData('Sep', 35, 24),
-                              TemperatureData('Oct', 72, 22),
-                              TemperatureData('Nov', 70, 20),
-                              TemperatureData('Dec', 28, 18),
-                            ],
-                            xValueMapper: (TemperatureData temperature, _) =>
-                                temperature.month,
-                            yValueMapper: (TemperatureData temperature, _) =>
-                                temperature.high,
-                            // Optional: to show the range between high and low temperatures
-                            // color can be customized as required
-                            color: Colors.blue.withOpacity(0.2),
-                            borderGradient: LinearGradient(
-                              colors: [
-                                Colors.blueAccent,
-                                Colors.blue.withOpacity(0.4)
-                              ],
-                              stops: [0.2, 1],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            ),
-                            borderColor: Colors.blue,
-                            borderWidth: 2,
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Container(
-                    //   width: 11,
-                    // ),
-                    // Container(
-                    //   // 柱状图
-                    //   width: 180.0,
-                    //   height: 80.0,
-                    //   // color: Colors.green,
-                    //   child: SfCartesianChart(
-                    //       primaryXAxis: CategoryAxis(),
-                    //       primaryYAxis:
-                    //           NumericAxis(minimum: 0, maximum: 40, interval: 10),
-                    //       tooltipBehavior: _tooltip,
-                    //       series: <ChartSeries<_ChartData, String>>[
-                    //         ColumnSeries<_ChartData, String>(
-                    //             dataSource: data,
-                    //             xValueMapper: (_ChartData data, _) => data.x,
-                    //             yValueMapper: (_ChartData data, _) => data.y,
-                    //             name: 'Gold',
-                    //             color: Color.fromRGBO(8, 142, 255, 1))
-                    //       ]),
-                    // ),
-                  ],
-                ),
-              ],
-            )),
-            Container(
-              // 柱状图
-              width: 380.0,
-              height: 100.0,
-              // color: Colors.green,
-              child: SfCartesianChart(
-                  primaryXAxis: CategoryAxis(),
-                  primaryYAxis:
-                      NumericAxis(minimum: 0, maximum: 40, interval: 10),
-                  tooltipBehavior: _tooltip,
-                  series: <ChartSeries<_ChartData, String>>[
-                    ColumnSeries<_ChartData, String>(
-                        dataSource: data,
-                        xValueMapper: (_ChartData data, _) => data.x,
-                        yValueMapper: (_ChartData data, _) => data.y,
-                        name: 'Gold',
-                        color: Color.fromRGBO(8, 142, 255, 1))
-                  ]),
-            ),
-            Container(
-              height: 1,
-            ),
-            Container(
-                child: Column(
-              children: [
-                Row(
-                  children: [
-                    Container(
-                        // 饼图
-                      alignment: Alignment.center,
-                        height: 100.0,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: [
-                            // BoxShadow(
-                            //   color:
-                            //       Color.fromARGB(255, 33, 27, 125).withOpacity(0.8),
-                            //   spreadRadius: 5,
-                            //   blurRadius: 7,
-                            //   offset: Offset(0, 3), // changes position of shadow
-                            // ),
+/// _dataMonitoring 数据检测container
+Widget get _dataMonitoring {
+  return Container(
+      color: XColors.white,
+      // 数据监测
+      child: Column(
+        children: [
+          Container(
+              padding: const EdgeInsets.fromLTRB(13.0, 0, 0, 6),
+              alignment: Alignment.topLeft,
+              child: Text("数据检测")),
+          Container(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    // 面积图
+                    // margin: EdgeInsets.all(13.0),
+                    height: 100.0,
+                    // color: Colors.red,
+                    child: SfCartesianChart(
+                      primaryXAxis: CategoryAxis(),
+                      series: <SplineAreaSeries<TemperatureData, String>>[
+                        SplineAreaSeries<TemperatureData, String>(
+                          dataSource: <TemperatureData>[
+                            TemperatureData('Jan', 30, 18),
+                            TemperatureData('Feb', 42, 20),
+                            TemperatureData('Mar', 15, 22),
+                            TemperatureData('Apr', 68, 25),
+                            TemperatureData('May', 40, 28),
+                            TemperatureData('Jun', 38, 27),
+                            TemperatureData('Jul', 47, 26),
+                            TemperatureData('Aug', 36, 25),
+                            TemperatureData('Sep', 35, 24),
+                            TemperatureData('Oct', 72, 22),
+                            TemperatureData('Nov', 70, 20),
+                            TemperatureData('Dec', 28, 18),
                           ],
-                          // border: Border.all(
+                          xValueMapper: (TemperatureData temperature, _) =>
+                              temperature.month,
+                          yValueMapper: (TemperatureData temperature, _) =>
+                              temperature.high,
+                          // Optional: to show the range between high and low temperatures
+                          // color can be customized as required
+                          color: Colors.blue.withOpacity(0.2),
+                          borderGradient: LinearGradient(
+                            colors: [
+                              Colors.blueAccent,
+                              Colors.blue.withOpacity(0.4)
+                            ],
+                            stops: [0.2, 1],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                          borderColor: Colors.blue,
+                          borderWidth: 2,
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Container(
+                  //   width: 11,
+                  // ),
+                  // Container(
+                  //   // 柱状图
+                  //   width: 180.0,
+                  //   height: 80.0,
+                  //   // color: Colors.green,
+                  //   child: SfCartesianChart(
+                  //       primaryXAxis: CategoryAxis(),
+                  //       primaryYAxis:
+                  //           NumericAxis(minimum: 0, maximum: 40, interval: 10),
+                  //       tooltipBehavior: _tooltip,
+                  //       series: <ChartSeries<_ChartData, String>>[
+                  //         ColumnSeries<_ChartData, String>(
+                  //             dataSource: data,
+                  //             xValueMapper: (_ChartData data, _) => data.x,
+                  //             yValueMapper: (_ChartData data, _) => data.y,
+                  //             name: 'Gold',
+                  //             color: Color.fromRGBO(8, 142, 255, 1))
+                  //       ]),
+                  // ),
+                ],
+              ),
+            ],
+          )),
+          Container(
+            // 柱状图
+            width: 380.0,
+            height: 100.0,
+            // color: Colors.green,
+            child: SfCartesianChart(
+                primaryXAxis: CategoryAxis(),
+                primaryYAxis:
+                    NumericAxis(minimum: 0, maximum: 40, interval: 10),
+                tooltipBehavior: _tooltip,
+                series: <ChartSeries<_ChartData, String>>[
+                  ColumnSeries<_ChartData, String>(
+                      dataSource: data,
+                      xValueMapper: (_ChartData data, _) => data.x,
+                      yValueMapper: (_ChartData data, _) => data.y,
+                      name: 'Gold',
+                      color: Color.fromRGBO(8, 142, 255, 1))
+                ]),
+          ),
+          Container(
+            height: 1,
+          ),
+          Container(
+              child: Column(
+            children: [
+              Row(
+                children: [
+                  Container(
+                      // 饼图
+                      alignment: Alignment.center,
+                      height: 100.0,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          // BoxShadow(
                           //   color:
                           //       Color.fromARGB(255, 33, 27, 125).withOpacity(0.8),
-                          //   width: 2,
+                          //   spreadRadius: 5,
+                          //   blurRadius: 7,
+                          //   offset: Offset(0, 3), // changes position of shadow
                           // ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        ],
+                        // border: Border.all(
+                        //   color:
+                        //       Color.fromARGB(255, 33, 27, 125).withOpacity(0.8),
+                        //   width: 2,
+                        // ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
 
-                        // color: Colors.red,
-                        // child: PieChartWidget()
-                        child: SfCircularChart(
-                          // title: ChartTitle(text: 'Sales Data'),
-                          // legend: Legend(isVisible: true),
-                          series: <CircularSeries>[
-                            PieSeries<pieChartSalesData, String>(
-                              dataSource: <pieChartSalesData>[
-                                pieChartSalesData('Jan', 35),
-                                pieChartSalesData('Feb', 15),
-                                pieChartSalesData('Mar', 34),
-                                pieChartSalesData('Apr', 16),
-                                // pieChartSalesData('May', 40)
-                              ],
-                              xValueMapper: (pieChartSalesData sales, _) =>
-                                  sales.year,
-                              yValueMapper: (pieChartSalesData sales, _) =>
-                                  sales.sales,
-                              dataLabelSettings:
-                                  DataLabelSettings(isVisible: true),
-                            )
-                          ],
-                        )),
-                    // Container(
-                    //   width: 11,
-                    // ),
-                    // Container(
-                    //   width: 180.0,
-                    //   height: 80.0,
-                    //   // color: Colors.green,
-                    //   child: ElevatedButton.icon(
-                    //     style: ButtonStyle(
-                    //         backgroundColor:
-                    //             MaterialStateProperty.all(Colors.white)),
-                    //     icon: Icon(
-                    //       Icons.add,
-                    //       color: Colors.grey,
-                    //     ),
-                    //     onPressed: () {
-                    //       Get.defaultDialog();
-                    //     },
-                    //     // label: Text(menuItems[index]),
-                    //     label: Text(''),
-                    //   ),
-                    // ),
-                  ],
-                ),
-              ],
-            )),
-            Container(
-              width: 11,
-            ),
-            SizedBox(
-              width: 180.0,
-              height: 80.0,
-              // color: Colors.green,
-              child: ElevatedButton.icon(
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.white)),
-                icon: Icon(
-                  size: 55,
-                  Icons.add,
-                  color: Colors.grey,
-                ),
-                onPressed: () {
-                  Get.defaultDialog();
-                },
-                // label: Text(menuItems[index]),
-                label: Text(''),
+                      // color: Colors.red,
+                      // child: PieChartWidget()
+                      child: SfCircularChart(
+                        // title: ChartTitle(text: 'Sales Data'),
+                        // legend: Legend(isVisible: true),
+                        series: <CircularSeries>[
+                          PieSeries<pieChartSalesData, String>(
+                            dataSource: <pieChartSalesData>[
+                              pieChartSalesData('Jan', 35),
+                              pieChartSalesData('Feb', 15),
+                              pieChartSalesData('Mar', 34),
+                              pieChartSalesData('Apr', 16),
+                              // pieChartSalesData('May', 40)
+                            ],
+                            xValueMapper: (pieChartSalesData sales, _) =>
+                                sales.year,
+                            yValueMapper: (pieChartSalesData sales, _) =>
+                                sales.sales,
+                            dataLabelSettings:
+                                DataLabelSettings(isVisible: true),
+                          )
+                        ],
+                      )),
+                  // Container(
+                  //   width: 11,
+                  // ),
+                  // Container(
+                  //   width: 180.0,
+                  //   height: 80.0,
+                  //   // color: Colors.green,
+                  //   child: ElevatedButton.icon(
+                  //     style: ButtonStyle(
+                  //         backgroundColor:
+                  //             MaterialStateProperty.all(Colors.white)),
+                  //     icon: Icon(
+                  //       Icons.add,
+                  //       color: Colors.grey,
+                  //     ),
+                  //     onPressed: () {
+                  //       Get.defaultDialog();
+                  //     },
+                  //     // label: Text(menuItems[index]),
+                  //     label: Text(''),
+                  //   ),
+                  // ),
+                ],
               ),
+            ],
+          )),
+          Container(
+            width: 11,
+          ),
+          SizedBox(
+            width: 180.0,
+            height: 80.0,
+            // color: Colors.green,
+            child: ElevatedButton.icon(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.white)),
+              icon: Icon(
+                size: 55,
+                Icons.add,
+                color: Colors.grey,
+              ),
+              onPressed: () {
+                Get.defaultDialog();
+              },
+              // label: Text(menuItems[index]),
+              label: Text(''),
             ),
-            SizedBox(
-              height: 12.h,
-            ),
-          ],
-        ));
-  }
+          ),
+          SizedBox(
+            height: 12.h,
+          ),
+        ],
+      ));
+}
+
 // 数据检测 end
 class CardChildWidget extends StatelessWidget {
   String itemName;

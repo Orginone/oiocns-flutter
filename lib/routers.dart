@@ -324,6 +324,7 @@ class Routers {
           HomeBinding(),
           IndexPageBinding(),
           UpdateBinding(),
+          ClassificationInfoBinding()
         ],
       ),
       GetPage(
@@ -366,7 +367,9 @@ class Routers {
         bindings: [
           HomeBinding(),
           IndexPageBinding(),
-          UpdateBinding()
+          UpdateBinding(),
+          SettingCenterBinding(),
+          ClassificationInfoBinding()
         ],
       ),
       GetPage(
