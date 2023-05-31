@@ -14,6 +14,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/message.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
@@ -75,7 +76,7 @@ class DetailItemWidget extends GetView<SettingController> {
   Widget _messageDetail(BuildContext context) {
     List<Widget> children = [];
     bool isCenter = false;
-    if (msg.msgType == "recall") {
+    if (msg.msgType == MessageType.recall.label) {
       Widget child;
       if (msg.metadata.fromId == controller.user.metadata.id) {
         child = Text("您撤回了一条消息", style: XFonts.size18Black9);
@@ -126,7 +127,10 @@ class DetailItemWidget extends GetView<SettingController> {
         ),
       ),
       onLongPress: () {
-        EventBusHelper.fire(chat.members[0]);
+         if(chat.share.typeName!=TargetType.person.label){
+           var target = chat.members.firstWhere((element) => element.id == msg.metadata.fromId);
+           EventBusHelper.fire(target);
+         }
       },
     );
   }
@@ -251,44 +255,68 @@ class DetailItemWidget extends GetView<SettingController> {
     );
 
     bool isRead = false;
+    List<XTarget> unreadMember = [];
+    List<XTarget> readMember = [];
+    Widget read = SizedBox();
+
     try {
       IMessageLabel? tag;
-      if(chat.share.typeName == TargetType.person.label){
-         tag = msg.labels.firstWhere((element) => element.userId == chat.chatId);
-      }else{
+      if (chat.share.typeName == TargetType.person.label) {
+        tag = msg.labels.firstWhere((element) => element.userId == chat.chatId);
+        isRead = tag != null;
+      } else {
         for (var member in chat.members) {
-
+          if (member.id != controller.user.metadata.id) {
+            if (msg.labels
+                .where((element) => element.userId == member.id)
+                .isEmpty) {
+              unreadMember.add(member);
+            } else {
+              readMember.add(member);
+            }
+          }
         }
-         tag = msg.labels.firstWhere((element) => element.userId == controller.user.id);
+        isRead = readMember.length == (chat.members.length - 1);
       }
-      isRead = tag != null;
-    } catch (e) {
-      isRead = false;
+    } catch (e) {}
+
+    if (isSelf) {
+      if (chat.share.typeName == TargetType.person.label) {
+        read = Container(
+          margin: EdgeInsets.only(right: 10.w),
+          child: Text(
+            isRead ? "已读" : "未读",
+            style: TextStyle(
+                color: isRead ? XColors.black9 : XColors.selectedColor,
+                fontSize: 16.sp),
+          ),
+        );
+      } else {
+        read = GestureDetector(
+          child: Container(
+            margin: EdgeInsets.only(right: 10.w),
+            child: Text(
+              isRead ? "全部已读" : "${unreadMember.length}人未读",
+              style: TextStyle(
+                  color: isRead ? XColors.black9 : XColors.selectedColor,
+                  fontSize: 16.sp),
+            ),
+          ),
+          onTap: (){
+            chatController.showReadMessage(readMember,unreadMember);
+          },
+        );
+      }
     }
+
+    content.add(read);
 
     return Container(
       margin: isSelf ? EdgeInsets.only(right: 2.w) : EdgeInsets.only(left: 2.w),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          isSelf
-              ? Container(
-                  margin: EdgeInsets.only(right: 5.w),
-                  child: Text(
-                    isRead ? "已读" : "未读",
-                    style: TextStyle(
-                        color: isRead
-                            ? XColors.applicationColor
-                            : XColors.cardBorder,
-                        fontSize: 16.sp),
-                  ),
-                )
-              : const SizedBox(),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: content,
-          ),
-        ],
+      child: Column(
+        crossAxisAlignment:
+            !isSelf ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+        children: content,
       ),
     );
   }

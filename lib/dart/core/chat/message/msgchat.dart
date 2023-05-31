@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:orginone/dart/base/common/entity.dart';
 import 'package:orginone/dart/base/common/lists.dart';
@@ -7,6 +9,7 @@ import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/pages/chat/text_replace_utils.dart';
 import 'package:orginone/util/encryption_util.dart';
 
@@ -180,7 +183,7 @@ abstract class IMsgChat extends IEntity {
   Future<bool> clearMessage();
 
   /// 接收消息
-  void receiveMessage(MsgSaveModel msg);
+  void receiveMessage(MsgSaveModel msg,bool isCurrentSession);
 
   void receiveTags(List<String> ids,List<String> tags);
 }
@@ -209,6 +212,8 @@ abstract class MsgChat extends Entity implements IMsgChat {
         memberChats = <PersonMsgChat>[].obs {
     this.space = space ?? this as IBelong;
   }
+
+  MessageChatController get controller => Get.find();
 
   List<String>? findMe;
 
@@ -285,7 +290,6 @@ abstract class MsgChat extends Entity implements IMsgChat {
       labels = (Set<String>.from(labels)..addAll(cache.labels ?? [])).toList();
       chatdata.value.chatName = cache.chatName ?? chatdata.value.chatName;
       share.name = chatdata.value.chatName??"";
-      cache.noReadCount = cache.noReadCount ?? chatdata.value.noReadCount;
       if (chatdata.value.noReadCount != cache.noReadCount) {
         chatdata.value.noReadCount = cache.noReadCount;
       }
@@ -433,7 +437,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
   }
 
   @override
-  receiveMessage(MsgSaveModel msg) {
+  receiveMessage(MsgSaveModel msg,bool isCurrentSession) {
     var imsg = Message(this,msg);
     if (imsg.msgType == "recall") {
        try{
@@ -444,9 +448,15 @@ abstract class MsgChat extends Entity implements IMsgChat {
     }else{
       messages.insert(0,imsg);
     }
-    if(userId != msg.fromId){
+    if(userId != msg.fromId && !isCurrentSession){
       chatdata.value.noReadCount += 1;
     }
+    if(isCurrentSession){
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        controller.markVisibleMessagesAsRead();
+      });
+    }
+
     chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
     chatdata.value.lastMessage = msg;
     chatdata.value.isFindme = TextUtils.findUserId(msg.msgBody);

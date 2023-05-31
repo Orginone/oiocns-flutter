@@ -13,6 +13,9 @@ abstract class IChatProvider {
   /// 所有会话
   List<IMsgChat> get chats;
 
+
+  IMsgChat? currentChat;
+
   /// 挂起消息
   void preMessage();
 
@@ -25,6 +28,9 @@ class ChatProvider implements IChatProvider {
   final RxList<MsgSaveModel> _preMessages;
 
   List<MsgTagModel> _preTags = [];
+
+  @override
+  IMsgChat? currentChat;
   @override
   final IPerson user;
 
@@ -39,9 +45,7 @@ class ChatProvider implements IChatProvider {
     kernel.on('RecvTags', (data) {
       var tag = MsgTagModel.fromJson(data);
       if (!_preMessage) {
-        _chatReceive(tag.id!,tag.belongId!,(chat){
-          chat.receiveTags(tag.ids!, tag.tags!);
-        });
+        _chatReceive(tag);
       } else {
         _preTags.add(tag);
       }
@@ -97,19 +101,19 @@ class ChatProvider implements IChatProvider {
         isMatch = data.belongId == c.belongId;
       }
       if (isMatch) {
-        c.receiveMessage(data);
+        c.receiveMessage(data,currentChat?.chatId == c.chatId);
       }
     }
   }
 
-  void _chatReceive(String chatId, String belongId, void Function(IMsgChat) action) {
+  void _chatReceive(MsgTagModel tagModel) {
     for (var c in chats) {
-      bool isMatch = chatId == c.chatId;
+      bool isMatch = tagModel.id == c.chatId;
       if ((c.share.typeName == TargetType.person.label || c.share.typeName == '权限') && isMatch) {
-        isMatch = belongId == c.belongId;
+        isMatch = tagModel.belongId == c.belongId;
       }
       if (isMatch) {
-        action(c);
+        c.receiveTags(tagModel.ids!, tagModel.tags!);
       }
     }
   }
