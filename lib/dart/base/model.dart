@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -4206,22 +4207,29 @@ class NameCodeModel {
 
 class MsgTagModel {
   // 工作空间ID
-  final String belongId;
+  String? belongId;
 
   // id
-  final String id;
+  String? id;
 
   // 消息类型
-  final List<String> ids;
+  List<String>? ids;
 
   // 消息体
-  final List<String> tags;
+   List<String>? tags;
 
   MsgTagModel(
-      {required this.belongId,
-      required this.id,
-      required this.ids,
-      required this.tags});
+      { this.belongId,
+       this.id,
+       this.ids,
+       this.tags});
+
+  MsgTagModel.fromJson(Map<String, dynamic> json){
+    belongId = json["belongId"];
+    id = json["id"];
+    ids = json["ids"]!=null?List.castFrom(json["ids"]):null;
+    tags = json["tags"]!=null?List.castFrom(json["tags"]):null;
+  }
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -4430,6 +4438,31 @@ class ChatModel {
     json["remark"] = remark;
     json["typeName"] = typeName;
     return json;
+  }
+}
+
+class MsgTagLabel {
+  String? label;
+  String? userId;
+  String? time;
+
+  MsgTagLabel({required this.label, required this.userId, required this.time});
+
+  factory MsgTagLabel.fromJson(Map<String, dynamic> json) {
+    return MsgTagLabel(
+      label: json['label'],
+      userId: json['userId'],
+      time: json['time'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      'label': label,
+      'userId': userId,
+      'time': time,
+    };
+    return data;
   }
 }
 
@@ -5160,6 +5193,7 @@ class MsgSaveModel {
   String showTxt;
   bool allowEdit;
   List<Tag>? tags;
+  late GlobalKey key;
 
   MsgSaveModel({
     required this.sessionId,
@@ -5185,6 +5219,7 @@ class MsgSaveModel {
         createTime = json['createTime'],
         updateTime = json['updateTime'],
         id = json['id'],
+        key = GlobalKey(debugLabel: json['id']),
         toId = json['toId'],
         showTxt = EncryptionUtil.inflate(json['msgBody']),
         allowEdit = json['allowEdit'] ?? false {

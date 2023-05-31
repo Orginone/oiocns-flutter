@@ -24,6 +24,7 @@ class ChatProvider implements IChatProvider {
   bool _preMessage = true;
   final RxList<MsgSaveModel> _preMessages;
 
+  List<MsgTagModel> _preTags = [];
   @override
   final IPerson user;
 
@@ -33,6 +34,16 @@ class ChatProvider implements IChatProvider {
         _recvMessage(MsgSaveModel.fromJson(data));
       } else {
         _preMessages.add(MsgSaveModel.fromJson(data));
+      }
+    });
+    kernel.on('RecvTags', (data) {
+      var tag = MsgTagModel.fromJson(data);
+      if (!_preMessage) {
+        _chatReceive(tag.id!,tag.belongId!,(chat){
+          chat.receiveTags(tag.ids!, tag.tags!);
+        });
+      } else {
+        _preTags.add(tag);
       }
     });
   }
@@ -87,6 +98,18 @@ class ChatProvider implements IChatProvider {
       }
       if (isMatch) {
         c.receiveMessage(data);
+      }
+    }
+  }
+
+  void _chatReceive(String chatId, String belongId, void Function(IMsgChat) action) {
+    for (var c in chats) {
+      bool isMatch = chatId == c.chatId;
+      if ((c.share.typeName == TargetType.person.label || c.share.typeName == '权限') && isMatch) {
+        isMatch = belongId == c.belongId;
+      }
+      if (isMatch) {
+        action(c);
       }
     }
   }

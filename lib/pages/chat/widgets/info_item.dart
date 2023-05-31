@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/chat/message/message.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/images.dart';
@@ -50,7 +51,7 @@ double defaultWidth = 10.w;
 
 class DetailItemWidget extends GetView<SettingController> {
   final IMsgChat chat;
-  final MsgSaveModel msg;
+  final IMessage msg;
 
   DetailItemWidget({
     Key? key,
@@ -67,7 +68,7 @@ class DetailItemWidget extends GetView<SettingController> {
   }
 
   bool get isSelf {
-    return msg.fromId == controller.user.metadata.id;
+    return msg.metadata.fromId == controller.user.metadata.id;
   }
 
   /// 消息详情
@@ -76,14 +77,14 @@ class DetailItemWidget extends GetView<SettingController> {
     bool isCenter = false;
     if (msg.msgType == "recall") {
       Widget child;
-      if (msg.fromId == controller.user.metadata.id) {
+      if (msg.metadata.fromId == controller.user.metadata.id) {
         child = Text("您撤回了一条消息", style: XFonts.size18Black9);
       } else {
         child = Text.rich(TextSpan(children: [
           WidgetSpan(
               child: TargetText(
             style: XFonts.size18Black9,
-            userId: msg.fromId,
+            userId: msg.metadata.fromId,
           ),alignment: PlaceholderAlignment.middle),
           TextSpan(text: "撤回了一条消息", style: XFonts.size18Black9),
         ]));
@@ -113,7 +114,7 @@ class DetailItemWidget extends GetView<SettingController> {
       var settingCtrl = Get.find<SettingController>();
       id = settingCtrl.user.metadata.id;
     } else {
-      id = msg.fromId;
+      id = msg.metadata.fromId;
     }
     return GestureDetector(
       child: TeamAvatar(
@@ -137,7 +138,7 @@ class DetailItemWidget extends GetView<SettingController> {
     if (!isSelf && chat.share.typeName != TargetType.person.label) {
       content.add(Container(
         margin: EdgeInsets.only(left: 10.w),
-        child: TargetText(userId: msg.fromId, style: XFonts.size16Black3),
+        child: TargetText(userId: msg.metadata.fromId, style: XFonts.size16Black3),
       ));
     }
 
@@ -147,8 +148,7 @@ class DetailItemWidget extends GetView<SettingController> {
     var textDirection = isSelf ? rtl : ltr;
 
     if (msg.msgType == MessageType.text.label) {
-      String? reply = TextUtils.isReplyMsg(msg.showTxt);
-      String? url = TextUtils.containsWebUrl(msg.showTxt);
+      String? reply = TextUtils.isReplyMsg(msg.metadata.showTxt);
       body = Column(
         crossAxisAlignment:
             isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -221,11 +221,11 @@ class DetailItemWidget extends GetView<SettingController> {
                           chat.deleteMessage(msg.id);
                           break;
                         case DetailFunc.forward:
-                          chatController.forward(msg.msgType,msg.showTxt);
+                          chatController.forward(msg.msgType,msg.metadata.showTxt);
                           break;
                         case DetailFunc.reply:
                           ChatBoxController controller = Get.find<ChatBoxController>();
-                          controller.replyText.value = msg.showTxt;
+                          controller.replyText.value = msg.metadata.showTxt;
                           break;
                       }
                       popCtrl.hideMenu();
@@ -250,11 +250,45 @@ class DetailItemWidget extends GetView<SettingController> {
       ),
     );
 
+    bool isRead = false;
+    try {
+      IMessageLabel? tag;
+      if(chat.share.typeName == TargetType.person.label){
+         tag = msg.labels.firstWhere((element) => element.userId == chat.chatId);
+      }else{
+        for (var member in chat.members) {
+
+        }
+         tag = msg.labels.firstWhere((element) => element.userId == controller.user.id);
+      }
+      isRead = tag != null;
+    } catch (e) {
+      isRead = false;
+    }
+
     return Container(
       margin: isSelf ? EdgeInsets.only(right: 2.w) : EdgeInsets.only(left: 2.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: content,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          isSelf
+              ? Container(
+                  margin: EdgeInsets.only(right: 5.w),
+                  child: Text(
+                    isRead ? "已读" : "未读",
+                    style: TextStyle(
+                        color: isRead
+                            ? XColors.applicationColor
+                            : XColors.cardBorder,
+                        fontSize: 16.sp),
+                  ),
+                )
+              : const SizedBox(),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: content,
+          ),
+        ],
       ),
     );
   }
@@ -295,9 +329,9 @@ class DetailItemWidget extends GetView<SettingController> {
     /// 解析参数
     Map<String, dynamic> msgBody = {};
     try {
-      msgBody = jsonDecode(msg.showTxt);
+      msgBody = jsonDecode(msg.metadata.showTxt);
     } catch (error) {
-      Log.info("参数解析失败，msg.showTxt:${msg.showTxt}");
+      Log.info("参数解析失败，msg.showTxt:${msg.metadata.showTxt}");
       return Container();
     }
     String link = msgBody["shareLink"] ?? "";
@@ -333,7 +367,7 @@ class DetailItemWidget extends GetView<SettingController> {
   Widget _voice({required TextDirection textDirection}) {
     // 初始化语音输入
     var playCtrl = Get.find<PlayController>();
-    playCtrl.putPlayerStatusIfAbsent(msg);
+    playCtrl.putPlayerStatusIfAbsent(msg.metadata);
     var voicePlay = playCtrl.getPlayerStatus(msg.id)!;
     var seconds = voicePlay.initProgress ~/ 1000;
     seconds = seconds > 60 ? 60 : seconds;
@@ -417,9 +451,9 @@ class DetailItemWidget extends GetView<SettingController> {
     /// 解析参数
     Map<String, dynamic> msgBody = {};
     try {
-      msgBody = jsonDecode(msg.showTxt);
+      msgBody = jsonDecode(msg.metadata.showTxt);
     } catch (error) {
-      Log.info("参数解析失败，msg.showTxt:${msg.showTxt}");
+      Log.info("参数解析失败，msg.showTxt:${msg.metadata.showTxt}");
       return Container();
     }
 
@@ -483,7 +517,7 @@ class DetailItemWidget extends GetView<SettingController> {
     RegExp exp = RegExp(
         r'((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?');
 
-    String text = TextUtils.textReplace(msg.showTxt);
+    String text = TextUtils.textReplace(msg.metadata.showTxt);
     Iterable<RegExpMatch> matches = exp.allMatches(text);
 
     if (matches.isNotEmpty) {
@@ -545,7 +579,7 @@ class DetailItemWidget extends GetView<SettingController> {
     return _detail(
       textDirection: textDirection,
       body: Text(
-        TextUtils.textReplace(msg.showTxt),
+        TextUtils.textReplace(msg.metadata.showTxt),
         style: XFonts.size20Black0,
       ),
     );
@@ -596,11 +630,7 @@ class _PreViewUrlState extends State<PreViewUrl> {
 
 enum VoiceStatus { stop, playing }
 
-String getFileSizeString({required int bytes, int decimals = 0}) {
-  const suffixes = ["B", "KB", "MB", "GB", "TB"];
-  var i = (log(bytes) / log(1024)).floor();
-  return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + suffixes[i];
-}
+
 
 List<String> imageExtension = [
   '.jpg',
@@ -742,4 +772,11 @@ class PlayController extends GetxController with GetTickerProviderStateMixin {
       _currentVoicePlay = null;
     }
   }
+}
+
+
+String getFileSizeString({required int bytes, int decimals = 0}) {
+  const suffixes = ["B", "KB", "MB", "GB", "TB"];
+  var i = (log(bytes) / log(1024)).floor();
+  return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + suffixes[i];
 }
