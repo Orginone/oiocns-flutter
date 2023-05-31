@@ -11,23 +11,8 @@ import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 class WorkStartNetWork {
-  static Future<List<XWorkDefine>> getWorkDefine(String speciesId) async {
-    List<XWorkDefine> defines = [];
-    // ResultType<XWorkDefineArray> result = await KernelApi.getInstance()
-    //     .queryWorkDefine(GetSpeciesResourceModel(
-    //         speciesId: speciesId,
-    //         spaceId: '0',
-    //         page: PageRequest(offset: 0, limit: 20, filter: '')));
-    // if (result.success) {
-    //   defines = result.data?.result ?? [];
-    // }
-    return defines;
-  }
-
   static Future<WorkNodeModel?> getDefineNode(String id) async {
     WorkNodeModel? node;
-    var settingCtrl = Get.find<SettingController>();
-    // var space = settingCtrl.space;
     ResultType<WorkNodeModel> result = await KernelApi.getInstance().queryWorkNodes(
         IdReq(
             id: id,
@@ -37,7 +22,9 @@ class WorkStartNetWork {
   }
 
   static Future<void> createInstance(IWorkDefine define,
-      Map<String, dynamic> data, List<String> thingIds) async {
+      Map<String, dynamic> headerData, List<Map<String,dynamic>> formData) async {
+
+    Map<String,dynamic> data = {"headerData":headerData,"formData":formData};
     XWorkInstance? result = await define.createWorkInstance(
       WorkInstanceModel(
         defineId: define.metadata.id!,
@@ -45,7 +32,6 @@ class WorkStartNetWork {
         contentType: "Text",
         data: jsonEncode(data),
         title: define.metadata.name!,
-        thingIds: thingIds,
         hook: "",
       ),
     );

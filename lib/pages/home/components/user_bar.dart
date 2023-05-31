@@ -172,11 +172,7 @@ class UserBar extends GetView<SettingController> {
     return Obx(() {
       dynamic avatar;
       var share = controller.provider.user?.share;
-      if(share?.avatar?.thumbnail?.contains("default")??false){
-        avatar = AIcons.icons['x']?['defalutAvatar'];
-      }else{
-        avatar = share?.avatar?.thumbnailUint8List??AIcons.icons['x']?['defalutAvatar'];
-      }
+      avatar = share?.avatar?.thumbnailUint8List??AIcons.icons['x']?['defalutAvatar'];
 
       return Container(
           margin: insets,

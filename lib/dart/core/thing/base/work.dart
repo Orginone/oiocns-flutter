@@ -116,7 +116,10 @@ abstract class Work extends SpeciesItem implements IWork {
         page: PageRequest(offset: 0, limit: 9999, filter: ''),
       ));
       if (res.success) {
-        defines = (res.data?.result ?? []).map((e) => FlowDefine(e,this)).toList();
+
+        defines = (res.data?.result ?? []).map((e){
+          return FlowDefine(e,this);
+        }).toList();
       }
     }
     return defines;

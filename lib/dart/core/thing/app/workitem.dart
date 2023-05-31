@@ -22,7 +22,10 @@ abstract class IWorkItem extends IWork {
     speciesTypes = [];
 
     for (var item in metadata.nodes??[]) {
-      children.add(WorkItem(item, this.app, this));
+      var workItem = createChildren(item,app.current);
+      if(workItem!=null){
+        children.add(workItem);
+      }
     }
     var type = SpeciesType.getType(metadata.typeName);
     if (type != null) {
@@ -46,11 +49,5 @@ abstract class IWorkItem extends IWork {
        return WorkItem(metadata, app, this);
      }
      return null;
-  }
-
-  @override
-  Future<List<IForm>> loadForms() {
-    // TODO: implement loadForms
-    throw UnimplementedError();
   }
 }

@@ -80,12 +80,7 @@ MappingComponentsCallback mappingSelectBoxWidget = (Fields data,
     return Container();
   }
   return Obx(() {
-    String content = '';
-    if((data.code?.contains("DATE")??false)||(data.code?.contains('date')??false) || data.code == 'DKGMSJ'){
-      content = data.defaultData.value??"";
-    }else{
-      content = data.defaultData.value?.values?.first.toString() ?? "";
-    }
+    String content = data.defaultData.value?.values?.first.toString() ?? "";;
     return Container(
       margin: EdgeInsets.only(
           left: (data.marginLeft ?? 0).h,

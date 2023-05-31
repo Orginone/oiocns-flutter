@@ -13,6 +13,9 @@ abstract class IChatProvider {
   /// 所有会话
   List<IMsgChat> get chats;
 
+
+  IMsgChat? currentChat;
+
   /// 挂起消息
   void preMessage();
 
@@ -24,6 +27,10 @@ class ChatProvider implements IChatProvider {
   bool _preMessage = true;
   final RxList<MsgSaveModel> _preMessages;
 
+  List<MsgTagModel> _preTags = [];
+
+  @override
+  IMsgChat? currentChat;
   @override
   final IPerson user;
 
@@ -33,6 +40,14 @@ class ChatProvider implements IChatProvider {
         _recvMessage(MsgSaveModel.fromJson(data));
       } else {
         _preMessages.add(MsgSaveModel.fromJson(data));
+      }
+    });
+    kernel.on('RecvTags', (data) {
+      var tag = MsgTagModel.fromJson(data);
+      if (!_preMessage) {
+        _chatReceive(tag);
+      } else {
+        _preTags.add(tag);
       }
     });
   }
@@ -86,7 +101,19 @@ class ChatProvider implements IChatProvider {
         isMatch = data.belongId == c.belongId;
       }
       if (isMatch) {
-        c.receiveMessage(data);
+        c.receiveMessage(data,currentChat?.chatId == c.chatId);
+      }
+    }
+  }
+
+  void _chatReceive(MsgTagModel tagModel) {
+    for (var c in chats) {
+      bool isMatch = tagModel.id == c.chatId;
+      if ((c.share.typeName == TargetType.person.label || c.share.typeName == '权限') && isMatch) {
+        isMatch = tagModel.belongId == c.belongId;
+      }
+      if (isMatch) {
+        c.receiveTags(tagModel.ids!, tagModel.tags!);
       }
     }
   }

@@ -51,7 +51,12 @@ class Tabs extends StatelessWidget {
   }
 
   Widget _main(List<Widget> children) {
-    return Expanded(child: TabBarView(controller: tabCtrl, children: children));
+    return Expanded(
+        child: TabBarView(
+      controller: tabCtrl,
+      physics: const NeverScrollableScrollPhysics(),
+      children: children,
+    ));
   }
 }
 

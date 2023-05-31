@@ -1,15 +1,13 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:logging/logging.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/consts.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/unified.dart';
-import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/core/enum.dart';
 
 class TeamTypeInfo {
   final bool? preview;
@@ -19,7 +17,7 @@ class TeamTypeInfo {
   final ShareIcon? share;
   final bool? notAvatar;
 
-  TeamTypeInfo( {
+  TeamTypeInfo({
     this.preview,
     this.number,
     double? fontSize,
@@ -29,7 +27,7 @@ class TeamTypeInfo {
   }) : fontSize = fontSize ?? 32.w;
 }
 
-class TeamAvatar extends StatelessWidget {
+class TeamAvatar extends StatefulWidget {
   final TeamTypeInfo info;
   final double size;
   final Widget? child;
@@ -44,26 +42,66 @@ class TeamAvatar extends StatelessWidget {
     this.children,
     BoxDecoration? decoration,
   })  : size = size ?? 66.w,
-        decoration = decoration??BoxDecoration(
-          color: XColors.themeColor,
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.all(Radius.circular(6.w)),
-        );
-
-  SettingController get setting => Get.find();
+        decoration = decoration ??
+            BoxDecoration(
+              color: XColors.themeColor,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.all(Radius.circular(6.w)),
+            );
 
   @override
+  State<TeamAvatar> createState() => _TeamAvatarState();
+}
+
+class _TeamAvatarState extends State<TeamAvatar> {
+  SettingController get setting => Get.find();
+
+  ShareIcon? cache;
+
+  late TeamTypeInfo info;
+
+  late double size;
+  Widget? child;
+  List<Widget>? children;
+  late BoxDecoration decoration;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    info = widget.info;
+    size = widget.size;
+    child = widget.child;
+    children = widget.children;
+    decoration = widget.decoration;
+  }
+
+  @override
+  void didUpdateWidget(covariant TeamAvatar oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    if(widget.info!=oldWidget.info){
+      info = widget.info;
+    }
+  }
+  @override
   Widget build(BuildContext context) {
-    if(info.share!=null){
+    if (info.share != null) {
       return avatar(info.share!);
     }
 
-    return FutureBuilder<ShareIcon>(builder: (context,shot){
-      if(shot.hasData && shot.connectionState == ConnectionState.done){
-        return avatar(shot.data!);
-      }
-      return SizedBox();
-    },future: setting.user.findShareById(info.userId!),);
+    if(ShareIdSet.containsKey(info.userId!)){
+      return avatar(ShareIdSet[info.userId!]!);
+    }
+
+    return FutureBuilder<ShareIcon>(
+      builder: (context, shot) {
+        if (shot.hasData && shot.connectionState == ConnectionState.done) {
+          cache = shot.data!;
+          return avatar(shot.data!);
+        }
+      return cache != null ? avatar(cache!) : const SizedBox();
+      },future: setting.user.findShareById(info.userId!),);
   }
 
 

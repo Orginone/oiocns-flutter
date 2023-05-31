@@ -245,6 +245,17 @@ class SettingCenterController
   }
 
   void createClassCriteria(SettingNavModel e, {bool isEdit = false}) async {
+
+    List<SpeciesType> speciesTypes = [];
+
+    if(e.source==null){
+      for (var element in e.children) {
+        speciesTypes.add(SpeciesType.getType(element.source.metadata.typeName)!);
+      }
+    }else{
+      speciesTypes = e.source.speciesTypes;
+    }
+
     IAuthority? authority = await e.space!.loadSuperAuth();
     List<IAuthority> auth = [];
     if (authority != null) {
@@ -254,7 +265,7 @@ class SettingCenterController
     List<ITarget> targets = await setting.getTeamTree(e.space!);
 
     showClassCriteriaDialog(
-        context, getAllTarget(targets),  e.source.speciesTypes, getAllAuthority(auth),
+        context, getAllTarget(targets), speciesTypes , getAllAuthority(auth),
         callBack: (name, code, target, specie, auth, public, remark) async {
       var model = SpeciesModel(
           name: name,

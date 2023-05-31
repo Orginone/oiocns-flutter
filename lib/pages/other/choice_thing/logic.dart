@@ -13,10 +13,10 @@ class ChoiceThingController extends BaseController<ChoiceThingState> {
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
+    List<String> selected = Get.arguments?['ids']??[];
+
     LoadingDialog.showLoading(context);
     state.things.value = await ChoiceThingNetWork.getThing();
-
-    List<String> selected = Get.arguments?['selectedThings']??[];
 
     for (var element in selected) {
       for (var value1 in state.things) {

@@ -28,7 +28,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vibration/vibration.dart';
 
-import 'text/at_person_dialog.dart';
+import 'dialog/at_person_dialog.dart';
 import 'text/at_textfield.dart';
 
 double defaultBorderRadius = 6.w;

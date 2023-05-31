@@ -11,6 +11,7 @@ class WorkPage extends BaseGetListPageView<WorkController, WorkState> {
   Widget buildView() {
     return Container(
       color: GYColors.backgroundColor,
+      height: double.infinity,
       child: SingleChildScrollView(
         child: ListView.builder(
           padding: EdgeInsets.symmetric(horizontal: 18.w,vertical: 10.h),
