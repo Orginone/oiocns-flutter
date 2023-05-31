@@ -10,11 +10,13 @@ import 'package:orginone/dart/core/getx/base_bindings.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/event/message.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/dialog/message_read_dialog.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'message_forward.dart';
 import 'widgets/message_list.dart';
@@ -137,7 +139,7 @@ class MessageChatController extends BaseController<MessageChatState> {
   }
 
   void showReadMessage(List<XTarget> readMember, List<XTarget> unreadMember) {
-    showMessageReadDialog(context,readMember,unreadMember);
+    showMessageReadDialog(context, readMember, unreadMember);
   }
 
   @override
@@ -147,7 +149,15 @@ class MessageChatController extends BaseController<MessageChatState> {
     super.onClose();
   }
 
-
+  @override
+  void onReceivedEvent(event) {
+    // TODO: implement onReceivedEvent
+    super.onReceivedEvent(event);
+    if (event is JumpSpecifyMessage) {
+      int index = state.chat.messages.indexOf(event.message);
+      state.itemScrollController.jumpTo(index: index);
+    }
+  }
 }
 
 class MessageChatState extends BaseGetState {
@@ -156,6 +166,8 @@ class MessageChatState extends BaseGetState {
   ChatBoxController get chatBoxCtrl => Get.find();
 
   late GlobalKey scrollKey;
+
+  final ItemScrollController itemScrollController = ItemScrollController();
 
   MessageChatState() {
     chat = Get.arguments;

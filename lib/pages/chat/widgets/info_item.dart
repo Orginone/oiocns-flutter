@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
@@ -40,6 +41,7 @@ enum DetailFunc {
   recall("撤回"),
   remove("删除"),
   forward("转发"),
+  copy("复制"),
   reply("回复");
   // multipleChoice("多选");
 
@@ -184,6 +186,9 @@ class DetailItemWidget extends GetView<SettingController> {
       DetailFunc.forward,
       DetailFunc.reply,
     ];
+    if(msg.msgType == MessageType.text.label){
+      func.add(DetailFunc.copy);
+    }
     if (userId == controller.user.metadata.id) {
       func.add(DetailFunc.remove);
     }
@@ -230,6 +235,9 @@ class DetailItemWidget extends GetView<SettingController> {
                         case DetailFunc.reply:
                           ChatBoxController controller = Get.find<ChatBoxController>();
                           controller.replyText.value = msg.metadata.showTxt;
+                          break;
+                        case DetailFunc.copy:
+                           Clipboard.setData(ClipboardData(text: TextUtils.isReplyMsg(msg.metadata.showTxt)));
                           break;
                       }
                       popCtrl.hideMenu();

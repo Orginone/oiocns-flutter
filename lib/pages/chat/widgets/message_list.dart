@@ -12,12 +12,12 @@ import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/util/date_util.dart';
 import 'package:orginone/widget/unified.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'info_item.dart';
 
 
 class MessageList extends StatelessWidget {
-
 
   const MessageList({Key? key}) : super(key: key);
 
@@ -42,12 +42,14 @@ class MessageList extends StatelessWidget {
       child: RefreshIndicator(
         onRefresh: ()=>controller.state.chat.moreMessage(),
         child: Obx(() {
-          return ListView.builder(
+          return ScrollablePositionedList.builder(
             padding: EdgeInsets.only(left: 10.w, right: 10.w),
-            key: controller.state.scrollKey,
             shrinkWrap: true,
+            key: controller.state.scrollKey,
             reverse: true,
+            itemScrollController: controller.state.itemScrollController,
             addAutomaticKeepAlives: true,
+            addRepaintBoundaries: true,
             itemCount: chat.messages.length,
             itemBuilder: (BuildContext context, int index) {
               return _item(index);

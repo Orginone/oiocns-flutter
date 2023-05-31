@@ -262,6 +262,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
 
   @override
   onMessage() {
+    setting.chat.currentChat = this;
     if (chatdata.value.noReadCount > 0) {
       chatdata.value.noReadCount = 0;
       cache();
@@ -439,7 +440,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
   @override
   receiveMessage(MsgSaveModel msg,bool isCurrentSession) {
     var imsg = Message(this,msg);
-    if (imsg.msgType == "recall") {
+    if (imsg.msgType == MessageType.recall.label) {
        try{
          messages.firstWhere((p0) => p0.id == imsg.id).recall();
        }catch(e){

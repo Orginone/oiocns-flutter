@@ -96,7 +96,7 @@ dependencies:
   audio_wave: ^0.1.4
   vibration: ^1.7.5
   badges: ^3.1.1
-
+  scrollable_positioned_list: ^0.3.8
   # 组件管理库
   get: ^4.6.5
 

@@ -63,7 +63,6 @@ class MessageItemWidget extends GetView<SettingController> {
       },
       onTap: () async {
         chat.onMessage();
-        controller.chat.currentChat = chat;
         Get.toNamed(
           Routers.messageChat,
           arguments: chat,

@@ -77,6 +77,14 @@ class _TeamAvatarState extends State<TeamAvatar> {
   }
 
   @override
+  void didUpdateWidget(covariant TeamAvatar oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    if(widget.info!=oldWidget.info){
+      info = widget.info;
+    }
+  }
+  @override
   Widget build(BuildContext context) {
     if (info.share != null) {
       return avatar(info.share!);
