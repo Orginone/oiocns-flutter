@@ -83,32 +83,35 @@ class CreateWorkPage
         if (snapshot.connectionState == ConnectionState.done) {
           return Column(
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: CommonWidget.commonNonIndicatorTabBar(
-                        state.tabController,
-                        state.thingForm
-                            .map((element) => element.name)
-                            .toList()),
-                  ),
-                  CommonWidget.commonPopupMenuButton(
-                    items: SubTableEnum.values.map((e) {
-                      String lable = e.lable;
-                      if (e != SubTableEnum.allChange) {
-                        lable = lable +
-                            state.thingForm[state.tabController.index].name;
-                      }
-                      return PopupMenuItem(
-                        value: e,
-                        child: Text(lable),
-                      );
-                    }).toList(),
-                    onSelected: (SubTableEnum function) {
-                      controller.subTableOperation(function);
-                    },
-                  )
-                ],
+              Container(
+                color: Colors.white,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: CommonWidget.commonNonIndicatorTabBar(
+                          state.tabController,
+                          state.thingForm
+                              .map((element) => element.name)
+                              .toList()),
+                    ),
+                    CommonWidget.commonPopupMenuButton(
+                      items: SubTableEnum.values.map((e) {
+                        String lable = e.lable;
+                        if (e != SubTableEnum.allChange && state.thingForm.isNotEmpty) {
+                          lable = lable +
+                              state.thingForm[state.tabController.index].name;
+                        }
+                        return PopupMenuItem(
+                          value: e,
+                          child: Text(lable),
+                        );
+                      }).toList(),
+                      onSelected: (SubTableEnum function) {
+                        controller.subTableOperation(function);
+                      },
+                    )
+                  ],
+                ),
               ),
               SizedBox(
                 height: 500.h,
