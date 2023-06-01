@@ -80,6 +80,7 @@ class WorkProvider implements IWorkProvider{
         }
         if(success){
           todos.removeWhere((element) => element.id == task.id);
+          todos.refresh();
         }
       }
     }
