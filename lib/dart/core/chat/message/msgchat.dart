@@ -451,13 +451,11 @@ abstract class MsgChat extends Entity implements IMsgChat {
     }else if(imsg.msgType == MessageType.file.label || imsg.msgType == MessageType.image.label ){
         Map<String,dynamic> body = jsonDecode(msg.showTxt);
         String name = body['name'];
-        try{
-          var index = messages.indexWhere((p0) => p0.id == name);
-          if(index != -1){
-            messages[index] = imsg;
-          }
+        var index = messages.indexWhere((p0) => p0.id == name);
+        if(index != -1){
+          messages[index] = imsg;
           messages.refresh();
-        }catch(e){
+        }else{
           messages.insert(0,imsg);
         }
     }else{
