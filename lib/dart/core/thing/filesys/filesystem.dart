@@ -97,8 +97,12 @@ class FileSystemItem implements IFileSystemItem {
   Future<IFileSystemItem?> create(String name) async{
     final exist = await _findByName(name);
     if (exist == null) {
-      final res = await kernel.anystore.bucketOpreate(belongId,BucketOpreateModel(  key: _formatKey(subName: name),
-        operate: BucketOpreates.create,));
+      final res = await kernel.anystore.bucketOpreate(
+          belongId,
+          BucketOpreateModel(
+            key: _formatKey(subName: name),
+            operate: BucketOpreates.create,
+          ));
       if (res.success && res.data != null) {
         metadata.hasSubDirectories = true;
         FileItemModel data = FileItemModel.fromJson(res.data!);
@@ -288,7 +292,7 @@ class FileSystemItem implements IFileSystemItem {
       return '';
     }
     try {
-      var keys = metadata.key != null ? [metadata.key] : [];
+      var keys = metadata.key != '' ? [metadata.key] : [];
       if (subName.isNotEmpty) {
         keys.add(subName);
       }
