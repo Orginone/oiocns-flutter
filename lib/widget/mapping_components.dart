@@ -63,7 +63,7 @@ MappingComponentsCallback mappingInputWidget = (Fields data,
         top: (data.marginTop ?? 0).h,
         bottom: (data.marginBottom ?? 0).h),
     child: CommonWidget.commonTextTile(data.title ?? "", "",
-        hint: data.hint,
+        hint: data.hint??"请输入",
         maxLine: data.maxLine,
         controller: controller,
         onChanged: (str){

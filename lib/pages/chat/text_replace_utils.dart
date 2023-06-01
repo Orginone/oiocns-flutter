@@ -1,6 +1,8 @@
 
 
 
+import 'dart:convert';
+
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +26,7 @@ class TextUtils{
 
   static String? isReplyMsg(String text) {
     String? msg;
-    var reg = RegExp(r'\$CITE\[([^\]]*)\]');
+    var reg = RegExp(r"\$CITE\[(.*?)\]");
     try {
       msg = reg.allMatches(text).map((e) => e.group(1) ?? "").first;
     } catch (e) {

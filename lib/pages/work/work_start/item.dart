@@ -43,7 +43,7 @@ class Item extends StatelessWidget {
               define.metadata.name ?? "",
               style: TextStyle(
                   color: Colors.black,
-                  fontSize: 18.sp,
+                  fontSize: 21.sp,
                   fontWeight: FontWeight.w500),
             ),
             SizedBox(
@@ -53,21 +53,12 @@ class Item extends StatelessWidget {
               children: [
                 Text(
                   define.metadata.code??"",
-                  style: TextStyle(color: Colors.black38, fontSize: 16.sp),
+                  style: TextStyle(color: Colors.black38, fontSize: 18.sp),
                 ),
                   SizedBox(width: 20.w,),
                   TargetText(
                   userId: define.metadata.belongId??"",
                   style: TextStyle(color: Colors.black38, fontSize: 16.sp),
-                ),
-                Expanded(
-                  child: Text(
-                    DateTime.tryParse(define.metadata.createTime ?? "")
-                            ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
-                        "",
-                    style: TextStyle(fontSize: 16.sp),
-                    textAlign: TextAlign.right,
-                  ),
                 ),
               ],
             )
