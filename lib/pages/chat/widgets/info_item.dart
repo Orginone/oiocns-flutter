@@ -365,18 +365,10 @@ class DetailItemWidget extends GetView<SettingController> {
     required BuildContext context,
     bool showShadow = false,
   }) {
-    /// 解析参数
-    Map<String, dynamic> msgBody = {};
-    try {
-      msgBody = jsonDecode(msg.metadata.showTxt);
-    } catch (error) {
-      Log.info("参数解析失败，msg.showTxt:${msg.metadata.showTxt}");
-      return Container();
-    }
-    dynamic link = msgBody["shareLink"] ?? '';
+    dynamic link = msg.metadata.msgData["shareLink"] ?? '';
 
-    if (msgBody["path"] != null && link == '') {
-      link = File(msgBody["path"]);
+    if (msg.metadata.msgData["path"] != null && link == '') {
+      link = File(msg.metadata.msgData["path"]);
     }
 
     /// 限制大小
@@ -498,16 +490,8 @@ class DetailItemWidget extends GetView<SettingController> {
     required BuildContext context,
     bool showShadow = false,
   }) {
-    /// 解析参数
-    Map<String, dynamic> msgBody = {};
-    try {
-      msgBody = jsonDecode(msg.metadata.showTxt);
-    } catch (error) {
-      Log.info("参数解析失败，msg.showTxt:${msg.metadata.showTxt}");
-      return Container();
-    }
 
-    String extension = msgBody["extension"];
+    String extension = msg.metadata.msgData["extension"];
     if (imageExtension.contains(extension.toLowerCase())) {
       return _image(textDirection: textDirection, context: context);
     }
@@ -530,7 +514,7 @@ class DetailItemWidget extends GetView<SettingController> {
               children: [
                 Expanded(
                   child: Text(
-                    msgBody['name'],
+                    msg.metadata.msgData['name'],
                     style: XFonts.size20Black0,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -540,7 +524,7 @@ class DetailItemWidget extends GetView<SettingController> {
                   height: 5.h,
                 ),
                 Text(
-                  getFileSizeString(bytes: msgBody['size']),
+                  getFileSizeString(bytes: msg.metadata.msgData['size']),
                   style: XFonts.size16Black9,
                 ),
               ],
@@ -556,7 +540,7 @@ class DetailItemWidget extends GetView<SettingController> {
     }
     return GestureDetector(
       onTap: () {
-        Get.toNamed(Routers.messageFile, arguments: msgBody);
+        Get.toNamed(Routers.messageFile, arguments: msg.metadata.msgData);
       },
       child: _detail(
         textDirection: textDirection,
@@ -590,16 +574,8 @@ class DetailItemWidget extends GetView<SettingController> {
     required TextDirection textDirection,
     required BuildContext context,
   }) {
-    /// 解析参数
-    Map<String, dynamic> msgBody = {};
-    try {
-      msgBody = jsonDecode(msg.metadata.showTxt);
-    } catch (error) {
-      Log.info("参数解析失败，msg.showTxt:${msg.metadata.showTxt}");
-      return Container();
-    }
 
-    String extension = msgBody["extension"];
+    String extension = msg.metadata.msgData["extension"];
     double progress = msg.metadata.progress;
     Widget body;
     if (imageExtension.contains(extension.toLowerCase())) {

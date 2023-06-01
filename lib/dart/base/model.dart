@@ -5195,6 +5195,7 @@ class MsgSaveModel {
   List<Tag>? tags;
   late GlobalKey key;
   late double progress;
+  late Map<String,dynamic> msgData;
   MsgSaveModel({
      this.sessionId ='',
      this.belongId = '',
@@ -5229,6 +5230,12 @@ class MsgSaveModel {
         tags!.add(Tag.fromJson(json));
       });
     }
+    try {
+      msgData = jsonDecode(showTxt);
+    } catch (error) {
+      msgData = {};
+    }
+
   }
 
   MsgSaveModel.fromFileUpload(String id,String fileName,String filePath,String ext,[int size = 0]){
