@@ -121,7 +121,7 @@ class WorkProvider implements IWorkProvider{
 
   @override
   Future<XWorkInstance?> loadTaskDetail(XWorkTask task) async{
-    final res = await kernel.queryWorkInstanceById(IdReq(id: task.instanceId!));
+    final res = await kernel.queryWorkInstanceById(IdReq(id: task.instanceId));
     return res.data;
   }
 

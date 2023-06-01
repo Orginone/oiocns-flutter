@@ -1,11 +1,8 @@
-import 'dart:convert';
-
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/icons.dart';
 import 'package:orginone/widget/image_widget.dart';
@@ -121,8 +118,12 @@ class UserBar extends GetView<SettingController> {
           onPressed: () {
             controller.jumpInitiate();
           },
+          constraints: BoxConstraints(maxWidth: 48.w),
         ),
-        Text(controller.homeEnum.value.label,style: TextStyle(fontSize: 36.sp),),
+        Text(
+          controller.homeEnum.value.label,
+          style: TextStyle(fontSize: 26.sp),
+        ),
         const Expanded(child: SizedBox()),
         ...action,
       ]),
@@ -134,13 +135,24 @@ class UserBar extends GetView<SettingController> {
       height: 74.h,
       child: Row(children: [
         Expanded(
-          child: Container(
-            margin: EdgeInsets.only(left: 20.w),
-            child: Text(
-              "奥集能",
-              style: TextStyle(fontSize: 36.sp),
-              overflow: TextOverflow.ellipsis,
-            ),
+          child: Row(
+            children: [
+              Container(
+                child: ImageWidget(
+                  AIcons.icons['x']!['logo_not_bg'],
+                  size: 30.w,
+                ),
+                margin: EdgeInsets.only(left: 15.w),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 10.w),
+                child: Text(
+                  "资产共享云",
+                  style: TextStyle(fontSize: 26.sp),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
           ),
         ),
         Padding(
@@ -179,7 +191,7 @@ class UserBar extends GetView<SettingController> {
           child: ImageWidget(
             avatar,
             fit: BoxFit.cover,
-            width: 45.w,
+            size: 45.w,
             circular: true,
           ));
     });

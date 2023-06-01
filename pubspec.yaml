@@ -26,7 +26,7 @@ flutter_icons:
   image_path: "images/logo.png"
 
 flutter_app_name:
-  name: "奥集能"
+  name: "共享云"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions

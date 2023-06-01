@@ -9,7 +9,7 @@ class TextUtils{
   static String textReplace(String text){
     String str = '';
     var findMe = RegExp(r'\$FINDME\[([^\]]*)\]');
-    var citeMessage = RegExp(r'\$CITEMESSAGE\[([^\]]*)\]');
+    var citeMessage = RegExp(r'\$CITE\[([^\]]*)\]');
     str = text.replaceAll(findMe, '');
     str = str.replaceAll(citeMessage, '');
     return str;

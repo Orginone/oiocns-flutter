@@ -333,8 +333,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
       padding: EdgeInsets.only(top: 8.h, bottom: 8.h, right: 8.w),
       child: ImageWidget(
         path,
-        width: boxDefaultHeight,
-        height: boxDefaultHeight,
+        size: boxDefaultHeight,
       ),
     );
   }
@@ -345,8 +344,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
       padding: EdgeInsets.only(left: 8.w, top: 8.h, bottom: 8.h),
       child: ImageWidget(
         path,
-        width: boxDefaultHeight,
-        height: boxDefaultHeight,
+        size: boxDefaultHeight,
       ),
     );
   }

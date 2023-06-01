@@ -15,8 +15,7 @@ class XImage {
     return ImageWidget(
       iconPath,
       fit: fit ?? BoxFit.cover,
-      width: size?.width,
-      height: size?.height,
+      size: size?.width,
     );
   }
 

@@ -117,11 +117,15 @@ class _TeamAvatarState extends State<TeamAvatar> {
       return AdvancedAvatar(
         size: size,
         decoration: decoration,
-        child: ImageWidget(image,width: size,
-          height: size,
-          color: (image is String) && (!image.contains('http'))?Colors.white:null,
+        child: ImageWidget(
+          image,
+          size: size,
+          color: (image is String) && (!image.contains('http'))
+              ? Colors.white
+              : null,
           fit: BoxFit.cover,
-          gaplessPlayback: true,),
+          gaplessPlayback: true,
+        ),
         children: children ?? [],
       );
     }

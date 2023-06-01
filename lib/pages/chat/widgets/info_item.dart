@@ -515,7 +515,7 @@ class DetailItemWidget extends GetView<SettingController> {
                 Expanded(
                   child: Text(
                     msg.metadata.msgData['name'],
-                    style: XFonts.size20Black0,
+                    style: XFonts.size24Black0,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -530,7 +530,7 @@ class DetailItemWidget extends GetView<SettingController> {
               ],
             ),
           ),
-          ImageWidget(Images.iconFile, width: 40.w, height: 40.w),
+          ImageWidget(Images.iconFile, size: 40.w),
         ],
       ),
     );
@@ -657,7 +657,7 @@ class DetailItemWidget extends GetView<SettingController> {
           body: Text.rich(
             TextSpan(
               children: _contentList,
-              style: XFonts.size20Black0,
+              style: XFonts.size24Black0,
             ),
           ),
         );
@@ -668,7 +668,7 @@ class DetailItemWidget extends GetView<SettingController> {
       textDirection: textDirection,
       body: Text(
         TextUtils.textReplace(msg.metadata.showTxt),
-        style: XFonts.size20Black0,
+        style: XFonts.size24Black0,
       ),
     );
   }
