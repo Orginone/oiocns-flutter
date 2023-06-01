@@ -7,7 +7,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/thing/app/application.dart';
-import 'package:orginone/dart/core/thing/base/work.dart';
+import 'package:orginone/dart/core/thing/base/flow.dart';
 import 'package:orginone/dart/core/thing/market/market.dart';
 import 'package:orginone/main.dart';
 
@@ -74,7 +74,7 @@ class WorkProvider implements IWorkProvider{
     for (final task in tasks) {
       if (task.status < TaskStatus.approvalStart.status) {
         if (status == -1) {
-          success = (await kernel.recallWorkInstance(IdReq(id: task.id!))).success;
+          success = (await kernel.recallWorkInstance(IdReq(id: task.id))).success;
         } else {
           success = (await kernel.approvalTask(ApprovalTaskReq(id: task.id,status: status,comment: comment,data: data))).success;
         }

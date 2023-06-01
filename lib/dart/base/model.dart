@@ -2340,43 +2340,37 @@ class SpeciesModel {
 }
 
 class FormModel {
-  // 唯一ID
   String? id;
-
-  // 名称
   String? name;
-
-  // 编号
   String? code;
-
-  // 备注
-  String? remark;
-
-  // 类别Id
-  String? speciesId;
-
-  // 共享用户Id
-  String? shareId;
   String? rule;
+  String? typeName;
+  String? remark;
+  String? speciesId;
+  String? shareId;
 
   FormModel({
-    this.id,
-    this.name,
-    this.code,
-    this.remark,
-    this.speciesId,
-    this.shareId,
-    this.rule,
+     this.id,
+     this.name,
+     this.code,
+     this.rule,
+     this.typeName,
+     this.remark,
+     this.speciesId,
+     this.shareId,
   });
 
-  FormModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    code = json['code'];
-    remark = json['remark'];
-    rule = json['rule'];
-    speciesId = json['speciesId'];
-    shareId = json['shareId'];
+  factory FormModel.fromJson(Map<String, dynamic> json) {
+    return FormModel(
+      id: json['id'],
+      name: json['name'],
+      code: json['code'],
+      rule: json['rule'],
+      typeName: json['typeName'],
+      remark: json['remark'],
+      speciesId: json['speciesId'],
+      shareId: json['shareId'],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -2384,13 +2378,15 @@ class FormModel {
       'id': id,
       'name': name,
       'code': code,
-      'remark': remark,
       'rule': rule,
+      'typeName': typeName,
+      'remark': remark,
       'speciesId': speciesId,
       'shareId': shareId,
     };
   }
 }
+
 
 class FormItemModel {
   // 唯一ID

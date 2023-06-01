@@ -10,7 +10,7 @@ import 'species.dart';
 
 abstract class IWorkDefine {
   /// 办事分类
-  late IWork workItem;
+  late IFlow workItem;
 
   /// 数据
   late XWorkDefine metadata;
@@ -34,7 +34,7 @@ abstract class IWorkDefine {
 class FlowDefine  implements IWorkDefine{
 
   FlowDefine(this.metadata,this.workItem){
-    share =  ShareIcon(name: metadata.name??"", typeName: '办事项',avatar: FileItemShare.parseAvatar(metadata.icon));
+    share =  ShareIcon(name: metadata.name??"", typeName: '事项',avatar: FileItemShare.parseAvatar(metadata.icon));
   }
 
   @override
@@ -44,7 +44,7 @@ class FlowDefine  implements IWorkDefine{
   late ShareIcon share;
 
   @override
-  late IWork workItem;
+  late IFlow workItem;
 
   @override
   Future<XWorkInstance?> createWorkInstance(WorkInstanceModel data) async{
@@ -82,7 +82,7 @@ class FlowDefine  implements IWorkDefine{
 
 }
 
-abstract class IWork extends ISpeciesItem {
+  abstract class IFlow extends ISpeciesItem {
   //对应的应用
   late IApplication app;
   //流程定义
@@ -95,8 +95,8 @@ abstract class IWork extends ISpeciesItem {
   Future<IWorkDefine?> createWorkDefine(WorkDefineModel data);
 
 }
-abstract class Work extends SpeciesItem implements IWork {
-  Work(super.metadata, super.current,[IApplication? app,super.parent]){
+abstract class Flow extends SpeciesItem implements IFlow {
+  Flow(super.metadata, super.current,[IApplication? app,super.parent]){
     defines = [];
     this.app = app??(this as IApplication);
   }
