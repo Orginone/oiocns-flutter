@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -372,7 +373,11 @@ class DetailItemWidget extends GetView<SettingController> {
       Log.info("参数解析失败，msg.showTxt:${msg.metadata.showTxt}");
       return Container();
     }
-    String link = msgBody["shareLink"] ?? msgBody["path"] ?? "";
+    dynamic link = msgBody["shareLink"] ?? '';
+
+    if (msgBody["path"] != null && link == '') {
+      link = File(msgBody["path"]);
+    }
 
     /// 限制大小
     BoxConstraints boxConstraints = BoxConstraints(maxWidth: 200.w);
@@ -383,7 +388,7 @@ class DetailItemWidget extends GetView<SettingController> {
 
     Widget body = ImageWidget(link, httpHeaders: headers);
 
-    if(showShadow){
+    if (showShadow) {
       body = _shadow(body);
     }
 
@@ -600,7 +605,8 @@ class DetailItemWidget extends GetView<SettingController> {
     if (imageExtension.contains(extension.toLowerCase())) {
       body = _image(textDirection: textDirection, context: context,showShadow: true);
     } else {
-      body = _file(textDirection: textDirection, context: context);
+      body = _file(
+          textDirection: textDirection, context: context, showShadow: true);
     }
 
     Widget gradient = Stack(

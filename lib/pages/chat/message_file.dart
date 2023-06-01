@@ -46,7 +46,9 @@ class _MessageFileState extends State<MessageFile> {
 
       };
     });
+
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +88,7 @@ class _MessageFileState extends State<MessageFile> {
                     await FileDownloader().download(task!,onProgress: (prpgress){
                       if(prpgress == 1){
                         FileDownloader().trackTasks();
-                        ToastUtils.showMsg(msg: "开始完成");
+                        ToastUtils.showMsg(msg: "下载完成");
                         setState(() {
                           fileExists = true;
                         });

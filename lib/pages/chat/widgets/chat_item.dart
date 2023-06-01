@@ -182,7 +182,7 @@ class MessageItemWidget extends GetView<SettingController> {
               }else{
                 showTxt = "$showTxt${TextUtils.textReplace(lastMessage.showTxt)}";
               }
-            } else if (messageType == 'recall') {
+            } else if (messageType == MessageType.recall.label) {
               showTxt = "$showTxt撤回了一条消息";
             } else if (messageType == MessageType.image.label) {
               showTxt = "$showTxt[图片]";
