@@ -69,11 +69,14 @@ class _MessageReadState extends State<MessageRead>
       body: Column(
         children: [
           TabBar(
-            tabs: tabs
-                .map((e) => Tab(
-                      text: e,
-                    ))
-                .toList(),
+            tabs: [
+              Tab(
+                text: "${tabs[0]}(${widget.readMember.length})",
+              ),
+              Tab(
+                text: "${tabs[1]}(${widget.unreadMember.length})",
+              )
+            ],
             controller: controller,
             indicatorSize: TabBarIndicatorSize.label,
             indicatorColor: XColors.black,

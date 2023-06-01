@@ -47,7 +47,7 @@ class Item extends StatelessWidget {
                     children: [
                       Text(
                         todo.taskType,
-                        style: TextStyle(fontSize: 18.sp),
+                        style: TextStyle(fontSize: 21.sp),
                       ),
                       Container(
                         margin: EdgeInsets.symmetric(horizontal: 10.w),
@@ -57,7 +57,7 @@ class Item extends StatelessWidget {
                       ),
                       Text(
                         todo.title,
-                        style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.w500),
+                        style: TextStyle(fontSize: 21.sp,fontWeight: FontWeight.w500),
                       ),
                       Expanded(
                         child: Align(
@@ -94,7 +94,7 @@ class Item extends StatelessWidget {
                     TextSpan(
                       children: [
                         TextSpan(
-                            text: '创建时间:',
+                            text: '创建时间: ',
                             style:
                                 TextStyle(fontSize: 16.sp, color: Colors.grey)),
                         TextSpan(
@@ -190,7 +190,7 @@ class Item extends StatelessWidget {
       children: [
         Text.rich(TextSpan(children: [
           TextSpan(
-              text: '创建人:',
+              text: '创建人: ',
               style: TextStyle(fontSize: 16.sp, color: Colors.grey)),
           WidgetSpan(
             child: TargetText(

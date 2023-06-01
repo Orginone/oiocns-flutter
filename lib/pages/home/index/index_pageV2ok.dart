@@ -71,7 +71,7 @@ class IndexTabPageok
           ),
         ),
         GestureDetector(
-          onTap: () {Get.snackbar("奥集能", "欢迎！欢迎！热烈欢迎");},
+          onTap: () {Get.snackbar("共享云", "欢迎！欢迎！热烈欢迎");},
           child: const Padding(
               padding: EdgeInsets.all(8.0),
               child: Icon(

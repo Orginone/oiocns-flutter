@@ -47,4 +47,11 @@ class Images {
 
   static const String chatDefaultPerson = "images/chat_default_person.png";
 
+  static const String iconWorkTodo = "images/icon_work_todo.png";
+
+  static const String iconWorkInitiation = "images/icon_work_initiation.png";
+
+  static const String iconWorkCompleted = "images/icon_work_completed.png";
+
+  static const String iconWorkInitiated = "images/icon_work_initiated.png";
 }

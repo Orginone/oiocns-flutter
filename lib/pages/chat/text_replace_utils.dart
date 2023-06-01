@@ -24,7 +24,7 @@ class TextUtils{
 
   static String? isReplyMsg(String text) {
     String? msg;
-    var reg = RegExp(r'\$CITEMESSAGE\[([^\]]*)\]');
+    var reg = RegExp(r'\$CITE\[([^\]]*)\]');
     try {
       msg = reg.allMatches(text).map((e) => e.group(1) ?? "").first;
     } catch (e) {

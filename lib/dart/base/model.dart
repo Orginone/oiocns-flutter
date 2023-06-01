@@ -5205,6 +5205,7 @@ class MsgSaveModel {
      this.showTxt = '',
      this.allowEdit = false,
     this.tags,
+    this.msgData =const {},
   });
 
   MsgSaveModel.fromJson(Map<String, dynamic> json)
@@ -5248,6 +5249,11 @@ class MsgSaveModel {
     updateTime = '';
     toId = '';
     sessionId = '';
+    try {
+      msgData = jsonDecode(showTxt);
+    } catch (error) {
+      msgData = {};
+    }
   }
 
   Map<String, dynamic> toJson() {

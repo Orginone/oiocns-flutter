@@ -69,14 +69,14 @@ class MessageItemWidget extends GetView<SettingController> {
         );
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 25.w),
+        padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _avatarContainer,
             SizedBox(
-              width: 15.w,
+              width: 10.w,
             ),
             Expanded(child: Obx(() => _content)),
           ],
@@ -87,14 +87,15 @@ class MessageItemWidget extends GetView<SettingController> {
 
   Widget get _avatarContainer {
     return Obx(() {
+     ;
       var noRead = chat.chatdata.value.noReadCount;
       Widget child = TeamAvatar(
         info: TeamTypeInfo(share: chat.share),
-        size: 65.w,
-        decoration: const BoxDecoration(
+        size: 60.w,
+        decoration:  chat.share.typeName == TargetType.person.label?const BoxDecoration(
           color: XColors.themeColor,
           shape: BoxShape.circle,
-        ),
+        ):null,
       );
       if (noRead > 0) {
         child = badges.Badge(
@@ -143,7 +144,7 @@ class MessageItemWidget extends GetView<SettingController> {
                 style: TextStyle(
                     color: XColors.chatTitleColor,
                     fontWeight: FontWeight.w500,
-                    fontSize: 20.sp)),
+                    fontSize: 21.sp)),
             SizedBox(
               width: 10.w,
             ),
@@ -210,7 +211,7 @@ class MessageItemWidget extends GetView<SettingController> {
             showTxt,
             style: TextStyle(
               color: XColors.chatHintColors,
-              fontSize: 18.sp,
+              fontSize: 17.sp,
             ),
             textAlign: TextAlign.left,
             maxLines: 1,

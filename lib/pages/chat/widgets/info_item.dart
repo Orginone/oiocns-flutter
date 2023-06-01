@@ -153,8 +153,10 @@ class DetailItemWidget extends GetView<SettingController> {
     var ltr = TextDirection.ltr;
     var textDirection = isSelf ? rtl : ltr;
 
+    String? reply = TextUtils.isReplyMsg(msg.metadata.showTxt);
+
     if (msg.msgType == MessageType.text.label) {
-      String? reply = TextUtils.isReplyMsg(msg.metadata.showTxt);
+
       body = Column(
         crossAxisAlignment:
             isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -657,7 +659,7 @@ class DetailItemWidget extends GetView<SettingController> {
           body: Text.rich(
             TextSpan(
               children: _contentList,
-              style: XFonts.size24Black0,
+              style: XFonts.size22Black0,
             ),
           ),
         );
@@ -668,7 +670,7 @@ class DetailItemWidget extends GetView<SettingController> {
       textDirection: textDirection,
       body: Text(
         TextUtils.textReplace(msg.metadata.showTxt),
-        style: XFonts.size24Black0,
+        style: XFonts.size22Black0,
       ),
     );
   }

@@ -676,7 +676,7 @@ class ChatBoxController with WidgetsBindingObserver {
         String message = inputController.text;
         if (replyText.value.isNotEmpty) {
           message =
-              '$message\$CITEMESSAGE[${TextUtils.textReplace(replyText.value)}]';
+              '$message\$CITE[${TextUtils.textReplace(replyText.value)}]';
         }
         if (rules.isNotEmpty) {
           for (var rule in rules) {
