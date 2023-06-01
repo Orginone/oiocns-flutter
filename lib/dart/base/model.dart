@@ -5181,32 +5181,32 @@ class Tag {
 }
 
 class MsgSaveModel {
-  String sessionId;
-  String belongId;
-  String fromId;
-  String msgType;
-  String msgBody;
-  String createTime;
-  String updateTime;
-  String id;
-  String toId;
-  String showTxt;
-  bool allowEdit;
+  late String sessionId;
+  late String belongId;
+  late String fromId;
+  late String msgType;
+  late  String msgBody;
+  late String createTime;
+  late String updateTime;
+  late String id;
+  late String toId;
+  late String showTxt;
+  late bool allowEdit;
   List<Tag>? tags;
   late GlobalKey key;
-
+  late double progress;
   MsgSaveModel({
-    required this.sessionId,
-    required this.belongId,
-    required this.fromId,
-    required this.msgType,
-    required this.msgBody,
-    required this.createTime,
-    required this.updateTime,
-    required this.id,
-    required this.toId,
-    required this.showTxt,
-    required this.allowEdit,
+     this.sessionId ='',
+     this.belongId = '',
+     this.fromId ='',
+     this.msgType = '',
+     this.msgBody = '',
+     this.createTime = '',
+     this.updateTime = '',
+     this.id = '',
+     this.toId = '',
+     this.showTxt = '',
+     this.allowEdit = false,
     this.tags,
   });
 
@@ -5229,6 +5229,22 @@ class MsgSaveModel {
         tags!.add(Tag.fromJson(json));
       });
     }
+  }
+
+  MsgSaveModel.fromFileUpload(String id,String fileName,String filePath,String ext,[int size = 0]){
+    fromId = id;
+    msgType = MessageType.uploading.label;
+    this.id = fileName;
+    tags = [];
+    progress = 0;
+    msgBody = jsonEncode({"path": filePath,'extension':'.$ext','name':fileName,'size':size});
+    createTime = DateTime.now().toString();
+    key = GlobalKey();
+    showTxt = msgBody;
+    belongId = '';
+    updateTime = '';
+    toId = '';
+    sessionId = '';
   }
 
   Map<String, dynamic> toJson() {

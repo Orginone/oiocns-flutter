@@ -39,7 +39,7 @@ class MessageLabel implements IMessageLabel {
 
 abstract class IMessage {
   String get id;
-  MsgSaveModel get metadata;
+  late MsgSaveModel metadata;
   Future<ShareIcon> get from;
   Future<ShareIcon> get to;
   bool get isMySend;
@@ -63,6 +63,7 @@ class Message implements IMessage {
   late IPerson user;
   late IMsgChat _chat;
   late String _msgBody;
+  @override
   List<IMessageLabel> labels = [];
   @override
   late MsgSaveModel metadata;

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
@@ -446,6 +448,18 @@ abstract class MsgChat extends Entity implements IMsgChat {
        }catch(e){
          messages.insert(0,imsg);
        }
+    }else if(imsg.msgType == MessageType.file.label || imsg.msgType == MessageType.image.label ){
+        Map<String,dynamic> body = jsonDecode(msg.showTxt);
+        String name = body['name'];
+        try{
+          var index = messages.indexWhere((p0) => p0.id == name);
+          if(index != -1){
+            messages[index] = imsg;
+          }
+          messages.refresh();
+        }catch(e){
+          messages.insert(0,imsg);
+        }
     }else{
       messages.insert(0,imsg);
     }

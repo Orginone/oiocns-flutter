@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
@@ -177,6 +176,8 @@ class DetailItemWidget extends GetView<SettingController> {
       body = _voice(textDirection: textDirection);
     } else if (msg.msgType == MessageType.file.label) {
       body = _file(textDirection: textDirection, context: context);
+    } else if (msg.msgType == MessageType.uploading.label) {
+      body = _uploading(textDirection: textDirection, context: context);
     } else {
       body = Container();
     }
@@ -361,6 +362,7 @@ class DetailItemWidget extends GetView<SettingController> {
   Widget _image({
     required TextDirection textDirection,
     required BuildContext context,
+    bool showShadow = false,
   }) {
     /// 解析参数
     Map<String, dynamic> msgBody = {};
@@ -370,7 +372,7 @@ class DetailItemWidget extends GetView<SettingController> {
       Log.info("参数解析失败，msg.showTxt:${msg.metadata.showTxt}");
       return Container();
     }
-    String link = msgBody["shareLink"] ?? "";
+    String link = msgBody["shareLink"] ?? msgBody["path"] ?? "";
 
     /// 限制大小
     BoxConstraints boxConstraints = BoxConstraints(maxWidth: 200.w);
@@ -378,6 +380,12 @@ class DetailItemWidget extends GetView<SettingController> {
     Map<String, String> headers = {
       "Authorization": KernelApi.getInstance().anystore.accessToken,
     };
+
+    Widget body = ImageWidget(link, httpHeaders: headers);
+
+    if(showShadow){
+      body = _shadow(body);
+    }
 
     return GestureDetector(
       onTap: () {
@@ -392,7 +400,7 @@ class DetailItemWidget extends GetView<SettingController> {
       child: _detail(
         constraints: boxConstraints,
         textDirection: textDirection,
-        body: CachedNetworkImage(imageUrl: link, httpHeaders: headers),
+        body: body,
         clipBehavior: Clip.hardEdge,
         padding: EdgeInsets.zero,
       ),
@@ -483,6 +491,7 @@ class DetailItemWidget extends GetView<SettingController> {
   Widget _file({
     required TextDirection textDirection,
     required BuildContext context,
+    bool showShadow = false,
   }) {
     /// 解析参数
     Map<String, dynamic> msgBody = {};
@@ -501,6 +510,45 @@ class DetailItemWidget extends GetView<SettingController> {
     /// 限制大小
     BoxConstraints boxConstraints = BoxConstraints(minWidth: 200.w,minHeight: 70.h,maxWidth: 250.w,maxHeight: 100.h);
 
+
+    Widget body = Container(
+      constraints: boxConstraints,
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    msgBody['name'],
+                    style: XFonts.size20Black0,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                SizedBox(
+                  height: 5.h,
+                ),
+                Text(
+                  getFileSizeString(bytes: msgBody['size']),
+                  style: XFonts.size16Black9,
+                ),
+              ],
+            ),
+          ),
+          ImageWidget(Images.iconFile, width: 40.w, height: 40.w),
+        ],
+      ),
+    );
+
+    if(showShadow){
+      body = _shadow(body);
+    }
     return GestureDetector(
       onTap: () {
         Get.toNamed(Routers.messageFile, arguments: msgBody);
@@ -509,42 +557,64 @@ class DetailItemWidget extends GetView<SettingController> {
         textDirection: textDirection,
         clipBehavior: Clip.hardEdge,
         padding: EdgeInsets.zero,
-        body: Container(
-          constraints: boxConstraints,
-          color: Colors.white,
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        msgBody['name'],
-                        style: XFonts.size20Black0,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    Text(
-                      getFileSizeString(bytes: msgBody['size']),
-                      style: XFonts.size16Black9,
-                    ),
-                  ],
-                ),
-              ),
-              ImageWidget(Images.iconFile,width: 40.w,height: 40.w),
-            ],
-          ),
-        ),
+        body: body,
       ),
     );
+  }
+
+
+  Widget _shadow(Widget body){
+    return Container(
+      foregroundDecoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          // Add one stop for each color. Stops should increase from 0 to 1
+          stops: [0.2, 0.7],
+          colors: [
+            Color.fromARGB(100, 0, 0, 0),
+            Color.fromARGB(100, 0, 0, 0),
+          ],
+        ),
+      ),
+      child: body,
+    );
+  }
+
+  Widget _uploading({
+    required TextDirection textDirection,
+    required BuildContext context,
+  }) {
+    /// 解析参数
+    Map<String, dynamic> msgBody = {};
+    try {
+      msgBody = jsonDecode(msg.metadata.showTxt);
+    } catch (error) {
+      Log.info("参数解析失败，msg.showTxt:${msg.metadata.showTxt}");
+      return Container();
+    }
+
+    String extension = msgBody["extension"];
+    double progress = msg.metadata.progress;
+    Widget body;
+    if (imageExtension.contains(extension.toLowerCase())) {
+      body = _image(textDirection: textDirection, context: context,showShadow: true);
+    } else {
+      body = _file(textDirection: textDirection, context: context);
+    }
+
+    Widget gradient = Stack(
+      alignment: Alignment.center,
+      fit: StackFit.passthrough,
+      children: [
+        body,
+        Text(
+          '${(progress*100).toStringAsFixed(0)}%',
+          style: TextStyle(color: Colors.white, fontSize: 24.sp),
+        ),
+      ],
+    );
+    return gradient;
   }
 
   Widget _text({required TextDirection textDirection}) {
@@ -621,6 +691,8 @@ class DetailItemWidget extends GetView<SettingController> {
     );
   }
 }
+
+
 
 class PreViewUrl extends StatefulWidget {
   final String url;

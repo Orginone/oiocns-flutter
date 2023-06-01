@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -21,13 +22,15 @@ class ImageWidget extends StatelessWidget {
 
   final bool gaplessPlayback;
 
+  final Map<String, String>? httpHeaders;
+
   const ImageWidget(this.path,
       {Key? key,
       this.width,
       this.height,
       this.color,
       this.fit = BoxFit.contain,
-      this.circular = false, this.gaplessPlayback = false})
+      this.circular = false, this.gaplessPlayback = false, this.httpHeaders})
       : super(key: key);
 
   @override
@@ -39,8 +42,7 @@ class ImageWidget extends StatelessWidget {
     if (path is String) {
       if (path.contains('http')) {
         child = network();
-      }
-      if (path.split('.').last.toLowerCase() == 'svg') {
+      } else if (path.split('.').last.toLowerCase() == 'svg') {
         child = svg();
       } else {
         child = asset();
@@ -73,7 +75,7 @@ class ImageWidget extends StatelessWidget {
   }
 
   Widget network(){
-    return Image.network(path, fit: fit, width: width, height: height, color: color,gaplessPlayback: gaplessPlayback);
+    return CachedNetworkImage(fit: fit, width: width, height: height, color: color, imageUrl: path,httpHeaders: httpHeaders,);
   }
 
   Widget memory(){

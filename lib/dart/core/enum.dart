@@ -72,6 +72,7 @@ enum MessageType {
   voice("语音"),
   recall("撤回"),
   readed("已读"),
+  uploading("上传中"),
   file("文件");
   const MessageType(this.label);
 
