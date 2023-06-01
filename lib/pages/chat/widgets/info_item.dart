@@ -148,42 +148,29 @@ class DetailItemWidget extends GetView<SettingController> {
       ));
     }
 
-    Widget body;
+    Widget  body = _chatBody(context);
     var rtl = TextDirection.rtl;
     var ltr = TextDirection.ltr;
     var textDirection = isSelf ? rtl : ltr;
 
     String? reply = TextUtils.isReplyMsg(msg.metadata.showTxt);
 
-    if (msg.msgType == MessageType.text.label) {
-
-      body = Column(
-        crossAxisAlignment:
-            isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          _text(textDirection: textDirection),
-          reply == null
-              ? const SizedBox()
-              : _detail(
-                  textDirection: textDirection,
-                  body: Text(
-                    reply,
-                    style: XFonts.size18Black0,
-                  ),
-                  bgColor: Colors.black.withOpacity(0.1)),
-        ],
-      );
-    } else if (msg.msgType == MessageType.image.label) {
-      body = _image(textDirection: textDirection, context: context);
-    } else if (msg.msgType == MessageType.voice.label) {
-      body = _voice(textDirection: textDirection);
-    } else if (msg.msgType == MessageType.file.label) {
-      body = _file(textDirection: textDirection, context: context);
-    } else if (msg.msgType == MessageType.uploading.label) {
-      body = _uploading(textDirection: textDirection, context: context);
-    } else {
-      body = Container();
-    }
+    body = Column(
+      crossAxisAlignment:
+      isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      children: [
+        _text(textDirection: textDirection),
+        reply == null
+            ? const SizedBox()
+            : _detail(
+            textDirection: textDirection,
+            body: Text(
+              reply,
+              style: XFonts.size18Black0,
+            ),
+            bgColor: Colors.black.withOpacity(0.1)),
+      ],
+    );
 
     String userId = chat.userId;
     List<DetailFunc> func = [
@@ -238,7 +225,7 @@ class DetailItemWidget extends GetView<SettingController> {
                           break;
                         case DetailFunc.reply:
                           ChatBoxController controller = Get.find<ChatBoxController>();
-                          controller.replyText.value = msg.metadata.showTxt;
+                          controller.replyText.value = jsonEncode(msg.metadata.toJson());
                           break;
                         case DetailFunc.copy:
                            Clipboard.setData(ClipboardData(text: TextUtils.isReplyMsg(msg.metadata.showTxt)));
@@ -333,6 +320,40 @@ class DetailItemWidget extends GetView<SettingController> {
     );
   }
 
+
+  Widget _chatBody(BuildContext context){
+    Widget body;
+    var rtl = TextDirection.rtl;
+    var ltr = TextDirection.ltr;
+    var textDirection = isSelf ? rtl : ltr;
+
+    String? reply = TextUtils.isReplyMsg(msg.metadata.showTxt);
+
+    if (msg.msgType == MessageType.text.label) {
+      body =  _text(textDirection: textDirection);
+    } else if (msg.msgType == MessageType.image.label) {
+      body = _image(textDirection: textDirection, context: context);
+    } else if (msg.msgType == MessageType.voice.label) {
+      body = _voice(textDirection: textDirection);
+    } else if (msg.msgType == MessageType.file.label) {
+      body = _file(textDirection: textDirection, context: context);
+    } else if (msg.msgType == MessageType.uploading.label) {
+      body = _uploading(textDirection: textDirection, context: context);
+    } else {
+      body = Container();
+    }
+
+    return body;
+  }
+
+  // Widget _replyBody(String? text){
+  //   if(text == null){
+  //     return Container();
+  //   }
+  //   Map<String,dynamic> json = jsonDecode(text);
+  //   MsgSaveModel model = MsgSaveModel.fromJson(json);
+  //
+  // }
   /// 会话详情
   Widget _detail({
     required TextDirection textDirection,
