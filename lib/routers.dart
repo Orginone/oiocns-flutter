@@ -1,4 +1,5 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/pages/chat/message_setting.dart';
 import 'package:orginone/pages/chat/message_routers.dart';
@@ -368,8 +369,11 @@ class Routers {
           HomeBinding(),
           IndexPageBinding(),
           UpdateBinding(),
-          SettingCenterBinding(),
-          ClassificationInfoBinding()
+          // SettingCenterBinding(),
+          SettingBinding(),
+          ClassificationInfoBinding(),
+          PermissionInfoBinding(),
+          HomeBinding(),
         ],
       ),
       GetPage(

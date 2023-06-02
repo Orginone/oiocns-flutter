@@ -5,7 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/pages/home/index/HorizontalScrollMenu/MyMenuItem.dart';
+import 'package:orginone/pages/home/home_page.dart';
+import 'package:orginone/pages/home/index/HorizontalScrollMenu/QuickEntry.dart';
 import 'package:orginone/pages/home/index/news/searchBarWidget.dart';
 import 'package:orginone/widget/template/base_view.dart';
 import 'package:orginone/widget/unified.dart';
@@ -32,14 +33,15 @@ class IndexPage extends StatelessWidget {
 
 // TODO 常用应用，超过五个字屏幕会越界
   IndexPage({Key? key}) : super(key: key) {
-    map["常用应用"] = [
+    map["应用"] = [
       {
         "id": 1,
         "icon": "icon",
         "cardName": "资产应用1",
         "func": () {
           // Get.toNamed(Routers.storageLocation);
-          HomeEnum.store;
+          HomeController homeController = Get.find();
+          homeController.tabController.animateTo(3);
         }
       },
       {"id": 2, "icon": "icon", "cardName": "资产应用2"},
@@ -236,17 +238,17 @@ class IndexPage extends StatelessWidget {
                 child: SizedBox(
                   height: 12.h,
                 )),
-            Container(
-              color: XColors.white,
-              padding: EdgeInsets.only(left: 12.w, right: 12.w),
-              child: ListView(
-                shrinkWrap: true,
-                children: _getItems()..add(Container(
-                    // margin:
-                    //     EdgeInsets.only(left: 20.w, bottom: 10.h, right: 20.w),
-                    )),
-              ),
-            ),
+            // Container(
+            //   color: XColors.white,
+            //   padding: EdgeInsets.only(left: 12.w, right: 12.w),
+            //   child: ListView(
+            //     shrinkWrap: true,
+            //     children: _getItems()..add(Container(
+            //         // margin:
+            //         //     EdgeInsets.only(left: 20.w, bottom: 10.h, right: 20.w),
+            //         )),
+            //   ),
+            // ),
             // _dataMonitoring,
           ]),
     );

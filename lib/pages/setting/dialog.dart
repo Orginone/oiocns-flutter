@@ -65,8 +65,8 @@ Future<void> showCreateIdentityDialog(
     builder: (context) {
       return Dialog(
           alignment: Alignment.center,
-          child: Builder(builder: (context) {
-            return StatefulBuilder(builder: (context, state) {
+          child: SingleChildScrollView(
+            child: StatefulBuilder(builder: (context, state) {
               return SizedBox(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -124,8 +124,8 @@ Future<void> showCreateIdentityDialog(
                   ],
                 ),
               );
-            });
-          }));
+            }),
+          ));
     },
   );
 }
@@ -232,8 +232,8 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
     builder: (context) {
       return Dialog(
           alignment: Alignment.center,
-          child: Builder(builder: (context) {
-            return StatefulBuilder(builder: (context, state) {
+          child: SingleChildScrollView(
+            child: StatefulBuilder(builder: (context, state) {
               return SizedBox(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -282,8 +282,8 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
                   ],
                 ),
               );
-            });
-          }));
+            }),
+          ));
     },
   );
 }
@@ -303,9 +303,8 @@ Future<void> showCreateDictItemDialog(BuildContext context,
     builder: (context) {
       return Dialog(
           alignment: Alignment.center,
-          child: Builder(builder: (context) {
-            return StatefulBuilder(builder: (context, state) {
-
+          child: SingleChildScrollView(
+            child: StatefulBuilder(builder: (context, state) {
               return SizedBox(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -344,8 +343,8 @@ Future<void> showCreateDictItemDialog(BuildContext context,
                   ],
                 ),
               );
-            });
-          }));
+            }),
+          ));
     },
   );
 }
@@ -364,9 +363,8 @@ Future<void> showCreateDictDialog(BuildContext context,
     builder: (context) {
       return Dialog(
           alignment: Alignment.center,
-          child: Builder(builder: (context) {
-            return StatefulBuilder(builder: (context, state) {
-
+          child: SingleChildScrollView(
+            child: StatefulBuilder(builder: (context, state) {
               return SizedBox(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -404,8 +402,8 @@ Future<void> showCreateDictDialog(BuildContext context,
                   ],
                 ),
               );
-            });
-          }));
+            }),
+          ));
     },
   );
 }
@@ -425,8 +423,8 @@ Future<void> showCreateFormDialog(BuildContext context,
     builder: (context) {
       return Dialog(
           alignment: Alignment.center,
-          child: Builder(builder: (context) {
-            return StatefulBuilder(builder: (context, state) {
+          child: SingleChildScrollView(
+            child: StatefulBuilder(builder: (context, state) {
               return SizedBox(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -469,8 +467,8 @@ Future<void> showCreateFormDialog(BuildContext context,
                   ],
                 ),
               );
-            });
-          }));
+            }),
+          ));
     },
   );
 }
@@ -498,8 +496,8 @@ Future<void> showCreateOrganizationDialog(
     builder: (context) {
       return Dialog(
           alignment: Alignment.center,
-          child: Builder(builder: (context) {
-            return StatefulBuilder(builder: (context, state) {
+          child: SingleChildScrollView(
+            child: StatefulBuilder(builder: (context, state) {
               return SizedBox(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -561,8 +559,8 @@ Future<void> showCreateOrganizationDialog(
                   ],
                 ),
               );
-            });
-          }));
+            }),
+          ));
     },
   );
 }
@@ -587,8 +585,8 @@ Future<void> showCreateAttributeDialog(BuildContext context,
     builder: (context) {
       return Dialog(
           alignment: Alignment.center,
-          child: Builder(builder: (context) {
-            return StatefulBuilder(builder: (context, state) {
+          child: SingleChildScrollView(
+            child: StatefulBuilder(builder: (context, state) {
               return SizedBox(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -651,8 +649,8 @@ Future<void> showCreateAttributeDialog(BuildContext context,
                   ],
                 ),
               );
-            });
-          }));
+            }),
+          ));
     },
   );
 }
@@ -674,8 +672,8 @@ Future<void> showCreateAttrDialog(BuildContext context,
     builder: (context) {
       return Dialog(
           alignment: Alignment.center,
-          child: Builder(builder: (context) {
-            return StatefulBuilder(builder: (context, state) {
+          child: SingleChildScrollView(
+            child: StatefulBuilder(builder: (context, state) {
               return SizedBox(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -751,8 +749,8 @@ Future<void> showCreateAttrDialog(BuildContext context,
                   ],
                 ),
               );
-            });
-          }));
+            }),
+          ));
     },
   );
 }
@@ -774,8 +772,8 @@ Future<void> showCreateWorkDialog(BuildContext context, List<ISpeciesItem> thing
     builder: (context) {
       return Dialog(
           alignment: Alignment.center,
-          child: Builder(builder: (context) {
-            return StatefulBuilder(builder: (context, state) {
+          child: SingleChildScrollView(
+            child: StatefulBuilder(builder: (context, state) {
               return SizedBox(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -823,8 +821,8 @@ Future<void> showCreateWorkDialog(BuildContext context, List<ISpeciesItem> thing
                   ],
                 ),
               );
-            });
-          }));
+            }),
+          ));
     },
   );
 }
@@ -847,8 +845,8 @@ Future<void> showCreateAuthDialog(
     builder: (context) {
       return Dialog(
           alignment: Alignment.center,
-          child: Builder(builder: (context) {
-            return StatefulBuilder(builder: (context, state) {
+          child: SingleChildScrollView(
+            child: StatefulBuilder(builder: (context, state) {
               return SizedBox(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -912,8 +910,8 @@ Future<void> showCreateAuthDialog(
                   ],
                 ),
               );
-            });
-          }));
+            }),
+          ));
     },
   );
 }
@@ -943,8 +941,8 @@ Future<void> showClassCriteriaDialog(
     builder: (context) {
       return Dialog(
           alignment: Alignment.center,
-          child: Builder(builder: (context) {
-            return StatefulBuilder(builder: (context, state) {
+          child: SingleChildScrollView(
+            child: StatefulBuilder(builder: (context, state) {
               return SizedBox(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -1045,8 +1043,8 @@ Future<void> showClassCriteriaDialog(
                   ],
                 ),
               );
-            });
-          }));
+            }),
+          ));
     },
   );
 }

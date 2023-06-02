@@ -1,17 +1,55 @@
 import 'dart:collection';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/config/forms.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/target/innerTeam/department.dart';
+import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/user.dart';
+import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
+import 'package:orginone/pages/setting/home/logic.dart';
+import 'package:orginone/pages/setting/home/state.dart';
 import 'package:orginone/pages/setting/user_info/state.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
+import 'package:getwidget/getwidget.dart';
+
+class MyMenuItemFunc {
+  late Function _addFriend;
+
+  MyMenuItemFunc() {
+    _addFriend = () async {
+      print("object");
+      final UserInfoState state = UserInfoState();
+      showSearchDialog(Get.context!, TargetType.person,
+          title: "添加好友",
+          hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
+        print("object333333311112222");
+
+        if (list.isNotEmpty) {
+          bool success = await state.settingController.user.pullMembers(list);
+          if (success) {
+            state.unitMember.addAll(list);
+            state.unitMember.refresh();
+            print("object11112222");
+          } else {
+            print("object2222");
+          }
+        }
+      });
+    };
+  }
+
+  Function get addFriend => _addFriend;
+}
 
 class MyMenuItem {
   final int id;
@@ -35,6 +73,11 @@ class MyHorizontalMenu extends StatefulWidget {
 
 class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
   late int _selectedItemId;
+/*
+2023年6月1日
+测试通过：定标准、加好友、建群组、建单位
+测试未通过：、加群组、、加单位
+*/
 
   LinkedHashMap<int, MyMenuItem> menuItems = LinkedHashMap.from({
     1: MyMenuItem(
@@ -48,49 +91,15 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
         id: 2,
         icon: Icons.search,
         cardName: '加好友',
-        func: () {
-          UserInfoState state = UserInfoState();
-
-          showSearchDialog(Get.context!, TargetType.person,
-              title: "添加好友",
-              hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
-            if (list.isNotEmpty) {
-              bool success =
-                  await state.settingController.user.pullMembers(list);
-              if (success) {
-                ToastUtils.showMsg(msg: "添加成功");
-                state.unitMember.addAll(list);
-                state.unitMember.refresh();
-              } else {
-                ToastUtils.showMsg(msg: "添加失败");
-              }
-            }
-          });
-        }),
+        func: MyMenuItemFunc()._addFriend),
     3: MyMenuItem(
         id: 3,
         icon: Icons.settings,
         cardName: '建群组',
         func: () {
-          // SettingController()
-          //     .showAddFeatures(10, TargetType.cohort, "建群组", "建群组");
+          SettingController setting = Get.find<SettingController>();
 
-          showCreateOrganizationDialog(
-            Get.context!,
-            [TargetType.cohort],
-            callBack: (String name, String code, String nickName,
-                String identify, String remark, TargetType type) async {
-              var target = TargetModel(
-                name: nickName,
-                code: code,
-                typeName: type.label,
-                teamName: name,
-                teamCode: code,
-                remark: remark,
-              );
-              await SettingController().user.createCohort(target);
-            },
-          );
+          setting.showAddFeatures(3, TargetType.cohort, "建群聊", "建群组");
         }),
     4: MyMenuItem(
         id: 4,
@@ -100,14 +109,14 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
           showSearchDialog(Get.context!, TargetType.cohort,
               title: "添加群组",
               hint: "请输入群组的编码", onSelected: (List<XTarget> list) async {
-            if (list.isEmpty) {
-              final UserInfoState state = UserInfoState();
+            if (list.isNotEmpty) {
+              UserInfoState state = UserInfoState();
 
               bool success = await state.settingController.user.applyJoin(list);
               if (success) {
-                ToastUtils.showMsg(msg: "发送成功");
+                toast("发送成功!");
               } else {
-                ToastUtils.showMsg(msg: "发送失败");
+                toast("发送失败!");
               }
             }
           });
@@ -117,6 +126,8 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
         icon: Icons.search,
         cardName: '建单位',
         func: () {
+          SettingController setting = Get.find<SettingController>();
+
           showCreateOrganizationDialog(
             Get.context!,
             [TargetType.company],
@@ -130,31 +141,75 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
                 teamCode: code,
                 remark: remark,
               );
-              await SettingController().user.createCohort(target);
+              await setting.user.createCompany(target);
             },
           );
+
+          // SettingController setting = Get.find<SettingController>();
+
+          // setting.showAddFeatures(3, TargetType.company, "建单位", "建单位");
         }),
     6: MyMenuItem(
         id: 6,
         icon: Icons.settings,
         cardName: '加单位',
         func: () {
-          showSearchDialog(Get.context!, TargetType.company,
-              title: "添加单位",
-              hint: "请输入单位的社会统一信用代码", onSelected: (List<XTarget> list) async {
-            if (list.isEmpty) {
-              final UserInfoState state = UserInfoState();
+          // showSearchDialog(Get.context!, TargetType.company,
+          //     title: "添加单位",
+          //     hint: "请输入单位的社会统一代码", onSelected: (List<XTarget> list) async {
+          //     print("success111111111000000");
+          //     print(list);
 
-              bool success = await state.settingController.user.applyJoin(list);
-              if (success) {
-                ToastUtils.showMsg(msg: "发送成功");
-              } else {
-                ToastUtils.showMsg(msg: "发送失败");
-              }
-            }
-          });
+          //     UserInfoState state3 = UserInfoState();
+
+          //     // final UserInfoState state = UserInfoState();
+
+          //     bool success =
+          //         await state3.settingController.user.applyJoin(list);
+          //     print("success111111111");
+          //     print(success);
+          //     if (success) {
+          //       toast("发送成功!");
+          //     } else {
+          //       toast("发送失败!");
+          //     }
+          // });
+
+          SettingController setting = Get.find<SettingController>();
+
+          setting.showAddFeatures(
+              2, TargetType.company, "添加单位", "请输入单位的社会统一代码");
         }),
   });
+
+  static Future<void> toast(String msg) {
+    return Fluttertoast.showToast(
+      msg: msg,
+      gravity: ToastGravity.CENTER,
+      toastLength: Toast.LENGTH_SHORT,
+    );
+  }
+
+  // Function addFriend() {
+  //   return () async {
+  //     print("object");
+  //     UserInfoState state = UserInfoState();
+  //     showSearchDialog(Get.context!, TargetType.person,
+  //         title: "添加好友",
+  //         hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
+  //       if (list.isNotEmpty) {
+  //         bool success = await state.settingController.user.pullMembers(list);
+  //         if (success) {
+  //           toast("添加好友成功!");
+  //           state.unitMember.addAll(list);
+  //           state.unitMember.refresh();
+  //         } else {
+  //           toast("添加好友失败!");
+  //         }
+  //       }
+  //     });
+  //   };
+  // }
 
   @override
   void initState() {
