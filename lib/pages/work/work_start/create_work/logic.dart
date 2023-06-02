@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/work/work_start/logic.dart';
 import 'package:orginone/pages/work/work_start/network.dart';
 import 'package:orginone/routers.dart';
@@ -37,7 +38,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
     List<XForm> forms = node?.forms ?? [];
 
     state.workForm.value =
-        forms.firstWhere((element) => element.shareId == element.belongId);
+        forms.firstWhere((element) => element.typeName == SpeciesType.work.label);
 
     if (state.workForm.value != null) {
       try {
@@ -54,7 +55,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
     List<XForm> forms = node?.forms ?? [];
 
     state.thingForm.value =
-        forms.where((element) => element.shareId == element.belongId).toList();
+        forms.where((element) => element.typeName == SpeciesType.thing.label).toList();
 
     for (var form in state.thingForm) {
       try {
@@ -93,6 +94,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
         formData.add(data);
       }
     }
+
     WorkStartNetWork.createInstance(state.define, headerData,formData);
   }
 

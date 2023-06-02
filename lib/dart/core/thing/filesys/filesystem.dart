@@ -97,8 +97,12 @@ class FileSystemItem implements IFileSystemItem {
   Future<IFileSystemItem?> create(String name) async{
     final exist = await _findByName(name);
     if (exist == null) {
-      final res = await kernel.anystore.bucketOpreate(belongId,BucketOpreateModel(  key: _formatKey(subName: name),
-        operate: BucketOpreates.create,));
+      final res = await kernel.anystore.bucketOpreate(
+          belongId,
+          BucketOpreateModel(
+            key: _formatKey(subName: name),
+            operate: BucketOpreates.create,
+          ));
       if (res.success && res.data != null) {
         metadata.hasSubDirectories = true;
         FileItemModel data = FileItemModel.fromJson(res.data!);
@@ -218,12 +222,13 @@ class FileSystemItem implements IFileSystemItem {
   Future<IFileSystemItem?> upload(String name, File file,
       [OnProgressType? onProgress]) async{
     var exist = await _findByName(name);
+    int fileLength =  file.lengthSync();
     if (exist == null) {
       onProgress?.call(0);
       var task = TaskModel(
           name: name,
           finished: 0,
-          size: file.lengthSync(),
+          size: fileLength,
           createTime: DateTime.now(),
           group: metadata.name);
 
@@ -237,8 +242,8 @@ class FileSystemItem implements IFileSystemItem {
       while (index * chunkSize < file.lengthSync().floorToDouble()) {
         var start = index * chunkSize;
         var end = start + chunkSize;
-        if (end > file.lengthSync().floorToDouble()) {
-          end = file.lengthSync();
+        if (end > fileLength.floorToDouble()) {
+          end = fileLength;
         }
         List<int> bytes = file.readAsBytesSync();
         bytes = bytes.sublist(start, end);
@@ -246,7 +251,7 @@ class FileSystemItem implements IFileSystemItem {
         data.fileItem = FileChunkData(
           index: index,
           uploadId: uuid,
-          size: file.lengthSync(),
+          size: fileLength,
           data: [],
           dataUrl: url,
         );
@@ -261,8 +266,8 @@ class FileSystemItem implements IFileSystemItem {
         index++;
         task.finished = end;
         filesys.taskChanged(uuid, task);
-        onProgress?.call(end.toDouble());
-        if (end == file.lengthSync() && res.data != null) {
+        onProgress?.call(end/fileLength);
+        if (end == fileLength  && res.data != null) {
           var node = FileSystemItem(
             filesys,
             FileItemModel.fromJson(res.data),
@@ -287,7 +292,7 @@ class FileSystemItem implements IFileSystemItem {
       return '';
     }
     try {
-      var keys = metadata.key != null ? [metadata.key] : [];
+      var keys = metadata.key != '' ? [metadata.key] : [];
       if (subName.isNotEmpty) {
         keys.add(subName);
       }

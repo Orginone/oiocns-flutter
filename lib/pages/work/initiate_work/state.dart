@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/images.dart';
 
 class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
   SettingController get settingCtrl => Get.find<SettingController>();
@@ -22,13 +23,13 @@ class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
               children: [
                 WorkBreadcrumbNav(
                     name: WorkEnum.initiationWork.label,
-                    workEnum: WorkEnum.initiationWork, children: [],space: value),
+                    workEnum: WorkEnum.initiationWork, children: [],space: value,image:WorkEnum.initiationWork.imagePath),
                 WorkBreadcrumbNav(
-                    name: WorkEnum.todo.label, workEnum: WorkEnum.todo, children: [],space: value),
+                    name: WorkEnum.todo.label, workEnum: WorkEnum.todo, children: [],space: value,image:WorkEnum.todo.imagePath),
                 WorkBreadcrumbNav(
-                    name: WorkEnum.completed.label, workEnum: WorkEnum.completed, children: [],space: value),
+                    name: WorkEnum.completed.label, workEnum: WorkEnum.completed, children: [],space: value,image:WorkEnum.completed.imagePath),
                 WorkBreadcrumbNav(
-                    name: WorkEnum.initiated.label, workEnum: WorkEnum.initiated, children: [],space: value),
+                    name: WorkEnum.initiated.label, workEnum: WorkEnum.initiated, children: [],space: value,image:WorkEnum.initiated.imagePath),
               ],
               image: value.metadata.avatarThumbnail(),
           ),
@@ -42,13 +43,13 @@ class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
             children: [
               WorkBreadcrumbNav(
                   name: WorkEnum.initiationWork.label,
-                  workEnum: WorkEnum.initiationWork, children: [],space: settingCtrl.user),
+                  workEnum: WorkEnum.initiationWork, children: [],space: settingCtrl.user,image:WorkEnum.initiationWork.imagePath ),
               WorkBreadcrumbNav(
-                  name: WorkEnum.todo.label, workEnum: WorkEnum.todo, children: [],space: settingCtrl.user),
+                  name: WorkEnum.todo.label, workEnum: WorkEnum.todo, children: [],space: settingCtrl.user,image:WorkEnum.todo.imagePath ),
               WorkBreadcrumbNav(
-                  name: WorkEnum.completed.label, workEnum: WorkEnum.completed, children: [],space: settingCtrl.user),
+                  name: WorkEnum.completed.label, workEnum: WorkEnum.completed, children: [],space: settingCtrl.user,image:WorkEnum.completed.imagePath ),
               WorkBreadcrumbNav(
-                  name: WorkEnum.initiated.label, workEnum: WorkEnum.initiated, children: [],space: settingCtrl.user),
+                  name: WorkEnum.initiated.label, workEnum: WorkEnum.initiated, children: [],space: settingCtrl.user,image:WorkEnum.initiated.imagePath ),
             ],
             space: settingCtrl.user
           ),
@@ -80,12 +81,14 @@ class WorkBreadcrumbNav extends BaseBreadcrumbNavModel<WorkBreadcrumbNav> {
 }
 
 enum WorkEnum {
-  initiationWork("发起事项"),
-  todo("待办事项"),
-  completed("已办事项"),
-  initiated("我发起的");
+  initiationWork("发起事项",Images.iconWorkInitiation),
+  todo("待办事项",Images.iconWorkTodo),
+  completed("已办事项",Images.iconWorkCompleted),
+  initiated("我发起的",Images.iconWorkInitiated);
 
   final String label;
 
-  const WorkEnum(this.label);
+  final String imagePath;
+
+  const WorkEnum(this.label,this.imagePath);
 }

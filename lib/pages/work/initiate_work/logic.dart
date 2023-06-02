@@ -3,9 +3,9 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/app/application.dart';
-import 'package:orginone/dart/core/thing/app/workitem.dart';
+import 'package:orginone/dart/core/thing/app/flowclass.dart';
+import 'package:orginone/dart/core/thing/base/flow.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
-import 'package:orginone/dart/core/thing/base/work.dart';
 import 'package:orginone/dart/core/thing/market/market.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/loading_dialog.dart';
@@ -86,8 +86,8 @@ class InitiateWorkController
           await (item as IApplication).loadWorkDefines();
           children.addAll(await loadDefines(item.children, space, workEnum));
           break;
-        case SpeciesType.work:
-           await (item as IWorkItem).loadWorkDefines();
+        case SpeciesType.flow:
+           await (item as IFlowClass).loadWorkDefines();
           children.addAll(await loadDefines(item.children, space, workEnum));
           break;
         default:

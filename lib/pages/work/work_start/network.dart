@@ -5,7 +5,7 @@ import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/thing/base/work.dart';
+import 'package:orginone/dart/core/thing/base/flow.dart';
 import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/toast_utils.dart';

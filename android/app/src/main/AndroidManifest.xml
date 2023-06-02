@@ -17,7 +17,7 @@
         android:usesCleartextTraffic="true"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:label="奥集能"
+        android:label="共享云"
         >
         <activity
             android:name="com.github.orginone.MainActivity"

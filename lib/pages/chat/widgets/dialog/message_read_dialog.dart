@@ -1,39 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/chat/message/message.dart';
+import 'package:orginone/util/date_util.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 
-Future<void>? showMessageReadDialog(BuildContext context,
-    List<XTarget> readMember, List<XTarget> unreadMember) {
+Future<void>? showMessageReadDialog(
+    BuildContext context,
+    List<XTarget> readMember,
+    List<XTarget> unreadMember,
+    List<IMessageLabel> labels) {
   return showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return ClipRRect(
-          borderRadius:  BorderRadius.only(
-            topLeft: Radius.circular(16.w),
-            topRight: Radius.circular(16.w),
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) {
+      return ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16.w),
+          topRight: Radius.circular(16.w),
+        ),
+        child: SizedBox(
+          height: 800.h,
+          child: MessageRead(
+            readMember: readMember,
+            unreadMember: unreadMember,
+            labels: labels,
           ),
-          child: SizedBox(
-            height: 800.h,
-            child: MessageRead(
-              readMember: readMember,
-              unreadMember: unreadMember,
-            ),
-          ),
-        );
-      },);
+        ),
+      );
+    },
+  );
 }
 
 class MessageRead extends StatefulWidget {
   final List<XTarget> readMember;
   final List<XTarget> unreadMember;
+  final List<IMessageLabel> labels;
 
   const MessageRead(
-      {Key? key, required this.readMember, required this.unreadMember})
+      {Key? key,
+      required this.readMember,
+      required this.unreadMember,
+      required this.labels})
       : super(key: key);
 
   @override
@@ -69,11 +80,14 @@ class _MessageReadState extends State<MessageRead>
       body: Column(
         children: [
           TabBar(
-            tabs: tabs
-                .map((e) => Tab(
-                      text: e,
-                    ))
-                .toList(),
+            tabs: [
+              Tab(
+                text: "${tabs[0]}(${widget.readMember.length})",
+              ),
+              Tab(
+                text: "${tabs[1]}(${widget.unreadMember.length})",
+              )
+            ],
             controller: controller,
             indicatorSize: TabBarIndicatorSize.label,
             indicatorColor: XColors.black,
@@ -87,7 +101,7 @@ class _MessageReadState extends State<MessageRead>
             child: TabBarView(
               controller: controller,
               children: [
-                buildList(widget.readMember),
+                buildList(widget.readMember, widget.labels),
                 buildList(widget.unreadMember),
               ],
             ),
@@ -97,18 +111,32 @@ class _MessageReadState extends State<MessageRead>
     );
   }
 
-  Widget buildList(List<XTarget> targets) {
+  Widget buildList(List<XTarget> targets, [List<IMessageLabel>? labels]) {
     return ListView.builder(
       itemBuilder: (context, index) {
         var target = targets[index];
+        String hint = target.remark ?? "";
+        if (labels != null) {
+          IMessageLabel label =
+              labels.firstWhere((element) => element.userId == target.id);
+          hint = "已读:${CustomDateUtil.getSessionTime(label.time)}";
+        }
         return Container(
           decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: Colors.grey.shade300,width: 0.5),)
-          ),
+              border: Border(
+            bottom: BorderSide(color: Colors.grey.shade300, width: 0.5),
+          )),
           child: ListTile(
-            leading: TeamAvatar(info: TeamTypeInfo(userId: target.id),size: 55.w,),
-            title:  Text(target.name),
-            subtitle: Text(target.remark??"",maxLines: 1,overflow: TextOverflow.ellipsis,) ,
+            leading: TeamAvatar(
+              info: TeamTypeInfo(userId: target.id),
+              size: 55.w,
+            ),
+            title: Text(target.name),
+            subtitle: Text(
+              hint,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         );
       },

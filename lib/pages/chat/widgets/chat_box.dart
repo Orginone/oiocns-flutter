@@ -13,8 +13,10 @@ import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart' hide Rule;
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/chat/message/message.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/images.dart';
@@ -331,8 +333,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
       padding: EdgeInsets.only(top: 8.h, bottom: 8.h, right: 8.w),
       child: ImageWidget(
         path,
-        width: boxDefaultHeight,
-        height: boxDefaultHeight,
+        size: boxDefaultHeight,
       ),
     );
   }
@@ -343,8 +344,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
       padding: EdgeInsets.only(left: 8.w, top: 8.h, bottom: 8.h),
       child: ImageWidget(
         path,
-        width: boxDefaultHeight,
-        height: boxDefaultHeight,
+        size: boxDefaultHeight,
       ),
     );
   }
@@ -676,7 +676,7 @@ class ChatBoxController with WidgetsBindingObserver {
         String message = inputController.text;
         if (replyText.value.isNotEmpty) {
           message =
-              '$message\$CITEMESSAGE[${TextUtils.textReplace(replyText.value)}]';
+              '$message\$CITE[${TextUtils.textReplace(replyText.value)}]';
         }
         if (rules.isNotEmpty) {
           for (var rule in rules) {
@@ -709,10 +709,21 @@ class ChatBoxController with WidgetsBindingObserver {
   void imagePicked(XFile pickedImage, IMsgChat chat) async {
     var settingCtrl = Get.find<SettingController>();
     var docDir = await settingCtrl.user.fileSystem.home?.create("沟通");
+    String ext = pickedImage.name.split('.').last;
+
+    var save = MsgSaveModel.fromFileUpload(
+        settingCtrl.user.id, pickedImage.name, pickedImage.path, ext);
+    chat.messages.insert(0, Message(chat, save));
+
     var item = await docDir?.upload(
       pickedImage.name,
       File(pickedImage.path),
-      (progress) {},
+      (progress) {
+        var msg = chat.messages
+            .firstWhere((element) => element.metadata.id == pickedImage.name);
+        msg.metadata.progress = progress;
+        chat.messages.refresh();
+      },
     );
     if (item != null) {
       chat.sendMessage(
@@ -723,10 +734,23 @@ class ChatBoxController with WidgetsBindingObserver {
   Future<void> filePicked(PlatformFile file, IMsgChat chat) async {
     var settingCtrl = Get.find<SettingController>();
     var docDir = await settingCtrl.user.fileSystem.home?.create('沟通');
+
+    String ext = file.name.split('.').last;
+
+    var file1 = File(file.path!);
+    var save = MsgSaveModel.fromFileUpload(
+        settingCtrl.user.id, file.name, file.path!, ext,file1.lengthSync());
+    chat.messages.insert(0, Message(chat, save));
+
     var item = await docDir?.upload(
       file.name,
-      File(file.path!),
-      (progress) {},
+      file1,
+      (progress) {
+        var msg = chat.messages
+            .firstWhere((element) => element.metadata.id == file.name);
+        msg.metadata.progress = progress;
+        chat.messages.refresh();
+      },
     );
     if (item != null) {
       chat.sendMessage(MessageType.file, jsonEncode(item.metadata.shareInfo()));

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
@@ -25,7 +25,6 @@ import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/pages/chat/text_replace_utils.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus_helper.dart';
-import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/string_util.dart';
 import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/target_text.dart';
@@ -144,42 +143,35 @@ class DetailItemWidget extends GetView<SettingController> {
     if (!isSelf && chat.share.typeName != TargetType.person.label) {
       content.add(Container(
         margin: EdgeInsets.only(left: 10.w),
-        child: TargetText(userId: msg.metadata.fromId, style: XFonts.size16Black3),
+        child:
+            TargetText(userId: msg.metadata.fromId, style: XFonts.size16Black3),
       ));
     }
 
-    Widget body;
     var rtl = TextDirection.rtl;
     var ltr = TextDirection.ltr;
     var textDirection = isSelf ? rtl : ltr;
 
-    if (msg.msgType == MessageType.text.label) {
-      String? reply = TextUtils.isReplyMsg(msg.metadata.showTxt);
-      body = Column(
-        crossAxisAlignment:
-            isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          _text(textDirection: textDirection),
-          reply == null
-              ? const SizedBox()
-              : _detail(
-                  textDirection: textDirection,
-                  body: Text(
-                    reply,
-                    style: XFonts.size18Black0,
-                  ),
-                  bgColor: Colors.black.withOpacity(0.1)),
-        ],
-      );
-    } else if (msg.msgType == MessageType.image.label) {
-      body = _image(textDirection: textDirection, context: context);
-    } else if (msg.msgType == MessageType.voice.label) {
-      body = _voice(textDirection: textDirection);
-    } else if (msg.msgType == MessageType.file.label) {
-      body = _file(textDirection: textDirection, context: context);
-    } else {
-      body = Container();
-    }
+    Widget body = _chatBody(context, textDirection);
+
+    String? reply = TextUtils.isReplyMsg(msg.metadata.showTxt);
+
+    body = Column(
+      crossAxisAlignment:
+          isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      children: [
+        body,
+        reply == null
+            ? const SizedBox()
+            : _detail(
+            textDirection: textDirection,
+            body: Text(
+              reply,
+              style: XFonts.size18Black0,
+            ),
+            bgColor: Colors.black.withOpacity(0.1)),
+      ],
+    );
 
     String userId = chat.userId;
     List<DetailFunc> func = [
@@ -311,7 +303,7 @@ class DetailItemWidget extends GetView<SettingController> {
             ),
           ),
           onTap: (){
-            chatController.showReadMessage(readMember,unreadMember);
+            chatController.showReadMessage(readMember,unreadMember,msg.labels);
           },
         );
       }
@@ -329,6 +321,49 @@ class DetailItemWidget extends GetView<SettingController> {
     );
   }
 
+
+  Widget _chatBody(BuildContext context, TextDirection textDirection) {
+    Widget body;
+
+    if (msg.msgType == MessageType.text.label) {
+      body = _text(textDirection: textDirection);
+    } else if (msg.msgType == MessageType.image.label) {
+      body = _image(textDirection: textDirection, context: context);
+    } else if (msg.msgType == MessageType.voice.label) {
+      body = _voice(textDirection: textDirection);
+    } else if (msg.msgType == MessageType.file.label) {
+      body = _file(textDirection: textDirection, context: context);
+    } else if (msg.msgType == MessageType.uploading.label) {
+      body = _uploading(textDirection: textDirection, context: context);
+    } else {
+      body = Container();
+    }
+
+    return body;
+  }
+
+  // Widget _replyBody(
+  //     BuildContext context, TextDirection textDirection, String? text) {
+  //   if (text == null) {
+  //     return Container();
+  //   }
+  //   Widget body;
+  //   Map<String, dynamic> json = jsonDecode(text);
+  //   MsgSaveModel msg = MsgSaveModel.fromJson(json);
+  //   if (msg.msgType == MessageType.text.label) {
+  //     body = _text(
+  //         textDirection: textDirection, bgColor: Colors.black.withOpacity(0.1));
+  //   } else if (msg.msgType == MessageType.image.label) {
+  //     body = _image(
+  //         textDirection: textDirection,
+  //         context: context,
+  //         bgColor: Colors.black.withOpacity(0.1));
+  //   } else {
+  //     body = Container();
+  //   }
+  //   return body;
+  // }
+
   /// 会话详情
   Widget _detail({
     required TextDirection textDirection,
@@ -338,7 +373,6 @@ class DetailItemWidget extends GetView<SettingController> {
     EdgeInsets? padding,
     Color? bgColor,
   }) {
-
     Color color = bgColor??(isSelf ? XColors.tinyLightBlue : Colors.white);
     
     return Container(
@@ -361,16 +395,14 @@ class DetailItemWidget extends GetView<SettingController> {
   Widget _image({
     required TextDirection textDirection,
     required BuildContext context,
+    bool showShadow = false,
+    Color? bgColor,
   }) {
-    /// 解析参数
-    Map<String, dynamic> msgBody = {};
-    try {
-      msgBody = jsonDecode(msg.metadata.showTxt);
-    } catch (error) {
-      Log.info("参数解析失败，msg.showTxt:${msg.metadata.showTxt}");
-      return Container();
+    dynamic link = msg.metadata.msgData["shareLink"] ?? '';
+
+    if (msg.metadata.msgData["path"] != null && link == '') {
+      link = File(msg.metadata.msgData["path"]);
     }
-    String link = msgBody["shareLink"] ?? "";
 
     /// 限制大小
     BoxConstraints boxConstraints = BoxConstraints(maxWidth: 200.w);
@@ -378,6 +410,12 @@ class DetailItemWidget extends GetView<SettingController> {
     Map<String, String> headers = {
       "Authorization": KernelApi.getInstance().anystore.accessToken,
     };
+
+    Widget body = ImageWidget(link, httpHeaders: headers);
+
+    if (showShadow) {
+      body = _shadow(body);
+    }
 
     return GestureDetector(
       onTap: () {
@@ -392,9 +430,10 @@ class DetailItemWidget extends GetView<SettingController> {
       child: _detail(
         constraints: boxConstraints,
         textDirection: textDirection,
-        body: CachedNetworkImage(imageUrl: link, httpHeaders: headers),
+        body: body,
         clipBehavior: Clip.hardEdge,
         padding: EdgeInsets.zero,
+        bgColor: bgColor,
       ),
     );
   }
@@ -483,17 +522,10 @@ class DetailItemWidget extends GetView<SettingController> {
   Widget _file({
     required TextDirection textDirection,
     required BuildContext context,
+    bool showShadow = false,
   }) {
-    /// 解析参数
-    Map<String, dynamic> msgBody = {};
-    try {
-      msgBody = jsonDecode(msg.metadata.showTxt);
-    } catch (error) {
-      Log.info("参数解析失败，msg.showTxt:${msg.metadata.showTxt}");
-      return Container();
-    }
 
-    String extension = msgBody["extension"];
+    String extension = msg.metadata.msgData["extension"];
     if (imageExtension.contains(extension.toLowerCase())) {
       return _image(textDirection: textDirection, context: context);
     }
@@ -501,53 +533,110 @@ class DetailItemWidget extends GetView<SettingController> {
     /// 限制大小
     BoxConstraints boxConstraints = BoxConstraints(minWidth: 200.w,minHeight: 70.h,maxWidth: 250.w,maxHeight: 100.h);
 
+
+    Widget body = Container(
+      constraints: boxConstraints,
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    msg.metadata.msgData['name'],
+                    style: XFonts.size24Black0,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                SizedBox(
+                  height: 5.h,
+                ),
+                Text(
+                  getFileSizeString(bytes: msg.metadata.msgData['size']),
+                  style: XFonts.size16Black9,
+                ),
+              ],
+            ),
+          ),
+          ImageWidget(Images.iconFile, size: 40.w),
+        ],
+      ),
+    );
+
+    if(showShadow){
+      body = _shadow(body);
+    }
     return GestureDetector(
       onTap: () {
-        Get.toNamed(Routers.messageFile, arguments: msgBody);
+        Get.toNamed(Routers.messageFile, arguments: msg.metadata.msgData);
       },
       child: _detail(
         textDirection: textDirection,
         clipBehavior: Clip.hardEdge,
         padding: EdgeInsets.zero,
-        body: Container(
-          constraints: boxConstraints,
-          color: Colors.white,
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        msgBody['name'],
-                        style: XFonts.size20Black0,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    Text(
-                      getFileSizeString(bytes: msgBody['size']),
-                      style: XFonts.size16Black9,
-                    ),
-                  ],
-                ),
-              ),
-              ImageWidget(Images.iconFile,width: 40.w,height: 40.w),
-            ],
-          ),
-        ),
+        body: body,
       ),
     );
   }
 
-  Widget _text({required TextDirection textDirection}) {
+
+  Widget _shadow(Widget body){
+    return Container(
+      foregroundDecoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          // Add one stop for each color. Stops should increase from 0 to 1
+          stops: [0.2, 0.7],
+          colors: [
+            Color.fromARGB(100, 0, 0, 0),
+            Color.fromARGB(100, 0, 0, 0),
+          ],
+        ),
+      ),
+      child: body,
+    );
+  }
+
+  Widget _uploading({
+    required TextDirection textDirection,
+    required BuildContext context,
+  }) {
+
+    String extension = msg.metadata.msgData["extension"];
+    double progress = msg.metadata.progress;
+    Widget body;
+    if (imageExtension.contains(extension.toLowerCase())) {
+      body = _image(textDirection: textDirection, context: context,showShadow: true);
+    } else {
+      body = _file(
+          textDirection: textDirection, context: context, showShadow: true);
+    }
+
+    Widget gradient = Stack(
+      alignment: Alignment.center,
+      fit: StackFit.passthrough,
+      children: [
+        body,
+        Text(
+          '${(progress*100).toStringAsFixed(0)}%',
+          style: TextStyle(color: Colors.white, fontSize: 24.sp),
+        ),
+      ],
+    );
+    return gradient;
+  }
+
+  Widget _text({
+    required TextDirection textDirection,
+    Color? bgColor,
+  }) {
     List<InlineSpan> _contentList = [];
 
     RegExp exp = RegExp(
@@ -595,17 +684,19 @@ class DetailItemWidget extends GetView<SettingController> {
     if (_contentList.isNotEmpty) {
       if (_contentList.length == 1) {
         return _detail(
+            bgColor: bgColor,
             textDirection: textDirection,
             body: PreViewUrl(
               url: _contentList.first.toPlainText().replaceAll("www.", ''),
             ));
       } else {
         return _detail(
+          bgColor: bgColor,
           textDirection: textDirection,
           body: Text.rich(
             TextSpan(
               children: _contentList,
-              style: XFonts.size20Black0,
+              style: XFonts.size22Black0,
             ),
           ),
         );
@@ -614,13 +705,16 @@ class DetailItemWidget extends GetView<SettingController> {
 
     return _detail(
       textDirection: textDirection,
+      bgColor: bgColor,
       body: Text(
         TextUtils.textReplace(msg.metadata.showTxt),
-        style: XFonts.size20Black0,
+        style: XFonts.size22Black0,
       ),
     );
   }
 }
+
+
 
 class PreViewUrl extends StatefulWidget {
   final String url;

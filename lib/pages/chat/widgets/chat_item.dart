@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -11,7 +12,6 @@ import 'package:orginone/util/date_util.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 import 'package:orginone/widget/widgets/text_tag.dart';
-import 'package:badges/badges.dart' as badges;
 
 enum ChatFunc {
   // topping("置顶会话"),
@@ -69,13 +69,15 @@ class MessageItemWidget extends GetView<SettingController> {
         );
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10.h,horizontal: 25.w),
+        padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _avatarContainer,
-            SizedBox(width: 15.w,),
+            SizedBox(
+              width: 10.w,
+            ),
             Expanded(child: Obx(() => _content)),
           ],
         ),
@@ -85,27 +87,34 @@ class MessageItemWidget extends GetView<SettingController> {
 
   Widget get _avatarContainer {
     return Obx(() {
+     ;
       var noRead = chat.chatdata.value.noReadCount;
       Widget child = TeamAvatar(
-          info: TeamTypeInfo(share: chat.share),size: 65.w,);
-      if(noRead>0){
-       child = badges.Badge(
-           ignorePointer: false,
-           position: badges.BadgePosition.topEnd(top: -10),
-           badgeContent: Text(
-             "${noRead > 99 ? "99+" : noRead}",
-             style: const TextStyle(
-               color: Colors.white,
-               fontSize: 10,
-               letterSpacing: 1,
-               wordSpacing: 2,
-               height: 1,
-             ),
-           ),
-           child:child,
-       );
+        info: TeamTypeInfo(share: chat.share),
+        size: 60.w,
+        decoration:  chat.share.typeName == TargetType.person.label?const BoxDecoration(
+          color: XColors.themeColor,
+          shape: BoxShape.circle,
+        ):null,
+      );
+      if (noRead > 0) {
+        child = badges.Badge(
+          ignorePointer: false,
+          position: badges.BadgePosition.topEnd(top: -10),
+          badgeContent: Text(
+            "${noRead > 99 ? "99+" : noRead}",
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 10,
+              letterSpacing: 1,
+              wordSpacing: 2,
+              height: 1,
+            ),
+          ),
+          child:child,
+        );
       }
-     return child;
+      return child;
     });
   }
 
@@ -126,22 +135,25 @@ class MessageItemWidget extends GetView<SettingController> {
         labels.add(Padding(padding: EdgeInsets.only(left: 4.w)));
       }
     }
-    if(target.value.chatName == "陈宣俊"){
-      print('');
-    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Text(target.value.chatName ?? "", style: XFonts.size20Black0W700),
-            SizedBox(width: 10.w,),
+            Text(target.value.chatName ?? "",
+                style: TextStyle(
+                    color: XColors.chatTitleColor,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 21.sp)),
+            SizedBox(
+              width: 10.w,
+            ),
             ...labels,
             Expanded(
               child: Text(
                 CustomDateUtil.getSessionTime(
                     chat.chatdata.value.lastMessage?.createTime),
-                style: TextStyle(color: Colors.grey,fontSize: 18.sp),
+                style: TextStyle(color: Colors.grey, fontSize: 18.sp),
                 textAlign: TextAlign.right,
               ),
             ),
@@ -182,7 +194,7 @@ class MessageItemWidget extends GetView<SettingController> {
               }else{
                 showTxt = "$showTxt${TextUtils.textReplace(lastMessage.showTxt)}";
               }
-            } else if (messageType == 'recall') {
+            } else if (messageType == MessageType.recall.label) {
               showTxt = "$showTxt撤回了一条消息";
             } else if (messageType == MessageType.image.label) {
               showTxt = "$showTxt[图片]";
@@ -198,8 +210,8 @@ class MessageItemWidget extends GetView<SettingController> {
           return Text(
             showTxt,
             style: TextStyle(
-              color: XColors.black9,
-              fontSize: 20.sp,
+              color: XColors.chatHintColors,
+              fontSize: 17.sp,
             ),
             textAlign: TextAlign.left,
             maxLines: 1,

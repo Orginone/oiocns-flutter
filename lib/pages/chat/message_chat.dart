@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/chat/message/message.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/getx/base_bindings.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
@@ -138,8 +139,8 @@ class MessageChatController extends BaseController<MessageChatState> {
     return false;
   }
 
-  void showReadMessage(List<XTarget> readMember, List<XTarget> unreadMember) {
-    showMessageReadDialog(context, readMember, unreadMember);
+  void showReadMessage(List<XTarget> readMember, List<XTarget> unreadMember, List<IMessageLabel> labels) {
+    showMessageReadDialog(context, readMember, unreadMember,labels);
   }
 
   @override

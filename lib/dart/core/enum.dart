@@ -47,6 +47,7 @@ enum SpeciesType {
   application('应用类'),
   dict('字典类'),
   /** 类别类目 */
+  flow('流程类'),
   work('事项类'),
   thing('实体类'),
   data('数据类');
@@ -72,6 +73,7 @@ enum MessageType {
   voice("语音"),
   recall("撤回"),
   readed("已读"),
+  uploading("上传中"),
   file("文件");
   const MessageType(this.label);
 

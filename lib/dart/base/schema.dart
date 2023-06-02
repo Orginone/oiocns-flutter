@@ -5513,6 +5513,7 @@ class XForm {
   String version;
   String createTime;
   String updateTime;
+  String typeName;
   List<XAttribute>? attributes;
   List<XWorkNode>? bindNodes;
   XSpecies? species;
@@ -5534,6 +5535,7 @@ class XForm {
     required this.version,
     required this.createTime,
     required this.updateTime,
+    required this.typeName,
     this.attributes,
     this.bindNodes,
     this.species,
@@ -5571,7 +5573,7 @@ class XForm {
       attributes: attributes,
       bindNodes: bindNodes,
       species: json['species'] != null ? XSpecies.fromJson(json['species']) : null,
-      belong: json['belong'] != null ? XTarget.fromJson(json['belong']) : null,
+      belong: json['belong'] != null ? XTarget.fromJson(json['belong']) : null, typeName: json['typeName'],
     );
   }
   Map<String, dynamic> toJson() {

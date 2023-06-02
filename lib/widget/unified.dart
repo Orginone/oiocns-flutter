@@ -22,7 +22,10 @@ class XColors {
   static const Color black = Color(0xff000000);
   static const Color black3 = Color(0xff303133);
   static const Color black6 = Color(0xff606266);
+  static const Color black666 = Color(0xff666666);
   static const Color black9 = Color(0xff909399);
+  static const Color chatTitleColor = Color(0xFF111111);
+  static const Color chatHintColors = Color(0xFFC2C2C2);
   static const Color white = Color(0xffffffff);
   static const Color lineLight = Color(0xffEDEDED);
   static const Color lineLight2 = Color(0xffD4D4D4);

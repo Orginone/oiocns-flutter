@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,9 +10,8 @@ import 'package:flutter_svg/svg.dart';
 class ImageWidget extends StatelessWidget {
   final dynamic path;
 
-  final double? width;
 
-  final double? height;
+  final double? size;
 
   final Color? color;
 
@@ -21,13 +21,14 @@ class ImageWidget extends StatelessWidget {
 
   final bool gaplessPlayback;
 
+  final Map<String, String>? httpHeaders;
+
   const ImageWidget(this.path,
       {Key? key,
-      this.width,
-      this.height,
+      this.size,
       this.color,
       this.fit = BoxFit.contain,
-      this.circular = false, this.gaplessPlayback = false})
+      this.circular = false, this.gaplessPlayback = false, this.httpHeaders})
       : super(key: key);
 
   @override
@@ -39,8 +40,7 @@ class ImageWidget extends StatelessWidget {
     if (path is String) {
       if (path.contains('http')) {
         child = network();
-      }
-      if (path.split('.').last.toLowerCase() == 'svg') {
+      } else if (path.split('.').last.toLowerCase() == 'svg') {
         child = svg();
       } else {
         child = asset();
@@ -65,26 +65,26 @@ class ImageWidget extends StatelessWidget {
 
   Widget svg() {
     return SvgPicture.asset(
-        path, fit: fit, width: width, height: height, color: color,);
+        path, fit: fit, width: size, height: size, color: color,);
   }
 
   Widget asset(){
-    return Image.asset(path, fit: fit, width: width, height: height, color: color,gaplessPlayback: gaplessPlayback,);
+    return Image.asset(path, fit: fit, width: size, height: size, color: color,gaplessPlayback: gaplessPlayback,);
   }
 
   Widget network(){
-    return Image.network(path, fit: fit, width: width, height: height, color: color,gaplessPlayback: gaplessPlayback);
+    return CachedNetworkImage(fit: fit, width: size, height: size, color: color, imageUrl: path,httpHeaders: httpHeaders,);
   }
 
   Widget memory(){
-    return Image.memory(path, fit: fit, width: width, height: height, color: color,gaplessPlayback: gaplessPlayback);
+    return Image.memory(path, fit: fit, width: size, height: size, color: color,gaplessPlayback: gaplessPlayback);
   }
 
   Widget file(){
-    return Image.file(path, fit: fit, width: width, height: height, color: color,gaplessPlayback: gaplessPlayback);
+    return Image.file(path, fit: fit, width: size, height: size, color: color,gaplessPlayback: gaplessPlayback);
   }
 
   Widget icon(){
-    return Icon(path,size: max(width??24.w, height??24.h),color: color,);
+    return Icon(path,size: max(size??24.w, size??24.h),color: color,);
   }
 }

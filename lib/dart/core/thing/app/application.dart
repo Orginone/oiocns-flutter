@@ -1,13 +1,14 @@
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/thing/app/workclass.dart';
 import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
-import 'package:orginone/dart/core/thing/base/work.dart';
+import 'package:orginone/dart/core/thing/base/flow.dart';
 import 'package:orginone/dart/core/thing/store/thingclass.dart';
 
 import 'data.dart';
-import 'workitem.dart';
+import 'flowclass.dart';
 
 
 abstract class IApplication extends ISpeciesItem {
@@ -37,8 +38,8 @@ class Application extends SpeciesItem implements IApplication {
   Future<List<IWorkDefine>> loadWorkDefines() async {
     defines.clear();
     for (var item in children) {
-      if (item.metadata.typeName == SpeciesType.work.label) {
-        defines.addAll(await (item as IWorkItem).loadAllWorkDefines());
+      if (item.metadata.typeName == SpeciesType.flow.label) {
+        defines.addAll(await (item as IFlowClass).loadAllWorkDefines());
       }
     }
     return defines;
@@ -50,9 +51,11 @@ class Application extends SpeciesItem implements IApplication {
       case SpeciesType.thing:
         return  ThingClass(metadata, current);
       case SpeciesType.work:
-        return WorkItem(metadata, this);
+        return WorkClass(metadata, this);
       case SpeciesType.data:
         return Data(metadata, this);
+      case SpeciesType.flow:
+        return FlowClass(metadata, this);
     }
     return null;
   }
