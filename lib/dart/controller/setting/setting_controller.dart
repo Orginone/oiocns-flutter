@@ -42,7 +42,7 @@ class SettingController extends GetxController {
     ItemModel('添加朋友', Icons.group_add,TargetType.person,"添加好友","请输入用户的账号"),
     ItemModel('加入群组', Icons.speaker_group,TargetType.cohort,"添加群组","请输入群组的编码"),
     ItemModel('加入单位组织', Icons.compare,TargetType.company,"添加单位","请输入单位的社会统一代码"),
-    ItemModel('发起群聊', Icons.chat_bubble,TargetType.cohort,"",""),
+    ItemModel('发起群聊', Icons.chat_bubble,TargetType.cohort,"发起群聊","请输入群聊信息"),
   ];
 
   @override
