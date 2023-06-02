@@ -5,10 +5,8 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/app/workitem.dart';
 import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
-import 'package:orginone/dart/core/thing/base/work.dart';
 import 'package:orginone/dart/core/thing/dict/dictclass.dart';
 import 'package:orginone/dart/core/thing/market/market.dart';
 import 'package:orginone/dart/core/thing/store/propclass.dart';
@@ -56,10 +54,8 @@ class SettingNetWork {
         List<dynamic> item = [];
         switch(SpeciesType.getType(element.metadata.typeName)){
           case SpeciesType.market:
-            item = await (element as IMarket).loadWorkDefines();
-            break;
           case SpeciesType.work:
-            item = await (element as IWorkItem).loadWorkDefines();
+            item = await (element as dynamic).loadWorkDefines();
             break;
           case SpeciesType.application:
             break;

@@ -45,6 +45,7 @@ import 'package:orginone/pages/setting/version_page.dart';
 // 仓库
 import 'pages/chat/message_chats.dart';
 import 'pages/chat/message_file.dart';
+import 'pages/chat/message_records.dart';
 import 'pages/home/index/index_page.dart';
 import 'pages/login/forgot_password/binding.dart';
 import 'pages/login/forgot_password/view.dart';
@@ -286,6 +287,8 @@ class Routers {
   static const String marketTree = "/marketTree";
 
   static const String messageFile = "/messageFile";
+
+  static const String messageRecords = "/messageRecords";
 
   static String get main {
     return login;
@@ -574,6 +577,11 @@ class Routers {
       GetPage(
         name: Routers.messageFile,
         page: () => const MessageFile(),
+      ),
+      GetPage(
+        name: Routers.messageRecords,
+        page: () =>  MessageRecordsPage(),
+        binding: MessageRecordsBinding(),
       ),
     ];
   }

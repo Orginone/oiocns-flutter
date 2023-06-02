@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
@@ -87,6 +88,8 @@ class AttrsController
 
   ClassificationInfoController get info => Get.find();
 
+  SettingController get setting => Get.find();
+
   dynamic get species => info.state.species;
 
   Future<void> createAttr({XAttribute? attr}) async {
@@ -123,7 +126,7 @@ class AttrsController
   }
 
   Future<void> loadAttrs({bool reload = false}) async {
-    state.attrs.value = await species.loadAttributes(reload: reload);
+    state.attrs.value = await setting.provider.work!.loadAttributes(species.metadata.id,species.metadata.belongId);
   }
 
   void onAttrOperation(operation, String code) async {

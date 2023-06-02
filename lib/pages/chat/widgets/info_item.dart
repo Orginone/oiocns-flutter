@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
@@ -14,7 +15,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/chat/message/message.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/images.dart';
@@ -22,7 +25,6 @@ import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/pages/chat/text_replace_utils.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus_helper.dart';
-import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/string_util.dart';
 import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/target_text.dart';
@@ -38,6 +40,7 @@ enum DetailFunc {
   recall("撤回"),
   remove("删除"),
   forward("转发"),
+  copy("复制"),
   reply("回复");
   // multipleChoice("多选");
 
@@ -50,7 +53,7 @@ double defaultWidth = 10.w;
 
 class DetailItemWidget extends GetView<SettingController> {
   final IMsgChat chat;
-  final MsgSaveModel msg;
+  final IMessage msg;
 
   DetailItemWidget({
     Key? key,
@@ -67,23 +70,23 @@ class DetailItemWidget extends GetView<SettingController> {
   }
 
   bool get isSelf {
-    return msg.fromId == controller.user.metadata.id;
+    return msg.metadata.fromId == controller.user.metadata.id;
   }
 
   /// 消息详情
   Widget _messageDetail(BuildContext context) {
     List<Widget> children = [];
     bool isCenter = false;
-    if (msg.msgType == "recall") {
+    if (msg.msgType == MessageType.recall.label) {
       Widget child;
-      if (msg.fromId == controller.user.metadata.id) {
+      if (msg.metadata.fromId == controller.user.metadata.id) {
         child = Text("您撤回了一条消息", style: XFonts.size18Black9);
       } else {
         child = Text.rich(TextSpan(children: [
           WidgetSpan(
               child: TargetText(
             style: XFonts.size18Black9,
-            userId: msg.fromId,
+            userId: msg.metadata.fromId,
           ),alignment: PlaceholderAlignment.middle),
           TextSpan(text: "撤回了一条消息", style: XFonts.size18Black9),
         ]));
@@ -113,7 +116,7 @@ class DetailItemWidget extends GetView<SettingController> {
       var settingCtrl = Get.find<SettingController>();
       id = settingCtrl.user.metadata.id;
     } else {
-      id = msg.fromId;
+      id = msg.metadata.fromId;
     }
     return GestureDetector(
       child: TeamAvatar(
@@ -125,7 +128,10 @@ class DetailItemWidget extends GetView<SettingController> {
         ),
       ),
       onLongPress: () {
-        EventBusHelper.fire(chat.members[0]);
+         if(chat.share.typeName!=TargetType.person.label){
+           var target = chat.members.firstWhere((element) => element.id == msg.metadata.fromId);
+           EventBusHelper.fire(target);
+         }
       },
     );
   }
@@ -137,49 +143,44 @@ class DetailItemWidget extends GetView<SettingController> {
     if (!isSelf && chat.share.typeName != TargetType.person.label) {
       content.add(Container(
         margin: EdgeInsets.only(left: 10.w),
-        child: TargetText(userId: msg.fromId, style: XFonts.size16Black3),
+        child:
+            TargetText(userId: msg.metadata.fromId, style: XFonts.size16Black3),
       ));
     }
 
-    Widget body;
     var rtl = TextDirection.rtl;
     var ltr = TextDirection.ltr;
     var textDirection = isSelf ? rtl : ltr;
 
-    if (msg.msgType == MessageType.text.label) {
-      String? reply = TextUtils.isReplyMsg(msg.showTxt);
-      String? url = TextUtils.containsWebUrl(msg.showTxt);
-      body = Column(
-        crossAxisAlignment:
-            isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          _text(textDirection: textDirection),
-          reply == null
-              ? const SizedBox()
-              : _detail(
-                  textDirection: textDirection,
-                  body: Text(
-                    reply,
-                    style: XFonts.size18Black0,
-                  ),
-                  bgColor: Colors.black.withOpacity(0.1)),
-        ],
-      );
-    } else if (msg.msgType == MessageType.image.label) {
-      body = _image(textDirection: textDirection, context: context);
-    } else if (msg.msgType == MessageType.voice.label) {
-      body = _voice(textDirection: textDirection);
-    } else if (msg.msgType == MessageType.file.label) {
-      body = _file(textDirection: textDirection, context: context);
-    } else {
-      body = Container();
-    }
+    Widget body = _chatBody(context, textDirection);
+
+    String? reply = TextUtils.isReplyMsg(msg.metadata.showTxt);
+
+    body = Column(
+      crossAxisAlignment:
+          isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      children: [
+        body,
+        reply == null
+            ? const SizedBox()
+            : _detail(
+            textDirection: textDirection,
+            body: Text(
+              reply,
+              style: XFonts.size18Black0,
+            ),
+            bgColor: Colors.black.withOpacity(0.1)),
+      ],
+    );
 
     String userId = chat.userId;
     List<DetailFunc> func = [
       DetailFunc.forward,
       DetailFunc.reply,
     ];
+    if(msg.msgType == MessageType.text.label){
+      func.add(DetailFunc.copy);
+    }
     if (userId == controller.user.metadata.id) {
       func.add(DetailFunc.remove);
     }
@@ -221,11 +222,14 @@ class DetailItemWidget extends GetView<SettingController> {
                           chat.deleteMessage(msg.id);
                           break;
                         case DetailFunc.forward:
-                          chatController.forward(msg.msgType,msg.showTxt);
+                          chatController.forward(msg.msgType,msg.metadata.showTxt);
                           break;
                         case DetailFunc.reply:
                           ChatBoxController controller = Get.find<ChatBoxController>();
-                          controller.replyText.value = msg.showTxt;
+                          controller.replyText.value = msg.metadata.showTxt;
+                          break;
+                        case DetailFunc.copy:
+                           Clipboard.setData(ClipboardData(text: TextUtils.isReplyMsg(msg.metadata.showTxt)));
                           break;
                       }
                       popCtrl.hideMenu();
@@ -250,14 +254,115 @@ class DetailItemWidget extends GetView<SettingController> {
       ),
     );
 
+    bool isRead = false;
+    List<XTarget> unreadMember = [];
+    List<XTarget> readMember = [];
+    Widget read = SizedBox();
+
+    try {
+      IMessageLabel? tag;
+      if (chat.share.typeName == TargetType.person.label) {
+        tag = msg.labels.firstWhere((element) => element.userId == chat.chatId);
+        isRead = tag != null;
+      } else {
+        for (var member in chat.members) {
+          if (member.id != controller.user.metadata.id) {
+            if (msg.labels
+                .where((element) => element.userId == member.id)
+                .isEmpty) {
+              unreadMember.add(member);
+            } else {
+              readMember.add(member);
+            }
+          }
+        }
+        isRead = readMember.length == (chat.members.length - 1);
+      }
+    } catch (e) {}
+
+    if (isSelf) {
+      if (chat.share.typeName == TargetType.person.label) {
+        read = Container(
+          margin: EdgeInsets.only(right: 10.w),
+          child: Text(
+            isRead ? "已读" : "未读",
+            style: TextStyle(
+                color: isRead ? XColors.black9 : XColors.selectedColor,
+                fontSize: 16.sp),
+          ),
+        );
+      } else {
+        read = GestureDetector(
+          child: Container(
+            margin: EdgeInsets.only(right: 10.w),
+            child: Text(
+              isRead ? "全部已读" : "${unreadMember.length}人未读",
+              style: TextStyle(
+                  color: isRead ? XColors.black9 : XColors.selectedColor,
+                  fontSize: 16.sp),
+            ),
+          ),
+          onTap: (){
+            chatController.showReadMessage(readMember,unreadMember,msg.labels);
+          },
+        );
+      }
+    }
+
+    content.add(read);
+
     return Container(
       margin: isSelf ? EdgeInsets.only(right: 2.w) : EdgeInsets.only(left: 2.w),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment:
+            !isSelf ? CrossAxisAlignment.start : CrossAxisAlignment.end,
         children: content,
       ),
     );
   }
+
+
+  Widget _chatBody(BuildContext context, TextDirection textDirection) {
+    Widget body;
+
+    if (msg.msgType == MessageType.text.label) {
+      body = _text(textDirection: textDirection);
+    } else if (msg.msgType == MessageType.image.label) {
+      body = _image(textDirection: textDirection, context: context);
+    } else if (msg.msgType == MessageType.voice.label) {
+      body = _voice(textDirection: textDirection);
+    } else if (msg.msgType == MessageType.file.label) {
+      body = _file(textDirection: textDirection, context: context);
+    } else if (msg.msgType == MessageType.uploading.label) {
+      body = _uploading(textDirection: textDirection, context: context);
+    } else {
+      body = Container();
+    }
+
+    return body;
+  }
+
+  // Widget _replyBody(
+  //     BuildContext context, TextDirection textDirection, String? text) {
+  //   if (text == null) {
+  //     return Container();
+  //   }
+  //   Widget body;
+  //   Map<String, dynamic> json = jsonDecode(text);
+  //   MsgSaveModel msg = MsgSaveModel.fromJson(json);
+  //   if (msg.msgType == MessageType.text.label) {
+  //     body = _text(
+  //         textDirection: textDirection, bgColor: Colors.black.withOpacity(0.1));
+  //   } else if (msg.msgType == MessageType.image.label) {
+  //     body = _image(
+  //         textDirection: textDirection,
+  //         context: context,
+  //         bgColor: Colors.black.withOpacity(0.1));
+  //   } else {
+  //     body = Container();
+  //   }
+  //   return body;
+  // }
 
   /// 会话详情
   Widget _detail({
@@ -268,7 +373,6 @@ class DetailItemWidget extends GetView<SettingController> {
     EdgeInsets? padding,
     Color? bgColor,
   }) {
-
     Color color = bgColor??(isSelf ? XColors.tinyLightBlue : Colors.white);
     
     return Container(
@@ -291,16 +395,14 @@ class DetailItemWidget extends GetView<SettingController> {
   Widget _image({
     required TextDirection textDirection,
     required BuildContext context,
+    bool showShadow = false,
+    Color? bgColor,
   }) {
-    /// 解析参数
-    Map<String, dynamic> msgBody = {};
-    try {
-      msgBody = jsonDecode(msg.showTxt);
-    } catch (error) {
-      Log.info("参数解析失败，msg.showTxt:${msg.showTxt}");
-      return Container();
+    dynamic link = msg.metadata.msgData["shareLink"] ?? '';
+
+    if (msg.metadata.msgData["path"] != null && link == '') {
+      link = File(msg.metadata.msgData["path"]);
     }
-    String link = msgBody["shareLink"] ?? "";
 
     /// 限制大小
     BoxConstraints boxConstraints = BoxConstraints(maxWidth: 200.w);
@@ -308,6 +410,12 @@ class DetailItemWidget extends GetView<SettingController> {
     Map<String, String> headers = {
       "Authorization": KernelApi.getInstance().anystore.accessToken,
     };
+
+    Widget body = ImageWidget(link, httpHeaders: headers);
+
+    if (showShadow) {
+      body = _shadow(body);
+    }
 
     return GestureDetector(
       onTap: () {
@@ -322,9 +430,10 @@ class DetailItemWidget extends GetView<SettingController> {
       child: _detail(
         constraints: boxConstraints,
         textDirection: textDirection,
-        body: CachedNetworkImage(imageUrl: link, httpHeaders: headers),
+        body: body,
         clipBehavior: Clip.hardEdge,
         padding: EdgeInsets.zero,
+        bgColor: bgColor,
       ),
     );
   }
@@ -333,7 +442,7 @@ class DetailItemWidget extends GetView<SettingController> {
   Widget _voice({required TextDirection textDirection}) {
     // 初始化语音输入
     var playCtrl = Get.find<PlayController>();
-    playCtrl.putPlayerStatusIfAbsent(msg);
+    playCtrl.putPlayerStatusIfAbsent(msg.metadata);
     var voicePlay = playCtrl.getPlayerStatus(msg.id)!;
     var seconds = voicePlay.initProgress ~/ 1000;
     seconds = seconds > 60 ? 60 : seconds;
@@ -413,17 +522,10 @@ class DetailItemWidget extends GetView<SettingController> {
   Widget _file({
     required TextDirection textDirection,
     required BuildContext context,
+    bool showShadow = false,
   }) {
-    /// 解析参数
-    Map<String, dynamic> msgBody = {};
-    try {
-      msgBody = jsonDecode(msg.showTxt);
-    } catch (error) {
-      Log.info("参数解析失败，msg.showTxt:${msg.showTxt}");
-      return Container();
-    }
 
-    String extension = msgBody["extension"];
+    String extension = msg.metadata.msgData["extension"];
     if (imageExtension.contains(extension.toLowerCase())) {
       return _image(textDirection: textDirection, context: context);
     }
@@ -431,59 +533,116 @@ class DetailItemWidget extends GetView<SettingController> {
     /// 限制大小
     BoxConstraints boxConstraints = BoxConstraints(minWidth: 200.w,minHeight: 70.h,maxWidth: 250.w,maxHeight: 100.h);
 
+
+    Widget body = Container(
+      constraints: boxConstraints,
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    msg.metadata.msgData['name'],
+                    style: XFonts.size24Black0,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                SizedBox(
+                  height: 5.h,
+                ),
+                Text(
+                  getFileSizeString(bytes: msg.metadata.msgData['size']),
+                  style: XFonts.size16Black9,
+                ),
+              ],
+            ),
+          ),
+          ImageWidget(Images.iconFile, size: 40.w),
+        ],
+      ),
+    );
+
+    if(showShadow){
+      body = _shadow(body);
+    }
     return GestureDetector(
       onTap: () {
-        Get.toNamed(Routers.messageFile, arguments: msgBody);
+        Get.toNamed(Routers.messageFile, arguments: msg.metadata.msgData);
       },
       child: _detail(
         textDirection: textDirection,
         clipBehavior: Clip.hardEdge,
         padding: EdgeInsets.zero,
-        body: Container(
-          constraints: boxConstraints,
-          color: Colors.white,
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        msgBody['name'],
-                        style: XFonts.size20Black0,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    Text(
-                      getFileSizeString(bytes: msgBody['size']),
-                      style: XFonts.size16Black9,
-                    ),
-                  ],
-                ),
-              ),
-              ImageWidget(Images.iconFile,width: 40.w,height: 40.w),
-            ],
-          ),
-        ),
+        body: body,
       ),
     );
   }
 
-  Widget _text({required TextDirection textDirection}) {
+
+  Widget _shadow(Widget body){
+    return Container(
+      foregroundDecoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          // Add one stop for each color. Stops should increase from 0 to 1
+          stops: [0.2, 0.7],
+          colors: [
+            Color.fromARGB(100, 0, 0, 0),
+            Color.fromARGB(100, 0, 0, 0),
+          ],
+        ),
+      ),
+      child: body,
+    );
+  }
+
+  Widget _uploading({
+    required TextDirection textDirection,
+    required BuildContext context,
+  }) {
+
+    String extension = msg.metadata.msgData["extension"];
+    double progress = msg.metadata.progress;
+    Widget body;
+    if (imageExtension.contains(extension.toLowerCase())) {
+      body = _image(textDirection: textDirection, context: context,showShadow: true);
+    } else {
+      body = _file(
+          textDirection: textDirection, context: context, showShadow: true);
+    }
+
+    Widget gradient = Stack(
+      alignment: Alignment.center,
+      fit: StackFit.passthrough,
+      children: [
+        body,
+        Text(
+          '${(progress*100).toStringAsFixed(0)}%',
+          style: TextStyle(color: Colors.white, fontSize: 24.sp),
+        ),
+      ],
+    );
+    return gradient;
+  }
+
+  Widget _text({
+    required TextDirection textDirection,
+    Color? bgColor,
+  }) {
     List<InlineSpan> _contentList = [];
 
     RegExp exp = RegExp(
         r'((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?');
 
-    String text = TextUtils.textReplace(msg.showTxt);
+    String text = TextUtils.textReplace(msg.metadata.showTxt);
     Iterable<RegExpMatch> matches = exp.allMatches(text);
 
     if (matches.isNotEmpty) {
@@ -525,17 +684,19 @@ class DetailItemWidget extends GetView<SettingController> {
     if (_contentList.isNotEmpty) {
       if (_contentList.length == 1) {
         return _detail(
+            bgColor: bgColor,
             textDirection: textDirection,
             body: PreViewUrl(
               url: _contentList.first.toPlainText().replaceAll("www.", ''),
             ));
       } else {
         return _detail(
+          bgColor: bgColor,
           textDirection: textDirection,
           body: Text.rich(
             TextSpan(
               children: _contentList,
-              style: XFonts.size20Black0,
+              style: XFonts.size22Black0,
             ),
           ),
         );
@@ -544,13 +705,16 @@ class DetailItemWidget extends GetView<SettingController> {
 
     return _detail(
       textDirection: textDirection,
+      bgColor: bgColor,
       body: Text(
-        TextUtils.textReplace(msg.showTxt),
-        style: XFonts.size20Black0,
+        TextUtils.textReplace(msg.metadata.showTxt),
+        style: XFonts.size22Black0,
       ),
     );
   }
 }
+
+
 
 class PreViewUrl extends StatefulWidget {
   final String url;
@@ -596,11 +760,7 @@ class _PreViewUrlState extends State<PreViewUrl> {
 
 enum VoiceStatus { stop, playing }
 
-String getFileSizeString({required int bytes, int decimals = 0}) {
-  const suffixes = ["B", "KB", "MB", "GB", "TB"];
-  var i = (log(bytes) / log(1024)).floor();
-  return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + suffixes[i];
-}
+
 
 List<String> imageExtension = [
   '.jpg',
@@ -742,4 +902,11 @@ class PlayController extends GetxController with GetTickerProviderStateMixin {
       _currentVoicePlay = null;
     }
   }
+}
+
+
+String getFileSizeString({required int bytes, int decimals = 0}) {
+  const suffixes = ["B", "KB", "MB", "GB", "TB"];
+  var i = (log(bytes) / log(1024)).floor();
+  return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + suffixes[i];
 }

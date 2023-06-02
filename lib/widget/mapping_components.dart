@@ -63,7 +63,7 @@ MappingComponentsCallback mappingInputWidget = (Fields data,
         top: (data.marginTop ?? 0).h,
         bottom: (data.marginBottom ?? 0).h),
     child: CommonWidget.commonTextTile(data.title ?? "", "",
-        hint: data.hint,
+        hint: data.hint??"请输入",
         maxLine: data.maxLine,
         controller: controller,
         onChanged: (str){
@@ -80,12 +80,7 @@ MappingComponentsCallback mappingSelectBoxWidget = (Fields data,
     return Container();
   }
   return Obx(() {
-    String content = '';
-    if((data.code?.contains("DATE")??false)||(data.code?.contains('date')??false) || data.code == 'DKGMSJ'){
-      content = data.defaultData.value??"";
-    }else{
-      content = data.defaultData.value?.values?.first.toString() ?? "";
-    }
+    String content = data.defaultData.value?.values?.first.toString() ?? "";;
     return Container(
       margin: EdgeInsets.only(
           left: (data.marginLeft ?? 0).h,

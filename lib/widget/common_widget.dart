@@ -68,7 +68,7 @@ class CommonWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              image!=null?ImageWidget(image,color: Colors.white,width: 32.w,height: 32.w,):SizedBox(),
+              image!=null?ImageWidget(image,color: Colors.white,size: 32.w):const SizedBox(),
               Text(
                 text,
                 style: TextStyle(color: Colors.white, fontSize: 16.sp),
@@ -720,7 +720,7 @@ class CommonWidget {
                         EdgeInsets.symmetric(vertical: 15.h, horizontal: 10.w),
                     color: GYColors.formTitleBackgroundColor,
                     height: 60.h,
-                    child: Text(title),
+                    child: Text(title,style: const TextStyle(color: XColors.black666,),),
                   ),
                 ),
                 SizedBox(height: 55.h,width: 0.5,),
@@ -770,7 +770,14 @@ class CommonWidget {
         key.add(title[i]);
       }
       for (var value in content) {
-        key.add(value[i]);
+        String data;
+        if(value.length-1<i){
+          data = '';
+        }else{
+          data = value[i];
+        }
+        key.add(data);
+
       }
       data.add(key);
     }

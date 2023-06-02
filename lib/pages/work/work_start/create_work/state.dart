@@ -1,23 +1,29 @@
 
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart' hide ThingModel;
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/thing/base/work.dart';
-import 'package:orginone/model/thing_model.dart';
+import 'package:orginone/dart/core/thing/base/flow.dart';
 
 class CreateWorkState extends BaseGetState{
   late IWorkDefine define;
 
-  late Rx<WorkNodeModel> node;
+  Rxn<XForm> workForm = Rxn();
 
-  var show = false.obs;
+  var thingForm = <XForm>[].obs;
 
-  var selectedThings = <ThingModel>[].obs;
-
+  late TabController tabController;
   CreateWorkState(){
     define = Get.arguments['define'];
-    node = Rx(Get.arguments['node']);
   }
+}
+
+enum SubTableEnum{
+  allChange("批量修改"),
+  addTable("新增"),
+  choiceTable("选择");
+
+  final String lable;
+  const SubTableEnum(this.lable);
 }

@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -32,8 +30,11 @@ import 'package:orginone/widget/unified.dart';
         }
       },
       child: Container(
-        color: Colors.white,
-        padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 10.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(bottom: BorderSide(color: Colors.grey.shade300,width: 0.5))
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 12.h),
         child: Row(
           children: [
             AdvancedAvatar(
@@ -44,10 +45,6 @@ import 'package:orginone/widget/unified.dart';
               child: item.image != null
                   ? ImageWidget(
                       item.image,
-                      color: (item.image is String) &&
-                              (!item.image.contains('http'))
-                          ? Colors.white
-                          : null,
                     )
                   : Container(
                       color: XColors.themeColor,
@@ -71,7 +68,7 @@ import 'package:orginone/widget/unified.dart';
       color: Colors.white,
       child: Text(
         item.name,
-        style: TextStyle(fontSize: 18.sp, color: Colors.black),
+        style: TextStyle(fontSize: 20.sp, color: Colors.black),
       ),
     );
   }

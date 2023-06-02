@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/widget/text_avatar.dart';
+import 'package:orginone/widget/widgets/team_avatar.dart';
 
 class AtPersonDialog {
 
@@ -22,21 +23,7 @@ class AtPersonDialog {
                     Navigator.pop(context, item);
                   },
                   title: Text(item.name),
-                  leading: item.avatarThumbnail()!=null
-                      ? TextAvatar(
-                          radius: 45.w,
-                          width: 45.w,
-                          avatarName: item.name.substring(0, 1) ?? "",
-                        )
-                      : Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                image: MemoryImage(item.avatarThumbnail()!),
-                                fit: BoxFit.cover),
-                          ),
-                          width: 45.w,
-                        ),
+                  leading: TeamAvatar(info: TeamTypeInfo(userId: item.id),size:45.w,),
                 );
               },
               itemCount: chat.members.length,

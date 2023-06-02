@@ -158,7 +158,7 @@ class MessageSetting extends GetView<SettingController> {
   Widget _searchChat(IMsgChat chat) {
     return ChooseItem(
       func: () {
-
+        Get.toNamed(Routers.messageRecords,arguments: {"chat":chat});
       },
       padding: EdgeInsets.zero,
       header: Text(

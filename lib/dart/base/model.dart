@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -2339,43 +2340,37 @@ class SpeciesModel {
 }
 
 class FormModel {
-  // 唯一ID
   String? id;
-
-  // 名称
   String? name;
-
-  // 编号
   String? code;
-
-  // 备注
-  String? remark;
-
-  // 类别Id
-  String? speciesId;
-
-  // 共享用户Id
-  String? shareId;
   String? rule;
+  String? typeName;
+  String? remark;
+  String? speciesId;
+  String? shareId;
 
   FormModel({
-    this.id,
-    this.name,
-    this.code,
-    this.remark,
-    this.speciesId,
-    this.shareId,
-    this.rule,
+     this.id,
+     this.name,
+     this.code,
+     this.rule,
+     this.typeName,
+     this.remark,
+     this.speciesId,
+     this.shareId,
   });
 
-  FormModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    code = json['code'];
-    remark = json['remark'];
-    rule = json['rule'];
-    speciesId = json['speciesId'];
-    shareId = json['shareId'];
+  factory FormModel.fromJson(Map<String, dynamic> json) {
+    return FormModel(
+      id: json['id'],
+      name: json['name'],
+      code: json['code'],
+      rule: json['rule'],
+      typeName: json['typeName'],
+      remark: json['remark'],
+      speciesId: json['speciesId'],
+      shareId: json['shareId'],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -2383,13 +2378,15 @@ class FormModel {
       'id': id,
       'name': name,
       'code': code,
-      'remark': remark,
       'rule': rule,
+      'typeName': typeName,
+      'remark': remark,
       'speciesId': speciesId,
       'shareId': shareId,
     };
   }
 }
+
 
 class FormItemModel {
   // 唯一ID
@@ -4206,22 +4203,29 @@ class NameCodeModel {
 
 class MsgTagModel {
   // 工作空间ID
-  final String belongId;
+  String? belongId;
 
   // id
-  final String id;
+  String? id;
 
   // 消息类型
-  final List<String> ids;
+  List<String>? ids;
 
   // 消息体
-  final List<String> tags;
+   List<String>? tags;
 
   MsgTagModel(
-      {required this.belongId,
-      required this.id,
-      required this.ids,
-      required this.tags});
+      { this.belongId,
+       this.id,
+       this.ids,
+       this.tags});
+
+  MsgTagModel.fromJson(Map<String, dynamic> json){
+    belongId = json["belongId"];
+    id = json["id"];
+    ids = json["ids"]!=null?List.castFrom(json["ids"]):null;
+    tags = json["tags"]!=null?List.castFrom(json["tags"]):null;
+  }
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
@@ -4430,6 +4434,31 @@ class ChatModel {
     json["remark"] = remark;
     json["typeName"] = typeName;
     return json;
+  }
+}
+
+class MsgTagLabel {
+  String? label;
+  String? userId;
+  String? time;
+
+  MsgTagLabel({required this.label, required this.userId, required this.time});
+
+  factory MsgTagLabel.fromJson(Map<String, dynamic> json) {
+    return MsgTagLabel(
+      label: json['label'],
+      userId: json['userId'],
+      time: json['time'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      'label': label,
+      'userId': userId,
+      'time': time,
+    };
+    return data;
   }
 }
 
@@ -5148,32 +5177,35 @@ class Tag {
 }
 
 class MsgSaveModel {
-  String sessionId;
-  String belongId;
-  String fromId;
-  String msgType;
-  String msgBody;
-  String createTime;
-  String updateTime;
-  String id;
-  String toId;
-  String showTxt;
-  bool allowEdit;
+  late String sessionId;
+  late String belongId;
+  late String fromId;
+  late String msgType;
+  late  String msgBody;
+  late String createTime;
+  late String updateTime;
+  late String id;
+  late String toId;
+  late String showTxt;
+  late bool allowEdit;
   List<Tag>? tags;
-
+  late GlobalKey key;
+  late double progress;
+  late Map<String,dynamic> msgData;
   MsgSaveModel({
-    required this.sessionId,
-    required this.belongId,
-    required this.fromId,
-    required this.msgType,
-    required this.msgBody,
-    required this.createTime,
-    required this.updateTime,
-    required this.id,
-    required this.toId,
-    required this.showTxt,
-    required this.allowEdit,
+     this.sessionId ='',
+     this.belongId = '',
+     this.fromId ='',
+     this.msgType = '',
+     this.msgBody = '',
+     this.createTime = '',
+     this.updateTime = '',
+     this.id = '',
+     this.toId = '',
+     this.showTxt = '',
+     this.allowEdit = false,
     this.tags,
+    this.msgData =const {},
   });
 
   MsgSaveModel.fromJson(Map<String, dynamic> json)
@@ -5185,6 +5217,7 @@ class MsgSaveModel {
         createTime = json['createTime'],
         updateTime = json['updateTime'],
         id = json['id'],
+        key = GlobalKey(debugLabel: json['id']),
         toId = json['toId'],
         showTxt = EncryptionUtil.inflate(json['msgBody']),
         allowEdit = json['allowEdit'] ?? false {
@@ -5193,6 +5226,33 @@ class MsgSaveModel {
       json["tags"].forEach((json){
         tags!.add(Tag.fromJson(json));
       });
+    }
+    try {
+      msgData = jsonDecode(showTxt);
+    } catch (error) {
+      msgData = {};
+    }
+
+  }
+
+  MsgSaveModel.fromFileUpload(String id,String fileName,String filePath,String ext,[int size = 0]){
+    fromId = id;
+    msgType = MessageType.uploading.label;
+    this.id = fileName;
+    tags = [];
+    progress = 0;
+    msgBody = jsonEncode({"path": filePath,'extension':'.$ext','name':fileName,'size':size});
+    createTime = DateTime.now().toString();
+    key = GlobalKey();
+    showTxt = msgBody;
+    belongId = '';
+    updateTime = '';
+    toId = '';
+    sessionId = '';
+    try {
+      msgData = jsonDecode(showTxt);
+    } catch (error) {
+      msgData = {};
     }
   }
 

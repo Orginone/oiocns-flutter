@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/unified.dart';
 
 import 'logic.dart';
 import 'state.dart';
@@ -42,8 +42,11 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
     }
     return Container(
       width: double.infinity,
-      height: 120.h,
-      color: Colors.white,
+      height: 100.h,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border:
+              Border(top: BorderSide(color: Colors.grey.shade300, width: 0.5))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -145,7 +148,7 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
         width: 200.w,
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(16.w),
+          borderRadius: BorderRadius.circular(8.w),
           border: border,
         ),
         child: Text(

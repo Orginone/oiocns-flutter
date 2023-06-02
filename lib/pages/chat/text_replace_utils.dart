@@ -1,6 +1,8 @@
 
 
 
+import 'dart:convert';
+
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,7 @@ class TextUtils{
   static String textReplace(String text){
     String str = '';
     var findMe = RegExp(r'\$FINDME\[([^\]]*)\]');
-    var citeMessage = RegExp(r'\$CITEMESSAGE\[([^\]]*)\]');
+    var citeMessage = RegExp(r'\$CITE\[([^\]]*)\]');
     str = text.replaceAll(findMe, '');
     str = str.replaceAll(citeMessage, '');
     return str;
@@ -24,7 +26,7 @@ class TextUtils{
 
   static String? isReplyMsg(String text) {
     String? msg;
-    var reg = RegExp(r'\$CITEMESSAGE\[([^\]]*)\]');
+    var reg = RegExp(r"\$CITE\[(.*?)\]");
     try {
       msg = reg.allMatches(text).map((e) => e.group(1) ?? "").first;
     } catch (e) {

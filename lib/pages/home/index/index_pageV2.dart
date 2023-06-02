@@ -22,7 +22,7 @@ class _IndexPageState extends State<IndexTabPage>
   @override
   void initState() {
     super.initState();
-    tabCtrl = TabController(length: 6, vsync: this);
+    tabCtrl = TabController(length: 1, vsync: this);
   }
 
   @override
