@@ -22,34 +22,6 @@ import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:getwidget/getwidget.dart';
 
-class MyMenuItemFunc {
-  late Function _addFriend;
-
-  MyMenuItemFunc() {
-    _addFriend = () async {
-      print("object");
-      final UserInfoState state = UserInfoState();
-      showSearchDialog(Get.context!, TargetType.person,
-          title: "添加好友",
-          hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
-        print("object333333311112222");
-
-        if (list.isNotEmpty) {
-          bool success = await state.settingController.user.pullMembers(list);
-          if (success) {
-            state.unitMember.addAll(list);
-            state.unitMember.refresh();
-            print("object11112222");
-          } else {
-            print("object2222");
-          }
-        }
-      });
-    };
-  }
-
-  Function get addFriend => _addFriend;
-}
 
 class MyMenuItem {
   final int id;
@@ -91,7 +63,26 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
         id: 2,
         icon: Icons.search,
         cardName: '加好友',
-        func: MyMenuItemFunc()._addFriend),
+        func: () {
+          final UserInfoState state = UserInfoState();
+          showSearchDialog(Get.context!, TargetType.person,
+              title: "添加好友",
+              hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
+            print("object333333311112222");
+
+            if (list.isNotEmpty) {
+              bool success =
+                  await state.settingController.user.pullMembers(list);
+              if (success) {
+                state.unitMember.addAll(list);
+                state.unitMember.refresh();
+                print("object11112222");
+              } else {
+                print("object2222");
+              }
+            }
+          });
+        }),
     3: MyMenuItem(
         id: 3,
         icon: Icons.settings,
@@ -106,20 +97,24 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
         icon: Icons.person,
         cardName: '加群组',
         func: () {
-          showSearchDialog(Get.context!, TargetType.cohort,
-              title: "添加群组",
-              hint: "请输入群组的编码", onSelected: (List<XTarget> list) async {
-            if (list.isNotEmpty) {
-              UserInfoState state = UserInfoState();
+          // showSearchDialog(Get.context!, TargetType.cohort,
+          //     title: "添加群组",
+          //     hint: "请输入群组的编码", onSelected: (List<XTarget> list) async {
+          //   if (list.isNotEmpty) {
+          //     UserInfoState state = UserInfoState();
 
-              bool success = await state.settingController.user.applyJoin(list);
-              if (success) {
-                toast("发送成功!");
-              } else {
-                toast("发送失败!");
-              }
-            }
-          });
+          //     bool success = await state.settingController.user.applyJoin(list);
+          //     if (success) {
+          //       toast("发送成功!");
+          //     } else {
+          //       toast("发送失败!");
+          //     }
+          //   }
+          // });
+
+          SettingController setting = Get.find<SettingController>();
+
+          setting.showAddFeatures(1, TargetType.cohort, "添加群组", "请输入群组的编码");
         }),
     5: MyMenuItem(
         id: 5,

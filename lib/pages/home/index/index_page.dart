@@ -238,17 +238,17 @@ class IndexPage extends StatelessWidget {
                 child: SizedBox(
                   height: 12.h,
                 )),
-            // Container(
-            //   color: XColors.white,
-            //   padding: EdgeInsets.only(left: 12.w, right: 12.w),
-            //   child: ListView(
-            //     shrinkWrap: true,
-            //     children: _getItems()..add(Container(
-            //         // margin:
-            //         //     EdgeInsets.only(left: 20.w, bottom: 10.h, right: 20.w),
-            //         )),
-            //   ),
-            // ),
+            Container(
+              color: XColors.white,
+              padding: EdgeInsets.only(left: 12.w, right: 12.w),
+              child: ListView(
+                shrinkWrap: true,
+                children: _getItems()..add(Container(
+                    // margin:
+                    //     EdgeInsets.only(left: 20.w, bottom: 10.h, right: 20.w),
+                    )),
+              ),
+            ),
             // _dataMonitoring,
           ]),
     );
