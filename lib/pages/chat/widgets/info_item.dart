@@ -129,10 +129,11 @@ class DetailItemWidget extends GetView<SettingController> {
         ),
       ),
       onLongPress: () {
-         if(chat.share.typeName!=TargetType.person.label){
-           var target = chat.members.firstWhere((element) => element.id == msg.metadata.fromId);
-           EventBusHelper.fire(target);
-         }
+        if (chat.share.typeName != TargetType.person.label) {
+          var target = chat.members
+              .firstWhere((element) => element.id == msg.metadata.fromId);
+          EventBusHelper.fire(target);
+        }
       },
     );
   }
@@ -155,7 +156,6 @@ class DetailItemWidget extends GetView<SettingController> {
 
     Widget body = _chatBody(context, textDirection);
 
-
     body = Column(
       crossAxisAlignment:
           isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -164,12 +164,12 @@ class DetailItemWidget extends GetView<SettingController> {
         msg.body?.cite == null
             ? const SizedBox()
             : _detail(
-            textDirection: textDirection,
-            body: Text(
-              msg.body!.cite!.body!.body!,
+                textDirection: textDirection,
+                body: Text(
+                  msg.body!.cite!.body!.body!,
                   style: XFonts.size18Black0,
                 ),
-            bgColor: Colors.black.withOpacity(0.1)),
+                bgColor: Colors.black.withOpacity(0.1)),
       ],
     );
 
@@ -222,10 +222,12 @@ class DetailItemWidget extends GetView<SettingController> {
                           chat.deleteMessage(msg.id);
                           break;
                         case DetailFunc.forward:
-                          chatController.forward(msg.msgType,msg.metadata.showTxt);
+                          chatController.forward(
+                              msg.msgType, msg.metadata.showTxt);
                           break;
                         case DetailFunc.reply:
-                          ChatBoxController controller = Get.find<ChatBoxController>();
+                          ChatBoxController controller =
+                              Get.find<ChatBoxController>();
                           controller.reply.value = msg.metadata;
                           break;
                         case DetailFunc.copy:
@@ -297,14 +299,17 @@ class DetailItemWidget extends GetView<SettingController> {
           child: Container(
             margin: EdgeInsets.only(right: 10.w),
             child: Text(
-              isRead ? "全部已读" : "${unreadMember.length == chat.members.length - 1?"全部未读":"${unreadMember.length}人未读"}",
+              isRead
+                  ? "全部已读"
+                  : "${unreadMember.length == chat.members.length - 1 ? "全部未读" : "${unreadMember.length}人未读"}",
               style: TextStyle(
                   color: isRead ? XColors.black9 : XColors.selectedColor,
                   fontSize: 16.sp),
             ),
           ),
-          onTap: (){
-            chatController.showReadMessage(readMember,unreadMember,msg.labels);
+          onTap: () {
+            chatController.showReadMessage(
+                readMember, unreadMember, msg.labels);
           },
         );
       }
@@ -321,7 +326,6 @@ class DetailItemWidget extends GetView<SettingController> {
       ),
     );
   }
-
 
   Widget _chatBody(BuildContext context, TextDirection textDirection) {
     Widget body;
@@ -374,12 +378,12 @@ class DetailItemWidget extends GetView<SettingController> {
     EdgeInsets? padding,
     Color? bgColor,
   }) {
-    Color color = bgColor??(isSelf ? XColors.tinyLightBlue : Colors.white);
-    
+    Color color = bgColor ?? (isSelf ? XColors.tinyLightBlue : Colors.white);
+
     return Container(
-      constraints: constraints ?? BoxConstraints(maxWidth: 350.w
-      ),
-      padding: padding ?? EdgeInsets.symmetric(horizontal: 15.w,vertical: 20.h),
+      constraints: constraints ?? BoxConstraints(maxWidth: 350.w),
+      padding:
+          padding ?? EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
       margin: textDirection == TextDirection.ltr
           ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
           : EdgeInsets.only(right: defaultWidth),
@@ -569,7 +573,7 @@ class DetailItemWidget extends GetView<SettingController> {
       ),
     );
 
-    if(showShadow){
+    if (showShadow) {
       body = _shadow(body);
     }
     return GestureDetector(
@@ -585,8 +589,7 @@ class DetailItemWidget extends GetView<SettingController> {
     );
   }
 
-
-  Widget _shadow(Widget body){
+  Widget _shadow(Widget body) {
     return Container(
       foregroundDecoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -625,7 +628,7 @@ class DetailItemWidget extends GetView<SettingController> {
       children: [
         body,
         Text(
-          '${(progress*100).toStringAsFixed(0)}%',
+          '${(progress * 100).toStringAsFixed(0)}%',
           style: TextStyle(color: Colors.white, fontSize: 24.sp),
         ),
       ],
@@ -638,7 +641,6 @@ class DetailItemWidget extends GetView<SettingController> {
     Color? bgColor,
   }) {
     List<InlineSpan> _contentList = [];
-
 
     _contentList = _getUrlSpan(msg.body?.body ?? "");
 
@@ -678,7 +680,6 @@ class DetailItemWidget extends GetView<SettingController> {
     );
   }
 
-
   List<InlineSpan> _getUrlSpan(String text) {
     RegExp urlExp = RegExp(r'(?:https?:\/\/|www\.)[^\s]+');
 
@@ -692,7 +693,7 @@ class DetailItemWidget extends GetView<SettingController> {
 
     List<RegExpMatch> urlMatch = urlExp.allMatches(text).toList();
 
-    if(urlMatch.isEmpty){
+    if (urlMatch.isEmpty) {
       return span;
     }
 
@@ -702,9 +703,9 @@ class DetailItemWidget extends GetView<SettingController> {
         imageUrl = "${Constant.host}/emo/$imageUrl";
         return WidgetSpan(
             child: ImageWidget(
-              imageUrl,
-              httpHeaders: headers,
-            ));
+          imageUrl,
+          httpHeaders: headers,
+        ));
       }
       return TextSpan(text: text);
     }
@@ -740,7 +741,7 @@ class DetailItemWidget extends GetView<SettingController> {
     return span;
   }
 
-  List<InlineSpan> _getImageSpan(String text){
+  List<InlineSpan> _getImageSpan(String text) {
     RegExp imageExp = RegExp(r'\$IMG\[(.*?)\]');
 
     Map<String, String> headers = {
@@ -753,7 +754,7 @@ class DetailItemWidget extends GetView<SettingController> {
 
     int startIndex = 0;
 
-    if(imgMatch.isEmpty){
+    if (imgMatch.isEmpty) {
       return span;
     }
 
@@ -767,9 +768,9 @@ class DetailItemWidget extends GetView<SettingController> {
       imageUrl = "${Constant.host}/emo/$imageUrl";
       span.add(WidgetSpan(
           child: ImageWidget(
-            imageUrl,
-            httpHeaders: headers,
-          )));
+        imageUrl,
+        httpHeaders: headers,
+      )));
 
       startIndex = match.end;
     }
@@ -781,10 +782,7 @@ class DetailItemWidget extends GetView<SettingController> {
 
     return span;
   }
-
 }
-
-
 
 class PreViewUrl extends StatefulWidget {
   final String url;
@@ -829,8 +827,6 @@ class _PreViewUrlState extends State<PreViewUrl> {
 }
 
 enum VoiceStatus { stop, playing }
-
-
 
 List<String> imageExtension = [
   '.jpg',
@@ -973,7 +969,6 @@ class PlayController extends GetxController with GetTickerProviderStateMixin {
     }
   }
 }
-
 
 String getFileSizeString({required int bytes, int decimals = 0}) {
   const suffixes = ["B", "KB", "MB", "GB", "TB"];

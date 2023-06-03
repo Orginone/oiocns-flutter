@@ -176,19 +176,22 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
               color: Colors.grey[200],
               width: double.infinity,
               alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(vertical: 5.h,horizontal: 15.w),
+              padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 15.w),
               child: Row(
                 children: [
                   Expanded(
                     child: Text(
-                        controller.reply.value?.body?.body??"",
+                      controller.reply.value?.body?.body ?? "",
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   GestureDetector(
-                    child: Icon(Icons.close,size: 28.w,),
-                    onTap: (){
+                    child: Icon(
+                      Icons.close,
+                      size: 28.w,
+                    ),
+                    onTap: () {
                       controller.reply.value = null;
                     },
                   )
@@ -379,11 +382,11 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
           break;
         case InputStatus.notPopup:
         case InputStatus.voice:
-        bottomHeight.value = 0;
+          bottomHeight.value = 0;
           return Container();
         case InputStatus.focusing:
         case InputStatus.inputtingText:
-        bottomHeight.value = 0;
+          bottomHeight.value = 0;
           body = Container();
           FocusScope.of(context).requestFocus(controller.focusNode);
           break;
@@ -671,7 +674,8 @@ class ChatBoxController with WidgetsBindingObserver {
         break;
       case InputEvent.clickSendBtn:
         String message = inputController.text;
-        await chat.sendMessage(MessageType.text, message,rules.map((e) => e.target?.id??"").toList(),reply.value);
+        await chat.sendMessage(MessageType.text, message,
+            rules.map((e) => e.target?.id ?? "").toList(), reply.value);
         inputController.clear();
         atKey.currentState?.clearRules();
         reply.value = null;
@@ -727,7 +731,7 @@ class ChatBoxController with WidgetsBindingObserver {
 
     var file1 = File(file.path!);
     var save = MsgSaveModel.fromFileUpload(
-        settingCtrl.user.id, file.name, file.path!, ext,file1.lengthSync());
+        settingCtrl.user.id, file.name, file.path!, ext, file1.lengthSync());
     chat.messages.insert(0, Message(chat, save));
 
     var item = await docDir?.upload(
