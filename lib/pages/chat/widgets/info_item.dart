@@ -13,6 +13,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -22,7 +23,6 @@ import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
-import 'package:orginone/pages/chat/text_replace_utils.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/string_util.dart';
@@ -70,7 +70,7 @@ class DetailItemWidget extends GetView<SettingController> {
   }
 
   bool get isSelf {
-    return msg.metadata.fromId == controller.user.metadata.id;
+    return msg.metadata.fromId == controller.user.id;
   }
 
   /// 消息详情
@@ -79,15 +79,16 @@ class DetailItemWidget extends GetView<SettingController> {
     bool isCenter = false;
     if (msg.msgType == MessageType.recall.label) {
       Widget child;
-      if (msg.metadata.fromId == controller.user.metadata.id) {
+      if (msg.metadata.fromId == controller.user.id) {
         child = Text("您撤回了一条消息", style: XFonts.size18Black9);
       } else {
         child = Text.rich(TextSpan(children: [
           WidgetSpan(
               child: TargetText(
-            style: XFonts.size18Black9,
-            userId: msg.metadata.fromId,
-          ),alignment: PlaceholderAlignment.middle),
+                style: XFonts.size18Black9,
+                userId: msg.metadata.fromId,
+              ),
+              alignment: PlaceholderAlignment.middle),
           TextSpan(text: "撤回了一条消息", style: XFonts.size18Black9),
         ]));
       }
@@ -114,7 +115,7 @@ class DetailItemWidget extends GetView<SettingController> {
     late String id;
     if (isSelf) {
       var settingCtrl = Get.find<SettingController>();
-      id = settingCtrl.user.metadata.id;
+      id = settingCtrl.user.id;
     } else {
       id = msg.metadata.fromId;
     }
@@ -154,21 +155,20 @@ class DetailItemWidget extends GetView<SettingController> {
 
     Widget body = _chatBody(context, textDirection);
 
-    String? reply = TextUtils.isReplyMsg(msg.metadata.showTxt);
 
     body = Column(
       crossAxisAlignment:
           isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         body,
-        reply == null
+        msg.body?.cite == null
             ? const SizedBox()
             : _detail(
             textDirection: textDirection,
             body: Text(
-              reply,
-              style: XFonts.size18Black0,
-            ),
+              msg.body!.cite!.body!.body!,
+                  style: XFonts.size18Black0,
+                ),
             bgColor: Colors.black.withOpacity(0.1)),
       ],
     );
@@ -178,10 +178,10 @@ class DetailItemWidget extends GetView<SettingController> {
       DetailFunc.forward,
       DetailFunc.reply,
     ];
-    if(msg.msgType == MessageType.text.label){
+    if (msg.msgType == MessageType.text.label) {
       func.add(DetailFunc.copy);
     }
-    if (userId == controller.user.metadata.id) {
+    if (userId == controller.user.id) {
       func.add(DetailFunc.remove);
     }
     if (isSelf) {
@@ -226,10 +226,11 @@ class DetailItemWidget extends GetView<SettingController> {
                           break;
                         case DetailFunc.reply:
                           ChatBoxController controller = Get.find<ChatBoxController>();
-                          controller.replyText.value = msg.metadata.showTxt;
+                          controller.reply.value = msg.metadata;
                           break;
                         case DetailFunc.copy:
-                           Clipboard.setData(ClipboardData(text: TextUtils.isReplyMsg(msg.metadata.showTxt)));
+                          Clipboard.setData(
+                              ClipboardData(text: msg.metadata.showTxt));
                           break;
                       }
                       popCtrl.hideMenu();
@@ -266,7 +267,7 @@ class DetailItemWidget extends GetView<SettingController> {
         isRead = tag != null;
       } else {
         for (var member in chat.members) {
-          if (member.id != controller.user.metadata.id) {
+          if (member.id != controller.user.id) {
             if (msg.labels
                 .where((element) => element.userId == member.id)
                 .isEmpty) {
@@ -296,7 +297,7 @@ class DetailItemWidget extends GetView<SettingController> {
           child: Container(
             margin: EdgeInsets.only(right: 10.w),
             child: Text(
-              isRead ? "全部已读" : "${unreadMember.length}人未读",
+              isRead ? "全部已读" : "${unreadMember.length == chat.members.length - 1?"全部未读":"${unreadMember.length}人未读"}",
               style: TextStyle(
                   color: isRead ? XColors.black9 : XColors.selectedColor,
                   fontSize: 16.sp),
@@ -398,10 +399,10 @@ class DetailItemWidget extends GetView<SettingController> {
     bool showShadow = false,
     Color? bgColor,
   }) {
-    dynamic link = msg.metadata.msgData["shareLink"] ?? '';
+    dynamic link = msg.body?.shareLink ?? '';
 
-    if (msg.metadata.msgData["path"] != null && link == '') {
-      link = File(msg.metadata.msgData["path"]);
+    if (msg.body?.path != null && link == '') {
+      link = File(msg.body!.path!);
     }
 
     /// 限制大小
@@ -524,15 +525,14 @@ class DetailItemWidget extends GetView<SettingController> {
     required BuildContext context,
     bool showShadow = false,
   }) {
-
-    String extension = msg.metadata.msgData["extension"];
+    String extension = msg.body?.extension ?? '';
     if (imageExtension.contains(extension.toLowerCase())) {
       return _image(textDirection: textDirection, context: context);
     }
 
     /// 限制大小
-    BoxConstraints boxConstraints = BoxConstraints(minWidth: 200.w,minHeight: 70.h,maxWidth: 250.w,maxHeight: 100.h);
-
+    BoxConstraints boxConstraints = BoxConstraints(
+        minWidth: 200.w, minHeight: 70.h, maxWidth: 250.w, maxHeight: 100.h);
 
     Widget body = Container(
       constraints: boxConstraints,
@@ -548,7 +548,7 @@ class DetailItemWidget extends GetView<SettingController> {
               children: [
                 Expanded(
                   child: Text(
-                    msg.metadata.msgData['name'],
+                    msg.body?.name ?? "",
                     style: XFonts.size24Black0,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -558,7 +558,7 @@ class DetailItemWidget extends GetView<SettingController> {
                   height: 5.h,
                 ),
                 Text(
-                  getFileSizeString(bytes: msg.metadata.msgData['size']),
+                  getFileSizeString(bytes: msg.body?.size ?? 0),
                   style: XFonts.size16Black9,
                 ),
               ],
@@ -574,7 +574,7 @@ class DetailItemWidget extends GetView<SettingController> {
     }
     return GestureDetector(
       onTap: () {
-        Get.toNamed(Routers.messageFile, arguments: msg.metadata.msgData);
+        Get.toNamed(Routers.messageFile, arguments: msg.body?.toJson());
       },
       child: _detail(
         textDirection: textDirection,
@@ -608,12 +608,12 @@ class DetailItemWidget extends GetView<SettingController> {
     required TextDirection textDirection,
     required BuildContext context,
   }) {
-
-    String extension = msg.metadata.msgData["extension"];
-    double progress = msg.metadata.progress;
+    String extension = msg.body?.extension ?? "";
+    double progress = msg.body?.progress ?? 0;
     Widget body;
     if (imageExtension.contains(extension.toLowerCase())) {
-      body = _image(textDirection: textDirection, context: context,showShadow: true);
+      body = _image(
+          textDirection: textDirection, context: context, showShadow: true);
     } else {
       body = _file(
           textDirection: textDirection, context: context, showShadow: true);
@@ -639,46 +639,11 @@ class DetailItemWidget extends GetView<SettingController> {
   }) {
     List<InlineSpan> _contentList = [];
 
-    RegExp exp = RegExp(
-        r'((http|ftp|https):\/\/)?([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?');
 
-    String text = TextUtils.textReplace(msg.metadata.showTxt);
-    Iterable<RegExpMatch> matches = exp.allMatches(text);
+    _contentList = _getUrlSpan(msg.body?.body ?? "");
 
-    if (matches.isNotEmpty) {
-      int index = 0;
-      for (var match in matches) {
-        String url = text.substring(match.start, match.end);
-        if (match.start == index) {
-          index = match.end;
-        }
-        if (index < match.start) {
-          String a = text.substring(index + 1, match.start);
-          index = match.end;
-          _contentList.add(
-            TextSpan(text: a),
-          );
-        }
-        if (exp.hasMatch(url)) {
-          _contentList.add(TextSpan(
-              text: url,
-              style: TextStyle(color: Colors.blue),
-              recognizer: new TapGestureRecognizer()
-                ..onTap = () {
-                  Get.toNamed(Routers.webView, arguments: {'url': url});
-                }));
-        } else {
-          _contentList.add(
-            TextSpan(text: url),
-          );
-        }
-      }
-      if (index < text.length) {
-        String a = text.substring(index, text.length);
-        _contentList.add(
-          TextSpan(text: a),
-        );
-      }
+    if (_contentList.isEmpty) {
+      _contentList = _getImageSpan(msg.body?.body ?? "");
     }
 
     if (_contentList.isNotEmpty) {
@@ -707,11 +672,116 @@ class DetailItemWidget extends GetView<SettingController> {
       textDirection: textDirection,
       bgColor: bgColor,
       body: Text(
-        TextUtils.textReplace(msg.metadata.showTxt),
+        msg.body?.body ?? "",
         style: XFonts.size22Black0,
       ),
     );
   }
+
+
+  List<InlineSpan> _getUrlSpan(String text) {
+    RegExp urlExp = RegExp(r'(?:https?:\/\/|www\.)[^\s]+');
+
+    RegExp imageExp = RegExp(r'\$IMG\[(.*?)\]');
+
+    Map<String, String> headers = {
+      "Authorization": KernelApi.getInstance().anystore.accessToken,
+    };
+
+    List<InlineSpan> span = [];
+
+    List<RegExpMatch> urlMatch = urlExp.allMatches(text).toList();
+
+    if(urlMatch.isEmpty){
+      return span;
+    }
+
+    InlineSpan getSpan(String text) {
+      if (imageExp.hasMatch(text)) {
+        String imageUrl = imageExp.allMatches(text).first.group(1)!;
+        imageUrl = "${Constant.host}/emo/$imageUrl";
+        return WidgetSpan(
+            child: ImageWidget(
+              imageUrl,
+              httpHeaders: headers,
+            ));
+      }
+      return TextSpan(text: text);
+    }
+
+    int index = 0;
+    for (var match in urlMatch) {
+      String url = text.substring(match.start, match.end);
+      if (match.start == index) {
+        index = match.end;
+      }
+      if (index < match.start) {
+        String a = text.substring(index, match.start);
+        index = match.end;
+        span.add(getSpan(a));
+      }
+      if (urlExp.hasMatch(url)) {
+        span.add(TextSpan(
+            text: url,
+            style: const TextStyle(color: Colors.blue),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                Get.toNamed(Routers.webView, arguments: {'url': url});
+              }));
+      } else {
+        span.add(getSpan(url));
+      }
+    }
+    if (index < text.length) {
+      String a = text.substring(index, text.length);
+      span.add(getSpan(a));
+    }
+
+    return span;
+  }
+
+  List<InlineSpan> _getImageSpan(String text){
+    RegExp imageExp = RegExp(r'\$IMG\[(.*?)\]');
+
+    Map<String, String> headers = {
+      "Authorization": KernelApi.getInstance().anystore.accessToken,
+    };
+
+    List<InlineSpan> span = [];
+
+    List<Match> imgMatch = imageExp.allMatches(text).toList();
+
+    int startIndex = 0;
+
+    if(imgMatch.isEmpty){
+      return span;
+    }
+
+    for (Match match in imgMatch) {
+      if (match.start > startIndex) {
+        String a = text.substring(startIndex, match.start);
+        span.add(TextSpan(text: a));
+      }
+
+      String imageUrl = match.group(1)!;
+      imageUrl = "${Constant.host}/emo/$imageUrl";
+      span.add(WidgetSpan(
+          child: ImageWidget(
+            imageUrl,
+            httpHeaders: headers,
+          )));
+
+      startIndex = match.end;
+    }
+
+    if (startIndex < text.length) {
+      String a = text.substring(startIndex);
+      span.add(TextSpan(text: a));
+    }
+
+    return span;
+  }
+
 }
 
 

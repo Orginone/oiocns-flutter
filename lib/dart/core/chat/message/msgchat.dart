@@ -12,7 +12,6 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
-import 'package:orginone/pages/chat/text_replace_utils.dart';
 import 'package:orginone/util/encryption_util.dart';
 
 import 'message.dart';
@@ -30,6 +29,7 @@ class MsgChatData {
   int noReadCount;
   int lastMsgTime;
   MsgSaveModel? lastMessage;
+  bool mentionMe;
 
   MsgChatData({
     required this.fullId,
@@ -41,6 +41,7 @@ class MsgChatData {
     required this.noReadCount,
     required this.lastMsgTime,
     this.lastMessage,
+    this.mentionMe = false,
   });
 
   MsgChatData.fromMap(Map<String, dynamic> map)
@@ -52,6 +53,7 @@ class MsgChatData {
         isToping = map["isToping"] ?? false,
         isFindme = map["isFindme"],
         lastMsgTime = map["lastMsgTime"],
+        mentionMe = map['mentionMe']??false,
         lastMessage = map["lastMessage"] == null
             ? null
             : MsgSaveModel.fromJson(map["lastMessage"]){
@@ -164,7 +166,7 @@ abstract class IMsgChat extends IEntity {
   Future<List<XTarget>> loadMembers({bool reload = false});
 
   /// 发送消息
-  Future<bool> sendMessage(MessageType type, String text);
+  Future<bool> sendMessage(MessageType type, String text,[List<String> mentions =const [],MsgSaveModel? cite]);
 
   /// 撤销消息
   Future<void> recallMessage(String id);
@@ -327,12 +329,19 @@ abstract class MsgChat extends Entity implements IMsgChat {
   }
 
   @override
-  Future<bool> sendMessage(MessageType type, String msgBody) async {
+  Future<bool> sendMessage(MessageType type, String msgBody,[List<String> mentions = const [],MsgSaveModel? cite]) async {
+    Map<String,dynamic> data = {
+      "body":msgBody,
+      "mentions":mentions,
+      'cite': cite?.toJson(),
+    };
+
+
     var res = await kernel.createImMsg(MsgSendModel(
       msgType: type.label,
       toId: chatId,
       belongId: belongId,
-      msgBody: EncryptionUtil.deflate(msgBody),
+      msgBody: EncryptionUtil.deflate("[obj]${jsonEncode(data)}"),
     ));
     return res.success;
   }
@@ -449,8 +458,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
          messages.insert(0,imsg);
        }
     }else if(imsg.msgType == MessageType.file.label || imsg.msgType == MessageType.image.label ){
-        Map<String,dynamic> body = jsonDecode(msg.showTxt);
-        String name = body['name'];
+        String name = msg.body?.name??"";
         var index = messages.indexWhere((p0) => p0.id == name);
         if(index != -1){
           messages[index] = imsg;
@@ -472,7 +480,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
 
     chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
     chatdata.value.lastMessage = msg;
-    chatdata.value.isFindme = TextUtils.findUserId(msg.msgBody);
+    chatdata.value.isFindme = msg.body?.mentions?.contains(setting.user.id);
     chatdata.refresh();
     cache();
   }

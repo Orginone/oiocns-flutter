@@ -6,7 +6,6 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/pages/chat/text_replace_utils.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_util.dart';
 import 'package:orginone/widget/unified.dart';
@@ -188,11 +187,11 @@ class MessageItemWidget extends GetView<SettingController> {
 
             var messageType = lastMessage.msgType;
             if (messageType == MessageType.text.label) {
-              var userIds = TextUtils.findUserId(lastMessage.showTxt);
+              var userIds = lastMessage.body?.mentions??[];
               if(userIds.isNotEmpty && userIds.contains(controller.user.userId)){
                 showTxt = "有人@你";
               }else{
-                showTxt = "$showTxt${TextUtils.textReplace(lastMessage.showTxt)}";
+                showTxt = "$showTxt${lastMessage.body?.body??""}";
               }
             } else if (messageType == MessageType.recall.label) {
               showTxt = "$showTxt撤回了一条消息";

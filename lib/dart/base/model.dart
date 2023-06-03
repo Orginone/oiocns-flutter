@@ -5177,21 +5177,20 @@ class Tag {
 }
 
 class MsgSaveModel {
-  late String sessionId;
-  late String belongId;
-  late String fromId;
-  late String msgType;
-  late  String msgBody;
-  late String createTime;
-  late String updateTime;
-  late String id;
-  late String toId;
-  late String showTxt;
-  late bool allowEdit;
-  List<Tag>? tags;
+   String sessionId = '';
+   String belongId = '';
+   String fromId = '';
+   String msgType = '';
+    String msgBody = '';
+   String createTime = DateTime.now().toString();
+   String updateTime = '';
+   String id = '';
+   String toId = '';
+   String showTxt = '';
+   bool allowEdit = false;
+  List<Tag>? tags ;
   late GlobalKey key;
-  late double progress;
-  late Map<String,dynamic> msgData;
+  MsgBodyModel? body;
   MsgSaveModel({
      this.sessionId ='',
      this.belongId = '',
@@ -5205,7 +5204,7 @@ class MsgSaveModel {
      this.showTxt = '',
      this.allowEdit = false,
     this.tags,
-    this.msgData =const {},
+    this.body,
   });
 
   MsgSaveModel.fromJson(Map<String, dynamic> json)
@@ -5228,9 +5227,21 @@ class MsgSaveModel {
       });
     }
     try {
-      msgData = jsonDecode(showTxt);
+      String json = showTxt;
+      if(showTxt.contains('[obj]')){
+        json = showTxt.substring(5);
+        Map<String,dynamic> data = jsonDecode(json);
+        if(msgType == MessageType.text.label){
+          body = MsgBodyModel.fromJson(data);
+        }else{
+          body = MsgBodyModel.fromJson(jsonDecode(data['body']));
+        }
+
+      }else{
+        body = MsgBodyModel.fromJson(jsonDecode(json));
+      }
     } catch (error) {
-      msgData = {};
+
     }
 
   }
@@ -5240,20 +5251,9 @@ class MsgSaveModel {
     msgType = MessageType.uploading.label;
     this.id = fileName;
     tags = [];
-    progress = 0;
-    msgBody = jsonEncode({"path": filePath,'extension':'.$ext','name':fileName,'size':size});
-    createTime = DateTime.now().toString();
     key = GlobalKey();
-    showTxt = msgBody;
-    belongId = '';
-    updateTime = '';
-    toId = '';
-    sessionId = '';
-    try {
-      msgData = jsonDecode(showTxt);
-    } catch (error) {
-      msgData = {};
-    }
+    body = MsgBodyModel(path: filePath,extension: '.$ext',name: fileName,size: size,progress: 0);
+
   }
 
   Map<String, dynamic> toJson() {
@@ -5269,7 +5269,66 @@ class MsgSaveModel {
     map['toId'] = toId;
     map['showTxt'] = showTxt;
     map['allowEdit'] = allowEdit;
+    map['body'] = body?.toJson();
     map['tags'] = tags?.map((v) => v.toJson()).toList();
     return map;
   }
 }
+
+class MsgBodyModel {
+  String? body;
+  List<String>? mentions;
+  MsgSaveModel? cite;
+  String? shareLink;
+  String? path;
+  String? extension;
+  String? name;
+  late int size;
+  late double progress;
+
+  MsgBodyModel({this.body, this.mentions, this.cite,this.extension,this.name,this.path,this.shareLink,this.size = 0,this.progress = 0});
+
+  MsgBodyModel.fromJson(Map<String, dynamic> json) {
+    body = json['body'];
+    if(body?.contains('\$IMG')??false){
+      body = body!.replaceAll('http://localhost:8080', Constant.host);
+      body = body!.replaceAll('http://orginone.cn/emo/', '');
+    }
+    if (json['mentions'] != null) {
+      mentions = <String>[];
+      json['mentions'].forEach((v) {
+        mentions!.add(v);
+      });
+    }
+    shareLink = json['shareLink'];
+    path = json['path'];
+    extension = json['extension'];
+    name = json['name'];
+    progress = json['progress']??0;
+    size = json['size']??0;
+    cite = json['cite'] != null ? new MsgSaveModel.fromJson(json['cite']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    String text = this.body??"";
+    if(text.contains('')??false){
+      text = text.replaceAll('\$IMG[', '\$IMG[http://orginone.cn/emo/');
+    }
+    data['body'] = text;
+    data['shareLink'] = this.shareLink;
+    data['path'] = this.path;
+    data['name'] = this.name;
+    data['size'] = this.size;
+    data['progress'] = this.progress;
+    data['extension'] = this.extension;
+    data['mentions'] = this.mentions;
+    if (this.cite != null) {
+      data['cite'] = this.cite!.toJson();
+    }
+    return data;
+  }
+}
+
+

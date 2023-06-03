@@ -17,7 +17,6 @@ import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 
-import 'text_replace_utils.dart';
 
 class MessageRecordsPage
     extends BaseGetView<MessageRecordsController, MessageRecordsState> {
@@ -67,7 +66,7 @@ class MessageRecordsPage
                     ),
                     title: Text(snapshot.data?.name ?? ""),
                     subtitle: Text(
-                      TextUtils.textReplace(item.msgBody),
+                      item.body?.body??"",
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
