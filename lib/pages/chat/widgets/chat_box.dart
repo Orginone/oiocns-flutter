@@ -20,7 +20,6 @@ import 'package:orginone/dart/core/chat/message/message.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/images.dart';
-import 'package:orginone/pages/chat/text_replace_utils.dart';
 import 'package:orginone/pages/chat/widgets/text/rich_text_input_formatter.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/permission_util.dart';
@@ -170,29 +169,30 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
             },
           ),
           Obx(() {
-            if (controller.replyText.value.isEmpty) {
+            if (controller.reply.value == null) {
               return SizedBox();
             }
             return Container(
               color: Colors.grey[200],
               width: double.infinity,
               alignment: Alignment.centerLeft,
-              padding: EdgeInsets.symmetric(vertical: 5.h,horizontal: 15.w),
+              padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 15.w),
               child: Row(
                 children: [
                   Expanded(
                     child: Text(
-                      TextUtils.textReplace(
-                        controller.replyText.value,
-                      ),
+                      controller.reply.value?.body?.body ?? "",
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   GestureDetector(
-                    child: Icon(Icons.close,size: 28.w,),
-                    onTap: (){
-                      controller.replyText.value = '';
+                    child: Icon(
+                      Icons.close,
+                      size: 28.w,
+                    ),
+                    onTap: () {
+                      controller.reply.value = null;
                     },
                   )
                 ],
@@ -382,11 +382,11 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
           break;
         case InputStatus.notPopup:
         case InputStatus.voice:
-        bottomHeight.value = 0;
+          bottomHeight.value = 0;
           return Container();
         case InputStatus.focusing:
         case InputStatus.inputtingText:
-        bottomHeight.value = 0;
+          bottomHeight.value = 0;
           body = Container();
           FocusScope.of(context).requestFocus(controller.focusNode);
           break;
@@ -614,7 +614,7 @@ class ChatBoxController with WidgetsBindingObserver {
 
   List<Rule> rules = [];
 
-  var replyText = ''.obs;
+  Rxn<MsgSaveModel> reply = Rxn();
 
   ChatBoxController() {
     EventBusHelper.register(this, (event) {
@@ -674,19 +674,11 @@ class ChatBoxController with WidgetsBindingObserver {
         break;
       case InputEvent.clickSendBtn:
         String message = inputController.text;
-        if (replyText.value.isNotEmpty) {
-          message =
-              '$message\$CITE[${TextUtils.textReplace(replyText.value)}]';
-        }
-        if (rules.isNotEmpty) {
-          for (var rule in rules) {
-            message = '$message\$FINDME[${rule.target!.belongId}]';
-          }
-        }
-        await chat.sendMessage(MessageType.text, message);
+        await chat.sendMessage(MessageType.text, message,
+            rules.map((e) => e.target?.id ?? "").toList(), reply.value);
         inputController.clear();
         atKey.currentState?.clearRules();
-        replyText.value = '';
+        reply.value = null;
         rules.clear();
         if (_inputStatus.value == InputStatus.inputtingText) {
           _inputStatus.value = InputStatus.focusing;
@@ -721,7 +713,7 @@ class ChatBoxController with WidgetsBindingObserver {
       (progress) {
         var msg = chat.messages
             .firstWhere((element) => element.metadata.id == pickedImage.name);
-        msg.metadata.progress = progress;
+        msg.metadata.body!.progress = progress;
         chat.messages.refresh();
       },
     );
@@ -739,7 +731,7 @@ class ChatBoxController with WidgetsBindingObserver {
 
     var file1 = File(file.path!);
     var save = MsgSaveModel.fromFileUpload(
-        settingCtrl.user.id, file.name, file.path!, ext,file1.lengthSync());
+        settingCtrl.user.id, file.name, file.path!, ext, file1.lengthSync());
     chat.messages.insert(0, Message(chat, save));
 
     var item = await docDir?.upload(
@@ -748,7 +740,7 @@ class ChatBoxController with WidgetsBindingObserver {
       (progress) {
         var msg = chat.messages
             .firstWhere((element) => element.metadata.id == file.name);
-        msg.metadata.progress = progress;
+        msg.metadata.body!.progress = progress;
         chat.messages.refresh();
       },
     );

@@ -161,7 +161,7 @@ class BucketOpreateModel {
       "name": name,
       "operate": operate.label,
       "fileItem": fileItem?.toJson(),
-      "destination":destination,
+      "destination": destination,
     };
   }
 }
@@ -2350,14 +2350,14 @@ class FormModel {
   String? shareId;
 
   FormModel({
-     this.id,
-     this.name,
-     this.code,
-     this.rule,
-     this.typeName,
-     this.remark,
-     this.speciesId,
-     this.shareId,
+    this.id,
+    this.name,
+    this.code,
+    this.rule,
+    this.typeName,
+    this.remark,
+    this.speciesId,
+    this.shareId,
   });
 
   factory FormModel.fromJson(Map<String, dynamic> json) {
@@ -2386,7 +2386,6 @@ class FormModel {
     };
   }
 }
-
 
 class FormItemModel {
   // 唯一ID
@@ -4212,19 +4211,15 @@ class MsgTagModel {
   List<String>? ids;
 
   // 消息体
-   List<String>? tags;
+  List<String>? tags;
 
-  MsgTagModel(
-      { this.belongId,
-       this.id,
-       this.ids,
-       this.tags});
+  MsgTagModel({this.belongId, this.id, this.ids, this.tags});
 
-  MsgTagModel.fromJson(Map<String, dynamic> json){
+  MsgTagModel.fromJson(Map<String, dynamic> json) {
     belongId = json["belongId"];
     id = json["id"];
-    ids = json["ids"]!=null?List.castFrom(json["ids"]):null;
-    tags = json["tags"]!=null?List.castFrom(json["tags"]):null;
+    ids = json["ids"] != null ? List.castFrom(json["ids"]) : null;
+    tags = json["tags"] != null ? List.castFrom(json["tags"]) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -4740,17 +4735,16 @@ class ShareIcon {
     required this.name,
     required this.typeName,
     this.avatar,
-  }){
+  }) {
     String defaultAvatar = '';
-    if(typeName == TargetType.person.label){
+    if (typeName == TargetType.person.label) {
       defaultAvatar = Images.chatDefaultPerson;
       avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
     }
-    if(typeName == TargetType.cohort.label){
+    if (typeName == TargetType.cohort.label) {
       defaultAvatar = Images.chatDefaultGroup;
       avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
     }
-
   }
 
   //通过JSON构造
@@ -4835,20 +4829,17 @@ class FileItemShare {
     return retList;
   }
 
-  Uint8List? get thumbnailUint8List{
-    try{
-      var uint8ListStr = thumbnail
-          ?.split(",")[1]
-          .replaceAll('\r', '')
-          .replaceAll('\n', '');
-      if(uint8ListStr == null){
+  Uint8List? get thumbnailUint8List {
+    try {
+      var uint8ListStr =
+          thumbnail?.split(",")[1].replaceAll('\r', '').replaceAll('\n', '');
+      if (uint8ListStr == null) {
         return null;
       }
-      return  base64Decode(uint8ListStr);
-    }catch(e){
+      return base64Decode(uint8ListStr);
+    } catch (e) {
       return null;
     }
-
   }
 
   //转成JSON
@@ -5177,35 +5168,34 @@ class Tag {
 }
 
 class MsgSaveModel {
-  late String sessionId;
-  late String belongId;
-  late String fromId;
-  late String msgType;
-  late  String msgBody;
-  late String createTime;
-  late String updateTime;
-  late String id;
-  late String toId;
-  late String showTxt;
-  late bool allowEdit;
+  String sessionId = '';
+  String belongId = '';
+  String fromId = '';
+  String msgType = '';
+  String msgBody = '';
+  String createTime = DateTime.now().toString();
+  String updateTime = '';
+  String id = '';
+  String toId = '';
+  String showTxt = '';
+  bool allowEdit = false;
   List<Tag>? tags;
   late GlobalKey key;
-  late double progress;
-  late Map<String,dynamic> msgData;
+  MsgBodyModel? body;
   MsgSaveModel({
-     this.sessionId ='',
-     this.belongId = '',
-     this.fromId ='',
-     this.msgType = '',
-     this.msgBody = '',
-     this.createTime = '',
-     this.updateTime = '',
-     this.id = '',
-     this.toId = '',
-     this.showTxt = '',
-     this.allowEdit = false,
+    this.sessionId = '',
+    this.belongId = '',
+    this.fromId = '',
+    this.msgType = '',
+    this.msgBody = '',
+    this.createTime = '',
+    this.updateTime = '',
+    this.id = '',
+    this.toId = '',
+    this.showTxt = '',
+    this.allowEdit = false,
     this.tags,
-    this.msgData =const {},
+    this.body,
   });
 
   MsgSaveModel.fromJson(Map<String, dynamic> json)
@@ -5223,37 +5213,40 @@ class MsgSaveModel {
         allowEdit = json['allowEdit'] ?? false {
     if (json['tags'] != null) {
       tags = [];
-      json["tags"].forEach((json){
+      json["tags"].forEach((json) {
         tags!.add(Tag.fromJson(json));
       });
     }
     try {
-      msgData = jsonDecode(showTxt);
-    } catch (error) {
-      msgData = {};
-    }
-
+      String json = showTxt;
+      if (showTxt.contains('[obj]')) {
+        json = showTxt.substring(5);
+        Map<String, dynamic> data = jsonDecode(json);
+        if (msgType == MessageType.text.label) {
+          body = MsgBodyModel.fromJson(data);
+        } else {
+          body = MsgBodyModel.fromJson(jsonDecode(data['body']));
+        }
+      } else {
+        body = MsgBodyModel.fromJson(jsonDecode(json));
+      }
+    } catch (error) {}
   }
 
-  MsgSaveModel.fromFileUpload(String id,String fileName,String filePath,String ext,[int size = 0]){
+  MsgSaveModel.fromFileUpload(
+      String id, String fileName, String filePath, String ext,
+      [int size = 0]) {
     fromId = id;
     msgType = MessageType.uploading.label;
     this.id = fileName;
     tags = [];
-    progress = 0;
-    msgBody = jsonEncode({"path": filePath,'extension':'.$ext','name':fileName,'size':size});
-    createTime = DateTime.now().toString();
     key = GlobalKey();
-    showTxt = msgBody;
-    belongId = '';
-    updateTime = '';
-    toId = '';
-    sessionId = '';
-    try {
-      msgData = jsonDecode(showTxt);
-    } catch (error) {
-      msgData = {};
-    }
+    body = MsgBodyModel(
+        path: filePath,
+        extension: '.$ext',
+        name: fileName,
+        size: size,
+        progress: 0);
   }
 
   Map<String, dynamic> toJson() {
@@ -5269,7 +5262,74 @@ class MsgSaveModel {
     map['toId'] = toId;
     map['showTxt'] = showTxt;
     map['allowEdit'] = allowEdit;
+    map['body'] = body?.toJson();
     map['tags'] = tags?.map((v) => v.toJson()).toList();
     return map;
+  }
+}
+
+class MsgBodyModel {
+  String? body;
+  List<String>? mentions;
+  MsgSaveModel? cite;
+  String? shareLink;
+  String? path;
+  String? extension;
+  String? name;
+  late int size;
+  late double progress;
+
+  MsgBodyModel(
+      {this.body,
+      this.mentions,
+      this.cite,
+      this.extension,
+      this.name,
+      this.path,
+      this.shareLink,
+      this.size = 0,
+      this.progress = 0});
+
+  MsgBodyModel.fromJson(Map<String, dynamic> json) {
+    body = json['body'];
+    if (body?.contains('\$IMG') ?? false) {
+      body = body!.replaceAll('http://localhost:8080', Constant.host);
+      body = body!.replaceAll('http://orginone.cn/emo/', '');
+    }
+    if (json['mentions'] != null) {
+      mentions = <String>[];
+      json['mentions'].forEach((v) {
+        mentions!.add(v);
+      });
+    }
+    shareLink = json['shareLink'];
+    path = json['path'];
+    extension = json['extension'];
+    name = json['name'];
+    progress = json['progress'] ?? 0;
+    size = json['size'] ?? 0;
+    cite =
+        json['cite'] != null ? new MsgSaveModel.fromJson(json['cite']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    String text = this.body ?? "";
+    if (text.contains('') ?? false) {
+      text = text.replaceAll('\$IMG[', '\$IMG[http://orginone.cn/emo/');
+    }
+    data['body'] = text;
+    data['shareLink'] = this.shareLink;
+    data['path'] = this.path;
+    data['name'] = this.name;
+    data['size'] = this.size;
+    data['progress'] = this.progress;
+    data['extension'] = this.extension;
+    data['mentions'] = this.mentions;
+    if (this.cite != null) {
+      data['cite'] = this.cite!.toJson();
+    }
+    return data;
   }
 }

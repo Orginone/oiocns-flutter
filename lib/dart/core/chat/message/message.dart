@@ -55,6 +55,7 @@ abstract class IMessage {
   String get readedinfo;
   int get comments;
 
+  MsgBodyModel? get body;
   void recall();
   void receiveTags(List<String> tags);
 }
@@ -190,4 +191,8 @@ class Message implements IMessage {
       labels.add(MessageLabel(user,t));
     }
   }
+
+  @override
+  // TODO: implement body
+  MsgBodyModel? get body => metadata.body;
 }
