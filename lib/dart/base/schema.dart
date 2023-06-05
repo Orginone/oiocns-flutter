@@ -4,8 +4,10 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/model/thing_model.dart' as thing;
+
 import 'model.dart';
 
 class XAttribute {
@@ -15,11 +17,11 @@ class XAttribute {
   /// 名称
   String? name;
 
+  /// 值类型
+  String? valueType;
+
   /// 编号
   String? code;
-
-  /// 规则
-  Rule? rule;
 
   /// 备注
   String? remark;
@@ -32,6 +34,9 @@ class XAttribute {
 
   /// 工作职权Id
   String? authId;
+
+  /// 字典Id
+  String? dictId;
 
   /// 属性Id
   String? propId;
@@ -77,11 +82,12 @@ class XAttribute {
 
   Fields? fields;
 
+  String? value;
+
   XAttribute({
     this.id,
     this.name,
     this.code,
-    this.rule,
     this.remark,
     this.shareId,
     this.belongId,
@@ -107,8 +113,8 @@ class XAttribute {
     id = json['id'] ?? "";
     name = json['name'] ?? "";
     code = json['code'] ?? "";
-    rule =
-        json['rule'] != null ? Rule.fromJson(jsonDecode(json["rule"])) : null;
+    valueType = json['valueType']??'';
+    dictId = json['dictId'] ?? '';
     remark = json['remark'] ?? "";
     shareId = json['shareId'] ?? "";
     belongId = json['belongId'] ?? "";
@@ -139,7 +145,9 @@ class XAttribute {
     belong = json['belong'] != null
         ? XTarget.fromJson(json['belong'] as Map<String, dynamic>)
         : null;
-    fields = toFields();
+     toFields().then((value){
+       fields = value;
+     });
   }
 
   Map<String, dynamic> toJson() {
@@ -147,7 +155,6 @@ class XAttribute {
     data['id'] = id;
     data['name'] = name;
     data['code'] = code;
-    data['rule'] = rule;
     data['remark'] = remark;
     data['shareId'] = shareId;
     data['belongId'] = belongId;
@@ -181,59 +188,47 @@ class XAttribute {
     return data;
   }
 
-  Fields toFields() {
+  Future<Fields> toFields() async{
     String? type;
     String? router;
-    switch (rule?.widget) {
-      case "text":
-      case "number":
-      case 'digit':
-      case "money":
-      case "string":
+    Map<dynamic, String> select = {};
+    switch (valueType) {
+      case "描述型":
+      case "数值型":
         type = "input";
         break;
-      case "dict":
-      case "select":
-      case "treeSelect":
+      case "选择型":
+      case "分类型":
         type = "select";
+        setting.provider.work?.loadItems(dictId??"").then((value){
+          for (var element in value) {
+            select[element.value] = element.name;
+          }
+        });
         break;
-      case "date":
-      case "datetime":
-      case "dateTimeRange":
+      case "日期型":
+      case "时间型":
         type = "selectDate";
         break;
-      case "person":
+      case "用户型":
         type = "selectPerson";
         break;
-      case "dept":
-      case "department":
-        type = "selectDepartment";
-        break;
-      case "identity":
-      case "auth":
-      case "group":
-      case 'radio':
-      case 'checkbox':
-      case 'file':
-      case 'upload':
+      // case "dept":
+      // case "department":
+      //   type = "selectDepartment";
+      //   break;
+      case '附件型':
         break;
       default:
         type = 'input';
         break;
     }
 
-    Map<dynamic, String> select = {};
-    rule?.dictItems?.forEach((element) {
-      select[element.value] = element.name;
-    });
+
     return Fields(
       title: name,
       type: type,
-      required: rule?.required,
-      hidden: rule?.hidden,
-      readOnly: rule?.readOnly,
       code: code,
-      hint: rule?.placeholder,
       select: select,
       router: router,
     );
@@ -716,14 +711,6 @@ class XProperty {
       'version': version,
       'createTime': createTime,
       'updateTime': updateTime,
-      'linkAttributes': linkAttributes?.map((attr) => attr.toJson()).toList(),
-      'links': links?.map((link) => link.toJson()).toList(),
-      'attributes': attributes?.map((attr) => attr.toJson()).toList(),
-      'things': things?.map((thing) => thing.toJson()).toList(),
-      'propThingValues': propThingValues?.map((prop) => prop.toJson()).toList(),
-      'species': species?.toJson(),
-      'dict': dict?.toJson(),
-      'belong': belong?.toJson(),
     };
     return data;
   }
@@ -5602,16 +5589,12 @@ class XForm {
       'version': version,
       'createTime': createTime,
       'updateTime': updateTime,
-      'attributes': attributeList,
-      'bindNodes': bindNodeList,
-      'species': species != null ? species!.toJson() : null,
-      'belong': belong != null ? belong!.toJson() : null,
     };
   }
 
-  void reset(){
+  void reset() async {
     for (var element in attributes??[]) {
-      element.fields = element.toFields();
+      element.fields =await element.toFields();
     }
   }
 }

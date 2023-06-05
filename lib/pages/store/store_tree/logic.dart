@@ -23,7 +23,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
       LoadingDialog.showLoading(context);
       ICompany space = state.model.value!.space! as ICompany;
       List<ISpeciesItem> species = filterSpecies(space);
-      state.model.value?.children.addAll(await buildSpeciesTree(species, space));
+      state.model.value?.children = await buildSpeciesTree(species, space);
       LoadingDialog.dismiss(context);
       state.model.refresh();
     }

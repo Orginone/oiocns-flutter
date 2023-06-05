@@ -20,10 +20,17 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Obx(() {
-                  return Column(
-                      children: state.useForm.map((form) {
-                        return _info(form);
-                      }).toList());
+                  if (state.workForm == null) {
+                    return Container();
+                  }
+                  return _info(state.workForm!);
+                }),
+                Obx(() {
+                  if (state.thingForm.isEmpty ||
+                      state.subTabController == null) {
+                    return Container();
+                  }
+                  return subTable();
                 }),
                 _opinion(),
               ],
@@ -35,6 +42,51 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
     );
   }
 
+  Widget subTable() {
+    return Container(
+      margin: EdgeInsets.only(top: 10.h),
+      child: Column(
+        children: [
+          CommonWidget.commonNonIndicatorTabBar(state.subTabController!,
+              state.thingForm.map((element) => element.name).toList()),
+          SizedBox(
+            height: 500.h,
+            child: Obx(() {
+              return TabBarView(
+                controller: state.subTabController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: state.thingForm.map((element) {
+                  List<String> title =
+                      element.attributes?.map((e) => e.name ?? "").toList() ??
+                          [];
+
+                  List<List<String>> content = element.things.map((thing) {
+                    List<String> data = [];
+
+                    for (var attribute in element.attributes!) {
+                      data.add(thing.eidtInfo?[attribute.code?.substring(1)]??"");
+                    }
+
+                    return [
+                      thing.id ?? "",
+                      thing.status ?? "",
+                      thing.createrName ?? "",
+                      ...data
+                    ];
+                  }).toList();
+
+                  return CommonWidget.commonDocumentWidget(
+                    title: ["标识", "创建者", "状态", ...title],
+                    content: content,
+                  );
+                }).toList(),
+              );
+            }),
+          )
+        ],
+      ),
+    );
+  }
 
   Widget _approval() {
     if (state.task.status != 1) {
@@ -75,10 +127,9 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
         CommonWidget.commonHeadInfoWidget(form.name??""),
         CommonWidget.commonFormWidget(
             formItem: form.attributes?.map((e) {
-              String content = "${e.remark}";
               return CommonWidget.commonFormItem(
-                  title: e.name ?? "", content: content);
-            }).toList()??[]),
+                      title: e.name ?? "", content: e.value ?? '');
+                }).toList()??[]),
       ],
     );
   }

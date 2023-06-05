@@ -53,8 +53,8 @@ class MessageChatPage
     var spaceName = state.chat.chatdata.value.labels.join(" | ");
     return Column(
       children: [
-        Text(name, style: XFonts.size22Black3),
-        Text(spaceName, style: XFonts.size14Black9),
+        Text(name, style: XFonts.size24Black3),
+        Text(spaceName, style: XFonts.size16Black9),
       ],
     );
   }

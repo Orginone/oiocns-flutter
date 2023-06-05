@@ -8,6 +8,7 @@ import 'package:orginone/pages/work/initiate_work/state.dart';
 
 class WorkListState extends BaseGetListState<XWorkTask> {
   late WorkBreadcrumbNav work;
+
   WorkListState() {
     work = Get.arguments['data'];
   }

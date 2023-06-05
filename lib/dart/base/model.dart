@@ -6,6 +6,7 @@ import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/images.dart';
+import 'package:orginone/model/thing_model.dart' as thing;
 import 'package:orginone/util/encryption_util.dart';
 
 /// 统一返回结构模型
@@ -5010,8 +5011,7 @@ class WorkInstanceModel {
   // 回调地址
   String? hook;
 
-  // 操作对象Id集合
-  List<String>? thingIds;
+  String? applyId;
 
   WorkInstanceModel({
     this.defineId,
@@ -5020,7 +5020,7 @@ class WorkInstanceModel {
     this.data,
     this.title,
     this.hook,
-    this.thingIds,
+    this.applyId,
   });
 
   Map<String, dynamic> toJson() {
@@ -5031,7 +5031,7 @@ class WorkInstanceModel {
     data['data'] = this.data;
     data['title'] = this.title;
     data['hook'] = this.hook;
-    data['thingIds'] = this.thingIds;
+    data['applyId'] = this.applyId;
     return data;
   }
 }
@@ -5293,8 +5293,9 @@ class MsgBodyModel {
   MsgBodyModel.fromJson(Map<String, dynamic> json) {
     body = json['body'];
     if (body?.contains('\$IMG') ?? false) {
-      body = body!.replaceAll('http://localhost:8080', Constant.host);
-      body = body!.replaceAll('http://orginone.cn/emo/', '');
+      body = body!.replaceAllMapped(RegExp(r'\$IMG\[.*?/([^/]+)\]'), (match) {
+        return '\$IMG[${match.group(1)}]';
+      });
     }
     if (json['mentions'] != null) {
       mentions = <String>[];
@@ -5316,7 +5317,7 @@ class MsgBodyModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
 
     String text = this.body ?? "";
-    if (text.contains('') ?? false) {
+    if (text.contains('\$IMG')) {
       text = text.replaceAll('\$IMG[', '\$IMG[http://orginone.cn/emo/');
     }
     data['body'] = text;
@@ -5330,6 +5331,57 @@ class MsgBodyModel {
     if (this.cite != null) {
       data['cite'] = this.cite!.toJson();
     }
+    return data;
+  }
+}
+
+class WorkSubmitModel {
+  late bool isHeader;
+  late XForm resourceData;
+  late List<thing.ThingModel> changeData;
+
+  WorkSubmitModel(
+      {required this.isHeader,
+      required this.resourceData,
+      this.changeData = const []});
+
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> changeDataMap = {};
+    for (var element in changeData) {
+      if (element.data != null) {
+        Map<String, dynamic> data = {};
+        for (var element in element.data!) {
+          if (element.values.first != null) {
+            dynamic value = element.values.first;
+            if (value is Map) {
+              value = value.keys.first;
+            }
+            data[element.keys.first.substring(1)] = value;
+          }
+        }
+
+        changeDataMap[element.id!] = data;
+      }
+    }
+
+    dynamic resourceDataMap;
+
+    if (isHeader) {
+      resourceDataMap = jsonEncode(resourceData.toJson());
+    } else {
+      resourceDataMap = jsonEncode({
+        'data': changeData.map((e) => e.toJson()).toList(),
+        'form': resourceData.toJson(),
+      });
+      print('');
+    }
+
+    Map<String, dynamic> data = {
+      'isHeader': isHeader,
+      'resourceData': resourceDataMap,
+      'changeData': changeDataMap,
+    };
     return data;
   }
 }

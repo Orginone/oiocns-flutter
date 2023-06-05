@@ -38,7 +38,7 @@ class InitiateWorkController
 
   void createWork(WorkBreadcrumbNav work) async{
     var defines =await getAllDefine(work);
-    Get.toNamed(Routers.workStart, arguments: {"defines": defines});
+    Get.toNamed(Routers.workStart, arguments: {"defines": defines,'belong':work.space});
   }
 
   void jumpWorkList(WorkBreadcrumbNav work) {

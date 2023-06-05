@@ -5,6 +5,8 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/thing/app/flowclass.dart';
+import 'package:orginone/dart/core/thing/app/workclass.dart';
 import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/dict/dictclass.dart';
@@ -54,8 +56,10 @@ class SettingNetWork {
         List<dynamic> item = [];
         switch(SpeciesType.getType(element.metadata.typeName)){
           case SpeciesType.market:
-          case SpeciesType.work:
-            item = await (element as dynamic).loadWorkDefines();
+            item = await (element as Market).loadWorkDefines();
+            break;
+          case SpeciesType.flow:
+            item = await (element as FlowClass).loadWorkDefines();
             break;
           case SpeciesType.application:
             break;

@@ -14,10 +14,10 @@ abstract class BaseBreadcrumbNavMultiplexPage<T extends BaseBreadcrumbNavControl
 
 
   TextStyle get _selectedTextStyle =>
-  TextStyle(fontSize: 20.sp, color: XColors.themeColor);
+  TextStyle(fontSize: 24.sp, color: XColors.themeColor);
 
   TextStyle get _unSelectedTextStyle =>
-  TextStyle(fontSize: 20.sp, color: Colors.black);
+  TextStyle(fontSize: 24.sp, color: Colors.black);
 
   @override
   Widget buildView() {
@@ -29,7 +29,7 @@ abstract class BaseBreadcrumbNavMultiplexPage<T extends BaseBreadcrumbNavControl
       titleWidget: Container(
         color: Colors.white,
         width: double.infinity,
-        padding: EdgeInsets.symmetric(vertical: 20),
+        padding: const EdgeInsets.symmetric(vertical: 20),
         child: LayoutBuilder(builder: (context, type) {
           List<Widget> nextStep = [];
           if (state.bcNav.isNotEmpty) {

@@ -146,7 +146,7 @@ class DetailItemWidget extends GetView<SettingController> {
       content.add(Container(
         margin: EdgeInsets.only(left: 10.w),
         child:
-            TargetText(userId: msg.metadata.fromId, style: XFonts.size16Black3),
+            TargetText(userId: msg.metadata.fromId, style: XFonts.size18Black3),
       ));
     }
 
@@ -291,7 +291,7 @@ class DetailItemWidget extends GetView<SettingController> {
             isRead ? "已读" : "未读",
             style: TextStyle(
                 color: isRead ? XColors.black9 : XColors.selectedColor,
-                fontSize: 16.sp),
+                fontSize: 18.sp),
           ),
         );
       } else {
@@ -383,7 +383,7 @@ class DetailItemWidget extends GetView<SettingController> {
     return Container(
       constraints: constraints ?? BoxConstraints(maxWidth: 350.w),
       padding:
-          padding ?? EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
+          padding ?? EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
       margin: textDirection == TextDirection.ltr
           ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
           : EdgeInsets.only(right: defaultWidth),
@@ -640,47 +640,22 @@ class DetailItemWidget extends GetView<SettingController> {
     required TextDirection textDirection,
     Color? bgColor,
   }) {
-    List<InlineSpan> _contentList = [];
+    Widget? child;
 
-    _contentList = _getUrlSpan(msg.body?.body ?? "");
+    child??=_getUrlSpan(msg.body?.body ?? "",textDirection,bgColor)??_getImageSpan(msg.body?.body ?? "",textDirection,bgColor);
 
-    if (_contentList.isEmpty) {
-      _contentList = _getImageSpan(msg.body?.body ?? "");
-    }
-
-    if (_contentList.isNotEmpty) {
-      if (_contentList.length == 1) {
-        return _detail(
-            bgColor: bgColor,
-            textDirection: textDirection,
-            body: PreViewUrl(
-              url: _contentList.first.toPlainText().replaceAll("www.", ''),
-            ));
-      } else {
-        return _detail(
-          bgColor: bgColor,
-          textDirection: textDirection,
-          body: Text.rich(
-            TextSpan(
-              children: _contentList,
-              style: XFonts.size22Black0,
-            ),
-          ),
-        );
-      }
-    }
-
-    return _detail(
+    return child??_detail(
       textDirection: textDirection,
       bgColor: bgColor,
       body: Text(
         msg.body?.body ?? "",
-        style: XFonts.size22Black0,
+        style: XFonts.size24Black0,
       ),
     );
   }
 
-  List<InlineSpan> _getUrlSpan(String text) {
+  Widget? _getUrlSpan(String text, TextDirection textDirection,
+      Color? bgColor,) {
     RegExp urlExp = RegExp(r'(?:https?:\/\/|www\.)[^\s]+');
 
     RegExp imageExp = RegExp(r'\$IMG\[(.*?)\]');
@@ -694,7 +669,7 @@ class DetailItemWidget extends GetView<SettingController> {
     List<RegExpMatch> urlMatch = urlExp.allMatches(text).toList();
 
     if (urlMatch.isEmpty) {
-      return span;
+      return null;
     }
 
     InlineSpan getSpan(String text) {
@@ -738,10 +713,31 @@ class DetailItemWidget extends GetView<SettingController> {
       span.add(getSpan(a));
     }
 
-    return span;
+    if (span.isNotEmpty) {
+      if (span.length == 1) {
+        return _detail(
+            bgColor: bgColor,
+            textDirection: textDirection,
+            body: PreViewUrl(
+              url: span.first.toPlainText().replaceAll("www.", ''),
+            ));
+      } else {
+        return _detail(
+          bgColor: bgColor,
+          textDirection: textDirection,
+          body: Text.rich(
+            TextSpan(
+              children: span,
+              style: XFonts.size24Black0,
+            ),
+          ),
+        );
+      }
+    }
   }
 
-  List<InlineSpan> _getImageSpan(String text) {
+  Widget? _getImageSpan(String text, TextDirection textDirection,
+      Color? bgColor,) {
     RegExp imageExp = RegExp(r'\$IMG\[(.*?)\]');
 
     Map<String, String> headers = {
@@ -755,7 +751,7 @@ class DetailItemWidget extends GetView<SettingController> {
     int startIndex = 0;
 
     if (imgMatch.isEmpty) {
-      return span;
+      return null;
     }
 
     for (Match match in imgMatch) {
@@ -766,11 +762,14 @@ class DetailItemWidget extends GetView<SettingController> {
 
       String imageUrl = match.group(1)!;
       imageUrl = "${Constant.host}/emo/$imageUrl";
-      span.add(WidgetSpan(
+      span.add(
+        WidgetSpan(
           child: ImageWidget(
-        imageUrl,
-        httpHeaders: headers,
-      )));
+            imageUrl,
+            httpHeaders: headers,
+          ),
+        ),
+      );
 
       startIndex = match.end;
     }
@@ -780,7 +779,17 @@ class DetailItemWidget extends GetView<SettingController> {
       span.add(TextSpan(text: a));
     }
 
-    return span;
+    return _detail(
+      bgColor: bgColor,
+      textDirection: textDirection,
+      body: Text.rich(
+        TextSpan(
+          children: span,
+          style: XFonts.size24Black0,
+        ),
+      ),
+    );
+
   }
 }
 
