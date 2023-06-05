@@ -77,22 +77,22 @@ class CreateWorkController extends BaseController<CreateWorkState>
       }
     }
     Map<String, dynamic> headerData = {};
-    for (var element in state.workForm.value?.attributes ?? []) {
-      if (element.fields?.defaultData.value != null) {
-        headerData[element.id!] = element.fields?.defaultData.value;
+    List<WorkSubmitModel> formData = [];
+    if(state.workForm.value!=null){
+      for (var element in state.workForm.value?.attributes ?? []) {
+        if (element.fields?.defaultData.value != null) {
+          headerData[element.id!] = element.fields?.defaultData.value;
+        }
       }
+      WorkSubmitModel workData = WorkSubmitModel(isHeader: true, resourceData: state.workForm.value!);
+      formData.add(workData);
     }
 
-    List<Map<String, dynamic>> formData = [];
+
+
     for (var form in state.thingForm) {
-      if(form.things.isNotEmpty){
-        Map<String,dynamic> data = {
-          'isHeader':false,
-          'resourceData':'[]',
-          'changeData':form.things.map((e) =>{e.id:e.data??""}).toList(),
-        };
-        formData.add(data);
-      }
+      WorkSubmitModel data = WorkSubmitModel(isHeader: false, resourceData: form,changeData: form.things,);
+      formData.add(data);
     }
 
     WorkStartNetWork.createInstance(state.define, headerData,formData);
@@ -116,7 +116,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
     if (function == SubTableEnum.choiceTable) {
       jumpEntity(form);
     } else {
-      showCreateAuthDialog(context, form, onSuceess: (model) {
+      showCreateAuthDialog(context, form,state.belong, onSuceess: (model) {
         if (function == SubTableEnum.addTable) {
           form.things.add(model);
         } else {
@@ -138,7 +138,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
       state.thingForm.refresh();
     }
     if (function == 'edit') {
-      showCreateAuthDialog(context, form, onSuceess: (model) {
+      showCreateAuthDialog(context, form,state.belong, onSuceess: (model) {
         thing = model;
         state.thingForm.refresh();
       }, thing: thing);

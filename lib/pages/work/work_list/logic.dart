@@ -11,7 +11,7 @@ class WorkListController extends BaseListController<WorkListState> {
  final WorkListState state = WorkListState();
 
   void createWork() {
-    Get.toNamed(Routers.workStart, arguments: {"data": state.work});
+    Get.toNamed(Routers.workStart, arguments: {"data": state.work,'belong':state.work.space});
   }
 
  @override

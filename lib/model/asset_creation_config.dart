@@ -3,6 +3,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/hive_utils.dart';
@@ -110,7 +111,7 @@ class Fields {
   int? maxLine;
   Rxn<dynamic> defaultData = Rxn<dynamic>();
   TextEditingController? controller;
-  late VoidCallback function;
+  late Function(IBelong) function;
   @HiveField(10)
   double? marginTop;
   @HiveField(11)
@@ -167,7 +168,7 @@ class Fields {
         type == "text") {
       defaultData.value = HiveUtils.getUser()?.person?.team?.name;
     }
-    function = () async{
+    function = (IBelong belong) async{
       if (type == "router") {
         Get.toNamed(router!);
       }
@@ -185,7 +186,7 @@ class Fields {
         });
       }
       if(type == 'selectPerson'){
-        var users = await setting.user.loadMembers();
+        var users =  belong.members;
         PickerUtils.showListStringPicker(Get.context!, titles: users.map((e) => e.name).toList(),
             callback: (str) {
               defaultData.value = users.firstWhere((element) => element.name == str);

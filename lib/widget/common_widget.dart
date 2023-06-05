@@ -71,7 +71,7 @@ class CommonWidget {
               image!=null?ImageWidget(image,color: Colors.white,size: 32.w):const SizedBox(),
               Text(
                 text,
-                style: TextStyle(color: Colors.white, fontSize: 16.sp),
+                style: TextStyle(color: Colors.white, fontSize: 18.sp),
               ),
             ],
           ),
@@ -182,7 +182,7 @@ class CommonWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(color: Colors.black, fontSize: 20.sp),
+                  style: TextStyle(color: Colors.black, fontSize: 18.sp),
                 ),
                 SizedBox(height: 10.h,),
                 TextField(
@@ -193,13 +193,13 @@ class CommonWidget {
                   onChanged: onChanged,
                   onSubmitted: onSubmitted,
                   style:
-                      textStyle ?? TextStyle(color: Colors.black, fontSize: 20.sp),
+                      textStyle ?? TextStyle(color: Colors.black, fontSize: 18.sp),
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.zero,
                       isDense: true,
                       hintText: hint,
                       hintStyle:
-                          TextStyle(color: Colors.grey.shade300, fontSize: 20.sp),
+                          TextStyle(color: Colors.grey.shade300, fontSize: 18.sp),
                       border: InputBorder.none),
                 ),
                 SizedBox(height: 10.h,),
@@ -244,7 +244,7 @@ class CommonWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(color: Colors.black, fontSize: 20.sp),
+                  style: TextStyle(color: Colors.black, fontSize: 18.sp),
                 ),
                 GestureDetector(
                   onTap: onTap,
@@ -258,12 +258,12 @@ class CommonWidget {
                             hint ?? "请选择",
                                   style: TextStyle(
                                       color: Colors.grey.shade300,
-                                      fontSize: 20.sp),
+                                      fontSize: 18.sp),
                                 )
                               : Text(
                                   content,
                                   style: TextStyle(
-                                      color: Colors.black, fontSize: 20.sp),
+                                      color: Colors.black, fontSize: 18.sp),
                                 ),
                         ),
                         Icon(
@@ -407,7 +407,7 @@ class CommonWidget {
                     alignment: PlaceholderAlignment.middle),
                 TextSpan(
                     text: info,
-                    style: TextStyle(fontSize: 20.sp, color: Colors.black))
+                    style: TextStyle(fontSize: 18.sp, color: Colors.black,fontWeight: FontWeight.w500))
               ],
             ),
           ),
@@ -720,7 +720,7 @@ class CommonWidget {
                         EdgeInsets.symmetric(vertical: 15.h, horizontal: 10.w),
                     color: GYColors.formTitleBackgroundColor,
                     height: 60.h,
-                    child: Text(title,style: const TextStyle(color: XColors.black666,),),
+                    child: Text(title,style: TextStyle(color: XColors.black666,fontSize: 18.sp),),
                   ),
                 ),
                 SizedBox(height: 55.h,width: 0.5,),
@@ -734,13 +734,10 @@ class CommonWidget {
                     child: userId.isNotEmpty
                         ? TargetText(
                             userId: userId,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                           )
                         : Text(
                             content,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                           style: TextStyle(color: XColors.black666,fontSize: 18.sp),
                           ),
                   ),
                 ),

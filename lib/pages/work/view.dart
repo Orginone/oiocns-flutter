@@ -16,7 +16,7 @@ class WorkPage extends BaseGetListPageView<WorkController, WorkState> {
       child: SingleChildScrollView(
         child: Obx(() {
           return ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 10.h),
+            padding: EdgeInsets.symmetric(horizontal: 14.w),
             itemBuilder: (context, index) {
               return Item(
                 todo: state.dataList[index],

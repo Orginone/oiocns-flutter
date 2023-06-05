@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/work/work_start/create_work/state.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -58,7 +59,7 @@ class CreateWorkPage
                       return Container();
                     }
                     Widget child =
-                        testMappingComponents[e.fields!.type ?? ""]!(e.fields!);
+                        testMappingComponents[e.fields!.type ?? ""]!(e.fields!,state.belong);
                     return child;
                   }).toList() ??
                   [],
@@ -96,14 +97,14 @@ class CreateWorkPage
                     ),
                     CommonWidget.commonPopupMenuButton(
                       items: SubTableEnum.values.map((e) {
-                        String lable = e.lable;
+                        String label = e.label;
                         if (e != SubTableEnum.allChange && state.thingForm.isNotEmpty) {
-                          lable = lable +
+                          label = label +
                               state.thingForm[state.tabController.index].name;
                         }
                         return PopupMenuItem(
                           value: e,
-                          child: Text(lable),
+                          child: Text(label),
                         );
                       }).toList(),
                       onSelected: (SubTableEnum function) {
@@ -128,7 +129,13 @@ class CreateWorkPage
                         List<String> data = e.data?.map((e) {
                               String value = '';
                               if(e.values.first!=null){
-                                value = e.values.first.toString();
+                                if(e.values.first is Map){
+                                  value = e.values.first.values.first.toString();
+                                } else if(e.values.first is XTarget){
+                                  value = e.values.first.name;
+                                } else{
+                                  value = e.values.first.toString();
+                                }
                               }
                               return value;
                             }).toList() ??

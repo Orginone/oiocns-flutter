@@ -36,7 +36,7 @@ class Item extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.w),
         ),
-        padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 18.w),
+        padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 14.w),
         child: Row(
           children: [
             Expanded(
@@ -47,7 +47,7 @@ class Item extends StatelessWidget {
                     children: [
                       Text(
                         todo.taskType,
-                        style: TextStyle(fontSize: 21.sp),
+                        style: TextStyle(fontSize: 22.sp),
                       ),
                       Container(
                         margin: EdgeInsets.symmetric(horizontal: 10.w),
@@ -57,7 +57,7 @@ class Item extends StatelessWidget {
                       ),
                       Text(
                         todo.title,
-                        style: TextStyle(fontSize: 21.sp,fontWeight: FontWeight.w500),
+                        style: TextStyle(fontSize: 22.sp,fontWeight: FontWeight.w500),
                       ),
                       Expanded(
                         child: Align(
@@ -75,7 +75,7 @@ class Item extends StatelessWidget {
                               statusMap[todo.status]!.text,
                               style: TextStyle(
                                   color: statusMap[todo.status]!.color,
-                                  fontSize: 14.sp),
+                                  fontSize: 18.sp),
                             ),
                           ),
                         ),
@@ -96,12 +96,12 @@ class Item extends StatelessWidget {
                         TextSpan(
                             text: '创建时间: ',
                             style:
-                                TextStyle(fontSize: 16.sp, color: Colors.grey)),
+                                TextStyle(fontSize: 18.sp, color: Colors.grey)),
                         TextSpan(
                           text: DateTime.tryParse(todo.createTime)
                                   ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
                               "",
-                          style: TextStyle(fontSize: 16.sp),
+                          style: TextStyle(fontSize: 18.sp),
                         ),
                       ],
                     ),
@@ -191,11 +191,11 @@ class Item extends StatelessWidget {
         Text.rich(TextSpan(children: [
           TextSpan(
               text: '创建人: ',
-              style: TextStyle(fontSize: 16.sp, color: Colors.grey)),
+              style: TextStyle(fontSize: 18.sp, color: Colors.grey)),
           WidgetSpan(
             child: TargetText(
                 userId: todo.createUser ?? "",
-                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500)),
+                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500)),
           ),
         ])),
         Container(
@@ -205,7 +205,7 @@ class Item extends StatelessWidget {
           color: Colors.grey,
         ),
         TargetText(
-          style: TextStyle(fontSize: 16.sp),
+          style: TextStyle(fontSize: 18.sp),
           userId: todo.shareId ?? "",
         ),
       ],

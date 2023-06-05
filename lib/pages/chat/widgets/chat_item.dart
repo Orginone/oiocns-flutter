@@ -86,11 +86,10 @@ class MessageItemWidget extends GetView<SettingController> {
 
   Widget get _avatarContainer {
     return Obx(() {
-     ;
       var noRead = chat.chatdata.value.noReadCount;
       Widget child = TeamAvatar(
         info: TeamTypeInfo(share: chat.share),
-        size: 60.w,
+        size: 65.w,
         decoration:  chat.share.typeName == TargetType.person.label?const BoxDecoration(
           color: XColors.themeColor,
           shape: BoxShape.circle,
@@ -127,7 +126,7 @@ class MessageItemWidget extends GetView<SettingController> {
           bgColor: Colors.white,
           textStyle: TextStyle(
             color: XColors.designBlue,
-            fontSize: 12.sp,
+            fontSize: 14.sp,
           ),
           borderColor: XColors.tinyBlue,
         ));
@@ -139,26 +138,32 @@ class MessageItemWidget extends GetView<SettingController> {
       children: [
         Row(
           children: [
-            Text(target.value.chatName ?? "",
-                style: TextStyle(
-                    color: XColors.chatTitleColor,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 21.sp)),
-            SizedBox(
-              width: 10.w,
-            ),
-            ...labels,
             Expanded(
               child: Text(
-                CustomDateUtil.getSessionTime(
-                    chat.chatdata.value.lastMessage?.createTime),
-                style: TextStyle(color: Colors.grey, fontSize: 18.sp),
-                textAlign: TextAlign.right,
+                target.value.chatName ?? "",
+                style: TextStyle(
+                  color: XColors.chatTitleColor,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 24.sp,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                maxLines: 1,
               ),
+            ),
+            Text(
+              CustomDateUtil.getSessionTime(
+                  chat.chatdata.value.lastMessage?.createTime),
+              style: TextStyle(color: Colors.grey, fontSize: 18.sp),
+              textAlign: TextAlign.right,
             ),
           ],
         ),
-        SizedBox(height: 3.h,),
+        Row(
+          children: labels,
+        ),
+        SizedBox(
+          height: 3.h,
+        ),
         _showTxt(),
       ],
     );
@@ -210,7 +215,7 @@ class MessageItemWidget extends GetView<SettingController> {
             showTxt,
             style: TextStyle(
               color: XColors.chatHintColors,
-              fontSize: 17.sp,
+              fontSize: 18.sp,
             ),
             textAlign: TextAlign.left,
             maxLines: 1,

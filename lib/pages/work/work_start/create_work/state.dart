@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/base/flow.dart';
 
 class CreateWorkState extends BaseGetState{
@@ -14,8 +15,11 @@ class CreateWorkState extends BaseGetState{
   var thingForm = <XForm>[].obs;
 
   late TabController tabController;
+
+  late IBelong belong;
   CreateWorkState(){
     define = Get.arguments['define'];
+    belong = Get.arguments['belong'];
   }
 }
 
@@ -24,6 +28,6 @@ enum SubTableEnum{
   addTable("新增"),
   choiceTable("选择");
 
-  final String lable;
-  const SubTableEnum(this.lable);
+  final String label;
+  const SubTableEnum(this.label);
 }

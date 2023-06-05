@@ -23,6 +23,9 @@ class WorkStartPage extends BaseGetView<WorkStartController, WorkStartState> {
               itemBuilder: (context, index) {
                 return Item(
                   define: state.defines[index],
+                  onTap: (){
+                    controller.createWork(state.defines[index]);
+                  },
                 );
               },
               itemCount: state.defines.length,

@@ -42,6 +42,10 @@ class ThingModel {
     data['CreateTime'] = this.createTime;
     data['ModifiedTime'] = this.modifiedTime;
     data['Status'] = this.status;
+    data['EDIT_INFO'] = this
+        .data
+        ?.map((e) => {e.keys.first.substring(1): e.values.first})
+        .toList();
     return data;
   }
 }

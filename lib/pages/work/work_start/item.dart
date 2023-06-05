@@ -12,23 +12,15 @@ import 'package:orginone/widget/target_text.dart';
 class Item extends StatelessWidget {
   final IWorkDefine define;
 
-  const Item({Key? key, required this.define}) : super(key: key);
+  final VoidCallback? onTap;
+  const Item({Key? key, required this.define, this.onTap}) : super(key: key);
 
 
   WorkStartController get work => Get.find<WorkStartController>();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
-        WorkNodeModel? node = await define.loadWorkNode();
-        if (node != null &&
-            node.forms != null &&
-            node.forms!.isNotEmpty) {
-          Get.toNamed(Routers.createWork,arguments: {"define":define,"node":node});
-        } else {
-          return ToastUtils.showMsg(msg: "流程未绑定表单");
-        }
-      },
+      onTap: onTap,
       child: Container(
         margin: EdgeInsets.only(right: 10.w, left: 10.w, top: 10.h),
         decoration: BoxDecoration(
@@ -48,6 +40,13 @@ class Item extends StatelessWidget {
             ),
             SizedBox(
               height: 10.h,
+            ),
+            Text(
+              define.metadata.name ?? "",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18.sp,
+              ),
             ),
             Row(
               children: [

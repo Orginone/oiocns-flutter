@@ -221,7 +221,7 @@ class IndexPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10)),
                 padding: const EdgeInsets.fromLTRB(11.0, 0, 0, 0),
                 alignment: Alignment.topLeft,
-                child: const Text("快捷入口")),
+                child:  Text("快捷入口",style: TextStyle(fontSize: 18.sp,fontWeight: FontWeight.w500),)),
             Container(
               color: XColors.white,
               child: SizedBox(
@@ -562,7 +562,7 @@ class CardChildWidget extends StatelessWidget {
           children: [
             Text(
               itemName,
-              // style: XFonts.size24Black3W700,
+              style:TextStyle(fontSize: 18.sp,fontWeight: FontWeight.w500),
             ),
             SizedBox(
               height: 12.h,

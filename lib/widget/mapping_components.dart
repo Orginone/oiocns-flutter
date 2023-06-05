@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/util/production_order_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 
-typedef MappingComponentsCallback = Widget Function(Fields data, {bool isEdit, AssetsType? assetsType});
+typedef MappingComponentsCallback = Widget Function(Fields data, IBelong belong,{bool isEdit, AssetsType? assetsType});
 
 Map<String, MappingComponentsCallback> testMappingComponents = {
   "text": mappingTextWidget,
@@ -20,7 +21,7 @@ Map<String, MappingComponentsCallback> testMappingComponents = {
 };
 
 
-MappingComponentsCallback mappingTextWidget = (Fields data,
+MappingComponentsCallback mappingTextWidget = (Fields data, IBelong belong,
     {bool isEdit = false, AssetsType? assetsType}) {
   if (data.isBillCode && !isEdit) {
     ProductionOrderUtils.productionSingleOrder(assetsType!.billHeader).then((
@@ -44,7 +45,7 @@ MappingComponentsCallback mappingTextWidget = (Fields data,
   });
 };
 
-MappingComponentsCallback mappingInputWidget = (Fields data,
+MappingComponentsCallback mappingInputWidget = (Fields data, IBelong belong,
     {bool isEdit = false, AssetsType? assetsType}) {
   List<TextInputFormatter>? inputFormatters;
   TextEditingController controller = TextEditingController(text: data.defaultData.value?.toString()??"");
@@ -74,7 +75,7 @@ MappingComponentsCallback mappingInputWidget = (Fields data,
   );
 };
 
-MappingComponentsCallback mappingSelectBoxWidget = (Fields data,
+MappingComponentsCallback mappingSelectBoxWidget = (Fields data, IBelong belong,
     {bool isEdit = false, AssetsType? assetsType}) {
   if(data.hidden??false){
     return Container();
@@ -89,14 +90,16 @@ MappingComponentsCallback mappingSelectBoxWidget = (Fields data,
           bottom: (data.marginBottom ?? 0).h),
       child: CommonWidget.commonChoiceTile(
           data.title ?? "",content,
-          onTap: data.function,
+          onTap: (){
+            data.function(belong);
+          },
           showLine: true,
           required: data.required ?? false),
     );
   });
 };
 
-MappingComponentsCallback mappingSelectDateBoxWidget = (Fields data,
+MappingComponentsCallback mappingSelectDateBoxWidget = (Fields data, IBelong belong,
     {bool isEdit = false, AssetsType? assetsType}) {
   if(data.hidden??false){
     return Container();
@@ -112,7 +115,9 @@ MappingComponentsCallback mappingSelectDateBoxWidget = (Fields data,
           bottom: (data.marginBottom ?? 0).h),
       child: CommonWidget.commonChoiceTile(
           data.title ?? "",content,
-          onTap: data.function,
+          onTap: (){
+            data.function(belong);
+          },
           showLine: true,
           required: data.required ?? false),
     );
@@ -120,7 +125,7 @@ MappingComponentsCallback mappingSelectDateBoxWidget = (Fields data,
 };
 
 
-MappingComponentsCallback mappingSelectPersonBoxWidget = (Fields data,
+MappingComponentsCallback mappingSelectPersonBoxWidget = (Fields data, IBelong belong,
     {bool isEdit = false, AssetsType? assetsType}) {
   if(data.hidden??false){
     return Container();
@@ -136,14 +141,16 @@ MappingComponentsCallback mappingSelectPersonBoxWidget = (Fields data,
           bottom: (data.marginBottom ?? 0).h),
       child: CommonWidget.commonChoiceTile(
           data.title ?? "",content,
-          onTap: data.function,
+          onTap: (){
+            data.function(belong);
+          },
           showLine: true,
           required: data.required ?? false),
     );
   });
 };
 
-MappingComponentsCallback mappingSelectDepartmentBoxWidget = (Fields data,
+MappingComponentsCallback mappingSelectDepartmentBoxWidget = (Fields data, IBelong belong,
     {bool isEdit = false, AssetsType? assetsType}) {
   if(data.hidden??false){
     return Container();
@@ -159,14 +166,16 @@ MappingComponentsCallback mappingSelectDepartmentBoxWidget = (Fields data,
           bottom: (data.marginBottom ?? 0).h),
       child: CommonWidget.commonChoiceTile(
           data.title ?? "",content,
-          onTap: data.function,
+          onTap:(){
+            data.function(belong);
+          },
           showLine: true,
           required: data.required ?? false),
     );
   });
 };
 
-MappingComponentsCallback mappingRouteWidget = (Fields data,
+MappingComponentsCallback mappingRouteWidget = (Fields data, IBelong belong,
     {bool isEdit = false, AssetsType? assetsType}) {
   if(data.hidden??false){
     return Container();
@@ -174,6 +183,6 @@ MappingComponentsCallback mappingRouteWidget = (Fields data,
   return Obx(() {
     return CommonWidget.commonChoiceTile(
         data.title??"", data.defaultData.value?.name ?? "",
-        required: true, onTap: data.function, showLine: true);
+        required: true, onTap: data.function(belong), showLine: true);
   });
 };
