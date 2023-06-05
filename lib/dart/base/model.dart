@@ -5345,22 +5345,23 @@ class WorkSubmitModel {
       required this.resourceData,
       this.changeData = const []});
 
+
   Map<String, dynamic> toJson() {
-    List<Map<String, dynamic>> changeDataMap = [];
+    Map<String, dynamic> changeDataMap = {};
     for (var element in changeData) {
       if (element.data != null) {
-        List<Map<String, dynamic>> data = [];
+        Map<String, dynamic> data = {};
         for (var element in element.data!) {
           if (element.values.first != null) {
             dynamic value = element.values.first;
             if (value is Map) {
               value = value.keys.first;
             }
-            data.add({element.keys.first.substring(1): value});
+            data[element.keys.first.substring(1)] = value;
           }
         }
 
-        changeDataMap.add({element.id!: data});
+        changeDataMap[element.id!] = data;
       }
     }
 
@@ -5372,8 +5373,6 @@ class WorkSubmitModel {
       resourceDataMap = jsonEncode({
         'data': changeData.map((e) => e.toJson()).toList(),
         'form': resourceData.toJson(),
-        'propertys':
-            resourceData.attributes?.map((e) => e.property?.toJson()).toList(),
       });
       print('');
     }

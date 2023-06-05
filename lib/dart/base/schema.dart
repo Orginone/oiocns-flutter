@@ -82,6 +82,8 @@ class XAttribute {
 
   Fields? fields;
 
+  String? value;
+
   XAttribute({
     this.id,
     this.name,
@@ -709,14 +711,6 @@ class XProperty {
       'version': version,
       'createTime': createTime,
       'updateTime': updateTime,
-      'linkAttributes': linkAttributes?.map((attr) => attr.toJson()).toList(),
-      'links': links?.map((link) => link.toJson()).toList(),
-      'attributes': attributes?.map((attr) => attr.toJson()).toList(),
-      'things': things?.map((thing) => thing.toJson()).toList(),
-      'propThingValues': propThingValues?.map((prop) => prop.toJson()).toList(),
-      'species': species?.toJson(),
-      'dict': dict?.toJson(),
-      'belong': belong?.toJson(),
     };
     return data;
   }
@@ -5595,10 +5589,6 @@ class XForm {
       'version': version,
       'createTime': createTime,
       'updateTime': updateTime,
-      'attributes': attributeList,
-      'bindNodes': bindNodeList,
-      'species': species != null ? species!.toJson() : null,
-      'belong': belong != null ? belong!.toJson() : null,
     };
   }
 

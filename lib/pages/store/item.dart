@@ -11,8 +11,9 @@ class StoreItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15.w,vertical: 11.h),
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 11.h),
       child: Row(
         children: [
           Container(
@@ -37,16 +38,20 @@ class StoreItem extends StatelessWidget {
           ),
           GestureDetector(
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: 5.h,horizontal: 15.w),
+              padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 15.w),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.w),
-                border: Border.all(color: Colors.grey.shade400,width: 0.5),
-
+                border: Border.all(color: Colors.grey.shade400, width: 0.5),
               ),
-              child:  Text("打开",style: XFonts.size20Black0,),
+              child: Text(
+                "打开",
+                style: XFonts.size20Black0,
+              ),
             ),
           ),
-          CommonWidget.commonPopupMenuButton(items: [])
+          CommonWidget.commonPopupMenuButton(items: [
+            PopupMenuItem(child: Text("设为常用")),
+          ])
         ],
       ),
     );

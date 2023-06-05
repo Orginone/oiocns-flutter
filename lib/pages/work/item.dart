@@ -31,7 +31,7 @@ class Item extends StatelessWidget {
         }
       },
       child: Container(
-        margin: EdgeInsets.only(top: 10.h),
+        margin: EdgeInsets.only(top: 10.h,right: 14.w,left: 14.w),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.w),

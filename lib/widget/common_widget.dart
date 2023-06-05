@@ -708,40 +708,45 @@ class CommonWidget {
       children: [
         Expanded(
           child: Container(
+            constraints: BoxConstraints(minHeight: 60.h),
             decoration: BoxDecoration(
                 border: Border(
                     bottom:
                         BorderSide(color: Colors.grey.shade200, width: 0.5))),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 15.h, horizontal: 10.w),
-                    color: GYColors.formTitleBackgroundColor,
-                    height: 60.h,
-                    child: Text(title,style: TextStyle(color: XColors.black666,fontSize: 18.sp),),
-                  ),
-                ),
-                SizedBox(height: 55.h,width: 0.5,),
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 15.h, horizontal: 10.w),
-                    color: Colors.white,
-                    height: 60.h,
-                    child: userId.isNotEmpty
-                        ? TargetText(
-                            userId: userId,
-                          )
-                        : Text(
-                            content,
-                           style: TextStyle(color: XColors.black666,fontSize: 18.sp),
-                          ),
-                  ),
-                ),
-              ],
+            child: LayoutBuilder(
+              builder: (context,constraints) {
+                return Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 15.h, horizontal: 10.w),
+                        height: constraints.minHeight,
+                        color: GYColors.formTitleBackgroundColor,
+                        child: Text(title,style: TextStyle(color: XColors.black666,fontSize: 18.sp),),
+                      ),
+                    ),
+                    SizedBox(height: 55.h,width: 0.5,),
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 15.h, horizontal: 10.w),
+                        color: Colors.white,
+                        height: constraints.minHeight,
+                        child: userId.isNotEmpty
+                            ? TargetText(
+                                userId: userId,
+                              )
+                            : Text(
+                                content,
+                               style: TextStyle(color: XColors.black666,fontSize: 18.sp),
+                              ),
+                      ),
+                    ),
+                  ],
+                );
+              }
             ),
           ),
         ),

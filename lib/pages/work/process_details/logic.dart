@@ -5,12 +5,11 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
-import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/pages/work/network.dart';
-import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
-
+import 'package:orginone/model/thing_model.dart' as thing;
 import 'state.dart';
 
 class ProcessDetailsController extends BaseController<ProcessDetailsState> with GetTickerProviderStateMixin{
@@ -55,30 +54,42 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
 
     WorkNodeModel? node = await state.define!.loadWorkNode();
     List<XForm> forms = node?.forms??[];
-
-    if(node?.forms!=null){
-      var formIds = node?.forms?.map((i) => i.id).toList();
-      for (var form in node?.forms??[]) {
-        try{
-          var iForm = forms.firstWhere((element) => formIds?.contains(element.id)??false);
-          form.attributes = await setting.provider.work!.loadAttributes(iForm.id,state.define!.workItem.belongId);
-          state.useForm.add(form);
-        }catch(e){
-
-        }
+    state.workForm.value =
+        forms.firstWhere((element) => element.typeName == SpeciesType.work.label);
+    state.thingForm.value =
+        forms.where((element) => element.typeName == SpeciesType.thing.label).toList();
+    if(state.workForm.value!=null){
+      var iForm = forms
+          .firstWhere((element) => state.workForm.value!.id == element.id);
+      state.workForm.value!.attributes = await setting.provider.work!
+          .loadAttributes(iForm.id, state.define!.workItem.belongId);
+      for (var element in state.workForm.value!.attributes??[]) {
+        element.value = data['forms']?['headerData']?[element.id]??'';
       }
     }
 
-    for (var form in state.useForm) {
-      // for (var item in form.items??[]) {
-      //   data['formData'].forEach((key, value) {
-      //     if(item.attrId == key){
-      //       item.value = value;
-      //     }
-      //   });
-      // }
+    for (var form in state.thingForm) {
+      try {
+        var iForm = forms.firstWhere((element) => form.id == element.id);
+        form.attributes = await setting.provider.work!
+            .loadAttributes(iForm.id, state.define!.workItem.belongId);
+
+        if(data['forms']?['formData']?[form.id]!=null){
+          Map<String,dynamic> resourceData = jsonDecode(data['forms']?['formData']?[form.id]['resourceData']);
+          if(resourceData['data']!=null){
+            resourceData['data'].forEach((json){
+              form.things.add(thing.ThingModel.fromJson(json));
+            });
+          }
+        }
+
+      } catch (e) {
+
+      }
     }
-    state.useForm.refresh();
+    state.subTabController = TabController(length: state.thingForm.length, vsync: this);
+    state.workForm.refresh();
+    state.thingForm.refresh();
   }
 
 

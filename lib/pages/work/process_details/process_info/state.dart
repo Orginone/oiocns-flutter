@@ -18,5 +18,9 @@ class ProcessInfoState extends BaseGetState{
 
   XWorkInstance? get flowInstance => processDetailsController.state.workInstance;
 
-  List<XForm> get useForm => processDetailsController.state.useForm;
+  XForm? get workForm => processDetailsController.state.workForm.value;
+
+  List<XForm> get thingForm => processDetailsController.state.thingForm;
+
+  TabController? get subTabController => processDetailsController.state.subTabController;
 }

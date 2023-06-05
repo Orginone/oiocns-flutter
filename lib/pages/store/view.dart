@@ -11,33 +11,67 @@ class StorePage
   @override
   Widget buildView() {
     return Container(
-      color: Colors.white,
+      color: XColors.bgColor,
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return  recentlyOpened();
+          }
+          if(index == 1){
+            return content();
+          }
+          return StoreItem();
+        },
+        itemCount: 12,
+      ),
+    );
+  }
+
+  Widget recentlyOpened() {
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+              bottom: BorderSide(color: Colors.grey.shade200, width: 0.5))),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: double.infinity,
-            height: 150.h,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
-              itemBuilder: (BuildContext context, int index) {
-                var item = state.recentlyList[index];
-                return button(item);
-              },
-              itemCount: state.recentlyList.length,
+          Padding(
+            padding: EdgeInsets.only(left: 20.w, top: 10.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "最近打开",
+                  style: XFonts.size24Black0,
+                ),
+              ],
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return content();
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: state.recentlyList.map((value) {
+                Widget child = button(value);
+                int index = state.recentlyList.indexOf(value);
+
+                if (index !=
+                    (state.recentlyList.length - 1)) {
+                  child = Container(
+                    margin: EdgeInsets.only(right: 15.w),
+                    child: child,
+                  );
                 }
-                return StoreItem();
-              },
-              itemCount: 11,
+                return Container(
+                  margin:EdgeInsets.only(left: index == 0 ? 0 : 27),
+                  child: child,
+                );;
+              }).toList(),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -79,7 +113,9 @@ class StorePage
   }
 
   Widget content() {
-    return Padding(
+    return Container(
+      margin: EdgeInsets.only(top: 10.h),
+      color: Colors.white,
       padding: EdgeInsets.symmetric(horizontal: 15.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -92,7 +128,7 @@ class StorePage
             items: const [
               DropdownMenuItem(
                 value: 'time',
-                child: Text('存储时间'),
+                child: Text('筛选'),
               )
             ],
             onChanged: (String? value) {},

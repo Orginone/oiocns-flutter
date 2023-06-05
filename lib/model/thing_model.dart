@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 
@@ -10,8 +12,10 @@ class ThingModel {
   String? status;
   bool isSelected = false;
   List<Map<String,dynamic>>? data;
+
+  Map<String, dynamic>? eidtInfo;
   ThingModel(
-      {this.id, this.creater, this.createTime, this.modifiedTime, this.status});
+      {this.id, this.creater, this.createTime, this.modifiedTime, this.status,this.eidtInfo});
 
   ThingModel.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
@@ -24,6 +28,7 @@ class ThingModel {
     createTime = json['CreateTime'];
     modifiedTime = json['ModifiedTime'];
     status = json['Status'];
+    eidtInfo = json['EDIT_INFO'];
     data = [];
     json.keys.forEach((element) {
       if(element.length>15 && element.contains("S")){
@@ -37,15 +42,18 @@ class ThingModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> info = new Map<String, dynamic>();
+    for (var element in this.data!) {
+       if(element.values.first!=null){
+         info[element.keys.first.substring(1)] = element.values.first;
+       }
+    }
     data['Id'] = this.id;
     data['Creater'] = this.creater;
     data['CreateTime'] = this.createTime;
     data['ModifiedTime'] = this.modifiedTime;
     data['Status'] = this.status;
-    data['EDIT_INFO'] = this
-        .data
-        ?.map((e) => {e.keys.first.substring(1): e.values.first})
-        .toList();
+    data['EDIT_INFO'] = info;
     return data;
   }
 }
