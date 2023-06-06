@@ -45,8 +45,8 @@ Future<void> showCreateAuthDialog(BuildContext context, XForm form,IBelong belon
                     SettingController setting = Get.find();
                     late ThingModel newModel;
                     if (thing == null && !isAllChange) {
-                      var res = await kernel.anystore
-                          .createThing(1, setting.user.id);
+                      var res =
+                          await kernel.anystore.createThing(1, setting.user.id);
                       if (res.success) {
                         newModel = ThingModel.fromJson(res.data[0]);
                       }
@@ -55,10 +55,10 @@ Future<void> showCreateAuthDialog(BuildContext context, XForm form,IBelong belon
                     } else {
                       newModel = ThingModel();
                     }
-                    newModel.data = form.attributes!
-                        .map((e) =>
-                    {e.code!: e.fields?.defaultData.value})
-                        .toList();
+                    for (var e in form.attributes!) {
+                      newModel.eidtInfo![e.id!] = e.fields?.defaultData.value;
+                    }
+
                     form.reset();
                     if (onSuceess != null) {
                       onSuceess(newModel);

@@ -5357,19 +5357,8 @@ class WorkSubmitModel {
   Map<String, dynamic> toJson() {
     Map<String, dynamic> changeDataMap = {};
     for (var element in changeData) {
-      if (element.data != null) {
-        Map<String, dynamic> data = {};
-        for (var element in element.data!) {
-          if (element.values.first != null) {
-            dynamic value = element.values.first;
-            if (value is Map) {
-              value = value.keys.first;
-            }
-            data[element.keys.first.substring(1)] = value;
-          }
-        }
-
-        changeDataMap[element.id!] = data;
+      if (element.eidtInfo != null) {
+        changeDataMap[element.id!] = element.eidtInfo;
       }
     }
 
