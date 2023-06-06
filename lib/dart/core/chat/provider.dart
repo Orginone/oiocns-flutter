@@ -11,8 +11,12 @@ abstract class IChatProvider {
   IPerson get user;
 
   /// 所有会话
-  List<IMsgChat> get chats;
+  late List<IMsgChat> allChats;
 
+  /// 指定会话
+  List<IMsgChat> get topChats;
+
+  List<IMsgChat> get chats;
 
   IMsgChat? currentChat;
 
@@ -21,11 +25,13 @@ abstract class IChatProvider {
 
   /// 加载消息
   void loadPreMessage();
+
+  void loadAllChats();
 }
 
 class ChatProvider implements IChatProvider {
   bool _preMessage = true;
-  final RxList<MsgSaveModel> _preMessages;
+  var _preMessages = <MsgSaveModel>[].obs;
 
   List<MsgTagModel> _preTags = [];
 
@@ -34,7 +40,7 @@ class ChatProvider implements IChatProvider {
   @override
   final IPerson user;
 
-  ChatProvider(this.user) : _preMessages = <MsgSaveModel>[].obs {
+  ChatProvider(this.user) {
     kernel.on('RecvMsg', (data) {
       if (!_preMessage) {
         _recvMessage(MsgSaveModel.fromJson(data));
@@ -50,6 +56,7 @@ class ChatProvider implements IChatProvider {
         _preTags.add(tag);
       }
     });
+    allChats = [];
   }
 
   @override
@@ -59,15 +66,14 @@ class ChatProvider implements IChatProvider {
 
   @override
   void loadPreMessage() {
-    kernel.anystore.get(StoreCollName.chatMessage,user.id).then((res) {
+    kernel.anystore.get(StoreCollName.chatMessage, user.id).then((res) {
       if (res.success) {
         if (res.data is Map<String, dynamic>) {
           res.data.keys.forEach((key) {
-            if (key!.startsWith('T') &&
-                res.data[key]['fullId'] != null) {
+            if (key!.startsWith('T') && res.data[key]['fullId'] != null) {
               var fullId = key.substring(1);
-              var find =
-                  chats.firstWhereOrNull((i) => i.chatdata.value.fullId == fullId);
+              var find = chats
+                  .firstWhereOrNull((i) => i.chatdata.value.fullId == fullId);
               find?.loadCache(MsgChatData.fromMap(res.data[key]));
             }
           });
@@ -84,16 +90,23 @@ class ChatProvider implements IChatProvider {
   }
 
   @override
-  List<IMsgChat> get chats {
-    final chats = [...user.chats];
+  late List<IMsgChat> allChats;
+
+
+  @override
+  void loadAllChats(){
+    allChats.clear();
+    allChats = [...user.chats];
     for (final company in user.companys) {
-      chats.addAll(company.chats);
+      allChats.addAll(company.chats);
     }
-    return chats;
+    allChats.removeWhere((element) => !element.isMyChat);
+    var s = allChats.where((element) => element.labels.contains("浙江省财政厅")).toList();
+    print('');
   }
 
   void _recvMessage(MsgSaveModel data) {
-    for (var c in chats) {
+    for (var c in allChats) {
       var isMatch = data.sessionId == c.chatId;
       if ((c.share.typeName == TargetType.person.label ||
               c.share.typeName == '权限') &&
@@ -101,20 +114,42 @@ class ChatProvider implements IChatProvider {
         isMatch = data.belongId == c.belongId;
       }
       if (isMatch) {
-        c.receiveMessage(data,currentChat?.chatId == c.chatId);
+        c.receiveMessage(data, currentChat?.chatId == c.chatId);
       }
     }
   }
 
   void _chatReceive(MsgTagModel tagModel) {
-    for (var c in chats) {
+    for (var c in allChats) {
       bool isMatch = tagModel.id == c.chatId;
-      if ((c.share.typeName == TargetType.person.label || c.share.typeName == '权限') && isMatch) {
+      if ((c.share.typeName == TargetType.person.label ||
+              c.share.typeName == '权限') &&
+          isMatch) {
         isMatch = tagModel.belongId == c.belongId;
       }
       if (isMatch) {
         c.receiveTags(tagModel.ids!, tagModel.tags!);
       }
     }
+  }
+
+  @override
+// TODO: implement topChats
+  List<IMsgChat> get topChats{
+    var list = allChats.where((element) => element.labels.contains("置顶")).toList();
+    list.sort((f, s) {
+      return (s.chatdata.value.lastMsgTime) - (f.chatdata.value.lastMsgTime);
+    });
+    return list;
+  }
+
+  @override
+// TODO: implement chats
+  List<IMsgChat> get chats {
+    var list = allChats.where((element) => !element.labels.contains("置顶")).toList();
+    list.sort((f, s) {
+      return (s.chatdata.value.lastMsgTime) - (f.chatdata.value.lastMsgTime);
+    });
+    return list;
   }
 }

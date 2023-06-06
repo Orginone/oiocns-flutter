@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
@@ -8,6 +9,7 @@ import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_util.dart';
+import 'package:orginone/util/string_util.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 import 'package:orginone/widget/widgets/text_tag.dart';
@@ -26,59 +28,70 @@ class MessageItemWidget extends GetView<SettingController> {
   // 用户信息
   final IMsgChat chat;
 
+  final bool enabledSlidable;
+
   const MessageItemWidget({
     Key? key,
     required this.chat,
+    this.enabledSlidable = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    double x = 0, y = 0;
+    bool isTop = chat.labels.contains("置顶");
     return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onPanDown: (position) {
-        x = position.globalPosition.dx;
-        y = position.globalPosition.dy;
-      },
-      onLongPress: () async {
-        final result = await showMenu(
-          context: context,
-          position: RelativeRect.fromLTRB(
-            x,
-            y - 50,
-            MediaQuery.of(context).size.width - x,
-            0,
-          ),
-          items: ChatFunc.values.map((item) {
-            return PopupMenuItem(value: item, child: Text(item.label));
-          }).toList(),
-        );
-        if (result != null) {
-          switch (result) {
-            case ChatFunc.remove:
-              break;
-          }
-        }
-      },
-      onTap: () async {
+      onTap: () {
         chat.onMessage();
         Get.toNamed(
           Routers.messageChat,
           arguments: chat,
         );
       },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
+      child: Slidable(
+        enabled: enabledSlidable,
+        endActionPane: ActionPane(
+          motion: const ScrollMotion(),
           children: [
-            _avatarContainer,
-            SizedBox(
-              width: 10.w,
+            SlidableAction(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              icon: Icons.vertical_align_top,
+              label:isTop?"取消置顶":"置顶",
+              onPressed: (BuildContext context) {
+                if(isTop){
+                  chat.labels.remove('置顶');
+                }else{
+                  chat.labels.add('置顶');
+                }
+                chat.cache();
+                controller.provider.refreshChat();
+              },
             ),
-            Expanded(child: Obx(() => _content)),
+            SlidableAction(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              icon: Icons.delete,
+              label: "删除",
+              onPressed: (BuildContext context) {
+                controller.chat.allChats.remove(chat);
+                controller.provider.refreshChat();
+              },
+            ),
           ],
+        ),
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _avatarContainer,
+              SizedBox(
+                width: 10.w,
+              ),
+              Expanded(child: Obx(() => _content)),
+            ],
+          ),
         ),
       ),
     );
@@ -119,16 +132,17 @@ class MessageItemWidget extends GetView<SettingController> {
   Widget get _content {
     var target = chat.chatdata;
     var labels = <Widget>[];
-    for (var item in chat.chatdata.value.labels) {
-      if(item.isNotEmpty){
+    for (var item in chat.labels) {
+      if (item.isNotEmpty) {
+        bool isTop = item == "置顶";
         labels.add(TextTag(
           item,
           bgColor: Colors.white,
           textStyle: TextStyle(
-            color: XColors.designBlue,
+            color: isTop ? XColors.fontErrorColor : XColors.designBlue,
             fontSize: 14.sp,
           ),
-          borderColor: XColors.tinyBlue,
+          borderColor: isTop ? XColors.fontErrorColor : XColors.tinyBlue,
         ));
         labels.add(Padding(padding: EdgeInsets.only(left: 4.w)));
       }
@@ -183,32 +197,15 @@ class MessageItemWidget extends GetView<SettingController> {
           if (snapshot.connectionState == ConnectionState.done) {
             var name = snapshot.data?.name ?? "";
             if (lastMessage.fromId != controller.user.metadata.id) {
-              if(chat.share.typeName != TargetType.person.label){
+              if (chat.share.typeName != TargetType.person.label) {
                 showTxt = "$name:";
-              }else{
+              } else {
                 showTxt = "对方:";
               }
             }
 
-            var messageType = lastMessage.msgType;
-            if (messageType == MessageType.text.label) {
-              var userIds = lastMessage.body?.mentions??[];
-              if(userIds.isNotEmpty && userIds.contains(controller.user.userId)){
-                showTxt = "有人@你";
-              }else{
-                showTxt = "$showTxt${lastMessage.body?.body??""}";
-              }
-            } else if (messageType == MessageType.recall.label) {
-              showTxt = "$showTxt撤回了一条消息";
-            } else if (messageType == MessageType.image.label) {
-              showTxt = "$showTxt[图片]";
-            } else if (messageType == MessageType.video.label) {
-              showTxt = "$showTxt[视频]";
-            } else if (messageType == MessageType.voice.label) {
-              showTxt = "$showTxt[语音]";
-            } else if (messageType == MessageType.file.label) {
-              showTxt = "$showTxt[文件]";
-            }
+            showTxt =
+                StringUtil.msgConversion(lastMessage, controller.user.userId);
           }
 
           return Text(

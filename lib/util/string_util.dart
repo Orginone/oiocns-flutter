@@ -1,4 +1,14 @@
+import 'dart:convert';
+
+import 'package:orginone/config/constant.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/enum.dart';
+
 class StringUtil {
+
+  static RegExp imgReg = RegExp(r'\$IMG\[(.*?)\]');
+
+  static RegExp urlReg = RegExp(r'(?:https?:\/\/|www\.)[^\s]+');
   static String getDetailRecallBody({
     required String fromId,
     required String name,
@@ -11,6 +21,74 @@ class StringUtil {
       msgBody = "$name$msgBody";
     }
     return msgBody;
+  }
+
+  static String imgLabelMsgConversion(String text){
+   String newText = text.replaceAllMapped(RegExp(r'\$IMG\[(.*?)\]'),(match){
+      return '[图片]';
+    });
+   return newText;
+  }
+
+  static String msgConversion(MsgSaveModel msg,String currentUserId){
+    String showTxt = '';
+    var messageType = msg.msgType;
+    if (messageType == MessageType.text.label) {
+      var userIds = msg.body?.mentions??[];
+      if(userIds.isNotEmpty && userIds.contains(currentUserId)){
+        showTxt = "有人@你";
+      }else{
+        showTxt = "$showTxt${msg.body?.body??""}";
+        showTxt = StringUtil.imgLabelMsgConversion(showTxt);
+      }
+    } else if (messageType == MessageType.recall.label) {
+      showTxt = "$showTxt撤回了一条消息";
+    } else if (messageType == MessageType.image.label) {
+      showTxt = "$showTxt[图片]";
+    } else if (messageType == MessageType.video.label) {
+      showTxt = "$showTxt[视频]";
+    } else if (messageType == MessageType.voice.label) {
+      showTxt = "$showTxt[语音]";
+    } else if (messageType == MessageType.file.label) {
+      showTxt = "$showTxt[文件]";
+    }
+
+    return showTxt;
+  }
+
+  static dynamic getImageUrl(String text){
+    dynamic imageUrl;
+    if (imgReg.hasMatch(text)) {
+      dynamic imageUrl = imgReg.allMatches(text).first.group(1)!;
+      if(imageUrl.contains('base64')){
+        imageUrl = imageUrl.split("/").last;
+        imageUrl = base64Decode(imageUrl);
+      }else{
+        imageUrl = "${Constant.host}/$imageUrl";
+      }
+    }
+    return imageUrl;
+  }
+
+  static String replaceAllImageLabel(String text){
+    String newText = text.replaceAllMapped(imgReg, (match) {
+      if(match.group(0)?.contains('http')??false){
+        String url = match.group(1)!;
+        String domainRemoved = url.replaceAll(RegExp(r"https?:\/\/[^\/]+\/"), "");
+        return "\$IMG[$domainRemoved]";
+      }
+      return match.group(0)??"";
+    });
+    return newText;
+  }
+  static String resetImageLabel(String text){
+    String newText = text.replaceAllMapped(imgReg, (match) {
+      if(match.group(0)?.contains('base64')??false){
+        return match.group(0)??"";
+      }
+      return "\$IMG[${Constant.host}/${match.group(1)}]";
+    });
+    return newText;
   }
 
   /// 分:秒显示

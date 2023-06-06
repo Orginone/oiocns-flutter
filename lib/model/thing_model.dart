@@ -13,9 +13,9 @@ class ThingModel {
   bool isSelected = false;
   List<Map<String,dynamic>>? data;
 
-  Map<String, dynamic>? eidtInfo;
+  Map<String, dynamic>? eidtInfo = {};
   ThingModel(
-      {this.id, this.creater, this.createTime, this.modifiedTime, this.status,this.eidtInfo});
+      {this.id, this.creater, this.createTime, this.modifiedTime, this.status,this.eidtInfo =const {},this.data = const []});
 
   ThingModel.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
@@ -28,7 +28,7 @@ class ThingModel {
     createTime = json['CreateTime'];
     modifiedTime = json['ModifiedTime'];
     status = json['Status'];
-    eidtInfo = json['EDIT_INFO'];
+    eidtInfo = json['EDIT_INFO']??{};
     data = [];
     json.keys.forEach((element) {
       if(element.length>15 && element.contains("S")){
@@ -53,7 +53,7 @@ class ThingModel {
     data['CreateTime'] = this.createTime;
     data['ModifiedTime'] = this.modifiedTime;
     data['Status'] = this.status;
-    data['EDIT_INFO'] = info;
+    data['EDIT_INFO'] = this.eidtInfo;
     return data;
   }
 }

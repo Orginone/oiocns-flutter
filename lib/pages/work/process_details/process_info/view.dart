@@ -64,7 +64,7 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
                     List<String> data = [];
 
                     for (var attribute in element.attributes!) {
-                      data.add(thing.eidtInfo?[attribute.code?.substring(1)]??"");
+                      data.add(thing.eidtInfo?[attribute.id]??"");
                     }
 
                     return [

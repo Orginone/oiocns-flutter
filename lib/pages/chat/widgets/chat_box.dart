@@ -23,7 +23,9 @@ import 'package:orginone/images.dart';
 import 'package:orginone/pages/chat/widgets/text/rich_text_input_formatter.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/permission_util.dart';
+import 'package:orginone/util/string_util.dart';
 import 'package:orginone/widget/image_widget.dart';
+import 'package:orginone/widget/target_text.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -172,6 +174,12 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
             if (controller.reply.value == null) {
               return SizedBox();
             }
+            String showTxt = StringUtil.msgConversion(controller.reply.value!,'');
+            List<InlineSpan> span  = [TextSpan(text:  showTxt,),];
+            if(chat.share.typeName!=TargetType.person.label){
+              span.insert(0,  WidgetSpan(child: TargetText(userId: controller.reply.value!.fromId,text: ": ",),alignment: PlaceholderAlignment.middle),);
+            }
+
             return Container(
               color: Colors.grey[200],
               width: double.infinity,
@@ -180,8 +188,10 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
               child: Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      controller.reply.value?.body?.body ?? "",
+                    child: Text.rich(
+                      TextSpan(
+                        children: span,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),

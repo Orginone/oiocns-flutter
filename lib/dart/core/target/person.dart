@@ -138,7 +138,6 @@ class Person extends Belong implements IPerson {
     if (!reload && companys.isNotEmpty) {
       return companys;
     }
-    companys.clear();
     final res = await kernel.queryJoinedTargetById(GetJoinedModel(
         id: metadata.id,
         typeNames: [
@@ -148,6 +147,7 @@ class Person extends Belong implements IPerson {
         ],
         page: PageRequest(offset: 0, limit: 9999, filter: '')));
     if (res.success) {
+      companys.clear();
       res.data?.result?.forEach((element) {
         companys.add(createCompanyForTarget(element));
       });
@@ -186,6 +186,7 @@ class Person extends Belong implements IPerson {
         page: PageRequest(offset: 0, limit: 9999, filter: ''),
       ));
       if (res.success) {
+        cohorts.clear();
         res.data?.result?.forEach((element) {
           cohorts.add(Cohort(this, element));
         });
@@ -265,19 +266,21 @@ class Person extends Belong implements IPerson {
     members = members.where((i) => i.id != userId).toList();
     if (isAdd) {
       for (var i in members) {
-        var item = PersonMsgChat(
-          id,
-          i.id,
-          ShareIcon(
-            name: i.name,
-            typeName: i.typeName,
-            avatar: FileItemShare.parseAvatar(i.icon),
-          ),
-          ['好友'],
-          i.remark ?? "",
-          this,
-        );
-        memberChats.add(item);
+        if(memberChats.where((element) => element.chatId == i.id).isEmpty){
+          var item = PersonMsgChat(
+            id,
+            i.id,
+            ShareIcon(
+              name: i.name,
+              typeName: i.typeName,
+              avatar: FileItemShare.parseAvatar(i.icon),
+            ),
+            ['好友'],
+            i.remark ?? "",
+            this,
+          );
+          memberChats.add(item);
+        }
       }
     } else {
       var chats = <PersonMsgChat>[];

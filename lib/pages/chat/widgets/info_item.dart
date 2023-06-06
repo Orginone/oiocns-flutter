@@ -1,38 +1,33 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:orginone/config/constant.dart';
-import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/message.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/images.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus_helper.dart';
-import 'package:orginone/util/string_util.dart';
-import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/target_text.dart';
 import 'package:orginone/widget/unified.dart';
-import 'package:orginone/widget/widgets/photo_widget.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 
 import 'chat_box.dart';
+import 'detail/file_detail.dart';
+import 'detail/image_detail.dart';
+import 'detail/text_detail.dart';
+import 'detail/uploading_detail.dart';
+import 'detail/voice_detail.dart';
 
 enum Direction { leftStart, rightStart }
 
@@ -163,13 +158,7 @@ class DetailItemWidget extends GetView<SettingController> {
         body,
         msg.body?.cite == null
             ? const SizedBox()
-            : _detail(
-                textDirection: textDirection,
-                body: Text(
-                  msg.body!.cite!.body!.body!,
-                  style: XFonts.size18Black0,
-                ),
-                bgColor: Colors.black.withOpacity(0.1)),
+            : _replyBody(context, textDirection),
       ],
     );
 
@@ -331,15 +320,30 @@ class DetailItemWidget extends GetView<SettingController> {
     Widget body;
 
     if (msg.msgType == MessageType.text.label) {
-      body = _text(textDirection: textDirection);
+      body = TextDetail(
+        isSelf: isSelf,
+        message: msg.metadata,
+      );
     } else if (msg.msgType == MessageType.image.label) {
-      body = _image(textDirection: textDirection, context: context);
+      body = ImageDetail(
+        isSelf: isSelf,
+        message: msg.metadata,
+      );
     } else if (msg.msgType == MessageType.voice.label) {
-      body = _voice(textDirection: textDirection);
+      body = VoiceDetail(
+        isSelf: isSelf,
+        message: msg.metadata,
+      );
     } else if (msg.msgType == MessageType.file.label) {
-      body = _file(textDirection: textDirection, context: context);
+      body = FileDetail(
+        isSelf: isSelf,
+        message: msg.metadata,
+      );
     } else if (msg.msgType == MessageType.uploading.label) {
-      body = _uploading(textDirection: textDirection, context: context);
+      body = UploadingDetail(
+        isSelf: isSelf,
+        message: msg.metadata,
+      );
     } else {
       body = Container();
     }
@@ -347,449 +351,40 @@ class DetailItemWidget extends GetView<SettingController> {
     return body;
   }
 
-  // Widget _replyBody(
-  //     BuildContext context, TextDirection textDirection, String? text) {
-  //   if (text == null) {
-  //     return Container();
-  //   }
-  //   Widget body;
-  //   Map<String, dynamic> json = jsonDecode(text);
-  //   MsgSaveModel msg = MsgSaveModel.fromJson(json);
-  //   if (msg.msgType == MessageType.text.label) {
-  //     body = _text(
-  //         textDirection: textDirection, bgColor: Colors.black.withOpacity(0.1));
-  //   } else if (msg.msgType == MessageType.image.label) {
-  //     body = _image(
-  //         textDirection: textDirection,
-  //         context: context,
-  //         bgColor: Colors.black.withOpacity(0.1));
-  //   } else {
-  //     body = Container();
-  //   }
-  //   return body;
-  // }
-
-  /// 会话详情
-  Widget _detail({
-    required TextDirection textDirection,
-    required Widget body,
-    BoxConstraints? constraints,
-    Clip? clipBehavior,
-    EdgeInsets? padding,
-    Color? bgColor,
-  }) {
-    Color color = bgColor ?? (isSelf ? XColors.tinyLightBlue : Colors.white);
-
-    return Container(
-      constraints: constraints ?? BoxConstraints(maxWidth: 350.w),
-      padding:
-          padding ?? EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-      margin: textDirection == TextDirection.ltr
-          ? EdgeInsets.only(left: defaultWidth, top: defaultWidth / 2)
-          : EdgeInsets.only(right: defaultWidth),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.all(Radius.circular(defaultWidth)),
-      ),
-      clipBehavior: clipBehavior ?? Clip.none,
-      child: body,
-    );
-  }
-
-  /// 图片详情
-  Widget _image({
-    required TextDirection textDirection,
-    required BuildContext context,
-    bool showShadow = false,
-    Color? bgColor,
-  }) {
-    dynamic link = msg.body?.shareLink ?? '';
-
-    if (msg.body?.path != null && link == '') {
-      link = File(msg.body!.path!);
-    }
-
-    /// 限制大小
-    BoxConstraints boxConstraints = BoxConstraints(maxWidth: 200.w);
-
-    Map<String, String> headers = {
-      "Authorization": KernelApi.getInstance().anystore.accessToken,
-    };
-
-    Widget body = ImageWidget(link, httpHeaders: headers);
-
-    if (showShadow) {
-      body = _shadow(body);
-    }
-
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(DialogRoute(
-            context: context,
-            builder: (BuildContext context) {
-              return PhotoWidget(
-                imageProvider: CachedNetworkImageProvider(link),
-              );
-            }));
-      },
-      child: _detail(
-        constraints: boxConstraints,
-        textDirection: textDirection,
-        body: body,
-        clipBehavior: Clip.hardEdge,
-        padding: EdgeInsets.zero,
-        bgColor: bgColor,
-      ),
-    );
-  }
-
-  /// 语音详情
-  Widget _voice({required TextDirection textDirection}) {
-    // 初始化语音输入
-    var playCtrl = Get.find<PlayController>();
-    playCtrl.putPlayerStatusIfAbsent(msg.metadata);
-    var voicePlay = playCtrl.getPlayerStatus(msg.id)!;
-    var seconds = voicePlay.initProgress ~/ 1000;
-    seconds = seconds > 60 ? 60 : seconds;
-
-    return _detail(
-      textDirection: textDirection,
-      body: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          GestureDetector(
-            onTap: () async {
-              if (voicePlay.bytes.isEmpty) {
-                Fluttertoast.showToast(msg: "未获取到语音，播放失败！");
-                return;
-              }
-              if (voicePlay.status.value == VoiceStatus.stop) {
-                playCtrl.startPlayVoice(msg.id, voicePlay.bytes);
-              } else {
-                playCtrl.stopPrePlayVoice();
-              }
-            },
-            child: Obx(() {
-              var status = voicePlay.status;
-              return status.value == VoiceStatus.stop
-                  ? const Icon(Icons.play_arrow, color: Colors.black)
-                  : const Icon(Icons.stop, color: Colors.black);
-            }),
-          ),
-          Padding(padding: EdgeInsets.only(left: 5.w)),
-          SizedBox(
-            height: 12.h,
-            width: 60.w + seconds * 2.w,
-            child: Stack(
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    height: 16.h,
-                    decoration: BoxDecoration(
-                      color: XColors.lineLight,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(2.w),
-                      ),
-                    ),
-                  ),
-                ),
-                Obx(() {
-                  var status = voicePlay.status;
-                  if (status.value == VoiceStatus.stop) {
-                    return Align(
-                      alignment: Alignment.centerLeft,
-                      child: Icon(Icons.circle, size: 12.h),
-                    );
-                  } else {
-                    return AlignTransition(
-                      alignment: playCtrl.animation!,
-                      child: Icon(Icons.circle, size: 12.h),
-                    );
-                  }
-                }),
-              ],
-            ),
-          ),
-          Padding(padding: EdgeInsets.only(left: 10.w)),
-          Obx(() {
-            var progress = voicePlay.progress;
-            return Text(
-              StringUtil.getMinusShow(progress.value ~/ 1000),
-              style: XFonts.size22Black3,
-            );
-          })
-        ],
-      ),
-    );
-  }
-
-  Widget _file({
-    required TextDirection textDirection,
-    required BuildContext context,
-    bool showShadow = false,
-  }) {
-    String extension = msg.body?.extension ?? '';
-    if (imageExtension.contains(extension.toLowerCase())) {
-      return _image(textDirection: textDirection, context: context);
-    }
-
-    /// 限制大小
-    BoxConstraints boxConstraints = BoxConstraints(
-        minWidth: 200.w, minHeight: 70.h, maxWidth: 250.w, maxHeight: 100.h);
-
-    Widget body = Container(
-      constraints: boxConstraints,
-      color: Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    msg.body?.name ?? "",
-                    style: XFonts.size24Black0,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                SizedBox(
-                  height: 5.h,
-                ),
-                Text(
-                  getFileSizeString(bytes: msg.body?.size ?? 0),
-                  style: XFonts.size16Black9,
-                ),
-              ],
-            ),
-          ),
-          ImageWidget(Images.iconFile, size: 40.w),
-        ],
-      ),
-    );
-
-    if (showShadow) {
-      body = _shadow(body);
-    }
-    return GestureDetector(
-      onTap: () {
-        Get.toNamed(Routers.messageFile, arguments: msg.body?.toJson());
-      },
-      child: _detail(
-        textDirection: textDirection,
-        clipBehavior: Clip.hardEdge,
-        padding: EdgeInsets.zero,
-        body: body,
-      ),
-    );
-  }
-
-  Widget _shadow(Widget body) {
-    return Container(
-      foregroundDecoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          // Add one stop for each color. Stops should increase from 0 to 1
-          stops: [0.2, 0.7],
-          colors: [
-            Color.fromARGB(100, 0, 0, 0),
-            Color.fromARGB(100, 0, 0, 0),
-          ],
-        ),
-      ),
-      child: body,
-    );
-  }
-
-  Widget _uploading({
-    required TextDirection textDirection,
-    required BuildContext context,
-  }) {
-    String extension = msg.body?.extension ?? "";
-    double progress = msg.body?.progress ?? 0;
-    Widget body;
-    if (imageExtension.contains(extension.toLowerCase())) {
-      body = _image(
-          textDirection: textDirection, context: context, showShadow: true);
-    } else {
-      body = _file(
-          textDirection: textDirection, context: context, showShadow: true);
-    }
-
-    Widget gradient = Stack(
-      alignment: Alignment.center,
-      fit: StackFit.passthrough,
-      children: [
-        body,
-        Text(
-          '${(progress * 100).toStringAsFixed(0)}%',
-          style: TextStyle(color: Colors.white, fontSize: 24.sp),
-        ),
-      ],
-    );
-    return gradient;
-  }
-
-  Widget _text({
-    required TextDirection textDirection,
-    Color? bgColor,
-  }) {
-    Widget? child;
-
-    child??=_getUrlSpan(msg.body?.body ?? "",textDirection,bgColor)??_getImageSpan(msg.body?.body ?? "",textDirection,bgColor);
-
-    return child??_detail(
-      textDirection: textDirection,
-      bgColor: bgColor,
-      body: Text(
-        msg.body?.body ?? "",
-        style: XFonts.size24Black0,
-      ),
-    );
-  }
-
-  Widget? _getUrlSpan(String text, TextDirection textDirection,
-      Color? bgColor,) {
-    RegExp urlExp = RegExp(r'(?:https?:\/\/|www\.)[^\s]+');
-
-    RegExp imageExp = RegExp(r'\$IMG\[(.*?)\]');
-
-    Map<String, String> headers = {
-      "Authorization": KernelApi.getInstance().anystore.accessToken,
-    };
-
-    List<InlineSpan> span = [];
-
-    List<RegExpMatch> urlMatch = urlExp.allMatches(text).toList();
-
-    if (urlMatch.isEmpty) {
-      return null;
-    }
-
-    InlineSpan getSpan(String text) {
-      if (imageExp.hasMatch(text)) {
-        String imageUrl = imageExp.allMatches(text).first.group(1)!;
-        imageUrl = "${Constant.host}/emo/$imageUrl";
-        return WidgetSpan(
-            child: ImageWidget(
-          imageUrl,
-          httpHeaders: headers,
-        ));
-      }
-      return TextSpan(text: text);
-    }
-
-    int index = 0;
-    for (var match in urlMatch) {
-      String url = text.substring(match.start, match.end);
-      if (match.start == index) {
-        index = match.end;
-      }
-      if (index < match.start) {
-        String a = text.substring(index, match.start);
-        index = match.end;
-        span.add(getSpan(a));
-      }
-      if (urlExp.hasMatch(url)) {
-        span.add(TextSpan(
-            text: url,
-            style: const TextStyle(color: Colors.blue),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                Get.toNamed(Routers.webView, arguments: {'url': url});
-              }));
-      } else {
-        span.add(getSpan(url));
-      }
-    }
-    if (index < text.length) {
-      String a = text.substring(index, text.length);
-      span.add(getSpan(a));
-    }
-
-    if (span.isNotEmpty) {
-      if (span.length == 1) {
-        return _detail(
-            bgColor: bgColor,
-            textDirection: textDirection,
-            body: PreViewUrl(
-              url: span.first.toPlainText().replaceAll("www.", ''),
-            ));
-      } else {
-        return _detail(
-          bgColor: bgColor,
-          textDirection: textDirection,
-          body: Text.rich(
-            TextSpan(
-              children: span,
-              style: XFonts.size24Black0,
-            ),
-          ),
-        );
-      }
-    }
-  }
-
-  Widget? _getImageSpan(String text, TextDirection textDirection,
-      Color? bgColor,) {
-    RegExp imageExp = RegExp(r'\$IMG\[(.*?)\]');
-
-    Map<String, String> headers = {
-      "Authorization": KernelApi.getInstance().anystore.accessToken,
-    };
-
-    List<InlineSpan> span = [];
-
-    List<Match> imgMatch = imageExp.allMatches(text).toList();
-
-    int startIndex = 0;
-
-    if (imgMatch.isEmpty) {
-      return null;
-    }
-
-    for (Match match in imgMatch) {
-      if (match.start > startIndex) {
-        String a = text.substring(startIndex, match.start);
-        span.add(TextSpan(text: a));
-      }
-
-      String imageUrl = match.group(1)!;
-      imageUrl = "${Constant.host}/emo/$imageUrl";
-      span.add(
-        WidgetSpan(
-          child: ImageWidget(
-            imageUrl,
-            httpHeaders: headers,
-          ),
-        ),
+  Widget _replyBody(BuildContext context, TextDirection textDirection) {
+    Widget? body;
+    if (msg.body?.cite?.msgType == MessageType.text.label) {
+      body = TextDetail(
+          isSelf: isSelf,
+          message: msg.body!.cite!,
+          bgColor: Colors.black.withOpacity(0.1),isReply: true,);
+    } else if (msg.body?.cite?.msgType == MessageType.image.label) {
+      body = ImageDetail(
+        message: msg.body!.cite!,
+        bgColor: Colors.black.withOpacity(0.1),
+        isSelf: isSelf,
       );
-
-      startIndex = match.end;
+    } else if (msg.body?.cite?.msgType == MessageType.voice.label) {
+      body = VoiceDetail(
+        message: msg.body!.cite!,
+        bgColor: Colors.black.withOpacity(0.1),
+        isSelf: isSelf,
+      );
+    } else if (msg.body?.cite?.msgType == MessageType.file.label) {
+      body = FileDetail(
+        message: msg.body!.cite!,
+        bgColor: Colors.black.withOpacity(0.1),
+        isSelf: isSelf,
+      );
+    }
+    if (body != null) {
+      return Container(
+        margin: EdgeInsets.only(top: 5.h),
+        child: body,
+      );
     }
 
-    if (startIndex < text.length) {
-      String a = text.substring(startIndex);
-      span.add(TextSpan(text: a));
-    }
-
-    return _detail(
-      bgColor: bgColor,
-      textDirection: textDirection,
-      body: Text.rich(
-        TextSpan(
-          children: span,
-          style: XFonts.size24Black0,
-        ),
-      ),
-    );
-
+    return SizedBox();
   }
 }
 
@@ -886,9 +481,8 @@ class PlayController extends GetxController with GetTickerProviderStateMixin {
   putPlayerStatusIfAbsent(MsgSaveModel msg) {
     if (!_playStatuses.containsKey(msg.id)) {
       try {
-        Map<String, dynamic> data = jsonDecode(msg.showTxt);
-        int milliseconds = data["milliseconds"] ?? 0;
-        List<dynamic> rowBytes = data["bytes"] ?? [];
+        int milliseconds = msg.body?.milliseconds ?? 0;
+        List<dynamic> rowBytes = msg.body?.bytes  ?? [];
         List<int> tempBytes = rowBytes.map((byte) => byte as int).toList();
         _playStatuses[msg.id] = PlayerStatus(
           status: VoiceStatus.stop.obs,

@@ -139,6 +139,7 @@ abstract class Target extends Team implements ITarget {
         filter: '',
       ));
       if (res.success) {
+        species.clear();
         for (var element in res.data?.result??[]) {
           var item = createSpeciesForType(element, this);
           if(item!=null){

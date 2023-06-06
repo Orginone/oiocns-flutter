@@ -8,6 +8,7 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/model/thing_model.dart' as thing;
 import 'package:orginone/util/encryption_util.dart';
+import 'package:orginone/util/string_util.dart';
 
 /// 统一返回结构模型
 class ResultType<T> {
@@ -5278,7 +5279,8 @@ class MsgBodyModel {
   String? name;
   late int size;
   late double progress;
-
+  int? milliseconds;
+  List<int>? bytes;
   MsgBodyModel(
       {this.body,
       this.mentions,
@@ -5288,14 +5290,12 @@ class MsgBodyModel {
       this.path,
       this.shareLink,
       this.size = 0,
-      this.progress = 0});
+      this.progress = 0,this.milliseconds,this.bytes});
 
   MsgBodyModel.fromJson(Map<String, dynamic> json) {
     body = json['body'];
     if (body?.contains('\$IMG') ?? false) {
-      body = body!.replaceAllMapped(RegExp(r'\$IMG\[.*?/([^/]+)\]'), (match) {
-        return '\$IMG[${match.group(1)}]';
-      });
+      body = StringUtil.replaceAllImageLabel(body!);
     }
     if (json['mentions'] != null) {
       mentions = <String>[];
@@ -5303,6 +5303,14 @@ class MsgBodyModel {
         mentions!.add(v);
       });
     }
+
+    if (json['bytes'] != null) {
+      bytes = <int>[];
+      json['bytes'].forEach((v) {
+        bytes!.add(v);
+      });
+    }
+    milliseconds = json['milliseconds'];
     shareLink = json['shareLink'];
     path = json['path'];
     extension = json['extension'];
@@ -5318,7 +5326,7 @@ class MsgBodyModel {
 
     String text = this.body ?? "";
     if (text.contains('\$IMG')) {
-      text = text.replaceAll('\$IMG[', '\$IMG[http://orginone.cn/emo/');
+      text = StringUtil.resetImageLabel(text);
     }
     data['body'] = text;
     data['shareLink'] = this.shareLink;
@@ -5349,19 +5357,8 @@ class WorkSubmitModel {
   Map<String, dynamic> toJson() {
     Map<String, dynamic> changeDataMap = {};
     for (var element in changeData) {
-      if (element.data != null) {
-        Map<String, dynamic> data = {};
-        for (var element in element.data!) {
-          if (element.values.first != null) {
-            dynamic value = element.values.first;
-            if (value is Map) {
-              value = value.keys.first;
-            }
-            data[element.keys.first.substring(1)] = value;
-          }
-        }
-
-        changeDataMap[element.id!] = data;
+      if (element.eidtInfo != null) {
+        changeDataMap[element.id!] = element.eidtInfo;
       }
     }
 
