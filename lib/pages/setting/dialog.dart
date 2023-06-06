@@ -538,6 +538,7 @@ Future<void> showCreateOrganizationDialog(
                     CommonWidget.commonTextTile("备注", '',
                         controller: remarkController,
                         showLine: true,
+                        required: true,
                         maxLine: 4,
                         hint: "请输入"),
                     CommonWidget.commonMultipleSubmitWidget(onTap1: () {
@@ -548,7 +549,7 @@ Future<void> showCreateOrganizationDialog(
                       } else if (codeController.text.isEmpty) {
                         ToastUtils.showMsg(msg: "请输入代码");
                       } else if (remarkController.text.isEmpty) {
-                        ToastUtils.showMsg(msg: "请输入简介");
+                        ToastUtils.showMsg(msg: "请输入备注");
                       } else {
                         if(callBack!=null){
                           callBack(nameController.text,codeController.text,nickNameController.text,identifyController.text,remarkController.text,selectedTarget);

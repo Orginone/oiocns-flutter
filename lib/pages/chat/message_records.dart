@@ -12,6 +12,7 @@ import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/event/message.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus_helper.dart';
+import 'package:orginone/util/string_util.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
@@ -66,7 +67,7 @@ class MessageRecordsPage
                     ),
                     title: Text(snapshot.data?.name ?? ""),
                     subtitle: Text(
-                      item.body?.body??"",
+                      StringUtil.msgConversion(item.metadata, ''),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),

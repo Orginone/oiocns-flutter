@@ -279,6 +279,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
 
   @override
   cache() {
+    chatdata.value.labels = labels;
     kernel.anystore.set(
       "${StoreCollName.chatMessage}.T${chatdata.value.fullId}",
       {

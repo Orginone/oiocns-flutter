@@ -63,6 +63,7 @@ class MessageItemWidget extends GetView<SettingController> {
                 }else{
                   chat.labels.add('置顶');
                 }
+                chat.cache();
                 controller.provider.refreshChat();
               },
             ),

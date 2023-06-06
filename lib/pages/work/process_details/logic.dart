@@ -54,18 +54,25 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
 
     WorkNodeModel? node = await state.define!.loadWorkNode();
     List<XForm> forms = node?.forms??[];
-    state.workForm.value =
-        forms.firstWhere((element) => element.typeName == SpeciesType.work.label);
+
     state.thingForm.value =
         forms.where((element) => element.typeName == SpeciesType.thing.label).toList();
-    if(state.workForm.value!=null){
-      var iForm = forms
-          .firstWhere((element) => state.workForm.value!.id == element.id);
-      state.workForm.value!.attributes = await setting.provider.work!
-          .loadAttributes(iForm.id, state.define!.workItem.belongId);
-      for (var element in state.workForm.value!.attributes??[]) {
-        element.value = data['forms']?['headerData']?[element.id]??'';
+
+
+    try{
+      state.workForm.value =
+          forms.firstWhere((element) => element.typeName == SpeciesType.work.label);
+      if(state.workForm.value!=null){
+        var iForm = forms
+            .firstWhere((element) => state.workForm.value!.id == element.id);
+        state.workForm.value!.attributes = await setting.provider.work!
+            .loadAttributes(iForm.id, state.define!.workItem.belongId);
+        for (var element in state.workForm.value!.attributes??[]) {
+          element.value = data['forms']?['headerData']?[element.id]??'';
+        }
       }
+    }catch(e){
+
     }
 
     for (var form in state.thingForm) {

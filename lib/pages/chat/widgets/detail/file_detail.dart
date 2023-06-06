@@ -61,7 +61,7 @@ class FileDetail extends BaseDetail {
                 Expanded(
                   child: Text(
                     message.body?.name ?? "",
-                    style: XFonts.size24Black0,
+                    style: XFonts.size20Black0,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
