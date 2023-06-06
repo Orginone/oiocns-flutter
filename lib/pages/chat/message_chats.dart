@@ -83,7 +83,7 @@ class MessageChats extends GetView<SettingController> {
               children: [
                 Text(
                   "常用",
-                  style: XFonts.size24Black0,
+                  style: XFonts.size18Black0,
                 ),
               ],
             ),
