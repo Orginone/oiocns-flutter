@@ -122,7 +122,7 @@ class UserBar extends GetView<SettingController> {
         ),
         Text(
           controller.homeEnum.value.label,
-          style: TextStyle(fontSize: 24.sp),
+          style: TextStyle(fontSize: 26.sp),
         ),
         const Expanded(child: SizedBox()),
         ...action,
@@ -148,7 +148,7 @@ class UserBar extends GetView<SettingController> {
                 margin: EdgeInsets.only(left: 10.w),
                 child: Text(
                   "资产共享云",
-                  style: TextStyle(fontSize: 24.sp),
+                  style: TextStyle(fontSize: 26.sp),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),

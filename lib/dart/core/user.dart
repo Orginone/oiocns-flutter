@@ -28,7 +28,7 @@ class UserProvider {
     kernel.on('RecvTags', (data) async {
        try{
          TagsMsgType tagsMsgType = TagsMsgType.fromJson(data);
-         var currentChat = chat?.chats.firstWhere((element) => element.chatId==tagsMsgType.id && element.belongId == tagsMsgType.belongId);
+         var currentChat = chat?.allChats.firstWhere((element) => element.chatId==tagsMsgType.id && element.belongId == tagsMsgType.belongId);
          currentChat?.overwriteMessagesTags(tagsMsgType);
        }catch(e){}
     });
@@ -94,6 +94,15 @@ class UserProvider {
     }
   }
 
+  void refreshWork(){
+    _work.refresh();
+  }
+
+  void refreshChat(){
+    _chat.refresh();
+  }
+
+
   /// 重载数据
   Future<void> reload() async {
        _inited = false;
@@ -102,6 +111,7 @@ class UserProvider {
        await _work.value?.loadTodos(reload: true);
        _inited = true;
        _chat.value?.loadPreMessage();
+       _chat.value?.loadAllChats();
        _user.refresh();
   }
 

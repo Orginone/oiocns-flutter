@@ -51,7 +51,7 @@ class WorkPage extends BaseGetListPageView<WorkController, WorkState> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "最近办事",
+                  "常用办事",
                   style: XFonts.size24Black0,
                 ),
               ],

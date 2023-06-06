@@ -15,25 +15,26 @@ class MessageChats extends GetView<SettingController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
+      var topChats = controller.chat.topChats;
+
       var chats = controller.chat.chats;
-      chats.removeWhere((element) => !element.isMyChat);
-      if (chats.isEmpty) {
-        return Container();
-      }
-      chats.sort((f, s) {
-        return (s.chatdata.value.lastMsgTime) - (f.chatdata.value.lastMsgTime);
-      });
-      return ListView.builder(
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        itemCount: chats.length+1,
-        itemBuilder: (BuildContext context, int index) {
-          if(index == 0){
-            return  recentlyOpened();
-          }
-          var chat = chats[index-1];
-          return MessageItemWidget(chat: chat);
-        },
+
+      return CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(child: recentlyOpened(),),
+          SliverList(
+            delegate: SliverChildBuilderDelegate((context,index){
+              var chat = topChats[index];
+              return MessageItemWidget(chat: chat);
+            },childCount: topChats.length),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate((context,index){
+              var chat = chats[index];
+              return MessageItemWidget(chat: chat);
+            },childCount: chats.length),
+          ),
+        ],
       );
     });
   }
@@ -75,7 +76,7 @@ class MessageChats extends GetView<SettingController> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "最近沟通",
+                  "常用联系人",
                   style: XFonts.size24Black0,
                 ),
               ],
@@ -164,7 +165,7 @@ class MessageChatsList extends GetView<MessageChatsListController> {
           itemCount: chats.length,
           itemBuilder: (BuildContext context, int index) {
             var chat = chats[index];
-            return MessageItemWidget(chat: chat);
+            return MessageItemWidget(chat: chat,enabledSlidable: false,);
           },
         ),
       ),

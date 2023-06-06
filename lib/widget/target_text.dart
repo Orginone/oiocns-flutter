@@ -11,6 +11,8 @@ class TargetText extends StatelessWidget {
 
   final String userId;
 
+  final String? text;
+
   final TextStyle? style;
 
   final int? maxLines;
@@ -19,7 +21,7 @@ class TargetText extends StatelessWidget {
 
   final TextAlign? textAlign;
 
-  const TargetText({Key? key, required this.userId, this.style, this.maxLines, this.overflow, this.textAlign}) : super(key: key);
+  const TargetText({Key? key, required this.userId, this.style, this.maxLines, this.overflow, this.textAlign, this.text}) : super(key: key);
 
   SettingController get setting => Get.find<SettingController>();
 
@@ -32,7 +34,7 @@ class TargetText extends StatelessWidget {
         name = snapshot.data?.name ?? "";
       }
 
-      return Text(name, style: style,maxLines: maxLines,overflow: overflow,textAlign: textAlign,);
+      return Text("$name${text??""}", style: style,maxLines: maxLines,overflow: overflow,textAlign: textAlign,);
     },future: setting.provider.user?.findShareById(userId),);
   }
 }

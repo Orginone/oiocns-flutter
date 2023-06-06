@@ -96,7 +96,7 @@ class HomeController extends TabsController {
     registerTab(XTab(
       view: const MessageChats(),
       tab: Obx(() {
-        var chats = settingCtrl.provider.chat?.chats??[];
+        var chats = settingCtrl.provider.chat?.allChats??[];
         int mgsCount = 0;
         for (var element in chats) {
           mgsCount += element.chatdata.value.noReadCount;

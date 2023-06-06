@@ -42,7 +42,7 @@ class StorePage
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "最近打开",
+                  "常用存储",
                   style: XFonts.size24Black0,
                 ),
               ],
@@ -121,8 +121,8 @@ class StorePage
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "共10项内容",
-            style: XFonts.size18Black9,
+            "最近打开",
+            style: XFonts.size18Black0,
           ),
           DropdownButton(
             items: const [
@@ -131,9 +131,11 @@ class StorePage
                 child: Text('筛选'),
               )
             ],
+            style: XFonts.size18Black0,
             onChanged: (String? value) {},
             value: "time",
             underline: const SizedBox(),
+            icon:  Icon(Icons.filter_alt_outlined,size: 22.w,),
           ),
         ],
       ),
