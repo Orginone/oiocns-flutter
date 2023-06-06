@@ -25,8 +25,7 @@ class IndexPage extends StatelessWidget {
   List<String> imageList = [
     "images/bg_center1.png",
     "images/bg_center2.png",
-    "images/bg_center1.png",
-    "images/bg_center2.png",
+    "images/bg_center3.png",
   ];
 
   LinkedHashMap map = LinkedHashMap();
@@ -309,7 +308,7 @@ class IndexPage extends StatelessWidget {
       items: imageList.map(
         (img) {
           return Container(
-            // margin: EdgeInsets.all(8.0),
+            margin: EdgeInsets.only(left: 8.0),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(5.0)),
               child: Image.asset(img, fit: BoxFit.fill, width: 1000.0),
