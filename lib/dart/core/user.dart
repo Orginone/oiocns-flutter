@@ -112,6 +112,7 @@ class UserProvider {
        _inited = true;
        _chat.value?.loadPreMessage();
        _chat.value?.loadAllChats();
+       _chat.refresh();
        _user.refresh();
   }
 

@@ -95,12 +95,14 @@ class ChatProvider implements IChatProvider {
 
   @override
   void loadAllChats(){
+    allChats.clear();
     allChats = [...user.chats];
     for (final company in user.companys) {
       allChats.addAll(company.chats);
     }
     allChats.removeWhere((element) => !element.isMyChat);
-
+    var s = allChats.where((element) => element.labels.contains("浙江省财政厅")).toList();
+    print('');
   }
 
   void _recvMessage(MsgSaveModel data) {
