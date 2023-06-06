@@ -51,7 +51,7 @@ class WorkPage extends BaseGetListPageView<WorkController, WorkState> {
               children: [
                 Text(
                   "常用",
-                  style: XFonts.size24Black0,
+                  style: XFonts.size18Black0,
                 ),
               ],
             ),

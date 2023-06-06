@@ -46,7 +46,7 @@ class MarketPage extends BaseGetPageView<MarketController, MarketState> {
               children: [
                 Text(
                   "常用",
-                  style: XFonts.size24Black0,
+                  style: XFonts.size18Black0,
                 ),
               ],
             ),

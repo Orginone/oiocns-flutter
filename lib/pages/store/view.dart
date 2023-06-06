@@ -43,7 +43,7 @@ class StorePage extends BaseGetPageView<StoreController, StoreState> {
               children: [
                 Text(
                   "常用",
-                  style: XFonts.size24Black0,
+                  style: XFonts.size18Black0,
                 ),
               ],
             ),
