@@ -168,18 +168,6 @@ class UserBar extends GetView<SettingController> {
     );
   }
 
-  Widget _textAvatar(EdgeInsets insets) {
-    return Obx(() {
-      return TextAvatar(
-        radius: 45.w,
-        width: 45.w,
-        avatarName: controller.provider.user?.metadata.name.substring(0, 1) ?? "",
-        textStyle: XFonts.size22White,
-        margin: insets,
-      );
-    });
-  }
-
   Widget _imgAvatar(EdgeInsets insets) {
     return Obx(() {
       dynamic avatar;

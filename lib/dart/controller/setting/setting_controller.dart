@@ -151,10 +151,12 @@ class SettingController extends GetxController {
        );
      }else{
        showSearchDialog(Get.context!,targetType,title: title,hint: hint,onSelected: (targets) async{
-         bool success = await user.applyJoin(targets);
-         if(success){
-           ToastUtils.showMsg(msg: "发送申请成功");
-         }
+           if(targets.isNotEmpty){
+             bool success = await user.applyJoin(targets);
+             if(success){
+               ToastUtils.showMsg(msg: "发送申请成功");
+             }
+           }
        });
      }
   }
