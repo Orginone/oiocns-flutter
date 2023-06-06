@@ -124,7 +124,7 @@ class MarketPage extends BaseGetPageView<MarketController, MarketState> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "最近打开",
+            "最近",
             style: XFonts.size18Black0,
           ),
           DropdownButton(
