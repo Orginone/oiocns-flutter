@@ -19,22 +19,28 @@ class MessageChats extends GetView<SettingController> {
 
       var chats = controller.chat.chats;
 
-      return CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(child: recentlyOpened(),),
-          SliverList(
-            delegate: SliverChildBuilderDelegate((context,index){
-              var chat = topChats[index];
-              return MessageItemWidget(chat: chat);
-            },childCount: topChats.length),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate((context,index){
-              var chat = chats[index];
-              return MessageItemWidget(chat: chat);
-            },childCount: chats.length),
-          ),
-        ],
+      return RefreshIndicator(
+
+        onRefresh: () async{
+          await controller.provider.reload();
+        },
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(child: recentlyOpened(),),
+            SliverList(
+              delegate: SliverChildBuilderDelegate((context,index){
+                var chat = topChats[index];
+                return MessageItemWidget(chat: chat);
+              },childCount: topChats.length),
+            ),
+            SliverList(
+              delegate: SliverChildBuilderDelegate((context,index){
+                var chat = chats[index];
+                return MessageItemWidget(chat: chat);
+              },childCount: chats.length),
+            ),
+          ],
+        ),
       );
     });
   }
