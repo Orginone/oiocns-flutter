@@ -10,8 +10,7 @@ import 'package:orginone/widget/unified.dart';
 import 'logic.dart';
 import 'state.dart';
 
-class MarketPage extends BaseGetPageView<MarketController,MarketState>{
-
+class MarketPage extends BaseGetPageView<MarketController, MarketState> {
   @override
   Widget buildView() {
     return Container(
@@ -19,9 +18,9 @@ class MarketPage extends BaseGetPageView<MarketController,MarketState>{
       child: ListView.builder(
         itemBuilder: (context, index) {
           if (index == 0) {
-            return  recentlyOpened();
+            return recentlyOpened();
           }
-          if(index == 1){
+          if (index == 1) {
             return content();
           }
           return StoreItem();
@@ -46,7 +45,7 @@ class MarketPage extends BaseGetPageView<MarketController,MarketState>{
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "常用流通",
+                  "常用",
                   style: XFonts.size24Black0,
                 ),
               ],
@@ -62,17 +61,17 @@ class MarketPage extends BaseGetPageView<MarketController,MarketState>{
                 Widget child = button(value);
                 int index = state.recentlyList.indexOf(value);
 
-                if (index !=
-                    (state.recentlyList.length - 1)) {
+                if (index != (state.recentlyList.length - 1)) {
                   child = Container(
                     margin: EdgeInsets.only(right: 15.w),
                     child: child,
                   );
                 }
                 return Container(
-                  margin:EdgeInsets.only(left: index == 0 ? 0 : 27),
+                  margin: EdgeInsets.only(left: index == 0 ? 0 : 27),
                   child: child,
-                );;
+                );
+                ;
               }).toList(),
             ),
           ),
@@ -108,8 +107,8 @@ class MarketPage extends BaseGetPageView<MarketController,MarketState>{
                 fontSize: 14.sp,
                 color: const Color.fromARGB(255, 52, 52, 54),
                 overflow: TextOverflow.ellipsis
-              // color: Colors.black
-            ),
+                // color: Colors.black
+                ),
           )
         ],
       ),
@@ -139,13 +138,15 @@ class MarketPage extends BaseGetPageView<MarketController,MarketState>{
             onChanged: (String? value) {},
             value: "time",
             underline: const SizedBox(),
-            icon:  Icon(Icons.filter_alt_outlined,size: 22.w,),
+            icon: Icon(
+              Icons.filter_alt_outlined,
+              size: 22.w,
+            ),
           ),
         ],
       ),
     );
   }
-
 
   @override
   MarketController getController() {

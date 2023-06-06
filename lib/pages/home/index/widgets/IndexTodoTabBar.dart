@@ -54,7 +54,7 @@ class IndexTodoTabBarWidget
               color: XColors.white, borderRadius: BorderRadius.circular(10)),
           padding: const EdgeInsets.fromLTRB(11.0, 0, 0, 0),
           alignment: Alignment.topLeft,
-          child: const Text("快捷入口")),
+          child: const Text("常用")),
       SizedBox(
         height: 22.h,
       ),

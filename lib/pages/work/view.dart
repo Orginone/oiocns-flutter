@@ -19,14 +19,14 @@ class WorkPage extends BaseGetListPageView<WorkController, WorkState> {
         child: Obx(() {
           return ListView.builder(
             itemBuilder: (context, index) {
-              if(index == 0){
-                return   recentlyOpened();
+              if (index == 0) {
+                return recentlyOpened();
               }
               return Item(
-                todo: state.dataList[index-1],
+                todo: state.dataList[index - 1],
               );
             },
-            itemCount: state.dataList.length+1,
+            itemCount: state.dataList.length + 1,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
           );
@@ -34,7 +34,6 @@ class WorkPage extends BaseGetListPageView<WorkController, WorkState> {
       ),
     );
   }
-
 
   Widget recentlyOpened() {
     return Container(
@@ -51,7 +50,7 @@ class WorkPage extends BaseGetListPageView<WorkController, WorkState> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "常用办事",
+                  "常用",
                   style: XFonts.size24Black0,
                 ),
               ],
@@ -67,17 +66,17 @@ class WorkPage extends BaseGetListPageView<WorkController, WorkState> {
                 Widget child = button(value);
                 int index = state.recentlyList.indexOf(value);
 
-                if (index !=
-                    (state.recentlyList.length - 1)) {
+                if (index != (state.recentlyList.length - 1)) {
                   child = Container(
                     margin: EdgeInsets.only(right: 15.w),
                     child: child,
                   );
                 }
                 return Container(
-                  margin:EdgeInsets.only(left: index == 0 ? 0 : 27),
+                  margin: EdgeInsets.only(left: index == 0 ? 0 : 27),
                   child: child,
-                );;
+                );
+                ;
               }).toList(),
             ),
           ),
@@ -113,8 +112,8 @@ class WorkPage extends BaseGetListPageView<WorkController, WorkState> {
                 fontSize: 14.sp,
                 color: const Color.fromARGB(255, 52, 52, 54),
                 overflow: TextOverflow.ellipsis
-              // color: Colors.black
-            ),
+                // color: Colors.black
+                ),
           )
         ],
       ),

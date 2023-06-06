@@ -42,7 +42,7 @@ class StorePage extends BaseGetPageView<StoreController, StoreState> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "常用存储",
+                  "常用",
                   style: XFonts.size24Black0,
                 ),
               ],

@@ -20,24 +20,25 @@ class MessageChats extends GetView<SettingController> {
       var chats = controller.chat.chats;
 
       return RefreshIndicator(
-
-        onRefresh: () async{
+        onRefresh: () async {
           await controller.provider.reload();
         },
         child: CustomScrollView(
           slivers: [
-            SliverToBoxAdapter(child: recentlyOpened(),),
-            SliverList(
-              delegate: SliverChildBuilderDelegate((context,index){
-                var chat = topChats[index];
-                return MessageItemWidget(chat: chat);
-              },childCount: topChats.length),
+            SliverToBoxAdapter(
+              child: recentlyOpened(),
             ),
             SliverList(
-              delegate: SliverChildBuilderDelegate((context,index){
+              delegate: SliverChildBuilderDelegate((context, index) {
+                var chat = topChats[index];
+                return MessageItemWidget(chat: chat);
+              }, childCount: topChats.length),
+            ),
+            SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
                 var chat = chats[index];
                 return MessageItemWidget(chat: chat);
-              },childCount: chats.length),
+              }, childCount: chats.length),
             ),
           ],
         ),
@@ -45,29 +46,28 @@ class MessageChats extends GetView<SettingController> {
     });
   }
 
-
   Widget recentlyOpened() {
     var recentlyList = [];
-    recentlyList.add(
-        Recent("0000", "资产监管", "${Constant.host}/img/logo/logo3.jpg"));
-    recentlyList.add(
-        Recent("0001", "资产处置", "${Constant.host}/img/logo/logo3.jpg"));
-    recentlyList.add(
-        Recent("0001", "通用表格", "${Constant.host}/img/logo/logo3.jpg"));
-    recentlyList.add(
-        Recent("0001", "公物仓", "${Constant.host}/img/logo/logo3.jpg"));
-    recentlyList.add(
-        Recent("0001", "公益仓", "${Constant.host}/img/logo/logo3.jpg"));
-    recentlyList.add(
-        Recent("0000", "资产监管", "${Constant.host}/img/logo/logo3.jpg"));
-    recentlyList.add(
-        Recent("0001", "资产处置", "${Constant.host}/img/logo/logo3.jpg"));
-    recentlyList.add(
-        Recent("0001", "通用表格", "${Constant.host}/img/logo/logo3.jpg"));
-    recentlyList.add(
-        Recent("0001", "公物仓", "${Constant.host}/img/logo/logo3.jpg"));
-    recentlyList.add(
-        Recent("0001", "公益仓", "${Constant.host}/img/logo/logo3.jpg"));
+    recentlyList
+        .add(Recent("0000", "资产监管", "${Constant.host}/img/logo/logo3.jpg"));
+    recentlyList
+        .add(Recent("0001", "资产处置", "${Constant.host}/img/logo/logo3.jpg"));
+    recentlyList
+        .add(Recent("0001", "通用表格", "${Constant.host}/img/logo/logo3.jpg"));
+    recentlyList
+        .add(Recent("0001", "公物仓", "${Constant.host}/img/logo/logo3.jpg"));
+    recentlyList
+        .add(Recent("0001", "公益仓", "${Constant.host}/img/logo/logo3.jpg"));
+    recentlyList
+        .add(Recent("0000", "资产监管", "${Constant.host}/img/logo/logo3.jpg"));
+    recentlyList
+        .add(Recent("0001", "资产处置", "${Constant.host}/img/logo/logo3.jpg"));
+    recentlyList
+        .add(Recent("0001", "通用表格", "${Constant.host}/img/logo/logo3.jpg"));
+    recentlyList
+        .add(Recent("0001", "公物仓", "${Constant.host}/img/logo/logo3.jpg"));
+    recentlyList
+        .add(Recent("0001", "公益仓", "${Constant.host}/img/logo/logo3.jpg"));
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
@@ -82,7 +82,7 @@ class MessageChats extends GetView<SettingController> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "常用联系人",
+                  "常用",
                   style: XFonts.size24Black0,
                 ),
               ],
@@ -98,17 +98,17 @@ class MessageChats extends GetView<SettingController> {
                 Widget child = button(value);
                 int index = recentlyList.indexOf(value);
 
-                if (index !=
-                    (recentlyList.length - 1)) {
+                if (index != (recentlyList.length - 1)) {
                   child = Container(
                     margin: EdgeInsets.only(right: 15.w),
                     child: child,
                   );
                 }
                 return Container(
-                  margin:EdgeInsets.only(left: index == 0 ? 0 : 27),
+                  margin: EdgeInsets.only(left: index == 0 ? 0 : 27),
                   child: child,
-                );;
+                );
+                ;
               }).toList(),
             ),
           ),
@@ -144,8 +144,8 @@ class MessageChats extends GetView<SettingController> {
                 fontSize: 14.sp,
                 color: const Color.fromARGB(255, 52, 52, 54),
                 overflow: TextOverflow.ellipsis
-              // color: Colors.black
-            ),
+                // color: Colors.black
+                ),
           )
         ],
       ),
@@ -171,7 +171,10 @@ class MessageChatsList extends GetView<MessageChatsListController> {
           itemCount: chats.length,
           itemBuilder: (BuildContext context, int index) {
             var chat = chats[index];
-            return MessageItemWidget(chat: chat,enabledSlidable: false,);
+            return MessageItemWidget(
+              chat: chat,
+              enabledSlidable: false,
+            );
           },
         ),
       ),
@@ -197,6 +200,4 @@ class MessageChatsListBinding extends Bindings {
   void dependencies() {
     Get.lazyPut(() => MessageChatsListController());
   }
-
 }
-
