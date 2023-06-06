@@ -266,19 +266,21 @@ class Person extends Belong implements IPerson {
     members = members.where((i) => i.id != userId).toList();
     if (isAdd) {
       for (var i in members) {
-        var item = PersonMsgChat(
-          id,
-          i.id,
-          ShareIcon(
-            name: i.name,
-            typeName: i.typeName,
-            avatar: FileItemShare.parseAvatar(i.icon),
-          ),
-          ['好友'],
-          i.remark ?? "",
-          this,
-        );
-        memberChats.add(item);
+        if(memberChats.where((element) => element.chatId == i.id).isEmpty){
+          var item = PersonMsgChat(
+            id,
+            i.id,
+            ShareIcon(
+              name: i.name,
+              typeName: i.typeName,
+              avatar: FileItemShare.parseAvatar(i.icon),
+            ),
+            ['好友'],
+            i.remark ?? "",
+            this,
+          );
+          memberChats.add(item);
+        }
       }
     } else {
       var chats = <PersonMsgChat>[];
