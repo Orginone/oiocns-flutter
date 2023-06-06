@@ -42,6 +42,12 @@ class ThingModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> info = new Map<String, dynamic>();
+    for (var element in this.data!) {
+       if(element.values.first!=null){
+         info[element.keys.first.substring(1)] = element.values.first;
+       }
+    }
     data['Id'] = this.id;
     data['Creater'] = this.creater;
     data['CreateTime'] = this.createTime;

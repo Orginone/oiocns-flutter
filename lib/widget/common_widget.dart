@@ -49,7 +49,8 @@ class CommonWidget {
     );
   }
 
-  static Widget commonSubmitWidget({VoidCallback? submit,String text = "确定",String? image}) {
+  static Widget commonSubmitWidget(
+      {VoidCallback? submit, String text = "确定", String? image}) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(vertical: 15.h),
@@ -68,7 +69,9 @@ class CommonWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              image!=null?ImageWidget(image,color: Colors.white,size: 32.w):const SizedBox(),
+              image != null
+                  ? ImageWidget(image, color: Colors.white, size: 32.w)
+                  : const SizedBox(),
               Text(
                 text,
                 style: TextStyle(color: Colors.white, fontSize: 18.sp),
@@ -80,7 +83,11 @@ class CommonWidget {
     );
   }
 
-  static Widget commonMultipleSubmitWidget({String str1 = "取消",String str2 = "确定",VoidCallback? onTap1,VoidCallback? onTap2}) {
+  static Widget commonMultipleSubmitWidget(
+      {String str1 = "取消",
+      String str2 = "确定",
+      VoidCallback? onTap1,
+      VoidCallback? onTap2}) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(vertical: 15.h),
@@ -95,10 +102,9 @@ class CommonWidget {
               width: 200.w,
               height: 50.h,
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4.w),
-                border: Border.all(color: XColors.themeColor)
-              ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4.w),
+                  border: Border.all(color: XColors.themeColor)),
               alignment: Alignment.center,
               child: Text(
                 str1,
@@ -140,7 +146,7 @@ class CommonWidget {
           height: 50.h,
           decoration: BoxDecoration(
             color: Colors.white,
-            border: Border.all(color: Colors.blueAccent,width: 0.5),
+            border: Border.all(color: Colors.blueAccent, width: 0.5),
             borderRadius: BorderRadius.circular(4.w),
           ),
           alignment: Alignment.center,
@@ -158,11 +164,12 @@ class CommonWidget {
       TextEditingController? controller,
       String? hint,
       int? maxLine,
-        ValueChanged<String>? onSubmitted,
-        ValueChanged<String>? onChanged,
+      ValueChanged<String>? onSubmitted,
+      ValueChanged<String>? onChanged,
       bool enabled = true,
       TextStyle? textStyle,
-      bool required = false,List<TextInputFormatter>? inputFormatters}) {
+      bool required = false,
+      List<TextInputFormatter>? inputFormatters}) {
     return Stack(
       children: [
         Container(
@@ -174,7 +181,8 @@ class CommonWidget {
               color: Colors.white,
               border: showLine
                   ? Border(
-                      bottom: BorderSide(color: Colors.grey.shade200, width: 0.5))
+                      bottom:
+                          BorderSide(color: Colors.grey.shade200, width: 0.5))
                   : null,
             ),
             child: Column(
@@ -184,25 +192,30 @@ class CommonWidget {
                   title,
                   style: TextStyle(color: Colors.black, fontSize: 18.sp),
                 ),
-                SizedBox(height: 10.h,),
+                SizedBox(
+                  height: 10.h,
+                ),
                 TextField(
-                  controller: controller ?? TextEditingController(text: content),
+                  controller:
+                      controller ?? TextEditingController(text: content),
                   maxLines: maxLine,
                   inputFormatters: inputFormatters,
                   enabled: enabled,
                   onChanged: onChanged,
                   onSubmitted: onSubmitted,
-                  style:
-                      textStyle ?? TextStyle(color: Colors.black, fontSize: 18.sp),
+                  style: textStyle ??
+                      TextStyle(color: Colors.black, fontSize: 18.sp),
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.zero,
                       isDense: true,
                       hintText: hint,
-                      hintStyle:
-                          TextStyle(color: Colors.grey.shade300, fontSize: 18.sp),
+                      hintStyle: TextStyle(
+                          color: Colors.grey.shade300, fontSize: 18.sp),
                       border: InputBorder.none),
                 ),
-                SizedBox(height: 10.h,),
+                SizedBox(
+                  height: 10.h,
+                ),
               ],
             ),
           ),
@@ -212,9 +225,9 @@ class CommonWidget {
           left: 10.w,
           child: required
               ? const Text(
-            "*",
-            style: TextStyle(color: Colors.red),
-          )
+                  "*",
+                  style: TextStyle(color: Colors.red),
+                )
               : Container(),
         ),
       ],
@@ -224,7 +237,8 @@ class CommonWidget {
   static Widget commonChoiceTile(String title, String content,
       {bool showLine = false,
       String? hint,
-      bool required = false,VoidCallback? onTap}) {
+      bool required = false,
+      VoidCallback? onTap}) {
     return Stack(
       children: [
         Container(
@@ -236,7 +250,8 @@ class CommonWidget {
               color: Colors.white,
               border: showLine
                   ? Border(
-                      bottom: BorderSide(color: Colors.grey.shade200, width: 0.5))
+                      bottom:
+                          BorderSide(color: Colors.grey.shade200, width: 0.5))
                   : null,
             ),
             child: Column(
@@ -255,7 +270,7 @@ class CommonWidget {
                         Expanded(
                           child: content.isEmpty
                               ? Text(
-                            hint ?? "请选择",
+                                  hint ?? "请选择",
                                   style: TextStyle(
                                       color: Colors.grey.shade300,
                                       fontSize: 18.sp),
@@ -283,29 +298,30 @@ class CommonWidget {
           left: 10.w,
           child: required
               ? const Text(
-            "*",
-            style: TextStyle(color: Colors.red),
-          )
+                  "*",
+                  style: TextStyle(color: Colors.red),
+                )
               : Container(),
         )
       ],
     );
   }
 
-  static Widget commonAddDetailedWidget({VoidCallback? onTap,required String text}){
+  static Widget commonAddDetailedWidget(
+      {VoidCallback? onTap, required String text}) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 25.h),
       width: double.infinity,
       alignment: Alignment.center,
       child: GestureDetector(
-        onTap:onTap,
+        onTap: onTap,
         child: Container(
           color: Colors.white,
           width: 200.w,
           height: 50.h,
           alignment: Alignment.center,
           child: Text.rich(
-             TextSpan(
+            TextSpan(
               children: [
                 const TextSpan(text: "+"),
                 TextSpan(text: text),
@@ -321,7 +337,7 @@ class CommonWidget {
   static Widget commonSearchBarWidget(
       {TextEditingController? controller,
       ValueChanged<String>? onSubmitted,
-        ValueChanged<String>? onChanged,
+      ValueChanged<String>? onChanged,
       String hint = "",
       bool showLine = false,
       Color? backgroundColor,
@@ -351,7 +367,7 @@ class CommonWidget {
                   controller: controller,
                   textInputAction: TextInputAction.done,
                   onSubmitted: onSubmitted,
-                  onChanged:onChanged ,
+                  onChanged: onChanged,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.zero,
                     isDense: true,
@@ -360,8 +376,14 @@ class CommonWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 5.w,),
-              Image.asset(Images.searchIcon,width: 28.w,height: 28.w,),
+              SizedBox(
+                width: 5.w,
+              ),
+              Image.asset(
+                Images.searchIcon,
+                width: 28.w,
+                height: 28.w,
+              ),
             ],
           ),
         ),
@@ -370,9 +392,9 @@ class CommonWidget {
   }
 
   static commonRadioTextWidget<T>(String name, T value,
-      {T? groupValue, ValueChanged<T?>? onChanged,String? keyWord}) {
+      {T? groupValue, ValueChanged<T?>? onChanged, String? keyWord}) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 5.h,horizontal: 16.w),
+      padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 16.w),
       width: double.infinity,
       color: Colors.white,
       child: Row(
@@ -382,15 +404,22 @@ class CommonWidget {
             groupValue: groupValue,
             onChanged: onChanged,
           ),
-          TextHighlight(content: name,keyWord: keyWord,normalStyle: TextStyle(fontSize: 16.sp,color: Colors.black87),highlightStyle: TextStyle(fontSize: 18.sp,color: Colors.black),)
+          TextHighlight(
+            content: name,
+            keyWord: keyWord,
+            normalStyle: TextStyle(fontSize: 16.sp, color: Colors.black87),
+            highlightStyle: TextStyle(fontSize: 18.sp, color: Colors.black),
+          )
         ],
       ),
     );
   }
 
-  static commonHeadInfoWidget(String info,{Widget? action,EdgeInsetsGeometry? padding}){
+  static commonHeadInfoWidget(String info,
+      {Widget? action, EdgeInsetsGeometry? padding}) {
     return Padding(
-      padding: padding??EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
+      padding:
+          padding ?? EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -407,24 +436,34 @@ class CommonWidget {
                     alignment: PlaceholderAlignment.middle),
                 TextSpan(
                     text: info,
-                    style: TextStyle(fontSize: 18.sp, color: Colors.black,fontWeight: FontWeight.w500))
+                    style: TextStyle(
+                        fontSize: 18.sp,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500))
               ],
             ),
           ),
-          action??Container(),
+          action ?? Container(),
         ],
       ),
     );
   }
 
-  static commonTextContentWidget(String text,String content,{double textSize = 20,double contentSize = 20,EdgeInsetsGeometry? padding,Color? color,int maxLines = 1,String userId = ''}){
+  static commonTextContentWidget(String text, String content,
+      {double textSize = 20,
+      double contentSize = 20,
+      EdgeInsetsGeometry? padding,
+      Color? color,
+      int maxLines = 1,
+      String userId = ''}) {
     TextStyle contentStyle = TextStyle(
         color: Colors.black,
         fontSize: contentSize.sp,
-        fontWeight: FontWeight.w700,overflow: TextOverflow.ellipsis);
+        fontWeight: FontWeight.w700,
+        overflow: TextOverflow.ellipsis);
 
     return Container(
-      padding: padding??EdgeInsets.symmetric(vertical: 15.h),
+      padding: padding ?? EdgeInsets.symmetric(vertical: 15.h),
       width: double.infinity,
       decoration: BoxDecoration(
           color: color,
@@ -439,12 +478,19 @@ class CommonWidget {
             style: TextStyle(color: Colors.grey, fontSize: textSize.sp),
           ),
           Expanded(
-            child: userId.isNotEmpty?TargetText(userId: userId,maxLines: maxLines,style: contentStyle,textAlign: TextAlign.right,):Text(
-              content,
-              style: contentStyle,
-              maxLines: maxLines,
-              textAlign: TextAlign.right,
-            ),
+            child: userId.isNotEmpty
+                ? TargetText(
+                    userId: userId,
+                    maxLines: maxLines,
+                    style: contentStyle,
+                    textAlign: TextAlign.right,
+                  )
+                : Text(
+                    content,
+                    style: contentStyle,
+                    maxLines: maxLines,
+                    textAlign: TextAlign.right,
+                  ),
           ),
         ],
       ),
@@ -452,25 +498,27 @@ class CommonWidget {
   }
 
   static commonMultipleChoiceButtonWidget(
-      {bool isSelected = false, ValueChanged<bool>? changed,double? iconSize}) {
+      {bool isSelected = false,
+      ValueChanged<bool>? changed,
+      double? iconSize}) {
     return GestureDetector(
       child: isSelected
           ? Container(
-           width: iconSize??32.w,
-            height: iconSize??32.w,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: XColors.themeColor,
-            ),
-            child: Icon(
+              width: iconSize ?? 32.w,
+              height: iconSize ?? 32.w,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: XColors.themeColor,
+              ),
+              child: Icon(
                 Icons.done,
                 size: 20.w,
                 color: Colors.white,
               ),
-          )
+            )
           : Icon(
               Icons.radio_button_off,
-              size: iconSize??32.w,
+              size: iconSize ?? 32.w,
             ),
       onTap: () {
         if (changed != null) {
@@ -480,7 +528,7 @@ class CommonWidget {
     );
   }
 
-  static commonShowChoiceDataInfo(String text,{VoidCallback? onTap}) {
+  static commonShowChoiceDataInfo(String text, {VoidCallback? onTap}) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
@@ -575,13 +623,14 @@ class CommonWidget {
     );
   }
 
-
-  static Widget commonNonIndicatorTabBar(TabController tabController,List<String> tabTitle,{ValueChanged<int>? onTap}) {
+  static Widget commonNonIndicatorTabBar(
+      TabController tabController, List<String> tabTitle,
+      {ValueChanged<int>? onTap}) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: Colors.grey.shade200,width: 0.5))
-      ),
+          color: Colors.white,
+          border: Border(
+              bottom: BorderSide(color: Colors.grey.shade200, width: 0.5))),
       alignment: Alignment.centerLeft,
       child: TabBar(
         controller: tabController,
@@ -625,9 +674,7 @@ class CommonWidget {
         child: Text.rich(
           TextSpan(
             children: [
-              TextSpan(
-                  text: " • ",
-                  style: unSelectedTextStyle),
+              TextSpan(text: " • ", style: unSelectedTextStyle),
               TextSpan(
                   text: title,
                   style: index == allTitle.length - 1
@@ -685,9 +732,8 @@ class CommonWidget {
     );
   }
 
-
-  static Widget commonFormWidget({required List<Widget> formItem}){
-    return  Container(
+  static Widget commonFormWidget({required List<Widget> formItem}) {
+    return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         color: GYColors.formBackgroundColor,
@@ -718,29 +764,37 @@ class CommonWidget {
                 children: [
                   Expanded(
                     child: Container(
-                      padding:
-                      EdgeInsets.symmetric(vertical: 15.h, horizontal: 10.w),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 15.h, horizontal: 10.w),
                       height: double.infinity,
                       color: GYColors.formTitleBackgroundColor,
-                      child: Text(title,style: TextStyle(color: XColors.black666,fontSize: 18.sp),),
+                      child: Text(
+                        title,
+                        style:
+                            TextStyle(color: XColors.black666, fontSize: 18.sp),
+                      ),
                     ),
                   ),
-                  SizedBox(height: 55.h,width: 0.5,),
+                  SizedBox(
+                    height: 55.h,
+                    width: 0.5,
+                  ),
                   Expanded(
                     flex: 2,
                     child: Container(
-                      padding:
-                      EdgeInsets.symmetric(vertical: 15.h, horizontal: 10.w),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 15.h, horizontal: 10.w),
                       color: Colors.white,
                       constraints: BoxConstraints(minHeight: 60.h),
                       child: userId.isNotEmpty
                           ? TargetText(
-                        userId: userId,
-                      )
+                              userId: userId,
+                            )
                           : Text(
-                        content,
-                        style: TextStyle(color: XColors.black666,fontSize: 18.sp),
-                      ),
+                              content,
+                              style: TextStyle(
+                                  color: XColors.black666, fontSize: 18.sp),
+                            ),
                     ),
                   ),
                 ],
@@ -752,17 +806,15 @@ class CommonWidget {
     );
   }
 
-  static Widget commonDocumentWidget(
-      {required List<String> title,
-      required List<List<String>> content,
-      double? contentWidth,
-      bool showOperation = false,
-        DocumentOperation? onOperation,
-        List<PopupMenuItem>? popupMenus,
-      }) {
+  static Widget commonDocumentWidget({
+    required List<String> title,
+    required List<List<String>> content,
+    double? contentWidth,
+    bool showOperation = false,
+    DocumentOperation? onOperation,
+    List<PopupMenuItem>? popupMenus,
+  }) {
     List<List<String>> data = [];
-
-
 
     for (int i = 0; i < title.length; i++) {
       List<String> key = [];
@@ -771,19 +823,18 @@ class CommonWidget {
       }
       for (var value in content) {
         String data;
-        if(value.length-1<i){
+        if (value.length - 1 < i) {
           data = '';
-        }else{
+        } else {
           data = value[i];
         }
         key.add(data);
-
       }
       data.add(key);
     }
     if (showOperation) {
-      var operation =
-          List.generate(data.first.length, (index) => index == 0 ? "操作" : index.toString());
+      var operation = List.generate(
+          data.first.length, (index) => index == 0 ? "操作" : index.toString());
       data.add(operation);
     }
 
@@ -791,14 +842,19 @@ class CommonWidget {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         alignment: Alignment.center,
-        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w,maxWidth: title == "操作"?60.w:170.w),
+        constraints: BoxConstraints(
+            minWidth: contentWidth ?? 60.w,
+            maxWidth: title == "操作" ? 60.w : 170.w),
         decoration: BoxDecoration(
-            border: Border(right: BorderSide(color: Colors.grey.shade200,width: 0.5))
-        ),
+            border: Border(
+                right: BorderSide(color: Colors.grey.shade200, width: 0.5))),
         height: 50.h,
         child: Text(
           title,
-          style: TextStyle(color: Colors.black,fontWeight: FontWeight.w600,fontSize: 18.sp),
+          style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w600,
+              fontSize: 18.sp),
         ),
       );
     }
@@ -807,14 +863,15 @@ class CommonWidget {
       return Container(
         alignment: Alignment.center,
         padding: EdgeInsets.symmetric(horizontal: 10.w),
-        constraints: BoxConstraints(minWidth: contentWidth ?? 60.w,maxWidth: 170.w),
+        constraints:
+            BoxConstraints(minWidth: contentWidth ?? 60.w, maxWidth: 170.w),
         height: 50.h,
         decoration: BoxDecoration(
-          border: Border(right: BorderSide(color: Colors.grey.shade200,width: 0.5))
-        ),
+            border: Border(
+                right: BorderSide(color: Colors.grey.shade200, width: 0.5))),
         child: Text(
           content,
-          style: TextStyle(color: Colors.grey,fontSize: 18.sp),
+          style: TextStyle(color: Colors.grey, fontSize: 18.sp),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -847,7 +904,7 @@ class CommonWidget {
                       onTap: () async {
                         await showMenu(
                           context: Get.context!,
-                          items: popupMenus??[],
+                          items: popupMenus ?? [],
                           position: RelativeRect.fromLTRB(
                             x,
                             y - 50,
@@ -855,11 +912,11 @@ class CommonWidget {
                             0,
                           ),
                         ).then((value) {
-                           if(value!=null){
-                             if (onOperation != null) {
-                               onOperation(value,data[0][index]);
-                             }
-                           }
+                          if (value != null) {
+                            if (onOperation != null) {
+                              onOperation(value, data[0][index]);
+                            }
+                          }
                         });
                       },
                       child: SizedBox(
@@ -879,10 +936,9 @@ class CommonWidget {
 
   static Widget commonPopupMenuButton<T>(
       {PopupMenuItemSelected<T>? onSelected,
-    required List<PopupMenuItem<T>> items,
-    Color? color,
-    IconData? icon}
-  ) {
+      required List<PopupMenuItem<T>> items,
+      Color? color,
+      IconData? icon}) {
     return Container(
       height: 50.h,
       color: color ?? Colors.white,
@@ -899,12 +955,13 @@ class CommonWidget {
     );
   }
 
-  static Widget commonTextField({required TextEditingController controller,
-    String hint = '',
-    String title = '',
-    List<TextInputFormatter>? inputFormatters,
-    bool obscureText = false,
-    Widget? action}) {
+  static Widget commonTextField(
+      {required TextEditingController controller,
+      String hint = '',
+      String title = '',
+      List<TextInputFormatter>? inputFormatters,
+      bool obscureText = false,
+      Widget? action}) {
     return Container(
       decoration: BoxDecoration(
           border: Border(
@@ -926,7 +983,7 @@ class CommonWidget {
               decoration: InputDecoration(
                   hintText: hint,
                   hintStyle:
-                  TextStyle(color: Colors.grey.shade400, fontSize: 20.sp),
+                      TextStyle(color: Colors.grey.shade400, fontSize: 20.sp),
                   border: InputBorder.none),
             ),
           ),

@@ -6,8 +6,8 @@ import 'package:orginone/widget/unified.dart';
 import 'item.dart';
 import 'logic.dart';
 import 'state.dart';
-class StorePage
-    extends BaseGetPageView<StoreController, StoreState> {
+
+class StorePage extends BaseGetPageView<StoreController, StoreState> {
   @override
   Widget buildView() {
     return Container(
@@ -15,9 +15,9 @@ class StorePage
       child: ListView.builder(
         itemBuilder: (context, index) {
           if (index == 0) {
-            return  recentlyOpened();
+            return recentlyOpened();
           }
-          if(index == 1){
+          if (index == 1) {
             return content();
           }
           return StoreItem();
@@ -58,17 +58,17 @@ class StorePage
                 Widget child = button(value);
                 int index = state.recentlyList.indexOf(value);
 
-                if (index !=
-                    (state.recentlyList.length - 1)) {
+                if (index != (state.recentlyList.length - 1)) {
                   child = Container(
                     margin: EdgeInsets.only(right: 15.w),
                     child: child,
                   );
                 }
                 return Container(
-                  margin:EdgeInsets.only(left: index == 0 ? 0 : 27),
+                  margin: EdgeInsets.only(left: index == 0 ? 0 : 27),
                   child: child,
-                );;
+                );
+                ;
               }).toList(),
             ),
           ),
@@ -135,19 +135,20 @@ class StorePage
             onChanged: (String? value) {},
             value: "time",
             underline: const SizedBox(),
-            icon:  Icon(Icons.filter_alt_outlined,size: 22.w,),
+            icon: Icon(
+              Icons.filter_alt_outlined,
+              size: 22.w,
+            ),
           ),
         ],
       ),
     );
   }
 
-
   @override
   StoreController getController() {
     return StoreController();
   }
-
 
   @override
   String tag() {
