@@ -51,7 +51,7 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
           CommonWidget.commonNonIndicatorTabBar(state.subTabController!,
               state.thingForm.map((element) => element.name).toList()),
           SizedBox(
-            height: 500.h,
+            height: 300.h,
             child: Obx(() {
               return TabBarView(
                 controller: state.subTabController,

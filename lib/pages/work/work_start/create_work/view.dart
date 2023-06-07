@@ -116,7 +116,7 @@ class CreateWorkPage
                 ),
               ),
               SizedBox(
-                height: 500.h,
+                height: 300.h,
                 child: Obx(() {
                   return TabBarView(
                     controller: state.tabController,
