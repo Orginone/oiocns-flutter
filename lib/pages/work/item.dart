@@ -13,10 +13,10 @@ import 'package:orginone/widget/unified.dart';
 import 'logic.dart';
 import 'state.dart';
 
-class Item extends StatelessWidget {
+class WorkItem extends StatelessWidget {
   final XWorkTask todo;
 
-  const Item({Key? key, required this.todo}) : super(key: key);
+  const WorkItem({Key? key, required this.todo}) : super(key: key);
 
   WorkController get controller => Get.find<WorkController>(tag: 'work');
 

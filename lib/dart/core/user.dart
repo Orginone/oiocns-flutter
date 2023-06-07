@@ -8,12 +8,16 @@ import 'package:orginone/event/home_data.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 
+import 'enum.dart';
+import 'thing/app/application.dart';
 import 'work/provider.dart';
 
 class UserProvider {
   final Rxn<IPerson> _user = Rxn();
   final Rxn<IWorkProvider> _work = Rxn();
   final Rxn<IChatProvider> _chat = Rxn();
+
+  var myApps = <IApplication>[].obs;
   bool _inited = false;
 
   UserProvider() {
@@ -105,29 +109,53 @@ class UserProvider {
 
   /// 重载数据
   Future<void> reload() async {
-       _inited = false;
-       _chat.value?.preMessage();
-       await _user.value?.deepLoad(reload: true);
-       await _work.value?.loadTodos(reload: true);
-       _inited = true;
-       _chat.value?.loadPreMessage();
-       _chat.value?.loadAllChats();
-       _chat.refresh();
-       _user.refresh();
+    _inited = false;
+    _chat.value?.preMessage();
+    await _user.value?.deepLoad(reload: true);
+    await _work.value?.loadTodos(reload: true);
+    _inited = true;
+    await loadApps();
+    _chat.value?.loadPreMessage();
+    _chat.value?.loadAllChats();
+
+    _chat.refresh();
+    _user.refresh();
   }
 
+  Future<void> loadApps() async {
+    for (var target in user!.targets) {
+      for (var specie in target.species) {
+        if (specie.metadata.typeName == SpeciesType.application.label) {
+          var app = specie as IApplication;
+          if ((await app.loadWorkDefines()).isNotEmpty) {
+            myApps.add(app);
+          }
+        }
+      }
+    }
 
-
+    myApps.value = myApps
+        .asMap()
+        .entries
+        .where((entry) =>
+            myApps.indexWhere(
+                (app) => app.metadata.id == entry.value.metadata.id) ==
+            entry.key)
+        .map((entry) => entry.value)
+        .toList();
+  }
 
   void _recvTarget(data) {
-    switch(data['TypeName']){
+    switch (data['TypeName']) {
       case "Relation":
         XTarget xTarget = XTarget.fromJson(data['Target']);
         XTarget subTarget = XTarget.fromJson(data['SubTarget']);
-        var target = [_user.value, ...user!.targets].firstWhere((element) => element!.id == xTarget.id,orElse: ()=>null);
-        if(target!=null){
+        var target = [_user.value, ...user!.targets].firstWhere(
+            (element) => element!.id == xTarget.id,
+            orElse: () => null);
+        if (target != null) {
           target.recvTarget(data['Operate'], true, subTarget);
-        }else if (_user.value!.id == subTarget.id) {
+        } else if (_user.value!.id == subTarget.id) {
           _user.value!.recvTarget(data['Operate'], false, xTarget);
         }
         break;

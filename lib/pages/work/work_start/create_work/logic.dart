@@ -116,7 +116,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
     if (function == SubTableEnum.choiceTable) {
       jumpEntity(form);
     } else {
-      showCreateAuthDialog(context, form,state.belong, onSuceess: (model) {
+      showCreateAuthDialog(context, form,state.target, onSuceess: (model) {
         if (function == SubTableEnum.addTable) {
           form.things.add(model);
         } else {
@@ -138,7 +138,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
       state.thingForm.refresh();
     }
     if (function == 'edit') {
-      showCreateAuthDialog(context, form,state.belong, onSuceess: (model) {
+      showCreateAuthDialog(context, form,state.target, onSuceess: (model) {
         thing = model;
         state.thingForm.refresh();
       }, thing: thing);

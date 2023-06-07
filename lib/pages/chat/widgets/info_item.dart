@@ -18,6 +18,7 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus_helper.dart';
+import 'package:orginone/util/string_util.dart';
 import 'package:orginone/widget/target_text.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
@@ -74,7 +75,7 @@ class DetailItemWidget extends GetView<SettingController> {
     bool isCenter = false;
     if (msg.msgType == MessageType.recall.label) {
       Widget child;
-      if (msg.metadata.fromId == controller.user.id) {
+      if (isSelf) {
         child = Text("您撤回了一条消息", style: XFonts.size18Black9);
       } else {
         child = Text.rich(TextSpan(children: [
@@ -212,7 +213,7 @@ class DetailItemWidget extends GetView<SettingController> {
                           break;
                         case DetailFunc.forward:
                           chatController.forward(
-                              msg.msgType, msg.metadata.showTxt);
+                              msg.msgType, msg.body!);
                           break;
                         case DetailFunc.reply:
                           ChatBoxController controller =
@@ -221,7 +222,7 @@ class DetailItemWidget extends GetView<SettingController> {
                           break;
                         case DetailFunc.copy:
                           Clipboard.setData(
-                              ClipboardData(text: msg.metadata.showTxt));
+                              ClipboardData(text: StringUtil.msgConversion(msg.metadata, '')));
                           break;
                       }
                       popCtrl.hideMenu();

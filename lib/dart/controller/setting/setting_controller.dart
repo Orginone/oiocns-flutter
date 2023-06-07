@@ -10,6 +10,7 @@ import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/user.dart';
+import 'package:orginone/dart/core/work/provider.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/routers.dart';
@@ -72,6 +73,10 @@ class SettingController extends GetxController {
 
   IChatProvider get chat {
     return _provider.chat!;
+  }
+
+  IWorkProvider get work {
+    return _provider.work!;
   }
 
   /// 组织树

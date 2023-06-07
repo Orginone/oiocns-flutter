@@ -124,9 +124,13 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidget.commonHeadInfoWidget(form.name??""),
+        CommonWidget.commonHeadInfoWidget(form.name),
         CommonWidget.commonFormWidget(
             formItem: form.attributes?.map((e) {
+              if(e.valueType == "用户型"){
+                return CommonWidget.commonFormItem(
+                    title: e.name ?? "", userId: e.value ?? '');
+              }
               return CommonWidget.commonFormItem(
                       title: e.name ?? "", content: e.value ?? '');
                 }).toList()??[]),

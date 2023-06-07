@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -15,13 +18,13 @@ import 'message_routers.dart';
 
 class MessageForward extends StatefulWidget {
 
-  final String text;
+  final MsgBodyModel msgBody;
 
   final String msgType;
 
   final VoidCallback? onSuccess;
 
-  const MessageForward({Key? key, required this.text, required this.msgType, this.onSuccess}) : super(key: key);
+  const MessageForward({Key? key, required this.msgBody, required this.msgType, this.onSuccess}) : super(key: key);
 
   @override
   State<MessageForward> createState() => _MessageForwardState();
@@ -118,7 +121,7 @@ class _MessageForwardState extends State<MessageForward> {
                             CupertinoDialogAction(
                               child: const Text('确定'),
                               onPressed: () async {
-                                var success = await item.msg.sendMessage(MessageType.getType(widget.msgType)!, widget.text);
+                                var success = await item.msg.sendMessage(MessageType.getType(widget.msgType)!, jsonEncode(widget.msgBody.toJson()));
                                 if(success){
                                   ToastUtils.showMsg(msg: "转发成功");
                                 }

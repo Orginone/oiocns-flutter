@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/message.dart';
@@ -88,11 +89,11 @@ class MessageChatController extends BaseController<MessageChatState> {
     markVisibleMessagesAsRead();
   }
 
-  void forward(String msgType, String text) {
+  void forward(String msgType, MsgBodyModel msgBody) {
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return MessageForward(text: text, msgType: msgType, onSuccess: () {
+          return MessageForward(msgBody: msgBody, msgType: msgType, onSuccess: () {
             Navigator.pop(context);
           },);
         },

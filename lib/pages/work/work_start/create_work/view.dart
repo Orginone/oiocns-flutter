@@ -59,7 +59,7 @@ class CreateWorkPage
                       return Container();
                     }
                     Widget child =
-                        testMappingComponents[e.fields!.type ?? ""]!(e.fields!,state.belong);
+                        testMappingComponents[e.fields!.type ?? ""]!(e.fields!,state.target);
                     return child;
                   }).toList() ??
                   [],

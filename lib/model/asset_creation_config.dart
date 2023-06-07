@@ -111,7 +111,7 @@ class Fields {
   int? maxLine;
   Rxn<dynamic> defaultData = Rxn<dynamic>();
   TextEditingController? controller;
-  late Function(IBelong) function;
+  late Function(ITarget) function;
   @HiveField(10)
   double? marginTop;
   @HiveField(11)
@@ -168,7 +168,7 @@ class Fields {
         type == "text") {
       defaultData.value = HiveUtils.getUser()?.person?.team?.name;
     }
-    function = (IBelong belong) async{
+    function = (ITarget target) async{
       if (type == "router") {
         Get.toNamed(router!);
       }
@@ -186,7 +186,7 @@ class Fields {
         });
       }
       if(type == 'selectPerson'){
-        var users =  belong.members;
+        var users =  target.members;
         PickerUtils.showListStringPicker(Get.context!, titles: users.map((e) => e.name).toList(),
             callback: (str) {
               defaultData.value = users.firstWhere((element) => element.name == str);
