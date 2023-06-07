@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -64,7 +65,12 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
                     List<String> data = [];
 
                     for (var attribute in element.attributes!) {
-                      data.add(thing.eidtInfo?[attribute.id]??"");
+                      if(attribute.valueType == "附件型"){
+                        FileItemShare share = FileItemShare.fromJson(thing.eidtInfo?[attribute.id]);
+                        data.add(share.name??"");
+                      }else{
+                        data.add(thing.eidtInfo?[attribute.id]??"");
+                      }
                     }
 
                     return [

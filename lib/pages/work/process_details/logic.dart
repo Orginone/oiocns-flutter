@@ -68,7 +68,13 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
         state.workForm.value!.attributes = await setting.provider.work!
             .loadAttributes(iForm.id, state.define!.workItem.belongId);
         for (var element in state.workForm.value!.attributes??[]) {
-          element.value = data['forms']?['headerData']?[element.id]??'';
+          if(element.valueType == "附件型"){
+            FileItemShare share = FileItemShare.fromJson(data['forms']?['headerData']?[element.id]);
+            element.value = share.name;
+            element.share = share;
+          }else{
+            element.value = data['forms']?['headerData']?[element.id]??'';
+          }
         }
       }
     }catch(e){

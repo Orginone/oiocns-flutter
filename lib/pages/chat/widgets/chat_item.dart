@@ -14,15 +14,6 @@ import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 import 'package:orginone/widget/widgets/text_tag.dart';
 
-enum ChatFunc {
-  // topping("置顶会话"),
-  // cancelTopping("取消置顶"),
-  remove("删除会话");
-
-  final String label;
-
-  const ChatFunc(this.label);
-}
 
 class MessageItemWidget extends GetView<SettingController> {
   // 用户信息

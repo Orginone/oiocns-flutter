@@ -30,8 +30,7 @@ Future<void> showCreateAuthDialog(BuildContext context, XForm form,ITarget targe
                       return Container();
                     }
                     if(thing!=null){
-                      int index = form.attributes!.indexOf(e);
-                      dynamic value = thing.data![index].values.first;
+                      dynamic value = thing.eidtInfo![e.id];
                       e.fields!.defaultData.value = value;
                     }
                     Widget child =

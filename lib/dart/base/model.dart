@@ -5358,7 +5358,12 @@ class WorkSubmitModel {
     Map<String, dynamic> changeDataMap = {};
     for (var element in changeData) {
       if (element.eidtInfo != null) {
-        changeDataMap[element.id!] = element.eidtInfo;
+        element.eidtInfo!.forEach((key, value) {
+          if(value is FileItemModel){
+            value = value.shareInfo();
+          }
+        });
+        changeDataMap[element.id!] = element.eidtInfo!;
       }
     }
 

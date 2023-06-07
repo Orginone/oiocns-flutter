@@ -79,9 +79,13 @@ class CreateWorkController extends BaseController<CreateWorkState>
     Map<String, dynamic> headerData = {};
     List<WorkSubmitModel> formData = [];
     if(state.workForm.value!=null){
-      for (var element in state.workForm.value?.attributes ?? []) {
+      for (var element in state.workForm.value?.attributes??[]) {
         if (element.fields?.defaultData.value != null) {
-          headerData[element.id!] = element.fields?.defaultData.value;
+           if(element.fields!.type == 'upload'){
+             headerData[element.id!] = element.fields?.defaultData.value.shareInfo();
+           }else{
+             headerData[element.id!] = element.fields?.defaultData.value;
+           }
         }
       }
       WorkSubmitModel workData = WorkSubmitModel(isHeader: true, resourceData: state.workForm.value!);
