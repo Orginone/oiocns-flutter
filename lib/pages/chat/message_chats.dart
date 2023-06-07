@@ -144,8 +144,7 @@ class MessageChats extends GetView<SettingController> {
                 fontSize: 14.sp,
                 color: const Color.fromARGB(255, 52, 52, 54),
                 overflow: TextOverflow.ellipsis
-                // color: Colors.black
-                ),
+            ),
           )
         ],
       ),

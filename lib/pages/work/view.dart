@@ -22,7 +22,7 @@ class WorkPage extends BaseGetListPageView<WorkController, WorkState> {
               if (index == 0) {
                 return recentlyOpened();
               }
-              return Item(
+              return WorkItem(
                 todo: state.dataList[index - 1],
               );
             },

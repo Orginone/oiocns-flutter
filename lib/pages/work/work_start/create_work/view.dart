@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/work/work_start/create_work/state.dart';
@@ -59,7 +60,7 @@ class CreateWorkPage
                       return Container();
                     }
                     Widget child =
-                        testMappingComponents[e.fields!.type ?? ""]!(e.fields!,state.belong);
+                        testMappingComponents[e.fields!.type ?? ""]!(e.fields!,state.target);
                     return child;
                   }).toList() ??
                   [],
@@ -115,7 +116,7 @@ class CreateWorkPage
                 ),
               ),
               SizedBox(
-                height: 500.h,
+                height: 300.h,
                 child: Obx(() {
                   return TabBarView(
                     controller: state.tabController,
@@ -126,20 +127,20 @@ class CreateWorkPage
                               .toList() ??
                           [];
                       List<List<String>> content = element.things.map((e) {
-                        List<String> data = e.data?.map((e) {
-                              String value = '';
-                              if(e.values.first!=null){
-                                if(e.values.first is Map){
-                                  value = e.values.first.values.first.toString();
-                                } else if(e.values.first is XTarget){
-                                  value = e.values.first.name;
-                                } else{
-                                  value = e.values.first.toString();
-                                }
-                              }
-                              return value;
-                            }).toList() ??
-                            [];
+                        List<String> data = [];
+                        e.eidtInfo!.forEach((key, value) {
+                          String v = '';
+                          if(value!=null){
+                            if(value is Map){
+                              v = value.values.first.toString();
+                            } else if(value is XTarget || value is FileItemModel){
+                              v = value.name;
+                            } else{
+                              v = value.toString();
+                            }
+                          }
+                          data.add(v);
+                        });
                         return [
                           e.id ?? "",
                           e.status ?? "",

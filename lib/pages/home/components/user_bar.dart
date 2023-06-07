@@ -2,12 +2,13 @@ import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/icons.dart';
 import 'package:orginone/widget/image_widget.dart';
-import 'package:orginone/widget/unified.dart';
-import 'package:orginone/widget/widgets/text_avatar.dart';
+import 'search_bar.dart';
 
 
 class UserBar extends GetView<SettingController> {
@@ -40,7 +41,30 @@ class UserBar extends GetView<SettingController> {
     List<Widget> action = [];
     action.add( IconButton(
       icon: const Icon(Icons.search),
-      onPressed: () {},
+      onPressed: () {
+
+        SearchBar? search;
+        switch(controller.homeEnum.value){
+          case HomeEnum.chat:
+            search = SearchBar<IMsgChat>(homeEnum: HomeEnum.chat,data: controller.chat.allChats);
+            break;
+          case HomeEnum.work:
+            search = SearchBar<XWorkTask>(homeEnum: HomeEnum.work,data: controller.work.todos);
+            break;
+          case HomeEnum.door:
+            // TODO: Handle this case.
+            break;
+          case HomeEnum.store:
+            search = SearchBar<int>(homeEnum: HomeEnum.store,data: []);
+            break;
+          case HomeEnum.market:
+            search = SearchBar<IMsgChat>(homeEnum: HomeEnum.market,data: []);
+            break;
+        }
+        if(search!=null){
+          showSearch(context: Get.context!, delegate:search);
+        }
+      },
       constraints: BoxConstraints(maxWidth: 50.w),
     ));
     if (controller.homeEnum.value == HomeEnum.chat) {

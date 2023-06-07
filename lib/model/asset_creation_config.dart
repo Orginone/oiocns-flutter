@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
@@ -8,6 +11,7 @@ import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
+import 'package:orginone/widget/loading_dialog.dart';
 
 part 'asset_creation_config.g.dart';
 
@@ -111,7 +115,7 @@ class Fields {
   int? maxLine;
   Rxn<dynamic> defaultData = Rxn<dynamic>();
   TextEditingController? controller;
-  late Function(IBelong) function;
+  late Function(ITarget) function;
   @HiveField(10)
   double? marginTop;
   @HiveField(11)
@@ -158,17 +162,7 @@ class Fields {
     if (type == "input") {
       controller = TextEditingController();
     }
-    if ((code == "USE_DEPT_NAME" || code == "OLD_ORG_NAME") && type == "text") {
-      defaultData.value =
-         "" ?? "个人中心";
-    }
-    if ((code == "USER_NAME" ||
-        code == "OLD_USER_NAME" ||
-        code == "SUBMITTER_NAME") &&
-        type == "text") {
-      defaultData.value = HiveUtils.getUser()?.person?.team?.name;
-    }
-    function = (IBelong belong) async{
+    function = (ITarget target) async{
       if (type == "router") {
         Get.toNamed(router!);
       }
@@ -186,7 +180,7 @@ class Fields {
         });
       }
       if(type == 'selectPerson'){
-        var users =  belong.members;
+        var users =  target.members;
         PickerUtils.showListStringPicker(Get.context!, titles: users.map((e) => e.name).toList(),
             callback: (str) {
               defaultData.value = users.firstWhere((element) => element.name == str);
@@ -199,10 +193,23 @@ class Fields {
               defaultData.value = team.firstWhere((element) => element.metadata.name == str);
             });
       }
+      if(type == 'upload'){
+        FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.any);
+        if (result != null) {
+          LoadingDialog.showLoading(Get.context!);
+          var docDir = await setting.user.fileSystem.home?.create('附件');
+          PlatformFile file = result.files.first;
+          var file1 = File(file.path!);
+          var item = await docDir?.upload(file.name, file1);
+          if(item!=null){
+            defaultData.value = item.metadata;
+          }
+          LoadingDialog.dismiss(Get.context!);
+        }
+      }
     };
   }
 
-  bool get isBillCode => code == "BILL_CODE";
 
 
   Map<String,dynamic> toUploadJson(){
@@ -218,37 +225,6 @@ class Fields {
     }
     if(type == "selectDepartment" || type == 'selectDepartment'){
       data[code!] = defaultData.value.id;
-    }
-    switch (code) {
-      case "ASSET_TYPE":
-        data[code!] = defaultData.value?.name;
-        break;
-      case "USER_NAME":
-      case "SUBMITTER_NAME":
-        if (type == "text") {
-          data["USER"] = HiveUtils.getUser()?.person?.id;
-        } else {
-          data["USER"] = defaultData.value?.id;
-          data["USER_NAME"] = defaultData.value?.name;
-        }
-        break;
-      case 'OLD_USER_NAME':
-        data["OLD_USER_ID"] = HiveUtils.getUser()?.person?.id;
-        break;
-      case "USE_DEPT_NAME":
-        data["USE_DEPT"] = '';
-        break;
-      case "OLD_ORG_NAME":
-        data['OLD_ORG_ID'] = '';
-        break;
-      case "KEEPER_NAME":
-        data['KEEPER_NAME'] = defaultData.value?.name;
-        data['KEEPER_ID'] = defaultData.value?.id;
-        break;
-      case 'KEEP_ORG_NAME':
-        data['KEEP_ORG_NAME'] = defaultData.value?.name;
-        data['KEEP_ORG_ID'] = defaultData.value?.id;
-        break;
     }
     return data;
   }
@@ -281,32 +257,6 @@ class Fields {
     var value = assetsJson[code!];
     if (value != null) {
       defaultData.value = value;
-    }
-    switch (code) {
-      case "ASSET_TYPE":
-        defaultData.value = '';
-        break;
-      case "SFXC":
-      case "DISPOSE_TYPE":
-      case "IS_SYS_UNIT":
-      case "evaluated":
-        if (assetsJson[code!] != null) {
-          dynamic key = assetsJson[code!];
-          dynamic value = select![assetsJson[code!]];
-          defaultData.value = {key: value};
-        }
-        break;
-      case "KEEPER_NAME":
-        defaultData.value = '';
-        break;
-      case "KEEP_ORG_NAME":
-        defaultData.value = '';
-        break;
-      case "USER_NAME":
-        if (type != "text") {
-          defaultData.value = '';
-        }
-        break;
     }
   }
 }

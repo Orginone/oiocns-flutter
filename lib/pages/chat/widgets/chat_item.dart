@@ -14,15 +14,6 @@ import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 import 'package:orginone/widget/widgets/text_tag.dart';
 
-enum ChatFunc {
-  // topping("置顶会话"),
-  // cancelTopping("取消置顶"),
-  remove("删除会话");
-
-  final String label;
-
-  const ChatFunc(this.label);
-}
 
 class MessageItemWidget extends GetView<SettingController> {
   // 用户信息
@@ -80,7 +71,7 @@ class MessageItemWidget extends GetView<SettingController> {
           ],
         ),
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w),
+          padding: EdgeInsets.symmetric(vertical: 7.h, horizontal: 15.w),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -171,6 +162,9 @@ class MessageItemWidget extends GetView<SettingController> {
               textAlign: TextAlign.right,
             ),
           ],
+        ),
+        SizedBox(
+          height: 3.h,
         ),
         Row(
           children: labels,

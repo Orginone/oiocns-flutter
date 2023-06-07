@@ -3,12 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/pages/other/assets_config.dart';
 import 'package:orginone/util/production_order_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 
-typedef MappingComponentsCallback = Widget Function(Fields data, IBelong belong,{bool isEdit, AssetsType? assetsType});
+typedef MappingComponentsCallback = Widget Function(Fields data, ITarget target);
 
 Map<String, MappingComponentsCallback> testMappingComponents = {
   "text": mappingTextWidget,
@@ -18,17 +19,11 @@ Map<String, MappingComponentsCallback> testMappingComponents = {
   "selectPerson":mappingSelectPersonBoxWidget,
   "selectDepartment":mappingSelectDepartmentBoxWidget,
   "router": mappingRouteWidget,
+  "upload": mappingUploadWidget,
 };
 
 
-MappingComponentsCallback mappingTextWidget = (Fields data, IBelong belong,
-    {bool isEdit = false, AssetsType? assetsType}) {
-  if (data.isBillCode && !isEdit) {
-    ProductionOrderUtils.productionSingleOrder(assetsType!.billHeader).then((
-        value) {
-      data.defaultData.value = value;
-    });
-  }
+MappingComponentsCallback mappingTextWidget = (Fields data, ITarget target) {
   if(data.hidden??false){
     return Container();
   }
@@ -45,8 +40,7 @@ MappingComponentsCallback mappingTextWidget = (Fields data, IBelong belong,
   });
 };
 
-MappingComponentsCallback mappingInputWidget = (Fields data, IBelong belong,
-    {bool isEdit = false, AssetsType? assetsType}) {
+MappingComponentsCallback mappingInputWidget = (Fields data, ITarget target) {
   List<TextInputFormatter>? inputFormatters;
   TextEditingController controller = TextEditingController(text: data.defaultData.value?.toString()??"");
   if (data.regx != null) {
@@ -75,13 +69,12 @@ MappingComponentsCallback mappingInputWidget = (Fields data, IBelong belong,
   );
 };
 
-MappingComponentsCallback mappingSelectBoxWidget = (Fields data, IBelong belong,
-    {bool isEdit = false, AssetsType? assetsType}) {
+MappingComponentsCallback mappingSelectBoxWidget = (Fields data,ITarget target) {
   if(data.hidden??false){
     return Container();
   }
   return Obx(() {
-    String content = data.defaultData.value?.values?.first.toString() ?? "";;
+    String content = data.defaultData.value?.values?.first.toString() ?? "";
     return Container(
       margin: EdgeInsets.only(
           left: (data.marginLeft ?? 0).h,
@@ -91,7 +84,7 @@ MappingComponentsCallback mappingSelectBoxWidget = (Fields data, IBelong belong,
       child: CommonWidget.commonChoiceTile(
           data.title ?? "",content,
           onTap: (){
-            data.function(belong);
+            data.function(target);
           },
           showLine: true,
           required: data.required ?? false),
@@ -99,8 +92,7 @@ MappingComponentsCallback mappingSelectBoxWidget = (Fields data, IBelong belong,
   });
 };
 
-MappingComponentsCallback mappingSelectDateBoxWidget = (Fields data, IBelong belong,
-    {bool isEdit = false, AssetsType? assetsType}) {
+MappingComponentsCallback mappingSelectDateBoxWidget = (Fields data, ITarget target) {
   if(data.hidden??false){
     return Container();
   }
@@ -116,7 +108,7 @@ MappingComponentsCallback mappingSelectDateBoxWidget = (Fields data, IBelong bel
       child: CommonWidget.commonChoiceTile(
           data.title ?? "",content,
           onTap: (){
-            data.function(belong);
+            data.function(target);
           },
           showLine: true,
           required: data.required ?? false),
@@ -125,8 +117,7 @@ MappingComponentsCallback mappingSelectDateBoxWidget = (Fields data, IBelong bel
 };
 
 
-MappingComponentsCallback mappingSelectPersonBoxWidget = (Fields data, IBelong belong,
-    {bool isEdit = false, AssetsType? assetsType}) {
+MappingComponentsCallback mappingSelectPersonBoxWidget = (Fields data, ITarget target) {
   if(data.hidden??false){
     return Container();
   }
@@ -142,7 +133,7 @@ MappingComponentsCallback mappingSelectPersonBoxWidget = (Fields data, IBelong b
       child: CommonWidget.commonChoiceTile(
           data.title ?? "",content,
           onTap: (){
-            data.function(belong);
+            data.function(target);
           },
           showLine: true,
           required: data.required ?? false),
@@ -150,8 +141,7 @@ MappingComponentsCallback mappingSelectPersonBoxWidget = (Fields data, IBelong b
   });
 };
 
-MappingComponentsCallback mappingSelectDepartmentBoxWidget = (Fields data, IBelong belong,
-    {bool isEdit = false, AssetsType? assetsType}) {
+MappingComponentsCallback mappingSelectDepartmentBoxWidget = (Fields data, ITarget target) {
   if(data.hidden??false){
     return Container();
   }
@@ -167,7 +157,7 @@ MappingComponentsCallback mappingSelectDepartmentBoxWidget = (Fields data, IBelo
       child: CommonWidget.commonChoiceTile(
           data.title ?? "",content,
           onTap:(){
-            data.function(belong);
+            data.function(target);
           },
           showLine: true,
           required: data.required ?? false),
@@ -175,14 +165,28 @@ MappingComponentsCallback mappingSelectDepartmentBoxWidget = (Fields data, IBelo
   });
 };
 
-MappingComponentsCallback mappingRouteWidget = (Fields data, IBelong belong,
-    {bool isEdit = false, AssetsType? assetsType}) {
+MappingComponentsCallback mappingRouteWidget = (Fields data, ITarget target) {
   if(data.hidden??false){
     return Container();
   }
   return Obx(() {
     return CommonWidget.commonChoiceTile(
         data.title??"", data.defaultData.value?.name ?? "",
-        required: true, onTap: data.function(belong), showLine: true);
+        required: true, onTap: (){
+      data.function(target);
+    }, showLine: true);
+  });
+};
+
+MappingComponentsCallback mappingUploadWidget = (Fields data, ITarget target) {
+  if(data.hidden??false){
+    return Container();
+  }
+  return Obx(() {
+    return CommonWidget.commonChoiceTile(
+        data.title??"", data.defaultData.value?.name ?? "",
+        required: true, onTap: (){
+      data.function(target);
+    }, showLine: true);
   });
 };

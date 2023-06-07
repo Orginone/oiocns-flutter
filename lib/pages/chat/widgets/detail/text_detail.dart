@@ -23,20 +23,16 @@ class TextDetail extends BaseDetail {
 
   @override
   Widget body(BuildContext context) {
-    Widget? child = _getUrlSpan(message.body?.body ?? "") ??
-        _getImageSpan(message.body?.body ?? "");
+    Widget? child = _getUrlSpan(message.body?.text ?? "") ??
+        _getImageSpan(message.body?.text ?? "");
     return child ??
         Text(
-          message.body?.body ?? "",
+          message.body?.text ?? "",
           style: XFonts.size24Black0,
         );
   }
 
   Widget? _getUrlSpan(String text) {
-    Map<String, String> headers = {
-      "Authorization": KernelApi.getInstance().anystore.accessToken,
-    };
-
     List<InlineSpan> span = [];
 
     List<RegExpMatch> urlMatch = StringUtil.urlReg.allMatches(text).toList();
@@ -48,11 +44,7 @@ class TextDetail extends BaseDetail {
     InlineSpan getSpan(String text) {
       dynamic imageUrl = StringUtil.getImageUrl(text);
       if (imageUrl != null) {
-        return WidgetSpan(
-            child: ImageWidget(
-          imageUrl,
-          httpHeaders: headers,
-        ));
+        return WidgetSpan(child: imageWidget(imageUrl));
       }
 
       return TextSpan(text: text);
@@ -104,10 +96,6 @@ class TextDetail extends BaseDetail {
   }
 
   Widget? _getImageSpan(String text) {
-    Map<String, String> headers = {
-      "Authorization": KernelApi.getInstance().anystore.accessToken,
-    };
-
     List<InlineSpan> span = [];
 
     List<Match> imgMatch = StringUtil.imgReg.allMatches(text).toList();
@@ -132,10 +120,7 @@ class TextDetail extends BaseDetail {
       }
       span.add(
         WidgetSpan(
-          child: ImageWidget(
-            imageUrl,
-            httpHeaders: headers,
-          ),
+          child: imageWidget(imageUrl),
         ),
       );
 
@@ -155,8 +140,35 @@ class TextDetail extends BaseDetail {
     );
   }
 
-  @override
-  void onTap(BuildContext context) {
-    // TODO: implement onTap
+
+  Widget imageWidget(dynamic url) {
+    Map<String, String> headers = {
+      "Authorization": KernelApi.getInstance().anystore.accessToken,
+    };
+
+    return GestureDetector(
+      onTap: (){
+        Navigator.of(Get.context!).push(
+          DialogRoute(
+            context: Get.context!,
+            builder: (BuildContext context) {
+              return GestureDetector(
+                onTap: (){
+                  Get.back();
+                },
+                child: ImageWidget(
+                  url,
+                  httpHeaders: headers,
+                ),
+              );
+            },
+          ),
+        );
+      },
+      child: ImageWidget(
+        url,
+        httpHeaders: headers,
+      ),
+    );
   }
 }

@@ -84,6 +84,8 @@ class XAttribute {
 
   String? value;
 
+  FileItemShare? share;
+
   XAttribute({
     this.id,
     this.name,
@@ -218,6 +220,7 @@ class XAttribute {
       //   type = "selectDepartment";
       //   break;
       case '附件型':
+        type = "upload";
         break;
       default:
         type = 'input';

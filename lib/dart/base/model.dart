@@ -5229,7 +5229,11 @@ class MsgSaveModel {
           body = MsgBodyModel.fromJson(jsonDecode(data['body']));
         }
       } else {
-        body = MsgBodyModel.fromJson(jsonDecode(json));
+        if(msgType == MessageType.text.label){
+          body = MsgBodyModel(text: json);
+        }else{
+          body = MsgBodyModel.fromJson(jsonDecode(json));
+        }
       }
     } catch (error) {}
   }
@@ -5270,7 +5274,7 @@ class MsgSaveModel {
 }
 
 class MsgBodyModel {
-  String? body;
+  String? text;
   List<String>? mentions;
   MsgSaveModel? cite;
   String? shareLink;
@@ -5282,7 +5286,7 @@ class MsgBodyModel {
   int? milliseconds;
   List<int>? bytes;
   MsgBodyModel(
-      {this.body,
+      {this.text,
       this.mentions,
       this.cite,
       this.extension,
@@ -5293,9 +5297,9 @@ class MsgBodyModel {
       this.progress = 0,this.milliseconds,this.bytes});
 
   MsgBodyModel.fromJson(Map<String, dynamic> json) {
-    body = json['body'];
-    if (body?.contains('\$IMG') ?? false) {
-      body = StringUtil.replaceAllImageLabel(body!);
+    text = json['body'];
+    if (text?.contains('\$IMG') ?? false) {
+      text = StringUtil.replaceAllImageLabel(text!);
     }
     if (json['mentions'] != null) {
       mentions = <String>[];
@@ -5324,7 +5328,7 @@ class MsgBodyModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
 
-    String text = this.body ?? "";
+    String text = this.text ?? "";
     if (text.contains('\$IMG')) {
       text = StringUtil.resetImageLabel(text);
     }
@@ -5358,7 +5362,12 @@ class WorkSubmitModel {
     Map<String, dynamic> changeDataMap = {};
     for (var element in changeData) {
       if (element.eidtInfo != null) {
-        changeDataMap[element.id!] = element.eidtInfo;
+        element.eidtInfo!.forEach((key, value) {
+          if(value is FileItemModel){
+            value = value.shareInfo();
+          }
+        });
+        changeDataMap[element.id!] = element.eidtInfo!;
       }
     }
 

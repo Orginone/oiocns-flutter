@@ -4,11 +4,12 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/market/model.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/model/thing_model.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/mapping_components.dart';
 
-Future<void> showCreateAuthDialog(BuildContext context, XForm form,IBelong belong,
+Future<void> showCreateAuthDialog(BuildContext context, XForm form,ITarget target,
     {ThingModel? thing,
     bool isAllChange = false,
     Function(ThingModel model)? onSuceess}) async {
@@ -29,13 +30,12 @@ Future<void> showCreateAuthDialog(BuildContext context, XForm form,IBelong belon
                       return Container();
                     }
                     if(thing!=null){
-                      int index = form.attributes!.indexOf(e);
-                      dynamic value = thing.data![index].values.first;
+                      dynamic value = thing.eidtInfo![e.id];
                       e.fields!.defaultData.value = value;
                     }
                     Widget child =
                     testMappingComponents[e.fields!.type ?? ""]!(
-                        e.fields!,belong);
+                        e.fields!,target);
                     return child;
                   }).toList() ??
                       [],

@@ -79,9 +79,13 @@ class CreateWorkController extends BaseController<CreateWorkState>
     Map<String, dynamic> headerData = {};
     List<WorkSubmitModel> formData = [];
     if(state.workForm.value!=null){
-      for (var element in state.workForm.value?.attributes ?? []) {
+      for (var element in state.workForm.value?.attributes??[]) {
         if (element.fields?.defaultData.value != null) {
-          headerData[element.id!] = element.fields?.defaultData.value;
+           if(element.fields!.type == 'upload'){
+             headerData[element.id!] = element.fields?.defaultData.value.shareInfo();
+           }else{
+             headerData[element.id!] = element.fields?.defaultData.value;
+           }
         }
       }
       WorkSubmitModel workData = WorkSubmitModel(isHeader: true, resourceData: state.workForm.value!);
@@ -116,7 +120,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
     if (function == SubTableEnum.choiceTable) {
       jumpEntity(form);
     } else {
-      showCreateAuthDialog(context, form,state.belong, onSuceess: (model) {
+      showCreateAuthDialog(context, form,state.target, onSuceess: (model) {
         if (function == SubTableEnum.addTable) {
           form.things.add(model);
         } else {
@@ -138,7 +142,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
       state.thingForm.refresh();
     }
     if (function == 'edit') {
-      showCreateAuthDialog(context, form,state.belong, onSuceess: (model) {
+      showCreateAuthDialog(context, form,state.target, onSuceess: (model) {
         thing = model;
         state.thingForm.refresh();
       }, thing: thing);
