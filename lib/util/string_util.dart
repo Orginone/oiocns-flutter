@@ -38,7 +38,7 @@ class StringUtil {
       if(userIds.isNotEmpty && userIds.contains(currentUserId)){
         showTxt = "有人@你";
       }else{
-        showTxt = "$showTxt${msg.body?.body??""}";
+        showTxt = "$showTxt${msg.body?.text??""}";
         showTxt = StringUtil.imgLabelMsgConversion(showTxt);
       }
     } else if (messageType == MessageType.recall.label) {

@@ -71,7 +71,7 @@ class MessageItemWidget extends GetView<SettingController> {
           ],
         ),
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w),
+          padding: EdgeInsets.symmetric(vertical: 7.h, horizontal: 15.w),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -162,6 +162,9 @@ class MessageItemWidget extends GetView<SettingController> {
               textAlign: TextAlign.right,
             ),
           ],
+        ),
+        SizedBox(
+          height: 3.h,
         ),
         Row(
           children: labels,

@@ -23,11 +23,11 @@ class TextDetail extends BaseDetail {
 
   @override
   Widget body(BuildContext context) {
-    Widget? child = _getUrlSpan(message.body?.body ?? "") ??
-        _getImageSpan(message.body?.body ?? "");
+    Widget? child = _getUrlSpan(message.body?.text ?? "") ??
+        _getImageSpan(message.body?.text ?? "");
     return child ??
         Text(
-          message.body?.body ?? "",
+          message.body?.text ?? "",
           style: XFonts.size24Black0,
         );
   }
