@@ -66,7 +66,7 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
 
                     for (var attribute in element.attributes!) {
                       if(attribute.valueType == "附件型"){
-                        FileItemShare share = FileItemShare.fromJson(thing.eidtInfo?[attribute.id]);
+                        FileItemShare share = FileItemShare.fromJson(thing.eidtInfo?[attribute.id]??{});
                         data.add(share.name??"");
                       }else{
                         data.add(thing.eidtInfo?[attribute.id]??"");
