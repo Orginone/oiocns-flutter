@@ -67,6 +67,8 @@ abstract class BaseDetail extends StatelessWidget {
 
   Widget body(BuildContext context);
 
-  void onTap(BuildContext context);
+  void onTap(BuildContext context){
+
+  }
 
 }
