@@ -23,7 +23,7 @@ class ThingInfoController extends BaseController<ThingInfoState> {
     super.onReady();
     LoadingDialog.showLoading(context);
     List<Map<ISpeciesItem,Map<String,dynamic>>> currentSpecies = [];
-    if(thing.data!=null){
+    if(thing.eidtInfo!=null){
       // CommonTreeManagement().species!.getAllList().forEach((specie) {
       //   for (var data in thing.data!) {
       //     String id = data.keys.first.substring(1);

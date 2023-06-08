@@ -128,18 +128,26 @@ class CreateWorkPage
                           [];
                       List<List<String>> content = element.things.map((e) {
                         List<String> data = [];
-                        e.eidtInfo!.forEach((key, value) {
-                          String v = '';
-                          if(value!=null){
-                            if(value is Map){
-                              v = value.values.first.toString();
-                            } else if(value is XTarget || value is FileItemModel){
-                              v = value.name;
-                            } else{
-                              v = value.toString();
+                        element.attributes?.forEach((element) {
+                          String str = '';
+                          dynamic value;
+                          if (e.eidtInfo.isNotEmpty) {
+                            value = e.eidtInfo[element.id];
+                          } else if (e.propertys.isNotEmpty) {
+                            value = e.propertys[element.code];
+                            e.eidtInfo[element.id!] = value;
+                          }
+                          if (value != null) {
+                            if (value is Map) {
+                              str = value.values.first.toString();
+                            } else if (value is XTarget ||
+                                value is FileItemModel) {
+                              str = value.name;
+                            } else {
+                              str = value.toString();
                             }
                           }
-                          data.add(v);
+                          data.add(str);
                         });
                         return [
                           e.id ?? "",

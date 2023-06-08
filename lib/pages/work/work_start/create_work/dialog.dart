@@ -56,7 +56,7 @@ Future<void> showCreateAuthDialog(BuildContext context, XForm form,ITarget targe
                       newModel = ThingModel();
                     }
                     for (var e in form.attributes!) {
-                      newModel.eidtInfo![e.id!] = e.fields?.defaultData.value;
+                      newModel.eidtInfo[e.id!] = e.fields?.defaultData.value;
                     }
 
                     form.reset();

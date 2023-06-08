@@ -299,7 +299,7 @@ class Company extends Belong implements ICompany {
     if (isAdd) {
       for (var i in members) {
         var item = PersonMsgChat(
-          id,
+          belong,
           i.id,
           ShareIcon(
               name: i.name,

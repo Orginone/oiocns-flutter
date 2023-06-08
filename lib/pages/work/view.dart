@@ -5,9 +5,10 @@ import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/widget/unified.dart';
+
+import 'item.dart';
 import 'logic.dart';
 import 'state.dart';
-import 'item.dart';
 
 class WorkPage extends BaseGetListPageView<WorkController, WorkState> {
   @override
@@ -16,21 +17,57 @@ class WorkPage extends BaseGetListPageView<WorkController, WorkState> {
       color: GYColors.backgroundColor,
       height: double.infinity,
       child: SingleChildScrollView(
-        child: Obx(() {
-          return ListView.builder(
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                return recentlyOpened();
-              }
-              return WorkItem(
-                todo: state.dataList[index - 1],
+        child: Column(
+          children: [
+            recentlyOpened(),
+            content(),
+            Obx(() {
+              return ListView.builder(
+                itemBuilder: (context, index) {
+                  return WorkItem(
+                    todo: state.dataList[index],
+                  );
+                },
+                itemCount: state.dataList.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
               );
-            },
-            itemCount: state.dataList.length + 1,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-          );
-        }),
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget content() {
+    return Container(
+      margin: EdgeInsets.only(top: 10.h),
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 15.w),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "最近",
+            style: XFonts.size18Black0,
+          ),
+          DropdownButton(
+            items: const [
+              DropdownMenuItem(
+                value: 'time',
+                child: Text('筛选'),
+              )
+            ],
+            style: XFonts.size18Black0,
+            onChanged: (String? value) {},
+            value: "time",
+            underline: const SizedBox(),
+            icon: Icon(
+              Icons.filter_alt_outlined,
+              size: 22.w,
+            ),
+          ),
+        ],
       ),
     );
   }

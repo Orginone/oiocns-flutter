@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/other/choice_thing/network.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
@@ -13,12 +12,14 @@ class ChoiceThingController extends BaseController<ChoiceThingState> {
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
-    List<String> selected = Get.arguments?['ids']??[];
+    List<String> ids =
+        state.form.things.map((element) => element.id ?? "").toList() ?? [];
 
     LoadingDialog.showLoading(context);
-    state.things.value = await ChoiceThingNetWork.getThing();
+    state.things.value =
+        await ChoiceThingNetWork.getThing(state.form.id, state.belongId);
 
-    for (var element in selected) {
+    for (var element in ids) {
       for (var value1 in state.things) {
         if (value1.id == element) {
           value1.isSelected = true;
@@ -34,11 +35,16 @@ class ChoiceThingController extends BaseController<ChoiceThingState> {
   }
 
   void submit() {
-    var result = [];
     var selected = state.things.where((element) => element.isSelected);
-    if(selected.isNotEmpty){
-      result = selected.toList();
+    if (selected.isNotEmpty) {
+      for (var element in selected) {
+        if (state.form.things
+            .where((element1) => element.id == element1.id)
+            .isEmpty) {
+          state.form.things.add(element);
+        }
+      }
     }
-    Get.back(result: result);
+    Get.back();
   }
 }

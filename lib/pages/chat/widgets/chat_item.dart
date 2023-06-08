@@ -71,17 +71,24 @@ class MessageItemWidget extends GetView<SettingController> {
           ],
         ),
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 7.h, horizontal: 15.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _avatarContainer,
-              SizedBox(
-                width: 10.w,
-              ),
-              Expanded(child: Obx(() => _content)),
-            ],
+          color: Colors.white,
+          padding: EdgeInsets.symmetric(horizontal: 15.w),
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 7.h),
+            decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.grey.shade300,width: 0.4))
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _avatarContainer,
+                SizedBox(
+                  width: 10.w,
+                ),
+                Expanded(child: Obx(() => _content)),
+              ],
+            ),
           ),
         ),
       ),

@@ -305,7 +305,9 @@ class DetailItemWidget extends GetView<SettingController> {
       }
     }
 
-    content.add(read);
+    if(!chat.isBelongPerson){
+      content.add(read);
+    }
 
     return Container(
       margin: isSelf ? EdgeInsets.only(right: 2.w) : EdgeInsets.only(left: 2.w),
@@ -575,7 +577,11 @@ class PlayController extends GetxController with GetTickerProviderStateMixin {
 }
 
 String getFileSizeString({required int bytes, int decimals = 0}) {
-  const suffixes = ["B", "KB", "MB", "GB", "TB"];
-  var i = (log(bytes) / log(1024)).floor();
-  return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + suffixes[i];
+  try{
+    const suffixes = ["B", "KB", "MB", "GB", "TB"];
+    var i = (log(bytes) / log(1024)).floor();
+    return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + suffixes[i];
+  }catch(e){
+    return '0B';
+  }
 }

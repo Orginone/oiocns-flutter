@@ -125,7 +125,7 @@ abstract class IMsgChat extends IEntity {
   String get userId;
 
   /// 会话归属Id
-  abstract String belongId;
+  abstract XTarget belong;
 
   /// 自归属用户
   abstract IBelong space;
@@ -194,7 +194,7 @@ abstract class IMsgChat extends IEntity {
 
 abstract class MsgChat extends Entity implements IMsgChat {
   MsgChat(
-    this.belongId,
+    this.belong,
     this.chatId,
     this.share,
     this.labels,
@@ -202,7 +202,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
     IBelong? space, {
     List<String>? findMe,
   })  : chatdata = MsgChatData(
-          fullId: "$belongId-$chatId",
+          fullId: "${belong.id}-$chatId",
           isToping: false,
           isFindme: false,
           noReadCount: 0,
@@ -231,7 +231,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
   String chatId;
 
   @override
-  String belongId;
+  XTarget belong;
 
   @override
   late IBelong space;
@@ -312,7 +312,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
       {
         "match": {
           "sessionId": chatId,
-          "belongId": belongId,
+          "belongId": belong.id,
         },
         "sort": {
           "createTime": -1,
@@ -341,7 +341,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
     var res = await kernel.createImMsg(MsgSendModel(
       msgType: type.label,
       toId: chatId,
-      belongId: belongId,
+      belongId: belong.id,
       msgBody: EncryptionUtil.deflate("[obj]${jsonEncode(data)}"),
     ));
     return res.success;
@@ -357,7 +357,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
   Future<void> tagMessage(List<String> ids, List<String> tags) async {
     if (ids.isNotEmpty && tags.isNotEmpty) {
       await kernel.tagImMsg(MsgTagModel(
-        belongId: belongId,
+        belongId: belong.id,
         id: chatId,
         ids: ids,
         tags: tags,
@@ -393,7 +393,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
       StoreCollName.chatMessage,
       {
         "sessionId": chatId,
-        "belongId": belongId,
+        "belongId": belong.id,
       },
       userId,
     );
@@ -414,7 +414,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
       return;
     }
     var needTagMsgs = ms.where((element) {
-      if (belongId != element.belongId || element.fromId == userId) {
+      if (belong.id != element.belongId || element.fromId == userId) {
         return false;
       }
       // 会话信息是否包含标签
@@ -516,12 +516,12 @@ abstract class MsgChat extends Entity implements IMsgChat {
 
   @override
   // TODO: implement isBelongPerson
-  bool get isBelongPerson => space.metadata.typeName == TargetType.person.label;
+  bool get isBelongPerson => belong.typeName == TargetType.person.label;
 }
 
 class PersonMsgChat extends MsgChat {
   PersonMsgChat(
-    super.belongId,
+    super.belong,
     super.chatId,
     super.share,
     super.labels,
