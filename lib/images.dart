@@ -54,4 +54,6 @@ class Images {
   static const String iconWorkCompleted = "images/icon_work_completed.png";
 
   static const String iconWorkInitiated = "images/icon_work_initiated.png";
+
+  static const String iconWorkitem = "images/icon_workitem.png";
 }

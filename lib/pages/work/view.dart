@@ -42,11 +42,32 @@ class WorkPage extends BaseGetListPageView<WorkController, WorkState> {
   Widget content() {
     return Container(
       margin: EdgeInsets.only(top: 10.h),
+      color: Colors.white,
       padding: EdgeInsets.symmetric(horizontal: 15.w),
-      alignment: Alignment.centerLeft,
-      child: Text(
-        "最近",
-        style: XFonts.size18Black0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "最近",
+            style: XFonts.size18Black0,
+          ),
+          DropdownButton(
+            items: const [
+              DropdownMenuItem(
+                value: 'time',
+                child: Text('筛选'),
+              )
+            ],
+            style: XFonts.size18Black0,
+            onChanged: (String? value) {},
+            value: "time",
+            underline: const SizedBox(),
+            icon: Icon(
+              Icons.filter_alt_outlined,
+              size: 22.w,
+            ),
+          ),
+        ],
       ),
     );
   }
