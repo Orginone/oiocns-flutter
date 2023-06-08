@@ -4,6 +4,8 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/thing/base/form.dart';
+import 'package:orginone/dart/core/thing/store/thingclass.dart';
 import 'package:orginone/pages/work/work_start/logic.dart';
 import 'package:orginone/pages/work/work_start/network.dart';
 import 'package:orginone/routers.dart';
@@ -102,14 +104,10 @@ class CreateWorkController extends BaseController<CreateWorkState>
     WorkStartNetWork.createInstance(state.define, headerData,formData);
   }
 
-  void jumpEntity(XForm form) {
-    List<String> ids =
-        form.things.map((element) => element.id ?? "").toList() ?? [];
-    Get.toNamed(Routers.choiceThing, arguments: {"ids": ids})?.then((value) {
-      if (value != null) {
-        form.things = value;
-        state.thingForm.refresh();
-      }
+  void jumpEntity(XForm form) async{
+
+    Get.toNamed(Routers.choiceThing, arguments: {"form": form,'belongId':state.target.belongId})?.then((value){
+      state.thingForm.refresh();
     });
   }
 
@@ -125,7 +123,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
           form.things.add(model);
         } else {
           for (var value in form.things) {
-            value.data = model.data;
+            value.eidtInfo = model.eidtInfo;
           }
         }
         state.thingForm.refresh();

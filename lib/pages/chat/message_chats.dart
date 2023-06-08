@@ -28,6 +28,9 @@ class MessageChats extends GetView<SettingController> {
             SliverToBoxAdapter(
               child: recentlyOpened(),
             ),
+            SliverToBoxAdapter(
+              child: content(),
+            ),
             SliverList(
               delegate: SliverChildBuilderDelegate((context, index) {
                 var chat = topChats[index];
@@ -44,6 +47,18 @@ class MessageChats extends GetView<SettingController> {
         ),
       );
     });
+  }
+
+  Widget content() {
+    return Container(
+      margin: EdgeInsets.only(top: 10.h),
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 15.w),
+      child:  Text(
+        "最近",
+        style: XFonts.size18Black0,
+      ),
+    );
   }
 
   Widget recentlyOpened() {

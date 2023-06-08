@@ -11,11 +11,11 @@ class ThingModel {
   String? modifiedTime;
   String? status;
   bool isSelected = false;
-  List<Map<String,dynamic>>? data;
 
-  Map<String, dynamic>? eidtInfo = {};
+  Map<String, dynamic> eidtInfo = {};
+  Map<String, dynamic> propertys = {};
   ThingModel(
-      {this.id, this.creater, this.createTime, this.modifiedTime, this.status,this.eidtInfo =const {},this.data = const []});
+      {this.id, this.creater, this.createTime, this.modifiedTime, this.status,this.eidtInfo =const {}});
 
   ThingModel.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
@@ -28,13 +28,11 @@ class ThingModel {
     createTime = json['CreateTime'];
     modifiedTime = json['ModifiedTime'];
     status = json['Status'];
+    propertys = json['Propertys']??{};
     eidtInfo = json['EDIT_INFO']??{};
-    data = [];
     json.keys.forEach((element) {
-      if(element.length>15 && element.contains("S")){
-        data!.add({
-          element:json[element],
-        });
+      if(element.length>15){
+        eidtInfo[element] = json[element];
       }
     });
 
@@ -42,12 +40,6 @@ class ThingModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    final Map<String, dynamic> info = new Map<String, dynamic>();
-    for (var element in this.data!) {
-       if(element.values.first!=null){
-         info[element.keys.first.substring(1)] = element.values.first;
-       }
-    }
     data['Id'] = this.id;
     data['Creater'] = this.creater;
     data['CreateTime'] = this.createTime;

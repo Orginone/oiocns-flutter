@@ -9,18 +9,20 @@ import '../../../dart/base/model.dart' hide ThingModel;
 
 class ChoiceThingNetWork{
 
-  static Future<List<ThingModel>> getThing() async{
+  static Future<List<ThingModel>> getThing(String id,String belongId) async{
     List<ThingModel> things = [];
-    var settingCtrl = Get.find<SettingController>();
     ResultType result = await KernelApi.getInstance().anystore.loadThing({
       "searchExpr": "undefined",
       "searchOperation": 'contains',
+      'requireTotalCount':true,
       "searchValue": null,
-      "userData": [],
+      "userData": [
+        'S$id'
+      ],
       "options": {
         "match": {},
       },
-    }, settingCtrl.user.metadata.id);
+    },belongId);
 
     if(result.success){
       result.data['data'].forEach((json){

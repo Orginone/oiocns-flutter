@@ -5360,18 +5360,28 @@ class WorkSubmitModel {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> changeDataMap = {};
-    for (var element in changeData) {
-      if (element.eidtInfo != null) {
-        element.eidtInfo!.forEach((key, value) {
-          if(value is FileItemModel){
-            value = value.shareInfo();
-          }
-        });
-        changeDataMap[element.id!] = element.eidtInfo!;
-      }
-    }
+
+    List<Map<String,dynamic>> propertys =[];
 
     dynamic resourceDataMap;
+
+    for (var element in changeData) {
+      element.eidtInfo = element.eidtInfo.map((key, value) {
+        if(value is FileItemModel){
+          value = value.shareInfo();
+        } else if(value is Map){
+          value = value.keys.first;
+        }
+        return MapEntry(key, value);
+      });
+      changeDataMap[element.id!] = element.eidtInfo;
+    }
+
+    for (var element in resourceData.attributes!) {
+      if(element.linkPropertys!=null && element.linkPropertys!.isNotEmpty){
+        propertys.add({"attrId":element.id,...element.linkPropertys![0].toJson()});
+      }
+    }
 
     if (isHeader) {
       resourceDataMap = jsonEncode(resourceData.toJson());
@@ -5379,8 +5389,8 @@ class WorkSubmitModel {
       resourceDataMap = jsonEncode({
         'data': changeData.map((e) => e.toJson()).toList(),
         'form': resourceData.toJson(),
+        'propertys':propertys,
       });
-      print('');
     }
 
     Map<String, dynamic> data = {
