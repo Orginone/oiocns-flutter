@@ -39,7 +39,7 @@ class _MessageFileState extends State<MessageFile> {
 
     FileDownloader().database.allRecords().then((records){
       try{
-        task = records.firstWhere((element) => element.task.filename == name).task as DownloadTask;
+        task = records.firstWhere((element) => element.task.filename == name && element.task.url == url).task as DownloadTask;
         fileExists = task != null;
         setState(() {});
       }catch(e){
