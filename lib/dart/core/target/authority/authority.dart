@@ -63,7 +63,7 @@ class Authority extends MsgChat implements IAuthority {
 
   Authority(this.metadata, this.space, [this.parent])
       : super(
-          space.id,
+          space.belong,
           metadata.id ?? "",
           ShareIcon(
             name: metadata.name ?? "",

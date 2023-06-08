@@ -32,7 +32,7 @@ class UserProvider {
     kernel.on('RecvTags', (data) async {
        try{
          TagsMsgType tagsMsgType = TagsMsgType.fromJson(data);
-         var currentChat = chat?.allChats.firstWhere((element) => element.chatId==tagsMsgType.id && element.belongId == tagsMsgType.belongId);
+         var currentChat = chat?.allChats.firstWhere((element) => element.chatId==tagsMsgType.id && element.belong.id == tagsMsgType.belongId);
          currentChat?.overwriteMessagesTags(tagsMsgType);
        }catch(e){}
     });

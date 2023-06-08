@@ -111,7 +111,7 @@ class ChatProvider implements IChatProvider {
       if ((c.share.typeName == TargetType.person.label ||
               c.share.typeName == '权限') &&
           isMatch) {
-        isMatch = data.belongId == c.belongId;
+        isMatch = data.belongId == c.belong.id;
       }
       if (isMatch) {
         c.receiveMessage(data, currentChat?.chatId == c.chatId);
@@ -125,7 +125,7 @@ class ChatProvider implements IChatProvider {
       if ((c.share.typeName == TargetType.person.label ||
               c.share.typeName == '权限') &&
           isMatch) {
-        isMatch = tagModel.belongId == c.belongId;
+        isMatch = tagModel.belongId == c.belong.id;
       }
       if (isMatch) {
         c.receiveTags(tagModel.ids!, tagModel.tags!);

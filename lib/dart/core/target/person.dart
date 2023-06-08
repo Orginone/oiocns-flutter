@@ -268,7 +268,7 @@ class Person extends Belong implements IPerson {
       for (var i in members) {
         if(memberChats.where((element) => element.chatId == i.id).isEmpty){
           var item = PersonMsgChat(
-            id,
+            belong,
             i.id,
             ShareIcon(
               name: i.name,

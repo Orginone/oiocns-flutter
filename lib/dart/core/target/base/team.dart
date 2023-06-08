@@ -51,7 +51,7 @@ abstract class ITeam extends IMsgChat {
 abstract class Team extends MsgChat implements ITeam {
   Team(this.metadata, List<String> labels, {IBelong? space})
       : super(
-          metadata.belongId,
+          metadata.belong!,
           metadata.id,
           ShareIcon(
             name: metadata.name,

@@ -106,7 +106,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
 
   void jumpEntity(XForm form) async{
 
-    Get.toNamed(Routers.choiceThing, arguments: {"form": form,'belongId':state.target.belongId})?.then((value){
+    Get.toNamed(Routers.choiceThing, arguments: {"form": form,'belongId':state.target.belong.id})?.then((value){
       state.thingForm.refresh();
     });
   }

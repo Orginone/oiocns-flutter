@@ -305,7 +305,9 @@ class DetailItemWidget extends GetView<SettingController> {
       }
     }
 
-    content.add(read);
+    if(!chat.isBelongPerson){
+      content.add(read);
+    }
 
     return Container(
       margin: isSelf ? EdgeInsets.only(right: 2.w) : EdgeInsets.only(left: 2.w),

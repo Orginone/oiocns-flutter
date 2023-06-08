@@ -61,7 +61,7 @@ abstract class IFileSystemItem {
 class FileSystemItem implements IFileSystemItem {
   FileSystemItem(this.filesys, this.metadata, [this.parent]) {
     children = [];
-    belongId = filesys.belong.belongId;
+    belongId = filesys.belong.belong.id;
   }
 
   @override

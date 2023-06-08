@@ -299,7 +299,7 @@ class CardChildWidget extends GetView<SettingController> {
                     var item = value[index];
                     late ITarget target;
                     for (var value1 in controller.user.targets) {
-                      if(value1.belongId == item.belongId){
+                      if(value1.belong.id == item.belongId){
                         target = value1;
                         continue;
                       }
