@@ -4810,12 +4810,13 @@ class FileItemShare {
   });
 
   //通过JSON构造
-  FileItemShare.fromJson(Map<String, dynamic> json)
-      : size = json["size"],
-        name = json["name"],
-        shareLink = json["shareLink"],
-        extension = json["extension"],
-        thumbnail = json["thumbnail"];
+  FileItemShare.fromJson(Map<String, dynamic> json){
+    size = json["size"];
+    name = json["name"];
+    shareLink = json["shareLink"];
+    extension = json["extension"];
+    thumbnail = json["thumbnail"];
+  }
 
   //通过动态数组解析成List
   static List<FileItemShare> fromList(List<dynamic>? list) {

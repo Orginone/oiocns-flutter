@@ -190,31 +190,28 @@ class WorkItem extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            color:  Colors.white,
+            color: Colors.white,
             borderRadius: const BorderRadius.all(Radius.circular(10)),
-            border: Border.all(color:  XColors.tinyBlue),
+            border: Border.all(color: XColors.tinyBlue),
           ),
-          padding:  const EdgeInsets.symmetric(vertical: 2,horizontal: 5),
+          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
           child: TargetText(
-              userId: todo.createUser ,
-              style: TextStyle(fontSize: 12.sp,color: XColors.designBlue)),
+              userId: todo.createUser,
+              style: TextStyle(fontSize: 12.sp, color: XColors.designBlue)),
         ),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 10.w),
-          height: 20.h,
-          width: 0.5,
-          color: Colors.grey,
+        SizedBox(
+          width: 10.w,
         ),
         Container(
           decoration: BoxDecoration(
-            color:  Colors.white,
+            color: Colors.white,
             borderRadius: const BorderRadius.all(Radius.circular(10)),
-            border: Border.all(color:  XColors.tinyBlue),
+            border: Border.all(color: XColors.tinyBlue),
           ),
-          padding:  const EdgeInsets.symmetric(vertical: 2,horizontal: 5),
+          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
           child: TargetText(
-              userId: todo.shareId ,
-              style: TextStyle(fontSize: 12.sp,color: XColors.designBlue)),
+              userId: todo.shareId,
+              style: TextStyle(fontSize: 12.sp, color: XColors.designBlue)),
         ),
       ],
     );

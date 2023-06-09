@@ -33,6 +33,7 @@ class KernelApi {
         _storeHub.invoke("TokenAuth", args: args).then((value) {
           log.info(value);
         }).catchError((err) {
+          print(err);
           log.info(err);
         });
       }

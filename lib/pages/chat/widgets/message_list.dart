@@ -47,6 +47,7 @@ class MessageList extends StatelessWidget {
             shrinkWrap: true,
             key: controller.state.scrollKey,
             reverse: true,
+            physics: const ClampingScrollPhysics(),
             itemScrollController: controller.state.itemScrollController,
             addAutomaticKeepAlives: true,
             addRepaintBoundaries: true,

@@ -14,7 +14,7 @@ import 'flowclass.dart';
 abstract class IApplication extends ISpeciesItem {
   late List<IWorkDefine> defines;
 
-  Future<List<IWorkDefine>> loadWorkDefines();
+  Future<List<IWorkDefine>> loadWorkDefines({bool reload = false});
 
 }
 
@@ -35,11 +35,11 @@ class Application extends SpeciesItem implements IApplication {
   late List<IWorkDefine> defines;
 
   @override
-  Future<List<IWorkDefine>> loadWorkDefines() async {
+  Future<List<IWorkDefine>> loadWorkDefines({bool reload = false}) async {
     defines.clear();
     for (var item in children) {
       if (item.metadata.typeName == SpeciesType.flow.label) {
-        defines.addAll(await (item as IFlowClass).loadAllWorkDefines());
+        defines.addAll(await (item as IFlowClass).loadAllWorkDefines(reload: reload));
       }
     }
     return defines;

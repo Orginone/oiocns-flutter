@@ -122,12 +122,16 @@ class UserProvider {
     _user.refresh();
   }
 
-  Future<void> loadApps() async {
+  Future<void> loadApps([bool reload = false]) async {
+    myApps.clear();
+    if(reload){
+      await user!.deepLoad(reload: reload);
+    }
     for (var target in user!.targets) {
       for (var specie in target.species) {
         if (specie.metadata.typeName == SpeciesType.application.label) {
           var app = specie as IApplication;
-          if ((await app.loadWorkDefines()).isNotEmpty) {
+          if ((await app.loadWorkDefines(reload: true)).isNotEmpty) {
             myApps.add(app);
           }
         }
@@ -143,6 +147,7 @@ class UserProvider {
             entry.key)
         .map((entry) => entry.value)
         .toList();
+    myApps.refresh();
   }
 
   void _recvTarget(data) {

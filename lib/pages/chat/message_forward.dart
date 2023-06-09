@@ -121,7 +121,8 @@ class _MessageForwardState extends State<MessageForward> {
                             CupertinoDialogAction(
                               child: const Text('确定'),
                               onPressed: () async {
-                                var success = await item.msg.sendMessage(MessageType.getType(widget.msgType)!, jsonEncode(widget.msgBody.toJson()));
+                                var msgType = MessageType.getType(widget.msgType);
+                                var success = await item.msg.sendMessage(msgType!,msgType == MessageType.text?widget.msgBody.text!:jsonEncode(widget.msgBody.toJson()));
                                 if(success){
                                   ToastUtils.showMsg(msg: "转发成功");
                                 }
