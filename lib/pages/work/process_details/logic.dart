@@ -67,11 +67,17 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
             .firstWhere((element) => state.workForm.value!.id == element.id);
         state.workForm.value!.attributes = await setting.provider.work!
             .loadAttributes(iForm.id, state.define!.workItem.belongId);
-        for (var element in state.workForm.value!.attributes??[]) {
+        for (var element in state.workForm.value!.attributes!) {
           if(element.valueType == "附件型"){
-            FileItemShare share = FileItemShare.fromJson(data['forms']?['headerData']?[element.id]);
-            element.value = share.name;
-            element.share = share;
+            try{
+              List<dynamic> files = jsonDecode(data['forms']?['headerData']?[element.id]);
+              List<FileItemShare> share = files.map((e) => FileItemShare.fromJson(e)).toList();
+              element.value = share.map((e) => e.name).join('\n');
+              element.share = share;
+            }catch(e){
+              print(e);
+            }
+
           }else{
             element.value = data['forms']?['headerData']?[element.id]??'';
           }

@@ -5369,7 +5369,7 @@ class WorkSubmitModel {
     for (var element in changeData) {
       element.eidtInfo = element.eidtInfo.map((key, value) {
         if(value is FileItemModel){
-          value = value.shareInfo();
+          value = jsonEncode([value.shareInfo()]);
         } else if(value is Map){
           value = value.keys.first;
         }

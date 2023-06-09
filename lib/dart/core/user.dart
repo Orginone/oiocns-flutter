@@ -123,26 +123,26 @@ class UserProvider {
   }
 
   Future<void> loadApps([bool reload = false]) async {
-    myApps.clear();
-    if(reload){
+    if (reload) {
       await user!.deepLoad(reload: reload);
     }
+    List<IApplication> apps = [];
     for (var target in user!.targets) {
       for (var specie in target.species) {
         if (specie.metadata.typeName == SpeciesType.application.label) {
           var app = specie as IApplication;
           if ((await app.loadWorkDefines(reload: true)).isNotEmpty) {
-            myApps.add(app);
+            apps.add(app);
           }
         }
       }
     }
 
-    myApps.value = myApps
+    myApps.value = apps
         .asMap()
         .entries
         .where((entry) =>
-            myApps.indexWhere(
+            apps.indexWhere(
                 (app) => app.metadata.id == entry.value.metadata.id) ==
             entry.key)
         .map((entry) => entry.value)

@@ -14,7 +14,7 @@ class WorkListPage extends BaseGetListView<WorkListController,WorkListState>{
   Widget buildView() {
     return SingleChildScrollView(
       child: ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 18.w,vertical: 10.h),
+        padding: EdgeInsets.only(top: 10.h),
         itemBuilder: (context, index) {
           return WorkItem(
             todo: state.dataList[index],

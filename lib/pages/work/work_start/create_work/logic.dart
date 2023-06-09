@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -84,7 +86,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
       for (var element in state.workForm.value?.attributes??[]) {
         if (element.fields?.defaultData.value != null) {
            if(element.fields!.type == 'upload'){
-             headerData[element.id!] = element.fields?.defaultData.value.shareInfo();
+             headerData[element.id!] = jsonEncode([element.fields?.defaultData.value.shareInfo()]);
            }else{
              headerData[element.id!] = element.fields?.defaultData.value;
            }

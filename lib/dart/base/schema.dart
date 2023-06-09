@@ -84,7 +84,7 @@ class XAttribute {
 
   String? value;
 
-  FileItemShare? share;
+  List<FileItemShare>? share;
 
   XAttribute({
     this.id,
