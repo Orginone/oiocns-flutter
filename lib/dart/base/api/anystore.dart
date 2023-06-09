@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/api/storehub.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/util/http_util.dart';
 
 class AnyStore {
@@ -87,6 +88,38 @@ class AnyStore {
       await _storeHub.invoke('UnSubscribed', args: [key, belongId]);
       _subscribeCallbacks.remove(fullKey);
     }
+  }
+
+  /// 从数据集查询数据
+  /// @param {string} key 对象名称（eg: rootName.person.name）
+  /// @param {string} belongId 对象所在域, 个人域(user),单位域(company),开放域(all)
+  /// @returns {ResultType} 对象异步结果
+  Future<List<XWorkTask>> pageRequest(String key, String belongId,Map<String,dynamic> options,PageRequest page) async {
+    List<XWorkTask> task = [];
+    if (_storeHub.isConnected) {
+      var raw = await aggregate(key,options,belongId);
+      if(raw.data!=null && raw.data[0]['count']>0){
+        options['skip'] = page.offset;
+        options['limit'] = page.limit;
+        var res = await aggregate(key,options,belongId);
+        if(res.data!=null){
+          res.data.forEach((json){
+            task.add(XWorkTask.fromJson(json));
+          });
+        }
+        return task;
+      }
+      return task;
+    }
+    var raw = await _restRequest(
+      'Object',
+      'Get/$key',
+      {
+        "belongId": belongId,
+      },
+      {},
+    );
+    return task;
   }
 
   /// 查询对象
@@ -340,4 +373,5 @@ class AnyStore {
       data: data,
     );
   }
+
 }

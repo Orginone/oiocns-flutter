@@ -177,12 +177,10 @@ class WorkItem extends StatelessWidget {
             "${targets[0].name}[${targets[0].typeName}]申请加入${targets[1].name}[${targets[1].typeName}]";
       }
     }
-    return Container(
-        margin: EdgeInsets.only(top: 20.h),
-        child: Text(
-          "内容:$content",
-          style: TextStyle(fontSize: 16.sp),
-        ));
+    return Text(
+      "内容:$content",
+      style: TextStyle(fontSize: 14.sp, color: Colors.grey),
+    );
   }
 
   Widget role() {

@@ -20,8 +20,6 @@ class IndexPage extends GetView<SettingController> {
   // 轮播图片
   List<String> imageList = [
     "images/bg_center1.png",
-    "images/bg_center2.png",
-    "images/bg_center3.png",
   ];
 
   @override
@@ -36,7 +34,7 @@ class IndexPage extends GetView<SettingController> {
         child: ListView(
             scrollDirection: Axis.vertical,
             children: <Widget>[
-              _carousel(imageList),
+              ImageWidget(imageList.first),
               Container(
                   decoration: BoxDecoration(
                       color: XColors.white,
@@ -104,12 +102,9 @@ class IndexPage extends GetView<SettingController> {
       autoPlay: true,
       items: imageList.map(
             (img) {
-          return Container(
-            margin: const EdgeInsets.only(left: 8.0),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-              child: Image.asset(img, fit: BoxFit.fill, width: 1000.0),
-            ),
+          return ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+            child: Image.asset(img, fit: BoxFit.fill, width: 1000.0),
           );
         },
       ).toList(),
