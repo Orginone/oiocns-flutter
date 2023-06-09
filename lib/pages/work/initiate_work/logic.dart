@@ -77,17 +77,14 @@ class InitiateWorkController
       [IBelong? space, WorkEnum? workEnum]) async {
     List<WorkBreadcrumbNav> list = [];
     for (var item in species) {
+      if(item.children.isEmpty){
+        continue;
+      }
       List<WorkBreadcrumbNav> children = [];
       switch (SpeciesType.getType(item.metadata.typeName)) {
         case SpeciesType.market:
-          await (item as IMarket).loadWorkDefines();
-          break;
         case SpeciesType.application:
-          await (item as IApplication).loadWorkDefines();
-          children.addAll(await loadDefines(item.children, space, workEnum));
-          break;
         case SpeciesType.flow:
-           await (item as IFlowClass).loadWorkDefines();
           children.addAll(await loadDefines(item.children, space, workEnum));
           break;
         default:
