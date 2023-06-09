@@ -33,82 +33,83 @@ class WorkItem extends StatelessWidget {
         }
       },
       child: Container(
-        margin: EdgeInsets.only(top: 10.h,right: 14.w,left: 14.w),
-        child: Card(
-          elevation: 1.2,
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 14.w),
-            child: Row(
-              children: [
-                ImageWidget(Images.iconWorkitem,size: 70.w,),
-                SizedBox(width: 12.w,),
-                Expanded(
-                  child: Container(
-                    margin: EdgeInsets.only(top: 10.h),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              todo.taskType,
+        padding: EdgeInsets.symmetric(horizontal: 14.w),
+        color: Colors.white,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 10.h, ),
+          decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: Colors.grey.shade300,width: 0.4))
+          ),
+          child: Row(
+            children: [
+              ImageWidget(Images.iconWorkitem,size: 70.w,),
+              SizedBox(width: 12.w,),
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.only(top: 10.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            todo.taskType,
+                            style: TextStyle(fontSize: 19.sp),
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 10.w),
+                            height: 20.h,
+                            width: 0.5,
+                            color: Colors.grey,
+                          ),
+                          Expanded(
+                            child: Text(
+                              todo.title,
                               style: TextStyle(fontSize: 19.sp),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10.w),
-                              height: 20.h,
-                              width: 0.5,
-                              color: Colors.grey,
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 3.w, vertical: 2.h),
+                            decoration: BoxDecoration(
+                              color: statusMap[todo.status]!.color.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(4.w),
+                              border: Border.all(
+                                  color: statusMap[todo.status]!.color, width: 0.5),
                             ),
-                            Expanded(
-                              child: Text(
-                                todo.title,
-                                style: TextStyle(fontSize: 19.sp),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                            child: Text(
+                              statusMap[todo.status]!.text,
+                              style: TextStyle(
+                                  color: statusMap[todo.status]!.color,
+                                  fontSize: 16.sp),
                             ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 3.w, vertical: 2.h),
-                              decoration: BoxDecoration(
-                                color: statusMap[todo.status]!.color.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(4.w),
-                                border: Border.all(
-                                    color: statusMap[todo.status]!.color, width: 0.5),
-                              ),
-                              child: Text(
-                                statusMap[todo.status]!.text,
-                                style: TextStyle(
-                                    color: statusMap[todo.status]!.color,
-                                    fontSize: 16.sp),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        role(),
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(child: comment()),
-                            Text('创建时间: ${DateTime.tryParse(todo.createTime)
-                                ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
-                                ""}',
-                                style:
-                                TextStyle(fontSize: 14.sp, color: Colors.grey)),
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      role(),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(child: comment()),
+                          Text('创建时间: ${DateTime.tryParse(todo.createTime)
+                              ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
+                              ""}',
+                              style:
+                              TextStyle(fontSize: 14.sp, color: Colors.grey)),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
