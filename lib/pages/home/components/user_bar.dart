@@ -10,7 +10,6 @@ import 'package:orginone/util/icons.dart';
 import 'package:orginone/widget/image_widget.dart';
 import 'search_bar.dart';
 
-
 class UserBar extends GetView<SettingController> {
   UserBar({super.key});
 
@@ -28,41 +27,41 @@ class UserBar extends GetView<SettingController> {
 
       return Container(
         decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: Colors.grey.shade400,width: 0.4),)
-        ),
+            border: Border(
+          bottom: BorderSide(color: Colors.grey.shade400, width: 0.4),
+        )),
         child: child,
       );
     });
   }
 
-
   Widget get _other {
-
     List<Widget> action = [];
-    action.add( IconButton(
+    action.add(IconButton(
       icon: const Icon(Icons.search),
       onPressed: () {
-
         SearchBar? search;
-        switch(controller.homeEnum.value){
+        switch (controller.homeEnum.value) {
           case HomeEnum.chat:
-            search = SearchBar<IMsgChat>(homeEnum: HomeEnum.chat,data: controller.chat.allChats);
+            search = SearchBar<IMsgChat>(
+                homeEnum: HomeEnum.chat, data: controller.chat.allChats);
             break;
           case HomeEnum.work:
-            search = SearchBar<XWorkTask>(homeEnum: HomeEnum.work,data: controller.work.todos);
+            search = SearchBar<XWorkTask>(
+                homeEnum: HomeEnum.work, data: controller.work.todos);
             break;
           case HomeEnum.door:
             // TODO: Handle this case.
             break;
           case HomeEnum.store:
-            search = SearchBar<int>(homeEnum: HomeEnum.store,data: []);
+            search = SearchBar<int>(homeEnum: HomeEnum.store, data: []);
             break;
           case HomeEnum.market:
-            search = SearchBar<IMsgChat>(homeEnum: HomeEnum.market,data: []);
+            search = SearchBar<IMsgChat>(homeEnum: HomeEnum.market, data: []);
             break;
         }
-        if(search!=null){
-          showSearch(context: Get.context!, delegate:search);
+        if (search != null) {
+          showSearch(context: Get.context!, delegate: search);
         }
       },
       constraints: BoxConstraints(maxWidth: 50.w),
@@ -82,7 +81,11 @@ class UserBar extends GetView<SettingController> {
                         (item) => GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () {
-                            controller.showAddFeatures(controller.menuItems.indexOf(item),item.targetType,item.title,item.hint);
+                            controller.showAddFeatures(
+                                controller.menuItems.indexOf(item),
+                                item.targetType,
+                                item.title,
+                                item.hint);
                             _menuController.hideMenu();
                           },
                           child: Container(
@@ -102,7 +105,7 @@ class UserBar extends GetView<SettingController> {
                                         vertical: 10),
                                     child: Text(
                                       item.name,
-                                      style:  TextStyle(
+                                      style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 18.sp,
                                       ),
@@ -172,7 +175,7 @@ class UserBar extends GetView<SettingController> {
                 margin: EdgeInsets.only(left: 10.w),
                 child: Text(
                   "资产共享云",
-                  style: TextStyle(fontSize: 24.sp),
+                  style: TextStyle(fontSize: 28.sp),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -196,7 +199,8 @@ class UserBar extends GetView<SettingController> {
     return Obx(() {
       dynamic avatar;
       var share = controller.provider.user?.share;
-      avatar = share?.avatar?.thumbnailUint8List??AIcons.icons['x']?['defalutAvatar'];
+      avatar = share?.avatar?.thumbnailUint8List ??
+          AIcons.icons['x']?['defalutAvatar'];
 
       return Container(
           margin: insets,
