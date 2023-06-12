@@ -4810,7 +4810,7 @@ class FileItemShare {
   });
 
   //通过JSON构造
-  FileItemShare.fromJson(Map<String, dynamic> json){
+  FileItemShare.fromJson(Map<String, dynamic> json) {
     size = json["size"];
     name = json["name"];
     shareLink = json["shareLink"];
@@ -5230,9 +5230,9 @@ class MsgSaveModel {
           body = MsgBodyModel.fromJson(jsonDecode(data['body']));
         }
       } else {
-        if(msgType == MessageType.text.label){
+        if (msgType == MessageType.text.label) {
           body = MsgBodyModel(text: json);
-        }else{
+        } else {
           body = MsgBodyModel.fromJson(jsonDecode(json));
         }
       }
@@ -5295,7 +5295,9 @@ class MsgBodyModel {
       this.path,
       this.shareLink,
       this.size = 0,
-      this.progress = 0,this.milliseconds,this.bytes});
+      this.progress = 0,
+      this.milliseconds,
+      this.bytes});
 
   MsgBodyModel.fromJson(Map<String, dynamic> json) {
     text = json['body'];
@@ -5358,19 +5360,18 @@ class WorkSubmitModel {
       required this.resourceData,
       this.changeData = const []});
 
-
   Map<String, dynamic> toJson() {
     Map<String, dynamic> changeDataMap = {};
 
-    List<Map<String,dynamic>> propertys =[];
+    List<Map<String, dynamic>> propertys = [];
 
     dynamic resourceDataMap;
 
     for (var element in changeData) {
       element.eidtInfo = element.eidtInfo.map((key, value) {
-        if(value is FileItemModel){
+        if (value is FileItemModel) {
           value = jsonEncode([value.shareInfo()]);
-        } else if(value is Map){
+        } else if (value is Map) {
           value = value.keys.first;
         }
         return MapEntry(key, value);
@@ -5379,8 +5380,9 @@ class WorkSubmitModel {
     }
 
     for (var element in resourceData.attributes!) {
-      if(element.linkPropertys!=null && element.linkPropertys!.isNotEmpty){
-        propertys.add({"attrId":element.id,...element.linkPropertys![0].toJson()});
+      if (element.linkPropertys != null && element.linkPropertys!.isNotEmpty) {
+        propertys
+            .add({"attrId": element.id, ...element.linkPropertys![0].toJson()});
       }
     }
 
@@ -5390,7 +5392,7 @@ class WorkSubmitModel {
       resourceDataMap = jsonEncode({
         'data': changeData.map((e) => e.toJson()).toList(),
         'form': resourceData.toJson(),
-        'propertys':propertys,
+        'propertys': propertys,
       });
     }
 

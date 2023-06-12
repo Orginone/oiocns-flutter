@@ -10,7 +10,6 @@ import 'package:orginone/util/icons.dart';
 import 'package:orginone/widget/image_widget.dart';
 import 'search_bar.dart';
 
-
 class UserBar extends GetView<SettingController> {
   UserBar({super.key});
 
@@ -21,39 +20,41 @@ class UserBar extends GetView<SettingController> {
     return Obx(() {
       return Container(
         decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: Colors.grey.shade400,width: 0.4),)
-        ),
+            border: Border(
+          bottom: BorderSide(color: Colors.grey.shade400, width: 0.4),
+        )),
         child: _userBar,
       );
     });
   }
 
-
   Widget get _userBar {
     List<Widget> action = [];
-    action.add( IconButton(
+    action.add(IconButton(
       icon: const Icon(Icons.search),
       onPressed: () {
         SearchBar? search;
-        switch(controller.homeEnum.value){
+        switch (controller.homeEnum.value) {
           case HomeEnum.chat:
-            search = SearchBar<IMsgChat>(homeEnum: HomeEnum.chat,data: controller.chat.allChats);
+            search = SearchBar<IMsgChat>(
+                homeEnum: HomeEnum.chat, data: controller.chat.allChats);
             break;
           case HomeEnum.work:
-            search = SearchBar<XWorkTask>(homeEnum: HomeEnum.work,data: controller.work.todos);
+            search = SearchBar<XWorkTask>(
+                homeEnum: HomeEnum.work, data: controller.work.todos);
             break;
           case HomeEnum.door:
             // TODO: Handle this case.
             break;
           case HomeEnum.store:
-            search = SearchBar<int>(homeEnum: HomeEnum.store,data: []);
+            search = SearchBar<int>(homeEnum: HomeEnum.store, data: []);
             break;
           case HomeEnum.market:
-            search = SearchBar<IMsgChat>(homeEnum: HomeEnum.market,data: []);
+            search = SearchBar<IMsgChat>(homeEnum: HomeEnum.market, data: []);
             break;
         }
-        if(search!=null){
-          showSearch(context: Get.context!, delegate:search);
+        if (search != null) {
+          showSearch(context: Get.context!, delegate: search);
         }
       },
       constraints: BoxConstraints(maxWidth: 50.w),
@@ -70,40 +71,44 @@ class UserBar extends GetView<SettingController> {
                 children: controller.menuItems
                     .map(
                       (item) => GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      controller.showAddFeatures(controller.menuItems.indexOf(item),item.targetType,item.title,item.hint);
-                      _menuController.hideMenu();
-                    },
-                    child: Container(
-                      height: 50.h,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        children: <Widget>[
-                          Icon(
-                            item.icon,
-                            size: 24.w,
-                            color: Colors.white,
-                          ),
-                          Expanded(
-                            child: Container(
-                              margin: const EdgeInsets.only(left: 10),
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10),
-                              child: Text(
-                                item.name,
-                                style:  TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18.sp,
+                        behavior: HitTestBehavior.translucent,
+                        onTap: () {
+                          controller.showAddFeatures(
+                              controller.menuItems.indexOf(item),
+                              item.targetType,
+                              item.title,
+                              item.hint);
+                          _menuController.hideMenu();
+                        },
+                        child: Container(
+                          height: 50.h,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                item.icon,
+                                size: 24.w,
+                                color: Colors.white,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 10),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: Text(
+                                    item.name,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.sp,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                )
+                    )
                     .toList(),
               ),
             ),
@@ -122,7 +127,7 @@ class UserBar extends GetView<SettingController> {
         constraints: BoxConstraints(maxWidth: 40.w),
       ),
     );
-    if(controller.homeEnum.value == HomeEnum.door){
+    if (controller.homeEnum.value == HomeEnum.door) {
       return SizedBox(
         height: 74.h,
         child: Row(children: [
@@ -165,7 +170,8 @@ class UserBar extends GetView<SettingController> {
     return Obx(() {
       dynamic avatar;
       var share = controller.provider.user?.share;
-      avatar = share?.avatar?.thumbnailUint8List??AIcons.icons['x']?['defalutAvatar'];
+      avatar = share?.avatar?.thumbnailUint8List ??
+          AIcons.icons['x']?['defalutAvatar'];
 
       return Container(
           margin: insets,

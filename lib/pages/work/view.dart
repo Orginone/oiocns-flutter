@@ -34,7 +34,6 @@ class WorkPage extends BaseFrequentlyUsedListPage<WorkController, WorkState> {
     );
   }
 
-
   @override
   WorkController getController() {
     return WorkController();

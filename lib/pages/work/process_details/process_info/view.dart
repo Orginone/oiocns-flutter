@@ -12,7 +12,8 @@ import 'package:orginone/widget/unified.dart';
 import 'logic.dart';
 import 'state.dart';
 
-class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoState>{
+class ProcessInfoPage
+    extends BaseGetPageView<ProcessInfoController, ProcessInfoState> {
   @override
   Widget buildView() {
     return Column(
@@ -67,18 +68,21 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
                     List<String> data = [];
 
                     for (var attribute in element.attributes!) {
-                      if(attribute.valueType == "附件型"){
-                          try{
-                            List<dynamic> files = jsonDecode(thing.eidtInfo[attribute.id]);
-                            List<FileItemShare> share = files.map((e) => FileItemShare.fromJson(e)).toList();
-                            data.add(share.map((e) => e.name).join('\n'));
-                          }catch(e){
-                            print(e);
+                      if (attribute.valueType == "附件型") {
+                        try {
+                          List<dynamic> files =
+                              jsonDecode(thing.eidtInfo[attribute.id]);
+                          List<FileItemShare> share = files
+                              .map((e) => FileItemShare.fromJson(e))
+                              .toList();
+                          data.add(share.map((e) => e.name).join('\n'));
+                        } catch (e) {
+                          print(e);
                         }
-                      }else  if(attribute.valueType == "用户型"){
-                        data.add(thing.eidtInfo[attribute.id!]?['name']??"");
-                      } else{
-                        data.add(thing.eidtInfo[attribute.id]??"");
+                      } else if (attribute.valueType == "用户型") {
+                        data.add(thing.eidtInfo[attribute.id!]?['name'] ?? "");
+                      } else {
+                        data.add(thing.eidtInfo[attribute.id] ?? "");
                       }
                     }
 
@@ -127,9 +131,10 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
           _button(
               text: '通过',
               textColor: Colors.white,
-              color: XColors.themeColor, onTap: () {
-            controller.approval(100);
-          }),
+              color: XColors.themeColor,
+              onTap: () {
+                controller.approval(100);
+              }),
         ],
       ),
     );
@@ -142,9 +147,12 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
         CommonWidget.commonHeadInfoWidget(form.name),
         CommonWidget.commonFormWidget(
             formItem: form.attributes?.map((e) {
-              return CommonWidget.commonFormItem(
-                      title: e.name ?? "", content: e.value ?? '',userId: e.valueType == "用户型"?e.value!:'');
-                }).toList()??[]),
+                  return CommonWidget.commonFormItem(
+                      title: e.name ?? "",
+                      content: e.value ?? '',
+                      userId: e.valueType == "用户型" ? e.value! : '');
+                }).toList() ??
+                []),
       ],
     );
   }
@@ -177,7 +185,8 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
                   height: 10.h,
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey.shade200),
                       borderRadius: BorderRadius.circular(16.w)),
@@ -200,12 +209,12 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
     );
   }
 
-
-  Widget _button({VoidCallback? onTap,
-    required String text,
-    Color? textColor,
-    Color? color,
-    BoxBorder? border}) {
+  Widget _button(
+      {VoidCallback? onTap,
+      required String text,
+      Color? textColor,
+      Color? color,
+      BoxBorder? border}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -224,6 +233,7 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
       ),
     );
   }
+
   @override
   ProcessInfoController getController() {
     return ProcessInfoController();

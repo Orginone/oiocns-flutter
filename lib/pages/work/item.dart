@@ -27,23 +27,30 @@ class WorkItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        if(todo.taskType == "事项"){
-          Get.toNamed(Routers.processDetails,arguments: {"todo":todo});
+      onTap: () {
+        if (todo.taskType == "事项") {
+          Get.toNamed(Routers.processDetails, arguments: {"todo": todo});
         }
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 14.w),
         color: Colors.white,
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 10.h, ),
-          decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.grey.shade300,width: 0.4))
+          padding: EdgeInsets.symmetric(
+            vertical: 10.h,
           ),
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(color: Colors.grey.shade300, width: 0.4))),
           child: Row(
             children: [
-              ImageWidget(Images.iconWorkitem,size: 70.w,),
-              SizedBox(width: 12.w,),
+              ImageWidget(
+                Images.iconWorkitem,
+                size: 70.w,
+              ),
+              SizedBox(
+                width: 12.w,
+              ),
               Expanded(
                 child: Container(
                   margin: EdgeInsets.only(top: 10.h),
@@ -74,10 +81,13 @@ class WorkItem extends StatelessWidget {
                             padding: EdgeInsets.symmetric(
                                 horizontal: 3.w, vertical: 2.h),
                             decoration: BoxDecoration(
-                              color: statusMap[todo.status]!.color.withOpacity(0.1),
+                              color: statusMap[todo.status]!
+                                  .color
+                                  .withOpacity(0.1),
                               borderRadius: BorderRadius.circular(4.w),
                               border: Border.all(
-                                  color: statusMap[todo.status]!.color, width: 0.5),
+                                  color: statusMap[todo.status]!.color,
+                                  width: 0.5),
                             ),
                             child: Text(
                               statusMap[todo.status]!.text,
@@ -98,11 +108,10 @@ class WorkItem extends StatelessWidget {
                       Row(
                         children: [
                           Expanded(child: comment()),
-                          Text('创建时间: ${DateTime.tryParse(todo.createTime)
-                              ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
-                              ""}',
-                              style:
-                              TextStyle(fontSize: 14.sp, color: Colors.grey)),
+                          Text(
+                              '创建时间: ${DateTime.tryParse(todo.createTime)?.format(format: "yyyy-MM-dd HH:mm:ss") ?? ""}',
+                              style: TextStyle(
+                                  fontSize: 14.sp, color: Colors.grey)),
                         ],
                       ),
                     ],
@@ -116,20 +125,19 @@ class WorkItem extends StatelessWidget {
     );
   }
 
-  Widget button(){
-    if(todo.status !=1){
+  Widget button() {
+    if (todo.status != 1) {
       return Container();
     }
 
     Widget button = Column(
       children: [
         GestureDetector(
-          onTap: (){
+          onTap: () {
             controller.approval(todo, 100);
           },
           child: Container(
-            padding:
-            EdgeInsets.symmetric(vertical: 5.h, horizontal: 20.w),
+            padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 20.w),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.w),
               color: XColors.themeColor,
@@ -140,14 +148,15 @@ class WorkItem extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 10.h,),
+        SizedBox(
+          height: 10.h,
+        ),
         GestureDetector(
-          onTap: (){
+          onTap: () {
             controller.approval(todo, 200);
           },
           child: Container(
-            padding:
-            EdgeInsets.symmetric(vertical: 5.h, horizontal: 20.w),
+            padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 20.w),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.w),
               color: Colors.red,
@@ -215,4 +224,3 @@ class WorkItem extends StatelessWidget {
     );
   }
 }
-
