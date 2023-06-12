@@ -293,6 +293,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
       ToastUtils.showMsg(msg: res.msg);
     }
     print("code------------------${"${StoreCollName.chatMessage}.T${chatdata.value.fullId}"}");
+    print("data------------------${chatdata.toJson()}");
   }
 
   @override

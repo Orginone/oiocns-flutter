@@ -11,7 +11,7 @@ abstract class IChatProvider {
   IPerson get user;
 
   /// 所有会话
-  late List<IMsgChat> allChats;
+  late RxList<IMsgChat> allChats;
 
   /// 指定会话
   List<IMsgChat> get topChats;
@@ -24,7 +24,7 @@ abstract class IChatProvider {
   void preMessage();
 
   /// 加载消息
-  void loadPreMessage();
+  Future<void> loadPreMessage();
 
   void loadAllChats();
 }
@@ -56,7 +56,7 @@ class ChatProvider implements IChatProvider {
         _preTags.add(tag);
       }
     });
-    allChats = [];
+    allChats = RxList([]);
   }
 
   @override
@@ -65,44 +65,41 @@ class ChatProvider implements IChatProvider {
   }
 
   @override
-  void loadPreMessage() {
-    kernel.anystore.get(StoreCollName.chatMessage, user.id).then((res) {
-      if (res.success) {
-        if (res.data is Map<String, dynamic>) {
-          res.data.keys.forEach((key) {
-            if (key!.startsWith('T') && res.data[key]['fullId'] != null) {
-              var fullId = key.substring(1);
-              var find = chats
-                  .firstWhereOrNull((i) => i.chatdata.value.fullId == fullId);
-              find?.loadCache(MsgChatData.fromMap(res.data[key]));
-            }
-          });
+  Future<void> loadPreMessage() async {
+    var res = await kernel.anystore.get(StoreCollName.chatMessage, user.id);
+    if (res.success) {
+      if (res.data is Map<String, dynamic>) {
+        for (var key in (res.data as Map).keys) {
+          if (key!.startsWith('T') && res.data[key]['fullId'] != null) {
+            var fullId = key.substring(1);
+            var find = allChats
+                .firstWhereOrNull((i) => i.chatdata.value.fullId == fullId);
+            find?.loadCache(MsgChatData.fromMap(res.data[key]));
+          }
         }
-        _preMessages.sort((a, b){
-          return DateTime.parse(a.createTime).compareTo(DateTime.parse(b.createTime));
-        });
-        for (var element in _preMessages) {
-          _recvMessage(element);
-        }
-        _preMessage = false;
       }
-    });
+      _preMessages.sort((a, b) {
+        return DateTime.parse(a.createTime)
+            .compareTo(DateTime.parse(b.createTime));
+      });
+      for (var element in _preMessages) {
+        _recvMessage(element);
+      }
+      _preMessage = false;
+    }
   }
 
   @override
-  late List<IMsgChat> allChats;
-
+  late RxList<IMsgChat> allChats;
 
   @override
-  void loadAllChats(){
+  void loadAllChats() {
     allChats.clear();
-    allChats = [...user.chats];
+    allChats.value = [...user.chats];
     for (final company in user.companys) {
       allChats.addAll(company.chats);
     }
     allChats.removeWhere((element) => !element.isMyChat);
-    var s = allChats.where((element) => element.labels.contains("浙江省财政厅")).toList();
-    print('');
   }
 
   void _recvMessage(MsgSaveModel data) {
@@ -146,7 +143,9 @@ class ChatProvider implements IChatProvider {
   @override
 // TODO: implement chats
   List<IMsgChat> get chats {
-    var list = allChats.where((element) => !element.labels.contains("置顶")).toList();
+    var list =
+        allChats.where((element) => !element.labels.contains("置顶")).toList();
+    list.removeWhere((element) => element.chatdata.value.lastMessage == null);
     list.sort((f, s) {
       return (s.chatdata.value.lastMsgTime) - (f.chatdata.value.lastMsgTime);
     });

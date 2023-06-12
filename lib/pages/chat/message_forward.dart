@@ -143,14 +143,7 @@ class _MessageForwardState extends State<MessageForward> {
                 },
                 child: Row(
                   children: [
-                    AdvancedAvatar(
-                      size: 50.w,
-                      decoration: BoxDecoration(
-                          color: XColors.themeColor,
-                          borderRadius: BorderRadius.all(Radius.circular(8.w)),
-                         ),
-                      child: ImageWidget(item.msg.share.avatar?.thumbnailUint8List??item.msg.share.avatar?.defaultAvatar),
-                    ),
+                    ImageWidget(item.msg.share.avatar?.thumbnailUint8List??item.msg.share.avatar?.defaultAvatar,size: 50.w,),
                     SizedBox(
                       width: 15.w,
                     ),

@@ -1,20 +1,12 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:orginone/dart/core/getx/base_get_list_state.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
+import 'package:orginone/dart/core/getx/frequently_used_list/base_frequently_used_list_state.dart';
 
-class StoreState extends BaseGetState{
+class StoreState extends BaseFrequentlyUsedListState{
 
-  var recentlyList = [];
 }
 
 
-
-
-class Recent {
-  final String id;
-  final String name;
-  final String url;
-
-  Recent(this.id, this.name, this.url);
-}

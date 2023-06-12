@@ -43,7 +43,7 @@ import 'package:orginone/pages/setting/version_page.dart';
 // 资产管理
 // 资产管理
 // 仓库
-import 'pages/chat/message_chats.dart';
+import 'pages/chat/message_chats/message_chats_list.dart';
 import 'pages/chat/message_file.dart';
 import 'pages/chat/message_records.dart';
 import 'pages/home/index/index_page.dart';
@@ -54,7 +54,6 @@ import 'pages/login/register/view.dart';
 import 'pages/login/verification_code/binding.dart';
 import 'pages/login/verification_code/view.dart';
 import 'pages/market/market_tree/binding.dart';
-import 'pages/other/add_friend/add_friend.dart';
 import 'pages/other/choice_gb/binding.dart';
 import 'pages/other/choice_gb/view.dart';
 import 'pages/other/choice_thing/view.dart';
@@ -125,7 +124,6 @@ class Routers {
 
   // 二维码扫描
   static const String scanning = "/scanning";
-  static const String addFriend = "/addFriend";
   static const String scanningResult = "/scanningResult";
 
   // 搜索
@@ -359,11 +357,6 @@ class Routers {
         name: Routers.messageChat,
         page: () => MessageChatPage(),
         bindings: [PlayBinding(),ChatBoxBinding(),MessageChatBinding()],
-      ),
-      GetPage(
-        name: Routers.addFriend,
-        page: () => AddFriendPage(),
-        binding: AddFriendBinding(),
       ),
       GetPage(
         name: Routers.index,

@@ -21,6 +21,7 @@ import 'package:orginone/pages/setting/user_info/state.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/widget/unified.dart';
 
 
 class MyMenuItem {
@@ -211,9 +212,9 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
     super.initState();
     _selectedItemId = menuItems.length + 1;
   }
-
   @override
   Widget build(BuildContext context) {
+    XColors.white;
     return Container(
       height: 74,
       child: ListView.builder(
@@ -234,7 +235,7 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
               padding: EdgeInsets.all(8.w),
               decoration: BoxDecoration(
                 color:
-                    itemId == _selectedItemId ? Colors.blue : Colors.grey[300],
+                    itemId == _selectedItemId ? Colors.blue : XColors.entryBgColor,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
@@ -243,13 +244,13 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
                   Icon(menuItem?.icon,
                       color: itemId == _selectedItemId
                           ? Colors.white
-                          : Colors.black),
+                          : XColors.entryColor),
                   SizedBox(height: 6.h),
                   Text(menuItem!.cardName,
                       style: TextStyle(
                           color: itemId == _selectedItemId
                               ? Colors.white
-                              : Colors.black)),
+                              : XColors.entryColor)),
                 ],
               ),
             ),

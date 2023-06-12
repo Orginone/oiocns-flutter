@@ -17,7 +17,7 @@ import 'package:orginone/widget/widgets/progress_dialog.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/chat/message_chats.dart';
+import 'package:orginone/pages/chat/message_chats/message_chats_page.dart';
 import 'package:orginone/pages/home/components/user_bar.dart';
 import 'package:orginone/pages/work/view.dart';
 import 'package:orginone/pages/setting/version_page.dart';
@@ -94,13 +94,13 @@ class HomeController extends TabsController {
     TextStyle selectedStyle = TextStyle(color: XColors.selectedColor,fontSize: 16.sp);
 
     registerTab(XTab(
-      view: const MessageChats(),
+      view:  MessageChats(),
       tab: Obx(() {
-        var chats = settingCtrl.provider.chat?.allChats??[];
+        var chats = settingCtrl.provider.chat?.allChats;
         int mgsCount = 0;
-        for (var element in chats) {
+        chats?.forEach((element) {
           mgsCount += element.chatdata.value.noReadCount;
-        }
+        });
 
         var isSelected = settingCtrl.homeEnum.value == HomeEnum.chat;
         return BadgeTabWidget(

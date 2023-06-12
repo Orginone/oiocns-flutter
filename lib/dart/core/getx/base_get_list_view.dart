@@ -1,10 +1,10 @@
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/load_state_widget.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'base_controller.dart';
 import 'base_get_list_state.dart';
@@ -31,12 +31,12 @@ abstract class BaseGetListView<T extends BaseListController,S extends BaseGetLis
             controller.loadData();
           },
           builder: (){
-            return SmartRefresher(
-              controller: controller.refreshController,
-              enablePullDown: true,
-              enablePullUp: false,
-              onRefresh: () => controller.onRefresh(),
-              onLoading: () => controller.onLoadMore(),
+            return EasyRefresh(
+              controller: state.refreshController,
+              header: const MaterialHeader(),
+              footer: const MaterialFooter(),
+              onRefresh: controller.onRefresh,
+              onLoad: controller.onLoadMore,
               child: Obx((){
                 if(state.dataList.isEmpty && displayNoDataWidget()){
                   return noData();

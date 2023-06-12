@@ -38,6 +38,9 @@ class XColors {
   static const Color bgGrayLight = Color(0xFFF5F5F5);
   static const Color yellow = Color(0xFFF1B463);
   static const Color orange = Color(0xFFFB8F11);
+  static const Color entryBgColor = Color(0xFFDFE0EF);
+  static const Color entryColor = Color(0xFF396DB2);
+
 }
 
 class XIcons {

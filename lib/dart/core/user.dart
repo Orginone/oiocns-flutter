@@ -115,9 +115,8 @@ class UserProvider {
     await _work.value?.loadTodos(reload: true);
     _inited = true;
     await loadApps();
-    _chat.value?.loadPreMessage();
     _chat.value?.loadAllChats();
-
+    await _chat.value?.loadPreMessage();
     _chat.refresh();
     _user.refresh();
   }
