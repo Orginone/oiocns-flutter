@@ -15,7 +15,7 @@ class StorePage extends BaseFrequentlyUsedListPage<StoreController, StoreState> 
         itemBuilder: (context, index) {
           return StoreItem();
         },
-        itemCount: 10,
+        itemCount: state.dataList.length,
       ),
     );
   }

@@ -14,6 +14,6 @@ class MarketController extends BaseFrequentlyUsedListController<MarketState> {
  void onInit() {
    // TODO: implement onInit
    super.onInit();
-
+   state.dataList.value = List.generate(10, (i)=>i);
  }
 }

@@ -12,32 +12,18 @@ class ThingInfoPage
   Widget buildView() {
     return SingleChildScrollView(
       child: Obx(() {
-        return Column(
-            children: state.details.map((element) {
-              return Column(
-                children: [
-                  CommonWidget.commonHeadInfoWidget(element.specie.metadata.name),
-                  // CommonWidget.commonFormWidget(
-                  //     formItem: element.data.map((e) {
-                  //       String value = e.value.toString();
-                  //       if (e.xAttribute.valueType == "选择型") {
-                  //         try {
-                  //           value = e.xAttribute.dict?.dictItems
-                  //               ?.firstWhere((element) =>
-                  //           element.value == e.value)
-                  //               .name ??
-                  //               "";
-                  //         } catch (e) {
-                  //           value = "";
-                  //         }
-                  //       }
-                  //
-                  //       return CommonWidget.commonFormItem(
-                  //           title: e.xAttribute.name ?? "", content: value);
-                  //     }).toList())
-                ],
-              );
-            }).toList());
+        return Column(children: [
+          CommonWidget.commonHeadInfoWidget(
+              state.thingController.state.form.metadata.name),
+          CommonWidget.commonFormWidget(
+              formItem: state.attr.map((e) {
+            String value = e.value ?? "";
+            return CommonWidget.commonFormItem(
+                title: e.name ?? "",
+                content: value,
+                userId: e.valueType == "用户型" ? e.value ?? "" : '');
+          }).toList())
+        ]);
       }),
     );
   }

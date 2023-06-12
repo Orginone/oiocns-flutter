@@ -15,7 +15,7 @@ class MarketPage extends BaseFrequentlyUsedListPage<MarketController, MarketStat
         itemBuilder: (context, index) {
           return StoreItem();
         },
-        itemCount: 10,
+        itemCount: state.dataList.length,
       ),
     );
   }

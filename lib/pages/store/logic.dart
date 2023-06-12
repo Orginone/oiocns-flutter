@@ -13,6 +13,6 @@ class StoreController extends BaseFrequentlyUsedListController<StoreState>{
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-
+    state.dataList.value = List.generate(10, (i)=>i);
   }
 }

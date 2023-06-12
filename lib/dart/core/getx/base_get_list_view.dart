@@ -66,5 +66,7 @@ abstract class BaseGetListView<T extends BaseListController,S extends BaseGetLis
 
   late String title;
 
-  List<Widget>? actions();
+  List<Widget> actions(){
+    return [];
+  }
 }

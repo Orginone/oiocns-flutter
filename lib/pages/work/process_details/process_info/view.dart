@@ -142,12 +142,8 @@ class ProcessInfoPage extends BaseGetPageView<ProcessInfoController,ProcessInfoS
         CommonWidget.commonHeadInfoWidget(form.name),
         CommonWidget.commonFormWidget(
             formItem: form.attributes?.map((e) {
-              if(e.valueType == "用户型"){
-                return CommonWidget.commonFormItem(
-                    title: e.name ?? "", userId: e.value ?? '');
-              }
               return CommonWidget.commonFormItem(
-                      title: e.name ?? "", content: e.value ?? '');
+                      title: e.name ?? "", content: e.value ?? '',userId: e.valueType == "用户型"?e.value!:'');
                 }).toList()??[]),
       ],
     );

@@ -1,12 +1,9 @@
-import 'package:get/get.dart';
-import 'package:orginone/pages/other/thing/network.dart';
-import 'package:orginone/widget/loading_dialog.dart';
-
-import '../../../dart/core/getx/base_controller.dart';
+import 'package:orginone/dart/core/getx/base_list_controller.dart';
+import 'package:orginone/pages/other/choice_thing/network.dart';
 import 'state.dart';
 
 
-class ThingController extends BaseController<ThingState> {
+class ThingController extends BaseListController<ThingState> {
  final ThingState state = ThingState();
 
 
@@ -14,8 +11,11 @@ class ThingController extends BaseController<ThingState> {
   void onReady() async{
     // TODO: implement onReady
     super.onReady();
-    LoadingDialog.showLoading(context);
-    state.things.value = await ThingNetWork.getThing(state.id);
-    LoadingDialog.dismiss(context);
+  }
+
+  @override
+  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async{
+    state.dataList.value = await ChoiceThingNetWork.getThing(state.form.metadata.id,state.belongId);
+    super.loadData();
   }
 }
