@@ -22,20 +22,22 @@ class MessageItemWidget extends GetView<SettingController> {
 
   final bool enabledSlidable;
 
+  final VoidCallback? callback;
   const MessageItemWidget({
     Key? key,
+    this.callback,
     required this.chat,
     this.enabledSlidable = true,
   }) : super(key: key);
 
-  MessageChatsController? get messageChatsController => Get.find();
   @override
   Widget build(BuildContext context) {
     bool isTop = chat.labels.contains("置顶");
     return GestureDetector(
       onTap: () {
-
-        messageChatsController?.setMostUsed(chat);
+        if(callback!=null){
+          callback!();
+        }
         chat.onMessage();
         Get.toNamed(
           Routers.messageChat,

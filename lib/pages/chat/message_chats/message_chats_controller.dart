@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_freqiently_usedList_controller.dart';
 import 'package:orginone/pages/chat/message_chats/message_chats_state.dart';

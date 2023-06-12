@@ -43,6 +43,7 @@ import 'package:orginone/pages/setting/version_page.dart';
 // 资产管理
 // 资产管理
 // 仓库
+import 'pages/chat/message_chats/message_chats_controller.dart';
 import 'pages/chat/message_chats/message_chats_list.dart';
 import 'pages/chat/message_file.dart';
 import 'pages/chat/message_records.dart';

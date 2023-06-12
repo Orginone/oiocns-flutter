@@ -25,13 +25,17 @@ class MessageChats extends BaseFrequentlyUsedListPage<MessageChatsController,
         SliverList(
           delegate: SliverChildBuilderDelegate((context, index) {
             var chat = topChats[index];
-            return MessageItemWidget(chat: chat);
+            return MessageItemWidget(chat: chat,callback: (){
+              controller.setMostUsed(chat);
+            },);
           }, childCount: topChats.length),
         ),
         SliverList(
           delegate: SliverChildBuilderDelegate((context, index) {
             var chat = chats[index];
-            return MessageItemWidget(chat: chat);
+            return MessageItemWidget(chat: chat,callback: (){
+              controller.setMostUsed(chat);
+            },);
           }, childCount: chats.length),
         ),
       ],
@@ -61,6 +65,11 @@ class MessageChats extends BaseFrequentlyUsedListPage<MessageChatsController,
 
   }
 
+  @override
+  String tag() {
+    // TODO: implement tag
+    return "MessageChats";
+  }
 }
 
 
