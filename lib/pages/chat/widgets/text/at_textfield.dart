@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:orginone/dart/base/schema.dart' hide Rule;
 
+import 'emoji_text_input_formatter.dart';
 import 'rich_text_input_formatter.dart';
 
 /// 绑定软键盘的输入框，可跟随键盘弹出和收起 ，调用KeyboardInputState.popKeyboard即可
@@ -79,8 +81,8 @@ class AtTextFiledState extends State<AtTextFiled> {
       decoration: widget.decoration,
       style: widget.style,
       inputFormatters: widget.inputFormatters == null
-          ? [_formatter]
-          : (widget.inputFormatters!..add(_formatter)),
+          ? [_formatter,EmojiTextInputFormatter()]
+          : (widget.inputFormatters!..addAll([_formatter,EmojiTextInputFormatter()])),
     );
   }
 
