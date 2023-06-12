@@ -1,6 +1,5 @@
-import 'package:orginone/config/constant.dart';
+import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_freqiently_usedList_controller.dart';
-import 'package:orginone/dart/core/getx/frequently_used_list/base_frequently_used_list_state.dart';
 import 'package:orginone/pages/chat/message_chats/message_chats_state.dart';
 
 class MessageChatsController
@@ -13,18 +12,25 @@ class MessageChatsController
     // TODO: implement onInit
     super.onInit();
     loadSuccess();
-    state.frequentlyUsedList.add( Recent("0000", "资产监管", "${Constant.host}/img/logo/logo3.jpg"));
   }
 
   @override
-  void onReady() {
-    // TODO: implement onReady
+  void onReady() async {
+    state.mostUsedList.value = await state.setting.chat.loadMostUsed();
   }
 
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
     // TODO: implement loadData
     await state.setting.provider.reload();
-    super.loadData(isRefresh: isRefresh,isLoad: isLoad);
+    super.loadData(isRefresh: isRefresh, isLoad: isLoad);
+  }
+
+  void setMostUsed(IMsgChat chat) async {
+    var recent = await state.setting.chat.setMostUsed(chat);
+    if (recent != null) {
+      state.mostUsedList.add(recent);
+      state.mostUsedList.refresh();
+    }
   }
 }

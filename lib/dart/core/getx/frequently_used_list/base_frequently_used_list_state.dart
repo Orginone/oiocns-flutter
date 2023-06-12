@@ -2,14 +2,14 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_list_state.dart';
 
 class BaseFrequentlyUsedListState<T extends Recent, S> extends BaseGetListState<S> {
-  var frequentlyUsedList = <S>[].obs;
+  var mostUsedList = <T>[].obs;
 }
 
 
 class Recent{
-  final String id;
-  final String name;
-  final String url;
+  String? id;
+  String? name;
+  dynamic avatar;
 
-  Recent(this.id, this.name, this.url);
+  Recent({this.id, this.name, this.avatar});
 }

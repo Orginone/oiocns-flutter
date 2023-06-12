@@ -153,7 +153,7 @@ abstract class IMsgChat extends IEntity {
   void onMessage();
 
   /// 缓存会话
-  void cache();
+  Future<void> cache();
 
   /// 加载会话缓存
   /// [chatCache] 缓存数据
@@ -273,7 +273,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
       await cache();
     }
     if (messages.length < 10) {
-      moreMessage();
+      await moreMessage();
     }
     chatdata.refresh();
   }

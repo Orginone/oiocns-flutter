@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/widget/unified.dart';
 
@@ -42,25 +43,31 @@ abstract class BaseFrequentlyUsedListPage<
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: state.frequentlyUsedList.map((value) {
-                    Widget child = frequentlyUsedItem(value);
-                    int index = state.frequentlyUsedList.indexOf(value);
+                child: Obx(() {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: state.mostUsedList.map((element) {
+                      Widget child = BaseFrequentlyUsedItem(
+                          recent: element,
+                          onTap: () {
+                            onTapRecent(element);
+                          });
+                      int index = state.mostUsedList.indexOf(element);
 
-                    if (index != (state.frequentlyUsedList.length - 1)) {
-                      child = Container(
-                        margin: EdgeInsets.only(right: 15.w),
+                      if (index != (state.mostUsedList.length - 1)) {
+                        child = Container(
+                          margin: EdgeInsets.only(right: 15.w),
+                          child: child,
+                        );
+                      }
+                      return Container(
+                        margin: EdgeInsets.only(left: index == 0 ? 0 : 20.w),
                         child: child,
                       );
-                    }
-                    return Container(
-                      margin: EdgeInsets.only(left: index == 0 ? 0 : 20.w),
-                      child: child,
-                    );
-                  }).toList(),
-                ),
+                    }).toList(),
+                  );
+                }),
               ),
               //
             ],
@@ -79,7 +86,5 @@ abstract class BaseFrequentlyUsedListPage<
     );
   }
 
-  Widget frequentlyUsedItem(Recent item) {
-    return BaseFrequentlyUsedItem(recent: item);
-  }
+  void onTapRecent(recent) {}
 }

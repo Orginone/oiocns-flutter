@@ -20,7 +20,6 @@ class MarketPage extends BaseFrequentlyUsedListPage<MarketController, MarketStat
     );
   }
 
-
   @override
   MarketController getController() {
     return MarketController();
