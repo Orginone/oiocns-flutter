@@ -1,50 +1,34 @@
-import 'package:get/get.dart';
-import 'package:orginone/dart/core/thing/base/species.dart';
-import 'package:orginone/model/thing_model.dart';
-import 'package:orginone/pages/other/thing/thing_details/logic.dart';
+import 'dart:convert';
+
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
 class ThingInfoController extends BaseController<ThingInfoState> {
- final ThingInfoState state = ThingInfoState();
+  final ThingInfoState state = ThingInfoState();
 
-
- ThingInfoController();
-
- var detailsController = Get.find<ThingDetailsController>();
-
- ThingModel get thing => detailsController.state.thing;
-
- @override
-  void onReady() async{
+  @override
+  void onReady() async {
     // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
-    List<Map<ISpeciesItem,Map<String,dynamic>>> currentSpecies = [];
-    if(thing.eidtInfo!=null){
-      // CommonTreeManagement().species!.getAllList().forEach((specie) {
-      //   for (var data in thing.data!) {
-      //     String id = data.keys.first.substring(1);
-      //     if(id == specie.id){
-      //       currentSpecies.add({specie:data[data.keys.first]});
-      //     }
-      //   }
-      // });
-    }
-    for (var element in currentSpecies) {
-      var data = element[element.keys.first];
-      List<CardData> cardData = [];
-      for (var attribute in data!.keys) {
-        var xAttr = null;
-        if(xAttr!=null){
-          cardData.add(CardData(xAttr, data[attribute]));
-        }
+    state.attr.value = await state.thingController.state.form.loadAttributes();
+    for (var element in state.attr) {
+      if (element.valueType == "附件型") {
+        try {
+          List<dynamic> files = jsonDecode(state.thing.propertys[element.code]);
+          List<FileItemShare> share =
+              files.map((e) => FileItemShare.fromJson(e)).toList();
+          element.value = share.map((e) => e.name).join('\n');
+          element.share = share;
+        } catch (e) {}
+      } else {
+        element.value = state.thing.propertys[element.code];
       }
-      CardDetails cardDetails = CardDetails(element.keys.first, cardData);
-      state.details.add(cardDetails);
     }
     LoadingDialog.dismiss(context);
+    state.attr.refresh();
   }
 }

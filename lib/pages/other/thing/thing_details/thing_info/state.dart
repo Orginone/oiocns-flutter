@@ -4,21 +4,17 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
+import 'package:orginone/model/thing_model.dart';
+import 'package:orginone/pages/other/thing/logic.dart';
+import 'package:orginone/pages/other/thing/thing_details/logic.dart';
 
 class ThingInfoState extends BaseGetState{
-  var details = <CardDetails>[].obs;
-}
+  var attr = <XAttribute>[].obs;
 
 
-class CardDetails{
-  late ISpeciesItem specie;
-  late List<CardData> data;
+  var thingController = Get.find<ThingController>();
 
-  CardDetails(this.specie,this.data);
-}
+  var detailsController = Get.find<ThingDetailsController>();
 
-class CardData{
-  late XAttribute xAttribute;
-  late dynamic value;
-  CardData(this.xAttribute,this.value);
+  ThingModel get thing => detailsController.state.thing;
 }

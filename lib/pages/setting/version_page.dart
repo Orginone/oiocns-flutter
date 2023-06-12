@@ -7,8 +7,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/widget/a_font.dart';
-import 'package:orginone/widget/base_list_controller.dart';
 import 'package:orginone/widget/template/originone_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/loading_widget.dart';
@@ -49,9 +49,9 @@ class VersionPage extends GetView<VersionController> {
 
   ListView listWidget() {
     return ListView.builder(
-      itemCount: controller.dataList.length,
+      itemCount: controller.state.dataList.length,
       itemBuilder: (context, index) {
-        return itemInit(context, index, controller.dataList[index]);
+        return itemInit(context, index, controller.state.dataList[index]);
       },
     );
   }
@@ -201,7 +201,7 @@ class VersionPage extends GetView<VersionController> {
 }
 
 
-class VersionController extends BaseListController<VersionVersionMes> {
+class VersionController extends BaseListController {
   var fileCtrl = UpdateController();
   final Rx<LoadStatusX> mLoadStatus = LoadStatusX.loading.obs;
 
@@ -211,8 +211,9 @@ class VersionController extends BaseListController<VersionVersionMes> {
     onRefresh();
   }
 
+
   @override
-  void onRefresh() async {
+  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async{
     var version = await fileCtrl.versionList();
     if (version != null) {
       List<VersionVersionMes> versionList = [];
@@ -230,7 +231,7 @@ class VersionController extends BaseListController<VersionVersionMes> {
       }
       PageResp<VersionVersionMes> pageResp =
       PageResp(versionList.length, versionList.length, versionList);
-      addData(true, pageResp);
+      state.dataList.add(pageResp);
       mLoadStatus.value = LoadStatusX.success;
       update();
     } else {
@@ -239,8 +240,7 @@ class VersionController extends BaseListController<VersionVersionMes> {
     }
   }
 
-  @override
-  void onLoadMore() {}
+
 
   @override
   void search(String value) {}

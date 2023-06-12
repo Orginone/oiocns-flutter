@@ -20,217 +20,70 @@ class IndexPage extends GetView<SettingController> {
   // 轮播图片
   List<String> imageList = [
     "images/bg_center1.png",
-    "images/bg_center2.png",
-    "images/bg_center3.png",
   ];
 
   @override
   Widget build(BuildContext context) {
-    double x = 0, y = 0;
     return Scaffold(
       backgroundColor: XColors.white,
       drawerScrimColor: XColors.white,
-      drawer: Drawer(
-        width: MediaQuery.of(context).size.width,
+      body: RefreshIndicator(
+        onRefresh: () async{
+          await controller.provider.loadApps(true);
+        },
         child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: XColors.navigatorBgColor,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.file_download_done_outlined),
-                        onPressed: () {
-                          Navigator.pop(context); // 关闭Drawer
-                        },
-                      ),
-                      const Text(
-                        '今天还没打卡哦',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 212.h,
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.close),
-                        onPressed: () {
-                          Navigator.pop(context); // 关闭Drawer
-                        },
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 22.h,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 22.h,
-                      ),
-                      GFAvatar(
-                          size: GFSize.LARGE,
-                          backgroundImage: NetworkImage(
-                              'https://s3.bmp.ovh/imgs/2023/02/28/3d1e012ec88ff534.jpg'),
-                          shape: GFAvatarShape.circle),
-                      SizedBox(
-                        width: 42.h,
-                      ),
-                      Column(
-                        children: [
-                          Text(
-                            '昵称：凌志强',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                            ),
-                          ),
-                          Text(
-                            '等级：999级',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                            ),
-                          ),
-                          Text(
-                            '个性签名：物有本末，事有始终。',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                            ),
-                          )
-                        ],
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.qr_code_scanner_outlined),
-                        onPressed: () {
-                          Get.toNamed(Routers.addFriend);
-                        },
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.favorite),
-              title: const Text('收藏'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.wallet),
-              title: const Text('钱包'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.insert_drive_file_sharp),
-              title: const Text('文件'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.source),
-              title: const Text('资源'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
-      body: ListView(
-          scrollDirection: Axis.vertical,
-          children: <Widget>[
-            _carousel(imageList),
-            Container(
-                decoration: BoxDecoration(
-                    color: XColors.white,
-                    borderRadius: BorderRadius.circular(10)),
+            scrollDirection: Axis.vertical,
+            children: <Widget>[
+              ImageWidget(imageList.first),
+              Container(
+                  decoration: BoxDecoration(
+                      color: XColors.white,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: SizedBox(
+                    height: 12.h,
+                  )),
+              Container(
+                color: XColors.white,
                 child: SizedBox(
                   height: 12.h,
-                )),
-            Container(
-              color: XColors.white,
-              child: SizedBox(
-                height: 12.h,
+                ),
               ),
-            ),
-            Container(
-                decoration: BoxDecoration(
-                    color: XColors.white,
-                    borderRadius: BorderRadius.circular(10)),
-                padding: const EdgeInsets.fromLTRB(11.0, 0, 0, 0),
-                alignment: Alignment.topLeft,
-                child: Text(
-              "常用",
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500),
-            )),
-        Container(
-          color: XColors.white,
-          child: SizedBox(
-            height: 12.h,
-          ),
-        ),
-        const MyHorizontalMenu(),
-        Container(
-            decoration: BoxDecoration(
-                color: XColors.white, borderRadius: BorderRadius.circular(10)),
+              Container(
+                  decoration: BoxDecoration(
+                      color: XColors.white,
+                      borderRadius: BorderRadius.circular(10)),
+                  padding: const EdgeInsets.fromLTRB(11.0, 0, 0, 0),
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                "常用",
+                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500),
+              )),
+          Container(
+            color: XColors.white,
             child: SizedBox(
               height: 12.h,
-            )),
-        Container(
-          color: XColors.white,
-          padding: EdgeInsets.only(left: 12.w, right: 12.w),
-          child: ListView(
-                shrinkWrap: true,
-            children: [
-              Obx(() {
-                return CardChildWidget('应用', controller.provider.myApps.value);
-              }),
-            ],
-          ),
-        ),
-      ]),
-    );
-  }
-
-  Widget _popMenuItem(
-    BuildContext context,
-    IconData icon,
-    String text,
-    Function func,
-  ) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        Navigator.pop(context);
-        func();
-      },
-      child: SizedBox(
-        height: 40.h,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(icon, color: Colors.black),
-            Container(
-              margin: EdgeInsets.only(left: 20.w),
             ),
-            Text(text),
-          ],
-        ),
+          ),
+          const MyHorizontalMenu(),
+          Container(
+              decoration: BoxDecoration(
+                  color: XColors.white, borderRadius: BorderRadius.circular(10)),
+              child: SizedBox(
+                height: 12.h,
+              )),
+          Container(
+            color: XColors.white,
+            padding: EdgeInsets.only(left: 12.w, right: 12.w),
+            child: ListView(
+                  shrinkWrap: true,
+              children: [
+                Obx(() {
+                  return CardChildWidget('应用', controller.provider.myApps.value);
+                }),
+              ],
+            ),
+          ),
+        ]),
       ),
     );
   }
@@ -249,12 +102,9 @@ class IndexPage extends GetView<SettingController> {
       autoPlay: true,
       items: imageList.map(
             (img) {
-          return Container(
-            margin: const EdgeInsets.only(left: 8.0),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-              child: Image.asset(img, fit: BoxFit.fill, width: 1000.0),
-            ),
+          return ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+            child: Image.asset(img, fit: BoxFit.fill, width: 1000.0),
           );
         },
       ).toList(),
@@ -291,7 +141,7 @@ class CardChildWidget extends GetView<SettingController> {
               itemCount: value.length,
               gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 5,
-                mainAxisExtent:100.h,
+                mainAxisExtent:110.h,
               ),
               itemBuilder: (context, index) {
                 return GestureDetector(

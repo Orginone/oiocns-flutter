@@ -121,7 +121,8 @@ class _MessageForwardState extends State<MessageForward> {
                             CupertinoDialogAction(
                               child: const Text('确定'),
                               onPressed: () async {
-                                var success = await item.msg.sendMessage(MessageType.getType(widget.msgType)!, jsonEncode(widget.msgBody.toJson()));
+                                var msgType = MessageType.getType(widget.msgType);
+                                var success = await item.msg.sendMessage(msgType!,msgType == MessageType.text?widget.msgBody.text!:jsonEncode(widget.msgBody.toJson()));
                                 if(success){
                                   ToastUtils.showMsg(msg: "转发成功");
                                 }
@@ -142,14 +143,7 @@ class _MessageForwardState extends State<MessageForward> {
                 },
                 child: Row(
                   children: [
-                    AdvancedAvatar(
-                      size: 50.w,
-                      decoration: BoxDecoration(
-                          color: XColors.themeColor,
-                          borderRadius: BorderRadius.all(Radius.circular(8.w)),
-                         ),
-                      child: ImageWidget(item.msg.share.avatar?.thumbnailUint8List??item.msg.share.avatar?.defaultAvatar),
-                    ),
+                    ImageWidget(item.msg.share.avatar?.thumbnailUint8List??item.msg.share.avatar?.defaultAvatar,size: 50.w,),
                     SizedBox(
                       width: 15.w,
                     ),

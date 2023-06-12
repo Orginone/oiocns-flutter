@@ -1,19 +1,20 @@
 
 
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/getx/base_get_list_state.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
+import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/model/thing_model.dart';
 
-class ThingState extends BaseGetState{
+class ThingState extends BaseGetListState<ThingModel>{
 
-  late String title;
+  late Form form;
 
-  late String id;
-
-  var things = <ThingModel>[].obs;
+  late String belongId;
 
   ThingState(){
-    title = Get.arguments['title'];
-    id = Get.arguments['id'];
+    form = Get.arguments['form'];
+    belongId = Get.arguments['belongId'];
   }
 }

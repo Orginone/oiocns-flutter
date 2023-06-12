@@ -1,12 +1,11 @@
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/config/enum.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'base_controller.dart';
 import 'base_get_list_state.dart';
-import 'base_get_state.dart';
+
 
 abstract class BaseListController<S extends BaseGetListState> extends BaseController<S>{
 
@@ -16,8 +15,6 @@ abstract class BaseListController<S extends BaseGetListState> extends BaseContro
 
   BaseListController();
 
-  RefreshController get refreshController => state.refreshController;
-
   @override
   void onInit() {
     log = Logger(this.toString());
@@ -25,22 +22,16 @@ abstract class BaseListController<S extends BaseGetListState> extends BaseContro
   }
 
 
+
+
   /// 下拉刷新使用
   Future onRefresh() async{
-    return await loadData(isRefresh: true).then((value){
-      refreshController.refreshCompleted();
-    }).onError((err,stack){
-      refreshController.refreshFailed();
-    });
+    await loadData(isRefresh: true);
   }
 
   /// 加载更多使用
   Future onLoadMore() async{
-    return await loadData().then((value){
-      refreshController.loadComplete();
-    }).onError((err,stack){
-      refreshController.loadFailed();
-    });
+    await loadData();
   }
 
   void loadSuccess(){
@@ -58,36 +49,6 @@ abstract class BaseListController<S extends BaseGetListState> extends BaseContro
     throw Exception("未实现的方法!");
   }
 
-  /// isRefresh true 刷新 false 加载更多
-  /// 添加数据&自动判断列表刷新和更多对应的头和脚状态
-  void addData(bool isRefresh,data) {
-    if (isRefresh) {
-      state.dataList.clear();
-      state.dataList.addAll(data);
-      refreshController.refreshCompleted(resetFooterState: true);
-      if (state.dataList.isEmpty) {
-        //加载空页面
-        updateLoadStatus(LoadStatusX.empty);
-        return;
-      } else {
-        updateLoadStatus(LoadStatusX.success);
-      }
-
-      /// 无更多
-      if (state.dataList.length >= data.length) {
-        refreshController.loadComplete();
-        refreshController.loadNoData();
-      }
-    } else {
-      state.dataList.addAll(data);
-      refreshController.loadComplete();
-
-      /// 无更多
-      if (state.dataList.length >= data.length) {
-        refreshController.loadNoData();
-      }
-    }
-  }
 
   void removeAt(int index) {
     if (index < state.dataList.length) {
@@ -100,12 +61,12 @@ abstract class BaseListController<S extends BaseGetListState> extends BaseContro
 
   @override
   void onClose() {
-    refreshController.dispose();
+    state.refreshController.dispose();
     super.onClose();
   }
 
   Future<void> loadData({bool isRefresh = false,bool isLoad = false}) async{
-
+    loadSuccess();
   }
 
 

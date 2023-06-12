@@ -108,8 +108,6 @@ dependencies:
 
   # view滑动库
   flutter_slidable: ^2.0.0
-  # 下拉刷新 加载更多
-  pull_to_refresh: ^2.0.0
   # 弹框
   flutter_animated_dialog: ^2.0.1
 
@@ -141,6 +139,7 @@ dependencies:
   flutter_svg: ^2.0.5
   adaptive_dialog: ^1.8.3+1
   flutter_link_previewer: ^3.1.0
+  easy_refresh: ^3.3.2+1
 dev_dependencies:
   flutter_test:
     sdk: flutter

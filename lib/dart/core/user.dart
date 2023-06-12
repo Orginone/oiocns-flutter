@@ -115,34 +115,38 @@ class UserProvider {
     await _work.value?.loadTodos(reload: true);
     _inited = true;
     await loadApps();
-    _chat.value?.loadPreMessage();
     _chat.value?.loadAllChats();
-
+    await _chat.value?.loadPreMessage();
     _chat.refresh();
     _user.refresh();
   }
 
-  Future<void> loadApps() async {
+  Future<void> loadApps([bool reload = false]) async {
+    if (reload) {
+      await user!.deepLoad(reload: reload);
+    }
+    List<IApplication> apps = [];
     for (var target in user!.targets) {
       for (var specie in target.species) {
         if (specie.metadata.typeName == SpeciesType.application.label) {
           var app = specie as IApplication;
-          if ((await app.loadWorkDefines()).isNotEmpty) {
-            myApps.add(app);
+          if ((await app.loadWorkDefines(reload: true)).isNotEmpty) {
+            apps.add(app);
           }
         }
       }
     }
 
-    myApps.value = myApps
+    myApps.value = apps
         .asMap()
         .entries
         .where((entry) =>
-            myApps.indexWhere(
+            apps.indexWhere(
                 (app) => app.metadata.id == entry.value.metadata.id) ==
             entry.key)
         .map((entry) => entry.value)
         .toList();
+    myApps.refresh();
   }
 
   void _recvTarget(data) {

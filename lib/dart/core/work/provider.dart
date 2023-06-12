@@ -23,7 +23,7 @@ abstract class IWorkProvider {
   Future<List<XWorkTask>> loadTodos({bool reload = false});
 
   /// 加载已办任务
-  Future<List<XWorkRecord>> loadDones(String id);
+  Future<List<XWorkTask>> loadDones(String id);
 
   /// 加载我发起的办事任务
   Future<List<XWorkTask>> loadApply(String id);
@@ -112,12 +112,38 @@ class WorkProvider implements IWorkProvider{
 
   @override
   Future<List<XWorkTask>> loadApply(String id) async{
-    return (await kernel.queryMyApply(IdReq(id: id))).data?.result??[];
+    var res = await kernel.anystore.pageRequest('work-task',user.id,{
+      "match": {
+        "belongId": id,
+        "createUser": user.id,
+        "nodeId": {
+          "_exists_": false,
+        },
+      },
+      "sort": {
+        "createTime": -1,
+      },
+    },PageRequest(offset: 0, limit: 9999, filter: ''));
+    return res;
   }
 
   @override
-  Future<List<XWorkRecord>> loadDones(String id) async{
-    return (await kernel.queryWorkRecord(IdReq(id: id))).data?.result??[];
+  Future<List<XWorkTask>> loadDones(String id) async{
+    var res = await kernel.anystore.pageRequest('work-task',user.id,{
+      "match": {
+        "belongId": id,
+        "status": {
+          "_gte_": 100,
+        },
+        "records": {
+          "_exists_": true,
+        },
+      },
+      "sort": {
+        "createTime": -1,
+      },
+    },PageRequest(offset: 0, limit: 9999, filter: ''));
+    return res;
   }
 
   @override

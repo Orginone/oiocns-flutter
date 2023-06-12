@@ -5,6 +5,7 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/model/thing_model.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_utils.dart';
+import 'package:orginone/widget/target_text.dart';
 
 class Item extends StatelessWidget {
   final ThingModel item;
@@ -49,15 +50,21 @@ class Item extends StatelessWidget {
                           SizedBox(
                             height: 10.h,
                           ),
-                          Text(
-                            "创建人:${settingCtrl.user.findShareById(item.creater ?? "")}",
-                            style: TextStyle(fontSize: 18.sp),
-                          ),
+                          Text.rich(TextSpan(
+                              children: [
+                                TextSpan(text: "创建人:",
+                                  style: TextStyle(fontSize: 18.sp),),
+                                WidgetSpan(child: TargetText(
+                                  userId: item.creater ?? "",
+                                  style: TextStyle(fontSize: 18.sp),),alignment: PlaceholderAlignment.middle)
+                              ]
+                          ),),
                           SizedBox(
                             height: 10.h,
                           ),
                           Text(
-                            "创建时间:${DateTime.tryParse(item.createTime ?? "")?.format(format: "yyyy-MM-dd HH:mm")}",
+                            "创建时间:${DateTime.tryParse(item.createTime ?? "")
+                                ?.format(format: "yyyy-MM-dd HH:mm")}",
                             style: TextStyle(
                                 color: Colors.black54, fontSize: 16.sp),
                           ),

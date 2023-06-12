@@ -1,9 +1,8 @@
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/widget/load_state_widget.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'base_get_list_state.dart';
 import 'base_list_controller.dart';
@@ -22,47 +21,55 @@ abstract class BaseGetListPageView<T extends BaseListController, S extends BaseG
     controller = Get.put(getController(), tag: tag());
     controller.context = context;
 
-    return Column(
-      children: [
-        headWidget(),
-        Expanded(
-          child: Obx(() {
-            return LoadStateWidget(
-              isSuccess: state.isSuccess.value,
-              isLoading: state.isLoading.value,
-              onRetry: (){
-                controller.loadData();
-              },
-              builder: (){
-                return SmartRefresher(
-                  controller: controller.refreshController,
-                  enablePullDown: true,
-                  enablePullUp: false,
-                  onRefresh: () => controller.onRefresh(),
-                  onLoading: () => controller.onLoadMore(),
-                  child: Obx((){
-                    if(state.dataList.isEmpty && displayNoDataWidget()){
+    return NestedScrollView(
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return [
+          SliverToBoxAdapter(
+            child: headWidget(),
+          )
+        ];
+      },
+      body: EasyRefresh(
+        controller: state.refreshController,
+        onRefresh: controller.onRefresh,
+        onLoad: controller.onLoadMore,
+        header: const MaterialHeader(),
+        footer: const MaterialFooter(),
+        child: Column(
+          children: [
+            Expanded(
+              child: Obx(() {
+                return LoadStateWidget(
+                  isSuccess: state.isSuccess.value,
+                  isLoading: state.isLoading.value,
+                  onRetry: () {
+                    controller.loadData();
+                  },
+                  child: Obx(() {
+                    if (state.dataList.isEmpty && displayNoDataWidget()) {
                       return noData();
                     }
                     return buildView();
                   }),
                 );
-              },
-            );
-          }),
+              }),
+            ),
+            bottomWidget(),
+          ],
         ),
-        bottomWidget(),
-      ],
+      ),
     );
   }
 
   Widget noData(){
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      alignment: Alignment.center,
-      color: Colors.grey.shade200,
-      child: Image.asset("images/no_data_icon.png",width: 300.w,height: 400.w,),
+    return SingleChildScrollView(
+      child: Container(
+        width: double.infinity,
+        height: MediaQuery.of(context).size.height.h,
+        alignment: Alignment.center,
+        color: Colors.grey.shade200,
+        child: Image.asset("images/no_data_icon.png",width: 300.w),
+      ),
     );
   }
 

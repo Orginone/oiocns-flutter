@@ -56,7 +56,10 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
   }
 
   void jumpDetails(StoreTreeNav nav) {
-    jumpFile(nav);
+    Get.toNamed(Routers.thing, arguments: {
+      'form': nav.source,
+      "belongId": nav.space!.id
+    });
   }
 
   void jumpFile(StoreTreeNav nav) {
@@ -67,6 +70,10 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
   void onNext(StoreTreeNav nav) {
     if (nav.personalEnum == PersonalEnum.file) {
       jumpFile(nav);
+    } else if (nav.source != null &&
+        nav.source.metadata.typeName == SpeciesType.thing.label &&
+        nav.children.isEmpty) {
+      jumpDetails(nav);
     } else {
       Get.toNamed(Routers.storeTree,
           preventDuplicates: false, arguments: {'data': nav});

@@ -18,7 +18,7 @@ class WorkNetWork {
 
   static Future<List<XWorkTask>> getDones(String id) async {
     var result = await setting.provider.work?.loadDones(id);
-    return result!.map((e) => e.task!).toList();
+    return result??[];
   }
 
   static Future<List<XWorkTask>> getApply(String id) async {

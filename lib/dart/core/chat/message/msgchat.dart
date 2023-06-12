@@ -13,6 +13,7 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/util/encryption_util.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 import 'message.dart';
 
@@ -152,7 +153,7 @@ abstract class IMsgChat extends IEntity {
   void onMessage();
 
   /// 缓存会话
-  void cache();
+  Future<void> cache();
 
   /// 加载会话缓存
   /// [chatCache] 缓存数据
@@ -265,22 +266,22 @@ abstract class MsgChat extends Entity implements IMsgChat {
   }
 
   @override
-  onMessage() {
+  onMessage() async{
     setting.chat.currentChat = this;
     if (chatdata.value.noReadCount > 0) {
       chatdata.value.noReadCount = 0;
-      cache();
+      await cache();
     }
     if (messages.length < 10) {
-      moreMessage();
+      await moreMessage();
     }
     chatdata.refresh();
   }
-
+  
   @override
-  cache() {
+ Future<void> cache() async{
     chatdata.value.labels = labels;
-    kernel.anystore.set(
+    var res = await kernel.anystore.set(
       "${StoreCollName.chatMessage}.T${chatdata.value.fullId}",
       {
         "operation": "replaceAll",
@@ -288,6 +289,11 @@ abstract class MsgChat extends Entity implements IMsgChat {
       },
       userId,
     );
+    if(!res.success){
+      ToastUtils.showMsg(msg: res.msg);
+    }
+    print("code------------------${"${StoreCollName.chatMessage}.T${chatdata.value.fullId}"}");
+    print("data------------------${chatdata.toJson()}");
   }
 
   @override

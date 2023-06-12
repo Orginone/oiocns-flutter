@@ -7,6 +7,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/pages/chat/message_chats/message_chats_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_util.dart';
 import 'package:orginone/util/string_util.dart';
@@ -21,8 +22,10 @@ class MessageItemWidget extends GetView<SettingController> {
 
   final bool enabledSlidable;
 
+  final VoidCallback? callback;
   const MessageItemWidget({
     Key? key,
+    this.callback,
     required this.chat,
     this.enabledSlidable = true,
   }) : super(key: key);
@@ -32,6 +35,9 @@ class MessageItemWidget extends GetView<SettingController> {
     bool isTop = chat.labels.contains("置顶");
     return GestureDetector(
       onTap: () {
+        if(callback!=null){
+          callback!();
+        }
         chat.onMessage();
         Get.toNamed(
           Routers.messageChat,

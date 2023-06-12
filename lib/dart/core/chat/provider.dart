@@ -5,13 +5,15 @@ import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/pages/chat/message_chats/message_chats_state.dart';
+import 'package:orginone/pages/home/index/index_page.dart';
 
 abstract class IChatProvider {
   /// 当前用户
   IPerson get user;
 
   /// 所有会话
-  late List<IMsgChat> allChats;
+  late RxList<IMsgChat> allChats;
 
   /// 指定会话
   List<IMsgChat> get topChats;
@@ -24,7 +26,13 @@ abstract class IChatProvider {
   void preMessage();
 
   /// 加载消息
-  void loadPreMessage();
+  Future<void> loadPreMessage();
+
+  //设为常用
+  Future<MessageRecent?> setMostUsed(IMsgChat msg);
+
+  //获取常用
+  Future<List<MessageRecent>> loadMostUsed();
 
   void loadAllChats();
 }
@@ -56,7 +64,7 @@ class ChatProvider implements IChatProvider {
         _preTags.add(tag);
       }
     });
-    allChats = [];
+    allChats = RxList([]);
   }
 
   @override
@@ -65,44 +73,41 @@ class ChatProvider implements IChatProvider {
   }
 
   @override
-  void loadPreMessage() {
-    kernel.anystore.get(StoreCollName.chatMessage, user.id).then((res) {
-      if (res.success) {
-        if (res.data is Map<String, dynamic>) {
-          res.data.keys.forEach((key) {
-            if (key!.startsWith('T') && res.data[key]['fullId'] != null) {
-              var fullId = key.substring(1);
-              var find = chats
-                  .firstWhereOrNull((i) => i.chatdata.value.fullId == fullId);
-              find?.loadCache(MsgChatData.fromMap(res.data[key]));
-            }
-          });
+  Future<void> loadPreMessage() async {
+    var res = await kernel.anystore.get(StoreCollName.chatMessage, user.id);
+    if (res.success) {
+      if (res.data is Map<String, dynamic>) {
+        for (var key in (res.data as Map).keys) {
+          if (key!.startsWith('T') && res.data[key]['fullId'] != null) {
+            var fullId = key.substring(1);
+            var find = allChats
+                .firstWhereOrNull((i) => i.chatdata.value.fullId == fullId);
+            find?.loadCache(MsgChatData.fromMap(res.data[key]));
+          }
         }
-        _preMessages.sort((a, b){
-          return DateTime.parse(a.createTime).compareTo(DateTime.parse(b.createTime));
-        });
-        for (var element in _preMessages) {
-          _recvMessage(element);
-        }
-        _preMessage = false;
       }
-    });
+      _preMessages.sort((a, b) {
+        return DateTime.parse(a.createTime)
+            .compareTo(DateTime.parse(b.createTime));
+      });
+      for (var element in _preMessages) {
+        _recvMessage(element);
+      }
+      _preMessage = false;
+    }
   }
 
   @override
-  late List<IMsgChat> allChats;
-
+  late RxList<IMsgChat> allChats;
 
   @override
-  void loadAllChats(){
+  void loadAllChats() {
     allChats.clear();
-    allChats = [...user.chats];
+    allChats.value = [...user.chats];
     for (final company in user.companys) {
       allChats.addAll(company.chats);
     }
     allChats.removeWhere((element) => !element.isMyChat);
-    var s = allChats.where((element) => element.labels.contains("浙江省财政厅")).toList();
-    print('');
   }
 
   void _recvMessage(MsgSaveModel data) {
@@ -146,10 +151,66 @@ class ChatProvider implements IChatProvider {
   @override
 // TODO: implement chats
   List<IMsgChat> get chats {
-    var list = allChats.where((element) => !element.labels.contains("置顶")).toList();
+    var list =
+        allChats.where((element) => !element.labels.contains("置顶")).toList();
+    list.removeWhere((element) => element.chatdata.value.lastMessage == null);
     list.sort((f, s) {
       return (s.chatdata.value.lastMsgTime) - (f.chatdata.value.lastMsgTime);
     });
     return list;
+  }
+
+
+  @override
+  Future<MessageRecent?> setMostUsed(IMsgChat msg) async {
+    var res = await kernel.anystore.set(
+      "${StoreCollName.mostUsed}.chats.T${msg.chatdata.value.fullId}",
+      {
+        "data": {
+          "id": msg.chatdata.value.fullId,
+        },
+      },
+      user.id,
+    );
+    if (res.success) {
+      MessageRecent recent =  MessageRecent(
+          chat: msg,
+          name: msg.chatdata.value.chatName,
+          id: msg.chatdata.value.fullId,
+          avatar: msg.share.avatar?.thumbnailUint8List ??
+              msg.share.avatar?.defaultAvatar);
+      return recent;
+    }
+    return null;
+  }
+
+  @override
+  Future<List<MessageRecent>> loadMostUsed() async{
+
+    List<MessageRecent> mostUsedChats = [];
+    var res = await kernel.anystore.get(
+      StoreCollName.mostUsed,
+      user.id,
+    );
+
+    if(res.success && res.data!=null){
+      var chats = res.data['chats'];
+      if (chats is Map<String, dynamic>) {
+        for (var key in chats.keys) {
+          var fullId = key.substring(1);
+          var find = allChats
+              .firstWhereOrNull((i) => i.chatdata.value.fullId == fullId);
+          if(find!=null){
+            mostUsedChats.add(MessageRecent(
+                chat: find,
+                name: find.chatdata.value.chatName,
+                id: find.chatdata.value.fullId,
+                avatar: find.share.avatar?.thumbnailUint8List ??
+                    find.share.avatar?.defaultAvatar));
+          }
+        }
+      }
+    }
+    return mostUsedChats;
   }
 }

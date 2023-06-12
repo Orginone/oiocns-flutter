@@ -13,6 +13,8 @@ class StoreCollName {
   static const wrkTask = 'work-task';
   static const workInstance = 'work-instances';
   static const chatMessage = 'chat-message';
+
+  static const mostUsed = 'most-used';
 }
 
 enum OrgAuth{
