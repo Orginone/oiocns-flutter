@@ -9,6 +9,7 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/thing/store/provider.dart';
 import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/dart/core/work/provider.dart';
 import 'package:orginone/event/home_data.dart';
@@ -77,6 +78,10 @@ class SettingController extends GetxController {
 
   IWorkProvider get work {
     return _provider.work!;
+  }
+
+  IStoreProvider get store {
+    return _provider.store!;
   }
 
   /// 组织树

@@ -14,7 +14,7 @@ class ThingInfoPage
       child: Obx(() {
         return Column(children: [
           CommonWidget.commonHeadInfoWidget(
-              state.thingController.state.form.metadata.name),
+             state.form.metadata.name),
           CommonWidget.commonFormWidget(
               formItem: state.attr.map((e) {
             String value = e.value ?? "";

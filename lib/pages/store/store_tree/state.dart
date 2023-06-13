@@ -20,13 +20,7 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
             name: value.metadata.name ?? "",
             id: value.metadata.id,
             space: value,
-            children: [
-              StoreTreeNav(
-                  name: PersonalEnum.file.label,
-                  personalEnum: PersonalEnum.file,
-                  children: [],
-                  space: value),
-            ],
+            children: [],
             image: value.metadata.avatarThumbnail(),
             wareHouseType: WareHouseType.organization,
           ),
@@ -40,18 +34,10 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
               wareHouseType: WareHouseType.personal,
               children: [
                 StoreTreeNav(
-                    name: PersonalEnum.application.label,
-                    personalEnum: PersonalEnum.application,
-                    children: []),
-                StoreTreeNav(
                     name: PersonalEnum.file.label,
                     personalEnum: PersonalEnum.file,
                     children: [],
                     space: settingCtrl.user),
-                StoreTreeNav(
-                    name: PersonalEnum.data.label,
-                    personalEnum: PersonalEnum.data,
-                    children: []),
               ],
               space: settingCtrl.user),
           StoreTreeNav(
@@ -86,12 +72,6 @@ class StoreTreeNav extends BaseBreadcrumbNavModel<StoreTreeNav> {
 }
 
 
-List<String> personalWork = [
-  "应用",
-  "文件",
-  "数据",
-];
-
 enum WareHouseType {
   personal("个人"),
   target('目标用户'),
@@ -101,9 +81,7 @@ enum WareHouseType {
 }
 
 enum PersonalEnum {
-  application("应用"),
-  file("文件"),
-  data("数据");
+  file("文件");
 
   final String label;
 

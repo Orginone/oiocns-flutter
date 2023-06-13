@@ -160,13 +160,13 @@ class CardChildWidget extends GetView<SettingController> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(60),
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
                           color: XColors.navigatorBgColor,
                         ),
                         alignment: Alignment.center,
-                        width: 70.w,
-                        height: 70.w,
+                        width: 65.w,
+                        height: 65.w,
                         child: ImageWidget(
                           value[index].share.avatar?.thumbnailUint8List,
                           size: 64.w,
@@ -175,7 +175,7 @@ class CardChildWidget extends GetView<SettingController> {
                       ),
                       Text(
                         value[index].metadata.name,
-                        style: XFonts.size18Black6,
+                        style: XFonts.size18Black6,maxLines: 1,overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),

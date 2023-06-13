@@ -238,12 +238,12 @@ class FileItemModel extends FileItemShare {
   });
 
   FileItemModel.fromJson(Map<String, dynamic> json)
-      : key = json['key'],
-        isDirectory = json['isDirectory'],
+      : key = json['key']??"",
+        isDirectory = json['isDirectory']??false,
         contentType = json['contentType'],
         dateCreated = DateTime.tryParse(json['dateCreated'] ?? ""),
         dateModified = DateTime.tryParse(json['dateModified'] ?? ""),
-        hasSubDirectories = json['hasSubDirectories'],
+        hasSubDirectories = json['hasSubDirectories']??false,
         super(
           size: json["size"],
           name: json["name"],
@@ -262,6 +262,7 @@ class FileItemModel extends FileItemShare {
       "thumbnail": thumbnail,
     };
   }
+
 }
 
 class FileItemArray {

@@ -29,8 +29,8 @@ class MessageChatsController
     super.loadData(isRefresh: isRefresh, isLoad: isLoad);
   }
 
-
-  void jumpMessage(recent) {
+  @override
+  void onTapRecent(recent) {
     if(recent is MessageRecent){
       recent.chat.onMessage();
       Get.toNamed(

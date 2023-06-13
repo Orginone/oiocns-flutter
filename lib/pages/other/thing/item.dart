@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/model/thing_model.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_utils.dart';
+import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/target_text.dart';
 
 class Item extends StatelessWidget {
   final ThingModel item;
+  final PopupMenuItemSelected? onSelected;
 
-  const Item(
-      {Key? key,
-      required this.item,
-      })
-      : super(key: key);
-
-
+  const Item({
+    Key? key,
+    required this.item,
+    this.onSelected,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -80,24 +80,39 @@ class Item extends StatelessWidget {
     );
   }
 
-  Widget popupMenuButton(){
-    return PopupMenuButton(
-      icon:Icon(
-        Icons.more_vert_outlined,
-        size: 32.w,
-      ),
-      itemBuilder: (BuildContext context){
-        return [
-          const PopupMenuItem(value: "details",child: Text("详情"),),
-          const PopupMenuItem(value: "NTF",child: Text("生成NFT"),),
-          const PopupMenuItem(value: "setCommon",child: Text("设为常用"),),
-        ];
-      },
-      onSelected: (str){
-        if(str == "details"){
-          Get.toNamed(Routers.thingDetails,arguments: {"thing":item});
-        }
-      },
-    );
+  Widget popupMenuButton() {
+    return Obx(() {
+      List<PopupMenuItem> items = [
+        const PopupMenuItem(
+          value: "details",
+          child: Text("详情"),
+        ),
+        const PopupMenuItem(
+          value: "NTF",
+          child: Text("生成NFT"),
+        ),
+      ];
+
+      if (settingCtrl.store.isMostUsed(item.id!)) {
+        items.add(
+          const PopupMenuItem(
+            value: "delete",
+            child: Text("移除常用"),
+          ),
+        );
+      } else {
+        items.add(
+          const PopupMenuItem(
+            value: "set",
+            child: Text("设为常用"),
+          ),
+        );
+      }
+
+      return CommonWidget.commonPopupMenuButton(
+        onSelected: onSelected,
+        items: items,
+      );
+    });
   }
 }

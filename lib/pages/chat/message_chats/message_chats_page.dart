@@ -43,11 +43,6 @@ class MessageChats extends BaseFrequentlyUsedListPage<MessageChatsController,
   }
 
   @override
-  void onTapRecent(recent) {
-    controller.jumpMessage(recent);
-  }
-
-  @override
   String tag() {
     // TODO: implement tag
     return "MessageChats";

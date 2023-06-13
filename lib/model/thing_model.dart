@@ -11,10 +11,12 @@ class ThingModel {
   String? createTime;
   String? modifiedTime;
   String? status;
+
   bool isSelected = false;
 
   Map<String, dynamic> eidtInfo = {};
   Map<String, dynamic> propertys = {};
+  Map<String, dynamic> species = {};
   ThingModel(
       {this.id, this.creater, this.createTime, this.modifiedTime, this.status,this.eidtInfo =const {}});
 
@@ -28,6 +30,7 @@ class ThingModel {
     createTime = json['CreateTime'];
     modifiedTime = json['ModifiedTime'];
     status = json['Status'];
+    species = json['Species']??{};
     propertys = json['Propertys']??{};
     eidtInfo = json['EDIT_INFO']??{};
     json.keys.forEach((element) {
@@ -35,17 +38,18 @@ class ThingModel {
         eidtInfo[element] = json[element];
       }
     });
-
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['Id'] = this.id;
-    data['Creater'] = this.creater;
-    data['CreateTime'] = this.createTime;
-    data['ModifiedTime'] = this.modifiedTime;
-    data['Status'] = this.status;
-    data['EDIT_INFO'] = this.eidtInfo;
+    data['Id'] = id;
+    data['Creater'] = creater;
+    data['CreateTime'] = createTime;
+    data['ModifiedTime'] = modifiedTime;
+    data['Status'] = status;
+    data['EDIT_INFO'] = eidtInfo;
+    data['Propertys'] = propertys;
+    data['Species'] = species;
     return data;
   }
 }
