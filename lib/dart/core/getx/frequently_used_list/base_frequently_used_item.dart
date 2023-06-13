@@ -18,11 +18,10 @@ class BaseFrequentlyUsedItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
-        width: 50.w,
+        width: 80.w,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            recent.avatar == null
+          children: [recent.avatar == null
                 ? Container(
                     height: 48.w,
                     width: 48.w,
@@ -35,11 +34,12 @@ class BaseFrequentlyUsedItem extends StatelessWidget {
                     recent.avatar,
                     size: 48.w,
                   ),
+            SizedBox(height: 5.h,),
             Text(
               recent.name ?? "",
               maxLines: 1,
               style: TextStyle(
-                  fontSize: 14.sp,
+                  fontSize: 18.sp,
                   color: const Color.fromARGB(255, 52, 52, 54),
                   overflow: TextOverflow.ellipsis),
             )

@@ -1,5 +1,8 @@
+import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/util/logger.dart';
+import 'package:orginone/widget/loading_dialog.dart';
 import 'package:signalr_core/signalr_core.dart';
 
 /// 存储集线器
@@ -141,6 +144,11 @@ class StoreHub {
       var res = await _connection.invoke(methodName, args: args);
       log.info("=====> res: $res");
       log.info("========== storeHub-invoke-end =============");
+      if(res['code'] == 401){
+        LoadingDialog.dismiss(Get.context!);
+        Get.offAndToNamed(Routers.login);
+        return;
+      }
       return res;
     } catch (err) {
       log.info("========== storeHub-invoke-end =============");

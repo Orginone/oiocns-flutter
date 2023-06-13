@@ -58,7 +58,7 @@ class LoginController extends BaseController<LoginState> {
       [Permission.storage, Permission.notification].request();
       LocalStore.getStore().setStringList("account",
           [state.accountController.text, state.passWordController.text]);
-      Get.offAndToNamed(Routers.home);
+      Get.offAllNamed(Routers.home);
     } else {
       ToastUtils.showMsg(msg: res.msg);
     }
