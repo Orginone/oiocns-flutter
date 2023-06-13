@@ -42,10 +42,14 @@ class WorkItem extends StatelessWidget {
               border: Border(
                   bottom: BorderSide(color: Colors.grey.shade300, width: 0.4))),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ImageWidget(
-                Images.iconWorkitem,
-                size: 70.w,
+              Container(
+                margin: EdgeInsets.only(top: 10.h),
+                child: ImageWidget(
+                  Images.iconWorkitem,
+                  size: 70.w,
+                ),
               ),
               SizedBox(
                 width: 12.w,
@@ -113,6 +117,7 @@ class WorkItem extends StatelessWidget {
                                   fontSize: 14.sp, color: Colors.grey)),
                         ],
                       ),
+                      button(),
                     ],
                   ),
                 ),
@@ -129,44 +134,51 @@ class WorkItem extends StatelessWidget {
       return Container();
     }
 
-    Widget button = Column(
-      children: [
-        GestureDetector(
-          onTap: () {
-            controller.approval(todo, 100);
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 20.w),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.w),
-              color: XColors.themeColor,
-            ),
-            child: Text(
-              "通过",
-              style: TextStyle(color: Colors.white, fontSize: 16.sp),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 10.h,
-        ),
-        GestureDetector(
-          onTap: () {
-            controller.approval(todo, 200);
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 20.w),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.w),
-              color: Colors.red,
-            ),
-            child: Text(
-              "退回",
-              style: TextStyle(color: Colors.white, fontSize: 16.sp),
+    Widget button = Container(
+      margin: EdgeInsets.only(top: 10.h),
+      child: Row(
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                controller.approval(todo, 100);
+              },
+              child: Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 50.w),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.w),
+                  color: XColors.themeColor,
+                ),
+                child: Text(
+                  "通过",
+                  style: TextStyle(color: Colors.white, fontSize: 16.sp),
+                ),
+              ),
             ),
           ),
-        )
-      ],
+          SizedBox(width: 15.w,),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                controller.approval(todo, 200);
+              },
+              child: Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 50.w),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.w),
+                  color: Colors.red,
+                ),
+                child: Text(
+                  "退回",
+                  style: TextStyle(color: Colors.white, fontSize: 16.sp),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
     return button;
   }
