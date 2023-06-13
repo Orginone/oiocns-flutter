@@ -130,7 +130,7 @@ class WorkItem extends StatelessWidget {
   }
 
   Widget button() {
-    if (todo.status != 1) {
+    if (todo.status != 1 || todo.approveType != "审批") {
       return Container();
     }
 
