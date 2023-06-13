@@ -137,46 +137,44 @@ class WorkItem extends StatelessWidget {
     Widget button = Container(
       margin: EdgeInsets.only(top: 10.h),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () {
-                controller.approval(todo, 100);
-              },
-              child: Container(
-                alignment: Alignment.center,
-                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 50.w),
-                decoration: BoxDecoration(
+          GestureDetector(
+            onTap: () {
+              controller.approval(todo, 200);
+            },
+            child: Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 60.w),
+              decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8.w),
-                  color: XColors.themeColor,
-                ),
-                child: Text(
-                  "同意",
-                  style: TextStyle(color: Colors.white, fontSize: 16.sp),
-                ),
+                  // color: Colors.red,
+                  border: Border.all(color: Colors.red,width: 0.5)
+              ),
+              child: Text(
+                "拒绝",
+                style: TextStyle(color: Colors.black, fontSize: 16.sp),
               ),
             ),
           ),
           SizedBox(width: 15.w,),
-          Expanded(
-            child: GestureDetector(
-              onTap: () {
-                controller.approval(todo, 200);
-              },
-              child: Container(
-                alignment: Alignment.center,
-                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 50.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.w),
-                  color: Colors.red,
-                ),
-                child: Text(
-                  "拒绝",
-                  style: TextStyle(color: Colors.white, fontSize: 16.sp),
-                ),
+          GestureDetector(
+            onTap: () {
+              controller.approval(todo, 100);
+            },
+            child: Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 60.w),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.w),
+                color: XColors.themeColor,
+              ),
+              child: Text(
+                "同意",
+                style: TextStyle(color: Colors.white, fontSize: 16.sp),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
