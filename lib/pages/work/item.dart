@@ -171,7 +171,7 @@ class WorkItem extends StatelessWidget {
                   color: Colors.red,
                 ),
                 child: Text(
-                  "退回",
+                  "拒绝",
                   style: TextStyle(color: Colors.white, fontSize: 16.sp),
                 ),
               ),
