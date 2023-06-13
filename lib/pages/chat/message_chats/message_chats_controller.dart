@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_freqiently_usedList_controller.dart';
 import 'package:orginone/pages/chat/message_chats/message_chats_state.dart';
+import 'package:orginone/routers.dart';
 
 class MessageChatsController
     extends BaseFrequentlyUsedListController<MessageChatsState> {
@@ -12,12 +13,13 @@ class MessageChatsController
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    state.mostUsedList =  state.setting.chat.messageRecent;
     loadSuccess();
   }
 
   @override
   void onReady() async {
-    state.mostUsedList.value = await state.setting.chat.loadMostUsed();
+
   }
 
   @override
@@ -27,11 +29,14 @@ class MessageChatsController
     super.loadData(isRefresh: isRefresh, isLoad: isLoad);
   }
 
-  void setMostUsed(IMsgChat chat) async {
-    var recent = await state.setting.chat.setMostUsed(chat);
-    if (recent != null) {
-      state.mostUsedList.add(recent);
-      state.mostUsedList.refresh();
+
+  void jumpMessage(recent) {
+    if(recent is MessageRecent){
+      recent.chat.onMessage();
+      Get.toNamed(
+        Routers.messageChat,
+        arguments: recent.chat,
+      );
     }
   }
 }

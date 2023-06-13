@@ -117,6 +117,7 @@ class UserProvider {
     await loadApps();
     _chat.value?.loadAllChats();
     await _chat.value?.loadPreMessage();
+    await _chat.value?.loadMostUsed();
     _chat.refresh();
     _user.refresh();
   }

@@ -15,6 +15,8 @@ abstract class IChatProvider {
   /// 所有会话
   late RxList<IMsgChat> allChats;
 
+  late RxList<MessageRecent> messageRecent;
+
   /// 指定会话
   List<IMsgChat> get topChats;
 
@@ -29,12 +31,17 @@ abstract class IChatProvider {
   Future<void> loadPreMessage();
 
   //设为常用
-  Future<MessageRecent?> setMostUsed(IMsgChat msg);
+  Future<void> setMostUsed(IMsgChat msg);
+
+  //设为常用
+  Future<void> removeMostUsed(IMsgChat msg);
 
   //获取常用
-  Future<List<MessageRecent>> loadMostUsed();
+  Future<void> loadMostUsed();
 
   void loadAllChats();
+
+  bool isMostUsed(IMsgChat msg);
 }
 
 class ChatProvider implements IChatProvider {
@@ -47,6 +54,9 @@ class ChatProvider implements IChatProvider {
   IMsgChat? currentChat;
   @override
   final IPerson user;
+
+  @override
+  late RxList<MessageRecent> messageRecent;
 
   ChatProvider(this.user) {
     kernel.on('RecvMsg', (data) {
@@ -64,7 +74,8 @@ class ChatProvider implements IChatProvider {
         _preTags.add(tag);
       }
     });
-    allChats = RxList([]);
+    allChats = RxList();
+    messageRecent = RxList();
   }
 
   @override
@@ -162,14 +173,10 @@ class ChatProvider implements IChatProvider {
 
 
   @override
-  Future<MessageRecent?> setMostUsed(IMsgChat msg) async {
+  Future<void> setMostUsed(IMsgChat msg) async {
     var res = await kernel.anystore.set(
       "${StoreCollName.mostUsed}.chats.T${msg.chatdata.value.fullId}",
-      {
-        "data": {
-          "id": msg.chatdata.value.fullId,
-        },
-      },
+      {},
       user.id,
     );
     if (res.success) {
@@ -179,29 +186,26 @@ class ChatProvider implements IChatProvider {
           id: msg.chatdata.value.fullId,
           avatar: msg.share.avatar?.thumbnailUint8List ??
               msg.share.avatar?.defaultAvatar);
-      return recent;
+      messageRecent.add(recent);
     }
-    return null;
   }
 
   @override
-  Future<List<MessageRecent>> loadMostUsed() async{
-
-    List<MessageRecent> mostUsedChats = [];
+  Future<void> loadMostUsed() async{
     var res = await kernel.anystore.get(
-      StoreCollName.mostUsed,
+      "${StoreCollName.mostUsed}.chats",
       user.id,
     );
-
     if(res.success && res.data!=null){
-      var chats = res.data['chats'];
+      messageRecent.clear();
+      var chats = res.data;
       if (chats is Map<String, dynamic>) {
         for (var key in chats.keys) {
           var fullId = key.substring(1);
           var find = allChats
               .firstWhereOrNull((i) => i.chatdata.value.fullId == fullId);
           if(find!=null){
-            mostUsedChats.add(MessageRecent(
+            messageRecent.add(MessageRecent(
                 chat: find,
                 name: find.chatdata.value.chatName,
                 id: find.chatdata.value.fullId,
@@ -211,6 +215,23 @@ class ChatProvider implements IChatProvider {
         }
       }
     }
-    return mostUsedChats;
   }
+
+  @override
+  bool isMostUsed(IMsgChat msg) {
+    return messageRecent.where((p0) => p0.id == msg.chatdata.value.fullId).isNotEmpty;
+  }
+
+  @override
+  Future<void> removeMostUsed(IMsgChat msg) async{
+    var res = await kernel.anystore.delete(
+      "${StoreCollName.mostUsed}.chats.T${msg.chatdata.value.fullId}",
+      user.id,
+    );
+    if(res.success){
+      messageRecent.removeWhere((element) => element.id == msg.chatdata.value.fullId);
+      messageRecent.refresh();
+    }
+  }
+
 }

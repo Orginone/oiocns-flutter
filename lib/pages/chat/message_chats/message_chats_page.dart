@@ -25,17 +25,13 @@ class MessageChats extends BaseFrequentlyUsedListPage<MessageChatsController,
         SliverList(
           delegate: SliverChildBuilderDelegate((context, index) {
             var chat = topChats[index];
-            return MessageItemWidget(chat: chat,callback: (){
-              controller.setMostUsed(chat);
-            },);
+            return MessageItemWidget(chat: chat);
           }, childCount: topChats.length),
         ),
         SliverList(
           delegate: SliverChildBuilderDelegate((context, index) {
             var chat = chats[index];
-            return MessageItemWidget(chat: chat,callback: (){
-              controller.setMostUsed(chat);
-            },);
+            return MessageItemWidget(chat: chat);
           }, childCount: chats.length),
         ),
       ],
@@ -55,14 +51,7 @@ class MessageChats extends BaseFrequentlyUsedListPage<MessageChatsController,
 
   @override
   void onTapRecent(recent) {
-    if(recent is MessageRecent){
-      recent.chat.onMessage();
-      Get.toNamed(
-        Routers.messageChat,
-        arguments: recent.chat,
-      );
-    }
-
+    controller.jumpMessage(recent);
   }
 
   @override
