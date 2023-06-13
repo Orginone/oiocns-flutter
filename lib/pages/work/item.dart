@@ -151,7 +151,7 @@ class WorkItem extends StatelessWidget {
                   color: XColors.themeColor,
                 ),
                 child: Text(
-                  "通过",
+                  "同意",
                   style: TextStyle(color: Colors.white, fontSize: 16.sp),
                 ),
               ),
