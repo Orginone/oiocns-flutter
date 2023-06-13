@@ -8,7 +8,10 @@ import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
+
+import 'widgets/message_breadcrumb_nav_item.dart';
 
 class MessageRouters
     extends BaseBreadcrumbNavMultiplexPage<Controller, ChatBreadNavState> {
@@ -21,14 +24,17 @@ class MessageRouters
 
   List<Widget> initiate() {
     List<Widget> children = [];
-    for (var child in state.model.value?.children ?? []) {
-      children.add(BaseBreadcrumbNavItem<ChatBreadcrumbNav>(
+    for (var child in state.model.value?.children??[]) {
+      children.add(MessageBreadcrumbNavItem(
         item: child,
         onNext: () {
           controller.jumpNext(child);
         },
         onTap: () {
           controller.jumpDetails(child);
+        },
+        onSelected: (key){
+          controller.operation(key,child.target!);
         },
       ));
     }
@@ -42,7 +48,6 @@ class MessageRouters
 }
 
 class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
-  final settingCtrl = Get.find<SettingController>();
 
   @override
   final ChatBreadNavState state = ChatBreadNavState();
@@ -132,6 +137,14 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
      }else{
        Get.toNamed(Routers.messageChatsList, arguments: {"chats":(chat.target as ITeam).chats.where((element) => element.isMyChat).toList()});
      }
+  }
+
+  void operation(String key, IMsgChat msg) {
+    if(key == 'set'){
+      settingCtrl.chat.setMostUsed(msg);
+    }else if(key == 'remove'){
+      settingCtrl.chat.removeMostUsed(msg);
+    }
   }
 }
 

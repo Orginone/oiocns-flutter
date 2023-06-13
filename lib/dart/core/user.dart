@@ -3,6 +3,8 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/chat/provider.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/main.dart';
@@ -10,12 +12,15 @@ import 'package:orginone/util/event_bus_helper.dart';
 
 import 'enum.dart';
 import 'thing/app/application.dart';
+import 'thing/store/provider.dart';
 import 'work/provider.dart';
 
 class UserProvider {
   final Rxn<IPerson> _user = Rxn();
   final Rxn<IWorkProvider> _work = Rxn();
   final Rxn<IChatProvider> _chat = Rxn();
+
+  final Rxn<IStoreProvider> _store = Rxn();
 
   var myApps = <IApplication>[].obs;
   bool _inited = false;
@@ -49,6 +54,10 @@ class UserProvider {
 
   IChatProvider? get chat {
     return _chat.value;
+  }
+
+  IStoreProvider? get store {
+    return _store.value;
   }
 
   /// 是否完成初始化
@@ -94,8 +103,18 @@ class UserProvider {
     if (_user.value != null) {
       _work.value = WorkProvider(_user.value!);
       _chat.value = ChatProvider(_user.value!);
+      _store.value = StoreProvider(_user.value!);
       EventBusHelper.fire(StartLoad());
     }
+  }
+
+  ITarget? findTarget(String belongId){
+     for (var element in user?.targets??[]) {
+       if(element.id == belongId){
+         return element;
+       }
+     }
+     return null;
   }
 
   void refreshWork(){
@@ -114,9 +133,12 @@ class UserProvider {
     await _user.value?.deepLoad(reload: true);
     await _work.value?.loadTodos(reload: true);
     _inited = true;
-    await loadApps();
     _chat.value?.loadAllChats();
+    await loadApps();
     await _chat.value?.loadPreMessage();
+    await _chat.value?.loadMostUsed();
+    await _work.value?.loadMostUsed();
+    await _store.value?.loadMostUsed();
     _chat.refresh();
     _user.refresh();
   }

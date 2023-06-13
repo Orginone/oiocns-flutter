@@ -5,22 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:orginone/config/forms.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/target/innerTeam/department.dart';
-import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/user.dart';
-import 'package:orginone/pages/setting/config.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/dialog.dart';
-import 'package:orginone/pages/setting/home/logic.dart';
-import 'package:orginone/pages/setting/home/state.dart';
 import 'package:orginone/pages/setting/user_info/state.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/toast_utils.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:orginone/widget/unified.dart';
 
 
@@ -73,7 +65,7 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
 
             if (list.isNotEmpty) {
               bool success =
-                  await state.settingController.user.pullMembers(list);
+                  await settingCtrl.user.pullMembers(list);
               if (success) {
                 state.unitMember.addAll(list);
                 state.unitMember.refresh();

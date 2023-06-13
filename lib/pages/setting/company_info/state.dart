@@ -8,8 +8,6 @@ import 'package:orginone/dart/core/target/team/company.dart';
 
 class CompanyInfoState extends BaseGetState {
 
-  // SettingController settingController = Get.find<SettingController>();
-  //
   // ICompany? get company => settingController.company;
 
   var unitMember = <XTarget>[].obs;

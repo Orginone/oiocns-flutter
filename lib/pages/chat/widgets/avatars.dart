@@ -24,7 +24,6 @@ class Avatars extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  SettingController get controller => Get.find();
 
   @override
   Widget build(BuildContext context) {

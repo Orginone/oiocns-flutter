@@ -14,7 +14,7 @@ class ThingInfoController extends BaseController<ThingInfoState> {
     // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
-    state.attr.value = await state.thingController.state.form.loadAttributes();
+    state.attr.value = await state.form.loadAttributes();
     for (var element in state.attr) {
       if (element.valueType == "附件型") {
         try {

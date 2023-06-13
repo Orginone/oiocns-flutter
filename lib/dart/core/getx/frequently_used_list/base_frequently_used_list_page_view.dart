@@ -51,18 +51,18 @@ abstract class BaseFrequentlyUsedListPage<
                       Widget child = BaseFrequentlyUsedItem(
                           recent: element,
                           onTap: () {
-                            onTapRecent(element);
+                            controller.onTapRecent(element);
                           });
                       int index = state.mostUsedList.indexOf(element);
 
                       if (index != (state.mostUsedList.length - 1)) {
                         child = Container(
-                          margin: EdgeInsets.only(right: 15.w),
+                          margin: EdgeInsets.only(right: 10.w),
                           child: child,
                         );
                       }
                       return Container(
-                        margin: EdgeInsets.only(left: index == 0 ? 0 : 20.w),
+                        margin: EdgeInsets.only(left: index == 0 ? 0 : 10.w),
                         child: child,
                       );
                     }).toList(),
@@ -86,5 +86,4 @@ abstract class BaseFrequentlyUsedListPage<
     );
   }
 
-  void onTapRecent(recent) {}
 }

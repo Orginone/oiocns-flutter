@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/base_bindings.dart';
@@ -96,7 +97,6 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
   }
 
   Widget get getName {
-    var settingCtrl = Get.find<SettingController>();
     return Padding(
       padding: const EdgeInsets.only(left: 20),
       child: Text.rich(TextSpan(text: settingCtrl.user.metadata.name)),

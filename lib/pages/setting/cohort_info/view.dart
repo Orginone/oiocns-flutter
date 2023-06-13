@@ -14,7 +14,6 @@ import 'state.dart';
 
 class CohortInfoPage extends BaseGetView<CohortInfoController,CohortInfoState>{
 
-  SettingController get setting => Get.find();
 
   @override
   Widget buildView() {

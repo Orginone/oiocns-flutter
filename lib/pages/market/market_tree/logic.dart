@@ -7,6 +7,7 @@ import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/market/market.dart';
 import 'package:orginone/dart/core/thing/store/thingclass.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
@@ -16,7 +17,6 @@ class MarketTreeController
     extends BaseBreadcrumbNavController<MarketTreeState> {
   final MarketTreeState state = MarketTreeState();
 
-  SettingController get settingCtrl => Get.find<SettingController>();
 
   @override
   void onReady() async {

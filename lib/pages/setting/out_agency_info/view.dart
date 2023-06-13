@@ -15,7 +15,6 @@ class OutAgencyInfoPage
     extends BaseGetView<OutAgencyInfoController, OutAgencyInfoState> {
 
 
-  SettingController get setting => Get.find();
 
   @override
   Widget buildView() {

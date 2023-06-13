@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/tabs/gf_tabbar.dart';
 import 'package:getwidget/components/tabs/gf_tabbar_view.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/widget/template/originone_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/text_avatar.dart';
@@ -174,14 +175,13 @@ class SearchPage extends GetView<SearchController> {
         case FunctionPoint.applyCompanies:
           children.add(ElevatedButton(
             onPressed: () async {
-              var targetCtrl = Get.find<SettingController>();
               switch (controller.functionPoint!) {
                 case FunctionPoint.addFriends:
                   // await PersonApi.join(target.id);
                   break;
                 case FunctionPoint.applyCohorts:
                 case FunctionPoint.applyCompanies:
-                  await targetCtrl.user
+                  await settingCtrl.user
                       .applyJoin([target]);
                   break;
               }

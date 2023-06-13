@@ -3,11 +3,17 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_frequently_used_list_state.dart';
+import 'package:orginone/dart/core/thing/base/flow.dart';
 
-class WorkState extends BaseFrequentlyUsedListState<Recent,XWorkTask>{
+class WorkState extends BaseFrequentlyUsedListState<WorkRecent,XWorkTask>{
 
 }
 
+
+class WorkRecent extends Recent{
+  late IWorkDefine define;
+  WorkRecent({super.id,super.avatar,super.name,required this.define});
+}
 
 Map<int, Status> statusMap = {
   1: Status(Colors.blue, '待处理'),

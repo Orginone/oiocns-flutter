@@ -7,4 +7,6 @@ import 'base_frequently_used_list_state.dart';
 
 class BaseFrequentlyUsedListController<S extends BaseFrequentlyUsedListState> extends BaseListController<S>{
 
+
+  void onTapRecent(recent) {}
 }

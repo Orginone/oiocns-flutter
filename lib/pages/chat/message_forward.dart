@@ -2,17 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/image_widget.dart';
-import 'package:orginone/widget/unified.dart';
 
 import 'message_routers.dart';
 
@@ -31,7 +28,6 @@ class MessageForward extends StatefulWidget {
 }
 
 class _MessageForwardState extends State<MessageForward> {
-  SettingController get setting => Get.find();
 
   late List<Hierarchy> list;
 
@@ -40,7 +36,7 @@ class _MessageForwardState extends State<MessageForward> {
     // TODO: implement initState
     super.initState();
     List<Hierarchy> companyItems = [];
-    for (var company in setting.user.companys) {
+    for (var company in settingCtrl.user.companys) {
       companyItems.add(
         Hierarchy(
           type: ChatType.list,
@@ -62,15 +58,15 @@ class _MessageForwardState extends State<MessageForward> {
     }
     list = [
       Hierarchy(
-          msg: setting.user,
+          msg: settingCtrl.user,
           children: [
             Hierarchy(
-              msg: setting.user,
-              children: setting.user.memberChats
+              msg: settingCtrl.user,
+              children: settingCtrl.user.memberChats
                   .map((chat) => Hierarchy(msg: chat, children: []))
                   .toList(),
             ),
-            ...setting.user.cohortChats
+            ...settingCtrl.user.cohortChats
                 .where((i) => i.isMyChat)
                 .map((item) => Hierarchy(msg: item, children: []))
                 .toList(),

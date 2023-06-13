@@ -16,7 +16,6 @@ import 'state.dart';
 class DepartmentInfoPage
     extends BaseGetView<DepartmentInfoController, DepartmentInfoState> {
 
-  SettingController get setting => Get.find();
 
   @override
   Widget buildView() {

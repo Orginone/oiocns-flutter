@@ -8,6 +8,7 @@ import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -88,7 +89,6 @@ class AttrsController
 
   ClassificationInfoController get info => Get.find();
 
-  SettingController get setting => Get.find();
 
   dynamic get species => info.state.species;
 
@@ -126,7 +126,7 @@ class AttrsController
   }
 
   Future<void> loadAttrs({bool reload = false}) async {
-    state.attrs.value = await setting.provider.work!.loadAttributes(species.metadata.id,species.metadata.belongId);
+    state.attrs.value = await settingCtrl.provider.work!.loadAttributes(species.metadata.id,species.metadata.belongId);
   }
 
   void onAttrOperation(operation, String code) async {

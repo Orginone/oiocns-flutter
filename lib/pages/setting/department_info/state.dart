@@ -10,7 +10,6 @@ import 'package:orginone/dart/core/target/base/target.dart';
 class DepartmentInfoState extends BaseGetState{
   late Rx<ITarget> depart;
 
-  SettingController settingController = Get.find<SettingController>();
 
   late TabController tabController;
 

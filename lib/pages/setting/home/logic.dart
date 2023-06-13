@@ -12,6 +12,7 @@ import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/dict/dict.dart';
 import 'package:orginone/dart/core/thing/store/propclass.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/classification_info/form.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
@@ -29,7 +30,6 @@ class SettingCenterController
     extends BaseBreadcrumbNavController<SettingCenterState> {
   final SettingCenterState state = SettingCenterState();
 
-  SettingController get setting => Get.find();
 
   @override
   void onReady() async {
@@ -47,7 +47,7 @@ class SettingCenterController
   }
 
   void jumpInfo(SettingNavModel model) {
-    if (state.settingCtrl.isUserSpace(model.space)) {
+    if (settingCtrl.isUserSpace(model.space)) {
       Get.toNamed(Routers.userInfo);
     } else {
       Get.toNamed(Routers.companyInfo, arguments: {"company": model.space});
@@ -204,7 +204,7 @@ class SettingCenterController
   }
 
   void createAuth(SettingNavModel item, {bool isEdit = false}) async {
-    List<ITarget> targets = await setting.getTeamTree(item.space!);
+    List<ITarget> targets = await settingCtrl.getTeamTree(item.space!);
     showCreateAuthDialog(context, getAllTarget(targets), target: item.space!,
         callBack: (name, code, target, isPublic, remark) async {
       var model = AuthorityModel(
@@ -262,7 +262,7 @@ class SettingCenterController
       auth.add(authority);
     }
 
-    List<ITarget> targets = await setting.getTeamTree(e.space!);
+    List<ITarget> targets = await settingCtrl.getTeamTree(e.space!);
 
     showClassCriteriaDialog(
         context, getAllTarget(targets), speciesTypes , getAllAuthority(auth),

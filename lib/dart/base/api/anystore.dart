@@ -170,7 +170,7 @@ class AnyStore {
   /// @returns {ResultType} 删除异步结果
   Future<ResultType<dynamic>> delete(String key, String belongId) async {
     if (_storeHub.isConnected) {
-      var raw = await _storeHub.invoke('Delete', args: [key, belongId]);
+      var raw = await _storeHub.invoke('Delete', args: [belongId,key]);
       return ResultType.fromJson(raw);
     }
     var raw = await _restRequest(

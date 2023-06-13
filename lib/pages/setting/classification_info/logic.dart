@@ -9,7 +9,7 @@ import 'property.dart';
 import 'state.dart';
 import 'work.dart';
 
-SettingController get setting => Get.find();
+
 
 class ClassificationInfoController
     extends BaseController<ClassificationInfoState>

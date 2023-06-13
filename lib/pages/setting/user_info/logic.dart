@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -25,8 +26,8 @@ class UserInfoController extends BaseController<UserInfoState>
   }
 
   Future<void> init() async {
-    var users = await state.settingController.user.loadMembers();
-    var company = await state.settingController.user.loadCompanys(reload: true);
+    var users = await settingCtrl.user.loadMembers();
+    var company = await settingCtrl.user.loadCompanys(reload: true);
     state.unitMember.clear();
     state.joinCompany.clear();
     state.unitMember.addAll(users ?? []);
@@ -48,7 +49,7 @@ class UserInfoController extends BaseController<UserInfoState>
             title: "添加成员",
             hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {
-            bool success = await state.settingController.user.pullMembers(list);
+            bool success = await settingCtrl.user.pullMembers(list);
             if (success) {
               ToastUtils.showMsg(msg: "添加成功");
               state.unitMember.addAll(list);
@@ -64,7 +65,7 @@ class UserInfoController extends BaseController<UserInfoState>
             title: "加入单位",
             hint: "请输入单位的社会统一信用代码", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {
-            bool success = await state.settingController.user.applyJoin(list);
+            bool success = await settingCtrl.user.applyJoin(list);
             if (success) {
               ToastUtils.showMsg(msg: "发送成功");
             }
@@ -76,7 +77,7 @@ class UserInfoController extends BaseController<UserInfoState>
 
   void removeMember(String data) async{
     var user = state.unitMember.firstWhere((element) => element.code == data);
-    bool success = await state.settingController.user.removeMembers([user]);
+    bool success = await settingCtrl.user.removeMembers([user]);
     if (success) {
       state.unitMember.removeWhere((element) => element.code == data);
       state.unitMember.refresh();

@@ -13,7 +13,6 @@ class BasicInfo extends StatelessWidget {
   final dynamic data;
   const BasicInfo({Key? key, required this.data}) : super(key: key);
 
-  SettingController get setting => Get.find();
 
   @override
   Widget build(BuildContext context) {

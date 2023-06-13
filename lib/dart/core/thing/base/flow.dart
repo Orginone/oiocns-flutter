@@ -31,7 +31,7 @@ abstract class IWorkDefine {
   Future<XWorkInstance?> createWorkInstance(WorkInstanceModel data);
 }
 
-class FlowDefine  implements IWorkDefine{
+class FlowDefine implements IWorkDefine{
 
   FlowDefine(this.metadata,this.workItem){
     share =  ShareIcon(name: metadata.name??"", typeName: '事项',avatar: FileItemShare.parseAvatar(metadata.icon));

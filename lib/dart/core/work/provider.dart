@@ -4,13 +4,14 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/thing/app/application.dart';
 import 'package:orginone/dart/core/thing/base/flow.dart';
 import 'package:orginone/dart/core/thing/market/market.dart';
 import 'package:orginone/main.dart';
-
+import 'package:orginone/pages/work/state.dart';
 
 abstract class IWorkProvider {
   /// 当前用户
@@ -18,6 +19,8 @@ abstract class IWorkProvider {
 
   /// 待办
   late RxList<XWorkTask> todos;
+
+  late RxList<WorkRecent> workRecent;
 
   /// 加载待办任务
   Future<List<XWorkTask>> loadTodos({bool reload = false});
@@ -49,6 +52,14 @@ abstract class IWorkProvider {
 
   ///根据字典id查询字典项
   Future<List<XDictItem>> loadItems(String id);
+
+  Future<void> loadMostUsed();
+
+  Future<void> setMostUsed(IWorkDefine define);
+
+  Future<void> removeMostUsed(IWorkDefine define);
+
+  bool isMostUsed(IWorkDefine define);
 }
 
 class WorkProvider implements IWorkProvider{
@@ -60,6 +71,7 @@ class WorkProvider implements IWorkProvider{
       var work = XWorkTask.fromJson(data);
       updateTask(work);
     });
+    workRecent = RxList();
   }
 
   @override
@@ -69,14 +81,21 @@ class WorkProvider implements IWorkProvider{
   late IPerson user;
 
   @override
-  Future<bool> approvalTask(List<XWorkTask> tasks, int status, {String? comment, String? data})async {
+  late RxList<WorkRecent> workRecent;
+
+  @override
+  Future<bool> approvalTask(List<XWorkTask> tasks, int status,
+      {String? comment, String? data}) async {
     bool success = true;
     for (final task in tasks) {
       if (task.status < TaskStatus.approvalStart.status) {
         if (status == -1) {
-          success = (await kernel.recallWorkInstance(IdReq(id: task.id))).success;
+          success =
+              (await kernel.recallWorkInstance(IdReq(id: task.id))).success;
         } else {
-          success = (await kernel.approvalTask(ApprovalTaskReq(id: task.id,status: status,comment: comment,data: data))).success;
+          success = (await kernel.approvalTask(ApprovalTaskReq(
+                  id: task.id, status: status, comment: comment, data: data)))
+              .success;
         }
         if(success){
           todos.removeWhere((element) => element.id == task.id);
@@ -199,11 +218,71 @@ class WorkProvider implements IWorkProvider{
   }
 
   @override
-  Future<List<XDictItem>> loadItems(String id) async{
+  Future<List<XDictItem>> loadItems(String id) async {
     var res = await kernel.queryDictItems(IdReq(id: id));
     if (res.success) {
       return res.data?.result ?? [];
     }
     return [];
+  }
+
+  @override
+  Future<void> loadMostUsed() async {
+    var res = await kernel.anystore.get(
+      "${StoreCollName.mostUsed}.works",
+      user.id,
+    );
+    if (res.success && res.data != null) {
+      workRecent.clear();
+      var works = res.data;
+      if (works is Map<String, dynamic>) {
+        for (var key in works.keys) {
+          var defineId = key.substring(1);
+          var define = await findFlowDefine(defineId);
+          if (define != null) {
+            workRecent.add(WorkRecent(
+                define: define,
+                name: define.metadata.name,
+                id: define.metadata.id,
+                avatar: define.share.avatar?.thumbnailUint8List));
+          }
+        }
+      }
+    }
+  }
+
+  @override
+  Future<void> removeMostUsed(IWorkDefine define) async {
+    var res = await kernel.anystore.set(
+      "${StoreCollName.mostUsed}.works.T${define.metadata.code}",
+      {},
+      user.id,
+    );
+    if (res.success) {
+      workRecent.removeWhere((p0) => p0.id == define.metadata.id);
+      workRecent.refresh();
+    }
+  }
+
+  @override
+  Future<void> setMostUsed(IWorkDefine define) async {
+    var res = await kernel.anystore.set(
+      "${StoreCollName.mostUsed}.works.T${define.metadata.id}",
+      {},
+      user.id,
+    );
+    if (res.success) {
+      WorkRecent recent = WorkRecent(
+          define: define,
+          name: define.metadata.name,
+          id: define.metadata.id,
+          avatar: define.share.avatar?.thumbnailUint8List);
+      workRecent.add(recent);
+    }
+  }
+
+  @override
+  bool isMostUsed(IWorkDefine define) {
+    return workRecent.where((p0) => p0.id == define.metadata.id).isNotEmpty;
   }
 }

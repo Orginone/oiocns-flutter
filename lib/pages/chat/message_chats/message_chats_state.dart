@@ -7,7 +7,6 @@ import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_frequently_used_list_state.dart';
 
 class MessageChatsState extends BaseFrequentlyUsedListState<MessageRecent,dynamic> {
-  SettingController get setting => Get.find();
 
   MessageChatsState() {}
 }

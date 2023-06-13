@@ -6,6 +6,7 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/dict/dict.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -46,7 +47,6 @@ typedef CreateAuthCallBack = Function(String name,String code,ITarget target,boo
 
 typedef CreateClassCriteriaCallBack = Function(String name,String code,ITarget target,String specie,IAuthority auth,bool isPublic,String remark);
 
-SettingController get setting => Get.find();
 
 Future<void> showCreateIdentityDialog(
     BuildContext context, List<IAuthority> authority,
@@ -216,12 +216,12 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
         // xTargetArray = await setting.company?.searchGroup(code);
         break;
       case TargetType.person:
-        targets = await setting.user.searchTargets(code,[TargetType.person.label]);
+        targets = await settingCtrl.user.searchTargets(code,[TargetType.person.label]);
         break;
       case TargetType.company:
       case TargetType.hospital:
       case TargetType.university:
-      targets = await setting.user.searchTargets(code,[TargetType.company.label,TargetType.hospital.label,TargetType.university.label]);
+      targets = await settingCtrl.user.searchTargets(code,[TargetType.company.label,TargetType.hospital.label,TargetType.university.label]);
         break;
     }
     return targets??[];

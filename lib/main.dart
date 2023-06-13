@@ -40,6 +40,8 @@ void main() async {
 final kernel = KernelApi.getInstance();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver();
+
+SettingController get settingCtrl => Get.find<SettingController>();
 const Size screenSize = Size(540, 1170);
 
 class ScreenInit extends StatelessWidget {
@@ -47,7 +49,6 @@ class ScreenInit extends StatelessWidget {
 
   List<String>? get account => LocalStore.getStore().getStringList("account");
 
-  SettingController get settingCtrl => Get.find<SettingController>();
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(

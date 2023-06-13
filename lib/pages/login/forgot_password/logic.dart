@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
@@ -45,7 +46,6 @@ class ForgotPasswordController extends BaseController<ForgotPasswordState> {
       ToastUtils.showMsg(msg: '密码必须包含：数字、字母、特殊字符');
       return;
     }
-    var settingCtrl = Get.find<SettingController>();
     ResultType<bool> result = await settingCtrl.provider.resetPassword(
         state.accountController.text,
         state.passWordController.text,
