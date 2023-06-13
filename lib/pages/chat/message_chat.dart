@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/message.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/getx/base_bindings.dart';
@@ -13,6 +12,7 @@ import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/event/message.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/dialog/message_read_dialog.dart';
 import 'package:orginone/routers.dart';
@@ -80,7 +80,6 @@ class MessageChatPage
 class MessageChatController extends BaseController<MessageChatState> {
   final MessageChatState state = MessageChatState();
 
-  SettingController get setting => Get.find();
 
   @override
   void onReady() {
@@ -116,7 +115,7 @@ class MessageChatController extends BaseController<MessageChatState> {
           bool isRead = false;
           try {
             var tag = message.metadata.tags
-                ?.firstWhere((element) => element.userId == setting.user.id);
+                ?.firstWhere((element) => element.userId == settingCtrl.user.id);
             isRead = tag != null;
           } catch (e) {
             isRead = false;
@@ -147,7 +146,7 @@ class MessageChatController extends BaseController<MessageChatState> {
   @override
   void onClose() {
     // TODO: implement onClose
-    setting.chat.currentChat = null;
+    settingCtrl.chat.currentChat = null;
     super.onClose();
   }
 

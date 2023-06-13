@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus.dart';
 import 'package:orginone/util/local_store.dart';
@@ -55,7 +56,6 @@ class RegisterController extends BaseController<RegisterState> {
 
   void register() async {
     LoadingDialog.showLoading(context);
-    var settingCtrl = Get.find<SettingController>();
     var res = await settingCtrl.provider.register(RegisterType(
         nickName: state.nickNameController.text,
         name: state.realNameController.text,

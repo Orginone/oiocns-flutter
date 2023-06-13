@@ -10,7 +10,6 @@ import 'state.dart';
 
 class AttributeInfoPage
     extends BaseGetView<AttributeInfoController, AttributeInfoState> {
-  SettingController setting = Get.find();
 
   @override
   Widget buildView() {

@@ -84,7 +84,6 @@ class HomeBinding extends Bindings {
 
 class HomeController extends TabsController {
   var updateCtrl = Get.find<UpdateController>();
-  var settingCtrl = Get.find<SettingController>();
 
   @override
   initTabs() {

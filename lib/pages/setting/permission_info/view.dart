@@ -9,7 +9,6 @@ import 'package:orginone/widget/gy_scaffold.dart';
 import 'logic.dart';
 import 'state.dart';
 
-SettingController get setting => Get.find();
 
 class PermissionInfoPage extends BaseGetView<PermissionInfoController,PermissionInfoState>{
 

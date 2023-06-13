@@ -8,6 +8,7 @@ import 'package:orginone/dart/core/thing/base/form.dart';
 import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/dart/core/thing/dict/dict.dart';
 import 'package:orginone/dart/core/thing/store/propclass.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/widget/common_widget.dart';
 
@@ -31,7 +32,6 @@ class PopupMenuWidget<T> extends StatefulWidget {
 class _PopupMenuWidgetState extends State<PopupMenuWidget> {
   var popupMenuItem = <PopupMenuItem>[];
 
-  SettingController get settingController => Get.find<SettingController>();
 
   ITarget? target;
 
@@ -125,7 +125,7 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
     }
     if (isSuperAdmin) {
       popupMenuItem.add(newPopupMenuItem("编辑", "edit"));
-      if (target != settingController.user) {
+      if (target != settingCtrl.user) {
         popupMenuItem.add(newPopupMenuItem("删除", "delete"));
       }
     }

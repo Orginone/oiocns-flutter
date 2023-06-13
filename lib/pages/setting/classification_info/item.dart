@@ -15,7 +15,6 @@ class Item extends StatelessWidget {
   final PopupMenuItemSelected? onSelected;
   const Item({Key? key, this.onTap, required this.dict, this.onSelected}) : super(key: key);
 
-  SettingController get settingController => Get.find<SettingController>();
 
   @override
   Widget build(BuildContext context) {

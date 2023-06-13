@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/getx/frequently_used_list/base_frequently_used_item.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_frequently_used_list_page_view.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/chat_item.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
-
 import 'message_chats_controller.dart';
 import 'message_chats_state.dart';
 
@@ -16,9 +9,9 @@ class MessageChats extends BaseFrequentlyUsedListPage<MessageChatsController,
     MessageChatsState> {
   @override
   Widget buildView() {
-    var topChats = state.setting.chat.topChats;
+    var topChats = settingCtrl.chat.topChats;
 
-    var chats = state.setting.chat.chats;
+    var chats = settingCtrl.chat.chats;
 
     return CustomScrollView(
       slivers: [

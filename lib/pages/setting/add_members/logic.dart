@@ -9,7 +9,6 @@ import 'state.dart';
 class AddMembersController extends BaseController<AddMembersState> {
   final AddMembersState state = AddMembersState();
 
-  SettingController get setting => Get.find();
 
   @override
   void onReady() async {

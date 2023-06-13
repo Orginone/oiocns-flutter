@@ -11,7 +11,6 @@ import 'package:orginone/dart/core/target/out_team/group.dart';
 class OutAgencyInfoState extends BaseGetState{
   late IGroup group;
 
-  SettingController settingController = Get.find<SettingController>();
 
   late TabController tabController;
 

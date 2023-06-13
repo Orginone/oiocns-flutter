@@ -16,7 +16,6 @@ import 'state.dart';
 class FileController extends BaseBreadcrumbNavController<FileState> {
   final FileState state = FileState();
 
-  SettingController get setting => Get.find();
 
   @override
   void onInit() {

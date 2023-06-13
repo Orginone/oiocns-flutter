@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/thing/base/flow.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
 
@@ -24,6 +26,14 @@ class WorkStartController extends BaseController<WorkStartState>
           arguments: {"define": define, "node": node, 'target': state.target});
     } else {
       ToastUtils.showMsg(msg: "流程未绑定表单");
+    }
+  }
+
+  void operation(String key, IWorkDefine define) {
+    if(key == 'set'){
+      settingCtrl.work.setMostUsed(define);
+    }else if(key == 'remove'){
+      settingCtrl.work.removeMostUsed(define);
     }
   }
 }

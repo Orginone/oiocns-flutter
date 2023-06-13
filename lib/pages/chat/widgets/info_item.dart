@@ -15,6 +15,7 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/message.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus_helper.dart';
@@ -110,7 +111,6 @@ class DetailItemWidget extends GetView<SettingController> {
   Widget _getAvatar() {
     late String id;
     if (isSelf) {
-      var settingCtrl = Get.find<SettingController>();
       id = settingCtrl.user.id;
     } else {
       id = msg.metadata.fromId;

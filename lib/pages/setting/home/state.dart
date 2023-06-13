@@ -2,10 +2,10 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/config.dart';
 
 class SettingCenterState extends BaseBreadcrumbNavState<SettingNavModel> {
-  SettingController get settingCtrl => Get.find<SettingController>();
 
   SettingCenterState() {
     model.value = Get.arguments?['data'];

@@ -5,12 +5,12 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/main.dart';
 
 class UserInfoState extends BaseGetState {
 
-  SettingController settingController = Get.find<SettingController>();
 
-  IPerson? get user => settingController.user;
+  IPerson? get user => settingCtrl.user;
 
   var unitMember = <XTarget>[].obs;
 

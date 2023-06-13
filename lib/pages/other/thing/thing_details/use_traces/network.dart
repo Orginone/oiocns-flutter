@@ -3,10 +3,10 @@ import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/main.dart';
 
 class UseTracesNetWork {
   static Future<XThingArchives?> getThingArchives(String id) async {
-    SettingController setting = Get.find<SettingController>();
     ResultType result = await KernelApi.getInstance().anystore.loadThingArchives( {
         "options": {
         "match": {
@@ -16,7 +16,7 @@ class UseTracesNetWork {
         },
       },
       "userData": [],
-    },setting.user.metadata.id);
+    },settingCtrl.user.metadata.id);
     if(result.success){
       return XThingArchives.fromJson(result.data['data'][0]);
     }

@@ -267,7 +267,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
 
   @override
   onMessage() async{
-    setting.chat.currentChat = this;
+    settingCtrl.chat.currentChat = this;
     if (chatdata.value.noReadCount > 0) {
       chatdata.value.noReadCount = 0;
       await cache();
@@ -487,7 +487,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
 
     chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
     chatdata.value.lastMessage = msg;
-    chatdata.value.isFindme = msg.body?.mentions?.contains(setting.user.id);
+    chatdata.value.isFindme = msg.body?.mentions?.contains(settingCtrl.user.id);
     chatdata.refresh();
     cache();
   }

@@ -113,6 +113,7 @@ class UserProvider {
     _chat.value?.preMessage();
     await _user.value?.deepLoad(reload: true);
     await _work.value?.loadTodos(reload: true);
+    await _work.value?.loadMostUsed();
     _inited = true;
     await loadApps();
     _chat.value?.loadAllChats();

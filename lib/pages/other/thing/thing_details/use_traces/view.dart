@@ -16,7 +16,6 @@ import 'state.dart';
 
 class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
 
-  SettingController get settingCtrl => Get.find<SettingController>();
 
   @override
   Widget buildView() {

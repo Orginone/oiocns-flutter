@@ -17,7 +17,6 @@ class Item extends StatelessWidget {
       : super(key: key);
 
 
-  SettingController get settingCtrl => Get.find<SettingController>();
 
   @override
   Widget build(BuildContext context) {

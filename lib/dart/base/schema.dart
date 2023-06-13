@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/model/thing_model.dart' as thing;
 
@@ -202,7 +203,7 @@ class XAttribute {
       case "选择型":
       case "分类型":
         type = "select";
-        setting.provider.work?.loadItems(dictId??"").then((value){
+        settingCtrl.provider.work?.loadItems(dictId??"").then((value){
           for (var element in value) {
             select[element.value] = element.name;
           }
@@ -577,7 +578,6 @@ class XPropertyArray {
     return json;
   }
 }
-SettingController setting = Get.find();
 
 //属性定义
 class XProperty {

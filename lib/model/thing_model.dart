@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/main.dart';
 
 class ThingModel {
   String? id;
@@ -21,8 +22,7 @@ class ThingModel {
     id = json['Id'];
     creater = json['Creater'];
 
-    SettingController setting = Get.find();
-    setting.user.findShareById(creater??"").then((value){
+    settingCtrl.user.findShareById(creater??"").then((value){
       createrName = value.name;
     });
     createTime = json['CreateTime'];

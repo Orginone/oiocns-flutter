@@ -28,7 +28,6 @@ class Item extends StatelessWidget {
       this.changed,  this.supportSideslip = false, this.delete, this.onTap})
       : super(key: key);
 
-  SettingController get settingController => Get.find<SettingController>();
 
   @override
   Widget build(BuildContext context) {

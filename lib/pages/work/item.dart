@@ -22,7 +22,6 @@ class WorkItem extends StatelessWidget {
 
   WorkController get controller => Get.find<WorkController>(tag: 'work');
 
-  SettingController get setting => Get.find<SettingController>();
 
   @override
   Widget build(BuildContext context) {

@@ -8,6 +8,7 @@ import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
 
 import 'widgets/message_breadcrumb_nav_item.dart';
@@ -47,7 +48,6 @@ class MessageRouters
 }
 
 class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
-  final settingCtrl = Get.find<SettingController>();
 
   @override
   final ChatBreadNavState state = ChatBreadNavState();
