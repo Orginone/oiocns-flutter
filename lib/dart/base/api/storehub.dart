@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/logger.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 import 'package:signalr_core/signalr_core.dart';
 
@@ -44,6 +45,7 @@ class StoreHub {
         for (final callback in _disconnectedCallbacks) {
           callback(err);
         }
+        ToastUtils.showMsg(msg: "连接断开,${_timeout}ms后重试。${err.toString()}`");
         log.warning("连接断开,${_timeout}ms后重试。${err.toString()}`");
         Future.delayed(Duration(milliseconds: _timeout), () {
           _starting();

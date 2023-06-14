@@ -156,7 +156,10 @@ class SettingController extends GetxController {
                teamCode: code,
                remark: remark,
              );
-             await user.createCohort(target);
+             var data =  await user.createCohort(target);
+             if(data!=null){
+               ToastUtils.showMsg(msg: "创建成功");
+             }
            },
        );
      }else{
