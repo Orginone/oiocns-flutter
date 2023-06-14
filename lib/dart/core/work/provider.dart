@@ -20,7 +20,7 @@ abstract class IWorkProvider {
   /// 待办
   late RxList<XWorkTask> todos;
 
-  late RxList<WorkRecent> workRecent;
+  late RxList<WorkFrequentlyUsed> workFrequentlyUsed;
 
   /// 加载待办任务
   Future<List<XWorkTask>> loadTodos({bool reload = false});
@@ -71,7 +71,7 @@ class WorkProvider implements IWorkProvider{
       var work = XWorkTask.fromJson(data);
       updateTask(work);
     });
-    workRecent = RxList();
+    workFrequentlyUsed = RxList();
   }
 
   @override
@@ -81,7 +81,7 @@ class WorkProvider implements IWorkProvider{
   late IPerson user;
 
   @override
-  late RxList<WorkRecent> workRecent;
+  late RxList<WorkFrequentlyUsed> workFrequentlyUsed;
 
   @override
   Future<bool> approvalTask(List<XWorkTask> tasks, int status,
@@ -250,14 +250,14 @@ class WorkProvider implements IWorkProvider{
       user.id,
     );
     if (res.success && res.data != null) {
-      workRecent.clear();
+      workFrequentlyUsed.clear();
       var works = res.data;
       if (works is Map<String, dynamic>) {
         for (var key in works.keys) {
           var defineId = key.substring(1);
           var define = await findFlowDefine(defineId);
           if (define != null) {
-            workRecent.add(WorkRecent(
+            workFrequentlyUsed.add(WorkFrequentlyUsed(
                 define: define,
                 name: define.metadata.name,
                 id: define.metadata.id,
@@ -276,8 +276,8 @@ class WorkProvider implements IWorkProvider{
       user.id,
     );
     if (res.success) {
-      workRecent.removeWhere((p0) => p0.id == define.metadata.id);
-      workRecent.refresh();
+      workFrequentlyUsed.removeWhere((p0) => p0.id == define.metadata.id);
+      workFrequentlyUsed.refresh();
     }
   }
 
@@ -289,17 +289,17 @@ class WorkProvider implements IWorkProvider{
       user.id,
     );
     if (res.success) {
-      WorkRecent recent = WorkRecent(
+      WorkFrequentlyUsed used = WorkFrequentlyUsed(
           define: define,
           name: define.metadata.name,
           id: define.metadata.id,
           avatar: define.share.avatar?.thumbnailUint8List);
-      workRecent.add(recent);
+      workFrequentlyUsed.add(used);
     }
   }
 
   @override
   bool isMostUsed(IWorkDefine define) {
-    return workRecent.where((p0) => p0.id == define.metadata.id).isNotEmpty;
+    return workFrequentlyUsed.where((p0) => p0.id == define.metadata.id).isNotEmpty;
   }
 }

@@ -3,7 +3,9 @@ import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/model/thing_model.dart';
 import 'package:orginone/pages/other/choice_thing/network.dart';
+import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/routers.dart';
+
 import 'state.dart';
 
 
@@ -27,10 +29,13 @@ class ThingController extends BaseListController<ThingState> {
 
     switch(key){
       case "details":
-        Get.toNamed(Routers.thingDetails,arguments: {"thing":item,'form':state.form});
+        settingCtrl.store.onRecordRecent(
+            RecentlyUseModel(type: StoreEnum.thing.label, thing: item));
+        Get.toNamed(Routers.thingDetails,
+            arguments: {"thing": item, 'form': state.form});
         break;
       case "set":
-        settingCtrl.store.setThingMostUsed(item);
+        settingCtrl.store.setMostUsed(thing: item, storeEnum: StoreEnum.thing);
         break;
       case "delete":
         settingCtrl.store.removeMostUsed(item.id!);

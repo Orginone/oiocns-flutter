@@ -15,22 +15,26 @@ class StoreController extends BaseFrequentlyUsedListController<StoreState> {
     // TODO: implement onInit
     super.onInit();
     state.dataList.value = List.generate(10, (i) => i);
-    state.mostUsedList = settingCtrl.store.storeRecent;
+    state.mostUsedList = settingCtrl.store.storeFrequentlyUsed;
   }
 
   @override
-  void onTapRecent(recent) async {
-    if (recent is StoreRecent) {
-      switch (recent.storeEnum) {
+  void onTapFrequentlyUsed(used) async {
+    if (used is StoreFrequentlyUsed) {
+      switch (used.storeEnum) {
         case StoreEnum.file:
+          settingCtrl.store.onRecordRecent(
+              RecentlyUseModel(type: StoreEnum.file.label, file:  used.fileItemShare));
           Get.toNamed(Routers.messageFile,
-              arguments: recent.fileItemShare!.shareInfo());
+              arguments: used.fileItemShare!.shareInfo());
           break;
         case StoreEnum.thing:
-          var thing = recent.thing;
+          var thing = used.thing;
           IForm? form = await settingCtrl.store
               .findForm(thing!.species.keys.first.substring(1));
           if (form != null) {
+            settingCtrl.store.onRecordRecent(
+                RecentlyUseModel(type: StoreEnum.thing.label, thing: thing));
             Get.toNamed(Routers.thingDetails,
                 arguments: {"thing": thing, 'form': form});
           } else {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_frequently_used_list_page_view.dart';
-import 'package:orginone/pages/store/item.dart';
 import 'package:orginone/widget/unified.dart';
 
 import 'logic.dart';
@@ -11,12 +10,7 @@ class MarketPage extends BaseFrequentlyUsedListPage<MarketController, MarketStat
   Widget buildView() {
     return Container(
       color: XColors.bgColor,
-      child: ListView.builder(
-        itemBuilder: (context, index) {
-          return StoreItem();
-        },
-        itemCount: state.dataList.length,
-      ),
+      child: Container(),
     );
   }
 

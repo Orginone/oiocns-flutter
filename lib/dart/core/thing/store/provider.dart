@@ -18,17 +18,22 @@ import 'package:orginone/pages/store/state.dart';
 abstract class IStoreProvider {
   late IPerson user;
 
-  late RxList<StoreRecent> storeRecent;
+  late RxList<StoreFrequentlyUsed> storeFrequentlyUsed;
+
+  late RxList<RecentlyUseModel> recent;
 
   List<ISpeciesItem> findThingSpecies(IBelong belong);
+
+  Future<void> onRecordRecent(RecentlyUseModel data);
 
   Future<void> loadRecentList();
 
   Future<void> loadMostUsed();
 
-  Future<void> setThingMostUsed(thing.ThingModel data);
-
-  Future<void> setFileMostUsed(FileItemModel data);
+  Future<void> setMostUsed(
+      {thing.ThingModel? thing,
+      FileItemModel? file,
+      required StoreEnum storeEnum});
 
   Future<void> removeMostUsed(String id);
 
@@ -39,22 +44,23 @@ abstract class IStoreProvider {
 
 class StoreProvider implements IStoreProvider {
   StoreProvider(this.user) {
-    storeRecent = RxList();
+    storeFrequentlyUsed = RxList();
+    recent = RxList();
   }
 
   @override
   late IPerson user;
 
   @override
-  late RxList<StoreRecent> storeRecent;
+  late RxList<StoreFrequentlyUsed> storeFrequentlyUsed;
 
   @override
-  Future<IForm?> findForm(String id) async{
+  Future<IForm?> findForm(String id) async {
     var species = findThingSpecies(user);
     for (var specie in species) {
       var forms = await (specie as IThingClass).loadForms();
       for (var form in forms) {
-        if(form.metadata.id == id){
+        if (form.metadata.id == id) {
           return form;
         }
       }
@@ -95,7 +101,7 @@ class StoreProvider implements IStoreProvider {
       user.id,
     );
     if (res.success && res.data != null) {
-      storeRecent.clear();
+      storeFrequentlyUsed.clear();
       var stores = res.data;
       if (stores is Map<String, dynamic>) {
         for (var key in stores.keys) {
@@ -103,7 +109,7 @@ class StoreProvider implements IStoreProvider {
           String type = stores[key]?['type'] ?? "";
           if (type == StoreEnum.file.label) {
             var data = FileItemModel.fromJson(stores[key]);
-            storeRecent.add(StoreRecent(
+            storeFrequentlyUsed.add(StoreFrequentlyUsed(
                 fileItemShare: data,
                 name: data.name,
                 id: id,
@@ -111,7 +117,7 @@ class StoreProvider implements IStoreProvider {
                 storeEnum: StoreEnum.file));
           } else if (type == StoreEnum.thing.label) {
             var data = thing.ThingModel.fromJson(stores[key]);
-            storeRecent.add(StoreRecent(
+            storeFrequentlyUsed.add(StoreFrequentlyUsed(
                 name: data.id,
                 id: id,
                 thing: data,
@@ -123,7 +129,24 @@ class StoreProvider implements IStoreProvider {
   }
 
   @override
-  Future<void> loadRecentList() async {}
+  Future<void> loadRecentList() async {
+    var res = await kernel.anystore.get(
+      "${StoreCollName.recentlyOpen}.stores",
+      user.id,
+    );
+    if (res.success && res.data != null) {
+      recent.clear();
+      var stores = res.data;
+      if (stores is Map<String, dynamic>) {
+        for (var key in stores.keys) {
+          recent.add(RecentlyUseModel.fromJson(stores[key]));
+        }
+        recent.sort((a,b){
+          return DateTime.parse(b.createTime).compareTo(DateTime.parse(a.createTime));
+        });
+      }
+    }
+  }
 
   @override
   Future<void> removeMostUsed(String id) async {
@@ -132,76 +155,96 @@ class StoreProvider implements IStoreProvider {
       user.id,
     );
     if (res.success) {
-      storeRecent.removeWhere((p0) => p0.id == id);
-      storeRecent.refresh();
+      storeFrequentlyUsed.removeWhere((p0) => p0.id == id);
+      storeFrequentlyUsed.refresh();
     }
   }
 
   @override
-  Future<void> setThingMostUsed(thing.ThingModel data) async {
-    var res = await kernel.anystore.set(
-      "${StoreCollName.mostUsed}.stores.T${data.id}",
-      {
-        'data': {
-          'type': 'thing',
-          ...data.toJson(),
-        },
-      },
-      user.id,
-    );
-    if (res.success) {
-      StoreRecent recent = StoreRecent(
-          thing: data, id: data.id, name: data.id, storeEnum: StoreEnum.thing);
-      storeRecent.add(recent);
+  Future<void> setMostUsed(
+      {thing.ThingModel? thing,
+      FileItemModel? file,
+      required StoreEnum storeEnum}) async {
+    Map<String, dynamic> data = {"type": storeEnum.label};
+    String id = '';
+    StoreFrequentlyUsed? used;
+    switch (storeEnum) {
+      case StoreEnum.file:
+        id = base64.encode(utf8.encode(file!.name!));
+        data.addAll(file.toJson());
+        used = StoreFrequentlyUsed(
+            fileItemShare: file,
+            id: id,
+            name: file.name,
+            avatar: getFileAvatar(file),
+            storeEnum: storeEnum);
+        break;
+      case StoreEnum.thing:
+        id = thing!.id!;
+        data.addAll(thing.toJson());
+        used = StoreFrequentlyUsed(
+            thing: thing, id: id, name: id, storeEnum: storeEnum);
+        break;
     }
-  }
-
-  @override
-  Future<void> setFileMostUsed(FileItemModel data) async {
-    String id = base64.encode(utf8.encode(data.name!));
     var res = await kernel.anystore.set(
       "${StoreCollName.mostUsed}.stores.T$id",
       {
-        'data': {'type': 'file', ...data.toJson()},
+        'data': data,
       },
       user.id,
     );
     if (res.success) {
-      StoreRecent recent = StoreRecent(
-          fileItemShare: data,
-          id: id,
-          name: data.name,
-          avatar: getFileAvatar(data),
-          storeEnum: StoreEnum.file);
-      storeRecent.add(recent);
+      storeFrequentlyUsed.add(used);
     }
   }
 
   @override
   bool isMostUsed(String id) {
-    return storeRecent.where((p0) => p0.id == id).isNotEmpty;
+    return storeFrequentlyUsed.where((p0) => p0.id == id).isNotEmpty;
   }
 
-  dynamic getFileAvatar(FileItemModel data) {
-    String ext = data.name!.split('.').last.toLowerCase();
-    if (ext == 'jpg' || ext == 'jpeg' || ext == 'png' || ext == 'webp') {
-      return data.shareInfo()['shareLink'];
-    } else {
-      switch (ext) {
-        case "xlsx":
-        case "xls":
-        case "excel":
-          return Images.excelIcon;
-        case "pdf":
-          return Images.pdfIcon;
-        case "ppt":
-          return Images.pptIcon;
-        case "docx":
-        case "doc":
-          return Images.wordIcon;
-        default:
-          return Images.otherIcon;
+
+  @override
+  Future<void> onRecordRecent(RecentlyUseModel data) async {
+    var res = await kernel.anystore.set(
+      "${StoreCollName.recentlyOpen}.stores.T${data.id}",
+      {
+        "operation": "replaceAll",
+        'data': data.toJson(),
+      },
+      user.id,
+    );
+    if(res.success){
+      if(recent.where((p0) => p0.id == data.id).isNotEmpty){
+        recent.removeWhere((element) => element.id == data.id);
       }
+      recent.insert(0,data);
+    }
+  }
+
+  @override
+  late RxList<RecentlyUseModel> recent;
+}
+
+dynamic getFileAvatar(FileItemModel data) {
+  String ext = data.name!.split('.').last.toLowerCase();
+  if (ext == 'jpg' || ext == 'jpeg' || ext == 'png' || ext == 'webp') {
+    return data.shareInfo()['shareLink'];
+  } else {
+    switch (ext) {
+      case "xlsx":
+      case "xls":
+      case "excel":
+        return Images.excelIcon;
+      case "pdf":
+        return Images.pdfIcon;
+      case "ppt":
+        return Images.pptIcon;
+      case "docx":
+      case "doc":
+        return Images.wordIcon;
+      default:
+        return Images.otherIcon;
     }
   }
 }

@@ -17,7 +17,7 @@ class WorkController extends BaseFrequentlyUsedListController<WorkState> {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    state.mostUsedList = settingCtrl.work.workRecent;
+    state.mostUsedList = settingCtrl.work.workFrequentlyUsed;
   }
 
   @override
@@ -40,15 +40,15 @@ class WorkController extends BaseFrequentlyUsedListController<WorkState> {
   }
 
   @override
-  void onTapRecent(recent) async {
-    if (recent is WorkRecent) {
-      WorkNodeModel? node = await recent.define.loadWorkNode();
+  void onTapFrequentlyUsed(used) async {
+    if (used is WorkFrequentlyUsed) {
+      WorkNodeModel? node = await used.define.loadWorkNode();
       if (node != null && node.forms != null && node.forms!.isNotEmpty) {
         Get.toNamed(Routers.createWork, arguments: {
-          "define": recent.define,
+          "define": used.define,
           "node": node,
           'target': settingCtrl.provider
-              .findTarget(recent.define.metadata.belongId ?? "")
+              .findTarget(used.define.metadata.belongId ?? "")
         });
       } else {
         ToastUtils.showMsg(msg: "流程未绑定表单");

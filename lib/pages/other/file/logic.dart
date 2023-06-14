@@ -4,11 +4,11 @@ import 'dart:io';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/dart/core/thing/filesys/filesystem.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
@@ -42,6 +42,8 @@ class FileController extends BaseBreadcrumbNavController<FileState> {
     if(model.source.metadata.isDirectory){
       Get.toNamed(Routers.file,arguments: {'data':model},preventDuplicates: false);
     }else{
+      settingCtrl.store.onRecordRecent(
+          RecentlyUseModel(type: StoreEnum.file.label, file: model.source.metadata));
       Get.toNamed(Routers.messageFile,arguments: model.source.metadata.shareInfo());
     }
   }
@@ -65,7 +67,8 @@ class FileController extends BaseBreadcrumbNavController<FileState> {
         delete(item);
         break;
       case "set":
-        settingCtrl.store.setFileMostUsed(item.source.metadata);
+        settingCtrl.store
+            .setMostUsed(storeEnum: StoreEnum.file, file: item.source.metadata);
         break;
       case "delete":
         String id = base64.encode(utf8.encode(item.source.metadata.name));

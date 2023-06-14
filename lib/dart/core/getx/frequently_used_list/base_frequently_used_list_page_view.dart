@@ -51,7 +51,7 @@ abstract class BaseFrequentlyUsedListPage<
                       Widget child = BaseFrequentlyUsedItem(
                           recent: element,
                           onTap: () {
-                            controller.onTapRecent(element);
+                            controller.onTapFrequentlyUsed(element);
                           });
                       int index = state.mostUsedList.indexOf(element);
 

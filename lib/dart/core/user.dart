@@ -134,11 +134,12 @@ class UserProvider {
     await _work.value?.loadTodos(reload: true);
     _inited = true;
     _chat.value?.loadAllChats();
-    await loadApps();
     await _chat.value?.loadPreMessage();
     await _chat.value?.loadMostUsed();
     await _work.value?.loadMostUsed();
     await _store.value?.loadMostUsed();
+    await _store.value?.loadRecentList();
+    await loadApps();
     _chat.refresh();
     _user.refresh();
   }
@@ -158,7 +159,7 @@ class UserProvider {
       await user!.deepLoad(reload: reload);
     }
     List<IApplication> apps = [];
-    for (var target in user!.targets) {
+    for (var target in user?.targets??[]) {
       for (var specie in target.species) {
         if (specie.metadata.typeName == SpeciesType.application.label) {
           var app = specie as IApplication;

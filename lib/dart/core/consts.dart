@@ -15,6 +15,8 @@ class StoreCollName {
   static const chatMessage = 'chat-message';
 
   static const mostUsed = 'most-used';
+
+  static const recentlyOpen = 'recently-open';
 }
 
 enum OrgAuth{

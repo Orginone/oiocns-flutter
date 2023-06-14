@@ -15,7 +15,7 @@ abstract class IChatProvider {
   /// 所有会话
   late RxList<IMsgChat> allChats;
 
-  late RxList<MessageRecent> messageRecent;
+  late RxList<MessageFrequentlyUsed> messageFrequentlyUsed;
 
   /// 指定会话
   List<IMsgChat> get topChats;
@@ -56,7 +56,7 @@ class ChatProvider implements IChatProvider {
   final IPerson user;
 
   @override
-  late RxList<MessageRecent> messageRecent;
+  late RxList<MessageFrequentlyUsed> messageFrequentlyUsed;
 
   ChatProvider(this.user) {
     kernel.on('RecvMsg', (data) {
@@ -75,7 +75,7 @@ class ChatProvider implements IChatProvider {
       }
     });
     allChats = RxList();
-    messageRecent = RxList();
+    messageFrequentlyUsed = RxList();
   }
 
   @override
@@ -180,13 +180,13 @@ class ChatProvider implements IChatProvider {
       user.id,
     );
     if (res.success) {
-      MessageRecent recent =  MessageRecent(
+      MessageFrequentlyUsed recent =  MessageFrequentlyUsed(
           chat: msg,
           name: msg.chatdata.value.chatName,
           id: msg.chatdata.value.fullId,
           avatar: msg.share.avatar?.thumbnailUint8List ??
               msg.share.avatar?.defaultAvatar);
-      messageRecent.add(recent);
+      messageFrequentlyUsed.add(recent);
     }
   }
 
@@ -197,7 +197,7 @@ class ChatProvider implements IChatProvider {
       user.id,
     );
     if(res.success && res.data!=null){
-      messageRecent.clear();
+      messageFrequentlyUsed.clear();
       var chats = res.data;
       if (chats is Map<String, dynamic>) {
         for (var key in chats.keys) {
@@ -205,7 +205,7 @@ class ChatProvider implements IChatProvider {
           var find = allChats
               .firstWhereOrNull((i) => i.chatdata.value.fullId == fullId);
           if(find!=null){
-            messageRecent.add(MessageRecent(
+            messageFrequentlyUsed.add(MessageFrequentlyUsed(
                 chat: find,
                 name: find.chatdata.value.chatName,
                 id: find.chatdata.value.fullId,
@@ -219,7 +219,7 @@ class ChatProvider implements IChatProvider {
 
   @override
   bool isMostUsed(IMsgChat msg) {
-    return messageRecent.where((p0) => p0.id == msg.chatdata.value.fullId).isNotEmpty;
+    return messageFrequentlyUsed.where((p0) => p0.id == msg.chatdata.value.fullId).isNotEmpty;
   }
 
   @override
@@ -229,8 +229,8 @@ class ChatProvider implements IChatProvider {
       user.id,
     );
     if(res.success){
-      messageRecent.removeWhere((element) => element.id == msg.chatdata.value.fullId);
-      messageRecent.refresh();
+      messageFrequentlyUsed.removeWhere((element) => element.id == msg.chatdata.value.fullId);
+      messageFrequentlyUsed.refresh();
     }
   }
 
