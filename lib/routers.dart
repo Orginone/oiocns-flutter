@@ -17,6 +17,7 @@ import 'package:orginone/pages/other/choice_people/view.dart';
 import 'package:orginone/pages/other/choice_thing/binding.dart';
 import 'package:orginone/pages/other/file/view.dart';
 import 'package:orginone/pages/home/home_page.dart';
+import 'package:orginone/pages/other/pdf/index.dart';
 import 'package:orginone/pages/other/qr_scan/binding.dart';
 import 'package:orginone/pages/other/qr_scan/view.dart';
 import 'package:orginone/pages/other/scanning/scanning_page.dart';
@@ -289,6 +290,8 @@ class Routers {
 
   static const String messageRecords = "/messageRecords";
 
+  static const String pdfReader = "/pdfReader";
+
   static String get main {
     return login;
     // var user = HiveUtils.getUser();
@@ -357,7 +360,7 @@ class Routers {
       GetPage(
         name: Routers.messageChat,
         page: () => MessageChatPage(),
-        bindings: [PlayBinding(),ChatBoxBinding(),MessageChatBinding()],
+        bindings: [PlayBinding(), ChatBoxBinding(), MessageChatBinding()],
       ),
       GetPage(
         name: Routers.index,
@@ -574,8 +577,12 @@ class Routers {
       ),
       GetPage(
         name: Routers.messageRecords,
-        page: () =>  MessageRecordsPage(),
+        page: () => MessageRecordsPage(),
         binding: MessageRecordsBinding(),
+      ),
+      GetPage(
+        name: Routers.pdfReader,
+        page: () => const PDFReaderPage(),
       ),
     ];
   }
