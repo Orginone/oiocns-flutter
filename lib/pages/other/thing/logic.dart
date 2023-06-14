@@ -29,8 +29,6 @@ class ThingController extends BaseListController<ThingState> {
 
     switch(key){
       case "details":
-        settingCtrl.store.onRecordRecent(
-            RecentlyUseModel(type: StoreEnum.thing.label, thing: item));
         Get.toNamed(Routers.thingDetails,
             arguments: {"thing": item, 'form': state.form});
         break;

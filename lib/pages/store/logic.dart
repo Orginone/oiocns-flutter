@@ -33,8 +33,6 @@ class StoreController extends BaseFrequentlyUsedListController<StoreState> {
           IForm? form = await settingCtrl.store
               .findForm(thing!.species.keys.first.substring(1));
           if (form != null) {
-            settingCtrl.store.onRecordRecent(
-                RecentlyUseModel(type: StoreEnum.thing.label, thing: thing));
             Get.toNamed(Routers.thingDetails,
                 arguments: {"thing": thing, 'form': form});
           } else {
