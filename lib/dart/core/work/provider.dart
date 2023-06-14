@@ -167,8 +167,25 @@ class WorkProvider implements IWorkProvider{
 
   @override
   Future<XWorkInstance?> loadTaskDetail(XWorkTask task) async{
-    final res = await kernel.queryWorkInstanceById(IdReq(id: task.instanceId));
-    return res.data;
+    var res = await kernel.anystore.aggregate(
+      StoreCollName.workInstance,
+      {
+        "match": {
+          "id": task.instanceId,
+        },
+        "limit": 1,
+        "lookup": {
+          "from": StoreCollName.workTask,
+          "localField": 'id',
+          "foreignField": 'instanceId',
+          "as": 'tasks',
+        },
+      }, task.belongId,
+    );
+    if (res.data!=null && res.data.length > 0) {
+      return XWorkInstance.fromJson(res.data[0]);
+    }
+    return null;
   }
 
   @override
