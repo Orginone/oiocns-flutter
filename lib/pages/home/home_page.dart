@@ -9,6 +9,7 @@ import 'package:orginone/pages/market/view.dart';
 import 'package:orginone/pages/store/view.dart';
 import 'package:orginone/util/event_bus.dart';
 import 'package:orginone/widget/badge_widget.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 import 'package:orginone/widget/template/originone_scaffold.dart';
 import 'package:orginone/widget/template/tabs.dart';
@@ -34,7 +35,6 @@ class HomePage extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    SysUtil.setStatusBarBright();
     return WillPopScope(
       onWillPop: () async {
         if (_lastCloseApp == null ||
@@ -46,27 +46,24 @@ class HomePage extends GetView<HomeController> {
         }
         return true;
       },
-      child: OrginoneScaffold(
-        resizeToAvoidBottomInset: false,
-        appBarElevation: 0,
-        appBarHeight: 0,
-        body: SafeArea(
-          child: Tabs(
-            tabCtrl: controller.tabController,
-            top: UserBar(),
-            views: controller.tabs.map((e) => e.toTabView()).toList(),
-            bottom: Container(
-              decoration: BoxDecoration(
-                  border: Border(top: BorderSide(color: Colors.grey.shade400,width: 0.4),)
-              ),
-              child: TabBar(
-                indicator: const UnderlineTabIndicator(),
-                controller: controller.tabController,
-                tabs: controller.tabs.map((item) => item.toTab()).toList(),
-                onTap: (index) {
-                  controller.changeTab(index);
-                },
-              ),
+      child: GyScaffold(
+        backgroundColor: Colors.white,
+        toolbarHeight: 0,
+        body: Tabs(
+          tabCtrl: controller.tabController,
+          top: UserBar(),
+          views: controller.tabs.map((e) => e.toTabView()).toList(),
+          bottom: Container(
+            decoration: BoxDecoration(
+                border: Border(top: BorderSide(color: Colors.grey.shade400,width: 0.4),)
+            ),
+            child: TabBar(
+              indicator: const UnderlineTabIndicator(),
+              controller: controller.tabController,
+              tabs: controller.tabs.map((item) => item.toTab()).toList(),
+              onTap: (index) {
+                controller.changeTab(index);
+              },
             ),
           ),
         ),
