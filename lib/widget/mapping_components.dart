@@ -172,7 +172,7 @@ MappingComponentsCallback mappingRouteWidget = (Fields data, ITarget target) {
   return Obx(() {
     return CommonWidget.commonChoiceTile(
         data.title??"", data.defaultData.value?.name ?? "",
-        required: true, onTap: (){
+        required: data.required??false, onTap: (){
       data.function(target);
     }, showLine: true);
   });
@@ -185,7 +185,7 @@ MappingComponentsCallback mappingUploadWidget = (Fields data, ITarget target) {
   return Obx(() {
     return CommonWidget.commonChoiceTile(
         data.title??"", data.defaultData.value?.name ?? "",
-        required: true, onTap: (){
+        required: data.required??false, onTap: (){
       data.function(target);
     }, showLine: true);
   });

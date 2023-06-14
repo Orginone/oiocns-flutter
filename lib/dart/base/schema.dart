@@ -6258,7 +6258,7 @@ class XTarget {
   final List<XIdentity>? givenIdentitys;
 
   // 该组织或个人所属的组织/个人
-  final XTarget? belong;
+  XTarget? belong;
 
   // 该组织或个人所属的组织/个人
   final List<XTarget>? targets;

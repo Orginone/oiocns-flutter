@@ -97,8 +97,9 @@ class MessageRecordsController extends BaseController<MessageRecordsState> {
     if (str.isNotEmpty) {
       state.searchMsg.value = state.chat.messages
           .where((p0) =>
-              p0.msgBody.toLowerCase().contains(str.toLowerCase()) &&
-              p0.msgType == MessageType.text.label)
+              p0.msgType == MessageType.text.label &&
+              (p0.body?.text?.toLowerCase().contains(str.toLowerCase()) ??
+                  false))
           .toList();
     }
   }

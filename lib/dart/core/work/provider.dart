@@ -182,7 +182,7 @@ class WorkProvider implements IWorkProvider{
         },
       }, task.belongId,
     );
-    if (res.data!=null && res.data.length > 0) {
+    if (res.data!=null && res.data.isNotEmpty) {
       return XWorkInstance.fromJson(res.data[0]);
     }
     return null;

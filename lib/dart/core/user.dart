@@ -143,6 +143,16 @@ class UserProvider {
     _user.refresh();
   }
 
+
+  Future<void> reloadChats() async{
+    await _user.value?.deepLoad(reload: true);
+    await _work.value?.loadTodos(reload: true);
+    _chat.value?.loadAllChats();
+    await _chat.value?.loadPreMessage();
+    _chat.refresh();
+  }
+
+
   Future<void> loadApps([bool reload = false]) async {
     if (reload) {
       await user!.deepLoad(reload: reload);
