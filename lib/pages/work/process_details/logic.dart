@@ -77,10 +77,16 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
             }catch(e){
               print(e);
             }
-
           }else{
             element.value = data['forms']?['headerData']?[element.id]??'';
           }
+
+          if(element.valueType == "用户型"){
+            element.fields?.defaultData.value = await settingCtrl.user.findShareById(element.value??"");
+          }else{
+            element.fields?.defaultData.value = element.value;
+          }
+          element.fields?.readOnly = true;
         }
       }
     }catch(e){
