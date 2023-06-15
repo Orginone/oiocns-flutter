@@ -36,13 +36,13 @@ class MessageSetting extends GetView<SettingController> {
         // _interruption,
         // _top,
         _searchChat(chat),
-        Padding(padding: EdgeInsets.only(top: 30.h)),
       ];
     } else {
       children = [
         _avatar(chat),
         Padding(padding: EdgeInsets.only(top: 50.h)),
         Avatars(
+          showCount: 15,
           persons: chat.members,
           addCallback: () {
             // Map<String, dynamic> args = {
@@ -55,7 +55,6 @@ class MessageSetting extends GetView<SettingController> {
         // _interruption,
         // _top,
         _searchChat(chat),
-        Padding(padding: EdgeInsets.only(top: 30.h)),
       ];
     }
 
@@ -160,7 +159,7 @@ class MessageSetting extends GetView<SettingController> {
       func: () {
         Get.toNamed(Routers.messageRecords,arguments: {"chat":chat});
       },
-      padding: EdgeInsets.zero,
+      padding: EdgeInsets.symmetric(vertical: 15.h),
       header: Text(
         "查找聊天记录",
         style: XFonts.size20Black3W700,
