@@ -68,25 +68,26 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
         state.workForm.value!.attributes = await settingCtrl.provider.work!
             .loadAttributes(iForm.id, state.define!.workItem.belongId);
         for (var element in state.workForm.value!.attributes!) {
-          if(element.valueType == "附件型"){
-            try{
+          print('11111');
+
+          try{
+            element.fields?.readOnly = true;
+            if(element.valueType == "附件型"){
               List<dynamic> files = jsonDecode(data['forms']?['headerData']?[element.id]);
               List<FileItemShare> share = files.map((e) => FileItemShare.fromJson(e)).toList();
               element.value = share.map((e) => e.name).join('\n');
               element.share = share;
-            }catch(e){
-              print(e);
+            }else{
+              element.value = data['forms']?['headerData']?[element.id]??'';
             }
-          }else{
-            element.value = data['forms']?['headerData']?[element.id]??'';
-          }
+            if(element.valueType == "用户型"){
+              element.fields?.defaultData.value = await settingCtrl.user.findShareById(element.value??"");
+            }else{
+              element.fields?.defaultData.value = element.value;
+            }
+          }catch(e){
 
-          if(element.valueType == "用户型"){
-            element.fields?.defaultData.value = await settingCtrl.user.findShareById(element.value??"");
-          }else{
-            element.fields?.defaultData.value = element.value;
           }
-          element.fields?.readOnly = true;
         }
       }
     }catch(e){

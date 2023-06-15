@@ -5593,9 +5593,9 @@ class XForm {
     };
   }
 
-  void reset() async {
+  void reset()  {
     for (var element in attributes??[]) {
-      element.fields =await element.toFields();
+      element.fields = element.initFields();
     }
   }
 }

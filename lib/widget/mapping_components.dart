@@ -74,7 +74,14 @@ MappingComponentsCallback mappingSelectBoxWidget = (Fields data,ITarget target) 
     return Container();
   }
   return Obx(() {
-    String content = data.defaultData.value?.values?.first.toString() ?? "";
+    String content = "";
+    if(data.defaultData.value!=null){
+      if(data.defaultData.value is String){
+        content = data.defaultData.value;
+      }else{
+        content = data.defaultData.value?.values?.first.toString()??"";
+      }
+    }
     return Container(
       margin: EdgeInsets.only(
           left: (data.marginLeft ?? 0).h,

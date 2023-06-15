@@ -75,7 +75,7 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
                       Text(statusMap[task.status]!.text),
                       SizedBox(width: 20.w,),
                       Expanded(child: TargetText(userId: task.createUser??"",)),
-                      Text("审核节点:${task.node?.nodeType}"),
+                      Text("审核节点:${task.node?.nodeType??""}"),
                     ],
                   ),
                   SizedBox(height:30.h,),

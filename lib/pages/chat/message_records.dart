@@ -95,12 +95,19 @@ class MessageRecordsController extends BaseController<MessageRecordsState> {
   void searchMsg(String str) {
     state.searchMsg.clear();
     if (str.isNotEmpty) {
-      state.searchMsg.value = state.chat.messages
-          .where((p0) =>
-              p0.msgType == MessageType.text.label &&
-              (p0.body?.text?.toLowerCase().contains(str.toLowerCase()) ??
-                  false))
-          .toList();
+      state.searchMsg.value = state.chat.messages.where((p0) {
+        String text = p0.body?.text ?? "";
+
+        text = text.replaceAll(StringUtil.imgReg, '');
+
+        bool isSearchText = p0.msgType == MessageType.text.label &&
+            text.toLowerCase().contains(str.toLowerCase());
+        if(isSearchText){
+          print(text);
+        }
+
+        return isSearchText;
+      }).toList();
     }
   }
 }
