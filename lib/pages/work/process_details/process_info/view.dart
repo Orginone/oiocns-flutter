@@ -6,7 +6,9 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/mapping_components.dart';
 import 'package:orginone/widget/unified.dart';
 
 import 'logic.dart';
@@ -145,14 +147,12 @@ class ProcessInfoPage
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidget.commonHeadInfoWidget(form.name),
-        CommonWidget.commonFormWidget(
-            formItem: form.attributes?.map((e) {
-                  return CommonWidget.commonFormItem(
-                      title: e.name ?? "",
-                      content: e.value ?? '',
-                      userId: e.valueType == "用户型" ? e.value! : '');
-                }).toList() ??
-                []),
+       ...form.attributes?.map((e) {
+         Widget child = testMappingComponents[e.fields!.type ?? ""]!(
+             e.fields!, settingCtrl.user);
+         return child;
+       }).toList() ??
+           []
       ],
     );
   }

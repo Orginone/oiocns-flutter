@@ -148,9 +148,7 @@ class XAttribute {
     belong = json['belong'] != null
         ? XTarget.fromJson(json['belong'] as Map<String, dynamic>)
         : null;
-     toFields().then((value){
-       fields = value;
-     });
+    fields = initFields();
   }
 
   Map<String, dynamic> toJson() {
@@ -191,7 +189,7 @@ class XAttribute {
     return data;
   }
 
-  Future<Fields> toFields() async{
+  Fields initFields(){
     String? type;
     String? router;
     Map<dynamic, String> select = {};
@@ -5595,9 +5593,9 @@ class XForm {
     };
   }
 
-  void reset() async {
+  void reset()  {
     for (var element in attributes??[]) {
-      element.fields =await element.toFields();
+      element.fields = element.initFields();
     }
   }
 }
@@ -6258,7 +6256,7 @@ class XTarget {
   final List<XIdentity>? givenIdentitys;
 
   // 该组织或个人所属的组织/个人
-  final XTarget? belong;
+  XTarget? belong;
 
   // 该组织或个人所属的组织/个人
   final List<XTarget>? targets;

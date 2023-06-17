@@ -30,13 +30,4 @@ class WorkListPage extends BaseGetListView<WorkListController,WorkListState>{
   @override
   // TODO: implement title
   String get title => state.work.name;
-
-  @override
-  List<Widget> actions() {
-    return state.work.workEnum == WorkEnum.todo?[
-      IconButton(onPressed: (){
-        controller.createWork();
-      }, icon: Icon(Icons.add,color: Colors.black,)),
-    ]:[];
-  }
 }

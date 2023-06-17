@@ -13,7 +13,7 @@ class MessageChatsController
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    state.mostUsedList =  settingCtrl.chat.messageRecent;
+    state.mostUsedList =  settingCtrl.chat.messageFrequentlyUsed;
     loadSuccess();
   }
 
@@ -30,12 +30,12 @@ class MessageChatsController
   }
 
   @override
-  void onTapRecent(recent) {
-    if(recent is MessageRecent){
-      recent.chat.onMessage();
+  void onTapFrequentlyUsed(used) {
+    if(used is MessageFrequentlyUsed){
+      used.chat.onMessage();
       Get.toNamed(
         Routers.messageChat,
-        arguments: recent.chat,
+        arguments: used.chat,
       );
     }
   }

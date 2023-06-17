@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_frequently_used_list_page_view.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/widget/unified.dart';
 
 import 'item.dart';
@@ -13,9 +14,10 @@ class StorePage extends BaseFrequentlyUsedListPage<StoreController, StoreState> 
       color: XColors.bgColor,
       child: ListView.builder(
         itemBuilder: (context, index) {
-          return StoreItem();
+          var item = settingCtrl.store.recent[index];
+          return StoreItem(item: item,);
         },
-        itemCount: state.dataList.length,
+        itemCount: settingCtrl.store.recent.length,
       ),
     );
   }

@@ -1,13 +1,20 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:orginone/dart/core/thing/base/form.dart';
+import 'package:orginone/main.dart';
+import 'package:orginone/routers.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/unified.dart';
 
+import 'state.dart';
+
 class StoreItem extends StatelessWidget {
-  const StoreItem({Key? key}) : super(key: key);
+  final RecentlyUseModel item;
+
+  const StoreItem({Key? key, required this.item}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,23 +23,40 @@ class StoreItem extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 11.h),
       child: Row(
         children: [
-          Container(
-            height: 80.w,
-            width: 80.w,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: const Color(0xFF17BC84),
-              borderRadius: BorderRadius.circular(16.w),
-            ),
-            child: Icon(Icons.other_houses,color: Colors.white,size: 48.w,),
+          item.avatar == null
+              ? Container(
+                  height: 80.w,
+                  width: 80.w,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF17BC84),
+                    borderRadius: BorderRadius.circular(16.w),
+                  ),
+                  child: Icon(
+                    Icons.other_houses,
+                    color: Colors.white,
+                    size: 48.w,
+                  ),
+                )
+              : ImageWidget(
+                  item.avatar,
+                  size: 80.w,
+                ),
+          SizedBox(
+            width: 20.w,
           ),
-          SizedBox(width: 20.w,),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("应用名称",style: XFonts.size24Black0,),
-                Text("存储占用",style: XFonts.size18Black9,)
+                Text(
+                  item.file?.name ?? item.thing?.id ?? "",
+                  style: XFonts.size24Black0,
+                ),
+                // Text(
+                //   "存储占用",
+                //   style: XFonts.size18Black9,
+                // )
               ],
             ),
           ),
@@ -48,10 +72,56 @@ class StoreItem extends StatelessWidget {
                 style: XFonts.size20Black0,
               ),
             ),
+            onTap: () async {
+              if (item.type == 'file') {
+                Get.toNamed(Routers.messageFile,
+                    arguments: item.file!.shareInfo());
+              } else {
+                var thing = item.thing;
+                IForm? form = await settingCtrl.store
+                    .findForm(thing!.species.keys.first.substring(1));
+                if (form != null) {
+                  Get.toNamed(Routers.thingDetails,
+                      arguments: {"thing": thing, 'form': form});
+                } else {
+                  ToastUtils.showMsg(msg: "未找到表单");
+                }
+              }
+            },
           ),
-          CommonWidget.commonPopupMenuButton(items: [
-            PopupMenuItem(child: Text("设为常用")),
-          ])
+          Obx(() {
+            PopupMenuItem popupMenuItem;
+            if (settingCtrl.store.isMostUsed(item.id)) {
+              popupMenuItem = const PopupMenuItem(
+                value: "remove",
+                child: Text("移除常用"),
+              );
+            } else {
+              popupMenuItem = const PopupMenuItem(
+                value: "set",
+                child: Text("设为常用"),
+              );
+            }
+            return CommonWidget.commonPopupMenuButton(
+                items: [
+                  popupMenuItem,
+                ],
+                onSelected: (key) {
+                  switch (key) {
+                    case "remove":
+                      settingCtrl.store.removeMostUsed(item.id);
+                      break;
+                    case "set":
+                      settingCtrl.store.setMostUsed(
+                          thing: item.thing,
+                          file: item.file,
+                          storeEnum: item.type == "thing"
+                              ? StoreEnum.thing
+                              : StoreEnum.file);
+                      break;
+                  }
+                });
+          })
         ],
       ),
     );

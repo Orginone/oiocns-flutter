@@ -74,7 +74,14 @@ MappingComponentsCallback mappingSelectBoxWidget = (Fields data,ITarget target) 
     return Container();
   }
   return Obx(() {
-    String content = data.defaultData.value?.values?.first.toString() ?? "";
+    String content = "";
+    if(data.defaultData.value!=null){
+      if(data.defaultData.value is String){
+        content = data.defaultData.value;
+      }else{
+        content = data.defaultData.value?.values?.first.toString()??"";
+      }
+    }
     return Container(
       margin: EdgeInsets.only(
           left: (data.marginLeft ?? 0).h,
@@ -84,7 +91,9 @@ MappingComponentsCallback mappingSelectBoxWidget = (Fields data,ITarget target) 
       child: CommonWidget.commonChoiceTile(
           data.title ?? "",content,
           onTap: (){
-            data.function(target);
+            if(!(data.readOnly??false)){
+              data.function(target);
+            }
           },
           showLine: true,
           required: data.required ?? false),
@@ -108,7 +117,9 @@ MappingComponentsCallback mappingSelectDateBoxWidget = (Fields data, ITarget tar
       child: CommonWidget.commonChoiceTile(
           data.title ?? "",content,
           onTap: (){
-            data.function(target);
+            if(!(data.readOnly??false)){
+              data.function(target);
+            }
           },
           showLine: true,
           required: data.required ?? false),
@@ -133,7 +144,9 @@ MappingComponentsCallback mappingSelectPersonBoxWidget = (Fields data, ITarget t
       child: CommonWidget.commonChoiceTile(
           data.title ?? "",content,
           onTap: (){
-            data.function(target);
+            if(!(data.readOnly??false)){
+              data.function(target);
+            }
           },
           showLine: true,
           required: data.required ?? false),
@@ -157,7 +170,9 @@ MappingComponentsCallback mappingSelectDepartmentBoxWidget = (Fields data, ITarg
       child: CommonWidget.commonChoiceTile(
           data.title ?? "",content,
           onTap:(){
-            data.function(target);
+            if(!(data.readOnly??false)){
+              data.function(target);
+            }
           },
           showLine: true,
           required: data.required ?? false),
@@ -172,8 +187,10 @@ MappingComponentsCallback mappingRouteWidget = (Fields data, ITarget target) {
   return Obx(() {
     return CommonWidget.commonChoiceTile(
         data.title??"", data.defaultData.value?.name ?? "",
-        required: true, onTap: (){
-      data.function(target);
+        required: data.required??false, onTap: (){
+      if(!(data.readOnly??false)){
+        data.function(target);
+      }
     }, showLine: true);
   });
 };
@@ -183,10 +200,20 @@ MappingComponentsCallback mappingUploadWidget = (Fields data, ITarget target) {
     return Container();
   }
   return Obx(() {
+    String str = '';
+    if(data.defaultData.value!=null){
+      if(data.defaultData.value is String){
+        str = data.defaultData.value;
+      }else{
+        str = data.defaultData.value?.name;
+      }
+    }
     return CommonWidget.commonChoiceTile(
-        data.title??"", data.defaultData.value?.name ?? "",
-        required: true, onTap: (){
-      data.function(target);
+        data.title??"", str,
+        required: data.required??false, onTap: (){
+          if(!(data.readOnly??false)){
+            data.function(target);
+          }
     }, showLine: true);
   });
 };

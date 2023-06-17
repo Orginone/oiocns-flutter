@@ -9,7 +9,7 @@ import 'package:orginone/widget/unified.dart';
 import 'base_frequently_used_list_state.dart';
 
 class BaseFrequentlyUsedItem extends StatelessWidget {
-  final Recent recent;
+  final FrequentlyUsed recent;
   final VoidCallback? onTap;
   const BaseFrequentlyUsedItem({Key? key, required this.recent, this.onTap}) : super(key: key);
 

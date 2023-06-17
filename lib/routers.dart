@@ -48,6 +48,7 @@ import 'pages/chat/message_chats/message_chats_controller.dart';
 import 'pages/chat/message_chats/message_chats_list.dart';
 import 'pages/chat/message_file.dart';
 import 'pages/chat/message_records.dart';
+import 'pages/chat/person_list_page.dart';
 import 'pages/home/index/index_page.dart';
 import 'pages/login/forgot_password/binding.dart';
 import 'pages/login/forgot_password/view.dart';
@@ -290,6 +291,7 @@ class Routers {
 
   static const String messageRecords = "/messageRecords";
 
+  static const String personListPage = "/personListPage";
   static const String pdfReader = "/pdfReader";
 
   static String get main {
@@ -579,6 +581,10 @@ class Routers {
         name: Routers.messageRecords,
         page: () => MessageRecordsPage(),
         binding: MessageRecordsBinding(),
+      ),
+      GetPage(
+        name: Routers.personListPage,
+        page: () => PersonListPage(),
       ),
       GetPage(
         name: Routers.pdfReader,

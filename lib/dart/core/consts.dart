@@ -10,11 +10,13 @@ const isJoinedError = '抱歉,您已加入该组织.';
 const functionNotFoundError = '抱歉,未找到该方法.';
 
 class StoreCollName {
-  static const wrkTask = 'work-task';
+  static const workTask = 'work-task';
   static const workInstance = 'work-instances';
   static const chatMessage = 'chat-message';
 
   static const mostUsed = 'most-used';
+
+  static const recentlyOpen = 'recently-open';
 }
 
 enum OrgAuth{

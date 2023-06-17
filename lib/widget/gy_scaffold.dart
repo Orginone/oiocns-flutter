@@ -32,21 +32,24 @@ class GyScaffold extends StatefulWidget {
 
   final Widget? bottomNavigationBar;
 
-  const GyScaffold(
-      {Key? key,
-      this.body,
-      this.supportSafeArea = true,
-      this.backgroundColor,
-      this.appBarColor,
-      this.titleName,
-      this.titleWidget,
-      this.titleStyle,
-      this.centerTitle = true,
-      this.actions,
-      this.leading,
-      this.elevation = 0,
-      this.backColor,
-      this.leadingWidth, this.bottomNavigationBar})
+  final double? toolbarHeight;
+
+  const GyScaffold({Key? key,
+    this.body,
+    this.supportSafeArea = true,
+    this.backgroundColor,
+    this.appBarColor,
+    this.titleName,
+    this.titleWidget,
+    this.titleStyle,
+    this.centerTitle = true,
+    this.actions,
+    this.leading,
+    this.elevation = 0,
+    this.backColor,
+    this.leadingWidth,
+    this.bottomNavigationBar,
+    this.toolbarHeight})
       : super(key: key);
 
   @override
@@ -80,6 +83,8 @@ class _GyScaffoldState extends State<GyScaffold> {
 
   late double leadingWidth;
 
+  double? toolbarHeight;
+
   Widget? bottomNavigationBar;
   @override
   void initState() {
@@ -103,6 +108,7 @@ class _GyScaffoldState extends State<GyScaffold> {
     backColor = widget.backColor ?? Colors.black;
     leadingWidth = widget.leadingWidth ?? kToolbarHeight;
     bottomNavigationBar = widget.bottomNavigationBar;
+    toolbarHeight = widget.toolbarHeight;
   }
 
   @override
@@ -151,6 +157,9 @@ class _GyScaffoldState extends State<GyScaffold> {
     if(oldWidget.bottomNavigationBar != widget.bottomNavigationBar){
       bottomNavigationBar = widget.bottomNavigationBar;
     }
+    if(oldWidget.toolbarHeight != widget.toolbarHeight){
+      toolbarHeight = widget.toolbarHeight;
+    }
   }
 
   @override
@@ -175,6 +184,7 @@ class _GyScaffoldState extends State<GyScaffold> {
           actions: actions,
           leading: leading ?? BackButton(color: backColor),
           leadingWidth: leadingWidth,
+          toolbarHeight:toolbarHeight,
         ),
         backgroundColor: backgroundColor,
         body: body,bottomNavigationBar: bottomNavigationBar,);
