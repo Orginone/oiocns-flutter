@@ -5,15 +5,9 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/app/flowclass.dart';
-import 'package:orginone/dart/core/thing/app/workclass.dart';
-import 'package:orginone/dart/core/thing/base/form.dart';
-import 'package:orginone/dart/core/thing/base/species.dart';
-import 'package:orginone/dart/core/thing/dict/dictclass.dart';
-import 'package:orginone/dart/core/thing/market/market.dart';
-import 'package:orginone/dart/core/thing/store/propclass.dart';
-import 'package:orginone/dart/core/thing/store/thingclass.dart';
-
+import 'package:orginone/dart/core/thing/form.dart';
+import 'package:orginone/dart/core/thing/property.dart';
+import 'package:orginone/dart/core/thing/species.dart';
 import 'config.dart';
 import 'home/state.dart';
 
@@ -30,7 +24,7 @@ class SettingNetWork {
             spaceEnum: model.spaceEnum,
             source: element,
             standardEnum: model.standardEnum,
-            image: element.metadata.avatarThumbnail(),name: element.metadata.name);
+            image: element.metadata.avatarThumbnail(),name: element.metadata.name!);
         element.children = await element.loadChildren();
         if (element.children.isNotEmpty) {
           await loopDepartment(element.children,child);
@@ -46,7 +40,7 @@ class SettingNetWork {
   }
 
   static Future<void> initGroup(SettingNavModel model) async {
-    Future<List<SettingNavModel>> getSpecies(List<ISpeciesItem> species) async{
+    Future<List<SettingNavModel>> getSpecies(List<ISpecies> species) async{
       List<SettingNavModel> children = [];
       for (var element in species) {
         var nav = SettingNavModel(
@@ -54,20 +48,20 @@ class SettingNetWork {
             source: element,
             standardEnum: StandardEnum.classCriteria,name: element.metadata.name??"");
         List<dynamic> item = [];
-        switch(SpeciesType.getType(element.metadata.typeName)){
+        switch(SpeciesType.getType(element.metadata.typeName!)){
           case SpeciesType.market:
-            item = await (element as Market).loadWorkDefines();
+            // item = await (element as Market).loadWorkDefines();
             break;
           case SpeciesType.flow:
-            item = await (element as FlowClass).loadWorkDefines();
+            // item = await (element as FlowClass).loadWorkDefines();
             break;
           case SpeciesType.application:
             break;
           case SpeciesType.dict:
-            item = await (element as IDictClass).loadDicts();
+            // item = await (element as IDictClass).loadDicts();
             break;
           case SpeciesType.thing:
-            item = await (element as IThingClass).loadForms();
+            // item = await (element as IThingClass).loadForms();
             break;
         }
         nav.children = [];
@@ -75,9 +69,9 @@ class SettingNetWork {
             space: model.space,
             source: e,
             standardEnum: StandardEnum.classCriteria,name: e.metadata.name??"")).toList());
-        if(element.children.isNotEmpty){
-          nav.children.addAll(await getSpecies(element.children));
-        }
+        // if(element.children.isNotEmpty){
+        //   nav.children.addAll(await getSpecies(element.children));
+        // }
         children.add(nav);
       }
       return children;
@@ -92,9 +86,9 @@ class SettingNetWork {
             source: value,
             children: [],
             standardEnum: model.standardEnum,
-            image: value.metadata.avatarThumbnail(),name: value.metadata.name);
+            image: value.metadata.avatarThumbnail(),name: value.metadata.name!);
         value.children = await value.loadChildren();
-        child.children.addAll(await getSpecies(value.species));
+        child.children.addAll(await getSpecies(value.directory.specieses));
         if (value.children.isNotEmpty) {
           child.children.addAll(await getNextLvOutAgency(value.children));
         }
@@ -116,7 +110,7 @@ class SettingNetWork {
           spaceEnum: model.spaceEnum,
           source: value,
           standardEnum: model.standardEnum,
-          image: value.metadata.avatarThumbnail(),name: value.metadata.name);
+          image: value.metadata.avatarThumbnail(),name: value.metadata.name!);
       model.children.add(child);
     }
 
@@ -131,7 +125,7 @@ class SettingNetWork {
           spaceEnum: model.spaceEnum,
           source: value,
           standardEnum: model.standardEnum,
-          image: value.metadata.avatarThumbnail(),name: value.metadata.name);
+          image: value.metadata.avatarThumbnail(),name: value.metadata.name!);
       model.children.add(child);
     }
   }
@@ -188,36 +182,36 @@ class SettingNetWork {
   }
 
   static Future<void> initDict(SettingNavModel model) async{
-    var dictArray = await model.space!.loadDicts();
-    if(dictArray.isNotEmpty){
-      model.children = [];
-      for (var value in dictArray) {
-        var child = SettingNavModel(
-            space: model.space,
-            spaceEnum: model.spaceEnum,
-            source: value,
-            standardEnum: model.standardEnum,
-            name: value.metadata.name??"");
-        model.children.add(child);
-      }
-    }
+    // var dictArray = await model.space!.loadDicts();
+    // if(dictArray.isNotEmpty){
+    //   model.children = [];
+    //   for (var value in dictArray) {
+    //     var child = SettingNavModel(
+    //         space: model.space,
+    //         spaceEnum: model.spaceEnum,
+    //         source: value,
+    //         standardEnum: model.standardEnum,
+    //         name: value.metadata.name??"");
+    //     model.children.add(child);
+    //   }
+    // }
   }
 
   static Future<void> initSpecies(SettingNavModel model) async {
-    List<ISpeciesItem> species = await model.space!.loadSpecies();
-    Future<void> loopSpeciesTree(List<ISpeciesItem> tree, List<SettingNavModel> navs) async{
+    List<ISpecies> species = await model.space!.directory.loadSpecieses();
+    Future<void> loopSpeciesTree(List<ISpecies> tree, List<SettingNavModel> navs) async{
       for (var element in tree) {
         var child = SettingNavModel(
             space: model.space,
             spaceEnum: model.spaceEnum,
             source: element,
-            image: element.share.avatar?.shareLink,
+            image: element.metadata.avatarThumbnail(),
             standardEnum: StandardEnum.classCriteria,
-            name: element.metadata.name);
+            name: element.metadata.name!);
 
         List<SettingNavModel> children = [];
         if (element.metadata.typeName == SpeciesType.thing.label) {
-          List<IForm> forms = await (element as IThingClass).loadForms();
+          List<IForm> forms = await element.directory.loadForms();
           if (forms.isNotEmpty) {
             children = forms
                 .map((e) => SettingNavModel(
@@ -229,9 +223,8 @@ class SettingNetWork {
                 .toList();
           }
         }
-        if (element.metadata.typeName == SpeciesType.store.label &&
-            element is IPropClass) {
-          List<XProperty> property = await element.loadPropertys();
+        if (element.metadata.typeName == SpeciesType.store.label) {
+          List<IProperty> property = await element.directory.loadPropertys();
           if (property.isNotEmpty) {
             children.addAll(property
                 .map((e) => SettingNavModel(
@@ -239,29 +232,28 @@ class SettingNetWork {
                 standardEnum:model.standardEnum,
                 source: element,
                 spaceEnum: model.spaceEnum,
-                name: e.name ?? "",
+                name: e.metadata.name ?? "",
                 id: e.id ?? ""))
                 .toList());
           }
         }
-        if (element.metadata.typeName == SpeciesType.dict.label &&
-            element is IDictClass) {
-          var dicts = await element.loadDicts();
-          children.addAll(dicts
-              .map((e) => SettingNavModel(
-              space: model.space,
-              standardEnum: model.standardEnum,
-              source: e,
-              spaceEnum: model.spaceEnum,
-              name: e.metadata.name ?? "",
-              id: e.metadata.id ?? ""))
-              .toList());
+        if (element.metadata.typeName == SpeciesType.dict.label) {
+          // var dicts = await element.loadDicts();
+          // children.addAll(dicts
+          //     .map((e) => SettingNavModel(
+          //     space: model.space,
+          //     standardEnum: model.standardEnum,
+          //     source: e,
+          //     spaceEnum: model.spaceEnum,
+          //     name: e.metadata.name ?? "",
+          //     id: e.metadata.id ?? ""))
+          //     .toList());
         }
 
         child.children = children;
-        if (element.children.isNotEmpty) {
-          await loopSpeciesTree(element.children, child.children);
-        }
+        // if (element.children.isNotEmpty) {
+        //   await loopSpeciesTree(element.children, child.children);
+        // }
         navs.add(child);
       }
     }

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
@@ -6,6 +8,7 @@ import 'package:orginone/dart/base/api/storehub.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/util/http_util.dart';
+import 'package:uuid/uuid.dart';
 
 class AnyStore {
   final Logger log = Logger("AnyStore");
@@ -286,6 +289,51 @@ class AnyStore {
     }
     var raw = await _restRequest('Bucket', 'Operate', {}, data.toJson());
     return ResultType<T>.fromJson(raw);
+  }
+
+
+  Future<FileItemModel?> fileUpdate(String belongId, File file, String key,
+      {void Function(double)? progress}) async {
+    final uuid = const Uuid().v1();
+    final data = BucketOpreateModel(
+      key: base64.encode(utf8.encode(key)),
+      operate: BucketOpreates.upload,
+    );
+    progress?.call(0);
+    int index = 0;
+    int chunkSize = 1024 * 1024;
+    int fileLength = file.lengthSync();
+    while (index * chunkSize < fileLength.floorToDouble()) {
+      var start = index * chunkSize;
+      var end = start + chunkSize;
+      if (end > fileLength.floorToDouble()) {
+        end = fileLength;
+      }
+      List<int> bytes = file.readAsBytesSync();
+      bytes = bytes.sublist(start, end);
+      String url = base64.encode(bytes);
+      data.fileItem = FileChunkData(
+        index: index,
+        uploadId: uuid,
+        size: fileLength,
+        data: [],
+        dataUrl: url,
+      );
+      var res = await bucketOpreate(belongId, data);
+      if (!res.success) {
+        data.operate = BucketOpreates.abortUpload;
+        await bucketOpreate(belongId, data);
+        progress?.call(-1);
+        return null;
+      }
+      index++;
+      progress?.call(end / fileLength);
+      if (end == fileLength && res.data != null) {
+        var node = FileItemModel.fromJson(res.data);
+        return node;
+      }
+    }
+    return null;
   }
 
   /// 加载物

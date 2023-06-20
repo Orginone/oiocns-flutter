@@ -1,9 +1,6 @@
 import 'dart:ui';
-
-import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/thing/base/flow.dart';
+import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/toast_utils.dart';
 
@@ -31,8 +28,8 @@ class WorkNetWork {
     return flowInstance;
   }
 
-  static Future<IWorkDefine?> getFlowDefine(XWorkTask todo) async {
-    IWorkDefine? define = await settingCtrl.provider.work?.findFlowDefine(todo.defineId!);
+  static Future<IWork?> getFlowDefine(XWorkTask todo) async {
+    IWork? define = await settingCtrl.provider.work?.findFlowDefine(todo.defineId!);
     return define;
   }
 

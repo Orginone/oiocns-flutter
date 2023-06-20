@@ -2,14 +2,525 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/model/thing_model.dart' as thing;
 
 import 'model.dart';
+
+class Xbase {
+  String? id;
+  int? status;
+  String? createUser;
+  String? updateUser;
+  String? version;
+  String? createTime;
+  String? updateTime;
+
+  Xbase({
+    this.id,
+    this.status,
+    this.createUser,
+    this.updateUser,
+    this.version,
+    this.createTime,
+    this.updateTime,
+  });
+
+  Xbase.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    status = json['status'];
+    createUser = json['createUser'];
+    updateUser = json['updateUser'];
+    version = json['version'];
+    createTime = json['createTime'];
+    updateTime = json['updateTime'];
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'status': status,
+      'createUser': createUser,
+      'updateUser': updateUser,
+      'version': version,
+      'createTime': createTime,
+      'updateTime': updateTime,
+    };
+  }
+}
+
+class XEntity extends Xbase {
+  String? name;
+  String? code;
+  String? remark;
+  String? icon;
+  String? belongId;
+  String? typeName;
+  XTarget? belong;
+
+  XEntity({
+    this.name,
+    this.code,
+    this.remark,
+    this.icon,
+    this.belongId,
+    this.typeName,
+    this.belong,
+    super.id,
+    super.status,
+    super.createUser,
+    super.updateUser,
+    super.version,
+    super.createTime,
+    super.updateTime,
+  });
+
+  XEntity.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    name = json['name'];
+    code = json['code'];
+    remark = json['remark'];
+    icon = json['icon'];
+    belongId = json['belongId'];
+    typeName = json['typeName'];
+    belong = json['belong'] != null ? XTarget.fromJson(json['belong']) : null;
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'code': code,
+      'remark': remark,
+      'icon': icon,
+      'belongId': belongId,
+      'typeName': typeName,
+      'belong': belong?.toJson(),
+      ...super.toJson(),
+    };
+  }
+
+
+  Uint8List? avatarThumbnail() {
+    if (icon == '') {
+      return null;
+    }
+    try {
+      var map = jsonDecode(icon ?? "");
+      FileItemShare share = FileItemShare.fromJson(map);
+      return share.thumbnailUint8List;
+    } catch (e) {
+      return null;
+    }
+  }
+
+}
+
+class XDirectory extends XEntity {
+  late String parentId;
+  late String shareId;
+  List<XProperty>? propertys;
+  List<XForm>? forms;
+  List<XSpecies>? species;
+  List<XApplication>? applications;
+  XDirectory? parent;
+  List<XDirectory>? nodes;
+
+  XDirectory({
+    required this.parentId,
+    required this.shareId,
+    this.propertys,
+    this.forms,
+    this.species,
+    this.applications,
+    this.parent,
+    this.nodes,
+     super.id,
+     super.status,
+     super.createUser,
+     super.updateUser,
+     super.version,
+     super.createTime,
+     super.updateTime,
+     super.name,
+     super.code,
+     super.remark,
+     super.icon,
+     super.belongId,
+    super.typeName,
+    XTarget? belong,
+  });
+
+  XDirectory.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    parentId = json['parentId']??"";
+    shareId = json['shareId']??"";
+    propertys = (json['propertys'] as List<dynamic>?)
+        ?.map((item) => XProperty.fromJson(item as Map<String, dynamic>))
+        .toList();
+    forms = (json['forms'] as List<dynamic>?)
+        ?.map((item) => XForm.fromJson(item as Map<String, dynamic>))
+        .toList();
+    species = (json['species'] as List<dynamic>?)
+        ?.map((item) => XSpecies.fromJson(item as Map<String, dynamic>))
+        .toList();
+    parent =
+        json['parent'] != null ? XDirectory.fromJson(json['parent']) : null;
+    nodes = (json['nodes'] as List<dynamic>?)
+        ?.map((item) => XDirectory.fromJson(item as Map<String, dynamic>))
+        .toList();
+    applications = (json['applications'] as List<dynamic>?)
+        ?.map((item) => XApplication.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'parentId': parentId,
+      'shareId': shareId,
+      'propertys': propertys?.map((e) => e.toJson()).toList(),
+      'forms': forms?.map((e) => e.toJson()).toList(),
+      'species': species?.map((e) => e.toJson()).toList(),
+      'parent': parent?.toJson(),
+      'nodes': nodes?.map((e) => e.toJson()).toList(),
+      'applications': applications?.map((e) => e.toJson()).toList(),
+      ...super.toJson(),
+    };
+  }
+}
+
+class XDirectoryArray {
+  // 便宜量
+  int? offset;
+
+  // 最大数量
+  int? limit;
+
+  // 总数
+  int? total;
+
+  // 结果
+  List<XDirectory>? result;
+
+  //构造方法
+  XDirectoryArray({
+    required this.offset,
+    required this.limit,
+    required this.total,
+    required this.result,
+  });
+
+  //通过JSON构造
+  XDirectoryArray.fromJson(Map<String, dynamic> json) {
+    offset = json["offset"];
+    limit = json["limit"];
+    total = json["total"];
+    if (json["result"] != null) {
+      result = [];
+      json["result"].forEach((e) {
+        result!.add(XDirectory.fromJson(e));
+      });
+    }
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["offset"] = offset;
+    json["limit"] = limit;
+    json["total"] = total;
+    json["result"] = result;
+    return json;
+  }
+}
+
+class XApplication extends XEntity {
+  late String directoryId;
+  late String parentId;
+  late String resource;
+  List<XWorkDefine>? defines;
+  XApplication? parent;
+  List<XApplication>? nodes;
+  XDirectory? directory;
+
+  XApplication({
+    required this.directoryId,
+    required this.parentId,
+    required this.resource,
+    this.defines,
+    this.parent,
+    this.nodes,
+    this.directory,
+    required super.id,
+    required super.status,
+    required super.createUser,
+    required super.updateUser,
+    required super.version,
+    required super.createTime,
+    required super.updateTime,
+    required super.name,
+    required super.code,
+    required super.remark,
+    required super.icon,
+    required super.belongId,
+    required super.typeName,
+    super.belong,
+  });
+
+  XApplication.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    directoryId = json['directoryId'];
+    parentId = json['parentId'];
+    resource = json['resource'];
+    defines = json['defines'] != null
+        ? List<XWorkDefine>.from(
+            json['defines'].map((x) => XWorkDefine.fromJson(x)))
+        : null;
+    parent =
+        json['parent'] != null ? XApplication.fromJson(json['parent']) : null;
+    nodes = json['nodes'] != null
+        ? List<XApplication>.from(
+            json['nodes'].map((x) => XApplication.fromJson(x)))
+        : null;
+    directory = json['directory'] != null
+        ? XDirectory.fromJson(json['directory'])
+        : null;
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    final json = super.toJson();
+    json['directoryId'] = directoryId;
+    json['parentId'] = parentId;
+    json['resource'] = resource;
+    json['defines'] =
+        defines != null ? defines!.map((x) => x.toJson()).toList() : null;
+    json['parent'] = parent?.toJson();
+    json['nodes'] =
+        nodes != null ? nodes!.map((x) => x.toJson()).toList() : null;
+    json['directory'] = directory?.toJson();
+    return json;
+  }
+}
+
+class XApplicationArray {
+  // 便宜量
+  int? offset;
+
+  // 最大数量
+  int? limit;
+
+  // 总数
+  int? total;
+
+  // 结果
+  List<XApplication>? result;
+
+  //构造方法
+  XApplicationArray({
+    required this.offset,
+    required this.limit,
+    required this.total,
+    required this.result,
+  });
+
+  //通过JSON构造
+  XApplicationArray.fromJson(Map<String, dynamic> json) {
+    offset = json["offset"];
+    limit = json["limit"];
+    total = json["total"];
+    if (json["result"] != null) {
+      result = [];
+      json["result"].forEach((e) {
+        result!.add(XApplication.fromJson(e));
+      });
+    }
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["offset"] = offset;
+    json["limit"] = limit;
+    json["total"] = total;
+    json["result"] = result;
+    return json;
+  }
+}
+
+class XSpeciesItem extends XEntity {
+  late String info;
+  late String parentId;
+  late String speciesId;
+  XSpecies? species;
+  XSpeciesItem? parent;
+  List<XSpeciesItem>? nodes;
+
+  XSpeciesItem({
+    required this.info,
+    required this.parentId,
+    required this.speciesId,
+    this.species,
+    this.parent,
+    this.nodes,
+    required super.id,
+    required super.status,
+    required super.createUser,
+    required super.updateUser,
+    required super.version,
+    required super.createTime,
+    required super.updateTime,
+    required super.name,
+    required super.code,
+    required super.remark,
+    required super.icon,
+    required super.belongId,
+    required super.typeName,
+    super.belong,
+  });
+
+  XSpeciesItem.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    info = json['info'];
+    parentId = json['parentId'];
+    speciesId = json['speciesId'];
+    species =
+        json['species'] != null ? XSpecies.fromJson(json['species']) : null;
+    parent =
+        json['parent'] != null ? XSpeciesItem.fromJson(json['parent']) : null;
+    nodes = json['nodes'] != null
+        ? List<XSpeciesItem>.from(
+            json['nodes'].map((x) => XSpeciesItem.fromJson(x)))
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final json = super.toJson();
+    json['info'] = info;
+    json['parentId'] = parentId;
+    json['speciesId'] = speciesId;
+    json['species'] = species?.toJson();
+    json['parent'] = parent?.toJson();
+    json['nodes'] = nodes?.map((x) => x.toJson()).toList();
+    return json;
+  }
+}
+
+class XSpeciesItemArray {
+  // 便宜量
+  int? offset;
+
+  // 最大数量
+  int? limit;
+
+  // 总数
+  int? total;
+
+  // 结果
+  List<XSpeciesItem>? result;
+
+  //构造方法
+  XSpeciesItemArray({
+    required this.offset,
+    required this.limit,
+    required this.total,
+    required this.result,
+  });
+
+  //通过JSON构造
+  XSpeciesItemArray.fromJson(Map<String, dynamic> json) {
+    offset = json["offset"];
+    limit = json["limit"];
+    total = json["total"];
+    if (json["result"] != null) {
+      result = [];
+      json["result"].forEach((e) {
+        result!.add(XSpeciesItem.fromJson(e));
+      });
+    }
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["offset"] = offset;
+    json["limit"] = limit;
+    json["total"] = total;
+    json["result"] = result;
+    return json;
+  }
+}
+
+class XSpecies extends XEntity {
+  late String directoryId;
+  late String sourceId;
+  List<XSpeciesItem>? speciesItems;
+  List<XProperty>? speciesProps;
+  XDirectory? directory;
+
+  XSpecies({
+    required this.directoryId,
+    required this.sourceId,
+    this.speciesItems,
+    this.speciesProps,
+    this.directory,
+    required super.name,
+    required super.code,
+    required super.remark,
+    required super.icon,
+    required super.belongId,
+    required super.typeName,
+    required super.id,
+    required super.status,
+    required super.createUser,
+    required super.updateUser,
+    required super.version,
+    required super.createTime,
+    required super.updateTime,
+  });
+
+  XSpecies.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    directoryId = json['directoryId']??"";
+    sourceId = json['sourceId']??"";
+    speciesItems = (json['speciesItems'] as List<dynamic>?)
+        ?.map((item) => XSpeciesItem.fromJson(item))
+        .toList();
+    speciesProps = (json['speciesProps'] as List<dynamic>?)
+        ?.map((prop) => XProperty.fromJson(prop))
+        .toList();
+    directory = json['directory'] != null
+        ? XDirectory.fromJson(json['directory'])
+        : null;
+  }
+
+  static List<XSpecies> fromList(List? list) {
+    if (list == null) {
+      return [];
+    }
+    List<XSpecies> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        if (item is Map<String, dynamic>) {
+          retList.add(XSpecies.fromJson(item));
+        } else {
+          item;
+        }
+      }
+    }
+    return retList;
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = {
+      'directoryId': directoryId,
+      'sourceId': sourceId,
+      'speciesItems': speciesItems?.map((item) => item.toJson()).toList(),
+      'speciesProps': speciesProps?.map((prop) => prop.toJson()).toList(),
+      'directory': directory?.toJson(),
+      ...super.toJson()
+    };
+    return json;
+  }
+}
 
 class XAttribute {
   /// 雪花ID
@@ -328,7 +839,6 @@ class XAttrLinkProp {
   }
 }
 
-
 //度量特性定义查询返回集合
 class XAttributeArray {
   // 便宜量
@@ -577,142 +1087,130 @@ class XPropertyArray {
   }
 }
 
-//属性定义
-class XProperty {
-  // 雪花ID
-  String? id;
-  // 名称
-  String? name;
-  // 编号
-  String? code;
+class XProperty extends XEntity {
   // 值类型
-  String? valueType;
+  late String valueType;
+
+  // 附加信息
+  late String info;
+
   // 计量单位
-  String? unit;
-  // 备注
-  String? remark;
-  // 类别ID
-  String? speciesId;
-  // 字典的类型ID
-  String? dictId;
+  late String unit;
+
+  // 目录ID
+  late String directoryId;
+
+  // 标签ID
+  late String speciesId;
+
   // 来源用户ID
-  String? sourceId;
-  // 归属用户ID
-  String? belongId;
-  // 状态
-  int? status;
-  // 创建人员ID
-  String? createUser;
-  // 更新人员ID
-  String? updateUser;
-  // 修改次数
-  String? version;
-  // 创建时间
-  String? createTime;
-  // 更新时间
-  String? updateTime;
+  late String sourceId;
+
   // 给物的度量标准
   List<XAttribute>? linkAttributes;
+
   // 特性关系
   List<XAttrLinkProp>? links;
+
   // 创建的特性集
   List<XAttribute>? attributes;
+
   // 附加过属性的物
   List<XThing>? things;
+
   // 属性的物的度量
   List<XThingProp>? propThingValues;
-  // 属性对应的类别
-  XSpecies? species;
-  // 字典类型
-  XDict? dict;
-  // 归属的用户
-  XTarget? belong;
 
-  XProperty(
-      { this.id,
-         this.name,
-         this.code,
-         this.valueType,
-         this.unit,
-         this.remark,
-         this.speciesId,
-         this.dictId,
-         this.sourceId,
-         this.belongId,
-         this.status,
-         this.createUser,
-         this.updateUser,
-         this.version,
-         this.createTime,
-         this.updateTime,
-        this.linkAttributes,
-        this.links,
-        this.attributes,
-        this.things,
-        this.propThingValues,
-        this.species,
-        this.dict,
-        this.belong});
-  factory XProperty.fromJson(Map<String, dynamic> json) {
-    return XProperty(
-      id: json['id'],
-      name: json['name'],
-      code: json['code'],
-      valueType: json['valueType'],
-      unit: json['unit'],
-      remark: json['remark'],
-      speciesId: json['speciesId'],
-      dictId: json['dictId'],
-      sourceId: json['sourceId'],
-      belongId: json['belongId'],
-      status: json['status'],
-      createUser: json['createUser'],
-      updateUser: json['updateUser'],
-      version: json['version'],
-      createTime: json['createTime'],
-      updateTime: json['updateTime'],
-      linkAttributes: (json['linkAttributes'] as List<dynamic>?)
-          ?.map((e) => XAttribute.fromJson(e))
-          .toList(),
-      links: (json['links'] as List<dynamic>?)
-          ?.map((e) => XAttrLinkProp.fromJson(e))
-          .toList(),
-      attributes: (json['attributes'] as List<dynamic>?)
-          ?.map((e) => XAttribute.fromJson(e))
-          .toList(),
-      things: (json['things'] as List<dynamic>?)
-          ?.map((e) => XThing.fromJson(e))
-          .toList(),
-      propThingValues: (json['propThingValues'] as List<dynamic>?)
-          ?.map((e) => XThingProp.fromJson(e))
-          .toList(),
-      species: json['species'] != null
-          ? XSpecies.fromJson(json['species'])
-          : null,
-      dict: json['dict'] != null ? XDict.fromJson(json['dict']) : null,
-      belong: json['belong'] != null ? XTarget.fromJson(json['belong']) : null,
-    );
+  // 属性的目录
+  XDirectory? directory;
+
+  // 字典类型
+  XSpecies? species;
+
+  XProperty({
+    super.id,
+    super.status,
+    super.createUser,
+    super.updateUser,
+    super.version,
+    super.createTime,
+    super.updateTime,
+    required this.valueType,
+    required this.info,
+    required this.unit,
+    required this.directoryId,
+    required this.speciesId,
+    required this.sourceId,
+    this.linkAttributes,
+    this.links,
+    this.attributes,
+    this.things,
+    this.propThingValues,
+    this.directory,
+    this.species,
+  });
+
+  XProperty.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    valueType = json['valueType'];
+    info = json['info'];
+    unit = json['unit'];
+    directoryId = json['directoryId'];
+    speciesId = json['speciesId'];
+    sourceId = json['sourceId'];
+    linkAttributes = (json['linkAttributes'] as List<dynamic>?)
+        ?.map((item) => XAttribute.fromJson(item))
+        .toList();
+    links = (json['links'] as List<dynamic>?)
+        ?.map((item) => XAttrLinkProp.fromJson(item))
+        .toList();
+    attributes = (json['attributes'] as List<dynamic>?)
+        ?.map((item) => XAttribute.fromJson(item))
+        .toList();
+    things = (json['things'] as List<dynamic>?)
+        ?.map((item) => XThing.fromJson(item))
+        .toList();
+    propThingValues = (json['propThingValues'] as List<dynamic>?)
+        ?.map((item) => XThingProp.fromJson(item))
+        .toList();
+    directory = json['directory'] != null
+        ? XDirectory.fromJson(json['directory'])
+        : null;
+    species =
+        json['species'] != null ? XSpecies.fromJson(json['species']) : null;
   }
 
+  @override
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {
-      'id': id,
-      'name': name,
-      'code': code,
-      'valueType': valueType,
-      'unit': unit,
-      'remark': remark,
-      'speciesId': speciesId,
-      'dictId': dictId,
-      'sourceId': sourceId,
-      'belongId': belongId,
-      'status': status,
-      'createUser': createUser,
-      'updateUser': updateUser,
-      'version': version,
-      'createTime': createTime,
-      'updateTime': updateTime,
-    };
+    final Map<String, dynamic> data = super.toJson();
+    data['valueType'] = valueType;
+    data['info'] = info;
+    data['unit'] = unit;
+    data['directoryId'] = directoryId;
+    data['speciesId'] = speciesId;
+    data['sourceId'] = sourceId;
+    if (linkAttributes != null) {
+      data['linkAttributes'] =
+          linkAttributes!.map((attr) => attr.toJson()).toList();
+    }
+    if (links != null) {
+      data['links'] = links!.map((link) => link.toJson()).toList();
+    }
+    if (attributes != null) {
+      data['attributes'] = attributes!.map((attr) => attr.toJson()).toList();
+    }
+    if (things != null) {
+      data['things'] = things!.map((thing) => thing.toJson()).toList();
+    }
+    if (propThingValues != null) {
+      data['propThingValues'] =
+          propThingValues!.map((value) => value.toJson()).toList();
+    }
+    if (directory != null) {
+      data['directory'] = directory!.toJson();
+    }
+    if (species != null) {
+      data['species'] = species!.toJson();
+    }
     return data;
   }
 }
@@ -1625,128 +2123,51 @@ class XExtendArray {
   }
 }
 
-//流程定义
-class XWorkDefine {
-  // 雪花ID
-  final String? id;
+class XWorkDefine extends XEntity {
+  late String rule;
+  late String applicationId;
+  late String shareId;
+  late bool allowAdd;
+  late bool allowEdit;
+  late bool allowSelect;
+  List<XWorkNode>? nodes;
+  List<XWorkInstance>? instances;
+  XApplication? application;
+  XTarget? target;
 
-  // 名称
-  final String? name;
+  XWorkDefine(
+      {required this.rule,
+      required this.applicationId,
+      required this.shareId,
+      required this.allowAdd,
+      required this.allowEdit,
+      required this.allowSelect,
+      required this.nodes,
+      required this.instances,
+      required this.application,
+      required this.target});
 
-  // 是否创建实体
-  final bool? isCreate;
+  XWorkDefine.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    rule = json['rule'];
+    applicationId = json['applicationId'];
+    shareId = json['shareId'];
+    allowAdd = json['allowAdd'];
+    allowEdit = json['allowEdit'];
+    allowSelect = json['allowSelect'];
+    nodes = json['nodes'] != null
+        ? List<XWorkNode>.from(
+            json['nodes'].map((node) => XWorkNode.fromJson(node)))
+        : null;
+    instances = json['instances'] != null
+        ? List<XWorkInstance>.from(json['instances']
+            .map((instance) => XWorkInstance.fromJson(instance)))
+        : null;
+    application = json['application'] != null
+        ? XApplication.fromJson(json['application'])
+        : null;
+    target = json['target'] != null ? XTarget.fromJson(json['target']) : null;
+  }
 
-  final String? shareId;
-
-  final String? icon;
-
-  // 编码
-  final String? code;
-
-  // 归属组织/个人Id
-  final String? belongId;
-
-  // 分类id
-  final String? speciesId;
-
-  // 权限Id
-  final String? authId;
-
-  // 公开的
-  final bool? public;
-
-  // 流程内容Json
-  final String? content;
-
-  // 备注
-  final String? remark;
-
-  // 状态
-  final int? status;
-
-  // 创建人员ID
-  final String? createUser;
-
-  // 更新人员ID
-  final String? updateUser;
-
-  // 修改次数
-  final String? version;
-
-  // 创建时间
-  final String? createTime;
-
-  // 更新时间
-  final String? updateTime;
-
-  // 流程定义节点
-  final List<XWorkNode>? nodes;
-
-  // 流程的实例
-  final List<XWorkInstance>? instances;
-
-  // 归属组织/个人
-  final XTarget? target;
-
-  //数据源id
-  final String? sourceIds;
-
-  //构造方法
-  XWorkDefine({
-    this.sourceIds,
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.belongId,
-    required this.speciesId,
-    required this.authId,
-    required this.public,
-    required this.content,
-    required this.remark,
-    required this.status,
-    required this.createUser,
-    required this.updateUser,
-    required this.version,
-    required this.createTime,
-    required this.updateTime,
-    required this.nodes,
-    required this.instances,
-    required this.target,
-    this.icon,
-    required this.isCreate,
-    this.shareId,
-  });
-
-  //通过JSON构造
-  XWorkDefine.fromJson(Map<String, dynamic> json)
-      : sourceIds = json["sourceIds"],
-        id = json["id"],
-        name = json["name"],
-        code = json["code"],
-        belongId = json["belongId"],
-        speciesId = json["speciesId"],
-        authId = json["authId"],
-        public = json["public"],
-        content = json["content"],
-        remark = json["remark"],
-        status = json["status"],
-        icon = json['icon'],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"],
-        shareId = json['shareId'],
-        isCreate = json['isCreate'],
-        nodes =
-            json["nodes"] != null ? XWorkNode.fromList(json["nodes"]) : null,
-        instances = json["instances"] != null
-            ? XWorkInstance.fromList(json["instances"])
-            : null,
-        target =
-            json["target"] != null ? XTarget.fromJson(json["target"]) : null;
-
-  //通过动态数组解析成List
   static List<XWorkDefine> fromList(List<Map<String, dynamic>>? list) {
     if (list == null) {
       return [];
@@ -1760,30 +2181,25 @@ class XWorkDefine {
     return retList;
   }
 
-  //转成JSON
+  @override
   Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["sourceIds"] = sourceIds;
-    json["id"] = id;
-    json["name"] = name;
-    json["code"] = code;
-    json["belongId"] = belongId;
-    json["authId"] = authId;
-    json["speciesId"] = speciesId;
-    json["public"] = public;
-    json["content"] = content;
-    json["remark"] = remark;
-    json["status"] = status;
-    json["createUser"] = createUser;
-    json["updateUser"] = updateUser;
-    json["version"] = version;
-    json["createTime"] = createTime;
-    json["updateTime"] = updateTime;
-    json["nodes"] = nodes;
-    json["instances"] = instances;
-    json['shareId'] = shareId;
-    json["target"] = target?.toJson();
-    return json;
+    final Map<String, dynamic> data = super.toJson();
+    data['rule'] = rule;
+    data['applicationId'] = applicationId;
+    data['shareId'] = shareId;
+    data['allowAdd'] = allowAdd;
+    data['allowEdit'] = allowEdit;
+    data['allowSelect'] = allowSelect;
+    data['nodes'] = this.nodes != null
+        ? nodes!.map((node) => node.toJson()).toList()
+        : null;
+    data['instances'] = this.instances != null
+        ? this.instances!.map((instance) => instance.toJson()).toList()
+        : null;
+    data['application'] =
+        this.application != null ? this.application!.toJson() : null;
+    data['target'] = this.target != null ? this.target!.toJson() : null;
+    return data;
   }
 }
 
@@ -1963,10 +2379,10 @@ class XWorkInstance {
   }
 
   //通过动态数组解析成List
-  static List<XWorkInstance> fromList(List<Map<String, dynamic>> list) {
+  static List<XWorkInstance> fromList(List<Map<String, dynamic>>? list) {
     List<XWorkInstance> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
+    if (list?.isNotEmpty??false) {
+      for (var item in list??[]) {
         retList.add(XWorkInstance.fromJson(item));
       }
     }
@@ -2917,156 +3333,54 @@ class XIdProofArray {
 }
 
 //角色
-class XIdentity {
-  // 雪花ID
-  String? id;
 
-  // 名称
-  String? name;
-
-  // 编号
-  String? code;
-
-  // 备注
-  String? remark;
-
-  String? authId;
-
-  // 创建组织/个人
-  String? belongId;
-
-  // 共享用户ID
-  String? shareId;
-
-  // 状态
-  int? status;
-
-  // 创建人员ID
-  String? createUser;
-
-  // 更新人员ID
-  String? updateUser;
-
-  // 修改次数
-  String? version;
-
-  // 创建时间
-  String? createTime;
-
-  // 更新时间
-  String? updateTime;
-
-  // 身份证明
+class XIdentity extends XEntity {
+  late String authId;
+  late String shareId;
   List<XIdProof>? idProofs;
-
-  // 身份集关系
   List<XTeamIdentity>? identityTeams;
-
   List<XTarget>? givenTargets;
-
-  // 身份所属的未完成流程的任务
-  List<XWorkTask>? Tasks;
-
-  // 身份所属的未完成流程的任务
-  List<XWorkTaskHistory>? TaskHistory;
-
-  // 身份集对于组织
   List<XTeam>? teams;
-
   XAuthority? authority;
+  XTarget? share;
 
-  // 创建身份的组织/个人
-  XTarget? belong;
-
-  //构造方法
   XIdentity({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.remark,
     required this.authId,
-    required this.belongId,
-    required this.status,
-    required this.createUser,
-    required this.updateUser,
-    required this.version,
-    required this.createTime,
-    required this.updateTime,
-    required this.idProofs,
-    required this.identityTeams,
-    required this.givenTargets,
-    required this.Tasks,
-    required this.TaskHistory,
-    required this.teams,
-    required this.authority,
-    required this.belong,
+    required this.shareId,
+    this.idProofs,
+    this.identityTeams,
+    this.givenTargets,
+    this.teams,
+    this.authority,
+    this.share,
   });
 
-  //通过JSON构造
-  XIdentity.fromJson(Map<String, dynamic> json) {
-    id = json["id"];
-    name = json["name"];
-    code = json["code"];
-    remark = json["remark"];
-    authId = json["authId"];
-    belongId = json["belongId"];
-    status = json["status"];
-    createUser = json["createUser"];
-    updateUser = json["updateUser"];
-    version = json["version"];
-    createTime = json["createTime"];
-    updateTime = json["updateTime"];
-    shareId = json['shareId'];
-    if (json["idProofs"] != null) {
-      idProofs = [];
-      json["idProofs"].forEach((json) {
-        idProofs!.add(XIdProof.fromJson(json));
-      });
-    }
-
-    if (json["identityTeams"] != null) {
-      identityTeams = [];
-      json["identityTeams"].forEach((json) {
-        identityTeams!.add(XTeamIdentity.fromJson(json));
-      });
-    }
-
-    if (json["givenTargets"] != null) {
-      givenTargets = [];
-      json["givenTargets"].forEach((json) {
-        givenTargets!.add(XTarget.fromJson(json));
-      });
-    }
-
-    if (json["Tasks"] != null) {
-      Tasks = [];
-      json["Tasks"].forEach((json) {
-        Tasks!.add(XWorkTask.fromJson(json));
-      });
-    }
-
-    if (json["TaskHistory"] != null) {
-      TaskHistory = [];
-      json["TaskHistory"].forEach((json) {
-        TaskHistory!.add(XWorkTaskHistory.fromJson(json));
-      });
-    }
-
-    if (json["teams"] != null) {
-      teams = [];
-      json["teams"].forEach((json) {
-        teams!.add(XTeam.fromJson(json));
-      });
-    }
-    authority = json["authority"] != null
-        ? XAuthority.fromJson(json["authority"])
+  XIdentity.fromJson(Map<String, dynamic> json):super.fromJson(json){
+    authId= json['authId'];
+    shareId= json['shareId'];
+    idProofs= (json['idProofs'] as List<dynamic>?)
+        ?.map((e) => XIdProof.fromJson(e as Map<String, dynamic>))
+        .toList();
+    identityTeams= (json['identityTeams'] as List<dynamic>?)
+        ?.map((e) => XTeamIdentity.fromJson(e as Map<String, dynamic>))
+        .toList();
+    givenTargets= (json['givenTargets'] as List<dynamic>?)
+        ?.map((e) => XTarget.fromJson(e as Map<String, dynamic>))
+        .toList();
+    teams= (json['teams'] as List<dynamic>?)
+        ?.map((e) => XTeam.fromJson(e as Map<String, dynamic>))
+        .toList();
+    authority= json['authority'] != null
+    ? XAuthority.fromJson(json['authority'] as Map<String, dynamic>)
         : null;
-    belong = json["belong"] != null ? XTarget.fromJson(json["belong"]) : null;
+    share= json['share'] != null
+    ? XTarget.fromJson(json['share'] as Map<String, dynamic>)
+    : null;
   }
 
   //通过动态数组解析成List
   static List<XIdentity> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
+    if (list == null || list.isEmpty) {
       return [];
     }
     List<XIdentity> retList = [];
@@ -3079,32 +3393,37 @@ class XIdentity {
   }
 
   //转成JSON
+
+
+  @override
   Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["name"] = name;
-    json["code"] = code;
-    json["remark"] = remark;
-    json["authId"] = authId;
-    json["belongId"] = belongId;
-    json["status"] = status;
-    json["createUser"] = createUser;
-    json["updateUser"] = updateUser;
-    json["version"] = version;
-    json["createTime"] = createTime;
-    json["updateTime"] = updateTime;
-    json["idProofs"] = idProofs;
-    json["identityTeams"] = identityTeams;
-    json["givenTargets"] = givenTargets;
-    json["Tasks"] = Tasks;
-    json["TaskHistory"] = TaskHistory;
-    json["teams"] = teams;
-    json["authority"] = authority?.toJson();
-    json["belong"] = belong?.toJson();
-    json['shareId'] = shareId;
-    return json;
+     Map<String, dynamic> data = super.toJson();
+    data['authId'] = this.authId;
+    data['shareId'] = this.shareId;
+    if (this.idProofs != null) {
+      data['idProofs'] = this.idProofs!.map((e) => e.toJson()).toList();
+    }
+    if (this.identityTeams != null) {
+      data['identityTeams'] =
+          this.identityTeams!.map((e) => e.toJson()).toList();
+    }
+    if (this.givenTargets != null) {
+      data['givenTargets'] =
+          this.givenTargets!.map((e) => e.toJson()).toList();
+    }
+    if (this.teams != null) {
+      data['teams'] = this.teams!.map((e) => e.toJson()).toList();
+    }
+    if (this.authority != null) {
+      data['authority'] = this.authority!.toJson();
+    }
+    if (this.share != null) {
+      data['share'] = this.share!.toJson();
+    }
+    return data;
   }
 }
+
 
 //角色查询返回集合
 class XIdentityArray {
@@ -5486,111 +5805,59 @@ class XWorkTask {
   }
 }
 
-class XForm {
-  String id;
-  String name;
-  String code;
-  String rule;
-  String remark;
-  String speciesId;
-  String shareId;
-  String belongId;
-  int status;
-  String createUser;
-  String updateUser;
-  String version;
-  String createTime;
-  String updateTime;
-  String typeName;
+class XForm extends XEntity {
+  late String rule;
+  late String directoryId;
   List<XAttribute>? attributes;
   List<XWorkNode>? bindNodes;
-  XSpecies? species;
-  XTarget? belong;
+  XDirectory? directory;
   List<thing.ThingModel> things = [];
 
   XForm({
-    required this.id,
-    required this.name,
-    required this.code,
+    required super.id,
+    required super.name,
+    required super.code,
     required this.rule,
-    required this.remark,
-    required this.speciesId,
-    required this.shareId,
-    required this.belongId,
-    required this.status,
-    required this.createUser,
-    required this.updateUser,
-    required this.version,
-    required this.createTime,
-    required this.updateTime,
-    required this.typeName,
+    required super.remark,
+    required super.belongId,
+    required super.status,
+    required super.createUser,
+    required super.updateUser,
+    required super.version,
+    required super.createTime,
+    required super.updateTime,
+    required super.typeName,
     this.attributes,
     this.bindNodes,
-    this.species,
-    this.belong,
+    super.belong,
+    required super.icon,
   });
 
-  factory XForm.fromJson(Map<String, dynamic> json) {
-    List<XAttribute>? attributes;
-    if (json['attributes'] != null) {
-      var attributeList = json['attributes'] as List;
-      attributes = attributeList.map((attribute) => XAttribute.fromJson(attribute)).toList();
-    }
-
-    List<XWorkNode>? bindNodes;
-    if (json['bindNodes'] != null) {
-      var nodeList = json['bindNodes'] as List;
-      bindNodes = nodeList.map((node) => XWorkNode.fromJson(node)).toList();
-    }
-
-    return XForm(
-      id: json['id'] ??"",
-      name: json['name']??"",
-      code: json['code'] ??"",
-      rule: json['rule'] ??"",
-      remark: json['remark'] ??"",
-      speciesId: json['speciesId']??"",
-      shareId: json['shareId'] ??"",
-      belongId: json['belongId'] ??"",
-      status: json['status'] as int,
-      createUser: json['createUser'] ??"",
-      updateUser: json['updateUser'] ??"",
-      version: json['version']??"",
-      createTime: json['createTime']??"",
-      updateTime: json['updateTime']??"",
-      attributes: attributes,
-      bindNodes: bindNodes,
-      species: json['species'] != null ? XSpecies.fromJson(json['species']) : null,
-      belong: json['belong'] != null ? XTarget.fromJson(json['belong']) : null, typeName: json['typeName'],
-    );
+  XForm.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    rule = json['rule'];
+    directoryId = json['directoryId'];
+    attributes = json['attributes'] != null
+        ? List<XAttribute>.from(
+            json['attributes'].map((x) => XAttribute.fromJson(x)))
+        : null;
+    bindNodes = json['bindNodes'] != null
+        ? List<XWorkNode>.from(
+            json['bindNodes'].map((x) => XWorkNode.fromJson(x)))
+        : null;
+    directory = json['directory'] != null
+        ? XDirectory.fromJson(json['directory'])
+        : null;
   }
+
+  @override
   Map<String, dynamic> toJson() {
-    List<Map<String, dynamic>>? attributeList;
-    if (attributes != null) {
-      attributeList = attributes!.map((attribute) => attribute.toJson()).toList();
-    }
-
-    List<Map<String, dynamic>>? bindNodeList;
-    if (bindNodes != null) {
-      bindNodeList = bindNodes!.map((bindNode) => bindNode.toJson()).toList();
-    }
-
-    return {
-      'id': id,
-      'name': name,
-      'code': code,
-      'rule': rule,
-      'remark': remark,
-      'speciesId': speciesId,
-      'shareId': shareId,
-      'belongId': belongId,
-      'status': status,
-      'createUser': createUser,
-      'updateUser': updateUser,
-      'version': version,
-      'createTime': createTime,
-      'updateTime': updateTime,
-    };
+    final json = super.toJson();
+    json['rule'] = rule;
+    json['directoryId'] = directoryId;
+    json['attributes'] = attributes?.map((x) => x.toJson()).toList();
+    json['bindNodes'] = bindNodes?.map((x) => x.toJson()).toList();
+    json['directory'] = directory?.toJson();
+    return json;
   }
 
   void reset()  {
@@ -5737,205 +6004,7 @@ class XSpeciesArray {
     return json;
   }
 }
-//类别定义
-class XSpecies {
-  // 雪花ID
-  String id;
 
-  // 名称
-  String name;
-
-  // 编号
-  String code;
-  // 值类型
-  String valueType;
-  // 备注
-  String remark;
-
-  // 公开的
-  bool public;
-
-  String typeName;
-
-  // 父类别ID
-  String parentId;
-
-  String icon;
-
-  String shareId;
-
-  // 创建组织/个人
-  String belongId;
-
-  // 工作权限Id
-  String authId;
-
-  // 状态
-  int status;
-
-  // 创建人员ID
-  String createUser;
-
-  // 更新人员ID
-  String updateUser;
-
-  // 修改次数
-  String version;
-
-  // 创建时间
-  String? createTime;
-
-  // 更新时间
-  String? updateTime;
-
-  // 该类别与物的关系
-  List<XThingSpec>? specThings;
-
-  // 该类别的物
-  List<XThing>? things;
-
-  // 类别的字典
-  List<XDict>? dicts;
-
-  // 类别的度量标准
-  List<XAttribute>? attributes;
-
-  // 分类的结构
-  XSpecies? parent;
-
-  // 分类的结构
-  List<XSpecies>? nodes;
-
-  // 工作权限
-  XAuthority? authority;
-
-  // 创建类别标准的组织/个人
-  XTarget? belong;
-
-  String unit;
-
-  XDict? dict;
-  //构造方法
-  XSpecies({
-    this.id = '',
-    this.name = '',
-    this.code = '',
-    this.remark = '',
-    this.public = false,
-    this.parentId = '',
-    this.belongId = '',
-    this.authId = '',
-    this.status = 0,
-    this.createUser = '',
-    this.updateUser = '',
-    this.version = '',
-    this.createTime,
-    this.updateTime,
-    this.specThings,
-    this.things,
-    this.dicts,
-    this.attributes,
-    this.parent,
-    this.nodes,
-    this.authority,
-    this.belong,
-    this.typeName = '',
-    this.icon = '',
-    this.shareId = '',
-    this.valueType = '',
-    this.unit = '',
-    this.dict,
-  });
-
-  //通过JSON构造
-  XSpecies.fromJson(Map<String, dynamic> json)
-      : id = json["id"] ?? "",
-        name = json["name"] ?? "",
-        code = json["code"] ?? "",
-        remark = json["remark"] ?? "",
-        public = json["public"] ?? false,
-        parentId = json["parentId"] ?? "",
-        belongId = json["belongId"] ?? "",
-        authId = json["authId"] ?? "",
-        status = json["status"] ?? 0,
-        valueType = json['valueType'] ?? '',
-        unit = json['unit']??'',
-        createUser = json["createUser"] ?? "",
-        updateUser = json["updateUser"] ?? "",
-        version = json["version"] ?? "",
-        typeName = json['typeName']??"",
-        icon = json['icon']??"",
-        shareId = json['shareId']??"",
-        createTime = json["createTime"] ?? "",
-        updateTime = json["updateTime"] ?? "",
-        specThings = XThingSpec.fromList(json["specThings"]),
-        things = XThing.fromList(json["things"]),
-        dicts = XDict.fromList(json["dicts"]),
-        dict = json["dict"]!=null?XDict.fromJson(json["dict"]):null,
-        attributes = json['attributes'] != null
-            ? List<XAttribute>.from(json['attributes'].map((x) => XAttribute.fromJson(x)))
-            : null,
-        parent =
-            json["parent"] != null ? XSpecies.fromJson(json["parent"]) : null,
-        nodes = XSpecies.fromList(json["nodes"]),
-        authority = json["authority"] != null
-            ? XAuthority.fromJson(json["authority"])
-            : null,
-        belong =
-            json["belong"] != null ? XTarget.fromJson(json["belong"]) : null;
-
-  //通过动态数组解析成List
-  static List<XSpecies> fromList(List? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XSpecies> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        if (item is Map<String, dynamic>) {
-          retList.add(XSpecies.fromJson(item));
-        } else {
-          item;
-        }
-      }
-    }
-    return retList;
-  }
-
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["name"] = name;
-    json["code"] = code;
-    json["remark"] = remark;
-    json["public"] = public;
-    json["parentId"] = parentId;
-    json["belongId"] = belongId;
-    json["authId"] = authId;
-    json["status"] = status;
-    json["createUser"] = createUser;
-    json["updateUser"] = updateUser;
-    json["version"] = version;
-    json["createTime"] = createTime;
-    json["updateTime"] = updateTime;
-    json["specThings"] = specThings;
-    json["things"] = things;
-    json["dicts"] = dicts;
-    json['icon'] = icon;
-    json['unit'] = unit;
-    json['valueType'] = valueType;
-    json['shareId'] = shareId;
-    json['typeName'] = typeName;
-    json["attributes"] = attributes;
-    json["parent"] = parent?.toJson();
-    json["nodes"] = nodes;
-    json["authority"] = authority?.toJson();
-    json["belong"] = belong?.toJson();
-    json['dict'] = dict?.toJson();
-    return json;
-  }
-}
 
 //类别定义查询返回集合
 class XFormArray {
@@ -6153,217 +6222,96 @@ class XStagingArray {
 }
 
 //组织/个人
-class XTarget {
-  // 雪花ID
-  final String id;
+class XTarget extends XEntity {
+  bool? public;
 
-  // 名称
-  String name;
+  String? thingId;
 
-  // 编号
-  String code;
-
-  // 类型
-  final String typeName;
-
-  // 头像
-  String icon;
-
-  // 归属
-  String belongId;
-
-  String? remark;
-
-  // 元数据
-  final String thingId;
-
-  // 状态
-  final int status;
-
-  // 创建人员ID
-  final String createUser;
-
-  // 更新人员ID
-  final String updateUser;
-
-  // 修改次数
-  final String version;
-
-  // 创建时间
-  final String createTime;
-
-  // 更新时间
-  final String updateTime;
-
-  // 采购订单
-  final List<XOrder>? orders;
-
-  // 身份证明
-  final List<XIdProof>? idProofs;
-
-  // 设立的市场
-  final List<XMarket>? markets;
-
-  // 标准要求
-  final List<XRuleStd>? ruleStds;
-
-  // 商品采购暂存
-  final List<XStaging>? stags;
-
-  // 拥有的产品
-  final List<XProduct>? products;
-
-  // 创建的身份
-  final List<XIdentity>? identitys;
-
-  // 监管的市场
-  final List<XMarket>? samrMarkets;
-
-  // 属于该组织/个人的物
-  final List<XThing>? things;
-
-  // 加入团队的关系
-  final List<XRelation>? relations;
-
-  // 作为团队的影子
-  final XTeam? team;
-
-  // 该组织/个人创建的字典类型
-  final List<XDict>? dicts;
-
-  // 卖出的订单详情
-  final List<XOrderDetail>? sellOrder;
-
-  // 该组织/个人创建的字典项
-  final List<XDictItem>? dictItems;
-
-  // 该组织/个人创建的类别标准
-  final List<XSpecies>? species;
-
-  // 该组织/个人创建的度量标准
-  final List<XAttribute>? attributes;
-
-  // 该组织/个人创建的职权标准
-  final List<XAuthority>? authority;
-
-  // 加入市场的关系
-  final List<XMarketRelation>? marketRelations;
-
-  // 加入的团队
-  final List<XTeam>? relTeams;
-
-  // 赋予该组织/个人创建的角色
-  final List<XIdentity>? givenIdentitys;
-
-  // 该组织或个人所属的组织/个人
-  XTarget? belong;
-
-  // 该组织或个人所属的组织/个人
-  final List<XTarget>? targets;
-
-  // 组织/个人物的本质
-  final XThing? thing;
-
-  // 归属组织/个人的应用资源分配记录
-  final List<XExtend>? distributes;
-
-  // 归属组织/个人的流程定义
-  final List<XWorkDefine>? Defines;
-
-  // 个人审批记录
-  final List<XWorkRecord>? Records;
+  List<XIdProof>? idProofs;
+  List<XIdentity>? shareIdentitys;
+  List<XIdentity>? identitys;
+  List<XThing>? things;
+  List<XRelation>? relations;
+  XTeam? team;
+  List<XSpecies>? specieses;
+  List<XSpeciesItem>? speciesItems;
+  List<XDirectory>? directorys;
+  List<XApplication>? applications;
+  List<XAttribute>? attributes;
+  List<XProperty>? propertys;
+  List<XAuthority>? authority;
+  List<XTeam>? relTeams;
+  List<XForm>? forms;
+  List<XIdentity>? givenIdentitys;
+  List<XTarget>? targets;
+  XThing? thing;
+  List<XWorkDefine>? defines;
+  List<XWorkInstance>? instances;
 
   bool isSelected = false;
 
   //构造方法
   XTarget({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.typeName,
-    required this.icon,
-    required this.belongId,
     required this.thingId,
-    required this.status,
-    required this.createUser,
-    required this.updateUser,
-    required this.version,
-    required this.createTime,
-    required this.updateTime,
-    required this.orders,
     required this.idProofs,
-    required this.markets,
-    required this.ruleStds,
-    required this.stags,
-    required this.products,
     required this.identitys,
-    required this.samrMarkets,
     required this.things,
     required this.relations,
     required this.team,
-    required this.dicts,
-    required this.sellOrder,
-    required this.dictItems,
-    required this.species,
     required this.attributes,
     required this.authority,
-    required this.marketRelations,
     required this.relTeams,
     required this.givenIdentitys,
-    required this.belong,
     required this.targets,
     required this.thing,
-    required this.distributes,
-    required this.Defines,
-    required this.Records,
-    this.remark,
   });
 
   //通过JSON构造
-  XTarget.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        name = json["name"],
-        code = json["code"],
-        remark = json['remark'],
-        typeName = json["typeName"],
-        icon = json["icon"] ?? "",
-        belongId = json["belongId"] ?? "",
-        thingId = json["thingId"],
-        status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"],
-        orders = XOrder.fromList(json["orders"]),
-        idProofs = XIdProof.fromList(json["idProofs"]),
-        markets = XMarket.fromList(json["markets"]),
-        ruleStds = XRuleStd.fromList(json["ruleStds"]),
-        stags = XStaging.fromList(json["stags"]),
-        products = XProduct.fromList(json["products"]),
-        identitys = XIdentity.fromList(json["identitys"]),
-        samrMarkets = XMarket.fromList(json["samrMarkets"]),
-        things = XThing.fromList(json["things"]),
-        relations = XRelation.fromList(json["relations"]),
-        team = json["team"] != null ? XTeam.fromJson(json["team"]) : null,
-        dicts = XDict.fromList(json["dicts"]),
-        sellOrder = XOrderDetail.fromList(json["sellOrder"]),
-        dictItems = XDictItem.fromList(json["dictItems"]),
-        species = XSpecies.fromList(json["species"]),
-        attributes = json['attributes'] != null
-            ? List<XAttribute>.from(json['attributes'].map((x) => XAttribute.fromJson(x)))
-            : null,
-        authority = XAuthority.fromList(json["authority"]),
-        marketRelations = XMarketRelation.fromList(json["marketRelations"]),
-        relTeams = XTeam.fromList(json["relTeams"]),
-        givenIdentitys = XIdentity.fromList(json["givenIdentitys"]),
-        belong =
-            json["belong"] == null ? null : XTarget.fromJson(json["belong"]),
-        targets = XTarget.fromList(json["targets"]),
-        thing = json["thing"] == null ? null : XThing.fromJson(json["thing"]),
-        distributes = XExtend.fromList(json["distributes"]),
-        Defines = XWorkDefine.fromList(json["defines"]),
-        Records = XWorkRecord.fromList(json["records"]);
+  XTarget.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    thingId = json["thingId"];
+    public = json['public'];
+    idProofs = XIdProof.fromList(json["idProofs"]);
+    shareIdentitys = XIdentity.fromList(json["shareIdentitys"]);
+    identitys = XIdentity.fromList(json["identitys"]);
+    things = XThing.fromList(json["things"]);
+    relations = XRelation.fromList(json["relations"]);
+    team = json["team"] != null ? XTeam.fromJson(json["team"]) : null;
+    specieses = XSpecies.fromList(json["relations"]);
+    speciesItems = json['speciesItems'] != null
+        ? List<XSpeciesItem>.from(
+        json['speciesItems'].map((x) => XSpeciesItem.fromJson(x)))
+        : null;
+    directorys = json['directorys'] != null
+        ? List<XDirectory>.from(
+        json['directorys'].map((x) => XDirectory.fromJson(x)))
+        : null;
+    applications = json['applications'] != null
+        ? List<XApplication>.from(
+        json['applications'].map((x) => XApplication.fromJson(x)))
+        : null;
+    attributes = json['attributes'] != null
+        ? List<XAttribute>.from(
+            json['attributes'].map((x) => XAttribute.fromJson(x)))
+        : null;
+    propertys= json['propertys'] != null
+        ? List<XProperty>.from(
+        json['propertys'].map((x) => XProperty.fromJson(x)))
+        : null;
+    forms = json['forms'] != null
+        ? List<XForm>.from(
+        json['forms'].map((x) => XForm.fromJson(x)))
+        : null;
+    defines = json['defines'] != null
+        ? List<XWorkDefine>.from(
+        json['defines'].map((x) => XWorkDefine.fromJson(x)))
+        : null;
+    instances = XWorkInstance.fromList(json["instances"]);
+    authority = XAuthority.fromList(json["authority"]);
+    relTeams = XTeam.fromList(json["relTeams"]);
+    givenIdentitys = XIdentity.fromList(json["givenIdentitys"]);
+    targets = XTarget.fromList(json["targets"]);
+    thing = json["thing"] == null ? null : XThing.fromJson(json["thing"]);
+  }
 
   //通过动态数组解析成List
   static List<XTarget> fromList(List<dynamic>? list) {
@@ -6378,21 +6326,8 @@ class XTarget {
     }
     return retList;
   }
-
-  Uint8List? avatarThumbnail() {
-    if (icon == '') {
-      return null;
-    }
-    try {
-      var map = jsonDecode(icon);
-      FileItemShare share = FileItemShare.fromJson(map);
-      return share.thumbnailUint8List;
-    } catch (e) {
-      return null;
-    }
-  }
-
   //转成JSON
+  @override
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json["id"] = id;
@@ -6408,32 +6343,18 @@ class XTarget {
     json["version"] = version;
     json["createTime"] = createTime;
     json["updateTime"] = updateTime;
-    json["orders"] = orders;
-    json["idProofs"] = idProofs;
-    json["markets"] = markets;
-    json["ruleStds"] = ruleStds;
-    json["stags"] = stags;
-    json["products"] = products;
-    json["identitys"] = identitys;
-    json["samrMarkets"] = samrMarkets;
-    json["things"] = things;
-    json["relations"] = relations;
+    json["idProofs"] = idProofs?.map((e) => e.toJson()).toList();
+    json["identitys"] = identitys?.map((e) => e.toJson()).toList();
+    json["things"] = things?.map((e) => e.toJson()).toList();
+    json["relations"] = relations?.map((e) => e.toJson()).toList();
     json["team"] = team?.toJson();
-    json["dicts"] = dicts;
-    json["sellOrder"] = sellOrder;
-    json["dictItems"] = dictItems;
-    json["species"] = species;
-    json["attributes"] = attributes;
-    json["authority"] = authority;
-    json["marketRelations"] = marketRelations;
-    json["relTeams"] = relTeams;
-    json["givenIdentitys"] = givenIdentitys;
+    json["attributes"] = attributes?.map((e) => e.toJson()).toList();
+    json["authority"] = authority?.map((e) => e.toJson()).toList();
+    json["relTeams"] = relTeams?.map((e) => e.toJson()).toList();
+    json["givenIdentitys"] = givenIdentitys?.map((e) => e.toJson()).toList();
     json["belong"] = belong?.toJson();
-    json["targets"] = targets;
+    json["targets"] = targets?.map((e) => e.toJson()).toList();
     json["thing"] = thing?.toJson();
-    json["distributes"] = distributes;
-    json["Defines"] = Defines;
-    json["Records"] = Records;
     json['remark'] = remark;
     return json;
   }

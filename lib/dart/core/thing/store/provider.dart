@@ -8,9 +8,8 @@ import 'package:orginone/dart/core/market/model.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
-import 'package:orginone/dart/core/thing/base/form.dart';
-import 'package:orginone/dart/core/thing/base/species.dart';
-import 'package:orginone/dart/core/thing/store/thingclass.dart';
+import 'package:orginone/dart/core/thing/form.dart';
+import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/model/thing_model.dart' as thing;
 import 'package:orginone/pages/store/state.dart';
@@ -22,7 +21,7 @@ abstract class IStoreProvider {
 
   late RxList<RecentlyUseModel> recent;
 
-  List<ISpeciesItem> findThingSpecies(IBelong belong);
+  List<ISpecies> findThingSpecies(IBelong belong);
 
   Future<void> onRecordRecent(RecentlyUseModel data);
 
@@ -58,21 +57,18 @@ class StoreProvider implements IStoreProvider {
   Future<IForm?> findForm(String id) async {
     var species = findThingSpecies(user);
     for (var specie in species) {
-      var forms = await (specie as IThingClass).loadForms();
+      var forms = await specie.directory.loadForms();
       for (var form in forms) {
-        if (form.metadata.id == id) {
+        if(form.metadata.id == id){
           return form;
         }
       }
     }
     for (var target in user.targets) {
-      var species = findThingSpecies(target);
-      for (var specie in species) {
-        var forms = await (specie as IThingClass).loadForms();
-        for (var form in forms) {
-          if(form.metadata.id == id){
-            return form;
-          }
+      var forms = await target.directory.loadForms();
+      for (var form in forms) {
+        if(form.metadata.id == id){
+          return form;
         }
       }
     }
@@ -80,14 +76,12 @@ class StoreProvider implements IStoreProvider {
   }
 
   @override
-  List<ISpeciesItem> findThingSpecies(ITarget belong) {
-    List<ISpeciesItem> species = [];
-    for (var element in belong.targets) {
-      if (element.space == belong) {
-        for (var s in element.species) {
-          if (SpeciesType.thing.label == s.metadata.typeName) {
-            species.add(s);
-          }
+  List<ISpecies> findThingSpecies(ITarget belong) {
+    List<ISpecies> species = [];
+    for (var element in belong.directory.specieses) {
+      if (element.metadata.belongId == belong.id) {
+        if (SpeciesType.thing.label == element.metadata.typeName) {
+          species.add(element);
         }
       }
     }

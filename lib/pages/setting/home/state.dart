@@ -23,8 +23,8 @@ class SettingCenterState extends BaseBreadcrumbNavState<SettingNavModel> {
         ),
         ...joinedCompanies
                 ?.map((element) => SettingNavModel(
-                    name: element.metadata.name,
-                    id: element.metadata.id,
+                    name: element.metadata.name!,
+                    id: element.metadata.id!,
                     image: element.metadata.avatarThumbnail(),
                     space: element,
                     settingType: SettingType.organization,

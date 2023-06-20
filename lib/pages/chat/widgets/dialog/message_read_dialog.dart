@@ -131,7 +131,7 @@ class _MessageReadState extends State<MessageRead>
               info: TeamTypeInfo(userId: target.id),
               size: 55.w,
             ),
-            title: Text(target.name),
+            title: Text(target.name!),
             subtitle: Text(
               hint,
               maxLines: 1,

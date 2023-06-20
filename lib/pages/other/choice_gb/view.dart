@@ -18,7 +18,7 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
            return CommonWidget.commonBreadcrumbNavWidget(
                firstTitle: state.head,
                allTitle: state.selectedGroup
-                   .map((element) => element.metadata.name)
+                   .map((element) => element.name!)
                    .toList(),
                onTapFirst: () {
                  controller.back();
@@ -63,7 +63,7 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
             item: item,
             showPopupMenu: state.showPopupMenu,
             next: () {
-              if (item.children.isNotEmpty) {
+              if (item.nodes!.isNotEmpty) {
                 controller.selectGroup(item);
               }
             },
@@ -84,7 +84,7 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
           Obx(() {
             var data = state.gb.value;
             if (state.selectedGroup.isNotEmpty) {
-              data = state.selectedGroup.last.children;
+              data = state.selectedGroup.last.nodes!;
             }
             return Container(
               margin: EdgeInsets.only(
@@ -96,7 +96,7 @@ class ChoiceGbPage extends BaseGetView<ChoiceGbController, ChoiceGbState> {
                     item: item,
                     showPopupMenu: state.showPopupMenu,
                     next: () {
-                      if (item.children.isNotEmpty) {
+                      if (item.nodes!.isNotEmpty) {
                         controller.selectGroup(item);
                       }
                     },

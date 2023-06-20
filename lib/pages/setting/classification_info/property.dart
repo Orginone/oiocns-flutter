@@ -4,7 +4,6 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/thing/dict/dict.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -30,7 +29,7 @@ class PropertyPage extends BaseGetPageView<PropertyController, PropertyState> {
                   element.name ?? "",
                   element.valueType ?? "",
                   element.unit ?? "",
-                  element.dict?.name ?? "",
+                  element.directory?.name ?? "",
                   element.belong?.name??"",
                   element.species?.name??"",
                   element.remark ?? ""
@@ -124,7 +123,7 @@ class PropertyController extends BaseController<PropertyState> {
             valueType: type,
             remark: remark,
             unit: unit,
-            dictId: dict?.metadata.id,
+            directoryId: dict?.id,
           );
           if(property!=null){
             model.id = property.id;
@@ -139,8 +138,8 @@ class PropertyController extends BaseController<PropertyState> {
         remark: property?.remark ?? "",
         valueType: property?.valueType ?? "",
         unit: property?.unit??"",
-        dictId: property?.dict?.id,
-        isEdit: true,dictList: info.state.data.space!.dicts??[]);
+        dictId: property?.id,
+        isEdit: true,dictList: info.state.data.space!.directory.specieses??[]);
   }
 
   Future<void> loadPropertys({bool reload = false}) async{

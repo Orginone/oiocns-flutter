@@ -1,9 +1,8 @@
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/identity/identity.dart';
-import 'package:orginone/dart/core/thing/app/application.dart';
-import 'package:orginone/dart/core/thing/base/species.dart';
-import 'package:orginone/dart/core/thing/index.dart';
+import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/main.dart';
 
 import 'team.dart';
@@ -29,9 +28,6 @@ abstract class ITarget extends ITeam {
   //用户设立的身份
   late List<IIdentity> identitys;
 
-  //用户设立的管理类别
-  late List<ISpeciesItem> species;
-
   //支持的类别类型
   late List<SpeciesType> speciesTypes;
 
@@ -46,22 +42,15 @@ abstract class ITarget extends ITeam {
   //加载用户设立的身份(角色)对象
   Future<List<IIdentity>> loadIdentitys({bool reload = false});
 
-  //加载用户设立的管理类别
-  Future<List<ISpeciesItem>> loadSpecies({bool reload = false});
-
   //为用户设立身份
   Future<IIdentity?> createIdentity(IdentityModel data);
 
-  Future<ISpeciesItem?> createSpecies(SpeciesModel data);
 }
 
 abstract class Target extends Team implements ITarget {
 
   @override
   late List<IIdentity> identitys;
-
-  @override
-  late List<ISpeciesItem> species;
 
   @override
   late List<SpeciesType> speciesTypes;
@@ -72,8 +61,13 @@ abstract class Target extends Team implements ITarget {
   Target(super.metadata, super.labels,{super.space}) {
     speciesTypes = [SpeciesType.application, SpeciesType.resource];
     memberTypes = [TargetType.person];
-    species = [];
     identitys = [];
+    var xDirectory = XDirectory.fromJson(metadata.toJson());
+    xDirectory.shareId = metadata.id!;
+    xDirectory.id = "${metadata.id!}_";
+    directory =  Directory(xDirectory,
+      this,
+    );
   }
 
   @override
@@ -95,30 +89,17 @@ abstract class Target extends Team implements ITarget {
 
   Future<bool> pullSubTarget(ITeam team) async {
     var res = await kernel
-        .pullAnyToTeam(GiveModel(id: metadata.id, subIds: [team.metadata.id]));
+        .pullAnyToTeam(GiveModel(id: metadata.id!, subIds: [team.metadata.id!]));
     return res.success;
   }
 
-  @override
-  Future<ISpeciesItem?> createSpecies(SpeciesModel data) async {
-    data.shareId = metadata.id;
-    data.parentId = '0';
-    var res = await kernel.createSpecies(data);
-    if (res.success && res.data?.id != null) {
-      var item = createSpeciesForType(res.data!, this);
-      if(item!=null){
-        species.add(item);
-      }
-      return item;
-    }
-    return null;
-  }
+
 
   @override
   Future<List<IIdentity>> loadIdentitys({bool reload = false}) async {
     if (identitys.isEmpty || reload) {
       var res = await kernel.queryTargetIdentitys(IDBelongReq(
-          id: metadata.id,
+          id: metadata.id!,
           page: PageRequest(offset: 0, limit: 9999, filter: '')));
       if (res.success && res.data?.result != null) {
         for (var element in res.data!.result!) {
@@ -130,24 +111,14 @@ abstract class Target extends Team implements ITarget {
   }
 
   @override
-  Future<List<ISpeciesItem>> loadSpecies({bool reload = false}) async {
-    if (species.isEmpty || reload) {
-      var res = await kernel.querySpeciesTree(GetSpeciesModel(
-        id: metadata.id,
-        upTeam: metadata.typeName == TargetType.group.label,
-        belongId: space.metadata.id,
-        filter: '',
-      ));
-      if (res.success) {
-        species.clear();
-        for (var element in res.data?.result??[]) {
-          var item = createSpeciesForType(element, this);
-          if(item!=null){
-            species.add(item);
-          }
-        }
-      }
-    }
-    return species;
+  Future<bool> loadContent({bool reload = false}) async{
+    await super.loadContent(reload: reload);
+    await loadIdentitys(reload: reload);
+    return true;
   }
+
+  @override
+  // TODO: implement directory
+  late IDirectory directory;
+
 }

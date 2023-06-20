@@ -1,10 +1,8 @@
 
 
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_list_state.dart';
-import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/thing/base/form.dart';
+import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/model/thing_model.dart';
 
 class ThingState extends BaseGetListState<ThingModel>{

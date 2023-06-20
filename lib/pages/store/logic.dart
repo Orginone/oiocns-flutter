@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_freqiently_usedList_controller.dart';
-import 'package:orginone/dart/core/thing/base/form.dart';
+import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';

@@ -70,7 +70,7 @@ class Authority extends MsgChat implements IAuthority {
             typeName: '权限',
             avatar: FileItemShare.parseAvatar(metadata.icon),
           ),
-          [space.metadata.name, '角色群'],
+          [space.metadata.name!, '角色群'],
           metadata.remark ?? "",
           space,
         ) {
@@ -132,7 +132,7 @@ class Authority extends MsgChat implements IAuthority {
     if (targets.isEmpty || reload) {
       final res = await kernel.queryAuthorityTargets(GainModel(
         id: metadata.id!,
-        subId: space.metadata.belongId,
+        subId: space.metadata.belongId!,
       ));
       if (res.success) {
         targets = res.data?.result ?? [];

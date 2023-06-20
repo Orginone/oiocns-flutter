@@ -3,7 +3,7 @@
 import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
-import 'package:orginone/dart/core/thing/base/species.dart';
+import 'package:orginone/dart/core/thing/species.dart';
 
 
 enum SettingType {
@@ -164,12 +164,12 @@ List<ITarget> getAllTarget(List<ITarget> targets) {
   return list;
 }
 
-List<ISpeciesItem> getAllSpecies(List<ISpeciesItem> species) {
-  List<ISpeciesItem> list = [];
+List<ISpecies> getAllSpecies(List<ISpecies> species) {
+  List<ISpecies> list = [];
   for (var element in species) {
     list.add(element);
-    if (element.children.isNotEmpty) {
-      list.addAll(getAllSpecies(element.children));
+    if (element.directory.specieses.isNotEmpty) {
+      list.addAll(getAllSpecies(element.directory.specieses));
     }
   }
   return list;

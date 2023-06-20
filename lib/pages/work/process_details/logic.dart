@@ -66,7 +66,7 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
         var iForm = forms
             .firstWhere((element) => state.workForm.value!.id == element.id);
         state.workForm.value!.attributes = await settingCtrl.provider.work!
-            .loadAttributes(iForm.id, state.define!.workItem.belongId);
+            .loadAttributes(iForm.id!, state.define!.metadata.belongId!);
         for (var element in state.workForm.value!.attributes!) {
           print('11111');
 
@@ -98,7 +98,7 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
       try {
         var iForm = forms.firstWhere((element) => form.id == element.id);
         form.attributes = await settingCtrl.provider.work!
-            .loadAttributes(iForm.id, state.define!.workItem.belongId);
+            .loadAttributes(iForm.id!, state.define!.metadata.belongId!);
 
         if(data['forms']?['formData']?[form.id]!=null){
           Map<String,dynamic> resourceData = jsonDecode(data['forms']?['formData']?[form.id]['resourceData']);

@@ -2,10 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/thing/base/species.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 

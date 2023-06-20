@@ -21,7 +21,7 @@ class StationInfoPage
           children: [
             Column(
               children: [
-                CommonWidget.commonHeadInfoWidget(state.station.metadata.name),
+                CommonWidget.commonHeadInfoWidget(state.station.metadata.name!),
                 Obx((){
                   List<List<String>> identityContent = [];
                   for (var identity in state.identitys) {

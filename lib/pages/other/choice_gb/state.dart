@@ -2,17 +2,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/thing/base/species.dart';
 
 class ChoiceGbState extends BaseGetState{
-  var gb = <ISpeciesItem>[].obs;
+  var gb = <XSpeciesItem>[].obs;
 
   TextEditingController searchController = TextEditingController();
 
-  var selectedGroup = <ISpeciesItem>[].obs;
+  var selectedGroup = <XSpeciesItem>[].obs;
 
-  var searchList = <ISpeciesItem>[].obs;
+  var searchList = <XSpeciesItem>[].obs;
 
 
   //显示搜索页面
@@ -26,9 +26,9 @@ class ChoiceGbState extends BaseGetState{
 
   ChoiceGbState(){
     head = Get.arguments?['head']??"";
-    ISpeciesItem? gb = Get.arguments?['gb'];
+    XSpeciesItem? gb = Get.arguments?['gb'];
     if(gb!=null){
-      this.gb.value = gb.children??[];
+      this.gb.value = gb.nodes??[];
       selectedGroup.add(gb);
     }else{
       this.gb.value = [];

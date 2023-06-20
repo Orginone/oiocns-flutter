@@ -37,7 +37,7 @@ class ChoicePeopleController extends BaseController<ChoicePeopleState> {
     state.searchList.clear();
 
     var filter =
-        state.allUser.where((element) => (element.name.contains(str)) ?? false);
+        state.allUser.where((element) => (element.name!.contains(str)) ?? false);
     if (filter.isNotEmpty) {
       state.searchList.addAll(filter);
     }

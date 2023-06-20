@@ -46,7 +46,7 @@ class ForgotPasswordController extends BaseController<ForgotPasswordState> {
       ToastUtils.showMsg(msg: '密码必须包含：数字、字母、特殊字符');
       return;
     }
-    ResultType<bool> result = await settingCtrl.provider.resetPassword(
+    ResultType result = await settingCtrl.provider.resetPassword(
         state.accountController.text,
         state.passWordController.text,
         state.keyController.text,

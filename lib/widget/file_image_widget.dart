@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:orginone/dart/core/thing/filesys/filesystem.dart';
+import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/images.dart';
 
 class FileImageWidget extends StatelessWidget {
   final double size;
-  final IFileSystemItem file;
+  final ISysFileInfo file;
 
   const FileImageWidget({Key? key, this.size = 44.0, required this.file})
       : super(key: key);
@@ -15,7 +15,7 @@ class FileImageWidget extends StatelessWidget {
     String ext = file.metadata!.name!.split('.').last.toLowerCase();
     if (ext == 'jpg' || ext == 'jpeg' || ext == 'png' || ext == 'webp') {
       return Image.network(
-        file.metadata?.shareInfo()['shareLink'],
+        file.shareInfo().shareLink!,
         width: size,
         height: size,
       );
@@ -37,11 +37,7 @@ class FileImageWidget extends StatelessWidget {
           img = Images.wordIcon;
           break;
         default:
-          if(file.metadata.isDirectory??false){
-            img = Images.dirIcon;
-          }else{
-            img = Images.otherIcon;
-          }
+          img = Images.otherIcon;
           break;
       }
     }

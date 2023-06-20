@@ -25,7 +25,7 @@ class PermissionInfoPage extends BaseGetView<PermissionInfoController,Permission
           CommonWidget.commonHeadInfoWidget("基本信息"),
           CommonWidget.commonFormWidget(formItem:[
             CommonWidget.commonFormItem(title: "权限名称",content: state.authority.metadata.name??""),
-            CommonWidget.commonFormItem(title: "共享组织",userId: state.authority.belong.id),
+            CommonWidget.commonFormItem(title: "共享组织",userId: state.authority.belong.id!),
             CommonWidget.commonFormItem(title: "权限编码",content: state.authority.metadata.code??""),
             CommonWidget.commonFormItem(title: "创建人",userId: state.authority.metadata.createUser!),
             CommonWidget.commonFormItem(title: "创建时间",content: DateTime.tryParse(state.authority.metadata.createTime!)!.format(format: "yyyy-MM-dd HH:mm")),

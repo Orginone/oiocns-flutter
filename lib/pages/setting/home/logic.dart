@@ -1,19 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/base/species.dart';
-import 'package:orginone/dart/core/thing/dict/dict.dart';
-import 'package:orginone/dart/core/thing/store/propclass.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/setting/classification_info/form.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/pages/setting/network.dart';
@@ -21,9 +15,7 @@ import 'package:orginone/routers.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/local_store.dart';
 import 'package:orginone/util/toast_utils.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/loading_dialog.dart';
-
 import 'state.dart';
 
 class SettingCenterController
@@ -145,7 +137,7 @@ class SettingCenterController
           var data = await model.space!.createTarget(target);
           if (data != null) {
             model.children.add(SettingNavModel(
-                name: data.metadata.name,
+                name: data.metadata.name!,
                 source: data,
                 space: model.space,
                 standardEnum: model.standardEnum,
@@ -270,10 +262,10 @@ class SettingCenterController
       var model = SpeciesModel(
           name: name,
           code: code,
-          public: public,
+          // public: public,
           typeName: specie,
-          shareId: target.metadata.id,
-          authId: auth.metadata.id ?? "",
+          // shareId: target.metadata.id,
+          // authId: auth.metadata.id ?? "",
           remark: remark);
 
       if (isEdit) {
@@ -345,14 +337,14 @@ class SettingCenterController
   }
 
   void operationClassCriteria(SettingNavModel item, value) {
-    if (item.source is IDict) {
-      operationDict(item, value);
-      return;
-    }
-    if (item.source is IPropClass) {
-      operationPropPackage(item, value);
-      return;
-    }
+    // if (item.source is IDict) {
+    //   operationDict(item, value);
+    //   return;
+    // }
+    // if (item.source is IPropClass) {
+    //   operationPropPackage(item, value);
+    //   return;
+    // }
     switch (value) {
       case "create":
         createClassCriteria(item);
@@ -421,7 +413,7 @@ class SettingCenterController
         valueType: type,
         remark: remark,
         unit: unit,
-        dictId: dict?.metadata.id,
+        directoryId: dict?.metadata.id,
       );
       if (isEdit) {
         model.id = property.id;
@@ -458,7 +450,7 @@ class SettingCenterController
         unit: isEdit ? property.unit ?? "" : null,
         dictId: isEdit ? property.dict?.id : null,
         isEdit: isEdit,
-        dictList: item.space!.dicts ?? []);
+        dictList: item.space!.directory.specieses ?? []);
   }
 
   List<TargetType> getTargetType(SettingNavModel model) {

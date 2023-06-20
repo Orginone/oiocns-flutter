@@ -21,7 +21,7 @@ class ThingController extends BaseListController<ThingState> {
 
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async{
-    state.dataList.value = await ChoiceThingNetWork.getThing(state.form.metadata.id,state.belongId);
+    state.dataList.value = await ChoiceThingNetWork.getThing(state.form.metadata.id!,state.belongId);
     super.loadData();
   }
 

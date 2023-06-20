@@ -18,7 +18,7 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
         organization.add(
           StoreTreeNav(
             name: value.metadata.name ?? "",
-            id: value.metadata.id,
+            id: value.metadata.id!,
             space: value,
             children: [],
             image: value.metadata.avatarThumbnail(),

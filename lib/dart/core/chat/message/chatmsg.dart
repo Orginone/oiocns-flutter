@@ -73,7 +73,7 @@ class ChatMessage implements IChatMessage {
         },
         "limit": 100000,
       },
-      belong.metadata.id,
+      belong.metadata.id!,
     );
     if (res.success && res.data != null) {
       _loadMessages(res.data, before);

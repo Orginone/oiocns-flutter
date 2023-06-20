@@ -5,7 +5,8 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/app/application.dart';
+import 'package:orginone/dart/core/thing/application.dart';
+import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/main.dart';
 
 /// 单位内部机构（部门）接口
@@ -46,7 +47,7 @@ class Department extends Target implements IDepartment {
       : super(metadata, [metadata.belong?.name ?? '', '${metadata.typeName}群'],
             space: company) {
     children = [];
-    switch (TargetType.getType(metadata.typeName)) {
+    switch (TargetType.getType(metadata.typeName!)) {
       case TargetType.college:
         childrenTypes = [
           TargetType.major,
@@ -112,7 +113,6 @@ class Department extends Target implements IDepartment {
   Future<void> deepLoad({bool reload = false}) async {
     await loadChildren(reload: reload);
     await loadMembers(reload: reload);
-    await loadSpecies(reload: reload);
     for (var department in children) {
       await department.deepLoad(reload: reload);
     }
@@ -120,7 +120,7 @@ class Department extends Target implements IDepartment {
 
   @override
   Future<bool> delete() async {
-    var res = await kernel.deleteTarget(IdReq(id: metadata.id));
+    var res = await kernel.deleteTarget(IdReq(id: metadata.id!));
     if (res.success) {
       if (parent != null) {
         parent!.children.removeWhere((i) => i == this);
@@ -148,7 +148,7 @@ class Department extends Target implements IDepartment {
   Future<List<IDepartment>> loadChildren({bool reload = false}) async {
     if (childrenTypes.isNotEmpty && (children.isEmpty || reload)) {
       var res = await kernel.querySubTargetById(GetSubsModel(
-        id: metadata.id,
+        id: metadata.id!,
         subTypeNames: childrenTypes.map((e) => e.label).toList(),
         page: PageRequest(offset: 0, limit: 9999, filter: ''),
       ));
@@ -167,9 +167,6 @@ class Department extends Target implements IDepartment {
   // TODO: implement subTarget
   List<ITarget> get subTarget => children;
 
-  @override
-  // TODO: implement workSpecies
-  List<IApplication> get workSpecies => [];
 
   @override
   // TODO: implement targets

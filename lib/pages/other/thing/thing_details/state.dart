@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart' hide Form;
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/thing/base/form.dart';
+import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/model/thing_model.dart';
 
 class ThingDetailsState extends BaseGetState{

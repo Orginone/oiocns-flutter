@@ -93,7 +93,7 @@ class CreateWorkPage
                       child: CommonWidget.commonNonIndicatorTabBar(
                           state.tabController,
                           state.thingForm
-                              .map((element) => element.name)
+                              .map((element) => element.name!)
                               .toList()),
                     ),
                     CommonWidget.commonPopupMenuButton(
@@ -101,7 +101,7 @@ class CreateWorkPage
                         String label = e.label;
                         if (e != SubTableEnum.allChange && state.thingForm.isNotEmpty) {
                           label = label +
-                              state.thingForm[state.tabController.index].name;
+                              state.thingForm[state.tabController.index].name!;
                         }
                         return PopupMenuItem(
                           value: e,

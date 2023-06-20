@@ -121,6 +121,18 @@ enum AuthorityType {
   }
 }
 
+enum OperateType {
+  add('新增'),
+  create('创建'),
+  remove('移除'),
+  update('更新'),
+  delete('删除');
+
+  final String label;
+
+  const OperateType(this.label);
+}
+
 /// 通用状态
 enum CommonStatus {
   applyStartStatus(1),

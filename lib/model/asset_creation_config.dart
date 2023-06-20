@@ -6,10 +6,9 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/util/date_utils.dart';
-import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
@@ -158,7 +157,6 @@ class Fields {
   }
 
   initData(){
-    SettingController setting = Get.find();
     if (type == "input") {
       controller = TextEditingController();
     }
@@ -181,14 +179,14 @@ class Fields {
       }
       if(type == 'selectPerson'){
         var users =  target.members;
-        PickerUtils.showListStringPicker(Get.context!, titles: users.map((e) => e.name).toList(),
+        PickerUtils.showListStringPicker(Get.context!, titles: users.map((e) => e.name!).toList(),
             callback: (str) {
               defaultData.value = users.firstWhere((element) => element.name == str);
             });
       }
       if(type == 'selectDepartment'){
-        List<ITarget> team = await setting.getTeamTree(setting.user);
-        PickerUtils.showListStringPicker(Get.context!, titles: team.map((e) => e.metadata.name).toList(),
+        List<ITarget> team = await settingCtrl.getTeamTree(settingCtrl.user);
+        PickerUtils.showListStringPicker(Get.context!, titles: team.map((e) => e.metadata.name!).toList(),
             callback: (str) {
               defaultData.value = team.firstWhere((element) => element.metadata.name == str);
             });
@@ -197,10 +195,10 @@ class Fields {
         FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.any);
         if (result != null) {
           LoadingDialog.showLoading(Get.context!);
-          var docDir = await setting.user.fileSystem.home?.create('附件');
+          var docDir =  settingCtrl.user.directory;
           PlatformFile file = result.files.first;
           var file1 = File(file.path!);
-          var item = await docDir?.upload(file.name, file1);
+          var item = await docDir.createFile(file1);
           if(item!=null){
             defaultData.value = item.metadata;
           }

@@ -126,7 +126,7 @@ class _AvatarsState extends State<Avatars> {
 
   /// 头像子项
   Widget _avatarItem(XTarget person) {
-    var name = person.name;
+    var name = person.name!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [

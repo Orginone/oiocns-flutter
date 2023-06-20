@@ -6,7 +6,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/thing/base/flow.dart';
+import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -108,19 +108,19 @@ class WorkController
     } catch (e) {}
   }
 
-  Future<void> createWork({IWorkDefine? flow}) async {
-    showCreateWorkDialog(context, info.state.data.space!.species,
+  Future<void> createWork({IWork? flow}) async {
+    showCreateWorkDialog(context, info.state.data.space!.directory.specieses,
         isEdit: flow != null,
         name: flow?.metadata.name ?? "",
         remark: flow?.metadata.remark ?? "",
-        create: flow?.metadata.isCreate ?? false,
+        create: flow?.metadata.allowEdit ?? false,
         code: flow?.metadata.code??'',
         onCreate: (name, code,remark, isCreate) async {
       var model = WorkDefineModel();
       model.remark = remark;
       model.name = name;
       model.code = code;
-      model.isCreate = isCreate;
+      // model.isCreate = isCreate;
       if(flow!=null){
         await flow.updateDefine(model);
       }else{
@@ -132,5 +132,5 @@ class WorkController
 }
 
 class WorkState extends BaseGetState {
-  var flow = <IWorkDefine>[].obs;
+  var flow = <IWork>[].obs;
 }

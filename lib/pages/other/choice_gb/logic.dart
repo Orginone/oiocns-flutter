@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/thing/base/species.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/routers.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
@@ -32,13 +32,13 @@ class ChoiceGbController extends BaseController<ChoiceGbState> {
     state.searchList.clear();
 
 
-    List<ISpeciesItem> allList = [];
+    List<XSpeciesItem> allList = [];
 
     for (var value in state.gb) {
       // allList.addAll(value.c);
     }
-    var filter = allList.where((element) => (element.metadata.name.contains(str)));
-    if (filter!=null && filter.isNotEmpty) {
+    var filter = allList.where((element) => (element.name!.contains(str)));
+    if (filter.isNotEmpty) {
       state.searchList.addAll(filter);
     }
   }
@@ -52,18 +52,18 @@ class ChoiceGbController extends BaseController<ChoiceGbState> {
     Get.back();
   }
 
-  void selectGroup(ISpeciesItem item) {
+  void selectGroup(XSpeciesItem item) {
     state.selectedGroup.add(item);
   }
 
-  void onTap(ISpeciesItem item) {
+  void onTap(XSpeciesItem item) {
     switch(state.function){
       case GbFunction.work:
         Get.toNamed(Routers.workStart,arguments: {"species":item});
         break;
       case GbFunction.wareHouse:
         Get.toNamed(Routers.thing,
-            arguments: {"id": item.metadata.id, "title": item.metadata.name});
+            arguments: {"id": item.id, "title": item.name});
         break;
     }
   }

@@ -26,10 +26,10 @@ class UserDocument extends StatelessWidget {
     List<List<String>> docContent = [];
     for (var user in unitMember) {
       docContent.add([
-        user.code,
-        user.name,
-        user.name,
-        user.code,
+        user.code!,
+        user.name!,
+        user.name!,
+        user.code!,
         user.remark ?? ""
       ]);
     }

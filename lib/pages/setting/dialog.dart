@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/thing/base/species.dart';
-import 'package:orginone/dart/core/thing/dict/dict.dart';
+import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
@@ -34,7 +32,7 @@ typedef CreateAttributeCallBack = Function(
   String valueType,
   String remark,
   String? unit,
-  IDict? dict,
+    ISpecies? dict,
 );
 
 typedef CreateAttrCallBack = Function(String name, String code, String remark,
@@ -148,7 +146,7 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
       children = [
         Row(
           children: [
-            Text(item.name),
+            Text(item.name!),
             SizedBox(
               width: 10.w,
             ),
@@ -181,7 +179,7 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
     }
     if(targetType == TargetType.group || targetType == TargetType.company){
       children = [
-        Text(item.name),
+        Text(item.name!),
         SizedBox(
           height: 10.h,
         ),
@@ -567,7 +565,7 @@ Future<void> showCreateOrganizationDialog(
 }
 
 Future<void> showCreateAttributeDialog(BuildContext context,
-    {CreateAttributeCallBack? onCreate,List<IDict> dictList =const [],
+    {CreateAttributeCallBack? onCreate,List<ISpecies> dictList =const [],
     bool isEdit = false,
     String? name,
     String? code,
@@ -579,7 +577,7 @@ Future<void> showCreateAttributeDialog(BuildContext context,
   TextEditingController remarkCtr = TextEditingController(text: remark);
 
   String? type = valueType;
-  IDict? dictValue = dictId!=null?dictList.firstWhere((element) => element.metadata.id == dictId):null;
+  ISpecies? dictValue = dictId!=null?dictList.firstWhere((element) => element.id == dictId):null;
 
   return showDialog(
     context: context,
@@ -756,7 +754,7 @@ Future<void> showCreateAttrDialog(BuildContext context,
   );
 }
 
-Future<void> showCreateWorkDialog(BuildContext context, List<ISpeciesItem> thing,
+Future<void> showCreateWorkDialog(BuildContext context, List<ISpecies> thing,
     {CreateWorkCallBack? onCreate,
     String name = '',
     String remark = '',
@@ -864,10 +862,10 @@ Future<void> showCreateAuthDialog(
                         required: true,
                         hint: "请输入"),
                     CommonWidget.commonChoiceTile(
-                        "选择制定组织", selectedTarget.metadata.name,
+                        "选择制定组织", selectedTarget.metadata.name!,
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
-                          titles: targets.map((e) => e.metadata.name).toList(),
+                          titles: targets.map((e) => e.metadata.name!).toList(),
                           callback: (str) {
                             state(() {
                               try {
@@ -978,7 +976,7 @@ Future<void> showClassCriteriaDialog(
                         "选择制定组织", selectedTarget?.metadata.name??"",
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
-                          titles: targets.map((e) => e.metadata.name).toList(),
+                          titles: targets.map((e) => e.metadata.name!).toList(),
                           callback: (str) {
                         state(() {
                           try {

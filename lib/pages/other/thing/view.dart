@@ -20,5 +20,5 @@ class ThingPage extends BaseGetListView<ThingController, ThingState> {
 
   @override
   // TODO: implement title
-  String get title => state.form.metadata.name;
+  String get title => state.form.metadata.name!;
 }

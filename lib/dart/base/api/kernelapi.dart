@@ -581,6 +581,18 @@ class KernelApi {
     );
   }
 
+  Future<ResultType<XSpeciesItem>> updateSpeciesItem(
+      SpeciesItemModel params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'updateSpeciesItem',
+        params: params,
+      ),
+      XSpeciesItem.fromJson,
+    );
+  }
+
   /// 更新度量标准
   /// @param {AttributeModel} params 请求参数
   /// @returns {ResultType<XAttribute>} 请求结果
@@ -713,7 +725,146 @@ class KernelApi {
     );
   }
 
+  Future<ResultType<XSpeciesItemArray>> querySpeciesItems(IdReq params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'QuerySpeciesItems',
+        params: params.toJson(),
+      ),
+      XSpeciesItemArray.fromJson,
+    );
+  }
 
+  Future<ResultType<XSpeciesItem>> createSpeciesItem(
+      SpeciesItemModel params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'CreateSpeciesItem',
+        params: params.toJson(),
+      ),
+      XSpeciesItem.fromJson,
+    );
+  }
+
+  Future<ResultType<XSpeciesItem>> deleteSpeciesItem(IdReq params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'DeleteSpeciesItem',
+        params: params.toJson(),
+      ),
+      XSpeciesItem.fromJson,
+    );
+  }
+
+  Future<ResultType<XApplication>> updateApplication(
+      ApplicationModel params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'UpdateApplication',
+        params: params.toJson(),
+      ),
+      XApplication.fromJson,
+    );
+  }
+
+  Future<ResultType> deleteApplication(IdReq params) async {
+    return await request(
+        ReqestType(
+          module: 'thing',
+          action: 'DeleteApplication',
+          params: params.toJson(),
+        ),
+        null);
+  }
+
+  Future<ResultType<XDirectory>> createDirectory(DirectoryModel params) async {
+    return await request(
+        ReqestType(
+          module: 'thing',
+          action: 'CreateDirectory',
+          params: params.toJson(),
+        ),
+        XDirectory.fromJson);
+  }
+
+  Future<ResultType<XDirectory>> updateDirectory(DirectoryModel params) async {
+    return await request(
+        ReqestType(
+          module: 'thing',
+          action: 'UpdateDirectory',
+          params: params.toJson(),
+        ),
+        XDirectory.fromJson);
+  }
+
+  Future<ResultType> deleteDirectory(IdReq params) async {
+    return await request(
+        ReqestType(
+          module: 'thing',
+          action: 'DeleteDirectory',
+          params: params.toJson(),
+        ),
+        null);
+  }
+
+  Future<ResultType<XFormArray>> queryForms(IdReq params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'QueryForms',
+        params: params.toJson(),
+      ),
+      XFormArray.fromJson,
+    );
+  }
+
+  Future<ResultType<XSpeciesArray>> querySpecies(IdReq params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'QuerySpecies',
+        params: params.toJson(),
+      ),
+      XSpeciesArray.fromJson,
+    );
+  }
+
+  Future<ResultType<XApplicationArray>> queryApplications(IdReq params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'QueryApplications',
+        params: params.toJson(),
+      ),
+      XApplicationArray.fromJson,
+    );
+  }
+
+  Future<ResultType<XApplication>> createApplication(ApplicationModel params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'CreateApplication',
+        params: params.toJson(),
+      ),
+      XApplication.fromJson,
+    );
+  }
+
+  Future<ResultType<XDirectoryArray>> queryDirectorys(GetDirectoryModel params) async {
+    return await request(
+      ReqestType(
+        module: 'thing',
+        action: 'QueryDirectorys',
+        params: params.toJson(),
+      ),
+      XDirectoryArray.fromJson,
+    );
+  }
 
   /// 物的元数据查询
   /// @param {ThingAttrReq} params 请求参数
@@ -929,6 +1080,17 @@ class KernelApi {
     );
   }
 
+  Future<ResultType> createTargetMsg(TargetMessageModel params) async {
+    return await request(
+      ReqestType(
+        module: 'chat',
+        action: 'CreateTargetMsg',
+        params: params,
+      ),
+      null,
+    );
+  }
+
   /// 更新标准规则
   /// @param {RuleStdModel} params 请求参数
   /// @returns {ResultType<XRuleStd>} 请求结果
@@ -1030,18 +1192,19 @@ class KernelApi {
   /// 重置密码
   /// @param {IdReqModel} params 请求参数
   /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> resetPassword(
+  Future<ResultType> resetPassword(
     String userName,
     String password,
     String privateKey,
   ) async {
     var req = {
-      "userName": userName,
+      "account": userName,
       "password": password,
       "privateKey": privateKey
     };
     if (_storeHub.isConnected) {
-      return await _storeHub.invoke('ResetPassword', args: [req]);
+      var data = await _storeHub.invoke('ResetPassword', args: [req]);
+      return ResultType.fromJson(data);
     } else {
       return await _restRequest('resetpassword', req);
     }
@@ -2497,8 +2660,7 @@ class KernelApi {
   /// 查询分类下的流程定义
   /// @param {QueryDefineReq} params 请求参数
   /// @returns {ResultType<XworkDefineArray>} 请求结果
-  Future<ResultType<XWorkDefineArray>> queryWorkDefine(
-      GetSpeciesResourceModel params) async {
+  Future<ResultType<XWorkDefineArray>> queryWorkDefine(IdReq params) async {
     return await request(
       ReqestType(
         module: 'work',

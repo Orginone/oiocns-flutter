@@ -6,7 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
-import 'package:orginone/dart/core/thing/filesys/filesystem.dart';
+import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/routers.dart';
@@ -29,13 +29,13 @@ class FileController extends BaseBreadcrumbNavController<FileState> {
   void onReady() async{
     // TODO: implement onReady
     super.onReady();
-    var file = (state.model.value!.source as IFileSystemItem);
-    bool success = await file.loadChildren();
-
-    if(success){
-      state.model.value!.children = file.children.map((e) => BaseBreadcrumbNavModel(name: e.metadata.name??"",source: e)).toList();
-      state.model.refresh();
-    }
+    var file = (state.model.value!.source as ISysFileInfo);
+    // bool success = await file.loadChildren();
+    //
+    // if(success){
+    //   state.model.value!.children = file.children.map((e) => BaseBreadcrumbNavModel(name: e.metadata.name??"",source: e)).toList();
+    //   state.model.refresh();
+    // }
   }
 
   void onNextLv(BaseBreadcrumbNavModel model) {
@@ -83,7 +83,7 @@ class FileController extends BaseBreadcrumbNavController<FileState> {
     if (result != null) {
       LoadingDialog.showLoading(context);
       for (PlatformFile item in result.files) {
-        IFileSystemItem? fileSystemItem = await nav.source.upload(
+        ISysFileInfo? fileSystemItem = await nav.source.upload(
           item.name,
           File(item.path!),
           (progress) {},

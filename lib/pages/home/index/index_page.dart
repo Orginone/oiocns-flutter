@@ -5,7 +5,7 @@ import 'package:getwidget/getwidget.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
-import 'package:orginone/dart/core/thing/app/application.dart';
+import 'package:orginone/dart/core/thing/application.dart';
 import 'package:orginone/pages/home/index/HorizontalScrollMenu/QuickEntry.dart';
 import 'package:orginone/pages/home/index/news/searchBarWidget.dart';
 import 'package:orginone/routers.dart';
@@ -154,7 +154,7 @@ class CardChildWidget extends GetView<SettingController> {
                         continue;
                       }
                     }
-                    Get.toNamed(Routers.workStart, arguments: {"defines": item.defines,'target':target});
+                    // Get.toNamed(Routers.workStart, arguments: {"defines": item.defines,'target':target});
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -168,13 +168,13 @@ class CardChildWidget extends GetView<SettingController> {
                         width: 65.w,
                         height: 65.w,
                         child: ImageWidget(
-                          value[index].share.avatar?.thumbnailUint8List,
+                          value[index].metadata.avatarThumbnail(),
                           size: 64.w,
                           circular: true,
                         ),
                       ),
                       Text(
-                        value[index].metadata.name,
+                        value[index].metadata.name!,
                         style: XFonts.size18Black6,maxLines: 1,overflow: TextOverflow.ellipsis,
                       ),
                     ],

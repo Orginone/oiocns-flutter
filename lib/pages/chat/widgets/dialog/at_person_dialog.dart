@@ -21,7 +21,7 @@ class AtPersonDialog {
                   onTap: () {
                     Navigator.pop(context, item);
                   },
-                  title: Text(item.name),
+                  title: Text(item.name!),
                   leading: TeamAvatar(info: TeamTypeInfo(userId: item.id),size:45.w,),
                 );
               },

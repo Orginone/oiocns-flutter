@@ -67,10 +67,10 @@ class UserInfoPage extends BaseGetView<UserInfoController, UserInfoState> {
         List<List<String>> companyContent = [];
         for (var company in state.joinCompany) {
           companyContent.add([
-            company.metadata.name,
-            company.metadata.code,
-            company.metadata.name,
-            company.metadata.code,
+            company.metadata.name!,
+            company.metadata.code!,
+            company.metadata.name!,
+            company.metadata.code!,
             company.metadata.remark ?? ""
           ]);
         }

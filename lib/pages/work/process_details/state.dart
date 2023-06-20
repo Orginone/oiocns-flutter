@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/thing/base/flow.dart';
+import 'package:orginone/dart/core/work/index.dart';
 
 class ProcessDetailsState extends BaseGetState{
 
@@ -14,7 +14,7 @@ class ProcessDetailsState extends BaseGetState{
 
   var xAttribute = {}.obs;
 
-  IWorkDefine? define;
+  IWork? define;
 
 
   Rxn<XForm> workForm = Rxn();

@@ -6,6 +6,7 @@ import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/identity/identity.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/main.dart';
 
 abstract class IStation implements ITeam {
@@ -27,6 +28,7 @@ abstract class IStation implements ITeam {
 class Station extends Team implements IStation {
   Station(XTarget metadata,this.company):super(metadata,[metadata.belong?.name ?? '', '${metadata.typeName}群'],space: company){
     identitys = [];
+    directory = company.directory;
   }
 
   @override
@@ -51,7 +53,7 @@ class Station extends Team implements IStation {
 
   @override
   Future<bool> delete() async{
-    var res = await kernel.deleteTarget(IdReq(id: metadata.id));
+    var res = await kernel.deleteTarget(IdReq(id: metadata.id!));
     if (res.success) {
       company.stations.removeWhere((i) => i == this);
     }
@@ -62,7 +64,7 @@ class Station extends Team implements IStation {
   @override
   Future<List<IIdentity>> loadIdentitys({bool reload = false}) async{
     if (identitys.isEmpty || reload) {
-      var res = await kernel.queryTeamIdentitys(IdReq(id: metadata.id));
+      var res = await kernel.queryTeamIdentitys(IdReq(id: metadata.id!));
       if (res.success) {
         identitys = (res.data?.result ?? []).map((item) => Identity(space,item)).toList();
       }
@@ -76,7 +78,7 @@ class Station extends Team implements IStation {
       return identitys.where((m) => m.metadata.id == i.metadata.id).isEmpty;
     }).toList();
     if (identitys.isNotEmpty) {
-      var res = await kernel.pullAnyToTeam(GiveModel( id: metadata.id,
+      var res = await kernel.pullAnyToTeam(GiveModel( id: metadata.id!,
         subIds: identitys.map((i) => i.metadata.id??"").toList(),));
       if (res.success) {
         this.identitys.addAll(identitys);
@@ -89,7 +91,7 @@ class Station extends Team implements IStation {
   @override
   Future<bool> removeIdentitys(List<IIdentity> identitys) async{
     for (var identity in identitys) {
-      var res = await kernel.removeOrExitOfTeam(GainModel( id: metadata.id,
+      var res = await kernel.removeOrExitOfTeam(GainModel( id: metadata.id!,
         subId: identity.metadata.id??"",));
       if (res.success) {
         this.identitys.removeWhere((i) => i == this);
@@ -97,5 +99,8 @@ class Station extends Team implements IStation {
     }
     return true;
   }
+
+  @override
+  late IDirectory directory;
 
 }
