@@ -112,15 +112,21 @@ class SettingCenterController
         name: "个人文件",
         space: user.space,
         spaceEnum: SpaceEnum.departments,
-        children: user.space!.directory.files.map((e){
-          return SettingNavModel(
-            name: e.filedata.name!,
-            space: user.space,
-            source: e,
-            spaceEnum: SpaceEnum.file,
-            image: e.shareInfo().thumbnail,
-          );
-        }).toList(),
+        children: [
+          ...user.space!.directory.files.map((e){
+            return SettingNavModel(
+              name: e.filedata.name!,
+              space: user.space,
+              source: e,
+              spaceEnum: SpaceEnum.file,
+              image: e.shareInfo().thumbnail,
+            );
+          }).toList(),
+          ...await loadSpecies(user.space!.directory.specieses, user.space!),
+          ...await loadApplications(user.space!.directory.applications, user.space!),
+          ...await loadForm(user.space!.directory.forms, user.space!),
+          ...await loadPropertys(user.space!.directory.propertys, user.space!),
+        ]
       ),
       SettingNavModel(
         name: "我的好友",
@@ -151,15 +157,21 @@ class SettingCenterController
           name: "单位文件",
           space: company.space,
           spaceEnum: SpaceEnum.departments,
-          children: company.space!.directory.files.map((e){
-            return SettingNavModel(
-              name: e.filedata.name!,
-              space: company.space,
-              source: e,
-              spaceEnum: SpaceEnum.file,
-              image: e.shareInfo().thumbnail,
-            );
-          }).toList(),
+          children: [
+            ...company.space!.directory.files.map((e){
+              return SettingNavModel(
+                name: e.filedata.name!,
+                space: company.space,
+                source: e,
+                spaceEnum: SpaceEnum.file,
+                image: e.shareInfo().thumbnail,
+              );
+            }).toList(),
+            ...await loadSpecies(company.space!.directory.specieses, company.space!),
+            ...await loadApplications(company.space!.directory.applications, company.space!),
+            ...await loadForm(company.space!.directory.forms, company.space!),
+            ...await loadPropertys(company.space!.directory.propertys, company.space!),
+          ]
         ),
         SettingNavModel(
           name: "单位成员",

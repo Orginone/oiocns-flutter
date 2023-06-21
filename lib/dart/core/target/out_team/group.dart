@@ -75,7 +75,7 @@ class Group extends Target implements IGroup {
     await loadMembers(reload: reload);
     await directory.loadContent(reload: reloadContent);
     for (var group in children) {
-      await group.deepLoad(reload: reload);
+      await group.deepLoad(reload: reload,reloadContent: reloadContent);
     }
   }
 

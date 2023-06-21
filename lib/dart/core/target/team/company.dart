@@ -183,16 +183,16 @@ class Company extends Belong implements ICompany {
     await loadSuperAuth(reload: reload);
     await directory.loadContent(reload: reloadContent);
     for (var group in groups) {
-      await group.deepLoad(reload: reload);
+      await group.deepLoad(reload: reload,reloadContent: reloadContent);
     }
     for (var department in departments) {
-      await department.deepLoad(reload: reload);
+      await department.deepLoad(reload: reload,reloadContent: reloadContent);
     }
     for (var station in stations) {
-      await station.deepLoad(reload: reload);
+      await station.deepLoad(reload: reload,reloadContent: reloadContent);
     }
     for (var cohort in cohorts) {
-      cohort.deepLoad(reload: reload);
+      cohort.deepLoad(reload: reload,reloadContent: reloadContent);
     }
     superAuth?.deepLoad(reload: reload);
   }
