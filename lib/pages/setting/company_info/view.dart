@@ -61,8 +61,8 @@ class CompanyInfoPage
         List<List<String>> groupContent = [];
         for (var group in state.joinGroup) {
           groupContent.add([
-            group.metadata.name,
-            group.metadata.code,
+            group.metadata.name!,
+            group.metadata.code!,
             group.metadata.remark ?? ""
           ]);
         }
@@ -94,9 +94,9 @@ class CompanyInfoPage
             style: TextStyle(fontSize: 21.sp),
           ),
           CommonWidget.commonTextContentWidget(
-              "单位名称", state.company.metadata.name),
+              "单位名称", state.company.metadata.name!),
           CommonWidget.commonTextContentWidget(
-              "社会统一信用代码", state.company.metadata.code),
+              "社会统一信用代码", state.company.metadata.code!),
           CommonWidget.commonTextContentWidget(
               "单位简介", state.company.metadata.remark ?? "",maxLines: 3),
         ],

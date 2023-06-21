@@ -58,15 +58,15 @@ class Person extends Belong implements IPerson {
   Future<bool> applyJoin(List<XTarget> members) async {
     var filter = members.where((element) {
       return [TargetType.person, TargetType.cohort, ...companyTypes]
-          .contains(TargetType.getType(element.typeName));
+          .contains(TargetType.getType(element.typeName!));
     }).toList();
     for (var value in filter) {
-      if (TargetType.getType(value.typeName) == TargetType.person) {
+      if (TargetType.getType(value.typeName!) == TargetType.person) {
         await pullMembers([value]);
       }
       await kernel.applyJoinTeam(GainModel(
-        id: value.id,
-        subId: metadata.id,
+        id: value.id!,
+        subId: metadata.id!,
       ));
     }
     return true;
@@ -120,9 +120,9 @@ class Person extends Belong implements IPerson {
 
       if (res.success && res.data?.result != null) {
         res.data?.result?.forEach((item) {
-          ShareIdSet[item.id] = ShareIcon(
-              name: item.name,
-              typeName: item.typeName,
+          ShareIdSet[item.id!] = ShareIcon(
+              name: item.name!,
+              typeName: item.typeName!,
               avatar: FileItemShare.parseAvatar(item.icon));
         });
         share = ShareIdSet[id] ?? share;
@@ -139,7 +139,7 @@ class Person extends Belong implements IPerson {
       return companys;
     }
     final res = await kernel.queryJoinedTargetById(GetJoinedModel(
-        id: metadata.id,
+        id: metadata.id!,
         typeNames: [
           TargetType.company.label,
           TargetType.hospital.label,
@@ -156,7 +156,7 @@ class Person extends Belong implements IPerson {
   }
 
   ICompany createCompanyForTarget(XTarget metadata) {
-    switch (TargetType.getType(metadata.typeName)) {
+    switch (TargetType.getType(metadata.typeName!)) {
       case TargetType.hospital:
         return Hospital(metadata, this);
       case TargetType.university:
@@ -181,7 +181,7 @@ class Person extends Belong implements IPerson {
   Future<List<ICohort>> loadCohorts({bool reload = false}) async {
     if (cohorts.isEmpty || reload) {
       var res = await kernel.queryJoinedTargetById(GetJoinedModel(
-        id: metadata.id,
+        id: metadata.id!,
         typeNames: [TargetType.cohort.label],
         page: PageRequest(offset: 0, limit: 9999, filter: ''),
       ));
@@ -217,7 +217,7 @@ class Person extends Belong implements IPerson {
 
   @override
   Future<bool> delete() async {
-    var res = await kernel.deleteTarget(IdReq(id: metadata.id));
+    var res = await kernel.deleteTarget(IdReq(id: metadata.id!));
     return res.success;
   }
 
@@ -269,10 +269,10 @@ class Person extends Belong implements IPerson {
         if(memberChats.where((element) => element.chatId == i.id).isEmpty){
           var item = PersonMsgChat(
             belong,
-            i.id,
+            i.id!,
             ShareIcon(
-              name: i.name,
-              typeName: i.typeName,
+              name: i.name!,
+              typeName: i.typeName!,
               avatar: FileItemShare.parseAvatar(i.icon),
             ),
             ['好友'],
@@ -296,18 +296,18 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  Future<void> deepLoad({bool reload = false}) async {
+  Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async {
     await loadGivedIdentitys(reload: reload);
     await loadCompanys(reload: reload);
     await loadCohorts(reload: reload);
     await loadMembers(reload: reload);
     await loadSuperAuth(reload: reload);
-    await loadSpecies(reload: reload);
+    await directory.loadContent(reload: reloadContent);
     for (var company in companys) {
-      await company.deepLoad(reload: reload);
+      await company.deepLoad(reload: reload,reloadContent: reloadContent);
     }
     for (var cohort in cohorts) {
-      await cohort.deepLoad(reload: reload);
+      await cohort.deepLoad(reload: reload,reloadContent: reloadContent);
     }
     superAuth?.deepLoad(reload: reload);
   }
@@ -320,7 +320,7 @@ class Person extends Belong implements IPerson {
     }else{
       switch (operate) {
         case 'Add':
-          if (companyTypes.contains(TargetType.getType(target.typeName))) {
+          if (companyTypes.contains(TargetType.getType(target.typeName!))) {
             var company = createCompanyForTarget(target);
             company.deepLoad();
             companys.add(company);
@@ -331,7 +331,7 @@ class Person extends Belong implements IPerson {
           }
           break;
         case 'Remove':
-          if (companyTypes.contains(TargetType.getType(target.typeName))) {
+          if (companyTypes.contains(TargetType.getType(target.typeName!))) {
              companys.removeWhere((a) => a.id == target.id);
           } else if (target.typeName == TargetType.cohort.label) {
              cohorts.removeWhere((a) => a.id == target.id);
@@ -370,4 +370,8 @@ class Person extends Belong implements IPerson {
     givedIdentitys
         .removeWhere((a) => idProofs.every((i) => i.id != a.identity?.id));
   }
+
+  @override
+  // TODO: implement shareTarget
+  List<ITarget> get shareTarget =>  [this, ...cohorts];
 }

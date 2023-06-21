@@ -17,7 +17,7 @@ class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
         organization.add(
           WorkBreadcrumbNav(
               name: value.metadata.name??"",
-              id: value.metadata.id,
+              id: value.metadata.id!,
               space: value,
               children: [
                 WorkBreadcrumbNav(

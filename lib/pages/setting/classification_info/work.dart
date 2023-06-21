@@ -1,12 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/thing/base/flow.dart';
+import 'package:orginone/dart/core/thing/application.dart';
+import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -27,12 +29,12 @@ class WorkPage extends BaseGetPageView<
             children: [
               CommonWidget.commonDocumentWidget(
                   title: ["办事名称", "办事标识", "创建时间", "备注"],
-                  content: state.flow.map((e) {
+                  content: state.work.map((e) {
                     return [
                       e.metadata.name ?? "",
                       e.metadata.code ?? "",
                       DateTime.tryParse(e.metadata.createTime ?? "")
-                              ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
+                          ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
                           "",
                       e.metadata.remark ?? ""
                     ];
@@ -71,66 +73,73 @@ class WorkPage extends BaseGetPageView<
   }
 }
 
-class WorkController
-    extends BaseController<WorkState> {
+class WorkController extends BaseController<WorkState> {
   final WorkState state = WorkState();
 
   ClassificationInfoController get info => Get.find();
 
-  dynamic get species => info.state.species;
+  IApplication get species => info.state.species;
 
   @override
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
-    await loadFlow();
+    await loadWork();
     LoadingDialog.dismiss(context);
   }
 
-  Future<void> loadFlow({bool reload = false}) async {
-    state.flow.value = await species.loadWorkDefines(reload: reload);
+  Future<void> loadWork({bool reload = false}) async {
+    state.work.value = await species.loadWorks(reload: reload);
   }
 
   void onWorkOperation(operation, String name) async {
     try {
-      var flow = state.flow.firstWhere((element) => element.metadata.name == name);
+      var work = state.work.firstWhere((element) => element.metadata.name == name);
       if (operation == "delete") {
         var success = await species.delete();
         if (success) {
-          state.flow.remove(flow);
-          state.flow.refresh();
+          state.work.remove(work);
+          state.work.refresh();
           ToastUtils.showMsg(msg: "删除成功");
         }
       } else if (operation == 'edit') {
-        createWork(flow: flow);
+        createWork(work: work);
       }
     } catch (e) {}
   }
 
-  Future<void> createWork({IWorkDefine? flow}) async {
-    showCreateWorkDialog(context, info.state.data.space!.species,
-        isEdit: flow != null,
-        name: flow?.metadata.name ?? "",
-        remark: flow?.metadata.remark ?? "",
-        create: flow?.metadata.isCreate ?? false,
-        code: flow?.metadata.code??'',
-        onCreate: (name, code,remark, isCreate) async {
+  Future<void> createWork({IWork? work}) async {
+    showCreateWorkDialog(context, info.state.data.space!.directory.specieses,
+        isEdit: work != null,
+        share: species.directory.target.space.shareTarget,
+        name: work?.metadata.name ?? "",
+        remark: work?.metadata.remark ?? "",
+        allowAdd: work?.metadata.allowAdd ?? true,
+        allowEdit: work?.metadata.allowEdit ?? true,
+        allowSelect: work?.metadata.allowSelect ?? true,
+        code: work?.metadata.code ?? '',
+        onCreate: (name, code, remark, allowAdd, allowEdit, allowSelect,share) async {
       var model = WorkDefineModel();
       model.remark = remark;
       model.name = name;
       model.code = code;
-      model.isCreate = isCreate;
-      if(flow!=null){
-        await flow.updateDefine(model);
-      }else{
-        await species.createWorkDefine(model);
+      model.shareId = share.id;
+      model.rule = jsonEncode({
+        "allowAdd": allowAdd,
+        "allowEdit": allowEdit,
+        "allowSelect": allowSelect
+      });
+      if (work != null) {
+        await work.updateDefine(model);
+      } else {
+        await species.createWork(model);
       }
-      await loadFlow(reload: true);
+      await loadWork(reload: true);
     });
   }
 }
 
 class WorkState extends BaseGetState {
-  var flow = <IWorkDefine>[].obs;
+  var work = <IWork>[].obs;
 }

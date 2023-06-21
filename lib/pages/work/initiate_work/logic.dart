@@ -2,11 +2,9 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
-import 'package:orginone/dart/core/thing/app/application.dart';
-import 'package:orginone/dart/core/thing/app/flowclass.dart';
-import 'package:orginone/dart/core/thing/base/flow.dart';
-import 'package:orginone/dart/core/thing/base/species.dart';
-import 'package:orginone/dart/core/thing/market/market.dart';
+import 'package:orginone/dart/core/thing/application.dart';
+import 'package:orginone/dart/core/thing/species.dart';
+import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
@@ -46,20 +44,20 @@ class InitiateWorkController
   }
 
   Future<void> init() async {
-    if (state.model.value!.name == "发起办事") {
+    if (state.isRootDir) {
       LoadingDialog.showLoading(context);
       List<WorkBreadcrumbNav> initiationWork =
           getInitiationWorkModel([state.model.value!]);
       for (var element in initiationWork) {
-        List<ISpeciesItem> species = [];
+        List<ISpecies> species = [];
         for (var target in element.space!.targets) {
           if (target.space == element.space!.space) {
-            for (var specie in target.species) {
-              switch (SpeciesType.getType(specie.metadata.typeName)) {
+            for (var specie in target.directory.specieses) {
+              switch (SpeciesType.getType(specie.metadata.typeName!)) {
                 case SpeciesType.market:
                 case SpeciesType.application:
                   species.add(specie);
-                  (specie as IApplication).loadWorkDefines();
+                  (specie as IApplication).loadWorks();
                   break;
               }
             }
@@ -73,29 +71,29 @@ class InitiateWorkController
     }
   }
 
-  Future<List<WorkBreadcrumbNav>> loadDefines(List<ISpeciesItem> species,
+  Future<List<WorkBreadcrumbNav>> loadDefines(List<ISpecies> species,
       [IBelong? space, WorkEnum? workEnum]) async {
     List<WorkBreadcrumbNav> list = [];
     for (var item in species) {
-      if(item.children.isEmpty){
+      if(item.items.isEmpty){
         continue;
       }
       List<WorkBreadcrumbNav> children = [];
-      switch (SpeciesType.getType(item.metadata.typeName)) {
+      switch (SpeciesType.getType(item.metadata.typeName!)) {
         case SpeciesType.market:
         case SpeciesType.application:
         case SpeciesType.flow:
-          children.addAll(await loadDefines(item.children, space, workEnum));
+          children.addAll(await loadDefines(item.directory.specieses, space, workEnum));
           break;
         default:
           continue;
       }
       list.add(WorkBreadcrumbNav(
           children: children,
-          image: item.share.avatar?.shareLink,
+          image: item.metadata.avatarThumbnail(),
           source: item,
           space: space,
-          name: item.metadata.name,
+          name: item.metadata.name!,
           workEnum: workEnum));
     }
 
@@ -115,8 +113,8 @@ class InitiateWorkController
     return list;
   }
 
-  Future<List<IWorkDefine>> getAllDefine(WorkBreadcrumbNav model) async{
-    List<IWorkDefine> list = [];
+  Future<List<IWork>> getAllDefine(WorkBreadcrumbNav model) async{
+    List<IWork> list = [];
     if(model.source?.defines != null){
       await model.source.loadWorkDefines();
       list.addAll(model.source?.defines);

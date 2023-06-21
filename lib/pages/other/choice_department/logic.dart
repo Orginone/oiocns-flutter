@@ -35,7 +35,7 @@ class ChoiceDepartmentController extends BaseController<ChoiceDepartmentState> {
     state.searchList.clear();
 
     var filter = state.allDepartment
-        .where((element) => (element.metadata.name.contains(str)) ?? false);
+        .where((element) => (element.metadata.name!.contains(str)) ?? false);
     if (filter.isNotEmpty) {
       state.searchList.addAll(filter);
     }

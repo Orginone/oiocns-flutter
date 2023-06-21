@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
-import 'package:orginone/dart/core/thing/filesys/filesysItem.dart';
-import 'package:orginone/dart/core/thing/filesys/filesystem.dart';
+import 'package:orginone/dart/core/thing/file_info.dart';
 
 class FileState extends BaseBreadcrumbNavState {
   TextEditingController searchController = TextEditingController();
@@ -10,7 +9,7 @@ class FileState extends BaseBreadcrumbNavState {
   FileState(){
     model.value = Get.arguments?['data'];
     if (model.value == null) {
-      IFileSystemItem? file = Get.arguments?['file'];
+      ISysFileInfo? file = Get.arguments?['file'];
       model.value = BaseBreadcrumbNavModel(
         source: file,
         name: file?.metadata?.name??"",

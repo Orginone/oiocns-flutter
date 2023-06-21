@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/thing/base/species.dart';
-import 'package:orginone/dart/core/thing/dict/dict.dart';
+import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
@@ -34,18 +32,20 @@ typedef CreateAttributeCallBack = Function(
   String valueType,
   String remark,
   String? unit,
-  IDict? dict,
+    ISpecies? dict,
 );
 
 typedef CreateAttrCallBack = Function(String name, String code, String remark,
     XProperty property, IAuthority authority, bool public);
 
-typedef CreateWorkCallBack = Function(
-    String name, String code,String remark, bool isCreate);
+typedef CreateWorkCallBack = Function(String name, String code, String remark,
+    bool allowAdd, bool allowEdit, bool allowSelect, ITarget share);
 
 typedef CreateAuthCallBack = Function(String name,String code,ITarget target,bool isPublic,String remark);
 
 typedef CreateClassCriteriaCallBack = Function(String name,String code,ITarget target,String specie,IAuthority auth,bool isPublic,String remark);
+
+typedef CreateSpeciesCallBack = Function(String name,String info,String remark);
 
 
 Future<void> showCreateIdentityDialog(
@@ -148,7 +148,7 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
       children = [
         Row(
           children: [
-            Text(item.name),
+            Text(item.name!),
             SizedBox(
               width: 10.w,
             ),
@@ -181,7 +181,7 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
     }
     if(targetType == TargetType.group || targetType == TargetType.company){
       children = [
-        Text(item.name),
+        Text(item.name!),
         SizedBox(
           height: 10.h,
         ),
@@ -567,7 +567,7 @@ Future<void> showCreateOrganizationDialog(
 }
 
 Future<void> showCreateAttributeDialog(BuildContext context,
-    {CreateAttributeCallBack? onCreate,List<IDict> dictList =const [],
+    {CreateAttributeCallBack? onCreate,List<ISpecies> dictList =const [],
     bool isEdit = false,
     String? name,
     String? code,
@@ -579,7 +579,7 @@ Future<void> showCreateAttributeDialog(BuildContext context,
   TextEditingController remarkCtr = TextEditingController(text: remark);
 
   String? type = valueType;
-  IDict? dictValue = dictId!=null?dictList.firstWhere((element) => element.metadata.id == dictId):null;
+  ISpecies? dictValue = dictId!=null?dictList.firstWhere((element) => element.id == dictId):null;
 
   return showDialog(
     context: context,
@@ -756,18 +756,25 @@ Future<void> showCreateAttrDialog(BuildContext context,
   );
 }
 
-Future<void> showCreateWorkDialog(BuildContext context, List<ISpeciesItem> thing,
+Future<void> showCreateWorkDialog(BuildContext context, List<ISpecies> thing,
     {CreateWorkCallBack? onCreate,
+    required List<ITarget> share,
     String name = '',
     String remark = '',
-      String code = '',
-    bool create = false,
+    String code = '',
+    bool allowAdd = true,
+    bool allowEdit = true,
+    bool allowSelect = true,
     bool isEdit = false}) async {
   TextEditingController nameCtr = TextEditingController(text: name);
   TextEditingController codeCtr = TextEditingController(text: code);
   TextEditingController remarkCtr = TextEditingController(text: remark);
 
-  bool isCreate = false;
+  bool add = allowAdd;
+  bool edit = allowEdit;
+  bool select = allowSelect;
+
+  ITarget? selectTarget;
   return showDialog(
     context: context,
     builder: (context) {
@@ -791,12 +798,41 @@ Future<void> showCreateWorkDialog(BuildContext context, List<ISpeciesItem> thing
                         required: true,
                         hint: "请输入"),
                     CommonWidget.commonChoiceTile(
-                        "是否创建实体", isCreate ? "是" : '否',
+                        "选择共享组织", selectTarget?.metadata.name ?? "",
+                        showLine: true, required: true, onTap: () {
+                      PickerUtils.showListStringPicker(Get.context!,
+                          titles: share.map((e) => e.metadata.name!).toList(),
+                          callback: (str) {
+                            state(() {
+                              selectTarget = share.firstWhere(
+                                      (element) => element.metadata.name == str);
+                            });
+                          });
+                    }, hint: "请选择"),
+                    CommonWidget.commonChoiceTile("允许新增实体", add ? "是" : '否',
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
                           titles: ['是', "否"], callback: (str) {
                         state(() {
-                          isCreate = str == "是";
+                          add = str == "是";
+                        });
+                      });
+                    }, hint: "请选择"),
+                    CommonWidget.commonChoiceTile("允许变更实体", edit ? "是" : '否',
+                        showLine: true, required: true, onTap: () {
+                      PickerUtils.showListStringPicker(Get.context!,
+                          titles: ['是', "否"], callback: (str) {
+                        state(() {
+                          edit = str == "是";
+                        });
+                      });
+                    }, hint: "请选择"),
+                    CommonWidget.commonChoiceTile("允许选择实体", select ? "是" : '否',
+                        showLine: true, required: true, onTap: () {
+                      PickerUtils.showListStringPicker(Get.context!,
+                          titles: ['是', "否"], callback: (str) {
+                        state(() {
+                          select = str == "是";
                         });
                       });
                     }, hint: "请选择"),
@@ -810,11 +846,14 @@ Future<void> showCreateWorkDialog(BuildContext context, List<ISpeciesItem> thing
                     }, onTap2: () {
                       if (nameCtr.text.isEmpty) {
                         ToastUtils.showMsg(msg: "请输入事项名称");
+                      } else if (selectTarget == null) {
+                        ToastUtils.showMsg(msg: "请选择共享组织");
                       } else if (codeCtr.text.isEmpty) {
                         ToastUtils.showMsg(msg: "请输入事项编号");
-                      }  else {
+                      } else {
                         if (onCreate != null) {
-                          onCreate(nameCtr.text,codeCtr.text ,remarkCtr.text, isCreate);
+                          onCreate(nameCtr.text, codeCtr.text, remarkCtr.text,
+                              add, edit, select, selectTarget!);
                         }
                         Navigator.pop(context);
                       }
@@ -864,10 +903,10 @@ Future<void> showCreateAuthDialog(
                         required: true,
                         hint: "请输入"),
                     CommonWidget.commonChoiceTile(
-                        "选择制定组织", selectedTarget.metadata.name,
+                        "选择制定组织", selectedTarget.metadata.name!,
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
-                          titles: targets.map((e) => e.metadata.name).toList(),
+                          titles: targets.map((e) => e.metadata.name!).toList(),
                           callback: (str) {
                             state(() {
                               try {
@@ -978,7 +1017,7 @@ Future<void> showClassCriteriaDialog(
                         "选择制定组织", selectedTarget?.metadata.name??"",
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
-                          titles: targets.map((e) => e.metadata.name).toList(),
+                          titles: targets.map((e) => e.metadata.name!).toList(),
                           callback: (str) {
                         state(() {
                           try {
@@ -1049,3 +1088,67 @@ Future<void> showClassCriteriaDialog(
     },
   );
 }
+
+Future<void> showCreateSpeciesDialog(
+    BuildContext context,
+    {String name = '',
+      String info = '',
+      String remark = '',
+      bool isEdit = false,CreateSpeciesCallBack? callBack}) async {
+  TextEditingController nameController = TextEditingController(text: name);
+  TextEditingController infoController = TextEditingController(text: info);
+  TextEditingController remarkController = TextEditingController(text: remark);
+
+
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+          alignment: Alignment.center,
+          child: SingleChildScrollView(
+            child: StatefulBuilder(builder: (context, state) {
+              return SizedBox(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CommonWidget.commonHeadInfoWidget("${isEdit?"编辑":"新增"}分类项"),
+                    CommonWidget.commonTextTile("名称", '',
+                        controller: nameController,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
+                    CommonWidget.commonTextTile("附加信息", '',
+                        controller: infoController,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
+                    CommonWidget.commonTextTile("备注", '',
+                        controller: remarkController,
+                        showLine: true,
+                        maxLine: 4,
+                        hint: "请输入"),
+                    CommonWidget.commonMultipleSubmitWidget(onTap1: () {
+                      Navigator.pop(context);
+                    }, onTap2: () {
+                      if (nameController.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入名称");
+                      } else if (infoController.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入代码");
+                      } else {
+                        if(callBack!=null){
+                          callBack(nameController.text,infoController.text,remarkController.text);
+                        }
+                        Navigator.pop(context);
+                      }
+                    }),
+                  ],
+                ),
+              );
+            }),
+          ));
+    },
+  );
+}
+
+
+

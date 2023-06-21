@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_frequently_used_list_state.dart';
-import 'package:orginone/dart/core/thing/base/flow.dart';
+import 'package:orginone/dart/core/work/index.dart';
 
 class WorkState extends BaseFrequentlyUsedListState<WorkFrequentlyUsed,XWorkTask>{
 
@@ -11,7 +11,7 @@ class WorkState extends BaseFrequentlyUsedListState<WorkFrequentlyUsed,XWorkTask
 
 
 class WorkFrequentlyUsed extends FrequentlyUsed{
-  late IWorkDefine define;
+  late IWork define;
   WorkFrequentlyUsed({super.id,super.avatar,super.name,required this.define});
 }
 

@@ -15,6 +15,7 @@ class Item extends BaseBreadcrumbNavItem<SettingNavModel> {
   @override
   Widget action() {
     // TODO: implement action
+    return Container();
     return PopupMenuWidget(
       onSelected:onSelected, model: item,
     );

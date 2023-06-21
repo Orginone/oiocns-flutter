@@ -161,11 +161,11 @@ class SearchPage extends GetView<SearchController> {
   Widget _targetItem(XTarget target) {
     List<Widget> children = [
       TextAvatar(
-        avatarName: target.name.substring(0, 2),
+        avatarName: target.name!.substring(0, 2),
         textStyle: XFonts.size20WhiteW700,
       ),
       Padding(padding: EdgeInsets.only(left: 10.w)),
-      Text(target.name, style: XFonts.size22Black3W700),
+      Text(target.name!, style: XFonts.size22Black3W700),
       Expanded(child: Container()),
     ];
     if (controller.functionPoint != null) {

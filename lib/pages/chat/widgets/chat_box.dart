@@ -710,17 +710,16 @@ class ChatBoxController with WidgetsBindingObserver {
   }
 
   void imagePicked(XFile pickedImage, IMsgChat chat) async {
-    var docDir = await settingCtrl.user.fileSystem.home?.create("沟通");
+    var docDir = settingCtrl.user.directory;
     String ext = pickedImage.name.split('.').last;
 
     var save = MsgSaveModel.fromFileUpload(
         settingCtrl.user.id, pickedImage.name, pickedImage.path, ext);
     chat.messages.insert(0, Message(chat, save));
 
-    var item = await docDir?.upload(
-      pickedImage.name,
+    var item = await docDir.createFile(
       File(pickedImage.path),
-      (progress) {
+      progress: (progress) {
         var msg = chat.messages
             .firstWhere((element) => element.metadata.id == pickedImage.name);
         msg.metadata.body!.progress = progress;
@@ -729,13 +728,13 @@ class ChatBoxController with WidgetsBindingObserver {
     );
     if (item != null) {
       chat.sendMessage(
-          MessageType.image, jsonEncode(item.metadata.shareInfo()));
+          MessageType.image, jsonEncode(item.shareInfo().toJson()));
     }
   }
 
   Future<void> filePicked(PlatformFile file, IMsgChat chat) async {
     var settingCtrl = Get.find<SettingController>();
-    var docDir = await settingCtrl.user.fileSystem.home?.create('沟通');
+    var docDir =  settingCtrl.user.directory;
 
     String ext = file.name.split('.').last;
 
@@ -744,10 +743,9 @@ class ChatBoxController with WidgetsBindingObserver {
         settingCtrl.user.id, file.name, file.path!, ext, file1.lengthSync());
     chat.messages.insert(0, Message(chat, save));
 
-    var item = await docDir?.upload(
-      file.name,
+    var item = await docDir.createFile(
       file1,
-      (progress) {
+      progress: (progress) {
         var msg = chat.messages
             .firstWhere((element) => element.metadata.id == file.name);
         msg.metadata.body!.progress = progress;
@@ -755,7 +753,7 @@ class ChatBoxController with WidgetsBindingObserver {
       },
     );
     if (item != null) {
-      chat.sendMessage(MessageType.file, jsonEncode(item.metadata.shareInfo()));
+      chat.sendMessage(MessageType.file, jsonEncode(item.shareInfo().shareLink));
     }
   }
 

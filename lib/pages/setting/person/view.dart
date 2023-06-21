@@ -106,7 +106,7 @@ class PersonPage extends BaseGetPageView<PersonController, PersonState> {
   Widget get getAvatar {
     var settingCtrl = Get.find<SettingController>();
     var avatar = settingCtrl.user.share.avatar;
-    var name = settingCtrl.user.metadata.name.substring(0, 1);
+    var name = settingCtrl.user.metadata.name!.substring(0, 1);
     var size = 100.w;
     if (avatar == null) {
       return AdvancedAvatar(

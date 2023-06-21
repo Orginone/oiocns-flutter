@@ -10,7 +10,6 @@ import 'package:orginone/dart/core/target/innerTeam/station.dart';
 import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/target/person.dart';
-import 'package:orginone/dart/core/thing/app/application.dart';
 import 'package:orginone/main.dart';
 
 abstract class ICompany extends IBelong {
@@ -79,8 +78,8 @@ class Company extends Belong implements ICompany {
     for (final member in members) {
       if (member.typeName == TargetType.group.label) {
         await kernel.applyJoinTeam(GainModel(
-          id: member.id,
-          subId: metadata.id,
+          id: member.id!,
+          subId: metadata.id!,
         ));
       }
     }
@@ -175,25 +174,25 @@ class Company extends Belong implements ICompany {
   }
 
   @override
-  Future<void> deepLoad({bool reload = false}) async {
+  Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async {
     await loadGroups(reload: reload);
     await loadDepartments(reload: reload);
     await loadStations(reload: reload);
     await loadCohorts(reload: reload);
     await loadMembers(reload: reload);
     await loadSuperAuth(reload: reload);
-    await loadSpecies(reload: reload);
+    await directory.loadContent(reload: reloadContent);
     for (var group in groups) {
-      await group.deepLoad(reload: reload);
+      await group.deepLoad(reload: reload,reloadContent: reloadContent);
     }
     for (var department in departments) {
-      await department.deepLoad(reload: reload);
+      await department.deepLoad(reload: reload,reloadContent: reloadContent);
     }
     for (var station in stations) {
-      await station.deepLoad(reload: reload);
+      await station.deepLoad(reload: reload,reloadContent: reloadContent);
     }
     for (var cohort in cohorts) {
-      cohort.deepLoad(reload: reload);
+      cohort.deepLoad(reload: reload,reloadContent: reloadContent);
     }
     superAuth?.deepLoad(reload: reload);
   }
@@ -201,7 +200,7 @@ class Company extends Belong implements ICompany {
   @override
   Future<bool> delete() async {
     final res = await kernel.deleteTarget(IdReq(
-      id: metadata.id,
+      id: metadata.id!,
     ));
     if (res.success) {
       user.companys.removeWhere((i) => i == this);
@@ -222,7 +221,7 @@ class Company extends Belong implements ICompany {
   Future<List<ICohort>> loadCohorts({bool reload = false}) async {
     if (cohorts.isEmpty || reload) {
       final res = await kernel.querySubTargetById(GetSubsModel(
-        id: metadata.id,
+        id: metadata.id!,
         subTypeNames: [TargetType.cohort.label],
         page: PageRequest(offset: 0, limit: 9999, filter: ''),
       ));
@@ -237,7 +236,7 @@ class Company extends Belong implements ICompany {
   Future<List<IDepartment>> loadDepartments({bool reload = false}) async {
     if (departments.isEmpty || reload) {
       final res = await kernel.querySubTargetById(GetSubsModel(
-        id: metadata.id,
+        id: metadata.id!,
         subTypeNames: departmentTypes.map((e) => e.label).toList(),
         page: PageRequest(offset: 0, limit: 9999, filter: ''),
       ));
@@ -253,7 +252,7 @@ class Company extends Belong implements ICompany {
   Future<List<IGroup>> loadGroups({bool reload = false}) async {
     if (groups.isEmpty || reload) {
       final res = await kernel.queryJoinedTargetById(GetJoinedModel(
-        id: metadata.id,
+        id: metadata.id!,
         typeNames: [TargetType.group.label],
         page: PageRequest(offset: 0, limit: 9999, filter: ''),
       ));
@@ -268,7 +267,7 @@ class Company extends Belong implements ICompany {
   Future<List<IStation>> loadStations({bool reload = false}) async {
     if (stations.isEmpty || reload) {
       final res = await kernel.querySubTargetById(GetSubsModel(
-        id: metadata.id,
+        id: metadata.id!,
         subTypeNames: [TargetType.station.label],
         page: PageRequest(offset: 0, limit: 9999, filter: ''),
       ));
@@ -300,12 +299,12 @@ class Company extends Belong implements ICompany {
       for (var i in members) {
         var item = PersonMsgChat(
           belong,
-          i.id,
+          i.id!,
           ShareIcon(
-              name: i.name,
-              typeName: i.typeName,
+              name: i.name!,
+              typeName: i.typeName!,
               avatar: FileItemShare.parseAvatar(i.icon)),
-          [metadata.name, '同事'],
+          [metadata.name!, '同事'],
           i.remark ?? "",
           this,
         );
@@ -336,4 +335,8 @@ class Company extends Belong implements ICompany {
     }
     return targets;
   }
+
+  @override
+  // TODO: implement shareTarget
+  List<ITarget> get shareTarget => [this, ...groups];
 }

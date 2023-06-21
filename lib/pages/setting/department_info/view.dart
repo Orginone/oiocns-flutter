@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/widget.dart';
@@ -65,13 +63,13 @@ class DepartmentInfoPage
         CommonWidget.commonHeadInfoWidget("基本信息"),
         CommonWidget.commonFormWidget(formItem: [
           CommonWidget.commonFormItem(
-              title: "部门名称", content: state.depart.value.metadata.name),
+              title: "部门名称", content: state.depart.value.metadata.name!),
           CommonWidget.commonFormItem(
-              title: "部门代码", content: state.depart.value.metadata.code),
+              title: "部门代码", content: state.depart.value.metadata.code!),
           CommonWidget.commonFormItem(
-              title: "团队简称", content: state.depart.value.metadata.name),
+              title: "团队简称", content: state.depart.value.metadata.name!),
           CommonWidget.commonFormItem(
-              title: "团队标识", content: state.depart.value.metadata.code ),
+              title: "团队标识", content: state.depart.value.metadata.code!),
           CommonWidget.commonFormItem(
               title: "所属单位",
               // content: state.settingController.company?.teamName ?? ""
@@ -79,7 +77,7 @@ class DepartmentInfoPage
           ),
           CommonWidget.commonFormItem(
               title: "创建人",
-              userId: state.depart.value.metadata.createUser),
+              userId: state.depart.value.metadata.createUser!),
           CommonWidget.commonFormItem(
               title: "创建时间",
               content: DateTime.tryParse(

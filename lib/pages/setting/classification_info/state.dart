@@ -5,9 +5,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/thing/base/flow.dart';
-import 'package:orginone/dart/core/thing/base/form.dart';
-import 'package:orginone/dart/core/thing/base/species.dart';
+import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/home/state.dart';
 
 class ClassificationInfoState extends BaseGetState{
@@ -23,35 +21,34 @@ class ClassificationInfoState extends BaseGetState{
   ClassificationInfoState() {
     data = Get.arguments['data'];
     species = data.source;
-    tabTitle = [ClassificationEnum.info];
-    if(species is IForm){
-      tabTitle.addAll([ClassificationEnum.attrs]);
-    }
-    if(species is FlowDefine){
-      tabTitle.addAll([ClassificationEnum.attrs]);
-    }
-    if(species is ISpeciesItem){
-      switch (SpeciesType.getType(species.metadata.typeName)) {
-        case SpeciesType.store:
-          tabTitle.add(ClassificationEnum.form);
-          break;
-        case SpeciesType.application:
-          tabTitle.addAll([ClassificationEnum.attrs]);
-          break;
-        case SpeciesType.market:
-        case SpeciesType.work:
-          tabTitle.add(ClassificationEnum.work);
-          break;
-      }
+    tabTitle = [];
+    switch(data.spaceEnum){
+      case SpaceEnum.person:
+         tabTitle.add(ClassificationEnum.personInfo);
+        break;
+      case SpaceEnum.species:
+        tabTitle.add(ClassificationEnum.info);
+        tabTitle.add(ClassificationEnum.species);
+        break;
+      case SpaceEnum.applications:
+        tabTitle.add(ClassificationEnum.info);
+        tabTitle.add(ClassificationEnum.work);
+        break;
+      case SpaceEnum.form:
+        tabTitle.add(ClassificationEnum.info);
+        tabTitle.add(ClassificationEnum.attrs);
+        break;
     }
   }
 }
 
 enum ClassificationEnum {
   info("基本信息"),
+  personInfo("个人信息"),
   property("属性定义"),
   attrs("表单特性"),
   form("表单设计"),
+  species("分类定义"),
   work("办事定义");
 
   final String label;

@@ -21,7 +21,7 @@ class ChoiceDepartmentPage
               return CommonWidget.commonBreadcrumbNavWidget(
                 firstTitle: '',
                 allTitle: state.selectedGroup
-                    .map((element) => element.metadata.name)
+                    .map((element) => element.metadata.name!)
                     .toList(),
                 onTapFirst: () {
                   controller.clearGroup();

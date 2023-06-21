@@ -46,7 +46,7 @@ class _PersonListPageState extends State<PersonListPage> {
   initList(List<PersonInfo> list) {
     if (list.isEmpty) return;
     for (int i = 0, length = list.length; i < length; i++) {
-      String pinyin = PinyinHelper.getPinyin(list[i].person.name);
+      String pinyin = PinyinHelper.getPinyin(list[i].person.name!);
       String tag = pinyin.substring(0, 1).toUpperCase();
       list[i].namePinyin = pinyin;
       if (RegExp("[A-Z]").hasMatch(tag)) {
@@ -62,7 +62,7 @@ class _PersonListPageState extends State<PersonListPage> {
   search(String key){
     personInfo.clear();
     for (var person in persons) {
-      if(person.name.contains(key)){
+      if(person.name!.contains(key)){
         personInfo.add(PersonInfo(person));
       }
     }
@@ -106,7 +106,7 @@ class _PersonListPageState extends State<PersonListPage> {
           info: TeamTypeInfo(userId: person.person.id),
           size: 55.w,
         ),
-        title: Text(person.person.name),
+        title: Text(person.person.name!),
         subtitle: Text(
           person.person.remark ?? "",
           maxLines: 1,

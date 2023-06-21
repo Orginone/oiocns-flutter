@@ -8,7 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
-import 'package:orginone/dart/core/thing/filesys/filesystem.dart';
+import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/widget/file_image_widget.dart';
 
@@ -23,7 +23,7 @@ class Item extends BaseBreadcrumbNavItem<BaseBreadcrumbNavModel> {
 
   @override
   Widget build(BuildContext context) {
-    IFileSystemItem file = item.source;
+    ISysFileInfo file = item.source;
     return GestureDetector(
       onTap: () {
         if (onNext != null) {
@@ -52,16 +52,16 @@ class Item extends BaseBreadcrumbNavItem<BaseBreadcrumbNavModel> {
     );
   }
 
-  Widget moreButton(IFileSystemItem file) {
-    if(!file.metadata.isDirectory){
+  Widget moreButton(ISysFileInfo file) {
+    if(!file.filedata.isDirectory){
       return Container();
     }
     return super.more();
   }
 
-  Widget popupMenuButton(IFileSystemItem file) {
+  Widget popupMenuButton(ISysFileInfo file) {
     List<PopupMenuItem> children = [];
-    if(file.metadata.isDirectory){
+    if(file.filedata.isDirectory){
       children = [
         const PopupMenuItem(value: "createDir",child: Text("新建文件夹"),),
         const PopupMenuItem(value: "refreshDir",child: Text("刷新文件夹"),),

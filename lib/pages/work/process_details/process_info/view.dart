@@ -54,7 +54,7 @@ class ProcessInfoPage
       child: Column(
         children: [
           CommonWidget.commonNonIndicatorTabBar(state.subTabController!,
-              state.thingForm.map((element) => element.name).toList()),
+              state.thingForm.map((element) => element.name!).toList()),
           SizedBox(
             height: 300.h,
             child: Obx(() {
@@ -146,7 +146,7 @@ class ProcessInfoPage
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidget.commonHeadInfoWidget(form.name),
+        CommonWidget.commonHeadInfoWidget(form.name!),
        ...form.attributes?.map((e) {
          Widget child = testMappingComponents[e.fields!.type ?? ""]!(
              e.fields!, settingCtrl.user);

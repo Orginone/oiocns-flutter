@@ -70,17 +70,17 @@ class OutAgencyInfoPage
             style: TextStyle(fontSize: 21.sp),
           ),
           CommonWidget.commonTextContentWidget(
-              "集团名称", state.group.metadata.name),
+              "集团名称", state.group.metadata.name!),
           CommonWidget.commonTextContentWidget(
-              "集团代码", state.group.metadata.code),
-          CommonWidget.commonTextContentWidget("团队简称", state.group.metadata.name),
+              "集团代码", state.group.metadata.code!),
+          CommonWidget.commonTextContentWidget("团队简称", state.group.metadata.name!),
           CommonWidget.commonTextContentWidget(
-              "团队标识", state.group.metadata.code),
+              "团队标识", state.group.metadata.code!),
           CommonWidget.commonTextContentWidget(
-              "创建人",'', userId:state.group.metadata.createUser),
+              "创建人",'', userId:state.group.metadata.createUser!),
           CommonWidget.commonTextContentWidget(
               "创建时间",
-              DateTime.tryParse(state.group.metadata.createTime)!
+              DateTime.tryParse(state.group.metadata.createTime!)!
                   .format()),
           CommonWidget.commonTextContentWidget(
               "简介", state.group.metadata.remark ?? ""),
@@ -94,8 +94,8 @@ class OutAgencyInfoPage
       List<List<String>> content = [];
       for (var user in state.unitMember) {
         content.add([
-          user.name,
-          user.code,
+          user.name!,
+          user.code!,
           user.name ?? "",
           user.code ?? "",
           user.remark ?? ""

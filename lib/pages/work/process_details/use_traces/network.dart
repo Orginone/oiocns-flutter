@@ -15,7 +15,7 @@ class UseTracesNetWork {
         },
       },
       "userData": [],
-    }, settingCtrl.user.metadata.id);
+    }, settingCtrl.user.metadata.id!);
     if(result.success){
       return XThingArchives.fromJson(result.data['data'][0]);
     }

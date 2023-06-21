@@ -3,7 +3,6 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/chat/provider.dart';
-import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/event/home_data.dart';
@@ -11,7 +10,7 @@ import 'package:orginone/main.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 
 import 'enum.dart';
-import 'thing/app/application.dart';
+import 'thing/application.dart';
 import 'thing/store/provider.dart';
 import 'work/provider.dart';
 
@@ -89,7 +88,7 @@ class UserProvider {
   /// @param password 密码
   /// @param privateKey 私钥
   /// @returns
-  Future<ResultType<bool>> resetPassword(
+  Future<ResultType> resetPassword(
     String account,
     String password,
     String privateKey,
@@ -130,7 +129,7 @@ class UserProvider {
   Future<void> reload() async {
     _inited = false;
     _chat.value?.preMessage();
-    await _user.value?.deepLoad(reload: true);
+    await _user.value?.deepLoad(reload: true,reloadContent: true);
     await _work.value?.loadTodos(reload: true);
     _inited = true;
     _chat.value?.loadAllChats();
@@ -147,7 +146,6 @@ class UserProvider {
 
   Future<void> reloadChats() async{
     await _user.value?.deepLoad(reload: true);
-    await _work.value?.loadTodos(reload: true);
     _chat.value?.loadAllChats();
     await _chat.value?.loadPreMessage();
     _chat.refresh();
@@ -159,13 +157,11 @@ class UserProvider {
       await user!.deepLoad(reload: reload);
     }
     List<IApplication> apps = [];
-    for (var target in user?.targets??[]) {
-      for (var specie in target.species) {
+    for (var target in user!.targets) {
+      for (var specie in target.directory.specieses) {
         if (specie.metadata.typeName == SpeciesType.application.label) {
           var app = specie as IApplication;
-          if ((await app.loadWorkDefines(reload: true)).isNotEmpty) {
-            apps.add(app);
-          }
+          apps.add(app);
         }
       }
     }

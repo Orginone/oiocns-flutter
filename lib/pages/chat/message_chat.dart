@@ -85,7 +85,9 @@ class MessageChatController extends BaseController<MessageChatState> {
   void onReady() {
     // TODO: implement onReady
     super.onReady();
-    markVisibleMessagesAsRead();
+    Future.delayed(const Duration(milliseconds: 100),(){
+      markVisibleMessagesAsRead();
+    });
   }
 
   void forward(String msgType, MsgBodyModel msgBody) {
@@ -114,8 +116,7 @@ class MessageChatController extends BaseController<MessageChatState> {
         if (isMessageVisible(bounds, message.metadata.key)) {
           bool isRead = false;
           try {
-            var tag = message.metadata.tags
-                ?.firstWhere((element) => element.userId == settingCtrl.user.id);
+            var tag = message.labels.firstWhere((element) => element.userId == settingCtrl.user.id);
             isRead = tag != null;
           } catch (e) {
             isRead = false;

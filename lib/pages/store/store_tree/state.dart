@@ -18,11 +18,10 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
         organization.add(
           StoreTreeNav(
             name: value.metadata.name ?? "",
-            id: value.metadata.id,
+            id: value.metadata.id!,
             space: value,
             children: [],
             image: value.metadata.avatarThumbnail(),
-            wareHouseType: WareHouseType.organization,
           ),
         );
       }
@@ -30,21 +29,13 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
         name: HomeEnum.store.label,
         children: [
           StoreTreeNav(
-              name: WareHouseType.personal.label,
-              wareHouseType: WareHouseType.personal,
-              children: [
-                StoreTreeNav(
-                    name: PersonalEnum.file.label,
-                    personalEnum: PersonalEnum.file,
-                    children: [],
-                    space: settingCtrl.user),
-              ],
-              space: settingCtrl.user),
-          StoreTreeNav(
-            children: organization,
-            name: WareHouseType.organization.label,
-            wareHouseType: WareHouseType.organization,
+            name: settingCtrl.provider.user?.metadata.name ?? "",
+            id: settingCtrl.provider.user?.metadata.id ?? "",
+            image: settingCtrl.provider.user?.metadata.avatarThumbnail(),
+            children: [],
+            space: settingCtrl.provider.user,
           ),
+          ...organization
         ],
       );
     }
@@ -54,36 +45,15 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
 }
 
 class StoreTreeNav extends BaseBreadcrumbNavModel<StoreTreeNav> {
-  PersonalEnum? personalEnum;
   IBelong? space;
-  SpeciesType? speciesType;
-  WareHouseType? wareHouseType;
   StoreTreeNav(
       {super.id = '',
       super.name = '',
       required List<StoreTreeNav> children,
       super.image,
       super.source,
-      this.personalEnum,
-      this.space,
-      this.speciesType,this.wareHouseType}) {
+      this.space,}) {
     this.children = children;
   }
 }
 
-
-enum WareHouseType {
-  personal("个人"),
-  target('目标用户'),
-  organization("组织");
-  final String label;
-  const WareHouseType(this.label);
-}
-
-enum PersonalEnum {
-  file("文件");
-
-  final String label;
-
-  const PersonalEnum(this.label);
-}

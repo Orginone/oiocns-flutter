@@ -13,6 +13,7 @@ import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/pages/setting/user_info/state.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/unified.dart';
 
 
@@ -61,7 +62,6 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
           showSearchDialog(Get.context!, TargetType.person,
               title: "添加好友",
               hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
-            print("object333333311112222");
 
             if (list.isNotEmpty) {
               bool success =
@@ -69,9 +69,9 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
               if (success) {
                 state.unitMember.addAll(list);
                 state.unitMember.refresh();
-                print("object11112222");
+                ToastUtils.showMsg(msg: "好友申请发送成功");
               } else {
-                print("object2222");
+                ToastUtils.showMsg(msg: "好友申请发送失败");
               }
             }
           });

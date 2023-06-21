@@ -17,7 +17,7 @@ class ChoiceThingController extends BaseController<ChoiceThingState> {
 
     LoadingDialog.showLoading(context);
     state.things.value =
-        await ChoiceThingNetWork.getThing(state.form.id, state.belongId);
+        await ChoiceThingNetWork.getThing(state.form.id!, state.belongId);
 
     for (var element in ids) {
       for (var value1 in state.things) {

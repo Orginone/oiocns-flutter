@@ -1,9 +1,11 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/dart/core/thing/directory.dart';
+import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/main.dart';
 
-abstract class IIdentity {
+abstract class IIdentity extends IFileInfo<XIdentity>{
   /// 设置身份（角色）的用户
   late IBelong space;
 
@@ -34,6 +36,7 @@ class Identity implements IIdentity {
 
   Identity(this.space, this.metadata) {
     members = [];
+    directory = space.directory;
   }
 
   @override
@@ -74,7 +77,7 @@ class Identity implements IIdentity {
     }).toList();
     if (filter.isNotEmpty) {
       final res = await kernel.giveIdentity(GiveModel(id: metadata.id!,
-          subIds: members.map((i) => i.id).toList()));
+          subIds: members.map((i) => i.id!).toList()));
       if (res.success) {
         this.members.addAll(members);
       }
@@ -86,7 +89,7 @@ class Identity implements IIdentity {
 @override
 Future<bool> removeMembers(List<XTarget> members)async {
   final res = await kernel.removeIdentity(GiveModel( id: metadata.id!,
-    subIds: members.map((i) => i.id).toList(),));
+    subIds: members.map((i) => i.id!).toList(),));
   if (res.success) {
     for (final member in members) {
       this.members = this.members.where((i) => i.id != member.id).toList();
@@ -109,5 +112,45 @@ Future<bool> update(IdentityModel data) async{
   }
   return res.success;
 }
+
+  @override
+  late IDirectory directory;
+
+
+  @override
+  Future<bool> copy(IDirectory destination) {
+    // TODO: implement copy
+    throw UnimplementedError();
+  }
+
+  @override
+  // TODO: implement isInherited
+  bool get isInherited => false;
+
+  @override
+  Future<bool> loadContent({bool reload = false}) {
+    // TODO: implement loadContent
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> move(IDirectory destination) {
+    // TODO: implement move
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> rename(String name) {
+    // TODO: implement rename
+    throw UnimplementedError();
+  }
+
+  @override
+  // TODO: implement belongId
+  String get belongId => metadata.belongId!;
+
+  @override
+  // TODO: implement id
+  String get id => metadata.id!;
 
 }

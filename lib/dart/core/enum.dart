@@ -41,16 +41,16 @@ enum TargetType {
 
 enum SpeciesType {
   /** 类别目录 */
-  market('流通类'),
-  resource('资源类'),
-  store('属性类'),
-  application('应用类'),
-  dict('字典类'),
+  market('流通'),
+  resource('资源'),
+  store('属性'),
+  application('应用'),
+  dict('字典'),
   /** 类别类目 */
-  flow('流程类'),
-  work('事项类'),
-  thing('实体类'),
-  data('数据类');
+  flow('流程'),
+  work('事项'),
+  thing('实体'),
+  data('数据');
 
   final String label;
 
@@ -119,6 +119,18 @@ enum AuthorityType {
   static String getName(MessageType type) {
     return type.label;
   }
+}
+
+enum OperateType {
+  add('新增'),
+  create('创建'),
+  remove('移除'),
+  update('更新'),
+  delete('删除');
+
+  final String label;
+
+  const OperateType(this.label);
 }
 
 /// 通用状态
@@ -217,3 +229,26 @@ const subDepartmentTypes = [
   TargetType.jobCohort,
   TargetType.research,
 ];
+
+
+
+enum SpaceEnum {
+  cardbag("卡包设置"),
+  security("账号与安全"),
+  gateway("门户设置"),
+  theme("主题设置"),
+  directory("文件夹"),
+  species("分类"),
+  property("属性"),
+  applications("应用"),
+  form("表单"),
+  file("文件"),
+  person("成员"),
+  departments("部门"),
+  groups("群组"),
+  cohorts("组织");
+
+  final  String label;
+
+  const SpaceEnum(this.label);
+}

@@ -1,17 +1,14 @@
 
-
-
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/person.dart';
-import 'package:orginone/dart/core/thing/app/application.dart';
-import 'package:orginone/dart/core/thing/base/flow.dart';
-import 'package:orginone/dart/core/thing/market/market.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/work/state.dart';
+
+import 'index.dart';
 
 abstract class IWorkProvider {
   /// 当前用户
@@ -42,7 +39,7 @@ abstract class IWorkProvider {
   Future<XWorkInstance?> loadTaskDetail(XWorkTask task);
 
   /// 查询流程定义
-  Future<IWorkDefine?> findFlowDefine(String defineId);
+  Future<IWork?> findFlowDefine(String defineId);
 
   ///删除办事实例
   Future<bool> deleteInstance(String id);
@@ -55,11 +52,11 @@ abstract class IWorkProvider {
 
   Future<void> loadMostUsed();
 
-  Future<void> setMostUsed(IWorkDefine define);
+  Future<void> setMostUsed(IWork define);
 
-  Future<void> removeMostUsed(IWorkDefine define);
+  Future<void> removeMostUsed(IWork define);
 
-  bool isMostUsed(IWorkDefine define);
+  bool isMostUsed(IWork define);
 }
 
 class WorkProvider implements IWorkProvider{
@@ -107,19 +104,10 @@ class WorkProvider implements IWorkProvider{
   }
 
   @override
-  Future<IWorkDefine?> findFlowDefine(String defineId) async{
+  Future<IWork?> findFlowDefine(String defineId) async{
     for (final target in user.targets) {
-      for (final species in target.species) {
-        final defines = <IWorkDefine>[];
-        switch (SpeciesType.getType(species.metadata.typeName)) {
-          case SpeciesType.market:
-            defines.addAll(await (species as IMarket).loadWorkDefines());
-            break;
-          case SpeciesType.application:
-            defines.addAll(await (species as IApplication).loadWorkDefines());
-            break;
-        }
-        for (final define in defines) {
+      for (final application in target.directory.applications) {
+        for (final define in application.works) {
           if (define.metadata.id == defineId) {
             return define;
           }
@@ -261,7 +249,7 @@ class WorkProvider implements IWorkProvider{
                 define: define,
                 name: define.metadata.name,
                 id: define.metadata.id,
-                avatar: define.share.avatar?.thumbnailUint8List));
+                avatar: define.metadata.avatarThumbnail()));
           }
         }
       }
@@ -269,7 +257,7 @@ class WorkProvider implements IWorkProvider{
   }
 
   @override
-  Future<void> removeMostUsed(IWorkDefine define) async {
+  Future<void> removeMostUsed(IWork define) async {
     var res = await kernel.anystore.set(
       "${StoreCollName.mostUsed}.works.T${define.metadata.code}",
       {},
@@ -282,7 +270,7 @@ class WorkProvider implements IWorkProvider{
   }
 
   @override
-  Future<void> setMostUsed(IWorkDefine define) async {
+  Future<void> setMostUsed(IWork define) async {
     var res = await kernel.anystore.set(
       "${StoreCollName.mostUsed}.works.T${define.metadata.id}",
       {},
@@ -293,13 +281,13 @@ class WorkProvider implements IWorkProvider{
           define: define,
           name: define.metadata.name,
           id: define.metadata.id,
-          avatar: define.share.avatar?.thumbnailUint8List);
+          avatar: define.metadata.avatarThumbnail());
       workFrequentlyUsed.add(used);
     }
   }
 
   @override
-  bool isMostUsed(IWorkDefine define) {
+  bool isMostUsed(IWork define) {
     return workFrequentlyUsed.where((p0) => p0.id == define.metadata.id).isNotEmpty;
   }
 }

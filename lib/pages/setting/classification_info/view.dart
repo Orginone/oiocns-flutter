@@ -11,7 +11,9 @@ import 'attrs.dart';
 import 'basic_info.dart';
 import 'form.dart';
 import 'logic.dart';
+import 'person_info.dart';
 import 'property.dart';
+import 'species.dart';
 import 'state.dart';
 import 'work.dart';
 
@@ -21,7 +23,7 @@ class ClassificationInfoPage
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: state.species?.metadata?.name??"",
+      titleName: state.data.name??"",
       body: Column(
         children: [
           tabBar(),
@@ -35,6 +37,10 @@ class ClassificationInfoPage
                     return BasicInfo(
                       data: state.species?.metadata,
                     );
+                  case ClassificationEnum.personInfo:
+                    return PersonInfo(
+                      data: state.species,
+                    );
                   case ClassificationEnum.property:
                     return KeepAliveWidget(child: PropertyPage());
                   case ClassificationEnum.attrs:
@@ -43,6 +49,8 @@ class ClassificationInfoPage
                     return KeepAliveWidget(child: FormPage());
                   case ClassificationEnum.work:
                     return KeepAliveWidget(child: WorkPage());
+                  case ClassificationEnum.species:
+                    return KeepAliveWidget(child: SpeciesPage());
                 }
               }).toList(),
             ),
@@ -80,7 +88,8 @@ class ClassificationInfoPage
             ),
           ),
           Obx(() {
-            if (state.currentIndex.value == 0 || state.tabTitle[state.currentIndex.value] == ClassificationEnum.form) {
+            var classif = state.tabTitle[state.currentIndex.value];
+            if (state.currentIndex.value == 0 ||  classif == ClassificationEnum.form || classif == ClassificationEnum.attrs) {
               return Container();
             }
 

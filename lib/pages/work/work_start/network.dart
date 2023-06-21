@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/thing/base/flow.dart';
+import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/event_bus_helper.dart';
@@ -21,11 +21,11 @@ class WorkStartNetWork {
     return node;
   }
 
-  static Future<void> createInstance(IWorkDefine define,
+  static Future<void> createInstance(IWork define,
       Map<String, dynamic> headerData, List<WorkSubmitModel> formData) async {
     Map<String, dynamic> formDataMap = {};
     for (var element in formData) {
-      formDataMap[element.resourceData.id] = element.toJson();
+      formDataMap[element.resourceData.id!] = element.toJson();
     }
     Map<String, dynamic> data = {
       "headerData": headerData,

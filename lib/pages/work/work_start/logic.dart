@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/thing/base/flow.dart';
+import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -19,7 +18,7 @@ class WorkStartController extends BaseController<WorkStartState>
     super.onReady();
   }
 
-  void createWork(IWorkDefine define) async {
+  void createWork(IWork define) async {
     WorkNodeModel? node = await define.loadWorkNode();
     if (node != null && node.forms != null && node.forms!.isNotEmpty) {
       Get.toNamed(Routers.createWork,
@@ -29,7 +28,7 @@ class WorkStartController extends BaseController<WorkStartState>
     }
   }
 
-  void operation(String key, IWorkDefine define) {
+  void operation(String key, IWork define) {
     if(key == 'set'){
       settingCtrl.work.setMostUsed(define);
     }else if(key == 'remove'){

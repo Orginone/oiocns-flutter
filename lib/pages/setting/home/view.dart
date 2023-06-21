@@ -65,17 +65,7 @@ class SettingCenterPage
               controller.jumpDetails(e);
             },
             onSelected: (value) {
-              switch(e.standardEnum){
-                case StandardEnum.permission:
-                  controller.operationPermission(e,value);
-                  break;
-                case StandardEnum.classCriteria:
-                  controller.operationClassCriteria(e,value);
-                  break;
-                default:
-                  controller.operationGroup(e,value);
-                  break;
-              }
+
             },
             item: e,
           );

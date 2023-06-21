@@ -347,7 +347,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
     var res = await kernel.createImMsg(MsgSendModel(
       msgType: type.label,
       toId: chatId,
-      belongId: belong.id,
+      belongId: belong.id!,
       msgBody: EncryptionUtil.deflate("[obj]${jsonEncode(data)}"),
     ));
     return res.success;

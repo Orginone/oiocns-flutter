@@ -28,7 +28,7 @@ class AttributeInfoPage
                     element.name ?? "",
                     element.valueType ?? "",
                     element.unit ?? "",
-                    element.dict?.name ?? "",
+                    element.directory?.name ?? "",
                     element.createUser??"",
                     element.belong?.name??"",
                     element.remark ?? ""

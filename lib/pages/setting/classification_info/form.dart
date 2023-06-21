@@ -5,7 +5,6 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/thing/store/propclass.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
@@ -13,7 +12,6 @@ import 'logic.dart';
 
 
 class FormPage extends BaseGetPageView<FormController, FormState> {
-  FormPage();
 
   @override
   Widget buildView() {
