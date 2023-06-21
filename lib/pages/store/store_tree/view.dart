@@ -18,9 +18,7 @@ class StoreTreePage
     return SingleChildScrollView(
       child: Obx(() {
         return Column(
-          children: state.model.value?.name == HomeEnum.store.label
-              ? home()
-              : details(),
+          children: details()
         );
       }),
     );

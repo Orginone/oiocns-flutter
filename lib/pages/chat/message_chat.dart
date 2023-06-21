@@ -85,7 +85,9 @@ class MessageChatController extends BaseController<MessageChatState> {
   void onReady() {
     // TODO: implement onReady
     super.onReady();
-    markVisibleMessagesAsRead();
+    Future.delayed(const Duration(milliseconds: 100),(){
+      markVisibleMessagesAsRead();
+    });
   }
 
   void forward(String msgType, MsgBodyModel msgBody) {

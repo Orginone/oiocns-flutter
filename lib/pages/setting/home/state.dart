@@ -1,9 +1,8 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/setting/config.dart';
 
 class SettingCenterState extends BaseBreadcrumbNavState<SettingNavModel> {
 
@@ -34,7 +33,6 @@ class SettingCenterState extends BaseBreadcrumbNavState<SettingNavModel> {
           id: settingCtrl.provider.user?.metadata.id ?? "",
           image: settingCtrl.provider.user?.metadata.avatarThumbnail(),
           children: [],
-          settingType: SettingType.personal,
           space: settingCtrl.provider.user,
         ),
         ...joinedCompanies
@@ -43,7 +41,6 @@ class SettingCenterState extends BaseBreadcrumbNavState<SettingNavModel> {
                     id: element.metadata.id!,
                     image: element.metadata.avatarThumbnail(),
                     space: element,
-                    settingType: SettingType.organization,
                     children: []))
                 .toList() ??
             [],
@@ -59,7 +56,6 @@ class SettingCenterState extends BaseBreadcrumbNavState<SettingNavModel> {
 class SettingNavModel extends BaseBreadcrumbNavModel<SettingNavModel> {
   SpaceEnum? spaceEnum;
   IBelong? space;
-  SettingType? settingType;
   SettingNavModel(
       {super.id = '',
         super.name = '',
@@ -68,6 +64,5 @@ class SettingNavModel extends BaseBreadcrumbNavModel<SettingNavModel> {
         super.image,
         this.spaceEnum,
         this.space,
-        this.settingType,
       });
 }

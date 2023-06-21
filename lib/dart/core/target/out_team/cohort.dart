@@ -21,9 +21,9 @@ class Cohort extends Target implements ICohort {
   List<IMsgChat> get chats => [this];
 
   @override
-  Future<void> deepLoad({bool reload = false}) async {
+  Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async {
     await loadMembers(reload: reload);
-    await directory.loadContent(reload: reload);
+    await directory.loadContent(reload: reloadContent);
   }
 
   @override

@@ -174,14 +174,14 @@ class Company extends Belong implements ICompany {
   }
 
   @override
-  Future<void> deepLoad({bool reload = false}) async {
+  Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async {
     await loadGroups(reload: reload);
     await loadDepartments(reload: reload);
     await loadStations(reload: reload);
     await loadCohorts(reload: reload);
     await loadMembers(reload: reload);
     await loadSuperAuth(reload: reload);
-    await directory.loadContent(reload: reload);
+    await directory.loadContent(reload: reloadContent);
     for (var group in groups) {
       await group.deepLoad(reload: reload);
     }

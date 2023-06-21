@@ -1,5 +1,6 @@
 
 
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
@@ -13,35 +14,6 @@ import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/dart/core/thing/property.dart';
 import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/pages/setting/home/state.dart';
-
-
-enum SettingType {
-  personal("个人"),
-  organization("组织");
-  final String label;
-  const SettingType(this.label);
-}
-
-enum SpaceEnum {
-  cardbag("卡包设置"),
-  security("账号与安全"),
-  gateway("门户设置"),
-  theme("主题设置"),
-  directory("文件夹"),
-  species("分类"),
-  property("属性"),
-  applications("应用"),
-  form("表单"),
-  file("文件"),
-  person("成员"),
-  departments("部门"),
-  groups("群组"),
-  cohorts("组织");
-
-  final  String label;
-
-  const SpaceEnum(this.label);
-}
 
 
 List<String> memberTitle = [

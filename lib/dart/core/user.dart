@@ -129,7 +129,7 @@ class UserProvider {
   Future<void> reload() async {
     _inited = false;
     _chat.value?.preMessage();
-    await _user.value?.deepLoad(reload: true);
+    await _user.value?.deepLoad(reload: true,reloadContent: true);
     await _work.value?.loadTodos(reload: true);
     _inited = true;
     _chat.value?.loadAllChats();
@@ -146,7 +146,6 @@ class UserProvider {
 
   Future<void> reloadChats() async{
     await _user.value?.deepLoad(reload: true);
-    await _work.value?.loadTodos(reload: true);
     _chat.value?.loadAllChats();
     await _chat.value?.loadPreMessage();
     _chat.refresh();

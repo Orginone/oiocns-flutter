@@ -229,3 +229,26 @@ const subDepartmentTypes = [
   TargetType.jobCohort,
   TargetType.research,
 ];
+
+
+
+enum SpaceEnum {
+  cardbag("卡包设置"),
+  security("账号与安全"),
+  gateway("门户设置"),
+  theme("主题设置"),
+  directory("文件夹"),
+  species("分类"),
+  property("属性"),
+  applications("应用"),
+  form("表单"),
+  file("文件"),
+  person("成员"),
+  departments("部门"),
+  groups("群组"),
+  cohorts("组织");
+
+  final  String label;
+
+  const SpaceEnum(this.label);
+}

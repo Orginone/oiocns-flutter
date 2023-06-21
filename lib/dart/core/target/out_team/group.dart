@@ -70,10 +70,10 @@ class Group extends Target implements IGroup {
   }
 
   @override
-  Future<void> deepLoad({bool reload = false}) async {
+  Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async {
     await loadChildren(reload: reload);
     await loadMembers(reload: reload);
-    await directory.loadContent(reload: reload);
+    await directory.loadContent(reload: reloadContent);
     for (var group in children) {
       await group.deepLoad(reload: reload);
     }

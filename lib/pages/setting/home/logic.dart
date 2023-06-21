@@ -1,12 +1,7 @@
 import 'package:get/get.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
-import 'package:orginone/dart/core/target/base/belong.dart';
-import 'package:orginone/dart/core/target/innerTeam/department.dart';
-import 'package:orginone/dart/core/target/out_team/cohort.dart';
-import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/directory.dart';
-import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/routers.dart';

@@ -1,12 +1,11 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
-import 'package:orginone/dart/core/thing/file_info.dart';
+import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/dart/core/thing/species.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/pages/store/config.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
@@ -20,24 +19,67 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
     // TODO: implement onReady
     super.onReady();
 
-    LoadingDialog.showLoading(context);
-    if(state.title == HomeEnum.store.label){
-      List<ISpecies> species = settingCtrl.store.findThingSpecies(state.model.value!.children[0].space!);
-      state.model.value!.children[0].children.addAll(await buildSpeciesTree(species, state.model.value!.children[0].space!));
-      state.model.refresh();
-    } else if (state.model.value?.wareHouseType == WareHouseType.organization) {
-      List<ISpecies> species = settingCtrl.store.findThingSpecies(state.model.value!.space!);
-      state.model.value?.children = [
-        StoreTreeNav(
-            name: PersonalEnum.file.label,
-            personalEnum: PersonalEnum.file,
-            children: [],
-            space: state.model.value!.space!),
-        ...await buildSpeciesTree(species, state.model.value!.space!),
-      ];
+    if (state.isRootDir) {
+      LoadingDialog.showLoading(context);
+      await loadUserSetting();
+      await loadCompanySetting();
+      LoadingDialog.dismiss(context);
       state.model.refresh();
     }
-    LoadingDialog.dismiss(context);
+  }
+
+  Future<void> loadUserSetting() async {
+    var user = state.model.value!.children[0];
+    List<StoreTreeNav> function = [
+      StoreTreeNav(
+        name: "个人文件",
+        space: user.space,
+        children: user.space!.directory.files.map((e) {
+          return StoreTreeNav(
+            name: e.filedata.name!,
+            space: user.space,
+            source: e,
+            image: e.shareInfo().thumbnail,
+            children: [],
+          );
+        }).toList(),
+      ),
+    ];
+
+    function.addAll(await loadDir(user.space!.directory.children, user.space!));
+    function.addAll(await loadCohorts(user.space!.cohorts, user.space!));
+    user.children = function;
+  }
+
+  Future<void> loadCompanySetting() async {
+    for (int i = 1; i < state.model.value!.children.length; i++) {
+      var company = state.model.value!.children[i];
+      List<StoreTreeNav> function = [
+        StoreTreeNav(
+          name: "单位文件",
+          space: company.space,
+          children: company.space!.directory.files.map((e) {
+            return StoreTreeNav(
+              name: e.filedata.name!,
+              space: company.space,
+              source: e,
+              image: e.shareInfo().thumbnail,
+              children: [],
+            );
+          }).toList(),
+        ),
+      ];
+      function.addAll(
+          await loadDir(company.space!.directory.children, company.space!));
+      function.addAll(await loadTargets(
+          (company.space!.targets.where(
+                  (element) => element.isMyChat && element.id != company.id))
+              .toList(),
+          company.space!));
+      function.addAll(
+          await loadGroup((company.space! as Company).groups, company.space!));
+      company.children.addAll(function);
+    }
   }
 
   Future<List<StoreTreeNav>> buildSpeciesTree(
@@ -52,13 +94,11 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
               children: [],
               source: e,
               name: e.metadata.name!,
-              speciesType: SpeciesType.thing,
               space: space))
           .toList());
       var nav = StoreTreeNav(
           children: [...thing],
           source: specie,
-          speciesType: SpeciesType.getType(specie.metadata.typeName!),
           name: specie.metadata.name!,
           space: space);
       navs.add(nav);
@@ -73,15 +113,8 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
     });
   }
 
-  void jumpFile(StoreTreeNav nav) {
-    // ISysFileInfo file = nav.space!.fileSystem.home!;
-    // Get.toNamed(Routers.file, arguments: {"file": file});
-  }
-
   void onNext(StoreTreeNav nav) {
-    if (nav.personalEnum == PersonalEnum.file) {
-      jumpFile(nav);
-    } else if (nav.source != null &&
+    if (nav.source != null &&
         nav.source.metadata.typeName == SpeciesType.thing.label &&
         nav.children.isEmpty) {
       jumpDetails(nav);

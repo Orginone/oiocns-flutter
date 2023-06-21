@@ -18,7 +18,7 @@ abstract class ITeam implements IMsgChat, IFileInfo<XTarget>{
   List<IMsgChat> get chats;
 
   //深加载
-  Future<void> deepLoad({bool reload = false});
+  Future<void> deepLoad({bool reload = false,bool reloadContent = false});
 
   //创建用户
   Future<ITeam?> createTarget(TargetModel data);

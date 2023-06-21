@@ -296,13 +296,13 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  Future<void> deepLoad({bool reload = false}) async {
+  Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async {
     await loadGivedIdentitys(reload: reload);
     await loadCompanys(reload: reload);
     await loadCohorts(reload: reload);
     await loadMembers(reload: reload);
     await loadSuperAuth(reload: reload);
-    await directory.loadContent(reload: reload);
+    await directory.loadContent(reload: reloadContent);
     for (var company in companys) {
       await company.deepLoad(reload: reload);
     }

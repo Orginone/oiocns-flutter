@@ -44,7 +44,7 @@ class InitiateWorkController
   }
 
   Future<void> init() async {
-    if (state.model.value!.name == "发起办事") {
+    if (state.isRootDir) {
       LoadingDialog.showLoading(context);
       List<WorkBreadcrumbNav> initiationWork =
           getInitiationWorkModel([state.model.value!]);
