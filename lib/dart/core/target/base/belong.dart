@@ -29,6 +29,9 @@ abstract class IBelong extends ITarget {
   //群会话
   List<IMsgChat> get cohortChats;
 
+
+  List<ITarget> get shareTarget;
+
   //加载群
   Future<List<ICohort>> loadCohorts({bool reload = false});
 

@@ -302,6 +302,7 @@ class Person extends Belong implements IPerson {
     await loadCohorts(reload: reload);
     await loadMembers(reload: reload);
     await loadSuperAuth(reload: reload);
+    await directory.loadContent(reload: reload);
     for (var company in companys) {
       await company.deepLoad(reload: reload);
     }
@@ -369,4 +370,8 @@ class Person extends Belong implements IPerson {
     givedIdentitys
         .removeWhere((a) => idProofs.every((i) => i.id != a.identity?.id));
   }
+
+  @override
+  // TODO: implement shareTarget
+  List<ITarget> get shareTarget =>  [this, ...cohorts];
 }

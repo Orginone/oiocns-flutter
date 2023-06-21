@@ -38,12 +38,14 @@ typedef CreateAttributeCallBack = Function(
 typedef CreateAttrCallBack = Function(String name, String code, String remark,
     XProperty property, IAuthority authority, bool public);
 
-typedef CreateWorkCallBack = Function(
-    String name, String code,String remark, bool isCreate);
+typedef CreateWorkCallBack = Function(String name, String code, String remark,
+    bool allowAdd, bool allowEdit, bool allowSelect, ITarget share);
 
 typedef CreateAuthCallBack = Function(String name,String code,ITarget target,bool isPublic,String remark);
 
 typedef CreateClassCriteriaCallBack = Function(String name,String code,ITarget target,String specie,IAuthority auth,bool isPublic,String remark);
+
+typedef CreateSpeciesCallBack = Function(String name,String info,String remark);
 
 
 Future<void> showCreateIdentityDialog(
@@ -756,16 +758,23 @@ Future<void> showCreateAttrDialog(BuildContext context,
 
 Future<void> showCreateWorkDialog(BuildContext context, List<ISpecies> thing,
     {CreateWorkCallBack? onCreate,
+    required List<ITarget> share,
     String name = '',
     String remark = '',
-      String code = '',
-    bool create = false,
+    String code = '',
+    bool allowAdd = true,
+    bool allowEdit = true,
+    bool allowSelect = true,
     bool isEdit = false}) async {
   TextEditingController nameCtr = TextEditingController(text: name);
   TextEditingController codeCtr = TextEditingController(text: code);
   TextEditingController remarkCtr = TextEditingController(text: remark);
 
-  bool isCreate = false;
+  bool add = allowAdd;
+  bool edit = allowEdit;
+  bool select = allowSelect;
+
+  ITarget? selectTarget;
   return showDialog(
     context: context,
     builder: (context) {
@@ -789,12 +798,41 @@ Future<void> showCreateWorkDialog(BuildContext context, List<ISpecies> thing,
                         required: true,
                         hint: "请输入"),
                     CommonWidget.commonChoiceTile(
-                        "是否创建实体", isCreate ? "是" : '否',
+                        "选择共享组织", selectTarget?.metadata.name ?? "",
+                        showLine: true, required: true, onTap: () {
+                      PickerUtils.showListStringPicker(Get.context!,
+                          titles: share.map((e) => e.metadata.name!).toList(),
+                          callback: (str) {
+                            state(() {
+                              selectTarget = share.firstWhere(
+                                      (element) => element.metadata.name == str);
+                            });
+                          });
+                    }, hint: "请选择"),
+                    CommonWidget.commonChoiceTile("允许新增实体", add ? "是" : '否',
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
                           titles: ['是', "否"], callback: (str) {
                         state(() {
-                          isCreate = str == "是";
+                          add = str == "是";
+                        });
+                      });
+                    }, hint: "请选择"),
+                    CommonWidget.commonChoiceTile("允许变更实体", edit ? "是" : '否',
+                        showLine: true, required: true, onTap: () {
+                      PickerUtils.showListStringPicker(Get.context!,
+                          titles: ['是', "否"], callback: (str) {
+                        state(() {
+                          edit = str == "是";
+                        });
+                      });
+                    }, hint: "请选择"),
+                    CommonWidget.commonChoiceTile("允许选择实体", select ? "是" : '否',
+                        showLine: true, required: true, onTap: () {
+                      PickerUtils.showListStringPicker(Get.context!,
+                          titles: ['是', "否"], callback: (str) {
+                        state(() {
+                          select = str == "是";
                         });
                       });
                     }, hint: "请选择"),
@@ -808,11 +846,14 @@ Future<void> showCreateWorkDialog(BuildContext context, List<ISpecies> thing,
                     }, onTap2: () {
                       if (nameCtr.text.isEmpty) {
                         ToastUtils.showMsg(msg: "请输入事项名称");
+                      } else if (selectTarget == null) {
+                        ToastUtils.showMsg(msg: "请选择共享组织");
                       } else if (codeCtr.text.isEmpty) {
                         ToastUtils.showMsg(msg: "请输入事项编号");
-                      }  else {
+                      } else {
                         if (onCreate != null) {
-                          onCreate(nameCtr.text,codeCtr.text ,remarkCtr.text, isCreate);
+                          onCreate(nameCtr.text, codeCtr.text, remarkCtr.text,
+                              add, edit, select, selectTarget!);
                         }
                         Navigator.pop(context);
                       }
@@ -1047,3 +1088,67 @@ Future<void> showClassCriteriaDialog(
     },
   );
 }
+
+Future<void> showCreateSpeciesDialog(
+    BuildContext context,
+    {String name = '',
+      String info = '',
+      String remark = '',
+      bool isEdit = false,CreateSpeciesCallBack? callBack}) async {
+  TextEditingController nameController = TextEditingController(text: name);
+  TextEditingController infoController = TextEditingController(text: info);
+  TextEditingController remarkController = TextEditingController(text: remark);
+
+
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+          alignment: Alignment.center,
+          child: SingleChildScrollView(
+            child: StatefulBuilder(builder: (context, state) {
+              return SizedBox(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CommonWidget.commonHeadInfoWidget("${isEdit?"编辑":"新增"}分类项"),
+                    CommonWidget.commonTextTile("名称", '',
+                        controller: nameController,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
+                    CommonWidget.commonTextTile("附加信息", '',
+                        controller: infoController,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
+                    CommonWidget.commonTextTile("备注", '',
+                        controller: remarkController,
+                        showLine: true,
+                        maxLine: 4,
+                        hint: "请输入"),
+                    CommonWidget.commonMultipleSubmitWidget(onTap1: () {
+                      Navigator.pop(context);
+                    }, onTap2: () {
+                      if (nameController.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入名称");
+                      } else if (infoController.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入代码");
+                      } else {
+                        if(callBack!=null){
+                          callBack(nameController.text,infoController.text,remarkController.text);
+                        }
+                        Navigator.pop(context);
+                      }
+                    }),
+                  ],
+                ),
+              );
+            }),
+          ));
+    },
+  );
+}
+
+
+

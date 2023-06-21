@@ -12,6 +12,8 @@ abstract class BaseBreadcrumbNavState<T extends BaseBreadcrumbNavModel> extends 
   Rxn<T> model = Rxn();
 
   final ScrollController navBarController = ScrollController();
+
+  bool get isRootDir => (bcNav.length - 1) == 0;
 }
 
  class BaseBreadcrumbNavModel<T> {

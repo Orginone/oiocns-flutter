@@ -14,6 +14,22 @@ class SettingCenterState extends BaseBreadcrumbNavState<SettingNavModel> {
       var joinedCompanies = settingCtrl.provider.user?.companys;
       model.value = SettingNavModel(name: "设置", children: [
         SettingNavModel(
+            name: SpaceEnum.security.label,
+            spaceEnum: SpaceEnum.security,
+            space: settingCtrl.provider.user),
+        SettingNavModel(
+            name: SpaceEnum.cardbag.label,
+            spaceEnum: SpaceEnum.cardbag,
+            space: settingCtrl.provider.user),
+        SettingNavModel(
+            name: SpaceEnum.gateway.label,
+            spaceEnum: SpaceEnum.gateway,
+            space: settingCtrl.provider.user),
+        SettingNavModel(
+            name: SpaceEnum.theme.label,
+            spaceEnum: SpaceEnum.theme,
+            space: settingCtrl.provider.user),
+        SettingNavModel(
           name: settingCtrl.provider.user?.metadata.name ?? "",
           id: settingCtrl.provider.user?.metadata.id ?? "",
           image: settingCtrl.provider.user?.metadata.avatarThumbnail(),
@@ -42,7 +58,6 @@ class SettingCenterState extends BaseBreadcrumbNavState<SettingNavModel> {
 
 class SettingNavModel extends BaseBreadcrumbNavModel<SettingNavModel> {
   SpaceEnum? spaceEnum;
-  StandardEnum? standardEnum;
   IBelong? space;
   SettingType? settingType;
   SettingNavModel(
@@ -52,7 +67,6 @@ class SettingNavModel extends BaseBreadcrumbNavModel<SettingNavModel> {
         super.source,
         super.image,
         this.spaceEnum,
-        this.standardEnum,
         this.space,
         this.settingType,
       });

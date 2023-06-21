@@ -41,16 +41,16 @@ enum TargetType {
 
 enum SpeciesType {
   /** 类别目录 */
-  market('流通类'),
-  resource('资源类'),
-  store('属性类'),
-  application('应用类'),
-  dict('字典类'),
+  market('流通'),
+  resource('资源'),
+  store('属性'),
+  application('应用'),
+  dict('字典'),
   /** 类别类目 */
-  flow('流程类'),
-  work('事项类'),
-  thing('实体类'),
-  data('数据类');
+  flow('流程'),
+  work('事项'),
+  thing('实体'),
+  data('数据');
 
   final String label;
 

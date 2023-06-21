@@ -27,8 +27,10 @@ XWorkDefine fullDefineRule(XWorkDefine data) {
   data.allowAdd = true;
   data.allowEdit = true;
   data.allowSelect = true;
-  if (data.rule.contains('{') && data.rule.contains('}')) {
-    Map<String, dynamic> rule = json.decode(data.rule);
+  if (data.rule != null &&
+      data.rule!.contains('{') &&
+      data.rule!.contains('}')) {
+    Map<String, dynamic> rule = json.decode(data.rule!);
     data.allowAdd = rule['allowAdd'];
     data.allowEdit = rule['allowEdit'];
     data.allowSelect = rule['allowSelect'];

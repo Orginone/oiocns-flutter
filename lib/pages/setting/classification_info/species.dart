@@ -1,14 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/thing/application.dart';
-import 'package:orginone/dart/core/work/index.dart';
+import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -17,8 +15,7 @@ import 'package:orginone/widget/loading_dialog.dart';
 
 import 'logic.dart';
 
-class WorkPage extends BaseGetPageView<
-    WorkController, WorkState> {
+class SpeciesPage extends BaseGetPageView<SpeciesController, SpeciesState> {
   @override
   Widget buildView() {
     return Container(
@@ -28,15 +25,16 @@ class WorkPage extends BaseGetPageView<
           return Column(
             children: [
               CommonWidget.commonDocumentWidget(
-                  title: ["办事名称", "办事标识", "创建时间", "备注"],
-                  content: state.work.map((e) {
+                  title: ["名称", "编号", "信息", "备注", "创建时间"],
+                  content: state.species.map((e) {
                     return [
-                      e.metadata.name ?? "",
-                      e.metadata.code ?? "",
-                      DateTime.tryParse(e.metadata.createTime ?? "")
-                          ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
+                      e.name ?? "",
+                      e.code ?? "",
+                      e.info ?? "",
+                      e.remark ?? "",
+                      DateTime.tryParse(e.createTime ?? "")
+                              ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
                           "",
-                      e.metadata.remark ?? ""
                     ];
                   }).toList(),
                   showOperation: true,
@@ -62,84 +60,75 @@ class WorkPage extends BaseGetPageView<
   }
 
   @override
-  WorkController getController() {
-    return WorkController();
+  SpeciesController getController() {
+    return SpeciesController();
   }
 
   @override
   String tag() {
     // TODO: implement tag
-    return "work";
+    return "species";
   }
 }
 
-class WorkController extends BaseController<WorkState> {
-  final WorkState state = WorkState();
+class SpeciesController extends BaseController<SpeciesState> {
+  final SpeciesState state = SpeciesState();
 
   ClassificationInfoController get info => Get.find();
 
-  IApplication get species => info.state.species;
+  ISpecies get species => info.state.species;
 
   @override
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
-    await loadWork();
+    await loadSpecies();
     LoadingDialog.dismiss(context);
   }
 
-  Future<void> loadWork({bool reload = false}) async {
-    state.work.value = await species.loadWorks(reload: reload);
+  Future<void> loadSpecies({bool reload = false}) async {
+    state.species.value = await species.loadItems(reload: reload);
   }
 
   void onWorkOperation(operation, String name) async {
     try {
-      var work = state.work.firstWhere((element) => element.metadata.name == name);
+      var xspecies =
+          state.species.firstWhere((element) => element.name == name);
       if (operation == "delete") {
-        var success = await species.delete();
+        var success = await species.deleteItem(xspecies);
         if (success) {
-          state.work.remove(work);
-          state.work.refresh();
+          state.species.remove(xspecies);
+          state.species.refresh();
           ToastUtils.showMsg(msg: "删除成功");
         }
       } else if (operation == 'edit') {
-        createWork(work: work);
+        createSpecies(xspecies: xspecies);
       }
     } catch (e) {}
   }
 
-  Future<void> createWork({IWork? work}) async {
-    showCreateWorkDialog(context, info.state.data.space!.directory.specieses,
-        isEdit: work != null,
-        share: species.directory.target.space.shareTarget,
-        name: work?.metadata.name ?? "",
-        remark: work?.metadata.remark ?? "",
-        allowAdd: work?.metadata.allowAdd ?? true,
-        allowEdit: work?.metadata.allowEdit ?? true,
-        allowSelect: work?.metadata.allowSelect ?? true,
-        code: work?.metadata.code ?? '',
-        onCreate: (name, code, remark, allowAdd, allowEdit, allowSelect,share) async {
-      var model = WorkDefineModel();
+  Future<void> createSpecies({XSpeciesItem? xspecies}) async {
+    showCreateSpeciesDialog(context,
+        isEdit: xspecies != null,
+        name: xspecies?.name ?? "",
+        info: xspecies?.info ?? "",
+        remark: xspecies?.remark ?? "", callBack: (name, info, remark) async {
+      SpeciesItemModel model = SpeciesItemModel();
       model.remark = remark;
+      model.info = info;
       model.name = name;
-      model.code = code;
-      model.shareId = share.id;
-      model.rule = jsonEncode({
-        "allowAdd": allowAdd,
-        "allowEdit": allowEdit,
-        "allowSelect": allowSelect
-      });
-      if (work != null) {
-        await work.updateDefine(model);
+      if (xspecies != null) {
+        model.id = xspecies.id;
+        await species.updateItem(model);
       } else {
-        await species.createWork(model);
+        await species.createItem(model);
       }
-      await loadWork(reload: true);
+      await loadSpecies(reload: true);
     });
   }
 }
 
-class WorkState extends BaseGetState {
-  var work = <IWork>[].obs;
+class SpeciesState extends BaseGetState {
+  var species = <XSpeciesItem>[].obs;
 }

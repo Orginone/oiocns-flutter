@@ -23,6 +23,7 @@ class Cohort extends Target implements ICohort {
   @override
   Future<void> deepLoad({bool reload = false}) async {
     await loadMembers(reload: reload);
+    await directory.loadContent(reload: reload);
   }
 
   @override

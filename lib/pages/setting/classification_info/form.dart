@@ -12,7 +12,6 @@ import 'logic.dart';
 
 
 class FormPage extends BaseGetPageView<FormController, FormState> {
-  FormPage();
 
   @override
   Widget buildView() {

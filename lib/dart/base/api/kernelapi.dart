@@ -586,7 +586,7 @@ class KernelApi {
     return await request(
       ReqestType(
         module: 'thing',
-        action: 'updateSpeciesItem',
+        action: 'UpdateSpeciesItem',
         params: params,
       ),
       XSpeciesItem.fromJson,

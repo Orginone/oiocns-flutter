@@ -268,9 +268,9 @@ class XApplication extends XEntity {
   });
 
   XApplication.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    directoryId = json['directoryId'];
-    parentId = json['parentId'];
-    resource = json['resource'];
+    directoryId = json['directoryId'] ?? "";
+    parentId = json['parentId'] ?? "";
+    resource = json['resource'] ?? "";
     defines = json['defines'] != null
         ? List<XWorkDefine>.from(
             json['defines'].map((x) => XWorkDefine.fromJson(x)))
@@ -348,9 +348,9 @@ class XApplicationArray {
 }
 
 class XSpeciesItem extends XEntity {
-  late String info;
-  late String parentId;
-  late String speciesId;
+  String? info;
+  String? parentId;
+  String? speciesId;
   XSpecies? species;
   XSpeciesItem? parent;
   List<XSpeciesItem>? nodes;
@@ -1089,22 +1089,22 @@ class XPropertyArray {
 
 class XProperty extends XEntity {
   // 值类型
-  late String valueType;
+  String? valueType;
 
   // 附加信息
-  late String info;
+  String? info;
 
   // 计量单位
-  late String unit;
+  String? unit;
 
   // 目录ID
-  late String directoryId;
+  String? directoryId;
 
   // 标签ID
-  late String speciesId;
+  String? speciesId;
 
   // 来源用户ID
-  late String sourceId;
+  String? sourceId;
 
   // 给物的度量标准
   List<XAttribute>? linkAttributes;
@@ -2124,12 +2124,12 @@ class XExtendArray {
 }
 
 class XWorkDefine extends XEntity {
-  late String rule;
-  late String applicationId;
-  late String shareId;
-  late bool allowAdd;
-  late bool allowEdit;
-  late bool allowSelect;
+  String? rule;
+  String? applicationId;
+  String? shareId;
+  bool? allowAdd;
+  bool? allowEdit;
+  bool? allowSelect;
   List<XWorkNode>? nodes;
   List<XWorkInstance>? instances;
   XApplication? application;
@@ -5834,8 +5834,8 @@ class XForm extends XEntity {
   });
 
   XForm.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    rule = json['rule'];
-    directoryId = json['directoryId'];
+    rule = json['rule'] ?? "";
+    directoryId = json['directoryId'] ?? "";
     attributes = json['attributes'] != null
         ? List<XAttribute>.from(
             json['attributes'].map((x) => XAttribute.fromJson(x)))

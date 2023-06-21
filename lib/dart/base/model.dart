@@ -5413,24 +5413,24 @@ class DirectoryModel {
 
 
 class SpeciesItemModel {
-  String id;
-  String name;
-  String code;
-  String icon;
-  String info;
-  String speciesId;
-  String parentId;
-  String remark;
+  String? id;
+  String? name;
+  String? code;
+  String? icon;
+  String? info;
+  String? speciesId;
+  String? parentId;
+  String? remark;
 
   SpeciesItemModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.icon,
-    required this.info,
-    required this.speciesId,
-    required this.parentId,
-    required this.remark,
+    this.id,
+    this.name,
+    this.code,
+     this.icon,
+    this.info,
+    this.speciesId,
+     this.parentId,
+     this.remark,
   });
 
   factory SpeciesItemModel.fromJson(Map<String, dynamic> json) {

@@ -49,6 +49,7 @@ class Station extends Team implements IStation {
   @override
   Future<void> deepLoad({bool reload = false}) async{
     await loadMembers(reload: reload);
+    await directory.loadContent(reload: reload);
   }
 
   @override

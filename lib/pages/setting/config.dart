@@ -1,9 +1,18 @@
 
 
 import 'package:orginone/dart/core/target/authority/authority.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/target/innerTeam/department.dart';
+import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
+import 'package:orginone/dart/core/thing/application.dart';
+import 'package:orginone/dart/core/thing/directory.dart';
+import 'package:orginone/dart/core/thing/file_info.dart';
+import 'package:orginone/dart/core/thing/form.dart';
+import 'package:orginone/dart/core/thing/property.dart';
 import 'package:orginone/dart/core/thing/species.dart';
+import 'package:orginone/pages/setting/home/state.dart';
 
 
 enum SettingType {
@@ -14,56 +23,25 @@ enum SettingType {
 }
 
 enum SpaceEnum {
-  innerAgency("内部机构"),
-  outAgency("组织群组"),
-  stationSetting("单位岗位"),
-  externalCohort("外部群组"),
-
-  personGroup("个人群组"),
-  standardSettings("标准设置"),
   cardbag("卡包设置"),
   security("账号与安全"),
   gateway("门户设置"),
-  theme("主题设置");
+  theme("主题设置"),
+  directory("文件夹"),
+  species("分类"),
+  property("属性"),
+  applications("应用"),
+  form("表单"),
+  file("文件"),
+  person("成员"),
+  departments("部门"),
+  groups("群组"),
+  cohorts("组织");
 
   final  String label;
 
   const SpaceEnum(this.label);
-
-  static SpaceEnum findEnum(String label){
-    switch(label){
-      case "内部机构":
-        return SpaceEnum.innerAgency;
-      case "外部机构":
-        return SpaceEnum.outAgency;
-      case "单位岗位":
-        return SpaceEnum.stationSetting;
-      case "外部群组":
-        return SpaceEnum.externalCohort;
-      case "个人群组":
-        return SpaceEnum.personGroup;
-      case "标准设置":
-        return SpaceEnum.standardSettings;
-      default:
-        return SpaceEnum.personGroup;
-    }
-  }
 }
-
-enum StandardEnum {
-  permission("权限标准"),
-  classCriteria('数据标准');
-  final String label;
-
-  const StandardEnum(this.label);
-}
-
-const companySpace = [
-  '内部机构',
-  '外部机构',
-  '岗位设置',
-  '单位群组',
-];
 
 
 List<String> memberTitle = [
@@ -188,3 +166,280 @@ List<IGroup> getAllOutAgency(List<IGroup> outAgencyGroup) {
 }
 
 
+
+Future<List<SettingNavModel>> loadDir(
+    List<IDirectory> dirs, IBelong belong) async {
+  List<SettingNavModel> nav = [];
+  for (var dir in dirs) {
+    await dir.loadContent(reload: true);
+    SettingNavModel dirNav = SettingNavModel(
+      source: dir,
+      name: dir.metadata.name!,
+      space: belong,
+      spaceEnum: SpaceEnum.directory,
+      image: dir.metadata.avatarThumbnail(),
+    );
+
+    dirNav.children = [];
+    if (dir.children.isNotEmpty) {
+      dirNav.children.addAll(await loadDir(dir.children, belong));
+    }
+    if (dir.files.isNotEmpty) {
+      dirNav.children.addAll(await loadFile(dir.files, belong));
+    }
+    if (dir.specieses.isNotEmpty) {
+      dirNav.children.addAll(await loadSpecies(dir.specieses, belong));
+    }
+    if (dir.applications.isNotEmpty) {
+      dirNav.children.addAll(await loadApplications(dir.applications, belong));
+    }
+    if (dir.propertys.isNotEmpty) {
+      dirNav.children.addAll(await loadPropertys(dir.propertys, belong));
+    }
+    if (dir.forms.isNotEmpty) {
+      dirNav.children.addAll(await loadForm(dir.forms, belong));
+    }
+    nav.add(dirNav);
+  }
+  return nav;
+}
+
+Future<List<SettingNavModel>> loadFile(
+    List<ISysFileInfo> files, IBelong belong) async {
+  List<SettingNavModel> nav = [];
+  for (var file in files) {
+    SettingNavModel dirNav = SettingNavModel(
+      source: file,
+      name: file.metadata.name!,
+      space: belong,
+      spaceEnum: SpaceEnum.file,
+      image: file.shareInfo().thumbnail,
+    );
+    nav.add(dirNav);
+  }
+  return nav;
+}
+
+Future<List<SettingNavModel>> loadSpecies(
+    List<ISpecies> species, IBelong belong) async {
+  List<SettingNavModel> nav = [];
+  for (var specie in species) {
+    SettingNavModel dirNav = SettingNavModel(
+      source: specie,
+      name: specie.metadata.name!,
+      space: belong,
+      spaceEnum: SpaceEnum.species,
+      image: specie.metadata.avatarThumbnail(),
+    );
+    nav.add(dirNav);
+  }
+  return nav;
+}
+
+Future<List<SettingNavModel>> loadApplications(
+    List<IApplication> applications, IBelong belong) async {
+  List<SettingNavModel> nav = [];
+  for (var application in applications) {
+    SettingNavModel dirNav = SettingNavModel(
+      source: application,
+      name: application.metadata.name!,
+      space: belong,
+      spaceEnum: SpaceEnum.applications,
+      image: application.metadata.avatarThumbnail(),
+    );
+    nav.add(dirNav);
+  }
+  return nav;
+}
+
+Future<List<SettingNavModel>> loadPropertys(
+    List<IProperty> propertys, IBelong belong) async {
+  List<SettingNavModel> nav = [];
+  for (var property in propertys) {
+    SettingNavModel dirNav = SettingNavModel(
+      source: property,
+      name: property.metadata.name!,
+      space: belong,
+      spaceEnum: SpaceEnum.property,
+      image: property.metadata.avatarThumbnail(),
+    );
+    nav.add(dirNav);
+  }
+  return nav;
+}
+
+Future<List<SettingNavModel>> loadForm(
+    List<IForm> forms, IBelong belong) async {
+  List<SettingNavModel> nav = [];
+  for (var form in forms) {
+    SettingNavModel dirNav = SettingNavModel(
+      source: form,
+      name: form.metadata.name!,
+      space: belong,
+      spaceEnum: SpaceEnum.form,
+      image: form.metadata.avatarThumbnail(),
+    );
+    nav.add(dirNav);
+  }
+  return nav;
+}
+
+Future<List<SettingNavModel>> loadCohorts(
+    List<ICohort> cohorts, IBelong belong) async {
+  List<SettingNavModel> nav = [];
+  for (var cohort in cohorts) {
+    SettingNavModel cohortNav = SettingNavModel(
+      source: cohort,
+      name: cohort.metadata.name!,
+      space: belong,
+      spaceEnum: SpaceEnum.cohorts,
+      image: cohort.share.avatar?.thumbnailUint8List,
+    );
+    cohortNav.children = [
+      SettingNavModel(
+        name: "${SpaceEnum.cohorts.label}文件",
+        space: belong,
+        spaceEnum: SpaceEnum.cohorts,
+        children: cohort.directory.files.map((e){
+          return SettingNavModel(
+            name: e.filedata.name!,
+            space: belong,
+            source: e,
+            spaceEnum: SpaceEnum.file,
+            image: e.shareInfo().thumbnail,
+          );
+        }).toList(),
+      ),
+      SettingNavModel(
+        name: "${SpaceEnum.cohorts.label}成员",
+        space: belong,
+        spaceEnum: SpaceEnum.cohorts,
+        children: cohort.members.map((e){
+          return SettingNavModel(
+            name: e.name!,
+            space: belong,
+            source: e,
+            spaceEnum: SpaceEnum.person,
+            image: e.avatarThumbnail(),
+          );
+        }).toList(),
+      ),
+    ];
+    if (cohort.directory.children.isNotEmpty) {
+      cohortNav.children
+          .addAll(await loadDir(cohort.directory.children, belong));
+    }
+    nav.add(cohortNav);
+  }
+  return nav;
+}
+
+Future<List<SettingNavModel>> loadDepartment(
+    List<IDepartment> departments, IBelong belong) async {
+  List<SettingNavModel> nav = [];
+  for (var department in departments) {
+    SettingNavModel departmentNav = SettingNavModel(
+      source: department,
+      name: department.metadata.name!,
+      space: belong,
+      spaceEnum: SpaceEnum.departments,
+      image: department.share.avatar?.thumbnailUint8List,
+    );
+    departmentNav.children = [
+      SettingNavModel(
+        name: "${SpaceEnum.departments.label}文件",
+        space: belong,
+        spaceEnum: SpaceEnum.departments,
+        children: department.directory.files.map((e){
+          return SettingNavModel(
+            name: e.filedata.name!,
+            space: belong,
+            source: e,
+            spaceEnum: SpaceEnum.file,
+            image: e.shareInfo().thumbnail,
+          );
+        }).toList(),
+      ),
+      SettingNavModel(
+        name: "${SpaceEnum.departments.label}成员",
+        space: belong,
+        spaceEnum: SpaceEnum.departments,
+        children: department.members.map((e){
+          return SettingNavModel(
+            name: e.name!,
+            space: belong,
+            source: e,
+            spaceEnum: SpaceEnum.person,
+            image: e.avatarThumbnail(),
+          );
+        }).toList(),
+      ),
+    ];
+    if (department.directory.children.isNotEmpty) {
+      departmentNav.children
+          .addAll(await loadDir(department.directory.children, belong));
+    }
+    if(department.children.isNotEmpty){
+      departmentNav.children
+          .addAll(await loadDepartment(department.children, belong));
+    }
+    nav.add(departmentNav);
+  }
+  return nav;
+}
+
+
+Future<List<SettingNavModel>> loadGroup(
+    List<IGroup> groups, IBelong belong) async {
+  List<SettingNavModel> nav = [];
+  for (var group in groups) {
+    SettingNavModel groupNav = SettingNavModel(
+      source: group,
+      name: group.metadata.name!,
+      space: belong,
+      spaceEnum: SpaceEnum.groups,
+      image: group.share.avatar?.thumbnailUint8List,
+    );
+    groupNav.children = [
+      SettingNavModel(
+        name: "${SpaceEnum.groups.label}文件",
+        space: belong,
+        spaceEnum: SpaceEnum.groups,
+        children: group.directory.files.map((e){
+          return SettingNavModel(
+            name: e.filedata.name!,
+            space: belong,
+            source: e,
+            spaceEnum: SpaceEnum.file,
+            image: e.shareInfo().thumbnail,
+          );
+        }).toList(),
+      ),
+      SettingNavModel(
+        name: "${SpaceEnum.groups.label}成员",
+        space: belong,
+        spaceEnum: SpaceEnum.groups,
+        children: group.members.map((e){
+          return SettingNavModel(
+            name: e.name!,
+            space: belong,
+            source: e,
+            spaceEnum: SpaceEnum.person,
+            image: e.avatarThumbnail(),
+
+          );
+        }).toList(),
+      ),
+    ];
+    if (group.directory.children.isNotEmpty) {
+      groupNav.children
+          .addAll(await loadDir(group.directory.children, belong));
+    }
+    if(group.children.isNotEmpty){
+      groupNav.children
+          .addAll(await loadGroup(group.children, belong));
+    }
+    nav.add(groupNav);
+  }
+  return nav;
+}

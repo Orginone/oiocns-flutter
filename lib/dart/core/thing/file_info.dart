@@ -5,6 +5,7 @@ import 'package:orginone/dart/base/common/entity.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
+import 'package:orginone/images.dart';
 
 import '../market/model.dart';
 
@@ -188,8 +189,39 @@ class SysFileInfo extends FileInfo<XEntity> implements ISysFileInfo {
       extension: filedata.extension,
       shareLink:
           '${Constant.host}/orginone/anydata/bucket/load/${filedata.shareLink}',
-      thumbnail: filedata.thumbnail,
+      thumbnail: getThumbnail(),
     );
+  }
+
+
+  String getThumbnail(){
+    String img = Images.otherIcon;
+    String ext = filedata.extension?.toLowerCase()??"";
+    if (ext == '.jpg' || ext == '.jpeg' || ext == '.png' || ext == '.webp') {
+      return '${Constant.host}/orginone/anydata/bucket/load/${filedata.shareLink}';
+    } else {
+      switch (ext) {
+        case "xlsx":
+        case "xls":
+        case "excel":
+          img = Images.excelIcon;
+          break;
+        case "pdf":
+          img = Images.pdfIcon;
+          break;
+        case "ppt":
+          img = Images.pptIcon;
+          break;
+        case "docx":
+        case "doc":
+          img = Images.wordIcon;
+          break;
+        default:
+          img = Images.otherIcon;
+          break;
+      }
+    }
+    return img;
   }
 
   String formatKey(String key) {

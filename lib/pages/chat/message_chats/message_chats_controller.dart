@@ -25,7 +25,7 @@ class MessageChatsController
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
     // TODO: implement loadData
-    await settingCtrl.provider.reload();
+    await settingCtrl.provider.reloadChats();
     super.loadData(isRefresh: isRefresh, isLoad: isLoad);
   }
 

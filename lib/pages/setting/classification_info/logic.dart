@@ -6,6 +6,7 @@ import '../../../dart/core/getx/base_controller.dart';
 import 'attrs.dart';
 import 'form.dart';
 import 'property.dart';
+import 'species.dart';
 import 'state.dart';
 import 'work.dart';
 
@@ -29,10 +30,6 @@ class ClassificationInfoController
 
   void create(ClassificationEnum classificationEnum) {
     switch (classificationEnum) {
-      case ClassificationEnum.attrs:
-        var controller = Get.find<AttrsController>(tag: "attr");
-        controller.createAttr();
-        break;
       case ClassificationEnum.form:
         var controller = Get.find<FormController>(tag: "form");
         // controller.createForm();
@@ -44,6 +41,10 @@ class ClassificationInfoController
       case ClassificationEnum.property:
         var controller = Get.find<PropertyController>(tag: "property");
         controller.createProperty();
+        break;
+      case ClassificationEnum.species:
+        var controller = Get.find<SpeciesController>(tag: "species");
+        controller.createSpecies();
         break;
     }
   }

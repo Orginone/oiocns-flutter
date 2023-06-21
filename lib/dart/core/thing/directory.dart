@@ -114,6 +114,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
     forms = [];
     propertys = [];
     specieses = [];
+    children = [];
     taskList = [];
     loadChildren(directorys);
   }
@@ -296,14 +297,19 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   @override
   Future<List<ISysFileInfo>> loadFiles({bool reload = false}) async {
     if (files.isEmpty || reload) {
-      final res = await kernel.anystore.bucketOpreate<List<FileItemModel>>(
+      final res = await kernel.anystore.bucketOpreate(
           metadata.belongId!,
           BucketOpreateModel(
             key: formatKey(id!),
             operate: BucketOpreates.list,
           ));
       if (res.success && res.data!=null) {
-        files = res.data!
+        List<FileItemModel> data = [];
+
+        res.data.forEach((json){
+          data.add(FileItemModel.fromJson(json));
+        });
+        files = data
             .where((i) => !i.isDirectory)
             .map((item) => SysFileInfo(item, this))
             .toList();

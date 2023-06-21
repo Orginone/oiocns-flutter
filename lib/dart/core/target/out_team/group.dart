@@ -73,6 +73,7 @@ class Group extends Target implements IGroup {
   Future<void> deepLoad({bool reload = false}) async {
     await loadChildren(reload: reload);
     await loadMembers(reload: reload);
+    await directory.loadContent(reload: reload);
     for (var group in children) {
       await group.deepLoad(reload: reload);
     }
@@ -139,9 +140,9 @@ class Group extends Target implements IGroup {
 
   @override
   // TODO: implement belongId
-  String get belongId => throw UnimplementedError();
+  String get belongId => metadata.belongId!;
 
   @override
   // TODO: implement id
-  String get id => throw UnimplementedError();
+  String get id => metadata.id!;
 }

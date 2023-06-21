@@ -35,79 +35,79 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    init();
+    // init();
   }
 
-  void init() {
-    popupMenuItem.clear();
-    target = (widget.model.source is ITarget)?widget.model.source:null;
-    if(widget.model.spaceEnum!=null){
-      if(widget.model.source==null){
-        switch (widget.model.spaceEnum) {
-          case SpaceEnum.innerAgency:
-            popupMenuItem.add(newPopupMenuItem("新建部门", "create"));
-            break;
-          case SpaceEnum.outAgency:
-            popupMenuItem.add(newPopupMenuItem("新建集团", "create"));
-            break;
-          case SpaceEnum.stationSetting:
-            popupMenuItem.add(newPopupMenuItem("新建岗位", "create"));
-            break;
-          case SpaceEnum.personGroup:
-          case SpaceEnum.externalCohort:
-            popupMenuItem.add(newPopupMenuItem("新建群组", "create"));
-            break;
-        }
-      }
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-        await initPopupMenuItem();
-      });
-    }
-    if(widget.model.standardEnum!=null){
-      switch (widget.model.standardEnum) {
-        case StandardEnum.permission:
-          popupMenuItem.add(newPopupMenuItem("新增权限", "create"));
-          if(widget.model.source != null){
-            if ((widget.model.source as IAuthority)
-                .hasAuthoritys([OrgAuth.relationAuthId.label])) {
-              popupMenuItem.add(newPopupMenuItem("编辑权限", "edit"));
-              popupMenuItem.add(newPopupMenuItem("删除权限", "delete"));
-            }
-          }
-          break;
-        case StandardEnum.classCriteria:
-          if (widget.model.source != null) {
-            // if(widget.model.source is ISpeciesItem){
-            //   if (widget.model.source.speciesTypes.isNotEmpty) {
-            //     popupMenuItem.add(newPopupMenuItem("新增类别", "create"));
-            //   }
-            //   popupMenuItem.add(newPopupMenuItem("编辑分类", "edit"));
-            //   popupMenuItem.add(newPopupMenuItem("删除分类", "delete"));
-            // }
-            // if(widget.model.source is IForm){
-            //   popupMenuItem.add(newPopupMenuItem("编辑表单", "edit"));
-            //   popupMenuItem.add(newPopupMenuItem("删除表单", "delete"));
-            // }
-            // if(widget.model.source is IDict){
-            //   if(widget.model.source == null){
-            //     popupMenuItem.add(newPopupMenuItem("新建字典", "create"));
-            //   }else{
-            //     popupMenuItem.add(newPopupMenuItem("编辑字典", "edit"));
-            //     popupMenuItem.add(newPopupMenuItem("删除字典", "delete"));
-            //   }
-            // }
-            // if(widget.model.source is IPropClass){
-            //   popupMenuItem.add(newPopupMenuItem("新增属性", "create"));
-            //   popupMenuItem.add(newPopupMenuItem("编辑属性", "edit"));
-            //   popupMenuItem.add(newPopupMenuItem("删除属性", "delete"));
-            // }
-          } else {
-            popupMenuItem.add(newPopupMenuItem("新增类别", "create"));
-          }
-          break;
-      }
-    }
-  }
+  // void init() {
+  //   popupMenuItem.clear();
+  //   target = (widget.model.source is ITarget)?widget.model.source:null;
+  //   if(widget.model.spaceEnum!=null){
+  //     if(widget.model.source==null){
+  //       switch (widget.model.spaceEnum) {
+  //         case SpaceEnum.innerAgency:
+  //           popupMenuItem.add(newPopupMenuItem("新建部门", "create"));
+  //           break;
+  //         case SpaceEnum.outAgency:
+  //           popupMenuItem.add(newPopupMenuItem("新建集团", "create"));
+  //           break;
+  //         case SpaceEnum.stationSetting:
+  //           popupMenuItem.add(newPopupMenuItem("新建岗位", "create"));
+  //           break;
+  //         case SpaceEnum.personGroup:
+  //         case SpaceEnum.externalCohort:
+  //           popupMenuItem.add(newPopupMenuItem("新建群组", "create"));
+  //           break;
+  //       }
+  //     }
+  //     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+  //       await initPopupMenuItem();
+  //     });
+  //   }
+  //   if(widget.model.standardEnum!=null){
+  //     switch (widget.model.standardEnum) {
+  //       case StandardEnum.permission:
+  //         popupMenuItem.add(newPopupMenuItem("新增权限", "create"));
+  //         if(widget.model.source != null){
+  //           if ((widget.model.source as IAuthority)
+  //               .hasAuthoritys([OrgAuth.relationAuthId.label])) {
+  //             popupMenuItem.add(newPopupMenuItem("编辑权限", "edit"));
+  //             popupMenuItem.add(newPopupMenuItem("删除权限", "delete"));
+  //           }
+  //         }
+  //         break;
+  //       case StandardEnum.classCriteria:
+  //         if (widget.model.source != null) {
+  //           // if(widget.model.source is ISpeciesItem){
+  //           //   if (widget.model.source.speciesTypes.isNotEmpty) {
+  //           //     popupMenuItem.add(newPopupMenuItem("新增类别", "create"));
+  //           //   }
+  //           //   popupMenuItem.add(newPopupMenuItem("编辑分类", "edit"));
+  //           //   popupMenuItem.add(newPopupMenuItem("删除分类", "delete"));
+  //           // }
+  //           // if(widget.model.source is IForm){
+  //           //   popupMenuItem.add(newPopupMenuItem("编辑表单", "edit"));
+  //           //   popupMenuItem.add(newPopupMenuItem("删除表单", "delete"));
+  //           // }
+  //           // if(widget.model.source is IDict){
+  //           //   if(widget.model.source == null){
+  //           //     popupMenuItem.add(newPopupMenuItem("新建字典", "create"));
+  //           //   }else{
+  //           //     popupMenuItem.add(newPopupMenuItem("编辑字典", "edit"));
+  //           //     popupMenuItem.add(newPopupMenuItem("删除字典", "delete"));
+  //           //   }
+  //           // }
+  //           // if(widget.model.source is IPropClass){
+  //           //   popupMenuItem.add(newPopupMenuItem("新增属性", "create"));
+  //           //   popupMenuItem.add(newPopupMenuItem("编辑属性", "edit"));
+  //           //   popupMenuItem.add(newPopupMenuItem("删除属性", "delete"));
+  //           // }
+  //         } else {
+  //           popupMenuItem.add(newPopupMenuItem("新增类别", "create"));
+  //         }
+  //         break;
+  //     }
+  //   }
+  // }
 
   Future<bool> initPopupMenuItem() async {
     if (target == null) {
@@ -142,7 +142,7 @@ class _PopupMenuWidgetState extends State<PopupMenuWidget> {
     // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
     if (oldWidget.model != widget.model) {
-      init();
+      // init();
     }
   }
 

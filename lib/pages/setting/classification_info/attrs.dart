@@ -8,6 +8,7 @@ import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
+import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
@@ -42,10 +43,6 @@ class AttrsPage extends BaseGetPageView<
                   }).toList(),
                   showOperation: true,
                   popupMenus: [
-                    const PopupMenuItem(
-                      child: Text("编辑"),
-                      value: "edit",
-                    ),
                     const PopupMenuItem(
                       child: Text("删除"),
                       value: "delete",
@@ -90,57 +87,20 @@ class AttrsController
   ClassificationInfoController get info => Get.find();
 
 
-  dynamic get species => info.state.species;
-
-  Future<void> createAttr({XAttribute? attr}) async {
-    List<IAuthority> auth = [];
-    List<XProperty> propertys = await species.loadPropertys();
-    IAuthority? authority = await species.loadSuperAuth();
-    if (authority != null) {
-      auth.add(authority);
-      auth = getAllAuthority(auth);
-    }
-    await showCreateAttrDialog(context, auth, propertys,
-        onCreate: (name, code, remark, property, authority, public) async {
-          var model = AttributeModel(
-            authId: authority.metadata.id,
-            propId: property.id,
-            name: name,
-            code: code,
-            remark: remark,
-            id: authority.metadata.id,
-          );
-          if (attr != null) {
-            await species.updateAttribute(model);
-          } else {
-            await species.createAttribute(model);
-          }
-          await loadAttrs(reload: true);
-        },
-        name: attr?.name ?? "",
-        code: attr?.code ?? "",
-        remark: attr?.remark ?? "",
-        pro: attr?.property,
-        authId: attr?.authId,
-        public:  false);
-  }
+  IForm get species => info.state.species;
 
   Future<void> loadAttrs({bool reload = false}) async {
-    state.attrs.value = await settingCtrl.provider.work!.loadAttributes(species.metadata.id,species.metadata.belongId);
+    state.attrs.value = await settingCtrl.provider.work!.loadAttributes(species.metadata.id!,species.metadata.belongId!);
   }
 
   void onAttrOperation(operation, String code) async {
     try {
       var attr = state.attrs.firstWhere((element) => element.code == code);
-      if (operation == "edit") {
-        createAttr(attr: attr);
-      } else if (operation == "delete") {
-        var success = await await species.deleteAttribute(attr);
-        if (success) {
-          state.attrs.remove(attr);
-          state.attrs.refresh();
-          ToastUtils.showMsg(msg: "删除成功");
-        }
+      var success =  await species.deleteAttribute(attr);
+      if (success) {
+        state.attrs.remove(attr);
+        state.attrs.refresh();
+        ToastUtils.showMsg(msg: "删除成功");
       }
     } catch (e) {}
   }
