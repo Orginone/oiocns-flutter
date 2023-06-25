@@ -52,7 +52,7 @@ class StoreTreePage
       return BaseBreadcrumbNavItem<StoreTreeNav>(
         item: e,
         onTap: () {
-          controller.jumpDetails(e);
+          // controller.jumpDetails(e);
         },
         onNext: () {
           controller.onNext(e);

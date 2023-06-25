@@ -1,3 +1,4 @@
+import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/consts.dart';
@@ -12,6 +13,7 @@ class SpeciesItem {
 
   SpeciesItem(this.metadata) {
     typeName = '分类项';
+    metadata.typeName = '分类项';
   }
 }
 
@@ -258,4 +260,8 @@ class Form extends FileInfo<XForm> implements IForm {
     }
     return false;
   }
+
+  @override
+  // TODO: implement popupMenuItem
+  List<PopupMenuItem> get popupMenuItem => [];
 }

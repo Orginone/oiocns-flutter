@@ -11,6 +11,7 @@ class AIcons {
       "person_empty": "assets/icons/person_empty.png",
       "placeholder": "assets/icons/placeholder.png",
       "setting": "assets/icons/setting.png",
+			"unsetting": "assets/icons/unsetting.png",
       "store": "assets/icons/store.png",
       "work": "assets/icons/work.png",
       "shop": "assets/icons/shop.png",

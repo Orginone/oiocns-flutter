@@ -1152,3 +1152,62 @@ Future<void> showCreateSpeciesDialog(
 
 
 
+Future<void> showCreateGeneralDialog(BuildContext context,String title,
+    {String name = '',
+      String code= '',
+      String remark = '',
+      bool isEdit = false,CreateSpeciesCallBack? callBack}) async{
+  TextEditingController nameController = TextEditingController(text: name);
+  TextEditingController codeController = TextEditingController(text: code);
+  TextEditingController remarkController = TextEditingController(text: remark);
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+          alignment: Alignment.center,
+          child: SingleChildScrollView(
+            child: StatefulBuilder(builder: (context, state) {
+              return SizedBox(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CommonWidget.commonHeadInfoWidget("${isEdit?"编辑":"新建"}$title"),
+                    CommonWidget.commonTextTile("名称", '',
+                        controller: nameController,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
+                    CommonWidget.commonTextTile("代码", '',
+                        controller: codeController,
+                        showLine: true,
+                        required: true,
+                        hint: "请输入"),
+                    CommonWidget.commonTextTile("备注", '',
+                        controller: remarkController,
+                        showLine: true,
+                        maxLine: 4,
+                        hint: "请输入"),
+                    CommonWidget.commonMultipleSubmitWidget(onTap1: () {
+                      Navigator.pop(context);
+                    }, onTap2: () {
+                      if (nameController.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入名称");
+                      } else if (codeController.text.isEmpty) {
+                        ToastUtils.showMsg(msg: "请输入代码");
+                      } else {
+                        if(callBack!=null){
+                          callBack(nameController.text,codeController.text,remarkController.text);
+                        }
+                        Navigator.pop(context);
+                      }
+                    }),
+                  ],
+                ),
+              );
+            }),
+          ));
+    },
+  );
+}
+
+

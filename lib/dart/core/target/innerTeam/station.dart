@@ -1,5 +1,6 @@
 
 
+import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
@@ -103,5 +104,9 @@ class Station extends Team implements IStation {
 
   @override
   late IDirectory directory;
+
+  @override
+  // TODO: implement popupMenuItem
+  List<PopupMenuItem> get popupMenuItem => [];
 
 }

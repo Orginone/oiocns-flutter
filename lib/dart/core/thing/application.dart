@@ -1,3 +1,4 @@
+import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
@@ -130,4 +131,8 @@ class Application extends FileInfo<XApplication> implements IApplication {
       });
     }
   }
+
+  @override
+  // TODO: implement popupMenuItem
+  List<PopupMenuItem> get popupMenuItem => [];
 }

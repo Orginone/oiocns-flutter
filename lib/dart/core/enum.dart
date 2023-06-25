@@ -243,6 +243,8 @@ enum SpaceEnum {
   applications("应用"),
   form("表单"),
   file("文件"),
+  user('个人'),
+  company("公司"),
   person("成员"),
   departments("部门"),
   groups("群组"),
@@ -252,3 +254,46 @@ enum SpaceEnum {
 
   const SpaceEnum(this.label);
 }
+
+enum PopupMenuKey{
+  createDir("新建目录"),
+  createApplication("新建应用"),
+  createSpecies("新建分类"),
+  createDict("新建字典"),
+  createAttr("新建属性"),
+  createThing("新建实体配置"),
+  createWork("新建事项配置"),
+  createDepartment("新建部门"),
+  createCompany("新建单位"),
+  createStation("新建岗位"),
+  createGroup("新建集群"),
+  createCohort("新建群组"),
+  updateInfo('更新信息'),
+  rename("重命名"),
+  delete("删除"),
+  upload("上传文件"),
+  shareQr("分享二维码"),
+  setCommon("设置常用"),
+  removeCommon("移除常用"),
+  openChat("打开会话");
+
+  final  String label;
+
+  const PopupMenuKey(this.label);
+}
+
+List<PopupMenuKey> createPopupMenuKey = [
+  PopupMenuKey.createDir,
+  PopupMenuKey.createApplication,
+  PopupMenuKey.createSpecies,
+  PopupMenuKey.createDict,
+  PopupMenuKey.createAttr,
+  PopupMenuKey.createThing,
+  PopupMenuKey.createWork,
+];
+
+List<PopupMenuKey> defaultPopupMenuKey = [
+  PopupMenuKey.upload,
+  PopupMenuKey.openChat,
+  PopupMenuKey.shareQr,
+];

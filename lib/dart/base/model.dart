@@ -2300,24 +2300,24 @@ class SpeciesModel {
 
 
 class FormModel {
-  String id;
-  String name;
-  String code;
-  String rule;
-  String icon;
-  String typeName;
-  String remark;
-  String directoryId;
+  String? id;
+  String? name;
+  String? code;
+  String? rule;
+  String? icon;
+  String? typeName;
+  String? remark;
+  String? directoryId;
 
   FormModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.rule,
-    required this.icon,
-    required this.typeName,
-    required this.remark,
-    required this.directoryId,
+    this.id,
+    this.name,
+    this.code,
+    this.rule,
+    this.icon,
+    this.typeName,
+    this.remark,
+    this.directoryId,
   });
 
   factory FormModel.fromJson(Map<String, dynamic> json) {
@@ -5367,22 +5367,22 @@ class WorkSubmitModel {
 }
 
 class DirectoryModel {
-  String id;
-  String name;
-  String code;
-  String icon;
-  String parentId;
-  String shareId;
-  String remark;
+  String? id;
+  String? name;
+  String? code;
+  String? icon;
+  String? parentId;
+  String? shareId;
+  String? remark;
 
   DirectoryModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.icon,
-    required this.parentId,
-    required this.shareId,
-    required this.remark,
+     this.id,
+     this.name,
+     this.code,
+     this.icon,
+     this.parentId,
+     this.shareId,
+     this.remark,
   });
 
   factory DirectoryModel.fromJson(Map<String, dynamic> json) {

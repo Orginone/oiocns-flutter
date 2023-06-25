@@ -14,16 +14,14 @@ import 'state.dart';
 class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
   final StoreTreeState state = StoreTreeState();
 
-  @override
-  void onReady() async{
-    // TODO: implement onReady
-    super.onReady();
 
+  @override
+  void onInit() async{
+    // TODO: implement onInit
+    super.onInit();
     if (state.isRootDir) {
-      LoadingDialog.showLoading(context);
       await loadUserSetting();
       await loadCompanySetting();
-      LoadingDialog.dismiss(context);
       state.model.refresh();
     }
   }
@@ -34,15 +32,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
       StoreTreeNav(
         name: "个人文件",
         space: user.space,
-        children: user.space!.directory.files.map((e) {
-          return StoreTreeNav(
-            name: e.filedata.name!,
-            space: user.space,
-            source: e,
-            image: e.shareInfo().thumbnail,
-            children: [],
-          );
-        }).toList(),
+        children: await loadFile(user.space!.directory.files,user.space!),
       ),
     ];
 
@@ -58,15 +48,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
         StoreTreeNav(
           name: "单位文件",
           space: company.space,
-          children: company.space!.directory.files.map((e) {
-            return StoreTreeNav(
-              name: e.filedata.name!,
-              space: company.space,
-              source: e,
-              image: e.shareInfo().thumbnail,
-              children: [],
-            );
-          }).toList(),
+          children: await loadFile(company.space!.directory.files,company.space!),
         ),
       ];
       function.addAll(
@@ -106,18 +88,18 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
     return navs;
   }
 
-  void jumpDetails(StoreTreeNav nav) {
+  void jumpThing(StoreTreeNav nav) {
     Get.toNamed(Routers.thing, arguments: {
-      'form': nav.source,
+      'form': nav.form??nav.source,
       "belongId": nav.space!.id
     });
   }
 
   void onNext(StoreTreeNav nav) {
-    if (nav.source != null &&
-        nav.source.metadata.typeName == SpeciesType.thing.label &&
-        nav.children.isEmpty) {
-      jumpDetails(nav);
+    if (nav.source != null && nav.children.isEmpty) {
+      if(nav.source.metadata.typeName.contains("配置") || nav.source.metadata.typeName == "分类项"){
+        jumpThing(nav);
+      }
     } else {
       Get.toNamed(Routers.storeTree,
           preventDuplicates: false, arguments: {'data': nav});

@@ -1,13 +1,15 @@
 import 'dart:convert';
 
+import 'package:background_downloader/background_downloader.dart';
+import 'package:flutter/material.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/common/entity.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/images.dart';
-
-import '../market/model.dart';
+import 'package:orginone/main.dart';
 
 abstract class IFileInfo<T extends XEntity> {
   String get belongId;
@@ -20,6 +22,8 @@ abstract class IFileInfo<T extends XEntity> {
   late T metadata;
 
   String get id;
+
+  List<PopupMenuItem> get popupMenuItem;
 
   Future<bool> delete();
 
@@ -226,5 +230,18 @@ class SysFileInfo extends FileInfo<XEntity> implements ISysFileInfo {
 
   String formatKey(String key) {
     return base64.encode(utf8.encode(key));
+  }
+
+  @override
+  // TODO: implement popupMenuItem
+  List<PopupMenuItem> get popupMenuItem {
+    List<PopupMenuKey> key = [PopupMenuKey.rename, PopupMenuKey.delete];
+
+    return key
+        .map((e) => PopupMenuItem(
+              value: e,
+              child: Text(e.label),
+            ))
+        .toList();
   }
 }

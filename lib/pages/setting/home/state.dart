@@ -13,27 +13,28 @@ class SettingCenterState extends BaseBreadcrumbNavState<SettingNavModel> {
       var joinedCompanies = settingCtrl.provider.user?.companys;
       model.value = SettingNavModel(name: "设置", children: [
         SettingNavModel(
-            name: SpaceEnum.security.label,
-            spaceEnum: SpaceEnum.security,
-            space: settingCtrl.provider.user),
+          name: SpaceEnum.security.label,
+          spaceEnum: SpaceEnum.security,
+        ),
         SettingNavModel(
-            name: SpaceEnum.cardbag.label,
-            spaceEnum: SpaceEnum.cardbag,
-            space: settingCtrl.provider.user),
+          name: SpaceEnum.cardbag.label,
+          spaceEnum: SpaceEnum.cardbag,
+        ),
         SettingNavModel(
-            name: SpaceEnum.gateway.label,
-            spaceEnum: SpaceEnum.gateway,
-            space: settingCtrl.provider.user),
+          name: SpaceEnum.gateway.label,
+          spaceEnum: SpaceEnum.gateway,
+        ),
         SettingNavModel(
-            name: SpaceEnum.theme.label,
-            spaceEnum: SpaceEnum.theme,
-            space: settingCtrl.provider.user),
+          name: SpaceEnum.theme.label,
+          spaceEnum: SpaceEnum.theme,
+        ),
         SettingNavModel(
           name: settingCtrl.provider.user?.metadata.name ?? "",
           id: settingCtrl.provider.user?.metadata.id ?? "",
           image: settingCtrl.provider.user?.metadata.avatarThumbnail(),
           children: [],
           space: settingCtrl.provider.user,
+          spaceEnum: SpaceEnum.user,
         ),
         ...joinedCompanies
                 ?.map((element) => SettingNavModel(
@@ -41,6 +42,7 @@ class SettingCenterState extends BaseBreadcrumbNavState<SettingNavModel> {
                     id: element.metadata.id!,
                     image: element.metadata.avatarThumbnail(),
                     space: element,
+                    spaceEnum: SpaceEnum.company,
                     children: []))
                 .toList() ??
             [],

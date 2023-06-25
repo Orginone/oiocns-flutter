@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -35,6 +36,9 @@ abstract class ITarget extends ITeam {
 
   /** 所有相关用户 */
   List<ITarget> get targets;
+
+  //功能按钮
+  List<PopupMenuItem> get popupMenuItem;
 
   //退出用户群
   Future<bool> exit();

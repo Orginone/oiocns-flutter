@@ -145,6 +145,7 @@ Future<List<SettingNavModel>> loadDir(
   for (var dir in dirs) {
     await dir.loadContent(reload: true);
     SettingNavModel dirNav = SettingNavModel(
+      id: dir.metadata.id!,
       source: dir,
       name: dir.metadata.name!,
       space: belong,
@@ -181,6 +182,7 @@ Future<List<SettingNavModel>> loadFile(
   List<SettingNavModel> nav = [];
   for (var file in files) {
     SettingNavModel dirNav = SettingNavModel(
+      id: file.metadata.id!,
       source: file,
       name: file.metadata.name!,
       space: belong,
@@ -196,14 +198,15 @@ Future<List<SettingNavModel>> loadSpecies(
     List<ISpecies> species, IBelong belong) async {
   List<SettingNavModel> nav = [];
   for (var specie in species) {
-    SettingNavModel dirNav = SettingNavModel(
+    SettingNavModel specieNav = SettingNavModel(
+      id: specie.metadata.id!,
       source: specie,
       name: specie.metadata.name!,
       space: belong,
       spaceEnum: SpaceEnum.species,
       image: specie.metadata.avatarThumbnail(),
     );
-    nav.add(dirNav);
+    nav.add(specieNav);
   }
   return nav;
 }
@@ -212,14 +215,15 @@ Future<List<SettingNavModel>> loadApplications(
     List<IApplication> applications, IBelong belong) async {
   List<SettingNavModel> nav = [];
   for (var application in applications) {
-    SettingNavModel dirNav = SettingNavModel(
+    SettingNavModel appNav = SettingNavModel(
+      id: application.metadata.id!,
       source: application,
       name: application.metadata.name!,
       space: belong,
       spaceEnum: SpaceEnum.applications,
       image: application.metadata.avatarThumbnail(),
     );
-    nav.add(dirNav);
+    nav.add(appNav);
   }
   return nav;
 }
@@ -228,14 +232,15 @@ Future<List<SettingNavModel>> loadPropertys(
     List<IProperty> propertys, IBelong belong) async {
   List<SettingNavModel> nav = [];
   for (var property in propertys) {
-    SettingNavModel dirNav = SettingNavModel(
+    SettingNavModel propertyNav = SettingNavModel(
+      id: property.metadata.id!,
       source: property,
       name: property.metadata.name!,
       space: belong,
       spaceEnum: SpaceEnum.property,
       image: property.metadata.avatarThumbnail(),
     );
-    nav.add(dirNav);
+    nav.add(propertyNav);
   }
   return nav;
 }
@@ -244,14 +249,15 @@ Future<List<SettingNavModel>> loadForm(
     List<IForm> forms, IBelong belong) async {
   List<SettingNavModel> nav = [];
   for (var form in forms) {
-    SettingNavModel dirNav = SettingNavModel(
+    SettingNavModel formNav = SettingNavModel(
+      id: form.metadata.id!,
       source: form,
       name: form.metadata.name!,
       space: belong,
       spaceEnum: SpaceEnum.form,
       image: form.metadata.avatarThumbnail(),
     );
-    nav.add(dirNav);
+    nav.add(formNav);
   }
   return nav;
 }
@@ -261,6 +267,7 @@ Future<List<SettingNavModel>> loadCohorts(
   List<SettingNavModel> nav = [];
   for (var cohort in cohorts) {
     SettingNavModel cohortNav = SettingNavModel(
+      id: cohort.metadata.id!,
       source: cohort,
       name: cohort.metadata.name!,
       space: belong,
@@ -269,19 +276,12 @@ Future<List<SettingNavModel>> loadCohorts(
     );
     cohortNav.children = [
       SettingNavModel(
+        id: SpaceEnum.cohorts.label,
         name: "${SpaceEnum.cohorts.label}文件",
         space: belong,
         spaceEnum: SpaceEnum.cohorts,
         children: [
-          ...cohort.directory.files.map((e){
-            return SettingNavModel(
-              name: e.filedata.name!,
-              space: belong,
-              source: e,
-              spaceEnum: SpaceEnum.file,
-              image: e.shareInfo().thumbnail,
-            );
-          }).toList(),
+          ...await loadFile(cohort.directory.files, belong),
           ...await loadSpecies(cohort.directory.specieses, belong),
           ...await loadApplications(cohort.directory.applications, belong),
           ...await loadForm(cohort.directory.forms, belong),
@@ -289,11 +289,13 @@ Future<List<SettingNavModel>> loadCohorts(
         ]
       ),
       SettingNavModel(
+        id: SpaceEnum.cohorts.label,
         name: "${SpaceEnum.cohorts.label}成员",
         space: belong,
         spaceEnum: SpaceEnum.cohorts,
         children: cohort.members.map((e){
           return SettingNavModel(
+            id: e.id!,
             name: e.name!,
             space: belong,
             source: e,
@@ -317,6 +319,7 @@ Future<List<SettingNavModel>> loadDepartment(
   List<SettingNavModel> nav = [];
   for (var department in departments) {
     SettingNavModel departmentNav = SettingNavModel(
+      id: department.metadata.id!,
       source: department,
       name: department.metadata.name!,
       space: belong,
@@ -325,19 +328,12 @@ Future<List<SettingNavModel>> loadDepartment(
     );
     departmentNav.children = [
       SettingNavModel(
+        id: SpaceEnum.departments.label,
         name: "${SpaceEnum.departments.label}文件",
         space: belong,
         spaceEnum: SpaceEnum.departments,
         children: [
-          ...department.directory.files.map((e){
-            return SettingNavModel(
-              name: e.filedata.name!,
-              space: belong,
-              source: e,
-              spaceEnum: SpaceEnum.file,
-              image: e.shareInfo().thumbnail,
-            );
-          }).toList(),
+          ...await loadFile(department.directory.files, belong),
           ...await loadSpecies(department.directory.specieses, belong),
           ...await loadApplications(department.directory.applications, belong),
           ...await loadForm(department.directory.forms, belong),
@@ -345,11 +341,13 @@ Future<List<SettingNavModel>> loadDepartment(
         ]
       ),
       SettingNavModel(
+        id: SpaceEnum.departments.label,
         name: "${SpaceEnum.departments.label}成员",
         space: belong,
         spaceEnum: SpaceEnum.departments,
         children: department.members.map((e){
           return SettingNavModel(
+            id: e.id!,
             name: e.name!,
             space: belong,
             source: e,
@@ -378,6 +376,7 @@ Future<List<SettingNavModel>> loadGroup(
   List<SettingNavModel> nav = [];
   for (var group in groups) {
     SettingNavModel groupNav = SettingNavModel(
+      id: group.metadata.id!,
       source: group,
       name: group.metadata.name!,
       space: belong,
@@ -386,19 +385,12 @@ Future<List<SettingNavModel>> loadGroup(
     );
     groupNav.children = [
       SettingNavModel(
+        id: SpaceEnum.groups.label,
         name: "${SpaceEnum.groups.label}文件",
         space: belong,
         spaceEnum: SpaceEnum.groups,
         children: [
-          ...group.directory.files.map((e){
-            return SettingNavModel(
-              name: e.filedata.name!,
-              space: belong,
-              source: e,
-              spaceEnum: SpaceEnum.file,
-              image: e.shareInfo().thumbnail,
-            );
-          }).toList(),
+          ...await loadFile(group.directory.files, belong),
           ...await loadSpecies(group.directory.specieses, belong),
           ...await loadApplications(group.directory.applications, belong),
           ...await loadForm(group.directory.forms, belong),
@@ -406,11 +398,13 @@ Future<List<SettingNavModel>> loadGroup(
         ]
       ),
       SettingNavModel(
+        id: SpaceEnum.groups.label,
         name: "${SpaceEnum.groups.label}成员",
         space: belong,
         spaceEnum: SpaceEnum.groups,
         children: group.members.map((e){
           return SettingNavModel(
+            id: e.id!,
             name: e.name!,
             space: belong,
             source: e,

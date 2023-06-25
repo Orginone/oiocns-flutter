@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart' hide Form;
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -377,9 +377,9 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
 
   @override
   Future<bool> update(DirectoryModel data) async {
-    data.id = id!;
-    data.parentId = metadata.parentId!;
-    data.shareId = metadata.shareId!;
+    data.id = id;
+    data.parentId = metadata.parentId;
+    data.shareId = metadata.shareId;
     var res = await kernel.updateDirectory(data);
     return res.success;
   }
@@ -422,5 +422,27 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
 
   String formatKey(String key) {
     return base64.encode(utf8.encode(key));
+  }
+
+  @override
+  // TODO: implement popupMenuItem
+  List<PopupMenuItem> get popupMenuItem {
+    List<PopupMenuKey> key = [];
+
+    if (target.hasRelationAuth()) {
+      key.addAll(
+          [...createPopupMenuKey, PopupMenuKey.rename, PopupMenuKey.delete]);
+    }
+
+    key.addAll([
+      PopupMenuKey.upload,
+      PopupMenuKey.shareQr,
+    ]);
+    return key
+        .map((e) => PopupMenuItem(
+              value: e,
+              child: Text(e.label),
+            ))
+        .toList();
   }
 }

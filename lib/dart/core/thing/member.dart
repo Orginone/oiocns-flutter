@@ -1,3 +1,4 @@
+import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 
@@ -44,4 +45,8 @@ class Member extends FileInfo<XTarget> implements IMember {
     // TODO: implement rename
     throw UnimplementedError();
   }
+
+  @override
+  // TODO: implement popupMenuItem
+  List<PopupMenuItem> get popupMenuItem => [];
 }

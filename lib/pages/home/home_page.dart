@@ -5,13 +5,12 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/event/home_data.dart';
-import 'package:orginone/pages/market/view.dart';
+import 'package:orginone/pages/setting/view.dart';
 import 'package:orginone/pages/store/view.dart';
 import 'package:orginone/util/event_bus.dart';
 import 'package:orginone/widget/badge_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/loading_dialog.dart';
-import 'package:orginone/widget/template/originone_scaffold.dart';
 import 'package:orginone/widget/template/tabs.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/progress_dialog.dart';
@@ -23,7 +22,6 @@ import 'package:orginone/pages/home/components/user_bar.dart';
 import 'package:orginone/pages/work/view.dart';
 import 'package:orginone/pages/setting/version_page.dart';
 import 'package:orginone/util/event_bus_helper.dart';
-import 'package:orginone/util/sys_util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'index/index_pageV2.dart';
@@ -148,14 +146,14 @@ class HomeController extends TabsController {
       }),
     ));
     registerTab(XTab(
-      view: MarketPage(),
+      view: SettingPage(),
       tab: Obx(() {
-        var isSelected = settingCtrl.homeEnum.value == HomeEnum.market;
+        var isSelected = settingCtrl.homeEnum.value == HomeEnum.setting;
         return BadgeTabWidget(
           imgPath: !isSelected
-              ? "unshop"
-              : "shop",
-          body: Text(HomeEnum.market.label, style: isSelected?selectedStyle:unSelectedStyle),
+              ? "unsetting"
+              : "setting",
+          body: Text(HomeEnum.setting.label, style: isSelected?selectedStyle:unSelectedStyle),
         );
       }),
     ));
@@ -231,6 +229,11 @@ class HomeController extends TabsController {
     if (index != settingCtrl.homeEnum.value.index) {
       settingCtrl.setHomeEnum(HomeEnum.values[index]);
     }
+  }
+
+  void jumpTab(HomeEnum homeEnum){
+    tabController.animateTo(homeEnum.index);
+    settingCtrl.setHomeEnum(homeEnum);
   }
 
   @override

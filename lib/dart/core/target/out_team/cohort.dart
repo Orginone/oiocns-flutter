@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
@@ -54,4 +56,21 @@ class Cohort extends Target implements ICohort {
   @override
   // TODO: implement targets
   List<ITarget> get targets => [this];
+
+  @override
+  // TODO: implement popupMenuItem
+  List<PopupMenuItem> get popupMenuItem {
+    List<PopupMenuKey> key = [];
+    if(hasRelationAuth()){
+      key.addAll([...createPopupMenuKey,PopupMenuKey.updateInfo]);
+    }
+    key.addAll(defaultPopupMenuKey);
+
+    return key
+        .map((e) => PopupMenuItem(
+      value: e,
+      child: Text(e.label),
+    ))
+        .toList();
+  }
 }

@@ -1,15 +1,12 @@
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
-import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/thing/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/dart/core/thing/form.dart';
-import 'package:orginone/dart/core/thing/property.dart';
-import 'package:orginone/dart/core/thing/species.dart';
 
 import 'store_tree/state.dart';
 
@@ -49,6 +46,7 @@ Future<List<StoreTreeNav>> loadFile(
   List<StoreTreeNav> nav = [];
   for (var file in files) {
     StoreTreeNav dirNav = StoreTreeNav(
+      id: file.metadata.id!,
       source: file,
       name: file.metadata.name!,
       space: belong,
@@ -64,14 +62,15 @@ Future<List<StoreTreeNav>> loadApplications(
     List<IApplication> applications, IBelong belong) async {
   List<StoreTreeNav> nav = [];
   for (var application in applications) {
-    StoreTreeNav dirNav = StoreTreeNav(
+    StoreTreeNav appNav = StoreTreeNav(
+      id: application.metadata.id!,
       source: application,
       name: application.metadata.name!,
       space: belong,
       image: application.metadata.avatarThumbnail(),
       children: [],
     );
-    nav.add(dirNav);
+    nav.add(appNav);
   }
   return nav;
 }
@@ -79,15 +78,39 @@ Future<List<StoreTreeNav>> loadApplications(
 Future<List<StoreTreeNav>> loadForm(List<IForm> forms, IBelong belong) async {
   List<StoreTreeNav> nav = [];
   for (var form in forms) {
+    await form.loadContent(reload: true);
     StoreTreeNav dirNav = StoreTreeNav(
+      id: form.metadata.id!,
       source: form,
       name: form.metadata.name!,
       space: belong,
       image: form.metadata.avatarThumbnail(),
-      children: [],
+      children: await loadSpeciesItem(form.items,belong,form),
     );
     nav.add(dirNav);
   }
+  return nav;
+}
+
+Future<List<StoreTreeNav>> loadSpeciesItem(List<SpeciesItem> species,IBelong belong,IForm form,
+    [String? id]) async {
+  List<StoreTreeNav> nav = [];
+
+  for (var specie in species) {
+     if(specie.metadata.parentId == id){
+       StoreTreeNav specieNav = StoreTreeNav(
+         id: specie.metadata.id!,
+         source: specie,
+         name: specie.metadata.name!,
+         space: belong,
+         form: form,
+         image: specie.metadata.avatarThumbnail(),
+         children: await loadSpeciesItem(species,belong,form,specie.metadata.id),
+       );
+       nav.add(specieNav);
+     }
+  }
+
   return nav;
 }
 
@@ -96,6 +119,7 @@ Future<List<StoreTreeNav>> loadCohorts(
   List<StoreTreeNav> nav = [];
   for (var cohort in cohorts) {
     StoreTreeNav cohortNav = StoreTreeNav(
+      id: cohort.metadata.id!,
       source: cohort,
       name: cohort.metadata.name!,
       space: belong,
@@ -104,17 +128,10 @@ Future<List<StoreTreeNav>> loadCohorts(
     );
     cohortNav.children = [
       StoreTreeNav(
+        id: SpaceEnum.cohorts.label,
         name: "${SpaceEnum.cohorts.label}文件",
         space: belong,
-        children: cohort.directory.files.map((e) {
-          return StoreTreeNav(
-            name: e.filedata.name!,
-            space: belong,
-            source: e,
-            image: e.shareInfo().thumbnail,
-            children: [],
-          );
-        }).toList(),
+        children: await loadFile(cohort.directory.files,belong),
       ),
     ];
     if (cohort.directory.children.isNotEmpty) {
@@ -131,6 +148,7 @@ Future<List<StoreTreeNav>> loadGroup(
   List<StoreTreeNav> nav = [];
   for (var group in groups) {
     StoreTreeNav groupNav = StoreTreeNav(
+      id: group.metadata.id!,
       source: group,
       name: group.metadata.name!,
       space: belong,
@@ -139,17 +157,10 @@ Future<List<StoreTreeNav>> loadGroup(
     );
     groupNav.children = [
       StoreTreeNav(
+        id:SpaceEnum.groups.label ,
         name: "${SpaceEnum.groups.label}文件",
         space: belong,
-        children: group.directory.files.map((e) {
-          return StoreTreeNav(
-            name: e.filedata.name!,
-            space: belong,
-            source: e,
-            image: e.shareInfo().thumbnail,
-            children: [],
-          );
-        }).toList(),
+        children: await loadFile(group.directory.files,belong),
       ),
     ];
     if (group.directory.children.isNotEmpty) {
@@ -167,33 +178,27 @@ Future<List<StoreTreeNav>> loadTargets(
     List<ITarget> targets, IBelong belong) async {
   List<StoreTreeNav> nav = [];
   for (var target in targets) {
-    StoreTreeNav cohortNav = StoreTreeNav(
+    StoreTreeNav targetNav = StoreTreeNav(
+      id: target.metadata.id!,
       source: target,
       name: target.metadata.name!,
       space: belong,
       image: target.share.avatar?.thumbnailUint8List,
       children: [],
     );
-    cohortNav.children = [
+    targetNav.children = [
       StoreTreeNav(
+        id: target.metadata.typeName!,
         name: "${target.metadata.typeName}文件",
         space: belong,
-        children: target.directory.files.map((e) {
-          return StoreTreeNav(
-            name: e.filedata.name!,
-            space: belong,
-            source: e,
-            image: e.shareInfo().thumbnail,
-            children: [],
-          );
-        }).toList(),
+        children: await loadFile(target.directory.files,belong),
       ),
     ];
     if (target.directory.children.isNotEmpty) {
-      cohortNav.children
+      targetNav.children
           .addAll(await loadDir(target.directory.children, belong));
     }
-    nav.add(cohortNav);
+    nav.add(targetNav);
   }
   return nav;
 }

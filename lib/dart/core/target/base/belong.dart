@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message/chatmsg.dart';

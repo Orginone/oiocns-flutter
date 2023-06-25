@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/src/material/popup_menu.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/consts.dart';
@@ -91,6 +93,7 @@ class Person extends Belong implements IPerson {
     data.teamName = data.teamName ?? data.name;
     var res = await kernel.createTarget(data);
     if (res.success && res.data != null) {
+      res.data!.belong = metadata;
       var company = createCompanyForTarget(res.data!);
       companys.add(company);
       await company.pullMembers([metadata]);
@@ -332,16 +335,15 @@ class Person extends Belong implements IPerson {
           break;
         case 'Remove':
           if (companyTypes.contains(TargetType.getType(target.typeName!))) {
-             companys.removeWhere((a) => a.id == target.id);
+            companys.removeWhere((a) => a.id == target.id);
           } else if (target.typeName == TargetType.cohort.label) {
-             cohorts.removeWhere((a) => a.id == target.id);
+            cohorts.removeWhere((a) => a.id == target.id);
           }
           break;
         default:
           break;
       }
     }
-
   }
 
   @override
@@ -373,5 +375,22 @@ class Person extends Belong implements IPerson {
 
   @override
   // TODO: implement shareTarget
-  List<ITarget> get shareTarget =>  [this, ...cohorts];
+  List<ITarget> get shareTarget => [this, ...cohorts];
+
+  @override
+  // TODO: implement popupMenuItem
+  List<PopupMenuItem> get popupMenuItem {
+    List<PopupMenuKey> key = [];
+    if(hasRelationAuth()){
+      key.addAll([...createPopupMenuKey,PopupMenuKey.createCohort,PopupMenuKey.createCompany,PopupMenuKey.updateInfo]);
+    }
+    key.addAll(defaultPopupMenuKey);
+
+    return key
+        .map((e) => PopupMenuItem(
+              value: e,
+              child: Text(e.label),
+            ))
+        .toList();
+  }
 }

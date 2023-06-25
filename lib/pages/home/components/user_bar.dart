@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/pages/home/home_page.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/icons.dart';
 import 'package:orginone/widget/image_widget.dart';
@@ -49,8 +50,8 @@ class UserBar extends GetView<SettingController> {
           case HomeEnum.store:
             search = SearchBar<int>(homeEnum: HomeEnum.store, data: []);
             break;
-          case HomeEnum.market:
-            search = SearchBar<IMsgChat>(homeEnum: HomeEnum.market, data: []);
+          case HomeEnum.setting:
+            search = SearchBar<IMsgChat>(homeEnum: HomeEnum.setting, data: []);
             break;
         }
         if (search != null) {
@@ -136,7 +137,8 @@ class UserBar extends GetView<SettingController> {
             child: GestureDetector(
               child: _imgAvatar(EdgeInsets.only(left: 10.w)),
               onTap: () {
-                Get.toNamed(Routers.settingCenter);
+                 var home = Get.find<HomeController>();
+                 home.jumpTab(HomeEnum.setting);
               },
             ),
           ),

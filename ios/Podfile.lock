@@ -44,6 +44,8 @@ PODS:
     - Flutter
   - flutter_local_notifications (0.0.1):
     - Flutter
+  - flutter_pdfview (1.0.2):
+    - Flutter
   - flutter_sound_core (8.5.0)
   - flutter_sound_lite (8.5.0):
     - Flutter
@@ -97,6 +99,7 @@ DEPENDENCIES:
   - flutter_background_service_ios (from `.symlinks/plugins/flutter_background_service_ios/ios`)
   - flutter_custom_dialog (from `.symlinks/plugins/flutter_custom_dialog/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
+  - flutter_pdfview (from `.symlinks/plugins/flutter_pdfview/ios`)
   - flutter_sound_lite (from `.symlinks/plugins/flutter_sound_lite/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
@@ -138,6 +141,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_custom_dialog/ios"
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
+  flutter_pdfview:
+    :path: ".symlinks/plugins/flutter_pdfview/ios"
   flutter_sound_lite:
     :path: ".symlinks/plugins/flutter_sound_lite/ios"
   fluttertoast:
@@ -177,6 +182,7 @@ SPEC CHECKSUMS:
   flutter_background_service_ios: e30e0d3ee69e4cee66272d0c78eacd48c2e94aac
   flutter_custom_dialog: c0d222a3c35af5b57581e54ef8784c94037cd2ec
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
+  flutter_pdfview: 25f53dd6097661e6395b17de506e6060585946bd
   flutter_sound_core: d9396f10752a0df9aa3197f4c431d62d934918cc
   flutter_sound_lite: 175808b357d0b3eeee1345843545bb2fbde06e6c
   fluttertoast: fafc4fa4d01a6a9e4f772ecd190ffa525e9e2d9c
