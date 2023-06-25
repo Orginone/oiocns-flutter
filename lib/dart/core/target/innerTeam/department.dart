@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
@@ -5,8 +7,6 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/application.dart';
-import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/main.dart';
 
 /// 单位内部机构（部门）接口
@@ -95,6 +95,7 @@ class Department extends Target implements IDepartment {
     data.public = false;
     var metadata = await create(data);
     if (metadata != null) {
+      metadata.belong = this.metadata;
       var department = Department(metadata, company, this);
       if (await pullSubTarget(department)) {
         children.add(department);
@@ -177,5 +178,21 @@ class Department extends Target implements IDepartment {
       targets.addAll(item.targets);
     }
     return targets;
+  }
+
+  @override
+  // TODO: implement popupMenuItem
+  List<PopupMenuItem> get popupMenuItem {
+    List<PopupMenuKey> key = [];
+    if(hasRelationAuth()){
+      key.addAll([...createPopupMenuKey,PopupMenuKey.createDepartment,PopupMenuKey.updateInfo]);
+    }
+    key.addAll(defaultPopupMenuKey);
+    return key
+        .map((e) => PopupMenuItem(
+      value: e,
+      child: Text(e.label),
+    ))
+        .toList();
   }
 }

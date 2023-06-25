@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
@@ -57,6 +59,7 @@ class Group extends Target implements IGroup {
     data.typeName = TargetType.group.label;
     final metadata = await create(data);
     if (metadata != null) {
+      metadata.belong = this.metadata;
       final group = Group(metadata, company);
       children.add(group);
       return group;
@@ -145,4 +148,21 @@ class Group extends Target implements IGroup {
   @override
   // TODO: implement id
   String get id => metadata.id!;
+
+  @override
+  // TODO: implement popupMenuItem
+  List<PopupMenuItem> get popupMenuItem {
+    List<PopupMenuKey> key = [];
+    if(hasRelationAuth()){
+      key.addAll(createPopupMenuKey);
+    }
+
+    key.addAll(defaultPopupMenuKey);
+    return key
+        .map((e) => PopupMenuItem(
+      value: e,
+      child: Text(e.label),
+    ))
+        .toList();
+  }
 }

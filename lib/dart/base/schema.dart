@@ -3379,7 +3379,7 @@ class XIdentity extends XEntity {
   }
 
   //通过动态数组解析成List
-  static List<XIdentity> fromList(List<Map<String, dynamic>>? list) {
+  static List<XIdentity> fromList(List<dynamic>? list) {
     if (list == null || list.isEmpty) {
       return [];
     }
@@ -5109,7 +5109,7 @@ class XRelation {
         target = XTarget.fromJson(json["target"]);
 
   //通过动态数组解析成List
-  static List<XRelation> fromList(List<Map<String, dynamic>>? list) {
+  static List<XRelation> fromList(List<dynamic>? list) {
     if (list == null) {
       return [];
     }
@@ -6660,11 +6660,11 @@ class XTeamIdentity {
         identity = XIdentity.fromJson(json["identity"]);
 
   //通过动态数组解析成List
-  static List<XTeamIdentity> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
+  static List<XTeamIdentity> fromList(List<dynamic>? list) {
     List<XTeamIdentity> retList = [];
+    if (list == null) {
+      return retList;
+    }
     if (list.isNotEmpty) {
       for (var item in list) {
         retList.add(XTeamIdentity.fromJson(item));

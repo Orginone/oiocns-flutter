@@ -8,7 +8,6 @@ import 'package:orginone/dart/core/getx/base_get_state.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
 import 'index/index_page.dart';
-import 'index/widgets/dataMonitoring.dart';
 
 class FunctionPage extends BaseGetPageView<FunctionController, FunctionState> {
   @override

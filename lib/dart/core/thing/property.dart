@@ -1,3 +1,4 @@
+import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
@@ -92,4 +93,8 @@ class Property extends FileInfo<XProperty> implements IProperty {
     var res = await kernel.updateProperty(data);
     return res.success;
   }
+
+  @override
+  // TODO: implement popupMenuItem
+  List<PopupMenuItem> get popupMenuItem => [];
 }

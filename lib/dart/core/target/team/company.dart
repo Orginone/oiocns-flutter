@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
@@ -339,4 +341,20 @@ class Company extends Belong implements ICompany {
   @override
   // TODO: implement shareTarget
   List<ITarget> get shareTarget => [this, ...groups];
+
+  @override
+  // TODO: implement popupMenuItem
+  List<PopupMenuItem> get popupMenuItem {
+    List<PopupMenuKey> key = [];
+    if(hasRelationAuth()){
+      key.addAll([...createPopupMenuKey,PopupMenuKey.updateInfo,PopupMenuKey.createDepartment,PopupMenuKey.createStation,PopupMenuKey.createGroup,]);
+    }
+    key.addAll(defaultPopupMenuKey);
+    return key
+        .map((e) => PopupMenuItem(
+      value: e,
+      child: Text(e.label),
+    ))
+        .toList();
+  }
 }

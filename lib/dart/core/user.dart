@@ -179,19 +179,19 @@ class UserProvider {
   }
 
   void _recvTarget(data) {
-    switch (data['TypeName']) {
-      case "Relation":
-        XTarget xTarget = XTarget.fromJson(data['Target']);
-        XTarget subTarget = XTarget.fromJson(data['SubTarget']);
-        var target = [_user.value, ...user!.targets].firstWhere(
-            (element) => element!.id == xTarget.id,
-            orElse: () => null);
-        if (target != null) {
-          target.recvTarget(data['Operate'], true, subTarget);
-        } else if (_user.value!.id == subTarget.id) {
-          _user.value!.recvTarget(data['Operate'], false, xTarget);
-        }
-        break;
-    }
+    // switch (data['TypeName']) {
+    //   case "Relation":
+    //     XTarget xTarget = XTarget.fromJson(data['Target']);
+    //     XTarget subTarget = XTarget.fromJson(data['SubTarget']);
+    //     var target = [_user.value, ...user!.targets].firstWhere(
+    //         (element) => element!.id == xTarget.id,
+    //         orElse: () => null);
+    //     if (target != null) {
+    //       target.recvTarget(data['Operate'], true, subTarget);
+    //     } else if (_user.value!.id == subTarget.id) {
+    //       _user.value!.recvTarget(data['Operate'], false, xTarget);
+    //     }
+    //     break;
+    // }
   }
 }

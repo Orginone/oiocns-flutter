@@ -1,3 +1,4 @@
+import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ import 'package:orginone/routers.dart';
 import 'package:orginone/util/notification_util.dart';
 import 'util/hive_utils.dart';
 import 'util/local_store.dart';
+
 
 void main() async {
   // 逻辑绑定

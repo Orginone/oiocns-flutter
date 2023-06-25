@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
-import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_page.dart';
 import 'package:orginone/images.dart';
-import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/widget/common_widget.dart';
+
 import 'item.dart';
 import 'logic.dart';
 import 'state.dart';
 
-class SettingCenterPage
-    extends BaseBreadcrumbNavMultiplexPage<SettingCenterController, SettingCenterState> {
+class SettingCenterPage extends BaseBreadcrumbNavMultiplexPage<
+    SettingCenterController,
+    SettingCenterState> {
 
   @override
   Widget body() {
-    return Obx((){
-      return state.model.value?.name == "设置"?home():details();
-    });
+    return state.isRootDir ? home() : details();
   }
 
   Widget home() {
@@ -25,19 +22,25 @@ class SettingCenterPage
       children: [
         Expanded(
           child: SingleChildScrollView(
-            child: Column(
-              children: state.model.value!.children
-                  .map((e) => BaseBreadcrumbNavItem(
-                        item: e,
-                        onTap: () {
-                          controller.jumpInfo(e);
-                        },
-                        onNext: () {
-                          controller.onHomeNextLv(e);
-                        },
-                      ))
-                  .toList(),
-            ),
+            child: Obx(() {
+              return Column(
+                children: state.model.value!.children
+                    .map((e) =>
+                    Item(
+                      item: e,
+                      onTap: () {
+                        controller.jumpInfo(e);
+                      },
+                      onNext: () {
+                        controller.onHomeNextLv(e);
+                      },
+                      onSelected: (key, item) {
+                        controller.operation(key, item);
+                      },
+                    ))
+                    .toList(),
+              );
+            }),
           ),
         ),
         SizedBox(
@@ -53,25 +56,27 @@ class SettingCenterPage
   }
 
 
-  Widget details(){
+  Widget details() {
     return SingleChildScrollView(
-      child: Column(
-        children: state.model.value?.children.map((e) {
-          return Item(
-            onNext: () {
-              controller.onDetailsNextLv(e);
-            },
-            onTap: (){
-              controller.jumpDetails(e);
-            },
-            onSelected: (value) {
-
-            },
-            item: e,
-          );
-        }).toList() ??
-            [],
-      ),
+      child: Obx(() {
+        return Column(
+          children: state.model.value?.children.map((e) {
+            return Item(
+              onNext: () {
+                controller.onDetailsNextLv(e);
+              },
+              onTap: () {
+                controller.jumpDetails(e);
+              },
+              onSelected: (key, item) {
+                controller.operation(key, item);
+              },
+              item: e,
+            );
+          }).toList() ??
+              [],
+        );
+      }),
     );
   }
 

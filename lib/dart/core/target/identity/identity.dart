@@ -1,3 +1,4 @@
+import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
@@ -152,5 +153,9 @@ Future<bool> update(IdentityModel data) async{
   @override
   // TODO: implement id
   String get id => metadata.id!;
+
+  @override
+  // TODO: implement popupMenuItem
+  List<PopupMenuItem> get popupMenuItem => [];
 
 }
