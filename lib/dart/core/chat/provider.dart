@@ -60,19 +60,27 @@ class ChatProvider implements IChatProvider {
 
   ChatProvider(this.user) {
     kernel.on('RecvMsg', (data) {
-      if (!_preMessage) {
-        _recvMessage(MsgSaveModel.fromJson(data));
-      } else {
-        _preMessages.add(MsgSaveModel.fromJson(data));
-      }
+        try{
+          if (!_preMessage) {
+            _recvMessage(MsgSaveModel.fromJson(data));
+          } else {
+            _preMessages.add(MsgSaveModel.fromJson(data));
+          }
+        }catch(e){
+          throw e;
+        }
     });
     kernel.on('RecvTags', (data) {
-      var tag = MsgTagModel.fromJson(data);
-      if (!_preMessage) {
-        _chatReceive(tag);
-      } else {
-        _preTags.add(tag);
-      }
+       try{
+         var tag = MsgTagModel.fromJson(data);
+         if (!_preMessage) {
+           _chatReceive(tag);
+         } else {
+           _preTags.add(tag);
+         }
+       }catch(e){
+         throw e;
+       }
     });
     allChats = RxList();
     messageFrequentlyUsed = RxList();

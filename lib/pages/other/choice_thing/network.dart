@@ -17,7 +17,7 @@ class ChoiceThingNetWork{
       'requireTotalCount':true,
       "searchValue": null,
       "userData": [
-        'S$id'
+        id
       ],
       "options": {
         "match": {},

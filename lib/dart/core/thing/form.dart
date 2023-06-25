@@ -12,6 +12,7 @@ class SpeciesItem {
 
   SpeciesItem(this.metadata) {
     typeName = '分类项';
+    metadata.typeName = '分类项';
   }
 }
 

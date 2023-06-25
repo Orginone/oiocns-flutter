@@ -5,7 +5,7 @@ import 'package:orginone/widget/unified.dart';
 import 'logic.dart';
 import 'state.dart';
 
-class MarketPage extends BaseFrequentlyUsedListPage<MarketController, MarketState> {
+class SettingPage extends BaseFrequentlyUsedListPage<SettingController, SettingState> {
   @override
   Widget buildView() {
     return Container(
@@ -15,13 +15,13 @@ class MarketPage extends BaseFrequentlyUsedListPage<MarketController, MarketStat
   }
 
   @override
-  MarketController getController() {
-    return MarketController();
+  SettingController getController() {
+    return SettingController();
   }
 
   @override
   String tag() {
     // TODO: implement tag
-    return "market";
+    return "setting";
   }
 }

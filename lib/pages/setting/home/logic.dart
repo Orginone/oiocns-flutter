@@ -7,7 +7,6 @@ import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/local_store.dart';
-import 'package:orginone/widget/loading_dialog.dart';
 
 import 'state.dart';
 
@@ -17,15 +16,13 @@ class SettingCenterController
 
 
   @override
-  void onReady() async {
-    // TODO: implement onReady
-    super.onReady();
+  void onInit() async {
+    // TODO: implement onInit
+    super.onInit();
     if (state.isRootDir) {
-      LoadingDialog.showLoading(context);
       await loadUserSetting();
       await loadCompanySetting();
       state.model.refresh();
-      LoadingDialog.dismiss(context);
     }
   }
 
@@ -113,21 +110,14 @@ class SettingCenterController
         space: user.space,
         spaceEnum: SpaceEnum.departments,
         children: [
-          ...user.space!.directory.files.map((e){
-            return SettingNavModel(
-              name: e.filedata.name!,
-              space: user.space,
-              source: e,
-              spaceEnum: SpaceEnum.file,
-              image: e.shareInfo().thumbnail,
-            );
-          }).toList(),
-          ...await loadSpecies(user.space!.directory.specieses, user.space!),
-          ...await loadApplications(user.space!.directory.applications, user.space!),
-          ...await loadForm(user.space!.directory.forms, user.space!),
-          ...await loadPropertys(user.space!.directory.propertys, user.space!),
-        ]
-      ),
+            ...await loadFile(user.space!.directory.files, user.space!),
+            ...await loadSpecies(user.space!.directory.specieses, user.space!),
+            ...await loadApplications(
+                user.space!.directory.applications, user.space!),
+            ...await loadForm(user.space!.directory.forms, user.space!),
+            ...await loadPropertys(
+                user.space!.directory.propertys, user.space!),
+          ]),
       SettingNavModel(
         name: "我的好友",
         space: user.space,
@@ -158,27 +148,22 @@ class SettingCenterController
           space: company.space,
           spaceEnum: SpaceEnum.departments,
           children: [
-            ...company.space!.directory.files.map((e){
-              return SettingNavModel(
-                name: e.filedata.name!,
-                space: company.space,
-                source: e,
-                spaceEnum: SpaceEnum.file,
-                image: e.shareInfo().thumbnail,
-              );
-            }).toList(),
-            ...await loadSpecies(company.space!.directory.specieses, company.space!),
-            ...await loadApplications(company.space!.directory.applications, company.space!),
-            ...await loadForm(company.space!.directory.forms, company.space!),
-            ...await loadPropertys(company.space!.directory.propertys, company.space!),
-          ]
-        ),
+              ...await loadFile(company.space!.directory.files, company.space!),
+              ...await loadSpecies(
+                  company.space!.directory.specieses, company.space!),
+              ...await loadApplications(
+                  company.space!.directory.applications, company.space!),
+              ...await loadForm(company.space!.directory.forms, company.space!),
+              ...await loadPropertys(
+                  company.space!.directory.propertys, company.space!),
+            ]),
         SettingNavModel(
           name: "单位成员",
           space: company.space,
           spaceEnum: SpaceEnum.cohorts,
           children: company.space!.members.map((e){
             return SettingNavModel(
+              id: e.id!,
               name: e.name!,
               space: company.space,
               source: e,

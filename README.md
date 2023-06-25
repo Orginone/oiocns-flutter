@@ -22,7 +22,7 @@
         ├── setting                     // 设置
         ├── work                        // 办事
         ├── login                       // 登录
-        ├── market                      // 流通
+        ├── setting                     // 设置
         ├── work                        // 办事
         ├── store                       // 仓库
     ├── util                            // 工具库
