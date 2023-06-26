@@ -16,21 +16,21 @@ const notificationId = 888;
 const android = AndroidInitializationSettings('@mipmap/ic_launcher');
 const ios = DarwinInitializationSettings();
 
-const initSettings = InitializationSettings(android: android, iOS: ios);
+const initSettings = InitializationSettings(android: android,iOS: ios);
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 class NotificationUtil {
   static Future<void> initializeService() async {
-    const AndroidNotificationChannel channel = AndroidNotificationChannel(
-      notificationChannelId, // id
-      '', // title
-      description: '',
-      importance: Importance.low,
-    );
     flutterLocalNotificationsPlugin.initialize(initSettings);
     if(Platform.isAndroid){
+      const AndroidNotificationChannel channel = AndroidNotificationChannel(
+        notificationChannelId, // id
+        'test', // title
+        description: 'test',
+        importance: Importance.low,
+      );
       await flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
@@ -85,7 +85,7 @@ Future<void> onStart(service) async {
   DartPluginRegistrant.ensureInitialized();
 
   if(Platform.isAndroid){
-    Timer.periodic(const Duration(seconds: 3), (timer) async {
+    Timer.periodic(const Duration(seconds: 1), (timer) async {
       print('爱共享前台进程运行中');
       if (await service.isForegroundService()) {
         flutterLocalNotificationsPlugin.show(
