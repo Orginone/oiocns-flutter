@@ -3,8 +3,6 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/core/enum.dart';
 
-KernelApi kernel = KernelApi.getInstance();
-
 
 /// 内核请求模型
 abstract class IMerchandise {

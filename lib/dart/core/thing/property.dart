@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/main.dart';
@@ -96,5 +98,19 @@ class Property extends FileInfo<XProperty> implements IProperty {
 
   @override
   // TODO: implement popupMenuItem
-  List<PopupMenuItem> get popupMenuItem => [];
+  List<PopupMenuItem> get popupMenuItem{
+    List<PopupMenuKey> key = [];
+    key.addAll([
+      PopupMenuKey.updateInfo,
+      PopupMenuKey.rename,
+      PopupMenuKey.delete,
+      PopupMenuKey.shareQr,
+    ]);
+    return key
+        .map((e) => PopupMenuItem(
+      value: e,
+      child: Text(e.label),
+    ))
+        .toList();
+  }
 }

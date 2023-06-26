@@ -15,6 +15,14 @@ class Item extends BaseBreadcrumbNavItem<SettingNavModel> {
 
 
   @override
+  Widget more() {
+    if(item.spaceEnum == SpaceEnum.file){
+      return const SizedBox();
+    }
+    return super.more();
+  }
+
+  @override
   Widget action() {
     // TODO: implement action
     if(item.source == null && item.space == null || item.spaceEnum == null){

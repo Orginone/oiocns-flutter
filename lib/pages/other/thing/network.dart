@@ -12,7 +12,7 @@ class ThingNetWork{
 
   static Future<List<ThingModel>> getThing(String id) async{
     List<ThingModel> things = [];
-    ResultType result = await KernelApi.getInstance().anystore.loadThing({
+    ResultType result = await kernel.anystore.loadThing({
       "searchExpr": "undefined",
       "searchOperation": 'contains',
       "searchValue": null,

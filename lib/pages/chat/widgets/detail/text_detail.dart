@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/routers.dart';
@@ -143,7 +144,7 @@ class TextDetail extends BaseDetail {
 
   Widget imageWidget(dynamic url) {
     Map<String, String> headers = {
-      "Authorization": KernelApi.getInstance().anystore.accessToken,
+      "Authorization": kernel.anystore.accessToken,
     };
 
     return GestureDetector(

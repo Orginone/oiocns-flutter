@@ -1,6 +1,7 @@
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/util/date_utils.dart';
 
 class ProductionOrderUtils {
@@ -11,11 +12,11 @@ class ProductionOrderUtils {
     String key = '${type}_$ymd';
 
     ResultType result =
-        await KernelApi.getInstance().anystore.get(key, "company");
+        await kernel.anystore.get(key, "company");
     if (result.success) {
       int latestCount = (result.data["count"]??_count )+ 1;
 
-      ResultType result1 = await KernelApi.getInstance().anystore.set(
+      ResultType result1 = await kernel.anystore.set(
           key,
           {
             "operation": "replaceAll",

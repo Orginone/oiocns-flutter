@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
 import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/widgets/photo_widget.dart';
@@ -32,7 +33,7 @@ class ImageDetail extends BaseDetail {
     }
 
     Map<String, String> headers = {
-      "Authorization": KernelApi.getInstance().anystore.accessToken,
+      "Authorization": kernel.anystore.accessToken,
     };
 
     Widget child = ImageWidget(link, httpHeaders: headers);

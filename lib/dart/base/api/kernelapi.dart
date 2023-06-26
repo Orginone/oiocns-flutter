@@ -6,6 +6,7 @@ import 'package:orginone/dart/base/api/anystore.dart';
 import 'package:orginone/dart/base/api/storehub.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/model/user_model.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/http_util.dart';
@@ -17,19 +18,25 @@ class KernelApi {
   final StoreHub _storeHub;
   final HttpUtil _requester;
   final Map<String, List<Function>> _methods;
-  final AnyStore _anystore;
+
+  late AnyStore _anystore;
 
   static KernelApi? _instance;
 
-  KernelApi(String url, {required HttpUtil request})
+  factory KernelApi() {
+    _instance ??= KernelApi._(Constant.kernelHub, request: HttpUtil());
+    return _instance!;
+  }
+
+  KernelApi._(String url, {required HttpUtil request})
       : _storeHub = StoreHub(url),
         _methods = {},
-        _requester = request,
-        _anystore = AnyStore.getInstance() {
+        _requester = request{
+    _anystore = AnyStore();
     _storeHub.on("Receive", receive);
     _storeHub.onConnected(() {
-      if (_anystore.accessToken.isNotEmpty) {
-        var args = [_anystore.accessToken];
+      if (_anystore!.accessToken.isNotEmpty) {
+        var args = [_anystore!.accessToken];
         _storeHub.invoke("TokenAuth", args: args).then((value) {
           log.info(value);
         }).catchError((err) {
@@ -41,18 +48,10 @@ class KernelApi {
     _storeHub.start();
   }
 
-  /// 获取单例
-  /// @param {string} url 集线器地址，默认为 "/orginone/kernel/hub"
-  /// @returns {KernelApi} 内核api单例
-  static KernelApi getInstance({String url = Constant.kernelHub}) {
-    _instance ??= KernelApi(url, request: HttpUtil());
-    return _instance!;
-  }
-
   /// 任意数据存储对象
   /// @returns {AnyStore | undefined} 可能为空的存储对象
   AnyStore get anystore {
-    return _anystore;
+    return _anystore!;
   }
 
   /// 是否在线
@@ -63,8 +62,16 @@ class KernelApi {
 
   stop() async {
     _methods.clear();
+    await _anystore!.stop();
     await _storeHub.dispose();
-    await _anystore.stop();
+    _instance = null;
+  }
+
+  start(){
+    _storeHub.start();
+    if(anystore.isOnline){
+      _anystore!.start();
+    }
   }
 
   receive(List<dynamic>? params) {
@@ -108,7 +115,7 @@ class KernelApi {
     var res = ResultType.fromJson(raw);
     if (res.success) {
       HiveUtils.putUser(UserModel.fromJson(raw['data']));
-      _anystore.updateToken(res.data["accessToken"]);
+      _anystore!.updateToken(res.data["accessToken"]);
     }
     return res;
   }
@@ -139,7 +146,7 @@ class KernelApi {
     }
     var res = ResultType.fromJson(raw);
     if (res.success) {
-      _anystore.updateToken(res.data ?? "");
+      _anystore!.updateToken(res.data ?? "");
     }
     return res;
   }
@@ -1074,7 +1081,7 @@ class KernelApi {
       ReqestType(
         module: 'target',
         action: 'UpdateTarget',
-        params: params,
+        params: params.toJson(),
       ),
       XTarget.fromJson,
     );
@@ -2943,11 +2950,16 @@ class KernelApi {
     } else {
       raw = await _restRequest('Request', req);
     }
-    if(!raw['success']){
-      ToastUtils.showMsg(msg: raw['msg']);
+    if(raw != null){
+      if(!raw['success']){
+        ToastUtils.showMsg(msg: raw['msg']);
+      }
     }
-    if (cvt != null) {
-      return ResultType.fromJsonSerialize(raw, cvt);
+    if (cvt  != null) {
+      if(raw == null){
+        print('raw');
+      }
+      return ResultType.fromJsonSerialize(raw??{}, cvt);
     } else {
       return ResultType.fromJson(raw);
     }

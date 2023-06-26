@@ -29,7 +29,7 @@ class AttributeInfoController extends BaseController<AttributeInfoState> {
       if (operation == "edit") {
        var dictArray = await state.data.source.loadDict(PageRequest(offset: 0, limit: 1000, filter: ''));
         showCreateAttributeDialog(context,
-            onCreate: (name, code, type, remark,unit,dict) async {
+            onCreate: (name, code, type, info,remark,[unit,dict]) async {
          var pro = await state.data.source.updateProperty(PropertyModel(
               id: property.id!,
               name: name,

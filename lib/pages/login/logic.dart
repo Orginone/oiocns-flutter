@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/local_store.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -16,6 +17,9 @@ class LoginController extends BaseController<LoginState> {
   void onInit() async {
     // TODO: implement onInit
     super.onInit();
+    if(!kernel.isOnline){
+      kernel.start();
+    }
     var account = LocalStore.getStore().getStringList("account");
     if (account != null) {
       state.accountController.text = account[0];
@@ -58,7 +62,7 @@ class LoginController extends BaseController<LoginState> {
       [Permission.storage, Permission.notification].request();
       LocalStore.getStore().setStringList("account",
           [state.accountController.text, state.passWordController.text]);
-      Get.offAndToNamed(Routers.home);
+      Get.offAllNamed(Routers.home);
     } else {
       ToastUtils.showMsg(msg: res.msg);
     }

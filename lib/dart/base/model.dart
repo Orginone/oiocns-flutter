@@ -2291,7 +2291,7 @@ class SpeciesModel {
       'typeName': typeName,
       'icon': icon,
       'remark': remark,
-      'sourceId': sourceId,
+      'sourceId': sourceId==""?null:sourceId,
       'directoryId': directoryId,
     };
     return json;
@@ -5462,39 +5462,39 @@ class SpeciesItemModel {
 }
 
 class ApplicationModel {
-  String id;
-  String name;
-  String code;
-  String icon;
-  String typeName;
-  String remark;
-  String directoryId;
-  String parentId;
-  String resource;
+  String? id;
+  String? name;
+  String? code;
+  String? icon;
+  String? typeName;
+  String? remark;
+  String? directoryId;
+  String? parentId;
+  String? resource;
 
   ApplicationModel({
-    required this.id,
-    required this.name,
-    required this.code,
-    required this.icon,
-    required this.typeName,
-    required this.remark,
-    required this.directoryId,
-    required this.parentId,
-    required this.resource,
+     this.id,
+     this.name,
+     this.code,
+     this.icon,
+     this.typeName,
+     this.remark,
+     this.directoryId,
+     this.parentId,
+     this.resource,
   });
 
   factory ApplicationModel.fromJson(Map<String, dynamic> json) {
     return ApplicationModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      code: json['code'] as String,
-      icon: json['icon'] as String,
-      typeName: json['typeName'] as String,
-      remark: json['remark'] as String,
-      directoryId: json['directoryId'] as String,
-      parentId: json['parentId'] as String,
-      resource: json['resource'] as String,
+      id: json['id'],
+      name: json['name'],
+      code: json['code'] ,
+      icon: json['icon'] ,
+      typeName: json['typeName'],
+      remark: json['remark'],
+      directoryId: json['directoryId'] ,
+      parentId: json['parentId'] ,
+      resource: json['resource'],
     );
   }
 

@@ -13,6 +13,7 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/util/encryption_util.dart';
+import 'package:orginone/util/notification_util.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 import 'message.dart';
@@ -456,7 +457,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
   }
 
   @override
-  receiveMessage(MsgSaveModel msg,bool isCurrentSession) {
+  receiveMessage(MsgSaveModel msg,bool isCurrentSession) async{
     var imsg = Message(this,msg);
     if (imsg.msgType == MessageType.recall.label) {
        try{
@@ -478,6 +479,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
     }
     if(userId != msg.fromId && !isCurrentSession){
       chatdata.value.noReadCount += 1;
+      NotificationUtil.showMsgNotification(msg);
     }
     if(isCurrentSession){
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {

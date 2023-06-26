@@ -4,13 +4,13 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/market/model.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/images.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/model/thing_model.dart' as thing;
 import 'package:orginone/pages/store/state.dart';
 
@@ -125,7 +125,7 @@ class StoreProvider implements IStoreProvider {
   @override
   Future<void> loadRecentList() async {
     var res = await kernel.anystore.get(
-      "${StoreCollName.recentlyOpen}.stores",
+      "${StoreCollName.storeOpen}.stores",
       user.id,
     );
     if (res.success && res.data != null) {
@@ -201,7 +201,7 @@ class StoreProvider implements IStoreProvider {
   @override
   Future<void> onRecordRecent(RecentlyUseModel data) async {
     var res = await kernel.anystore.set(
-      "${StoreCollName.recentlyOpen}.stores.T${data.id}",
+      "${StoreCollName.storeOpen}.stores.T${data.id}",
       {
         "operation": "replaceAll",
         'data': data.toJson(),

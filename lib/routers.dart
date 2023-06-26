@@ -14,7 +14,6 @@ import 'package:orginone/pages/other/choice_department/view.dart';
 import 'package:orginone/pages/other/choice_people/binding.dart';
 import 'package:orginone/pages/other/choice_people/view.dart';
 import 'package:orginone/pages/other/choice_thing/binding.dart';
-import 'package:orginone/pages/other/file/view.dart';
 import 'package:orginone/pages/home/home_page.dart';
 import 'package:orginone/pages/other/pdf/index.dart';
 import 'package:orginone/pages/other/qr_scan/binding.dart';
@@ -58,7 +57,8 @@ import 'pages/login/verification_code/view.dart';
 import 'pages/other/choice_gb/binding.dart';
 import 'pages/other/choice_gb/view.dart';
 import 'pages/other/choice_thing/view.dart';
-import 'pages/other/file/binding.dart';
+import 'pages/other/share_qr_code/binding.dart';
+import 'pages/other/share_qr_code/view.dart';
 import 'pages/other/storage_location/binding.dart';
 import 'pages/other/storage_location/view.dart';
 import 'pages/other/thing/binding.dart';
@@ -237,9 +237,6 @@ class Routers {
   //实体详情
   static const String thingDetails = '/thingDetails';
 
-  //文件夹
-  static const String file = '/file';
-
   //内部机构详情
   static const String departmentInfo = '/departmentInfo';
 
@@ -289,6 +286,8 @@ class Routers {
 
   static const String personListPage = "/personListPage";
   static const String pdfReader = "/pdfReader";
+
+  static const String shareQrCode = "/shareQrCode";
 
   static String get main {
     return login;
@@ -455,11 +454,6 @@ class Routers {
         binding: ThingDetailsBinding(),
       ),
       GetPage(
-        name: Routers.file,
-        page: () => FilePage(),
-        binding: FileBinding(),
-      ),
-      GetPage(
         name: Routers.settingCenter,
         page: () => SettingCenterPage(),
         binding: SettingCenterBinding(),
@@ -580,6 +574,11 @@ class Routers {
       GetPage(
         name: Routers.pdfReader,
         page: () => const PDFReaderPage(),
+      ),
+      GetPage(
+        name: Routers.shareQrCode,
+        page: () =>  ShareQrCodePage(),
+        binding: ShareQrCodeBinding(),
       ),
     ];
   }

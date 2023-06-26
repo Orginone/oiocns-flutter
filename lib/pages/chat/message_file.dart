@@ -5,7 +5,9 @@ import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
@@ -20,11 +22,9 @@ class MessageFile extends StatefulWidget {
 
 class _MessageFileState extends State<MessageFile> {
 
-  late String url;
+  late FileItemShare fileShare;
 
-  late String name;
-
-  late String extension;
+  late String type;
 
   bool fileExists = false;
 
@@ -34,20 +34,24 @@ class _MessageFileState extends State<MessageFile> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    url = Get.arguments['shareLink'];
-    name = Get.arguments['name'];
-    extension = Get.arguments['extension'];
+    fileShare = Get.arguments['file'];
+
+    type = Get.arguments['type'];
 
     FileDownloader().database.allRecords().then((records){
       try{
-        task = records.firstWhere((element) => element.task.filename == name && element.task.url == url).task as DownloadTask;
+        task = records.firstWhere((element) => element.task.filename == fileShare.name! && element.task.url == fileShare.shareLink!).task as DownloadTask;
         fileExists = task != null;
         setState(() {});
       }catch(e){
 
       };
     });
-
+    
+    if(type == "store"){
+      settingCtrl.store.onRecordRecent(
+          RecentlyUseModel(type: StoreEnum.file.label, file: FileItemModel.fromJson(fileShare.toJson())));
+    }
   }
 
 
@@ -69,7 +73,7 @@ class _MessageFileState extends State<MessageFile> {
               height: 40.h,
             ),
             Text(
-              name,
+              fileShare.name!,
               style: XFonts.size26Black0,
             ),
             SizedBox(
@@ -82,9 +86,9 @@ class _MessageFileState extends State<MessageFile> {
                     openFile();
                   } else {
                     task = DownloadTask(
-                        url:url,
+                        url:fileShare.shareLink!,
                         baseDirectory: BaseDirectory.applicationSupport,
-                        filename: name);
+                        filename: fileShare.name!);
                     ToastUtils.showMsg(msg: "开始下载");
                     await FileDownloader().download(task!,onProgress: (prpgress){
                       if(prpgress == 1){

@@ -6,7 +6,7 @@ import 'package:orginone/main.dart';
 
 class UseTracesNetWork {
   static Future<XThingArchives?> getThingArchives(String id) async {
-    ResultType result = await KernelApi.getInstance().anystore.loadThingArchives( {
+    ResultType result = await kernel.anystore.loadThingArchives( {
         "options": {
         "match": {
           "_id": {

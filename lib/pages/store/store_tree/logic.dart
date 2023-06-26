@@ -15,16 +15,6 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
   final StoreTreeState state = StoreTreeState();
 
 
-  @override
-  void onInit() async{
-    // TODO: implement onInit
-    super.onInit();
-    if (state.isRootDir) {
-      await loadUserSetting();
-      await loadCompanySetting();
-      state.model.refresh();
-    }
-  }
 
   Future<void> loadUserSetting() async {
     var user = state.model.value!.children[0];
@@ -64,28 +54,18 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
     }
   }
 
-  Future<List<StoreTreeNav>> buildSpeciesTree(
-      List<ISpecies> species, IBelong space) async {
-    List<StoreTreeNav> navs = [];
 
-    for (var specie in species) {
-      List<StoreTreeNav> thing = [];
-      List<IForm> forms = await specie.directory.loadForms();
-      thing.addAll(forms
-          .map((e) => StoreTreeNav(
-              children: [],
-              source: e,
-              name: e.metadata.name!,
-              space: space))
-          .toList());
-      var nav = StoreTreeNav(
-          children: [...thing],
-          source: specie,
-          name: specie.metadata.name!,
-          space: space);
-      navs.add(nav);
+  @override
+  void onReady() async{
+    // TODO: implement onReady
+    super.onReady();
+    if (state.isRootDir) {
+      LoadingDialog.showLoading(context);
+      await loadUserSetting();
+      await loadCompanySetting();
+      state.model.refresh();
+      LoadingDialog.dismiss(context);
     }
-    return navs;
   }
 
   void jumpThing(StoreTreeNav nav) {
@@ -95,10 +75,17 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
     });
   }
 
+  void jumpFile(StoreTreeNav nav) {
+    Get.toNamed(Routers.messageFile, arguments: {"file":nav.source!.shareInfo(),"type":"store"});
+  }
+
   void onNext(StoreTreeNav nav) {
     if (nav.source != null && nav.children.isEmpty) {
       if(nav.source.metadata.typeName.contains("配置") || nav.source.metadata.typeName == "分类项"){
         jumpThing(nav);
+      }
+      if(nav.source.metadata.typeName == '文件'){
+        jumpFile(nav);
       }
     } else {
       Get.toNamed(Routers.storeTree,

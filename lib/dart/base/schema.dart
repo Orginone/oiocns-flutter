@@ -235,9 +235,9 @@ class XDirectoryArray {
 }
 
 class XApplication extends XEntity {
-  late String directoryId;
-  late String parentId;
-  late String resource;
+  String? directoryId;
+  String? parentId;
+  String? resource;
   List<XWorkDefine>? defines;
   XApplication? parent;
   List<XApplication>? nodes;
@@ -268,9 +268,9 @@ class XApplication extends XEntity {
   });
 
   XApplication.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    directoryId = json['directoryId'] ?? "";
-    parentId = json['parentId'] ?? "";
-    resource = json['resource'] ?? "";
+    directoryId = json['directoryId'];
+    parentId = json['parentId'];
+    resource = json['resource'];
     defines = json['defines'] != null
         ? List<XWorkDefine>.from(
             json['defines'].map((x) => XWorkDefine.fromJson(x)))
@@ -450,8 +450,8 @@ class XSpeciesItemArray {
 }
 
 class XSpecies extends XEntity {
-  late String directoryId;
-  late String sourceId;
+  String? directoryId;
+  String? sourceId;
   List<XSpeciesItem>? speciesItems;
   List<XProperty>? speciesProps;
   XDirectory? directory;
