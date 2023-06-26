@@ -91,7 +91,7 @@ XEntity fileToEntity(
     code: data.key,
     icon: data.toJson().toString(),
     belongId: belongId,
-    typeName: data.contentType ?? "",
+    typeName: "文件",
     createTime: data.dateCreated?.toString() ?? "",
     updateTime: data.dateModified?.toString() ?? "",
     belong: belong,

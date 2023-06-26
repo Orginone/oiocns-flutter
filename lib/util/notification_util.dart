@@ -84,8 +84,9 @@ class NotificationUtil {
 Future<void> onStart(service) async {
   DartPluginRegistrant.ensureInitialized();
 
-  Timer.periodic(const Duration(seconds: 1), (timer) async {
-    if(Platform.isAndroid){
+  if(Platform.isAndroid){
+    Timer.periodic(const Duration(seconds: 3), (timer) async {
+      print('爱共享前台进程运行中');
       if (await service.isForegroundService()) {
         flutterLocalNotificationsPlugin.show(
           notificationId,
@@ -101,6 +102,6 @@ Future<void> onStart(service) async {
           ),
         );
       }
-    }
-  });
+    });
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
@@ -75,7 +76,7 @@ class StoreItem extends StatelessWidget {
             onTap: () async {
               if (item.type == 'file') {
                 Get.toNamed(Routers.messageFile,
-                    arguments: {'file':item.file!.shareInfo(),'type':'store'});
+                    arguments: {'file':FileItemShare.fromJson(item.file!.shareInfo()),'type':'store'});
               } else {
                 var thing = item.thing;
                 IForm? form = await settingCtrl.store

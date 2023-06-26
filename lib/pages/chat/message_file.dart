@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
@@ -46,7 +47,11 @@ class _MessageFileState extends State<MessageFile> {
 
       };
     });
-
+    
+    if(type == "store"){
+      settingCtrl.store.onRecordRecent(
+          RecentlyUseModel(type: StoreEnum.file.label, file: FileItemModel.fromJson(fileShare.toJson())));
+    }
   }
 
 

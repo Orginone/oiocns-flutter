@@ -125,7 +125,7 @@ class StoreProvider implements IStoreProvider {
   @override
   Future<void> loadRecentList() async {
     var res = await kernel.anystore.get(
-      "${StoreCollName.recentlyOpen}.stores",
+      "${StoreCollName.storeOpen}.stores",
       user.id,
     );
     if (res.success && res.data != null) {
@@ -201,7 +201,7 @@ class StoreProvider implements IStoreProvider {
   @override
   Future<void> onRecordRecent(RecentlyUseModel data) async {
     var res = await kernel.anystore.set(
-      "${StoreCollName.recentlyOpen}.stores.T${data.id}",
+      "${StoreCollName.storeOpen}.stores.T${data.id}",
       {
         "operation": "replaceAll",
         'data': data.toJson(),

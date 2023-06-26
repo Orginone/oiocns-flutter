@@ -16,7 +16,7 @@ class StoreCollName {
 
   static const mostUsed = 'most-used';
 
-  static const recentlyOpen = 'recently-open';
+  static const storeOpen = 'store-open';
 }
 
 enum OrgAuth{

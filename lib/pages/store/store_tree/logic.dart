@@ -75,10 +75,17 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
     });
   }
 
+  void jumpFile(StoreTreeNav nav) {
+    Get.toNamed(Routers.messageFile, arguments: {"file":nav.source!.shareInfo(),"type":"store"});
+  }
+
   void onNext(StoreTreeNav nav) {
     if (nav.source != null && nav.children.isEmpty) {
       if(nav.source.metadata.typeName.contains("配置") || nav.source.metadata.typeName == "分类项"){
         jumpThing(nav);
+      }
+      if(nav.source.metadata.typeName == '文件'){
+        jumpFile(nav);
       }
     } else {
       Get.toNamed(Routers.storeTree,
