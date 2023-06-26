@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_freqiently_usedList_controller.dart';
 import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/main.dart';
@@ -26,7 +27,7 @@ class StoreController extends BaseFrequentlyUsedListController<StoreState> {
           settingCtrl.store.onRecordRecent(
               RecentlyUseModel(type: StoreEnum.file.label, file:  used.fileItemShare));
           Get.toNamed(Routers.messageFile,
-              arguments: used.fileItemShare!.shareInfo());
+              arguments: FileItemShare.fromJson(used.fileItemShare!.shareInfo()));
           break;
         case StoreEnum.thing:
           var thing = used.thing;

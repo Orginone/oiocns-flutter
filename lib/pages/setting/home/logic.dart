@@ -1,22 +1,20 @@
 import 'dart:io';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:background_downloader/background_downloader.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/thing/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
-import 'package:orginone/dart/core/thing/file_info.dart';
+import 'package:orginone/dart/core/thing/property.dart';
 import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/hive_utils.dart';
-import 'package:orginone/util/local_store.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
@@ -27,13 +25,16 @@ class SettingCenterController
   final SettingCenterState state = SettingCenterState();
 
   @override
-  void onInit() async {
-    // TODO: implement onInit
-    super.onInit();
+  void onReady() async {
+    // TODO: implement onReady
+    super.onReady();
+
     if (state.isRootDir) {
+      LoadingDialog.showLoading(context);
       await loadUserSetting();
       await loadCompanySetting();
       state.model.refresh();
+      LoadingDialog.dismiss(context);
     }
   }
 
@@ -60,9 +61,7 @@ class SettingCenterController
   }
 
   void jumpLogin() async {
-    LocalStore.clear();
-    await HiveUtils.clean();
-    Get.offAllNamed(Routers.login);
+    settingCtrl.exitLogin();
   }
 
   void jumpDetails(SettingNavModel model) {
@@ -107,11 +106,10 @@ class SettingCenterController
         Get.toNamed(Routers.classificationInfo, arguments: {"data": model});
         break;
       case SpaceEnum.file:
-      // TODO: Handle this case.
+        Get.toNamed(Routers.messageFile, arguments: model.source!.shareInfo());
         break;
     }
   }
-
 
   Future<void> loadUserSetting() async {
     var user = state.model.value!.children[4];
@@ -198,6 +196,7 @@ class SettingCenterController
         if (success) {
           ToastUtils.showMsg(msg: "修改成功");
           item.name = name;
+          item.source.metadata.name = name;
           state.model.refresh();
         }
       } else {
@@ -297,6 +296,7 @@ class SettingCenterController
         if (success) {
           ToastUtils.showMsg(msg: "修改成功");
           item.name = name;
+          item.source.metadata.name = name;
           state.model.refresh();
         }
       } else {
@@ -343,10 +343,10 @@ class SettingCenterController
             context: context,
             textFields: [
               DialogTextField(
-                hintText: item.source.metadata.name,
+                hintText: item.name,
               )
             ],
-            title: "修改${item.source.metadata.name}名称")
+            title: "修改${item.name}名称")
         .then((str) {
       if (str != null && str[0].isNotEmpty) {
         item.source.rename(str[0]).then((value) {
@@ -360,7 +360,7 @@ class SettingCenterController
     });
   }
 
-  Future<void> delete(SettingNavModel item) async {
+  void delete(SettingNavModel item) async {
     bool success = await item.source.delete();
     if (success) {
       ToastUtils.showMsg(msg: "删除成功");
@@ -369,8 +369,36 @@ class SettingCenterController
     }
   }
 
+  void updateInfo(PopupMenuKey key, SettingNavModel item) async {
+    switch (item.spaceEnum) {
+      case SpaceEnum.directory:
+        createDir(item, true);
+        break;
+      case SpaceEnum.species:
+        createSpecies(item, item.source.metadata.typeName, true);
+        break;
+      case SpaceEnum.property:
+        createAttr(item, true);
+        break;
+      case SpaceEnum.applications:
+        createApplication(item, true);
+        break;
+      case SpaceEnum.form:
+        createSpecies(item, '分类', true);
+        break;
+      case SpaceEnum.user:
+      case SpaceEnum.company:
+      case SpaceEnum.person:
+      case SpaceEnum.departments:
+      case SpaceEnum.groups:
+      case SpaceEnum.cohorts:
+        createTarget(key, item, true);
+        break;
+    }
+  }
+
   void createTarget(PopupMenuKey key, SettingNavModel model,
-      {bool isEdit = false}) {
+      [bool isEdit = false]) {
     List<TargetType> targetType = [];
 
     switch (key) {
@@ -399,8 +427,7 @@ class SettingCenterController
         ];
         break;
     }
-
-    var item = model.source;
+    var item = model.source ?? model.space;
     showCreateOrganizationDialog(context, targetType, callBack: (String name,
             String code,
             String nickName,
@@ -417,7 +444,7 @@ class SettingCenterController
       );
       if (isEdit) {
         target.id = item.id;
-        target.belongId = item.target.belongId;
+        target.belongId = item.metadata.belongId;
         bool success = false;
         if (model.source == null) {
           success = await model.space!.update(target);
@@ -452,13 +479,146 @@ class SettingCenterController
         }
       }
     },
-        code: isEdit ? item.target.code : "",
-        name: isEdit ? item.teamName : "",
-        nickName: isEdit ? item.name : "",
-        identify: isEdit ? (item.target.code ?? "") : "",
-        remark: isEdit ? (item.target.remark ?? "") : "",
-        type: isEdit ? TargetType.getType(item.typeName) : null,
+        code: isEdit ? item.metadata.code : "",
+        name: isEdit ? item.metadata.name : "",
+        nickName: isEdit ? item.metadata?.team?.name ?? "" : "",
+        identify: isEdit ? (item.metadata.team?.code ?? "" ?? "") : "",
+        remark: isEdit ? (item.metadata.remark ?? "") : "",
+        type: isEdit ? TargetType.getType(item.metadata.typeName) : null,
         isEdit: isEdit);
+  }
+
+  void createAttr(SettingNavModel item, [bool isEdit = false]) {
+    showCreateAttributeDialog(context,
+        onCreate: (name, code, valueType, info, remake, [unit, dict]) async {
+      var data = PropertyModel(
+          name: name,
+          code: code,
+          valueType: valueType,
+          info: info,
+          remark: remake,
+          unit: unit,
+          speciesId: dict?.id);
+      if (isEdit) {
+        var success = await (item.source as IProperty).update(data);
+        if (success) {
+          item.source.metadata.name = name;
+          item.source.metadata.code = code;
+          item.source.metadata.valueType = valueType;
+          item.source.metadata.info = info;
+          item.source.metadata.unit = unit;
+          item.source.metadata.speciesId = dict?.id;
+          ToastUtils.showMsg(msg: "更新成功");
+          item.name = name;
+          state.model.refresh();
+        }
+      } else {
+        IProperty? property;
+        switch (item.spaceEnum!) {
+          case SpaceEnum.directory:
+            property = await item.source.createProperty(data);
+            break;
+          case SpaceEnum.user:
+          case SpaceEnum.company:
+            property = await item.space!.directory.createProperty(data);
+            break;
+          case SpaceEnum.person:
+          case SpaceEnum.departments:
+          case SpaceEnum.groups:
+          case SpaceEnum.cohorts:
+            property = await item.source!.directory.createProperty(data);
+            break;
+        }
+        if (property != null) {
+          ToastUtils.showMsg(msg: "创建成功");
+
+          var nav = SettingNavModel(
+              id: property.id,
+              name: property.metadata.name!,
+              space: item.space,
+              source: property,
+              spaceEnum: SpaceEnum.directory,
+              image: property.metadata.avatarThumbnail());
+
+          if (item.spaceEnum != SpaceEnum.user &&
+              item.spaceEnum != SpaceEnum.company) {
+            item.children.add(nav);
+          } else {
+            item.children[0].children.add(nav);
+          }
+          state.model.refresh();
+        }
+      }
+    },
+        name: isEdit ? item.source.metadata.name : '',
+        code: isEdit ? item.source.metadata.code : '',
+        valueType: item.source.metadata.valueType,
+        info: item.source.metadata.info,
+        unit: item.source.metadata.unit);
+  }
+
+  void createApplication(SettingNavModel item, [bool isEdit = false]) {
+    showClassCriteriaDialog(
+      context,
+      [SpeciesType.application],
+      isEdit: isEdit,
+      name: isEdit?item.source.metadata.name:null,
+      code: isEdit?item.source.metadata.code:null,
+      typeName: isEdit?item.source.metadata.typeName:null,
+      remark: isEdit?item.source.metadata.remark:null,
+      resource: isEdit?item.source.metadata.resource:null,
+      callBack: (String name,String code,String typeName,String remark,[String? resource]) async{
+        var data = ApplicationModel(name: name,code: code,remark: remark,resource: resource,typeName: typeName);
+        if(isEdit){
+          var success = await (item.source as IApplication).update(data);
+          if (success) {
+            item.source.metadata.name = name;
+            item.source.metadata.code = code;
+            item.source.metadata.typeName = typeName;
+            item.source.metadata.resource = resource;
+            item.source.metadata.remark = remark;
+            ToastUtils.showMsg(msg: "更新成功");
+            item.name = name;
+            state.model.refresh();
+          }
+        }else{
+          IApplication? application;
+          switch (item.spaceEnum!) {
+            case SpaceEnum.directory:
+              application = await item.source.createApplication(data);
+              break;
+            case SpaceEnum.user:
+            case SpaceEnum.company:
+            application = await item.space!.directory.createApplication(data);
+              break;
+            case SpaceEnum.person:
+            case SpaceEnum.departments:
+            case SpaceEnum.groups:
+            case SpaceEnum.cohorts:
+            application = await item.source!.directory.createApplication(data);
+              break;
+          }
+          if (application != null) {
+            ToastUtils.showMsg(msg: "创建成功");
+            var nav = SettingNavModel(
+                id: application.id,
+                name: application.metadata.name!,
+                space: item.space,
+                source: application,
+                spaceEnum: SpaceEnum.directory,
+                image: application.metadata.avatarThumbnail());
+
+            if (item.spaceEnum != SpaceEnum.user &&
+                item.spaceEnum != SpaceEnum.company) {
+              item.children.add(nav);
+            } else {
+              item.children[0].children.add(nav);
+            }
+            state.model.refresh();
+          }
+        }
+      }
+    );
   }
 
   void operation(PopupMenuKey key, SettingNavModel item) {
@@ -467,7 +627,7 @@ class SettingCenterController
         createDir(item);
         break;
       case PopupMenuKey.createApplication:
-        // TODO: Handle this case.
+        createApplication(item);
         break;
       case PopupMenuKey.createSpecies:
         createSpecies(item, '分类');
@@ -476,7 +636,7 @@ class SettingCenterController
         createSpecies(item, '字典');
         break;
       case PopupMenuKey.createAttr:
-        // TODO: Handle this case.
+        createAttr(item);
         break;
       case PopupMenuKey.createThing:
         createSpecies(item, '实体配置');
@@ -492,7 +652,7 @@ class SettingCenterController
         createTarget(key, item);
         break;
       case PopupMenuKey.updateInfo:
-        // TODO: Handle this case.
+        updateInfo(key, item);
         break;
       case PopupMenuKey.rename:
         rename(item);
@@ -504,7 +664,18 @@ class SettingCenterController
         uploadFile(item);
         break;
       case PopupMenuKey.shareQr:
-        // TODO: Handle this case.
+
+        var entity;
+        if (item.spaceEnum == SpaceEnum.user ||
+            item.spaceEnum == SpaceEnum.company) {
+          entity = item.space!.metadata;
+        }else{
+          entity = item.source.metadata;
+        }
+        Get.toNamed(
+          Routers.shareQrCode,
+          arguments: {"entity":entity},
+        );
         break;
       case PopupMenuKey.openChat:
         if (item.spaceEnum == SpaceEnum.user ||

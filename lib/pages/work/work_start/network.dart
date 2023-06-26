@@ -13,7 +13,7 @@ import 'package:orginone/util/toast_utils.dart';
 class WorkStartNetWork {
   static Future<WorkNodeModel?> getDefineNode(String id) async {
     WorkNodeModel? node;
-    ResultType<WorkNodeModel> result = await KernelApi.getInstance().queryWorkNodes(
+    ResultType<WorkNodeModel> result = await kernel.queryWorkNodes(
         IdReq(
             id: id,
         ));
@@ -52,7 +52,7 @@ class WorkStartNetWork {
 
   static Future<List<XWorkInstance>> getWorkInstance({String? id,String? speciesId}) async {
     List<XWorkInstance> WorkInstacnes = [];
-    ResultType<XWorkInstanceArray> result = await KernelApi.getInstance()
+    ResultType<XWorkInstanceArray> result = await kernel
         .queryInstanceByApply(FlowReq(
         id: id,spaceId: '0',speciesId: speciesId, page: PageRequest(offset: 0, limit: 9999, filter: '')));
 

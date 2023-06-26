@@ -13,10 +13,13 @@ import 'package:orginone/dart/core/thing/store/provider.dart';
 import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/dart/core/work/provider.dart';
 import 'package:orginone/event/home_data.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus.dart';
 import 'package:orginone/util/event_bus_helper.dart';
+import 'package:orginone/util/hive_utils.dart';
+import 'package:orginone/util/local_store.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 const sessionUserName = 'sessionUser';
@@ -172,6 +175,14 @@ class SettingController extends GetxController {
            }
        });
      }
+  }
+
+  void exitLogin() async{
+    kernel.stop();
+    LocalStore.clear();
+    await HiveUtils.clean();
+    homeEnum.value = HomeEnum.door;
+    Get.offAllNamed(Routers.login);
   }
 }
 

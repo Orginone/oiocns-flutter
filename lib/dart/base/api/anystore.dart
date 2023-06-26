@@ -19,12 +19,12 @@ class AnyStore {
 
   static AnyStore? _instance;
 
-  static AnyStore getInstance({String url = "/orginone/anydata/hub"}) {
-    _instance ??= AnyStore(request: HttpUtil());
+  factory AnyStore(){
+    _instance ??= AnyStore._(request: HttpUtil());
     return _instance!;
   }
 
-  AnyStore({required HttpUtil request})
+  AnyStore._({required HttpUtil request})
       : accessToken = "",
         _storeHub = StoreHub(Constant.anyStoreHub),
         _requester = request {
@@ -45,6 +45,11 @@ class AnyStore {
   stop() async {
     _subscribeCallbacks.clear();
     await _storeHub.dispose();
+    _instance = null;
+  }
+
+  void start() {
+    _storeHub.start();
   }
 
   /// 是否在线

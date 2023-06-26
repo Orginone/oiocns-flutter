@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
-import 'package:signalr_core/signalr_core.dart';
+import 'package:signalr_netcore/signalr_client.dart';
 
 /// 存储集线器
 class StoreHub {
@@ -32,21 +32,21 @@ class StoreHub {
     int interval = 3000,
   })  : _timeout = timeout,
         _connection = HubConnectionBuilder()
-            .withUrl(
-                url,
-                HttpConnectionOptions(
+            .withUrl(url,
+                options: HttpConnectionOptions(
                     skipNegotiation: true,
-                    transport: HttpTransportType.webSockets))
+                    transport: HttpTransportType.WebSockets))
+            .configureLogging(Logger('logger'))
             .build() {
     _connection.keepAliveIntervalInMilliseconds = interval;
     _connection.serverTimeoutInMilliseconds = timeout;
-    _connection.onclose((err) {
-      if (!isConnected && err != null) {
+    _connection.onclose(({error}) {
+      if (!isConnected && error != null) {
         for (final callback in _disconnectedCallbacks) {
-          callback(err);
+          callback(error);
         }
-        ToastUtils.showMsg(msg: "连接断开,${_timeout}ms后重试。${err.toString()}`");
-        log.warning("连接断开,${_timeout}ms后重试。${err.toString()}`");
+        ToastUtils.showMsg(msg: "连接断开,${_timeout}ms后重试。${error.toString()}`");
+        log.warning("连接断开,${_timeout}ms后重试。${error.toString()}`");
         Future.delayed(Duration(milliseconds: _timeout), () {
           _starting();
         });
@@ -57,7 +57,7 @@ class StoreHub {
   /// 是否处于连接着的状态
   /// @return {boolean} 状态
   bool get isConnected {
-    return _isStarted && _connection.state == HubConnectionState.connected;
+    return _isStarted && _connection.state == HubConnectionState.Connected;
   }
 
   /// 销毁连接
@@ -137,20 +137,21 @@ class StoreHub {
   /// @param {string} methodName 方法名
   /// @param {any[]} args 参数
   /// @returns {Promise<ResultType>} 异步结果
-  Future<dynamic> invoke(String methodName, {List<dynamic>? args}) async {
+  Future<dynamic> invoke(String methodName, {List<Object>? args}) async {
     log.info("========== storeHub-invoke-start =============");
     log.info("=====> url: ${_connection.baseUrl}");
     log.info("=====> methodName: $methodName");
     log.info("=====> args: $args");
     try {
       var res = await _connection.invoke(methodName, args: args);
+      if(res!= null){
+        if((res as Map)['code'] == 401){
+          settingCtrl.exitLogin();
+          return;
+        }
+      }
       log.info("=====> res: $res");
       log.info("========== storeHub-invoke-end =============");
-      if(res['code'] == 401){
-        LoadingDialog.dismiss(Get.context!);
-        Get.offAndToNamed(Routers.login);
-        return;
-      }
       return res;
     } catch (err) {
       log.info("========== storeHub-invoke-end =============");

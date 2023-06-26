@@ -116,7 +116,7 @@ class PropertyController extends BaseController<PropertyState> {
 
   void createProperty({XProperty? property}) async{
     showCreateAttributeDialog(context,
-        onCreate: (name, code, type, remark,unit,dict) async {
+        onCreate: (name, code, type,info, remark,[unit,dict]) async {
           var model = PropertyModel(
             name: name,
             code: code,

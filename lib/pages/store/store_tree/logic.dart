@@ -15,16 +15,6 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
   final StoreTreeState state = StoreTreeState();
 
 
-  @override
-  void onInit() async{
-    // TODO: implement onInit
-    super.onInit();
-    if (state.isRootDir) {
-      await loadUserSetting();
-      await loadCompanySetting();
-      state.model.refresh();
-    }
-  }
 
   Future<void> loadUserSetting() async {
     var user = state.model.value!.children[0];
@@ -64,28 +54,18 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
     }
   }
 
-  Future<List<StoreTreeNav>> buildSpeciesTree(
-      List<ISpecies> species, IBelong space) async {
-    List<StoreTreeNav> navs = [];
 
-    for (var specie in species) {
-      List<StoreTreeNav> thing = [];
-      List<IForm> forms = await specie.directory.loadForms();
-      thing.addAll(forms
-          .map((e) => StoreTreeNav(
-              children: [],
-              source: e,
-              name: e.metadata.name!,
-              space: space))
-          .toList());
-      var nav = StoreTreeNav(
-          children: [...thing],
-          source: specie,
-          name: specie.metadata.name!,
-          space: space);
-      navs.add(nav);
+  @override
+  void onReady() async{
+    // TODO: implement onReady
+    super.onReady();
+    if (state.isRootDir) {
+      LoadingDialog.showLoading(context);
+      await loadUserSetting();
+      await loadCompanySetting();
+      state.model.refresh();
+      LoadingDialog.dismiss(context);
     }
-    return navs;
   }
 
   void jumpThing(StoreTreeNav nav) {

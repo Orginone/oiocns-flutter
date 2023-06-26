@@ -59,6 +59,8 @@ import 'pages/other/choice_gb/binding.dart';
 import 'pages/other/choice_gb/view.dart';
 import 'pages/other/choice_thing/view.dart';
 import 'pages/other/file/binding.dart';
+import 'pages/other/share_qr_code/binding.dart';
+import 'pages/other/share_qr_code/view.dart';
 import 'pages/other/storage_location/binding.dart';
 import 'pages/other/storage_location/view.dart';
 import 'pages/other/thing/binding.dart';
@@ -289,6 +291,8 @@ class Routers {
 
   static const String personListPage = "/personListPage";
   static const String pdfReader = "/pdfReader";
+
+  static const String shareQrCode = "/shareQrCode";
 
   static String get main {
     return login;
@@ -580,6 +584,11 @@ class Routers {
       GetPage(
         name: Routers.pdfReader,
         page: () => const PDFReaderPage(),
+      ),
+      GetPage(
+        name: Routers.shareQrCode,
+        page: () =>  ShareQrCodePage(),
+        binding: ShareQrCodeBinding(),
       ),
     ];
   }

@@ -39,7 +39,7 @@ void main() async {
   runApp(const ScreenInit());
 }
 
-final kernel = KernelApi.getInstance();
+KernelApi get kernel => KernelApi();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver();
 
@@ -97,7 +97,7 @@ class ScreenInit extends StatelessWidget {
     }
 
     if (account != null) {
-      if (KernelApi.getInstance().isOnline) {
+      if (kernel.isOnline) {
         await login();
       } else {
         Future.delayed(const Duration(milliseconds: 100), () async {

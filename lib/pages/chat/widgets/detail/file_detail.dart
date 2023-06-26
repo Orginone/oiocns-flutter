@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
@@ -91,6 +92,6 @@ class FileDetail extends BaseDetail {
 
   @override
   void onTap(BuildContext context) {
-    Get.toNamed(Routers.messageFile, arguments: message.body?.toJson());
+    Get.toNamed(Routers.messageFile, arguments: FileItemShare.fromJson(message.body!.toJson()));
   }
 }

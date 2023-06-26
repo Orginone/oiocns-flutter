@@ -147,11 +147,11 @@ class LoadingDialog extends Dialog {
     );
   }
 
-  static Future<void> dismiss(BuildContext context) async {
+  static void dismiss(BuildContext context) {
     timer?.cancel();
     if (_requestShow) {
       _requestShow = false;
-      return Navigator.of(context).pop();
+      Navigator.of(context).pop();
     }
   }
 }

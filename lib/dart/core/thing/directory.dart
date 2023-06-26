@@ -47,6 +47,8 @@ abstract class IDirectory extends IFileInfo<XDirectory> {
   //上传任务列表
   late List<TaskModel> taskList;
 
+  late bool isLoaded;
+
   //目录下的内容
   List<IFileInfo<XEntity>> content(int mode);
 
@@ -286,7 +288,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
       if (res.success && res.data!=null) {
         final data = res.data!.result ?? [];
         applications = data
-            .where((i) => i.parentId.isEmpty)
+            .where((i) => i.parentId == null || i.parentId == '')
             .map((i) => Application(i, this, null, data))
             .toList();
       }
@@ -406,9 +408,10 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   }
 
   @override
-  Future<bool> loadContent({bool reload = false}) async{
+  Future<bool> loadContent({bool reload = false}) async {
     // TODO: implement loadContent
-    if(reload){
+
+    if (reload && !isLoaded) {
       await loadSubDirectory();
       await loadFiles();
       await loadForms();
@@ -416,7 +419,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
       await loadSpecieses();
       await loadApplications();
     }
-
+    isLoaded = reload;
     return false;
   }
 
@@ -445,4 +448,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
             ))
         .toList();
   }
+
+  @override
+  bool isLoaded = false;
 }
