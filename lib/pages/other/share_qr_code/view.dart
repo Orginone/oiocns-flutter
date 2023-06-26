@@ -17,11 +17,14 @@ class ShareQrCodePage
     return GyScaffold(
       titleName: state.entity.name!,
       backgroundColor: Colors.white,
-      body: QrImage(
-        data: '${Constant.host}/${state.entity.id}',
-        version: QrVersions.auto,
-        size:Get.width,
-        embeddedImage: image!=null?MemoryImage(image):null,
+      body: Align(
+        alignment: Alignment.center,
+        child: QrImage(
+          data: '${Constant.host}/${state.entity.id}',
+          version: QrVersions.auto,
+          size:400.w,
+          embeddedImage: image!=null?MemoryImage(image):null,
+        ),
       ),
     );
   }

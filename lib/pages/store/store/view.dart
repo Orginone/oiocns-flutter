@@ -76,7 +76,7 @@ class StorePage extends BaseGetPageView<StoreController,StoreState>{
   Widget button(Popular recent) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed(Routers.file);
+
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

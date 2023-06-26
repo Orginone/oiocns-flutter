@@ -27,7 +27,7 @@ class StoreController extends BaseFrequentlyUsedListController<StoreState> {
           settingCtrl.store.onRecordRecent(
               RecentlyUseModel(type: StoreEnum.file.label, file:  used.fileItemShare));
           Get.toNamed(Routers.messageFile,
-              arguments: FileItemShare.fromJson(used.fileItemShare!.shareInfo()));
+              arguments: {"file":FileItemShare.fromJson(used.fileItemShare!.shareInfo()),"type":"store"});
           break;
         case StoreEnum.thing:
           var thing = used.thing;

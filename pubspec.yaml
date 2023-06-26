@@ -26,7 +26,7 @@ flutter_icons:
   image_path: "images/logo.png"
 
 flutter_app_name:
-  name: "共享云"
+  name: "爱共享"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -114,15 +114,13 @@ dependencies:
 
   optimize_battery: ^0.0.4
   auto_start_flutter: ^0.1.1
-  flutter_background_service:
-    ^2.4.5
+  flutter_background_service: ^3.0.1
 
-    # 消息总线
-  event_bus:
-    2.0.0
-    # 数据本地化
+  #消息总线
+  event_bus: 2.0.0
+  #数据本地化
   shared_preferences: ^2.0.17
-  # 图表
+  #图表
   syncfusion_flutter_charts: ^19.3.49
   fl_chart: ^0.61.0
   google_fonts: ^4.0.3

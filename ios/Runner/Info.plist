@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>共享云</string>
+	<string>爱共享</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -76,5 +76,9 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+        <string>dev.flutter.background.refresh</string>
+    </array>
 </dict>
 </plist>

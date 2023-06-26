@@ -17,7 +17,7 @@
         android:usesCleartextTraffic="true"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:label="共享云"
+        android:label="爱共享"
         >
         <activity
             android:name="com.github.orginone.MainActivity"
@@ -53,7 +53,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
-
         <!-- declare customized Initializer -->
     </application>
 </manifest>

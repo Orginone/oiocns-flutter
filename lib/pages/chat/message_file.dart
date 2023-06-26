@@ -23,6 +23,8 @@ class _MessageFileState extends State<MessageFile> {
 
   late FileItemShare fileShare;
 
+  late String type;
+
   bool fileExists = false;
 
   DownloadTask? task;
@@ -31,7 +33,9 @@ class _MessageFileState extends State<MessageFile> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    fileShare = Get.arguments;
+    fileShare = Get.arguments['file'];
+
+    type = Get.arguments['type'];
 
     FileDownloader().database.allRecords().then((records){
       try{

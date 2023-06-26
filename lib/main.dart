@@ -1,7 +1,13 @@
+import 'dart:async';
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -23,9 +29,8 @@ void main() async {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
   await HiveUtils.init();
-
   // 初始化通知配置
-  NotificationUtil.initNotification();
+  NotificationUtil.initializeService();
   await LocalStore.instance();
   // 日志初始化
   Logger.root.level = Level.ALL;
@@ -39,6 +44,7 @@ void main() async {
   runApp(const ScreenInit());
 }
 
+final service = FlutterBackgroundService();
 KernelApi get kernel => KernelApi();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver();
