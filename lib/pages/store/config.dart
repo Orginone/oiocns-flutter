@@ -135,6 +135,7 @@ Future<List<StoreTreeNav>> loadCohorts(
     cohortNav.children = [
       StoreTreeNav(
         id: SpaceEnum.cohorts.label,
+        spaceEnum: SpaceEnum.directory,
         name: "${SpaceEnum.cohorts.label}文件",
         space: belong,
         children: await loadFile(cohort.directory.files,belong),
@@ -167,6 +168,7 @@ Future<List<StoreTreeNav>> loadGroup(
         id:SpaceEnum.groups.label ,
         name: "${SpaceEnum.groups.label}文件",
         space: belong,
+        spaceEnum: SpaceEnum.directory,
         children: await loadFile(group.directory.files,belong),
       ),
     ];
@@ -199,6 +201,7 @@ Future<List<StoreTreeNav>> loadTargets(
         id: target.metadata.typeName!,
         name: "${target.metadata.typeName}文件",
         space: belong,
+        spaceEnum: SpaceEnum.directory,
         children: await loadFile(target.directory.files,belong),
       ),
     ];

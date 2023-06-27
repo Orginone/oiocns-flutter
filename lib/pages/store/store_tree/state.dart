@@ -50,14 +50,13 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
 class StoreTreeNav extends BaseBreadcrumbNavModel<StoreTreeNav> {
   IBelong? space;
   IForm? form;
-  SpaceEnum? spaceEnum;
   StoreTreeNav(
       {super.id = '',
       super.name = '',
       required List<StoreTreeNav> children,
       super.image,
       super.source,
-      this.space,this.form, this.spaceEnum}) {
+      this.space,this.form, super.spaceEnum}) {
     this.children = children;
   }
 }

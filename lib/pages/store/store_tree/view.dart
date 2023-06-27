@@ -25,6 +25,9 @@ class StoreTreePage
     return state.model.value!.children.map((e) {
       return StoreNavItem(
         item: e,
+        onTap: (){
+          controller.jumpDetails(e);
+        },
         onNext: () {
           controller.onNext(e);
         },

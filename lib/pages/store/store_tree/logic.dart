@@ -22,6 +22,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
       StoreTreeNav(
         name: "个人文件",
         space: user.space,
+        spaceEnum: SpaceEnum.directory,
         children: await loadFile(user.space!.directory.files,user.space!),
       ),
     ];
@@ -38,6 +39,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
         StoreTreeNav(
           name: "单位文件",
           space: company.space,
+          spaceEnum: SpaceEnum.directory,
           children: await loadFile(company.space!.directory.files,company.space!),
         ),
       ];
@@ -50,6 +52,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
           company.space!));
       function.addAll(
           await loadGroup((company.space! as Company).groups, company.space!));
+      function.addAll(await loadCohorts(company.space!.cohorts, company.space!));
       company.children.addAll(function);
     }
   }
@@ -68,6 +71,31 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
     }
   }
 
+
+  void jumpDetails(StoreTreeNav nav) {
+    switch (nav.spaceEnum) {
+      case SpaceEnum.departments:
+        Get.toNamed(Routers.departmentInfo,
+            arguments: {'depart': nav.source});
+        break;
+      case SpaceEnum.groups:
+        Get.toNamed(Routers.outAgencyInfo, arguments: {'group': nav.source});
+        break;
+      case SpaceEnum.cohorts:
+        Get.toNamed(Routers.cohortInfo, arguments: {'cohort': nav.source});
+        break;
+      case SpaceEnum.user:
+        Get.toNamed(Routers.userInfo);
+        break;
+      case SpaceEnum.company:
+        Get.toNamed(Routers.companyInfo, arguments: {"company": nav.space});
+        break;
+      default:
+        onNext(nav);
+        break;
+    }
+  }
+
   void jumpThing(StoreTreeNav nav) {
     Get.toNamed(Routers.thing, arguments: {
       'form': nav.form??nav.source,
@@ -83,9 +111,11 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
     if (nav.source != null && nav.children.isEmpty) {
       if(nav.source.metadata.typeName.contains("配置") || nav.source.metadata.typeName == "分类项"){
         jumpThing(nav);
-      }
-      if(nav.source.metadata.typeName == '文件'){
+      } else if(nav.spaceEnum == SpaceEnum.file){
         jumpFile(nav);
+      } else {
+        Get.toNamed(Routers.storeTree,
+            preventDuplicates: false, arguments: {'data': nav});
       }
     } else {
       Get.toNamed(Routers.storeTree,

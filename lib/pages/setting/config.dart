@@ -279,7 +279,7 @@ Future<List<SettingNavModel>> loadCohorts(
         id: SpaceEnum.cohorts.label,
         name: "${SpaceEnum.cohorts.label}文件",
         space: belong,
-        spaceEnum: SpaceEnum.cohorts,
+        spaceEnum: SpaceEnum.directory,
         children: [
           ...await loadFile(cohort.directory.files, belong),
           ...await loadSpecies(cohort.directory.specieses, belong),
@@ -292,7 +292,7 @@ Future<List<SettingNavModel>> loadCohorts(
         id: SpaceEnum.cohorts.label,
         name: "${SpaceEnum.cohorts.label}成员",
         space: belong,
-        spaceEnum: SpaceEnum.cohorts,
+        spaceEnum: SpaceEnum.person,
         children: cohort.members.map((e){
           return SettingNavModel(
             id: e.id!,
@@ -331,7 +331,7 @@ Future<List<SettingNavModel>> loadDepartment(
         id: SpaceEnum.departments.label,
         name: "${SpaceEnum.departments.label}文件",
         space: belong,
-        spaceEnum: SpaceEnum.departments,
+        spaceEnum: SpaceEnum.directory,
         children: [
           ...await loadFile(department.directory.files, belong),
           ...await loadSpecies(department.directory.specieses, belong),
@@ -344,7 +344,7 @@ Future<List<SettingNavModel>> loadDepartment(
         id: SpaceEnum.departments.label,
         name: "${SpaceEnum.departments.label}成员",
         space: belong,
-        spaceEnum: SpaceEnum.departments,
+        spaceEnum: SpaceEnum.person,
         children: department.members.map((e){
           return SettingNavModel(
             id: e.id!,
@@ -388,7 +388,7 @@ Future<List<SettingNavModel>> loadGroup(
         id: SpaceEnum.groups.label,
         name: "${SpaceEnum.groups.label}文件",
         space: belong,
-        spaceEnum: SpaceEnum.groups,
+        spaceEnum: SpaceEnum.directory,
         children: [
           ...await loadFile(group.directory.files, belong),
           ...await loadSpecies(group.directory.specieses, belong),
@@ -401,7 +401,7 @@ Future<List<SettingNavModel>> loadGroup(
         id: SpaceEnum.groups.label,
         name: "${SpaceEnum.groups.label}成员",
         space: belong,
-        spaceEnum: SpaceEnum.groups,
+        spaceEnum: SpaceEnum.person,
         children: group.members.map((e){
           return SettingNavModel(
             id: e.id!,

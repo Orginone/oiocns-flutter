@@ -86,9 +86,6 @@ class SettingCenterController
           Routers.security,
         );
         break;
-      case SpaceEnum.directory:
-      // TODO: Handle this case.
-        break;
       case SpaceEnum.departments:
         Get.toNamed(Routers.departmentInfo,
             arguments: {'depart': model.source});
@@ -121,10 +118,12 @@ class SettingCenterController
             user.space!.directory.applications, user.space!),
         ...await loadForm(user.space!.directory.forms, user.space!),
         ...await loadPropertys(user.space!.directory.propertys, user.space!),
-      ]),
+      ],spaceEnum: SpaceEnum.directory),
       SettingNavModel(
         name: "我的好友",
         space: user.space,
+        spaceEnum: SpaceEnum.person,
+        image: user.space!.metadata.avatarThumbnail(),
         children: user.space!.members.map((e) {
           return SettingNavModel(
             name: e.name!,
@@ -155,10 +154,12 @@ class SettingCenterController
           ...await loadForm(company.space!.directory.forms, company.space!),
           ...await loadPropertys(
               company.space!.directory.propertys, company.space!),
-        ]),
+        ],spaceEnum: SpaceEnum.directory),
         SettingNavModel(
           name: "单位成员",
           space: company.space,
+          spaceEnum: SpaceEnum.company,
+          image: company.space!.metadata.avatarThumbnail(),
           children: company.space!.members.map((e) {
             return SettingNavModel(
               id: e.id!,

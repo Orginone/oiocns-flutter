@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 
 abstract class BaseBreadcrumbNavState<T extends BaseBreadcrumbNavModel> extends BaseGetState{
@@ -22,8 +23,9 @@ abstract class BaseBreadcrumbNavState<T extends BaseBreadcrumbNavModel> extends 
   late List<T> children;
   dynamic image;
   dynamic source;
+  SpaceEnum? spaceEnum;
 
-  BaseBreadcrumbNavModel({this.id = '',this.name = '',this.children = const [],this.source,this.image});
+  BaseBreadcrumbNavModel({this.id = '',this.name = '',this.children = const [],this.source,this.image,this.spaceEnum});
 }
 
 class BaseBreadcrumbNavInfo{

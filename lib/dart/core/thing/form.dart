@@ -132,8 +132,8 @@ class Form extends FileInfo<XForm> implements IForm {
   @override
   Future<bool> loadContent({bool reload = false}) async{
     if(reload && !isLoaded){
-      await loadAttributes(reload: reload);
-      await loadItems(reload: reload);
+     await Future.wait([    loadAttributes(reload: reload),
+      loadItems(reload: reload),]);
     }
     isLoaded = reload;
     return true;

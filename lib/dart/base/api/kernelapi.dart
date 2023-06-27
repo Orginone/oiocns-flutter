@@ -6,7 +6,6 @@ import 'package:orginone/dart/base/api/anystore.dart';
 import 'package:orginone/dart/base/api/storehub.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/main.dart';
 import 'package:orginone/model/user_model.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/http_util.dart';

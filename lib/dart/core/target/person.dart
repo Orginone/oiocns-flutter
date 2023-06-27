@@ -300,19 +300,21 @@ class Person extends Belong implements IPerson {
 
   @override
   Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async {
-    await loadGivedIdentitys(reload: reload);
-    await loadCompanys(reload: reload);
-    await loadCohorts(reload: reload);
-    await loadMembers(reload: reload);
-    await loadSuperAuth(reload: reload);
-    await directory.loadContent(reload: reloadContent);
+    await Future.wait([
+      loadGivedIdentitys(reload: reload),
+      loadCompanys(reload: reload),
+      loadCohorts(reload: reload),
+      loadMembers(reload: reload),
+      loadSuperAuth(reload: reload),
+       directory.loadContent(reload: reloadContent),
+    ]);
+    superAuth?.deepLoad(reload: reload);
     for (var company in companys) {
-      await company.deepLoad(reload: reload,reloadContent: reloadContent);
+      await company.deepLoad(reload: reload, reloadContent: reloadContent);
     }
     for (var cohort in cohorts) {
-      await cohort.deepLoad(reload: reload,reloadContent: reloadContent);
+      await cohort.deepLoad(reload: reload, reloadContent: reloadContent);
     }
-    superAuth?.deepLoad(reload: reload);
   }
 
   @override

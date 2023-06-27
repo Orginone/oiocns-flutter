@@ -72,7 +72,7 @@ abstract class FileInfo<T extends XEntity> extends Entity
 
   @override
   Future<bool> loadContent({bool reload = false}) async {
-    return await Future.delayed(Duration(milliseconds: reload ? 100 : 0));
+    return reload;
   }
 }
 

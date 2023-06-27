@@ -410,12 +410,14 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
     // TODO: implement loadContent
 
     if (reload && !isLoaded) {
-      await loadSubDirectory();
-      await loadFiles();
-      await loadForms();
-      await loadPropertys();
-      await loadSpecieses();
-      await loadApplications();
+      await Future.wait([
+        loadSubDirectory(),
+        loadFiles(),
+        loadForms(),
+        loadPropertys(),
+        loadSpecieses(),
+        loadApplications(),
+      ]);
     }
     isLoaded = reload;
     return false;

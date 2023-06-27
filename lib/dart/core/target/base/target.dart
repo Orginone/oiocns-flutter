@@ -116,8 +116,8 @@ abstract class Target extends Team implements ITarget {
 
   @override
   Future<bool> loadContent({bool reload = false}) async{
-    await super.loadContent(reload: reload);
-    await loadIdentitys(reload: reload);
+    await Future.wait([  super.loadContent(reload: reload),
+     loadIdentitys(reload: reload),]);
     return true;
   }
 

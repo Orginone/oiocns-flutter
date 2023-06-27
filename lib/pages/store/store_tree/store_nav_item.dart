@@ -38,18 +38,11 @@ class StoreNavItem extends BaseBreadcrumbNavItem<StoreTreeNav>{
             ],
             onSelected: (key) {
               onSelected?.call(key,item);
-            });
+            },);
       });
     }
     return super.action();
   }
 
-  @override
-  Widget more() {
-    if(item.source!=null&&item.spaceEnum == SpaceEnum.file){
-      return const SizedBox();
-    }
-    return super.more();
-  }
 
 }

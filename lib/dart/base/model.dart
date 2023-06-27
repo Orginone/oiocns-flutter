@@ -39,12 +39,12 @@ class ResultType<T> {
 
   ResultType.fromJsonSerialize(
       Map<String, dynamic> json, T Function(Map<String, dynamic>) serialize)
-      : msg = json["msg"],
+      : msg = json["msg"]??"",
         data = (json["data"] != null && json["data"] is Map)
             ? serialize(json["data"])
             : null,
-        code = json["code"],
-        success = json["success"];
+        code = json["code"]??400,
+        success = json["success"]??false;
 }
 
 class PageResp<T> {

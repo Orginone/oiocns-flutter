@@ -112,9 +112,12 @@ class Department extends Target implements IDepartment {
 
   @override
   Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async {
-    await loadChildren(reload: reload);
-    await loadMembers(reload: reload);
-    await directory.loadContent(reload: reloadContent);
+    await Future.wait([
+      loadChildren(reload: reload),
+      loadMembers(reload: reload),
+      directory.loadContent(reload: reloadContent),
+    ]);
+
     for (var department in children) {
       await department.deepLoad(reload: reload);
     }

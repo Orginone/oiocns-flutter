@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.dart';
 import 'package:orginone/widget/common_widget.dart';
+
 import 'state.dart';
 
 class Item extends BaseBreadcrumbNavItem<SettingNavModel> {
@@ -10,15 +11,6 @@ class Item extends BaseBreadcrumbNavItem<SettingNavModel> {
       {Key? key,
         this.onSelected, required super.item,super.onNext,super.onTap});
 
-
-
-  @override
-  Widget more() {
-    if(item.spaceEnum == SpaceEnum.file){
-      return const SizedBox();
-    }
-    return super.more();
-  }
 
   @override
   Widget action() {
