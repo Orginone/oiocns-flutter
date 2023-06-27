@@ -125,8 +125,8 @@ class UserProvider {
   }
   /// 重载数据
   Future<void> loadData() async {
-    print('开始加载数据-------${DateTime.now()}');
     if(kernel.isOnline && kernel.anystore.isOnline){
+      print('开始加载数据-------${DateTime.now()}');
       _inited = false;
       _chat.value?.preMessage();
       await Future.wait([
