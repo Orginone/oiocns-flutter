@@ -8,6 +8,8 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/pages/chat/widgets/chat_item.dart';
+import 'package:orginone/pages/store/item.dart';
+import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/pages/work/item.dart';
 
 class SearchBar<T> extends SearchDelegate{
@@ -54,10 +56,10 @@ class SearchBar<T> extends SearchDelegate{
 
 
   void search(){
+    searchData.clear();
     if(query.isEmpty){
       return;
     }
-    searchData.clear();
     for (var element in data) {
       switch(homeEnum){
         case HomeEnum.chat:
@@ -68,6 +70,18 @@ class SearchBar<T> extends SearchDelegate{
         case HomeEnum.work:
           if((element as XWorkTask).title.contains(query)){
             searchData.add(element);
+          }
+          break;
+        case HomeEnum.store:
+          var recent = (element as RecentlyUseModel);
+          if(recent.type == StoreEnum.file.label){
+            if(recent.file!.name!.contains(query)){
+              searchData.add(element);
+            }
+          }else{
+            if(recent.thing!.id!.contains(query)){
+              searchData.add(element);
+            }
           }
           break;
       }
@@ -85,6 +99,8 @@ class SearchBar<T> extends SearchDelegate{
           return MessageItemWidget(chat:item as IMsgChat);
         case HomeEnum.work:
           return WorkItem(todo:item as XWorkTask);
+        case HomeEnum.store:
+          return StoreItem(item:item as RecentlyUseModel);
       }
       return Container();
     });
