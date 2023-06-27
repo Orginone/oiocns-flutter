@@ -55,7 +55,7 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
             Expanded(
               child: title(),
             ),
-            action(),
+            item.showPopup?action():const SizedBox(),
             more(),
           ],
         ),

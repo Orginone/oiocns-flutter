@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
@@ -93,14 +94,14 @@ class StoreItem extends StatelessWidget {
           Obx(() {
             PopupMenuItem popupMenuItem;
             if (settingCtrl.store.isMostUsed(item.id)) {
-              popupMenuItem = const PopupMenuItem(
-                value: "remove",
-                child: Text("移除常用"),
+              popupMenuItem =  PopupMenuItem(
+                value: PopupMenuKey.removeCommon,
+                child: Text(PopupMenuKey.removeCommon.label),
               );
             } else {
-              popupMenuItem = const PopupMenuItem(
-                value: "set",
-                child: Text("设为常用"),
+              popupMenuItem = PopupMenuItem(
+                value: PopupMenuKey.setCommon,
+                child: Text(PopupMenuKey.setCommon.label),
               );
             }
             return CommonWidget.commonPopupMenuButton(
@@ -109,10 +110,10 @@ class StoreItem extends StatelessWidget {
                 ],
                 onSelected: (key) {
                   switch (key) {
-                    case "remove":
+                    case PopupMenuKey.removeCommon:
                       settingCtrl.store.removeMostUsed(item.id);
                       break;
-                    case "set":
+                    case PopupMenuKey.setCommon:
                       settingCtrl.store.setMostUsed(
                           thing: item.thing,
                           file: item.file,

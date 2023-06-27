@@ -1,11 +1,17 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/dart/core/thing/species.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/store/config.dart';
+import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
@@ -22,6 +28,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
       StoreTreeNav(
         name: "个人文件",
         space: user.space,
+        showPopup: false,
         spaceEnum: SpaceEnum.directory,
         children: await loadFile(user.space!.directory.files,user.space!),
       ),
@@ -39,6 +46,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
         StoreTreeNav(
           name: "单位文件",
           space: company.space,
+          showPopup: false,
           spaceEnum: SpaceEnum.directory,
           children: await loadFile(company.space!.directory.files,company.space!),
         ),
@@ -126,13 +134,25 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
   void operation(PopupMenuKey key, StoreTreeNav item) {
     switch(key){
       case PopupMenuKey.shareQr:
-        // TODO: Handle this case.
+        var entity;
+        if (item.spaceEnum == SpaceEnum.user ||
+            item.spaceEnum == SpaceEnum.company) {
+          entity = item.space!.metadata;
+        }else{
+          entity = item.source.metadata;
+        }
+        Get.toNamed(
+          Routers.shareQrCode,
+          arguments: {"entity":entity},
+        );
         break;
       case PopupMenuKey.setCommon:
-        // TODO: Handle this case.
+        settingCtrl.store.setMostUsed(
+            file: FileItemModel.fromJson((item.source as ISysFileInfo).shareInfo().toJson()),
+            storeEnum: StoreEnum.file);
         break;
       case PopupMenuKey.removeCommon:
-        // TODO: Handle this case.
+        settingCtrl.store.removeMostUsed(item.id);
         break;
     }
   }

@@ -1,6 +1,8 @@
 
 
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -18,30 +20,29 @@ class StoreNavItem extends BaseBreadcrumbNavItem<StoreTreeNav>{
 
   @override
   Widget action() {
-    if(item.source!=null&&item.spaceEnum == SpaceEnum.file){
+
+    if(item.spaceEnum == SpaceEnum.file){
       return Obx(() {
-        PopupMenuItem<PopupMenuKey> popupMenuItem;
+        List<PopupMenuKey> keys = [PopupMenuKey.shareQr];
         if (settingCtrl.store.isMostUsed(item.id)) {
-          popupMenuItem = PopupMenuItem(
-            value: PopupMenuKey.removeCommon,
-            child: Text(PopupMenuKey.removeCommon.label),
-          );
+          keys.add(PopupMenuKey.removeCommon);
         } else {
-          popupMenuItem =  PopupMenuItem(
-            value: PopupMenuKey.setCommon,
-            child: Text(PopupMenuKey.setCommon.label),
-          );
+          keys.add(PopupMenuKey.setCommon);
         }
         return CommonWidget.commonPopupMenuButton<PopupMenuKey>(
-            items: [
-              popupMenuItem,
-            ],
-            onSelected: (key) {
-              onSelected?.call(key,item);
-            },);
+          items: keys.map((e) => PopupMenuItem(value: e,child: Text(e.label),)).toList(),
+          onSelected: (key) {
+            onSelected?.call(key,item);
+          },);
       });
     }
-    return super.action();
+    return CommonWidget.commonPopupMenuButton<PopupMenuKey>(
+      items: [
+        PopupMenuItem(value: PopupMenuKey.shareQr,child: Text(PopupMenuKey.shareQr.label),)
+      ],
+      onSelected: (key) {
+        onSelected?.call(key,item);
+      },);
   }
 
 

@@ -64,6 +64,7 @@ class SettingNavModel extends BaseBreadcrumbNavModel<SettingNavModel> {
         super.source,
         super.image,
         super.spaceEnum,
+        super.showPopup = true,
         this.space,
       });
 }

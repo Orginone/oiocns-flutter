@@ -56,7 +56,10 @@ class StoreTreeNav extends BaseBreadcrumbNavModel<StoreTreeNav> {
       required List<StoreTreeNav> children,
       super.image,
       super.source,
-      this.space,this.form, super.spaceEnum}) {
+      super.showPopup = true,
+      this.space,
+      this.form,
+      super.spaceEnum}) {
     this.children = children;
   }
 }

@@ -52,7 +52,7 @@ class SettingCenterController
   }
 
   void onDetailsNextLv(SettingNavModel model) {
-    if (model.children.isEmpty && model.source!=null) {
+    if (model.children.isEmpty && model.spaceEnum!=SpaceEnum.directory) {
       jumpDetails(model);
     } else {
       Get.toNamed(Routers.settingCenter,
@@ -118,11 +118,12 @@ class SettingCenterController
             user.space!.directory.applications, user.space!),
         ...await loadForm(user.space!.directory.forms, user.space!),
         ...await loadPropertys(user.space!.directory.propertys, user.space!),
-      ],spaceEnum: SpaceEnum.directory),
+      ],spaceEnum: SpaceEnum.directory,showPopup: false),
       SettingNavModel(
         name: "我的好友",
         space: user.space,
         spaceEnum: SpaceEnum.person,
+       showPopup: false,
         image: user.space!.metadata.avatarThumbnail(),
         children: user.space!.members.map((e) {
           return SettingNavModel(
@@ -154,11 +155,12 @@ class SettingCenterController
           ...await loadForm(company.space!.directory.forms, company.space!),
           ...await loadPropertys(
               company.space!.directory.propertys, company.space!),
-        ],spaceEnum: SpaceEnum.directory),
+        ],spaceEnum: SpaceEnum.directory,showPopup: false),
         SettingNavModel(
           name: "单位成员",
           space: company.space,
           spaceEnum: SpaceEnum.company,
+          showPopup: false,
           image: company.space!.metadata.avatarThumbnail(),
           children: company.space!.members.map((e) {
             return SettingNavModel(

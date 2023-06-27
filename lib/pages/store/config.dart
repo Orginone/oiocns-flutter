@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
@@ -47,7 +49,7 @@ Future<List<StoreTreeNav>> loadFile(
   List<StoreTreeNav> nav = [];
   for (var file in files) {
     StoreTreeNav dirNav = StoreTreeNav(
-      id: file.metadata.id!,
+      id: base64.encode(utf8.encode(file.metadata.name!)),
       source: file,
       name: file.metadata.name!,
       space: belong,
@@ -136,6 +138,7 @@ Future<List<StoreTreeNav>> loadCohorts(
       StoreTreeNav(
         id: SpaceEnum.cohorts.label,
         spaceEnum: SpaceEnum.directory,
+        showPopup: false,
         name: "${SpaceEnum.cohorts.label}文件",
         space: belong,
         children: await loadFile(cohort.directory.files,belong),
@@ -166,6 +169,7 @@ Future<List<StoreTreeNav>> loadGroup(
     groupNav.children = [
       StoreTreeNav(
         id:SpaceEnum.groups.label ,
+        showPopup: false,
         name: "${SpaceEnum.groups.label}文件",
         space: belong,
         spaceEnum: SpaceEnum.directory,
@@ -199,6 +203,7 @@ Future<List<StoreTreeNav>> loadTargets(
     targetNav.children = [
       StoreTreeNav(
         id: target.metadata.typeName!,
+        showPopup: false,
         name: "${target.metadata.typeName}文件",
         space: belong,
         spaceEnum: SpaceEnum.directory,

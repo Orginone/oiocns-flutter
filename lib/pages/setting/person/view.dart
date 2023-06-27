@@ -191,7 +191,7 @@ class Item extends StatelessWidget {
           child: GestureDetector(
               onTap: () {
                 if(goTo == Routers.login){
-                  Get.offAllNamed(goTo);
+                  Get.offAndToNamed(goTo);
                   LocalStore.getStore().remove('account');
                   HiveUtils.clean();
                 }else{
