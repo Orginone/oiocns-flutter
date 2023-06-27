@@ -97,8 +97,7 @@ class ScreenInit extends StatelessWidget {
       if(login.success){
         print('登录成功');
       }else{
-        ToastUtils.showMsg(msg: login.msg);
-        Get.offAndToNamed(Routers.login);
+        settingCtrl.exitLogin();
       }
     }
 

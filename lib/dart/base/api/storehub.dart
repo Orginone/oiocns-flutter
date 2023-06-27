@@ -140,10 +140,9 @@ class StoreHub {
     log.info("=====> args: $args");
     try {
       var res = await _connection.invoke(methodName, args: args);
-      if(res!= null){
-        if((res as Map)['code'] == 401){
+      if(res!= null && (res is Map)){
+        if(res['code'] == 401){
           settingCtrl.exitLogin();
-          return;
         }
       }
       log.info("=====> res: $res");

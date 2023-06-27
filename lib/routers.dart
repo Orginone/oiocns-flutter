@@ -36,7 +36,6 @@ import 'package:orginone/pages/setting/person/mark/bindings.dart';
 import 'package:orginone/pages/setting/person/mark/view.dart';
 import 'package:orginone/pages/setting/person/security/bindings.dart';
 import 'package:orginone/pages/setting/person/security/index.dart';
-import 'package:orginone/pages/setting/person/view.dart';
 import 'package:orginone/pages/setting/version_page.dart';
 
 // 资产管理
@@ -254,9 +253,6 @@ class Routers {
 
   //添加角色
   static const String addMembers = '/addMembers';
-
-  //个人中心
-  static const String personPage = "/personPage";
 
   static const String cardbag = "/cardbag";
   static const String dynamic = "/dynamic";
@@ -497,11 +493,6 @@ class Routers {
         name: Routers.addMembers,
         page: () => AddMembersPage(),
         binding: AddMembersBinding(),
-      ),
-      GetPage(
-        name: Routers.personPage,
-        page: () => PersonPage(),
-        binding: PersonBinding(),
       ),
       GetPage(
         name: Routers.permissionInfo,
