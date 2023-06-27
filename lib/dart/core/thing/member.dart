@@ -49,4 +49,7 @@ class Member extends FileInfo<XTarget> implements IMember {
   @override
   // TODO: implement popupMenuItem
   List<PopupMenuItem> get popupMenuItem => [];
+
+  @override
+  bool isLoaded = false;
 }

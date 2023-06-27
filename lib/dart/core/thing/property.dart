@@ -51,7 +51,10 @@ class Property extends FileInfo<XProperty> implements IProperty {
 
   @override
   Future<bool> loadContent({bool reload = false}) async{
-    await loadAttributes(reload: reload);
+     if(reload && !isLoaded){
+       await loadAttributes(reload: reload);
+     }
+     isLoaded = reload;
     return true;
   }
 
@@ -113,4 +116,7 @@ class Property extends FileInfo<XProperty> implements IProperty {
     ))
         .toList();
   }
+
+  @override
+  bool isLoaded = false;
 }

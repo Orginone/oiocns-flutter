@@ -10,6 +10,7 @@ import 'package:orginone/main.dart';
 import 'file_info.dart';
 
 abstract class IApplication implements IFileInfo<XApplication> {
+
   //上级模块
   IApplication? parent;
 
@@ -153,4 +154,7 @@ class Application extends FileInfo<XApplication> implements IApplication {
           .toList();
     }
   }
+
+  @override
+  bool isLoaded = false;
 }

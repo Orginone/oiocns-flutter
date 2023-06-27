@@ -92,4 +92,18 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
           preventDuplicates: false, arguments: {'data': nav});
     }
   }
+
+  void operation(PopupMenuKey key, StoreTreeNav item) {
+    switch(key){
+      case PopupMenuKey.shareQr:
+        // TODO: Handle this case.
+        break;
+      case PopupMenuKey.setCommon:
+        // TODO: Handle this case.
+        break;
+      case PopupMenuKey.removeCommon:
+        // TODO: Handle this case.
+        break;
+    }
+  }
 }

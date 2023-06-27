@@ -1,9 +1,6 @@
-import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
-import 'package:orginone/widget/loading_dialog.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
 /// 存储集线器
@@ -36,7 +33,6 @@ class StoreHub {
                 options: HttpConnectionOptions(
                     skipNegotiation: true,
                     transport: HttpTransportType.WebSockets))
-            .configureLogging(Logger('logger'))
             .build() {
     _connection.keepAliveIntervalInMilliseconds = interval;
     _connection.serverTimeoutInMilliseconds = timeout;

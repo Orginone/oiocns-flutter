@@ -73,4 +73,7 @@ class Cohort extends Target implements ICohort {
     ))
         .toList();
   }
+
+  @override
+  bool isLoaded = false;
 }

@@ -165,4 +165,7 @@ class Group extends Target implements IGroup {
     ))
         .toList();
   }
+
+  @override
+  bool isLoaded = false;
 }

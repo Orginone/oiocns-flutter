@@ -76,7 +76,7 @@ class StoreItem extends StatelessWidget {
             onTap: () async {
               if (item.type == 'file') {
                 Get.toNamed(Routers.messageFile,
-                    arguments: {'file':FileItemShare.fromJson(item.file!.shareInfo()),'type':'store'});
+                    arguments: {'file':item.file!,'type':'store'});
               } else {
                 var thing = item.thing;
                 IForm? form = await settingCtrl.store

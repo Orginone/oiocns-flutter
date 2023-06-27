@@ -21,6 +21,7 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
             name: value.metadata.name ?? "",
             id: value.metadata.id!,
             space: value,
+            spaceEnum: SpaceEnum.company,
             children: [],
             image: value.metadata.avatarThumbnail(),
           ),
@@ -35,6 +36,7 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
             image: settingCtrl.provider.user?.metadata.avatarThumbnail(),
             children: [],
             space: settingCtrl.provider.user,
+            spaceEnum: SpaceEnum.user,
           ),
           ...organization
         ],
@@ -48,13 +50,14 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
 class StoreTreeNav extends BaseBreadcrumbNavModel<StoreTreeNav> {
   IBelong? space;
   IForm? form;
+  SpaceEnum? spaceEnum;
   StoreTreeNav(
       {super.id = '',
       super.name = '',
       required List<StoreTreeNav> children,
       super.image,
       super.source,
-      this.space,this.form}) {
+      this.space,this.form, this.spaceEnum}) {
     this.children = children;
   }
 }

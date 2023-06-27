@@ -19,6 +19,7 @@ Future<List<StoreTreeNav>> loadDir(
       source: dir,
       name: dir.metadata.name!,
       space: belong,
+      spaceEnum: SpaceEnum.directory,
       image: dir.metadata.avatarThumbnail(),
       children: [],
     );
@@ -50,6 +51,7 @@ Future<List<StoreTreeNav>> loadFile(
       source: file,
       name: file.metadata.name!,
       space: belong,
+      spaceEnum: SpaceEnum.file,
       image: file.shareInfo().thumbnail,
       children: [],
     );
@@ -65,6 +67,7 @@ Future<List<StoreTreeNav>> loadApplications(
     StoreTreeNav appNav = StoreTreeNav(
       id: application.metadata.id!,
       source: application,
+      spaceEnum: SpaceEnum.applications,
       name: application.metadata.name!,
       space: belong,
       image: application.metadata.avatarThumbnail(),
@@ -82,6 +85,7 @@ Future<List<StoreTreeNav>> loadForm(List<IForm> forms, IBelong belong) async {
     StoreTreeNav dirNav = StoreTreeNav(
       id: form.metadata.id!,
       source: form,
+      spaceEnum: SpaceEnum.form,
       name: form.metadata.name!,
       space: belong,
       image: form.metadata.avatarThumbnail(),
@@ -101,6 +105,7 @@ Future<List<StoreTreeNav>> loadSpeciesItem(List<SpeciesItem> species,IBelong bel
        StoreTreeNav specieNav = StoreTreeNav(
          id: specie.metadata.id!,
          source: specie,
+         spaceEnum: SpaceEnum.species,
          name: specie.metadata.name!,
          space: belong,
          form: form,
@@ -121,6 +126,7 @@ Future<List<StoreTreeNav>> loadCohorts(
     StoreTreeNav cohortNav = StoreTreeNav(
       id: cohort.metadata.id!,
       source: cohort,
+      spaceEnum: SpaceEnum.cohorts,
       name: cohort.metadata.name!,
       space: belong,
       image: cohort.share.avatar?.thumbnailUint8List,
@@ -150,6 +156,7 @@ Future<List<StoreTreeNav>> loadGroup(
     StoreTreeNav groupNav = StoreTreeNav(
       id: group.metadata.id!,
       source: group,
+      spaceEnum: SpaceEnum.groups,
       name: group.metadata.name!,
       space: belong,
       image: group.share.avatar?.thumbnailUint8List,
@@ -181,6 +188,7 @@ Future<List<StoreTreeNav>> loadTargets(
     StoreTreeNav targetNav = StoreTreeNav(
       id: target.metadata.id!,
       source: target,
+      spaceEnum: SpaceEnum.departments,
       name: target.metadata.name!,
       space: belong,
       image: target.share.avatar?.thumbnailUint8List,

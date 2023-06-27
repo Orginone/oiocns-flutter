@@ -14,6 +14,8 @@ import 'package:orginone/main.dart';
 abstract class IFileInfo<T extends XEntity> {
   String get belongId;
 
+  late bool isLoaded;
+
   //是否为继承的类别
   bool get isInherited;
 
@@ -244,4 +246,7 @@ class SysFileInfo extends FileInfo<XEntity> implements ISysFileInfo {
             ))
         .toList();
   }
+
+  @override
+  bool isLoaded = false;
 }

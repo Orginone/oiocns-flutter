@@ -357,4 +357,7 @@ class Company extends Belong implements ICompany {
     ))
         .toList();
   }
+
+  @override
+  bool isLoaded = false;
 }

@@ -223,7 +223,7 @@ class StoreProvider implements IStoreProvider {
 dynamic getFileAvatar(FileItemModel data) {
   String ext = data.name!.split('.').last.toLowerCase();
   if (ext == 'jpg' || ext == 'jpeg' || ext == 'png' || ext == 'webp') {
-    return data.shareInfo()['shareLink'];
+    return data.shareLink;
   } else {
     switch (ext) {
       case "xlsx":

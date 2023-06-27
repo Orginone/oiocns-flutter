@@ -195,4 +195,7 @@ class Department extends Target implements IDepartment {
     ))
         .toList();
   }
+
+  @override
+  bool isLoaded = false;
 }

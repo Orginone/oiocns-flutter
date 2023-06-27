@@ -52,8 +52,8 @@ class NotificationUtil {
         autoStart: true,
         isForegroundMode: false,
         notificationChannelId: notificationChannelId,
-        initialNotificationTitle: '通知状态',
-        initialNotificationContent: '开启',
+        initialNotificationTitle: '默认通知标题',
+        initialNotificationContent: '默认内容',
         foregroundServiceNotificationId: notificationId,
       ),
       iosConfiguration: IosConfiguration(
@@ -85,23 +85,8 @@ Future<void> onStart(service) async {
   DartPluginRegistrant.ensureInitialized();
 
   if(Platform.isAndroid){
-    Timer.periodic(const Duration(seconds: 1), (timer) async {
+    Timer.periodic(const Duration(seconds: 3), (timer) async {
       print('爱共享前台进程运行中');
-      if (await service.isForegroundService()) {
-        flutterLocalNotificationsPlugin.show(
-          notificationId,
-          '爱共享',
-          '正在运行中',
-          const NotificationDetails(
-            android: AndroidNotificationDetails(
-              notificationChannelId,
-              '前台消息',
-              icon: 'ic_bg_service_small',
-              ongoing: true,
-            ),
-          ),
-        );
-      }
     });
   }
 }

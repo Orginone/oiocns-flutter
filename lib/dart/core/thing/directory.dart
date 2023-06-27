@@ -47,8 +47,6 @@ abstract class IDirectory extends IFileInfo<XDirectory> {
   //上传任务列表
   late List<TaskModel> taskList;
 
-  late bool isLoaded;
-
   //目录下的内容
   List<IFileInfo<XEntity>> content(int mode);
 

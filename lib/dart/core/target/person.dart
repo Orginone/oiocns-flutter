@@ -393,4 +393,7 @@ class Person extends Belong implements IPerson {
             ))
         .toList();
   }
+
+  @override
+  bool isLoaded = false;
 }

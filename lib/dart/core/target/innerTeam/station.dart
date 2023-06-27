@@ -109,4 +109,7 @@ class Station extends Team implements IStation {
   // TODO: implement popupMenuItem
   List<PopupMenuItem> get popupMenuItem => [];
 
+  @override
+  bool isLoaded = false;
+
 }

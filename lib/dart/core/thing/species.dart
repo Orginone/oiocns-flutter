@@ -133,7 +133,10 @@ class Species extends FileInfo<XSpecies> implements ISpecies {
 
   @override
   Future<bool> loadContent({bool reload = false}) async{
-    await loadItems(reload: reload);
+    if(reload && !isLoaded){
+      await loadItems(reload: reload);
+    }
+    isLoaded = true;
     return true;
   }
 
@@ -156,4 +159,7 @@ class Species extends FileInfo<XSpecies> implements ISpecies {
           .toList();
     }
   }
+
+  @override
+  bool isLoaded = false;
 }
