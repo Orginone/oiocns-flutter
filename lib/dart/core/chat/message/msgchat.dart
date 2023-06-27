@@ -388,7 +388,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
         chatdata.value.lastMessage = null;
       }
       chatdata.refresh();
-      cache();
+      await cache();
       return true;
     }
     return res.success;
@@ -409,7 +409,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
       chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
       chatdata.value.lastMessage = null;
       chatdata.refresh();
-      cache();
+      await cache();
       return true;
     }
     return res.success;
@@ -491,7 +491,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
     chatdata.value.lastMessage = msg;
     chatdata.value.isFindme = msg.body?.mentions?.contains(settingCtrl.user.id);
     chatdata.refresh();
-    cache();
+    await cache();
   }
 
   void _loadMessages(List<dynamic> msgs) {
@@ -507,14 +507,14 @@ abstract class MsgChat extends Entity implements IMsgChat {
   }
 
   @override
-  void receiveTags(List<String> ids, List<String> tags) {
+  void receiveTags(List<String> ids, List<String> tags) async{
     if (ids.isNotEmpty && tags.isNotEmpty) {
       for (var id in ids) {
        try{
          var message = messages.firstWhere((m) => m.id == id);
          message.receiveTags(tags);
          messages.refresh();
-         cache();
+         await cache();
        }catch(e){
 
        }

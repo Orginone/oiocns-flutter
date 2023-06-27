@@ -49,13 +49,13 @@ class MessageItemWidget extends GetView<SettingController> {
               foregroundColor: Colors.white,
               icon: Icons.vertical_align_top,
               label:isTop?"取消置顶":"置顶",
-              onPressed: (BuildContext context) {
+              onPressed: (BuildContext context) async{
                 if(isTop){
                   chat.labels.remove('置顶');
                 }else{
                   chat.labels.add('置顶');
                 }
-                chat.cache();
+                await chat.cache();
                 controller.provider.refreshChat();
               },
             ),

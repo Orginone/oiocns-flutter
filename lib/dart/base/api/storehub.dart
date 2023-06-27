@@ -79,17 +79,20 @@ class StoreHub {
   void restart() {
     if (isConnected) {
       _connection.stop().then((_) {
-        _starting();
+        _starting(isRestart: true);
       });
     }
   }
 
   /// 开始连接
   /// @returns {void} 无返回值
-  void _starting() {
+  void _starting({bool isRestart = false}) {
     _connection.start()?.then((_) {
       for (final callback in _connectedCallbacks) {
         callback();
+      }
+      if(isRestart){
+        ToastUtils.showMsg(msg: "连接成功");
       }
     }, onError: (err) {
       log.warning("url: ${_connection.baseUrl}");
@@ -143,6 +146,11 @@ class StoreHub {
       if(res!= null && (res is Map)){
         if(res['code'] == 401){
           settingCtrl.exitLogin();
+        } else if(res['code'] == 500){
+          ToastUtils.showMsg(msg: '断开链接,正在重试');
+          String token = kernel.anystore.accessToken;
+          kernel.anystore.accessToken = '';
+          kernel.anystore.updateToken(token);
         }
       }
       log.info("=====> res: $res");
