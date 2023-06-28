@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/common/entity.dart';

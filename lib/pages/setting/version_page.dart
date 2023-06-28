@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/widget/a_font.dart';
+import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/template/originone_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/loading_widget.dart';
@@ -64,10 +65,9 @@ class VersionPage extends GetView<VersionController> {
         children: [
           Align(
             alignment: AlignmentDirectional.topStart,
-            child: XImage.netImageRadiusAll(
-                url: value.uploadName?.shareLink ?? '',
-                radius: 5,
-                size: Size(60.w, 60.w)),
+            child: ImageWidget(
+                 value.uploadName?.shareLink ?? '',
+                size: 60.w),
           ),
           Align(
             alignment: AlignmentDirectional.centerStart,

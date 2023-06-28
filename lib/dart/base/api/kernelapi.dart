@@ -15,7 +15,6 @@ class KernelApi {
   final Logger log = Logger("KernelApi");
 
   final StoreHub _storeHub;
-  final HttpUtil _requester;
   final Map<String, List<Function>> _methods;
 
   late AnyStore _anystore;
@@ -23,14 +22,13 @@ class KernelApi {
   static KernelApi? _instance;
 
   factory KernelApi() {
-    _instance ??= KernelApi._(Constant.kernelHub, request: HttpUtil());
+    _instance ??= KernelApi._(Constant.kernelHub);
     return _instance!;
   }
 
-  KernelApi._(String url, {required HttpUtil request})
+  KernelApi._(String url)
       : _storeHub = StoreHub(url),
-        _methods = {},
-        _requester = request{
+        _methods = {}{
     _anystore = AnyStore();
     _storeHub.on("Receive", receive);
     _storeHub.onConnected(() {

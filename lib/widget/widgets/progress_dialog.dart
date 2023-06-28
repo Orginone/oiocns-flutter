@@ -9,6 +9,7 @@ import 'package:getwidget/types/gf_progress_type.dart';
 import 'package:orginone/widget/a_font.dart';
 import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/sys_util.dart';
+import 'package:orginone/widget/image_widget.dart';
 import 'package:ota_update/ota_update.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -62,7 +63,7 @@ class UpdaterDialog extends Dialog {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(padding: EdgeInsets.only(top: 20.h)),
-              XImage.netImageRadiusAll(url: icon,radius: 5,size: Size(60.w, 60.w)),
+              ImageWidget(icon,size: 60.w),
               Padding(padding: EdgeInsets.only(top: 20.h)),
               description,
               progressWidget,

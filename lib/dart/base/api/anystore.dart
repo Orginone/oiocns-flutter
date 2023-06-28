@@ -7,12 +7,10 @@ import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/api/storehub.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/util/http_util.dart';
 import 'package:uuid/uuid.dart';
 
 class AnyStore {
   final Logger log = Logger("AnyStore");
-  final HttpUtil _requester;
   final StoreHub _storeHub;
   String accessToken;
   final Map<String, Function(dynamic)> _subscribeCallbacks = {};
@@ -20,14 +18,13 @@ class AnyStore {
   static AnyStore? _instance;
 
   factory AnyStore(){
-    _instance ??= AnyStore._(request: HttpUtil());
+    _instance ??= AnyStore._();
     return _instance!;
   }
 
-  AnyStore._({required HttpUtil request})
+  AnyStore._()
       : accessToken = "",
-        _storeHub = StoreHub(Constant.anyStoreHub),
-        _requester = request {
+        _storeHub = StoreHub(Constant.anyStoreHub){
     _storeHub.on("updated", (args) => _updated(args![0], args[1], args[2]));
     _storeHub.onConnected(() {
       if (accessToken.isNotEmpty) {
