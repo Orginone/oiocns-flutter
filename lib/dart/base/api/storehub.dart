@@ -48,6 +48,9 @@ class StoreHub {
         });
       }
     });
+    _connection.onreconnected(({connectionId}) {
+      ToastUtils.showMsg(msg: "正在重新连接服务器");
+    });
   }
 
   /// 是否处于连接着的状态
@@ -79,20 +82,19 @@ class StoreHub {
   void restart() {
     if (isConnected) {
       _connection.stop().then((_) {
-        _starting(isRestart: true);
+        _starting();
       });
+    }else if(_connection.state != HubConnectionState.Reconnecting){
+      _starting();
     }
   }
 
   /// 开始连接
   /// @returns {void} 无返回值
-  void _starting({bool isRestart = false}) {
+  void _starting() {
     _connection.start()?.then((_) {
       for (final callback in _connectedCallbacks) {
         callback();
-      }
-      if(isRestart){
-        ToastUtils.showMsg(msg: "连接成功");
       }
     }, onError: (err) {
       log.warning("url: ${_connection.baseUrl}");
@@ -137,6 +139,12 @@ class StoreHub {
   /// @param {any[]} args 参数
   /// @returns {Promise<ResultType>} 异步结果
   Future<dynamic> invoke(String methodName, {List<Object>? args}) async {
+
+    if(_connection.state == HubConnectionState.Reconnecting){
+      ToastUtils.showMsg(msg: "正在重连请稍后再试");
+      return null;
+    }
+
     log.info("========== storeHub-invoke-start =============");
     log.info("=====> url: ${_connection.baseUrl}");
     log.info("=====> methodName: $methodName");
@@ -145,7 +153,8 @@ class StoreHub {
       var res = await _connection.invoke(methodName, args: args);
       if(res!= null && (res is Map)){
         if(res['code'] == 401){
-          settingCtrl.exitLogin();
+          ToastUtils.showMsg(msg: '断开链接,正在重试');
+          kernel.restart();
         } else if(res['code'] == 500){
           ToastUtils.showMsg(msg: '断开链接,正在重试');
           String token = kernel.anystore.accessToken;
@@ -159,7 +168,7 @@ class StoreHub {
     } catch (err) {
       log.info("========== storeHub-invoke-end =============");
       log.info("=====> err: $err");
-      return {"code": 400, "msg": "请求异常", "success": false};
+      return null;
     }
   }
 }

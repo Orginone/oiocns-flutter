@@ -58,6 +58,11 @@ class AnyStore {
     return _storeHub.isConnected;
   }
 
+
+  void restart(){
+    _storeHub.restart();
+  }
+
   /// 更新token
   /// @param accessToken token
   updateToken(String accessToken) {

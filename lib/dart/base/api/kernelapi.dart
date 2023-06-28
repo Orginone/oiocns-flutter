@@ -59,9 +59,15 @@ class KernelApi {
     return _storeHub.isConnected;
   }
 
+
+  void restart(){
+    _storeHub.restart();
+    _anystore.restart();
+  }
+
   stop() async {
     _methods.clear();
-    await _anystore!.stop();
+    await _anystore.stop();
     await _storeHub.dispose();
     _instance = null;
   }
@@ -69,7 +75,7 @@ class KernelApi {
   start(){
     _storeHub.start();
     if(anystore.isOnline){
-      _anystore!.start();
+      _anystore.start();
     }
   }
 
