@@ -1,10 +1,8 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/local_store.dart';
 import 'package:orginone/util/toast_utils.dart';
-import 'package:orginone/widget/loading_dialog.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../dart/core/getx/base_controller.dart';

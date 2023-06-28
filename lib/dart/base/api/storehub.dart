@@ -150,11 +150,6 @@ class StoreHub {
   /// @returns {Promise<ResultType>} 异步结果
   Future<dynamic> invoke(String methodName, {List<Object>? args}) async {
 
-    if(_connection.state == HubConnectionState.Reconnecting){
-      ToastUtils.showMsg(msg: "正在重连请稍后再试");
-      return null;
-    }
-
     log.info("========== storeHub-invoke-start =============");
     log.info("=====> url: ${_connection.baseUrl}");
     log.info("=====> methodName: $methodName");
@@ -166,7 +161,6 @@ class StoreHub {
           ToastUtils.showMsg(msg: 'error 401 长连接已断开,正在重试');
           Log.info('断开链接,正在重试');
           kernel.restart();
-          return null;
         } else if(res['code'] == 500){
           ToastUtils.showMsg(msg: 'error 500 长连接已断开,正在重试');
           Log.info('anystore断开链接,正在重试');

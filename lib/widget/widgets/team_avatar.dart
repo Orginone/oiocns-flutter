@@ -32,7 +32,8 @@ class TeamAvatar extends StatefulWidget {
   final double size;
   final Widget? child;
   final List<Widget>? children;
-  final BoxDecoration decoration;
+
+  final bool circular;
 
   TeamAvatar({
     super.key,
@@ -40,14 +41,8 @@ class TeamAvatar extends StatefulWidget {
     double? size,
     this.child,
     this.children,
-    BoxDecoration? decoration,
-  })  : size = size ?? 66.w,
-        decoration = decoration ??
-            BoxDecoration(
-              color: XColors.themeColor,
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.all(Radius.circular(6.w)),
-            );
+    this.circular = false,
+  })  : size = size ?? 66.w;
 
   @override
   State<TeamAvatar> createState() => _TeamAvatarState();
@@ -65,6 +60,8 @@ class _TeamAvatarState extends State<TeamAvatar> {
   List<Widget>? children;
   late BoxDecoration decoration;
 
+  late bool circular;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -73,7 +70,7 @@ class _TeamAvatarState extends State<TeamAvatar> {
     size = widget.size;
     child = widget.child;
     children = widget.children;
-    decoration = widget.decoration;
+    circular = widget.circular;
   }
 
   @override
@@ -107,66 +104,13 @@ class _TeamAvatarState extends State<TeamAvatar> {
 
   Widget avatar(ShareIcon share){
     var avatar = share.avatar;
-    if (avatar?.thumbnail != null) {
-      var image;
-      if(avatar!.thumbnail!.contains('default')??false){
-        image = avatar.thumbnail!;
-      }else{
-        image = avatar.thumbnailUint8List;
-      }
-      return AdvancedAvatar(
-        size: size,
-        decoration: decoration,
-        child: ImageWidget(
-          image,
-          size: size,
-          color: (image is String) && (!image.contains('http'))
-              ? Colors.white
-              : null,
-          fit: BoxFit.cover,
-          gaplessPlayback: true,
-        ),
-        children: children ?? [],
-      );
-    }
-    var typeName = share.typeName;
-    Widget? child;
-    if (this.child == null) {
-      if (typeName == TargetType.group.label) {
-        child = Icon(Icons.groups, size: info.fontSize, color: Colors.white);
-      } else if (typeName == TargetType.company.label) {
-        child = Icon(Icons.group, size: info.fontSize, color: Colors.white);
-      } else if (typeName == TargetType.section.label) {
-        child = Icon(Icons.person, size: info.fontSize, color: Colors.white);
-      } else if (typeName == TargetType.department.label) {
-        child = Icon(Icons.group, size: info.fontSize, color: Colors.white);
-      } else if (typeName == TargetType.college.label) {
-        child = Icon(Icons.group, size: info.fontSize, color: Colors.white);
-      } else if (typeName == TargetType.laboratory.label) {
-        child = Icon(Icons.group, size: info.fontSize, color: Colors.white);
-      } else if (typeName == TargetType.office.label) {
-        child = Icon(Icons.group, size: info.fontSize, color: Colors.white);
-      } else if (typeName == TargetType.research.label) {
-        child = Icon(Icons.group, size: info.fontSize, color: Colors.white);
-      } else if (typeName == TargetType.working.label) {
-        child = Icon(Icons.group, size: info.fontSize, color: Colors.white);
-      } else if (typeName == TargetType.station.label) {
-        child = Icon(Icons.group, size: info.fontSize, color: Colors.white);
-      } else if (typeName == TargetType.cohort.label) {
-        child = Icon(Icons.group, size: info.fontSize, color: Colors.white);
-      } else if (typeName == TargetType.person.label) {
-        child = Icon(Icons.group, size: info.fontSize, color: Colors.white);
-      } else {
-        child = Icon(Icons.group, size: info.fontSize, color: Colors.white);
-      }
-    } else {
-      child = this.child!;
-    }
-    return AdvancedAvatar(
+    dynamic image = avatar?.thumbnailUint8List??avatar?.defaultAvatar;
+    return ImageWidget(
+      image,
       size: size,
-      children: children ?? [],
-      decoration: decoration,
-      child: child,
+      fit: BoxFit.cover,
+      gaplessPlayback: true,
+      circular: circular,
     );
   }
 }

@@ -53,7 +53,7 @@ class HomePage extends GetView<HomeController> {
           views: controller.tabs.map((e) => e.toTabView()).toList(),
           bottom: Container(
             decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: Colors.grey.shade400,width: 0.4),)
+                border: Border(top: BorderSide(color: Colors.grey.shade400,width: 0.4),),
             ),
             child: TabBar(
               indicator: const UnderlineTabIndicator(),

@@ -4703,7 +4703,15 @@ class ShareIcon {
       avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
     }
     if (typeName == TargetType.cohort.label) {
-      defaultAvatar = Images.chatDefaultGroup;
+      defaultAvatar = Images.chatDefaultCohort;
+      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
+    }
+    if (typeName == TargetType.department.label) {
+      defaultAvatar = Images.chatDefaultCohort;
+      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
+    }
+    if (typeName == TargetType.company.label) {
+      defaultAvatar = Images.chatDefaultCohort;
       avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
     }
   }

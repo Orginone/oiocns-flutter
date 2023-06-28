@@ -73,7 +73,9 @@ class ImageWidget extends StatelessWidget {
   }
 
   Widget network(){
-    return CachedNetworkImage(fit: fit, width: size, height: size, color: color, imageUrl: path,httpHeaders: httpHeaders,);
+    return CachedNetworkImage(fit: fit, width: size, height: size, color: color, imageUrl: path,httpHeaders: httpHeaders,placeholder: (context,str){
+      return Container(width: size,height: size,color: Colors.white,);
+    },);
   }
 
   Widget memory(){

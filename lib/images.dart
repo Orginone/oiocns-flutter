@@ -43,7 +43,7 @@ class Images {
 
   static const String iconFile = "images/icon_file.png";
 
-  static const String chatDefaultGroup = "images/chat_default_group.png";
+  static const String chatDefaultCohort = "images/chat_default_cohort.png";
 
   static const String chatDefaultPerson = "images/chat_default_person.png";
 

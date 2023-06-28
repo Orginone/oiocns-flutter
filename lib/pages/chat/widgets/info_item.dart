@@ -119,10 +119,7 @@ class DetailItemWidget extends GetView<SettingController> {
       child: TeamAvatar(
         size: 55.w,
         info: TeamTypeInfo(userId: id),
-        decoration: const BoxDecoration(
-          color: XColors.themeColor,
-          shape: BoxShape.circle,
-        ),
+        circular: true,
       ),
       onLongPress: () {
         if (chat.share.typeName != TargetType.person.label) {
