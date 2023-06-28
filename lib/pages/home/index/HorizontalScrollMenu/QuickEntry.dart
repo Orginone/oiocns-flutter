@@ -129,7 +129,10 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
                 teamCode: code,
                 remark: remark,
               );
-              await setting.user.createCompany(target);
+              var company = await setting.user.createCompany(target);
+              if(company!=null){
+                ToastUtils.showMsg(msg: "新建成功");
+              }
             },
           );
 
