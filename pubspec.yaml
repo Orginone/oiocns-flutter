@@ -150,8 +150,6 @@ flutter:
     - assets/
     - images/
     - assets/icons/
-    - assets/icons/2.0x/
-    - assets/icons/3.0x/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
