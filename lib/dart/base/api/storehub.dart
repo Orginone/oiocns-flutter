@@ -1,5 +1,6 @@
 import 'package:logging/logging.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
@@ -48,9 +49,16 @@ class StoreHub {
         });
       }
     });
-    _connection.onreconnected(({connectionId}) {
+    _connection.onreconnecting(({error}) {
       ToastUtils.showMsg(msg: "正在重新连接服务器");
     });
+    _connection.onreconnected(({connectionId}) {
+      Future.delayed(const Duration(microseconds: 500),(){
+        kernel.restart();
+        ToastUtils.showMsg(msg: "重新连接到服务器");
+      });
+    });
+
   }
 
   /// 是否处于连接着的状态
@@ -153,10 +161,13 @@ class StoreHub {
       var res = await _connection.invoke(methodName, args: args);
       if(res!= null && (res is Map)){
         if(res['code'] == 401){
-          ToastUtils.showMsg(msg: '断开链接,正在重试');
+          ToastUtils.showMsg(msg: 'error 401 长连接已断开,正在重试');
+          Log.info('断开链接,正在重试');
           kernel.restart();
+          return null;
         } else if(res['code'] == 500){
-          ToastUtils.showMsg(msg: '断开链接,正在重试');
+          ToastUtils.showMsg(msg: 'error 500 长连接已断开,正在重试');
+          Log.info('anystore断开链接,正在重试');
           String token = kernel.anystore.accessToken;
           kernel.anystore.accessToken = '';
           kernel.anystore.updateToken(token);

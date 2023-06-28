@@ -112,11 +112,7 @@ class KernelApi {
       "pwd": password,
     };
     dynamic raw;
-    if (_storeHub.isConnected) {
-      raw = await _storeHub.invoke('Login', args: [req]);
-    } else {
-      raw = await _restRequest("login", req);
-    }
+    raw = await _storeHub.invoke('Login', args: [req]);
     var res = ResultType.fromJson(raw);
     if (res.success) {
       HiveUtils.putUser(UserModel.fromJson(raw['data']));
@@ -128,11 +124,7 @@ class KernelApi {
   /// 注册
   Future<ResultType<dynamic>> register(RegisterType params) async {
     dynamic raw;
-    if (_storeHub.isConnected) {
-      raw = await _storeHub.invoke('Register', args: [params]);
-    } else {
-      raw = await _restRequest('Register', params);
-    }
+    raw = await _storeHub.invoke('Register', args: [params]);
     var res = ResultType.fromJson(raw);
     if (res.success) {
       ToastUtils.showMsg(msg: "私有key---${ res.data['privateKey']}");
@@ -144,11 +136,7 @@ class KernelApi {
 
   Future<ResultType<dynamic>> genToken(String companyId) async {
     dynamic raw;
-    if (_storeHub.isConnected) {
-      raw = await _storeHub.invoke('GenToken', args: [companyId]);
-    } else {
-      raw = await _restRequest('gentoken', companyId);
-    }
+    raw = await _storeHub.invoke('GenToken', args: [companyId]);
     var res = ResultType.fromJson(raw);
     if (res.success) {
       _anystore!.updateToken(res.data ?? "");
@@ -1214,12 +1202,8 @@ class KernelApi {
       "password": password,
       "privateKey": privateKey
     };
-    if (_storeHub.isConnected) {
-      var data = await _storeHub.invoke('ResetPassword', args: [req]);
-      return ResultType.fromJson(data);
-    } else {
-      return await _restRequest('resetpassword', req);
-    }
+    var data = await _storeHub.invoke('ResetPassword', args: [req]);
+    return ResultType.fromJson(data);
   }
 
   /*
@@ -2949,12 +2933,8 @@ class KernelApi {
     T Function(Map<String, dynamic>)? cvt,
   ) async {
     dynamic raw;
-    if (_storeHub.isConnected) {
-      log.info("====> req:${req.toJson()}");
-      raw = await _storeHub.invoke('Request', args: [req]);
-    } else {
-      raw = await _restRequest('Request', req);
-    }
+    log.info("====> req:${req.toJson()}");
+    raw = await _storeHub.invoke('Request', args: [req]);
     if(raw != null){
       if(!raw['success']){
         ToastUtils.showMsg(msg: raw['msg']);
@@ -2971,24 +2951,9 @@ class KernelApi {
   }
 
   Future<dynamic> requests<T>(List<ReqestType> reqs) async {
-    if (_storeHub.isConnected) {
-      return await _storeHub.invoke('Requests', args: reqs);
-    } else {
-      return await _restRequest('Requests', reqs);
-    }
+    return await _storeHub.invoke('Requests', args: reqs);
   }
 
-  Future<dynamic> _restRequest(
-    String methodName,
-    dynamic data, {
-    bool hasToken = true,
-  }) async {
-    return await _requester.post(
-      "${Constant.kernel}/$methodName",
-      data: data,
-      hasToken: hasToken,
-    );
-  }
 
 
 

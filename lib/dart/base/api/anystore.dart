@@ -109,29 +109,18 @@ class AnyStore {
   /// @returns {ResultType} 对象异步结果
   Future<List<XWorkTask>> pageRequest(String key, String belongId,Map<String,dynamic> options,PageRequest page) async {
     List<XWorkTask> task = [];
-    if (_storeHub.isConnected) {
-      var raw = await aggregate(key,options,belongId);
-      if(raw.data!=null && raw.data[0]['count']>0){
-        options['skip'] = page.offset;
-        options['limit'] = page.limit;
-        var res = await aggregate(key,options,belongId);
-        if(res.data!=null){
-          res.data.forEach((json){
-            task.add(XWorkTask.fromJson(json));
-          });
-        }
-        return task;
+    var raw = await aggregate(key,options,belongId);
+    if(raw.data!=null && raw.data[0]['count']>0){
+      options['skip'] = page.offset;
+      options['limit'] = page.limit;
+      var res = await aggregate(key,options,belongId);
+      if(res.data!=null){
+        res.data.forEach((json){
+          task.add(XWorkTask.fromJson(json));
+        });
       }
       return task;
     }
-    var raw = await _restRequest(
-      'Object',
-      'Get/$key',
-      {
-        "belongId": belongId,
-      },
-      {},
-    );
     return task;
   }
 
@@ -140,18 +129,7 @@ class AnyStore {
   /// @param {string} belongId 对象所在域, 个人域(user),单位域(company),开放域(all)
   /// @returns {ResultType} 对象异步结果
   Future<ResultType<dynamic>> get(String key, String belongId) async {
-    if (_storeHub.isConnected) {
-      var raw = await _storeHub.invoke('Get', args: [belongId, key]);
-      return ResultType.fromJson(raw);
-    }
-    var raw = await _restRequest(
-      'Object',
-      'Get/$key',
-      {
-        "belongId": belongId,
-      },
-      {},
-    );
+    var raw = await _storeHub.invoke('Get', args: [belongId, key]);
     return ResultType.fromJson(raw);
   }
 
@@ -162,18 +140,7 @@ class AnyStore {
   /// @returns {ResultType} 变更异步结果
   Future<ResultType<dynamic>> set(
       String key, dynamic setData, String belongId) async {
-    if (_storeHub.isConnected) {
-      var raw = await _storeHub.invoke('Set', args: [belongId, key, setData]);
-      return ResultType.fromJson(raw);
-    }
-    var raw = await _restRequest(
-      'Object',
-      'Set/$key',
-      {
-        "belongId": belongId,
-      },
-      setData,
-    );
+    var raw = await _storeHub.invoke('Set', args: [belongId, key, setData]);
     return ResultType.fromJson(raw);
   }
 
@@ -182,18 +149,7 @@ class AnyStore {
   /// @param {string} belongId 对象所在域, 个人域(user),单位域(company),开放域(all)
   /// @returns {ResultType} 删除异步结果
   Future<ResultType<dynamic>> delete(String key, String belongId) async {
-    if (_storeHub.isConnected) {
-      var raw = await _storeHub.invoke('Delete', args: [belongId,key]);
-      return ResultType.fromJson(raw);
-    }
-    var raw = await _restRequest(
-      'Object',
-      'Delete/$key',
-      {
-        "belongId": belongId,
-      },
-      {},
-    );
+    var raw = await _storeHub.invoke('Delete', args: [belongId,key]);
     return ResultType.fromJson(raw);
   }
 
@@ -204,19 +160,8 @@ class AnyStore {
   /// @returns {ResultType} 添加异步结果
   Future<ResultType<dynamic>> insert(
       String collName, dynamic data, String belongId) async {
-    if (_storeHub.isConnected) {
-      var raw =
-          await _storeHub.invoke('Insert', args: [belongId, collName, data]);
-      return ResultType.fromJson(raw);
-    }
-    var raw = await _restRequest(
-      'Object',
-      'Update/$collName',
-      {
-        "belongId": belongId,
-      },
-      data,
-    );
+    var raw =
+    await _storeHub.invoke('Insert', args: [belongId, collName, data]);
     return ResultType.fromJson(raw);
   }
 
@@ -227,19 +172,8 @@ class AnyStore {
   /// @returns {ResultType} 更新异步结果
   Future<ResultType<dynamic>> update(
       String collName, dynamic update, String belongId) async {
-    if (_storeHub.isConnected) {
-      var raw =
-          await _storeHub.invoke('Update', args: [belongId, collName, update]);
-      return ResultType.fromJson(raw);
-    }
-    var raw = await _restRequest(
-      'Collection',
-      'Update/$collName',
-      {
-        "belongId": belongId,
-      },
-      update,
-    );
+    var raw =
+    await _storeHub.invoke('Update', args: [belongId, collName, update]);
     return ResultType.fromJson(raw);
   }
 
@@ -250,19 +184,8 @@ class AnyStore {
   /// @returns {ResultType} 移除异步结果
   Future<ResultType<dynamic>> remove(
       String collName, dynamic match, String belongId) async {
-    if (_storeHub.isConnected) {
-      var raw =
-          await _storeHub.invoke('Remove', args: [belongId, collName, match]);
-      return ResultType.fromJson(raw);
-    }
-    var raw = await _restRequest(
-      'Collection',
-      'Remove/$collName',
-      {
-        "belongId": belongId,
-      },
-      match,
-    );
+    var raw =
+    await _storeHub.invoke('Remove', args: [belongId, collName, match]);
     return ResultType.fromJson(raw);
   }
 
@@ -273,19 +196,8 @@ class AnyStore {
   /// @returns {ResultType} 移除异步结果
   Future<ResultType<dynamic>> aggregate(
       String collName, dynamic options, String belongId) async {
-    if (_storeHub.isConnected) {
-      var raw = await _storeHub
-          .invoke('Aggregate', args: [belongId, collName, options]);
-      return ResultType.fromJson(raw);
-    }
-    var raw = await _restRequest(
-      'Collection',
-      'Aggregate/$collName',
-      {
-        "belongId": belongId,
-      },
-      options,
-    );
+    var raw = await _storeHub
+        .invoke('Aggregate', args: [belongId, collName, options]);
     return ResultType.fromJson(raw);
   }
 
@@ -293,11 +205,7 @@ class AnyStore {
   /// @param data 操作携带的数据
   /// @returns {ResultType<T>} 移除异步结果
   Future<ResultType<T>> bucketOpreate<T>(String belongId,BucketOpreateModel data) async {
-    if (_storeHub.isConnected) {
-      var raw = await _storeHub.invoke('BucketOpreate', args: [belongId,data.toJson()]);
-      return ResultType<T>.fromJson(raw);
-    }
-    var raw = await _restRequest('Bucket', 'Operate', {}, data.toJson());
+    var raw = await _storeHub.invoke('BucketOpreate', args: [belongId,data.toJson()]);
     return ResultType<T>.fromJson(raw);
   }
 
@@ -351,11 +259,7 @@ class AnyStore {
   /// @returns {ResultType<T>} 移除异步结果
   Future<ResultType<dynamic>> loadThing<T>(
       dynamic options, String belongId) async {
-    if (_storeHub.isConnected) {
-      var raw = await _storeHub.invoke('Load', args: [belongId, options]);
-      return ResultType.fromJson(raw);
-    }
-    var raw = await _restRequest('Thing', 'Load', options, {});
+    var raw = await _storeHub.invoke('Load', args: [belongId, options]);
     return ResultType.fromJson(raw);
   }
 
@@ -367,13 +271,8 @@ class AnyStore {
     Map<String, dynamic> options,
     String belongId,
   ) async {
-    if (_storeHub.isConnected) {
-      var raw =
-          await _storeHub.invoke('LoadArchives', args: [belongId, options]);
-      return ResultType.fromJson(raw);
-    }
-    options.addAll({"belongId": belongId});
-    var raw = await _restRequest('Thing', 'LoadArchives', options, {});
+    var raw =
+    await _storeHub.invoke('LoadArchives', args: [belongId, options]);
     return ResultType.fromJson(raw);
   }
 
@@ -384,18 +283,7 @@ class AnyStore {
     int number,
     String belongId,
   ) async {
-    if (_storeHub.isConnected) {
-      var raw = await _storeHub.invoke('Create', args: [belongId, number]);
-      return ResultType.fromJson(raw);
-    }
-    var raw = await _restRequest(
-      'Thing',
-      'Create',
-      {
-        "belongId": belongId,
-      },
-      number,
-    );
+    var raw = await _storeHub.invoke('Create', args: [belongId, number]);
     return ResultType.fromJson(raw);
   }
 
@@ -414,22 +302,5 @@ class AnyStore {
     }
   }
 
-  /// 使用rest请求后端
-  /// @param methodName 方法
-  /// @param data 内容体数据
-  /// @param params 查询参数
-  /// @returns 返回结果
-  Future<dynamic> _restRequest(
-    String controller,
-    String methodName,
-    Map<String, dynamic> params,
-    dynamic data,
-  ) async {
-    return await _requester.post(
-      "/orginone/anydata/$controller/$methodName",
-      queryParameters: params,
-      data: data,
-    );
-  }
 
 }
