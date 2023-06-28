@@ -175,7 +175,7 @@ class StoreHub {
     } catch (err) {
       log.info("========== storeHub-invoke-end =============");
       log.info("=====> err: $err");
-      return null;
+      return  {"code": 400, "msg": "", "success": false};
     }
   }
 }

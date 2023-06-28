@@ -19,58 +19,20 @@ abstract class BaseBreadcrumbNavPage<T extends BaseBreadcrumbNavController,S ext
 
   @override
   Widget buildView() {
+    List<Widget> nextStep = [];
+    if (state.bcNav.isNotEmpty) {
+      for (var value in state.bcNav) {
+        nextStep.add(_level(value));
+      }
+    }
     return GyScaffold(
-      leadingWidth: 0,
-      leading: const SizedBox(),
+      titleSpacing: 0,
+      leading: BackButton(color: Colors.black,onPressed: (){
+        controller.popAll();
+      },),
       centerTitle: false,
-      titleWidget: Container(
-        color: Colors.white,
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
-        child: LayoutBuilder(builder: (context, type) {
-          List<Widget> nextStep = [];
-          if (state.bcNav.isNotEmpty) {
-            for (var value in state.bcNav) {
-               if(value != state.bcNav.first){
-                 nextStep.add(_level(value));
-               }
-            }
-          }
-          return SingleChildScrollView(
-            controller: state.navBarController,
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                GestureDetector(
-                  onTap: (){
-                    controller.pop(0);
-                  },
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        WidgetSpan(
-                            child:GestureDetector(
-                              onTap: (){
-                                controller.popAll();
-                              },
-                              child: Icon(Icons.arrow_back_ios,color: Colors.black,),
-                            ),
-                            alignment: PlaceholderAlignment.middle),
-                        TextSpan(
-                            text: state.bcNav.first.title,
-                            style: state.bcNav.isEmpty
-                                ? _selectedTextStyle
-                                : _unSelectedTextStyle)
-                      ],
-                    ),
-                  ),
-                ),
-                ...nextStep,
-              ],
-            ),
-          );
-        }),
-      ),
+      appBarColor: Colors.white,
+      titleWidget:SingleChildScrollView(scrollDirection: Axis.horizontal,controller: state.navBarController,child: Row(children:nextStep,),),
       body: body(),
     );
   }
