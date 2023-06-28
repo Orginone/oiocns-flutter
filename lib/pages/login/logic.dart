@@ -52,7 +52,6 @@ class LoginController extends BaseController<LoginState> {
       return;
     }
 
-    var settingCtrl = Get.find<SettingController>();
     var res = await settingCtrl.provider.login(
       state.accountController.text,
       state.passWordController.text,

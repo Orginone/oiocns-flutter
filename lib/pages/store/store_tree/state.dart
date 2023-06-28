@@ -4,10 +4,9 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/form.dart';
+import 'package:orginone/main.dart';
 
 class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
-  SettingController get settingCtrl => Get.find<SettingController>();
-
   StoreTreeState() {
     model.value = Get.arguments?['data'];
 

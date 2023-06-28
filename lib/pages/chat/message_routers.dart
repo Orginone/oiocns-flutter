@@ -150,7 +150,6 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
 }
 
 class ChatBreadNavState extends BaseBreadcrumbNavState<ChatBreadcrumbNav> {
-  SettingController get settingCtrl => Get.find<SettingController>();
 
   ChatBreadNavState() {
     model.value = Get.arguments?['data'];

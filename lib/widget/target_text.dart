@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/main.dart';
 
 class TargetText extends StatelessWidget {
 
@@ -23,8 +24,6 @@ class TargetText extends StatelessWidget {
 
   const TargetText({Key? key, required this.userId, this.style, this.maxLines, this.overflow, this.textAlign, this.text}) : super(key: key);
 
-  SettingController get setting => Get.find<SettingController>();
-
   @override
   Widget build(BuildContext context) {
     return  FutureBuilder<ShareIcon>(builder: (context,snapshot) {
@@ -35,6 +34,6 @@ class TargetText extends StatelessWidget {
       }
 
       return Text("$name${text??""}", style: style,maxLines: maxLines,overflow: overflow,textAlign: textAlign,);
-    },future: setting.provider.user?.findShareById(userId),);
+    },future: settingCtrl.provider.user?.findShareById(userId),);
   }
 }
