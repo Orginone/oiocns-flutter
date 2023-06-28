@@ -164,6 +164,10 @@ class HomeController extends TabsController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    if(Get.arguments??false){
+      XEventBus.instance.fire(UserLoaded());
+    }
+
     EventBusHelper.register(this, (event) async {
       if (event is ShowLoading) {
         if (event.isShow) {
