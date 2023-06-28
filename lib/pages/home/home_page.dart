@@ -183,8 +183,6 @@ class HomeController extends TabsController {
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
-
-    _update();
   }
 
 

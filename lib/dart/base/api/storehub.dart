@@ -161,11 +161,13 @@ class StoreHub {
       var res = await _connection.invoke(methodName, args: args);
       if(res!= null && (res is Map)){
         if(res['code'] == 401){
-          Log.info('error 401 断开链接,正在重试');
+          ToastUtils.showMsg(msg: 'error 401 长连接已断开,正在重试');
+          Log.info('断开链接,正在重试');
           kernel.restart();
           return null;
         } else if(res['code'] == 500){
-          Log.info('error 500 anystore断开链接,正在重试');
+          ToastUtils.showMsg(msg: 'error 500 长连接已断开,正在重试');
+          Log.info('anystore断开链接,正在重试');
           String token = kernel.anystore.accessToken;
           kernel.anystore.accessToken = '';
           kernel.anystore.updateToken(token);
