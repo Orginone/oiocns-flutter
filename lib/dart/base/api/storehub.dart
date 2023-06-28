@@ -1,7 +1,9 @@
+import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/toast_utils.dart';
+import 'package:orginone/widget/loading_dialog.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
 /// 存储集线器
@@ -50,12 +52,12 @@ class StoreHub {
       }
     });
     _connection.onreconnecting(({error}) {
-      ToastUtils.showMsg(msg: "正在重新连接服务器");
+        LoadingDialog.showLoading(Get.context!,msg: "正在重新连接服务器");
     });
     _connection.onreconnected(({connectionId}) {
       Future.delayed(const Duration(microseconds: 500),(){
         kernel.restart();
-        ToastUtils.showMsg(msg: "重新连接到服务器");
+        LoadingDialog.dismiss(Get.context!);
       });
     });
 
