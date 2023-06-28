@@ -37,6 +37,7 @@ abstract class IFormView {
 }
 
 abstract class IForm implements IFileInfo<XForm>, IFormView {
+
   /// 更新表单
   Future<bool> update(FormModel data);
 
@@ -130,8 +131,11 @@ class Form extends FileInfo<XForm> implements IForm {
 
   @override
   Future<bool> loadContent({bool reload = false}) async{
-    await loadAttributes(reload: reload);
-    await loadItems(reload: reload);
+    if(reload && !isLoaded){
+     await Future.wait([    loadAttributes(reload: reload),
+      loadItems(reload: reload),]);
+    }
+    isLoaded = reload;
     return true;
   }
 
@@ -233,7 +237,7 @@ class Form extends FileInfo<XForm> implements IForm {
 
   @override
   Future<bool> update(FormModel data) async {
-    data.id = id!;
+    data.id = id;
     data.directoryId = metadata.directoryId;
     data.typeName = metadata.typeName!;
     var res = await kernel.updateForm(data);
@@ -280,4 +284,7 @@ class Form extends FileInfo<XForm> implements IForm {
     ))
         .toList();
   }
+
+  @override
+  bool isLoaded = false;
 }

@@ -4,10 +4,9 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/form.dart';
+import 'package:orginone/main.dart';
 
 class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
-  SettingController get settingCtrl => Get.find<SettingController>();
-
   StoreTreeState() {
     model.value = Get.arguments?['data'];
 
@@ -21,6 +20,7 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
             name: value.metadata.name ?? "",
             id: value.metadata.id!,
             space: value,
+            spaceEnum: SpaceEnum.company,
             children: [],
             image: value.metadata.avatarThumbnail(),
           ),
@@ -35,6 +35,7 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
             image: settingCtrl.provider.user?.metadata.avatarThumbnail(),
             children: [],
             space: settingCtrl.provider.user,
+            spaceEnum: SpaceEnum.user,
           ),
           ...organization
         ],
@@ -54,7 +55,10 @@ class StoreTreeNav extends BaseBreadcrumbNavModel<StoreTreeNav> {
       required List<StoreTreeNav> children,
       super.image,
       super.source,
-      this.space,this.form}) {
+      super.showPopup = true,
+      this.space,
+      this.form,
+      super.spaceEnum}) {
     this.children = children;
   }
 }

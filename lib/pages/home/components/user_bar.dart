@@ -6,6 +6,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/pages/home/home_page.dart';
+import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/icons.dart';
 import 'package:orginone/widget/image_widget.dart';
@@ -48,10 +49,10 @@ class UserBar extends GetView<SettingController> {
             // TODO: Handle this case.
             break;
           case HomeEnum.store:
-            search = SearchBar<int>(homeEnum: HomeEnum.store, data: []);
+            search = SearchBar<RecentlyUseModel>(homeEnum: HomeEnum.store, data: controller.store.recent);
             break;
           case HomeEnum.setting:
-            search = SearchBar<IMsgChat>(homeEnum: HomeEnum.setting, data: []);
+            search = SearchBar<int>(homeEnum: HomeEnum.setting, data: []);
             break;
         }
         if (search != null) {

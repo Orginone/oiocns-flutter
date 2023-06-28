@@ -56,7 +56,6 @@ class SettingCenterState extends BaseBreadcrumbNavState<SettingNavModel> {
 
 
 class SettingNavModel extends BaseBreadcrumbNavModel<SettingNavModel> {
-  SpaceEnum? spaceEnum;
   IBelong? space;
   SettingNavModel(
       {super.id = '',
@@ -64,7 +63,8 @@ class SettingNavModel extends BaseBreadcrumbNavModel<SettingNavModel> {
         super.children = const [],
         super.source,
         super.image,
-        this.spaceEnum,
+        super.spaceEnum,
+        super.showPopup = true,
         this.space,
       });
 }

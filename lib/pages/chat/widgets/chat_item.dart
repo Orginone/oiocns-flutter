@@ -7,7 +7,6 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/pages/chat/message_chats/message_chats_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_util.dart';
 import 'package:orginone/util/string_util.dart';
@@ -49,13 +48,13 @@ class MessageItemWidget extends GetView<SettingController> {
               foregroundColor: Colors.white,
               icon: Icons.vertical_align_top,
               label:isTop?"取消置顶":"置顶",
-              onPressed: (BuildContext context) {
+              onPressed: (BuildContext context) async{
                 if(isTop){
                   chat.labels.remove('置顶');
                 }else{
                   chat.labels.add('置顶');
                 }
-                chat.cache();
+                await chat.cache();
                 controller.provider.refreshChat();
               },
             ),
@@ -102,10 +101,7 @@ class MessageItemWidget extends GetView<SettingController> {
       Widget child = TeamAvatar(
         info: TeamTypeInfo(share: chat.share),
         size: 65.w,
-        decoration:  chat.share.typeName == TargetType.person.label?const BoxDecoration(
-          color: XColors.themeColor,
-          shape: BoxShape.circle,
-        ):null,
+        circular: chat.share.typeName == TargetType.person.label,
       );
       if (noRead > 0) {
         child = badges.Badge(

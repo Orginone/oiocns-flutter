@@ -1,5 +1,7 @@
 
 
+import 'dart:convert';
+
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
@@ -182,7 +184,7 @@ Future<List<SettingNavModel>> loadFile(
   List<SettingNavModel> nav = [];
   for (var file in files) {
     SettingNavModel dirNav = SettingNavModel(
-      id: file.metadata.id!,
+      id: base64.encode(utf8.encode(file.metadata.name!)),
       source: file,
       name: file.metadata.name!,
       space: belong,
@@ -277,23 +279,24 @@ Future<List<SettingNavModel>> loadCohorts(
     cohortNav.children = [
       SettingNavModel(
         id: SpaceEnum.cohorts.label,
-        name: "${SpaceEnum.cohorts.label}文件",
-        space: belong,
-        spaceEnum: SpaceEnum.cohorts,
-        children: [
-          ...await loadFile(cohort.directory.files, belong),
-          ...await loadSpecies(cohort.directory.specieses, belong),
-          ...await loadApplications(cohort.directory.applications, belong),
-          ...await loadForm(cohort.directory.forms, belong),
-          ...await loadPropertys(cohort.directory.propertys, belong),
-        ]
-      ),
+          name: "${SpaceEnum.cohorts.label}文件",
+          space: belong,
+          showPopup: false,
+          spaceEnum: SpaceEnum.directory,
+          children: [
+            ...await loadFile(cohort.directory.files, belong),
+            ...await loadSpecies(cohort.directory.specieses, belong),
+            ...await loadApplications(cohort.directory.applications, belong),
+            ...await loadForm(cohort.directory.forms, belong),
+            ...await loadPropertys(cohort.directory.propertys, belong),
+          ]),
       SettingNavModel(
         id: SpaceEnum.cohorts.label,
         name: "${SpaceEnum.cohorts.label}成员",
         space: belong,
-        spaceEnum: SpaceEnum.cohorts,
-        children: cohort.members.map((e){
+        showPopup: false,
+        spaceEnum: SpaceEnum.person,
+        children: cohort.members.map((e) {
           return SettingNavModel(
             id: e.id!,
             name: e.name!,
@@ -328,24 +331,26 @@ Future<List<SettingNavModel>> loadDepartment(
     );
     departmentNav.children = [
       SettingNavModel(
-        id: SpaceEnum.departments.label,
-        name: "${SpaceEnum.departments.label}文件",
-        space: belong,
-        spaceEnum: SpaceEnum.departments,
-        children: [
-          ...await loadFile(department.directory.files, belong),
-          ...await loadSpecies(department.directory.specieses, belong),
-          ...await loadApplications(department.directory.applications, belong),
-          ...await loadForm(department.directory.forms, belong),
-          ...await loadPropertys(department.directory.propertys, belong),
-        ]
-      ),
+          id: SpaceEnum.departments.label,
+          showPopup: false,
+          name: "${SpaceEnum.departments.label}文件",
+          space: belong,
+          spaceEnum: SpaceEnum.directory,
+          children: [
+            ...await loadFile(department.directory.files, belong),
+            ...await loadSpecies(department.directory.specieses, belong),
+            ...await loadApplications(
+                department.directory.applications, belong),
+            ...await loadForm(department.directory.forms, belong),
+            ...await loadPropertys(department.directory.propertys, belong),
+          ]),
       SettingNavModel(
+        showPopup: false,
         id: SpaceEnum.departments.label,
         name: "${SpaceEnum.departments.label}成员",
         space: belong,
-        spaceEnum: SpaceEnum.departments,
-        children: department.members.map((e){
+        spaceEnum: SpaceEnum.person,
+        children: department.members.map((e) {
           return SettingNavModel(
             id: e.id!,
             name: e.name!,
@@ -385,24 +390,26 @@ Future<List<SettingNavModel>> loadGroup(
     );
     groupNav.children = [
       SettingNavModel(
-        id: SpaceEnum.groups.label,
-        name: "${SpaceEnum.groups.label}文件",
-        space: belong,
-        spaceEnum: SpaceEnum.groups,
-        children: [
-          ...await loadFile(group.directory.files, belong),
-          ...await loadSpecies(group.directory.specieses, belong),
-          ...await loadApplications(group.directory.applications, belong),
-          ...await loadForm(group.directory.forms, belong),
-          ...await loadPropertys(group.directory.propertys, belong),
-        ]
+          showPopup: false,
+          id: SpaceEnum.groups.label,
+          name: "${SpaceEnum.groups.label}文件",
+          space: belong,
+          spaceEnum: SpaceEnum.directory,
+          children: [
+            ...await loadFile(group.directory.files, belong),
+            ...await loadSpecies(group.directory.specieses, belong),
+            ...await loadApplications(group.directory.applications, belong),
+            ...await loadForm(group.directory.forms, belong),
+            ...await loadPropertys(group.directory.propertys, belong),
+          ]
       ),
       SettingNavModel(
         id: SpaceEnum.groups.label,
+        showPopup: false,
         name: "${SpaceEnum.groups.label}成员",
         space: belong,
-        spaceEnum: SpaceEnum.groups,
-        children: group.members.map((e){
+        spaceEnum: SpaceEnum.person,
+        children: group.members.map((e) {
           return SettingNavModel(
             id: e.id!,
             name: e.name!,

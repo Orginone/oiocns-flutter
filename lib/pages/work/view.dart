@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:orginone/config/color.dart';
-import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_frequently_used_list_page_view.dart';
-import 'package:orginone/pages/store/state.dart';
-import 'package:orginone/widget/unified.dart';
 
 import 'item.dart';
 import 'logic.dart';

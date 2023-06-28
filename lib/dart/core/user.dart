@@ -26,7 +26,7 @@ class UserProvider {
 
   UserProvider() {
     kernel.on('ChatRefresh', () async {
-      await reload();
+      await reloadChats();
     });
     kernel.on('RecvTarget', (data) async {
       if (_inited) {
@@ -123,24 +123,34 @@ class UserProvider {
   void refreshChat(){
     _chat.refresh();
   }
-
-
   /// 重载数据
-  Future<void> reload() async {
-    _inited = false;
-    _chat.value?.preMessage();
-    await _user.value?.deepLoad(reload: true,reloadContent: true);
-    await _work.value?.loadTodos(reload: true);
-    _inited = true;
-    _chat.value?.loadAllChats();
-    await _chat.value?.loadPreMessage();
-    await _chat.value?.loadMostUsed();
-    await _work.value?.loadMostUsed();
-    await _store.value?.loadMostUsed();
-    await _store.value?.loadRecentList();
-    await loadApps();
-    _chat.refresh();
-    _user.refresh();
+  Future<void> loadData() async {
+    if(kernel.isOnline && kernel.anystore.isOnline){
+      print('开始加载数据-------${DateTime.now()}');
+      _inited = false;
+      _chat.value?.preMessage();
+      await Future.wait([
+        _user.value!.deepLoad(reload: true, reloadContent: true),
+        _work.value!.loadTodos(reload: true),
+      ]);
+      _inited = true;
+      _chat.value?.loadAllChats();
+      await Future.wait([
+        _chat.value!.loadPreMessage(),
+        _chat.value!.loadMostUsed(),
+        _work.value!.loadMostUsed(),
+        _store.value!.loadMostUsed(),
+        _store.value!.loadRecentList(),
+        loadApps(),
+      ]);
+      print('加载数据完成-------${DateTime.now()}');
+      _chat.refresh();
+      _user.refresh();
+    }else{
+     await Future.delayed(Duration(milliseconds: 100),() async{
+        await loadData();
+      });
+    }
   }
 
 

@@ -21,6 +21,7 @@ import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/local_store.dart';
 import 'package:orginone/util/toast_utils.dart';
+import 'package:orginone/widget/loading_dialog.dart';
 
 const sessionUserName = 'sessionUser';
 const sessionSpaceName = 'sessionSpace';
@@ -56,7 +57,7 @@ class SettingController extends GetxController {
     _provider = UserProvider();
     _userSub = XEventBus.instance.on<UserLoaded>().listen((event) async {
       EventBusHelper.fire(ShowLoading(true));
-      await _provider.reload();
+      await _provider.loadData();
       EventBusHelper.fire(ShowLoading(false));
     });
   }
@@ -178,6 +179,7 @@ class SettingController extends GetxController {
   }
 
   void exitLogin() async{
+    LoadingDialog.dismiss(Get.context!);
     kernel.stop();
     LocalStore.clear();
     await HiveUtils.clean();

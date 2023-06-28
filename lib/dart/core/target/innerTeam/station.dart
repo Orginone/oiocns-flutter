@@ -49,8 +49,10 @@ class Station extends Team implements IStation {
 
   @override
   Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async{
-    await loadMembers(reload: reload);
-    await directory.loadContent(reload: reloadContent);
+    await Future.wait([
+      loadMembers(reload: reload),
+      directory.loadContent(reload: reloadContent),
+    ]);
   }
 
   @override
@@ -108,5 +110,8 @@ class Station extends Team implements IStation {
   @override
   // TODO: implement popupMenuItem
   List<PopupMenuItem> get popupMenuItem => [];
+
+  @override
+  bool isLoaded = false;
 
 }

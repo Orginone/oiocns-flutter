@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
@@ -74,11 +73,13 @@ class Group extends Target implements IGroup {
 
   @override
   Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async {
-    await loadChildren(reload: reload);
-    await loadMembers(reload: reload);
-    await directory.loadContent(reload: reloadContent);
+    await Future.wait([
+      loadChildren(reload: reload),
+      loadMembers(reload: reload),
+      directory.loadContent(reload: reloadContent),
+    ]);
     for (var group in children) {
-      await group.deepLoad(reload: reload,reloadContent: reloadContent);
+      await group.deepLoad(reload: reload, reloadContent: reloadContent);
     }
   }
 
@@ -165,4 +166,7 @@ class Group extends Target implements IGroup {
     ))
         .toList();
   }
+
+  @override
+  bool isLoaded = false;
 }

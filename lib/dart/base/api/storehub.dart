@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/routers.dart';
+import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 import 'package:signalr_netcore/signalr_client.dart';
@@ -36,7 +36,6 @@ class StoreHub {
                 options: HttpConnectionOptions(
                     skipNegotiation: true,
                     transport: HttpTransportType.WebSockets))
-            .configureLogging(Logger('logger'))
             .build() {
     _connection.keepAliveIntervalInMilliseconds = interval;
     _connection.serverTimeoutInMilliseconds = timeout;
@@ -52,6 +51,16 @@ class StoreHub {
         });
       }
     });
+    _connection.onreconnecting(({error}) {
+        LoadingDialog.showLoading(Get.context!,msg: "正在重新连接服务器");
+    });
+    _connection.onreconnected(({connectionId}) {
+      Future.delayed(const Duration(microseconds: 500),(){
+        kernel.restart();
+        LoadingDialog.dismiss(Get.context!);
+      });
+    });
+
   }
 
   /// 是否处于连接着的状态
@@ -85,6 +94,8 @@ class StoreHub {
       _connection.stop().then((_) {
         _starting();
       });
+    }else if(_connection.state != HubConnectionState.Reconnecting){
+      _starting();
     }
   }
 
@@ -138,16 +149,24 @@ class StoreHub {
   /// @param {any[]} args 参数
   /// @returns {Promise<ResultType>} 异步结果
   Future<dynamic> invoke(String methodName, {List<Object>? args}) async {
+
     log.info("========== storeHub-invoke-start =============");
     log.info("=====> url: ${_connection.baseUrl}");
     log.info("=====> methodName: $methodName");
     log.info("=====> args: $args");
     try {
       var res = await _connection.invoke(methodName, args: args);
-      if(res!= null){
-        if((res as Map)['code'] == 401){
-          settingCtrl.exitLogin();
-          return;
+      if(res!= null && (res is Map)){
+        if(res['code'] == 401){
+          ToastUtils.showMsg(msg: 'error 401 长连接已断开,正在重试');
+          Log.info('断开链接,正在重试');
+          kernel.restart();
+        } else if(res['code'] == 500){
+          ToastUtils.showMsg(msg: 'error 500 长连接已断开,正在重试');
+          Log.info('anystore断开链接,正在重试');
+          String token = kernel.anystore.accessToken;
+          kernel.anystore.accessToken = '';
+          kernel.anystore.updateToken(token);
         }
       }
       log.info("=====> res: $res");
@@ -156,7 +175,7 @@ class StoreHub {
     } catch (err) {
       log.info("========== storeHub-invoke-end =============");
       log.info("=====> err: $err");
-      return {"code": 400, "msg": "请求异常", "success": false};
+      return  {"code": 400, "msg": "", "success": false};
     }
   }
 }

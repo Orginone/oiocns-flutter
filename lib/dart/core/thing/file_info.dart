@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/common/entity.dart';
@@ -13,6 +12,8 @@ import 'package:orginone/main.dart';
 
 abstract class IFileInfo<T extends XEntity> {
   String get belongId;
+
+  late bool isLoaded;
 
   //是否为继承的类别
   bool get isInherited;
@@ -70,7 +71,7 @@ abstract class FileInfo<T extends XEntity> extends Entity
 
   @override
   Future<bool> loadContent({bool reload = false}) async {
-    return await Future.delayed(Duration(milliseconds: reload ? 100 : 0));
+    return reload;
   }
 }
 
@@ -244,4 +245,7 @@ class SysFileInfo extends FileInfo<XEntity> implements ISysFileInfo {
             ))
         .toList();
   }
+
+  @override
+  bool isLoaded = false;
 }

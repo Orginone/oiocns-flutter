@@ -733,7 +733,6 @@ class ChatBoxController with WidgetsBindingObserver {
   }
 
   Future<void> filePicked(PlatformFile file, IMsgChat chat) async {
-    var settingCtrl = Get.find<SettingController>();
     var docDir =  settingCtrl.user.directory;
 
     String ext = file.name.split('.').last;

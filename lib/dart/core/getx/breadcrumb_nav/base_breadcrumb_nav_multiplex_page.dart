@@ -21,34 +21,20 @@ abstract class BaseBreadcrumbNavMultiplexPage<T extends BaseBreadcrumbNavControl
 
   @override
   Widget buildView() {
-
+    List<Widget> nextStep = [];
+    if (state.bcNav.isNotEmpty) {
+      for (var value in state.bcNav) {
+        nextStep.add(_level(value));
+      }
+    }
     return GyScaffold(
-      leadingWidth: 0,
-      leading: const SizedBox(),
+      titleSpacing: 0,
+      leading: BackButton(color: Colors.black,onPressed: (){
+        controller.popAll();
+      },),
       centerTitle: false,
-      titleWidget: Container(
-        color: Colors.white,
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: LayoutBuilder(builder: (context, type) {
-          List<Widget> nextStep = [];
-          if (state.bcNav.isNotEmpty) {
-            for (var value in state.bcNav) {
-              nextStep.add(_level(value));
-            }
-          }
-          return Row(
-            children: [
-              IconButton(onPressed: (){
-                controller.popAll();
-              }, icon: const Icon(Icons.arrow_back_ios,color: Colors.black,),constraints: BoxConstraints(maxWidth: 40.w),),
-              Expanded(
-                child: SingleChildScrollView(scrollDirection: Axis.horizontal,child: Row(children:nextStep,),controller: state.navBarController,),
-              )
-            ],
-          );
-        }),
-      ),
+      appBarColor: Colors.white,
+      titleWidget:SingleChildScrollView(scrollDirection: Axis.horizontal,controller: state.navBarController,child: Row(children:nextStep,),),
       body: body(),
     );
   }

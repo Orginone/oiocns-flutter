@@ -158,4 +158,7 @@ Future<bool> update(IdentityModel data) async{
   // TODO: implement popupMenuItem
   List<PopupMenuItem> get popupMenuItem => [];
 
+  @override
+  bool isLoaded = false;
+
 }

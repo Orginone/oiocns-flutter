@@ -6,6 +6,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/work/work_start/logic.dart';
 import 'package:orginone/pages/work/work_start/network.dart';
 import 'package:orginone/routers.dart';
@@ -20,8 +21,6 @@ class CreateWorkController extends BaseController<CreateWorkState>
   final CreateWorkState state = CreateWorkState();
 
   WorkStartController get work => Get.find<WorkStartController>();
-
-  SettingController get setting => Get.find<SettingController>();
 
   @override
   void onReady() async {
@@ -46,7 +45,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
       try {
         var iForm = forms
             .firstWhere((element) => state.workForm.value!.id == element.id);
-        state.workForm.value!.attributes = await setting.provider.work!
+        state.workForm.value!.attributes = await settingCtrl.provider.work!
             .loadAttributes(iForm.id!, state.define.metadata.belongId!);
       } catch (e) {}
     }
@@ -62,7 +61,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
     for (var form in state.thingForm) {
       try {
         var iForm = forms.firstWhere((element) => form.id == element.id);
-        form.attributes = await setting.provider.work!
+        form.attributes = await settingCtrl.provider.work!
             .loadAttributes(iForm.id!, state.define.metadata.belongId!);
       } catch (e) {}
     }

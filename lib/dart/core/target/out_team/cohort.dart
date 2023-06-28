@@ -24,8 +24,7 @@ class Cohort extends Target implements ICohort {
 
   @override
   Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async {
-    await loadMembers(reload: reload);
-    await directory.loadContent(reload: reloadContent);
+    await Future.wait([loadMembers(reload: reload),directory.loadContent(reload: reloadContent)]);
   }
 
   @override
@@ -73,4 +72,7 @@ class Cohort extends Target implements ICohort {
     ))
         .toList();
   }
+
+  @override
+  bool isLoaded = false;
 }

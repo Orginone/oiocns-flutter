@@ -53,7 +53,7 @@ class HomePage extends GetView<HomeController> {
           views: controller.tabs.map((e) => e.toTabView()).toList(),
           bottom: Container(
             decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: Colors.grey.shade400,width: 0.4),)
+                border: Border(top: BorderSide(color: Colors.grey.shade400,width: 0.4),),
             ),
             child: TabBar(
               indicator: const UnderlineTabIndicator(),
@@ -164,7 +164,10 @@ class HomeController extends TabsController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    XEventBus.instance.fire(UserLoaded());
+    if(Get.arguments??false){
+      XEventBus.instance.fire(UserLoaded());
+    }
+
     EventBusHelper.register(this, (event) async {
       if (event is ShowLoading) {
         if (event.isShow) {
@@ -183,8 +186,6 @@ class HomeController extends TabsController {
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
-
-    _update();
   }
 
 

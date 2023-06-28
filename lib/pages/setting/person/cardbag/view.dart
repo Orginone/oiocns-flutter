@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
@@ -31,8 +32,7 @@ class _CardbagViewGetX extends GetView<CardbagController> {
 
   // 主视图
   Widget _buildView() {
-    var settingCtrl = Get.find<SettingController>();
-    var avatar = settingCtrl.user!.share.avatar;
+    var avatar = settingCtrl.user.share.avatar;
     return Center(
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         card,
@@ -105,7 +105,6 @@ class _CardbagViewGetX extends GetView<CardbagController> {
   }
 
   Widget get card {
-    var settingCtrl = Get.find<SettingController>();
     var name = settingCtrl.user.metadata.name!.substring(0, 1);
     if (settingCtrl.user.share.avatar == null) {
       return Container(

@@ -18,9 +18,6 @@ import 'package:orginone/pages/home/home_page.dart';
 import 'package:orginone/pages/other/pdf/index.dart';
 import 'package:orginone/pages/other/qr_scan/binding.dart';
 import 'package:orginone/pages/other/qr_scan/view.dart';
-import 'package:orginone/pages/other/scanning/scanning_page.dart';
-import 'package:orginone/pages/other/scanning/scanning_result_pge.dart';
-import 'package:orginone/pages/other/search_page.dart';
 import 'package:orginone/pages/other/web_view/binding.dart';
 import 'package:orginone/pages/other/web_view/view.dart';
 import 'package:orginone/pages/work/work_list/view.dart';
@@ -36,7 +33,6 @@ import 'package:orginone/pages/setting/person/mark/bindings.dart';
 import 'package:orginone/pages/setting/person/mark/view.dart';
 import 'package:orginone/pages/setting/person/security/bindings.dart';
 import 'package:orginone/pages/setting/person/security/index.dart';
-import 'package:orginone/pages/setting/person/view.dart';
 import 'package:orginone/pages/setting/version_page.dart';
 
 // 资产管理
@@ -122,14 +118,6 @@ class Routers {
 
   // 简单表单编辑器
   static const String form = "/form";
-
-  // 二维码扫描
-  static const String scanning = "/scanning";
-  static const String scanningResult = "/scanningResult";
-
-  // 搜索
-  static const String search = "/search";
-  static const String searchResult = "/searchResult";
 
   // 消息
   static const String messageSetting = "/messageSetting";
@@ -255,9 +243,6 @@ class Routers {
   //添加角色
   static const String addMembers = '/addMembers';
 
-  //个人中心
-  static const String personPage = "/personPage";
-
   static const String cardbag = "/cardbag";
   static const String dynamic = "/dynamic";
   static const String mark = "/mark";
@@ -329,21 +314,6 @@ class Routers {
           UpdateBinding(),
           ClassificationInfoBinding()
         ],
-      ),
-      GetPage(
-        name: Routers.scanning,
-        page: () => const ScanningPage(),
-        binding: ScanningBinding(),
-      ),
-      GetPage(
-        name: Routers.search,
-        page: () => const SearchPage(),
-        binding: SearchBinding(),
-      ),
-      GetPage(
-        name: Routers.searchResult,
-        page: () => const ScanningResultPage(),
-        binding: ScanningResultBinding(),
       ),
       GetPage(
         name: Routers.messageSetting,
@@ -497,11 +467,6 @@ class Routers {
         name: Routers.addMembers,
         page: () => AddMembersPage(),
         binding: AddMembersBinding(),
-      ),
-      GetPage(
-        name: Routers.personPage,
-        page: () => PersonPage(),
-        binding: PersonBinding(),
       ),
       GetPage(
         name: Routers.permissionInfo,

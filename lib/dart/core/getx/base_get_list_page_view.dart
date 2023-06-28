@@ -2,6 +2,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/images.dart';
 import 'package:orginone/widget/load_state_widget.dart';
 
 import 'base_get_list_state.dart';
@@ -68,7 +69,7 @@ abstract class BaseGetListPageView<T extends BaseListController, S extends BaseG
         height: MediaQuery.of(context).size.height.h,
         alignment: Alignment.center,
         color: Colors.grey.shade200,
-        child: Image.asset("images/no_data_icon.png",width: 300.w),
+        child: Image.asset(Images.empty,width: 300.w),
       ),
     );
   }

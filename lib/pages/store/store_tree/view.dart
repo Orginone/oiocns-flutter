@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
-import 'package:orginone/widget/common_widget.dart';
 import 'logic.dart';
 import 'state.dart';
-
+import 'store_nav_item.dart';
 class StoreTreePage
     extends BaseBreadcrumbNavMultiplexPage<
         StoreTreeController,
@@ -24,38 +21,18 @@ class StoreTreePage
     );
   }
 
-
-  List<Widget> home() {
-    List<Widget> children = [];
-    for (var child in state.model.value!.children) {
-      children.add(Column(
-        children: [
-          CommonWidget.commonHeadInfoWidget(child.name),
-          ...child.children.map((e) {
-            return BaseBreadcrumbNavItem<StoreTreeNav>(
-              item: e,
-              onTap: () {
-              },
-              onNext: () {
-                controller.onNext(e);
-              },
-            );
-          }).toList(),
-        ],
-      ));
-    }
-    return children;
-  }
-
   List<Widget> details() {
     return state.model.value!.children.map((e) {
-      return BaseBreadcrumbNavItem<StoreTreeNav>(
+      return StoreNavItem(
         item: e,
-        onTap: () {
-          // controller.jumpDetails(e);
+        onTap: (){
+          controller.jumpDetails(e);
         },
         onNext: () {
           controller.onNext(e);
+        },
+        onSelected: (key,item){
+          controller.operation(key, item);
         },
       );
     }).toList();
