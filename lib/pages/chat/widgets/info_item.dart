@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_sound_lite/flutter_sound.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -532,7 +532,7 @@ class PlayController extends GetxController with GetTickerProviderStateMixin {
     _animationController!.forward();
 
     // 监听进度
-    _soundPlayer ??= await FlutterSoundPlayer().openAudioSession();
+    _soundPlayer ??= await FlutterSoundPlayer().openPlayer();
     _soundPlayer!.setSubscriptionDuration(const Duration(milliseconds: 50));
     _mt = _soundPlayer!.onProgress!.listen((event) {
       _currentVoicePlay!.progress.value = event.position.inMilliseconds;
