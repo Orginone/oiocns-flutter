@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/model/thing_model.dart' as thing;
@@ -84,6 +85,11 @@ class XEntity extends Xbase {
     belongId = json['belongId'];
     typeName = json['typeName'];
     belong = json['belong'] != null ? XTarget.fromJson(json['belong']) : null;
+
+    var share = shareIcon();
+    if(share!=null && !ShareIdSet.containsKey(id)){
+      ShareIdSet[id!] = share;
+    }
   }
 
   @override
