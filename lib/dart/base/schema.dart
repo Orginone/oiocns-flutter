@@ -85,11 +85,6 @@ class XEntity extends Xbase {
     belongId = json['belongId'];
     typeName = json['typeName'];
     belong = json['belong'] != null ? XTarget.fromJson(json['belong']) : null;
-
-    var share = shareIcon();
-    if(share!=null && !ShareIdSet.containsKey(id)){
-      ShareIdSet[id!] = share;
-    }
   }
 
   @override
@@ -6329,6 +6324,10 @@ class XTarget extends XEntity {
     givenIdentitys = XIdentity.fromList(json["givenIdentitys"]);
     targets = XTarget.fromList(json["targets"]);
     thing = json["thing"] == null ? null : XThing.fromJson(json["thing"]);
+    var share = shareIcon();
+    if(share!=null && !ShareIdSet.containsKey(id)){
+      ShareIdSet[id!] = share;
+    }
   }
 
   //通过动态数组解析成List
