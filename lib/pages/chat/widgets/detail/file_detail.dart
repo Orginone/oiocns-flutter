@@ -24,6 +24,7 @@ class FileDetail extends BaseDetail {
     super.padding = EdgeInsets.zero,
     super.bgColor,
     super.isReply = false,
+    super.chat
   });
 
 

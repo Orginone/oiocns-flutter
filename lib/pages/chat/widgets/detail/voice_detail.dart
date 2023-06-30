@@ -16,6 +16,7 @@ class VoiceDetail extends BaseDetail {
     super.bgColor,
     super.constraints,
     super.isReply = false,
+    super.chat,
   });
 
   PlayController get playCtrl => Get.find<PlayController>();

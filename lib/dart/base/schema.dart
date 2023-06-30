@@ -114,6 +114,18 @@ class XEntity extends Xbase {
     }
   }
 
+  ShareIcon? shareIcon() {
+    if (icon == '') {
+      return null;
+    }
+    try {
+      var map = jsonDecode(icon ?? "");
+      FileItemShare share = FileItemShare.fromJson(map);
+      return ShareIcon(name: name??"", typeName: typeName??"",avatar: share);
+    } catch (e) {
+      return null;
+    }
+  }
 }
 
 class XDirectory extends XEntity {

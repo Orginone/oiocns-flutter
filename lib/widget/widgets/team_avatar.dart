@@ -30,8 +30,6 @@ class TeamTypeInfo {
 class TeamAvatar extends StatefulWidget {
   final TeamTypeInfo info;
   final double size;
-  final Widget? child;
-  final List<Widget>? children;
 
   final bool circular;
 
@@ -39,8 +37,6 @@ class TeamAvatar extends StatefulWidget {
     super.key,
     required this.info,
     double? size,
-    this.child,
-    this.children,
     this.circular = false,
   })  : size = size ?? 66.w;
 
@@ -68,8 +64,6 @@ class _TeamAvatarState extends State<TeamAvatar> {
     super.initState();
     info = widget.info;
     size = widget.size;
-    child = widget.child;
-    children = widget.children;
     circular = widget.circular;
   }
 
