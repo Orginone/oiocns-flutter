@@ -28,10 +28,6 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>FDAllFilesDownloadedMessage</key>
-	<string>下载完成</string>
-	<key>FDMaximumConcurrentTasks</key>
-	<integer>5</integer>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>sms</string>

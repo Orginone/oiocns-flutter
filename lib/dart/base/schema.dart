@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/model/thing_model.dart' as thing;
@@ -114,6 +115,18 @@ class XEntity extends Xbase {
     }
   }
 
+  ShareIcon? shareIcon() {
+    if (icon == '') {
+      return null;
+    }
+    try {
+      var map = jsonDecode(icon ?? "");
+      FileItemShare share = FileItemShare.fromJson(map);
+      return ShareIcon(name: name??"", typeName: typeName??"",avatar: share);
+    } catch (e) {
+      return null;
+    }
+  }
 }
 
 class XDirectory extends XEntity {
@@ -6311,6 +6324,10 @@ class XTarget extends XEntity {
     givenIdentitys = XIdentity.fromList(json["givenIdentitys"]);
     targets = XTarget.fromList(json["targets"]);
     thing = json["thing"] == null ? null : XThing.fromJson(json["thing"]);
+    var share = shareIcon();
+    if(share!=null && !ShareIdSet.containsKey(id)){
+      ShareIdSet[id!] = share;
+    }
   }
 
   //通过动态数组解析成List

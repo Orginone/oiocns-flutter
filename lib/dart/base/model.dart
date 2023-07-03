@@ -5577,3 +5577,71 @@ class TargetMessageModel {
     };
   }
 }
+
+class TargetOperateModel {
+  String? operate;
+  XTarget? target;
+  XTarget? subTarget;
+  XTarget? operater;
+
+  TargetOperateModel({
+     this.operate,
+     this.target,
+    this.subTarget,
+     this.operater,
+  });
+
+  TargetOperateModel.fromJson(Map<String, dynamic> json) {
+    operate= json['operate'];
+    target=XTarget.fromJson(json['target']);
+    subTarget= json['subTarget'] != null ? XTarget.fromJson(json['subTarget']) : null;
+    operater= XTarget.fromJson(json['operater']);
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      'operate': operate,
+      'target': target?.toJson(),
+      'operater': operater?.toJson(),
+    };
+    if (subTarget != null) {
+      data['subTarget'] = subTarget!.toJson();
+    }
+    return data;
+  }
+}
+
+
+class IdentityOperateModel {
+  String? operate;
+  XTarget? operater;
+  XIdentity? identity;
+  XTarget? station;
+  XTarget? subTarget;
+
+  IdentityOperateModel({
+    this.operate,
+    this.operater,
+    this.identity,
+    this.station,
+    this.subTarget,
+  });
+
+  IdentityOperateModel.fromJson(Map<String, dynamic> json) {
+    operate =json['operate'];
+    operater = json['operater']!=null?XTarget.fromJson(json['operater']):null;
+    identity =json['identity']!=null?XIdentity.fromJson(json['identity']):null;
+    station = json['station']!=null?XTarget.fromJson(json['station']):null;
+    subTarget=  json['subTarget']!=null?XTarget.fromJson(json['subTarget']):null;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'operate': operate,
+      'operater': operater?.toJson(),
+      'identity': identity?.toJson(),
+      'station': station?.toJson(),
+      'subTarget': subTarget?.toJson(),
+    };
+  }
+}

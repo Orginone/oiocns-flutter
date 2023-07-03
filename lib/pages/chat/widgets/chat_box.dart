@@ -3,13 +3,14 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:audio_session/audio_session.dart';
 import 'package:audio_wave/audio_wave.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_sound_lite/flutter_sound.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -646,6 +647,7 @@ class ChatBoxController with WidgetsBindingObserver {
     stopRecord();
   }
 
+
   /// 事件触发器
   eventFire(BuildContext context, InputEvent inputEvent, IMsgChat chat) async {
     switch (inputEvent) {
@@ -796,7 +798,25 @@ class ChatBoxController with WidgetsBindingObserver {
   }
 
   openRecorder() async {
-    await _recorder.openAudioSession();
+    final session = await AudioSession.instance;
+    await session.configure(AudioSessionConfiguration(
+      avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
+      avAudioSessionCategoryOptions:
+      AVAudioSessionCategoryOptions.allowBluetooth |
+      AVAudioSessionCategoryOptions.defaultToSpeaker,
+      avAudioSessionMode: AVAudioSessionMode.spokenAudio,
+      avAudioSessionRouteSharingPolicy:
+      AVAudioSessionRouteSharingPolicy.defaultPolicy,
+      avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
+      androidAudioAttributes: const AndroidAudioAttributes(
+        contentType: AndroidAudioContentType.speech,
+        flags: AndroidAudioFlags.none,
+        usage: AndroidAudioUsage.voiceCommunication,
+      ),
+      androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
+      androidWillPauseWhenDucked: true,
+    ));
+    await _recorder.openRecorder();
     await _recorder.setSubscriptionDuration(const Duration(milliseconds: 50));
     await _recorder.isEncoderSupported(Codec.aacMP4);
   }
@@ -815,11 +835,12 @@ class ChatBoxController with WidgetsBindingObserver {
       _currentFile = '${tempDir.path}/orginone${ext[Codec.aacMP4.index]}';
       print("voiceFile--------------$_currentFile");
       // 开启监听
+
       await _recorder.startRecorder(
         toFile: _currentFile,
         codec: Codec.aacMP4,
-        bitRate: 8000,
-        sampleRate: 8000,
+        bitRate: 48000,
+        sampleRate: 48000,
       );
       _mt = _recorder.onProgress?.listen((e) {
         print('e------------------${e.duration}');
@@ -836,7 +857,7 @@ class ChatBoxController with WidgetsBindingObserver {
   /// 停止录音
   stopRecord() async {
     await _recorder.stopRecorder();
-    await _recorder.closeAudioSession();
+    await _recorder.closeRecorder();
     if (_mt != null) {
       _mt!.cancel();
       _mt = null;

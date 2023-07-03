@@ -51,7 +51,7 @@ class StationInfoController extends BaseController<StationInfoState> {
 
   void removeAdmin(String data) async {
     try {
-      var user = state.identitys.firstWhere((element) => element.metadata.id == data);
+      var user = state.identitys.firstWhere((element) => element.id == data);
       bool success = await state.station.removeIdentitys([user]);
       if (success) {
         state.identitys.remove(user);

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main.dart';
@@ -46,21 +45,6 @@ class NotificationUtil {
         sound: true,
       );
     }
-    await service.configure(
-      androidConfiguration: AndroidConfiguration(
-        onStart: onStart,
-        autoStart: true,
-        isForegroundMode: false,
-        notificationChannelId: notificationChannelId,
-        initialNotificationTitle: '默认通知标题',
-        initialNotificationContent: '默认内容',
-        foregroundServiceNotificationId: notificationId,
-      ),
-      iosConfiguration: IosConfiguration(
-        autoStart: true,
-        onForeground: onStart,
-      ),
-    );
   }
 
   static void showMsgNotification(MsgSaveModel msg) async {

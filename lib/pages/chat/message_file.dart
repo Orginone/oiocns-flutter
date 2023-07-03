@@ -1,11 +1,12 @@
-
-
-
 import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/getx/base_bindings.dart';
+import 'package:orginone/dart/core/getx/base_controller.dart';
+import 'package:orginone/dart/core/getx/base_get_state.dart';
+import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -13,50 +14,11 @@ import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 
-class MessageFile extends StatefulWidget {
-  const MessageFile({Key? key}) : super(key: key);
 
+class MessageFilePage
+    extends BaseGetView<MessageFileController, MessageFileState> {
   @override
-  State<MessageFile> createState() => _MessageFileState();
-}
-
-class _MessageFileState extends State<MessageFile> {
-
-  late FileItemShare fileShare;
-
-  late String type;
-
-  bool fileExists = false;
-
-  DownloadTask? task;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    fileShare = Get.arguments['file'];
-
-    type = Get.arguments['type'];
-
-    FileDownloader().database.allRecords().then((records){
-      try{
-        task = records.firstWhere((element) => element.task.filename == fileShare.name! && element.task.url == fileShare.shareLink!).task as DownloadTask;
-        fileExists = task != null;
-        setState(() {});
-      }catch(e){
-
-      };
-    });
-    
-    if(type == "store"){
-      settingCtrl.store.onRecordRecent(
-          RecentlyUseModel(type: StoreEnum.file.label, file: FileItemModel.fromJson(fileShare.toJson())));
-    }
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
+  Widget buildView() {
     return GyScaffold(
       body: Container(
         width: double.infinity,
@@ -73,41 +35,98 @@ class _MessageFileState extends State<MessageFile> {
               height: 40.h,
             ),
             Text(
-              fileShare.name!,
+              state.fileShare.name!,
               style: XFonts.size26Black0,
             ),
             SizedBox(
               height: 100.h,
             ),
-            CommonWidget.commonSubmitWidget(
-                text: fileExists ? "打开" : "下载",
-                submit: () async {
-                  if (fileExists) {
-                    openFile();
-                  } else {
-                    task = DownloadTask(
-                        url:fileShare.shareLink!,
-                        baseDirectory: BaseDirectory.applicationSupport,
-                        filename: fileShare.name!);
-                    ToastUtils.showMsg(msg: "开始下载");
-                    await FileDownloader().download(task!,onProgress: (prpgress){
-                      if(prpgress == 1){
-                        FileDownloader().trackTasks();
-                        ToastUtils.showMsg(msg: "下载完成");
-                        setState(() {
-                          fileExists = true;
-                        });
-                      }
-                    });
-                  }
-                })
+            Obx(() {
+              return CommonWidget.commonSubmitWidget(
+                  text: state.fileExists.value ? "打开" : "下载",
+                  submit: () async {
+                    if (state.fileExists.value) {
+                      controller.openFile();
+                    } else {
+                      controller.downloadFile();
+                    }
+                  });
+            })
           ],
         ),
       ),
     );
   }
 
-  void openFile() async{
-    await FileDownloader().openFile(task: task);
+
+}
+
+class MessageFileBinding extends BaseBindings<MessageFileController> {
+  @override
+  MessageFileController getController() {
+    return MessageFileController();
+  }
+}
+
+class MessageFileController extends BaseController<MessageFileState> {
+  final MessageFileState state = MessageFileState();
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    FileDownloader().database.allRecords().then((records) {
+      try {
+        state.task = records
+            .firstWhere((element) =>
+        element.task.filename == state.fileShare.name! &&
+            element.task.url == state.fileShare.shareLink!)
+            .task as DownloadTask;
+        state.fileExists.value = state.task != null;
+      } catch (e) {
+
+      };
+    });
+  }
+
+  void downloadFile() async {
+    state.task = DownloadTask(
+        url: state.fileShare.shareLink!,
+        baseDirectory: BaseDirectory.applicationSupport,
+        filename: state.fileShare.name!);
+    ToastUtils.showMsg(msg: "开始下载");
+    await FileDownloader().download(state.task!, onProgress: (prpgress) {
+      if (prpgress == 1) {
+        FileDownloader().trackTasks();
+        state.fileExists.value = true;
+        ToastUtils.showMsg(msg: "下载完成");
+      }
+    });
+  }
+
+  void openFile() async {
+    await FileDownloader().openFile(task: state.task);
+  }
+}
+
+class MessageFileState extends BaseGetState {
+  late FileItemShare fileShare;
+
+  late String type;
+
+  var fileExists = false.obs;
+
+  DownloadTask? task;
+
+  MessageFileState() {
+    fileShare = Get.arguments['file'];
+
+    type = Get.arguments['type'];
+
+    if (type == "store") {
+      settingCtrl.store.onRecordRecent(
+          RecentlyUseModel(type: StoreEnum.file.label,
+              file: FileItemModel.fromJson(fileShare.toJson())));
+    }
   }
 }

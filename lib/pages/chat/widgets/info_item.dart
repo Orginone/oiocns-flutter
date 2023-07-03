@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_sound_lite/flutter_sound.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -72,6 +72,22 @@ class DetailItemWidget extends GetView<SettingController> {
 
   /// 消息详情
   Widget _messageDetail(BuildContext context) {
+    late String id;
+    ShareIcon? shareIcon;
+    XTarget? target;
+    if (isSelf) {
+      id = settingCtrl.user.id;
+      shareIcon = settingCtrl.user.share;
+    } else {
+      id = msg.metadata.fromId;
+      if(chat.share.typeName == TargetType.person.label){
+        shareIcon = chat.share;
+      }else{
+        target = chat.members.firstWhere((element) => element.id == id);
+        shareIcon = target.shareIcon();
+      }
+    }
+
     List<Widget> children = [];
     bool isCenter = false;
     if (msg.msgType == MessageType.recall.label) {
@@ -84,6 +100,7 @@ class DetailItemWidget extends GetView<SettingController> {
               child: TargetText(
                 style: XFonts.size18Black9,
                 userId: msg.metadata.fromId,
+                shareIcon: shareIcon,
               ),
               alignment: PlaceholderAlignment.middle),
           TextSpan(text: "撤回了一条消息", style: XFonts.size18Black9),
@@ -92,8 +109,8 @@ class DetailItemWidget extends GetView<SettingController> {
       children.add(child);
       isCenter = true;
     } else {
-      children.add(_getAvatar());
-      children.add(_getChat(context));
+      children.add(_getAvatar(id,shareIcon));
+      children.add(_getChat(target?.name??""));
     }
     return Container(
       margin: EdgeInsets.only(top: 8.h, bottom: 8.h),
@@ -108,17 +125,11 @@ class DetailItemWidget extends GetView<SettingController> {
   }
 
   /// 获取头像
-  Widget _getAvatar() {
-    late String id;
-    if (isSelf) {
-      id = settingCtrl.user.id;
-    } else {
-      id = msg.metadata.fromId;
-    }
+  Widget _getAvatar(String id,[ShareIcon? shareIcon]) {
     return GestureDetector(
       child: TeamAvatar(
         size: 55.w,
-        info: TeamTypeInfo(userId: id),
+        info: TeamTypeInfo(share: shareIcon,userId: id),
         circular: true,
       ),
       onLongPress: () {
@@ -132,14 +143,13 @@ class DetailItemWidget extends GetView<SettingController> {
   }
 
   /// 获取会话
-  Widget _getChat(BuildContext context) {
+  Widget _getChat(String name) {
     List<Widget> content = <Widget>[];
 
     if (!isSelf && chat.share.typeName != TargetType.person.label) {
       content.add(Container(
         margin: EdgeInsets.only(left: 10.w),
-        child:
-            TargetText(userId: msg.metadata.fromId, style: XFonts.size18Black3),
+        child: Text(name, style: XFonts.size18Black3),
       ));
     }
 
@@ -147,7 +157,7 @@ class DetailItemWidget extends GetView<SettingController> {
     var ltr = TextDirection.ltr;
     var textDirection = isSelf ? rtl : ltr;
 
-    Widget body = _chatBody(context, textDirection);
+    Widget body = _chatBody(Get.context!, textDirection);
 
     body = Column(
       crossAxisAlignment:
@@ -156,7 +166,7 @@ class DetailItemWidget extends GetView<SettingController> {
         body,
         msg.body?.cite == null
             ? const SizedBox()
-            : _replyBody(context, textDirection),
+            : _replyBody(Get.context!, textDirection),
       ],
     );
 
@@ -357,24 +367,27 @@ class DetailItemWidget extends GetView<SettingController> {
       body = TextDetail(
           isSelf: isSelf,
           message: msg.body!.cite!,
-          bgColor: Colors.black.withOpacity(0.1),isReply: true,);
+          bgColor: Colors.black.withOpacity(0.1),isReply: true,chat: chat,);
     } else if (msg.body?.cite?.msgType == MessageType.image.label) {
       body = ImageDetail(
         message: msg.body!.cite!,
         bgColor: Colors.black.withOpacity(0.1),
         isSelf: isSelf,
+        chat: chat,
       );
     } else if (msg.body?.cite?.msgType == MessageType.voice.label) {
       body = VoiceDetail(
         message: msg.body!.cite!,
         bgColor: Colors.black.withOpacity(0.1),
         isSelf: isSelf,
+        chat: chat,
       );
     } else if (msg.body?.cite?.msgType == MessageType.file.label) {
       body = FileDetail(
         message: msg.body!.cite!,
         bgColor: Colors.black.withOpacity(0.1),
         isSelf: isSelf,
+        chat: chat,
       );
     }
     if (body != null) {
@@ -532,7 +545,7 @@ class PlayController extends GetxController with GetTickerProviderStateMixin {
     _animationController!.forward();
 
     // 监听进度
-    _soundPlayer ??= await FlutterSoundPlayer().openAudioSession();
+    _soundPlayer ??= await FlutterSoundPlayer().openPlayer();
     _soundPlayer!.setSubscriptionDuration(const Duration(milliseconds: 50));
     _mt = _soundPlayer!.onProgress!.listen((event) {
       _currentVoicePlay!.progress.value = event.position.inMilliseconds;

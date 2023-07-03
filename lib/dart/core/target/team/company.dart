@@ -360,4 +360,46 @@ class Company extends Belong implements ICompany {
 
   @override
   bool isLoaded = false;
+
+  @override
+  Future<bool> teamChangedNotity(XTarget target) async{
+    switch (TargetType.getType(target.typeName!)) {
+      case TargetType.person:
+        return await pullMembers([target]);
+      case TargetType.group:
+        if (!groups.any((i) => i.id == target.id)) {
+          final group = Group(target, this);
+          await group.deepLoad();
+          groups.add(group);
+          return true;
+        }
+        break;
+      case TargetType.station:
+        if (!stations.any((i) => i.id == target.id)) {
+          final station = Station(target, this);
+          await station.deepLoad();
+          stations.add(station);
+          return true;
+        }
+        break;
+      case TargetType.cohort:
+        if (!cohorts.any((i) => i.id == target.id)) {
+          final cohort = Cohort(this,target);
+          await cohort.deepLoad();
+          cohorts.add(cohort);
+          return true;
+        }
+        break;
+      default:
+        if (departmentTypes.contains(target.typeName as TargetType)) {
+          if (!departments.any((i) => i.id == target.id)) {
+            final department = Department(target, this);
+            await department.deepLoad();
+            departments.add(department);
+            return true;
+          }
+        }
+    }
+    return false;
+  }
 }

@@ -43,6 +43,8 @@ abstract class ITeam implements IMsgChat, IFileInfo<XTarget>{
   bool hasRelationAuth();
 
   void recvTarget(String operate, bool isChild, XTarget target);
+
+  Future<bool> teamChangedNotity(XTarget target);
 }
 
 

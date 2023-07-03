@@ -32,6 +32,9 @@ abstract class IPerson extends IBelong {
   // 加载赋予人的身份(角色)实体
   Future<List<XIdProof>> loadGivedIdentitys({bool reload = false});
 
+  //根据Id查询共享信息
+  Future<XEntity?> findEntityAsync(String id);
+
   void removeGivedIdentity(List<String> identityIds, [String? teamId]);
 
   //加载单位
@@ -398,4 +401,50 @@ class Person extends Belong implements IPerson {
 
   @override
   bool isLoaded = false;
+
+  @override
+  Future<XEntity?> findEntityAsync(String id) async {
+    var res = await kernel.queryEntityById(IdReq(id: id));
+    if (res.success && res.data != null) {
+      var shareIcon = res.data!.shareIcon();
+      if (shareIcon != null) {
+        ShareIdSet[id] = shareIcon;
+      }
+      return res.data;
+    }
+    return null;
+  }
+
+  @override
+  Future<bool> teamChangedNotity(XTarget target) async{
+    if(target.typeName == TargetType.cohort.label){
+      if (!cohorts.any((i) => i.id == target.id)) {
+        final cohort = Cohort(this,target);
+        await cohort.deepLoad();
+        cohorts.add(cohort);
+        return true;
+      }
+    }else{
+      if (companyTypes.contains(target.typeName as TargetType)) {
+        if (!companys.any((i) => i.id == target.id)) {
+          final company = createCompanyFromTarget(target,this);
+          await company.deepLoad();
+          companys.add(company);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  Company createCompanyFromTarget(XTarget metadata, IPerson user) {
+    switch (TargetType.getType(metadata.typeName!)) {
+      case TargetType.hospital:
+        return Hospital(metadata, user);
+      case TargetType.university:
+        return University(metadata, user);
+      default:
+        return Company(metadata, user);
+    }
+  }
 }

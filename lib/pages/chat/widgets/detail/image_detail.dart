@@ -22,6 +22,7 @@ class ImageDetail extends BaseDetail {
     super.clipBehavior = Clip.hardEdge,
     super.padding = EdgeInsets.zero,
     super.isReply = false,
+    super.chat
   });
 
   @override

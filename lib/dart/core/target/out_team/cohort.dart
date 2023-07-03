@@ -75,4 +75,9 @@ class Cohort extends Target implements ICohort {
 
   @override
   bool isLoaded = false;
+
+  @override
+  Future<bool> teamChangedNotity(XTarget target) async{
+    return await pullMembers([target]);
+  }
 }

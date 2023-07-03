@@ -34,6 +34,7 @@ import 'package:orginone/pages/setting/person/mark/view.dart';
 import 'package:orginone/pages/setting/person/security/bindings.dart';
 import 'package:orginone/pages/setting/person/security/index.dart';
 import 'package:orginone/pages/setting/version_page.dart';
+import 'package:orginone/util/hive_utils.dart';
 
 // 资产管理
 // 资产管理
@@ -275,13 +276,12 @@ class Routers {
   static const String shareQrCode = "/shareQrCode";
 
   static String get main {
-    return login;
-    // var user = HiveUtils.getUser();
-    // if (user != null) {
-    //   return home;
-    // } else {
-    //   return login;
-    // }
+    var user = HiveUtils.getUser();
+    if (user != null) {
+      return home;
+    } else {
+      return login;
+    }
   }
 
   static List<GetPage> getInitRouters() {
@@ -525,7 +525,8 @@ class Routers {
       ),
       GetPage(
         name: Routers.messageFile,
-        page: () => const MessageFile(),
+        page: () =>  MessageFilePage(),
+        binding: MessageFileBinding()
       ),
       GetPage(
         name: Routers.messageRecords,

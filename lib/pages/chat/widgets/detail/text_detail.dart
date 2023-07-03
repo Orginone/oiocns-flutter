@@ -20,7 +20,7 @@ class TextDetail extends BaseDetail {
       super.bgColor,
       super.clipBehavior = Clip.hardEdge,
       super.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      super.constraints,  super.isReply = false,});
+      super.constraints,  super.isReply = false,super.chat});
 
   @override
   Widget body(BuildContext context) {

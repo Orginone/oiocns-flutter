@@ -4,6 +4,7 @@ import 'package:orginone/main.dart';
 import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
+import 'package:signalr_netcore/ihub_protocol.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
 /// 存储集线器
@@ -32,10 +33,7 @@ class StoreHub {
     int interval = 3000,
   })  : _timeout = timeout,
         _connection = HubConnectionBuilder()
-            .withUrl(url,
-                options: HttpConnectionOptions(
-                    skipNegotiation: true,
-                    transport: HttpTransportType.WebSockets))
+            .withUrl(url,options: HttpConnectionOptions(headers: MessageHeaders()..setHeaderValue('content-type', 'application/json;charset=UTF-8')))
             .build() {
     _connection.keepAliveIntervalInMilliseconds = interval;
     _connection.serverTimeoutInMilliseconds = timeout;
@@ -92,7 +90,7 @@ class StoreHub {
   void restart() {
     if (isConnected) {
       _connection.stop().then((_) {
-        _starting();
+         _starting();
       });
     }else if(_connection.state != HubConnectionState.Reconnecting){
       _starting();
@@ -113,7 +111,7 @@ class StoreHub {
         callback(err);
       }
       Future.delayed(Duration(milliseconds: _timeout), () {
-        _starting();
+        restart();
       });
     });
   }
@@ -175,7 +173,7 @@ class StoreHub {
     } catch (err) {
       log.info("========== storeHub-invoke-end =============");
       log.info("=====> err: $err");
-      return  {"code": 400, "msg": "", "success": false};
+      return  {"code": 400, "msg": err.toString(), "success": false};
     }
   }
 }

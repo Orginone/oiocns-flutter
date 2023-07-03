@@ -180,7 +180,7 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
         Text("座右铭:${item.remark??""}"),
       ];
     }
-    if(targetType == TargetType.group || targetType == TargetType.company){
+    if(targetType == TargetType.group || targetType == TargetType.company || targetType == TargetType.cohort){
       children = [
         Text(item.name!),
         SizedBox(
@@ -214,7 +214,10 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
     List<XTarget>? targets;
     switch (targetType) {
       case TargetType.group:
-        // xTargetArray = await setting.company?.searchGroup(code);
+        targets = await settingCtrl.user.searchTargets(code,[TargetType.group.label]);
+        break;
+      case TargetType.cohort:
+        targets = await settingCtrl.user.searchTargets(code,[TargetType.cohort.label]);
         break;
       case TargetType.person:
         targets = await settingCtrl.user.searchTargets(code,[TargetType.person.label]);

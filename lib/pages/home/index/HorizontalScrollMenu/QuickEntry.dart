@@ -1,9 +1,7 @@
 import 'dart:collection';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -81,14 +79,16 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
         icon: Icons.settings,
         cardName: '建群组',
         func: () {
-          settingCtrl.showAddFeatures(3, TargetType.cohort, "建群聊", "建群组");
+          settingCtrl.showAddFeatures(
+              ItemModel(Shortcut.addCohort, "建群聊", "建群组", TargetType.cohort));
         }),
     4: MyMenuItem(
         id: 4,
         icon: Icons.person,
         cardName: '加群组',
         func: () {
-          settingCtrl.showAddFeatures(1, TargetType.cohort, "添加群组", "请输入群组的编码");
+          settingCtrl.showAddFeatures(ItemModel(
+              Shortcut.addGroup, "添加群组", "请输入群组的编码", TargetType.cohort));
         }),
     5: MyMenuItem(
         id: 5,
@@ -120,8 +120,8 @@ class _MyHorizontalMenuState extends State<MyHorizontalMenu> {
         icon: Icons.settings,
         cardName: '加单位',
         func: () {
-          settingCtrl.showAddFeatures(
-              2, TargetType.company, "添加单位", "请输入单位的社会统一代码");
+          settingCtrl.showAddFeatures(ItemModel(
+              Shortcut.addCompany, "添加单位", "请输入单位的社会统一代码", TargetType.company));
         }),
   });
 

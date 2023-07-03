@@ -188,23 +188,21 @@ class MessageItemWidget extends GetView<SettingController> {
         height: 30.h,
       );
     }
-    return FutureBuilder<ShareIcon>(
-        future: controller.user.findShareById(lastMessage.fromId),
-        builder: (context, snapshot) {
+    return Builder(
+        builder: (context) {
           var showTxt = "";
-          if (snapshot.connectionState == ConnectionState.done) {
-            var name = snapshot.data?.name ?? "";
-            if (lastMessage.fromId != controller.user.metadata.id) {
-              if (chat.share.typeName != TargetType.person.label) {
-                showTxt = "$name:";
-              } else {
-                showTxt = "对方:";
-              }
+          if (lastMessage.fromId != controller.user.metadata.id) {
+            if (chat.share.typeName != TargetType.person.label) {
+              var target = chat.members.firstWhere((element) => element.id == lastMessage.fromId);
+              ShareIcon? shareIcon = target.shareIcon();
+              showTxt = "${shareIcon?.name}:";
+            } else {
+              showTxt = "对方:";
             }
-
-            showTxt =
-                StringUtil.msgConversion(lastMessage, controller.user.userId);
           }
+
+          showTxt =
+              StringUtil.msgConversion(lastMessage, controller.user.userId);
 
           return Text(
             showTxt,
