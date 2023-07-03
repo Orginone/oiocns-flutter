@@ -47,7 +47,8 @@ dependencies:
   ota_update: ^4.0.1
 
   # 网络库，日志库，工具库，路径库，压缩库
-  dio: ^4.0.4
+  dio: ^5.2.1+1
+  dio_cache_interceptor: ^3.4.2
   pretty_dio_logger: ^1.2.0-beta-1
   logging: ^1.0.2
   common_utils: ^2.1.0
@@ -98,8 +99,6 @@ dependencies:
   flutter_slidable: ^2.0.0
   # 弹框
   flutter_animated_dialog: ^2.0.1
-
-  flutter_background_service: ^3.0.1
 
   #消息总线
   event_bus: 2.0.0
