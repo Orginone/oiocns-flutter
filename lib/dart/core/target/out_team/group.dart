@@ -169,4 +169,19 @@ class Group extends Target implements IGroup {
 
   @override
   bool isLoaded = false;
+
+  @override
+  Future<bool> teamChangedNotity(XTarget target) async{
+    if(target.typeName == TargetType.group.label){
+      if (!children.any((i) => i.id == target.id)) {
+        final group = Group(target, company);
+        await group.deepLoad();
+        children.add(group);
+        return true;
+      }
+      return false;
+    }else{
+      return await pullMembers([target]);
+    }
+  }
 }

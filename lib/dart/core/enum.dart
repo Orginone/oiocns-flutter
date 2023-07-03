@@ -131,6 +131,10 @@ enum OperateType {
   final String label;
 
   const OperateType(this.label);
+
+  static OperateType getType(String name) {
+    return OperateType.values.firstWhere((element) => element.label == name);
+  }
 }
 
 /// 通用状态

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import 'logic.dart';
@@ -11,13 +12,10 @@ import 'state.dart';
 class QrScanPage extends BaseGetView<QrScanController,QrScanState>{
   @override
   Widget buildView() {
-    return  Scaffold(
-      appBar: AppBar(
-        title: Text("扫一扫"),
-        backgroundColor: Colors.transparent,
-      ),
+    return  const GyScaffold(
+      titleName: '扫一扫',
       backgroundColor: Colors.transparent,
-      body:const QrScan(),
+      body:QrScan(),
     );
   }
 }

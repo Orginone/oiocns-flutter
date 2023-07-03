@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -8,8 +10,12 @@ import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/event_bus_helper.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 import 'enum.dart';
+import 'target/base/team.dart';
+import 'target/identity/identity.dart';
+import 'target/innerTeam/station.dart';
 import 'thing/application.dart';
 import 'thing/store/provider.dart';
 import 'work/provider.dart';
@@ -33,12 +39,17 @@ class UserProvider {
         _recvTarget(data);
       }
     });
+    kernel.on('RecvIdentity', (data) async {
+      if (_inited) {
+        _recvIdentity(data);
+      }
+    });
     kernel.on('RecvTags', (data) async {
-       try{
-         TagsMsgType tagsMsgType = TagsMsgType.fromJson(data);
-         var currentChat = chat?.allChats.firstWhere((element) => element.chatId==tagsMsgType.id && element.belong.id == tagsMsgType.belongId);
-         currentChat?.overwriteMessagesTags(tagsMsgType);
-       }catch(e){}
+      try{
+        TagsMsgType tagsMsgType = TagsMsgType.fromJson(data);
+        var currentChat = chat?.allChats.firstWhere((element) => element.chatId==tagsMsgType.id && element.belong.id == tagsMsgType.belongId);
+        currentChat?.overwriteMessagesTags(tagsMsgType);
+      }catch(e){}
     });
   }
 
@@ -71,7 +82,6 @@ class UserProvider {
     var res = await kernel.login(account, password);
     if (res.success) {
       await _loadUser(XTarget.fromJson(res.data["target"]));
-
     }
     return res;
   }
@@ -88,11 +98,9 @@ class UserProvider {
   /// @param password 密码
   /// @param privateKey 私钥
   /// @returns
-  Future<ResultType> resetPassword(
-    String account,
-    String password,
-    String privateKey,
-  ) async {
+  Future<ResultType> resetPassword(String account,
+      String password,
+      String privateKey,) async {
     return await kernel.resetPassword(account, password, privateKey);
   }
 
@@ -108,12 +116,12 @@ class UserProvider {
   }
 
   ITarget? findTarget(String belongId){
-     for (var element in user?.targets??[]) {
-       if(element.id == belongId){
-         return element;
-       }
-     }
-     return null;
+    for (var element in user?.targets??[]) {
+      if(element.id == belongId){
+        return element;
+      }
+    }
+    return null;
   }
 
   void refreshWork(){
@@ -123,6 +131,7 @@ class UserProvider {
   void refreshChat(){
     _chat.refresh();
   }
+
   /// 重载数据
   Future<void> loadData() async {
     if(kernel.isOnline && kernel.anystore.isOnline){
@@ -147,7 +156,7 @@ class UserProvider {
       _chat.refresh();
       _user.refresh();
     }else{
-     await Future.delayed(Duration(milliseconds: 100),() async{
+      await Future.delayed(Duration(milliseconds: 100),() async{
         await loadData();
       });
     }
@@ -188,20 +197,150 @@ class UserProvider {
     myApps.refresh();
   }
 
-  void _recvTarget(data) {
-    // switch (data['TypeName']) {
-    //   case "Relation":
-    //     XTarget xTarget = XTarget.fromJson(data['Target']);
-    //     XTarget subTarget = XTarget.fromJson(data['SubTarget']);
-    //     var target = [_user.value, ...user!.targets].firstWhere(
-    //         (element) => element!.id == xTarget.id,
-    //         orElse: () => null);
-    //     if (target != null) {
-    //       target.recvTarget(data['Operate'], true, subTarget);
-    //     } else if (_user.value!.id == subTarget.id) {
-    //       _user.value!.recvTarget(data['Operate'], false, xTarget);
-    //     }
-    //     break;
-    // }
+  Future<void> _recvTarget(String recvData) async {
+    final data = TargetOperateModel.fromJson(json.decode(recvData));
+    if (user == null) return;
+
+    final allTarget = List<ITeam>.from(user!.targets);
+    for (var a in user!.companys) {
+      allTarget.addAll(a.stations);
+    }
+
+    String message = '';
+    switch (OperateType.getType(data.operate!)) {
+      case OperateType.delete:
+        message = '${data.operater?.name}将${data.target!.name}删除.';
+        allTarget
+            .where((i) => i.id == data.target!.id)
+            .forEach((i) => i.delete());
+        break;
+      case OperateType.update:
+        message = '${data.operater?.name}将${data.target!.name}信息更新.';
+        break;
+      case OperateType.remove:
+        if (data.subTarget != null) {
+          var operated = false;
+          for (final item in [user, ...user!.companys]) {
+            if (item!.id == data.subTarget!.id) {
+              message =
+                  '${item.id == user!.id ? '您' : item.metadata.name}已被${data.operater?.name}从${data.target!.name}移除.';
+              item.parentTarget
+                  .where((i) => i.id == data.target!.id)
+                  .forEach((i) {
+                i.delete();
+                operated = true;
+              });
+            }
+          }
+          if (!operated) {
+            message =
+                '${data.operater?.name}把${data.subTarget!.name}从${data.target!.name}移除.';
+            allTarget
+                .where((i) =>
+                    i.id == data.target!.id ||
+                    data.target!.id == data.subTarget!.id)
+                .forEach((i) {
+              i.removeMembers([data.subTarget!]);
+            });
+          }
+        }
+        break;
+      case OperateType.add:
+        if (data.subTarget != null) {
+          var operated = false;
+          message =
+              '${data.operater?.name}把${data.subTarget!.name}与${data.target!.name}建立关系.';
+          for (final item in [user, ...user!.companys]) {
+            if (item!.id == data.subTarget!.id &&
+                await item.teamChangedNotity(data.target!)) {
+              operated = true;
+            }
+          }
+          if (!operated) {
+            for (final item in allTarget) {
+              if (item.id == data.target!.id) {
+                await item.teamChangedNotity(data.subTarget!);
+              }
+            }
+          }
+        }
+        break;
+    }
+
+    if (message.isNotEmpty) {
+      if (data.operater?.id != user!.id) {
+        ToastUtils.showMsg(msg: message);
+      }
+    }
   }
+
+  void _recvIdentity(String recvData) {
+    final data = IdentityOperateModel.fromJson(json.decode(recvData));
+    if (user == null) return;
+    final targets = user!.targets;
+    for (var a in user!.companys) {
+      targets.addAll(a.cohorts);
+    }
+    final identitys = <IIdentity>[];
+    final stations = <IStation>[];
+    for (var i in targets) {
+      if (i.id == data.identity!.shareId) {
+        identitys.addAll(i.identitys.where((s) => s.id == data.identity!.id));
+      }
+    }
+    for (var a in user!.companys) {
+      stations.addAll(a.stations);
+    }
+    var message = '';
+    switch (OperateType.getType(data.operate!)) {
+      case OperateType.create:
+        message = '${data.operater?.name}新增身份【${data.identity!.name}】.';
+        for (var a in targets) {
+          if (a.identitys.every((q) => q.id != data.identity!.id)) {
+            a.identitys.add(Identity(a,data.identity!));
+          }
+        }
+        break;
+      case OperateType.delete:
+        message = '${data.operater?.name}将身份【${data.identity!.name}】删除.';
+        for (var a in identitys) {
+          a.delete();
+        }
+        for (var i in stations) {
+          i.removeIdentitys([data.identity!]);
+        }
+        break;
+      case OperateType.update:
+        // user.updateMetadata(data.identity);
+        break;
+      case OperateType.remove:
+        if (data.station != null) {
+          message = '${data.operater?.name}移除岗位【${data.station!.name}】中的身份【${data.identity!.name}】.';
+          stations
+              .firstWhereOrNull((s) => s.id == data.station!.id)
+              ?.removeIdentitys([data.identity!]);
+        } else {
+          message = '${data.operater?.name}移除赋予【${data.subTarget!.name}】的身份【${data.identity!.name}】.';
+          identitys.forEach((i) => i.removeMembers([data.subTarget!]));
+        }
+        break;
+      case OperateType.add:
+        if (data.station != null) {
+          message = '${data.operater?.name}向岗位【${data.station!.name}】添加身份【${data.identity!.name}】.';
+          stations
+              .firstWhereOrNull((s) => s.id == data.station!.id)
+              ?.pullIdentitys([data.identity!]);
+        } else {
+          message = '${data.operater?.name}赋予{${data.subTarget!.name}身份【${data.identity!.name}】.';
+          identitys.forEach((i) => i.pullMembers([data.subTarget!]));
+        }
+        break;
+    }
+    if (message.isNotEmpty) {
+      if (data.operater?.id != user!.id) {
+        ToastUtils.showMsg(msg: message);
+      }
+    }
+  }
+
 }

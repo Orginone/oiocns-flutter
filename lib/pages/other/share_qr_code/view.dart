@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
@@ -22,8 +21,10 @@ class ShareQrCodePage
         child: QrImage(
           data: '${Constant.host}/${state.entity.id}',
           version: QrVersions.auto,
-          size:400.w,
-          embeddedImage: image!=null?MemoryImage(image):null,
+          size: 400.w,
+          embeddedImage: image != null ? MemoryImage(image) : null,
+          errorCorrectionLevel: QrErrorCorrectLevel.H,
+          embeddedImageStyle: QrEmbeddedImageStyle(size: Size(80.w, 80.w)),
         ),
       ),
     );

@@ -7,7 +7,6 @@ import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/pages/home/home_page.dart';
 import 'package:orginone/pages/store/state.dart';
-import 'package:orginone/routers.dart';
 import 'package:orginone/util/icons.dart';
 import 'package:orginone/widget/image_widget.dart';
 import 'search_bar.dart';
@@ -75,12 +74,12 @@ class UserBar extends GetView<SettingController> {
                       (item) => GestureDetector(
                         behavior: HitTestBehavior.translucent,
                         onTap: () {
-                          controller.showAddFeatures(
-                              controller.menuItems.indexOf(item),
-                              item.targetType,
-                              item.title,
-                              item.hint);
                           _menuController.hideMenu();
+                          if(item.shortcut == Shortcut.qrCode){
+                            controller.qrScan();
+                          }else{
+                            controller.showAddFeatures(item);
+                          }
                         },
                         child: Container(
                           height: 50.h,
@@ -88,7 +87,7 @@ class UserBar extends GetView<SettingController> {
                           child: Row(
                             children: <Widget>[
                               Icon(
-                                item.icon,
+                                item.shortcut.icon,
                                 size: 24.w,
                                 color: Colors.white,
                               ),
@@ -98,7 +97,7 @@ class UserBar extends GetView<SettingController> {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 10),
                                   child: Text(
-                                    item.name,
+                                    item.shortcut.label,
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 18.sp,

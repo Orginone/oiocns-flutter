@@ -14,16 +14,16 @@ abstract class IStation implements ITeam {
   /// 设立岗位的单位
   late ICompany company;
   /// 岗位下的角色
-  late List<IIdentity> identitys;
+  late List<XIdentity> identitys;
 
   /// 加载用户设立的身份(角色)对象
-  Future<List<IIdentity>> loadIdentitys({bool reload = false});
+  Future<List<XIdentity>> loadIdentitys({bool reload = false});
 
   /// 用户拉入新身份(角色)
-  Future<bool> pullIdentitys(List<IIdentity> identitys);
+  Future<bool> pullIdentitys(List<XIdentity> identitys);
 
   /// 用户移除身份(角色)
-  Future<bool> removeIdentitys(List<IIdentity> identitys);
+  Future<bool> removeIdentitys(List<XIdentity> identitys);
 }
 
 class Station extends Team implements IStation {
@@ -36,7 +36,7 @@ class Station extends Team implements IStation {
   late ICompany company;
 
   @override
-  late List<IIdentity> identitys;
+  late List<XIdentity> identitys;
 
   @override
   // TODO: implement chats
@@ -66,39 +66,45 @@ class Station extends Team implements IStation {
   }
 
   @override
-  Future<List<IIdentity>> loadIdentitys({bool reload = false}) async{
+  Future<List<XIdentity>> loadIdentitys({bool reload = false}) async{
     if (identitys.isEmpty || reload) {
       var res = await kernel.queryTeamIdentitys(IdReq(id: metadata.id!));
       if (res.success) {
-        identitys = (res.data?.result ?? []).map((item) => Identity(space,item)).toList();
+        identitys = (res.data?.result ?? []);
       }
     }
     return identitys;
   }
 
   @override
-  Future<bool> pullIdentitys(List<IIdentity> identitys) async{
-    identitys = identitys.where((i) {
-      return identitys.where((m) => m.metadata.id == i.metadata.id).isEmpty;
-    }).toList();
+  Future<bool> pullIdentitys(List<XIdentity> identitys) async{
+    identitys = identitys.where((i) => this.identitys.every((a) => a.id != i.id)).toList();
     if (identitys.isNotEmpty) {
-      var res = await kernel.pullAnyToTeam(GiveModel( id: metadata.id!,
-        subIds: identitys.map((i) => i.metadata.id??"").toList(),));
-      if (res.success) {
-        this.identitys.addAll(identitys);
-      }
-      return res.success;
+      final res = await kernel.pullAnyToTeam(GiveModel( id: this.id,
+        subIds: identitys.map((i) => i.id!).toList(),));
+      if (!res.success) return false;
+      // for (final identity in identitys) {
+      //   createIdentityMsg(OperateType.Add, identity);
+      // }
+      this.identitys.addAll(identitys);
     }
     return true;
   }
 
   @override
-  Future<bool> removeIdentitys(List<IIdentity> identitys) async{
-    for (var identity in identitys) {
-      var res = await kernel.removeOrExitOfTeam(GainModel( id: metadata.id!,
-        subId: identity.metadata.id??"",));
-      if (res.success) {
-        this.identitys.removeWhere((i) => i == this);
+  Future<bool> removeIdentitys(List<XIdentity> identitys) async{
+    identitys = identitys.where((i) => this.identitys.any((a) => a.id == i.id)).toList();
+    if (identitys.isNotEmpty) {
+      for (final identity in identitys) {
+        final res = await kernel.removeOrExitOfTeam(GainModel( id: id,
+          subId: identity.id!,));
+        if (!res.success) return false;
+        // createIdentityMsg(OperateType.remove, identity);
+        company.user.removeGivedIdentity(
+          identitys.map((a) => a.id!).toList(),
+          id,
+        );
+        this.identitys.removeWhere((i) => i.id == identity.id);
       }
     }
     return true;
@@ -113,5 +119,10 @@ class Station extends Team implements IStation {
 
   @override
   bool isLoaded = false;
+
+  @override
+  Future<bool> teamChangedNotity(XTarget target) async{
+    return await pullMembers([target]);
+  }
 
 }

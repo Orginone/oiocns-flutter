@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/provider.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
@@ -26,13 +27,25 @@ import 'package:orginone/widget/loading_dialog.dart';
 const sessionUserName = 'sessionUser';
 const sessionSpaceName = 'sessionSpace';
 
+
+enum Shortcut{
+  addPerson("添加朋友",Icons.group_add),
+  addGroup("加入群组",Icons.speaker_group),
+  addCompany("加入单位组织", Icons.compare),
+  addCohort("发起群聊",Icons.chat_bubble),
+  qrCode("扫一扫",Icons.qr_code_2_outlined);
+
+  final String label;
+  final IconData icon;
+  const Shortcut(this.label,this.icon);
+}
+
 class ItemModel {
-  String name;
-  IconData icon;
-  TargetType targetType;
+  Shortcut shortcut;
+  TargetType? targetType;
   String title;
   String hint;
-  ItemModel(this.name,this.icon,this.targetType,this.title,this.hint);
+  ItemModel(this.shortcut,[this.title = '',this.hint = '',this.targetType,]);
 }
 
 
@@ -45,10 +58,11 @@ class SettingController extends GetxController {
   var homeEnum = HomeEnum.door.obs;
 
   var menuItems = [
-    ItemModel('添加朋友', Icons.group_add,TargetType.person,"添加好友","请输入用户的账号"),
-    ItemModel('加入群组', Icons.speaker_group,TargetType.cohort,"添加群组","请输入群组的编码"),
-    ItemModel('加入单位组织', Icons.compare,TargetType.company,"添加单位","请输入单位的社会统一代码"),
-    ItemModel('发起群聊', Icons.chat_bubble,TargetType.cohort,"发起群聊","请输入群聊信息"),
+    ItemModel(Shortcut.addPerson,"添加好友","请输入用户的账号",TargetType.person,),
+    ItemModel(Shortcut.addGroup,"添加群组","请输入群组的编码",TargetType.cohort),
+    ItemModel(Shortcut.addCompany,"添加单位","请输入单位的社会统一代码",TargetType.company),
+    ItemModel(Shortcut.addCohort,"发起群聊","请输入群聊信息",TargetType.cohort),
+    ItemModel(Shortcut.qrCode),
   ];
 
   @override
@@ -104,20 +118,6 @@ class SettingController extends GetxController {
     return result;
   }
 
-  /// 组织树
-  Future<List<ITarget>> getCompanyTeamTree(
-    ICompany company,
-    bool isShare,
-  ) async {
-    var result = <ITarget>[];
-    result.add(company);
-    if (isShare) {
-      var groups = await company.loadGroups(reload: false);
-      result.addAll([...groups]);
-    }
-    return result;
-  }
-
   void setHomeEnum(HomeEnum value) {
     homeEnum.value = value;
   }
@@ -146,10 +146,10 @@ class SettingController extends GetxController {
     return space == user;
   }
 
-  void showAddFeatures(int index, TargetType targetType, String title, String hint) {
-     if(index == menuItems.length - 1){
+  void showAddFeatures(ItemModel item) {
+     if(item.shortcut == Shortcut.addCohort){
        showCreateOrganizationDialog(
-           Get.context!, [targetType],
+           Get.context!, [item.targetType!],
            callBack: (String name, String code, String nickName, String identify,
                String remark, TargetType type) async {
              var target = TargetModel(
@@ -167,7 +167,7 @@ class SettingController extends GetxController {
            },
        );
      }else{
-       showSearchDialog(Get.context!,targetType,title: title,hint: hint,onSelected: (targets) async{
+       showSearchDialog(Get.context!,item.targetType!,title: item.title,hint: item.hint,onSelected: (targets) async{
            if(targets.isNotEmpty){
              bool success = await user.applyJoin(targets);
              if(success){
@@ -185,6 +185,21 @@ class SettingController extends GetxController {
     await HiveUtils.clean();
     homeEnum.value = HomeEnum.door;
     Get.offAllNamed(Routers.login);
+  }
+
+  void qrScan() {
+    Get.toNamed(Routers.qrScan)?.then((value) async{
+      if(value!=null){
+        String id = value.split('/').toList().last;
+        XEntity? entity = await user.findEntityAsync(id);
+        if(entity!=null){
+          List<XTarget> target = await user.searchTargets(entity.code!,[entity.typeName!]);
+          if(target.isNotEmpty){
+             await user.applyJoin(target);
+          }
+        }
+      }
+    });
   }
 }
 

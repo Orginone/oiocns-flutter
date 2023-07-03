@@ -65,10 +65,7 @@ class UserInfoController extends BaseController<UserInfoState>
             title: "加入单位",
             hint: "请输入单位的社会统一信用代码", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {
-            bool success = await settingCtrl.user.applyJoin(list);
-            if (success) {
-              ToastUtils.showMsg(msg: "发送成功");
-            }
+            await settingCtrl.user.applyJoin(list);
           }
         });
         break;

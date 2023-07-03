@@ -201,4 +201,18 @@ class Department extends Target implements IDepartment {
 
   @override
   bool isLoaded = false;
+
+  @override
+  Future<bool> teamChangedNotity(XTarget target) async{
+    if (childrenTypes.contains(TargetType.getType(target.typeName!))) {
+      if (!children.any((i) => i.id == target.id)) {
+        final department = Department(target, company);
+        await department.deepLoad();
+        children.add(department);
+        return true;
+      }
+      return false;
+    }
+    return await pullMembers([target]);
+  }
 }

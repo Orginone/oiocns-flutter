@@ -26,12 +26,12 @@ class StationInfoPage
                   List<List<String>> identityContent = [];
                   for (var identity in state.identitys) {
                     identityContent.add([
-                      identity.metadata.id??"",
-                      identity.metadata.code??"",
-                      identity.metadata.name??"",
-                      identity.metadata.name??"",
-                      identity.metadata.belongId??"",
-                      identity.metadata.remark ?? ""
+                      identity.id??"",
+                      identity.code??"",
+                      identity.name??"",
+                      identity.name??"",
+                      identity.belongId??"",
+                      identity.remark ?? ""
                     ]);
                   }
                   return CommonWidget.commonDocumentWidget(

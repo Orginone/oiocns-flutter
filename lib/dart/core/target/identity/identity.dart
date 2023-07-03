@@ -2,13 +2,14 @@ import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/main.dart';
 
 abstract class IIdentity extends IFileInfo<XIdentity>{
   /// 设置身份（角色）的用户
-  late IBelong space;
+  late ITarget current;
 
   /// 数据实体
   late XIdentity metadata;
@@ -35,9 +36,9 @@ abstract class IIdentity extends IFileInfo<XIdentity>{
 
 class Identity implements IIdentity {
 
-  Identity(this.space, this.metadata) {
+  Identity(this.current, this.metadata) {
     members = [];
-    directory = space.directory;
+    directory = current.directory;
   }
 
   @override
@@ -47,13 +48,13 @@ class Identity implements IIdentity {
   late XIdentity metadata;
 
   @override
-  late IBelong space;
+  late ITarget current;
 
   @override
   Future<bool> delete() async{
     final res = await kernel.deleteAuthority(IdReq(id: metadata.id!));
     if (res.success) {
-      space.identitys.removeWhere((i) => i != this);
+      current.identitys.removeWhere((i) => i != this);
     }
     return res.success;
   }

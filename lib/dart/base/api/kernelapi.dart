@@ -8,7 +8,6 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/model/user_model.dart';
 import 'package:orginone/util/hive_utils.dart';
-import 'package:orginone/util/http_util.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 class KernelApi {
@@ -1134,14 +1133,14 @@ class KernelApi {
   /// 申请加入组织/个人
   /// @param {JoinTeamModel} params 请求参数
   /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> applyJoinTeam(GainModel params) async {
+  Future<ResultType<dynamic>> applyJoinTeam(GainModel params) async {
     return await request(
       ReqestType(
         module: 'target',
         action: 'ApplyJoinTeam',
         params: params,
       ),
-      (item) => item as bool,
+      ResultType.fromJson,
     );
   }
 
@@ -2926,6 +2925,17 @@ class KernelApi {
     );
   }
 
+  Future<ResultType<XEntity>> queryEntityById(IdReq params) async {
+    return await request(
+      ReqestType(
+        module: 'core',
+        action: 'QueryEntityById',
+        params: params.toJson(),
+      ),
+      XEntity.fromJson,
+    );
+  }
+
   Future<ResultType<T>> request<T>(
     ReqestType req,
     T Function(Map<String, dynamic>)? cvt,
@@ -2933,8 +2943,8 @@ class KernelApi {
     dynamic raw;
     log.info("====> req:${req.toJson()}");
     raw = await _storeHub.invoke('Request', args: [req]);
-    if(raw != null){
-      if(!raw['success']){
+    if (raw != null) {
+      if (!raw['success']) {
         ToastUtils.showMsg(msg: raw['msg']);
       }
     }
