@@ -90,7 +90,7 @@ class StoreHub {
   void restart() {
     if (isConnected) {
       _connection.stop().then((_) {
-        _starting();
+         _starting();
       });
     }else if(_connection.state != HubConnectionState.Reconnecting){
       _starting();
@@ -111,7 +111,7 @@ class StoreHub {
         callback(err);
       }
       Future.delayed(Duration(milliseconds: _timeout), () {
-        _starting();
+        restart();
       });
     });
   }

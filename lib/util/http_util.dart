@@ -16,8 +16,8 @@ class HttpUtil {
   Logger log = Logger("HttpLogger");
   var dio = Dio(BaseOptions(
     baseUrl: Constant.host,
-    connectTimeout: 10000,
-    receiveTimeout: 10000,
+    connectTimeout: Duration(seconds: 30),
+    receiveTimeout: Duration(seconds: 30),
   ));
 
   void init() {

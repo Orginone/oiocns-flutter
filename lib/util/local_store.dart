@@ -4,7 +4,7 @@ class LocalStore {
   static SharedPreferences? _store;
 
   static Future<void>  instance() async {
-    _store ??= await SharedPreferences.getInstance();;
+    _store ??= await SharedPreferences.getInstance();
   }
 
   static SharedPreferences getStore(){
