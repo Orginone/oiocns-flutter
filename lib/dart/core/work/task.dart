@@ -59,7 +59,7 @@ class WorkTask implements IWorkTask {
           data:
               instanceData != null ? jsonEncode(instanceData!.toJson()) : null,
         ));
-        if (res.data && status < TaskStatus.refuseStart.status) {
+        if (res.success && status < TaskStatus.refuseStart.status) {
           if (targets.length == 2) {
             for (final item in user.targets) {
               if (item.id == targets[1].id) {
@@ -68,6 +68,7 @@ class WorkTask implements IWorkTask {
             }
           }
         }
+        return res.success;
       }
     }
     return false;

@@ -12,7 +12,7 @@ class ProcessInfoController extends BaseController<ProcessInfoState> {
   void approval(int status) async {
     await WorkNetWork.approvalTask(
         status: status,
-        comment: state.comment.text, todo: state.processDetailsController.state.todo,
+        comment: state.comment.text, todo: state.todo,
         onSuccess: () {
           Get.back();
         }
