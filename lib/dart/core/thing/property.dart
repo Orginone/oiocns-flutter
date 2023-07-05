@@ -119,4 +119,13 @@ class Property extends FileInfo<XProperty> implements IProperty {
 
   @override
   bool isLoaded = false;
+
+  @override
+  List<IFileInfo<XEntity>> content(int mode) {
+    return [];
+  }
+
+  @override
+  // TODO: implement locationKey
+  String get locationKey => '';
 }

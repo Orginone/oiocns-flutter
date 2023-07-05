@@ -8,16 +8,14 @@ import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/target_text.dart';
 
 class Item extends StatelessWidget {
-  final IWork define;
+  final IWork work;
 
   final VoidCallback? onTap;
 
   final PopupMenuItemSelected? onSelected;
 
-  const Item({Key? key, required this.define, this.onTap, this.onSelected})
+  const Item({Key? key, required this.work, this.onTap, this.onSelected})
       : super(key: key);
-
-  WorkStartController get work => Get.find<WorkStartController>();
 
 
   @override
@@ -38,7 +36,7 @@ class Item extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    define.metadata.name ?? "",
+                    work.metadata.name ?? "",
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 21.sp,
@@ -48,7 +46,7 @@ class Item extends StatelessWidget {
                     height: 10.h,
                   ),
                   Text(
-                    define.metadata.name ?? "",
+                    work.metadata.name ?? "",
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 18.sp,
@@ -57,7 +55,7 @@ class Item extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        define.metadata.code ?? "",
+                        work.metadata.code ?? "",
                         style:
                             TextStyle(color: Colors.black38, fontSize: 18.sp),
                       ),
@@ -65,7 +63,7 @@ class Item extends StatelessWidget {
                         width: 20.w,
                       ),
                       TargetText(
-                        userId: define.metadata.belongId ?? "",
+                        userId: work.metadata.belongId ?? "",
                         style:
                             TextStyle(color: Colors.black38, fontSize: 16.sp),
                       ),
@@ -76,7 +74,7 @@ class Item extends StatelessWidget {
             ),
             Obx(() {
               PopupMenuItem popupMenuItem;
-              if (settingCtrl.work.isMostUsed(define)) {
+              if (settingCtrl.work.isMostUsed(work)) {
                 popupMenuItem = const PopupMenuItem(
                   value: "remove",
                   child: Text("移除常用"),

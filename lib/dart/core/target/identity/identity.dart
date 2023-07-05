@@ -162,4 +162,13 @@ Future<bool> update(IdentityModel data) async{
   @override
   bool isLoaded = false;
 
+  @override
+  List<IFileInfo<XEntity>> content(int mode) {
+    return [];
+  }
+
+  @override
+  // TODO: implement locationKey
+  String get locationKey => '';
+
 }

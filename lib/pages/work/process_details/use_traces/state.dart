@@ -10,6 +10,6 @@ class UseTracesState extends BaseGetState{
 
   ProcessDetailsController processDetailsController = Get.find<ProcessDetailsController>();
 
-  XWorkInstance? get flowInstance => processDetailsController.state.workInstance;
+  XWorkInstance? get flowInstance => processDetailsController.state.todo.instance;
 
 }

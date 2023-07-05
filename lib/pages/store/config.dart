@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
@@ -98,21 +99,21 @@ Future<List<StoreTreeNav>> loadForm(List<IForm> forms, IBelong belong) async {
   return nav;
 }
 
-Future<List<StoreTreeNav>> loadSpeciesItem(List<SpeciesItem> species,IBelong belong,IForm form,
+Future<List<StoreTreeNav>> loadSpeciesItem(List<XSpeciesItem> species,IBelong belong,IForm form,
     [String? id]) async {
   List<StoreTreeNav> nav = [];
 
   for (var specie in species) {
-     if(specie.metadata.parentId == id){
+     if(specie.parentId == id){
        StoreTreeNav specieNav = StoreTreeNav(
-         id: specie.metadata.id!,
+         id: specie.id!,
          source: specie,
          spaceEnum: SpaceEnum.species,
-         name: specie.metadata.name!,
+         name: specie.name!,
          space: belong,
          form: form,
-         image: specie.metadata.avatarThumbnail(),
-         children: await loadSpeciesItem(species,belong,form,specie.metadata.id),
+         image: specie.avatarThumbnail(),
+         children: await loadSpeciesItem(species,belong,form,specie.id),
        );
        nav.add(specieNav);
      }

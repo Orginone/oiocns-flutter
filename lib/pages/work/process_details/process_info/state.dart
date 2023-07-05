@@ -2,8 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
+import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/pages/work/process_details/logic.dart';
 import 'package:orginone/pages/work/state.dart';
 
@@ -14,13 +16,13 @@ class ProcessInfoState extends BaseGetState{
 
   ProcessDetailsController processDetailsController = Get.find<ProcessDetailsController>();
 
-  XWorkTask get task => processDetailsController.state.todo;
+  IWorkTask get todo => processDetailsController.state.todo;
 
-  XWorkInstance? get flowInstance => processDetailsController.state.workInstance;
+  WorkNodeModel? get node => processDetailsController.state.node;
 
-  XForm? get workForm => processDetailsController.state.workForm.value;
+  XForm? get mainForm => processDetailsController.state.mainForm.value;
 
-  List<XForm> get thingForm => processDetailsController.state.thingForm;
+  List<XForm> get subForm => processDetailsController.state.subForm;
 
   TabController? get subTabController => processDetailsController.state.subTabController;
 }

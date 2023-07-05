@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/pages/home/home_page.dart';
 import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/util/icons.dart';
@@ -41,7 +42,7 @@ class UserBar extends GetView<SettingController> {
                 homeEnum: HomeEnum.chat, data: controller.chat.allChats);
             break;
           case HomeEnum.work:
-            search = SearchBar<XWorkTask>(
+            search = SearchBar<IWorkTask>(
                 homeEnum: HomeEnum.work, data: controller.work.todos);
             break;
           case HomeEnum.door:

@@ -18,11 +18,11 @@ class WorkStartController extends BaseController<WorkStartState>
     super.onReady();
   }
 
-  void createWork(IWork define) async {
-    WorkNodeModel? node = await define.loadWorkNode();
+  void createWork(IWork work) async {
+    WorkNodeModel? node = await work.loadWorkNode();
     if (node != null && node.forms != null && node.forms!.isNotEmpty) {
       Get.toNamed(Routers.createWork,
-          arguments: {"define": define, "node": node, 'target': state.target});
+          arguments: {"work": work, "node": node, 'target': state.target});
     } else {
       ToastUtils.showMsg(msg: "流程未绑定表单");
     }

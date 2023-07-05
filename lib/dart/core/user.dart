@@ -10,6 +10,7 @@ import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/event_bus_helper.dart';
+import 'package:orginone/util/notification_util.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 import 'enum.dart';
@@ -27,7 +28,7 @@ class UserProvider {
 
   final Rxn<IStoreProvider> _store = Rxn();
 
-  var myApps = <IApplication>[].obs;
+  var myApps =   <Map<IApplication,ITarget>>[].obs;
   bool _inited = false;
 
   UserProvider() {
@@ -51,6 +52,17 @@ class UserProvider {
         currentChat?.overwriteMessagesTags(tagsMsgType);
       }catch(e){}
     });
+  }
+
+  List<ITarget> get targets {
+    final List<ITarget> targets = [];
+    if (_user.value != null) {
+      targets.addAll(_user.value!.targets);
+      for (final company in _user.value!.companys) {
+        targets.addAll(company.targets);
+      }
+    }
+    return targets;
   }
 
   /// 当前用户
@@ -108,7 +120,7 @@ class UserProvider {
   _loadUser(XTarget person) async {
     _user.value = Person(person);
     if (_user.value != null) {
-      _work.value = WorkProvider(_user.value!);
+      _work.value = WorkProvider(this);
       _chat.value = ChatProvider(_user.value!);
       _store.value = StoreProvider(_user.value!);
       EventBusHelper.fire(StartLoad());
@@ -175,25 +187,16 @@ class UserProvider {
     if (reload) {
       await user!.deepLoad(reload: reload);
     }
-    List<IApplication> apps = [];
-    for (var target in user!.targets) {
-      for (var specie in target.directory.specieses) {
-        if (specie.metadata.typeName == SpeciesType.application.label) {
-          var app = specie as IApplication;
-          apps.add(app);
-        }
+    List<Map<IApplication,ITarget>> apps = [];
+    for (var target in targets) {
+      var applications = await target.directory.loadAllApplications();
+      for (var element in applications) {
+        apps.add({element:target.space});
       }
     }
-
-    myApps.value = apps
-        .asMap()
-        .entries
-        .where((entry) =>
-            apps.indexWhere(
-                (app) => app.metadata.id == entry.value.metadata.id) ==
-            entry.key)
-        .map((entry) => entry.value)
-        .toList();
+    myApps.value = apps.where((a){
+      return apps.indexWhere((x) => x.keys.first.id == a.keys.first.id) == apps.indexOf(a);
+    }).toList();
     myApps.refresh();
   }
 
@@ -269,7 +272,7 @@ class UserProvider {
 
     if (message.isNotEmpty) {
       if (data.operater?.id != user!.id) {
-        ToastUtils.showMsg(msg: message);
+        NotificationUtil.showMsgNotification("信息变更", message);
       }
     }
   }
@@ -338,7 +341,7 @@ class UserProvider {
     }
     if (message.isNotEmpty) {
       if (data.operater?.id != user!.id) {
-        ToastUtils.showMsg(msg: message);
+        NotificationUtil.showMsgNotification("身份变更", message);
       }
     }
   }

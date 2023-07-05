@@ -7,6 +7,7 @@ import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/main.dart';
 
 import '../../base/model.dart';
@@ -447,4 +448,13 @@ class Person extends Belong implements IPerson {
         return Company(metadata, user);
     }
   }
+
+  @override
+  List<IFileInfo<XEntity>> content(int mode) {
+    return [];
+  }
+
+  @override
+  // TODO: implement locationKey
+  String get locationKey => '';
 }

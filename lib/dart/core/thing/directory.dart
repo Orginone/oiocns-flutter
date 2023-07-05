@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart' hide Form;
+import 'package:orginone/dart/base/common/entity.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -37,6 +38,8 @@ typedef TaskChangeNotify = Function(List<TaskModel> taskList);
 abstract class IDirectory extends IFileInfo<XDirectory> {
   //当前加载目录的用户
   late ITarget target;
+
+  String get key;
 
   //上级目录
   IDirectory? parent;
@@ -100,6 +103,9 @@ abstract class IDirectory extends IFileInfo<XDirectory> {
 
   //加载应用
   Future<List<IApplication>> loadApplications({bool reload = false});
+
+  //加载全部应用
+  Future<List<IApplication>> loadAllApplications({bool reload = false});
 
   //新建应用
   Future<IApplication?> createApplication(ApplicationModel data);
@@ -451,4 +457,22 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
 
   @override
   bool isLoaded = false;
+
+  @override
+  String get key => uuid.v4();
+
+  @override
+  // TODO: implement locationKey
+  String get locationKey => key;
+
+  @override
+  Future<List<IApplication>> loadAllApplications({bool reload = false}) async{
+    await loadSubDirectory();
+    final applications = <IApplication>[];
+    applications.addAll(await loadApplications(reload: reload));
+    for (final subDirectory in children) {
+      applications.addAll(await subDirectory.loadApplications(reload: reload));
+    }
+    return applications;
+  }
 }

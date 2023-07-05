@@ -50,7 +50,8 @@ class StoreHub {
       }
     });
     _connection.onreconnecting(({error}) {
-        LoadingDialog.showLoading(Get.context!,msg: "正在重新连接服务器");
+        LoadingDialog.showLoading(Get.context!,
+          msg: "正在重新连接服务器", dismissSeconds: -1);
     });
     _connection.onreconnected(({connectionId}) {
       Future.delayed(const Duration(microseconds: 500),(){

@@ -26,7 +26,7 @@ class WorkListController extends BaseListController<WorkListState> {
         var todo = await WorkNetWork.getTodo();
         state.dataList.value = todo
             .where((element) =>
-                element.belongId == state.work.space?.metadata.belongId)
+                element.metadata.belongId == state.work.space?.metadata.belongId)
             .toList();
         break;
       case WorkEnum.completed:

@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:orginone/dart/core/consts.dart';
-import 'package:orginone/main.dart';
 import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/model/thing_model.dart' as thing;
 
@@ -535,229 +534,96 @@ class XSpecies extends XEntity {
   }
 }
 
-class XAttribute {
-  /// 雪花ID
-  String? id;
 
-  /// 名称
+class XAttribute extends Xbase {
   String? name;
-
   /// 值类型
-  String? valueType;
-
-  /// 编号
+  // String? valueType;
   String? code;
-
-  /// 备注
+  String? rule;
   String? remark;
-
-  /// 共享用户ID
-  String? shareId;
-
-  /// 归属用户ID
-  String? belongId;
-
-  /// 工作职权Id
-  String? authId;
-
-  /// 字典Id
-  String? dictId;
-
-  /// 属性Id
   String? propId;
-
-  /// 表单Id
+  String? authId;
   String? formId;
-
-  /// 状态
-  int? status;
-
-  /// 创建人员ID
-  String? createUser;
-
-  /// 更新人员ID
-  String? updateUser;
-
-  /// 修改次数
-  String? version;
-
-  /// 创建时间
-  String? createTime;
-
-  /// 更新时间
-  String? updateTime;
-
-  /// 附加过属性的物
+  String? belongId;
   List<XProperty>? linkPropertys;
-
-  /// 属性关系
   List<XAttrLinkProp>? links;
-
-  /// 关联属性
   XProperty? property;
-
-  /// 工作职权
-  XAuthority? authority;
-
-  /// 特性对应的表单
   XForm? form;
-
-  /// 创建度量标准的用户
+  XAuthority? authority;
   XTarget? belong;
-
-  Fields? fields;
-
   String? value;
 
   List<FileItemShare>? share;
 
   XAttribute({
-    this.id,
     this.name,
     this.code,
+    this.rule,
     this.remark,
-    this.shareId,
-    this.belongId,
     this.authId,
     this.propId,
     this.formId,
-    this.status,
-    this.createUser,
-    this.updateUser,
-    this.version,
-    this.createTime,
-    this.updateTime,
+    this.belongId,
     this.linkPropertys,
     this.links,
     this.property,
-    this.authority,
     this.form,
+    this.authority,
     this.belong,
-    this.fields,
   });
 
-  XAttribute.fromJson(Map<String, dynamic> json) {
-    id = json['id'] ?? "";
-    name = json['name'] ?? "";
-    code = json['code'] ?? "";
-    valueType = json['valueType']??'';
-    dictId = json['dictId'] ?? '';
-    remark = json['remark'] ?? "";
-    shareId = json['shareId'] ?? "";
-    belongId = json['belongId'] ?? "";
-    authId = json['authId'] ?? "";
-    propId = json['propId'] ?? "";
-    formId = json['formId'] ?? "";
-    status = json['status'] ?? "";
-    createUser = json['createUser'] ?? "";
-    updateUser = json['updateUser'] ?? "";
-    version = json['version'] ?? "";
-    createTime = json['createTime'] ?? "";
-    updateTime = json['updateTime'] ?? "";
-    linkPropertys = (json['linkPropertys'] as List<dynamic>?)
-        ?.map((item) => XProperty.fromJson(item as Map<String, dynamic>))
-        .toList();
-    links = (json['links'] as List<dynamic>?)
-        ?.map((item) => XAttrLinkProp.fromJson(item as Map<String, dynamic>))
-        .toList();
-    property = json['property'] != null
-        ? XProperty.fromJson(json['property'] as Map<String, dynamic>)
+  XAttribute.fromJson(Map<String, dynamic> json):super.fromJson(json){
+    name = json['name'];
+    code = json['code'];
+    // valueType = json['valueType']??'';
+    rule = json['rule'];
+    remark = json['remark'];
+    authId = json['authId'];
+    propId = json['propId'];
+    formId = json['formId'];
+    belongId = json['belongId'];
+    linkPropertys = json['linkPropertys'] != null
+        ? List<XProperty>.from(
+            json['linkPropertys'].map((x) => XProperty.fromJson(x)),
+          )
         : null;
+    links = json['links'] != null
+        ? List<XAttrLinkProp>.from(
+            json['links'].map((x) => XAttrLinkProp.fromJson(x)),
+          )
+        : null;
+    property =
+        json['property'] != null ? XProperty.fromJson(json['property']) : null;
+    form = json['form'] != null ? XForm.fromJson(json['form']) : null;
     authority = json['authority'] != null
-        ? XAuthority.fromJson(json['authority'] as Map<String, dynamic>)
+        ? XAuthority.fromJson(json['authority'])
         : null;
-    form = json['form'] != null
-        ? XForm.fromJson(json['form'] as Map<String, dynamic>)
-        : null;
-    belong = json['belong'] != null
-        ? XTarget.fromJson(json['belong'] as Map<String, dynamic>)
-        : null;
-    fields = initFields();
+    belong = json['belong'] != null ? XTarget.fromJson(json['belong']) : null;
   }
 
+  @override
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
-    data['id'] = id;
-    data['name'] = name;
-    data['code'] = code;
-    data['remark'] = remark;
-    data['shareId'] = shareId;
-    data['belongId'] = belongId;
-    data['authId'] = authId;
-    data['propId'] = propId;
-    data['formId'] = formId;
-    data['status'] = status;
-    data['createUser'] = createUser;
-    data['updateUser'] = updateUser;
-    data['version'] = version;
-    data['createTime'] = createTime;
-    data['updateTime'] = updateTime;
-    if (linkPropertys != null) {
-      data['linkPropertys'] = linkPropertys!.map((x) => x.toJson()).toList();
-    }
-    if (links != null) {
-      data['links'] = links!.map((x) => x.toJson()).toList();
-    }
-    if (property != null) {
-      data['property'] = property!.toJson();
-    }
-    if (authority != null) {
-      data['authority'] = authority!.toJson();
-    }
-    if (form != null) {
-      data['form'] = form!.toJson();
-    }
-    if (belong != null) {
-      data['belong'] = belong!.toJson();
-    }
+    final Map<String, dynamic> data = {
+      'name': name,
+      'code': code,
+      'rule': rule,
+      'remark': remark,
+      'authId': authId,
+      'propId': propId,
+      'formId': formId,
+      'belongId': belongId,
+      'linkPropertys': linkPropertys != null
+          ? linkPropertys!.map((x) => x.toJson()).toList()
+          : null,
+      'links': links != null ? links!.map((x) => x.toJson()).toList() : null,
+      'property': property != null ? property!.toJson() : null,
+      'form': form != null ? form!.toJson() : null,
+      'authority': authority != null ? authority!.toJson() : null,
+      'belong': belong != null ? belong!.toJson() : null,
+      ...super.toJson()
+    };
     return data;
-  }
-
-  Fields initFields(){
-    String? type;
-    String? router;
-    Map<dynamic, String> select = {};
-    switch (valueType) {
-      case "描述型":
-      case "数值型":
-        type = "input";
-        break;
-      case "选择型":
-      case "分类型":
-        type = "select";
-        settingCtrl.provider.work?.loadItems(dictId??"").then((value){
-          for (var element in value) {
-            select[element.value] = element.name;
-          }
-        });
-        break;
-      case "日期型":
-      case "时间型":
-        type = "selectDate";
-        break;
-      case "用户型":
-        type = "selectPerson";
-        break;
-      // case "dept":
-      // case "department":
-      //   type = "selectDepartment";
-      //   break;
-      case '附件型':
-        type = "upload";
-        break;
-      default:
-        type = 'input';
-        break;
-    }
-
-
-    return Fields(
-      title: name,
-      type: type,
-      code: code,
-      select: select,
-      router: router,
-    );
   }
 }
 
@@ -5824,8 +5690,8 @@ class XForm extends XEntity {
   List<XAttribute>? attributes;
   List<XWorkNode>? bindNodes;
   XDirectory? directory;
-  List<thing.ThingModel> things = [];
-
+  FormEditData? data;
+  List<FieldModel> fields = [];
   XForm({
     required super.id,
     required super.name,
@@ -5871,12 +5737,6 @@ class XForm extends XEntity {
     json['bindNodes'] = bindNodes?.map((x) => x.toJson()).toList();
     json['directory'] = directory?.toJson();
     return json;
-  }
-
-  void reset()  {
-    for (var element in attributes??[]) {
-      element.fields = element.initFields();
-    }
   }
 }
 

@@ -52,4 +52,13 @@ class Member extends FileInfo<XTarget> implements IMember {
 
   @override
   bool isLoaded = false;
+
+  @override
+  List<IFileInfo<XEntity>> content(int mode) {
+    return [];
+  }
+
+  @override
+  // TODO: implement locationKey
+  String get locationKey => '';
 }

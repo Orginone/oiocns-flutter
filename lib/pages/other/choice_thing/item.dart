@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/model/thing_model.dart';
 import 'package:orginone/util/date_utils.dart';
@@ -9,7 +10,7 @@ import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/target_text.dart';
 
 class Item extends StatelessWidget {
-  final ThingModel item;
+  final AnyThingModel item;
   final ValueChanged? changed;
   final bool showSelectButton;
   final bool showDelete;

@@ -9,6 +9,7 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/work/network.dart';
+import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 import 'package:orginone/model/thing_model.dart' as thing;
 import 'state.dart';
@@ -27,9 +28,6 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
     // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
-
-    state.workInstance ??= await WorkNetWork.getFlowInstance(state.todo);
-    state.define ??= await WorkNetWork.getFlowDefine(state.todo);
     await loadDataInfo();
     LoadingDialog.dismiss(context);
   }
@@ -38,85 +36,61 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
     state.hideProcess.value = false;
   }
 
-  Future<void> loadDataInfo() async {
 
-    if (state.workInstance == null) {
-      return;
-    }
-    if (state.define == null) {
-      return;
-    }
-
-    Map<String, dynamic> data = jsonDecode(state.workInstance!.data ?? "");
-    if (data.isEmpty) {
-      return;
-    }
-
-    WorkNodeModel? node = await state.define!.loadWorkNode();
-    List<XForm> forms = node?.forms??[];
-
-    state.thingForm.value =
-        forms.where((element) => element.typeName == SpeciesType.thing.label).toList();
-
-
-    try{
-      state.workForm.value =
-          forms.firstWhere((element) => element.typeName == SpeciesType.work.label);
-      if(state.workForm.value!=null){
-        var iForm = forms
-            .firstWhere((element) => state.workForm.value!.id == element.id);
-        state.workForm.value!.attributes = await settingCtrl.provider.work!
-            .loadAttributes(iForm.id!, state.define!.metadata.belongId!);
-        for (var element in state.workForm.value!.attributes!) {
-          print('11111');
-
-          try{
-            element.fields?.readOnly = true;
-            if(element.valueType == "附件型"){
-              List<dynamic> files = jsonDecode(data['forms']?['headerData']?[element.id]);
-              List<FileItemShare> share = files.map((e) => FileItemShare.fromJson(e)).toList();
-              element.value = share.map((e) => e.name).join('\n');
-              element.share = share;
-            }else{
-              element.value = data['forms']?['headerData']?[element.id]??'';
-            }
-            if(element.valueType == "用户型"){
-              element.fields?.defaultData.value = await settingCtrl.user.findShareById(element.value??"");
-            }else{
-              element.fields?.defaultData.value = element.value;
-            }
-          }catch(e){
-
-          }
-        }
-      }
-    }catch(e){
-
-    }
-
-    for (var form in state.thingForm) {
-      try {
-        var iForm = forms.firstWhere((element) => form.id == element.id);
-        form.attributes = await settingCtrl.provider.work!
-            .loadAttributes(iForm.id!, state.define!.metadata.belongId!);
-
-        if(data['forms']?['formData']?[form.id]!=null){
-          Map<String,dynamic> resourceData = jsonDecode(data['forms']?['formData']?[form.id]['resourceData']);
-          if(resourceData['data']!=null){
-            resourceData['data'].forEach((json){
-              form.things.add(thing.ThingModel.fromJson(json));
-            });
-          }
-        }
-
-      } catch (e) {
-
+  WorkNodeModel? getNodeByNodeId(String id, {WorkNodeModel? node}) {
+    if (node != null) {
+      if (id == node.id) return node;
+      final find = getNodeByNodeId(id, node: node.children);
+      if (find != null) return find;
+      for (final subNode in node.branches ?? []) {
+        final find = getNodeByNodeId(id, node: subNode.children);
+        if (find != null) return find;
       }
     }
-    state.subTabController = TabController(length: state.thingForm.length, vsync: this);
-    state.workForm.refresh();
-    state.thingForm.refresh();
+    return null;
   }
 
+  Future<void> loadDataInfo() async {
+    state.node = getNodeByNodeId(state.todo.instanceData?.node?.id??"", node: state.todo.instanceData?.node);
+    if(state.node!=null){
+      state.mainForm.value = state.node!.forms?.firstWhere((element) => element.typeName == "主表");
+      state.mainForm.value!.data = getFormData(state.mainForm.value!.id!);
+      state.mainForm.value!.fields = state.todo.instanceData!.fields[state.mainForm.value!.id]??[];
+      for (var field in state.mainForm.value!.fields) {
+        field.fields = field.initFields();
+      }
+      state.subForm.value = state.node!.forms?.where((element) => element.typeName == "子表").toList()??[];
+      for (var element in state.subForm) {
+        element.data = getFormData(element.id!);
+        element.fields = state.todo.instanceData!.fields[element.id]??[];
+        for (var field in element.fields) {
+          field.fields = field.initFields();
+        }
+      }
+      state.subTabController = TabController(length: state.subForm.length, vsync: this);
+      state.mainForm.refresh();
+      state.subForm.refresh();
+    }
+  }
 
+  FormEditData getFormData(String id) {
+    final source = <AnyThingModel>[];
+    if (state.todo.instanceData?.data != null && state.todo.instanceData?.data[id] != null) {
+      final beforeData = state.todo.instanceData!.data[id]!;
+      if (beforeData.isNotEmpty) {
+        final nodeData = beforeData.where((i) => i.nodeId == state.node?.id).toList();
+        if (nodeData.isNotEmpty) {
+          return nodeData.last;
+        }
+      }
+    }
+    var data = FormEditData(
+      nodeId: state.node?.id,
+      // creator: belong.userId,
+      createTime: DateTime.now().format(format: 'yyyy-MM-dd hh:mm:ss.S'),
+    );
+    data.before = List.from(source);
+    data.after =  List.from(source);
+    return data;
+  }
 }

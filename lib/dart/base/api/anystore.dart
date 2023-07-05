@@ -276,12 +276,13 @@ class AnyStore {
   /// 创建物
   /// @param  创建数量
   /// @returns {ResultType<T>} 移除异步结果
-  Future<ResultType<T>> createThing<T>(
-    int number,
+  Future<ResultType<AnyThingModel>> createThing(
+    String name,
     String belongId,
   ) async {
-    var raw = await _storeHub.invoke('Create', args: [belongId, number]);
-    return ResultType.fromJson(raw);
+    ;
+    var raw = await _storeHub.invoke('Create', args: [belongId, name]);
+    return ResultType<AnyThingModel>.fromJsonSerialize(raw,AnyThingModel.fromJson);
   }
 
   /// 对象变更通知

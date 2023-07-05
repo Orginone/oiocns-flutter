@@ -157,4 +157,15 @@ class Application extends FileInfo<XApplication> implements IApplication {
 
   @override
   bool isLoaded = false;
+
+  @override
+  List<IFileInfo<XEntity>> content(int mode) {
+    final List<IFileInfo<XEntity>> fileList = [...children, ...works];
+    fileList.sort((a, b) => DateTime.parse(a.metadata.updateTime??"").compareTo(DateTime.parse(b.metadata.updateTime??"")));
+    return fileList.reversed.toList();
+  }
+
+  @override
+  // TODO: implement locationKey
+  String get locationKey => key;
 }

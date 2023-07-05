@@ -21,7 +21,7 @@ class ThingInfoPage
             return CommonWidget.commonFormItem(
                 title: e.name ?? "",
                 content: value,
-                userId: e.valueType == "用户型" ? e.value ?? "" : '');
+                userId: e.value??"");//e.valueType == "用户型" ? e.value ?? "" : '');
           }).toList())
         ]);
       }),

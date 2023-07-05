@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_freqiently_usedList_controller.dart';
+import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
@@ -35,7 +36,7 @@ class WorkController extends BaseFrequentlyUsedListController<WorkState> {
     loadSuccess();
   }
 
-  void approval(XWorkTask todo, int status) async {
+  void approval(IWorkTask todo, int status) async {
     await WorkNetWork.approvalTask(status: status, comment: '', todo: todo);
   }
 

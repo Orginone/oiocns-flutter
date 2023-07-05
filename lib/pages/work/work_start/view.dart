@@ -21,18 +21,18 @@ class WorkStartPage extends BaseGetView<WorkStartController, WorkStartState> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
-                var define = state.defines[index];
+                var work = state.works[index];
                 return Item(
-                  define: define,
+                  work: work,
                   onTap: (){
-                    controller.createWork(define);
+                    controller.createWork(work);
                   },
                   onSelected: (key){
-                    controller.operation(key, define);
+                    controller.operation(key, work);
                   },
                 );
               },
-              itemCount: state.defines.length,
+              itemCount: state.works.length,
             );
           }),
         ),

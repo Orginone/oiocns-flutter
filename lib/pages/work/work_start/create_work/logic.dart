@@ -1,16 +1,13 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/work/work_start/logic.dart';
-import 'package:orginone/pages/work/work_start/network.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
+import 'package:orginone/widget/loading_dialog.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
 import 'dialog.dart';
@@ -26,6 +23,18 @@ class CreateWorkController extends BaseController<CreateWorkState>
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
+    LoadingDialog.showLoading(context);
+
+
+    await loadMainTable();
+    await loadSubTable();
+    state.apply = await state.work.createApply();
+    ResultType<AnyThingModel> result =
+    await kernel.anystore.createThing('', state.target.id);
+    if (result.data != null) {
+      state.mainForm.value!.things.add(result.data!);
+    }
+    LoadingDialog.dismiss(context);
   }
 
   @override
@@ -35,113 +44,104 @@ class CreateWorkController extends BaseController<CreateWorkState>
   }
 
   Future<void> loadMainTable() async {
-    WorkNodeModel? node = (await state.define.loadWorkNode());
-    List<XForm> forms = node?.forms ?? [];
+    var forms = (await state.work.loadWorkForms());
+    state.mainForm.value =
+        forms.firstWhere((element) => element.metadata.typeName == "主表");
 
-    state.workForm.value =
-        forms.firstWhere((element) => element.typeName == SpeciesType.work.label);
-
-    if (state.workForm.value != null) {
-      try {
-        var iForm = forms
-            .firstWhere((element) => state.workForm.value!.id == element.id);
-        state.workForm.value!.attributes = await settingCtrl.provider.work!
-            .loadAttributes(iForm.id!, state.define.metadata.belongId!);
-      } catch (e) {}
+    if (state.mainForm.value != null) {
+      await state.mainForm.value!.loadAttributes();
+      await state.mainForm.value!.loadItems();
     }
+
+    state.mainForm.refresh();
   }
 
   Future<void> loadSubTable() async {
-    WorkNodeModel? node = (await state.define.loadWorkNode());
-    List<XForm> forms = node?.forms ?? [];
+    var forms = (await state.work.loadWorkForms());
+    state.subForm.value =
+        forms.where((element) => element.metadata.typeName == "子表").toList();
 
-    state.thingForm.value =
-        forms.where((element) => element.typeName == SpeciesType.thing.label).toList();
-
-    for (var form in state.thingForm) {
-      try {
-        var iForm = forms.firstWhere((element) => form.id == element.id);
-        form.attributes = await settingCtrl.provider.work!
-            .loadAttributes(iForm.id!, state.define.metadata.belongId!);
-      } catch (e) {}
-    }
     state.tabController =
-        TabController(length: state.thingForm.length, vsync: this);
+        TabController(length: state.subForm.length, vsync: this);
+    for (var form in state.subForm) {
+      await form.loadAttributes();
+      await form.loadItems();
+    }
+    state.subForm.refresh();
   }
 
   Future<void> submit() async {
-    for (var element in state.workForm.value?.attributes ?? []) {
+    for (var element in state.mainForm.value?.fields ?? []) {
       if (element.fields?.required ?? false) {
         if (element.fields!.defaultData.value == null) {
           return ToastUtils.showMsg(msg: element.fields!.hint!);
         }
       }
     }
-    Map<String, dynamic> headerData = {};
-    List<WorkSubmitModel> formData = [];
-    if(state.workForm.value!=null){
-      for (var element in state.workForm.value?.attributes??[]) {
-        if (element.fields?.defaultData.value != null) {
-           if(element.fields!.type == 'upload'){
-             headerData[element.id!] = jsonEncode([element.fields?.defaultData.value.shareInfo()]);
-           }else{
-             headerData[element.id!] = element.fields?.defaultData.value;
-           }
-        }
+    LoadingDialog.showLoading(context);
+
+    if (state.apply != null) {
+      state.apply!.instanceData.fields[state.mainForm.value!.id] = state.mainForm.value!.fields;
+      for (var form in state.subForm) {
+        state.apply!.instanceData.fields[form.id] = form.fields;
       }
-      WorkSubmitModel workData = WorkSubmitModel(isHeader: true, resourceData: state.workForm.value!);
-      formData.add(workData);
+      Map<String, FormEditData> fromData = {};
+      var main = FormEditData(createTime: DateTime.now().toString(),nodeId: state.work.node?.id,creator: settingCtrl.user.id,);
+      main.after = state.mainForm.value!.things;
+      state.mainForm.value!.setThing(main.after[0]);
+      state.apply!.instanceData.primary.addAll(main.after![0].otherInfo);
+
+      fromData[state.mainForm.value!.id] = main;
+      for (var element in state.subForm) {
+        var sub = FormEditData(createTime: DateTime.now().toString(),nodeId: state.work.node?.id,creator: settingCtrl.user.id);
+        sub.after = element.things;
+        sub.before = element.things.where((element) => element.isSelected).toList();
+        fromData[element.id] = sub;
+      }
+      bool success = await state.apply!
+          .createApply(state.apply!.belong.id, state.remark.text, fromData);
+      LoadingDialog.dismiss(context);
+      if (success) {
+        ToastUtils.showMsg(msg: "提交成功");
+        Get.back();
+      }
     }
 
-
-
-    for (var form in state.thingForm) {
-      WorkSubmitModel data = WorkSubmitModel(isHeader: false, resourceData: form,changeData: form.things,);
-      formData.add(data);
-    }
-
-    WorkStartNetWork.createInstance(state.define, headerData,formData);
   }
 
-  void jumpEntity(XForm form) async{
+  void jumpEntity(IForm form) async{
 
     Get.toNamed(Routers.choiceThing, arguments: {"form": form,'belongId':state.target.belong.id})?.then((value){
-      state.thingForm.refresh();
+      state.subForm.refresh();
     });
   }
 
   void subTableOperation(SubTableEnum function) {
     int subTableIndex = state.tabController.index;
-    XForm form = state.thingForm[subTableIndex];
+    IForm form = state.subForm[subTableIndex];
 
     if (function == SubTableEnum.choiceTable) {
       jumpEntity(form);
     } else {
       showCreateAuthDialog(context, form,state.target, onSuceess: (model) {
-        if (function == SubTableEnum.addTable) {
-          form.things.add(model);
-        } else {
-          for (var value in form.things) {
-            value.eidtInfo = model.eidtInfo;
-          }
-        }
-        state.thingForm.refresh();
-      }, isAllChange: function == SubTableEnum.allChange);
+        form.things.add(model);
+        state.subForm.refresh();
+      });
     }
   }
 
   void subTableFormOperation(String function, String key) {
     int subTableIndex = state.tabController.index;
-    XForm form = state.thingForm[subTableIndex];
+    IForm form = state.subForm[subTableIndex];
     var thing = form.things.firstWhere((element) => element.id == key);
     if (function == 'delete') {
       form.things.remove(thing);
-      state.thingForm.refresh();
+      state.subForm.refresh();
     }
     if (function == 'edit') {
       showCreateAuthDialog(context, form,state.target, onSuceess: (model) {
         thing = model;
-        state.thingForm.refresh();
+        state.subForm.refresh();
       }, thing: thing);
     }
   }

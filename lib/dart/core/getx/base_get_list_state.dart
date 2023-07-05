@@ -9,6 +9,8 @@ abstract class BaseGetListState<T> extends BaseGetState{
 
   var loadStatus = LoadStatusX.loading.obs;
 
+  int page = 0;
+
   EasyRefreshController refreshController = EasyRefreshController();
 
   var isSuccess = false.obs;

@@ -10,24 +10,27 @@ import '../../../dart/base/model.dart' hide ThingModel;
 
 class ChoiceThingNetWork{
 
-  static Future<List<ThingModel>> getThing(String id,String belongId) async{
-    List<ThingModel> things = [];
+  static Future<List<AnyThingModel>> getThing(String id,String belongId,{int index = 0}) async{
+    List<AnyThingModel> things = [];
     ResultType result = await kernel.anystore.loadThing({
-      "searchExpr": "undefined",
-      "searchOperation": 'contains',
-      'requireTotalCount':true,
+      "requireTotalCount": true,
+      "searchOperation": "contains",
       "searchValue": null,
-      "userData": [
-        id
+      "skip": index * 20,
+      "take": 20,
+      "userData": [],
+      "sort": [
+        {
+          "selector": "Id",
+          "desc": false
+        }
       ],
-      "options": {
-        "match": {},
-      },
-    },belongId);
+      "group": null
+    },settingCtrl.user.id);
 
     if(result.success){
       result.data['data'].forEach((json){
-        things.add(ThingModel.fromJson(json));
+        things.add(AnyThingModel.fromJson(json));
       });
     }
 

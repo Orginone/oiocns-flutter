@@ -6,6 +6,7 @@ import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/images.dart';
+import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/model/thing_model.dart' as thing;
 import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/string_util.dart';
@@ -4964,25 +4965,15 @@ class WorkDefineModel {
 
 
 class WorkInstanceModel {
-  // 流程定义Id
   String? defineId;
-
-  // 展示内容
   String? content;
-
-  // 内容类型
   String? contentType;
-
-  // 单数据内容
   String? data;
-
-  // 标题
   String? title;
-
-  // 回调地址
   String? hook;
-
+  String? taskId;
   String? applyId;
+  String? childrenData;
 
   WorkInstanceModel({
     this.defineId,
@@ -4991,21 +4982,325 @@ class WorkInstanceModel {
     this.data,
     this.title,
     this.hook,
+    this.taskId,
     this.applyId,
+    this.childrenData,
   });
 
+  WorkInstanceModel.fromJson(Map<String, dynamic> json) {
+    defineId = json['defineId'];
+    content = json['content'];
+    contentType = json['contentType'];
+    data = json['data'];
+    title = json['title'];
+    hook = json['hook'];
+    taskId = json['taskId'];
+    applyId = json['applyId'];
+    childrenData = json['childrenData'];
+  }
+
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['defineId'] = this.defineId;
     data['content'] = this.content;
     data['contentType'] = this.contentType;
     data['data'] = this.data;
     data['title'] = this.title;
     data['hook'] = this.hook;
+    data['taskId'] = this.taskId;
     data['applyId'] = this.applyId;
+    data['childrenData'] = this.childrenData;
     return data;
   }
 }
+
+class InstanceDataModel {
+  WorkNodeModel? node;
+  bool? allowAdd;
+  bool? allowEdit;
+  bool? allowSelect;
+  Map<String, List<FieldModel>> fields = {};
+  Map<String, List<FormEditData>> data = {};
+  Map<String, dynamic> primary = {};
+
+  InstanceDataModel({
+    this.node,
+    this.allowAdd,
+    this.allowEdit,
+    this.allowSelect,
+  });
+
+  InstanceDataModel.fromJson(Map<String, dynamic> json) {
+
+    if (json['fields'] != null) {
+      json['fields'].forEach((key, value) {
+        List<FieldModel> fieldList = [];
+        if (value is List) {
+          for (var fieldJson in value) {
+            fieldList.add(FieldModel.fromJson(fieldJson));
+          }
+        }
+        fields[key] = fieldList;
+      });
+    }
+
+    if (json['data'] != null) {
+      json['data'].forEach((key, value) {
+        List<FormEditData> formDataList = [];
+        if (value is List) {
+          for (var formDataJson in value) {
+            formDataList.add(FormEditData.fromJson(formDataJson));
+          }
+        }
+        data[key] = formDataList;
+      });
+    }
+
+    if (json['primary'] != null) {
+      primary = Map<String, dynamic>.from(json['primary']);
+    }
+
+    node= WorkNodeModel.fromJson(json['node']);
+    allowAdd= json['allowAdd'];
+    allowEdit= json['allowEdit'];
+    allowSelect= json['allowSelect'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['node'] = this.node?.toJson();
+    data['allowAdd'] = this.allowAdd;
+    data['allowEdit'] = this.allowEdit;
+    data['allowSelect'] = this.allowSelect;
+    data['fields'] = this.fields.map(
+        (key, value) => MapEntry(key, value.map((e) => e.toJson()).toList()));
+    data['data'] = this.data.map(
+        (key, value) => MapEntry(key, value.map((e) => e.toJson()).toList()));
+    data['primary'] = this.primary;
+    return data;
+  }
+}
+
+class FieldModel {
+  String? id;
+  String? name;
+  String? code;
+  String? valueType;
+  String? rule;
+  String? remark;
+  List<FiledLookup>? lookups;
+  late Fields fields;
+  FieldModel({
+    this.id,
+    this.name,
+    this.code,
+    this.valueType,
+    this.rule,
+    this.remark,
+    this.lookups,
+  });
+
+  FieldModel.fromJson(Map<String, dynamic> json) {
+    List<FiledLookup> lookups = [];
+    if (json['lookups'] != null) {
+      json['lookups'].forEach((lookupJson) {
+        lookups.add(FiledLookup.fromJson(lookupJson));
+      });
+    }
+    id = json['id'];
+    name = json['name'];
+    code = json['code'];
+    valueType = json['valueType'];
+    rule = json['rule'];
+    remark = json['remark'];
+    lookups = lookups;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['code'] = this.code;
+    data['valueType'] = this.valueType;
+    data['rule'] = this.rule;
+    data['remark'] = this.remark;
+    data['lookups'] = this.lookups?.map((lookup) => lookup.toJson()).toList();
+    return data;
+  }
+
+  Fields initFields() {
+    String? type;
+    String? router;
+    Map<dynamic, String> select = {};
+    switch (valueType) {
+      case "描述型":
+      case "数值型":
+        type = "input";
+        break;
+      case "选择型":
+      case "分类型":
+        type = "select";
+        break;
+      case "日期型":
+      case "时间型":
+        type = "selectDate";
+        break;
+      case "用户型":
+        if(rule!=null){
+          Map widget = jsonDecode(rule!);
+          if(widget.isEmpty){
+            type = "selectPerson";
+          }else if(widget['widget'] == 'group'){
+            type = "selectGroup";
+          }else if(widget['widget'] == 'dept'){
+            type = "selectDepartment";
+          }
+        }
+        break;
+      case '附件型':
+        type = "upload";
+        break;
+      default:
+        type = 'input';
+        break;
+    }
+
+    return Fields(
+      title: name,
+      type: type,
+      code: code,
+      select: select,
+      router: router,
+    );
+  }
+}
+
+class FiledLookup {
+  String? id;
+  String? text;
+  String? value;
+  String? parentId;
+  String? icon;
+
+  FiledLookup({
+    this.id,
+    this.text,
+    this.value,
+    this.parentId,
+    this.icon,
+  });
+
+  FiledLookup.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    text = json['text'];
+    value = json['value'];
+    parentId = json['parentId'];
+    icon = json['icon'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['id'] = this.id;
+    data['text'] = this.text;
+    data['value'] = this.value;
+    data['parentId'] = this.parentId;
+    data['icon'] = this.icon;
+    return data;
+  }
+}
+
+class FormEditData {
+  List<AnyThingModel> before = [];
+  List<AnyThingModel> after = [];
+  String? nodeId;
+  String? creator;
+  String? createTime;
+
+  FormEditData({
+    this.nodeId,
+    this.creator,
+    this.createTime,
+  });
+
+  FormEditData.fromJson(Map<String, dynamic> json) {
+
+    if (json['before'] != null) {
+      json['before'].forEach((itemJson) {
+        before.add(AnyThingModel.fromJson(itemJson));
+      });
+    }
+
+    if (json['after'] != null) {
+      json['after'].forEach((itemJson) {
+        after.add(AnyThingModel.fromJson(itemJson));
+      });
+    }
+    nodeId= json['nodeId'];
+    creator= json['creator'];
+    createTime= json['createTime'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['before'] = this.before?.map((item) => item.toJson()).toList();
+    data['after'] = this.after?.map((item) => item.toJson()).toList();
+    data['nodeId'] = this.nodeId;
+    data['creator'] = this.creator;
+    data['createTime'] = this.createTime;
+    return data;
+  }
+}
+
+class AnyThingModel {
+  String? id;
+  String? name;
+  String? status;
+  String? creater;
+  String? createTime;
+  String? modifiedTime;
+  bool isSelected = false;
+  Map<String, dynamic> otherInfo = {};
+
+  AnyThingModel({
+    this.id,
+    this.name,
+    this.status,
+    this.creater,
+    this.createTime,
+    this.modifiedTime,
+  });
+
+  AnyThingModel.fromJson(Map<String, dynamic> json) {
+    json.forEach((key, value) {
+      if (key != 'Id' && key != 'Name' && key != 'Status' &&
+          key != 'Creater' && key != 'CreateTime' && key != 'ModifiedTime') {
+        otherInfo[key] = value;
+      }
+    });
+
+    id= json['Id'];
+    name= json['Name'];
+    status= json['Status'];
+    creater= json['Creater'];
+    createTime= json['CreateTime'];
+    modifiedTime= json['ModifiedTime'];
+    otherInfo= otherInfo;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['Id'] = this.id;
+    data['Name'] = this.name;
+    data['Status'] = this.status;
+    data['Creater'] = this.creater;
+    data['CreateTime'] = this.createTime;
+    data['ModifiedTime'] = this.modifiedTime;
+    data.addAll(this.otherInfo);
+    return data;
+  }
+}
+
+
 
 class Branche {
   List<Condition>? conditions;

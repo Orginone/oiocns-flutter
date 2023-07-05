@@ -26,11 +26,13 @@ abstract class BaseListController<S extends BaseGetListState> extends BaseContro
 
   /// 下拉刷新使用
   Future onRefresh() async{
+    state.page = 0;
     await loadData(isRefresh: true);
   }
 
   /// 加载更多使用
   Future onLoadMore() async{
+    state.page++;
     await loadData();
   }
 

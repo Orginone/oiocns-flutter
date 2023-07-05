@@ -13,7 +13,7 @@ class ProcessDetailsPage
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: state.todo.title,
+      titleName: state.todo.metadata.title,
       body: Column(
         children: [
           tabBar(),
