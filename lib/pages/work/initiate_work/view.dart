@@ -35,17 +35,13 @@ class InitiateWorkPage extends BaseBreadcrumbNavMultiplexPage<
         children: [
           CommonWidget.commonHeadInfoWidget(child.name),
           ...child.children.map((e) {
-            return InitiateWorkItem(
+            return BaseBreadcrumbNavItem(
               item: e,
-              showCreateIcon:  e.workEnum == WorkEnum.initiationWork,
               onTap: () {
                 controller.jumpWorkList(e);
               },
               onNext: (){
                 controller.jumpNext(e);
-              },
-              onCreateWork: (){
-                controller.createWork(e);
               },
             );
           }).toList(),
@@ -59,17 +55,13 @@ class InitiateWorkPage extends BaseBreadcrumbNavMultiplexPage<
     List<Widget> children = [];
     for (var child in state.model.value!.children) {
       children.add(
-        InitiateWorkItem(
+        BaseBreadcrumbNavItem(
           item: child,
-          showCreateIcon: child.workEnum == WorkEnum.initiationWork,
           onTap: () {
             controller.jumpWorkList(child);
           },
           onNext: (){
             controller.jumpNext(child);
-          },
-          onCreateWork: (){
-            controller.createWork(child);
           },
         ),
       );

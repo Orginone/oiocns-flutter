@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -26,18 +27,19 @@ class ProcessInfoPage
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Obx(() {
-                  if (state.workForm == null) {
+                  if (state.mainForm == null) {
                     return Container();
                   }
-                  return _info(state.workForm!);
+                  return _info(state.mainForm!);
                 }),
                 Obx(() {
-                  if (state.thingForm.isEmpty ||
+                  if (state.subForm.isEmpty ||
                       state.subTabController == null) {
                     return Container();
                   }
                   return subTable();
                 }),
+                SizedBox(height: 10.h,),
                 _opinion(),
               ],
             ),
@@ -54,44 +56,26 @@ class ProcessInfoPage
       child: Column(
         children: [
           CommonWidget.commonNonIndicatorTabBar(state.subTabController!,
-              state.thingForm.map((element) => element.name!).toList()),
+              state.subForm.map((element) => element.name!).toList()),
           SizedBox(
             height: 300.h,
             child: Obx(() {
               return TabBarView(
                 controller: state.subTabController,
                 physics: const NeverScrollableScrollPhysics(),
-                children: state.thingForm.map((element) {
+                children: state.subForm.map((element) {
                   List<String> title =
-                      element.attributes?.map((e) => e.name ?? "").toList() ??
+                      element.fields.map((e) => e.name ?? "").toList() ??
                           [];
-
-                  List<List<String>> content = element.things.map((thing) {
+                  List<List<String>> content = element.data!.after.map((thing) {
                     List<String> data = [];
-
-                    for (var attribute in element.attributes!) {
-                      if (attribute.valueType == "附件型") {
-                        try {
-                          List<dynamic> files =
-                              jsonDecode(thing.eidtInfo[attribute.id]);
-                          List<FileItemShare> share = files
-                              .map((e) => FileItemShare.fromJson(e))
-                              .toList();
-                          data.add(share.map((e) => e.name).join('\n'));
-                        } catch (e) {
-                          print(e);
-                        }
-                      } else if (attribute.valueType == "用户型") {
-                        data.add(thing.eidtInfo[attribute.id!]?['name'] ?? "");
-                      } else {
-                        data.add(thing.eidtInfo[attribute.id] ?? "");
-                      }
+                    for (var element in element.fields) {
+                      data.add(thing.otherInfo[element.id]??"");
                     }
-
                     return [
                       thing.id ?? "",
-                      thing.createrName ?? "",
                       thing.status ?? "",
+                      ShareIdSet[thing.creater]?.name??"",
                       ...data
                     ];
                   }).toList();
@@ -110,7 +94,7 @@ class ProcessInfoPage
   }
 
   Widget _approval() {
-    if (state.task.status != 1) {
+    if (state.todo.metadata.status != 1) {
       return Container();
     }
     return Container(
@@ -147,9 +131,15 @@ class ProcessInfoPage
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidget.commonHeadInfoWidget(form.name!),
-       ...form.attributes?.map((e) {
-         Widget child = testMappingComponents[e.fields!.type ?? ""]!(
-             e.fields!, settingCtrl.user);
+       ...form.fields.map((e) {
+         if(e.fields.type == "input"){
+           e.fields.controller!.text = form.data?.after[0].otherInfo[e.id]??"";
+         }else{
+           e.fields.defaultData.value = form.data?.after[0].otherInfo[e.id]??"";
+         }
+         e.fields.readOnly = true;
+         Widget child = testMappingComponents[e.fields.type ?? ""]!(
+             e.fields, settingCtrl.user);
          return child;
        }).toList() ??
            []
@@ -158,54 +148,15 @@ class ProcessInfoPage
   }
 
   Widget _opinion() {
-    if (state.task.status != 1) {
+    if (state.todo.metadata.status != 1) {
       return Container();
     }
-    return Container(
-      margin: EdgeInsets.only(bottom: 10.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CommonWidget.commonHeadInfoWidget("审批意见"),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.w),
-            margin: EdgeInsets.symmetric(horizontal: 15.w),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8.w),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "意见",
-                  style: TextStyle(color: Colors.black, fontSize: 20.sp),
-                ),
-                SizedBox(
-                  height: 10.h,
-                ),
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade200),
-                      borderRadius: BorderRadius.circular(16.w)),
-                  child: TextField(
-                    maxLines: 4,
-                    controller: state.comment,
-                    maxLength: 140,
-                    decoration: InputDecoration(
-                        hintText: "请输入您的意见",
-                        hintStyle: TextStyle(
-                            color: Colors.grey.shade200, fontSize: 24.sp),
-                        border: InputBorder.none),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+    return CommonWidget.commonTextTile(
+      "备注",
+      "",
+      controller: state.comment,
+      hint: "请填写备注信息",
+      maxLine: 4,
     );
   }
 

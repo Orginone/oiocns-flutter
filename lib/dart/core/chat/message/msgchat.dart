@@ -479,7 +479,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
     }
     if(userId != msg.fromId && !isCurrentSession){
       chatdata.value.noReadCount += 1;
-      NotificationUtil.showMsgNotification(msg);
+      NotificationUtil.showChatMessageNotification(msg);
     }
     if(isCurrentSession){
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {

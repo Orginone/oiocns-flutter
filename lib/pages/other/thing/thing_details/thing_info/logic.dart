@@ -16,7 +16,8 @@ class ThingInfoController extends BaseController<ThingInfoState> {
     LoadingDialog.showLoading(context);
     state.attr.value = await state.form.loadAttributes();
     for (var element in state.attr) {
-      if (element.valueType == "附件型") {
+      // if (element.valueType == "附件型") {
+      if (false) {
         try {
           List<dynamic> files = jsonDecode(state.thing.propertys[element.code]);
           List<FileItemShare> share =

@@ -47,19 +47,23 @@ class NotificationUtil {
     }
   }
 
-  static void showMsgNotification(MsgSaveModel msg) async {
+  static void showChatMessageNotification(MsgSaveModel msg) async {
     ShareIcon share = await settingCtrl.user.findShareById(msg.fromId);
+    showMsgNotification("${share.name}发来一条消息", StringUtil.msgConversion(msg, settingCtrl.user.id));
+  }
+
+  static void showMsgNotification(String title,String body){
     flutterLocalNotificationsPlugin.show(
       notificationId,
-      "${share.name}发来一条消息",
-      StringUtil.msgConversion(msg, settingCtrl.user.id),
+      title,
+      body,
       const NotificationDetails(
-        android: AndroidNotificationDetails(
-          notificationChannelId,
-          '',
-          icon: 'ic_bg_service_small',
-        ),
-        iOS: DarwinNotificationDetails(threadIdentifier: notificationChannelId)
+          android: AndroidNotificationDetails(
+            notificationChannelId,
+            '',
+            icon: 'ic_bg_service_small',
+          ),
+          iOS: DarwinNotificationDetails(threadIdentifier: notificationChannelId)
       ),
     );
   }

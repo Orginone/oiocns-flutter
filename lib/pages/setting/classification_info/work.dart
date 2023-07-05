@@ -131,7 +131,7 @@ class WorkController extends BaseController<WorkState> {
         "allowSelect": allowSelect
       });
       if (work != null) {
-        await work.updateDefine(model);
+        // await work.updateDefine(model);
       } else {
         await species.createWork(model);
       }

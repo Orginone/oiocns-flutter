@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/pages/work/state.dart';
 import 'package:orginone/widget/target_text.dart';
 import 'package:orginone/widget/unified.dart';
@@ -11,7 +9,6 @@ import 'package:orginone/util/date_utils.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 import '../../../../../dart/core/getx/base_get_page_view.dart';
-import '../../../../dart/controller/setting/setting_controller.dart';
 import 'logic.dart';
 import 'state.dart';
 

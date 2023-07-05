@@ -7,6 +7,7 @@ import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/pages/chat/widgets/chat_item.dart';
 import 'package:orginone/pages/store/item.dart';
 import 'package:orginone/pages/store/state.dart';
@@ -98,7 +99,7 @@ class SearchBar<T> extends SearchDelegate{
         case HomeEnum.chat:
           return MessageItemWidget(chat:item as IMsgChat);
         case HomeEnum.work:
-          return WorkItem(todo:item as XWorkTask);
+          return WorkItem(todo:item as IWorkTask);
         case HomeEnum.store:
           return StoreItem(item:item as RecentlyUseModel);
       }

@@ -1,26 +1,30 @@
 import 'dart:convert';
 
+import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/thing/application.dart';
+import 'package:orginone/dart/core/thing/directory.dart';
+import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/main.dart';
 
-abstract class IWork {
-  IApplication? application;
-  late List<IFormView> forms;
-  late XWorkDefine metadata;
+import 'apply.dart';
+
+abstract class IWork extends IFileInfo<XWorkDefine> {
+  late IApplication application;
+  late List<IForm> forms;
+
+  WorkNodeModel? node;
 
   // 更新办事定义的实现
-  Future<bool> updateDefine(WorkDefineModel data);
+  Future<bool> update(WorkDefineModel req);
 
-  Future<WorkNodeModel?> loadWorkNode();
+  Future<WorkNodeModel?> loadWorkNode({bool reload = false});
 
-  Future<List<IFormView>> loadWorkForms();
+  Future<List<IForm>> loadWorkForms({bool reload = false});
 
-  Future<bool> deleteDefine();
-
-  Future<XWorkInstance?> createWorkInstance(WorkInstanceModel data);
+  Future<IWorkApply?> createApply();
 }
 
 XWorkDefine fullDefineRule(XWorkDefine data) {
@@ -39,85 +43,176 @@ XWorkDefine fullDefineRule(XWorkDefine data) {
   return data;
 }
 
-class Work implements IWork {
-
-  Work(XWorkDefine metadata,this.application){
-    this.metadata = fullDefineRule(metadata);
+class Work extends FileInfo<XWorkDefine> implements IWork {
+  Work(
+    XWorkDefine metadata,
+    this.application,
+  ) : super(fullDefineRule(metadata), application.directory) {
     forms = [];
   }
 
+  @override
+  late IApplication application;
 
   @override
-  IApplication? application;
+  late List<IForm> forms;
 
   @override
-  late List<IFormView> forms;
+  bool isLoaded = false;
 
   @override
-  late XWorkDefine metadata;
+  WorkNodeModel? node;
 
   @override
-  Future<XWorkInstance?> createWorkInstance(WorkInstanceModel data) async{
-    var res = await kernel.createWorkInstance(data);
-    if (res.success) {
-      return res.data;
+  Future<bool> copy(IDirectory destination) async {
+    if (destination.id != application.id) {
+      if (destination is IApplication) {
+        final app = destination as IApplication;
+        final node = await loadWorkNode();
+
+        var data = WorkDefineModel.fromJson(metadata.toJson());
+        data.applicationId = app.id;
+        data.resource = node;
+        final res = await app.createWork(data);
+        return res != null;
+      }
+    }
+    return false;
+  }
+
+  @override
+  Future<IWorkApply?> createApply() async{
+    if (node != null && forms.isNotEmpty) {
+      final InstanceDataModel data = InstanceDataModel(
+        node: node!,
+        allowAdd: metadata.allowAdd,
+        allowEdit: metadata.allowEdit,
+        allowSelect: metadata.allowSelect,
+      );
+      return WorkApply(
+        directory.target.space,
+        WorkInstanceModel(
+          hook: '',
+          taskId: '0',
+          title: metadata.name,
+          defineId: id,
+        ),
+        data,
+      );
     }
     return null;
   }
 
   @override
-  Future<bool> deleteDefine() async{
-     if(application!=null){
-       var res = await kernel.deleteWorkDefine(IdReq(id: metadata.id!));
-       if (res.success) {
-         application?.works.removeWhere((a) => a.metadata.id != metadata.id);
-       }
-       return res.success;
-     }
-     return false;
+  Future<bool> delete() async {
+    final res = await kernel.deleteWorkDefine(IdReq(id: id));
+    if (res.success) {
+      application.works.removeWhere((a) => a.id == id);
+    }
+    return res.success;
   }
 
   @override
-  Future<List<IFormView>> loadWorkForms() async {
-    List<IFormView> forms = [];
-    var res = await kernel.queryWorkNodes(IdReq(id: metadata.id!));
-    if (res.success && res.data != null) {
-      void recursionForms(WorkNodeModel node) {
-        if (node.forms != null && node.forms!.isNotEmpty) {
-          forms.addAll(node.forms!.map((i) => FormView(i)));
+  Future<List<IForm>> loadWorkForms({bool reload = false}) async{
+    final List<IForm> forms = [];
+    if (!reload) {
+      await loadWorkNode(reload: true);
+    }
+    if (node != null) {
+      recursionForms(WorkNodeModel node) async {
+        for (var item in node.forms??[]) {
+          final form = Form(
+            item..id = "${item.id!}",
+            directory,
+          );
+          await form.loadContent();
+          forms.add(form);
         }
         if (node.children != null) {
-          recursionForms(node.children!);
+          await recursionForms(node.children!);
         }
         if (node.branches != null) {
-          for (var branch in node.branches!) {
+          for (final branch in node.branches!) {
             if (branch.children != null) {
-              recursionForms(branch.children!);
+              await recursionForms(branch.children!);
             }
           }
         }
       }
-      recursionForms(res.data!);
+      await recursionForms(node!);
     }
     this.forms = forms;
     return forms;
   }
 
   @override
-  Future<WorkNodeModel?> loadWorkNode() async{
-    var res = await kernel.queryWorkNodes(IdReq(id: metadata.id!));
-    if (res.success) {
-      return res.data;
+  Future<WorkNodeModel?> loadWorkNode({bool reload = false}) async{
+    if (node == null || reload) {
+      final res = await kernel.queryWorkNodes(IdReq(id: id));
+      if (res.success) {
+        node = res.data;
+      }
     }
-    return null;
+    return node;
   }
 
   @override
-  Future<bool> updateDefine(WorkDefineModel data) async{
-    data.id = metadata.id!;
-    data.applicationId = metadata.applicationId;
-    var res = await kernel.createWorkDefine(data);
+  Future<bool> move(IDirectory destination) async {
+    if (destination.id != directory.id &&
+        destination.metadata.belongId == application.metadata.belongId) {
+      if (destination is IApplication) {
+        final app = destination as IApplication;
+        final node = await loadWorkNode();
+        var data = WorkDefineModel.fromJson(metadata.toJson());
+        data.resource = node;
+        final success = await update(data);
+        if (success) {
+          directory.propertys.removeWhere((i) => i.id == destination.id);
+          application = app;
+          app.works.add(this);
+        }
+        return success;
+      }
+    }
+    return false;
+  }
+
+  @override
+  // TODO: implement popupMenuItem
+  List<PopupMenuItem> get popupMenuItem => [];
+
+  @override
+  Future<bool> rename(String name) async {
+    final node = await loadWorkNode();
+    var data = WorkDefineModel.fromJson(metadata.toJson());
+    data.name = name;
+    data.resource = node;
+    return await update(data);
+  }
+
+  @override
+  Future<bool> update(WorkDefineModel req) async{
+    req.id = id;
+    req.applicationId = metadata.applicationId;
+    var res = await kernel.createWorkDefine(req);
+    if (res.success && res.data!=null) {
+      node = req.resource;
+    }
     return res.success;
   }
 
+  @override
+  Future<bool> loadContent({bool reload = false}) async {
+    await loadWorkForms();
+    return forms.isNotEmpty;
+  }
+
+  @override
+  List<IFileInfo<XEntity>> content(int mode) {
+    return forms;
+  }
+
+  @override
+  // TODO: implement locationKey
+  String get locationKey => application.locationKey;
 }

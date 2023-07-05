@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/work/apply.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/main.dart';
@@ -31,17 +32,7 @@ class WorkStartNetWork {
       "headerData": headerData,
       "formData": formDataMap,
     };
-    XWorkInstance? result = await define.createWorkInstance(
-      WorkInstanceModel(
-        defineId: define.metadata.id!,
-        content: "",
-        contentType: "Text",
-        data: jsonEncode(data),
-        title: define.metadata.name!,
-        hook: "",
-        applyId: settingCtrl.user.id,
-      ),
-    );
+    IWorkApply? result = await define.createApply();
 
     if (result!=null) {
       ToastUtils.showMsg(msg: "提交成功");

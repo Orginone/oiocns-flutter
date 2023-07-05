@@ -116,7 +116,7 @@ class IndexPage extends GetView<SettingController> {
 class CardChildWidget extends GetView<SettingController> {
   String itemName;
 
-  List<IApplication> value;
+  List<Map<IApplication,ITarget>> value;
 
   CardChildWidget(this.itemName, this.value);
 
@@ -144,17 +144,14 @@ class CardChildWidget extends GetView<SettingController> {
                 mainAxisExtent:110.h,
               ),
               itemBuilder: (context, index) {
+                var item = value[index];
+                var app = item.keys.first;
                 return GestureDetector(
-                  onTap: () {
-                    var item = value[index];
-                    late ITarget target;
-                    for (var value1 in controller.user.targets) {
-                      if(value1.belong.id == item.belongId){
-                        target = value1;
-                        continue;
-                      }
-                    }
-                    // Get.toNamed(Routers.workStart, arguments: {"defines": item.defines,'target':target});
+                  onTap: () async{
+
+                    var works =  await app.loadWorks();
+                    var target = item.values.first;
+                    Get.toNamed(Routers.workStart, arguments: {"works":works,'target':target});
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -168,13 +165,13 @@ class CardChildWidget extends GetView<SettingController> {
                         width: 65.w,
                         height: 65.w,
                         child: ImageWidget(
-                          value[index].metadata.avatarThumbnail(),
+                          app.metadata.avatarThumbnail(),
                           size: 64.w,
                           circular: true,
                         ),
                       ),
                       Text(
-                        value[index].metadata.name!,
+                        app.metadata.name!,
                         style: XFonts.size18Black6,maxLines: 1,overflow: TextOverflow.ellipsis,
                       ),
                     ],

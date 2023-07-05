@@ -21,9 +21,6 @@ class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
               space: value,
               children: [
                 WorkBreadcrumbNav(
-                    name: WorkEnum.initiationWork.label,
-                    workEnum: WorkEnum.initiationWork, children: [],space: value,image:WorkEnum.initiationWork.imagePath),
-                WorkBreadcrumbNav(
                     name: WorkEnum.todo.label, workEnum: WorkEnum.todo, children: [],space: value,image:WorkEnum.todo.imagePath),
                 WorkBreadcrumbNav(
                     name: WorkEnum.completed.label, workEnum: WorkEnum.completed, children: [],space: value,image:WorkEnum.completed.imagePath),
@@ -40,9 +37,6 @@ class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
           WorkBreadcrumbNav(
             name: "个人",
             children: [
-              WorkBreadcrumbNav(
-                  name: WorkEnum.initiationWork.label,
-                  workEnum: WorkEnum.initiationWork, children: [],space: settingCtrl.user,image:WorkEnum.initiationWork.imagePath ),
               WorkBreadcrumbNav(
                   name: WorkEnum.todo.label, workEnum: WorkEnum.todo, children: [],space: settingCtrl.user,image:WorkEnum.todo.imagePath ),
               WorkBreadcrumbNav(
@@ -80,7 +74,6 @@ class WorkBreadcrumbNav extends BaseBreadcrumbNavModel<WorkBreadcrumbNav> {
 }
 
 enum WorkEnum {
-  initiationWork("发起事项",Images.iconWorkInitiation),
   todo("待办事项",Images.iconWorkTodo),
   completed("已办事项",Images.iconWorkCompleted),
   initiated("我发起的",Images.iconWorkInitiated);

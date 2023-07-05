@@ -6,6 +6,7 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/main.dart';
 
 /// 单位群接口
@@ -184,4 +185,13 @@ class Group extends Target implements IGroup {
       return await pullMembers([target]);
     }
   }
+
+  @override
+  List<IFileInfo<XEntity>> content(int mode) {
+   return [];
+  }
+
+  @override
+  // TODO: implement locationKey
+  String get locationKey => '';
 }

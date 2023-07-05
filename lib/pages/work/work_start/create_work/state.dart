@@ -2,29 +2,35 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/thing/form.dart';
+import 'package:orginone/dart/core/work/apply.dart';
 import 'package:orginone/dart/core/work/index.dart';
 
 class CreateWorkState extends BaseGetState{
-  late IWork define;
+  late IWork work;
 
-  Rxn<XForm> workForm = Rxn();
+  Rxn<IForm> mainForm = Rxn();
 
-  var thingForm = <XForm>[].obs;
+  var subForm = <IForm>[].obs;
 
   late TabController tabController;
 
+  TextEditingController remark = TextEditingController();
+
+  IWorkApply? apply;
+
   late ITarget target;
   CreateWorkState(){
-    define = Get.arguments['define'];
+    work = Get.arguments['work'];
     target = Get.arguments['target'];
   }
 }
 
 enum SubTableEnum{
-  allChange("批量修改"),
   addTable("新增"),
   choiceTable("选择");
 

@@ -5,44 +5,39 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/person.dart';
+import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/work/state.dart';
 
 import 'index.dart';
+import 'task.dart';
 
 abstract class IWorkProvider {
+
+  late String userId;
+
   /// 当前用户
-  late IPerson user;
+  late UserProvider user;
 
   /// 待办
-  late RxList<XWorkTask> todos;
+  late RxList<IWorkTask> todos;
 
   late RxList<WorkFrequentlyUsed> workFrequentlyUsed;
 
   /// 加载待办任务
-  Future<List<XWorkTask>> loadTodos({bool reload = false});
+  Future<List<IWorkTask>> loadTodos({bool reload = false});
 
   /// 加载已办任务
-  Future<List<XWorkTask>> loadDones(String id);
+  Future<List<IWorkTask>> loadDones(String id);
 
   /// 加载我发起的办事任务
-  Future<List<XWorkTask>> loadApply(String id);
+  Future<List<IWorkTask>> loadApply(String id);
 
   /// 任务更新
   void updateTask(XWorkTask task);
 
-  /// 任务审批
-  Future<bool> approvalTask(List<XWorkTask> tasks, int status,
-      {String? comment, String? data});
-
-  /// 查询任务明细
-  Future<XWorkInstance?> loadTaskDetail(XWorkTask task);
-
   /// 查询流程定义
   Future<IWork?> findFlowDefine(String defineId);
-
-  ///删除办事实例
-  Future<bool> deleteInstance(String id);
 
   ///根据表单id查询表单特性
   Future<List<XAttribute>> loadAttributes(String id, String belongId);
@@ -50,12 +45,16 @@ abstract class IWorkProvider {
   ///根据字典id查询字典项
   Future<List<XDictItem>> loadItems(String id);
 
+  //加载常用
   Future<void> loadMostUsed();
 
+  //设为常用
   Future<void> setMostUsed(IWork define);
 
+  //移除常用
   Future<void> removeMostUsed(IWork define);
 
+  //是否常用
   bool isMostUsed(IWork define);
 }
 
@@ -63,7 +62,8 @@ class WorkProvider implements IWorkProvider{
 
 
   WorkProvider(this.user){
-    todos = <XWorkTask>[].obs;
+    userId = user.user!.id;
+    todos = <IWorkTask>[].obs;
     kernel.on('RecvTask', (data) {
       var work = XWorkTask.fromJson(data);
       updateTask(work);
@@ -72,36 +72,17 @@ class WorkProvider implements IWorkProvider{
   }
 
   @override
-  late RxList<XWorkTask> todos;
+  late RxList<IWorkTask> todos;
 
   @override
-  late IPerson user;
+  late UserProvider user;
 
   @override
   late RxList<WorkFrequentlyUsed> workFrequentlyUsed;
 
   @override
-  Future<bool> approvalTask(List<XWorkTask> tasks, int status,
-      {String? comment, String? data}) async {
-    bool success = true;
-    for (final task in tasks) {
-      if (task.status < TaskStatus.approvalStart.status) {
-        if (status == -1) {
-          success =
-              (await kernel.recallWorkInstance(IdReq(id: task.id))).success;
-        } else {
-          success = (await kernel.approvalTask(ApprovalTaskReq(
-                  id: task.id, status: status, comment: comment, data: data)))
-              .success;
-        }
-        if(success){
-          todos.removeWhere((element) => element.id == task.id);
-          todos.refresh();
-        }
-      }
-    }
-    return success;
-  }
+  // TODO: implement userId
+  late String userId;
 
   @override
   Future<IWork?> findFlowDefine(String defineId) async{
@@ -118,11 +99,11 @@ class WorkProvider implements IWorkProvider{
   }
 
   @override
-  Future<List<XWorkTask>> loadApply(String id) async{
-    var res = await kernel.anystore.pageRequest('work-task',user.id,{
+  Future<List<IWorkTask>> loadApply(String id) async{
+    var res = await kernel.anystore.pageRequest('work-task',userId,{
       "match": {
         "belongId": id,
-        "createUser": user.id,
+        "createUser": userId,
         "nodeId": {
           "_exists_": false,
         },
@@ -131,12 +112,12 @@ class WorkProvider implements IWorkProvider{
         "createTime": -1,
       },
     },PageRequest(offset: 0, limit: 9999, filter: ''));
-    return res;
+    return res.map((e) => WorkTask(e, user)).toList();
   }
 
   @override
-  Future<List<XWorkTask>> loadDones(String id) async{
-    var res = await kernel.anystore.pageRequest('work-task',user.id,{
+  Future<List<IWorkTask>> loadDones(String id) async{
+    var res = await kernel.anystore.pageRequest('work-task',userId,{
       "match": {
         "belongId": id,
         "status": {
@@ -150,39 +131,16 @@ class WorkProvider implements IWorkProvider{
         "createTime": -1,
       },
     },PageRequest(offset: 0, limit: 9999, filter: ''));
-    return res;
+    return res.map((e) => WorkTask(e, user)).toList();
   }
 
-  @override
-  Future<XWorkInstance?> loadTaskDetail(XWorkTask task) async{
-    var res = await kernel.anystore.aggregate(
-      StoreCollName.workInstance,
-      {
-        "match": {
-          "id": task.instanceId,
-        },
-        "limit": 1,
-        "lookup": {
-          "from": StoreCollName.workTask,
-          "localField": 'id',
-          "foreignField": 'instanceId',
-          "as": 'tasks',
-        },
-      }, task.belongId,
-    );
-    if (res.data!=null && res.data.isNotEmpty) {
-      return XWorkInstance.fromJson(res.data[0]);
-    }
-    return null;
-  }
 
   @override
-  Future<List<XWorkTask>> loadTodos({bool reload = false}) async{
+  Future<List<IWorkTask>> loadTodos({bool reload = false}) async{
     if (todos.isEmpty || reload) {
       final res = await kernel.queryApproveTask(IdReq(id: '0'));
       if (res.success) {
-        todos.clear();
-        todos.addAll(res.data?.result??[]);
+        todos.value = (res.data?.result??[]).map((e) => WorkTask(e, user)).toList();
         todos.refresh();
       }
     }
@@ -191,23 +149,17 @@ class WorkProvider implements IWorkProvider{
 
   @override
   void updateTask(XWorkTask task) {
-    final index = todos.indexWhere((i) => i.id == task.id);
+    final index = todos.indexWhere((i) => i.metadata.id == task.id);
     if (task.status != TaskStatus.approvalStart.status) {
       if (index < 0) {
-        todos.insert(0, task);
+        todos.insert(0, WorkTask(task, user));
       } else {
-        todos[index] = task;
+        todos[index].updated(task);
       }
     } else if (index > -1) {
       todos.removeAt(index);
     }
     todos.refresh();
-  }
-
-  @override
-  Future<bool> deleteInstance(String id) async {
-    var res = await kernel.recallWorkInstance(IdReq(id: id));
-    return res.success;
   }
 
   @override
@@ -235,7 +187,7 @@ class WorkProvider implements IWorkProvider{
   Future<void> loadMostUsed() async {
     var res = await kernel.anystore.get(
       "${StoreCollName.mostUsed}.works",
-      user.id,
+      userId,
     );
     if (res.success && res.data != null) {
       workFrequentlyUsed.clear();
@@ -261,7 +213,7 @@ class WorkProvider implements IWorkProvider{
     var res = await kernel.anystore.set(
       "${StoreCollName.mostUsed}.works.T${define.metadata.code}",
       {},
-      user.id,
+      userId,
     );
     if (res.success) {
       workFrequentlyUsed.removeWhere((p0) => p0.id == define.metadata.id);
@@ -274,7 +226,7 @@ class WorkProvider implements IWorkProvider{
     var res = await kernel.anystore.set(
       "${StoreCollName.mostUsed}.works.T${define.metadata.id}",
       {},
-      user.id,
+      userId,
     );
     if (res.success) {
       WorkFrequentlyUsed used = WorkFrequentlyUsed(

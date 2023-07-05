@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_utils.dart';
@@ -16,7 +17,7 @@ import 'logic.dart';
 import 'state.dart';
 
 class WorkItem extends StatelessWidget {
-  final XWorkTask todo;
+  final IWorkTask todo;
 
   const WorkItem({Key? key, required this.todo}) : super(key: key);
 
@@ -26,8 +27,9 @@ class WorkItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        if (todo.taskType == "事项") {
+      onTap: () async{
+        if (todo.metadata.taskType == "事项") {
+          await todo.loadInstance();
           Get.toNamed(Routers.processDetails, arguments: {"todo": todo});
         }
       },
@@ -63,7 +65,7 @@ class WorkItem extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            todo.taskType,
+                            todo.metadata.taskType,
                             style: TextStyle(fontSize: 19.sp),
                           ),
                           Container(
@@ -74,7 +76,7 @@ class WorkItem extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(
-                              todo.title,
+                              todo.metadata.title,
                               style: TextStyle(fontSize: 19.sp),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -84,18 +86,18 @@ class WorkItem extends StatelessWidget {
                             padding: EdgeInsets.symmetric(
                                 horizontal: 3.w, vertical: 2.h),
                             decoration: BoxDecoration(
-                              color: statusMap[todo.status]!
+                              color: statusMap[todo.metadata.status]!
                                   .color
                                   .withOpacity(0.1),
                               borderRadius: BorderRadius.circular(4.w),
                               border: Border.all(
-                                  color: statusMap[todo.status]!.color,
+                                  color: statusMap[todo.metadata.status]!.color,
                                   width: 0.5),
                             ),
                             child: Text(
-                              statusMap[todo.status]!.text,
+                              statusMap[todo.metadata.status]!.text,
                               style: TextStyle(
-                                  color: statusMap[todo.status]!.color,
+                                  color: statusMap[todo.metadata.status]!.color,
                                   fontSize: 16.sp),
                             ),
                           ),
@@ -112,7 +114,7 @@ class WorkItem extends StatelessWidget {
                         children: [
                           Expanded(child: comment()),
                           Text(
-                              '创建时间: ${DateTime.tryParse(todo.createTime)?.format(format: "yyyy-MM-dd HH:mm:ss") ?? ""}',
+                              '创建时间: ${DateTime.tryParse(todo.metadata.createTime)?.format(format: "yyyy-MM-dd HH:mm:ss") ?? ""}',
                               style: TextStyle(
                                   fontSize: 14.sp, color: Colors.grey)),
                         ],
@@ -130,7 +132,7 @@ class WorkItem extends StatelessWidget {
   }
 
   Widget button() {
-    if (todo.status != 1 || todo.approveType != "审批") {
+    if (todo.metadata.status != 1 || todo.metadata.approveType != "审批") {
       return Container();
     }
 
@@ -182,18 +184,14 @@ class WorkItem extends StatelessWidget {
   }
 
   Widget comment() {
-    String content = todo.content;
+    String content = todo.metadata.content;
     if (content.isEmpty) {
-      return SizedBox();
+      return const SizedBox();
     }
 
-    if (todo.taskType == '加用户' && todo.content.isNotEmpty) {
-      List<dynamic> json = jsonDecode(todo.content);
-      List<XTarget> targets = json.map((e) => XTarget.fromJson(e)).toList();
-      if (targets.length == 2) {
-        content =
-            "${targets[0].name}[${targets[0].typeName}]申请加入${targets[1].name}[${targets[1].typeName}]";
-      }
+    if (todo.targets.length == 2) {
+      content =
+      "${todo.targets[0].name}[${todo.targets[0].typeName}]申请加入${todo.targets[1].name}[${todo.targets[1].typeName}]";
     }
     return Text(
       "内容:$content",
@@ -212,7 +210,7 @@ class WorkItem extends StatelessWidget {
           ),
           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
           child: TargetText(
-              userId: todo.createUser,
+              userId: todo.metadata.createUser,
               style: TextStyle(fontSize: 12.sp, color: XColors.designBlue)),
         ),
         SizedBox(
@@ -226,7 +224,7 @@ class WorkItem extends StatelessWidget {
           ),
           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
           child: TargetText(
-              userId: todo.shareId,
+              userId: todo.metadata.shareId,
               style: TextStyle(fontSize: 12.sp, color: XColors.designBlue)),
         ),
       ],

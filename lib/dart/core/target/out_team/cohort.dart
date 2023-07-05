@@ -6,6 +6,7 @@ import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/main.dart';
 
 abstract class ICohort extends ITarget {}
@@ -80,4 +81,13 @@ class Cohort extends Target implements ICohort {
   Future<bool> teamChangedNotity(XTarget target) async{
     return await pullMembers([target]);
   }
+
+  @override
+  List<IFileInfo<XEntity>> content(int mode) {
+    return [];
+  }
+
+  @override
+  // TODO: implement locationKey
+  String get locationKey => '';
 }

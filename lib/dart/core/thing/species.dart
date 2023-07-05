@@ -162,4 +162,13 @@ class Species extends FileInfo<XSpecies> implements ISpecies {
 
   @override
   bool isLoaded = false;
+
+  @override
+  List<IFileInfo<XEntity>> content(int mode) {
+    return [];
+  }
+
+  @override
+  // TODO: implement locationKey
+  String get locationKey => '';
 }

@@ -24,6 +24,8 @@ abstract class IFileInfo<T extends XEntity> {
 
   String get id;
 
+  String get locationKey;
+
   List<PopupMenuItem> get popupMenuItem;
 
   Future<bool> delete();
@@ -39,6 +41,8 @@ abstract class IFileInfo<T extends XEntity> {
 
   //加载文件内容
   Future<bool> loadContent({bool reload = false});
+
+  List<IFileInfo<XEntity>> content(int mode);
 }
 
 abstract class FileInfo<T extends XEntity> extends Entity
@@ -248,4 +252,13 @@ class SysFileInfo extends FileInfo<XEntity> implements ISysFileInfo {
 
   @override
   bool isLoaded = false;
+
+  @override
+  List<IFileInfo<XEntity>> content(int mode) {
+    return [];
+  }
+
+  @override
+  // TODO: implement locationKey
+  String get locationKey => directory.key;
 }

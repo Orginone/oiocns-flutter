@@ -12,6 +12,7 @@ import 'package:orginone/dart/core/target/innerTeam/station.dart';
 import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/target/person.dart';
+import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/main.dart';
 
 abstract class ICompany extends IBelong {
@@ -335,6 +336,9 @@ class Company extends Belong implements ICompany {
     for (var item in departments) {
       targets.addAll(item.targets);
     }
+    for (var item in cohorts) {
+      targets.addAll(item.targets);
+    }
     return targets;
   }
 
@@ -402,4 +406,13 @@ class Company extends Belong implements ICompany {
     }
     return false;
   }
+
+  @override
+  List<IFileInfo<XEntity>> content(int mode) {
+    return [];
+  }
+
+  @override
+  // TODO: implement locationKey
+  String get locationKey => '';
 }

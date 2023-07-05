@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/target/innerTeam/department.dart';
+import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
@@ -114,7 +116,6 @@ class Fields {
   int? maxLine;
   Rxn<dynamic> defaultData = Rxn<dynamic>();
   TextEditingController? controller;
-  late Function(ITarget) function;
   @HiveField(10)
   double? marginTop;
   @HiveField(11)
@@ -160,52 +161,6 @@ class Fields {
     if (type == "input") {
       controller = TextEditingController();
     }
-    function = (ITarget target) async{
-      if (type == "router") {
-        Get.toNamed(router!);
-      }
-      if (type == "select") {
-        PickerUtils.showListStringPicker(Get.context!, titles: select!.values.toList(),
-            callback: (str) {
-              int index = select!.values.toList().indexOf(str);
-              dynamic key = select!.keys.toList()[index];
-              defaultData.value = {key: str};
-            });
-      }
-      if(type == 'selectDate'){
-        DatePicker.showDateTimePicker(Get.context!,currentTime: DateTime.now(),locale: LocaleType.zh,onConfirm: (date){
-          defaultData.value = date.format(format: "yyyy-MM-dd HH:mm");
-        });
-      }
-      if(type == 'selectPerson'){
-        var users =  target.members;
-        PickerUtils.showListStringPicker(Get.context!, titles: users.map((e) => e.name!).toList(),
-            callback: (str) {
-              defaultData.value = users.firstWhere((element) => element.name == str);
-            });
-      }
-      if(type == 'selectDepartment'){
-        List<ITarget> team = await settingCtrl.getTeamTree(settingCtrl.user);
-        PickerUtils.showListStringPicker(Get.context!, titles: team.map((e) => e.metadata.name!).toList(),
-            callback: (str) {
-              defaultData.value = team.firstWhere((element) => element.metadata.name == str);
-            });
-      }
-      if(type == 'upload'){
-        FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.any);
-        if (result != null) {
-          LoadingDialog.showLoading(Get.context!);
-          var docDir =  settingCtrl.user.directory;
-          PlatformFile file = result.files.first;
-          var file1 = File(file.path!);
-          var item = await docDir.createFile(file1);
-          if(item!=null){
-            defaultData.value = item.metadata;
-          }
-          LoadingDialog.dismiss(Get.context!);
-        }
-      }
-    };
   }
 
 
@@ -242,7 +197,6 @@ class Fields {
     data['select'] = select;
     data['defaultData'] = defaultData;
     data['controller'] = controller;
-    data['function'] = function;
     data['marginTop'] = marginTop;
     data['marginBottom'] = marginBottom;
     data['marginLeft'] = marginLeft;

@@ -22,22 +22,14 @@ class InitiateWorkController
   }
 
   void jumpNext(WorkBreadcrumbNav work) {
-    if (work.children.isEmpty && work.name != WorkEnum.initiationWork.label) {
-      if (work.workEnum == WorkEnum.initiationWork) {
-        createWork(work);
-      } else {
-        jumpWorkList(work);
-      }
+    if (work.children.isEmpty) {
+      jumpWorkList(work);
     } else {
       Get.toNamed(Routers.initiateWork,
           preventDuplicates: false, arguments: {"data": work});
     }
   }
 
-  void createWork(WorkBreadcrumbNav work) async{
-    var defines =await getAllDefine(work);
-    Get.toNamed(Routers.workStart, arguments: {"defines": defines,'target':work.space});
-  }
 
   void jumpWorkList(WorkBreadcrumbNav work) {
     Get.toNamed(Routers.workList, arguments: {"data": work});
@@ -104,11 +96,7 @@ class InitiateWorkController
       List<WorkBreadcrumbNav> models) {
     List<WorkBreadcrumbNav> list = [];
     for (var value in models) {
-      if (value.workEnum == WorkEnum.initiationWork) {
-        list.add(value);
-      } else if (value.children.isNotEmpty) {
-        list.addAll(getInitiationWorkModel(value.children));
-      }
+      list.addAll(getInitiationWorkModel(value.children));
     }
     return list;
   }

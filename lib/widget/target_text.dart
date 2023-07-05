@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/main.dart';
 
 
@@ -56,7 +57,7 @@ class _TargetTextState extends State<TargetText> {
     maxLines = widget.maxLines;
     overflow = widget.overflow;
     textAlign = widget.textAlign;
-    shareIcon = widget.shareIcon;
+    shareIcon = widget.shareIcon??ShareIdSet[userId];
   }
 
   @override
