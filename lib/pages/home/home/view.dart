@@ -84,30 +84,36 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
     required String path,
     required String unPath,
   }) {
-    return Obx(() {
-      var isSelected = settingCtrl.homeEnum.value == homeEnum;
-      var mgsCount = 0;
-      if (homeEnum == HomeEnum.work) {
-        mgsCount = settingCtrl.provider.work?.todos.length ?? 0;
-      } else if (homeEnum == HomeEnum.chat) {
-        var chats = settingCtrl.provider.chat?.allChats;
-        chats?.forEach((element) {
-          mgsCount += element.chatdata.value.noReadCount;
-        });
-      }
-      return GestureDetector(
-        onTap: () {
-          state.pageController.jumpToPage(homeEnum.index);
-          settingCtrl.setHomeEnum(homeEnum);
-        },
-        child: BadgeTabWidget(
-          imgPath: !isSelected ? unPath : path,
-          body: Text(homeEnum.label,
-              style: isSelected ? selectedStyle : unSelectedStyle),
-          mgsCount: mgsCount,
-        ),
-      );
-    });
+    return Expanded(
+      child: Obx(() {
+        var isSelected = settingCtrl.homeEnum.value == homeEnum;
+        var mgsCount = 0;
+        if (homeEnum == HomeEnum.work) {
+          mgsCount = settingCtrl.provider.work?.todos.length ?? 0;
+        } else if (homeEnum == HomeEnum.chat) {
+          var chats = settingCtrl.provider.chat?.allChats;
+          chats?.forEach((element) {
+            mgsCount += element.chatdata.value.noReadCount;
+          });
+        }
+        return GestureDetector(
+          onTap: () {
+            state.pageController.jumpToPage(homeEnum.index);
+            settingCtrl.setHomeEnum(homeEnum);
+          },
+          behavior: HitTestBehavior.translucent,
+          child: Align(
+            alignment: Alignment.center,
+            child: BadgeTabWidget(
+              imgPath: !isSelected ? unPath : path,
+              body: Text(homeEnum.label,
+                  style: isSelected ? selectedStyle : unSelectedStyle),
+              mgsCount: mgsCount,
+            ),
+          ),
+        );
+      }),
+    );
   }
 
   TextStyle get unSelectedStyle =>
