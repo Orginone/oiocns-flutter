@@ -33,4 +33,9 @@ class HomeController extends BaseController<HomeState> {
       XEventBus.instance.fire(UserLoaded());
     }
   }
+
+  void jumpTab(HomeEnum setting) {
+    state.pageController.jumpToPage(setting.index);
+    settingCtrl.homeEnum.value = setting;
+  }
 }

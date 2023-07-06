@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
@@ -65,6 +67,7 @@ class SettingNavModel extends BaseBreadcrumbNavModel<SettingNavModel> {
         super.image,
         super.spaceEnum,
         super.showPopup = true,
+        super.onNext,
         this.space,
       });
 }

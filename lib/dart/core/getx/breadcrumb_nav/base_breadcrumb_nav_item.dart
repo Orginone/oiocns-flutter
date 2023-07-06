@@ -24,7 +24,10 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async{
+        if(item.onNext!=null){
+           await item.onNext!(item);
+        }
         if (onNext != null) {
           onNext!();
         } else if (onTap != null) {

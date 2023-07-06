@@ -26,7 +26,7 @@ class ChoiceThingNetWork{
         }
       ],
       "group": null
-    },settingCtrl.user.id);
+    },belongId);
 
     if(result.success){
       result.data['data'].forEach((json){

@@ -52,15 +52,15 @@ class StoreController extends BaseFrequentlyUsedListController<StoreState> {
           });
           break;
         case StoreEnum.thing:
-          var thing = used.thing;
-          IForm? form = await settingCtrl.store
-              .findForm(thing!.species.keys.first.substring(1));
-          if (form != null) {
-            Get.toNamed(Routers.thingDetails,
-                arguments: {"thing": thing, 'form': form});
-          } else {
-            ToastUtils.showMsg(msg: "未找到表单");
-          }
+          // var thing = used.thing;
+          // IForm? form = await settingCtrl.store
+          //     .findForm(thing!.keys.first.substring(1));
+          // if (form != null) {
+          //   Get.toNamed(Routers.thingDetails,
+          //       arguments: {"thing": thing, 'form': form});
+          // } else {
+          //   ToastUtils.showMsg(msg: "未找到表单");
+          // }
           break;
       }
     }

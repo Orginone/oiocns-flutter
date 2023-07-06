@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/model/thing_model.dart';
 import 'package:orginone/pages/other/thing/thing_details/logic.dart';
@@ -14,7 +15,7 @@ class UseTracesController extends BaseController<UseTracesState> {
 
  var detailsController = Get.find<ThingDetailsController>();
 
- ThingModel get thing => detailsController.state.thing;
+ AnyThingModel get thing => detailsController.state.thing;
 
  @override
   void onReady() async{

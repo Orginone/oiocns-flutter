@@ -25,8 +25,8 @@ abstract class BaseBreadcrumbNavState<T extends BaseBreadcrumbNavModel> extends 
   dynamic source;
   SpaceEnum? spaceEnum;
   bool showPopup;
-
-  BaseBreadcrumbNavModel({this.id = '',this.name = '',this.children = const [],this.source,this.image,this.spaceEnum,this.showPopup = true});
+  Future<void> Function(dynamic)? onNext;
+  BaseBreadcrumbNavModel({this.id = '',this.name = '',this.children = const [],this.source,this.image,this.spaceEnum,this.showPopup = true,this.onNext});
 }
 
 class BaseBreadcrumbNavInfo{

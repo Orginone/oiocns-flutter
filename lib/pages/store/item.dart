@@ -79,15 +79,15 @@ class StoreItem extends StatelessWidget {
                 Get.toNamed(Routers.messageFile,
                     arguments: {'file':item.file!,'type':'store'});
               } else {
-                var thing = item.thing;
-                IForm? form = await settingCtrl.store
-                    .findForm(thing!.species.keys.first.substring(1));
-                if (form != null) {
-                  Get.toNamed(Routers.thingDetails,
-                      arguments: {"thing": thing, 'form': form});
-                } else {
-                  ToastUtils.showMsg(msg: "未找到表单");
-                }
+                // var thing = item.thing;
+                // IForm? form = await settingCtrl.store
+                //     .findForm(thing!.species.keys.first.substring(1));
+                // if (form != null) {
+                //   Get.toNamed(Routers.thingDetails,
+                //       arguments: {"thing": thing, 'form': form});
+                // } else {
+                //   ToastUtils.showMsg(msg: "未找到表单");
+                // }
               }
             },
           ),

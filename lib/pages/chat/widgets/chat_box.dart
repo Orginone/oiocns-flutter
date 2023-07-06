@@ -754,7 +754,9 @@ class ChatBoxController with WidgetsBindingObserver {
       },
     );
     if (item != null) {
-      chat.sendMessage(MessageType.file, jsonEncode(item.shareInfo().shareLink));
+      var msg = chat.messages.firstWhere((element) => element.body?.name == save.body?.name);
+      msg.body!.name = item.shareInfo().name;
+      chat.sendMessage(MessageType.file, jsonEncode(item.shareInfo().toJson()));
     }
   }
 

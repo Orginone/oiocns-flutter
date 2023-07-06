@@ -139,7 +139,8 @@ class UserBar extends GetView<SettingController> {
             child: GestureDetector(
               child: _imgAvatar(EdgeInsets.only(left: 10.w)),
               onTap: () {
-                settingCtrl.setHomeEnum(HomeEnum.setting);
+                var home = Get.find<HomeController>();
+                home.jumpTab(HomeEnum.setting);
               },
             ),
           ),

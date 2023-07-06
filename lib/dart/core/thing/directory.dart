@@ -109,6 +109,8 @@ abstract class IDirectory extends IFileInfo<XDirectory> {
 
   //新建应用
   Future<IApplication?> createApplication(ApplicationModel data);
+
+  Future<void> loadSubDirectory();
 }
 
 class Directory extends FileInfo<XDirectory> implements IDirectory {
@@ -390,6 +392,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
     return res.success;
   }
 
+  @override
   Future<void> loadSubDirectory() async {
     if (parent == null) {
       final res = await kernel.queryDirectorys(GetDirectoryModel(

@@ -31,7 +31,7 @@ abstract class IStoreProvider {
   Future<void> loadMostUsed();
 
   Future<void> setMostUsed(
-      {thing.ThingModel? thing,
+      {AnyThingModel? thing,
       FileItemModel? file,
       required StoreEnum storeEnum});
 
@@ -114,7 +114,7 @@ class StoreProvider implements IStoreProvider {
                 avatar: getFileAvatar(data),
                 storeEnum: StoreEnum.file));
           } else if (type == StoreEnum.thing.label) {
-            var data = thing.ThingModel.fromJson(stores[key]);
+            var data = AnyThingModel.fromJson(stores[key]);
             storeFrequentlyUsed.add(StoreFrequentlyUsed(
                 name: data.id,
                 id: id,
@@ -161,7 +161,7 @@ class StoreProvider implements IStoreProvider {
 
   @override
   Future<void> setMostUsed(
-      {thing.ThingModel? thing,
+      {AnyThingModel? thing,
       FileItemModel? file,
       required StoreEnum storeEnum}) async {
     Map<String, dynamic> data = {"type": storeEnum.label};

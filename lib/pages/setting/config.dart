@@ -145,7 +145,7 @@ Future<List<SettingNavModel>> loadDir(
     List<IDirectory> dirs, IBelong belong) async {
   List<SettingNavModel> nav = [];
   for (var dir in dirs) {
-    await dir.loadContent(reload: true);
+    // await dir.loadContent(reload: true);
     SettingNavModel dirNav = SettingNavModel(
       id: dir.metadata.id!,
       source: dir,
