@@ -181,7 +181,7 @@ class SettingController extends GetxController {
     kernel.stop();
     LocalStore.clear();
     await HiveUtils.clean();
-    homeEnum.value = HomeEnum.door;
+    homeEnum.value = HomeEnum.chat;
     Get.offAllNamed(Routers.login);
   }
 

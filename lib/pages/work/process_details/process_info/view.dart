@@ -133,9 +133,9 @@ class ProcessInfoPage
         CommonWidget.commonHeadInfoWidget(form.name!),
        ...form.fields.map((e) {
          if(e.fields.type == "input"){
-           e.fields.controller!.text = form.data?.after[0].otherInfo[e.id]??"";
+           e.fields.controller!.text = form.data?.after[0].otherInfo[e.id].toString()??"";
          }else{
-           e.fields.defaultData.value = form.data?.after[0].otherInfo[e.id]??"";
+           e.fields.defaultData.value = form.data?.after[0].otherInfo[e.id].toString()??"";
          }
          e.fields.readOnly = true;
          Widget child = testMappingComponents[e.fields.type ?? ""]!(
