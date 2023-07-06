@@ -11,7 +11,7 @@ class StoreState
 class StoreFrequentlyUsed extends FrequentlyUsed {
   FileItemModel? fileItemShare;
 
-  ThingModel? thing;
+  AnyThingModel? thing;
 
   StoreEnum storeEnum;
 
@@ -36,7 +36,7 @@ enum StoreEnum {
 class RecentlyUseModel {
   FileItemModel? file;
 
-  ThingModel? thing;
+  AnyThingModel? thing;
 
   late String createTime;
 
@@ -56,7 +56,7 @@ class RecentlyUseModel {
     createTime = json['createTime'];
     type = json['type'];
     id = json['id'];
-    thing = json['thing'] != null ? ThingModel.fromJson(json['thing']) : null;
+    thing = json['thing'] != null ? AnyThingModel.fromJson(json['thing']) : null;
     file = json['file'] != null ? FileItemModel.fromJson(json['file']) : null;
     loadAvatar();
   }

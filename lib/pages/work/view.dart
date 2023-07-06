@@ -29,16 +29,4 @@ class WorkPage extends BaseFrequentlyUsedListPage<WorkController, WorkState> {
       ),
     );
   }
-
-
-  @override
-  WorkController getController() {
-    return WorkController();
-  }
-
-  @override
-  String tag() {
-    // TODO: implement tag
-    return "work";
-  }
 }

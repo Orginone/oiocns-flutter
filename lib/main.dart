@@ -9,9 +9,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/notification_util.dart';
+import 'dart/controller/setting/user_controller.dart';
 import 'util/hive_utils.dart';
 import 'util/local_store.dart';
 
@@ -43,7 +43,7 @@ KernelApi get kernel => KernelApi();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver();
 
-SettingController get settingCtrl => Get.find<SettingController>();
+UserController get settingCtrl => Get.find<UserController>();
 const Size screenSize = Size(540, 1170);
 
 class ScreenInit extends StatelessWidget {
@@ -61,7 +61,7 @@ class ScreenInit extends StatelessWidget {
         return GetMaterialApp(
           navigatorObservers: [routeObserver],
           navigatorKey: navigatorKey,
-          initialBinding: SettingBinding(),
+          initialBinding: UserBinding(),
           onInit: () async {
             await automaticLogon();
           },

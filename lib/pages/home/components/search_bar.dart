@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/controller/setting/user_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/pages/chat/widgets/chat_item.dart';

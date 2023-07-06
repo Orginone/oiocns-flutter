@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/target/identity/identity.dart';
 import 'package:orginone/pages/setting/config.dart';
@@ -21,7 +20,6 @@ class IdentityInfoPage
     this.identity = Rx(identity);
   }
 
-  SettingController get setting => Get.find();
   @override
   Widget buildView() {
     return SingleChildScrollView(

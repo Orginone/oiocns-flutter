@@ -11,3 +11,7 @@ class ShowLoading{
 class StartLoad{
 
 }
+
+class LoadUserDone{
+
+}

@@ -21,34 +21,52 @@ abstract class BaseGetListView<T extends BaseListController,S extends BaseGetLis
   @override
   Widget build(BuildContext context) {
     this.controller.context = context;
-    return GyScaffold(
-      titleName: title,
-      actions: actions(),
-      body: Obx(() {
-        return LoadStateWidget(
-          isSuccess: state.isSuccess.value,
-          isLoading: state.isLoading.value,
-          onRetry: (){
-            controller.loadData();
-          },
-          builder: (){
-            return EasyRefresh(
-              controller: state.refreshController,
-              header: const MaterialHeader(),
-              footer: const MaterialFooter(),
-              onRefresh: controller.onRefresh,
-              onLoad: controller.onLoadMore,
-              child: Obx((){
-                if(state.dataList.isEmpty && displayNoDataWidget()){
-                  return noData();
-                }
-                return buildView();
+
+    Widget body = NestedScrollView(
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return [
+          SliverToBoxAdapter(
+            child: headWidget(),
+          )
+        ];
+      },
+      body: EasyRefresh(
+        controller: state.refreshController,
+        onRefresh: controller.onRefresh,
+        onLoad: controller.onLoadMore,
+        header: const MaterialHeader(),
+        footer: const MaterialFooter(),
+        child: Column(
+          children: [
+            Expanded(
+              child: Obx(() {
+                return LoadStateWidget(
+                  isSuccess: state.isSuccess.value,
+                  isLoading: state.isLoading.value,
+                  onRetry: () {
+                    controller.loadData();
+                  },
+                  child: Obx(() {
+                    if (state.dataList.isEmpty && displayNoDataWidget()) {
+                      return noData();
+                    }
+                    return buildView();
+                  }),
+                );
               }),
-            );
-          },
-        );
-      }),
+            ),
+            bottomWidget(),
+          ],
+        ),
+      ),
     );
+    if(showAppBar){
+      body = GyScaffold(
+        titleName: title,
+        actions: actions(),
+        body:body);
+    }
+    return body;
   }
 
   Widget noData(){
@@ -70,4 +88,14 @@ abstract class BaseGetListView<T extends BaseListController,S extends BaseGetLis
   List<Widget> actions(){
     return [];
   }
+
+  Widget headWidget() {
+    return Container();
+  }
+
+  Widget bottomWidget() {
+    return Container();
+  }
+
+  bool showAppBar = true;
 }

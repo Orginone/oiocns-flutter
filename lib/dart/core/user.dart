@@ -11,7 +11,6 @@ import 'package:orginone/event/home_data.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/notification_util.dart';
-import 'package:orginone/util/toast_utils.dart';
 
 import 'enum.dart';
 import 'target/base/team.dart';
@@ -110,33 +109,105 @@ class UserProvider {
   /// @param password 密码
   /// @param privateKey 私钥
   /// @returns
-  Future<ResultType> resetPassword(String account,
-      String password,
-      String privateKey,) async {
+  Future<ResultType> resetPassword(
+    String account,
+    String password,
+    String privateKey,
+  ) async {
     return await kernel.resetPassword(account, password, privateKey);
   }
 
   /// 加载用户
   _loadUser(XTarget person) async {
     _user.value = Person(person);
-    if (_user.value != null) {
-      _work.value = WorkProvider(this);
-      _chat.value = ChatProvider(_user.value!);
-      _store.value = StoreProvider(_user.value!);
-      EventBusHelper.fire(StartLoad());
+    EventBusHelper.fire(StartLoad());
+  }
+
+  ///加载消息
+  Future<bool> loadChat() async{
+    if(_user.value == null){
+      return false;
+    }
+    _chat.value = ChatProvider(_user.value!);
+    await _loadChatData();
+    return true;
+  }
+
+  ///加载消息数据
+  Future<void> _loadChatData() async {
+    if (_inited) {
+      print('开始加载沟通数据-------${DateTime.now()}');
+      _chat.value?.preMessage();
+      _chat.value?.loadAllChats();
+      await Future.wait([
+        _chat.value!.loadPreMessage(),
+        _chat.value!.loadMostUsed(),
+      ]);
+      print('加载沟通数据完成-------${DateTime.now()}');
+      _chat.refresh();
+    } else {
+      await _loadChatData();
     }
   }
 
-  ITarget? findTarget(String belongId){
-    for (var element in user?.targets??[]) {
-      if(element.id == belongId){
+  ///加载办事
+  Future<bool> loadWork() async{
+    if(_user.value == null){
+      return false ;
+    }
+    _work.value = WorkProvider(this);
+    await _loadWorkData();
+    return true;
+  }
+
+  Future<void> _loadWorkData() async {
+    if (_inited) {
+      print('开始加载办事数据-------${DateTime.now()}');
+      await Future.wait([
+        _work.value!.loadTodos(reload: true),
+        _work.value!.loadMostUsed(),
+      ]);
+      _work.refresh();
+      print('加载办事数据完成-------${DateTime.now()}');
+    } else {
+      await _loadWorkData();
+    }
+  }
+
+  ///加载存储
+  Future<bool> loadStore() async{
+    if(_user.value == null){
+      return false;
+    }
+    _store.value = StoreProvider(_user.value!);
+    await _loadStoreData();
+    return true;
+  }
+
+  Future<void> _loadStoreData() async {
+    if (_inited) {
+      print('开始加载存储数据-------${DateTime.now()}');
+      await Future.wait([
+      _store.value!.loadMostUsed(),
+      _store.value!.loadRecentList(),
+      ]);
+      _store.refresh();
+      print('加载存储数据完成-------${DateTime.now()}');
+    }else {
+      await _loadStoreData();
+    }
+  }
+
+  ITarget? findTarget(String belongId) {
+    for (var element in user?.targets ?? []) {
+      if (element.id == belongId) {
         return element;
       }
     }
     return null;
   }
 
-  void refreshWork(){
+  void refreshWork() {
     _work.refresh();
   }
 
@@ -149,24 +220,11 @@ class UserProvider {
     if(kernel.isOnline && kernel.anystore.isOnline){
       print('开始加载数据-------${DateTime.now()}');
       _inited = false;
-      _chat.value?.preMessage();
-      await Future.wait([
-        _user.value!.deepLoad(reload: true, reloadContent: true),
-        _work.value!.loadTodos(reload: true),
-      ]);
+      await _user.value!.deepLoad(reload: true, reloadContent: true);
       _inited = true;
-      _chat.value?.loadAllChats();
-      await Future.wait([
-        _chat.value!.loadPreMessage(),
-        _chat.value!.loadMostUsed(),
-        _work.value!.loadMostUsed(),
-        _store.value!.loadMostUsed(),
-        _store.value!.loadRecentList(),
-        loadApps(),
-      ]);
-      print('加载数据完成-------${DateTime.now()}');
-      _chat.refresh();
       _user.refresh();
+      print('加载数据完成-------${DateTime.now()}');
+      EventBusHelper.fire(LoadUserDone());
     }else{
       await Future.delayed(Duration(milliseconds: 100),() async{
         await loadData();
@@ -188,12 +246,13 @@ class UserProvider {
       await user!.deepLoad(reload: reload);
     }
     List<Map<IApplication,ITarget>> apps = [];
-    for (var target in targets) {
+    for (var target in _user.value!.targets) {
       var applications = await target.directory.loadAllApplications();
       for (var element in applications) {
         apps.add({element:target.space});
       }
     }
+    print('');
     myApps.value = apps.where((a){
       return apps.indexWhere((x) => x.keys.first.id == a.keys.first.id) == apps.indexOf(a);
     }).toList();

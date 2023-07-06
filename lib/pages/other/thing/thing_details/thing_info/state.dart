@@ -1,6 +1,7 @@
 
 
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/thing/form.dart';
@@ -13,7 +14,7 @@ class ThingInfoState extends BaseGetState{
 
   var detailsController = Get.find<ThingDetailsController>();
 
-  ThingModel get thing => detailsController.state.thing;
+  AnyThingModel get thing => detailsController.state.thing;
 
   Form get form => detailsController.state.form;
 }

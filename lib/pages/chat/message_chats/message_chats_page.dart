@@ -9,9 +9,9 @@ class MessageChats extends BaseFrequentlyUsedListPage<MessageChatsController,
     MessageChatsState> {
   @override
   Widget buildView() {
-    var topChats = settingCtrl.chat.topChats;
+    var topChats = settingCtrl.provider.chat?.topChats??[];
 
-    var chats = settingCtrl.chat.chats;
+    var chats = settingCtrl.provider.chat?.chats??[];
 
     return CustomScrollView(
       slivers: [
@@ -31,10 +31,6 @@ class MessageChats extends BaseFrequentlyUsedListPage<MessageChatsController,
     );
   }
 
-  @override
-  MessageChatsController getController() {
-    return MessageChatsController();
-  }
 
   @override
   bool displayNoDataWidget() {
@@ -42,11 +38,6 @@ class MessageChats extends BaseFrequentlyUsedListPage<MessageChatsController,
     return false;
   }
 
-  @override
-  String tag() {
-    // TODO: implement tag
-    return "MessageChats";
-  }
 }
 
 

@@ -344,7 +344,6 @@ abstract class MsgChat extends Entity implements IMsgChat {
       'cite': cite?.toJson(),
     };
 
-
     var res = await kernel.createImMsg(MsgSendModel(
       msgType: type.label,
       toId: chatId,
@@ -467,11 +466,12 @@ abstract class MsgChat extends Entity implements IMsgChat {
        }
     }else if(imsg.msgType == MessageType.file.label || imsg.msgType == MessageType.image.label ){
         String name = msg.body?.name??"";
-        var index = messages.indexWhere((p0) => p0.id == name);
+        var index = messages.indexWhere((p0) => p0.body?.name == name);
         if(index != -1){
           messages[index] = imsg;
           messages.refresh();
         }else{
+          print('');
           messages.insert(0,imsg);
         }
     }else{

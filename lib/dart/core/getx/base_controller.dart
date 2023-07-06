@@ -20,13 +20,14 @@ abstract class BaseController<S extends BaseGetState> extends GetxController{
   void onInit() {
     super.onInit();
     log = Logger(this.toString());
+    EventBusHelper.register(this, onReceivedEvent);
   }
 
   @override
   void onReady() async{
     // TODO: implement onReady
     super.onReady();
-    EventBusHelper.register(this, onReceivedEvent);
+
     await loadData();
   }
 

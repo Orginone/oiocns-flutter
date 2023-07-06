@@ -12,6 +12,7 @@ import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/model/thing_model.dart' as thing;
+import 'package:orginone/pages/store/logic.dart';
 import 'package:orginone/pages/store/state.dart';
 
 abstract class IStoreProvider {
@@ -30,7 +31,7 @@ abstract class IStoreProvider {
   Future<void> loadMostUsed();
 
   Future<void> setMostUsed(
-      {thing.ThingModel? thing,
+      {AnyThingModel? thing,
       FileItemModel? file,
       required StoreEnum storeEnum});
 
@@ -42,6 +43,9 @@ abstract class IStoreProvider {
 }
 
 class StoreProvider implements IStoreProvider {
+
+  StoreController get storeController => Get.find();
+
   StoreProvider(this.user) {
     storeFrequentlyUsed = RxList();
     recent = RxList();
@@ -110,7 +114,7 @@ class StoreProvider implements IStoreProvider {
                 avatar: getFileAvatar(data),
                 storeEnum: StoreEnum.file));
           } else if (type == StoreEnum.thing.label) {
-            var data = thing.ThingModel.fromJson(stores[key]);
+            var data = AnyThingModel.fromJson(stores[key]);
             storeFrequentlyUsed.add(StoreFrequentlyUsed(
                 name: data.id,
                 id: id,
@@ -120,6 +124,7 @@ class StoreProvider implements IStoreProvider {
         }
       }
     }
+    storeController.loadFrequentlyUsed();
   }
 
   @override
@@ -156,7 +161,7 @@ class StoreProvider implements IStoreProvider {
 
   @override
   Future<void> setMostUsed(
-      {thing.ThingModel? thing,
+      {AnyThingModel? thing,
       FileItemModel? file,
       required StoreEnum storeEnum}) async {
     Map<String, dynamic> data = {"type": storeEnum.label};

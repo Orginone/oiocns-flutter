@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus.dart';

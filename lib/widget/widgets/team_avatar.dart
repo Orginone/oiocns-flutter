@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/consts.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/widget/image_widget.dart';
-import 'package:orginone/widget/unified.dart';
 
 class TeamTypeInfo {
   final bool? preview;
@@ -45,7 +42,6 @@ class TeamAvatar extends StatefulWidget {
 }
 
 class _TeamAvatarState extends State<TeamAvatar> {
-  SettingController get setting => Get.find();
 
   ShareIcon? cache;
 
@@ -92,7 +88,7 @@ class _TeamAvatarState extends State<TeamAvatar> {
           return avatar(shot.data!);
         }
       return cache != null ? avatar(cache!) : const SizedBox();
-      },future: setting.user.findShareById(info.userId!),);
+      },future: settingCtrl.user.findShareById(info.userId!),);
   }
 
 

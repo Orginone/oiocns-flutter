@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
+import 'package:orginone/dart/core/getx/base_get_list_view.dart';
 import 'package:orginone/widget/unified.dart';
 
 import 'base_freqiently_usedList_controller.dart';
@@ -10,7 +11,7 @@ import 'base_frequently_used_list_state.dart';
 
 abstract class BaseFrequentlyUsedListPage<
 T extends BaseFrequentlyUsedListController,
-S extends BaseFrequentlyUsedListState> extends BaseGetListPageView<T, S> {
+S extends BaseFrequentlyUsedListState> extends BaseGetListView<T, S> {
   @override
   Widget headWidget() {
     // TODO: implement headWidget
@@ -118,4 +119,7 @@ S extends BaseFrequentlyUsedListState> extends BaseGetListPageView<T, S> {
     );
   }
 
+  @override
+  // TODO: implement showAppBar
+  bool get showAppBar => false;
 }

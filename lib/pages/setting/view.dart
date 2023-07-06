@@ -13,15 +13,4 @@ class SettingPage extends BaseFrequentlyUsedListPage<SettingController, SettingS
       child: Container(),
     );
   }
-
-  @override
-  SettingController getController() {
-    return SettingController();
-  }
-
-  @override
-  String tag() {
-    // TODO: implement tag
-    return "setting";
-  }
 }

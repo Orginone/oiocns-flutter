@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/model/assets_info.dart';
 import 'package:orginone/pages/other/add_asset/state.dart';
 import 'package:orginone/util/date_utils.dart';

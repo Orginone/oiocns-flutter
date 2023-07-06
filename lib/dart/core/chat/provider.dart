@@ -5,8 +5,8 @@ import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/pages/chat/message_chats/message_chats_controller.dart';
 import 'package:orginone/pages/chat/message_chats/message_chats_state.dart';
-import 'package:orginone/pages/home/index/index_page.dart';
 
 abstract class IChatProvider {
   /// 当前用户
@@ -57,6 +57,9 @@ class ChatProvider implements IChatProvider {
 
   @override
   late RxList<MessageFrequentlyUsed> messageFrequentlyUsed;
+
+
+  MessageChatsController get messageChatsController => Get.find();
 
   ChatProvider(this.user) {
     kernel.on('RecvMsg', (data) {
@@ -223,6 +226,8 @@ class ChatProvider implements IChatProvider {
         }
       }
     }
+
+    messageChatsController.loadFrequentlyUsed();
   }
 
   @override

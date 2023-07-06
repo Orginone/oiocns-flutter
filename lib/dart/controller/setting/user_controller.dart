@@ -50,7 +50,7 @@ class ItemModel {
 
 
 /// 设置控制器
-class SettingController extends GetxController {
+class UserController extends GetxController {
   String currentKey = "";
   StreamSubscription<UserLoaded>? _userSub;
   late UserProvider _provider;
@@ -73,6 +73,10 @@ class SettingController extends GetxController {
       EventBusHelper.fire(ShowLoading(true));
       await _provider.loadData();
       EventBusHelper.fire(ShowLoading(false));
+      _provider.loadChat();
+      _provider.loadWork();
+      _provider.loadStore();
+      _provider.loadApps();
     });
   }
 
@@ -183,7 +187,7 @@ class SettingController extends GetxController {
     kernel.stop();
     LocalStore.clear();
     await HiveUtils.clean();
-    homeEnum.value = HomeEnum.door;
+    homeEnum.value = HomeEnum.chat;
     Get.offAllNamed(Routers.login);
   }
 
@@ -203,10 +207,10 @@ class SettingController extends GetxController {
   }
 }
 
-class SettingBinding extends Bindings {
+class UserBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(SettingController(), permanent: true);
+    Get.put(UserController(), permanent: true);
   }
 }
 

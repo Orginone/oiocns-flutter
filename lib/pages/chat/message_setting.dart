@@ -5,7 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/controller/setting/user_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/chat/widgets/avatars.dart';
@@ -17,7 +17,7 @@ import 'package:orginone/widget/widgets/team_avatar.dart';
 
 Size defaultBtnSize = Size(400.w, 70.h);
 
-class MessageSetting extends GetView<SettingController> {
+class MessageSetting extends GetView<UserController> {
   const MessageSetting({Key? key}) : super(key: key);
 
   @override

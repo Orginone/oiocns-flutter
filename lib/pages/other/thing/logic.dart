@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/model/thing_model.dart';
@@ -21,11 +22,11 @@ class ThingController extends BaseListController<ThingState> {
 
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async{
-    // state.dataList.value = await ChoiceThingNetWork.getThing(state.form.metadata.id!,state.belongId);
+    state.dataList.addAll(await ChoiceThingNetWork.getThing(state.form.id,state.belongId,index: state.page));
     super.loadData();
   }
 
-  void operation(String key, ThingModel item) {
+  void operation(String key, AnyThingModel item) {
 
     switch(key){
       case "details":

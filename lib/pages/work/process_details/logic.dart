@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/main.dart';
@@ -21,7 +20,6 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
     state.tabController = TabController(length: tabTitle.length, vsync: this);
   }
 
-  SettingController get controller => Get.find();
 
   @override
   void onReady() async {

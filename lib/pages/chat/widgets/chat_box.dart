@@ -16,7 +16,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart' hide Rule;
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/chat/message/message.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -754,7 +753,9 @@ class ChatBoxController with WidgetsBindingObserver {
       },
     );
     if (item != null) {
-      chat.sendMessage(MessageType.file, jsonEncode(item.shareInfo().shareLink));
+      var msg = chat.messages.firstWhere((element) => element.body?.name == save.body?.name);
+      msg.body!.name = item.shareInfo().name;
+      chat.sendMessage(MessageType.file, jsonEncode(item.shareInfo().toJson()));
     }
   }
 

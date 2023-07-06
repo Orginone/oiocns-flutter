@@ -2,7 +2,6 @@
 
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/model/thing_model.dart';
 
@@ -26,7 +25,7 @@ class ChoiceThingNetWork{
         }
       ],
       "group": null
-    },settingCtrl.user.id);
+    },belongId);
 
     if(result.success){
       result.data['data'].forEach((json){

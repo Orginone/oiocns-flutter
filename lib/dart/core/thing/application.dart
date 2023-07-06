@@ -28,6 +28,8 @@ abstract class IApplication implements IFileInfo<XApplication> {
 
   //新建办事
   Future<IWork?> createWork(WorkDefineModel data);
+
+  Future<IApplication?> createModule(ApplicationModel data);
 }
 
 class Application extends FileInfo<XApplication> implements IApplication {
@@ -168,4 +170,18 @@ class Application extends FileInfo<XApplication> implements IApplication {
   @override
   // TODO: implement locationKey
   String get locationKey => key;
+
+  @override
+  Future<IApplication?> createModule(ApplicationModel data) async{
+    data.parentId = id;
+    data.typeName = '模块';
+    data.directoryId = directory.id;
+    final res = await kernel.createApplication(data);
+    if (res.success && res.data != null) {
+      final application = Application(res.data!, directory, this);
+      children.add(application);
+      return application;
+    }
+    return null;
+  }
 }

@@ -79,6 +79,7 @@ abstract class Team extends MsgChat implements ITeam{
     data.teamName = data.teamName ?? data.name;
     var res = await kernel.createTarget(data);
     if (res.success && res.data != null) {
+      await space.user.loadGivedIdentitys(reload: true);
       return res.data;
     }
     return null;
