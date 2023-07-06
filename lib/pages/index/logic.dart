@@ -12,7 +12,6 @@ class IndexController extends BaseController<IndexState> {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    loadApps();
   }
 
   @override

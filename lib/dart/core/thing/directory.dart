@@ -124,7 +124,6 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
     specieses = [];
     children = [];
     taskList = [];
-    loadChildren(directorys);
   }
 
   @override
@@ -290,8 +289,8 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   @override
   Future<List<IApplication>> loadApplications({bool reload = false}) async{
     if (applications.isEmpty || reload) {
-      final res = await kernel.queryApplications(IdReq(id: id!));
-      if (res.success && res.data!=null) {
+      final res = await kernel.queryApplications(IdReq(id: id));
+      if (res.success && res.data != null) {
         final data = res.data!.result ?? [];
         applications = data
             .where((i) => i.parentId == null || i.parentId == '')
@@ -397,21 +396,29 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
     if (parent == null) {
       final res = await kernel.queryDirectorys(GetDirectoryModel(
         id: target.id,
-        upTeam: target.metadata.typeName == TargetType.group.label,));
+        upTeam: target.metadata.typeName == TargetType.group.label,
+      ));
       if (res.success && res.data != null) {
         children = [];
-        loadChildren(res.data!.result??[]);
+        var data = (res.data!.result??[]).firstWhere((i) => i.id == id);
+        loadChildren(data,res.data!.result ?? []);
       }
     }
   }
 
-
-  loadChildren(List<XDirectory>? directorys) {
-    if (directorys != null && directorys.isNotEmpty) {
-      directorys.where((i) => i.parentId == id).forEach((i) {
-        children.add(Directory(i, target, this, directorys));
-      });
-    }
+  loadChildren(XDirectory data, List<XDirectory> directorys) {
+    forms = (data.forms ?? []).map((f) => Form(f, this)).toList();
+    specieses = (data.species ?? []).map((s) => Species(s, this)).toList();
+    propertys = (data.propertys ?? []).map((p) => Property(p, this)).toList();
+    applications = (data.applications ?? [])
+        .where((a) => a.parentId == null || a.parentId == '')
+        .map((a) => Application(a, this, null, data.applications))
+        .toList();
+    directorys.where((i) => i.parentId == data.id).forEach((i) {
+      final subDirectory = Directory(i, target, this, directorys);
+      subDirectory.loadChildren(i, directorys);
+      children.add(subDirectory);
+    });
   }
 
   @override
@@ -419,14 +426,18 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
     // TODO: implement loadContent
 
     if (reload && !isLoaded) {
-      await Future.wait([
-        loadSubDirectory(),
-        loadFiles(),
-        loadForms(),
-        loadPropertys(),
-        loadSpecieses(),
-        loadApplications(),
-      ]);
+      if (metadata.typeName == '成员目录') {
+        await target.loadContent(reload: reload);
+      } else {
+        await Future.wait([
+          loadSubDirectory(),
+          loadFiles(),
+          loadForms(),
+          loadPropertys(),
+          loadSpecieses(),
+          loadApplications(),
+        ]);
+      }
     }
     isLoaded = reload;
     return false;
@@ -470,11 +481,10 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
 
   @override
   Future<List<IApplication>> loadAllApplications({bool reload = false}) async{
-    await loadSubDirectory();
     final applications = <IApplication>[];
     applications.addAll(await loadApplications(reload: reload));
     for (final subDirectory in children) {
-      applications.addAll(await subDirectory.loadApplications(reload: reload));
+      applications.addAll(await subDirectory.loadAllApplications(reload: reload));
     }
     return applications;
   }

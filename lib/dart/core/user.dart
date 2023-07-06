@@ -246,12 +246,13 @@ class UserProvider {
       await user!.deepLoad(reload: reload);
     }
     List<Map<IApplication,ITarget>> apps = [];
-    for (var target in targets) {
+    for (var target in _user.value!.targets) {
       var applications = await target.directory.loadAllApplications();
       for (var element in applications) {
         apps.add({element:target.space});
       }
     }
+    print('');
     myApps.value = apps.where((a){
       return apps.indexWhere((x) => x.keys.first.id == a.keys.first.id) == apps.indexOf(a);
     }).toList();
