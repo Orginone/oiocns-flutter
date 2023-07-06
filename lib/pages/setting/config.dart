@@ -145,7 +145,6 @@ Future<List<SettingNavModel>> loadDir(
     List<IDirectory> dirs, IBelong belong) async {
   List<SettingNavModel> nav = [];
   for (var dir in dirs) {
-    // await dir.loadContent(reload: true);
     SettingNavModel dirNav = SettingNavModel(
       id: dir.metadata.id!,
         source: dir,
@@ -154,6 +153,7 @@ Future<List<SettingNavModel>> loadDir(
         spaceEnum: SpaceEnum.directory,
         image: dir.metadata.avatarThumbnail(),
         onNext: (nav) async {
+          await dir.loadContent(reload: true);
           nav.children = [
             ...await loadDir(dir.children, belong),
             ...await loadFile(dir.files, belong),
@@ -162,7 +162,9 @@ Future<List<SettingNavModel>> loadDir(
             ...await loadPropertys(dir.propertys, belong),
             ...await loadForm(dir.forms, belong),
           ];
-        });
+        },
+    );
+    nav.add(dirNav);
   }
   return nav;
 }
@@ -264,7 +266,7 @@ Future<List<SettingNavModel>> loadCohorts(
         spaceEnum: SpaceEnum.cohorts,
         image: cohort.share.avatar?.thumbnailUint8List,
         onNext: (nav) async {
-          await cohort.loadContent();
+          await cohort.loadContent(reload: true);
           nav.children = [
             SettingNavModel(
                 id: SpaceEnum.cohorts.label,
@@ -318,7 +320,7 @@ Future<List<SettingNavModel>> loadDepartment(
         spaceEnum: SpaceEnum.departments,
         image: department.share.avatar?.thumbnailUint8List,
         onNext: (nav) async {
-          await department.loadContent();
+          await department.loadContent(reload: true);
           nav.children = [
             SettingNavModel(
                 id: SpaceEnum.departments.label,
@@ -374,6 +376,7 @@ Future<List<SettingNavModel>> loadGroup(
         spaceEnum: SpaceEnum.groups,
         image: group.share.avatar?.thumbnailUint8List,
         onNext: (nav) async {
+          await group.loadContent(reload: true);
           nav.children = [
             SettingNavModel(
                 showPopup: false,
