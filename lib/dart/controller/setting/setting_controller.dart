@@ -55,7 +55,7 @@ class SettingController extends GetxController {
   StreamSubscription<UserLoaded>? _userSub;
   late UserProvider _provider;
 
-  var homeEnum = HomeEnum.door.obs;
+  var homeEnum = HomeEnum.chat.obs;
 
   var menuItems = [
     ItemModel(Shortcut.addPerson,"添加好友","请输入用户的账号",TargetType.person,),
@@ -70,9 +70,7 @@ class SettingController extends GetxController {
     super.onInit();
     _provider = UserProvider();
     _userSub = XEventBus.instance.on<UserLoaded>().listen((event) async {
-      EventBusHelper.fire(ShowLoading(true));
       await _provider.loadData();
-      EventBusHelper.fire(ShowLoading(false));
     });
   }
 

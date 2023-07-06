@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_freqiently_usedList_controller.dart';
 import 'package:orginone/dart/core/thing/form.dart';
+import 'package:orginone/event/home_data.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -15,8 +16,29 @@ class StoreController extends BaseFrequentlyUsedListController<StoreState> {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    state.dataList.value = List.generate(10, (i) => i);
-    state.mostUsedList = settingCtrl.store.storeFrequentlyUsed;
+    initData();
+  }
+
+  @override
+  void onReceivedEvent(event) async{
+    if (event is LoadUserDone) {
+      initData();
+    }
+  }
+
+   initData() async{
+    await settingCtrl.provider.loadStore().then((value){
+      if(value){
+        loadSuccess();
+      }
+    });
+    state.dataList.value = settingCtrl.store.recent;
+
+  }
+
+  void loadFrequentlyUsed() {
+    state.mostUsedList.value = settingCtrl.store.storeFrequentlyUsed;
+    state.mostUsedList.refresh();
   }
 
   @override
@@ -24,8 +46,10 @@ class StoreController extends BaseFrequentlyUsedListController<StoreState> {
     if (used is StoreFrequentlyUsed) {
       switch (used.storeEnum) {
         case StoreEnum.file:
-          Get.toNamed(Routers.messageFile,
-              arguments: {"file":FileItemShare.fromJson(used.fileItemShare!.shareInfo()),"type":"store"});
+          Get.toNamed(Routers.messageFile, arguments: {
+            "file": FileItemShare.fromJson(used.fileItemShare!.shareInfo()),
+            "type": "store"
+          });
           break;
         case StoreEnum.thing:
           var thing = used.thing;

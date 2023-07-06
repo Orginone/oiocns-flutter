@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/pages/home/index/index_page.dart';
+import 'package:orginone/pages/home/index/syncfusion_flutter_charts/pieChart.dart';
+import 'package:orginone/pages/home/index/syncfusion_flutter_charts/splineArea.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 

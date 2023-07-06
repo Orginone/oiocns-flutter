@@ -1,10 +1,11 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/pages/chat/message_setting.dart';
 import 'package:orginone/pages/chat/message_routers.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
+import 'package:orginone/pages/home/home/binding.dart';
+import 'package:orginone/pages/home/home/view.dart';
 import 'package:orginone/pages/login/binding.dart';
 import 'package:orginone/pages/login/view.dart';
 import 'package:orginone/pages/other/add_asset/binding.dart';
@@ -14,7 +15,6 @@ import 'package:orginone/pages/other/choice_department/view.dart';
 import 'package:orginone/pages/other/choice_people/binding.dart';
 import 'package:orginone/pages/other/choice_people/view.dart';
 import 'package:orginone/pages/other/choice_thing/binding.dart';
-import 'package:orginone/pages/home/home_page.dart';
 import 'package:orginone/pages/other/pdf/index.dart';
 import 'package:orginone/pages/other/qr_scan/binding.dart';
 import 'package:orginone/pages/other/qr_scan/view.dart';
@@ -23,8 +23,6 @@ import 'package:orginone/pages/other/web_view/view.dart';
 import 'package:orginone/pages/work/work_list/view.dart';
 import 'package:orginone/pages/work/work_start/view.dart';
 import 'package:orginone/pages/setting/dict_info/view.dart';
-import 'package:orginone/pages/setting/home/binding.dart';
-import 'package:orginone/pages/setting/home/view.dart';
 import 'package:orginone/pages/setting/person/cardbag/bindings.dart';
 import 'package:orginone/pages/setting/person/cardbag/index.dart';
 import 'package:orginone/pages/setting/person/dynamic/bindings.dart';
@@ -44,7 +42,6 @@ import 'pages/chat/message_chats/message_chats_list.dart';
 import 'pages/chat/message_file.dart';
 import 'pages/chat/message_records.dart';
 import 'pages/chat/person_list_page.dart';
-import 'pages/home/index/index_page.dart';
 import 'pages/login/forgot_password/binding.dart';
 import 'pages/login/forgot_password/view.dart';
 import 'pages/login/register/binding.dart';
@@ -62,6 +59,8 @@ import 'pages/other/thing/binding.dart';
 import 'pages/other/thing/thing_details/binding.dart';
 import 'pages/other/thing/thing_details/view.dart';
 import 'pages/other/thing/view.dart';
+import 'pages/setting/home/binding.dart';
+import 'pages/setting/home/view.dart';
 import 'pages/store/application_details/binding.dart';
 import 'pages/store/application_details/view.dart';
 import 'pages/store/store_tree/binding.dart';
@@ -307,12 +306,10 @@ class Routers {
       ),
       GetPage(
         name: Routers.home,
-        page: () => const HomePage(),
+        page: () => HomePage(),
         bindings: [
           HomeBinding(),
-          IndexPageBinding(),
           UpdateBinding(),
-          ClassificationInfoBinding()
         ],
       ),
       GetPage(
@@ -328,20 +325,6 @@ class Routers {
         name: Routers.messageChat,
         page: () => MessageChatPage(),
         bindings: [PlayBinding(), ChatBoxBinding(), MessageChatBinding()],
-      ),
-      GetPage(
-        name: Routers.index,
-        page: () => IndexPage(),
-        bindings: [
-          HomeBinding(),
-          IndexPageBinding(),
-          UpdateBinding(),
-          // SettingCenterBinding(),
-          SettingBinding(),
-          ClassificationInfoBinding(),
-          PermissionInfoBinding(),
-          HomeBinding(),
-        ],
       ),
       GetPage(
         name: Routers.storageLocation,

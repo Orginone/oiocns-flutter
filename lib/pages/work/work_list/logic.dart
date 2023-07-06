@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/event/work_reload.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/work/initiate_work/state.dart';
 import 'package:orginone/pages/work/network.dart';
 import 'package:orginone/routers.dart';
@@ -23,7 +24,7 @@ class WorkListController extends BaseListController<WorkListState> {
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
     switch (state.work.workEnum!) {
       case WorkEnum.todo:
-        var todo = await WorkNetWork.getTodo();
+        var todo = await settingCtrl.work.loadTodos();
         state.dataList.value = todo
             .where((element) =>
                 element.metadata.belongId == state.work.space?.metadata.belongId)
@@ -31,11 +32,11 @@ class WorkListController extends BaseListController<WorkListState> {
         break;
       case WorkEnum.completed:
         state.dataList.value =
-            await WorkNetWork.getDones(state.work.space?.metadata.id ?? "");
+            await settingCtrl.work.loadDones(state.work.space?.metadata.id ?? "");
         break;
       case WorkEnum.initiated:
         state.dataList.value =
-            await WorkNetWork.getApply(state.work.space?.metadata.id ?? "");
+            await settingCtrl.work.loadApply(state.work.space?.metadata.id ?? "");
         break;
     }
     state.dataList.refresh();

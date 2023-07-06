@@ -9,9 +9,9 @@ class MessageChats extends BaseFrequentlyUsedListPage<MessageChatsController,
     MessageChatsState> {
   @override
   Widget buildView() {
-    var topChats = settingCtrl.chat.topChats;
+    var topChats = settingCtrl.provider.chat?.topChats??[];
 
-    var chats = settingCtrl.chat.chats;
+    var chats = settingCtrl.provider.chat?.chats??[];
 
     return CustomScrollView(
       slivers: [

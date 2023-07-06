@@ -9,21 +9,6 @@ import 'package:orginone/util/toast_utils.dart';
 
 class WorkNetWork {
 
-  static Future<List<IWorkTask>> getTodo() async {
-    var result = await settingCtrl.provider.work?.loadTodos(reload: true);
-    return result??[];
-  }
-
-  static Future<List<IWorkTask>> getDones(String id) async {
-    var result = await settingCtrl.provider.work?.loadDones(id);
-    return result??[];
-  }
-
-  static Future<List<IWorkTask>> getApply(String id) async {
-    var result = await settingCtrl.provider.work?.loadApply(id);
-    return result??[];
-  }
-
   static Future<XWorkInstance?> getFlowInstance(IWorkTask todo) async {
     bool success = await todo.loadInstance(reload: true);
     if(success){

@@ -7,6 +7,7 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/pages/work/logic.dart';
 import 'package:orginone/pages/work/state.dart';
 
 import 'index.dart';
@@ -68,7 +69,7 @@ class WorkProvider implements IWorkProvider{
       var work = XWorkTask.fromJson(data);
       updateTask(work);
     });
-    workFrequentlyUsed = RxList();
+    workFrequentlyUsed = <WorkFrequentlyUsed>[].obs;
   }
 
   @override
@@ -83,6 +84,8 @@ class WorkProvider implements IWorkProvider{
   @override
   // TODO: implement userId
   late String userId;
+
+  WorkController get workController => Get.find(tag: 'work');
 
   @override
   Future<IWork?> findFlowDefine(String defineId) async{
@@ -140,7 +143,8 @@ class WorkProvider implements IWorkProvider{
     if (todos.isEmpty || reload) {
       final res = await kernel.queryApproveTask(IdReq(id: '0'));
       if (res.success) {
-        todos.value = (res.data?.result??[]).map((e) => WorkTask(e, user)).toList();
+        todos.clear();
+        todos.addAll((res.data?.result??[]).map((e) => WorkTask(e, user)).toList());
         todos.refresh();
       }
     }
@@ -206,6 +210,7 @@ class WorkProvider implements IWorkProvider{
         }
       }
     }
+    workController.loadFrequentlyUsed();
   }
 
   @override

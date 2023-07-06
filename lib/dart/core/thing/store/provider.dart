@@ -12,6 +12,7 @@ import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/model/thing_model.dart' as thing;
+import 'package:orginone/pages/store/logic.dart';
 import 'package:orginone/pages/store/state.dart';
 
 abstract class IStoreProvider {
@@ -42,6 +43,9 @@ abstract class IStoreProvider {
 }
 
 class StoreProvider implements IStoreProvider {
+
+  StoreController get storeController => Get.find(tag: 'store');
+
   StoreProvider(this.user) {
     storeFrequentlyUsed = RxList();
     recent = RxList();
@@ -120,6 +124,7 @@ class StoreProvider implements IStoreProvider {
         }
       }
     }
+    storeController.loadFrequentlyUsed();
   }
 
   @override
