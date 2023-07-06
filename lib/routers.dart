@@ -20,6 +20,7 @@ import 'package:orginone/pages/other/qr_scan/binding.dart';
 import 'package:orginone/pages/other/qr_scan/view.dart';
 import 'package:orginone/pages/other/web_view/binding.dart';
 import 'package:orginone/pages/other/web_view/view.dart';
+import 'package:orginone/pages/setting/bindings.dart';
 import 'package:orginone/pages/work/work_list/view.dart';
 import 'package:orginone/pages/work/work_start/view.dart';
 import 'package:orginone/pages/setting/dict_info/view.dart';
@@ -37,6 +38,7 @@ import 'package:orginone/util/hive_utils.dart';
 // 资产管理
 // 资产管理
 // 仓库
+import 'pages/chat/message_chats/bindings.dart';
 import 'pages/chat/message_chats/message_chats_controller.dart';
 import 'pages/chat/message_chats/message_chats_list.dart';
 import 'pages/chat/message_file.dart';
@@ -63,8 +65,10 @@ import 'pages/setting/home/binding.dart';
 import 'pages/setting/home/view.dart';
 import 'pages/store/application_details/binding.dart';
 import 'pages/store/application_details/view.dart';
+import 'pages/store/bindings.dart';
 import 'pages/store/store_tree/binding.dart';
 import 'pages/store/store_tree/view.dart';
+import 'pages/work/bindings.dart';
 import 'pages/work/initiate_work/binding.dart';
 import 'pages/work/initiate_work/view.dart';
 import 'pages/work/process_details/binding.dart';
@@ -309,6 +313,10 @@ class Routers {
         page: () => HomePage(),
         bindings: [
           HomeBinding(),
+          MessageChatsControllerBinding(),
+          WorkBinding(),
+          StoreBinding(),
+          SettingBinding(),
           UpdateBinding(),
         ],
       ),

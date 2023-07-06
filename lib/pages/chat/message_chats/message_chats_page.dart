@@ -31,10 +31,6 @@ class MessageChats extends BaseFrequentlyUsedListPage<MessageChatsController,
     );
   }
 
-  @override
-  MessageChatsController getController() {
-    return MessageChatsController();
-  }
 
   @override
   bool displayNoDataWidget() {
@@ -42,11 +38,6 @@ class MessageChats extends BaseFrequentlyUsedListPage<MessageChatsController,
     return false;
   }
 
-  @override
-  String tag() {
-    // TODO: implement tag
-    return "MessageChats";
-  }
 }
 
 

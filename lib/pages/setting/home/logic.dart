@@ -110,63 +110,27 @@ class SettingCenterController
 
   Future<void> loadUserSetting() async {
     var user = state.model.value!.children[4];
-    List<SettingNavModel> function = [
-      SettingNavModel(name: "个人文件", space: user.space, children: [
-        ...await loadFile(user.space!.directory.files, user.space!),
-        ...await loadSpecies(user.space!.directory.specieses, user.space!),
-        ...await loadApplications(
-            user.space!.directory.applications, user.space!),
-        ...await loadForm(user.space!.directory.forms, user.space!),
-        ...await loadPropertys(user.space!.directory.propertys, user.space!),
-      ],spaceEnum: SpaceEnum.directory,showPopup: false),
-      SettingNavModel(
-        name: "我的好友",
-        space: user.space,
-        spaceEnum: SpaceEnum.person,
-       showPopup: false,
-        image: user.space!.metadata.avatarThumbnail(),
-        children: user.space!.members.map((e) {
-          return SettingNavModel(
-            name: e.name!,
-            space: user.space,
-            source: e,
-            spaceEnum: SpaceEnum.person,
-            image: e.avatarThumbnail(),
-          );
-        }).toList(),
-      ),
-    ];
-
-    function.addAll(await loadDir(user.space!.directory.children, user.space!));
-    function.addAll(await loadCohorts(user.space!.cohorts, user.space!));
-    user.children = function;
-  }
-
-  Future<void> loadCompanySetting() async {
-    for(int i = 5;i<state.model.value!.children.length;i++){
-      var company = state.model.value!.children[i];
+    user.onNext = (nav)async{
+      await user.space!.loadContent(reload: true);
       List<SettingNavModel> function = [
-        SettingNavModel(name: "单位文件", space: company.space, children: [
-          ...await loadFile(company.space!.directory.files, company.space!),
-          ...await loadSpecies(
-              company.space!.directory.specieses, company.space!),
+        SettingNavModel(name: "个人文件", space: user.space, children: [
+          ...await loadFile(user.space!.directory.files, user.space!),
+          ...await loadSpecies(user.space!.directory.specieses, user.space!),
           ...await loadApplications(
-              company.space!.directory.applications, company.space!),
-          ...await loadForm(company.space!.directory.forms, company.space!),
-          ...await loadPropertys(
-              company.space!.directory.propertys, company.space!),
+              user.space!.directory.applications, user.space!),
+          ...await loadForm(user.space!.directory.forms, user.space!),
+          ...await loadPropertys(user.space!.directory.propertys, user.space!),
         ],spaceEnum: SpaceEnum.directory,showPopup: false),
         SettingNavModel(
-          name: "单位成员",
-          space: company.space,
-          spaceEnum: SpaceEnum.company,
+          name: "我的好友",
+          space: user.space,
+          spaceEnum: SpaceEnum.person,
           showPopup: false,
-          image: company.space!.metadata.avatarThumbnail(),
-          children: company.space!.members.map((e) {
+          image: user.space!.metadata.avatarThumbnail(),
+          children: user.space!.members.map((e) {
             return SettingNavModel(
-              id: e.id!,
               name: e.name!,
-              space: company.space,
+              space: user.space,
               source: e,
               spaceEnum: SpaceEnum.person,
               image: e.avatarThumbnail(),
@@ -174,15 +138,58 @@ class SettingCenterController
           }).toList(),
         ),
       ];
-      function.addAll(
-          await loadDir(company.space!.directory.children, company.space!));
-      function.addAll(await loadDepartment(
-          (company.space! as Company).departments, company.space!));
-      function.addAll(
-          await loadGroup((company.space! as Company).groups, company.space!));
-      function
-          .addAll(await loadCohorts(company.space!.cohorts, company.space!));
-      company.children.addAll(function);
+
+      function.addAll(await loadDir(user.space!.directory.children, user.space!));
+      function.addAll(await loadCohorts(user.space!.cohorts, user.space!));
+      nav.children = function;
+    };
+
+  }
+
+  Future<void> loadCompanySetting() async {
+    for(int i = 5;i<state.model.value!.children.length;i++){
+      var company = state.model.value!.children[i];
+      company.onNext = (nav) async{
+        await company.space!.loadContent(reload: true);
+        List<SettingNavModel> function = [
+          SettingNavModel(name: "单位文件", space: company.space, children: [
+            ...await loadFile(company.space!.directory.files, company.space!),
+            ...await loadSpecies(
+                company.space!.directory.specieses, company.space!),
+            ...await loadApplications(
+                company.space!.directory.applications, company.space!),
+            ...await loadForm(company.space!.directory.forms, company.space!),
+            ...await loadPropertys(
+                company.space!.directory.propertys, company.space!),
+          ],spaceEnum: SpaceEnum.directory,showPopup: false),
+          SettingNavModel(
+            name: "单位成员",
+            space: company.space,
+            spaceEnum: SpaceEnum.company,
+            showPopup: false,
+            image: company.space!.metadata.avatarThumbnail(),
+            children: company.space!.members.map((e) {
+              return SettingNavModel(
+                id: e.id!,
+                name: e.name!,
+                space: company.space,
+                source: e,
+                spaceEnum: SpaceEnum.person,
+                image: e.avatarThumbnail(),
+              );
+            }).toList(),
+          ),
+        ];
+        function.addAll(
+            await loadDir(company.space!.directory.children, company.space!));
+        function.addAll(await loadDepartment(
+            (company.space! as Company).departments, company.space!));
+        function.addAll(
+            await loadGroup((company.space! as Company).groups, company.space!));
+        function
+            .addAll(await loadCohorts(company.space!.cohorts, company.space!));
+        nav.children.addAll(function);
+      };
     }
   }
 

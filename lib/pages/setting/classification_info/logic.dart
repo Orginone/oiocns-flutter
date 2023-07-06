@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide Form;
 import 'package:get/get.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
 import 'attrs.dart';

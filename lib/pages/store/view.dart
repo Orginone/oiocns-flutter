@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_frequently_used_list_page_view.dart';
-import 'package:orginone/main.dart';
 import 'package:orginone/widget/unified.dart';
 
 import 'item.dart';
@@ -24,17 +23,5 @@ class StorePage
         );
       }),
     );
-  }
-
-
-  @override
-  StoreController getController() {
-    return StoreController();
-  }
-
-  @override
-  String tag() {
-    // TODO: implement tag
-    return "store";
   }
 }

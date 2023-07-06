@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/controller/setting/user_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/main.dart';
@@ -13,7 +13,7 @@ import 'package:orginone/util/icons.dart';
 import 'package:orginone/widget/image_widget.dart';
 import 'search_bar.dart';
 
-class UserBar extends GetView<SettingController> {
+class UserBar extends GetView<UserController> {
   UserBar({super.key});
 
   final CustomPopupMenuController _menuController = CustomPopupMenuController();

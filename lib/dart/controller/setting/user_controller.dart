@@ -50,12 +50,12 @@ class ItemModel {
 
 
 /// 设置控制器
-class SettingController extends GetxController {
+class UserController extends GetxController {
   String currentKey = "";
   StreamSubscription<UserLoaded>? _userSub;
   late UserProvider _provider;
 
-  var homeEnum = HomeEnum.chat.obs;
+  var homeEnum = HomeEnum.door.obs;
 
   var menuItems = [
     ItemModel(Shortcut.addPerson,"添加好友","请输入用户的账号",TargetType.person,),
@@ -70,7 +70,13 @@ class SettingController extends GetxController {
     super.onInit();
     _provider = UserProvider();
     _userSub = XEventBus.instance.on<UserLoaded>().listen((event) async {
+      EventBusHelper.fire(ShowLoading(true));
       await _provider.loadData();
+      EventBusHelper.fire(ShowLoading(false));
+      _provider.loadChat();
+      _provider.loadWork();
+      _provider.loadStore();
+      _provider.loadApps();
     });
   }
 
@@ -201,10 +207,10 @@ class SettingController extends GetxController {
   }
 }
 
-class SettingBinding extends Bindings {
+class UserBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(SettingController(), permanent: true);
+    Get.put(UserController(), permanent: true);
   }
 }
 

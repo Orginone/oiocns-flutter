@@ -11,7 +11,7 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
+import 'package:orginone/dart/controller/setting/user_controller.dart';
 import 'package:orginone/dart/core/chat/message/message.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -48,7 +48,7 @@ enum DetailFunc {
 
 double defaultWidth = 10.w;
 
-class DetailItemWidget extends GetView<SettingController> {
+class DetailItemWidget extends GetView<UserController> {
   final IMsgChat chat;
   final IMessage msg;
 

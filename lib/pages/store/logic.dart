@@ -1,11 +1,9 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_freqiently_usedList_controller.dart';
-import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/event/home_data.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/toast_utils.dart';
 
 import 'state.dart';
 
@@ -16,24 +14,17 @@ class StoreController extends BaseFrequentlyUsedListController<StoreState> {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    initData();
   }
 
   @override
-  void onReceivedEvent(event) async{
-    if (event is LoadUserDone) {
-      initData();
-    }
+  void onReady() {
+    // TODO: implement onReady
+    initData();
   }
 
    initData() async{
-    await settingCtrl.provider.loadStore().then((value){
-      if(value){
-        loadSuccess();
-      }
-    });
     state.dataList.value = settingCtrl.store.recent;
-
+    loadSuccess();
   }
 
   void loadFrequentlyUsed() {

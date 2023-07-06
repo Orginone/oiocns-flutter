@@ -18,12 +18,11 @@ class WorkController extends BaseFrequentlyUsedListController<WorkState> {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    initData();
   }
 
   @override
   void onReady() {
-    // TODO: implement onReady
+   initData();
   }
 
   void loadFrequentlyUsed() {
@@ -35,21 +34,14 @@ class WorkController extends BaseFrequentlyUsedListController<WorkState> {
   void onReceivedEvent(event) async {
     // TODO: implement onReceivedEvent
     super.onReceivedEvent(event);
-    if (event is LoadUserDone) {
-      initData();
-    }
     if (event is WorkReload) {
       await loadData();
     }
   }
 
   void initData() async {
-    await settingCtrl.provider.loadWork().then((value){
-      if(value){
-        loadSuccess();
-      }
-    });
     state.dataList = settingCtrl.work.todos;
+    loadSuccess();
   }
 
   @override

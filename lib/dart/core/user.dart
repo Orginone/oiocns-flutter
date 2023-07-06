@@ -151,7 +151,7 @@ class UserProvider {
   }
 
   ///加载办事
-  Future<bool>  loadWork() async{
+  Future<bool> loadWork() async{
     if(_user.value == null){
       return false ;
     }

@@ -19,27 +19,14 @@ class MessageChatsController
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    initData();
   }
 
   @override
   void onReady() {
+    loadSuccess();
   }
 
-  @override
-  void onReceivedEvent(event) async{
-    if (event is LoadUserDone) {
-      initData();
-    }
-  }
 
-  initData() async{
-    await settingCtrl.provider.loadChat().then((value){
-      if(value){
-        loadSuccess();
-      }
-    });
-  }
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
     // TODO: implement loadData

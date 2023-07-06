@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/setting/setting_controller.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/routers.dart';

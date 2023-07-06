@@ -85,7 +85,7 @@ class WorkProvider implements IWorkProvider{
   // TODO: implement userId
   late String userId;
 
-  WorkController get workController => Get.find(tag: 'work');
+  WorkController get workController => Get.find();
 
   @override
   Future<IWork?> findFlowDefine(String defineId) async{

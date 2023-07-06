@@ -20,7 +20,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
     var user = state.model.value!.children[0];
 
     user.onNext = (nav)async{
-      await user.space!.loadContent();
+      await user.space!.loadContent(reload: true);
       List<StoreTreeNav> function = [
         StoreTreeNav(
           name: "个人文件",
@@ -40,7 +40,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
   Future<void> loadCompanySetting() async {
     for (int i = 1; i < state.model.value!.children.length; i++) {
       var company = state.model.value!.children[i];
-      await company.space!.loadContent();
+      await company.space!.loadContent(reload: true);
       company.onNext = (nav) async{
         List<StoreTreeNav> function = [
           StoreTreeNav(

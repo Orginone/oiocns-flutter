@@ -44,7 +44,7 @@ abstract class IStoreProvider {
 
 class StoreProvider implements IStoreProvider {
 
-  StoreController get storeController => Get.find(tag: 'store');
+  StoreController get storeController => Get.find();
 
   StoreProvider(this.user) {
     storeFrequentlyUsed = RxList();

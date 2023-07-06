@@ -59,7 +59,7 @@ class ChatProvider implements IChatProvider {
   late RxList<MessageFrequentlyUsed> messageFrequentlyUsed;
 
 
-  MessageChatsController get messageChatsController => Get.find(tag: 'MessageChats');
+  MessageChatsController get messageChatsController => Get.find();
 
   ChatProvider(this.user) {
     kernel.on('RecvMsg', (data) {
