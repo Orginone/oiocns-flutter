@@ -36,6 +36,8 @@ class GyScaffold extends StatefulWidget {
 
   final double? titleSpacing;
 
+  final Widget? floatingActionButton;
+
   const GyScaffold({Key? key,
     this.body,
     this.supportSafeArea = true,
@@ -51,7 +53,7 @@ class GyScaffold extends StatefulWidget {
     this.backColor,
     this.leadingWidth,
     this.bottomNavigationBar,
-    this.toolbarHeight, this.titleSpacing})
+    this.toolbarHeight, this.titleSpacing, this.floatingActionButton})
       : super(key: key);
 
   @override
@@ -90,6 +92,8 @@ class _GyScaffoldState extends State<GyScaffold> {
   Widget? bottomNavigationBar;
 
   double? titleSpacing;
+
+  Widget? floatingActionButton;
   @override
   void initState() {
     // TODO: implement initState
@@ -114,6 +118,7 @@ class _GyScaffoldState extends State<GyScaffold> {
     bottomNavigationBar = widget.bottomNavigationBar;
     toolbarHeight = widget.toolbarHeight;
     titleSpacing = widget.titleSpacing;
+    floatingActionButton = widget.floatingActionButton;
   }
 
   @override
@@ -168,6 +173,9 @@ class _GyScaffoldState extends State<GyScaffold> {
     if(oldWidget.titleSpacing != widget.titleSpacing){
       titleSpacing = widget.titleSpacing;
     }
+    if(oldWidget.floatingActionButton != widget.floatingActionButton){
+      floatingActionButton = widget.floatingActionButton;
+    }
   }
 
   @override
@@ -196,6 +204,9 @@ class _GyScaffoldState extends State<GyScaffold> {
           toolbarHeight:toolbarHeight,
         ),
         backgroundColor: backgroundColor,
-        body: body,bottomNavigationBar: bottomNavigationBar,);
+        body: body,
+      bottomNavigationBar: bottomNavigationBar,
+      floatingActionButton:floatingActionButton ,
+    );
   }
 }

@@ -93,6 +93,6 @@ class FileDetail extends BaseDetail {
 
   @override
   void onTap(BuildContext context) {
-    Get.toNamed(Routers.messageFile, arguments:{"file": FileItemShare.fromJson(message.body!.toJson()),"type":"chat"});
+    Routers.jumpFile(file: FileItemShare.fromJson(message.body!.toJson()));
   }
 }

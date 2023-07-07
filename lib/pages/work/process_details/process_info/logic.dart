@@ -22,6 +22,9 @@ class ProcessInfoController extends BaseController<ProcessInfoState> {
   Future<bool> loadFieldData(
       FieldModel field, Map<String, dynamic> data) async {
     var value = data[field.id];
+    if(value == null){
+      return false;
+    }
     if (field.field.type == "input") {
       field.field.controller!.text = value ?? "";
     } else {
@@ -45,10 +48,10 @@ class ProcessInfoController extends BaseController<ProcessInfoState> {
           }
           break;
         case "upload":
-          field.field.defaultData.value = FileItemModel.fromJson(value??{});
+          field.field.defaultData.value = value!=null?FileItemModel.fromJson(value):null;
           break;
         default:
-          field.field.defaultData.value = value ?? "";
+          field.field.defaultData.value = value;
           break;
       }
     }

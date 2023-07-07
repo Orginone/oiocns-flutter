@@ -37,10 +37,7 @@ class StoreController extends BaseFrequentlyUsedListController<StoreState> {
     if (used is StoreFrequentlyUsed) {
       switch (used.storeEnum) {
         case StoreEnum.file:
-          Get.toNamed(Routers.messageFile, arguments: {
-            "file": FileItemShare.fromJson(used.fileItemShare!.shareInfo()),
-            "type": "store"
-          });
+          Routers.jumpFile(file: FileItemShare.fromJson(used.fileItemShare!.shareInfo()),type: 'store');
           break;
         case StoreEnum.thing:
           // var thing = used.thing;

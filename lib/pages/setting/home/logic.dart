@@ -103,7 +103,7 @@ class SettingCenterController
         Get.toNamed(Routers.classificationInfo, arguments: {"data": model});
         break;
       case SpaceEnum.file:
-        Get.toNamed(Routers.messageFile, arguments: {"file":model.source!.shareInfo(),"type":"setting"});
+        Routers.jumpFile(file: model.source!.shareInfo(),type: "setting");
         break;
     }
   }

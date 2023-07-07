@@ -210,19 +210,19 @@ class SysFileInfo extends FileInfo<XEntity> implements ISysFileInfo {
       return '${Constant.host}/orginone/anydata/bucket/load/${filedata.shareLink}';
     } else {
       switch (ext) {
-        case "xlsx":
-        case "xls":
-        case "excel":
+        case ".xlsx":
+        case ".xls":
+        case ".excel":
           img = Images.excelIcon;
           break;
-        case "pdf":
+        case ".pdf":
           img = Images.pdfIcon;
           break;
-        case "ppt":
+        case ".ppt":
           img = Images.pptIcon;
           break;
-        case "docx":
-        case "doc":
+        case ".docx":
+        case ".doc":
           img = Images.wordIcon;
           break;
         default:

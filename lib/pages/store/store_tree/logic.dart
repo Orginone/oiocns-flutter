@@ -117,7 +117,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
   }
 
   void jumpFile(StoreTreeNav nav) {
-    Get.toNamed(Routers.messageFile, arguments: {"file":nav.source!.shareInfo(),"type":"store"});
+    Routers.jumpFile(file: nav.source!.shareInfo(), type: 'store');
   }
 
   void onNext(StoreTreeNav nav) async {
