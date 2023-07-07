@@ -389,7 +389,9 @@ MappingComponentsCallback mappingSwitchWidget = (Fields data, ITarget target) {
                   children.add(CommonWidget.commonRadioTextWidget<String>(
                       value, key, groupValue: data.defaultData.value,
                       onChanged: (v) {
-                    data.defaultData.value = v;
+                    if(!(data.readOnly??false)){
+                      data.defaultData.value = v;
+                    }
                   }, padding: EdgeInsets.symmetric(vertical: 5.h)));
                 });
 
