@@ -62,11 +62,11 @@ class CreateWorkPage
             CommonWidget.commonHeadInfoWidget(
                 state.mainForm.value?.metadata.name ?? ""),
             ...state.mainForm.value?.fields.map((e) {
-                  if (e.fields.type == null) {
+                  if (e.field.type == null) {
                     return Container();
                   }
                   Widget child =
-                      testMappingComponents[e.fields.type ?? ""]!(e.fields, state.target);
+                      testMappingComponents[e.field.type ?? ""]!(e.field, state.target);
                   return child;
                 }).toList() ??
                 [],

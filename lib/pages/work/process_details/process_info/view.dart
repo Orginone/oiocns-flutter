@@ -30,14 +30,14 @@ class ProcessInfoPage
                   if (state.mainForm == null) {
                     return Container();
                   }
-                  return _info(state.mainForm!);
+                  return _mainTable();
                 }),
                 Obx(() {
                   if (state.subForm.isEmpty ||
                       state.subTabController == null) {
                     return Container();
                   }
-                  return subTable();
+                  return _subTable();
                 }),
                 SizedBox(height: 10.h,),
                 _opinion(),
@@ -50,7 +50,29 @@ class ProcessInfoPage
     );
   }
 
-  Widget subTable() {
+
+  Widget _mainTable() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CommonWidget.commonHeadInfoWidget(state.mainForm!.name!),
+        ...state.mainForm!.fields.map((e) {
+          return FutureBuilder(builder:(context,snapshot){
+            if(snapshot.connectionState != ConnectionState.done && !snapshot.hasData){
+              return Container();
+            }
+            Widget child = testMappingComponents[e.field.type ?? ""]!(
+                e.field, settingCtrl.user);
+            return child;
+          },future:  controller.loadFieldData(e, state.mainForm!.data?.after[0].otherInfo??{}),);
+        }).toList() ??
+            []
+      ],
+    );
+  }
+
+
+  Widget _subTable() {
     return Container(
       margin: EdgeInsets.only(top: 10.h),
       child: Column(
@@ -123,27 +145,6 @@ class ProcessInfoPage
               }),
         ],
       ),
-    );
-  }
-
-  Widget _info(XForm form) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CommonWidget.commonHeadInfoWidget(form.name!),
-       ...form.fields.map((e) {
-         if(e.fields.type == "input"){
-           e.fields.controller!.text = form.data?.after[0].otherInfo[e.id].toString()??"";
-         }else{
-           e.fields.defaultData.value = form.data?.after[0].otherInfo[e.id].toString()??"";
-         }
-         e.fields.readOnly = true;
-         Widget child = testMappingComponents[e.fields.type ?? ""]!(
-             e.fields, settingCtrl.user);
-         return child;
-       }).toList() ??
-           []
-      ],
     );
   }
 

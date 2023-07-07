@@ -13,6 +13,7 @@ import 'target_text.dart';
 typedef DocumentOperation = Function(dynamic type, String data);
 
 class CommonWidget {
+  //提交按钮
   static Widget commonCreateSubmitWidget(
       {VoidCallback? draft, VoidCallback? submit}) {
     return Container(
@@ -49,6 +50,7 @@ class CommonWidget {
     );
   }
 
+  //单个按钮
   static Widget commonSubmitWidget(
       {VoidCallback? submit, String text = "确定", String? image}) {
     return Container(
@@ -83,6 +85,7 @@ class CommonWidget {
     );
   }
 
+  //两个按钮
   static Widget commonMultipleSubmitWidget(
       {String str1 = "取消",
       String str2 = "确定",
@@ -133,6 +136,7 @@ class CommonWidget {
     );
   }
 
+  //删除按钮
   static Widget commonDeleteWidget({VoidCallback? delete}) {
     return Container(
       width: double.infinity,
@@ -159,6 +163,7 @@ class CommonWidget {
     );
   }
 
+  //输入框
   static Widget commonTextTile(String title, String content,
       {bool showLine = false,
       TextEditingController? controller,
@@ -234,6 +239,7 @@ class CommonWidget {
     );
   }
 
+  //选择
   static Widget commonChoiceTile(String title, String content,
       {bool showLine = false,
       String? hint,
@@ -307,33 +313,37 @@ class CommonWidget {
     );
   }
 
+  //带+号文本
   static Widget commonAddDetailedWidget(
       {VoidCallback? onTap, required String text}) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 25.h),
-      width: double.infinity,
-      alignment: Alignment.center,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          color: Colors.white,
-          width: 200.w,
-          height: 50.h,
-          alignment: Alignment.center,
-          child: Text.rich(
-            TextSpan(
-              children: [
-                const TextSpan(text: "+"),
-                TextSpan(text: text),
-              ],
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 25.h),
+        width: double.infinity,
+        alignment: Alignment.center,
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            color: Colors.white,
+            width: 200.w,
+            height: 50.h,
+            alignment: Alignment.center,
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  const TextSpan(text: "+"),
+                  TextSpan(text: text),
+                ],
+              ),
+              style: TextStyle(color: Colors.blue, fontSize: 20.sp),
             ),
-            style: TextStyle(color: Colors.blue, fontSize: 20.sp),
           ),
         ),
       ),
     );
   }
 
+  //搜索框
   static Widget commonSearchBarWidget(
       {TextEditingController? controller,
       ValueChanged<String>? onSubmitted,
@@ -391,30 +401,41 @@ class CommonWidget {
     );
   }
 
+  //单选按钮
   static commonRadioTextWidget<T>(String name, T value,
-      {T? groupValue, ValueChanged<T?>? onChanged, String? keyWord}) {
+      {T? groupValue,
+      ValueChanged<T?>? onChanged,
+      String? keyWord,
+      bool showLine = false,EdgeInsets? padding}) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 16.w),
-      width: double.infinity,
-      color: Colors.white,
-      child: Row(
-        children: [
-          Radio<T>(
-            value: value,
-            groupValue: groupValue,
-            onChanged: onChanged,
-          ),
-          TextHighlight(
-            content: name,
-            keyWord: keyWord,
-            normalStyle: TextStyle(fontSize: 16.sp, color: Colors.black87),
-            highlightStyle: TextStyle(fontSize: 18.sp, color: Colors.black),
-          )
-        ],
+      decoration: BoxDecoration(
+          border: showLine
+              ? Border(bottom: BorderSide(color: Colors.grey.shade300))
+              : null,
+          color: Colors.white),
+      child: Container(
+        padding: padding??EdgeInsets.symmetric(vertical: 5.h, horizontal: 16.w),
+        color: Colors.white,
+        child: Row(
+          children: [
+            Radio<T>(
+              value: value,
+              groupValue: groupValue,
+              onChanged: onChanged,
+            ),
+            TextHighlight(
+              content: name,
+              keyWord: keyWord,
+              normalStyle: TextStyle(fontSize: 16.sp, color: Colors.black87),
+              highlightStyle: TextStyle(fontSize: 18.sp, color: Colors.black),
+            )
+          ],
+        ),
       ),
     );
   }
 
+  //标题信息
   static commonHeadInfoWidget(String info,
       {Widget? action, EdgeInsetsGeometry? padding}) {
     return Padding(
@@ -449,6 +470,7 @@ class CommonWidget {
     );
   }
 
+  //文本框
   static commonTextContentWidget(String text, String content,
       {double textSize = 20,
       double contentSize = 20,
@@ -497,6 +519,7 @@ class CommonWidget {
     );
   }
 
+  //多选按钮
   static commonMultipleChoiceButtonWidget(
       {bool isSelected = false,
       ValueChanged<bool>? changed,
@@ -528,6 +551,7 @@ class CommonWidget {
     );
   }
 
+  //选择按钮
   static commonShowChoiceDataInfo(String text, {VoidCallback? onTap}) {
     return Container(
       width: double.infinity,
@@ -578,6 +602,7 @@ class CommonWidget {
     );
   }
 
+  //带icon的按钮
   static Widget commonIconButtonWidget(
       {required String iconPath,
       VoidCallback? callback,
@@ -623,6 +648,7 @@ class CommonWidget {
     );
   }
 
+  //没有指示器的tabbar
   static Widget commonNonIndicatorTabBar(
       TabController tabController, List<String> tabTitle,
       {ValueChanged<int>? onTap}) {
@@ -651,87 +677,7 @@ class CommonWidget {
     );
   }
 
-  static Widget commonBreadcrumbNavWidget(
-      {required String firstTitle,
-      required List<String> allTitle,
-      VoidCallback? onTapFirst,
-      ValueChanged? onTapTitle,
-      EdgeInsetsGeometry? padding}) {
-    TextStyle selectedTextStyle =
-        TextStyle(fontSize: 20.sp, color: XColors.themeColor);
-
-    TextStyle unSelectedTextStyle =
-        TextStyle(fontSize: 20.sp, color: Colors.black);
-
-    Widget level(String title) {
-      int index = allTitle.indexOf(title);
-      return GestureDetector(
-        onTap: () {
-          if (onTapTitle != null) {
-            onTapTitle(index);
-          }
-        },
-        child: Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(text: " • ", style: unSelectedTextStyle),
-              TextSpan(
-                  text: title,
-                  style: index == allTitle.length - 1
-                      ? selectedTextStyle
-                      : unSelectedTextStyle),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return Container(
-      color: Colors.white,
-      width: double.infinity,
-      padding:
-          padding ?? EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
-      child: LayoutBuilder(builder: (context, type) {
-        List<Widget> nextStep = [];
-        if (allTitle.isNotEmpty) {
-          for (var value in allTitle) {
-            nextStep.add(level(value));
-          }
-        }
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              GestureDetector(
-                onTap: onTapFirst,
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      WidgetSpan(
-                          child: Container(
-                            width: 5.w,
-                            height: 25.h,
-                            margin: EdgeInsets.only(right: 15.w),
-                            color: XColors.themeColor,
-                          ),
-                          alignment: PlaceholderAlignment.middle),
-                      TextSpan(
-                          text: firstTitle,
-                          style: allTitle.isEmpty
-                              ? selectedTextStyle
-                              : unSelectedTextStyle)
-                    ],
-                  ),
-                ),
-              ),
-              ...nextStep,
-            ],
-          ),
-        );
-      }),
-    );
-  }
-
+  //表单控件绑定FormItem
   static Widget commonFormWidget({required List<Widget> formItem}) {
     return Container(
       width: double.infinity,
@@ -806,6 +752,7 @@ class CommonWidget {
     );
   }
 
+  //文档控件
   static Widget commonDocumentWidget({
     required List<String> title,
     required List<List<String>> content,
@@ -934,6 +881,7 @@ class CommonWidget {
     );
   }
 
+  //弹出按钮
   static Widget commonPopupMenuButton<T>(
       {PopupMenuItemSelected<T>? onSelected,
       required List<PopupMenuItem<T>> items,
@@ -955,6 +903,7 @@ class CommonWidget {
     );
   }
 
+  //带额外功能的输入框
   static Widget commonTextField(
       {required TextEditingController controller,
       String hint = '',

@@ -10,10 +10,6 @@ import 'package:orginone/pages/login/binding.dart';
 import 'package:orginone/pages/login/view.dart';
 import 'package:orginone/pages/other/add_asset/binding.dart';
 import 'package:orginone/pages/other/add_asset/view.dart';
-import 'package:orginone/pages/other/choice_department/binding.dart';
-import 'package:orginone/pages/other/choice_department/view.dart';
-import 'package:orginone/pages/other/choice_people/binding.dart';
-import 'package:orginone/pages/other/choice_people/view.dart';
 import 'package:orginone/pages/other/choice_thing/binding.dart';
 import 'package:orginone/pages/other/pdf/index.dart';
 import 'package:orginone/pages/other/qr_scan/binding.dart';
@@ -50,8 +46,6 @@ import 'pages/login/register/binding.dart';
 import 'pages/login/register/view.dart';
 import 'pages/login/verification_code/binding.dart';
 import 'pages/login/verification_code/view.dart';
-import 'pages/other/choice_gb/binding.dart';
-import 'pages/other/choice_gb/view.dart';
 import 'pages/other/choice_thing/view.dart';
 import 'pages/other/share_qr_code/binding.dart';
 import 'pages/other/share_qr_code/view.dart';
@@ -150,12 +144,6 @@ class Routers {
   //选择地点
   static const String storageLocation = "/storageLocation";
 
-  //选择人员
-  static const String choicePeople = "/choicePeople";
-
-  //选择部门
-  static const String choiceDepartment = "/choiceDepartment";
-
   //选择资产分类
   static const String choiceAssets = "/choiceAssets";
   static const String choiceSpecificAssets = "/choiceSpecificAssets";
@@ -202,8 +190,6 @@ class Routers {
   //审批详情
   static const String processDetails = '/processDetails';
 
-  //选择标准分类
-  static const String choiceGb = '/choiceGb';
 
   //发起会话
   static const String initiateChat = '/initiateChat';
@@ -345,16 +331,6 @@ class Routers {
         binding: AddAssetBinding(),
       ),
       GetPage(
-        name: Routers.choicePeople,
-        page: () => ChoicePeoplePage(),
-        binding: ChoicePeopleBinding(),
-      ),
-      GetPage(
-        name: Routers.choiceDepartment,
-        page: () => ChoiceDepartmentPage(),
-        binding: ChoiceDepartmentBinding(),
-      ),
-      GetPage(
         name: Routers.qrScan,
         page: () => QrScanPage(),
         binding: QrScanBinding(),
@@ -368,11 +344,6 @@ class Routers {
         name: Routers.processDetails,
         page: () => ProcessDetailsPage(),
         binding: ProcessDetailsBinding(),
-      ),
-      GetPage(
-        name: Routers.choiceGb,
-        page: () => ChoiceGbPage(),
-        binding: ChoiceGbBinding(),
       ),
       GetPage(
         name: Routers.initiateChat,

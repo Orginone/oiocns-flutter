@@ -78,6 +78,7 @@ dependencies:
   flutter_custom_dialog: ^1.0.20
   flutter_advanced_avatar: ^1.1.0
   flutter_datetime_picker: ^1.5.1
+  omni_datetime_picker: ^0.1.4
   # 音频录制以及音频播放
   flutter_sound: ^9.2.13
   audio_wave: ^0.1.4
