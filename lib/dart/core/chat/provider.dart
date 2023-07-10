@@ -18,9 +18,9 @@ abstract class IChatProvider {
   late RxList<MessageFrequentlyUsed> messageFrequentlyUsed;
 
   /// 指定会话
-  List<IMsgChat> get topChats;
+  RxList<IMsgChat> get topChats;
 
-  List<IMsgChat> get chats;
+  RxList<IMsgChat> get chats;
 
   IMsgChat? currentChat;
 
@@ -162,24 +162,24 @@ class ChatProvider implements IChatProvider {
 
   @override
 // TODO: implement topChats
-  List<IMsgChat> get topChats{
+  RxList<IMsgChat> get topChats{
     var list = allChats.where((element) => element.labels.contains("置顶")).toList();
     list.sort((f, s) {
       return (s.chatdata.value.lastMsgTime) - (f.chatdata.value.lastMsgTime);
     });
-    return list;
+    return list.obs;
   }
 
   @override
 // TODO: implement chats
-  List<IMsgChat> get chats {
+  RxList<IMsgChat> get chats {
     var list =
         allChats.where((element) => !element.labels.contains("置顶")).toList();
     list.removeWhere((element) => element.chatdata.value.lastMessage == null);
     list.sort((f, s) {
       return (s.chatdata.value.lastMsgTime) - (f.chatdata.value.lastMsgTime);
     });
-    return list;
+    return list.obs;
   }
 
 

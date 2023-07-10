@@ -120,21 +120,15 @@ class UserProvider {
   /// 加载用户
   _loadUser(XTarget person) async {
     _user.value = Person(person);
+    _chat.value = ChatProvider(_user.value!);
+    _work.value = WorkProvider(this);
+    _store.value = StoreProvider(_user.value!);
     EventBusHelper.fire(StartLoad());
   }
 
-  ///加载消息
-  Future<bool> loadChat() async{
-    if(_user.value == null){
-      return false;
-    }
-    _chat.value = ChatProvider(_user.value!);
-    await _loadChatData();
-    return true;
-  }
 
   ///加载消息数据
-  Future<void> _loadChatData() async {
+  Future<void> loadChatData() async {
     if (_inited) {
       print('开始加载沟通数据-------${DateTime.now()}');
       _chat.value?.preMessage();
@@ -146,21 +140,12 @@ class UserProvider {
       print('加载沟通数据完成-------${DateTime.now()}');
       _chat.refresh();
     } else {
-      await _loadChatData();
+      await loadChatData();
     }
   }
 
-  ///加载办事
-  Future<bool> loadWork() async{
-    if(_user.value == null){
-      return false ;
-    }
-    _work.value = WorkProvider(this);
-    await _loadWorkData();
-    return true;
-  }
-
-  Future<void> _loadWorkData() async {
+  ///加载办事数据
+  Future<void> loadWorkData() async {
     if (_inited) {
       print('开始加载办事数据-------${DateTime.now()}');
       await Future.wait([
@@ -170,21 +155,12 @@ class UserProvider {
       _work.refresh();
       print('加载办事数据完成-------${DateTime.now()}');
     } else {
-      await _loadWorkData();
+      await loadWorkData();
     }
   }
 
-  ///加载存储
-  Future<bool> loadStore() async{
-    if(_user.value == null){
-      return false;
-    }
-    _store.value = StoreProvider(_user.value!);
-    await _loadStoreData();
-    return true;
-  }
-
-  Future<void> _loadStoreData() async {
+  ///加载存储数据
+  Future<void> loadStoreData() async {
     if (_inited) {
       print('开始加载存储数据-------${DateTime.now()}');
       await Future.wait([
@@ -194,7 +170,7 @@ class UserProvider {
       _store.refresh();
       print('加载存储数据完成-------${DateTime.now()}');
     }else {
-      await _loadStoreData();
+      await loadStoreData();
     }
   }
 
@@ -220,7 +196,7 @@ class UserProvider {
     if(kernel.isOnline && kernel.anystore.isOnline){
       print('开始加载数据-------${DateTime.now()}');
       _inited = false;
-      await _user.value!.deepLoad(reload: true, reloadContent: true);
+      await _user.value!.deepLoad(reload: true, reloadContent: false);
       _inited = true;
       _user.refresh();
       print('加载数据完成-------${DateTime.now()}');
@@ -233,6 +209,10 @@ class UserProvider {
   }
 
 
+  Future<void> loadContent() async{
+    await _user.value!.deepLoad(reload: false, reloadContent: true);;
+  }
+
   Future<void> reloadChats() async{
     await _user.value?.deepLoad(reload: true);
     _chat.value?.loadAllChats();
@@ -242,9 +222,9 @@ class UserProvider {
 
 
   Future<void> loadApps([bool reload = false]) async {
-    if (reload) {
-      await user!.deepLoad(reload: reload);
-    }
+    // if (reload) {
+    //   await user!.deepLoad(reload: reload);
+    // }
     List<Map<IApplication,ITarget>> apps = [];
     for (var target in _user.value!.targets) {
       var applications = await target.directory.loadAllApplications();

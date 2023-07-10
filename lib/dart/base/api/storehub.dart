@@ -158,7 +158,7 @@ class StoreHub {
       if(res!= null && (res is Map)){
         if(res['code'] == 401){
           ToastUtils.showMsg(msg:"登录已过期,请重新登录");
-          settingCtrl.exitLogin();
+          settingCtrl.exitLogin(cleanUserLoginInfo: false);
         } else if(res['code'] == 500){
           ToastUtils.showMsg(msg: 'error 500 长连接已断开,正在重试');
           Log.info('anystore断开链接,正在重试');

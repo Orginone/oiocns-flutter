@@ -73,9 +73,10 @@ class UserController extends GetxController {
       EventBusHelper.fire(ShowLoading(true));
       await _provider.loadData();
       EventBusHelper.fire(ShowLoading(false));
-      _provider.loadChat();
-      _provider.loadWork();
-      _provider.loadStore();
+      _provider.loadChatData();
+      _provider.loadWorkData();
+      _provider.loadStoreData();
+      await _provider.loadContent();
       _provider.loadApps();
     });
   }
@@ -182,10 +183,12 @@ class UserController extends GetxController {
      }
   }
 
-  void exitLogin() async{
+  void exitLogin({bool cleanUserLoginInfo = true}) async{
+    if(cleanUserLoginInfo){
+      LocalStore.clear();
+    }
     LoadingDialog.dismiss(Get.context!);
     kernel.stop();
-    LocalStore.clear();
     await HiveUtils.clean();
     homeEnum.value = HomeEnum.chat;
     Get.offAllNamed(Routers.login);
