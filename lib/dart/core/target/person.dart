@@ -314,7 +314,7 @@ class Person extends Belong implements IPerson {
     ]);
     superAuth?.deepLoad(reload: reload);
     for (var company in companys) {
-      await company.deepLoad(reload: reload, reloadContent: reloadContent);
+       await company.deepLoad(reload: reload, reloadContent: reloadContent);
     }
     for (var cohort in cohorts) {
       await cohort.deepLoad(reload: reload, reloadContent: reloadContent);

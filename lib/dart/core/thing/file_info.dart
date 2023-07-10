@@ -261,4 +261,10 @@ class SysFileInfo extends FileInfo<XEntity> implements ISysFileInfo {
   @override
   // TODO: implement locationKey
   String get locationKey => directory.key;
+
+  @override
+  Future<bool> loadApplication({bool reload = false}) {
+    // TODO: implement loadApplication
+    throw UnimplementedError();
+  }
 }

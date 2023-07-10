@@ -73,11 +73,13 @@ class UserController extends GetxController {
       EventBusHelper.fire(ShowLoading(true));
       await _provider.loadData();
       EventBusHelper.fire(ShowLoading(false));
-      _provider.loadChatData();
-      _provider.loadWorkData();
-      _provider.loadStoreData();
-      await _provider.loadContent();
-      _provider.loadApps();
+      await Future.wait([
+        _provider.loadChatData(),
+        _provider.loadWorkData(),
+        _provider.loadStoreData(),
+        _provider.loadContent(),
+      ]);
+      _provider.loadApps(true);
     });
   }
 

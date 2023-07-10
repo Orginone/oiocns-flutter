@@ -291,6 +291,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
     if (applications.isEmpty || reload) {
       final res = await kernel.queryApplications(IdReq(id: id));
       if (res.success && res.data != null) {
+        print(res);
         final data = res.data!.result ?? [];
         applications = data
             .where((i) => i.parentId == null || i.parentId == '')
