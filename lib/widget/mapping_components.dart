@@ -386,7 +386,7 @@ MappingComponentsCallback mappingSwitchWidget = (Fields data, ITarget target) {
               data.select!.isEmpty?SizedBox():Obx(() {
                 List<Widget> children = [];
                 data.select?.forEach((key, value) {
-                  children.add(CommonWidget.commonRadioTextWidget(
+                  children.add(CommonWidget.commonRadioTextWidget<dynamic>(
                       value, key, groupValue: data.defaultData.value,
                       onChanged: (v) {
                     if(!(data.readOnly??false)){
