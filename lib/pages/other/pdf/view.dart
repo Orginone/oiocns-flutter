@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
+import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/template/originone_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 
@@ -59,14 +60,12 @@ class PDFReaderPage extends GetView<PDFReaderController> {
       init: PDFReaderController(),
       id: "pdf_reader_page",
       builder: (_) {
-        return OrginoneScaffold(
-          appBarLeading: XWidgets.defaultBackBtn,
-          appBarTitle: Text("PDF", style: XFonts.size22Black3),
-          appBarCenterTitle: true,
+        return GyScaffold(
+          titleName: controller.fileModel.name??"",
           body: SafeArea(
             child: _buildView(),
           ),
-          floatingButton: FutureBuilder<PDFViewController>(
+          floatingActionButton: FutureBuilder<PDFViewController>(
             future: controller.pdfcontroller.future,
             builder: (context, AsyncSnapshot<PDFViewController> snapshot) {
               if (snapshot.hasData) {

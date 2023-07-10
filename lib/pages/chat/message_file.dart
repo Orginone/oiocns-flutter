@@ -85,7 +85,7 @@ class MessageFileController extends BaseController<MessageFileState> {
         state.fileExists.value = state.task != null;
       } catch (e) {
 
-      };
+      }
     });
   }
 
@@ -120,13 +120,5 @@ class MessageFileState extends BaseGetState {
 
   MessageFileState() {
     fileShare = Get.arguments['file'];
-
-    type = Get.arguments['type'];
-
-    if (type == "store") {
-      settingCtrl.store.onRecordRecent(
-          RecentlyUseModel(type: StoreEnum.file.label,
-              file: FileItemModel.fromJson(fileShare.toJson())));
-    }
   }
 }

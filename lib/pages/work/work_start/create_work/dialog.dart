@@ -22,16 +22,16 @@ Future<void> showCreateAuthDialog(
                   CommonWidget.commonHeadInfoWidget(
                       "${thing != null ? "编辑" : "新增"}${form.metadata.name}"),
                   ...form.fields.map((e) {
-                        if (e.fields.type == null) {
+                        if (e.field.type == null) {
                           return Container();
                         }
                         if (thing != null) {
-                          dynamic value = thing.otherInfo![e.code];
-                          e.fields..defaultData.value = value;
+                          dynamic value = thing.otherInfo[e.code];
+                          e.field.defaultData.value = value;
                         }
                         Widget child =
-                            testMappingComponents[e.fields.type ?? ""]!(
-                                e.fields, target);
+                            testMappingComponents[e.field.type ?? ""]!(
+                                e.field, target);
                         return child;
                       }).toList() ??
                       [],

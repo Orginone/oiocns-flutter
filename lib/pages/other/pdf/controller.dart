@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/model/file_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
@@ -28,29 +29,8 @@ class PDFReaderController extends GetxController {
   bool isReady = false;
   bool pathReady = false;
   String errorMessage = '';
-  FileModel? fileModel;
+  late FileItemShare fileModel;
   String? path;
-  _initData() {
-    ///判断是否是网络链接
-    if (fileModel!.fileType == FileType.pdf) {
-      ///判断是否是网络链接
-      if (fileModel!.filePath.startsWith("http")) {
-        createFileOfPdfUrl().then((f) {
-          path = f.path;
-          pathReady = true;
-          update(["pdf_reader_page"]);
-        });
-      } else {
-        fromAsset().then((f) {
-          path = f.path;
-          pathReady = true;
-          update(["pdf_reader_page"]);
-        });
-      }
-    }
-    update(["pdf_reader_page"]);
-  }
-
   void onTap() {}
 
   @override
@@ -58,8 +38,13 @@ class PDFReaderController extends GetxController {
     super.onInit();
 
     ///获取路由传参
-    fileModel = Get.arguments ?? '';
-    _initData();
+    fileModel = Get.arguments['file'];
+    createFileOfPdfUrl().then((f) {
+      path = f.path;
+      pathReady = true;
+      update(["pdf_reader_page"]);
+    });
+    update(["pdf_reader_page"]);
   }
 
   @override
@@ -125,35 +110,12 @@ class PDFReaderController extends GetxController {
     }
   }
 
-  ///从本地加载PDF
-  Future<File> fromAsset() async {
-    // To open from assets, you can copy them to the app storage folder, and the access them "locally"
-    Completer<File> completer = Completer();
-
-    try {
-      var dir = await getApplicationDocumentsDirectory();
-      File file = File("${dir.path}/${fileModel?.fileName}");
-
-      var data = await rootBundle.load(fileModel?.filePath ?? '');
-      var bytes = data.buffer.asUint8List();
-      await file.writeAsBytes(bytes, flush: true);
-      completer.complete(file);
-    } catch (e) {
-      throw Exception('Error parsing asset file!');
-    }
-
-    return completer.future;
-  }
-
   ///从网络加载PDF
   Future<File> createFileOfPdfUrl() async {
     Completer<File> completer = Completer();
     logger.info("Start download file from internet!");
     try {
-      // "https://berlin2017.droidcon.cod.newthinking.net/sites/global.droidcon.cod.newthinking.net/files/media/documents/Flutter%20-%2060FPS%20UI%20of%20the%20future%20%20-%20DroidconDE%2017.pdf";
-      // final url = "https://pdfkit.org/docs/guide.pdf";
-      // const url = "http://www.pdf995.com/samples/pdf.pdf";
-      final url = fileModel?.filePath ?? '';
+      final url = fileModel.shareLink!;
       final filename = url.substring(url.lastIndexOf("/") + 1);
       var request = await HttpClient().getUrl(Uri.parse(url));
       var response = await request.close();

@@ -53,6 +53,7 @@ class ForgotPasswordController extends BaseController<ForgotPasswordState> {
 
     if (result.success) {
       ToastUtils.showMsg(msg: '重置密码成功！');
+      Get.back();
     } else {
       ToastUtils.showMsg(msg: result.msg);
     }

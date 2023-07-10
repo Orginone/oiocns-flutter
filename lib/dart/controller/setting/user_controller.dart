@@ -27,17 +27,16 @@ import 'package:orginone/widget/loading_dialog.dart';
 const sessionUserName = 'sessionUser';
 const sessionSpaceName = 'sessionSpace';
 
-
-enum Shortcut{
-  addPerson("添加朋友",Icons.group_add),
-  addGroup("加入群组",Icons.speaker_group),
+enum Shortcut {
+  addPerson("添加朋友", Icons.group_add),
+  addGroup("加入群组", Icons.speaker_group),
   addCompany("加入单位组织", Icons.compare),
-  addCohort("发起群聊",Icons.chat_bubble),
-  qrCode("扫一扫",Icons.qr_code_2_outlined);
+  addCohort("发起群聊", Icons.chat_bubble),
+  qrCode("扫一扫", Icons.qr_code_2_outlined);
 
   final String label;
   final IconData icon;
-  const Shortcut(this.label,this.icon);
+  const Shortcut(this.label, this.icon);
 }
 
 class ItemModel {
@@ -45,9 +44,13 @@ class ItemModel {
   TargetType? targetType;
   String title;
   String hint;
-  ItemModel(this.shortcut,[this.title = '',this.hint = '',this.targetType,]);
+  ItemModel(
+    this.shortcut, [
+    this.title = '',
+    this.hint = '',
+    this.targetType,
+  ]);
 }
-
 
 /// 设置控制器
 class UserController extends GetxController {
@@ -58,10 +61,15 @@ class UserController extends GetxController {
   var homeEnum = HomeEnum.door.obs;
 
   var menuItems = [
-    ItemModel(Shortcut.addPerson,"添加好友","请输入用户的账号",TargetType.person,),
-    ItemModel(Shortcut.addGroup,"添加群组","请输入群组的编码",TargetType.cohort),
-    ItemModel(Shortcut.addCompany,"添加单位","请输入单位的社会统一代码",TargetType.company),
-    ItemModel(Shortcut.addCohort,"发起群聊","请输入群聊信息",TargetType.cohort),
+    ItemModel(
+      Shortcut.addPerson,
+      "添加好友",
+      "请输入用户的账号",
+      TargetType.person,
+    ),
+    ItemModel(Shortcut.addGroup, "添加群组", "请输入群组的编码", TargetType.cohort),
+    ItemModel(Shortcut.addCompany, "添加单位", "请输入单位的社会统一代码", TargetType.company),
+    ItemModel(Shortcut.addCohort, "发起群聊", "请输入群聊信息", TargetType.cohort),
     ItemModel(Shortcut.qrCode),
   ];
 
@@ -73,10 +81,13 @@ class UserController extends GetxController {
       EventBusHelper.fire(ShowLoading(true));
       await _provider.loadData();
       EventBusHelper.fire(ShowLoading(false));
-      _provider.loadChat();
-      _provider.loadWork();
-      _provider.loadStore();
-      _provider.loadApps();
+      await Future.wait([
+        _provider.loadChatData(),
+        _provider.loadWorkData(),
+        _provider.loadStoreData(),
+        _provider.loadContent(),
+      ]);
+      _provider.loadApps(true);
     });
   }
 
@@ -107,17 +118,14 @@ class UserController extends GetxController {
   }
 
   /// 组织树
-  Future<List<ITarget>> getTeamTree(
-      IBelong space,
-    [bool isShare = true]
-  ) async {
+  Future<List<ITarget>> getTeamTree(IBelong space,
+      [bool isShare = true]) async {
     var result = <ITarget>[];
     result.add(space);
     if (space == user) {
-      result.addAll([...(await user.loadCohorts(reload: false))??[]]);
+      result.addAll([...(await user.loadCohorts(reload: false)) ?? []]);
     } else if (isShare) {
-      result.addAll(
-          [...(await (space as ICompany).loadGroups(reload: false))]);
+      result.addAll([...(await (space as ICompany).loadGroups(reload: false))]);
     }
     return result;
   }
@@ -151,55 +159,60 @@ class UserController extends GetxController {
   }
 
   void showAddFeatures(ItemModel item) {
-     if(item.shortcut == Shortcut.addCohort){
-       showCreateOrganizationDialog(
-           Get.context!, [item.targetType!],
-           callBack: (String name, String code, String nickName, String identify,
-               String remark, TargetType type) async {
-             var target = TargetModel(
-               name: nickName,
-               code: code,
-               typeName: type.label,
-               teamName: name,
-               teamCode: code,
-               remark: remark,
-             );
-             var data =  await user.createCohort(target);
-             if(data!=null){
-               ToastUtils.showMsg(msg: "创建成功");
-             }
-           },
-       );
-     }else{
-       showSearchDialog(Get.context!,item.targetType!,title: item.title,hint: item.hint,onSelected: (targets) async{
-           if(targets.isNotEmpty){
-             bool success = await user.applyJoin(targets);
-             if(success){
-               ToastUtils.showMsg(msg: "发送申请成功");
-             }
-           }
-       });
-     }
+    if (item.shortcut == Shortcut.addCohort) {
+      showCreateOrganizationDialog(
+        Get.context!,
+        [item.targetType!],
+        callBack: (String name, String code, String nickName, String identify,
+            String remark, TargetType type) async {
+          var target = TargetModel(
+            name: nickName,
+            code: code,
+            typeName: type.label,
+            teamName: name,
+            teamCode: code,
+            remark: remark,
+          );
+          var data = await user.createCohort(target);
+          if (data != null) {
+            ToastUtils.showMsg(msg: "创建成功");
+          }
+        },
+      );
+    } else {
+      showSearchDialog(Get.context!, item.targetType!,
+          title: item.title, hint: item.hint, onSelected: (targets) async {
+        if (targets.isNotEmpty) {
+          bool success = await user.applyJoin(targets);
+          if (success) {
+            ToastUtils.showMsg(msg: "发送申请成功");
+          }
+        }
+      });
+    }
   }
 
-  void exitLogin() async{
+  void exitLogin({bool cleanUserLoginInfo = true}) async {
+    if (cleanUserLoginInfo) {
+      LocalStore.clear();
+    }
     LoadingDialog.dismiss(Get.context!);
     kernel.stop();
-    LocalStore.clear();
     await HiveUtils.clean();
     homeEnum.value = HomeEnum.chat;
     Get.offAllNamed(Routers.login);
   }
 
   void qrScan() {
-    Get.toNamed(Routers.qrScan)?.then((value) async{
-      if(value!=null){
+    Get.toNamed(Routers.qrScan)?.then((value) async {
+      if (value != null) {
         String id = value.split('/').toList().last;
         XEntity? entity = await user.findEntityAsync(id);
-        if(entity!=null){
-          List<XTarget> target = await user.searchTargets(entity.code!,[entity.typeName!]);
-          if(target.isNotEmpty){
-             await user.applyJoin(target);
+        if (entity != null) {
+          List<XTarget> target =
+              await user.searchTargets(entity.code!, [entity.typeName!]);
+          if (target.isNotEmpty) {
+            await user.applyJoin(target);
           }
         }
       }

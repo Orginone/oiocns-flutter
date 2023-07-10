@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:ui';
-import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,6 +24,7 @@ void main() async {
   await HiveUtils.init();
 
   await NotificationUtil.initializeService();
+
   // 初始化通知配置
   await LocalStore.instance();
   // 日志初始化

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
@@ -178,21 +177,24 @@ class Company extends Belong implements ICompany {
 
   @override
   Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async {
-    await loadGroups(reload: reload);
-    await loadDepartments(reload: reload);
-    await loadStations(reload: reload);
-    await loadCohorts(reload: reload);
-    await loadMembers(reload: reload);
-    await loadSuperAuth(reload: reload);
-    await directory.loadContent(reload: reloadContent);
+    await Future.wait([
+      loadGroups(reload: reload),
+      loadDepartments(reload: reload),
+      loadStations(reload: reload),
+      loadCohorts(reload: reload),
+      loadMembers(reload: reload),
+      loadSuperAuth(reload: reload),
+      directory.loadContent(reload: reloadContent),
+    ]);
+
     for (var group in groups) {
-      await group.deepLoad(reload: reload,reloadContent: reloadContent);
+      group.deepLoad(reload: reload, reloadContent: reloadContent);
     }
     for (var department in departments) {
-      await department.deepLoad(reload: reload,reloadContent: reloadContent);
+      department.deepLoad(reload: reload, reloadContent: reloadContent);
     }
     for (var station in stations) {
-      await station.deepLoad(reload: reload,reloadContent: reloadContent);
+      station.deepLoad(reload: reload, reloadContent: reloadContent);
     }
     for (var cohort in cohorts) {
       cohort.deepLoad(reload: reload,reloadContent: reloadContent);

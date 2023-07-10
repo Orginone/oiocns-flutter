@@ -264,14 +264,14 @@ class Form extends FileInfo<XForm> implements IForm {
       }
     }
     for (var element in fields) {
-      element.fields = await initFields(attributes.firstWhere((attr) => attr.id == element.id));
-      if(element.fields.type == "select"){
-        var field = fields.firstWhere((f) => f.code == element.fields.code);
+      element.field = await initFields(attributes.firstWhere((attr) => attr.id == element.id));
+      if(element.field.type == "select" || element.field.type == 'switch'){
+        var field = fields.firstWhere((f) => f.code == element.field.code);
         Map<dynamic,String> select = {};
         for (var value in field.lookups!) {
-          select[value.id] = value.text??"";
+          select[value.value] = value.text??"";
         }
-        element.fields.select = select;
+        element.field.select = select;
       }
     }
     return items;
@@ -279,37 +279,52 @@ class Form extends FileInfo<XForm> implements IForm {
 
   Future<void> reset() async {
     for (var element in fields) {
-      element.fields = await initFields(attributes.firstWhere((attr) => attr.id == element.id));
+      element.field.defaultData.value = null;
     }
   }
 
   Future<Fields> initFields(XAttribute attr) async {
     String? type;
     String? router;
+    String? regx;
     Map<dynamic, String> select = {};
+    Map rule = jsonDecode(attr.rule!);
+    String widget = rule?['widget']??"";
     switch (attr.property?.valueType) {
       case "描述型":
+        type = "input";
+        break;
       case "数值型":
+        regx = r'[0-9]';
         type = "input";
         break;
       case "选择型":
       case "分类型":
-        type = "select";
+        if(widget == 'switch'){
+          type = "switch";
+        }else{
+          type = "select";
+        }
         break;
       case "日期型":
-      case "时间型":
         type = "selectDate";
         break;
+      case "时间型":
+        if(widget == "dateRange"){
+          type = "selectDateRange";
+        } else  if(widget == "timeRange"){
+          type = "selectTimeRange";
+        } else {
+          type = "selectTime";
+        }
+        break;
       case "用户型":
-        if(attr.rule!=null){
-          Map widget = jsonDecode(attr.rule!);
-          if(widget.isEmpty){
-            type = "selectPerson";
-          }else if(widget['widget'] == 'group'){
-            type = "selectGroup";
-          }else if(widget['widget'] == 'dept'){
-            type = "selectDepartment";
-          }
+        if(widget.isEmpty){
+          type = "selectPerson";
+        }else if(widget== 'group'){
+          type = "selectGroup";
+        }else if(widget == 'dept'){
+          type = "selectDepartment";
         }
         break;
       case '附件型':
@@ -326,6 +341,7 @@ class Form extends FileInfo<XForm> implements IForm {
       code: attr.code,
       select: select,
       router: router,
+      regx: regx
     );
   }
 
@@ -339,21 +355,28 @@ class Form extends FileInfo<XForm> implements IForm {
   @override
   void setThing(AnyThingModel thing) {
     for (var element in fields) {
-      if (element.fields.type == "input") {
+      if (element.field.type == "input") {
         thing.otherInfo[element.id!] =
-            element.fields.controller!.text;
+            element.field.controller!.text;
       }
-      if (element.fields.defaultData.value != null) {
-        if (element.fields.type == "selectPerson") {
-          thing.otherInfo[element.id!] =
-              element.fields.defaultData.value.id;
-        } else if (element.fields.type == "selectDepartment" ||
-            element.fields.type == "selectGroup") {
-          thing.otherInfo[element.id!] =
-              element.fields.defaultData.value.metadata.id;
-        } else if (element.fields.type == "select") {
-          thing.otherInfo[element.id!] =
-              element.fields.defaultData.value.keys?.first;
+      if (element.field.defaultData.value != null) {
+        switch(element.field.type){
+          case "selectPerson":
+          case "selectDepartment":
+          case "selectGroup":
+            thing.otherInfo[element.id!] =
+                element.field.defaultData.value.id;
+            break;
+          case "select":
+            thing.otherInfo[element.id!] =
+                element.field.defaultData.value.keys?.first;
+            break;
+          case "upload":
+            thing.otherInfo[element.id!] = element.field.defaultData.value.toJson();
+            break;
+          default:
+            thing.otherInfo[element.id!] = element.field.defaultData.value!;
+            break;
         }
       }
     }

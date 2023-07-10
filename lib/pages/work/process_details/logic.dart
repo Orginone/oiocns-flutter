@@ -7,6 +7,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/pages/work/network.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
@@ -55,20 +56,83 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
       state.mainForm.value!.data = getFormData(state.mainForm.value!.id!);
       state.mainForm.value!.fields = state.todo.instanceData!.fields[state.mainForm.value!.id]??[];
       for (var field in state.mainForm.value!.fields) {
-        field.fields = field.initFields();
+        field.field =await initFields(field);
       }
       state.subForm.value = state.node!.forms?.where((element) => element.typeName == "子表").toList()??[];
       for (var element in state.subForm) {
         element.data = getFormData(element.id!);
         element.fields = state.todo.instanceData!.fields[element.id]??[];
         for (var field in element.fields) {
-          field.fields = field.initFields();
+          field.field =await initFields(field);
         }
       }
       state.subTabController = TabController(length: state.subForm.length, vsync: this);
       state.mainForm.refresh();
       state.subForm.refresh();
     }
+  }
+
+  Future<Fields> initFields(FieldModel field) async {
+    String? type;
+    String? router;
+    String? regx;
+    Map<dynamic, String> select = {};
+    Map rule = jsonDecode(field.rule!);
+    String widget = rule?['widget']??"";
+    switch (field.valueType) {
+      case "描述型":
+        type = "input";
+        break;
+      case "数值型":
+        regx = r'[0-9]';
+        type = "input";
+        break;
+      case "选择型":
+      case "分类型":
+        if(widget == 'switch'){
+          type = "switch";
+        }else{
+          type = "select";
+        }
+        break;
+      case "日期型":
+        type = "selectDate";
+        break;
+      case "时间型":
+        if(widget == "dateRange"){
+          type = "selectDateRange";
+        } else  if(widget == "timeRange"){
+          type = "selectTimeRange";
+        } else {
+          type = "selectTime";
+        }
+        break;
+      case "用户型":
+        if(widget.isEmpty){
+          type = "selectPerson";
+        }else if(widget== 'group'){
+          type = "selectGroup";
+        }else if(widget == 'dept'){
+          type = "selectDepartment";
+        }
+        break;
+      case '附件型':
+        type = "upload";
+        break;
+      default:
+        type = 'input';
+        break;
+    }
+
+    return Fields(
+      title: field.name,
+      type: type,
+      code: field.code,
+      select: select,
+      router: router,
+      regx: regx,
+      readOnly:  true,
+    );
   }
 
   FormEditData getFormData(String id) {

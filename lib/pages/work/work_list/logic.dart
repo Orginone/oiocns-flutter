@@ -39,7 +39,6 @@ class WorkListController extends BaseListController<WorkListState> {
             await settingCtrl.work.loadApply(state.work.space?.metadata.id ?? "");
         break;
     }
-    state.dataList.refresh();
-    loadSuccess();
+    super.loadData();
   }
 }

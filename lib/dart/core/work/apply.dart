@@ -58,6 +58,7 @@ class WorkApply implements IWorkApply{
       ),
     );
 
+    print(jsonEncode(instanceData.toJson()));
     return res.success;
   }
 

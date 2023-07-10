@@ -1,7 +1,9 @@
-import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'dart:io';
+
+import 'package:get/get.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
-import 'package:orginone/pages/chat/message_setting.dart';
 import 'package:orginone/pages/chat/message_routers.dart';
+import 'package:orginone/pages/chat/message_setting.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/pages/home/home/binding.dart';
@@ -10,10 +12,6 @@ import 'package:orginone/pages/login/binding.dart';
 import 'package:orginone/pages/login/view.dart';
 import 'package:orginone/pages/other/add_asset/binding.dart';
 import 'package:orginone/pages/other/add_asset/view.dart';
-import 'package:orginone/pages/other/choice_department/binding.dart';
-import 'package:orginone/pages/other/choice_department/view.dart';
-import 'package:orginone/pages/other/choice_people/binding.dart';
-import 'package:orginone/pages/other/choice_people/view.dart';
 import 'package:orginone/pages/other/choice_thing/binding.dart';
 import 'package:orginone/pages/other/pdf/index.dart';
 import 'package:orginone/pages/other/qr_scan/binding.dart';
@@ -21,8 +19,6 @@ import 'package:orginone/pages/other/qr_scan/view.dart';
 import 'package:orginone/pages/other/web_view/binding.dart';
 import 'package:orginone/pages/other/web_view/view.dart';
 import 'package:orginone/pages/setting/bindings.dart';
-import 'package:orginone/pages/work/work_list/view.dart';
-import 'package:orginone/pages/work/work_start/view.dart';
 import 'package:orginone/pages/setting/dict_info/view.dart';
 import 'package:orginone/pages/setting/person/cardbag/bindings.dart';
 import 'package:orginone/pages/setting/person/cardbag/index.dart';
@@ -33,13 +29,17 @@ import 'package:orginone/pages/setting/person/mark/view.dart';
 import 'package:orginone/pages/setting/person/security/bindings.dart';
 import 'package:orginone/pages/setting/person/security/index.dart';
 import 'package:orginone/pages/setting/version_page.dart';
+import 'package:orginone/pages/work/work_list/view.dart';
+import 'package:orginone/pages/work/work_start/view.dart';
 import 'package:orginone/util/hive_utils.dart';
+import 'package:orginone/util/image_utils.dart';
 
 // 资产管理
 // 资产管理
 // 仓库
+import 'dart/base/model.dart';
+import 'main.dart';
 import 'pages/chat/message_chats/bindings.dart';
-import 'pages/chat/message_chats/message_chats_controller.dart';
 import 'pages/chat/message_chats/message_chats_list.dart';
 import 'pages/chat/message_file.dart';
 import 'pages/chat/message_records.dart';
@@ -50,9 +50,11 @@ import 'pages/login/register/binding.dart';
 import 'pages/login/register/view.dart';
 import 'pages/login/verification_code/binding.dart';
 import 'pages/login/verification_code/view.dart';
-import 'pages/other/choice_gb/binding.dart';
-import 'pages/other/choice_gb/view.dart';
 import 'pages/other/choice_thing/view.dart';
+import 'pages/other/file_reader/binding.dart';
+import 'pages/other/file_reader/view.dart';
+import 'pages/other/photo_view/binding.dart';
+import 'pages/other/photo_view/view.dart';
 import 'pages/other/share_qr_code/binding.dart';
 import 'pages/other/share_qr_code/view.dart';
 import 'pages/other/storage_location/binding.dart';
@@ -61,22 +63,6 @@ import 'pages/other/thing/binding.dart';
 import 'pages/other/thing/thing_details/binding.dart';
 import 'pages/other/thing/thing_details/view.dart';
 import 'pages/other/thing/view.dart';
-import 'pages/setting/home/binding.dart';
-import 'pages/setting/home/view.dart';
-import 'pages/store/application_details/binding.dart';
-import 'pages/store/application_details/view.dart';
-import 'pages/store/bindings.dart';
-import 'pages/store/store_tree/binding.dart';
-import 'pages/store/store_tree/view.dart';
-import 'pages/work/bindings.dart';
-import 'pages/work/initiate_work/binding.dart';
-import 'pages/work/initiate_work/view.dart';
-import 'pages/work/process_details/binding.dart';
-import 'pages/work/process_details/view.dart';
-import 'pages/work/work_list/binding.dart';
-import 'pages/work/work_start/binding.dart';
-import 'pages/work/work_start/create_work/binding.dart';
-import 'pages/work/work_start/create_work/view.dart';
 import 'pages/setting/add_members/binding.dart';
 import 'pages/setting/add_members/view.dart';
 import 'pages/setting/attribute_info/binding.dart';
@@ -90,6 +76,8 @@ import 'pages/setting/company_info/view.dart';
 import 'pages/setting/department_info/binding.dart';
 import 'pages/setting/department_info/view.dart';
 import 'pages/setting/dict_info/binding.dart';
+import 'pages/setting/home/binding.dart';
+import 'pages/setting/home/view.dart';
 import 'pages/setting/out_agency_info/binding.dart';
 import 'pages/setting/out_agency_info/view.dart';
 import 'pages/setting/permission_info/binding.dart';
@@ -100,6 +88,21 @@ import 'pages/setting/station_info/binding.dart';
 import 'pages/setting/station_info/view.dart';
 import 'pages/setting/user_info/binding.dart';
 import 'pages/setting/user_info/view.dart';
+import 'pages/store/application_details/binding.dart';
+import 'pages/store/application_details/view.dart';
+import 'pages/store/bindings.dart';
+import 'pages/store/state.dart';
+import 'pages/store/store_tree/binding.dart';
+import 'pages/store/store_tree/view.dart';
+import 'pages/work/bindings.dart';
+import 'pages/work/initiate_work/binding.dart';
+import 'pages/work/initiate_work/view.dart';
+import 'pages/work/process_details/binding.dart';
+import 'pages/work/process_details/view.dart';
+import 'pages/work/work_list/binding.dart';
+import 'pages/work/work_start/binding.dart';
+import 'pages/work/work_start/create_work/binding.dart';
+import 'pages/work/work_start/create_work/view.dart';
 
 class Routers {
   // 首页
@@ -150,12 +153,6 @@ class Routers {
   //选择地点
   static const String storageLocation = "/storageLocation";
 
-  //选择人员
-  static const String choicePeople = "/choicePeople";
-
-  //选择部门
-  static const String choiceDepartment = "/choiceDepartment";
-
   //选择资产分类
   static const String choiceAssets = "/choiceAssets";
   static const String choiceSpecificAssets = "/choiceSpecificAssets";
@@ -201,9 +198,6 @@ class Routers {
 
   //审批详情
   static const String processDetails = '/processDetails';
-
-  //选择标准分类
-  static const String choiceGb = '/choiceGb';
 
   //发起会话
   static const String initiateChat = '/initiateChat';
@@ -278,6 +272,10 @@ class Routers {
 
   static const String shareQrCode = "/shareQrCode";
 
+  static const String photoView = "/photoView";
+
+  static const String fileReader = "/fileReader";
+
   static String get main {
     var user = HiveUtils.getUser();
     if (user != null) {
@@ -345,16 +343,6 @@ class Routers {
         binding: AddAssetBinding(),
       ),
       GetPage(
-        name: Routers.choicePeople,
-        page: () => ChoicePeoplePage(),
-        binding: ChoicePeopleBinding(),
-      ),
-      GetPage(
-        name: Routers.choiceDepartment,
-        page: () => ChoiceDepartmentPage(),
-        binding: ChoiceDepartmentBinding(),
-      ),
-      GetPage(
         name: Routers.qrScan,
         page: () => QrScanPage(),
         binding: QrScanBinding(),
@@ -368,11 +356,6 @@ class Routers {
         name: Routers.processDetails,
         page: () => ProcessDetailsPage(),
         binding: ProcessDetailsBinding(),
-      ),
-      GetPage(
-        name: Routers.choiceGb,
-        page: () => ChoiceGbPage(),
-        binding: ChoiceGbBinding(),
       ),
       GetPage(
         name: Routers.initiateChat,
@@ -515,10 +498,9 @@ class Routers {
         binding: WorkListBinding(),
       ),
       GetPage(
-        name: Routers.messageFile,
-        page: () =>  MessageFilePage(),
-        binding: MessageFileBinding()
-      ),
+          name: Routers.messageFile,
+          page: () => MessageFilePage(),
+          binding: MessageFileBinding()),
       GetPage(
         name: Routers.messageRecords,
         page: () => MessageRecordsPage(),
@@ -534,9 +516,39 @@ class Routers {
       ),
       GetPage(
         name: Routers.shareQrCode,
-        page: () =>  ShareQrCodePage(),
+        page: () => ShareQrCodePage(),
         binding: ShareQrCodeBinding(),
       ),
+      GetPage(
+        name: Routers.photoView,
+        page: () => PhotoViewPage(),
+        binding: PhotoViewBinding(),
+      ),
+      GetPage(
+        name: Routers.fileReader,
+        page: () => FileReaderPage(),
+        binding: FileReaderBinding(),
+      ),
     ];
+  }
+
+  static void jumpFile({required FileItemShare file, String type = 'chat'}) {
+    var extension = file.extension?.toLowerCase() ?? "";
+    if (type == "store") {
+      settingCtrl.store.onRecordRecent(RecentlyUseModel(
+          type: StoreEnum.file.label,
+          file: FileItemModel.fromJson(file.toJson())));
+    }
+    if (ImageUtils.isPdf(extension)) {
+      Get.toNamed(Routers.pdfReader, arguments: {"file": file});
+    } else if (ImageUtils.isImage(extension)) {
+      Get.toNamed(Routers.photoView, arguments: {
+        "images": [file.shareLink!]
+      });
+    } else if (ImageUtils.isWord(extension)) {
+      Get.toNamed(Routers.fileReader, arguments: {'file': file});
+    } else {
+      Get.toNamed(Routers.messageFile, arguments: {"file": file});
+    }
   }
 }

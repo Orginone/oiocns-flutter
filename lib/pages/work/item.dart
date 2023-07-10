@@ -20,7 +20,7 @@ class WorkItem extends StatelessWidget {
 
   const WorkItem({Key? key, required this.todo}) : super(key: key);
 
-  WorkController get controller => Get.find<WorkController>(tag: 'work');
+  WorkController get controller => Get.find<WorkController>();
 
 
   @override
@@ -118,7 +118,7 @@ class WorkItem extends StatelessWidget {
                                   fontSize: 14.sp, color: Colors.grey)),
                         ],
                       ),
-                      button(),
+                      // button(),
                     ],
                   ),
                 ),

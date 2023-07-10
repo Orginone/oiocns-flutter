@@ -10,6 +10,7 @@ import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/event/message.dart';
+import 'package:orginone/images.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/string_util.dart';
@@ -49,10 +50,14 @@ class MessageRecordsPage
         ),
       ],
       body: Obx(() {
+
+        if(state.isSearchState.value && state.searchMsg.isEmpty){
+          return noData();
+        }
+
         return ListView.builder(
           itemBuilder: (BuildContext context, int index) {
             var item = state.searchMsg[index];
-
             return Container(
               decoration: BoxDecoration(
                   border: Border(
@@ -87,12 +92,23 @@ class MessageRecordsPage
       }),
     );
   }
+
+
+  Widget noData(){
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      alignment: Alignment.center,
+      child: Image.asset(Images.empty,width: 300.w,height: 400.w,),
+    );
+  }
 }
 
 class MessageRecordsController extends BaseController<MessageRecordsState> {
   final MessageRecordsState state = MessageRecordsState();
 
   void searchMsg(String str) {
+    state.isSearchState.value = str.isNotEmpty;
     state.searchMsg.clear();
     if (str.isNotEmpty) {
       state.searchMsg.value = state.chat.messages.where((p0) {
@@ -122,6 +138,7 @@ class MessageRecordsBinding extends BaseBindings<MessageRecordsController> {
 class MessageRecordsState extends BaseGetState {
   late IMsgChat chat;
   var searchMsg = <IMessage>[].obs;
+  var isSearchState = false.obs;
 
   MessageRecordsState() {
     chat = Get.arguments['chat'];

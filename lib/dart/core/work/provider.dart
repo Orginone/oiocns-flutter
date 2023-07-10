@@ -103,7 +103,7 @@ class WorkProvider implements IWorkProvider{
 
   @override
   Future<List<IWorkTask>> loadApply(String id) async{
-    var res = await kernel.anystore.pageRequest('work-task',userId,{
+    var res = await kernel.anystore.pageRequest('work-tasks',userId,{
       "match": {
         "belongId": id,
         "createUser": userId,
@@ -120,7 +120,7 @@ class WorkProvider implements IWorkProvider{
 
   @override
   Future<List<IWorkTask>> loadDones(String id) async{
-    var res = await kernel.anystore.pageRequest('work-task',userId,{
+    var res = await kernel.anystore.pageRequest('work-tasks',userId,{
       "match": {
         "belongId": id,
         "status": {

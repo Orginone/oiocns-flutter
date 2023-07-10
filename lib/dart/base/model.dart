@@ -5089,7 +5089,7 @@ class FieldModel {
   String? rule;
   String? remark;
   List<FiledLookup>? lookups;
-  late Fields fields;
+  late Fields field;
   FieldModel({
     this.id,
     this.name,
@@ -5113,7 +5113,7 @@ class FieldModel {
     valueType = json['valueType'];
     rule = json['rule'];
     remark = json['remark'];
-    lookups = lookups;
+    this.lookups = lookups;
   }
 
   Map<String, dynamic> toJson() {
@@ -5126,52 +5126,6 @@ class FieldModel {
     data['remark'] = this.remark;
     data['lookups'] = this.lookups?.map((lookup) => lookup.toJson()).toList();
     return data;
-  }
-
-  Fields initFields() {
-    String? type;
-    String? router;
-    Map<dynamic, String> select = {};
-    switch (valueType) {
-      case "描述型":
-      case "数值型":
-        type = "input";
-        break;
-      case "选择型":
-      case "分类型":
-        type = "select";
-        break;
-      case "日期型":
-      case "时间型":
-        type = "selectDate";
-        break;
-      case "用户型":
-        if(rule!=null){
-          Map widget = jsonDecode(rule!);
-          if(widget.isEmpty){
-            type = "selectPerson";
-          }else if(widget['widget'] == 'group'){
-            type = "selectGroup";
-          }else if(widget['widget'] == 'dept'){
-            type = "selectDepartment";
-          }
-        }
-        break;
-      case '附件型':
-        type = "upload";
-        break;
-      default:
-        type = 'input';
-        break;
-    }
-
-    return Fields(
-      title: name,
-      type: type,
-      code: code,
-      select: select,
-      router: router,
-    );
   }
 }
 
