@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -10,11 +8,10 @@ import 'package:orginone/routers.dart';
 import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/unified.dart';
 
-
 class ApplicationWidget extends StatelessWidget {
   String itemName;
 
-  List<Map<IApplication,ITarget>> value;
+  List<Map<IApplication, ITarget>> value;
 
   ApplicationWidget(this.itemName, this.value);
 
@@ -37,23 +34,22 @@ class ApplicationWidget extends StatelessWidget {
               padding: EdgeInsets.only(top: 10.h, bottom: 20.h),
               shrinkWrap: true,
               itemCount: value.length,
-              gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 5,
-                mainAxisExtent:110.h,
+                mainAxisExtent: 110.h,
               ),
               itemBuilder: (context, index) {
                 var item = value[index];
                 var app = item.keys.first;
 
-
                 late Widget icon;
-                if(app.metadata.avatarThumbnail()!=null){
+                if (app.metadata.avatarThumbnail() != null) {
                   icon = ImageWidget(
                     app.metadata.avatarThumbnail(),
                     size: 64.w,
                     circular: true,
                   );
-                }else{
+                } else {
                   icon = Icon(
                     Ionicons.apps,
                     color: const Color(0xFF9498df),
@@ -62,11 +58,11 @@ class ApplicationWidget extends StatelessWidget {
                 }
 
                 return GestureDetector(
-                  onTap: () async{
-
-                    var works =  await app.loadWorks();
+                  onTap: () async {
+                    var works = await app.loadWorks();
                     var target = item.values.first;
-                    Get.toNamed(Routers.workStart, arguments: {"works":works,'target':target});
+                    Get.toNamed(Routers.workStart,
+                        arguments: {"works": works, 'target': target});
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,7 +79,9 @@ class ApplicationWidget extends StatelessWidget {
                       ),
                       Text(
                         app.metadata.name!,
-                        style: XFonts.size18Black6,maxLines: 1,overflow: TextOverflow.ellipsis,
+                        style: XFonts.size18Black6,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),

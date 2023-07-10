@@ -199,7 +199,6 @@ class Routers {
   //审批详情
   static const String processDetails = '/processDetails';
 
-
   //发起会话
   static const String initiateChat = '/initiateChat';
 
@@ -499,10 +498,9 @@ class Routers {
         binding: WorkListBinding(),
       ),
       GetPage(
-        name: Routers.messageFile,
-        page: () =>  MessageFilePage(),
-        binding: MessageFileBinding()
-      ),
+          name: Routers.messageFile,
+          page: () => MessageFilePage(),
+          binding: MessageFileBinding()),
       GetPage(
         name: Routers.messageRecords,
         page: () => MessageRecordsPage(),

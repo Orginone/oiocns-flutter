@@ -9,18 +9,19 @@ import 'package:orginone/routers.dart';
 
 import 'state.dart';
 
-
 class ThingController extends BaseListController<ThingState> {
- final ThingState state = ThingState();
+  final ThingState state = ThingState();
 
   @override
-  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async{
-    state.dataList.addAll(await ChoiceThingNetWork.getThing(state.form.id,state.belongId,index: state.page));
+  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
+    state.dataList.addAll(await ChoiceThingNetWork.getThing(
+        state.form.id, state.belongId,
+        index: state.page));
     super.loadData();
   }
 
   void operation(String key, AnyThingModel item) {
-    switch(key){
+    switch (key) {
       case "details":
         Get.toNamed(Routers.thingDetails,
             arguments: {"thing": item, 'form': state.form});

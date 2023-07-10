@@ -8,8 +8,6 @@ import 'message_chats_state.dart';
 
 class MessageChats extends BaseFrequentlyUsedListPage<MessageChatsController,
     MessageChatsState> {
-
-
   @override
   Widget buildView() {
     return Obx(() {
@@ -32,15 +30,9 @@ class MessageChats extends BaseFrequentlyUsedListPage<MessageChatsController,
     });
   }
 
-
   @override
   bool displayNoDataWidget() {
     // TODO: implement displayNoDataWidget
     return false;
   }
-
 }
-
-
-
-

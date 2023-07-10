@@ -27,7 +27,7 @@ class UserProvider {
 
   final Rxn<IStoreProvider> _store = Rxn();
 
-  var myApps =   <Map<IApplication,ITarget>>[].obs;
+  var myApps = <Map<IApplication, ITarget>>[].obs;
   bool _inited = false;
 
   UserProvider() {
@@ -45,11 +45,13 @@ class UserProvider {
       }
     });
     kernel.on('RecvTags', (data) async {
-      try{
+      try {
         TagsMsgType tagsMsgType = TagsMsgType.fromJson(data);
-        var currentChat = chat?.allChats.firstWhere((element) => element.chatId==tagsMsgType.id && element.belong.id == tagsMsgType.belongId);
+        var currentChat = chat?.allChats.firstWhere((element) =>
+            element.chatId == tagsMsgType.id &&
+            element.belong.id == tagsMsgType.belongId);
         currentChat?.overwriteMessagesTags(tagsMsgType);
-      }catch(e){}
+      } catch (e) {}
     });
   }
 
@@ -126,7 +128,6 @@ class UserProvider {
     EventBusHelper.fire(StartLoad());
   }
 
-
   ///加载消息数据
   Future<void> loadChatData() async {
     if (_inited) {
@@ -164,12 +165,12 @@ class UserProvider {
     if (_inited) {
       print('开始加载存储数据-------${DateTime.now()}');
       await Future.wait([
-      _store.value!.loadMostUsed(),
-      _store.value!.loadRecentList(),
+        _store.value!.loadMostUsed(),
+        _store.value!.loadRecentList(),
       ]);
       _store.refresh();
       print('加载存储数据完成-------${DateTime.now()}');
-    }else {
+    } else {
       await loadStoreData();
     }
   }
@@ -187,13 +188,13 @@ class UserProvider {
     _work.refresh();
   }
 
-  void refreshChat(){
+  void refreshChat() {
     _chat.refresh();
   }
 
   /// 重载数据
   Future<void> loadData() async {
-    if(kernel.isOnline && kernel.anystore.isOnline){
+    if (kernel.isOnline && kernel.anystore.isOnline) {
       print('开始加载数据-------${DateTime.now()}');
       _inited = false;
       await _user.value!.deepLoad(reload: true, reloadContent: false);
@@ -201,36 +202,37 @@ class UserProvider {
       _user.refresh();
       print('加载数据完成-------${DateTime.now()}');
       EventBusHelper.fire(LoadUserDone());
-    }else{
-      await Future.delayed(const Duration(milliseconds: 100),() async{
+    } else {
+      await Future.delayed(const Duration(milliseconds: 100), () async {
         await loadData();
       });
     }
   }
 
-
-  Future<void> loadContent() async{
+  Future<void> loadContent() async {
     await _user.value!.deepLoad(reload: false, reloadContent: true);
   }
 
-  Future<void> reloadChats() async{
+  Future<void> reloadChats() async {
     await _user.value?.deepLoad(reload: true);
     _chat.value?.loadAllChats();
     await _chat.value?.loadPreMessage();
     _chat.refresh();
   }
 
-
   Future<void> loadApps([bool reload = false]) async {
-    List<Map<IApplication,ITarget>> apps = [];
+    List<Map<IApplication, ITarget>> apps = [];
     for (var target in _user.value!.targets) {
-      var applications = await target.directory.loadAllApplications(reload: reload);
+      var applications =
+          await target.directory.loadAllApplications(reload: reload);
       for (var element in applications) {
-        apps.add({element:target.space});
+        apps.add({element: target.space});
       }
     }
-    myApps.value = apps.where((a){
-      return apps.indexWhere((x) => x.keys.first.id == a.keys.first.id) == apps.indexOf(a);
+    print('');
+    myApps.value = apps.where((a) {
+      return apps.indexWhere((x) => x.keys.first.id == a.keys.first.id) ==
+          apps.indexOf(a);
     }).toList();
     myApps.refresh();
   }
@@ -335,7 +337,7 @@ class UserProvider {
         message = '${data.operater?.name}新增身份【${data.identity!.name}】.';
         for (var a in targets) {
           if (a.identitys.every((q) => q.id != data.identity!.id)) {
-            a.identitys.add(Identity(a,data.identity!));
+            a.identitys.add(Identity(a, data.identity!));
           }
         }
         break;
@@ -353,23 +355,27 @@ class UserProvider {
         break;
       case OperateType.remove:
         if (data.station != null) {
-          message = '${data.operater?.name}移除岗位【${data.station!.name}】中的身份【${data.identity!.name}】.';
+          message =
+              '${data.operater?.name}移除岗位【${data.station!.name}】中的身份【${data.identity!.name}】.';
           stations
               .firstWhereOrNull((s) => s.id == data.station!.id)
               ?.removeIdentitys([data.identity!]);
         } else {
-          message = '${data.operater?.name}移除赋予【${data.subTarget!.name}】的身份【${data.identity!.name}】.';
+          message =
+              '${data.operater?.name}移除赋予【${data.subTarget!.name}】的身份【${data.identity!.name}】.';
           identitys.forEach((i) => i.removeMembers([data.subTarget!]));
         }
         break;
       case OperateType.add:
         if (data.station != null) {
-          message = '${data.operater?.name}向岗位【${data.station!.name}】添加身份【${data.identity!.name}】.';
+          message =
+              '${data.operater?.name}向岗位【${data.station!.name}】添加身份【${data.identity!.name}】.';
           stations
               .firstWhereOrNull((s) => s.id == data.station!.id)
               ?.pullIdentitys([data.identity!]);
         } else {
-          message = '${data.operater?.name}赋予{${data.subTarget!.name}身份【${data.identity!.name}】.';
+          message =
+              '${data.operater?.name}赋予{${data.subTarget!.name}身份【${data.identity!.name}】.';
           identitys.forEach((i) => i.pullMembers([data.subTarget!]));
         }
         break;
@@ -380,5 +386,4 @@ class UserProvider {
       }
     }
   }
-
 }

@@ -33,7 +33,11 @@ class StoreHub {
     int interval = 3000,
   })  : _timeout = timeout,
         _connection = HubConnectionBuilder()
-            .withUrl(url,options: HttpConnectionOptions(headers: MessageHeaders()..setHeaderValue('content-type', 'application/json;charset=UTF-8')))
+            .withUrl(url,
+                options: HttpConnectionOptions(
+                    headers: MessageHeaders()
+                      ..setHeaderValue(
+                          'content-type', 'application/json;charset=UTF-8')))
             .build() {
     _connection.keepAliveIntervalInMilliseconds = interval;
     _connection.serverTimeoutInMilliseconds = timeout;
@@ -50,16 +54,15 @@ class StoreHub {
       }
     });
     _connection.onreconnecting(({error}) {
-        LoadingDialog.showLoading(Get.context!,
+      LoadingDialog.showLoading(Get.context!,
           msg: "正在重新连接服务器", dismissSeconds: -1);
     });
     _connection.onreconnected(({connectionId}) {
-      Future.delayed(const Duration(microseconds: 500),(){
+      Future.delayed(const Duration(microseconds: 500), () {
         kernel.restart();
         LoadingDialog.dismiss(Get.context!);
       });
     });
-
   }
 
   /// 是否处于连接着的状态
@@ -91,9 +94,9 @@ class StoreHub {
   void restart() {
     if (isConnected) {
       _connection.stop().then((_) {
-         _starting();
+        _starting();
       });
-    }else if(_connection.state != HubConnectionState.Reconnecting){
+    } else if (_connection.state != HubConnectionState.Reconnecting) {
       _starting();
     }
   }
@@ -148,18 +151,17 @@ class StoreHub {
   /// @param {any[]} args 参数
   /// @returns {Promise<ResultType>} 异步结果
   Future<dynamic> invoke(String methodName, {List<Object>? args}) async {
-
     log.info("========== storeHub-invoke-start =============");
     log.info("=====> url: ${_connection.baseUrl}");
     log.info("=====> methodName: $methodName");
     log.info("=====> args: $args");
     try {
       var res = await _connection.invoke(methodName, args: args);
-      if(res!= null && (res is Map)){
-        if(res['code'] == 401){
-          ToastUtils.showMsg(msg:"登录已过期,请重新登录");
+      if (res != null && (res is Map)) {
+        if (res['code'] == 401) {
+          ToastUtils.showMsg(msg: "登录已过期,请重新登录");
           settingCtrl.exitLogin(cleanUserLoginInfo: false);
-        } else if(res['code'] == 500){
+        } else if (res['code'] == 500) {
           ToastUtils.showMsg(msg: 'error 500 长连接已断开,正在重试');
           Log.info('anystore断开链接,正在重试');
           String token = kernel.anystore.accessToken;
@@ -173,7 +175,7 @@ class StoreHub {
     } catch (err) {
       log.info("========== storeHub-invoke-end =============");
       log.info("=====> err: $err");
-      return  {"code": 400, "msg": err.toString(), "success": false};
+      return {"code": 400, "msg": err.toString(), "success": false};
     }
   }
 }

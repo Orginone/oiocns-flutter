@@ -10,15 +10,14 @@ import 'base_get_list_state.dart';
 import 'base_get_view.dart';
 import 'base_list_controller.dart';
 
-abstract class BaseGetListView<T extends BaseListController,S extends BaseGetListState> extends BaseGetView<T,S>{
-
+abstract class BaseGetListView<T extends BaseListController,
+    S extends BaseGetListState> extends BaseGetView<T, S> {
   S get state => controller.state as S;
   BuildContext get context => controller.context;
 
   @override
   Widget build(BuildContext context) {
     this.controller.context = context;
-
 
     Widget body = EasyRefresh(
       controller: state.refreshController,
@@ -50,7 +49,7 @@ abstract class BaseGetListView<T extends BaseListController,S extends BaseGetLis
       ),
     );
 
-    if(headWidget() != null){
+    if (headWidget() != null) {
       body = NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
@@ -63,33 +62,34 @@ abstract class BaseGetListView<T extends BaseListController,S extends BaseGetLis
       );
     }
 
-    if(showAppBar){
-      body = GyScaffold(
-        titleName: title,
-        actions: actions(),
-        body:body);
+    if (showAppBar) {
+      body = GyScaffold(titleName: title, actions: actions(), body: body);
     }
     return body;
   }
 
-  Widget noData(){
+  Widget noData() {
     return Container(
       width: double.infinity,
       height: double.infinity,
       alignment: Alignment.center,
       color: Colors.grey.shade200,
-      child: Image.asset(Images.empty,width: 300.w,height: 400.w,),
+      child: Image.asset(
+        Images.empty,
+        width: 300.w,
+        height: 400.w,
+      ),
     );
   }
 
-  bool displayNoDataWidget()=>true;
+  bool displayNoDataWidget() => true;
 
   @override
   Widget buildView();
 
   late String title;
 
-  List<Widget> actions(){
+  List<Widget> actions() {
     return [];
   }
 

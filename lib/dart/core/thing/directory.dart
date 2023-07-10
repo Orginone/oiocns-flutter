@@ -69,7 +69,8 @@ abstract class IDirectory extends IFileInfo<XDirectory> {
   Future<List<ISysFileInfo>> loadFiles({bool reload = false});
 
   //上传文件
-  Future<ISysFileInfo?> createFile(File file,{void Function(double)? progress});
+  Future<ISysFileInfo?> createFile(File file,
+      {void Function(double)? progress});
 
   //目录下的表单
   late List<IForm> forms;
@@ -200,10 +201,10 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   }
 
   @override
-  Future<IApplication?> createApplication(ApplicationModel data) async{
+  Future<IApplication?> createApplication(ApplicationModel data) async {
     data.directoryId = id!;
     var res = await kernel.createApplication(data);
-    if (res.success && res.data!=null) {
+    if (res.success && res.data != null) {
       var application = Application(res.data!, this);
       applications.add(application);
       return application;
@@ -212,7 +213,8 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   }
 
   @override
-  Future<ISysFileInfo?> createFile(File file, {void Function(double)? progress}) async{
+  Future<ISysFileInfo?> createFile(File file,
+      {void Function(double)? progress}) async {
     progress?.call(0);
     final task = TaskModel(
       name: file.path.split('/').last,
@@ -225,7 +227,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
       metadata.belongId!,
       file,
       '${id}/${file.path.split('/').last}',
-         progress:  (pn) {
+      progress: (pn) {
         task.finished = pn.toInt();
         progress?.call(pn);
       },
@@ -239,10 +241,10 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   }
 
   @override
-  Future<IForm?> createForm(FormModel data) async{
+  Future<IForm?> createForm(FormModel data) async {
     data.directoryId = id!;
     var res = await kernel.createForm(data);
-    if (res.success && res.data!=null) {
+    if (res.success && res.data != null) {
       var form = Form(res.data!, this);
       forms.add(form);
       return form;
@@ -251,11 +253,11 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   }
 
   @override
-  Future<IProperty?> createProperty(PropertyModel data) async{
+  Future<IProperty?> createProperty(PropertyModel data) async {
     data.directoryId = id!;
     var res = await kernel.createProperty(data);
-    if (res.success && res.data!=null) {
-      var property =  Property(res.data!, this);
+    if (res.success && res.data != null) {
+      var property = Property(res.data!, this);
       propertys.add(property);
       return property;
     }
@@ -263,11 +265,11 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   }
 
   @override
-  Future<ISpecies?> createSpecies(SpeciesModel data) async{
+  Future<ISpecies?> createSpecies(SpeciesModel data) async {
     data.directoryId = id!;
     var res = await kernel.createSpecies(data);
-    if (res.success && res.data!=null) {
-      var species =  Species(res.data!, this);
+    if (res.success && res.data != null) {
+      var species = Species(res.data!, this);
       specieses.add(species);
       return species;
     }
@@ -287,7 +289,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   }
 
   @override
-  Future<List<IApplication>> loadApplications({bool reload = false}) async{
+  Future<List<IApplication>> loadApplications({bool reload = false}) async {
     if (applications.isEmpty || reload) {
       final res = await kernel.queryApplications(IdReq(id: id));
       if (res.success && res.data != null) {
@@ -311,10 +313,10 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
             key: formatKey(id!),
             operate: BucketOpreates.list,
           ));
-      if (res.success && res.data!=null) {
+      if (res.success && res.data != null) {
         List<FileItemModel> data = [];
 
-        res.data.forEach((json){
+        res.data.forEach((json) {
           data.add(FileItemModel.fromJson(json));
         });
         files = data
@@ -327,10 +329,10 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   }
 
   @override
-  Future<List<IForm>> loadForms({bool reload = false}) async{
+  Future<List<IForm>> loadForms({bool reload = false}) async {
     if (forms.isEmpty || reload) {
       final res = await kernel.queryForms(IdReq(id: id!));
-      if (res.success && res.data!=null) {
+      if (res.success && res.data != null) {
         forms = (res.data!.result ?? []).map((i) => Form(i, this)).toList();
       }
     }
@@ -338,22 +340,24 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   }
 
   @override
-  Future<List<IProperty>> loadPropertys({bool reload = false}) async{
+  Future<List<IProperty>> loadPropertys({bool reload = false}) async {
     if (propertys.isEmpty || reload) {
       final res = await kernel.queryPropertys(IdReq(id: id!));
-      if (res.success && res.data!=null) {
-        propertys = (res.data!.result ?? []).map((i) => Property(i, this)).toList();
+      if (res.success && res.data != null) {
+        propertys =
+            (res.data!.result ?? []).map((i) => Property(i, this)).toList();
       }
     }
     return propertys;
   }
 
   @override
-  Future<List<ISpecies>> loadSpecieses({bool reload = false}) async{
+  Future<List<ISpecies>> loadSpecieses({bool reload = false}) async {
     if (specieses.isEmpty || reload) {
       final res = await kernel.querySpecies(IdReq(id: id!));
-      if (res.success && res.data!=null) {
-        specieses = (res.data!.result ?? []).map((i) => Species(i, this)).toList();
+      if (res.success && res.data != null) {
+        specieses =
+            (res.data!.result ?? []).map((i) => Species(i, this)).toList();
       }
     }
     return specieses;
@@ -401,8 +405,8 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
       ));
       if (res.success && res.data != null) {
         children = [];
-        var data = (res.data!.result??[]).firstWhere((i) => i.id == id);
-        loadChildren(data,res.data!.result ?? []);
+        var data = (res.data!.result ?? []).firstWhere((i) => i.id == id);
+        loadChildren(data, res.data!.result ?? []);
       }
     }
   }
@@ -481,11 +485,12 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   String get locationKey => key;
 
   @override
-  Future<List<IApplication>> loadAllApplications({bool reload = false}) async{
+  Future<List<IApplication>> loadAllApplications({bool reload = false}) async {
     final applications = <IApplication>[];
     applications.addAll(await loadApplications(reload: reload));
     for (final subDirectory in children) {
-      applications.addAll(await subDirectory.loadAllApplications(reload: reload));
+      applications
+          .addAll(await subDirectory.loadAllApplications(reload: reload));
     }
     return applications;
   }

@@ -33,13 +33,14 @@ class ProcessInfoPage
                   return _mainTable();
                 }),
                 Obx(() {
-                  if (state.subForm.isEmpty ||
-                      state.subTabController == null) {
+                  if (state.subForm.isEmpty || state.subTabController == null) {
                     return Container();
                   }
                   return _subTable();
                 }),
-                SizedBox(height: 10.h,),
+                SizedBox(
+                  height: 10.h,
+                ),
                 _opinion(),
               ],
             ),
@@ -50,27 +51,30 @@ class ProcessInfoPage
     );
   }
 
-
   Widget _mainTable() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CommonWidget.commonHeadInfoWidget(state.mainForm!.name!),
         ...state.mainForm!.fields.map((e) {
-          return FutureBuilder(builder:(context,snapshot){
-            if(snapshot.connectionState != ConnectionState.done && !snapshot.hasData){
-              return Container();
-            }
-            Widget child = testMappingComponents[e.field.type ?? ""]!(
-                e.field, settingCtrl.user);
-            return child;
-          },future:  controller.loadMainFieldData(e, state.mainForm!.data?.after[0].otherInfo??{}),);
-        }).toList() ??
+              return FutureBuilder(
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done &&
+                      !snapshot.hasData) {
+                    return Container();
+                  }
+                  Widget child = testMappingComponents[e.field.type ?? ""]!(
+                      e.field, settingCtrl.user);
+                  return child;
+                },
+                future: controller.loadMainFieldData(
+                    e, state.mainForm!.data?.after[0].otherInfo ?? {}),
+              );
+            }).toList() ??
             []
       ],
     );
   }
-
 
   Widget _subTable() {
     return Container(
@@ -87,18 +91,19 @@ class ProcessInfoPage
                 physics: const NeverScrollableScrollPhysics(),
                 children: state.subForm.map((element) {
                   List<String> title =
-                      element.fields.map((e) => e.name ?? "").toList() ??
-                          [];
+                      element.fields.map((e) => e.name ?? "").toList() ?? [];
                   return FutureBuilder<List<List<String>>>(
-                    builder: (context,snapshot) {
-                      if(snapshot.hasData){
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
                         return CommonWidget.commonDocumentWidget(
                           title: ["标识", "创建者", "状态", ...title],
-                          content: snapshot.data??[],
+                          content: snapshot.data ?? [],
                         );
                       }
-                     return Container();
-                    },future: controller.loadSubFieldData(element, element.fields),
+                      return Container();
+                    },
+                    future:
+                        controller.loadSubFieldData(element, element.fields),
                   );
                 }).toList(),
               );
