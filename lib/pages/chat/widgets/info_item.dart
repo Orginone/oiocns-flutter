@@ -211,6 +211,7 @@ class DetailItemWidget extends GetView<UserController> {
                       ),
                     ),
                     onTap: () {
+                      popCtrl.hideMenu();
                       switch (item) {
                         case DetailFunc.recall:
                           chat.recallMessage(msg.id);
@@ -232,7 +233,6 @@ class DetailItemWidget extends GetView<UserController> {
                               ClipboardData(text: StringUtil.msgConversion(msg.metadata, '')));
                           break;
                       }
-                      popCtrl.hideMenu();
                     },
                   ),
                 )
