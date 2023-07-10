@@ -118,7 +118,7 @@ class WorkItem extends StatelessWidget {
                                   fontSize: 14.sp, color: Colors.grey)),
                         ],
                       ),
-                      // button(),
+                      button(),
                     ],
                   ),
                 ),

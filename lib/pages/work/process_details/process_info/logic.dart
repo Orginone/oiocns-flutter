@@ -51,11 +51,10 @@ class ProcessInfoController extends BaseController<ProcessInfoState> {
           }
           if(field.field.type == "select"){
             field.field.defaultData.value = {value:field.field.select![value]};
-            return field.field.select![value] ?? "";
           }else{
             field.field.defaultData.value = value??"";
-            return value??"";
           }
+          return field.field.select![value] ?? "";
         case "upload":
           field.field.defaultData.value =
               value != null ? FileItemModel.fromJson(value) : null;
