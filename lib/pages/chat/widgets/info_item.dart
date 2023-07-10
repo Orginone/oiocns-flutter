@@ -422,6 +422,15 @@ class _PreViewUrlState extends State<PreViewUrl> {
   }
 
   @override
+  void didUpdateWidget(covariant PreViewUrl oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    if(widget.url!=oldWidget.url){
+      url = widget.url;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return LinkPreview(
       onPreviewDataFetched: (data) {
