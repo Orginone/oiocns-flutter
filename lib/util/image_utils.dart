@@ -49,6 +49,5 @@ class ImageUtils {
       extension.contains("xlsx") ||
       extension.contains("xls") ||
       extension.contains("pptx") ||
-      extension.contains("pdf") ||
       extension.contains("txt");
 }

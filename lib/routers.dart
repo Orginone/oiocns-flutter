@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:get/get.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/pages/chat/message_routers.dart';
@@ -545,7 +547,7 @@ class Routers {
       Get.toNamed(Routers.photoView, arguments: {
         "images": [file.shareLink!]
       });
-    } else if (false) {
+    } else if (ImageUtils.isWord(extension)) {
       Get.toNamed(Routers.fileReader, arguments: {'file': file});
     } else {
       Get.toNamed(Routers.messageFile, arguments: {"file": file});
