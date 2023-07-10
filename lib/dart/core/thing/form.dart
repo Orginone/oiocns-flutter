@@ -279,7 +279,7 @@ class Form extends FileInfo<XForm> implements IForm {
 
   Future<void> reset() async {
     for (var element in fields) {
-      element.field = await initFields(attributes.firstWhere((attr) => attr.id == element.id));
+      element.field.defaultData.value = null;
     }
   }
 

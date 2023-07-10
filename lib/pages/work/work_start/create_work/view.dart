@@ -119,37 +119,31 @@ class CreateWorkPage
                   children: state.subForm.map((element) {
                     List<String> title =
                         element.fields.map((e) => e.name ?? "").toList();
-                    List<List<String>> content =
-                        element.things.map((e) {
-                      List<String> data = [];
-                      for (var element in element.fields) {
-                        data.add(e.otherInfo[element.id]??"");
-                      }
-                      return [
-                        e.id ?? "",
-                        e.status ?? "",
-                        ShareIdSet[e.creater]?.name??"",
-                        ...data
-                      ];
-                    }).toList();
 
-                    return CommonWidget.commonDocumentWidget(
-                        title: ["标识", "创建者", "状态", ...title],
-                        content: content,
-                        showOperation: true,
-                        popupMenus: const [
-                          PopupMenuItem(
-                            value: "edit",
-                            child: Text("编辑"),
-                          ),
-                          PopupMenuItem(
-                            value: "delete",
-                            child: Text("删除"),
-                          ),
-                        ],
-                        onOperation: (function, key) {
-                          controller.subTableFormOperation(function, key);
-                        });
+                    return FutureBuilder<List<List<String>>>(
+                      builder: (context,snapshot) {
+                        if(snapshot.hasData){
+                          return CommonWidget.commonDocumentWidget(
+                              title: ["标识", "创建者", "状态", ...title],
+                              content: snapshot.data??[],
+                              showOperation: true,
+                              popupMenus: const [
+                                PopupMenuItem(
+                                  value: "edit",
+                                  child: Text("编辑"),
+                                ),
+                                PopupMenuItem(
+                                  value: "delete",
+                                  child: Text("删除"),
+                                ),
+                              ],
+                              onOperation: (function, key) {
+                                controller.subTableFormOperation(function, key);
+                              });
+                        }
+                        return Container();
+                      },future: controller.loadSubFieldData(element, element.fields),
+                    );
                   }).toList(),
                 );
               }),

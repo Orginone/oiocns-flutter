@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/work/work_start/logic.dart';
@@ -72,8 +73,8 @@ class CreateWorkController extends BaseController<CreateWorkState>
 
   Future<void> submit() async {
     for (var element in state.mainForm.value?.fields ?? []) {
-      if (element.fields?.required ?? false) {
-        if (element.fields!.defaultData.value == null) {
+      if (element.field.required ?? false) {
+        if (element.field!.defaultData.value == null) {
           return ToastUtils.showMsg(msg: element.fields!.hint!);
         }
       }
@@ -107,6 +108,61 @@ class CreateWorkController extends BaseController<CreateWorkState>
       }
     }
 
+  }
+
+
+  Future<List<List<String>>> loadSubFieldData(
+      IForm form, List<FieldModel> fields) async {
+    List<List<String>> content = [];
+    for (var thing in form.things) {
+      List<String> data = [thing.id ?? "",
+        thing.status ?? "",
+        ShareIdSet[thing.creater]?.name??"",];
+      for (var field in fields) {
+        dynamic value = thing.otherInfo[field.id];
+        if(value == null){
+          data.add('');
+        }else{
+          try{
+            data.add(await _converField(field, thing.otherInfo[field.id]));
+          }catch(e){
+            print('');
+          }
+        }
+      }
+      content.add(data);
+    }
+    return content;
+  }
+
+
+  Future<String> _converField(FieldModel field,dynamic value) async{
+    if (field.field.type == "input") {
+      return value??"";
+    } else {
+      switch (field.field.type) {
+        case "selectPerson":
+        case "selectDepartment":
+        case "selectGroup":
+          var share = await settingCtrl.user.findShareById(value);
+          return share.name;
+        case "select":
+        case 'switch':
+        Map<dynamic,String> select= {};
+        for (var value in field.lookups??[]) {
+          select[value.value] = value.text ?? "";
+        }
+        return select[value]??"";
+        case "upload":
+          var file = value!=null?FileItemModel.fromJson(value):null;
+          return file?.name??"";
+        default:
+          if(field.field.type == "selectTimeRange" || field.field.type == "selectDateRange"){
+            return value.join("至");
+          }
+          return value??"";
+      }
+    }
   }
 
   void jumpEntity(IForm form) async{

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/application.dart';
 import 'package:orginone/routers.dart';
@@ -43,6 +44,23 @@ class ApplicationWidget extends StatelessWidget {
               itemBuilder: (context, index) {
                 var item = value[index];
                 var app = item.keys.first;
+
+
+                late Widget icon;
+                if(app.metadata.avatarThumbnail()!=null){
+                  icon = ImageWidget(
+                    app.metadata.avatarThumbnail(),
+                    size: 64.w,
+                    circular: true,
+                  );
+                }else{
+                  icon = Icon(
+                    Ionicons.apps,
+                    color: const Color(0xFF9498df),
+                    size: 50.w,
+                  );
+                }
+
                 return GestureDetector(
                   onTap: () async{
 
@@ -61,11 +79,7 @@ class ApplicationWidget extends StatelessWidget {
                         alignment: Alignment.center,
                         width: 65.w,
                         height: 65.w,
-                        child: ImageWidget(
-                          app.metadata.avatarThumbnail(),
-                          size: 64.w,
-                          circular: true,
-                        ),
+                        child: icon,
                       ),
                       Text(
                         app.metadata.name!,

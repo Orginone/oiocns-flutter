@@ -64,7 +64,7 @@ class ProcessInfoPage
             Widget child = testMappingComponents[e.field.type ?? ""]!(
                 e.field, settingCtrl.user);
             return child;
-          },future:  controller.loadFieldData(e, state.mainForm!.data?.after[0].otherInfo??{}),);
+          },future:  controller.loadMainFieldData(e, state.mainForm!.data?.after[0].otherInfo??{}),);
         }).toList() ??
             []
       ],
@@ -89,22 +89,16 @@ class ProcessInfoPage
                   List<String> title =
                       element.fields.map((e) => e.name ?? "").toList() ??
                           [];
-                  List<List<String>> content = element.data!.after.map((thing) {
-                    List<String> data = [];
-                    for (var element in element.fields) {
-                      data.add(thing.otherInfo[element.id]??"");
-                    }
-                    return [
-                      thing.id ?? "",
-                      thing.status ?? "",
-                      ShareIdSet[thing.creater]?.name??"",
-                      ...data
-                    ];
-                  }).toList();
-
-                  return CommonWidget.commonDocumentWidget(
-                    title: ["标识", "创建者", "状态", ...title],
-                    content: content,
+                  return FutureBuilder<List<List<String>>>(
+                    builder: (context,snapshot) {
+                      if(snapshot.hasData){
+                        return CommonWidget.commonDocumentWidget(
+                          title: ["标识", "创建者", "状态", ...title],
+                          content: snapshot.data??[],
+                        );
+                      }
+                     return Container();
+                    },future: controller.loadSubFieldData(element, element.fields),
                   );
                 }).toList(),
               );
