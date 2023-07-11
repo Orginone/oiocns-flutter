@@ -229,12 +229,12 @@ class UserProvider {
         apps.add({element: target.space});
       }
     }
-    print('');
     myApps.value = apps.where((a) {
       return apps.indexWhere((x) => x.keys.first.id == a.keys.first.id) ==
           apps.indexOf(a);
     }).toList();
     myApps.refresh();
+    EventBusHelper.fire(LoadApplicationDone());
   }
 
   Future<void> _recvTarget(String recvData) async {

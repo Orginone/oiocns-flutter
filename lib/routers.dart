@@ -13,6 +13,8 @@ import 'package:orginone/pages/login/view.dart';
 import 'package:orginone/pages/other/add_asset/binding.dart';
 import 'package:orginone/pages/other/add_asset/view.dart';
 import 'package:orginone/pages/other/choice_thing/binding.dart';
+import 'package:orginone/pages/other/general_bread_crumbs/binding.dart';
+import 'package:orginone/pages/other/general_bread_crumbs/view.dart';
 import 'package:orginone/pages/other/pdf/index.dart';
 import 'package:orginone/pages/other/qr_scan/binding.dart';
 import 'package:orginone/pages/other/qr_scan/view.dart';
@@ -276,6 +278,9 @@ class Routers {
 
   static const String fileReader = "/fileReader";
 
+  static const String generalBreadCrumbs = "/generalBreadCrumbs";
+
+
   static String get main {
     var user = HiveUtils.getUser();
     if (user != null) {
@@ -528,6 +533,11 @@ class Routers {
         name: Routers.fileReader,
         page: () => FileReaderPage(),
         binding: FileReaderBinding(),
+      ),
+      GetPage(
+        name: Routers.generalBreadCrumbs,
+        page: () => GeneralBreadCrumbsPage(),
+        binding: GeneralBreadCrumbsBinding(),
       ),
     ];
   }

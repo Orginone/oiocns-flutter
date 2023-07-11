@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/model/asset_creation_config.dart';
-import 'package:orginone/model/thing_model.dart' as thing;
 
 import 'model.dart';
 
@@ -5574,86 +5573,66 @@ class XRuleStdArray {
   }
 }
 
-class XWorkTask {
-  String id;
-  String nodeId;
-  String title;
-  String approveType;
-  String taskType;
-  int count;
-  String defineId;
-  String shareId;
-  String belongId;
-  String instanceId;
-  String identityId;
-  String content;
-  String remark;
-  int status;
-  String createUser;
-  String updateUser;
-  String version;
-  String createTime;
-  String updateTime;
+class XWorkTask extends XEntity {
+  String? nodeId;
+  String? title;
+  String? approveType;
+  String? taskType;
+  int? count;
+  String? defineId;
+  String? shareId;
+  String? belongId;
+  String? instanceId;
+  String? identityId;
+  String? content;
+  String? remark;
   List<XWorkRecord>? records;
   XWorkNode? node;
   XWorkInstance? instance;
 
   XWorkTask({
-    required this.id,
-    required this.nodeId,
-    required this.title,
-    required this.approveType,
-    required this.taskType,
-    required this.count,
-    required this.defineId,
-    required this.shareId,
-    required this.belongId,
-    required this.instanceId,
-    required this.identityId,
-    required this.content,
-    required this.remark,
-    required this.status,
-    required this.createUser,
-    required this.updateUser,
-    required this.version,
-    required this.createTime,
-    required this.updateTime,
+     this.nodeId,
+     this.title,
+     this.approveType,
+     this.taskType,
+     this.count,
+     this.defineId,
+     this.shareId,
+     this.belongId,
+     this.instanceId,
+     this.identityId,
+     this.content,
+     this.remark,
     this.records,
     this.node,
     this.instance,
   });
 
-  factory XWorkTask.fromJson(Map<String, dynamic> json) {
+  XWorkTask.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     List<XWorkRecord>? records;
     if (json['records'] != null) {
       var recordList = json['records'] as List;
-      records = recordList.map((record) => XWorkRecord.fromJson(record)).toList();
+      records =
+          recordList.map((record) => XWorkRecord.fromJson(record)).toList();
     }
 
-    return XWorkTask(
-      id: json['id']??"",
-      nodeId: json['nodeId'] ??"",
-      title: json['title'] ??"",
-      approveType: json['approveType'] ??"",
-      taskType: json['taskType'] ??"",
-      count: json['count']??0,
-      defineId: json['defineId']??"",
-      shareId: json['shareId'] ??"",
-      belongId: json['belongId'] ??"",
-      instanceId: json['instanceId'] ??"",
-      identityId: json['identityId']??"",
-      content: json['content']??"",
-      remark: json['remark'] ??"",
-      status: json['status']??-1,
-      createUser: json['createUser']??"",
-      updateUser: json['updateUser']??"",
-      version: json['version']??"",
-      createTime: json['createTime']??"",
-      updateTime: json['updateTime']??"",
-      records: records,
-      node: json['node'] != null ? XWorkNode.fromJson(json['node']) : null,
-      instance: json['instance'] != null ? XWorkInstance.fromJson(json['instance']) : null,
-    );
+    nodeId = json['nodeId'] ?? "";
+    title = json['title'] ?? "";
+    approveType = json['approveType'] ?? "";
+    taskType = json['taskType'] ?? "";
+    count = json['count'] ?? 0;
+    defineId = json['defineId'] ?? "";
+    shareId = json['shareId'] ?? "";
+    belongId = json['belongId'] ?? "";
+    instanceId = json['instanceId'] ?? "";
+    identityId = json['identityId'] ?? "";
+    content = json['content'] ?? "";
+    remark = json['remark'] ?? "";
+    records = records;
+    node = json['node'] != null ? XWorkNode.fromJson(json['node']) : null;
+    instance = json['instance'] != null
+        ? XWorkInstance.fromJson(json['instance'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {

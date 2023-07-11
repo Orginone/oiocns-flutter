@@ -52,6 +52,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
     if (state.mainForm.value != null) {
       await state.mainForm.value!.loadAttributes();
       await state.mainForm.value!.loadItems();
+      await state.mainForm.value!.createFields();
     }
 
     state.mainForm.refresh();
@@ -67,6 +68,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
     for (var form in state.subForm) {
       await form.loadAttributes();
       await form.loadItems();
+      await form.createFields();
     }
     state.subForm.refresh();
   }

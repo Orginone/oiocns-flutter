@@ -96,27 +96,29 @@ class ChatProvider implements IChatProvider {
 
   @override
   Future<void> loadPreMessage() async {
-    var res = await kernel.anystore.get(StoreCollName.chatMessage, user.id);
-    if (res.success) {
-      if (res.data is Map<String, dynamic>) {
-        for (var key in (res.data as Map).keys) {
-          if (key!.startsWith('T') && res.data[key]['fullId'] != null) {
-            var fullId = key.substring(1);
-            var find = allChats
-                .firstWhereOrNull((i) => i.chatdata.value.fullId == fullId);
-            find?.loadCache(MsgChatData.fromMap(res.data[key]));
+    kernel.anystore.subscribed(StoreCollName.chatMessage, user.id,(res){
+      if (res!=null) {
+        if (res is Map<String, dynamic>) {
+          for (var key in (res as Map).keys) {
+            if (key!.startsWith('T') && res[key]['fullId'] != null) {
+              var fullId = key.substring(1);
+              var find = allChats
+                  .firstWhereOrNull((i) => i.chatdata.value.fullId == fullId);
+              find?.loadCache(MsgChatData.fromMap(res[key]));
+            }
           }
         }
+        _preMessages.sort((a, b) {
+          return DateTime.parse(a.createTime)
+              .compareTo(DateTime.parse(b.createTime));
+        });
+        for (var element in _preMessages) {
+          _recvMessage(element);
+        }
+        _preMessage = false;
       }
-      _preMessages.sort((a, b) {
-        return DateTime.parse(a.createTime)
-            .compareTo(DateTime.parse(b.createTime));
-      });
-      for (var element in _preMessages) {
-        _recvMessage(element);
-      }
-      _preMessage = false;
-    }
+    });
+
   }
 
   @override

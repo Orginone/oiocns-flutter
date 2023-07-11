@@ -1,32 +1,31 @@
+
+
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/chat/message_routers.dart';
 import 'package:orginone/widget/common_widget.dart';
 
-class MessageBreadcrumbNavItem
-    extends BaseBreadcrumbNavItem<ChatBreadcrumbNav> {
-  final PopupMenuItemSelected? onSelected;
+import 'state.dart';
 
-  MessageBreadcrumbNavItem({
-    required super.item,
-    super.onTap,
-    super.onNext,
-    super.key,
-    this.onSelected,
-  });
+class Item extends BaseBreadcrumbNavItem<GeneralBreadcrumbNav>{
+
+  final void Function(PopupMenuKey value,GeneralBreadcrumbNav model)? onSelected;
+
+  Item({required super.item,super.onNext,super.onTap,this.onSelected});
 
 
   @override
   Widget action() {
-    if (item.type == ChatType.list) {
+    // TODO: implement action
+    if (item.spaceEnum != SpaceEnum.work) {
       return super.action();
     }
     return Obx((){
-      PopupMenuItem popupMenuItem;
-      if (settingCtrl.chat.isMostUsed(item.target!)) {
+      PopupMenuItem<PopupMenuKey> popupMenuItem;
+      if (settingCtrl.work.isMostUsed(item.source!)) {
         popupMenuItem = const PopupMenuItem(
           value: PopupMenuKey.removeCommon,
           child: Text("移除常用"),
@@ -38,9 +37,11 @@ class MessageBreadcrumbNavItem
         );
       }
 
-      return CommonWidget.commonPopupMenuButton(items: [
+      return CommonWidget.commonPopupMenuButton<PopupMenuKey>(items: [
         popupMenuItem,
-      ], onSelected: onSelected);
+      ], onSelected: (PopupMenuKey key){
+        onSelected?.call(key,item);
+      });
     });
   }
 }

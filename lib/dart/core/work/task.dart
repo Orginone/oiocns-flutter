@@ -47,7 +47,7 @@ class WorkTask implements IWorkTask {
 
   @override
   Future<bool> approvalTask(int status, {String? comment}) async {
-    if (metadata.status < TaskStatus.approvalStart.status) {
+    if ((metadata.status!) < TaskStatus.approvalStart.status) {
       if (status == -1) {
         return await recallApply();
       }
@@ -96,7 +96,7 @@ class WorkTask implements IWorkTask {
           "as": 'tasks',
         },
       },
-      metadata.belongId,
+      metadata.belongId!,
     );
 
     if (res.data != null && res.data.length > 0) {
@@ -151,7 +151,7 @@ class WorkTask implements IWorkTask {
   List<XTarget> get targets {
     if (metadata.taskType == '加用户') {
       try {
-        final parsedContent = jsonDecode(metadata.content) as List<dynamic>;
+        final parsedContent = jsonDecode(metadata.content??"[]") as List<dynamic>;
         return parsedContent.map((item) => XTarget.fromJson(item)).toList();
       } catch (ex) {
         return [];

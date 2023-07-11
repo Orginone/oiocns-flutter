@@ -140,10 +140,10 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
      }
   }
 
-  void operation(String key, IMsgChat msg) {
-    if(key == 'set'){
+  void operation(PopupMenuKey key, IMsgChat msg) {
+    if(key == PopupMenuKey.setCommon){
       settingCtrl.chat.setMostUsed(msg);
-    }else if(key == 'remove'){
+    }else if(key == PopupMenuKey.removeCommon){
       settingCtrl.chat.removeMostUsed(msg);
     }
   }
