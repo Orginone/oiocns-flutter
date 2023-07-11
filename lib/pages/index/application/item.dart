@@ -92,6 +92,7 @@ class ApplicationItem extends StatelessWidget {
                       return GeneralBreadcrumbNav(
                         id: e.metadata.id??"",
                         name: e.metadata.name??"",
+                        spaceEnum: SpaceEnum.work,
                         space: target,
                         source: e, children: [],
                       );

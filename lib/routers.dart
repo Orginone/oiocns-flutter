@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:get/get.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/pages/chat/message_routers.dart';
@@ -65,6 +63,8 @@ import 'pages/other/thing/binding.dart';
 import 'pages/other/thing/thing_details/binding.dart';
 import 'pages/other/thing/thing_details/view.dart';
 import 'pages/other/thing/view.dart';
+import 'pages/other/video_play/binding.dart';
+import 'pages/other/video_play/view.dart';
 import 'pages/setting/add_members/binding.dart';
 import 'pages/setting/add_members/view.dart';
 import 'pages/setting/attribute_info/binding.dart';
@@ -279,6 +279,10 @@ class Routers {
   static const String fileReader = "/fileReader";
 
   static const String generalBreadCrumbs = "/generalBreadCrumbs";
+
+  static const String videoPlay = "/videoPlay";
+
+
 
 
   static String get main {
@@ -539,6 +543,11 @@ class Routers {
         page: () => GeneralBreadCrumbsPage(),
         binding: GeneralBreadCrumbsBinding(),
       ),
+      GetPage(
+        name: Routers.videoPlay,
+        page: () => VideoPlayPage(),
+        binding: VideoPlayBinding(),
+      ),
     ];
   }
 
@@ -557,6 +566,8 @@ class Routers {
       });
     } else if (ImageUtils.isWord(extension)) {
       Get.toNamed(Routers.fileReader, arguments: {'file': file});
+    } else if (ImageUtils.isVideo(extension)) {
+      Get.toNamed(Routers.videoPlay, arguments: {'file': file});
     } else {
       Get.toNamed(Routers.messageFile, arguments: {"file": file});
     }
