@@ -74,7 +74,7 @@ dependencies:
   emoji_picker_flutter: ^1.5.0
   cached_network_image: ^3.2.1
   photo_view: ^0.14.0
-  package_info_plus: ^3.1.2
+  package_info_plus: ^4.0.2
   flutter_custom_dialog: ^1.0.20
   flutter_advanced_avatar: ^1.1.0
   flutter_datetime_picker: ^1.5.1
@@ -128,7 +128,8 @@ dependencies:
   photo_manager: ^2.6.0
   extended_image: ^6.1.0
   flutter_filereader: ^3.0.0
-  better_player: ^0.0.83
+  chewie: ^1.7.0
+  video_player: ^2.6.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

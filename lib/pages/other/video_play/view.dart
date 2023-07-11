@@ -1,4 +1,4 @@
-import 'package:better_player/better_player.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
@@ -16,14 +16,12 @@ class VideoPlayPage extends BaseGetView<VideoPlayController, VideoPlayState> {
       titleStyle: const TextStyle(color: Colors.white),
       backColor: Colors.white,
       backgroundColor: Colors.black,
-      body: Center(
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: BetterPlayer(
-            controller: state.betterPlayerController,
-          ),
-        ),
-      ),
+      body: Obx(() {
+        if(!state.isInitialized.value){
+          return Center(child:  CircularProgressIndicator(),);
+        }
+        return Chewie(controller: state.chewieController);
+      }),
     );
   }
 }
