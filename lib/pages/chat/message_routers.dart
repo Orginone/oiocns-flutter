@@ -18,13 +18,15 @@ class MessageRouters
   @override
   Widget body() {
     return SingleChildScrollView(child: Obx(() {
-      return Column(children: initiate());
+      var chats = state.model.value?.children.where((element) => element.name.contains(state.keyword)).toList();
+
+      return Column(children: initiate(chats??[]));
     }));
   }
 
-  List<Widget> initiate() {
+  List<Widget> initiate(List<ChatBreadcrumbNav> chats) {
     List<Widget> children = [];
-    for (var child in state.model.value?.children??[]) {
+    for (var child in chats) {
       children.add(MessageBreadcrumbNavItem(
         item: child,
         onNext: () {

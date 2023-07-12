@@ -86,8 +86,9 @@ class UserController extends GetxController {
         _provider.loadWorkData(),
         _provider.loadStoreData(),
         _provider.loadContent(),
+      _provider.loadApps(),
       ]);
-      _provider.loadApps();
+      EventBusHelper.fire(InitHomeData());
     });
   }
 

@@ -21,5 +21,8 @@ class ApplicationController extends BaseController<ApplicationState> {
        state.isSuccess.value = true;
        state.isLoading.value = false;
      }
+     if(event is InitHomeData){
+       loadApps(false);
+     }
   }
 }
