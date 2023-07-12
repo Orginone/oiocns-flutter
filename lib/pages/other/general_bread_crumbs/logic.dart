@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
+import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -12,7 +13,7 @@ class GeneralBreadCrumbsController extends BaseBreadcrumbNavController<GeneralBr
  final GeneralBreadCrumbsState state = GeneralBreadCrumbsState();
 
   void onNext(GeneralBreadcrumbNav item) {
-    if(item.spaceEnum == SpaceEnum.work){
+    if(item.spaceEnum == SpaceEnum.work || item.spaceEnum == SpaceEnum.file){
      jumpDetails(item);
     }else{
      Get.toNamed(Routers.generalBreadCrumbs,
@@ -31,7 +32,9 @@ class GeneralBreadCrumbsController extends BaseBreadcrumbNavController<GeneralBr
       ToastUtils.showMsg(msg: "流程未绑定表单");
      };
      break;
-
+    case SpaceEnum.file:
+     Routers.jumpFile(file: (item.source as ISysFileInfo).shareInfo());
+     break;
    }
   }
 

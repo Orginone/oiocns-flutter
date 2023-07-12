@@ -29,10 +29,10 @@ class SettingCenterPage extends BaseBreadcrumbNavMultiplexPage<
                     .map((e) => Item(
                           item: e,
                           onTap: () {
-                            controller.jumpInfo(e);
+                            controller.onDetailsNextLv(e);
                           },
                           onNext: () {
-                            controller.onHomeNextLv(e);
+                            controller.onDetailsNextLv(e);
                           },
                           onSelected: (key, item) {
                             controller.operation(key, item);
