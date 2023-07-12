@@ -7,6 +7,9 @@ import 'package:orginone/main.dart';
 class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
 
   InitiateWorkState() {
+
+    showSearchButton = false;
+
     var joinedCompanies = settingCtrl.user.companys;
 
     model.value = Get.arguments?['data'];

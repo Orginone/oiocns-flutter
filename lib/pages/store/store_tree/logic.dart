@@ -172,4 +172,11 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
         break;
     }
   }
+
+  @override
+  void onTopPopupMenuSelected(PopupMenuKey key) {
+    // TODO: implement onTopPopupMenuSelected
+    operation(key,state.model.value!);
+
+  }
 }

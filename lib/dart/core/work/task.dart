@@ -57,7 +57,7 @@ class WorkTask implements IWorkTask {
           status: status,
           comment: comment,
           data:
-              instanceData != null ? jsonEncode(instanceData!.toJson()) : null,
+              instanceData != null ? jsonEncode(instanceData?.toJson()??{}) : null,
         ));
         if (res.success && status < TaskStatus.refuseStart.status) {
           if (targets.length == 2) {
@@ -102,7 +102,8 @@ class WorkTask implements IWorkTask {
     if (res.data != null && res.data.length > 0) {
       try {
         instance = XWorkInstance.fromJson(res.data[0]);
-        instanceData = instance != null
+       Map<String,dynamic> json = jsonDecode(instance!.data ?? "");
+        instanceData = instance != null && json.isNotEmpty
             ? InstanceDataModel.fromJson(jsonDecode(instance!.data ?? ""))
             : null;
         return instanceData != null;

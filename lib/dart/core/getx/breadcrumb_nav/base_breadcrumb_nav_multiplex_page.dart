@@ -1,23 +1,23 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
+import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 
 import 'base_breadcrumb_nav_controller.dart';
 import 'base_get_breadcrumb_nav_state.dart';
 
-abstract class BaseBreadcrumbNavMultiplexPage<T extends BaseBreadcrumbNavController,S extends BaseBreadcrumbNavState> extends BaseGetPageView<T,S>{
-
-
-
+abstract class BaseBreadcrumbNavMultiplexPage<
+    T extends BaseBreadcrumbNavController,
+    S extends BaseBreadcrumbNavState> extends BaseGetPageView<T, S> {
   TextStyle get _selectedTextStyle =>
-  TextStyle(fontSize: 24.sp, color: XColors.themeColor);
+      TextStyle(fontSize: 24.sp, color: XColors.themeColor);
 
   TextStyle get _unSelectedTextStyle =>
-  TextStyle(fontSize: 24.sp, color: Colors.black);
+      TextStyle(fontSize: 24.sp, color: Colors.black);
 
   @override
   Widget buildView() {
@@ -29,12 +29,51 @@ abstract class BaseBreadcrumbNavMultiplexPage<T extends BaseBreadcrumbNavControl
     }
     return GyScaffold(
       titleSpacing: 0,
-      leading: BackButton(color: Colors.black,onPressed: (){
-        controller.popAll();
-      },),
+      leading: BackButton(
+        color: Colors.black,
+        onPressed: () {
+          controller.popAll();
+        },
+      ),
       centerTitle: false,
       appBarColor: Colors.white,
-      titleWidget:SingleChildScrollView(scrollDirection: Axis.horizontal,controller: state.navBarController,child: Row(children:nextStep,),),
+      titleWidget: Obx(() {
+        if (state.showSearch.value) {
+          return CommonWidget.commonSearchBarWidget(
+              hint: "请输入",
+              onChanged: (str) {
+                controller.search(str);
+              });
+        }
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          controller: state.navBarController,
+          child: Row(
+            children: nextStep,
+          ),
+        );
+      }),
+      actions: [
+        state.showSearchButton?Obx(() {
+          return IconButton(
+            onPressed: () {
+              controller.changeSearchState();
+            },
+            icon: Icon(
+              state.showSearch.value ? Icons.close : Icons.search,
+              color: Colors.black,
+            ),
+          );
+        }):const SizedBox(),
+        popupMenuItems().isEmpty
+            ? const SizedBox()
+            : CommonWidget.commonPopupMenuButton<PopupMenuKey>(
+                items: popupMenuItems(),
+                iconColor: Colors.black,
+                onSelected: (key) {
+                  controller.onTopPopupMenuSelected(key);
+                }),
+      ],
       body: body(),
     );
   }
@@ -49,7 +88,7 @@ abstract class BaseBreadcrumbNavMultiplexPage<T extends BaseBreadcrumbNavControl
               ? _selectedTextStyle
               : _unSelectedTextStyle),
     ];
-    if ((index+1) != state.bcNav.length) {
+    if ((index + 1) != state.bcNav.length) {
       children.add(TextSpan(text: " • ", style: _unSelectedTextStyle));
     }
     return GestureDetector(
@@ -71,4 +110,9 @@ abstract class BaseBreadcrumbNavMultiplexPage<T extends BaseBreadcrumbNavControl
     // TODO: implement tag
     return hashCode.toString();
   }
+
+  List<PopupMenuItem<PopupMenuKey>> popupMenuItems() {
+    return [];
+  }
+
 }

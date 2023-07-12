@@ -15,6 +15,12 @@ abstract class BaseBreadcrumbNavState<T extends BaseBreadcrumbNavModel> extends 
   final ScrollController navBarController = ScrollController();
 
   bool get isRootDir => (bcNav.length - 1) == 0;
+
+  var showSearch = false.obs;
+
+  var keyword = ''.obs;
+
+  bool showSearchButton = true;
 }
 
  class BaseBreadcrumbNavModel<T> {

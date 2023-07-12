@@ -7,7 +7,9 @@ import 'package:orginone/dart/core/target/base/target.dart';
 class GeneralBreadCrumbsState extends BaseBreadcrumbNavState{
 
   GeneralBreadCrumbsState(){
-    model.value = Get.arguments?['data'];
+    if(Get.arguments is Map){
+      model.value = Get.arguments?['data'];
+    }
     title = model.value?.name??'';
   }
 }

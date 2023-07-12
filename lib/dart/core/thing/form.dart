@@ -281,7 +281,7 @@ class Form extends FileInfo<XForm> implements IForm {
     String? regx;
     Map<dynamic, String> select = {};
     Map rule = jsonDecode(attr.rule ?? "{}");
-    String widget = rule?['widget'] ?? "";
+    String widget = rule['widget'] ?? "";
     switch (attr.valueType) {
       case "描述型":
         type = "input";

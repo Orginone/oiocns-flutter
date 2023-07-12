@@ -8,7 +8,11 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/user_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/thing/directory.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/avatars.dart';
+import 'package:orginone/pages/other/general_bread_crumbs/state.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/template/choose_item.dart';
@@ -35,6 +39,7 @@ class MessageSetting extends GetView<UserController> {
         Padding(padding: EdgeInsets.only(top: 30.h)),
         // _interruption,
         // _top,
+        _file(chat),
         _searchChat(chat),
       ];
     } else {
@@ -54,6 +59,7 @@ class MessageSetting extends GetView<UserController> {
         ),
         // _interruption,
         // _top,
+        _file(chat),
         _searchChat(chat),
       ];
     }
@@ -171,6 +177,32 @@ class MessageSetting extends GetView<UserController> {
     );
   }
 
+  Widget _file(IMsgChat chat) {
+    return ChooseItem(
+      func: () async{
+        List<GeneralBreadcrumbNav> navs = [];
+        IDirectory dir;
+        if(chat.share.typeName == TargetType.person.label){
+          dir = settingCtrl.user.directory;
+          navs = await _buildNav([dir],settingCtrl.user);
+        }else{
+          dir = (chat as ITarget).directory;
+          navs = await _buildNav([dir],chat);
+        }
+        Get.toNamed(Routers.generalBreadCrumbs,arguments: {"data":navs.first});
+      },
+      padding: EdgeInsets.symmetric(vertical: 15.h),
+      header: Text(
+        "共享目录",
+        style: XFonts.size20Black3W700,
+      ),
+      operate: Icon(
+        Icons.keyboard_arrow_right,
+        size: 32.w,
+      ),
+    );
+  }
+
   /// 清空聊天记录
   Widget _clear(BuildContext context, IMsgChat chat) {
     return GestureDetector(
@@ -258,5 +290,49 @@ class MessageSetting extends GetView<UserController> {
       },
       child: Text(btnName, style: XFonts.size22WhiteW700),
     );
+  }
+
+
+  Future<List<GeneralBreadcrumbNav>> _buildNav(List<IDirectory> dirs,ITarget target) async{
+    List<GeneralBreadcrumbNav> navs = [];
+    for (var dir in dirs) {
+      await Future.wait([dir.loadSubDirectory(),dir.loadFiles()]);
+      var nav = GeneralBreadcrumbNav(
+          id: dir.metadata.id??"",
+          name: dir.metadata.name ?? "",
+          source: dir,
+          spaceEnum: SpaceEnum.directory,
+          space: target,
+          onNext: (item) async{
+            item.children = [
+              ...dir.files.map((e) {
+                return GeneralBreadcrumbNav(
+                  id: e.metadata.id??"",
+                  name: e.metadata.name??"",
+                  spaceEnum: SpaceEnum.file,
+                  space: target,
+                  source: e, children: [],
+                );
+              }).toList(),
+              ...await _buildNav(dir.children,target),
+            ];
+          }, children: [
+        ...dir.files.map((e) {
+          return GeneralBreadcrumbNav(
+            id: e.metadata.id??"",
+            name: e.metadata.name??"",
+            spaceEnum: SpaceEnum.file,
+            space: target,
+            source: e, children: [],
+          );
+        }).toList(),
+        ...await _buildNav(dir.children,target),
+      ],
+      );
+      navs.add(nav);
+    }
+
+
+    return navs;
   }
 }

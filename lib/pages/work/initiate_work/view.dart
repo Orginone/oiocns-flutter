@@ -16,7 +16,7 @@ class InitiateWorkPage extends BaseBreadcrumbNavMultiplexPage<
     return SingleChildScrollView(
       child: Obx(() {
         List<Widget> children = [];
-        if (state.model.value!.name == "发起办事") {
+        if (state.isRootDir) {
           children = initiate();
         }else{
           children = workDetails();
