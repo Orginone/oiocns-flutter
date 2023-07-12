@@ -6728,7 +6728,7 @@ class XThing {
         belong = XTarget.fromJson(json["belong"]);
 
   //通过动态数组解析成List
-  static List<XThing> fromList(List<Map<String, dynamic>>? list) {
+  static List<XThing> fromList(List<dynamic>? list) {
     if (list == null) {
       return [];
     }

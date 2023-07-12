@@ -213,8 +213,17 @@ class UserController extends GetxController {
           List<XTarget> target =
               await user.searchTargets(entity.code!, [entity.typeName!]);
           if (target.isNotEmpty) {
-            await user.applyJoin(target);
+            var success = await user.applyJoin(target);
+            if(success){
+              ToastUtils.showMsg(msg: "申请发送成功");
+            }else{
+              ToastUtils.showMsg(msg: "申请发送失败");
+            }
+          }else{
+            ToastUtils.showMsg(msg: "获取用户失败");
           }
+        }else{
+          ToastUtils.showMsg(msg: "获取用户失败");
         }
       }
     });
