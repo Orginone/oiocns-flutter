@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/main.dart';
 
 import 'state.dart';
 
-class IndexController extends BaseController<IndexState> {
+class IndexController extends BaseController<IndexState> with GetTickerProviderStateMixin{
  final IndexState state = IndexState();
 
 
@@ -12,6 +13,7 @@ class IndexController extends BaseController<IndexState> {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    state.tabController = TabController(length: tabTitle.length, vsync: this);
   }
 
   @override
@@ -25,9 +27,5 @@ class IndexController extends BaseController<IndexState> {
   void onReceivedEvent(event) {
     // TODO: implement onReceivedEvent
     super.onReceivedEvent(event);
-  }
-
-  Future<void> loadApps([bool reload = false]) async{
-    await settingCtrl.provider.loadApps(reload);
   }
 }

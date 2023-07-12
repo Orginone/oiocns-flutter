@@ -245,6 +245,8 @@ enum SpaceEnum {
   species("分类"),
   property("属性"),
   applications("应用"),
+  module("模块"),
+  work("办事"),
   form("表单"),
   file("文件"),
   user('个人'),

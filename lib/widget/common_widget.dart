@@ -886,7 +886,7 @@ class CommonWidget {
       {PopupMenuItemSelected<T>? onSelected,
       required List<PopupMenuItem<T>> items,
       Color? color,
-      IconData? icon}) {
+      IconData? icon,Color? iconColor}) {
     return Container(
       height: 50.h,
       color: color ?? Colors.white,
@@ -894,6 +894,7 @@ class CommonWidget {
         icon: Icon(
           icon ?? Icons.more_vert_outlined,
           size: 32.w,
+          color: iconColor,
         ),
         itemBuilder: (BuildContext context) {
           return items;

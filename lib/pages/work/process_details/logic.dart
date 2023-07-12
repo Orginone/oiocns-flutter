@@ -3,15 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
-import 'package:orginone/main.dart';
 import 'package:orginone/model/asset_creation_config.dart';
-import 'package:orginone/pages/work/network.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
-import 'package:orginone/model/thing_model.dart' as thing;
 import 'state.dart';
 
 class ProcessDetailsController extends BaseController<ProcessDetailsState> with GetTickerProviderStateMixin{
@@ -63,7 +58,7 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
         element.data = getFormData(element.id!);
         element.fields = state.todo.instanceData!.fields[element.id]??[];
         for (var field in element.fields) {
-          field.field =await initFields(field);
+          field.field = await initFields(field);
         }
       }
       state.subTabController = TabController(length: state.subForm.length, vsync: this);
@@ -77,8 +72,8 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
     String? router;
     String? regx;
     Map<dynamic, String> select = {};
-    Map rule = jsonDecode(field.rule!);
-    String widget = rule?['widget']??"";
+    Map rule = jsonDecode(field.rule??"{}");
+    String widget = rule['widget']??"";
     switch (field.valueType) {
       case "描述型":
         type = "input";

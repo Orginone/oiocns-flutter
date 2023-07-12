@@ -1,13 +1,15 @@
 
 
 
+import 'package:flutter/material.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 
 class IndexState extends BaseGetState{
 
-  List<String> imageList = [
-    "images/bg_center1.png",
-  ];
-
+  late TabController tabController;
 
 }
+
+const List<String> tabTitle = [
+  "应用",
+];

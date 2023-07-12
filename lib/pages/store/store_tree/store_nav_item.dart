@@ -36,6 +36,7 @@ class StoreNavItem extends BaseBreadcrumbNavItem<StoreTreeNav>{
           },);
       });
     }
+
     return CommonWidget.commonPopupMenuButton<PopupMenuKey>(
       items: [
         PopupMenuItem(value: PopupMenuKey.shareQr,child: Text(PopupMenuKey.shareQr.label),)

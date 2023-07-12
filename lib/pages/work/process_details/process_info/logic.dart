@@ -49,7 +49,11 @@ class ProcessInfoController extends BaseController<ProcessInfoState> {
           for (var value in field.lookups ?? []) {
             field.field.select![value.value] = value.text ?? "";
           }
-          field.field.defaultData.value = {value: field.field.select![value]};
+          if(field.field.type == "select"){
+            field.field.defaultData.value = {value:field.field.select![value]};
+          }else{
+            field.field.defaultData.value = value??"";
+          }
           return field.field.select![value] ?? "";
         case "upload":
           field.field.defaultData.value =

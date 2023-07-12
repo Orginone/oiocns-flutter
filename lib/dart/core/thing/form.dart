@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/consts.dart';
@@ -31,6 +32,8 @@ abstract class IForm implements IFileInfo<XForm> {
   Future<bool> update(FormModel data);
 
   late List<XSpeciesItem> items;
+
+  Future<void> createFields();
 
   Future<List<XSpeciesItem>> loadItems({bool reload = false});
 
@@ -263,17 +266,6 @@ class Form extends FileInfo<XForm> implements IForm {
         }
       }
     }
-    for (var element in fields) {
-      element.field = await initFields(attributes.firstWhere((attr) => attr.id == element.id));
-      if(element.field.type == "select" || element.field.type == 'switch'){
-        var field = fields.firstWhere((f) => f.code == element.field.code);
-        Map<dynamic,String> select = {};
-        for (var value in field.lookups!) {
-          select[value.value] = value.text??"";
-        }
-        element.field.select = select;
-      }
-    }
     return items;
   }
 
@@ -283,14 +275,14 @@ class Form extends FileInfo<XForm> implements IForm {
     }
   }
 
-  Future<Fields> initFields(XAttribute attr) async {
+  Future<Fields> initFields(FieldModel attr) async {
     String? type;
     String? router;
     String? regx;
     Map<dynamic, String> select = {};
-    Map rule = jsonDecode(attr.rule!);
-    String widget = rule?['widget']??"";
-    switch (attr.property?.valueType) {
+    Map rule = jsonDecode(attr.rule ?? "{}");
+    String widget = rule['widget'] ?? "";
+    switch (attr.valueType) {
       case "描述型":
         type = "input";
         break;
@@ -300,9 +292,12 @@ class Form extends FileInfo<XForm> implements IForm {
         break;
       case "选择型":
       case "分类型":
-        if(widget == 'switch'){
+        for (var value in attr.lookups ?? []) {
+          select[value.value] = value.text ?? "";
+        }
+        if (widget == 'switch') {
           type = "switch";
-        }else{
+        } else {
           type = "select";
         }
         break;
@@ -372,7 +367,8 @@ class Form extends FileInfo<XForm> implements IForm {
                 element.field.defaultData.value.keys?.first;
             break;
           case "upload":
-            thing.otherInfo[element.id!] = element.field.defaultData.value.toJson();
+            thing.otherInfo[element.id!] =
+                element.field.defaultData.value.toJson();
             break;
           default:
             thing.otherInfo[element.id!] = element.field.defaultData.value!;
@@ -382,4 +378,10 @@ class Form extends FileInfo<XForm> implements IForm {
     }
   }
 
+  @override
+  Future<void> createFields() async {
+    for (var element in fields) {
+      element.field = await initFields(element);
+    }
+  }
 }

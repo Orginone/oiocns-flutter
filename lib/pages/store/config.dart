@@ -9,6 +9,7 @@ import 'package:orginone/dart/core/thing/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/dart/core/thing/form.dart';
+import 'package:orginone/dart/core/work/index.dart';
 
 import 'store_tree/state.dart';
 
@@ -28,7 +29,7 @@ Future<List<StoreTreeNav>> loadDir(
           ...await loadDir(dir.children, target),
           ...await loadFile(dir.files, target),
           ...await loadApplications(dir.applications, target),
-          ...await loadForm(dir.forms, target)
+          // ...await loadForm(dir.forms, target)
         ];
       },
       children: [],
@@ -60,6 +61,7 @@ Future<List<StoreTreeNav>> loadApplications(
     List<IApplication> applications, ITarget target) async {
   List<StoreTreeNav> nav = [];
   for (var application in applications) {
+    var works = await application.loadWorks();
     StoreTreeNav appNav = StoreTreeNav(
       id: application.metadata.id!,
       source: application,
@@ -67,7 +69,54 @@ Future<List<StoreTreeNav>> loadApplications(
       name: application.metadata.name!,
       space: target,
       image: application.metadata.avatarThumbnail(),
+      children: [
+        ...await loadModule(application.children,target),
+        ...loadWork(works, target),
+      ],
+    );
+    nav.add(appNav);
+  }
+  return nav;
+}
+
+List<StoreTreeNav> loadWork(
+    List<IWork> works, ITarget target) {
+  List<StoreTreeNav> nav = [];
+  for (var work in works) {
+    StoreTreeNav workNav = StoreTreeNav(
+      id: work.metadata.id!,
+      source: work,
+      spaceEnum: SpaceEnum.work,
+      name: work.metadata.name!,
+      space: target,
+      image: work.metadata.avatarThumbnail(),
       children: [],
+    );
+    nav.add(workNav);
+  }
+  return nav;
+}
+
+Future<List<StoreTreeNav>> loadModule(
+    List<IApplication> applications, ITarget target) async {
+  List<StoreTreeNav> nav = [];
+  for (var application in applications) {
+    StoreTreeNav appNav = StoreTreeNav(
+      id: application.metadata.id!,
+      source: application,
+      spaceEnum: SpaceEnum.module,
+      name: application.metadata.name!,
+      space: target,
+      image: application.metadata.avatarThumbnail(),
+      children: [],
+      onNext: (item) async{
+        var works = await application.loadWorks();
+        List<StoreTreeNav> nav = [
+          ...await loadModule(application.children, target),
+          ...loadWork(works, target),
+        ];
+        item.children = nav;
+      }
     );
     nav.add(appNav);
   }

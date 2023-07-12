@@ -487,11 +487,15 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   @override
   Future<List<IApplication>> loadAllApplications({bool reload = false}) async {
     final applications = <IApplication>[];
-    applications.addAll(await loadApplications(reload: reload));
-    for (final subDirectory in children) {
-      applications
-          .addAll(await subDirectory.loadAllApplications(reload: reload));
+    var res = await Future.wait<List<IApplication>>([
+      loadApplications(reload: reload),
+      ...children.map((e) => e.loadAllApplications(reload: reload)).toList()
+    ]);
+
+    for (var element in res) {
+      applications.addAll(element);
     }
+
     return applications;
   }
 }

@@ -27,7 +27,11 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
           space: user.space,
           showPopup: false,
           spaceEnum: SpaceEnum.directory,
-          children: await loadFile(user.space!.directory.files,user.space!),
+          children: [
+            ...await loadApplications(user.space!.directory.applications,user.space!),
+            ...await loadForm(user.space!.directory.forms,user.space!),
+            ...await loadFile(user.space!.directory.files,user.space!),
+          ],
         ),
       ];
 
@@ -48,10 +52,14 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
             space: company.space,
             showPopup: false,
             spaceEnum: SpaceEnum.directory,
-            children: await loadFile(company.space!.directory.files,company.space!),
+            children: [
+              ...await loadApplications(company.space!.directory.applications,company.space!),
+              ...await loadForm(company.space!.directory.forms,company.space!),
+              ...await loadFile(company.space!.directory.files,company.space!),
+            ],
           ),
         ];
-        function.addAll(
+         function.addAll(
             await loadDir(company.space!.directory.children, company.space!));
         function.addAll(await loadTargets(
             (company.space!.targets.where(
@@ -61,7 +69,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
         function.addAll(
             await loadGroup((company.space! as Company).groups, company.space!));
         function.addAll(await loadCohorts((company.space! as IBelong).cohorts, company.space!));
-        nav.children.addAll(function);
+        nav.children = function;
       };
     }
   }
@@ -122,10 +130,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
 
   void onNext(StoreTreeNav nav) async {
     if (nav.source != null && nav.children.isEmpty) {
-      if (nav.source.metadata.typeName.contains("配置") ||
-          nav.source.metadata.typeName == "分类项") {
-        jumpThing(nav);
-      } else if (nav.spaceEnum == SpaceEnum.file) {
+      if (nav.spaceEnum == SpaceEnum.file) {
         jumpFile(nav);
       } else if (nav.spaceEnum == SpaceEnum.applications) {
         var works = await nav.source.loadWorks();
@@ -166,5 +171,12 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
         settingCtrl.store.removeMostUsed(item.id);
         break;
     }
+  }
+
+  @override
+  void onTopPopupMenuSelected(PopupMenuKey key) {
+    // TODO: implement onTopPopupMenuSelected
+    operation(key,state.model.value!);
+
   }
 }

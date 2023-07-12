@@ -37,6 +37,14 @@ class ImageUtils {
 
   static bool isPdf(String extension) => extension.contains("pdf");
 
+  static bool isVideo(String extension) =>
+      extension.contains("avi") ||
+      extension.contains("wmv") ||
+      extension.contains("mpg") ||
+      extension.contains("mov") ||
+      extension.contains("fly") ||
+      extension.contains("mp4");
+
   static bool isImage(String extension) =>
       extension.contains("png") ||
       extension.contains("jpg") ||

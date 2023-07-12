@@ -130,39 +130,31 @@ class UserBar extends GetView<UserController> {
         constraints: BoxConstraints(maxWidth: 40.w),
       ),
     );
-    if (controller.homeEnum.value == HomeEnum.door) {
-      return SizedBox(
-        height: 74.h,
-        child: Row(children: [
-          Padding(
-            padding: EdgeInsets.only(left: 10.w),
-            child: GestureDetector(
-              child: _imgAvatar(EdgeInsets.only(left: 10.w)),
-              onTap: () {
-                var home = Get.find<HomeController>();
-                home.jumpTab(HomeEnum.setting);
-              },
-            ),
-          ),
-          const Expanded(child: SizedBox()),
-          ...action,
-        ]),
-      );
-    }
-
     return SizedBox(
       height: 74.h,
       child: Row(children: [
-        IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            controller.jumpInitiate();
-          },
-          constraints: BoxConstraints(maxWidth: 48.w),
-        ),
-        Text(
-          controller.homeEnum.value.label,
-          style: TextStyle(fontSize: 24.sp),
+        Row(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 10.w),
+              child: GestureDetector(
+                child: _imgAvatar(EdgeInsets.only(left: 10.w)),
+                onTap: () {
+                  if(controller.homeEnum.value == HomeEnum.door){
+                    var home = Get.find<HomeController>();
+                    home.jumpTab(HomeEnum.setting);
+                  }else{
+                    controller.jumpInitiate();
+                  }
+                },
+              ),
+            ),
+            SizedBox(width: 10.w,),
+            Text(
+              controller.homeEnum.value.label,
+              style: TextStyle(fontSize: 24.sp),
+            ),
+          ],
         ),
         const Expanded(child: SizedBox()),
         ...action,

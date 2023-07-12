@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/routers.dart';
@@ -61,9 +62,24 @@ abstract class BaseBreadcrumbNavController<S extends BaseBreadcrumbNavState>
   }
 
   void popAll(){
-    Get.until((route){
-      return Get.currentRoute == Routers.home;
-    },);
+    pop(0);
+    Get.back();
+  }
+
+
+  void onTopPopupMenuSelected(PopupMenuKey key){
+
+  }
+
+  void search(str){
+    state.keyword.value = str;
+  }
+
+  void changeSearchState(){
+    state.showSearch.value = !state.showSearch.value;
+    if(!state.showSearch.value){
+      state.keyword.value = '';
+    }
   }
 
   void back(){

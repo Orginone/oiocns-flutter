@@ -706,4 +706,9 @@ class SettingCenterController
         break;
     }
   }
+
+  @override
+  void onTopPopupMenuSelected(PopupMenuKey key) {
+    operation(key,state.model.value!);
+  }
 }

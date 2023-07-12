@@ -15,6 +15,7 @@ import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/dart/core/thing/property.dart';
 import 'package:orginone/dart/core/thing/species.dart';
+import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/pages/setting/home/state.dart';
 
 
@@ -207,6 +208,7 @@ Future<List<SettingNavModel>> loadApplications(
     List<IApplication> applications, IBelong belong) async {
   List<SettingNavModel> nav = [];
   for (var application in applications) {
+    var works = await application.loadWorks();
     SettingNavModel appNav = SettingNavModel(
       id: application.metadata.id!,
       source: application,
@@ -214,6 +216,55 @@ Future<List<SettingNavModel>> loadApplications(
       space: belong,
       spaceEnum: SpaceEnum.applications,
       image: application.metadata.avatarThumbnail(),
+      children: [
+        ...await loadModule(application.children,belong),
+        ...loadWork(works, belong),
+      ]
+    );
+    nav.add(appNav);
+  }
+  return nav;
+}
+
+
+List<SettingNavModel> loadWork(
+    List<IWork> works, ITarget target) {
+  List<SettingNavModel> nav = [];
+  for (var work in works) {
+    SettingNavModel workNav = SettingNavModel(
+      id: work.metadata.id!,
+      source: work,
+      spaceEnum: SpaceEnum.work,
+      name: work.metadata.name!,
+      space: target  as IBelong,
+      image: work.metadata.avatarThumbnail(),
+      children: [],
+    );
+    nav.add(workNav);
+  }
+  return nav;
+}
+
+Future<List<SettingNavModel>> loadModule(
+    List<IApplication> applications, ITarget target) async {
+  List<SettingNavModel> nav = [];
+  for (var application in applications) {
+    SettingNavModel appNav = SettingNavModel(
+        id: application.metadata.id!,
+        source: application,
+        spaceEnum: SpaceEnum.module,
+        name: application.metadata.name!,
+        space: target as IBelong,
+        image: application.metadata.avatarThumbnail(),
+        children: [],
+        onNext: (item) async{
+          var works = await application.loadWorks();
+          List<SettingNavModel> nav = [
+            ...await loadModule(application.children, target),
+            ...loadWork(works, target),
+          ];
+          item.children = nav;
+        }
     );
     nav.add(appNav);
   }

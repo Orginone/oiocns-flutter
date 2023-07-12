@@ -222,6 +222,7 @@ class UserProvider {
 
   Future<void> loadApps([bool reload = false]) async {
     List<Map<IApplication, ITarget>> apps = [];
+    print('开始加载应用-------${DateTime.now()}');
     for (var target in _user.value!.targets) {
       var applications =
           await target.directory.loadAllApplications(reload: reload);
@@ -229,12 +230,13 @@ class UserProvider {
         apps.add({element: target.space});
       }
     }
-    print('');
     myApps.value = apps.where((a) {
       return apps.indexWhere((x) => x.keys.first.id == a.keys.first.id) ==
           apps.indexOf(a);
     }).toList();
+    print('加载应用完成-------${DateTime.now()}');
     myApps.refresh();
+    EventBusHelper.fire(LoadApplicationDone());
   }
 
   Future<void> _recvTarget(String recvData) async {

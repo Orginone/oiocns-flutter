@@ -47,7 +47,7 @@ class WorkTask implements IWorkTask {
 
   @override
   Future<bool> approvalTask(int status, {String? comment}) async {
-    if (metadata.status < TaskStatus.approvalStart.status) {
+    if ((metadata.status!) < TaskStatus.approvalStart.status) {
       if (status == -1) {
         return await recallApply();
       }
@@ -57,7 +57,7 @@ class WorkTask implements IWorkTask {
           status: status,
           comment: comment,
           data:
-              instanceData != null ? jsonEncode(instanceData!.toJson()) : null,
+              instanceData != null ? jsonEncode(instanceData?.toJson()??{}) : null,
         ));
         if (res.success && status < TaskStatus.refuseStart.status) {
           if (targets.length == 2) {
@@ -96,13 +96,14 @@ class WorkTask implements IWorkTask {
           "as": 'tasks',
         },
       },
-      metadata.belongId,
+      metadata.belongId!,
     );
 
     if (res.data != null && res.data.length > 0) {
       try {
         instance = XWorkInstance.fromJson(res.data[0]);
-        instanceData = instance != null
+       Map<String,dynamic> json = jsonDecode(instance!.data ?? "");
+        instanceData = instance != null && json.isNotEmpty
             ? InstanceDataModel.fromJson(jsonDecode(instance!.data ?? ""))
             : null;
         return instanceData != null;
@@ -151,7 +152,7 @@ class WorkTask implements IWorkTask {
   List<XTarget> get targets {
     if (metadata.taskType == '加用户') {
       try {
-        final parsedContent = jsonDecode(metadata.content) as List<dynamic>;
+        final parsedContent = jsonDecode(metadata.content??"[]") as List<dynamic>;
         return parsedContent.map((item) => XTarget.fromJson(item)).toList();
       } catch (ex) {
         return [];

@@ -15,3 +15,6 @@ class StartLoad{
 class LoadUserDone{
 
 }
+class LoadApplicationDone{
+
+}

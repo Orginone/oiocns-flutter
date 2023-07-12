@@ -19,6 +19,8 @@ class ImageWidget extends StatelessWidget {
 
   final bool circular;
 
+  final double? radius;
+
   final bool gaplessPlayback;
 
   final Map<String, String>? httpHeaders;
@@ -28,7 +30,7 @@ class ImageWidget extends StatelessWidget {
       this.size,
       this.color,
       this.fit = BoxFit.contain,
-      this.circular = false, this.gaplessPlayback = false, this.httpHeaders})
+      this.circular = false, this.gaplessPlayback = false, this.httpHeaders, this.radius})
       : super(key: key);
 
   @override
@@ -55,7 +57,12 @@ class ImageWidget extends StatelessWidget {
       child = asset();
     }
 
-    if (circular) {
+    if (radius!=null) {
+      child = ClipRRect(
+        borderRadius: BorderRadius.circular(radius!),
+        child: child,
+      );
+    }else if (circular) {
       child = ClipOval(
         child: child,
       );

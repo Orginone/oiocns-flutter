@@ -69,7 +69,7 @@ class SearchBar<T> extends SearchDelegate{
           }
           break;
         case HomeEnum.work:
-          if((element as IWorkTask).metadata.title.contains(query)){
+          if((element as IWorkTask).metadata.title!.contains(query)){
             searchData.add(element);
           }
           break;

@@ -26,11 +26,9 @@ class WorkItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async{
-        if (todo.metadata.taskType == "事项") {
-          await todo.loadInstance();
-          Get.toNamed(Routers.processDetails, arguments: {"todo": todo});
-        }
+      onTap: () async {
+        await todo.loadInstance();
+        Get.toNamed(Routers.processDetails, arguments: {"todo": todo});
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 14.w),
@@ -48,7 +46,7 @@ class WorkItem extends StatelessWidget {
               Container(
                 margin: EdgeInsets.only(top: 10.h),
                 child: ImageWidget(
-                  Images.iconWorkitem,
+                  todo.metadata.avatarThumbnail() ?? Images.iconWorkitem,
                   size: 70.w,
                 ),
               ),
@@ -64,7 +62,7 @@ class WorkItem extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            todo.metadata.taskType,
+                            todo.metadata.taskType ?? "",
                             style: TextStyle(fontSize: 19.sp),
                           ),
                           Container(
@@ -75,7 +73,7 @@ class WorkItem extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(
-                              todo.metadata.title,
+                              todo.metadata.title ?? "",
                               style: TextStyle(fontSize: 19.sp),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -113,7 +111,7 @@ class WorkItem extends StatelessWidget {
                         children: [
                           Expanded(child: comment()),
                           Text(
-                              '创建时间: ${DateTime.tryParse(todo.metadata.createTime)?.format(format: "yyyy-MM-dd HH:mm:ss") ?? ""}',
+                              '创建时间: ${DateTime.tryParse(todo.metadata.createTime ?? "")?.format(format: "yyyy-MM-dd HH:mm:ss") ?? ""}',
                               style: TextStyle(
                                   fontSize: 14.sp, color: Colors.grey)),
                         ],
@@ -183,14 +181,14 @@ class WorkItem extends StatelessWidget {
   }
 
   Widget comment() {
-    String content = todo.metadata.content;
+    String content = todo.metadata.content ?? "";
     if (content.isEmpty) {
       return const SizedBox();
     }
 
     if (todo.targets.length == 2) {
       content =
-      "${todo.targets[0].name}[${todo.targets[0].typeName}]申请加入${todo.targets[1].name}[${todo.targets[1].typeName}]";
+          "${todo.targets[0].name}[${todo.targets[0].typeName}]申请加入${todo.targets[1].name}[${todo.targets[1].typeName}]";
     }
     return Text(
       "内容:$content",
@@ -209,7 +207,7 @@ class WorkItem extends StatelessWidget {
           ),
           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
           child: TargetText(
-              userId: todo.metadata.createUser,
+              userId: todo.metadata.createUser ?? "",
               style: TextStyle(fontSize: 12.sp, color: XColors.designBlue)),
         ),
         SizedBox(
@@ -223,7 +221,7 @@ class WorkItem extends StatelessWidget {
           ),
           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
           child: TargetText(
-              userId: todo.metadata.shareId,
+              userId: todo.metadata.shareId ?? "",
               style: TextStyle(fontSize: 12.sp, color: XColors.designBlue)),
         ),
       ],

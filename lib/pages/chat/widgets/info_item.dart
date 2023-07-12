@@ -211,6 +211,7 @@ class DetailItemWidget extends GetView<UserController> {
                       ),
                     ),
                     onTap: () {
+                      popCtrl.hideMenu();
                       switch (item) {
                         case DetailFunc.recall:
                           chat.recallMessage(msg.id);
@@ -232,7 +233,6 @@ class DetailItemWidget extends GetView<UserController> {
                               ClipboardData(text: StringUtil.msgConversion(msg.metadata, '')));
                           break;
                       }
-                      popCtrl.hideMenu();
                     },
                   ),
                 )
@@ -419,6 +419,15 @@ class _PreViewUrlState extends State<PreViewUrl> {
     // TODO: implement initState
     super.initState();
     url = widget.url;
+  }
+
+  @override
+  void didUpdateWidget(covariant PreViewUrl oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    if(widget.url!=oldWidget.url){
+      url = widget.url;
+    }
   }
 
   @override

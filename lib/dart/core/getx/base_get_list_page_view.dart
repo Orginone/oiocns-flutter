@@ -43,8 +43,8 @@ abstract class BaseGetListPageView<T extends BaseListController, S extends BaseG
                 return LoadStateWidget(
                   isSuccess: state.isSuccess.value,
                   isLoading: state.isLoading.value,
-                  onRetry: () {
-                    controller.loadData();
+                  onRetry: () async {
+                    await controller.loadData();
                   },
                   child: Obx(() {
                     if (state.dataList.isEmpty && displayNoDataWidget()) {

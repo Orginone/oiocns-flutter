@@ -71,6 +71,8 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
     if (item.spaceEnum == SpaceEnum.species ||
         item.spaceEnum == SpaceEnum.property ||
         item.spaceEnum == SpaceEnum.applications ||
+        item.spaceEnum == SpaceEnum.module ||
+        item.spaceEnum == SpaceEnum.work ||
         item.spaceEnum == SpaceEnum.form ||
         item.spaceEnum == SpaceEnum.file) {
       tips = Text(
@@ -101,7 +103,7 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
   Widget more() {
     if (item.spaceEnum == SpaceEnum.file ||
         item.spaceEnum == SpaceEnum.species ||
-        item.spaceEnum == SpaceEnum.applications ||
+        item.spaceEnum == SpaceEnum.work ||
         item.spaceEnum == SpaceEnum.form ||
         item.spaceEnum == SpaceEnum.property) {
       return const SizedBox();
@@ -154,6 +156,8 @@ class _Icon extends StatelessWidget {
         case SpaceEnum.property:
           icon = Ionicons.snow_sharp;
           break;
+        case SpaceEnum.work:
+        case SpaceEnum.module:
         case SpaceEnum.applications:
           icon = Ionicons.apps_sharp;
           break;
