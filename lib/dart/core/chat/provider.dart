@@ -75,15 +75,15 @@ class ChatProvider implements IChatProvider {
     });
     kernel.on('RecvTags', (data) {
        try{
-         var tag = MsgTagModel.fromJson(data);
-         if (!_preMessage) {
-           _chatReceive(tag);
-         } else {
-           _preTags.add(tag);
-         }
-       }catch(e){
-         throw e;
-       }
+        var tag = MsgTagModel.fromJson(data);
+        if (!_preMessage) {
+          _chatReceive(tag);
+        } else {
+          _preTags.add(tag);
+        }
+      } catch (e) {
+        throw e;
+      }
     });
     allChats = RxList();
     messageFrequentlyUsed = RxList();
@@ -96,29 +96,31 @@ class ChatProvider implements IChatProvider {
 
   @override
   Future<void> loadPreMessage() async {
-    kernel.anystore.subscribed(StoreCollName.chatMessage, user.id,(res){
-      if (res!=null) {
-        if (res is Map<String, dynamic>) {
-          for (var key in (res as Map).keys) {
-            if (key!.startsWith('T') && res[key]['fullId'] != null) {
-              var fullId = key.substring(1);
-              var find = allChats
-                  .firstWhereOrNull((i) => i.chatdata.value.fullId == fullId);
-              find?.loadCache(MsgChatData.fromMap(res[key]));
-            }
-          }
-        }
-        _preMessages.sort((a, b) {
-          return DateTime.parse(a.createTime)
-              .compareTo(DateTime.parse(b.createTime));
-        });
-        for (var element in _preMessages) {
-          _recvMessage(element);
-        }
-        _preMessage = false;
+    var res = await kernel.anystore.get(StoreCollName.chatMessage, user.id);
+    if (res.success) {
+      if (res.data is Map<String, dynamic>) {
+        recvPreMessage(res.data);
       }
-    });
+    }
+  }
 
+  void recvPreMessage(Map<String, dynamic> data) {
+    for (var key in data.keys) {
+      if (key.startsWith('T') && data[key]['fullId'] != null) {
+        var fullId = key.substring(1);
+        var find =
+            allChats.firstWhereOrNull((i) => i.chatdata.value.fullId == fullId);
+        find?.loadCache(MsgChatData.fromMap(data[key]));
+      }
+    }
+    _preMessages.sort((a, b) {
+      return DateTime.parse(a.createTime)
+          .compareTo(DateTime.parse(b.createTime));
+    });
+    for (var element in _preMessages) {
+      _recvMessage(element);
+    }
+    _preMessage = false;
   }
 
   @override
