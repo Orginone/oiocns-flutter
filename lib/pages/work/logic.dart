@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_freqiently_usedList_controller.dart';
 import 'package:orginone/dart/core/work/task.dart';
-import 'package:orginone/event/home_data.dart';
 import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';

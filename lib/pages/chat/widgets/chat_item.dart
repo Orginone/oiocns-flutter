@@ -192,28 +192,29 @@ class MessageItemWidget extends GetView<UserController> {
         builder: (context) {
           var showTxt = "";
           if (lastMessage.fromId != controller.user.metadata.id) {
-            if (chat.share.typeName != TargetType.person.label) {
-              var target = chat.members.firstWhere((element) => element.id == lastMessage.fromId);
-              ShareIcon? shareIcon = target.shareIcon();
-              showTxt = "${shareIcon?.name}:";
-            } else {
-              showTxt = "对方:";
-            }
-          }
+        if (chat.share.typeName != TargetType.person.label) {
+          var target = chat.members
+              .firstWhere((element) => element.id == lastMessage.fromId);
+          ShareIcon? shareIcon = target.shareIcon();
+          showTxt = "${shareIcon?.name}:";
+        } else {
+          showTxt = "对方:";
+        }
+      }
 
-          showTxt =
-              StringUtil.msgConversion(lastMessage, controller.user.userId);
+      showTxt = showTxt +
+          StringUtil.msgConversion(lastMessage, controller.user.userId);
 
-          return Text(
-            showTxt,
-            style: TextStyle(
-              color: XColors.chatHintColors,
-              fontSize: 18.sp,
-            ),
-            textAlign: TextAlign.left,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          );
+      return Text(
+        showTxt,
+        style: TextStyle(
+          color: XColors.chatHintColors,
+          fontSize: 18.sp,
+        ),
+        textAlign: TextAlign.left,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      );
         });
   }
 }

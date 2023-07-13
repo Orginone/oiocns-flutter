@@ -124,6 +124,7 @@ class Company extends Belong implements ICompany {
     data.public = false;
     final metadata = await create(data);
     if (metadata != null) {
+      metadata.belong = belong;
       var department = Department(metadata, this);
       if (await pullSubTarget(department)) {
         departments.add(department);
@@ -138,6 +139,7 @@ class Company extends Belong implements ICompany {
     data.typeName = TargetType.group.label;
     final metadata = await create(data);
     if (metadata != null) {
+      metadata.belong = belong;
       final group = Group(metadata, this);
       groups.add(group);
       await group.pullMembers([metadata]);
@@ -152,6 +154,7 @@ class Company extends Belong implements ICompany {
     data.typeName = TargetType.station.label;
     final metadata = await create(data);
     if (metadata != null) {
+      metadata.belong = belong;
       final station = Station(metadata, this);
       if (await pullSubTarget(station)) {
         stations.add(station);

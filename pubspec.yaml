@@ -130,6 +130,7 @@ dependencies:
   flutter_filereader: ^3.0.0
   chewie: ^1.7.0
   video_player: ^2.6.1
+  toggle_switch: ^2.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

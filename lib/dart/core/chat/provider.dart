@@ -211,6 +211,7 @@ class ChatProvider implements IChatProvider {
           avatar: msg.share.avatar?.thumbnailUint8List ??
               msg.share.avatar?.defaultAvatar);
       messageFrequentlyUsed.add(recent);
+      messageFrequentlyUsed.refresh();
     }
   }
 

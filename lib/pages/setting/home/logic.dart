@@ -207,7 +207,12 @@ class SettingCenterController
           ToastUtils.showMsg(msg: "修改成功");
           item.name = name;
           item.source.metadata.name = name;
+          item.source.metadata.code = code;
+          item.source.metadata.remark = remark;
           state.model.refresh();
+          if(item == state.model.value){
+            updateNav();
+          }
         }
       } else {
         IDirectory? dir;
@@ -307,7 +312,12 @@ class SettingCenterController
           ToastUtils.showMsg(msg: "修改成功");
           item.name = name;
           item.source.metadata.name = name;
+          item.source.metadata.code = code;
+          item.source.metadata.remark = remark;
           state.model.refresh();
+          if(item == state.model.value){
+            updateNav();
+          }
         }
       } else {
         ISpecies? species;
@@ -364,6 +374,9 @@ class SettingCenterController
             ToastUtils.showMsg(msg: "修改成功");
             item.name = str[0];
             state.model.refresh();
+            if(item == state.model.value){
+              updateNav();
+            }
           }
         });
       }
@@ -464,7 +477,23 @@ class SettingCenterController
         if (success) {
           ToastUtils.showMsg(msg: "更新成功");
           model.name = name;
+          if (model.source == null) {
+            model.space!.metadata.name = name;
+            model.space!.metadata.code = code;
+            model.space!.metadata.team?.name = nickName;
+            model.space!.metadata.team?.code = identify;
+            model.space!.metadata.remark = remark;
+          } else {
+            model.source.metadata.name = name;
+            model.source.metadata.code = code;
+            model.source.metadata.team?.name = nickName;
+            model.source.metadata.team?.code = identify;
+            model.source.metadata.remark = remark;
+          }
           state.model.refresh();
+          if(model == state.model.value){
+            updateNav();
+          }
         }
       } else {
         var data;
@@ -521,6 +550,9 @@ class SettingCenterController
           ToastUtils.showMsg(msg: "更新成功");
           item.name = name;
           state.model.refresh();
+          if(item == state.model.value){
+            updateNav();
+          }
         }
       } else {
         IProperty? property;
@@ -547,7 +579,7 @@ class SettingCenterController
               name: property.metadata.name!,
               space: item.space,
               source: property,
-              spaceEnum: SpaceEnum.directory,
+              spaceEnum: SpaceEnum.property,
               image: property.metadata.avatarThumbnail());
 
           if (item.spaceEnum != SpaceEnum.user &&
@@ -562,9 +594,9 @@ class SettingCenterController
     },
         name: isEdit ? item.source.metadata.name : '',
         code: isEdit ? item.source.metadata.code : '',
-        valueType: item.source.metadata.valueType,
-        info: item.source.metadata.info,
-        unit: item.source.metadata.unit);
+        valueType: isEdit?item.source.metadata.valueType : "",
+        info: isEdit?item.source.metadata.info : null,
+        unit: isEdit?item.source.metadata.unit:null);
   }
 
   void createApplication(SettingNavModel item, [bool isEdit = false]) {
@@ -590,6 +622,9 @@ class SettingCenterController
             ToastUtils.showMsg(msg: "更新成功");
             item.name = name;
             state.model.refresh();
+            if(item == state.model.value){
+              updateNav();
+            }
           }
         }else{
           IApplication? application;

@@ -49,16 +49,17 @@ abstract class BaseGetListView<T extends BaseListController,
       ),
     );
 
-    if (headWidget() != null) {
+    if(hasNested){
       body = NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             SliverToBoxAdapter(
               child: headWidget(),
-            )
+            ),
           ];
         },
         body: body,
+        floatHeaderSlivers: true,
       );
     }
 
@@ -73,7 +74,7 @@ abstract class BaseGetListView<T extends BaseListController,
       width: double.infinity,
       height: double.infinity,
       alignment: Alignment.center,
-      color: Colors.grey.shade200,
+      color: Colors.white,
       child: Image.asset(
         Images.empty,
         width: 300.w,
@@ -93,11 +94,15 @@ abstract class BaseGetListView<T extends BaseListController,
     return [];
   }
 
-  Widget? headWidget() => null;
+  Widget headWidget(){
+    return const SizedBox();
+  }
 
   Widget bottomWidget() {
     return Container();
   }
 
   bool showAppBar = true;
+
+  bool hasNested = false;
 }

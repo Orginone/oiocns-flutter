@@ -291,7 +291,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
       userId,
     );
     if(chatdata.value.noReadCount == 0){
-      kernel.anystore.set(
+      await kernel.anystore.set(
         "${StoreCollName.chatMessage}.Changed",
         {
           "operation": "replaceAll",

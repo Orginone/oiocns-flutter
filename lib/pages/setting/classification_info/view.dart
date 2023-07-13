@@ -97,7 +97,7 @@ class ClassificationInfoPage
               PopupMenuItem(
                 value: 'create',
                   child: Text(
-                      "新增${state.tabTitle[state.currentIndex.value].label}"),
+                      "新增${state.species.metadata.typeName}"),
                 ),
             ], onSelected: (str) {
               controller.create(state.tabTitle[state.currentIndex.value]);

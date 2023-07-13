@@ -11,8 +11,8 @@ import 'base_breadcrumb_nav_controller.dart';
 import 'base_get_breadcrumb_nav_state.dart';
 
 abstract class BaseBreadcrumbNavMultiplexPage<
-    T extends BaseBreadcrumbNavController,
-    S extends BaseBreadcrumbNavState> extends BaseGetPageView<T, S> {
+T extends BaseBreadcrumbNavController,
+S extends BaseBreadcrumbNavState> extends BaseGetPageView<T, S> {
   TextStyle get _selectedTextStyle =>
       TextStyle(fontSize: 24.sp, color: XColors.themeColor);
 
@@ -21,12 +21,6 @@ abstract class BaseBreadcrumbNavMultiplexPage<
 
   @override
   Widget buildView() {
-    List<Widget> nextStep = [];
-    if (state.bcNav.isNotEmpty) {
-      for (var value in state.bcNav) {
-        nextStep.add(_level(value));
-      }
-    }
     return GyScaffold(
       titleSpacing: 0,
       leading: BackButton(
@@ -48,13 +42,21 @@ abstract class BaseBreadcrumbNavMultiplexPage<
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           controller: state.navBarController,
-          child: Row(
-            children: nextStep,
-          ),
+          child: Obx(() {
+            List<Widget> nextStep = [];
+            if (state.bcNav.isNotEmpty) {
+              for (var value in state.bcNav) {
+                nextStep.add(_level(value));
+              }
+            }
+            return Row(
+              children: nextStep,
+            );
+          }),
         );
       }),
       actions: [
-        state.showSearchButton?Obx(() {
+        state.showSearchButton ? Obx(() {
           return IconButton(
             onPressed: () {
               controller.changeSearchState();
@@ -64,15 +66,15 @@ abstract class BaseBreadcrumbNavMultiplexPage<
               color: Colors.black,
             ),
           );
-        }):const SizedBox(),
+        }) : const SizedBox(),
         popupMenuItems().isEmpty
             ? const SizedBox()
             : CommonWidget.commonPopupMenuButton<PopupMenuKey>(
-                items: popupMenuItems(),
-                iconColor: Colors.black,
-                onSelected: (key) {
-                  controller.onTopPopupMenuSelected(key);
-                }),
+            items: popupMenuItems(),
+            iconColor: Colors.black,
+            onSelected: (key) {
+              controller.onTopPopupMenuSelected(key);
+            }),
       ],
       body: body(),
     );
