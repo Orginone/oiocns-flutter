@@ -43,7 +43,7 @@ class GridItem extends StatelessWidget {
     var noRead = adapter.noReadCount;
     Widget child = ImageWidget(
       adapter.image,
-      size: 40.w,
+      size: 50.w,
       iconColor: const Color(0xFF9498df),
       circular: adapter.circularAvatar,
     );
