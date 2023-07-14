@@ -50,26 +50,29 @@ class MessageSetting extends GetView<UserController> {
       children = [
         _avatar(chat),
         Padding(padding: EdgeInsets.only(top: 50.h)),
-        Avatars(
-          showCount: 15,
-          persons: chat.members,
-          hasAdd: true,
-          addCallback: () {
-            var target = TargetType.getType(chat.share.typeName) == TargetType.group ? TargetType.company : TargetType.person;
-            showSearchDialog(
-              context,
-                target,
-              title: "邀请成员",
-              hint: "请输入用户的账号",
-              onSelected: (targets) async{
-                var success = await (chat as ITeam).pullMembers(targets);
-                if(success){
-                  ToastUtils.showMsg(msg: "发送邀请成功");
-                }
-              }
-            );
-          },
-        ),
+        Obx(() {
+          return Avatars(
+            showCount: 15,
+            persons: chat.members.value,
+            hasAdd: true,
+            addCallback: () {
+              var target = TargetType.getType(chat.share.typeName) ==
+                  TargetType.group ? TargetType.company : TargetType.person;
+              showSearchDialog(
+                  context,
+                  target,
+                  title: "邀请成员",
+                  hint: "请输入用户的账号",
+                  onSelected: (targets) async {
+                    var success = await (chat as ITeam).pullMembers(targets);
+                    if (success) {
+                      ToastUtils.showMsg(msg: "邀请成功");
+                    }
+                  }
+              );
+            },
+          );
+        }),
         // _interruption,
         // _top,
         _file(chat),
@@ -108,7 +111,7 @@ class MessageSetting extends GetView<UserController> {
               ),
             ),
             SizedBox(height: 50.h,),
-            _clear(context,chat),
+            _clear(context, chat),
           ],
         ),
       ),
@@ -176,7 +179,7 @@ class MessageSetting extends GetView<UserController> {
   Widget _searchChat(IMsgChat chat) {
     return ChooseItem(
       func: () {
-        Get.toNamed(Routers.messageRecords,arguments: {"chat":chat});
+        Get.toNamed(Routers.messageRecords, arguments: {"chat": chat});
       },
       padding: EdgeInsets.symmetric(vertical: 15.h),
       header: Text(
@@ -192,17 +195,18 @@ class MessageSetting extends GetView<UserController> {
 
   Widget _file(IMsgChat chat) {
     return ChooseItem(
-      func: () async{
+      func: () async {
         List<GeneralBreadcrumbNav> navs = [];
         IDirectory dir;
-        if(chat.share.typeName == TargetType.person.label){
+        if (chat.share.typeName == TargetType.person.label) {
           dir = settingCtrl.user.directory;
-          navs = await _buildNav([dir],settingCtrl.user);
-        }else{
+          navs = await _buildNav([dir], settingCtrl.user);
+        } else {
           dir = (chat as ITarget).directory;
-          navs = await _buildNav([dir],chat);
+          navs = await _buildNav([dir], chat);
         }
-        Get.toNamed(Routers.generalBreadCrumbs,arguments: {"data":navs.first});
+        Get.toNamed(
+            Routers.generalBreadCrumbs, arguments: {"data": navs.first});
       },
       padding: EdgeInsets.symmetric(vertical: 15.h),
       header: Text(
@@ -246,11 +250,11 @@ class MessageSetting extends GetView<UserController> {
         );
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 150.w),
-       
+        padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 150.w),
+
         decoration: BoxDecoration(
-          color: XColors.themeColor,
-          borderRadius: BorderRadius.circular(32.w)
+            color: XColors.themeColor,
+            borderRadius: BorderRadius.circular(32.w)
         ),
         child: Text(
           "清空聊天记录",
@@ -306,42 +310,46 @@ class MessageSetting extends GetView<UserController> {
   }
 
 
-  Future<List<GeneralBreadcrumbNav>> _buildNav(List<IDirectory> dirs,ITarget target) async{
+  Future<List<GeneralBreadcrumbNav>> _buildNav(List<IDirectory> dirs,
+      ITarget target) async {
     List<GeneralBreadcrumbNav> navs = [];
     for (var dir in dirs) {
-      await Future.wait([dir.loadSubDirectory(),dir.loadFiles()]);
+      await Future.wait([dir.loadSubDirectory(), dir.loadFiles()]);
       var nav = GeneralBreadcrumbNav(
-          id: dir.metadata.id??"",
-          name: dir.metadata.name ?? "",
-          source: dir,
-          spaceEnum: SpaceEnum.directory,
-          space: target,
-          onNext: (item) async{
-            item.children = [
-              ...dir.files.map((e) {
-                return GeneralBreadcrumbNav(
-                  id: e.metadata.id??"",
-                  name: e.metadata.name??"",
-                  spaceEnum: SpaceEnum.file,
-                  image: (e as SysFileInfo).getThumbnail(),
-                  space: target,
-                  source: e, children: [],
-                );
-              }).toList(),
-              ...await _buildNav(dir.children,target),
-            ];
-          }, children: [
-        ...dir.files.map((e) {
-          return GeneralBreadcrumbNav(
-            id: e.metadata.id??"",
-            name: e.metadata.name??"",
-            spaceEnum: SpaceEnum.file,
-            space: target,
-            source: e, children: [],
-          );
-        }).toList(),
-        ...await _buildNav(dir.children,target),
-      ],
+        id: dir.metadata.id ?? "",
+        name: dir.metadata.name ?? "",
+        source: dir,
+        spaceEnum: SpaceEnum.directory,
+        space: target,
+        onNext: (item) async {
+          item.children = [
+            ...dir.files.map((e) {
+              return GeneralBreadcrumbNav(
+                id: e.metadata.id ?? "",
+                name: e.metadata.name ?? "",
+                spaceEnum: SpaceEnum.file,
+                image: (e as SysFileInfo).getThumbnail(),
+                space: target,
+                source: e,
+                children: [],
+              );
+            }).toList(),
+            ...await _buildNav(dir.children, target),
+          ];
+        },
+        children: [
+          ...dir.files.map((e) {
+            return GeneralBreadcrumbNav(
+              id: e.metadata.id ?? "",
+              name: e.metadata.name ?? "",
+              spaceEnum: SpaceEnum.file,
+              space: target,
+              source: e,
+              children: [],
+            );
+          }).toList(),
+          ...await _buildNav(dir.children, target),
+        ],
       );
       navs.add(nav);
     }
