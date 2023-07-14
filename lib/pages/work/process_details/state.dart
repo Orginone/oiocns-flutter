@@ -16,12 +16,14 @@ class ProcessDetailsState extends BaseGetState{
 
   var xAttribute = {}.obs;
 
-  Rxn<XForm> mainForm = Rxn();
+  var mainForm = <XForm>[].obs;
 
   var subForm = <XForm>[].obs;
 
 
-  TabController? subTabController;
+  late TabController subTabController;
+
+  late TabController mainTabController;
 
   late TabController tabController;
 

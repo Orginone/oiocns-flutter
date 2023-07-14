@@ -13,11 +13,17 @@ import 'package:orginone/dart/core/work/index.dart';
 class CreateWorkState extends BaseGetState{
   late IWork work;
 
-  Rxn<IForm> mainForm = Rxn();
+  var mainForm = <IForm>[].obs;
 
   var subForm = <IForm>[].obs;
 
-  late TabController tabController;
+  late TabController mainTabController;
+
+  var mainIndex = 0.obs;
+
+  late TabController subTabController;
+
+  var subIndex = 0.obs;
 
   TextEditingController remark = TextEditingController();
 
