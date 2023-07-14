@@ -10,6 +10,111 @@ import 'package:orginone/widget/widgets/text_tag.dart';
 
 import 'list_adapter.dart';
 
+
+class GridItem extends StatelessWidget {
+  final ListAdapter adapter;
+
+  const GridItem({
+    Key? key,
+    required this.adapter,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: (){
+        adapter.callback?.call();
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _avatarContainer,
+          SizedBox(
+            width: 10.w,
+          ),
+          Expanded(child: _content),
+        ],
+      ),
+    );
+  }
+
+  Widget get _avatarContainer {
+    var noRead = adapter.noReadCount;
+    Widget child = ImageWidget(
+      adapter.image,
+      size: 40.w,
+      iconColor: const Color(0xFF9498df),
+      circular: adapter.circularAvatar,
+    );
+    if (noRead > 0) {
+      child = badges.Badge(
+        ignorePointer: false,
+        position: badges.BadgePosition.topEnd(top: -2),
+        badgeContent: Text(
+          "${noRead > 99 ? "99+" : noRead}",
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 10,
+            letterSpacing: 1,
+            wordSpacing: 2,
+            height: 1,
+          ),
+        ),
+        child: child,
+      );
+    }
+    return child;
+  }
+
+  Widget get _content {
+    Widget label;
+
+   var text = adapter.typeName??adapter.labels.first;
+
+    var style = TextStyle(
+      color: XColors.designBlue,
+      fontSize: 14.sp,
+    );
+
+    if (adapter.isUserLabel) {
+      label = Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          border: Border.all(color: XColors.tinyBlue),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+        child: TargetText(userId: text, style: style),
+      );
+    } else {
+      label = TextTag(
+        text,
+        bgColor: Colors.white,
+        textStyle: style,
+        borderColor: XColors.tinyBlue,maxLines: 1,
+      );
+    }
+    return Column(
+      children: [
+        Text(
+          adapter.title,
+          style: TextStyle(
+            color: XColors.chatTitleColor,
+            fontWeight: FontWeight.w500,
+            fontSize: 24.sp,
+            overflow: TextOverflow.ellipsis,
+          ),
+          maxLines: 1,
+        ),
+        SizedBox(height: 10.h,),
+        label,
+      ],
+    );
+  }
+}
+
+
 class ListItem extends StatelessWidget {
   final ListAdapter adapter;
 

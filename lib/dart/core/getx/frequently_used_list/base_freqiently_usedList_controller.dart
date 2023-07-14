@@ -23,4 +23,9 @@ class BaseFrequentlyUsedListController<S extends BaseFrequentlyUsedListState>
   }
 
   void onTapFrequentlyUsed(used) {}
+
+
+  void changeListMode(int index){
+    state.mode.value = ListMode.values[index];
+  }
 }

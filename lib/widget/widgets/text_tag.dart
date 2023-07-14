@@ -19,7 +19,7 @@ class TextTag extends StatelessWidget {
   final double radius;
   final Function? onTap;
   final Function? onPanDown;
-
+  final int? maxLines;
   const TextTag(
     this.label, {
     this.textStyle = defaultTextStyle,
@@ -29,7 +29,7 @@ class TextTag extends StatelessWidget {
     this.radius = defaultRadius,
     this.onTap,
     this.onPanDown,
-    Key? key,
+    Key? key, this.maxLines,
   }) : super(key: key);
 
   @override
@@ -52,7 +52,7 @@ class TextTag extends StatelessWidget {
           border: borderColor == null ? null : Border.all(color: borderColor!),
         ),
         padding: padding,
-        child: Text(label, style: textStyle),
+        child: Text(label, style: textStyle,maxLines: maxLines,),
       ),
     );
   }

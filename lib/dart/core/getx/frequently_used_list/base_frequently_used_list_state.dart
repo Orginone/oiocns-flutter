@@ -12,8 +12,14 @@ class BaseFrequentlyUsedListState<T extends FrequentlyUsed, S> extends BaseGetLi
   var scrollX = (-1.0).obs;
 
   var adapter = <ListAdapter>[].obs;
+
+  var mode = ListMode.list.obs;
 }
 
+enum ListMode{
+  list,
+  grid;
+}
 
 class FrequentlyUsed{
   String? id;

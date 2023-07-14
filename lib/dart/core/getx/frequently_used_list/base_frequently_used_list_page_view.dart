@@ -9,7 +9,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 import 'base_freqiently_usedList_controller.dart';
 import 'base_frequently_used_item.dart';
 import 'base_frequently_used_list_state.dart';
-import 'list_item.dart';
+import 'item.dart';
 
 abstract class BaseFrequentlyUsedListPage<
 T extends BaseFrequentlyUsedListController,
@@ -104,8 +104,12 @@ S extends BaseFrequentlyUsedListState> extends BaseGetListView<T, S> {
               Ionicons.grid,
             ],
             borderWidth: 0.5,
-            borderColor: [XColors.themeColor],
-            onToggle: (index) {},
+            borderColor: const [XColors.themeColor],
+            onToggle: (index) {
+              if (index != null && index != state.mode.value.index) {
+                controller.changeListMode(index);
+              }
+            },
           ),
         ),
       ],
@@ -115,9 +119,24 @@ S extends BaseFrequentlyUsedListState> extends BaseGetListView<T, S> {
   @override
   Widget buildView() {
     return Obx(() {
+      if (state.mode.value == ListMode.grid) {
+        return GridView.builder(
+          gridDelegate:
+              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+          itemBuilder: (context, index) {
+            return GridItem(
+              adapter: state.adapter[index],
+            );
+          },
+          itemCount: state.adapter.length,
+        );
+      }
+
       return ListView.builder(
         itemBuilder: (context, index) {
-          return ListItem(adapter: state.adapter[index],);
+          return ListItem(
+            adapter: state.adapter[index],
+          );
         },
         itemCount: state.adapter.length,
       );

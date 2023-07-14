@@ -37,6 +37,8 @@ class ListAdapter {
 
   late bool isUserLabel;
 
+  String? typeName;
+
   ListAdapter({
     this.title = '',
     this.labels = const [],
@@ -56,6 +58,7 @@ class ListAdapter {
     bool isTop = labels.contains("置顶");
     enabledSlidable = true;
     isUserLabel = false;
+    typeName = chat.share.typeName;
     slideActions = [
       SlidableAction(
         backgroundColor: Colors.blue,

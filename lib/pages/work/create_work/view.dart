@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/pages/work/work_start/create_work/state.dart';
+import 'state.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/mapping_components.dart';

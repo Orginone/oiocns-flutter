@@ -30,7 +30,6 @@ import 'package:orginone/pages/setting/person/security/bindings.dart';
 import 'package:orginone/pages/setting/person/security/index.dart';
 import 'package:orginone/pages/setting/version_page.dart';
 import 'package:orginone/pages/work/work_list/view.dart';
-import 'package:orginone/pages/work/work_start/view.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/image_utils.dart';
 
@@ -102,9 +101,8 @@ import 'pages/work/initiate_work/view.dart';
 import 'pages/work/process_details/binding.dart';
 import 'pages/work/process_details/view.dart';
 import 'pages/work/work_list/binding.dart';
-import 'pages/work/work_start/binding.dart';
-import 'pages/work/work_start/create_work/binding.dart';
-import 'pages/work/work_start/create_work/view.dart';
+import 'pages/work/create_work/binding.dart';
+import 'pages/work/create_work/view.dart';
 
 class Routers {
   // 首页
@@ -375,11 +373,6 @@ class Routers {
         name: Routers.initiateWork,
         page: () => InitiateWorkPage(),
         binding: InitiateWorkBinding(),
-      ),
-      GetPage(
-        name: Routers.workStart,
-        page: () => WorkStartPage(),
-        binding: WorkStartBinding(),
       ),
       GetPage(
         name: Routers.createWork,
