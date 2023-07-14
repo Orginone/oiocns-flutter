@@ -73,7 +73,7 @@ class _AvatarsState extends State<Avatars> {
       mappedPerson = mappedPerson.sublist(0, showCount!);
     }
     if (hasAdd) {
-      mappedPerson.add(_addItem);
+      mappedPerson.replaceRange(mappedPerson.length-1, mappedPerson.length, [_addItem]);
     }
     return GridView.count(
       padding: padding,

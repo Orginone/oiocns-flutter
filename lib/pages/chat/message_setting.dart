@@ -9,12 +9,15 @@ import 'package:orginone/dart/controller/setting/user_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/avatars.dart';
 import 'package:orginone/pages/other/general_bread_crumbs/state.dart';
+import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/template/choose_item.dart';
 import 'package:orginone/widget/unified.dart';
@@ -50,12 +53,21 @@ class MessageSetting extends GetView<UserController> {
         Avatars(
           showCount: 15,
           persons: chat.members,
+          hasAdd: true,
           addCallback: () {
-            // Map<String, dynamic> args = {
-            //   "spaceId": chat.spaceId,
-            //   "messageItemId": chat.chatId
-            // };
-            // Get.toNamed(Routers.invite, arguments: args);
+            var target = TargetType.getType(chat.share.typeName) == TargetType.group ? TargetType.company : TargetType.person;
+            showSearchDialog(
+              context,
+                target,
+              title: "邀请成员",
+              hint: "请输入用户的账号",
+              onSelected: (targets) async{
+                var success = await (chat as ITeam).pullMembers(targets);
+                if(success){
+                  ToastUtils.showMsg(msg: "发送邀请成功");
+                }
+              }
+            );
           },
         ),
         // _interruption,
