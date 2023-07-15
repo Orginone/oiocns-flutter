@@ -163,7 +163,7 @@ abstract class Team extends MsgChat implements ITeam{
       ));
       if (res.success) {
         _memberLoaded = true;
-        members = res.data?.result ?? [];
+        members.value = res.data?.result ?? [];
         loadMemberChats(members, true);
       }
     }
@@ -185,6 +185,7 @@ abstract class Team extends MsgChat implements ITeam{
       ));
       if (res.success) {
         this.members.addAll(filterMembers);
+        this.members.refresh();
         for (var element in members) {
           createTargetMsg(OperateType.add, sub: element);
         }

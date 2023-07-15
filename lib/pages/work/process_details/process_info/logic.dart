@@ -33,7 +33,7 @@ class ProcessInfoController extends BaseController<ProcessInfoState> {
 
   Future<String> _buildField(FieldModel field, dynamic value) async {
     if (field.field.type == "input") {
-      field.field.controller!.text = value ?? "";
+      field.field.controller!.text = (value ?? "").toString();
       return value ?? "";
     } else {
       switch (field.field.type) {
@@ -97,5 +97,14 @@ class ProcessInfoController extends BaseController<ProcessInfoState> {
       content.add(data);
     }
     return content;
+  }
+
+
+  void changeMainIndex(int index) {
+    if (state.mainIndex.value != index) state.mainIndex.value = index;
+  }
+
+  void changeSubIndex(int index) {
+    if (state.subIndex.value != index) state.subIndex.value = index;
   }
 }

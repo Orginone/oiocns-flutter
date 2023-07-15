@@ -190,7 +190,7 @@ class _Icon extends StatelessWidget {
 
     return Icon(
       icon,
-      color: Color(0xFF9498df),
+      color: const Color(0xFF9498df),
       size: 50.w,
     );
   }

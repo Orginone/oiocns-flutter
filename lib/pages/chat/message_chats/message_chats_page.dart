@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/frequently_used_list/base_frequently_used_list_page_view.dart';
+import 'package:orginone/dart/core/getx/frequently_used_list/list_adapter.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/chat/widgets/chat_item.dart';
+
 import 'message_chats_controller.dart';
 import 'message_chats_state.dart';
 
@@ -11,23 +12,23 @@ class MessageChats extends BaseFrequentlyUsedListPage<MessageChatsController,
   @override
   Widget buildView() {
     return Obx(() {
-      return CustomScrollView(
-        slivers: [
-          SliverList(
-            delegate: SliverChildBuilderDelegate((context, index) {
-              var chat = settingCtrl.provider.chat!.topChats[index];
-              return MessageItemWidget(chat: chat);
-            }, childCount: settingCtrl.provider.chat?.topChats.length),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate((context, index) {
-              var chat = settingCtrl.provider.chat!.chats[index];
-              return MessageItemWidget(chat: chat);
-            }, childCount: settingCtrl.provider.chat?.chats.length),
-          ),
-        ],
-      );
+      var chats = [
+        ...settingCtrl.provider.chat?.topChats ?? [],
+        ...settingCtrl.provider.chat?.chats ?? [],
+      ];
+
+      state.adapter.value = chats.map((e) => ListAdapter.chat(e)).toList();
+      return super.buildView();
     });
+  }
+
+  @override
+  Widget headWidget() {
+     return Obx((){
+       state.mostUsedList.value = settingCtrl.chat.messageFrequentlyUsed;
+       state.mostUsedList.refresh();
+       return super.headWidget();
+     });
   }
 
   @override

@@ -240,6 +240,7 @@ class WorkProvider implements IWorkProvider{
           id: define.metadata.id,
           avatar: define.metadata.avatarThumbnail());
       workFrequentlyUsed.add(used);
+      workFrequentlyUsed.refresh();
     }
   }
 

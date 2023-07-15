@@ -15,6 +15,8 @@ class ImageWidget extends StatelessWidget {
 
   final Color? color;
 
+  final Color? iconColor;
+
   final BoxFit fit;
 
   final bool circular;
@@ -29,6 +31,7 @@ class ImageWidget extends StatelessWidget {
       {Key? key,
       this.size,
       this.color,
+        this.iconColor,
       this.fit = BoxFit.contain,
       this.circular = false, this.gaplessPlayback = false, this.httpHeaders, this.radius})
       : super(key: key);
@@ -94,6 +97,6 @@ class ImageWidget extends StatelessWidget {
   }
 
   Widget icon(){
-    return Icon(path,size: max(size??24.w, size??24.h),color: color,);
+    return Icon(path,size: max(size??24.w, size??24.h),color: iconColor,);
   }
 }

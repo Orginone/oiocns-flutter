@@ -20,9 +20,15 @@ class ProcessInfoState extends BaseGetState{
 
   WorkNodeModel? get node => processDetailsController.state.node;
 
-  XForm? get mainForm => processDetailsController.state.mainForm.value;
+  List<XForm> get mainForm => processDetailsController.state.mainForm;
 
   List<XForm> get subForm => processDetailsController.state.subForm;
 
-  TabController? get subTabController => processDetailsController.state.subTabController;
+  TabController get subTabController => processDetailsController.state.subTabController;
+
+  TabController get mainTabController => processDetailsController.state.mainTabController;
+
+  var mainIndex = 0.obs;
+
+  var subIndex = 0.obs;
 }

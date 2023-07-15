@@ -1377,7 +1377,7 @@ class XAuthority {
   }
 
   //通过动态数组解析成List
-  static List<XAuthority> fromList(List<Map<String, dynamic>>? list) {
+  static List<XAuthority> fromList(List? list) {
     if (list == null) {
       return [];
     }
@@ -6361,7 +6361,7 @@ class XTeam {
         identitys = XIdentity.fromList(json["identitys"]);
 
   //通过动态数组解析成List
-  static List<XTeam> fromList(List<Map<String, dynamic>>? list) {
+  static List<XTeam> fromList(List? list) {
     if (list == null) {
       return [];
     }

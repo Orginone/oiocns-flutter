@@ -49,12 +49,14 @@ class WorkApply implements IWorkApply{
       WorkInstanceModel(
         defineId: metadata.defineId,
         content: content,
+        title: metadata.title,
         contentType: 'Text',
         data: jsonEncode(instanceData.toJson()),
         childrenData: '',
         applyId: applyId,
         hook: metadata.hook,
         taskId: metadata.taskId,
+
       ),
     );
 

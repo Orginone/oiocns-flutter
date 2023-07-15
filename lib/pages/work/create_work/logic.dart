@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/work/work_start/logic.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
@@ -18,7 +16,6 @@ class CreateWorkController extends BaseController<CreateWorkState>
     with GetTickerProviderStateMixin {
   final CreateWorkState state = CreateWorkState();
 
-  WorkStartController get work => Get.find<WorkStartController>();
 
   @override
   void onReady() async {
@@ -33,7 +30,9 @@ class CreateWorkController extends BaseController<CreateWorkState>
     ResultType<AnyThingModel> result =
     await kernel.anystore.createThing('', state.target.id);
     if (result.data != null) {
-      state.mainForm.value!.things.add(result.data!);
+      for (var element in state.mainForm) {
+        element.things.add(result.data!);
+      }
     }
     LoadingDialog.dismiss(context);
   }
@@ -47,12 +46,13 @@ class CreateWorkController extends BaseController<CreateWorkState>
   Future<void> loadMainTable() async {
     var forms = (await state.work.loadWorkForms());
     state.mainForm.value =
-        forms.firstWhere((element) => element.metadata.typeName == "主表");
-
-    if (state.mainForm.value != null) {
-      await state.mainForm.value!.loadAttributes();
-      await state.mainForm.value!.loadItems();
-      await state.mainForm.value!.createFields();
+        forms.where((element) => element.metadata.typeName == "主表").toList();
+    state.mainTabController =
+        TabController(length: state.mainForm.length, vsync: this);
+    for (var form in state.mainForm) {
+      await form.loadAttributes();
+      await form.loadItems();
+      await form.createFields();
     }
 
     state.mainForm.refresh();
@@ -63,7 +63,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
     state.subForm.value =
         forms.where((element) => element.metadata.typeName == "子表").toList();
 
-    state.tabController =
+    state.subTabController =
         TabController(length: state.subForm.length, vsync: this);
     for (var form in state.subForm) {
       await form.loadAttributes();
@@ -74,31 +74,42 @@ class CreateWorkController extends BaseController<CreateWorkState>
   }
 
   Future<void> submit() async {
-    for (var element in state.mainForm.value?.fields ?? []) {
-      if (element.field.required ?? false) {
-        if (element.field!.defaultData.value == null) {
-          return ToastUtils.showMsg(msg: element.fields!.hint!);
-        }
-      }
-    }
+    // for (var element in state.mainForm.value?.fields ?? []) {
+    //   if (element.field.required ?? false) {
+    //     if (element.field!.defaultData.value == null) {
+    //       return ToastUtils.showMsg(msg: element.fields!.hint!);
+    //     }
+    //   }
+    // }
     LoadingDialog.showLoading(context);
 
     if (state.apply != null) {
-      state.apply!.instanceData.fields[state.mainForm.value!.id] = state.mainForm.value!.fields;
+      for (var form in state.mainForm) {
+        state.apply!.instanceData.fields[form.id] = form.fields;
+      }
+
       for (var form in state.subForm) {
         state.apply!.instanceData.fields[form.id] = form.fields;
       }
       Map<String, FormEditData> fromData = {};
-      var main = FormEditData(createTime: DateTime.now().toString(),nodeId: state.work.node?.id,creator: settingCtrl.user.id,);
-      main.after = state.mainForm.value!.things;
-      state.mainForm.value!.setThing(main.after[0]);
-      state.apply!.instanceData.primary.addAll(main.after![0].otherInfo);
-
-      fromData[state.mainForm.value!.id] = main;
+      for (var element in state.mainForm) {
+        var main = FormEditData(
+            createTime: DateTime.now().toString(),
+            nodeId: state.work.node?.id,
+            creator: settingCtrl.user.id);
+        main.after = element.things;
+        element.setThing(main.after[0]);
+        fromData[element.id] = main;
+        state.apply!.instanceData.primary.addAll(main.after[0].otherInfo);
+      }
       for (var element in state.subForm) {
-        var sub = FormEditData(createTime: DateTime.now().toString(),nodeId: state.work.node?.id,creator: settingCtrl.user.id);
+        var sub = FormEditData(
+            createTime: DateTime.now().toString(),
+            nodeId: state.work.node?.id,
+            creator: settingCtrl.user.id);
         sub.after = element.things;
-        sub.before = element.things.where((element) => element.isSelected).toList();
+        sub.before =
+            element.things.where((element) => element.isSelected).toList();
         fromData[element.id] = sub;
       }
       bool success = await state.apply!
@@ -175,13 +186,13 @@ class CreateWorkController extends BaseController<CreateWorkState>
   }
 
   void subTableOperation(SubTableEnum function) {
-    int subTableIndex = state.tabController.index;
+    int subTableIndex = state.subTabController.index;
     IForm form = state.subForm[subTableIndex];
 
     if (function == SubTableEnum.choiceTable) {
       jumpEntity(form);
     } else {
-      showCreateAuthDialog(context, form,state.target, onSuceess: (model) {
+      showCreateAuthDialog(context, form, state.target, onSuceess: (model) {
         form.things.add(model);
         state.subForm.refresh();
       });
@@ -189,7 +200,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
   }
 
   void subTableFormOperation(String function, String key) {
-    int subTableIndex = state.tabController.index;
+    int subTableIndex = state.subTabController.index;
     IForm form = state.subForm[subTableIndex];
     var thing = form.things.firstWhere((element) => element.id == key);
     if (function == 'delete') {
@@ -197,10 +208,18 @@ class CreateWorkController extends BaseController<CreateWorkState>
       state.subForm.refresh();
     }
     if (function == 'edit') {
-      showCreateAuthDialog(context, form,state.target, onSuceess: (model) {
+      showCreateAuthDialog(context, form, state.target, onSuceess: (model) {
         thing = model;
         state.subForm.refresh();
       }, thing: thing);
     }
+  }
+
+  void changeMainIndex(int index) {
+    if (state.mainIndex.value != index) state.mainIndex.value = index;
+  }
+
+  void changeSubIndex(int index) {
+    if (state.subIndex.value != index) state.subIndex.value = index;
   }
 }

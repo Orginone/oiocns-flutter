@@ -203,7 +203,7 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  Future<List<XTarget>> searchTargets(
+  Future<List<XTarget>>searchTargets(
       String filter, List<String> typeNames) async {
     var res = await kernel.searchTargets(NameTypeModel(
       name: filter,

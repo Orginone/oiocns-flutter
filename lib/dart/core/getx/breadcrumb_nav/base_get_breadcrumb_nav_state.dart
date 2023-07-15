@@ -6,7 +6,7 @@ import 'package:orginone/dart/core/getx/base_get_state.dart';
 
 abstract class BaseBreadcrumbNavState<T extends BaseBreadcrumbNavModel> extends BaseGetState{
 
-  List<BaseBreadcrumbNavInfo> bcNav = [];
+  var bcNav = <BaseBreadcrumbNavInfo>[].obs;
 
   String title  = '';
 

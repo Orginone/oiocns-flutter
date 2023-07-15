@@ -3,9 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
-import 'package:orginone/routers.dart';
 
-import '../base_bindings.dart';
 import 'breadcrumb_nav_instance.dart';
 
 abstract class BaseBreadcrumbNavController<S extends BaseBreadcrumbNavState>
@@ -14,29 +12,38 @@ abstract class BaseBreadcrumbNavController<S extends BaseBreadcrumbNavState>
 
   BaseBreadcrumbNavController();
 
+  BaseBreadcrumbNavController? previous;
+
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    var previous = BreadcrumbNavInstance().previous()?.state.bcNav;
-    state.bcNav.add(BaseBreadcrumbNavInfo(title: state.title,data: state.model.value));
+    previous = BreadcrumbNavInstance().previous();
+    state.bcNav.add(
+        BaseBreadcrumbNavInfo(title: state.title, data: state.model.value));
     if (previous != null) {
-      for (int i = previous.length - 1; i >= 0 ; i--) {
-        state.bcNav
-            .insert(0, BreadcrumbNavInstance().previous()!.state.bcNav[i]);
+      for (int i = previous!.state.bcNav.length - 1; i >= 0; i--) {
+        state.bcNav.insert(0, previous!.state.bcNav[i]);
       }
     }
+  }
+
+  updateNav() {
+    state.bcNav.last.title = state.model.value!.name;
+    previous!.state.model.refresh();
+    state.bcNav.refresh();
   }
 
   @override
   void onReady() {
     // TODO: implement onReady
     super.onReady();
-    BreadcrumbNavInstance().put(this,tag: tag);
+    BreadcrumbNavInstance().put(this, tag: tag);
 
     var maxPosition = state.navBarController.position.maxScrollExtent;
-    
-    state.navBarController.animateTo(maxPosition, duration: const Duration(microseconds: 300), curve: Curves.linear);
+
+    state.navBarController.animateTo(maxPosition,
+        duration: const Duration(microseconds: 300), curve: Curves.linear);
   }
 
   @override

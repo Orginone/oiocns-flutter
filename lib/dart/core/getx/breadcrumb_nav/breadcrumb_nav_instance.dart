@@ -14,7 +14,6 @@ class BreadcrumbNavInstance {
   static final Map<String, _BreadcrumbNavInstance> _breadcrumbNav = {};
 
 
-
   void put(BaseBreadcrumbNavController controller,{String? tag}){
     var router = ModalRoute.of(controller.context)?.settings.name;
 
