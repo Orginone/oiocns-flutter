@@ -32,7 +32,7 @@ enum Shortcut {
   addGroup("加入群组", Icons.speaker_group),
   addCompany("加入单位组织", Icons.compare),
   addCohort("发起群聊", Icons.chat_bubble),
-  qrCode("扫一扫", Icons.qr_code_2_outlined);
+  createCompany("创建单位", Icons.compare);
 
   final String label;
   final IconData icon;
@@ -70,7 +70,7 @@ class UserController extends GetxController {
     ItemModel(Shortcut.addGroup, "添加群组", "请输入群组的编码", TargetType.cohort),
     ItemModel(Shortcut.addCompany, "添加单位", "请输入单位的社会统一代码", TargetType.company),
     ItemModel(Shortcut.addCohort, "发起群聊", "请输入群聊信息", TargetType.cohort),
-    ItemModel(Shortcut.qrCode),
+    ItemModel(Shortcut.createCompany, "创建单位", "", TargetType.company),
   ];
 
   @override
@@ -160,7 +160,7 @@ class UserController extends GetxController {
   }
 
   void showAddFeatures(ItemModel item) {
-    if (item.shortcut == Shortcut.addCohort) {
+    if (item.shortcut == Shortcut.addCohort || item.shortcut == Shortcut.createCompany) {
       showCreateOrganizationDialog(
         Get.context!,
         [item.targetType!],
@@ -174,7 +174,7 @@ class UserController extends GetxController {
             teamCode: code,
             remark: remark,
           );
-          var data = await user.createCohort(target);
+          var data = item.shortcut == Shortcut.createCompany?await user.createCompany(target):await user.createCohort(target);
           if (data != null) {
             ToastUtils.showMsg(msg: "创建成功");
           }

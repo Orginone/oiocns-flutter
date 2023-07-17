@@ -1,13 +1,13 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/core/getx/frequently_used_list/base_freqiently_usedList_controller.dart';
-import 'package:orginone/event/home_data.dart';
+import 'package:orginone/dart/core/getx/submenu_list/base_submenu_controller.dart';
+import 'package:orginone/dart/core/getx/submenu_list/base_submenu_state.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
 
 import 'state.dart';
 
-class StoreController extends BaseFrequentlyUsedListController<StoreState> {
+class StoreController extends BaseSubmenuController<StoreState> {
   final StoreState state = StoreState();
 
   @override
@@ -22,14 +22,21 @@ class StoreController extends BaseFrequentlyUsedListController<StoreState> {
     initData();
   }
 
+
   initData() async {
     state.dataList.value = settingCtrl.store.recent;
     loadSuccess();
   }
 
-  void loadFrequentlyUsed() {
-    state.mostUsedList.value = settingCtrl.store.storeFrequentlyUsed;
-    state.mostUsedList.refresh();
+  @override
+  void initSubmenu() {
+    // TODO: implement initSubmenu
+    super.initSubmenu();
+    state.submenu.value = [
+      SubmenuType(text: "全部", value: 'all'),
+      SubmenuType(text: "文件", value: 'create'),
+      SubmenuType(text: "表单", value: 'todo'),
+    ];
   }
 
   @override

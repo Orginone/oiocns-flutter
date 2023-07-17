@@ -4,22 +4,22 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/user_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/getx/frequently_used_list/base_freqiently_usedList_controller.dart';
+import 'package:orginone/dart/core/getx/submenu_list/base_submenu_controller.dart';
+import 'package:orginone/dart/core/getx/submenu_list/base_submenu_state.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/toast_utils.dart';
 
-import '../../dart/core/getx/frequently_used_list/base_frequently_used_list_state.dart';
 import 'dialog.dart';
 import 'state.dart';
 
-class SettingController extends BaseFrequentlyUsedListController<SettingState> {
+class SettingController extends BaseSubmenuController<SettingState> {
   final SettingState state = SettingState();
 
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    state.mostUsedList.value = [
+    [
       FrequentlyUsed(
         id: "addPerson",
         name: "加好友",
@@ -45,6 +45,19 @@ class SettingController extends BaseFrequentlyUsedListController<SettingState> {
         name: "加单位",
         avatar: Ionicons.add,
       ),
+    ];
+  }
+
+
+
+  @override
+  void initSubmenu() {
+    // TODO: implement initSubmenu
+    super.initSubmenu();
+    state.submenu.value = [
+      SubmenuType(text: "全部", value: 'all'),
+      SubmenuType(text: "常用", value: 'common'),
+      SubmenuType(text: "最近", value: 'recent'),
     ];
   }
 

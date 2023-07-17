@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/dart/core/getx/frequently_used_list/list_adapter.dart';
-import 'package:orginone/dart/core/getx/frequently_used_list/item.dart';
+import 'package:orginone/dart/core/getx/submenu_list/item.dart';
+import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
 import 'package:orginone/main.dart';
 
 import '../../../widget/load_state_widget.dart';

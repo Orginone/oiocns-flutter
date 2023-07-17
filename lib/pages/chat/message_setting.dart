@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/api/kernelapi.dart';
-import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/user_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';

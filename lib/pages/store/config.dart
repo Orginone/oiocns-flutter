@@ -29,7 +29,7 @@ Future<List<StoreTreeNav>> loadDir(
           ...await loadDir(dir.children, target),
           ...await loadFile(dir.files, target),
           ...await loadApplications(dir.applications, target),
-          // ...await loadForm(dir.forms, target)
+          ...await loadForm(dir.forms, target)
         ];
       },
       children: [],
@@ -133,8 +133,7 @@ Future<List<StoreTreeNav>> loadForm(List<IForm> forms, ITarget target) async {
       name: form.metadata.name!,
       space: target,
       onNext: (nav) async {
-        await form.loadItems(reload: true);
-        nav.children = await loadSpeciesItem(form.items, target, form);
+
       },
       image: form.metadata.avatarThumbnail(),
       children: [],

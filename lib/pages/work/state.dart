@@ -1,12 +1,11 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/getx/frequently_used_list/base_frequently_used_list_state.dart';
+import 'package:orginone/dart/core/getx/submenu_list/base_submenu_state.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/dart/core/work/task.dart';
 
-class WorkState extends BaseFrequentlyUsedListState<WorkFrequentlyUsed,IWorkTask>{
+class WorkState extends BaseSubmenuState<WorkFrequentlyUsed,IWorkTask>{
 
 }
 

@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/core/getx/frequently_used_list/base_freqiently_usedList_controller.dart';
+import 'package:orginone/dart/core/getx/submenu_list/base_submenu_controller.dart';
+import 'package:orginone/dart/core/getx/submenu_list/base_submenu_state.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/main.dart';
@@ -9,8 +10,9 @@ import 'package:orginone/util/toast_utils.dart';
 
 import 'network.dart';
 import 'state.dart';
+import 'work_sub/logic.dart';
 
-class WorkController extends BaseFrequentlyUsedListController<WorkState> {
+class WorkController extends BaseSubmenuController<WorkState> {
   final WorkState state = WorkState();
 
   @override
@@ -20,13 +22,22 @@ class WorkController extends BaseFrequentlyUsedListController<WorkState> {
   }
 
   @override
-  void onReady() {
-   initData();
+  void initSubmenu() {
+    // TODO: implement initSubmenu
+    super.initSubmenu();
+    state.submenu.value = [
+      SubmenuType(text: "全部", value: 'all'),
+      SubmenuType(text: "常用", value: 'common'),
+      SubmenuType(text: "发起", value: 'create'),
+      SubmenuType(text: "待办", value: 'todo'),
+      SubmenuType(text: "已办", value: 'done'),
+      SubmenuType(text: "我发起", value: 'apply'),
+    ];
   }
 
-  void loadFrequentlyUsed() {
-    state.mostUsedList.value = settingCtrl.work.workFrequentlyUsed;
-    state.mostUsedList.refresh();
+  @override
+  void onReady() {
+    loadSuccess();
   }
 
   @override
@@ -38,35 +49,20 @@ class WorkController extends BaseFrequentlyUsedListController<WorkState> {
     }
   }
 
-  void initData() async {
-    state.dataList = settingCtrl.work.todos;
-    loadSuccess();
-  }
-
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
-    await settingCtrl.work.loadTodos(reload: true);
+     if(state.submenu[state.submenuIndex.value].value == "todo"){
+       await settingCtrl.work.loadTodos(reload: true);
+     }
+     if(state.submenu[state.submenuIndex.value].value == "done"){
+       WorkSubController workSubController = Get.find(tag: "work_done");
+       workSubController.loadDones();
+     }
+     if(state.submenu[state.submenuIndex.value].value == "apply"){
+       WorkSubController workSubController = Get.find(tag: "work_apply");
+       workSubController.loadApply();
+     }
     super.loadData(isRefresh: isRefresh, isLoad: isLoad);
   }
 
-  void approval(IWorkTask todo, int status) async {
-    await WorkNetWork.approvalTask(status: status, comment: '', todo: todo);
-  }
-
-  @override
-  void onTapFrequentlyUsed(used) async {
-    if (used is WorkFrequentlyUsed) {
-      WorkNodeModel? node = await used.define.loadWorkNode();
-      if (node != null && node.forms != null && node.forms!.isNotEmpty) {
-        Get.toNamed(Routers.createWork, arguments: {
-          "define": used.define,
-          "node": node,
-          'target': settingCtrl.provider
-              .findTarget(used.define.metadata.belongId ?? "")
-        });
-      } else {
-        ToastUtils.showMsg(msg: "流程未绑定表单");
-      }
-    }
-  }
 }

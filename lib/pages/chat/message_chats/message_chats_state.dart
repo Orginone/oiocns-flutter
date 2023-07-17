@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/getx/frequently_used_list/base_frequently_used_list_state.dart';
+import 'package:orginone/dart/core/getx/submenu_list/base_submenu_state.dart';
 
-class MessageChatsState extends BaseFrequentlyUsedListState<MessageFrequentlyUsed,dynamic> {
+class MessageChatsState extends BaseSubmenuState<MessageFrequentlyUsed,dynamic> {
   MessageChatsState() {}
 }
 

@@ -2,6 +2,7 @@ import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/user_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
@@ -62,6 +63,12 @@ class UserBar extends GetView<UserController> {
       },
       constraints: BoxConstraints(maxWidth: 50.w),
     ));
+    action.add(IconButton(
+      icon: const Icon(Ionicons.qr_code_sharp),
+      onPressed: () {
+        controller.qrScan();
+      },
+    ));
     action.add(
       CustomPopupMenu(
         menuBuilder: () => ClipRRect(
@@ -77,14 +84,9 @@ class UserBar extends GetView<UserController> {
                         behavior: HitTestBehavior.translucent,
                         onTap: () {
                           _menuController.hideMenu();
-                          if(item.shortcut == Shortcut.qrCode){
-                            controller.qrScan();
-                          }else{
-                            controller.showAddFeatures(item);
-                          }
+                          controller.showAddFeatures(item);
                         },
                         child: Container(
-                          height: 50.h,
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Row(
                             children: <Widget>[
