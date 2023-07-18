@@ -11,7 +11,6 @@ import 'package:orginone/dart/core/thing/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/property.dart';
 import 'package:orginone/dart/core/thing/species.dart';
-import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/pages/setting/setting_sub_page/logic.dart';
@@ -97,7 +96,7 @@ class SettingCenterController
           SettingNavModel(
             name: "单位成员",
             space: company.space,
-            spaceEnum: SpaceEnum.company,
+            spaceEnum: SpaceEnum.person,
             showPopup: false,
             image: company.space!.metadata.avatarThumbnail(),
             children: company.space!.members.map((e) {
@@ -116,17 +115,17 @@ class SettingCenterController
             await loadDir(company.space!.directory.children, company.space!));
         function.addAll(await loadDepartment(
             (company.space! as Company).departments, company.space!));
-        function.addAll(
-            await loadGroup((company.space! as Company).groups, company.space!));
+        function.addAll(await loadGroup(
+            (company.space! as Company).groups, company.space!));
         function
             .addAll(await loadCohorts(company.space!.cohorts, company.space!));
-        nav.children.addAll(function);
+        nav.children = function;
       };
     }
   }
 
   void onNextLv(SettingNavModel model) {
-    if (model.children.isEmpty && model.spaceEnum!=SpaceEnum.directory) {
+    if (model.children.isEmpty) {
       jumpDetails(model);
     } else {
       Get.toNamed(Routers.settingCenter,
@@ -149,17 +148,20 @@ class SettingCenterController
       case SpaceEnum.species:
       case SpaceEnum.applications:
       case SpaceEnum.form:
-      case SpaceEnum.person:
         Get.toNamed(Routers.classificationInfo, arguments: {"data": model});
         break;
       case SpaceEnum.file:
-        Routers.jumpFile(file: model.source!.shareInfo(),type: "setting");
+        Routers.jumpFile(file: model.source!.shareInfo(), type: "setting");
         break;
       case SpaceEnum.user:
         Get.toNamed(Routers.userInfo);
         break;
       case SpaceEnum.company:
         Get.toNamed(Routers.companyInfo, arguments: {"company": model.space});
+        break;
+      default:
+        Get.toNamed(Routers.settingCenter,
+            preventDuplicates: false, arguments: {"data": model});
         break;
     }
   }
@@ -407,6 +409,7 @@ class SettingCenterController
     switch (key) {
       case PopupMenuKey.createDepartment:
         targetType = [
+          TargetType.department,
           TargetType.office,
           TargetType.working,
           TargetType.research,

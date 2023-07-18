@@ -62,10 +62,14 @@ class MessageSetting extends GetView<UserController> {
                   title: "邀请成员",
                   hint: "请输入用户的账号",
                   onSelected: (targets) async {
-                    var success = await (chat as ITeam).pullMembers(targets);
-                    if (success) {
-                      ToastUtils.showMsg(msg: "邀请成功");
-                    }
+                     if(targets.isNotEmpty){
+                       var success = await (chat as ITeam).pullMembers(targets);
+                       if (success) {
+                         ToastUtils.showMsg(msg: "邀请成功");
+                       }
+                     }else{
+                       ToastUtils.showMsg(msg: "未选择用户");
+                     }
                   }
               );
             },

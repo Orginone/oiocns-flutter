@@ -133,18 +133,18 @@ class SettingSubController extends BaseController<SettingSubState> {
         image: e.avatarThumbnail(),
        );
       }).toList(),
-     ),
-    ];
-    function.addAll(
-        await loadDir(company.space!.directory.children, company.space!));
-    function.addAll(await loadDepartment(
-        (company.space! as Company).departments, company.space!));
-    function.addAll(
-        await loadGroup((company.space! as Company).groups, company.space!));
-    function
-        .addAll(await loadCohorts(company.space!.cohorts, company.space!));
-    nav.children.addAll(function);
-   };
+          ),
+        ];
+        function.addAll(
+            await loadDir(company.space!.directory.children, company.space!));
+        function.addAll(await loadDepartment(
+            (company.space! as Company).departments, company.space!));
+        function.addAll(await loadGroup(
+            (company.space! as Company).groups, company.space!));
+        function
+            .addAll(await loadCohorts(company.space!.cohorts, company.space!));
+        nav.children = function;
+      };
   }
  }
 
@@ -159,25 +159,6 @@ class SettingSubController extends BaseController<SettingSubState> {
 
  void jumpDetails(SettingNavModel model) {
   switch (model.spaceEnum) {
-   case SpaceEnum.departments:
-    Get.toNamed(Routers.departmentInfo,
-        arguments: {'depart': model.source});
-    break;
-   case SpaceEnum.groups:
-    Get.toNamed(Routers.outAgencyInfo, arguments: {'group': model.source});
-    break;
-   case SpaceEnum.cohorts:
-    Get.toNamed(Routers.cohortInfo, arguments: {'cohort': model.source});
-    break;
-   case SpaceEnum.species:
-   case SpaceEnum.applications:
-   case SpaceEnum.form:
-   case SpaceEnum.person:
-    Get.toNamed(Routers.classificationInfo, arguments: {"data": model});
-    break;
-   case SpaceEnum.file:
-    Routers.jumpFile(file: model.source!.shareInfo(),type: "setting");
-    break;
    case SpaceEnum.user:
     Get.toNamed(Routers.userInfo);
     break;
@@ -412,11 +393,12 @@ class SettingSubController extends BaseController<SettingSubState> {
   switch (key) {
    case PopupMenuKey.createDepartment:
     targetType = [
-     TargetType.office,
-     TargetType.working,
-     TargetType.research,
-     TargetType.laboratory
-    ];
+          TargetType.department,
+          TargetType.office,
+          TargetType.working,
+          TargetType.research,
+          TargetType.laboratory
+        ];
     break;
    case PopupMenuKey.createStation:
     targetType = [TargetType.station];
@@ -443,10 +425,10 @@ class SettingSubController extends BaseController<SettingSubState> {
       String remark,
       TargetType type) async {
    var target = TargetModel(
-    name: nickName,
+    name: name,
     code: code,
     typeName: type.label,
-    teamName: name,
+    teamName: nickName,
     teamCode: code,
     remark: remark,
    );
