@@ -2,6 +2,8 @@
 
 import 'dart:convert';
 
+import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
@@ -16,7 +18,12 @@ import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/dart/core/thing/property.dart';
 import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/dart/core/work/index.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/home/state.dart';
+import 'package:orginone/routers.dart';
+import 'package:orginone/util/toast_utils.dart';
+
+import 'dialog.dart';
 
 
 List<String> memberTitle = [
@@ -139,8 +146,6 @@ List<IGroup> getAllOutAgency(List<IGroup> outAgencyGroup) {
 
   return list;
 }
-
-
 
 Future<List<SettingNavModel>> loadDir(
     List<IDirectory> dirs, IBelong belong) async {

@@ -28,10 +28,15 @@ abstract class BaseBreadcrumbNavController<S extends BaseBreadcrumbNavState>
     }
   }
 
-  updateNav() {
+  //刷新上一页数据
+  void updateNav() {
     state.bcNav.last.title = state.model.value!.name;
-    previous!.state.model.refresh();
     state.bcNav.refresh();
+    try{
+      previous?.state.model.refresh();
+    }catch(e){
+
+    }
   }
 
   @override

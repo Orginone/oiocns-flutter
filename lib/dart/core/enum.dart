@@ -237,10 +237,6 @@ const subDepartmentTypes = [
 
 
 enum SpaceEnum {
-  cardbag("卡包设置"),
-  security("账号与安全"),
-  gateway("门户设置"),
-  theme("主题设置"),
   directory("文件夹"),
   species("分类"),
   property("属性"),

@@ -45,9 +45,9 @@ S extends BaseSubmenuState> extends BaseGetListView<T, S> {
               return ScrollablePositionedList.builder(
                 padding: EdgeInsets.symmetric(horizontal: 10.w),
                 scrollDirection: Axis.horizontal,
-                itemCount: state.submenu.length,
+                itemCount: state.subGroup.value.groups!.length,
                 itemBuilder: (BuildContext context, int index) {
-                  var menu = state.submenu[index];
+                  var menu = state.subGroup.value.groups![index];
                   return Obx(() {
                     return GestureDetector(
                       onTap: () {
@@ -58,7 +58,8 @@ S extends BaseSubmenuState> extends BaseGetListView<T, S> {
                         padding: EdgeInsets.symmetric(
                             vertical: 5.h, horizontal: 15.w),
                         margin: EdgeInsets.only(
-                            right: index != state.submenu.length - 1
+                            right: index !=
+                                state.subGroup.value.groups!.length - 1
                                 ? 10.w
                                 : 0),
                         decoration: BoxDecoration(
@@ -68,7 +69,7 @@ S extends BaseSubmenuState> extends BaseGetListView<T, S> {
                               : Colors.grey[200],
                         ),
                         child: Text(
-                          menu.text,
+                          menu.label!,
                           style: TextStyle(
                               color: state.submenuIndex.value != index
                                   ? XColors.themeColor
@@ -98,16 +99,22 @@ S extends BaseSubmenuState> extends BaseGetListView<T, S> {
   }
 
   @override
-  Widget buildView(){
-    return PageView.builder(
-      itemBuilder: buildPageView,
-      itemCount: state.submenu.length,
-      physics: const NeverScrollableScrollPhysics(),
-      controller: state.pageController,
-    );
+  Widget buildView() {
+    return Obx(() {
+     var groups = state.subGroup.value.groups!;
+      return PageView.builder(
+        itemBuilder: (context, index) {
+          var type = groups[index].value;
+          return buildPageView(type!);
+        },
+        itemCount: groups.length,
+        physics: const NeverScrollableScrollPhysics(),
+        controller: state.pageController,
+      );
+    });
   }
 
-  Widget buildPageView(BuildContext context, int index);
+  Widget buildPageView(String type);
 
   @override
   // TODO: implement showAppBar
@@ -116,4 +123,7 @@ S extends BaseSubmenuState> extends BaseGetListView<T, S> {
   @override
   // TODO: implement hasNested
   bool get hasNested => true;
+
+  @override
+  bool displayNoDataWidget() => false;
 }

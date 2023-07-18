@@ -6,7 +6,9 @@ import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/dart/core/work/task.dart';
 
 class WorkState extends BaseSubmenuState<WorkFrequentlyUsed,IWorkTask>{
-
+  @override
+  // TODO: implement tag
+  String get tag => "办事";
 }
 
 

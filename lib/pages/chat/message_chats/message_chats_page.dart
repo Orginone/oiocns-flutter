@@ -10,13 +10,7 @@ class MessageChats extends BaseSubmenuPage<MessageChatsController,
     MessageChatsState> {
 
   @override
-  bool displayNoDataWidget() {
-    // TODO: implement displayNoDataWidget
-    return false;
-  }
-
-  @override
-  Widget buildPageView(BuildContext context, int index) {
-    return KeepAliveWidget(child: MessageSubPage(state.submenu[index].value));
+  Widget buildPageView(String type) {
+    return KeepAliveWidget(child: MessageSubPage(type));
   }
 }

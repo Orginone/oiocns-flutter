@@ -1,19 +1,8 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import 'package:orginone/dart/core/target/base/belong.dart';
-import 'package:orginone/dart/core/target/base/target.dart';
-import 'package:orginone/dart/core/target/innerTeam/department.dart';
-import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/main.dart';
-import 'package:orginone/util/date_utils.dart';
-import 'package:orginone/widget/bottom_sheet_dialog.dart';
-import 'package:orginone/widget/loading_dialog.dart';
-
 part 'asset_creation_config.g.dart';
 
 @HiveType(typeId: 4)

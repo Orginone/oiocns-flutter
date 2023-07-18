@@ -181,7 +181,7 @@ class ListAdapter {
   }
 
   ListAdapter.store(RecentlyUseModel recent) {
-    image = recent.avatar ?? Icons.other_houses;
+    image = recent.avatar ?? Ionicons.clipboard_sharp;
     labels = [recent.thing == null?"文件":"物"];
     title = recent.thing?.id??recent.file?.name??"";
     enabledSlidable = false;

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/provider.dart';
@@ -36,7 +37,21 @@ enum Shortcut {
 
   final String label;
   final IconData icon;
+
   const Shortcut(this.label, this.icon);
+}
+
+enum SettingEnum {
+  security("账号与安全", Ionicons.key_sharp),
+  cardbag("卡包设置", Ionicons.card_sharp),
+  gateway("门户设置", Ionicons.home_sharp),
+  theme("主题设置", Ionicons.color_palette_sharp),
+  exitLogin("退出登录", Ionicons.exit_sharp);
+
+  final String label;
+  final IconData icon;
+
+  const SettingEnum(this.label, this.icon);
 }
 
 class ItemModel {
@@ -44,6 +59,7 @@ class ItemModel {
   TargetType? targetType;
   String title;
   String hint;
+
   ItemModel(
     this.shortcut, [
     this.title = '',
@@ -86,9 +102,9 @@ class UserController extends GetxController {
         _provider.loadWorkData(),
         _provider.loadStoreData(),
         _provider.loadContent(),
-      _provider.loadApps(),
       ]);
-      EventBusHelper.fire(InitHomeData());
+      _provider.loadApps();
+      EventBusHelper.fire(InitDataDone());
     });
   }
 
@@ -219,14 +235,42 @@ class UserController extends GetxController {
             }else{
               ToastUtils.showMsg(msg: "申请发送失败");
             }
-          }else{
+          } else {
             ToastUtils.showMsg(msg: "获取用户失败");
           }
-        }else{
+        } else {
           ToastUtils.showMsg(msg: "获取用户失败");
         }
       }
     });
+  }
+
+  void jumpSetting(SettingEnum item) {
+    switch (item) {
+      case SettingEnum.security:
+        Get.toNamed(
+          Routers.security,
+        );
+        break;
+      case SettingEnum.cardbag:
+        Get.toNamed(
+          Routers.cardbag,
+        );
+        break;
+      case SettingEnum.gateway:
+        Get.toNamed(
+          Routers.security,
+        );
+        break;
+      case SettingEnum.theme:
+        Get.toNamed(
+          Routers.security,
+        );
+        break;
+      case SettingEnum.exitLogin:
+        exitLogin();
+        break;
+    }
   }
 }
 

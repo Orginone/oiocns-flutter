@@ -8,10 +8,7 @@ import 'work_sub/view.dart';
 
 class WorkPage extends BaseSubmenuPage<WorkController, WorkState> {
   @override
-  Widget buildPageView(BuildContext context, int index) {
-    return KeepAliveWidget(child: WorkSubPage(state.submenu[index].value));
+  Widget buildPageView(String type) {
+    return KeepAliveWidget(child: WorkSubPage(type));
   }
-
-  @override
-  bool displayNoDataWidget() => false;
 }
