@@ -30,7 +30,6 @@ S extends BaseSubmenuState> extends BaseGetListView<T, S> {
         ];
       },
       body: super.build(context),
-      floatHeaderSlivers: true,
     );
   }
 
@@ -105,7 +104,7 @@ S extends BaseSubmenuState> extends BaseGetListView<T, S> {
       return PageView.builder(
         itemBuilder: (context, index) {
           var type = groups[index].value;
-          return buildPageView(type!);
+          return IntrinsicHeight(child: buildPageView(type!));
         },
         itemCount: groups.length,
         physics: const NeverScrollableScrollPhysics(),
