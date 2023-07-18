@@ -1,12 +1,16 @@
 import 'dart:convert';
 
 import 'package:orginone/dart/base/model.dart' hide ThingModel;
-import 'package:orginone/dart/core/getx/frequently_used_list/base_frequently_used_list_state.dart';
+import 'package:orginone/dart/core/getx/submenu_list/base_submenu_state.dart';
 import 'package:orginone/dart/core/thing/store/provider.dart';
 import 'package:orginone/model/thing_model.dart';
 
 class StoreState
-    extends BaseFrequentlyUsedListState<StoreFrequentlyUsed, dynamic> {}
+    extends BaseSubmenuState<StoreFrequentlyUsed, dynamic> {
+  @override
+  // TODO: implement tag
+  String get tag => "存储";
+}
 
 class StoreFrequentlyUsed extends FrequentlyUsed {
   FileItemModel? fileItemShare;

@@ -2,21 +2,23 @@ import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/schema.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:orginone/dart/controller/setting/user_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/work/task.dart';
-import 'package:orginone/main.dart';
 import 'package:orginone/pages/home/home/logic.dart';
 import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/util/icons.dart';
 import 'package:orginone/widget/image_widget.dart';
+
 import 'search_bar.dart';
 
 class UserBar extends GetView<UserController> {
   UserBar({super.key});
 
   final CustomPopupMenuController _menuController = CustomPopupMenuController();
+
+  final CustomPopupMenuController _settingController = CustomPopupMenuController();
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +64,12 @@ class UserBar extends GetView<UserController> {
       },
       constraints: BoxConstraints(maxWidth: 50.w),
     ));
+    action.add(IconButton(
+      icon: const Icon(Ionicons.qr_code_sharp),
+      onPressed: () {
+        controller.qrScan();
+      },
+    ));
     action.add(
       CustomPopupMenu(
         menuBuilder: () => ClipRRect(
@@ -77,14 +85,9 @@ class UserBar extends GetView<UserController> {
                         behavior: HitTestBehavior.translucent,
                         onTap: () {
                           _menuController.hideMenu();
-                          if(item.shortcut == Shortcut.qrCode){
-                            controller.qrScan();
-                          }else{
-                            controller.showAddFeatures(item);
-                          }
+                          controller.showAddFeatures(item);
                         },
                         child: Container(
-                          height: 50.h,
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Row(
                             children: <Widget>[
@@ -118,18 +121,68 @@ class UserBar extends GetView<UserController> {
           ),
         ),
         verticalMargin: -5.h,
-        controller: _menuController,
+        controller: _settingController,
         pressType: PressType.singleClick,
         child: const Icon(Icons.add),
       ),
     );
     action.add(
-      IconButton(
-        icon: const Icon(Icons.more_vert),
-        onPressed: () {},
-        constraints: BoxConstraints(maxWidth: 40.w),
+      CustomPopupMenu(
+        menuBuilder: () => ClipRRect(
+          borderRadius: BorderRadius.circular(5),
+          child: Container(
+            color: const Color(0xFF4C4C4C),
+            child: IntrinsicWidth(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: SettingEnum.values
+                    .map(
+                      (item) => GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onTap: () {
+                          _menuController.hideMenu();
+                          controller.jumpSetting(item);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                item.icon,
+                                size: 24.w,
+                                color: Colors.white,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 10),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: Text(
+                                    item.label,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.sp,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+          ),
+        ),
+        verticalMargin: -5.h,
+        controller: _menuController,
+        pressType: PressType.singleClick,
+        child: const Icon(Icons.more_vert),
       ),
     );
+
     return SizedBox(
       height: 74.h,
       child: Row(children: [

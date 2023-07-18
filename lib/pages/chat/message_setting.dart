@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/api/kernelapi.dart';
-import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/user_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -64,10 +62,14 @@ class MessageSetting extends GetView<UserController> {
                   title: "邀请成员",
                   hint: "请输入用户的账号",
                   onSelected: (targets) async {
-                    var success = await (chat as ITeam).pullMembers(targets);
-                    if (success) {
-                      ToastUtils.showMsg(msg: "邀请成功");
-                    }
+                     if(targets.isNotEmpty){
+                       var success = await (chat as ITeam).pullMembers(targets);
+                       if (success) {
+                         ToastUtils.showMsg(msg: "邀请成功");
+                       }
+                     }else{
+                       ToastUtils.showMsg(msg: "未选择用户");
+                     }
                   }
               );
             },

@@ -85,8 +85,6 @@ class WorkProvider implements IWorkProvider{
   // TODO: implement userId
   late String userId;
 
-  WorkController get workController => Get.find();
-
   @override
   Future<IWork?> findFlowDefine(String defineId) async{
     for (final target in user.targets) {
@@ -210,7 +208,6 @@ class WorkProvider implements IWorkProvider{
         }
       }
     }
-    workController.loadFrequentlyUsed();
   }
 
   @override

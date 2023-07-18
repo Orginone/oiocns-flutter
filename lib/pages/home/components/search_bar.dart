@@ -3,15 +3,12 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:orginone/config/color.dart';
-import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/setting/user_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/getx/submenu_list/item.dart';
+import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
 import 'package:orginone/dart/core/work/task.dart';
-import 'package:orginone/pages/chat/widgets/chat_item.dart';
-import 'package:orginone/pages/store/item.dart';
 import 'package:orginone/pages/store/state.dart';
-import 'package:orginone/pages/work/item.dart';
 
 class SearchBar<T> extends SearchDelegate{
 
@@ -97,11 +94,11 @@ class SearchBar<T> extends SearchDelegate{
       var item = searchData[index];
       switch(homeEnum){
         case HomeEnum.chat:
-          return MessageItemWidget(chat:item as IMsgChat);
+          return ListItem(adapter: ListAdapter.chat(item as IMsgChat),);
         case HomeEnum.work:
-          return WorkItem(todo:item as IWorkTask);
+          return ListItem(adapter: ListAdapter.work(item as IWorkTask));
         case HomeEnum.store:
-          return StoreItem(item:item as RecentlyUseModel);
+          return ListItem(adapter: ListAdapter.store(item as RecentlyUseModel));
       }
       return Container();
     });

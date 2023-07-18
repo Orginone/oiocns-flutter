@@ -11,5 +11,9 @@ class IndexState extends BaseGetState{
 }
 
 const List<String> tabTitle = [
-  "应用",
+  "动态",
+  "共享软件",
+  "公物仓",
+  "公益仓",
+  "数据资产",
 ];

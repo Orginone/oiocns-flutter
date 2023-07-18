@@ -3,6 +3,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/main.dart';
@@ -67,7 +68,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
                 .toList(),
             company.space!));
         function.addAll(
-            await loadGroup((company.space! as Company).groups, company.space!));
+            await loadGroup((company.space! as Group).children, company.space!));
         function.addAll(await loadCohorts((company.space! as IBelong).cohorts, company.space!));
         nav.children = function;
       };
@@ -79,7 +80,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
   void onReady() async{
     // TODO: implement onReady
     super.onReady();
-    if (state.isRootDir) {
+    if (state.isRootDir && Get.arguments?['data'] == null) {
       LoadingDialog.showLoading(context);
       await loadUserSetting();
       await loadCompanySetting();
@@ -106,41 +107,37 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
       case SpaceEnum.company:
         Get.toNamed(Routers.companyInfo, arguments: {"company": nav.space});
         break;
+      case SpaceEnum.form:
+        Get.toNamed(Routers.thing, arguments: {
+          'form': nav.form??nav.source,
+          "belongId": nav.space!.belong.id
+        });
+        break;
+      case SpaceEnum.species:
+        Get.toNamed(Routers.thing, arguments: {
+          'form': nav.form??nav.source,
+          "belongId": nav.space!.belong.id
+        });
+        break;
       case SpaceEnum.applications:
         var works = await nav.source.loadWorks();
         var target = nav.space;
         Get.toNamed(Routers.workStart,
             arguments: {"works": works, 'target': target});
         break;
+      case SpaceEnum.file:
+        Routers.jumpFile(file: nav.source!.shareInfo(), type: 'store');
+        break;
       default:
-        onNext(nav);
+        Get.toNamed(Routers.storeTree,
+            preventDuplicates: false, arguments: {'data': nav});
         break;
     }
-  }
-  void jumpThing(StoreTreeNav nav) {
-    Get.toNamed(Routers.thing, arguments: {
-      'form': nav.form??nav.source,
-      "belongId": nav.space!.belong.id
-    });
-  }
-
-  void jumpFile(StoreTreeNav nav) {
-    Routers.jumpFile(file: nav.source!.shareInfo(), type: 'store');
   }
 
   void onNext(StoreTreeNav nav) async {
     if (nav.source != null && nav.children.isEmpty) {
-      if (nav.spaceEnum == SpaceEnum.file) {
-        jumpFile(nav);
-      } else if (nav.spaceEnum == SpaceEnum.applications) {
-        var works = await nav.source.loadWorks();
-        var target = nav.space;
-        Get.toNamed(Routers.workStart,
-            arguments: {"works": works, 'target': target});
-      } else {
-        Get.toNamed(Routers.storeTree,
-            preventDuplicates: false, arguments: {'data': nav});
-      }
+       jumpDetails(nav);
     } else {
       Get.toNamed(Routers.storeTree,
           preventDuplicates: false, arguments: {'data': nav});

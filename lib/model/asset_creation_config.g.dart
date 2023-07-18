@@ -104,15 +104,15 @@ class FieldsAdapter extends TypeAdapter<Fields> {
       readOnly: fields[5] as bool?,
       regx: fields[6] as String?,
       hidden: fields[8] as bool?,
+      router: fields[14] as String?,
+      hint: fields[1] as String?,
+      select: (fields[7] as Map?)?.cast<dynamic, String>(),
     )
-      ..hint = fields[1] as String?
-      ..select = (fields[7] as Map?)?.cast<dynamic, String>()
       ..maxLine = fields[9] as int?
       ..marginTop = fields[10] as double?
       ..marginBottom = fields[11] as double?
       ..marginLeft = fields[12] as double?
-      ..marginRight = fields[13] as double?
-      ..router = fields[14] as String?;
+      ..marginRight = fields[13] as double?;
   }
 
   @override

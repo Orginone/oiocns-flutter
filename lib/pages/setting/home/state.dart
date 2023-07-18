@@ -8,28 +8,14 @@ import 'package:orginone/main.dart';
 
 class SettingCenterState extends BaseBreadcrumbNavState<SettingNavModel> {
 
+  late bool isSettingSubPage;
+
   SettingCenterState() {
     model.value = Get.arguments?['data'];
-
+    isSettingSubPage = Get.arguments?['isSettingSubPage']??false;
     if (model.value == null) {
       var joinedCompanies = settingCtrl.provider.user?.companys;
       model.value = SettingNavModel(name: "设置", children: [
-        SettingNavModel(
-          name: SpaceEnum.security.label,
-          spaceEnum: SpaceEnum.security,
-        ),
-        SettingNavModel(
-          name: SpaceEnum.cardbag.label,
-          spaceEnum: SpaceEnum.cardbag,
-        ),
-        SettingNavModel(
-          name: SpaceEnum.gateway.label,
-          spaceEnum: SpaceEnum.gateway,
-        ),
-        SettingNavModel(
-          name: SpaceEnum.theme.label,
-          spaceEnum: SpaceEnum.theme,
-        ),
         SettingNavModel(
           name: settingCtrl.provider.user?.metadata.name ?? "",
           id: settingCtrl.provider.user?.metadata.id ?? "",

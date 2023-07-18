@@ -1,4 +1,4 @@
-class InitHomeData{
+class InitDataDone{
 
 }
 

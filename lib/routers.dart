@@ -50,6 +50,8 @@ import 'pages/login/register/view.dart';
 import 'pages/login/verification_code/binding.dart';
 import 'pages/login/verification_code/view.dart';
 import 'pages/other/choice_thing/view.dart';
+import 'pages/other/edit_sub_group/binding.dart';
+import 'pages/other/edit_sub_group/view.dart';
 import 'pages/other/file_reader/binding.dart';
 import 'pages/other/file_reader/view.dart';
 import 'pages/other/photo_view/binding.dart';
@@ -280,7 +282,7 @@ class Routers {
 
   static const String videoPlay = "/videoPlay";
 
-
+  static const String editSubGroup = "/editSubGroup";
 
 
   static String get main {
@@ -540,6 +542,11 @@ class Routers {
         name: Routers.videoPlay,
         page: () => VideoPlayPage(),
         binding: VideoPlayBinding(),
+      ),
+      GetPage(
+        name: Routers.editSubGroup,
+        page: () => EditSubGroupPage(),
+        binding: EditSubGroupBinding(),
       ),
     ];
   }

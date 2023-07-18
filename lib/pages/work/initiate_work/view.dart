@@ -15,14 +15,8 @@ class InitiateWorkPage extends BaseBreadcrumbNavMultiplexPage<
   Widget body() {
     return SingleChildScrollView(
       child: Obx(() {
-        List<Widget> children = [];
-        if (state.isRootDir) {
-          children = initiate();
-        }else{
-          children = workDetails();
-        }
         return Column(
-          children: children,
+          children: initiate(),
         );
       }),
     );
@@ -51,23 +45,6 @@ class InitiateWorkPage extends BaseBreadcrumbNavMultiplexPage<
     return children;
   }
 
-  List<Widget> workDetails() {
-    List<Widget> children = [];
-    for (var child in state.model.value!.children) {
-      children.add(
-        BaseBreadcrumbNavItem(
-          item: child,
-          onTap: () {
-            controller.jumpWorkList(child);
-          },
-          onNext: (){
-            controller.jumpNext(child);
-          },
-        ),
-      );
-    }
-    return children;
-  }
 
   @override
   InitiateWorkController getController() {

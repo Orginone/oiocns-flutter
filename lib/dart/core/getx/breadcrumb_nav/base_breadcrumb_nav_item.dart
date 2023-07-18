@@ -135,18 +135,6 @@ class _Icon extends StatelessWidget {
       icon = Ionicons.book_sharp;
     } else {
       switch (spaceEnum) {
-        case SpaceEnum.cardbag:
-          icon = Ionicons.card_sharp;
-          break;
-        case SpaceEnum.security:
-          icon = Ionicons.key_sharp;
-          break;
-        case SpaceEnum.gateway:
-          icon = Ionicons.home_sharp;
-          break;
-        case SpaceEnum.theme:
-          icon = Ionicons.color_palette_sharp;
-          break;
         case SpaceEnum.directory:
           icon = Ionicons.folder_sharp;
           break;

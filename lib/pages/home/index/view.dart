@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/pages/index/state.dart';
+import 'state.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 import 'package:orginone/widget/unified.dart';
-import 'application/view.dart';
 import 'logic.dart';
 
 class IndexPage extends BaseGetPageView<IndexController,IndexState>{
@@ -16,11 +15,11 @@ class IndexPage extends BaseGetPageView<IndexController,IndexState>{
         Expanded(
           child: TabBarView(
             controller: state.tabController,
-            children: [
-              KeepAliveWidget(
-                child: ApplicationPage(),
-              )
-            ],
+            children: tabTitle.map((e){
+              return KeepAliveWidget(
+                child: Container(),
+              );
+            }).toList(),
           ),
         )
       ],

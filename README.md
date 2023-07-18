@@ -17,7 +17,7 @@
     ├── dart                            // 核心
     ├── pages                           // 页面
     	├── chat                        // 沟通
-        ├── ohter                       // 其他页面
+        ├── ohter                       // 其他通用页面
         ├── home                        // 主页
         ├── setting                     // 设置
         ├── work                        // 办事

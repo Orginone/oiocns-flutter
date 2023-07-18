@@ -48,21 +48,6 @@ abstract class BaseGetListView<T extends BaseListController,
         ],
       ),
     );
-
-    if(hasNested){
-      body = NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [
-            SliverToBoxAdapter(
-              child: headWidget(),
-            ),
-          ];
-        },
-        body: body,
-        floatHeaderSlivers: true,
-      );
-    }
-
     if (showAppBar) {
       body = GyScaffold(titleName: title, actions: actions(), body: body);
     }
@@ -94,9 +79,6 @@ abstract class BaseGetListView<T extends BaseListController,
     return [];
   }
 
-  Widget headWidget(){
-    return const SizedBox();
-  }
 
   Widget bottomWidget() {
     return Container();
@@ -104,5 +86,4 @@ abstract class BaseGetListView<T extends BaseListController,
 
   bool showAppBar = true;
 
-  bool hasNested = false;
 }

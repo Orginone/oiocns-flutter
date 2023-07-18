@@ -124,7 +124,6 @@ class StoreProvider implements IStoreProvider {
         }
       }
     }
-    storeController.loadFrequentlyUsed();
   }
 
   @override

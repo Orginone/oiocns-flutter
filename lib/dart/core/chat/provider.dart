@@ -58,9 +58,6 @@ class ChatProvider implements IChatProvider {
   @override
   late RxList<MessageFrequentlyUsed> messageFrequentlyUsed;
 
-
-  MessageChatsController get messageChatsController => Get.find();
-
   ChatProvider(this.user) {
     kernel.on('RecvMsg', (data) {
         try{
@@ -85,6 +82,13 @@ class ChatProvider implements IChatProvider {
         throw e;
       }
     });
+    kernel.anystore.subscribed("${StoreCollName.chatMessage}.Changed", user.id, (data){
+      if(data!=null){
+        var msg = MsgChatData.fromMap(data);
+        var chat = allChats.firstWhereOrNull((element) => element.chatdata.value.fullId == msg.fullId);
+        chat?.loadCache(msg);
+      }
+    });
 
     allChats = RxList();
     messageFrequentlyUsed = RxList();
@@ -103,14 +107,6 @@ class ChatProvider implements IChatProvider {
         recvPreMessage(res.data);
       }
     }
-    kernel.anystore.subscribed("${StoreCollName.chatMessage}.Changed", user.id, (data){
-       if(data!=null){
-         var msg = MsgChatData.fromMap(data);
-         var chat = allChats.firstWhereOrNull((element) => element.chatdata.value.fullId == msg.fullId);
-         chat?.loadCache(msg);
-       }
-
-    });
   }
 
   void recvPreMessage(Map<String, dynamic> data) {
@@ -240,8 +236,6 @@ class ChatProvider implements IChatProvider {
         }
       }
     }
-
-    messageChatsController.loadFrequentlyUsed();
   }
 
   @override

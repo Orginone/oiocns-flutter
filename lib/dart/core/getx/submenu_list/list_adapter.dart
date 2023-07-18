@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/application.dart';
@@ -90,19 +91,22 @@ class ListAdapter {
     noReadCount = chat.chatdata.value.noReadCount;
     title = chat.chatdata.value.chatName ?? "";
     dateTime = chat.chatdata.value.lastMessage?.createTime;
-    var lastMessage = chat.chatdata.value.lastMessage;
     content = '';
-    if (lastMessage!.fromId != settingCtrl.user.metadata.id) {
-      if (chat.share.typeName != TargetType.person.label) {
-        var target = chat.members
-            .firstWhere((element) => element.id == lastMessage.fromId);
-        content = "${target.name}:";
-      } else {
-        content = "对方:";
+    var lastMessage = chat.chatdata.value.lastMessage;
+    if(lastMessage!=null){
+      if (lastMessage!.fromId != settingCtrl.user.metadata.id) {
+        if (chat.share.typeName != TargetType.person.label) {
+          var target = chat.members
+              .firstWhere((element) => element.id == lastMessage.fromId);
+          content = "${target.name}:";
+        } else {
+          content = "对方:";
+        }
       }
+      content = content +
+          StringUtil.msgConversion(lastMessage, settingCtrl.user.userId);
     }
-    content = content +
-        StringUtil.msgConversion(lastMessage, settingCtrl.user.userId);
+
 
     image = chat.share.avatar?.thumbnailUint8List ??
         chat.share.avatar?.defaultAvatar;
@@ -126,15 +130,13 @@ class ListAdapter {
     title = work.metadata.title ?? '';
     dateTime = work.metadata.createTime ?? "";
     content = work.metadata.content ?? "";
-
+    image = ShareIdSet[work.metadata.shareId]?.avatar?.thumbnailUint8List ?? Images.iconWorkitem;
     if (work.targets.length == 2) {
       content =
           "${work.targets[0].name}[${work.targets[0].typeName}]申请加入${work.targets[1].name}[${work.targets[1].typeName}]";
     }
 
     content = "内容:$content";
-
-    image = work.metadata.avatarThumbnail() ?? Images.iconWorkitem;
 
     callback = () async {
       await work.loadInstance();
@@ -150,7 +152,7 @@ class ListAdapter {
     noReadCount = 0;
     title = application.metadata.name ?? "";
     dateTime = application.metadata.createTime ?? "";
-    content = "应用说明:";
+    content = "应用说明:${application.metadata.remark??""}";
     image = application.metadata.avatarThumbnail() ?? Ionicons.apps;
 
     callback = () async {
@@ -179,7 +181,7 @@ class ListAdapter {
   }
 
   ListAdapter.store(RecentlyUseModel recent) {
-    image = recent.avatar ?? Icons.other_houses;
+    image = recent.avatar ?? Ionicons.clipboard_sharp;
     labels = [recent.thing == null?"文件":"物"];
     title = recent.thing?.id??recent.file?.name??"";
     enabledSlidable = false;

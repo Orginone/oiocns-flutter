@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
-import 'package:orginone/images.dart';
-import 'package:orginone/widget/common_widget.dart';
-
 import 'item.dart';
 import 'logic.dart';
 import 'state.dart';
@@ -15,45 +12,29 @@ class SettingCenterPage extends BaseBreadcrumbNavMultiplexPage<
 
   @override
   Widget body() {
-    return Column(
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            child: Obx(() {
-              var children = state.model.value!.children
-                  .where(
-                      (element) => element.name.contains(state.keyword.value))
-                  .toList();
-              return Column(
-                children: children
-                    .map((e) => Item(
-                          item: e,
-                          onTap: () {
-                            controller.onDetailsNextLv(e);
-                          },
-                          onNext: () {
-                            controller.onDetailsNextLv(e);
-                          },
-                          onSelected: (key, item) {
-                            controller.operation(key, item);
-                      },
-                    ))
-                    .toList(),
-              );
-            }),
-          ),
-        ),
-        state.isRootDir
-            ? SizedBox(
-                child: CommonWidget.commonSubmitWidget(
-                    text: "退出登录",
-                    submit: () {
-                      controller.jumpLogin();
+    return SingleChildScrollView(
+      child: Obx(() {
+        var children = state.model.value!.children
+            .where(
+                (element) => element.name.contains(state.keyword.value))
+            .toList();
+        return Column(
+          children: children
+              .map((e) => Item(
+                    item: e,
+                    onTap: () {
+                      controller.jumpDetails(e);
                     },
-                    image: Images.logOut),
-              )
-            : const SizedBox(),
-      ],
+                    onNext: () {
+                      controller.onNextLv(e);
+                    },
+                    onSelected: (key, item) {
+                      controller.operation(key, item);
+                },
+              ))
+              .toList(),
+        );
+      }),
     );
   }
 

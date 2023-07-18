@@ -11,9 +11,9 @@ import 'package:orginone/dart/core/thing/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/property.dart';
 import 'package:orginone/dart/core/thing/species.dart';
-import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
+import 'package:orginone/pages/setting/setting_sub_page/logic.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
@@ -24,12 +24,13 @@ class SettingCenterController
     extends BaseBreadcrumbNavController<SettingCenterState> {
   final SettingCenterState state = SettingCenterState();
 
+  SettingSubController get sub => Get.find(tag: 'setting_all');
   @override
   void onReady() async {
     // TODO: implement onReady
     super.onReady();
 
-    if (state.isRootDir) {
+    if (state.isRootDir && Get.arguments?['data'] == null) {
       LoadingDialog.showLoading(context);
       await loadUserSetting();
       await loadCompanySetting();
@@ -38,78 +39,8 @@ class SettingCenterController
     }
   }
 
-  void jumpInfo(SettingNavModel model) {
-    if (settingCtrl.isUserSpace(model.space)) {
-      Get.toNamed(Routers.userInfo);
-    } else {
-      Get.toNamed(Routers.companyInfo, arguments: {"company": model.space});
-    }
-  }
-
-  void onHomeNextLv(SettingNavModel model) {
-    Get.toNamed(Routers.settingCenter,
-        preventDuplicates: false, arguments: {"data": model});
-  }
-
-  void onDetailsNextLv(SettingNavModel model) {
-    if (model.children.isEmpty && model.spaceEnum!=SpaceEnum.directory) {
-      jumpDetails(model);
-    } else {
-      Get.toNamed(Routers.settingCenter,
-          preventDuplicates: false, arguments: {"data": model});
-    }
-  }
-
-  void jumpLogin() async {
-    settingCtrl.exitLogin();
-  }
-
-  void jumpDetails(SettingNavModel model) {
-    switch (model.spaceEnum) {
-      case SpaceEnum.cardbag:
-        Get.toNamed(
-          Routers.cardbag,
-        );
-        break;
-      case SpaceEnum.security:
-        Get.toNamed(
-          Routers.security,
-        );
-        break;
-      case SpaceEnum.gateway:
-        Get.toNamed(
-          Routers.security,
-        );
-        break;
-      case SpaceEnum.theme:
-        Get.toNamed(
-          Routers.security,
-        );
-        break;
-      case SpaceEnum.departments:
-        Get.toNamed(Routers.departmentInfo,
-            arguments: {'depart': model.source});
-        break;
-      case SpaceEnum.groups:
-        Get.toNamed(Routers.outAgencyInfo, arguments: {'group': model.source});
-        break;
-      case SpaceEnum.cohorts:
-        Get.toNamed(Routers.cohortInfo, arguments: {'cohort': model.source});
-        break;
-      case SpaceEnum.species:
-      case SpaceEnum.applications:
-      case SpaceEnum.form:
-      case SpaceEnum.person:
-        Get.toNamed(Routers.classificationInfo, arguments: {"data": model});
-        break;
-      case SpaceEnum.file:
-        Routers.jumpFile(file: model.source!.shareInfo(),type: "setting");
-        break;
-    }
-  }
-
   Future<void> loadUserSetting() async {
-    var user = state.model.value!.children[4];
+    var user = state.model.value!.children.first;
     user.onNext = (nav)async{
       await user.space!.loadContent(reload: true);
       List<SettingNavModel> function = [
@@ -147,7 +78,7 @@ class SettingCenterController
   }
 
   Future<void> loadCompanySetting() async {
-    for(int i = 5;i<state.model.value!.children.length;i++){
+    for(int i = 1;i<state.model.value!.children.length;i++){
       var company = state.model.value!.children[i];
       company.onNext = (nav) async{
         await company.space!.loadContent(reload: true);
@@ -165,7 +96,7 @@ class SettingCenterController
           SettingNavModel(
             name: "单位成员",
             space: company.space,
-            spaceEnum: SpaceEnum.company,
+            spaceEnum: SpaceEnum.person,
             showPopup: false,
             image: company.space!.metadata.avatarThumbnail(),
             children: company.space!.members.map((e) {
@@ -184,12 +115,54 @@ class SettingCenterController
             await loadDir(company.space!.directory.children, company.space!));
         function.addAll(await loadDepartment(
             (company.space! as Company).departments, company.space!));
-        function.addAll(
-            await loadGroup((company.space! as Company).groups, company.space!));
+        function.addAll(await loadGroup(
+            (company.space! as Company).groups, company.space!));
         function
             .addAll(await loadCohorts(company.space!.cohorts, company.space!));
-        nav.children.addAll(function);
+        nav.children = function;
       };
+    }
+  }
+
+  void onNextLv(SettingNavModel model) {
+    if (model.children.isEmpty) {
+      jumpDetails(model);
+    } else {
+      Get.toNamed(Routers.settingCenter,
+          preventDuplicates: false, arguments: {"data": model});
+    }
+  }
+
+  void jumpDetails(SettingNavModel model) {
+    switch (model.spaceEnum) {
+      case SpaceEnum.departments:
+        Get.toNamed(Routers.departmentInfo,
+            arguments: {'depart': model.source});
+        break;
+      case SpaceEnum.groups:
+        Get.toNamed(Routers.outAgencyInfo, arguments: {'group': model.source});
+        break;
+      case SpaceEnum.cohorts:
+        Get.toNamed(Routers.cohortInfo, arguments: {'cohort': model.source});
+        break;
+      case SpaceEnum.species:
+      case SpaceEnum.applications:
+      case SpaceEnum.form:
+        Get.toNamed(Routers.classificationInfo, arguments: {"data": model});
+        break;
+      case SpaceEnum.file:
+        Routers.jumpFile(file: model.source!.shareInfo(), type: "setting");
+        break;
+      case SpaceEnum.user:
+        Get.toNamed(Routers.userInfo);
+        break;
+      case SpaceEnum.company:
+        Get.toNamed(Routers.companyInfo, arguments: {"company": model.space});
+        break;
+      default:
+        Get.toNamed(Routers.settingCenter,
+            preventDuplicates: false, arguments: {"data": model});
+        break;
     }
   }
 
@@ -212,6 +185,9 @@ class SettingCenterController
           state.model.refresh();
           if(item == state.model.value){
             updateNav();
+            if(state.isSettingSubPage){
+              sub.state.nav.refresh();
+            }
           }
         }
       } else {
@@ -317,6 +293,9 @@ class SettingCenterController
           state.model.refresh();
           if(item == state.model.value){
             updateNav();
+            if(state.isSettingSubPage){
+              sub.state.nav.refresh();
+            }
           }
         }
       } else {
@@ -376,6 +355,9 @@ class SettingCenterController
             state.model.refresh();
             if(item == state.model.value){
               updateNav();
+              if(state.isSettingSubPage){
+                sub.state.nav.refresh();
+              }
             }
           }
         });
@@ -427,6 +409,7 @@ class SettingCenterController
     switch (key) {
       case PopupMenuKey.createDepartment:
         targetType = [
+          TargetType.department,
           TargetType.office,
           TargetType.working,
           TargetType.research,
@@ -493,6 +476,9 @@ class SettingCenterController
           state.model.refresh();
           if(model == state.model.value){
             updateNav();
+            if(state.isSettingSubPage){
+              sub.state.nav.refresh();
+            }
           }
         }
       } else {
@@ -552,6 +538,9 @@ class SettingCenterController
           state.model.refresh();
           if(item == state.model.value){
             updateNav();
+            if(state.isSettingSubPage){
+              sub.state.nav.refresh();
+            }
           }
         }
       } else {
@@ -624,6 +613,9 @@ class SettingCenterController
             state.model.refresh();
             if(item == state.model.value){
               updateNav();
+              if(state.isSettingSubPage){
+                sub.state.nav.refresh();
+              }
             }
           }
         }else{

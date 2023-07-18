@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:orginone/config/color.dart';
-import 'package:orginone/dart/core/getx/frequently_used_list/base_frequently_used_list_page_view.dart';
-import 'package:orginone/dart/core/getx/frequently_used_list/list_adapter.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/dart/core/getx/submenu_list/base_submenu_page_view.dart';
+import 'package:orginone/widget/keep_alive_widget.dart';
 
-import 'item.dart';
 import 'logic.dart';
 import 'state.dart';
+import 'work_sub/view.dart';
 
-class WorkPage extends BaseFrequentlyUsedListPage<WorkController, WorkState> {
+class WorkPage extends BaseSubmenuPage<WorkController, WorkState> {
   @override
-  Widget buildView() {
-    return Obx((){
-      state.adapter.value = state.dataList.map((element) => ListAdapter.work(element)).toList();
-      return super.buildView();
-    });
+  Widget buildPageView(String type) {
+    return KeepAliveWidget(child: WorkSubPage(type));
   }
 }
