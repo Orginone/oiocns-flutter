@@ -25,7 +25,7 @@ class WorkController extends BaseSubmenuController<WorkState> {
     var work = HiveUtils.getSubGroup('work');
     if(work==null){
       work = SubGroup.fromJson(workDefaultConfig);
-      HiveUtils.putSubGroup('store', work);
+      HiveUtils.putSubGroup('work', work);
     }
     state.subGroup = Rx(work);
   }
