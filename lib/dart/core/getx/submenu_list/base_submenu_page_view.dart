@@ -14,7 +14,7 @@ S extends BaseSubmenuState> extends BaseGetView<T, S> {
 
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildView() {
     // TODO: implement build
     return NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -29,7 +29,7 @@ S extends BaseSubmenuState> extends BaseGetView<T, S> {
           )
         ];
       },
-      body: buildView(),
+      body: body(),
     );
   }
 
@@ -97,8 +97,7 @@ S extends BaseSubmenuState> extends BaseGetView<T, S> {
     );
   }
 
-  @override
-  Widget buildView() {
+  Widget body() {
     return Obx(() {
      var groups = state.subGroup.value.groups!;
       return PageView.builder(

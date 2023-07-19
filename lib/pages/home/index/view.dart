@@ -52,14 +52,16 @@ class IndexPage extends BaseGetPageView<IndexController,IndexState>{
             ),
           ),
         ),
-        // GestureDetector(
-        //   onTap: () {},
-        //   child: Padding(
-        //       padding: const EdgeInsets.all(8.0),
-        //       child: Icon(
-        //         Icons.more_vert,
-        //       )),
-        // ),
+        IconButton(
+          onPressed: () {
+
+          },
+          alignment: Alignment.center,
+          icon: const Icon(
+            Icons.menu,
+          ),
+          iconSize: 24.w,
+          padding: EdgeInsets.zero,)
       ],
     );
   }

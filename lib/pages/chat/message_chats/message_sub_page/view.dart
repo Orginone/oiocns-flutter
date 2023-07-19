@@ -63,17 +63,17 @@ class MessageSubPage
   }
 
   Widget messageWidget() {
+    List<IMsgChat> chats = state.chats;
+    if(type == "unread"){
+      chats = chats.where((element) => element.chatdata.value.noReadCount !=0).toList();
+    }
+    if(type == "single"){
+      chats = chats.where((element) => element.share.typeName == TargetType.person.label).toList();
+    }
+    if(type == "group"){
+      chats = chats.where((element) => element.share.typeName != TargetType.person.label).toList();
+    }
     return Obx(() {
-      List<IMsgChat> chats = state.chats;
-      if(type == "unread"){
-        chats = chats.where((element) => element.chatdata.value.noReadCount !=0).toList();
-      }
-      if(type == "single"){
-        chats = chats.where((element) => element.share.typeName == TargetType.person.label).toList();
-      }
-      if(type == "group"){
-        chats = chats.where((element) => element.share.typeName != TargetType.person.label).toList();
-      }
       return ListView.builder(
         controller: state.scrollController,
         itemBuilder: (BuildContext context, int index) {

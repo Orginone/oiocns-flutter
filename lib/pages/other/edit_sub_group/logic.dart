@@ -32,6 +32,10 @@ class EditSubGroupController extends BaseController<EditSubGroupState> {
   }
 
   void removeGroup(Group item) {
+    if (!(item.allowEdit ?? true)) {
+      ToastUtils.showMsg(msg: "此分组不允许移除");
+      return;
+    }
     state.subGroup.value.groups!.remove(item);
     state.subGroup.value.hidden!.add(item);
     state.subGroup.refresh();
