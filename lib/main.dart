@@ -74,7 +74,7 @@ class ScreenInit extends StatelessWidget {
             Locale('zh', 'CN'),
             Locale('en', 'US'),
           ],
-          darkTheme: ThemeData(useMaterial3: true),
+          darkTheme: ThemeData(useMaterial3: false),
           textDirection: TextDirection.ltr,
           initialRoute: account != null ? Routers.home : Routers.login,
           getPages: Routers.getInitRouters(),
