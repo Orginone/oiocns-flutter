@@ -17,31 +17,29 @@ class Item extends BaseBreadcrumbNavItem<GeneralBreadcrumbNav>{
   Item({required super.item,super.onNext,super.onTap,this.onSelected});
 
 
-  @override
-  Widget action() {
-    // TODO: implement action
+  List<PopupMenuItem> popupItems(){
     if (item.spaceEnum != SpaceEnum.work) {
-      return super.action();
+      return super.popupItems();
     }
-    return Obx((){
-      PopupMenuItem<PopupMenuKey> popupMenuItem;
-      if (settingCtrl.work.isMostUsed(item.source!)) {
-        popupMenuItem = const PopupMenuItem(
-          value: PopupMenuKey.removeCommon,
-          child: Text("移除常用"),
-        );
-      } else {
-        popupMenuItem = const PopupMenuItem(
-          value: PopupMenuKey.setCommon,
-          child: Text("设为常用"),
-        );
-      }
+    PopupMenuItem<PopupMenuKey> popupMenuItem;
+    if (settingCtrl.work.isMostUsed(item.source!)) {
+      popupMenuItem = const PopupMenuItem(
+        value: PopupMenuKey.removeCommon,
+        child: Text("移除常用"),
+      );
+    } else {
+      popupMenuItem = const PopupMenuItem(
+        value: PopupMenuKey.setCommon,
+        child: Text("设为常用"),
+      );
+    }
+    return [
+      popupMenuItem
+    ];
+  }
 
-      return CommonWidget.commonPopupMenuButton<PopupMenuKey>(items: [
-        popupMenuItem,
-      ], onSelected: (PopupMenuKey key){
-        onSelected?.call(key,item);
-      });
-    });
+  @override
+  void onSelectPopupItem(key) {
+    onSelected?.call(key,item);
   }
 }

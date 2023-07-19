@@ -41,7 +41,6 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
               UserBar(),
               Expanded(
                 child: PageView(
-                  physics: const NeverScrollableScrollPhysics(),
                   controller: state.pageController,
                   children: [
                     KeepAliveWidget(child: MessageChats()),
@@ -50,6 +49,9 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
                     KeepAliveWidget(child: StorePage()),
                     KeepAliveWidget(child: SettingPage()),
                   ],
+                  onPageChanged: (index){
+                    settingCtrl.setHomeEnum(HomeEnum.values[index]);
+                  },
                 ),
               ),
               bottomButton(),

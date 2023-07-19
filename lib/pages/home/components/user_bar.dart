@@ -35,37 +35,36 @@ class UserBar extends GetView<UserController> {
 
   Widget get _userBar {
     List<Widget> action = [];
+     if(controller.homeEnum.value!=HomeEnum.door){
+       action.add(IconButton(
+         icon: const Icon(Icons.search),
+         onPressed: () {
+           SearchBar? search;
+           switch (controller.homeEnum.value) {
+             case HomeEnum.chat:
+               search = SearchBar<IMsgChat>(
+                   homeEnum: HomeEnum.chat, data: controller.chat.allChats);
+               break;
+             case HomeEnum.work:
+               search = SearchBar<IWorkTask>(
+                   homeEnum: HomeEnum.work, data: controller.work.todos);
+               break;
+             case HomeEnum.store:
+               search = SearchBar<RecentlyUseModel>(homeEnum: HomeEnum.store, data: controller.store.recent);
+               break;
+             case HomeEnum.setting:
+               search = SearchBar<int>(homeEnum: HomeEnum.setting, data: []);
+               break;
+           }
+           if (search != null) {
+             showSearch(context: Get.context!, delegate: search);
+           }
+         },
+         constraints: BoxConstraints(maxWidth: 50.w),
+       ));
+     }
     action.add(IconButton(
-      icon: const Icon(Icons.search),
-      onPressed: () {
-        SearchBar? search;
-        switch (controller.homeEnum.value) {
-          case HomeEnum.chat:
-            search = SearchBar<IMsgChat>(
-                homeEnum: HomeEnum.chat, data: controller.chat.allChats);
-            break;
-          case HomeEnum.work:
-            search = SearchBar<IWorkTask>(
-                homeEnum: HomeEnum.work, data: controller.work.todos);
-            break;
-          case HomeEnum.door:
-            // TODO: Handle this case.
-            break;
-          case HomeEnum.store:
-            search = SearchBar<RecentlyUseModel>(homeEnum: HomeEnum.store, data: controller.store.recent);
-            break;
-          case HomeEnum.setting:
-            search = SearchBar<int>(homeEnum: HomeEnum.setting, data: []);
-            break;
-        }
-        if (search != null) {
-          showSearch(context: Get.context!, delegate: search);
-        }
-      },
-      constraints: BoxConstraints(maxWidth: 50.w),
-    ));
-    action.add(IconButton(
-      icon: const Icon(Ionicons.qr_code_sharp),
+      icon: const Icon(Ionicons.scan_outline),
       onPressed: () {
         controller.qrScan();
       },
@@ -193,12 +192,12 @@ class UserBar extends GetView<UserController> {
               child: GestureDetector(
                 child: _imgAvatar(EdgeInsets.only(left: 10.w)),
                 onTap: () {
-                  if(controller.homeEnum.value == HomeEnum.door){
-                    var home = Get.find<HomeController>();
-                    home.jumpTab(HomeEnum.setting);
-                  }else{
-                    controller.jumpInitiate();
-                  }
+                  // if(controller.homeEnum.value == HomeEnum.door){
+                  //   var home = Get.find<HomeController>();
+                  //   home.jumpTab(HomeEnum.setting);
+                  // }else{
+                  //   controller.jumpInitiate();
+                  // }
                 },
               ),
             ),

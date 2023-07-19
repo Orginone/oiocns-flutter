@@ -5,6 +5,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/widget/image_widget.dart';
+import 'package:orginone/widget/popup_widget.dart';
 
 class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
     extends StatelessWidget {
@@ -24,43 +25,50 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async{
-        if(item.onNext!=null){
-           await item.onNext!(item);
-        }
-        if (onNext != null) {
-          onNext!();
-        } else if (onTap != null) {
-          onTap!();
-        }
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border(bottom: BorderSide(color: Colors.grey.shade300,width: 0.5))
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 12.h),
-        child: Row(
-          children: [
-            AdvancedAvatar(
-              size: 60.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(8.w)),
+      child: PopupWidget(
+        itemBuilder: (BuildContext context) {
+          return popupItems();
+        },
+        onSelected: (key){
+          onSelectPopupItem(key);
+        },
+        onTap: () async{
+          if(item.onNext!=null){
+             await item.onNext!(item);
+          }
+          if (onNext != null) {
+            onNext!();
+          } else if (onTap != null) {
+            onTap!();
+          }
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border(bottom: BorderSide(color: Colors.grey.shade300,width: 0.5))
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 12.h),
+          child: Row(
+            children: [
+              AdvancedAvatar(
+                size: 60.w,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(8.w)),
+                ),
+                child: item.image != null
+                    ? ImageWidget(
+                        item.image,
+                      )
+                    : _Icon(
+                        spaceEnum: item.spaceEnum,
+                      ),
               ),
-              child: item.image != null
-                  ? ImageWidget(
-                      item.image,
-                    )
-                  : _Icon(
-                      spaceEnum: item.spaceEnum,
-                    ),
-            ),
-            Expanded(
-              child: title(),
-            ),
-            item.showPopup?action():const SizedBox(),
-            more(),
-          ],
+              Expanded(
+                child: title(),
+              ),
+              more(),
+            ],
+          ),
         ),
       ),
     );
@@ -117,9 +125,14 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
     );
   }
 
-  Widget action() {
-    return SizedBox();
+  List<PopupMenuItem> popupItems(){
+    return [];
   }
+
+  void onSelectPopupItem(dynamic key){
+
+  }
+
 }
 
 class _Icon extends StatelessWidget {

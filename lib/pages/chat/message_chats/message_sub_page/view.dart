@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
-import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
 import 'package:orginone/main.dart';
@@ -51,29 +50,39 @@ class MessageSubPage
 
   Widget commonWidget() {
     return Obx(() {
-      return ListView.builder(
+      return GridView.builder(
         controller: state.scrollController,
         itemBuilder: (BuildContext context, int index) {
           var item = settingCtrl.chat.messageFrequentlyUsed[index];
-          return ListItem(adapter: ListAdapter.chat(item.chat));
+          return GridItem(adapter: ListAdapter.chat(item.chat));
         },
         itemCount: settingCtrl.chat.messageFrequentlyUsed.length,
+        gridDelegate:
+            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
       );
     });
   }
 
   Widget messageWidget() {
-    List<IMsgChat> chats = state.chats;
-    if(type == "unread"){
-      chats = chats.where((element) => element.chatdata.value.noReadCount !=0).toList();
-    }
-    if(type == "single"){
-      chats = chats.where((element) => element.share.typeName == TargetType.person.label).toList();
-    }
-    if(type == "group"){
-      chats = chats.where((element) => element.share.typeName != TargetType.person.label).toList();
-    }
     return Obx(() {
+      List<IMsgChat> chats = state.chats;
+      if (type == "unread") {
+        chats = chats
+            .where((element) => element.chatdata.value.noReadCount != 0)
+            .toList();
+      }
+      if (type == "single") {
+        chats = chats
+            .where(
+                (element) => element.share.typeName == TargetType.person.label)
+            .toList();
+      }
+      if (type == "group") {
+        chats = chats
+            .where(
+                (element) => element.share.typeName != TargetType.person.label)
+            .toList();
+      }
       return ListView.builder(
         controller: state.scrollController,
         itemBuilder: (BuildContext context, int index) {
