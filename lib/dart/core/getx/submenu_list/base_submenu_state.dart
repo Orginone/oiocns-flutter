@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/getx/base_get_list_state.dart';
+import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/model/subgroup.dart';
 
 import 'list_adapter.dart';
 
-class BaseSubmenuState<T extends FrequentlyUsed, S> extends BaseGetListState<S> {
+class BaseSubmenuState<T extends FrequentlyUsed> extends BaseGetState {
 
   late Rx<SubGroup> subGroup;
 

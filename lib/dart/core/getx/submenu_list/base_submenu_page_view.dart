@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/getx/base_get_list_view.dart';
+import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -10,7 +10,7 @@ import 'base_submenu_state.dart';
 import 'item.dart';
 
 abstract class BaseSubmenuPage<T extends BaseSubmenuController,
-S extends BaseSubmenuState> extends BaseGetListView<T, S> {
+S extends BaseSubmenuState> extends BaseGetView<T, S> {
 
 
   @override
@@ -29,7 +29,7 @@ S extends BaseSubmenuState> extends BaseGetListView<T, S> {
           )
         ];
       },
-      body: super.build(context),
+      body: buildView(),
     );
   }
 

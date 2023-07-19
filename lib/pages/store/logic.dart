@@ -19,10 +19,6 @@ class StoreController extends BaseSubmenuController<StoreState> {
     super.onInit();
   }
 
-  @override
-  void onReady() {
-    loadSuccess();
-  }
 
   @override
   void initSubGroup() {
@@ -36,27 +32,4 @@ class StoreController extends BaseSubmenuController<StoreState> {
     state.subGroup = Rx(store);
   }
 
-  @override
-  void onTapFrequentlyUsed(used) async {
-    if (used is StoreFrequentlyUsed) {
-      switch (used.storeEnum) {
-        case StoreEnum.file:
-          Routers.jumpFile(
-              file: FileItemShare.fromJson(used.fileItemShare!.shareInfo()),
-              type: 'store');
-          break;
-        case StoreEnum.thing:
-          // var thing = used.thing;
-          // IForm? form = await settingCtrl.store
-          //     .findForm(thing!.keys.first.substring(1));
-          // if (form != null) {
-          //   Get.toNamed(Routers.thingDetails,
-          //       arguments: {"thing": thing, 'form': form});
-          // } else {
-          //   ToastUtils.showMsg(msg: "未找到表单");
-          // }
-          break;
-      }
-    }
-  }
 }

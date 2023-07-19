@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
+import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
@@ -21,7 +22,7 @@ import 'package:orginone/widget/loading_dialog.dart';
 import '../config.dart';
 import 'state.dart';
 
-class SettingSubController extends BaseController<SettingSubState> {
+class SettingSubController extends BaseListController<SettingSubState> {
  final SettingSubState state = SettingSubState();
 
  late String type;
@@ -60,6 +61,7 @@ class SettingSubController extends BaseController<SettingSubState> {
      await loadCompanySetting();
      state.nav.refresh();
     }
+    loadSuccess();
   }
 
 
@@ -699,4 +701,13 @@ class SettingSubController extends BaseController<SettingSubState> {
     break;
   }
  }
+
+ @override
+  void onReady() {
+    // TODO: implement onReady
+  }
+  @override
+  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async{
+
+  }
 }

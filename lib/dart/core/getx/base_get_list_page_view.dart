@@ -22,42 +22,33 @@ abstract class BaseGetListPageView<T extends BaseListController, S extends BaseG
     controller = Get.put(getController(), tag: tag());
     controller.context = context;
 
-    return NestedScrollView(
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        return [
-          SliverToBoxAdapter(
-            child: headWidget(),
-          )
-        ];
-      },
-      body: EasyRefresh(
-        controller: state.refreshController,
-        onRefresh: controller.onRefresh,
-        onLoad: controller.onLoadMore,
-        header: const MaterialHeader(),
-        footer: const MaterialFooter(),
-        child: Column(
-          children: [
-            Expanded(
-              child: Obx(() {
-                return LoadStateWidget(
-                  isSuccess: state.isSuccess.value,
-                  isLoading: state.isLoading.value,
-                  onRetry: () async {
-                    await controller.loadData();
-                  },
-                  child: Obx(() {
-                    if (state.dataList.isEmpty && displayNoDataWidget()) {
-                      return noData();
-                    }
-                    return buildView();
-                  }),
-                );
-              }),
-            ),
-            bottomWidget(),
-          ],
-        ),
+    return EasyRefresh(
+      controller: state.refreshController,
+      onRefresh: controller.onRefresh,
+      onLoad: controller.onLoadMore,
+      header: const MaterialHeader(),
+      footer: const MaterialFooter(),
+      child: Column(
+        children: [
+          Expanded(
+            child: Obx(() {
+              return LoadStateWidget(
+                isSuccess: state.isSuccess.value,
+                isLoading: state.isLoading.value,
+                onRetry: () async {
+                  await controller.loadData();
+                },
+                child: Obx(() {
+                  if (state.dataList.isEmpty && displayNoDataWidget()) {
+                    return noData();
+                  }
+                  return buildView();
+                }),
+              );
+            }),
+          ),
+          bottomWidget(),
+        ],
       ),
     );
   }

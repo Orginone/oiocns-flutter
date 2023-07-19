@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
@@ -10,7 +11,7 @@ import 'package:orginone/pages/store/store_tree/store_nav_item.dart';
 import 'logic.dart';
 import 'state.dart';
 
-class StoreSubPage extends BaseGetPageView<StoreSubController,StoreSubState>{
+class StoreSubPage extends BaseGetListPageView<StoreSubController,StoreSubState>{
 
   late String type;
 
@@ -29,29 +30,31 @@ class StoreSubPage extends BaseGetPageView<StoreSubController,StoreSubState>{
 
 
   Widget allWidget(){
-    return SingleChildScrollView(
-      child: Column(
-        children: state.nav!.children.map((e) {
-          return StoreNavItem(
-            item: e,
-            onTap: () {
-              controller.jumpDetails(e);
-            },
-            onNext: () {
-              controller.onNext(e);
-            },
-            onSelected: (key, item) {
-              controller.operation(key, item);
-            },
-          );
-        }).toList(),
-      ),
+    return ListView.builder(
+      controller: state.scrollController,
+      itemBuilder: (BuildContext context, int index) {
+        var item = state.nav!.children[index];
+        return StoreNavItem(
+          item: item,
+          onTap: () {
+            controller.jumpDetails(item);
+          },
+          onNext: () {
+            controller.onNext(item);
+          },
+          onSelected: (key, item) {
+            controller.operation(key, item);
+          },
+        );
+      },
+      itemCount: state.nav!.children.length,
     );
   }
 
   Widget commonWidget(){
     return Obx((){
       return ListView.builder(
+        controller: state.scrollController,
         itemBuilder: (context, index) {
           var store = settingCtrl.store.storeFrequentlyUsed[index];
 
@@ -72,6 +75,7 @@ class StoreSubPage extends BaseGetPageView<StoreSubController,StoreSubState>{
       var data = settingCtrl.store.recent.where((p0) => p0.type == type).toList();
 
       return ListView.builder(
+        controller: state.scrollController,
         itemBuilder: (context, index) {
           var store = data[index];
           return ListItem(adapter: ListAdapter.store(store));
@@ -91,4 +95,7 @@ class StoreSubPage extends BaseGetPageView<StoreSubController,StoreSubState>{
     // TODO: implement tag
     return "store_$type";
   }
+
+  @override
+  bool displayNoDataWidget() =>false;
 }

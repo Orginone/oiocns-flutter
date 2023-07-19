@@ -33,28 +33,5 @@ class MessageChatsController
     state.subGroup = Rx(chat);
   }
 
-  @override
-  void onReady() {
-    loadSuccess();
-  }
-  
-  
 
-  @override
-  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
-    // TODO: implement loadData
-    await settingCtrl.provider.reloadChats();
-    super.loadData(isRefresh: isRefresh, isLoad: isLoad);
-  }
-
-  @override
-  void onTapFrequentlyUsed(used) {
-    if(used is MessageFrequentlyUsed){
-      used.chat.onMessage();
-      Get.toNamed(
-        Routers.messageChat,
-        arguments: used.chat,
-      );
-    }
-  }
 }

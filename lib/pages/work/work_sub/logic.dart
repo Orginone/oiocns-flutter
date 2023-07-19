@@ -1,12 +1,13 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/getx/base_controller.dart';
+import 'package:orginone/dart/core/getx/base_list_controller.dart';
+import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/work/initiate_work/state.dart';
 import 'package:orginone/routers.dart';
 
 import 'state.dart';
 
-class WorkSubController extends BaseController<WorkSubState> {
+class WorkSubController extends BaseListController<WorkSubState> {
   final WorkSubState state = WorkSubState();
 
   late String type;
@@ -14,18 +15,33 @@ class WorkSubController extends BaseController<WorkSubState> {
   WorkSubController(this.type);
 
   @override
-  void onInit() async{
+  void onInit() async {
     // TODO: implement onInit
     super.onInit();
     if (type == "all") {
       initNav();
     }
-    if(type == "done"){
+    if (type == "done") {
       await loadDones();
     }
-    if(type == "apply"){
+    if (type == "apply") {
       await loadApply();
     }
+    loadSuccess();
+  }
+
+  @override
+  void onReceivedEvent(event) async {
+    // TODO: implement onReceivedEvent
+    super.onReceivedEvent(event);
+    if (event is WorkReload && type == "todo") {
+      await loadData();
+    }
+  }
+
+  @override
+  void onReady() {
+    // TODO: implement onReady
   }
 
   void initNav() {
@@ -78,11 +94,27 @@ class WorkSubController extends BaseController<WorkSubState> {
     Get.toNamed(Routers.workList, arguments: {"data": work});
   }
 
-  loadDones() async{
+  loadDones() async {
     state.list.value = await settingCtrl.work.loadDones(settingCtrl.user.id);
   }
 
-  loadApply() async{
+  loadApply() async {
     state.list.value = await settingCtrl.work.loadApply(settingCtrl.user.id);
+  }
+
+  @override
+  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
+    if (type == "todo") {
+      await settingCtrl.work.loadTodos(reload: true);
+    }
+    if (type == "done") {
+      await loadDones();
+    }
+    if (type == "apply") {
+      await loadApply();
+    }
+    if (type == "common") {
+      await settingCtrl.work.loadMostUsed();
+    }
   }
 }

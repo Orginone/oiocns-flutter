@@ -30,35 +30,5 @@ class WorkController extends BaseSubmenuController<WorkState> {
     state.subGroup = Rx(work);
   }
 
-  @override
-  void onReady() {
-    loadSuccess();
-  }
-
-  @override
-  void onReceivedEvent(event) async {
-    // TODO: implement onReceivedEvent
-    super.onReceivedEvent(event);
-    if (event is WorkReload) {
-      await loadData();
-    }
-  }
-
-  @override
-  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
-    var value = state.subGroup.value.groups![state.submenuIndex.value].value;
-     if(value == "todo"){
-       await settingCtrl.work.loadTodos(reload: true);
-     }
-     if(value == "done"){
-       WorkSubController workSubController = Get.find(tag: "work_done");
-       workSubController.loadDones();
-     }
-     if(value == "apply"){
-       WorkSubController workSubController = Get.find(tag: "work_apply");
-       workSubController.loadApply();
-     }
-    super.loadData(isRefresh: isRefresh, isLoad: isLoad);
-  }
 
 }

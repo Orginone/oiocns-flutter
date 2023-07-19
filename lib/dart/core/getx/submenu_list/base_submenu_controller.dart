@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/model/subgroup.dart';
 import 'package:orginone/routers.dart';
@@ -9,7 +10,7 @@ import 'package:orginone/widget/gy_scaffold.dart';
 import 'base_submenu_state.dart';
 
 class BaseSubmenuController<S extends BaseSubmenuState>
-    extends BaseListController<S> {
+    extends BaseController<S> {
   @override
   void onInit() {
     // TODO: implement onInit

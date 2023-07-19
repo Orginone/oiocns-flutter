@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
@@ -12,16 +13,10 @@ import 'logic.dart';
 import 'state.dart';
 
 class MessageSubPage
-    extends BaseGetPageView<MessageSubController, MessageSubState> {
+    extends BaseGetListPageView<MessageSubController, MessageSubState> {
   late String type;
 
   MessageSubPage(this.type);
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return super.build(context);
-  }
 
   @override
   Widget buildView() {
@@ -35,26 +30,29 @@ class MessageSubPage
   }
 
   Widget allWidget() {
-    return SingleChildScrollView(
-        child: Column(
-            children: state.nav!.children
-                .map((e) =>
-                MessageBreadcrumbNavItem(
-                  item: e,
-                  onNext: () {
-                    controller.jumpNext(e);
-                  },
-                  onTap: () {
-                    controller.jumpDetails(e);
-                  },
-                  onSelected: (key) {},
-                ))
-                .toList()));
+    return ListView.builder(
+      controller: state.scrollController,
+      itemBuilder: (BuildContext context, int index) {
+        var item = state.nav!.children[index];
+        return MessageBreadcrumbNavItem(
+          item: item,
+          onNext: () {
+            controller.jumpNext(item);
+          },
+          onTap: () {
+            controller.jumpDetails(item);
+          },
+          onSelected: (key) {},
+        );
+      },
+      itemCount: state.nav!.children.length,
+    );
   }
 
   Widget commonWidget() {
     return Obx(() {
       return ListView.builder(
+        controller: state.scrollController,
         itemBuilder: (BuildContext context, int index) {
           var item = settingCtrl.chat.messageFrequentlyUsed[index];
           return ListItem(adapter: ListAdapter.chat(item.chat));
@@ -77,6 +75,7 @@ class MessageSubPage
         chats = chats.where((element) => element.share.typeName != TargetType.person.label).toList();
       }
       return ListView.builder(
+        controller: state.scrollController,
         itemBuilder: (BuildContext context, int index) {
           var item = chats[index];
           return ListItem(adapter: ListAdapter.chat(item));
@@ -96,4 +95,7 @@ class MessageSubPage
     // TODO: implement tag
     return "message_$type";
   }
+
+  @override
+  bool displayNoDataWidget() => false;
 }

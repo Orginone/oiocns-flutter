@@ -6,7 +6,7 @@ import 'package:orginone/dart/core/thing/store/provider.dart';
 import 'package:orginone/model/thing_model.dart';
 
 class StoreState
-    extends BaseSubmenuState<StoreFrequentlyUsed, dynamic> {
+    extends BaseSubmenuState<StoreFrequentlyUsed> {
   @override
   // TODO: implement tag
   String get tag => "存储";
