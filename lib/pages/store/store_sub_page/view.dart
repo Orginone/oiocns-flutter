@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
-import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
 import 'package:orginone/main.dart';
@@ -53,18 +52,22 @@ class StoreSubPage extends BaseGetListPageView<StoreSubController,StoreSubState>
 
   Widget commonWidget(){
     return Obx((){
-      return ListView.builder(
+      return GridView.builder(
         controller: state.scrollController,
         itemBuilder: (context, index) {
           var store = settingCtrl.store.storeFrequentlyUsed[index];
 
-          return ListItem(adapter: ListAdapter(
-            title: store.name??"",
-            image: store.fileItemShare?.thumbnailUint8List??Ionicons.clipboard_sharp,
-            content: store.storeEnum.label,
+          return GridItem(
+              adapter: ListAdapter(
+            title: store.name ?? "",
+            image: store.fileItemShare?.thumbnailUint8List ??
+                Ionicons.clipboard_sharp,
+            labels: [store.storeEnum.label],
           ));
         },
-        itemCount:  settingCtrl.store.storeFrequentlyUsed.length,
+        itemCount: settingCtrl.store.storeFrequentlyUsed.length,
+        gridDelegate:
+            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
       );
     });
   }

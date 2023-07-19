@@ -14,8 +14,9 @@ class BaseSubmenuController<S extends BaseSubmenuState>
   @override
   void onInit() {
     // TODO: implement onInit
-    super.onInit();
     initSubGroup();
+    state.submenuIndex.value = state.pageController.initialPage;
+    super.onInit();
   }
 
   void initSubGroup() {

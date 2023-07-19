@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/dart/core/getx/submenu_list/base_submenu_controller.dart';
@@ -54,6 +55,8 @@ class SettingController extends BaseSubmenuController<SettingState> {
       HiveUtils.putSubGroup('setting', setting);
     }
     state.subGroup = Rx(setting);
+    var index = setting.groups!.indexWhere((element) => element.value == "common");
+    state.pageController = PageController(initialPage: index);
   }
 
 }

@@ -13,7 +13,7 @@ class BaseSubmenuState<T extends FrequentlyUsed> extends BaseGetState {
 
   var submenuIndex = 0.obs;
 
-  PageController pageController = PageController();
+  late PageController pageController;
 
   String tag = '';
 }

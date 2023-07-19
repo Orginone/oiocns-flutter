@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/getx/submenu_list/base_submenu_controller.dart';
@@ -30,6 +31,8 @@ class StoreController extends BaseSubmenuController<StoreState> {
       HiveUtils.putSubGroup('store', store);
     }
     state.subGroup = Rx(store);
+    var index = store.groups!.indexWhere((element) => element.value == "common");
+    state.pageController = PageController(initialPage: index);
   }
 
 }

@@ -64,17 +64,19 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
 
 
   Widget commonWidget(){
-    return Obx((){
-      return ListView.builder(
+    return Obx(() {
+      return GridView.builder(
+        gridDelegate:
+            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
         controller: state.scrollController,
         itemBuilder: (context, index) {
           var app = settingCtrl.work.workFrequentlyUsed[index];
 
-          return ListItem(
+          return GridItem(
               adapter: ListAdapter(
             title: app.define.metadata.name ?? "",
             image: Ionicons.apps_sharp,
-            content: app.define.metadata.typeName ?? "",
+            labels: [app.define.metadata.typeName ?? ""],
           ));
         },
         itemCount: settingCtrl.work.workFrequentlyUsed.length,
