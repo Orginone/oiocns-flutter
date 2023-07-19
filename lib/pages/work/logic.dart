@@ -26,7 +26,7 @@ class WorkController extends BaseSubmenuController<WorkState> {
     }
     state.subGroup = Rx(work);
     var index = work.groups!.indexWhere((element) => element.value == "todo");
-    state.pageController = PageController(initialPage: index);
+    state.tabController = TabController(initialIndex: index,length: work.groups!.length,vsync: this);
   }
 
 

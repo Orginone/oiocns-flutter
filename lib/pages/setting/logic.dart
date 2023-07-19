@@ -56,7 +56,7 @@ class SettingController extends BaseSubmenuController<SettingState> {
     }
     state.subGroup = Rx(setting);
     var index = setting.groups!.indexWhere((element) => element.value == "common");
-    state.pageController = PageController(initialPage: index);
+    state.tabController = TabController(initialIndex: index,length: setting.groups!.length,vsync: this);
   }
 
 }

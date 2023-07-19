@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/user_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -6,6 +8,7 @@ import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/pages/store/store_tree/state.dart';
 import 'package:orginone/routers.dart';
 
@@ -213,5 +216,15 @@ class StoreSubController extends BaseListController<StoreSubState> {
          await settingCtrl.store.loadRecentList();
        }
      }
+  }
+
+  void onSelected(key, StoreFrequentlyUsed store) {
+    var id;
+    if(store.fileItemShare!=null){
+      id = base64.encode(utf8.encode(store.fileItemShare!.name!));
+    }else{
+      id = store.thing?.id??"";
+    }
+   settingCtrl.store.removeMostUsed(id);
   }
 }

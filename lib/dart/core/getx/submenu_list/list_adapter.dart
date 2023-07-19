@@ -173,6 +173,11 @@ class ListAdapter {
   ListAdapter.store(RecentlyUseModel recent) {
     image = recent.avatar ?? Ionicons.clipboard_sharp;
     labels = [recent.thing == null?"文件":"物"];
+    callback = (){
+      if(recent.file!=null){
+        Routers.jumpFile(file: recent.file!,type: "store");
+      }
+    };
     title = recent.thing?.id??recent.file?.name??"";
     isUserLabel = false;
     circularAvatar = false;

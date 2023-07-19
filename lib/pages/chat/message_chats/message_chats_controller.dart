@@ -29,7 +29,7 @@ class MessageChatsController
     }
     state.subGroup = Rx(chat);
     var index = chat.groups!.indexWhere((element) => element.value == "recent");
-    state.pageController = PageController(initialPage: index);
+    state.tabController = TabController(initialIndex: index,length: chat.groups!.length,vsync: this);
   }
 
 

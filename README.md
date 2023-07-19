@@ -23,7 +23,6 @@
         ├── work                        // 办事
         ├── login                       // 登录
         ├── setting                     // 设置
-        ├── work                        // 办事
         ├── store                       // 仓库
     ├── util                            // 工具库
     ├── main.dart                       // 入口

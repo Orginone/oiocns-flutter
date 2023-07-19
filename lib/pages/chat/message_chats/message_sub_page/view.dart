@@ -54,7 +54,17 @@ class MessageSubPage
         controller: state.scrollController,
         itemBuilder: (BuildContext context, int index) {
           var item = settingCtrl.chat.messageFrequentlyUsed[index];
-          return GridItem(adapter: ListAdapter.chat(item.chat));
+          var adapter = ListAdapter.chat(item.chat);
+          adapter.popupMenuItems = [
+            PopupMenuItem(
+              value: PopupMenuKey.removeCommon,
+              child: Text(PopupMenuKey.removeCommon.label),
+            )
+          ];
+          adapter.onSelected = (key) {
+            controller.onSelected(key, item.chat);
+          };
+          return GridItem(adapter: adapter);
         },
         itemCount: settingCtrl.chat.messageFrequentlyUsed.length,
         gridDelegate:

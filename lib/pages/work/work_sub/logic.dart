@@ -3,6 +3,7 @@ import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/work/initiate_work/state.dart';
+import 'package:orginone/pages/work/state.dart';
 import 'package:orginone/routers.dart';
 
 import 'state.dart';
@@ -116,5 +117,9 @@ class WorkSubController extends BaseListController<WorkSubState> {
     if (type == "common") {
       await settingCtrl.work.loadMostUsed();
     }
+  }
+
+  void onSelected(key, WorkFrequentlyUsed app) {
+    settingCtrl.work.removeMostUsed(app.define);
   }
 }

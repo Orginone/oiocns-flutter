@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
@@ -72,12 +73,24 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
         itemBuilder: (context, index) {
           var app = settingCtrl.work.workFrequentlyUsed[index];
 
-          return GridItem(
-              adapter: ListAdapter(
+          var adapter = ListAdapter(
             title: app.define.metadata.name ?? "",
             image: Ionicons.apps_sharp,
             labels: [app.define.metadata.typeName ?? ""],
-          ));
+          );
+
+          adapter.popupMenuItems = [
+            PopupMenuItem(
+              value: PopupMenuKey.removeCommon,
+              child: Text(PopupMenuKey.removeCommon.label),
+            )
+          ];
+          adapter.onSelected = (key) {
+            controller.onSelected(key, app);
+          };
+
+          return GridItem(
+              adapter: adapter);
         },
         itemCount: settingCtrl.work.workFrequentlyUsed.length,
       );

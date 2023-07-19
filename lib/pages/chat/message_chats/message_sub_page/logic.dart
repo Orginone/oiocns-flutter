@@ -4,6 +4,7 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/pages/chat/message_chats/message_chats_state.dart';
 import 'package:orginone/pages/chat/message_routers.dart';
 import 'package:orginone/routers.dart';
 
@@ -124,5 +125,9 @@ class MessageSubController extends BaseListController<MessageSubState> {
         await settingCtrl.provider.reloadChats();
       }
     }
+  }
+
+  void onSelected(key, IMsgChat chat) {
+    settingCtrl.chat.removeMostUsed(chat);
   }
 }

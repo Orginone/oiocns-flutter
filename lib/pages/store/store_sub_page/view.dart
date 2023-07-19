@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
@@ -56,14 +57,23 @@ class StoreSubPage extends BaseGetListPageView<StoreSubController,StoreSubState>
         controller: state.scrollController,
         itemBuilder: (context, index) {
           var store = settingCtrl.store.storeFrequentlyUsed[index];
-
-          return GridItem(
-              adapter: ListAdapter(
+          var adapter = ListAdapter(
             title: store.name ?? "",
             image: store.fileItemShare?.thumbnailUint8List ??
                 Ionicons.clipboard_sharp,
             labels: [store.storeEnum.label],
-          ));
+          );
+          adapter.popupMenuItems = [
+            PopupMenuItem(
+              value: PopupMenuKey.removeCommon,
+              child: Text(PopupMenuKey.removeCommon.label),
+            )
+          ];
+          adapter.onSelected = (key) {
+            controller.onSelected(key, store);
+          };
+          return GridItem(
+              adapter:adapter );
         },
         itemCount: settingCtrl.store.storeFrequentlyUsed.length,
         gridDelegate:

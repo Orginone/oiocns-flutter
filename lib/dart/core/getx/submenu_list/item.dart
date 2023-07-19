@@ -22,9 +22,15 @@ class GridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return PopupWidget(
       onTap: (){
         adapter.callback?.call();
+      },
+      itemBuilder: (BuildContext context) {
+        return adapter.popupMenuItems;
+      },
+      onSelected: (key){
+        adapter.onSelected?.call(key);
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
