@@ -55,7 +55,7 @@ MappingComponentsCallback mappingTextWidget = (Fields data, ITarget target) {
           required: data.required ?? false,
           enabled: !(data.readOnly ?? false),
           showLine: true,
-          textStyle: XFonts.size20Black0),
+          textStyle: XFonts.size22Black0),
     );
   });
 };
@@ -82,7 +82,7 @@ MappingComponentsCallback mappingInputWidget = (Fields data, ITarget target) {
         controller: data.controller, onChanged: (str) {
       // data.defaultData.value = str;
     },
-        textStyle: XFonts.size20Black0,
+        textStyle: XFonts.size22Black0,
         required: data.required ?? false,
         inputFormatters: inputFormatters,
         enabled: !(data.readOnly ?? false),
@@ -123,7 +123,7 @@ MappingComponentsCallback mappingSelectBoxWidget = (Fields data,ITarget target) 
         },
         showLine: true,
         required: data.required ?? false,
-        textStyle: XFonts.size20Black0,
+        textStyle: XFonts.size22Black0,
       ),
     );
   });
@@ -157,7 +157,7 @@ MappingComponentsCallback mappingSelectTimeBoxWidget =
         },
         showLine: true,
         required: data.required ?? false,
-        textStyle: XFonts.size20Black0,
+        textStyle: XFonts.size22Black0,
       ),
     );
   });
@@ -193,7 +193,7 @@ MappingComponentsCallback mappingSelectTimeRangeBoxWidget =
         },
         showLine: true,
         required: data.required ?? false,
-        textStyle: XFonts.size20Black0,
+        textStyle: XFonts.size22Black0,
       ),
     );
   });
@@ -227,7 +227,7 @@ MappingComponentsCallback mappingSelectDateBoxWidget =
         },
         showLine: true,
         required: data.required ?? false,
-        textStyle: XFonts.size20Black0,
+        textStyle: XFonts.size22Black0,
       ),
     );
   });
@@ -262,7 +262,7 @@ MappingComponentsCallback mappingSelectDateRangeBoxWidget =
         },
         showLine: true,
         required: data.required ?? false,
-        textStyle: XFonts.size20Black0,
+        textStyle: XFonts.size22Black0,
       ),
     );
   });
@@ -297,7 +297,7 @@ MappingComponentsCallback mappingSelectPersonBoxWidget =
         },
         showLine: true,
         required: data.required ?? false,
-        textStyle: XFonts.size20Black0,
+        textStyle: XFonts.size22Black0,
       ),
     );
   });
@@ -345,7 +345,7 @@ MappingComponentsCallback mappingSelectDepartmentBoxWidget = (Fields data, ITarg
         },
         showLine: true,
         required: data.required ?? false,
-        textStyle: XFonts.size20Black0,
+        textStyle: XFonts.size22Black0,
       ),
     );
   });
@@ -381,7 +381,7 @@ MappingComponentsCallback mappingSelectGroupBoxWidget = (Fields data, ITarget ta
         },
         showLine: true,
         required: data.required ?? false,
-        textStyle: XFonts.size20Black0,
+        textStyle: XFonts.size22Black0,
       ),
     );
   });
@@ -426,7 +426,7 @@ MappingComponentsCallback mappingSwitchWidget = (Fields data, ITarget target) {
             children: [
               Text(
                 data.title ?? '',
-                style: XFonts.size20Black0,
+                style: XFonts.size22Black0,
               ),
               data.select!.isEmpty
                   ? const SizedBox()
@@ -495,7 +495,7 @@ MappingComponentsCallback mappingUploadWidget = (Fields data, ITarget target) {
         }
       },
       showLine: true,
-      textStyle: XFonts.size20Black0,
+      textStyle: XFonts.size22Black0,
     );
   });
 };

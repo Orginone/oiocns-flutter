@@ -148,6 +148,7 @@ class SettingCenterController
       case SpaceEnum.species:
       case SpaceEnum.applications:
       case SpaceEnum.form:
+      case SpaceEnum.person:
         Get.toNamed(Routers.classificationInfo, arguments: {"data": model});
         break;
       case SpaceEnum.file:
@@ -158,6 +159,8 @@ class SettingCenterController
         break;
       case SpaceEnum.company:
         Get.toNamed(Routers.companyInfo, arguments: {"company": model.space});
+        break;
+      case SpaceEnum.property:
         break;
       default:
         Get.toNamed(Routers.settingCenter,

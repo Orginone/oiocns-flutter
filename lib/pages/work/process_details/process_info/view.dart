@@ -181,7 +181,7 @@ class ProcessInfoPage
         ),
         child: Text(
           text,
-          style: TextStyle(color: textColor, fontSize: 20.sp),
+          style: TextStyle(color: textColor, fontSize: 24.sp),
         ),
       ),
     );

@@ -87,7 +87,7 @@ class UserController extends GetxController {
     ItemModel(Shortcut.addGroup, "添加群组", "请输入群组的编码", TargetType.cohort),
     ItemModel(Shortcut.createCompany, "创建单位", "", TargetType.company),
     ItemModel(Shortcut.addCompany, "添加单位", "请输入单位的社会统一代码", TargetType.company),
-    ItemModel(Shortcut.addCohort, "发起群聊", "请输入群聊信息", TargetType.cohort),
+    ItemModel(Shortcut.addCohort, "创建群组", "请输入群聊信息", TargetType.cohort),
   ];
 
   @override
