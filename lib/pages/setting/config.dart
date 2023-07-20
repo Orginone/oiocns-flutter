@@ -21,7 +21,6 @@ import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/dart/core/thing/property.dart';
 import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/dart/core/work/index.dart';
-import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/home/state.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -766,7 +765,7 @@ void delete(SettingNavModel item,{VoidCallback? callback}) async {
 void createTarget(PopupMenuKey key, SettingNavModel model,
     {bool isEdit = false, Function([SettingNavModel? nav])? callback}) {
   List<TargetType> targetType = [];
-
+  SpaceEnum? spaceEnum;
   switch (key) {
     case PopupMenuKey.createDepartment:
       targetType = [
@@ -776,15 +775,19 @@ void createTarget(PopupMenuKey key, SettingNavModel model,
         TargetType.research,
         TargetType.laboratory
       ];
+      spaceEnum = SpaceEnum.departments;
       break;
     case PopupMenuKey.createStation:
       targetType = [TargetType.station];
+      spaceEnum = SpaceEnum.groups;
       break;
     case PopupMenuKey.createGroup:
       targetType = [TargetType.group];
+      spaceEnum = SpaceEnum.groups;
       break;
     case PopupMenuKey.createCohort:
       targetType = [TargetType.cohort];
+      spaceEnum = SpaceEnum.cohorts;
       break;
     case PopupMenuKey.createCompany:
       targetType = [
@@ -792,6 +795,7 @@ void createTarget(PopupMenuKey key, SettingNavModel model,
         TargetType.hospital,
         TargetType.university
       ];
+      spaceEnum = SpaceEnum.company;
       break;
   }
   var item = model.source ?? model.space;
@@ -802,10 +806,10 @@ void createTarget(PopupMenuKey key, SettingNavModel model,
           String remark,
           TargetType type) async {
     var target = TargetModel(
-      name: nickName,
+      name: name,
       code: code,
       typeName: type.label,
-      teamName: name,
+      teamName: nickName,
       teamCode: code,
       remark: remark,
     );
@@ -849,7 +853,7 @@ void createTarget(PopupMenuKey key, SettingNavModel model,
             name: data.metadata.name!,
             source: data,
             space: model.space,
-            spaceEnum: model.spaceEnum);
+            spaceEnum: spaceEnum);
         callback?.call(nav);
       }
     }

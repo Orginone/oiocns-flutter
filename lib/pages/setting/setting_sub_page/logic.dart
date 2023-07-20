@@ -1,9 +1,13 @@
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/controller/setting/user_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/pages/setting/home/state.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/toast_utils.dart';
 
 import '../config.dart';
 import 'state.dart';
@@ -15,24 +19,38 @@ class SettingSubController extends BaseListController<SettingSubState> {
 
  SettingSubController(this.type);
 
+ SettingSubController get allController => Get.find(tag: "setting_all");
 
-
- @override
-  void onInit() async{
+  @override
+  void onInit() async {
     // TODO: implement onInit
     super.onInit();
-    if(type == 'all'){
-     var joinedCompanies = settingCtrl.provider.user?.companys;
-     state.nav.value = SettingNavModel(name: "设置", children: [
-      SettingNavModel(
-       name: settingCtrl.provider.user?.metadata.name ?? "",
-       id: settingCtrl.provider.user?.metadata.id ?? "",
-       image: settingCtrl.provider.user?.metadata.avatarThumbnail(),
-       children: [],
-       space: settingCtrl.provider.user,
-       spaceEnum: SpaceEnum.user,
-      ),
-      ...joinedCompanies
+
+    if (type == 'common') {
+      state.shortcutDatas = [
+        ...settingCtrl.menuItems,
+      ];
+      for (int index = 5; index < Shortcut.values.length; index++) {
+        var short = Shortcut.values[index];
+        state.shortcutDatas.add(ShortcutData(
+          short,
+          short.label,
+        ));
+      }
+    }
+
+    if (type == 'all') {
+      var joinedCompanies = settingCtrl.provider.user?.companys;
+      state.nav.value = SettingNavModel(name: "设置", children: [
+        SettingNavModel(
+          name: settingCtrl.provider.user?.metadata.name ?? "",
+          id: settingCtrl.provider.user?.metadata.id ?? "",
+          image: settingCtrl.provider.user?.metadata.avatarThumbnail(),
+          children: [],
+          space: settingCtrl.provider.user,
+          spaceEnum: SpaceEnum.user,
+        ),
+        ...joinedCompanies
                 ?.map((element) => SettingNavModel(
                     name: element.metadata.name!,
                     id: element.metadata.id!,
@@ -93,85 +111,38 @@ class SettingSubController extends BaseListController<SettingSubState> {
         break;
       case PopupMenuKey.createApplication:
         createApplication(item, callback: ([nav]) {
-          if (item.spaceEnum != SpaceEnum.user &&
-              item.spaceEnum != SpaceEnum.company) {
-            item.children.add(nav!);
-          } else {
-            item.children[0].children.add(nav!);
-          }
-          state.nav.refresh();
-          if (item.spaceEnum != SpaceEnum.user &&
-              item.spaceEnum != SpaceEnum.company) {
-            item.children.add(nav);
-          } else {
-            item.children[0].children.add(nav);
-          }
           state.nav.refresh();
         });
         break;
       case PopupMenuKey.createSpecies:
         createSpecies(item, '分类', callback: ([nav]) {
-          if (item.spaceEnum == SpaceEnum.user ||
-              item.spaceEnum == SpaceEnum.company) {
-            item.children[0].children.add(nav!);
-          } else {
-            item.children.add(nav!);
-          }
-
           state.nav.refresh();
         });
         break;
       case PopupMenuKey.createDict:
         createSpecies(item, '字典', callback: ([nav]) {
-          if (item.spaceEnum == SpaceEnum.user ||
-              item.spaceEnum == SpaceEnum.company) {
-            item.children[0].children.add(nav!);
-          } else {
-            item.children.add(nav!);
-          }
-
           state.nav.refresh();
         });
         break;
       case PopupMenuKey.createAttr:
         createAttr(item, callback: ([nav]) {
-          if (item.spaceEnum != SpaceEnum.user &&
-              item.spaceEnum != SpaceEnum.company) {
-            item.children.add(nav!);
-          } else {
-            item.children[0].children.add(nav!);
-          }
           state.nav.refresh();
         });
         break;
       case PopupMenuKey.createThing:
         createSpecies(item, '实体配置', callback: ([nav]) {
-          if (item.spaceEnum == SpaceEnum.user ||
-              item.spaceEnum == SpaceEnum.company) {
-            item.children[0].children.add(nav!);
-          } else {
-            item.children.add(nav!);
-          }
-
           state.nav.refresh();
         });
         break;
       case PopupMenuKey.createWork:
         createSpecies(item, '事项配置', callback: ([nav]) {
-          if (item.spaceEnum == SpaceEnum.user ||
-              item.spaceEnum == SpaceEnum.company) {
-            item.children[0].children.add(nav!);
-          } else {
-            item.children.add(nav!);
-          }
-
           state.nav.refresh();
         });
         break;
       case PopupMenuKey.createDepartment:
       case PopupMenuKey.createStation:
-   case PopupMenuKey.createGroup:
-   case PopupMenuKey.createCohort:
+      case PopupMenuKey.createGroup:
+      case PopupMenuKey.createCohort:
       case PopupMenuKey.createCompany:
         createTarget(key, item, callback: ([nav]) {
           if (key == PopupMenuKey.createCompany) {
@@ -187,11 +158,6 @@ class SettingSubController extends BaseListController<SettingSubState> {
         break;
       case PopupMenuKey.upload:
         uploadFile(item, callback: ([nav]) {
-          if (item.spaceEnum == SpaceEnum.directory) {
-            item.children.add(nav!);
-          } else {
-            item.children[0].children.add(nav!);
-          }
           state.nav.refresh();
         });
         break;
@@ -202,14 +168,121 @@ class SettingSubController extends BaseListController<SettingSubState> {
     openChat(item);
         break;
     }
- }
+  }
 
- @override
+  @override
   void onReady() {
     // TODO: implement onReady
   }
-  @override
-  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async{
 
+  @override
+  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {}
+
+  void clickCommon(ShortcutData item) {
+    SettingNavModel model;
+    try {
+      model = allController.state.nav.value!.children[0];
+    } catch (e) {
+      model = SettingNavModel(
+        space: settingCtrl.provider.user,
+        spaceEnum: SpaceEnum.user,
+      );
+    }
+
+    switch (item.shortcut) {
+      case Shortcut.createCompany:
+      case Shortcut.addCohort:
+        showCreateOrganizationDialog(
+          Get.context!,
+          [item.targetType!],
+          callBack: (String name, String code, String nickName, String identify,
+              String remark, TargetType type) async {
+            var target = TargetModel(
+              name: nickName,
+              code: code,
+              typeName: type.label,
+              teamName: name,
+              teamCode: code,
+              remark: remark,
+            );
+            var data = item.shortcut == Shortcut.createCompany
+                ? await settingCtrl.user.createCompany(target)
+                : await settingCtrl.user.createCohort(target);
+            if (data != null) {
+              ToastUtils.showMsg(msg: "创建成功");
+            }
+          },
+        );
+        break;
+      case Shortcut.addPerson:
+      case Shortcut.addGroup:
+      case Shortcut.addCompany:
+        showSearchDialog(Get.context!, item.targetType!,
+            title: item.title, hint: item.hint, onSelected: (targets) async {
+          if (targets.isNotEmpty) {
+            bool success = await settingCtrl.user.applyJoin(targets);
+            if (success) {
+              ToastUtils.showMsg(msg: "发送申请成功");
+            }
+          }
+        });
+        break;
+      case Shortcut.createDir:
+        createDir(model, callback: () {
+          try {
+            allController.state.nav.refresh();
+          } catch (e) {}
+        });
+        break;
+      case Shortcut.createApplication:
+        createApplication(model, callback: ([nav]) {
+          try {
+            allController.state.nav.refresh();
+          } catch (e) {}
+        });
+        break;
+      case Shortcut.createSpecies:
+        createSpecies(model, '分类', callback: ([nav]) {
+          try {
+            allController.state.nav.refresh();
+          } catch (e) {}
+        });
+        break;
+      case Shortcut.createDict:
+        createSpecies(model, '字典', callback: ([nav]) {
+          try {
+            allController.state.nav.refresh();
+          } catch (e) {}
+        });
+        break;
+      case Shortcut.createAttr:
+        createAttr(model, callback: ([nav]) {
+          try {
+            allController.state.nav.refresh();
+          } catch (e) {}
+        });
+        break;
+      case Shortcut.createThing:
+        createSpecies(model, '实体配置', callback: ([nav]) {
+          try {
+            allController.state.nav.refresh();
+          } catch (e) {}
+        });
+        break;
+      case Shortcut.createWork:
+        createSpecies(model, '事项配置', callback: ([nav]) {
+          try {
+            allController.state.nav.refresh();
+          } catch (e) {}
+        });
+        break;
+      case Shortcut.uploadFile:
+        uploadFile(model, callback: ([nav]) {
+          try {
+            allController.state.nav.refresh();
+          } catch (e) {}
+        });
+        break;
+    }
   }
 }

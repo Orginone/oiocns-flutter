@@ -165,72 +165,30 @@ class SettingCenterController
           } else {
             item.children[0].children.add(nav!);
           }
-          state.model.refresh();
-          if (item.spaceEnum != SpaceEnum.user &&
-              item.spaceEnum != SpaceEnum.company) {
-            item.children.add(nav);
-          } else {
-            item.children[0].children.add(nav);
-          }
-          state.model.refresh();
         });
         break;
       case PopupMenuKey.createSpecies:
         createSpecies(item, '分类', callback: ([nav]) {
-          if (item.spaceEnum == SpaceEnum.user ||
-              item.spaceEnum == SpaceEnum.company) {
-            item.children[0].children.add(nav!);
-          } else {
-            item.children.add(nav!);
-          }
-
           state.model.refresh();
         });
         break;
       case PopupMenuKey.createDict:
         createSpecies(item, '字典', callback: ([nav]) {
-          if (item.spaceEnum == SpaceEnum.user ||
-              item.spaceEnum == SpaceEnum.company) {
-            item.children[0].children.add(nav!);
-          } else {
-            item.children.add(nav!);
-          }
-
           state.model.refresh();
         });
         break;
       case PopupMenuKey.createAttr:
         createAttr(item, callback: ([nav]) {
-          if (item.spaceEnum != SpaceEnum.user &&
-              item.spaceEnum != SpaceEnum.company) {
-            item.children.add(nav!);
-          } else {
-            item.children[0].children.add(nav!);
-          }
           state.model.refresh();
         });
         break;
       case PopupMenuKey.createThing:
         createSpecies(item, '实体配置', callback: ([nav]) {
-          if (item.spaceEnum == SpaceEnum.user ||
-              item.spaceEnum == SpaceEnum.company) {
-            item.children[0].children.add(nav!);
-          } else {
-            item.children.add(nav!);
-          }
-
           state.model.refresh();
         });
         break;
       case PopupMenuKey.createWork:
         createSpecies(item, '事项配置', callback: ([nav]) {
-          if (item.spaceEnum == SpaceEnum.user ||
-              item.spaceEnum == SpaceEnum.company) {
-            item.children[0].children.add(nav!);
-          } else {
-            item.children.add(nav!);
-          }
-
           state.model.refresh();
         });
         break;
@@ -270,11 +228,6 @@ class SettingCenterController
         break;
       case PopupMenuKey.upload:
         uploadFile(item, callback: ([nav]) {
-          if (item.spaceEnum == SpaceEnum.directory) {
-            item.children.add(nav!);
-          } else {
-            item.children[0].children.add(nav!);
-          }
           state.model.refresh();
         });
         break;
