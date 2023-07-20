@@ -18,29 +18,30 @@ class MessageBreadcrumbNavItem
     this.onSelected,
   });
 
+  @override
+  List<PopupMenuItem> popupItems() {
+    if (item.type == ChatType.list) {
+      return super.popupItems();
+    }
+    PopupMenuItem popupMenuItem;
+    if (settingCtrl.chat.isMostUsed(item.target!)) {
+      popupMenuItem = const PopupMenuItem(
+        value: PopupMenuKey.removeCommon,
+        child: Text("移除常用"),
+      );
+    } else {
+      popupMenuItem = const PopupMenuItem(
+        value: PopupMenuKey.setCommon,
+        child: Text("设为常用"),
+      );
+    }
+    return [
+      popupMenuItem,
+    ];
+  }
 
   @override
-  Widget action() {
-    if (item.type == ChatType.list) {
-      return super.action();
-    }
-    return Obx((){
-      PopupMenuItem popupMenuItem;
-      if (settingCtrl.chat.isMostUsed(item.target!)) {
-        popupMenuItem = const PopupMenuItem(
-          value: PopupMenuKey.removeCommon,
-          child: Text("移除常用"),
-        );
-      } else {
-        popupMenuItem = const PopupMenuItem(
-          value: PopupMenuKey.setCommon,
-          child: Text("设为常用"),
-        );
-      }
-
-      return CommonWidget.commonPopupMenuButton(items: [
-        popupMenuItem,
-      ], onSelected: onSelected);
-    });
+  void onSelectPopupItem(key) {
+    onSelected?.call(key);
   }
 }

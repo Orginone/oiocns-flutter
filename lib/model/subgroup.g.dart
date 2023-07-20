@@ -59,17 +59,20 @@ class GroupAdapter extends TypeAdapter<Group> {
     return Group(
       label: fields[0] as String?,
       value: fields[1] as String?,
+      allowEdit: fields[2] as bool?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Group obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.label)
       ..writeByte(1)
-      ..write(obj.value);
+      ..write(obj.value)
+      ..writeByte(2)
+      ..write(obj.allowEdit);
   }
 
   @override

@@ -18,9 +18,7 @@ import 'package:orginone/util/string_util.dart';
 class ListAdapter {
   VoidCallback? callback;
 
-  late bool enabledSlidable;
-
-  List<SlidableAction> slideActions = [];
+  List<PopupMenuItem> popupMenuItems = [];
 
   late String title;
 
@@ -38,6 +36,8 @@ class ListAdapter {
 
   late bool isUserLabel;
 
+  PopupMenuItemSelected? onSelected;
+
   String? typeName;
 
   ListAdapter({
@@ -50,43 +50,36 @@ class ListAdapter {
     this.noReadCount = 0,
     this.circularAvatar = false,
     this.callback,
-    this.enabledSlidable = false,
-    this.slideActions = const [],
+    this.popupMenuItems = const [],
   });
 
   ListAdapter.chat(IMsgChat chat) {
     labels = chat.labels;
     bool isTop = labels.contains("置顶");
-    enabledSlidable = true;
     isUserLabel = false;
     typeName = chat.share.typeName;
-    slideActions = [
-      SlidableAction(
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        icon: Icons.vertical_align_top,
-        label: isTop ? "取消置顶" : "置顶",
-        onPressed: (BuildContext context) async {
-          if (isTop) {
-            chat.labels.remove('置顶');
-          } else {
-            chat.labels.add('置顶');
-          }
+    popupMenuItems = [
+      PopupMenuItem(child: Text(isTop?"取消置顶":"置顶"),value: isTop?PopupMenuKey.cancelTopping:PopupMenuKey.topping,),
+      PopupMenuItem(child: Text("删除"),value: PopupMenuKey.delete,),
+    ];
+    onSelected = (key) async{
+      switch(key){
+        case PopupMenuKey.cancelTopping:
+          chat.labels.remove('置顶');
           await chat.cache();
           settingCtrl.provider.refreshChat();
-        },
-      ),
-      SlidableAction(
-        backgroundColor: Colors.red,
-        foregroundColor: Colors.white,
-        icon: Icons.delete,
-        label: "删除",
-        onPressed: (BuildContext context) {
+          break;
+        case PopupMenuKey.topping:
+          chat.labels.add('置顶');
+          await chat.cache();
+          settingCtrl.provider.refreshChat();
+          break;
+        case PopupMenuKey.delete:
           settingCtrl.chat.allChats.remove(chat);
           settingCtrl.provider.refreshChat();
-        },
-      ),
-    ];
+          break;
+      }
+    };
     circularAvatar = chat.share.typeName == TargetType.person.label;
     noReadCount = chat.chatdata.value.noReadCount;
     title = chat.chatdata.value.chatName ?? "";
@@ -122,9 +115,7 @@ class ListAdapter {
 
   ListAdapter.work(IWorkTask work) {
     labels = [work.metadata.createUser!, work.metadata.shareId!];
-    enabledSlidable = false;
     isUserLabel = true;
-    slideActions = [];
     circularAvatar = false;
     noReadCount = 0;
     title = work.metadata.title ?? '';
@@ -146,7 +137,6 @@ class ListAdapter {
 
   ListAdapter.application(IApplication application, ITarget target) {
     labels = [target.metadata.name ?? ""];
-    enabledSlidable = false;
     isUserLabel = false;
     circularAvatar = false;
     noReadCount = 0;
@@ -183,8 +173,12 @@ class ListAdapter {
   ListAdapter.store(RecentlyUseModel recent) {
     image = recent.avatar ?? Ionicons.clipboard_sharp;
     labels = [recent.thing == null?"文件":"物"];
+    callback = (){
+      if(recent.file!=null){
+        Routers.jumpFile(file: recent.file!,type: "store");
+      }
+    };
     title = recent.thing?.id??recent.file?.name??"";
-    enabledSlidable = false;
     isUserLabel = false;
     circularAvatar = false;
     noReadCount = 0;

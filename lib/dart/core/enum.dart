@@ -277,8 +277,9 @@ enum PopupMenuKey{
   shareQr("分享二维码"),
   setCommon("设置常用"),
   removeCommon("移除常用"),
-  openChat("打开会话");
-
+  openChat("打开会话"),
+  topping("置顶"),
+  cancelTopping("取消置顶");
   final  String label;
 
   const PopupMenuKey(this.label);

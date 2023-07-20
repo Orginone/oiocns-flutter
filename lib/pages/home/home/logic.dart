@@ -38,4 +38,10 @@ class HomeController extends BaseController<HomeState> {
     state.pageController.jumpToPage(setting.index);
     settingCtrl.homeEnum.value = setting;
   }
+
+  @override
+  void dispose() {
+    state.pageController.dispose();
+    super.dispose();
+  }
 }

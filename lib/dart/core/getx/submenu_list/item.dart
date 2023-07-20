@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:orginone/util/date_util.dart';
 import 'package:orginone/widget/image_widget.dart';
+import 'package:orginone/widget/popup_widget.dart';
 import 'package:orginone/widget/target_text.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/text_tag.dart';
@@ -21,9 +22,15 @@ class GridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return PopupWidget(
       onTap: (){
         adapter.callback?.call();
+      },
+      itemBuilder: (BuildContext context) {
+        return adapter.popupMenuItems;
+      },
+      onSelected: (key){
+        adapter.onSelected?.call(key);
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -125,36 +132,35 @@ class ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
+    return PopupWidget(
+      itemBuilder: (BuildContext context) {
+        return adapter.popupMenuItems;
+      },
+      onTap: (){
         adapter.callback?.call();
       },
-      child: Slidable(
-        enabled: adapter.enabledSlidable,
-        endActionPane: ActionPane(
-          motion: const ScrollMotion(),
-          children: adapter.slideActions,
-        ),
+      onSelected: (key){
+        adapter.onSelected?.call(key);
+      },
+      child: Container(
+        color: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 15.w),
         child: Container(
-          color: Colors.white,
-          padding: EdgeInsets.symmetric(horizontal: 15.w),
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 7.h),
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom:
-                        BorderSide(color: Colors.grey.shade300, width: 0.4))),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _avatarContainer,
-                SizedBox(
-                  width: 10.w,
-                ),
-                Expanded(child: _content),
-              ],
-            ),
+          padding: EdgeInsets.symmetric(vertical: 7.h),
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom:
+                      BorderSide(color: Colors.grey.shade300, width: 0.4))),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _avatarContainer,
+              SizedBox(
+                width: 10.w,
+              ),
+              Expanded(child: _content),
+            ],
           ),
         ),
       ),

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/getx/submenu_list/base_submenu_controller.dart';
@@ -19,10 +20,6 @@ class StoreController extends BaseSubmenuController<StoreState> {
     super.onInit();
   }
 
-  @override
-  void onReady() {
-    loadSuccess();
-  }
 
   @override
   void initSubGroup() {
@@ -34,29 +31,8 @@ class StoreController extends BaseSubmenuController<StoreState> {
       HiveUtils.putSubGroup('store', store);
     }
     state.subGroup = Rx(store);
+    var index = store.groups!.indexWhere((element) => element.value == "common");
+    state.tabController = TabController(initialIndex: index,length: store.groups!.length,vsync: this);
   }
 
-  @override
-  void onTapFrequentlyUsed(used) async {
-    if (used is StoreFrequentlyUsed) {
-      switch (used.storeEnum) {
-        case StoreEnum.file:
-          Routers.jumpFile(
-              file: FileItemShare.fromJson(used.fileItemShare!.shareInfo()),
-              type: 'store');
-          break;
-        case StoreEnum.thing:
-          // var thing = used.thing;
-          // IForm? form = await settingCtrl.store
-          //     .findForm(thing!.keys.first.substring(1));
-          // if (form != null) {
-          //   Get.toNamed(Routers.thingDetails,
-          //       arguments: {"thing": thing, 'form': form});
-          // } else {
-          //   ToastUtils.showMsg(msg: "未找到表单");
-          // }
-          break;
-      }
-    }
-  }
 }

@@ -1,31 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'state.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 import 'package:orginone/widget/unified.dart';
+
 import 'logic.dart';
+import 'state.dart';
 
 class IndexPage extends BaseGetPageView<IndexController,IndexState>{
   @override
   Widget buildView() {
-    return Column(
-      children: [
-        tabBar(),
-        Expanded(
-          child: TabBarView(
-            controller: state.tabController,
-            children: tabTitle.map((e){
-              return KeepAliveWidget(
-                child: Container(),
-              );
-            }).toList(),
-          ),
-        )
-      ],
+    return NotificationListener<ScrollNotification>(
+      onNotification: state.pageViewScrollUtils.handleNotification,
+      child: Column(
+        children: [
+          tabBar(),
+          Expanded(
+            child: TabBarView(
+              controller: state.tabController,
+              children: tabTitle.map((e) {
+                return KeepAliveWidget(
+                  child: Container(),
+                );
+              }).toList(),
+            ),
+          )
+        ],
+      ),
     );
   }
-
 
   Widget tabBar() {
     return Row(
@@ -52,14 +55,16 @@ class IndexPage extends BaseGetPageView<IndexController,IndexState>{
             ),
           ),
         ),
-        // GestureDetector(
-        //   onTap: () {},
-        //   child: Padding(
-        //       padding: const EdgeInsets.all(8.0),
-        //       child: Icon(
-        //         Icons.more_vert,
-        //       )),
-        // ),
+        IconButton(
+          onPressed: () {
+
+          },
+          alignment: Alignment.center,
+          icon: const Icon(
+            Icons.menu,
+          ),
+          iconSize: 24.w,
+          padding: EdgeInsets.zero,)
       ],
     );
   }

@@ -1,8 +1,10 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/setting/user_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
+import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/main.dart';
@@ -14,7 +16,7 @@ import '../config.dart';
 import 'state.dart';
 
 
-class StoreSubController extends BaseController<StoreSubState> {
+class StoreSubController extends BaseListController<StoreSubState> {
  final StoreSubState state = StoreSubState();
 
  late String type;
@@ -59,6 +61,7 @@ class StoreSubController extends BaseController<StoreSubState> {
       await loadUserSetting();
       await loadCompanySetting();
     }
+    loadSuccess();
   }
 
 
@@ -182,14 +185,46 @@ class StoreSubController extends BaseController<StoreSubState> {
        if (item.spaceEnum == SpaceEnum.user ||
            item.spaceEnum == SpaceEnum.company) {
          entity = item.space!.metadata;
+        } else {
+          entity = item.source.metadata;
+        }
+        Get.toNamed(
+          Routers.shareQrCode,
+          arguments: {"entity": entity},
+        );
+        break;
+    }
+  }
+
+  @override
+  void onClose() {
+    state.scrollController.dispose();
+    super.onClose();
+  }
+
+  @override
+  void onReady() {
+    // TODO: implement onReady
+  }
+
+  @override
+  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async{
+     if(type != "all"){
+       if(type == 'common'){
+         await settingCtrl.store.loadMostUsed();
        }else{
-         entity = item.source.metadata;
+         await settingCtrl.store.loadRecentList();
        }
-       Get.toNamed(
-         Routers.shareQrCode,
-         arguments: {"entity":entity},
-       );
-       break;
-   }
- }
+     }
+  }
+
+  void onSelected(key, StoreFrequentlyUsed store) {
+    var id;
+    if(store.fileItemShare!=null){
+      id = base64.encode(utf8.encode(store.fileItemShare!.name!));
+    }else{
+      id = store.thing?.id??"";
+    }
+   settingCtrl.store.removeMostUsed(id);
+  }
 }

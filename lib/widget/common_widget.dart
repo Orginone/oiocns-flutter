@@ -215,7 +215,7 @@ class CommonWidget {
                       isDense: true,
                       hintText: hint,
                       hintStyle: TextStyle(
-                          color: Colors.grey.shade300, fontSize: 18.sp),
+                          color: Colors.grey.shade300, fontSize: textStyle?.fontSize??18.sp),
                       border: InputBorder.none),
                 ),
                 SizedBox(
@@ -244,7 +244,7 @@ class CommonWidget {
       {bool showLine = false,
       String? hint,
       bool required = false,
-      VoidCallback? onTap}) {
+      VoidCallback? onTap,TextStyle? textStyle}) {
     return Stack(
       children: [
         Container(
@@ -279,11 +279,11 @@ class CommonWidget {
                                   hint ?? "请选择",
                                   style: TextStyle(
                                       color: Colors.grey.shade300,
-                                      fontSize: 18.sp),
+                                      fontSize: textStyle?.fontSize??18.sp),
                                 )
                               : Text(
                                   content,
-                                  style: TextStyle(
+                                  style: textStyle??TextStyle(
                                       color: Colors.black, fontSize: 18.sp),
                                 ),
                         ),

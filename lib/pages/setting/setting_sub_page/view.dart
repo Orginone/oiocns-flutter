@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
@@ -10,7 +11,7 @@ import 'logic.dart';
 import 'state.dart';
 
 class SettingSubPage
-    extends BaseGetPageView<SettingSubController, SettingSubState> {
+    extends BaseGetListPageView<SettingSubController, SettingSubState> {
   late String type;
 
   SettingSubPage(this.type);
@@ -27,41 +28,45 @@ class SettingSubPage
   }
 
   Widget commonWidget() {
-    return Column(
-      children: settingCtrl.menuItems.map((e) {
-        return ListItem(adapter: ListAdapter(
-          title: e.title,
-          content: e.shortcut.label,
-          image: e.shortcut.icon,
-          callback: (){
-            settingCtrl.showAddFeatures(e);
-          }
+    return GridView.builder(
+      controller: state.scrollController,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4),
+      itemBuilder: (context, index) {
+        var item = settingCtrl.menuItems[index];
+        return GridItem(adapter: ListAdapter(
+            title: item.title,
+            labels:[item.shortcut.label] ,
+            image: item.shortcut.icon,
+            callback: () {
+              settingCtrl.showAddFeatures(item);
+            }
         ));
-      }).toList(),
-    );
+      }, itemCount: settingCtrl.menuItems.length,);
   }
 
   Widget allWidget() {
-    return SingleChildScrollView(
-      child: Obx(() {
-        return Column(
-          children: state.nav.value!.children
-              .map((e) => Item(
-                    item: e,
-                    onTap: () {
-                      controller.jumpDetails(e);
-                    },
-                    onNext: () {
-                      controller.onNextLv(e);
-                    },
-                    onSelected: (key, item) {
-                      controller.operation(key, item);
-                    },
-                  ))
-              .toList(),
-        );
-      }),
-    );
+    return Obx(() {
+      return ListView.builder(
+        controller: state.scrollController,
+        itemBuilder: (BuildContext context, int index) {
+          var item = state.nav.value!.children[index];
+          return Item(
+            item: item,
+            onTap: () {
+              controller.jumpDetails(item);
+            },
+            onNext: () {
+              controller.onNextLv(item);
+            },
+            onSelected: (key, item) {
+              controller.operation(key, item);
+            },
+          );
+        },
+        itemCount: state.nav.value!.children.length,
+      );
+    });
   }
 
   @override
@@ -74,4 +79,7 @@ class SettingSubPage
     // TODO: implement tag
     return "setting_$type";
   }
+
+  @override
+  bool displayNoDataWidget() => false;
 }

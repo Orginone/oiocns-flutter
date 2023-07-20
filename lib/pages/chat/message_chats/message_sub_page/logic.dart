@@ -1,28 +1,30 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/getx/base_controller.dart';
+import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/pages/chat/message_chats/message_chats_state.dart';
 import 'package:orginone/pages/chat/message_routers.dart';
 import 'package:orginone/routers.dart';
 
 import 'state.dart';
 
-class MessageSubController extends BaseController<MessageSubState> {
- final MessageSubState state = MessageSubState();
+class MessageSubController extends BaseListController<MessageSubState> {
+  final MessageSubState state = MessageSubState();
 
- late String type;
+  late String type;
 
- MessageSubController(this.type);
+  MessageSubController(this.type);
 
- @override
- void onInit() async{
-  super.onInit();
-  await initChatBreadNav();
- }
+  @override
+  void onInit() async {
+    super.onInit();
+    await initChatBreadNav();
+    loadSuccess();
+  }
 
- Future<void> initChatBreadNav() async {
+  Future<void> initChatBreadNav() async {
   List<ChatBreadcrumbNav> companyItems = [];
   for (var company in settingCtrl.user.companys) {
    companyItems.add(
@@ -91,16 +93,41 @@ class MessageSubController extends BaseController<MessageSubState> {
   }
  }
 
- void jumpDetails(ChatBreadcrumbNav chat) {
-  if(chat.type == ChatType.chat){
-   chat.target?.onMessage();
-   Get.toNamed(Routers.messageChat, arguments: chat.target);
-  }else{
-   Get.toNamed(Routers.messageChatsList, arguments: {"chats":(chat.target as ITeam).chats.where((element) => element.isMyChat).toList()});
+  void jumpDetails(ChatBreadcrumbNav chat) {
+    if (chat.type == ChatType.chat) {
+      chat.target?.onMessage();
+      Get.toNamed(Routers.messageChat, arguments: chat.target);
+    } else {
+      Get.toNamed(Routers.messageChatsList, arguments: {
+        "chats": (chat.target as ITeam)
+            .chats
+            .where((element) => element.isMyChat)
+            .toList()
+      });
+    }
   }
- }
 
+  @override
+  void onReady() {}
 
+  @override
+  void onClose() {
+    state.scrollController.dispose();
+    super.onClose();
+  }
 
+  @override
+  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
+    if (type != 'all') {
+      if (type == "common") {
+        await settingCtrl.chat.loadMostUsed();
+      } else {
+        await settingCtrl.provider.reloadChats();
+      }
+    }
+  }
 
+  void onSelected(key, IMsgChat chat) {
+    settingCtrl.chat.removeMostUsed(chat);
+  }
 }

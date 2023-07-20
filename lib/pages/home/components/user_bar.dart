@@ -34,155 +34,6 @@ class UserBar extends GetView<UserController> {
   }
 
   Widget get _userBar {
-    List<Widget> action = [];
-    action.add(IconButton(
-      icon: const Icon(Icons.search),
-      onPressed: () {
-        SearchBar? search;
-        switch (controller.homeEnum.value) {
-          case HomeEnum.chat:
-            search = SearchBar<IMsgChat>(
-                homeEnum: HomeEnum.chat, data: controller.chat.allChats);
-            break;
-          case HomeEnum.work:
-            search = SearchBar<IWorkTask>(
-                homeEnum: HomeEnum.work, data: controller.work.todos);
-            break;
-          case HomeEnum.door:
-            // TODO: Handle this case.
-            break;
-          case HomeEnum.store:
-            search = SearchBar<RecentlyUseModel>(homeEnum: HomeEnum.store, data: controller.store.recent);
-            break;
-          case HomeEnum.setting:
-            search = SearchBar<int>(homeEnum: HomeEnum.setting, data: []);
-            break;
-        }
-        if (search != null) {
-          showSearch(context: Get.context!, delegate: search);
-        }
-      },
-      constraints: BoxConstraints(maxWidth: 50.w),
-    ));
-    action.add(IconButton(
-      icon: const Icon(Ionicons.qr_code_sharp),
-      onPressed: () {
-        controller.qrScan();
-      },
-    ));
-    action.add(
-      CustomPopupMenu(
-        menuBuilder: () => ClipRRect(
-          borderRadius: BorderRadius.circular(5),
-          child: Container(
-            color: const Color(0xFF4C4C4C),
-            child: IntrinsicWidth(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: controller.menuItems
-                    .map(
-                      (item) => GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onTap: () {
-                          _menuController.hideMenu();
-                          controller.showAddFeatures(item);
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Row(
-                            children: <Widget>[
-                              Icon(
-                                item.shortcut.icon,
-                                size: 24.w,
-                                color: Colors.white,
-                              ),
-                              Expanded(
-                                child: Container(
-                                  margin: const EdgeInsets.only(left: 10),
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  child: Text(
-                                    item.shortcut.label,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.sp,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ),
-          ),
-        ),
-        verticalMargin: -5.h,
-        controller: _settingController,
-        pressType: PressType.singleClick,
-        child: const Icon(Icons.add),
-      ),
-    );
-    action.add(
-      CustomPopupMenu(
-        menuBuilder: () => ClipRRect(
-          borderRadius: BorderRadius.circular(5),
-          child: Container(
-            color: const Color(0xFF4C4C4C),
-            child: IntrinsicWidth(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: SettingEnum.values
-                    .map(
-                      (item) => GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onTap: () {
-                          _menuController.hideMenu();
-                          controller.jumpSetting(item);
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Row(
-                            children: <Widget>[
-                              Icon(
-                                item.icon,
-                                size: 24.w,
-                                color: Colors.white,
-                              ),
-                              Expanded(
-                                child: Container(
-                                  margin: const EdgeInsets.only(left: 10),
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  child: Text(
-                                    item.label,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.sp,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ),
-          ),
-        ),
-        verticalMargin: -5.h,
-        controller: _menuController,
-        pressType: PressType.singleClick,
-        child: const Icon(Icons.more_vert),
-      ),
-    );
-
     return SizedBox(
       height: 74.h,
       child: Row(children: [
@@ -193,12 +44,12 @@ class UserBar extends GetView<UserController> {
               child: GestureDetector(
                 child: _imgAvatar(EdgeInsets.only(left: 10.w)),
                 onTap: () {
-                  if(controller.homeEnum.value == HomeEnum.door){
-                    var home = Get.find<HomeController>();
-                    home.jumpTab(HomeEnum.setting);
-                  }else{
-                    controller.jumpInitiate();
-                  }
+                  // if(controller.homeEnum.value == HomeEnum.door){
+                  //   var home = Get.find<HomeController>();
+                  //   home.jumpTab(HomeEnum.setting);
+                  // }else{
+                  //   controller.jumpInitiate();
+                  // }
                 },
               ),
             ),
@@ -210,7 +61,148 @@ class UserBar extends GetView<UserController> {
           ],
         ),
         const Expanded(child: SizedBox()),
-        ...action,
+        if (controller.homeEnum.value!=HomeEnum.door) IconButton(
+          icon: const Icon(Ionicons.search_outline),
+          onPressed: () {
+            SearchBar? search;
+            switch (controller.homeEnum.value) {
+              case HomeEnum.chat:
+                search = SearchBar<IMsgChat>(
+                    homeEnum: HomeEnum.chat, data: controller.chat.allChats);
+                break;
+              case HomeEnum.work:
+                search = SearchBar<IWorkTask>(
+                    homeEnum: HomeEnum.work, data: controller.work.todos);
+                break;
+              case HomeEnum.store:
+                search = SearchBar<RecentlyUseModel>(homeEnum: HomeEnum.store, data: controller.store.recent);
+                break;
+              case HomeEnum.setting:
+                search = SearchBar<int>(homeEnum: HomeEnum.setting, data: []);
+                break;
+            }
+            if (search != null) {
+              showSearch(context: Get.context!, delegate: search);
+            }
+          },
+          constraints: BoxConstraints(maxWidth: 50.w),
+        ) else const SizedBox(),
+        IconButton(
+          icon: const Icon(Ionicons.scan_outline),
+          onPressed: () {
+            controller.qrScan();
+          },
+        ),
+        CustomPopupMenu(
+          menuBuilder: () => ClipRRect(
+            borderRadius: BorderRadius.circular(5),
+            child: Container(
+              color: const Color(0xFF4C4C4C),
+              child: IntrinsicWidth(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: controller.menuItems
+                      .map(
+                        (item) => GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {
+                        _menuController.hideMenu();
+                        controller.showAddFeatures(item);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              item.shortcut.icon,
+                              size: 24.w,
+                              color: Colors.white,
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin: const EdgeInsets.only(left: 10),
+                                padding:
+                                const EdgeInsets.symmetric(vertical: 10),
+                                child: Text(
+                                  item.shortcut.label,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.sp,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                      .toList(),
+                ),
+              ),
+            ),
+          ),
+          verticalMargin: -5.h,
+          controller: _settingController,
+          pressType: PressType.singleClick,
+          child: const Icon(Ionicons.add_sharp),
+        ),
+        const SizedBox(width: 5,),
+        CustomPopupMenu(
+          menuBuilder: () => ClipRRect(
+            borderRadius: BorderRadius.circular(5),
+            child: Container(
+              color: const Color(0xFF4C4C4C),
+              child: IntrinsicWidth(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: SettingEnum.values
+                      .map(
+                        (item) => GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {
+                        _menuController.hideMenu();
+                        controller.jumpSetting(item);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              item.icon,
+                              size: 24.w,
+                              color: Colors.white,
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin: const EdgeInsets.only(left: 10),
+                                padding:
+                                const EdgeInsets.symmetric(vertical: 10),
+                                child: Text(
+                                  item.label,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.sp,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                      .toList(),
+                ),
+              ),
+            ),
+          ),
+          verticalMargin: -5.h,
+          controller: _menuController,
+          pressType: PressType.singleClick,
+          child: const Icon(Ionicons.ellipsis_vertical),
+        ),
+        const SizedBox(width: 5,),
       ]),
     );
   }

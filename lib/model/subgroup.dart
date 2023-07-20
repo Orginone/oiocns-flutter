@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+
 part 'subgroup.g.dart';
 
 @HiveType(typeId: 7)
@@ -44,18 +45,22 @@ class Group{
   String? label;
   @HiveField(1)
   String? value;
+  @HiveField(2)
+  bool? allowEdit;
 
-  Group({this.label,this.value});
+  Group({this.label, this.value, this.allowEdit});
 
-  Group.fromJson(Map<String,dynamic> json){
+  Group.fromJson(Map<String, dynamic> json) {
     label = json['label'];
     value = json['value'];
+    allowEdit = json['allowEdit'];
   }
 
-  Map<String,dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     return {
-      "label":label,
-      "value":value,
+      "label": label,
+      "value": value,
+      'allowEdit': allowEdit,
     };
   }
 }

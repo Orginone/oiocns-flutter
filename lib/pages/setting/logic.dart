@@ -1,18 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/setting/user_controller.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/submenu_list/base_submenu_controller.dart';
 import 'package:orginone/dart/core/getx/submenu_list/base_submenu_state.dart';
-import 'package:orginone/main.dart';
 import 'package:orginone/model/subgroup.dart';
 import 'package:orginone/model/subgroup_config.dart';
 import 'package:orginone/util/hive_utils.dart';
-import 'package:orginone/util/toast_utils.dart';
-
-import 'dialog.dart';
 import 'state.dart';
 
 class SettingController extends BaseSubmenuController<SettingState> {
@@ -62,6 +55,8 @@ class SettingController extends BaseSubmenuController<SettingState> {
       HiveUtils.putSubGroup('setting', setting);
     }
     state.subGroup = Rx(setting);
+    var index = setting.groups!.indexWhere((element) => element.value == "common");
+    state.tabController = TabController(initialIndex: index,length: setting.groups!.length,vsync: this);
   }
 
 }

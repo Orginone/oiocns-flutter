@@ -56,9 +56,9 @@ class EditSubGroupPage
                         onPressed: () {
                           controller.removeGroup(item);
                         },
-                        icon: const Icon(
+                        icon:  Icon(
                           Ionicons.remove_circle,
-                          color: Colors.red,
+                          color: (item.allowEdit??true)?Colors.red:Colors.grey,
                         ),
                         padding: EdgeInsets.zero,
                         constraints: BoxConstraints(maxWidth: 30.w),
