@@ -1,11 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -58,23 +53,25 @@ class ProcessInfoPage
           }),
           Column(
             children: state.mainForm[state.mainIndex.value].fields.map((e) {
-              if(state.mainForm[state.mainIndex.value].data?.after.isEmpty??true){
-                return Container();
-              }
-              return FutureBuilder(
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState != ConnectionState.done &&
-                      !snapshot.hasData) {
-                    return Container();
+                  Map<String, dynamic> info = {};
+                  if (state.mainForm[state.mainIndex.value].data?.after
+                          .isNotEmpty ??
+                      false) {
+                    info = state.mainForm[state.mainIndex.value].data!.after[0]
+                        .otherInfo;
                   }
-                  Widget child = testMappingComponents[e.field.type ?? ""]!(
-                      e.field, settingCtrl.user);
-                  return child;
-                },
-                future: controller.loadMainFieldData(
-                    e, state.mainForm[state.mainIndex.value].data?.after[0]
-                    .otherInfo ?? {}),
-              );
+                  return FutureBuilder(
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState != ConnectionState.done &&
+                          !snapshot.hasData) {
+                        return Container();
+                      }
+                      Widget child = testMappingComponents[e.field.type ?? ""]!(
+                          e.field, settingCtrl.user);
+                      return child;
+                    },
+                    future: controller.loadMainFieldData(e, info),
+                  );
             }).toList() ??
                 [],
           ),

@@ -10,7 +10,6 @@ import 'package:flutter_svg/svg.dart';
 class ImageWidget extends StatelessWidget {
   final dynamic path;
 
-
   final double? size;
 
   final Color? color;

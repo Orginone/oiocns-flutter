@@ -112,7 +112,6 @@ class ListAdapter {
       );
     };
   }
-
   ListAdapter.work(IWorkTask work) {
     labels = [work.metadata.createUser!, work.metadata.shareId!];
     isUserLabel = true;

@@ -81,17 +81,27 @@ class MessageChatInfoPage
       ),
       bottomNavigationBar: SizedBox(
         height: 120.h,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            circle(
-                icon: Ionicons.chatbubble_sharp,
-                lable: "发消息",
-                callback: () {
-                  controller.jumpMessage();
-                }),
-            circle(icon: Ionicons.call_sharp, lable: "打电话"),
-          ],
+        child: Builder(
+          builder: (context) {
+            List<Widget> children = [
+              circle(
+                  icon: Ionicons.chatbubble_sharp,
+                  lable: "发消息",
+                  callback: () {
+                    controller.jumpMessage();
+                  }),
+              circle(icon: Ionicons.call_sharp, lable: "打电话"),
+            ];
+            if(!state.isFriend){
+              children.add(circle(icon: Ionicons.person_add_sharp, lable: "加好友",callback: (){
+                controller.addPerson();
+              }));
+            }
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: children,
+            );
+          }
         ),
       ),
     );

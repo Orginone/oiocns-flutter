@@ -40,8 +40,8 @@ class HomeController extends BaseController<HomeState> {
   }
 
   @override
-  void dispose() {
+  void onClose() {
     state.pageController.dispose();
-    super.dispose();
+    super.onClose();
   }
 }
