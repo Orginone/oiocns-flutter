@@ -77,7 +77,7 @@ class IdentityInfoPage
               action: CommonWidget.commonPopupMenuButton(items: const [
                 PopupMenuItem(
                   value: IdentityFunction.addMember,
-                  child: Text("指派角色"),
+                  child: Text("添加成员"),
                 ),
               ], onSelected: (IdentityFunction function) {
                 controller.identityOperation(function);

@@ -72,8 +72,7 @@ class DepartmentInfoPage
               title: "团队标识", content: state.depart.value.metadata.code!),
           CommonWidget.commonFormItem(
               title: "所属单位",
-              // content: state.settingController.company?.teamName ?? ""
-              content: ""
+              content: state.depart.value.space.metadata.name??"",
           ),
           CommonWidget.commonFormItem(
               title: "创建人",

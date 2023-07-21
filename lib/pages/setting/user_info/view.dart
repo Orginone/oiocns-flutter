@@ -35,10 +35,6 @@ class UserInfoPage extends BaseGetView<UserInfoController, UserInfoState> {
                   CommonWidget.commonPopupMenuButton(
                       items: const [
                         PopupMenuItem(
-                          value: UserFunction.record,
-                          child: Text("查看申请记录"),
-                        ),
-                        PopupMenuItem(
                           value: UserFunction.addUser,
                           child: Text("添加好友"),
                         ),

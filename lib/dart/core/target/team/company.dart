@@ -356,7 +356,7 @@ class Company extends Belong implements ICompany {
   List<PopupMenuItem> get popupMenuItem {
     List<PopupMenuKey> key = [];
     if(hasRelationAuth()){
-      key.addAll([...createPopupMenuKey,PopupMenuKey.updateInfo,PopupMenuKey.createDepartment,PopupMenuKey.createStation,PopupMenuKey.createGroup,]);
+      key.addAll([...createPopupMenuKey,PopupMenuKey.updateInfo,PopupMenuKey.createDepartment,PopupMenuKey.createGroup,]);
     }
     key.addAll(defaultPopupMenuKey);
     return key

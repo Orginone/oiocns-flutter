@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/identity/identity.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
@@ -18,6 +19,7 @@ class IdentityInfoController extends BaseController<IdentityInfoState> {
   RoleSettingsController get roleSetting =>Get.find<RoleSettingsController>();
 
   IdentityInfoController(this.identity);
+
 
 
   @override
@@ -69,15 +71,18 @@ class IdentityInfoController extends BaseController<IdentityInfoState> {
         roleSetting.deleteIdentity(identity.value);
         break;
       case IdentityFunction.addMember:
-        Get.toNamed(Routers.addMembers,arguments: {"title":"指派角色"})?.then((value) async{
-          var selected = (value as List<XTarget>);
-          if(selected.isNotEmpty){
-            bool success = await identity.value.pullMembers(selected);
-            if(success){
-              await loadMembers();
-            }
-          }
-        });
+        showSearchDialog(context, TargetType.person,
+            title: "添加成员",
+            hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
+              if (list.isNotEmpty) {
+                bool success = await roleSetting.state.target.pullMembers(list);
+                if (success) {
+                  ToastUtils.showMsg(msg: "添加成功");
+                } else {
+                  ToastUtils.showMsg(msg: "添加失败");
+                }
+              }
+            });
         break;
     }
   }

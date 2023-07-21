@@ -3,6 +3,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/setting/config.dart';
+import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
 
@@ -35,16 +36,18 @@ class StationInfoController extends BaseController<StationInfoState> {
   void companyOperation(CompanyFunction function) {
    switch(function){
      case CompanyFunction.addUser:
-       Get.toNamed(Routers.addMembers,arguments: {"title":"添加岗位人员"})?.then((value) async{
-         var selected = (value as List<XTarget>);
-         if(selected.isNotEmpty){
-            bool success = await state.station.pullMembers(selected);
-            if (success) {
-              state.unitMember.addAll(selected);
-              state.unitMember.refresh();
-            }
-          }
-        });
+       showSearchDialog(context, TargetType.person,
+           title: "添加成员",
+           hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
+             if (list.isNotEmpty) {
+               bool success = await state.station.pullMembers(list);
+               if (success) {
+                 ToastUtils.showMsg(msg: "添加成功");
+               } else {
+                 ToastUtils.showMsg(msg: "添加失败");
+               }
+             }
+           });
         break;
     }
   }
