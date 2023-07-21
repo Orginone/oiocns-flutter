@@ -151,6 +151,7 @@ class ChatProvider implements IChatProvider {
       }
       if (isMatch) {
         c.receiveMessage(data, currentChat?.chatId == c.chatId);
+        c.messages.refresh();
       }
     }
   }

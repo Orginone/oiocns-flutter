@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
+import 'package:orginone/pages/chat/message_chat_info/view.dart';
 import 'package:orginone/pages/chat/message_routers.dart';
 import 'package:orginone/pages/chat/message_setting.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
@@ -38,6 +39,7 @@ import 'package:orginone/util/image_utils.dart';
 // 仓库
 import 'dart/base/model.dart';
 import 'main.dart';
+import 'pages/chat/message_chat_info/binding.dart';
 import 'pages/chat/message_chats/bindings.dart';
 import 'pages/chat/message_chats/message_chats_list.dart';
 import 'pages/chat/message_file.dart';
@@ -284,6 +286,7 @@ class Routers {
 
   static const String editSubGroup = "/editSubGroup";
 
+  static const String messageChatInfo = "/messageChatInfo";
 
   static String get main {
     var user = HiveUtils.getUser();
@@ -547,6 +550,11 @@ class Routers {
         name: Routers.editSubGroup,
         page: () => EditSubGroupPage(),
         binding: EditSubGroupBinding(),
+      ),
+      GetPage(
+        name: Routers.messageChatInfo,
+        page: () => MessageChatInfoPage(),
+        binding: MessageChatInfoBinding(),
       ),
     ];
   }

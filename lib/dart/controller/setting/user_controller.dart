@@ -33,9 +33,15 @@ enum Shortcut {
   addGroup("加入群组", Icons.speaker_group),
   createCompany("创建单位", Icons.compare),
   addCompany("加入单位", Icons.compare),
-  addCohort("发起群聊", Icons.chat_bubble);
-
-
+  addCohort("发起群聊", Icons.chat_bubble),
+  createDir("新建目录",Ionicons.folder_sharp),
+  createApplication("新建应用",Ionicons.apps_sharp),
+  createSpecies("新建分类",Ionicons.pricetag_sharp),
+  createDict("新建字典",Ionicons.book_sharp),
+  createAttr("新建属性",Ionicons.snow_sharp),
+  createThing("新建实体配置",Ionicons.pricetag_sharp),
+  createWork("新建事项配置",Ionicons.pricetag_sharp),
+  uploadFile("上传文件",Ionicons.file_tray_sharp);
   final String label;
   final IconData icon;
 
@@ -55,13 +61,13 @@ enum SettingEnum {
   const SettingEnum(this.label, this.icon);
 }
 
-class ItemModel {
+class ShortcutData {
   Shortcut shortcut;
   TargetType? targetType;
   String title;
   String hint;
 
-  ItemModel(
+  ShortcutData(
     this.shortcut, [
     this.title = '',
     this.hint = '',
@@ -78,16 +84,16 @@ class UserController extends GetxController {
   var homeEnum = HomeEnum.door.obs;
 
   var menuItems = [
-    ItemModel(
+    ShortcutData(
       Shortcut.addPerson,
       "添加好友",
       "请输入用户的账号",
       TargetType.person,
     ),
-    ItemModel(Shortcut.addGroup, "添加群组", "请输入群组的编码", TargetType.cohort),
-    ItemModel(Shortcut.createCompany, "创建单位", "", TargetType.company),
-    ItemModel(Shortcut.addCompany, "添加单位", "请输入单位的社会统一代码", TargetType.company),
-    ItemModel(Shortcut.addCohort, "发起群聊", "请输入群聊信息", TargetType.cohort),
+    ShortcutData(Shortcut.addGroup, "添加群组", "请输入群组的编码", TargetType.cohort),
+    ShortcutData(Shortcut.createCompany, "创建单位", "", TargetType.company),
+    ShortcutData(Shortcut.addCompany, "添加单位", "请输入单位的社会统一代码", TargetType.company),
+    ShortcutData(Shortcut.addCohort, "创建群组", "请输入群聊信息", TargetType.cohort),
   ];
 
   @override
@@ -176,37 +182,45 @@ class UserController extends GetxController {
     return space == user;
   }
 
-  void showAddFeatures(ItemModel item) {
-    if (item.shortcut == Shortcut.addCohort || item.shortcut == Shortcut.createCompany) {
-      showCreateOrganizationDialog(
-        Get.context!,
-        [item.targetType!],
-        callBack: (String name, String code, String nickName, String identify,
-            String remark, TargetType type) async {
-          var target = TargetModel(
-            name: nickName,
-            code: code,
-            typeName: type.label,
-            teamName: name,
-            teamCode: code,
-            remark: remark,
-          );
-          var data = item.shortcut == Shortcut.createCompany?await user.createCompany(target):await user.createCohort(target);
-          if (data != null) {
-            ToastUtils.showMsg(msg: "创建成功");
+  void showAddFeatures(ShortcutData item) {
+    switch (item.shortcut) {
+      case Shortcut.createCompany:
+      case Shortcut.addCohort:
+        showCreateOrganizationDialog(
+          Get.context!,
+          [item.targetType!],
+          callBack: (String name, String code, String nickName, String identify,
+              String remark, TargetType type) async {
+            var target = TargetModel(
+              name: nickName,
+              code: code,
+              typeName: type.label,
+              teamName: name,
+              teamCode: code,
+              remark: remark,
+            );
+            var data = item.shortcut == Shortcut.createCompany
+                ? await user.createCompany(target)
+                : await user.createCohort(target);
+            if (data != null) {
+              ToastUtils.showMsg(msg: "创建成功");
+            }
+          },
+        );
+        break;
+      case Shortcut.addPerson:
+      case Shortcut.addGroup:
+      case Shortcut.addCompany:
+        showSearchDialog(Get.context!, item.targetType!,
+            title: item.title, hint: item.hint, onSelected: (targets) async {
+          if (targets.isNotEmpty) {
+            bool success = await user.applyJoin(targets);
+            if (success) {
+              ToastUtils.showMsg(msg: "发送申请成功");
+            }
           }
-        },
-      );
-    } else {
-      showSearchDialog(Get.context!, item.targetType!,
-          title: item.title, hint: item.hint, onSelected: (targets) async {
-        if (targets.isNotEmpty) {
-          bool success = await user.applyJoin(targets);
-          if (success) {
-            ToastUtils.showMsg(msg: "发送申请成功");
-          }
-        }
-      });
+        });
+        break;
     }
   }
 

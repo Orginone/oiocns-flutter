@@ -109,7 +109,7 @@ class GridItem extends StatelessWidget {
           style: TextStyle(
             color: XColors.chatTitleColor,
             fontWeight: FontWeight.w500,
-            fontSize: 24.sp,
+            fontSize: 20.sp,
             overflow: TextOverflow.ellipsis,
           ),
           maxLines: 1,

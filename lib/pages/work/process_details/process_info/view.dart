@@ -58,6 +58,9 @@ class ProcessInfoPage
           }),
           Column(
             children: state.mainForm[state.mainIndex.value].fields.map((e) {
+              if(state.mainForm[state.mainIndex.value].data?.after.isEmpty??true){
+                return Container();
+              }
               return FutureBuilder(
                 builder: (context, snapshot) {
                   if (snapshot.connectionState != ConnectionState.done &&
@@ -181,7 +184,7 @@ class ProcessInfoPage
         ),
         child: Text(
           text,
-          style: TextStyle(color: textColor, fontSize: 20.sp),
+          style: TextStyle(color: textColor, fontSize: 24.sp),
         ),
       ),
     );

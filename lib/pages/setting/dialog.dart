@@ -78,12 +78,13 @@ Future<void> showCreateIdentityDialog(
                         controller: name,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",
+                        textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("角色编号", '',
                         controller: code,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     identity != null
                         ? const SizedBox()
                         : CommonWidget.commonChoiceTile(
@@ -99,12 +100,12 @@ Future<void> showCreateIdentityDialog(
                                 } catch (e) {}
                               });
                             });
-                          }, hint: "请选择"),
+                          }, hint: "请选择",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("角色简介", '',
                         controller: remark,
                         showLine: true,
                         maxLine: 4,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonMultipleSubmitWidget(onTap1: () {
                       Navigator.pop(context);
                     }, onTap2: () {
@@ -319,17 +320,17 @@ Future<void> showCreateDictItemDialog(BuildContext context,
                         controller: nameCtr,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("值", '',
                         controller: codeCtr,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("备注", '',
                         controller: remarkCtr,
                         showLine: true,
                         maxLine: 4,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonMultipleSubmitWidget(onTap1: () {
                       Navigator.pop(context);
                     }, onTap2: () {
@@ -378,17 +379,17 @@ Future<void> showCreateDictDialog(BuildContext context,
                         controller: nameCtr,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("字典代码", '',
                         controller: codeCtr,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("备注", '',
                         controller: remarkCtr,
                         showLine: true,
                         maxLine: 4,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonMultipleSubmitWidget(onTap1: () {
                       Navigator.pop(context);
                     }, onTap2: () {
@@ -438,12 +439,12 @@ Future<void> showCreateFormDialog(BuildContext context,
                         controller: nameCrl,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("字典代码", '',
                         controller: codeCrl,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonChoiceTile(
                         "向下组织公开", public ? "公开" : '不公开',
                         showLine: true, required: true, onTap: () {
@@ -453,7 +454,7 @@ Future<void> showCreateFormDialog(BuildContext context,
                           public = str == "公开";
                         });
                       });
-                    }, hint: "请选择"),
+                    }, hint: "请选择",textStyle: XFonts.size22Black0),
                     CommonWidget.commonMultipleSubmitWidget(onTap1: () {
                       Navigator.pop(context);
                     }, onTap2: () {
@@ -511,16 +512,16 @@ Future<void> showCreateOrganizationDialog(
                         controller: nameController,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("代码", '',
                         controller: codeController,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("简称", '',
                         controller: nickNameController,
                         showLine: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonChoiceTile(
                         "选择制定组织", selectedTarget.label,
                         showLine: true, required: true, onTap: () {
@@ -534,17 +535,17 @@ Future<void> showCreateOrganizationDialog(
                           } catch (e) {}
                         });
                       });
-                    }, hint: "请选择"),
+                    }, hint: "请选择",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("标识", '',
                         controller: identifyController,
                         showLine: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("备注", '',
                         controller: remarkController,
                         showLine: true,
                         required: true,
                         maxLine: 4,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonMultipleSubmitWidget(onTap1: () {
                       Navigator.pop(context);
                     }, onTap2: () {
@@ -603,10 +604,10 @@ Future<void> showCreateAttributeDialog(BuildContext context,
                         controller: nameCtr,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("属性代码", '',
                         controller: codeCtr,
-                        showLine: true, required: true,hint: "请输入"),
+                        showLine: true, required: true,hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonChoiceTile("属性类型", type??"",
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
@@ -615,7 +616,7 @@ Future<void> showCreateAttributeDialog(BuildContext context,
                           type = str;
                         });
                       });
-                    }, hint: "请选择"),
+                    }, hint: "请选择",textStyle: XFonts.size22Black0),
                     type == "选择型"? CommonWidget.commonChoiceTile("选择字典", dictValue?.metadata.name??"",
                         showLine: true, required: true, onTap: () {
                           PickerUtils.showListStringPicker(Get.context!,
@@ -624,23 +625,23 @@ Future<void> showCreateAttributeDialog(BuildContext context,
                                   dictValue = dictList.firstWhere((element) => element.metadata.name == str);
                                 });
                               });
-                        }, hint: "请选择"):const SizedBox(),
+                        }, hint: "请选择",textStyle: XFonts.size22Black0):const SizedBox(),
                     type == "数值型"? CommonWidget.commonTextTile("单位", '',
                         controller: unitCtr,
                         showLine: true,
-                        hint: "请输入"):const SizedBox(),
+                        hint: "请输入",textStyle: XFonts.size22Black0):const SizedBox(),
                     CommonWidget.commonTextTile("附加信息", '',
                         controller: infoCtr,
                         showLine: true,
                         required: true,
                         maxLine: 4,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("备注信息", '',
                         controller: remarkCtr,
                         showLine: true,
                         required: true,
                         maxLine: 4,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonMultipleSubmitWidget(onTap1: () {
                       Navigator.pop(context);
                     }, onTap2: () {
@@ -700,12 +701,12 @@ Future<void> showCreateAttrDialog(BuildContext context,
                         controller: nameCtr,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("特性代码", '',
                         controller: codeCtr,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonChoiceTile("选择属性", property?.name ?? "",
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
@@ -716,7 +717,7 @@ Future<void> showCreateAttrDialog(BuildContext context,
                               .firstWhere((element) => element.name == str);
                         });
                       });
-                    }, hint: "请选择"),
+                    }, hint: "请选择",textStyle: XFonts.size22Black0),
                     CommonWidget.commonChoiceTile(
                         "选择管理权限", authority?.metadata.name ?? "",
                         showLine: true, required: true, onTap: () {
@@ -728,7 +729,7 @@ Future<void> showCreateAttrDialog(BuildContext context,
                               .firstWhere((element) => element.metadata.name == str);
                         });
                       });
-                    }, hint: "请选择"),
+                    }, hint: "请选择",textStyle: XFonts.size22Black0),
                     CommonWidget.commonChoiceTile(
                         "向下组织公开", isPublic ? "公开" : '不公开',
                         showLine: true, required: true, onTap: () {
@@ -738,12 +739,12 @@ Future<void> showCreateAttrDialog(BuildContext context,
                           isPublic = str == "公开";
                         });
                       });
-                    }, hint: "请选择"),
+                    }, hint: "请选择",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("特性定义", '',
                         controller: remarkCtr,
                         showLine: true,
                         maxLine: 4,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonMultipleSubmitWidget(onTap1: () {
                       Navigator.pop(context);
                     }, onTap2: () {
@@ -807,12 +808,12 @@ Future<void> showCreateWorkDialog(BuildContext context, List<ISpecies> thing,
                         controller: nameCtr,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("事项编号", '',
                         controller: codeCtr,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonChoiceTile(
                         "选择共享组织", selectTarget?.metadata.name ?? "",
                         showLine: true, required: true, onTap: () {
@@ -824,7 +825,7 @@ Future<void> showCreateWorkDialog(BuildContext context, List<ISpecies> thing,
                                       (element) => element.metadata.name == str);
                             });
                           });
-                    }, hint: "请选择"),
+                    }, hint: "请选择",textStyle: XFonts.size22Black0),
                     CommonWidget.commonChoiceTile("允许新增实体", add ? "是" : '否',
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
@@ -833,7 +834,7 @@ Future<void> showCreateWorkDialog(BuildContext context, List<ISpecies> thing,
                           add = str == "是";
                         });
                       });
-                    }, hint: "请选择"),
+                    }, hint: "请选择",textStyle: XFonts.size22Black0),
                     CommonWidget.commonChoiceTile("允许变更实体", edit ? "是" : '否',
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
@@ -842,7 +843,7 @@ Future<void> showCreateWorkDialog(BuildContext context, List<ISpecies> thing,
                           edit = str == "是";
                         });
                       });
-                    }, hint: "请选择"),
+                    }, hint: "请选择",textStyle: XFonts.size22Black0),
                     CommonWidget.commonChoiceTile("允许选择实体", select ? "是" : '否',
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
@@ -851,12 +852,12 @@ Future<void> showCreateWorkDialog(BuildContext context, List<ISpecies> thing,
                           select = str == "是";
                         });
                       });
-                    }, hint: "请选择"),
+                    }, hint: "请选择",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("备注", '',
                         controller: remarkCtr,
                         showLine: true,
                         maxLine: 4,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonMultipleSubmitWidget(onTap1: () {
                       Navigator.pop(context);
                     }, onTap2: () {
@@ -912,12 +913,12 @@ Future<void> showCreateAuthDialog(
                         controller: nameController,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("代码", '',
                         controller: codeController,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonChoiceTile(
                         "选择制定组织", selectedTarget.metadata.name!,
                         showLine: true, required: true, onTap: () {
@@ -931,7 +932,7 @@ Future<void> showCreateAuthDialog(
                               } catch (e) {}
                             });
                           });
-                    }, hint: "请选择"),
+                    }, hint: "请选择",textStyle: XFonts.size22Black0),
                     CommonWidget.commonChoiceTile(
                         "是否公开", isPublic ? "公开" : '不公开',
                         showLine: true, required: true, onTap: () {
@@ -941,12 +942,12 @@ Future<void> showCreateAuthDialog(
                               isPublic = str == "公开";
                             });
                           });
-                    }, hint: "请选择"),
+                    }, hint: "请选择",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("备注", '',
                         controller: remarkController,
                         showLine: true,
                         maxLine: 4,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonMultipleSubmitWidget(onTap1: () {
                       Navigator.pop(context);
                     }, onTap2: () {
@@ -1005,12 +1006,12 @@ Future<void> showClassCriteriaDialog(
                         controller: nameController,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("代码", '',
                         controller: codeController,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonChoiceTile(
                         "选择类型", selectedSpecies??"",
                         showLine: true, required: true, onTap: () {
@@ -1024,18 +1025,18 @@ Future<void> showClassCriteriaDialog(
                               } catch (e) {}
                             });
                           });
-                    }, hint: "请选择"),
+                    }, hint: "请选择",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("资源", '',
                         controller: resourceController,
                         showLine: true,
                         maxLine: 1,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("备注信息", '',
                         controller: remarkController,
                         showLine: true,
                         required: true,
                         maxLine: 4,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonMultipleSubmitWidget(onTap1: () {
                       Navigator.pop(context);
                     }, onTap2: () {
@@ -1090,17 +1091,17 @@ Future<void> showCreateSpeciesDialog(
                         controller: nameController,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("附加信息", '',
                         controller: infoController,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("备注", '',
                         controller: remarkController,
                         showLine: true,
                         maxLine: 4,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonMultipleSubmitWidget(onTap1: () {
                       Navigator.pop(context);
                     }, onTap2: () {
@@ -1150,17 +1151,17 @@ Future<void> showCreateGeneralDialog(BuildContext context,String title,
                         controller: nameController,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("代码", '',
                         controller: codeController,
                         showLine: true,
                         required: true,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonTextTile("备注", '',
                         controller: remarkController,
                         showLine: true,
                         maxLine: 4,
-                        hint: "请输入"),
+                        hint: "请输入",textStyle: XFonts.size22Black0),
                     CommonWidget.commonMultipleSubmitWidget(onTap1: () {
                       Navigator.pop(context);
                     }, onTap2: () {

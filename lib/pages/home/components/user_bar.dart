@@ -6,7 +6,6 @@ import 'package:ionicons/ionicons.dart';
 import 'package:orginone/dart/controller/setting/user_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/work/task.dart';
-import 'package:orginone/pages/home/home/logic.dart';
 import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/util/icons.dart';
 import 'package:orginone/widget/image_widget.dart';
@@ -56,12 +55,12 @@ class UserBar extends GetView<UserController> {
             SizedBox(width: 10.w,),
             Text(
               controller.homeEnum.value.label,
-              style: TextStyle(fontSize: 24.sp),
+              style: TextStyle(fontSize: 28.sp),
             ),
           ],
         ),
         const Expanded(child: SizedBox()),
-        if (controller.homeEnum.value!=HomeEnum.door) IconButton(
+        IconButton(
           icon: const Icon(Ionicons.search_outline),
           onPressed: () {
             SearchBar? search;
@@ -86,7 +85,7 @@ class UserBar extends GetView<UserController> {
             }
           },
           constraints: BoxConstraints(maxWidth: 50.w),
-        ) else const SizedBox(),
+        ),
         IconButton(
           icon: const Icon(Ionicons.scan_outline),
           onPressed: () {

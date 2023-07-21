@@ -1694,7 +1694,7 @@ class KernelApi {
       ReqestType(
         module: 'chat',
         action: 'RecallImMsg',
-        params: params,
+        params: params.toJson(),
       ),
       MsgSaveModel.fromJson,
     );

@@ -33,16 +33,16 @@ class SettingSubPage
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4),
       itemBuilder: (context, index) {
-        var item = settingCtrl.menuItems[index];
+        var item = state.shortcutDatas[index];
         return GridItem(adapter: ListAdapter(
             title: item.title,
             labels:[item.shortcut.label] ,
             image: item.shortcut.icon,
             callback: () {
-              settingCtrl.showAddFeatures(item);
+              controller.clickCommon(item);
             }
         ));
-      }, itemCount: settingCtrl.menuItems.length,);
+      }, itemCount: state.shortcutDatas.length,);
   }
 
   Widget allWidget() {

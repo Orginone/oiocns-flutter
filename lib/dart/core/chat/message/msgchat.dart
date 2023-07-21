@@ -500,8 +500,8 @@ abstract class MsgChat extends Entity implements IMsgChat {
     chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
     chatdata.value.lastMessage = msg;
     chatdata.value.isFindme = msg.body?.mentions?.contains(settingCtrl.user.id);
-    chatdata.refresh();
     await cache();
+    chatdata.refresh();
   }
 
   void _loadMessages(List<dynamic> msgs) {

@@ -135,8 +135,7 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
 
   void jumpDetails(ChatBreadcrumbNav chat) {
      if(chat.type == ChatType.chat){
-       chat.target?.onMessage();
-       Get.toNamed(Routers.messageChat, arguments: chat.target);
+       Get.toNamed(Routers.messageChatInfo, arguments: {"chat":chat.target});
      }else{
        Get.toNamed(Routers.messageChatsList, arguments: {"chats":(chat.target as ITeam).chats.where((element) => element.isMyChat).toList()});
      }

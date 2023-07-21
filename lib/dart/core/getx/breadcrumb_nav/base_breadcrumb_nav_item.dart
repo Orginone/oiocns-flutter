@@ -98,7 +98,7 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
         children: [
           Text(
             item.name,
-            style: TextStyle(fontSize: 20.sp, color: Colors.black),
+            style: TextStyle(fontSize: 24.sp, color: Colors.black),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

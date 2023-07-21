@@ -22,7 +22,6 @@ S extends BaseSubmenuState> extends BaseGetView<T, S> {
             flexibleSpace: headWidget(),
             floating: true,
             pinned: true,
-            toolbarHeight: 55.h,
           )
         ];
       },
@@ -49,7 +48,7 @@ S extends BaseSubmenuState> extends BaseGetView<T, S> {
                       padding: EdgeInsets.symmetric(
                           vertical: 5.h, horizontal: 15.w),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16.w),
+                        borderRadius: BorderRadius.circular(20.w),
                         color: state.submenuIndex.value == index
                             ? XColors.themeColor
                             : Colors.grey[200],

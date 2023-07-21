@@ -19,32 +19,15 @@ class StoreNavItem extends BaseBreadcrumbNavItem<StoreTreeNav>{
 
 
   @override
-  Widget action() {
-
-    if(item.spaceEnum == SpaceEnum.file){
-      return Obx(() {
-        List<PopupMenuKey> keys = [PopupMenuKey.shareQr];
-        if (settingCtrl.store.isMostUsed(item.id)) {
-          keys.add(PopupMenuKey.removeCommon);
-        } else {
-          keys.add(PopupMenuKey.setCommon);
-        }
-        return CommonWidget.commonPopupMenuButton<PopupMenuKey>(
-          items: keys.map((e) => PopupMenuItem(value: e,child: Text(e.label),)).toList(),
-          onSelected: (key) {
-            onSelected?.call(key,item);
-          },);
-      });
-    }
-
-    return CommonWidget.commonPopupMenuButton<PopupMenuKey>(
-      items: [
-        PopupMenuItem(value: PopupMenuKey.shareQr,child: Text(PopupMenuKey.shareQr.label),)
-      ],
-      onSelected: (key) {
-        onSelected?.call(key,item);
-      },);
+  List<PopupMenuItem> popupItems() {
+    // TODO: implement popupItems
+    return [ PopupMenuItem(value: PopupMenuKey.shareQr,child: Text(PopupMenuKey.shareQr.label),)];
   }
 
+
+  @override
+  void onSelectPopupItem(key) {
+    onSelected?.call(key,item);
+  }
 
 }
