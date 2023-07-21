@@ -7,6 +7,7 @@ import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/api/storehub.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:signalr_netcore/signalr_client.dart';
 import 'package:uuid/uuid.dart';
 
 class AnyStore {
@@ -68,6 +69,15 @@ class AnyStore {
       _storeHub.restart();
     }
   }
+
+  Future<void> disconnect() async{
+    _storeHub.disconnect();
+  }
+
+  HubConnectionState? connectionState() {
+    return _storeHub.connectionState();
+  }
+
 
   /// 订阅对象变更
   /// @param {string} key 对象名称（eg: rootName.person.name）

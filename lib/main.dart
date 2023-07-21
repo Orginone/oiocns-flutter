@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/foreground_utils.dart';
 import 'package:orginone/util/notification_util.dart';
 import 'dart/controller/setting/user_controller.dart';
 import 'util/hive_utils.dart';
@@ -27,6 +28,8 @@ void main() async {
 
   // 初始化通知配置
   await LocalStore.instance();
+
+  ForegroundUtils().initForegroundTask();
   // 日志初始化
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((event) {
@@ -105,5 +108,8 @@ class ScreenInit extends StatelessWidget {
       }
     }
   }
+
+
+
 }
 
