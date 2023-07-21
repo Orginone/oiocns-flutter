@@ -63,7 +63,7 @@ Map<String, dynamic> workDefaultConfig = {
       "allowEdit":true,
     },
     {
-      "label": "我发起",
+      "label": "已发起",
       "value": "apply",
       "allowEdit":true,
     },

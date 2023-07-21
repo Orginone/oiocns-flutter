@@ -153,8 +153,10 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
 class ChatBreadNavState extends BaseBreadcrumbNavState<ChatBreadcrumbNav> {
 
   ChatBreadNavState() {
-    model.value = Get.arguments?['data'];
-    title = model.value?.name ?? HomeEnum.chat.label;
+    if( Get.arguments is Map){
+      model.value = Get.arguments?['data'];
+      title = model.value?.name ?? HomeEnum.chat.label;
+    }
   }
 }
 

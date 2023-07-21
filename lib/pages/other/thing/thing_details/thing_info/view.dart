@@ -17,7 +17,7 @@ class ThingInfoPage
              state.form.metadata.name!),
           CommonWidget.commonFormWidget(
               formItem: state.attr.map((e) {
-            String value = e.value ?? "";
+            String value = e.property?.valueType ?? "";
             return CommonWidget.commonFormItem(
                 title: e.name ?? "",
                 content: value,

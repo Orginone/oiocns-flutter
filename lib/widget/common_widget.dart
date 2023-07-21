@@ -728,9 +728,11 @@ class CommonWidget {
                   Expanded(
                     flex: 2,
                     child: Container(
+                      alignment: Alignment.centerLeft,
                       padding: EdgeInsets.symmetric(
                           vertical: 15.h, horizontal: 10.w),
                       color: Colors.white,
+                      height: double.infinity,
                       constraints: BoxConstraints(minHeight: 60.h),
                       child: userId.isNotEmpty
                           ? TargetText(

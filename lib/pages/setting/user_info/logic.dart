@@ -46,14 +46,12 @@ class UserInfoController extends BaseController<UserInfoState>
         break;
       case UserFunction.addUser:
         showSearchDialog(context, TargetType.person,
-            title: "添加成员",
+            title: "添加好友",
             hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {
             bool success = await settingCtrl.user.pullMembers(list);
             if (success) {
               ToastUtils.showMsg(msg: "添加成功");
-              state.unitMember.addAll(list);
-              state.unitMember.refresh();
             } else {
               ToastUtils.showMsg(msg: "添加失败");
             }

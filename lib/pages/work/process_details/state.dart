@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/dart/core/work/task.dart';
 
 class ProcessDetailsState extends BaseGetState{

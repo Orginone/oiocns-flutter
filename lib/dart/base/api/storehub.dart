@@ -4,8 +4,6 @@ import 'package:orginone/main.dart';
 import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
-import 'package:signalr_netcore/ihub_protocol.dart';
-import 'package:signalr_netcore/json_hub_protocol.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
 /// 存储集线器
@@ -69,6 +67,10 @@ class StoreHub {
     return _isStarted && _connection.state == HubConnectionState.Connected;
   }
 
+  HubConnectionState? connectionState(){
+    return _connection.state;
+  }
+
   /// 销毁连接
   /// @returns {Promise<void>} 异步Promise
   Future<void> dispose() async {
@@ -97,6 +99,12 @@ class StoreHub {
     } else if (_connection.state != HubConnectionState.Reconnecting) {
       _starting();
     }
+  }
+
+
+  Future<void> disconnect() async{
+    _isStarted = false;
+    _connection.stop();
   }
 
   /// 开始连接

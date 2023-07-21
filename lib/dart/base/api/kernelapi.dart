@@ -9,6 +9,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/model/user_model.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
+import 'package:signalr_netcore/signalr_client.dart';
 
 class KernelApi {
   final Logger log = Logger("KernelApi");
@@ -56,22 +57,31 @@ class KernelApi {
     return _storeHub.isConnected;
   }
 
+  HubConnectionState? connectionState() {
+    return _storeHub.connectionState();
+  }
+
 
   void restart(){
     _storeHub.restart();
     _anystore.restart();
   }
 
-  stop() async {
+  Future<void> stop() async {
     _methods.clear();
     await _anystore.stop();
     await _storeHub.dispose();
     _instance = null;
   }
 
+  Future<void> disconnect() async{
+    _storeHub.disconnect();
+    _anystore.disconnect();
+  }
+
   start(){
     _storeHub.start();
-    if(anystore.isOnline){
+    if(!anystore.isOnline){
       _anystore.start();
     }
   }

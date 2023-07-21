@@ -10,6 +10,7 @@ import 'package:orginone/main.dart';
 import 'package:orginone/pages/store/config.dart';
 import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
 import 'state.dart';
@@ -118,6 +119,15 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
           'form': nav.form??nav.source,
           "belongId": nav.space!.belong.id
         });
+        break;
+      case SpaceEnum.work:
+        WorkNodeModel? node = await nav.source.loadWorkNode();
+        if (node != null && node.forms != null && node.forms!.isNotEmpty) {
+          Get.toNamed(Routers.createWork,
+              arguments: {"work": nav.source, "node": node, 'target': nav.space});
+        } else {
+          ToastUtils.showMsg(msg: "流程未绑定表单");
+        }
         break;
       case SpaceEnum.applications:
         var works = await nav.source.loadWorks();

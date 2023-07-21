@@ -70,21 +70,21 @@ class MessageFileBinding extends BaseBindings<MessageFileController> {
 
 class MessageFileController extends BaseController<MessageFileState> {
   final MessageFileState state = MessageFileState();
-
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
     FileDownloader().database.allRecords().then((records) {
+      print('');
       try {
         state.task = records
             .firstWhere((element) =>
-        element.task.filename == state.fileShare.name! &&
-            element.task.url == state.fileShare.shareLink!)
+        element.task.filename == state.fileShare.name!)
             .task as DownloadTask;
         state.fileExists.value = state.task != null;
+        state.fileExists.refresh();
       } catch (e) {
-
+        print(e);
       }
     });
   }

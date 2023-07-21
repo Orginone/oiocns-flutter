@@ -3,6 +3,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/pages/setting/config.dart';
+import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
 
@@ -31,16 +32,18 @@ class CohortInfoController extends BaseController<CohortInfoState> {
         Get.toNamed(Routers.roleSettings, arguments: {"target": state.cohort});
         break;
       case CompanyFunction.addUser:
-        Get.toNamed(Routers.addMembers, arguments: {"title": "指派角色"})
-            ?.then((value) async {
-          var selected = (value as List<XTarget>);
-          if (selected.isNotEmpty) {
-            bool success = await state.cohort.pullMembers(selected);
-            if (success) {
-              await init();
-            }
-          }
-        });
+        showSearchDialog(context, TargetType.company,
+            title: "添加成员",
+            hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
+              if (list.isNotEmpty) {
+                bool success = await state.cohort.pullMembers(list);
+                if (success) {
+                  ToastUtils.showMsg(msg: "添加成功");
+                } else {
+                  ToastUtils.showMsg(msg: "添加失败");
+                }
+              }
+            });
         break;
     }
   }
