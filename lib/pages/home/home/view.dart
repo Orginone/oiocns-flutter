@@ -1,3 +1,4 @@
+import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -40,18 +41,17 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
             children: [
               UserBar(),
               Expanded(
-                child: PageView(
-                  controller: state.pageController,
+                child: ExtendedTabBarView(
+                    shouldIgnorePointerWhenScrolling:false,
+                  controller: state.tabController,
+                  link: true,
                   children: [
                     KeepAliveWidget(child: MessageChats()),
                     KeepAliveWidget(child: WorkPage()),
                     KeepAliveWidget(child: IndexPage()),
                     KeepAliveWidget(child: StorePage()),
                     KeepAliveWidget(child: SettingPage()),
-                  ],
-                  onPageChanged: (index){
-                    settingCtrl.setHomeEnum(HomeEnum.values[index]);
-                  },
+                  ]
                 ),
               ),
               bottomButton(),
@@ -67,16 +67,19 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
           top: BorderSide(color: Colors.grey.shade400, width: 0.4),
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          button(homeEnum: HomeEnum.chat, path: 'chat', unPath: 'unchat'),
-          button(homeEnum: HomeEnum.work, path: 'work', unPath: 'unwork'),
-          button(homeEnum: HomeEnum.door, path: 'home', unPath: 'unhome'),
-          button(homeEnum: HomeEnum.store, path: 'store', unPath: 'unstore'),
-          button(
-              homeEnum: HomeEnum.setting, path: 'setting', unPath: 'unsetting'),
+      child: ExtendedTabBar(
+        tabs: [
+          ExtendedTab(child: button(homeEnum: HomeEnum.chat, path: 'chat', unPath: 'unchat')),
+          ExtendedTab(child: button(homeEnum: HomeEnum.work, path: 'work', unPath: 'unwork')),
+          ExtendedTab(child: button(homeEnum: HomeEnum.door, path: 'home', unPath: 'unhome')),
+          ExtendedTab(child: button(homeEnum: HomeEnum.store, path: 'store', unPath: 'unstore')),
+          ExtendedTab(
+            child: button(
+                homeEnum: HomeEnum.setting, path: 'setting', unPath: 'unsetting'),
+          ),
         ],
+        controller: state.tabController,
+        indicator: BoxDecoration(),
       ),
     );
   }
@@ -100,7 +103,7 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
         }
         return GestureDetector(
           onTap: () {
-            state.pageController.jumpToPage(homeEnum.index);
+            state.tabController.animateTo(homeEnum.index);
             settingCtrl.setHomeEnum(homeEnum);
           },
           behavior: HitTestBehavior.translucent,

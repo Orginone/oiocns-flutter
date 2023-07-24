@@ -1,3 +1,4 @@
+import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -14,34 +15,28 @@ S extends BaseSubmenuState> extends BaseGetView<T, S> {
   @override
   Widget buildView() {
     // TODO: implement build
-    return NestedScrollView(
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        return [
-          SliverAppBar(
-            backgroundColor: Colors.white,
-            flexibleSpace: headWidget(),
-            floating: true,
-            pinned: true,
-          )
-        ];
-      },
-      body: body(),
+    return Column(
+      children: [
+        headWidget(),
+        Expanded(child: body()),
+      ],
     );
   }
 
 
   Widget headWidget() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10.h),
+      color: Colors.white,
       child: Row(
         children: [
           Expanded(
             child: Obx(() {
-              return TabBar(
+              return ExtendedTabBar(
                 controller: state.tabController,
                 tabs: state.subGroup.value.groups!.map((e) {
                   var index = state.subGroup.value.groups!.indexOf(e);
-                  return Tab(
+                  return ExtendedTab(
+                    scrollDirection: Axis.horizontal,
                     height: 40.h,
                     child: Container(
                       alignment: Alignment.center,
@@ -89,28 +84,45 @@ S extends BaseSubmenuState> extends BaseGetView<T, S> {
   }
 
   Widget body() {
-    return NotificationListener<ScrollNotification>(
-      onNotification: state.pageViewScrollUtils.handleNotification,
-      child: Obx(() {
-        var groups = state.subGroup.value.groups!;
-        return TabBarView(
-          controller: state.tabController,
-          children: groups.map((e) => buildPageView(e.value!)).toList(),
-        );
-      }),
-    );
+    return Obx(() {
+      var groups = state.subGroup.value.groups!;
+      return ExtendedTabBarView(
+        link: true,
+        physics: const ClampingScrollPhysics(),
+        controller: state.tabController,
+        children: groups.map((e) {
+          return SizedBox(
+            key: PageStorageKey(state.subGroup.value.type! + e.value!),
+            child: buildPageView(e.value!),
+          );
+        }).toList(),
+      );
+    });
   }
 
   Widget buildPageView(String type);
 
-  @override
-  // TODO: implement showAppBar
-  bool get showAppBar => false;
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate(this.child);
+
+  final Widget child;
 
   @override
-  // TODO: implement hasNested
-  bool get hasNested => true;
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return child;
+  }
 
   @override
-  bool displayNoDataWidget() => false;
+  double get maxExtent => 55;
+
+  @override
+  double get minExtent => 55;
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
+  }
 }

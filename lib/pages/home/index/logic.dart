@@ -17,9 +17,6 @@ class IndexController extends BaseController<IndexState>
     // TODO: implement onInit
     super.onInit();
     state.tabController = TabController(length: tabTitle.length, vsync: this);
-    state.pageViewScrollUtils = PageViewScrollUtils(
-        pageController: homeController.state.pageController,
-        tabController: state.tabController);
   }
 
   @override

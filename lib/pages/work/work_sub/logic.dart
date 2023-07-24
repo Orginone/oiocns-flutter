@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/event/work_reload.dart';
@@ -19,6 +20,7 @@ class WorkSubController extends BaseListController<WorkSubState> {
   void onInit() async {
     // TODO: implement onInit
     super.onInit();
+    state.scrollController = ScrollController(debugLabel: type);
     if (type == "all") {
       initNav();
     }
