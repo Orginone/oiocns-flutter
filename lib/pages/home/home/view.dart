@@ -42,16 +42,15 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
               UserBar(),
               Expanded(
                 child: ExtendedTabBarView(
-                    shouldIgnorePointerWhenScrolling:false,
+                  shouldIgnorePointerWhenScrolling:false,
                   controller: state.tabController,
-                  link: true,
                   children: [
                     KeepAliveWidget(child: MessageChats()),
                     KeepAliveWidget(child: WorkPage()),
                     KeepAliveWidget(child: IndexPage()),
                     KeepAliveWidget(child: StorePage()),
                     KeepAliveWidget(child: SettingPage()),
-                  ]
+                  ],
                 ),
               ),
               bottomButton(),
@@ -67,7 +66,7 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
           top: BorderSide(color: Colors.grey.shade400, width: 0.4),
         ),
       ),
-      child: ExtendedTabBar(
+      child: TabBar(
         tabs: [
           ExtendedTab(child: button(homeEnum: HomeEnum.chat, path: 'chat', unPath: 'unchat')),
           ExtendedTab(child: button(homeEnum: HomeEnum.work, path: 'work', unPath: 'unwork')),
@@ -79,6 +78,9 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
           ),
         ],
         controller: state.tabController,
+        onTap: (index){
+          controller.jumpTab(HomeEnum.values[index]);
+        },
         indicator: BoxDecoration(),
       ),
     );
@@ -89,36 +91,24 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
     required String path,
     required String unPath,
   }) {
-    return Expanded(
-      child: Obx(() {
-        var isSelected = settingCtrl.homeEnum.value == homeEnum;
-        var mgsCount = 0;
-        if (homeEnum == HomeEnum.work) {
-          mgsCount = settingCtrl.provider.work?.todos.length ?? 0;
-        } else if (homeEnum == HomeEnum.chat) {
-          var chats = settingCtrl.provider.chat?.allChats;
-          chats?.forEach((element) {
-            mgsCount += element.chatdata.value.noReadCount;
-          });
-        }
-        return GestureDetector(
-          onTap: () {
-            state.tabController.animateTo(homeEnum.index);
-            settingCtrl.setHomeEnum(homeEnum);
-          },
-          behavior: HitTestBehavior.translucent,
-          child: Align(
-            alignment: Alignment.center,
-            child: BadgeTabWidget(
-              imgPath: !isSelected ? unPath : path,
-              body: Text(homeEnum.label,
-                  style: isSelected ? selectedStyle : unSelectedStyle),
-              mgsCount: mgsCount,
-            ),
-          ),
-        );
-      }),
-    );
+    return Obx(() {
+      var isSelected = settingCtrl.homeEnum.value == homeEnum;
+      var mgsCount = 0;
+      if (homeEnum == HomeEnum.work) {
+        mgsCount = settingCtrl.provider.work?.todos.length ?? 0;
+      } else if (homeEnum == HomeEnum.chat) {
+        var chats = settingCtrl.provider.chat?.allChats;
+        chats?.forEach((element) {
+          mgsCount += element.chatdata.value.noReadCount;
+        });
+      }
+      return BadgeTabWidget(
+        imgPath: !isSelected ? unPath : path,
+        body: Text(homeEnum.label,
+            style: isSelected ? selectedStyle : unSelectedStyle),
+        mgsCount: mgsCount,
+      );
+    });
   }
 
   TextStyle get unSelectedStyle =>

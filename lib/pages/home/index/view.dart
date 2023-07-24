@@ -16,7 +16,6 @@ class IndexPage extends BaseGetPageView<IndexController,IndexState>{
         tabBar(),
         Expanded(
           child: ExtendedTabBarView(
-            link: true,
             controller: state.tabController,
             children: tabTitle.map((e) {
               return KeepAliveWidget(

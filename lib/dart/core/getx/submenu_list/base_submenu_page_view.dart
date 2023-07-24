@@ -87,8 +87,6 @@ S extends BaseSubmenuState> extends BaseGetView<T, S> {
     return Obx(() {
       var groups = state.subGroup.value.groups!;
       return ExtendedTabBarView(
-        link: true,
-        physics: const ClampingScrollPhysics(),
         controller: state.tabController,
         children: groups.map((e) {
           return SizedBox(
