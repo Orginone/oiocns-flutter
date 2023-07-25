@@ -19,8 +19,8 @@ class GuideBagPage extends StatelessWidget {
             .of(context)
             .backButtonTooltip,
         onPressed: () {
-          Routers.changeTransition();
           Navigator.maybePop(context);
+          Routers.changeTransition();
         },
       ),
       body: Align(

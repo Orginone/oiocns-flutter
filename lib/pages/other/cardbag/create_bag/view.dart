@@ -23,8 +23,7 @@ class CreateBagPage extends BaseGetView<CreateBagController, CreateBagState> {
             .of(context)
             .backButtonTooltip,
         onPressed: () {
-          Routers.changeTransition();
-          Navigator.maybePop(context);
+           Get.offNamed(Routers.guideBag);
         },
       ),
       backgroundColor: Colors.white,

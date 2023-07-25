@@ -57,7 +57,7 @@ class UserBar extends GetView<UserController> {
                       Icon(
                         item.icon,
                         size: 24.w,
-                        color: Colors.black38,
+                        color: Colors.black,
                       ),
                       Expanded(
                         child: Container(
@@ -68,7 +68,7 @@ class UserBar extends GetView<UserController> {
                             item.label,
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 18.sp,
+                              fontSize: 20.sp,
                             ),
                           ),
                         ),
@@ -137,7 +137,7 @@ class UserBar extends GetView<UserController> {
                         Icon(
                           item.shortcut.icon,
                           size: 24.w,
-                          color: Colors.black38,
+                          color: Colors.black,
                         ),
                         Expanded(
                           child: Container(
@@ -147,7 +147,7 @@ class UserBar extends GetView<UserController> {
                               item.shortcut.label,
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 18.sp,
+                                fontSize: 20.sp,
                               ),
                             ),
                           ),

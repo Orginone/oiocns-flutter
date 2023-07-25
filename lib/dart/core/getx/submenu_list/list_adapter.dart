@@ -163,7 +163,7 @@ class ListAdapter {
                 children: [],
               );
             }).toList(),
-            ..._loadNav(application.children, target),
+            ..._loadModuleNav(application.children, target),
           ]);
       Get.toNamed(Routers.generalBreadCrumbs, arguments: {"data": nav});
     };
@@ -186,7 +186,7 @@ class ListAdapter {
 
   }
 
-  List<GeneralBreadcrumbNav> _loadNav(List<IApplication> app, ITarget target) {
+  List<GeneralBreadcrumbNav> _loadModuleNav(List<IApplication> app, ITarget target) {
     List<GeneralBreadcrumbNav> navs = [];
     for (var value in app) {
       navs.add(GeneralBreadcrumbNav(
@@ -208,7 +208,7 @@ class ListAdapter {
                   children: [],
                 );
               }),
-              ..._loadNav(value.children, target),
+              ..._loadModuleNav(value.children, target),
             ];
             item.children = data;
           },

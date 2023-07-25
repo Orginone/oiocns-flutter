@@ -134,7 +134,7 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
             controller.jumpNext(item);
           },
         );
-      },itemCount: state.nav!.children.length,);
+      },itemCount: state.nav?.children.length??0,);
   }
 
   @override

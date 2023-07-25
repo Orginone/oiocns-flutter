@@ -33,7 +33,7 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
         color: Colors.black,
         tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         onPressed: () {
-          Navigator.maybePop(context);
+          Get.offNamed(Routers.guideBag);
         },
       ),
       actions: [
