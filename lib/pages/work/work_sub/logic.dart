@@ -80,7 +80,22 @@ class WorkSubController extends BaseListController<WorkSubState> {
         ),
       );
     }
-    state.nav = WorkBreadcrumbNav(children: organization);
+    state.nav = WorkBreadcrumbNav(children: [
+      WorkBreadcrumbNav(
+          name:  settingCtrl.user.metadata.name??"",
+          children: [
+            WorkBreadcrumbNav(
+                name: WorkEnum.todo.label, workEnum: WorkEnum.todo, children: [],space: settingCtrl.user,image:WorkEnum.todo.imagePath ),
+            WorkBreadcrumbNav(
+                name: WorkEnum.completed.label, workEnum: WorkEnum.completed, children: [],space: settingCtrl.user,image:WorkEnum.completed.imagePath ),
+            WorkBreadcrumbNav(
+                name: WorkEnum.initiated.label, workEnum: WorkEnum.initiated, children: [],space: settingCtrl.user,image:WorkEnum.initiated.imagePath ),
+          ],
+          space: settingCtrl.user,
+        image: settingCtrl.user.metadata.avatarThumbnail()
+      ),
+      ...organization,
+    ]);
   }
 
   void jumpNext(WorkBreadcrumbNav work) {

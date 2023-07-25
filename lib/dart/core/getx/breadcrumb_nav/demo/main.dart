@@ -5,11 +5,11 @@
 // import 'package:orginone/main.dart';
 //
 // import 'demo1/binding.dart';
-// import 'demo1/view.dart';
+// import 'demo1/guide_bag_page.dart';
 // import 'demo2/binding.dart';
-// import 'demo2/view.dart';
+// import 'demo2/guide_bag_page.dart';
 // import 'demo3/binding.dart';
-// import 'demo3/view.dart';
+// import 'demo3/guide_bag_page.dart';
 //
 // void main() async {
 //   // 开启 app

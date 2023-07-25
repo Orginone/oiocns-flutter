@@ -268,9 +268,7 @@ class UserController extends GetxController {
         );
         break;
       case SettingEnum.cardbag:
-        Get.toNamed(
-          Routers.cardbag,
-        );
+        Routers.jumpCardBag();
         break;
       case SettingEnum.gateway:
         Get.toNamed(

@@ -111,6 +111,7 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
     });
   }
 
+
   TextStyle get unSelectedStyle =>
       TextStyle(color: XColors.black3, fontSize: 16.sp);
 
