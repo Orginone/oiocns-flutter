@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
+import 'package:orginone/main.dart';
 import 'item.dart';
 import 'logic.dart';
 import 'state.dart';
@@ -50,6 +51,18 @@ class SettingCenterPage extends BaseBreadcrumbNavMultiplexPage<
 
   @override
   List<PopupMenuItem<PopupMenuKey>> popupMenuItems() {
+    if(state.model.value!.spaceEnum == SpaceEnum.person){
+      List<PopupMenuKey> keys = [
+        PopupMenuKey.addPerson,
+        PopupMenuKey.permission,
+        PopupMenuKey.role,
+      ];
+      if(!settingCtrl.isUserSpace(state.model.value!.space!)){
+        keys.add(PopupMenuKey.station);
+      }
+      return keys.map((e) => PopupMenuItem(value: e,child: Text(e.label),)).toList();
+    }
+
     if (state.model.value!.source == null && state.model.value!.space == null ||
         state.model.value!.spaceEnum == null) {
       return super.popupMenuItems();

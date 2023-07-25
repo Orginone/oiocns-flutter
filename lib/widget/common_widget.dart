@@ -197,7 +197,7 @@ class CommonWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(color: Colors.black, fontSize: 18.sp),
+                  style: TextStyle(color: Colors.black, fontSize: textStyle?.fontSize??18.sp),
                 ),
                 SizedBox(
                   height: 10.h,
@@ -268,7 +268,7 @@ class CommonWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(color: Colors.black, fontSize: 18.sp),
+                  style: TextStyle(color: Colors.black, fontSize:textStyle?.fontSize?? 18.sp),
                 ),
                 GestureDetector(
                   onTap: onTap,

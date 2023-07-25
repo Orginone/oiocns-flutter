@@ -279,8 +279,12 @@ enum PopupMenuKey{
   removeCommon("移除常用"),
   openChat("打开会话"),
   topping("置顶"),
-  cancelTopping("取消置顶");
-  final  String label;
+  cancelTopping("取消置顶"),
+  addPerson("邀请成员"),
+  permission("权限设置"),
+  role("角色设置"),
+  station("岗位设置");
+  final String label;
 
   const PopupMenuKey(this.label);
 }
