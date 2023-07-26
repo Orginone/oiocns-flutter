@@ -22,7 +22,6 @@ class BaseSubmenuController<S extends BaseSubmenuState>
     initSubGroup();
     state.submenuIndex.value = state.tabController.index;
     super.onInit();
-    state.pageViewScrollUtils = PageViewScrollUtils(pageController: homeController.state.pageController, tabController: state.tabController);
     state.tabController.addListener(() {
       changeSubmenuIndex(state.tabController.index);
     });

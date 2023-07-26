@@ -1,3 +1,4 @@
+import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -40,8 +41,9 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
             children: [
               UserBar(),
               Expanded(
-                child: PageView(
-                  controller: state.pageController,
+                child: ExtendedTabBarView(
+                  shouldIgnorePointerWhenScrolling:false,
+                  controller: state.tabController,
                   children: [
                     KeepAliveWidget(child: MessageChats()),
                     KeepAliveWidget(child: WorkPage()),
@@ -49,9 +51,6 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
                     KeepAliveWidget(child: StorePage()),
                     KeepAliveWidget(child: SettingPage()),
                   ],
-                  onPageChanged: (index){
-                    settingCtrl.setHomeEnum(HomeEnum.values[index]);
-                  },
                 ),
               ),
               bottomButton(),
@@ -67,16 +66,22 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
           top: BorderSide(color: Colors.grey.shade400, width: 0.4),
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          button(homeEnum: HomeEnum.chat, path: 'chat', unPath: 'unchat'),
-          button(homeEnum: HomeEnum.work, path: 'work', unPath: 'unwork'),
-          button(homeEnum: HomeEnum.door, path: 'home', unPath: 'unhome'),
-          button(homeEnum: HomeEnum.store, path: 'store', unPath: 'unstore'),
-          button(
-              homeEnum: HomeEnum.setting, path: 'setting', unPath: 'unsetting'),
+      child: TabBar(
+        tabs: [
+          ExtendedTab(child: button(homeEnum: HomeEnum.chat, path: 'chat', unPath: 'unchat')),
+          ExtendedTab(child: button(homeEnum: HomeEnum.work, path: 'work', unPath: 'unwork')),
+          ExtendedTab(child: button(homeEnum: HomeEnum.door, path: 'home', unPath: 'unhome')),
+          ExtendedTab(child: button(homeEnum: HomeEnum.store, path: 'store', unPath: 'unstore')),
+          ExtendedTab(
+            child: button(
+                homeEnum: HomeEnum.setting, path: 'setting', unPath: 'unsetting'),
+          ),
         ],
+        controller: state.tabController,
+        onTap: (index){
+          controller.jumpTab(HomeEnum.values[index]);
+        },
+        indicator: BoxDecoration(),
       ),
     );
   }
@@ -86,37 +91,26 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
     required String path,
     required String unPath,
   }) {
-    return Expanded(
-      child: Obx(() {
-        var isSelected = settingCtrl.homeEnum.value == homeEnum;
-        var mgsCount = 0;
-        if (homeEnum == HomeEnum.work) {
-          mgsCount = settingCtrl.provider.work?.todos.length ?? 0;
-        } else if (homeEnum == HomeEnum.chat) {
-          var chats = settingCtrl.provider.chat?.allChats;
-          chats?.forEach((element) {
-            mgsCount += element.chatdata.value.noReadCount;
-          });
-        }
-        return GestureDetector(
-          onTap: () {
-            state.pageController.jumpToPage(homeEnum.index);
-            settingCtrl.setHomeEnum(homeEnum);
-          },
-          behavior: HitTestBehavior.translucent,
-          child: Align(
-            alignment: Alignment.center,
-            child: BadgeTabWidget(
-              imgPath: !isSelected ? unPath : path,
-              body: Text(homeEnum.label,
-                  style: isSelected ? selectedStyle : unSelectedStyle),
-              mgsCount: mgsCount,
-            ),
-          ),
-        );
-      }),
-    );
+    return Obx(() {
+      var isSelected = settingCtrl.homeEnum.value == homeEnum;
+      var mgsCount = 0;
+      if (homeEnum == HomeEnum.work) {
+        mgsCount = settingCtrl.provider.work?.todos.length ?? 0;
+      } else if (homeEnum == HomeEnum.chat) {
+        var chats = settingCtrl.provider.chat?.allChats;
+        chats?.forEach((element) {
+          mgsCount += element.chatdata.value.noReadCount;
+        });
+      }
+      return BadgeTabWidget(
+        imgPath: !isSelected ? unPath : path,
+        body: Text(homeEnum.label,
+            style: isSelected ? selectedStyle : unSelectedStyle),
+        mgsCount: mgsCount,
+      );
+    });
   }
+
 
   TextStyle get unSelectedStyle =>
       TextStyle(color: XColors.black3, fontSize: 16.sp);

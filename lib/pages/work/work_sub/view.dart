@@ -36,6 +36,7 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
   Widget otherWidget(){
     return Obx((){
       return ListView.builder(
+        shrinkWrap: true,
         controller: state.scrollController,
         itemBuilder: (context, index) {
           var work = state.list[index];
@@ -52,6 +53,7 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
   Widget todoWidget(){
     return Obx((){
       return ListView.builder(
+        shrinkWrap: true,
         controller: state.scrollController,
         itemBuilder: (context, index) {
           var work = settingCtrl.work.todos[index];
@@ -67,6 +69,7 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
   Widget commonWidget(){
     return Obx(() {
       return GridView.builder(
+        shrinkWrap: true,
         gridDelegate:
             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
         controller: state.scrollController,
@@ -101,6 +104,7 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
   Widget applicationWidget(){
     return Obx((){
       return GridView.builder(
+        shrinkWrap: true,
         controller: state.scrollController,
         itemBuilder: (context, index) {
           var app = settingCtrl.provider.myApps[index];
@@ -130,7 +134,7 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
             controller.jumpNext(item);
           },
         );
-      },itemCount: state.nav!.children.length,);
+      },itemCount: state.nav?.children.length??0,);
   }
 
   @override

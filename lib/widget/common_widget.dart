@@ -173,17 +173,19 @@ class CommonWidget {
       ValueChanged<String>? onChanged,
       bool enabled = true,
       TextStyle? textStyle,
+        TextStyle? hintTextStyle,
+        Color? backgroundColor,
       bool required = false,
       List<TextInputFormatter>? inputFormatters}) {
     return Stack(
       children: [
         Container(
-          color: Colors.white,
+          color: backgroundColor??Colors.white,
           width: double.infinity,
           padding: EdgeInsets.symmetric(vertical: 10.w, horizontal: 16.h),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: backgroundColor??Colors.white,
               border: showLine
                   ? Border(
                       bottom:
@@ -195,7 +197,7 @@ class CommonWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(color: Colors.black, fontSize: 18.sp),
+                  style: TextStyle(color: Colors.black, fontSize: textStyle?.fontSize??18.sp),
                 ),
                 SizedBox(
                   height: 10.h,
@@ -214,9 +216,10 @@ class CommonWidget {
                       contentPadding: EdgeInsets.zero,
                       isDense: true,
                       hintText: hint,
-                      hintStyle: TextStyle(
+                      hintStyle: hintTextStyle??TextStyle(
                           color: Colors.grey.shade300, fontSize: textStyle?.fontSize??18.sp),
                       border: InputBorder.none),
+
                 ),
                 SizedBox(
                   height: 10.h,
@@ -265,7 +268,7 @@ class CommonWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(color: Colors.black, fontSize: 18.sp),
+                  style: TextStyle(color: Colors.black, fontSize:textStyle?.fontSize?? 18.sp),
                 ),
                 GestureDetector(
                   onTap: onTap,

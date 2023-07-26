@@ -71,7 +71,7 @@ class WorkBreadcrumbNav extends BaseBreadcrumbNavModel<WorkBreadcrumbNav> {
       super.image,
       super.source,
       this.workEnum,
-      this.space}){
+      this.space,super.spaceEnum,super.onNext}){
    this.children = children;
   }
 }
@@ -79,6 +79,7 @@ class WorkBreadcrumbNav extends BaseBreadcrumbNavModel<WorkBreadcrumbNav> {
 enum WorkEnum {
   todo("待办事项",Images.iconWorkTodo),
   completed("已办事项",Images.iconWorkCompleted),
+  initiationWork("发起事项",Images.iconWorkInitiation),
   initiated("我发起的",Images.iconWorkInitiated);
 
   final String label;

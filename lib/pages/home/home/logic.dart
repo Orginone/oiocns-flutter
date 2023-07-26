@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/setting/user_controller.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
@@ -8,13 +9,19 @@ import 'package:orginone/widget/loading_dialog.dart';
 
 import 'state.dart';
 
-class HomeController extends BaseController<HomeState> {
+class HomeController extends BaseController<HomeState>with GetTickerProviderStateMixin {
   final HomeState state = HomeState();
 
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    state.tabController = TabController(length: 5, vsync: this,initialIndex: 2,animationDuration: Duration.zero);
+    state.tabController.addListener(() {
+      if(settingCtrl.homeEnum.value.index != state.tabController.index){
+         settingCtrl.homeEnum.value = HomeEnum.values[state.tabController.index];
+       }
+    });
     if (Get.arguments ?? false) {
       XEventBus.instance.fire(UserLoaded());
     }
@@ -35,13 +42,13 @@ class HomeController extends BaseController<HomeState> {
   }
 
   void jumpTab(HomeEnum setting) {
-    state.pageController.jumpToPage(setting.index);
+    state.tabController.animateTo(setting.index);
     settingCtrl.homeEnum.value = setting;
   }
 
   @override
   void onClose() {
-    state.pageController.dispose();
+    state.tabController.dispose();
     super.onClose();
   }
 }

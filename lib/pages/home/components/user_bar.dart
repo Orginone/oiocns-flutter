@@ -38,21 +38,50 @@ class UserBar extends GetView<UserController> {
       child: Row(children: [
         Row(
           children: [
-            Padding(
+            customPopupMenu(child: Padding(
               padding: EdgeInsets.only(left: 10.w),
-              child: GestureDetector(
-                child: _imgAvatar(EdgeInsets.only(left: 10.w)),
+              child: _imgAvatar(EdgeInsets.only(left: 10.w)),
+            ), children: SettingEnum.values
+                .map(
+                  (item) => GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () {
-                  // if(controller.homeEnum.value == HomeEnum.door){
-                  //   var home = Get.find<HomeController>();
-                  //   home.jumpTab(HomeEnum.setting);
-                  // }else{
-                  //   controller.jumpInitiate();
-                  // }
+                  _menuController.hideMenu();
+                  controller.jumpSetting(item);
                 },
+                child: Container(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: <Widget>[
+                      Icon(
+                        item.icon,
+                        size: 24.w,
+                        color: Colors.black,
+                      ),
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 10),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10),
+                          child: Text(
+                            item.label,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20.sp,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
+            )
+                .toList(),controller: _menuController),
+            SizedBox(
+              width: 10.w,
             ),
-            SizedBox(width: 10.w,),
             Text(
               controller.homeEnum.value.label,
               style: TextStyle(fontSize: 28.sp),
@@ -92,117 +121,76 @@ class UserBar extends GetView<UserController> {
             controller.qrScan();
           },
         ),
-        CustomPopupMenu(
-          menuBuilder: () => ClipRRect(
-            borderRadius: BorderRadius.circular(5),
-            child: Container(
-              color: const Color(0xFF4C4C4C),
-              child: IntrinsicWidth(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: controller.menuItems
-                      .map(
-                        (item) => GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: () {
-                        _menuController.hideMenu();
-                        controller.showAddFeatures(item);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          children: <Widget>[
-                            Icon(
-                              item.shortcut.icon,
-                              size: 24.w,
-                              color: Colors.white,
-                            ),
-                            Expanded(
-                              child: Container(
-                                margin: const EdgeInsets.only(left: 10),
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 10),
-                                child: Text(
-                                  item.shortcut.label,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.sp,
-                                  ),
-                                ),
+        customPopupMenu(
+          children: controller.menuItems
+              .map(
+                (item) => GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () {
+                    _menuController.hideMenu();
+                    controller.showAddFeatures(item);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: <Widget>[
+                        Icon(
+                          item.shortcut.icon,
+                          size: 24.w,
+                          color: Colors.black,
+                        ),
+                        Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 10),
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Text(
+                              item.shortcut.label,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20.sp,
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  )
-                      .toList(),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          verticalMargin: -5.h,
+              )
+              .toList(),
           controller: _settingController,
-          pressType: PressType.singleClick,
-          child: const Icon(Ionicons.add_sharp),
+          child: const Icon(
+            Ionicons.add_sharp,
+          ),
         ),
-        const SizedBox(width: 5,),
-        CustomPopupMenu(
-          menuBuilder: () => ClipRRect(
-            borderRadius: BorderRadius.circular(5),
-            child: Container(
-              color: const Color(0xFF4C4C4C),
-              child: IntrinsicWidth(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: SettingEnum.values
-                      .map(
-                        (item) => GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: () {
-                        _menuController.hideMenu();
-                        controller.jumpSetting(item);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          children: <Widget>[
-                            Icon(
-                              item.icon,
-                              size: 24.w,
-                              color: Colors.white,
-                            ),
-                            Expanded(
-                              child: Container(
-                                margin: const EdgeInsets.only(left: 10),
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 10),
-                                child: Text(
-                                  item.label,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.sp,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                      .toList(),
-                ),
-              ),
+        const SizedBox(
+          width: 10,
+        ),
+      ]),
+    );
+  }
+
+  Widget customPopupMenu(
+      {CustomPopupMenuController? controller,
+      required Widget child,
+      required List<Widget> children}) {
+    return CustomPopupMenu(
+      menuBuilder: () => ClipRRect(
+        borderRadius: BorderRadius.circular(5),
+        child: Container(
+          color: Colors.white,
+          child: IntrinsicWidth(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: children,
             ),
           ),
-          verticalMargin: -5.h,
-          controller: _menuController,
-          pressType: PressType.singleClick,
-          child: const Icon(Ionicons.ellipsis_vertical),
         ),
-        const SizedBox(width: 5,),
-      ]),
+      ),
+      controller: controller,
+      pressType: PressType.singleClick,
+      showArrow: false,
+      child: child,
     );
   }
 

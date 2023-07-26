@@ -1,3 +1,4 @@
+import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
@@ -10,23 +11,20 @@ import 'state.dart';
 class IndexPage extends BaseGetPageView<IndexController,IndexState>{
   @override
   Widget buildView() {
-    return NotificationListener<ScrollNotification>(
-      onNotification: state.pageViewScrollUtils.handleNotification,
-      child: Column(
-        children: [
-          tabBar(),
-          Expanded(
-            child: TabBarView(
-              controller: state.tabController,
-              children: tabTitle.map((e) {
-                return KeepAliveWidget(
-                  child: Container(),
-                );
-              }).toList(),
-            ),
-          )
-        ],
-      ),
+    return Column(
+      children: [
+        tabBar(),
+        Expanded(
+          child: ExtendedTabBarView(
+            controller: state.tabController,
+            children: tabTitle.map((e) {
+              return KeepAliveWidget(
+                child: Container(),
+              );
+            }).toList(),
+          ),
+        )
+      ],
     );
   }
 
@@ -37,10 +35,11 @@ class IndexPage extends BaseGetPageView<IndexController,IndexState>{
           child: Container(
             color: Colors.white,
             alignment: Alignment.centerLeft,
-            child: TabBar(
+            child: ExtendedTabBar(
               controller: state.tabController,
               tabs: tabTitle.map((e) {
-                return Tab(
+                return ExtendedTab(
+                  scrollDirection: Axis.horizontal,
                   text: e,
                   height: 40.h,
                 );

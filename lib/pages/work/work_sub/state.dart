@@ -13,5 +13,5 @@ class WorkSubState extends BaseGetListState{
 
   var list = <IWorkTask>[].obs;
 
-  ScrollController scrollController = ScrollController();
+  late ScrollController scrollController;
 }

@@ -1,9 +1,12 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
+import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/pages/setting/config.dart';
+import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/pages/setting/setting_sub_page/logic.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
 import 'state.dart';
@@ -236,6 +239,25 @@ class SettingCenterController
         break;
       case PopupMenuKey.openChat:
         openChat(item);
+        break;
+      case PopupMenuKey.permission:
+        break;
+      case PopupMenuKey.addPerson:
+        showSearchDialog(Get.context!,  TargetType.person,
+            title: "邀请成员", hint: "请输入用户的账号", onSelected: (targets) async {
+              if (targets.isNotEmpty) {
+                bool success = await state.model.value!.space!.applyJoin(targets);
+                if (success) {
+                  ToastUtils.showMsg(msg: "发送申请成功");
+                }
+              }
+            });
+        break;
+      case PopupMenuKey.role:
+        Get.toNamed(Routers.roleSettings, arguments: {"target": state.model.value!.space});
+        break;
+      case PopupMenuKey.station:
+        Get.toNamed(Routers.stationInfo, arguments: {"station": (state.model.value!.space as Company).stations[0]});
         break;
     }
   }

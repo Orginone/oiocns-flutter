@@ -105,6 +105,7 @@ abstract class Target extends Team implements ITarget {
       var res = await kernel.queryTargetIdentitys(IDBelongReq(
           id: metadata.id!,
           page: PageRequest(offset: 0, limit: 9999, filter: '')));
+      identitys.clear();
       if (res.success && res.data?.result != null) {
         for (var element in res.data!.result!) {
           identitys.add(Identity(space,element));

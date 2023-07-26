@@ -11,6 +11,7 @@ import 'package:orginone/pages/login/binding.dart';
 import 'package:orginone/pages/login/view.dart';
 import 'package:orginone/pages/other/add_asset/binding.dart';
 import 'package:orginone/pages/other/add_asset/view.dart';
+import 'package:orginone/pages/other/cardbag/create_bag/view.dart';
 import 'package:orginone/pages/other/choice_thing/binding.dart';
 import 'package:orginone/pages/other/general_bread_crumbs/binding.dart';
 import 'package:orginone/pages/other/general_bread_crumbs/view.dart';
@@ -21,8 +22,6 @@ import 'package:orginone/pages/other/web_view/binding.dart';
 import 'package:orginone/pages/other/web_view/view.dart';
 import 'package:orginone/pages/setting/bindings.dart';
 import 'package:orginone/pages/setting/dict_info/view.dart';
-import 'package:orginone/pages/setting/person/cardbag/bindings.dart';
-import 'package:orginone/pages/setting/person/cardbag/index.dart';
 import 'package:orginone/pages/setting/person/dynamic/bindings.dart';
 import 'package:orginone/pages/setting/person/dynamic/index.dart';
 import 'package:orginone/pages/setting/person/mark/bindings.dart';
@@ -51,6 +50,11 @@ import 'pages/login/register/binding.dart';
 import 'pages/login/register/view.dart';
 import 'pages/login/verification_code/binding.dart';
 import 'pages/login/verification_code/view.dart';
+import 'pages/other/cardbag/bindings.dart';
+import 'pages/other/cardbag/create_bag/binding.dart';
+import 'pages/other/cardbag/create_bag/guide_bag_page.dart';
+import 'pages/other/cardbag/create_bag/import_wallet_page.dart';
+import 'pages/other/cardbag/view.dart';
 import 'pages/other/choice_thing/view.dart';
 import 'pages/other/edit_sub_group/binding.dart';
 import 'pages/other/edit_sub_group/view.dart';
@@ -100,13 +104,13 @@ import 'pages/store/state.dart';
 import 'pages/store/store_tree/binding.dart';
 import 'pages/store/store_tree/view.dart';
 import 'pages/work/bindings.dart';
+import 'pages/work/create_work/binding.dart';
+import 'pages/work/create_work/view.dart';
 import 'pages/work/initiate_work/binding.dart';
 import 'pages/work/initiate_work/view.dart';
 import 'pages/work/process_details/binding.dart';
 import 'pages/work/process_details/view.dart';
 import 'pages/work/work_list/binding.dart';
-import 'pages/work/create_work/binding.dart';
-import 'pages/work/create_work/view.dart';
 
 class Routers {
   // 首页
@@ -287,6 +291,12 @@ class Routers {
   static const String editSubGroup = "/editSubGroup";
 
   static const String messageChatInfo = "/messageChatInfo";
+
+  static const String createBag = "/createBag";
+
+  static const String guideBag = "/guideBag";
+
+  static const String importWallet = "/importWallet";
 
   static String get main {
     var user = HiveUtils.getUser();
@@ -556,7 +566,35 @@ class Routers {
         page: () => MessageChatInfoPage(),
         binding: MessageChatInfoBinding(),
       ),
+      GetPage(
+        name: Routers.createBag,
+        page: () => CreateBagPage(),
+        binding: CreateBagBinding(),
+      ),
+      GetPage(
+        name: Routers.guideBag,
+        page: () => const GuideBagPage(),
+      ),
+      GetPage(
+        name: Routers.importWallet,
+        page: () => const ImportWalletPage(),
+      ),
     ];
+  }
+
+  static void jumpCardBag() {
+    changeTransition(Transition.downToUp);
+    Get.toNamed(Routers.guideBag);
+  }
+
+  static void changeTransition([Transition? transition]) {
+    Get.config(
+      enableLog: Get.isLogEnable,
+      defaultTransition: transition??Transition.native,
+      defaultOpaqueRoute: Get.isOpaqueRouteDefault,
+      defaultPopGesture: Get.isPopGestureEnable,
+      defaultDurationTransition: Get.defaultTransitionDuration,
+    );
   }
 
   static void jumpFile({required FileItemShare file, String type = 'chat'}) {

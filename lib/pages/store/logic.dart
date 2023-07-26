@@ -32,7 +32,7 @@ class StoreController extends BaseSubmenuController<StoreState> {
     }
     state.subGroup = Rx(store);
     var index = store.groups!.indexWhere((element) => element.value == "common");
-    state.tabController = TabController(initialIndex: index,length: store.groups!.length,vsync: this);
+    state.tabController = TabController(initialIndex: index,length: store.groups!.length,vsync: this,animationDuration: Duration.zero);
   }
 
 }

@@ -132,6 +132,8 @@ dependencies:
   video_player: ^2.6.1
   toggle_switch: ^2.1.0
   flutter_background_service: ^3.0.1
+  extended_tabs: ^4.0.2
+  dots_indicator: ^3.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

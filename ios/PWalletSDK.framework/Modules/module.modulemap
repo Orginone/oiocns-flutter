@@ -1,0 +1,6 @@
+framework module PWalletSDK {
+  umbrella header "PWalletSDK.h"
+
+  export *
+  module * { export * }
+}

@@ -29,11 +29,11 @@ const sessionUserName = 'sessionUser';
 const sessionSpaceName = 'sessionSpace';
 
 enum Shortcut {
-  addPerson("添加朋友", Icons.group_add),
-  addGroup("加入群组", Icons.speaker_group),
-  createCompany("创建单位", Icons.compare),
-  addCompany("加入单位", Icons.compare),
-  addCohort("发起群聊", Icons.chat_bubble),
+  addPerson("添加朋友", Icons.group_add_outlined),
+  addGroup("加入群组", Icons.speaker_group_outlined),
+  createCompany("创建单位", Icons.compare_outlined),
+  addCompany("加入单位", Icons.compare_outlined),
+  addCohort("发起群聊", Icons.chat_bubble_outline_outlined),
   createDir("新建目录",Ionicons.folder_sharp),
   createApplication("新建应用",Ionicons.apps_sharp),
   createSpecies("新建分类",Ionicons.pricetag_sharp),
@@ -49,11 +49,11 @@ enum Shortcut {
 }
 
 enum SettingEnum {
-  security("账号与安全", Ionicons.key_sharp),
-  cardbag("卡包设置", Ionicons.card_sharp),
-  gateway("门户设置", Ionicons.home_sharp),
-  theme("主题设置", Ionicons.color_palette_sharp),
-  exitLogin("退出登录", Ionicons.exit_sharp);
+  security("账号与安全", Ionicons.key_outline),
+  cardbag("卡包设置", Ionicons.card_outline),
+  gateway("门户设置", Ionicons.home_outline),
+  theme("主题设置", Ionicons.color_palette_outline),
+  exitLogin("退出登录", Ionicons.exit_outline);
 
   final String label;
   final IconData icon;
@@ -90,10 +90,10 @@ class UserController extends GetxController {
       "请输入用户的账号",
       TargetType.person,
     ),
-    ShortcutData(Shortcut.addGroup, "添加群组", "请输入群组的编码", TargetType.cohort),
+    ShortcutData(Shortcut.addGroup, "加入群组", "请输入群组的编码", TargetType.cohort),
     ShortcutData(Shortcut.createCompany, "创建单位", "", TargetType.company),
-    ShortcutData(Shortcut.addCompany, "添加单位", "请输入单位的社会统一代码", TargetType.company),
-    ShortcutData(Shortcut.addCohort, "创建群组", "请输入群聊信息", TargetType.cohort),
+    ShortcutData(Shortcut.addCompany, "加入单位", "请输入单位的社会统一代码", TargetType.company),
+    ShortcutData(Shortcut.addCohort, "发起群聊", "请输入群聊信息", TargetType.cohort),
   ];
 
   @override
@@ -231,7 +231,7 @@ class UserController extends GetxController {
     LoadingDialog.dismiss(Get.context!);
     kernel.stop();
     await HiveUtils.clean();
-    homeEnum.value = HomeEnum.chat;
+    homeEnum.value = HomeEnum.door;
     Get.offAllNamed(Routers.login);
   }
 
@@ -268,9 +268,7 @@ class UserController extends GetxController {
         );
         break;
       case SettingEnum.cardbag:
-        Get.toNamed(
-          Routers.cardbag,
-        );
+        Routers.jumpCardBag();
         break;
       case SettingEnum.gateway:
         Get.toNamed(

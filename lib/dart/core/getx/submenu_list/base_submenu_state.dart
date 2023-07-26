@@ -1,11 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/model/subgroup.dart';
-import 'package:orginone/util/page_view_scroll_utils.dart';
-
-import 'list_adapter.dart';
 
 class BaseSubmenuState<T extends FrequentlyUsed> extends BaseGetState {
 
@@ -16,8 +12,6 @@ class BaseSubmenuState<T extends FrequentlyUsed> extends BaseGetState {
   late TabController tabController;
 
   String tag = '';
-
-  late PageViewScrollUtils pageViewScrollUtils;
 }
 
 class FrequentlyUsed{
