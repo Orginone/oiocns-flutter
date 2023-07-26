@@ -50,32 +50,37 @@ class UserBar extends GetView<UserController> {
                   controller.jumpSetting(item);
                 },
                 child: Container(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        item.icon,
-                        size: 24.w,
-                        color: Colors.black,
-                      ),
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 10),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10),
-                          child: Text(
-                            item.label,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 20.sp,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                  color: Colors.grey.shade300, width: 0.5),
                             ),
                           ),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                item.icon,
+                                size: 24.w,
+                                color: Colors.black,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 10),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8),
+                                  child: Text(
+                                    item.label,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 24.sp,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
               ),
             )
                 .toList(),controller: _menuController),
@@ -132,6 +137,10 @@ class UserBar extends GetView<UserController> {
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
+                    decoration: BoxDecoration(
+                        border: Border(
+                            bottom: BorderSide(
+                                color: Colors.grey.shade300, width: 0.5))),
                     child: Row(
                       children: <Widget>[
                         Icon(
@@ -142,12 +151,12 @@ class UserBar extends GetView<UserController> {
                         Expanded(
                           child: Container(
                             margin: const EdgeInsets.only(left: 10),
-                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            padding: const EdgeInsets.symmetric(vertical: 7),
                             child: Text(
                               item.shortcut.label,
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 20.sp,
+                                fontSize: 24.sp,
                               ),
                             ),
                           ),

@@ -32,8 +32,9 @@ class StoreHub {
     int interval = 3000,
   })  : _timeout = timeout,
         _connection = HubConnectionBuilder()
-            .withUrl(url,
-                options: HttpConnectionOptions())
+            .withUrl(url, options: HttpConnectionOptions())
+            .withAutomaticReconnect(
+                retryDelays: List.generate(1000, (index) => 2000))
             .build() {
     _connection.keepAliveIntervalInMilliseconds = interval;
     _connection.serverTimeoutInMilliseconds = timeout;
@@ -54,8 +55,8 @@ class StoreHub {
           msg: "正在重新连接服务器", dismissSeconds: -1);
     });
     _connection.onreconnected(({connectionId}) {
+      kernel.restart();
       Future.delayed(const Duration(microseconds: 500), () {
-        kernel.restart();
         LoadingDialog.dismiss(Get.context!);
       });
     });

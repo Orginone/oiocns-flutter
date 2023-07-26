@@ -26,6 +26,8 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isBagList = Get.arguments?['isBagList']??false;
+
     return GyScaffold(
       titleName: "导入钱包",
       leading: IconButton(
@@ -33,7 +35,8 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
         color: Colors.black,
         tooltip: MaterialLocalizations.of(context).backButtonTooltip,
         onPressed: () {
-          Get.offNamed(Routers.guideBag);
+          Get.back();
+          Routers.changeTransition();
         },
       ),
       actions: [
@@ -108,7 +111,12 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
             Expanded(child: SizedBox()),
             CommonWidget.commonSubmitWidget(text: "开始导入", submit: () {
               Routers.changeTransition();
-              Get.offAndToNamed(Routers.cardbag);
+             if(!isBagList){
+               Get.offUntil(GetPageRoute(),(route) => route.settings.name == Routers.home);
+               Get.offAndToNamed(Routers.cardbag);
+             }else{
+               Get.back();
+             }
             })
           ],
         ),

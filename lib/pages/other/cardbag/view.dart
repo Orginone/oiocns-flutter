@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/other/cardbag/state.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/util/icons.dart';
 import 'package:orginone/widget/buttons.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
@@ -32,6 +34,9 @@ class CardbagPage extends BaseGetView<CardbagController, CardbagState> {
           ICard(
             asset: 180.0,
             name: '111',
+            onTap: (){
+              Get.toNamed(Routers.bagDetails);
+            },
           ),
         ],
       ),
@@ -48,7 +53,9 @@ class CardbagPage extends BaseGetView<CardbagController, CardbagState> {
           Expanded(
             child: outlinedButton(
               "创建",
-              onPressed: () {},
+              onPressed: () {
+                Routers.jumpCreateBag();
+              },
               height: 70.h,
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
@@ -65,7 +72,9 @@ class CardbagPage extends BaseGetView<CardbagController, CardbagState> {
           ),
           Expanded(
             child: outlinedButton("添加",
-                onPressed: () {},
+                onPressed: () {
+                   Routers.jumpImportWallet();
+                },
                 style: ButtonStyle(
                   backgroundColor:
                       MaterialStateProperty.all(const Color(0xFF1890FF)),
@@ -154,6 +163,8 @@ class CardbagPage extends BaseGetView<CardbagController, CardbagState> {
         ));
   }
 }
+
+
 class ICard extends StatelessWidget {
   final String? name;
   final double? asset;

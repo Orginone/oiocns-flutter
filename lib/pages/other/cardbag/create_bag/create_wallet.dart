@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/pages/other/cardbag/create_bag/logic.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/buttons.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -17,6 +18,9 @@ class _CreateWalletState extends State<CreateWallet> {
   TextEditingController userNameController = TextEditingController();
   TextEditingController passWordController = TextEditingController();
   TextEditingController verifyPassWordController = TextEditingController();
+
+  CreateBagController get controller => Get.find();
+
 
   var passwordUnVisible = true;
 
@@ -79,7 +83,12 @@ class _CreateWalletState extends State<CreateWallet> {
           Expanded(child: SizedBox()),
           elevatedButton("创建", onPressed: () {
             Routers.changeTransition();
-            Get.offAndToNamed(Routers.cardbag);
+            if(!controller.state.isBagList){
+              Get.offUntil(GetPageRoute(),(route) => route.settings.name == Routers.home);
+              Get.offAndToNamed(Routers.cardbag);
+            }else{
+              Get.back();
+            }
           }),
           SizedBox(
             height: 10.h,

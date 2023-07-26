@@ -49,7 +49,7 @@ class IndexPage extends BaseGetPageView<IndexController,IndexState>{
               unselectedLabelColor: Colors.grey,
               unselectedLabelStyle: TextStyle(fontSize: 20.sp),
               labelColor: XColors.themeColor,
-              labelStyle: TextStyle(fontSize: 21.sp),
+              labelStyle: TextStyle(fontSize: 22.sp),
               isScrollable: true,
               labelPadding: EdgeInsets.symmetric(horizontal: 10.w),
             ),

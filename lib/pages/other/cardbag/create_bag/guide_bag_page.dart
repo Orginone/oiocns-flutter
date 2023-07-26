@@ -34,7 +34,7 @@ class GuideBagPage extends StatelessWidget {
                 elevatedButton(
                   "创建新钱包",
                   onPressed: () {
-                    Get.offAndToNamed(Routers.createBag);
+                    Get.toNamed(Routers.createBag);
                   },
                 ),
                 SizedBox(height: 20.h),
@@ -45,7 +45,7 @@ class GuideBagPage extends StatelessWidget {
                           const Color(0x11000000)),
                     ),
                     onPressed: () {
-                      Get.offAndToNamed(Routers.importWallet);
+                      Get.toNamed(Routers.importWallet);
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
