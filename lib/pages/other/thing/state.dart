@@ -12,8 +12,10 @@ class ThingState extends BaseGetListState<AnyThingModel>{
 
   late String belongId;
 
+  String? filter;
   ThingState(){
     form = Get.arguments['form'];
     belongId = Get.arguments['belongId'];
+    filter= Get.arguments['filter'];
   }
 }

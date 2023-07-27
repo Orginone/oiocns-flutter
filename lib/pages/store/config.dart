@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:ionicons/ionicons.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
@@ -133,7 +135,10 @@ Future<List<StoreTreeNav>> loadForm(List<IForm> forms, ITarget target) async {
       name: form.metadata.name!,
       space: target,
       onNext: (nav) async {
-
+        await form.loadAttributes();
+        await form.loadItems();
+        var filter = form.fields.where((element) => element.valueType == "选择型").toList();
+        nav.children = loadFilterItem(filter,target,form);
       },
       image: form.metadata.avatarThumbnail(),
       children: [],
@@ -143,25 +148,43 @@ Future<List<StoreTreeNav>> loadForm(List<IForm> forms, ITarget target) async {
   return nav;
 }
 
-Future<List<StoreTreeNav>> loadSpeciesItem(
-    List<XSpeciesItem> species, ITarget target, IForm form,
-    [String? id]) async {
+List<StoreTreeNav> loadFilterItem(
+    List<FieldModel> fields, ITarget target, IForm form,
+    [String? id])  {
   List<StoreTreeNav> nav = [];
 
-  for (var specie in species) {
-    if (specie.parentId == id) {
+  List<StoreTreeNav> loadItem(List<FiledLookup> lookups){
+    List<StoreTreeNav> nav = [];
+    for (var lookup in lookups) {
       StoreTreeNav specieNav = StoreTreeNav(
-        id: specie.id!,
-        source: specie,
-        spaceEnum: SpaceEnum.species,
-        name: specie.name!,
+        id: lookup.id!,
+        source: lookup,
+        spaceEnum: SpaceEnum.filter,
+        name: lookup.text??"",
         space: target,
         form: form,
-        image: specie.avatarThumbnail(),
-        children: await loadSpeciesItem(species, target, form, specie.id),
+        image: Ionicons.filter_outline,
+        children: [
+
+        ],
       );
       nav.add(specieNav);
     }
+    return nav;
+  }
+
+  for (var field in fields) {
+    StoreTreeNav specieNav = StoreTreeNav(
+      id: field.id!,
+      source: field,
+      spaceEnum: SpaceEnum.filter,
+      name: field.name!,
+      space: target,
+      form: form,
+      image: Ionicons.filter_outline,
+      children: field.lookups!=null?loadItem(field.lookups!):[],
+    );
+    nav.add(specieNav);
   }
 
   return nav;

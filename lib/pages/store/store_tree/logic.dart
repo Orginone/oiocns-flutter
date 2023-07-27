@@ -138,6 +138,13 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
       case SpaceEnum.file:
         Routers.jumpFile(file: nav.source!.shareInfo(), type: 'store');
         break;
+      case SpaceEnum.filter:
+        Get.toNamed(Routers.thing, arguments: {
+          'form': nav.form??nav.source,
+          "belongId": nav.space!.belong.id,
+          'filter':(nav.source is FieldModel)?nav.source?.code:nav.source?.value,
+        });
+        break;
       default:
         Get.toNamed(Routers.storeTree,
             preventDuplicates: false, arguments: {'data': nav});
