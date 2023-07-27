@@ -61,7 +61,7 @@ class CardbagPage extends BaseGetView<CardbagController, CardbagState> {
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(36.w))),
                 side: MaterialStateProperty.all(
-                    const BorderSide(color: Color(0xFF1890FF), width: 1)),
+                     BorderSide(color: XColors.blueTextColor, width: 1)),
               ),
               textStyle:
                   TextStyle(fontSize: 18.sp, color: const Color(0xFF1890FF)),
@@ -77,7 +77,7 @@ class CardbagPage extends BaseGetView<CardbagController, CardbagState> {
                 },
                 style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all(const Color(0xFF1890FF)),
+                      MaterialStateProperty.all(XColors.blueTextColor),
                   side: MaterialStateProperty.all(BorderSide.none),
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(36.w))),
@@ -182,7 +182,7 @@ class ICard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-          shadowColor: const Color(0xFF1890FF),
+          shadowColor: XColors.blueTextColor,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
             child: Row(

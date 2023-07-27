@@ -67,7 +67,7 @@ class WalletDetailsPage
                                 ),
                                 Text(
                                   "账户余额: ￥125.30",
-                                  style: TextStyle(color: Color(0xFF1890FF)),
+                                  style: TextStyle(color: XColors.blueTextColor),
                                 ),
                               ],
                             ),
@@ -138,7 +138,7 @@ class WalletDetailsPage
                               color: Color(0xFF1890FF), width: 1)),
                         ),
                         textStyle: TextStyle(
-                            fontSize: 18.sp, color: const Color(0xFF1890FF)),
+                            fontSize: 18.sp, color: XColors.blueTextColor),
                       ),
                     ),
                     SizedBox(
@@ -181,7 +181,7 @@ class WalletDetailsPage
                     labelStyle: TextStyle(
                       fontSize: 24.sp,
                     ),
-                    labelColor: const Color(0xFF1890FF),
+                    labelColor: XColors.blueTextColor,
                     unselectedLabelStyle: TextStyle(
                       fontSize: 24.sp,
                     ),

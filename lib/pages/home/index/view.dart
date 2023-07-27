@@ -5,8 +5,11 @@ import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 import 'package:orginone/widget/unified.dart';
 
+import 'digital_assets/digital_assets.dart';
+import 'group_dynamics/group_dynamics.dart';
 import 'logic.dart';
 import 'state.dart';
+import 'welfare/welfare.dart';
 
 class IndexPage extends BaseGetPageView<IndexController,IndexState>{
   @override
@@ -17,11 +20,14 @@ class IndexPage extends BaseGetPageView<IndexController,IndexState>{
         Expanded(
           child: ExtendedTabBarView(
             controller: state.tabController,
-            children: tabTitle.map((e) {
-              return KeepAliveWidget(
-                child: Container(),
-              );
-            }).toList(),
+            children: [
+              GroupDynamics(),
+              Container(),
+              Container(),
+              Container(),
+              Welfare(),
+              DigitalAssets(),
+            ]
           ),
         )
       ],

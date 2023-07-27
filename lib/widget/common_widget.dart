@@ -456,13 +456,13 @@ class CommonWidget {
                       width: 5.w,
                       height: 25.h,
                       margin: EdgeInsets.only(right: 15.w),
-                      color: XColors.themeColor,
+                      color: XColors.blueTextColor,
                     ),
                     alignment: PlaceholderAlignment.middle),
                 TextSpan(
                     text: info,
                     style: TextStyle(
-                        fontSize: 18.sp,
+                        fontSize: 22.sp,
                         color: Colors.black,
                         fontWeight: FontWeight.w500))
               ],

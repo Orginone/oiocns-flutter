@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
+import 'package:orginone/widget/unified.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import 'state.dart';
@@ -64,7 +65,7 @@ class WalletDetailsController extends BaseController<WalletDetailsState>
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(36.w),
-                      border: Border.all(color: Color(0xFF1890FF), width: 1),),
+                      border: Border.all(color:XColors.blueTextColor, width: 1),),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -79,7 +80,7 @@ class WalletDetailsController extends BaseController<WalletDetailsState>
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                              color: const Color(0xFF1890FF),
+                              color: XColors.blueTextColor,
                               borderRadius: BorderRadius.circular(15.w)),
                           padding: EdgeInsets.symmetric(
                               horizontal: 10.w, vertical: 4.h),

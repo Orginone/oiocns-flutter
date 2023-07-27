@@ -56,4 +56,15 @@ class Images {
   static const String iconWorkInitiated = "images/icon_work_initiated.png";
 
   static const String iconWorkitem = "images/icon_workitem.png";
+
+  static const String iconBlueArrow = "images/icon_blue_arrow.png";
+
+  static const String imageProject = "images/image_project.png";
+
+  static const String imageMonthly = "images/image_monthly.png";
+
+  static const String imageProgress = "images/image_progress.png";
+
+  static const String imageEverytime = "images/image_everytime.png";
+
 }
