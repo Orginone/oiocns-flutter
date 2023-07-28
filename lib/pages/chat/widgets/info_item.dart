@@ -58,8 +58,6 @@ class DetailItemWidget extends GetView<UserController> {
     required this.msg,
   }) : super(key: key);
 
-  CustomPopupMenuController popCtrl = CustomPopupMenuController();
-
   MessageChatController get chatController => Get.find();
   @override
   Widget build(BuildContext context) {
@@ -211,7 +209,7 @@ class DetailItemWidget extends GetView<UserController> {
                       ),
                     ),
                     onTap: () {
-                      popCtrl.hideMenu();
+                      controller.chatMenuController.hideMenu();
                       switch (item) {
                         case DetailFunc.recall:
                           chat.recallMessage(msg.id);
@@ -244,7 +242,7 @@ class DetailItemWidget extends GetView<UserController> {
 
     content.add(
       CustomPopupMenu(
-        controller: popCtrl,
+        controller: controller.chatMenuController,
         position: PreferredPosition.bottom,
         menuBuilder: _buildLongPressMenu,
         barrierColor: Colors.transparent,

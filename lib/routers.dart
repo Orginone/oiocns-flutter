@@ -620,7 +620,7 @@ class Routers {
 
 
   static void jumpCardBag() {
-    if(HiveUtils.getAllWallet().isEmpty){
+    if(walletCtrl.wallet.isEmpty){
       changeTransition(Transition.downToUp);
       Get.toNamed(Routers.guideBag);
       return;

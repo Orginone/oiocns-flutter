@@ -15,10 +15,6 @@ import 'search_bar.dart';
 class UserBar extends GetView<UserController> {
   UserBar({super.key});
 
-  final CustomPopupMenuController _menuController = CustomPopupMenuController();
-
-  final CustomPopupMenuController _settingController = CustomPopupMenuController();
-
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -46,9 +42,9 @@ class UserBar extends GetView<UserController> {
                   (item) => GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onTap: () {
-                  _menuController.hideMenu();
-                  controller.jumpSetting(item);
-                },
+                  controller.functionMenuController.hideMenu();
+                          controller.jumpSetting(item);
+                        },
                 child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           decoration: BoxDecoration(
@@ -81,9 +77,10 @@ class UserBar extends GetView<UserController> {
                             ],
                           ),
                         ),
-              ),
-            )
-                .toList(),controller: _menuController),
+                      ),
+                    )
+                    .toList(),
+                controller: controller.functionMenuController),
             SizedBox(
               width: 10.w,
             ),
@@ -132,7 +129,7 @@ class UserBar extends GetView<UserController> {
                 (item) => GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: () {
-                    _menuController.hideMenu();
+                    controller.settingMenuController.hideMenu();
                     controller.showAddFeatures(item);
                   },
                   child: Container(
@@ -167,7 +164,7 @@ class UserBar extends GetView<UserController> {
                 ),
               )
               .toList(),
-          controller: _settingController,
+          controller: controller.settingMenuController,
           child: const Icon(
             Ionicons.add_sharp,
           ),
