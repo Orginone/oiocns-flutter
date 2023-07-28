@@ -35,7 +35,6 @@ class SysUtil {
   }
 
   static void hideStatusBar() {
-    SystemChrome.setEnabledSystemUIOverlays([]);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   }
 }

@@ -1,5 +1,5 @@
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';

@@ -16,8 +16,7 @@ class LoadingButton extends StatelessWidget {
   final LoadingButtonController loadingBtnCtrl;
   final AnimationController animationCtrl;
 
-  LoadingButton({
-    super.key,
+  LoadingButton({Key? key,
     required this.child,
     required this.callback,
     required this.loadingBtnCtrl,
@@ -25,7 +24,7 @@ class LoadingButton extends StatelessWidget {
         animationCtrl = AnimationController(
           vsync: loadingBtnCtrl,
           duration: const Duration(seconds: 1),
-        )..repeat();
+        )..repeat(), super(key: key);
 
   @override
   Widget build(BuildContext context) {

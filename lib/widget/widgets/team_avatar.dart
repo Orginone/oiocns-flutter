@@ -30,7 +30,6 @@ class TeamAvatar extends StatefulWidget {
   final bool circular;
 
   TeamAvatar({
-    super.key,
     required this.info,
     double? size,
     this.circular = false,
