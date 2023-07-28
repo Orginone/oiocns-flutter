@@ -46,9 +46,9 @@ class ProcessDetailsPage
         indicatorSize: TabBarIndicatorSize.label,
         indicatorColor: XColors.themeColor,
         unselectedLabelColor: Colors.grey,
-        unselectedLabelStyle: TextStyle(fontSize: 21.sp),
+        unselectedLabelStyle: TextStyle(fontSize: 22.sp),
         labelColor: XColors.themeColor,
-        labelStyle: TextStyle(fontSize: 23.sp),
+        labelStyle: TextStyle(fontSize: 24.sp),
         isScrollable: true,
       ),
     );

@@ -5215,6 +5215,7 @@ class AnyThingModel {
   bool isSelected = false;
   Map<String, dynamic> otherInfo = {};
 
+  Map<String, Archives> archives = {};
   AnyThingModel({
     this.id,
     this.name,
@@ -5227,10 +5228,16 @@ class AnyThingModel {
   AnyThingModel.fromJson(Map<String, dynamic> json) {
     json.forEach((key, value) {
       if (key != 'Id' && key != 'Name' && key != 'Status' &&
-          key != 'Creater' && key != 'CreateTime' && key != 'ModifiedTime') {
+          key != 'Creater' && key != 'CreateTime' && key != 'ModifiedTime' && key!="Archives") {
         otherInfo[key] = value;
       }
     });
+
+    if(json['Archives']!=null){
+      json['Archives'] .forEach((key,value){
+        archives[key] = Archives.fromJson(value);
+      });
+    }
 
     id= json['Id'];
     name= json['Name'];
@@ -5238,7 +5245,6 @@ class AnyThingModel {
     creater= json['Creater'];
     createTime= json['CreateTime'];
     modifiedTime= json['ModifiedTime'];
-    otherInfo= otherInfo;
   }
 
   Map<String, dynamic> toJson() {
@@ -5254,7 +5260,74 @@ class AnyThingModel {
   }
 }
 
+class Archives{
+  String? id;
+  String? title;
+  String? defineId;
+  String? contentType;
+  String? content;
+  String? applyId;
+  String? shareId;
+  String? belongId;
+  int? status;
+  String? createUser;
+  String? updateUser;
+  String? version;
+  String? createTime;
+  String? updateTime;
 
+  Archives(
+      {this.id,
+        this.title,
+        this.defineId,
+        this.contentType,
+        this.content,
+        this.applyId,
+        this.shareId,
+        this.belongId,
+        this.status,
+        this.createUser,
+        this.updateUser,
+        this.version,
+        this.createTime,
+        this.updateTime});
+
+  Archives.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+    defineId = json['defineId'];
+    contentType = json['contentType'];
+    content = json['content'];
+    applyId = json['applyId'];
+    shareId = json['shareId'];
+    belongId = json['belongId'];
+    status = json['status'];
+    createUser = json['createUser'];
+    updateUser = json['updateUser'];
+    version = json['version'];
+    createTime = json['createTime'];
+    updateTime = json['updateTime'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['title'] = this.title;
+    data['defineId'] = this.defineId;
+    data['contentType'] = this.contentType;
+    data['content'] = this.content;
+    data['applyId'] = this.applyId;
+    data['shareId'] = this.shareId;
+    data['belongId'] = this.belongId;
+    data['status'] = this.status;
+    data['createUser'] = this.createUser;
+    data['updateUser'] = this.updateUser;
+    data['version'] = this.version;
+    data['createTime'] = this.createTime;
+    data['updateTime'] = this.updateTime;
+    return data;
+  }
+}
 
 class Branche {
   List<Condition>? conditions;

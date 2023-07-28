@@ -7,8 +7,6 @@ import 'package:orginone/dart/core/getx/base_bindings.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/main.dart';
-import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
@@ -42,10 +40,21 @@ class MessageFilePage
               height: 100.h,
             ),
             Obx(() {
+              if (state.downloadStatus.value == DownloadStatus.downloading) {
+                return CircularProgressIndicator(
+                  value: state.downloadProgress.value,
+                  backgroundColor: XColors.statisticsBoxColor,
+                  valueColor: const AlwaysStoppedAnimation<Color>(XColors.blueTextColor),
+                );
+              }
               return CommonWidget.commonSubmitWidget(
-                  text: state.fileExists.value ? "打开" : "下载",
+                  text: state.downloadStatus.value ==
+                          DownloadStatus.downloadCompleted
+                      ? "打开"
+                      : "下载",
                   submit: () async {
-                    if (state.fileExists.value) {
+                    if (state.downloadStatus.value ==
+                        DownloadStatus.downloadCompleted) {
                       controller.openFile();
                     } else {
                       controller.downloadFile();
@@ -78,11 +87,13 @@ class MessageFileController extends BaseController<MessageFileState> {
       print('');
       try {
         state.task = records
-            .firstWhere((element) =>
-        element.task.filename == state.fileShare.name!)
+            .firstWhere(
+                (element) => element.task.filename == state.fileShare.name!)
             .task as DownloadTask;
-        state.fileExists.value = state.task != null;
-        state.fileExists.refresh();
+        state.downloadStatus.value = state.task != null
+            ? DownloadStatus.downloadCompleted
+            : DownloadStatus.notStarted;
+        state.downloadStatus.refresh();
       } catch (e) {
         print(e);
       }
@@ -95,10 +106,12 @@ class MessageFileController extends BaseController<MessageFileState> {
         baseDirectory: BaseDirectory.applicationSupport,
         filename: state.fileShare.name!);
     ToastUtils.showMsg(msg: "开始下载");
+    state.downloadStatus.value = DownloadStatus.downloading;
     await FileDownloader().download(state.task!, onProgress: (prpgress) {
+      state.downloadProgress.value = prpgress;
       if (prpgress == 1) {
         FileDownloader().trackTasks();
-        state.fileExists.value = true;
+        state.downloadStatus.value = DownloadStatus.downloadCompleted;
         ToastUtils.showMsg(msg: "下载完成");
       }
     });
@@ -114,11 +127,19 @@ class MessageFileState extends BaseGetState {
 
   late String type;
 
-  var fileExists = false.obs;
+  var downloadStatus = DownloadStatus.notStarted.obs;
+
+  var downloadProgress = 0.0.obs;
 
   DownloadTask? task;
 
   MessageFileState() {
     fileShare = Get.arguments['file'];
   }
+}
+
+enum DownloadStatus {
+  notStarted,
+  downloading,
+  downloadCompleted,
 }

@@ -440,8 +440,9 @@ class CommonWidget {
 
   //标题信息
   static commonHeadInfoWidget(String info,
-      {Widget? action, EdgeInsetsGeometry? padding}) {
-    return Padding(
+      {Widget? action, EdgeInsetsGeometry? padding,Color? color}) {
+    return Container(
+      color: color,
       padding:
           padding ?? EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
       child: Row(
@@ -455,13 +456,13 @@ class CommonWidget {
                       width: 5.w,
                       height: 25.h,
                       margin: EdgeInsets.only(right: 15.w),
-                      color: XColors.themeColor,
+                      color: XColors.blueTextColor,
                     ),
                     alignment: PlaceholderAlignment.middle),
                 TextSpan(
                     text: info,
                     style: TextStyle(
-                        fontSize: 18.sp,
+                        fontSize: 22.sp,
                         color: Colors.black,
                         fontWeight: FontWeight.w500))
               ],
@@ -654,7 +655,7 @@ class CommonWidget {
   //没有指示器的tabbar
   static Widget commonNonIndicatorTabBar(
       TabController tabController, List<String> tabTitle,
-      {ValueChanged<int>? onTap}) {
+      {ValueChanged<int>? onTap,TextStyle? labelStyle}) {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
@@ -670,9 +671,9 @@ class CommonWidget {
           );
         }).toList(),
         unselectedLabelColor: Colors.grey,
-        unselectedLabelStyle: TextStyle(fontSize: 18.sp),
+        unselectedLabelStyle: labelStyle??TextStyle(fontSize: 18.sp),
         labelColor: XColors.themeColor,
-        labelStyle: TextStyle(fontSize: 18.sp),
+        labelStyle: labelStyle??TextStyle(fontSize: 18.sp),
         isScrollable: true,
         indicator: const BoxDecoration(),
         onTap: onTap,

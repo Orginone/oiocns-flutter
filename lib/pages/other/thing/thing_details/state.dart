@@ -20,5 +20,5 @@ class ThingDetailsState extends BaseGetState{
 
 const List<String> tabTitle = [
   '基本信息',
-  '历史痕迹',
+  '归档痕迹',
 ];

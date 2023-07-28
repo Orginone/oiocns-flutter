@@ -50,6 +50,10 @@ import 'pages/login/register/binding.dart';
 import 'pages/login/register/view.dart';
 import 'pages/login/verification_code/binding.dart';
 import 'pages/login/verification_code/view.dart';
+import 'pages/other/cardbag/bag_details/view.dart';
+import 'pages/other/cardbag/bag_details/wallet_details/binding.dart';
+import 'pages/other/cardbag/bag_details/wallet_details/transfer_accounts.dart';
+import 'pages/other/cardbag/bag_details/wallet_details/view.dart';
 import 'pages/other/cardbag/bindings.dart';
 import 'pages/other/cardbag/create_bag/binding.dart';
 import 'pages/other/cardbag/create_bag/guide_bag_page.dart';
@@ -297,6 +301,13 @@ class Routers {
   static const String guideBag = "/guideBag";
 
   static const String importWallet = "/importWallet";
+
+  static const String bagDetails = "/bagDetails";
+
+  static const String walletDetails = "/walletDetails";
+
+  static const String transferAccounts = "/transferAccounts";
+
 
   static String get main {
     var user = HiveUtils.getUser();
@@ -579,8 +590,32 @@ class Routers {
         name: Routers.importWallet,
         page: () => const ImportWalletPage(),
       ),
+      GetPage(
+        name: Routers.bagDetails,
+        page: () => BagDetailsPage(),
+      ),
+      GetPage(
+        name: Routers.walletDetails,
+        page: () => WalletDetailsPage(),
+        binding: WalletDetailsBinding(),
+      ),
+      GetPage(
+        name: Routers.transferAccounts,
+        page: () => TransferAccounts(),
+      ),
     ];
   }
+
+  static void jumpCreateBag() {
+    changeTransition(Transition.downToUp);
+    Get.toNamed(Routers.createBag)?.then((value) => changeTransition());
+  }
+
+  static void jumpImportWallet() {
+    changeTransition(Transition.downToUp);
+    Get.toNamed(Routers.importWallet)?.then((value) => changeTransition());
+  }
+
 
   static void jumpCardBag() {
     changeTransition(Transition.downToUp);

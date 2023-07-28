@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/model/thing_model.dart';
 import 'package:orginone/pages/other/choice_thing/network.dart';
 import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/routers.dart';
@@ -16,7 +15,7 @@ class ThingController extends BaseListController<ThingState> {
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
     state.dataList.addAll(await ChoiceThingNetWork.getThing(
         state.form.id, state.belongId,
-        index: state.page));
+        index: state.page, filter: state.filter));
     super.loadData();
   }
 

@@ -89,10 +89,7 @@ S extends BaseSubmenuState> extends BaseGetView<T, S> {
       return ExtendedTabBarView(
         controller: state.tabController,
         children: groups.map((e) {
-          return SizedBox(
-            key: PageStorageKey(state.subGroup.value.type! + e.value!),
-            child: buildPageView(e.value!),
-          );
+          return buildPageView(e.value!);
         }).toList(),
       );
     });

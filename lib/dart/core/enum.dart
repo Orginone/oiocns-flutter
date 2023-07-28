@@ -239,6 +239,7 @@ const subDepartmentTypes = [
 enum SpaceEnum {
   directory("文件夹"),
   species("分类"),
+  filter("筛选"),
   property("属性"),
   applications("应用"),
   module("模块"),

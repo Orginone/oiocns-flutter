@@ -17,4 +17,10 @@ class CreateBagState extends BaseGetState{
   List<String> mnemonics = [];
 
   PageController pageController = PageController();
+
+  late bool isBagList;
+
+  CreateBagState(){
+    isBagList = Get.arguments?['isBagList']??false;
+  }
 }

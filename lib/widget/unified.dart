@@ -40,6 +40,10 @@ class XColors {
   static const Color orange = Color(0xFFFB8F11);
   static const Color entryBgColor = Color(0xFFDFE0EF);
   static const Color entryColor = Color(0xFF396DB2);
+  static const Color statisticsBoxColor = Color(0xFFC5E3FF);
+  static const Color blueHintTextColor = Color(0xFF4C9DF9);
+  static const Color blueTextColor = Color(0xFF1890FF);
+  static const Color cardShadowColor = Color(0xFF4C9DF9);
 
 }
 

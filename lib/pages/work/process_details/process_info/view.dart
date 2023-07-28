@@ -50,7 +50,7 @@ class ProcessInfoPage
                   .map((element) => element.name!)
                   .toList(), onTap: (index) {
             controller.changeMainIndex(index);
-          }),
+          },labelStyle: TextStyle(fontSize: 20.sp)),
           Column(
             children: state.mainForm[state.mainIndex.value].fields.map((e) {
                   Map<String, dynamic> info = {};
@@ -92,7 +92,7 @@ class ProcessInfoPage
             CommonWidget.commonNonIndicatorTabBar(state.subTabController,
                 state.subForm.map((element) => element.name!).toList(),onTap: (index){
               controller.changeSubIndex(index);
-                }),
+                },labelStyle: TextStyle(fontSize: 20.sp)),
             Obx(() {
               var sub = state.subForm[state.subIndex.value];
               List<String> title =

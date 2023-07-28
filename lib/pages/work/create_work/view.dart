@@ -62,7 +62,7 @@ class CreateWorkPage
                     .map((element) => element.metadata.name!)
                     .toList(), onTap: (index) {
               controller.changeMainIndex(index);
-            }),
+            },labelStyle: TextStyle(fontSize: 20.sp)),
             Column(
               children: state.mainForm[state.mainIndex.value].fields.map((e) {
                     if (e.field.type == null) {
@@ -100,7 +100,7 @@ class CreateWorkPage
                             .map((element) => element.metadata.name!)
                             .toList(), onTap: (index) {
                       controller.changeSubIndex(index);
-                    }),
+                    },labelStyle: TextStyle(fontSize: 20.sp)),
                   ),
                   CommonWidget.commonPopupMenuButton(
                     items: SubTableEnum.values.map((e) {
