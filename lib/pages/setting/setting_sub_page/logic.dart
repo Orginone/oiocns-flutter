@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/controller/setting/user_controller.dart';
+import 'package:orginone/dart/controller/user_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/main.dart';

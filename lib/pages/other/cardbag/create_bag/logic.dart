@@ -20,8 +20,9 @@ class CreateBagController extends BaseController<CreateBagState> {
     state.pages.add(CreateWallet());
   }
 
-  void setMnemonics(List<String> mnemonics){
+  void setMnemonics(List<String> mnemonics,int type){
     state.mnemonics = mnemonics;
+    state.mnemonicType = type;
   }
 
   void nextPage(){

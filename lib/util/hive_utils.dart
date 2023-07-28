@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/model/subgroup.dart';
 import 'package:orginone/model/user_model.dart';
+import 'package:orginone/model/wallet_model.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../model/acc.dart';
@@ -12,6 +13,7 @@ class HiveUtils {
   static late Box _userBox;
   static late Box _assetConfigBox;
   static late Box _subGroupConfigBox;
+  static late Box _walletBox;
 
   static Future<void> init() async {
     if (!kIsWeb) {
@@ -28,12 +30,14 @@ class HiveUtils {
         ..registerAdapter(ConfigAdapter())
         ..registerAdapter(FieldsAdapter())
         ..registerAdapter(SubGroupAdapter())
-        ..registerAdapter(GroupAdapter());
+        ..registerAdapter(GroupAdapter())
+        ..registerAdapter(WalletAdapter());
     }
 
     _userBox = await Hive.openBox('userBox');
     _assetConfigBox = await Hive.openBox('assetConfigBox');
     _subGroupConfigBox = await Hive.openBox('subGroupConfigBox');
+    _walletBox = await Hive.openBox("walletBox");
   }
 
   static void putUser(UserModel user) async {
@@ -48,16 +52,30 @@ class HiveUtils {
     return _subGroupConfigBox.get(key);
   }
 
-
   static void putSubGroup(String key,SubGroup group) {
      _subGroupConfigBox.put(key,group);
   }
 
+  static void putWallet(Wallet wallet) {
+    _walletBox.put(wallet.account,wallet);
+  }
+
+  static List<Wallet> getAllWallet() {
+    List<Wallet> wallets = [];
+    var data= _walletBox.values.toList();
+    if(data.isNotEmpty){
+      for (var element in data) {
+        wallets.add(element);
+      }
+    }
+    return wallets;
+  }
 
   static Future<void> clean() async{
     await _userBox.clear();
     await _assetConfigBox.clear();
     await _subGroupConfigBox.clear();
+    await _walletBox.clear();
   }
 
   static void putConfig(List<AssetCreationConfig> configs) async{

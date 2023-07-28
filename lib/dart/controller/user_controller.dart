@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
@@ -83,6 +84,12 @@ class UserController extends GetxController {
 
   var homeEnum = HomeEnum.door.obs;
 
+
+  late CustomPopupMenuController functionMenuController;
+
+  late CustomPopupMenuController settingMenuController;
+
+  late CustomPopupMenuController chatMenuController;
   var menuItems = [
     ShortcutData(
       Shortcut.addPerson,
@@ -99,6 +106,9 @@ class UserController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    chatMenuController = CustomPopupMenuController();
+    functionMenuController = CustomPopupMenuController();
+    settingMenuController = CustomPopupMenuController();
     _provider = UserProvider();
     _userSub = XEventBus.instance.on<UserLoaded>().listen((event) async {
       EventBusHelper.fire(ShowLoading(true));

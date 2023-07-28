@@ -29,13 +29,12 @@ class Tabs extends StatelessWidget {
   final Widget? bottom;
   final TabController tabCtrl;
 
-  const Tabs({
-    super.key,
+  const Tabs({Key? key,
     required this.tabCtrl,
     this.top,
     required this.views,
     this.bottom,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

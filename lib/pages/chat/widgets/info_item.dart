@@ -11,7 +11,7 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/setting/user_controller.dart';
+import 'package:orginone/dart/controller/user_controller.dart';
 import 'package:orginone/dart/core/chat/message/message.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
@@ -57,8 +57,6 @@ class DetailItemWidget extends GetView<UserController> {
     required this.chat,
     required this.msg,
   }) : super(key: key);
-
-  CustomPopupMenuController popCtrl = CustomPopupMenuController();
 
   MessageChatController get chatController => Get.find();
   @override
@@ -211,7 +209,7 @@ class DetailItemWidget extends GetView<UserController> {
                       ),
                     ),
                     onTap: () {
-                      popCtrl.hideMenu();
+                      controller.chatMenuController.hideMenu();
                       switch (item) {
                         case DetailFunc.recall:
                           chat.recallMessage(msg.id);
@@ -244,7 +242,7 @@ class DetailItemWidget extends GetView<UserController> {
 
     content.add(
       CustomPopupMenu(
-        controller: popCtrl,
+        controller: controller.chatMenuController,
         position: PreferredPosition.bottom,
         menuBuilder: _buildLongPressMenu,
         barrierColor: Colors.transparent,

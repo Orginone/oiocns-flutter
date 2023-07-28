@@ -31,13 +31,18 @@ class CardbagPage extends BaseGetView<CardbagController, CardbagState> {
         children: [
           card,
           butn,
-          ICard(
-            asset: 180.0,
-            name: '111',
-            onTap: (){
-              Get.toNamed(Routers.bagDetails);
-            },
-          ),
+          Obx(() {
+            return Column(
+                children: walletCtrl.wallet.map((element) {
+              return ICard(
+                asset: 180.0,
+                name: element.account,
+                onTap: () {
+                  Get.toNamed(Routers.bagDetails);
+                },
+              );
+            }).toList());
+          }),
         ],
       ),
     );

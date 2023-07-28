@@ -12,13 +12,12 @@ class DialogConfirm extends Dialog {
   final String confirmText; //是否需要"确定"按钮
   final ConfirmCallback? confirmFun; //确定回调
 
-  const DialogConfirm({
-    super.key,
+  const DialogConfirm({Key? key,
     this.title,
     this.content,
     this.confirmText = "确定",
     this.confirmFun,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

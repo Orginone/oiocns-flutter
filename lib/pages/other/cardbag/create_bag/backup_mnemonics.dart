@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/channel/wallet_channel.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/widget/buttons.dart';
 import 'package:orginone/widget/keep_alive_widget.dart';
 import 'package:orginone/widget/unified.dart';
@@ -18,25 +20,36 @@ class _BackupMnemonicsState extends State<BackupMnemonics>
     with TickerProviderStateMixin {
   late TabController tabController;
 
-  List<String> newChineseKey = [];
+  List<String> chineseKey = [];
+
+  List<String> englishKey = [];
 
   CreateBagController get controller => Get.find();
-
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     tabController = TabController(length: 2, vsync: this);
-    integration();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      Future.wait([
+        walletCtrl.loadMnemonicString(1),
+        walletCtrl.loadMnemonicString(0)
+      ]).then((value) {
+        loadChineseKey(value[0].split(' '));
+        englishKey = value[1].split(' ');
+        setState(() {});
+      });
+    });
   }
 
-  void integration() {
+  void loadChineseKey(List<String> keys) {
     var str = [];
-    for (var element in chineseKey) {
+    chineseKey.clear();
+    for (var element in keys) {
       str.add(element);
       if (str.length == 3) {
-        newChineseKey.add(str.join());
+        chineseKey.add(str.join());
         str.clear();
       }
     }
@@ -84,7 +97,7 @@ class _BackupMnemonicsState extends State<BackupMnemonics>
                     children: [
                       KeepAliveWidget(
                           child: GridMnemonicsView(
-                        keys: newChineseKey,
+                            keys: chineseKey,
                       )),
                       KeepAliveWidget(
                           child: GridMnemonicsView(keys: englishKey)),
@@ -100,8 +113,15 @@ class _BackupMnemonicsState extends State<BackupMnemonics>
               Expanded(
                 child: outlinedButton(
                   "更换助记词",
-                  onPressed: () {
-                    newChineseKey.clear();
+                  onPressed: () async {
+                    String value;
+                    if (tabController.index == 0) {
+                      value = await WalletChannel().loadMnemonicString(1);
+                      loadChineseKey(value.split(' '));
+                    } else {
+                      value = await WalletChannel().loadMnemonicString(0);
+                      englishKey = value.split(' ');
+                    }
                     setState(() {});
                   },
                   height: 70.h,
@@ -116,7 +136,9 @@ class _BackupMnemonicsState extends State<BackupMnemonics>
               ),
               Expanded(
                 child: outlinedButton("下一步", onPressed: () {
-                  controller.setMnemonics(tabController.index==0?newChineseKey:englishKey);
+                  controller.setMnemonics(
+                      tabController.index == 0 ? chineseKey : englishKey,
+                      tabController.index == 0 ? 1 : 0);
                   controller.nextPage();
                 },
                     style: ButtonStyle(
@@ -187,36 +209,3 @@ class GridMnemonicsView extends StatelessWidget {
     );
   }
 }
-
-const chineseKey = [
-  "秀",
-  "玻",
-  "议",
-  "裂",
-  "敲",
-  "员",
-  "汇",
-  "摊",
-  "舰",
-  "勇",
-  "对",
-  "曲",
-  "明",
-  "省",
-  "希",
-];
-
-const englishKey = [
-  "embark",
-  "item",
-  "volcano",
-  "dice",
-  "endorse",
-  "onion",
-  "mail",
-  "online",
-  "gym",
-  "coconut",
-  "mandate",
-  "scare"
-];

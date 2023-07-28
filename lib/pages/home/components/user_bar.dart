@@ -1,9 +1,9 @@
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:orginone/dart/controller/setting/user_controller.dart';
+import 'package:orginone/dart/controller/user_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/pages/store/state.dart';
@@ -14,10 +14,6 @@ import 'search_bar.dart';
 
 class UserBar extends GetView<UserController> {
   UserBar({super.key});
-
-  final CustomPopupMenuController _menuController = CustomPopupMenuController();
-
-  final CustomPopupMenuController _settingController = CustomPopupMenuController();
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +42,9 @@ class UserBar extends GetView<UserController> {
                   (item) => GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onTap: () {
-                  _menuController.hideMenu();
-                  controller.jumpSetting(item);
-                },
+                  controller.functionMenuController.hideMenu();
+                          controller.jumpSetting(item);
+                        },
                 child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           decoration: BoxDecoration(
@@ -81,9 +77,10 @@ class UserBar extends GetView<UserController> {
                             ],
                           ),
                         ),
-              ),
-            )
-                .toList(),controller: _menuController),
+                      ),
+                    )
+                    .toList(),
+                controller: controller.functionMenuController),
             SizedBox(
               width: 10.w,
             ),
@@ -132,7 +129,7 @@ class UserBar extends GetView<UserController> {
                 (item) => GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: () {
-                    _menuController.hideMenu();
+                    controller.settingMenuController.hideMenu();
                     controller.showAddFeatures(item);
                   },
                   child: Container(
@@ -167,7 +164,7 @@ class UserBar extends GetView<UserController> {
                 ),
               )
               .toList(),
-          controller: _settingController,
+          controller: controller.settingMenuController,
           child: const Icon(
             Ionicons.add_sharp,
           ),

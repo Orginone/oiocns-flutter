@@ -90,7 +90,7 @@ class _LoadStateWidgetState extends State<LoadStateWidget> {
               ? CircularProgressIndicator(
                   valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
                 )
-              : CircularProgressIndicator(color:Theme.of(context).accentColor,),
+              : CircularProgressIndicator(color:Theme.of(context).colorScheme.secondary,),
         ],
       ),
     );
@@ -142,9 +142,9 @@ class _LoadStateWidgetState extends State<LoadStateWidget> {
           vertical: 5,
         ),
         onTap: onTap,
-        bgColor: widget.antiColor ? Colors.white : Theme.of(context).accentColor,
+        bgColor: widget.antiColor ? Colors.white : Theme.of(context).colorScheme.secondary,
         style: TextStyle(
-          color: widget.antiColor ? Theme.of(context).accentColor: Color(0xFFFFFFFF),
+          color: widget.antiColor ? Theme.of(context).colorScheme.secondary: Color(0xFFFFFFFF),
           fontSize: 16,
         ),
         borderRadius: const BorderRadius.all(

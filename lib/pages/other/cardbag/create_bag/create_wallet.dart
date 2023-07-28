@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:orginone/channel/wallet_channel.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/pages/other/cardbag/create_bag/logic.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/buttons.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/unified.dart';
@@ -81,14 +85,31 @@ class _CreateWalletState extends State<CreateWallet> {
             ),
           ),
           Expanded(child: SizedBox()),
-          elevatedButton("创建", onPressed: () {
-            Routers.changeTransition();
-            if(!controller.state.isBagList){
-              Get.offUntil(GetPageRoute(),(route) => route.settings.name == Routers.home);
-              Get.offAndToNamed(Routers.cardbag);
-            }else{
-              Get.back();
+          elevatedButton("创建", onPressed: () async{
+            if(verifyPassWordController.text!=passWordController.text){
+               ToastUtils.showMsg(msg: "两次输入的密码不一致请重新输入");
+               return;
             }
+
+            dynamic mnemonics;
+            if (controller.state.mnemonicType == 0) {
+              mnemonics = controller.state.mnemonics.join(' ');
+            } else {
+              mnemonics = controller.state.mnemonics.join('');
+              mnemonics = mnemonics.split('').toList().join(' ');
+            }
+            bool success = await walletCtrl.createWallet(mnemonics,userNameController.text,passWordController.text);
+            if(success){
+              ToastUtils.showMsg(msg: "创建成功");
+              Routers.changeTransition();
+              if(!controller.state.isBagList){
+                Get.offUntil(GetPageRoute(),(route) => route.settings.name == Routers.home);
+                Get.offAndToNamed(Routers.cardbag);
+              }else{
+                Get.back();
+              }
+            }
+
           }),
           SizedBox(
             height: 10.h,
