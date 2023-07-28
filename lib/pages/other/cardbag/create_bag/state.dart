@@ -16,6 +16,8 @@ class CreateBagState extends BaseGetState{
 
   List<String> mnemonics = [];
 
+  int mnemonicType = 1;
+
   PageController pageController = PageController();
 
   late bool isBagList;

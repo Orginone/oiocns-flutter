@@ -37,6 +37,7 @@ import 'package:orginone/util/image_utils.dart';
 // 资产管理
 // 仓库
 import 'dart/base/model.dart';
+import 'dart/controller/wallet_controller.dart';
 import 'main.dart';
 import 'pages/chat/message_chat_info/binding.dart';
 import 'pages/chat/message_chats/bindings.dart';
@@ -349,6 +350,7 @@ class Routers {
           StoreBinding(),
           SettingBinding(),
           UpdateBinding(),
+          WalletBinding(),
         ],
       ),
       GetPage(
@@ -618,8 +620,12 @@ class Routers {
 
 
   static void jumpCardBag() {
-    changeTransition(Transition.downToUp);
-    Get.toNamed(Routers.guideBag);
+    if(HiveUtils.getAllWallet().isEmpty){
+      changeTransition(Transition.downToUp);
+      Get.toNamed(Routers.guideBag);
+      return;
+    }
+    Get.toNamed(Routers.cardbag);
   }
 
   static void changeTransition([Transition? transition]) {

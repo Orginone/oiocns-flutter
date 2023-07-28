@@ -3,7 +3,7 @@ import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:orginone/dart/controller/setting/user_controller.dart';
+import 'package:orginone/dart/controller/user_controller.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/pages/store/state.dart';

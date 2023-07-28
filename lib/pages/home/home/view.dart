@@ -2,7 +2,7 @@ import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/controller/setting/user_controller.dart';
+import 'package:orginone/dart/controller/user_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_chats/message_chats_page.dart';

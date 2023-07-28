@@ -53,7 +53,6 @@ class _VerifyMnemonicState extends State<VerifyMnemonic> {
             padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 15.h),
             child: GridView.builder(
               shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
               padding: EdgeInsets.zero,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,

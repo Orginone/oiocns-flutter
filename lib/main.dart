@@ -7,11 +7,13 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/channel/wallet_channel.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/controller/wallet_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/foreground_utils.dart';
 import 'package:orginone/util/notification_util.dart';
-import 'dart/controller/setting/user_controller.dart';
+import 'dart/controller/user_controller.dart';
 import 'util/hive_utils.dart';
 import 'util/local_store.dart';
 
@@ -30,6 +32,8 @@ void main() async {
   await LocalStore.instance();
 
   ForegroundUtils().initForegroundTask();
+
+  WalletChannel().init();
   // 日志初始化
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((event) {
@@ -47,6 +51,9 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver();
 
 UserController get settingCtrl => Get.find<UserController>();
+
+WalletController get walletCtrl => Get.find<WalletController>();
+
 const Size screenSize = Size(540, 1170);
 
 class ScreenInit extends StatelessWidget {
@@ -91,9 +98,7 @@ class ScreenInit extends StatelessWidget {
       String accountName = account![0];
       String passWord = account![1];
       var login = await settingCtrl.provider.login(accountName, passWord);
-      if(login.success){
-        print('登录成功');
-      }else{
+      if(!login.success){
         settingCtrl.exitLogin();
       }
     }
@@ -102,6 +107,7 @@ class ScreenInit extends StatelessWidget {
       if (kernel.isOnline) {
         await login();
       } else {
+
         Future.delayed(const Duration(milliseconds: 100), () async {
           await automaticLogon();
         });
