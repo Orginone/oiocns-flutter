@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/person.dart';
@@ -54,7 +55,7 @@ abstract class IMessage {
   bool get allowEdit;
   String get readedinfo;
   int get comments;
-
+  late CustomPopupMenuController chatController;
   MsgBodyModel? get body;
   void recall();
   void receiveTags(List<String> tags);
@@ -79,6 +80,7 @@ class Message implements IMessage {
     metadata.tags?.forEach((tag) {
       labels.add(MessageLabel(user,tag));
     });
+    chatController = CustomPopupMenuController();
   }
 
   @override
@@ -195,4 +197,7 @@ class Message implements IMessage {
   @override
   // TODO: implement body
   MsgBodyModel? get body => metadata.body;
+
+  @override
+  late CustomPopupMenuController chatController;
 }
