@@ -1,3 +1,4 @@
+import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,20 +6,27 @@ import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/buttons.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/widget/keep_alive_widget.dart';
 import 'package:orginone/widget/sliver_tabbar_delegate.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import 'logic.dart';
 import 'state.dart';
+import 'transaction_records/view.dart';
 
 class WalletDetailsPage
     extends BaseGetView<WalletDetailsController, WalletDetailsState> {
   @override
   Widget buildView() {
+    final double statusBarHeight = MediaQuery.of(context).padding.top;
+    final double pinnedHeaderHeight =
+        statusBarHeight +
+            kToolbarHeight;
     return GyScaffold(
       titleName: "钱包详情",
       actions: [
@@ -28,7 +36,7 @@ class WalletDetailsPage
           color: Colors.black,
         ),
       ],
-      body: NestedScrollView(
+      body: ExtendedNestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             SliverToBoxAdapter(
@@ -38,7 +46,7 @@ class WalletDetailsPage
                 child: Card(
                   child: Padding(
                     padding:
-                        EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
+                    EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -53,11 +61,11 @@ class WalletDetailsPage
                               children: [
                                 Text.rich(TextSpan(children: [
                                   TextSpan(
-                                    text: "BTC",
+                                    text: state.coin.type,
                                     style: XFonts.size24Black0,
                                   ),
                                   TextSpan(
-                                    text: " (比特币)",
+                                    text: " (${state.coin.type})",
                                     style: TextStyle(
                                         fontSize: 24.sp, color: Colors.grey),
                                   )
@@ -66,14 +74,14 @@ class WalletDetailsPage
                                   height: 10.h,
                                 ),
                                 Text(
-                                  "账户余额: ￥125.30",
-                                  style: TextStyle(color: XColors.blueTextColor),
+                                  "账户余额: ￥${state.coin.balance}",
+                                  style: const TextStyle(color: XColors.blueTextColor),
                                 ),
                               ],
                             ),
-                            Expanded(child: SizedBox()),
+                            const Expanded(child: SizedBox()),
                             QrImage(
-                              data: '12344211',
+                              data: state.coin.address??"",
                               version: QrVersions.auto,
                               size: 120.w,
                               errorCorrectionLevel: QrErrorCorrectLevel.H,
@@ -86,14 +94,15 @@ class WalletDetailsPage
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              "2sdfdanacoc35dcxsd321cs55d5s23ec",
-                              style: TextStyle(color: Colors.grey),
+                            Text(
+                              state.coin.address??"",
+                              style: const TextStyle(color: Colors.grey),
                             ),
                             GestureDetector(
                               onTap: () {
+                                ToastUtils.showMsg(msg: "已复制到剪切板");
                                 Clipboard.setData(ClipboardData(
-                                    text: "2sdfdanacoc35dcxsd321cs55d5s23ec"));
+                                    text: state.coin.address??""));
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -157,7 +166,7 @@ class WalletDetailsPage
                                     borderRadius: BorderRadius.circular(36.w))),
                           ),
                           textStyle:
-                              TextStyle(fontSize: 18.sp, color: Colors.white),
+                          TextStyle(fontSize: 18.sp, color: Colors.white),
                           height: 70.h),
                     ),
                   ],
@@ -168,39 +177,41 @@ class WalletDetailsPage
               child: CommonWidget.commonHeadInfoWidget("交易记录",
                   color: Colors.white),
             ),
-            SliverPersistentHeader(
-              delegate: SliverTabBarDelegate(
-                tabBar: Container(
-                  decoration: BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(
-                              color: Colors.grey.shade200, width: 0.5))),
-                  child: TabBar(
-                    tabs: tabs.map((e) => Text(e)).toList(),
-                    controller: state.tabController,
-                    labelStyle: TextStyle(
-                      fontSize: 24.sp,
-                    ),
-                    labelColor: XColors.blueTextColor,
-                    unselectedLabelStyle: TextStyle(
-                      fontSize: 24.sp,
-                    ),
-                    unselectedLabelColor: Colors.grey.shade400,
-                    indicatorSize: TabBarIndicatorSize.label,
-                  ),
-                ),
-              ),
-              pinned: true,
-              floating: true,
-            ),
           ];
         },
-        body: TabBarView(
-          controller: state.tabController,
-          children: const [
-            SizedBox(),
-            SizedBox(),
-            SizedBox(),
+        onlyOneScrollInBody: true,
+        pinnedHeaderSliverHeightBuilder: () {
+          return 0;
+        },
+        body: Column(
+          children: [
+            Container(
+              color: Colors.white,
+              height: 40,
+              child: TabBar(
+                tabs: tabs.map((e) => Text(e)).toList(),
+                controller: state.tabController,
+                labelStyle: TextStyle(
+                  fontSize: 24.sp,
+                ),
+                labelColor: XColors.blueTextColor,
+                unselectedLabelStyle: TextStyle(
+                  fontSize: 24.sp,
+                ),
+                unselectedLabelColor: Colors.grey.shade400,
+                indicatorSize: TabBarIndicatorSize.label,
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: state.tabController,
+                children:  [
+                  KeepAliveWidget(child: TransactionRecordsPage(-1)),
+                  KeepAliveWidget(child: TransactionRecordsPage(0)),
+                  KeepAliveWidget(child: TransactionRecordsPage(1)),
+                ],
+              ),
+            ),
           ],
         ),
       ),

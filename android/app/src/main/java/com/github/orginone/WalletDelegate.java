@@ -8,6 +8,10 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import walletapi.HDWallet;
+import walletapi.QueryByPage;
+import walletapi.Util;
+import walletapi.WalletBalance;
+import walletapi.WalletQueryByAddr;
 import walletapi.Walletapi;
 
 public class WalletDelegate implements MethodChannel.MethodCallHandler {
@@ -17,9 +21,12 @@ public class WalletDelegate implements MethodChannel.MethodCallHandler {
 
     private Gson gson;
 
+    private Util util;
+
     WalletDelegate(BinaryMessenger messenger) {
         walletChannel = new MethodChannel(messenger, CHANNEL_NAME);
         gson = new Gson();
+        util = new Util();
         walletChannel.setMethodCallHandler(this);
     }
 
@@ -32,7 +39,7 @@ public class WalletDelegate implements MethodChannel.MethodCallHandler {
                     String mnemonicString = loadMnemonicString(call.argument("type"));
                     result.success(mnemonicString);
                 } catch (Exception e) {
-                    result.error(e.toString(), e.getMessage(), e);
+                    result.success(null);
                 }
                 break;
             case "createWallet":
@@ -47,7 +54,38 @@ public class WalletDelegate implements MethodChannel.MethodCallHandler {
                     String json = gson.toJson(walletInfoBean);
                     result.success(json);
                 } catch (Exception e) {
-                    result.error(e.toString(), e.getMessage(), e);
+                    result.success(null);
+                }
+                break;
+            case "getBalance":
+                WalletBalance walletBalance = new WalletBalance();
+                walletBalance.setAddress(call.argument("address"));
+                walletBalance.setCointype(call.argument("cointype"));
+                walletBalance.setUtil(getUtil(call.argument("util")));
+                walletBalance.setTokenSymbol(call.argument("tokenSymbol"));
+                try {
+                    String balance = getBalance(walletBalance);
+                    result.success(balance);
+                } catch (Exception e) {
+                    result.success(null);
+                }
+                break;
+            case "transactionsByaddress":
+                WalletQueryByAddr walletQueryByAddr = new WalletQueryByAddr();
+                QueryByPage page = new QueryByPage();
+                page.setAddress(call.argument("address"));
+                page.setCointype(call.argument("cointype"));
+                page.setTokenSymbol(call.argument("tokenSymbol"));
+                page.setCount(Long.valueOf(call.argument("count").toString()));
+                page.setIndex(Long.valueOf(call.argument("index").toString()));
+                page.setType(Long.valueOf(call.argument("type").toString()));
+                walletQueryByAddr.setQueryByPage(page);
+                walletQueryByAddr.setUtil(getUtil(call.argument("util")));
+                try {
+                    String records = transactionsByaddress(walletQueryByAddr);
+                    result.success(records);
+                } catch (Exception e) {
+                    result.success(null);
                 }
                 break;
         }
@@ -60,7 +98,7 @@ public class WalletDelegate implements MethodChannel.MethodCallHandler {
      * @param type Int  1 中文  0 英文
      * @return String
      */
-    public String loadMnemonicString(int type) throws Exception {
+    private String loadMnemonicString(int type) throws Exception {
         if (type == 0) {
 
             return Walletapi.newMnemonicString(type, 128);
@@ -75,7 +113,7 @@ public class WalletDelegate implements MethodChannel.MethodCallHandler {
      * @param passWord       密码
      * @param walletInfoBean 模型
      */
-    public void createWallet(String mnemonics, String passWord, WalletInfoBean walletInfoBean) throws Exception {
+    private void createWallet(String mnemonics, String passWord, WalletInfoBean walletInfoBean) throws Exception {
         HDWallet wallet = Walletapi.newWalletFromMnemonic_v2(Walletapi.TypeETHString, mnemonics);
         String privateKey = Walletapi.byteTohex(wallet.newKeyPriv(0));
         String publicKey = Walletapi.byteTohex(wallet.newKeyPub(0));
@@ -85,7 +123,6 @@ public class WalletDelegate implements MethodChannel.MethodCallHandler {
         walletInfoBean.setAddress(address);
         encryption(mnemonics, passWord, walletInfoBean);
     }
-
 
     /**
      * 加密
@@ -104,6 +141,32 @@ public class WalletDelegate implements MethodChannel.MethodCallHandler {
         walletInfoBean.setMnemonicsEncKey(mnemonicsEncKey);
     }
 
+    /**
+     * 获取账户余额
+     *
+     * @param balance  钱包信息
+     */
+    private String getBalance(WalletBalance balance) throws Exception {
+        byte[] bytes = Walletapi.getbalance(balance);
+        return Walletapi.byteTostring(bytes);
+    }
+
+    /**
+     * 获取交易记录
+     *
+     * @param walletQueryByAddr  钱包信息
+     */
+    private String transactionsByaddress(WalletQueryByAddr walletQueryByAddr) throws Exception {
+        byte[] bytes = Walletapi.queryTransactionsByaddress(walletQueryByAddr);
+        return Walletapi.byteTostring(bytes);
+    }
+
+
+
+    private Util getUtil(String node){
+        util.setNode(node);
+        return  util;
+    }
     void onDestroy() {
         walletChannel = null;
     }

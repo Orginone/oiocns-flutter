@@ -134,6 +134,7 @@ dependencies:
   video_player: ^2.6.1
   toggle_switch: ^2.1.0
   flutter_background_service: ^3.0.1
+  extended_nested_scroll_view: ^6.1.2
   extended_tabs:
     git:
      url: https://github.com/xy221150/extended_tabs.git
