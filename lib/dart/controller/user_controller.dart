@@ -89,7 +89,6 @@ class UserController extends GetxController {
 
   late CustomPopupMenuController settingMenuController;
 
-  late CustomPopupMenuController chatMenuController;
   var menuItems = [
     ShortcutData(
       Shortcut.addPerson,
@@ -106,7 +105,6 @@ class UserController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    chatMenuController = CustomPopupMenuController();
     functionMenuController = CustomPopupMenuController();
     settingMenuController = CustomPopupMenuController();
     _provider = UserProvider();

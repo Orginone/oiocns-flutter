@@ -7,6 +7,10 @@ abstract class WalletApi {
   Future<String> loadMnemonicString(int type);
 
   Future<bool> createWallet(String mnemonics, String account, String passWord);
+
+  Future<void> queryWalletBalance(Wallet wallet);
+
+  void updateWallet(Wallet wallet);
 }
 
 class WalletController extends GetxController implements WalletApi {
@@ -24,6 +28,8 @@ class WalletController extends GetxController implements WalletApi {
       String mnemonics, String account, String passWord) async {
     var data = await WalletChannel().createWallet(mnemonics, account, passWord);
     if (data != null) {
+      data.coins ??= [];
+      data.coins!.add(Coin.fromJson(DEFAULT_COINS[0]));
       wallet.add(data);
     }
     return data != null;
@@ -36,6 +42,37 @@ class WalletController extends GetxController implements WalletApi {
 
   void clean() {
     wallet.clear();
+  }
+
+  @override
+  void updateWallet(Wallet wallet) {
+    HiveUtils.putWallet(wallet);
+    this.wallet.refresh();
+  }
+
+  @override
+  Future<void> queryWalletBalance(Wallet wallet) async {
+    if (wallet.coins != null) {
+      Future.wait(wallet.coins!
+              .map((e) => WalletChannel().getBalance(e.toJson()))
+              .toList())
+          .then((data) {
+        if (data.isNotEmpty) {
+          for (var element in data) {
+            if (element != null) {
+              String address = element['result']['address'];
+              String balance = element['result']['balance'];
+              var coin = wallet.coins!
+                  .firstWhereOrNull((element) => element.address == address);
+              if (coin != null) {
+                coin.balance = balance;
+              }
+            }
+          }
+          updateWallet(wallet);
+        }
+      });
+    }
   }
 }
 

@@ -31,7 +31,8 @@ class HiveUtils {
         ..registerAdapter(FieldsAdapter())
         ..registerAdapter(SubGroupAdapter())
         ..registerAdapter(GroupAdapter())
-        ..registerAdapter(WalletAdapter());
+        ..registerAdapter(WalletAdapter())
+        ..registerAdapter(CoinAdapter());
     }
 
     _userBox = await Hive.openBox('userBox');

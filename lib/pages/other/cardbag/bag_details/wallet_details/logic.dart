@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -45,7 +46,7 @@ class WalletDetailsController extends BaseController<WalletDetailsState>
                   height: 50.h,
                 ),
                 QrImage(
-                  data: '12344211',
+                  data: state.coin.address??"",
                   version: QrVersions.auto,
                   size: 300.w,
                   errorCorrectionLevel: QrErrorCorrectLevel.H,
@@ -69,14 +70,15 @@ class WalletDetailsController extends BaseController<WalletDetailsState>
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text("2sandman35dcxsd321cs55d5s23ec",style: TextStyle(color: Color(0xFF1890FF)),),
+                       Text(state.coin.address??"",style: const TextStyle(color: Color(0xFF1890FF)),),
                       SizedBox(
                         width: 10.w,
                       ),
                       GestureDetector(
                         onTap: () {
-                          Clipboard.setData(const ClipboardData(
-                              text: "2sdfdanacoc35dcxsd321cs55d5s23ec"));
+                          ToastUtils.showMsg(msg: "已复制到剪切板");
+                          Clipboard.setData(ClipboardData(
+                              text: state.coin.address??""));
                         },
                         child: Container(
                           decoration: BoxDecoration(

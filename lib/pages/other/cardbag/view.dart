@@ -38,7 +38,7 @@ class CardbagPage extends BaseGetView<CardbagController, CardbagState> {
                 asset: 180.0,
                 name: element.account,
                 onTap: () {
-                  Get.toNamed(Routers.bagDetails);
+                  Get.toNamed(Routers.bagDetails,arguments: {"wallet":element});
                 },
               );
             }).toList());

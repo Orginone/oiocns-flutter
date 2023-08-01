@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:orginone/model/wallet_model.dart';
+import 'package:orginone/routers.dart';
 import 'package:orginone/widget/unified.dart';
 
 class Item extends StatelessWidget {
-  final String? name;
-  final String? cnName;
-  final VoidCallback? onTap;
+  final Coin coin;
 
   const Item({
     super.key,
-    this.name,
-    this.cnName,
-    this.onTap,
+    required this.coin,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: (){
+        Get.toNamed(Routers.walletDetails,arguments: {"coin":coin});
+      },
       child: Card(
           margin: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
           child: Padding(
@@ -31,15 +32,16 @@ class Item extends StatelessWidget {
                     Container(
                       width: 20.w,
                     ),
-                    Text('$name', style:  TextStyle(fontSize: 20.sp)),
+                    Text(coin.type??"", style:  TextStyle(fontSize: 20.sp)),
                     Container(
                       width: 10.w,
                     ),
-                    Text('($cnName)',
+                    Text('(${coin.type??""})',
                         style:
                              TextStyle(fontSize: 18.sp, color: Colors.grey)),
                   ],
                 ),
+                Text(coin.balance??"0"),
               ],
             ),
           )),
@@ -57,7 +59,7 @@ class Item extends StatelessWidget {
       child: Align(
         alignment: Alignment.center,
         child: Text(
-          name!.substring(0, 1),
+          (coin.type??"AS").substring(0, 1),
           style: XFonts.size28White,
         ),
       ),

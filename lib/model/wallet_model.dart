@@ -20,6 +20,8 @@ class Wallet {
   String? privateKey;
   @HiveField(7)
   String? publicKey;
+  @HiveField(8)
+  List<Coin>? coins;
 
   Wallet({
     this.account,
@@ -42,6 +44,12 @@ class Wallet {
     passwdHash = json['passwdHash'];
     privateKey = json['privateKey'];
     publicKey = json['publicKey'];
+    if (json['coins'] != null) {
+      coins = [];
+      json['coins'].forEach((json) {
+        coins!.add(Coin.fromJson(json));
+      });
+    }
   }
 
   // Convert the WalletBean instance to a JSON object
@@ -55,6 +63,66 @@ class Wallet {
       'passwdHash': passwdHash,
       'privateKey': privateKey,
       'publicKey': publicKey,
+      'coins': coins?.map((e) => e.toJson()).toList(),
     };
   }
 }
+
+@HiveType(typeId: 10)
+class Coin {
+  @HiveField(0)
+  String? address;
+  @HiveField(1)
+  String? type;
+  @HiveField(2)
+  String? tokenSymbol;
+  @HiveField(3)
+  String? node;
+  @HiveField(4)
+  String? balance;
+
+  Coin({this.address, this.type, this.node, this.balance, this.tokenSymbol});
+
+  Coin.fromJson(Map<String, dynamic> json) {
+    address = json['address'];
+    type = json['type'];
+    tokenSymbol = json['tokenSymbol'];
+    node = json['node'];
+    balance = json['balance'];
+  }
+
+  // Convert the WalletBean instance to a JSON object
+  Map<String, dynamic> toJson() {
+    return {
+      'address': address,
+      'util': node,
+      'tokenSymbol': tokenSymbol,
+      'cointype': type,
+      'balance': balance,
+    };
+  }
+}
+
+const DEFAULT_COINS = [
+  {
+    "address": "",
+    "type": "AS",
+    "tokenSymbol": "AS",
+    'node': '',
+    'balance': '0',
+  },
+  {
+    "address": "",
+    "type": "BTC",
+    "tokenSymbol": "BTC",
+    'node': '',
+    'balance': '0',
+  },
+  {
+    "address": "",
+    "type": "ETH",
+    "tokenSymbol": "ETH",
+    'node': '',
+    'balance': '0',
+  },
+];

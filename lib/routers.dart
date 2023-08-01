@@ -51,6 +51,8 @@ import 'pages/login/register/binding.dart';
 import 'pages/login/register/view.dart';
 import 'pages/login/verification_code/binding.dart';
 import 'pages/login/verification_code/view.dart';
+import 'pages/other/cardbag/bag_details/search_coin/binding.dart';
+import 'pages/other/cardbag/bag_details/search_coin/view.dart';
 import 'pages/other/cardbag/bag_details/view.dart';
 import 'pages/other/cardbag/bag_details/wallet_details/binding.dart';
 import 'pages/other/cardbag/bag_details/wallet_details/transfer_accounts.dart';
@@ -309,6 +311,7 @@ class Routers {
 
   static const String transferAccounts = "/transferAccounts";
 
+  static const String searchCoin = "/searchCoin";
 
   static String get main {
     var user = HiveUtils.getUser();
@@ -604,6 +607,11 @@ class Routers {
       GetPage(
         name: Routers.transferAccounts,
         page: () => TransferAccounts(),
+      ),
+      GetPage(
+        name: Routers.searchCoin,
+        page: () => SearchCoinPage(),
+        binding: SearchCoinBinding(),
       ),
     ];
   }

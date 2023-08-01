@@ -51,7 +51,6 @@ double defaultWidth = 10.w;
 class DetailItemWidget extends GetView<UserController> {
   final IMsgChat chat;
   final IMessage msg;
-
   DetailItemWidget({
     Key? key,
     required this.chat,
@@ -59,6 +58,8 @@ class DetailItemWidget extends GetView<UserController> {
   }) : super(key: key);
 
   MessageChatController get chatController => Get.find();
+
+
   @override
   Widget build(BuildContext context) {
     return _messageDetail(context);
@@ -209,7 +210,7 @@ class DetailItemWidget extends GetView<UserController> {
                       ),
                     ),
                     onTap: () {
-                      controller.chatMenuController.hideMenu();
+                      msg.chatController.hideMenu();
                       switch (item) {
                         case DetailFunc.recall:
                           chat.recallMessage(msg.id);
@@ -242,7 +243,7 @@ class DetailItemWidget extends GetView<UserController> {
 
     content.add(
       CustomPopupMenu(
-        controller: controller.chatMenuController,
+        controller:  msg.chatController,
         position: PreferredPosition.bottom,
         menuBuilder: _buildLongPressMenu,
         barrierColor: Colors.transparent,
