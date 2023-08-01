@@ -207,6 +207,7 @@ class _GyScaffoldState extends State<GyScaffold> {
         body: body,
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton:floatingActionButton ,
+      resizeToAvoidBottomInset: true,
     );
   }
 }
