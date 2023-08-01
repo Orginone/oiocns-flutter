@@ -204,7 +204,7 @@ class UserBar extends GetView<UserController> {
                     controller.showAddFeatures(item);
                   },
                   child: Container(
-                    padding:  EdgeInsets.symmetric(horizontal: 10.w),
+                    padding:  EdgeInsets.symmetric(horizontal: 20.w),
                     decoration: BoxDecoration(
                         border: Border(
                             bottom: BorderSide(
