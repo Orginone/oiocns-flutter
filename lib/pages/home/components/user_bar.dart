@@ -204,7 +204,7 @@ class UserBar extends GetView<UserController> {
                     controller.showAddFeatures(item);
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding:  EdgeInsets.symmetric(horizontal: 10.w),
                     decoration: BoxDecoration(
                         border: Border(
                             bottom: BorderSide(
@@ -218,8 +218,9 @@ class UserBar extends GetView<UserController> {
                         ),
                         Expanded(
                           child: Container(
-                            margin: const EdgeInsets.only(left: 10),
-                            padding: const EdgeInsets.symmetric(vertical: 7),
+                            margin: EdgeInsets.only(left: 10.w),
+                            padding:
+                            EdgeInsets.symmetric(vertical: 15.h),
                             child: Text(
                               item.shortcut.label,
                               style: TextStyle(
