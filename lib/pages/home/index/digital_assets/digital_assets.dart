@@ -6,6 +6,7 @@ import 'package:orginone/widget/dynamic_height_grid_view.dart';
 import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/unified.dart';
 
+import '../widget/widget.dart';
 import 'digital_assets_item.dart';
 
 class DigitalAssets extends StatefulWidget {
@@ -86,7 +87,7 @@ class _DigitalAssetsState extends State<DigitalAssets> {
   Widget newAssets() {
     return Column(
       children: [
-        CommonWidget.commonHeadInfoWidget("数字资产上新", action: arrow('查看更多数字资产')),
+        CommonWidget.commonHeadInfoWidget("数字资产上新", action: TextArrow(title: "查看更多数字资产",)),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: DynamicHeightGridView(
@@ -134,7 +135,7 @@ class _DigitalAssetsState extends State<DigitalAssets> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidget.commonHeadInfoWidget("相关制度", action: arrow('查看更多相关制度')),
+        CommonWidget.commonHeadInfoWidget("相关制度", action: TextArrow(title: "查看更多相关制度",)),
         relatedItem(
           "《浙江XXXXXXXXXXXXXXXXXXXXXXXX管理规范》简介",
         ),
@@ -173,19 +174,6 @@ class _DigitalAssetsState extends State<DigitalAssets> {
     );
   }
 
-  Widget arrow(String title, [VoidCallback? onTap]) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Text.rich(TextSpan(children: [
-        TextSpan(text: title, style: TextStyle(fontSize: 18.sp)),
-        WidgetSpan(
-            child: Container(
-                margin: EdgeInsets.only(left: 10.w),
-                child: const ImageWidget(Images.iconBlueArrow)),
-            alignment: PlaceholderAlignment.middle)
-      ])),
-    );
-  }
 
   Widget relatedItem(String title) {
     return GestureDetector(
