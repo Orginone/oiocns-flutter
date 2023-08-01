@@ -62,7 +62,7 @@ class UserBar extends GetView<UserController> {
                               width: 240.w,
                               child: Row(
                                 children: [
-                                  Text(controller.user.metadata.name ?? ""),
+                                  Text(controller.provider.user?.metadata.name ?? ""),
                                   Expanded(
                                     child: Container(
                                       margin: EdgeInsets.only(right: 10.w),
@@ -94,13 +94,13 @@ class UserBar extends GetView<UserController> {
                               height: 10.h,
                             ),
                             SizedBox(
+                              width: 240.w,
                               child: Text(
-                                controller.user.metadata.remark ?? "",
+                                controller.provider.user?.metadata.remark ?? "",
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                                 style: TextStyle(fontSize: 16.sp),
                               ),
-                              width: 240.w,
                             ),
                           ],
                         )
