@@ -68,7 +68,13 @@ class WalletChannel {
     }
     return records;
   }
+
+  Future<bool> createTransaction(Map<String, dynamic> params) async{
+    dynamic data = await _methodChannel.invokeMethod("createTransaction",params);
+    return data!=null;
+  }
 }
+
 
 
 const transactions = {

@@ -1,5 +1,7 @@
 package com.github.orginone;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
@@ -9,9 +11,13 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import walletapi.HDWallet;
 import walletapi.QueryByPage;
+import walletapi.SignData;
+import walletapi.Txdata;
 import walletapi.Util;
 import walletapi.WalletBalance;
 import walletapi.WalletQueryByAddr;
+import walletapi.WalletSendTx;
+import walletapi.WalletTx;
 import walletapi.Walletapi;
 
 public class WalletDelegate implements MethodChannel.MethodCallHandler {
@@ -74,7 +80,7 @@ public class WalletDelegate implements MethodChannel.MethodCallHandler {
                 WalletQueryByAddr walletQueryByAddr = new WalletQueryByAddr();
                 QueryByPage page = new QueryByPage();
                 page.setAddress(call.argument("address"));
-                page.setCointype(call.argument("cointype"));
+                page.setCointype(call.argument("coinType"));
                 page.setTokenSymbol(call.argument("tokenSymbol"));
                 page.setCount(Long.valueOf(call.argument("count").toString()));
                 page.setIndex(Long.valueOf(call.argument("index").toString()));
@@ -84,6 +90,30 @@ public class WalletDelegate implements MethodChannel.MethodCallHandler {
                 try {
                     String records = transactionsByaddress(walletQueryByAddr);
                     result.success(records);
+                } catch (Exception e) {
+                    result.success(null);
+                }
+                break;
+            case "createTransaction":
+                try {
+                    WalletTx walletTx = new WalletTx();
+                    walletTx.setCointype(call.argument("coinType"));
+                    if (call.argument("coinType") == call.argument("tokenSymbol")) {
+                        walletTx.setTokenSymbol("");
+                    } else {
+                        walletTx.setTokenSymbol(call.argument("tokenSymbol"));
+                    }
+                    Txdata txdata = new Txdata();
+                    txdata.setAmount(Double.parseDouble(call.argument("amount").toString()));
+                    txdata.setFee(Double.parseDouble(call.argument("fee").toString()));
+                    txdata.setFrom(call.argument("from"));
+                    txdata.setTo(call.argument("to"));
+                    txdata.setNote(call.argument("node"));
+                    walletTx.setTx(txdata);
+                    walletTx.setUtil(getUtil(call.argument("util")));
+                    String resultStr = createTransaction(walletTx, call.argument("privateKey"));
+
+                    result.success(resultStr);
                 } catch (Exception e) {
                     result.success(null);
                 }
@@ -154,7 +184,7 @@ public class WalletDelegate implements MethodChannel.MethodCallHandler {
     /**
      * 获取交易记录
      *
-     * @param walletQueryByAddr  钱包信息
+     * @param walletQueryByAddr 钱包信息
      */
     private String transactionsByaddress(WalletQueryByAddr walletQueryByAddr) throws Exception {
         byte[] bytes = Walletapi.queryTransactionsByaddress(walletQueryByAddr);
@@ -162,12 +192,73 @@ public class WalletDelegate implements MethodChannel.MethodCallHandler {
     }
 
 
-
-    private Util getUtil(String node){
-        util.setNode(node);
-        return  util;
+    private String createTransaction(WalletTx walletTx, String privateKey) throws Exception {
+        byte[] raw = Walletapi.createRawTransaction(walletTx);
+        String rawStr = Walletapi.byteTostring(raw);
+        StringResult stringResult = gson.fromJson(rawStr, StringResult.class);
+        String result = stringResult.getResult();
+        if (TextUtils.isEmpty(result)) {
+            return null;
+        }
+        SignData signData = new SignData();
+        signData.setCointype(walletTx.getCointype());
+        signData.setPrivKey(privateKey);
+        signData.setData(Walletapi.stringTobyte(result));
+        String sign = signTransaction(signData);
+        WalletSendTx sendTx = new WalletSendTx();
+        sendTx.setSignedTx(sign);
+        sendTx.setCointype(walletTx.getCointype());
+        sendTx.setUtil(walletTx.getUtil());
+        sendTx.setTokenSymbol(walletTx.getTokenSymbol());
+        return sendTransaction(sendTx);
     }
+
+    private String signTransaction(SignData signData) throws Exception {
+        return Walletapi.signRawTransaction(signData);
+    }
+
+    private String sendTransaction(WalletSendTx sendTx) throws Exception {
+        return Walletapi.byteTostring(Walletapi.sendRawTransaction(sendTx));
+    }
+
+
+    private Util getUtil(String node) {
+        util.setNode(node);
+        return util;
+    }
+
     void onDestroy() {
         walletChannel = null;
+    }
+}
+
+
+class StringResult {
+    private String error;
+    private int id;
+    private String result;
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
     }
 }
