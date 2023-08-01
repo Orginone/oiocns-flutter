@@ -2,11 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/images.dart';
+import 'package:orginone/pages/home/index/widget/widget.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/unified.dart';
-
-import 'welfare_item.dart';
 
 class Welfare extends StatefulWidget {
   const Welfare({Key? key}) : super(key: key);
@@ -69,11 +68,10 @@ class _WelfareState extends State<Welfare> {
         children: [
           CommonWidget.commonHeadInfoWidget(info, action: ImageWidget(Images.iconBlueArrow)),
           SizedBox(height: 10.h,),
-          ...List.generate(3, (index) =>  WelfareItem()).toList(),
+          ...List.generate(3, (index) =>  CardItem()).toList(),
         ],
       ),
     );
   }
-
-
 }
+

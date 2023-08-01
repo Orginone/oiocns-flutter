@@ -80,8 +80,12 @@ class Coin {
   String? node;
   @HiveField(4)
   String? balance;
+  @HiveField(5)
+  String? privateKey;
+  @HiveField(6)
+  String? publicKey;
 
-  Coin({this.address, this.type, this.node, this.balance, this.tokenSymbol});
+  Coin({this.address, this.type, this.node, this.balance, this.tokenSymbol,this.privateKey,this.publicKey});
 
   Coin.fromJson(Map<String, dynamic> json) {
     address = json['address'];
@@ -89,16 +93,20 @@ class Coin {
     tokenSymbol = json['tokenSymbol'];
     node = json['node'];
     balance = json['balance'];
+    privateKey = json['privateKey'];
+    publicKey = json['publicKey'];
   }
 
   // Convert the WalletBean instance to a JSON object
   Map<String, dynamic> toJson() {
     return {
-      'address': address,
-      'util': node,
-      'tokenSymbol': tokenSymbol,
-      'cointype': type,
-      'balance': balance,
+      'address': address??"",
+      'util': node??"",
+      'tokenSymbol': tokenSymbol??"",
+      'coinType': type??"",
+      'balance': balance??"",
+      'publicKey':publicKey??"",
+      'privateKey':privateKey??""
     };
   }
 }

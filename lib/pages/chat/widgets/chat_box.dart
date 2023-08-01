@@ -102,7 +102,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
       }
     });
     return Container(
-      color: Color(0xFFFCFDFF),
+      color: const Color(0xFFFCFDFF),
       padding: EdgeInsets.symmetric(vertical: 5.h),
       child: Column(
         children: [
@@ -156,7 +156,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
             valueChangedCallback: (rules, value) {
               controller.rules = rules;
             },
-            style: XFonts.size20Black3,
+            style: XFonts.size22Black3,
             controller: controller.inputController,
             decoration: InputDecoration(
               isCollapsed: true,

@@ -79,13 +79,15 @@ class CoinAdapter extends TypeAdapter<Coin> {
       node: fields[3] as String?,
       balance: fields[4] as String?,
       tokenSymbol: fields[2] as String?,
+      privateKey: fields[5] as String?,
+      publicKey: fields[6] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Coin obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.address)
       ..writeByte(1)
@@ -95,7 +97,11 @@ class CoinAdapter extends TypeAdapter<Coin> {
       ..writeByte(3)
       ..write(obj.node)
       ..writeByte(4)
-      ..write(obj.balance);
+      ..write(obj.balance)
+      ..writeByte(5)
+      ..write(obj.privateKey)
+      ..writeByte(6)
+      ..write(obj.publicKey);
   }
 
   @override

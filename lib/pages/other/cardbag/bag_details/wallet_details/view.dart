@@ -23,10 +23,6 @@ class WalletDetailsPage
     extends BaseGetView<WalletDetailsController, WalletDetailsState> {
   @override
   Widget buildView() {
-    final double statusBarHeight = MediaQuery.of(context).padding.top;
-    final double pinnedHeaderHeight =
-        statusBarHeight +
-            kToolbarHeight;
     return GyScaffold(
       titleName: "钱包详情",
       actions: [
@@ -136,7 +132,7 @@ class WalletDetailsPage
                       child: outlinedButton(
                         "转账",
                         onPressed: () {
-                          Get.toNamed(Routers.transferAccounts);
+                          Get.toNamed(Routers.transferAccounts,arguments: {"coin":state.coin});
                         },
                         height: 70.h,
                         style: ButtonStyle(

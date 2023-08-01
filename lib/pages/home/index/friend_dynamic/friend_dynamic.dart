@@ -1,37 +1,37 @@
+
+
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:orginone/images.dart';
-import 'package:orginone/main.dart';
 import 'package:orginone/pages/home/index/widget/widget.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/unified.dart';
 
-
-class GroupDynamics extends StatefulWidget {
-  const GroupDynamics({Key? key}) : super(key: key);
+class FriendDynamic extends StatefulWidget {
+  const FriendDynamic({Key? key}) : super(key: key);
 
   @override
-  State<GroupDynamics> createState() => _GroupDynamicsState();
+  State<FriendDynamic> createState() => _FriendDynamicState();
 }
 
-class _GroupDynamicsState extends State<GroupDynamics> {
+class _FriendDynamicState extends State<FriendDynamic> {
   @override
   Widget build(BuildContext context) {
     return ListView(
       padding: EdgeInsets.symmetric(vertical: 15.h),
       children: [
-        mostViewed(),
-        SizedBox(height: 10.h,),
-        NewsPage(),
+        concerned(),
         SizedBox(height: 10.h),
         newDynamic(),
       ],
     );
   }
 
-  Widget mostViewed(){
+
+  Widget concerned(){
     return Card(
       shadowColor: XColors.cardShadowColor,
       elevation: 1.25,
@@ -43,8 +43,8 @@ class _GroupDynamicsState extends State<GroupDynamics> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("最常浏览",style: XFonts.size22Black0W700,),
-                TextArrow(title: "查看我的关注",)
+                Text("特别关心",style: XFonts.size22Black0W700,),
+                TextArrow(title: '',)
               ],
             ),
             SizedBox(height: 10.h,),
@@ -61,16 +61,11 @@ class _GroupDynamicsState extends State<GroupDynamics> {
   Widget newDynamic(){
     return Column(
       children: [
-        CommonWidget.commonHeadInfoWidget("最新动态", action: TextArrow(title: '查看全部动态',)),
+        CommonWidget.commonHeadInfoWidget("最新动态", action: TextArrow(title: "查看全部动态",)),
         SizedBox(height: 10.h,),
         ...List.generate(5, (index) =>  CardItem()).toList(),
       ],
     );
   }
 
-
-
-
-
-  
 }

@@ -6,9 +6,12 @@ import 'package:orginone/widget/keep_alive_widget.dart';
 import 'package:orginone/widget/unified.dart';
 
 import 'digital_assets/digital_assets.dart';
+import 'friend_dynamic/friend_dynamic.dart';
 import 'group_dynamics/group_dynamics.dart';
 import 'logic.dart';
+import 'shared_software/shared_software.dart';
 import 'state.dart';
+import 'warehouse/warehouse.dart';
 import 'welfare/welfare.dart';
 
 class IndexPage extends BaseGetPageView<IndexController,IndexState>{
@@ -22,9 +25,9 @@ class IndexPage extends BaseGetPageView<IndexController,IndexState>{
             controller: state.tabController,
             children: [
               GroupDynamics(),
-              Container(),
-              Container(),
-              Container(),
+              FriendDynamic(),
+              SharedSoftware(),
+              Warehouse(),
               Welfare(),
               DigitalAssets(),
             ]
