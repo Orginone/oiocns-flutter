@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 
@@ -24,9 +26,11 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
 
   var verifyPassWordUnVisible = true;
 
+  String CHINESE_REGEX = "[\u4e00-\u9fa5]";
+
   @override
   Widget build(BuildContext context) {
-    bool isBagList = Get.arguments?['isBagList']??false;
+    bool isBagList = Get.arguments?['isBagList'] ?? false;
 
     return GyScaffold(
       titleName: "导入钱包",
@@ -108,16 +112,45 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
                 ),
               ),
             ),
-            Expanded(child: SizedBox()),
-            CommonWidget.commonSubmitWidget(text: "开始导入", submit: () {
-              Routers.changeTransition();
-             if(!isBagList){
-               Get.offUntil(GetPageRoute(),(route) => route.settings.name == Routers.home);
-               Get.offAndToNamed(Routers.cardbag);
-             }else{
-               Get.back();
-             }
-            })
+            const Expanded(child: SizedBox()),
+            CommonWidget.commonSubmitWidget(
+                text: "开始导入",
+                submit: () async {
+
+                  if(userNameController.text.isEmpty){
+                    ToastUtils.showMsg(msg: "请输入用户名");
+                    return;
+                  }
+                  if(passWordController.text.isEmpty){
+                    ToastUtils.showMsg(msg: "请输入密码");
+                    return;
+                  }
+                  if(passWordController.text != verifyPassWordController.text){
+                    ToastUtils.showMsg(msg: "两次密码不正确");
+                    return;
+                  }
+
+                  String mnemonics;
+                  if (mnemonicController.text.contains(RegExp(CHINESE_REGEX))) {
+                    mnemonics =
+                        mnemonicController.text.replaceAll(" ", '').split('').toList().join(' ');
+                  } else {
+                    mnemonics = mnemonicController.text;
+                  }
+                  bool success = await walletCtrl.createWallet(mnemonics,
+                      userNameController.text, passWordController.text);
+                  if (success) {
+                    ToastUtils.showMsg(msg: "导入成功");
+                    Routers.changeTransition();
+                    if (!isBagList) {
+                      Get.offUntil(GetPageRoute(),
+                          (route) => route.settings.name == Routers.home);
+                      Get.offAndToNamed(Routers.cardbag);
+                    } else {
+                      Get.back();
+                    }
+                  }
+                })
           ],
         ),
       ),

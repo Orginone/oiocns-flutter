@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/channel/wallet_channel.dart';
@@ -136,10 +137,28 @@ class _BackupMnemonicsState extends State<BackupMnemonics>
               ),
               Expanded(
                 child: outlinedButton("下一步", onPressed: () {
-                  controller.setMnemonics(
-                      tabController.index == 0 ? chineseKey : englishKey,
-                      tabController.index == 0 ? 1 : 0);
-                  controller.nextPage();
+                  showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (BuildContext context) {
+                      return ClassicGeneralDialogWidget(
+                        titleText: '确认备份完成助记词',
+                        contentText: '请确保助记词已经完成备份',
+                        positiveText: "确定",
+                        negativeText: "取消",
+                        onPositiveClick: () {
+                          Navigator.of(context).pop();
+                          controller.setMnemonics(
+                              tabController.index == 0 ? chineseKey : englishKey,
+                              tabController.index == 0 ? 1 : 0);
+                          controller.nextPage();
+                        },
+                        onNegativeClick: () {
+                          Navigator.of(context).pop();
+                        },
+                      );
+                    },
+                  );
                 },
                     style: ButtonStyle(
                       backgroundColor:
