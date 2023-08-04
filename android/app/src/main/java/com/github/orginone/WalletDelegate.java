@@ -66,7 +66,7 @@ public class WalletDelegate implements MethodChannel.MethodCallHandler {
             case "getBalance":
                 WalletBalance walletBalance = new WalletBalance();
                 walletBalance.setAddress(call.argument("address"));
-                walletBalance.setCointype(call.argument("cointype"));
+                walletBalance.setCointype(call.argument("coinType"));
                 walletBalance.setUtil(getUtil(call.argument("util")));
                 walletBalance.setTokenSymbol(call.argument("tokenSymbol"));
                 try {
@@ -108,7 +108,7 @@ public class WalletDelegate implements MethodChannel.MethodCallHandler {
                     txdata.setFee(Double.parseDouble(call.argument("fee").toString()));
                     txdata.setFrom(call.argument("from"));
                     txdata.setTo(call.argument("to"));
-                    txdata.setNote(call.argument("node"));
+                    txdata.setNote(call.argument("note"));
                     walletTx.setTx(txdata);
                     walletTx.setUtil(getUtil(call.argument("util")));
                     String resultStr = createTransaction(walletTx, call.argument("privateKey"));

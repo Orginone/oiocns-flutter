@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:hive/hive.dart';
 
 part 'wallet_model.g.dart';
@@ -39,8 +42,22 @@ class Wallet {
   Wallet.fromJson(Map<String, dynamic> json) {
     account = json['account'];
     address = json['address'];
-    encPasswd = List<int>.from(json['encPasswd']);
-    mnemonicsEncKey = List<int>.from(json['mnemonicsEncKey']);
+    if(json['encPasswd']!=null){
+      if(Platform.isIOS){
+        encPasswd = base64Decode(json['encPasswd']);
+      }else{
+        encPasswd = List<int>.from(json['encPasswd']);
+      }
+    }
+
+    if(json['mnemonicsEncKey']!=null){
+      if(Platform.isIOS){
+        mnemonicsEncKey = base64Decode(json['mnemonicsEncKey']);
+      }else{
+        mnemonicsEncKey = List<int>.from(json['mnemonicsEncKey']);
+      }
+    }
+
     passWord = json['passWord'];
     passwdHash = json['passwdHash'];
     privateKey = json['privateKey'];
