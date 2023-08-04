@@ -46,10 +46,10 @@ class Tips extends StatelessWidget {
   }
 
   Widget _tips(
-    String title,
-    IconData iconData,
-    String content,
-  ) {
+      String title,
+      IconData iconData,
+      String content,
+      ) {
     return Row(
       children: [
         Icon(iconData),
@@ -63,7 +63,7 @@ class Tips extends StatelessWidget {
                   textAlign: TextAlign.start,
                   title,
                   style:
-                      TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+                  TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
               Text(
                   textAlign: TextAlign.start,
                   content,
@@ -76,45 +76,3 @@ class Tips extends StatelessWidget {
   }
 }
 
-// class _ActionArea extends ConsumerStatefulWidget {
-//   final void Function() onClickCreateButton;
-//
-//   _ActionArea(this.onClickCreateButton, {Key? key}) : super(key: key) {
-//     Log.i("action-area 初始化");
-//   }
-//
-//   @override
-//   ConsumerState<_ActionArea> createState() => _ActionAreaState();
-// }
-//
-// class _ActionAreaState extends ConsumerState<_ActionArea> {
-//   void _onCheckedChanged(bool? checked) {
-//     ref.read(_tipsAccepted.state).state = checked ?? false;
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final isChecked = ref.watch(_tipsAccepted);
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.stretch,
-//       children: [
-//         Row(
-//           crossAxisAlignment: CrossAxisAlignment.end,
-//           children: [
-//             Checkbox(
-//               value: isChecked,
-//               onChanged: _onCheckedChanged,
-//               activeColor: Theme.of(context).primaryColor,
-//               shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.circular(1000)),
-//             ),
-//             const Expanded(child: Text("我了解助记词由我个人保管，一旦丢失 xxx 无法为我找回")),
-//           ],
-//         ),
-//         const SizedBox(height: 10),
-//         const SizedBox(height: 20),
-//       ],
-//     );
-//   }
-// }
-//

@@ -29,7 +29,7 @@ class _VerifyMnemonicState extends State<VerifyMnemonic> {
     // TODO: implement initState
     super.initState();
     sortMnemonics = List.generate(controller.state.mnemonics.length,
-        (index) => _VerifyWord(index, controller.state.mnemonics[index]));
+            (index) => _VerifyWord(index, controller.state.mnemonics[index]));
     sortMnemonics.sort((a, b) => Random().nextInt(100) > 30 ? 1 : -1);
 
   }

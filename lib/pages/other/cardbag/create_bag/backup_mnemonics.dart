@@ -99,7 +99,7 @@ class _BackupMnemonicsState extends State<BackupMnemonics>
                       KeepAliveWidget(
                           child: GridMnemonicsView(
                             keys: chineseKey,
-                      )),
+                          )),
                       KeepAliveWidget(
                           child: GridMnemonicsView(keys: englishKey)),
                     ],
@@ -162,7 +162,7 @@ class _BackupMnemonicsState extends State<BackupMnemonics>
                 },
                     style: ButtonStyle(
                       backgroundColor:
-                          MaterialStateProperty.all(Colors.blueAccent),
+                      MaterialStateProperty.all(Colors.blueAccent),
                       side: MaterialStateProperty.all(BorderSide.none),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(36.w))),

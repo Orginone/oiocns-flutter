@@ -32,6 +32,7 @@ class Wallet {
     this.passwdHash,
     this.privateKey,
     this.publicKey,
+    this.coins
   });
 
   // Factory method to create a WalletBean instance from a JSON object

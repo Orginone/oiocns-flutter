@@ -56,13 +56,13 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CommonWidget.commonTextTile(
-              "",
-              "",
-              controller: mnemonicController,
-              maxLine: 5,
-              hint: '请输入助记词,用空格分隔',
-              backgroundColor: Colors.grey.shade200,
-              hintTextStyle: TextStyle(color: Colors.grey,fontSize: 20.sp),
+                "",
+                "",
+                controller: mnemonicController,
+                maxLine: 5,
+                hint: '请输入助记词,用空格分隔',
+                backgroundColor: Colors.grey.shade200,
+                hintTextStyle: TextStyle(color: Colors.grey,fontSize: 20.sp),
                 textStyle: TextStyle(color: Colors.black,fontSize: 20.sp)
             ),
             SizedBox(height: 10.h,),
@@ -144,7 +144,7 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
                     Routers.changeTransition();
                     if (!isBagList) {
                       Get.offUntil(GetPageRoute(),
-                          (route) => route.settings.name == Routers.home);
+                              (route) => route.settings.name == Routers.home);
                       Get.offAndToNamed(Routers.cardbag);
                     } else {
                       Get.back();
