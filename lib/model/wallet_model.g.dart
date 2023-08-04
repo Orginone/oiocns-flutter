@@ -25,7 +25,8 @@ class WalletAdapter extends TypeAdapter<Wallet> {
       passwdHash: fields[5] as String?,
       privateKey: fields[6] as String?,
       publicKey: fields[7] as String?,
-    )..coins = (fields[8] as List?)?.cast<Coin>();
+      coins: (fields[8] as List?)?.cast<Coin>(),
+    );
   }
 
   @override
