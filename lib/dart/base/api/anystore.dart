@@ -117,7 +117,7 @@ class AnyStore {
   Future<List<XWorkTask>> pageRequest(String key, String belongId,Map<String,dynamic> options,PageRequest page) async {
     List<XWorkTask> task = [];
     var raw = await aggregate(key,options,belongId);
-    if(raw.data!=null && raw.data[0]['count']>0){
+    if(raw.data!=null && raw.data.isNotEmpty){
       options['skip'] = page.offset;
       options['limit'] = page.limit;
       var res = await aggregate(key,options,belongId);
