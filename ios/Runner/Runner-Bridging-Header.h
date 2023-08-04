@@ -1,2 +1,2 @@
 #import "GeneratedPluginRegistrant.h"
-//#import "Walletapi/Walletapi.h"
+#import "Walletapi/Walletapi.h"

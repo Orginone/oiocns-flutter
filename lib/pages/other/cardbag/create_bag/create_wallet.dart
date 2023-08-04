@@ -86,10 +86,19 @@ class _CreateWalletState extends State<CreateWallet> {
           ),
           Expanded(child: SizedBox()),
           elevatedButton("创建", onPressed: () async{
-            if(verifyPassWordController.text!=passWordController.text){
-               ToastUtils.showMsg(msg: "两次输入的密码不一致请重新输入");
-               return;
+            if(userNameController.text.isEmpty){
+              ToastUtils.showMsg(msg: "请输入用户名");
+              return;
             }
+            if(passWordController.text.isEmpty){
+              ToastUtils.showMsg(msg: "请输入密码");
+              return;
+            }
+            if(passWordController.text != verifyPassWordController.text){
+              ToastUtils.showMsg(msg: "两次密码不正确");
+              return;
+            }
+
 
             dynamic mnemonics;
             if (controller.state.mnemonicType == 0) {

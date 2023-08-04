@@ -22,8 +22,8 @@ class UserBar extends GetView<UserController> {
       return Container(
         decoration: BoxDecoration(
             border: Border(
-          bottom: BorderSide(color: Colors.grey.shade400, width: 0.4),
-        )),
+              bottom: BorderSide(color: Colors.grey.shade400, width: 0.4),
+            )),
         child: _userBar,
       );
     });
@@ -83,7 +83,7 @@ class UserBar extends GetView<UserController> {
                                         ),
                                         padding: EdgeInsets.zero,
                                         constraints:
-                                            BoxConstraints(maxHeight: 24.w),
+                                        BoxConstraints(maxHeight: 24.w),
                                       ),
                                     ),
                                   )
@@ -110,45 +110,45 @@ class UserBar extends GetView<UserController> {
                   ...SettingEnum.values
                       .map(
                         (item) => GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: () {
-                            controller.functionMenuController.hideMenu();
-                            controller.jumpSetting(item);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 10.w),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                    color: Colors.grey.shade300, width: 0.5),
-                              ),
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                Icon(
-                                  item.icon,
-                                  size: 24.w,
-                                  color: Colors.black,
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    margin: EdgeInsets.only(left: 10.w),
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 15.h),
-                                    child: Text(
-                                      item.label,
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 24.sp,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {
+                        controller.functionMenuController.hideMenu();
+                        controller.jumpSetting(item);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10.w),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                                color: Colors.grey.shade300, width: 0.5),
                           ),
                         ),
-                      )
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              item.icon,
+                              size: 24.w,
+                              color: Colors.black,
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(left: 10.w),
+                                padding:
+                                EdgeInsets.symmetric(vertical: 15.h),
+                                child: Text(
+                                  item.label,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 24.sp,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
                       .toList()
                 ],
                 controller: controller.functionMenuController),
@@ -198,43 +198,43 @@ class UserBar extends GetView<UserController> {
           children: controller.menuItems
               .map(
                 (item) => GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: () {
-                    controller.settingMenuController.hideMenu();
-                    controller.showAddFeatures(item);
-                  },
-                  child: Container(
-                    padding:  EdgeInsets.symmetric(horizontal: 20.w),
-                    decoration: BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(
-                                color: Colors.grey.shade300, width: 0.5))),
-                    child: Row(
-                      children: <Widget>[
-                        Icon(
-                          item.shortcut.icon,
-                          size: 24.w,
-                          color: Colors.black,
-                        ),
-                        Expanded(
-                          child: Container(
-                            margin: EdgeInsets.only(left: 10.w),
-                            padding:
-                            EdgeInsets.symmetric(vertical: 15.h),
-                            child: Text(
-                              item.shortcut.label,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 24.sp,
-                              ),
-                            ),
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                controller.settingMenuController.hideMenu();
+                controller.showAddFeatures(item);
+              },
+              child: Container(
+                padding:  EdgeInsets.symmetric(horizontal: 20.w),
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(
+                            color: Colors.grey.shade300, width: 0.5))),
+                child: Row(
+                  children: <Widget>[
+                    Icon(
+                      item.shortcut.icon,
+                      size: 24.w,
+                      color: Colors.black,
+                    ),
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.only(left: 10.w),
+                        padding:
+                        EdgeInsets.symmetric(vertical: 15.h),
+                        child: Text(
+                          item.shortcut.label,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 24.sp,
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              )
+              ),
+            ),
+          )
               .toList(),
           controller: controller.settingMenuController,
           child: const Icon(
@@ -250,8 +250,8 @@ class UserBar extends GetView<UserController> {
 
   Widget customPopupMenu(
       {CustomPopupMenuController? controller,
-      required Widget child,
-      required List<Widget> children}) {
+        required Widget child,
+        required List<Widget> children}) {
     return CustomPopupMenu(
       menuBuilder: () => ClipRRect(
         borderRadius: BorderRadius.circular(5),
@@ -274,9 +274,9 @@ class UserBar extends GetView<UserController> {
 
   Widget _imgAvatar(EdgeInsets insets,
       {BoxFit fit = BoxFit.cover,
-      bool circular = true,
-      double size = 45,
-      double? radius}) {
+        bool circular = true,
+        double size = 45,
+        double? radius}) {
     return Obx(() {
       dynamic avatar;
       var share = controller.provider.user?.share;
