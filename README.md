@@ -36,8 +36,8 @@
 
 目前官方 Flutter 版本迭代较快，其中引用的一些库在新版本中并没有适配,，建议 Flutter 版本与以下相同，后期考虑兼容升级。
 
-1. Flutter 3.7.0
-2. Dart 2.19.0
+1. Flutter 3.10.0
+2. Dart 3.0.0
 3. DevTools 2.20.1 
 
 Flutter 安装过程可以参考 [Flutter 中文开发者网站 - Flutter](https://flutter.cn/docs)
