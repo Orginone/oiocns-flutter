@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
+import 'package:logging/logging.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/user_controller.dart';
@@ -92,14 +94,28 @@ class DetailItemWidget extends GetView<UserController> {
     if (msg.msgType == MessageType.recall.label) {
       Widget child;
       if (isSelf) {
-        child = Text("您撤回了一条消息", style: XFonts.size18Black9);
+        List<InlineSpan> recallMsgs=[TextSpan(text: "您撤回了一条消息", style: XFonts.size18Black9)];
+        
+        String msgStr=jsonDecode(msg.msgBody.substring(5))['body'];
+        if(!StringUtil.isJson(msgStr)) {
+          recallMsgs.add(TextSpan(text:" 重新编辑",style: TextStyle(color: Colors.blueAccent,fontSize: 20.sp),
+            recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              ChatBoxController controller = Get.find<ChatBoxController>();
+
+              controller.inputController.text = msgStr;
+              controller.eventFire(context, InputEvent.clickInput, chat);
+            }
+          ));
+        }
+        child = Text.rich(TextSpan(children: recallMsgs));
       } else {
         child = Text.rich(TextSpan(children: [
           WidgetSpan(
               child: TargetText(
-                style: XFonts.size18Black9,
-                userId: msg.metadata.fromId,
-                shareIcon: shareIcon,
+                  style: XFonts.size18Black9,
+                  userId: msg.metadata.fromId,
+                  shareIcon: shareIcon,
               ),
               alignment: PlaceholderAlignment.middle),
           TextSpan(text: "撤回了一条消息", style: XFonts.size18Black9),
