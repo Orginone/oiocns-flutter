@@ -10,7 +10,6 @@ import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
-import 'package:logging/logging.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/user_controller.dart';
@@ -113,9 +112,9 @@ class DetailItemWidget extends GetView<UserController> {
         child = Text.rich(TextSpan(children: [
           WidgetSpan(
               child: TargetText(
-                  style: XFonts.size18Black9,
-                  userId: msg.metadata.fromId,
-                  shareIcon: shareIcon,
+                style: XFonts.size18Black9,
+                userId: msg.metadata.fromId,
+                shareIcon: shareIcon,
               ),
               alignment: PlaceholderAlignment.middle),
           TextSpan(text: "撤回了一条消息", style: XFonts.size18Black9),
