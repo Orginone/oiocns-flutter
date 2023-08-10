@@ -127,4 +127,15 @@ class StringUtil {
   static String formatFileSize(int size) {
     return "${(size * 1.0 / 1024 / 1024).toStringAsFixed(1)}M";
   }
+
+  /// 判断文本是否为json字符串
+  static bool isJson(String str) {
+    bool isJsonStr=false;
+
+    try{
+      jsonDecode(str);
+      isJsonStr=true;
+    }catch(e){}
+    return isJsonStr;
+  }
 }
