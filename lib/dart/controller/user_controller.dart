@@ -271,9 +271,7 @@ class UserController extends GetxController {
   void jumpSetting(SettingEnum item) {
     switch (item) {
       case SettingEnum.security:
-        Get.toNamed(
-          Routers.security,
-        );
+        Get.toNamed(Routers.forgotPassword);
         break;
       case SettingEnum.cardbag:
         Routers.jumpCardBag();
