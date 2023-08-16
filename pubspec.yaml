@@ -67,8 +67,11 @@ dependencies:
   flutter_screenutil: ^5.8.4
   fluttertoast: ^8.0.9
   permission_handler: ^10.0.1
+  # 二维码扫描
   qr_code_scanner: ^1.0.1
   qr_flutter: ^4.0.0
+  #扫码 支持图片识别
+  scan: ^1.6.0
   image_picker: ^0.8.5+3
   webview_flutter: ^4.2.1
   flutter_local_notifications: ^11.0.0
@@ -137,9 +140,10 @@ dependencies:
   extended_nested_scroll_view: ^6.1.2
   extended_tabs:
     git:
-     url: https://github.com/xy221150/extended_tabs.git
-     ref: master
+      url: https://github.com/xy221150/extended_tabs.git
+      ref: master
   dots_indicator: ^3.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
