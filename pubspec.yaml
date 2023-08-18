@@ -73,6 +73,7 @@ dependencies:
   #扫码 支持图片识别
   scan: ^1.6.0
   image_picker: ^0.8.5+3
+  image_gallery_saver: ^2.0.3
   webview_flutter: ^4.2.1
   flutter_local_notifications: ^11.0.0
   emoji_picker_flutter: ^1.5.0

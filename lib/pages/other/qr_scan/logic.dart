@@ -16,7 +16,7 @@ class QrScanController extends BaseController<QrScanState> {
   @override
   onInit() {
     super.onInit();
-    requestPermission();
+    // requestPermission();
   }
 
   requestPermission() async {
@@ -41,7 +41,7 @@ class QrScanController extends BaseController<QrScanState> {
       }
     } on PlatformException catch (error) {
       if (error.code == "camera_access_denied") {
-        PermissionUtil.showPermissionDialog(context, Permission.camera);
+        PermissionUtil.showPermissionDialog(context, Permission.photos);
       }
     } catch (error) {
       error.printError();
