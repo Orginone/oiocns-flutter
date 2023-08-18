@@ -6,6 +6,8 @@ import 'logic.dart';
 import 'state.dart';
 
 class QrScanPage extends BaseGetView<QrScanController, QrScanState> {
+  const QrScanPage({super.key});
+
   @override
   Widget buildView() {
     return GyScaffold(
