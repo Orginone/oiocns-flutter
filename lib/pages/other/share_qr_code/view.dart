@@ -1,20 +1,13 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/config/color.dart';
-import 'package:orginone/config/constant.dart';
 import 'package:orginone/config/index.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/extension/ex_list.dart';
 import 'package:orginone/extension/ex_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/text_widget.dart';
-import 'package:orginone/widget/unified.dart';
-import 'package:orginone/widget/widgets/team_avatar.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import 'logic.dart';
@@ -22,7 +15,7 @@ import 'state.dart';
 
 class ShareQrCodePage
     extends BaseGetView<ShareQrCodeController, ShareQrCodeState> {
-  const ShareQrCodePage({super.key});
+  ShareQrCodePage();
 
   @override
   Widget buildView() {
@@ -35,25 +28,27 @@ class ShareQrCodePage
   Widget buildMainView() {
     return <Widget>[
       buildUserQrInfoView(),
-      buildActions()
-          .paddingTop(GYSpace.page * 1.3)
-          .paddingHorizontal(GYSpace.paragraph)
+      buildActions().paddingHorizontal(GYSpace.paragraph)
     ].toColumn();
   }
 
   Widget buildUserQrInfoView() {
-    return RepaintBoundary(
-      key: controller.globalKey,
-      child: <Widget>[
-        infoView(),
-        buildQRImageView().paddingTop(GYSpace.paragraph),
-        buildTipTextView().paddingTop(GYSpace.card),
-      ]
-          .toColumn()
-          .paddingAll(GYSpace.paragraph)
-          .card(color: GYColors.white)
-          .paddingHorizontal(GYSpace.paragraph)
-          .paddingTop(GYSpace.paragraph * 2),
+    return Container(
+      padding: EdgeInsets.only(
+          top: GYSpace.paragraph * 2,
+          bottom: GYSpace.paragraph,
+          left: GYSpace.paragraph,
+          right: GYSpace.paragraph),
+      child: RepaintBoundary(
+          key: controller.globalKey,
+          child: <Widget>[
+            infoView(),
+            buildQRImageView().paddingTop(GYSpace.paragraph),
+            buildTipTextView().paddingTop(GYSpace.card),
+          ]
+              .toColumn()
+              .paddingAll(GYSpace.paragraph)
+              .card(color: GYColors.white)),
     );
   }
 
@@ -105,7 +100,7 @@ class ShareQrCodePage
   ///提示语
   TextWidget buildTipTextView() {
     return const TextWidget(
-      text: '扫一扫上面的二维码图案，添加我为好友',
+      text: '扫一扫上面的二维码图案，一起分享吧',
       style: TextStyle(
         color: GYColors.gray_99,
         fontSize: 12,
