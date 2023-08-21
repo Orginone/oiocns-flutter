@@ -1,32 +1,27 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/user_controller.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/main.dart';
-
 import 'package:orginone/pages/chat/message_forward.dart';
-import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:ui' as ui;
-
 import 'state.dart';
 
 class ShareQrCodeController extends BaseController<ShareQrCodeState> {
   final ShareQrCodeState state = ShareQrCodeState();
   final GlobalKey globalKey = GlobalKey();
   scan() {
-    Log.info('扫描');
+    // Log.info('扫描');
     UserController c = Get.find<UserController>();
     c.qrScan();
   }
@@ -54,7 +49,7 @@ class ShareQrCodeController extends BaseController<ShareQrCodeState> {
             builder: (context) {
               return MessageForward(
                 msgBody: MsgBodyModel.fromJson(item.shareInfo().toJson()),
-                msgType: MessageType.file.label,
+                msgType: MessageType.image.label,
                 onSuccess: () {
                   Navigator.pop(context);
                 },
@@ -69,7 +64,7 @@ class ShareQrCodeController extends BaseController<ShareQrCodeState> {
   }
 
   save() async {
-    Log.info('保存');
+    // Log.info('保存');
 
     bool req = await requestPermission();
     if (req) {
@@ -81,17 +76,21 @@ class ShareQrCodeController extends BaseController<ShareQrCodeState> {
   // / 动态申请权限，需要区分android和ios，很多时候它两配置权限时各自的名称不同
   // / 此处以保存图片需要的配置为例
   Future<bool> requestPermission() async {
-    late PermissionStatus status;
     // 1、读取系统权限的弹框
-    if (Platform.isIOS) {
-      status = await Permission.photosAddOnly.request();
-    } else {
-      status = await Permission.storage.request();
-      // status = await Permission.manageExternalStorage.request();
+    PermissionStatus storageStatus = await Permission.storage.status;
+    if (storageStatus != PermissionStatus.granted) {
+      if (Platform.isIOS) {
+        storageStatus = await Permission.photosAddOnly.request();
+      } else {
+        storageStatus = await Permission.storage.request();
+        // Log.info('storageStatus: $storageStatus');
+        // storageStatus = await Permission.manageExternalStorage.request();
+      }
     }
+
     // 2、假如你点not allow后，下次点击不会在出现系统权限的弹框（系统权限的弹框只会出现一次），
     // 这时候需要你自己写一个弹框，然后去打开app权限的页面
-    if (status != PermissionStatus.granted) {
+    if (storageStatus != PermissionStatus.granted) {
       showCupertinoDialog(
           context: Get.context!,
           builder: (context) {
