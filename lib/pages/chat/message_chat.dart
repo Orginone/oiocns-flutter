@@ -80,12 +80,11 @@ class MessageChatPage
 class MessageChatController extends BaseController<MessageChatState> {
   final MessageChatState state = MessageChatState();
 
-
   @override
   void onReady() {
     // TODO: implement onReady
     super.onReady();
-    Future.delayed(const Duration(milliseconds: 100),(){
+    Future.delayed(const Duration(milliseconds: 100), () {
       markVisibleMessagesAsRead();
     });
   }
@@ -94,9 +93,13 @@ class MessageChatController extends BaseController<MessageChatState> {
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return MessageForward(msgBody: msgBody, msgType: msgType, onSuccess: () {
-            Navigator.pop(context);
-          },);
+          return MessageForward(
+            msgBody: msgBody,
+            msgType: msgType,
+            onSuccess: () {
+              Navigator.pop(context);
+            },
+          );
         },
         isScrollControlled: true,
         isDismissible: false,
@@ -105,18 +108,19 @@ class MessageChatController extends BaseController<MessageChatState> {
   }
 
   void markVisibleMessagesAsRead() {
-    final RenderObject? renderObject = state.scrollKey.currentContext
-        ?.findRenderObject();
+    final RenderObject? renderObject =
+        state.scrollKey.currentContext?.findRenderObject();
     if (renderObject is RenderBox) {
       final Offset topLeft = renderObject.localToGlobal(Offset.zero);
-      final Offset bottomRight = renderObject.localToGlobal(
-          renderObject.size.bottomRight(Offset.zero));
+      final Offset bottomRight = renderObject
+          .localToGlobal(renderObject.size.bottomRight(Offset.zero));
       final Rect bounds = Rect.fromPoints(topLeft, bottomRight);
       for (var message in state.chat.messages) {
         if (isMessageVisible(bounds, message.metadata.key)) {
           bool isRead = false;
           try {
-            var tag = message.labels.firstWhere((element) => element.userId == settingCtrl.user.id);
+            var tag = message.labels
+                .firstWhere((element) => element.userId == settingCtrl.user.id);
             isRead = tag != null;
           } catch (e) {
             isRead = false;
@@ -133,15 +137,21 @@ class MessageChatController extends BaseController<MessageChatState> {
   bool isMessageVisible(Rect bounds, GlobalKey key) {
     final RenderObject? renderObject = key.currentContext?.findRenderObject();
     if (renderObject is RenderBox) {
-      final RenderAbstractViewport viewport = RenderAbstractViewport.of(
-          renderObject);
+      final RenderAbstractViewport viewport =
+          RenderAbstractViewport.of(renderObject);
       return bounds.overlaps(viewport.paintBounds);
     }
     return false;
   }
 
-  void showReadMessage(List<XTarget> readMember, List<XTarget> unreadMember, List<IMessageLabel> labels) {
-    showMessageReadDialog(context, readMember, unreadMember,labels);
+  void showReadMessage(List<XTarget> readMember, List<XTarget> unreadMember,
+      List<IMessageLabel> labels) {
+    // showMessageReadDialog(context, readMember, unreadMember,labels);
+    Get.toNamed(Routers.messageReceive, arguments: {
+      'readMember': readMember,
+      'unreadMember': unreadMember,
+      'labels': labels
+    });
   }
 
   @override
@@ -182,5 +192,4 @@ class MessageChatBinding extends BaseBindings<MessageChatController> {
   MessageChatController getController() {
     return MessageChatController();
   }
-
 }

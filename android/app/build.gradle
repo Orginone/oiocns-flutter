@@ -56,7 +56,11 @@ android {
         // You can update the following values to match your application needs. 
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
         minSdkVersion 24
-        targetSdkVersion flutter.targetSdkVersion
+        //部分安卓手机型号，在申请存储相关权限时，无法获取存储权限，跳转到设置里，也无法找到存储相关
+        //发现是安卓13版本的问题安卓文档permission_handler的issues里面也有人提出了问题目前(2023-3-6) https://github.com/Baseflow/flutter-permission-handler/issues/995
+        //只能通过降低targetSdkVersion的办法解决，将targetSdkVersion从33变为32
+        // targetSdkVersion flutter.targetSdkVersion
+        targetSdkVersion 32
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/pages/chat/message_chat_info/view.dart';
+import 'package:orginone/pages/chat/message_receive_page/index.dart';
 import 'package:orginone/pages/chat/message_routers.dart';
 import 'package:orginone/pages/chat/message_setting.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
@@ -144,6 +145,7 @@ class Routers {
   // 消息
   static const String messageSetting = "/messageSetting";
   static const String messageChat = "/messageChat";
+  static const String messageReceive = "/messageReceive";
   static const String messageChatsList = "/messageChatsList";
 
   // 首页
@@ -369,6 +371,10 @@ class Routers {
         name: Routers.messageChat,
         page: () => MessageChatPage(),
         bindings: [PlayBinding(), ChatBoxBinding(), MessageChatBinding()],
+      ),
+      GetPage(
+        name: Routers.messageReceive,
+        page: () => const MessageReceivePage(),
       ),
       GetPage(
         name: Routers.storageLocation,
@@ -626,9 +632,8 @@ class Routers {
     Get.toNamed(Routers.importWallet)?.then((value) => changeTransition());
   }
 
-
   static void jumpCardBag() {
-    if(walletCtrl.wallet.isEmpty){
+    if (walletCtrl.wallet.isEmpty) {
       changeTransition(Transition.downToUp);
       Get.toNamed(Routers.guideBag);
       return;
@@ -639,7 +644,7 @@ class Routers {
   static void changeTransition([Transition? transition]) {
     Get.config(
       enableLog: Get.isLogEnable,
-      defaultTransition: transition??Transition.native,
+      defaultTransition: transition ?? Transition.native,
       defaultOpaqueRoute: Get.isOpaqueRouteDefault,
       defaultPopGesture: Get.isPopGestureEnable,
       defaultDurationTransition: Get.defaultTransitionDuration,
