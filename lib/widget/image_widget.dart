@@ -30,14 +30,17 @@ class ImageWidget extends StatelessWidget {
       {Key? key,
       this.size,
       this.color,
-        this.iconColor,
+      this.iconColor,
       this.fit = BoxFit.contain,
-      this.circular = false, this.gaplessPlayback = false, this.httpHeaders, this.radius})
+      this.circular = false,
+      this.gaplessPlayback = false,
+      this.httpHeaders,
+      this.radius})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if(path == null){
+    if (path == null) {
       return SizedBox();
     }
     Widget child;
@@ -59,12 +62,12 @@ class ImageWidget extends StatelessWidget {
       child = asset();
     }
 
-    if (radius!=null) {
+    if (radius != null) {
       child = ClipRRect(
         borderRadius: BorderRadius.circular(radius!),
         child: child,
       );
-    }else if (circular) {
+    } else if (circular) {
       child = ClipOval(
         child: child,
       );
@@ -74,28 +77,82 @@ class ImageWidget extends StatelessWidget {
 
   Widget svg() {
     return SvgPicture.asset(
-        path, fit: fit, width: size, height: size, color: color,);
+      path,
+      fit: fit,
+      width: size,
+      height: size,
+      color: color,
+    );
   }
 
-  Widget asset(){
-    return Image.asset(path, fit: fit, width: size, height: size, color: color,gaplessPlayback: gaplessPlayback,);
+  Widget asset() {
+    return Image.asset(
+      path,
+      fit: fit,
+      width: size,
+      height: size,
+      color: color,
+      gaplessPlayback: gaplessPlayback,
+    );
   }
 
-  Widget network(){
-    return CachedNetworkImage(fit: fit, width: size, height: size, color: color, imageUrl: path,httpHeaders: httpHeaders,placeholder: (context,str){
-      return Container(width: size,height: size,color: Colors.white,);
-    },);
+  Widget network() {
+    return CachedNetworkImage(
+      fit: fit,
+      width: size,
+      height: size,
+      color: color,
+      imageUrl: path,
+      httpHeaders: httpHeaders,
+      errorWidget: (context, url, error) {
+        return Icon(
+          Icons.broken_image,
+          color: Colors.grey.shade300,
+          size: 50.w,
+        );
+      },
+      placeholder: (context, str) {
+        return Container(
+          width: size,
+          height: size,
+          color: Colors.white,
+        );
+      },
+    );
   }
 
-  Widget memory(){
-    return Image.memory(path, fit: fit, width: size, height: size, color: color,gaplessPlayback: gaplessPlayback);
+  Widget memory() {
+    return Image.memory(
+      path,
+      fit: fit,
+      width: size,
+      height: size,
+      color: color,
+      gaplessPlayback: gaplessPlayback,
+      errorBuilder: (context, error, stackTrace) {
+        return Icon(
+          Icons.broken_image,
+          color: Colors.grey.shade300,
+          size: 50.w,
+        );
+      },
+    );
   }
 
-  Widget file(){
-    return Image.file(path, fit: fit, width: size, height: size, color: color,gaplessPlayback: gaplessPlayback);
+  Widget file() {
+    return Image.file(path,
+        fit: fit,
+        width: size,
+        height: size,
+        color: color,
+        gaplessPlayback: gaplessPlayback);
   }
 
-  Widget icon(){
-    return Icon(path,size: max(size??24.w, size??24.h),color: iconColor,);
+  Widget icon() {
+    return Icon(
+      path,
+      size: max(size ?? 24.w, size ?? 24.h),
+      color: iconColor,
+    );
   }
 }
