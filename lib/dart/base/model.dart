@@ -40,12 +40,12 @@ class ResultType<T> {
 
   ResultType.fromJsonSerialize(
       Map<String, dynamic> json, T Function(Map<String, dynamic>) serialize)
-      : msg = json["msg"]??"",
+      : msg = json["msg"] ?? "",
         data = (json["data"] != null && json["data"] is Map)
             ? serialize(json["data"])
             : null,
-        code = json["code"]??400,
-        success = json["success"]??false;
+        code = json["code"] ?? 400,
+        success = json["success"] ?? false;
 }
 
 class PageResp<T> {
@@ -239,12 +239,12 @@ class FileItemModel extends FileItemShare {
   });
 
   FileItemModel.fromJson(Map<String, dynamic> json)
-      : key = json['key']??"",
-        isDirectory = json['isDirectory']??false,
+      : key = json['key'] ?? "",
+        isDirectory = json['isDirectory'] ?? false,
         contentType = json['contentType'],
         dateCreated = DateTime.tryParse(json['dateCreated'] ?? ""),
         dateModified = DateTime.tryParse(json['dateModified'] ?? ""),
-        hasSubDirectories = json['hasSubDirectories']??false,
+        hasSubDirectories = json['hasSubDirectories'] ?? false,
         super(
           size: json["size"],
           name: json["name"],
@@ -263,7 +263,6 @@ class FileItemModel extends FileItemShare {
       "thumbnail": thumbnail,
     };
   }
-
 }
 
 class FileItemArray {
@@ -1842,16 +1841,16 @@ class PropertyModel {
   String? remark;
 
   PropertyModel({
-     this.id,
-     this.name,
-     this.code,
-     this.valueType,
-     this.unit,
-     this.info,
-     this.directoryId,
-     this.speciesId,
-     this.sourceId,
-     this.remark,
+    this.id,
+    this.name,
+    this.code,
+    this.valueType,
+    this.unit,
+    this.info,
+    this.directoryId,
+    this.speciesId,
+    this.sourceId,
+    this.remark,
   });
 
   factory PropertyModel.fromJson(Map<String, dynamic> json) {
@@ -1885,7 +1884,6 @@ class PropertyModel {
     return data;
   }
 }
-
 
 class DictModel {
   // 唯一ID
@@ -2261,14 +2259,14 @@ class SpeciesModel {
   String? directoryId;
 
   SpeciesModel({
-     this.id,
-     this.name,
-     this.code,
-     this.typeName,
-     this.icon,
-     this.remark,
-     this.sourceId,
-     this.directoryId,
+    this.id,
+    this.name,
+    this.code,
+    this.typeName,
+    this.icon,
+    this.remark,
+    this.sourceId,
+    this.directoryId,
   });
 
   factory SpeciesModel.fromJson(Map<String, dynamic> json) {
@@ -2292,13 +2290,12 @@ class SpeciesModel {
       'typeName': typeName,
       'icon': icon,
       'remark': remark,
-      'sourceId': sourceId==""?null:sourceId,
+      'sourceId': sourceId == "" ? null : sourceId,
       'directoryId': directoryId,
     };
     return json;
   }
 }
-
 
 class FormModel {
   String? id;
@@ -2347,7 +2344,6 @@ class FormModel {
     };
   }
 }
-
 
 class FormItemModel {
   // 唯一ID
@@ -4920,14 +4916,14 @@ class WorkDefineModel {
   WorkNodeModel? resource;
 
   WorkDefineModel({
-     this.id,
-     this.name,
-     this.code,
-     this.icon,
-     this.remark,
-     this.shareId,
-     this.applicationId,
-     this.rule,
+    this.id,
+    this.name,
+    this.code,
+    this.icon,
+    this.remark,
+    this.shareId,
+    this.applicationId,
+    this.rule,
     this.resource,
   });
 
@@ -4962,7 +4958,6 @@ class WorkDefineModel {
     return data;
   }
 }
-
 
 class WorkInstanceModel {
   String? defineId;
@@ -5031,7 +5026,6 @@ class InstanceDataModel {
   });
 
   InstanceDataModel.fromJson(Map<String, dynamic> json) {
-
     if (json['fields'] != null) {
       json['fields'].forEach((key, value) {
         List<FieldModel> fieldList = [];
@@ -5060,10 +5054,10 @@ class InstanceDataModel {
       primary = Map<String, dynamic>.from(json['primary']);
     }
 
-    node= WorkNodeModel.fromJson(json['node']);
-    allowAdd= json['allowAdd'];
-    allowEdit= json['allowEdit'];
-    allowSelect= json['allowSelect'];
+    node = WorkNodeModel.fromJson(json['node']);
+    allowAdd = json['allowAdd'];
+    allowEdit = json['allowEdit'];
+    allowSelect = json['allowSelect'];
   }
 
   Map<String, dynamic> toJson() {
@@ -5177,7 +5171,6 @@ class FormEditData {
   });
 
   FormEditData.fromJson(Map<String, dynamic> json) {
-
     if (json['before'] != null) {
       json['before'].forEach((itemJson) {
         before.add(AnyThingModel.fromJson(itemJson));
@@ -5189,9 +5182,9 @@ class FormEditData {
         after.add(AnyThingModel.fromJson(itemJson));
       });
     }
-    nodeId= json['nodeId'];
-    creator= json['creator'];
-    createTime= json['createTime'];
+    nodeId = json['nodeId'];
+    creator = json['creator'];
+    createTime = json['createTime'];
   }
 
   Map<String, dynamic> toJson() {
@@ -5227,24 +5220,29 @@ class AnyThingModel {
 
   AnyThingModel.fromJson(Map<String, dynamic> json) {
     json.forEach((key, value) {
-      if (key != 'Id' && key != 'Name' && key != 'Status' &&
-          key != 'Creater' && key != 'CreateTime' && key != 'ModifiedTime' && key!="Archives") {
+      if (key != 'Id' &&
+          key != 'Name' &&
+          key != 'Status' &&
+          key != 'Creater' &&
+          key != 'CreateTime' &&
+          key != 'ModifiedTime' &&
+          key != "Archives") {
         otherInfo[key] = value;
       }
     });
 
-    if(json['Archives']!=null){
-      json['Archives'] .forEach((key,value){
+    if (json['Archives'] != null) {
+      json['Archives'].forEach((key, value) {
         archives[key] = Archives.fromJson(value);
       });
     }
 
-    id= json['Id'];
-    name= json['Name'];
-    status= json['Status'];
-    creater= json['Creater'];
-    createTime= json['CreateTime'];
-    modifiedTime= json['ModifiedTime'];
+    id = json['Id'];
+    name = json['Name'];
+    status = json['Status'];
+    creater = json['Creater'];
+    createTime = json['CreateTime'];
+    modifiedTime = json['ModifiedTime'];
   }
 
   Map<String, dynamic> toJson() {
@@ -5260,7 +5258,7 @@ class AnyThingModel {
   }
 }
 
-class Archives{
+class Archives {
   String? id;
   String? title;
   String? defineId;
@@ -5278,19 +5276,19 @@ class Archives{
 
   Archives(
       {this.id,
-        this.title,
-        this.defineId,
-        this.contentType,
-        this.content,
-        this.applyId,
-        this.shareId,
-        this.belongId,
-        this.status,
-        this.createUser,
-        this.updateUser,
-        this.version,
-        this.createTime,
-        this.updateTime});
+      this.title,
+      this.defineId,
+      this.contentType,
+      this.content,
+      this.applyId,
+      this.shareId,
+      this.belongId,
+      this.status,
+      this.createUser,
+      this.updateUser,
+      this.version,
+      this.createTime,
+      this.updateTime});
 
   Archives.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -5706,13 +5704,13 @@ class DirectoryModel {
   String? remark;
 
   DirectoryModel({
-     this.id,
-     this.name,
-     this.code,
-     this.icon,
-     this.parentId,
-     this.shareId,
-     this.remark,
+    this.id,
+    this.name,
+    this.code,
+    this.icon,
+    this.parentId,
+    this.shareId,
+    this.remark,
   });
 
   factory DirectoryModel.fromJson(Map<String, dynamic> json) {
@@ -5738,9 +5736,7 @@ class DirectoryModel {
       'remark': remark,
     };
   }
-
 }
-
 
 class SpeciesItemModel {
   String? id;
@@ -5756,11 +5752,11 @@ class SpeciesItemModel {
     this.id,
     this.name,
     this.code,
-     this.icon,
+    this.icon,
     this.info,
     this.speciesId,
-     this.parentId,
-     this.remark,
+    this.parentId,
+    this.remark,
   });
 
   factory SpeciesItemModel.fromJson(Map<String, dynamic> json) {
@@ -5803,27 +5799,27 @@ class ApplicationModel {
   String? resource;
 
   ApplicationModel({
-     this.id,
-     this.name,
-     this.code,
-     this.icon,
-     this.typeName,
-     this.remark,
-     this.directoryId,
-     this.parentId,
-     this.resource,
+    this.id,
+    this.name,
+    this.code,
+    this.icon,
+    this.typeName,
+    this.remark,
+    this.directoryId,
+    this.parentId,
+    this.resource,
   });
 
   factory ApplicationModel.fromJson(Map<String, dynamic> json) {
     return ApplicationModel(
       id: json['id'],
       name: json['name'],
-      code: json['code'] ,
-      icon: json['icon'] ,
+      code: json['code'],
+      icon: json['icon'],
       typeName: json['typeName'],
       remark: json['remark'],
-      directoryId: json['directoryId'] ,
-      parentId: json['parentId'] ,
+      directoryId: json['directoryId'],
+      parentId: json['parentId'],
       resource: json['resource'],
     );
   }
@@ -5907,17 +5903,18 @@ class TargetOperateModel {
   XTarget? operater;
 
   TargetOperateModel({
-     this.operate,
-     this.target,
+    this.operate,
+    this.target,
     this.subTarget,
-     this.operater,
+    this.operater,
   });
 
   TargetOperateModel.fromJson(Map<String, dynamic> json) {
-    operate= json['operate'];
-    target=XTarget.fromJson(json['target']);
-    subTarget= json['subTarget'] != null ? XTarget.fromJson(json['subTarget']) : null;
-    operater= XTarget.fromJson(json['operater']);
+    operate = json['operate'];
+    target = XTarget.fromJson(json['target']);
+    subTarget =
+        json['subTarget'] != null ? XTarget.fromJson(json['subTarget']) : null;
+    operater = XTarget.fromJson(json['operater']);
   }
 
   Map<String, dynamic> toJson() {
@@ -5932,7 +5929,6 @@ class TargetOperateModel {
     return data;
   }
 }
-
 
 class IdentityOperateModel {
   String? operate;
@@ -5950,11 +5946,15 @@ class IdentityOperateModel {
   });
 
   IdentityOperateModel.fromJson(Map<String, dynamic> json) {
-    operate =json['operate'];
-    operater = json['operater']!=null?XTarget.fromJson(json['operater']):null;
-    identity =json['identity']!=null?XIdentity.fromJson(json['identity']):null;
-    station = json['station']!=null?XTarget.fromJson(json['station']):null;
-    subTarget=  json['subTarget']!=null?XTarget.fromJson(json['subTarget']):null;
+    operate = json['operate'];
+    operater =
+        json['operater'] != null ? XTarget.fromJson(json['operater']) : null;
+    identity =
+        json['identity'] != null ? XIdentity.fromJson(json['identity']) : null;
+    station =
+        json['station'] != null ? XTarget.fromJson(json['station']) : null;
+    subTarget =
+        json['subTarget'] != null ? XTarget.fromJson(json['subTarget']) : null;
   }
 
   Map<String, dynamic> toJson() {

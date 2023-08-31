@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -5,6 +7,7 @@ import 'dart:math';
 
 import 'package:audio_session/audio_session.dart';
 import 'package:audio_wave/audio_wave.dart';
+import 'package:common_utils/common_utils.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -88,6 +91,11 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [_keyBoardBtn(context), _sendBtn(context)],
           );
+        case InputStatus.at:
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [_emojiBtn(context), _sendBtn(context)],
+          );
       }
     });
     WidgetsBinding.instance.addObserver(this);
@@ -97,7 +105,8 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
       if (inputStatus == InputStatus.focusing ||
           inputStatus == InputStatus.notPopup ||
           inputStatus == InputStatus.voice ||
-          inputStatus == InputStatus.inputtingText) {
+          inputStatus == InputStatus.inputtingText ||
+          inputStatus == InputStatus.at) {
         bottomHeight.value = bottom;
       }
     });
@@ -148,6 +157,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
             keyboardType: TextInputType.multiline,
             focusNode: controller.focusNode,
             onChanged: (text) {
+              if (text.endsWith('@')) return; //如果是@结尾的话不需要做text的事件通知
               controller.eventFire(context, InputEvent.clickInput, chat);
             },
             onTap: () {
@@ -167,18 +177,35 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
               ),
             ),
             triggerAtCallback: () async {
-              var target = await AtPersonDialog.showDialog(context, chat);
+              ///延迟500ms 执行艾特回调 让弹框更丝滑
+              await Future.delayed(const Duration(milliseconds: 500));
+              controller.eventFire(context, InputEvent.inputAt, chat);
+              List<XTarget>? target =
+                  await AtPersonDialog.showDialog(context, chat);
               return target;
             },
           ),
           Obx(() {
             if (controller.reply.value == null) {
-              return SizedBox();
+              return const SizedBox();
             }
-            String showTxt = StringUtil.msgConversion(controller.reply.value!,'');
-            List<InlineSpan> span  = [TextSpan(text:  showTxt,),];
-            if(chat.share.typeName!=TargetType.person.label){
-              span.insert(0,  WidgetSpan(child: TargetText(userId: controller.reply.value!.fromId,text: ": ",),alignment: PlaceholderAlignment.middle),);
+            String showTxt =
+                StringUtil.msgConversion(controller.reply.value!, '');
+            List<InlineSpan> span = [
+              TextSpan(
+                text: showTxt,
+              ),
+            ];
+            if (chat.share.typeName != TargetType.person.label) {
+              span.insert(
+                0,
+                WidgetSpan(
+                    child: TargetText(
+                      userId: controller.reply.value!.fromId,
+                      text: ": ",
+                    ),
+                    alignment: PlaceholderAlignment.middle),
+              );
             }
 
             return Container(
@@ -401,6 +428,10 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
           body = Container();
           FocusScope.of(context).requestFocus(controller.focusNode);
           break;
+        case InputStatus.at:
+          bottomHeight.value = 0;
+          body = Container();
+          break;
       }
       return Offstage(
         offstage: false,
@@ -564,6 +595,7 @@ enum InputStatus {
   voice,
   inputtingText,
   inputtingEmoji,
+  at, //@
 }
 
 enum InputEvent {
@@ -575,6 +607,7 @@ enum InputEvent {
   clickBlank,
   inputText,
   inputEmoji,
+  inputAt,
   clickSendBtn
 }
 
@@ -646,7 +679,6 @@ class ChatBoxController with WidgetsBindingObserver {
     stopRecord();
   }
 
-
   /// 事件触发器
   eventFire(BuildContext context, InputEvent inputEvent, IMsgChat chat) async {
     switch (inputEvent) {
@@ -661,6 +693,9 @@ class ChatBoxController with WidgetsBindingObserver {
         break;
       case InputEvent.clickKeyBoard:
         _inputStatus.value = InputStatus.notPopup;
+        break;
+      case InputEvent.inputEmoji:
+        _inputStatus.value = InputStatus.at;
         break;
       case InputEvent.clickEmoji:
         FocusScope.of(context).requestFocus(blankNode);
@@ -678,6 +713,10 @@ class ChatBoxController with WidgetsBindingObserver {
         } else {
           _inputStatus.value = InputStatus.notPopup;
         }
+        break;
+      case InputEvent.inputAt:
+        _inputStatus.value = InputStatus.at;
+        FocusScope.of(context).unfocus();
         break;
       case InputEvent.inputEmoji:
         if (_inputStatus.value != InputStatus.inputtingEmoji) {
@@ -734,7 +773,7 @@ class ChatBoxController with WidgetsBindingObserver {
   }
 
   Future<void> filePicked(PlatformFile file, IMsgChat chat) async {
-    var docDir =  settingCtrl.user.directory;
+    var docDir = settingCtrl.user.directory;
 
     String ext = file.name.split('.').last;
 
@@ -753,7 +792,8 @@ class ChatBoxController with WidgetsBindingObserver {
       },
     );
     if (item != null) {
-      var msg = chat.messages.firstWhere((element) => element.body?.name == save.body?.name);
+      var msg = chat.messages
+          .firstWhere((element) => element.body?.name == save.body?.name);
       msg.body!.name = item.shareInfo().name;
       chat.sendMessage(MessageType.file, jsonEncode(item.shareInfo().toJson()));
     }
@@ -803,11 +843,11 @@ class ChatBoxController with WidgetsBindingObserver {
     await session.configure(AudioSessionConfiguration(
       avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
       avAudioSessionCategoryOptions:
-      AVAudioSessionCategoryOptions.allowBluetooth |
-      AVAudioSessionCategoryOptions.defaultToSpeaker,
+          AVAudioSessionCategoryOptions.allowBluetooth |
+              AVAudioSessionCategoryOptions.defaultToSpeaker,
       avAudioSessionMode: AVAudioSessionMode.spokenAudio,
       avAudioSessionRouteSharingPolicy:
-      AVAudioSessionRouteSharingPolicy.defaultPolicy,
+          AVAudioSessionRouteSharingPolicy.defaultPolicy,
       avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
       androidAudioAttributes: const AndroidAudioAttributes(
         contentType: AndroidAudioContentType.speech,
