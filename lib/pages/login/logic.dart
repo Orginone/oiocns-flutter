@@ -15,7 +15,7 @@ class LoginController extends BaseController<LoginState> {
   void onInit() async {
     // TODO: implement onInit
     super.onInit();
-    if(!kernel.isOnline){
+    if (!kernel.isOnline) {
       kernel.start();
     }
     var account = LocalStore.getStore().getStringList("account");
@@ -59,7 +59,8 @@ class LoginController extends BaseController<LoginState> {
       [Permission.storage, Permission.notification].request();
       LocalStore.getStore().setStringList("account",
           [state.accountController.text, state.passWordController.text]);
-      Get.offAndToNamed(Routers.home,arguments: true);
+      Get.offAndToNamed(Routers.logintrans, arguments: true);
+      Future.delayed(const Duration(seconds: 2));
     } else {
       ToastUtils.showMsg(msg: res.msg);
     }

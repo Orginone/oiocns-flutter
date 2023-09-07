@@ -6,7 +6,6 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'clip_circle.dart';
 
-
 abstract class BaseCommonWidget extends StatefulWidget {
   final Color? rippleColor;
   final bool? blackRippleColor;
@@ -66,7 +65,8 @@ abstract class BaseCommonWidget extends StatefulWidget {
     this.gradient,
     this.customBg,
     this.constraints,
-    PopupOnEvent? popupOnEvent, this.behavior,
+    PopupOnEvent? popupOnEvent,
+    this.behavior,
   })  : this.useRipple = useRipple ?? true,
         this.blackRippleColor = blackRippleColor ?? true,
         this.isCircle = isCircle ?? false,
@@ -99,9 +99,9 @@ abstract class BaseCommonWidgetState<T extends BaseCommonWidget>
     return widget.margin == null
         ? rootWidget
         : Padding(
-      padding: widget.margin!,
-      child: rootWidget,
-    );
+            padding: widget.margin!,
+            child: rootWidget,
+          );
   }
 
   Widget? _buildSizeWidget() {
@@ -163,7 +163,7 @@ abstract class BaseCommonWidgetState<T extends BaseCommonWidget>
       if (widget.borderRadius != null) {
         blurWidget = ClipRRect(
           child: blurWidget,
-          borderRadius: widget.borderRadius,
+          // borderRadius: widget.borderRadius,
         );
       }
       return blurWidget;
@@ -204,8 +204,7 @@ abstract class BaseCommonWidgetState<T extends BaseCommonWidget>
     }
     Color? splashColor;
     if (widget.rippleColor == null) {
-      splashColor =
-      widget.blackRippleColor! ? Colors.black : Colors.white;
+      splashColor = widget.blackRippleColor! ? Colors.black : Colors.white;
     } else {
       splashColor = widget.rippleColor;
     }
@@ -288,12 +287,12 @@ abstract class BaseCommonWidgetState<T extends BaseCommonWidget>
         widgets.add(
           (info.fillHorizontal || info.fillVertical)
               ? Positioned(
-            left: horizontal,
-            top: vertical,
-            right: horizontal,
-            bottom: vertical,
-            child: info.widget,
-          )
+                  left: horizontal,
+                  top: vertical,
+                  right: horizontal,
+                  bottom: vertical,
+                  child: info.widget,
+                )
               : info.widget,
         );
       });
@@ -340,14 +339,14 @@ abstract class BaseCommonWidgetState<T extends BaseCommonWidget>
           padding: widget.padding!,
           child: widget.isCircle!
               ? ClipCircle(
-            child: contentWidget,
-          )
+                  child: contentWidget,
+                )
               : widget.borderRadius != null
-              ? ClipRRect(
-            child: contentWidget,
-            borderRadius: widget.borderRadius,
-          )
-              : contentWidget,
+                  ? ClipRRect(
+                      child: contentWidget,
+                      // borderRadius: widget.borderRadius,
+                    )
+                  : contentWidget,
         );
       } else {
         contentWidget = Padding(
@@ -358,7 +357,7 @@ abstract class BaseCommonWidgetState<T extends BaseCommonWidget>
     } else if (widget.borderRadius != null && widget.isContentClip()) {
       contentWidget = ClipRRect(
         child: contentWidget,
-        borderRadius: widget.borderRadius,
+        // borderRadius: widget.borderRadius,
       );
     }
 

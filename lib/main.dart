@@ -17,12 +17,12 @@ import 'dart/controller/user_controller.dart';
 import 'util/hive_utils.dart';
 import 'util/local_store.dart';
 
-
 void main() async {
   // 逻辑绑定
   WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+  SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
   await HiveUtils.init();
 
@@ -87,18 +87,19 @@ class ScreenInit extends StatelessWidget {
           darkTheme: ThemeData(useMaterial3: false),
           textDirection: TextDirection.ltr,
           initialRoute: account != null ? Routers.home : Routers.login,
+          defaultTransition: Transition.fadeIn,
           getPages: Routers.getInitRouters(),
         );
       },
     );
   }
 
-  Future<void> automaticLogon() async{
+  Future<void> automaticLogon() async {
     Future<void> login() async {
       String accountName = account![0];
       String passWord = account![1];
       var login = await settingCtrl.provider.login(accountName, passWord);
-      if(!login.success){
+      if (!login.success) {
         settingCtrl.exitLogin();
       }
     }
@@ -107,15 +108,10 @@ class ScreenInit extends StatelessWidget {
       if (kernel.isOnline) {
         await login();
       } else {
-
         Future.delayed(const Duration(milliseconds: 100), () async {
           await automaticLogon();
         });
       }
     }
   }
-
-
-
 }
-

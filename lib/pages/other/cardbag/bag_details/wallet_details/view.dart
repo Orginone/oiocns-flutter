@@ -42,7 +42,7 @@ class WalletDetailsPage
                 child: Card(
                   child: Padding(
                     padding:
-                    EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
+                        EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -71,17 +71,18 @@ class WalletDetailsPage
                                 ),
                                 Text(
                                   "账户余额: ￥${state.coin.balance}",
-                                  style: const TextStyle(color: XColors.blueTextColor),
+                                  style: const TextStyle(
+                                      color: XColors.blueTextColor),
                                 ),
                               ],
                             ),
                             const Expanded(child: SizedBox()),
-                            QrImage(
-                              data: state.coin.address??"",
-                              version: QrVersions.auto,
-                              size: 120.w,
-                              errorCorrectionLevel: QrErrorCorrectLevel.H,
-                            ),
+                            // QrImage(
+                            //   data: state.coin.address??"",
+                            //   version: QrVersions.auto,
+                            //   size: 120.w,
+                            //   errorCorrectionLevel: QrErrorCorrectLevel.H,
+                            // ),
                           ],
                         ),
                         SizedBox(
@@ -91,14 +92,14 @@ class WalletDetailsPage
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              state.coin.address??"",
+                              state.coin.address ?? "",
                               style: const TextStyle(color: Colors.grey),
                             ),
                             GestureDetector(
                               onTap: () {
                                 ToastUtils.showMsg(msg: "已复制到剪切板");
                                 Clipboard.setData(ClipboardData(
-                                    text: state.coin.address??""));
+                                    text: state.coin.address ?? ""));
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -132,7 +133,8 @@ class WalletDetailsPage
                       child: outlinedButton(
                         "转账",
                         onPressed: () {
-                          Get.toNamed(Routers.transferAccounts,arguments: {"coin":state.coin});
+                          Get.toNamed(Routers.transferAccounts,
+                              arguments: {"coin": state.coin});
                         },
                         height: 70.h,
                         style: ButtonStyle(
@@ -162,7 +164,7 @@ class WalletDetailsPage
                                     borderRadius: BorderRadius.circular(36.w))),
                           ),
                           textStyle:
-                          TextStyle(fontSize: 18.sp, color: Colors.white),
+                              TextStyle(fontSize: 18.sp, color: Colors.white),
                           height: 70.h),
                     ),
                   ],
@@ -201,7 +203,7 @@ class WalletDetailsPage
             Expanded(
               child: TabBarView(
                 controller: state.tabController,
-                children:  [
+                children: [
                   KeepAliveWidget(child: TransactionRecordsPage(-1)),
                   KeepAliveWidget(child: TransactionRecordsPage(0)),
                   KeepAliveWidget(child: TransactionRecordsPage(1)),

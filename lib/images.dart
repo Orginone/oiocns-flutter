@@ -67,4 +67,5 @@ class Images {
 
   static const String imageEverytime = "images/image_everytime.png";
 
+  static const String loginTransition = "images/transition_page.png";
 }
