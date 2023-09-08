@@ -1,7 +1,37 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive",
-    "files.associations": {
-        "*.dart": "dart",
-        "*.go": "go",
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "files.associations": {
+    "*.dart": "dart",
+    "*.go": "go",
+  },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "pubspec.yaml": "pubspec.lock,pubspec_overrides.yaml,.packages,.flutter-plugins,.flutter-plugins-dependencies,.metadata",
+    "*.dart": "${capture}.g.dart"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "editor.formatOnType": true,
+  "editor.wordWrap": "wordWrapColumn",
+  "editor.wordWrapColumn": 300,
+  "vetur.format.defaultFormatterOptions": {
+    "prettyhtml": {
+      "printWidth": 1000,
+      "singleQuote": false,
+      "wrapAttributes": false,
+      "sortAttributes": false
     }
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "vetur.format.defaultFormatter.html": "prettyhtml",
+  "editor.formatOnSave": true, // 保存文件自动format
+  "javascript.format.semicolons": "insert", // js文件，强制必须有分号，设置`remove`则禁止分号
+  "typescript.format.semicolons": "insert", // ts文件，同上
+  "editor.tabSize": 2, // 设置默认缩进为2个空格
+  "editor.detectIndentation": false, // 是否强制所有文件按tabSize设置缩进；"否"则根据文件内容缩进、新建文件按tabSize缩进。
+  "files.insertFinalNewline": true, // 所有文件末尾留一空行
 }

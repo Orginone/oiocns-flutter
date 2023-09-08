@@ -5,7 +5,6 @@ import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/chat/message_chats/message_chats_controller.dart';
 import 'package:orginone/pages/chat/message_chats/message_chats_state.dart';
 
 abstract class IChatProvider {
@@ -46,9 +45,9 @@ abstract class IChatProvider {
 
 class ChatProvider implements IChatProvider {
   bool _preMessage = true;
-  var _preMessages = <MsgSaveModel>[].obs;
+  final _preMessages = <MsgSaveModel>[].obs;
 
-  List<MsgTagModel> _preTags = [];
+  final List<MsgTagModel> _preTags = [];
 
   @override
   IMsgChat? currentChat;
@@ -60,18 +59,18 @@ class ChatProvider implements IChatProvider {
 
   ChatProvider(this.user) {
     kernel.on('RecvMsg', (data) {
-        try{
-          if (!_preMessage) {
-            _recvMessage(MsgSaveModel.fromJson(data));
-          } else {
-            _preMessages.add(MsgSaveModel.fromJson(data));
-          }
-        }catch(e){
-          throw e;
+      try {
+        if (!_preMessage) {
+          _recvMessage(MsgSaveModel.fromJson(data));
+        } else {
+          _preMessages.add(MsgSaveModel.fromJson(data));
         }
+      } catch (e) {
+        rethrow;
+      }
     });
     kernel.on('RecvTags', (data) {
-       try{
+      try {
         var tag = MsgTagModel.fromJson(data);
         if (!_preMessage) {
           _chatReceive(tag);
@@ -79,13 +78,15 @@ class ChatProvider implements IChatProvider {
           _preTags.add(tag);
         }
       } catch (e) {
-        throw e;
+        rethrow;
       }
     });
-    kernel.anystore.subscribed("${StoreCollName.chatMessage}.Changed", user.id, (data){
-      if(data!=null){
+    kernel.anystore.subscribed("${StoreCollName.chatMessage}.Changed", user.id,
+        (data) {
+      if (data != null) {
         var msg = MsgChatData.fromMap(data);
-        var chat = allChats.firstWhereOrNull((element) => element.chatdata.value.fullId == msg.fullId);
+        var chat = allChats.firstWhereOrNull(
+            (element) => element.chatdata.value.fullId == msg.fullId);
         chat?.loadCache(msg);
       }
     });
@@ -172,8 +173,9 @@ class ChatProvider implements IChatProvider {
 
   @override
 // TODO: implement topChats
-  RxList<IMsgChat> get topChats{
-    var list = allChats.where((element) => element.labels.contains("置顶")).toList();
+  RxList<IMsgChat> get topChats {
+    var list =
+        allChats.where((element) => element.labels.contains("置顶")).toList();
     list.sort((f, s) {
       return (s.chatdata.value.lastMsgTime) - (f.chatdata.value.lastMsgTime);
     });
@@ -192,7 +194,6 @@ class ChatProvider implements IChatProvider {
     return list.obs;
   }
 
-
   @override
   Future<void> setMostUsed(IMsgChat msg) async {
     var res = await kernel.anystore.set(
@@ -201,7 +202,7 @@ class ChatProvider implements IChatProvider {
       user.id,
     );
     if (res.success) {
-      MessageFrequentlyUsed recent =  MessageFrequentlyUsed(
+      MessageFrequentlyUsed recent = MessageFrequentlyUsed(
           chat: msg,
           name: msg.chatdata.value.chatName,
           id: msg.chatdata.value.fullId,
@@ -213,12 +214,12 @@ class ChatProvider implements IChatProvider {
   }
 
   @override
-  Future<void> loadMostUsed() async{
+  Future<void> loadMostUsed() async {
     var res = await kernel.anystore.get(
       "${StoreCollName.mostUsed}.chats",
       user.id,
     );
-    if(res.success && res.data!=null){
+    if (res.success && res.data != null) {
       messageFrequentlyUsed.clear();
       var chats = res.data;
       if (chats is Map<String, dynamic>) {
@@ -226,7 +227,7 @@ class ChatProvider implements IChatProvider {
           var fullId = key.substring(1);
           var find = allChats
               .firstWhereOrNull((i) => i.chatdata.value.fullId == fullId);
-          if(find!=null){
+          if (find != null) {
             messageFrequentlyUsed.add(MessageFrequentlyUsed(
                 chat: find,
                 name: find.chatdata.value.chatName,
@@ -241,19 +242,21 @@ class ChatProvider implements IChatProvider {
 
   @override
   bool isMostUsed(IMsgChat msg) {
-    return messageFrequentlyUsed.where((p0) => p0.id == msg.chatdata.value.fullId).isNotEmpty;
+    return messageFrequentlyUsed
+        .where((p0) => p0.id == msg.chatdata.value.fullId)
+        .isNotEmpty;
   }
 
   @override
-  Future<void> removeMostUsed(IMsgChat msg) async{
+  Future<void> removeMostUsed(IMsgChat msg) async {
     var res = await kernel.anystore.delete(
       "${StoreCollName.mostUsed}.chats.T${msg.chatdata.value.fullId}",
       user.id,
     );
-    if(res.success){
-      messageFrequentlyUsed.removeWhere((element) => element.id == msg.chatdata.value.fullId);
+    if (res.success) {
+      messageFrequentlyUsed
+          .removeWhere((element) => element.id == msg.chatdata.value.fullId);
       messageFrequentlyUsed.refresh();
     }
   }
-
 }

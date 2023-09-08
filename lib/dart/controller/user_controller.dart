@@ -35,14 +35,15 @@ enum Shortcut {
   createCompany("创建单位", Icons.compare_outlined),
   addCompany("加入单位", Icons.compare_outlined),
   addCohort("发起群聊", Icons.chat_bubble_outline_outlined),
-  createDir("新建目录",Ionicons.folder_sharp),
-  createApplication("新建应用",Ionicons.apps_sharp),
-  createSpecies("新建分类",Ionicons.pricetag_sharp),
-  createDict("新建字典",Ionicons.book_sharp),
-  createAttr("新建属性",Ionicons.snow_sharp),
-  createThing("新建实体配置",Ionicons.pricetag_sharp),
-  createWork("新建事项配置",Ionicons.pricetag_sharp),
-  uploadFile("上传文件",Ionicons.file_tray_sharp);
+  createDir("新建目录", Ionicons.folder_sharp),
+  createApplication("新建应用", Ionicons.apps_sharp),
+  createSpecies("新建分类", Ionicons.pricetag_sharp),
+  createDict("新建字典", Ionicons.book_sharp),
+  createAttr("新建属性", Ionicons.snow_sharp),
+  createThing("新建实体配置", Ionicons.pricetag_sharp),
+  createWork("新建事项配置", Ionicons.pricetag_sharp),
+  uploadFile("上传文件", Ionicons.file_tray_sharp);
+
   final String label;
   final IconData icon;
 
@@ -84,7 +85,6 @@ class UserController extends GetxController {
 
   var homeEnum = HomeEnum.door.obs;
 
-
   late CustomPopupMenuController functionMenuController;
 
   late CustomPopupMenuController settingMenuController;
@@ -98,7 +98,8 @@ class UserController extends GetxController {
     ),
     ShortcutData(Shortcut.addGroup, "加入群组", "请输入群组的编码", TargetType.cohort),
     ShortcutData(Shortcut.createCompany, "创建单位", "", TargetType.company),
-    ShortcutData(Shortcut.addCompany, "加入单位", "请输入单位的社会统一代码", TargetType.company),
+    ShortcutData(
+        Shortcut.addCompany, "加入单位", "请输入单位的社会统一代码", TargetType.company),
     ShortcutData(Shortcut.addCohort, "发起群聊", "请输入群聊信息", TargetType.cohort),
   ];
 
@@ -234,7 +235,7 @@ class UserController extends GetxController {
 
   void exitLogin({bool cleanUserLoginInfo = true}) async {
     if (cleanUserLoginInfo) {
-      LocalStore.clear();
+      Storage.clear();
     }
     LoadingDialog.dismiss(Get.context!);
     kernel.stop();
@@ -253,9 +254,9 @@ class UserController extends GetxController {
               await user.searchTargets(entity.code!, [entity.typeName!]);
           if (target.isNotEmpty) {
             var success = await user.applyJoin(target);
-            if(success){
+            if (success) {
               ToastUtils.showMsg(msg: "申请发送成功");
-            }else{
+            } else {
               ToastUtils.showMsg(msg: "申请发送失败");
             }
           } else {
