@@ -12,10 +12,11 @@ class Rule {
   /// extra attribute,you can put like userId and so on
   final XTarget? target;
 
-  Rule(this.startIndex, this.endIndex,this.target);
+  Rule(this.startIndex, this.endIndex, this.target);
 
   Rule copy([startIndex, endIndex, target]) {
-    return Rule(startIndex ?? this.startIndex, endIndex ?? this.endIndex,target??this.target);
+    return Rule(startIndex ?? this.startIndex, endIndex ?? this.endIndex,
+        target ?? this.target);
   }
 
   @override
@@ -24,7 +25,7 @@ class Rule {
   }
 }
 
-typedef TriggerAtCallback = Future<XTarget?> Function();
+typedef TriggerAtCallback = Future<List<XTarget>?> Function();
 
 typedef ValueChangedCallback = void Function(List<Rule> rules, String value);
 
@@ -36,7 +37,6 @@ class RichTextInputFormatter extends TextInputFormatter {
   TextEditingController controller;
   List<Rule> _rules;
 
-
   /// trigger symbol,when input this ,the [_triggerAtCallback] will be called
   final String triggerSymbol;
 
@@ -45,18 +45,19 @@ class RichTextInputFormatter extends TextInputFormatter {
 
   List<Rule> get rules => _rules.map((Rule rule) => rule.copy()).toList();
 
-  RichTextInputFormatter({required TriggerAtCallback triggerAtCallback,
+  RichTextInputFormatter({
+    required TriggerAtCallback triggerAtCallback,
     ValueChangedCallback? valueChangedCallback,
     required this.controller,
     this.triggerSymbol = "@",
-  })
-      : assert(triggerAtCallback != null && controller != null),
+  })  : assert(triggerAtCallback != null && controller != null),
         _rules = [],
         _triggerAtCallback = triggerAtCallback,
         _valueChangedCallback = valueChangedCallback;
 
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     if (_flag) {
       /// compatible with Xiaomi
       return oldValue;
@@ -68,7 +69,7 @@ class RichTextInputFormatter extends TextInputFormatter {
       /// adding
       if (newValue.text.length - oldValue.text.length == 1 &&
           newValue.text.substring(
-              newValue.selection.start - 1, newValue.selection.end) ==
+                  newValue.selection.start - 1, newValue.selection.end) ==
               triggerSymbol) {
         /// the adding char is [triggerSymbol]
         triggerAt(oldValue, newValue);
@@ -104,23 +105,26 @@ class RichTextInputFormatter extends TextInputFormatter {
 
   /// trigger special callback
   /// 触发[triggerSymbol]操作
-  void triggerAt(TextEditingValue oldValue, TextEditingValue newValue,{XTarget? t}) async {
+  void triggerAt(TextEditingValue oldValue, TextEditingValue newValue,
+      {XTarget? t}) async {
     /// 新值的选中光标的开始位置
     int selStart = math.max(newValue.selection.start, 1);
 
     /// 调用外部选人回调，返回具体参数
-    XTarget? target = t??await _triggerAtCallback();
-    if (target!=null) {
+    List<XTarget>? target = t != null ? [t] : await _triggerAtCallback();
+    if (target != null) {
+      List nameArr = target.map((e) => '${e.name} ').toList();
+      var atNameStr = nameArr.join('@');
       int startIndex = selStart - 1; // 新值的选中光标的后面一个的字符
       String newString;
-      String currentText = t!=null?"${controller.text}@":controller.text;
+      String currentText = t != null ? "${controller.text}@" : controller.text;
       if (selStart < currentText.length) {
         /// 如果光标是在原来字符的中间
         newString =
-        "${currentText.substring(0, startIndex + 1)}${target.name} ${currentText.substring(startIndex + 1, currentText.length)}";
+            "${currentText.substring(0, startIndex + 1)}${atNameStr} ${currentText.substring(startIndex + 1, currentText.length)}";
       } else {
         /// 如果光标是在字符串最后面
-        newString = "$currentText${target.name} ";
+        newString = "$currentText${atNameStr} ";
       }
       int endIndex = startIndex + (newString.length - currentText.length);
       controller.text = newString;
@@ -132,14 +136,18 @@ class RichTextInputFormatter extends TextInputFormatter {
       );
       _correctRules(
           oldValue.selection.start, currentText.length, newString.length);
-      _rules.add(Rule(startIndex, endIndex, target));
+
+      for (var element in target) {
+        _rules.add(Rule(startIndex, endIndex, element));
+      }
 
       _valueChangedCallback?.call(rules, controller.text);
     }
   }
 
   /// 检查被删除/替换的内容是否涉及到rules里的特殊segment并处理，另外作字符的处理替换
-  TextEditingValue checkRules(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue checkRules(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     /// 旧的文本的光标是否选中了部分
     bool isOldSelectedPart = oldValue.selection.start != oldValue.selection.end;
 
@@ -174,7 +182,7 @@ class RichTextInputFormatter extends TextInputFormatter {
     String newStartSelBeforeStr = newValue.text.substring(
         0, newValue.selection.start < 0 ? 0 : newValue.selection.start);
     String oldStartSelBeforeStr =
-    oldValue.text.substring(0, oldValue.selection.start);
+        oldValue.text.substring(0, oldValue.selection.start);
     String middleStr = "";
     if (newStartSelBeforeStr.length >= oldStartSelBeforeStr.length &&
         (oldValue.selection.end != oldValue.selection.start) &&
@@ -187,13 +195,15 @@ class RichTextInputFormatter extends TextInputFormatter {
     }
 
     int leftSubStringEndIndex =
-    startIndex > oldValue.text.length ? oldValue.text.length : startIndex;
-    String leftValue =
-    startIndex == 0 ? "" : oldValue.text.substring(0, leftSubStringEndIndex);
+        startIndex > oldValue.text.length ? oldValue.text.length : startIndex;
+    String leftValue = startIndex == 0
+        ? ""
+        : oldValue.text.substring(0, leftSubStringEndIndex);
 
     String middleValue = middleStr;
-    String rightValue =
-    endIndex == oldValue.text.length ? "" : oldValue.text.substring(endIndex, oldValue.text.length);
+    String rightValue = endIndex == oldValue.text.length
+        ? ""
+        : oldValue.text.substring(endIndex, oldValue.text.length);
     String value = "$leftValue$middleValue$rightValue";
 
     /// 计算最终光标位置
@@ -217,16 +227,15 @@ class RichTextInputFormatter extends TextInputFormatter {
     );
   }
 
-  void manualAdd(XTarget target){
-   var textSelection = TextSelection(
-      baseOffset: controller.value.selection.baseOffset+1,
-      extentOffset: controller.value.selection.extentOffset+1,
+  void manualAdd(XTarget target) {
+    var textSelection = TextSelection(
+      baseOffset: controller.value.selection.baseOffset + 1,
+      extentOffset: controller.value.selection.extentOffset + 1,
     );
     triggerAt(
         controller.value,
         TextEditingValue(
-            text: "${controller.value.text}@",
-            selection: textSelection),
+            text: "${controller.value.text}@", selection: textSelection),
         t: target);
   }
 

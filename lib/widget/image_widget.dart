@@ -133,7 +133,7 @@ class ImageWidget extends StatelessWidget {
         return Icon(
           Icons.broken_image,
           color: Colors.grey.shade300,
-          size: 50.w,
+          size: size,
         );
       },
     );

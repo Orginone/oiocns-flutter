@@ -1,3 +1,4 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -81,8 +82,9 @@ class AtTextFiledState extends State<AtTextFiled> {
       decoration: widget.decoration,
       style: widget.style,
       inputFormatters: widget.inputFormatters == null
-          ? [_formatter,EmojiTextInputFormatter()]
-          : (widget.inputFormatters!..addAll([_formatter,EmojiTextInputFormatter()])),
+          ? [_formatter, EmojiTextInputFormatter()]
+          : (widget.inputFormatters!
+            ..addAll([_formatter, EmojiTextInputFormatter()])),
     );
   }
 
@@ -90,14 +92,14 @@ class AtTextFiledState extends State<AtTextFiled> {
     _controller = widget.controller ?? TextEditingController();
     focusNode = widget.focusNode ?? FocusNode();
     _formatter = RichTextInputFormatter(
-        triggerAtCallback: () async {
-          XTarget? target = await widget.triggerAtCallback();
-          return target;
-        },
-        controller: _controller,
-        valueChangedCallback: (List<Rule> rules, String value) {
-          _inputValue = value;
-          _rules = rules;
+      triggerAtCallback: () async {
+        List<XTarget>? target = await widget.triggerAtCallback();
+        return target;
+      },
+      controller: _controller,
+      valueChangedCallback: (List<Rule> rules, String value) {
+        _inputValue = value;
+        _rules = rules;
         if (widget.valueChangedCallback != null) {
           widget.valueChangedCallback!(rules, value);
         }
@@ -109,10 +111,11 @@ class AtTextFiledState extends State<AtTextFiled> {
     _formatter.clear();
   }
 
-  void addTarget(XTarget target){
+  void addTarget(XTarget target) {
     _formatter.manualAdd(target);
   }
-  void clearRules(){
+
+  void clearRules() {
     _formatter.clear();
   }
 }
