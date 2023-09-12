@@ -1,12 +1,7 @@
 {
-<<<<<<< HEAD
     "java.configuration.updateBuildConfiguration": "interactive",
     "files.associations": {
         "*.dart": "dart",
         "*.go": "go",
     }
 }
-=======
-    "java.configuration.updateBuildConfiguration": "interactive"
-}
->>>>>>> main
