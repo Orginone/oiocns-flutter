@@ -35,3 +35,4 @@
   "editor.detectIndentation": false, // 是否强制所有文件按tabSize设置缩进；"否"则根据文件内容缩进、新建文件按tabSize缩进。
   "files.insertFinalNewline": true, // 所有文件末尾留一空行
 }
+
