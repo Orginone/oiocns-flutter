@@ -33,3 +33,23 @@ class Constants {
 
   static const unicodeSupplementaryPlaneBegin = 0x010000;
 }
+
+int toUint8(int v) {
+  if (v < 0) {
+    return 0;
+  }
+  if (v > Constants.maxUint8) {
+    return Constants.maxUint8;
+  }
+  return v | 0;
+}
+
+int toUint32(int v) {
+  if (v < 0) {
+    return 0;
+  }
+  if (v > Constants.maxUint32) {
+    return Constants.maxUint32;
+  }
+  return v | 0;
+}

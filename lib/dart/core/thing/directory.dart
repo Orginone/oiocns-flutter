@@ -5,7 +5,7 @@ import 'package:flutter/material.dart' hide Form;
 import 'package:orginone/dart/base/common/entity.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/property.dart';
@@ -35,6 +35,7 @@ class TaskModel {
 
 typedef TaskChangeNotify = Function(List<TaskModel> taskList);
 
+///目录接口类
 abstract class IDirectory extends IFileInfo<XDirectory> {
   //当前加载目录的用户
   late ITarget target;
@@ -114,6 +115,7 @@ abstract class IDirectory extends IFileInfo<XDirectory> {
   Future<void> loadSubDirectory();
 }
 
+///目录实现类
 class Directory extends FileInfo<XDirectory> implements IDirectory {
   Directory(XDirectory metadata, this.target,
       [this.parent, List<XDirectory>? directorys])

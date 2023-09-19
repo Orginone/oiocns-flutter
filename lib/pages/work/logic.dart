@@ -20,14 +20,16 @@ class WorkController extends BaseSubmenuController<WorkState> {
     // TODO: implement initSubGroup
     super.initSubGroup();
     var work = HiveUtils.getSubGroup('work');
-    if(work==null){
+    if (work == null) {
       work = SubGroup.fromJson(workDefaultConfig);
       HiveUtils.putSubGroup('work', work);
     }
     state.subGroup = Rx(work);
     var index = work.groups!.indexWhere((element) => element.value == "todo");
-    state.tabController = TabController(initialIndex: index,length: work.groups!.length,vsync: this,animationDuration: Duration.zero);
+    state.tabController = TabController(
+        initialIndex: index,
+        length: work.groups!.length,
+        vsync: this,
+        animationDuration: Duration.zero);
   }
-
-
 }
