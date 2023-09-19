@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,19 +16,19 @@ import 'dart/controller/user_controller.dart';
 import 'util/hive_utils.dart';
 import 'util/local_store.dart';
 
-
 void main() async {
   // 逻辑绑定
   WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+  SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
   await HiveUtils.init();
 
   await NotificationUtil.initializeService();
 
   // 初始化通知配置
-  await LocalStore.instance();
+  await Storage.init();
 
   ForegroundUtils().initForegroundTask();
 
@@ -59,7 +58,7 @@ const Size screenSize = Size(540, 1170);
 class ScreenInit extends StatelessWidget {
   const ScreenInit({Key? key}) : super(key: key);
 
-  List<String>? get account => LocalStore.getStore().getStringList("account");
+  List<String>? get account => Storage.getList("account");
 
   @override
   Widget build(BuildContext context) {
@@ -93,12 +92,12 @@ class ScreenInit extends StatelessWidget {
     );
   }
 
-  Future<void> automaticLogon() async{
+  Future<void> automaticLogon() async {
     Future<void> login() async {
       String accountName = account![0];
       String passWord = account![1];
       var login = await settingCtrl.provider.login(accountName, passWord);
-      if(!login.success){
+      if (!login.success) {
         settingCtrl.exitLogin();
       }
     }
@@ -107,15 +106,10 @@ class ScreenInit extends StatelessWidget {
       if (kernel.isOnline) {
         await login();
       } else {
-
         Future.delayed(const Duration(milliseconds: 100), () async {
           await automaticLogon();
         });
       }
     }
   }
-
-
-
 }
-

@@ -8,26 +8,21 @@ import 'package:signalr_netcore/signalr_client.dart';
 
 /// 存储集线器
 class StoreHub {
-  // 是否已经启动
-  bool _isStarted = false;
-
   // 超时重试时间
   final int _timeout;
-
+  // 是否已经启动
+  bool _isStarted = false;
   // signalr 连接
   final HubConnection _connection;
-
   // 连接成功回调
   List<Function> _connectedCallbacks = [];
-
-  // 日志
-  final Logger log = Logger("StoreHub");
-
   // 连接断开回调
   List<Function(Exception?)> _disconnectedCallbacks = [];
-
+  // 日志
+  final Logger log = Logger("StoreHub");
   StoreHub(
     String url, {
+    protocol = 'json',
     int timeout = 8000,
     int interval = 3000,
   })  : _timeout = timeout,
@@ -68,7 +63,7 @@ class StoreHub {
     return _isStarted && _connection.state == HubConnectionState.Connected;
   }
 
-  HubConnectionState? connectionState(){
+  HubConnectionState? connectionState() {
     return _connection.state;
   }
 
@@ -102,8 +97,7 @@ class StoreHub {
     }
   }
 
-
-  Future<void> disconnect() async{
+  Future<void> disconnect() async {
     _isStarted = false;
     _connection.stop();
   }
@@ -171,9 +165,9 @@ class StoreHub {
         } else if (res['code'] == 500) {
           ToastUtils.showMsg(msg: 'error 500 长连接已断开,正在重试');
           Log.info('anystore断开链接,正在重试');
-          String token = kernel.anystore.accessToken;
-          kernel.anystore.accessToken = '';
-          kernel.anystore.updateToken(token);
+          // String token = kernel.accessToken;
+          // kernel.setToken = '';
+          // kernel.setToken(token);
         }
       }
       log.info("=====> res: $res");

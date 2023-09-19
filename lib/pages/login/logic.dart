@@ -9,21 +9,20 @@ import '../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
 class LoginController extends BaseController<LoginState> {
+  @override
   final LoginState state = LoginState();
 
   @override
   void onInit() async {
-    // TODO: implement onInit
     super.onInit();
-    if(!kernel.isOnline){
+
+    if (!kernel.isOnline) {
       kernel.start();
     }
-    var account = LocalStore.getStore().getStringList("account");
-    if (account != null) {
-      state.accountController.text = account[0];
-      state.phoneNumberController.text = account[0];
-      state.passWordController.text = account[1];
-    }
+    var account = Storage.getList("account");
+    state.accountController.text = account[0];
+    state.phoneNumberController.text = account[0];
+    state.passWordController.text = account[1];
   }
 
   void showPassWord() {
@@ -57,9 +56,9 @@ class LoginController extends BaseController<LoginState> {
     if (res.success) {
       ToastUtils.showMsg(msg: "登录成功");
       [Permission.storage, Permission.notification].request();
-      LocalStore.getStore().setStringList("account",
+      Storage.setList("account",
           [state.accountController.text, state.passWordController.text]);
-      Get.offAndToNamed(Routers.home,arguments: true);
+      Get.offAndToNamed(Routers.home, arguments: true);
     } else {
       ToastUtils.showMsg(msg: res.msg);
     }

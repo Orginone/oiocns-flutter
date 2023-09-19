@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -10,6 +10,175 @@ import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/model/thing_model.dart' as thing;
 import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/string_util.dart';
+
+/// 内核请求模型
+class ReqestType {
+  // 模块
+  final String module;
+
+  // 方法
+  final String action;
+
+  // 参数
+  final dynamic params;
+
+  ReqestType({
+    required this.module,
+    required this.action,
+    required this.params,
+  });
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["module"] = module;
+    json["action"] = action;
+    json["params"] = params;
+    return json;
+  }
+}
+
+// 请求数据核类型定义
+class DataProxyType {
+  String module; // 模块
+  String action; // 方法
+  String belongId; // 归属
+  String? copyId; // 抄送
+  dynamic params; // 参数
+  List<String> relations; // 关系举证(用户鉴权[user=>relations=>target],最大支持2级关系)
+
+  DataProxyType({
+    required this.module,
+    required this.action,
+    required this.belongId,
+    this.copyId,
+    required this.params,
+    required this.relations,
+  });
+
+  factory DataProxyType.fromJson(Map<String, dynamic> json) {
+    return DataProxyType(
+      module: json['module'] as String, // 模块
+      action: json['action'] as String, // 方法
+      belongId: json['belongId'] as String, // 归属
+      copyId: json['copyId'] as String?, // 抄送
+      params: json['params'], // 参数
+      relations: List<String>.from(json['relations'] as List), // 关系举证
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'module': module, // 模块
+      'action': action, // 方法
+      'belongId': belongId, // 归属
+      if (copyId != null) 'copyId': copyId, // 抄送
+      'params': params, // 参数
+      'relations': relations, // 关系举证
+    };
+  }
+}
+
+// 请求数据核类型定义
+class DataNotityType {
+  // 数据
+  dynamic data;
+  // 通知的用户
+  String targetId;
+  // 是否忽略自己
+  bool ignoreSelf;
+  // 标签
+  String flag;
+  // 关系举证(用户鉴权[user=>relations=>target],最大支持2级关系)
+  List<String> relations;
+  // 归属用户
+  String belongId;
+  // 通知用户自身
+  bool onlyTarget;
+  // 仅通知在线用户
+  bool onlineOnly;
+
+  DataNotityType({
+    required this.data,
+    required this.targetId,
+    required this.ignoreSelf,
+    required this.flag,
+    required this.relations,
+    required this.belongId,
+    required this.onlyTarget,
+    required this.onlineOnly,
+  });
+}
+
+// 代理请求类型定义
+class HttpRequestType {
+// 目标地址
+  late String uri;
+  // 请求方法
+  late String method;
+  // 请求头
+  late Map<String, List<String>> header;
+  // 请求体
+  late String content;
+}
+
+// Http请求响应类型定义
+class HttpResponseType {
+// 状态码
+  late int status;
+  // 响应类型
+  late String contentType;
+  // 响应头
+  late Map<String, List<String>> header;
+  // 响应体
+  late String content;
+}
+
+// 返回类型定义
+class LoadResult<T> {
+  // 数据
+  T? data;
+  // 分组数量
+  final int groupCount;
+  // 总数
+  final int totalCount;
+  final List<dynamic> summary;
+  //http代码
+  final int code;
+  // 消息
+  final String msg;
+  // 是否成功标志
+  final bool success;
+  LoadResult({
+    required this.code,
+    this.data,
+    required this.groupCount,
+    required this.totalCount,
+    required this.summary,
+    required this.msg,
+    required this.success,
+  });
+
+  LoadResult.fromJson(Map<String, dynamic> json)
+      : data = json["data"],
+        groupCount = json["groupCount"],
+        totalCount = json["totalCount"],
+        summary = json["summary"],
+        code = json["code"],
+        msg = json["msg"],
+        success = json["success"];
+
+  LoadResult.fromJsonSerialize(
+      Map<String, dynamic> json, T Function(Map<String, dynamic>) serialize)
+      : data = (json["data"] != null && json["data"] is Map)
+            ? serialize(json["data"])
+            : null,
+        groupCount = json["groupCount"] ?? 0,
+        totalCount = json["totalCount"] ?? 0,
+        summary = List<String>.from(json['summary'] as List),
+        code = json["code"] ?? 400,
+        msg = json["msg"] ?? "",
+        success = json["success"] ?? false;
+}
 
 /// 统一返回结构模型
 class ResultType<T> {
@@ -46,71 +215,2247 @@ class ResultType<T> {
             : null,
         code = json["code"] ?? 400,
         success = json["success"] ?? false;
-}
-
-class PageResp<T> {
-  final int limit;
-  final int total;
-  final List<T> result;
-
-  PageResp(this.limit, this.total, this.result);
-
-  static PageResp<T> fromMap<T>(Map<String, dynamic> map, Function mapping) {
-    int limit = map["limit"] ?? 0;
-    int total = map["total"] ?? 0;
-    List<dynamic> result = map["result"] ?? [];
-
-    List<T> ans = result.map((item) => mapping(item) as T).toList();
-    return PageResp<T>(limit, total, ans);
-  }
 
   Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["limit"] = limit;
-    json["total"] = total;
-    json["result"] = result;
-    return json;
-  }
-}
-
-/// 内核请求模型
-class ReqestType {
-  // 模块
-  final String module;
-
-  // 方法
-  final String action;
-
-  // 参数
-  final dynamic params;
-
-  ReqestType({
-    required this.module,
-    required this.action,
-    required this.params,
-  });
-
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["module"] = module;
-    json["action"] = action;
-    json["params"] = params;
-    return json;
+    return {
+      'code': code,
+      'data': data,
+      'msg': msg,
+      'success': success,
+    };
   }
 }
 
 /// 事件接收模型
 class ReceiveType {
-  // 目标
-  final String target;
+  // 用户
+  String userId;
+  // 对象
+  String target;
+  // 数据
+  dynamic data;
+  ReceiveType({required this.userId, required this.target, required this.data});
+  factory ReceiveType.fromJson(Map<String, dynamic> json) {
+    return ReceiveType(
+      userId: json['userId'] ?? '',
+      target: json['target'] ?? '',
+      data: json['data'] as dynamic,
+    );
+  }
+  Map<String, dynamic> toJson() => {
+        'userId': userId,
+        'target': target,
+      };
+}
+
+/// 在线信息
+class OnlineInfo {
+  /// 用户Id
+  late String userId;
+
+  /// 连接Id
+  late String connectionId;
+
+  /// 远端地址
+  late String remoteAddr;
+
+  /// 上线时间
+  late String onlineTime;
+
+  /// 认证时间
+  late String authTime;
+
+  /// 请求次数
+  late int requestCount;
+
+  /// 终端类型
+  late String endPointType;
+
+  OnlineInfo({
+    required this.userId,
+    required this.connectionId,
+    required this.remoteAddr,
+    required this.onlineTime,
+    required this.authTime,
+    required this.requestCount,
+    required this.endPointType,
+  });
+}
+
+/// 在线信息查询接口
+class OnlineSet {
+  /// 用户连接
+  final List<OnlineInfo>? users;
+
+  /// 存储连接
+  final List<OnlineInfo>? storages;
+
+  OnlineSet({this.users, this.storages});
+}
+
+class PageResult<T> {
+  // 偏移量
+  int offset;
+  // 最大数量
+  int limit;
+  // 总数
+  int total;
+  // 结果
+  List<T> rsult;
+  PageResult({
+    required this.total,
+    required this.offset,
+    required this.limit,
+    required this.rsult,
+  });
+
+  factory PageResult.fromJson(Map<String, dynamic> json) {
+    return PageResult(
+      total: json['total'] as int,
+      offset: json['offset'] as int,
+      limit: json['limit'] as int,
+      rsult: List<T>.from(json['rsult'] as List),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'total': total,
+      'offset': offset,
+      'limit': limit,
+      'rsult': rsult,
+    };
+  }
+}
+
+// 注册消息类型
+class RegisterType {
+  // 昵称
+  final String nickName;
+
+  // 姓名
+  final String name;
+
+  // 电话
+  final String phone;
+
+  // 账户
+  final String account;
+
+  // 密码
+  final String password;
+
+  // 座右铭
+  final String motto;
+
+  // 头像
+  final String avatar;
+
+  RegisterType({
+    required this.nickName,
+    required this.name,
+    required this.phone,
+    required this.account,
+    required this.password,
+    required this.motto,
+    required this.avatar,
+  });
+
+  //通过JSON构造
+  RegisterType.fromJson(Map<String, dynamic> json)
+      : nickName = json["nickName"],
+        name = json["name"],
+        phone = json["phone"],
+        account = json["account"],
+        password = json["password"],
+        motto = json["motto"],
+        avatar = json["avatar"];
+
+  //通过动态数组解析成List
+  static List<RegisterType> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<RegisterType> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(RegisterType.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["nickName"] = nickName;
+    json["name"] = name;
+    json["phone"] = phone;
+    json["account"] = account;
+    json["password"] = password;
+    json["motto"] = motto;
+    json["avatar"] = avatar;
+    return json;
+  }
+}
+
+class IdPair {
+  // 唯一ID
+  final String id;
+  final String value;
+
+  IdPair(this.id, this.value);
+}
+
+// 请求数据核类型定义
+class PageModel {
+  //过滤条件
+  String filter;
+  // 偏移量
+  int offset;
+  // 最大数量
+  int limit;
+
+  PageModel({
+    required this.filter,
+    required this.offset,
+    required this.limit,
+  });
+
+  factory PageModel.fromJson(Map<String, dynamic> json) {
+    return PageModel(
+      filter: json['filter'] as String,
+      offset: json['offset'] as int,
+      limit: json['limit'] as int,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'filter': filter,
+      'offset': offset,
+      'limit': limit,
+    };
+  }
+}
+
+class IdModel {
+  // 唯一ID
+  final String id;
+
+  IdModel(
+    this.id,
+  );
+}
+
+class IdPageModel {
+  // 唯一ID
+  final String id;
+  //分页
+  final PageModel? page;
+
+  IdPageModel(
+    this.id,
+    this.page,
+  );
+}
+
+class IdArrayModel {
+  // 唯一ID
+  final List<String> ids;
+  //分页
+  final PageModel? page;
+
+  IdArrayModel(
+    this.ids,
+    this.page,
+  );
+}
+
+class EntityModel {
+  // 雪花ID
+  final String id;
+  // 名称
+  final String name;
+  // 编号
+  final String code;
+  // 备注
+  final String remark;
+  // 图标
+  final String icon;
+  // 归属用户ID
+  final String belongId;
+  // 类型
+  final String typeName;
+  // 状态
+  final int status;
+  // 创建人员ID
+  final String createUser;
+  // 更新人员ID
+  final String updateUser;
+  // 修改次数
+  final String version;
+  // 创建时间
+  final String createTime;
+  // 更新时间
+  final String updateTime;
+
+  EntityModel(
+      this.id,
+      this.name,
+      this.code,
+      this.remark,
+      this.icon,
+      this.belongId,
+      this.typeName,
+      this.status,
+      this.createUser,
+      this.updateUser,
+      this.version,
+      this.createTime,
+      this.updateTime);
+}
+
+class AuthorityModel {
+  // 唯一ID
+  String? id;
+
+  // 名称
+  String? name;
+
+  // 编号
+  String? code;
+
+  String? icon;
+
+  // 公开的
+  bool? public;
+
+  // 父类别ID
+  String? parentId;
+
+  // 共享用户
+  String? shareId;
+
+  // 备注
+  String? remark;
+
+  //构造方法
+  AuthorityModel({
+    this.id,
+    this.name,
+    this.code,
+    this.public,
+    this.parentId,
+    this.shareId,
+    this.remark,
+    this.icon,
+  });
+
+  //通过JSON构造
+  AuthorityModel.fromJson(Map<String, dynamic> json)
+      : id = json["id"],
+        name = json["name"],
+        code = json["code"],
+        public = json["public"],
+        parentId = json["parentId"],
+        shareId = json["shareId"],
+        icon = json['icon'],
+        remark = json["remark"];
+
+  //通过动态数组解析成List
+  static List<AuthorityModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<AuthorityModel> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(AuthorityModel.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["name"] = name;
+    json["code"] = code;
+    json["public"] = public;
+    json["parentId"] = parentId;
+    json["shareId"] = shareId;
+    json['icon'] = icon;
+    json["remark"] = remark;
+    return json;
+  }
+}
+
+class IdentityModel {
+  // 唯一ID
+  String? id;
+
+  // 名称
+  String? name;
+
+  // 编号
+  String? code;
+
+  // 权限Id
+  String? authId;
+
+  // 共享用户Id
+  String? shareId;
+
+  // 备注
+  String? remark;
+
+  //构造方法
+  IdentityModel({
+    this.id,
+    this.name,
+    this.code,
+    this.authId,
+    this.shareId,
+    this.remark,
+  });
+
+  //通过JSON构造
+  IdentityModel.fromJson(Map<String, dynamic> json)
+      : id = json["id"],
+        name = json["name"],
+        code = json["code"],
+        authId = json["authId"],
+        shareId = json["shareId"],
+        remark = json["remark"];
+
+  //通过动态数组解析成List
+  static List<IdentityModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<IdentityModel> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(IdentityModel.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["name"] = name;
+    json["code"] = code;
+    json["authId"] = authId;
+    json["shareId"] = shareId;
+    json["remark"] = remark;
+    return json;
+  }
+}
+
+class TargetModel {
+  // 唯一ID
+  String? id;
+
+  // 名称
+  String? name;
+
+  // 编号
+  String? code;
+
+  // 类型名
+  String typeName;
+
+  // 头像
+  String? icon;
+
+  // 创建组织/个人
+  String? belongId;
+
+  // 团队名称
+  String? teamName;
+
+  // 团队代号
+  String? teamCode;
+
+  // 团队备注
+  String? remark;
+
+  bool? public;
+
+  //构造方法
+  TargetModel({
+    this.id,
+    this.name,
+    this.code,
+    required this.typeName,
+    this.icon,
+    this.belongId,
+    this.teamName,
+    this.teamCode,
+    this.remark,
+    this.public,
+  });
+
+  //通过JSON构造
+  TargetModel.fromJson(Map<String, dynamic> json)
+      : id = json["id"],
+        name = json["name"],
+        code = json["code"],
+        typeName = json["typeName"],
+        icon = json["icon"],
+        belongId = json["belongId"],
+        teamName = json["teamName"],
+        teamCode = json["teamCode"],
+        public = json['public'],
+        remark = json["remark"];
+
+  //通过动态数组解析成List
+  static List<TargetModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<TargetModel> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(TargetModel.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["name"] = name;
+    json["code"] = code;
+    json["typeName"] = typeName;
+    json["icon"] = icon;
+    json["belongId"] = belongId;
+    json["teamName"] = teamName;
+    json["teamCode"] = teamCode;
+    json["remark"] = remark;
+    json['public'] = public;
+    return json;
+  }
+}
+
+class GiveModel {
+  // 唯一ID
+  final String id;
+
+  // 子ID
+  final List<String> subIds;
+
+  //构造方法
+  GiveModel({
+    required this.id,
+    required this.subIds,
+  });
+
+  //通过JSON构造
+  GiveModel.fromJson(Map<String, dynamic> json)
+      : id = json["id"],
+        subIds = json["subIds"];
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["subIds"] = subIds;
+    return json;
+  }
+}
+
+class GainModel {
+  // 唯一ID
+  final String id;
+
+  // 子ID
+  final String subId;
+
+  //构造方法
+  GainModel({
+    required this.id,
+    required this.subId,
+  });
+
+  //通过JSON构造
+  GainModel.fromJson(Map<String, dynamic> json)
+      : id = json["id"],
+        subId = json["subId"];
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["subId"] = subId;
+    return json;
+  }
+}
+
+class ApprovalModel {
+  // 唯一ID
+  final String? id;
+
+  // 状态
+  final int? status;
+
+  //构造方法
+  ApprovalModel({
+    this.id,
+    this.status,
+  });
+
+  //通过JSON构造
+  ApprovalModel.fromJson(Map<String, dynamic> json)
+      : id = json["id"],
+        status = json["status"];
+
+  //通过动态数组解析成List
+  static List<ApprovalModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<ApprovalModel> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(ApprovalModel.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["status"] = status;
+    return json;
+  }
+}
+
+class SearchModel {
+  // 名称
+  final String name;
+  // 类型数组
+  final List<String> peNames;
+  // 分页
+  PageModel? page;
+
+  SearchModel(this.name, this.peNames, {this.page});
+}
+
+class GetSubsModel {
+  // 唯一ID
+  final String id;
+
+  // 加入的节点类型
+  final List<String> subTypeNames;
+
+  // 分页
+  final PageModel page;
+
+  GetSubsModel(
+      {required this.id, required this.subTypeNames, required this.page});
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["subTypeNames"] = subTypeNames;
+    json["page"] = page.toJson();
+    return json;
+  }
+}
+
+class MsgSendModel {
+  // 接收方Id
+  final String toId;
+
+  // 工作空间ID
+  final String belongId;
+
+  // 消息类型
+  final String msgType;
+
+  // 消息体
+  final String msgBody;
+
+  //构造方法
+  MsgSendModel({
+    required this.toId,
+    required this.belongId,
+    required this.msgType,
+    required this.msgBody,
+  });
+
+  //通过JSON构造
+  MsgSendModel.fromJson(Map<String, dynamic> json)
+      : belongId = json["belongId"],
+        toId = json["toId"],
+        msgType = json["msgType"],
+        msgBody = json["msgBody"];
+
+  //通过动态数组解析成List
+  static List<MsgSendModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<MsgSendModel> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(MsgSendModel.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["belongId"] = belongId;
+    json["toId"] = toId;
+    json["msgType"] = msgType;
+    json["msgBody"] = msgBody;
+    return json;
+  }
+}
+
+class MsgTagModel {
+  // 工作空间ID
+  String? belongId;
+
+  // id
+  String? id;
+
+  // 消息类型
+  List<String>? ids;
+
+  // 消息体
+  List<String>? tags;
+
+  MsgTagModel({this.belongId, this.id, this.ids, this.tags});
+
+  MsgTagModel.fromJson(Map<String, dynamic> json) {
+    belongId = json["belongId"];
+    id = json["id"];
+    ids = json["ids"] != null ? List.castFrom(json["ids"]) : null;
+    tags = json["tags"] != null ? List.castFrom(json["tags"]) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["belongId"] = belongId;
+    json["id"] = id;
+    json["ids"] = ids;
+    json["tags"] = tags;
+    return json;
+  }
+}
+
+/// 聊天消息类型
+class ChatMessageType extends Xbase {
+  String fromId; // 发起方Id
+  String toId; // 接收方Id
+  String sessionId; // 接收会话Id
+  String typeName; // 类型
+  String content; // 内容
+  List<CommentType> comments; // 评注
+
+  ChatMessageType({
+    required this.fromId,
+    required this.toId,
+    required this.sessionId,
+    required this.typeName,
+    required this.content,
+    required this.comments,
+  }) : super();
+}
+
+class CommentType {
+  String label; // 标签名称
+  String userId; // 人员Id
+  String time; // 时间
+
+  CommentType({
+    required this.label,
+    required this.userId,
+    required this.time,
+  });
+}
+
+class PropertyModel {
+  String? id; // 唯一ID
+  String? name; // 名称
+  String? code; // 编号
+  String? valueType; // 值类型
+  String? unit; // 计量单位
+  String? info; // 附加信息
+  String? directoryId; // 目录ID
+  String? speciesId; // 分类标签ID
+  String? sourceId; // 来源用户ID
+  String? remark; // 备注
+
+  PropertyModel({
+    this.id,
+    this.name,
+    this.code,
+    this.valueType,
+    this.unit,
+    this.info,
+    this.directoryId,
+    this.speciesId,
+    this.sourceId,
+    this.remark,
+  });
+
+  factory PropertyModel.fromJson(Map<String, dynamic> json) {
+    return PropertyModel(
+      id: json['id'],
+      name: json['name'],
+      code: json['code'],
+      valueType: json['valueType'],
+      unit: json['unit'],
+      info: json['info'],
+      directoryId: json['directoryId'],
+      speciesId: json['speciesId'],
+      sourceId: json['sourceId'],
+      remark: json['remark'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      'id': id,
+      'name': name,
+      'code': code,
+      'valueType': valueType,
+      'unit': unit,
+      'info': info,
+      'directoryId': directoryId,
+      'speciesId': speciesId,
+      'sourceId': sourceId,
+      'remark': remark,
+    };
+    return data;
+  }
+}
+
+class DirectoryModel {
+  String? id; // 唯一ID
+  String? name; // 名称
+  String? code; // 编号
+  String? icon; // 图标
+  String? parentId; // 父目录ID
+  String? shareId; // 共享用户ID
+  String? remark; // 备注
+
+  DirectoryModel({
+    this.id,
+    this.name,
+    this.code,
+    this.icon,
+    this.parentId,
+    this.shareId,
+    this.remark,
+  });
+
+  factory DirectoryModel.fromJson(Map<String, dynamic> json) {
+    return DirectoryModel(
+      id: json['id'],
+      name: json['name'],
+      code: json['code'],
+      icon: json['icon'],
+      parentId: json['parentId'],
+      shareId: json['shareId'],
+      remark: json['remark'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'code': code,
+      'icon': icon,
+      'parentId': parentId,
+      'shareId': shareId,
+      'remark': remark,
+    };
+  }
+}
+
+class SpeciesModel {
+  String? id; // 唯一ID
+  String? name; // 名称
+  String? code; // 编号
+  String? typeName; // 类型
+  String? icon; // 图标
+  String? remark; // 备注
+  String? sourceId; // 来源用户ID
+  String? directoryId; // 目录ID
+
+  SpeciesModel({
+    this.id,
+    this.name,
+    this.code,
+    this.typeName,
+    this.icon,
+    this.remark,
+    this.sourceId,
+    this.directoryId,
+  });
+
+  factory SpeciesModel.fromJson(Map<String, dynamic> json) {
+    return SpeciesModel(
+      id: json['id'],
+      name: json['name'],
+      code: json['code'],
+      typeName: json['typeName'],
+      icon: json['icon'],
+      remark: json['remark'],
+      sourceId: json['sourceId'],
+      directoryId: json['directoryId'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = {
+      'id': id,
+      'name': name,
+      'code': code,
+      'typeName': typeName,
+      'icon': icon,
+      'remark': remark,
+      'sourceId': sourceId == "" ? null : sourceId,
+      'directoryId': directoryId,
+    };
+    return json;
+  }
+}
+
+class SpeciesItemModel {
+  String? id; // 唯一ID
+  String? name; // 键
+  String? code; // 编号
+  String? icon; // 图标
+  String? info; // 附加信息
+  String? speciesId; // 类型ID
+  String? parentId; // 父类目ID
+  String? remark; // 备注
+
+  SpeciesItemModel({
+    this.id,
+    this.name,
+    this.code,
+    this.icon,
+    this.info,
+    this.speciesId,
+    this.parentId,
+    this.remark,
+  });
+
+  factory SpeciesItemModel.fromJson(Map<String, dynamic> json) {
+    return SpeciesItemModel(
+      id: json['id'],
+      name: json['name'],
+      code: json['code'],
+      icon: json['icon'],
+      info: json['info'],
+      speciesId: json['speciesId'],
+      parentId: json['parentId'],
+      remark: json['remark'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = {
+      'id': id,
+      'name': name,
+      'code': code,
+      'icon': icon,
+      'info': info,
+      'speciesId': speciesId,
+      'parentId': parentId,
+      'remark': remark,
+    };
+    return json;
+  }
+}
+
+class AttributeModel {
+  /// 唯一ID
+  String? id;
+
+  /// 名称
+  String? name;
+
+  /// 编号
+  String? code;
+
+  /// 规则
+  String? rule;
+
+  /// 属性Id
+  String? propId;
+
+  /// 工作职权Id
+  String? authId;
+
+  /// 表单项Id
+  String? formId;
+
+  /// 备注
+  String? remark;
+
+  AttributeModel({
+    this.id,
+    this.name,
+    this.code,
+    this.rule,
+    this.propId,
+    this.authId,
+    this.formId,
+    this.remark,
+  });
+
+  factory AttributeModel.fromJson(Map<String, dynamic> json) {
+    return AttributeModel(
+      id: json['id'],
+      name: json['name'],
+      code: json['code'],
+      rule: json['rule'],
+      propId: json['propId'],
+      authId: json['authId'],
+      formId: json['formId'],
+      remark: json['remark'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['name'] = name;
+    data['code'] = code;
+    data['rule'] = rule;
+    data['propId'] = propId;
+    data['authId'] = authId;
+    data['formId'] = formId;
+    data['remark'] = remark;
+    return data;
+  }
+}
+
+class FormModel {
+  String? id; // 唯一ID
+  String? name; // 名称
+  String? code; // 编号
+  String? rule; // 规则
+  String? icon; // 图标
+  String? typeName; // 类型
+  String? remark; // 备注
+  String? directoryId; // 目录ID
+
+  FormModel({
+    this.id,
+    this.name,
+    this.code,
+    this.rule,
+    this.icon,
+    this.typeName,
+    this.remark,
+    this.directoryId,
+  });
+
+  factory FormModel.fromJson(Map<String, dynamic> json) {
+    return FormModel(
+      id: json['id'],
+      name: json['name'],
+      code: json['code'],
+      rule: json['rule'],
+      icon: json['icon'],
+      typeName: json['typeName'],
+      remark: json['remark'],
+      directoryId: json['directoryId'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'code': code,
+      'rule': rule,
+      'icon': icon,
+      'typeName': typeName,
+      'remark': remark,
+      'directoryId': directoryId,
+    };
+  }
+}
+
+class ApplicationModel {
+  String? id; // 唯一ID
+  String? name; // 名称
+  String? code; // 编号
+  String? icon; // 图标
+  String? typeName; // 类型
+  String? remark; // 备注
+  String? directoryId; // 目录ID
+  String? parentId; // 父级ID
+  String? resource; // 资源
+
+  ApplicationModel({
+    this.id,
+    this.name,
+    this.code,
+    this.icon,
+    this.typeName,
+    this.remark,
+    this.directoryId,
+    this.parentId,
+    this.resource,
+  });
+
+  factory ApplicationModel.fromJson(Map<String, dynamic> json) {
+    return ApplicationModel(
+      id: json['id'],
+      name: json['name'],
+      code: json['code'],
+      icon: json['icon'],
+      typeName: json['typeName'],
+      remark: json['remark'],
+      directoryId: json['directoryId'],
+      parentId: json['parentId'],
+      resource: json['resource'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['name'] = name;
+    data['code'] = code;
+    data['icon'] = icon;
+    data['typeName'] = typeName;
+    data['remark'] = remark;
+    data['directoryId'] = directoryId;
+    data['parentId'] = parentId;
+    data['resource'] = resource;
+    return data;
+  }
+}
+
+class ThingModel {
+  // 唯一ID
+  final String? id;
+
+  // 内容
+  final String data;
+
+  // 归属id
+  final String? belongId;
+
+  //构造方法
+  ThingModel({
+    this.id,
+    required this.data,
+    this.belongId,
+  });
+
+  //通过JSON构造
+  ThingModel.fromJson(Map<String, dynamic> json)
+      : id = json["id"],
+        data = json["data"],
+        belongId = json["belongId"];
+
+  //通过动态数组解析成List
+  static List<ThingModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<ThingModel> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(ThingModel.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["data"] = data;
+    json["belongId"] = belongId;
+    return json;
+  }
+}
+
+class SetPropModel {
+  String id; // 物的唯一ID
+  List<IdPair>? data; // 特性数据
+
+  SetPropModel({
+    required this.id,
+    this.data,
+  });
+}
+
+class GetDirectoryModel {
+  late String id; // 唯一ID
+  late bool upTeam; // 是否向上递归用户
+  late PageModel page; // 分页
+
+  GetDirectoryModel({
+    required this.id,
+    required this.upTeam,
+    required this.page,
+  });
+
+  factory GetDirectoryModel.fromJson(Map<String, dynamic> json) {
+    return GetDirectoryModel(
+      id: json['id'] as String,
+      upTeam: json['upTeam'] as bool,
+      page: PageModel.fromJson(json['page']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['upTeam'] = upTeam;
+    data['page'] = PageRequest(offset: 0, limit: 9999, filter: '');
+    return data;
+  }
+}
+
+class AnyThingModel {
+  String? id;
+
+  /// 唯一ID
+  String? name;
+
+  /// 名称
+  String? status;
+
+  /// 状态
+  String? creater;
+
+  /// 创建人
+  String? createTime;
+
+  /// 创建时间
+  String? modifiedTime;
+
+  /// 变更时间
+  bool isSelected = false;
+
+  /// 其它信息
+  Map<String, dynamic> otherInfo = {};
+
+  Map<String, Archives> archives = {};
+  AnyThingModel({
+    this.id,
+    this.name,
+    this.status,
+    this.creater,
+    this.createTime,
+    this.modifiedTime,
+  });
+
+  AnyThingModel.fromJson(Map<String, dynamic> json) {
+    json.forEach((key, value) {
+      if (key != 'Id' &&
+          key != 'Name' &&
+          key != 'Status' &&
+          key != 'Creater' &&
+          key != 'CreateTime' &&
+          key != 'ModifiedTime' &&
+          key != "Archives") {
+        otherInfo[key] = value;
+      }
+    });
+
+    if (json['Archives'] != null) {
+      json['Archives'].forEach((key, value) {
+        archives[key] = Archives.fromJson(value);
+      });
+    }
+
+    id = json['Id'];
+    name = json['Name'];
+    status = json['Status'];
+    creater = json['Creater'];
+    createTime = json['CreateTime'];
+    modifiedTime = json['ModifiedTime'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['Id'] = id;
+    data['Name'] = name;
+    data['Status'] = status;
+    data['Creater'] = creater;
+    data['CreateTime'] = createTime;
+    data['ModifiedTime'] = modifiedTime;
+    data.addAll(otherInfo);
+    return data;
+  }
+}
+
+class WorkDefineModel {
+  String? id; // 流程ID
+  String? name; // 流程名称
+  String? code; // 流程编号
+  String? icon; // 图标
+  String? remark; // 备注
+  String? shareId; // 共享组织ID
+  String? applicationId; // 应用ID
+  String? rule; // 是否创建实体
+  WorkNodeModel? resource; // 流程节点
+
+  WorkDefineModel({
+    this.id,
+    this.name,
+    this.code,
+    this.icon,
+    this.remark,
+    this.shareId,
+    this.applicationId,
+    this.rule,
+    this.resource,
+  });
+
+  factory WorkDefineModel.fromJson(Map<String, dynamic> json) {
+    return WorkDefineModel(
+      id: json['id'],
+      name: json['name'],
+      code: json['code'],
+      icon: json['icon'],
+      remark: json['remark'],
+      shareId: json['shareId'],
+      applicationId: json['applicationId'],
+      rule: json['rule'],
+      resource: json['resource'] != null
+          ? WorkNodeModel.fromJson(json['resource'])
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      'id': id,
+      'name': name,
+      'code': code,
+      'icon': icon,
+      'remark': remark,
+      'shareId': shareId,
+      'applicationId': applicationId,
+      'rule': rule,
+      'resource': resource != null ? resource!.toJson() : null,
+    };
+    return data;
+  }
+}
+
+class WorkInstanceModel {
+  String? defineId; // 流程定义Id
+  String? content; // 展示内容
+  String? contentType; // 内容类型
+  String? data; // 单数据内容
+  String? title; // 标题
+  String? hook; // 回调地址
+  String? taskId; // 对应父流程实例节点任务Id
+  String? applyId; // 发起用户ID
+  String? childrenData;
+
+  WorkInstanceModel({
+    this.defineId,
+    this.content,
+    this.contentType,
+    this.data,
+    this.title,
+    this.hook,
+    this.taskId,
+    this.applyId,
+    this.childrenData,
+  });
+
+  WorkInstanceModel.fromJson(Map<String, dynamic> json) {
+    defineId = json['defineId'];
+    content = json['content'];
+    contentType = json['contentType'];
+    data = json['data'];
+    title = json['title'];
+    hook = json['hook'];
+    taskId = json['taskId'];
+    applyId = json['applyId'];
+    childrenData = json['childrenData'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['defineId'] = defineId;
+    data['content'] = content;
+    data['contentType'] = contentType;
+    data['data'] = this.data;
+    data['title'] = title;
+    data['hook'] = hook;
+    data['taskId'] = taskId;
+    data['applyId'] = applyId;
+    data['childrenData'] = childrenData;
+    return data;
+  }
+}
+
+class InstanceDataModel {
+  WorkNodeModel? node;
+
+  /// 流程节点
+  bool? allowAdd; // 允许新增
+  bool? allowEdit; // 允许变更
+  bool? allowSelect; // 允许选择
+  Map<String, List<FieldModel>> fields = {};
+  /** 表单字段 */ /// 表单id
+  Map<String, List<FormEditData>> data = {};
+
+  /// 提交的表单数据 // 表单id
+  Map<String, dynamic> primary = {};
+
+  /// 填写的主表信息
+
+  InstanceDataModel({
+    this.node,
+    this.allowAdd,
+    this.allowEdit,
+    this.allowSelect,
+  });
+
+  InstanceDataModel.fromJson(Map<String, dynamic> json) {
+    if (json['fields'] != null) {
+      json['fields'].forEach((key, value) {
+        List<FieldModel> fieldList = [];
+        if (value is List) {
+          for (var fieldJson in value) {
+            fieldList.add(FieldModel.fromJson(fieldJson));
+          }
+        }
+        fields[key] = fieldList;
+      });
+    }
+
+    if (json['data'] != null) {
+      json['data'].forEach((key, value) {
+        List<FormEditData> formDataList = [];
+        if (value is List) {
+          for (var formDataJson in value) {
+            formDataList.add(FormEditData.fromJson(formDataJson));
+          }
+        }
+        data[key] = formDataList;
+      });
+    }
+
+    if (json['primary'] != null) {
+      primary = Map<String, dynamic>.from(json['primary']);
+    }
+
+    node = WorkNodeModel.fromJson(json['node']);
+    allowAdd = json['allowAdd'];
+    allowEdit = json['allowEdit'];
+    allowSelect = json['allowSelect'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['node'] = node?.toJson();
+    data['allowAdd'] = allowAdd;
+    data['allowEdit'] = allowEdit;
+    data['allowSelect'] = allowSelect;
+    data['fields'] = fields.map(
+        (key, value) => MapEntry(key, value.map((e) => e.toJson()).toList()));
+    data['data'] = this.data.map(
+        (key, value) => MapEntry(key, value.map((e) => e.toJson()).toList()));
+    data['primary'] = primary;
+    return data;
+  }
+}
+
+class FieldModel {
+  String? id; //标识(特性标识)
+  String? name; //名称(特性名称)
+  String? code; //代码(属性代码)
+  String? valueType; //类型(属性类型)
+  String? rule; //规则(特性规则)
+  String? remark; //备注(特性描述)
+  List<FiledLookup>? lookups; //字典(字典项/分类项)
+  late Fields field; //标识(特性标识)
+  FieldModel({
+    this.id,
+    this.name,
+    this.code,
+    this.valueType,
+    this.rule,
+    this.remark,
+    this.lookups,
+  });
+
+  FieldModel.fromJson(Map<String, dynamic> json) {
+    List<FiledLookup> lookups = [];
+    if (json['lookups'] != null) {
+      json['lookups'].forEach((lookupJson) {
+        lookups.add(FiledLookup.fromJson(lookupJson));
+      });
+    }
+    id = json['id'];
+    name = json['name'];
+    code = json['code'];
+    valueType = json['valueType'];
+    rule = json['rule'];
+    remark = json['remark'];
+    this.lookups = lookups;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['code'] = code;
+    data['valueType'] = valueType;
+    data['rule'] = rule;
+    data['remark'] = remark;
+    data['lookups'] = lookups?.map((lookup) => lookup.toJson()).toList();
+    return data;
+  }
+}
+
+class FiledLookup {
+  String? id;
+
+  /// 唯一标识(项标识)
+  String? text;
+
+  /// 描述(项名称)
+  String? value;
+
+  /// 值(项代码)
+  String? parentId;
+
+  /// 父级Id(项的父级Id)
+  String? icon;
+
+  /// 图标
+
+  FiledLookup({
+    this.id,
+    this.text,
+    this.value,
+    this.parentId,
+    this.icon,
+  });
+
+  FiledLookup.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    text = json['text'];
+    value = json['value'];
+    parentId = json['parentId'];
+    icon = json['icon'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['text'] = text;
+    data['value'] = value;
+    data['parentId'] = parentId;
+    data['icon'] = icon;
+    return data;
+  }
+}
+
+class FormEditData {
+  List<AnyThingModel> before = [];
+
+  /// 操作前数据体
+  List<AnyThingModel> after = [];
+
+  /// 操作后数据体
+  String? nodeId;
+
+  /// 流程节点Id
+  String? creator;
+
+  /// 操作人
+  String? createTime;
+
+  /// 操作时间
+
+  FormEditData({
+    this.nodeId,
+    this.creator,
+    this.createTime,
+  });
+
+  FormEditData.fromJson(Map<String, dynamic> json) {
+    if (json['before'] != null) {
+      json['before'].forEach((itemJson) {
+        before.add(AnyThingModel.fromJson(itemJson));
+      });
+    }
+
+    if (json['after'] != null) {
+      json['after'].forEach((itemJson) {
+        after.add(AnyThingModel.fromJson(itemJson));
+      });
+    }
+    nodeId = json['nodeId'];
+    creator = json['creator'];
+    createTime = json['createTime'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['before'] = before.map((item) => item.toJson()).toList();
+    data['after'] = after.map((item) => item.toJson()).toList();
+    data['nodeId'] = nodeId;
+    data['creator'] = creator;
+    data['createTime'] = createTime;
+    return data;
+  }
+}
+
+class WorkNodeModel {
+  String? id;
+  String? code; // 节点编号
+  String? type; // 节点类型
+  String? name; // 节点名称
+  WorkNodeModel? children; // 子节点
+  List<Branche>? branches; // 节点分支
+  int? num; // 节点审批数量
+  String? destType; // 节点审批目标类型
+  String? destId; // 节点审批目标Id
+  String? destName; // 节点目标名称
+  String? defineId; // 节点归属组织
+  List<XForm>? forms;
+  List<XForm>? primaryFormIds; // 主表Id集合
+  List<XForm>? detailFormIds; // 子表Id集合
+  List<XForm>? primaryForms; // 主表
+  List<XForm>? detailForms; // 子表
+
+  WorkNodeModel({
+    required this.id,
+    required this.code,
+    required this.type,
+    required this.name,
+    this.children,
+    this.branches,
+    required this.num,
+    required this.destType,
+    required this.destId,
+    required this.destName,
+    required this.defineId,
+    this.forms,
+    this.primaryFormIds,
+    this.detailFormIds,
+    this.primaryForms,
+    this.detailForms,
+  });
+
+  factory WorkNodeModel.fromJson(Map<String, dynamic> json) {
+    return WorkNodeModel(
+      id: json['id'],
+      code: json['code'],
+      type: json['type'],
+      name: json['name'],
+      children: json['children'] != null
+          ? WorkNodeModel.fromJson(json['children'])
+          : null,
+      branches: json['branches'] != null
+          ? List<Branche>.from(json['branches'].map((x) => Branche.fromJson(x)))
+          : null,
+      num: json['num'],
+      destType: json['destType'],
+      destId: json['destId'],
+      destName: json['destName'],
+      defineId: json['defineId'],
+      forms: json['forms'] != null
+          ? List<XForm>.from(json['forms'].map((x) => XForm.fromJson(x)))
+          : null,
+      primaryFormIds: json['primaryFormIds'] != null
+          ? List<XForm>.from(
+              json['primaryFormIds'].map((x) => XForm.fromJson(x)))
+          : null,
+      detailFormIds: json['detailFormIds'] != null
+          ? List<XForm>.from(
+              json['detailFormIds'].map((x) => XForm.fromJson(x)))
+          : null,
+      primaryForms: json['primaryForms'] != null
+          ? List<XForm>.from(json['primaryForms'].map((x) => XForm.fromJson(x)))
+          : null,
+      detailForms: json['detailForms'] != null
+          ? List<XForm>.from(json['detailForms'].map((x) => XForm.fromJson(x)))
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['code'] = code;
+    data['type'] = type;
+    data['name'] = name;
+    if (children != null) {
+      data['children'] = children!.toJson();
+    }
+    if (branches != null) {
+      data['branches'] = branches!.map((x) => x.toJson()).toList();
+    }
+    data['num'] = num;
+    data['destType'] = destType;
+    data['destId'] = destId;
+    data['destName'] = destName;
+    data['defineId'] = defineId;
+    if (forms != null) {
+      data['forms'] = forms!.map((x) => x.toJson()).toList();
+    }
+    if (primaryFormIds != null) {
+      data['primaryFormIds'] = forms!.map((x) => x.toJson()).toList();
+    }
+    if (detailFormIds != null) {
+      data['detailFormIds'] = forms!.map((x) => x.toJson()).toList();
+    }
+    if (primaryForms != null) {
+      data['primaryForms'] = forms!.map((x) => x.toJson()).toList();
+    }
+    if (detailForms != null) {
+      data['detailForms'] = forms!.map((x) => x.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Branche {
+  List<Condition>? conditions;
+  WorkNodeModel? children;
+
+  Branche({this.conditions, this.children});
+
+  factory Branche.fromJson(Map<String, dynamic> json) {
+    return Branche(
+      conditions: json['conditions'] != null
+          ? List<Condition>.from(
+              json['conditions'].map((x) => Condition.fromJson(x)))
+          : null,
+      children: json['children'] != null
+          ? WorkNodeModel.fromJson(json['children'])
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    if (conditions != null) {
+      data['conditions'] = conditions!.map((x) => x.toJson()).toList();
+    }
+    if (children != null) {
+      data['children'] = children!.toJson();
+    }
+    return data;
+  }
+}
+
+class Condition {
+  // 规则
+  String? paramKey;
+
+  // 键
+  String? key;
+
+  // 类型
+  String? type;
+
+  // 值
+  String? val;
+
+  //构造方法
+  Condition({
+    required this.paramKey,
+    required this.key,
+    required this.type,
+    required this.val,
+  });
+
+  Condition.fromJson(Map<String, dynamic> json) {
+    paramKey = json['paramKey'];
+    key = json['key'];
+    type = json['type'];
+    val = json['val'];
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "paramKey": paramKey,
+      "key": key,
+      "type": type,
+      "val": val,
+    };
+  }
+}
+
+class QueryTaskReq {
+  // 流程定义Id
+  final String defineId;
+
+  // 任务类型 审批、抄送
+  final String typeName;
+
+  QueryTaskReq(this.defineId, this.typeName);
+
+  QueryTaskReq.fromJson(Map<String, dynamic> json)
+      : defineId = json["defineId"],
+        typeName = json["typeName"];
+
+  static List<QueryTaskReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<QueryTaskReq> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(QueryTaskReq.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["defineId"] = defineId;
+    json["typeName"] = typeName;
+    return json;
+  }
+}
+
+class ApprovalTaskReq {
+  // 流程定义Id
+  final String? id;
+
+  // 状态
+  final int? status;
+
+  // 评论
+  final String? comment;
 
   // 数据
-  final dynamic data;
+  final String? data;
 
-  ReceiveType({
-    required this.target,
-    required this.data,
+  //构造方法
+  ApprovalTaskReq({
+    this.id,
+    this.status,
+    this.comment,
+    this.data,
   });
+
+  //通过JSON构造
+  ApprovalTaskReq.fromJson(Map<String, dynamic> json)
+      : id = json["id"],
+        status = json["status"],
+        comment = json["comment"],
+        data = json["data"];
+
+  //通过动态数组解析成List
+  static List<ApprovalTaskReq> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<ApprovalTaskReq> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(ApprovalTaskReq.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["status"] = status;
+    json["comment"] = comment;
+    json["data"] = data;
+    return json;
+  }
+}
+
+class TargetMessageModel {
+  late String data; // 内容
+  late bool excludeOperater; // 是否剔除当前操作人
+  late String targetId; // 目标用户Id集合
+  late bool group; // 组织集群
+
+  TargetMessageModel({
+    required this.data,
+    required this.excludeOperater,
+    required this.targetId,
+    required this.group,
+  });
+
+  factory TargetMessageModel.fromJson(Map<String, dynamic> json) {
+    return TargetMessageModel(
+      data: json['data'] as String,
+      excludeOperater: json['excludeOperater'] as bool,
+      targetId: json['targetId'] as String,
+      group: json['group'] as bool,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'data': data,
+      'excludeOperater': excludeOperater,
+      'targetId': targetId,
+      'group': group,
+    };
+  }
+}
+
+class IdentityMessageModel {
+  // 内容
+  late String data;
+  //是否剔除当前操作人
+  late bool excludeOperater;
+  //身份Id
+  late String identityId;
+  //岗位Id
+  late String stationId;
+  //组织集群
+  late bool group;
+
+  IdentityMessageModel({
+    required this.data,
+    required this.excludeOperater,
+    required this.identityId,
+    required this.stationId,
+    required this.group,
+  });
+
+  factory IdentityMessageModel.fromJson(Map<String, dynamic> json) {
+    return IdentityMessageModel(
+      data: json['data'] as String,
+      excludeOperater: json['excludeOperater'] as bool,
+      identityId: json['identityId'] as String,
+      stationId: json['stationId'] as String,
+      group: json['group'] as bool,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'data': data,
+      'excludeOperater': excludeOperater,
+      'identityId': identityId,
+      'stationId': stationId,
+      'group': group,
+    };
+  }
+}
+
+class TargetOperateModel {
+  String? operate;
+  XTarget? target;
+  XTarget? subTarget;
+  XTarget? operater;
+
+  TargetOperateModel({
+    this.operate,
+    this.target,
+    this.subTarget,
+    this.operater,
+  });
+
+  TargetOperateModel.fromJson(Map<String, dynamic> json) {
+    operate = json['operate'];
+    target = XTarget.fromJson(json['target']);
+    subTarget =
+        json['subTarget'] != null ? XTarget.fromJson(json['subTarget']) : null;
+    operater = XTarget.fromJson(json['operater']);
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      'operate': operate,
+      'target': target?.toJson(),
+      'operater': operater?.toJson(),
+    };
+    if (subTarget != null) {
+      data['subTarget'] = subTarget!.toJson();
+    }
+    return data;
+  }
+}
+
+class IdentityOperateModel {
+  String? operate;
+  XTarget? operater;
+  XIdentity? identity;
+  XTarget? station;
+  XTarget? subTarget;
+
+  IdentityOperateModel({
+    this.operate,
+    this.operater,
+    this.identity,
+    this.station,
+    this.subTarget,
+  });
+
+  IdentityOperateModel.fromJson(Map<String, dynamic> json) {
+    operate = json['operate'];
+    operater =
+        json['operater'] != null ? XTarget.fromJson(json['operater']) : null;
+    identity =
+        json['identity'] != null ? XIdentity.fromJson(json['identity']) : null;
+    station =
+        json['station'] != null ? XTarget.fromJson(json['station']) : null;
+    subTarget =
+        json['subTarget'] != null ? XTarget.fromJson(json['subTarget']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'operate': operate,
+      'operater': operater?.toJson(),
+      'identity': identity?.toJson(),
+      'station': station?.toJson(),
+      'subTarget': subTarget?.toJson(),
+    };
+  }
+}
+
+// 文件系统项分享数据
+class ShareIcon {
+  // 名称
+  String name;
+
+  // 类型
+  String typeName;
+
+  // 头像
+  FileItemShare? avatar;
+
+  //构造方法
+  ShareIcon({
+    required this.name,
+    required this.typeName,
+    this.avatar,
+  }) {
+    String defaultAvatar = '';
+    if (typeName == TargetType.person.label) {
+      defaultAvatar = Images.chatDefaultPerson;
+      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
+    }
+    if (typeName == TargetType.cohort.label) {
+      defaultAvatar = Images.chatDefaultCohort;
+      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
+    }
+    if (typeName == TargetType.department.label) {
+      defaultAvatar = Images.chatDefaultCohort;
+      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
+    }
+    if (typeName == TargetType.company.label) {
+      defaultAvatar = Images.chatDefaultCohort;
+      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
+    }
+  }
+
+  //通过JSON构造
+  ShareIcon.fromJson(Map<String, dynamic> json)
+      : name = json["name"],
+        typeName = json["typeName"],
+        avatar = json["avatar"] != null
+            ? FileItemShare.fromJson(json["avatar"])
+            : null;
+
+  //通过动态数组解析成List
+  static List<ShareIcon> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<ShareIcon> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(ShareIcon.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["name"] = name;
+    json["typeName"] = typeName;
+    json["avatar"] = avatar?.toJson();
+    return json;
+  }
+}
+
+// 文件系统项数据模型
+class FileItemShare {
+  // 大小
+  int? size;
+
+  // 名称
+  String? name;
+
+  // 共享链接
+  String? shareLink;
+
+  // 拓展名
+  String? extension;
+
+  // 缩略图
+  String? thumbnail;
+
+  String? defaultAvatar;
+
+  FileItemShare({
+    this.size,
+    this.name,
+    this.shareLink,
+    this.extension,
+    this.thumbnail,
+    this.defaultAvatar,
+  });
+
+  //通过JSON构造
+  FileItemShare.fromJson(Map<String, dynamic> json) {
+    size = json["size"];
+    name = json["name"];
+    shareLink = json["shareLink"];
+    extension = json["extension"];
+    thumbnail = json["thumbnail"];
+  }
+
+  //通过动态数组解析成List
+  static List<FileItemShare> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<FileItemShare> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(FileItemShare.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  Uint8List? get thumbnailUint8List {
+    try {
+      var uint8ListStr =
+          thumbnail?.split(",")[1].replaceAll('\r', '').replaceAll('\n', '');
+      if (uint8ListStr == null) {
+        return null;
+      }
+      return base64Decode(uint8ListStr);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["size"] = size;
+    json["name"] = name;
+    json["shareLink"] = shareLink;
+    json["extension"] = extension;
+    json["thumbnail"] = thumbnail;
+    return json;
+  }
+
+  static FileItemShare? parseAvatar(String? avatar) {
+    if (avatar != null) {
+      try {
+        var share = FileItemShare.fromJson(jsonDecode(avatar));
+        return share;
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  }
+}
+
+/// 文件系统项数据模型
+class FileItemModel extends FileItemShare {
+  // 完整路径
+  String key;
+
+  // 创建时间
+  DateTime? dateCreated;
+
+  // 修改时间
+  DateTime? dateModified;
+
+  // 文件类型
+  String? contentType;
+
+  // 是否是目录
+  bool isDirectory;
+
+  // 是否包含子目录
+  bool hasSubDirectories;
+
+  FileItemModel({
+    required this.key,
+    required this.dateCreated,
+    required this.dateModified,
+    this.contentType,
+    required this.isDirectory,
+    required this.hasSubDirectories,
+    super.size,
+    super.name,
+    super.shareLink,
+    super.extension,
+    super.thumbnail,
+  });
+
+  FileItemModel.fromJson(Map<String, dynamic> json)
+      : key = json['key'] ?? "",
+        isDirectory = json['isDirectory'] ?? false,
+        contentType = json['contentType'],
+        dateCreated = DateTime.tryParse(json['dateCreated'] ?? ""),
+        dateModified = DateTime.tryParse(json['dateModified'] ?? ""),
+        hasSubDirectories = json['hasSubDirectories'] ?? false,
+        super(
+          size: json["size"],
+          name: json["name"],
+          shareLink: json["shareLink"],
+          extension: json["extension"],
+          thumbnail: json["thumbnail"],
+        );
+
+  Map<String, dynamic> shareInfo() {
+    String url = "${Constant.host}/orginone/anydata/bucket/load/$shareLink";
+    return {
+      "shareLink": url,
+      "size": size,
+      "name": name,
+      "extension": extension,
+      "thumbnail": thumbnail,
+    };
+  }
 }
 
 /// 桶支持的操作
@@ -204,64 +2549,562 @@ class FileChunkData {
   }
 }
 
-/// 文件系统项数据模型
-class FileItemModel extends FileItemShare {
-  // 完整路径
-  String key;
+/// 任务模型
+class TaskModel {
+  final String name;
 
-  // 创建时间
-  DateTime? dateCreated;
+  final int size;
 
-  // 修改时间
-  DateTime? dateModified;
+  final int finished;
 
-  // 文件类型
-  String? contentType;
+  final DateTime createTime;
 
-  // 是否是目录
-  bool isDirectory;
-
-  // 是否包含子目录
-  bool hasSubDirectories;
-
-  FileItemModel({
-    required this.key,
-    required this.dateCreated,
-    required this.dateModified,
-    this.contentType,
-    required this.isDirectory,
-    required this.hasSubDirectories,
-    super.size,
-    super.name,
-    super.shareLink,
-    super.extension,
-    super.thumbnail,
+  TaskModel({
+    required this.name,
+    required this.size,
+    required this.finished,
+    required this.createTime,
   });
 
-  FileItemModel.fromJson(Map<String, dynamic> json)
-      : key = json['key'] ?? "",
-        isDirectory = json['isDirectory'] ?? false,
-        contentType = json['contentType'],
-        dateCreated = DateTime.tryParse(json['dateCreated'] ?? ""),
-        dateModified = DateTime.tryParse(json['dateModified'] ?? ""),
-        hasSubDirectories = json['hasSubDirectories'] ?? false,
-        super(
-          size: json["size"],
-          name: json["name"],
-          shareLink: json["shareLink"],
-          extension: json["extension"],
-          thumbnail: json["thumbnail"],
-        );
-
-  Map<String, dynamic> shareInfo() {
-    String url = "${Constant.host}/orginone/anydata/bucket/load/$shareLink";
+  Map<String, dynamic> toJson() {
     return {
-      "shareLink": url,
-      "size": size,
       "name": name,
-      "extension": extension,
-      "thumbnail": thumbnail,
+      "size": size,
+      'finished': finished,
+      "createTime": createTime,
     };
+  }
+}
+
+/// 操作命令模型
+class OperateModel {
+  final String cmd;
+
+  final int sort;
+
+  final String label;
+  final String iconType;
+
+  final OperateModel? menus;
+
+  OperateModel({
+    required this.cmd,
+    required this.sort,
+    required this.label,
+    required this.iconType,
+    required this.menus,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      "cmd": cmd,
+      "sort": sort,
+      "menus": menus,
+    };
+  }
+}
+
+/// 会话元数据
+class MsgChatData {
+  /// 消息类会话完整Id
+  String fullId;
+
+  /// 会话标签
+  List<String> labels;
+
+  /// 会话名称
+  String chatName;
+
+  /// 会话备注
+  String chatRemark;
+
+  /// 是否置顶
+  bool isToping;
+
+  /// 会话未读消息数量
+  int noReadCount;
+
+  /// 最后一次消息时间
+  int lastMsgTime;
+
+  /// 最新消息
+  ChatMessageType? lastMessage;
+
+  /// 提及我
+  bool mentionMe;
+
+  MsgChatData({
+    required this.fullId,
+    required this.labels,
+    required this.chatName,
+    required this.chatRemark,
+    required this.isToping,
+    required this.noReadCount,
+    required this.lastMsgTime,
+    required this.lastMessage,
+    required this.mentionMe,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      "fullId": fullId,
+      "labels": labels,
+      "chatName": chatName,
+      "chatRemark": chatRemark,
+      "isToping": isToping,
+      "noReadCount": noReadCount,
+      "lastMsgTime": lastMsgTime,
+      "lastMessage": lastMessage?.toJson(),
+      "mentionMe": mentionMe,
+    };
+  }
+}
+
+// 动态
+class ActivityType extends Xbase {
+  // 类型
+  String typeName;
+  // 内容
+  String content;
+  // 资源
+  List<FileItemShare> resource;
+  // 评注
+  List<CommentType> comments;
+  // 点赞
+  List<String> likes;
+  // 转发
+  List<String> forward;
+  // 标签
+  List<String> tags;
+
+  ActivityType({
+    required this.typeName,
+    required this.content,
+    required this.resource,
+    required this.comments,
+    required this.likes,
+    required this.forward,
+    required this.tags,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      "typeName": typeName,
+      "content": content,
+      "resource": resource,
+      "comments": comments,
+      "likes": likes,
+      "forward": forward,
+      "tags": tags
+    };
+  }
+}
+
+class LoadOptions {
+  List<dynamic> filter; // 过滤条件
+  int take; // 获取数量
+  String group; // 分组字段
+  int skip; // 跳过数量
+  dynamic options; // 其他选项
+
+  LoadOptions({
+    required this.filter,
+    required this.take,
+    required this.group,
+    required this.skip,
+    required this.options,
+  });
+}
+
+class DirectoryContent {
+  List<XForm> forms; // 表单列表
+  List<XSpecies> specieses; // 物种列表
+  List<XProperty> propertys; // 属性列表
+  List<XApplication> applications; // 应用列表
+  List<XDirectory> directorys; // 目录列表
+
+  DirectoryContent({
+    required this.forms,
+    required this.specieses,
+    required this.propertys,
+    required this.applications,
+    required this.directorys,
+  });
+}
+
+class Edge {
+  String id; // 主键
+  String start; // 开始
+  String end; // 结束
+
+  Edge({
+    required this.id,
+    required this.start,
+    required this.end,
+  });
+}
+
+class Mapping {
+  String source; // 源
+  String target; // 目标
+  List<Mapping> mappings; // 映射列表
+
+  Mapping({
+    required this.source,
+    required this.target,
+    required this.mappings,
+  });
+}
+
+class Store {
+  String formId; // 表单 ID
+  String directoryId; // 目录 ID
+
+  Store({
+    required this.formId,
+    required this.directoryId,
+  });
+}
+
+class Selection {
+  String type; // 类型 ('checkbox' 或 'radio')
+  String key; // 关键字
+  String formId; // 表单 ID
+
+  Selection({
+    required this.type,
+    required this.key,
+    required this.formId,
+  });
+}
+
+class Environment {
+  String id; // 环境 ID
+  String name; // 环境名称
+  KeyValue params; // 参数
+
+  Environment({
+    required this.id,
+    required this.name,
+    required this.params,
+  });
+}
+
+class Script {
+  String id; // 脚本 ID
+  String name; // 脚本名称
+  String code; // 脚本代码
+
+  Script({
+    required this.id,
+    required this.name,
+    required this.code,
+  });
+}
+
+enum GraphStatus {
+  editable("Editable"),
+  viewable("Viewable"),
+  running("Running");
+
+  const GraphStatus(this.label);
+
+  final String label;
+
+  static String getName(GraphStatus stasus) {
+    return stasus.label;
+  }
+}
+
+// ts中的 联合类型
+// export type NodeStatus = 'Completed' | 'Error' | GraphStatus;
+enum NodeStatus {
+  completed("Completed"),
+  error("Error"),
+  editable("Editable"),
+  viewable("Viewable"),
+  running("Running");
+
+  const NodeStatus(this.label);
+
+  final String label;
+
+  static String getName(NodeStatus stasus) {
+    return stasus.label;
+  }
+}
+
+enum NodeType {
+  request("Request"),
+  link("Link"),
+  mapping("Mapping"),
+  store("Store");
+
+  const NodeType(this.label);
+
+  final String label;
+
+  static String getName(NodeType type) {
+    return type.label;
+  }
+}
+
+enum Event {
+  edit("Edit"),
+  view("View"),
+  run("Run");
+
+  const Event(this.label);
+
+  final String label;
+
+  static String getName(Event event) {
+    return event.label;
+  }
+}
+
+enum ScriptPos {
+  pre("pre"),
+  post("post");
+
+  const ScriptPos(this.label);
+
+  final String label;
+
+  static String getName(ScriptPos scriptPos) {
+    return scriptPos.label;
+  }
+}
+
+class Node<T> {
+  String id; // 主键
+  String name; // 名称
+  String typeName; // 类型
+  List<Script> preScripts; // 前置脚本
+  List<Script> postScripts; // 后置脚本
+  T data; // 数据（请求、子链接、映射、存储）
+
+  Node({
+    required this.id,
+    required this.name,
+    required this.typeName,
+    required this.preScripts,
+    required this.postScripts,
+    required this.data,
+  });
+}
+
+//export type RunNode<T> = NodeStatus & Node<T>;
+class RunNode<T> extends Node<T> {
+  RunNode({
+    required String id,
+    required String name,
+    required String typeName,
+    required List<Script> preScripts,
+    required List<Script> postScripts,
+    required T data,
+  }) : super(
+          id: id,
+          name: name,
+          typeName: typeName,
+          preScripts: preScripts,
+          postScripts: postScripts,
+          data: data,
+        );
+}
+
+class RequestNode extends Node<HttpRequestType> {
+  RequestNode({
+    required String id,
+    required String name,
+    required String typeName,
+    required List<Script> preScripts,
+    required List<Script> postScripts,
+    required HttpRequestType data,
+  }) : super(
+          id: id,
+          name: name,
+          typeName: typeName,
+          preScripts: preScripts,
+          postScripts: postScripts,
+          data: data,
+        );
+}
+
+class LinkNode extends Node<String> {
+  LinkNode({
+    required String id,
+    required String name,
+    required String typeName,
+    required List<Script> preScripts,
+    required List<Script> postScripts,
+    required String data,
+  }) : super(
+          id: id,
+          name: name,
+          typeName: typeName,
+          preScripts: preScripts,
+          postScripts: postScripts,
+          data: data,
+        );
+}
+
+class ScriptNode extends Node<Script> {
+  ScriptNode({
+    required String id,
+    required String name,
+    required String typeName,
+    required List<Script> preScripts,
+    required List<Script> postScripts,
+    required Script data,
+  }) : super(
+          id: id,
+          name: name,
+          typeName: typeName,
+          preScripts: preScripts,
+          postScripts: postScripts,
+          data: data,
+        );
+}
+
+class MappingNode extends Node<Mapping> {
+  MappingNode({
+    required String id,
+    required String name,
+    required String typeName,
+    required List<Script> preScripts,
+    required List<Script> postScripts,
+    required Mapping data,
+  }) : super(
+          id: id,
+          name: name,
+          typeName: typeName,
+          preScripts: preScripts,
+          postScripts: postScripts,
+          data: data,
+        );
+}
+
+class StoreNode extends Node<Store> {
+  StoreNode({
+    required String id,
+    required String name,
+    required String typeName,
+    required List<Script> preScripts,
+    required List<Script> postScripts,
+    required Store data,
+  }) : super(
+          id: id,
+          name: name,
+          typeName: typeName,
+          preScripts: preScripts,
+          postScripts: postScripts,
+          data: data,
+        );
+}
+
+class KeyValue {
+  String? key;
+}
+
+class Transfer extends XStandard {
+  List<Environment> envs; // 环境集合
+  String? curEnv; // 当前环境
+  List<Node<dynamic>> nodes; // 节点集合
+  List<Edge> edges; // 边集合
+  dynamic graph; // 图数据
+
+  Transfer({
+    required this.envs,
+    this.curEnv,
+    required this.nodes,
+    required this.edges,
+    required this.graph,
+    required String id,
+    required String name,
+    required String typeName,
+    required List<Script> preScripts,
+    required List<Script> postScripts,
+    required super.directoryId,
+  });
+}
+
+class SettingWidget {
+  String name; // 按钮生成的 schema 的 key 值
+  String text; // 在左侧栏按钮展示文案
+  String? icon; // 在左侧栏按钮展示图标
+  String? widget; // 如果是基本组件，这个字段注明它对应的 widgets
+  dynamic schema; // 组件对应的 schema 片段
+  dynamic setting; // 组件的配置信息，使用 form-render 的 schema 来描述
+
+  SettingWidget({
+    required this.name,
+    required this.text,
+    this.icon,
+    this.widget,
+    this.schema,
+    this.setting,
+  });
+}
+
+class Setting {
+  String title; // 最外层的分组名称
+  List<SettingWidget> widgets; // 每个组件的配置，在左侧栏是一个按钮
+  bool? show;
+  bool? useCommon;
+
+  Setting({
+    required this.title,
+    required this.widgets,
+    this.show,
+    this.useCommon,
+  });
+}
+
+class SchemaType {
+  String displayType; // 'row' 或 'column' 的显示类型
+  String type; // 'object' 的类型
+  dynamic labelWidth; // 数字或字符串的标签宽度
+  Map<String, dynamic> properties; // 属性的记录
+  int column; // 1、2 或 3 的列数
+
+  SchemaType({
+    required this.displayType,
+    required this.type,
+    required this.labelWidth,
+    required this.properties,
+    required this.column,
+  });
+}
+
+ResultType<bool> get badRequest {
+  return ResultType(success: false, msg: '请求失败', code: 400, data: false);
+}
+
+//TODO:以下是旧模型  待验证是否还使用 不用可以删除
+class PageResp<T> {
+  final int limit;
+  final int total;
+  final List<T> result;
+
+  PageResp(this.limit, this.total, this.result);
+
+  static PageResp<T> fromMap<T>(Map<String, dynamic> map, Function mapping) {
+    int limit = map["limit"] ?? 0;
+    int total = map["total"] ?? 0;
+    List<dynamic> result = map["result"] ?? [];
+
+    List<T> ans = result.map((item) => mapping(item) as T).toList();
+    return PageResp<T>(limit, total, ans);
+  }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["limit"] = limit;
+    json["total"] = total;
+    json["result"] = result;
+    return json;
   }
 }
 
@@ -705,60 +3548,6 @@ class IdSpaceReq {
     json["id"] = id;
     json["spaceId"] = spaceId;
     json["page"] = page?.toJson();
-    return json;
-  }
-}
-
-class GiveModel {
-  // 唯一ID
-  final String id;
-
-  // 子ID
-  final List<String> subIds;
-
-  //构造方法
-  GiveModel({
-    required this.id,
-    required this.subIds,
-  });
-
-  //通过JSON构造
-  GiveModel.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        subIds = json["subIds"];
-
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["subIds"] = subIds;
-    return json;
-  }
-}
-
-class GainModel {
-  // 唯一ID
-  final String id;
-
-  // 子ID
-  final String subId;
-
-  //构造方法
-  GainModel({
-    required this.id,
-    required this.subId,
-  });
-
-  //通过JSON构造
-  GainModel.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        subId = json["subId"];
-
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["subId"] = subId;
     return json;
   }
 }
@@ -1467,28 +4256,6 @@ class IDReqSubModel {
   }
 }
 
-class GetSubsModel {
-  // 唯一ID
-  final String id;
-
-  // 加入的节点类型
-  final List<String> subTypeNames;
-
-  // 分页
-  final PageRequest page;
-
-  GetSubsModel(
-      {required this.id, required this.subTypeNames, required this.page});
-
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["subTypeNames"] = subTypeNames;
-    json["page"] = page.toJson();
-    return json;
-  }
-}
-
 class GetJoinedModel {
   // 唯一ID
   final String id;
@@ -1784,104 +4551,6 @@ class IdNameArray {
     Map<String, dynamic> json = {};
     json["result"] = result;
     return json;
-  }
-}
-
-class ApprovalModel {
-  // 唯一ID
-  final String? id;
-
-  // 状态
-  final int? status;
-
-  //构造方法
-  ApprovalModel({
-    this.id,
-    this.status,
-  });
-
-  //通过JSON构造
-  ApprovalModel.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        status = json["status"];
-
-  //通过动态数组解析成List
-  static List<ApprovalModel> fromList(List<dynamic>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<ApprovalModel> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(ApprovalModel.fromJson(item));
-      }
-    }
-    return retList;
-  }
-
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["status"] = status;
-    return json;
-  }
-}
-
-class PropertyModel {
-  String? id;
-  String? name;
-  String? code;
-  String? valueType;
-  String? unit;
-  String? info;
-  String? directoryId;
-  String? speciesId;
-  String? sourceId;
-  String? remark;
-
-  PropertyModel({
-    this.id,
-    this.name,
-    this.code,
-    this.valueType,
-    this.unit,
-    this.info,
-    this.directoryId,
-    this.speciesId,
-    this.sourceId,
-    this.remark,
-  });
-
-  factory PropertyModel.fromJson(Map<String, dynamic> json) {
-    return PropertyModel(
-      id: json['id'],
-      name: json['name'],
-      code: json['code'],
-      valueType: json['valueType'],
-      unit: json['unit'],
-      info: json['info'],
-      directoryId: json['directoryId'],
-      speciesId: json['speciesId'],
-      sourceId: json['sourceId'],
-      remark: json['remark'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {
-      'id': id,
-      'name': name,
-      'code': code,
-      'valueType': valueType,
-      'unit': unit,
-      'info': info,
-      'directoryId': directoryId,
-      'speciesId': speciesId,
-      'sourceId': sourceId,
-      'remark': remark,
-    };
-    return data;
   }
 }
 
@@ -2201,150 +4870,6 @@ class FlowDefineModel {
   );
 }
 
-class ThingModel {
-  // 唯一ID
-  final String? id;
-
-  // 内容
-  final String data;
-
-  // 归属id
-  final String? belongId;
-
-  //构造方法
-  ThingModel({
-    this.id,
-    required this.data,
-    this.belongId,
-  });
-
-  //通过JSON构造
-  ThingModel.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        data = json["data"],
-        belongId = json["belongId"];
-
-  //通过动态数组解析成List
-  static List<ThingModel> fromList(List<dynamic>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<ThingModel> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(ThingModel.fromJson(item));
-      }
-    }
-    return retList;
-  }
-
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["data"] = data;
-    json["belongId"] = belongId;
-    return json;
-  }
-}
-
-class SpeciesModel {
-  String? id;
-  String? name;
-  String? code;
-  String? typeName;
-  String? icon;
-  String? remark;
-  String? sourceId;
-  String? directoryId;
-
-  SpeciesModel({
-    this.id,
-    this.name,
-    this.code,
-    this.typeName,
-    this.icon,
-    this.remark,
-    this.sourceId,
-    this.directoryId,
-  });
-
-  factory SpeciesModel.fromJson(Map<String, dynamic> json) {
-    return SpeciesModel(
-      id: json['id'],
-      name: json['name'],
-      code: json['code'],
-      typeName: json['typeName'],
-      icon: json['icon'],
-      remark: json['remark'],
-      sourceId: json['sourceId'],
-      directoryId: json['directoryId'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = {
-      'id': id,
-      'name': name,
-      'code': code,
-      'typeName': typeName,
-      'icon': icon,
-      'remark': remark,
-      'sourceId': sourceId == "" ? null : sourceId,
-      'directoryId': directoryId,
-    };
-    return json;
-  }
-}
-
-class FormModel {
-  String? id;
-  String? name;
-  String? code;
-  String? rule;
-  String? icon;
-  String? typeName;
-  String? remark;
-  String? directoryId;
-
-  FormModel({
-    this.id,
-    this.name,
-    this.code,
-    this.rule,
-    this.icon,
-    this.typeName,
-    this.remark,
-    this.directoryId,
-  });
-
-  factory FormModel.fromJson(Map<String, dynamic> json) {
-    return FormModel(
-      id: json['id'],
-      name: json['name'],
-      code: json['code'],
-      rule: json['rule'],
-      icon: json['icon'],
-      typeName: json['typeName'],
-      remark: json['remark'],
-      directoryId: json['directoryId'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'code': code,
-      'rule': rule,
-      'icon': icon,
-      'typeName': typeName,
-      'remark': remark,
-      'directoryId': directoryId,
-    };
-  }
-}
-
 class FormItemModel {
   // 唯一ID
   String id;
@@ -2393,298 +4918,6 @@ class FormItemModel {
       'remark': remark,
       'attrId': attrId,
     };
-  }
-}
-
-class AttributeModel {
-  /// 唯一ID
-  String? id;
-
-  /// 名称
-  String? name;
-
-  /// 编号
-  String? code;
-
-  /// 规则
-  String? rule;
-
-  /// 属性Id
-  String? propId;
-
-  /// 工作职权Id
-  String? authId;
-
-  /// 表单项Id
-  String? formId;
-
-  /// 备注
-  String? remark;
-
-  AttributeModel({
-    this.id,
-    this.name,
-    this.code,
-    this.rule,
-    this.propId,
-    this.authId,
-    this.formId,
-    this.remark,
-  });
-
-  factory AttributeModel.fromJson(Map<String, dynamic> json) {
-    return AttributeModel(
-      id: json['id'],
-      name: json['name'],
-      code: json['code'],
-      rule: json['rule'],
-      propId: json['propId'],
-      authId: json['authId'],
-      formId: json['formId'],
-      remark: json['remark'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
-    data['id'] = id;
-    data['name'] = name;
-    data['code'] = code;
-    data['rule'] = rule;
-    data['propId'] = propId;
-    data['authId'] = authId;
-    data['formId'] = formId;
-    data['remark'] = remark;
-    return data;
-  }
-}
-
-class AuthorityModel {
-  // 唯一ID
-  String? id;
-
-  // 名称
-  String? name;
-
-  // 编号
-  String? code;
-
-  String? icon;
-
-  // 公开的
-  bool? public;
-
-  // 父类别ID
-  String? parentId;
-
-  // 共享用户
-  String? shareId;
-
-  // 备注
-  String? remark;
-
-  //构造方法
-  AuthorityModel({
-    this.id,
-    this.name,
-    this.code,
-    this.public,
-    this.parentId,
-    this.shareId,
-    this.remark,
-    this.icon,
-  });
-
-  //通过JSON构造
-  AuthorityModel.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        name = json["name"],
-        code = json["code"],
-        public = json["public"],
-        parentId = json["parentId"],
-        shareId = json["shareId"],
-        icon = json['icon'],
-        remark = json["remark"];
-
-  //通过动态数组解析成List
-  static List<AuthorityModel> fromList(List<dynamic>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<AuthorityModel> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(AuthorityModel.fromJson(item));
-      }
-    }
-    return retList;
-  }
-
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["name"] = name;
-    json["code"] = code;
-    json["public"] = public;
-    json["parentId"] = parentId;
-    json["shareId"] = shareId;
-    json['icon'] = icon;
-    json["remark"] = remark;
-    return json;
-  }
-}
-
-class IdentityModel {
-  // 唯一ID
-  String? id;
-
-  // 名称
-  String? name;
-
-  // 编号
-  String? code;
-
-  // 权限Id
-  String? authId;
-
-  // 共享用户Id
-  String? shareId;
-
-  // 备注
-  String? remark;
-
-  //构造方法
-  IdentityModel({
-    this.id,
-    this.name,
-    this.code,
-    this.authId,
-    this.shareId,
-    this.remark,
-  });
-
-  //通过JSON构造
-  IdentityModel.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        name = json["name"],
-        code = json["code"],
-        authId = json["authId"],
-        shareId = json["shareId"],
-        remark = json["remark"];
-
-  //通过动态数组解析成List
-  static List<IdentityModel> fromList(List<dynamic>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<IdentityModel> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(IdentityModel.fromJson(item));
-      }
-    }
-    return retList;
-  }
-
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["name"] = name;
-    json["code"] = code;
-    json["authId"] = authId;
-    json["shareId"] = shareId;
-    json["remark"] = remark;
-    return json;
-  }
-}
-
-class TargetModel {
-  // 唯一ID
-  String? id;
-
-  // 名称
-  String? name;
-
-  // 编号
-  String? code;
-
-  // 类型名
-  String typeName;
-
-  // 头像
-  String? icon;
-
-  // 创建组织/个人
-  String? belongId;
-
-  // 团队名称
-  String? teamName;
-
-  // 团队代号
-  String? teamCode;
-
-  // 团队备注
-  String? remark;
-
-  bool? public;
-
-  //构造方法
-  TargetModel({
-    this.id,
-    this.name,
-    this.code,
-    required this.typeName,
-    this.icon,
-    this.belongId,
-    this.teamName,
-    this.teamCode,
-    this.remark,
-    this.public,
-  });
-
-  //通过JSON构造
-  TargetModel.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        name = json["name"],
-        code = json["code"],
-        typeName = json["typeName"],
-        icon = json["icon"],
-        belongId = json["belongId"],
-        teamName = json["teamName"],
-        teamCode = json["teamCode"],
-        public = json['public'],
-        remark = json["remark"];
-
-  //通过动态数组解析成List
-  static List<TargetModel> fromList(List<dynamic>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<TargetModel> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(TargetModel.fromJson(item));
-      }
-    }
-    return retList;
-  }
-
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["name"] = name;
-    json["code"] = code;
-    json["typeName"] = typeName;
-    json["icon"] = icon;
-    json["belongId"] = belongId;
-    json["teamName"] = teamName;
-    json["teamCode"] = teamCode;
-    json["remark"] = remark;
-    json['public'] = public;
-    return json;
   }
 }
 
@@ -4158,91 +6391,6 @@ class NameCodeModel {
   }
 }
 
-class MsgTagModel {
-  // 工作空间ID
-  String? belongId;
-
-  // id
-  String? id;
-
-  // 消息类型
-  List<String>? ids;
-
-  // 消息体
-  List<String>? tags;
-
-  MsgTagModel({this.belongId, this.id, this.ids, this.tags});
-
-  MsgTagModel.fromJson(Map<String, dynamic> json) {
-    belongId = json["belongId"];
-    id = json["id"];
-    ids = json["ids"] != null ? List.castFrom(json["ids"]) : null;
-    tags = json["tags"] != null ? List.castFrom(json["tags"]) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["belongId"] = belongId;
-    json["id"] = id;
-    json["ids"] = ids;
-    json["tags"] = tags;
-    return json;
-  }
-}
-
-class MsgSendModel {
-  // 接收方Id
-  final String toId;
-
-  // 工作空间ID
-  final String belongId;
-
-  // 消息类型
-  final String msgType;
-
-  // 消息体
-  final String msgBody;
-
-  //构造方法
-  MsgSendModel({
-    required this.toId,
-    required this.belongId,
-    required this.msgType,
-    required this.msgBody,
-  });
-
-  //通过JSON构造
-  MsgSendModel.fromJson(Map<String, dynamic> json)
-      : belongId = json["belongId"],
-        toId = json["toId"],
-        msgType = json["msgType"],
-        msgBody = json["msgBody"];
-
-  //通过动态数组解析成List
-  static List<MsgSendModel> fromList(List<dynamic>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<MsgSendModel> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(MsgSendModel.fromJson(item));
-      }
-    }
-    return retList;
-  }
-
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["belongId"] = belongId;
-    json["toId"] = toId;
-    json["msgType"] = msgType;
-    json["msgBody"] = msgBody;
-    return json;
-  }
-}
-
 class ChatResponse {
   // 会话分组
   final List<GroupChatModel>? groups;
@@ -4491,40 +6639,6 @@ class FlowInstanceModel {
   }
 }
 
-class QueryTaskReq {
-  // 流程定义Id
-  final String defineId;
-
-  // 任务类型 审批、抄送
-  final String typeName;
-
-  QueryTaskReq(this.defineId, this.typeName);
-
-  QueryTaskReq.fromJson(Map<String, dynamic> json)
-      : defineId = json["defineId"],
-        typeName = json["typeName"];
-
-  static List<QueryTaskReq> fromList(List<dynamic>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<QueryTaskReq> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(QueryTaskReq.fromJson(item));
-      }
-    }
-    return retList;
-  }
-
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["defineId"] = defineId;
-    json["typeName"] = typeName;
-    return json;
-  }
-}
-
 class FlowRelationModel {
   //流程定义Id
   final String? defineId;
@@ -4624,640 +6738,6 @@ class FlowReq {
   }
 }
 
-class ApprovalTaskReq {
-  // 流程定义Id
-  final String? id;
-
-  // 状态
-  final int? status;
-
-  // 评论
-  final String? comment;
-
-  // 数据
-  final String? data;
-
-  //构造方法
-  ApprovalTaskReq({
-    this.id,
-    this.status,
-    this.comment,
-    this.data,
-  });
-
-  //通过JSON构造
-  ApprovalTaskReq.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        status = json["status"],
-        comment = json["comment"],
-        data = json["data"];
-
-  //通过动态数组解析成List
-  static List<ApprovalTaskReq> fromList(List<dynamic>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<ApprovalTaskReq> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(ApprovalTaskReq.fromJson(item));
-      }
-    }
-    return retList;
-  }
-
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["status"] = status;
-    json["comment"] = comment;
-    json["data"] = data;
-    return json;
-  }
-}
-
-// 文件系统项分享数据
-class ShareIcon {
-  // 名称
-  String name;
-
-  // 类型
-  String typeName;
-
-  // 头像
-  FileItemShare? avatar;
-
-  //构造方法
-  ShareIcon({
-    required this.name,
-    required this.typeName,
-    this.avatar,
-  }) {
-    String defaultAvatar = '';
-    if (typeName == TargetType.person.label) {
-      defaultAvatar = Images.chatDefaultPerson;
-      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
-    }
-    if (typeName == TargetType.cohort.label) {
-      defaultAvatar = Images.chatDefaultCohort;
-      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
-    }
-    if (typeName == TargetType.department.label) {
-      defaultAvatar = Images.chatDefaultCohort;
-      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
-    }
-    if (typeName == TargetType.company.label) {
-      defaultAvatar = Images.chatDefaultCohort;
-      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
-    }
-  }
-
-  //通过JSON构造
-  ShareIcon.fromJson(Map<String, dynamic> json)
-      : name = json["name"],
-        typeName = json["typeName"],
-        avatar = json["avatar"] != null
-            ? FileItemShare.fromJson(json["avatar"])
-            : null;
-
-  //通过动态数组解析成List
-  static List<ShareIcon> fromList(List<dynamic>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<ShareIcon> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(ShareIcon.fromJson(item));
-      }
-    }
-    return retList;
-  }
-
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["name"] = name;
-    json["typeName"] = typeName;
-    json["avatar"] = avatar?.toJson();
-    return json;
-  }
-}
-
-// 文件系统项数据模型
-class FileItemShare {
-  // 大小
-  int? size;
-
-  // 名称
-  String? name;
-
-  // 共享链接
-  String? shareLink;
-
-  // 拓展名
-  String? extension;
-
-  // 缩略图
-  String? thumbnail;
-
-  String? defaultAvatar;
-
-  FileItemShare({
-    this.size,
-    this.name,
-    this.shareLink,
-    this.extension,
-    this.thumbnail,
-    this.defaultAvatar,
-  });
-
-  //通过JSON构造
-  FileItemShare.fromJson(Map<String, dynamic> json) {
-    size = json["size"];
-    name = json["name"];
-    shareLink = json["shareLink"];
-    extension = json["extension"];
-    thumbnail = json["thumbnail"];
-  }
-
-  //通过动态数组解析成List
-  static List<FileItemShare> fromList(List<dynamic>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<FileItemShare> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(FileItemShare.fromJson(item));
-      }
-    }
-    return retList;
-  }
-
-  Uint8List? get thumbnailUint8List {
-    try {
-      var uint8ListStr =
-          thumbnail?.split(",")[1].replaceAll('\r', '').replaceAll('\n', '');
-      if (uint8ListStr == null) {
-        return null;
-      }
-      return base64Decode(uint8ListStr);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["size"] = size;
-    json["name"] = name;
-    json["shareLink"] = shareLink;
-    json["extension"] = extension;
-    json["thumbnail"] = thumbnail;
-    return json;
-  }
-
-  static FileItemShare? parseAvatar(String? avatar) {
-    if (avatar != null) {
-      try {
-        var share = FileItemShare.fromJson(jsonDecode(avatar));
-        return share;
-      } catch (e) {
-        return null;
-      }
-    }
-    return null;
-  }
-}
-
-// 注册消息类型
-class RegisterType {
-  // 昵称
-  final String nickName;
-
-  // 姓名
-  final String name;
-
-  // 电话
-  final String phone;
-
-  // 账户
-  final String account;
-
-  // 密码
-  final String password;
-
-  // 座右铭
-  final String motto;
-
-  // 头像
-  final String avatar;
-
-  RegisterType({
-    required this.nickName,
-    required this.name,
-    required this.phone,
-    required this.account,
-    required this.password,
-    required this.motto,
-    required this.avatar,
-  });
-
-  //通过JSON构造
-  RegisterType.fromJson(Map<String, dynamic> json)
-      : nickName = json["nickName"],
-        name = json["name"],
-        phone = json["phone"],
-        account = json["account"],
-        password = json["password"],
-        motto = json["motto"],
-        avatar = json["avatar"];
-
-  //通过动态数组解析成List
-  static List<RegisterType> fromList(List<dynamic>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<RegisterType> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(RegisterType.fromJson(item));
-      }
-    }
-    return retList;
-  }
-
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["nickName"] = nickName;
-    json["name"] = name;
-    json["phone"] = phone;
-    json["account"] = account;
-    json["password"] = password;
-    json["motto"] = motto;
-    json["avatar"] = avatar;
-    return json;
-  }
-}
-
-class WorkDefineModel {
-  String? id;
-  String? name;
-  String? code;
-  String? icon;
-  String? remark;
-  String? shareId;
-  String? applicationId;
-  String? rule;
-  WorkNodeModel? resource;
-
-  WorkDefineModel({
-    this.id,
-    this.name,
-    this.code,
-    this.icon,
-    this.remark,
-    this.shareId,
-    this.applicationId,
-    this.rule,
-    this.resource,
-  });
-
-  factory WorkDefineModel.fromJson(Map<String, dynamic> json) {
-    return WorkDefineModel(
-      id: json['id'],
-      name: json['name'],
-      code: json['code'],
-      icon: json['icon'],
-      remark: json['remark'],
-      shareId: json['shareId'],
-      applicationId: json['applicationId'],
-      rule: json['rule'],
-      resource: json['resource'] != null
-          ? WorkNodeModel.fromJson(json['resource'])
-          : null,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {
-      'id': this.id,
-      'name': this.name,
-      'code': this.code,
-      'icon': this.icon,
-      'remark': this.remark,
-      'shareId': this.shareId,
-      'applicationId': this.applicationId,
-      'rule': this.rule,
-      'resource': this.resource != null ? this.resource!.toJson() : null,
-    };
-    return data;
-  }
-}
-
-class WorkInstanceModel {
-  String? defineId;
-  String? content;
-  String? contentType;
-  String? data;
-  String? title;
-  String? hook;
-  String? taskId;
-  String? applyId;
-  String? childrenData;
-
-  WorkInstanceModel({
-    this.defineId,
-    this.content,
-    this.contentType,
-    this.data,
-    this.title,
-    this.hook,
-    this.taskId,
-    this.applyId,
-    this.childrenData,
-  });
-
-  WorkInstanceModel.fromJson(Map<String, dynamic> json) {
-    defineId = json['defineId'];
-    content = json['content'];
-    contentType = json['contentType'];
-    data = json['data'];
-    title = json['title'];
-    hook = json['hook'];
-    taskId = json['taskId'];
-    applyId = json['applyId'];
-    childrenData = json['childrenData'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['defineId'] = this.defineId;
-    data['content'] = this.content;
-    data['contentType'] = this.contentType;
-    data['data'] = this.data;
-    data['title'] = this.title;
-    data['hook'] = this.hook;
-    data['taskId'] = this.taskId;
-    data['applyId'] = this.applyId;
-    data['childrenData'] = this.childrenData;
-    return data;
-  }
-}
-
-class InstanceDataModel {
-  WorkNodeModel? node;
-  bool? allowAdd;
-  bool? allowEdit;
-  bool? allowSelect;
-  Map<String, List<FieldModel>> fields = {};
-  Map<String, List<FormEditData>> data = {};
-  Map<String, dynamic> primary = {};
-
-  InstanceDataModel({
-    this.node,
-    this.allowAdd,
-    this.allowEdit,
-    this.allowSelect,
-  });
-
-  InstanceDataModel.fromJson(Map<String, dynamic> json) {
-    if (json['fields'] != null) {
-      json['fields'].forEach((key, value) {
-        List<FieldModel> fieldList = [];
-        if (value is List) {
-          for (var fieldJson in value) {
-            fieldList.add(FieldModel.fromJson(fieldJson));
-          }
-        }
-        fields[key] = fieldList;
-      });
-    }
-
-    if (json['data'] != null) {
-      json['data'].forEach((key, value) {
-        List<FormEditData> formDataList = [];
-        if (value is List) {
-          for (var formDataJson in value) {
-            formDataList.add(FormEditData.fromJson(formDataJson));
-          }
-        }
-        data[key] = formDataList;
-      });
-    }
-
-    if (json['primary'] != null) {
-      primary = Map<String, dynamic>.from(json['primary']);
-    }
-
-    node = WorkNodeModel.fromJson(json['node']);
-    allowAdd = json['allowAdd'];
-    allowEdit = json['allowEdit'];
-    allowSelect = json['allowSelect'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['node'] = this.node?.toJson();
-    data['allowAdd'] = this.allowAdd;
-    data['allowEdit'] = this.allowEdit;
-    data['allowSelect'] = this.allowSelect;
-    data['fields'] = this.fields.map(
-        (key, value) => MapEntry(key, value.map((e) => e.toJson()).toList()));
-    data['data'] = this.data.map(
-        (key, value) => MapEntry(key, value.map((e) => e.toJson()).toList()));
-    data['primary'] = this.primary;
-    return data;
-  }
-}
-
-class FieldModel {
-  String? id;
-  String? name;
-  String? code;
-  String? valueType;
-  String? rule;
-  String? remark;
-  List<FiledLookup>? lookups;
-  late Fields field;
-  FieldModel({
-    this.id,
-    this.name,
-    this.code,
-    this.valueType,
-    this.rule,
-    this.remark,
-    this.lookups,
-  });
-
-  FieldModel.fromJson(Map<String, dynamic> json) {
-    List<FiledLookup> lookups = [];
-    if (json['lookups'] != null) {
-      json['lookups'].forEach((lookupJson) {
-        lookups.add(FiledLookup.fromJson(lookupJson));
-      });
-    }
-    id = json['id'];
-    name = json['name'];
-    code = json['code'];
-    valueType = json['valueType'];
-    rule = json['rule'];
-    remark = json['remark'];
-    this.lookups = lookups;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['code'] = this.code;
-    data['valueType'] = this.valueType;
-    data['rule'] = this.rule;
-    data['remark'] = this.remark;
-    data['lookups'] = this.lookups?.map((lookup) => lookup.toJson()).toList();
-    return data;
-  }
-}
-
-class FiledLookup {
-  String? id;
-  String? text;
-  String? value;
-  String? parentId;
-  String? icon;
-
-  FiledLookup({
-    this.id,
-    this.text,
-    this.value,
-    this.parentId,
-    this.icon,
-  });
-
-  FiledLookup.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    text = json['text'];
-    value = json['value'];
-    parentId = json['parentId'];
-    icon = json['icon'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = this.id;
-    data['text'] = this.text;
-    data['value'] = this.value;
-    data['parentId'] = this.parentId;
-    data['icon'] = this.icon;
-    return data;
-  }
-}
-
-class FormEditData {
-  List<AnyThingModel> before = [];
-  List<AnyThingModel> after = [];
-  String? nodeId;
-  String? creator;
-  String? createTime;
-
-  FormEditData({
-    this.nodeId,
-    this.creator,
-    this.createTime,
-  });
-
-  FormEditData.fromJson(Map<String, dynamic> json) {
-    if (json['before'] != null) {
-      json['before'].forEach((itemJson) {
-        before.add(AnyThingModel.fromJson(itemJson));
-      });
-    }
-
-    if (json['after'] != null) {
-      json['after'].forEach((itemJson) {
-        after.add(AnyThingModel.fromJson(itemJson));
-      });
-    }
-    nodeId = json['nodeId'];
-    creator = json['creator'];
-    createTime = json['createTime'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['before'] = this.before?.map((item) => item.toJson()).toList();
-    data['after'] = this.after?.map((item) => item.toJson()).toList();
-    data['nodeId'] = this.nodeId;
-    data['creator'] = this.creator;
-    data['createTime'] = this.createTime;
-    return data;
-  }
-}
-
-class AnyThingModel {
-  String? id;
-  String? name;
-  String? status;
-  String? creater;
-  String? createTime;
-  String? modifiedTime;
-  bool isSelected = false;
-  Map<String, dynamic> otherInfo = {};
-
-  Map<String, Archives> archives = {};
-  AnyThingModel({
-    this.id,
-    this.name,
-    this.status,
-    this.creater,
-    this.createTime,
-    this.modifiedTime,
-  });
-
-  AnyThingModel.fromJson(Map<String, dynamic> json) {
-    json.forEach((key, value) {
-      if (key != 'Id' &&
-          key != 'Name' &&
-          key != 'Status' &&
-          key != 'Creater' &&
-          key != 'CreateTime' &&
-          key != 'ModifiedTime' &&
-          key != "Archives") {
-        otherInfo[key] = value;
-      }
-    });
-
-    if (json['Archives'] != null) {
-      json['Archives'].forEach((key, value) {
-        archives[key] = Archives.fromJson(value);
-      });
-    }
-
-    id = json['Id'];
-    name = json['Name'];
-    status = json['Status'];
-    creater = json['Creater'];
-    createTime = json['CreateTime'];
-    modifiedTime = json['ModifiedTime'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['Id'] = this.id;
-    data['Name'] = this.name;
-    data['Status'] = this.status;
-    data['Creater'] = this.creater;
-    data['CreateTime'] = this.createTime;
-    data['ModifiedTime'] = this.modifiedTime;
-    data.addAll(this.otherInfo);
-    return data;
-  }
-}
-
 class Archives {
   String? id;
   String? title;
@@ -5308,127 +6788,21 @@ class Archives {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['defineId'] = this.defineId;
-    data['contentType'] = this.contentType;
-    data['content'] = this.content;
-    data['applyId'] = this.applyId;
-    data['shareId'] = this.shareId;
-    data['belongId'] = this.belongId;
-    data['status'] = this.status;
-    data['createUser'] = this.createUser;
-    data['updateUser'] = this.updateUser;
-    data['version'] = this.version;
-    data['createTime'] = this.createTime;
-    data['updateTime'] = this.updateTime;
-    return data;
-  }
-}
-
-class Branche {
-  List<Condition>? conditions;
-  WorkNodeModel? children;
-
-  Branche({this.conditions, this.children});
-
-  factory Branche.fromJson(Map<String, dynamic> json) {
-    return Branche(
-      conditions: json['conditions'] != null
-          ? List<Condition>.from(
-              json['conditions'].map((x) => Condition.fromJson(x)))
-          : null,
-      children: json['children'] != null
-          ? WorkNodeModel.fromJson(json['children'])
-          : null,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
-    if (conditions != null) {
-      data['conditions'] = conditions!.map((x) => x.toJson()).toList();
-    }
-    if (children != null) {
-      data['children'] = children!.toJson();
-    }
-    return data;
-  }
-}
-
-class WorkNodeModel {
-  String? id;
-  String? code;
-  String? type;
-  String? name;
-  WorkNodeModel? children;
-  List<Branche>? branches;
-  int? num;
-  String? destType;
-  String? destId;
-  String? destName;
-  String? defineId;
-  List<XForm>? forms;
-
-  WorkNodeModel({
-    required this.id,
-    required this.code,
-    required this.type,
-    required this.name,
-    this.children,
-    this.branches,
-    required this.num,
-    required this.destType,
-    required this.destId,
-    required this.destName,
-    required this.defineId,
-    this.forms,
-  });
-
-  factory WorkNodeModel.fromJson(Map<String, dynamic> json) {
-    return WorkNodeModel(
-      id: json['id'],
-      code: json['code'],
-      type: json['type'],
-      name: json['name'],
-      children: json['children'] != null
-          ? WorkNodeModel.fromJson(json['children'])
-          : null,
-      branches: json['branches'] != null
-          ? List<Branche>.from(json['branches'].map((x) => Branche.fromJson(x)))
-          : null,
-      num: json['num'],
-      destType: json['destType'],
-      destId: json['destId'],
-      destName: json['destName'],
-      defineId: json['defineId'],
-      forms: json['forms'] != null
-          ? List<XForm>.from(json['forms'].map((x) => XForm.fromJson(x)))
-          : null,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
-    data['code'] = code;
-    data['type'] = type;
-    data['name'] = name;
-    if (children != null) {
-      data['children'] = children!.toJson();
-    }
-    if (branches != null) {
-      data['branches'] = branches!.map((x) => x.toJson()).toList();
-    }
-    data['num'] = num;
-    data['destType'] = destType;
-    data['destId'] = destId;
-    data['destName'] = destName;
+    data['title'] = title;
     data['defineId'] = defineId;
-    if (forms != null) {
-      data['forms'] = forms!.map((x) => x.toJson()).toList();
-    }
+    data['contentType'] = contentType;
+    data['content'] = content;
+    data['applyId'] = applyId;
+    data['shareId'] = shareId;
+    data['belongId'] = belongId;
+    data['status'] = status;
+    data['createUser'] = createUser;
+    data['updateUser'] = updateUser;
+    data['version'] = version;
+    data['createTime'] = createTime;
+    data['updateTime'] = updateTime;
     return data;
   }
 }
@@ -5613,27 +6987,26 @@ class MsgBodyModel {
     name = json['name'];
     progress = json['progress'] ?? 0;
     size = json['size'] ?? 0;
-    cite =
-        json['cite'] != null ? new MsgSaveModel.fromJson(json['cite']) : null;
+    cite = json['cite'] != null ? MsgSaveModel.fromJson(json['cite']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
 
     String text = this.text ?? "";
     if (text.contains('\$IMG')) {
       text = StringUtil.resetImageLabel(text);
     }
     data['body'] = text;
-    data['shareLink'] = this.shareLink;
-    data['path'] = this.path;
-    data['name'] = this.name;
-    data['size'] = this.size;
-    data['progress'] = this.progress;
-    data['extension'] = this.extension;
-    data['mentions'] = this.mentions;
-    if (this.cite != null) {
-      data['cite'] = this.cite!.toJson();
+    data['shareLink'] = shareLink;
+    data['path'] = path;
+    data['name'] = name;
+    data['size'] = size;
+    data['progress'] = progress;
+    data['extension'] = extension;
+    data['mentions'] = mentions;
+    if (cite != null) {
+      data['cite'] = cite!.toJson();
     }
     return data;
   }
@@ -5668,12 +7041,12 @@ class WorkSubmitModel {
       changeDataMap[element.id!] = element.eidtInfo;
     }
 
-    for (var element in resourceData.attributes!) {
-      if (element.linkPropertys != null && element.linkPropertys!.isNotEmpty) {
-        propertys
-            .add({"attrId": element.id, ...element.linkPropertys![0].toJson()});
-      }
-    }
+    // for (var element in resourceData.attributes!) {
+    //   if (element.linkPropertys != null && element.linkPropertys!.isNotEmpty) {
+    //     propertys
+    //         .add({"attrId": element.id, ...element.linkPropertys![0].toJson()});
+    //   }
+    // }
 
     if (isHeader) {
       resourceDataMap = jsonEncode(resourceData.toJson());
@@ -5691,279 +7064,5 @@ class WorkSubmitModel {
       'changeData': changeDataMap,
     };
     return data;
-  }
-}
-
-class DirectoryModel {
-  String? id;
-  String? name;
-  String? code;
-  String? icon;
-  String? parentId;
-  String? shareId;
-  String? remark;
-
-  DirectoryModel({
-    this.id,
-    this.name,
-    this.code,
-    this.icon,
-    this.parentId,
-    this.shareId,
-    this.remark,
-  });
-
-  factory DirectoryModel.fromJson(Map<String, dynamic> json) {
-    return DirectoryModel(
-      id: json['id'],
-      name: json['name'],
-      code: json['code'],
-      icon: json['icon'],
-      parentId: json['parentId'],
-      shareId: json['shareId'],
-      remark: json['remark'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'code': code,
-      'icon': icon,
-      'parentId': parentId,
-      'shareId': shareId,
-      'remark': remark,
-    };
-  }
-}
-
-class SpeciesItemModel {
-  String? id;
-  String? name;
-  String? code;
-  String? icon;
-  String? info;
-  String? speciesId;
-  String? parentId;
-  String? remark;
-
-  SpeciesItemModel({
-    this.id,
-    this.name,
-    this.code,
-    this.icon,
-    this.info,
-    this.speciesId,
-    this.parentId,
-    this.remark,
-  });
-
-  factory SpeciesItemModel.fromJson(Map<String, dynamic> json) {
-    return SpeciesItemModel(
-      id: json['id'],
-      name: json['name'],
-      code: json['code'],
-      icon: json['icon'],
-      info: json['info'],
-      speciesId: json['speciesId'],
-      parentId: json['parentId'],
-      remark: json['remark'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = {
-      'id': id,
-      'name': name,
-      'code': code,
-      'icon': icon,
-      'info': info,
-      'speciesId': speciesId,
-      'parentId': parentId,
-      'remark': remark,
-    };
-    return json;
-  }
-}
-
-class ApplicationModel {
-  String? id;
-  String? name;
-  String? code;
-  String? icon;
-  String? typeName;
-  String? remark;
-  String? directoryId;
-  String? parentId;
-  String? resource;
-
-  ApplicationModel({
-    this.id,
-    this.name,
-    this.code,
-    this.icon,
-    this.typeName,
-    this.remark,
-    this.directoryId,
-    this.parentId,
-    this.resource,
-  });
-
-  factory ApplicationModel.fromJson(Map<String, dynamic> json) {
-    return ApplicationModel(
-      id: json['id'],
-      name: json['name'],
-      code: json['code'],
-      icon: json['icon'],
-      typeName: json['typeName'],
-      remark: json['remark'],
-      directoryId: json['directoryId'],
-      parentId: json['parentId'],
-      resource: json['resource'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
-    data['id'] = id;
-    data['name'] = name;
-    data['code'] = code;
-    data['icon'] = icon;
-    data['typeName'] = typeName;
-    data['remark'] = remark;
-    data['directoryId'] = directoryId;
-    data['parentId'] = parentId;
-    data['resource'] = resource;
-    return data;
-  }
-}
-
-class GetDirectoryModel {
-  late String id;
-  late bool upTeam;
-
-  GetDirectoryModel({
-    required this.id,
-    required this.upTeam,
-  });
-
-  factory GetDirectoryModel.fromJson(Map<String, dynamic> json) {
-    return GetDirectoryModel(
-      id: json['id'] as String,
-      upTeam: json['upTeam'] as bool,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
-    data['id'] = id;
-    data['upTeam'] = upTeam;
-    data['page'] = PageRequest(offset: 0, limit: 9999, filter: '');
-    return data;
-  }
-}
-
-class TargetMessageModel {
-  late String data;
-  late bool excludeOperater;
-  late String targetId;
-  late bool group;
-
-  TargetMessageModel({
-    required this.data,
-    required this.excludeOperater,
-    required this.targetId,
-    required this.group,
-  });
-
-  factory TargetMessageModel.fromJson(Map<String, dynamic> json) {
-    return TargetMessageModel(
-      data: json['data'] as String,
-      excludeOperater: json['excludeOperater'] as bool,
-      targetId: json['targetId'] as String,
-      group: json['group'] as bool,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'data': data,
-      'excludeOperater': excludeOperater,
-      'targetId': targetId,
-      'group': group,
-    };
-  }
-}
-
-class TargetOperateModel {
-  String? operate;
-  XTarget? target;
-  XTarget? subTarget;
-  XTarget? operater;
-
-  TargetOperateModel({
-    this.operate,
-    this.target,
-    this.subTarget,
-    this.operater,
-  });
-
-  TargetOperateModel.fromJson(Map<String, dynamic> json) {
-    operate = json['operate'];
-    target = XTarget.fromJson(json['target']);
-    subTarget =
-        json['subTarget'] != null ? XTarget.fromJson(json['subTarget']) : null;
-    operater = XTarget.fromJson(json['operater']);
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {
-      'operate': operate,
-      'target': target?.toJson(),
-      'operater': operater?.toJson(),
-    };
-    if (subTarget != null) {
-      data['subTarget'] = subTarget!.toJson();
-    }
-    return data;
-  }
-}
-
-class IdentityOperateModel {
-  String? operate;
-  XTarget? operater;
-  XIdentity? identity;
-  XTarget? station;
-  XTarget? subTarget;
-
-  IdentityOperateModel({
-    this.operate,
-    this.operater,
-    this.identity,
-    this.station,
-    this.subTarget,
-  });
-
-  IdentityOperateModel.fromJson(Map<String, dynamic> json) {
-    operate = json['operate'];
-    operater =
-        json['operater'] != null ? XTarget.fromJson(json['operater']) : null;
-    identity =
-        json['identity'] != null ? XIdentity.fromJson(json['identity']) : null;
-    station =
-        json['station'] != null ? XTarget.fromJson(json['station']) : null;
-    subTarget =
-        json['subTarget'] != null ? XTarget.fromJson(json['subTarget']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'operate': operate,
-      'operater': operater?.toJson(),
-      'identity': identity?.toJson(),
-      'station': station?.toJson(),
-      'subTarget': subTarget?.toJson(),
-    };
   }
 }
