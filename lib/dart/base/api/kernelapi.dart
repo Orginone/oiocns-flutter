@@ -13,6 +13,7 @@ import 'package:orginone/util/http_util.dart';
 import 'package:orginone/util/local_store.dart';
 import 'package:orginone/util/toast_utils.dart';
 
+//测试权限
 class KernelApi {
   // 当前用户
   String userId = '';
