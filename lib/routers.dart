@@ -9,6 +9,7 @@ import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/pages/home/home/binding.dart';
 import 'package:orginone/pages/home/home/view.dart';
 import 'package:orginone/pages/login/binding.dart';
+import 'package:orginone/pages/login/login_transition/view.dart';
 import 'package:orginone/pages/login/view.dart';
 import 'package:orginone/pages/other/add_asset/binding.dart';
 import 'package:orginone/pages/other/add_asset/view.dart';
@@ -138,6 +139,9 @@ class Routers {
 
   //忘记密码
   static const String forgotPassword = "/forgotPassword";
+
+  //登录过渡加载页面
+  static const String logintrans = "/logintrans";
 
   // 简单表单编辑器
   static const String form = "/form";
@@ -344,6 +348,10 @@ class Routers {
         name: Routers.forgotPassword,
         page: () => ForgotPasswordPage(),
         binding: ForgotPasswordBinding(),
+      ),
+      GetPage(
+        name: Routers.logintrans,
+        page: () => LoginTransPage(),
       ),
       GetPage(
         name: Routers.home,

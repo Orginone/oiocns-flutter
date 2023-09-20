@@ -86,6 +86,7 @@ class ScreenInit extends StatelessWidget {
           darkTheme: ThemeData(useMaterial3: false),
           textDirection: TextDirection.ltr,
           initialRoute: account != null ? Routers.home : Routers.login,
+          defaultTransition: Transition.fadeIn,
           getPages: Routers.getInitRouters(),
         );
       },

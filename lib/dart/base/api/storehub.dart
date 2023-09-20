@@ -63,12 +63,16 @@ class StoreHub {
     return _isStarted && _connection.state == HubConnectionState.Connected;
   }
 
+
+  ///连接状态
+
   HubConnectionState? connectionState() {
     return _connection.state;
   }
 
   /// 销毁连接
-  /// @returns {Promise<void>} 异步Promise
+  /// @returns {Promise<void>} 异步Promise ts内核
+  /// 异步 Future
   Future<void> dispose() async {
     _isStarted = false;
     _connectedCallbacks = [];
@@ -81,14 +85,18 @@ class StoreHub {
   void start() {
     if (!_isStarted) {
       _isStarted = true;
-      _starting();
+      if (!isConnected) {
+        _starting();
+      }
     }
   }
 
   /// 重新建立连接
   /// @returns {void} 无返回值
-  void restart() {
+  void restart() async {
     if (isConnected) {
+      _isStarted = false;
+      await this._connection.stop();
       _connection.stop().then((_) {
         _starting();
       });

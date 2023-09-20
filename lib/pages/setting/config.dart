@@ -6,7 +6,7 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
@@ -27,7 +27,6 @@ import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
 import 'dialog.dart';
-
 
 List<String> memberTitle = [
   "账号",
@@ -91,7 +90,7 @@ enum CompanyFunction {
   addGroup,
 }
 
-enum UserFunction{
+enum UserFunction {
   record,
   addUser,
   addGroup,
@@ -156,22 +155,22 @@ Future<List<SettingNavModel>> loadDir(
   for (var dir in dirs) {
     SettingNavModel dirNav = SettingNavModel(
       id: dir.metadata.id!,
-        source: dir,
-        name: dir.metadata.name!,
-        space: belong,
-        spaceEnum: SpaceEnum.directory,
-        image: dir.metadata.avatarThumbnail(),
-        onNext: (nav) async {
-          await dir.loadContent(reload: true);
-          nav.children = [
-            ...await loadDir(dir.children, belong),
-            ...await loadFile(dir.files, belong),
-            ...await loadSpecies(dir.specieses, belong),
-            ...await loadApplications(dir.applications, belong),
-            ...await loadPropertys(dir.propertys, belong),
-            ...await loadForm(dir.forms, belong),
-          ];
-        },
+      source: dir,
+      name: dir.metadata.name!,
+      space: belong,
+      spaceEnum: SpaceEnum.directory,
+      image: dir.metadata.avatarThumbnail(),
+      onNext: (nav) async {
+        await dir.loadContent(reload: true);
+        nav.children = [
+          ...await loadDir(dir.children, belong),
+          ...await loadFile(dir.files, belong),
+          ...await loadSpecies(dir.specieses, belong),
+          ...await loadApplications(dir.applications, belong),
+          ...await loadPropertys(dir.propertys, belong),
+          ...await loadForm(dir.forms, belong),
+        ];
+      },
     );
     nav.add(dirNav);
   }
@@ -218,25 +217,22 @@ Future<List<SettingNavModel>> loadApplications(
   for (var application in applications) {
     var works = await application.loadWorks();
     SettingNavModel appNav = SettingNavModel(
-      id: application.metadata.id!,
-      source: application,
-      name: application.metadata.name!,
-      space: belong,
-      spaceEnum: SpaceEnum.applications,
-      image: application.metadata.avatarThumbnail(),
-      children: [
-        ...await loadModule(application.children,belong),
-        ...loadWork(works, belong),
-      ]
-    );
+        id: application.metadata.id!,
+        source: application,
+        name: application.metadata.name!,
+        space: belong,
+        spaceEnum: SpaceEnum.applications,
+        image: application.metadata.avatarThumbnail(),
+        children: [
+          ...await loadModule(application.children, belong),
+          ...loadWork(works, belong),
+        ]);
     nav.add(appNav);
   }
   return nav;
 }
 
-
-List<SettingNavModel> loadWork(
-    List<IWork> works, ITarget target) {
+List<SettingNavModel> loadWork(List<IWork> works, ITarget target) {
   List<SettingNavModel> nav = [];
   for (var work in works) {
     SettingNavModel workNav = SettingNavModel(
@@ -244,7 +240,7 @@ List<SettingNavModel> loadWork(
       source: work,
       spaceEnum: SpaceEnum.work,
       name: work.metadata.name!,
-      space: target  as IBelong,
+      space: target as IBelong,
       image: work.metadata.avatarThumbnail(),
       children: [],
     );
@@ -265,15 +261,14 @@ Future<List<SettingNavModel>> loadModule(
         space: target as IBelong,
         image: application.metadata.avatarThumbnail(),
         children: [],
-        onNext: (item) async{
+        onNext: (item) async {
           var works = await application.loadWorks();
           List<SettingNavModel> nav = [
             ...await loadModule(application.children, target),
             ...loadWork(works, target),
           ];
           item.children = nav;
-        }
-    );
+        });
     nav.add(appNav);
   }
   return nav;
@@ -421,7 +416,6 @@ Future<List<SettingNavModel>> loadDepartment(
   }
   return nav;
 }
-
 
 Future<List<SettingNavModel>> loadGroup(
     List<IGroup> groups, IBelong belong) async {
@@ -574,7 +568,7 @@ Future<void> loadCompanySetting(Rxn<SettingNavModel> model) async {
 }
 
 void createDir(SettingNavModel item,
-{bool isEdit = false, VoidCallback? callback}) {
+    {bool isEdit = false, VoidCallback? callback}) {
   showCreateGeneralDialog(Get.context!, "目录",
       isEdit: isEdit,
       name: isEdit ? item.source.metadata.name! : '',
@@ -624,7 +618,8 @@ void createDir(SettingNavModel item,
   });
 }
 
-void uploadFile(SettingNavModel item, {Function([SettingNavModel? nav])? callback}) async {
+void uploadFile(SettingNavModel item,
+    {Function([SettingNavModel? nav])? callback}) async {
   late IDirectory dir;
 
   switch (item.spaceEnum!) {
@@ -732,7 +727,7 @@ void createSpecies(SettingNavModel item, String typeName,
   });
 }
 
-void rename(SettingNavModel item,{VoidCallback? callback}) {
+void rename(SettingNavModel item, {VoidCallback? callback}) {
   showTextInputDialog(
           context: Get.context!,
           textFields: [
@@ -754,7 +749,7 @@ void rename(SettingNavModel item,{VoidCallback? callback}) {
   });
 }
 
-void delete(SettingNavModel item,{VoidCallback? callback}) async {
+void delete(SettingNavModel item, {VoidCallback? callback}) async {
   bool success = await item.source.delete();
   if (success) {
     ToastUtils.showMsg(msg: "删除成功");
@@ -867,7 +862,8 @@ void createTarget(PopupMenuKey key, SettingNavModel model,
       isEdit: isEdit);
 }
 
-void createAttr(SettingNavModel item, {bool isEdit = false, Function([SettingNavModel? nav])? callback}) {
+void createAttr(SettingNavModel item,
+    {bool isEdit = false, Function([SettingNavModel? nav])? callback}) {
   showCreateAttributeDialog(Get.context!,
       onCreate: (name, code, valueType, info, remake, [unit, dict]) async {
     var data = PropertyModel(
@@ -925,7 +921,7 @@ void createAttr(SettingNavModel item, {bool isEdit = false, Function([SettingNav
         } else {
           item.children[0].children.add(nav);
         }
-       callback?.call(nav);
+        callback?.call(nav);
       }
     }
   },
@@ -936,7 +932,8 @@ void createAttr(SettingNavModel item, {bool isEdit = false, Function([SettingNav
       unit: isEdit ? item.source.metadata.unit : null);
 }
 
-void createApplication(SettingNavModel item, {bool isEdit = false, Function([SettingNavModel? nav])? callback}) {
+void createApplication(SettingNavModel item,
+    {bool isEdit = false, Function([SettingNavModel? nav])? callback}) {
   showClassCriteriaDialog(Get.context!, [SpeciesType.application],
       isEdit: isEdit,
       name: isEdit ? item.source.metadata.name : null,
@@ -962,7 +959,7 @@ void createApplication(SettingNavModel item, {bool isEdit = false, Function([Set
         item.source.metadata.remark = remark;
         ToastUtils.showMsg(msg: "更新成功");
         item.name = name;
-       callback?.call();
+        callback?.call();
       }
     } else {
       IApplication? application;
@@ -1003,11 +1000,9 @@ void createApplication(SettingNavModel item, {bool isEdit = false, Function([Set
   });
 }
 
-
-void shareQr(SettingNavModel item){
+void shareQr(SettingNavModel item) {
   var entity;
-  if (item.spaceEnum == SpaceEnum.user ||
-      item.spaceEnum == SpaceEnum.company) {
+  if (item.spaceEnum == SpaceEnum.user || item.spaceEnum == SpaceEnum.company) {
     entity = item.space!.metadata;
   } else {
     entity = item.source.metadata;
@@ -1018,9 +1013,8 @@ void shareQr(SettingNavModel item){
   );
 }
 
-void openChat(SettingNavModel item){
-  if (item.spaceEnum == SpaceEnum.user ||
-      item.spaceEnum == SpaceEnum.company) {
+void openChat(SettingNavModel item) {
+  if (item.spaceEnum == SpaceEnum.user || item.spaceEnum == SpaceEnum.company) {
     item.space!.onMessage();
     Get.toNamed(
       Routers.messageChat,

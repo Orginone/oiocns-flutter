@@ -15,7 +15,6 @@ class LoginController extends BaseController<LoginState> {
   @override
   void onInit() async {
     super.onInit();
-
     if (!kernel.isOnline) {
       kernel.start();
     }
@@ -58,7 +57,9 @@ class LoginController extends BaseController<LoginState> {
       [Permission.storage, Permission.notification].request();
       Storage.setList("account",
           [state.accountController.text, state.passWordController.text]);
-      Get.offAndToNamed(Routers.home, arguments: true);
+
+      Get.offAndToNamed(Routers.logintrans, arguments: true);
+      Future.delayed(const Duration(seconds: 2));
     } else {
       ToastUtils.showMsg(msg: res.msg);
     }

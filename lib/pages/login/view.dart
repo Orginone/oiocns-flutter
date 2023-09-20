@@ -130,15 +130,15 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
                     text: state.accountLogin.value
                         ? "手机号登录"
                         : state.phoneNumberLogin.value
-                        ? "账号密码登录"
-                        : ""),
+                            ? "账号密码登录"
+                            : ""),
               ]),
               style: const TextStyle(color: XColors.themeColor),
             ),
           );
         }),
         Obx(() {
-          if(state.phoneNumberLogin.value){
+          if (state.phoneNumberLogin.value) {
             return Container();
           }
           return GestureDetector(
@@ -174,21 +174,19 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
             const TextSpan(text: "同意"),
             WidgetSpan(
                 child: GestureDetector(
-                  child: Text(
-                    "《服务条款》",
-                    style: TextStyle(
-                        color: XColors.themeColor, fontSize: 20.sp),
-                  ),
-                )),
+              child: Text(
+                "《服务条款》",
+                style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),
+              ),
+            )),
             const TextSpan(text: "与"),
             WidgetSpan(
                 child: GestureDetector(
-                  child: Text(
-                    "《隐私条款》",
-                    style: TextStyle(
-                        color: XColors.themeColor, fontSize: 20.sp),
-                  ),
-                ))
+              child: Text(
+                "《隐私条款》",
+                style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),
+              ),
+            ))
           ]),
           style: TextStyle(color: Colors.black, fontSize: 20.sp),
         )
@@ -236,7 +234,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
               controller.register();
             },
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: 10.h,horizontal: 15.w),
+              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
               child: Text(
                 "注册用户",
                 style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),

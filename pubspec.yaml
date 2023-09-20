@@ -41,6 +41,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  #过渡动画
+  page_animation_transition: ^1.0.0
+
   #多线程
   worker_manager: ^5.0.0
 

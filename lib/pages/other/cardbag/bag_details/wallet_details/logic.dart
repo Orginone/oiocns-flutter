@@ -45,12 +45,12 @@ class WalletDetailsController extends BaseController<WalletDetailsState>
                 SizedBox(
                   height: 50.h,
                 ),
-                QrImage(
-                  data: state.coin.address??"",
-                  version: QrVersions.auto,
-                  size: 300.w,
-                  errorCorrectionLevel: QrErrorCorrectLevel.H,
-                ),
+                // QrImage(
+                //   data: state.coin.address??"",
+                //   version: QrVersions.auto,
+                //   size: 300.w,
+                //   errorCorrectionLevel: QrErrorCorrectLevel.H,
+                // ),
                 SizedBox(
                   height: 30.h,
                 ),
@@ -62,23 +62,28 @@ class WalletDetailsController extends BaseController<WalletDetailsState>
                   height: 30.h,
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 15.h,horizontal: 20.w),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 15.h, horizontal: 20.w),
                   decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(36.w),
-                      border: Border.all(color:XColors.blueTextColor, width: 1),),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(36.w),
+                    border: Border.all(color: XColors.blueTextColor, width: 1),
+                  ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                       Text(state.coin.address??"",style: const TextStyle(color: Color(0xFF1890FF)),),
+                      Text(
+                        state.coin.address ?? "",
+                        style: const TextStyle(color: Color(0xFF1890FF)),
+                      ),
                       SizedBox(
                         width: 10.w,
                       ),
                       GestureDetector(
                         onTap: () {
                           ToastUtils.showMsg(msg: "已复制到剪切板");
-                          Clipboard.setData(ClipboardData(
-                              text: state.coin.address??""));
+                          Clipboard.setData(
+                              ClipboardData(text: state.coin.address ?? ""));
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -88,8 +93,8 @@ class WalletDetailsController extends BaseController<WalletDetailsState>
                               horizontal: 10.w, vertical: 4.h),
                           child: Text(
                             "复制",
-                            style: TextStyle(
-                                color: Colors.white, fontSize: 14.sp),
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 14.sp),
                           ),
                         ),
                       )

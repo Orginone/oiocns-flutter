@@ -78,22 +78,22 @@ class ShareQrCodePage
     var image = state.entity.avatarThumbnail();
     return Align(
       alignment: Alignment.center,
-      child: QrImage(
-        data: '${Constant.host}/${state.entity.id}',
-        version: QrVersions.auto,
-        size: 330.w,
-        embeddedImage: image != null ? MemoryImage(image) : null,
-        errorCorrectionLevel: QrErrorCorrectLevel.H,
-        embeddedImageStyle: QrEmbeddedImageStyle(size: Size(60.w, 60.w)),
-        dataModuleStyle: const QrDataModuleStyle(
-          dataModuleShape: QrDataModuleShape.square,
-          color: Colors.black,
-        ),
-        eyeStyle: const QrEyeStyle(
-          eyeShape: QrEyeShape.square,
-          color: Colors.black,
-        ),
-      ),
+      // child: QrImage(
+      //   data: '${Constant.host}/${state.entity.id}',
+      //   version: QrVersions.auto,
+      //   size: 330.w,
+      //   embeddedImage: image != null ? MemoryImage(image) : null,
+      //   errorCorrectionLevel: QrErrorCorrectLevel.H,
+      //   embeddedImageStyle: QrEmbeddedImageStyle(size: Size(60.w, 60.w)),
+      //   dataModuleStyle: const QrDataModuleStyle(
+      //     dataModuleShape: QrDataModuleShape.square,
+      //     color: Colors.black,
+      //   ),
+      //   eyeStyle: const QrEyeStyle(
+      //     eyeShape: QrEyeShape.square,
+      //     color: Colors.black,
+      //   ),
+      // ),
     );
   }
 
