@@ -2,6 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
+import 'package:orginone/main.dart';
+import 'package:orginone/util/local_store.dart';
+import 'package:orginone/util/toast_utils.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class HttpUtil {
@@ -16,8 +19,8 @@ class HttpUtil {
   Logger log = Logger("HttpLogger");
   var dio = Dio(BaseOptions(
     baseUrl: Constant.host,
-    connectTimeout: Duration(seconds: 30),
-    receiveTimeout: Duration(seconds: 30),
+    connectTimeout: const Duration(seconds: 30),
+    receiveTimeout: const Duration(seconds: 30),
   ));
 
   void init() {
@@ -30,13 +33,13 @@ class HttpUtil {
         return handler.next(options); //continue
       }, onResponse: (response, handler) {
         return handler.next(response); // continue
-      }, onError: (DioError e, handler) {
+      }, onError: (DioException e, handler) {
         return handler.next(e);
       }));
   }
 
   Future<Options> addTokenHeader(Options? options) async {
-    var accessToken = "getAccessToken";
+    var accessToken = Storage.getString('accessToken');
     log.info("====> accessToken：$accessToken");
     if (options == null) {
       return Options(headers: {"Authorization": accessToken});
@@ -75,7 +78,7 @@ class HttpUtil {
           onReceiveProgress: onReceiveProgress);
 
       return result.data!;
-    } on DioError catch (error) {
+    } on DioException catch (error) {
       _onDioError(error, showError!);
     } on Exception catch (error) {
       _onExceptionError(error, showError!);
@@ -117,7 +120,7 @@ class HttpUtil {
       );
 
       return result.data!;
-    } on DioError catch (error) {
+    } on DioException catch (error) {
       _onDioError(error, showError!);
       rethrow;
     } on Exception catch (error) {
@@ -135,7 +138,7 @@ class HttpUtil {
     }
   }
 
-  _onDioError(DioError error, bool showToast) {
+  _onDioError(DioException error, bool showToast) {
     if (error.response == null) return;
     Response response = error.response!;
     var statusCode = response.statusCode;
@@ -144,7 +147,11 @@ class HttpUtil {
       if (showToast) {
         Fluttertoast.showToast(msg: response.statusMessage ?? "");
       }
-    } else if (statusCode == 401) {}
+    } else if (statusCode == 401) {
+      ToastUtils.showMsg(msg: "登录已过期,请重新登录");
+      //token过期
+      _errorNoAuthLogout();
+    }
   }
 
   Future<dynamic> download({
@@ -155,5 +162,10 @@ class HttpUtil {
     dio.download(url, savePath, onReceiveProgress: (received, total) {
       progressCallback(received, total);
     });
+  }
+
+  // 退出并重新登录
+  Future<void> _errorNoAuthLogout() async {
+    settingCtrl.exitLogin(cleanUserLoginInfo: false);
   }
 }

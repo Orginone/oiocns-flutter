@@ -4,7 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/config/constant.dart';
-import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/base/api/kernelapi_old.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
