@@ -1,54 +1,88 @@
 import 'dart:async';
-
-import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
-import 'package:orginone/dart/base/api/anystore.dart';
 import 'package:orginone/dart/base/api/storehub.dart';
+import 'package:orginone/dart/base/common/commands.dart';
+import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/model/user_model.dart';
+import 'package:orginone/pages/other/pdf/index.dart';
 import 'package:orginone/util/hive_utils.dart';
+import 'package:orginone/util/http_util.dart';
+import 'package:orginone/util/local_store.dart';
 import 'package:orginone/util/toast_utils.dart';
-import 'package:signalr_netcore/signalr_client.dart';
 
+//测试权限
 class KernelApi {
-  final Logger log = Logger("KernelApi");
-
+  // 当前用户
+  String userId = '';
+// 存储集线器
   final StoreHub _storeHub;
-  final Map<String, List<Function>> _methods;
-
-  late AnyStore _anystore;
-
+  // axios实例
+  final _http = HttpUtil();
+  // 单例
   static KernelApi? _instance;
+  // 单例
+  // 必达消息缓存
+  final Map<String, dynamic> _cacheData = {};
 
+  // 订阅方法
+  final Map<String, List<Function>> _methods;
+  // 订阅回调字典
+  final Map<String, void Function(dynamic)> _subscribeCallbacks;
+
+  // 上下线提醒
+  final Emitter onlineNotify = Emitter();
+  // 在线的连接
+  List<String> onlineIds = [];
   factory KernelApi() {
     _instance ??= KernelApi._(Constant.kernelHub);
     return _instance!;
   }
 
   KernelApi._(String url)
-      : _storeHub = StoreHub(url),
-        _methods = {}{
-    _anystore = AnyStore();
-    _storeHub.on("Receive", receive);
+      : _methods = {},
+        _subscribeCallbacks = {},
+        _storeHub = StoreHub(url, protocol: 'json') {
+    _storeHub.on("Receive", (res) => _receive(res));
+    _storeHub.on('Updated', (res) => _updated(res));
+
     _storeHub.onConnected(() {
-      if (_anystore!.accessToken.isNotEmpty) {
-        var args = [_anystore!.accessToken];
-        _storeHub.invoke("TokenAuth", args: args).then((value) {
-          log.info(value);
+      if (accessToken.isNotEmpty) {
+        _storeHub.invoke("TokenAuth", args: [accessToken]).then((value) {
+          ResultType res = ResultType.fromJson(value);
+          if (res.success) {
+            _subscribeCallbacks.forEach((fullKey, value) {
+              var key = fullKey.split("|")[0];
+              var belongId = fullKey.split("|")[1];
+              subscribed(key, belongId, value);
+            });
+          }
         }).catchError((err) {
-          print(err);
-          log.info(err);
+          logger.warning(err);
         });
       }
     });
-    _storeHub.start();
+    start();
   }
 
-  /// 任意数据存储对象
-  /// @returns {AnyStore | undefined} 可能为空的存储对象
-  AnyStore get anystore {
-    return _anystore!;
+// 获取accessToken
+  String get accessToken {
+    return Storage.getString('accessToken');
+  }
+
+  // 设置accessToken
+  set setToken(String val) {
+    Storage.setString('accessToken', val);
+  }
+
+  /// 获取单例
+  /// @param {string} url 集线器地址，默认为 "/orginone/kernel/hub"
+  /// @returns {KernelApi} 内核api单例
+  static getInstance(String url) {
+    _instance ??= KernelApi._(Constant.kernelHub);
+    return _instance!;
   }
 
   /// 是否在线
@@ -57,864 +91,130 @@ class KernelApi {
     return _storeHub.isConnected;
   }
 
-  HubConnectionState? connectionState() {
-    return _storeHub.connectionState();
-  }
-
-
-  void restart(){
+  void restart() {
     _storeHub.restart();
-    _anystore.restart();
   }
 
   Future<void> stop() async {
     _methods.clear();
-    await _anystore.stop();
+
     await _storeHub.dispose();
     _instance = null;
   }
 
-  Future<void> disconnect() async{
+  Future<void> disconnect() async {
     _storeHub.disconnect();
-    _anystore.disconnect();
   }
 
-  start(){
+  start() {
     _storeHub.start();
-    if(!anystore.isOnline){
-      _anystore.start();
-    }
   }
 
-  receive(List<dynamic>? params) {
-    if (params == null) {
-      return;
-    }
-    log.info("最初接受到的消息: ${params.toString()}");
-    Map<String, dynamic> param = params[0];
-    String key = param["target"].toString().toLowerCase();
-    if (_methods.containsKey(key)) {
-      for (var callback in _methods[key]!) {
-        callback(param["data"]);
+  /// 连接信息
+  Future<OnlineSet?> onlines() async {
+    if (onlineIds.isNotEmpty) {
+      var result = await _storeHub.invoke('Online');
+      if (result.success && result.data != null) {
+        var data = result.data as OnlineSet;
+        var uids = data.users?.map((i) => i.connectionId).toList() ?? [];
+        var sids = data.storages?.map((i) => i.connectionId).toList() ?? [];
+        var ids = [...uids, ...sids];
+        if (ids.length != onlineIds.length) {
+          onlineIds = ids;
+          onlineNotify.changCallback();
+        }
+        onlineIds = ids;
+        return result.data;
       }
-    } else {
-      log.info("未订阅相关内容信息，循环接收消息中......");
-      Timer(const Duration(seconds: 1), () => receive(params));
     }
+    return null;
   }
 
-  on(String methodName, Function method) {
-    var lowerCase = methodName.toLowerCase();
-    _methods.putIfAbsent(lowerCase, () => []);
-    if (_methods[lowerCase]!.contains(method)) {
-      return;
-    }
-    _methods[lowerCase]!.add(method);
-  }
+  /// 登录到后台核心获取accessToken
+  /// @param userName 用户名
+  /// @param password 密码
+  /// @returns Future<ResultType<dynamic>> 异步登录结果
 
-  /// 登录接口
-  Future<ResultType<dynamic>> login(String account, String password) async {
+  Future<ResultType<dynamic>> login(String userName, String password) async {
     Map<String, dynamic> req = {
-      "account": account,
+      "account": userName,
       "pwd": password,
     };
     dynamic raw;
-    raw = await _storeHub.invoke('Login', args: [req]);
+    if (_storeHub.isConnected) {
+      raw = await _storeHub.invoke('Login', args: [req]);
+    } else {
+      raw = await _restRequest('login', req);
+    }
+
     var res = ResultType.fromJson(raw);
     if (res.success) {
       HiveUtils.putUser(UserModel.fromJson(raw['data']));
-      _anystore!.updateToken(res.data["accessToken"]);
+      setToken = res.data["accessToken"];
     }
     return res;
   }
 
-  /// 注册
+  /// 重置密码
+  /// @param {IdReqModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType> resetPassword(
+    String userName,
+    String password,
+    String privateKey,
+  ) async {
+    var req = {
+      "account": userName,
+      "password": password,
+      "privateKey": privateKey
+    };
+    var res;
+    if (_storeHub.isConnected) {
+      res = await _storeHub.invoke('ResetPassword', args: [req]);
+    } else {
+      res = await _restRequest("resetpassword", req);
+    }
+
+    return ResultType.fromJson(res);
+  }
+
+  /// 注册到后台核心获取accessToken
+  /// @param name 姓名
+  /// @param motto 座右铭
+  /// @param phone 电话
+  /// @param account 账户
+  /// @param password 密码
+  /// @param nickName 昵称
+  /// @returns {Promise<model.ResultType<any>>} 异步注册结果
+
   Future<ResultType<dynamic>> register(RegisterType params) async {
-    dynamic raw;
-    raw = await _storeHub.invoke('Register', args: [params]);
-    var res = ResultType.fromJson(raw);
+    dynamic res;
+    if (_storeHub.isConnected) {
+      res = await _storeHub.invoke('Register', args: [params]);
+    } else {
+      res = await _restRequest('Register', params);
+    }
+
+    var model = ResultType.fromJson(res);
     if (res.success) {
-      ToastUtils.showMsg(msg: "私有key---${ res.data['privateKey']}");
-    }else{
+      // ToastUtils.showMsg(msg: "私有key---${res.data['privateKey']}");
+    } else {
       ToastUtils.showMsg(msg: res.msg);
     }
-    return res;
+    return model;
   }
 
-  Future<ResultType<dynamic>> genToken(String companyId) async {
-    dynamic raw;
-    raw = await _storeHub.invoke('GenToken', args: [companyId]);
-    var res = ResultType.fromJson(raw);
-    if (res.success) {
-      _anystore!.updateToken(res.data ?? "");
-    }
-    return res;
-  }
-
-  /// 创建字典类型
-  /// @param {DictModel} params 请求参数
-  /// @returns {ResultType<XDict>} 请求结果
-  Future<ResultType<XDict>> createDict(DictModel params) async {
+  /// 根据ID查询实体信息
+  /// @param {model.IdModel} params 请求参数
+  /// @returns {model.ResultType<schema.XEntity>} 请求结果
+  Future<ResultType<XEntity>> queryEntityById(IdReq params) async {
     return await request(
       ReqestType(
-        module: 'thing',
-        action: 'CreateDict',
+        module: 'core',
+        action: 'QueryEntityById',
         params: params.toJson(),
       ),
-      XDict.fromJson,
-    );
-  }
-
-  ///查询分类的表单
-  Future<ResultType<XFormArray>> querySpeciesForms(GetSpeciesResourceModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QuerySpeciesForms',
-        params: params.toJson(),
-      ),
-      XFormArray.fromJson,
-    );
-  }
-
-  Future<ResultType<XForm>> createForm(FormModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'CreateForm',
-        params: params.toJson(),
-      ),
-      XForm.fromJson,
-    );
-  }
-
-  Future<ResultType<XForm>> updateForm(FormModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'UpdateForm',
-        params: params.toJson(),
-      ),
-      XForm.fromJson,
-    );
-  }
-
-  Future<ResultType> deleteForm(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'DeleteForm',
-        params: params.toJson(),
-      ),
-      ResultType.fromJson,
-    );
-  }
-
-
-  ///查询用户字典集
-  Future<ResultType<XDictArray>> queryDicts(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QueryDicts',
-        params: params.toJson(),
-      ),
-      XDictArray.fromJson,
-    );
-  }
-
-  Future<ResultType<XTargetArray>> searchTargets(NameTypeModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'SearchTargets',
-        params: params.toJson(),
-      ),
-      XTargetArray.fromJson,
-    );
-  }
-
-
-  /*
-   * 创建业务标准子项
-   * @param {model.OperationItemModel} params 请求参数
-   * @returns {model.ResultType<boolean>} 请求结果
-   */
-  Future<ResultType<bool>> createOperationItems(
-      OperationItemModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'CreateOperationItems',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 创建日志记录
-  /// @param {LogModel} params 请求参数
-  /// @returns {ResultType<XLog>} 请求结果
-  Future<ResultType<XLog>> createLog(LogModel params) async {
-    return await request(
-      ReqestType(
-        module: 'base',
-        action: 'CreateLog',
-        params: params,
-      ),
-      XLog.fromJson,
-    );
-  }
-
-  /// 创建字典项
-  /// @param {DictItemModel} params 请求参数
-  /// @returns {ResultType<XDictItem>} 请求结果
-  Future<ResultType<XDictItem>> createDictItem(DictItemModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'CreateDictItem',
-        params: params.toJson(),
-      ),
-      XDictItem.fromJson,
-    );
-  }
-
-  /// 删除字典类型
-  /// @param {IdReqModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> deleteDict(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'DeleteDict',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 删除业务标准
-  /// @param {IdReqModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> deleteOperation(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'DeleteOperation',
-        params: params.toJson(),
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 删除字典项
-  /// @param {IdReqModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> deleteDictItem(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'DeleteDictItem',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 更新字典类型
-  /// @param {DictModel} params 请求参数
-  /// @returns {ResultType<XDict>} 请求结果
-  Future<ResultType<XDict>> updateDict(DictModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'UpdateDict',
-        params: params,
-      ),
-      XDict.fromJson,
-    );
-  }
-
-  /// 更新字典项
-  /// @param {DictItemModel} params 请求参数
-  /// @returns {ResultType<XDictItem>} 请求结果
-  Future<ResultType<XDictItem>> updateDictItem(DictItemModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'UpdateDictItem',
-        params: params.toJson(),
-      ),
-      XDictItem.fromJson,
-    );
-  }
-
-  /*
-   * 根据id查询分类
-   * @param {model.IdArrayReq} params 请求参数
-   * @returns {model.ResultType<schema.XSpeciesArray>} 请求结果
-   */
-  Future<ResultType<XSpeciesArray>> querySpeciesById(IdArrayReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QuerySpeciesById',
-        params: params,
-      ),
-      XSpeciesArray.fromJson,
-    );
-  }
-
-  /*
-   * 创建元属性
-   * @param {model.PropertyModel} params 请求参数
-   * @returns {model.ResultType<schema.XProperty>} 请求结果
-   */
-  Future<ResultType<XProperty>> createProperty(PropertyModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'CreateProperty',
-        params: params.toJson(),
-      ),
-      XProperty.fromJson,
-    );
-  }
-
-  /*
-   * 更新元属性
-   * @param {model.PropertyModel} params 请求参数
-   * @returns {model.ResultType<schema.XProperty>} 请求结果
-   */
-  Future<ResultType<XProperty>> updateProperty(PropertyModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'UpdateProperty',
-        params: params.toJson(),
-      ),
-      XProperty.fromJson,
-    );
-  }
-
-  /*
-   * 查询属性关联的特性
-   * @param {model.IdModel} params 请求参数
-   * @returns {model.ResultType<schema.XAttributeArray>} 请求结果
-   */
-  Future<ResultType<XAttributeArray>> queryPropAttributes(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QueryPropAttributes',
-        params: params.toJson(),
-      ),
-      XAttributeArray.fromJson,
-    );
-  }
-
-  /*
-   * 更新元属性
-   * @param {model.PropertyModel} params 请求参数
-   * @returns {model.ResultType<schema.XProperty>} 请求结果
-   */
-  Future<ResultType<bool>> deleteProperty(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'DeleteProperty',
-        params: params.toJson(),
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /*
-   * 根据id查询分类
-   * @param {model.IdBelongReq} params 请求参数
-   * @returns {model.ResultType<schema.XPropertyArray>} 请求结果
-   */
-  Future<ResultType<XPropertyArray>> queryPropertys(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QueryPropertys',
-        params: params.toJson(),
-      ),
-      XPropertyArray.fromJson,
-    );
-  }
-
-  /*
-   * 根据id查询分类
-   * @param {model.IdBelongReq} params 请求参数
-   * @returns {model.ResultType<schema.XDictArray>} 请求结果
-   */
-  Future<ResultType<XDictArray>> queryDict(IdBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QueryDict',
-        params: params.toJson(),
-      ),
-      XDictArray.fromJson,
-    );
-  }
-
-  /// 更新字典项
-  /// @param {DictItemModel} params 请求参数
-  /// @returns {ResultType<XDictItem>} 请求结果
-  Future<ResultType<XDictItemArray>> queryDictItems(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QueryDictItems',
-        params: params.toJson(),
-      ),
-      XDictItemArray.fromJson,
-    );
-  }
-
-  /// 创建类别
-  /// @param {SpeciesModel} params 请求参数
-  /// @returns {ResultType<XSpecies>} 请求结果
-  Future<ResultType<XSpecies>> createSpecies(SpeciesModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'CreateSpecies',
-        params: params,
-      ),
-      XSpecies.fromJson,
-    );
-  }
-
-  /// 创建度量标准
-  /// @param {AttributeModel} params 请求参数
-  /// @returns {ResultType<XAttribute>} 请求结果
-  Future<ResultType<XAttribute>> createAttribute(AttributeModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'CreateAttribute',
-        params: params,
-      ),
-      XAttribute.fromJson,
-    );
-  }
-
-  /// 创建物
-  /// @param {ThingModel} params 请求参数
-  /// @returns {ResultType<XThing>} 请求结果
-  Future<ResultType<XThing>> createThing(ThingModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'CreateThing',
-        params: params,
-      ),
-      XThing.fromJson,
-    );
-  }
-
-  /// 创建物
-  /// @param {ThingModel} params 请求参数
-  /// @returns {ResultType<XThing>} 请求结果
-  Future<ResultType<bool>> perfectThing(ThingModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'CreateThing',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 删除类别
-  /// @param {IdReqModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> deleteSpecies(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'DeleteSpecies',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 删除度量标准
-  /// @param {IdReqModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> deleteAttribute(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'DeleteAttribute',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 删除物
-  /// @param {IdReqModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> deleteThing(IdReqModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'DeleteThing',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 更新类别
-  /// @param {SpeciesModel} params 请求参数
-  /// @returns {ResultType<XSpecies>} 请求结果
-  Future<ResultType<XSpecies>> updateSpecies(SpeciesModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'UpdateSpecies',
-        params: params,
-      ),
-      XSpecies.fromJson,
-    );
-  }
-
-  Future<ResultType<XSpeciesItem>> updateSpeciesItem(
-      SpeciesItemModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'UpdateSpeciesItem',
-        params: params,
-      ),
-      XSpeciesItem.fromJson,
-    );
-  }
-
-  /// 更新度量标准
-  /// @param {AttributeModel} params 请求参数
-  /// @returns {ResultType<XAttribute>} 请求结果
-  Future<ResultType<XAttribute>> updateAttribute(AttributeModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'UpdateAttribute',
-        params: params,
-      ),
-      XAttribute.fromJson,
-    );
-  }
-
-
-
-  /// 更新物
-  /// @param {ThingModel} params 请求参数
-  /// @returns {ResultType<XThing>} 请求结果
-  Future<ResultType<XThing>> updateThing(ThingModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'UpdateThing',
-        params: params,
-      ),
-      XThing.fromJson,
-    );
-  }
-
-  /// 物添加类别
-  /// @param {ThingSpeciesModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> thingAddSpecies(ThingSpeciesModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'ThingAddSpecies',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 物添加度量数据
-  /// @param {ThingAttrModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> thingAddAttribute(ThingAttrModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'ThingAddAttribute',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 物移除类别
-  /// @param {ThingSpeciesModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> thingRemoveSpecies(ThingSpeciesModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'ThingRemoveSpecies',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 物移除度量数据
-  /// @param {ThingAttrModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> thingRemoveAttribute(ThingAttrModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'ThingRemoveAttribute',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 查询分类树
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XSpecies>} 请求结果
-  Future<ResultType<XSpeciesArray>> querySpeciesTree(
-      GetSpeciesModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QuerySpeciesTree',
-        params: params.toJson(),
-      ),
-      XSpeciesArray.fromJson,
-    );
-  }
-
-  /*
-   * 查询分类字典
-   * @param {model.IdSpeciesReq} params 请求参数
-   * @returns {model.ResultType<schema.XDictArray>} 请求结果
-   */
-  Future<ResultType<XDictArray>> querySpeciesDict(IdSpeciesReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QuerySpeciesDict',
-        params: params,
-      ),
-      XDictArray.fromJson,
-    );
-  }
-
-  /// 查询分类的度量标准
-  /// @param {IdSpeciesReq} params 请求参数
-  /// @returns {ResultType<XAttributeArray>} 请求结果
-  Future<ResultType<XAttributeArray>> queryFormAttributes(
-      GainModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QueryFormAttributes',
-        params: params.toJson(),
-      ),
-      XAttributeArray.fromJson,
-    );
-  }
-
-  Future<ResultType<XSpeciesItemArray>> querySpeciesItems(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QuerySpeciesItems',
-        params: params.toJson(),
-      ),
-      XSpeciesItemArray.fromJson,
-    );
-  }
-
-  Future<ResultType<XSpeciesItem>> createSpeciesItem(
-      SpeciesItemModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'CreateSpeciesItem',
-        params: params.toJson(),
-      ),
-      XSpeciesItem.fromJson,
-    );
-  }
-
-  Future<ResultType<XSpeciesItem>> deleteSpeciesItem(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'DeleteSpeciesItem',
-        params: params.toJson(),
-      ),
-      XSpeciesItem.fromJson,
-    );
-  }
-
-  Future<ResultType<XApplication>> updateApplication(
-      ApplicationModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'UpdateApplication',
-        params: params.toJson(),
-      ),
-      XApplication.fromJson,
-    );
-  }
-
-  Future<ResultType> deleteApplication(IdReq params) async {
-    return await request(
-        ReqestType(
-          module: 'thing',
-          action: 'DeleteApplication',
-          params: params.toJson(),
-        ),
-        null);
-  }
-
-  Future<ResultType<XDirectory>> createDirectory(DirectoryModel params) async {
-    return await request(
-        ReqestType(
-          module: 'thing',
-          action: 'CreateDirectory',
-          params: params.toJson(),
-        ),
-        XDirectory.fromJson);
-  }
-
-  Future<ResultType<XDirectory>> updateDirectory(DirectoryModel params) async {
-    return await request(
-        ReqestType(
-          module: 'thing',
-          action: 'UpdateDirectory',
-          params: params.toJson(),
-        ),
-        XDirectory.fromJson);
-  }
-
-  Future<ResultType> deleteDirectory(IdReq params) async {
-    return await request(
-        ReqestType(
-          module: 'thing',
-          action: 'DeleteDirectory',
-          params: params.toJson(),
-        ),
-        null);
-  }
-
-  Future<ResultType<XFormArray>> queryForms(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QueryForms',
-        params: params.toJson(),
-      ),
-      XFormArray.fromJson,
-    );
-  }
-
-  Future<ResultType<XSpeciesArray>> querySpecies(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QuerySpecies',
-        params: params.toJson(),
-      ),
-      XSpeciesArray.fromJson,
-    );
-  }
-
-  Future<ResultType<XApplicationArray>> queryApplications(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QueryApplications',
-        params: params.toJson(),
-      ),
-      XApplicationArray.fromJson,
-    );
-  }
-
-  Future<ResultType<XApplication>> createApplication(ApplicationModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'CreateApplication',
-        params: params.toJson(),
-      ),
-      XApplication.fromJson,
-    );
-  }
-
-  Future<ResultType<XDirectoryArray>> queryDirectorys(GetDirectoryModel params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QueryDirectorys',
-        params: params.toJson(),
-      ),
-      XDirectoryArray.fromJson,
-    );
-  }
-
-  /// 物的元数据查询
-  /// @param {ThingAttrReq} params 请求参数
-  /// @returns {ResultType<XThingAttrArray>} 请求结果
-  Future<ResultType<XThingAttrArray>> queryThingData(
-      ThingAttrReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QueryThingData',
-        params: params,
-      ),
-      XThingAttrArray.fromJson,
-    );
-  }
-
-  /// 物的历史元数据查询
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XThingAttrHistroyArray>} 请求结果
-  Future<ResultType<XThingAttrHistroyArray>> queryThingHistroyData(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QueryThingHistroyData',
-        params: params,
-      ),
-      XThingAttrHistroyArray.fromJson,
-    );
-  }
-
-  /// 物的关系元数据查询
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XRelationArray>} 请求结果
-  Future<ResultType<XRelationArray>> queryThingRelationData(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'thing',
-        action: 'QueryThingRelationData',
-        params: params,
-      ),
-      XRelationArray.fromJson,
+      XEntity.fromJson,
     );
   }
 
@@ -960,20 +260,6 @@ class KernelApi {
     );
   }
 
-  /// 创建标准规则
-  /// @param {RuleStdModel} params 请求参数
-  /// @returns {ResultType<XRuleStd>} 请求结果
-  Future<ResultType<XRuleStd>> createRuleStd(RuleStdModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'CreateRuleStd',
-        params: params,
-      ),
-      XRuleStd.fromJson,
-    );
-  }
-
   /// 删除权限
   /// @param {IdReqModel} params 请求参数
   /// @returns {ResultType<bool>} 请求结果
@@ -1016,35 +302,6 @@ class KernelApi {
     );
   }
 
-  /// 删除标准规则
-  /// @param {RuleStdModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> deleteRuleStd(RuleStdModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'DeleteRuleStd',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 递归删除组织/个人
-  /// @param {RecursiveReqModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> recursiveDeleteTarget(
-      RecursiveReqModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'RecursiveDeleteTarget',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
   /// 更新权限
   /// @param {AuthorityModel} params 请求参数
   /// @returns {ResultType<XAuthority>} 请求结果
@@ -1073,7 +330,7 @@ class KernelApi {
     );
   }
 
-  /// 更新组织/个人
+  /// 更新用户
   /// @param {TargetModel} params 请求参数
   /// @returns {ResultType<XTarget>} 请求结果
   Future<ResultType<XTarget>> updateTarget(TargetModel params) async {
@@ -1087,32 +344,7 @@ class KernelApi {
     );
   }
 
-  Future<ResultType> createTargetMsg(TargetMessageModel params) async {
-    return await request(
-      ReqestType(
-        module: 'chat',
-        action: 'CreateTargetMsg',
-        params: params,
-      ),
-      null,
-    );
-  }
-
-  /// 更新标准规则
-  /// @param {RuleStdModel} params 请求参数
-  /// @returns {ResultType<XRuleStd>} 请求结果
-  Future<ResultType<XRuleStd>> updateRuleStd(RuleStdModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'UpdateRuleStd',
-        params: params,
-      ),
-      XRuleStd.fromJson,
-    );
-  }
-
-  /// 分配角色
+  /// 分配身份
   /// @param {GiveIdentityModel} params 请求参数
   /// @returns {ResultType<bool>} 请求结果
   Future<ResultType<bool>> giveIdentity(GiveModel params) async {
@@ -1154,21 +386,7 @@ class KernelApi {
     );
   }
 
-  /// 加入组织/个人申请审批
-  /// @param {ApprovalModel} params 请求参数
-  /// @returns {ResultType<XRelation>} 请求结果
-  Future<ResultType<XRelation>> joinTeamApproval(ApprovalModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'JoinTeamApproval',
-        params: params,
-      ),
-      XRelation.fromJson,
-    );
-  }
-
-  /// 拉组织/个人加入组织/个人的团队
+  ///  拉入用户的团队
   /// @param {TeamPullModel} params 请求参数
   /// @returns {ResultType<bool>} 请求结果
   Future<ResultType<bool>> pullAnyToTeam(GiveModel params) async {
@@ -1182,42 +400,167 @@ class KernelApi {
     );
   }
 
-  /// 取消申请加入组织/个人
-  /// @param {IdReqModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> cancelJoinTeam(IdReqModel params) async {
+  /// 移除或退出用户的团队
+  /// @param {model.GainModel} params 请求参数
+  /// @returns {model.ResultType<boolean>} 请求结果
+  Future<ResultType> removeOrExitOfTeam(GainModel params) async {
     return await request(
       ReqestType(
         module: 'target',
-        action: 'CancelJoinTeam',
+        action: 'RemoveOrExitOfTeam',
         params: params,
       ),
-      (item) => item as bool,
+      ResultType.fromJson,
     );
   }
 
-  /// 重置密码
-  /// @param {IdReqModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType> resetPassword(
-    String userName,
-    String password,
-    String privateKey,
-  ) async {
-    var req = {
-      "account": userName,
-      "password": password,
-      "privateKey": privateKey
-    };
-    var data = await _storeHub.invoke('ResetPassword', args: [req]);
-    return ResultType.fromJson(data);
+  /// 根据ID查询用户信息
+  /// @param {model.IdArrayModel} params 请求参数
+  /// @returns {model.ResultType<model.PageResult<schema.XTarget>>} 请求结果
+  Future<ResultType<XTargetArray>> queryTargetById(IdArrayReq params) async {
+    return await request(
+      ReqestType(
+        module: 'target',
+        action: 'QueryTargetById',
+        params: params.toJson(),
+      ),
+      XTargetArray.fromJson,
+    );
   }
 
-  /*
-   * 查询组织容器下的角色集
-   * @param {IDBelongReq} params 请求参数
-   * @returns {ResultType<schema.XIdentityArray>} 请求结果
-   */
+  /// 模糊查找用户
+  /// @param {model.SearchModel} params 请求参数
+  /// @returns {model.ResultType<model.PageResult<schema.XTarget>>} 请求结果
+  Future<ResultType<XTargetArray>> searchTargets(NameTypeModel params) async {
+    return await request(
+      ReqestType(
+        module: 'target',
+        action: 'SearchTargets',
+        params: params.toJson(),
+      ),
+      XTargetArray.fromJson,
+    );
+  }
+
+  /// 根据ID查询子用户
+  /// @param {model.GetSubsModel} params 请求参数
+  /// @returns {model.ResultType<model.PageResult<schema.XTarget>>} 请求结果
+  Future<ResultType<XTargetArray>> querySubTargetById(
+      GetSubsModel params) async {
+    return await request(
+      ReqestType(
+        module: 'target',
+        action: 'QuerySubTargetById',
+        params: params,
+      ),
+      XTargetArray.fromJson,
+    );
+  }
+
+  /// 查询用户加入的用户
+  /// @param {model.GetJoinedModel} params 请求参数
+  /// @returns {model.ResultType<model.PageResult<schema.XTarget>>} 请求结果
+  Future<ResultType<XTargetArray>> queryJoinedTargetById(
+      GetJoinedModel params) async {
+    return await request(
+      ReqestType(
+        module: 'target',
+        action: 'QueryJoinedTargetById',
+        params: params.toJson(),
+      ),
+      XTargetArray.fromJson,
+    );
+  }
+
+  /// 查询组织权限树
+  /// @param {model.IdPageModel} params 请求参数
+  /// @returns {model.ResultType<schema.XAuthority>} 请求结果
+  Future<ResultType<XAuthority>> queryAuthorityTree(IdReq params) async {
+    return await request(
+      ReqestType(
+        module: 'target',
+        action: 'QueryAuthorityTree',
+        params: params,
+      ),
+      XAuthority.fromJson,
+    );
+  }
+
+  /// 查询拥有权限的成员
+  /// @param {model.GainModel} params 请求参数
+  /// @returns {model.ResultType<model.PageResult<schema.XTarget>>} 请求结果
+  Future<ResultType<XTargetArray>> queryAuthorityTargets(
+      GainModel params) async {
+    return await request(
+      ReqestType(
+        module: 'target',
+        action: 'QueryAuthorityTargets',
+        params: params,
+      ),
+      XTargetArray.fromJson,
+    );
+  }
+
+  /// 查询组织身份
+  /// @param {model.IdPageModel} params 请求参数
+  /// @returns {model.ResultType<model.PageResult<schema.XIdentity>>} 请求结果
+  Future<ResultType<XIdentityArray>> queryTargetIdentitys(
+      IDBelongReq params) async {
+    return await request(
+      ReqestType(
+        module: 'target',
+        action: 'QueryTargetIdentitys',
+        params: params,
+      ),
+      XIdentityArray.fromJson,
+    );
+  }
+
+  /// 查询赋予身份的用户
+  /// @param {model.IdPageModel} params 请求参数
+  /// @returns {model.ResultType<model.PageResult<schema.XTarget>>} 请求结果
+  Future<ResultType<XTargetArray>> queryIdentityTargets(IdReq params) async {
+    return await request(
+      ReqestType(
+        module: 'target',
+        action: 'QueryIdentityTargets',
+        params: params,
+      ),
+      XTargetArray.fromJson,
+    );
+  }
+
+  /// 查询在当前空间拥有权限的组织
+  /// @param {model.IdPageModel} params 请求参数
+  /// @returns {model.ResultType<model.PageResult<schema.XTarget>>} 请求结果
+  Future<ResultType<XTargetArray>> queryTargetsByAuthority(
+      SpaceAuthReq params) async {
+    return await request(
+      ReqestType(
+        module: 'target',
+        action: 'QueryTargetsByAuthority',
+        params: params,
+      ),
+      XTargetArray.fromJson,
+    );
+  }
+
+  /// 查询赋予的身份
+  /// @returns {model.ResultType<model.PageResult<schema.XIdProof>>} 请求结果
+  Future<ResultType<XIdProofArray>> queryGivedIdentitys() async {
+    return await request(
+      ReqestType(
+        module: 'target',
+        action: 'QueryGivedIdentitys',
+        params: {},
+      ),
+      XIdProofArray.fromJson,
+    );
+  }
+
+  /// 查询组织身份集
+  /// @param {model.IdPageModel} params 请求参数
+  /// @returns {model.ResultType<model.PageResult<schema.XIdentity>>} 请求结果
   Future<ResultType<XIdentityArray>> queryTeamIdentitys(
     IdReq params,
   ) async {
@@ -1231,1381 +574,54 @@ class KernelApi {
     );
   }
 
-  /*
-   * 拉角色加入组织
-   * @param {TeamPullModel} params 请求参数
-   * @returns {ResultType<boolean>} 请求结果
-   */
-  Future<ResultType<bool>> pullIdentityToTeam(
-    TeamPullModel params,
-  ) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'PullIdentityToTeam',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /*
-   * 从组织角色集中剔除角色
-   * @param {TeamPullModel} params 请求参数
-   * @returns {ResultType<boolean>} 请求结果
-   */
-  Future<ResultType<bool>> removeTeamIdentity(
-    GiveIdentityModel params,
-  ) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'RemoveTeamIdentity',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 从组织/个人移除组织/个人的团队
-  /// @param {TeamPullModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> removeAnyOfTeam(TeamPullModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'RemoveAnyOfTeam',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 递归从组织及子组织/个人移除组织/个人的团队
-  /// @param {TeamPullModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> recursiveRemoveAnyOfTeam(
-      TeamPullModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'RecursiveRemoveAnyOfTeam',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 从组织/个人及归属组织移除组织/个人的团队
-  /// @param {TeamPullModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> removeAnyOfTeamAndBelong(
-      TeamPullModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'RemoveAnyOfTeamAndBelong',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 退出组织
-  /// @param {ExitTeamModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> exitAnyOfTeam(ExitTeamModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'ExitAnyOfTeam',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 递归退出组织
-  /// @param {ExitTeamModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> recursiveExitAnyOfTeam(ExitTeamModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'RecursiveExitAnyOfTeam',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 退出组织及退出组织归属的组织
-  /// @param {ExitTeamModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> exitAnyOfTeamAndBelong(ExitTeamModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'ExitAnyOfTeamAndBelong',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 根据ID查询组织/个人信息
-  /// @param {IdArrayReq} params 请求参数
-  /// @returns {ResultType<XTargetArray>} 请求结果
-  Future<ResultType<XTargetArray>> queryTargetById(IdArrayReq params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryTargetById',
-        params: params.toJson(),
-      ),
-      XTargetArray.fromJson,
-    );
-  }
-
-  /// 查询加入关系
-  /// @param {RelationReq} params 请求参数
-  /// @returns {ResultType<XRelationArray>} 请求结果
-  Future<ResultType<XRelationArray>> queryRelationById(
-      RelationReq params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryRelationById',
-        params: params,
-      ),
-      XRelationArray.fromJson,
-    );
-  }
-
-  //查询赋予的身份
-  Future<ResultType<XIdProofArray>> queryGivedIdentitys() async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryGivedIdentitys',
-        params: {},
-      ),
-      XIdProofArray.fromJson,
-    );
-  }
-
-  /// 根据名称和类型查询组织/个人
-  /// @param {NameTypeModel} params 请求参数
-  /// @returns {ResultType<XTarget>} 请求结果
-  Future<ResultType<XTarget>> queryTargetByName(NameTypeModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryTargetByName',
-        params: params,
-      ),
-      XTarget.fromJson,
-    );
-  }
-
-  /// 模糊查找组织/个人根据名称和类型
-  /// @param {NameTypeModel} params 请求参数
-  /// @returns {ResultType<XTargetArray>} 请求结果
-  Future<ResultType<XTargetArray>> searchTargetByName(
-      NameTypeModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'SearchTargetByName',
-        params: params,
-      ),
-      XTargetArray.fromJson,
-    );
-  }
-
-  /// 查询组织制定的标准
-  /// @param {IDBelongTargetReq} params 请求参数
-  /// @returns {ResultType<XAttributeArray>} 请求结果
-  Future<ResultType<XAttributeArray>> queryTeamRuleAttrs(
-      IDBelongTargetReq params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryTeamRuleAttrs',
-        params: params,
-      ),
-      XAttributeArray.fromJson,
-    );
-  }
-
-  /// 根据ID查询子组织/个人
-  /// @param {IDReqSubModel} params 请求参数
-  /// @returns {ResultType<XTargetArray>} 请求结果
-  Future<ResultType<XTargetArray>> querySubTargetById(
-      GetSubsModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QuerySubTargetById',
-        params: params,
-      ),
-      XTargetArray.fromJson,
-    );
-  }
-
-  /// 根据ID查询归属的组织/个人
-  /// @param {IDReqSubModel} params 请求参数
-  /// @returns {ResultType<XTargetArray>} 请求结果
-  Future<ResultType<XTargetArray>> queryBelongTargetById(
-      IDReqSubModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryBelongTargetById',
-        params: params,
-      ),
-      XTargetArray.fromJson,
-    );
-  }
-
-  /// 查询组织/个人加入的组织/个人
-  /// @param {IDReqJoinedModel} params 请求参数
-  /// @returns {ResultType<XTargetArray>} 请求结果
-  Future<ResultType<XTargetArray>> queryJoinedTargetById(
-      GetJoinedModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryJoinedTargetById',
-        params: params.toJson(),
-      ),
-      XTargetArray.fromJson,
-    );
-  }
-
-  /// 查询加入组织/个人申请
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XRelationArray>} 请求结果
-  Future<ResultType<XRelationArray>> queryJoinTeamApply(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryJoinTeamApply',
-        params: params,
-      ),
-      XRelationArray.fromJson,
-    );
-  }
-
-  /// 查询组织/个人加入审批
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XRelationArray>} 请求结果
-  Future<ResultType<XRelationArray>> queryTeamJoinApproval(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryTeamJoinApproval',
-        params: params,
-      ),
-      XRelationArray.fromJson,
-    );
-  }
-
-  Future<ResultType> removeOrExitOfTeam(GainModel params) async{
-    return await request(ReqestType(
-      module: 'target',
-      action: 'RemoveOrExitOfTeam',
-      params: params,
-    ),ResultType.fromJson,
-    );
-  }
-  /// 查询组织权限树
-  /// @param {IdSpaceReq} params 请求参数
-  /// @returns {ResultType<XAuthority>} 请求结果
-  Future<ResultType<XAuthority>> queryAuthorityTree(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryAuthorityTree',
-        params: params,
-      ),
-      XAuthority.fromJson,
-    );
-  }
-
-  /// 查询组织身份
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XIdentityArray>} 请求结果
-  Future<ResultType<XIdentityArray>> queryTargetIdentitys(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryTargetIdentitys',
-        params: params,
-      ),
-      XIdentityArray.fromJson,
-    );
-  }
-
-  /// 查询权限角色
-  /// @param {IdSpaceReq} params 请求参数
-  /// @returns {ResultType<XIdentityArray>} 请求结果
-  Future<ResultType<XIdentityArray>> queryAuthorityIdentitys(
-      IdSpaceReq params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryAuthorityIdentitys',
-        params: params,
-      ),
-      XIdentityArray.fromJson,
-    );
-  }
-
-  /*
-   * 查询拥有的职权
-   * @param {model.PageRequest} params 请求参数
-   * @returns {model.ResultType<schema.XAuthorityArray>} 请求结果
-   */
-  Future<ResultType<XAuthorityArray>> queryOwnAuthoritys(
-      PageRequest params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryOwnAuthoritys',
-        params: params,
-      ),
-      XAuthorityArray.fromJson,
-    );
-  }
-
-  /*
-   * 查询职权下的所有人员
-   * @param {model.PageRequest} params 请求参数
-   * @returns {model.ResultType<schema.XTargetArray>} 请求结果
-   */
-  Future<ResultType<XTargetArray>> queryAuthorityPerson(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryAuthorityPerson',
-        params: params,
-      ),
-      XTargetArray.fromJson,
-    );
-  }
-
-  /// 查询赋予角色的组织/个人
-  /// @param {IDBelongTargetReq} params 请求参数
-  /// @returns {ResultType<XTargetArray>} 请求结果
-  Future<ResultType<XTargetArray>> queryIdentityTargets(
-      IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryIdentityTargets',
-        params: params,
-      ),
-      XTargetArray.fromJson,
-    );
-  }
-
-  Future<ResultType<XTargetArray>> queryAuthorityTargets(
-      GainModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryAuthorityTargets',
-        params: params,
-      ),
-      XTargetArray.fromJson,
-    );
-  }
-
-  /// 查询在当前空间拥有角色的组织
-  /// @param {SpaceAuthReq} params 请求参数
-  /// @returns {ResultType<XTargetArray>} 请求结果
-  Future<ResultType<XTargetArray>> queryTargetsByAuthority(
-      SpaceAuthReq params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryTargetsByAuthority',
-        params: params,
-      ),
-      XTargetArray.fromJson,
-    );
-  }
-
-  /// 查询拥有该角色的人员
-  /// @param {IdSpaceReq} params 请求参数
-  /// @returns {ResultType<XTargetArray>} 请求结果
-  Future<ResultType<XTargetArray>> queryPersonByAuthority(
-      IdSpaceReq params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryPersonByAuthority',
-        params: params,
-      ),
-      XTargetArray.fromJson,
-    );
-  }
-
-  /// 查询在当前空间拥有的角色
-  /// @param {IdReq} params 请求参数
-  /// @returns {ResultType<XIdentityArray>} 请求结果
-  Future<ResultType<XIdentityArray>> querySpaceIdentitys(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QuerySpaceIdentitys',
-        params: params,
-      ),
-      XIdentityArray.fromJson,
-    );
-  }
-
-  /// 创建即使消息
-  /// @param {ImMsgModel} params 请求参数
-  /// @returns {ResultType<MsgSaveModel>} 请求结果
-  Future<ResultType<MsgSendModel>> createImMsg(MsgSendModel params) async {
+  /// 创建组织变更消息
+  /// @param {model.TargetMessageModel} params 请求参数
+  /// @returns {model.ResultType<boolean>} 请求结果
+  Future<ResultType> createTargetMsg(TargetMessageModel params) async {
     return await request(
       ReqestType(
         module: 'chat',
-        action: 'CreateImMsg',
+        action: 'CreateTargetMsg',
         params: params,
       ),
-      MsgSendModel.fromJson,
+      null,
     );
   }
 
-
-  Future<ResultType> tagImMsg(MsgTagModel params) async {
+  /// 创建身份变更消息
+  /// @param {model.TargetMessageModel} params 请求参数
+  /// @returns {model.ResultType<boolean>} 请求结果
+  Future<ResultType> createIdentityMsg(IdentityMessageModel params) async {
     return await request(
       ReqestType(
         module: 'chat',
-        action: 'TagImMsg',
+        action: 'CreateIdentityMsg',
         params: params,
       ),
-      ResultType.fromJson,
+      null,
     );
   }
 
-  /// 消息撤回
-  /// @param {MsgSaveModel} params 请求参数
-  /// @returns {ResultType<MsgSaveModel>} 请求结果
-  Future<ResultType<MsgSaveModel>> recallImMsg(MsgSaveModel params) async {
-    return await request(
-      ReqestType(
-        module: 'chat',
-        action: 'RecallImMsg',
-        params: params.toJson(),
-      ),
-      MsgSaveModel.fromJson,
-    );
-  }
+  /// 创建办事定义
+  /// @param {model.WorkDefineModel} params 请求参数
+  /// @returns {model.ResultType<schema.XWorkDefine>} 请求结果
 
-  /// 查询聊天会话
-  /// @param {ChatsReqModel} params 请求参数
-  /// @returns {ResultType<ChatResponse>} 请求结果
-  Future<ResultType<ChatResponse>> queryImChats(ChatsReqModel params) async {
+  Future<ResultType<XWorkDefine>> createWorkDefine(
+      WorkDefineModel params) async {
     return await request(
       ReqestType(
-        module: 'chat',
-        action: 'QueryImChats',
+        module: 'work',
+        action: 'CreateWorkDefine',
         params: params,
       ),
-      ChatResponse.fromJson,
+      XWorkDefine.fromJson,
     );
   }
 
-  /// 查询群历史消息
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XImMsgArray>} 请求结果
-  Future<ResultType<XImMsgArray>> queryCohortImMsgs(IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'chat',
-        action: 'QueryCohortImMsgs',
-        params: params,
-      ),
-      XImMsgArray.fromJson,
-    );
-  }
+  /// 创建办事实例(启动办事)
+  /// @param {model.WorkInstanceModel} params 请求参数
+  /// @returns {model.ResultType<schema.XWorkInstance>} 请求结果
 
-  /// 查询好友聊天消息
-  /// @param {IdSpaceReq} params 请求参数
-  /// @returns {ResultType<XImMsgArray>} 请求结果
-  Future<ResultType<XImMsgArray>> queryFriendImMsgs(IdSpaceReq params) async {
-    return await request(
-      ReqestType(
-        module: 'chat',
-        action: 'QueryFriendImMsgs',
-        params: params,
-      ),
-      XImMsgArray.fromJson,
-    );
-  }
-
-  /// 根据ID查询名称
-  /// @param {IdReq} params 请求参数
-  /// @returns {ResultType<NameModel>} 请求结果
-  Future<ResultType<NameModel>> queryNameBySnowId(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'chat',
-        action: 'QueryNameBySnowId',
-        params: params,
-      ),
-      NameModel.fromJson,
-    );
-  }
-
-  /// 创建市场
-  /// @param {MarketModel} params 请求参数
-  /// @returns {ResultType<XMarket>} 请求结果
-  Future<ResultType<XMarket>> createMarket(MarketModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'CreateMarket',
-        params: params,
-      ),
-      XMarket.fromJson,
-    );
-  }
-
-  /// 产品上架:产品所有者
-  /// @param {MerchandiseModel} params 请求参数
-  /// @returns {ResultType<XMerchandise>} 请求结果
-  Future<ResultType<XMerchandise>> createMerchandise(
-      MerchandiseModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'CreateMerchandise',
-        params: params,
-      ),
-      XMerchandise.fromJson,
-    );
-  }
-
-  /// 创建产品
-  /// @param {ProductModel} params 请求参数
-  /// @returns {ResultType<XProduct>} 请求结果
-  Future<ResultType<XProduct>> createProduct(ProductModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'CreateProduct',
-        params: params,
-      ),
-      XProduct.fromJson,
-    );
-  }
-
-  /// 创建产品资源
-  /// @param {ResourceModel} params 请求参数
-  /// @returns {ResultType<XResource>} 请求结果
-  Future<ResultType<XResource>> createProductResource(
-      ResourceModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'CreateProductResource',
-        params: params,
-      ),
-      XResource.fromJson,
-    );
-  }
-
-  /// 商品加入暂存区
-  /// @param {StagingModel} params 请求参数
-  /// @returns {ResultType<XStaging>} 请求结果
-  Future<ResultType<XStaging>> createStaging(StagingModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'CreateStaging',
-        params: params,
-      ),
-      XStaging.fromJson,
-    );
-  }
-
-  /// 创建订单:商品直接购买
-  /// @param {OrderModel} params 请求参数
-  /// @returns {ResultType<XOrder>} 请求结果
-  Future<ResultType<XOrder>> createOrder(OrderModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'CreateOrder',
-        params: params,
-      ),
-      XOrder.fromJson,
-    );
-  }
-
-  /// 创建订单:暂存区下单
-  /// @param {OrderModelByStags} params 请求参数
-  /// @returns {ResultType<XOrder>} 请求结果
-  Future<ResultType<XOrder>> createOrderByStags(
-      OrderModelByStags params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'CreateOrderByStags',
-        params: params,
-      ),
-      XOrder.fromJson,
-    );
-  }
-
-  /// 创建订单支付
-  /// @param {OrderPayModel} params 请求参数
-  /// @returns {ResultType<XOrderPay>} 请求结果
-  Future<ResultType<XOrderPay>> createOrderPay(OrderPayModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'CreateOrderPay',
-        params: params,
-      ),
-      XOrderPay.fromJson,
-    );
-  }
-
-  /// 创建对象拓展操作
-  /// @param {SourceExtendModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> createSourceExtend(SourceExtendModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'CreateSourceExtend',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 删除市场
-  /// @param {IDWithBelongReq} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> deleteMarket(IDWithBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'DeleteMarket',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 下架商品:商品所有者
-  /// @param {IDWithBelongReq} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> deleteMerchandise(IDWithBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'DeleteMerchandise',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 下架商品:市场管理员
-  /// @param {IDWithBelongReq} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> deleteMerchandiseByManager(
-      IDWithBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'DeleteMerchandiseByManager',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 删除产品
-  /// @param {IDWithBelongReq} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> deleteProduct(IDWithBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'DeleteProduct',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 删除产品资源(产品所属者可以操作)
-  /// @param {IDWithBelongReq} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> deleteProductResource(IDWithBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'DeleteProductResource',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 移除暂存区商品
-  /// @param {IDWithBelongReq} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> deleteStaging(IDWithBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'DeleteStaging',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 创建对象拓展操作
-  /// @param {SourceExtendModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> deleteSourceExtend(SourceExtendModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'DeleteSourceExtend',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 根据Code查询市场
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XMarketArray>} 请求结果
-  Future<ResultType<XMarketArray>> queryMarketByCode(IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QueryMarketByCode',
-        params: params,
-      ),
-      XMarketArray.fromJson,
-    );
-  }
-
-  /// 查询拥有的市场
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XMarketArray>} 请求结果
-  Future<ResultType<XMarketArray>> queryOwnMarket(IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QueryOwnMarket',
-        params: params,
-      ),
-      XMarketArray.fromJson,
-    );
-  }
-
-  /// 查询软件共享仓库的市场
-  /// @returns {ResultType<XMarketArray>} 请求结果
-  Future<ResultType<XMarketArray>> getPublicMarket() async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'GetPublicMarket',
-        params: {},
-      ),
-      XMarketArray.fromJson,
-    );
-  }
-
-  /// 查询市场成员集合
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XMarketRelationArray>} 请求结果
-  Future<ResultType<XMarketRelationArray>> queryMarketMember(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QueryMarketMember',
-        params: params,
-      ),
-      XMarketRelationArray.fromJson,
-    );
-  }
-
-  /// 查询市场对应的暂存区
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XStagingArray>} 请求结果
-  Future<ResultType<XStagingArray>> queryStaging(IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QueryStaging',
-        params: params,
-      ),
-      XStagingArray.fromJson,
-    );
-  }
-
-  /// 根据ID查询订单信息
-  /// @param {IdReq} params 请求参数
-  /// @returns {ResultType<XOrder>} 请求结果
-  Future<ResultType<XOrder>> getOrderInfo(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'GetOrderInfo',
-        params: params,
-      ),
-      XOrder.fromJson,
-    );
-  }
-
-  /// 根据ID查询订单详情项
-  /// @param {IDWithBelongReq} params 请求参数
-  /// @returns {ResultType<XOrderDetail>} 请求结果
-  Future<ResultType<XOrderDetail>> getOrderDetailById(
-      IDWithBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'GetOrderDetailById',
-        params: params,
-      ),
-      XOrderDetail.fromJson,
-    );
-  }
-
-  /// 卖方:查询出售商品的订单列表
-  /// @param {IDStatusPageReq} params 请求参数
-  /// @returns {ResultType<XOrderDetailArray>} 请求结果
-  Future<ResultType<XOrderDetailArray>> querySellOrderList(
-      IDStatusPageReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QuerySellOrderList',
-        params: params,
-      ),
-      XOrderDetailArray.fromJson,
-    );
-  }
-
-  /// 卖方:查询指定商品的订单列表
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XOrderDetailArray>} 请求结果
-  Future<ResultType<XOrderDetailArray>> querySellOrderListByMerchandise(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QuerySellOrderListByMerchandise',
-        params: params,
-      ),
-      XOrderDetailArray.fromJson,
-    );
-  }
-
-  /// 买方:查询购买订单列表
-  /// @param {IDStatusPageReq} params 请求参数
-  /// @returns {ResultType<XOrderArray>} 请求结果
-  Future<ResultType<XOrderArray>> queryBuyOrderList(
-      IDStatusPageReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QueryBuyOrderList',
-        params: params,
-      ),
-      XOrderArray.fromJson,
-    );
-  }
-
-  /// 查询订单支付信息
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XOrderPayArray>} 请求结果
-  Future<ResultType<XOrderPayArray>> queryPayList(IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QueryPayList',
-        params: params,
-      ),
-      XOrderPayArray.fromJson,
-    );
-  }
-
-  /// 申请者:查询加入市场申请
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XMarketRelationArray>} 请求结果
-  Future<ResultType<XMarketRelationArray>> queryJoinMarketApply(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QueryJoinMarketApply',
-        params: params,
-      ),
-      XMarketRelationArray.fromJson,
-    );
-  }
-
-  /// 查询加入市场审批
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XMarketRelationArray>} 请求结果
-  Future<ResultType<XMarketRelationArray>> queryJoinApproval(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QueryJoinApproval',
-        params: params,
-      ),
-      XMarketRelationArray.fromJson,
-    );
-  }
-
-  /// 管理者:查询加入市场申请
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XMarketRelationArray>} 请求结果
-  Future<ResultType<XMarketRelationArray>> queryJoinMarketApplyByManager(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QueryJoinMarketApplyByManager',
-        params: params,
-      ),
-      XMarketRelationArray.fromJson,
-    );
-  }
-
-  /// 申请者:查询商品上架申请
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XMerchandiseArray>} 请求结果
-  Future<ResultType<XMerchandiseArray>> queryMerchandiseApply(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QueryMerchandiseApply',
-        params: params,
-      ),
-      XMerchandiseArray.fromJson,
-    );
-  }
-
-  /// 市场:查询商品上架申请
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XMerchandiseArray>} 请求结果
-  Future<ResultType<XMerchandiseArray>> queryMerchandiesApplyByManager(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QueryMerchandiesApplyByManager',
-        params: params,
-      ),
-      XMerchandiseArray.fromJson,
-    );
-  }
-
-  /// 查询市场中所有商品
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XMerchandiseArray>} 请求结果
-  Future<ResultType<XMerchandiseArray>> searchMerchandise(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'SearchMerchandise',
-        params: params,
-      ),
-      XMerchandiseArray.fromJson,
-    );
-  }
-
-  /// 查询产品详细信息
-  /// @param {IDWithBelongReq} params 请求参数
-  /// @returns {ResultType<XProduct>} 请求结果
-  Future<ResultType<XProduct>> getProductInfo(IDWithBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'GetProductInfo',
-        params: params,
-      ),
-      XProduct.fromJson,
-    );
-  }
-
-  /// 查询产品资源列表
-  /// @param {IDWithBelongPageReq} params 请求参数
-  /// @returns {ResultType<XResourceArray>} 请求结果
-  Future<ResultType<XResourceArray>> queryProductResource(
-      IDWithBelongPageReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QueryProductResource',
-        params: params,
-      ),
-      XResourceArray.fromJson,
-    );
-  }
-
-  /// 查询组织/个人产品
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XProductArray>} 请求结果
-  Future<ResultType<XProductArray>> querySelfProduct(IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QuerySelfProduct',
-        params: params,
-      ),
-      XProductArray.fromJson,
-    );
-  }
-
-  /// 根据产品查询商品上架信息
-  /// @param {IDBelongReq} params 请求参数
-  /// @returns {ResultType<XMerchandiseArray>} 请求结果
-  Future<ResultType<XMerchandiseArray>> queryMerchandiseListByProduct(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QueryMerchandiseListByProduct',
-        params: params,
-      ),
-      XMerchandiseArray.fromJson,
-    );
-  }
-
-  /// 查询指定产品/资源的拓展信息
-  /// @param {SearchExtendReq} params 请求参数
-  /// @returns {ResultType<IdNameArray>} 请求结果
-  Future<ResultType<IdNameArray>> queryExtendBySource(
-      SearchExtendReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QueryExtendBySource',
-        params: params,
-      ),
-      IdNameArray.fromJson,
-    );
-  }
-
-  /// 查询可用产品
-  /// @param {UsefulProductReq} params 请求参数
-  /// @returns {ResultType<XProductArray>} 请求结果
-  Future<ResultType<XProductArray>> queryUsefulProduct(
-      UsefulProductReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QueryUsefulProduct',
-        params: params,
-      ),
-      XProductArray.fromJson,
-    );
-  }
-
-  /// 查询可用资源列表
-  /// @param {UsefulResourceReq} params 请求参数
-  /// @returns {ResultType<XResourceArray>} 请求结果
-  Future<ResultType<XResourceArray>> queryUsefulResource(
-      UsefulResourceReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QueryUsefulResource',
-        params: params,
-      ),
-      XResourceArray.fromJson,
-    );
-  }
-
-  /// 更新市场
-  /// @param {MarketModel} params 请求参数
-  /// @returns {ResultType<XMarket>} 请求结果
-  Future<ResultType<XMarket>> updateMarket(MarketModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'UpdateMarket',
-        params: params,
-      ),
-      XMarket.fromJson,
-    );
-  }
-
-  /// 更新商品信息
-  /// @param {MerchandiseModel} params 请求参数
-  /// @returns {ResultType<XMerchandise>} 请求结果
-  Future<ResultType<XMerchandise>> updateMerchandise(
-      MerchandiseModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'UpdateMerchandise',
-        params: params,
-      ),
-      XMerchandise.fromJson,
-    );
-  }
-
-  /// 更新产品
-  /// @param {ProductModel} params 请求参数
-  /// @returns {ResultType<XProduct>} 请求结果
-  Future<ResultType<XProduct>> updateProduct(ProductModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'UpdateProduct',
-        params: params,
-      ),
-      XProduct.fromJson,
-    );
-  }
-
-  /// 更新产品资源
-  /// @param {ResourceModel} params 请求参数
-  /// @returns {ResultType<XResource>} 请求结果
-  Future<ResultType<XResource>> updateProductResource(
-      ResourceModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'UpdateProductResource',
-        params: params,
-      ),
-      XResource.fromJson,
-    );
-  }
-
-  /// 更新订单
-  /// @param {OrderModel} params 请求参数
-  /// @returns {ResultType<XOrder>} 请求结果
-  Future<ResultType<XOrder>> updateOrder(OrderModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'UpdateOrder',
-        params: params,
-      ),
-      XOrder.fromJson,
-    );
-  }
-
-  /// 更新订单项
-  /// @param {OrderDetailModel} params 请求参数
-  /// @returns {ResultType<XOrderDetail>} 请求结果
-  Future<ResultType<XOrderDetail>> updateOrderDetail(
-      OrderDetailModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'UpdateOrderDetail',
-        params: params,
-      ),
-      XOrderDetail.fromJson,
-    );
-  }
-
-  /// 退出市场
-  /// @param {IDWithBelongReq} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> quitMarket(IDWithBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QuitMarket',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 申请加入市场
-  /// @param {IDWithBelongReq} params 请求参数
-  /// @returns {ResultType<XMarketRelation>} 请求结果
-  Future<ResultType<XMarketRelation>> applyJoinMarket(
-      IDWithBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'ApplyJoinMarket',
-        params: params,
-      ),
-      XMarketRelation.fromJson,
-    );
-  }
-
-  /// 拉组织/个人加入市场
-  /// @param {MarketPullModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> pullAnyToMarket(MarketPullModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'PullAnyToMarket',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 取消加入市场
-  /// @param {IdReqModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> cancelJoinMarket(IdReqModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'CancelJoinMarket',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 查询上架审批
-  /// @param {IdReqModel} params 请求参数
-  /// @returns {ResultType<XMerchandiseArray>} 请求结果
-  Future<ResultType<XMerchandiseArray>> queryPublicApproval(
-      IDBelongReq params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'QueryPublicApproval',
-        params: params,
-      ),
-      XMerchandiseArray.fromJson,
-    );
-  }
-
-  /// 取消订单详情
-  /// @param {ApprovalModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> cancelOrderDetail(ApprovalModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'CancelOrderDetail',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 移除市场成员
-  /// @param {MarketPullModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> removeMarketMember(MarketPullModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'RemoveMarketMember',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 审核加入市场申请
-  /// @param {ApprovalModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> approvalJoinApply(ApprovalModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'ApprovalJoinApply',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 交付订单详情中的商品
-  /// @param {ApprovalModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> deliverMerchandise(ApprovalModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'DeliverMerchandise',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 退还商品
-  /// @param {ApprovalModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> rejectMerchandise(ApprovalModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'RejectMerchandise',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 商品上架审核
-  /// @param {ApprovalModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> approvalMerchandise(ApprovalModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'ApprovalMerchandise',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 产品上架:市场拥有者
-  /// @param {MerchandiseModel} params 请求参数
-  /// @returns {ResultType<XMerchandise>} 请求结果
-  Future<ResultType<XMerchandise>> pullProductToMarket(
-      MerchandiseModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'PullProductToMarket',
-        params: params,
-      ),
-      XMerchandise.fromJson,
-    );
-  }
-
-  /// 创建流程实例(启动流程)
-  /// @param {workInstanceModel} params 请求参数
-  /// @returns {ResultType<XworkInstance>} 请求结果
   Future<ResultType<XWorkInstance>> createWorkInstance(
       WorkInstanceModel params) async {
     return await request(
@@ -2618,23 +634,9 @@ class KernelApi {
     );
   }
 
-  /// 创建流程绑定
-  /// @param {workRelationModel} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> createworkRelation(FlowRelationModel params) async {
-    return await request(
-      ReqestType(
-        module: 'work',
-        action: 'CreateworkRelation',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 删除流程定义
-  /// @param {IdReq} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
+  /// 删除办事定义
+  /// @param {model.IdModel} params 请求参数
+  /// @returns {model.ResultType<boolean>} 请求结果
   Future<ResultType<bool>> deleteWorkDefine(IdReq params) async {
     return await request(
       ReqestType(
@@ -2646,55 +648,9 @@ class KernelApi {
     );
   }
 
-  /// 删除流程实例(发起人撤回)
-  /// @param {IdReq} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType<bool>> deleteInstance(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'work',
-        action: 'DeleteInstance',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
-  }
-
-  /// 查询分类下的流程定义
-  /// @param {QueryDefineReq} params 请求参数
-  /// @returns {ResultType<XworkDefineArray>} 请求结果
-  Future<ResultType<XWorkDefineArray>> queryWorkDefine(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'work',
-        action: 'QueryWorkDefine',
-        params: params.toJson(),
-      ),
-      XWorkDefineArray.fromJson,
-    );
-  }
-
-  /*
-   * 查询流程节点(复现流程图)
-   * @param {IdReq} params 请求参数
-   * @returns {ResultType<XworkDefineArray>} 请求结果
-   */
-  Future<ResultType<WorkNodeModel>> queryWorkNodes(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'work',
-        action: 'QueryWorkNodes',
-        params: params,
-      ),
-      WorkNodeModel.fromJson,
-    );
-  }
-
-  /*
-   * 删除办事实例(发起人撤回)
-   * @param {IdReq} params 请求参数
-   * @returns {ResultType} 请求结果
-   */
+  /// 删除办事实例(发起人撤回)
+  /// @param {model.IdModel} params 请求参数
+  /// @returns {model.ResultType<boolean>} 请求结果
   Future<ResultType> recallWorkInstance(IdReq params) async {
     return await request(
       ReqestType(
@@ -2706,38 +662,37 @@ class KernelApi {
     );
   }
 
-  /// 查询发起的流程实例
-  /// @param {workReq} params 请求参数
-  /// @returns {ResultType<XworkInstanceArray>} 请求结果
-  Future<ResultType<XWorkInstanceArray>> queryInstanceByApply(
-      FlowReq params) async {
+  /// 查询办事定义
+  /// @param {model.IdPageModel} params 请求参数
+  /// @returns {model.ResultType<model.PageResult<schema.XWorkDefine>>} 请求结果
+  Future<ResultType<XWorkDefineArray>> queryWorkDefine(IdReq params) async {
     return await request(
       ReqestType(
         module: 'work',
-        action: 'QueryInstanceByApply',
+        action: 'QueryWorkDefine',
         params: params.toJson(),
       ),
-      XWorkInstanceArray.fromJson,
+      XWorkDefineArray.fromJson,
     );
   }
 
-  /// 根据Id查询流程实例
-  /// @param {workReq} params 请求参数
-  /// @returns {ResultType<XworkInstanceArray>} 请求结果
-  Future<ResultType<XWorkInstance>> queryWorkInstanceById(IdReq params) async {
+  /// 查询办事节点
+  /// @param {model.IdModel} params 请求参数
+  /// @returns {model.ResultType<model.WorkNodeModel>} 请求结果
+  Future<ResultType<WorkNodeModel>> queryWorkNodes(IdReq params) async {
     return await request(
       ReqestType(
         module: 'work',
-        action: 'QueryWorkInstanceById',
-        params: params.toJson(),
+        action: 'QueryWorkNodes',
+        params: params,
       ),
-      XWorkInstance.fromJson,
+      WorkNodeModel.fromJson,
     );
   }
 
-  /// 查询待审批任务、待审阅抄送
-  /// @param {IdReq} params 请求参数
-  /// @returns {ResultType<XworkTaskArray>} 请求结果
+  /// 查询待审批任务、抄送
+  /// @param {model.IdModel} params 请求参数
+  /// @returns {model.ResultType<model.PageResult<schema.XWorkTask>>} 请求结果
   Future<ResultType<XWorkTaskArray>> queryApproveTask(IdReq params) async {
     return await request(
       ReqestType(
@@ -2749,54 +704,9 @@ class KernelApi {
     );
   }
 
-  /// 查询待审批任务、待审阅抄送
-  /// @param {IdReq} params 请求参数
-  /// @returns {ResultType<XWorkRecordArray>} 请求结果
-  Future<ResultType<XWorkRecordArray>> queryWorkRecord(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'work',
-        action: 'QueryWorkRecord',
-        params: params.toJson(),
-      ),
-      XWorkRecordArray.fromJson,
-    );
-  }
-
-  /// 查询发起的办事
-  /// @param {IdReq} params 请求参数
-  /// @returns {ResultType<XWorkRecordArray>} 请求结果
-  Future<ResultType<XWorkTaskArray>> queryMyApply(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'work',
-        action: 'QueryMyApply',
-        params: params.toJson(),
-      ),
-      XWorkTaskArray.fromJson,
-    );
-  }
-
-
-
-  /// 查询审批记录
-  /// @param {IdSpaceReq} params 请求参数
-  /// @returns {ResultType<XworkTaskHistoryArray>} 请求结果
-  Future<ResultType<XWorkTaskHistoryArray>> queryRecord(
-      RecordSpaceReq params) async {
-    return await request(
-      ReqestType(
-        module: 'work',
-        action: 'QueryRecord',
-        params: params.toJson(),
-      ),
-      XWorkTaskHistoryArray.fromJson,
-    );
-  }
-
-  /// 流程节点审批
-  /// @param {ApprovalTaskReq} params 请求参数
-  /// @returns {ResultType<bool>} 请求结果
+  /// 办事节点审批
+  /// @param {model.ApprovalTaskReq} params 请求参数
+  /// @returns {model.ResultType<boolean>} 请求结果
   Future<ResultType> approvalTask(ApprovalTaskReq params) async {
     return await request(
       ReqestType(
@@ -2808,171 +718,595 @@ class KernelApi {
     );
   }
 
-  /// 发布流程定义
-  /// @param {XworkDefine} params 请求参数
-  /// @returns {ResultType<XworkDefine>} 请求结果
-  Future<ResultType<XWorkDefine>> createWorkDefine(WorkDefineModel params) async {
-    return await request(
-      ReqestType(
-        module: 'work',
-        action: 'CreateWorkDefine',
-        params: params,
-      ),
-      XWorkDefine.fromJson,
-    );
+  /// 获取对象数据
+  /// @param {string} belongId 对象所在的归属用户ID
+  /// @param {string} key 对象名称（eg: rootName.person.name）
+  /// @returns {model.ResultType<T>} 对象异步结果
+  Future<ResultType<T>> objectGet<T>(
+    String belongId,
+    List<String> relations,
+    String key,
+  ) async {
+    return await dataProxy(
+        DataProxyType(
+          module: 'Object',
+          action: 'Get',
+          belongId: belongId,
+          relations: relations,
+          params: key,
+        ),
+        null);
   }
 
-  /// 取消订单
-  /// @param {ApprovalModel} params 请求参数
-  /// @returns {ResultType<boolean>} 请求结果
-  Future<ResultType<bool>> cancelOrder(ApprovalModel params) async {
-    return await request(
-      ReqestType(
-        module: 'market',
-        action: 'CancelOrder',
-        params: params,
-      ),
-      (item) => item as bool,
-    );
+  /// 变更对象数据
+  /// @param {string} belongId 对象所在的归属用户ID
+  /// @param {string} key 对象名称（eg: rootName.person.name）
+  /// @param {any} setData 对象新的值
+  /// @returns {model.ResultType<T>} 对象异步结果
+  Future<ResultType<dynamic>> objectSet(
+    String belongId,
+    List<String> relations,
+    String key,
+    dynamic setData,
+  ) async {
+    return await dataProxy(
+        DataProxyType(
+          module: 'Object',
+          action: 'Set',
+          belongId: belongId,
+          relations: relations,
+          params: {
+            key,
+            setData,
+          },
+        ),
+        null);
   }
 
-  /// ******* 公共方法 *********///
-  /// *** 后续迁移至终端实现 ****///
-  /// ****** （资产链）Did *****///
-
-  /// 生成助记词
-  /// @param {int} language 请求参数
-  /// @returns {ResultType<dynamic>} 请求结果
-  Future<ResultType<dynamic>> newMnemonic(int language) async {
-    return await request(
-      ReqestType(
-        module: 'public',
-        action: 'NewMnemonic',
-        params: Map.from({"language": language}),
-      ),
-      null,
-    );
+  /// 删除对象数据
+  /// @param {string} belongId 对象所在的归属用户ID
+  /// @param {string} key 对象名称（eg: rootName.person.name）
+  /// @returns {model.ResultType<T>} 对象异步结果
+  Future<ResultType<dynamic>> objectDelete(
+    String belongId,
+    List<String> relations,
+    String key,
+  ) async {
+    return await dataProxy(
+        DataProxyType(
+          module: 'Object',
+          action: 'Delete',
+          belongId: belongId,
+          relations: relations,
+          params: key,
+        ),
+        null);
   }
 
-  /// 从助记词到私钥
-  /// @param {int} index 序号
-  /// @param {String} mnemonic 助记词
-  /// @returns {ResultType<dynamic>} 请求结果
-  Future<ResultType<dynamic>> mnemonicToPrivateKey(
-      int index, String mnemonic) async {
-    return await request(
-      ReqestType(
-        module: 'public',
-        action: 'MnemonicToPrivateKey',
-        params: Map.from({"index": index, "mnemonic": mnemonic}),
-      ),
-      null,
-    );
+  /// 添加数据到数据集
+  /// @param {string} collName 数据集名称（eg: history-message）
+  /// @param {} data 要添加的数据，对象/数组
+  /// @param {string} belongId 对象所在的归属用户ID
+  /// @returns {model.ResultType<T>} 对象异步结果
+  Future<ResultType<T>> collectionInsert<T>(
+    String belongId,
+    List<String> relations,
+    String collName,
+    T data,
+    String? copyId,
+  ) async {
+    return await dataProxy(
+        DataProxyType(
+          module: 'Collection',
+          action: 'Insert',
+          belongId: belongId,
+          copyId: copyId,
+          relations: relations,
+          params: {collName, data},
+        ),
+        null);
   }
 
-  /// 从私钥到公钥
-  /// @param {String} privateKey 私钥
-  /// @returns {ResultType<dynamic>} 请求结果
-  Future<ResultType<dynamic>> privateKeyToPublicKey(String privateKey) async {
-    return await request(
-      ReqestType(
-        module: 'public',
-        action: 'PrivateKeyToPublicKey',
-        params: Map.from({"privateKey": privateKey}),
-      ),
-      null,
-    );
+  /// 变更数据集数据
+  /// @param {string} collName 数据集名称（eg: history-message）
+  /// @param {} data 要添加的数据，对象/数组
+  /// @param {string} belongId 对象所在的归属用户ID
+  /// @returns {model.ResultType<T>} 对象异步结果
+  Future<ResultType<T>> collectionSetFields<T>(
+    String belongId,
+    List<String> relations,
+    String collName,
+    dynamic collSet,
+    String? copyId,
+  ) async {
+    return await dataProxy(
+        DataProxyType(
+          module: 'Collection',
+          action: 'SetFields',
+          belongId: belongId,
+          copyId: copyId,
+          relations: relations,
+          params: {collName, collSet},
+        ),
+        null);
   }
 
-  /// 从公钥到地址
-  /// @param {String} publicKey 公钥
-  /// @returns {ResultType<dynamic>} 请求结果
-  Future<ResultType<dynamic>> publicKeyToAddress(String publicKey) async {
-    return await request(
-      ReqestType(
-        module: 'public',
-        action: 'PublicKeyToAddress',
-        params: Map.from({"publicKey": publicKey}),
-      ),
-      null,
-    );
+  /// 替换数据集数据
+  /// @param {string} collName 数据集名称（eg: history-message）
+  /// @param {T} replace 要添加的数据，对象/数组
+  /// @param {string} belongId 对象所在的归属用户ID
+  /// @returns {model.ResultType<T>} 对象异步结果
+  Future<ResultType<T>> collectionReplace<T>(
+    String belongId,
+    List<String> relations,
+    String collName,
+    T replace,
+    String? copyId,
+  ) async {
+    return await dataProxy(
+        DataProxyType(
+          module: 'Collection',
+          action: 'Replace',
+          belongId: belongId,
+          copyId: copyId,
+          relations: relations,
+          params: {collName, replace},
+        ),
+        null);
   }
 
-  /// 签名
-  /// @param {String} privateKey 私钥
-  /// @param {String} message 消息
-  /// @returns {ResultType<dynamic>} 请求结果
-  Future<ResultType<dynamic>> signature(
-      String privateKey, String message) async {
-    return await request(
-      ReqestType(
-        module: 'public',
-        action: 'Signature',
-        params: Map.from({"privateKey": privateKey, "message": message}),
-      ),
-      null,
-    );
+  /// 更新数据到数据集
+  /// @param {string} collName 数据集名称（eg: history-message）
+  /// @param {any} update 更新操作（match匹配，update变更,options参数）
+  /// @param {string} belongId 对象所在的归属用户ID
+  /// @returns {model.ResultType<T>} 对象异步结果
+  Future<ResultType<dynamic>> collectionUpdate(
+    String belongId,
+    List<String> relations,
+    String collName,
+    dynamic update,
+    String? copyId,
+  ) async {
+    return await dataProxy(
+        DataProxyType(
+          module: 'Collection',
+          action: 'Update',
+          belongId: belongId,
+          copyId: copyId,
+          relations: relations,
+          params: {collName, update},
+        ),
+        null);
   }
 
-  /// 验签
-  /// @param {String} publicKey 公钥
-  /// @param {List<int>} signature 签名
-  /// @param {String} message 消息
-  /// @returns {ResultType<dynamic>} 请求结果
-  Future<ResultType<dynamic>> verify(
-      String publicKey, String message, List<int> signature) async {
-    return await request(
-      ReqestType(
-        module: 'public',
-        action: 'Verify',
-        params: Map.from({
-          "publicKey": publicKey,
-          "message": message,
-          "signature": signature,
-        }),
-      ),
-      null,
-    );
+  /// 从数据集移除数据
+  /// @param {string} collName 数据集名称（eg: history-message）
+  /// @param {any} match 匹配信息
+  /// @param {string} belongId 对象所在的归属用户ID
+  /// @returns {model.ResultType<T>} 对象异步结果
+  Future<ResultType<dynamic>> collectionRemove(
+    String belongId,
+    List<String> relations,
+    String collName,
+    dynamic match,
+    String? copyId,
+  ) async {
+    return await dataProxy(
+        DataProxyType(
+          module: 'Collection',
+          action: 'Remove',
+          belongId: belongId,
+          copyId: copyId,
+          relations: relations,
+          params: {collName, match},
+        ),
+        null);
   }
 
-  Future<ResultType<XEntity>> queryEntityById(IdReq params) async {
-    return await request(
-      ReqestType(
-        module: 'core',
-        action: 'QueryEntityById',
-        params: params.toJson(),
-      ),
-      XEntity.fromJson,
-    );
+  /// 查询数据集数据
+  /// @param  过滤参数
+  /// @returns {model.ResultType<T>} 移除异步结果
+  Future<LoadResult<T>> collectionLoad<T>(
+      String belongId, List<String> relations, dynamic options) async {
+    options['belongId'] = belongId;
+    ResultType res = await dataProxy(
+        DataProxyType(
+          module: 'Collection',
+          action: 'Load',
+          belongId: belongId,
+          relations: relations,
+          params: options,
+        ),
+        null);
+
+    return LoadResult.fromJson(res.toJson());
   }
+
+  /// 从数据集查询数据
+  /// @param {string} collName 数据集名称（eg: history-message）
+  /// @param {any} options 聚合管道(eg: {match:{a:1},skip:10,limit:10})
+  /// @param {string} belongId 对象所在的归属用户ID
+  /// @returns {model.ResultType<T>} 对象异步结果
+  Future<ResultType<dynamic>> collectionAggregate(
+    String belongId,
+    List<String> relations,
+    String collName,
+    dynamic options,
+  ) async {
+    return await dataProxy(
+        DataProxyType(
+          module: 'Collection',
+          action: 'Aggregate',
+          belongId: belongId,
+          relations: relations,
+          params: {collName, options},
+        ),
+        null);
+  }
+
+  /// 从数据集查询数据
+  /// @param {string} collName 数据集名称（eg: history-message）
+  /// @param {any} options 聚合管道(eg: {match:{a:1},skip:10,limit:10})
+  /// @param {string} belongId 对象所在的归属用户ID
+  /// @returns {model.ResultType<T>} 对象异步结果
+  Future<ResultType<PageResult<T>>> collectionPageRequest<T>(
+    String belongId,
+    List<String> relations,
+    String collName,
+    dynamic options,
+    PageModel page,
+  ) async {
+    var total =
+        await collectionAggregate(belongId, relations, collName, options);
+    if (total.data && (total.data is List) && total.data.length > 0) {
+      options['skip'] = page.offset;
+      options['limit'] = page.limit;
+      var res =
+          await collectionAggregate(belongId, relations, collName, options);
+      return ResultType<PageResult<T>>(
+        code: res.code,
+        msg: res.msg,
+        success: res.success,
+        data: PageResult(
+            offset: page.offset,
+            limit: page.limit,
+            total: total.data[0].length,
+            rsult: res.data),
+      );
+    }
+
+    return ResultType<PageResult<T>>(
+        data: total.data,
+        code: total.code,
+        msg: total.msg,
+        success: total.success);
+  }
+
+  /// 桶操作
+  /// @param data 操作携带的数据
+  /// @returns {ResultType<T>} 移除异步结果
+  Future<ResultType<T>> bucketOpreate<T>(
+    String belongId,
+    List<String> relations,
+    BucketOpreateModel data,
+  ) async {
+    return await dataProxy(
+        DataProxyType(
+          module: 'Bucket',
+          action: 'Operate',
+          belongId: belongId,
+          relations: relations,
+          params: data,
+        ),
+        null);
+  }
+
+  /// 加载物
+  /// @param  过滤参数
+  /// @returns {model.ResultType<T>} 移除异步结果
+
+  Future<ResultType<T>> loadThing<T>(
+    String belongId,
+    List<String> relations,
+    dynamic options,
+  ) async {
+    options['belongId'] = belongId;
+    return await dataProxy(
+        DataProxyType(
+          module: 'Thing',
+          action: 'Load',
+          belongId: belongId,
+          relations: relations,
+          params: options,
+        ),
+        null);
+  }
+
+  /// 创建物
+  /// @param name 物的名称
+  /// @returns {model.ResultType<model.AnyThingModel>} 移除异步结果
+
+  Future<ResultType<AnyThingModel>> createThing<T>(
+    String belongId,
+    List<String> relations,
+    String name,
+  ) async {
+    return await dataProxy(
+        DataProxyType(
+          module: 'Thing',
+          action: 'Create',
+          belongId: belongId,
+          relations: relations,
+          params: name,
+        ),
+        null);
+  }
+
+  /// 订阅对象变更
+  /// @param {string} key 对象名称（eg: rootName.person.name）
+  /// @param {string} belongId 对象所在域, 个人域(user),单位域(company),开放域(all)
+  /// @param {(data:any)=>void} callback 变更回调，默认回调一次
+  /// @returns {void} 无返回值
+  subscribed(String key, String belongId, Function(dynamic)? callback) async {
+    if (callback != null) {
+      final fullKey = "$key|$belongId";
+      _subscribeCallbacks[fullKey] = callback;
+      if (_storeHub.isConnected) {
+        var raw = await _storeHub.invoke('Subscribed', args: [belongId, key]);
+        var res = ResultType.fromJson(raw);
+        if (res.success && res.data != null) {
+          callback(res.data);
+        }
+      }
+    }
+  }
+
+  /// 取消订阅对象变更
+  /// @param {string} key 对象名称（eg: rootName.person.name）
+  /// @param {string} belongId 对象所在域, 个人域(user),单位域(company),开放域(all)
+  /// @returns {void} 无返回值
+
+  unSubscribed(
+    String belongId,
+    String key,
+  ) async {
+    final fullKey = "$key|$belongId";
+    if (_subscribeCallbacks.containsKey(fullKey) && _storeHub.isConnected) {
+      await _storeHub.invoke('UnSubscribed', args: [key, belongId]);
+      _subscribeCallbacks.remove(fullKey);
+    }
+  }
+
+  /// 由内核代理一个http请求
+  /// @param {model.HttpRequestType} reqs 请求体
+  /// @returns 异步结果
+  Future<ResultType<HttpResponseType>> httpForward(
+    HttpRequestType req,
+  ) async {
+    if (_storeHub.isConnected) {
+      return await _storeHub.invoke('HttpForward', args: [req]);
+    } else {
+      var res = await _restRequest('httpForward', req);
+
+      return ResultType<HttpResponseType>(
+          code: res.code, msg: res.msg, success: res.success, data: res.data);
+    }
+  }
+
+  /// 请求一个数据核方法
+  /// @param {ReqestType} reqs 请求体
+  /// @returns 异步结果
+  Future<ResultType<T>> dataProxy<T>(
+    DataProxyType req,
+    T Function(Map<String, dynamic>)? cvt,
+  ) async {
+    dynamic raw;
+    if (_storeHub.isConnected) {
+      raw = await _storeHub.invoke('DataProxy', args: [req]);
+    } else {
+      raw = await _restRequest('dataProxy', req);
+    }
+    if (raw != null) {
+      if (!raw['success']) {
+        ToastUtils.showMsg(msg: raw['msg']);
+      }
+    }
+    if (cvt != null) {
+      if (raw == null) {
+        print('raw');
+      }
+      return ResultType.fromJsonSerialize(raw ?? {}, cvt);
+    } else {
+      return ResultType.fromJson(raw);
+    }
+  }
+
+  /// 数据变更通知
+  /// @param {ReqestType} reqs 请求体
+  /// @returns 异步结果
+  Future<ResultType<bool>> dataNotify(DataNotityType req) async {
+    if (_storeHub.isConnected) {
+      return await _storeHub.invoke('DataNotify', args: [req]);
+    } else {
+      var res = await _restRequest('dataNotify', req);
+      return res as ResultType<bool>;
+    }
+  }
+
+  /// 请求一个内核方法
+  /// @param {ReqestType} reqs 请求体
+  /// @returns 异步结果
 
   Future<ResultType<T>> request<T>(
     ReqestType req,
     T Function(Map<String, dynamic>)? cvt,
   ) async {
     dynamic raw;
-    log.info("====> req:${req.toJson()}");
-    raw = await _storeHub.invoke('Request', args: [req]);
+    logger.info("====> req:${req.toJson()}");
+    if (_storeHub.isConnected) {
+      raw = await _storeHub.invoke('Request', args: [req]);
+    } else {
+      raw = await _restRequest('request', req);
+    }
+
     if (raw != null) {
       if (!raw['success']) {
         ToastUtils.showMsg(msg: raw['msg']);
       }
     }
-    if (cvt  != null) {
-      if(raw == null){
+    if (cvt != null) {
+      if (raw == null) {
         print('raw');
       }
-      return ResultType.fromJsonSerialize(raw??{}, cvt);
+      return ResultType.fromJsonSerialize(raw ?? {}, cvt);
     } else {
       return ResultType.fromJson(raw);
     }
   }
 
-  Future<dynamic> requests<T>(List<ReqestType> reqs) async {
-    return await _storeHub.invoke('Requests', args: reqs);
+  /// 请求多个内核方法,使用同一个事务
+  /// @param {model.ResultType<any>[]} reqs 请求体
+  /// @returns 异步结果
+
+  Future<ResultType<dynamic>> requests<T>(List<ReqestType> reqs) async {
+    if (_storeHub.isConnected) {
+      return await _storeHub.invoke('Requests', args: reqs);
+    } else {
+      return await _restRequest('requests', reqs);
+    }
   }
 
+  ona(String methodName, Function method) {
+    var lowerCase = methodName.toLowerCase();
+    _methods.putIfAbsent(lowerCase, () => []);
+    if (_methods[lowerCase]!.contains(method)) {
+      return;
+    }
+    _methods[lowerCase]!.add(method);
+  }
 
+  /// 监听服务端方法
+  /// @param {string} methodName 方法名
+  /// @returns {void} 无返回值
+  void on(String? methodName, List<dynamic>? newOperation) {
+    if (methodName == null || newOperation == null) {
+      return;
+    }
 
+    methodName = methodName.toLowerCase();
+    _methods.putIfAbsent(methodName, () => []);
 
+    for (var element in newOperation) {
+      if (_methods[methodName]!.contains(element)) {
+        return;
+      } else {
+        _methods[methodName]!.add(element);
+      }
+    }
+
+    List data = _cacheData[methodName] ?? [];
+    data.map((dynamic e) {
+      Function.apply(e, newOperation);
+    });
+    _cacheData[methodName] = [];
+  }
+
+  /// 接收服务端消息
+  _receive(List<dynamic>? params) {
+    if (params == null) {
+      return;
+    }
+    Map<String, dynamic> param = params[0];
+    ReceiveType res = ReceiveType.fromJson(param);
+    bool onlineOnly = true;
+    if (res.target == 'DataNotify') {
+      DataNotityType data = res.data;
+      res.target = '${data.belongId}-${data.targetId}-${data.flag}';
+      res.data = data.data;
+      onlineOnly = data.onlineOnly;
+    }
+    switch (res.target) {
+      case 'Online':
+      case 'Outline':
+        {
+          var connectionId = res.data['connectionId'];
+          if (connectionId && connectionId.length > 0) {
+            if (onlineIds.isEmpty) {
+              onlineIds.add('');
+              onlines();
+            } else {
+              if (res.target == 'Online') {
+                if (onlineIds.every((i) => i != connectionId)) {
+                  onlineIds.add(connectionId);
+                }
+              } else {
+                onlineIds = onlineIds.where((i) => i != connectionId).toList();
+              }
+              onlineNotify.changCallback();
+            }
+            command.emitter('_', res.target.toLowerCase(), res.data);
+          }
+        }
+        break;
+      default:
+        {
+          var methods = _methods[res.target.toLowerCase()];
+          if (methods != null) {
+            try {
+              for (var m in methods) {
+                Function.apply(m, [res.data]);
+              }
+            } catch (e) {
+              logger.warning(e as Error);
+            }
+          } else if (!onlineOnly) {
+            var data = _cacheData[res.target.toLowerCase()] ?? {};
+            _cacheData[res.target.toLowerCase()] = [...data, res.data];
+          }
+        }
+    }
+  }
+
+  /// 对象变更通知
+  /// @param belongId 归属
+  /// @param key 主键
+  /// @param data 数据
+  /// @returns {void} 无返回值
+  _updated(List<dynamic>? param) {
+    if (param == null || param.length < 2) return;
+    String belongId = '';
+    String key = '';
+    dynamic data;
+    belongId = param[0];
+    key = param[1];
+    data = param[2];
+    final fullKey = "$key|$belongId";
+    if (_subscribeCallbacks.containsKey(fullKey)) {
+      final Function(dynamic)? callback = _subscribeCallbacks[fullKey];
+      if (callback != null) {
+        callback(data);
+      }
+    }
+  }
+
+  /// 使用rest请求后端
+  /// @param methodName 方法
+  /// @param data 参数
+  /// @returns 返回结果
+  Future<ResultType> _restRequest(String methodName, dynamic args) async {
+    final res = await _http.post('${Constant.rest}/$methodName', data: args);
+
+    if (res.data && (res.data is ResultType)) {
+      final result = res.data;
+      if (!result.success) {
+        if (result.code == 401) {
+          settingCtrl.exitLogin(cleanUserLoginInfo: false);
+        } else {
+          logger.warning('请求失败' + result.msg);
+        }
+      }
+      return result;
+    }
+    return badRequest;
+  }
 }

@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/api/kernelapi.dart';
+import 'package:orginone/dart/base/api/kernelapi_old.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/main.dart';

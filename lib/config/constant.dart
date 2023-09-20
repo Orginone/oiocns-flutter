@@ -14,4 +14,5 @@ class Constant {
   static const market = "$host/orginone/appstore/market";
   static const order = "$host/orginone/appstore/order";
   static const product = "$host/orginone/appstore/product";
+  static const rest = "$host/orginone/kernel/rest";
 }
