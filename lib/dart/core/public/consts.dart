@@ -1,5 +1,4 @@
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 
 // 异常消息常量
@@ -78,15 +77,15 @@ enum FormModalType {
   const FormModalType(this.label);
 }
 
-///用于获取全部的分页模型
-enum PageAll {
-  offset(0),
-  limit((2 << 15) - 1),
-  filter('');
+///用于获取全部的分页模型,有错误暂时不启用
+// enum PageAll {
+//   offset(0),
+//   limit((2 << 15) - 1),
+//   filter('');
 
-  final String label;
-  const PageAll(this.label);
-}
+//   final String label;
+//   const PageAll(this.label);
+// }
 
 ///通用状态信息Map
 class Status {

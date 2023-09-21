@@ -33,7 +33,7 @@ class KernelApi {
   final Map<String, void Function(dynamic)> _subscribeCallbacks;
 
   // 上下线提醒
-  final Emitter onlineNotify = Emitter();
+  final Emitter onlineNotify = Emitter(); //////
   // 在线的连接
   List<String> onlineIds = [];
   factory KernelApi() {
