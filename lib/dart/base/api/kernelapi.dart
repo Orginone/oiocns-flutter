@@ -76,6 +76,14 @@ class KernelApi {
     Storage.setString('accessToken', val);
   }
 
+  /// 实时获取连接状态
+  /// @param callback
+  onConnectedChanged(Function(dynamic) callback) async {
+    Function.apply(callback, [_storeHub.isConnected]);
+    _storeHub.onDisconnected(Function.apply(callback, [false]));
+    _storeHub.onConnected(() => Function.apply(callback, [true]));
+  }
+
   /// 获取单例
   /// @param {string} url 集线器地址，默认为 "/orginone/kernel/hub"
   /// @returns {KernelApi} 内核api单例
@@ -201,6 +209,18 @@ class KernelApi {
       ToastUtils.showMsg(msg: res.msg);
     }
     return model;
+  }
+
+  /// 激活存储
+  Future<ResultType<XEntity>> activateStorage(GainModel params) async {
+    return await request(
+      ReqestType(
+        module: 'target',
+        action: 'ActivateStorage',
+        params: params.toJson(),
+      ),
+      XEntity.fromJson,
+    );
   }
 
   /// 根据ID查询实体信息
@@ -1124,6 +1144,9 @@ class KernelApi {
   /// @param {ReqestType} reqs 请求体
   /// @returns 异步结果
   Future<ResultType<bool>> dataNotify(DataNotityType req) async {
+    if (req.ignoreSelf) {
+      req.ignoreConnectionId = _storeHub.connectionId;
+    }
     if (_storeHub.isConnected) {
       return await _storeHub.invoke('DataNotify', args: [req]);
     } else {
@@ -1220,6 +1243,9 @@ class KernelApi {
     bool onlineOnly = true;
     if (res.target == 'DataNotify') {
       DataNotityType data = res.data;
+      if (data.ignoreConnectionId == _storeHub.connectionId) {
+        return;
+      }
       res.target = '${data.belongId}-${data.targetId}-${data.flag}';
       res.data = data.data;
       onlineOnly = data.onlineOnly;

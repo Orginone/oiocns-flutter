@@ -86,6 +86,8 @@ class DataNotityType {
   String targetId;
   // 是否忽略自己
   bool ignoreSelf;
+  // 忽略的连接ID
+  String? ignoreConnectionId;
   // 标签
   String flag;
   // 关系举证(用户鉴权[user=>relations=>target],最大支持2级关系)
@@ -101,6 +103,7 @@ class DataNotityType {
     required this.data,
     required this.targetId,
     required this.ignoreSelf,
+    this.ignoreConnectionId,
     required this.flag,
     required this.relations,
     required this.belongId,
