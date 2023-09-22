@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/controller/user_controller.dart';
+import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
@@ -23,7 +23,7 @@ import 'package:orginone/widget/widgets/team_avatar.dart';
 
 Size defaultBtnSize = Size(400.w, 70.h);
 
-class MessageSetting extends GetView<UserController> {
+class MessageSetting extends GetView<IndexController> {
   const MessageSetting({Key? key}) : super(key: key);
 
   @override
@@ -54,24 +54,21 @@ class MessageSetting extends GetView<UserController> {
             persons: chat.members.value,
             hasAdd: true,
             addCallback: () {
-              var target = TargetType.getType(chat.share.typeName) ==
-                  TargetType.group ? TargetType.company : TargetType.person;
-              showSearchDialog(
-                  context,
-                  target,
-                  title: "邀请成员",
-                  hint: "请输入用户的账号",
+              var target =
+                  TargetType.getType(chat.share.typeName) == TargetType.group
+                      ? TargetType.company
+                      : TargetType.person;
+              showSearchDialog(context, target, title: "邀请成员", hint: "请输入用户的账号",
                   onSelected: (targets) async {
-                     if(targets.isNotEmpty){
-                       var success = await (chat as ITeam).pullMembers(targets);
-                       if (success) {
-                         ToastUtils.showMsg(msg: "邀请成功");
-                       }
-                     }else{
-                       ToastUtils.showMsg(msg: "未选择用户");
-                     }
+                if (targets.isNotEmpty) {
+                  var success = await (chat as ITeam).pullMembers(targets);
+                  if (success) {
+                    ToastUtils.showMsg(msg: "邀请成功");
                   }
-              );
+                } else {
+                  ToastUtils.showMsg(msg: "未选择用户");
+                }
+              });
             },
           );
         }),
@@ -112,7 +109,9 @@ class MessageSetting extends GetView<UserController> {
                 children: children,
               ),
             ),
-            SizedBox(height: 50.h,),
+            SizedBox(
+              height: 50.h,
+            ),
             _clear(context, chat),
           ],
         ),
@@ -207,8 +206,8 @@ class MessageSetting extends GetView<UserController> {
           dir = (chat as ITarget).directory;
           navs = await _buildNav([dir], chat);
         }
-        Get.toNamed(
-            Routers.generalBreadCrumbs, arguments: {"data": navs.first});
+        Get.toNamed(Routers.generalBreadCrumbs,
+            arguments: {"data": navs.first});
       },
       padding: EdgeInsets.symmetric(vertical: 15.h),
       header: Text(
@@ -253,11 +252,9 @@ class MessageSetting extends GetView<UserController> {
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 150.w),
-
         decoration: BoxDecoration(
             color: XColors.themeColor,
-            borderRadius: BorderRadius.circular(32.w)
-        ),
+            borderRadius: BorderRadius.circular(32.w)),
         child: Text(
           "清空聊天记录",
           style: XFonts.size22WhiteW700,
@@ -311,9 +308,8 @@ class MessageSetting extends GetView<UserController> {
     );
   }
 
-
-  Future<List<GeneralBreadcrumbNav>> _buildNav(List<IDirectory> dirs,
-      ITarget target) async {
+  Future<List<GeneralBreadcrumbNav>> _buildNav(
+      List<IDirectory> dirs, ITarget target) async {
     List<GeneralBreadcrumbNav> navs = [];
     for (var dir in dirs) {
       await Future.wait([dir.loadSubDirectory(), dir.loadFiles()]);
@@ -355,7 +351,6 @@ class MessageSetting extends GetView<UserController> {
       );
       navs.add(nav);
     }
-
 
     return navs;
   }

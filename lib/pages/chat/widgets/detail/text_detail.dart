@@ -4,7 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/config/constant.dart';
-import 'package:orginone/dart/base/api/kernelapi_old.dart';
+
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
@@ -14,13 +14,16 @@ import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/unified.dart';
 
 class TextDetail extends BaseDetail {
-  TextDetail(
-      {required super.isSelf,
+  const TextDetail(
+      {super.key,
+      required super.isSelf,
       required super.message,
       super.bgColor,
       super.clipBehavior = Clip.hardEdge,
       super.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      super.constraints,  super.isReply = false,super.chat});
+      super.constraints,
+      super.isReply = false,
+      super.chat});
 
   @override
   Widget body(BuildContext context) {
@@ -141,20 +144,19 @@ class TextDetail extends BaseDetail {
     );
   }
 
-
   Widget imageWidget(dynamic url) {
     Map<String, String> headers = {
       "Authorization": kernel.anystore.accessToken,
     };
 
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         Navigator.of(Get.context!).push(
           DialogRoute(
             context: Get.context!,
             builder: (BuildContext context) {
               return GestureDetector(
-                onTap: (){
+                onTap: () {
                   Get.back();
                 },
                 child: ImageWidget(

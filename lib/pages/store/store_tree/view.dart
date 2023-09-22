@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 
 import 'logic.dart';
 import 'state.dart';
@@ -9,6 +9,8 @@ import 'store_nav_item.dart';
 
 class StoreTreePage extends BaseBreadcrumbNavMultiplexPage<StoreTreeController,
     StoreTreeState> {
+  StoreTreePage({super.key});
+
   @override
   Widget body() {
     return SingleChildScrollView(

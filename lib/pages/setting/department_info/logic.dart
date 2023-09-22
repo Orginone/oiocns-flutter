@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/routers.dart';
@@ -12,6 +12,7 @@ import 'state.dart';
 
 class DepartmentInfoController extends BaseController<DepartmentInfoState>
     with GetTickerProviderStateMixin {
+  @override
   final DepartmentInfoState state = DepartmentInfoState();
 
   DepartmentInfoController() {
@@ -44,16 +45,17 @@ class DepartmentInfoController extends BaseController<DepartmentInfoState>
         showSearchDialog(context, TargetType.person,
             title: "添加成员",
             hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
-              if (list.isNotEmpty) {
-                bool success = await state.depart.value.pullMembers(list);
-                if (success) {
-                  ToastUtils.showMsg(msg: "添加成功");
-                } else {
-                  ToastUtils.showMsg(msg: "添加失败");
-                }
-              }
-            });
+          if (list.isNotEmpty) {
+            bool success = await state.depart.value.pullMembers(list);
+            if (success) {
+              ToastUtils.showMsg(msg: "添加成功");
+            } else {
+              ToastUtils.showMsg(msg: "添加失败");
+            }
+          }
+        });
         break;
+      default:
     }
   }
 

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/controller/user_controller.dart';
+import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_bindings.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
@@ -15,12 +15,16 @@ import 'widgets/message_breadcrumb_nav_item.dart';
 
 class MessageRouters
     extends BaseBreadcrumbNavMultiplexPage<Controller, ChatBreadNavState> {
+  MessageRouters({super.key});
+
   @override
   Widget body() {
     return SingleChildScrollView(child: Obx(() {
-      var chats = state.model.value?.children.where((element) => element.name.contains(state.keyword)).toList();
+      var chats = state.model.value?.children
+          .where((element) => element.name.contains(state.keyword))
+          .toList();
 
-      return Column(children: initiate(chats??[]));
+      return Column(children: initiate(chats ?? []));
     }));
   }
 
@@ -35,8 +39,8 @@ class MessageRouters
         onTap: () {
           controller.jumpDetails(child);
         },
-        onSelected: (key){
-          controller.operation(key,child.target!);
+        onSelected: (key) {
+          controller.operation(key, child.target!);
         },
       ));
     }
@@ -50,7 +54,6 @@ class MessageRouters
 }
 
 class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
-
   @override
   final ChatBreadNavState state = ChatBreadNavState();
 
@@ -80,10 +83,12 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
               ),
               ...company.cohortChats
                   .where((i) => i.isMyChat)
-                  .map((item) => createNav(item.chatId, item, [],spaceEnum: SpaceEnum.departments))
+                  .map((item) => createNav(item.chatId, item, [],
+                      spaceEnum: SpaceEnum.departments))
                   .toList(),
             ],
-            type: ChatType.list,spaceEnum: SpaceEnum.company),
+            type: ChatType.list,
+            spaceEnum: SpaceEnum.company),
       );
     }
     state.model.value = ChatBreadcrumbNav(children: [
@@ -95,12 +100,14 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
               "${settingCtrl.user.id}0",
               settingCtrl.user,
               settingCtrl.user.memberChats
-                  .map((chat) => createNav(chat.chatId, chat, [],spaceEnum: SpaceEnum.person))
+                  .map((chat) => createNav(chat.chatId, chat, [],
+                      spaceEnum: SpaceEnum.person))
                   .toList(),
             ),
             ...settingCtrl.user.cohortChats
                 .where((i) => i.isMyChat)
-                .map((item) => createNav(item.chatId, item, [],spaceEnum: SpaceEnum.departments))
+                .map((item) => createNav(item.chatId, item, [],
+                    spaceEnum: SpaceEnum.departments))
                 .toList(),
           ],
           type: ChatType.list),
@@ -111,9 +118,9 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
 
   ChatBreadcrumbNav createNav(
       String id, IMsgChat target, List<ChatBreadcrumbNav> children,
-      {ChatType type = ChatType.chat,SpaceEnum? spaceEnum}) {
-
-    dynamic image = target.share.avatar?.thumbnailUint8List??target.share.avatar?.defaultAvatar;
+      {ChatType type = ChatType.chat, SpaceEnum? spaceEnum}) {
+    dynamic image = target.share.avatar?.thumbnailUint8List ??
+        target.share.avatar?.defaultAvatar;
     return ChatBreadcrumbNav(
         id: id,
         type: type,
@@ -134,26 +141,30 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
   }
 
   void jumpDetails(ChatBreadcrumbNav chat) {
-     if(chat.type == ChatType.chat){
-       Get.toNamed(Routers.messageChatInfo, arguments: {"chat":chat.target});
-     }else{
-       Get.toNamed(Routers.messageChatsList, arguments: {"chats":(chat.target as ITeam).chats.where((element) => element.isMyChat).toList()});
-     }
+    if (chat.type == ChatType.chat) {
+      Get.toNamed(Routers.messageChatInfo, arguments: {"chat": chat.target});
+    } else {
+      Get.toNamed(Routers.messageChatsList, arguments: {
+        "chats": (chat.target as ITeam)
+            .chats
+            .where((element) => element.isMyChat)
+            .toList()
+      });
+    }
   }
 
   void operation(PopupMenuKey key, IMsgChat msg) {
-    if(key == PopupMenuKey.setCommon){
+    if (key == PopupMenuKey.setCommon) {
       settingCtrl.chat.setMostUsed(msg);
-    }else if(key == PopupMenuKey.removeCommon){
+    } else if (key == PopupMenuKey.removeCommon) {
       settingCtrl.chat.removeMostUsed(msg);
     }
   }
 }
 
 class ChatBreadNavState extends BaseBreadcrumbNavState<ChatBreadcrumbNav> {
-
   ChatBreadNavState() {
-    if( Get.arguments is Map){
+    if (Get.arguments is Map) {
       model.value = Get.arguments?['data'];
       title = model.value?.name ?? HomeEnum.chat.label;
     }

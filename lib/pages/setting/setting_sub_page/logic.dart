@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/controller/user_controller.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/pages/setting/home/state.dart';
@@ -13,17 +13,17 @@ import '../config.dart';
 import 'state.dart';
 
 class SettingSubController extends BaseListController<SettingSubState> {
- final SettingSubState state = SettingSubState();
+  @override
+  final SettingSubState state = SettingSubState();
 
- late String type;
+  late String type;
 
- SettingSubController(this.type);
+  SettingSubController(this.type);
 
- SettingSubController get allController => Get.find(tag: "setting_all");
+  SettingSubController get allController => Get.find(tag: "setting_all");
 
   @override
   void onInit() async {
-    // TODO: implement onInit
     super.onInit();
 
     if (type == 'common') {
@@ -69,40 +69,44 @@ class SettingSubController extends BaseListController<SettingSubState> {
   }
 
   void onNextLv(SettingNavModel model) {
-  if (model.children.isEmpty && model.spaceEnum!=SpaceEnum.directory) {
-   jumpDetails(model);
-  } else {
-   Get.toNamed(Routers.settingCenter,
-       preventDuplicates: false, arguments: {"data": model,"isSettingSubPage":true});
+    if (model.children.isEmpty && model.spaceEnum != SpaceEnum.directory) {
+      jumpDetails(model);
+    } else {
+      Get.toNamed(Routers.settingCenter,
+          preventDuplicates: false,
+          arguments: {"data": model, "isSettingSubPage": true});
+    }
   }
- }
 
- void jumpDetails(SettingNavModel model) {
-  switch (model.spaceEnum) {
-   case SpaceEnum.user:
-    Get.toNamed(Routers.userInfo);
-    break;
-   case SpaceEnum.company:
-    Get.toNamed(Routers.companyInfo, arguments: {"company": model.space});
-    break;
+  void jumpDetails(SettingNavModel model) {
+    switch (model.spaceEnum) {
+      case SpaceEnum.user:
+        Get.toNamed(Routers.userInfo);
+        break;
+      case SpaceEnum.company:
+        Get.toNamed(Routers.companyInfo, arguments: {"company": model.space});
+        break;
+      default:
+    }
   }
- }
- void updateInfo(PopupMenuKey key, SettingNavModel item) async {
-  switch (item.spaceEnum) {
-   case SpaceEnum.user:
-   case SpaceEnum.company:
-   case SpaceEnum.person:
-   case SpaceEnum.departments:
-   case SpaceEnum.groups:
+
+  void updateInfo(PopupMenuKey key, SettingNavModel item) async {
+    switch (item.spaceEnum) {
+      case SpaceEnum.user:
+      case SpaceEnum.company:
+      case SpaceEnum.person:
+      case SpaceEnum.departments:
+      case SpaceEnum.groups:
       case SpaceEnum.cohorts:
         createTarget(key, item, isEdit: true, callback: ([nav]) {
           state.nav.refresh();
         });
         break;
+      default:
     }
- }
+  }
 
- void operation(PopupMenuKey key, SettingNavModel item) {
+  void operation(PopupMenuKey key, SettingNavModel item) {
     switch (key) {
       case PopupMenuKey.createDir:
         createDir(item, callback: () {
@@ -165,15 +169,14 @@ class SettingSubController extends BaseListController<SettingSubState> {
         shareQr(item);
         break;
       case PopupMenuKey.openChat:
-    openChat(item);
+        openChat(item);
         break;
+      default:
     }
   }
 
   @override
-  void onReady() {
-    // TODO: implement onReady
-  }
+  void onReady() {}
 
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {}

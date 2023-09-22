@@ -2,7 +2,7 @@ import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/controller/user_controller.dart';
+import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_chats/message_chats_page.dart';
@@ -42,7 +42,7 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
               UserBar(),
               Expanded(
                 child: ExtendedTabBarView(
-                  shouldIgnorePointerWhenScrolling:false,
+                  shouldIgnorePointerWhenScrolling: false,
                   controller: state.tabController,
                   children: [
                     KeepAliveWidget(child: MessageChats()),
@@ -68,17 +68,27 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
       ),
       child: TabBar(
         tabs: [
-          ExtendedTab(child: button(homeEnum: HomeEnum.chat, path: 'chat', unPath: 'unchat')),
-          ExtendedTab(child: button(homeEnum: HomeEnum.work, path: 'work', unPath: 'unwork')),
-          ExtendedTab(child: button(homeEnum: HomeEnum.door, path: 'home', unPath: 'unhome')),
-          ExtendedTab(child: button(homeEnum: HomeEnum.store, path: 'store', unPath: 'unstore')),
+          ExtendedTab(
+              child: button(
+                  homeEnum: HomeEnum.chat, path: 'chat', unPath: 'unchat')),
+          ExtendedTab(
+              child: button(
+                  homeEnum: HomeEnum.work, path: 'work', unPath: 'unwork')),
+          ExtendedTab(
+              child: button(
+                  homeEnum: HomeEnum.door, path: 'home', unPath: 'unhome')),
+          ExtendedTab(
+              child: button(
+                  homeEnum: HomeEnum.store, path: 'store', unPath: 'unstore')),
           ExtendedTab(
             child: button(
-                homeEnum: HomeEnum.setting, path: 'setting', unPath: 'unsetting'),
+                homeEnum: HomeEnum.setting,
+                path: 'setting',
+                unPath: 'unsetting'),
           ),
         ],
         controller: state.tabController,
-        onTap: (index){
+        onTap: (index) {
           controller.jumpTab(HomeEnum.values[index]);
         },
         indicator: BoxDecoration(),
@@ -110,7 +120,6 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
       );
     });
   }
-
 
   TextStyle get unSelectedStyle =>
       TextStyle(color: XColors.black3, fontSize: 16.sp);

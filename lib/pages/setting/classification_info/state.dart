@@ -1,14 +1,11 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/pages/setting/config.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/pages/setting/home/state.dart';
 
-class ClassificationInfoState extends BaseGetState{
+class ClassificationInfoState extends BaseGetState {
   late dynamic species;
   late TabController tabController;
   late List<ClassificationEnum> tabTitle;
@@ -22,9 +19,9 @@ class ClassificationInfoState extends BaseGetState{
     data = Get.arguments['data'];
     species = data.source;
     tabTitle = [];
-    switch(data.spaceEnum){
+    switch (data.spaceEnum) {
       case SpaceEnum.person:
-         tabTitle.add(ClassificationEnum.personInfo);
+        tabTitle.add(ClassificationEnum.personInfo);
         break;
       case SpaceEnum.species:
         tabTitle.add(ClassificationEnum.info);
@@ -38,6 +35,7 @@ class ClassificationInfoState extends BaseGetState{
         tabTitle.add(ClassificationEnum.info);
         tabTitle.add(ClassificationEnum.attrs);
         break;
+      default:
     }
   }
 }

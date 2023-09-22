@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/widget/target_text.dart';
 import 'package:orginone/widget/unified.dart';
@@ -27,7 +26,8 @@ abstract class BaseDetail extends StatelessWidget {
       this.bgColor,
       required this.isSelf,
       required this.message,
-      this.isReply = false, this.chat})
+      this.isReply = false,
+      this.chat})
       : super(key: key);
 
   @override
@@ -36,36 +36,39 @@ abstract class BaseDetail extends StatelessWidget {
         isSelf ? TextDirection.rtl : TextDirection.ltr;
     Color color = bgColor ?? (isSelf ? XColors.tinyLightBlue : Colors.white);
 
-
     Widget child = body(context);
 
-    if(isReply){
+    if (isReply) {
       ShareIcon? shareIcon;
       if (isSelf) {
         shareIcon = settingCtrl.user.share;
       } else {
-        if(chat!.share.typeName == TargetType.person.label){
+        if (chat!.share.typeName == TargetType.person.label) {
           shareIcon = chat!.share;
-        }else{
-          var target = chat!.members.firstWhere((element) => element.id == message.fromId);
+        } else {
+          var target = chat!.members
+              .firstWhere((element) => element.id == message.fromId);
           shareIcon = target.shareIcon();
         }
       }
-      if(shareIcon == null){
+      if (shareIcon == null) {
         print('');
       }
-      child = Text.rich(
-        TextSpan(
-          children: [
-            WidgetSpan(child: TargetText(userId: message.fromId,text: ": ",style: XFonts.size24Black0,shareIcon: shareIcon,),alignment: PlaceholderAlignment.bottom),
-            WidgetSpan(child: child,alignment: PlaceholderAlignment.bottom),
-          ]
-        )
-      );
+      child = Text.rich(TextSpan(children: [
+        WidgetSpan(
+            child: TargetText(
+              userId: message.fromId,
+              text: ": ",
+              style: XFonts.size24Black0,
+              shareIcon: shareIcon,
+            ),
+            alignment: PlaceholderAlignment.bottom),
+        WidgetSpan(child: child, alignment: PlaceholderAlignment.bottom),
+      ]));
     }
 
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         onTap(context);
       },
       child: Container(
@@ -87,8 +90,5 @@ abstract class BaseDetail extends StatelessWidget {
 
   Widget body(BuildContext context);
 
-  void onTap(BuildContext context){
-
-  }
-
+  void onTap(BuildContext context) {}
 }

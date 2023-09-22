@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:orginone/dart/base/api/kernelapi_old.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
 import 'package:orginone/widget/image_widget.dart';
@@ -13,17 +12,17 @@ import 'shadow_widget.dart';
 class ImageDetail extends BaseDetail {
   final bool showShadow;
 
-  ImageDetail({
-    this.showShadow = false,
-    required super.isSelf,
-    super.constraints = const BoxConstraints(maxWidth: 200),
-    super.bgColor,
-    required super.message,
-    super.clipBehavior = Clip.hardEdge,
-    super.padding = EdgeInsets.zero,
-    super.isReply = false,
-    super.chat
-  });
+  const ImageDetail(
+      {super.key,
+      this.showShadow = false,
+      required super.isSelf,
+      super.constraints = const BoxConstraints(maxWidth: 200),
+      super.bgColor,
+      required super.message,
+      super.clipBehavior = Clip.hardEdge,
+      super.padding = EdgeInsets.zero,
+      super.isReply = false,
+      super.chat});
 
   @override
   Widget body(BuildContext context) {

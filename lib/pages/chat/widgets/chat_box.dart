@@ -7,7 +7,6 @@ import 'dart:math';
 
 import 'package:audio_session/audio_session.dart';
 import 'package:audio_wave/audio_wave.dart';
-import 'package:common_utils/common_utils.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +20,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart' hide Rule;
 import 'package:orginone/dart/core/chat/message/message.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/text/rich_text_input_formatter.dart';
@@ -717,11 +716,6 @@ class ChatBoxController with WidgetsBindingObserver {
       case InputEvent.inputAt:
         _inputStatus.value = InputStatus.at;
         FocusScope.of(context).unfocus();
-        break;
-      case InputEvent.inputEmoji:
-        if (_inputStatus.value != InputStatus.inputtingEmoji) {
-          _inputStatus.value = InputStatus.inputtingEmoji;
-        }
         break;
       case InputEvent.clickSendBtn:
         String message = inputController.text;

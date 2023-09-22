@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 
 import 'breadcrumb_nav_instance.dart';
 
 abstract class BaseBreadcrumbNavController<S extends BaseBreadcrumbNavState>
     extends BaseController<S> {
-
-
   BaseBreadcrumbNavController();
 
   BaseBreadcrumbNavController? previous;
@@ -32,11 +30,9 @@ abstract class BaseBreadcrumbNavController<S extends BaseBreadcrumbNavState>
   void updateNav() {
     state.bcNav.last.title = state.model.value!.name;
     state.bcNav.refresh();
-    try{
+    try {
       previous?.state.model.refresh();
-    }catch(e){
-
-    }
+    } catch (e) {}
   }
 
   @override
@@ -60,41 +56,42 @@ abstract class BaseBreadcrumbNavController<S extends BaseBreadcrumbNavState>
 
   void pop(int index) {
     String routerName = state.bcNav[index].route;
-    Get.until((route){
-      if(route.settings.arguments==null){
-        return Get.currentRoute == routerName;
-      }
-      var name = (route.settings.arguments as Map)['data']?.name??"";
-      var id = (route.settings.arguments as Map)['data']?.id??"";
-      if(name == ''){
-        return Get.currentRoute == routerName;
-      }
-      return Get.currentRoute == routerName && state.bcNav[index].data?.name == name && state.bcNav[index].data?.id == id;
-    },);
+    Get.until(
+      (route) {
+        if (route.settings.arguments == null) {
+          return Get.currentRoute == routerName;
+        }
+        var name = (route.settings.arguments as Map)['data']?.name ?? "";
+        var id = (route.settings.arguments as Map)['data']?.id ?? "";
+        if (name == '') {
+          return Get.currentRoute == routerName;
+        }
+        return Get.currentRoute == routerName &&
+            state.bcNav[index].data?.name == name &&
+            state.bcNav[index].data?.id == id;
+      },
+    );
   }
 
-  void popAll(){
+  void popAll() {
     pop(0);
     Get.back();
   }
 
+  void onTopPopupMenuSelected(PopupMenuKey key) {}
 
-  void onTopPopupMenuSelected(PopupMenuKey key){
-
-  }
-
-  void search(str){
+  void search(str) {
     state.keyword.value = str;
   }
 
-  void changeSearchState(){
+  void changeSearchState() {
     state.showSearch.value = !state.showSearch.value;
-    if(!state.showSearch.value){
+    if (!state.showSearch.value) {
       state.keyword.value = '';
     }
   }
 
-  void back(){
+  void back() {
     Get.back();
   }
 }

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/consts.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/application.dart';
 import 'package:orginone/dart/core/work/task.dart';
@@ -59,11 +58,17 @@ class ListAdapter {
     isUserLabel = false;
     typeName = chat.share.typeName;
     popupMenuItems = [
-      PopupMenuItem(child: Text(isTop?"取消置顶":"置顶"),value: isTop?PopupMenuKey.cancelTopping:PopupMenuKey.topping,),
-      PopupMenuItem(child: Text("删除"),value: PopupMenuKey.delete,),
+      PopupMenuItem(
+        value: isTop ? PopupMenuKey.cancelTopping : PopupMenuKey.topping,
+        child: Text(isTop ? "取消置顶" : "置顶"),
+      ),
+      const PopupMenuItem(
+        value: PopupMenuKey.delete,
+        child: Text("删除"),
+      ),
     ];
-    onSelected = (key) async{
-      switch(key){
+    onSelected = (key) async {
+      switch (key) {
         case PopupMenuKey.cancelTopping:
           chat.labels.remove('置顶');
           await chat.cache();
@@ -86,8 +91,8 @@ class ListAdapter {
     dateTime = chat.chatdata.value.lastMessage?.createTime;
     content = '';
     var lastMessage = chat.chatdata.value.lastMessage;
-    if(lastMessage!=null){
-      if (lastMessage!.fromId != settingCtrl.user.metadata.id) {
+    if (lastMessage != null) {
+      if (lastMessage.fromId != settingCtrl.user.metadata.id) {
         if (chat.share.typeName != TargetType.person.label) {
           var target = chat.members
               .firstWhere((element) => element.id == lastMessage.fromId);
@@ -99,7 +104,6 @@ class ListAdapter {
       content = content +
           StringUtil.msgConversion(lastMessage, settingCtrl.user.userId);
     }
-
 
     image = chat.share.avatar?.thumbnailUint8List ??
         chat.share.avatar?.defaultAvatar;
@@ -120,7 +124,8 @@ class ListAdapter {
     title = work.metadata.title ?? '';
     dateTime = work.metadata.createTime ?? "";
     content = work.metadata.content ?? "";
-    image = ShareIdSet[work.metadata.shareId]?.avatar?.thumbnailUint8List ?? Images.iconWorkitem;
+    image = ShareIdSet[work.metadata.shareId]?.avatar?.thumbnailUint8List ??
+        Images.iconWorkitem;
     if (work.targets.length == 2) {
       content =
           "${work.targets[0].name}[${work.targets[0].typeName}]申请加入${work.targets[1].name}[${work.targets[1].typeName}]";
@@ -141,7 +146,7 @@ class ListAdapter {
     noReadCount = 0;
     title = application.metadata.name ?? "";
     dateTime = application.metadata.createTime ?? "";
-    content = "应用说明:${application.metadata.remark??""}";
+    content = "应用说明:${application.metadata.remark ?? ""}";
     image = application.metadata.avatarThumbnail() ?? Ionicons.apps;
 
     callback = () async {
@@ -171,22 +176,22 @@ class ListAdapter {
 
   ListAdapter.store(RecentlyUseModel recent) {
     image = recent.avatar ?? Ionicons.clipboard_sharp;
-    labels = [recent.thing == null?"文件":"物"];
-    callback = (){
-      if(recent.file!=null){
-        Routers.jumpFile(file: recent.file!,type: "store");
+    labels = [recent.thing == null ? "文件" : "物"];
+    callback = () {
+      if (recent.file != null) {
+        Routers.jumpFile(file: recent.file!, type: "store");
       }
     };
-    title = recent.thing?.id??recent.file?.name??"";
+    title = recent.thing?.id ?? recent.file?.name ?? "";
     isUserLabel = false;
     circularAvatar = false;
     noReadCount = 0;
     content = '';
     dateTime = recent.createTime;
-
   }
 
-  List<GeneralBreadcrumbNav> _loadModuleNav(List<IApplication> app, ITarget target) {
+  List<GeneralBreadcrumbNav> _loadModuleNav(
+      List<IApplication> app, ITarget target) {
     List<GeneralBreadcrumbNav> navs = [];
     for (var value in app) {
       navs.add(GeneralBreadcrumbNav(

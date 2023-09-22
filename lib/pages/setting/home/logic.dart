@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
@@ -13,12 +13,12 @@ import 'state.dart';
 
 class SettingCenterController
     extends BaseBreadcrumbNavController<SettingCenterState> {
+  @override
   final SettingCenterState state = SettingCenterState();
 
   SettingSubController get sub => Get.find(tag: 'setting_all');
   @override
   void onReady() async {
-    // TODO: implement onReady
     super.onReady();
 
     if (state.isRootDir && Get.arguments?['data'] == null) {
@@ -29,7 +29,6 @@ class SettingCenterController
       LoadingDialog.dismiss(context);
     }
   }
-
 
   void onNextLv(SettingNavModel model) {
     if (model.children.isEmpty) {
@@ -150,6 +149,7 @@ class SettingCenterController
           }
         });
         break;
+      default:
     }
   }
 
@@ -243,27 +243,31 @@ class SettingCenterController
       case PopupMenuKey.permission:
         break;
       case PopupMenuKey.addPerson:
-        showSearchDialog(Get.context!,  TargetType.person,
+        showSearchDialog(Get.context!, TargetType.person,
             title: "邀请成员", hint: "请输入用户的账号", onSelected: (targets) async {
-              if (targets.isNotEmpty) {
-                bool success = await state.model.value!.space!.applyJoin(targets);
-                if (success) {
-                  ToastUtils.showMsg(msg: "发送申请成功");
-                }
-              }
-            });
+          if (targets.isNotEmpty) {
+            bool success = await state.model.value!.space!.applyJoin(targets);
+            if (success) {
+              ToastUtils.showMsg(msg: "发送申请成功");
+            }
+          }
+        });
         break;
       case PopupMenuKey.role:
-        Get.toNamed(Routers.roleSettings, arguments: {"target": state.model.value!.space});
+        Get.toNamed(Routers.roleSettings,
+            arguments: {"target": state.model.value!.space});
         break;
       case PopupMenuKey.station:
-        Get.toNamed(Routers.stationInfo, arguments: {"station": (state.model.value!.space as Company).stations[0]});
+        Get.toNamed(Routers.stationInfo, arguments: {
+          "station": (state.model.value!.space as Company).stations[0]
+        });
         break;
+      default:
     }
   }
 
   @override
   void onTopPopupMenuSelected(PopupMenuKey key) {
-    operation(key,state.model.value!);
+    operation(key, state.model.value!);
   }
 }

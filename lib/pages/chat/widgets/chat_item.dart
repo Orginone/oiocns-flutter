@@ -4,9 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/controller/user_controller.dart';
+import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_util.dart';
 import 'package:orginone/util/string_util.dart';
@@ -14,8 +14,7 @@ import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 import 'package:orginone/widget/widgets/text_tag.dart';
 
-
-class MessageItemWidget extends GetView<UserController> {
+class MessageItemWidget extends GetView<IndexController> {
   // 用户信息
   final IMsgChat chat;
 
@@ -47,11 +46,11 @@ class MessageItemWidget extends GetView<UserController> {
               backgroundColor: Colors.blue,
               foregroundColor: Colors.white,
               icon: Icons.vertical_align_top,
-              label:isTop?"取消置顶":"置顶",
-              onPressed: (BuildContext context) async{
-                if(isTop){
+              label: isTop ? "取消置顶" : "置顶",
+              onPressed: (BuildContext context) async {
+                if (isTop) {
                   chat.labels.remove('置顶');
-                }else{
+                } else {
                   chat.labels.add('置顶');
                 }
                 await chat.cache();
@@ -76,8 +75,9 @@ class MessageItemWidget extends GetView<UserController> {
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 7.h),
             decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.grey.shade300,width: 0.4))
-            ),
+                border: Border(
+                    bottom:
+                        BorderSide(color: Colors.grey.shade300, width: 0.4))),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -117,7 +117,7 @@ class MessageItemWidget extends GetView<UserController> {
               height: 1,
             ),
           ),
-          child:child,
+          child: child,
         );
       }
       return child;
@@ -188,10 +188,9 @@ class MessageItemWidget extends GetView<UserController> {
         height: 30.h,
       );
     }
-    return Builder(
-        builder: (context) {
-          var showTxt = "";
-          if (lastMessage.fromId != controller.user.metadata.id) {
+    return Builder(builder: (context) {
+      var showTxt = "";
+      if (lastMessage.fromId != controller.user.metadata.id) {
         if (chat.share.typeName != TargetType.person.label) {
           var target = chat.members
               .firstWhere((element) => element.id == lastMessage.fromId);
@@ -215,6 +214,6 @@ class MessageItemWidget extends GetView<UserController> {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
-        });
+    });
   }
 }

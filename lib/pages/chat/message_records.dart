@@ -4,11 +4,11 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/chat/message/message.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_bindings.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/event/message.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/routers.dart';
@@ -19,9 +19,10 @@ import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 
-
 class MessageRecordsPage
     extends BaseGetView<MessageRecordsController, MessageRecordsState> {
+  const MessageRecordsPage({super.key});
+
   @override
   Widget buildView() {
     return GyScaffold(
@@ -50,8 +51,7 @@ class MessageRecordsPage
         ),
       ],
       body: Obx(() {
-
-        if(state.isSearchState.value && state.searchMsg.isEmpty){
+        if (state.isSearchState.value && state.searchMsg.isEmpty) {
           return noData();
         }
 
@@ -93,18 +93,22 @@ class MessageRecordsPage
     );
   }
 
-
-  Widget noData(){
+  Widget noData() {
     return Container(
       width: double.infinity,
       height: double.infinity,
       alignment: Alignment.center,
-      child: Image.asset(Images.empty,width: 300.w,height: 400.w,),
+      child: Image.asset(
+        Images.empty,
+        width: 300.w,
+        height: 400.w,
+      ),
     );
   }
 }
 
 class MessageRecordsController extends BaseController<MessageRecordsState> {
+  @override
   final MessageRecordsState state = MessageRecordsState();
 
   void searchMsg(String str) {
@@ -118,7 +122,7 @@ class MessageRecordsController extends BaseController<MessageRecordsState> {
 
         bool isSearchText = p0.msgType == MessageType.text.label &&
             text.toLowerCase().contains(str.toLowerCase());
-        if(isSearchText){
+        if (isSearchText) {
           print(text);
         }
 

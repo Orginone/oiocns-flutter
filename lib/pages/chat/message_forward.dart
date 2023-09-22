@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
@@ -14,21 +14,21 @@ import 'package:orginone/widget/image_widget.dart';
 import 'message_routers.dart';
 
 class MessageForward extends StatefulWidget {
-
   final MsgBodyModel msgBody;
 
   final String msgType;
 
   final VoidCallback? onSuccess;
 
-  const MessageForward({Key? key, required this.msgBody, required this.msgType, this.onSuccess}) : super(key: key);
+  const MessageForward(
+      {Key? key, required this.msgBody, required this.msgType, this.onSuccess})
+      : super(key: key);
 
   @override
   State<MessageForward> createState() => _MessageForwardState();
 }
 
 class _MessageForwardState extends State<MessageForward> {
-
   late List<Hierarchy> list;
 
   @override
@@ -87,7 +87,8 @@ class _MessageForwardState extends State<MessageForward> {
     );
   }
 
-  Widget buildList(List<Hierarchy> list, {ScrollPhysics? physics,double leftPadding = 0}) {
+  Widget buildList(List<Hierarchy> list,
+      {ScrollPhysics? physics, double leftPadding = 0}) {
     return ListView.builder(
       physics: physics,
       shrinkWrap: true,
@@ -96,17 +97,18 @@ class _MessageForwardState extends State<MessageForward> {
       itemBuilder: (BuildContext context, int index) {
         var item = list[index];
         return Container(
-          padding: EdgeInsets.only(top: 10.h,bottom: 10.h,left: leftPadding),
+          padding: EdgeInsets.only(top: 10.h, bottom: 10.h, left: leftPadding),
           child: Column(
             children: [
               GestureDetector(
-                onTap: (){
-                  if(item.type == ChatType.chat){
+                onTap: () {
+                  if (item.type == ChatType.chat) {
                     showCupertinoDialog(
                       context: context,
                       builder: (context) {
                         return CupertinoAlertDialog(
-                          title: Text("发送给${item.msg.chatdata.value.chatName}?"),
+                          title:
+                              Text("发送给${item.msg.chatdata.value.chatName}?"),
                           actions: <Widget>[
                             CupertinoDialogAction(
                               child: const Text('取消'),
@@ -117,20 +119,25 @@ class _MessageForwardState extends State<MessageForward> {
                             CupertinoDialogAction(
                               child: const Text('确定'),
                               onPressed: () async {
-                                var msgType = MessageType.getType(widget.msgType);
-                                var success = await item.msg.sendMessage(msgType!,msgType == MessageType.text?widget.msgBody.text!:jsonEncode(widget.msgBody.toJson()));
-                                if(success){
+                                var msgType =
+                                    MessageType.getType(widget.msgType);
+                                var success = await item.msg.sendMessage(
+                                    msgType!,
+                                    msgType == MessageType.text
+                                        ? widget.msgBody.text!
+                                        : jsonEncode(widget.msgBody.toJson()));
+                                if (success) {
                                   ToastUtils.showMsg(msg: "转发成功");
                                 }
-                                Navigator.pop(context,success);
+                                Navigator.pop(context, success);
                               },
                             ),
                           ],
                         );
                       },
-                    ).then((success){
-                      if(success){
-                        if(widget.onSuccess!=null){
+                    ).then((success) {
+                      if (success) {
+                        if (widget.onSuccess != null) {
                           widget.onSuccess!();
                         }
                       }
@@ -139,7 +146,11 @@ class _MessageForwardState extends State<MessageForward> {
                 },
                 child: Row(
                   children: [
-                    ImageWidget(item.msg.share.avatar?.thumbnailUint8List??item.msg.share.avatar?.defaultAvatar,size: 50.w,),
+                    ImageWidget(
+                      item.msg.share.avatar?.thumbnailUint8List ??
+                          item.msg.share.avatar?.defaultAvatar,
+                      size: 50.w,
+                    ),
                     SizedBox(
                       width: 15.w,
                     ),
@@ -164,7 +175,8 @@ class _MessageForwardState extends State<MessageForward> {
               ),
               item.children.isNotEmpty && item.isOpen
                   ? buildList(item.children,
-                      physics: const NeverScrollableScrollPhysics(),leftPadding: 20.w)
+                      physics: const NeverScrollableScrollPhysics(),
+                      leftPadding: 20.w)
                   : const SizedBox(),
             ],
           ),

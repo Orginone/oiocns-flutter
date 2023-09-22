@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
@@ -12,6 +12,7 @@ import 'state.dart';
 
 class UserInfoController extends BaseController<UserInfoState>
     with GetTickerProviderStateMixin {
+  @override
   final UserInfoState state = UserInfoState();
 
   UserInfoController() {
@@ -20,7 +21,6 @@ class UserInfoController extends BaseController<UserInfoState>
 
   @override
   void onReady() async {
-    // TODO: implement onReady
     super.onReady();
     await init();
   }
@@ -70,7 +70,7 @@ class UserInfoController extends BaseController<UserInfoState>
     }
   }
 
-  void removeMember(String data) async{
+  void removeMember(String data) async {
     var user = state.unitMember.firstWhere((element) => element.code == data);
     bool success = await settingCtrl.user.removeMembers([user]);
     if (success) {
