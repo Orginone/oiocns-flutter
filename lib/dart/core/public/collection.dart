@@ -27,6 +27,10 @@ class XCollection<T extends Xbase> {
     return _collName;
   }
 
+  String subMethodName({String? id}){
+    return '${this._target.belongId}-${id ?? this._target.id}-${this._collName}';///
+  }
+
   Future<List<T>> all() async {
     if (!_loaded) {
       _cache = await load({});
@@ -324,9 +328,9 @@ class XCollection<T extends Xbase> {
     return res.success;
   }
 
-  void subscribe(List<String> keys, callback: (data: any) => void,{String? id}){
-    kernel.subscribe(this.subMethodName(id), [...this._keys, ...keys], (data) => {
-      callback.apply(this, [data]);
+  void subscribe(String keys, callback = (data = any) => void,{String? id}){
+    kernel.subscribed(keys,this.subMethodName(id),  (data) => {
+       Function.apply(callback, [data], null),
     });
   }
 }
