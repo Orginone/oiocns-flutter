@@ -1,12 +1,18 @@
+import 'package:orginone/dart/base/common/emitter.dart';
+import 'package:orginone/dart/base/index.dart';
+import 'package:orginone/dart/core/public/operates.dart';
+import 'package:orginone/main.dart';
+
 import '../../base/model.dart';
 import '../../base/schema.dart';
 
-var ShareIdSet = <String, ShareIcon>{};
+Map<String, dynamic> shareIdSet = <String, dynamic>{};
 
-abstract class IEntity<T> {
+abstract class IEntity<T> extends Emitter {
   //实体唯一键
   late String key;
   //唯一标识
+  @override
   late String id;
   //实体名称
   late String name;
@@ -17,7 +23,7 @@ abstract class IEntity<T> {
   //实体描述
   late String remark;
   //数据实体
-  late T metadata;
+  late dynamic metadata;
   //用户ID
   late String userId;
   //归属Id
@@ -40,4 +46,107 @@ abstract class IEntity<T> {
   OperationModel operates(String mode);
 }
 
-class Entity implements IEntity {}
+///实体类实现
+abstract class Entity<T extends XEntity> extends Emitter implements IEntity {
+  late dynamic _metadata;
+  @override
+  late String key;
+
+  Entity(T metadata) {
+    this.key = super.id;
+    this._metadata = metadata;
+    shareIdSet[metadata.id] = metadata;
+  }
+
+  String getId() {
+    return this._metadata.id;
+  }
+
+  String getName() {
+    return metadata().name;
+  }
+
+  String getCode() {
+    return metadata().code;
+  }
+
+  String getTypeName() {
+    return metadata().typeName;
+  }
+
+  String getRemark() {
+    return metadata().remark ?? '';
+  }
+
+  T getMetadata() {
+    if (shareIdSet.containsKey(this._metadata.id)) {
+      return shareIdSet.values as T;
+    }
+    return this._metadata;
+  }
+
+  String getUserId() {
+    return kernel.userId;
+  }
+
+  String getBelongId() {
+    return this._metadata.belongId;
+  }
+
+  ShareIcon getShare() {
+    return this.findShare(id);
+  }
+
+  ShareIcon getCreater() {
+    return this.findShare(getMetadata().createUser!);
+  }
+
+  ShareIcon getUpdater() {
+    return this.findShare(getMetadata().updateUser!);
+  }
+
+  ShareIcon getBelong() {
+    return findShare(getMetadata().belongId!);
+  }
+
+  void setMetadata(T metadata) {
+    if (metadata.id == id) {
+      this.metadata = metadata;
+      shareIdSet[id] = metadata;
+      changCallback();
+    }
+  }
+
+  U findMetadata<U>(String id) {
+    if (shareIdSet.containsKey(id)) {
+      return shareIdSet.values as U;
+    }
+    return null as U;
+  }
+
+  void updateMetadata<U extends XEntity>(U data) {
+    shareIdSet[data.id] = data;
+  }
+
+  void setEntity() {
+    shareIdSet[id + '*'] = this;
+  }
+
+  U getEntity<U>(String id) {
+    return shareIdSet[id + '*'];
+  }
+
+  ShareIcon findShare(String id) {
+    var metadata = this.findMetadata<XTarget>(id);
+    ShareIcon shareIcon = ShareIcon(
+        name: metadata.name ?? '加载中...',
+        typeName: metadata.typeName ?? '未知',
+        avatar: parseAvatar(metadata.icon));
+    return shareIcon;
+  }
+
+  ///获取右键操作方法,暂时不实现
+  // OperationModel operates(String mode) {
+  //   return [entityOperates.remark, entityOperates.qrCode];
+  // }
+}

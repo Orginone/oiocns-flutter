@@ -2602,6 +2602,15 @@ class OperateModel {
       "menus": menus,
     };
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'sort': sort,
+      'cmd': cmd,
+      'label': label,
+      'iconType': iconType,
+    };
+  }
 }
 
 /// 会话元数据

@@ -7,7 +7,7 @@ import 'package:orginone/model/asset_creation_config.dart';
 import 'model.dart';
 
 class Xbase {
-  String? id; // 雪花ID
+  late String id; // 雪花ID
   int? status; // 状态
   String? createUser; // 创建人员ID
   String? updateUser; // 更新人员ID
