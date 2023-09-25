@@ -1,18 +1,15 @@
-import 'dart:ui';
-
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/main.dart';
 
 class SettingCenterState extends BaseBreadcrumbNavState<SettingNavModel> {
-
   late bool isSettingSubPage;
 
   SettingCenterState() {
     model.value = Get.arguments?['data'];
-    isSettingSubPage = Get.arguments?['isSettingSubPage']??false;
+    isSettingSubPage = Get.arguments?['isSettingSubPage'] ?? false;
     if (model.value == null) {
       var joinedCompanies = settingCtrl.provider.user?.companys;
       model.value = SettingNavModel(name: "设置", children: [
@@ -41,19 +38,17 @@ class SettingCenterState extends BaseBreadcrumbNavState<SettingNavModel> {
   }
 }
 
-
-
 class SettingNavModel extends BaseBreadcrumbNavModel<SettingNavModel> {
   IBelong? space;
-  SettingNavModel(
-      {super.id = '',
-        super.name = '',
-        super.children = const [],
-        super.source,
-        super.image,
-        super.spaceEnum,
-        super.showPopup = true,
-        super.onNext,
-        this.space,
-      });
+  SettingNavModel({
+    super.id = '',
+    super.name = '',
+    super.children = const [],
+    super.source,
+    super.image,
+    super.spaceEnum,
+    super.showPopup = true,
+    super.onNext,
+    this.space,
+  });
 }

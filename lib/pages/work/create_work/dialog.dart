@@ -40,8 +40,8 @@ Future<void> showCreateAuthDialog(
                   }, onTap2: () async {
                     late AnyThingModel newModel;
                     if (thing == null) {
-                      var res = await kernel.anystore
-                          .createThing('', target.id);
+                      var res =
+                          await kernel.anystore.createThing('', target.id);
                       if (res.data != null) {
                         newModel = res.data!;
                       }

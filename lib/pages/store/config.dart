@@ -2,8 +2,7 @@ import 'dart:convert';
 
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
@@ -72,7 +71,7 @@ Future<List<StoreTreeNav>> loadApplications(
       space: target,
       image: application.metadata.avatarThumbnail(),
       children: [
-        ...await loadModule(application.children,target),
+        ...await loadModule(application.children, target),
         ...loadWork(works, target),
       ],
     );
@@ -81,8 +80,7 @@ Future<List<StoreTreeNav>> loadApplications(
   return nav;
 }
 
-List<StoreTreeNav> loadWork(
-    List<IWork> works, ITarget target) {
+List<StoreTreeNav> loadWork(List<IWork> works, ITarget target) {
   List<StoreTreeNav> nav = [];
   for (var work in works) {
     StoreTreeNav workNav = StoreTreeNav(
@@ -104,22 +102,21 @@ Future<List<StoreTreeNav>> loadModule(
   List<StoreTreeNav> nav = [];
   for (var application in applications) {
     StoreTreeNav appNav = StoreTreeNav(
-      id: application.metadata.id!,
-      source: application,
-      spaceEnum: SpaceEnum.module,
-      name: application.metadata.name!,
-      space: target,
-      image: application.metadata.avatarThumbnail(),
-      children: [],
-      onNext: (item) async{
-        var works = await application.loadWorks();
-        List<StoreTreeNav> nav = [
-          ...await loadModule(application.children, target),
-          ...loadWork(works, target),
-        ];
-        item.children = nav;
-      }
-    );
+        id: application.metadata.id!,
+        source: application,
+        spaceEnum: SpaceEnum.module,
+        name: application.metadata.name!,
+        space: target,
+        image: application.metadata.avatarThumbnail(),
+        children: [],
+        onNext: (item) async {
+          var works = await application.loadWorks();
+          List<StoreTreeNav> nav = [
+            ...await loadModule(application.children, target),
+            ...loadWork(works, target),
+          ];
+          item.children = nav;
+        });
     nav.add(appNav);
   }
   return nav;
@@ -137,8 +134,9 @@ Future<List<StoreTreeNav>> loadForm(List<IForm> forms, ITarget target) async {
       onNext: (nav) async {
         await form.loadAttributes();
         await form.loadItems();
-        var filter = form.fields.where((element) => element.valueType == "选择型").toList();
-        nav.children = loadFilterItem(filter,target,form);
+        var filter =
+            form.fields.where((element) => element.valueType == "选择型").toList();
+        nav.children = loadFilterItem(filter, target, form);
       },
       image: form.metadata.avatarThumbnail(),
       children: [],
@@ -150,23 +148,21 @@ Future<List<StoreTreeNav>> loadForm(List<IForm> forms, ITarget target) async {
 
 List<StoreTreeNav> loadFilterItem(
     List<FieldModel> fields, ITarget target, IForm form,
-    [String? id])  {
+    [String? id]) {
   List<StoreTreeNav> nav = [];
 
-  List<StoreTreeNav> loadItem(List<FiledLookup> lookups){
+  List<StoreTreeNav> loadItem(List<FiledLookup> lookups) {
     List<StoreTreeNav> nav = [];
     for (var lookup in lookups) {
       StoreTreeNav specieNav = StoreTreeNav(
         id: lookup.id!,
         source: lookup,
         spaceEnum: SpaceEnum.filter,
-        name: lookup.text??"",
+        name: lookup.text ?? "",
         space: target,
         form: form,
         image: Ionicons.filter_outline,
-        children: [
-
-        ],
+        children: [],
       );
       nav.add(specieNav);
     }
@@ -182,7 +178,7 @@ List<StoreTreeNav> loadFilterItem(
       space: target,
       form: form,
       image: Ionicons.filter_outline,
-      children: field.lookups!=null?loadItem(field.lookups!):[],
+      children: field.lookups != null ? loadItem(field.lookups!) : [],
     );
     nav.add(specieNav);
   }

@@ -1,8 +1,7 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/controller/user_controller.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
-import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/form.dart';
 import 'package:orginone/main.dart';
@@ -43,7 +42,7 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
       );
     }
 
-    title = model.value?.name??"";
+    title = model.value?.name ?? "";
   }
 }
 
@@ -57,11 +56,10 @@ class StoreTreeNav extends BaseBreadcrumbNavModel<StoreTreeNav> {
       super.image,
       super.source,
       super.showPopup = true,
-        super.onNext,
+      super.onNext,
       this.space,
       this.form,
       super.spaceEnum}) {
     this.children = children;
   }
 }
-

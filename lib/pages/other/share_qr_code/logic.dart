@@ -6,9 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/controller/user_controller.dart';
+import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_forward.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -18,11 +19,12 @@ import 'dart:ui' as ui;
 import 'state.dart';
 
 class ShareQrCodeController extends BaseController<ShareQrCodeState> {
+  @override
   final ShareQrCodeState state = ShareQrCodeState();
   final GlobalKey globalKey = GlobalKey();
   scan() {
     // Log.info('扫描');
-    UserController c = Get.find<UserController>();
+    IndexController c = Get.find<IndexController>();
     c.qrScan();
   }
 

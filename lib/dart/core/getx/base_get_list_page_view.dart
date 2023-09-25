@@ -8,10 +8,11 @@ import 'package:orginone/widget/load_state_widget.dart';
 import 'base_get_list_state.dart';
 import 'base_list_controller.dart';
 
-abstract class BaseGetListPageView<T extends BaseListController, S extends BaseGetListState>
-    extends StatelessWidget {
-
+abstract class BaseGetListPageView<T extends BaseListController,
+    S extends BaseGetListState> extends StatelessWidget {
   late T controller;
+
+  BaseGetListPageView({super.key});
 
   S get state => controller.state as S;
 
@@ -53,20 +54,19 @@ abstract class BaseGetListPageView<T extends BaseListController, S extends BaseG
     );
   }
 
-  Widget noData(){
+  Widget noData() {
     return SingleChildScrollView(
       child: Container(
         width: double.infinity,
         height: MediaQuery.of(context).size.height.h,
         alignment: Alignment.center,
         color: Colors.grey.shade200,
-        child: Image.asset(Images.empty,width: 300.w),
+        child: Image.asset(Images.empty, width: 300.w),
       ),
     );
   }
 
   Widget buildView();
-
 
   Widget headWidget() {
     return Container();
@@ -82,5 +82,5 @@ abstract class BaseGetListPageView<T extends BaseListController, S extends BaseG
     return "";
   }
 
-  bool displayNoDataWidget()=>true;
+  bool displayNoDataWidget() => true;
 }

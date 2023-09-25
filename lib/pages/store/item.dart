@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -73,7 +73,7 @@ class StoreItem extends StatelessWidget {
             ),
             onTap: () async {
               if (item.type == 'file') {
-                Routers.jumpFile(file: item.file!,type: 'store');
+                Routers.jumpFile(file: item.file!, type: 'store');
               } else {
                 // var thing = item.thing;
                 // IForm? form = await settingCtrl.store
@@ -90,7 +90,7 @@ class StoreItem extends StatelessWidget {
           Obx(() {
             PopupMenuItem popupMenuItem;
             if (settingCtrl.store.isMostUsed(item.id)) {
-              popupMenuItem =  PopupMenuItem(
+              popupMenuItem = PopupMenuItem(
                 value: PopupMenuKey.removeCommon,
                 child: Text(PopupMenuKey.removeCommon.label),
               );

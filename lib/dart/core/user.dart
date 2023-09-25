@@ -365,7 +365,9 @@ class UserProvider {
         } else {
           message =
               '${data.operater?.name}移除赋予【${data.subTarget!.name}】的身份【${data.identity!.name}】.';
-          identitys.forEach((i) => i.removeMembers([data.subTarget!]));
+          for (var i in identitys) {
+            i.removeMembers([data.subTarget!]);
+          }
         }
         break;
       case OperateType.add:
@@ -378,7 +380,9 @@ class UserProvider {
         } else {
           message =
               '${data.operater?.name}赋予{${data.subTarget!.name}身份【${data.identity!.name}】.';
-          identitys.forEach((i) => i.pullMembers([data.subTarget!]));
+          for (var i in identitys) {
+            i.pullMembers([data.subTarget!]);
+          }
         }
         break;
     }

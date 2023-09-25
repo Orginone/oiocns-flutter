@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 
 import 'state.dart';
 
 class Item extends BaseBreadcrumbNavItem<SettingNavModel> {
-  final void Function(PopupMenuKey value,SettingNavModel model)? onSelected;
+  final void Function(PopupMenuKey value, SettingNavModel model)? onSelected;
   const Item(
-      {Key? key,
-        this.onSelected, required super.item,super.onNext,super.onTap});
-
+      {super.key,
+      this.onSelected,
+      required super.item,
+      super.onNext,
+      super.onTap});
 
   @override
   List<PopupMenuItem> popupItems() {
@@ -23,7 +25,6 @@ class Item extends BaseBreadcrumbNavItem<SettingNavModel> {
 
   @override
   void onSelectPopupItem(key) {
-    onSelected?.call(key,item);
+    onSelected?.call(key, item);
   }
 }
-

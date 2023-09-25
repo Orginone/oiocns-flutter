@@ -1,20 +1,15 @@
-
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/consts.dart';
-import 'package:orginone/dart/core/enum.dart';
-import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/work/logic.dart';
 import 'package:orginone/pages/work/state.dart';
 
 import 'index.dart';
 import 'task.dart';
 
 abstract class IWorkProvider {
-
   late String userId;
 
   /// 当前用户
@@ -59,10 +54,8 @@ abstract class IWorkProvider {
   bool isMostUsed(IWork define);
 }
 
-class WorkProvider implements IWorkProvider{
-
-
-  WorkProvider(this.user){
+class WorkProvider implements IWorkProvider {
+  WorkProvider(this.user) {
     userId = user.user!.id;
     todos = <IWorkTask>[].obs;
     kernel.on('RecvTask', (data) {
@@ -86,7 +79,7 @@ class WorkProvider implements IWorkProvider{
   late String userId;
 
   @override
-  Future<IWork?> findFlowDefine(String defineId) async{
+  Future<IWork?> findFlowDefine(String defineId) async {
     for (final target in user.targets) {
       for (final application in target.directory.applications) {
         for (final define in application.works) {
@@ -100,49 +93,57 @@ class WorkProvider implements IWorkProvider{
   }
 
   @override
-  Future<List<IWorkTask>> loadApply(String id) async{
-    var res = await kernel.anystore.pageRequest('work-tasks',userId,{
-      "match": {
-        "belongId": id,
-        "createUser": userId,
-        "nodeId": {
-          "_exists_": false,
+  Future<List<IWorkTask>> loadApply(String id) async {
+    var res = await kernel.anystore.pageRequest(
+        'work-tasks',
+        userId,
+        {
+          "match": {
+            "belongId": id,
+            "createUser": userId,
+            "nodeId": {
+              "_exists_": false,
+            },
+          },
+          "sort": {
+            "createTime": -1,
+          },
         },
-      },
-      "sort": {
-        "createTime": -1,
-      },
-    },PageRequest(offset: 0, limit: 9999, filter: ''));
+        PageRequest(offset: 0, limit: 9999, filter: ''));
     return res.map((e) => WorkTask(e, user)).toList();
   }
 
   @override
-  Future<List<IWorkTask>> loadDones(String id) async{
-    var res = await kernel.anystore.pageRequest('work-tasks',userId,{
-      "match": {
-        "belongId": id,
-        "status": {
-          "_gte_": 100,
+  Future<List<IWorkTask>> loadDones(String id) async {
+    var res = await kernel.anystore.pageRequest(
+        'work-tasks',
+        userId,
+        {
+          "match": {
+            "belongId": id,
+            "status": {
+              "_gte_": 100,
+            },
+            "records": {
+              "_exists_": true,
+            },
+          },
+          "sort": {
+            "createTime": -1,
+          },
         },
-        "records": {
-          "_exists_": true,
-        },
-      },
-      "sort": {
-        "createTime": -1,
-      },
-    },PageRequest(offset: 0, limit: 9999, filter: ''));
+        PageRequest(offset: 0, limit: 9999, filter: ''));
     return res.map((e) => WorkTask(e, user)).toList();
   }
 
-
   @override
-  Future<List<IWorkTask>> loadTodos({bool reload = false}) async{
+  Future<List<IWorkTask>> loadTodos({bool reload = false}) async {
     if (todos.isEmpty || reload) {
       final res = await kernel.queryApproveTask(IdReq(id: '0'));
       if (res.success) {
         todos.clear();
-        todos.addAll((res.data?.result??[]).map((e) => WorkTask(e, user)).toList());
+        todos.addAll(
+            (res.data?.result ?? []).map((e) => WorkTask(e, user)).toList());
         todos.refresh();
       }
     }
@@ -243,6 +244,8 @@ class WorkProvider implements IWorkProvider{
 
   @override
   bool isMostUsed(IWork define) {
-    return workFrequentlyUsed.where((p0) => p0.id == define.metadata.id).isNotEmpty;
+    return workFrequentlyUsed
+        .where((p0) => p0.id == define.metadata.id)
+        .isNotEmpty;
   }
 }

@@ -1,35 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/store/store_tree/store_nav_item.dart';
 
 import 'logic.dart';
 import 'state.dart';
 
-class StoreSubPage extends BaseGetListPageView<StoreSubController,StoreSubState>{
-
+class StoreSubPage
+    extends BaseGetListPageView<StoreSubController, StoreSubState> {
   late String type;
 
-  StoreSubPage(this.type);
+  StoreSubPage(this.type, {super.key});
 
   @override
   Widget buildView() {
-    if(type == "all"){
+    if (type == "all") {
       return allWidget();
     }
-    if(type == "common"){
+    if (type == "common") {
       return commonWidget();
     }
     return recentWidget(type: type);
   }
 
-
-  Widget allWidget(){
+  Widget allWidget() {
     return ListView.builder(
       controller: state.scrollController,
       itemBuilder: (BuildContext context, int index) {
@@ -51,8 +50,8 @@ class StoreSubPage extends BaseGetListPageView<StoreSubController,StoreSubState>
     );
   }
 
-  Widget commonWidget(){
-    return Obx((){
+  Widget commonWidget() {
+    return Obx(() {
       return GridView.builder(
         controller: state.scrollController,
         itemBuilder: (context, index) {
@@ -72,8 +71,7 @@ class StoreSubPage extends BaseGetListPageView<StoreSubController,StoreSubState>
           adapter.onSelected = (key) {
             controller.onSelected(key, store);
           };
-          return GridItem(
-              adapter:adapter );
+          return GridItem(adapter: adapter);
         },
         itemCount: settingCtrl.store.storeFrequentlyUsed.length,
         gridDelegate:
@@ -82,10 +80,10 @@ class StoreSubPage extends BaseGetListPageView<StoreSubController,StoreSubState>
     });
   }
 
-
-  Widget recentWidget({String type = "file"}){
-    return Obx((){
-      var data = settingCtrl.store.recent.where((p0) => p0.type == type).toList();
+  Widget recentWidget({String type = "file"}) {
+    return Obx(() {
+      var data =
+          settingCtrl.store.recent.where((p0) => p0.type == type).toList();
 
       return ListView.builder(
         controller: state.scrollController,
@@ -110,5 +108,5 @@ class StoreSubPage extends BaseGetListPageView<StoreSubController,StoreSubState>
   }
 
   @override
-  bool displayNoDataWidget() =>false;
+  bool displayNoDataWidget() => false;
 }

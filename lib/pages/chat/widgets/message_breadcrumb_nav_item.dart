@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_routers.dart';
 
@@ -8,7 +9,7 @@ class MessageBreadcrumbNavItem
     extends BaseBreadcrumbNavItem<ChatBreadcrumbNav> {
   final PopupMenuItemSelected? onSelected;
 
-  MessageBreadcrumbNavItem({
+  const MessageBreadcrumbNavItem({
     required super.item,
     super.onTap,
     super.onNext,

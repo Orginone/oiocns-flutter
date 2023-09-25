@@ -12,10 +12,10 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/controller/user_controller.dart';
+import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/chat/message/message.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/routers.dart';
@@ -49,17 +49,16 @@ enum DetailFunc {
 
 double defaultWidth = 10.w;
 
-class DetailItemWidget extends GetView<UserController> {
+class DetailItemWidget extends GetView<IndexController> {
   final IMsgChat chat;
   final IMessage msg;
-  DetailItemWidget({
+  const DetailItemWidget({
     Key? key,
     required this.chat,
     required this.msg,
   }) : super(key: key);
 
   MessageChatController get chatController => Get.find();
-
 
   @override
   Widget build(BuildContext context) {
@@ -80,9 +79,9 @@ class DetailItemWidget extends GetView<UserController> {
       shareIcon = settingCtrl.user.share;
     } else {
       id = msg.metadata.fromId;
-      if(chat.share.typeName == TargetType.person.label){
+      if (chat.share.typeName == TargetType.person.label) {
         shareIcon = chat.share;
-      }else{
+      } else {
         target = chat.members.firstWhere((element) => element.id == id);
         shareIcon = target.shareIcon();
       }
@@ -93,19 +92,22 @@ class DetailItemWidget extends GetView<UserController> {
     if (msg.msgType == MessageType.recall.label) {
       Widget child;
       if (isSelf) {
-        List<InlineSpan> recallMsgs=[TextSpan(text: "您撤回了一条消息", style: XFonts.size18Black9)];
-        
-        String msgStr=jsonDecode(msg.msgBody.substring(5))['body'];
-        if(!StringUtil.isJson(msgStr)) {
-          recallMsgs.add(TextSpan(text:" 重新编辑",style: TextStyle(color: Colors.blueAccent,fontSize: 20.sp),
-            recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              ChatBoxController controller = Get.find<ChatBoxController>();
+        List<InlineSpan> recallMsgs = [
+          TextSpan(text: "您撤回了一条消息", style: XFonts.size18Black9)
+        ];
 
-              controller.inputController.text = msgStr;
-              controller.eventFire(context, InputEvent.clickInput, chat);
-            }
-          ));
+        String msgStr = jsonDecode(msg.msgBody.substring(5))['body'];
+        if (!StringUtil.isJson(msgStr)) {
+          recallMsgs.add(TextSpan(
+              text: " 重新编辑",
+              style: TextStyle(color: Colors.blueAccent, fontSize: 20.sp),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  ChatBoxController controller = Get.find<ChatBoxController>();
+
+                  controller.inputController.text = msgStr;
+                  controller.eventFire(context, InputEvent.clickInput, chat);
+                }));
         }
         child = Text.rich(TextSpan(children: recallMsgs));
       } else {
@@ -123,8 +125,8 @@ class DetailItemWidget extends GetView<UserController> {
       children.add(child);
       isCenter = true;
     } else {
-      children.add(_getAvatar(id,shareIcon));
-      children.add(_getChat(target?.name??""));
+      children.add(_getAvatar(id, shareIcon));
+      children.add(_getChat(target?.name ?? ""));
     }
     return Container(
       margin: EdgeInsets.only(top: 8.h, bottom: 8.h),
@@ -139,11 +141,11 @@ class DetailItemWidget extends GetView<UserController> {
   }
 
   /// 获取头像
-  Widget _getAvatar(String id,[ShareIcon? shareIcon]) {
+  Widget _getAvatar(String id, [ShareIcon? shareIcon]) {
     return GestureDetector(
       child: TeamAvatar(
         size: 55.w,
-        info: TeamTypeInfo(share: shareIcon,userId: id),
+        info: TeamTypeInfo(share: shareIcon, userId: id),
         circular: true,
       ),
       onLongPress: () {
@@ -234,8 +236,7 @@ class DetailItemWidget extends GetView<UserController> {
                           chat.deleteMessage(msg.id);
                           break;
                         case DetailFunc.forward:
-                          chatController.forward(
-                              msg.msgType, msg.body!);
+                          chatController.forward(msg.msgType, msg.body!);
                           break;
                         case DetailFunc.reply:
                           ChatBoxController controller =
@@ -243,8 +244,9 @@ class DetailItemWidget extends GetView<UserController> {
                           controller.reply.value = msg.metadata;
                           break;
                         case DetailFunc.copy:
-                          Clipboard.setData(
-                              ClipboardData(text: StringUtil.msgConversion(msg.metadata, '')));
+                          Clipboard.setData(ClipboardData(
+                              text:
+                                  StringUtil.msgConversion(msg.metadata, '')));
                           break;
                       }
                     },
@@ -258,7 +260,7 @@ class DetailItemWidget extends GetView<UserController> {
 
     content.add(
       CustomPopupMenu(
-        controller:  msg.chatController,
+        controller: msg.chatController,
         position: PreferredPosition.bottom,
         menuBuilder: _buildLongPressMenu,
         barrierColor: Colors.transparent,
@@ -271,7 +273,7 @@ class DetailItemWidget extends GetView<UserController> {
     bool isRead = false;
     List<XTarget> unreadMember = [];
     List<XTarget> readMember = [];
-    Widget read = SizedBox();
+    Widget read = const SizedBox();
 
     try {
       IMessageLabel? tag;
@@ -312,7 +314,9 @@ class DetailItemWidget extends GetView<UserController> {
             child: Text(
               isRead
                   ? "全部已读"
-                  : "${unreadMember.length == chat.members.length - 1 ? "全部未读" : "${unreadMember.length}人未读"}",
+                  : unreadMember.length == chat.members.length - 1
+                      ? "全部未读"
+                      : "${unreadMember.length}人未读",
               style: TextStyle(
                   color: isRead ? XColors.black9 : XColors.selectedColor,
                   fontSize: 16.sp),
@@ -326,7 +330,7 @@ class DetailItemWidget extends GetView<UserController> {
       }
     }
 
-    if(!chat.isBelongPerson){
+    if (!chat.isBelongPerson) {
       content.add(read);
     }
 
@@ -379,9 +383,12 @@ class DetailItemWidget extends GetView<UserController> {
     Widget? body;
     if (msg.body?.cite?.msgType == MessageType.text.label) {
       body = TextDetail(
-          isSelf: isSelf,
-          message: msg.body!.cite!,
-          bgColor: Colors.black.withOpacity(0.1),isReply: true,chat: chat,);
+        isSelf: isSelf,
+        message: msg.body!.cite!,
+        bgColor: Colors.black.withOpacity(0.1),
+        isReply: true,
+        chat: chat,
+      );
     } else if (msg.body?.cite?.msgType == MessageType.image.label) {
       body = ImageDetail(
         message: msg.body!.cite!,
@@ -411,7 +418,7 @@ class DetailItemWidget extends GetView<UserController> {
       );
     }
 
-    return SizedBox();
+    return const SizedBox();
   }
 }
 
@@ -439,7 +446,7 @@ class _PreViewUrlState extends State<PreViewUrl> {
   void didUpdateWidget(covariant PreViewUrl oldWidget) {
     // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
-    if(widget.url!=oldWidget.url){
+    if (widget.url != oldWidget.url) {
       url = widget.url;
     }
   }
@@ -518,7 +525,7 @@ class PlayController extends GetxController with GetTickerProviderStateMixin {
     if (!_playStatuses.containsKey(msg.id)) {
       try {
         int milliseconds = msg.body?.milliseconds ?? 0;
-        List<dynamic> rowBytes = msg.body?.bytes  ?? [];
+        List<dynamic> rowBytes = msg.body?.bytes ?? [];
         List<int> tempBytes = rowBytes.map((byte) => byte as int).toList();
         _playStatuses[msg.id] = PlayerStatus(
           status: VoiceStatus.stop.obs,
@@ -610,11 +617,11 @@ class PlayController extends GetxController with GetTickerProviderStateMixin {
 }
 
 String getFileSizeString({required int bytes, int decimals = 0}) {
-  try{
+  try {
     const suffixes = ["B", "KB", "MB", "GB", "TB"];
     var i = (log(bytes) / log(1024)).floor();
     return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + suffixes[i];
-  }catch(e){
+  } catch (e) {
     return '0B';
   }
 }

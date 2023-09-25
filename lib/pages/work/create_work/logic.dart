@@ -14,33 +14,25 @@ import 'state.dart';
 
 class CreateWorkController extends BaseController<CreateWorkState>
     with GetTickerProviderStateMixin {
+  @override
   final CreateWorkState state = CreateWorkState();
-
 
   @override
   void onReady() async {
-    // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
-
 
     await loadMainTable();
     await loadSubTable();
     state.apply = await state.work.createApply();
     ResultType<AnyThingModel> result =
-    await kernel.anystore.createThing('', state.target.id);
+        await kernel.anystore.createThing('', state.target.id);
     if (result.data != null) {
       for (var element in state.mainForm) {
         element.things.add(result.data!);
       }
     }
     LoadingDialog.dismiss(context);
-  }
-
-  @override
-  void onReceivedEvent(event) {
-    // TODO: implement onReceivedEvent
-    super.onReceivedEvent(event);
   }
 
   Future<void> loadMainTable() async {
@@ -120,25 +112,25 @@ class CreateWorkController extends BaseController<CreateWorkState>
         Get.back();
       }
     }
-
   }
-
 
   Future<List<List<String>>> loadSubFieldData(
       IForm form, List<FieldModel> fields) async {
     List<List<String>> content = [];
     for (var thing in form.things) {
-      List<String> data = [thing.id ?? "",
+      List<String> data = [
+        thing.id ?? "",
         thing.status ?? "",
-        ShareIdSet[thing.creater]?.name??"",];
+        ShareIdSet[thing.creater]?.name ?? "",
+      ];
       for (var field in fields) {
         dynamic value = thing.otherInfo[field.id];
-        if(value == null){
+        if (value == null) {
           data.add('');
-        }else{
-          try{
+        } else {
+          try {
             data.add(await _converField(field, thing.otherInfo[field.id]));
-          }catch(e){
+          } catch (e) {
             print('');
           }
         }
@@ -148,10 +140,9 @@ class CreateWorkController extends BaseController<CreateWorkState>
     return content;
   }
 
-
-  Future<String> _converField(FieldModel field,dynamic value) async{
+  Future<String> _converField(FieldModel field, dynamic value) async {
     if (field.field.type == "input") {
-      return value??"";
+      return value ?? "";
     } else {
       switch (field.field.type) {
         case "selectPerson":
@@ -161,26 +152,28 @@ class CreateWorkController extends BaseController<CreateWorkState>
           return share.name;
         case "select":
         case 'switch':
-        Map<dynamic,String> select= {};
-        for (var value in field.lookups??[]) {
-          select[value.value] = value.text ?? "";
-        }
-        return select[value]??"";
+          Map<dynamic, String> select = {};
+          for (var value in field.lookups ?? []) {
+            select[value.value] = value.text ?? "";
+          }
+          return select[value] ?? "";
         case "upload":
-          var file = value!=null?FileItemModel.fromJson(value):null;
-          return file?.name??"";
+          var file = value != null ? FileItemModel.fromJson(value) : null;
+          return file?.name ?? "";
         default:
-          if(field.field.type == "selectTimeRange" || field.field.type == "selectDateRange"){
+          if (field.field.type == "selectTimeRange" ||
+              field.field.type == "selectDateRange") {
             return value.join("至");
           }
-          return value??"";
+          return value ?? "";
       }
     }
   }
 
-  void jumpEntity(IForm form) async{
-
-    Get.toNamed(Routers.choiceThing, arguments: {"form": form,'belongId':state.target.belong.id})?.then((value){
+  void jumpEntity(IForm form) async {
+    Get.toNamed(Routers.choiceThing,
+            arguments: {"form": form, 'belongId': state.target.belong.id})
+        ?.then((value) {
       state.subForm.refresh();
     });
   }

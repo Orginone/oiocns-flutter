@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 
 import 'logic.dart';
@@ -14,7 +14,7 @@ import 'state.dart';
 class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
   late String type;
 
-  WorkSubPage(this.type);
+  WorkSubPage(this.type, {super.key});
 
   @override
   Widget buildView() {
@@ -33,8 +33,8 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
     return otherWidget();
   }
 
-  Widget otherWidget(){
-    return Obx((){
+  Widget otherWidget() {
+    return Obx(() {
       return ListView.builder(
         shrinkWrap: true,
         controller: state.scrollController,
@@ -48,10 +48,8 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
     });
   }
 
-
-
-  Widget todoWidget(){
-    return Obx((){
+  Widget todoWidget() {
+    return Obx(() {
       return ListView.builder(
         shrinkWrap: true,
         controller: state.scrollController,
@@ -65,8 +63,7 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
     });
   }
 
-
-  Widget commonWidget(){
+  Widget commonWidget() {
     return Obx(() {
       return GridView.builder(
         shrinkWrap: true,
@@ -92,17 +89,15 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
             controller.onSelected(key, app);
           };
 
-          return GridItem(
-              adapter: adapter);
+          return GridItem(adapter: adapter);
         },
         itemCount: settingCtrl.work.workFrequentlyUsed.length,
       );
     });
   }
 
-
-  Widget applicationWidget(){
-    return Obx((){
+  Widget applicationWidget() {
+    return Obx(() {
       return GridView.builder(
         shrinkWrap: true,
         controller: state.scrollController,
@@ -113,12 +108,12 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
             adapter: ListAdapter.application(app.keys.first, app.values.first),
           );
         },
-        itemCount: settingCtrl.provider.myApps.length, 
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+        itemCount: settingCtrl.provider.myApps.length,
+        gridDelegate:
+            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
       );
     });
   }
-
 
   Widget allWidget() {
     return ListView.builder(
@@ -134,7 +129,9 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
             controller.jumpNext(item);
           },
         );
-      },itemCount: state.nav?.children.length??0,);
+      },
+      itemCount: state.nav?.children.length ?? 0,
+    );
   }
 
   @override

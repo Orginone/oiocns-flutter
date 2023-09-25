@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/message_breadcrumb_nav_item.dart';
 
@@ -15,7 +15,7 @@ class MessageSubPage
     extends BaseGetListPageView<MessageSubController, MessageSubState> {
   late String type;
 
-  MessageSubPage(this.type);
+  MessageSubPage(this.type, {super.key});
 
   @override
   Widget buildView() {
@@ -111,7 +111,6 @@ class MessageSubPage
 
   @override
   String tag() {
-    // TODO: implement tag
     return "message_$type";
   }
 

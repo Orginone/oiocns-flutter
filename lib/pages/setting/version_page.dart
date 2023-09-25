@@ -17,7 +17,6 @@ import 'package:orginone/widget/widgets/progress_dialog.dart';
 import 'package:orginone/config/enum.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/util/load_image.dart';
 import 'package:orginone/util/string_util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -25,7 +24,6 @@ import '../../main.dart';
 
 class VersionPage extends GetView<VersionController> {
   const VersionPage({Key? key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +63,7 @@ class VersionPage extends GetView<VersionController> {
         children: [
           Align(
             alignment: AlignmentDirectional.topStart,
-            child: ImageWidget(
-                 value.uploadName?.shareLink ?? '',
-                size: 60.w),
+            child: ImageWidget(value.uploadName?.shareLink ?? '', size: 60.w),
           ),
           Align(
             alignment: AlignmentDirectional.centerStart,
@@ -169,9 +165,7 @@ class VersionPage extends GetView<VersionController> {
                         width: 135.w,
                         height: 42.h,
                         child: GFButton(
-                          onPressed: () {
-
-                          },
+                          onPressed: () {},
                           color: XColors.themeColor,
                           text: "查看详情",
                           textStyle: AFont.instance.size18White,
@@ -197,9 +191,7 @@ class VersionPage extends GetView<VersionController> {
       ),
     );
   }
-
 }
-
 
 class VersionController extends BaseListController {
   var fileCtrl = UpdateController();
@@ -211,9 +203,8 @@ class VersionController extends BaseListController {
     onRefresh();
   }
 
-
   @override
-  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async{
+  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
     var version = await fileCtrl.versionList();
     if (version != null) {
       List<VersionVersionMes> versionList = [];
@@ -230,7 +221,7 @@ class VersionController extends BaseListController {
         return;
       }
       PageResp<VersionVersionMes> pageResp =
-      PageResp(versionList.length, versionList.length, versionList);
+          PageResp(versionList.length, versionList.length, versionList);
       state.dataList.add(pageResp);
       mLoadStatus.value = LoadStatusX.success;
       update();
@@ -239,8 +230,6 @@ class VersionController extends BaseListController {
       update();
     }
   }
-
-
 
   @override
   void search(String value) {}
@@ -253,9 +242,7 @@ class VersionBinding extends Bindings {
   }
 }
 
-
 class UpdateController extends GetxController {
-
   Future<Map<String, dynamic>> apkDetail() async {
     var key = "apkFile";
     var domain = "all";
@@ -280,5 +267,3 @@ class UpdateBinding extends Bindings {
     Get.lazyPut(() => UpdateController());
   }
 }
-
-

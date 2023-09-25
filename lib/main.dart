@@ -12,7 +12,7 @@ import 'package:orginone/dart/controller/wallet_controller.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/foreground_utils.dart';
 import 'package:orginone/util/notification_util.dart';
-import 'dart/controller/user_controller.dart';
+import 'dart/controller/index.dart';
 import 'util/hive_utils.dart';
 import 'util/local_store.dart';
 
@@ -49,7 +49,7 @@ KernelApi get kernel => KernelApi();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver();
 
-UserController get settingCtrl => Get.find<UserController>();
+IndexController get settingCtrl => Get.find<IndexController>();
 
 WalletController get walletCtrl => Get.find<WalletController>();
 

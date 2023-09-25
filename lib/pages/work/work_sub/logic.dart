@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
-import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/event/work_reload.dart';
@@ -15,6 +14,7 @@ import 'package:orginone/routers.dart';
 import 'state.dart';
 
 class WorkSubController extends BaseListController<WorkSubState> {
+  @override
   final WorkSubState state = WorkSubState();
 
   late String type;
@@ -23,7 +23,6 @@ class WorkSubController extends BaseListController<WorkSubState> {
 
   @override
   void onInit() async {
-    // TODO: implement onInit
     super.onInit();
     state.scrollController = ScrollController(debugLabel: type);
     if (type == "all") {
@@ -40,7 +39,6 @@ class WorkSubController extends BaseListController<WorkSubState> {
 
   @override
   void onReceivedEvent(event) async {
-    // TODO: implement onReceivedEvent
     super.onReceivedEvent(event);
     if (event is WorkReload && type == "todo") {
       await loadData();
@@ -48,9 +46,7 @@ class WorkSubController extends BaseListController<WorkSubState> {
   }
 
   @override
-  void onReady() {
-    // TODO: implement onReady
-  }
+  void onReady() {}
 
   void initNav() async {
     var joinedCompanies = settingCtrl.user.companys;
@@ -96,7 +92,7 @@ class WorkSubController extends BaseListController<WorkSubState> {
     }
     state.nav = WorkBreadcrumbNav(children: [
       WorkBreadcrumbNav(
-          name:  settingCtrl.user.metadata.name??"",
+          name: settingCtrl.user.metadata.name ?? "",
           children: [
             WorkBreadcrumbNav(
                 name: WorkEnum.todo.label,
@@ -134,8 +130,8 @@ class WorkSubController extends BaseListController<WorkSubState> {
   }
 
   Future<List<WorkBreadcrumbNav>> buildApplication(IDirectory dir) async {
-
-    List<WorkBreadcrumbNav> _loadModuleNav(List<IApplication> app, IBelong belong) {
+    List<WorkBreadcrumbNav> _loadModuleNav(
+        List<IApplication> app, IBelong belong) {
       List<WorkBreadcrumbNav> navs = [];
       for (var value in app) {
         navs.add(WorkBreadcrumbNav(
@@ -174,7 +170,7 @@ class WorkSubController extends BaseListController<WorkSubState> {
       works.add(WorkBreadcrumbNav(
           children: [],
           name: element.metadata.name!,
-          id: element.id!,
+          id: element.id,
           image: element.metadata.avatarThumbnail(),
           space: (dir.target as IBelong),
           workEnum: WorkEnum.initiationWork,

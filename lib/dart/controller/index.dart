@@ -7,7 +7,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/provider.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
@@ -78,7 +78,7 @@ class ShortcutData {
 }
 
 /// 设置控制器
-class UserController extends GetxController {
+class IndexController extends GetxController {
   String currentKey = "";
   StreamSubscription<UserLoaded>? _userSub;
   late UserProvider _provider;
@@ -130,10 +130,12 @@ class UserController extends GetxController {
     super.onClose();
   }
 
+  /// 数据提供者
   UserProvider get provider {
     return _provider;
   }
 
+  /// 当前用户
   IPerson get user {
     return _provider.user!;
   }
@@ -142,6 +144,7 @@ class UserController extends GetxController {
     return _provider.chat!;
   }
 
+  /// 办事提供者
   IWorkProvider get work {
     return _provider.work!;
   }
@@ -297,7 +300,7 @@ class UserController extends GetxController {
 class UserBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(UserController(), permanent: true);
+    Get.put(IndexController(), permanent: true);
   }
 }
 

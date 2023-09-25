@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
@@ -11,8 +11,10 @@ import 'base_breadcrumb_nav_controller.dart';
 import 'base_get_breadcrumb_nav_state.dart';
 
 abstract class BaseBreadcrumbNavMultiplexPage<
-T extends BaseBreadcrumbNavController,
-S extends BaseBreadcrumbNavState> extends BaseGetPageView<T, S> {
+    T extends BaseBreadcrumbNavController,
+    S extends BaseBreadcrumbNavState> extends BaseGetPageView<T, S> {
+  BaseBreadcrumbNavMultiplexPage({super.key});
+
   TextStyle get _selectedTextStyle =>
       TextStyle(fontSize: 24.sp, color: XColors.themeColor);
 
@@ -56,30 +58,31 @@ S extends BaseBreadcrumbNavState> extends BaseGetPageView<T, S> {
         );
       }),
       actions: [
-        state.showSearchButton ? Obx(() {
-          return IconButton(
-            onPressed: () {
-              controller.changeSearchState();
-            },
-            icon: Icon(
-              state.showSearch.value ? Icons.close : Icons.search,
-              color: Colors.black,
-            ),
-          );
-        }) : const SizedBox(),
+        state.showSearchButton
+            ? Obx(() {
+                return IconButton(
+                  onPressed: () {
+                    controller.changeSearchState();
+                  },
+                  icon: Icon(
+                    state.showSearch.value ? Icons.close : Icons.search,
+                    color: Colors.black,
+                  ),
+                );
+              })
+            : const SizedBox(),
         popupMenuItems().isEmpty
             ? const SizedBox()
             : CommonWidget.commonPopupMenuButton<PopupMenuKey>(
-            items: popupMenuItems(),
-            iconColor: Colors.black,
-            onSelected: (key) {
-              controller.onTopPopupMenuSelected(key);
-            }),
+                items: popupMenuItems(),
+                iconColor: Colors.black,
+                onSelected: (key) {
+                  controller.onTopPopupMenuSelected(key);
+                }),
       ],
       body: body(),
     );
   }
-
 
   Widget _level(BaseBreadcrumbNavInfo info) {
     int index = state.bcNav.indexOf(info);
@@ -116,5 +119,4 @@ S extends BaseBreadcrumbNavState> extends BaseGetPageView<T, S> {
   List<PopupMenuItem<PopupMenuKey>> popupMenuItems() {
     return [];
   }
-
 }

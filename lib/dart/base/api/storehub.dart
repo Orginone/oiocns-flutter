@@ -20,6 +20,10 @@ class StoreHub {
   List<Function(Exception?)> _disconnectedCallbacks = [];
   // 日志
   final Logger log = Logger("StoreHub");
+
+  /// 连接ID
+  String get connectionId => _connection.connectionId ?? '';
+
   StoreHub(
     String url, {
     protocol = 'json',
@@ -63,7 +67,6 @@ class StoreHub {
     return _isStarted && _connection.state == HubConnectionState.Connected;
   }
 
-
   ///连接状态
 
   HubConnectionState? connectionState() {
@@ -96,7 +99,7 @@ class StoreHub {
   void restart() async {
     if (isConnected) {
       _isStarted = false;
-      await this._connection.stop();
+      await _connection.stop();
       _connection.stop().then((_) {
         _starting();
       });

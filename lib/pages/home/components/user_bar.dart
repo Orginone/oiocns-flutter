@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/config/index.dart';
-import 'package:orginone/dart/controller/user_controller.dart';
+import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/extension/ex_list.dart';
@@ -17,7 +17,7 @@ import 'package:orginone/widget/text_widget.dart';
 
 import 'search_bar.dart';
 
-class UserBar extends GetView<UserController> {
+class UserBar extends GetView<IndexController> {
   const UserBar({super.key});
 
   @override

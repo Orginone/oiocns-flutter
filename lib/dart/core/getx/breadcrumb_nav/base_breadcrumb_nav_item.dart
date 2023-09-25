@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/popup_widget.dart';
 
@@ -29,12 +29,12 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
         itemBuilder: (BuildContext context) {
           return popupItems();
         },
-        onSelected: (key){
+        onSelected: (key) {
           onSelectPopupItem(key);
         },
-        onTap: () async{
-          if(item.onNext!=null){
-             await item.onNext!(item);
+        onTap: () async {
+          if (item.onNext != null) {
+            await item.onNext!(item);
           }
           if (onNext != null) {
             onNext!();
@@ -44,10 +44,10 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
         },
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border(bottom: BorderSide(color: Colors.grey.shade300,width: 0.5))
-          ),
-          padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 12.h),
+              color: Colors.white,
+              border: Border(
+                  bottom: BorderSide(color: Colors.grey.shade300, width: 0.5))),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           child: Row(
             children: [
               AdvancedAvatar(
@@ -125,14 +125,11 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
     );
   }
 
-  List<PopupMenuItem> popupItems(){
+  List<PopupMenuItem> popupItems() {
     return [];
   }
 
-  void onSelectPopupItem(dynamic key){
-
-  }
-
+  void onSelectPopupItem(dynamic key) {}
 }
 
 class _Icon extends StatelessWidget {
