@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/consts.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
@@ -43,7 +43,6 @@ abstract class IStoreProvider {
 }
 
 class StoreProvider implements IStoreProvider {
-
   StoreController get storeController => Get.find();
 
   StoreProvider(this.user) {
@@ -63,7 +62,7 @@ class StoreProvider implements IStoreProvider {
     for (var specie in species) {
       var forms = await specie.directory.loadForms();
       for (var form in forms) {
-        if(form.metadata.id == id){
+        if (form.metadata.id == id) {
           return form;
         }
       }
@@ -71,7 +70,7 @@ class StoreProvider implements IStoreProvider {
     for (var target in user.targets) {
       var forms = await target.directory.loadForms();
       for (var form in forms) {
-        if(form.metadata.id == id){
+        if (form.metadata.id == id) {
           return form;
         }
       }
@@ -139,8 +138,9 @@ class StoreProvider implements IStoreProvider {
         for (var key in stores.keys) {
           recent.add(RecentlyUseModel.fromJson(stores[key]));
         }
-        recent.sort((a,b){
-          return DateTime.parse(b.createTime).compareTo(DateTime.parse(a.createTime));
+        recent.sort((a, b) {
+          return DateTime.parse(b.createTime)
+              .compareTo(DateTime.parse(a.createTime));
         });
       }
     }
@@ -201,7 +201,6 @@ class StoreProvider implements IStoreProvider {
     return storeFrequentlyUsed.where((p0) => p0.id == id).isNotEmpty;
   }
 
-
   @override
   Future<void> onRecordRecent(RecentlyUseModel data) async {
     var res = await kernel.anystore.set(
@@ -212,11 +211,11 @@ class StoreProvider implements IStoreProvider {
       },
       user.id,
     );
-    if(res.success){
-      if(recent.where((p0) => p0.id == data.id).isNotEmpty){
+    if (res.success) {
+      if (recent.where((p0) => p0.id == data.id).isNotEmpty) {
         recent.removeWhere((element) => element.id == data.id);
       }
-      recent.insert(0,data);
+      recent.insert(0, data);
     }
   }
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/main.dart';
@@ -10,7 +10,6 @@ import 'package:orginone/main.dart';
 import 'file_info.dart';
 
 abstract class IApplication implements IFileInfo<XApplication> {
-
   //上级模块
   IApplication? parent;
 
@@ -139,7 +138,7 @@ class Application extends FileInfo<XApplication> implements IApplication {
 
   @override
   // TODO: implement popupMenuItem
-  List<PopupMenuItem> get popupMenuItem{
+  List<PopupMenuItem> get popupMenuItem {
     {
       List<PopupMenuKey> key = [];
       key.addAll([
@@ -150,9 +149,9 @@ class Application extends FileInfo<XApplication> implements IApplication {
       ]);
       return key
           .map((e) => PopupMenuItem(
-        value: e,
-        child: Text(e.label),
-      ))
+                value: e,
+                child: Text(e.label),
+              ))
           .toList();
     }
   }
@@ -163,7 +162,8 @@ class Application extends FileInfo<XApplication> implements IApplication {
   @override
   List<IFileInfo<XEntity>> content(int mode) {
     final List<IFileInfo<XEntity>> fileList = [...children, ...works];
-    fileList.sort((a, b) => DateTime.parse(a.metadata.updateTime??"").compareTo(DateTime.parse(b.metadata.updateTime??"")));
+    fileList.sort((a, b) => DateTime.parse(a.metadata.updateTime ?? "")
+        .compareTo(DateTime.parse(b.metadata.updateTime ?? "")));
     return fileList.reversed.toList();
   }
 
@@ -172,7 +172,7 @@ class Application extends FileInfo<XApplication> implements IApplication {
   String get locationKey => key;
 
   @override
-  Future<IApplication?> createModule(ApplicationModel data) async{
+  Future<IApplication?> createModule(ApplicationModel data) async {
     data.parentId = id;
     data.typeName = '模块';
     data.directoryId = directory.id;
