@@ -9,10 +9,13 @@ import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/model/user_model.dart';
 
 import '../../base/model.dart';
 import '../../base/schema.dart';
-import '../enum.dart';
+import '../public/enums.dart';
+import '../public/objects.dart';
+import '../thing/file_info.dart';
 import 'base/belong.dart';
 import 'team/hospital.dart';
 import 'team/university.dart';
@@ -24,22 +27,29 @@ abstract class IPerson extends IBelong {
   //赋予人的身份(角色)实体
   late List<XIdProof> givedIdentitys;
 
+  //用户缓存对象
+  late XObject<Xbase> cacheObj;
+
+  //拷贝的文件
+  late Map<String, IFileInfo<XEntity>> copyFiles;
+
   //根据ID查询共享信息
   Future<ShareIcon> findShareById(String id);
+  //根据Id查询共享信息
+  Future<XEntity?> findEntityAsync(String id);
 
   //判断是否拥有某些用户的权限
   bool authenticate(List<String> orgIds, List<String> authIds);
 
   // 加载赋予人的身份(角色)实体
   Future<List<XIdProof>> loadGivedIdentitys({bool reload = false});
-
-  //根据Id查询共享信息
-  Future<XEntity?> findEntityAsync(String id);
-
+  //赋予身份
+  void giveIdentitys(List<XIdentity> identitus, {String? identity});
+  //移除赋予人的身份（角色）实体
   void removeGivedIdentity(List<String> identityIds, [String? teamId]);
 
   //加载单位
-  Future<List<ICompany>> loadCompanys({bool reload = false});
+  Future<List<ICompany>> loadCompanys({bool reload = false}); /////
 
   //创建单位
   Future<ICompany?> createCompany(TargetModel data);
@@ -48,6 +58,7 @@ abstract class IPerson extends IBelong {
   Future<List<XTarget>> searchTargets(String filter, List<String> typeNames);
 }
 
+//人员类型实现
 class Person extends Belong implements IPerson {
   @override
   late RxList<ICompany> companys;
@@ -55,8 +66,15 @@ class Person extends Belong implements IPerson {
   @override
   late List<XIdProof> givedIdentitys;
 
-  Person(XTarget metadata) : super(metadata, ['本人']) {
-    companys = <ICompany>[].obs;
+  bool _cohortloaded = false;
+
+  bool _givedIdentityLoaded = false;
+
+  Person(XTarget _metadata) : super(_metadata, []) {
+    //['本人']
+    cacheObj = XObject(_metadata, 'target-cache', []);
+    copyFiles = {};
+    this.companys = <ICompany>[].obs;
     givedIdentitys = [];
   }
 
@@ -203,7 +221,7 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  Future<List<XTarget>>searchTargets(
+  Future<List<XTarget>> searchTargets(
       String filter, List<String> typeNames) async {
     var res = await kernel.searchTargets(NameTypeModel(
       name: filter,
@@ -273,7 +291,7 @@ class Person extends Belong implements IPerson {
     members = members.where((i) => i.id != userId).toList();
     if (isAdd) {
       for (var i in members) {
-        if(memberChats.where((element) => element.chatId == i.id).isEmpty){
+        if (memberChats.where((element) => element.chatId == i.id).isEmpty) {
           var item = PersonMsgChat(
             belong,
             i.id!,
@@ -303,18 +321,19 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async {
+  Future<void> deepLoad(
+      {bool reload = false, bool reloadContent = false}) async {
     await Future.wait([
       loadGivedIdentitys(reload: reload),
       loadCompanys(reload: reload),
       loadCohorts(reload: reload),
       loadMembers(reload: reload),
       loadSuperAuth(reload: reload),
-       directory.loadContent(reload: reloadContent),
+      directory.loadContent(reload: reloadContent),
     ]);
     superAuth?.deepLoad(reload: reload);
     for (var company in companys) {
-       await company.deepLoad(reload: reload, reloadContent: reloadContent);
+      await company.deepLoad(reload: reload, reloadContent: reloadContent);
     }
     for (var cohort in cohorts) {
       await cohort.deepLoad(reload: reload, reloadContent: reloadContent);
@@ -324,9 +343,9 @@ class Person extends Belong implements IPerson {
   @override
   void recvTarget(String operate, bool isChild, XTarget target) {
     // TODO: implement recvTarget
-    if(isChild){
+    if (isChild) {
       super.recvTarget(operate, isChild, target);
-    }else{
+    } else {
       switch (operate) {
         case 'Add':
           if (companyTypes.contains(TargetType.getType(target.typeName!))) {
@@ -334,7 +353,7 @@ class Person extends Belong implements IPerson {
             company.deepLoad();
             companys.add(company);
           } else if (target.typeName == TargetType.cohort.label) {
-            var cohort = Cohort(this,target);
+            var cohort = Cohort(this, target);
             cohort.deepLoad();
             cohorts.add(cohort);
           }
@@ -387,8 +406,13 @@ class Person extends Belong implements IPerson {
   // TODO: implement popupMenuItem
   List<PopupMenuItem> get popupMenuItem {
     List<PopupMenuKey> key = [];
-    if(hasRelationAuth()){
-      key.addAll([...createPopupMenuKey,PopupMenuKey.createCohort,PopupMenuKey.createCompany,PopupMenuKey.updateInfo]);
+    if (hasRelationAuth()) {
+      key.addAll([
+        ...createPopupMenuKey,
+        PopupMenuKey.createCohort,
+        PopupMenuKey.createCompany,
+        PopupMenuKey.updateInfo
+      ]);
     }
     key.addAll(defaultPopupMenuKey);
 
@@ -417,18 +441,18 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  Future<bool> teamChangedNotity(XTarget target) async{
-    if(target.typeName == TargetType.cohort.label){
+  Future<bool> teamChangedNotity(XTarget target) async {
+    if (target.typeName == TargetType.cohort.label) {
       if (!cohorts.any((i) => i.id == target.id)) {
-        final cohort = Cohort(this,target);
+        final cohort = Cohort(this, target);
         await cohort.deepLoad();
         cohorts.add(cohort);
         return true;
       }
-    }else{
+    } else {
       if (companyTypes.contains(target.typeName as TargetType)) {
         if (!companys.any((i) => i.id == target.id)) {
-          final company = createCompanyFromTarget(target,this);
+          final company = createCompanyFromTarget(target, this);
           await company.deepLoad();
           companys.add(company);
           return true;
@@ -457,4 +481,15 @@ class Person extends Belong implements IPerson {
   @override
   // TODO: implement locationKey
   String get locationKey => '';
+
+  @override
+  XObject<Xbase> cacheObj;
+
+  @override
+  Map<String, IFileInfo<XEntity>> copyFiles;
+
+  @override
+  void giveIdentitys(List<XIdentity> identitus, {String? identity}) {
+    // TODO: implement giveIdentitys
+  }
 }

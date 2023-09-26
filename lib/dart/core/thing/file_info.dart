@@ -5,7 +5,7 @@ import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/common/entity.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/main.dart';
@@ -202,10 +202,9 @@ class SysFileInfo extends FileInfo<XEntity> implements ISysFileInfo {
     );
   }
 
-
-  String getThumbnail(){
+  String getThumbnail() {
     String img = Images.otherIcon;
-    String ext = filedata.extension?.toLowerCase()??"";
+    String ext = filedata.extension?.toLowerCase() ?? "";
     if (ext == '.jpg' || ext == '.jpeg' || ext == '.png' || ext == '.webp') {
       return '${Constant.host}/orginone/anydata/bucket/load/${filedata.shareLink}';
     } else {

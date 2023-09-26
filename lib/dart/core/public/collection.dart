@@ -9,11 +9,14 @@ class XCollection<T extends Xbase> {
   late String _collName;
   late XTarget _target;
   late List<String> _relations = [];
+  late List<String> _keys;
 
   ///构造方法
-  constructor(XTarget target, String name, List<String> relations) {
-    _loaded = false;
+  XCollection(
+      XTarget target, String name, List<String> relations, List<String> keys) {
     _cache = [];
+    _keys = keys;
+    _loaded = false;
     _collName = name;
     _target = target;
     _relations = relations;
@@ -27,8 +30,10 @@ class XCollection<T extends Xbase> {
     return _collName;
   }
 
-  String subMethodName({String? id}){
-    return '${this._target.belongId}-${id ?? this._target.id}-${this._collName}';///
+  String subMethodName({String? id}) {
+    return '${this._target.belongId}-${id ?? this._target.id}-${this._collName}';
+
+    ///
   }
 
   Future<List<T>> all() async {
@@ -39,17 +44,14 @@ class XCollection<T extends Xbase> {
     return _cache;
   }
 
-  Future<List<T>> find(List<String> ids) async {
+  Future<List<T>> find({required List<String> ids}) async {
     if (ids != '' && ids.isNotEmpty) {
-      return await loadSpace({
-        options: {
-          match: {
-            _id: {
-              _in_: ids,
-            }
-          }
+      Map<String, dynamic> options = {
+        'match': {
+          '_id': {'_in_': ids}
         }
-      });
+      };
+      return await loadSpace(options);
     }
     return [];
   }
@@ -202,19 +204,18 @@ class XCollection<T extends Xbase> {
     return [];
   }
 
-  Future<bool> delete(T data,{String? copyId}) async {
+  Future<bool> delete(T data, {String? copyId}) async {
+    Map<String, dynamic> update = {
+      'match': {'_id': data.id},
+      'update': {
+        '_set': {'isDeleted': true}
+      }
+    };
     var res = await kernel.collectionUpdate(
       _target.belongId!,
       this._relations,
       this._collName,
-      // {
-      //   match: { _id: data.id },
-      //   update: {
-      //     _set_: {
-      //       isDeleted: true,
-      //     },
-      //   },
-      // },
+      update,
       copyId,
     );
     if (res.success) {
@@ -223,78 +224,20 @@ class XCollection<T extends Xbase> {
     return false;
   }
 
-  Future<bool> deleteMany(List<T> data, {String? copyId})async{
-    var res = await kernel.collectionUpdate(
-      _target.belongId!,
-      this._relations,
-      this._collName,
-      // {
-      //   match: {
-      //     _id: {
-      //       _in_: data.map((i) => i.id),
-      //     },
-      //   },
-      //   update: {
-      //     _set_: {
-      //       isDeleted: true,
-      //     },
-      //   },
-      // },
-      copyId,
-    );
-    if (res.success) {
-      return res.data?.MatchedCount > 0;
-    }
-    return false;
-  }
-
-  Future<bool> deleteMatch(dynamic match, {String? copyId})async {
-    var res = await kernel.collectionUpdate(
-      _target.belongId!,
-      this._relations,
-      this._collName,
-      // {
-      //   match: match,
-      //   update: {
-      //     _set_: {
-      //       isDeleted: true,
-      //     },
-      //   },
-      // },
-      copyId,
-    );
-    if (res.success) {
-      return res.data?.MatchedCount > 0;
-    }
-    return false;
-  }
-
-  Future<bool>  remove(T data,  {String? copyId})async {
-    var res = await kernel.collectionRemove(
-      this._target.belongId!,
-      this._relations,
-      this._collName,
-      // {
-      //   _id: data.id,
-      // },
-      copyId,
-    );
-    if (res.success) {
-      return res.data?.MatchedCount > 0;
-    }
-    return false;
-  }
-
-  Future<bool> removeMany(data = T[],  {String? copyId}) async {
-    var res = await kernel.collectionRemove(
-      this._target.belongId!,
-      this._relations,
-      this._collName,
-      {
-        _id: {
-          _in_: data.map((i) => i.id),
-        },
+  Future<bool> deleteMany(List<T> data, {String? copyId}) async {
+    Map<String, dynamic> update = {
+      'match': {
+        '_id': {'_in': data.map((i) => i.id)}
       },
+      'update': {
+        '_set_': {'isDeleted': true}
+      }
+    };
+    var res = await kernel.collectionUpdate(
+      _target.belongId!,
+      this._relations,
+      this._collName,
+      update,
       copyId,
     );
     if (res.success) {
@@ -303,17 +246,69 @@ class XCollection<T extends Xbase> {
     return false;
   }
 
-  Future removeCache(String id) async{
+  Future<bool> deleteMatch(dynamic match, {String? copyId}) async {
+    Map<String, dynamic> update = {
+      'match': match,
+      'update': {
+        '_set_': {'isDeleted': true}
+      }
+    };
+    var res = await kernel.collectionUpdate(
+      _target.belongId!,
+      this._relations,
+      this._collName,
+      update,
+      copyId,
+    );
+    if (res.success) {
+      return res.data?.MatchedCount > 0;
+    }
+    return false;
+  }
+
+  Future<bool> remove(T data, {String? copyId}) async {
+    Map<String, dynamic> match = {'_id': data.id};
+    var res = await kernel.collectionRemove(
+      this._target.belongId!,
+      this._relations,
+      this._collName,
+      match,
+      copyId,
+    );
+    if (res.success) {
+      return res.data?.MatchedCount > 0;
+    }
+    return false;
+  }
+
+  Future<bool> removeMany(List<T> data, {String? copyId}) async {
+    Map<String, dynamic> match = {
+      '_id': {'_in_': data.map((i) => i.id)}
+    };
+    var res = await kernel.collectionRemove(
+      this._target.belongId!,
+      this._relations,
+      this._collName,
+      match,
+      copyId,
+    );
+    if (res.success) {
+      return res.data?.MatchedCount > 0;
+    }
+    return false;
+  }
+
+  Future removeCache(String id) async {
     this._cache = this._cache.where((element) => element.id != id).toList();
   }
 
   Future<bool> notity(
-    T data,
-    {bool? ignoreSelf,
+    T data, {
+    bool? ignoreSelf,
     String? targetId,
     bool? onlyTarget,
-    bool onlineOnly= true,}
-  )async{
+    bool onlineOnly = true,
+  }) async {
     DataNotityType req = DataNotityType(
       data: data,
       flag: this.collName,
@@ -328,9 +323,12 @@ class XCollection<T extends Xbase> {
     return res.success;
   }
 
-  void subscribe(String keys, callback = (data = any) => void,{String? id}){
-    kernel.subscribed(keys,this.subMethodName(id),  (data) => {
-       Function.apply(callback, [data], null),
-    });
+  void subscribe(String keys, Function callback, {String? id}) {
+    kernel.subscribed(
+        keys,
+        this.subMethodName(id: id),
+        (data) => {
+              Function.apply(callback, [data], null),
+            });
   }
 }
