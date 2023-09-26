@@ -7,7 +7,7 @@ import 'package:orginone/model/asset_creation_config.dart';
 import 'model.dart';
 
 class Xbase {
-  late String id; // 雪花ID
+  String id; // 雪花ID
   int? status; // 状态
   String? createUser; // 创建人员ID
   String? updateUser; // 更新人员ID
@@ -19,7 +19,7 @@ class Xbase {
   // 归属用户ID
   String? belongId;
   Xbase({
-    this.id,
+    required this.id,
     this.status,
     this.createUser,
     this.updateUser,
@@ -30,8 +30,7 @@ class Xbase {
     this.belongId,
   });
 
-  Xbase.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+  Xbase.fromJson(Map<String, dynamic> json) : id = json['id'] ?? '' {
     status = json['status'];
     createUser = json['createUser'];
     updateUser = json['updateUser'];
@@ -79,7 +78,7 @@ class XEntity extends Xbase {
     this.icon,
     this.typeName,
     this.belong,
-    super.id,
+    required super.id,
     super.status,
     super.createUser,
     super.updateUser,
@@ -144,7 +143,7 @@ class XEntity extends Xbase {
 class XStandard extends XEntity {
   // 目录ID
   String directoryId;
-  XStandard({required this.directoryId});
+  XStandard({required this.directoryId, required super.id});
   XStandard.fromJson(Map<String, dynamic> json)
       : directoryId = json['directoryId'] ?? "",
         super.fromJson(json) {
@@ -168,6 +167,7 @@ class XApplication extends XStandard {
     this.parent,
     this.nodes,
     this.directory,
+    required super.id,
   });
 
   XApplication.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -226,6 +226,7 @@ class XAttrLinkProp extends Xbase {
     required this.propId,
     this.property,
     this.attribute,
+    required super.id,
   });
 
   XAttrLinkProp.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -296,6 +297,7 @@ class XAttribute extends Xbase {
     this.form,
     this.authority,
     this.belong,
+    required super.id,
   });
 
   XAttribute.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -378,6 +380,7 @@ class XAuthority extends XEntity {
     required this.identitys,
     required this.authSpecies,
     required this.autAttrs,
+    required super.id,
   });
 
   //通过JSON构造
@@ -464,6 +467,7 @@ class XDirectory extends XStandard {
     this.nodes,
     XTarget? belong,
     required super.directoryId,
+    required super.id,
   });
 
   XDirectory.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -4392,6 +4396,7 @@ class XForm extends XStandard {
     this.attributes,
     this.bindNodes,
     required super.directoryId,
+    required super.id,
   });
 
   XForm.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -4545,6 +4550,7 @@ class XIdProof extends Xbase {
     this.teamId,
     this.target,
     this.identity,
+    required super.id,
   });
 
   @override
@@ -4608,6 +4614,7 @@ class XIdentity extends XEntity {
     this.teams,
     this.authority,
     this.share,
+    required super.id,
   });
 
   XIdentity.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -4717,7 +4724,7 @@ class XProperty extends XEntity {
   XSpecies? species;
 
   XProperty({
-    super.id,
+    required super.id,
     super.status,
     super.createUser,
     super.updateUser,
@@ -4824,6 +4831,7 @@ class XRelation extends Xbase {
     required this.attrValues,
     required this.team,
     required this.target,
+    required super.id,
   });
 
   //通过JSON构造
@@ -4874,6 +4882,7 @@ class XSpecies extends XStandard {
     this.directory,
     this.speciesProps,
     required super.directoryId,
+    required super.id,
   });
 
   XSpecies.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -4937,6 +4946,7 @@ class XSpeciesItem extends XEntity {
     this.parent,
     this.nodes,
     super.belong,
+    required super.id,
   });
 
   XSpeciesItem.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -5009,6 +5019,7 @@ class XTarget extends XEntity {
     required this.givenIdentitys,
     required this.targets,
     required this.thing,
+    required super.id,
   });
 
   //通过JSON构造
@@ -5141,6 +5152,7 @@ class XTeam extends Xbase {
     required this.relations,
     required this.target,
     required this.identitys,
+    required super.id,
   });
 
   //通过JSON构造
@@ -5209,6 +5221,7 @@ class XTeamIdentity extends Xbase {
     required this.teamId,
     required this.team,
     required this.identity,
+    required super.id,
   });
 
   //通过JSON构造
@@ -5302,6 +5315,7 @@ class XThing extends Xbase {
     required this.givenSpecies,
     required this.givenAttributes,
     required this.belong,
+    required super.id,
   });
 
   //通过JSON构造
@@ -5385,6 +5399,7 @@ class XThingProp extends Xbase {
     this.histroy,
     this.property,
     this.thing,
+    required super.id,
   });
 
   XThingProp.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -5447,7 +5462,8 @@ class XWorkDefine extends XEntity {
       required this.nodes,
       required this.instances,
       required this.application,
-      required this.target});
+      required this.target,
+      required super.id});
 
   XWorkDefine.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     rule = json['rule'];
@@ -5541,6 +5557,7 @@ class XWorkInstance extends Xbase {
     this.historyTasks,
     this.operationIds,
     this.thingIds,
+    required super.id,
   });
 
   //通过JSON构造
@@ -5644,6 +5661,7 @@ class XWorkNode extends Xbase {
     this.tasks,
     this.bindFroms,
     this.define,
+    required super.id,
   });
 
   //通过JSON构造
@@ -5718,6 +5736,7 @@ class XWorkNodeRelation extends Xbase {
     required this.fromType,
     required this.nodeId,
     required this.formId,
+    required super.id,
   });
 
   //通过JSON构造
@@ -5757,7 +5776,8 @@ class XWorkRecord extends Xbase {
       required this.taskId,
       required this.comment,
       required this.data,
-      required this.task});
+      required this.task,
+      required super.id});
 
   //通过JSON构造
   XWorkRecord.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -5831,6 +5851,7 @@ class XWorkTask extends Xbase {
     this.records,
     this.node,
     this.instance,
+    required super.id,
   });
 
   XWorkTask.fromJson(Map<String, dynamic> json) : super.fromJson(json) {

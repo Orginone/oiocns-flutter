@@ -977,7 +977,8 @@ class ChatMessageType extends Xbase {
     required this.typeName,
     required this.content,
     required this.comments,
-  }) : super();
+    required super.id,
+  });
 }
 
 class CommentType {
@@ -2697,6 +2698,7 @@ class ActivityType extends Xbase {
     required this.likes,
     required this.forward,
     required this.tags,
+    required super.id,
   });
 
   @override
@@ -3033,7 +3035,7 @@ class Transfer extends XStandard {
     required this.nodes,
     required this.edges,
     required this.graph,
-    required String id,
+    required super.id,
     required String name,
     required String typeName,
     required List<Script> preScripts,
@@ -3092,6 +3094,28 @@ class SchemaType {
 
 ResultType<bool> get badRequest {
   return ResultType(success: false, msg: '请求失败', code: 400, data: false);
+}
+
+class SubMethodsModel {
+  List<String> keys;
+  Function operation;
+
+  SubMethodsModel({
+    required this.keys,
+    required this.operation,
+  });
+
+  SubMethodsModel.fromJson(Map<String, dynamic> json)
+      : keys = json['keys'],
+        operation = json['operation'];
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['keys'] = keys;
+    map['operation'] = operation;
+
+    return map;
+  }
 }
 
 //TODO:以下是旧模型  待验证是否还使用 不用可以删除

@@ -11,6 +11,8 @@ import 'state.dart';
 
 class InitiateWorkPage extends BaseBreadcrumbNavMultiplexPage<
     InitiateWorkController, InitiateWorkState> {
+  InitiateWorkPage({super.key});
+
   @override
   Widget body() {
     return SingleChildScrollView(
@@ -23,7 +25,7 @@ class InitiateWorkPage extends BaseBreadcrumbNavMultiplexPage<
               onTap: () {
                 controller.jumpWorkList(child);
               },
-              onNext: (){
+              onNext: () {
                 controller.jumpNext(child);
               },
             ),
