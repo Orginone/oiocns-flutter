@@ -9,6 +9,7 @@ class XObject<T extends Xbase> {
   late String _objName;
   late XTarget _target;
   late List<String> _relations;
+  late Method _method;
   XObject(XTarget target, String name, List<String> relations) {
     _loaded = false;
     _target = target;
