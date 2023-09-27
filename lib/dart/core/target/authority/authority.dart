@@ -1,7 +1,8 @@
-import 'package:orginone/dart/base/common/entity.dart';
+import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/main.dart';
 
@@ -25,13 +26,13 @@ abstract class IAuthority extends IEntity<XAuthority> {
   Future<List<XTarget>> loadMembers({bool? reload});
 
   /// 创建权限
-  Future<IAuthority?> create(AuthorityModel data);
+  Future<IAuthority?> create(XAuthority data, {bool? notity});
 
   /// 更新权限
   Future<bool> update(AuthorityModel data);
 
   /// 删除权限
-  Future<bool> delete();
+  Future<bool> delete({bool? notity});
 
   /// 根据权限id查找权限实例
   IAuthority? findAuthById(String authId, {IAuthority? auth});
@@ -46,100 +47,104 @@ abstract class IAuthority extends IEntity<XAuthority> {
   Future<bool> receiveAuthority(AuthorityOperateModel data);
 }
 
-class Authority extends MsgChat implements IAuthority {
-  @override
-  late List<IAuthority> children;
-
-  @override
-  late XAuthority metadata;
-
-  @override
-  IAuthority? parent;
-
+class Authority extends Entity<XAuthority> implements IAuthority {
   @override
   late IBelong space;
 
   @override
-  late List<XTarget> targets;
+  List<XTarget> members = [];
 
-  Authority(this.metadata, this.space, [this.parent])
-      : super(
-          space.belong,
-          metadata.id ?? "",
-          ShareIcon(
-            name: metadata.name ?? "",
-            typeName: '权限',
-            avatar: FileItemShare.parseAvatar(metadata.icon),
-          ),
-          [space.metadata.name!, '角色群'],
-          metadata.remark ?? "",
-          space,
-        ) {
-    targets = [];
-    children = [];
+  @override
+  IAuthority? parent;
+  @override
+  List<IAuthority> children = [];
+  @override
+  late IDirectory directory;
+
+  bool _memberLoaded = false;
+
+  Authority(XAuthority metadata, IBelong _space, Authority authority,
+      {IAuthority? parent})
+      : super(metadata) {
+    space = _space;
+    this.parent = parent;
     for (var node in metadata.nodes ?? []) {
       children.add(Authority(node, space, this));
     }
+    directory = _space.directory;
   }
 
   @override
-  Future<IAuthority?> create(AuthorityModel data) async {
-    data.parentId = metadata.id;
-    final res = await kernel.createAuthority(data);
-    if (res.success && res.data?.id != null) {
-      final authority = Authority(res.data!, space, this);
-      children.add(authority);
-      return authority;
-    }
-    return null;
-  }
-
-  @override
-  Future<void> deepLoad({bool reload = false}) async {
-    await loadMembers(reload: reload);
-    for (final item in children) {
-      await item.deepLoad(reload: reload);
-    }
-  }
-
-  @override
-  IAuthority? findAuthById(String authId, {IAuthority? auth}) {
-    auth = auth ?? space.superAuth;
-    if (auth?.metadata.id == authId) {
-      return auth;
-    } else {
-      for (final item in auth?.children ?? []) {
-        final find = findAuthById(authId, auth: item);
-        if (find != null) {
-          return find;
-        }
-      }
-    }
-    return null;
-  }
-
-  @override
-  bool hasAuthoritys(List<String> authIds) {
-    var ids = loadParentAuthIds(authIds);
-    final orgIds = [metadata.belongId ?? ""];
-    if (metadata.shareId != null && metadata.shareId != null) {
-      orgIds.add(metadata.shareId!);
-    }
-    return space.user.authenticate(orgIds, ids);
-  }
-
-  @override
-  Future<List<XTarget>> loadMembers({bool reload = false}) async {
-    if (targets.isEmpty || reload) {
-      final res = await kernel.queryAuthorityTargets(GainModel(
+  Future<List<XTarget>> loadMembers({bool? reload = false}) async {
+    if (!_memberLoaded || reload!) {
+      var res = await kernel.queryAuthorityTargets(GainModel(
         id: metadata.id,
         subId: space.metadata.belongId!,
       ));
       if (res.success) {
-        targets = res.data?.result ?? [];
+        _memberLoaded = true;
+        members = res.data?.result ?? [];
       }
     }
-    return targets;
+    return members;
+  }
+
+  @override
+  Future<IAuthority?> create(XAuthority data, {bool? notity = false}) async {
+    if (!notity!) {
+      var res = await kernel.createAuthority(AuthorityModel(
+        id: data.id,
+        name: data.name,
+        code: data.code,
+        public: data.public,
+        parentId: id,
+        shareId: data.shareId,
+        remark: data.remark,
+        icon: data.icon,
+      ));
+      if (!res.success) return null;
+      data = res.data!;
+      await space.sendAuthorityChangeMsg(
+          OperateType.create as String, res.data!); //operate操作未实现
+    }
+    var authority = Authority(data, space, this);
+    children.add(authority);
+    return authority;
+  }
+
+  @override
+  Future<bool> update(AuthorityModel data) async {
+    data.id = id;
+    data.shareId = metadata.shareId;
+    data.parentId = metadata.parentId;
+    data.name = data.name ?? name;
+    data.code = data.code ?? code;
+    data.icon = data.icon ?? metadata.icon;
+    data.remark = data.remark ?? remark;
+    final res = await kernel.updateAuthority(data);
+    if (res.success && res.data?.id != null) {
+      metadata = res.data!;
+      share = ShareIcon(
+        name: metadata.name ?? "",
+        typeName: '权限',
+        avatar: FileItemShare.parseAvatar(metadata.icon),
+      );
+    }
+    return res.success;
+  }
+
+  @override
+  Future<bool> delete({bool? notity = false}) async {
+    if (!notity!) {
+      final res = await kernel.deleteAuthority(IdReq(id: id));
+      if (!res.success) return false;
+      await space.sendAuthorityChangeMsg(
+          OperateType.delete as String, metadata);
+    }
+    if (parent != null) {
+      parent?.children.removeWhere((i) => i != this);
+    }
+    return true;
   }
 
   @override
@@ -154,6 +159,39 @@ class Authority extends MsgChat implements IAuthority {
     return result;
   }
 
+  @override
+  IAuthority? findAuthById(String authId, {IAuthority? auth}) {
+    auth = auth ?? space.superAuth;
+    if (auth?.id == authId) {
+      return auth;
+    } else {
+      for (final item in auth?.children ?? []) {
+        final find = findAuthById(authId, auth: item);
+        if (find != null) {
+          return find;
+        }
+      }
+    }
+    return null;
+  }
+
+  @override
+  Future<void> deepLoad({bool reload = false}) async {
+    await loadMembers(reload: reload);
+    await Future.wait(
+        children.map((item) async => await item.deepLoad(reload: reload)));
+  }
+
+  @override
+  bool hasAuthoritys(List<String> authIds) {
+    authIds = loadParentAuthIds(authIds);
+    final orgIds = [metadata.belongId ?? ""];
+    if (metadata.shareId != null && metadata.shareId != null) {
+      orgIds.add(metadata.shareId!);
+    }
+    return space.user.authenticate(orgIds, ids);
+  }
+
   void _appendParentId(IAuthority auth, List<String> authIds) {
     if (!authIds.contains(auth.metadata.id)) {
       authIds.add(auth.metadata.id);
@@ -161,36 +199,6 @@ class Authority extends MsgChat implements IAuthority {
     if (auth.parent != null) {
       _appendParentId(auth.parent!, authIds);
     }
-  }
-
-  @override
-  Future<bool> update(AuthorityModel data) async {
-    data.id = metadata.id;
-    data.shareId = metadata.shareId;
-    data.parentId = metadata.parentId;
-    data.name = data.name ?? metadata.name;
-    data.code = data.code ?? metadata.code;
-    data.icon = data.icon ?? metadata.icon;
-    data.remark = data.remark ?? metadata.remark;
-    final res = await kernel.updateAuthority(data);
-    if (res.success && res.data?.id != null) {
-      metadata = res.data!;
-      share = ShareIcon(
-        name: metadata.name ?? "",
-        typeName: '权限',
-        avatar: FileItemShare.parseAvatar(metadata.icon),
-      );
-    }
-    return res.success;
-  }
-
-  @override
-  Future<bool> delete() async {
-    final res = await kernel.deleteAuthority(IdReq(id: metadata.id));
-    if (res.success && parent != null) {
-      parent!.children.removeWhere((i) => i != this);
-    }
-    return res.success;
   }
 
   @override

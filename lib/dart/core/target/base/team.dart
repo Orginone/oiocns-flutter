@@ -1,24 +1,39 @@
 import 'dart:convert';
 
+import 'package:orginone/dart/base/index.dart';
+import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/consts.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/file_info.dart';
 import 'package:orginone/main.dart';
 
-abstract class ITeam implements IMsgChat, IFileInfo<XTarget>{
+import '../person.dart';
+
+abstract class ITeam implements IEntity<XTarget> {
+  //当前用户
+  late IPerson user;
+  //加载归属组织
+  @override
+  late IBelong space;
+  //当前目录
+  @override
+  late IDirectory directory;
+  //成员
+  late List<XTarget> members;
   //限定成员类型
   late List<TargetType> memberTypes;
-
-  //用户相关的所有会话
-  List<IMsgChat> get chats;
+  //成员会话
+  late List<ISession> memberChats;
 
   //深加载
-  Future<void> deepLoad({bool reload = false,bool reloadContent = false});
+  Future<void> deepLoad({bool? reload = false});
+  //加载成员
+  Future<List<XTarget>> loadMembers({bool? reload = false});
 
   //创建用户
   Future<ITeam?> createTarget(TargetModel data);
@@ -27,51 +42,116 @@ abstract class ITeam implements IMsgChat, IFileInfo<XTarget>{
   Future<bool> update(TargetModel data);
 
   //删除(注销)团队
-  Future<bool> delete();
+  @override
+  Future<bool> delete({bool? notity});
 
   //用户拉入新成员
-  Future<bool> pullMembers(List<XTarget> members);
+  Future<bool> pullMembers(List<XTarget> members, {bool? notity});
 
   //用户移除成员
-  Future<bool> removeMembers(List<XTarget> members);
+  Future<bool> removeMembers(List<XTarget> members, {bool? notity});
 
-  //加载成员会话
-  void loadMemberChats(List<XTarget> members, bool isAdd);
-
-  bool hasAuthoritys(List<String> authIds);
-
+  //是否有管理关系的权限
   bool hasRelationAuth();
 
-  void recvTarget(String operate, bool isChild, XTarget target);
+  //判断是否拥有某些权限
+  bool hasAuthoritys(List<String> authIds);
 
-  Future<bool> teamChangedNotity(XTarget target);
+  //发送组织变更消息
+  Future<bool> sendTargetNotity(OperateType operate,
+      {XTarget? sub, String? subTargetId});
 }
 
+abstract class Team extends MsgChat implements ITeam {
+  Team(List<String> _keys, this.metadata, List<String> _relations,
+      List<TargetType> _memberTypes)
+      : super(metadata) {
+    _memberTypes = [TargetType.person];
+    memberTypes = _memberTypes;
+    relations = _relations;
+    kernel.subscribe('${metadata.belongId}-${metadata.id}-target',
+        [..._keys, this.key], (data) => _receiveTarget(data));
+  }
 
-abstract class Team extends MsgChat implements ITeam{
-  Team(this.metadata, List<String> labels, {IBelong? space})
-      : super(
-          metadata.belong!,
-          metadata.id!,
-          ShareIcon(
-            name: metadata.name!,
-            typeName: metadata.typeName!,
-            avatar: FileItemShare.parseAvatar(metadata.icon),
-          ),
-          labels,
-          metadata.remark ?? "",
-          space,
-        ) {
-    memberTypes = [TargetType.person];
+  late List<TargetType> memberTypes;
+  @override
+  late List<XTarget> members = [];
+  @override
+  List<ISession> memberChats = [];
+  List<String> relations;
+  IDirectory directory;
+  bool _memberLoaded = false;
+
+  @override
+  bool get isInherited => metadata.belongId != space.id;
+
+  @override
+  Future<List<XTarget>> loadMembers({bool? reload = false}) async {
+    if (!_memberLoaded || reload!) {
+      var res = await kernel.querySubTargetById(GetSubsModel(
+        id: metadata.id,
+        subTypeNames: memberTypes.map((e) => e.label).toList(),
+        page: pageAll(),
+      ));
+      if (res.success) {
+        _memberLoaded = true;
+        members = res.data?.result ?? [];
+        members.forEach((i) => updateMetadata(i));
+        loadMemberChats(members, true);
+      }
+    }
+    return members;
   }
 
   @override
-  late List<TargetType> memberTypes;
+  Future<bool> pullMembers(List<XTarget> members,
+      {bool? notity = false}) async {
+    var filterMembers = members
+        .where((i) => memberTypes.contains(TargetType.getType(i.typeName!)))
+        .toList();
+    members = filterMembers.where((element) {
+      return this.members.where((m) => m.id == element.id).isEmpty;
+    }).toList();
+    if (members.isNotEmpty) {
+      if (!notity!) {
+        var res = await kernel.pullAnyToTeam(GiveModel(
+          id: id,
+          subIds: members.map((i) => i.id).toList(),
+        ));
+
+        if (!res.success) return false;
+        members.forEach((c) =>
+            sendTargetNotity(OperateType.add, sub: c, subTargetId: c.id));
+      }
+    }
+    return true;
+  }
 
   @override
-  late XTarget metadata;
-
-  bool _memberLoaded = false;
+  Future<bool> removeMembers(List<XTarget> members,
+      {bool? notity = false}) async {
+    var filterMembers = members
+        .where((i) => memberTypes.contains(TargetType.getType(i.typeName!)))
+        .toList();
+    members = filterMembers.where((element) {
+      return this.members.where((m) => m.id == element.id).isEmpty;
+    }).toList();
+    for (var member in members) {
+      if (memberTypes.contains(TargetType.getType(member.typeName!))) {
+        if (!notity!) {
+          var res = await kernel
+              .removeOrExitOfTeam(GainModel(id: id, subId: member.id));
+          if (!res.success) return false;
+          sendTargetNotity(OperateType.remove,
+              sub: member, subTargetId: member.id);
+          notifySesion(false, [member]); ////
+        }
+        this.members.removeWhere((i) => i.id == member.id);
+        loadMemberChats([member], false);
+      }
+    }
+    return true;
+  }
 
   Future<XTarget?> create(TargetModel data) async {
     data.belongId = space.metadata.id;
@@ -84,9 +164,6 @@ abstract class Team extends MsgChat implements ITeam{
     }
     return null;
   }
-  @override
-  // TODO: implement isInherited
-  bool get isInherited => metadata.belongId != space.id;
 
   @override
   Future<bool> copy(IDirectory destination) {
@@ -100,10 +177,9 @@ abstract class Team extends MsgChat implements ITeam{
     throw UnimplementedError();
   }
 
-
   @override
   Future<bool> rename(String name) {
-    var data =TargetModel.fromJson(metadata.toJson());
+    var data = TargetModel.fromJson(metadata.toJson());
     data.name = name;
     data.teamCode = metadata.team?.code ?? metadata.code!;
     data.teamName = metadata.team?.name ?? metadata.name!;
@@ -116,7 +192,7 @@ abstract class Team extends MsgChat implements ITeam{
 
   @override
   // TODO: implement id
-  String get id => metadata.id!;
+  String get id => metadata.id;
 
   @override
   void recvTarget(String operate, bool isChild, XTarget target) {
@@ -139,7 +215,7 @@ abstract class Team extends MsgChat implements ITeam{
   @override
   bool hasAuthoritys(List<String> authIds) {
     authIds = space.superAuth?.loadParentAuthIds(authIds) ?? authIds;
-    var orgIds = [metadata.belongId!, metadata.id!];
+    var orgIds = [metadata.belongId!, metadata.id];
     return space.user.authenticate(orgIds, authIds);
   }
 
@@ -154,74 +230,11 @@ abstract class Team extends MsgChat implements ITeam{
   }
 
   @override
-  Future<List<XTarget>> loadMembers({bool reload = false}) async {
-    if (!_memberLoaded || reload) {
-      var res = await kernel.querySubTargetById(GetSubsModel(
-        id: metadata.id!,
-        subTypeNames: memberTypes.map((e) => e.label).toList(),
-        page: PageRequest(offset: 0, limit: 9999, filter: ''),
-      ));
-      if (res.success) {
-        _memberLoaded = true;
-        members.value = res.data?.result ?? [];
-        loadMemberChats(members, true);
-      }
-    }
-    return members;
-  }
-
-  @override
-  Future<bool> pullMembers(List<XTarget> members) async {
-    var filterMembers = members
-        .where((i) => memberTypes.contains(TargetType.getType(i.typeName!)))
-        .toList();
-    filterMembers = filterMembers.where((element) {
-      return this.members.where((m) => m.id == element.id).isEmpty;
-    }).toList();
-    if (filterMembers.isNotEmpty) {
-      var res = await kernel.pullAnyToTeam(GiveModel(
-        id: metadata.id!,
-        subIds: members.map((i) => i.id!).toList(),
-      ));
-      if (res.success) {
-        this.members.addAll(filterMembers);
-        this.members.refresh();
-        for (var element in members) {
-          createTargetMsg(OperateType.add, sub: element);
-        }
-        loadMemberChats(members, true);
-      }
-      return res.success;
-    }
-    return true;
-  }
-
-  @override
-  Future<bool> removeMembers(List<XTarget> members) async {
-    bool success = false;
-    for (var member in members) {
-      if (memberTypes.contains(TargetType.getType(member.typeName!))) {
-        if (member.id == userId || hasRelationAuth()) {
-          await createTargetMsg(OperateType.remove, sub: member);
-        }
-        var res = await kernel
-            .removeOrExitOfTeam(GainModel(id: metadata.id!, subId: member.id!));
-        success = res.success;
-        if (res.success) {
-          this.members.removeWhere((i) => i.id == member.id);
-          loadMemberChats([member], false);
-        }
-      }
-    }
-    return success;
-  }
-
-  @override
   Future<bool> delete() async {
     if (hasRelationAuth()) {
       await createTargetMsg(OperateType.delete);
     }
-    final res = await kernel.deleteTarget(IdReq(id: metadata.id!));
+    final res = await kernel.deleteTarget(IdReq(id: metadata.id));
     return res.success;
   }
 
@@ -255,7 +268,7 @@ abstract class Team extends MsgChat implements ITeam{
 
   Future<void> createTargetMsg(OperateType operate, {XTarget? sub}) async {
     await kernel.createTargetMsg(TargetMessageModel(
-      targetId: sub != null && userId == metadata.id ? sub.id! : metadata.id!,
+      targetId: sub != null && userId == metadata.id ? sub.id : metadata.id,
       excludeOperater: false,
       group: metadata.typeName == TargetType.group.label,
       data: jsonEncode({

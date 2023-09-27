@@ -37,8 +37,7 @@ abstract class IBelong extends ITarget {
   );
 
   // ///下面属于原代码的变量，新的ts内核中不存在
-  // //当前用户
-  // late IPerson user;
+  
 
   // //归属的消息
   // late IChatMessage message;
