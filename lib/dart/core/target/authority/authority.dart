@@ -1,18 +1,16 @@
+import 'package:orginone/dart/base/common/entity.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/main.dart';
 
-abstract class IAuthority implements IMsgChat {
-  /// 数据实体
-  late XAuthority metadata;
-
-  /// 拥有该权限的成员
-  late List<XTarget> targets;
-
+abstract class IAuthority extends IEntity<XAuthority> {
   /// 加载权限的自归属用户
   late IBelong space;
+
+  /// 拥有该权限的成员
+  late List<XTarget> members;
 
   /// 父级权限
   IAuthority? parent;
@@ -20,11 +18,11 @@ abstract class IAuthority implements IMsgChat {
   /// 子级权限
   late List<IAuthority> children;
 
-  /// 用户相关的所有会话
-  List<IMsgChat> get chats;
-
   /// 深加载
   Future<void> deepLoad({bool reload = false});
+
+  ///加载成员实体
+  Future<List<XTarget>> loadMembers({bool? reload});
 
   /// 创建权限
   Future<IAuthority?> create(AuthorityModel data);
@@ -43,6 +41,9 @@ abstract class IAuthority implements IMsgChat {
 
   /// 判断是否拥有某些权限
   bool hasAuthoritys(List<String> authIds);
+
+  ///接收职权变更消息
+  Future<bool> receiveAuthority(AuthorityOperateModel data);
 }
 
 class Authority extends MsgChat implements IAuthority {
@@ -131,7 +132,7 @@ class Authority extends MsgChat implements IAuthority {
   Future<List<XTarget>> loadMembers({bool reload = false}) async {
     if (targets.isEmpty || reload) {
       final res = await kernel.queryAuthorityTargets(GainModel(
-        id: metadata.id!,
+        id: metadata.id,
         subId: space.metadata.belongId!,
       ));
       if (res.success) {
@@ -155,7 +156,7 @@ class Authority extends MsgChat implements IAuthority {
 
   void _appendParentId(IAuthority auth, List<String> authIds) {
     if (!authIds.contains(auth.metadata.id)) {
-      authIds.add(auth.metadata.id!);
+      authIds.add(auth.metadata.id);
     }
     if (auth.parent != null) {
       _appendParentId(auth.parent!, authIds);
@@ -185,7 +186,7 @@ class Authority extends MsgChat implements IAuthority {
 
   @override
   Future<bool> delete() async {
-    final res = await kernel.deleteAuthority(IdReq(id: metadata.id!));
+    final res = await kernel.deleteAuthority(IdReq(id: metadata.id));
     if (res.success && parent != null) {
       parent!.children.removeWhere((i) => i != this);
     }

@@ -1066,7 +1066,8 @@ class KernelApi {
   /// @param {string} belongId 对象所在域, 个人域(user),单位域(company),开放域(all)
   /// @param {(data:any)=>void} callback 变更回调，默认回调一次
   /// @returns {void} 无返回值
-  subscribed(String key, String belongId, Function(dynamic)? callback) async {
+  subscribed(
+      String key, List<String> belongId, Function(dynamic)? callback) async {
     if (callback != null) {
       final fullKey = "$key|$belongId";
       _subscribeCallbacks[fullKey] = callback;

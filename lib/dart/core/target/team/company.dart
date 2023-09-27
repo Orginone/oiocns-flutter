@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
@@ -179,7 +179,8 @@ class Company extends Belong implements ICompany {
   }
 
   @override
-  Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async {
+  Future<void> deepLoad(
+      {bool reload = false, bool reloadContent = false}) async {
     await Future.wait([
       loadGroups(reload: reload),
       loadDepartments(reload: reload),
@@ -200,7 +201,7 @@ class Company extends Belong implements ICompany {
       station.deepLoad(reload: reload, reloadContent: reloadContent);
     }
     for (var cohort in cohorts) {
-      cohort.deepLoad(reload: reload,reloadContent: reloadContent);
+      cohort.deepLoad(reload: reload, reloadContent: reloadContent);
     }
     superAuth?.deepLoad(reload: reload);
   }
@@ -299,7 +300,6 @@ class Company extends Belong implements ICompany {
     return [...departments, ...cohorts];
   }
 
-
   @override
   void loadMemberChats(List<XTarget> members, bool isAdd) {
     members = members.where((i) => i.id != userId).toList();
@@ -355,15 +355,20 @@ class Company extends Belong implements ICompany {
   // TODO: implement popupMenuItem
   List<PopupMenuItem> get popupMenuItem {
     List<PopupMenuKey> key = [];
-    if(hasRelationAuth()){
-      key.addAll([...createPopupMenuKey,PopupMenuKey.updateInfo,PopupMenuKey.createDepartment,PopupMenuKey.createGroup,]);
+    if (hasRelationAuth()) {
+      key.addAll([
+        ...createPopupMenuKey,
+        PopupMenuKey.updateInfo,
+        PopupMenuKey.createDepartment,
+        PopupMenuKey.createGroup,
+      ]);
     }
     key.addAll(defaultPopupMenuKey);
     return key
         .map((e) => PopupMenuItem(
-      value: e,
-      child: Text(e.label),
-    ))
+              value: e,
+              child: Text(e.label),
+            ))
         .toList();
   }
 
@@ -371,7 +376,7 @@ class Company extends Belong implements ICompany {
   bool isLoaded = false;
 
   @override
-  Future<bool> teamChangedNotity(XTarget target) async{
+  Future<bool> teamChangedNotity(XTarget target) async {
     switch (TargetType.getType(target.typeName!)) {
       case TargetType.person:
         return await pullMembers([target]);
@@ -393,7 +398,7 @@ class Company extends Belong implements ICompany {
         break;
       case TargetType.cohort:
         if (!cohorts.any((i) => i.id == target.id)) {
-          final cohort = Cohort(this,target);
+          final cohort = Cohort(this, target);
           await cohort.deepLoad();
           cohorts.add(cohort);
           return true;

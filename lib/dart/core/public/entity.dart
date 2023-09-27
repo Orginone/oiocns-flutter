@@ -1,6 +1,5 @@
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/index.dart';
-import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/main.dart';
 
 import '../../base/model.dart';
@@ -117,31 +116,32 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity {
     }
   }
 
-  U findMetadata<U>(String id) {
+  T? findMetadata<T>(String id) {
     if (shareIdSet.containsKey(id)) {
-      return shareIdSet.values as U;
+      return shareIdSet.values as T;
     }
-    return null as U;
+    return null;
   }
 
+  @override
   void updateMetadata<U extends XEntity>(U data) {
     shareIdSet[data.id] = data;
   }
 
   void setEntity() {
-    shareIdSet[id + '*'] = this;
+    shareIdSet['$id*'] = this;
   }
 
   U getEntity<U>(String id) {
-    return shareIdSet[id + '*'];
+    return shareIdSet['$id*'];
   }
 
   ShareIcon findShare(String id) {
     var metadata = this.findMetadata<XTarget>(id);
     ShareIcon shareIcon = ShareIcon(
-        name: metadata.name ?? '加载中...',
-        typeName: metadata.typeName ?? '未知',
-        avatar: parseAvatar(metadata.icon));
+        name: metadata?.name ?? '加载中...',
+        typeName: metadata?.typeName ?? '未知',
+        avatar: parseAvatar(metadata?.icon));
     return shareIcon;
   }
 
