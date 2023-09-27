@@ -9,11 +9,10 @@ import 'species.dart';
 import 'state.dart';
 import 'work.dart';
 
-
-
 class ClassificationInfoController
     extends BaseController<ClassificationInfoState>
     with GetTickerProviderStateMixin {
+  @override
   final ClassificationInfoState state = ClassificationInfoState();
 
   ClassificationInfoController() {
@@ -45,6 +44,7 @@ class ClassificationInfoController
         var controller = Get.find<SpeciesController>(tag: "species");
         controller.createSpecies();
         break;
+      default:
     }
   }
 }

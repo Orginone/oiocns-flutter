@@ -247,6 +247,7 @@ class UpdateController extends GetxController {
     var key = "apkFile";
     var domain = "all";
     ResultType resp = await kernel.anystore.get(key, domain);
+
     return resp.data["apk"];
   }
 

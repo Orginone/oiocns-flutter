@@ -27,9 +27,9 @@ class KernelApi {
   final Map<String, dynamic> _cacheData = {};
 
   // 订阅方法
-  final Map<String, List<Function>> _methods;
-  // 订阅回调字典
-  final Map<String, void Function(dynamic)> _subscribeCallbacks;
+  final Map<String, List<Function()>> _methods;
+  // 订阅方法
+  final Map<String, List> _subMethods;
 
   // 上下线提醒
   final Emitter onlineNotify = Emitter(); //////
@@ -42,21 +42,16 @@ class KernelApi {
 
   KernelApi._(String url)
       : _methods = {},
-        _subscribeCallbacks = {},
+        _subMethods = {},
         _storeHub = StoreHub(url, protocol: 'json') {
     _storeHub.on("Receive", (res) => _receive(res));
-    _storeHub.on('Updated', (res) => _updated(res));
 
     _storeHub.onConnected(() {
       if (accessToken.isNotEmpty) {
         _storeHub.invoke("TokenAuth", args: [accessToken]).then((value) {
           ResultType res = ResultType.fromJson(value);
           if (res.success) {
-            _subscribeCallbacks.forEach((fullKey, value) {
-              var key = fullKey.split("|")[0];
-              var belongId = fullKey.split("|")[1];
-              subscribed(key, belongId, value);
-            });
+            logger.info('连接到内核成功!');
           }
         }).catchError((err) {
           logger.warning(err);
@@ -1199,13 +1194,45 @@ class KernelApi {
     }
   }
 
-  ona(String methodName, Function method) {
-    var lowerCase = methodName.toLowerCase();
-    _methods.putIfAbsent(lowerCase, () => []);
-    if (_methods[lowerCase]!.contains(method)) {
+  /// 订阅变更
+  /// @param flag 标识
+  /// @param keys 唯一标志
+  /// @param operation 操作
+  void subscribe(
+    String flag,
+    List<String> keys,
+    Function(List<dynamic>) operation,
+  ) {
+    if (flag.isEmpty || keys.isEmpty) {
       return;
     }
-    _methods[lowerCase]!.add(method);
+    flag = flag.toLowerCase();
+    if (_subMethods[flag] != null) {
+      _subMethods[flag] = [];
+    }
+    _subMethods[flag]?.add({
+      'keys': keys,
+      'operation': operation,
+    });
+    final data = _cacheData[flag] ?? [];
+    data.forEach((item) {
+      operation.call(item);
+    });
+    _cacheData[flag] = [];
+  }
+
+  /// 取消订阅变更
+  /// @param flag 标识
+  /// @param keys 唯一标志
+  /// @param operation 操作
+  unSubscribe(String key) {
+    for (var flag in _subMethods.keys) {
+      _subMethods[flag] = _subMethods[flag]!
+          .where(
+            (i) => !i['keys'].contains(key),
+          )
+          .toList();
+    }
   }
 
   /// 监听服务端方法
@@ -1290,28 +1317,6 @@ class KernelApi {
             _cacheData[res.target.toLowerCase()] = [...data, res.data];
           }
         }
-    }
-  }
-
-  /// 对象变更通知
-  /// @param belongId 归属
-  /// @param key 主键
-  /// @param data 数据
-  /// @returns {void} 无返回值
-  _updated(List<dynamic>? param) {
-    if (param == null || param.length < 2) return;
-    String belongId = '';
-    String key = '';
-    dynamic data;
-    belongId = param[0];
-    key = param[1];
-    data = param[2];
-    final fullKey = "$key|$belongId";
-    if (_subscribeCallbacks.containsKey(fullKey)) {
-      final Function(dynamic)? callback = _subscribeCallbacks[fullKey];
-      if (callback != null) {
-        callback(data);
-      }
     }
   }
 
