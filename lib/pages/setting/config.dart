@@ -14,11 +14,11 @@ import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/application.dart';
+import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
-import 'package:orginone/dart/core/thing/file_info.dart';
-import 'package:orginone/dart/core/thing/form.dart';
-import 'package:orginone/dart/core/thing/property.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
+import 'package:orginone/dart/core/thing/standard/form.dart';
+import 'package:orginone/dart/core/thing/standard/property.dart';
 import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/pages/setting/home/state.dart';
@@ -154,7 +154,7 @@ Future<List<SettingNavModel>> loadDir(
   List<SettingNavModel> nav = [];
   for (var dir in dirs) {
     SettingNavModel dirNav = SettingNavModel(
-      id: dir.metadata.id!,
+      id: dir.metadata.id,
       source: dir,
       name: dir.metadata.name!,
       space: belong,
@@ -199,7 +199,7 @@ Future<List<SettingNavModel>> loadSpecies(
   List<SettingNavModel> nav = [];
   for (var specie in species) {
     SettingNavModel specieNav = SettingNavModel(
-      id: specie.metadata.id!,
+      id: specie.metadata.id,
       source: specie,
       name: specie.metadata.name!,
       space: belong,
@@ -217,7 +217,7 @@ Future<List<SettingNavModel>> loadApplications(
   for (var application in applications) {
     var works = await application.loadWorks();
     SettingNavModel appNav = SettingNavModel(
-        id: application.metadata.id!,
+        id: application.metadata.id,
         source: application,
         name: application.metadata.name!,
         space: belong,
@@ -236,7 +236,7 @@ List<SettingNavModel> loadWork(List<IWork> works, ITarget target) {
   List<SettingNavModel> nav = [];
   for (var work in works) {
     SettingNavModel workNav = SettingNavModel(
-      id: work.metadata.id!,
+      id: work.metadata.id,
       source: work,
       spaceEnum: SpaceEnum.work,
       name: work.metadata.name!,
@@ -254,7 +254,7 @@ Future<List<SettingNavModel>> loadModule(
   List<SettingNavModel> nav = [];
   for (var application in applications) {
     SettingNavModel appNav = SettingNavModel(
-        id: application.metadata.id!,
+        id: application.metadata.id,
         source: application,
         spaceEnum: SpaceEnum.module,
         name: application.metadata.name!,
@@ -279,7 +279,7 @@ Future<List<SettingNavModel>> loadPropertys(
   List<SettingNavModel> nav = [];
   for (var property in propertys) {
     SettingNavModel propertyNav = SettingNavModel(
-      id: property.metadata.id!,
+      id: property.metadata.id,
       source: property,
       name: property.metadata.name!,
       space: belong,
@@ -296,7 +296,7 @@ Future<List<SettingNavModel>> loadForm(
   List<SettingNavModel> nav = [];
   for (var form in forms) {
     SettingNavModel formNav = SettingNavModel(
-      id: form.metadata.id!,
+      id: form.metadata.id,
       source: form,
       name: form.metadata.name!,
       space: belong,
@@ -313,7 +313,7 @@ Future<List<SettingNavModel>> loadCohorts(
   List<SettingNavModel> nav = [];
   for (var cohort in cohorts) {
     SettingNavModel cohortNav = SettingNavModel(
-        id: cohort.metadata.id!,
+        id: cohort.metadata.id,
         source: cohort,
         name: cohort.metadata.name!,
         space: belong,
@@ -344,7 +344,7 @@ Future<List<SettingNavModel>> loadCohorts(
               spaceEnum: SpaceEnum.person,
               children: cohort.members.map((e) {
                 return SettingNavModel(
-                  id: e.id!,
+                  id: e.id,
                   name: e.name!,
                   space: belong,
                   source: e,
@@ -367,7 +367,7 @@ Future<List<SettingNavModel>> loadDepartment(
   List<SettingNavModel> nav = [];
   for (var department in departments) {
     SettingNavModel departmentNav = SettingNavModel(
-        id: department.metadata.id!,
+        id: department.metadata.id,
         source: department,
         name: department.metadata.name!,
         space: belong,
@@ -399,7 +399,7 @@ Future<List<SettingNavModel>> loadDepartment(
               spaceEnum: SpaceEnum.person,
               children: department.members.map((e) {
                 return SettingNavModel(
-                  id: e.id!,
+                  id: e.id,
                   name: e.name!,
                   space: belong,
                   source: e,
@@ -422,7 +422,7 @@ Future<List<SettingNavModel>> loadGroup(
   List<SettingNavModel> nav = [];
   for (var group in groups) {
     SettingNavModel groupNav = SettingNavModel(
-        id: group.metadata.id!,
+        id: group.metadata.id,
         source: group,
         name: group.metadata.name!,
         space: belong,
@@ -453,7 +453,7 @@ Future<List<SettingNavModel>> loadGroup(
               spaceEnum: SpaceEnum.person,
               children: group.members.map((e) {
                 return SettingNavModel(
-                  id: e.id!,
+                  id: e.id,
                   name: e.name!,
                   space: belong,
                   source: e,
@@ -544,7 +544,7 @@ Future<void> loadCompanySetting(Rxn<SettingNavModel> model) async {
           image: company.space!.metadata.avatarThumbnail(),
           children: company.space!.members.map((e) {
             return SettingNavModel(
-              id: e.id!,
+              id: e.id,
               name: e.name!,
               space: company.space,
               source: e,
@@ -628,7 +628,7 @@ void uploadFile(SettingNavModel item,
       break;
     case SpaceEnum.user:
     case SpaceEnum.company:
-      dir = await item.space!.directory;
+      dir = item.space!.directory;
       break;
     case SpaceEnum.person:
     case SpaceEnum.departments:

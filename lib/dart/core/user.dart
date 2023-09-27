@@ -16,7 +16,7 @@ import 'enum.dart';
 import 'target/base/team.dart';
 import 'target/identity/identity.dart';
 import 'target/innerTeam/station.dart';
-import 'thing/application.dart';
+import 'thing/standard/application.dart';
 import 'thing/store/provider.dart';
 import 'work/provider.dart';
 

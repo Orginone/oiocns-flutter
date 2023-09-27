@@ -7,7 +7,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/thing/application.dart';
+import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/util/date_utils.dart';
@@ -17,8 +17,9 @@ import 'package:orginone/widget/loading_dialog.dart';
 
 import 'logic.dart';
 
-class WorkPage extends BaseGetPageView<
-    WorkController, WorkState> {
+class WorkPage extends BaseGetPageView<WorkController, WorkState> {
+  WorkPage({super.key});
+
   @override
   Widget buildView() {
     return Container(
@@ -34,7 +35,7 @@ class WorkPage extends BaseGetPageView<
                       e.metadata.name ?? "",
                       e.metadata.code ?? "",
                       DateTime.tryParse(e.metadata.createTime ?? "")
-                          ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
+                              ?.format(format: "yyyy-MM-dd HH:mm:ss") ??
                           "",
                       e.metadata.remark ?? ""
                     ];
@@ -58,7 +59,6 @@ class WorkPage extends BaseGetPageView<
         }),
       ),
     );
-    ;
   }
 
   @override
@@ -74,6 +74,7 @@ class WorkPage extends BaseGetPageView<
 }
 
 class WorkController extends BaseController<WorkState> {
+  @override
   final WorkState state = WorkState();
 
   ClassificationInfoController get info => Get.find();
@@ -95,7 +96,8 @@ class WorkController extends BaseController<WorkState> {
 
   void onWorkOperation(operation, String name) async {
     try {
-      var work = state.work.firstWhere((element) => element.metadata.name == name);
+      var work =
+          state.work.firstWhere((element) => element.metadata.name == name);
       if (operation == "delete") {
         var success = await species.delete();
         if (success) {
@@ -118,8 +120,8 @@ class WorkController extends BaseController<WorkState> {
         allowAdd: work?.metadata.allowAdd ?? true,
         allowEdit: work?.metadata.allowEdit ?? true,
         allowSelect: work?.metadata.allowSelect ?? true,
-        code: work?.metadata.code ?? '',
-        onCreate: (name, code, remark, allowAdd, allowEdit, allowSelect,share) async {
+        code: work?.metadata.code ?? '', onCreate: (name, code, remark,
+            allowAdd, allowEdit, allowSelect, share) async {
       var model = WorkDefineModel();
       model.remark = remark;
       model.name = name;

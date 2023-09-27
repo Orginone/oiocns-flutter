@@ -7,10 +7,10 @@ import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
-import 'package:orginone/dart/core/thing/file_info.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
-abstract class ITeam implements IMsgChat, IFileInfo<XTarget>{
+abstract class ITeam implements IMsgChat, IFileInfo<XTarget> {
   //限定成员类型
   late List<TargetType> memberTypes;
 
@@ -18,7 +18,7 @@ abstract class ITeam implements IMsgChat, IFileInfo<XTarget>{
   List<IMsgChat> get chats;
 
   //深加载
-  Future<void> deepLoad({bool reload = false,bool reloadContent = false});
+  Future<void> deepLoad({bool reload = false, bool reloadContent = false});
 
   //创建用户
   Future<ITeam?> createTarget(TargetModel data);
@@ -47,8 +47,7 @@ abstract class ITeam implements IMsgChat, IFileInfo<XTarget>{
   Future<bool> teamChangedNotity(XTarget target);
 }
 
-
-abstract class Team extends MsgChat implements ITeam{
+abstract class Team extends MsgChat implements ITeam {
   Team(this.metadata, List<String> labels, {IBelong? space})
       : super(
           metadata.belong!,
@@ -84,6 +83,7 @@ abstract class Team extends MsgChat implements ITeam{
     }
     return null;
   }
+
   @override
   // TODO: implement isInherited
   bool get isInherited => metadata.belongId != space.id;
@@ -100,10 +100,9 @@ abstract class Team extends MsgChat implements ITeam{
     throw UnimplementedError();
   }
 
-
   @override
   Future<bool> rename(String name) {
-    var data =TargetModel.fromJson(metadata.toJson());
+    var data = TargetModel.fromJson(metadata.toJson());
     data.name = name;
     data.teamCode = metadata.team?.code ?? metadata.code!;
     data.teamName = metadata.team?.name ?? metadata.name!;

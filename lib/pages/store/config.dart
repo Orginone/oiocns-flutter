@@ -6,10 +6,10 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
-import 'package:orginone/dart/core/thing/application.dart';
+import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
-import 'package:orginone/dart/core/thing/file_info.dart';
-import 'package:orginone/dart/core/thing/form.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
+import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/dart/core/work/index.dart';
 
 import 'store_tree/state.dart';
@@ -64,7 +64,7 @@ Future<List<StoreTreeNav>> loadApplications(
   for (var application in applications) {
     var works = await application.loadWorks();
     StoreTreeNav appNav = StoreTreeNav(
-      id: application.metadata.id!,
+      id: application.metadata.id,
       source: application,
       spaceEnum: SpaceEnum.applications,
       name: application.metadata.name!,
@@ -84,7 +84,7 @@ List<StoreTreeNav> loadWork(List<IWork> works, ITarget target) {
   List<StoreTreeNav> nav = [];
   for (var work in works) {
     StoreTreeNav workNav = StoreTreeNav(
-      id: work.metadata.id!,
+      id: work.metadata.id,
       source: work,
       spaceEnum: SpaceEnum.work,
       name: work.metadata.name!,
@@ -102,7 +102,7 @@ Future<List<StoreTreeNav>> loadModule(
   List<StoreTreeNav> nav = [];
   for (var application in applications) {
     StoreTreeNav appNav = StoreTreeNav(
-        id: application.metadata.id!,
+        id: application.metadata.id,
         source: application,
         spaceEnum: SpaceEnum.module,
         name: application.metadata.name!,
@@ -126,7 +126,7 @@ Future<List<StoreTreeNav>> loadForm(List<IForm> forms, ITarget target) async {
   List<StoreTreeNav> nav = [];
   for (var form in forms) {
     StoreTreeNav dirNav = StoreTreeNav(
-      id: form.metadata.id!,
+      id: form.metadata.id,
       source: form,
       spaceEnum: SpaceEnum.form,
       name: form.metadata.name!,
@@ -191,7 +191,7 @@ Future<List<StoreTreeNav>> loadCohorts(
   List<StoreTreeNav> nav = [];
   for (var cohort in cohorts) {
     StoreTreeNav cohortNav = StoreTreeNav(
-      id: cohort.metadata.id!,
+      id: cohort.metadata.id,
       source: cohort,
       spaceEnum: SpaceEnum.cohorts,
       name: cohort.metadata.name!,
@@ -230,7 +230,7 @@ Future<List<StoreTreeNav>> loadGroup(
   List<StoreTreeNav> nav = [];
   for (var group in groups) {
     StoreTreeNav groupNav = StoreTreeNav(
-      id: group.metadata.id!,
+      id: group.metadata.id,
       source: group,
       spaceEnum: SpaceEnum.groups,
       name: group.metadata.name!,
@@ -271,7 +271,7 @@ Future<List<StoreTreeNav>> loadTargets(
   List<StoreTreeNav> nav = [];
   for (var target in targets) {
     StoreTreeNav targetNav = StoreTreeNav(
-      id: target.metadata.id!,
+      id: target.metadata.id,
       source: target,
       spaceEnum: SpaceEnum.departments,
       name: target.metadata.name!,

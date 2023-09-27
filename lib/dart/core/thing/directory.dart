@@ -8,14 +8,11 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/property.dart';
+import 'package:orginone/dart/core/thing/resource.dart';
+import 'package:orginone/dart/core/thing/standard/index.dart';
 import 'package:orginone/main.dart';
-
-import 'application.dart';
-import 'file_info.dart';
-import 'form.dart';
+import 'fileinfo.dart';
 import 'member.dart';
-import 'species.dart';
 
 class TaskModel {
   String? group;
@@ -40,6 +37,8 @@ abstract class IDirectory extends IFileInfo<XDirectory> {
   //当前加载目录的用户
   late ITarget target;
 
+  /// 资源类
+  late DataResource resource;
   String get key;
 
   //上级目录
@@ -52,6 +51,7 @@ abstract class IDirectory extends IFileInfo<XDirectory> {
   late List<TaskModel> taskList;
 
   //目录下的内容
+  @override
   List<IFileInfo<XEntity>> content(int mode);
 
   //创建子目录
@@ -61,6 +61,7 @@ abstract class IDirectory extends IFileInfo<XDirectory> {
   Future<bool> update(DirectoryModel data);
 
   //删除目录
+  @override
   Future<bool> delete();
 
   //目录下的文件
@@ -119,7 +120,10 @@ abstract class IDirectory extends IFileInfo<XDirectory> {
 class Directory extends FileInfo<XDirectory> implements IDirectory {
   Directory(XDirectory metadata, this.target,
       [this.parent, List<XDirectory>? directorys])
-      : super(metadata..typeName = "目录", parent) {
+      : super(
+          metadata..typeName = "目录",
+          parent,
+        ) {
     applications = [];
     files = [];
     forms = [];
@@ -157,6 +161,18 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   late List<TaskModel> taskList;
 
   @override
+  bool isLoaded = false;
+
+  @override
+  String get key => uuid.v4();
+
+  @override
+  // TODO: implement locationKey
+  String get locationKey => key;
+
+  @override
+  DataResource get resource => target.resource;
+  @override
   List<IFileInfo<XEntity>> content(int mode) {
     List<IFileInfo<XEntity>> cnt = [
       ...children,
@@ -191,7 +207,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
 
   @override
   Future<IDirectory?> create(DirectoryModel data) async {
-    data.parentId = id!;
+    data.parentId = id;
     data.shareId = metadata.shareId!;
     var res = await kernel.createDirectory(data);
     if (res.success && res.data != null) {
@@ -204,7 +220,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
 
   @override
   Future<IApplication?> createApplication(ApplicationModel data) async {
-    data.directoryId = id!;
+    data.directoryId = id;
     var res = await kernel.createApplication(data);
     if (res.success && res.data != null) {
       var application = Application(res.data!, this);
@@ -228,7 +244,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
     final data = await kernel.anystore.fileUpdate(
       metadata.belongId!,
       file,
-      '${id}/${file.path.split('/').last}',
+      '$id/${file.path.split('/').last}',
       progress: (pn) {
         task.finished = pn.toInt();
         progress?.call(pn);
@@ -244,7 +260,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
 
   @override
   Future<IForm?> createForm(FormModel data) async {
-    data.directoryId = id!;
+    data.directoryId = id;
     var res = await kernel.createForm(data);
     if (res.success && res.data != null) {
       var form = Form(res.data!, this);
@@ -256,7 +272,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
 
   @override
   Future<IProperty?> createProperty(PropertyModel data) async {
-    data.directoryId = id!;
+    data.directoryId = id;
     var res = await kernel.createProperty(data);
     if (res.success && res.data != null) {
       var property = Property(res.data!, this);
@@ -268,7 +284,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
 
   @override
   Future<ISpecies?> createSpecies(SpeciesModel data) async {
-    data.directoryId = id!;
+    data.directoryId = id;
     var res = await kernel.createSpecies(data);
     if (res.success && res.data != null) {
       var species = Species(res.data!, this);
@@ -281,7 +297,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   @override
   Future<bool> delete() async {
     if (parent != null) {
-      final res = await kernel.deleteDirectory(IdReq(id: id!));
+      final res = await kernel.deleteDirectory(IdReq(id: id));
       if (res.success) {
         parent!.children.removeWhere((i) => i.id == id);
       }
@@ -312,7 +328,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
       final res = await kernel.anystore.bucketOpreate(
           metadata.belongId!,
           BucketOpreateModel(
-            key: formatKey(id!),
+            key: formatKey(id),
             operate: BucketOpreates.list,
           ));
       if (res.success && res.data != null) {
@@ -333,7 +349,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   @override
   Future<List<IForm>> loadForms({bool reload = false}) async {
     if (forms.isEmpty || reload) {
-      final res = await kernel.queryForms(IdReq(id: id!));
+      final res = await kernel.queryForms(IdReq(id: id));
       if (res.success && res.data != null) {
         forms = (res.data!.result ?? []).map((i) => Form(i, this)).toList();
       }
@@ -344,7 +360,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   @override
   Future<List<IProperty>> loadPropertys({bool reload = false}) async {
     if (propertys.isEmpty || reload) {
-      final res = await kernel.queryPropertys(IdReq(id: id!));
+      final res = await kernel.queryPropertys(IdReq(id: id));
       if (res.success && res.data != null) {
         propertys =
             (res.data!.result ?? []).map((i) => Property(i, this)).toList();
@@ -356,7 +372,7 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   @override
   Future<List<ISpecies>> loadSpecieses({bool reload = false}) async {
     if (specieses.isEmpty || reload) {
-      final res = await kernel.querySpecies(IdReq(id: id!));
+      final res = await kernel.querySpecies(IdReq(id: id));
       if (res.success && res.data != null) {
         specieses =
             (res.data!.result ?? []).map((i) => Species(i, this)).toList();
@@ -477,16 +493,6 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
   }
 
   @override
-  bool isLoaded = false;
-
-  @override
-  String get key => uuid.v4();
-
-  @override
-  // TODO: implement locationKey
-  String get locationKey => key;
-
-  @override
   Future<List<IApplication>> loadAllApplications({bool reload = false}) async {
     final applications = <IApplication>[];
     var res = await Future.wait<List<IApplication>>([
@@ -499,5 +505,10 @@ class Directory extends FileInfo<XDirectory> implements IDirectory {
     }
 
     return applications;
+  }
+
+  @override
+  set resource(DataResource resource) {
+    // TODO: implement resource
   }
 }

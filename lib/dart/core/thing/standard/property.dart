@@ -4,7 +4,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
-import 'package:orginone/dart/core/thing/file_info.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
 abstract class IProperty extends IFileInfo<XProperty> {
@@ -50,17 +50,17 @@ class Property extends FileInfo<XProperty> implements IProperty {
   }
 
   @override
-  Future<bool> loadContent({bool reload = false}) async{
-     if(reload && !isLoaded){
-       await loadAttributes(reload: reload);
-     }
-     isLoaded = reload;
+  Future<bool> loadContent({bool reload = false}) async {
+    if (reload && !isLoaded) {
+      await loadAttributes(reload: reload);
+    }
+    isLoaded = reload;
     return true;
   }
 
   @override
-  Future<List<XAttribute>> loadAttributes({bool reload = false}) async{
-    if(attributes.isEmpty || reload){
+  Future<List<XAttribute>> loadAttributes({bool reload = false}) async {
+    if (attributes.isEmpty || reload) {
       var res = await kernel.queryPropAttributes(IdReq(id: id!));
       if (res.success) {
         attributes = res.data?.result ?? [];
@@ -70,7 +70,7 @@ class Property extends FileInfo<XProperty> implements IProperty {
   }
 
   @override
-  Future<bool> move(IDirectory destination) async{
+  Future<bool> move(IDirectory destination) async {
     if (destination.id != directory.id &&
         destination.metadata.belongId == directory.metadata.belongId) {
       var success = await update(PropertyModel.fromJson(metadata.toJson()));
@@ -85,14 +85,14 @@ class Property extends FileInfo<XProperty> implements IProperty {
   }
 
   @override
-  Future<bool> rename(String name) async{
+  Future<bool> rename(String name) async {
     var data = PropertyModel.fromJson(metadata.toJson());
     data.name = name;
     return await update(data);
   }
 
   @override
-  Future<bool> update(PropertyModel data) async{
+  Future<bool> update(PropertyModel data) async {
     data.id = id!;
     data.directoryId = metadata.directoryId;
     var res = await kernel.updateProperty(data);
@@ -101,7 +101,7 @@ class Property extends FileInfo<XProperty> implements IProperty {
 
   @override
   // TODO: implement popupMenuItem
-  List<PopupMenuItem> get popupMenuItem{
+  List<PopupMenuItem> get popupMenuItem {
     List<PopupMenuKey> key = [];
     key.addAll([
       PopupMenuKey.updateInfo,
@@ -111,9 +111,9 @@ class Property extends FileInfo<XProperty> implements IProperty {
     ]);
     return key
         .map((e) => PopupMenuItem(
-      value: e,
-      child: Text(e.label),
-    ))
+              value: e,
+              child: Text(e.label),
+            ))
         .toList();
   }
 
