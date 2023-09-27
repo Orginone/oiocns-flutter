@@ -303,7 +303,7 @@ class XCollection<T extends Xbase> {
   }
 
   Future<bool> notity(
-    T data, {
+    dynamic data, {
     bool? ignoreSelf,
     String? targetId,
     bool? onlyTarget,
@@ -326,7 +326,7 @@ class XCollection<T extends Xbase> {
   void subscribe(String keys, Function callback, {String? id}) {
     kernel.subscribed(
         keys,
-        this.subMethodName(id: id),
+        subMethodName(id: id) as List<String>, ////有问题
         (data) => {
               Function.apply(callback, [data], null),
             });
