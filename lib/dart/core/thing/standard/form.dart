@@ -10,7 +10,7 @@ import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/model/asset_creation_config.dart';
 
-import 'file_info.dart';
+import '../fileinfo.dart';
 
 class SpeciesItem {
   late XSpeciesItem metadata;
@@ -21,7 +21,6 @@ class SpeciesItem {
     metadata.typeName = '分类项';
   }
 }
-
 
 abstract class IForm implements IFileInfo<XForm> {
   late List<XAttribute> attributes;
@@ -48,10 +47,8 @@ abstract class IForm implements IFileInfo<XForm> {
 
   Future<void> reset();
 
-
   void setThing(AnyThingModel thing);
 }
-
 
 class Form extends FileInfo<XForm> implements IForm {
   Form(super.metadata, super.directory) {
@@ -71,7 +68,7 @@ class Form extends FileInfo<XForm> implements IForm {
   Future<bool> copy(IDirectory destination) async {
     if (destination.id != directory.id) {
       var data = FormModel.fromJson(metadata.toJson());
-      data.directoryId = directory.id!;
+      data.directoryId = directory.id;
       var res = await destination.createForm(data);
       return res != null;
     }
@@ -79,10 +76,12 @@ class Form extends FileInfo<XForm> implements IForm {
   }
 
   @override
-  Future<bool> loadContent({bool reload = false}) async{
-    if(reload && !isLoaded){
-     await Future.wait([loadAttributes(reload: reload),
-      loadItems(reload: reload),]);
+  Future<bool> loadContent({bool reload = false}) async {
+    if (reload && !isLoaded) {
+      await Future.wait([
+        loadAttributes(reload: reload),
+        loadItems(reload: reload),
+      ]);
     }
     isLoaded = reload;
     return true;
@@ -90,9 +89,9 @@ class Form extends FileInfo<XForm> implements IForm {
 
   @override
   Future<bool> delete() async {
-    var res = await kernel.deleteForm(IdReq(id: id!));
+    var res = await kernel.deleteForm(IdReq(id: id));
     if (res.success) {
-       directory.forms.removeWhere((i) => i.id == id);
+      directory.forms.removeWhere((i) => i.id == id);
     }
     return res.success;
   }
@@ -101,7 +100,7 @@ class Form extends FileInfo<XForm> implements IForm {
   Future<bool> deleteAttribute(XAttribute data) async {
     final index = attributes.indexWhere((i) => i.id == data.id);
     if (index > -1) {
-      final res = await kernel.deleteAttribute(IdReq(id:  data.id!));
+      final res = await kernel.deleteAttribute(IdReq(id: data.id));
       if (res.success) {
         attributes.removeAt(index);
       }
@@ -178,7 +177,7 @@ class Form extends FileInfo<XForm> implements IForm {
 
   @override
   // TODO: implement popupMenuItem
-  List<PopupMenuItem> get popupMenuItem{
+  List<PopupMenuItem> get popupMenuItem {
     List<PopupMenuKey> key = [];
     key.addAll([
       PopupMenuKey.updateInfo,
@@ -269,6 +268,7 @@ class Form extends FileInfo<XForm> implements IForm {
     return items;
   }
 
+  @override
   Future<void> reset() async {
     for (var element in fields) {
       element.field.defaultData.value = null;
@@ -305,20 +305,20 @@ class Form extends FileInfo<XForm> implements IForm {
         type = "selectDate";
         break;
       case "时间型":
-        if(widget == "dateRange"){
+        if (widget == "dateRange") {
           type = "selectDateRange";
-        } else  if(widget == "timeRange"){
+        } else if (widget == "timeRange") {
           type = "selectTimeRange";
         } else {
           type = "selectTime";
         }
         break;
       case "用户型":
-        if(widget.isEmpty){
+        if (widget.isEmpty) {
           type = "selectPerson";
-        }else if(widget== 'group'){
+        } else if (widget == 'group') {
           type = "selectGroup";
-        }else if(widget == 'dept'){
+        } else if (widget == 'dept') {
           type = "selectDepartment";
         }
         break;
@@ -331,13 +331,12 @@ class Form extends FileInfo<XForm> implements IForm {
     }
 
     return Fields(
-      title: attr.name,
-      type: type,
-      code: attr.code,
-      select: select,
-      router: router,
-      regx: regx
-    );
+        title: attr.name,
+        type: type,
+        code: attr.code,
+        select: select,
+        router: router,
+        regx: regx);
   }
 
   @override
@@ -351,16 +350,14 @@ class Form extends FileInfo<XForm> implements IForm {
   void setThing(AnyThingModel thing) {
     for (var element in fields) {
       if (element.field.type == "input") {
-        thing.otherInfo[element.id!] =
-            element.field.controller!.text;
+        thing.otherInfo[element.id!] = element.field.controller!.text;
       }
       if (element.field.defaultData.value != null) {
-        switch(element.field.type){
+        switch (element.field.type) {
           case "selectPerson":
           case "selectDepartment":
           case "selectGroup":
-            thing.otherInfo[element.id!] =
-                element.field.defaultData.value.id;
+            thing.otherInfo[element.id!] = element.field.defaultData.value.id;
             break;
           case "select":
             thing.otherInfo[element.id!] =

@@ -7,7 +7,7 @@ import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
-import 'package:orginone/dart/core/thing/form.dart';
+import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
@@ -17,9 +17,7 @@ import 'package:orginone/widget/loading_dialog.dart';
 
 import 'logic.dart';
 
-class AttrsPage extends BaseGetPageView<
-    AttrsController,
-    AttrsState> {
+class AttrsPage extends BaseGetPageView<AttrsController, AttrsState> {
   @override
   Widget buildView() {
     return Container(
@@ -70,8 +68,7 @@ class AttrsPage extends BaseGetPageView<
   }
 }
 
-class AttrsController
-    extends BaseController<AttrsState> {
+class AttrsController extends BaseController<AttrsState> {
   final AttrsState state = AttrsState();
 
   @override
@@ -85,17 +82,17 @@ class AttrsController
 
   ClassificationInfoController get info => Get.find();
 
-
   IForm get species => info.state.species;
 
   Future<void> loadAttrs({bool reload = false}) async {
-    state.attrs.value = await settingCtrl.provider.work!.loadAttributes(species.metadata.id!,species.metadata.belongId!);
+    state.attrs.value = await settingCtrl.provider.work!
+        .loadAttributes(species.metadata.id!, species.metadata.belongId!);
   }
 
   void onAttrOperation(operation, String code) async {
     try {
       var attr = state.attrs.firstWhere((element) => element.code == code);
-      var success =  await species.deleteAttribute(attr);
+      var success = await species.deleteAttribute(attr);
       if (success) {
         state.attrs.remove(attr);
         state.attrs.refresh();
@@ -103,7 +100,6 @@ class AttrsController
       }
     } catch (e) {}
   }
-
 }
 
 class AttrsState extends BaseGetState {

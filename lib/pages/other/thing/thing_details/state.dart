@@ -1,18 +1,15 @@
-
-
 import 'package:flutter/material.dart' hide Form;
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/thing/form.dart';
-import 'package:orginone/model/thing_model.dart';
+import 'package:orginone/dart/core/thing/standard/form.dart';
 
-class ThingDetailsState extends BaseGetState{
+class ThingDetailsState extends BaseGetState {
   late TabController tabController;
   late AnyThingModel thing;
   late Form form;
 
-  ThingDetailsState(){
+  ThingDetailsState() {
     thing = Get.arguments['thing'];
     form = Get.arguments['form'];
   }

@@ -9,7 +9,7 @@ import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
-import 'package:orginone/dart/core/thing/file_info.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
 import '../person.dart';
@@ -25,6 +25,7 @@ abstract class ITeam implements IEntity<XTarget> {
   late IDirectory directory;
   //成员
   late List<XTarget> members;
+
   //限定成员类型
   late List<TargetType> memberTypes;
   //成员会话
@@ -34,6 +35,7 @@ abstract class ITeam implements IEntity<XTarget> {
   Future<void> deepLoad({bool? reload = false});
   //加载成员
   Future<List<XTarget>> loadMembers({bool? reload = false});
+
 
   //创建用户
   Future<ITeam?> createTarget(TargetModel data);
@@ -101,6 +103,7 @@ abstract class Team extends MsgChat implements ITeam {
       }
     }
     return members;
+
   }
 
   @override
@@ -164,6 +167,7 @@ abstract class Team extends MsgChat implements ITeam {
     }
     return null;
   }
+
 
   @override
   Future<bool> copy(IDirectory destination) {

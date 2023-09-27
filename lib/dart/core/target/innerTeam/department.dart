@@ -7,7 +7,7 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/file_info.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
 /// 单位内部机构（部门）接口
@@ -103,6 +103,7 @@ class Department extends Target implements IDepartment {
         return department;
       }
     }
+    return null;
   }
 
   @override
@@ -112,7 +113,8 @@ class Department extends Target implements IDepartment {
   }
 
   @override
-  Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async {
+  Future<void> deepLoad(
+      {bool reload = false, bool reloadContent = false}) async {
     await Future.wait([
       loadChildren(reload: reload),
       loadMembers(reload: reload),
@@ -126,7 +128,7 @@ class Department extends Target implements IDepartment {
 
   @override
   Future<bool> delete() async {
-    var res = await kernel.deleteTarget(IdReq(id: metadata.id!));
+    var res = await kernel.deleteTarget(IdReq(id: metadata.id));
     if (res.success) {
       if (parent != null) {
         parent!.children.removeWhere((i) => i == this);
@@ -154,7 +156,7 @@ class Department extends Target implements IDepartment {
   Future<List<IDepartment>> loadChildren({bool reload = false}) async {
     if (childrenTypes.isNotEmpty && (children.isEmpty || reload)) {
       var res = await kernel.querySubTargetById(GetSubsModel(
-        id: metadata.id!,
+        id: metadata.id,
         subTypeNames: childrenTypes.map((e) => e.label).toList(),
         page: PageRequest(offset: 0, limit: 9999, filter: ''),
       ));
@@ -173,7 +175,6 @@ class Department extends Target implements IDepartment {
   // TODO: implement subTarget
   List<ITarget> get subTarget => children;
 
-
   @override
   // TODO: implement targets
   List<ITarget> get targets {
@@ -188,15 +189,19 @@ class Department extends Target implements IDepartment {
   // TODO: implement popupMenuItem
   List<PopupMenuItem> get popupMenuItem {
     List<PopupMenuKey> key = [];
-    if(hasRelationAuth()){
-      key.addAll([...createPopupMenuKey,PopupMenuKey.createDepartment,PopupMenuKey.updateInfo]);
+    if (hasRelationAuth()) {
+      key.addAll([
+        ...createPopupMenuKey,
+        PopupMenuKey.createDepartment,
+        PopupMenuKey.updateInfo
+      ]);
     }
     key.addAll(defaultPopupMenuKey);
     return key
         .map((e) => PopupMenuItem(
-      value: e,
-      child: Text(e.label),
-    ))
+              value: e,
+              child: Text(e.label),
+            ))
         .toList();
   }
 
@@ -204,7 +209,7 @@ class Department extends Target implements IDepartment {
   bool isLoaded = false;
 
   @override
-  Future<bool> teamChangedNotity(XTarget target) async{
+  Future<bool> teamChangedNotity(XTarget target) async {
     if (childrenTypes.contains(TargetType.getType(target.typeName!))) {
       if (!children.any((i) => i.id == target.id)) {
         final department = Department(target, company);
@@ -219,7 +224,7 @@ class Department extends Target implements IDepartment {
 
   @override
   List<IFileInfo<XEntity>> content(int mode) {
-   return [];
+    return [];
   }
 
   @override

@@ -11,7 +11,7 @@ import 'package:orginone/dart/core/target/innerTeam/station.dart';
 import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
 import 'package:orginone/dart/core/target/person.dart';
-import 'package:orginone/dart/core/thing/file_info.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
 abstract class ICompany extends IBelong {

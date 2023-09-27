@@ -4,7 +4,7 @@ import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_contr
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/out_team/group.dart';
-import 'package:orginone/dart/core/thing/file_info.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/store/config.dart';
 import 'package:orginone/pages/store/state.dart';

@@ -9,7 +9,7 @@ import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/out_team/cohort.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/file_info.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/local_store.dart';
 
@@ -18,6 +18,7 @@ import '../../base/schema.dart';
 import '../public/enums.dart';
 import '../public/objects.dart';
 import '../public/entity.dart';
+import '../thing/fileinfo.dart';
 import 'base/belong.dart';
 import 'team/hospital.dart';
 import 'team/university.dart';

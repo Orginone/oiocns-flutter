@@ -5,6 +5,7 @@ import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/common/entity.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/public/collection.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/images.dart';
@@ -71,7 +72,7 @@ abstract class FileInfo<T extends XEntity> extends Entity
 
   @override
   // TODO: implement id
-  String get id => metadata.id!.replaceAll('_', '');
+  String get id => metadata.id.replaceAll('_', '');
 
   @override
   Future<bool> loadContent({bool reload = false}) async {
@@ -113,7 +114,7 @@ class SysFileInfo extends FileInfo<XEntity> implements ISysFileInfo {
       : super(
             fileToEntity(filedata, directory.metadata.belongId!,
                 directory.metadata.belong),
-            directory) {}
+            directory);
 
   @override
   late FileItemModel filedata;
@@ -266,4 +267,118 @@ class SysFileInfo extends FileInfo<XEntity> implements ISysFileInfo {
     // TODO: implement loadApplication
     throw UnimplementedError();
   }
+}
+
+abstract class IStandardFileInfo<T extends XStandard> extends IFileInfo<T> {
+  /// 变更通知
+  Future<bool> notify(String operate, List<XEntity> data);
+
+  /// 更新
+  Future<bool> update(T data);
+}
+
+class StandardFileInfo<T extends XStandard> extends FileInfo<T>
+    implements IStandardFileInfo<T> {
+  XCollection<T> coll;
+  @override
+  late bool isLoaded;
+
+  StandardFileInfo(
+    T _metadata,
+    IDirectory _directory,
+    XCollection<T> _coll,
+  )   : coll = _coll,
+        super(_metadata, _directory);
+  @override
+  Future<bool> copy(IDirectory destination) {
+    // TODO: implement copy
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> move(IDirectory destination) {
+    // TODO: implement move
+    throw UnimplementedError();
+  }
+
+  @override
+  T get metadata {
+    throw UnimplementedError();
+// return  _metadata;
+  }
+
+  bool allowCopy(IDirectory destination) {
+    return directory.target.belongId != destination.target.belongId;
+  }
+
+  bool allowMove(IDirectory destination) {
+    return (destination.id != directory.id &&
+        destination.target.belongId == directory.target.belongId);
+  }
+
+  @override
+  Future<bool> update(T data) {
+    // TODO: implement update
+    throw UnimplementedError();
+  }
+
+  @override
+  List<IFileInfo<XEntity>> content(int mode) {
+    // TODO: implement content
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> delete() {
+    // TODO: implement delete
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> rename(String name) {
+    // TODO: implement rename
+    throw UnimplementedError();
+  }
+
+  Future<bool> copyTo(String directoryId, {XCollection<T>? coll}) async {
+    coll = coll ?? this.coll;
+    // const data = await coll.replace({
+    //   ...metadata,
+    //   directoryId: directoryId,
+    // });
+    // if (data) {
+    //   return await coll.notity({
+    //     data: [data],
+    //     operate: 'insert',
+    //   });
+    // }
+    return false;
+  }
+
+  //  async moveTo(directoryId = string, coll = XCollection<T> = coll): Promise<boolean> {
+  //   // const data = await coll.replace({
+  //   //   ...metadata,
+  //   //   directoryId: directoryId,
+  //   // });
+  //   // if (data) {
+  //   //   await this.notify('delete', [this.metadata]);
+  //   //   return await coll.notity({
+  //   //     data: [data],
+  //   //     operate: 'insert',
+  //   //   });
+  //   // }
+  //   return false;
+  // }
+  @override
+  // TODO: implement locationKey
+  String get locationKey => throw UnimplementedError();
+
+  @override
+  Future<bool> notify(String operate, List<XEntity> data) async {
+    return await coll.notity(data, targetId: operate);
+  }
+
+  @override
+  // TODO: implement popupMenuItem
+  List<PopupMenuItem> get popupMenuItem => throw UnimplementedError();
 }

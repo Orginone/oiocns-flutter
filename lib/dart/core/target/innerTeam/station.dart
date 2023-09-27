@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -8,12 +6,13 @@ import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/identity/identity.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
-import 'package:orginone/dart/core/thing/file_info.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
 abstract class IStation implements ITeam {
   /// 设立岗位的单位
   late ICompany company;
+
   /// 岗位下的角色
   late List<XIdentity> identitys;
 
@@ -28,7 +27,9 @@ abstract class IStation implements ITeam {
 }
 
 class Station extends Team implements IStation {
-  Station(XTarget metadata,this.company):super(metadata,[metadata.belong?.name ?? '', '${metadata.typeName}群'],space: company){
+  Station(XTarget metadata, this.company)
+      : super(metadata, [metadata.belong?.name ?? '', '${metadata.typeName}群'],
+            space: company) {
     identitys = [];
     directory = company.directory;
   }
@@ -44,12 +45,13 @@ class Station extends Team implements IStation {
   List<IMsgChat> get chats => [this];
 
   @override
-  Future<ITeam?> createTarget(TargetModel data) async{
+  Future<ITeam?> createTarget(TargetModel data) async {
     return null;
   }
 
   @override
-  Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async{
+  Future<void> deepLoad(
+      {bool reload = false, bool reloadContent = false}) async {
     await Future.wait([
       loadMembers(reload: reload),
       directory.loadContent(reload: reloadContent),
@@ -57,17 +59,16 @@ class Station extends Team implements IStation {
   }
 
   @override
-  Future<bool> delete() async{
+  Future<bool> delete() async {
     var res = await kernel.deleteTarget(IdReq(id: metadata.id!));
     if (res.success) {
       company.stations.removeWhere((i) => i == this);
     }
     return res.success;
-
   }
 
   @override
-  Future<List<XIdentity>> loadIdentitys({bool reload = false}) async{
+  Future<List<XIdentity>> loadIdentitys({bool reload = false}) async {
     if (identitys.isEmpty || reload) {
       var res = await kernel.queryTeamIdentitys(IdReq(id: metadata.id!));
       if (res.success) {
@@ -78,11 +79,15 @@ class Station extends Team implements IStation {
   }
 
   @override
-  Future<bool> pullIdentitys(List<XIdentity> identitys) async{
-    identitys = identitys.where((i) => this.identitys.every((a) => a.id != i.id)).toList();
+  Future<bool> pullIdentitys(List<XIdentity> identitys) async {
+    identitys = identitys
+        .where((i) => this.identitys.every((a) => a.id != i.id))
+        .toList();
     if (identitys.isNotEmpty) {
-      final res = await kernel.pullAnyToTeam(GiveModel( id: this.id,
-        subIds: identitys.map((i) => i.id!).toList(),));
+      final res = await kernel.pullAnyToTeam(GiveModel(
+        id: this.id,
+        subIds: identitys.map((i) => i.id!).toList(),
+      ));
       if (!res.success) return false;
       // for (final identity in identitys) {
       //   createIdentityMsg(OperateType.Add, identity);
@@ -93,12 +98,16 @@ class Station extends Team implements IStation {
   }
 
   @override
-  Future<bool> removeIdentitys(List<XIdentity> identitys) async{
-    identitys = identitys.where((i) => this.identitys.any((a) => a.id == i.id)).toList();
+  Future<bool> removeIdentitys(List<XIdentity> identitys) async {
+    identitys = identitys
+        .where((i) => this.identitys.any((a) => a.id == i.id))
+        .toList();
     if (identitys.isNotEmpty) {
       for (final identity in identitys) {
-        final res = await kernel.removeOrExitOfTeam(GainModel( id: id,
-          subId: identity.id!,));
+        final res = await kernel.removeOrExitOfTeam(GainModel(
+          id: id,
+          subId: identity.id!,
+        ));
         if (!res.success) return false;
         // createIdentityMsg(OperateType.remove, identity);
         company.user.removeGivedIdentity(
@@ -122,7 +131,7 @@ class Station extends Team implements IStation {
   bool isLoaded = false;
 
   @override
-  Future<bool> teamChangedNotity(XTarget target) async{
+  Future<bool> teamChangedNotity(XTarget target) async {
     return await pullMembers([target]);
   }
 
@@ -134,5 +143,4 @@ class Station extends Team implements IStation {
   @override
   // TODO: implement locationKey
   String get locationKey => '';
-
 }

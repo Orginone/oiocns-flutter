@@ -6,7 +6,7 @@ import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
-import 'package:orginone/dart/core/thing/file_info.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
 abstract class ICohort extends ITarget {}
@@ -14,18 +14,21 @@ abstract class ICohort extends ITarget {}
 class Cohort extends Target implements ICohort {
   Cohort(IBelong space, XTarget metadata)
       : super(metadata, [metadata.belong?.name ?? '', metadata.typeName!],
-            space: space){
+            space: space) {
     speciesTypes.add(SpeciesType.market);
   }
-
 
   @override
   // TODO: implement chats
   List<IMsgChat> get chats => [this];
 
   @override
-  Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async {
-    await Future.wait([loadMembers(reload: reload),directory.loadContent(reload: reloadContent)]);
+  Future<void> deepLoad(
+      {bool reload = false, bool reloadContent = false}) async {
+    await Future.wait([
+      loadMembers(reload: reload),
+      directory.loadContent(reload: reloadContent)
+    ]);
   }
 
   @override
@@ -52,7 +55,6 @@ class Cohort extends Target implements ICohort {
   // TODO: implement subTarget
   List<ITarget> get subTarget => [];
 
-
   @override
   // TODO: implement targets
   List<ITarget> get targets => [this];
@@ -61,16 +63,16 @@ class Cohort extends Target implements ICohort {
   // TODO: implement popupMenuItem
   List<PopupMenuItem> get popupMenuItem {
     List<PopupMenuKey> key = [];
-    if(hasRelationAuth()){
-      key.addAll([...createPopupMenuKey,PopupMenuKey.updateInfo]);
+    if (hasRelationAuth()) {
+      key.addAll([...createPopupMenuKey, PopupMenuKey.updateInfo]);
     }
     key.addAll(defaultPopupMenuKey);
 
     return key
         .map((e) => PopupMenuItem(
-      value: e,
-      child: Text(e.label),
-    ))
+              value: e,
+              child: Text(e.label),
+            ))
         .toList();
   }
 
@@ -78,7 +80,7 @@ class Cohort extends Target implements ICohort {
   bool isLoaded = false;
 
   @override
-  Future<bool> teamChangedNotity(XTarget target) async{
+  Future<bool> teamChangedNotity(XTarget target) async {
     return await pullMembers([target]);
   }
 

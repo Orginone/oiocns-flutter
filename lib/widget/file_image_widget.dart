@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:orginone/dart/core/thing/file_info.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/images.dart';
 
 class FileImageWidget extends StatelessWidget {
