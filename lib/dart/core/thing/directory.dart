@@ -113,6 +113,8 @@ abstract class IDirectory extends IFileInfo<XDirectory> {
   Future<IApplication?> createApplication(ApplicationModel data);
 
   Future<void> loadSubDirectory();
+
+  void structCallback() {}
 }
 
 ///目录实现类
