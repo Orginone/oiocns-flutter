@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
-import 'package:orginone/dart/core/thing/application.dart';
+import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/main.dart';

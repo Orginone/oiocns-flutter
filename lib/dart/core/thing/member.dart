@@ -2,7 +2,7 @@ import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 
-import 'file_info.dart';
+import 'fileinfo.dart';
 
 abstract class IMember extends IFileInfo<XTarget> {
   late bool isMember;

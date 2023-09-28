@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/thing/application.dart';
+import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
-import 'package:orginone/dart/core/thing/file_info.dart';
-import 'package:orginone/dart/core/thing/form.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
+import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/main.dart';
 
 import 'apply.dart';
@@ -81,7 +81,7 @@ class Work extends FileInfo<XWorkDefine> implements IWork {
   }
 
   @override
-  Future<IWorkApply?> createApply() async{
+  Future<IWorkApply?> createApply() async {
     if (node != null && forms.isNotEmpty) {
       final InstanceDataModel data = InstanceDataModel(
         node: node!,
@@ -113,14 +113,14 @@ class Work extends FileInfo<XWorkDefine> implements IWork {
   }
 
   @override
-  Future<List<IForm>> loadWorkForms({bool reload = false}) async{
+  Future<List<IForm>> loadWorkForms({bool reload = false}) async {
     final List<IForm> forms = [];
     if (!reload) {
       await loadWorkNode(reload: true);
     }
     if (node != null) {
       recursionForms(WorkNodeModel node) async {
-        for (var item in node.forms??[]) {
+        for (var item in node.forms ?? []) {
           final form = Form(
             item..id = "${item.id!}",
             directory,
@@ -139,6 +139,7 @@ class Work extends FileInfo<XWorkDefine> implements IWork {
           }
         }
       }
+
       await recursionForms(node!);
     }
     this.forms = forms;
@@ -146,7 +147,7 @@ class Work extends FileInfo<XWorkDefine> implements IWork {
   }
 
   @override
-  Future<WorkNodeModel?> loadWorkNode({bool reload = false}) async{
+  Future<WorkNodeModel?> loadWorkNode({bool reload = false}) async {
     if (node == null || reload) {
       final res = await kernel.queryWorkNodes(IdReq(id: id));
       if (res.success) {
@@ -191,11 +192,11 @@ class Work extends FileInfo<XWorkDefine> implements IWork {
   }
 
   @override
-  Future<bool> update(WorkDefineModel req) async{
+  Future<bool> update(WorkDefineModel req) async {
     req.id = id;
     req.applicationId = metadata.applicationId;
     var res = await kernel.createWorkDefine(req);
-    if (res.success && res.data!=null) {
+    if (res.success && res.data != null) {
       node = req.resource;
     }
     return res.success;

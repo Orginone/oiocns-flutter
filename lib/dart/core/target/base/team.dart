@@ -23,6 +23,7 @@ abstract class ITeam implements IEntity<XTarget> {
   late IDirectory directory;
   //成员
   late List<XTarget> members;
+
   //限定成员类型
   late List<TargetType> memberTypes;
   //成员会话

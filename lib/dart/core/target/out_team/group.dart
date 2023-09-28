@@ -6,7 +6,7 @@ import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/file_info.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
 /// 单位群接口
@@ -73,7 +73,8 @@ class Group extends Target implements IGroup {
   }
 
   @override
-  Future<void> deepLoad({bool reload = false,bool reloadContent = false}) async {
+  Future<void> deepLoad(
+      {bool reload = false, bool reloadContent = false}) async {
     await Future.wait([
       loadChildren(reload: reload),
       loadMembers(reload: reload),
@@ -132,7 +133,6 @@ class Group extends Target implements IGroup {
   // TODO: implement subTarget
   List<ITarget> get subTarget => children;
 
-
   @override
   // TODO: implement targets
   List<ITarget> get targets {
@@ -155,16 +155,16 @@ class Group extends Target implements IGroup {
   // TODO: implement popupMenuItem
   List<PopupMenuItem> get popupMenuItem {
     List<PopupMenuKey> key = [];
-    if(hasRelationAuth()){
+    if (hasRelationAuth()) {
       key.addAll(createPopupMenuKey);
     }
 
     key.addAll(defaultPopupMenuKey);
     return key
         .map((e) => PopupMenuItem(
-      value: e,
-      child: Text(e.label),
-    ))
+              value: e,
+              child: Text(e.label),
+            ))
         .toList();
   }
 
@@ -172,8 +172,8 @@ class Group extends Target implements IGroup {
   bool isLoaded = false;
 
   @override
-  Future<bool> teamChangedNotity(XTarget target) async{
-    if(target.typeName == TargetType.group.label){
+  Future<bool> teamChangedNotity(XTarget target) async {
+    if (target.typeName == TargetType.group.label) {
       if (!children.any((i) => i.id == target.id)) {
         final group = Group(target, company);
         await group.deepLoad();
@@ -181,14 +181,14 @@ class Group extends Target implements IGroup {
         return true;
       }
       return false;
-    }else{
+    } else {
       return await pullMembers([target]);
     }
   }
 
   @override
   List<IFileInfo<XEntity>> content(int mode) {
-   return [];
+    return [];
   }
 
   @override

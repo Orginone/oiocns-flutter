@@ -7,11 +7,10 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
-import 'package:orginone/dart/core/thing/form.dart';
+import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/dart/core/thing/species.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/model/thing_model.dart' as thing;
 import 'package:orginone/pages/store/logic.dart';
 import 'package:orginone/pages/store/state.dart';
 

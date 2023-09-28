@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
-import 'package:orginone/dart/core/thing/form.dart';
+import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/mapping_components.dart';
