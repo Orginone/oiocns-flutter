@@ -2,7 +2,7 @@ import 'package:orginone/dart/base/model.dart';
 
 ///web端的翻译，用于鼠标右键功能，移动端暂时不实现
 ///实体的操作
-enum entityOperates {
+enum entityOperates OperateModel{
   open(),
   update(),
   delete(),

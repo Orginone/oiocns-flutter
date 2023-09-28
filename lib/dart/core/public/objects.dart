@@ -11,7 +11,7 @@ class XObject<T extends Xbase> {
   late String _objName;
   late XTarget _target;
   late List<String> _relations;
-  late Map<String, Function(List<dynamic>)> _method;
+  late Map<String, List<Function>> _method;
   XObject(
       XTarget target, String name, List<String> relations, List<String> keys) {
     _loaded = false;
@@ -19,7 +19,7 @@ class XObject<T extends Xbase> {
     _relations = relations;
     _objName = name;
     _method = {};
-    kernel.subscribed(this.subMethodName, keys, (res) => _objectCallback(res));
+    kernel.subscribe(this.subMethodName, keys, (i) => _objectCallback(i));
   }
 
   dynamic get cache {
@@ -113,12 +113,12 @@ class XObject<T extends Xbase> {
   void subscribe(dynamic data, {required String id}) {
     var kernel = KernelApi();
     kernel.on(
-      '${this._target.belongId}-${id != null || this._target.id != null}-${this._objName}',
+      '${this._target.belongId}-${id != '' || this._target.id != ''}-${this._objName}',
       Function.apply(this.callback, [], null),
     );
   }
 
-  void setValue(String path, dynamic data) {
+  setValue(String path, dynamic data) {
     if (this._cache != null) {
       if (path == '') {
         return this.cache();
@@ -160,20 +160,22 @@ class XObject<T extends Xbase> {
     return data;
   }
 
-  _objectCallback(String flag, dynamic data, Map<String, dynamic> res) {
-    res = {
-      'flag': flag,
-      'data': data,
-    };
-    var methods = _method[res['flag']];
-    List<dynamic> resdata = [];
-    resdata.addAll(_method[res['data']] as Iterable);
+  ///暂时有错，能改的帅哥改一下
+  _objectCallback(Res res) {
+    var methods = _method[res.flag];
     if (methods != {}) {
       try {
-        methods?.forEach((m) => Function.apply(methods, []));
+        methods?.forEach((m) => Function.apply(m, []));
       } catch (e) {
         printError();
       }
     }
   }
+}
+
+class Res {
+  late String flag;
+  late dynamic data;
+
+  Res({required this.flag, this.data});
 }

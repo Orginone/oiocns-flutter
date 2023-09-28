@@ -1061,36 +1061,36 @@ class KernelApi {
   /// @param {string} belongId 对象所在域, 个人域(user),单位域(company),开放域(all)
   /// @param {(data:any)=>void} callback 变更回调，默认回调一次
   /// @returns {void} 无返回值
-  subscribed(
-      String key, List<String> belongId, Function(dynamic)? callback) async {
-    if (callback != null) {
-      final fullKey = "$key|$belongId";
-      _subscribeCallbacks[fullKey] = callback;
-      if (_storeHub.isConnected) {
-        var raw = await _storeHub.invoke('Subscribed', args: [belongId, key]);
-        var res = ResultType.fromJson(raw);
-        if (res.success && res.data != null) {
-          callback(res.data);
-        }
-      }
-    }
-  }
+  // subscribed(
+  //     String key, List<String> belongId, Function(dynamic)? callback) async {
+  //   if (callback != null) {
+  //     final fullKey = "$key|$belongId";
+  //     _subscribeCallbacks[fullKey] = callback;
+  //     if (_storeHub.isConnected) {
+  //       var raw = await _storeHub.invoke('Subscribed', args: [belongId, key]);
+  //       var res = ResultType.fromJson(raw);
+  //       if (res.success && res.data != null) {
+  //         callback(res.data);
+  //       }
+  //     }
+  //   }
+  // }
 
-  /// 取消订阅对象变更
-  /// @param {string} key 对象名称（eg: rootName.person.name）
-  /// @param {string} belongId 对象所在域, 个人域(user),单位域(company),开放域(all)
-  /// @returns {void} 无返回值
+  // /// 取消订阅对象变更
+  // /// @param {string} key 对象名称（eg: rootName.person.name）
+  // /// @param {string} belongId 对象所在域, 个人域(user),单位域(company),开放域(all)
+  // /// @returns {void} 无返回值
 
-  unSubscribed(
-    String belongId,
-    String key,
-  ) async {
-    final fullKey = "$key|$belongId";
-    if (_subscribeCallbacks.containsKey(fullKey) && _storeHub.isConnected) {
-      await _storeHub.invoke('UnSubscribed', args: [key, belongId]);
-      _subscribeCallbacks.remove(fullKey);
-    }
-  }
+  // unSubscribed(
+  //   String belongId,
+  //   String key,
+  // ) async {
+  //   final fullKey = "$key|$belongId";
+  //   if (_subscribeCallbacks.containsKey(fullKey) && _storeHub.isConnected) {
+  //     await _storeHub.invoke('UnSubscribed', args: [key, belongId]);
+  //     _subscribeCallbacks.remove(fullKey);
+  //   }
+  // }
 
   /// 由内核代理一个http请求
   /// @param {model.HttpRequestType} reqs 请求体
@@ -1201,7 +1201,7 @@ class KernelApi {
   void subscribe(
     String flag,
     List<String> keys,
-    Function(List<dynamic>) operation,
+    Function(dynamic) operation, //部分代码又用到dynamic，我先改了
   ) {
     if (flag.isEmpty || keys.isEmpty) {
       return;

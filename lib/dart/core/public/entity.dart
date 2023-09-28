@@ -4,6 +4,7 @@ import 'package:orginone/main.dart';
 
 import '../../base/model.dart';
 import '../../base/schema.dart';
+import './operates.dart';
 
 Map<String, dynamic> shareIdSet = <String, dynamic>{};
 
@@ -42,12 +43,12 @@ abstract class IEntity<T> extends Emitter {
 
   ///对实体可进行操作
   ///@param mode 模式，默认为配置模式
-  OperationModel operates(String mode);
+  List<OperateModel> operates({String? mode});
 }
 
 ///实体类实现
-abstract class Entity<T extends XEntity> extends Emitter implements IEntity {
-  late dynamic _metadata;
+abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
+  late T _metadata;
   @override
   late String key;
 
@@ -57,55 +58,66 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity {
     shareIdSet[metadata.id] = metadata;
   }
 
-  String getId() {
+  @override
+  String get id {
     return this._metadata.id;
   }
 
-  String getName() {
-    return metadata().name;
+  @override
+  String get name {
+    return _metadata.name!;
   }
 
-  String getCode() {
-    return metadata().code;
+  @override
+  String get code {
+    return _metadata.code!;
   }
 
-  String getTypeName() {
-    return metadata().typeName;
+  String get typeName {
+    return _metadata.typeName!;
   }
 
-  String getRemark() {
-    return metadata().remark ?? '';
+  @override
+  String get remark {
+    return _metadata.remark ?? '';
   }
 
-  T getMetadata() {
+  @override
+  T get metadata {
     if (shareIdSet.containsKey(this._metadata.id)) {
       return shareIdSet.values as T;
     }
     return this._metadata;
   }
 
-  String getUserId() {
+  @override
+  String get userId {
     return kernel.userId;
   }
 
-  String getBelongId() {
-    return this._metadata.belongId;
+  @override
+  String get belongId {
+    return _metadata.belongId!;
   }
 
-  ShareIcon getShare() {
+  @override
+  ShareIcon get share {
     return this.findShare(id);
   }
 
-  ShareIcon getCreater() {
-    return this.findShare(getMetadata().createUser!);
+  @override
+  ShareIcon get creater {
+    return this.findShare(metadata.createUser!);
   }
 
-  ShareIcon getUpdater() {
-    return this.findShare(getMetadata().updateUser!);
+  @override
+  ShareIcon get updater {
+    return this.findShare(metadata.updateUser!);
   }
 
-  ShareIcon getBelong() {
-    return findShare(getMetadata().belongId!);
+  @override
+  ShareIcon get belong {
+    return findShare(metadata.belongId!);
   }
 
   void setMetadata(T metadata) {
@@ -145,8 +157,9 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity {
     return shareIcon;
   }
 
-  ///获取右键操作方法,暂时不实现
-  // OperationModel operates(String mode) {
-  //   return [entityOperates.remark, entityOperates.qrCode];
-  // }
+  ///获取右键操作方法
+  @override
+  List<OperateModel> operates({String? mode}) {
+    return [entityOperates.remark, entityOperates.qrCode] as List<OperateModel>;
+  }
 }

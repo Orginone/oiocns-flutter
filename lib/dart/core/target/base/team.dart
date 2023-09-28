@@ -1,15 +1,15 @@
-import 'dart:convert';
+import 'dart:async';
 
+import 'package:logging/logging.dart';
 import 'package:orginone/dart/base/index.dart';
 import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/public/enums.dart';
+import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
-import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
 import '../person.dart';
@@ -18,10 +18,8 @@ abstract class ITeam implements IEntity<XTarget> {
   //当前用户
   late IPerson user;
   //加载归属组织
-  @override
   late IBelong space;
   //当前目录
-  @override
   late IDirectory directory;
   //成员
   late List<XTarget> members;
@@ -35,7 +33,6 @@ abstract class ITeam implements IEntity<XTarget> {
   Future<void> deepLoad({bool? reload = false});
   //加载成员
   Future<List<XTarget>> loadMembers({bool? reload = false});
-
 
   //创建用户
   Future<ITeam?> createTarget(TargetModel data);
@@ -64,27 +61,32 @@ abstract class ITeam implements IEntity<XTarget> {
       {XTarget? sub, String? subTargetId});
 }
 
-abstract class Team extends MsgChat implements ITeam {
-  Team(List<String> _keys, this.metadata, List<String> _relations,
-      List<TargetType> _memberTypes)
-      : super(metadata) {
-    _memberTypes = [TargetType.person];
-    memberTypes = _memberTypes;
-    relations = _relations;
-    kernel.subscribe('${metadata.belongId}-${metadata.id}-target',
-        [..._keys, this.key], (data) => _receiveTarget(data));
-  }
-
+///团队基类实现
+abstract class Team extends Entity<XTarget> implements ITeam {
+  @override
+  late IBelong space;
+  @override
+  late IPerson user;
+  @override
   late List<TargetType> memberTypes;
   @override
   late List<XTarget> members = [];
   @override
-  List<ISession> memberChats = [];
-  List<String> relations;
-  IDirectory directory;
-  bool _memberLoaded = false;
-
+  late List<ISession> memberChats = [];
+  late List<String> relations;
   @override
+  late IDirectory directory;
+  bool _memberLoaded = false;
+  Team(List<String> _keys, XTarget _metadata, List<String> _relations,
+      List<TargetType> _memberTypes)
+      : super(_metadata) {
+    _memberTypes = [TargetType.person];
+    memberTypes = _memberTypes;
+    relations = _relations;
+    kernel.subscribe('${metadata.belongId}-${metadata.id}-target',
+        [..._keys, key], (data) => receiveTarget(data as TargetOperateModel));
+  }
+
   bool get isInherited => metadata.belongId != space.id;
 
   @override
@@ -98,12 +100,13 @@ abstract class Team extends MsgChat implements ITeam {
       if (res.success) {
         _memberLoaded = true;
         members = res.data?.result ?? [];
-        members.forEach((i) => updateMetadata(i));
+        for (var i in members) {
+          updateMetadata(i);
+        }
         loadMemberChats(members, true);
       }
     }
     return members;
-
   }
 
   @override
@@ -123,8 +126,9 @@ abstract class Team extends MsgChat implements ITeam {
         ));
 
         if (!res.success) return false;
-        members.forEach((c) =>
-            sendTargetNotity(OperateType.add, sub: c, subTargetId: c.id));
+        for (var c in members) {
+          sendTargetNotity(OperateType.add, sub: c, subTargetId: c.id);
+        }
       }
     }
     return true;
@@ -157,70 +161,75 @@ abstract class Team extends MsgChat implements ITeam {
   }
 
   Future<XTarget?> create(TargetModel data) async {
-    data.belongId = space.metadata.id;
+    data.belongId = space.id;
     data.teamCode = data.teamCode ?? data.code;
     data.teamName = data.teamName ?? data.name;
     var res = await kernel.createTarget(data);
-    if (res.success && res.data != null) {
+    if (res.success && res.data?.id != null) {
       await space.user.loadGivedIdentitys(reload: true);
       return res.data;
     }
     return null;
   }
 
-
   @override
-  Future<bool> copy(IDirectory destination) {
-    // TODO: implement copy
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<bool> move(IDirectory destination) {
-    // TODO: implement move
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<bool> rename(String name) {
-    var data = TargetModel.fromJson(metadata.toJson());
-    data.name = name;
-    data.teamCode = metadata.team?.code ?? metadata.code!;
-    data.teamName = metadata.team?.name ?? metadata.name!;
-    return update(data);
-  }
-
-  @override
-  // TODO: implement belongId
-  String get belongId => metadata.belongId!;
-
-  @override
-  // TODO: implement id
-  String get id => metadata.id;
-
-  @override
-  void recvTarget(String operate, bool isChild, XTarget target) {
-    if (isChild && memberTypes.contains(TargetType.getType(target.typeName!))) {
-      switch (operate) {
-        case 'Add':
-          members.add(target);
-          loadMemberChats([target], true);
-          break;
-        case 'Remove':
-          members.removeWhere((a) => a.id == target.id);
-          loadMemberChats([target], false);
-          break;
-        default:
-          break;
-      }
+  Future<bool> update(TargetModel data) async {
+    data.id = id;
+    data.typeName = typeName;
+    data.belongId = metadata.belongId;
+    data.name = data.name ?? name;
+    data.code = data.code ?? code;
+    data.icon = data.icon ?? metadata.icon;
+    data.teamName = data.teamName ?? data.name;
+    data.teamCode = data.teamCode ?? data.code;
+    data.remark = data.remark ?? remark;
+    var res = await kernel.updateTarget(data);
+    if (res.success && res.data?.id != null) {
+      setMetadata(res.data!);
+      sendTargetNotity(OperateType.update);
     }
+    return res.success;
   }
 
   @override
-  bool hasAuthoritys(List<String> authIds) {
-    authIds = space.superAuth?.loadParentAuthIds(authIds) ?? authIds;
-    var orgIds = [metadata.belongId!, metadata.id];
-    return space.user.authenticate(orgIds, authIds);
+  Future<bool> delete({bool? notity = false}) async {
+    if (!notity!) {
+      if (hasRelationAuth() && id != belongId) {
+        await sendTargetNotity(OperateType.delete);
+      }
+      final res = await kernel.deleteTarget(IdReq(id: metadata.id));
+      notity = res.success;
+    }
+    if (notity) {
+      kernel.unSubscribe(key);
+    }
+    return notity;
+  }
+
+  Future<bool> loadContent({bool reload = false}) async {
+    await loadMembers(reload: reload);
+    return true;
+  }
+
+  @override
+  List<OperateModel> operates({String? mode}) {
+    final operates = super.operates();
+    if (hasRelationAuth()) {
+      operates.insertAll(
+          0,
+          [entityOperates.update, entityOperates.delete]
+              as Iterable<OperateModel>);
+    }
+    return operates;
+  }
+
+  @override
+  Future<void> deepLoad({bool? reload});
+  @override
+  Future<ITeam?> createTarget(TargetModel data);
+
+  void loadMemberChats(List<XTarget> members, bool isAdd) {
+    memberChats = [];
   }
 
   @override
@@ -229,58 +238,105 @@ abstract class Team extends MsgChat implements ITeam {
   }
 
   @override
-  void loadMemberChats(List<XTarget> members, bool isAdd) {
-    memberChats = [];
+  bool hasAuthoritys(List<String> authIds) {
+    authIds = space.superAuth?.loadParentAuthIds(authIds) ?? authIds;
+    var orgIds = [metadata.belongId!, id];
+    return user.authenticate(orgIds, authIds);
   }
 
   @override
-  Future<bool> delete() async {
-    if (hasRelationAuth()) {
-      await createTargetMsg(OperateType.delete);
-    }
-    final res = await kernel.deleteTarget(IdReq(id: metadata.id));
-    return res.success;
-  }
-
-  @override
-  Future<bool> loadContent({bool reload = false}) async {
-    await directory.loadContent(reload: reload);
-    return true;
-  }
-
-  @override
-  Future<bool> update(TargetModel data) async {
-    data.id = metadata.id;
-    data.typeName = metadata.typeName!;
-    data.belongId = metadata.belongId;
-    data.name = data.name ?? metadata.name;
-    data.code = data.code ?? metadata.code;
-    data.icon = data.icon ?? metadata.icon;
-    data.teamName = data.teamName ?? data.name;
-    data.teamCode = data.teamCode ?? data.code;
-    data.remark = data.remark ?? metadata.remark;
-    var res = await kernel.updateTarget(data);
-    if (res.success && res.data != null) {
-      metadata = res.data!;
-      share.typeName = metadata.typeName!;
-      share.name = metadata.name!;
-      share.avatar = FileItemShare.parseAvatar(metadata.icon);
-      createTargetMsg(OperateType.update);
-    }
-    return res.success;
-  }
-
-  Future<void> createTargetMsg(OperateType operate, {XTarget? sub}) async {
-    await kernel.createTargetMsg(TargetMessageModel(
-      targetId: sub != null && userId == metadata.id ? sub.id : metadata.id,
-      excludeOperater: false,
-      group: metadata.typeName == TargetType.group.label,
-      data: jsonEncode({
-        'operate': operate.label,
-        'target': metadata,
-        'subTarget': sub,
-        'operater': space.user.metadata,
-      }),
+  Future<bool> sendTargetNotity(OperateType operate,
+      {XTarget? sub, String? subTargetId}) async {
+    var res = await kernel.dataNotify(DataNotityType(
+      data: {
+        operate,
+        metadata,
+        sub,
+        user.metadata,
+      },
+      targetId: id,
+      ignoreSelf: false,
+      flag: 'target',
+      relations: relations,
+      belongId: belongId,
+      onlyTarget: false,
+      onlineOnly: true,
+      subTargetId: subTargetId,
     ));
+    return res.success;
+  }
+
+  Future<void> receiveTarget(TargetOperateModel data) async {
+    var message = "";
+    switch (data.operate) {
+      case 'Add':
+        if (data.subTarget != null) {
+          if (id == data.target?.id) {
+            if (memberTypes.contains(data.subTarget?.typeName as TargetType)) {
+              message =
+                  '${data.operater?.name}把${data.subTarget?.name}与${data.target?.name}建立关系.';
+              await pullMembers([data.subTarget!], notity: true);
+            } else {
+              message = await _addSubTarget(data.subTarget!);
+            }
+          } else {
+            message = await _addJoinTarget(data.target!);
+          }
+        }
+        break;
+      case 'Remove':
+        if (data.subTarget != null) {
+          if (id == data.target?.id && data.subTarget?.id != space.id) {
+            if (memberTypes.contains(data.subTarget?.typeName as TargetType)) {
+              message =
+                  '${data.operater?.name}把${data.subTarget?.name}从${data.target?.name}移除.';
+              await removeMembers([data.subTarget!], notity: true);
+            }
+          } else {
+            message = await _removeJoinTarget(data.target!);
+          }
+        }
+        break;
+      case 'Delete':
+        message = '${data.operater?.name}将${data.target?.name}删除.';
+        delete(notity: true);
+        break;
+      case 'Update':
+        message = '${data.operater?.name}将${data.target?.name}信息更新.';
+        setMetadata(data.target!);
+        break;
+    }
+    if (message.isNotEmpty) {
+      if (data.operater?.id != user.id) {
+        final Logger log = Logger('Team');
+      }
+      space.directory.structCallback();
+      emitterFlag();
+    }
+  }
+
+  Future<String> _removeJoinTarget(XTarget _) async {
+    await sleeps(Duration.zero);
+    return '';
+  }
+
+  Future<String> _addSubTarget(XTarget _) async {
+    await sleeps(Duration.zero);
+    return '';
+  }
+
+  Future<String> _addJoinTarget(XTarget _) async {
+    await sleeps(Duration.zero);
+    return '';
+  }
+
+  Future<void> _notifySession(bool _, List<XTarget> __) async {
+    await sleeps(Duration.zero);
+  }
+
+  ///延时方法
+  ///@param timeout 延时时长，单位ms
+  Future<bool> sleeps(Duration timeout) async {
+    return Future(() => Timer(timeout, () => true) as FutureOr<bool>);
   }
 }
