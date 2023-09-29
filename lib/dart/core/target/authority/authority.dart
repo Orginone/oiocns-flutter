@@ -1,11 +1,12 @@
 import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/main.dart';
+import '../../thing/directory.dart';
 
+///权限结构
 abstract class IAuthority extends IEntity<XAuthority> {
   /// 加载权限的自归属用户
   late IBelong space;
@@ -47,6 +48,7 @@ abstract class IAuthority extends IEntity<XAuthority> {
   Future<bool> receiveAuthority(AuthorityOperateModel data);
 }
 
+///权限实现类
 class Authority extends Entity<XAuthority> implements IAuthority {
   @override
   late IBelong space;
@@ -58,20 +60,16 @@ class Authority extends Entity<XAuthority> implements IAuthority {
   IAuthority? parent;
   @override
   List<IAuthority> children = [];
-  @override
   late IDirectory directory;
 
   bool _memberLoaded = false;
 
-  Authority(XAuthority metadata, IBelong _space, Authority authority,
-      {IAuthority? parent})
+  Authority(XAuthority metadata, this.space, Authority authority, {this.parent})
       : super(metadata) {
-    space = _space;
-    this.parent = parent;
     for (var node in metadata.nodes ?? []) {
       children.add(Authority(node, space, this));
     }
-    directory = _space.directory;
+    directory = space.directory;
   }
 
   @override
@@ -189,24 +187,64 @@ class Authority extends Entity<XAuthority> implements IAuthority {
     if (metadata.shareId != null && metadata.shareId != null) {
       orgIds.add(metadata.shareId!);
     }
-    return space.user.authenticate(orgIds, ids);
+    return space.user.authenticate(orgIds, authIds);
   }
 
   void _appendParentId(IAuthority auth, List<String> authIds) {
-    if (!authIds.contains(auth.metadata.id)) {
-      authIds.add(auth.metadata.id);
+    if (!authIds.contains(auth.id)) {
+      authIds.add(auth.id);
     }
     if (auth.parent != null) {
       _appendParentId(auth.parent!, authIds);
     }
   }
 
+  // @override
+  // List<IMsgChat> get chats {
+  //   final chats = <IMsgChat>[this];
+  //   for (final item in children) {
+  //     chats.addAll(item.chats);
+  //   }
+  //   return chats;
+  // }
+
   @override
-  List<IMsgChat> get chats {
-    final chats = <IMsgChat>[this];
-    for (final item in children) {
-      chats.addAll(item.chats);
+  Future<bool> receiveAuthority(AuthorityOperateModel data) async {
+    var message = '';
+    if (id == data.authority?.parentId &&
+        data.operate == OperateType.create.label) {
+      message = '${data.operater?.name}新增权限【${data.authority?.name}】.';
+      await create(data.authority!, notity: true);
+    } else if (id == data.authority?.id) {
+      switch (data.operate) {
+        case '删除':
+          message = '${data.operater?.name}将权限【${data.authority?.name}】删除.';
+          await delete(notity: true);
+          break;
+        case '更新':
+          message = '${data.operater?.name}将权限【${data.authority?.name}】信息更新.';
+          updateMetadata<XAuthority>(data.authority!);
+          break;
+        default:
+          break;
+      }
+    } else {
+      for (var child in children) {
+        if (await child.receiveAuthority(data)) {
+          return true;
+        }
+      }
     }
-    return chats;
+    //日志
+    // if (message.length > 0) {
+    //   if (data.operater?.id != this.space.user.id) {
+    //     logger.info(message);
+    //   }
+    //   return true;
+    // }
+    return false;
   }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

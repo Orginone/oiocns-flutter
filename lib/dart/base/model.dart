@@ -2245,6 +2245,39 @@ class IdentityOperateModel {
   }
 }
 
+///AuthorityOperateModel
+class AuthorityOperateModel {
+  //操作方式
+  late String operate;
+  //操作人
+  XTarget? operater;
+  //操作的职权
+  XAuthority? authority;
+
+  AuthorityOperateModel({
+    required this.operate,
+    required this.operater,
+    required this.authority,
+  });
+
+  AuthorityOperateModel.fromJson(Map<String, dynamic> json) {
+    operate = json['operate'];
+    operater =
+        json['operater'] != null ? XTarget.fromJson(json['operater']) : null;
+    authority = json['authority'] != null
+        ? XAuthority.fromJson(json['authority'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'operate': operate,
+      'operater': operater?.toJson(),
+      'authority': authority?.toJson(),
+    };
+  }
+}
+
 // 文件系统项分享数据
 class ShareIcon {
   // 名称
