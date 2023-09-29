@@ -36,7 +36,7 @@ class DataResource {
   late XCollection<ChatMessageType> messageColl;
 
   /// 数据传输配置集合
-  late XCollection<Transfer> transferColl;
+  late XCollection<XTransfer> transferColl;
 
   /// 资源对应的用户信息
   XTarget get targetMetadata => target;
@@ -45,7 +45,7 @@ class DataResource {
   DataResource(this.target, this.relations, List<String> keys) {
     _keys = keys;
     formColl = genTargetColl<XForm>('standard-form');
-    transferColl = genTargetColl<Transfer>('standard-transfer');
+    transferColl = genTargetColl<XTransfer>('standard-transfer');
     speciesColl = genTargetColl<XSpecies>('standard-species');
     messageColl = genTargetColl<ChatMessageType>('chat-messages');
     propertyColl = genTargetColl<XProperty>('standard-property');
@@ -58,12 +58,12 @@ class DataResource {
   Future<void> preLoad({bool reload = false}) async {
     if (!_proLoaded || reload) {
       await Future.wait([
-        formColl.all(reload),
-        speciesColl.all(reload),
-        propertyColl.all(reload),
-        transferColl.all(reload),
-        directoryColl.all(reload),
-        applicationColl.all(reload),
+        formColl.all(reload: reload),
+        speciesColl.all(reload: reload),
+        propertyColl.all(reload: reload),
+        transferColl.all(reload: reload),
+        directoryColl.all(reload: reload),
+        applicationColl.all(reload: reload),
       ]);
     }
     _proLoaded = true;

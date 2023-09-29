@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/enum.dart';
+
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
-abstract class IProperty extends IFileInfo<XProperty> {
+abstract class IProperty extends IStandardFileInfo<XProperty> {
   late List<XAttribute> attributes;
 
-  // 更新表单逻辑
-  Future<bool> update(PropertyModel data);
-
   // 删除表单逻辑
+  @override
   Future<bool> delete();
-
-  Future<List<XAttribute>> loadAttributes({bool reload = false});
+  @ooverride
+  late List<XAttribute> attributes;
 }
 
-class Property extends FileInfo<XProperty> implements IProperty {
-  Property(super.metadata, super.directory) {
+class Property extends StandardFileInfo<XProperty> implements IProperty {
+  Property(super.metadata, super.directory) : super(null, null, null) {
     metadata.typeName = '属性';
     attributes = [];
   }
@@ -32,7 +29,7 @@ class Property extends FileInfo<XProperty> implements IProperty {
   Future<bool> copy(IDirectory destination) async {
     if (destination.id != directory.id) {
       var data = PropertyModel.fromJson(metadata.toJson());
-      data.directoryId = directory.id!;
+      data.directoryId = directory.id;
       data.sourceId = metadata.belongId!;
       var res = await destination.createProperty(data);
       return res != null;
@@ -42,7 +39,7 @@ class Property extends FileInfo<XProperty> implements IProperty {
 
   @override
   Future<bool> delete() async {
-    var res = await kernel.deleteProperty(IdReq(id: id!));
+    var res = await kernel.deleteProperty(IdReq(id: id));
     if (res.success) {
       directory.propertys.removeWhere((i) => i.id == id);
     }
@@ -61,7 +58,7 @@ class Property extends FileInfo<XProperty> implements IProperty {
   @override
   Future<List<XAttribute>> loadAttributes({bool reload = false}) async {
     if (attributes.isEmpty || reload) {
-      var res = await kernel.queryPropAttributes(IdReq(id: id!));
+      var res = await kernel.queryPropAttributes(IdReq(id: id));
       if (res.success) {
         attributes = res.data?.result ?? [];
       }
@@ -93,7 +90,7 @@ class Property extends FileInfo<XProperty> implements IProperty {
 
   @override
   Future<bool> update(PropertyModel data) async {
-    data.id = id!;
+    data.id = id;
     data.directoryId = metadata.directoryId;
     var res = await kernel.updateProperty(data);
     return res.success;

@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
-import 'file_info.dart';
-
-abstract class ISpecies implements IFileInfo<XSpecies> {
+abstract class ISpecies implements IStandardFileInfo<XSpecies> {
   /// 类目项
   late List<XSpeciesItem> items;
 
   /// 更新类目
+  @override
   Future<bool> update(SpeciesModel data);
 
   /// 删除类目
+  @override
   Future<bool> delete();
 
   /// 加载类目项
@@ -31,7 +30,7 @@ abstract class ISpecies implements IFileInfo<XSpecies> {
   Future<bool> updateItem(SpeciesItemModel data);
 }
 
-class Species extends FileInfo<XSpecies> implements ISpecies {
+class Species extends StandardFileInfo<XSpecies> implements ISpecies {
   Species(super.metadata, super.directory) {
     items = [];
   }
@@ -43,7 +42,7 @@ class Species extends FileInfo<XSpecies> implements ISpecies {
   Future<bool> copy(IDirectory destination) async {
     if (destination.id != directory.id) {
       var data = FormModel.fromJson(metadata.toJson());
-      data.directoryId = directory.id!;
+      data.directoryId = directory.id;
       var res = await destination.createForm(data);
       return res != null;
     }
@@ -52,7 +51,7 @@ class Species extends FileInfo<XSpecies> implements ISpecies {
 
   @override
   Future<XSpeciesItem?> createItem(SpeciesItemModel data) async {
-    data.speciesId = id!;
+    data.speciesId = id;
     var res = await kernel.createSpeciesItem(data);
     if (res.success && res.data != null) {
       items.add(res.data!);
@@ -63,7 +62,7 @@ class Species extends FileInfo<XSpecies> implements ISpecies {
 
   @override
   Future<bool> delete() async {
-    var res = await kernel.deleteSpecies(IdReq(id: id!));
+    var res = await kernel.deleteSpecies(IdReq(id: id));
     if (res.success) {
       directory.specieses.removeWhere((i) => i.id == id);
     }
@@ -72,7 +71,7 @@ class Species extends FileInfo<XSpecies> implements ISpecies {
 
   @override
   Future<bool> deleteItem(XSpeciesItem item) async {
-    var res = await kernel.deleteSpeciesItem(IdReq(id: item.id!));
+    var res = await kernel.deleteSpeciesItem(IdReq(id: item.id));
     if (res.success) {
       items.removeWhere((i) => i.id == item.id);
     }
@@ -82,7 +81,7 @@ class Species extends FileInfo<XSpecies> implements ISpecies {
   @override
   Future<List<XSpeciesItem>> loadItems({bool reload = false}) async {
     if (items.isEmpty || reload) {
-      var res = await kernel.querySpeciesItems(IdReq(id: id!));
+      var res = await kernel.querySpeciesItems(IdReq(id: id));
       if (res.success) {
         items = res.data?.result ?? [];
       }
@@ -91,7 +90,7 @@ class Species extends FileInfo<XSpecies> implements ISpecies {
   }
 
   @override
-  Future<bool> move(IDirectory destination) async{
+  Future<bool> move(IDirectory destination) async {
     if (destination.id != directory.id &&
         destination.metadata.belongId == directory.metadata.belongId) {
       var success = await update(SpeciesModel.fromJson(metadata.toJson()));
@@ -106,25 +105,25 @@ class Species extends FileInfo<XSpecies> implements ISpecies {
   }
 
   @override
-  Future<bool> rename(String name) async{
+  Future<bool> rename(String name) async {
     var data = SpeciesModel.fromJson(metadata.toJson());
     data.name = name;
     return await update(data);
   }
 
   @override
-  Future<bool> update(SpeciesModel data) async{
-    data.id = id!;
+  Future<bool> update(SpeciesModel data) async {
+    data.id = id;
     data.directoryId = metadata.directoryId;
     var res = await kernel.updateSpecies(data);
     return res.success;
   }
 
   @override
-  Future<bool> updateItem(SpeciesItemModel data) async{
+  Future<bool> updateItem(SpeciesItemModel data) async {
     data.speciesId = id;
     var res = await kernel.updateSpeciesItem(data);
-    if (res.success && res.data!=null) {
+    if (res.success && res.data != null) {
       items.removeWhere((i) => i.id == data.id);
       items.add(res.data!);
     }
@@ -132,8 +131,8 @@ class Species extends FileInfo<XSpecies> implements ISpecies {
   }
 
   @override
-  Future<bool> loadContent({bool reload = false}) async{
-    if(reload && !isLoaded){
+  Future<bool> loadContent({bool reload = false}) async {
+    if (reload && !isLoaded) {
       await loadItems(reload: reload);
     }
     isLoaded = true;
@@ -142,7 +141,7 @@ class Species extends FileInfo<XSpecies> implements ISpecies {
 
   @override
   // TODO: implement popupMenuItem
-  List<PopupMenuItem> get popupMenuItem{
+  List<PopupMenuItem> get popupMenuItem {
     {
       List<PopupMenuKey> key = [];
       key.addAll([
@@ -153,9 +152,9 @@ class Species extends FileInfo<XSpecies> implements ISpecies {
       ]);
       return key
           .map((e) => PopupMenuItem(
-        value: e,
-        child: Text(e.label),
-      ))
+                value: e,
+                child: Text(e.label),
+              ))
           .toList();
     }
   }

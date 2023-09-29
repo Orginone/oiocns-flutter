@@ -1,10 +1,10 @@
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/index.dart';
+import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/main.dart';
 
 import '../../base/model.dart';
 import '../../base/schema.dart';
-import './operates.dart';
 
 Map<String, dynamic> shareIdSet = <String, dynamic>{};
 
@@ -19,7 +19,7 @@ abstract class IEntity<T> extends Emitter {
   //实体编号
   late String code;
   //实体类型
-  late String typename;
+  late String typeName;
   //实体描述
   late String remark;
   //数据实体
@@ -43,12 +43,12 @@ abstract class IEntity<T> extends Emitter {
 
   ///对实体可进行操作
   ///@param mode 模式，默认为配置模式
-  List<OperateModel> operates({String? mode});
+  List<OperateModel> operates({int? mode});
 }
 
 ///实体类实现
 abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
-  late T _metadata;
+  late dynamic _metadata;
   @override
   late String key;
 
@@ -65,21 +65,22 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
 
   @override
   String get name {
-    return _metadata.name!;
+    return metadata.name ?? '';
   }
 
   @override
   String get code {
-    return _metadata.code!;
+    return metadata.code ?? '';
   }
 
+  @override
   String get typeName {
-    return _metadata.typeName!;
+    return metadata.typeName ?? '';
   }
 
   @override
   String get remark {
-    return _metadata.remark ?? '';
+    return metadata.remark ?? '';
   }
 
   @override
@@ -97,7 +98,7 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
 
   @override
   String get belongId {
-    return _metadata.belongId!;
+    return this._metadata.belongId;
   }
 
   @override
@@ -107,12 +108,12 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
 
   @override
   ShareIcon get creater {
-    return this.findShare(metadata.createUser!);
+    return this.findShare(metadata.createUser ?? '');
   }
 
   @override
   ShareIcon get updater {
-    return this.findShare(metadata.updateUser!);
+    return this.findShare(metadata.updateUser ?? '');
   }
 
   @override
@@ -144,7 +145,7 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
     shareIdSet['$id*'] = this;
   }
 
-  U getEntity<U>(String id) {
+  U? getEntity<U>(String id) {
     return shareIdSet['$id*'];
   }
 
@@ -157,9 +158,13 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
     return shareIcon;
   }
 
-  ///获取右键操作方法
+  //获取右键操作方法,暂时不实现
+
   @override
-  List<OperateModel> operates({String? mode}) {
-    return [entityOperates.remark, entityOperates.qrCode] as List<OperateModel>;
+  List<OperateModel> operates({int? mode}) {
+    return [
+      OperateModel.fromJson(EntityOperates.remark.toJson()),
+      OperateModel.fromJson(EntityOperates.qrcode.toJson()),
+    ];
   }
 }

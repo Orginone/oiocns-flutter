@@ -22,12 +22,13 @@ class SpeciesItem {
   }
 }
 
-abstract class IForm implements IFileInfo<XForm> {
+abstract class IForm implements IStandardFileInfo<XForm> {
   late List<XAttribute> attributes;
   late List<FieldModel> fields;
 
   late List<AnyThingModel> things;
 
+  @override
   Future<bool> update(FormModel data);
 
   late List<XSpeciesItem> items;
@@ -50,7 +51,7 @@ abstract class IForm implements IFileInfo<XForm> {
   void setThing(AnyThingModel thing);
 }
 
-class Form extends FileInfo<XForm> implements IForm {
+class Form extends StandardFileInfo<XForm> implements IForm {
   Form(super.metadata, super.directory) {
     attributes = [];
     items = [];

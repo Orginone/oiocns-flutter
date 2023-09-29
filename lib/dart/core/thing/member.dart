@@ -1,64 +1,65 @@
-import 'package:flutter/src/material/popup_menu.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/thing/directory.dart';
+import 'package:orginone/dart/core/public/operates.dart';
 
-import 'fileinfo.dart';
+import './directory.dart';
+import './fileinfo.dart';
 
-abstract class IMember extends IFileInfo<XTarget> {
+abstract class IMember implements IFileInfo<XTarget> {
   late bool isMember;
-
-  String get fullId;
+  late String fullId;
 }
 
 class Member extends FileInfo<XTarget> implements IMember {
-  Member(super.metadata, super.directory) {
-    isMember = true;
-  }
+  Member(
+    XTarget metadata,
+    IDirectory directory,
+  ) : super(metadata, directory);
 
   @override
-  // TODO: implement fullId
+  bool isMember = true;
+
+  @override
+  String get cacheFlag => 'members';
+
+  @override
   String get fullId => '${directory.belongId}-${metadata.id}';
 
   @override
-  late bool isMember;
-
-  @override
-  Future<bool> copy(IDirectory destination) {
-    // TODO: implement copy
-    throw UnimplementedError();
+  Future<bool> rename(String name) async {
+    throw Exception('Not supported yet.');
   }
 
   @override
-  Future<bool> delete() {
-    // TODO: implement delete
-    throw UnimplementedError();
+  Future<bool> copy(IDirectory destination) async {
+    await destination.target.pullMembers([metadata]);
+    return true;
   }
 
   @override
-  Future<bool> move(IDirectory destination) {
-    // TODO: implement move
-    throw UnimplementedError();
+  Future<bool> move(IDirectory destination) async {
+    throw Exception('Not supported yet.');
   }
 
   @override
-  Future<bool> rename(String name) {
-    // TODO: implement rename
-    throw UnimplementedError();
+  Future<bool> delete() async {
+    throw Exception('Not supported yet.');
   }
 
   @override
-  // TODO: implement popupMenuItem
-  List<PopupMenuItem> get popupMenuItem => [];
-
-  @override
-  bool isLoaded = false;
-
-  @override
-  List<IFileInfo<XEntity>> content(int mode) {
-    return [];
+  List<OperateModel> operates({int? mode}) {
+    final operates = super.operates(mode: 1);
+    if (metadata.id != directory.belongId &&
+        directory.target.hasRelationAuth()) {
+      operates.insert(0, OperateModel.fromJson(MemberOperates.copy.toJson()));
+      operates.insert(0, OperateModel.fromJson(MemberOperates.remove.toJson()));
+    }
+    if (metadata.id != directory.target.userId) {
+      operates.insert(0, OperateModel.fromJson(TargetOperates.chat.toJson()));
+    }
+    return operates;
   }
 
   @override
-  // TODO: implement locationKey
-  String get locationKey => '';
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

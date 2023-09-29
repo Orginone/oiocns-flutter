@@ -56,6 +56,25 @@ class Xbase {
   }
 }
 
+class XCache {
+  // 完整的ID标识
+  String fullId;
+  // 标签
+  List<String>? tags;
+
+  XCache({required this.fullId, this.tags});
+
+  XCache.fromJson(Map<String, dynamic> json)
+      : fullId = json['fullId'] ?? '',
+        tags = json['tags'];
+
+  Map<String, dynamic> toJson() {
+    return {
+      'fullId': fullId,
+    };
+  }
+}
+
 class XEntity extends Xbase {
   // 名称
   String? name;
@@ -79,6 +98,7 @@ class XEntity extends Xbase {
     this.typeName,
     this.belong,
     required super.id,
+    super.belongId,
     super.status,
     super.createUser,
     super.updateUser,
@@ -4683,7 +4703,7 @@ class XIdentity extends XEntity {
   }
 }
 
-class XProperty extends XEntity {
+class XProperty extends XStandard {
   // 值类型
   String? valueType;
 
@@ -4692,9 +4712,6 @@ class XProperty extends XEntity {
 
   // 计量单位
   String? unit;
-
-  // 目录ID
-  String? directoryId;
 
   // 标签ID
   String? speciesId;
@@ -4725,18 +4742,12 @@ class XProperty extends XEntity {
 
   XProperty({
     required super.id,
-    super.status,
-    super.createUser,
-    super.updateUser,
-    super.version,
-    super.createTime,
-    super.updateTime,
     required this.valueType,
     required this.info,
     required this.unit,
-    required this.directoryId,
     required this.speciesId,
     required this.sourceId,
+    required super.directoryId,
     this.linkAttributes,
     this.links,
     this.attributes,
