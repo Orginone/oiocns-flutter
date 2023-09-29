@@ -4,7 +4,8 @@ class Emitter {
   final id = const Uuid().v1();
   Map<String, void Function(String, List<dynamic>)> _refreshCallback = {};
 
-  Map<String, Map<String, void Function(String)>> _partRefreshCallback = {};
+  final Map<String, Map<String, void Function(String)>> _partRefreshCallback =
+      {};
   Emitter() {
     _refreshCallback = {};
   }

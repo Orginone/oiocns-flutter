@@ -1,12 +1,13 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/identity/identity.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
+import 'package:orginone/dart/core/thing/resource.dart';
 import 'package:orginone/main.dart';
-
-import '../../thing/file_info.dart';
 import 'team.dart';
 
 /// 空间类型数据
@@ -24,7 +25,7 @@ class SpaceType {
   late ShareIcon share;
 }
 
-abstract class ITarget with ITeam, IFileInfo<XTarget> {
+abstract class ITarget extends IFileInfo<XTarget> with ITeam  {
   //会话
   late ISession session;
   //用户资源
@@ -52,6 +53,7 @@ abstract class ITarget with ITeam, IFileInfo<XTarget> {
 
 ///用户基类实现
 abstract class Target extends Team implements ITarget {
+  @override
   IPerson user;
   //ISession session;
   @override
@@ -77,6 +79,7 @@ abstract class Target extends Team implements ITarget {
       (data = any) => _receiveIdentity(data),);
   }
 
+  @override
   String get spaceId{
     return space.id;
   }
@@ -116,10 +119,10 @@ abstract class Target extends Team implements ITarget {
   @override
   List<OperateModel> operates(){
     var operates = super.operates();////
-    if(this.session.isMyChat){
+    if(session.isMyChat){
       operates.unshift(targetOperates.Chat);
     }
-    if(this.members.some((i) => i.id === this.userId)){
+    if(members.some((i) => i.id === userId)){
       //operates.unshift(memberOperates.Exit);
     }
   }
@@ -147,7 +150,7 @@ abstract class Target extends Team implements ITarget {
     return Team.update({
       metadata,
       name: name,
-      teamCode: metadata.team?.code ?? this.code,
+      teamCode: metadata.team?.code ?? code,
       teamName: metadata.team?.name ?? this.name,
     });
   }
@@ -219,7 +222,7 @@ abstract class Target extends Team implements ITarget {
         break;
       case OperateType.update:
         message = `${data.operater.name}将身份【${data.identity.name}】信息更新.`;
-        this.updateMetadata(data.identity);
+        updateMetadata(data.identity);
         break;
       case OperateType.remove:
         if (data.subTarget) {

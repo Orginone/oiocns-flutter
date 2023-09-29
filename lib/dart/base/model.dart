@@ -2350,25 +2350,22 @@ class ShareIcon {
 class FileItemShare {
   // 大小
   int? size;
-
   // 名称
   String? name;
-
   // 共享链接
   String? shareLink;
-
+  // 文件类型
+  String? contentType;
   // 拓展名
   String? extension;
-
   // 缩略图
   String? thumbnail;
-
   String? defaultAvatar;
-
   FileItemShare({
     this.size,
     this.name,
     this.shareLink,
+    this.contentType,
     this.extension,
     this.thumbnail,
     this.defaultAvatar,
@@ -2379,6 +2376,7 @@ class FileItemShare {
     size = json["size"];
     name = json["name"];
     shareLink = json["shareLink"];
+    contentType = json["contentType"];
     extension = json["extension"];
     thumbnail = json["thumbnail"];
   }
@@ -2440,12 +2438,13 @@ class FileItemModel extends FileItemShare {
   String key;
 
   // 创建时间
-  DateTime? dateCreated;
+  String? dateCreated;
 
   // 修改时间
-  DateTime? dateModified;
+  String? dateModified;
 
   // 文件类型
+  @override
   String? contentType;
 
   // 是否是目录
@@ -2472,8 +2471,8 @@ class FileItemModel extends FileItemShare {
       : key = json['key'] ?? "",
         isDirectory = json['isDirectory'] ?? false,
         contentType = json['contentType'],
-        dateCreated = DateTime.tryParse(json['dateCreated'] ?? ""),
-        dateModified = DateTime.tryParse(json['dateModified'] ?? ""),
+        dateCreated = json['dateCreated'] ?? "",
+        dateModified = json['dateModified'] ?? "",
         hasSubDirectories = json['hasSubDirectories'] ?? false,
         super(
           size: json["size"],
@@ -2592,7 +2591,7 @@ class TaskModel {
 
   final int size;
 
-  final int finished;
+  int finished;
 
   final DateTime createTime;
 
@@ -2622,7 +2621,7 @@ class OperateModel {
   final String label;
   final String iconType;
 
-  final OperateModel? menus;
+  final List<OperateModel>? menus;
 
   OperateModel({
     required this.cmd,
@@ -2631,11 +2630,23 @@ class OperateModel {
     required this.iconType,
     required this.menus,
   });
-
+  factory OperateModel.fromJson(Map<String, dynamic> json) {
+    return OperateModel(
+      cmd: json['cmd'] as String,
+      sort: json['sort'] as int,
+      label: json['label'] as String,
+      iconType: json['iconType'] as String,
+      menus: (json['menus'] as List<dynamic>?)
+          ?.map((e) => OperateModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
   Map<String, dynamic> toJson() {
     return {
       "cmd": cmd,
       "sort": sort,
+      "label": label,
+      "iconType": iconType,
       "menus": menus,
     };
   }
@@ -3055,14 +3066,15 @@ class KeyValue {
   String? key;
 }
 
-class Transfer extends XStandard {
+// 迁移配置
+class XTransfer extends XStandard {
   List<Environment> envs; // 环境集合
   String? curEnv; // 当前环境
   List<Node<dynamic>> nodes; // 节点集合
   List<Edge> edges; // 边集合
   dynamic graph; // 图数据
 
-  Transfer({
+  XTransfer({
     required this.envs,
     this.curEnv,
     required this.nodes,

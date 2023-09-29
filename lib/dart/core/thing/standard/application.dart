@@ -8,7 +8,7 @@ import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/main.dart';
 
-abstract class IApplication implements IFileInfo<XApplication> {
+abstract class IApplication implements IStandardFileInfo<XApplication> {
   ///上级模块
   IApplication? parent;
 
@@ -33,14 +33,23 @@ abstract class IApplication implements IFileInfo<XApplication> {
 
 class Application extends StandardFileInfo<XApplication>
     implements IApplication {
-  Application([
-    this.parent,
-    List<XApplication>? applications,
-  ]) : super(metadata, directory, directory.resource.applicationColl) {
-    children = [];
-    works = [];
+  @override
+  final XApplication metadata;
+  @override
+  final IDirectory directory;
+
+  final List<XApplication>? applications;
+
+  Application(this.metadata, this.directory, {this.parent, this.applications})
+      : super(
+          metadata,
+          directory,
+          directory.resource.applicationColl,
+        ) {
+    isContainer = true;
     loadChildren(applications);
   }
+
   @override
   late List<IWork> works = [];
   @override
@@ -230,4 +239,7 @@ class Application extends StandardFileInfo<XApplication>
     return (destination.id != directory.id &&
         destination.target.belongId == directory.target.belongId);
   }
+
+  @override
+  late bool isContainer;
 }

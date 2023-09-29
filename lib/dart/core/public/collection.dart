@@ -36,8 +36,8 @@ class XCollection<T extends Xbase> {
     ///
   }
 
-  Future<List<T>> all() async {
-    if (!_loaded) {
+  Future<List<T>> all({bool reload = false}) async {
+    if (!_loaded || reload) {
       _cache = await load({});
       _loaded = true;
     }
@@ -82,7 +82,7 @@ class XCollection<T extends Xbase> {
     return await loadSpace(options);
   }
 
-  Future<T?> insert(T data, String? copyId) async {
+  Future<T?> insert(T data, {String? copyId}) async {
     data.id = data.id ?? 'snowId()';
     data.shareId = _target.id;
     data.belongId = data.belongId ?? _target.belongId;
@@ -323,12 +323,8 @@ class XCollection<T extends Xbase> {
     return res.success;
   }
 
-  void subscribe(String keys, Function callback, {String? id}) {
-    kernel.subscribed(
-        keys,
-        subMethodName(id: id) as List<String>, ////有问题
-        (data) => {
-              Function.apply(callback, [data], null),
-            });
+  void subscribe(List<String> keys, Function callback, {String? id}) {
+    kernel.subscribe(
+        subMethodName(id: id), keys, (data) => callback.call(data));
   }
 }

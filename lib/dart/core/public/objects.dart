@@ -93,24 +93,29 @@ class XObject<T extends Xbase> {
     return res.success;
   }
 
-  Future<bool> notity(
-      dynamic data, bool ignoreSelf, String targetId, bool onlyTarget,
-      [bool onlineOnly = true]) async {
+  Future<bool> notity(String flag, dynamic data,
+      {bool? onlyTarget,
+      bool? ignoreSelf,
+      String? targetId,
+      bool onlineOnly = true}) async {
     var kernel = KernelApi();
+
     DataNotityType req = DataNotityType(
-        data: data,
-        targetId: targetId,
-        ignoreSelf: ignoreSelf,
-        flag: this._objName,
-        relations: this._relations,
-        belongId: this._target.belongId!,
-        onlyTarget: onlyTarget,
-        onlineOnly: onlineOnly);
+      data: {'flag': flag, 'data': data},
+      flag: this._objName,
+      onlineOnly: onlineOnly,
+      belongId: this._target.belongId!,
+      relations: this._relations,
+      onlyTarget: onlyTarget == true,
+      ignoreSelf: ignoreSelf == true,
+      targetId: targetId ?? this._target.id,
+    );
     var res = await kernel.dataNotify(req);
     return res.success;
   }
 
-  void subscribe(dynamic data, {required String id}) {
+  void subscribe(dynamic data, Null Function(XCache data) param1,
+      {required String id}) {
     var kernel = KernelApi();
     kernel.on(
       '${this._target.belongId}-${id != '' || this._target.id != ''}-${this._objName}',
