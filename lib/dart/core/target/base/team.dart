@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:logging/logging.dart';
+import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/index.dart';
 import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -77,11 +78,11 @@ abstract class Team extends Entity<XTarget> implements ITeam {
   @override
   late IDirectory directory;
   bool _memberLoaded = false;
+  static const mTypes = [TargetType.person];
   Team(List<String> _keys, XTarget _metadata, List<String> _relations,
-      List<TargetType> _memberTypes)
+      {List<TargetType> memberTypes = mTypes})
       : super(_metadata) {
-    _memberTypes = [TargetType.person];
-    memberTypes = _memberTypes;
+    this.memberTypes = memberTypes;
     relations = _relations;
     kernel.subscribe('${metadata.belongId}-${metadata.id}-target',
         [..._keys, key], (data) => receiveTarget(data as TargetOperateModel));
@@ -151,7 +152,7 @@ abstract class Team extends Entity<XTarget> implements ITeam {
           if (!res.success) return false;
           sendTargetNotity(OperateType.remove,
               sub: member, subTargetId: member.id);
-          notifySesion(false, [member]); ////
+          notifySession(false, [member]); ////
         }
         this.members.removeWhere((i) => i.id == member.id);
         loadMemberChats([member], false);
@@ -212,12 +213,12 @@ abstract class Team extends Entity<XTarget> implements ITeam {
   }
 
   @override
-  List<OperateModel> operates({String? mode}) {
+  List<OperateModel> operates({int? mode}) {
     final operates = super.operates();
     if (hasRelationAuth()) {
       operates.insertAll(
           0,
-          [entityOperates.update, entityOperates.delete]
+          [EntityOperates.update, EntityOperates.delete]
               as Iterable<OperateModel>);
     }
     return operates;
@@ -311,7 +312,8 @@ abstract class Team extends Entity<XTarget> implements ITeam {
         final Logger log = Logger('Team');
       }
       space.directory.structCallback();
-      emitterFlag();
+      Command command = Command();
+      command.emitterFlag();
     }
   }
 
@@ -330,7 +332,7 @@ abstract class Team extends Entity<XTarget> implements ITeam {
     return '';
   }
 
-  Future<void> _notifySession(bool _, List<XTarget> __) async {
+  Future<void> notifySession(bool _, List<XTarget> __) async {
     await sleeps(Duration.zero);
   }
 

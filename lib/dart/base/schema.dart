@@ -163,7 +163,22 @@ class XEntity extends Xbase {
 class XStandard extends XEntity {
   // 目录ID
   String directoryId;
-  XStandard({required this.directoryId, required super.id});
+  XStandard(
+      {required this.directoryId,
+      required super.id,
+      super.belong,
+      super.belongId,
+      super.code,
+      super.createTime,
+      super.createUser,
+      super.icon,
+      super.name,
+      super.remark,
+      super.status,
+      super.typeName,
+      super.updateTime,
+      super.updateUser,
+      super.version});
   XStandard.fromJson(Map<String, dynamic> json)
       : directoryId = json['directoryId'] ?? "",
         super.fromJson(json) {
@@ -468,8 +483,7 @@ class XAuthority extends XEntity {
 }
 
 class XDirectory extends XStandard {
-  late String parentId; // 父目录ID
-
+  String? parentId; // 父目录ID
   List<XProperty>? propertys; // 目录下的属性
   List<XForm>? forms; // 目录下的单
   List<XSpecies>? species; // 目录下的分类
@@ -478,14 +492,14 @@ class XDirectory extends XStandard {
   List<XDirectory>? nodes; // 目录的结构
 
   XDirectory({
-    required this.parentId,
+    this.parentId,
     this.propertys,
     this.forms,
     this.species,
     this.applications,
     this.parent,
     this.nodes,
-    XTarget? belong,
+    super.belong,
     required super.directoryId,
     required super.id,
   });

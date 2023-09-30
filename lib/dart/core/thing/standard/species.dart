@@ -1,133 +1,51 @@
-import 'package:flutter/material.dart';
-import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
-import 'package:orginone/main.dart';
 
 abstract class ISpecies implements IStandardFileInfo<XSpecies> {
   /// 类目项
   late List<XSpeciesItem> items;
 
-  /// 更新类目
-  @override
-  Future<bool> update(SpeciesModel data);
-
-  /// 删除类目
-  @override
-  Future<bool> delete();
-
   /// 加载类目项
   Future<List<XSpeciesItem>> loadItems({bool reload = false});
 
   /// 新增类目项
-  Future<XSpeciesItem?> createItem(SpeciesItemModel data);
+  Future<XSpeciesItem?> createItem(XSpeciesItem data);
 
   /// 删除类目项
   Future<bool> deleteItem(XSpeciesItem item);
 
   /// 更新类目项
-  Future<bool> updateItem(SpeciesItemModel data);
+  Future<bool> updateItem(XSpeciesItem data);
 }
 
 class Species extends StandardFileInfo<XSpecies> implements ISpecies {
-  Species(super.metadata, super.directory) {
+  @override
+  final IDirectory directory;
+  @override
+  final XSpecies metadata;
+  @override
+  List<XSpeciesItem> items = [];
+  bool _itemLoaded = false;
+  @override
+  String get cacheFlag => 'species';
+
+  ///构造函数
+  Species(
+    this.metadata,
+    this.directory,
+  ) : super(metadata, directory, directory.resource.speciesColl) {
     items = [];
   }
-
-  @override
-  late List<XSpeciesItem> items;
-
-  @override
-  Future<bool> copy(IDirectory destination) async {
-    if (destination.id != directory.id) {
-      var data = FormModel.fromJson(metadata.toJson());
-      data.directoryId = directory.id;
-      var res = await destination.createForm(data);
-      return res != null;
-    }
-    return false;
-  }
-
-  @override
-  Future<XSpeciesItem?> createItem(SpeciesItemModel data) async {
-    data.speciesId = id;
-    var res = await kernel.createSpeciesItem(data);
-    if (res.success && res.data != null) {
-      items.add(res.data!);
-      return res.data;
-    }
-    return null;
-  }
-
   @override
   Future<bool> delete() async {
-    var res = await kernel.deleteSpecies(IdReq(id: id));
-    if (res.success) {
-      directory.specieses.removeWhere((i) => i.id == id);
+    var success = true;
+    if (items.isNotEmpty) {
+      success = await directory.resource.speciesItemColl.deleteMatch({
+        'speciesId': id,
+      });
     }
-    return res.success;
-  }
-
-  @override
-  Future<bool> deleteItem(XSpeciesItem item) async {
-    var res = await kernel.deleteSpeciesItem(IdReq(id: item.id));
-    if (res.success) {
-      items.removeWhere((i) => i.id == item.id);
-    }
-    return res.success;
-  }
-
-  @override
-  Future<List<XSpeciesItem>> loadItems({bool reload = false}) async {
-    if (items.isEmpty || reload) {
-      var res = await kernel.querySpeciesItems(IdReq(id: id));
-      if (res.success) {
-        items = res.data?.result ?? [];
-      }
-    }
-    return items;
-  }
-
-  @override
-  Future<bool> move(IDirectory destination) async {
-    if (destination.id != directory.id &&
-        destination.metadata.belongId == directory.metadata.belongId) {
-      var success = await update(SpeciesModel.fromJson(metadata.toJson()));
-      if (success) {
-        directory.forms.removeWhere((i) => i.id == id);
-        directory = destination;
-        destination.specieses.add(this);
-      }
-      return success;
-    }
-    return false;
-  }
-
-  @override
-  Future<bool> rename(String name) async {
-    var data = SpeciesModel.fromJson(metadata.toJson());
-    data.name = name;
-    return await update(data);
-  }
-
-  @override
-  Future<bool> update(SpeciesModel data) async {
-    data.id = id;
-    data.directoryId = metadata.directoryId;
-    var res = await kernel.updateSpecies(data);
-    return res.success;
-  }
-
-  @override
-  Future<bool> updateItem(SpeciesItemModel data) async {
-    data.speciesId = id;
-    var res = await kernel.updateSpeciesItem(data);
-    if (res.success && res.data != null) {
-      items.removeWhere((i) => i.id == data.id);
-      items.add(res.data!);
-    }
-    return res.success;
+    return success && await super.delete();
   }
 
   @override
@@ -140,34 +58,79 @@ class Species extends StandardFileInfo<XSpecies> implements ISpecies {
   }
 
   @override
-  // TODO: implement popupMenuItem
-  List<PopupMenuItem> get popupMenuItem {
-    {
-      List<PopupMenuKey> key = [];
-      key.addAll([
-        PopupMenuKey.updateInfo,
-        PopupMenuKey.rename,
-        PopupMenuKey.delete,
-        PopupMenuKey.shareQr,
-      ]);
-      return key
-          .map((e) => PopupMenuItem(
-                value: e,
-                child: Text(e.label),
-              ))
-          .toList();
+  Future<List<XSpeciesItem>> loadItems({bool reload = false}) async {
+    if (!_itemLoaded || reload) {
+      final res = await directory.resource.speciesItemColl.loadSpace({
+        'options': {
+          'match': {'speciesId': id}
+        },
+      });
+      _itemLoaded = true;
+      items = res ?? [];
     }
+    return items;
   }
 
   @override
-  bool isLoaded = false;
-
-  @override
-  List<IFileInfo<XEntity>> content(int mode) {
-    return [];
+  Future<XSpeciesItem?> createItem(XSpeciesItem data) async {
+    data.speciesId = id;
+    final res = await directory.resource.speciesItemColl.insert(data);
+    if (res != null) {
+      items.add(res);
+    }
+    return res;
   }
 
   @override
-  // TODO: implement locationKey
-  String get locationKey => '';
+  Future<bool> deleteItem(XSpeciesItem item) async {
+    final success = await directory.resource.speciesItemColl.delete(item);
+    if (success) {
+      items = items.where((i) => i.id != item.id).toList();
+    }
+    return success;
+  }
+
+  @override
+  Future<bool> updateItem(XSpeciesItem data) async {
+    data.speciesId = id;
+    final res = await directory.resource.speciesItemColl.replace(data);
+    if (res != null) {
+      final index = items.indexWhere((i) => i.id == data.id);
+      if (index > -1) {
+        items[index] = res;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> copy(IDirectory destination) async {
+    if (allowCopy(destination)) {
+      await super
+          .copyTo(destination.id, coll: destination.resource.speciesColl);
+      final items = await directory.resource.speciesItemColl.loadSpace({
+        'options': {
+          'match': {
+            'speciesId': id,
+          },
+        },
+      });
+      await destination.resource.speciesItemColl.replaceMany(items);
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> move(IDirectory destination) async {
+    if (allowMove(destination)) {
+      return await super
+          .moveTo(destination.id, coll: destination.resource.speciesColl);
+    }
+    return false;
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
