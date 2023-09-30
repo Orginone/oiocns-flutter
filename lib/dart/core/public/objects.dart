@@ -109,6 +109,7 @@ class XObject<T extends Xbase> {
       onlyTarget: onlyTarget == true,
       ignoreSelf: ignoreSelf == true,
       targetId: targetId ?? this._target.id,
+      subTargetId: null,
     );
     var res = await kernel.dataNotify(req);
     return res.success;
