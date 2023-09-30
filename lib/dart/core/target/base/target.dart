@@ -2,12 +2,14 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/identity/identity.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/dart/core/thing/resource.dart';
 import 'package:orginone/main.dart';
+import '../../public/operates.dart';
 import 'team.dart';
 
 /// 空间类型数据
@@ -25,7 +27,7 @@ class SpaceType {
   late ShareIcon share;
 }
 
-abstract class ITarget extends IFileInfo<XTarget> with ITeam  {
+abstract class ITarget extends IFileInfo<XTarget> with ITeam {
   //会话
   late ISession session;
   //用户资源
@@ -55,36 +57,49 @@ abstract class ITarget extends IFileInfo<XTarget> with ITeam  {
 abstract class Target extends Team implements ITarget {
   @override
   IPerson user;
-  //ISession session;
+  @override
+  IBelong space;
+  @override
+  ISession session;
   @override
   IDirectory directory;
   @override
-  //DataResource resource;
+  DataResource resource;
+  //继承了IFileInfo
+  // late List<XCache> cache;
   bool isContainer;
   @override
-  List<IIdentity> identitys;
+  List<IIdentity> identitys = [];
   @override
   IDirectory memberDirectory;
   final bool _identityLoaded = false;
 
-  Target(super.keys, super.metadata, super.relations, super.memberTypes) {
-    user = user ?? (this as IPerson);
-    resource = DataResource(metadata, relations, [key]);
-    directory = Directory(metadata, target); //////////////////////
-    memberDirectory = Directory(metadata, target);
-    isContainer = true;
-    session = Session(id, metadata); /////////////////////////
-    kernel.subscribed('${_metadata.belongId}-${_metadata.id}-identity',
-      [..._keys, key],
-      (data = any) => _receiveIdentity(data),);
+  Target(List<String> _keys, XTarget _metadata, List<String> _relations,
+      {IBelong? space, IPerson? user, List<TargetType>? memberTypes})
+      : super(_keys, _metadata, _relations) {
+    if (space != null) {
+      this.space = space;
+    } else {
+      this.space = this as IBelong;
+    }
+    if (user != null) {
+      this.user = user;
+    } else {
+      this.user = this as IPerson;
+    }
+    cache = XCache(fullId: '${_metadata.belongId}_${_metadata.id}');
+    resource = DataResource(_metadata, _relations, [key]);
+    directory = Directory(XDirectory(
+        parentId: _metadata.parentId, directoryId: directoryId, id: id));
   }
 
   @override
-  String get spaceId{
+  String get spaceId {
     return space.id;
   }
+
   @override
-  String get locationKey{
+  String get locationKey {
     return id;
   }
 
@@ -116,22 +131,22 @@ abstract class Target extends Team implements ITarget {
     return null;
   }
 
-  @override
-  List<OperateModel> operates(){
-    var operates = super.operates();////
-    if(session.isMyChat){
-      operates.unshift(targetOperates.Chat);
+  List<OperateModel> operates({int? mode}) {
+    var operates = super.operates(); ////
+    if (session.isMyChat) {
+      operates.insert(0, TargetOperates.chat as OperateModel);
     }
-    if(members.some((i) => i.id === userId)){
-      //operates.unshift(memberOperates.Exit);
+    if (members.any((i) => i.id == userId)) {
+      //operates.insert(0,MemberOperates.exit as OperateModel);
     }
+    return operates;
   }
 
   Future<bool> pullSubTarget(ITeam team) async {
-    var res = await kernel.pullAnyToTeam(
-        GiveModel(id: metadata.id, subIds: [team.metadata.id]));
-    if(res.success){
-      await sendTargetNotity(OperateType.add,team.metadata);
+    var res = await kernel
+        .pullAnyToTeam(GiveModel(id: metadata.id, subIds: [team.metadata.id]));
+    if (res.success) {
+      await sendTargetNotity(OperateType.add, sub: team.metadata);
     }
     return res.success;
   }
@@ -146,13 +161,19 @@ abstract class Target extends Team implements ITarget {
   }
 
   @override
-  Future<bool> rename(String name)async {
-    return Team.update({
-      metadata,
+  Future<bool> rename(String name) async {
+    return update(TargetModel(
+      id: metadata.id,
       name: name,
+      code: metadata.code,
+      typeName: metadata.typeName!,
+      icon: metadata.icon,
+      belongId: metadata.belongId,
+      remark: metadata.remark,
       teamCode: metadata.team?.code ?? code,
       teamName: metadata.team?.name ?? this.name,
-    });
+      public: metadata.public,
+    ));
   }
   //暂不支持
   // @override
@@ -172,20 +193,20 @@ abstract class Target extends Team implements ITarget {
   }
 
   @override
-  Future notifySession(bool pull,List<XTarget> member){
-     if (id != userId) {
-      for (const member of members) {
-        if (member.typeName === TargetType.Person) {
+  Future<void> notifySession(bool pull, List<XTarget> member) async {
+    if (id != userId) {
+      for (var member in members) {
+        if (member.typeName == TargetType.person) {
           if (pull) {
-            await this.session.sendMessage(
-              MessageType.Notify,
-              `${user.name} 邀请 ${member.name} 加入群聊`,
+            await session.sendMessage(
+              MessageType.notify,
+              '${user.name} 邀请 ${member.name} 加入群聊',
               [],
             );
           } else {
-            await this.session.sendMessage(
-              MessageType.Notify,
-              `${user.name} 将 ${member.name} 移出群聊`,
+            await session.sendMessage(
+              MessageType.notify,
+              '${user.name} 将 ${member.name} 移出群聊',
               [],
             );
           }
@@ -193,63 +214,65 @@ abstract class Target extends Team implements ITarget {
       }
     }
   }
+
   @override
-  Future<bool> sendIdentityChangeMsg(dynamic data)async{
+  Future<bool> sendIdentityChangeMsg(dynamic data) async {
     var res = await kernel.dataNotify(DataNotityType(
       data: data,
       targetId: metadata.id,
-      ignoreSelf: true, 
-      flag: 'identity', 
-      relations: relations, 
-      belongId: belongId, 
-      onlyTarget: false, 
+      ignoreSelf: true,
+      flag: 'identity',
+      relations: relations,
+      belongId: belongId,
+      onlyTarget: false,
       onlineOnly: false,
+      subTargetId: null,
     ));
     return res.success;
   }
-  Future _receiveIdentity(IdentityOperateModel data){
-    var message ='';
+
+  Future _receiveIdentity(IdentityOperateModel data) async {
+    var message = '';
     switch (data.operate) {
-      case OperateType.create:
-        message = `${data.operater.name}新增身份【${data.identity.name}】.`;
-        if (identitys.every((q) => q.id !== data.identity.id)) {
-          identitys.push(Identity(data.identity, this));
+      case '创建':
+        message = '${data.operater?.name}新增身份【${data.identity?.name}】.';
+        if (identitys.every((q) => q.id != data.identity?.id)) {
+          identitys.add(Identity(data.identity as ITarget, this));
         }
         break;
-      case OperateType.delete:
-        message = `${data.operater.name}将身份【${data.identity.name}】删除.`;
+      case '删除':
+        message = '${data.operater?.name}将身份【${data.identity?.name}】删除.';
         await identitys.find((a) => a.id == data.identity.id)?.delete(true);
         break;
-      case OperateType.update:
-        message = `${data.operater.name}将身份【${data.identity.name}】信息更新.`;
+      case '更新':
+        message = '${data.operater?.name}将身份【${data.identity?.name}】信息更新.';
         updateMetadata(data.identity);
         break;
-      case OperateType.remove:
-        if (data.subTarget) {
-          message = `${data.operater.name}移除赋予【${data.subTarget!.name}】的身份【${
-            data.identity.name
-          }】.`;
+      case '移除':
+        if (data.subTarget != null) {
+          message =
+              '${data.operater?.name}移除赋予【${data.subTarget!.name}】的身份【${data.identity?.name}】.';
           await identitys
-            .find((a) => a.id == data.identity.id)
-            ?.removeMembers([data.subTarget], true);
+              .find((a) => a.id == data.identity?.id)
+              .removeMembers([data.subTarget], true);
         }
         break;
-      case OperateType.add:
-        if (data.subTarget) {
-          message = '${data.operater.name}赋予{${data.subTarget!.name}身份【${
-            data.identity.name
-          }】.';
+      case '新增':
+        if (data.subTarget != null) {
+          message =
+              '${data.operater?.name}赋予{${data.subTarget!.name}身份【${data.identity?.name}】.';
           await identitys
-            .find((a) => a.id == data.identity.id)
-            ?.pullMembers([data.subTarget], true);
+              .find((a) => a.id == data.identity?.id)
+              ?.pullMembers([data.subTarget], true);
         }
         break;
     }
-    if (message.isNotEmpty) {
-      if (data.operater?.id != user.id) {
-        logger.info(message);
-      }
-      directory.structCallback();
-    }
+    //日志
+    // if (message.isNotEmpty) {
+    //   if (data.operater?.id != user.id) {
+    //     logger.info(message);
+    //   }
+    //   directory.structCallback();
+    // }
   }
 }

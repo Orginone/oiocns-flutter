@@ -98,6 +98,8 @@ class DataNotityType {
   bool onlyTarget;
   // 仅通知在线用户
   bool onlineOnly;
+  //被操作方Id
+  String? subTargetId;
 
   DataNotityType({
     required this.data,
@@ -109,6 +111,7 @@ class DataNotityType {
     required this.belongId,
     required this.onlyTarget,
     required this.onlineOnly,
+    required this.subTargetId,
   });
 }
 

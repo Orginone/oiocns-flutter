@@ -23,7 +23,7 @@ abstract class IEntity<T> extends Emitter {
   //实体描述
   late String remark;
   //数据实体
-  late dynamic metadata;
+  late T metadata;
   //用户ID
   late String userId;
   //归属Id

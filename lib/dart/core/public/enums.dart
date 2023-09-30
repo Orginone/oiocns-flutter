@@ -70,8 +70,7 @@ enum MessageType {
   video("视频"),
   voice("语音"),
   recall("撤回"),
-  readed("已读"), //ts还未实现
-  uploading("上传中"); //ts还未实现
+  notify('通知'); //ts还未实现
 
   const MessageType(this.label);
 
@@ -93,10 +92,8 @@ enum MessageType {
         return MessageType.voice;
       case "撤回":
         return MessageType.recall;
-      case "已读":
-        return MessageType.readed;
-      case "文件":
-        return MessageType.file;
+      case "通知":
+        return MessageType.notify;
     }
     return null;
   }
